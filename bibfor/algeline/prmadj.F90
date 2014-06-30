@@ -23,7 +23,7 @@ subroutine prmadj(nbnd, neq, n2, adjncy, xadj,&
     integer :: nbnd, neq, n2
     integer :: adjncy(*), xadj(neq+1), xadjd(*), liste(neq), q(n2)
     integer :: noeud(*), nbnoeu, ndi, ndj, deb, fin, deblis, i, j, ndsuiv
-    logical :: vider
+    logical(kind=1) :: vider
     vider = .false.
     nbnoeu = 0
     deblis=0

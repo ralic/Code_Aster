@@ -41,7 +41,7 @@ interface
         character(len=19) , intent(in)    :: solveu
         character(len=24) , intent(in)    :: vecblo
         character(len=24) , intent(in)    :: veclag
-        logical           , intent(in)    :: flage
+        logical(kind=1)   , intent(in)    :: flage
 !!
         integer           , intent(inout) :: icom1
         integer           , intent(inout) :: icom2
@@ -51,6 +51,6 @@ interface
         real(kind=8)      , intent(inout) :: omemin
         real(kind=8)      , intent(inout) :: vpinf
         real(kind=8)      , intent(inout) :: vpmax
-        logical           , intent(inout) :: lcomod
+        logical(kind=1)   , intent(inout) :: lcomod
     end subroutine vppost
 end interface

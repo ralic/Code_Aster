@@ -41,7 +41,7 @@ subroutine te0360(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: typmod(2), nomail, lielrf(10)
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
     integer :: iw, ivf1, idf1, igeom, imate
     integer :: ivf2, idf2, nnos, jgn

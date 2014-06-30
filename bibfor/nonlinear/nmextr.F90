@@ -68,7 +68,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
     character(len=2) :: chaine
     character(len=24) :: oldcha, nomcha, nomchs, nomchx
     character(len=4) :: typcha
-    logical :: lextr, trouve
+    logical(kind=1) :: lextr, trouve
     character(len=24) :: listno, listma, listpi, listsp, listcp
     character(len=24) :: extinf, extcha, exttyp, extact
     integer :: jextin, jextch, jextty, jextac

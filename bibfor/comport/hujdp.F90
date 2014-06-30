@@ -49,7 +49,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     real(kind=8) :: yf(18), sigdc(3), prodd, prodf, mat(6, 6)
     real(kind=8) :: m, degr, b, phi, ptrac
     character(len=8) :: mod
-    logical :: debug
+    logical(kind=1) :: debug
 !
     common /tdim/ ndt, ndi
     common /meshuj/ debug

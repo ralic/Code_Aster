@@ -26,7 +26,7 @@ interface
         character(len=*) :: form
         integer :: ifi
         character(len=*) :: titre
-        logical :: lgmsh
+        logical(kind=1) :: lgmsh
         integer :: nbcham
         character(len=*) :: cham(*)
         character(len=*) :: partie
@@ -34,24 +34,24 @@ interface
         character(len=*) :: para(*)
         integer :: nbordr
         integer :: ordr(*)
-        logical :: lresu
+        logical(kind=1) :: lresu
         character(len=*) :: motfac
         integer :: iocc
         character(len=*) :: cecr
         character(len=8) :: tycha
-        logical :: lcor
+        logical(kind=1) :: lcor
         integer :: nbnot
         integer :: numnoe(*)
         integer :: nbmat
         integer :: nummai(*)
         integer :: nbcmp
         character(len=*) :: nomcmp(*)
-        logical :: lsup
+        logical(kind=1) :: lsup
         real(kind=8) :: borsup
-        logical :: linf
+        logical(kind=1) :: linf
         real(kind=8) :: borinf
-        logical :: lmax
-        logical :: lmin
+        logical(kind=1) :: lmax
+        logical(kind=1) :: lmin
         character(len=*) :: formr
         integer :: nive
         integer :: versio

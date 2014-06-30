@@ -58,7 +58,7 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit     none
-    logical :: fnoevo
+    logical(kind=1) :: fnoevo
     integer :: dimdef, dimcon
     integer :: ndim
     real(kind=8) :: dt, congem(dimcon), r(dimdef)

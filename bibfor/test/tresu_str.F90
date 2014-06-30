@@ -4,7 +4,7 @@ subroutine tresu_str(tbtxt, refk, valk, ific, llab)
     character(len=80), intent(in) :: refk
     character(len=80), intent(in) :: valk
     integer, intent(in) :: ific
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

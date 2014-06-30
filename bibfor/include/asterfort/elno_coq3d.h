@@ -22,6 +22,6 @@ interface
         character(len=16) :: option
         integer :: nb1,nb2,npgsr,npgsn,nso,nbcou
         real(kind=8) :: geom(*),cara(*),valpg(*),outno(*),lzr(*),matr(*)
-        logical :: lgreen
+        logical(kind=1) :: lgreen
     end subroutine elno_coq3d
 end interface

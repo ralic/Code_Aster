@@ -22,7 +22,7 @@ interface
         integer :: kxmps
         character(len=12) :: usersm
         integer :: nprec
-        logical :: lresol
+        logical(kind=1) :: lresol
         character(len=24) :: kvers
     end subroutine amumpu
 end interface

@@ -36,7 +36,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
     real(kind=8) :: tau1(3), tau2(3), rese(3), mproj(3, 3), vtmp(336)
     integer :: nconta, ndeple
     character(len=8) :: typmai
-    logical :: lpenaf
+    logical(kind=1) :: lpenaf
 !
 ! ----------------------------------------------------------------------
 !

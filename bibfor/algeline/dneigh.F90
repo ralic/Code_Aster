@@ -162,7 +162,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical :: select(1)
+    logical(kind=1) :: select(1)
     integer :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
 !
@@ -199,7 +199,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 ! DUE TO CRP_102 CALL DLACPY ('ALL', N, N, H, LDH, WORKL, N)
     call dlacpy('A', n, n, h, ldh,&
                 workl, n)
-    call dlaqrb(.true., n, 1, n, workl,&
+    call dlaqrb(.true._1, n, 1, n, workl,&
                 n, ritzr, ritzi, bounds, ierr)
     if (ierr .ne. 0) goto 9000
 !

@@ -36,7 +36,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: numedd, defico
-    logical :: lcont
+    logical(kind=1) :: lcont
     character(len=24) :: sdnuco
 !
 ! ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
     character(len=8) :: nomgd, modele, noma
     character(len=24) :: nolili
-    logical :: lxfcm
+    logical(kind=1) :: lxfcm
     integer :: nec, nbnoeu, ncmpmx
     integer :: nlili, neq
     integer :: ico

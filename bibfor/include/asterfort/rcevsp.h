@@ -20,7 +20,7 @@ interface
                       cspo, cspe, cspto, cspte, cspmo,&
                       cspme)
         character(len=24) :: csiex
-        logical :: kemixt
+        logical(kind=1) :: kemixt
         character(len=24) :: cstex
         character(len=24) :: csmex
         character(len=24) :: cinst

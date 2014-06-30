@@ -69,7 +69,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
     integer :: idc, id(12), ii, j, ktest
     real(kind=8) :: d, dx, dy, dz
     integer :: f1(4), f2(4), f3(4), f4(4), f5(4), f6(4)
-    logical :: facnp1, facnp2, facnp3, facnp4, facnp5, facnp6
+    logical(kind=1) :: facnp1, facnp2, facnp3, facnp4, facnp5, facnp6
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !

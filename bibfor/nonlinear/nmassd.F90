@@ -67,7 +67,7 @@ subroutine nmassd(modele, numedd, lischa, fonact, depest,&
     character(len=19) :: vect(nbcoef)
     character(len=19) :: vebest
     character(len=19) :: cnbest, cndido, cndidi, cndipi
-    logical :: ldidi
+    logical(kind=1) :: ldidi
 !
 ! ----------------------------------------------------------------------
 !

@@ -30,9 +30,9 @@ interface
         integer :: npi
         integer :: nno2
         integer :: nno1
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         real(kind=8) :: deltat
-        logical :: perman
+        logical(kind=1) :: perman
         real(kind=8) :: wref(npg)
         integer :: iu(3, 18)
         integer :: ip(2, 9)
@@ -50,6 +50,6 @@ interface
         integer :: press1(9)
         integer :: press2(9)
         integer :: tempe(5)
-        logical :: axi
+        logical(kind=1) :: axi
     end subroutine fneihm
 end interface

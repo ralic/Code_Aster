@@ -69,7 +69,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
     character(len=16) :: keywordread(300)
     character(len=16) :: k16_dummy(300), keyword, val_t_dummy
     integer :: n, i_keyword, i_keyexcl
-    logical :: l_excl
+    logical(kind=1) :: l_excl
     integer :: j_kexcl
 !
 ! --------------------------------------------------------------------------------------------------

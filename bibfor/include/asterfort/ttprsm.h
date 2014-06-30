@@ -31,7 +31,7 @@ interface
         real(kind=8) :: rese(3)
         real(kind=8) :: nrese
         real(kind=8) :: coeffp
-        logical :: lpenaf
+        logical(kind=1) :: lpenaf
         real(kind=8) :: dvitet(3)
     end subroutine ttprsm
 end interface

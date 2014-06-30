@@ -64,7 +64,7 @@ subroutine exchml(imodat, iparg)
     integer :: iachik, iachix, iaoptt, lgco, iaopno, iret, debugr, lggrel
     integer :: jec, ncmp, jad1, jad2, jel, ipt2, k, ipt1, jparal
     integer :: nbpoi, icmp1, icmp2, kcmp, ipt
-    logical :: etendu, lparal, lverec
+    logical(kind=1) :: etendu, lparal, lverec
     character(len=8) :: tych, cas
 ! DEB-------------------------------------------------------------------
 !

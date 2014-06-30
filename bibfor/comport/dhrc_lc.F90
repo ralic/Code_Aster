@@ -93,8 +93,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, sig, vip, a0, c0,&
 !                 1 => ABSENCE DE CONVERGENCE
 ! ----------------------------------------------------------------------
 !
-    logical :: rigi, resi
-    logical :: lelas
+    logical(kind=1) :: rigi, resi
+    logical(kind=1) :: lelas
 !
     integer :: k, kdmax, indi(6), indip(6), nbact, l, i, iret, kd, kd2
 !

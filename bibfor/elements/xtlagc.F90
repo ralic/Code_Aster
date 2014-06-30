@@ -31,7 +31,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
     character(len=8) :: typmai
     real(kind=8) :: dlagrc
     integer :: cface(5, 3), nface, nconta
-    logical :: lmulti
+    logical(kind=1) :: lmulti
 !
 ! ----------------------------------------------------------------------
 !

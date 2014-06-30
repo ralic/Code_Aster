@@ -24,6 +24,6 @@ interface
         real(kind=8) :: geom1(*)
         integer :: tria3(*)
         real(kind=8) :: cobar2(3)
-        logical :: ok
+        logical(kind=1) :: ok
     end subroutine pj2da1
 end interface

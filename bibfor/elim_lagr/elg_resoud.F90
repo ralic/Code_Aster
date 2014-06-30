@@ -30,7 +30,7 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
     real(kind=8), intent(inout) :: rsolu(*)
     complex(kind=8), intent(inout) :: csolu(*)
     character(len=*), intent(in) :: criter
-    logical, intent(in) :: prepos
+    logical(kind=1), intent(in) :: prepos
     integer, intent(in) :: istop
     integer, intent(out) :: iret
 ! ======================================================================

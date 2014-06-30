@@ -10,7 +10,7 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
 #include "asterfort/as_allocate.h"
     integer :: id, neq, nbsup, nsupp(*), tcosup(nbsup, *)
     real(kind=8) :: recmod(nbsup, neq, *), repdir(neq, *)
-    logical :: monoap, muapde
+    logical(kind=1) :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

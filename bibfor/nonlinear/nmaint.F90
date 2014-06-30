@@ -62,11 +62,11 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 !
     integer :: ifm, niv
     character(len=1) :: base
-    logical :: lcont, lmacr
+    logical(kind=1) :: lcont, lmacr
     character(len=19) :: cncont, cnsstr
     integer :: neq, i, endo
     integer :: endop1, endop2
-    logical :: lendo
+    logical(kind=1) :: lendo
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------

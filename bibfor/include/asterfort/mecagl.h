@@ -35,20 +35,20 @@ interface
         integer :: nnoff
         integer :: iord
         integer :: ndeg
-        logical :: lincr
-        logical :: thlagr
-        logical :: glagr
-        logical :: thlag2
-        logical :: milieu
+        logical(kind=1) :: lincr
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: glagr
+        logical(kind=1) :: thlag2
+        logical(kind=1) :: milieu
         integer :: ndimte
-        logical :: pair
-        logical :: extim
+        logical(kind=1) :: pair
+        logical(kind=1) :: extim
         real(kind=8) :: time
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
-        logical :: lmelas
+        logical(kind=1) :: lmelas
         character(len=16) :: nomcas
         character(len=8) :: kcalc
         character(len=24) :: fonoeu

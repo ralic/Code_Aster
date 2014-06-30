@@ -31,7 +31,7 @@ interface
         integer :: nfe
         integer :: ddlc
         integer :: cmp(nbcmp)
-        logical :: lmeca
-        logical :: pre1
+        logical(kind=1) :: lmeca
+        logical(kind=1) :: pre1
     end subroutine xpocmp
 end interface 

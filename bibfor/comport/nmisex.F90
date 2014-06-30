@@ -72,7 +72,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 !
 !
-    logical :: cplan, plasti, inco, dech
+    logical(kind=1) :: cplan, plasti, inco, dech
     integer :: ndimsi, jprol2, jvale2, nbval2
     integer :: imate2, k, l, niter, ibid
     integer :: iret5

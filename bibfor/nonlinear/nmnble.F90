@@ -75,7 +75,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     character(len=19) :: depmoi, depplu
     character(len=19) :: depdel, ddepla
     character(len=19) :: vitini, accini, vitplu, accplu
-    logical :: loptin, lallv, leltc, ldyna
+    logical(kind=1) :: loptin, lallv, leltc, ldyna
     integer :: mmitgo, mmitfr, mmitca
     real(kind=8), pointer :: ddepl(:) => null()
     real(kind=8), pointer :: depde(:) => null()

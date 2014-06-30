@@ -32,12 +32,12 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical :: fordef
+        logical(kind=1) :: fordef
         character(len=8) :: nommai
         character(len=16) :: proaxe
         character(len=8) :: nommap
         character(len=19) :: cnsr
-        logical :: post
+        logical(kind=1) :: post
         real(kind=8) :: resu(7)
     end subroutine avgrno
 end interface

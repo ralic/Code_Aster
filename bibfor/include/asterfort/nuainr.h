@@ -25,7 +25,7 @@ interface
         integer :: nc1
         integer :: ic1
         real(kind=8) :: nuax1(*)
-        logical :: nual1(*)
+        logical(kind=1) :: nual1(*)
         real(kind=8) :: nuav1(*)
         real(kind=8) :: x2(nx1)
         real(kind=8) :: dref

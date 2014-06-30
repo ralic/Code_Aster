@@ -74,7 +74,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: pgl(3, 3), ffp(3), matsct(6)
     real(kind=8) :: xd(3), ang1(3)
     real(kind=8) :: ey, ez, gamma, xl, xl2, xls2
-    logical :: vecteu, matric, reactu
+    logical(kind=1) :: vecteu, matric, reactu
     integer :: i, jcret, npge
     integer :: igeom, imate, icontm, isect, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat

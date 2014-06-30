@@ -22,7 +22,7 @@ subroutine i2rdl2(n, t, k, nom, adr)
 !       COPIE DE I2RDLI
 !
     integer :: i, j
-    logical :: fini, trouve
+    logical(kind=1) :: fini, trouve
 !
     i = 1
     j = 0

@@ -35,7 +35,7 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, ifm, niv, icompt
     real(kind=8) :: saltm, nadm(1), ukl, vale(2)
-    logical :: trouve, endur
+    logical(kind=1) :: trouve, endur
     integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=8) :: kbid

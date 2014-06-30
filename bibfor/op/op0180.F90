@@ -75,7 +75,7 @@ subroutine op0180()
     integer :: ncaba, nsief, nbmabe, jlimab, nbnoca
     real(kind=8) :: delta, ea, f0, frco, frli, mu0, rh1000, sa, fprg, xflu, xret
     real(kind=8) :: trelax, valr(2),rbid
-    logical :: mail2d, relax, quad
+    logical(kind=1) :: mail2d, relax, quad
     character(len=3) :: k3b
     character(len=8) :: caelem, chmat, mailla, modele, noancr(2), nomu, adher
     character(len=8) :: typanc(2), typ_ma

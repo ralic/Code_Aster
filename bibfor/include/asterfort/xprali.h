@@ -24,7 +24,7 @@ interface
         integer :: nelcou
         character(len=19) :: poifis
         character(len=19) :: trifis
-        logical :: libre
+        logical(kind=1) :: libre
         real(kind=8) :: vin(3)
     end subroutine xprali
 end interface

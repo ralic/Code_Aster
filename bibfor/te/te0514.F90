@@ -76,7 +76,7 @@ subroutine te0514(option, nomte)
     integer :: fisco(2*nfimax), fisc(2*nfimax), zxain, ai
     integer :: ndoubl(ninmax*(2**nfimax)), ndoub2(ninmax*(2**nfimax))
     integer :: ndoub3(nmmax*(2**nfimax))
-    logical :: deja, ajn
+    logical(kind=1) :: deja, ajn
 !
 !......................................................................
 !     LES TABLEAUX FISC, FISCO, NDOUBL, NDOUB2, PMILIE, PINTER ONT ETE

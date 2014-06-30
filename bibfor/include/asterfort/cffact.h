@@ -26,6 +26,6 @@ interface
         integer :: llf1
         integer :: llf2
         integer :: indfac
-        logical :: lechec
+        logical(kind=1) :: lechec
     end subroutine cffact
 end interface

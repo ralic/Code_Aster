@@ -73,7 +73,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
     integer :: nbcac, nbcpn, nbcrb, nbmac, nbnac, nboper, nbsd, nr, ifm, ibid
     integer :: ny
     real(kind=8) :: vecty(3)
-    logical :: tridim
+    logical(kind=1) :: tridim
     character(len=24) :: lscpnc, quant, sdlieu, sdeval, lscpcd
     character(len=24) :: sdev, sdli, sdmoye, sdmail
     character(len=19) :: sdpost, eval, lieu, sdnewr, ssch19
@@ -81,7 +81,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
     character(len=8) :: k8b, typco, courbe, mailla, repere
     character(len=4) :: docu
     character(len=1) :: ca
-    logical :: chok
+    logical(kind=1) :: chok
 !
 !==================== CORPS DE LA ROUTINE =============================
 !

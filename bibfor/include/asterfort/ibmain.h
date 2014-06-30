@@ -17,6 +17,6 @@
 !
 interface
     subroutine ibmain(lldbg)
-        logical :: lldbg
+        logical(kind=1) :: lldbg
     end subroutine ibmain
 end interface

@@ -19,7 +19,7 @@ interface
     function diincl(sddisc, nomchz, force)
         character(len=19) :: sddisc
         character(len=*) :: nomchz
-        logical :: force
-        logical :: diincl
+        logical(kind=1) :: force
+        logical(kind=1) :: diincl
     end function diincl
 end interface

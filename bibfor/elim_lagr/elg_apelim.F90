@@ -39,7 +39,7 @@ subroutine elg_apelim(kptsc, lqr)
 # include "asterfort/wkvect.h"
 !
     integer :: kptsc
-    logical :: lqr
+    logical(kind=1) :: lqr
 !--------------------------------------------------------------
 ! BUT : calculer (dans PETSC) les matrices nécessaires à
 !       ELIM_LAGR='OUI' :
@@ -65,7 +65,7 @@ subroutine elg_apelim(kptsc, lqr)
     character(len=19) :: nomat, nosolv, rigi1
     character(len=14) :: nonu
     character(len=16) :: concep, nomcmd
-    logical :: lmd, info2
+    logical(kind=1) :: lmd, info2
     PetscInt :: ierr
     PetscInt :: one = 1
     Mat :: c, ct, c2, t, t2, mtemp

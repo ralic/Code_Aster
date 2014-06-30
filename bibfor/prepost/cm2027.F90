@@ -179,13 +179,13 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
 ! --- DUPLICATION A L'IDENTIQUE
 !
     call cpclma(main, maout, 'GROUPENO', 'G')
-    call jedupo(main//'.NOMMAI', 'G', maout//'.NOMMAI', .false.)
+    call jedupo(main//'.NOMMAI', 'G', maout//'.NOMMAI', .false._1)
     call cpclma(main, maout, 'GROUPEMA', 'G')
 !
 ! --- DIMENSION DU MAILLAGE : NOMBRE TOTAL DE NOEUDS
 !
     nbtot = nbno + nbnomi + nbnohe
-    call jedupo(main//'.DIME', 'G', maout//'.DIME', .false.)
+    call jedupo(main//'.DIME', 'G', maout//'.DIME', .false._1)
     call jeveuo(maout//'.DIME', 'E', jdim)
     zi(jdim-1 + 1) = nbtot
 !
@@ -223,7 +223,7 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
     typema = maout // '.TYPMAIL'
     connei = main //'.CONNEX'
     conneo = maout//'.CONNEX'
-    call jedupo(main//'.TYPMAIL', 'G', typema, .false.)
+    call jedupo(main//'.TYPMAIL', 'G', typema, .false._1)
     call jeveuo(typema, 'E', jtypma)
     call jecrec(conneo, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)

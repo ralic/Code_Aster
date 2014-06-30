@@ -24,11 +24,11 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
 #include "asterfort/assert.h"
     character(len=4) :: oper
     character(len=*) :: optcaz, optasz, typmaz
-    logical :: lasse, lcalc
+    logical(kind=1) :: lasse, lcalc
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical :: lassme(20), lcalme(20)
+    logical(kind=1) :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !

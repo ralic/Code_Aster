@@ -168,7 +168,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
                     lambda(i+3,j+3)=pgl(i,j)
                 end do
             end do
-            call ssvaro(lambda, 'LG', .true., 'EXTE', nomacr,&
+            call ssvaro(lambda, 'LG', .true._1, 'EXTE', nomacr,&
                         iavmat, jresl)
         else
             ASSERT(.false.)

@@ -54,7 +54,7 @@ subroutine obttit(sdtabl, sepcol, entet1, entet2, entet3)
     character(len=24) :: slcolo, sdcolo
     integer :: icol, ncol, pos
     integer :: larcol, larlig, tithau
-    logical :: lacti
+    logical(kind=1) :: lacti
     character(len=16) :: titli1, titli2, titli3
 !
 ! ----------------------------------------------------------------------

@@ -46,7 +46,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
     integer :: ibask, ifonc, ihosin,  nbval
-    logical :: endur
+    logical(kind=1) :: endur
 !
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------

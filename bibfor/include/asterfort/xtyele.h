@@ -24,6 +24,6 @@ interface
         character(len=24) :: trav
         character(len=8) :: fiss(nfiss)
         integer :: contac
-        logical :: linter
+        logical(kind=1) :: linter
     end subroutine xtyele
 end interface

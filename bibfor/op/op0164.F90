@@ -57,7 +57,7 @@ subroutine op0164()
     character(len=72) :: texte
     real(kind=8) :: a(3), a2(3)
     integer(kind=8) :: long1, long2, long3
-    logical :: lissf, lsym
+    logical(kind=1) :: lissf, lsym
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

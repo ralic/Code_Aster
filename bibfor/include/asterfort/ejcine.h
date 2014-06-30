@@ -22,7 +22,7 @@ interface
         integer :: nno2
         integer :: nno1
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: vff1(nno1)
         real(kind=8) :: vff2(nno2)
         real(kind=8) :: wref

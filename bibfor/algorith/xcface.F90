@@ -85,7 +85,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
     integer :: iadzi, iazk24, ndim, ptmax
     character(len=8) :: typma
     integer :: zxain
-    logical :: lcont, lajpa, lajpb, lajpc, ajout
+    logical(kind=1) :: lcont, lajpa, lajpb, lajpc, ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()

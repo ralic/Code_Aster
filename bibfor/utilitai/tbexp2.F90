@@ -29,7 +29,7 @@ subroutine tbexp2(nomta, para)
 ! ----------------------------------------------------------------------
     character(len=4) :: typpar
     character(len=24) :: valk(2)
-    logical :: exist
+    logical(kind=1) :: exist
 ! DEB------------------------------------------------------------------
 !
     call jemarq()

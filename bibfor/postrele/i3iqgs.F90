@@ -16,7 +16,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical :: fink
+    logical(kind=1) :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -61,7 +61,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
     real(kind=8) :: e1(3), e2(3), e3(3), cs(3, 4), sgtp(6), x(3), r(3), s(3)
     real(kind=8) :: t(3)
     real(kind=8) :: e1i(3), e2i(3)
-    logical :: pb, djala1, djala2
+    logical(kind=1) :: pb, djala1, djala2
 !
 !======================================================================
 !

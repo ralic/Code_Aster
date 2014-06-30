@@ -74,7 +74,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
     character(len=19) :: matdrv
     real(kind=8) :: epscor
-    logical :: cor
+    logical(kind=1) :: cor
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
@@ -129,22 +129,22 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
         cptr = cptr+1
 ! ---   CALCUL DU VECTEUR TANGENT
         if (cptr .eq. 1) then
-            call mnltan(.true., imat, numdrv, matdrv, xcdl,&
+            call mnltan(.true._1, imat, numdrv, matdrv, xcdl,&
                         parcho, adime, xtemp, ninc, nd,&
                         nchoc, h, hf, xtang)
         else
-            call mnltan(.false., imat, numdrv, matdrv, xcdl,&
+            call mnltan(.false._1, imat, numdrv, matdrv, xcdl,&
                         parcho, adime, xtemp, ninc, nd,&
                         nchoc, h, hf, xtang)
         endif
 ! ---   RECALCUL DE LA MATRICE JACOBIENNE
-        call mnldrv(.true., imat, numdrv, matdrv, xcdl,&
+        call mnldrv(.true._1, imat, numdrv, matdrv, xcdl,&
                     parcho, adime, xtemp, zr(itang), ninc,&
                     nd, nchoc, h, hf)
 ! ---   ON RESOUD LE SYSTEME LINEAIRE (DRDV\XTANG)
         call resoud(matdrv, ' ', ' ', ' ', 1,&
                     ' ', ' ', 'V', zr(iru), [cbid],&
-                    ' ', .false., 0, iret)
+                    ' ', .false._1, 0, iret)
 ! ---   ON AJOUTE AU VECTEUR SOLUTION
         call daxpy(ninc, -1.d0, zr(iru), 1, zr(itemp),&
                    1)

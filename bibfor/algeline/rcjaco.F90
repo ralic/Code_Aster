@@ -27,7 +27,7 @@ subroutine rcjaco(ar, br, valpro)
     real(kind=8) :: tol, toldyn, valaux(3), eps, akk, ajj, ab, verif
     real(kind=8) :: eptola, epcoma, eptolb, epcomb, raci, d1, d2, den, ca, cg
     real(kind=8) :: aj, bj, ak, bk, rtol, dif, epsa, compa, epsb, compb
-    logical :: iconv
+    logical(kind=1) :: iconv
     data   nperm, tol, toldyn / 12, 1.d-10, 1.d-2 /
 ! ----------------------------------------------------------------------
 !

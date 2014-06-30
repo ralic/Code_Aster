@@ -29,6 +29,6 @@ interface
         real(kind=8) :: sgt(*)
         integer :: nbpt
         integer :: lstpt(*)
-        logical :: fink
+        logical(kind=1) :: fink
     end subroutine i3ifqs
 end interface

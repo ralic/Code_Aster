@@ -132,7 +132,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
     integer :: jk24c, jkpar, nbrow, frecou
     real(kind=8) :: valr(2), omgmin, omgmax, omgshi, rbid, prec, omgdec
-    logical :: caldet, ldyna
+    logical(kind=1) :: caldet, ldyna
 !
     call infniv(ifm, niv)
 ! MAUVAISE VALEUR DE OPTION
@@ -189,8 +189,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 10      continue
         ier=0
         call vpstur(lraide, omgshi, lmasse, ldynam, rbid,&
-                    ibid, npivot(1), ier, solveu, .false.,&
-                    .true.)
+                    ibid, npivot(1), ier, solveu, .false._1,&
+                    .true._1)
         if (ier .ne. 0) then
             nbessa= nbessa+1
             if (nbessa .le. nbrssa) then
@@ -258,7 +258,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
             ier=0
             call vpstur(lraide, omgmin, lmasse, ldynam, det(1),&
                         idet(1), npivot(1), ier, solveu, caldet,&
-                        .false.)
+                        .false._1)
             nbfmin=npivot(1)
             if (ier .ne. 0) then
                 nbessa=nbessa+1
@@ -309,7 +309,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
             ier=0
             call vpstur(lraide, omgmax, lmasse, ldynam, det(2),&
                         idet(2), npivot(2), ier, solveu, caldet,&
-                        .false.)
+                        .false._1)
             nbfmax=npivot(2)
             if (ier .ne. 0) then
                 nbessa=nbessa+1
@@ -446,8 +446,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 23          continue
             ier=0
             call vpstur(lraide, omgshi, lmasse, ldynam, rbid,&
-                        ibid, npivot( 1), ier, solveu, .false.,&
-                        .true.)
+                        ibid, npivot( 1), ier, solveu, .false._1,&
+                        .true._1)
             if (ier .ne. 0) then
                 nbessa=nbessa+1
                 if (nbessa .le. nbrssa) then
@@ -522,8 +522,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 30      continue
         ier=0
         call vpstur(lraide, omgshi, lmasse, ldynam, rbid,&
-                    ibid, npivot(1), ier, solveu, .false.,&
-                    .true.)
+                    ibid, npivot(1), ier, solveu, .false._1,&
+                    .true._1)
         if (ier .ne. 0) then
             nbessa=nbessa+1
             if (nbessa .le. nbrssa) then

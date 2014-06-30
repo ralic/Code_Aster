@@ -69,7 +69,7 @@ subroutine te0082(option, nomte)
     press1(1) = 0
     press2(1) = 0
     tempe(1) = 0
-    call grdthm(nomte, .false., .false., 2, mecani,&
+    call grdthm(nomte, .false._1, .false._1, 2, mecani,&
                 press1, press2, tempe, ibi, ibi,&
                 ibi, ibi, ibi, ibi)
     idec = press1(1) + press2(1) + tempe(1)

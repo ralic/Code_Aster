@@ -30,7 +30,7 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
     character(len=19) :: sddisc
     integer :: numarc
     real(kind=8) :: instan
-    logical :: force
+    logical(kind=1) :: force
 !
 ! ----------------------------------------------------------------------
 !

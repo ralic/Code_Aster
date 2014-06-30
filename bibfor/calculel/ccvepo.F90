@@ -19,7 +19,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmamo.h"
 #include "asterfort/utmess.h"
-    logical :: exipou
+    logical(kind=1) :: exipou
     integer :: nbchre, ioccur, nbchar
     character(len=8) :: modele, resuin
     character(len=16) :: typesd

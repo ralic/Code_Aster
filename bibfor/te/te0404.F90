@@ -57,7 +57,7 @@ implicit none
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
-    logical :: coupmf
+    logical(kind=1) :: coupmf
     integer :: elas_type
     character(len=16) :: elas_keyword
 ! DEB ------------------------------------------------------------------

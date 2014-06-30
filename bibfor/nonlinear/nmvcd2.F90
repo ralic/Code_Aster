@@ -25,7 +25,7 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 #include "asterfort/jeveuo.h"
     character(len=*) :: indez
     character(len=*) :: chmat
-    logical :: exivc, exiref
+    logical(kind=1) :: exivc, exiref
 !
 !
 ! ------------------------------------------------------------------

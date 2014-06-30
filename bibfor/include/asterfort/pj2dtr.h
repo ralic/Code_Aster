@@ -24,6 +24,6 @@ interface
         character(len=8) :: elrf2d(6)
         real(kind=8) :: geom1(*)
         real(kind=8) :: geom2(*)
-        logical :: lraff
+        logical(kind=1) :: lraff
     end subroutine pj2dtr
 end interface

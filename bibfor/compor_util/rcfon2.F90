@@ -66,7 +66,7 @@ subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical :: tessup
+    logical(kind=1) :: tessup
     character(len=1) :: type_prol
     character(len=24) :: func_name
     integer :: jp, jr, i, i0

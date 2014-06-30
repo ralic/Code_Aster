@@ -67,7 +67,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
 !
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
     integer :: iadzi, iazk24, iret
     real(kind=8) :: epxmax
     parameter   (epxmax = 5.d0)

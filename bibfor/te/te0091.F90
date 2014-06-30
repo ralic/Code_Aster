@@ -41,7 +41,7 @@ subroutine te0091(option, nomte)
     real(kind=8) :: valpar(nbres), poids, r, tx, ty, z, nx, ny
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ivectu, i, l, iforc
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

@@ -21,11 +21,11 @@ interface
                       def, pff)
         integer :: nno
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: g
         real(kind=8) :: r
-        logical :: rigi
-        logical :: matsym
+        logical(kind=1) :: rigi
+        logical(kind=1) :: matsym
         real(kind=8) :: fr(3, 3)
         real(kind=8) :: vff(nno, *)
         real(kind=8) :: dff(nno, *)

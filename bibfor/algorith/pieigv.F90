@@ -52,7 +52,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !                F := COPILO(1,2)+COPILO(2,2)*ETA = TAU
 ! ----------------------------------------------------------------------
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
     integer :: ndim, ndimsi, k, iter, nitmax
     integer :: ifm, niv
     real(kind=8) :: trepsd, coplan, sigeld(6)

@@ -60,9 +60,9 @@ subroutine exchno(imodat, iparg)
     integer :: desc, prno1, prno2, modloc, ityplo
     integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
     integer :: iaux1, k, iec, debugr
-    logical :: lparal
+    logical(kind=1) :: lparal
 !
-    logical :: diff, moyenn
+    logical(kind=1) :: diff, moyenn
 !
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL

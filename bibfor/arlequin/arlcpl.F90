@@ -63,7 +63,7 @@ subroutine arlcpl(zocc ,nbma1 ,nbma2 , &
     parameter    (nbnomx=27)
     integer          ::  nliai,nddl
     parameter    (nliai=12,nddl=nliai*nliai)
-    logical          ::  proj
+    logical(kind=1)          ::  proj
     character(len=8) ::  marlel,modarl,mailar
     character(len=24)::  tabcor
     integer          ::  iaux,jaux

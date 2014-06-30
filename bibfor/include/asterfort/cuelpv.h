@@ -20,6 +20,6 @@ interface
         integer :: numlia
         character(len=24) :: resocu
         integer :: nbliai
-        logical :: lelpiv
+        logical(kind=1) :: lelpiv
     end subroutine cuelpv
 end interface

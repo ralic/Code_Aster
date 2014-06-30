@@ -51,7 +51,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     integer :: nfiss
     character(len=8) :: fiss(nfiss), noma
     integer :: contac, ndim, iret
-    logical :: linter
+    logical(kind=1) :: linter
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,7 +79,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     character(len=8) :: typma, k8bid, nomail
     character(len=19) :: clsn, clst, cnxinv, cstn(nfiss), maicon(nfiss)
     character(len=24) :: grp(4*nfiss)
-    logical :: lcont
+    logical(kind=1) :: lcont
     integer, pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: vlsn(:) => null()

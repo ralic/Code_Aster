@@ -28,7 +28,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
     integer :: nnoff, num
     real(kind=8) :: gthi(1), gs(1), gi(1)
     character(len=24) :: fond, objcur
-    logical :: milieu, gxfem
+    logical(kind=1) :: milieu, gxfem
 !
 ! ......................................................................
 !      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
@@ -59,7 +59,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 !
     character(len=24) :: vect, matr, lissg
 !
-    logical :: connex
+    logical(kind=1) :: connex
 !
 ! OBJET DECRIVANT LE MAILLAGE
 !

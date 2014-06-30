@@ -66,9 +66,9 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
 !
     real(kind=8) :: cobar2(3), dmin, d2, dx, dy, xmin, ymin, surf, rtr3
     integer :: p, q, p1, q1, p2, q2, ino2, i, k, iposi, nx, ntrbt
-    logical :: ok
+    logical(kind=1) :: ok
 !
-    logical :: ldmax, loin
+    logical(kind=1) :: ldmax, loin
     real(kind=8) :: distma
 ! DEB ------------------------------------------------------------------
     nbtrou=0

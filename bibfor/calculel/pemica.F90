@@ -55,7 +55,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     character(len=8) :: scal
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
-    logical :: first
+    logical(kind=1) :: first
     real(kind=8) :: ar(6), br(6), vecpro(3, 3), valpro(3), tol, toldyn
     real(kind=8) :: v1(3), v2(3), v3(3), jacaux(3), ixpr2, iypr2
 !     ------------------------------------------------------------------

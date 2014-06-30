@@ -32,9 +32,9 @@ interface
         character(len=24) :: lifo(*)
         integer :: nchar
         integer :: nveca
-        logical :: lcrea
-        logical :: lprem
-        logical :: lamort
+        logical(kind=1) :: lcrea
+        logical(kind=1) :: lprem
+        logical(kind=1) :: lamort
         real(kind=8) :: t0
         character(len=24) :: mate
         character(len=24) :: carele

@@ -56,7 +56,7 @@ implicit none
     real(kind=8) :: repere(7), xyzgau(3), instan
     integer :: igeom, ipoids, ivf, idfde
 !
-    logical :: calbn
+    logical(kind=1) :: calbn
     integer :: i, ino, j, k, proj, nbpg2, ipg, ispg
     integer :: ndim, nnos, kp, idim
     real(kind=8) :: d(6, 6), s

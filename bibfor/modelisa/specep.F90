@@ -59,7 +59,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: casint
+    logical(kind=1) :: casint
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
     character(len=8) :: nomu
     character(len=19) :: spectr, base
@@ -69,7 +69,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     real(kind=8) :: r8b, module
     real(kind=8) :: coefac(8), coefae(8), coefdc(6), coefde(6)
     complex(kind=8) :: c16b
-    logical :: ltable
+    logical(kind=1) :: ltable
     character(len=8) :: k8b, caelem, modele, table, noma, nomno0
     character(len=16) :: config, nopart(2)
     character(len=19) :: typflu, nomfon

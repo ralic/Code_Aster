@@ -85,7 +85,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    logical :: exitim, exipou, optdem
+    logical(kind=1) :: exitim, exipou, optdem
 !
     integer :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt
     integer :: nbtrou, minord, maxord, jlinst, iordr, nbordl
@@ -106,7 +106,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=24) :: chaout, ligrel, mateco, ligres
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt
 !
-    logical :: ligmod
+    logical(kind=1) :: ligmod
 !
     call jemarq()
     codret = 1

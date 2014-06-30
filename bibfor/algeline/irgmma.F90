@@ -49,7 +49,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
     integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma, jrefe
     integer :: jtitr
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
-    logical :: logic
+    logical(kind=1) :: logic
     character(len=1) :: base
     character(len=8) :: k8b, nomg, typm, typm2
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, cooval, coodsc

@@ -32,7 +32,7 @@ subroutine dilele(option, typmod, npi, ndim, dimuel,&
 #include "asterfort/dilpen.h"
 #include "asterfort/dilsga.h"
 #include "asterfort/equdil.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm
     integer :: imate, dimdef, ndim, nno, nnom, nnos, dimuel, dimcon
     integer :: regula(6)

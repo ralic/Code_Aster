@@ -17,7 +17,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     character(len=8) :: resu
     character(len=19) :: vecord
     character(len=24) :: melord
-    logical :: lmelas, lncas
+    logical(kind=1) :: lmelas, lncas
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

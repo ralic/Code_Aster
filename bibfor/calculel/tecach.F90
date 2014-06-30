@@ -110,7 +110,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
 !     -----------------------------------------------------------------
     character(len=8) :: nompar, stop8
     character(len=1) :: loue
-    logical :: exichl, etendu
+    logical(kind=1) :: exichl, etendu
     integer :: iaoptt, lgco, iaopmo, ilopmo, iaopno, ilopno, iaopds, iaoppa
     integer :: iamloc, ilmloc, iadsgd, inuma, inval, jtab(8)
     integer :: npario, iel, iparg
@@ -131,7 +131,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !
     character(len=24) :: valk(3)
-    logical :: stpcat, stpexi, stpinc
+    logical(kind=1) :: stpcat, stpexi, stpinc
 !
 !   DEB--------------------------------------------------------------
     if (present(numa)) then

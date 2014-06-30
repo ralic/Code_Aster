@@ -79,7 +79,7 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
     integer :: arom1, arom2, arom3, arom4, arom5, arom6, arom7, arom8
     integer :: ar1d1, ar1d2, ar1d3, n1, nbma, arom9
     real(kind=8) :: zero, un, t1, t2
-    logical :: fini, find, atrv, btrv, adansm, bdansm
+    logical(kind=1) :: fini, find, atrv, btrv, adansm, bdansm
 !
 !======================================================================
 !

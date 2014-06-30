@@ -22,7 +22,7 @@ interface
                       cnslt, cnsln)
         character(len=8) :: noma
         character(len=8) :: maiaux
-        logical :: grille
+        logical(kind=1) :: grille
         integer :: ndim
         character(len=8) :: meth
         character(len=8) :: nfonf

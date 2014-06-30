@@ -25,7 +25,7 @@ interface
         integer :: ncmpve
         character(len=*) :: nofimd
         integer :: numcmp(ncmpve)
-        logical :: exicmp(nbvato)
+        logical(kind=1) :: exicmp(nbvato)
         integer :: nbmaec
         integer :: limaec(*)
         integer :: adsd

@@ -52,7 +52,7 @@ subroutine i2vois(conec, type, maille, n, v1,&
     integer :: i, j, mi, mj
     integer :: nig, njg
     integer :: nid, njd
-    logical :: nonv1, nonv2
+    logical(kind=1) :: nonv1, nonv2
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -70,7 +70,7 @@ subroutine comp_meca_vari(rela_comp   , defo_comp   , type_cpla   , nb_vari     
     integer :: nb_vari_rela, nb_vari_meta
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     integer :: nb_vari_flua, nb_vari_plas, nb_vari_cpla, nb_vari_coup
-    logical :: l_cristal, l_kit_meta, l_kit_thm, l_exte_comp, l_kit_ddi, l_kit_cg
+    logical(kind=1) :: l_cristal, l_kit_meta, l_kit_thm, l_exte_comp, l_kit_ddi, l_kit_cg
     integer :: nb_vari_cg(2)
     character(len=16) :: rela_cg(2)
 !

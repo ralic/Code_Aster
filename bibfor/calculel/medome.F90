@@ -66,7 +66,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit, knum
     character(len=8) :: crit
-    logical :: lpost
+    logical(kind=1) :: lpost
     character(len=24), pointer :: lcha(:) => null()
     integer, pointer :: infc(:) => null()
     call jemarq()

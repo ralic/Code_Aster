@@ -167,7 +167,7 @@ subroutine gtrsen(select, n, t, ldt, q,&
     integer :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical :: select( * )
+    logical(kind=1) :: select( * )
     complex(kind=8) :: q( ldq, * ), t( ldt, * ), w( * )
 !     ..
 !     .. LOCAL SCALARS ..

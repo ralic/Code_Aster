@@ -40,7 +40,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
     character(len=24) :: matass, cndirp, cnchci, cnresi
     character(len=24) :: vtempm, vtempp, vtemp, vec2nd, vec2ni
     character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
-    logical :: lostat
+    logical(kind=1) :: lostat
 !
 ! ----------------------------------------------------------------------
 !
@@ -141,7 +141,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !
         call resoud(matass, maprec, solveu, cnchci, 0,&
                     vtempp, chsol, 'V', [0.d0], [cbid],&
-                    criter, .true., 0, iret)
+                    criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS VTEMPM DU CHAMP SOLUTION CHSOL
 !
@@ -165,7 +165,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !
         call resoud(matass, maprec, solveu, cnchci, 0,&
                     vtempp, chsol, 'V', [0.d0], [cbid],&
-                    criter, .true., 0, iret)
+                    criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS VTEMPM DU CHAMP SOLUTION CHSOL
 !

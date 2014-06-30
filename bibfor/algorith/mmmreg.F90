@@ -76,7 +76,8 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
     real(kind=8) :: deplpm(3), deplpe(3)
     real(kind=8) :: tau1(3), tau2(3), ff(9)
     character(len=8) :: aliase, aliasm
-    logical :: lveri
+    logical(kind=1) :: lveri
+    logical lcond
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
 !
@@ -203,12 +204,15 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 !
                 do 40 i = 1, nnm
                     nuno = connex(1+zi(ilong-1+nummam)+i-2)
-                    ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+1))
-                    ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+2))
+                    lcond=zl(jdepdl-1+ndd1*(nuno-1)+1)
+                    ASSERT(lcond)
+                    lcond=zl(jdepdl-1+ndd1*(nuno-1)+2)
+                    ASSERT(lcond)
                     deplpm(1) = deplpm(1)+cnsv(ndd1*(nuno-1)+1) *ff(i)
                     deplpm(2) = deplpm(2)+cnsv(ndd1*(nuno-1)+2) *ff(i)
                     if (ndimg .eq. 3) then
-                        ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+3))
+                        lcond=zl(jdepdl-1+ndd1*(nuno-1)+3)
+                        ASSERT(lcond)
                         deplpm(3) = deplpm(3)+cnsv(ndd1*(nuno- 1)+3)*ff(i)
                     endif
 40              continue

@@ -66,7 +66,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 #include "asterfort/mctgel.h"
 #include "asterfort/matini.h"
 #include "asterfort/mcbnvi.h"
-    logical :: mectru, pre2tr
+    logical(kind=1) :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom
     real(kind=8) :: defgem(dimdef), congem(dimcon), congep(dimcon)
@@ -89,7 +89,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     real(kind=8) :: angma1(3), angmas(7), ang2(3), depstr(6)
     real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=16) :: complg(3)
-    logical :: cp, yapre2
+    logical(kind=1) :: cp, yapre2
     character(len=8)  :: nomres(3)
     real(kind=8)      :: rprops(3)
 ! ======================================================================

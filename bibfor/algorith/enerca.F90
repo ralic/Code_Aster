@@ -88,7 +88,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     character(len=19) :: valinc(*), masse, amort, rigid, sdener
     real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)
     real(kind=8) :: fexte(*), famor(*), fliai(*), fnoda(*), fcine(*)
-    logical :: lamort, ldyna, lexpl
+    logical(kind=1) :: lamort, ldyna, lexpl
     character(len=8) :: schema
 !
 !
@@ -221,7 +221,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     if (sdener(1:8) .eq. '&&OP0048') then
         AS_ALLOCATE(vr=kumoyz, size=neq)
         call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
-                    .true.)
+                    .true._1)
         wint=ddot(neq,zr(iupmuz),1,kumoyz,1)
     else
         do iaux = 1, neq
@@ -236,7 +236,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     if (ldyna) then
         AS_ALLOCATE(vr=mdv, size=neq)
         call mrmult('ZERO', imasse, vpmvmz, mdv, 1,&
-                    .true.)
+                    .true._1)
         ecin=ddot(neq,vmoyz,1,mdv,1)
     endif
 ! --------------------------------------------------------------------
@@ -254,9 +254,9 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
             AS_ALLOCATE(vr=mumoyz, size=neq)
             call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1,&
-                        .true.)
+                        .true._1)
             call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1,&
-                        .true.)
+                        .true._1)
             do iaux = 1, neq
                 fmoy(iaux)=mumoyz(iaux)-zr(imumoy-1+iaux)
             end do
@@ -265,7 +265,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
             call wkvect('&&ENERCA.KUMOY', 'V V R  ', neq, ikumoy)
             call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1,&
-                        .true.)
+                        .true._1)
             do iaux = 1, neq
                 fmoy(iaux)=kumoyz(iaux)-zr(ikumoy-1+iaux)
             end do
@@ -309,12 +309,12 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
             if (zi(iamort+3) .eq. 1) then
                 call wkvect('&&ENERCA.CVMOYZ', 'V V R', neq, icvmoz)
                 call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
-                            .true.)
+                            .true._1)
                 amor = amor + ddot(neq,zr(iupmuz),1,zr(icvmoz),1)
             else
                 call wkvect('&&ENERCA.CVMOYZ', 'V V C', neq, icvmoz)
                 call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
-                            .true.)
+                            .true._1)
                 amor = amor + ddot(neq,zr(iupmuz),1,zr(icvmoz),1)
             endif
         endif

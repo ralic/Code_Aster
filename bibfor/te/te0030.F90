@@ -39,7 +39,7 @@ subroutine te0030(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! =====================================================================
 ! =====================================================================
-    logical :: logthm
+    logical(kind=1) :: logthm
     integer :: imate, icompo, ivarip, icontp, ilocal, ibid
     integer :: nbvari, nbrac4, rindic, kpg, ii, nbsig
     integer :: icode, iret, tabthm(3), dimmax, npgu

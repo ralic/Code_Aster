@@ -40,7 +40,7 @@ interface
         real(kind=8) :: dlagrf(2)
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
-        logical :: lpenaf
+        logical(kind=1) :: lpenaf
         real(kind=8) :: coefff
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)

@@ -53,7 +53,7 @@ subroutine op0054()
     integer :: iadrno, impr, iadrco, iadrma, iadrt2, iadrt3, iadrt4, iadrt5
     integer :: icode, ific, n1
     real(kind=8) :: dir(3), rinf, rsup
-    logical :: ldirec
+    logical(kind=1) :: ldirec
     character(len=8) :: noma, modele, fond, resu, noeud, format, config
     character(len=16) :: type, oper, fichie, valk(2)
     character(len=24) :: trav1, trav2, trav3, trav4, stok4

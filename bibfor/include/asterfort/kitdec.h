@@ -25,7 +25,7 @@ interface
                       dp1, dp2, grat, grap1, grap2,&
                       retcom, rinstp)
         integer :: kpi
-        logical :: yachai
+        logical(kind=1) :: yachai
         integer :: yamec
         integer :: yate
         integer :: yap1

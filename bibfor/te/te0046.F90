@@ -64,7 +64,7 @@ subroutine te0046(option, nomte)
     integer :: nfh, nfe, singu, ddlc, jpmilt, irese
     integer :: jpintt, jcnset, jheavt, jlonch, igeom, jout
     integer :: i, j, nse, ise, in, ino, ipg, kpg
-    logical :: axi
+    logical(kind=1) :: axi
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/

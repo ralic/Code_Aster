@@ -24,8 +24,8 @@ interface
         integer :: ldb
         integer :: ldtr
         integer :: ldtl
-        logical :: ltranl
-        logical :: ltranr
+        logical(kind=1) :: ltranl
+        logical(kind=1) :: ltranr
         integer :: isgn
         integer :: n1
         integer :: n2

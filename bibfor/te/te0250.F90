@@ -60,7 +60,7 @@ subroutine te0250(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, imattt, i, j, ij, l, li, lj, icoefh, iray, itemp, c(6, 9)
     integer :: ise, nse, nnop2, icode, ier, ibid
-    logical :: laxi, lcoef
+    logical(kind=1) :: laxi, lcoef
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

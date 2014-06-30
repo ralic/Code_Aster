@@ -25,7 +25,7 @@ interface
         real(kind=8) :: mamolg
         real(kind=8) :: kh
         real(kind=8) :: dp21p2
-        logical :: emmag
+        logical(kind=1) :: emmag
         real(kind=8) :: em
         real(kind=8) :: dmadp2_0
     end function dmadp2

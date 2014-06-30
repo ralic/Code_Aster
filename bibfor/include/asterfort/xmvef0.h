@@ -29,7 +29,7 @@ interface
         real(kind=8) :: ffc(9)
         real(kind=8) :: jacobi
         real(kind=8) :: coefcr
-        logical :: lpenac
+        logical(kind=1) :: lpenac
         real(kind=8) :: dlagrf(2)
         integer :: cface(5, 3)
         character(len=8) :: typmai
@@ -38,7 +38,7 @@ interface
         integer :: jddle(2)
         integer :: nconta
         integer :: nfhe
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavno(8)
         real(kind=8) :: vtmp(336)
     end subroutine xmvef0

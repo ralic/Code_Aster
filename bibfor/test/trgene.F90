@@ -70,8 +70,8 @@ subroutine trgene(ific, nocc)
     character(len=19) :: cham19, knum, resu19
     character(len=24) :: travr, travi, travc, travrr, travir, travcr
     character(len=200) :: lign1, lign2
-    logical :: lref
-    logical :: skip
+    logical(kind=1) :: lref
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
@@ -246,12 +246,12 @@ subroutine trgene(ific, nocc)
                 tbtxt(1)='NON_REGRESSION'
             endif
 
-            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, typres, nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
                                  zi(irefi), vali, zc(irefc), valc, ignore=skip, &
                                  compare=ordgrd)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                call tresu_print_all(tbref(1), tbref(2), .false._1, typres, nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
                                      zi(irefir), vali, zc(irefcr), valc)
             endif
@@ -326,12 +326,12 @@ subroutine trgene(ific, nocc)
                     tbtxt(1)='NON_REGRESSION'
                 endif
 
-                call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+                call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, typres, nref, &
                                      crit, epsi, ssigne, zr(irefr), valr, &
                                      zi(irefi), vali, zc(irefc), valc, ignore=skip, &
                                      compare=ordgrd)
                 if (lref) then
-                    call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                    call tresu_print_all(tbref(1), tbref(2), .false._1, typres, nref, &
                                          crit, epsir, ssigne, zr(irefrr), valr, &
                                          zi(irefir), vali, zc(irefcr), valc)
                 endif
@@ -430,12 +430,12 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, typres, nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
                                  zi(irefi), vali, zc(irefc), valc, ignore=skip, &
                                  compare=ordgrd)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                call tresu_print_all(tbref(1), tbref(2), .false._1, typres, nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
                                      zi(irefir), vali, zc(irefcr), valc)
             endif
@@ -520,11 +520,11 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call tresu_print_all(tbtxt(1), tbtxt(2), .true., 'C', nref, &
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, 'C', nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
                                  zi(irefi), vali, zc(irefc), valc)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .false., 'C', nref, &
+                call tresu_print_all(tbref(1), tbref(2), .false._1, 'C', nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
                                      zi(irefir), vali, zc(irefcr), valc)
             endif
@@ -609,12 +609,12 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call tresu_print_all(tbtxt(1), tbtxt(2), .true., 'R', nref, &
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, 'R', nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
                                  zi(irefi), vali, zc(irefc), valc, ignore=skip, &
                                  compare=ordgrd)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .false., 'R', nref, &
+                call tresu_print_all(tbref(1), tbref(2), .false._1, 'R', nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
                                      zi(irefir), vali, zc(irefcr), valc)
             endif

@@ -46,7 +46,7 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 #include "asterfort/utmess.h"
     integer :: ipg, idfde, niv, ifm, nno, ia1, ia2
     real(kind=8) :: jacob, geom(*)
-    logical :: l2d
+    logical(kind=1) :: l2d
 !
     real(kind=8) :: valr
 !

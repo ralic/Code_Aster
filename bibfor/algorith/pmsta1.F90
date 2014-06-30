@@ -40,7 +40,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 #include "blas/dscal.h"
     integer :: nbpar, i, nbvari, igrad, ncmp, nbvita, iforta, liccvg(5)
     integer :: actite, jvari
-    logical :: itemax, conver
+    logical(kind=1) :: itemax, conver
     character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
     character(len=8) :: k8b, typpar(*), nomvi(*), vk8(2)
     character(len=16) :: nompar(*)

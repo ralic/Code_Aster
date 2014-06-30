@@ -6,7 +6,7 @@ subroutine expass(jxvrf)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jxveri.h"
-    logical :: jxvrf
+    logical(kind=1) :: jxvrf
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ subroutine expass(jxvrf)
 !     --- VARIABLES LOCALES --------------------------------------------
     character(len=8) :: nomres
     character(len=16) :: concep, nomcmd
-    logical :: ldbg
+    logical(kind=1) :: ldbg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

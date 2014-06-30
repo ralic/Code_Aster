@@ -42,7 +42,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 #include "asterfort/vedime.h"
 #include "asterfort/velame.h"
 #include "asterfort/vrcref.h"
-    logical :: assmat
+    logical(kind=1) :: assmat
     character(len=1) :: base
     character(len=19) :: lischa, solveu, vecass, matass, maprec
     character(len=24) :: cnchci, modele, carele, fomult, numedd, compor
@@ -96,7 +96,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     character(len=24) :: k24bid, blan24, vediri, vadiri, velapl, valapl, vecham
     character(len=24) :: vacham, chlapl, chdiri, chcham, chths, charge, infoch
     character(len=24) :: vecths
-    logical :: ass1er, lbid, lhydr, lsech, ltemp, lptot
+    logical(kind=1) :: ass1er, lbid, lhydr, lsech, ltemp, lptot
 !
 ! DEB-------------------------------------------------------------------
 !====
@@ -166,7 +166,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 !
         call uttcpu('CPU.OP0046.1', 'DEBUT', ' ')
         call merime(modele(1:8), nchar, zk24(jchar), mate, carele(1:8),&
-                    .true., time, compor, matele, nh,&
+                    .true._1, time, compor, matele, nh,&
                     base)
         ass1er = .true.
         call uttcpu('CPU.OP0046.1', 'FIN', ' ')

@@ -40,7 +40,7 @@ subroutine op0017()
 #include "asterfort/as_allocate.h"
     integer :: nivo, n3, n1, ifi, n2, nbocc,  ncon, ipos, long(1), n4
     integer :: i, iocc
-    logical :: lattr, lcont
+    logical(kind=1) :: lattr, lcont
     character(len=1) :: base
     character(len=8) :: leresu
     character(len=16) :: nomfi

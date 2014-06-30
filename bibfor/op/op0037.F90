@@ -82,7 +82,7 @@ subroutine op0037()
     integer :: l1, l2, l3, lmasse, lraide, lamor, lddl
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
-    logical :: lmasin, lrefe, lbasm, lamo, lcmplx, lparam
+    logical(kind=1) :: lmasin, lrefe, lbasm, lamo, lcmplx, lparam
     character(len=1) :: typmod
     character(len=24) :: valk(4)
     character(len=8) :: modeou, modein, nomcmp(7), k8b, cmp, noma, mat1, mat2, mat3, noeud

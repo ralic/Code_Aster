@@ -27,6 +27,6 @@ interface
         integer, intent(out) :: numnoe_c
         real(kind=8), intent(out) :: ab(3)
         real(kind=8), intent(out) :: ac(3)
-        logical, intent(out) :: l_trian
+        logical(kind=1), intent(out) :: l_trian
     end subroutine drz03d_tria
 end interface

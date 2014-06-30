@@ -41,7 +41,7 @@ subroutine apbloc(matass, solveu, tbloc)
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     character(len=24) :: precon
-    logical :: leliml
+    logical(kind=1) :: leliml
     character(len=24), pointer :: slvk(:) => null()
 !
 !----------------------------------------------------------------

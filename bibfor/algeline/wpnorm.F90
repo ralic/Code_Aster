@@ -144,7 +144,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
             call mtcmbl(2, typcst, constr, nmatr, ndynam,&
                         ' ', ' ', 'ELIM=')
             call mcmult('ZERO', ldynam, vecpro(1, im), xxxx_gene_2, 1,&
-                        .true.)
+                        .true._1)
             xnorm = czero
             do 31 ieq = 1, neq
                 xnorm = xnorm + vecpro(ieq,im) * xxxx_gene_2(ieq)

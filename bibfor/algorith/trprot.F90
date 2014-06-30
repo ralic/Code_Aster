@@ -83,7 +83,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: test1, test2, test3
+    logical(kind=1) :: test1, test2, test3
     integer :: nbvale, nbrefe, nbdesc, ibid, isst, iadrp
     integer :: i, iad(2), iad3d(3), icor(2), ndble
     real(kind=8) :: tgeom(6), tmin, epsi, const(2)
@@ -535,9 +535,9 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
     call resoud(ma, maprec, solveu, ' ', 0,&
                 chflu, chsol, 'V', [0.d0], [cbid],&
-                criter, .true., 0, iret)
+                criter, .true._1, 0, iret)
     call jedupc('V', chsol(1:19), 1, 'V', chflu(1:19),&
-                .false.)
+                .false._1)
     call detrsd('CHAMP_GD', chsol)
 !
 !--------ON REPLONGE LA PRESSION SUR L INTERFACE

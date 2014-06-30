@@ -44,7 +44,7 @@ function lisnbg(lischa, genchz)
 !
     integer :: ichar, nbchar
     integer :: genrec
-    logical :: lok
+    logical(kind=1) :: lok
 !
 ! ----------------------------------------------------------------------
 !

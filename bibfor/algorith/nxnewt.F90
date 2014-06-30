@@ -39,7 +39,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
     integer :: lonch
-    logical :: conver, reasma
+    logical(kind=1) :: conver, reasma
     character(len=19) :: infcha, solveu, maprec
     character(len=24) :: modele, mate, carele, charge, infoch, numedd, time
     character(len=24) :: matass, cnchci, cnresi, vtemp, vtempm, vtempp, vec2nd
@@ -190,7 +190,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
                 vtempp, chsol, 'V', [0.d0], [cbid],&
-                criter, .true., 0, iret)
+                criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL,
 !     INCREMENT DE TEMPERATURE

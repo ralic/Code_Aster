@@ -22,14 +22,14 @@ interface
         integer :: dimcon
         integer :: dimdef
         integer :: imate
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: mecani(5)
         integer :: press1(7)
         integer :: press2(7)
         integer :: tempe(5)
         integer :: ndim
         real(kind=8) :: dt
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimdef+1)
     end subroutine fonoda

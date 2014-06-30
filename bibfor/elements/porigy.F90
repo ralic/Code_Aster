@@ -45,7 +45,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, xjx, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, xjx2, alfay2, alfaz2
-    logical :: euler
+    logical(kind=1) :: euler
 !     ------------------------------------------------------------------
 !
     zero = 0.d0

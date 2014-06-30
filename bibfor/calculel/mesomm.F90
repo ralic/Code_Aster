@@ -77,7 +77,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     character(len=4) :: typch, kmpic
     character(len=8) :: scal
     character(len=19) :: champ2, ligrel
-    logical :: first
+    logical(kind=1) :: first
     integer :: i,  iavale, ibid, icoef, idecgr, iel, ier1, ier2
     integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
     character(len=24), pointer :: celk(:) => null()

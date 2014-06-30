@@ -26,6 +26,6 @@ interface
         character(len=24), intent(in) :: list_node
         character(len=8), intent(in), optional :: model
         character(len=*), intent(in), optional :: suffix
-        logical, intent(in), optional :: elem_excl
+        logical(kind=1), intent(in), optional :: elem_excl
     end subroutine getnode
 end interface

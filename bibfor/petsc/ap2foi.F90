@@ -44,7 +44,7 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
     integer :: kptsc
     mpi_int :: mpicou
     character(len=19) :: nosolv
-    logical :: lmd
+    logical(kind=1) :: lmd
     KSPConvergedReason :: indic
     PetscInt :: its
 !----------------------------------------------------------------
@@ -105,7 +105,7 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
     integer :: kptsc
     integer :: mpicou
     character(len=19) :: nosolv
-    logical :: lmd
+    logical(kind=1) :: lmd
     integer :: indic
     integer :: its
 

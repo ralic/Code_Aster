@@ -46,7 +46,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 !
     integer :: igeom, imate, iforc, iforf, itemps, ipesa, irota
     integer :: iret, ino, j, kk, mxstac
-    logical :: fonc
+    logical(kind=1) :: fonc
     real(kind=8) :: valpar(4), rbid=0.d0, om, omo, val(1), rhocst
     integer :: icodre(1)
     character(len=8) :: nompar(4)

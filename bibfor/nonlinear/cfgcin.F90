@@ -113,7 +113,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 !
         call resoud(matass, k19bla, solveu, cncin0, 0,&
                     secmbr, ddelt, 'V', [0.d0], [c16bid],&
-                    k19bla, .true., 0, iret)
+                    k19bla, .true._1, 0, iret)
 !
 ! ----- U = U + (-DELTA)
 !

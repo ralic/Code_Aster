@@ -37,7 +37,7 @@ subroutine te0223(option, nomte)
     real(kind=8) :: poids, r, fx, fy, mz, f1, f3, m2, nx, ny, cour, dfdx(3)
     integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
     integer :: ivectu, k, i, l, iforc
-    logical :: global
+    logical(kind=1) :: global
 !
 !
 !-----------------------------------------------------------------------

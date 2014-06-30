@@ -49,7 +49,7 @@ subroutine liscom(nomo, codarr, lischa)
     integer :: ichar, nbchar
     character(len=8) :: modch2, charge, modch1
     integer :: genrec
-    logical :: lveag, lveas
+    logical(kind=1) :: lveag, lveas
 !
 ! ----------------------------------------------------------------------
 !

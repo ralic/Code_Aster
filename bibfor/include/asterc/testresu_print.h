@@ -24,9 +24,9 @@ interface
         implicit none
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
-        logical, intent(in) :: llab
-        logical, intent(in) :: skip
-        logical, intent(in) :: rela
+        logical(kind=1), intent(in) :: llab
+        logical(kind=1), intent(in) :: skip
+        logical(kind=1), intent(in) :: rela
         real(kind=8), intent(in) :: tole
         integer, intent(in) :: typ
         real(kind=8), intent(in) :: refr

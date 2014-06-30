@@ -37,7 +37,7 @@ function idensd(typesd, sd1, sd2)
 !                .FALSE.   SINON
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    logical :: iden
+    logical(kind=1) :: iden
     character(len=16) :: typ2sd
     character(len=19) :: pchn1, pchn2
 !

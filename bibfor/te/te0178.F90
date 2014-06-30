@@ -41,7 +41,7 @@ subroutine te0178(option, nomte)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: imattt, i, j, ij, l, li, lj
     integer :: imate, iimpe, kpg, spt
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
 !-----------------------------------------------------------------------

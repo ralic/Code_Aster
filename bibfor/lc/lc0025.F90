@@ -32,7 +32,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    logical :: cp
+    logical(kind=1) :: cp
 !
 !     KIT_DDI
 !       CALL NMCOUP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CP,

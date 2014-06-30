@@ -57,7 +57,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     parameter   ( nbcmp = 2 )
     real(kind=8) :: inst, epsi, vmoy, ta, tint, text, vale(2), prec(2)
     complex(kind=8) :: cbid
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=8) :: k8b, nomgd, licmp(nbcmp), tbther, tbmoye, kioc, crit(2)
     character(len=16) :: motclf, motcls(2), typmcs(2), motcln(2), typmcn(2)
     character(len=16) :: nopara(2)

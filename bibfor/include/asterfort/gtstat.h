@@ -18,6 +18,6 @@
 interface
     function gtstat(istat)
         integer :: istat
-        logical :: gtstat
+        logical(kind=1) :: gtstat
     end function gtstat
 end interface

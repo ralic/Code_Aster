@@ -77,7 +77,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     character(len=19) :: chelem, knum, kins, depla, ligrel, chvarc, chvref
     character(len=24) :: chmasd, chfreq, chamgd, chnumc, typcha, chtime, k24b, chgeom, chcara(18)
     character(len=24) :: chtemp, opt, mlggma, mlgnma, chharm, nomgrm, valk2(2)
-    logical :: exitim
+    logical(kind=1) :: exitim
     complex(kind=8) :: c16b, calpha
     integer :: iarg
 !

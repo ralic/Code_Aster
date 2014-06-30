@@ -117,18 +117,18 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: reasma, lcamor
-    logical :: ldyna, lamor, lsuiv, lcrigi, lcfint, larigi
+    logical(kind=1) :: reasma, lcamor
+    logical(kind=1) :: ldyna, lamor, lsuiv, lcrigi, lcfint, larigi
     character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
     character(len=19) :: vefint, cnfint
     character(len=24) :: modele
-    logical :: renume
+    logical(kind=1) :: renume
     integer :: ifm, niv
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical :: lassme(20), lcalme(20)
+    logical(kind=1) :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -142,8 +142,8 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! --- INTIIALISATIONS
 !
-    call nmcmat('INIT', '      ', ' ', ' ', .false.,&
-                .false., nbmatr, ltypma, loptme, loptma,&
+    call nmcmat('INIT', '      ', ' ', ' ', .false._1,&
+                .false._1, nbmatr, ltypma, loptme, loptma,&
                 lcalme, lassme)
     modele = modelz
     faccvg = -1
@@ -211,7 +211,7 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 ! --- ASSEMBLAGE DES MATR-ELEM DE RIGIDITE
 !
     if (larigi) then
-        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .false.,&
+        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .false._1,&
                     larigi, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
@@ -220,16 +220,16 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 ! --- NECESSAIRE SI MATR_ELEM RIGIDITE CHANGE !
 !
     if (lcamor) then
-        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true.,&
-                    .true., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true._1,&
+                    .true._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
     if (lsuiv) then
-        call nmcmat('AJOU', 'MESUIV', ' ', ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MESUIV', ' ', ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !
@@ -237,8 +237,8 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
     if (renume) then
         if (ldyna) then
-            call nmcmat('AJOU', 'MEMASS', ' ', ' ', .false.,&
-                        .true., nbmatr, ltypma, loptme, loptma,&
+            call nmcmat('AJOU', 'MEMASS', ' ', ' ', .false._1,&
+                        .true._1, nbmatr, ltypma, loptme, loptma,&
                         lcalme, lassme)
         endif
         if (.not.reasma) then
@@ -273,9 +273,9 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 ! --- AFFICHAGE
 !
     if (reasma) then
-        call nmimck(sdimpr, 'MATR_ASSE', metcor, .true.)
+        call nmimck(sdimpr, 'MATR_ASSE', metcor, .true._1)
     else
-        call nmimck(sdimpr, 'MATR_ASSE', metcor, .false.)
+        call nmimck(sdimpr, 'MATR_ASSE', metcor, .false._1)
     endif
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE

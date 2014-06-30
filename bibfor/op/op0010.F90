@@ -85,7 +85,7 @@ subroutine op0010()
     character(len=24) :: lismae, lisnoe, vcn, grlr, vcnt, grlrt
     real(kind=8) :: meserr(3)
     character(len=8) :: test, msgout(2), typma
-    logical :: quad
+    logical(kind=1) :: quad
 !     MESSAGES
 !
 !     CRACK ADVANCEMENT
@@ -100,7 +100,7 @@ subroutine op0010()
     integer :: jlisno
     character(len=19) :: ucnslt, ucnsln, ugrlt, ugrln, ucnxin, disfr, nodtor
     character(len=19) :: eletor, liggrd
-    logical :: grille, locdom
+    logical(kind=1) :: grille, locdom
 !
 !     DUMMY MODEL
     character(len=8) :: dnoma, dnomo
@@ -117,11 +117,11 @@ subroutine op0010()
 !     DOMAINE LOCALISATION
     integer :: nbno,     jgltl, jglnl
     character(len=19) :: grltc, grlnc
-    logical :: ldpre
+    logical(kind=1) :: ldpre
     real(kind=8) :: radimp, radlim
 !
 !     FRONT SUR LA GRILLE
-    logical :: goinop
+    logical(kind=1) :: goinop
     character(len=19) :: cnseg, cnseng, cnsljg
     character(len=24) :: lismag, lisnog
     real(kind=8), pointer :: gln(:) => null()
@@ -312,18 +312,18 @@ subroutine op0010()
 !
     lismae = fiss//'.GROUP_MA_ENRI'
     lisnoe = fiss//'.GROUP_NO_ENRI'
-    call jedupo(fispre//'.GROUP_MA_ENRI', 'G', lismae, .false.)
-    call jedupo(fispre//'.GROUP_NO_ENRI', 'G', lisnoe, .false.)
+    call jedupo(fispre//'.GROUP_MA_ENRI', 'G', lismae, .false._1)
+    call jedupo(fispre//'.GROUP_NO_ENRI', 'G', lisnoe, .false._1)
 !
 ! --- DUPLICATION DE INFO ET MODELE (LA NOUVELLE FISSURE RESTE
 !     ATTACHE AU MODELE SAIN INITIAL
 !
-    call jedupo(fispre//'.INFO', 'G', fiss//'.INFO', .false.)
-    call jedupo(fispre//'.MODELE', 'G', fiss//'.MODELE', .false.)
+    call jedupo(fispre//'.INFO', 'G', fiss//'.INFO', .false._1)
+    call jedupo(fispre//'.MODELE', 'G', fiss//'.MODELE', .false._1)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
 !
-    call jedupo(fispre//'.CARAFOND', 'G', fiss//'.CARAFOND', .false.)
+    call jedupo(fispre//'.CARAFOND', 'G', fiss//'.CARAFOND', .false._1)
     call jeveuo(fiss//'.CARAFOND', 'L', jcaraf)
 !
 !   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER

@@ -31,9 +31,9 @@ interface
         integer :: npi
         integer :: nnos
         integer :: nno
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         real(kind=8) :: deltat
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: nnom
         integer :: npg
         integer :: ipoids
@@ -59,6 +59,6 @@ interface
         integer :: nmec
         integer :: np1
         integer :: np2
-        logical :: axi
+        logical(kind=1) :: axi
     end subroutine fnothm
 end interface

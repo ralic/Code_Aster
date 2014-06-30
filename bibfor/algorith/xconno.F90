@@ -65,7 +65,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
     character(len=3) :: tsca
     character(len=19) :: ces, cns, ligrel, cns2, ces2
     character(len=24) :: grp(3)
-    logical :: lstno
+    logical(kind=1) :: lstno
     character(len=8) :: ma, nomgd, nomfis, licmp(2)
     integer, pointer :: nbsp(:) => null()
     integer, pointer :: connex(:) => null()

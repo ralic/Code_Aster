@@ -112,7 +112,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
     integer :: nbpara, n1, irt, jtabx, jtaby, nbval
     real(kind=8) :: df, flim, krelax, fi, f2
     complex(kind=8) :: cbid
-    logical :: trouv1, trouv2, exi1, exi2
+    logical(kind=1) :: trouv1, trouv2, exi1, exi2
     character(len=3) :: k3b
     character(len=24) :: abscca, alphca
     character(len=8) :: ntable, k8b

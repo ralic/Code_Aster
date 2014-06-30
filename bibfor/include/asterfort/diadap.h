@@ -19,6 +19,6 @@ interface
     function diadap(sddisc, iadapt)
         character(len=19) :: sddisc
         integer :: iadapt
-        logical :: diadap
+        logical(kind=1) :: diadap
     end function diadap
 end interface

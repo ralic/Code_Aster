@@ -103,7 +103,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     integer ::    jdirgr
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
     integer ::  jresc1, nbcmp
-    logical :: pre1
+    logical(kind=1) :: pre1
     character(len=3) :: tsca
     character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1), ldep1(3), ldep4(4)
     character(len=16) :: k16b, nomcmd

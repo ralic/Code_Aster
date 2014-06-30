@@ -37,13 +37,13 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical :: fordef
+        logical(kind=1) :: fordef
         real(kind=8) :: fatsoc
         character(len=16) :: proaxe
         character(len=8) :: nommat
         real(kind=8) :: vala
         real(kind=8) :: coefpa
-        logical :: post
+        logical(kind=1) :: post
         real(kind=8) :: cudomx
         real(kind=8) :: nxm(2)
         real(kind=8) :: nym(2)

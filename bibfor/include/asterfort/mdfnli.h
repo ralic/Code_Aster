@@ -66,7 +66,7 @@ interface
         character(len=6) :: typal(20)
         character(len=3) :: finpal(20)
         character(len=8) :: cnpal(20)
-        logical :: prdeff
+        logical(kind=1) :: prdeff
         real(kind=8) :: conv
         real(kind=8) :: fsauv(20, 3)
     end subroutine mdfnli

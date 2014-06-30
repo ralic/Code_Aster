@@ -55,7 +55,8 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: table
-    logical :: l_para_exis
+    logical(kind=1) :: l_para_exis
+    logical :: lcond
     character(len=8) :: k8bid
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,11 +76,14 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 ! - Check table
 !
     call tbexip(table, 'NUME_CABLE', l_para_exis, k8bid)
-    ASSERT(l_para_exis)
+    lcond=l_para_exis
+    ASSERT(lcond)
     call tbexip(table, 'NOM_ANCRAGE1', l_para_exis, k8bid)
-    ASSERT(l_para_exis)
+    lcond=l_para_exis
+    ASSERT(lcond)
     call tbexip(table, 'NOM_ANCRAGE2', l_para_exis, k8bid)
-    ASSERT(l_para_exis)
+    lcond=l_para_exis
+    ASSERT(lcond)
 !
 ! - Get informations in table
 !

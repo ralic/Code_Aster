@@ -67,7 +67,7 @@ subroutine celces(celz, basez, cesz)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
     integer :: ico, adiel, ispt, jcesd, jlpt,  cumu
     character(len=24) :: valk(2)
-    logical :: sdveri
+    logical(kind=1) :: sdveri
     integer, pointer :: liel(:) => null()
     integer, pointer :: lliel(:) => null()
     integer, pointer :: celd(:) => null()

@@ -42,7 +42,7 @@ subroutine te0506(option, nomte)
     integer :: iflux
     integer :: ipoids, ivf, idfde, igeom
     integer :: iveres
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
     call jemarq()

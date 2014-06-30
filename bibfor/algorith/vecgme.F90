@@ -75,7 +75,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     character(len=19) :: resuel, resufv(1), depmoi, depdel, vites, strmoi
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
     integer :: jlchin, ier
-    logical :: bidon
+    logical(kind=1) :: bidon
     integer :: nbchmx, ii, somme
     parameter (nbchmx=7)
     integer :: nbopt(nbchmx), tab(nbchmx)

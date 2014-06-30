@@ -24,7 +24,7 @@ subroutine chloet(iparg, etendu, jceld)
 !     ELEMENTS
 ! -----------------------------------------------------------------
 #include "jeveux.h"
-    logical :: etendu
+    logical(kind=1) :: etendu
     integer :: iparg, jceld
 ! -----------------------------------------------------------------
 !     ENTREES:

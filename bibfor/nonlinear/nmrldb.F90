@@ -58,7 +58,7 @@ subroutine nmrldb(solveu, lmat, resu, nbsm, cncine)
 !
     call resoud(matr, ' ', solveu, cncine, nbsm,&
                 ' ', ' ', 'V', resu, [c16bid],&
-                ' ', .true., 0, iret)
+                ' ', .true._1, 0, iret)
 !
     call jedema()
 !

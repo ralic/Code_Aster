@@ -23,8 +23,8 @@ interface
         integer :: neq
         integer :: nbsup
         character(len=16) :: nomsy
-        logical :: monoap
-        logical :: muapde
+        logical(kind=1) :: monoap
+        logical(kind=1) :: muapde
         integer :: id
         character(len=*) :: moncha
         real(kind=8) :: vecmod(neq, *)

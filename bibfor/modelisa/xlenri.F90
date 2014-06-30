@@ -28,7 +28,7 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 #include "asterfort/wkvect.h"
     character(len=8) :: fiss, noma
     character(len=24) :: lismae, lisnoe
-    logical :: goinop
+    logical(kind=1) :: goinop
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,8 +100,8 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
     endif
 !
 !     ENREGISTREMENT DANS LA BASE GLOBALE
-    call jedupo(lismae, 'G', fiss(1:8)//'.GROUP_MA_ENRI', .false.)
-    call jedupo(lisnoe, 'G', fiss(1:8)//'.GROUP_NO_ENRI', .false.)
+    call jedupo(lismae, 'G', fiss(1:8)//'.GROUP_MA_ENRI', .false._1)
+    call jedupo(lisnoe, 'G', fiss(1:8)//'.GROUP_NO_ENRI', .false._1)
 !
     call jedema()
 end subroutine

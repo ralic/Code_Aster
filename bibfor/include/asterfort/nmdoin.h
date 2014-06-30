@@ -18,7 +18,7 @@
 interface
     subroutine nmdoin(evol, evonol, instin, numein)
         character(len=24) :: evol
-        logical :: evonol
+        logical(kind=1) :: evonol
         real(kind=8) :: instin
         integer :: numein
     end subroutine nmdoin

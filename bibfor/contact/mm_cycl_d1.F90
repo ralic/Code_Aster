@@ -69,7 +69,7 @@ subroutine mm_cycl_d1(sd_cont_solv  , point_index   , &
     integer :: statut(30)
     integer :: cycl_type, cycl_long_acti
     integer :: cycl_ecod(1), cycl_long, cycl_sub_type, cycl_stat
-    logical :: detect
+    logical(kind=1) :: detect
     real(kind=8) :: laug_cont_prev, laug_cont_curr
     real(kind=8) :: pres_near
     integer :: zone_cont_prev, zone_cont_curr

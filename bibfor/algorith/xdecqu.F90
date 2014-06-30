@@ -76,7 +76,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     integer :: ntm, nm, inm, nptm, nnop
     integer :: zxain
     character(len=8) :: typma, elrese(3), elrefp
-    logical :: cut, papillon, ajout
+    logical(kind=1) :: cut, papillon, ajout
 !
     parameter       (ptmax=6)
     data            elrese /'SEG3','TRIA6','TETRA10'/

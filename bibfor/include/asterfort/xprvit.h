@@ -36,7 +36,7 @@ interface
         character(len=19) :: cnsbet
         character(len=19) :: listp
         real(kind=8) :: damax
-        logical :: locdom
+        logical(kind=1) :: locdom
         real(kind=8) :: rdimp
         real(kind=8) :: rdtor
         character(len=19) :: delta

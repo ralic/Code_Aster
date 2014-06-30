@@ -26,7 +26,7 @@ interface
         character(len=*) :: nomobz
         integer :: nobl
         integer :: nobc
-        logical :: okpart
+        logical(kind=1) :: okpart
         integer :: lilig(nblig)
         integer :: licol(nbcol)
         complex(kind=8) :: cmat(ndim, ndim)

@@ -5,7 +5,7 @@ subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
 #include "blas/daxpy.h"
     real(kind=8) :: d0(*), v0(*), f(*), f0(*)
     integer :: rigid, amort, neq
-    logical :: lamort
+    logical(kind=1) :: lamort
 !
 !**********************************************************************
 ! ======================================================================
@@ -49,12 +49,12 @@ subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
 !
     mun = -1.d0
     call mrmult('ZERO', rigid, d0, f0, 1,&
-                .true.)
+                .true._1)
     call daxpy(neq, mun, f0, 1, f,&
                1)
     if (lamort) then
         call mrmult('ZERO', amort, v0, f0, 1,&
-                    .true.)
+                    .true._1)
         call daxpy(neq, mun, f0, 1, f,&
                    1)
     endif

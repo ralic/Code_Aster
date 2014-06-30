@@ -21,10 +21,10 @@ subroutine i2fini(epsi, binf, bsup, tsor, tsex,&
 !
     integer :: adrgt, tm2(*)
     real(kind=8) :: tsor(*), tsex(*), epsi, binf, bsup
-    logical :: fini
+    logical(kind=1) :: fini
 !
     integer :: i
-    logical :: stop
+    logical(kind=1) :: stop
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

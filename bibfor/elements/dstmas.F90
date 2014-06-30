@@ -62,7 +62,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: zero, un, six, douze, wgtf, wgtm, wgtmf
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
     character(len=3) :: stopz
-    logical :: coupmf, exce
+    logical(kind=1) :: coupmf, exce
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
@@ -310,13 +310,13 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(3, 6, pgl, zr(jvitg), vite)
-            call dxtloe(flex, memb, mefl, ctor, .false.,&
+            call dxtloe(flex, memb, mefl, ctor, .false._1,&
                         vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(3, 6, pgl, zr(jdepg), depl)
-                call dxtloe(flex, memb, mefl, ctor, .false.,&
+                call dxtloe(flex, memb, mefl, ctor, .false._1,&
                             depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)

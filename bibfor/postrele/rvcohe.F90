@@ -63,7 +63,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     integer :: acheff, amaicb,  alneud, anumcp, anomcp, nbcmp
     integer :: nbgrpn, nbneud, nbcrb, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ibid
-    logical :: chelok
+    logical(kind=1) :: chelok
     character(len=24), pointer :: grpn(:) => null()
 !
 !=====================================================================

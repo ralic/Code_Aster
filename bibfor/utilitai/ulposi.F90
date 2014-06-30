@@ -37,7 +37,7 @@ subroutine ulposi(unit, posi, ierr)
     character(len=1) :: k1
     character(len=24) :: valk(2)
     integer :: ios, iend
-    logical :: lop, lnom
+    logical(kind=1) :: lop, lnom
 !     ------------------------------------------------------------------
 !
     ierr = 100

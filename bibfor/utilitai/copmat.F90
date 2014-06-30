@@ -45,7 +45,7 @@ subroutine copmat(matr, numddl, mat)
     character(len=8) :: kbid, matr
     character(len=14) :: numddl
     real(kind=8) :: mat(*), pij
-    logical :: lsym
+    logical(kind=1) :: lsym
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

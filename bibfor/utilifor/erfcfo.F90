@@ -59,7 +59,7 @@ function erfcfo(x)
 #include "asterfort/inits.h"
     real(kind=8) :: x, erfcs(21), erfccs(59), erc2cs(49), sqeps, sqrtpi, xmax
     real(kind=8) :: txmax, xsml, y
-    logical :: first
+    logical(kind=1) :: first
     save erfcs,erc2cs,erfccs,sqrtpi,nterf,nterfc,nterc2,xsml,xmax,&
      &     sqeps,first
 !-----------------------------------------------------------------------

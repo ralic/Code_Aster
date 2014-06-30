@@ -75,7 +75,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !  -----------------
 !
     integer :: i, nd, nbnac, ind, alsnac,  ierd
-    logical :: egal
+    logical(kind=1) :: egal
     real(kind=8) :: znd, zref, aux
     character(len=8) :: k8b
     character(len=24) :: valk(2)

@@ -174,8 +174,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
     real(kind=8) :: valr
 !
-    logical :: existm, existt
-    logical :: logaux
+    logical(kind=1) :: existm, existt
+    logical(kind=1) :: logaux
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: nume(:) => null()
     integer, pointer :: typmail(:) => null()

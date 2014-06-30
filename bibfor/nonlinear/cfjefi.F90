@@ -55,7 +55,7 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
     integer :: iliai, jdecal, nbddl
     real(kind=8) :: jeuini, jeuold, jeuinc
     real(kind=8) :: jexnew, jexold, jexinc
-    logical :: lpenac, llagrf, lctfd
+    logical(kind=1) :: lpenac, llagrf, lctfd
     character(len=24) :: apcoef, apddl, appoin
     integer :: japcoe, japddl, japptr
     character(len=24) :: apcofr

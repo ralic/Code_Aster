@@ -15,7 +15,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "blas/ddot.h"
     integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
     integer :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
-    logical :: callst, grille
+    logical(kind=1) :: callst, grille
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,9 +38,9 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
     real(kind=8) :: p(2), dmin, a(2), b(2), m(2), ap(2), ab(2), norcab, ps, eps
     real(kind=8) :: d, oriabp, xln, ps1, xlt
     integer :: isefis, nseabs, inose, nunose, n1, nbnoma, num, nunoc, i
-    logical :: ma2ff
+    logical(kind=1) :: ma2ff
     integer :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
-    logical :: finfis
+    logical(kind=1) :: finfis
 !
     call jemarq()
 !

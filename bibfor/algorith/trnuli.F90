@@ -39,7 +39,7 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
 !-----------------------------------------------------------------------
 !
     integer :: itab(nblig, nbcol), icol(nbcol)
-    logical :: ok
+    logical(kind=1) :: ok
 !
 !-----------------------------------------------------------------------
 !     DATA

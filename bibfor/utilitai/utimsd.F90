@@ -35,7 +35,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 #include "asterfort/as_allocate.h"
     character(len=*) :: sch1, base
     integer :: ipos, niveau, unit
-    logical :: lattr, lcont
+    logical(kind=1) :: lattr, lcont
 ! ----------------------------------------------------------------------
 ! BUT:
 !   IMPRIMER LE CONTENU DES OBJETS JEVEUX (K24) AYANT
@@ -65,7 +65,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     character(len=40) :: lb
     character(len=1) :: xous, bas2
     integer :: long, nbval, nbobj,  i
-    logical :: tout
+    logical(kind=1) :: tout
     character(len=8) :: kbid
     character(len=24), pointer :: liste(:) => null()
 !
@@ -145,7 +145,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
             do 2 i = 1, nbobj
                 ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
-                call utimob(unit, ob1, niveau, .true., .false.,&
+                call utimob(unit, ob1, niveau, .true._1, .false._1,&
                             xous)
  2          continue
         endif
@@ -158,7 +158,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
             do 3 i = 1, nbobj
                 ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
-                call utimob(unit, ob1, niveau, .false., .true.,&
+                call utimob(unit, ob1, niveau, .false._1, .true._1,&
                             xous)
  3          continue
         endif

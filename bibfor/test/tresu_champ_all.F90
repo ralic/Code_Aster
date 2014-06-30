@@ -21,9 +21,9 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -64,7 +64,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=4) :: type
     character(len=5) :: sufv
     character(len=19) :: cham19
-    logical :: skip
+    logical(kind=1) :: skip
 !     ------------------------------------------------------------------
     if (present(ignore)) then
         skip = ignore

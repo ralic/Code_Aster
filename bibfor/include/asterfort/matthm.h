@@ -26,7 +26,7 @@ interface
         integer :: nno2
         integer :: nno1
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: iu(3, 18)
         integer :: ip(2, 9)
         integer :: ipf(2, 2, 9)

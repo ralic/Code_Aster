@@ -19,8 +19,8 @@ interface
     subroutine defgen(testl1, testl2, nno, r, x3,&
                       sina, cosa, cour, vf, dfds,&
                       depl, eps, epsx3)
-        logical :: testl1
-        logical :: testl2
+        logical(kind=1) :: testl1
+        logical(kind=1) :: testl2
         integer :: nno
         real(kind=8) :: r
         real(kind=8) :: x3

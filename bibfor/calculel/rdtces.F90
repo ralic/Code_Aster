@@ -54,7 +54,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
     integer :: ncmp, icmp
     character(len=8) :: nomgd, typces
     character(len=3) :: tsca
-    logical :: isvide
+    logical(kind=1) :: isvide
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: ce1c(:) => null()
 !     ------------------------------------------------------------------

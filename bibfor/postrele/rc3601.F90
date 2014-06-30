@@ -25,7 +25,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 #include "asterfort/as_allocate.h"
     integer :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
     real(kind=8) :: c(*), k(*), cara(*), snmax, samax, utot, sm, factus(*)
-    logical :: seisme
+    logical(kind=1) :: seisme
     character(len=8) :: nommat
 !     ------------------------------------------------------------------
 ! ======================================================================

@@ -102,7 +102,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     complex(kind=8) :: cbid
     character(len=8) :: k8b
     character(len=24) :: nonoma
-    logical :: notlin
+    logical(kind=1) :: notlin
 !
     real(kind=8) :: ffel2d, x(2), ff(9)
     real(kind=8), pointer :: coemur(:) => null()

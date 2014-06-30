@@ -26,7 +26,7 @@ interface
         real(kind=8) :: inst
         real(kind=8) :: insold
         character(len=8) :: k8cart
-        logical :: ltheta
+        logical(kind=1) :: ltheta
         integer :: niv
         integer :: ifm
         integer :: option

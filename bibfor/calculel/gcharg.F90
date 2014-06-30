@@ -28,7 +28,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     character(len=19) :: lischa
     character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
     character(len=19) :: chepsi, chpesa, chrota
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     real(kind=8) :: time
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -83,14 +83,14 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     character(len=16) :: typfct, motcle, nomcmd, phenom
     character(len=13) :: prefob
     integer :: motclc(2)
-    logical :: lfchar, lfmult, lformu, lccomb, lpchar
+    logical(kind=1) :: lfchar, lfmult, lformu, lccomb, lpchar
     integer :: nbauth, nbnaut, mclaut(2), iposit
     integer :: iprec, ibid, itypob(2), ibid2(2)
     character(len=19) :: carteo, cartei
-    logical :: lvolu, l1d2d, l2d3d, lpres
-    logical :: lepsi, lpesa, lrota
-    logical :: lfvolu, lf1d2d, lf2d3d, lfpres
-    logical :: lfepsi, lfpesa, lfrota
+    logical(kind=1) :: lvolu, l1d2d, l2d3d, lpres
+    logical(kind=1) :: lepsi, lpesa, lrota
+    logical(kind=1) :: lfvolu, lf1d2d, lf2d3d, lfpres
+    logical(kind=1) :: lfepsi, lfpesa, lfrota
 !
 ! ----------------------------------------------------------------------
 !

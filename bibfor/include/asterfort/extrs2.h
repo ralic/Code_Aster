@@ -22,7 +22,7 @@ interface
         character(len=*) :: resu0
         character(len=*) :: resu1
         character(len=16) :: typcon
-        logical :: lrest
+        logical(kind=1) :: lrest
         character(len=8) :: mailla
         character(len=8) :: modele
         integer :: nbordr

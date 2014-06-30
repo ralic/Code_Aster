@@ -51,7 +51,7 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
 #include "asterfort/utmess.h"
     integer :: nbf, nsomf, ndegre
     real(kind=8) :: poinc1, poinc2
-    logical :: lmaj
+    logical(kind=1) :: lmaj
     character(len=8) :: elrefe, typmac
 !
 !

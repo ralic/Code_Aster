@@ -3,7 +3,7 @@ function dmadp2(rho22, sat, phi, cs, mamolg,&
     implicit none
     real(kind=8) :: rho22, sat, phi, cs, mamolg, kh, dp21p2, dmadp2
     real(kind=8) :: dphip2, em
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 !
 ! ======================================================================

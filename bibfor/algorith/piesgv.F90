@@ -37,7 +37,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
 
     subroutine lcesbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
     real(kind=8),intent(in) :: ep0(6),ep1(6),l0,l1,etamin,etamax   
-    logical, intent(out)    :: vide     
+    logical(kind=1), intent(out)    :: vide     
     real(kind=8),intent(out):: etam,etap     
     end subroutine lcesbo
     end interface
@@ -69,7 +69,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
     integer, parameter:: itemax=100
     real(kind=8),parameter :: red=1.d-2, erra=1.d-6
 ! ----------------------------------------------------------------------
-    logical :: cplan, croiss, gauche, droite, vide
+    logical(kind=1) :: cplan, croiss, gauche, droite, vide
     integer :: ndim, ndimsi, i, n
     real(kind=8) :: coplan
     real(kind=8) :: etam, etap, etal, precvg, l0, l1, etm, etp

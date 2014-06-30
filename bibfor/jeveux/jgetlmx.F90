@@ -59,7 +59,7 @@ subroutine jgetlmx(nomlu, ival)
     character(len=32) :: noml32
     character(len=1) :: genri
     integer :: icre, iret
-    logical :: lconst, lcol
+    logical(kind=1) :: lconst, lcol
 ! DEB ------------------------------------------------------------------
 !
     ipgcex = ipgc

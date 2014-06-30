@@ -81,7 +81,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     real(kind=8) :: delta
     real(kind=8) :: factor, maxi, cohes, vec(3), pt, qt
     character(len=8) :: mod, nomail
-    logical :: debug, loop, bnews(3), mtrac
+    logical(kind=1) :: debug, loop, bnews(3), mtrac
 ! ====================================================================
     parameter   ( d13  = .3333333333334d0 )
     parameter   ( un   = 1.d0 )

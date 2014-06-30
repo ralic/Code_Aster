@@ -31,20 +31,20 @@ interface
         character(len=*) :: nomsd
         character(len=*) :: nomsym
         integer :: numord
-        logical :: lcor
+        logical(kind=1) :: lcor
         integer :: nbnot
         integer :: numnoe(*)
         integer :: nbmat
         integer :: nummai(*)
         integer :: nbcmp
         character(len=*) :: nomcmp(*)
-        logical :: lsup
+        logical(kind=1) :: lsup
         real(kind=8) :: borsup
-        logical :: linf
+        logical(kind=1) :: linf
         real(kind=8) :: borinf
-        logical :: lmax
-        logical :: lmin
-        logical :: lresu
+        logical(kind=1) :: lmax
+        logical(kind=1) :: lmin
+        logical(kind=1) :: lresu
         character(len=*) :: formr
         integer :: ncmp
         integer :: nucmp(*)

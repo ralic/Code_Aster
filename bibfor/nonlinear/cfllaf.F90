@@ -66,7 +66,7 @@ subroutine cfllaf(noma, defico, resoco, iliai, nbliai,&
 !
 !
     integer :: posit
-    logical :: lelpiv, lelpi1, lelpi2
+    logical(kind=1) :: lelpiv, lelpi1, lelpi2
     character(len=1) :: typeaj
     character(len=2) :: typef0, typef1, typef2
 !

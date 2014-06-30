@@ -78,7 +78,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
     integer :: jcesl, jcesv, jcesd,  ncmp, icmp
     character(len=24) :: grp
     integer :: jgrp, iret, jnbsp, ifiss
-    logical :: vall, isint
+    logical(kind=1) :: vall, isint
     character(len=19) :: chelsi, cmafis, faclon, chnbsp
     real(kind=8) :: valr
     character(len=8), pointer :: fiss(:) => null()

@@ -26,12 +26,12 @@ interface
         character(len=24) :: cinst
         character(len=24) :: cnoc
         real(kind=8) :: sm
-        logical :: lfatig
-        logical :: lpmpb
-        logical :: lsn
+        logical(kind=1) :: lfatig
+        logical(kind=1) :: lpmpb
+        logical(kind=1) :: lsn
         character(len=24) :: csno
         character(len=24) :: csne
-        logical :: flexio
+        logical(kind=1) :: flexio
         character(len=24) :: csneo
         character(len=24) :: csnee
         character(len=24) :: cfao
@@ -42,10 +42,10 @@ interface
         character(len=16) :: kinti
         integer :: it
         integer :: jt
-        logical :: lrocht
+        logical(kind=1) :: lrocht
         real(kind=8) :: symax
         character(len=24) :: cpres
-        logical :: kemixt
+        logical(kind=1) :: kemixt
         character(len=24) :: cspto
         character(len=24) :: cspte
         character(len=24) :: cspmo

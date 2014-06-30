@@ -66,7 +66,7 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
     integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
     integer :: vali(5), nbfr, ibid
     complex(kind=8) :: des, vpq, mhu, vpp, vpm
-    logical :: trouve, lconj
+    logical(kind=1) :: trouve, lconj
     character(len=1) :: kmsg
     character(len=16) :: valk, typres
 !

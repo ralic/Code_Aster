@@ -37,7 +37,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
     character(len=24) :: sdieto
     integer :: numins
     real(kind=8) :: para(*)
-    logical :: lnonl, force
+    logical(kind=1) :: lnonl, force
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
     character(len=19) :: lisch2

@@ -83,7 +83,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     integer, pointer :: lliel1(:) => null()
     integer, pointer :: lliel2(:) => null()
     integer, pointer :: igriel1(:) => null()
-    logical :: same_ligrel
+    logical(kind=1) :: same_ligrel
     integer, pointer :: cesv(:) => null()
 
 #define numail2(igr,iel) liel2(lliel2(igr)+iel-1)

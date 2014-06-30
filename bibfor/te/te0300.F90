@@ -65,7 +65,7 @@ subroutine te0300(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(3), nompar(3), elrefe
 !
-    logical :: fonc, axi
+    logical(kind=1) :: fonc, axi
 !.......................................................................
 !
     call elref1(elrefe)

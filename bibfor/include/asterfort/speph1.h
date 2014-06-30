@@ -21,8 +21,8 @@ interface
                       nbpf)
         integer :: nbpf
         integer :: nbn
-        logical :: intphy
-        logical :: intmod
+        logical(kind=1) :: intphy
+        logical(kind=1) :: intmod
         character(len=8) :: nomu
         real(kind=8) :: cham(nbn, *)
         real(kind=8) :: specmr(nbpf, *)

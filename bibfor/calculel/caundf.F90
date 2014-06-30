@@ -56,7 +56,8 @@ subroutine caundf(code, opt, te)
     integer :: iachok, iparg, lggrel, iachlo
     character(len=3) :: typsca
     character(len=8) :: nompar
-    logical :: ecras, arret
+    logical(kind=1) :: ecras
+    logical :: arret
     character(len=16) :: nomte, nomopt
     integer :: ich, debugr, lgcata
     real(kind=8) :: rnnem

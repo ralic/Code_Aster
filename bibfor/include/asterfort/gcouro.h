@@ -31,7 +31,7 @@ interface
         real(kind=8) :: dir(3)
         character(len=8) :: nomnoe(*)
         character(len=8) :: fond
-        logical :: direc
+        logical(kind=1) :: direc
         character(len=24) :: stok4
     end subroutine gcouro
 end interface

@@ -46,7 +46,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: rinstp, rinstm, vectu(dimuel)
     character(len=8) :: typmod(2), fami, poum
     character(len=16) :: option, compor(*)
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -507,7 +507,8 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! VARIABLES COMMUNES
 ! =====================================================================
 !
-    logical :: tange, cont, vf, bool
+    logical(kind=1) :: tange, cont, vf
+    logical :: bool
     integer :: numav
     real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa), normfa(maxdim, maxfa), vol
     real(kind=8) :: volv
@@ -520,7 +521,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
     integer :: nfacem
     integer :: voifa(maxfa, 2)
-    logical :: finter(maxfa)
+    logical(kind=1) :: finter(maxfa)
 ! =====================================================================
 ! VARIABLES VF SUSHI
 ! =====================================================================
@@ -570,9 +571,9 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! SI FICKFA =TRUE LES DIFFUSIVITES DE FICK SONT CALCULEES A PARTIR
 ! DES INCONNUES AUX FACES SINON ELLES SONT CALCULEES AU CENTRE
 !
-    logical :: fickfa
+    logical(kind=1) :: fickfa
 ! SI DECEN=.FALSE. ALORS ON NE FAIT AUCUN DECENTRAGE
-    logical :: decen
+    logical(kind=1) :: decen
 !=====================================================================
 ! NOUVELLE VARIABLES POUR SUSHI POUR TRAITER LA DIFFUSION PAR MOYENNE
     real(kind=8) :: fclls(maxfa), fclls1(maxfa+1, maxfa), fclls2(maxfa+1, maxfa), ftgls(maxfa)
@@ -1065,13 +1066,13 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ========================================
 ! FLUX VOLUMIQUES
 ! ========================================
-        call vfcfks(.true., tange, maxfa, nface, cvp,&
+        call vfcfks(.true._1, tange, maxfa, nface, cvp,&
                     dcvp1, dcvp2, cvpf, dcvp1f, dcvp2f,&
                     d, pesa, zero, zero, zero,&
                     xg, xface, maxdim, ndim, ftgks,&
                     ftgks1, ftgks2)
 !
-        call vfcfks(.true., tange, maxfa, nface, cad,&
+        call vfcfks(.true._1, tange, maxfa, nface, cad,&
                     dcad1, dcad2, cadf, dcad1f, dcad2f,&
                     d, pesa, zero, zero, zero,&
                     xg, xface, maxdim, ndim, fclks,&
@@ -1321,13 +1322,13 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 cadfv1(ifav)=valfav(ifav,dconp1,airdis,fa)
                 cadfv2(ifav)=valfav(ifav,dconp2,airdis,fa)
 223          continue
-            call vfcfks(.true., tange, maxfa, nfacev, cvpv,&
+            call vfcfks(.true._1, tange, maxfa, nfacev, cvpv,&
                         dcvp1v, dcvp2v, cvpfv, cvpfv1, cvpfv2,&
                         dl, pesa, zero, zero, zero,&
                         xl, xfacel, maxdim, ndim, ftgls,&
                         ftgls1, ftgls2)
 !
-            call vfcfks(.true., tange, maxfa, nfacev, cadv,&
+            call vfcfks(.true._1, tange, maxfa, nfacev, cadv,&
                         dcad1v, dcad2v, cadfv, cadfv1, cadfv2,&
                         dl, pesa, zero, zero, zero,&
                         xl, xfacel, maxdim, ndim, fclls,&
@@ -1396,12 +1397,12 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ========================================
 ! FLUX VOLUMIQUES
 ! ========================================
-        call vfcfks(.true., tange, maxfa, nface, pwp,&
+        call vfcfks(.true._1, tange, maxfa, nface, pwp,&
                     dpwp1, dpwp2, pwpf, dpwp1f, dpwp2f,&
                     c, pesa, rhol, drhol1, drhol2,&
                     xg, xface, maxdim, ndim, flks,&
                     dflks1, dflks2)
-        call vfcfks(.true., tange, maxfa, nface, pgp,&
+        call vfcfks(.true._1, tange, maxfa, nface, pgp,&
                     dpgp1, dpgp2, pgpf, dpgp1f, dpgp2f,&
                     c, pesa, rhog, drhog1, drhog2,&
                     xg, xface, maxdim, ndim, fgks,&
@@ -1499,34 +1500,34 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !=======================================================
 ! CALCUL DE :FLUW,FLUVP,FLUAS,FLUAD
 !=======================================================
-        call cafvsu(.true., tange, maxfa, nface, flks,&
+        call cafvsu(.true._1, tange, maxfa, nface, flks,&
                     dflks1, dflks2, mobwf, dw1f, dw2f,&
                     dw1fv, dw2fv, fluws, fw1s, fw2s,&
                     fw1sv, fw2sv, nbvois, nvoima)
-        call cafvsu(.true., tange, maxfa, nface, fgks,&
+        call cafvsu(.true._1, tange, maxfa, nface, fgks,&
                     dfgks1, dfgks2, movpf, dvp1f, dvp2f,&
                     dvp1fv, dvp2fv, fluvps, fvp1s, fvp2s,&
                     fvp1sv, fvp2sv, nbvois, nvoima)
-        call cafvsu(.true., tange, maxfa, nface, fgks,&
+        call cafvsu(.true._1, tange, maxfa, nface, fgks,&
                     dfgks1, dfgks2, moasf, das1f, das2f,&
                     das1fv, das2fv, fluass, fas1s, fas2s,&
                     fas1sv, fas2sv, nbvois, nvoima)
-        call cafvsu(.true., tange, maxfa, nface, flks,&
+        call cafvsu(.true._1, tange, maxfa, nface, flks,&
                     dflks1, dflks2, moadf, dad1f, dad2f,&
                     dad1fv, dad2fv, fluads, fad1s, fad2s,&
                     fad1sv, fad2sv, nbvois, nvoima)
         do 24 ifa = 1, nface
             if (.not.finter(ifa)) then
-                call cafmsu(ifa, .true., tange, maxfa, nface,&
+                call cafmsu(ifa, .true._1, tange, maxfa, nface,&
                             fgks(ifa), dfgks1, dfgks2, movpf(0, ifa), dvp1f(0, ifa),&
                             dvp2f(0, ifa), fmvps, fm1vps, fm2vps)
-                call cafmsu(ifa, .true., tange, maxfa, nface,&
+                call cafmsu(ifa, .true._1, tange, maxfa, nface,&
                             flks(ifa), dflks1, dflks2, mobwf(0, ifa), dw1f(0, ifa),&
                             dw2f(0, ifa), fmws, fm1ws, fm2ws)
-                call cafmsu(ifa, .true., tange, maxfa, nface,&
+                call cafmsu(ifa, .true._1, tange, maxfa, nface,&
                             fgks(ifa), dfgks1, dfgks2, moasf(0, ifa), das1f(0, ifa),&
                             das2f(0, ifa), fmass, fm1ass, fm2ass)
-                call cafmsu(ifa, .true., tange, maxfa, nface,&
+                call cafmsu(ifa, .true._1, tange, maxfa, nface,&
                             flks(ifa), dflks1, dflks2, moadf(0, ifa), dad1f(0, ifa),&
                             dad2f(0, ifa), fmads, fm1ads, fm2ads)
             endif

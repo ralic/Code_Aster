@@ -18,7 +18,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 #include "asterfort/utbtab.h"
 #include "asterfort/utdtab.h"
 #include "asterfort/utmess.h"
-    logical :: coupmf
+    logical(kind=1) :: coupmf
     integer :: nno, multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)

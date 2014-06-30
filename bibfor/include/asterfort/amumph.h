@@ -21,6 +21,6 @@ interface
         integer :: iret, nbsol
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
-        logical :: prepos
+        logical(kind=1) :: prepos
     end subroutine amumph
 end interface

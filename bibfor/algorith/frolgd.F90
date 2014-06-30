@@ -117,7 +117,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     integer :: llliai, llliac
     integer :: llf, llf1, llf2
     integer :: indic, indfac, ajliai, spliai
-    logical :: liasup, lechec
+    logical(kind=1) :: liasup, lechec
     integer :: nbpren
     integer :: neq, nbliac, nbliai, ndim, nesmax
     real(kind=8) :: rho, xjvmax
@@ -131,7 +131,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     integer :: itemax, isto, itemul
     character(len=24) :: clreac
     integer :: jclrea
-    logical :: reapre
+    logical(kind=1) :: reapre
     integer :: incr
     real(kind=8) :: xmul
     integer :: nmult
@@ -430,7 +430,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     call mtdscr(maf1)
     call jeveuo(maf1//'.&INT', 'L', lmaf1)
     call mrmult('ZERO', lmaf1, depc, zr(jafmu), 1,&
-                .true.)
+                .true._1)
 !
 ! --- CREATION DE LA MATRICE FRO2 (TERME NEGATIF)
 !

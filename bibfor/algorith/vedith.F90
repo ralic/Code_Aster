@@ -58,7 +58,7 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
     integer :: iaux, iret, nchar, jinf, jchar, icha
     integer :: numdi
     integer :: exicha
-    logical :: bidon
+    logical(kind=1) :: bidon
 !
 ! ----------------------------------------------------------------------
 !

@@ -88,7 +88,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
     character(len=19) :: force1
     integer :: numrep
 !
-    logical :: lamort, ener
+    logical(kind=1) :: lamort, ener
 !
 !
 !
@@ -161,8 +161,8 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 50      continue
         call enerca(k19bid, dep0, zr(ivit0r), depl1, vite2,&
                     masse1, amort1, rigid1, fexte, famor,&
-                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true.,&
-                    .false., sdener, '&&DLDIFF')
+                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
+                    .false._1, sdener, '&&DLDIFF')
         call jedetr('FNODABID')
         call jedetr('FCINEBID')
         call jedetr('VIT0_TR')

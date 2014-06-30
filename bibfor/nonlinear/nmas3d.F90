@@ -86,7 +86,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !.......................................................................
 !
-    logical :: grand, calbn, axi
+    logical(kind=1) :: grand, calbn, axi
     integer :: kpg, i, ii, ino, ia, j, k, kl, proj, cod(9), nbpg2
     integer :: ndim, nnos, jgano, kp, iaa
     real(kind=8) :: d(6, 6), f(3, 3), eps(6), deps(6), r, s, sigma(6), sign(6)
@@ -197,13 +197,13 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     axi = .false.
     call nmgeom(3, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplm,&
-                .true., poids, dfdi, f, eps,&
+                .true._1, poids, dfdi, f, eps,&
                 r)
 !
 !     CALCUL DE DEPS
     call nmgeom(3, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplp,&
-                .false., poids, dfdi, f, deps,&
+                .false._1, poids, dfdi, f, deps,&
                 r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,

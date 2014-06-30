@@ -33,6 +33,6 @@ interface
         integer :: spliai
         integer :: indic
         real(kind=8) :: xmul
-        logical :: liasup
+        logical(kind=1) :: liasup
     end subroutine cfgli3
 end interface

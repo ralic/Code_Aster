@@ -18,7 +18,7 @@
 interface
     subroutine netbis(meca, net, bishop)
         character(len=16) :: meca
-        logical :: net
-        logical :: bishop
+        logical(kind=1) :: net
+        logical(kind=1) :: bishop
     end subroutine netbis
 end interface

@@ -52,7 +52,7 @@ subroutine te0435(option, nomte)
     integer :: ivectu, icontp, ivarip, jcret, imatuu
     real(kind=8) :: dff(2, 8), alpha, beta, b(3, 3, 8), jac
     real(kind=8) :: epsm(3), deps(3), epsth(3), epsthe, sigp(3), tmp, rig(3, 3)
-    logical :: vecteu, matric
+    logical(kind=1) :: vecteu, matric
 !
 ! - BOOLEEN UTILES
 !

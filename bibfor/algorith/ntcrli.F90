@@ -64,7 +64,7 @@ subroutine ntcrli(instin, lisins, sddisc)
     real(kind=8) :: tole
     real(kind=8) :: r8bid
     real(kind=8) :: dtmin, dt0
-    logical :: linsti, linsei
+    logical(kind=1) :: linsti, linsei
     character(len=8) :: k8bid
     character(len=24) :: lisifr, lisdit
     character(len=24) :: tpsipo, tpsinf

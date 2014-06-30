@@ -36,7 +36,8 @@ implicit none
     real(kind=8), intent(in) :: xyzgau(3)
     integer, intent(in) :: nbsig
     real(kind=8), intent(out) :: d(nbsig, nbsig)
-    logical, optional, intent(in) :: l_modi_cp
+    logical(kind=1), optional, intent(in) :: l_modi_cp
+    logical :: lcond
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,7 +74,8 @@ implicit none
         call dmatcp(fami, mater, time, poum, ipg,&
                     ispg, repere, d)
         if (present(l_modi_cp)) then
-            ASSERT(l_modi_cp)
+            lcond=l_modi_cp
+            ASSERT(lcond)
             call dmatdp(fami, mater, time, poum, ipg,&
                         ispg, repere, d)
         else

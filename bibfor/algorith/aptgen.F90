@@ -54,7 +54,7 @@ subroutine aptgen(sdappa)
     integer :: jdecmm, nbmam
     integer :: jdecme, nbmae
     character(len=4) :: typzon
-    logical :: apcald
+    logical(kind=1) :: apcald
     real(kind=8) :: epsmax
     integer :: itemax
 !

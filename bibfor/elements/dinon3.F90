@@ -8,7 +8,7 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
     real(kind=8) :: ul(neq), dul(neq), utl(neq)
     real(kind=8) :: varimo(nbcomp*3), varipl(nbcomp*3)
     real(kind=8) :: raide(nbcomp), param(6, nbpar)
-    logical :: okdire(6)
+    logical(kind=1) :: okdire(6)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

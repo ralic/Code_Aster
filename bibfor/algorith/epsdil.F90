@@ -27,7 +27,7 @@ subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
 #include "asterfort/cabrp0.h"
 #include "asterfort/cabrp1.h"
 #include "asterfort/cabrsl.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, dimdef, dimuel
     integer :: ndim, nddls, nddlm, nno, nnos, nnom, regula(6)
     real(kind=8) :: geom(ndim, *), deplp(dimuel), defgep(npi*dimdef)

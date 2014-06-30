@@ -197,7 +197,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
     character(len=3) :: matcst, cnseui
     character(len=8) :: nomail
     character(len=*) :: fami
-    logical :: rigi, resi, istemp
+    logical(kind=1) :: rigi, resi, istemp
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
     common /ecri/   nomail

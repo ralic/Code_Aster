@@ -102,9 +102,9 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
     character(len=19) :: nomgd1
     character(len=19) :: nomgd2
 !
-    logical :: calre1, calfo1
-    logical :: calre2, calfo2
-    logical :: calcul
+    logical(kind=1) :: calre1, calfo1
+    logical(kind=1) :: calre2, calfo2
+    logical(kind=1) :: calcul
 !
 !
 ! ----------------------------------------------------------------------

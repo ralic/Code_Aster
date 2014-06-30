@@ -77,7 +77,7 @@ subroutine jeimpd(unit, clas, cmess)
 ! ---------------------------------------------------------------------
     character(len=1) :: kclas, cgenr, ctype, clasi, cgen2
     character(len=32) :: crnom
-    logical :: lcol, lente
+    logical(kind=1) :: lcol, lente
     integer :: ipgcex, lgbl
 ! DEB -----------------------------------------------------------------
     ipgcex = ipgc

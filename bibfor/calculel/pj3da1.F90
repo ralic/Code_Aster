@@ -3,7 +3,7 @@ subroutine pj3da1(ino2, geom2, i, geom1, tetr4,&
     implicit none
     real(kind=8) :: cobar2(4), geom1(*), geom2(*), epsi
     integer :: i, tetr4(*), ino2
-    logical :: ok
+    logical(kind=1) :: ok
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

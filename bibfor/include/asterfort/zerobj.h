@@ -18,6 +18,6 @@
 interface
     function zerobj(obj)
         character(len=*) :: obj
-        logical :: zerobj
+        logical(kind=1) :: zerobj
     end function zerobj
 end interface

@@ -50,7 +50,7 @@ subroutine op0199()
     integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9
     real(kind=8) :: rbid, tps(6), mij, cij, kij
     complex(kind=8) :: cbid
-    logical :: vrai
+    logical(kind=1) :: vrai
     character(len=2) :: model
     character(len=3) :: nd
     character(len=8) :: nomres, k8bid, modmec, phibar, moint, char

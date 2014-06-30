@@ -65,7 +65,7 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, nbpari, nbparr, mxresf,
     mpi_int           , intent(inout) :: mpicou, mpicow
     integer           , intent(inout) :: icom1, icom2
     real(kind=8)      , intent(inout) :: omemax, omemin, vpinf, vpmax
-    logical           , intent(inout) :: lcomod
+    logical(kind=1)   , intent(inout) :: lcomod
 
 !
 ! --- VARIABLES LOCALES
@@ -85,7 +85,7 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, nbpari, nbparr, mxresf,
     character(len=16) :: k16bid, optiof, optiov, stoper, sturm, typres
     character(len=19) :: amor, masse, raide, k19bid
     character(len=24) :: nopara(nbpara), valk(2)
-    logical           :: lc, lkr, lns, lbid
+    logical(kind=1)   :: lc, lkr, lns, lbid
 
 !
 ! --- DECLARATION DES DATAS

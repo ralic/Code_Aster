@@ -20,7 +20,7 @@ subroutine cfelpv(numlia, typlia, resoco, nbliai, lelpiv)
     implicit     none
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
-    logical :: lelpiv
+    logical(kind=1) :: lelpiv
     integer :: numlia
     integer :: nbliai
     character(len=2) :: typlia

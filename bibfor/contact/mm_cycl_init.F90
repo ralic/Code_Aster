@@ -55,7 +55,7 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
     integer :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
     integer :: slave_pt_index, slave_pt_nb
     real(kind=8) :: coef_cont, coef_frot
-    logical :: lveri
+    logical(kind=1) :: lveri
 !
 ! --------------------------------------------------------------------------------------------------
 !

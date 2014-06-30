@@ -25,7 +25,7 @@ subroutine nmerge(sderro, nomevt, lactiv)
 #include "asterfort/jeveuo.h"
     character(len=24) :: sderro
     character(len=9) :: nomevt
-    logical :: lactiv
+    logical(kind=1) :: lactiv
 !
 ! ----------------------------------------------------------------------
 !

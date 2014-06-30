@@ -3,7 +3,7 @@ subroutine rc32f0(nbsigr, nocc, saltij, saltm, trouve,&
     implicit   none
     integer :: nbsigr, nocc(*), isk, isl, nl, nk
     real(kind=8) :: saltij(*), saltm
-    logical :: trouve
+    logical(kind=1) :: trouve
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D               WWW.CODE-ASTER.ORG

@@ -31,7 +31,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 #include "asterfort/jeveuo.h"
     integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(nbcmp)
     integer :: ddlc
-    logical :: lmeca, pre1, press
+    logical(kind=1) :: lmeca, pre1, press
     character(len=8) :: elrefp
     character(len=19) :: cns1
 !
@@ -54,7 +54,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 !
 !
     integer ::  jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
-    logical :: exist(n, nbcmp), contas
+    logical(kind=1) :: exist(n, nbcmp), contas
     character(len=8) :: nomcmp, k8bid
     character(len=8), pointer :: cnsc(:) => null()
 !

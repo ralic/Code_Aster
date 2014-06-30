@@ -42,7 +42,7 @@ subroutine codree(reel, mode, chaine)
     character(len=10) :: format
     integer :: long, nbchif
     real(kind=8) :: valeur
-    logical :: marktr
+    logical(kind=1) :: marktr
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ient, ii, il, im, ndec

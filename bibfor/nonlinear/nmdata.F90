@@ -80,7 +80,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
     integer :: n1, n2
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
-    logical :: l_etat_init
+    logical(kind=1) :: l_etat_init
 !
 ! ----------------------------------------------------------------------
 !

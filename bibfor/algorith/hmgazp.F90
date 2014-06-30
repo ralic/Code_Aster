@@ -71,7 +71,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: phi, rho11, phi0, rac2
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical :: yachai
+    logical(kind=1) :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -82,7 +82,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: r, rho0, csigm, alp11, em
     real(kind=8) :: eps, rinstp, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -100,7 +100,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: dqeps(6)
     real(kind=8) :: sigmp(6)
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !

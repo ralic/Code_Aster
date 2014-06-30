@@ -21,7 +21,7 @@ subroutine nmamab(modele, carele, lamor)
 #include "asterfort/dismoi.h"
 !
     character(len=24) :: modele, carele
-    logical :: lamor
+    logical(kind=1) :: lamor
 !
     character(len=24) :: rep1, rep2
 ! ----------------------------------------------------------------------

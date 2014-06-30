@@ -68,7 +68,7 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
     integer :: iparg, iachlo, lggrel, jcelv, jresl
     integer :: descgd, jceld, code, debugr, ncmpel, debgr2
     character(len=8) :: nompar, typsca
-    logical :: lparal
+    logical(kind=1) :: lparal
 !
     call jemarq()
 !

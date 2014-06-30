@@ -240,7 +240,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 #include "asterfort/jeveuo.h"
     integer :: numpas, nbpal
     real(kind=8) :: temps, dep(nbpal, *), vit(nbpal, *), dt, dtsto, vrotat
-    logical :: prdeff
+    logical(kind=1) :: prdeff
 !
 !
 !

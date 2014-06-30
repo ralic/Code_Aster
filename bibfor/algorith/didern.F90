@@ -19,7 +19,7 @@ function didern(sddisc, numins)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: didern
+    logical(kind=1) :: didern
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"

@@ -22,7 +22,7 @@ function isfonc(list_func_acti, func_name_z)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    logical :: isfonc
+    logical(kind=1) :: isfonc
     integer, intent(in) :: list_func_acti(*)
     character(len=*), intent(in) :: func_name_z
 !

@@ -18,6 +18,6 @@
 interface
     subroutine assma1(matas, ldist)
         character(len=*) :: matas
-        logical :: ldist
+        logical(kind=1) :: ldist
     end subroutine assma1
 end interface

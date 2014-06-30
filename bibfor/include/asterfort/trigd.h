@@ -22,7 +22,7 @@ interface
         integer :: deb1
         integer :: dg2(*)
         integer :: deb2
-        logical :: cumul
+        logical(kind=1) :: cumul
         integer :: ino
         integer :: nno
     end subroutine trigd

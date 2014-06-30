@@ -86,12 +86,12 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
                 write(ifm,*) ' * SD INTROUVABLE !'
             else
                 write(ifm,*) ' * RESUME DE LA SD :'
-                call utimsd(ifm, -1, .true., .true., lchiz(ich),&
+                call utimsd(ifm, -1, .true._1, .true._1, lchiz(ich),&
                             1, ' ')
             endif
         else
             write(ifm,*) ' * RESUME DE LA SD :'
-            call utimsd(ifm, -1, .true., .true., lchiz(ich)(1:19),&
+            call utimsd(ifm, -1, .true._1, .true._1, lchiz(ich)(1:19),&
                         1, ' ')
         endif
 100  end do
@@ -119,12 +119,12 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
                 write(ifm,*) ' * SD INTROUVABLE !'
             else
                 write(ifm,*) ' * RESUME DE LA SD :'
-                call utimsd(ifm, -1, .true., .true., lchouz(ich),&
+                call utimsd(ifm, -1, .true._1, .true._1, lchouz(ich),&
                             1, ' ')
             endif
         else
             write(ifm,*) ' * RESUME DE LA SD :'
-            call utimsd(ifm, -1, .true., .true., lchouz(ich)(1:19),&
+            call utimsd(ifm, -1, .true._1, .true._1, lchouz(ich)(1:19),&
                         1, ' ')
         endif
 200  end do

@@ -72,8 +72,8 @@ subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
     character(len=8) :: lpaout(mxnbou), lpain(mxnbin)
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
-    logical :: exitem, exihyd, exipto, exisec, exiepa, exipha
-    logical :: lbid, exiph1, exiph2, lxfem
+    logical(kind=1) :: exitem, exihyd, exipto, exisec, exiepa, exipha
+    logical(kind=1) :: lbid, exiph1, exiph2, lxfem
     integer :: iret
     real(kind=8) :: x(2)
     character(len=19) :: vecel(2), vecelp, vecelm

@@ -1,6 +1,6 @@
 function zerobj(obj)
     implicit none
-    logical :: zerobj
+    logical(kind=1) :: zerobj
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"

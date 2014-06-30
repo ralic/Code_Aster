@@ -27,7 +27,7 @@ interface
         real(kind=8) :: deltat
         integer :: nbrpas
         real(kind=8) :: dtmin
-        logical :: ldcext
+        logical(kind=1) :: ldcext
         real(kind=8) :: durdec
         integer :: retdec
     end subroutine nmdeca

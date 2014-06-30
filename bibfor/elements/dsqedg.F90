@@ -54,7 +54,7 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: vf(3), vm(3), vt(2), excent, bfam(3, 8), bcam(2, 8)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), vcm(2), vcf(2)
     real(kind=8) :: qsi, eta, jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
-    logical :: coupmf, excen
+    logical(kind=1) :: coupmf, excen
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !

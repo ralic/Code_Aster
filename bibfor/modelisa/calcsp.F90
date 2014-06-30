@@ -52,7 +52,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: casint
+    logical(kind=1) :: casint
     character(len=8) :: nomu, table
     integer :: nbm, nbmr, imod1, nuor(*), ivite
     real(kind=8) :: freq(*), masg(*)

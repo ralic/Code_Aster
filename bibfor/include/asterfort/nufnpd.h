@@ -36,7 +36,7 @@ interface
         real(kind=8) :: geomi(ndim, nno1)
         real(kind=8) :: sig(2*ndim+1, npg)
         real(kind=8) :: ddl(*)
-        logical :: mini
+        logical(kind=1) :: mini
         real(kind=8) :: vect(*)
     end subroutine nufnpd
 end interface

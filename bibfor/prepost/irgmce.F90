@@ -28,7 +28,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou, nomain, tycha
     real(kind=8) :: coord(*), para(*)
-    logical :: lresu
+    logical(kind=1) :: lresu
     integer :: nbcmpi, ifi, nbordr, versio
     integer :: ordr(*), connx(*), point(*)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
@@ -90,7 +90,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
     integer :: icmp,  ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
     parameter(ncmpme=12)
-    logical :: iwri, tens, scal, vect, lcmp
+    logical(kind=1) :: iwri, tens, scal, vect, lcmp
     character(len=1) :: tsca
     character(len=8) :: k8b, nomgd, type, nocmp
     character(len=19) :: noch19, champs

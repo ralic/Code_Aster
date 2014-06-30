@@ -116,7 +116,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     integer :: zveass, zsolal, zvalin
     parameter    (zveass=32,zsolal=17,zvalin=28)
 !
-    logical :: exopt, mieux, irecli
+    logical(kind=1) :: exopt, mieux, irecli
     integer :: itrlmx, iterho, act, opt
     integer :: pilopt
     integer :: nbeffe

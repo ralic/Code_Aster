@@ -92,7 +92,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     real(kind=8) :: divtol, resipc
     complex(kind=8) :: cbid
 !
-    logical :: lmd
+    logical(kind=1) :: lmd
 !
 !----------------------------------------------------------------
 !     Variables PETSc

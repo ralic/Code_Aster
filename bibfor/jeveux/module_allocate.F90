@@ -45,7 +45,7 @@ module module_allocate
 !------------------------------------------------------------------------
 !
     type array_1
-        logical, allocatable :: vl(:)
+        logical(kind=1), allocatable :: vl(:)
         integer, allocatable :: vi(:)
         integer(kind=4), allocatable :: vi4(:)
         real(kind=8), allocatable :: vr(:)
@@ -56,7 +56,7 @@ module module_allocate
         character(len=32), allocatable :: vk32(:)
         character(len=80), allocatable :: vk80(:)
 !
-        logical :: present
+        logical(kind=1) :: present
         type(c_ptr) :: ptr_ident
         character(len=3) :: tsca
     end type array_1
@@ -92,7 +92,7 @@ contains
                               vc, vk8, vk16, vk24, vk32,&
                               vk80)
         integer :: lon1
-        logical, pointer, optional :: vl(:)
+        logical(kind=1), pointer, optional :: vl(:)
         integer, pointer, optional :: vi(:)
         integer(kind=4), pointer, optional :: vi4(:)
         real(kind=8), pointer, optional :: vr(:)
@@ -193,7 +193,7 @@ contains
                                 vc, vk8, vk16, vk24, vk32,&
                                 vk80)
         integer, intent(out) :: ierr
-        logical, pointer, optional :: vl(:)
+        logical(kind=1), pointer, optional :: vl(:)
         integer, pointer, optional :: vi(:)
         integer(kind=4), pointer, optional :: vi4(:)
         real(kind=8), pointer, optional :: vr(:)

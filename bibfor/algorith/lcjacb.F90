@@ -91,7 +91,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
     character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
 !
-    logical ::  bnews(3), mtrac
+    logical(kind=1) ::  bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret=0

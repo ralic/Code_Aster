@@ -131,7 +131,8 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     integer :: idatfa(200)
     integer :: adnomg, adnumg, adnume, nvnbgr
     integer :: ilmed, ilnew, nogrlo, jnogrl, jnogrc
-    logical :: ierr, renomm, errgm
+    logical(kind=1) :: renomm, errgm
+    logical :: ierr
     character(len=80) :: kbid, newgrm
 !
     character(len=2) :: saux02

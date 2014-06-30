@@ -18,7 +18,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
     real(kind=8) :: depgen(*), vitgen(*), accgen(*)
     real(kind=8) :: work1(*), pulsa2(*)
     character(len=16) :: typbas
-    logical :: lamor
+    logical(kind=1) :: lamor
     complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -114,12 +114,12 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
     else if (typbas(1:11).eq.'MODELE_GENE') then
         if (desca .ne. 0) then
             call mrmult('ZERO', desca, vitgen, work1, 1,&
-                        .false.)
+                        .false._1)
             call mrmult('CUMU', descr, depgen, work1, 1,&
-                        .false.)
+                        .false._1)
         else
             call mrmult('ZERO', descr, depgen, work1, 1,&
-                        .false.)
+                        .false._1)
         endif
         do im = 1, neqgen
             accgen(im) = fexgen(im) - work1(im)
@@ -129,7 +129,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
         matr = zk24(zi(descm+1))(1:19)
         call resoud(matr, ' ', ' ', ' ', 1,&
                     ' ', ' ', ' ', accgen, [cbid],&
-                    ' ', .true., 0, iret)
+                    ' ', .true._1, 0, iret)
     endif
 !
 end subroutine

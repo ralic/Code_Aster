@@ -131,7 +131,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         nommcl=zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
-!       call utimsd(6, 2, .false., .true.,basmod(1:8)//'           .REFD', 1, ' ')
+!       call utimsd(6, 2, .false._1, .true._1,basmod(1:8)//'           .REFD', 1, ' ')
         call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=repk, arret='C',&
                     ier=iret)
     else if (questi(1:10).eq.'NB_CMP_MAX') then

@@ -53,11 +53,11 @@ subroutine mecgm2(lischa, instan, mesuiv)
 !
     integer :: nbchme, nchar
     integer :: iret, ichar, icha, ier
-    logical :: fct
+    logical(kind=1) :: fct
     character(len=24) :: licoef, fomult
     integer :: jlicoe, jfonct
     real(kind=8) :: valres
-    logical :: bidon
+    logical(kind=1) :: bidon
     character(len=24), pointer :: relr(:) => null()
 !
 ! ----------------------------------------------------------------------

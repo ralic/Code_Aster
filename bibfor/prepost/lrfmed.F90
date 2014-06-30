@@ -139,7 +139,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !
     character(len=64) :: k64b
 !
-    logical :: existm, logaux
+    logical(kind=1) :: existm, logaux
     character(len=24), pointer :: refe(:) => null()
 !
 ! ----------------------------------------------------------------------

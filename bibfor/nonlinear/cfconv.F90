@@ -56,13 +56,13 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lallv, lreag
+    logical(kind=1) :: lallv, lreag
     character(len=24) :: clreac
     integer :: jclrea
     character(len=16) :: geonoe, k16bla
     real(kind=8) :: geoval, r8bid
-    logical :: ctderg, cvresi
-    logical :: dvpfix, dvfixg
+    logical(kind=1) :: ctderg, cvresi
+    logical(kind=1) :: dvpfix, dvfixg
     integer :: ctcite
 !
 ! ----------------------------------------------------------------------
@@ -82,8 +82,8 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 !
 ! --- VALEURS NON AFFECTEES DANS LE TABLEAU
 !
-    call nmimck(sdimpr, 'BOUC_NOEU', k16bla, .false.)
-    call nmimcr(sdimpr, 'BOUC_VALE', r8bid, .false.)
+    call nmimck(sdimpr, 'BOUC_NOEU', k16bla, .false._1)
+    call nmimcr(sdimpr, 'BOUC_VALE', r8bid, .false._1)
 !
 ! --- CONVERGENCE DES RESIDUS D'EQUILIBRE ?
 !
@@ -124,10 +124,10 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 ! --- ENREGISTREMENT DES VALEURS POUR AFFICHAGE
 !
     if (lreag) then
-        call nmimck(sdimpr, 'BOUC_NOEU', geonoe, .true.)
-        call nmimcr(sdimpr, 'BOUC_VALE', geoval, .true.)
+        call nmimck(sdimpr, 'BOUC_NOEU', geonoe, .true._1)
+        call nmimcr(sdimpr, 'BOUC_VALE', geoval, .true._1)
     endif
-    call nmimci(sdimpr, 'CTCD_NBIT', ctcite, .true.)
+    call nmimci(sdimpr, 'CTCD_NBIT', ctcite, .true._1)
 !
 ! --- ENREGISTREMENT DES EVENEMENTS - DIVERGENCES
 !

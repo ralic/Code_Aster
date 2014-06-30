@@ -53,7 +53,7 @@ subroutine te0433(option, nomte)
     real(kind=8) :: epsm, epsg(9), epsthe, sig, sigg(9), rho(1), valres(2), epot
     real(kind=8) :: x(8), y(8), z(8), volume, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6), vro
-    logical :: lexc
+    logical(kind=1) :: lexc
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !

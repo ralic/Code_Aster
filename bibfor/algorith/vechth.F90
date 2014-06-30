@@ -86,7 +86,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
     character(len=24) :: ligrel(3), lchin(nchinx), resuel, chgeom, chcara(18)
     character(len=24) :: modele, charge, infoch, carele, inst, chtn, mate
     character(len=24) :: vecele, ligcal
-    logical :: bidon
+    logical(kind=1) :: bidon
 ! ----------------------------------------------------------------------
     integer :: nbchmx
     parameter (nbchmx=6)

@@ -55,7 +55,7 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: valk, valo
-    logical :: valb
+    logical(kind=1) :: valb
     integer :: vali
     real(kind=8) :: valr
     character(len=1) :: typpa1, typpa2

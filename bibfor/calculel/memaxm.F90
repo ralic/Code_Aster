@@ -82,7 +82,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     real(kind=8) :: valr, vmima
     character(len=19) :: chams, cham19
     integer :: tncomp(nbcmp)
-    logical :: copi, lmax, labs, lreel
+    logical(kind=1) :: copi, lmax, labs, lreel
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------

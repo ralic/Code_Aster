@@ -36,7 +36,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
     integer :: nbfond
     character(len=19) :: info, listpt
     character(len=24) :: fonmul
-    logical :: goinop
+    logical(kind=1) :: goinop
 !
 ! ----------------------------------------------------------------------
 !       ORIENTATION DES POINTS DU FOND DE FISSURE DANS LE CADRE DE XFEM

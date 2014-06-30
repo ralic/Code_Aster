@@ -58,8 +58,8 @@ subroutine pofape()
     real(kind=8) :: rbid, phmax, cissio, sphere, pcorr, val(2), vmax, vmin
     real(kind=8) :: domage(1), rcrit, vresu(24), resu(7), valpar(35)
     complex(kind=8) :: cbid
-    logical :: lhaigh, lke, post, fordef, plcicr
-    logical :: crsigm, crepst, crepse, crepsp, plcr2
+    logical(kind=1) :: lhaigh, lke, post, fordef, plcicr
+    logical(kind=1) :: crsigm, crepst, crepse, crepsp, plcr2
     integer :: icodre(2), icodwo, icodba, icodhs
     character(len=8) :: k8b, nomten(6), nomres(2), kdomm, nompar, nommat, cara
     character(len=8) :: result, nomeps(6), nomepp(6)

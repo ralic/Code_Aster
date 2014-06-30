@@ -53,7 +53,7 @@ subroutine ndpred(sddyna, valinc, solalg)
 !
     integer :: jcfsc
     character(len=24) :: cfsc
-    logical :: ldepl, lvite, lacce
+    logical(kind=1) :: ldepl, lvite, lacce
     integer :: n
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
     character(len=24) :: vect(3)

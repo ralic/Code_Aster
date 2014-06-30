@@ -75,8 +75,8 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical :: lctcd, lctcc, lnewtc
-    logical :: mmcvca
+    logical(kind=1) :: lctcd, lctcc, lnewtc
+    logical(kind=1) :: mmcvca
     character(len=8) :: nomo
     character(len=16) :: k16bla
     real(kind=8) :: r8bid
@@ -101,8 +101,8 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 !
 ! --- VALEURS NON AFFECTEES DANS LE TABLEAU
 !
-    call nmimck(sdimpr, 'BOUC_NOEU', k16bla, .false.)
-    call nmimcr(sdimpr, 'BOUC_VALE', r8bid, .false.)
+    call nmimck(sdimpr, 'BOUC_NOEU', k16bla, .false._1)
+    call nmimcr(sdimpr, 'BOUC_VALE', r8bid, .false._1)
 !
 ! --- CONVERGENCE ADAPTEE AU CONTACT DISCRET
 !
@@ -119,9 +119,9 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
                     valinc, solalg, sdtime, sdstat, mmcvca,&
                     instan)
         if (mmcvca) then
-            call nmcrel(sderro, 'DIVE_CTCC', .false.)
+            call nmcrel(sderro, 'DIVE_CTCC', .false._1)
         else
-            call nmcrel(sderro, 'DIVE_CTCC', .true.)
+            call nmcrel(sderro, 'DIVE_CTCC', .true._1)
         endif
     endif
 !

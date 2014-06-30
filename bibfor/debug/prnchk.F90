@@ -23,7 +23,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
     integer :: adress(*), fils(*), frere(*), lgsn(*), lfront(*)
     integer :: invsup(*), seq(*), nbsn
     integer :: sni, sn, sn0, vois, m, vali(2), i
-    logical :: trouv
+    logical(kind=1) :: trouv
     do 1 i = 1, nbsn
         sni=seq(i)
         m = lfront(sni)

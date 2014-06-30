@@ -22,8 +22,8 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: fomult
-        logical :: matcst
-        logical :: coecst
+        logical(kind=1) :: matcst
+        logical(kind=1) :: coecst
         character(len=19) :: infcha
         character(len=8) :: result
         integer :: nuord

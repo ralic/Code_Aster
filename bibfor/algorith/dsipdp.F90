@@ -26,7 +26,7 @@ subroutine dsipdp(thmc, adcome, addep1, addep2, dimcon,&
 ! OUT DSPDP2  DERIVEE DE SIP  PAR RAPPORT A PRE2
 ! ======================================================================
     implicit      none
-    logical :: pre2tr
+    logical(kind=1) :: pre2tr
     integer :: adcome, addep1, addep2, dimcon, dimdef
     real(kind=8) :: dspdp1, dspdp2, dsde(dimcon, dimdef)
     character(len=16) :: thmc

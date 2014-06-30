@@ -76,7 +76,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
     character(len=24) :: autoc1, autoc2
     character(len=24) :: clreac, tacfin, tangco
     integer :: jclrea, jtacf, jtango
-    logical :: lctfd, lpenac, lpenaf, lmatrc, lgcp, lctf3d, ldiric
+    logical(kind=1) :: lctfd, lpenac, lpenaf, lmatrc, lgcp, lctf3d, ldiric
 !
 ! ----------------------------------------------------------------------
 !

@@ -66,8 +66,8 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 ! ----------------------------------------------------------------------
 !
     integer :: mmitgo, mmitca, mmitfr
-    logical :: lboucf, lboucg, lboucc
-    logical :: lappa, loptin
+    logical(kind=1) :: lboucf, lboucg, lboucc
+    logical(kind=1) :: lappa, loptin
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,7 +99,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 !
 ! --- ECRITURE NUMERO ITERATION
 !
-        call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true.)
+        call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true._1)
 !
 ! --- NOUVELLE ITERATION DE GEOMETRIE
 !
@@ -115,7 +115,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 !
         call mmbouc(resoco, 'FROT', 'INIT', mmitfr)
         call mmbouc(resoco, 'FROT', 'INCR', mmitfr)
-        call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true.)
+        call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true._1)
     endif
 !
 ! --- NIVEAU: 2   BOUCLE SEUILS DE FROTTEMENT
@@ -132,7 +132,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 !
         call mmbouc(resoco, 'CONT', 'INIT', mmitca)
         call mmbouc(resoco, 'CONT', 'INCR', mmitca)
-        call nmimci(sdimpr, 'BOUC_CONT', mmitca, .true.)
+        call nmimci(sdimpr, 'BOUC_CONT', mmitca, .true._1)
     endif
 !
 ! --- NIVEAU: 1   BOUCLE CONTACT

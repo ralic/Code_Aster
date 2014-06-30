@@ -26,8 +26,8 @@ interface
         integer :: maxfa
         integer :: fa
         integer :: fav
-        logical :: cont
-        logical :: tange
+        logical(kind=1) :: cont
+        logical(kind=1) :: tange
         real(kind=8) :: fluxk(nface)
         real(kind=8) :: flux1k(1:maxfa+1, nface)
         real(kind=8) :: flux2k(1:maxfa+1, nface)

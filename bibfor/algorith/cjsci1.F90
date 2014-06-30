@@ -45,7 +45,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
     real(kind=8) :: trdeps, coef, pa, n, multi
     real(kind=8) :: x0, x1, x2, oldx2, y0, y1, y2
     real(kind=8) :: zero, un, deux, trois, qinit
-    logical :: tract
+    logical(kind=1) :: tract
     integer :: i
 !
     common /tdim/   ndt , ndi

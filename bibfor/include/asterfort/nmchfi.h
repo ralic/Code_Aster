@@ -27,10 +27,10 @@ interface
         integer :: numins
         integer :: iterat
         character(len=24) :: defico
-        logical :: lcfint
-        logical :: lcdiri
-        logical :: lcbudi
-        logical :: lcrigi
+        logical(kind=1) :: lcfint
+        logical(kind=1) :: lcdiri
+        logical(kind=1) :: lcbudi
+        logical(kind=1) :: lcrigi
         character(len=16) :: option
     end subroutine nmchfi
 end interface

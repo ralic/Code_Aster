@@ -30,18 +30,18 @@ interface
         real(kind=8) :: vale(*)
         character(len=*) :: nomcmp(*)
         character(len=*) :: nomnoe(*)
-        logical :: lcor
+        logical(kind=1) :: lcor
         integer :: ndim
         real(kind=8) :: coor(*)
         integer :: numnoe(*)
         integer :: nbcmpt
         integer :: nucmpu(*)
-        logical :: lsup
+        logical(kind=1) :: lsup
         real(kind=8) :: borsup
-        logical :: linf
+        logical(kind=1) :: linf
         real(kind=8) :: borinf
-        logical :: lmax
-        logical :: lmin
+        logical(kind=1) :: lmax
+        logical(kind=1) :: lmin
         character(len=*) :: formr
     end subroutine ircrrl
 end interface

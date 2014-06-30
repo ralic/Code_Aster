@@ -28,7 +28,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     character(len=16) :: nsymb
     character(len=19) :: chpgs
     character(len=24) :: nkcha, nkcmp, mesmai, nival, nrval, niord
-    logical :: toucmp
+    logical(kind=1) :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

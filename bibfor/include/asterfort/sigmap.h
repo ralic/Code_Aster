@@ -18,8 +18,8 @@
 interface 
     subroutine sigmap(net, bishop, sat, signe, tbiot,&
                       dp2, dp1, sigmp)
-        logical :: net
-        logical :: bishop
+        logical(kind=1) :: net
+        logical(kind=1) :: bishop
         real(kind=8) :: sat
         real(kind=8) :: signe
         real(kind=8) :: tbiot(6)

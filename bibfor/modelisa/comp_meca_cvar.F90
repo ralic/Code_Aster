@@ -46,7 +46,7 @@ subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
     character(len=16) :: keywordfact
     character(len=16) :: type_matg, post_iter
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(9), type_cpla
-    logical :: l_matr_tgsc, l_crit_rupt
+    logical(kind=1) :: l_matr_tgsc, l_crit_rupt
     integer :: nume_comp, nb_vari
     integer :: nb_vari_comp(9)
 !

@@ -66,7 +66,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
     real(kind=8) :: tl(3, 3, 3, 3), tls(6, 6), epse(4), d1(4, 4)
     real(kind=8) :: gn(3, 3), feta(4), xi(3, 3), me(3, 3, 3, 3), lamb(3)
     real(kind=8) :: logl(3)
-    logical :: resi, rigi, cplan
+    logical(kind=1) :: resi, rigi, cplan
 ! ---------------------------------------------------------------------
 !********************CONTRAINTE ET FORCES INTERIEURES******************
 !

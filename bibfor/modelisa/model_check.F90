@@ -27,7 +27,7 @@ subroutine model_check(model, l_veri_elem)
 ! ======================================================================
 !
     character(len=8), intent(in) :: model
-    logical, optional, intent(in) :: l_veri_elem
+    logical(kind=1), optional, intent(in) :: l_veri_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine model_check(model, l_veri_elem)
     character(len=16) :: repk
     integer :: i_disc_2d, i_disc_3d
     character(len=8) :: mesh
-    logical :: l_axis
+    logical(kind=1) :: l_axis
     integer :: nb_mesh_elem
     character(len=19) :: ligrel_model
     character(len=24) :: model_maille
@@ -60,7 +60,7 @@ subroutine model_check(model, l_veri_elem)
     
     ligrel_model = model//'.MODELE'
 !
-! - Check topological dimensions
+! - Check topological(kind=1) dimensions
 !
     if (nb_dim_geom .gt. 3) then
         nb_dim_geom2 = 0

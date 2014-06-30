@@ -46,7 +46,7 @@ subroutine nmevr0(sddisc)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=16) :: action, nomevd
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

@@ -41,7 +41,7 @@ subroutine te0136(option, nomte)
     integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
     integer :: iveres, i, j, l, li, iech, iray, itemps, itemp
     integer :: nnop2, c(6, 9), ise, nse, ibid
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !     -----------------------------------------------------------------
 !

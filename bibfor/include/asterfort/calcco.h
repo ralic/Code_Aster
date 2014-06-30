@@ -33,8 +33,8 @@ interface
         integer :: dimcon
         integer :: dimdef
         character(len=16) :: option
-        logical :: yachai
-        logical :: perman
+        logical(kind=1) :: yachai
+        logical(kind=1) :: perman
         character(len=16) :: meca
         character(len=16) :: thmc
         character(len=16) :: ther

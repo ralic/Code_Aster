@@ -61,7 +61,7 @@ subroutine cfleqa(noma, defico, nzoco, nnoqua)
     integer :: iatyma, itypma
     character(len=8) :: nomtm
     integer :: nbnomi
-    logical :: lveri
+    logical(kind=1) :: lveri
 !
 ! ----------------------------------------------------------------------
 !

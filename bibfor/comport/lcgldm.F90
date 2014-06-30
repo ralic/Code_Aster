@@ -77,8 +77,8 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
 !       QM1 ET QM2 = Tm DANS R7.01.32
 !       QFF        = Tf DANS R7.01.32
 !
-    logical :: rigi, resi, coup
-    logical :: lelas, elas, elas1, elas2
+    logical(kind=1) :: rigi, resi, coup
+    logical(kind=1) :: lelas, elas, elas1, elas2
     integer :: k, kdmax
     real(kind=8) :: eps(6), emp(2), efp(2), qff(2)
     real(kind=8) :: vmp(2, 2), vfp(2, 2)

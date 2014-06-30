@@ -31,7 +31,7 @@ subroutine nmnume(modele, result, lischa, lcont, defico,&
     character(len=8) :: result
     character(len=19) :: lischa, solveu
     character(len=19) :: sdnume
-    logical :: lcont
+    logical(kind=1) :: lcont
 !
 ! ----------------------------------------------------------------------
 !

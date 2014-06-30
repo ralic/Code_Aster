@@ -32,7 +32,7 @@ interface
         real(kind=8) :: valfor(nbcomp)
         character(len=8) :: valfof(nbcomp)
         character(len=16) :: motcle(nbcomp)
-        logical :: verif
+        logical(kind=1) :: verif
         integer :: nbec
     end subroutine affono
 end interface

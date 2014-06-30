@@ -41,7 +41,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
     real(kind=8) :: xfl, xfly, xflz, xiy, xiy2, xiz, xiz2
     real(kind=8) :: xjx, xjx2, xl_geom, zero, pgl_bid(3, 3), xl0
     real(kind=8) :: xig, ang_bid(3)
-    logical :: euler
+    logical(kind=1) :: euler
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0

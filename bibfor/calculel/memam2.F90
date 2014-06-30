@@ -22,7 +22,7 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
     real(kind=8) :: time
     character(len=8) :: lchar(*)
     character(len=*) :: option, modele, chacce, mate, cara, vecel, basez, ligrez
-    logical :: exitim
+    logical(kind=1) :: exitim
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

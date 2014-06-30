@@ -33,7 +33,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    logical :: matsym
+    logical(kind=1) :: matsym
     character(len=16) :: option, compor(*)
     integer :: iret, nno, ndim
     real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*), smatr(*), varia(*)

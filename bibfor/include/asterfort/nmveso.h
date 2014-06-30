@@ -30,6 +30,6 @@ interface
         real(kind=8) :: dp(np)
         real(kind=8) :: dbeta(nb)
         integer :: nr
-        logical :: cplan
+        logical(kind=1) :: cplan
     end subroutine nmveso
 end interface

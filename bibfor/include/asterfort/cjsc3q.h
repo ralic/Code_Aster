@@ -25,7 +25,7 @@ interface
         real(kind=8) :: q(6)
         real(kind=8) :: qii
         real(kind=8) :: cos3tq
-        logical :: devnul
-        logical :: trac
+        logical(kind=1) :: devnul
+        logical(kind=1) :: trac
     end subroutine cjsc3q
 end interface

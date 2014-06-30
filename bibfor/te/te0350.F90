@@ -47,6 +47,7 @@ subroutine te0350(option, nomte)
     integer :: jtab(7), jcret, codret, ndim, nnos, jgano
     real(kind=8) :: vect1(54), vect3(4*27*2), xyz(3)
     real(kind=8) :: angmas(7)
+    logical :: lcond
 !
 !
 !
@@ -68,7 +69,8 @@ subroutine te0350(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        ASSERT(lteatt('C_PLAN', 'OUI'))
+        lcond=lteatt('C_PLAN', 'OUI')
+        ASSERT(lcond)
     endif
 !
     typmod(2) = 'ASSU    '

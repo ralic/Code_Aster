@@ -70,7 +70,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !   PARAMETRE REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    logical :: saut, ordre
+    logical(kind=1) :: saut, ordre
     integer :: nbno, icrit, nliais, ldlid, llint3, llint4, iret, nbec, nbcmpm
     integer :: ival, nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, i, j, k, l
     integer :: ibid, nbno1, nbno2, llint1, llint2

@@ -100,12 +100,13 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: n_keyexcl
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-    logical :: l_rota_2d, l_rota_3d
-    logical :: l_tran
+    logical(kind=1) :: l_rota_2d, l_rota_3d
+    logical(kind=1) :: l_tran
     real(kind=8) :: tran(3)
-    logical :: l_cent
+    logical(kind=1) :: l_cent
     real(kind=8) :: cent(3)
-    logical :: l_angl_naut
+    logical(kind=1) :: l_angl_naut
+    logical :: lcond
     real(kind=8) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -240,8 +241,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
         call char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
-        ASSERT(.not.l_cent)
-        ASSERT(.not.l_angl_naut)
+        lcond = .not.l_cent
+        ASSERT(lcond)
+        lcond = .not.l_angl_naut
+        ASSERT(lcond)
 !
 ! ----- Apply translation
 !

@@ -40,7 +40,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     integer :: kxmps, option
-    logical :: lquali, ldist
+    logical(kind=1) :: lquali, ldist
     character(len=1) :: type
 !
 #ifdef _HAVE_MUMPS
@@ -58,7 +58,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     integer ::  nprec, ibid
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max
-    logical :: lbid
+    logical(kind=1) :: lbid
     character(len=4) :: typm, etam
     character(len=12) :: k12bid
     character(len=14) :: nonu

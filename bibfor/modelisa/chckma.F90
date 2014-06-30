@@ -64,7 +64,7 @@ subroutine chckma(nomu, dtol)
     character(len=24) :: cooval, connex, nommai, nomnoe, nsolo, mdoubl
     integer :: nbmail, nbnoeu
     integer :: insolo, imdoub, iatyma, nmdoub
-    logical :: indic, alarme, erreur
+    logical(kind=1) :: indic, alarme, erreur
 !
     call jemarq()
     call infniv(ifm, niv)

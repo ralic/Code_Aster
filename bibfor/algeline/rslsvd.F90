@@ -80,7 +80,7 @@ subroutine rslsvd(nm, m, n, a, w,&
 ! -----------------
     integer :: ib, j, rg
     real(kind=8) :: alphaj
-    logical :: matuv
+    logical(kind=1) :: matuv
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

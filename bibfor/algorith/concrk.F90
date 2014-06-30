@@ -65,7 +65,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
         krefd = basemo
     endif
 !
-    call mdallo(nomres, 'TRAN', parch, sauve='GLOB', checkarg=.false.,&
+    call mdallo(nomres, 'TRAN', parch, sauve='GLOB', checkarg=.false._1,&
                 method=method, base=krefd, nbmodes=neqgen, rigi=riggen, mass=masgen,&
                 amor=amogen, jordr=jords, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
                 jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=noecho,&

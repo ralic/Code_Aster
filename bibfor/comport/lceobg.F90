@@ -66,8 +66,8 @@ subroutine lceobg(ndim, typmod, imate, crit, epstm,&
 ! OUT IRET    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    logical :: rigi, resi, elas, reinit
-    logical :: total, tot1, tot2, tot3, dbloq
+    logical(kind=1) :: rigi, resi, elas, reinit
+    logical(kind=1) :: total, tot1, tot2, tot3, dbloq
     integer :: ndimsi, i, j, k, l, p, q, m, n, t(3, 3)
     integer :: bdim, r1(6), r2(6)
 !

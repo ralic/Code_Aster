@@ -20,6 +20,6 @@ interface
         character(len=*) :: solv1z
         character(len=*) :: mat2z
         character(len=1) :: bas1
-        logical :: lqr
+        logical(kind=1) :: lqr
     end subroutine elg_calc_matk_red
 end interface

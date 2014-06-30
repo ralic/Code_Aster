@@ -114,7 +114,7 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 !
     character(len=19) :: incest, depest, depmoi
     character(len=19) :: depso1, depso2
-    logical :: lproj
+    logical(kind=1) :: lproj
     integer :: iret
 !
 ! ----------------------------------------------------------------------

@@ -25,8 +25,8 @@ interface
         integer :: dimcon
         integer :: dimdef
         integer :: imate
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         integer :: kpi
         integer :: npg
         character(len=8) :: nomail

@@ -41,7 +41,7 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
     end subroutine lcesga
     end interface
 
-    logical :: fige
+    logical(kind=1) :: fige
     character(len=8) :: typmod(*)
     character(len=16) :: option
     character(len=*) :: fami
@@ -75,7 +75,7 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), dimension(6), parameter :: kr = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 ! --------------------------------------------------------------------------------------------------
-    logical :: cplan, rigi, resi, elas
+    logical(kind=1) :: cplan, rigi, resi, elas
     integer :: ndim, ndimsi, ij, kl, etat
     real(kind=8) :: phi, lag, apg, grad(3)
     real(kind=8) :: coplan, cor33, vplan(6), eps(6), sigel(6), treps

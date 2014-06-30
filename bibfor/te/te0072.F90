@@ -42,7 +42,7 @@ subroutine te0072(option, nomte)
     integer :: ivectt, i, j, l, li, icoefh, itex, iray, itemp, itemps
     integer :: nnop2, c(6, 9), ise, nse, ibid
     real(kind=8) :: sigma, epsil, tpinf, tz0
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
     call elref1(elrefe)

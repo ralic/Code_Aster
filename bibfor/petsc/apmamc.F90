@@ -62,7 +62,7 @@ subroutine apmamc(kptsc)
     character(len=16) :: idxi1, idxi2, trans1, trans2
     character(len=14) :: nonu
 !
-    logical :: lmnsy
+    logical(kind=1) :: lmnsy
 !
     real(kind=8) :: valm
     integer, pointer :: smdi(:) => null()

@@ -23,6 +23,6 @@ interface
         integer :: nbn
         real(kind=8) :: coordo(*)
         real(kind=8) :: pave(*)
-        logical :: coupe
+        logical(kind=1) :: coupe
     end subroutine i3ctpv
 end interface

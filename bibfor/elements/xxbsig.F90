@@ -84,7 +84,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
     real(kind=8) :: dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), sign(2*ndim)
     real(kind=8) :: r
-    logical :: grdepl, axi
+    logical(kind=1) :: grdepl, axi
 !
     real(kind=8) :: rac2
     data     rac2 / 1.4142135623731d0 /
@@ -182,7 +182,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 !       ET CALCUL DE FF, DFDI, ET EPS
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
         if (grdepl) then
-            call xcinem(axi, nnop, nnops, idepl, .true., ndim, he,&
+            call xcinem(axi, nnop, nnops, idepl, .true._1, ndim, he,&
                         r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f, rbid6, rbid33)
         else

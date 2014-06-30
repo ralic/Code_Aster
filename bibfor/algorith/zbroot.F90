@@ -21,7 +21,7 @@ subroutine zbroot(mem, rhonew, echec)
     implicit none
 #include "asterc/r8prem.h"
     real(kind=8) :: mem(2, *), rhonew
-    logical :: echec
+    logical(kind=1) :: echec
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,7 +40,7 @@ subroutine zbroot(mem, rhonew, echec)
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical :: bpos, lopti
+    logical(kind=1) :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti

@@ -78,7 +78,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     integer :: vali(2)
     complex(kind=8) :: cshift
     real(kind=8) :: ecart, valr(3)
-    logical :: sortie
+    logical(kind=1) :: sortie
     integer :: idiag, iretou, iv, ivdiag
     character(len=6) :: valk
 !-----------------------------------------------------------------------

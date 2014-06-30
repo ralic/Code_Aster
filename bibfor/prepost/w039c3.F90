@@ -46,7 +46,7 @@ subroutine w039c3(carele, modele, ifi, form, titre)
     character(len=19) :: chrel1, chrel2, chrel3
     character(len=64) :: nommed
     character(len=80) :: titrz
-    logical :: l3d
+    logical(kind=1) :: l3d
     data  nomcmp / 'X' , 'Y' , 'Z' /
 ! ----------------------------------------------------------------------
     call jemarq()

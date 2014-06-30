@@ -65,7 +65,7 @@ subroutine jetass(clas)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical :: litlec
+    logical(kind=1) :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
     character(len=2) :: dn2
@@ -79,7 +79,7 @@ subroutine jetass(clas)
     integer :: idiadd
     parameter    ( idiadd = 2 )
 !     ------------------------------------------------------------------
-    logical :: libre, actu
+    logical(kind=1) :: libre, actu
     character(len=1) :: kclas
     integer :: itp(1), jitp, iaditp, iaddi(2), iaddib(2), lgbl, iadyn
 ! DEB ------------------------------------------------------------------

@@ -19,7 +19,7 @@ function ischar(lischa, typcha, soutyp, ichar)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: ischar
+    logical(kind=1) :: ischar
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -65,8 +65,8 @@ function ischar(lischa, typcha, soutyp, ichar)
 !
     integer :: iret, icha, deb, fin
     integer :: nchar
-    logical :: ldiri, lelim, ldual, ldidi
-    logical :: lneum, londe, llapl, lsigm, lelem, lsuiv
+    logical(kind=1) :: ldiri, lelim, ldual, ldidi
+    logical(kind=1) :: lneum, londe, llapl, lsigm, lelem, lsuiv
     character(len=24) :: charge, infcha
     integer :: jalich, jinfch
 !

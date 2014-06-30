@@ -25,7 +25,7 @@ interface
         integer :: nno1
         integer :: nddl
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: ipg
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)

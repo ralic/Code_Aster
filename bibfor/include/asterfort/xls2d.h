@@ -19,8 +19,8 @@ interface
     subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                      jlnsl, nbno, jcoor, jcoorg, nbmaf,&
                      jdlima, nbsef, jdlise, jconx1, jconx2)
-        logical :: callst
-        logical :: grille
+        logical(kind=1) :: callst
+        logical(kind=1) :: grille
         integer :: jltsv
         integer :: jltsl
         integer :: jlnsv

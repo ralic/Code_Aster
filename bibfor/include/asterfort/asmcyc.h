@@ -27,7 +27,7 @@ interface
         integer :: ni
         integer :: nj
         integer :: na
-        logical :: axok
+        logical(kind=1) :: axok
         integer :: liax(nbliax)
         integer :: libid(*)
     end subroutine asmcyc

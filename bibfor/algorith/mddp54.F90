@@ -61,7 +61,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     character(len=8) :: fonrev(*), nofdep(*), nofvit(*), nofacc(*), monmot
     character(len=8) :: fk(2), dfk(2), foncp, fonca, foncv, vitvar
 !
-    logical :: lamor, prdeff
+    logical(kind=1) :: lamor, prdeff
     real(kind=8) :: zero, teval, dteval, dt, coefm(*), dplmod(nbchoc, neqgen, *)
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
     real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd

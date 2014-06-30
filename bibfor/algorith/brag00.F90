@@ -83,7 +83,7 @@ subroutine brag00(fami, kpg, ksp, ndim, typmod,&
 !      REAL*8          INSTA0
     real(kind=8) :: e0, nu0
 !      REAL*8          MU0,K0
-    logical :: fluage
+    logical(kind=1) :: fluage
 ! MODIFI MARS 2006 "NOUVELLE" VARIABLE DE COMMANDE HYDR ET SECH
     character(len=*) :: fami
     integer :: iret, kpg, ksp

@@ -215,7 +215,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     integer :: nbval, nbn, nbco, nbsp, n1, kk
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
-    logical :: utili
+    logical(kind=1) :: utili
     character(len=8) :: repere
     character(len=24) :: nomjv, nomaux
 !

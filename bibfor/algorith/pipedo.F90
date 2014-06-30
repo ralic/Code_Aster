@@ -69,7 +69,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     real(kind=8) :: valres(nbres)
 !
 !
-    logical :: cplan, rechbg, rechbd
+    logical(kind=1) :: cplan, rechbg, rechbd
     integer :: ndimsi, k, nsol, iter, nitmax
     integer :: i, j, l, t(3, 3), kpg, spt
     real(kind=8) :: coplan, un

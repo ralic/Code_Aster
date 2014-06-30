@@ -10,7 +10,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
     character(len=8) :: basemo
     character(len=16) :: typea(*), typbas(*)
     character(len=19) :: trange, typref(*)
-    logical :: tousno, multap
+    logical(kind=1) :: tousno, multap
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

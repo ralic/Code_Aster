@@ -12,7 +12,7 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
 #include "asterfort/ccpoux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/meceuc.h"
-    logical :: exipou, exitim
+    logical(kind=1) :: exipou, exitim
     integer :: nbchre, ioccur, numord, nordm1
     character(len=1) :: basopt
     character(len=8) :: modele, resuin, resuou, carael

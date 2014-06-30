@@ -80,7 +80,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
     character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
     character(len=8) :: renum, kmpic, kmatd
-    logical :: dbg
+    logical(kind=1) :: dbg
 !
 !----------------------------------------------------------------------
     call jemarq()

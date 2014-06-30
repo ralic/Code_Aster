@@ -57,7 +57,7 @@ subroutine rec110(nomres, nomsqu, modgen)
     character(len=24) :: valk(4)
     character(len=8) :: nomres, nomsqu, modgen, tt, lintf, ljntf
     character(len=8) :: k8bid, nomnoe, crit, nomsst
-    logical :: fusion
+    logical(kind=1) :: fusion
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

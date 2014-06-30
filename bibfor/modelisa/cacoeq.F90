@@ -69,7 +69,7 @@ subroutine cacoeq(chargz, nomaz)
     integer :: suppo1, suppo2, suppo3
     integer :: izone, nzoco, nnoco
     character(len=24) :: defico
-    logical :: lreli
+    logical(kind=1) :: lreli
     data direct/0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0/
 !
 ! ----------------------------------------------------------------------

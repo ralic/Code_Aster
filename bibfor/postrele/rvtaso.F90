@@ -55,7 +55,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     integer :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(10)
     complex(kind=8) :: c16b
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=3) :: typpar
     character(len=8) :: acces, nomres, ctype, courbe, crit, k8b
     character(len=16) :: intitu

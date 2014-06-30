@@ -53,7 +53,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
     real(kind=8) :: fexini(*), famini(*), fliini(*)
     character(len=8) :: baseno, result
     character(len=24) :: numedd
-    logical :: lcrea, lener, linfo
+    logical(kind=1) :: lcrea, lener, linfo
     integer :: nume
     integer :: neq
     integer :: inchac

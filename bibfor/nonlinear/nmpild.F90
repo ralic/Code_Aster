@@ -54,7 +54,7 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
     character(len=19) :: ddepla, deppr1, deppr2
     character(len=19) :: dvitla, vitpr1, vitpr2
     character(len=19) :: daccla, accpr1, accpr2
-    logical :: ldyna
+    logical(kind=1) :: ldyna
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

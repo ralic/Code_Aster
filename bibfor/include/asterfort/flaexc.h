@@ -21,7 +21,7 @@ interface
                       info)
         integer :: ldq
         integer :: ldt
-        logical :: wantq
+        logical(kind=1) :: wantq
         integer :: n
         real(kind=8) :: t(ldt, *)
         real(kind=8) :: q(ldq, *)

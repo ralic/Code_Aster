@@ -46,7 +46,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
 !     ------------------------------------------------------------------
     real(kind=8) :: vpinf2, vpmax2, tole
     real(kind=8) :: valr(2)
-    logical :: loginf, logmax
+    logical(kind=1) :: loginf, logmax
     integer :: niv, ifm, i
 !     ------------------------------------------------------------------
 !

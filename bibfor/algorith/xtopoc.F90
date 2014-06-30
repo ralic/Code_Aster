@@ -55,7 +55,7 @@ subroutine xtopoc(modele)
 !
     character(len=19) :: ligrel, chgeom
     character(len=19) :: lnno, grlnno, ltno, grltno, fissco, champ(7)
-    logical :: debug
+    logical(kind=1) :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
     integer :: jcesd,  jcesl, iad, i, nbma, ima

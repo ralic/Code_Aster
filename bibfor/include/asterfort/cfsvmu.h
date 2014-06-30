@@ -19,6 +19,6 @@ interface
     subroutine cfsvmu(defico, resoco, lconv)
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical :: lconv
+        logical(kind=1) :: lconv
     end subroutine cfsvmu
 end interface

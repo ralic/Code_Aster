@@ -28,7 +28,7 @@ subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: kpi, ipoids, ipoid2, idfde, idfde2, ndim, regula(6), dimdef, ivf
     integer :: ivf2, nno, nnos, nnom, nddls, nddlm, dimuel
     real(kind=8) :: geom(ndim, *), poids, poids2, b(dimdef, dimuel)

@@ -30,9 +30,9 @@ interface
         character(len=19) :: solveu
         real(kind=8) :: para(*)
         character(len=24) :: numedd
-        logical :: lostat
-        logical :: levol
-        logical :: lnonl
+        logical(kind=1) :: lostat
+        logical(kind=1) :: levol
+        logical(kind=1) :: lnonl
         character(len=19) :: sddisc
         character(len=24) :: sdieto
         character(len=24) :: vhydr

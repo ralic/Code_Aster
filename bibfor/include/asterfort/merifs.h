@@ -23,7 +23,7 @@ interface
         character(len=*) :: lchar(*)
         character(len=*) :: mate
         character(len=8) :: cara
-        logical :: exitim
+        logical(kind=1) :: exitim
         real(kind=8) :: time
         character(len=19) :: matel
         integer :: nh

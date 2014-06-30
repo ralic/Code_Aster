@@ -97,7 +97,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(20)
     character(len=8) :: nomres(20), acier(4)
 !
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
     data         kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !

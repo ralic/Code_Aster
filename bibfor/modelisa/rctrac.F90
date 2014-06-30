@@ -49,7 +49,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
 !
 !
-    logical :: procon, ltrac
+    logical(kind=1) :: procon, ltrac
     integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, ipifc, jpro
     integer :: jvalf1, nbvf1, k, k1, k2, nar
     integer :: jvaln, nbvn, i, j, jvalf2, nbvf2

@@ -26,6 +26,6 @@ interface
         integer :: precis
         character(len=*) :: crit
         real(kind=8) :: epsi
-        logical :: astock
+        logical(kind=1) :: astock
     end subroutine numeok
 end interface

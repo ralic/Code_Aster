@@ -33,11 +33,11 @@ interface
         integer :: listno(*)
         integer :: icmp
         integer :: ifi
-        logical :: iwri
+        logical(kind=1) :: iwri
         integer :: iadmax
         integer :: ordr(nbord2)
         character(len=*) :: chamsy
         character(len=*) :: nomcon
-        logical :: lresu
+        logical(kind=1) :: lresu
     end subroutine irgmec
 end interface

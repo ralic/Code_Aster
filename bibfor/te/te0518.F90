@@ -36,7 +36,7 @@ subroutine te0518(option, nomte)
 ! ......................................................................
     character(len=8) :: typmod(2)
     character(len=16) :: typilo
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nno, nnob, npg, ndim, nddl, neps, lgpg, jtab(7)
     integer :: iret, nnos, jgano, ipoids, ivf, idfde, ivfb, idfdeb, jganob
     integer :: igeom, imate, itype, icontm, ivarim, icopil, iborne, ictau

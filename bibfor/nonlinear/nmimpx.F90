@@ -47,7 +47,7 @@ subroutine nmimpx(sdimpr)
     integer :: larlig
     character(len=255) :: ligsep
     integer :: unimes
-    logical :: lprint
+    logical(kind=1) :: lprint
 !
 ! ----------------------------------------------------------------------
 !

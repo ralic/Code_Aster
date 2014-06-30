@@ -25,7 +25,7 @@ interface
         real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: yd(nr)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
     end subroutine hujayd
 end interface

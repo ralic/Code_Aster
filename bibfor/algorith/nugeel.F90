@@ -67,7 +67,7 @@ subroutine nugeel(nugene, modgen)
     character(len=19) :: prgene
     character(len=24) :: defli, nomsst, sizlia, sst
     character(len=24) :: valk, seliai
-    logical :: pbcone
+    logical(kind=1) :: pbcone
 !
 !
 !---------- VARIABLES PERSOS -------------------------------------------

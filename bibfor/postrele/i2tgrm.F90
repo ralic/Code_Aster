@@ -33,7 +33,7 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
     integer :: nbm, voisn1(*), voisn2(*)
     integer :: nbchm, stchm(*), ptchm(*)
 !
-    logical :: simple, cycle
+    logical(kind=1) :: simple, cycle
     integer :: i, apt, ast, mdpt, aplace
 !
 !

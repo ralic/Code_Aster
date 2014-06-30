@@ -115,8 +115,8 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
     character(len=19) :: depold, depdel, deppr1, deppr2
     character(len=24) :: typpil
     integer :: ifm, niv, ib, ibid
-    logical :: swloun, isxfe
-    logical :: switch, mixte
+    logical(kind=1) :: swloun, isxfe
+    logical(kind=1) :: switch, mixte
     real(kind=8) :: miincr, miresi, contra, precyc, fnid(2)
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()

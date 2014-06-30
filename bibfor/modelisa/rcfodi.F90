@@ -37,7 +37,7 @@ subroutine rcfodi(ifon, beta, f, df)
 !
     integer :: jpro, jvalf, jv, jp, nbvf
     integer :: isave, ideb, ifin, incr, indfct
-    logical :: tesinf, tessup, entre, deja, avant
+    logical(kind=1) :: tesinf, tessup, entre, deja, avant
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !

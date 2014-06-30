@@ -41,7 +41,7 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
     real(kind=8) :: xa, xb, ya, yb
     character(len=8) :: nomres(2), fami, poum
     integer :: icodre(2), kpg, spt
-    logical :: axi
+    logical(kind=1) :: axi
 !
     axi = typmod(1) .eq. 'AXIS'
 !

@@ -50,7 +50,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     character(len=19) :: sddyna, sdpilo
     character(len=19) :: solalg(*)
     integer :: fonact(*)
-    logical :: lacc0, lener
+    logical(kind=1) :: lacc0, lener
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +80,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     integer :: jioinf, jiolch
     integer :: nbcham, zioch
     character(len=24) :: nomchs
-    logical :: evonol, leinit
+    logical(kind=1) :: evonol, leinit
     integer :: neq, nocc, numein, iret, i
     integer ::  icham
     character(len=8) :: k8bid
@@ -91,9 +91,9 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     character(len=19) :: depold
     character(len=24) :: champ1, champ2, dep2, dep1, errthm
     integer ::     jinst, jerrt
-    logical :: lpilo, lpiarc, lctcc
-    logical :: lexge, lreuse, lerrt
-    logical :: lzero
+    logical(kind=1) :: lpilo, lpiarc, lctcc
+    logical(kind=1) :: lexge, lreuse, lerrt
+    logical(kind=1) :: lzero
     real(kind=8) :: coefav
     integer :: ifm, niv
     real(kind=8), pointer :: plir(:) => null()

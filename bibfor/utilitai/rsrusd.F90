@@ -95,7 +95,7 @@ subroutine rsrusd(nomsd, iordr)
         call jeveuo(jexnum(noms2//'.TACH', ibid), 'E', jtach)
         do 10 krang = irang, nbordr
             kordr=ordr(krang)
-            call rsutch(nomsd, nomsy, kordr, chextr, .true.)
+            call rsutch(nomsd, nomsy, kordr, chextr, .true._1)
             call detrsd('CHAMP_GD', chextr)
             zk24(jtach-1+krang) = ' '
 10      continue

@@ -6,7 +6,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    logical :: astock
+    logical(kind=1) :: astock
     character(len=*) :: acces, listrz, listiz, crit
     integer :: ilu, precis
     real(kind=8) :: rlu, epsi

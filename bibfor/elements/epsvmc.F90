@@ -67,7 +67,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
     real(kind=8) :: epsth(162), eps2(162), xyzgau(3), d(4, 4)
     real(kind=8) :: zero, un, deux
     integer :: i, igau, icodre(1)
-    logical :: l_modi_cp
+    logical(kind=1) :: l_modi_cp
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :

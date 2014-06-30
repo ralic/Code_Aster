@@ -53,7 +53,7 @@ subroutine rc36si(noma, nbma, listma)
     integer :: nbth, jseigr, jchth, nume, nbm, nbp12, nbp23, nbp13, jsp12, jsp23
     integer :: jsp13, nbsg1, nbsg2, nbsg3, jsigr, vali(3), nbgrt, numg1, numg2
     integer :: jspas, ing, jnbvg, nbvg, ndim, numgs, nbseis
-    logical :: yapass
+    logical(kind=1) :: yapass
     character(len=8) :: k8b, ouinon
     character(len=16) :: motcl1, motcl2
     character(len=24) :: chmome

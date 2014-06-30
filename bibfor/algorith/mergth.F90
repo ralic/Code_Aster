@@ -56,7 +56,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
     character(len=19) :: chvarc, stano, pintto, cnseto, heavto, loncha, basloc
     character(len=19) :: lsn, lst, pinter, ainter, cface, longco, baseco
     integer :: iret, nchar, ilires, icha, jchar, jinf
-    logical :: lxfem
+    logical(kind=1) :: lxfem
 ! ----------------------------------------------------------------------
     integer :: nbchmx
 !-----------------------------------------------------------------------

@@ -19,6 +19,6 @@ interface
     function cgvtem(resu, iord0)
         character(len=8), intent(in) :: resu
         integer, intent(in) :: iord0
-        logical :: cgvtem
+        logical(kind=1) :: cgvtem
     end function cgvtem
 end interface

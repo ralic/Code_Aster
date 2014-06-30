@@ -9,7 +9,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/xxmmvd.h"
-    logical :: ajout
+    logical(kind=1) :: ajout
     integer :: ndim, long, ipt, cpt, ia, in
     real(kind=8) :: newpt(3), longar, al, list(*), ainter(*)
 ! ======================================================================
@@ -49,7 +49,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 !     ------------------------------------------------------------------
     real(kind=8) :: p(3)
     integer :: i, j
-    logical :: deja
+    logical(kind=1) :: deja
     integer :: zxain
 ! ----------------------------------------------------------------------
 !

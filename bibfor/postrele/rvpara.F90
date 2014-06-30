@@ -70,7 +70,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
     integer :: jnoeu, n11, n12, n13, n14, n15, n16, n17, n18
     integer :: jncas, jangl, jnocp, numcmp, jnucp, nbordr, jnume
     real(kind=8) :: r8b
-    logical :: lmima, lmoye, lextr, lmoygr
+    logical(kind=1) :: lmima, lmoye, lextr, lmoygr
     complex(kind=8) :: c16b
     character(len=8) :: k8b, resu, typara(100), nomcmp
     character(len=16) :: k16b, nomsy, tysd

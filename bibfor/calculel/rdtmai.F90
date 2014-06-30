@@ -85,7 +85,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=24) :: nommai, nomnoe, grpnoe, cooval, cooref, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm, valk(2)
-    logical :: lvide
+    logical(kind=1) :: lvide
     character(len=24), pointer :: grp_noeu_in(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: vconnex(:) => null()
@@ -209,7 +209,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 ! --- OBJET .DIME
     dimin=noma//'.DIME'
     dimou=nomare//'.DIME'
-    call jedupo(dimin, base, dimou, .false.)
+    call jedupo(dimin, base, dimou, .false._1)
     call jeveuo(dimou, 'E', jdim)
     zi(jdim-1+1)=nbnoou
     zi(jdim-1+3)=nbmaou
@@ -479,7 +479,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !     -- SI L'ON SOUHAITE RECUPERER LES TABLEAUX DE CORRESPONDANCE :
     if (corrn .ne. ' ') then
         call juveca('&&RDTMAI_WORK_2', nbnoou)
-        call jedupo('&&RDTMAI_WORK_2', bascor, corrn, .false.)
+        call jedupo('&&RDTMAI_WORK_2', bascor, corrn, .false._1)
     endif
     if (corrm .ne. ' ') then
         call wkvect(corrm, bascor//' V I', nbmaou, jcorrm)

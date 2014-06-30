@@ -51,7 +51,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lacti, cvbouc, lerrei, llign, lldcbo
+    logical(kind=1) :: lacti, cvbouc, lerrei, llign, lldcbo
     integer :: ievdac
     real(kind=8) :: r8bid
     integer :: ibid

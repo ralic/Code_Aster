@@ -6,7 +6,8 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
     character(len=2) :: tt
     integer :: jtmp2, nrmax, jresl
     integer :: jvalm(2)
-    logical :: lmasym, lmesym
+    logical(kind=1) :: lmasym, lmesym
+    logical :: lcond
     real(kind=8) :: rcoef
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -47,7 +48,8 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !        UNE MATRICE ASSEMBLEE NON SYMETRIQUE, IL FAUT COPIER 2 FOIS
     nbfois=1
     if (lmasym) then
-        ASSERT(lmesym)
+        lcond=lmesym
+        ASSERT(lcond)
     else
         if (lmesym) nbfois=2
     endif

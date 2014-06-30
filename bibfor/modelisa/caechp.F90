@@ -63,7 +63,7 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
     integer :: nbtymx, nechp, ibid,  jvalv, iocc, nh, nt, i, j
     integer :: nbtyp, jlistt, nbm, nfiss, nfismx, jma, ntcon
     parameter    (nfismx=100)
-    logical :: ltcon, lcoefh
+    logical(kind=1) :: ltcon, lcoefh
     integer :: igrel, inema
 !-----------------------------------------------------------------------
     integer :: jligr, ncmp

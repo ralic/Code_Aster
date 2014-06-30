@@ -28,7 +28,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
     integer :: algofr
     real(kind=8) :: p(3, 3), saut(3), lamb1(3), cstafr, cpenfr, pboul(3)
     real(kind=8) :: vitang(3), ptknp(3, 3), ik(3, 3), kn(3, 3)
-    logical :: adher
+    logical(kind=1) :: adher
 !
 ! ----------------------------------------------------------------------
 !                      TEST DE L'ADHÉRENCE AVEC X-FEM
@@ -61,7 +61,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
     real(kind=8) :: prec, norme, xab(3, 3), gt(3)
     real(kind=8) :: p2(2, 2), ptknp2(2, 2), kn2(2, 2), xab2(2, 2)
     real(kind=8) :: gt2(3), norme2
-    logical :: lpenaf
+    logical(kind=1) :: lpenaf
     parameter  (prec=1.d-12)
 !
 !-----------------------------------------------------------------------

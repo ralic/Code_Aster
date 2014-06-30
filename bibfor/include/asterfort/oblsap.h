@@ -19,6 +19,6 @@ interface
     subroutine oblsap(sdlist, idnvaz, lacti)
         character(len=24) :: sdlist
         character(len=*) :: idnvaz
-        logical :: lacti
+        logical(kind=1) :: lacti
     end subroutine oblsap
 end interface

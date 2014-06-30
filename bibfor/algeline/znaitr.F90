@@ -293,7 +293,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    logical :: first, orth1, orth2, rstart, step3, step4
+    logical(kind=1) :: first, orth1, orth2, rstart, step3, step4
     integer(kind=4) :: infol4
     integer :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
     real(kind=8) :: smlnum, tst1, ulp, unfl, betaj, temp1, rnorm1, wnorm, rbid(1)
@@ -438,7 +438,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !           | RSTART = .TRUE. FLOW RETURNS HERE.   |
 !           %--------------------------------------%
 !
-    call zgetv0(ido, bmat, .false., n, j,&
+    call zgetv0(ido, bmat, .false._1, n, j,&
                 v, ldv, resid, rnorm, ipntr,&
                 workd, ierr, alpha)
     if (ido .ne. 99) goto 9000

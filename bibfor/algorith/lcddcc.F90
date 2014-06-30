@@ -19,7 +19,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     real(kind=8) :: t8, t9
     real(kind=8) :: rs, d1, lambda, alphat, ls, tauslt, tauslr, gamnuc, asr
     real(kind=8) :: delta1, delta2, airr, rhoirr, depdt, tauc, t10
-    logical :: new
+    logical(kind=1) :: new
     common /deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef

@@ -4,7 +4,7 @@ subroutine i3tstf(k, f, desc, desctm, conexk,&
 #include "jeveux.h"
     integer :: k, f, desc(*), desctm(*), conexk(*)
     real(kind=8) :: coordo(*), epsi
-    logical :: gauche
+    logical(kind=1) :: gauche
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

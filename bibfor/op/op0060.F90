@@ -100,7 +100,7 @@ subroutine op0060()
     integer :: jdepl, jvite, jacce
     integer :: lmat(4), nbord, icomb
     integer :: jpomr
-    logical :: newcal, calgen
+    logical(kind=1) :: newcal, calgen
     real(kind=8) :: depi, freq, omega
     real(kind=8) :: rval, coef(6), tps1(4), rtab(2)
     complex(kind=8) :: cval, czero
@@ -438,7 +438,7 @@ subroutine op0060()
         call zcopy(neq, zc(lsecmb), 1, secmb, 1)
         call resoud(dynam, maprec, solveu, vezero, 0,&
                     secmbr, soluti, 'V', [0.d0], [c16bid],&
-                    crgc, .true., 0, iret)
+                    crgc, .true._1, 0, iret)
         call jeveuo(soluti(1:19)//'.VALE', 'L', vc=solut)
         call zcopy(neq, solut, 1, zc(lsecmb), 1)
         call jedetr(soluti)

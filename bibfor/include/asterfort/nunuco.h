@@ -19,7 +19,7 @@ interface
     subroutine nunuco(numedd, defico, lcont, sdnuco)
         character(len=24) :: numedd
         character(len=24) :: defico
-        logical :: lcont
+        logical(kind=1) :: lcont
         character(len=24) :: sdnuco
     end subroutine nunuco
 end interface

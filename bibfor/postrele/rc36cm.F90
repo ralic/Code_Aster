@@ -52,12 +52,12 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 !
     integer ::   nbresu, nbcmp, icha, ir
     integer :: vali(2)
-    logical :: seisme, autre
+    logical(kind=1) :: seisme, autre
     character(len=8) :: nocmp(3)
     character(len=24) :: chams0
     complex(kind=8) :: cbid
     character(len=24), pointer :: lich(:) => null()
-    logical, pointer :: licm(:) => null()
+    logical(kind=1), pointer :: licm(:) => null()
     real(kind=8), pointer :: licr(:) => null()
     character(len=24), pointer :: champ(:) => null()
     integer, pointer :: nume_char(:) => null()
@@ -111,7 +111,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
         chams0='&&RC36CM.CHAMS0'
         if (autre) then
             call cesfus(nbchar, lich, licm, licr, [cbid],&
-                        .false., 'V', chams0)
+                        .false._1, 'V', chams0)
         else
             call cesqua(nbchar, lich, licm, 'V', chams0)
         endif

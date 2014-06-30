@@ -55,11 +55,11 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: ldyna, lammo, lmpas, lrefe, lmacr, lmuap, lviss
-    logical :: leltc, leltf
-    logical :: lunil, lctcd, lctfd, lpenac, lallv
-    logical :: lsstf, limpe
-    logical :: ldidi, lpilo, lener
+    logical(kind=1) :: ldyna, lammo, lmpas, lrefe, lmacr, lmuap, lviss
+    logical(kind=1) :: leltc, leltf
+    logical(kind=1) :: lunil, lctcd, lctfd, lpenac, lallv
+    logical(kind=1) :: lsstf, limpe
+    logical(kind=1) :: ldidi, lpilo, lener
     integer :: neq
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depmoi, vitmoi, accmoi

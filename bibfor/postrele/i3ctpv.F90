@@ -4,7 +4,7 @@ subroutine i3ctpv(epsi, noeud, nbn, coordo, pave,&
 !
     integer :: noeud(*), nbn
     real(kind=8) :: epsi, coordo(*), pave(*)
-    logical :: coupe
+    logical(kind=1) :: coupe
 !
 !     ------------------------------------------------------------------
 ! ======================================================================

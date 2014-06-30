@@ -19,7 +19,7 @@ interface
     subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                       resuc1, nbordr, modele, mate, cara,&
                       nchar, ctyp)
-        logical :: newcal
+        logical(kind=1) :: newcal
         character(len=16) :: tysd
         character(len=19) :: knum
         character(len=19) :: kcha

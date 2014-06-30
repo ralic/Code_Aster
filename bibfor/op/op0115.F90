@@ -51,7 +51,7 @@ subroutine op0115()
     real(kind=8) :: rbid
 !
     complex(kind=8) :: valc
-    logical :: diag
+    logical(kind=1) :: diag
 !
     character(len=8) :: nomu, fonc, k8bid, tfonc, nomref
     character(len=16) :: concep, nomcmd, motfac(3)

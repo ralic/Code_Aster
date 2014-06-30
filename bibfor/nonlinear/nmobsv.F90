@@ -45,7 +45,7 @@ subroutine nmobsv(noma, sddisc, sdieto, sdobse, numins)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: inst
-    logical :: lobsv
+    logical(kind=1) :: lobsv
 !
 ! ----------------------------------------------------------------------
 !

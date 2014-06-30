@@ -5,7 +5,7 @@ subroutine dxtpif(temp, ltemp)
 #include "asterfort/utmess.h"
 !
     real(kind=8) :: temp(3)
-    logical :: ltemp(3)
+    logical(kind=1) :: ltemp(3)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

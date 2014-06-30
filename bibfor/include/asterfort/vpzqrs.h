@@ -25,7 +25,7 @@ interface
         integer :: m
         integer :: n
         real(kind=8) :: hh(ih, n)
-        logical :: loc(n)
+        logical(kind=1) :: loc(n)
         real(kind=8) :: valpi(n)
         real(kind=8) :: valpr(n)
         real(kind=8) :: zvps(iz, m)

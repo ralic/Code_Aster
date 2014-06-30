@@ -23,6 +23,6 @@ interface
         complex(kind=8) :: vect(*)
         complex(kind=8) :: xsol(*)
         integer :: nbvect
-        logical :: prepos
+        logical(kind=1) :: prepos
     end subroutine mcmult
 end interface

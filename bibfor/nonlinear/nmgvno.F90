@@ -87,7 +87,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
     integer :: k2(1)
     character(len=8) :: nom(1), famil, poum
 !
-    logical :: resi, rigi, grand, axi, elas, full
+    logical(kind=1) :: resi, rigi, grand, axi, elas, full
     integer :: nddl, ndimsi, g, cod(27), n, i, m, j, kl, pq, os, osa, kk
     integer :: iu(3*27), ia(8), kpg, spt
     real(kind=8) :: rac2, c, val(1)
@@ -217,7 +217,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                     r, dfdi1, deplm, f, epsm)
         call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
                     r, dfdi1, depld, f, epsd)
-        call nmmabu(ndim, nno1, .false., grand, dfdi1,&
+        call nmmabu(ndim, nno1, .false._1, grand, dfdi1,&
                     b)
         if (axi) then
             do 80 n = 1, nno1

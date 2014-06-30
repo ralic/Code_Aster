@@ -37,7 +37,7 @@ subroutine jeveuo(nomlu, cel, jadr, &
     character(len=*), intent(in) :: cel
     integer, optional :: jadr
 
-    logical,           pointer, optional, intent(out) :: vl(:)
+    logical(kind=1),   pointer, optional, intent(out) :: vl(:)
     integer,           pointer, optional, intent(out) :: vi(:)
     integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
     real(kind=8),      pointer, optional, intent(out) :: vr(:)
@@ -123,7 +123,7 @@ subroutine jeveuo(nomlu, cel, jadr, &
             ltypi = ltyp ( jltyp(iclaco) + ixlono )
             lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
             call jxlocs(zi, genri, ltypi, lonoi, iblono,&
-                        .false., jctab)
+                        .false._1, jctab)
             n1 = long ( jlong(iclaco) + ixlono )  
             ktyp='I'     
             if (present(jadr)) then 

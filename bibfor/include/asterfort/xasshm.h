@@ -82,7 +82,7 @@ interface
         integer :: nmec
         integer :: np1
         character(len=16) :: compor(*)
-        logical :: axi
+        logical(kind=1) :: axi
         character(len=3) :: modint
         integer :: codret
         integer :: nnopm

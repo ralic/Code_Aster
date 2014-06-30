@@ -57,7 +57,7 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
     real(kind=8) :: matpg(6, 27*nbcou), matno(6, 12*nbcou), matgn(6, 12*nbcou)
     real(kind=8) :: pk2(6, 27*nbcou), matgnu(6, 12*nbcou), signo(6, 12*nbcou)
 !
-    logical :: lgreen
+    logical(kind=1) :: lgreen
 !
 ! ----------------------------------------------------------------------
 !

@@ -59,7 +59,7 @@ subroutine dfllec(sdlist, dtmin)
     parameter    (nbordr = 6)
     character(len=16) :: evdord(nbordr)
     integer :: lisord(nbordr)
-    logical :: oblord(nbordr)
+    logical(kind=1) :: oblord(nbordr)
 !
     character(len=16) :: mcfact
     integer :: ibid
@@ -78,16 +78,16 @@ subroutine dfllec(sdlist, dtmin)
     character(len=24) :: lisevr, lisevk, lisesu
     integer :: leevr, leevk, lesur
     integer :: jeevr, jeevk, jesur
-    logical :: loblig, lsave
+    logical(kind=1) :: loblig, lsave
     integer ::  ilast, iplus
     integer, pointer :: trav(:) => null()
 !
     data evdord  /'ERRE'     ,'DELTA_GRANDEUR'  ,&
      &              'COLLISION','INTERPENETRATION',&
      &              'DIVE_RESI','INSTABILITE'/
-    data oblord  /.true. ,.false.,&
-     &              .false.,.false.,&
-     &              .false.,.false./
+    data oblord  /.true. ,.false._1,&
+     &              .false._1,.false._1,&
+     &              .false._1,.false./
 !
 ! ----------------------------------------------------------------------
 !

@@ -79,7 +79,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     integer :: nno, npgbis, ddlm, ddld, ndimb, ino
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
     integer :: nbsig, nnops
-    logical :: grdepl
+    logical(kind=1) :: grdepl
     real(kind=8) :: f(3, 3), eps(6), baslog(9)
     real(kind=8) :: fe(4), instan, lsng, lstg
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
@@ -172,7 +172,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 !       CALCUL DES DEFORMATIONS EPS
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(.false., nnop, nnops, idepl, grdepl, ndim, he,&
+        call xcinem(.false._1, nnop, nnops, idepl, grdepl, ndim, he,&
                     rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f, eps, grad)
 !

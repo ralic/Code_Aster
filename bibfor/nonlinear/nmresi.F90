@@ -106,18 +106,18 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     integer :: ifm, niv, nocc
     integer :: neq
     character(len=8) :: noddlm
-    logical :: ldyna, lstat, lcine, lctcc
+    logical(kind=1) :: ldyna, lstat, lcine, lctcc
     character(len=19) :: profch, foiner
     character(len=19) :: commoi, depmoi
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
     integer ::  jfnod
     integer :: ieq
-    logical :: lrefe, linit, lcmp
+    logical(kind=1) :: lrefe, linit, lcmp
     real(kind=8) :: val1, val4, val5
     real(kind=8) :: maxres
     integer :: irela, imaxi, iresi, irefe, ichar, icomp
-    logical :: lndepl, lpilo
+    logical(kind=1) :: lndepl, lpilo
     character(len=16) :: nfrot, ngeom
     character(len=24) :: sdnuco
     integer :: jnuco

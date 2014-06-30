@@ -66,7 +66,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: n1, nbocc, iocc, nbno2, nbma1
     integer ::   iexi
 !
-    logical :: ldmax, dbg
+    logical(kind=1) :: ldmax, dbg
     real(kind=8) :: distma
     integer, pointer :: limanu1(:) => null()
     integer, pointer :: linonu2(:) => null()

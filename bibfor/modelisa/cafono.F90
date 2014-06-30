@@ -74,7 +74,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     parameter     (nmocl=10)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
-    logical :: verif
+    logical(kind=1) :: verif
     character(len=8) :: nomn, typmcl(2), typlag, valfof(nmocl)
     character(len=16) :: motcle(nmocl), keywordfact, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch

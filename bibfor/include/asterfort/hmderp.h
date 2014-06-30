@@ -24,7 +24,7 @@ interface
                       dp1pp1, dp2pp1, dtpp1, dp1pp2, dp2pp2,&
                       dtpp2, dp1pt, dp2pt, dtpt)
         integer :: yate
-        logical :: yavp
+        logical(kind=1) :: yavp
         real(kind=8) :: t
         real(kind=8) :: r
         real(kind=8) :: kh

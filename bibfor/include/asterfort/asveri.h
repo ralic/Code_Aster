@@ -25,8 +25,8 @@ interface
         character(len=*) :: meca
         character(len=*) :: psmo
         character(len=*) :: stat
-        logical :: tronc
-        logical :: monoap
+        logical(kind=1) :: tronc
+        logical(kind=1) :: monoap
         integer :: nsupp(*)
         character(len=*) :: nomsup(nbsup, *)
         integer :: ndir(*)

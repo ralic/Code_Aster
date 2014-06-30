@@ -37,7 +37,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    logical :: zcmplx
+    logical(kind=1) :: zcmplx
     integer :: itype, nbabs, inatur, ideas, nbmesu, labs, lvalc, lvalr
     real(kind=8) :: amin, apas
 !

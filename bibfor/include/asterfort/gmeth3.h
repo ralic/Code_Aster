@@ -21,11 +21,11 @@ interface
         integer :: nnoff
         character(len=24) :: fond
         real(kind=8) :: gthi(1)
-        logical :: milieu
+        logical(kind=1) :: milieu
         real(kind=8) :: gs(1)
         character(len=24) :: objcur
         real(kind=8) :: gi(1)
         integer :: num
-        logical :: gxfem
+        logical(kind=1) :: gxfem
     end subroutine gmeth3
 end interface

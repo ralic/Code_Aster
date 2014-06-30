@@ -19,8 +19,8 @@ interface
     subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
                       vale, valpar)
         integer :: ndim
-        logical :: nsymx
-        logical :: nsymy
+        logical(kind=1) :: nsymx
+        logical(kind=1) :: nsymy
         integer :: np
         real(kind=8) :: xyp(2)
         real(kind=8) :: vale(*)

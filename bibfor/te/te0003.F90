@@ -141,7 +141,7 @@ subroutine te0003(option, nomte)
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt
     character(len=19) :: nomgds, ligrel, chflum, chflup
     character(len=24) :: valk(2)
-    logical :: levol, ltheta, laxi, lmaj, lnonli, l2d, llumpe
+    logical(kind=1) :: levol, ltheta, laxi, lmaj, lnonli, l2d, llumpe
 !
 ! --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
 !     REMARQUE : NE PAS SUPPRIMER CE COMMENTAIRE DETAILLE CAR IL EST

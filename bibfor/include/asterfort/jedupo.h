@@ -20,6 +20,6 @@ interface
         character(len=*) :: schin
         character(len=*) :: claout
         character(len=*) :: schout
-        logical :: dupcol
+        logical(kind=1) :: dupcol
     end subroutine jedupo
 end interface

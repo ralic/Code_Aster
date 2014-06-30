@@ -26,7 +26,7 @@ interface
         character(len=8) :: basemo
         character(len=19) :: typref(*)
         character(len=16) :: typbas(*)
-        logical :: tousno
-        logical :: multap
+        logical(kind=1) :: tousno
+        logical(kind=1) :: multap
     end subroutine rbph01
 end interface

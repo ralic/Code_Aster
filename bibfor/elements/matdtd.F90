@@ -23,7 +23,7 @@ subroutine matdtd(nomte, testl1, testl2, dsidep, cisail,&
     character(len=16) :: nomte
     real(kind=8) :: cisail, x3, cour, r, cosa, rhos, rhot, kappa
     real(kind=8) :: dsidep(6, 6), mata(3, 3), dtildi(5, 5)
-    logical :: testl1, testl2
+    logical(kind=1) :: testl1, testl2
 !
 !-----------------------------------------------------------------------
     real(kind=8) :: rhos2, rhost, rhot2, x32

@@ -74,7 +74,7 @@ subroutine op0045()
     character(len=16) :: typcon, compex
     character(len=19) :: k19bid, matpsc, matopa, solveu, eigsol
     character(len=24) :: veclag, vecblo, vecrig, vecrer, vecrei, vecrek, vecvp, k24bid
-    logical           :: flage, lcomod
+    logical(kind=1)   :: flage, lcomod
 
     
 ! --------------------------------------------------------------------------------------------------

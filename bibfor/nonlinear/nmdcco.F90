@@ -27,7 +27,7 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
     character(len=19) :: sddisc
     integer :: ievdac, nbrpas, retdec
     real(kind=8) :: ratio, deltac, subdur
-    logical :: ldcext
+    logical(kind=1) :: ldcext
     character(len=4) :: typdec
     character(len=16) :: optdec
 !

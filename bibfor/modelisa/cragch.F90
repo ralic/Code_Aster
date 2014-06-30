@@ -138,14 +138,14 @@ subroutine cragch(long, typcoe, typval, ligrch)
         call agcart(longut, ca2)
 !
 ! ---     AGRANDISSEMENT DE CA1.LIMA :
-        call jedupo(ca1//'.LIMA', 'V', ca1//'.TRAV', .false.)
+        call jedupo(ca1//'.LIMA', 'V', ca1//'.TRAV', .false._1)
         call jelira(ca1//'.LIMA', 'CLAS', cval=base)
         call jedetr(ca1//'.LIMA')
         call jeagco(ca1//'.TRAV', ca1//'.LIMA', longut, 2*longut, base)
         call jedetr(ca1//'.TRAV')
 !
 ! ---     AGRANDISSEMENT DE CA2.LIMA :
-        call jedupo(ca2//'.LIMA', 'V', ca2//'.TRAV', .false.)
+        call jedupo(ca2//'.LIMA', 'V', ca2//'.TRAV', .false._1)
         call jelira(ca2//'.LIMA', 'CLAS', cval=base)
         call jedetr(ca2//'.LIMA')
         call jeagco(ca2//'.TRAV', ca2//'.LIMA', longut, 2*longut, base)

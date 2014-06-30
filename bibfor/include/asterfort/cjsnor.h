@@ -22,7 +22,7 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: x(6)
         real(kind=8) :: nor(7)
-        logical :: devnul
-        logical :: trac
+        logical(kind=1) :: devnul
+        logical(kind=1) :: trac
     end subroutine cjsnor
 end interface

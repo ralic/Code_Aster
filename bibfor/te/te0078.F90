@@ -52,7 +52,7 @@ subroutine te0078(option, nomte)
     integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, ivectt, jgano, nnop2
     integer :: c(6, 9), ise, nse, nuno, ipoids, ivf, idfde, igeom, imate, itemp
     integer :: icamas, npg2, ipoid2, ivf2, idfde2, ibid
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

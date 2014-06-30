@@ -20,7 +20,7 @@ interface
                       ratio, typdec, nbrpas, deltac, dtmin,&
                       retdec)
         character(len=24) :: nomlis
-        logical :: linfo
+        logical(kind=1) :: linfo
         character(len=*) :: optdez
         real(kind=8) :: deltat
         real(kind=8) :: instam

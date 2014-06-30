@@ -76,7 +76,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
     integer :: jvsipn, jvsieq, jveteq
 !
-    logical :: lbid
+    logical(kind=1) :: lbid
     character(len=8) :: nompf(30), nompar(30)
     character(len=16) :: typcha
     character(len=24) :: chnom, cbid

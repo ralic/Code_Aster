@@ -64,7 +64,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, matopa, mxresf, neqact,
 !
     integer           , intent(out) :: nconv
     real(kind=8)      , intent(out) :: vpinf, vpmax
-    logical           , intent(out) :: flage
+    logical(kind=1)   , intent(out) :: flage
 
 !
 ! --- INPUT/OUTPUT
@@ -87,7 +87,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, matopa, mxresf, neqact,
     character(len=16) :: k16bid, optiof, stoper, typres
     character(len=19) :: amor, k19bid, masse, raide
     character(len=24) :: kmetho, k24bid
-    logical           :: lbid, lc, lkr, lns, lpg
+    logical(kind=1)   :: lbid, lc, lkr, lns, lpg
 
 ! -----------------------
 ! --- CORPS DE LA ROUTINE

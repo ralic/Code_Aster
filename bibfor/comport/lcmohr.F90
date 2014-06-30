@@ -93,7 +93,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
     integer :: mxiter, i, j, itjac1
 !
 ! Declaration of integer type variables
-    logical :: epflag, tridim, outofp
+    logical(kind=1) :: epflag, tridim, outofp
 ! Declaration of character type variables
     character(len=8) :: mod, nomres(3)
 !

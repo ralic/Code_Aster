@@ -135,7 +135,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     real(kind=8) :: epscon
     real(kind=8) :: epsthe, epsthm
     real(kind=8) :: depsth(6), epsdth(6), alphaf, alpham
-    logical :: trac
+    logical(kind=1) :: trac
 !
     real(kind=8) :: i1d
 !

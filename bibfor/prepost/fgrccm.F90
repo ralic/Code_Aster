@@ -33,7 +33,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
 !     -----------------------------------------------------------------
 !
     real(kind=8) :: moyext, a
-    logical :: cyczer
+    logical(kind=1) :: cyczer
 !
 ! ------------------------------------------------------------
 !

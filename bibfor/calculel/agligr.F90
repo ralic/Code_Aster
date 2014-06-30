@@ -64,12 +64,12 @@ subroutine agligr(long, ligrch)
 !
     call jelira(ligrch//'.LIEL', 'LONT', lon1)
     call jelira(ligrch//'.LIEL', 'NMAXOC', nmax1)
-    call jedupo(ligrch//'.LIEL', 'V', ligr1, .false.)
+    call jedupo(ligrch//'.LIEL', 'V', ligr1, .false._1)
     call jedetr(ligrch//'.LIEL')
 !
     call jelira(ligrch//'.NEMA', 'LONT', lon2)
     call jelira(ligrch//'.NEMA', 'NMAXOC', nmax2)
-    call jedupo(ligrch//'.NEMA', 'V', ligr2, .false.)
+    call jedupo(ligrch//'.NEMA', 'V', ligr2, .false._1)
     call jedetr(ligrch//'.NEMA')
 !
 ! --- COPIE DE LIGR1 ET LIGR2 SUR LIGRCH.LIEL ET LIGRCH.NEMA

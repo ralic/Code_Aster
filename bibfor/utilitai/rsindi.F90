@@ -53,7 +53,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
 !                   RENDANT NBTROU = - NBTROU
 ! ----------------------------------------------------------------------
     character(len=8) :: crit2
-    logical :: depass, trouve
+    logical(kind=1) :: depass, trouve
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

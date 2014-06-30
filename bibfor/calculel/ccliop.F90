@@ -72,7 +72,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     integer :: lopor1(100), lopor2(100), itmp, nopous, jlisop
     integer :: jliori, jlidep, jlnoin, jlisde
 !
-    logical :: opajou
+    logical(kind=1) :: opajou
 !
     character(len=1) :: isodep(100)
     character(len=4) :: lopdep(100)

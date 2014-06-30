@@ -20,6 +20,6 @@ interface
         character(len=19) :: sddisc
         integer :: iterat
         real(kind=8) :: prec
-        logical :: nmrcyc
+        logical(kind=1) :: nmrcyc
     end function nmrcyc
 end interface

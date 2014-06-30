@@ -58,7 +58,7 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, jcoor
     integer :: nbmaor, ii, kdeb
-    logical :: reorie
+    logical(kind=1) :: reorie
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo

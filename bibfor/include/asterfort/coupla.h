@@ -33,7 +33,7 @@ interface
         real(kind=8) :: vecr3(*)
         real(kind=8) :: masg(*)
         real(kind=8) :: puls(*)
-        logical :: locflc(*)
+        logical(kind=1) :: locflc(*)
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: amfluc(np1, *)
         real(kind=8) :: xsi0(*)

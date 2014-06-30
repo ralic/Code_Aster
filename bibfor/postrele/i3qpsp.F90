@@ -46,7 +46,7 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
     real(kind=8) :: t, ndf, zero, un, x(3), nab
     real(kind=8) :: a11, a12, a21, a22, b1, b2, r1, r2, r3, t1, t2
     real(kind=8) :: xa, ya, xb, yb, xd, yd, xf, yf, td, tf
-    logical :: finf, atrv, btrv, pb
+    logical(kind=1) :: finf, atrv, btrv, pb
 !
 !======================================================================
 !

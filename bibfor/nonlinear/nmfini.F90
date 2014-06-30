@@ -90,11 +90,11 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     character(len=19) :: fexmoi, fammoi, flimoi
     integer :: imasse, iamort
     integer :: neq, iaux
-    logical :: lamor, ldyna
+    logical(kind=1) :: lamor, ldyna
     integer :: nbvect
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
-    logical :: lassve(20), lcalve(20)
+    logical(kind=1) :: lassve(20), lcalve(20)
     character(len=19) :: cnfnod, fnomoi
     real(kind=8), pointer :: cv(:) => null()
     real(kind=8), pointer :: ma(:) => null()
@@ -135,7 +135,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call jeveuo(vitmoi//'.VALE', 'L', vr=vitmo)
         AS_ALLOCATE(vr=cv, size=neq)
         call mrmult('ZERO', iamort, vitmo, cv, 1,&
-                    .true.)
+                    .true._1)
         do iaux = 1, neq
             fexmo(iaux) = fexmo(iaux) + cv(iaux)
         end do
@@ -152,7 +152,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call jeveuo(accmoi//'.VALE', 'L', vr=ccmo)
         AS_ALLOCATE(vr=ma, size=neq)
         call mrmult('ZERO', imasse, ccmo, ma, 1,&
-                    .true.)
+                    .true._1)
         do iaux = 1, neq
             fexmo(iaux) = fexmo(iaux) + ma(iaux)
         end do
@@ -162,7 +162,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! --- AJOUT DU TERME CNFNOD
 !
     nbvect=0
-    call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true., .true.,&
+    call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
     call nmxvec(modele, mate, carele, compor, carcri,&
                 sdtime, sddisc, sddyna, numins, valinc,&

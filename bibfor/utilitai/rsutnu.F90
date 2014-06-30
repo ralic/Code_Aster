@@ -74,7 +74,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     character(len=19) :: knacc, kvacc, knmod, listr, resuin, knum2
     complex(kind=8) :: c16b
     integer :: ltout, linst, lfreq, lordr, tord(1)
-    logical :: verifi
+    logical(kind=1) :: verifi
 !     ------------------------------------------------------------------
     call jemarq()
     call getres(k8b, concep, nomcmd)
@@ -454,7 +454,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             endif
 778          continue
             call jedetr(knum)
-            call jedupo(knum2, 'V', knum, .false.)
+            call jedupo(knum2, 'V', knum, .false._1)
             call jedetr(knum2)
             nbordr=indi
         endif

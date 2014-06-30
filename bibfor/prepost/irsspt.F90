@@ -35,7 +35,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     character(len=*) :: cesz, nomcmp(*)
     integer :: unite, nbmat, nummai(*), nbcmp
     real(kind=8) :: borinf, borsup
-    logical :: lsup, linf, lmax, lmin
+    logical(kind=1) :: lsup, linf, lmax, lmin
 ! ---------------------------------------------------------------------
 ! BUT: IMPRIMER LES VALEURS MIN/MAX DES COMPOSANTES D'UN CHAM_ELEM_S
 !      A DES SOUS-POINTS
@@ -66,7 +66,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     real(kind=8) :: vptmi2, vptma2, vmamin, vmamax
     character(len=8) ::  ma, noma
     character(len=19) :: ces
-    logical :: lmamin, lmamax, lptmin, lptmax, lspmin, lspmax
+    logical(kind=1) :: lmamin, lmamax, lptmin, lptmax, lspmin, lspmax
     integer, pointer :: num_cmp_cham(:) => null()
     integer, pointer :: num_mail_cham(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

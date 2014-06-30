@@ -56,7 +56,7 @@ subroutine coqucf(nomu)
     character(len=8) :: nomma, nmcmpf, nomval(3), nomfct
     character(len=19) :: cartco, cartcf, celsco, celscf, connex
     character(len=24) :: k24bid
-    logical :: lcoor
+    logical(kind=1) :: lcoor
     character(len=8), pointer :: cesvf(:) => null()
     real(kind=8), pointer :: cesvo(:) => null()
     character(len=8), pointer :: cescf(:) => null()

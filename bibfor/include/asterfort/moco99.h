@@ -23,6 +23,6 @@ interface
         character(len=8) :: resul
         integer :: lrang(nbmod)
         integer :: iorne
-        logical :: seul
+        logical(kind=1) :: seul
     end subroutine moco99
 end interface

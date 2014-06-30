@@ -59,8 +59,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     integer :: nitimp, nbmeca, compt, msup(2)
     integer :: umess, ifm, niv
     integer :: essai, essmax, resi, nmax, imin
-    logical :: debug, noconv, aredec, stopnc, negmul(8), subd
-    logical :: loop, euler
+    logical(kind=1) :: debug, noconv, aredec, stopnc, negmul(8), subd
+    logical(kind=1) :: loop, euler
 !
     common    /tdim/ ndt, ndi
     common    /meshuj/ debug
@@ -85,9 +85,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     real(kind=8) :: ptrac, ye(nmod), tole1, rtrac
 !
     real(kind=8) :: predi0(6), sigd0(6), deps0(6), vind0(50), prob(4)
-    logical :: arede0, stopn0, loop0, prox(4), probt, proxc(4)
-    logical :: tracti, cycl, negtra, bnews(3), nodef
-    logical :: neglam(3), mectra, ltry, modif, mtrac
+    logical(kind=1) :: arede0, stopn0, loop0, prox(4), probt, proxc(4)
+    logical(kind=1) :: tracti, cycl, negtra, bnews(3), nodef
+    logical(kind=1) :: neglam(3), mectra, ltry, modif, mtrac
 !
     character(len=8) :: mod
 !

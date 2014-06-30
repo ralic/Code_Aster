@@ -66,9 +66,9 @@ subroutine trchno(ific, nocc)
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
     character(len=200) :: lign1, lign2
     integer :: iarg
-    logical :: lref
+    logical(kind=1) :: lref
     character(len=8), pointer :: nom_cmp(:) => null()
-    logical :: skip
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
@@ -231,11 +231,11 @@ subroutine trchno(ific, nocc)
                 endif
                 call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                            ific, .true., ssigne, ignore=skip, compare=ordgrd)
+                            ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                                ific, .false., ssigne)
+                                ific, .false._1, ssigne)
                 endif
 !
             else
@@ -251,12 +251,12 @@ subroutine trchno(ific, nocc)
                 call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
                             lign2, crit, ific, nbcmp, nom_cmp,&
-                            .true., ssigne, ignore=skip, compare=ordgrd)
+                            .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
                                 zi( irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
                                 lign2, crit, ific, nbcmp, nom_cmp,&
-                                .false., ssigne)
+                                .false._1, ssigne)
                 endif
                 AS_DEALLOCATE(vk8=nom_cmp)
             endif
@@ -308,12 +308,12 @@ subroutine trchno(ific, nocc)
             endif
             call tresu_champ_no(cham19, nonoeu, noddl, nref, tbtxt,&
                                 zi(irefi), zr( irefr), zc(irefc), typres, epsi,&
-                                crit, ific, .true., ssigne, ignore=skip, &
+                                crit, ific, .true._1, ssigne, ignore=skip, &
                                 compare=ordgrd)
             if (lref) then
                 call tresu_champ_no(cham19, nonoeu, noddl, nref, tbref,&
                                     zi(irefir), zr(irefrr), zc(irefcr), typres, epsir,&
-                                    crit, ific, .false., ssigne)
+                                    crit, ific, .false._1, ssigne)
             endif
         endif
         write (ific,*)' '

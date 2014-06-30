@@ -51,10 +51,10 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
     real(kind=8) :: x0, y0, z0, x1, y1, z1
     real(kind=8) :: xp, yp, zp, x, y, z
     real(kind=8) :: alp, r1, tetax
-    logical :: rotati, allong
-    logical :: rota, plaq, piqu, allo
-    logical :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
-    logical :: quar1, quar2, quar3, quar4
+    logical(kind=1) :: rotati, allong
+    logical(kind=1) :: rota, plaq, piqu, allo
+    logical(kind=1) :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
+    logical(kind=1) :: quar1, quar2, quar3, quar4
     character(len=24) :: grpnoe, cooval
 !     ------------------------------------------------------------------
 !

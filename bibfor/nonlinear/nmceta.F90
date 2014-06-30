@@ -36,7 +36,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 #include "asterfort/nmcere.h"
 #include "asterfort/nmcese.h"
     integer :: fonact(*)
-    logical :: irecli
+    logical(kind=1) :: irecli
     integer :: iterat, nbeffe
     integer :: ldccvg, pilcvg
     real(kind=8) :: etaf, proeta(2), rho, offset, residu
@@ -95,7 +95,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 !
 !
-    logical :: bormin, bormax
+    logical(kind=1) :: bormin, bormax
     integer ::   j, i
     integer :: licite(2)
     real(kind=8) :: infini

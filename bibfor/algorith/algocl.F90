@@ -49,7 +49,7 @@ subroutine algocl(sdstat, defico, resoco, solveu, matass,&
     character(len=24) :: defico, resoco
     character(len=19) :: solveu, matass
     integer :: ctccvg
-    logical :: ctcfix
+    logical(kind=1) :: ctcfix
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,7 +97,7 @@ subroutine algocl(sdstat, defico, resoco, solveu, matass,&
 !
 !
     integer :: ifm, niv
-    logical :: lechec
+    logical(kind=1) :: lechec
     integer ::  ieq, iter
     integer :: llliai, llliac
     integer :: llf, llf1, llf2

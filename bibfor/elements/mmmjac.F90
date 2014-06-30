@@ -28,7 +28,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
     character(len=8) :: alias
     integer :: jgeom
     real(kind=8) :: ff(9), dff(2, 9)
-    logical :: laxis
+    logical(kind=1) :: laxis
     integer :: nne, ndim
     real(kind=8) :: jacobi
 !

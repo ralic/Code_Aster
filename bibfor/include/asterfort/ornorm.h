@@ -20,7 +20,7 @@ interface
         character(len=8) :: noma
         integer :: listma(*)
         integer :: nbmail
-        logical :: reorie
+        logical(kind=1) :: reorie
         integer :: norien
     end subroutine ornorm
 end interface

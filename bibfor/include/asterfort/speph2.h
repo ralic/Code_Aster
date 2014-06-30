@@ -22,7 +22,7 @@ interface
         character(len=16) :: movrep
         integer :: napexc
         integer :: nbmode
-        logical :: intmod
+        logical(kind=1) :: intmod
         character(len=8) :: table
         real(kind=8) :: specmr(nbpf, *)
         real(kind=8) :: specmi(nbpf, *)

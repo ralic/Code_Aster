@@ -45,7 +45,7 @@ subroutine w039ca(ifi, form)
     character(len=8) :: chmat, carele, mailla, charge, modele
     character(len=80) :: titre
     character(len=19) :: ligrel
-    logical :: lexi
+    logical(kind=1) :: lexi
 ! ----------------------------------------------------------------------
 !
     call jemarq()

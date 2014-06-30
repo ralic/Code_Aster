@@ -82,8 +82,8 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 !
 !
 !
-    logical :: lunil, lctcd
-    logical :: lallv
+    logical(kind=1) :: lunil, lctcd
+    logical(kind=1) :: lallv
     character(len=19) :: depdel, ddepla, cncine
     character(len=19) :: depplu
     character(len=14) :: numedd

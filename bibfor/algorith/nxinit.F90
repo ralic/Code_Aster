@@ -38,7 +38,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
 #include "asterfort/nxnoli.h"
 #include "asterfort/rsnume.h"
 #include "asterfort/tiinit.h"
-    logical :: lostat, levol, lnonl
+    logical(kind=1) :: lostat, levol, lnonl
     character(len=19) :: lischa, lisch2, solveu
     character(len=19) :: sddisc, sdcrit, sdobse
     character(len=24) :: sdieto
@@ -66,7 +66,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
     character(len=24) :: noojb
     character(len=24) :: hydr0
     real(kind=8) :: instin
-    logical :: lreuse
+    logical(kind=1) :: lreuse
 !
 ! ----------------------------------------------------------------------
 !

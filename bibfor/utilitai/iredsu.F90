@@ -77,7 +77,7 @@ subroutine iredsu(macr, form, ifc, versio)
     character(len=24) :: manono
     character(len=80) :: titre
 !
-    logical :: f, lbid
+    logical(kind=1) :: f, lbid
     real(kind=8), pointer :: mass_gene(:) => null()
     real(kind=8), pointer :: mass_jonc(:) => null()
     character(len=24), pointer :: mode_stat(:) => null()
@@ -210,7 +210,7 @@ subroutine iredsu(macr, form, ifc, versio)
             titre = 'MODE DYNAMIQUE'
             call irecri(basemo, form, ifc, titre, lbid,&
                         1, 'DEPL', ' ', iero, k8b,&
-                        1, [iord], .true., b, iero,&
+                        1, [iord], .true._1, b, iero,&
                         cecr, k8b, f, 0, [0],&
                         0, [0], iero, k8b, f,&
                         zero, f, zero, f, f,&

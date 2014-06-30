@@ -100,7 +100,7 @@ subroutine te0497(option, nomte)
     real(kind=8) :: tsisbh, denomi
     real(kind=8) :: longc, presc, admec, adhy0, adhy1, adv1h, adhymd
 !
-    logical :: laxi, perman, vf
+    logical(kind=1) :: laxi, perman, vf
 !
     character(len=2) :: form, noeu
     character(len=3) :: modint
@@ -124,7 +124,7 @@ subroutine te0497(option, nomte)
     character(len=8) :: nomr12(nbr12), nomr13(nbr13), nomre5(nbre5), nomre6(nbre6)
     character(len=8) :: valk(2)
 !
-    logical :: yapr, yaro
+    logical(kind=1) :: yapr, yaro
 !
     data nomre1 / 'RHO','BIOT_COE' /
     data nomr13 / 'RHO','BIOT_L','BIOT_N','BIOT_T'/
@@ -589,7 +589,7 @@ subroutine te0497(option, nomte)
 !                DE GAUSS, SACHANT QUE L'ORIENTATION NE DOIT PAS CHANGER
 !
     jkp = 1
-    call utjac(.true., zr(igeom), jkp, idfde, 0,&
+    call utjac(.true._1, zr(igeom), jkp, idfde, 0,&
                ibid, nno, orien)
 !
 !------------------------------------------------------------------

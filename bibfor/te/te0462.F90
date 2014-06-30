@@ -46,7 +46,7 @@ subroutine te0462(option, nomte)
     integer :: ifpg, ig, icou, iniv, ino
     real(kind=8) :: pgl(3, 3), xx, yy, zz
     real(kind=8) :: epais, excen, gm1(3), gm2(3), epc, bas, hh
-    logical :: grille
+    logical(kind=1) :: grille
     character(len=8) :: fami(nfpgmx)
     data gm1 / 0.d0,0.d0,1.d0/
 ! ----------------------------------------------------------------------

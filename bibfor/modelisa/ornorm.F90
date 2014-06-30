@@ -19,7 +19,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 #include "asterfort/as_allocate.h"
 !
     integer :: listma(*), nbmail, norien
-    logical :: reorie
+    logical(kind=1) :: reorie
     character(len=8) :: noma
 !.======================================================================
 ! ======================================================================
@@ -55,7 +55,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     integer :: p1, p2, ifm, niv,  p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, nconex, zero
-    logical :: dime1, dime2
+    logical(kind=1) :: dime1, dime2
     character(len=1) :: lect
     character(len=2) :: kdim
     character(len=8) :: typel, nomail

@@ -63,7 +63,7 @@ subroutine vpvers(eigsol, modes, checksd)
     character(len=16) :: k16bid, modrig, optiof, typeqz, typres
     character(len=19) :: amor, k19bid, masse, masse0, raide, raide0, numedd
     character(len=24) :: valk(2), k24buff
-    logical           :: lc, lkr, lns, lpg, lqz
+    logical(kind=1)   :: lc, lkr, lns, lpg, lqz
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE

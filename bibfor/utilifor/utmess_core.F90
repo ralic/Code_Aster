@@ -53,7 +53,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     character(len=16) :: compex
     character(len=8) :: nomres, k8b
     character(len=2) :: typm
-    logical :: lerror, lvalid, labort, suite, lstop, lerrm, ltrb
+    logical(kind=1) :: lerror, lvalid, labort, suite, lstop, lerrm, ltrb
     integer :: lout, idf, i, lc, imaap
     integer :: numex
 !

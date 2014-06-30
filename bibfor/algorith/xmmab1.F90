@@ -37,7 +37,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
     real(kind=8) :: tau1(3), tau2(3), rese(3), mmat(336, 336), mproj(3, 3)
     real(kind=8) :: dlagrf(2), jeu
     character(len=8) :: typmai
-    logical :: lpenaf
+    logical(kind=1) :: lpenaf
 !
 ! ----------------------------------------------------------------------
 !

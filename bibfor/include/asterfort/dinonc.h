@@ -25,6 +25,6 @@ interface
         real(kind=8) :: klv(*)
         real(kind=8) :: raide(*)
         real(kind=8) :: param(6, nbpar)
-        logical :: okdire(6)
+        logical(kind=1) :: okdire(6)
     end subroutine dinonc
 end interface 

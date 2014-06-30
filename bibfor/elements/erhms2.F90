@@ -66,7 +66,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !
 #include "jeveux.h"
 #include "asterfort/indiis.h"
-    logical :: perman
+    logical(kind=1) :: perman
     integer :: ino, nbs
     integer :: ivois, nbcmp, adsip
     integer :: tbref1(12), tbref2(12)

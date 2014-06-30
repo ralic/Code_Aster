@@ -36,7 +36,8 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
     integer :: ndim, jltsv, jltsl, jlnsv, jlnsl
     character(len=8) :: noma, cote
     character(len=16) :: geofis
-    logical :: callst
+    logical(kind=1) :: callst
+    logical :: lcond
     real(kind=8) :: vect1(3), vect2(3), noeud(3), a, b, r
 !
 ! ----------------------------------------------------------------------
@@ -178,7 +179,8 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                 zl(jlnsl-1+(ino-1)+1)=.true.
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                ASSERT(.not.callst)
+                lcond=.not.callst
+                ASSERT(lcond)
                 zr(jltsv-1+(ino-1)+1)= -1.d0
                 zl(jltsl-1+(ino-1)+1)=.true.
 !
@@ -350,7 +352,8 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             else if (geofis.eq.'DROITE') then
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                ASSERT(.not.callst)
+                lcond=.not.callst
+                ASSERT(lcond)
                 zr(jltsv-1+(ino-1)+1)= -1.d0
                 zl(jltsl-1+(ino-1)+1)=.true.
 !

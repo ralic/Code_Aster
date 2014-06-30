@@ -246,7 +246,7 @@ subroutine ftrsen(job, compq, select, n, t,&
     real(kind=8) :: s, sep
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical :: select( * )
+    logical(kind=1) :: select( * )
     integer :: iwork( * )
     real(kind=8) :: q( ldq, * ), t( ldt, * ), wi( * ), work( * ), wr( * )
 !     .. PARAMETERS ..
@@ -254,7 +254,7 @@ subroutine ftrsen(job, compq, select, n, t,&
     parameter          ( zero = 0.0d+0, one = 1.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: pair, swap, wantbh, wantq, wants, wantsp
+    logical(kind=1) :: pair, swap, wantbh, wantq, wants, wantsp
     integer :: ierr, k, kase, kk, ks, n1, n2, nn
     real(kind=8) :: est, rnorm, scale
 !     ..

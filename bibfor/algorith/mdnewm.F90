@@ -43,7 +43,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     real(kind=8) :: rgygen(*)
     character(len=8) :: basemo, nomres, nomfon(*), foncv, fonca
     character(len=16) :: typbas
-    logical :: lamor
+    logical(kind=1) :: lamor
     integer :: descmm, descmr, descma, liad(*), inumor(*)
     real(kind=8) :: r8b, coefm(*), passto(*)
 !-----------------------------------------------------------------------

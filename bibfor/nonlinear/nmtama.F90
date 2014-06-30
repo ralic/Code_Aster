@@ -52,7 +52,7 @@ subroutine nmtama(fami, kpg, ksp, imate, instam,&
 !            14 = UN_SUR_M          (VISCOSITE)
 ! ----------------------------------------------------------------------
 !
-    logical :: visco
+    logical(kind=1) :: visco
     character(len=8) :: nom(14)
     integer :: ok(14)
     real(kind=8) :: e, nu

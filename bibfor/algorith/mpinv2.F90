@@ -57,12 +57,12 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
     real(kind=8) :: retap(nbmode, nbabs), reta2p(nbmode, nbabs)
     real(kind=8) :: xabs(nbabs)
     real(kind=8) :: coef(*)
-    logical :: lfonct
+    logical(kind=1) :: lfonct
 ! ----------------------------------------------------------------------
     integer :: imod, jmod, imes, iabs, ierr, ibid, jmes
     integer :: lscdmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
     real(kind=8) :: alpha, eps
-    logical :: nul
+    logical(kind=1) :: nul
     character(len=3) :: method
     character(len=8) :: regul
     character(len=16) :: nomcha

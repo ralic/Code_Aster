@@ -63,7 +63,7 @@ subroutine aprend(sdappa)
     real(kind=8) :: vecpml(3), vecpmm(3)
     integer :: jdecnm, numnom, posnom
     integer :: posmin, typapp
-    logical :: dirapp, prtole, lexcl
+    logical(kind=1) :: dirapp, prtole, lexcl
     integer :: vali(2)
     real(kind=8) :: valr(4)
 !

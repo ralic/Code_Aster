@@ -90,7 +90,7 @@ subroutine mdtr74(nomres)
     character(len=16) :: typbas, typba2, method
     character(len=19) :: lisarc, nomstm, nomstk, nomstg, masse, marig, fonct
     character(len=24) :: numk24, numm24, numc24, lisins, nomnoe, typeba, valk(3)
-    logical :: lamor, okmethod
+    logical(kind=1) :: lamor, okmethod
     integer :: itypfl, nexcit, nexcir, ntotex
     integer :: vali(3), jvec, jvecr, j1
     real(kind=8) :: acrit, agene
@@ -109,7 +109,7 @@ subroutine mdtr74(nomres)
     integer :: nbpal, nbrfis
     integer :: iadri
     character(len=24) :: npal
-    logical :: prdeff
+    logical(kind=1) :: prdeff
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: i, iam, iamog, ibid, icoupl, idiff
@@ -588,9 +588,9 @@ subroutine mdtr74(nomres)
 !           Lecture des donnees paliers
             call getvis('PALIER_EDYOS', 'UNITE', iocc=1, scal=unitpa, nbret=n1)
             if (n1 .ne. 0) then
-                call lecdon(.true., unitpa, prdeff)
+                call lecdon(.true._1, unitpa, prdeff)
             else
-                call lecdon(.false., 0, prdeff)
+                call lecdon(.false._1, 0, prdeff)
             endif
             call getvr8('COUPLAGE_EDYOS', 'PAS_TPS_EDYOS', iocc=1, scal=dtsto, nbret=n1)
         else
@@ -764,7 +764,7 @@ subroutine mdtr74(nomres)
 !       Dans le cas de RUNGE KUTTA, l'allocation se fait a l'intérieur de la routine MDRUKU
 !       Pour cette option il y a plusieurs objets de longueur variable. La taille d'un nouvel
 !       objet est NBSAUV*1.5. La routine 'concrk' se charge de compacter les objets.
-        call mdallo(nomres, 'TRAN', nbsauv, sauve='GLOB', checkarg=.false.,&
+        call mdallo(nomres, 'TRAN', nbsauv, sauve='GLOB', checkarg=.false._1,&
                     method=method, base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen,&
                     amor=amogen, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
                     jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbnli, noecho=zk8(jnoec),&

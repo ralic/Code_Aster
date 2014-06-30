@@ -18,12 +18,12 @@
 interface
     subroutine mmmpha(loptf, lcont, ladhe, ndexfr, lpenac,&
                       lpenaf, phasep)
-        logical :: loptf
-        logical :: lcont
-        logical :: ladhe
+        logical(kind=1) :: loptf
+        logical(kind=1) :: lcont
+        logical(kind=1) :: ladhe
         integer :: ndexfr
-        logical :: lpenac
-        logical :: lpenaf
+        logical(kind=1) :: lpenac
+        logical(kind=1) :: lpenaf
         character(len=9) :: phasep
     end subroutine mmmpha
 end interface

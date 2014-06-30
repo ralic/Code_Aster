@@ -72,7 +72,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
 !     ------------------------------------------------------------------
     character(len=8) :: nom
     character(len=128) :: nom128
-    logical :: lrab
+    logical(kind=1) :: lrab
     integer :: lgbl, vali(3)
 ! DEB ------------------------------------------------------------------
     ib = 0

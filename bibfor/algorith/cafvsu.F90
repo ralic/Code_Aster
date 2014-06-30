@@ -66,7 +66,7 @@ subroutine cafvsu(cont, tange, maxfa, nface, fks,&
 !        L ELEMENT COURANT(0) CAR SI IL Y A DU DECENTRAGE ON VA STOCKER
 !        DANS DFLX1V ET DFLX2
     implicit none
-    logical :: cont, tange
+    logical(kind=1) :: cont, tange
     integer :: maxfa
     integer :: nface
     integer :: nbvois, nvoima

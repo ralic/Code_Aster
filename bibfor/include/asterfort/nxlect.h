@@ -24,8 +24,8 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
-        logical :: matcst
-        logical :: coecst
+        logical(kind=1) :: matcst
+        logical(kind=1) :: coecst
         character(len=24) :: fomult
         character(len=19) :: lischa
         character(len=24) :: charge

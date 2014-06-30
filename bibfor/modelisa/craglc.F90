@@ -85,7 +85,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE ---
 !
-        call jedupo(mod//'.MODELE    .LGRF', 'G', ligrch//'.LGRF', .false.)
+        call jedupo(mod//'.MODELE    .LGRF', 'G', ligrch//'.LGRF', .false._1)
 !
         call wkvect(ligrch//'.NBNO', 'G V I', 1, idnbno)
         zi(idnbno) = 0

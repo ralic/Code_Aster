@@ -24,6 +24,6 @@ interface
         integer :: iptm
         integer :: ndexfr
         integer :: typapp
-        logical :: lexfro
+        logical(kind=1) :: lexfro
     end subroutine mmexcl
 end interface

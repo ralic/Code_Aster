@@ -49,7 +49,7 @@ subroutine snecol(imod, nbnode)
     character(len=1) :: prfnoe
     character(len=4) :: kbid
     character(len=8) :: chnode, chgrou
-    logical :: logiq(256)
+    logical(kind=1) :: logiq(256)
     integer :: jpo(256), jnomb(256), jmax(256)
 !  ------------ FIN DECLARATION -------------
 !

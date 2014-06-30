@@ -71,7 +71,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     integer :: ipt, iord, icmp, nbr, nbk, nbc, nbf
     integer :: ivch,  ivpt, ibid, ivalk
     integer :: numsym, ivch2, ivord2(nbordr), numord
-    logical :: crit
+    logical(kind=1) :: crit
 !
 ! ---   VECTEURS DE TRAVAIL
 !

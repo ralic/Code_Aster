@@ -28,7 +28,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
     real(kind=8) :: edge
     real(kind=8) :: right
     real(kind=8) :: apex
-    logical :: outofp
+    logical(kind=1) :: outofp
 !
 #include "asterfort/jacobi.h"
 #include "asterfort/lceqvn.h"
@@ -41,7 +41,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
     integer :: itri, iorder, mmax, nmax, mxiter, i, j, itjac1
 !
 ! Declaration of integer type variables
-    logical :: epflag
+    logical(kind=1) :: epflag
 !
     parameter&
      &(   mmax=3     ,nmax=6     )

@@ -11,7 +11,7 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
 #include "asterfort/rsutrg.h"
     integer :: iordr
     character(len=*) :: nomsd, nomsy, nomcha
-    logical :: lverif
+    logical(kind=1) :: lverif
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

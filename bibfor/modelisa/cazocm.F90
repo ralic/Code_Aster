@@ -68,7 +68,7 @@ subroutine cazocm(char, motfac, izone)
     real(kind=8) :: noor
     real(kind=8) :: dir(3), tolj, tola, tolint
     character(len=8) :: jeuf1, jeuf2
-    logical :: lliss, lcalc
+    logical(kind=1) :: lliss, lcalc
 !
 ! ----------------------------------------------------------------------
 !

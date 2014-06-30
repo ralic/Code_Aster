@@ -29,7 +29,7 @@ subroutine oblsai(sdlist, istru, lacti)
 #include "asterfort/obseti.h"
     character(len=24) :: sdlist
     integer :: istru
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

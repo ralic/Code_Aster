@@ -43,7 +43,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
     real(kind=8) :: materf(14, 2), crit(*)
     character(len=8) :: mod
     real(kind=8) :: zero, un, d12, deux, trois, pa, qinit
-    logical :: tract
+    logical(kind=1) :: tract
     integer :: i, j
 !
     common /tdim/   ndt  , ndi

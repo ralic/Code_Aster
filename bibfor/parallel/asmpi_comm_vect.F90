@@ -88,7 +88,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     integer :: km,nbm,nbv1,nbv2,nbv3,idecal,jtrav
     real(kind=8) :: taill1, taillmax
     mpi_int :: nbpro4, mpicou, proc
-    logical :: scal
+    logical(kind=1) :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
 

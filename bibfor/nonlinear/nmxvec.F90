@@ -31,7 +31,7 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 #include "asterfort/nmchex.h"
     integer :: nbvect
     character(len=6) :: ltypve(20)
-    logical :: lcalve(20), lassve(20)
+    logical(kind=1) :: lcalve(20), lassve(20)
     character(len=16) :: loptve(20)
     character(len=*) :: modelz
     character(len=24) :: mate, carele, sdtime
@@ -93,7 +93,7 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
     character(len=19) :: vecele, vecass
     real(kind=8) :: instam, instap
     character(len=24) :: modele
-    logical :: lcalc, lasse
+    logical(kind=1) :: lcalc, lasse
     character(len=16) :: option
 !
 ! ----------------------------------------------------------------------

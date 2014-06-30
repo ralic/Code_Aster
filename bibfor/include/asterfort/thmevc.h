@@ -21,7 +21,7 @@ interface
                       nddlm, nnom)
         character(len=16) :: option
         character(len=16) :: nomte
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: nno
         integer :: npg
         integer :: ipoids

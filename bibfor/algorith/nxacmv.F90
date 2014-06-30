@@ -81,7 +81,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 #include "asterfort/vedith.h"
 #include "asterfort/vetnth.h"
 #include "asterfort/vrcins.h"
-    logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
+    logical(kind=1) :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas
     character(len=19) :: infcha, solveu, maprec
@@ -108,7 +108,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
     character(len=24) :: ligrmo, merigi, memass, mediri, tlimat(3), bidon
     character(len=24) :: vediri, vechtp, vetntp, vetnti, vadirp, vachtp, vechtn
     character(len=24) :: vachtn, vtemp2
-    logical :: llin
+    logical(kind=1) :: llin
     data typres /'R'/
     data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &             'R       ','RHO     '/

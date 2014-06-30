@@ -36,6 +36,6 @@ interface
         real(kind=8) :: s2
         real(kind=8) :: r1
         real(kind=8) :: r2
-        logical :: eli
+        logical(kind=1) :: eli
     end subroutine i2isgc
 end interface

@@ -43,7 +43,7 @@ interface
         character(len=24) :: sdtime
         character(len=19) :: sddisc
         integer :: nbeffe
-        logical :: irecli
+        logical(kind=1) :: irecli
         real(kind=8) :: proeta(2)
         real(kind=8) :: offset
         real(kind=8) :: rho

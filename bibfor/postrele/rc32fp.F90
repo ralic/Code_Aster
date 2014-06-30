@@ -42,7 +42,7 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
     integer :: isk, isl, k, l, nk, nl, n0, i1, nsitup, ifm, niv, icompt
     integer :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
     real(kind=8) :: fumax, ukl
-    logical :: trouve, yapass
+    logical(kind=1) :: trouve, yapass
     character(len=3) :: typass
     integer, pointer :: passage_sit(:) => null()
 !     ------------------------------------------------------------------

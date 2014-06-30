@@ -21,7 +21,7 @@ interface
         integer :: nbhar
         integer :: numrep
         integer :: neq
-        logical :: reprise
+        logical(kind=1) :: reprise
         character(len=8) :: baseno
         integer :: nbordr0
         integer :: nbordr

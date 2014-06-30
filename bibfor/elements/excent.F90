@@ -6,7 +6,7 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
     integer :: nbpoin, nbcmp
     real(kind=8) :: excen, reffin(*), reffou(*)
     complex(kind=8) :: ceffin(*), ceffou(*)
-    logical :: lreel
+    logical(kind=1) :: lreel
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

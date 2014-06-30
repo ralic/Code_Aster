@@ -23,12 +23,12 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
-        logical :: lnonl
+        logical(kind=1) :: lnonl
         real(kind=8) :: para(*)
         character(len=19) :: sddisc
         character(len=19) :: sdcrit
         character(len=24) :: sdieto
         character(len=19) :: lisch2
-        logical :: force
+        logical(kind=1) :: force
     end subroutine ntarch
 end interface

@@ -24,7 +24,7 @@ interface
                       dp1, dp2, dt, retcom)
         integer :: ndim
         integer :: kpi
-        logical :: yachai
+        logical(kind=1) :: yachai
         integer :: yamec
         integer :: yate
         integer :: yap1

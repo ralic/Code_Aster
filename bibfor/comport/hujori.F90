@@ -49,7 +49,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
     real(kind=8) :: angl(3), p(3, 3), passag(6, 6), passal(6, 6)
     real(kind=8) :: vec1(6), vec(6), mat(6, 6), mat1(6, 6), work(6, 6)
     character(len=5) :: sens
-    logical :: reorie
+    logical(kind=1) :: reorie
 !
     data   zero  / 0.d0 /
     data   deux  / 2.d0 /

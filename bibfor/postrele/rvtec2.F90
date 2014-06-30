@@ -67,7 +67,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     integer :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari
     integer ::  nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord(1)
     real(kind=8) :: prec
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=3) :: typpar
     character(len=7) :: kii
     character(len=8) :: k8b, acces, nomres, ctype, courbe, crit

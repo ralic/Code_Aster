@@ -155,9 +155,9 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
             endif
 20      continue
         call mrmult('ZERO', imat(1), ye, kye, 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', imat(2), dye, mdye, 1,&
-                    .false.)
+                    .false._1)
         call dscal(nd, 0.d0, zr(iky), 1)
         call dscal(nd, 0.d0, zr(imdy), 1)
         i=0

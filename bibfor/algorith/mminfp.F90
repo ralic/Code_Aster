@@ -32,7 +32,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
     character(len=*) :: questz
     integer :: irep(*)
     real(kind=8) :: rrep(*)
-    logical :: lrep(*)
+    logical(kind=1) :: lrep(*)
 !
 ! ----------------------------------------------------------------------
 !

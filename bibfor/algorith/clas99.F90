@@ -151,7 +151,7 @@ subroutine clas99(nomres)
     inor=1
     do i = 1, nbmome
         call moco99(nomres, zk8(ltmome+i-1), zi(ltnbmo+i-1), zi(lrang), inor,&
-                    .true.)
+                    .true._1)
     end do
     if (nbmoma .gt. 0) call jedetr('&&CLAS99.NUME.ORD')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.MODE_MECA')

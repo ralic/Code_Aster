@@ -29,7 +29,7 @@ interface
         integer :: dimenr
         integer :: ndim
         integer :: dimuel
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         real(kind=8) :: deltat
         integer :: nno
         integer :: npg
@@ -51,7 +51,7 @@ interface
         integer :: nddlm
         integer :: nmec
         integer :: np1
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: nnopm
         integer :: igeom
         integer :: jpintt

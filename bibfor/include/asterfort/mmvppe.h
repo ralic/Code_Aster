@@ -30,9 +30,9 @@ interface
         integer :: nnm
         integer :: nnl
         integer :: nbdm
-        logical :: laxis
-        logical :: ldyna
-        logical :: lfovit
+        logical(kind=1) :: laxis
+        logical(kind=1) :: ldyna
+        logical(kind=1) :: lfovit
         real(kind=8) :: jeusup
         real(kind=8) :: ffe(9)
         real(kind=8) :: ffm(9)

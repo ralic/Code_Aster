@@ -76,7 +76,7 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     character(len=19) :: vect(nbcoef)
     character(len=19) :: cnfnod, cnbudi, cnvcpr, cnsstr, cneltc, cneltf
     character(len=19) :: depmoi, k19bla
-    logical :: lmacr, leltc, leltf, lallv
+    logical(kind=1) :: lmacr, leltc, leltf, lallv
 !
 ! ----------------------------------------------------------------------
 !

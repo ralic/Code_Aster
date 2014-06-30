@@ -30,7 +30,7 @@ interface
         real(kind=8) :: ffc(9)
         integer :: nconta
         integer :: nfhe
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavno(8)
         real(kind=8) :: dlagrc
     end subroutine xtlagc

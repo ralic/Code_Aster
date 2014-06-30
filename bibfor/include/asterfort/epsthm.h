@@ -49,7 +49,7 @@ interface
         integer :: tempe(5)
         integer :: np1
         integer :: np2
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: epsm(6, npi)
     end subroutine epsthm
 end interface

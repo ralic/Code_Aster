@@ -65,7 +65,7 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
     real(kind=8) :: pvp0, sat, rinstp
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, thmc, ther, hydr, phenom
-    logical :: perman, yachai
+    logical(kind=1) :: perman, yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 ! ======================================================================

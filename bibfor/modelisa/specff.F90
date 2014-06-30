@@ -62,7 +62,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 #include "asterfort/veriff.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: casint, ltable, exiind
+    logical(kind=1) :: casint, ltable, exiind
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
     character(len=8) :: nomu, caelem, modele, table, nomnoa, noma
     character(len=19) :: spectr, base, typflu

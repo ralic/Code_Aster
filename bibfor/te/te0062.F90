@@ -54,7 +54,7 @@ subroutine te0062(option, nomte)
     character(len=8) :: nomres(3)
     character(len=16) :: phenom
 !
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 !
 ! ----------------------------------------------------------------------
 !

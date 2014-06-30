@@ -86,7 +86,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     character(len=24) :: mlggma, mlgnma, ligrel, lchin(9), compor
     character(len=24) :: lchout(2), contg, defog, varig, depla, ssoup
     character(len=24) :: kvalrc, kvalrk, vale2(2)
-    logical :: opti
+    logical(kind=1) :: opti
     complex(kind=8) :: c16b
     integer :: iarg
     character(len=8), pointer :: l_nom_mat(:) => null()

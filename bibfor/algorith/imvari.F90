@@ -61,7 +61,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
     integer :: nb_vari_comp(9), nb_vari_cg(2)
     character(len=16) :: vari_excl, vari_name
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, kit_comp(9)
-    logical :: l_excl, l_kit_thm, l_kit_ddi, l_kit_cg
+    logical(kind=1) :: l_excl, l_kit_thm, l_kit_ddi, l_kit_cg
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     character(len=16) :: rela_cg(2)

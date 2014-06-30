@@ -94,7 +94,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !     -----------------------
 !       -- TYPESD INCONNU => ON UTILISE JEDUPC => COUTEUX EN CPU
         call jedupc(' ', sd1, 1, base, sd2,&
-                    .true.)
+                    .true._1)
 !
 ! ----------------------------------------------------------------------
     else if ((typesd.eq.'CHAMP') .or. (typesd.eq.'CHAMP_GD')) then

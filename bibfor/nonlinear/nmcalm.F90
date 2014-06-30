@@ -169,14 +169,14 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
 !
     else if (typmat.eq.'MEMASS') then
         call memame(optmat, modele, nbchar, zk8(jchar2), mate,&
-                    carele, .true., instam, compor, matele,&
+                    carele, .true._1, instam, compor, matele,&
                     base)
 !
 ! --- MATR_ELEM AMORTISSEMENT
 !
     else if (typmat.eq.'MEAMOR') then
         call meamme(optmat, modele, nbchar, zk8(jchar2), mate,&
-                    carele, .true., instam, 'V', merigi,&
+                    carele, .true._1, instam, 'V', merigi,&
                     memass, matele, varplu)
 !
 ! --- MATR_ELEM POUR CHARGES SUIVEUSES

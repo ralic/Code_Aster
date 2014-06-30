@@ -24,7 +24,7 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         integer :: izone
-        logical :: lexfro
+        logical(kind=1) :: lexfro
         integer :: posnoe
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

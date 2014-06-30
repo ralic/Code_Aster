@@ -20,7 +20,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
     integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*)
     character(len=*) :: masse, kspect, kasysp, knoeu
-    logical :: monoap, muapde, corfre
+    logical(kind=1) :: monoap, muapde, corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

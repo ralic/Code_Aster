@@ -39,7 +39,7 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
 !-----------------------------------------------------------------------
     integer :: liax(nbliax)
     complex(kind=8) :: zmat(nbddg, nbmod), zvec(nbddg)
-    logical :: axok
+    logical(kind=1) :: axok
 !-----------------------------------------------------------------------
 !
 !  CAS DE PRESENCE DDL AXE

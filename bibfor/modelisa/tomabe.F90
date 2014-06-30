@@ -81,7 +81,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! ---------
     character(len=8) :: chmat, mailla
     integer :: nbnoma, nbnobe, nbmabe
-    logical :: mail2d
+    logical(kind=1) :: mail2d
     character(len=19) :: nunobe
     real(kind=8) :: xflu, xret
     character(len=24) :: nmabet
@@ -95,7 +95,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     integer :: ntri3, ntri6, nqua4, nqua8, nqua9, ntet4, ntet10, npyr5, npyr13
     integer :: npen6, npen15, nhex8, nhex20, nhex27
 !
-    logical :: mail3d, trouv1, trouv2
+    logical(kind=1) :: mail3d, trouv1, trouv2
     character(len=3) :: k3mai
     character(len=8) :: beton
     character(len=19) :: carte, nomrc, chsmat, cartez, chtmp

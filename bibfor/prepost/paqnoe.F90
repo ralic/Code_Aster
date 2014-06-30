@@ -51,7 +51,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     character(len=16) :: forcri
-    logical :: fordef
+    logical(kind=1) :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------
 ! BUT: CONSTRUIRE LES PAQUETS DE NOEUDS AFIN DE CALCULER LE VECTEUR
@@ -79,7 +79,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     integer :: jepspd, jepspl, jepspv, iret4, jepped, jeppel
     integer :: inop, somnow, icmp, jnoeu, nunoe, jeppev
     integer :: vali(2), paract(35), valep, ic, tord(1)
-    logical :: post, crsigm, crepst, crepse, crepsp, lbid, creppe
+    logical(kind=1) :: post, crsigm, crepst, crepse, crepsp, lbid, creppe
 !
     real(kind=8) :: r8b, val1, val2, resu(7), vresu(24), valpar(35)
     complex(kind=8) :: c16b

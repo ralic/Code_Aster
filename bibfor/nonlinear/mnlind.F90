@@ -41,7 +41,7 @@ subroutine mnlind(n, deb, cle, vect, ind)
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     integer :: indt
-    logical :: lstp
+    logical(kind=1) :: lstp
 !
     if (n .lt. 0) then
         ind=-999

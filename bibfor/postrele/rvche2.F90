@@ -57,7 +57,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
-    logical :: inivid
+    logical(kind=1) :: inivid
     integer, pointer :: connex(:) => null()
     integer, pointer :: repe(:) => null()
     character(len=24), pointer :: celk(:) => null()
@@ -102,7 +102,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
         call utmess('F', 'POSTRELE_26', nk=2, valk=valk)
     endif
 !
-    call jedupo(chelm//'.CELV', 'V', nomjv, .false.)
+    call jedupo(chelm//'.CELV', 'V', nomjv, .false._1)
     call jeveuo(nomjv, 'E', iavale)
 !
     call jeveuo(chelm//'.CELK', 'L', vk24=celk)

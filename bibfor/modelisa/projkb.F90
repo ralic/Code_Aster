@@ -111,7 +111,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
     integer ::  nbmaok, nbsom, noe, somn12, somn23
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2, x3dp(3), xbw(2)
     character(len=24) :: conxma, coorno
-    logical :: dejavu
+    logical(kind=1) :: dejavu
     integer, pointer :: somno_bord(:) => null()
 !
 !

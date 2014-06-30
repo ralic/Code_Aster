@@ -68,8 +68,8 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
     integer :: jmu, jcopo
     character(len=24) :: clreac
     integer :: jclrea
-    logical :: lpenac, lctfd, lpenaf
-    logical :: llagrc, llagrf, reapre, reageo
+    logical(kind=1) :: lpenac, lctfd, lpenaf
+    logical(kind=1) :: llagrc, llagrf, reapre, reageo
     real(kind=8) :: vdiagm
 !
 ! ----------------------------------------------------------------------

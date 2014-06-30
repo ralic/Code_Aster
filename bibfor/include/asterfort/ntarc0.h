@@ -24,7 +24,7 @@ interface
         character(len=24) :: carele
         character(len=19) :: sdcrit
         character(len=19) :: lisch2
-        logical :: lnonl
+        logical(kind=1) :: lnonl
         real(kind=8) :: para(*)
         integer :: numarc
         real(kind=8) :: instan

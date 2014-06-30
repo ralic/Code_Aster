@@ -25,7 +25,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 #include "asterfort/as_allocate.h"
 !
     integer :: lmax, nbocc
-    logical :: locamb
+    logical(kind=1) :: locamb
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -67,7 +67,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     character(len=19) :: cartgr, cartcf
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex, tmpncf, tmpvcf
     character(len=32) :: kjexn
-    logical :: lcartf
+    logical(kind=1) :: lcartf
     integer, pointer :: nume_ma(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------

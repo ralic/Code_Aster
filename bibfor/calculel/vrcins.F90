@@ -60,7 +60,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
     character(len=8) :: valk(4)
-    logical :: avrc, dbg
+    logical(kind=1) :: avrc, dbg
     integer :: ibid, nbcvrc
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2
     character(len=8), pointer :: cvrcvarc(:) => null()

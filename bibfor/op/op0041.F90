@@ -102,7 +102,7 @@ subroutine op0041()
     character(len=19) :: ltno, lnno, grltno, grlnno, stnor, stno, info, ltnofa
     character(len=19) :: lnnofa, grltfa, grlnfa
     character(len=24) :: lismae, lisnoe, pheno, poro
-    logical :: grille, ldmax, goinop
+    logical(kind=1) :: grille, ldmax, goinop
     character(len=8) :: fisgri
 !
 ! ----------------------------------------------------------------------
@@ -177,7 +177,7 @@ subroutine op0041()
             call utmess('F', 'XFEM_68')
         endif
 !
-        call jedupo(fisgri//'.GRI.MODELE', 'G', fiss(1:8)// '.GRI.MODELE', .false.)
+        call jedupo(fisgri//'.GRI.MODELE', 'G', fiss(1:8)// '.GRI.MODELE', .false._1)
         call copisd('CHAMP', 'G', fisgri//'.GRI.LNNO', fiss(1:8)// '.GRI.LNNO')
         call copisd('CHAMP', 'G', fisgri//'.GRI.GRLNNO', fiss(1:8)// '.GRI.GRLNNO')
 !
@@ -189,8 +189,8 @@ subroutine op0041()
 !
         call jeexin(fisgri//'.PRO.RAYON_TORE', ibid)
         if (ibid .gt. 0) then
-            call jedupo(fisgri//'.PRO.RAYON_TORE', 'G', fiss(1:8)// '.PRO.RAYON_TORE', .false.)
-            call jedupo(fisgri//'.PRO.NOEUD_TORE', 'G', fiss(1:8)// '.PRO.NOEUD_TORE', .false.)
+            call jedupo(fisgri//'.PRO.RAYON_TORE', 'G', fiss(1:8)// '.PRO.RAYON_TORE', .false._1)
+            call jedupo(fisgri//'.PRO.NOEUD_TORE', 'G', fiss(1:8)// '.PRO.NOEUD_TORE', .false._1)
         endif
 !
         grille=.false.
@@ -346,7 +346,7 @@ subroutine op0041()
         ASSERT(.false.)
     endif
 !
-    call xinils(noma, kbid, .false., ndim, meth,&
+    call xinils(noma, kbid, .false._1, ndim, meth,&
                 nfonf, nfong, geofis, a, b,&
                 r, noeud, cote, vect1, vect2,&
                 cnslt, cnsln)

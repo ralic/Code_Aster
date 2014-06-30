@@ -116,7 +116,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
     character(len=255) :: kfic
     character(len=64) :: valk(2)
 !
-    logical :: existm, ficexi
+    logical(kind=1) :: existm, ficexi
 !
 !     ------------------------------------------------------------------
 !

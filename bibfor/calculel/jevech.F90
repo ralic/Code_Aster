@@ -67,7 +67,7 @@ subroutine jevech(nmparz, louez, itab)
     integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !
-    logical :: etendu
+    logical(kind=1) :: etendu
     character(len=24) :: valk(5)
 !
 !

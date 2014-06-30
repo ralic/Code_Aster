@@ -66,7 +66,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
     integer :: izone, imae, iptm
     integer :: nne, nbmae, nptm
     integer :: ndimg, nzoco
-    logical :: lveri
+    logical(kind=1) :: lveri
     real(kind=8) :: lambdc(1), ksipc1, ksipc2
     real(kind=8) :: mlagc(9)
     character(len=8) :: aliase

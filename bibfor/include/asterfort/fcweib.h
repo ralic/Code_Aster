@@ -20,7 +20,7 @@ interface
                       nt, nbres, indtp, nbtp, m,&
                       fc, dfc)
         integer :: nrupt
-        logical :: cals
+        logical(kind=1) :: cals
         real(kind=8) :: sk(*)
         real(kind=8) :: sigw(*)
         integer :: nur(*)

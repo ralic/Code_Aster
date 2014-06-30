@@ -72,7 +72,7 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !---------------------GESTION DE L' INTERSECTION---------------------
 !
     integer :: i, adrgt, k, f1or, f2or, f1ex, f2ex, fcom, m1, m2, pt, f1
-    logical :: adansm, bdansm, elimin, atrouv, btrouv, fini, fincal
+    logical(kind=1) :: adansm, bdansm, elimin, atrouv, btrouv, fini, fincal
     real(kind=8) :: or, ex, ror, rex, xm, ym
     real(kind=8) :: s, r1, xa, ya, xb, yb, sm
 !

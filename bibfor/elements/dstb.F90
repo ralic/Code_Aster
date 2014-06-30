@@ -48,7 +48,7 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     real(kind=8) :: bca(2, 3), bcn(2, 9), bc(2, 9)
     real(kind=8) :: hft2(2, 6), an(3, 9)
     real(kind=8) :: qsi, eta, t2iu(4), t2ui(4), t1ve(9)
-    logical :: coupmf
+    logical(kind=1) :: coupmf
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

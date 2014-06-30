@@ -29,7 +29,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
 #include "asterfort/utmess.h"
     real(kind=8) :: pic(*), e1, e2, sigmax(*), sigmin(*)
     integer :: npic, ncyc, k
-    logical :: cyczer
+    logical(kind=1) :: cyczer
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i

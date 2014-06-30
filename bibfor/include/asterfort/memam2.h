@@ -26,7 +26,7 @@ interface
         character(len=*) :: mate
         character(len=*) :: cara
         character(len=24) :: compor
-        logical :: exitim
+        logical(kind=1) :: exitim
         real(kind=8) :: time
         character(len=*) :: chacce
         character(len=*) :: vecel

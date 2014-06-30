@@ -21,7 +21,7 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
 #include "asterfort/lcvpbo.h"
 #include "asterfort/utmess.h"
     real(kind=8),intent(in) :: ep0(6),ep1(6),l0,l1,etamin,etamax   
-    logical, intent(out)    :: vide     
+    logical(kind=1), intent(out)    :: vide     
     real(kind=8),intent(out):: etam,etap     
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
 ! etap      nouvelle borne max
 ! --------------------------------------------------------------------------------------------------
 
-    logical :: vide1, vide2
+    logical(kind=1) :: vide1, vide2
     integer :: i, nsol, nsol1, nsol2, sgn(2), sgn1(2), sgn2(2), ptr
     real(kind=8) :: trep0, trep1, ts0(6), ts1(6), s0(3), s1(3), cb
     real(kind=8) :: s0s0, s0s1, s1s1, trs0, trs1, q0, q1, q2, sol(2), sol1(2), sol2(2)

@@ -24,7 +24,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
     character(len=2) :: kdim
     character(len=8) :: mail
     character(len=*) :: nomob1
-    logical :: coince
+    logical(kind=1) :: coince
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !       Si .true. on accepte qu'une maille de peau soit "coincee"
 !       entre 2 mailles de part et d'autre de la peau.
 !       Sinon, on emet une erreur fatale.
-!       si .true., on choisit la maille telle que sa normale sortante
+!       si .true._1, on choisit la maille telle que sa normale sortante
 !       soit la meme que celle de la maille de peau.
 
 !-----------------------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
     integer :: ima, numa, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
     integer :: ifm, niv, ipos,  nutyma
     integer :: lisnoe(27), indmai
-    logical :: first
+    logical(kind=1) :: first
     character(len=8) :: k8b, nomail, type
     character(len=16) :: oper, k16b
     character(len=24) :: nomavo, valk(4)

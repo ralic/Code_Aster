@@ -68,7 +68,7 @@ subroutine mltpre(mat19, renumz)
     character(len=24) :: nomp01, nomp02, nomp03, nomp04, nomp05, nomp06, nomp07
     character(len=24) :: nomp08, nomp09, nomp10, nomp11, nomp12, nomp13
     character(len=24) :: nomp14, nomp15, nomp16, nomp17, nomp18, nomp19, nomp20
-    logical :: nivdbg, matgen
+    logical(kind=1) :: nivdbg, matgen
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: nueq(:) => null()

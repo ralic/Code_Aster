@@ -24,8 +24,8 @@ interface
                       fomult, numedd, nume, solveu, numrep)
         character(len=8) :: result
         character(len=19) :: force1
-        logical :: lcrea
-        logical :: lamort
+        logical(kind=1) :: lcrea
+        logical(kind=1) :: lamort
         integer :: neq
         integer :: imat(*)
         character(len=8) :: masse

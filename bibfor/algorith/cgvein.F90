@@ -33,7 +33,7 @@ subroutine cgvein(resu, compor, iord0, l_temp)
     integer, intent(in) :: iord0
     character(len=8), intent(in) :: resu
     character(len=19), intent(in) :: compor
-    logical, intent(in) :: l_temp
+    logical(kind=1), intent(in) :: l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine cgvein(resu, compor, iord0, l_temp)
     character(len=8) :: noma
     character(len=16) :: k16ldc
     character(len=19) :: chcalc, chtmp
-    logical :: lldcok
+    logical(kind=1) :: lldcok
     character(len=16), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()
 !

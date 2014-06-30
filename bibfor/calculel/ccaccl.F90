@@ -68,7 +68,7 @@ subroutine ccaccl(option, modele, mateco, carael, ligrel, &
 !   LICHIN  K24* LISTE MODIFIEE DES CHAMPS IN
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    logical :: exicar
+    logical(kind=1) :: exicar
 !
     integer :: iret1, iret2, kparin
     integer :: ipara, inume, nbsp

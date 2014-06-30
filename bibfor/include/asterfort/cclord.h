@@ -22,7 +22,7 @@ interface
         integer :: nbordr
         character(len=19) :: lisord
         character(len=8) :: nobase
-        logical :: optdem
+        logical(kind=1) :: optdem
         integer :: minord
         integer :: maxord
         character(len=8) :: resuin

@@ -41,7 +41,7 @@ subroutine te0293(option, nomte)
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, r
 !
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 ! ----------------------------------------------------------------------
 !

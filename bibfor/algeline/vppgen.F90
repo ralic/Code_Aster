@@ -63,7 +63,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
     if (lmasse .ne. 0) then
         do 100 ivect = 1, nbvect
             call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1,&
-                        .false.)
+                        .false._1)
             masseg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
 100      continue
     endif
@@ -73,7 +73,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
     if (lamor .ne. 0) then
         do 200 ivect = 1, nbvect
             call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1,&
-                        .false.)
+                        .false._1)
             amorg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
 200      continue
     else
@@ -88,7 +88,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
                 zr(laux1+ieq)= vect(ieq,ivect)*iddl(ieq)
 310          continue
             call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1,&
-                        .false.)
+                        .false._1)
             raideg(ivect) = ddot(neq,zr(laux+1),1,zr(laux1+1),1)
 300      continue
     endif

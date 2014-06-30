@@ -67,7 +67,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     real(kind=8) :: newins, newdt, deltac
     real(kind=8) :: inst, prec, valr(2)
     real(kind=8) :: insfin, insref
-    logical :: ladap, uncrok
+    logical(kind=1) :: ladap, uncrok
     character(len=24) :: tpsite
     integer :: jiter
     integer :: nbini, nmax, inspas

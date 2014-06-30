@@ -50,7 +50,7 @@ subroutine nmchsv(fonact, veasse, sddyna)
     character(len=19) :: olondp, ollapl, olcine
     character(len=19) :: cnfedo, cnfsdo, cndido, cndidi, cnfint
     character(len=19) :: cnondp, cnlapl, cncine
-    logical :: londe, llapl, ldidi
+    logical(kind=1) :: londe, llapl, ldidi
 !
 ! ----------------------------------------------------------------------
 !

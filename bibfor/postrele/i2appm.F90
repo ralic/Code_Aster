@@ -2,7 +2,7 @@ subroutine i2appm(xp, yp, xso, yso, xin,&
                   yin, cdroi, nbc, dedans)
     implicit   none
     real(kind=8) :: xp, yp, xso(*), yso(*), xin(*), yin(*)
-    logical :: dedans, cdroi(*)
+    logical(kind=1) :: dedans, cdroi(*)
     integer :: nbc
 !
 ! ======================================================================

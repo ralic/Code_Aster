@@ -111,7 +111,7 @@ subroutine op0019()
     integer :: npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill
     integer :: ngribt, nmembr, iclf, ioc, icle, ng
     integer :: depart, jdnm, ixnw, jdln, jdlm, jdls
-    logical :: locaco, locagb, locamb
+    logical(kind=1) :: locaco, locagb, locamb
     character(len=6) :: kioc
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclf(nbmcf), mcle(4), k16bid

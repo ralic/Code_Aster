@@ -36,7 +36,7 @@ subroutine liimpr(noml, impr, fichie)
     character(len=16) :: nomcmd
     character(len=19) :: nomlis
     character(len=24) :: lpas, nbpa, vale, bint, titr
-    logical :: lisree
+    logical(kind=1) :: lisree
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iret, iul, jbor, jnbp

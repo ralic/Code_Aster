@@ -29,7 +29,7 @@ interface
         integer :: nnl
         integer :: nbcps
         integer :: nbdm
-        logical :: laxis
-        logical :: leltf
+        logical(kind=1) :: laxis
+        logical(kind=1) :: leltf
     end subroutine mmelem
 end interface

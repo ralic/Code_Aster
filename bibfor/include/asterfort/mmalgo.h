@@ -24,11 +24,11 @@ interface
                   indi_frot_curr, ctcsta        , mmcvca        , scotch        )
         character(len=24), intent(in) :: sd_cont_defi
         character(len=24), intent(in) :: sd_cont_solv
-        logical, intent(in) :: l_loop_cont
-        logical, intent(in) :: l_frot_zone
-        logical, intent(in) :: l_vite
-        logical, intent(in) :: l_glis_init
-        logical, intent(in) :: l_coef_adap
+        logical(kind=1), intent(in) :: l_loop_cont
+        logical(kind=1), intent(in) :: l_frot_zone
+        logical(kind=1), intent(in) :: l_vite
+        logical(kind=1), intent(in) :: l_glis_init
+        logical(kind=1), intent(in) :: l_coef_adap
         integer, intent(in) :: point_index
         integer, intent(in) :: zone_index
         integer, intent(in) :: indi_cont_init
@@ -44,7 +44,7 @@ interface
         integer, intent(out) :: indi_cont_curr
         integer, intent(out) :: indi_frot_curr
         integer, intent(out) :: ctcsta
-        logical, intent(out) :: mmcvca
-        logical, intent(out) :: scotch
+        logical(kind=1), intent(out) :: mmcvca
+        logical(kind=1), intent(out) :: scotch
     end subroutine mmalgo
 end interface

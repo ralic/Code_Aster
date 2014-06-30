@@ -85,7 +85,7 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate,&
 !
     real(kind=8) :: tp, tm, tref
     integer :: iret
-    logical :: cplane, coup
+    logical(kind=1) :: cplane, coup
 !
 !     NORMALEMENT, LES VERIF ONT ETE FAITES AVANT POUR INTERDIRE
 !     GRAD_VARI

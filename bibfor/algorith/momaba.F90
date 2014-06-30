@@ -42,7 +42,7 @@ subroutine momaba(mailla)
 !
     integer :: jtyma, nbmc, nbma, jnuma, i, j, ityp,  n1, n2, i1, i2, nbno
     integer :: nbmat, jpoin, ifm, niv, jcon,  ndim, nn, jnbma, ncount
-    logical :: lnmf, lmodi
+    logical(kind=1) :: lnmf, lmodi
     parameter(nbmc=2)
     character(len=8) :: k8b, type
     character(len=16) :: tymocl(nbmc), motcle(nbmc)

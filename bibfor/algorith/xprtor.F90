@@ -33,7 +33,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     character(len=19) :: cnsln, grln, cnslt, grlt, nodcal, elecal, cnsdis, disfr
     character(len=19) :: cnsbl, cnxinv, liggrd
     character(len=24) :: vcn, grlr, vcnt, grlrt
-    logical :: tore
+    logical(kind=1) :: tore
     real(kind=8) :: radtor, radimp
 !
 ! ======================================================================
@@ -312,7 +312,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
         else
 !           THE DOMAIN LOCALISATION WAS USED IN THE PREVIOUS PROPAGATION
 !           STEP. WE JUST NEED TO COPY IT.
-            call jedupo(fispre//'.PRO.NOEUD_TORE', 'V', lisold, .false.)
+            call jedupo(fispre//'.PRO.NOEUD_TORE', 'V', lisold, .false._1)
             call jeveuo(lisold, 'L', jlisol)
         endif
 !

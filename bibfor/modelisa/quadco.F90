@@ -53,7 +53,7 @@ subroutine quadco(char, indqua)
 !
     integer :: iform
     character(len=24) :: defico
-    logical :: lallv, lpenac, lgliss
+    logical(kind=1) :: lallv, lpenac, lgliss
 !
 ! ----------------------------------------------------------------------
 !

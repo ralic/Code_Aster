@@ -46,7 +46,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=*) :: modele, optioz, cara, mate
     character(len=*) :: merigi, memass, meamor, varplu
     character(len=8) :: lchar(*)
-    logical :: exitim
+    logical(kind=1) :: exitim
     character(len=1) :: base
 !
 ! ----------------------------------------------------------------------
@@ -87,7 +87,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=24) :: rigich, massch, ligrmo, ligrch
     character(len=24) :: chgeom, chcara(18), chharm, argu
     character(len=16) :: option
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
     character(len=24), pointer :: rerr(:) => null()
 !

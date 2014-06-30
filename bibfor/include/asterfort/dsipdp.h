@@ -27,6 +27,6 @@ interface
         real(kind=8) :: dsde(dimcon, dimdef)
         real(kind=8) :: dspdp1
         real(kind=8) :: dspdp2
-        logical :: pre2tr
+        logical(kind=1) :: pre2tr
     end subroutine dsipdp
 end interface

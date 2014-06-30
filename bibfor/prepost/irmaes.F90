@@ -80,7 +80,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     parameter   (atrmin = 'RAYON MIN')
     parameter   (atrmax = 'RAYON MAX')
 !
-    logical :: exicoq, exituy, exipmf
+    logical(kind=1) :: exicoq, exituy, exipmf
     real(kind=8), pointer :: ccesv(:) => null()
     real(kind=8), pointer :: ocesv(:) => null()
     real(kind=8), pointer :: pcesv(:) => null()

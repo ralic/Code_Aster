@@ -28,7 +28,7 @@ subroutine brdefv(e1i, e2i, a, t, b,&
 #include "asterfort/bre1bl.h"
 #include "asterfort/bre1ec.h"
 #include "asterfort/bre2ec.h"
-    logical :: h1, h2
+    logical(kind=1) :: h1, h2
 !
 !     EFLIM=3.0E-2
 !-----------------------------------------------------------------------

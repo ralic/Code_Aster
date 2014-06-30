@@ -70,7 +70,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     complex(kind=8) :: calpha, calp
     real(kind=8) :: phase, omega
     integer :: npuis
-    logical :: lveas, lveag
+    logical(kind=1) :: lveas, lveag
     character(len=24) :: chamno
     complex(kind=8), pointer :: resu(:) => null()
 !

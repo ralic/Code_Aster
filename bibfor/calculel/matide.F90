@@ -61,7 +61,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     character(len=14) :: nonu
     character(len=1) :: ktyp
     character(len=19) :: mat19
-    logical :: ltypr, lsym, eliml, elimc
+    logical(kind=1) :: ltypr, lsym, eliml, elimc
     real(kind=8) :: kmax
     complex(kind=8) :: ckmax
     integer, pointer :: smdi(:) => null()

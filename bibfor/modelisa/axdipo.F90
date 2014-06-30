@@ -62,7 +62,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     integer :: ncmpor, nummai, nutyel, pobali, iaux1
     integer :: ntyele(nbtel)
 !
-    logical :: ntrouv
+    logical(kind=1) :: ntrouv
 !
     real(kind=8) :: alpha, alpha2, beta, beta2, cosa, cosa2, cosb
     real(kind=8) :: cosb2, cosg, cosg2, dif1, dif2, dif3, dife1

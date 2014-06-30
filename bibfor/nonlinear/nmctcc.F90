@@ -46,7 +46,7 @@ subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
     character(len=19), intent(in) :: valinc(*)
     character(len=19), intent(in) :: solalg(*)
     real(kind=8), intent(in) :: instan
-    logical, intent(out) :: mmcvca
+    logical(kind=1), intent(out) :: mmcvca
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,12 +73,12 @@ subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: ltfcm, lctcc, lxfcm, lfrot, lerroc
+    logical(kind=1) :: ltfcm, lctcc, lxfcm, lfrot, lerroc
     integer :: ntpc, itemul, maxcon, ctcsta
     integer :: mmitca
     character(len=8) :: nomo
     integer :: iterat
-    logical :: cycl_flip
+    logical(kind=1) :: cycl_flip
 !
 ! ----------------------------------------------------------------------
 !
@@ -152,9 +152,9 @@ subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
 !
     call nmcrel(sderro, 'ERRE_CTCC', lerroc)
     if (mmcvca) then
-        call nmcrel(sderro, 'DIVE_FIXC', .false.)
+        call nmcrel(sderro, 'DIVE_FIXC', .false._1)
     else
-        call nmcrel(sderro, 'DIVE_FIXC', .true.)
+        call nmcrel(sderro, 'DIVE_FIXC', .true._1)
     endif
 !
 end subroutine

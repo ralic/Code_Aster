@@ -65,7 +65,7 @@ subroutine asmaco(ma1, ma2, mag)
     integer :: iatyma, iacoo1, iacoo2, iavale, iret, iret1, iret2
     integer :: iamam1, iamam2, nbpar
     integer :: ilgma, ilgm2, decal
-    logical :: match, elim
+    logical(kind=1) :: match, elim
     real(kind=8) :: prec1, prec2, prec, dist, x1, y1, z1, x2, y2, z2, r8b, armin
     real(kind=8) :: xi1, yi1, zi1
     complex(kind=8) :: c16b

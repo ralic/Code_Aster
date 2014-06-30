@@ -6,7 +6,7 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
 #include "asterfort/utmess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp
     real(kind=8) :: sigw(*), m, fc, dfc, s1, s2, sk(*)
-    logical :: cals
+    logical(kind=1) :: cals
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

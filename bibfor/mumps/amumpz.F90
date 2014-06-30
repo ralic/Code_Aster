@@ -71,7 +71,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     character(len=19) :: vcine, nosolv
     integer :: iret, nbsol, kxmps, ifmump, pcentp(2)
     complex(kind=8) :: csolu(*)
-    logical :: prepos
+    logical(kind=1) :: prepos
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
@@ -88,8 +88,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     character(len=19) :: nomat
     character(len=24) :: kmonit(12), k24aux, kvers, k24bid
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
-    logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
-    logical :: lopfac
+    logical(kind=1) :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
+    logical(kind=1) :: lopfac
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
     real(kind=8), pointer :: slvr(:) => null()

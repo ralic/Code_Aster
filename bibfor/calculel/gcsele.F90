@@ -29,13 +29,13 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
 !
     character(len=16) :: motcle
     character(len=19) :: carte0
-    logical :: lformu, lpchar, lccomb
+    logical(kind=1) :: lformu, lpchar, lccomb
     character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
     character(len=19) :: chepsi, chpesa, chrota
-    logical :: lvolu, l1d2d, l2d3d, lpres
-    logical :: lepsi, lpesa, lrota
-    logical :: lfvolu, lf1d2d, lf2d3d, lfpres
-    logical :: lfepsi, lfpesa, lfrota
+    logical(kind=1) :: lvolu, l1d2d, l2d3d, lpres
+    logical(kind=1) :: lepsi, lpesa, lrota
+    logical(kind=1) :: lfvolu, lf1d2d, lf2d3d, lfpres
+    logical(kind=1) :: lfepsi, lfpesa, lfrota
 !
 ! ----------------------------------------------------------------------
 !

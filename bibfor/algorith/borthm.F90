@@ -21,7 +21,7 @@ subroutine borthm(axi, vf, perman, typvf,&
     implicit none
 #include "asterfort/dimthm.h"
 #include "asterfort/typthm.h"
-    logical :: axi, perman, vf
+    logical(kind=1) :: axi, perman, vf
     integer :: ndim, ndlno, ndlnm
     character(len=8) :: typmod(2)
     integer :: typvf

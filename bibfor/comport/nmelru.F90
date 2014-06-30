@@ -56,7 +56,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
     real(kind=8) :: epseq, p, divu, ener(2)
     character(len=*) :: fami, poum
     character(len=16) :: compor(*)
-    logical :: nonlin
+    logical(kind=1) :: nonlin
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: icodre(3)
@@ -71,7 +71,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
 !
     character(len=8) :: nomres(3), para_type
 !
-    logical :: trac, line, puis
+    logical(kind=1) :: trac, line, puis
 !
     common        /rconm2/alfafa,unsurn,sieleq
     real(kind=8) :: alfafa, unsurn, sieleq

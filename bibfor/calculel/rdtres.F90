@@ -72,7 +72,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     character(len=16) :: typres, nomsym(200), nopara
     character(len=8) :: model1, crit, type, model2, kchml
     character(len=19) :: chp, chpre, ligrel
-    logical :: acceno, redpos
+    logical(kind=1) :: acceno, redpos
     integer, pointer :: nume_ordre(:) => null()
     character(len=16), pointer :: noms_para(:) => null()
     integer, pointer :: corrm_inv(:) => null()

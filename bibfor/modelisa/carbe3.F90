@@ -72,7 +72,7 @@ subroutine carbe3(charge)
     integer :: jnogro, jnoesc,  jnzddl, jnznor
     integer :: nbrbe3, nbdles, nbcfes, nbddl, nblign, nbcol, nbgrou, nbent
     integer :: nbnoeu, nbdlma, maxesc, maxles, maxddl, dime
-    logical :: fincod, ddlesc(6), ddlmai(6), frstco, dime2d
+    logical(kind=1) :: fincod, ddlesc(6), ddlmai(6), frstco, dime2d
     real(kind=8) :: rbid, coomai(3), cooesc(3), lc, norme, lcsqua, stws(6, 6)
     real(kind=8) :: cofesc, beta, x(6, 6)
     real(kind=8), pointer :: b(:) => null()

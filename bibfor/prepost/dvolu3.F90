@@ -39,7 +39,7 @@ function dvolu3(coord, norm, coord1)
 !
     integer :: i, j, k, l, m, e
     real(kind=8) :: vol3, vol4, xio1, yio1, zio1, dio1
-    logical :: lnoeu
+    logical(kind=1) :: lnoeu
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES
 !     RQ : 2 POINTS DEDANS

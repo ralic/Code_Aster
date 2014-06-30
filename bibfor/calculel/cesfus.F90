@@ -42,7 +42,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
-    logical :: lcumul(nbchs), lcoc
+    logical(kind=1) :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
     complex(kind=8) :: lcoefc(nbchs)
 ! ---------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     character(len=19) :: ces1, ces3
     real(kind=8) :: coefr
     complex(kind=8) :: coefc
-    logical :: cumul
+    logical(kind=1) :: cumul
     character(len=8), pointer :: ce3c(:) => null()
     integer, pointer :: corr_cmp(:) => null()
     character(len=8), pointer :: licmp(:) => null()

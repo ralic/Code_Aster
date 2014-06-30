@@ -86,7 +86,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
     character(len=19) :: matir, matim, matia, amort
     character(len=24) :: valer, valem, valea
     character(len=24) :: valk(2)
-    logical :: cpx
+    logical(kind=1) :: cpx
 !
 ! ----------------------------------------------------------------------
 !

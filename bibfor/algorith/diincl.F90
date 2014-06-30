@@ -19,7 +19,7 @@ function diincl(sddisc, nomchz, force)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: diincl
+    logical(kind=1) :: diincl
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -28,7 +28,7 @@ function diincl(sddisc, nomchz, force)
 #include "asterfort/jeveuo.h"
     character(len=19) :: sddisc
     character(len=*) :: nomchz
-    logical :: force
+    logical(kind=1) :: force
 !
 ! ----------------------------------------------------------------------
 !

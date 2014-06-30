@@ -51,11 +51,11 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: dvrela, dvmaxi, dvrefe, dvcomp
-    logical :: dvpfix, dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
-    logical :: dvdebo, cvpilo
-    logical :: cvnewt, lerrne
-    logical :: erctcg, erctcf, erctcc
+    logical(kind=1) :: dvrela, dvmaxi, dvrefe, dvcomp
+    logical(kind=1) :: dvpfix, dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
+    logical(kind=1) :: dvdebo, cvpilo
+    logical(kind=1) :: cvnewt, lerrne
+    logical(kind=1) :: erctcg, erctcf, erctcc
     character(len=16) :: debors
     character(len=24) :: sdtabc, slcolo, lisnom
 !
@@ -121,7 +121,7 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
         call obtsdm(lisnom, 'BOUC_GEOM', 'X')
         call obtsdm(lisnom, 'BOUC_FROT', 'X')
         call obtsdm(lisnom, 'BOUC_CONT', 'X')
-        if (dvdebo) call nmimck(sdimpr, 'DEBORST  ', debors, .true.)
+        if (dvdebo) call nmimck(sdimpr, 'DEBORST  ', debors, .true._1)
     else if (nombcl.eq.'FIXE') then
         call obtsdm(lisnom, 'BOUC_GEOM', 'X')
         call obtsdm(lisnom, 'BOUC_FROT', 'X')

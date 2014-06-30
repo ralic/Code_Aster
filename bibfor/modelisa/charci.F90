@@ -82,7 +82,7 @@ subroutine charci(chcine, mfact, mo, type)
     character(len=19) :: chci, cns, cns2, depla, noxfem
     character(len=24) :: cino, cnuddl, cvlddl, nprol,valk(2)
     character(len=80) :: titre
-    logical :: lxfem
+    logical(kind=1) :: lxfem
     character(len=8), pointer :: afck(:) => null()
     data nprol/'                   .PROL'/
 ! --- DEBUT -----------------------------------------------------------

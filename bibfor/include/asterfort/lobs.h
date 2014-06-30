@@ -20,6 +20,6 @@ interface
         character(len=19) :: sdobse
         integer :: numins
         real(kind=8) :: inst
-        logical :: lobsv
+        logical(kind=1) :: lobsv
     end subroutine lobs
 end interface

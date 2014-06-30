@@ -75,7 +75,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     character(len=6) :: chn
     character(len=8) :: valk(2)
     parameter     (crilsn = 1.d-4)
-    logical :: lpint
+    logical(kind=1) :: lpint
     data          valk /'NOEUDS','XPOAJN'/
 !
 !     ------------------------------------------------------------------

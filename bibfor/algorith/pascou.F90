@@ -62,7 +62,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     integer :: ibid, jcesd, jcesl,  n1, i
     integer :: nbma, ima, iad,  nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, r8b
-    logical :: booneg, boopos, exicar
+    logical(kind=1) :: booneg, boopos, exicar
     character(len=6) :: nompro
     character(len=8) :: k8bid, mo, lpain(3), lpaout(1), stocfl, maicfl, mail
     character(len=19) :: chams

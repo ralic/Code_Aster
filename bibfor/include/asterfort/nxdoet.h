@@ -20,8 +20,8 @@ interface
                       initpr, instin)
         character(len=24) :: modele
         character(len=24) :: numedd
-        logical :: lreuse
-        logical :: lostat
+        logical(kind=1) :: lreuse
+        logical(kind=1) :: lostat
         character(len=24) :: sdieto
         integer :: initpr
         real(kind=8) :: instin

@@ -19,7 +19,7 @@ interface
     subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
         character(len=16), intent(in) :: rela_comp
         character(len=*), intent(in) :: whatz
-        logical, intent(out) :: l_detec
+        logical(kind=1), intent(out) :: l_detec
         character(len=16), optional, intent(in) :: type_matg
         character(len=16), optional, intent(in) :: post_iter
     end subroutine comp_meca_l

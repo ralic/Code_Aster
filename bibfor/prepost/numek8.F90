@@ -31,7 +31,7 @@ subroutine numek8(tglok8, tlock8, nbgk8, nblk8, tind)
 !***********************************************************************
 !
     character(len=8) :: nlk8
-    logical :: trouve
+    logical(kind=1) :: trouve
     integer :: i, j
 !
 !-----------------------------------------------------------------------

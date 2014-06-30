@@ -28,7 +28,7 @@ subroutine cfgccj(resoco, nbliai, conjug)
 #include "blas/dscal.h"
     character(len=24) :: resoco
     integer :: nbliai
-    logical :: conjug
+    logical(kind=1) :: conjug
 !
 ! ----------------------------------------------------------------------
 !

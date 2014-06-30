@@ -22,7 +22,7 @@ interface
         integer :: nocc(*)
         real(kind=8) :: saltij(*)
         real(kind=8) :: saltm
-        logical :: trouve
+        logical(kind=1) :: trouve
         integer :: isk
         integer :: isl
         integer :: nk

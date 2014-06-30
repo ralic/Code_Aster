@@ -13,7 +13,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     integer :: nunoa, nunob, nunoc
     character(len=8) :: noma
     character(len=19) :: cnxinv
-    logical :: fabord
+    logical(kind=1) :: fabord
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

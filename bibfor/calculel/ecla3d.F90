@@ -68,7 +68,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
 !
 ! ---------------------------------------------------------------------
     integer :: k, ihexa8, ipent6, itetr4, ipyra5
-    logical :: ltetra, lpyram
+    logical(kind=1) :: ltetra, lpyram
     character(len=24) :: valk(3)
 !
 ! ---------------------------------------------------------------------

@@ -87,7 +87,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     character(len=16) :: tysd
     character(len=19) :: knum, kcha
     character(len=24) :: mate
-    logical :: newcal
+    logical(kind=1) :: newcal
 !
 !
 !     --- VARIABLES LOCALES ---

@@ -43,7 +43,8 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
     character(len=*) :: cv
     integer :: deblig
     real(kind=8) :: rv
-    logical :: lnom, lent
+    logical(kind=1) :: lnom, lent
+    logical :: lcond
 !
 !-----------------------------------------------------------------------
     integer :: i, icl, ifl, ilec, inom, iv
@@ -54,7 +55,8 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
     nbigno=0
     nom='INDEFINI'
 !
-    ASSERT(inom.eq.0.or.inom.eq.1)
+    lcond=inom.eq.0.or.inom.eq.1
+    ASSERT(lcond)
 !
     if (inom .eq. 0) then
  1      continue
@@ -141,7 +143,8 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
             endif
         else
             if (lent) then
-                ASSERT(.not.lnom)
+                lcond=.not.lnom
+                ASSERT(lcond)
                 nbigno = nbigno - 1
                 goto 9
             else

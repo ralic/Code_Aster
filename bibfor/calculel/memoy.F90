@@ -57,7 +57,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     real(kind=8) :: rzero
     character(len=8) :: scal1, scal2
     character(len=19) :: champ1, champ2, ligrel, ligre1, ligre2
-    logical :: first
+    logical(kind=1) :: first
 !
 !-----------------------------------------------------------------------
     integer :: i, iacelk,   ibid, icoef, idecg1

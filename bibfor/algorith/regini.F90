@@ -26,7 +26,7 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
     integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
     integer :: regula(6)

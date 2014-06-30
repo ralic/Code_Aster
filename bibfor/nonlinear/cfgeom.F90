@@ -31,7 +31,7 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 #include "asterfort/nmtime.h"
 #include "asterfort/reajeu.h"
     integer :: iterat
-    logical :: reageo
+    logical(kind=1) :: reageo
     character(len=8) :: noma
     character(len=24) :: defico, resoco, sdtime, sdstat
     character(len=19) :: depplu

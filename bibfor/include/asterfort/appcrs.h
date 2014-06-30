@@ -18,6 +18,6 @@
 interface
     subroutine appcrs(kptsc, lmd)
         integer :: kptsc
-        logical :: lmd
+        logical(kind=1) :: lmd
     end subroutine appcrs
 end interface

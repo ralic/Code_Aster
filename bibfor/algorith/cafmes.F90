@@ -53,7 +53,7 @@ subroutine cafmes(ifa, cont, tange, maxfa, nface,&
 !     FMW =  MOB * F_{K,SIGMA}
 !================================================
     implicit none
-    logical :: cont, tange
+    logical(kind=1) :: cont, tange
     integer :: maxfa
     integer :: nface
     real(kind=8) :: fmw(1:maxfa)

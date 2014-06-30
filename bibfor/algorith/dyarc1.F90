@@ -39,7 +39,7 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
     integer :: inda, indc
     real(kind=8) :: rval
     real(kind=8) :: valr
-    logical :: trouve
+    logical(kind=1) :: trouve
     character(len=8) :: k8b
     character(len=16) :: typcon, nomcmd
 !     ------------------------------------------------------------------

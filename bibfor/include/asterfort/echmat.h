@@ -18,7 +18,7 @@
 interface
     subroutine echmat(matz, ldist, rmin, rmax)
         character(len=*) :: matz
-        logical :: ldist
+        logical(kind=1) :: ldist
         real(kind=8) :: rmin
         real(kind=8) :: rmax
     end subroutine echmat

@@ -34,7 +34,7 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
     real(kind=8) :: pic(*), x, y, e1, e2, e3, sigmax(*), sigmin(*)
     real(kind=8) :: r1, r2, rd, rad
     integer :: npic, ncyc, itrv(*), npicb
-    logical :: lresi, cyczer
+    logical(kind=1) :: lresi, cyczer
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ifm, j, k, niv, npicr

@@ -56,7 +56,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     character(len=24) :: valk(3)
     character(len=8) :: intf, kbid, mailla, nomnod, nomnog, nomnj
     character(len=50) :: diag
-    logical :: ordre
+    logical(kind=1) :: ordre
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

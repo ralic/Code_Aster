@@ -19,6 +19,6 @@ interface
     subroutine nmlecv(sderro, nombcl, lconv)
         character(len=24) :: sderro
         character(len=4) :: nombcl
-        logical :: lconv
+        logical(kind=1) :: lconv
     end subroutine nmlecv
 end interface

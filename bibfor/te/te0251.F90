@@ -43,7 +43,7 @@ subroutine te0251(option, nomte)
     integer :: imattt, i, j, ij, l, li, lj, ibid
     integer :: c(6, 9), ise, nse, nnop2
     integer :: igeom, iflux, itempi, itemps
-    logical :: laxi
+    logical(kind=1) :: laxi
     character(len=8) :: elrefe, alias8
 !
 !

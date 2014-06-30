@@ -56,7 +56,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     integer :: ival, iret,   igr, nbtrou, itbma, lma, nbval
     integer ::  jcnsl,  jcnsv, nbno, ino, jno, nbn, in
     integer :: jcmp, cmpmin, cmpmax
-    logical :: ltopo
+    logical(kind=1) :: ltopo
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cesc(:) => null()

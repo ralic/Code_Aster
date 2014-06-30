@@ -29,7 +29,7 @@ interface
         real(kind=8) :: f
         real(kind=8) :: fvec(*)
         real(kind=8) :: stpmax
-        logical :: check
+        logical(kind=1) :: check
         real(kind=8) :: tolx
         real(kind=8) :: vecr1(*)
         real(kind=8) :: vecr2(*)

@@ -68,7 +68,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 !   IRET    I    CODE RETOUR (0 SI OK, 1 SINON)
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    logical :: exif1d
+    logical(kind=1) :: exif1d
 !
     integer :: ltymo,  lfreq, neq, lvale, lacce, ii, i
     integer :: l1, l3,   n1, ipara, ier, linst

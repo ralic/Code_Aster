@@ -44,6 +44,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     character(len=19) :: chnorm, csnorm
     integer, pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
+    logical :: lcond
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -70,7 +71,8 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     if (.not.zl(jcnsl-1+3*(nuno2-1)+k)) then
         call utmess('F', 'CHAMPS_2', sk=chnorm)
     endif
-    ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
+    lcond=zl(jcnsl-1+3*(nuno2-1)+k)
+    ASSERT(lcond)
     zr(jlisv1-1+3*(nuno2-1)+k)=cnsv(3*(nuno2-1)+k)*&
             epais
 10  continue
@@ -88,7 +90,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     40 end do
     call pj3dco('PARTIE', mo, mo, nbma1, lima1,&
                 nbno2, lino2, ' ', geom2, corre1,&
-                .false., rbid)
+                .false._1, rbid)
 !
 !
 !     -- ON MODIFIE GEOM2 (-H/2) POUR OBTENIR CORRE2 :
@@ -102,7 +104,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     60 end do
     call pj3dco('PARTIE', mo, mo, nbma1, lima1,&
                 nbno2, lino2, ' ', geom2, corre2,&
-                .false., rbid)
+                .false._1, rbid)
 !
 !     -- ON RETABLIT GEOM2 :
 !     -------------------------------------------------

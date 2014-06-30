@@ -70,7 +70,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     real(kind=8) :: modmax, module
     character(len=3) :: kmod
     character(len=8) :: nompar
-    logical :: defini
+    logical(kind=1) :: defini
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

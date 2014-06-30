@@ -21,6 +21,6 @@ interface
         character(len=4) :: typcha
         character(len=4) :: soutyp
         integer :: ichar
-        logical :: ischar
+        logical(kind=1) :: ischar
     end function ischar
 end interface

@@ -76,11 +76,11 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
     criter=' '
     k19bid=' '
     call mrmult('ZERO', lamor, yh, u1, 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lmasse, yb, u2, 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lmasse, yh, u3, 1,&
-                .false.)
+                .false._1)
 !-RM-DEB
 !     LA BOUCLE 5 REALISE LE PRODUIT PAR MASSE*INV(MASSE_REG)*MASSR
 !     OR CETTE MATRICE EST EGALE A MASSE
@@ -96,7 +96,7 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, [0.d0], v,&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
         if (appr .eq. 'R') then
             do i = 1, n, 1
                 zh(i) = - dble(v(i))
@@ -114,7 +114,7 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, u1, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
         do i = 1, n, 1
             zh(i) = -u1(i)
             zb(i) = (yh(i) - sr*u1(i))*lbloq(i)

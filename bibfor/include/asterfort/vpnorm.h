@@ -27,7 +27,7 @@ interface
         integer :: ddlexc(*)
         real(kind=8) :: vecpro(neq, *)
         real(kind=8) :: resufr(nbmode, *)
-        logical :: lmasin
+        logical(kind=1) :: lmasin
         real(kind=8) :: xmastr
         integer :: isign
         integer :: numddl

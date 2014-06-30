@@ -51,7 +51,7 @@ subroutine cfverl(defico, resoco)
     character(len=19) :: sdappa
     character(len=24) :: apverk, apvera
     integer :: jlistn, jlista
-    logical :: lliss
+    logical(kind=1) :: lliss
 !
 ! ----------------------------------------------------------------------
 !

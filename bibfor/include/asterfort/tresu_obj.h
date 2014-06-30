@@ -26,9 +26,9 @@ interface
         real(kind=8), intent(in) :: refr
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        logical, intent(in) :: llab
+        logical(kind=1), intent(in) :: llab
         character(len=*), intent(in) :: ssigne
-        logical, intent(in), optional :: ignore
+        logical(kind=1), intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_obj
 end interface

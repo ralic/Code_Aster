@@ -60,7 +60,7 @@ subroutine exresl(modatt, iparg, chin)
 !     ------------------
     integer :: desc, mode, ncmpel, iret, jparal, iel, iaux1, iaux2, iaux0, k
     integer :: jresl, debugr, lggrel
-    logical :: lparal
+    logical(kind=1) :: lparal
 !
 !
     call jemarq()

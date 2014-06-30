@@ -42,7 +42,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, dc, dc0, c, h, ka, sk, rk, val(4), kap, gap, incr
     real(kind=8) :: dn, tn, t(3), ddndtn, deltam

@@ -18,7 +18,7 @@ function lisico(genchz, genrec)
 ! ======================================================================
 !
     implicit none
-    logical :: lisico
+    logical(kind=1) :: lisico
 #include "jeveux.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"

@@ -27,7 +27,7 @@ subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
     real(kind=8) :: dlagrc, hpg, ffc(9), jacobi, coefcr, coefcp
     real(kind=8) :: vtmp(336)
     character(len=8) :: typmai
-    logical :: lpenac, lmulti
+    logical(kind=1) :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !

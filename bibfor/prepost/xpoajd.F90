@@ -24,7 +24,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: nbcmp, cmp(nbcmp), nfe, ima, jconx1, jconx2, jcnsv1
     integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac
     integer :: nfiss, jfisno, he(nfiss), nfh, inn, nnn, ninter
-    logical :: lmeca
+    logical(kind=1) :: lmeca
+    logical :: lcond
     character(len=8) :: elrefp, typma
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
@@ -101,7 +102,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8)
     integer :: lact(8), nlact
-    logical :: lpint, lcont, pre1
+    logical(kind=1) :: lpint, lcont, pre1
     parameter    (crilsn = 1.d-4)
 !
 !     ------------------------------------------------------------------
@@ -138,7 +139,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             lpint = .false.
         endif
     endif
-    if (ddlc .gt. 0) ASSERT(lmeca)
+    if (ddlc .gt. 0) then
+       lcond=lmeca
+       ASSERT(lcond)
+    endif   
     lcont = (ddlc.gt.0).and.(ndime.eq.ndim) .and.(ninter.gt.0).and.(nfiss.eq.1)
 !
     inn = inn + 1

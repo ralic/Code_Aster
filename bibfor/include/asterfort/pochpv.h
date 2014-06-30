@@ -26,6 +26,6 @@ interface
         real(kind=8) :: trepos
         integer :: nbclas
         character(len=*) :: nomres
-        logical :: loptio
+        logical(kind=1) :: loptio
     end subroutine pochpv
 end interface

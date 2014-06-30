@@ -75,7 +75,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
     character(len=8) :: nomres(2), elrese(3), fami(3), poum
     character(len=16) :: phenom
-    logical :: axi
+    logical(kind=1) :: axi
     real(kind=8) :: baslog(3*ndim), tem, lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)

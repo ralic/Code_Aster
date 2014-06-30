@@ -54,11 +54,11 @@ subroutine ordonp(nomfon)
 !
     call jelira(chpar, 'LONUTI', nbpara)
 !     RECUPERE LES PARAMETRES
-    call jedupo(chpar, 'V', sfpar, .false.)
+    call jedupo(chpar, 'V', sfpar, .false._1)
     call jeveuo(sfpar, 'E', ipar)
     call jelira(sfpar, 'LONUTI', nbpara)
 !
-    call jedupo(chval, 'V', sfval, .false.)
+    call jedupo(chval, 'V', sfval, .false._1)
 !
     call jedetr(chpar)
     call jedetr(chval)

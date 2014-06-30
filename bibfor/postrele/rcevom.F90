@@ -20,7 +20,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 #include "asterfort/tbcrsd.h"
     integer :: it, jt
     real(kind=8) :: sm, symax
-    logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt
+    logical(kind=1) :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, cnoc, csno, csne, csneo, csnee, cfao
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo

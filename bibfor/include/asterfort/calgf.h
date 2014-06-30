@@ -23,7 +23,7 @@ interface
         integer :: npg
         integer :: nno
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: geomi(ndim, nno)
         integer :: g
         integer :: iw
@@ -31,7 +31,7 @@ interface
         integer :: idff
         real(kind=8) :: deplm(nno*ndim)
         real(kind=8) :: deplt(nno*ndim)
-        logical :: grand
+        logical(kind=1) :: grand
         real(kind=8) :: alpha
         real(kind=8) :: r
         real(kind=8) :: w

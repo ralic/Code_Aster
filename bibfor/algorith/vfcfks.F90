@@ -50,7 +50,7 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    logical :: cont, tange
+    logical(kind=1) :: cont, tange
     integer :: maxfa, maxdim
     integer :: nface, ndim
     real(kind=8) :: fks(nface)

@@ -50,7 +50,7 @@ subroutine dxsith(nomte, mater, sigma)
 !
     character(len=4) :: fami
 !
-    logical :: dkg
+    logical(kind=1) :: dkg
 !
 ! ----------------------------------------------------------------------
 !

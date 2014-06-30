@@ -54,7 +54,7 @@ subroutine te0573(option, nomte)
     integer :: mxnoeu, mxnpg, mxvect, mxmatr
     parameter     (mxnoeu=3,mxnpg=4,mxvect=2*3,mxmatr=2*3*2*3)
 !
-    logical :: laxi
+    logical(kind=1) :: laxi
     integer :: ndim, nno, npg, nnos, nddl
     integer :: iddl, ino, ipg
     integer :: jpoids, jvf, jdf, jgano

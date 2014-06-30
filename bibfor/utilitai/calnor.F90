@@ -110,7 +110,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 !
     real(kind=8) :: x1, y1, x2, y2, x3, y3, norme
     real(kind=8) :: x(9), y(9), z(9), sx(9, 9), sy(9, 9), sz(9, 9)
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 ! ----------------------------------------------------------------------
 !

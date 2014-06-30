@@ -50,7 +50,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
     real(kind=8) :: interv
     integer :: i, n1, n2, nb, ct
     real(kind=8) :: a, b, c
-    logical :: sortie
+    logical(kind=1) :: sortie
 !
 !-----------------------------------------------------------------------
 !

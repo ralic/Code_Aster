@@ -20,7 +20,7 @@ interface
                       codret)
         character(len=64) :: nochmd
         integer :: lnochm
-        logical :: lresu
+        logical(kind=1) :: lresu
         character(len=8) :: noresu
         character(len=16) :: nomsym
         integer :: codret

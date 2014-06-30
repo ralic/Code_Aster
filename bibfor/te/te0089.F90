@@ -42,7 +42,7 @@ subroutine te0089(option, nomte)
     real(kind=8) :: pres, cisa
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ipres, ivectu, i, l
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

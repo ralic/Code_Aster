@@ -30,6 +30,6 @@ interface
         integer :: im2
         integer :: if2
         integer :: iao2
-        logical :: i3egfa
+        logical(kind=1) :: i3egfa
     end function i3egfa
 end interface

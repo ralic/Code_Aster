@@ -66,7 +66,7 @@ subroutine te0363(option, nomte)
     real(kind=8) :: rre, rrm, ffec(8)
     parameter    (prec=1.d-16)
     integer :: cface(5, 3), contac, ddle(2), ddlm(2), ibid, ndeple
-    logical :: lmulti
+    logical(kind=1) :: lmulti
 !
 ! ----------------------------------------------------------------------
 !

@@ -23,7 +23,7 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno
     real(kind=8) :: vff(nno), dfdi(nno, ndim), deplg(*)
     real(kind=8) :: epsb(6), geps(6, 3)

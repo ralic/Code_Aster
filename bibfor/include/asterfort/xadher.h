@@ -30,6 +30,6 @@ interface
         real(kind=8) :: kn(3, 3)
         real(kind=8) :: ptknp(3, 3)
         real(kind=8) :: ik(3, 3)
-        logical :: adher
+        logical(kind=1) :: adher
     end subroutine xadher
 end interface

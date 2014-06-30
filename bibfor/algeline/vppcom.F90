@@ -21,7 +21,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    logical :: lcomod
+    logical(kind=1) :: lcomod
     integer :: icom1, icom2, nbpari, nbparr, nbpark, nconv, neq, mxresf
     integer :: resui(*)
     real(kind=8) :: vectr(*), resur(*)

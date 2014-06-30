@@ -67,7 +67,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: invrot(ndim, ndim), rigart
     character(len=8) :: nom(nbpa), nompar(ndim+1)
     character(len=1) :: poum
-    logical :: resi, rigi, elas, ifpahm, ifhyme
+    logical(kind=1) :: resi, rigi, elas, ifpahm, ifhyme
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 ! CALCUL DE CONTRAINTE (RESIDU)

@@ -19,6 +19,6 @@ interface
     function idenob(obj1, obj2)
         character(len=*) :: obj1
         character(len=*) :: obj2
-        logical :: idenob
+        logical(kind=1) :: idenob
     end function idenob
 end interface

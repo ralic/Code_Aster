@@ -45,7 +45,7 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
     real(kind=8) :: sommr
     integer :: sommi, nbign
     character(len=24) :: k24
-    logical :: l
+    logical(kind=1) :: l
     character(len=*) :: perm
     character(len=8) :: k8
     real(kind=8) :: x

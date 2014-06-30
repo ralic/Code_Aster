@@ -76,7 +76,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
     integer :: nbvec,  ityp, neq, jass, i, ibid, iret, icha
     integer :: n1, jvacha
-    logical :: bidon
+    logical(kind=1) :: bidon
     character(len=4) :: tych
     character(len=8) :: modele, newnom, vacha8
     character(len=19) :: chamno, resuel, vecele

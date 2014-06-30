@@ -66,11 +66,11 @@ subroutine cfllm1(resoco, neq, nesmax, nbliai, nbliac,&
     integer :: ztacf
     character(len=19) :: fro1
     integer :: jfro11, jfro12
-    logical :: liaact
+    logical(kind=1) :: liaact
     character(len=2) :: typec0, typef0, typef1, typef2
     real(kind=8) :: coefff
     character(len=2) :: typli2
-    logical :: lelpiv, lelpi1, lelpi2
+    logical(kind=1) :: lelpiv, lelpi1, lelpi2
     real(kind=8) :: ajeufx, ajeufy, glis
     real(kind=8) :: lambdc, lambdf
     character(len=19) :: deplc

@@ -18,8 +18,8 @@
 interface 
     subroutine dspdp1(net, bishop, signe, tbiot, sat,&
                       dsdp1)
-        logical :: net
-        logical :: bishop
+        logical(kind=1) :: net
+        logical(kind=1) :: bishop
         real(kind=8) :: signe
         real(kind=8) :: tbiot(6)
         real(kind=8) :: sat

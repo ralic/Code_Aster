@@ -74,7 +74,7 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
     real(kind=8) :: vale
     character(len=16) :: lieu
     character(len=9) :: colonn
-    logical :: laffe
+    logical(kind=1) :: laffe
 !
 ! ----------------------------------------------------------------------
 !

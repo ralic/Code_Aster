@@ -40,7 +40,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: chmate
-    logical, intent(in) :: l_etat_init
+    logical(kind=1), intent(in) :: l_etat_init
     character(len=19), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------

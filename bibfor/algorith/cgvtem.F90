@@ -30,7 +30,7 @@ function cgvtem(resu, iord0)
 !
     character(len=8), intent(in) :: resu
     integer, intent(in) :: iord0
-    logical :: cgvtem
+    logical(kind=1) :: cgvtem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ function cgvtem(resu, iord0)
 !
     integer :: iret, jadmat, nvacr, ivarc
     character(len=8) :: chmat, k8b, other_varc
-    logical :: exivrc, exitem
+    logical(kind=1) :: exivrc, exitem
     character(len=8), pointer :: cvrcvarc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

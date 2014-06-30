@@ -26,7 +26,7 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
     real(kind=8) :: vectu(*)
     real(kind=8) :: sigma(6), sign(6), matuu(*), vff(*)
     real(kind=8) :: tmp1, tmp2, sigg(6), sig(6), r
-    logical :: matsym, axi, resi, rigi
+    logical(kind=1) :: matsym, axi, resi, rigi
 !
 !.......................................................................
 !     BUT:  CALCUL DE LA MATRICE TANGENTE EN CONFIGURATION LAGRANGIENNE

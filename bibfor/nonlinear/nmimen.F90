@@ -46,7 +46,7 @@ subroutine nmimen(sdimpr)
 !
     character(len=255) :: ligsep, entet1, entet2, entet3
     character(len=24) :: sdtabc
-    logical :: lcsv, lprint
+    logical(kind=1) :: lcsv, lprint
     integer :: larlig, unimes, unicsv
 !
 ! ----------------------------------------------------------------------

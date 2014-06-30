@@ -58,8 +58,8 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: ldyna
-    logical :: lctcc, ltfcm, lxfcm
+    logical(kind=1) :: ldyna
+    logical(kind=1) :: lctcc, ltfcm, lxfcm
     character(len=19) :: depgeo, deplam
     character(len=19) :: vitini, accini
     character(len=19) :: depmoi, accplu, vitplu

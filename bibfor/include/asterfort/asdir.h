@@ -20,8 +20,8 @@ interface
                      nsupp, tcosup, recmod, repdir)
         integer :: nbsup
         integer :: neq
-        logical :: monoap
-        logical :: muapde
+        logical(kind=1) :: monoap
+        logical(kind=1) :: muapde
         integer :: id
         integer :: nsupp(*)
         integer :: tcosup(nbsup, *)

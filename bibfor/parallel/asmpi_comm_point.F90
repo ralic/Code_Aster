@@ -80,7 +80,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
     integer :: nbv
     mpi_int :: lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
-    logical :: scal
+    logical(kind=1) :: scal
     real(kind=8) :: wkr(1)
     integer :: wki(1)
     integer(kind=4) :: wki4(1)

@@ -23,7 +23,7 @@ interface
         character(len=8) :: basemo
         character(len=19) :: basefl
         integer :: numvit
-        logical :: newres
+        logical(kind=1) :: newres
         integer :: itypfl
         integer :: imasse
         integer :: nuor(*)

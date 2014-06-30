@@ -5,7 +5,7 @@ subroutine sigmap(net, bishop, sat, signe, tbiot,&
 #include "asterfort/utmess.h"
     integer :: i
     real(kind=8) :: signe, sat, tbiot(6), dp2, dp1, sigmp(6)
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

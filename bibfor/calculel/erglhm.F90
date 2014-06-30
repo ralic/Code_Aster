@@ -8,7 +8,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
 #include "asterfort/rsadpa.h"
     integer :: jceld, iavale, iord, longt, nbgr
     character(len=19) :: ligrel, resuc1
-    logical :: perman
+    logical(kind=1) :: perman
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

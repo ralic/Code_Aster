@@ -86,7 +86,7 @@ subroutine op0197()
     real(kind=8) :: valr(nbparr), test, proint, maxcs, tpsmin, tpsmax
     real(kind=8) :: valrr(3)
     complex(kind=8) :: c16b
-    logical :: calm, cals, impr, dept, recm, recs
+    logical(kind=1) :: calm, cals, impr, dept, recm, recs
     integer, pointer :: nom_nures(:) => null()
     real(kind=8), pointer :: nom_inssig(:) => null()
     character(len=8), pointer :: vale(:) => null()

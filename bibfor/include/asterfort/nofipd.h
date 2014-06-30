@@ -53,8 +53,8 @@ interface
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: sigp(2*ndim+1, npg)
         real(kind=8) :: vip(lgpg, npg)
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         real(kind=8) :: vect(*)
         real(kind=8) :: matr(*)
         integer :: codret

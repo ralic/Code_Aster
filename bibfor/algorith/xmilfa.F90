@@ -58,7 +58,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
     integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
     integer :: i, j, zxain, nno
     real(kind=8) :: xref(81), tole, crit
-    logical :: courbe
+    logical(kind=1) :: courbe
     parameter   (tole=1.d-1)
 !
 ! --------------------------------------------------------------------

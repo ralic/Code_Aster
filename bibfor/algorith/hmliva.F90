@@ -83,7 +83,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     real(kind=8) :: phi0, pvp0
     real(kind=8) :: ums, phids, rinstp, angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical :: yachai
+    logical(kind=1) :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -94,7 +94,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     real(kind=8) :: r, rho0, csigm, alp11, alp12, rho12, alpha0
     real(kind=8) :: eps, deps(6), mdal(6), dalal, alphfi, cbiot, unsks
     parameter  ( eps = 1.d-21 )
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -111,7 +111,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     real(kind=8) :: m11m, m12m, coeps, pinf, dp2, cp21, cp22, rho21
     real(kind=8) :: rho22, dpad, signe, rac2
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !

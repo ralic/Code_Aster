@@ -42,7 +42,7 @@ subroutine te0451(option, nomte)
     character(len=8) :: alias8, nomres
     character(len=3) :: cmod, num
     character(len=2) :: val
-    logical :: lcoqmu, lreel
+    logical(kind=1) :: lcoqmu, lreel
 !     ------------------------------------------------------------------
     call teattr('S', 'ALIAS8', alias8, ibid)
     cmod=alias8(3:5)

@@ -32,7 +32,7 @@ subroutine diagp3(tens, vecp, valp)
 ! ----------------------------------------------------------------------
 !
     integer :: i, nrac, ind
-    logical :: invvp, tnull
+    logical(kind=1) :: invvp, tnull
     real(kind=8) :: trace, x(6), y(6), det(4), rtemp
     real(kind=8) :: a, b, c, theta
     real(kind=8) :: f, g

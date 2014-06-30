@@ -53,7 +53,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
     character(len=8) :: resu
     character(len=24) :: valk(2)
     character(len=16) :: concep, cmd
-    logical :: secple
+    logical(kind=1) :: secple
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

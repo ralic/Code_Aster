@@ -27,7 +27,7 @@ interface
         real(kind=8) :: sut
         real(kind=8) :: bc1
         real(kind=8) :: suc
-        logical :: local
+        logical(kind=1) :: local
         real(kind=8) :: t33(3, 3)
         real(kind=8) :: n33(3, 3)
         real(kind=8) :: lct

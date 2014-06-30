@@ -14,7 +14,7 @@ subroutine presup(iunv, imod, lgrcou)
 #include "asterfort/sleneu.h"
 #include "asterfort/snecol.h"
 #include "asterfort/utmess.h"
-    logical :: lgrcou
+    logical(kind=1) :: lgrcou
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@ subroutine presup(iunv, imod, lgrcou)
 !
 ! --> DECLARATIONS DES VARIABLES
 !
-    logical :: larret
+    logical(kind=1) :: larret
     integer :: min, man, imod, imes, iunv, mxtyma, mxperm, mxperf
     integer :: maxfa, i, nbtyma, ites, maxnod
     parameter (mxtyma=99,maxnod=32,mxperm=maxnod*mxtyma)

@@ -26,7 +26,7 @@ subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 !
     character(len=19) , intent(in) :: comp_elas
     integer, intent(in) :: nb_cmp
-    logical, intent(in) :: l_etat_init
+    logical(kind=1), intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !

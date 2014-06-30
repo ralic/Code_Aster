@@ -24,6 +24,6 @@ interface
         real(kind=8) :: edge
         real(kind=8) :: right
         real(kind=8) :: apex
-        logical :: outofp
+        logical(kind=1) :: outofp
     end subroutine mctg2d
 end interface

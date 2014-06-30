@@ -53,7 +53,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical :: rigi, resi, elas, coup
+    logical(kind=1) :: rigi, resi, elas, coup
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret, iterat
     real(kind=8) :: eps(6), treps, sigel(6), kron(6)
     real(kind=8) :: rac2, coef, coef2

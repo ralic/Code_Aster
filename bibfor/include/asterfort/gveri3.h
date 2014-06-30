@@ -22,8 +22,8 @@ interface
         character(len=24) :: taillr
         character(len=8) :: config
         integer :: lnoff
-        logical :: thlagr
-        logical :: thlag2
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: thlag2
         integer :: ndeg
         character(len=24) :: trav1
         character(len=24) :: trav2

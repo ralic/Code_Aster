@@ -63,7 +63,7 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
 !
     real(kind=8) :: e1, e2, e3, r1, r2, rad, rd, x, y
 !
-    logical :: lresi
+    logical(kind=1) :: lresi
 !
 !-----------------------------------------------------------------------
 !234567                                                              012

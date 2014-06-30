@@ -32,7 +32,7 @@ subroutine nmfdff(ndim, nno, axi, g, r,&
     integer :: ndim, nno, n, nmax, i, m, g
     real(kind=8) :: dff(nno, *), vff(nno, *), fr(3, 3), rac2, r
     real(kind=8) :: def(2*ndim, nno, ndim), pff(2*ndim, nno, nno)
-    logical :: axi, rigi, matsym
+    logical(kind=1) :: axi, rigi, matsym
 !
     rac2=sqrt(2.d0)
 !

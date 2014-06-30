@@ -68,7 +68,7 @@ subroutine dstsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: bca(2, 3), bcn(2, 9)
     real(kind=8) :: an(3, 9)
     real(kind=8) :: hicou
-    logical :: coupmf, lcalct
+    logical(kind=1) :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

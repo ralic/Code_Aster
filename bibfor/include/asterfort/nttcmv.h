@@ -34,8 +34,8 @@ interface
         character(len=24) :: chlapm
         real(kind=8) :: tpsthe(6)
         real(kind=8) :: tpsnp1
-        logical :: reasvt
-        logical :: reasmt
+        logical(kind=1) :: reasvt
+        logical(kind=1) :: reasmt
         character(len=1) :: creas
         character(len=24) :: vtemp
         character(len=24) :: vtempm

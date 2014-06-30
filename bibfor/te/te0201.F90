@@ -46,7 +46,7 @@ subroutine te0201(option, nomte)
     integer :: lgpg1, lgpg
     real(kind=8) :: mat(8, 8), fint(8), sigmo(6, 2), sigma(6, 2)
     character(len=8) :: typmod(2)
-    logical :: resi, rigi, matsym
+    logical(kind=1) :: resi, rigi, matsym
 !
     resi = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
     rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'

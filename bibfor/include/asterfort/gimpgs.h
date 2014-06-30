@@ -28,7 +28,7 @@ interface
         integer :: ndeg
         integer :: ndimte
         real(kind=8) :: gthi(1)
-        logical :: extim
+        logical(kind=1) :: extim
         real(kind=8) :: time
         integer :: iordr
         integer :: unit

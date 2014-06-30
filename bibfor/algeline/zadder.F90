@@ -38,7 +38,7 @@ subroutine zadder(uplo, n, alpha, x, incx,&
 !-----------------------------------------------------------------------
     integer :: ix, j
     complex(kind=8) :: temp, temp1, temp2, temp3, temp4
-    logical :: upper
+    logical(kind=1) :: upper
     real(kind=8) :: dble
 !
     if (n .eq. 0 .or. alpha .eq. 0.0d0) goto 9000

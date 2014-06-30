@@ -48,7 +48,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 !
     integer :: i
     real(kind=8) :: zero, un, bid66(6, 6), matert(22, 2)
-    logical :: reorie
+    logical(kind=1) :: reorie
     parameter      (zero = 0.d0)
     parameter      (un   = 1.d0)
 !       ----------------------------------------------------------------

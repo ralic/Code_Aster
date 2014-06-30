@@ -66,7 +66,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
     real(kind=8) :: deltat, instam, instap
     real(kind=8) :: insref, deltac
     character(len=24) :: nomlis
-    logical :: ldcext
+    logical(kind=1) :: ldcext
     integer :: retdex
 !
 ! ----------------------------------------------------------------------

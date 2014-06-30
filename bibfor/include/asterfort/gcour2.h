@@ -31,13 +31,13 @@ interface
         character(len=24) :: trav3
         character(len=24) :: chfond
         character(len=8) :: fond
-        logical :: connex
+        logical(kind=1) :: connex
         character(len=24) :: stok4
-        logical :: thlagr
-        logical :: thlag2
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: thlag2
         integer :: nbre
-        logical :: milieu
+        logical(kind=1) :: milieu
         integer :: ndimte
-        logical :: pair
+        logical(kind=1) :: pair
     end subroutine gcour2
 end interface

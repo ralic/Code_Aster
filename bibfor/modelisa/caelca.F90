@@ -92,7 +92,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     character(len=8) :: modele, chmat, caelem
     integer :: irana1, icabl, nbnoca(*)
     character(len=19) :: numaca
-    logical :: relax, quad
+    logical(kind=1) :: relax, quad
     real(kind=8) :: ea, rh1000, prelax, fprg, frco, frli, sa
 !
 ! VARIABLES LOCALES
@@ -101,7 +101,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     integer :: jdesc, jmodma, jnumac, jptma, jvalk, jvalr, lonuti, nbcste, nbec
     integer :: nbno, ncaba, ntyele(2), numail, nbcmp, idebgd, i, nbma
     real(kind=8) :: eps, rbid
-    logical :: trouv1, trouv2, trouv3, trouv4, trouv5
+    logical(kind=1) :: trouv1, trouv2, trouv3, trouv4, trouv5
     character(len=3) :: k3cab, k3mai
     character(len=8) :: acier, k8b
     character(len=19) :: carte, nomrc

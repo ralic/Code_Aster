@@ -36,6 +36,6 @@ interface
         integer :: jtail
         integer :: jfonmu
         integer :: ndim
-        logical :: goinop
+        logical(kind=1) :: goinop
     end subroutine xlmail
 end interface

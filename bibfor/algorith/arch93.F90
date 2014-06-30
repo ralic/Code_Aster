@@ -82,8 +82,8 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
     complex(kind=8) :: c16b
 !
-    logical :: direct
-    logical :: lbid
+    logical(kind=1) :: direct
+    logical(kind=1) :: lbid
 !
 !-----------------------------------------------------------------------
 !
@@ -541,10 +541,10 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         iul = iunifi( 'MESSAGE' )
         call irecri(resu, 'RESULTAT', iul, k8b, lbid,&
                     ibid, k8b, ' ', nbpar, zk16(jpara),&
-                    nbmode, zi(lres), .true., k8b, ibid,&
-                    'T', k8b, .false., ibid, [0],&
-                    ibid, [0], ibid, k8b, .false.,&
-                    r8b, .false., r8b, .false., .false.,&
+                    nbmode, zi(lres), .true._1, k8b, ibid,&
+                    'T', k8b, .false._1, ibid, [0],&
+                    ibid, [0], ibid, k8b, .false._1,&
+                    r8b, .false._1, r8b, .false._1, .false._1,&
                     formar, nive, versio)
     endif
 !

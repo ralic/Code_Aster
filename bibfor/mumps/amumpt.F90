@@ -49,7 +49,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
     character(len=1) :: type
     character(len=24) :: kmonit(12)
     real(kind=8) :: temps(6), rctdeb
-    logical :: lquali, ldist
+    logical(kind=1) :: lquali, ldist
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
@@ -67,7 +67,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
     character(len=24) :: ksizemu
     character(len=80) :: nvers
     real(kind=8) :: rmonit(18), rinfog(100), rctfin, retfin
-    logical :: ldebug, lcmde
+    logical(kind=1) :: ldebug, lcmde
 !
     call jemarq()
     call infniv(ifm, niv)

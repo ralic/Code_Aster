@@ -29,7 +29,7 @@ interface
         real(kind=8) :: varimo(nbcomp*3)
         real(kind=8) :: raide(nbcomp)
         real(kind=8) :: param(6, nbpar)
-        logical :: okdire(6)
+        logical(kind=1) :: okdire(6)
         real(kind=8) :: varipl(nbcomp*3)
     end subroutine dinon3
 end interface

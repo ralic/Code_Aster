@@ -56,7 +56,7 @@ subroutine piqeli(mailla)
     parameter    (nbnoms=8)
     character(len=8) :: noms1(nbnoms), noms2(nbnoms)
     character(len=24) :: grpmai, grpnoe, connex, liso1, liso2, liso3, grpnov
-    logical :: recosf
+    logical(kind=1) :: recosf
     real(kind=8) :: dmin0
 !
     data noms1 / 'S_LAT1','S_LAT1_C','S_LAT1_T','S_FOND1',&

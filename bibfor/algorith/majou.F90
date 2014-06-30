@@ -299,7 +299,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
         call jeveuo(chflu//'.VALE', 'E', vr=vale)
         call resoud(ma, ' ', solveu, ' ', 1,&
                     ' ', ' ', ' ', vale, [cbid],&
-                    ' ', .true., 0, iret)
+                    ' ', .true._1, 0, iret)
 !
 !
 !--------ON REPLONGE LA PRESSION SUR L INTERFACE

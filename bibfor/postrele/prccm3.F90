@@ -32,7 +32,7 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
     character(len=8) :: kbid
     real(kind=8) :: valr(2)
     integer :: icodre(1)
-    logical :: endur
+    logical(kind=1) :: endur
 !     ------------------------------------------------------------------
 !
     un = 1.0d0

@@ -23,7 +23,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     complex(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*)
     character(len=*) :: titr, nomnoe(*), nomsd, nomsym
-    logical :: lmasu
+    logical(kind=1) :: lmasu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     character(len=80) :: entete(10), titre, texte
     integer :: nbchs
     integer :: impre, iente, iutil
-    logical :: afaire, lcmp
+    logical(kind=1) :: afaire, lcmp
 !
 !
 !  --- INITIALISATIONS ----
@@ -79,7 +79,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     integer :: ifin, inno, ino,   iret, irval
     integer ::  ival, jmax, jtitr, ncmp
     integer, pointer :: ipcmps(:) => null()
-    logical, pointer :: ltabl(:) => null()
+    logical(kind=1), pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()

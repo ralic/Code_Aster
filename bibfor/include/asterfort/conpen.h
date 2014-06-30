@@ -22,9 +22,9 @@ interface
         integer :: nbcor
         character(len=8) :: macor(nbcor+2)
         character(len=8) :: macoc(nbcoc+2)
-        logical :: lface
-        logical :: locorr
-        logical :: loreor
+        logical(kind=1) :: lface
+        logical(kind=1) :: locorr
+        logical(kind=1) :: loreor
         character(len=8) :: ma
     end subroutine conpen
 end interface

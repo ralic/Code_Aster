@@ -155,7 +155,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
             call codent(k, 'D0', knuma2)
             ch19 = chma(1:8)//'.'//knuma2//knuma1//knuma3
             call jedupc(' ', chma, 1, 'V', ch19,&
-                        .false.)
+                        .false._1)
             call jelira(ch19//'.VALR', 'LONUTI', zi(kk))
             call jeveut(ch19//'.VALR', 'L', zi(kk+1))
             call jelira(ch19//'.VALC', 'LONUTI', zi(kk+2))

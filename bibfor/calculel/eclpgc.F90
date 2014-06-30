@@ -100,7 +100,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     integer :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
 ! ---------------------------------------------------------------------
-    logical :: lvari
+    logical(kind=1) :: lvari
     integer :: numa, jnofpg, kk
     integer :: k, te, npg1, npoini, ideca2
     integer :: igr,  jcmaco,  jcliel, jcnsl2

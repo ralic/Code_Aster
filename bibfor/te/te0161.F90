@@ -46,14 +46,14 @@ subroutine te0161(option, nomte)
     integer :: nno, kp, i, ivectu, ipesa, nddl, npg, iyty, nordre, lsect
     integer :: ipoids, ivf, igeom, imate, iforc
     integer :: itemps, nbpar, idepla, ideplp, k, l, ic, neu, iret, neum1
-    logical :: normal
+    logical(kind=1) :: normal
     real(kind=8) :: r8min, r8bid=0.d0, rho(1), a, coef
     real(kind=8) :: s, s2, s3, s4, s5, x(4), c1, c2(3), w(6), u(3), v(3), w2(3)
 !
     integer :: ifcx, idfdk, jgano, ndim, nnos
     character(len=8) :: nompar(4), nompav(1)
     real(kind=8) :: valpav(1), fcx, vite2, vp(3)
-    logical :: okvent, fozero
+    logical(kind=1) :: okvent, fozero
 ! --- ------------------------------------------------------------------
     data nompar/'X','Y','Z','INST'/
     data nompav/'VITE'/

@@ -32,7 +32,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
     integer :: nfon
     integer :: jfon, jbas, jtail, jfonmu
     integer :: nbfond, ndim
-    logical :: goinop
+    logical(kind=1) :: goinop
 !
 ! ----------------------------------------------------------------------
 !

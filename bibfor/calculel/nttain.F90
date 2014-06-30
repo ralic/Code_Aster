@@ -110,7 +110,7 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
                 vtempp, chsol, 'V', [0.d0], [cbid],&
-                criter, .true., 0, iret)
+                criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL
 !

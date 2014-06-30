@@ -30,8 +30,8 @@ interface
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
         integer, intent(in) :: ific
-        logical, intent(in) :: llab
-        logical, intent(in), optional :: ignore
+        logical(kind=1), intent(in) :: llab
+        logical(kind=1), intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_carte
 end interface

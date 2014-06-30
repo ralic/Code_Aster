@@ -44,7 +44,7 @@ subroutine cfmmci(defico, resoco)
 !
 !
     integer :: nzoco, izone
-    logical :: lctcd, lctcc, lxfcm
+    logical(kind=1) :: lctcd, lctcc, lxfcm
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefpn, coefpt
     real(kind=8) :: coefcr, coeffr, coefcp, coeffp

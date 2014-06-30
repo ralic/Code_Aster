@@ -50,7 +50,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
     integer :: jtitr
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol, jnbnun
     integer :: idlima
-    logical :: logic
+    logical(kind=1) :: logic
     character(len=1) :: base
     character(len=8) :: k8b, nomg, typm, typm2
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, cooval, coodsc

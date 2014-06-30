@@ -71,7 +71,7 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: bfa(3, 4), bfb(3, 12), bfn(3, 12)
     real(kind=8) :: bca(2, 4), bcb(2, 12), bcn(2, 12)
     real(kind=8) :: jacob(5), hicou
-    logical :: coupmf, lcalct
+    logical(kind=1) :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

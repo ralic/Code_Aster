@@ -23,7 +23,7 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
 #include "asterfort/jxdeps.h"
 #include "asterfort/utmess.h"
     integer :: itab(*), lty1, lon1, jadm, jitab
-    logical :: ldeps
+    logical(kind=1) :: ldeps
     character(len=*) :: gen1
 ! ----------------------------------------------------------------------
 ! RENVOIE L'ADRESSE DU SEGMENT DE VALEUR PAR RAPPORT A ITAB

@@ -65,7 +65,7 @@ subroutine te0239(option, nomte)
     integer :: ivarix, mod
     integer :: ipoids, ivf, idfdk, igeom, imate
     integer :: nbpar, cod, iret, ksp
-    logical :: vecteu, matric, testl1, testl2
+    logical(kind=1) :: vecteu, matric, testl1, testl2
 !
     parameter (npge=3)
 !

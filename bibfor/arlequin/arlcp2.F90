@@ -30,7 +30,7 @@ subroutine arlcp2(iocc,mail,nomo,typmai, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
 
-    logical ::       proj
+    logical(kind=1) ::       proj
     character(len=16) :: typmai
     character(len=8) ::  mail,nomo
     character(len=10) :: nom1,nom2

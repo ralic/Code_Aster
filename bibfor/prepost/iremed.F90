@@ -30,7 +30,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     character(len=8) :: carael
     character(len=*) :: nomcon, novcmp, nocham, liordr, nomcmp, partie
     integer :: ifichi, nbnoec, linoec(*), nbmaec, limaec(*)
-    logical :: lresu, lvarie
+    logical(kind=1) :: lresu, lvarie
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     integer :: lnochm, i, cresav, nbcmdu, jnosym, ierd
     integer :: jnocha, jliord, nbordr, nbrcmp, jnocmp
 !
-    logical :: lfirst
+    logical(kind=1) :: lfirst
     integer, pointer :: numcmp(:) => null()
     character(len=24), pointer :: celk(:) => null()
     parameter   (cesnsp = '&&IREMED.CANBSP')

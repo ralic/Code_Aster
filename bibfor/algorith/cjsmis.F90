@@ -56,7 +56,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
     parameter     (nmod = 8 )
     parameter     (nitimp = 100)
     integer :: iter
-    logical :: noconv, aredec, stopnc
+    logical(kind=1) :: noconv, aredec, stopnc
 !
 !
     real(kind=8) :: epsd(6), deps(6), det

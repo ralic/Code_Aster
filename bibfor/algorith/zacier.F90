@@ -73,7 +73,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
     character(len=8) :: fami, poum
 !
     integer :: i, j, nbpas
-    logical :: lrefr
+    logical(kind=1) :: lrefr
 !
 !-----------------------------------------------------------------------
 !

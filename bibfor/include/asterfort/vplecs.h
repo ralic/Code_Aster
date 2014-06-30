@@ -73,11 +73,11 @@ interface
     character(len=19) , intent(out)   :: raide
     character(len=19) , intent(out)   :: tabmod    
 !
-    logical           , intent(out)   :: lc
-    logical           , intent(out)   :: lkr
-    logical           , intent(out)   :: lns
-    logical           , intent(out)   :: lpg
-    logical           , intent(out)   :: lqz
+    logical(kind=1)   , intent(out)   :: lc
+    logical(kind=1)   , intent(out)   :: lkr
+    logical(kind=1)   , intent(out)   :: lns
+    logical(kind=1)   , intent(out)   :: lpg
+    logical(kind=1)   , intent(out)   :: lqz
 !    
     end subroutine vplecs
 end interface

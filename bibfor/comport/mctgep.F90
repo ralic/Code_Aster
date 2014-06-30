@@ -36,7 +36,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 ! Declaration of integer type variables
     integer :: i, j, ia, ib, ic, mcomp, mdim
 !
-    logical ::  epflag
+    logical(kind=1) ::  epflag
 !
     parameter ( mcomp=6    ,mdim=3 )
 !

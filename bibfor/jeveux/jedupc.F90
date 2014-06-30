@@ -22,7 +22,7 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
 #include "asterfort/utmess.h"
     character(len=*) :: clain, schin, claout, schout
     integer :: ipos
-    logical :: dupcol
+    logical(kind=1) :: dupcol
 ! ----------------------------------------------------------------------
 !     RECOPIE LES OBJETS DE LA CLASSE CLAIN POSSEDANT LA SOUS-CHAINE
 !     SCHIN EN POSITION IPOS DANS LA CLASSE CLAOUT AVEC LA SOUS-CHAINE

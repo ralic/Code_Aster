@@ -19,7 +19,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
     integer :: lmasse, lamor, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
-    logical :: lqz
+    logical(kind=1) :: lqz
 !     -----------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -53,7 +53,7 @@ subroutine lcfrlo(ndim, typmod, imate, epsm, deps,&
 !
 !
 !
-    logical :: cplan, rigi, resi, secant, nonlin
+    logical(kind=1) :: cplan, rigi, resi, secant, nonlin
     integer :: ndimsi, k, l, etat
 !
     real(kind=8) :: eps(6), treps, coplan, sigel(6)

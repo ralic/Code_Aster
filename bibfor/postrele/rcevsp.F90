@@ -11,7 +11,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
 #include "asterfort/wkvect.h"
     character(len=24) :: csiex, cinst, cspo, cspe, cstex, csmex, cspto, cspte
     character(len=24) :: cspmo, cspme
-    logical :: kemixt
+    logical(kind=1) :: kemixt
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -54,7 +54,8 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     parameter    (ddlmax=24)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical :: lelim, lmat, lvec
+    logical(kind=1) :: lelim
+    logical :: lmat, lvec
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------

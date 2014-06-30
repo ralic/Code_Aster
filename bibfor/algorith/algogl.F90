@@ -96,7 +96,7 @@ subroutine algogl(sdstat, defico, resoco, solveu, matass,&
 !
 !
     integer :: ifm, niv
-    logical :: lechec
+    logical(kind=1) :: lechec
     integer ::  ieq, iter
     integer :: llliai, llliac
     integer :: llf, llf1, llf2

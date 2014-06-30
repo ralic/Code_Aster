@@ -65,7 +65,7 @@ subroutine op0009()
     character(len=16) :: type, oper, suropt
     character(len=19) :: kcha, matel, rigiel, massel, resuel
     character(len=24) :: time2, mate, compor
-    logical :: exitim
+    logical(kind=1) :: exitim
     integer :: n1, n2, n3, n4, ier, n5, nh, n6, ncha, icha
     integer :: nbresu,  iresu, iexi, n7
     character(len=24), pointer :: relr(:) => null()

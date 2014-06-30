@@ -52,7 +52,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
     character(len=5) :: refe, desc, vale
     character(len=8) :: noma, nomgd
     character(len=19) :: ch19, ligrel
-    logical :: lmeca, lther
+    logical(kind=1) :: lmeca, lther
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, ic, icoef, idecgr

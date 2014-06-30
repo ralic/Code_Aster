@@ -26,6 +26,6 @@ interface
         real(kind=8) :: coor(*)
         integer :: nbmavo
         integer :: mailvo(*)
-        logical :: coince
+        logical(kind=1) :: coince
     end subroutine utmasu
 end interface

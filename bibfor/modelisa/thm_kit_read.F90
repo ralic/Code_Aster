@@ -57,7 +57,7 @@ subroutine thm_kit_read(keywordfact, iocc     , rela_comp, rela_thmc, rela_hydr,
     character(len=16) :: pothmc(dmthmc), pohydr(dmhydr), pomeca(dmmeca)
     character(len=16) :: valk(3)
     integer :: ikit, ii, nocc
-    logical :: l_thmc, l_hydr, l_meca
+    logical(kind=1) :: l_thmc, l_hydr, l_meca
     character(len=16) :: rela_kit(4)
 !
 ! --------------------------------------------------------------------------------------------------

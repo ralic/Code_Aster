@@ -55,7 +55,7 @@ subroutine rscopi(base, sd1, sd2)
 !
     integer ::  i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
     integer :: iatava
-    logical :: dejfai
+    logical(kind=1) :: dejfai
     character(len=1) :: bas2
     character(len=4) :: type, typacc
     character(len=5) :: nomobj
@@ -77,12 +77,12 @@ subroutine rscopi(base, sd1, sd2)
 !
 !     --- LE .DESC, .NOVA, .TAVA, .ORDR ---
 !
-    call jedupo(sdr1//'.DESC', bas2, sdr2//'.DESC', .false.)
-    call jedupo(sdr1//'.NOVA', bas2, sdr2//'.NOVA', .false.)
-    call jedupo(sdr1//'.TAVA', bas2, sdr2//'.TAVA', .false.)
-    call jedupo(sdr1//'.ORDR', bas2, sdr2//'.ORDR', .false.)
-    call jedupo(sdr1//'.REFD', bas2, sdr2//'.REFD', .false.)
-    call jedupo(sdr1//'.INDI', bas2, sdr2//'.INDI', .false.)
+    call jedupo(sdr1//'.DESC', bas2, sdr2//'.DESC', .false._1)
+    call jedupo(sdr1//'.NOVA', bas2, sdr2//'.NOVA', .false._1)
+    call jedupo(sdr1//'.TAVA', bas2, sdr2//'.TAVA', .false._1)
+    call jedupo(sdr1//'.ORDR', bas2, sdr2//'.ORDR', .false._1)
+    call jedupo(sdr1//'.REFD', bas2, sdr2//'.REFD', .false._1)
+    call jedupo(sdr1//'.INDI', bas2, sdr2//'.INDI', .false._1)
 
 !
 !     --- LE .TACH ---
@@ -130,7 +130,7 @@ subroutine rscopi(base, sd1, sd2)
             dejfai = .true.
             nomobj = '.PARA'
         endif
-        call jedupo(sdr1//nomobj, bas2, sdr2//nomobj, .false.)
+        call jedupo(sdr1//nomobj, bas2, sdr2//nomobj, .false._1)
 !
 30  continue
     call jedetr(nompar)

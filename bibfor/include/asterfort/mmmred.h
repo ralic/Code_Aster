@@ -18,7 +18,7 @@
 interface
     subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
         integer :: ndimg
-        logical :: lctfc
+        logical(kind=1) :: lctfc
         character(len=19) :: champ
         character(len=19) :: champr
         integer :: ndd1

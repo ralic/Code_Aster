@@ -50,7 +50,7 @@ subroutine op0004()
     character(len=8) :: k8b
     character(len=16) :: nomcmd, typfon, verif
     character(len=19) :: nomfon
-    logical :: defonc
+    logical(kind=1) :: defonc
     integer :: iret, iret2
     integer :: vali(2)
 !     ------------------------------------------------------------------

@@ -26,7 +26,7 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical :: lassme(20), lcalme(20)
+    logical(kind=1) :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: leltc, leltf
+    logical(kind=1) :: leltc, leltf
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,16 +60,16 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 ! --- ELEMENTS DE CONTACT (XFEM+CONTINU)
 !
     if (leltc) then
-        call nmcmat('AJOU', 'MEELTC', ' ', ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MEELTC', ' ', ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !
 ! --- ELEMENTS DE FROTTEMENT (XFEM+CONTINU)
 !
     if (leltf) then
-        call nmcmat('AJOU', 'MEELTF', ' ', ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MEELTF', ' ', ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !

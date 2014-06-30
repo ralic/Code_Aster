@@ -22,7 +22,7 @@ interface
         real(kind=8) :: parcri(*)
         integer :: iterat
         integer :: numins
-        logical :: itemax
+        logical(kind=1) :: itemax
         character(len=24) :: sderro
         integer :: liccvg(5)
         integer :: actite

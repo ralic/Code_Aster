@@ -57,7 +57,7 @@ subroutine elg_comptt(c, t, nworkt)
     integer :: nbcont, nbnz, indcon, indlib,  compnd
     real(kind=8) :: eps, norm, valt, normc,cmax
     mpi_int :: mpicomm
-    logical :: info2
+    logical(kind=1) :: info2
 !-----------------------------------------------------------------
 !
   info2 = .false. 

@@ -28,7 +28,7 @@ interface
         character(len=19) :: chepsi
         character(len=19) :: chpesa
         character(len=19) :: chrota
-        logical :: lfonc
+        logical(kind=1) :: lfonc
         real(kind=8) :: time
         integer :: iord
     end subroutine gcharg

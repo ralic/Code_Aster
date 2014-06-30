@@ -21,7 +21,7 @@ subroutine netbis(meca, net, bishop)
 ! ON PASSE EN CONTRAINTE NETTE DANS LE CAS ELAS_GONF (SINON BISHOP)
 ! ======================================================================
     implicit none
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
     character(len=16) :: meca
     if (meca .eq. 'ELAS_GONF') then
         net=.true.

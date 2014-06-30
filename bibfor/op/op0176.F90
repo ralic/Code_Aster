@@ -75,7 +75,7 @@ subroutine op0176()
     character(len=19) :: resuou, resuin
     character(len=24) :: lisarc, lichex, nompar
 !
-    logical :: fals, true, lbid, lrest
+    logical(kind=1) :: fals, true, lbid, lrest
 !
     complex(kind=8) :: c16b
     integer :: nmail, nmode

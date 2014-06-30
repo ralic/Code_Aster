@@ -23,7 +23,7 @@ interface
                       iava2, ncmpm2, iaptm2, iade3, iava3,&
                       ncmpm3, iaptm3, tm2h1b)
         integer :: ndim
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: ino
         integer :: nbs
         real(kind=8) :: theta

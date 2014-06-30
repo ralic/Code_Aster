@@ -62,7 +62,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
 !
     integer :: codres(2), itemp, iret
     character(len=2) :: nomres(2)
-    logical :: vecteu, matric
+    logical(kind=1) :: vecteu, matric
     integer :: dimklv, kp, kk, i, j, k
     real(kind=8) :: eps(nc), deps(nc), fg(nno*nc), sigp(nc), sigm(nc)
     real(kind=8) :: e, nu, g, phiy, phiz, xls2, epsthf(1), epsthd(1)

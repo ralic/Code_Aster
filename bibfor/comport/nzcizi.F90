@@ -96,7 +96,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(12)
     character(len=8) :: nomres(12), zirc(2)
 !
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !

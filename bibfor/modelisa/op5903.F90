@@ -61,7 +61,7 @@ subroutine op5903(nbocci, sdcomp)
     character(len=16) :: kit_comp(9)
     character(len=16) :: texte(2), moclef
     character(len=24) :: vnbfig, rnomgf, kgroup
-    logical :: l_kit
+    logical(kind=1) :: l_kit
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -30,7 +30,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
     real(kind=8) :: borsup, borinf, coor(*), vale(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, nomnos(*), formr
     character(len=19) :: nolili
-    logical :: lsup, linf, lmax, lmin, lcor
+    logical(kind=1) :: lsup, linf, lmax, lmin, lcor
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
     character(len=10) :: format
     character(len=24) :: nrepe
     character(len=50) :: fmt, fmv, fmt1, fmt2, form1
-    logical :: limpr
+    logical(kind=1) :: limpr
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

@@ -54,7 +54,7 @@ subroutine nmimr0(sdimpr, nombcl)
 !
     integer :: icol, ncol
     character(len=9) :: typcol
-    logical :: laffe, lacti
+    logical(kind=1) :: laffe, lacti
     character(len=24) :: slcolo, sdtabc, sdcolo
     character(len=4) :: lieuin
 !

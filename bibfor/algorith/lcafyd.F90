@@ -59,7 +59,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
     character(len=16) :: loi, comp(*), necoul
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
-    logical :: bnews(3), mtrac
+    logical(kind=1) :: bnews(3), mtrac
     common /tdim/   ndt  , ndi
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef

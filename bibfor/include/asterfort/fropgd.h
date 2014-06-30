@@ -29,6 +29,6 @@ interface
         real(kind=8) :: resigr
         character(len=19) :: depdel
         integer :: ctccvg
-        logical :: ctcfix
+        logical(kind=1) :: ctcfix
     end subroutine fropgd
 end interface

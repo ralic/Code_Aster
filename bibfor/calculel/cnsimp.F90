@@ -49,7 +49,7 @@ subroutine cnsimp(cnsz, unite)
     character(len=3) :: tsca
     character(len=19) :: cns
     character(len=40) :: fmt1, fmt2
-    logical :: exicmp
+    logical(kind=1) :: exicmp
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: cnsd(:) => null()

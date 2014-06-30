@@ -53,7 +53,7 @@ subroutine calcyc(nomres)
     character(len=24) :: repmat, soumat
     character(len=24) :: valk
     complex(kind=8) :: comshi
-    logical :: axok
+    logical(kind=1) :: axok
     real(kind=8) :: rlome2(2)
 !
 !-----------------------------------------------------------------------

@@ -77,7 +77,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     integer :: kpg, n, i, j, ino, iret, ipg
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
-    logical :: grdepl, axi
+    logical(kind=1) :: grdepl, axi
     real(kind=8) :: f(3, 3), eps(6), baslog(6)
     real(kind=8) :: fe(4), instan, rac2
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), lsng, lstg

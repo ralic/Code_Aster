@@ -40,7 +40,7 @@ subroutine rcevfu(cnoc, cfat, fut)
     integer :: noc2m, nbcycl
     integer ::    indi, inds, k, l, ifm, niv
     real(kind=8) :: fum, fukl
-    logical :: encore
+    logical(kind=1) :: encore
     real(kind=8), pointer :: matr_fu(:) => null()
     integer, pointer :: nb_occ_k(:) => null()
     integer, pointer :: nb_occ_l(:) => null()

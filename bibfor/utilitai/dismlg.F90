@@ -50,7 +50,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !
     integer :: dimge(3)
-    logical :: melang
+    logical(kind=1) :: melang
     character(len=8) :: calcri, mailla, nomacr, modele, typemail, k8bid, mthm
     character(len=16) :: nomte, phenom, nomodl, tyvois
     character(len=19) :: nomob
@@ -59,7 +59,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     integer :: ige2, igr, jliel, ite, ige1, ige3, nbgr
     integer :: iexi, iexi2,  ico
     integer :: jnomac, nbsm, ism,  ibid
-    logical :: mail_quad, mail_line, lret
+    logical(kind=1) :: mail_quad, mail_line, lret
     integer :: ndime, nb_elem, i_typelem
     character(len=24) :: list_elem
     character(len=8), pointer :: typema(:) => null()

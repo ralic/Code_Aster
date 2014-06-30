@@ -67,7 +67,7 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
     integer :: nbsurf, nbma, nbnoq, nbno
     integer :: iatyma, itypma
     character(len=8) :: nomtm
-    logical :: lveri
+    logical(kind=1) :: lveri
     integer :: jindno, jelino
     integer :: jdecno, jdecqu
     integer :: posno, numno1, numno2

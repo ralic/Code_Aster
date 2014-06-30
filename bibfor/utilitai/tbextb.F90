@@ -71,7 +71,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
     character(len=8) :: rela
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
-    logical :: lok
+    logical(kind=1) :: lok
     integer, pointer :: numero(:) => null()
     character(len=24), pointer :: para_r(:) => null()
     character(len=8), pointer :: type_r(:) => null()

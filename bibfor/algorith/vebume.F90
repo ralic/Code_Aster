@@ -70,7 +70,7 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
     character(len=16) :: option
     character(len=19) :: depla, vecele, matass
     character(len=24) :: ligrch, chalph
-    logical :: debug
+    logical(kind=1) :: debug
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !

@@ -40,9 +40,9 @@ implicit none
     character(len=48), intent(in) :: comp_comb_2
     character(len=19), intent(in) :: ligrel_curr
     character(len=19), intent(in) :: ligrel_prev
-    logical, intent(out) :: no_same_spg
-    logical, intent(out) :: no_same_cmp
-    logical, intent(out) :: l_modif_vari
+    logical(kind=1), intent(out) :: no_same_spg
+    logical(kind=1), intent(out) :: no_same_cmp
+    logical(kind=1), intent(out) :: l_modif_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,9 +69,9 @@ implicit none
 !
     integer :: iad1, iad2, iadp, iadm
     integer :: i_elem, k, vali(3)
-    logical :: elem_in_curr, elem_in_prev
+    logical(kind=1) :: elem_in_curr, elem_in_prev
     integer :: idx_comb_prev, idx_comb_curr
-    logical :: all_is_zero
+    logical(kind=1) :: all_is_zero
     integer :: nb_pg_prev, nb_spg_prev, nb_cmp_prev
     integer :: nb_spg_curr, nb_cmp_curr
     character(len=16) :: rela_comp_prev, rela_comp_curr

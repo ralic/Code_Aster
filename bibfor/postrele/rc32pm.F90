@@ -8,7 +8,7 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
 #include "asterfort/rc32s0.h"
 #include "asterfort/rc32st.h"
     real(kind=8) :: pi, mi(*), mse(*), pm, pb, pmpb
-    logical :: seisme
+    logical(kind=1) :: seisme
     character(len=4) :: lieu
 !     ------------------------------------------------------------------
 ! ======================================================================

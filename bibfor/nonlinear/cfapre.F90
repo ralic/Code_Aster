@@ -77,10 +77,10 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
     integer :: posmae, posnoe(1), posmam, posnom(1)
     integer :: numnoe(1)
     integer :: entapp, typapp
-    logical :: lctfd, lctf3d
+    logical(kind=1) :: lctfd, lctf3d
     integer :: nzoco, ndimg, nbpt, nbliai
     integer :: nesmax
-    logical :: lveri
+    logical(kind=1) :: lveri
     character(len=8) :: nomnoe
     real(kind=8) :: ksipr1, ksipr2, tau1m(3), tau2m(3)
     real(kind=8) :: coorne(3), dissup

@@ -42,7 +42,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: vind(*), vinf(*)
 !
     real(kind=8) :: dsde(*)
-    logical :: lcpdb
+    logical(kind=1) :: lcpdb
 !
     character(len=16) :: comp(*), opt
     character(len=*) :: fami

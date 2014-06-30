@@ -55,7 +55,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
     character(len=19) :: vecele, resuel, chvref, chsith
     character(len=24) :: chgeom, chcara(18), chtime, ligrmo, vrcplu
     character(len=24) :: lchin(mxnbin), lchout(mxnbou), modele, carele
-    logical :: ltemp, lbid, lxfem
+    logical(kind=1) :: ltemp, lbid, lxfem
 !
     call jemarq()
     newnom = '.0000000'

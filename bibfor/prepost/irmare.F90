@@ -20,7 +20,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     character(len=16) :: formar
     real(kind=8) :: coordo(*)
     integer :: connex(*), typma(*), point(*), typel(*), ifc, nbtitr
-    logical :: lmod
+    logical(kind=1) :: lmod
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

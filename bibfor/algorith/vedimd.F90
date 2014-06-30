@@ -78,7 +78,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=8) :: parain, paraou, typech
     integer :: ibid, iret
     integer :: ichar, nbchar, genrec
-    logical :: ldual
+    logical(kind=1) :: ldual
     character(len=24) :: nomlis
     integer :: jlisci, nbch, indxch
     integer :: nbdual

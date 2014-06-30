@@ -28,7 +28,7 @@ interface
         integer :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: toleou
-        logical :: dirapp
+        logical(kind=1) :: dirapp
         real(kind=8) :: dir(3)
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

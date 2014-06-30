@@ -51,7 +51,7 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
     real(kind=8) :: kethe1, valr(2)
     character(len=8) :: kbid
     integer :: icodre(1)
-    logical :: endur
+    logical(kind=1) :: endur
 ! DEB ------------------------------------------------------------------
 !
 ! --- LE MATERIAU

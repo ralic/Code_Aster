@@ -21,6 +21,6 @@ interface
         real(kind=8) :: pt(3)
         real(kind=8) :: d(3)
         real(kind=8) :: angl
-        logical :: bidim
+        logical(kind=1) :: bidim
     end subroutine rotama
 end interface

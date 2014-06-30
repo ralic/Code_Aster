@@ -26,7 +26,7 @@ subroutine nmimcr(sdimpr, typcoz, valr, laffe)
     character(len=24) :: sdimpr
     character(len=*) :: typcoz
     real(kind=8) :: valr
-    logical :: laffe
+    logical(kind=1) :: laffe
 !
 ! ----------------------------------------------------------------------
 !

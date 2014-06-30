@@ -81,7 +81,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     character(len=24) :: mlgnno, mlgnma, tmcinf, tmvinf
 !
 !
-    logical :: transl, lvale
+    logical(kind=1) :: transl, lvale
     integer :: iarg
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/

@@ -100,7 +100,7 @@ subroutine conori(ma)
     character(len=8) :: kmac, ktyc, knoc, kmar, ktyr, knor
     character(len=8) :: ma, kbid
 !
-    logical :: lomodi, loreo0, loreor, lomod0, locor0, lface, lface0
+    logical(kind=1) :: lomodi, loreo0, loreor, lomod0, locor0, lface, lface0
 !
 !-----------------------------------------------------------------------
     integer :: i, ikmar, iktyr, imai, imarc, imaz, inoe

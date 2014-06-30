@@ -108,7 +108,7 @@ ddl)
     call jeveuo(resu//'.VALE', 'E', vr=vale)
 !
     call mrmult('ZERO', lmat, zr(jvec), vale, 1,&
-                .true.)
+                .true._1)
 !
 !      CALL WKVECT('&&SIMONO.DDL.BLOQUE','V V I',NEQ,IDDL)
 !      CALL TYPDDL('BLOQ',NUME,NEQ,ZI(IDDL),NBACT,NBBLO,NBLAG,NBLIAI)

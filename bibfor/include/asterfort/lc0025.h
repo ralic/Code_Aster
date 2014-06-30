@@ -30,7 +30,7 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        logical :: cp
+        logical(kind=1) :: cp
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)

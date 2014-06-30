@@ -22,7 +22,7 @@ interface
         integer :: npg
         integer :: nno
         integer :: mode
-        logical :: laxi
+        logical(kind=1) :: laxi
         real(kind=8) :: poidsg(npg)
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: dff(nno, npg)

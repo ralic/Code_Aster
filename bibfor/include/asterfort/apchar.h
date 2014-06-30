@@ -29,7 +29,7 @@ interface
         integer :: ldynam
         character(len=19) :: solveu
         integer :: lamor
-        logical :: lc
+        logical(kind=1) :: lc
         character(len=3) :: impr
         integer :: ifapm
         integer :: ind

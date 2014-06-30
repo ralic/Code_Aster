@@ -22,7 +22,7 @@ interface
         integer :: idfimd
         character(len=*) :: nomamd
         integer :: option
-        logical :: existm
+        logical(kind=1) :: existm
         integer :: ndim
         integer :: codret
     end subroutine mdexma

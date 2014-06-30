@@ -59,7 +59,7 @@ subroutine orilgm(noma)
     integer :: ntrait, jjv, nbmavo, jmavo, nbmato, ima, nbmavi, jmavi, k, jgv
     integer :: ncf3, ngs, jgs, nbmasu, jmasu
     real(kind=8) :: vect(3)
-    logical :: reorie, orivec
+    logical(kind=1) :: reorie, orivec
     character(len=8) :: k8b
     character(len=16) :: mofa2d, mofa3d, mofb3d, mofc3d
     character(len=24) :: nomnoe, grmama, nnoeud, gmat

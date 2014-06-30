@@ -30,7 +30,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 #include "asterfort/r8inir.h"
 #include "asterfort/tanbul.h"
 #include "blas/ddot.h"
-    logical :: mini
+    logical(kind=1) :: mini
     integer :: ndim, nno1, nno2, npg, iw, idff1
     integer :: mate
     integer :: vu(3, 27), vp(27)
@@ -65,7 +65,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: nddl, g
     integer :: sa, na, ia, kk
     real(kind=8) :: deplm(3*27)
@@ -82,7 +82,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: kce(nno2, nno2), rce(nno2)
     character(len=16) :: option
 !
-    parameter    (grand = .false.)
+    parameter    (grand = .false._1)
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
@@ -162,7 +162,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
         call tanbul(option, ndim, g, mate, compor(1),&
-                    .false., mini, alpha, dsbdep, trepst)
+                    .false._1, mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then

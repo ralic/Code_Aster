@@ -25,7 +25,7 @@ interface
         integer :: i3
         character(len=8) :: macoc(2+nbcoc)
         character(len=8) :: macor(2+nbcor)
-        logical :: loreor
+        logical(kind=1) :: loreor
         character(len=8) :: mailla
     end subroutine conors
 end interface

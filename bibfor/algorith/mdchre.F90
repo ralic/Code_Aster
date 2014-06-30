@@ -13,7 +13,7 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
 !
     integer :: ioc, iliai, nbnli
     real(kind=8) :: parcho(nbnli, *)
-    logical :: lnoue2
+    logical(kind=1) :: lnoue2
     character(len=8) :: repere
     character(len=10) :: motfac
     character(len=16) :: typnum

@@ -35,7 +35,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
     integer :: nbpari, nbparr, nbpark, icom1, icom2, nfreqg
     real(kind=8) :: vectr(*), resur(*), omecor
     complex(kind=8) :: vectc(*)
-    logical :: lcomod
+    logical(kind=1) :: lcomod
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,7 +83,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
     integer :: ineg, iprec, iret, ilgcon, nrscr
     real(kind=8) :: rbid
     complex(kind=8) :: zbid
-    logical :: lns
+    logical(kind=1) :: lns
 !     ------------------------------------------------------------------
 !
     call jemarq()

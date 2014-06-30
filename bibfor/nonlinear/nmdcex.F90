@@ -58,12 +58,12 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
 !
     integer :: numins
-    logical :: lstop
+    logical(kind=1) :: lstop
     real(kind=8) :: instam, instap, deltat, insfin
     real(kind=8) :: dtmin, ratio
     real(kind=8) :: valr(2)
     integer :: nbrpas
-    logical :: ldeco
+    logical(kind=1) :: ldeco
     character(len=4) :: typdec
     character(len=24) :: nomlis
     character(len=16) :: optdec
@@ -110,7 +110,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
 ! --------- DECOUPE
 !
-            call nmdecc(nomlis, .false., optdec, deltat, instam,&
+            call nmdecc(nomlis, .false._1, optdec, deltat, instam,&
                         ratio, typdec, nbrpas, deltac, dtmin,&
                         retdex)
             if (retdex .eq. 0) goto 999

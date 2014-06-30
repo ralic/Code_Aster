@@ -27,7 +27,7 @@ interface
         integer :: numsiq
         real(kind=8) :: pj
         real(kind=8) :: mj(*)
-        logical :: seisme
+        logical(kind=1) :: seisme
         real(kind=8) :: mse(*)
         real(kind=8) :: spij(2)
         real(kind=8) :: typeke

@@ -45,7 +45,7 @@ subroutine ssdege(nomu)
 !        NOMU : NOM DU MACR_ELEM_STAT QUE L'ON DEFINIT.
 !
     character(len=8) :: kbi81, noma, nomo, nomgd, promes
-    logical :: lmess
+    logical(kind=1) :: lmess
     real(kind=8) :: time
     character(len=16) :: pheno
 ! ----------------------------------------------------------------------

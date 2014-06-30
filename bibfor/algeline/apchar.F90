@@ -17,7 +17,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 #include "asterfort/utmess.h"
 !
     integer :: nk, lraide, lmasse, ldynam, lamor, ifapm, ind
-    logical :: lc
+    logical(kind=1) :: lc
     real(kind=8) :: theta
     complex(kind=8) :: lambda
     character(len=3) :: impr

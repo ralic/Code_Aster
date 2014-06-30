@@ -4,7 +4,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
 #include "asterfort/posddl.h"
 #include "asterfort/utmess.h"
     integer :: nbnli, iliai, ddlcho(*), ier
-    logical :: lnoue2
+    logical(kind=1) :: lnoue2
     character(len=8) :: noecho(nbnli, *)
 ! ----------------------------------------------------------------------
 ! ======================================================================

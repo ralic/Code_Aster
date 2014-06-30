@@ -61,7 +61,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     character(len=19) :: nomtab, nomta2
     character(len=24) :: nomjv, nojv2, nomjvl, nojvl2, inpar, jnpar
     character(len=24) :: valk
-    logical :: lok
+    logical(kind=1) :: lok
     integer, pointer :: tri2(:) => null()
     integer, pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()

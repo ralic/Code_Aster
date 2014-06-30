@@ -24,7 +24,7 @@ interface
         integer :: nbf0
         integer :: nbnoca(*)
         character(len=19) :: numaca
-        logical :: quad
+        logical(kind=1) :: quad
         integer :: sens
     end subroutine topoca
 end interface

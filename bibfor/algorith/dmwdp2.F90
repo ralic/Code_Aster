@@ -4,7 +4,7 @@ function dmwdp2(rho11, sat, phi, cs, cliq,&
     real(kind=8) :: rho11, sat, phi, cs, cliq, dp11p2, dmwdp2
     real(kind=8) :: em
     real(kind=8) :: dphip2
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 !
 ! ======================================================================

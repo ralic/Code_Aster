@@ -74,7 +74,7 @@ subroutine te0534(option, nomte)
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
     real(kind=8) :: rr, cohes(3), rela
-    logical :: lbid, lelim
+    logical(kind=1) :: lbid, lelim
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg
     character(len=16) :: enr
@@ -198,7 +198,7 @@ subroutine te0534(option, nomte)
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
         call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
-                    jheano, vstnc, lact, .true., lelim,&
+                    jheano, vstnc, lact, .true._1, lelim,&
                     ndim, nfe, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)
@@ -293,14 +293,14 @@ subroutine te0534(option, nomte)
     if (nfh .ne. 0) then
         call jevech('PSTANO', 'L', jstno)
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false., lbid,&
+                    nno, nnos, zi(jstno), .false._1, lbid,&
                     option, nomte, ddlm,&
                     nfiss, jfisno, vect=zr(ivect))
     endif
 !     SUPPRESSION DES DDLS DE CONTACT
     if (lelim) then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, vstnc, .true., .true.,&
+                    nno, nnos, vstnc, .true._1, .true._1,&
                     option, nomte, ddlm,&
                     nfiss, jfisno, vect=zr(ivect))
     endif

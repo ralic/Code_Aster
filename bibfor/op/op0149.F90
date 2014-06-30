@@ -42,7 +42,7 @@ subroutine op0149()
     character(len=16) :: typres, nomcmd
     character(len=19) :: basefl
     character(len=24) :: numo, vite, refefl, fsic, fsvi
-    logical :: newres, lnuor, lamor, lamoru, nocopl, numok
+    logical(kind=1) :: newres, lnuor, lamor, lamoru, nocopl, numok
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

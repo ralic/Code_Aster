@@ -46,6 +46,7 @@ subroutine te0577(option, nomte)
     integer :: jstno
     integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, ivectt, nddlno
     character(len=8) :: elrefp
+    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 ! --- PREALABLES AU CALCUL DU VECTEUR ELEMENTAIRE
@@ -53,7 +54,8 @@ subroutine te0577(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    ASSERT(iselli(elrefp))
+    lcond=iselli(elrefp)
+    ASSERT(lcond)
 !
 !     CHAMPS IN 'CLASSIQUES'
     call jevech('PGEOMER', 'L', igeom)

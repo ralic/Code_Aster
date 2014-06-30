@@ -27,7 +27,7 @@ interface
         integer :: lnm3d(*)
         integer :: ndim
         real(kind=8) :: coor(*)
-        logical :: reorie
+        logical(kind=1) :: reorie
         integer :: norien
         integer :: ifm
         integer :: niv

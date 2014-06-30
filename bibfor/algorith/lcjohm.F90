@@ -30,7 +30,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
     integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
     real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
     character(len=8) :: nomail
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
 ! - VARIABLES DE SORTIE
 !

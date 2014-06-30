@@ -14,7 +14,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
     real(kind=8) :: spther(2)
-    logical :: seisme
+    logical(kind=1) :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------

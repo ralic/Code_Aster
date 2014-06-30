@@ -55,7 +55,7 @@ subroutine op0154()
 #include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
     integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier
-    logical :: bidim
+    logical(kind=1) :: bidim
     character(len=8) :: ma, ma2, depla, coutur, mab
     character(len=16) :: kbi1, kbi2, option
     character(len=19) :: geomi, geomf

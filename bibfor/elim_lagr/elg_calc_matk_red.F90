@@ -32,7 +32,7 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 # include "asterfort/utmess.h"
     character(len=*) :: mat1z, mat2z, solv1z
     character(len=1) :: bas1
-    logical :: lqr
+    logical(kind=1) :: lqr
 !--------------------------------------------------------------
 ! but :
 !   calculer la matrice reduite mat2z correspondant a mat1z

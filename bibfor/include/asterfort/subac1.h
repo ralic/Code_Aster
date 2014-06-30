@@ -19,7 +19,7 @@ interface
     subroutine subac1(laxi, nno, vff, dff, geom,&
                       cova)
         integer :: nno
-        logical :: laxi
+        logical(kind=1) :: laxi
         real(kind=8) :: vff(nno)
         real(kind=8) :: dff(nno)
         real(kind=8) :: geom(2, nno)

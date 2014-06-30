@@ -93,9 +93,9 @@ subroutine op0026()
     character(len=19) :: commoi, complu, depplu
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
     character(len=19) :: mediri, merigi, vediri, vefint, veforc
-    logical :: lmatr, lvnod, lvfin, lcomp
-    logical :: l_merimo, l_medime, l_vefnme, l_etat_init
-    logical :: tabret(0:10)
+    logical(kind=1) :: lmatr, lvnod, lvfin, lcomp
+    logical(kind=1) :: l_merimo, l_medime, l_vefnme, l_etat_init
+    logical(kind=1) :: tabret(0:10)
     integer :: fonact(100)
 !-----------------------------------------------------------------------
     data lischa     /'&&OP0026.LISCHA'/

@@ -25,7 +25,7 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 #include "asterfort/utmess.h"
     integer :: nbchs
     character(len=*) :: lichs(nbchs), chs3, base
-    logical :: lcumul(nbchs), lcoc
+    logical(kind=1) :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
     complex(kind=8) :: lcoefc(nbchs)
 ! ---------------------------------------------------------------------

@@ -141,11 +141,11 @@ subroutine te0409(option, nomte)
 !
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), c, s
 !
-    logical :: t3g, q4g
-    logical :: leul, lrgm
-    logical :: lbid, resi, rigi
-    logical :: q4gg
-    logical :: coupmf, ther
+    logical(kind=1) :: t3g, q4g
+    logical(kind=1) :: leul, lrgm
+    logical(kind=1) :: lbid, resi, rigi
+    logical(kind=1) :: q4gg
+    logical(kind=1) :: coupmf, ther
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx
     integer :: idfd2, jgano

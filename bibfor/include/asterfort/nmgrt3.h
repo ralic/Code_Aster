@@ -27,14 +27,14 @@ interface
         real(kind=8) :: def(6, nno, 3)
         real(kind=8) :: pff(6, nno, nno)
         character(len=16) :: option
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: r
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: sign(6)
         real(kind=8) :: sigma(6)
-        logical :: matsym
+        logical(kind=1) :: matsym
         real(kind=8) :: matuu(*)
         real(kind=8) :: vectu(3, nno)
     end subroutine nmgrt3

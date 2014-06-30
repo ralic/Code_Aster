@@ -28,7 +28,7 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
     character(len=16) :: motfac
     integer :: iocc
     character(len=24) :: nomcha, sdieto
-    logical :: lextr
+    logical(kind=1) :: lextr
 !
 ! ----------------------------------------------------------------------
 !

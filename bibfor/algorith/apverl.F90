@@ -78,7 +78,7 @@ subroutine apverl(sdappa)
     integer :: jlistn, jlista
     real(kind=8) :: prosca, angle, oldang, val
     integer :: inoeu
-    logical :: apcald
+    logical(kind=1) :: apcald
 !
 ! ----------------------------------------------------------------------
 !

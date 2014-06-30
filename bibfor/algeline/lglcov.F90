@@ -1,7 +1,7 @@
 function lglcov(seuil, toler)
 !
     implicit none
-    logical :: lglcov
+    logical(kind=1) :: lglcov
     real(kind=8) :: seuil, toler
 ! ======================================================================
 ! ======================================================================

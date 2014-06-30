@@ -57,7 +57,7 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: defico, deficu, resocu, resoco
-    logical :: lerrit
+    logical(kind=1) :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,7 +110,7 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
 !
     real(kind=8) :: etan, offset, rho
     real(kind=8) :: instam, instap, deltat, resigr
-    logical :: lpilo, lreli, lctcd, lunil
+    logical(kind=1) :: lpilo, lreli, lctcd, lunil
     character(len=19) :: cnfext
     integer :: ctccvg, ldccvg, pilcvg
     integer :: ifm, niv

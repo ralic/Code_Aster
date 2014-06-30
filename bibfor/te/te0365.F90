@@ -69,11 +69,11 @@ subroutine te0365(option, nomte)
     real(kind=8) :: jeu, djeu(3), djeut(3)
     character(len=8) :: typmae, typmam
     character(len=9) :: phasep
-    logical :: laxis, leltf
-    logical :: lpenac, lpenaf
-    logical :: loptf, ldyna, lfovit, lcont
-    logical :: ladhe
-    logical :: debug
+    logical(kind=1) :: laxis, leltf
+    logical(kind=1) :: lpenac, lpenaf
+    logical(kind=1) :: loptf, ldyna, lfovit, lcont
+    logical(kind=1) :: ladhe
+    logical(kind=1) :: debug
     real(kind=8) :: ffe(9), ffm(9), ffl(9)
 !
     real(kind=8) :: vectcc(9)

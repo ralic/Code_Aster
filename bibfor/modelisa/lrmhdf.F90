@@ -106,7 +106,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
     character(len=255) :: kfic
     character(len=200) :: descfi
 !
-    logical :: existm
+    logical(kind=1) :: existm
 !
 !     ------------------------------------------------------------------
     call jemarq()

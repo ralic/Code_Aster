@@ -84,7 +84,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     character(len=24) :: vale, nomjv
     character(len=24) :: valk(2)
     complex(kind=8) :: c16b
-    logical :: recunp
+    logical(kind=1) :: recunp
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, ieq, ii, ik, imode, ir, tmod(1)

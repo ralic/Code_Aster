@@ -21,6 +21,6 @@ interface
         integer :: irec
         integer :: ifield
         integer :: valatt
-        logical :: trouve
+        logical(kind=1) :: trouve
     end subroutine decod1
 end interface

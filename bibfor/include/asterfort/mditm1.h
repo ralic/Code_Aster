@@ -36,7 +36,7 @@ interface
         integer :: icoupl
         character(len=8) :: tpfl
         integer :: veci1(*)
-        logical :: locfl0(*)
+        logical(kind=1) :: locfl0(*)
         real(kind=8) :: dt0
         real(kind=8) :: tfexm
         real(kind=8) :: ts

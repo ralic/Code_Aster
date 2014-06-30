@@ -58,7 +58,7 @@ subroutine i2chem(nomail, nbparm)
     integer :: numse, numm1, numm2, ibid, numno, iret, ideb, trouve
     integer :: vali(7)
     real(kind=8) :: epsi
-    logical :: ouvert
+    logical(kind=1) :: ouvert
     character(len=8) :: k8b, nomcrb, typm, nomma, nomse, nomm1, nomm2
     character(len=16) :: typcrb, opera
     character(len=24) :: conec, type, nommai, nomnoe, noeud, nomgr

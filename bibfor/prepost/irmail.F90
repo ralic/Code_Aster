@@ -54,7 +54,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
 !---------------- ARGUMENTS --------------------------------------------
     integer :: versio, nive, infmai
-    logical :: lmod
+    logical(kind=1) :: lmod
     character(len=8) :: noma, nomo
     character(len=16) :: formar
     character(len=*) :: form
@@ -69,7 +69,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     integer :: lon1, maxnod, nbgrm, nbgrn
     integer :: nbmai, nbnoe, nbtitr, ndim
 !
-    logical :: lmasu, lgmsh
+    logical(kind=1) :: lmasu, lgmsh
 !
     character(len=80) :: titmai
     real(kind=8), pointer :: vale(:) => null()

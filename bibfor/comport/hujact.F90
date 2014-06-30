@@ -49,7 +49,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
     real(kind=8) :: mater(22, 2), un, zero
     real(kind=8) :: psf
     real(kind=8) :: seuil, rd, rf, psm
-    logical :: debug, chgmec, negmul(8), miso
+    logical(kind=1) :: debug, chgmec, negmul(8), miso
     real(kind=8) :: vinm(50), seuilm, c1td, c2td, cmod, deux
 ! --------------------------------------------------------------------
     common /tdim/   ndt, ndi

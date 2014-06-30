@@ -24,7 +24,7 @@ interface
         integer :: ifi
         integer :: nbcham
         character(len=*) :: cham(*)
-        logical :: lresu
+        logical(kind=1) :: lresu
         integer :: nbordr
         integer :: ordr(*)
         integer :: nbcmp
@@ -32,7 +32,7 @@ interface
         integer :: nbmat
         integer :: nummai(*)
         integer :: versio
-        logical :: lgmsh
+        logical(kind=1) :: lgmsh
         character(len=8) :: tycha
     end subroutine irgmsh
 end interface

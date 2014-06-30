@@ -105,7 +105,7 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
     integer :: jnto, nunopr
 !
 !     PROJECTION CODE
-    logical :: ldmax
+    logical(kind=1) :: ldmax
     real(kind=8) :: distma
     character(len=8) :: lpain(4), lpaout(2)
     character(len=19) :: cnols, celgls, chams

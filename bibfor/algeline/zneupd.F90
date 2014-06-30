@@ -336,7 +336,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
     character(len=1) :: bmat, howmny
     character(len=2) :: which
-    logical :: rvec
+    logical(kind=1) :: rvec
     integer :: info, ldz, ldv, lworkl, n, ncv, nev
     complex(kind=8) :: sigma
     real(kind=8) :: tol
@@ -346,7 +346,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !     %-----------------%
 !
     integer :: iparam(11), ipntr(14)
-    logical :: select(*)
+    logical(kind=1) :: select(*)
     real(kind=8) :: rwork(*)
     complex(kind=8) :: d(*), resid(*), v(ldv, *), z(ldz, *), workd(3*n)
     complex(kind=8) :: workl(lworkl), workev(2*ncv)
@@ -369,7 +369,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
     integer :: ishift
     complex(kind=8) :: rnorm, temp, vl(1)
     real(kind=8) :: rtemp, eps23, eps
-    logical :: reord
+    logical(kind=1) :: reord
 !
 !
 !     %--------------------%
@@ -606,7 +606,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         call zcopy(ldh*ncv, workl(ih), 1, workl(iuptri), 1)
         call zlaset('A', ncv, ncv, zero, one,&
                     workl(invsub), ldq)
-        call zlahqr(.true., .true., ncv, 1, ncv,&
+        call zlahqr(.true._1, .true._1, ncv, 1, ncv,&
                     workl(iuptri), ldh, workl(iheig), 1, ncv,&
                     workl(invsub), ldq, ierr4)
         ierr=ierr4

@@ -49,7 +49,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
-    logical :: cplan, inco
+    logical(kind=1) :: cplan, inco
     integer :: ndim, imate, kpg, ksp, iret, ndimsi
     integer :: k, l, iret2, iret3, iret4, iret5, icodre(3)
     real(kind=8) :: sigm(6), sigp(6), vip(1), dsidep(6, 6)

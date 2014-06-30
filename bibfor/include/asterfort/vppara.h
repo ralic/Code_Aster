@@ -45,7 +45,7 @@ interface
         real(kind=8) :: resur(*)
         character(len=*) :: resuk(*)
         character(len=1) :: ktyp
-        logical :: lcomod
+        logical(kind=1) :: lcomod
         integer :: icom1
         integer :: icom2
         character(len=16) :: typres

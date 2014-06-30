@@ -27,7 +27,7 @@ subroutine obgetb(nomstr, nompaz, vall)
 #include "asterfort/obpara.h"
     character(len=24) :: nomstr
     character(len=*) :: nompaz
-    logical :: vall
+    logical(kind=1) :: vall
 !
 ! ----------------------------------------------------------------------
 !

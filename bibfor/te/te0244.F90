@@ -55,7 +55,7 @@ subroutine te0244(option, nomte)
     integer :: idfde, igeom, imate, icomp, ifon(3), itemp, ivectt, ivecti
     integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2, isechf
     integer :: isechi, ibid, ihydr
-    logical :: laxi, lhyd
+    logical(kind=1) :: laxi, lhyd
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

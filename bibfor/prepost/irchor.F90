@@ -25,7 +25,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     integer :: ioccur, nbnosy, nbordr, nbrcmp, nbcmdu, nbpara, codret
     character(len=8) :: leresu
     character(len=*) :: nchsym, nnuord, nlicmp, novcmp, nnopar
-    logical :: lresul
+    logical(kind=1) :: lresul
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     character(len=19) :: noch19, knum
     character(len=24) :: valk(6)
 !
-    logical :: afaire
+    logical(kind=1) :: afaire
     character(len=8), pointer :: veri_nom_cmp(:) => null()
 !
     call jemarq()

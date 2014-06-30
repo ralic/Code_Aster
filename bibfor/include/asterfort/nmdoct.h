@@ -21,8 +21,8 @@ interface
         character(len=19) :: lischa
         character(len=24) :: defico
         character(len=24) :: deficu
-        logical :: lcont
-        logical :: lunil
+        logical(kind=1) :: lcont
+        logical(kind=1) :: lunil
         character(len=19) :: ligrcf
         character(len=19) :: ligrxf
     end subroutine nmdoct

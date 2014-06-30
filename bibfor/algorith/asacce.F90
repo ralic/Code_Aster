@@ -13,7 +13,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
     real(kind=8) :: recmod(nbsup, neq, *), recmor(nbsup, neq, *)
     character(len=16) :: nomsy
     character(len=*) :: moncha
-    logical :: monoap, muapde
+    logical(kind=1) :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

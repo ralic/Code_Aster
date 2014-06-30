@@ -17,7 +17,7 @@
 !
 interface
 function lteatt(noattr, vattr, typel)
-    logical  :: lteatt
+    logical(kind=1)  :: lteatt
     character(len=*), intent(in) :: noattr
     character(len=*), intent(in) :: vattr
     character(len=*), intent(in), optional :: typel

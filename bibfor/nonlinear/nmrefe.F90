@@ -87,7 +87,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=24) :: chcara(18)
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
     character(len=19) :: pinter, ainter, baseco, ccface, lonfac
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
     character(len=16) :: option
 !

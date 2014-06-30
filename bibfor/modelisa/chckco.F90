@@ -64,7 +64,7 @@ subroutine chckco(char, noma, ndimg)
     integer :: posnno(9), numnno(9)
     character(len=4) :: typno, typma
     character(len=8) :: alias, nomma
-    logical :: lpoutr, lpoint
+    logical(kind=1) :: lpoutr, lpoint
     integer :: itype
     integer :: nmaco
 !

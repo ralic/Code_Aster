@@ -29,7 +29,7 @@ subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
     character(len=19) :: nomsd
     real(kind=8) :: inst
     character(len=4) :: typsel
-    logical :: lselec
+    logical(kind=1) :: lselec
     integer :: nume, freq, nbinst
     real(kind=8) :: tole
 !

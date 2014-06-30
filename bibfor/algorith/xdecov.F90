@@ -70,7 +70,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     integer :: a1, a2, a3, a4, a, b, c, d, ndime
     character(len=8) :: typma, elrese(3)
     integer :: zxain, mxstac
-    logical :: axi
+    logical(kind=1) :: axi
     parameter      (mxstac=1000)
 !
     data            elrese /'SEG2','TRIA3','TETRA4'/

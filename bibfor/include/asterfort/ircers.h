@@ -43,7 +43,7 @@ interface
         integer :: ir
         integer :: nbmat
         integer :: nummai(*)
-        logical :: lmasu
+        logical(kind=1) :: lmasu
         integer :: ncmpu
         integer :: nucmp(*)
         integer :: nbcmp

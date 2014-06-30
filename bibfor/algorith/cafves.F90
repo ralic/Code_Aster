@@ -58,7 +58,7 @@ subroutine cafves(cont, tange, maxfa, nface, fks,&
 !
 !================================================
     implicit none
-    logical :: cont, tange
+    logical(kind=1) :: cont, tange
     integer :: maxfa
     integer :: nface
     real(kind=8) :: flux

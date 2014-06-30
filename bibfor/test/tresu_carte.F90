@@ -17,8 +17,8 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
-    logical, intent(in) :: llab
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in) :: llab
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     complex(kind=8) :: valc
     character(len=8) :: nomma
     character(len=4) :: tych
-    logical :: skip
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     skip = .false.

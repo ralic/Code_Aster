@@ -43,7 +43,7 @@ subroutine i3dch2(epsi, seuil, maxitr, fk, m,&
     integer :: i
     real(kind=8) :: valfk(3, 4), valr(4), vals(4), un, zero
     real(kind=8) :: x0, y0, a, b, c, d, rsup, rinf, ssup, sinf, t1, t2
-    logical :: fini, egalr, egals
+    logical(kind=1) :: fini, egalr, egals
 !
 !======================================================================
 !

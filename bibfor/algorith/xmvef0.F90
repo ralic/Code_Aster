@@ -31,7 +31,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
     real(kind=8) :: vtmp(336)
     character(len=8) :: typmai
     integer :: nconta, nfhe, heavno(8)
-    logical :: lpenac, lmulti
+    logical(kind=1) :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !

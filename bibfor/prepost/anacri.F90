@@ -27,7 +27,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     character(len=3) :: impgrd
     character(len=16) :: nomcri, nomfor, typcha
     integer :: paract(35)
-    logical :: fordef, crsigm, crepst, crepse, crepsp
+    logical(kind=1) :: fordef, crsigm, crepst, crepse, crepsp
 !
 ! ---------------------------------------------------------------------
 ! BUT: ANALYSER LE CRITERE POUR DETERMINER LES GRANDEURS NECESSAIARES
@@ -55,7 +55,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     character(len=2) :: nomty1(35), nomty2(30)
     character(len=8) :: nompa1(35), nompa2(30), nompf(35)
     character(len=24) :: chnom, cbid
-    logical :: grdexi
+    logical(kind=1) :: grdexi
 !
 !     ---------------------------------------------------------------
     data  nompa1/       'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&

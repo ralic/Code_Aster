@@ -59,7 +59,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
     integer :: retact, ievdac
-    logical :: arret
+    logical(kind=1) :: arret
     character(len=4) :: etfixe
     integer :: actfix
 !

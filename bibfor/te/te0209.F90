@@ -39,7 +39,7 @@ subroutine te0209(option, nomte)
     real(kind=8) :: poids, poids1, poids2, coefh
     real(kind=8) :: r1, r2, nx, ny, tpg, theta
     character(len=8) :: lirefe(2)
-    logical :: laxi
+    logical(kind=1) :: laxi
 !     ------------------------------------------------------------------
 !
     laxi = .false.

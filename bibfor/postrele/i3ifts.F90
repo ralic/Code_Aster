@@ -12,7 +12,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical :: fink
+    logical(kind=1) :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +54,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
     integer :: sm(3), i, j, ds1, decf, adescm, arete, nba, iret, ipos, vali(3)
     real(kind=8) :: c, zero, un, r, s, t, lcara, unsur2, eps
     real(kind=8) :: a(3, 3), b(3), x(3), cs(3, 3), e1(3), e2(3), e3(3)
-    logical :: djala1, djala2
+    logical(kind=1) :: djala1, djala2
 !
 !======================================================================
 !

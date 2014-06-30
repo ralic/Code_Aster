@@ -34,8 +34,8 @@ interface
         integer :: nnl
         integer :: nbdm
         integer :: iresog
-        logical :: laxis
-        logical :: ldyna
+        logical(kind=1) :: laxis
+        logical(kind=1) :: ldyna
     
         real(kind=8) :: jeusup
         real(kind=8) :: ffe(9)

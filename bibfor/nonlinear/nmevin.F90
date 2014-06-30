@@ -54,7 +54,7 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
     character(len=24) :: jeuite
     integer :: jjeuit
     real(kind=8) :: jeufin, pnmaxi
-    logical :: levent
+    logical(kind=1) :: levent
     real(kind=8) :: penmax
     integer :: ibid
     character(len=8) :: k8bid

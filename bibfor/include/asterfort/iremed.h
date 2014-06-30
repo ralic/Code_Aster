@@ -25,13 +25,13 @@ interface
         character(len=*) :: novcmp
         character(len=*) :: partie
         character(len=*) :: liordr
-        logical :: lresu
+        logical(kind=1) :: lresu
         integer :: nbnoec
         integer :: linoec(*)
         integer :: nbmaec
         integer :: limaec(*)
         character(len=*) :: nomcmp
-        logical :: lvarie
+        logical(kind=1) :: lvarie
         character(len=8) :: carael
     end subroutine iremed
 end interface

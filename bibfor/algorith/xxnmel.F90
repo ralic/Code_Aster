@@ -99,7 +99,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: dgdgl(4, 3), pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+nfe), nnop)
     real(kind=8) :: ur, r
-    logical :: grdepl, axi, cplan
+    logical(kind=1) :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
     real(kind=8) :: rind(6), rac2, angmas(3)

@@ -55,7 +55,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     real(kind=8) :: jeumin
     real(kind=8) :: t1min(3), t2min(3)
     real(kind=8) :: ximin, yimin
-    logical :: projin
+    logical(kind=1) :: projin
 !
 ! ----------------------------------------------------------------------
 !
@@ -122,7 +122,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     real(kind=8) :: coorma(27), xi, yi
     real(kind=8) :: r3bid(3)
     character(len=8) :: typma
-    logical :: dirapp, noapar, lappar
+    logical(kind=1) :: dirapp, noapar, lappar
     integer :: iproj, iprojm
     integer :: iad,  itypma, nptm, ifiss
     integer, pointer :: connex(:) => null()

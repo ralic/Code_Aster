@@ -64,7 +64,7 @@ subroutine te0510(option, nomte)
     real(kind=8) :: norm2, ptree(3), ptref(3)
     real(kind=8) :: lsn
     integer :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
-    logical :: elim, elim2
+    logical(kind=1) :: elim, elim2
     integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc
     integer :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
     integer :: nfisc, ifisc, nfisc2, nn, vali(2)

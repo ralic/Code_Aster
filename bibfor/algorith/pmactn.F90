@@ -30,7 +30,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
     character(len=24) :: sderro
     real(kind=8) :: parcri(*)
     integer :: liccvg(5)
-    logical :: itemax
+    logical(kind=1) :: itemax
     integer :: action, actite
     integer :: iterat, numins
 !
@@ -65,7 +65,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 !
 !
     integer :: retact, ievdac
-    logical :: arret
+    logical(kind=1) :: arret
     integer :: ldccvg, faccvg
     character(len=24) :: sdimpr, k24bla
     character(len=19) :: solveu

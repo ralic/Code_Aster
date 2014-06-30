@@ -89,9 +89,9 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
         call jeveuo(jexnum(nomd2//'.TACH', isymb), 'L', jtach)
         chext2 = zk24(jtach+irang-1)(1:19)
         if (chext2 .eq. ' ') then
-            call rsutch(nomsd, noms2, iordr, chext2, .true.)
+            call rsutch(nomsd, noms2, iordr, chext2, .true._1)
         else
-            call rsutch(nomsd, noms2, iordr, chext3, .true.)
+            call rsutch(nomsd, noms2, iordr, chext3, .true._1)
             ASSERT(chext2.eq.chext3)
         endif
 !
@@ -115,7 +115,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
             endif
         endif
 !
-        call rsutch(nomsd, noms2, iordr, chext2, .true.)
+        call rsutch(nomsd, noms2, iordr, chext2, .true._1)
     endif
 !
 !

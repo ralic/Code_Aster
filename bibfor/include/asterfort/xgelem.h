@@ -41,6 +41,6 @@ interface
         real(kind=8) :: fno(ndim*nnop)
         integer :: jfisno
         integer :: isig
-        logical :: incr
+        logical(kind=1) :: incr
     end subroutine xgelem
 end interface

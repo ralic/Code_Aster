@@ -31,7 +31,7 @@ interface
         integer :: nbp23
         integer :: nbp13
         integer :: sigr(*)
-        logical :: yapass
+        logical(kind=1) :: yapass
         character(len=3) :: typass
         integer :: nsitup
     end subroutine rc32f1

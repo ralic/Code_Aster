@@ -61,7 +61,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
     real(kind=8) :: mefl(54)
     real(kind=8) :: bsigth(24), enerth, carat3(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), qsi, eta
-    logical :: coupmf, indith
+    logical(kind=1) :: coupmf, indith
     integer :: i, jcoqu, jdepg, k
     real(kind=8) :: ctor, excent, zero
     real(kind=8) :: aire

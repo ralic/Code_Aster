@@ -61,7 +61,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: kxmps, ifmump
-    logical :: ldist, lmd, lpreco
+    logical(kind=1) :: ldist, lmd, lpreco
     real(kind=8) :: epsmat
     character(len=1) :: type
     character(len=5) :: klag2
@@ -93,7 +93,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest
     complex(kind=8) :: caux
-    logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
+    logical(kind=1) :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
     integer, pointer :: smdi(:) => null()
     integer, pointer :: nequ(:) => null()
 !

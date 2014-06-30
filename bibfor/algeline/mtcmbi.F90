@@ -53,7 +53,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     character(len=19) :: matres, noma
     character(len=24) :: valm, valmr
     complex(kind=8) :: czero
-    logical :: matsym
+    logical(kind=1) :: matsym
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef

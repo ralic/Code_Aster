@@ -26,7 +26,7 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 #include "blas/ddot.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno1, nno2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2), ang(*)
     real(kind=8) :: dffr2(ndim-1, nno2), wg, b(3, 3, 2*nno1)

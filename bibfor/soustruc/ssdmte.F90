@@ -50,7 +50,7 @@ subroutine ssdmte(mag)
 !        MAG : NOM DU MAILLAGE RESULTAT.
 !
     character(len=8) :: nomacr, nomnoe
-    logical :: recom
+    logical(kind=1) :: recom
     character(len=19) :: coordo
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:

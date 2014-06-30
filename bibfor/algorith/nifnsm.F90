@@ -65,8 +65,8 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
-    logical :: nonloc
+    logical(kind=1) :: axi, grand
+    logical(kind=1) :: nonloc
     integer :: k2ret(1), vij(3, 3), lij(3, 3)
     integer :: nddl, ndu, g
     integer :: kl, sa, ra, na, ia, ja, kk
@@ -81,7 +81,7 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     real(kind=8) :: kr(6), id(3, 3)
     real(kind=8) :: am, ap, bm, boa, aa, bb, daa, dbb, dboa, d2boa
 !
-    parameter    (grand = .true.)
+    parameter    (grand = .true._1)
     data         vij  / 1, 4, 5,&
      &                  4, 2, 6,&
      &                  5, 6, 3 /

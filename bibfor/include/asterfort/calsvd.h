@@ -23,9 +23,9 @@ interface
         integer :: nm
         real(kind=8) :: a(nm, n)
         real(kind=8) :: w(n)
-        logical :: matu
+        logical(kind=1) :: matu
         real(kind=8) :: u(nm, m)
-        logical :: matv
+        logical(kind=1) :: matv
         real(kind=8) :: v(nm, n)
         integer :: ierr
     end subroutine calsvd

@@ -99,7 +99,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     character(len=8) :: nnoeca, voisin(2)
     character(len=19) :: licnx, lnuma
     character(len=24) :: coorno, nomama, nonoca, nonoma
-    logical :: encore
+    logical(kind=1) :: encore
 !
     character(len=24) :: param(4), parcr
     integer, pointer :: cnx_maille(:) => null()

@@ -74,7 +74,7 @@ subroutine xcomhm(option, imate, compor,instap,&
 #   include "asterfort/xcalfh.h"
 #   include "asterfort/xcalme.h"
 #   include "asterfort/xhmsat.h"
-    logical :: yachai
+    logical(kind=1) :: yachai
     integer :: retcom, kpi, npg, vicpr1, vicpr2
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec, yap1
     integer :: yap2, yate, addeme, addep1, addep2, addete

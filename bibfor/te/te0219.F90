@@ -45,7 +45,7 @@ subroutine te0219(option, nomte)
     integer :: nnop2, c(6, 9), ise, nse, itemps, j, ier, ibid
 !
 !
-    logical :: fonc
+    logical(kind=1) :: fonc
 !
 !
     call elref1(elrefe)

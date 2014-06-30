@@ -27,6 +27,6 @@ interface
         integer :: ioccur
         character(len=24) :: suropt
         character(len=24) :: ligrel
-        logical :: exipou
+        logical(kind=1) :: exipou
     end subroutine ccvepo
 end interface

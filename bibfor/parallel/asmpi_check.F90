@@ -55,7 +55,7 @@ subroutine asmpi_check(nbpro4, iret)
 #include "asterc/asmpi_send_i4.h"
 #include "asterc/asmpi_test.h"
 !
-    logical :: isterm(nbpro4), lcont
+    logical(kind=1) :: isterm(nbpro4), lcont
     mpi_int :: term
     integer :: i, nbterm, np1, resp0
     mpi_int :: rank, istat, mpicou, wki(1), nbv, ip4

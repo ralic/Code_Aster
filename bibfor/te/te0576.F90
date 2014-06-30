@@ -65,7 +65,7 @@ subroutine te0576(option, nomte)
     real(kind=8) :: poids, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
     character(len=16) :: compor(3)
-    logical :: grand
+    logical(kind=1) :: grand
 ! DEB ------------------------------------------------------------------
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -254,9 +254,9 @@ subroutine te0576(option, nomte)
             end do
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
-            call nmgeom(3, nno, .false., grand, zr(igeom),&
+            call nmgeom(3, nno, .false._1, grand, zr(igeom),&
                         igau, ipoids, ivf, idfde, zr(idepl),&
-                        .true., poids, dfdbid, f, epsbid,&
+                        .true._1, poids, dfdbid, f, epsbid,&
                         r)
 !
 ! ---     CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT

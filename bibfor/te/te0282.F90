@@ -64,7 +64,7 @@ subroutine te0282(option, nomte)
 !
     character(len=8) :: nompar(3), elrefe
 !
-    logical :: fonc, chargn, axis
+    logical(kind=1) :: fonc, chargn, axis
 !
 ! =====================================================================
 ! INITIALISATIONS

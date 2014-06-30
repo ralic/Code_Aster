@@ -56,8 +56,8 @@ subroutine trcart(ific, nocc)
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=200) :: lign1, lign2
     integer :: iarg
-    logical :: lref
-    logical :: skip
+    logical(kind=1) :: lref
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
@@ -149,11 +149,11 @@ subroutine trcart(ific, nocc)
         endif
         call tresu_carte(cham19, nomail, noddl, tbtxt, vali,&
                     valr, valc, typres, epsi, crit,&
-                    ific, .true., ignore=skip, compare=ordgrd)
+                    ific, .true._1, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_carte(cham19, nomail, noddl, tbref, valir,&
                         valrr, valcr, typres, epsir, crit,&
-                        ific, .false.)
+                        ific, .false._1)
         endif
         write (ific,*)' '
 !

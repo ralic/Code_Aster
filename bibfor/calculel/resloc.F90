@@ -92,7 +92,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     character(len=24) :: chtime, chvois, chsigx, cvoisx, chelem
     character(len=*) :: ligrel, mate
     real(kind=8) :: tbgrca(3)
-    logical :: yaxfem, yathm, perman
+    logical(kind=1) :: yaxfem, yathm, perman
 !
 ! DECLARATION VARIABLES LOCALES
 !

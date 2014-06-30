@@ -87,7 +87,8 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
     complex(kind=8) :: vale_cplx
     character(len=8) :: vale_fonc
     character(len=4) :: type_coef
-    logical :: l_trian, l_same
+    logical(kind=1) :: l_trian
+    logical :: l_same
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
     integer, pointer :: dime(:) => null()

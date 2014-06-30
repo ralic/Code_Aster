@@ -32,7 +32,7 @@ interface
         real(kind=8) :: sigd(6)
         integer :: nr
         real(kind=8) :: yd(*)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
     end subroutine lcafyd
 end interface

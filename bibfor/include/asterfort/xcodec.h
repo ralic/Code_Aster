@@ -21,6 +21,6 @@ interface
         character(len=8) :: modelx
         integer :: ndim
         real(kind=8) :: crimax
-        logical :: linter
+        logical(kind=1) :: linter
     end subroutine xcodec
 end interface

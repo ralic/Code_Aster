@@ -45,7 +45,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 
-    logical           :: proj
+    logical(kind=1)           :: proj
     character(len=8)  :: mailar,mail,nomo
     character(len=10) :: nom1,nom2
     character(len=16) :: typmai

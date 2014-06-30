@@ -32,7 +32,7 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
     character(len=24) :: defico, resoco
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1(3), tau2(3)
-    logical :: lexfro
+    logical(kind=1) :: lexfro
 !
 ! ----------------------------------------------------------------------
 !

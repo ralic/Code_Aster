@@ -86,7 +86,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     real(kind=8) :: depgc(*), vitgt(*), depgt(*), cmod(np1, *), kmod(np1, *)
     real(kind=8) :: cmod0(np1, *), kmod0(np1, *), cmodca(np1, *), kmodca(np1, *)
     real(kind=8) :: amflu0(np1, *), amfluc(np1, *)
-    logical :: locflc(*)
+    logical(kind=1) :: locflc(*)
     real(kind=8) :: cmodfa(np1, *)
     integer :: npfts
     real(kind=8) :: textts(*), fextts(np4, *)
@@ -95,7 +95,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     real(kind=8) :: fmod00(*), fmodt(*), fmod0t(*), vitg0t(*), depg0t(*)
     real(kind=8) :: ftmp(*), mtmp1(np1, *), mtmp2(np1, *), mtmp6(3, *)
     real(kind=8) :: ttr(n2, *), u(*), w(*), dd(*)
-    logical :: loc(*)
+    logical(kind=1) :: loc(*)
     integer :: intge1(*), intge2(*), indx(*), indxf(*)
     real(kind=8) :: vvg(np1, *), vg(np1, *), vg0(np1, *), vd(np1, *)
     real(kind=8) :: vd0(np1, *), rr(*), rr0(*), ri(*), premac, prerel

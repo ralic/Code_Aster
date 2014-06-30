@@ -30,8 +30,8 @@ interface
         character(len=8) :: carael
         character(len=16) :: typesd
         character(len=24) :: ligrel
-        logical :: exipou
-        logical :: exitim
+        logical(kind=1) :: exipou
+        logical(kind=1) :: exitim
         character(len=19) :: lischa
         integer :: nbchre
         integer :: ioccur

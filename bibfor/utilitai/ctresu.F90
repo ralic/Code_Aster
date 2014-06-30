@@ -33,7 +33,7 @@ subroutine ctresu(nomtb)
 !
 ! ----------------------------------------------------------------------
     integer :: nbcmp, ndim, nbno, nbma, nbval
-    logical :: toucmp
+    logical(kind=1) :: toucmp
     character(len=1) :: tygd
     character(len=4) :: tych
     character(len=8) :: typac, sdres, noma

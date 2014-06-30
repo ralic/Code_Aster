@@ -72,7 +72,7 @@ subroutine te0600(option, nomte)
     integer :: li, kp, j, l, k, ibid, typvf, idim
     real(kind=8) :: r8bid=0.d0, rho(1), coef, rx
     integer :: icodre(1)
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH
 !  21 = 9 DEF MECA + 4 POUR P1 + 4 POUR P2 + 4 POUR T
@@ -128,7 +128,7 @@ subroutine te0600(option, nomte)
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! IVF2      FONCTIONS DE FORMES LINEAIRES
 ! =====================================================================
-    logical :: fnoevo, vf
+    logical(kind=1) :: fnoevo, vf
     real(kind=8) :: dt
 ! =====================================================================
 ! --- 1. INITIALISATIONS ----------------------------------------------

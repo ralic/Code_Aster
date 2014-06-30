@@ -48,7 +48,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
     character(len=8) :: nomres(nmat)
     integer :: icodre(nmat)
     character(len=16) :: nmater, necris, nomfam, necoul, phenom
-    logical :: zecris
+    logical(kind=1) :: zecris
 !     ----------------------------------------------------------------
 !
     nbval=0

@@ -17,7 +17,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
     real(kind=8) :: coefcr, coefcp, rre, rrm
     character(len=8) :: typmai
     integer :: ndeple, nnc, jddle(2), jddlm(2)
-    logical :: lpenac, lmulti
+    logical(kind=1) :: lpenac, lmulti
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -53,6 +53,6 @@ interface
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: matass
-        logical :: lerrit
+        logical(kind=1) :: lerrit
     end subroutine nmfcor
 end interface

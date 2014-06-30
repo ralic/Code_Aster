@@ -54,7 +54,7 @@ subroutine excart(imodat, iparg)
     integer :: desc, modloc, dec1, dec2, lgcata, iret
     integer :: ipt, ityplo, jparal
     integer :: nbpoin, ncmp, ngrmx, debugr
-    logical :: lparal
+    logical(kind=1) :: lparal
 !
 ! DEB-------------------------------------------------------------------
 !

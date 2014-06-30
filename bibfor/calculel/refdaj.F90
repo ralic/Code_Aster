@@ -94,7 +94,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
-    logical :: oktres, newref, oktref
+    logical(kind=1) :: oktres, newref, oktref
     integer :: lonref(4), indref, jrefe, nbrefs, nbrefsmax, nbinit, nbord1
     integer :: ibid, jbid, jindi, nbord0, ir, nbcham
     character(len=1) :: jvb
@@ -280,8 +280,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
  27 continue
 !
 !   For debugging purposes only
-!   call utimsd(6, 1, .false., .true., corefd,1, 'G')
-!   call utimsd(6, 1, .false., .true., obindi,1, 'G')
+!   call utimsd(6, 1, .false._1, .true._1, corefd,1, 'G')
+!   call utimsd(6, 1, .false._1, .true._1, obindi,1, 'G')
 !
     call jedema()
 !

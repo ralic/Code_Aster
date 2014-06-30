@@ -67,8 +67,9 @@ subroutine op0025()
     real(kind=8) :: tpsthe(6), tps1(4), deltat, deltam
     real(kind=8) :: theta, instap
 !
-    logical :: matcst, coecst, lostat, levol, asme, asms, finpas, lnonl
-    logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
+    logical(kind=1) :: matcst, coecst, lostat, levol, asme, asms, finpas, lnonl
+    logical(kind=1) :: reasvc, reasvt, reasmt, reasrg, reasms, force
+    logical :: lcond
 !
     character(len=1) :: creas
     character(len=8) :: evolsc, mailla
@@ -134,7 +135,8 @@ subroutine op0025()
                 lisch2, solveu, para, numedd, lostat,&
                 levol, lnonl, sddisc, sdieto, mailla,&
                 sdcrit, time)
-    ASSERT(.not.lnonl)
+    lcond=  .not.lnonl          
+    ASSERT(lcond)
 !
 ! 2.5. ==> CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
 !

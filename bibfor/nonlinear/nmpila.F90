@@ -33,7 +33,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
     character(len=24) :: numedd
     character(len=19) :: ddepl0, ddepl1, depdel
     real(kind=8) :: dtau, eta(2)
-    logical :: isxfe
+    logical(kind=1) :: isxfe
 !
 ! ----------------------------------------------------------------------
 !

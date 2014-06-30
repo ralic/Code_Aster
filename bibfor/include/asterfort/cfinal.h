@@ -20,8 +20,8 @@ interface
                       llf, llf1, llf2)
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical :: reapre
-        logical :: reageo
+        logical(kind=1) :: reapre
+        logical(kind=1) :: reageo
         integer :: nbliac
         integer :: llf
         integer :: llf1

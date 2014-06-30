@@ -48,7 +48,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     real(kind=8) :: sigm(dimcon)
     character(len=8) :: nomail
     character(len=16) :: option, compor(*)
-    logical :: perman, resi, rigi
+    logical(kind=1) :: perman, resi, rigi
 !
 ! - VARIABLES SORTIE
     integer :: retcom
@@ -76,7 +76,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     parameter (maxfa=6)
     real(kind=8) :: valfac(maxfa, 14, 6)
     character(len=16) :: meca, thmc, ther, hydr, phenom
-    logical :: vf, yachai
+    logical(kind=1) :: vf, yachai
 !
 ! =====================================================================
 !.......................................................................

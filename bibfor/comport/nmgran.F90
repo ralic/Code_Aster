@@ -86,7 +86,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     real(kind=8) :: amdv(6, 9), apdv(6, 9), ammo(9), apmo(9), ap(6, 9), am(6, 9)
     real(kind=8) :: ther, coefa(9), coefc(9), coeff(9), coefb, coefd, coeft
     real(kind=8) :: coefg, coefh, coefi, coefj, coefv, coefk(9), epsthp, epsthm
-    logical :: cplan
+    logical(kind=1) :: cplan
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 ! DEB -----------------------------------------------------------------
 !

@@ -20,7 +20,7 @@ interface
             eigsol, lcomod, nbvecg, nfreqg, nbpark, nbpari, nbparr, vecrer, vecrei, vecrek, vecvp,&
             mxresf)
         character(len=19) , intent(in)    :: eigsol
-        logical           , intent(in)    :: lcomod
+        logical (kind=1)  , intent(in)    :: lcomod
         integer           , intent(in)    :: nbvecg
         integer           , intent(in)    :: nfreqg
         integer           , intent(in)    :: nbpark

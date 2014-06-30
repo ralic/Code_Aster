@@ -94,11 +94,11 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
             freq = dcmplx( ami, fri)
             freq2 = freq*freq
             call mcmult('ZERO', lraide, vecp(ivec), zc(iaux1), 1,&
-                        .false.)
+                        .false._1)
             call mcmult('ZERO', lmasse, vecp(ivec), zc(iaux2), 1,&
-                        .false.)
+                        .false._1)
             call mcmult('ZERO', lamor, vecp(ivec), zc(iaux3), 1,&
-                        .false.)
+                        .false._1)
             do 2 j = 0, neq-1
                 zc(iaux2+j)=zc(iaux1+j)+freq*zc(iaux3+j)+freq2*zc(&
                 iaux2+j)

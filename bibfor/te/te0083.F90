@@ -50,7 +50,7 @@ implicit none
     integer :: ivectu, ivf, nbsig, ndim, nno
     integer :: npg
     real(kind=8) :: zero
-    logical :: l_meta
+    logical(kind=1) :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -56,7 +56,7 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
     integer :: jatmu, jafmu
     character(len=19) :: ddeplc, ddepl0, ddelt
     character(len=19) :: depl0
-    logical :: lgcp, lctfd
+    logical(kind=1) :: lgcp, lctfd
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()

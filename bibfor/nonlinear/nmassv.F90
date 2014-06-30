@@ -97,7 +97,7 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
     character(len=24) :: charge, infoch, fomult, fomul2
     character(len=16) :: typvec
     integer :: jimpe, jvaanc
-    logical :: ltheta
+    logical(kind=1) :: ltheta
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

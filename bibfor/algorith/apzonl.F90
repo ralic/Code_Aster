@@ -27,7 +27,7 @@ subroutine apzonl(sdappa, izone, questz, vall)
 #include "asterfort/jemarq.h"
     character(len=19) :: sdappa
     integer :: izone
-    logical :: vall
+    logical(kind=1) :: vall
     character(len=*) :: questz
 !
 ! ----------------------------------------------------------------------

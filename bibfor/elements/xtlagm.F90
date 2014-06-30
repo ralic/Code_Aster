@@ -30,7 +30,7 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
     character(len=8) :: typmai
     real(kind=8) :: dlagrc, dlagrf(2)
     integer :: cface(5, 3), nface
-    logical :: lfrott, lmulti
+    logical(kind=1) :: lfrott, lmulti
 !
 ! ----------------------------------------------------------------------
 !

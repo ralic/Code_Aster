@@ -27,9 +27,9 @@ interface
         integer :: nev
         integer :: n
         integer :: ldz
-        logical :: rvec
+        logical(kind=1) :: rvec
         character(len=1) :: howmny
-        logical :: select(ncv)
+        logical(kind=1) :: select(ncv)
         real(kind=8) :: dr(nev+1)
         real(kind=8) :: di(nev+1)
         real(kind=8) :: z(ldz, *)

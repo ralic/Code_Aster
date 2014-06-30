@@ -96,7 +96,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     real(kind=8) :: ppi, ppj, snmax, samax, utot, saltij, ug, nadm(1), mpi(3)
     real(kind=8) :: mpj(3), sm, sn, sp, c(3), k(3), cara(3), matpi(14)
     real(kind=8) :: matpj(14), mse(3), snb, sab, smm, vale(2)
-    logical :: seisme, endur
+    logical(kind=1) :: seisme, endur
     integer :: icodre(1)
     character(len=8) :: k8b, nommat, noeud, valk(7), kbid
     character(len=24) :: momepi, momepj, nommai, nomnoe, connex, matepi, matepj

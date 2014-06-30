@@ -54,7 +54,7 @@ subroutine te0334(option, nomte)
     character(len=8) :: nomres(nbres), nompar, mod3d
     character(len=16) :: optio2, phenom, cmp1, cmp2
     character(len=16) :: compor
-    logical :: lflu
+    logical(kind=1) :: lflu
 ! DEB ------------------------------------------------------------------
 !
 ! --- CARACTERISTIQUES DU TYPE D'ELEMENT :

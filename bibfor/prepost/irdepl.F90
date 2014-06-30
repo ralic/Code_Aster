@@ -41,9 +41,9 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     character(len=*) :: nomcmp(*), formr, partie
     integer :: nbnot, ifi, numnoe(*), nbcmp, nive
     integer :: numord
-    logical :: lcor
-    logical :: lsup, linf, lmax, lmin
-    logical :: lresu
+    logical(kind=1) :: lcor
+    logical(kind=1) :: lsup, linf, lmax, lmin
+    logical(kind=1) :: lresu
     real(kind=8) :: borsup, borinf
 !_____________________________________________________________________
 ! ======================================================================
@@ -92,7 +92,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     character(len=1) :: type
     integer :: gd, lgconc, lgch16
     integer ::  nuti
-    logical :: lmasu
+    logical(kind=1) :: lmasu
     character(len=8) :: nomsdr, nomma, nomgd, cbid, forma
     character(len=16) :: nomcmd, nosy16
     character(len=19) :: chamn

@@ -54,7 +54,7 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
 !
     integer :: jelem, jlist
     integer :: iret,  ima
-    logical :: same
+    logical(kind=1) :: same
     character(len=24) :: noojb
     character(len=8) :: model
 !

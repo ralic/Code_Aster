@@ -38,7 +38,7 @@ function dvolu4(coord, norm, coord1)
 !
     integer :: i, j, k, l, e
     real(kind=8) :: xo1i, yo1i, zo1i, do1i
-    logical :: lnoeu
+    logical(kind=1) :: lnoeu
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES
 !     RQ : 2 POINTS DEDANS

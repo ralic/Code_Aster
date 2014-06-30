@@ -36,7 +36,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    logical :: bon
+    logical(kind=1) :: bon
     character(len=8) :: nomu, cara(100), kioc
     character(len=16) :: sec, vsec, concep, cmd
     integer :: vali(3)

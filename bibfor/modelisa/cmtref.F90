@@ -49,7 +49,7 @@ subroutine cmtref(chmat, nomail)
 !  IN/VAR : CHMAT   : CHAM_MATER
 !  IN     : NOMAIL  : MAILLAGE
 ! ----------------------------------------------------------------------
-    logical :: dbg
+    logical(kind=1) :: dbg
 ! ----------------------------------------------------------------------
 !
     integer :: iret,   jlcm1,   jltrf
@@ -206,11 +206,11 @@ subroutine cmtref(chmat, nomail)
 !
     dbg=.false.
     if (dbg) then
-        call utimsd(6, 2, .false., .true., carcm1,&
+        call utimsd(6, 2, .false._1, .true._1, carcm1,&
                     1, ' ')
-        call utimsd(6, 2, .false., .true., carcm2,&
+        call utimsd(6, 2, .false._1, .true._1, carcm2,&
                     1, ' ')
-        call utimsd(6, 2, .false., .true., cartrf,&
+        call utimsd(6, 2, .false._1, .true._1, cartrf,&
                     1, ' ')
         call imprsd('CHAMP', carcm1, 6, 'CHAM_MATER:'//carcm1)
         call imprsd('CHAMP', carcm2, 6, 'CHAM_MATER:'//carcm2)

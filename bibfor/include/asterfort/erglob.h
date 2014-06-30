@@ -19,8 +19,8 @@ interface
     subroutine erglob(cheler, yathm, perman, option, iord,&
                       resuco, resuc1)
         character(len=*) :: cheler
-        logical :: yathm
-        logical :: perman
+        logical(kind=1) :: yathm
+        logical(kind=1) :: perman
         character(len=*) :: option
         integer :: iord
         character(len=*) :: resuco

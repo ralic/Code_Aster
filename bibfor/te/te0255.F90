@@ -39,7 +39,7 @@ subroutine te0255(option, nomte)
     real(kind=8) :: poids, nx, ny
     integer :: ipoids, ivf, idfde, igeom, ivnor
     integer :: nno, kp, npg, ivectu, imate, ldec, kpg, spt
-    logical :: laxi
+    logical(kind=1) :: laxi
     character(len=8) :: fami, poum
 !
 !

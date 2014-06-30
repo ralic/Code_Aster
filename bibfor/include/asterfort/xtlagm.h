@@ -29,10 +29,10 @@ interface
         integer :: jdepde
         integer :: jpcai
         real(kind=8) :: ffc(9)
-        logical :: lfrott
+        logical(kind=1) :: lfrott
         integer :: nconta
         integer :: nfhe
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavno(8)
         real(kind=8) :: dlagrc
         real(kind=8) :: dlagrf(2)

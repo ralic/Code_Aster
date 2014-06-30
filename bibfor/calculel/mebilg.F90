@@ -70,7 +70,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 !
     complex(kind=8) :: livc(nbmxpa)
 !
-    logical :: ufonc, vfonc
+    logical(kind=1) :: ufonc, vfonc
 !
     character(len=2) :: codret
     character(len=8) :: lpain(20), lpaout(1)

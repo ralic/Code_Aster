@@ -9,7 +9,7 @@ subroutine decod2(rec, irec, ifield, itype, ilu,&
     character(len=*) :: rec(20)
     integer :: irec, ifield, itype, ilu
     real(kind=8) :: rlu
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

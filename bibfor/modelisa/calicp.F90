@@ -73,7 +73,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     real(kind=8) :: tran(3), cent(3), angl_naut(3)
-    logical :: l_tran, l_cent, l_angl_naut
+    logical(kind=1) :: l_tran, l_cent, l_angl_naut
     character(len=8) :: suffix
     character(len=24) :: list_node_o1, list_node_o2, list_node_i1, list_node_i2
     integer :: nb_node, nb_node_1, nb_node_2

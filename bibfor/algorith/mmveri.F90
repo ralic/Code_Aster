@@ -100,7 +100,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
     real(kind=8) :: jeu, dist
     character(len=8) :: nommae, nommam, aliase
     character(len=16) :: nompt, noment
-    logical :: lveri, lexfro
+    logical(kind=1) :: lveri, lexfro
     integer :: jjeux, jloca, jenti, jzone
 !
 ! ----------------------------------------------------------------------

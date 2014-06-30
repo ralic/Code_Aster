@@ -50,7 +50,7 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     real(kind=8) :: long, da, dda, alphap(2), alpham(2)
     real(kind=8) :: mtemp(4, 8), dsidep(6, 6)
     real(kind=8) :: xa, xb, ya, yb
-    logical :: axi
+    logical(kind=1) :: axi
 !
     axi = typmod(1) .eq. 'AXIS'
 !

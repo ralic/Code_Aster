@@ -66,7 +66,7 @@ subroutine resvoi(moz, maz, chvoiz)
     integer :: numav1, numav2, numav3, numav4, typ, som(4, 6, 4), iatyma
 !
 !
-    logical :: troisd
+    logical(kind=1) :: troisd
 !
     integer :: debugr
     integer, pointer :: repe(:) => null()

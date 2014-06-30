@@ -108,8 +108,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     character(len=1) :: matsym
     real(kind=8) :: c1, temps(6)
 !
-    logical :: acreer, cumul, dbg, ldist
-    logical :: lmasym, lmesym, ldgrel
+    logical(kind=1) :: acreer, cumul, dbg, ldist
+    logical(kind=1) :: lmasym, lmesym, ldgrel
+    logical :: lcond
 !
     integer :: admodl, i
     integer ::  jdesc
@@ -492,11 +493,12 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !                   -- CALCUL DE KAMPIC :
             call dismoi('MPI_COMPLET', resu, 'RESUELEM', repk=kempic)
+            lcond=ldist
             if (kempic .eq. 'NON') then
-                ASSERT(ldist)
+                ASSERT(lcond)
                 kampic='NON'
             else
-                ASSERT(.not.ldist)
+                ASSERT(.not.lcond)
             endif
 !
 !
@@ -510,7 +512,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
             call dismoi('EXI_VF', ligre1, 'LIGREL', repk=exivf)
             if (exivf .eq. 'OUI') then
-                ASSERT(.not.lmasym)
+                lcond=.not.lmasym
+                ASSERT(lcond)
                 call jeveuo(ligre1//'.REPE', 'L', jrepe)
                 call jeveuo(ligre1//'.NVGE', 'L', vk16=nvge)
                 vge=nvge(1)(1:12)
@@ -529,7 +532,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call dismoi('TYPE_MATRICE', resu, 'RESUELEM', repk=symel)
             ASSERT(symel(1:1).eq.'S' .or. symel(1:1) .eq.'N')
             lmesym=(symel(1:1).eq.'S')
-            if (lmasym) ASSERT(lmesym)
+            lcond=lmesym
+            if (lmasym) ASSERT(lcond)
 !
 !                   -- BOUCLE SUR LES GRELS DU LIGREL
 !                   ==================================
@@ -618,14 +622,15 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     if (ellagr .gt. 0) call assma1(mat19, ldist)
 !
 !
+    lcond=ldist
     if (kampic .eq. 'OUI') then
 !         -- calcul std ou calcul distribue complete
 !            (cmd eclatee asse_matrice)
-        ASSERT(.not.ldist)
+        ASSERT(.not.lcond)
         zk24(jrefa-1+11)='MPI_COMPLET'
     else
 !         -- calcul distribue avec ou sans mumps
-        ASSERT(ldist)
+        ASSERT(lcond)
         zk24(jrefa-1+11)='MPI_INCOMPLET'
     endif
 !        -- DANGEREUX DE CUMULER DEUX TYPES D'INFORMATIONS EN REFA(11)
@@ -634,7 +639,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !           POUR RECUPERER CETTE INFO
     if (imatd .ne. 0) then
 !        -- CALCUL DISTRIBUE AVEC MUMPS + OPTION MATR_DISTRIBUEE='OUI'
-        ASSERT(ldist)
+        ASSERT(lcond)
         zk24(jrefa-1+11)='MATR_DISTR'
     endif
 !

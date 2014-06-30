@@ -46,7 +46,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     character(len=8) :: lchar(*)
     character(len=1) :: base
     character(len=*) :: option, modele, mate, carele, compor, matelz
-    logical :: exitim
+    logical(kind=1) :: exitim
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +87,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     integer :: nbout2
     integer :: nh, iret, icode
     integer :: ifmdbg, nivdbg, ier
-    logical :: debug
+    logical(kind=1) :: debug
     character(len=24), pointer :: rerr(:) => null()
     data chvarc /'&&MEMAME.VARC'/
 !

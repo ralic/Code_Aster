@@ -34,7 +34,7 @@ interface
         character(len=*) :: nomsym
         integer :: ir
         integer :: numnoe(*)
-        logical :: lmasu
+        logical(kind=1) :: lmasu
         integer :: nbcmp
         integer :: ncmps(*)
         character(len=*) :: nocmpl(*)

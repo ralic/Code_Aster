@@ -13,9 +13,9 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
     real(kind=8), intent(in) :: refr
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +54,7 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
     character(len=3) :: tysc
     real(kind=8) :: sommr
     integer :: resume, sommi, lonuti, lonmax, ni, iret, iret2
-    logical :: skip
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !
     skip = .false.

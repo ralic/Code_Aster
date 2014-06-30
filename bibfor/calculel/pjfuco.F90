@@ -72,7 +72,7 @@ subroutine pjfuco(c1, c2, base, c3)
         call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
     endif
     10 end do
-    call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false.)
+    call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false._1)
 !
 !
 !     2- OBJETS  .PJEF_NB et .PJEF_M1 :

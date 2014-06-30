@@ -31,7 +31,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 #include "asterfort/jemarq.h"
 #include "asterfort/teattr.h"
     integer, intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
-    logical, intent(in) :: matsym, lcontx
+    logical(kind=1), intent(in) :: matsym, lcontx
     character(len=16), intent(in) :: option, nomte
     integer, intent(in) :: ddlm, nfiss, jfisno
     real(kind=8), optional, intent(inout) :: mat(*)
@@ -67,7 +67,8 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     parameter    (ddlmax=1053)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical :: lelim, lmultc, lmat, lvec
+    logical(kind=1) :: lelim, lmultc
+    logical :: lmat, lvec
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------

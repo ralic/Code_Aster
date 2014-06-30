@@ -25,7 +25,7 @@ interface
         character(len=8) :: lchar(*)
         character(len=*) :: mate
         character(len=*) :: cara
-        logical :: exitim
+        logical(kind=1) :: exitim
         real(kind=8) :: time
         character(len=1) :: base
         character(len=*) :: merigi

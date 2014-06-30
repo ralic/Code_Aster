@@ -23,7 +23,7 @@ interface
         character(len=8) :: noma
         integer :: ioc
         real(kind=8) :: rigi(6)
-        logical :: lvale
+        logical(kind=1) :: lvale
         character(len=24) :: ligrma(nbgr)
         integer :: nbno
         character(len=8) :: tabnoe(*)

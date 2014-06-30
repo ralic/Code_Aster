@@ -53,7 +53,7 @@ subroutine rcveri(tablz)
     character(len=8) :: k8b, crit, tyva
     character(len=16) :: valek(5), table, tbtmp1, tbtmp2, titu, valk(2), typmec
     character(len=24) :: coorx, coory, coorz, instan, intitu
-    logical :: exi1, exi2, exi3, exist, noinst, impnm
+    logical(kind=1) :: exi1, exi2, exi3, exist, noinst, impnm
     parameter(crit='RELATIF ',eps=1.0d-6, eps2=1.0d-2)
 !
     call jemarq()

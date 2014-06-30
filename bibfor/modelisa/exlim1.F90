@@ -90,7 +90,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 !
 ! --- OBJET .LGRF
 !     ------------
-    call jedupo(ligrmo//'.LGRF', base, ligrel//'.LGRF', .false.)
+    call jedupo(ligrmo//'.LGRF', base, ligrel//'.LGRF', .false._1)
 
 !   -- On retire les mailles 0 de lismai :
 !   --------------------------------------

@@ -25,7 +25,7 @@ interface
         integer :: ido
         character(len=1) :: bmat
         integer :: itry
-        logical :: initv
+        logical(kind=1) :: initv
         real(kind=8) :: v(ldv, j)
         real(kind=8) :: resid(n)
         real(kind=8) :: rnorm

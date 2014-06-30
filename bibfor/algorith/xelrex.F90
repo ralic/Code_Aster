@@ -27,7 +27,7 @@ subroutine xelrex(elrefp, nno, xref)
     integer :: ndim, nnos, nbfpg, nbpg(nbfamx)
     real(kind=8) :: vol
     character(len=8) :: fapg(nbfamx), elp
-    logical :: transfert
+    logical(kind=1) :: transfert
 !=======================================================================
 !
     transfert=.false.

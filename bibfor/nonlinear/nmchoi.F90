@@ -27,7 +27,7 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
 #include "asterfort/ndynlo.h"
     character(len=16) :: metcor, metpre, optrig
     integer :: numins
-    logical :: reasma, lcamor, lcrigi, lcfint, larigi
+    logical(kind=1) :: reasma, lcamor, lcrigi, lcfint, larigi
     character(len=19) :: sddyna
     character(len=10) :: phase
     integer :: fonact(*)
@@ -58,7 +58,7 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: limpex, lshima, lprem
+    logical(kind=1) :: limpex, lshima, lprem
 !
 ! ----------------------------------------------------------------------
 !

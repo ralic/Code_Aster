@@ -25,7 +25,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     character(len=*) :: resu0, resu1
     character(len=16) :: typcon
     character(len=8) :: mailla, modele
-    logical :: lrest
+    logical(kind=1) :: lrest
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

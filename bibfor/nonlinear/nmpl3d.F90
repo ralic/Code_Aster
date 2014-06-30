@@ -46,7 +46,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(3, nno)
 !
-    logical :: matsym
+    logical(kind=1) :: matsym
     common / nmpale / unsurk,unsurm,valden
     real(kind=8) :: unsurk, unsurm, valden
 !
@@ -86,7 +86,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !......................................................................
 !
-    logical :: grand
+    logical(kind=1) :: grand
 !
     integer :: kpg, kk, n, i, m, j, j1, kl, kkd, cod(27), ipoids, ivf, idfde
 !
@@ -125,16 +125,16 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
             deps(j)=0.d0
 20      continue
 !
-        call nmgeom(3, nno, .false., grand, geom,&
+        call nmgeom(3, nno, .false._1, grand, geom,&
                     kpg, ipoids, ivf, idfde, deplm,&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     r)
 !
 !       CALCUL DE DEPS
 !
-        call nmgeom(3, nno, .false., grand, geom,&
+        call nmgeom(3, nno, .false._1, grand, geom,&
                     kpg, ipoids, ivf, idfde, deplp,&
-                    .false., poids, dfdi, f, deps,&
+                    .false._1, poids, dfdi, f, deps,&
                     r)
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,

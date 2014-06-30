@@ -60,8 +60,8 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
 !
 !
 !
-    logical :: ldyna, lmpas
-    logical :: lpilo
+    logical(kind=1) :: ldyna, lmpas
+    logical(kind=1) :: lpilo
     integer :: jcfsc
     character(len=19) :: depmoi, varmoi, sigmoi, commoi, vitmoi, accmoi
     character(len=19) :: depplu, varplu, sigplu, complu, vitplu, accplu

@@ -27,7 +27,7 @@ interface
         integer :: enrmec(3)
         integer :: ndim
         real(kind=8) :: dt
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimenr)
     end subroutine xfnoda

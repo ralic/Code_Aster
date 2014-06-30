@@ -53,7 +53,7 @@ subroutine calcmd(np1, a, a0, n, m,&
     real(kind=8) :: premac, prerel, mtmp1(np1, *), mtmp2(np1, *), ttr(n2, *)
     real(kind=8) :: u(*), w(*), d(*)
     integer :: intge1(*), intge2(*), indx(*), indxf(*)
-    logical :: loc(*)
+    logical(kind=1) :: loc(*)
 !
 ! VARIABLES LOCALES
 ! -----------------

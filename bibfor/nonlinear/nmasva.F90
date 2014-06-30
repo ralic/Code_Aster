@@ -59,7 +59,7 @@ subroutine nmasva(sddyna, veasse, cnvado)
     real(kind=8) :: covari(20)
     real(kind=8) :: coeext, coeex2, coeint
     character(len=19) :: cnfsdo, cnfint
-    logical :: ldyna, lmpas
+    logical(kind=1) :: ldyna, lmpas
 !
 ! ----------------------------------------------------------------------
 !

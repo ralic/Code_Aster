@@ -30,7 +30,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
     character(len=8) :: lpain(nbin)
     character(len=19) :: lchin(nbin)
     character(len=8) :: nomo
-    logical :: lxfem
+    logical(kind=1) :: lxfem
     real(kind=8) :: partps(3)
     character(len=19) :: varplu
     character(len=24) :: mate, carele

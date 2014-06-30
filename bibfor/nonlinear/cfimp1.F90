@@ -71,7 +71,7 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
     integer :: typapp, entapp
     integer :: ndimg, nbliai
     integer :: btotal, nbliac, llf, llf1, llf2
-    logical :: llagrf, llagrc
+    logical(kind=1) :: llagrf, llagrc
 !
 ! ----------------------------------------------------------------------
 !

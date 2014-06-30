@@ -50,7 +50,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     character(len=24) :: numedd
     character(len=16) :: method(*)
     character(len=19) :: sdpilo
-    logical :: lreli
+    logical(kind=1) :: lreli
 !
 ! ----------------------------------------------------------------------
 !
@@ -113,7 +113,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     character(len=19) :: grln, cnsln, grlt
     character(len=24) :: liseq2, lisno1, lisno2
     real(kind=8) :: coef1, coef2, coefi, vect(3)
-    logical :: isxfe, selxfe, selfem
+    logical(kind=1) :: isxfe, selxfe, selfem
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: plsl(:) => null()
 !

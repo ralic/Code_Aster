@@ -58,7 +58,7 @@ implicit none
     character(len=16) :: formul
     character(len=19) :: ligrmo, ligret, ligrel, ligrch
     integer :: iform
-    logical :: lallv
+    logical(kind=1) :: lallv
     character(len=24) :: sdcont_defi
     character(len=8), pointer :: p_load_type(:) => null() 
 !

@@ -97,7 +97,7 @@ subroutine resyme(resu1z, basez, resu2z)
     call jedetr(resul2//'.RELR')
     call jedetr(resul2//'.RERR')
     call jedupc(' ', resul1//'.RERR', 1, 'V', resul2//'.RERR',&
-                .false.)
+                .false._1)
     call jelira(resul1//'.RELR', 'LONUTI', nbresu)
     call wkvect(resul2//'.RELR', base//' V K24', nbresu, idlre2)
     call jeveuo(resul1//'.RELR', 'L', vk24=relr)

@@ -66,8 +66,8 @@ subroutine trchel(ific, nocc)
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
     character(len=200) :: lign1, lign2
     integer :: iarg
-    logical :: lref
-    logical :: skip
+    logical(kind=1) :: lref
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
@@ -227,11 +227,11 @@ subroutine trchel(ific, nocc)
                 endif
                 call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                            ific, .true., ssigne, ignore=skip, compare=ordgrd)
+                            ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                                ific, .false., ssigne)
+                                ific, .false._1, ssigne)
                 endif
             else
                 nbcmp = -n4
@@ -246,12 +246,12 @@ subroutine trchel(ific, nocc)
                 call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
                             lign2, crit, ific, nbcmp, zk8(jcmp),&
-                            .true., ssigne, ignore=skip, compare=ordgrd)
+                            .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
                                 lign2, crit, ific, nbcmp, zk8(jcmp),&
-                                .false., ssigne)
+                                .false._1, ssigne)
                 endif
                 call jedetr('&&OP0023.NOM_CMP')
             endif
@@ -348,12 +348,12 @@ subroutine trchel(ific, nocc)
             call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                         ivari, noddl, nref, tbtxt, zi(irefi),&
                         zr(irefr), zc(irefc), typres, epsi, crit,&
-                        ific, .true., ssigne, ignore=skip, compare=ordgrd)
+                        ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
             if (lref) then
                 call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                             ivari, noddl, nref, tbref, zi(irefir),&
                             zr(irefrr), zc(irefcr), typres, epsir, crit,&
-                            ific, .false., ssigne)
+                            ific, .false._1, ssigne)
             endif
             write (ific,*)' '
         endif

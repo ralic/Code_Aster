@@ -103,7 +103,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
     integer :: k, nbv
     mpi_int :: lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4, proc
     mpi_int, parameter :: pr0=0
-    logical :: scal
+    logical(kind=1) :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
 

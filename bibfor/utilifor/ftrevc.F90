@@ -189,14 +189,14 @@ subroutine ftrevc(side, howmny, select, n, t,&
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical :: select( * )
+    logical(kind=1) :: select( * )
     real(kind=8) :: t( ldt, * ), vl( ldvl, * ), vr( ldvr, * ), work( * )
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
     parameter          ( zero = 0.0d+0, one = 1.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: allv, bothv, leftv, over, pair, rightv, somev
+    logical(kind=1) :: allv, bothv, leftv, over, pair, rightv, somev
     integer :: i, ierr, ii, ip, is, j, j1, j2, jnxt, k, ki, n2
     real(kind=8) :: beta, bignum, emax, rec, remax, scale, smin, smlnum, ulp
     real(kind=8) :: unfl, vcrit, vmax, wi, wr, xnorm
@@ -365,7 +365,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
 !                    1-BY-1 DIAGONAL BLOCK
 !
-                        call flaln2(.false., 1, 1, smin, one,&
+                        call flaln2(.false._1, 1, 1, smin, one,&
                                     t( j, j ), ldt, one, one, work( j+n ),&
                                     n, wr, zero, x, 2,&
                                     scale, xnorm, ierr)
@@ -394,7 +394,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
 !                    2-BY-2 DIAGONAL BLOCK
 !
-                        call flaln2(.false., 2, 1, smin, one,&
+                        call flaln2(.false._1, 2, 1, smin, one,&
                                     t( j-1, j-1 ), ldt, one, one, work( j-1+n ),&
                                     n, wr, zero, x, 2,&
                                     scale, xnorm, ierr)
@@ -493,7 +493,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
 !                    1-BY-1 DIAGONAL BLOCK
 !
-                        call flaln2(.false., 1, 2, smin, one,&
+                        call flaln2(.false._1, 1, 2, smin, one,&
                                     t( j, j ), ldt, one, one, work( j+n ),&
                                     n, wr, wi, x, 2,&
                                     scale, xnorm, ierr)
@@ -529,7 +529,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
 !                    2-BY-2 DIAGONAL BLOCK
 !
-                        call flaln2(.false., 2, 2, smin, one,&
+                        call flaln2(.false._1, 2, 2, smin, one,&
                                     t( j-1, j-1 ), ldt, one, one, work( j-1+n ),&
                                     n, wr, wi, x, 2,&
                                     scale, xnorm, ierr)
@@ -700,7 +700,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
 !                    SOLVE (T(J,J)-WR)'*X = WORK
 !
-                        call flaln2(.false., 1, 1, smin, one,&
+                        call flaln2(.false._1, 1, 1, smin, one,&
                                     t( j, j ), ldt, one, one, work( j+n ),&
                                     n, wr, zero, x, 2,&
                                     scale, xnorm, ierr)
@@ -737,7 +737,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !                      (T(J,J)-WR   T(J,J+1)     )'* X = SCALE*( WORK1 )
 !                      (T(J+1,J)    T(J+1,J+1)-WR)             ( WORK2 )
 !
-                        call flaln2(.true., 2, 1, smin, one,&
+                        call flaln2(.true._1, 2, 1, smin, one,&
                                     t( j, j ), ldt, one, one, work( j+n ),&
                                     n, wr, zero, x, 2,&
                                     scale, xnorm, ierr)
@@ -845,7 +845,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
 !                    SOLVE (T(J,J)-(WR-I*WI))*(X11+I*X12)= WK+I*WK2
 !
-                        call flaln2(.false., 1, 2, smin, one,&
+                        call flaln2(.false._1, 1, 2, smin, one,&
                                     t( j, j ), ldt, one, one, work( j+n ),&
                                     n, wr, -wi, x, 2,&
                                     scale, xnorm, ierr)
@@ -893,7 +893,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !                      ((T(J,J)   T(J,J+1)  )'-(WR-I*WI)*I)*X = SCALE*B
 !                      ((T(J+1,J) T(J+1,J+1))             )
 !
-                        call flaln2(.true., 2, 2, smin, one,&
+                        call flaln2(.true._1, 2, 2, smin, one,&
                                     t( j, j ), ldt, one, one, work( j+n ),&
                                     n, wr, -wi, x, 2,&
                                     scale, xnorm, ierr)

@@ -64,7 +64,7 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
 !
     integer :: nums, adrs, c
     real(kind=8) :: xd, yd, xf, yf, xi, yi
-    logical :: droit
+    logical(kind=1) :: droit
 !
 !---------------------DESCRIPTION DE L' INTERSECTION AVEC UNE MAILLE--
 !
@@ -74,7 +74,7 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
 !---------------------GESTION DE L' INTERSECTION---------------------
 !
     integer :: pt, i, adrgt, k, f1or, f2or, f1ex, f2ex, fcom, m1, m2
-    logical :: adansm, bdansm, elimin, atrouv, btrouv, fini, fincal
+    logical(kind=1) :: adansm, bdansm, elimin, atrouv, btrouv, fini, fincal
     real(kind=8) :: or, ex, ror, rex, xm, ym, xt, yt, indic, coef, crit
     real(kind=8) :: s, r1, xnewm, ynewm, xnewt, ynewt, inf, sup, sm
     integer :: f1

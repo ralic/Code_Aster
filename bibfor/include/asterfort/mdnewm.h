@@ -30,7 +30,7 @@ interface
         real(kind=8) :: masgen(*)
         real(kind=8) :: riggen(*)
         real(kind=8) :: rgygen(*)
-        logical :: lamor
+        logical(kind=1) :: lamor
         real(kind=8) :: amogen(*)
         real(kind=8) :: gyogen(*)
         character(len=8) :: foncv

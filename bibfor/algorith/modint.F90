@@ -265,7 +265,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry,&
                 ' ', ' ', ' ', zr(lmakry), [cbid],&
-                ' ', .true., 0, iret)         
+                ' ', .true._1, 0, iret)         
 !
 !---------------------------------------------C
 !--                                         --C
@@ -293,10 +293,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
     call jeveuo(masse(1:19)//'.&INT', 'L', lmatm)
     call mrmult('ZERO', lmatm, zr(lmakry), zr(lmatrm), nsekry,&
-                .true.)
+                .true._1)
     call jeveuo(raide(1:19)//'.&INT', 'L', lmatk)
     call mrmult('ZERO', lmatk, zr(lmakry), zr(lmatrk), nsekry,&
-                .true.)
+                .true._1)
 !
     do j1 = 1, nsekry
         zr(lmapro+(j1-1)*nsekry+j1-1)= ddot(neq,zr(lmakry+(j1-1)*neq),&

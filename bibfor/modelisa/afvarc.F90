@@ -63,7 +63,7 @@ subroutine afvarc(chmat, nomail, nomode)
     character(len=8) :: novarc, novar1, novar2, livarc(nmxfac), knumer
     character(len=8) :: nocvrc
     real(kind=8) :: vrcref(nmxcmp), rcmp(10), vref
-    logical :: errgd, ldetr, lautr
+    logical(kind=1) :: errgd, ldetr, lautr
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: valv1(:) => null()
     character(len=16), pointer :: valv2(:) => null()

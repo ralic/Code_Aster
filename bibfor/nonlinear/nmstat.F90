@@ -60,10 +60,10 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lctcd, lallv, lcont, lctcc
-    logical :: lctcg, lboucc, lboucf, lfrot
-    logical :: lmvib, lflam, lpost, lnewtg
-    logical :: lprint
+    logical(kind=1) :: lctcd, lallv, lcont, lctcc
+    logical(kind=1) :: lctcg, lboucc, lboucf, lfrot
+    logical(kind=1) :: lmvib, lflam, lpost, lnewtg
+    logical(kind=1) :: lprint
     real(kind=8) :: tpsint, tpsasm, tpsfac, tps2mb, tpssol
     real(kind=8) :: tps, tpsmoy, tpspst, tpslst, tpsrst
     real(kind=8) :: effica

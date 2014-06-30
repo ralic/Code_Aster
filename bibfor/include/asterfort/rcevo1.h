@@ -18,7 +18,7 @@
 interface
     subroutine rcevo1(nommat, fatizh, sm, para, symax)
         character(len=8) :: nommat
-        logical :: fatizh
+        logical(kind=1) :: fatizh
         real(kind=8) :: sm
         real(kind=8) :: para(*)
         real(kind=8) :: symax

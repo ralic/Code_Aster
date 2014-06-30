@@ -62,7 +62,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     character(len=24) :: chnumi, chnumj, chnoei, chnoej, chcmpi, chcmpj, chvale
     character(len=24) :: chfreq
 !
-    logical :: lindi, exiind
+    logical(kind=1) :: lindi, exiind
     integer :: lnumi, lnumj, mxval, num, lcmpi, lcmpj
     integer :: nbfreq, ifreq
     character(len=8), pointer :: cmp_j(:) => null()

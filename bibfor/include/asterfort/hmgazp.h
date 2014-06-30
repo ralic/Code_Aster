@@ -29,7 +29,7 @@ interface
         integer :: dimcon
         integer :: dimdef
         integer :: ndim
-        logical :: yachai
+        logical(kind=1) :: yachai
         character(len=16) :: option
         character(len=16) :: meca
         character(len=16) :: thmc

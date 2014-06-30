@@ -25,6 +25,6 @@ interface
         real(kind=8) :: vector(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        logical :: lnfixe
+        logical(kind=1) :: lnfixe
     end subroutine cfnord
 end interface

@@ -56,7 +56,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical :: l_affe_all
+    logical(kind=1) :: l_affe_all
     integer :: nb_elem_affe
     character(len=16) :: texte(2)
     character(len=16) :: defo_comp, rela_comp, rela_thmc, type_cpla
@@ -68,7 +68,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     integer :: nt
-    logical :: l_kit_thm
+    logical(kind=1) :: l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !

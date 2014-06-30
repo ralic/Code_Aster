@@ -36,6 +36,6 @@ interface
         character(len=8) :: resuco
         character(len=19) :: comps1
         character(len=19) :: comps2
-        logical :: pre1
+        logical(kind=1) :: pre1
     end subroutine xpomac
 end interface 

@@ -40,7 +40,7 @@ subroutine pacou0(x, fvec, qt, r, c,&
     real(kind=8) :: masg(*), amor(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
     integer :: veci1(*)
-    logical :: restrt, sing, skip, check
+    logical(kind=1) :: restrt, sing, skip, check
     character(len=8) :: typflu
 !-----------------------------------------------------------------------
     integer :: i, indic, its, j, k, maxits, n

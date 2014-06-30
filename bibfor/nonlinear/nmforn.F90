@@ -46,7 +46,7 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! ---------------------------------------------------------------------
 !
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
     integer :: nddl, ndimsi, g, n, i, kl, kk
     integer :: iu(3*27), ia(8)
     real(kind=8) :: dfdi1(27, 3)

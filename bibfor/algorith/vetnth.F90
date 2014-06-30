@@ -84,7 +84,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
     character(len=24) :: modele, carele, matcod, inst, chtn, vecel, vecei
     character(len=24) :: compor, tmpchi, tmpchf, chhy, ligrmo, lchin(nchinx)
     character(len=24) :: chgeom, lchout(nchoux), chcara(18)
-    logical :: lnlin
+    logical(kind=1) :: lnlin
 !
     chvarc = '&&NXACMV.CHVARC'
 !

@@ -28,7 +28,7 @@ subroutine nmcrel(sderro, nomevt, vall)
 #include "asterfort/nmeceb.h"
     character(len=24) :: sderro
     character(len=9) :: nomevt
-    logical :: vall
+    logical(kind=1) :: vall
 !
 ! ----------------------------------------------------------------------
 !

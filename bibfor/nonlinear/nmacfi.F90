@@ -58,8 +58,8 @@ subroutine nmacfi(fonact, veasse, cnffdo, cndfdo)
     real(kind=8) :: cofixe(20)
     character(len=19) :: cnfedo, cndido
     character(len=19) :: cncine, cndidi, cnsstr, cnsstf
-    logical :: ldidi
-    logical :: lmacr, lsstf
+    logical(kind=1) :: ldidi
+    logical(kind=1) :: lmacr, lsstf
 !
 ! ----------------------------------------------------------------------
 !

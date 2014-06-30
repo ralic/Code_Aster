@@ -19,7 +19,7 @@ function mmmaxi(modelz, lisma, nbma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: mmmaxi
+    logical(kind=1) :: mmmaxi
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infbav.h"
@@ -89,7 +89,7 @@ function mmmaxi(modelz, lisma, nbma)
     call jeveuo(lisma, 'L', ilmail)
     call infmue()
     call utmasu(noma, '2D', nbma, zi(ilmail), maisup,&
-                vale, 0, mailvo, .false.)
+                vale, 0, mailvo, .false._1)
     call infbav()
     call jeveuo(maisup, 'L', jmaisu)
 !

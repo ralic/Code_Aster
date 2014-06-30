@@ -65,7 +65,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
     integer :: nbtcmp,  sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
     integer :: vali, ilong, k, l, lnc, ncom, nspm
 !
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
     character(len=1) :: cbid
     integer, pointer :: nund(:) => null()

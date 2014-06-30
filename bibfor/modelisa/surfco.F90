@@ -48,7 +48,7 @@ subroutine surfco(char, noma)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: lmail
+    logical(kind=1) :: lmail
     character(len=24) :: defico
     integer :: iform
 !

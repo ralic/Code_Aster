@@ -57,11 +57,11 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
 !
 !
 !
-    logical :: lreac(3)
+    logical(kind=1) :: lreac(3)
     character(len=24) :: clreac
     integer :: jclrea
     character(len=24) :: autoc1, autoc2
-    logical :: leltc, lctcd, lallv
+    logical(kind=1) :: leltc, lctcd, lallv
     integer :: mmitgo
 !
 ! ----------------------------------------------------------------------

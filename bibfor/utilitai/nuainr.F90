@@ -23,7 +23,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
     character(len=*) :: method
     integer :: nx1, np1, ic1, nc1
     real(kind=8) :: nuax1(*), nuav1(*), x2(nx1), dref, dref2, val2
-    logical :: nual1(*)
+    logical(kind=1) :: nual1(*)
 !
 !  BUT : INTERPOLER LA VALEUR VAL2 DU NUAGE NUAG1 SUR LE POINT DE
 !        COORDONNEES X2

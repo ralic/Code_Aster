@@ -22,7 +22,7 @@ interface
                       mprojt, dlagrc, dlagrf, dvite, rese,&
                       vectcc, vectff)
         character(len=9) :: phasep
-        logical :: leltf
+        logical(kind=1) :: leltf
         integer :: ndim
         integer :: nnl
         integer :: nbcps

@@ -27,6 +27,6 @@ interface
         character(len=8) :: nomail
         character(len=8) :: nomare
         character(len=8) :: resure
-        logical :: lgmsh
+        logical(kind=1) :: lgmsh
     end subroutine irmfac
 end interface

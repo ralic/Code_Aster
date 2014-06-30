@@ -27,7 +27,7 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat,&
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    logical, intent(out) :: l_xfem
+    logical(kind=1), intent(out) :: l_xfem
     character(len=19), intent(out) :: connex_inv
     character(len=19), intent(out) :: ch_xfem_node
     character(len=19), intent(out) :: ch_xfem_stat

@@ -50,7 +50,7 @@ subroutine asmchc(matas)
     integer :: jsmhc,  jvalm, jvalm2, jccva, jccll, nelim
     integer ::  iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
     integer ::  nblocm, jccii,  decjel, iremp,  keta
-    logical :: nonsym
+    logical(kind=1) :: nonsym
     integer, pointer :: elim(:) => null()
     integer, pointer :: remplis(:) => null()
     integer, pointer :: ccid(:) => null()

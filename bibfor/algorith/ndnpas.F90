@@ -43,7 +43,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     character(len=19) :: sddyna, sddisc
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
-    logical :: scotch
+    logical(kind=1) :: scotch
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,9 +74,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     character(len=24) :: cfsc
     real(kind=8) :: alpha, beta, gamma, theta, phi, unthet, kappa
     real(kind=8) :: instam, instap, deltat
-    logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
-    logical :: ldepl, lvite, lacce
-    logical :: lnewma, ltheta, lkrenk
+    logical(kind=1) :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
+    logical(kind=1) :: ldepl, lvite, lacce
+    logical(kind=1) :: lnewma, ltheta, lkrenk
     real(kind=8) :: coerig, coeamo, coemas
     real(kind=8) :: coeext, coeint, coeequ, coeex2
     integer :: imode

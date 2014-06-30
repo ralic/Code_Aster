@@ -126,10 +126,10 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
     integer :: zvalin
     parameter    (zvalin=28)
 !
-    logical :: reasma
-    logical :: lcrigi, lcfint, lmacr
-    logical :: lamor
-    logical :: lsuiv
+    logical(kind=1) :: reasma
+    logical(kind=1) :: lcrigi, lcfint, lmacr
+    logical(kind=1) :: lamor
+    logical(kind=1) :: lsuiv
     character(len=16) :: optrig, optamo
     integer :: reincr, iterat
     character(len=8) :: tdiag, syme
@@ -140,7 +140,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
     integer :: nbmatr, jexx
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20), modlag
-    logical :: lassme(20), lcalme(20)
+    logical(kind=1) :: lassme(20), lcalme(20)
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -156,8 +156,8 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
 ! --- INITIALISATIONS
 !
-    call nmcmat('INIT', ' ', ' ', ' ', .true.,&
-                .true., nbmatr, ltypma, loptme, loptma,&
+    call nmcmat('INIT', ' ', ' ', ' ', .true._1,&
+                .true._1, nbmatr, ltypma, loptme, loptma,&
                 lcalme, lassme)
     codere = '&&NMFLMA.CODERE'
     iterat = 0
@@ -239,7 +239,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 ! --- CALCUL DES MATR-ELEM DE RIGIDITE
 !
     if (lcrigi) then
-        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .true.,&
+        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .true._1,&
                     reasma, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
@@ -249,16 +249,16 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
     if (lcrigi .and. lamor) then
         optamo = 'AMOR_MECA'
-        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true.,&
-                    .true., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true._1,&
+                    .true._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
     if (lsuiv) then
-        call nmcmat('AJOU', 'MESUIV', ' ', ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MESUIV', ' ', ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !
@@ -266,8 +266,8 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
     if (mod45 .eq. 'FLAM') then
         if (defo .eq. 0) then
-            call nmcmat('AJOU', 'MEGEOM', ' ', ' ', .true.,&
-                        .false., nbmatr, ltypma, loptme, loptma,&
+            call nmcmat('AJOU', 'MEGEOM', ' ', ' ', .true._1,&
+                        .false._1, nbmatr, ltypma, loptme, loptma,&
                         lcalme, lassme)
         endif
     endif
@@ -275,8 +275,8 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 ! --- CALCUL DES MATR-ELEM DES SOUS-STRUCTURES
 !
     if (lmacr) then
-        call nmcmat('AJOU', 'MESSTR', ' ', ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MESSTR', ' ', ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !

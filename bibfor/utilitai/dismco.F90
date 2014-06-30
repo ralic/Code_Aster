@@ -50,7 +50,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
     integer :: iret,  jcald, jcall,  nbma, ima, iadc
     character(len=6) :: lcham(3)
     character(len=8) :: noma, nomail
-    logical :: incr, elas
+    logical(kind=1) :: incr, elas
     character(len=8), pointer :: cesk(:) => null()
     character(len=16), pointer :: cesv(:) => null()
     data  lcham/ 'RELCOM', 'DEFORM', 'INCELA'/

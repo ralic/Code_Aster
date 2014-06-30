@@ -68,7 +68,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     real(kind=8) :: rcmp(4), eps, x(9), y(9), a(9, 9), b(9, 4), diag(9)
     real(kind=8) :: wk1(9, 9), wk2(9)
     integer :: nno, npg, ivf
-    logical :: app
+    logical(kind=1) :: app
 !
 !
 !
@@ -87,7 +87,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     integer, pointer :: indic(:) => null()
     integer, pointer :: longconinv(:) => null()
     integer, pointer :: nbpatchmil(:) => null()
-    logical, pointer :: noeubord(:) => null()
+    logical(kind=1), pointer :: noeubord(:) => null()
     integer, pointer :: numnb(:) => null()
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: refe(:) => null()

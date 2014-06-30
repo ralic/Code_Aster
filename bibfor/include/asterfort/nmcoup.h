@@ -29,7 +29,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: imat
         character(len=16) :: comp(*)
-        logical :: lcpdb
+        logical(kind=1) :: lcpdb
         real(kind=8) :: crit(*)
         real(kind=8) :: timed
         real(kind=8) :: timef

@@ -61,7 +61,8 @@ subroutine nupodd(nu, base, rang, nbproc)
     character(len=8) :: noma, mo, partit
     character(len=19) :: ligrmo, nomlig
 !
-    logical :: ldist, ldgrel
+    logical :: ldist
+    logical(kind=1) :: ldgrel
     integer, pointer :: adne(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     integer, pointer :: connex(:) => null()

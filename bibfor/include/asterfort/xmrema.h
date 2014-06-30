@@ -45,7 +45,7 @@ interface
         real(kind=8) :: t2min(3)
         real(kind=8) :: ximin
         real(kind=8) :: yimin
-        logical :: projin
+        logical(kind=1) :: projin
         integer :: stamin
         integer :: ifism
     end subroutine xmrema

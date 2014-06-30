@@ -26,7 +26,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !  Usage:      CALL ZVOUT (LOUT, N, CX, IDIGIT, IFMT)
 !
 !  Arguments
-!     lout   - logical unit number. (Input)
+!     lout   - logical(kind=1) unit number. (Input)
 !     n      - Length of array cx.  (Input)
 !     cx     - Complex*16 array to be printed.  (Input)
 !     ifmt   - Format to be used in printing array cx.  (Input)

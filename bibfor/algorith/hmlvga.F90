@@ -100,7 +100,7 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
     real(kind=8) :: p1, dp1, p2, dp2, t, dt, phi, padp, pvp, h11, h12
     real(kind=8) :: rho11, phi0, pvp0, kh, rinstp, angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical :: yachai
+    logical(kind=1) :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -115,7 +115,7 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
     real(kind=8) :: padm, rho22, em, alpha0
     real(kind=8) :: eps, deps(6), mdal(6), dalal, alphfi, cbiot, unsks
     parameter  ( eps = 1.d-21 )
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -132,7 +132,7 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
     real(kind=8) :: pinf, sigmp(6)
     real(kind=8) :: dqeps(6), dsdp2(6), rac2
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !

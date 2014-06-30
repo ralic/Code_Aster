@@ -59,7 +59,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 !
     integer :: j, inel, nuef, ind, noeud, iel, elem, n
     integer :: nedep, nefin, nbelco, nbnoco
-    logical :: test
+    logical(kind=1) :: test
 !
 ! 1 - EFS DES COUCHES 1, 2 ET 3
 ! 1.1 - COUCHE 1

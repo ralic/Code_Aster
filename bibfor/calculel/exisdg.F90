@@ -1,7 +1,7 @@
 function exisdg(dg, cmp)
 ! aslint: disable=
     implicit none
-    logical :: exisdg
+    logical(kind=1) :: exisdg
     integer :: dg(*), cmp
 !     ------------------------------------------------------------------
 ! ======================================================================

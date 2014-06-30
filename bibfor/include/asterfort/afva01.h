@@ -20,6 +20,6 @@ interface
         character(len=16) :: typsd
         character(len=16) :: nomsd
         character(len=16) :: nomsym
-        logical :: lautr
+        logical(kind=1) :: lautr
     end subroutine afva01
 end interface

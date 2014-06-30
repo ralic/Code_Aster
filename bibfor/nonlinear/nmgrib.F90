@@ -27,7 +27,7 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
-    logical :: lexc
+    logical(kind=1) :: lexc
     integer :: nno
     real(kind=8) :: geom(3, nno), dff(2, nno), dir11(3)
     real(kind=8) :: b(6, nno), vecn(3), p(3, 6)

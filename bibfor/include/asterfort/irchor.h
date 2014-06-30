@@ -21,7 +21,7 @@ interface
                       nbrcmp, nbcmdu, nbpara, codret)
         integer :: ioccur
         character(len=8) :: leresu
-        logical :: lresul
+        logical(kind=1) :: lresul
         character(len=*) :: nchsym
         character(len=*) :: nnuord
         character(len=*) :: nlicmp

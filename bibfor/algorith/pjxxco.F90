@@ -51,7 +51,8 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 #include "asterfort/pjspco.h"
 #include "asterfort/pjtyco.h"
 #include "asterfort/utmess.h"
-    logical :: isole
+    logical(kind=1) :: isole
+    logical :: lcond
     character(len=4) :: typcal
     character(len=8) :: resuin
     character(len=8) :: moa1, moa2, corru
@@ -67,7 +68,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    logical :: lnoeu, lelno, lelem, lelga
+    logical(kind=1) :: lnoeu, lelno, lelem, lelga
 !
 !
 ! DEB ------------------------------------------------------------------
@@ -128,14 +129,16 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
             if ((method.eq.'COLLOCATION') .and. (.not.lnoeu) .and. ( .not.lelno) .and.&
                 (.not.lelem)) then
-                ASSERT(lelga)
+                lcond=lelga
+                ASSERT(lcond)
                 valk(1) = method
                 valk(2) = 'ELGA'
                 call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
             endif
 !
             if ((method.eq.'SOUS_POINT') .and. (.not.lnoeu) .and. ( .not.lelno)) then
-                ASSERT(lelga .or. lelem)
+                lcond=lelga .or. lelem
+                ASSERT(lcond)
                 valk(1) = method
                 valk(2) = 'ELGA ET ELEM'
                 call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)

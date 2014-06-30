@@ -50,7 +50,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: nbnoma, nbnore
-    logical :: exilag
+    logical(kind=1) :: exilag
 !
 !
 !

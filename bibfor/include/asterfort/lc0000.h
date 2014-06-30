@@ -46,7 +46,7 @@ interface
         character(len=16) :: option
         real(kind=8) :: angmas(3)
         real(kind=8) :: wkin(nwkin)
-        logical :: cp
+        logical(kind=1) :: cp
         integer :: numlc
         real(kind=8) :: tempd
         real(kind=8) :: tempf

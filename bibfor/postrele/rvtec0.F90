@@ -70,7 +70,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
     integer ::   nbvari, nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(1050)
     complex(kind=8) :: c16b
-    logical :: exist, erreur
+    logical(kind=1) :: exist, erreur
     character(len=3) :: typpar
     character(len=7) :: kii
     character(len=8) :: k8b, acces, nomres, ctype, courbe, crit

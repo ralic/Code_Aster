@@ -38,7 +38,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 #include "asterfort/nxnoli.h"
 #include "asterfort/rsnume.h"
 #include "asterfort/tiinit.h"
-    logical :: lostat, levol, lnonl
+    logical(kind=1) :: lostat, levol, lnonl
     character(len=19) :: lischa, lisch2, solveu
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
@@ -71,7 +71,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
     character(len=19) :: k19bla
     character(len=24) :: noojb, k24bla, vhydr, hydr0
     real(kind=8) :: instin
-    logical :: lreuse
+    logical(kind=1) :: lreuse
 !
 ! ----------------------------------------------------------------------
 !

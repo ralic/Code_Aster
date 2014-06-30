@@ -48,7 +48,7 @@ subroutine ordonn(nomfon, iret)
     integer :: ival
     integer ::  nbpara
     integer :: nbval, nbpts, ier, i
-    logical :: isnap, inv
+    logical(kind=1) :: isnap, inv
     character(len=1) :: codmes
     character(len=16) :: typfon
     character(len=24) :: chval

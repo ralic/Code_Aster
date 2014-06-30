@@ -47,7 +47,7 @@ subroutine te0541(option, nomte)
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu, itab(1)
     integer :: iret, k, itemps
-    logical :: lbid
+    logical(kind=1) :: lbid
     character(len=8) :: enr, elref
     character(len=16) :: compor(4)
 ! ----------------------------------------------------------------------
@@ -111,7 +111,7 @@ subroutine te0541(option, nomte)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false., lbid,&
+                nno, nnos, zi(jstno), .false._1, lbid,&
                 option, nomte, ddlm,&
                 nfiss, jfisno, vect=zr(ivectu))
 !

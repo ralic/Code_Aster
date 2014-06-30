@@ -53,7 +53,7 @@ subroutine te0249(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: c(6, 9), imattt, i, j, ij, l, li, lj, iray, itemp, ise, nse
     integer :: nnop2, iech, itemps, ibid
-    logical :: laxi, lcoef
+    logical(kind=1) :: laxi, lcoef
     character(len=8) :: elrefe, alias8
 !
 !====

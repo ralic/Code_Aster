@@ -74,7 +74,7 @@ subroutine cfmxr0(defico, resoco, noma)
     integer ::  jcnslr
     integer ::  jcnslp
     integer :: jdecne
-    logical :: lctcc, lctcd, lmail
+    logical(kind=1) :: lctcc, lctcd, lmail
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: cnsvr(:) => null()
 ! ----------------------------------------------------------------------

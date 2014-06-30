@@ -44,7 +44,7 @@ subroutine te0060(option, nomte)
     integer :: ipoids, ivf, idfdx, idfdy, igeom, itemps, i, ndim, nno, ipg, npg1
     integer :: ivectt, itext, iech, iray, ino, idec, jdec, kdec, ldec, itemp
     integer :: jno, j, ier, jgano, nnos
-    logical :: ltext
+    logical(kind=1) :: ltext
 !
 !
 !====

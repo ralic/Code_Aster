@@ -23,8 +23,8 @@ interface
                       jgano1, iu, ip, ipf, iq,&
                       modint)
         character(len=16) :: nomte
-        logical :: axi
-        logical :: perman
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
         integer :: mecani(8)
         integer :: press1(9)
         integer :: press2(9)

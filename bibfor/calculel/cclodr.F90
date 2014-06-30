@@ -62,7 +62,7 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
     character(len=19) :: nosyou
     character(len=24) :: noliop, nolori, noldep, noliin, nolisd
 !
-    logical :: exitor
+    logical(kind=1) :: exitor
 !
     call jemarq()
 !

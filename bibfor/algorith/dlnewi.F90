@@ -119,7 +119,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
 !
-    logical :: lcrea, lamort, limped, lmodst
+    logical(kind=1) :: lcrea, lamort, limped, lmodst
 !
     character(len=6) :: nompro
     parameter (nompro = 'DLNEWI')
@@ -172,7 +172,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     real(kind=8) :: tempm, temps
     integer :: vali(2)
     real(kind=8) :: valr(2)
-    logical :: gasymr, gsyrie, ener
+    logical(kind=1) :: gasymr, gsyrie, ener
     real(kind=8), pointer :: epl1(:) => null()
     real(kind=8), pointer :: fammo(:) => null()
     real(kind=8), pointer :: vien(:) => null()

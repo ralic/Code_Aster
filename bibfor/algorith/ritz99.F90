@@ -51,7 +51,7 @@ subroutine ritz99(nomres)
     character(len=19) :: numref, nume1
     character(len=24) :: trang1, trang2, tempor, tempi, tempi2, rigi1, mass1, amor1
     character(len=24) :: valk(3), concep(3)
-    logical :: seul
+    logical(kind=1) :: seul
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -152,7 +152,7 @@ subroutine ritz99(nomres)
             end do
             inord=1
             call moco99(nomres, resul1, nbmod1, zi(lrang1), inord,&
-                        .true.)
+                        .true._1)
             call jedetr(trang1)
         endif
         if (nbmodb .gt. 0) then
@@ -161,7 +161,7 @@ subroutine ritz99(nomres)
                 zi(lrang2+ii-1)=ii
             end do
             call moco99(nomres, resul2, nbmodb, zi(lrang2), inord,&
-                        .false.)
+                        .false._1)
             call jedetr(trang2)
         endif
         nbmoda = nbmod1 - nbdef
@@ -337,7 +337,7 @@ subroutine ritz99(nomres)
     if (nbmoda .gt. 0) then
         if (nbgl .eq. 1) then
             call moco99(nomres, resul1, nbmoda, zi(lrang1), inord,&
-                        .true.)
+                        .true._1)
 !
             call dismoi('NUME_DDL', resul1, 'RESU_DYNA', repk=nume1)
             call dismoi('REF_RIGI_PREM', resul1, 'RESU_DYNA', repk=rigi1, arret='C',&
@@ -349,7 +349,7 @@ subroutine ritz99(nomres)
         else if (nbgl.gt.1) then
             do i = 1, nbgl
                 call moco99(nomres, zk8(idgl+i-1), zi(lnbm+i-1), zi( lrang1), inord,&
-                            .true.)
+                            .true._1)
                 resul1 = zk8(idgl+i-1)
             end do
             inord = inord + nbmoda
@@ -361,7 +361,7 @@ subroutine ritz99(nomres)
     if (.not.seul) then
         if (nbmodb .gt. 0) then
             call moco99(nomres, resul2, nbmodb, zi(lrang2), inord,&
-                        .false.)
+                        .false._1)
             call jedetr(trang2)
         endif
     endif

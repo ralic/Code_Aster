@@ -31,9 +31,9 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -78,7 +78,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     character(len=8) :: nomma
     character(len=19) :: prchno, valk(3)
     character(len=24) :: nolili
-    logical :: skip
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !
 !-----------------------------------------------------------------------

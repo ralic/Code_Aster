@@ -90,7 +90,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
     integer :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
     integer :: ifm, nivinf
 !
-    logical :: logaux, lprolz
+    logical(kind=1) :: logaux, lprolz
 !
 !====
 ! 1. PREALABLES

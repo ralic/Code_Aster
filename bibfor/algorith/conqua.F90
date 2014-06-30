@@ -51,7 +51,7 @@ subroutine conqua(macor, nbcor, macoc, nbcoc, lface,&
 !
     character(len=8) :: macor(nbcor+2), macoc(nbcoc+2), ma
 !
-    logical :: lomodi, locorr, lface, quadra, loreor
+    logical(kind=1) :: lomodi, locorr, lface, quadra, loreor
     integer :: i1, i2
 !-----------------------------------------------------------------------
 #define face(i1,i2) nococ(1).eq.i1.and.nococ(2).eq.i2

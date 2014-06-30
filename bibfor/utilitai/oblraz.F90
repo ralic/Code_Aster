@@ -56,7 +56,7 @@ subroutine oblraz(sdlist)
 !
     call obgeti(sdlist, 'NBRE_STRUCTS', nbstru)
     do 10 istru = 1, nbstru
-        call oblsai(sdlist, istru, .false.)
+        call oblsai(sdlist, istru, .false._1)
 10  end do
 !
     call jedema()

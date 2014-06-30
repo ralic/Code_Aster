@@ -73,14 +73,14 @@ subroutine ssdt74(nomres, nomcmd)
     character(len=8) :: fbid(2)
     character(len=24) :: numg24, lisins
     character(len=24) :: valk(2)
-    logical :: lamor
+    logical(kind=1) :: lamor
     integer :: nexcit, nexcir, ntotex, nbobjs
 !
 !  COUPLAGE EDYOS
 ! =>
     integer :: nbpal
     real(kind=8) :: vrotat, dtsto
-    logical :: prdeff
+    logical(kind=1) :: prdeff
 ! =<
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -348,7 +348,7 @@ subroutine ssdt74(nomres, nomcmd)
     if (namor .eq. 0) amogen = k8b
 !
     if (method(1:5) .ne. 'RUNGE') then
-        call mdallo(nomres, 'TRAN', nbsauv, sauve='GLOB', checkarg=.false.,&
+        call mdallo(nomres, 'TRAN', nbsauv, sauve='GLOB', checkarg=.false._1,&
                     method=method, base=numgen, nbmodes=neqgen, rigi=riggen, mass=masgen,&
                     amor=amogen, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
                     jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=zk8(jnoec),&

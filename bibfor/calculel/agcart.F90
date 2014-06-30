@@ -65,7 +65,7 @@ subroutine agcart(ngdmxn, chinz)
 ! --- AGRANDISSEMENT DE .DESC:
 ! ------------------------------
     descav='&&AGCART.DESCAV'
-    call jedupo(chin//'.DESC', 'V', descav, .false.)
+    call jedupo(chin//'.DESC', 'V', descav, .false._1)
     call jeveuo(descav, 'E', jdesca)
     igd = zi(jdesca-1+1)
     nec = nbec(igd)

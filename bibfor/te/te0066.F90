@@ -49,7 +49,7 @@ subroutine te0066(option, nomte)
     real(kind=8) :: angmas(7), point(3), fluglo(3), fluloc(3), p(3, 3)
     integer :: i, ipoids, ivf, idfde, igeom, imate, kpg, spt, ino
     integer :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe, l
-    logical :: aniso
+    logical(kind=1) :: aniso
 !
 !-----------------------------------------------------------------------
     integer :: iret, nbpar, nnos

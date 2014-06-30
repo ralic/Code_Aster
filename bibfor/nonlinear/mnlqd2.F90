@@ -55,7 +55,7 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
     integer :: iddl, i, nddl
     integer ::  icdl, iadim, itemp, k, ivec, nt, ih, puismax
     integer ::   neqs, deb, hind, ddl, nddlx, nddly
-    logical :: stp
+    logical(kind=1) :: stp
     integer, pointer :: vneqs(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
@@ -100,7 +100,7 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
                 endif
             endif
 10      continue
-        call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 1, .false.)
+        call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 1, .false._1)
         i=0
         do 20 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then

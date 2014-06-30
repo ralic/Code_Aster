@@ -25,7 +25,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
     implicit none
 !
 #include "asterfort/caatdb.h"
-    logical :: calbn
+    logical(kind=1) :: calbn
     integer :: kpg, i, j, k, nno, proj, ic, iadpg
     real(kind=8) :: dsidep(6, 6), bn(6, 3, 8)
     real(kind=8) :: gamma(4, 8), dh(4, 24)

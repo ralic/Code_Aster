@@ -23,7 +23,7 @@ interface
         integer :: tabnoz(3, narz)
         real(kind=8) :: tabcoz(ndim, narz)
         real(kind=8) :: tabcrz(narz)
-        logical :: lgroup
+        logical(kind=1) :: lgroup
         character(len=19) :: nliseq
     end subroutine xrell2
 end interface

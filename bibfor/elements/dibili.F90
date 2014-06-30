@@ -74,7 +74,7 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
     real(kind=8) :: valpar(nbpart), coeflo(6, nbparc), vardnl(nbvint)
     integer :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
-    logical :: okdire(6)
+    logical(kind=1) :: okdire(6)
 !   nbparc paramètres par composante
     data nompar /'KDEB_DX','KFIN_DX','FPRE_DX',&
                  'KDEB_DY','KFIN_DY','FPRE_DY',&

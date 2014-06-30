@@ -22,7 +22,7 @@ interface
                       f)
         integer :: masse
         integer :: amort
-        logical :: lamort
+        logical(kind=1) :: lamort
         integer :: neq
         real(kind=8) :: c0
         real(kind=8) :: c1

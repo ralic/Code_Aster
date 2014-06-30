@@ -27,7 +27,7 @@ interface
         real(kind=8) :: riggen(*)
         integer :: descr
         real(kind=8) :: fexgen(*)
-        logical :: lamor
+        logical(kind=1) :: lamor
         real(kind=8) :: amogen(*)
         integer :: desca
         real(kind=8) :: work1(*)

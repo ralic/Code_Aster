@@ -70,7 +70,7 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
     real(kind=8) :: d, dx, dy, dz
     integer :: f1(4), f2(4), f3(4)
 !
-    logical :: facnp1, facnp2, facnp3
+    logical(kind=1) :: facnp1, facnp2, facnp3
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !

@@ -22,7 +22,7 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
-    logical :: lfovit, ldyna
+    logical(kind=1) :: lfovit, ldyna
     real(kind=8) :: jeusup
     integer :: ndexfr
     real(kind=8) :: coefac, coefaf

@@ -170,17 +170,17 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
             if (zk8(ialich-1+1)(1:3) .eq. 'NON') then
 !
 !           -- LE CHARGEMENT N'EST PAS "SUIVEUR" :
-                call ssvaro(lambda, 'GL', .false., 'TOUS', nomacr,&
+                call ssvaro(lambda, 'GL', .false._1, 'TOUS', nomacr,&
                             ialica, idresl)
                 call jeveuo('&&SSVALV.VALTEMP', 'E', idres2)
                 call ssvau1(nomacr, idresl, idres2)
-                call ssvaro(lambda, 'LG', .false., 'EXTE', nomacr,&
+                call ssvaro(lambda, 'LG', .false._1, 'EXTE', nomacr,&
                             idres2, idresl)
 !
             else if (zk8(ialich-1+1)(1:3).eq.'OUI') then
 !
 !           -- LE CHARGEMENT EST "SUIVEUR" :
-                call ssvaro(lambda, 'LG', .false., 'EXTE', nomacr,&
+                call ssvaro(lambda, 'LG', .false._1, 'EXTE', nomacr,&
                             ialica+nddlt, idresl)
             else
                 call utmess('F', 'SOUSTRUC_47')

@@ -33,7 +33,7 @@ interface
         character(len=8) :: masse
         character(len=8) :: rigid
         character(len=8) :: amort
-        logical :: lamort
+        logical(kind=1) :: lamort
         integer :: nchar
         integer :: nveca
         character(len=19) :: lischa

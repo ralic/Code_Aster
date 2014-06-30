@@ -38,6 +38,6 @@ interface
         integer :: ndec
         real(kind=8) :: epscon
         integer :: iret
-        logical :: trac
+        logical(kind=1) :: trac
     end subroutine cjspla
 end interface

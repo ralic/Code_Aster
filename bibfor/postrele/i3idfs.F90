@@ -9,7 +9,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
 #include "asterfort/utmess.h"
     integer :: k, f, nbpt, lstpt(*), nba
     real(kind=8) :: epsi, sgt(*), coorsm(3, *)
-    logical :: fink
+    logical(kind=1) :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -50,7 +50,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
     integer :: arete, nd, nf, i, ipos
     real(kind=8) :: a(3, 2), x(2), b(3), t, td, tf, r1, r2, r3, t1, t2, nrmab
     real(kind=8) :: zero, un
-    logical :: finf, dejala
+    logical(kind=1) :: finf, dejala
 !
 !======================================================================
 !

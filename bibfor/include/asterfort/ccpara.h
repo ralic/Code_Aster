@@ -24,7 +24,7 @@ interface
         character(len=8) :: resuou
         integer :: numord
         integer :: nordm1
-        logical :: exitim
+        logical(kind=1) :: exitim
         character(len=8) :: mateco
         character(len=8) :: carael
     end subroutine ccpara

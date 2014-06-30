@@ -23,7 +23,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: ddlexc, typcst(*), typres
     real(kind=8) :: const(*)
-    logical :: matd
+    logical(kind=1) :: matd
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +60,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !     -----------------------------------------------------------------
 !     LGBLOC = LONGUEUR DES BLOCS
     integer :: lgbloc
-    logical :: symr, symi
+    logical(kind=1) :: symr, symi
 !     -----------------------------------------------------------------
     character(len=1) :: clas, typmat
     character(len=19) :: matres, mati

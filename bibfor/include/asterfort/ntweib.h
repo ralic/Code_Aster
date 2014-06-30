@@ -20,7 +20,7 @@ interface
                       nt, nbres, x1, x2, xacc,&
                       rtsafe, impr, ifm, indtp, nbtp)
         integer :: nrupt
-        logical :: cals
+        logical(kind=1) :: cals
         real(kind=8) :: sk(*)
         real(kind=8) :: sigw(*)
         integer :: nur(*)
@@ -30,7 +30,7 @@ interface
         real(kind=8) :: x2
         real(kind=8) :: xacc
         real(kind=8) :: rtsafe
-        logical :: impr
+        logical(kind=1) :: impr
         integer :: ifm
         integer :: indtp(*)
         integer :: nbtp

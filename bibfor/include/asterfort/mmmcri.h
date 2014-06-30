@@ -27,6 +27,6 @@ interface
         real(kind=8) :: epsmax
         character(len=16) :: cvgnoe
         real(kind=8) :: cvgval
-        logical :: mmconv
+        logical(kind=1) :: mmconv
     end subroutine mmmcri
 end interface

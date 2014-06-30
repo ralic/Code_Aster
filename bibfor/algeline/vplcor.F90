@@ -99,7 +99,7 @@ subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
 !
 100          continue
             call mrmult('ZERO', ldynam, vect(1, ivecp), pkx(1, ivecp), 1,&
-                        .false.)
+                        .false._1)
         endif
 !
 10  continue

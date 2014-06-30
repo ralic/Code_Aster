@@ -30,7 +30,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     character(len=8) :: nomcp(*), repere, courbe
     integer :: nbcpnc, nbcpcd, codir
     real(kind=8) :: valdir(*), vec1(*), vec2(*)
-    logical :: tridim
+    logical(kind=1) :: tridim
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

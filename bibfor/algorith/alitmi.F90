@@ -94,7 +94,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
     real(kind=8) :: cmod0(np1, *), kmod0(np1, *), cmod(np1, *), kmod(np1, *)
     real(kind=8) :: cmodca(np1, *), kmodca(np1, *), amflu0(np1, *)
     real(kind=8) :: amfluc(np1, *), cmodfa(np1, *)
-    logical :: locflc(*)
+    logical(kind=1) :: locflc(*)
     integer :: npfts
     real(kind=8) :: textts(*), fextts(np4, *)
     integer :: ndef, indt
@@ -104,7 +104,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
     integer :: intge1(*), intge2(*), indx(*), indxf(*)
     real(kind=8) :: ftmp(*), mtmp1(np1, *), mtmp2(np1, *), mtmp6(3, *)
     real(kind=8) :: ttr(n2, *), u(*), w(*), dd(*)
-    logical :: loc(*)
+    logical(kind=1) :: loc(*)
     real(kind=8) :: vvg(np1, *), vg(np1, *), vg0(np1, *), vd(np1, *)
     real(kind=8) :: vd0(np1, *), rr(*), rr0(*), ri(*)
     real(kind=8) :: premac, prerel, trans(2, 2, *), pulsd(*)

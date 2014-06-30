@@ -19,7 +19,7 @@ function lteatt(noattr, vattr, typel)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 #include "asterfort/teattr.h"
-    logical  :: lteatt
+    logical(kind=1)  :: lteatt
     character(len=*), intent(in) :: noattr
     character(len=*), intent(in) :: vattr
     character(len=*), intent(in), optional :: typel

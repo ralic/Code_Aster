@@ -8,7 +8,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
     integer :: nrupt, nt(*), nbres, nur(*), ir, indtp(*), nbtp, ifm
     real(kind=8) :: x(*), y(*), sigw(*), mk, sk(*), mkp, skp(*), prob(*)
     character(len=16) :: method
-    logical :: calm, cals, impr, dept
+    logical(kind=1) :: calm, cals, impr, dept
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

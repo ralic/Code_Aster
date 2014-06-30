@@ -64,7 +64,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
     integer :: i, j, l, jn, jfh, coefj
     integer :: pli, plj
     real(kind=8) :: ffi, ffj
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 ! ----------------------------------------------------------------------
 !

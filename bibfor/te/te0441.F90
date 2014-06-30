@@ -56,7 +56,7 @@ subroutine te0441(option, nomte)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag, famil, poum
     character(len=16) :: phenom
-    logical :: lbid
+    logical(kind=1) :: lbid
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
@@ -185,7 +185,7 @@ subroutine te0441(option, nomte)
         nnop = nnos
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nnop, nnops, zi(jstno), .false., lbid,&
+                nnop, nnops, zi(jstno), .false._1, lbid,&
                 option, nomte, ddlm,&
                 nfiss, jfisno, vect=zr(ivectu))
 !

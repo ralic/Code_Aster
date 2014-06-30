@@ -61,7 +61,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
 !
     integer :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
-    logical :: chgcmp, cumul, lcumul(2)
+    logical(kind=1) :: chgcmp, cumul, lcumul(2)
     integer :: ncmp, jlicmp, gd, jcmpgd,  iret, nncp, nchg
     real(kind=8) :: coefr, lcoefr(2)
     complex(kind=8) :: coefc, lcoefc(2)
@@ -73,7 +73,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     character(len=19) :: chs3, ligrel
     character(len=24) :: cnom, valk(3)
 !
-    logical :: lcoc
+    logical(kind=1) :: lcoc, bool(1) 
     character(len=8), pointer :: licmp2(:) => null()
 !     -----------------------------------------------------------------
 !
@@ -314,7 +314,8 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !       4.4 FUSION DU CHAMP REDUIT AVEC LE CHAMP RESULTAT :
 !       ----------------------------------------------------
         if (iocc .eq. 1) then
-            call chsfus(1, chs2, [.false.], [coefr], [coefc],&
+            bool(1) = .false.
+            call chsfus(1, chs2, bool(1), [coefr], [coefc],&
                         lcoc, 'V', chs3)
         else
             lichs(1) = chs3

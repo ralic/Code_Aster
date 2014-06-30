@@ -27,7 +27,7 @@ interface
         character(len=19) :: sdpilo
         real(kind=8) :: rho
         real(kind=8) :: eta
-        logical :: isxfe
+        logical(kind=1) :: isxfe
         real(kind=8) :: f
         integer :: indic
     end subroutine nmceai

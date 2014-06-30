@@ -69,7 +69,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
     character(len=24) :: chgeom, ligrmo
     integer :: nchond
     character(len=19) :: chondp
-    logical :: debug
+    logical(kind=1) :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
     character(len=8), pointer :: lgrf(:) => null()

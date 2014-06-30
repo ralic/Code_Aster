@@ -100,7 +100,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     integer :: iterm, idirect, lonuti, lveclr, mdim, nbrel0
     integer :: nbrela, nbrmax, nbterr, niv, k
     real(kind=8) :: norm_coef
-    logical :: l_rota
+    logical(kind=1) :: l_rota
     character(len=8), pointer :: rlla(:) => null()
     integer, pointer :: rlnt(:) => null()
     character(len=8), pointer :: rlno(:) => null()

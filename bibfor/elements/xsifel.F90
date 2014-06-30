@@ -106,7 +106,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho
     integer :: icodre(4)
     character(len=8) :: nomres(4), elrese(6), fami(6)
-    logical :: lcour, grdepl, axi
+    logical(kind=1) :: lcour, grdepl, axi
     integer :: irese, nnops
     integer :: ddln, nnon, indenn, mxstac
     parameter      (mxstac=1000)

@@ -78,7 +78,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     character(len=8) :: nomgd
     integer :: k, iexi, iexi1, iexi2
     integer :: inddec(nin)
-    logical :: lcmplx, lsspt, ldbg, lopdec
+    logical(kind=1) :: lcmplx, lsspt, ldbg, lopdec
 ! ----------------------------------------------------------------------
 !
     call jemarq()

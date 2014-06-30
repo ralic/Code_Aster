@@ -22,15 +22,15 @@ interface
                       spmecm, spthem, samax, utot, sm,&
                       sigpm, resuas, resuss, resuca, resucs,&
                       factus, pmmax, pbmax, pmbmax)
-        logical :: lpmpb
-        logical :: lsn
-        logical :: lsnet
-        logical :: lfatig
-        logical :: lrocht
+        logical(kind=1) :: lpmpb
+        logical(kind=1) :: lsn
+        logical(kind=1) :: lsnet
+        logical(kind=1) :: lfatig
+        logical(kind=1) :: lrocht
         character(len=4) :: lieu
         integer :: ig
         integer :: iocs
-        logical :: seisme
+        logical(kind=1) :: seisme
         integer :: npass
         character(len=8) :: mater
         real(kind=8) :: snmax

@@ -60,7 +60,7 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
 !
 !
     integer :: ifm, niv
-    logical :: lctcd, lctcc, lallv, lxfcm
+    logical(kind=1) :: lctcd, lctcc, lallv, lxfcm
     character(len=8) :: nomo
 !
 ! ----------------------------------------------------------------------

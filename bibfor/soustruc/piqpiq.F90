@@ -10,7 +10,7 @@ subroutine piqpiq(xp, yp, zp, x, y,&
     real(kind=8) :: xp, yp, zp, x, y, z
     real(kind=8) :: rep, ret, rit, bet, hso, eso, h2, h3, l4, l5
     character(len=8) :: typsou
-    logical :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
+    logical(kind=1) :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

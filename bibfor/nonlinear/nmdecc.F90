@@ -34,7 +34,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
     character(len=4) :: typdec
     integer :: nbrpas, retdec
     real(kind=8) :: instam, deltat, ratio, dtmin, deltac
-    logical :: linfo
+    logical(kind=1) :: linfo
 !
 ! ----------------------------------------------------------------------
 !

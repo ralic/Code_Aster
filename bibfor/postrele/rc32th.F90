@@ -57,7 +57,7 @@ subroutine rc32th()
     real(kind=8) :: sigth(1000*ncmp), tresc(2), r3(2)
     real(kind=8) :: tremin(2), tremax(2), tmin(2), tmax(2)
     complex(kind=8) :: cbid
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=8) :: k8b, crit(2), nocmp(ncmp), table, knume, tbpres
     character(len=16) :: motclf, valek(2), motcl2
     character(len=24) :: instan, abscur, jvorig, jvextr

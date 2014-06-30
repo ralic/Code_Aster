@@ -88,7 +88,7 @@ subroutine op0061()
     integer :: prodsci
     character(len=14) :: xcdl, parcho, adime
     real(kind=8) :: ampl, amax, ap, epscor2, vr
-    logical :: cor, lbif, reprise, lcine
+    logical(kind=1) :: cor, lbif, reprise, lcine
     integer :: iraid, ireg, iorig, ijeu, inddl, ifres, vi, num_ordr, num_lig, nbno, info
     integer :: ivec, iutj, iut1, iups, ius, ifpnl, ieng, isort, icdl, ivect, numrep, ntab
     character(len=14) :: xvect, xut1, xutj, xups, xus, xfpnl, xeng, xsort, xbif
@@ -235,7 +235,7 @@ subroutine op0061()
     xutj = baseno//'.XUTJ'
     call wkvect(xut1, 'V V R', ninc, iut1)
     call wkvect(xutj, 'V V R', ninc, iutj)
-    call mnltan(.true., imat, numdrv, matdrv, xcdl,&
+    call mnltan(.true._1, imat, numdrv, matdrv, xcdl,&
                 parcho, adime, xvect, ninc, nd,&
                 nchoc, h, hf, xut1)
     call dcopy(ninc, zr(iut1), 1, zr(iutj), 1)
@@ -303,7 +303,7 @@ subroutine op0061()
                            1)
             end do
 ! ---       CALCUL DE LA TANGENTE AU NOUVEAU POINT
-            call mnltan(.true., imat, numdrv, matdrv, xcdl,&
+            call mnltan(.true._1, imat, numdrv, matdrv, xcdl,&
                         parcho, adime, xvect, ninc, nd,&
                         nchoc, h, hf, xut1)
 ! ---       SENS DE CONTINUATION

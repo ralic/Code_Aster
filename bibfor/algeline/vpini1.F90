@@ -91,7 +91,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
     character(len=16) :: k16bid, modrig, optiof, optiov, typeqz, typres
     character(len=19) :: amor, masse, raide, tabmod
     character(len=24) :: metres, valk(2), k24bid
-    logical           :: lbid, lc, lkr, lns, lqz, ltabmo
+    logical(kind=1)   :: lbid, lc, lkr, lns, lqz, ltabmo
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE

@@ -17,7 +17,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
     character(len=*) :: resuco
     character(len=19) :: resuc1
     character(len=*) :: cheler, option
-    logical :: yathm, perman
+    logical(kind=1) :: yathm, perman
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
     integer :: ibid, longt, long2, mode, j, iavale, icoef, nbgr, jceld
     character(len=4) :: docu
     character(len=19) :: chele2, ligrel
-    logical :: first
+    logical(kind=1) :: first
     character(len=24), pointer :: celk(:) => null()
 !
 ! ----------------------------------------------------------------------

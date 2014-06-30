@@ -67,7 +67,7 @@ subroutine nmcrli(instin, lisins, sddisc)
     real(kind=8) :: tole
     real(kind=8) :: r8bid
     real(kind=8) :: dtmin, dt0
-    logical :: linsti, linsei
+    logical(kind=1) :: linsti, linsei
     character(len=8) :: k8bid, result
     character(len=24) :: tpsipo
     character(len=24) :: tpsrpc, tpspil, tpsdin, tpsite, tpsbcl
@@ -213,7 +213,7 @@ subroutine nmcrli(instin, lisins, sddisc)
 !
 ! --- STOCKAGE DE LA LISTE DES INSTANTS DE PASSAGE OBLIGATOIRES (JALONS)
 !
-    call jedupo(sddisc(1:19)//'.DITR', 'V', tpsipo, .false.)
+    call jedupo(sddisc(1:19)//'.DITR', 'V', tpsipo, .false._1)
 !
 ! --- CREATION DE LA TABLE DES PARAMETRES CALCULES
 !

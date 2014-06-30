@@ -80,15 +80,15 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: opmass, oprigi
-    logical :: lmacr, ldyna, lexpl, lbid
-    logical :: lamor, lktan, lelas, lvarc, lcfint, lamra
+    logical(kind=1) :: lmacr, ldyna, lexpl, lbid
+    logical(kind=1) :: lamor, lktan, lelas, lvarc, lcfint, lamra
     integer :: ifm, niv
     integer :: numins, iterat, ldccvg
     integer :: nbmatr
     character(len=16) :: optrig, optamo
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical :: lassme(20), lcalme(20)
+    logical(kind=1) :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -134,8 +134,8 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
         write (ifm,*) '<MECANONLINE> ... MATR_ELEM DE'//&
      &                ' RIGIDITE ASSOCIEE AUX LAGRANGE'
     endif
-    call nmcmat('AJOU', 'MEDIRI', ' ', ' ', .true.,&
-                .false., nbmatr, ltypma, loptme, loptma,&
+    call nmcmat('AJOU', 'MEDIRI', ' ', ' ', .true._1,&
+                .false._1, nbmatr, ltypma, loptme, loptma,&
                 lcalme, lassme)
 !
 ! --- MATRICE DE MASSE
@@ -153,8 +153,8 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
         else
             opmass = 'MASS_MECA'
         endif
-        call nmcmat('AJOU', 'MEMASS', opmass, ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MEMASS', opmass, ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
 !
     endif
@@ -167,8 +167,8 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
             write (ifm,*) '<MECANONLINE> ... MATR_ELEM DES MACRO_ELEMENTS'
         endif
         oprigi = 'RIGI_MECA'
-        call nmcmat('AJOU', 'MESSTR', oprigi, ' ', .true.,&
-                    .true., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MESSTR', oprigi, ' ', .true._1,&
+                    .true._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
     endif
 !
@@ -178,8 +178,8 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
         optrig = 'RIGI_MECA'
 ! ----- PARAMETRE INUTILE POUR OPTION RIGI_MECA
         iterat = 0
-        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MERIGI', optrig, ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
         if (lvarc) then
             call utmess('A', 'MECANONLINE3_2')
@@ -190,8 +190,8 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 !
     if (lamor .and. .not.lktan) then
         optamo = 'AMOR_MECA'
-        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true.,&
-                    .false., nbmatr, ltypma, loptme, loptma,&
+        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true._1,&
+                    .false._1, nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
 !
     endif

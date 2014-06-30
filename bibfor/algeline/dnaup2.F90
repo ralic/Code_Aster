@@ -257,7 +257,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !     %---------------%
 !
     character(len=2) :: wprime
-    logical :: cnorm, getv0, initv, update, ushift
+    logical(kind=1) :: cnorm, getv0, initv, update, ushift
     integer :: ierr, iter, j, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp
     integer :: numcnv
     real(kind=8) :: rnorm, temp, eps23
@@ -588,7 +588,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SM'
         if (which .eq. 'SI') wprime = 'LM'
 !
-        call dsortc(wprime, .true., kplusp, ritzr, ritzi,&
+        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi,&
                     bounds)
 !
 !           %----------------------------------------------%
@@ -605,7 +605,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SI'
         if (which .eq. 'SI') wprime = 'LI'
 !
-        call dsortc(wprime, .true., kplusp, ritzr, ritzi,&
+        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi,&
                     bounds)
 !
 !           %--------------------------------------------------%
@@ -626,7 +626,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           %----------------------------------------------------%
 !
         wprime = 'LR'
-        call dsortc(wprime, .true., nev0, bounds, ritzr,&
+        call dsortc(wprime, .true._1, nev0, bounds, ritzr,&
                     ritzi)
 !
 !           %----------------------------------------------%
@@ -645,7 +645,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           | RITZR, RITZI AND BOUND.                        |
 !           %------------------------------------------------%
 !
-        call dsortc(which, .true., nconv, ritzr, ritzi,&
+        call dsortc(which, .true._1, nconv, ritzr, ritzi,&
                     bounds)
 !
         if (msglvl .gt. 1) then

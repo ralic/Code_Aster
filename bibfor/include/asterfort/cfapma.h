@@ -24,8 +24,8 @@ interface
         character(len=19) :: newgeo
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical :: lctfd
-        logical :: lctf3d
+        logical(kind=1) :: lctfd
+        logical(kind=1) :: lctf3d
         integer :: ndimg
         integer :: izone
         integer :: posnoe

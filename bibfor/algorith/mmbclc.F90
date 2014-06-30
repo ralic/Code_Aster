@@ -43,7 +43,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     character(len=19), intent(in) :: sddisc, sddyna
     character(len=24), intent(in) :: defico, resoco, sdtime, sdstat, sdimpr, numedd
     character(len=19), intent(in) :: valinc(*), solalg(*)
-    logical, intent(out) :: mmcvca
+    logical(kind=1), intent(out) :: mmcvca
     real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
@@ -74,8 +74,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lallv, lnewtc, lnewtg
-    logical :: loptin
+    logical(kind=1) :: lallv, lnewtc, lnewtg
+    logical(kind=1) :: loptin
     integer :: ctcsta
     character(len=19) :: depgeo, depplu
 !
@@ -149,7 +149,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 !
 ! - Contact status for generalized Newton
 !
-    if (lnewtc) call nmimci(sdimpr, 'CONT_NEWT', ctcsta, .true.)
+    if (lnewtc) call nmimci(sdimpr, 'CONT_NEWT', ctcsta, .true._1)
 !
 999 continue
 !

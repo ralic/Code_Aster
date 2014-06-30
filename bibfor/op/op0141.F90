@@ -67,7 +67,7 @@ subroutine op0141()
     character(len=16) :: nomcmd, typcon, typba1, typba2, matri1, matri2, depl
     character(len=19) :: matr, pronu1, pronu2, pronua
     character(len=24) :: chamol
-    logical :: c1, c2, zcmplx, ieri
+    logical(kind=1) :: c1, c2, zcmplx, ieri
     integer, pointer :: deeq(:) => null()
     integer, pointer :: nllneq1(:) => null()
 !     ------------------------------------------------------------------
@@ -251,7 +251,7 @@ subroutine op0141()
             pii=0.d0
             if (matr .ne. ' ') then
                 call mcmult('ZERO', imatra, zc(idbas1+(i-1)*neq), zc( idvec1), 1,&
-                            .true.)
+                            .true._1)
 !
                 do iddl = 1, neq
                     if (deeq(2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0,0.d0)
@@ -275,7 +275,7 @@ subroutine op0141()
                 pjj=0.d0
                 if (matr .ne. ' ') then
                     call mcmult('ZERO', imatra, zc(idbas2+(j-1)*neq), zc(idvec2), 1,&
-                                .true.)
+                                .true._1)
 !
                     do iddl = 1, neq
                         if (deeq(2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0,0.d0)
@@ -297,7 +297,7 @@ subroutine op0141()
                         -zc(idbas2+(j-1)*neq-1+iddl)
                     end do
                     call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1,&
-                                .true.)
+                                .true._1)
                     do iddl = 1, neq
                         if (deeq(2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0,0.d0)
                     end do
@@ -342,7 +342,7 @@ subroutine op0141()
             pii=0.d0
             if (matr .ne. ' ') then
                 call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1,&
-                            .true.)
+                            .true._1)
                 call zerlag(neq, deeq, vectr=zr(idvec1))
             else
                 call dcopy(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1)
@@ -357,7 +357,7 @@ subroutine op0141()
                 pjj=0.d0
                 if (matr .ne. ' ') then
                     call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1,&
-                                .true.)
+                                .true._1)
                     call zerlag(neq, deeq, vectr=zr(idvec2))
                 else
                     call dcopy(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1)
@@ -368,7 +368,7 @@ subroutine op0141()
                 if (ieri) then
                     call vdiff(neq, zr(idbas1+(i-1)*neq), zr(idbas2+(j- 1)*neq), zr(idbas3))
                     call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1,&
-                                .true.)
+                                .true._1)
                     call zerlag(neq, deeq, vectr=zr(idvec3))
 !
                     pij = abs(ddot( neq,zr(idbas3) ,1, zr(idvec3),1))

@@ -44,7 +44,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     real(kind=8) :: borsup, borinf
     integer :: nbnot, numnoe(*), nbmat, nummai(*), nbcmp, ifi, numord, ncmp
     integer :: nucmp(*), nive
-    logical :: lcor, lsup, linf, lmax, lmin, lresu
+    logical(kind=1) :: lcor, lsup, linf, lmax, lmin, lresu
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     character(len=19) :: chame, chames
     character(len=24) :: nolili, nconec, ncncin, valk(2)
     character(len=80) :: titmai
-    logical :: lmasu
+    logical(kind=1) :: lmasu
     integer :: i,  iad, iadr,  iel
     integer :: im, imod, in, ino, iret, itype
     integer ::  jcncin, jcnx, jcoor, jdrvlc,  jliste

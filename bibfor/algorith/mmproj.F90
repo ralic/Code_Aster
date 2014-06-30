@@ -30,7 +30,7 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
     integer :: nno
     real(kind=8) :: coorma(27)
     real(kind=8) :: coorpt(3)
-    logical :: dirapp
+    logical(kind=1) :: dirapp
     real(kind=8) :: dir(3)
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: tau1(3), tau2(3)

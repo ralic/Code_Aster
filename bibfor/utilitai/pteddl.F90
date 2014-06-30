@@ -58,7 +58,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
     character(len=8) :: nomma
     character(len=19) :: nomnu, prno
     character(len=24) :: nolili
-    logical :: matd, lnuge
+    logical(kind=1) :: matd, lnuge
     integer, pointer :: nume_cmp(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: nueq(:) => null()

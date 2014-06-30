@@ -72,7 +72,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: fe(4), poids, r
     character(len=8) :: elrese(6), fami(6)
-    logical :: grdepl, axi
+    logical(kind=1) :: grdepl, axi
     integer :: irese
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/

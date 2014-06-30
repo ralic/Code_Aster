@@ -56,7 +56,7 @@ subroutine te0292(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(2)
 !
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 ! ----------------------------------------------------------------------
     call jemarq()

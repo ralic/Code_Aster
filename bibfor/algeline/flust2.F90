@@ -77,7 +77,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 ! -----------------
     integer :: ibid
     real(kind=8) :: carac(2)
-    logical :: lnul, lneg, calcul(2)
+    logical(kind=1) :: lnul, lneg, calcul(2)
     character(len=8) :: k8b
     character(len=24) :: fsic
 !

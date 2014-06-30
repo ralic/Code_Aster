@@ -57,7 +57,7 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     integer :: ncmp2, iret
     real(kind=8) :: r8b, aire, xlong
     complex(kind=8) :: c16b
-    logical :: icre1, icre2
+    logical(kind=1) :: icre1, icre2
     character(len=8) :: k8b, nomtab
     character(len=16) :: motclf
     character(len=19) :: cart1, cart2, cartes(2)

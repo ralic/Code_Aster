@@ -198,7 +198,7 @@ subroutine nmmoam(sdammz, nbmoda)
         call dcopy(neq, val, 1, vect1, 1)
         call zerlag(neq, zi(iddeeq), vectr=vect1)
         call mrmult('ZERO', lmat, vect1, zr(jbasmo+(imode-1)*neq), 1,&
-                    .true.)
+                    .true._1)
         call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
     end do
 !

@@ -20,6 +20,6 @@ interface
         character(len=8), intent(in) :: resu
         character(len=19), intent(in) :: compor
         integer, intent(in) :: iord0
-        logical, intent(in) :: l_temp
+        logical(kind=1), intent(in) :: l_temp
     end subroutine cgvein
 end interface

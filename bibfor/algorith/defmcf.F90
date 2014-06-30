@@ -27,7 +27,7 @@ subroutine defmcf(nbm, nbmp, locfl0, locflc)
 ! ARGUMENTS
 ! ---------
     integer :: nbm, nbmp
-    logical :: locfl0(*), locflc(*)
+    logical(kind=1) :: locfl0(*), locflc(*)
 !
 ! VARIABLES LOCALES
 ! -----------------

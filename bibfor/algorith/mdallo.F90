@@ -44,7 +44,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     character(len=8) , optional, intent(in)  :: fonrev(*)
     integer          , optional, intent(out) :: jrevc, jrevv
     character(len=4) , optional, intent(in)  :: sauve
-    logical          , optional, intent(in)  :: checkarg
+    logical(kind=1)          , optional, intent(in)  :: checkarg
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 ! IN  : SAUVE :  VAUT 'GLOB' OU 'VOLA'
 ! IN  : CHECKARG : VERIFIER LA COHERENCE DANS LES ARGUMENTS OPTIONNELS D'ENTREE
 ! ----------------------------------------------------------------------
-    logical :: checkargs, entvid, saved
+    logical(kind=1) :: checkargs, entvid, saved
     integer :: nbstoc, j1refe, inom, i, ic, iret, jchmp, nbchoc2, nbrede2, nbrevi2, nbvint
     integer :: jdesc, jinti, jncho, nbsym2, jsst, jvint, nbmode, nbsto1, jredn, jrevn
     real(kind=8) :: dt2

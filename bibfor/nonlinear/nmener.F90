@@ -99,7 +99,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     integer ::   ivitmo, ivitpl
     integer :: neq, i, j,  long
     integer :: ifexte, ifamor, ifliai, ifcine, ifnoda
-    logical :: ldyna, lamor, lexpl, reassm
+    logical(kind=1) :: ldyna, lamor, lexpl, reassm
     real(kind=8), pointer :: epmo(:) => null()
     real(kind=8), pointer :: eppl(:) => null()
     real(kind=8), pointer :: fammo(:) => null()

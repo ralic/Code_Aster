@@ -46,13 +46,13 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical :: litlec
+    logical(kind=1) :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
     common /inbdet/  nblim(n),nbgros(n),nbpeti(n)
 !     ------------------------------------------------------------------
     integer :: kadd, ladd, lgbl
-    logical :: lpetit, lrab
+    logical(kind=1) :: lpetit, lrab
 ! DEB ------------------------------------------------------------------
     kadd = iaddi(1)
     ladd = iaddi(2)

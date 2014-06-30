@@ -65,7 +65,7 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     integer(kind=8) :: sommi3
     integer :: iret, iadm, iadd, long, lon2, iad, kk, nbign
     integer :: nbob2, itrou, iobj
-    logical :: contig
+    logical(kind=1) :: contig
     character(len=24) :: k24
     character(len=8) ::  stock
     character(len=3) :: type

@@ -24,8 +24,8 @@ interface
                       jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
                       lgtmp2, jvalm, ilinu, ellagr, exivf,&
                       jdesc, jrepe, jptvoi, jelvoi, codvoi)
-        logical :: lmasym
-        logical :: lmesym
+        logical(kind=1) :: lmasym
+        logical(kind=1) :: lmesym
         character(len=2) :: tt
         integer :: igr
         integer :: iel
@@ -37,8 +37,8 @@ interface
         integer :: jrsvi
         integer :: nbvel
         integer :: nnoe
-        logical :: ldist
-        logical :: ldgrel
+        logical(kind=1) :: ldist
+        logical(kind=1) :: ldgrel
         integer :: ilima
         integer :: jadli
         integer :: jadne

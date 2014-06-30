@@ -28,7 +28,7 @@ subroutine oblgai(sdlist, istru, lacti)
 #include "asterfort/obgett.h"
     character(len=24) :: sdlist
     integer :: istru
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

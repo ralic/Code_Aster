@@ -17,7 +17,7 @@ function xismec()
 ! ======================================================================
 !
     implicit none
-    logical :: xismec
+    logical(kind=1) :: xismec
 #include "jeveux.h"
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL MECANIQUE?
@@ -33,7 +33,7 @@ function xismec()
     character(len=16) :: k16tmp
     character(len=24) :: licham
     integer :: jlicha
-    logical :: lmeca
+    logical(kind=1) :: lmeca
 !-----------------------------------------------------------------------
 !
     call jemarq()

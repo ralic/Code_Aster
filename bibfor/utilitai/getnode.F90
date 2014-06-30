@@ -39,7 +39,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     character(len=24), intent(in) :: list_node
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
-    logical, intent(in), optional :: elem_excl
+    logical(kind=1), intent(in), optional :: elem_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,7 +90,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
     integer :: i_lect, i_excl, i_node
-    logical :: l_read_elem
+    logical(kind=1) :: l_read_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !

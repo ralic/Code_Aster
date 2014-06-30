@@ -58,7 +58,7 @@ subroutine promor(nuz, base)
     character(len=8) :: ma, mo, exiele, exivf
 !----------------------------------------------------------------------
     character(len=14) :: nu
-    logical :: ldist, ldgrel, lmadis
+    logical(kind=1) :: ldist, ldgrel, lmadis
     character(len=19) :: nomlig
     integer ::  iconx2, ili,  iel
     integer :: idprn1

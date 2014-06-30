@@ -24,6 +24,6 @@ interface
         integer :: itype
         integer :: ilu
         real(kind=8) :: rlu
-        logical :: trouve
+        logical(kind=1) :: trouve
     end subroutine decod2
 end interface

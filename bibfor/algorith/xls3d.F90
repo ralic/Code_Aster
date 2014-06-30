@@ -27,7 +27,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
     character(len=8) :: noma
     integer :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
-    logical :: callst, grille
+    logical(kind=1) :: callst, grille
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
     real(kind=8) :: ab(3), ac(3), ap(3), vn(3), vnt(3), bc(3)
     real(kind=8) :: a(3), p(3), b(3), c(3), m(3), pm(3)
     real(kind=8) :: norme, ps, ps1, ps2, d
-    logical :: ma2ff
+    logical(kind=1) :: ma2ff
     character(len=19) :: mai, sens
     character(len=8) :: nomail
     real(kind=8) :: mprim(3), pmprim(3), cos, sin, vect(3), nove, pronor, angle

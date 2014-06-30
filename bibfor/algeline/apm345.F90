@@ -16,7 +16,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
     integer :: nbtetc, nk, pivot2, lraide, lmasse, ldynam, lamor, ifapm
     real(kind=8) :: rayonc
     complex(kind=8) :: centrc
-    logical :: ltest, lc
+    logical(kind=1) :: ltest, lc
     character(len=3) :: impr
     character(len=8) :: typcon, typcha
     character(len=19) :: solveu

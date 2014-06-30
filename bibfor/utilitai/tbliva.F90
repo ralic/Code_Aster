@@ -67,7 +67,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     character(len=4) :: rela, type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
-    logical :: lok
+    logical(kind=1) :: lok
     integer, pointer :: numero(:) => null()
     integer, pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()

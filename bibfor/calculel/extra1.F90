@@ -57,7 +57,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute)
     character(len=8) :: nompar
     integer :: k, iparg, imodat
     integer :: ipar, npin, iparin
-    logical :: exich
+    logical(kind=1) :: exich
 !
 !
 ! DEB-------------------------------------------------------------------

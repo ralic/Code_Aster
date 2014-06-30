@@ -72,7 +72,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     character(len=8) :: mod
     character(len=16) :: comp(*), option
     character(len=24) :: cpmono(5*nmat+1)
-        logical :: bnews(3), mtrac
+        logical(kind=1) :: bnews(3), mtrac
     parameter       ( un   =  1.d0   )
     parameter       ( zero =  0.d0   )
     common /tdim/ ndt,ndi

@@ -60,7 +60,7 @@ interface
         integer :: icoupl
         character(len=8) :: tpfl
         integer :: veci1(*)
-        logical :: locfl0(*)
+        logical(kind=1) :: locfl0(*)
         real(kind=8) :: dt0
         real(kind=8) :: tfexm
         real(kind=8) :: ts
@@ -173,8 +173,8 @@ interface
         real(kind=8) :: beta(2, *)
         real(kind=8) :: gamma(2, *)
         real(kind=8) :: old(9, *)
-        logical :: locflc(*)
-        logical :: loc(*)
+        logical(kind=1) :: locflc(*)
+        logical(kind=1) :: loc(*)
         complex(kind=8) :: s0(*)
         complex(kind=8) :: z0(*)
         complex(kind=8) :: sr0(*)

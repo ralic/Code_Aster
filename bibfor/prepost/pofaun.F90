@@ -71,7 +71,7 @@ subroutine pofaun()
     character(len=24) :: fvale
     real(kind=8) :: r8b, pseuil, rdomm, val(3), rampl
     complex(kind=8) :: cbid
-    logical :: lhaigh, fateps, lke
+    logical(kind=1) :: lhaigh, fateps, lke
 !     --- POST_FATI_UNIAX ----------------------------------------------
     parameter (nbpapf=5)
     character(len=1) :: typppf(nbpapf)

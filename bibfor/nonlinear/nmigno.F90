@@ -19,12 +19,12 @@ function nmigno(jdiri, lndepl, ieq)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: nmigno
+    logical(kind=1) :: nmigno
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: jdiri, ieq
-    logical :: lndepl
+    logical(kind=1) :: lndepl
 !
 ! ----------------------------------------------------------------------
 !

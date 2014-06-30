@@ -76,7 +76,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
     character(len=24) :: chtime, chnumc, chamgd, typcha, chgeom, chcara(18), chtemp, chharm
     character(len=24) :: compor, mlggma, mlgnma, k24b, nomgrm, valk2(2)
 !
-    logical :: exitim
+    logical(kind=1) :: exitim
     complex(kind=8) :: c16b, calpha
     integer :: iarg
 !

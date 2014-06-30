@@ -43,7 +43,7 @@ subroutine dbgcha(valinc, instap, iterat)
     character(len=19) :: depplu
     character(len=8) :: instxt, itetxt
     integer :: codret
-    logical :: dbg
+    logical(kind=1) :: dbg
 !
 ! ----------------------------------------------------------------------
 !

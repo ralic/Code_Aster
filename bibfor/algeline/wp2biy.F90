@@ -54,13 +54,13 @@ subroutine wp2biy(lm, lc, lk, s2, dsr,&
     zero = 0.0d0
 !
     call mrmult('ZERO', lk, yh, u1, 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lc, yh, u2, 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lm, yb, u3, 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lm, yh, u4, 1,&
-                .false.)
+                .false._1)
 !
     if (dsr .ne. zero) then
 !        --- PARTIE REELLE DU DECALLAGE NON NULLE ---
@@ -77,9 +77,9 @@ subroutine wp2biy(lm, lc, lk, s2, dsr,&
     endif
 !
     call mrmult('CUMU', lk, yb, zh, 1,&
-                .false.)
+                .false._1)
     call mrmult('CUMU', lc, yb, zb, 1,&
-                .false.)
+                .false._1)
 !
     do 20, i = 1, n, 1
     zh(i) = isi*zh(i)

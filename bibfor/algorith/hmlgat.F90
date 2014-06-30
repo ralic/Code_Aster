@@ -73,7 +73,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
     real(kind=8) :: p1, dp1, t, dt, phi, rho11, phi0, rinstp
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical :: yachai
+    logical(kind=1) :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -84,7 +84,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
     real(kind=8) :: em, mdal(6), dalal, alphfi, cbiot, unsks, alpha0
     real(kind=8) :: eps, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -101,7 +101,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
     real(kind=8) :: dsdp1(6), sigmp(6)
     real(kind=8) :: dmdeps(6), cp22, rac2
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !

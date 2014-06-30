@@ -49,7 +49,7 @@ subroutine cfnodb(char)
 !
 !
     character(len=24) :: defico
-    logical :: lcalc
+    logical(kind=1) :: lcalc
     integer :: nzoco, nnoco, iform
     character(len=24) :: nodbl, nodbl2
     integer :: jnodbl, jnodb2

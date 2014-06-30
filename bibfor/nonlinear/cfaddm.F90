@@ -34,7 +34,7 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
     real(kind=8) :: coefno(*)
     real(kind=8) :: jeu, coornp(3)
     real(kind=8) :: norm(3), tau1(3), tau2(3)
-    logical :: lctfd, lctf3d
+    logical(kind=1) :: lctfd, lctf3d
 !
 ! ----------------------------------------------------------------------
 !

@@ -28,7 +28,7 @@ interface
         character(len=24) :: infoch
         character(len=24) :: numedd
         character(len=19) :: solveu
-        logical :: lostat
+        logical(kind=1) :: lostat
         character(len=24) :: time
         integer :: lonch
         character(len=24) :: matass

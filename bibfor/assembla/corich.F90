@@ -118,7 +118,7 @@ subroutine corich(action, champ, ichin, ichout)
 !
         call juveca(numich, 2*longmx)
 !
-        call jedupo(repert, 'V', reptmp, .false.)
+        call jedupo(repert, 'V', reptmp, .false._1)
         call jedetr(repert)
         call jecreo(repert, 'V N K24')
         call jeecra(repert, 'NOMMAX', 2*longmx)
@@ -183,7 +183,7 @@ subroutine corich(action, champ, ichin, ichout)
 !
 !     IMPRESSIONS POUR LE DEBUG :
 !     ----------------------------
-    if (.false.) then
+    if (.false._1) then
         write (6,*) 'CORICH FIN ',action,' ',champ,ichin,ichout
         call jelira(repert, 'NOMUTI', long)
         call jelira(repert, 'NOMMAX', longmx)

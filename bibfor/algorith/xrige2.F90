@@ -74,7 +74,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: rac2
     integer :: nnops
 !
-    logical :: axi
+    logical(kind=1) :: axi
 !
     data     rac2 / 1.4142135623731d0 /
 !

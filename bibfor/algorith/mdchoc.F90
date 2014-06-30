@@ -28,7 +28,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     real(kind=8) :: ps1del(neq, nexcit), ps2del(nbnli, nexcit, *)
     character(len=8) :: noecho(nbnli, *), intitu(*), monmot
     character(len=14) :: numddl
-    logical :: lamor
+    logical(kind=1) :: lamor
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

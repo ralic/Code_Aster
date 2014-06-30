@@ -71,7 +71,7 @@ subroutine abscur(ma)
     integer :: jmesma,jmesno,numa,iexi,nbnoseg
     real(kind=8) :: s, stot
     real(kind=8) :: s13, s32, s34, s42, abscurv(4), coor(3,4)
-    logical :: dbg=.false.
+    logical(kind=1) :: dbg=.false.
     integer, pointer :: icoseg(:) => null()
     integer, pointer :: nu2seg(:) => null()
     integer, pointer :: segordo(:) => null()

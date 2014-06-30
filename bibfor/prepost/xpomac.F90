@@ -72,7 +72,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !
     integer :: jdirma, jmac, iret, nbno, jdirno, ino, i
     integer :: nbma, ima, jno, ier, jnivgr
-    logical :: pre1
+    logical(kind=1) :: pre1
     character(len=8) :: k8b
     character(len=16) :: k16b, nomcmd
     character(len=24) :: dirmai, dirnoe

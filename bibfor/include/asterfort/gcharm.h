@@ -18,7 +18,7 @@
 interface
     subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                       carteo)
-        logical :: lfchar
+        logical(kind=1) :: lfchar
         character(len=19) :: cartei
         character(len=8) :: nomfct
         character(len=8) :: newfct

@@ -22,15 +22,15 @@ interface
                       r)
         integer :: nno
         integer :: ndim
-        logical :: axi
-        logical :: grand
+        logical(kind=1) :: axi
+        logical(kind=1) :: grand
         real(kind=8) :: geom(ndim, nno)
         integer :: kpg
         integer :: ipoids
         integer :: ivf
         integer :: idfde
         real(kind=8) :: depl(ndim, nno)
-        logical :: ldfdi
+        logical(kind=1) :: ldfdi
         real(kind=8) :: poids
         real(kind=8) :: dfdi(nno, ndim)
         real(kind=8) :: f(3, 3)

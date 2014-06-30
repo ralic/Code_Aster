@@ -36,7 +36,7 @@ subroutine nmcpl3(compor, option, crit, deps, dsidep,&
     implicit none
     character(len=16) :: option, compor(*)
     integer :: k, ndim, ncpmax, icp, cpl
-    logical :: conv, vecteu
+    logical(kind=1) :: conv, vecteu
     real(kind=8) :: vip(*), deps(*), crit(*), dsidep(6, 6), sigp(4), sigpeq
     real(kind=8) :: prec, signul, precr, ddezz
 !

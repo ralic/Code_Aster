@@ -135,7 +135,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 30  continue
 ! --- VECTEMP2 = M*VECTEMP1
     call mrmult('ZERO', imat(2), zr(ivtp1), zr(ivtp2), 2*h,&
-                .false.)
+                .false._1)
 ! --- VECTEMP3 = VECTEMP2 (ON ELIMINE LES DDLS NON ACTIFS)
     call wkvect('&&MNLQNL.VTEP3', 'V V R', nd*(2*h), ivtp3)
     do 40 j = 1, 2*h

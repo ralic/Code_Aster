@@ -47,7 +47,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     integer :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
     integer :: tspaq, ordini
-    logical :: post
+    logical(kind=1) :: post
     real(kind=8) :: vresu(24), valpar(35)
     character(len=8) :: nommai, grdvie, nommap
     character(len=16) :: nomcri, nommet, nomfor, forvie, forcri

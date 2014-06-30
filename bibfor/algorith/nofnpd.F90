@@ -65,7 +65,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: nddl, g
     integer :: ia, na, ra, sa, kk
     real(kind=8) :: deplm(3*27), r
@@ -84,7 +84,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: stab, hk
     character(len=16) :: option
 !
-    parameter    (grand = .false.)
+    parameter    (grand = .false._1)
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
@@ -179,7 +179,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DE L'INVERSE DE KAPPA
         call tanbul(option, ndim, g, mate, compor(1),&
-                    .false., .false., alpha, dsbdep, trepst)
+                    .false._1, .false._1, alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U
         do na = 1, nno1

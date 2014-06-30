@@ -20,7 +20,7 @@ interface
                       parcho, adime, xvect, ninc, nd,&
                       nchoc, h, hf, xtang)
         integer :: ninc
-        logical :: lcal
+        logical(kind=1) :: lcal
         integer :: imat(2)
         character(len=14) :: numdrv
         character(len=19) :: matdrv

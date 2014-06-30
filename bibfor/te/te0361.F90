@@ -40,7 +40,7 @@ subroutine te0361(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: lielrf(10)
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
     integer :: iw, ivf1, idf1, igeom, icontm, ivectu, ndim, ntrou, icamas
     integer :: iu(3, 18), im(3, 9), it(18)

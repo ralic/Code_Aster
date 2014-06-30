@@ -8,7 +8,7 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
 #include "asterfort/jexnum.h"
     integer :: napexc, nbmode, nbpf
     real(kind=8) :: specmr(nbpf, *), specmi(nbpf, *)
-    logical :: intmod
+    logical(kind=1) :: intmod
     character(len=8) :: table
     character(len=16) :: movrep
 !-----------------------------------------------------------------------

@@ -28,7 +28,7 @@ subroutine nmondp(lischa, londe, chondp, nondp)
     integer :: nondp
     character(len=24) :: chondp
     character(len=19) :: lischa
-    logical :: londe
+    logical(kind=1) :: londe
 !
 !
 !

@@ -25,7 +25,7 @@ subroutine utimob(unit, obin, nivo, lattr, lcont,&
 #include "asterfort/utmess.h"
     character(len=*) :: obin, xous
     integer :: nivo, unit
-    logical :: lattr, lcont
+    logical(kind=1) :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
 !       UNIT   : UNITE LOGIQUE D'IMPRESSION

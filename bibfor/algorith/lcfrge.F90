@@ -57,7 +57,7 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
 !
 !
 !
-    logical :: cplan, resi, rigi, elas, nonlin
+    logical(kind=1) :: cplan, resi, rigi, elas, nonlin
     integer :: ndimsi, k, l, etat
 !
     real(kind=8) :: eps(6), epsr(6), treps, coplan, sigel(6)

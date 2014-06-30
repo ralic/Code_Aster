@@ -30,6 +30,6 @@ interface
         integer, intent(in) :: fonact(*)
         character(len=16), intent(out) :: metcor
         character(len=16), intent(out) :: metpre
-        logical, intent(out) :: reasma
+        logical(kind=1), intent(out) :: reasma
     end subroutine nmchrm
 end interface

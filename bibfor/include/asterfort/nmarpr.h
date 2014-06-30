@@ -20,7 +20,7 @@ interface
                       numarc)
         character(len=8) :: result
         character(len=19) :: sddisc
-        logical :: lreuse
+        logical(kind=1) :: lreuse
         integer :: numder
         real(kind=8) :: insder
         integer :: numarc

@@ -31,7 +31,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 #include "asterfort/pipetc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)

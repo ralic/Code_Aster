@@ -22,9 +22,9 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer , intent(in):: ific
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -67,7 +67,7 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
-    logical :: skip
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !

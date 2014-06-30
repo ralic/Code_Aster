@@ -62,10 +62,10 @@ subroutine gchs2f(char1, char2, char3)
     epsi = r8prem()
 !
 !     DUPLICATION AVANT MISE A JOUR
-    call jedupo(char1//'.DESC', 'V', char3//'.DESC', .false.)
-    call jedupo(char1//'.NOMA', 'V', char3//'.NOMA', .false.)
-    call jedupo(char1//'.NOLI', 'V', char3//'.NOLI', .false.)
-    call jedupo(char1//'.LIMA', 'V', char3//'.LIMA', .false.)
+    call jedupo(char1//'.DESC', 'V', char3//'.DESC', .false._1)
+    call jedupo(char1//'.NOMA', 'V', char3//'.NOMA', .false._1)
+    call jedupo(char1//'.NOLI', 'V', char3//'.NOLI', .false._1)
+    call jedupo(char1//'.LIMA', 'V', char3//'.LIMA', .false._1)
 !
 !     DESC (MAJ 1/2)
     call jeveuo(char1//'.DESC', 'L', vi=des1)

@@ -5,7 +5,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
     integer :: dim, nb, nordre
     real(kind=8) :: a(dim, dim), b(dim, nb), det
-    logical :: iret
+    logical(kind=1) :: iret
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
     integer :: i, j, k
     real(kind=8) :: c, d, cmin, cmax
-    logical :: flag, ldet
+    logical(kind=1) :: flag, ldet
 !
     iret = .true.
 !

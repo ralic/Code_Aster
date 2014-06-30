@@ -62,7 +62,7 @@ subroutine calci(phib24, phi1j, bj, cij1)
 ! ---PRODUIT MATRICE BJ ET LE VECTEUR POTENTIEL PHI1J
 !
     call mrmult('ZERO', imade, phi1, produit, 1,&
-                .true.)
+                .true._1)
 !
 !
 !--PRODUITS SCALAIRES VECTEURS  PHI1J PAR LE VECTEUR RESULTAT PRECEDENT

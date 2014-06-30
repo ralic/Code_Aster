@@ -45,7 +45,7 @@ subroutine impsdr(sdcolo, valk, valr, vali)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: linte, lreel, lchai
+    logical(kind=1) :: linte, lreel, lchai
 !
 ! ----------------------------------------------------------------------
 !

@@ -34,7 +34,7 @@ subroutine te0001(option, nomte)
     real(kind=8) :: dgrd
     real(kind=8) :: valpar(4), angl(3), mat(3, 3), vect(6)
     character(len=8) :: nompar(4), nomfon
-    logical :: langl
+    logical(kind=1) :: langl
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ier, j, jdimp, jgeom, jtime, jvec

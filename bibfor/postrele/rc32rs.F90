@@ -6,7 +6,7 @@ subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32r1.h"
 #include "asterfort/rc32r8.h"
 #include "asterfort/tbcrsd.h"
-    logical :: pmpb, sn, snet, fatigu, lrocht
+    logical(kind=1) :: pmpb, sn, snet, fatigu, lrocht
     real(kind=8) :: symax
     character(len=8) :: mater
 !     ------------------------------------------------------------------

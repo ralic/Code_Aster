@@ -109,7 +109,7 @@ subroutine op0015()
 !     -- APPEL A LA ROUTINE RESOUD :
     call resoud(matr, matf, solve2, vcine, 0,&
                 secmbr, xsol, 'G', [0.d0], [cbid],&
-                ' ', .true., 0, iret)
+                ' ', .true._1, 0, iret)
 !
     if (metres .ne. 'MUMPS' .and. metres .ne. 'PETSC') then
         call detrsd('SOLVEUR', solve2)

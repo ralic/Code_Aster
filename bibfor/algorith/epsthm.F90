@@ -18,7 +18,7 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
     integer :: np1, np2
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     real(kind=8) :: geom(ndim, nno), depla(dimuel), epsm(6, npi)
-    logical :: axi
+    logical(kind=1) :: axi
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

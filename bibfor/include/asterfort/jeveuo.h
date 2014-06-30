@@ -23,7 +23,7 @@
     character(len=*), intent(in) :: cel
     integer, optional :: jadr
 
-    logical,           pointer, optional, intent(out) :: vl(:)
+    logical(kind=1),           pointer, optional, intent(out) :: vl(:)
     integer,           pointer, optional, intent(out) :: vi(:)
     integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
     real(kind=8),      pointer, optional, intent(out) :: vr(:)

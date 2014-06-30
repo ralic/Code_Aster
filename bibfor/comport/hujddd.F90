@@ -62,7 +62,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     real(kind=8) :: vhist(6), sxh, scxh, fac, ptrac
     character(len=6) :: carac
     character(len=8) :: nomail
-    logical :: consol, tract, debug, dila
+    logical(kind=1) :: consol, tract, debug, dila
 ! =====================================================================
     parameter     ( d12   = 0.5d0  )
     parameter     ( d14   = 0.25d0 )

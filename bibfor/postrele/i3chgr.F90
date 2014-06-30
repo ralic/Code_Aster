@@ -33,7 +33,7 @@ subroutine i3chgr(a, b, t1, t2, n)
 !
     integer :: i, j
     real(kind=8) :: epsi, un, xa, xb, ya, yb, za, zb, ct, st, cp, sp, d
-    logical :: egalx, egaly
+    logical(kind=1) :: egalx, egaly
 !
 !======================================================================
 !

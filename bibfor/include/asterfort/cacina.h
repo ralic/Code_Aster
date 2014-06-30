@@ -25,8 +25,8 @@ interface
         integer :: npg
         integer :: nno
         integer :: ndim
-        logical :: axi
-        logical :: grand
+        logical(kind=1) :: axi
+        logical(kind=1) :: grand
         character(len=16) :: compor(*)
         real(kind=8) :: geomm(3, nno)
         integer :: g

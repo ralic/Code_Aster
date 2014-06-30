@@ -60,7 +60,7 @@ subroutine nminer(masse, accplu, cniner)
 ! --- CALCUL FORCES INERTIE
 !
     call mrmult('ZERO', jmass, accp, iner, 1,&
-                .true.)
+                .true._1)
 !
     call jedema()
 end subroutine

@@ -45,7 +45,7 @@ subroutine ndmapp(sddyna, valinc)
 !
 !
 !
-    logical :: lmuap
+    logical(kind=1) :: lmuap
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs

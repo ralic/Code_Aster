@@ -25,7 +25,7 @@ interface
         real(kind=8) :: rmesu(nbmesu, nbabs)
         real(kind=8) :: coef(*)
         real(kind=8) :: xabs(nbabs)
-        logical :: lfonct
+        logical(kind=1) :: lfonct
         real(kind=8) :: reta(nbmode, nbabs)
     end subroutine mpinvr
 end interface

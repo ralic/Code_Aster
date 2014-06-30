@@ -37,7 +37,7 @@ interface
         integer :: jddlm(2)
         integer :: nfhe
         integer :: nfhm
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavfa(*)
         real(kind=8) :: jeuca
     end subroutine xmmjec

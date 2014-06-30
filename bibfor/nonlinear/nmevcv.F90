@@ -52,7 +52,7 @@ subroutine nmevcv(sderro, fonact, nombcl)
 !
 !
 !
-    logical :: cveven
+    logical(kind=1) :: cveven
     integer :: ieven, zeven
     character(len=24) :: erreni, erreno, errfct
     integer :: jeeniv, jeenom, jeefct
@@ -60,9 +60,9 @@ subroutine nmevcv(sderro, fonact, nombcl)
     integer :: jeinfo
     character(len=9) :: neven, teven
     character(len=24) :: feven
-    logical :: dv, cv, lfonc
+    logical(kind=1) :: dv, cv, lfonc
     character(len=4) :: etabcl
-    logical :: cvresi, cvnewt, cvfixe, cvinst
+    logical(kind=1) :: cvresi, cvnewt, cvfixe, cvinst
 !
 ! ----------------------------------------------------------------------
 !

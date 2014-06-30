@@ -24,7 +24,7 @@ subroutine mmmlcf(coefff,coefac,coefaf,lpenac,lpenaf, &
 #include "asterfort/jevech.h"
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefff, lambds
-    logical :: lpenac, lpenaf
+    logical(kind=1) :: lpenac, lpenaf
     integer :: iresof, iresog
 !
 ! ----------------------------------------------------------------------

@@ -63,7 +63,7 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     integer :: pm1a(4), pm1b(4), pm2(4)
     integer :: inm, ia, ib, mfisloc
     integer :: zxain
-    logical :: ispm2, ajout
+    logical(kind=1) :: ispm2, ajout
 !
 ! --------------------------------------------------------------------
 !

@@ -35,7 +35,7 @@ interface
         character(len=24) , intent(in)    :: vecblo
         integer           , intent(in)    :: npivot
 !!
-        logical           , intent(out)   :: flage
+        logical(kind=1)   , intent(out)   :: flage
         integer           , intent(out)   :: nconv
         real(kind=8)      , intent(out)   :: vpinf
         real(kind=8)      , intent(out)   :: vpmax

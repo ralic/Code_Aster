@@ -61,7 +61,7 @@ subroutine nmcrar(result, sddisc, fonact, numreo)
     integer :: jarinf
     character(len=19) :: sdarch
     integer :: ifm, niv
-    logical :: lreuse
+    logical(kind=1) :: lreuse
     character(len=1) :: base
     real(kind=8) :: insder
 !

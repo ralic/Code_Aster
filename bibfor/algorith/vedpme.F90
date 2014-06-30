@@ -56,7 +56,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     character(len=24) :: ligrch, lchin(3), lchout(1), chgeom, chtime
     integer :: ibid, iret, nchar, jinf, jchar, icha
     integer :: numdi
-    logical :: bidon
+    logical(kind=1) :: bidon
     character(len=19) :: lvedip
 !
 ! ----------------------------------------------------------------------

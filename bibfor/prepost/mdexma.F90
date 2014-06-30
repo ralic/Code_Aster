@@ -53,7 +53,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 #include "asterfort/utmess.h"
     character(len=*) :: nofimd, nomamd
 !
-    logical :: existm, ficexi, dejouv
+    logical(kind=1) :: existm, ficexi, dejouv
 !
     integer :: option, ndim, codret
 !

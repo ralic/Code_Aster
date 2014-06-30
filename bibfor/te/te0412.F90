@@ -97,7 +97,7 @@ subroutine te0412(option, nomte)
     integer :: jcara
 !
     character(len=16) :: valk(3), optio2
-    logical :: dkq, dkg, lkit, coupmf
+    logical(kind=1) :: dkq, dkg, lkit, coupmf
 !
     nbsig = 6
     if (nomte .eq. 'MEDKQU4 ' .or. nomte .eq. 'MEDSQU4 ' .or. nomte .eq. 'MEQ4QU4 ') then

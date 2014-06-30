@@ -10,7 +10,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-    logical :: optdem
+    logical(kind=1) :: optdem
     integer :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord

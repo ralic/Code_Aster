@@ -71,7 +71,7 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
     real(kind=8) :: coeffp, coeffr, ik(3, 3), jac, knp(3, 3)
     real(kind=8) :: mmat(216, 216), mu, nd(3), p(3, 3), ffc(8), ffp(27)
     real(kind=8) :: ptknp(3, 3), rr, seuil, tau1(3), tau2(3)
-    logical :: adher
+    logical(kind=1) :: adher
 !
     if (mu .eq. 0.d0 .or. seuil .eq. 0.d0) indco = 0
     if (nfiss .gt. 1) indco = 0

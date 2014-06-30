@@ -4,7 +4,7 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
 #include "jeveux.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/juveca.h"
-    logical :: lmasym
+    logical(kind=1) :: lmasym
     integer :: jtmp2, lgtmp2, nbterm, jsmhc, jsmdi
     integer :: ideb, ifin, imil
     integer :: nbi1, ti1(nbi1), ti2(nbi1)
@@ -65,7 +65,7 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
 !     -- CALCUL DE ICOEFL :
 !     ------------------------------------------
         icoefl=0
-        if (.false.) then
+        if (.false._1) then
 !         -- RECHERCHE BESTIALE :
             do i = 1, ncoefc
                 if (zi4(jsmhc-1+icoefc+i) .eq. ili) then

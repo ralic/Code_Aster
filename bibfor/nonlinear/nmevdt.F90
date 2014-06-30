@@ -49,7 +49,7 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: mtcpup, mtcpui, stopus
+    logical(kind=1) :: mtcpup, mtcpui, stopus
     character(len=4) :: etnewt
     integer :: itcpup, itcpui, isusr1
 !

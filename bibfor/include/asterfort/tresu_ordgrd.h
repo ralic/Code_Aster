@@ -19,7 +19,7 @@ interface
     subroutine tresu_ordgrd(valr, ignore, compare, mcf, iocc)
         implicit none
         real(kind=8), intent(in) :: valr
-        logical, intent(out) :: ignore
+        logical(kind=1), intent(out) :: ignore
         real(kind=8), intent(out) :: compare
         character(len=*), intent(in), optional :: mcf
         integer, intent(in), optional :: iocc

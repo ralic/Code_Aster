@@ -63,7 +63,7 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
     real(kind=8) :: sig0, eps0, mexpo, puiss
     real(kind=8) :: seuil, dseuil, dpuiss, asinh, lv1, lv2, lv3
 !
-    logical :: overfl
+    logical(kind=1) :: overfl
 !
     parameter       ( un     = 1.d0  )
     parameter       ( zero   = 0.d0  )

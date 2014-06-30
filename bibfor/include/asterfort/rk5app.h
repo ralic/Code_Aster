@@ -24,7 +24,7 @@ interface
         real(kind=8) :: yinit(nbeq)
         real(kind=8) :: dyinit(nbeq)
         real(kind=8) :: solu(3*nbeq)
-        logical :: decoup
+        logical(kind=1) :: decoup
         interface
             subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
                              decoup)
@@ -33,7 +33,7 @@ interface
                 real(kind=8) :: yy0(nbeq)
                 real(kind=8) :: dy0(nbeq)
                 real(kind=8) :: dyy(nbeq)
-                logical :: decoup
+                logical(kind=1) :: decoup
             end subroutine rkfct
         end interface
     end subroutine rk5app

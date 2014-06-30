@@ -132,7 +132,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
     real(kind=8) :: det, bid16(6), bid66(6, 6)
     real(kind=8) :: materf(22, 2), zero, un, deux, dix
     real(kind=8) :: neps, nsig, ptrac, rtrac
-    logical :: debug, conv, reorie, tract
+    logical(kind=1) :: debug, conv, reorie, tract
 !
     parameter     ( degr  = 0.0174532925199d0 )
 !

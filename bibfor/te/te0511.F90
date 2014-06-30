@@ -37,7 +37,7 @@ subroutine te0511(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! =====================================================================
 ! =====================================================================
-    logical :: logthm
+    logical(kind=1) :: logthm
     integer :: imate, icompo, ivarip, icontp, ilocal, ic, iv
     integer :: nbvari, rindic, kpg, nbsig, imat, ibid
     integer :: icode, iret, tabthm(3), dimmax, npgu

@@ -30,7 +30,7 @@ interface
         character(len=8) :: noma
         integer :: typma(*)
         integer :: typel(*)
-        logical :: lmod
+        logical(kind=1) :: lmod
         character(len=80) :: titre(*)
         integer :: nbtitr
         integer :: nbgrn

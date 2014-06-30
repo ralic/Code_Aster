@@ -36,7 +36,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
     character(len=8) :: nomacr
     character(len=*) :: sens
-    logical :: matrix
+    logical(kind=1) :: matrix
     character(len=4) :: typnoe
     integer :: iadm1, iadm2
     real(kind=8) :: l(6, 6)

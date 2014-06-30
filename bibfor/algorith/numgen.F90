@@ -59,7 +59,7 @@ subroutine numgen(nugene, modgen)
     character(len=19) :: prgene
     character(len=24) :: defli, fprofl, nomsst
     character(len=24) :: valk
-    logical :: assok, pbcone
+    logical(kind=1) :: assok, pbcone
 !
 !
 !-----------------------------------------------------------------------

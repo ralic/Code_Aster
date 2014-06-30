@@ -28,7 +28,7 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 #include "asterfort/rssepa.h"
     character(len=8) :: result
     integer :: numarc
-    logical :: lnonl
+    logical(kind=1) :: lnonl
     real(kind=8) :: instan, para(*)
     character(len=19) :: lisch2, sdcrit
     character(len=24) :: modele, mate, carele

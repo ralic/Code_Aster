@@ -37,7 +37,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical :: lcalme(20), lassme(20)
+    logical(kind=1) :: lcalme(20), lassme(20)
     character(len=*) :: modelz
     character(len=*) :: mate
     character(len=24) :: sdtime, sdstat
@@ -50,7 +50,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     character(len=19) :: meelem(*), measse(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
-    logical :: lcfint
+    logical(kind=1) :: lcfint
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,7 +105,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     character(len=19) :: matele, matass
     character(len=1) :: base
     real(kind=8) :: instam, instap
-    logical :: lcalc, lasse
+    logical(kind=1) :: lcalc, lasse
 !
 ! ----------------------------------------------------------------------
 !

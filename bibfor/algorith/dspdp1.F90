@@ -5,7 +5,7 @@ subroutine dspdp1(net, bishop, signe, tbiot, sat,&
 !
     integer :: i
     real(kind=8) :: signe, tbiot(6), sat, dsdp1(6)
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 ! ======================================================================
 !
 ! ======================================================================

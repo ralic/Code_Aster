@@ -64,7 +64,7 @@ subroutine celfpg(celz, nomobj, iret)
 ! IRET    CODE RETOUR
 !         0 : PAS D'ERREUR
 !         1 : CELZ NE CORRESPOND PAS A NOMOBJ (S'IL EXISTE)
-    logical :: lexi
+    logical(kind=1) :: lexi
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------

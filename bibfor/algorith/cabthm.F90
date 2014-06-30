@@ -74,7 +74,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/matini.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nddls, nddlm, nmec, np1, np2, ndim, nno, i, n, kk, yamec
     integer :: nnos, nnom, kpi, dimdef, dimuel, ipoids, idfde, ivf
     integer :: addeme, yap1, yap2, addep1, addep2, yate, addete

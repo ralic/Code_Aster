@@ -23,7 +23,7 @@ interface
                       coefaf, coefac, matrcc, matrff, matrce,&
                       matrcm, matrfe, matrfm)
         character(len=9) :: phasep
-        logical :: leltf
+        logical(kind=1) :: leltf
         integer :: ndim
         integer :: nnl
         integer :: nne

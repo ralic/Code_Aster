@@ -87,7 +87,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
     integer :: numarc
     real(kind=8) :: instam, instan
     character(len=8) :: k8bid
-    logical :: force, lprint
+    logical(kind=1) :: force, lprint
     character(len=19) :: k19bid
     character(len=4) :: etcalc
     integer :: numrep

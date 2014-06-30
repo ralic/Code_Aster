@@ -19,7 +19,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
     character(len=*) :: nomcmp(*), nomnoe(*), formr
     real(kind=8) :: borsup, borinf, coor(*)
     complex(kind=8) :: vale(*)
-    logical :: lsup, linf, lcor, lmax, lmin
+    logical(kind=1) :: lsup, linf, lcor, lmax, lmin
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

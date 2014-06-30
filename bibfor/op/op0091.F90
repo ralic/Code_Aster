@@ -350,13 +350,13 @@ subroutine op0091()
         call dismoi('SOLVEUR', mraid, 'MATR_ASSE', repk=solveu)
         call resoud(imped, ' ', solveu, ' ', nbmod,&
                     ' ', ' ', ' ', zr(lsecme), [cbid],&
-                    ' ', .true., 0, iret)
+                    ' ', .true._1, 0, iret)
 !-- CALCUL DE LA REPONSE AUX DEPLACEMENTS D'INTERFACE
         do k1 = 1, nbsla
             lbid=lsecme+2*nbeq1*nbmod
             call resoud(imped, ' ', solveu, ' ', nbmod,&
                         ' ', ' ', ' ', zr(lbid+nbeq1*nbmod*(k1-1)), [cbid],&
-                        ' ', .true., 0, iret)
+                        ' ', .true._1, 0, iret)
         end do
 !-- "DEBLOQUAGE" DES DDL DE LAGRANGE ASSOCIES AUX INTERFACES DE LISINT
 !--   DANS LA MATRICE IMPED
@@ -373,7 +373,7 @@ subroutine op0091()
 !-- CALCUL DE LA REPONSE AUX EFFORTS D'INTERFACE
         call resoud(imped, ' ', solveu, ' ', nbmod,&
                     ' ', ' ', ' ', zr(lsecme+nbeq1*nbmod), [cbid],&
-                    ' ', .true., 0, iret)
+                    ' ', .true._1, 0, iret)
 !-- RECOPIE DES MODES ETENDUS A LA SUITE DES CORRECTIONS A INTERF. LIBRE
         call jedetc('V', imped, 1)
         nbexp=0

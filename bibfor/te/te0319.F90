@@ -48,7 +48,7 @@ subroutine te0319(option, nomte)
     real(kind=8) :: dire(3), orig(3), point(3), a, b, c, angl(3)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, npg1, i, iflux, itemps, itempe
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 ! FIN ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: icamas, l, ndim, nnos, nuno

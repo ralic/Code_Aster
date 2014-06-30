@@ -21,9 +21,9 @@ interface
         integer :: nbcycl
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)
-        logical :: lke
+        logical(kind=1) :: lke
         real(kind=8) :: rke(*)
-        logical :: lhaigh
+        logical(kind=1) :: lhaigh
         real(kind=8) :: rcorr(*)
         real(kind=8) :: dom(*)
     end subroutine fgdohs

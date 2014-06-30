@@ -49,7 +49,7 @@ subroutine contex(nomop, nompar)
     character(len=8) :: nompa2, nomail, nomgd
     integer ::  jdesop, iapara, nbin, nbou, iadzi, iazk24
     integer :: nblig, indic, k, itrou, iopt, igd, jdsgd
-    logical :: lopt, lpara, lgd
+    logical(kind=1) :: lopt, lpara, lgd
     character(len=80), pointer :: comlibr(:) => null()
 !
 !

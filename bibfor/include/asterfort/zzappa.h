@@ -20,6 +20,6 @@ interface
         integer :: num
         integer :: liste(1)
         integer :: n
-        logical :: app
+        logical(kind=1) :: app
     end subroutine zzappa
 end interface

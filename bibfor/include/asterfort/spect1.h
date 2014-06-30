@@ -20,7 +20,7 @@ interface
                       vite, nuor, imodi, imodf, nbm,&
                       nbpf, nomzon, vmoyzi, vmoyto)
         integer :: nbm
-        logical :: casint
+        logical(kind=1) :: casint
         character(len=8) :: nomu
         character(len=19) :: spectr
         integer :: ispect

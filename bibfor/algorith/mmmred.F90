@@ -28,7 +28,7 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 #include "asterfort/jemarq.h"
     integer :: ndimg
     character(len=19) :: champ, champr
-    logical :: lctfc
+    logical(kind=1) :: lctfc
     integer :: ndd1
 !
 ! ----------------------------------------------------------------------

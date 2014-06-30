@@ -88,7 +88,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     real(kind=8) :: r8bid
     real(kind=8) :: taberr(2), tbgrca(3)
     character(len=16) :: option
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
 !
 ! ----------------------------------------------------------------------

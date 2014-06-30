@@ -54,7 +54,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
     real(kind=8) :: tempf, materd(nmat, 2), materf(nmat, 2), vind(50)
     real(kind=8) :: sigd(6), angmas(3)
 !
-    logical :: reorie
+    logical(kind=1) :: reorie
     real(kind=8) :: zero, bid66(6, 6), seuil, tin(3), piso, q
     real(kind=8) :: ptrac, b, phi, m, pc0, degr, d, un, trois
     real(kind=8) :: matert(22, 2)

@@ -58,7 +58,7 @@ subroutine te0040(option, nomte)
 
 
 !
-    logical :: lgreen
+    logical(kind=1) :: lgreen
 !
 ! ----------------------------------------------------------------------
 !

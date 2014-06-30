@@ -89,7 +89,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
     real(kind=8) :: coord(3, 4), a1, a2, a3, b1, b2, b3, c1, c2, c3
     real(kind=8) :: s1, s2, s3, dir1, dir2, dir3, norme
 !
-    logical :: sommet, milieu
+    logical(kind=1) :: sommet, milieu
 !
 !
 ! OBJETS DEFINISSANT LA CONNECTIVITE  ET LE TYPE DES MAILLES

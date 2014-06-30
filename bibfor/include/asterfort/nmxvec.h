@@ -43,8 +43,8 @@ interface
         character(len=19) :: measse(*)
         integer :: nbvect
         character(len=6) :: ltypve(20)
-        logical :: lcalve(20)
+        logical(kind=1) :: lcalve(20)
         character(len=16) :: loptve(20)
-        logical :: lassve(20)
+        logical(kind=1) :: lassve(20)
     end subroutine nmxvec
 end interface

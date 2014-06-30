@@ -72,7 +72,7 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
     character(len=16) :: nomt2, noatt2, vattr2
     character(len=24) :: valk(2)
     integer :: jcte, n1, nbattr, k, ite
-    logical :: apelje
+    logical(kind=1) :: apelje
 
 !----------------------------------------------------------------------
     if (present(typel)) then

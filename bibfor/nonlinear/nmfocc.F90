@@ -68,7 +68,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: leltc, leltf, lallv, lnewtc, lnewtg
+    logical(kind=1) :: leltc, leltf, lallv, lnewtc, lnewtg
     character(len=19) :: veeltc, veeltf
     character(len=19) :: cneltf, cneltc, cnfint
     character(len=19) :: depmoi, depdel, vitmoi, accmoi, vitplu

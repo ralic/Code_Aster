@@ -19,8 +19,8 @@ interface
     subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                       chadel, coef, chamaj, ordre)
         integer :: neq
-        logical :: lgrot
-        logical :: lendo
+        logical(kind=1) :: lgrot
+        logical(kind=1) :: lendo
         character(len=19) :: sdnume
         real(kind=8) :: chaini(*)
         real(kind=8) :: chadel(*)

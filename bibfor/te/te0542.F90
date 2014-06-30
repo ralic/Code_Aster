@@ -47,7 +47,7 @@ subroutine te0542(option, nomte)
     integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icompo
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu
-    logical :: lbid
+    logical(kind=1) :: lbid
     real(kind=8) :: sigref(1), depref
     character(len=8) :: enr, elref
 ! DEB ------------------------------------------------------------------
@@ -102,7 +102,7 @@ subroutine te0542(option, nomte)
                    jpmilt, nfiss, jfisno)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false., lbid,&
+                    nno, nnos, zi(jstno), .false._1, lbid,&
                     option, nomte, ddlm,&
                     nfiss, jfisno, vect=zr(ivectu))
 !

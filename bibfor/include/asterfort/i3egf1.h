@@ -30,6 +30,6 @@ interface
         integer :: im2
         integer :: if2
         integer :: iao2
-        logical :: legfa
+        logical(kind=1) :: legfa
     end subroutine i3egf1
 end interface

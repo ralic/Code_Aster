@@ -368,7 +368,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
     character(len=1) :: bmat, howmny
     character(len=2) :: which
-    logical :: rvec
+    logical(kind=1) :: rvec
     integer :: info, ldz, ldv, lworkl, n, ncv, nev
     real(kind=8) :: sigmar, sigmai, tol
 !
@@ -377,7 +377,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !     %-----------------%
 !
     integer :: iparam(11), ipntr(14)
-    logical :: select(ncv)
+    logical(kind=1) :: select(ncv)
     real(kind=8) :: dr(nev+1), di(nev+1), resid(n), v(ldv, ncv), z(ldz, *)
     real(kind=8) :: workd(3*n), workl(lworkl), workev(3*ncv)
 !
@@ -398,7 +398,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
     integer :: iuptri, iwork(1), j, k, ktrord, ldh, ldq, mode, msglvl, outncv
     integer :: ritzr, ritzi, irr, iri, ibd
 ! DUE TO CRS512 INTEGER IWEV, WRR, WRI
-    logical :: reord
+    logical(kind=1) :: reord
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps
 !
 !     %--------------------%
@@ -657,7 +657,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 ! WORKL(INVSUB), LDQ)
         call dlaset('A', ncv, ncv, zero, one,&
                     workl(invsub), ldq)
-        call flahqr(.true., .true., ncv, 1, ncv,&
+        call flahqr(.true._1, .true._1, ncv, 1, ncv,&
                     workl(iuptri), ldh, workl(iheigr), workl(iheigi), 1,&
                     ncv, workl(invsub), ldq, ierr)
         call dcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)

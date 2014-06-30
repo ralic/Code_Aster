@@ -26,7 +26,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
     real(kind=8) :: eigx(3)
     real(kind=8) :: eigy(3)
     real(kind=8) :: edge
-    logical :: outofp
+    logical(kind=1) :: outofp
 !
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
@@ -41,7 +41,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
      &    r0    ,r1    ,r2    ,r3    ,r4    ,rp5   ,sqr/&
      &    0.0d0 ,1.0d0 ,2.0d0 ,3.0d0 ,4.0d0 ,0.5d0 ,&
      &    1.4142135623730951d0/
-    logical :: epflag
+    logical(kind=1) :: epflag
 ! Declaration of Common space variables
     common / debug / epflag
 !***********************************************************************

@@ -40,7 +40,7 @@ subroutine te0359(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
     character(len=8) :: lielrf(10)
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nno1, nno2, npg, lgpg, ndim, iret, ntrou, iu(3, 18), im(3, 9)
     integer :: it(18)
     integer :: iw, ivf1, idf1, igeom, imate, ivf2, idf2, nnos, jgn, jtab(7)

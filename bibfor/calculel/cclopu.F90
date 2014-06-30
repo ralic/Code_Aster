@@ -75,7 +75,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=24) :: chn
     parameter   (mcfact='CHAM_UTIL')
 !
-    logical :: newcal, vu
+    logical(kind=1) :: newcal, vu
     integer, pointer :: nb_op_ty(:) => null()
     character(len=16), pointer :: oputil(:) => null()
 !

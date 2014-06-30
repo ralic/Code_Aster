@@ -651,7 +651,7 @@ subroutine te0000(numc, opt, te)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: iret, jparal
-    logical :: lparal
+    logical(kind=1) :: lparal
     character(len=16) :: nomte, nomopt
     character(len=8) :: k8bid
 ! DEB-------------------------------------------------------------------

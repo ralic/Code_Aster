@@ -23,7 +23,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     character(len=19) :: char1, char2, charg
     integer :: ichar
-    logical :: fonc1, fonc2
+    logical(kind=1) :: fonc1, fonc2
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     character(len=8) :: ma, k8b, val1, val2, nomfct, noms2f
     character(len=19) :: charg1, charg2
     character(len=40) :: acces
-    logical :: s2f
+    logical(kind=1) :: s2f
     integer, pointer :: des1(:) => null()
     integer, pointer :: des2(:) => null()
 !

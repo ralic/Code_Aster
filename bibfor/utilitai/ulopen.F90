@@ -54,7 +54,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
     character(len=4) :: k4b
     character(len=1) :: k1acce, k1aut
     integer :: i, ierr, ier1, ier2, ifile
-    logical :: v11
+    logical(kind=1) :: v11
     character(len=80) :: valk(3)
 !     CONSERVER LA COHERENCE AVEC IBIMPR
     integer :: mximpr

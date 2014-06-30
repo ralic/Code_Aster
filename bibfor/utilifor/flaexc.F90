@@ -108,7 +108,7 @@ subroutine flaexc(wantq, n, t, ldt, q,&
 #include "blas/dlange.h"
 #include "blas/dlarfx.h"
 #include "blas/drot.h"
-    logical :: wantq
+    logical(kind=1) :: wantq
     integer :: info, j1, ldq, ldt, n, n1, n2
 !     ..
 !     .. ARRAY ARGUMENTS ..
@@ -199,7 +199,7 @@ subroutine flaexc(wantq, n, t, ldt, q,&
 !
 !        SOLVE T11*X - X*T22 = SCALE*T12 FOR X.
 !
-        call flasy2(.false., .false., -1, n1, n2,&
+        call flasy2(.false._1, .false._1, -1, n1, n2,&
                     d, ldd, d( n1+1, n1+1 ), ldd, d( 1, n1+1 ),&
                     ldd, scale, x, ldx, xnorm,&
                     ierr)

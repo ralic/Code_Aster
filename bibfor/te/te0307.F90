@@ -42,7 +42,7 @@ subroutine te0307(option, nomte)
     real(kind=8) :: coenp1
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, iveres, i, l, li, icoefh
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
 !

@@ -43,7 +43,7 @@ subroutine nmpcin(matass)
 !
 !
     integer :: jrefa, jccid
-    logical :: lvcine
+    logical(kind=1) :: lvcine
 !
 ! ----------------------------------------------------------------------
 !

@@ -30,11 +30,11 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        logical :: noconv
-        logical :: aredec
-        logical :: stopnc
+        logical(kind=1) :: noconv
+        logical(kind=1) :: aredec
+        logical(kind=1) :: stopnc
         integer :: niter
         real(kind=8) :: epscon
-        logical :: trac
+        logical(kind=1) :: trac
     end subroutine cjsmde
 end interface

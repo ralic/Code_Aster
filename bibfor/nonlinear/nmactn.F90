@@ -60,7 +60,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
     integer :: retact, ievdac, actnew
-    logical :: arret
+    logical(kind=1) :: arret
     character(len=4) :: etnewt
 !
 ! ----------------------------------------------------------------------

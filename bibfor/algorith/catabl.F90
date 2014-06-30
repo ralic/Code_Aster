@@ -71,7 +71,7 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
     character(len=16) :: nomobj(nbobje), typobj(nbobje)
 !
     character(len=19) :: nomtab
-    logical :: l_new_table, l_copy_table, l_repl_object
+    logical(kind=1) :: l_new_table, l_copy_table, l_repl_object
     integer :: i_repl_object
     integer ::   jnobj, jnosd, jnuor, jtobj, jrins, jlins
     integer :: nboldp, nblign

@@ -72,7 +72,7 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
     character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: valinc(*)
     character(len=19), intent(in) :: solalg(*)
-    logical, intent(out) :: mmcvca
+    logical(kind=1), intent(out) :: mmcvca
     integer, intent(out) :: ctcsta
     real(kind=8), intent(in) :: instan
 !
@@ -128,9 +128,9 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
     character(len=19) :: oldgeo, newgeo
     character(len=19) :: chavit, chdepd
     character(len=19) :: depdel, depplu, vitplu
-    logical :: lgliss, lvites, scotch
-    logical :: lglini, lveri, lexig, lboucc, l_coef_adap
-    logical :: lfrotz, lpenaf, lfrot
+    logical(kind=1) :: lgliss, lvites, scotch
+    logical(kind=1) :: lglini, lveri, lexig, lboucc, l_coef_adap
+    logical(kind=1) :: lfrotz, lpenaf, lfrot
     integer :: mmitgo, mmitfr, mmitca
     character(len=24) :: sd_cycl_his, sd_cycl_coe
     integer :: jcyhis, jcycoe

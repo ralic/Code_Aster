@@ -25,11 +25,11 @@ interface
         integer :: lmat
         integer :: smdi(*)
         integer(kind=4) :: smhc(*)
-        logical :: lmatd
+        logical(kind=1) :: lmatd
         integer :: neql
         real(kind=8) :: vect(neq, nbvect)
         real(kind=8) :: xsol(neq, nbvect)
         real(kind=8) :: vectmp(neq)
-        logical :: prepos
+        logical(kind=1) :: prepos
     end subroutine mrmmvr
 end interface

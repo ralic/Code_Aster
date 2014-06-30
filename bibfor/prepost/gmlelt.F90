@@ -57,7 +57,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 !
 !
     character(len=8) :: k8bid
-    logical :: exisgr
+    logical(kind=1) :: exisgr
     integer :: imes, nbmxte, nbtag, i, ij, k, icurgr
     integer :: nbgrou, indgro, ima, ibid, ityp, ino, node, indmax
     integer :: jnuma, jtypma, jgroma, jnbnma, jnoma, jnbmag, jnbtym

@@ -3,7 +3,7 @@ subroutine zengen(pp, nbeq, yy0, dy0, dyy,&
     implicit none
     integer :: nbeq
     real(kind=8) :: pp(*), yy0(nbeq), dy0(nbeq), dyy(nbeq)
-    logical :: decoup
+    logical(kind=1) :: decoup
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

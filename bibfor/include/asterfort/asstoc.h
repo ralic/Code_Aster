@@ -24,9 +24,9 @@ interface
         character(len=16) :: nomsy
         real(kind=8) :: repdir(neq, *)
         integer :: ndir(*)
-        logical :: comdir
+        logical(kind=1) :: comdir
         character(len=*) :: typcdi
-        logical :: glob
-        logical :: prim
+        logical(kind=1) :: glob
+        logical(kind=1) :: prim
     end subroutine asstoc
 end interface

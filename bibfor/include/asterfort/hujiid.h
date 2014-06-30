@@ -27,10 +27,10 @@ interface
         real(kind=8) :: yd(18)
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(18)
-        logical :: loop
+        logical(kind=1) :: loop
         real(kind=8) :: dsig(6)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
         integer :: iret
     end subroutine hujiid
 end interface

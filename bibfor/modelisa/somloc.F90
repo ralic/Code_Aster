@@ -26,7 +26,7 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
 #include "asterfort/utmess.h"
     integer :: m, adco, nbso, nusglo, nusloc
 !
-    logical :: trouve
+    logical(kind=1) :: trouve
     integer :: is
     integer :: vali(2)
 !

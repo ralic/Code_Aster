@@ -67,7 +67,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
     real(kind=8) :: r8bid, klv(78), varmo(8), varpl(8), dvl(12), dpe(12), dve(12), ulp(12), duly
     real(kind=8) :: force(3)
     real(kind=8) :: klc(144), fl(12)
-    logical      :: statique
+    logical(kind=1)      :: statique
     character(len=8) :: k8bid
     real(kind=8) :: valre1(nbre1), valpar, coulom
     integer :: codre1(nbre1)

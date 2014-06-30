@@ -123,7 +123,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     character(len=200) :: nofimd
     character(len=255) :: kfic
 !
-    logical :: ttt
+    logical(kind=1) :: ttt
 !
     call jemarq()
 !

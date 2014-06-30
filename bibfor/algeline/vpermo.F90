@@ -83,9 +83,9 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
     do 30 i = 1, nbprop
         ivec=(i-1)*neq+1
         call mrmult('ZERO', lraide, vecp(ivec), zr(iaux1), 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmasse, vecp(ivec), zr(iaux2), 1,&
-                    .false.)
+                    .false._1)
         anorm1 = 0.d0
         do 20 j = 1, neq
             raux=zr(iaux1+j-1)

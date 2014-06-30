@@ -70,7 +70,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
     integer :: ino, iddl, posno
     character(len=8) :: nomnoe
     integer :: neq, nesmax, nddl
-    logical :: lctfd, llagrf
+    logical(kind=1) :: lctfd, llagrf
     integer :: zcoco
 !
 ! ----------------------------------------------------------------------

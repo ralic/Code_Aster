@@ -84,7 +84,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 ! OUT IRET    : CODE RETOUR DE L'INTEGRATION DE LA LDC
 !
 !
-    logical :: grand, axi, resi, rigi
+    logical(kind=1) :: grand, axi, resi, rigi
     integer :: lij(3, 3), vij(3, 3), ia, ja, na, ib, jb, nb, g, kk, os, ija, i
     integer :: nddl, ndu, vu(3, 27)
     integer :: cod(27)
@@ -94,7 +94,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     real(kind=8) :: sigmam(6), taup(6), dsidep(6, 3, 3)
     real(kind=8) :: rac2, rbid, tbid(6), t1, t2
 !
-    parameter (grand = .true.)
+    parameter (grand = .true._1)
     data    vij  / 1, 4, 5,&
      &               4, 2, 6,&
      &               5, 6, 3 /

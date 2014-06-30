@@ -3,7 +3,7 @@ subroutine dspdp2(net, bishop, tbiot, dsdp2)
 #include "asterfort/utmess.h"
     integer :: i
     real(kind=8) :: tbiot(6), dsdp2(6)
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 ! ======================================================================
 !
 ! ======================================================================

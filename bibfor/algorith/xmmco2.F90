@@ -60,7 +60,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
     real(kind=8) :: au(3, 3), coefi, coefj, dside2(3, 3), ffc(8), pdotal(3, 3)
     real(kind=8) :: ffi, ffj, r, temp(3, 3), unity(3, 3), ptr(3, 3)
     real(kind=8) :: alocal(3, 3)
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 !
 ! ----------------------------------------------------------------------

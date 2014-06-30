@@ -44,7 +44,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
     integer :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 !
-    logical :: oktref
+    logical(kind=1) :: oktref
     integer :: corent(6), ibid, jref, intyre, nbrefs, inddeb, indfin, senpar, numocc
     integer :: indcha, ir,  index, l1, l2, l3, nbcham
     character(len=4) :: accref(6), typref, indref

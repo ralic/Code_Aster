@@ -55,8 +55,8 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 !
 !
     integer :: ifm, niv
-    logical :: ldyna, lstat
-    logical :: lnewma, lthetd, lthetv, lkrenk, ldepl, lvite
+    logical(kind=1) :: ldyna, lstat
+    logical(kind=1) :: lnewma, lthetd, lthetv, lkrenk, ldepl, lvite
 !
 ! ----------------------------------------------------------------------
 !

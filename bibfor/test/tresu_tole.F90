@@ -38,7 +38,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
     real(kind=8) :: epsir(2)
     character(len=24) :: umcf
 !   to print the message only once
-    logical, save :: ipass = .false.
+    logical(kind=1), save :: ipass = .false.
 !
     ASSERT(ENSEMBLE2(mcf, iocc))
     if (absent(mcf)) then

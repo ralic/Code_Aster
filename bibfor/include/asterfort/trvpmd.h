@@ -22,7 +22,7 @@ interface
         integer :: n
         integer :: m
         real(kind=8) :: rr(*)
-        logical :: loc(*)
+        logical(kind=1) :: loc(*)
         integer :: indxf(*)
         integer :: npoint(*)
         integer :: lpoint(*)

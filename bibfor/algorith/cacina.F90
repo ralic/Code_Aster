@@ -31,7 +31,7 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
 #include "blas/dcopy.h"
     character(len=16) :: compor(*)
     integer :: ndim, nno, g, iw, idff, i, j, npg, lgpg, ivash2
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     real(kind=8) :: fm(3, 3), fma(3, 3)
     real(kind=8) :: depld(3*27), geomm(3, nno), vff(nno, npg)
     real(kind=8) :: r, rbid, dff(nno, 3), tbid(6)

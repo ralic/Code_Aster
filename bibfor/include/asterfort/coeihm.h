@@ -30,9 +30,9 @@ interface
         integer :: dimdef
         integer :: ndim
         character(len=16) :: option
-        logical :: perman
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: perman
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)

@@ -29,7 +29,7 @@ interface
         real(kind=8) :: epseq
         real(kind=8) :: p
         real(kind=8) :: divu
-        logical :: nonlin
+        logical(kind=1) :: nonlin
         real(kind=8) :: ener(2)
     end subroutine nmelru
 end interface

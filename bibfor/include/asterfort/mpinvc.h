@@ -26,7 +26,7 @@ interface
         complex(kind=8) :: cmesu(nbmesu, nbabs)
         real(kind=8) :: coef(*)
         real(kind=8) :: xabs(nbabs)
-        logical :: lfonct
+        logical(kind=1) :: lfonct
         complex(kind=8) :: ceta(nbmode, nbabs)
         complex(kind=8) :: cetap(nbmode, nbabs)
         complex(kind=8) :: ceta2p(nbmode, nbabs)

@@ -39,8 +39,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  n_suffix    : number of sufixes excluded for topological keywords
-! In  list_suffix : list of sufixes excluded for topological keywords
+! In  n_suffix    : number of sufixes excluded for topological(kind=1) keywords
+! In  list_suffix : list of sufixes excluded for topological(kind=1) keywords
 ! In  keywordfact : factor keyword
 ! In  keywordexcl : name of JEVEUX object for excluded keywords
 ! Out n_keyexcl   : number of excluded keywords

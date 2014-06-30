@@ -90,7 +90,7 @@ subroutine op0151()
     character(len=16) :: mexpic, mcompt, mdomag, typeq, typoi, typdg, option
     character(len=19) :: nomsd, chelem, chelrs, ligrel, nomsd2
     character(len=24) :: valk(6)
-    logical :: fordef, crsigm, crepst, crepse, crepsp
+    logical(kind=1) :: fordef, crsigm, crepst, crepse, crepsp
     real(kind=8) :: prec, instic
 !
     integer :: nval, impr, ifm, jordr, jcoef, jcelk

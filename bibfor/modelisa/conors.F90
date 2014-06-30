@@ -61,7 +61,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
     character(len=8) :: mailla
     integer :: nbcoc
     character(len=8) :: macoc(2+nbcoc)
-    logical :: loreor
+    logical(kind=1) :: loreor
     integer :: nbcor
     character(len=8) :: macor(2+nbcor)
 !

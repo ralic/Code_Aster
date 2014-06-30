@@ -28,7 +28,7 @@ interface
         character(len=*) :: modmec
         character(len=*) :: chamno
         character(len=14) :: num
-        logical :: vrai
+        logical(kind=1) :: vrai
         integer :: i
         integer :: j
         real(kind=8) :: mij

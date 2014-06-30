@@ -52,7 +52,7 @@ subroutine te0332(option, nomte)
     integer :: issopt, ima, nbvari, ipopp, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, ii, iret, iadzi, ivarmg, iazk24
     integer :: igeom, icong, ivarpg, isdrmr, isdrpr, kq
-    logical :: laxi
+    logical(kind=1) :: laxi
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

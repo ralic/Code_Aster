@@ -31,8 +31,8 @@ interface
         integer :: ndim
         integer :: dimdef
         integer :: dimdep
-        logical :: axi
-        logical :: perman
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
         real(kind=8) :: deltat
         integer :: nmec
         integer :: np1

@@ -60,7 +60,7 @@ subroutine op0042()
     character(len=16) :: nomcmd, tysd, pheno, concep, k16bid, compex
     character(len=19) :: knum, kcha, solveu
     character(len=24) :: mate
-    logical :: newcal
+    logical(kind=1) :: newcal
 !     ------------------------------------------------------------------
 !
     call jemarq()

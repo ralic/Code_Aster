@@ -86,7 +86,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     integer :: ialim1, ialin1,  ilcnx1, ialin2
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 !
-    logical :: dbg, ldmax, loin, loin2
+    logical(kind=1) :: dbg, ldmax, loin, loin2
     real(kind=8) :: distma, dmin
     real(kind=8) :: cobary(2)
 !
@@ -308,9 +308,9 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     call pj1dtr(cortr3, corres, nutm, elrf)
     dbg=.false.
     if (dbg) then
-        call utimsd(ifm, 2, .false., .true., '&&PJ6DCO',&
+        call utimsd(ifm, 2, .false._1, .true._1, '&&PJ6DCO',&
                     1, ' ')
-        call utimsd(ifm, 2, .false., .true., corres,&
+        call utimsd(ifm, 2, .false._1, .true._1, corres,&
                     1, ' ')
     endif
     call detrsd('CORRESP_2_MAILLA', cortr3)

@@ -27,14 +27,14 @@ interface
         integer :: nk
         character(len=24) :: k24rc
         integer :: pivot2
-        logical :: ltest
+        logical(kind=1) :: ltest
         character(len=8) :: typcha
         integer :: lraide
         integer :: lmasse
         integer :: ldynam
         character(len=19) :: solveu
         integer :: lamor
-        logical :: lc
+        logical(kind=1) :: lc
         character(len=3) :: impr
         integer :: ifapm
     end subroutine apm345

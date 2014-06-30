@@ -23,7 +23,7 @@ interface
         integer :: nbmail
         integer :: norien
         integer :: ntrait
-        logical :: reorie
+        logical(kind=1) :: reorie
         integer :: nbmavo
         integer :: mailvo(*)
     end subroutine orilma

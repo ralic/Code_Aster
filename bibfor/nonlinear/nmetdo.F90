@@ -48,7 +48,7 @@ subroutine nmetdo(sdcriq)
 !
     integer :: nbocc, n1, n2, ii, jj, iocc
     integer :: idebut, iret
-    logical :: ellisq
+    logical(kind=1) :: ellisq
     character(len=16) :: comp1, comel(dimaki), argii, argjj
     character(len=24) :: errthm
 !

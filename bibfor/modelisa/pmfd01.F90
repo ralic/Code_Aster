@@ -53,7 +53,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     character(len=1) :: ki1
     character(len=2) :: ki2
     character(len=19) :: ces1, lichs(2), ces3, ligrmo, cel
-    logical :: lcumul(2), exipmf
+    logical(kind=1) :: lcumul(2), exipmf
     real(kind=8) :: lcoefr(2)
     character(len=8) :: licmp(2+99)
     complex(kind=8) :: cbid
@@ -137,7 +137,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     lcoefr(2) = 1.d0
     ces3 = '&&PMFD01.CES3'
     call cesfus(2, lichs, lcumul, lcoefr, [cbid],&
-                .false., 'V', ces3)
+                .false._1, 'V', ces3)
     call detrsd('CHAM_ELEM_S', ces1)
 !
     cel = carele//'.CANBSP'

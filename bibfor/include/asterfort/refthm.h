@@ -28,9 +28,9 @@ interface
         integer :: dimdef
         integer :: nnos
         integer :: nno
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         real(kind=8) :: dt
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: nnom
         integer :: npi
         integer :: npg
@@ -57,6 +57,6 @@ interface
         integer :: nmec
         integer :: np1
         integer :: np2
-        logical :: axi
+        logical(kind=1) :: axi
     end subroutine refthm
 end interface 

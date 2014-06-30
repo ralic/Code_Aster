@@ -101,11 +101,11 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     integer :: ldsor,  neq, idet(2)
     integer :: nbddl2,  redem
     character(len=24) :: nopara(nbpara), metres
-    logical :: flage, lbid
+    logical(kind=1) :: flage, lbid
     real(kind=8), pointer :: resid(:) => null()
     integer, pointer :: resu_i(:) => null()
     character(len=24), pointer :: resu_k(:) => null()
-    logical, pointer :: select(:) => null()
+    logical(kind=1), pointer :: select(:) => null()
     real(kind=8), pointer :: vect_propre(:) => null()
     real(kind=8), pointer :: vect_stabil(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -482,7 +482,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                 lamor, mxresf, neq, nconv, omecor,&
                 zi(lddl), zi(lprod), vect_propre, [cbid], nbpari,&
                 nparr, nbpark, nopara, mod45, resu_i,&
-                zr(lresur), resu_k, ktyp, .false., ibid,&
+                zr(lresur), resu_k, ktyp, .false._1, ibid,&
                 ibid, k16bid, ibid)
 !
     if (niv .ge. 2) then
@@ -498,7 +498,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                     lamor, un, neq, un, omecor,&
                     zi(lddl), zi(lprod), vect_stabil, [cbid], nbpari,&
                     nparr, nbpark, nopara, 'STAB', resu_i,&
-                    [csta], resu_k, ktyp, .false., ibid,&
+                    [csta], resu_k, ktyp, .false._1, ibid,&
                     ibid, k16bid, ibid)
 !
     endif

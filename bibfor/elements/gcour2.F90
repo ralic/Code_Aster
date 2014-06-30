@@ -105,7 +105,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2, psca
     real(kind=8) :: norme, vecx, vecy, vecz, xl, tmpv(3)
 !
-    logical :: thlagr, milieu, connex, thlag2, pair
+    logical(kind=1) :: thlagr, milieu, connex, thlag2, pair
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, idesc, idiri, idirs, ielsup

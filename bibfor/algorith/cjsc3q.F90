@@ -46,7 +46,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
     common /tdim/   ndt, ndi
 !
     real(kind=8) :: sig(6), x(6), pa, qinit, q(6), qii, cos3tq
-    logical :: devnul, trac
+    logical(kind=1) :: devnul, trac
     real(kind=8) :: i1, s(6), qiirel
     real(kind=8) :: detq, pref
     integer :: i

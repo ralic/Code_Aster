@@ -37,7 +37,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1, idff2, lgpg
     integer :: mate
     integer :: vu(3, 27), vg(27), vp(27)
@@ -96,7 +96,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 ! OUT CODRET  : CODE RETOUR
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand, nonloc
+    logical(kind=1) :: axi, grand, nonloc
     integer :: g, nddl, ndu
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: k2ret(1), lij(3, 3), vij(3, 3), os, kk
@@ -120,7 +120,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: tampon(10), id(3, 3), rbid(1)
     real(kind=8) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa
 !
-    parameter    (grand = .true.)
+    parameter    (grand = .true._1)
     data         vij  / 1, 4, 5,&
      &                  4, 2, 6,&
      &                  5, 6, 3 /

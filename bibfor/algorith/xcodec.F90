@@ -34,7 +34,7 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
     character(len=8) :: noma, modelx
     integer :: ndim
     real(kind=8) :: crimax
-    logical :: linter
+    logical(kind=1) :: linter
 !
 ! ----------------------------------------------------------------------
 !

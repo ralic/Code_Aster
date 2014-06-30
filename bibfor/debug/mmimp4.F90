@@ -31,7 +31,7 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
     integer :: iptm
     integer :: indcoi, indcon
     integer :: indfri, indfrn
-    logical :: lfrot, lvites, lgliss
+    logical(kind=1) :: lfrot, lvites, lgliss
     real(kind=8) :: jeu, jeuvit, lambdc
 !
 ! ----------------------------------------------------------------------

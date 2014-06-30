@@ -51,7 +51,7 @@ subroutine te0139(option, nomte)
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, li, jcret, codret
     integer :: ivarix
-    logical :: matsym
+    logical(kind=1) :: matsym
     integer :: jtab(7), nnos, idim
     real(kind=8) :: bary(3)
     real(kind=8) :: pff(6*27*27), def(6*27*3), dfdi(3*27)

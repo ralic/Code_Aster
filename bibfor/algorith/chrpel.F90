@@ -96,7 +96,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! nb max de points (noeuds|gauss) par élément
     integer, parameter :: nptmax = 30
     integer, dimension(6) :: permvec
-    logical :: exi_cmp
+    logical(kind=1) :: exi_cmp
     real(kind=8) :: valr, xnormr
     real(kind=8), dimension(3) :: xbary, angnot
     real(kind=8), dimension(3) :: orig, axez, vectx, vecty, angrep

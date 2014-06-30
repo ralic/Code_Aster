@@ -52,7 +52,7 @@ subroutine te0138(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom, i, j
     integer :: l, li, iflux, iveres, nse, c(6, 9), ise, nnop2, itemps, itempi
     integer :: ibid
-    logical :: laxi
+    logical(kind=1) :: laxi
     character(len=8) :: elrefe
 !
 !====

@@ -83,7 +83,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
     character(len=24) :: strx, raide
     character(len=24) :: bidon, chacce, k24b, modele, kstr
-    logical :: exitim, lbid, lstr, lstr2
+    logical(kind=1) :: exitim, lbid, lstr, lstr2
     real(kind=8), pointer :: cgmp(:) => null()
     real(kind=8), pointer :: chmp(:) => null()
     real(kind=8), pointer :: fono(:) => null()
@@ -396,7 +396,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call utmess('F', 'PREPOST3_81')
             endif
             call mrmult('ZERO', lmat, nldepl, zr(ltrav), 1,&
-                        .true.)
+                        .true._1)
             do j = 0, lonch-1
                 noch(1+j)=noch(1+j)-omega2*zr(ltrav+j)
             end do
@@ -438,7 +438,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     call utmess('F', 'PREPOST3_81')
                 endif
                 call mrmult('ZERO', lmat, zr(jddr), zr(ltrav), 1,&
-                            .true.)
+                            .true._1)
                 do j = 0, lonch-1
                     noch(1+j)=noch(1+j)-zr(ltrav+j)
                 end do
@@ -458,7 +458,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     call utmess('F', 'PREPOST3_81')
                 endif
                 call mrmult('ZERO', lmat, zr(lacce), zr(ltrav), 1,&
-                            .true.)
+                            .true._1)
                 do j = 0, lonch-1
                     noch(1+j)=noch(1+j)+zr(ltrav+j)
                 end do
@@ -478,7 +478,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     call utmess('F', 'PREPOST3_81')
                 endif
                 call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1,&
-                            .true.)
+                            .true._1)
                 do j = 0, lonch-1
                     noch(1+j)=noch(1+j)+dble(zc(ltrav+j))
                 end do

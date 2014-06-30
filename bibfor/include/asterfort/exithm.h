@@ -18,7 +18,7 @@
 interface
     subroutine exithm(modele, yathm, perman)
         character(len=8) :: modele
-        logical :: yathm
-        logical :: perman
+        logical(kind=1) :: yathm
+        logical(kind=1) :: perman
     end subroutine exithm
 end interface

@@ -38,7 +38,7 @@ subroutine te0316(option, nomte)
     integer :: ipoids, ivf, idfde, igeom
     integer :: ndi, nno, kp, npg
     integer :: ldec
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !-----------------------------------------------------------------------
     integer :: i, ij, imattt, j, jgano, ndim, nnos

@@ -100,7 +100,7 @@ subroutine xmcart(noma, defico, modele, resoco)
     character(len=8) ::  nomgd
     character(len=19) :: ligrxf, chs(7), carte(7)
     integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier
-    logical :: lmulti
+    logical(kind=1) :: lmulti
 !
 ! ----------------------------------------------------------------------
 !

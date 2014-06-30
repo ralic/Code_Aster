@@ -18,7 +18,7 @@
 interface 
     subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
                       h, hf, parcho, adime, ninc, tabchoc, lcine)
-        logical :: reprise
+        logical(kind=1) :: reprise
         integer :: imat(2)
         character(len=14) :: numedd
         character(len=14) :: xcdl
@@ -30,6 +30,6 @@ interface
         character(len=14) :: adime
         integer :: ninc
         character(len=8) :: tabchoc
-        logical :: lcine
+        logical(kind=1) :: lcine
     end subroutine mnlcho
 end interface 

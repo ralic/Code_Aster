@@ -28,8 +28,8 @@ interface
         integer :: jheano
         integer :: vstnc(*)
         integer :: lact(8)
-        logical :: lcalel
-        logical :: lelim
+        logical(kind=1) :: lcalel
+        logical(kind=1) :: lelim
         integer :: ndim
         integer :: nfe
         integer :: nfh

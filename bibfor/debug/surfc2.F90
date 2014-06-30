@@ -56,7 +56,7 @@ subroutine surfc2(char, noma, ifm)
 !
     integer :: nzoco, nnoco, nmaco
     real(kind=8) :: tolint
-    logical :: lveri
+    logical(kind=1) :: lveri
     integer :: izone
     character(len=24) :: mailma, defico
     integer :: jnomno, jnomma

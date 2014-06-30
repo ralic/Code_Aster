@@ -39,7 +39,7 @@ subroutine te0493(option, nomte)
     integer :: iflux, ivectu, k, i, iad
     integer :: idec, jdec, kdec
     character(len=24) :: valkm(3)
-    logical :: tria
+    logical(kind=1) :: tria
 !
 !
 !-----------------------------------------------------------------------

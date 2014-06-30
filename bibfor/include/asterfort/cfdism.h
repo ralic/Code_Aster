@@ -18,8 +18,8 @@
 interface
     subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
         character(len=24) :: defico
-        logical :: ldpou
-        logical :: ldcoq
+        logical(kind=1) :: ldpou
+        logical(kind=1) :: ldcoq
         integer :: posnoe
         real(kind=8) :: distst
     end subroutine cfdism

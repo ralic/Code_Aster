@@ -423,9 +423,9 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ----- CALCUL PRODUIT MATRICE  MODES
 !
         call mrmult('ZERO', lmatk, zr(ltveca+(i-1)*neq), zr(ltvec1), 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmatm, zr(ltveca+(i-1)*neq), zr(ltvec3), 1,&
-                    .false.)
+                    .false._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
         call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
@@ -488,9 +488,9 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE DROITE
 !
         call mrmult('ZERO', lmatk, zr(ltvecb+(i-1)*neq), zr(ltvec1), 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmatm, zr(ltvecb+(i-1)*neq), zr(ltvec3), 1,&
-                    .false.)
+                    .false._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
         call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
@@ -574,9 +574,9 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE GAUCHE
 !
         call mrmult('ZERO', lmatk, zr(ltvecc+(i-1)*neq), zr(ltvec1), 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmatm, zr(ltvecc+(i-1)*neq), zr(ltvec3), 1,&
-                    .false.)
+                    .false._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
         call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
@@ -762,9 +762,9 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ------- CALCUL PROJECTION MATRICE DEFORMEES AXE
 !
             call mrmult('ZERO', lmatk, zr(ltvecd+(i-1)*neq), zr(ltvec1), 1,&
-                        .false.)
+                        .false._1)
             call mrmult('ZERO', lmatm, zr(ltvecd+(i-1)*neq), zr(ltvec3), 1,&
-                        .false.)
+                        .false._1)
             call zerlag(neq, deeq, vectr=zr(ltvec1))
             call zerlag(neq, deeq, vectr=zr(ltvec3))
 !

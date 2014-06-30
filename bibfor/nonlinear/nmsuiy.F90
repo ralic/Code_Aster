@@ -51,7 +51,7 @@ subroutine nmsuiy(sdimpr, valr, isuiv)
 !
     call impfoi(0, 1, isuiv, indsui)
     typcol = 'SUIVDDL'//indsui
-    call nmimcr(sdimpr, typcol, valr, .true.)
+    call nmimcr(sdimpr, typcol, valr, .true._1)
 !
 ! --- SUIVI_DDL SUIVANT
 !

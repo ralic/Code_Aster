@@ -48,7 +48,7 @@ subroutine te0220(option, nomte)
     real(kind=8) :: angmas(7), rbid(3), fluglo(2), fluloc(2), p(2, 2)
     integer :: ndim, nno, nnos, npg, kp, j, itempe, itemp, iener
     integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar
-    logical :: aniso
+    logical(kind=1) :: aniso
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

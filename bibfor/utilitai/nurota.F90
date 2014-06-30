@@ -77,6 +77,7 @@ subroutine nurota(numedd, compor, sdnuro)
     integer, pointer :: desc(:) => null()
     integer, pointer :: ptma(:) => null()
     character(len=16), pointer :: vale(:) => null()
+    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 !
@@ -161,7 +162,8 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---     QUI EST RELCOM A BIEN ETE AFFECTEE
 !
-                    ASSERT(exisdg([dg], 1))
+                    lcond=exisdg([dg], 1)
+                    ASSERT(lcond)
 ! ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
                     compt = vale(1+idebgd+3-1)
                     if (compt .ne. deform) goto 130

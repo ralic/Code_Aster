@@ -43,7 +43,7 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    logical :: lcine
+    logical(kind=1) :: lcine
     integer :: imat(2), nd
     character(len=14) :: xcdl, numedd
 ! ----------------------------------------------------------------------

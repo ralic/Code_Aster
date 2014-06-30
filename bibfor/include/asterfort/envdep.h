@@ -27,6 +27,6 @@ interface
         real(kind=8) :: vit(nbpal, *)
         real(kind=8) :: vrotat
         character(len=3) :: finpal(20)
-        logical :: prdeff
+        logical(kind=1) :: prdeff
     end subroutine envdep
 end interface

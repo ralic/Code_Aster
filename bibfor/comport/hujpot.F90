@@ -61,7 +61,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
     real(kind=8) :: e1, e2, e3, nu12, nu13, nu23, g1, g2, g3, nu21, nu31, nu32
     real(kind=8) :: delta
     real(kind=8) :: piso
-    logical :: debug, prox, rdctps, aredec, bid
+    logical(kind=1) :: debug, prox, rdctps, aredec, bid
     character(len=7) :: etatf
     character(len=8) :: mod
     real(kind=8) :: vinm(50), seuilm

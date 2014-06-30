@@ -31,7 +31,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    logical :: lfcplx, lacce
+    logical(kind=1) :: lfcplx, lacce
     integer :: ichar, indic
     integer :: iexcit, nexci
     character(len=19) :: excit

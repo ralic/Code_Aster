@@ -76,7 +76,7 @@ subroutine op0113()
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont
-    logical :: linter
+    logical(kind=1) :: linter
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
 !
@@ -228,8 +228,8 @@ subroutine op0113()
 !        PUIS .REPE, .PRNM ET .PRNS AVEC CALL ADALIG CORMGI ET INITEL
 !-----------------------------------------------------------------------
 !
-    call jedupo(ligr1//'.NBNO', 'G', ligr2//'.NBNO', .false.)
-    call jedupo(ligr1//'.LGRF', 'G', ligr2//'.LGRF', .false.)
+    call jedupo(ligr1//'.NBNO', 'G', ligr2//'.NBNO', .false._1)
+    call jedupo(ligr1//'.LGRF', 'G', ligr2//'.LGRF', .false._1)
     call jeveuo(ligr2//'.LGRF', 'E', vk8=lgrf2)
     lgrf2(2)=modelx
 !

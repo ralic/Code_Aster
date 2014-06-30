@@ -43,7 +43,7 @@ subroutine gidoma(nbnoto)
 !     VARIABLES LOCALES:
 !     ------------------
 !
-    logical :: iden
+    logical(kind=1) :: iden
 !
 !
 !     -- RECUPERATION DU NOMBRE DE MAILLES TOTAL (AVANT COMPACTAGE):

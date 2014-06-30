@@ -102,7 +102,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
     complex(kind=8) :: cbid
     character(len=8) :: k8b
     character(len=24) :: nonoma
-    logical :: notlin
+    logical(kind=1) :: notlin
     integer :: nno
 !
     real(kind=8) :: ffel3d, ff(27), x(3)

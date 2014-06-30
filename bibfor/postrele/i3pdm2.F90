@@ -4,7 +4,7 @@ subroutine i3pdm2(epsi, n, s, nbs, p,&
 #include "asterfort/utmess.h"
     integer :: nbs
     real(kind=8) :: n(*), s(3, *), p(*), epsi
-    logical :: dedans
+    logical(kind=1) :: dedans
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -48,7 +48,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
     character(len=10) :: pheno
     real(kind=8) :: nrupt(1), delta, dnap, epmax, valp(2), val(10)
     real(kind=8) :: salt, x, re(1), slmodi, y
-    logical :: endur
+    logical(kind=1) :: endur
 !-----------------------------------------------------------------------
     integer :: i, ier, nbpar
     real(kind=8) :: rbid, zero

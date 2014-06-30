@@ -57,8 +57,8 @@ interface
         real(kind=8) :: crit(*)
         integer :: indi(7)
         real(kind=8) :: vind1(nvi)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
         real(kind=8) :: drdy(nr, nr)
         integer :: iret
     end subroutine lcjacb

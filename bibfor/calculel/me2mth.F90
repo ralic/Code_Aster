@@ -74,7 +74,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
 !
 !
 !
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     character(len=8) :: lpain(5), lpaout(1), k8bid
     character(len=16) :: option
     character(len=24) :: lchin(5), lchout(1), ligrmo, ligrch

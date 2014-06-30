@@ -60,7 +60,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     character(len=24) :: magrma, manoma, nprno
     character(len=24) :: nomch0
     character(len=80) :: titre
-    logical :: lamor
+    logical(kind=1) :: lamor
     integer :: iarg, ir
 !     ------------------------------------------------------------------
 !

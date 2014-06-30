@@ -39,7 +39,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: rinstp, rinstm
     character(len=8) :: typmod(2)
     character(len=16) :: option, compor(*)
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
 !
 !
 ! ======================================================================
@@ -108,7 +108,8 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: rthmc(1), p10, p20
     real(kind=8) :: valcen(14, 6), valfac(maxfa, 14, 6)
 !
-    logical :: tange, cont, bool
+    logical(kind=1) :: tange, cont
+    logical :: bool
 !
     integer :: codmes(1), kpg, spt
     character(len=8) :: fami, poum
@@ -215,7 +216,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! =====================================================================
 ! VARIABLES COMMUNES
 ! =====================================================================
-    logical :: vf
+    logical(kind=1) :: vf
     real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa), normfa(maxdim, maxfa), vol
     integer :: ifa, jfa, idim
     real(kind=8) :: pcp, pwp, pgp, dpgp1, dpgp2, dpwp1, dpwp2
@@ -249,7 +250,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: dias2(maxfa), difuvp(maxfa), difuas(maxfa), difuad(maxfa), diad1f(maxfa)
     real(kind=8) :: diad2f(maxfa), dias1f(maxfa), dias2f(maxfa), divp1f(maxfa), divp2f(maxfa)
 !=====================================================================
-    logical ::  ldcen
+    logical(kind=1) ::  ldcen
     real(kind=8) :: xg(maxdim)
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: alpha, zero
@@ -654,22 +655,22 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! ========================================
 ! FLUX VOLUMIQUES
 !=========================================
-    call vfcfks(.true., tange, maxfa, nface, cvp,&
+    call vfcfks(.true._1, tange, maxfa, nface, cvp,&
                 dcvp1, dcvp2, cvpf, dcvp1f, dcvp2f,&
                 d, pesa, zero, zero, zero,&
                 xg, xface, maxdim, ndim, ftgks,&
                 ftgks1, ftgks2)
-    call vfcfks(.true., tange, maxfa, nface, cad,&
+    call vfcfks(.true._1, tange, maxfa, nface, cad,&
                 dcad1, dcad2, cadf, dcad1f, dcad2f,&
                 d, pesa, zero, zero, zero,&
                 xg, xface, maxdim, ndim, fclks,&
                 fclks1, fclks2)
-    call vfcfks(.true., tange, maxfa, nface, pwp,&
+    call vfcfks(.true._1, tange, maxfa, nface, pwp,&
                 dpwp1, dpwp2, pwpf, dpwp1f, dpwp2f,&
                 c, pesa, rhol, drhol1, drhol2,&
                 xg, xface, maxdim, ndim, flks,&
                 dflks1, dflks2)
-    call vfcfks(.true., tange, maxfa, nface, pgp,&
+    call vfcfks(.true._1, tange, maxfa, nface, pgp,&
                 dpgp1, dpgp2, pgpf, dpgp1f, dpgp2f,&
                 c, pesa, rhog, drhog1, drhog2,&
                 xg, xface, maxdim, ndim, fgks,&
@@ -779,11 +780,11 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         endif
 161  end do
     do 162 ifa = 1, nface
-        call cafmes(ifa, .true., tange, maxfa, nface,&
+        call cafmes(ifa, .true._1, tange, maxfa, nface,&
                     flks(ifa), dflks1, dflks2, mobwf(ifa), dw1f,&
                     dw2f, dw1ffa, dw2ffa, fmws, fm1ws,&
                     fm2ws)
-        call cafmes(ifa, .true., tange, maxfa, nface,&
+        call cafmes(ifa, .true._1, tange, maxfa, nface,&
                     fgks(ifa), dfgks1, dfgks2, movpf(ifa), dvp1f,&
                     dvp2f, dvp1ff, dvp2ff, fmvps, fm1vps,&
                     fm2vps)
@@ -791,7 +792,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     ftgks(ifa), ftgks1, ftgks2, difuvp(ifa), divp1,&
                     divp2, divp1f, divp2f, fmvps, fm1vps,&
                     fm2vps)
-        call cafmes(ifa, .true., tange, maxfa, nface,&
+        call cafmes(ifa, .true._1, tange, maxfa, nface,&
                     fgks(ifa), dfgks1, dfgks2, moasf(ifa), das1f,&
                     das2f, das1ff, das2ff, fmass, fm1ass,&
                     fm2ass)
@@ -799,7 +800,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     ftgks(ifa), ftgks1, ftgks2, difuas(ifa), dias1,&
                     dias2, dias1f, dias2f, fmass, fm1ass,&
                     fm2ass)
-        call cafmes(ifa, .true., tange, maxfa, nface,&
+        call cafmes(ifa, .true._1, tange, maxfa, nface,&
                     flks(ifa), dflks1, dflks2, moadf(ifa), dad1f,&
                     dad2f, dad1ff, dad2ff, fmads, fm1ads,&
                     fm2ads)
@@ -808,25 +809,25 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     diad2, diad1f, diad2f, fmads, fm1ads,&
                     fm2ads)
 162  end do
-    call cafves(.true., tange, maxfa, nface, flks,&
+    call cafves(.true._1, tange, maxfa, nface, flks,&
                 dflks1, dflks2, mobwf, dw1f, dw2f,&
                 dw1ffa, dw2ffa, fluws, fw1s, fw2s)
-    call cafves(.true., tange, maxfa, nface, fgks,&
+    call cafves(.true._1, tange, maxfa, nface, fgks,&
                 dfgks1, dfgks2, movpf, dvp1f, dvp2f,&
                 dvp1ff, dvp2ff, fluvps, fvp1s, fvp2s)
-    call cafves(.true., tange, maxfa, nface, ftgks,&
+    call cafves(.true._1, tange, maxfa, nface, ftgks,&
                 ftgks1, ftgks2, difuvp, divp1, divp2,&
                 divp1f, divp2f, fluvps, fvp1s, fvp2s)
-    call cafves(.true., tange, maxfa, nface, fgks,&
+    call cafves(.true._1, tange, maxfa, nface, fgks,&
                 dfgks1, dfgks2, moasf, das1f, das2f,&
                 das1ff, das2ff, fluass, fas1s, fas2s)
-    call cafves(.true., tange, maxfa, nface, ftgks,&
+    call cafves(.true._1, tange, maxfa, nface, ftgks,&
                 ftgks1, ftgks2, difuas, dias1, dias2,&
                 dias1f, dias2f, fluass, fas1s, fas2s)
-    call cafves(.true., tange, maxfa, nface, flks,&
+    call cafves(.true._1, tange, maxfa, nface, flks,&
                 dflks1, dflks2, moadf, dad1f, dad2f,&
                 dad1ff, dad2ff, fluads, fad1s, fad2s)
-    call cafves(.true., tange, maxfa, nface, fclks,&
+    call cafves(.true._1, tange, maxfa, nface, fclks,&
                 fclks1, fclks2, difuad, diad1, diad2,&
                 diad1f, diad2f, fluads, fad1s, fad2s)
     if (cont) then

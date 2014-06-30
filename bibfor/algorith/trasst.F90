@@ -161,11 +161,11 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !
 !-- CALCUL DES TRAVAUX
         call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
-                    .true.)
+                    .true._1)
 !
         travm=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
         call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), mode_sst1_eff2, 1,&
-                    .true.)
+                    .true._1)
         travk=ddot(nbeq1,zr(lmod1),1,mode_sst1_eff2,1)
         traint=travk-(pulsa_propres(j1)**2)*travm
         if (pulsa_propres(j1) .gt. 1) traint=traint/pulsa_propres(j1)

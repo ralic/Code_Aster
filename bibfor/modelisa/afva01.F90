@@ -10,7 +10,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: typsd, nomsd, nomsym
-    logical :: lautr
+    logical(kind=1) :: lautr
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

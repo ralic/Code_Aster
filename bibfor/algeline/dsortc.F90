@@ -86,7 +86,7 @@ subroutine dsortc(which, apply, n, xreal, ximag,&
 #include "asterc/matfpe.h"
 #include "blas/dlapy2.h"
     character(len=2) :: which
-    logical :: apply
+    logical(kind=1) :: apply
     integer :: n
 !
 !     %-----------------%

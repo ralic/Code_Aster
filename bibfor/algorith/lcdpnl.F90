@@ -55,7 +55,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
 ! OUT PROJ    PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
-    logical :: rigi, resi, elas
+    logical(kind=1) :: rigi, resi, elas
     integer :: ndimsi, i, j, ndt, ndi
     real(kind=8) :: kron(6), tre, trer, valres(2), dsdp2(6, 6), tp, tm, tref
     real(kind=8) :: deuxmu, lambda, dsdp1b(6, 6), young, nu

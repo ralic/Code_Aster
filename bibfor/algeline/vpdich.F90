@@ -69,8 +69,8 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
     do 10 i = 2, nfreq-1
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
         call vpstur(lraide, valp(i), lmasse, ldynam, det(i),&
-                    idet(i), ieme(i), ier, solveu, .true.,&
-                    .false.)
+                    idet(i), ieme(i), ier, solveu, .true._1,&
+                    .false._1)
         ieme(i) = ieme(i) - nblagr
         if (typres .ne. 'DYNAMIQUE') then
             if (valp(i) .lt. 0.d0) then
@@ -103,8 +103,8 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                         idx=0
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
                         call vpstur(lraide, valpx, lmasse, ldynam, dx,&
-                                    idx, ix, ier, solveu, .true.,&
-                                    .false.)
+                                    idx, ix, ier, solveu, .true._1,&
+                                    .false._1)
                         ix = ix-nblagr
                         if (typres .ne. 'DYNAMIQUE') then
                             if (valpx .lt. 0.d0) then

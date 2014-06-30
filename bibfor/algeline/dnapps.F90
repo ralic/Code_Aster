@@ -216,7 +216,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     %------------------------%
 !
     integer :: i, iend, ir, istart, j, jj, kplusp, msglvl, nr
-    logical :: cconj, first
+    logical(kind=1) :: cconj, first
     real(kind=8) :: c, f, g, h11, h12, h21, h22, h32, r, s, sigmai, sigmar
     real(kind=8) :: smlnum, ulp, unfl, u(3), t, tau, tst1
 ! DUE TO CRS512      REAL*8 OVFL

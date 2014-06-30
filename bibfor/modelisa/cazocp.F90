@@ -57,8 +57,8 @@ subroutine cazocp(char)
     integer :: noc
     real(kind=8) :: precis, coefrs
     real(kind=8) :: resige, resifr
-    logical :: lgcp, l_newt_fr
-    logical :: lctcd, lctcc, lxfcm, lfrot, lmail
+    logical(kind=1) :: lgcp, l_newt_fr
+    logical(kind=1) :: lctcd, lctcc, lxfcm, lfrot, lmail
     character(len=16) :: lissa, coef_adap
 !
 ! ----------------------------------------------------------------------

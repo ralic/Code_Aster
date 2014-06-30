@@ -47,7 +47,7 @@ subroutine lisver(lischa)
     character(len=8) :: charge
     integer :: genrec
     character(len=16) :: typapp
-    logical :: lelim, ldual, levoc
+    logical(kind=1) :: lelim, ldual, levoc
 !
 ! ----------------------------------------------------------------------
 !

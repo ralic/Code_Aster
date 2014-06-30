@@ -18,7 +18,7 @@ function gtstat(istat)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-    logical :: gtstat
+    logical(kind=1) :: gtstat
 #include "asterf_constant.h"
 !     ARGUMENT IN
     integer :: istat

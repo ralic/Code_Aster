@@ -24,8 +24,8 @@ interface
                       idfde, ddld, ddlm, enrmec, nenr,&
                       dimenr, nnop, nnops, nnopm)
         character(len=16) :: nomte
-        logical :: axi
-        logical :: perman
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
         character(len=8) :: typmod(2)
         character(len=3) :: modint
         integer :: mecani(5)

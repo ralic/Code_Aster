@@ -89,7 +89,7 @@ subroutine te0536(option, nomte)
         nno = nnos
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false., .true.,&
+                nno, nnos, zi(jstno), .false._1, .true._1,&
                 option, nomte, ddlm,&
                 nfiss, jfisno, mat=zr(imatuu))
 !

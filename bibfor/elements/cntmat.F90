@@ -31,7 +31,7 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 #include "asterfort/matinv.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tanmgl.h"
-    logical :: resi, rigi, coup, elas, elas1, elas2
+    logical(kind=1) :: resi, rigi, coup, elas, elas1, elas2
 !
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, alf, treps, gmt, gmc, gf
     real(kind=8) :: da1, da2, cof1(2), q2d(2), de33d1, de33d2, ksi2d, tr2d

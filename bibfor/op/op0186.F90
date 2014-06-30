@@ -60,9 +60,10 @@ subroutine op0186()
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
-    logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
-    logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
-    logical :: force, lnonl
+    logical(kind=1) :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
+    logical(kind=1) :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
+    logical(kind=1) :: force, lnonl
+    logical :: lcond
     integer :: parmei(2), parcri(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp,  jtemp
     integer :: itab(2)
@@ -159,7 +160,8 @@ subroutine op0186()
                 lischa, lisch2, solveu, para, numedd,&
                 lostat, levol, lnonl, sddisc, sdieto,&
                 vhydr, sdobse, mailla, sdcrit, time)
-    ASSERT(lnonl)
+    lcond=lnonl
+    ASSERT(lcond)
 !
     if (lostat) then
         numins=0

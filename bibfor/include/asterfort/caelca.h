@@ -27,9 +27,9 @@ interface
         integer :: icabl
         integer :: nbnoca(*)
         character(len=19) :: numaca
-        logical :: quad
+        logical(kind=1) :: quad
         character(len=4) :: regl
-        logical :: relax
+        logical(kind=1) :: relax
         real(kind=8) :: ea
         real(kind=8) :: rh1000
         real(kind=8) :: prelax

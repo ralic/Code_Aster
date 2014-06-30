@@ -71,7 +71,7 @@ subroutine xoripe(modele)
     character(len=19) :: ligrel, chs(5), chlsn
     character(len=24) :: grmape, nomob, vecnor, grp(3)
     character(len=19) :: pintto, cnseto, loncha, heav
-    logical :: quadratique
+    logical(kind=1) :: quadratique
     integer :: itypbo
     integer, pointer :: vnfis(:) => null()
     integer, pointer :: typmail(:) => null()
@@ -167,7 +167,7 @@ subroutine xoripe(modele)
     nomob = '&&XORIPE.NU_MAILLE_3D'
 !
     call utmasu(noma, kdim, nbmail, zi(jmail), nomob,&
-                vale, 0, mailvo, .false.)
+                vale, 0, mailvo, .false._1)
     call jeveuo(nomob, 'L', jm3d)
 !
 !     ------------------------------------------------------------------

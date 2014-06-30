@@ -18,6 +18,6 @@
 interface
     function cgverho(imate)
         integer :: imate
-        logical :: cgverho
+        logical(kind=1) :: cgverho
     end function cgverho
 end interface

@@ -25,6 +25,6 @@ interface
         integer :: nbsauv
         real(kind=8) :: vecpr8(nbmode, *)
         complex(kind=8) :: vecpc8(nbmode, *)
-        logical :: zcmplx
+        logical(kind=1) :: zcmplx
     end subroutine mdallr
 end interface

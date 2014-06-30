@@ -85,7 +85,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
     integer :: numrep
     character(len=8) :: resu
     character(len=2) :: type
-    logical :: exist
+    logical(kind=1) :: exist
 !
 ! ----------------------------------------------------------------------
 !

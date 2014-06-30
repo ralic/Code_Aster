@@ -63,9 +63,9 @@ subroutine cfjein(noma, defico, resoco, depdel)
     integer :: japcof
     character(len=24) :: clreac
     integer :: jclrea
-    logical :: reapre
+    logical(kind=1) :: reapre
     integer :: nbliai, neq, ndimg, nesmax
-    logical :: lgliss, lctfd, llagrf
+    logical(kind=1) :: lgliss, lctfd, llagrf
     real(kind=8) :: aljeu
     real(kind=8) :: jeuold, jeuini, jexini, jeyini
     real(kind=8) :: val1, val2, val

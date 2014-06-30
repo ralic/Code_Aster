@@ -5,7 +5,7 @@ subroutine i3ptrv(epsi, lstpt, nbpt, t, trouve,&
 #include "jeveux.h"
     integer :: nbpt, lstpt(*), ipos
     real(kind=8) :: epsi, t
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
 !     ------------------------------------------------------------------
 ! ======================================================================

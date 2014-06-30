@@ -216,9 +216,9 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     else if (metres.eq.'MUMPS') then
 !     ---------------------------------------
         call amumph('DETR_OCC', solvop, noma19, [0.d0], [cbid],&
-                    ' ', 0, iretz, .true.)
+                    ' ', 0, iretz, .true._1)
         call amumph('PRERES', solvop, noma19, [0.d0], [cbid],&
-                    ' ', 0, iretz, .true.)
+                    ' ', 0, iretz, .true._1)
 
 !       -- mumps ne nous dit pas le nombre de decimales reellement perdues :
         ndeci=-999

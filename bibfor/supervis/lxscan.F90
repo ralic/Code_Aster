@@ -65,7 +65,7 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     parameter ( mxetat = 13 , mxcla1 = mxclas+1)
     integer :: neweta(mxcla1, mxetat)
 !
-    logical :: nbeneg, expneg
+    logical(kind=1) :: nbeneg, expneg
     character(len=1) :: carext
     real(kind=8) :: xndec, xdec
     integer :: nival, inival

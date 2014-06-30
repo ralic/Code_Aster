@@ -24,6 +24,6 @@ interface
         integer :: cpt
         real(kind=8) :: newpt(3)
         real(kind=8) :: longar
-        logical :: ajout
+        logical(kind=1) :: ajout
     end subroutine xajpmi
 end interface

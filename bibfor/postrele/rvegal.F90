@@ -20,7 +20,7 @@ subroutine rvegal(epsi, criter, x, y, ok,&
 ! ======================================================================
 !
     character(len=1) :: criter
-    logical :: ok
+    logical(kind=1) :: ok
     real(kind=8) :: epsi, x, y, eccart
 !
 !********************************************************************

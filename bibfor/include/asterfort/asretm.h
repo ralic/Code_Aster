@@ -18,7 +18,7 @@
 interface
     subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                       jsmdi, i1, i2)
-        logical :: lmasym
+        logical(kind=1) :: lmasym
         integer :: jtmp2
         integer :: lgtmp2
         integer :: nbterm

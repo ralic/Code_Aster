@@ -48,7 +48,7 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lctcc, lctcd
+    logical(kind=1) :: lctcc, lctcd
 !
 ! ----------------------------------------------------------------------
 !

@@ -56,10 +56,10 @@ subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lerrei
-    logical :: cvnewt, cvinst
-    logical :: ltabl
-    logical :: lboucl, lexpl
+    logical(kind=1) :: lerrei
+    logical(kind=1) :: cvnewt, cvinst
+    logical(kind=1) :: ltabl
+    logical(kind=1) :: lboucl, lexpl
 !
 ! ----------------------------------------------------------------------
 !

@@ -23,7 +23,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmo02.h"
 #include "asterfort/wkvect.h"
-    logical :: lpmpb, lsn, lsnet, lfatig, lrocht
+    logical(kind=1) :: lpmpb, lsn, lsnet, lfatig, lrocht
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -86,7 +86,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: matpi(8), matpj(8), mse(12), spmeca(2), spther(2), spthem
     real(kind=8) :: spmecm, kemeca, kether, pm, pb, pmpb, sipmax, simpij, snemax
     real(kind=8) :: kemax, pmmax, pbmax
-    logical :: seisme, cfait
+    logical(kind=1) :: seisme, cfait
     character(len=4) :: lieu(2)
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
     integer, pointer :: situ_numero(:) => null()

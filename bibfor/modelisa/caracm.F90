@@ -45,7 +45,7 @@ subroutine caracm(char, nzoco, iform)
 !
 !
 !
-    logical :: lmail
+    logical(kind=1) :: lmail
     character(len=24) :: defico
     integer :: ztole, zdirn, zmeth
     character(len=24) :: methco, dirapp, toleco, dirnor

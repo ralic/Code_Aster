@@ -19,6 +19,6 @@ interface
     subroutine obsetb(nomstr, nompaz, vall)
         character(len=24) :: nomstr
         character(len=*) :: nompaz
-        logical :: vall
+        logical(kind=1) :: vall
     end subroutine obsetb
 end interface

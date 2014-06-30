@@ -58,7 +58,7 @@ subroutine te0324(option, nomte)
     real(kind=8) :: a(3), b(3), surf, surf2    
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres)
-    logical :: ljfr
+    logical(kind=1) :: ljfr
     
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
 !

@@ -32,7 +32,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     real(kind=8) :: resufr(mxfreq, *)
     character(len=*) :: option, resufk(mxfreq, *), typres
     character(len=1) :: ktyp
-    logical :: lns
+    logical(kind=1) :: lns
 !
 ! VARIABLES LOCALES
     integer :: ifm, ifreq, indf, niv, vali(4)

@@ -91,7 +91,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
         call utmess('F', 'POSTRELE_26', nk=2, valk=valk)
     endif
 !
-    call jedupo(chelm//'.CELV', 'V', nomjv, .false.)
+    call jedupo(chelm//'.CELV', 'V', nomjv, .false._1)
     call jeveuo(nomjv, 'E', iavale)
 !
     call jeveuo(chelm//'.CELK', 'L', vk24=celk)

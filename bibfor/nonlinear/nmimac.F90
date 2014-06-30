@@ -53,14 +53,14 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: lreli, lpilo, lctcd, lctcc
-    logical :: lborst, lrefe, lcomp
-    logical :: lboucc, lboucf, lboucg, lallv, lnewtf, lnewtc, lnewtg
+    logical(kind=1) :: lreli, lpilo, lctcd, lctcc
+    logical(kind=1) :: lborst, lrefe, lcomp
+    logical(kind=1) :: lboucc, lboucf, lboucg, lallv, lnewtf, lnewtc, lnewtg
     character(len=24) :: sdtabc, slcolo, sdcolo
     integer :: icolo, nbcolo
     character(len=24) :: suiinf
     integer :: jsuiin
-    logical :: linfre, linftp, lcsv
+    logical(kind=1) :: linfre, linftp, lcsv
     integer :: isuiv, nbsuiv
     character(len=1) :: indsui
     character(len=9) :: typcol
@@ -105,125 +105,125 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 !
 ! --- PAS DE TEMPS
 !
-    if (lcsv) call oblsap(slcolo, 'INCR_INST', .true.)
+    if (lcsv) call oblsap(slcolo, 'INCR_INST', .true._1)
 !
 ! --- CONTACT - BOUCLE GEOMETRIQUE
 !
-    if (lboucg) call oblsap(slcolo, 'BOUC_GEOM', .true.)
+    if (lboucg) call oblsap(slcolo, 'BOUC_GEOM', .true._1)
 !
 ! --- CONTACT - BOUCLE FROTTEMENT
 !
-    if (lboucf) call oblsap(slcolo, 'BOUC_FROT', .true.)
+    if (lboucf) call oblsap(slcolo, 'BOUC_FROT', .true._1)
 !
 ! --- CONTACT - BOUCLE CONTACT
 !
-    if (lboucc) call oblsap(slcolo, 'BOUC_CONT', .true.)
+    if (lboucc) call oblsap(slcolo, 'BOUC_CONT', .true._1)
 !
 ! --- ITERATIONS DE NEWTON
 !
-    call oblsap(slcolo, 'ITER_NUME', .true.)
+    call oblsap(slcolo, 'ITER_NUME', .true._1)
 !
 ! --- RESI_GLOB_RELA
 !
-    call oblsap(slcolo, 'RESI_RELA', .true.)
-    if (linfre) call oblsap(slcolo, 'RELA_NOEU', .true.)
+    call oblsap(slcolo, 'RESI_RELA', .true._1)
+    if (linfre) call oblsap(slcolo, 'RELA_NOEU', .true._1)
 !
 ! --- RESI_GLOB_MAXI
 !
-    call oblsap(slcolo, 'RESI_MAXI', .true.)
-    if (linfre) call oblsap(slcolo, 'MAXI_NOEU', .true.)
+    call oblsap(slcolo, 'RESI_MAXI', .true._1)
+    if (linfre) call oblsap(slcolo, 'MAXI_NOEU', .true._1)
 !
 ! --- GEOMETRIE (NEWTON GENERALISE)
 !
     if (lnewtg) then
-        call oblsap(slcolo, 'GEOM_NEWT', .true.)
+        call oblsap(slcolo, 'GEOM_NEWT', .true._1)
         if (linfre) then
-            call oblsap(slcolo, 'GEOM_NOEU', .true.)
+            call oblsap(slcolo, 'GEOM_NOEU', .true._1)
         endif
     endif
 !
 ! --- SEUIL DE COULOMB (NEWTON GENERALISE)
 !
     if (lnewtf) then
-        call oblsap(slcolo, 'FROT_NEWT', .true.)
+        call oblsap(slcolo, 'FROT_NEWT', .true._1)
         if (linfre) then
-            call oblsap(slcolo, 'FROT_NOEU', .true.)
+            call oblsap(slcolo, 'FROT_NOEU', .true._1)
         endif
     endif
 !
 ! --- STATUTS DE CONTACT (NEWTON GENERALISE)
 !
     if (lnewtc) then
-        call oblsap(slcolo, 'CONT_NEWT', .true.)
+        call oblsap(slcolo, 'CONT_NEWT', .true._1)
     endif
 !
 ! --- RESIDU PAR REFERENCE
 !
     if (lrefe) then
-        call oblsap(slcolo, 'RESI_REFE', .true.)
+        call oblsap(slcolo, 'RESI_REFE', .true._1)
         if (linfre) then
-            call oblsap(slcolo, 'REFE_NOEU', .true.)
+            call oblsap(slcolo, 'REFE_NOEU', .true._1)
         endif
     endif
 !
 ! --- RESIDU PAR FORCES NODALES CMP (THM)
 !
     if (lcomp) then
-        call oblsap(slcolo, 'RESI_COMP', .true.)
+        call oblsap(slcolo, 'RESI_COMP', .true._1)
         if (linfre) then
-            call oblsap(slcolo, 'COMP_NOEU', .true.)
+            call oblsap(slcolo, 'COMP_NOEU', .true._1)
         endif
     endif
 !
 ! --- BOUCLES CONTACT
 !
     if (lboucg .or. lboucf .or. lboucc) then
-        call oblsap(slcolo, 'BOUC_VALE', .true.)
+        call oblsap(slcolo, 'BOUC_VALE', .true._1)
         if (linfre) then
-            call oblsap(slcolo, 'BOUC_NOEU', .true.)
+            call oblsap(slcolo, 'BOUC_NOEU', .true._1)
         endif
     endif
 !
 ! --- METHODE DE BORST
 !
     if (lborst) then
-        call oblsap(slcolo, 'DEBORST  ', .true.)
+        call oblsap(slcolo, 'DEBORST  ', .true._1)
     endif
 !
 ! --- RECHERCHE LINEAIRE
 !
     if (lreli) then
-        call oblsap(slcolo, 'RELI_NBIT', .true.)
-        call oblsap(slcolo, 'RELI_COEF', .true.)
+        call oblsap(slcolo, 'RELI_NBIT', .true._1)
+        call oblsap(slcolo, 'RELI_COEF', .true._1)
     endif
 !
 ! --- PILOTAGE
 !
     if (lpilo) then
-        call oblsap(slcolo, 'PILO_COEF', .true.)
+        call oblsap(slcolo, 'PILO_COEF', .true._1)
     endif
 !
 ! --- OPTION D'ASSEMBLAGE
 !
-    call oblsap(slcolo, 'MATR_ASSE', .true.)
+    call oblsap(slcolo, 'MATR_ASSE', .true._1)
 !
 ! --- CONTACT DISCRET - INFORMATIONS SUR SOUS-ITERATIONS
 !
     if (lctcd .and. (.not.lallv)) then
-        call oblsap(slcolo, 'CTCD_NBIT', .true.)
+        call oblsap(slcolo, 'CTCD_NBIT', .true._1)
     endif
 !
 ! --- CONTACT CONTINU - DETECTION CYCLAGE
 !
     if (lctcc .and. (.not.lallv)) then
-        call oblsap(slcolo, 'CTCC_CYCL', .true.)
+        call oblsap(slcolo, 'CTCC_CYCL', .true._1)
     endif
 !
 !
 ! --- TEMPS PASSE DANS L'ITERATION
 !
     if (linftp) then
-        call oblsap(slcolo, 'ITER_TIME', .true.)
+        call oblsap(slcolo, 'ITER_TIME', .true._1)
     endif
 !
 ! --- ACTIVATION DES COLONNES POUR LE SUIVI EN TEMPS REEL
@@ -234,7 +234,7 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
     do isuiv = 1, nbsuiv
         call impfoi(0, 1, isuiv, indsui)
         typcol = 'SUIVDDL'//indsui
-        call oblsap(slcolo, typcol, .true.)
+        call oblsap(slcolo, typcol, .true._1)
     end do
 !
 ! --- CALCUL DE LA LARGEUR DE LA LIGNE
@@ -245,7 +245,7 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 !
     do icolo = 1, nbcolo
         call oblgoi(slcolo, icolo, sdcolo)
-        call obsetb(sdcolo, 'VALE_AFFE', .false.)
+        call obsetb(sdcolo, 'VALE_AFFE', .false._1)
     end do
 !
     call jedema()

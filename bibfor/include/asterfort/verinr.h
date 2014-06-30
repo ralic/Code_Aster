@@ -20,6 +20,6 @@ interface
         integer :: nbval
         character(len=19) :: tbins1
         character(len=19) :: tbins2
-        logical :: verinr
+        logical(kind=1) :: verinr
     end function verinr
 end interface

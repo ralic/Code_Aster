@@ -46,7 +46,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
     integer :: n1, ier, kotyp, im, numa, ityp, nume, iatyma, lgp, lgm
     integer :: ilist, klist, nbmc, nbma, jnoma
     parameter     ( nbmc = 3 )
-    logical :: lnume, lmail
+    logical(kind=1) :: lnume, lmail
     integer :: lopt, lnom
     character(len=8) :: noma, option, oldtyp, prfm, nommai, knume
     character(len=16) :: tymocl(nbmc), motcle(nbmc)

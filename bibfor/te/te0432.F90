@@ -58,7 +58,7 @@ subroutine te0432(option, nomte)
     real(kind=8) :: aexc(3, 3, 8, 8), a(6, 6, 8, 8), coef, matv(1176)
     real(kind=8) :: matp(48, 48)
     real(kind=8) :: diag(3, 8), wgt, alfam(3), somme(3), masvit(48), ecin
-    logical :: lexc, ldiag
+    logical(kind=1) :: lexc, ldiag
 !
 !
     lexc = (lteatt('CODMOD','GRC'))

@@ -21,8 +21,8 @@ interface
         real(kind=8) :: coefff
         real(kind=8) :: coefac
         real(kind=8) :: coefaf
-        logical :: lpenac
-        logical :: lpenaf
+        logical(kind=1) :: lpenac
+        logical(kind=1) :: lpenaf
         integer :: iresof
         integer :: iresog
         real(kind=8) :: lambds

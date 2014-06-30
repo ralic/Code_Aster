@@ -66,7 +66,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
     real(kind=8) :: ptrac, pref, maxi, cohes, factor
     character(len=7) :: etat
     character(len=8) :: mod, nomail
-    logical :: debug
+    logical(kind=1) :: debug
 !
     common /tdim/   ndt, ndi
     common /meshuj/ debug

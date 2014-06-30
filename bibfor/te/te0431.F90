@@ -59,7 +59,7 @@ subroutine te0431(option, nomte)
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: epsm, deps, sigm, sig, tmp, rig, valres(2)
     real(kind=8) :: angmas(3)
-    logical :: vecteu, matric, lexc
+    logical(kind=1) :: vecteu, matric, lexc
 !
 ! - BOOLEEN UTILES
 !

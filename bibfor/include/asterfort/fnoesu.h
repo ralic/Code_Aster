@@ -35,7 +35,7 @@ interface
         integer :: press2(7)
         integer :: tempe(5)
         integer :: typvf
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: ipoids
         integer :: ivf
         integer :: idfde

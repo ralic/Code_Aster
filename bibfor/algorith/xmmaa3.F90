@@ -65,7 +65,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
     integer :: i, j, k, l, jn, in, ifh, jfh, coefi, coefj
     integer :: pli
     real(kind=8) :: ffi
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 ! ----------------------------------------------------------------------
 !

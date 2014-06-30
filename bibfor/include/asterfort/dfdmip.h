@@ -21,7 +21,7 @@ interface
                       dfdi)
         integer :: nno
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: geom(ndim, nno)
         integer :: g
         integer :: iw

@@ -55,7 +55,7 @@
 ! DECLARATION VARIABLES LOCALES
       integer      :: ireor1,ireor2,i,j,k,compt1,compt2,compt3,iauxi,iauxj,nconvl,ifm,niv
       real(kind=8) :: seuilr,seuilp,auxri,auxri1
-      logical      :: ltest,lcheck
+      logical(kind=1)      :: ltest,lcheck
 
 !-----------------------------------------------------------------------
       call jemarq()
@@ -69,7 +69,7 @@
       if (lcheck) then
           write(ifm,*)'m-orthogonalite std avant vpgsmm'
           do 10 i=1,nconv
-              call mrmult('ZERO',lmatb,vect(1,i),vaux,1,.false.)
+              call mrmult('ZERO',lmatb,vect(1,i),vaux,1,.false._1)
               auxri=0.d0
               do 11 j=1,i
                   auxri1=0.d0
@@ -183,7 +183,7 @@
       if (lcheck) then
           write(ifm,*)'m-orthogonalite std apres vpgsmm'
           do 80 i=1,nconv
-              call mrmult('ZERO',lmatb,vect(1,i),vaux,1,.false.)
+              call mrmult('ZERO',lmatb,vect(1,i),vaux,1,.false._1)
               auxri=0.d0
               do 81 j=1,i
                   auxri1=0.d0

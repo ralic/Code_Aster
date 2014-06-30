@@ -68,7 +68,7 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 #include "asterfort/greihm.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/modthm.h"
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
     integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
     integer :: ndim, nnos, nno1, nno2, ntrou
     integer :: dimdef, dimcon

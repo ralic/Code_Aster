@@ -30,7 +30,7 @@ interface
         integer :: nbno
         integer :: icmp
         integer :: ifi
-        logical :: iwri
+        logical(kind=1) :: iwri
         integer :: iadmax
     end subroutine irgmg1
 end interface

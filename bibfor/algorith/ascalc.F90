@@ -40,7 +40,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     real(kind=8) :: f1gup, f2gup
     character(len=*) :: resu, masse, mome, psmo, stat, typcmo, typcdi, knomsy(*)
     character(len=*) :: nomsup(*)
-    logical :: monoap, muapde, comdir, tronc, corfre
+    logical(kind=1) :: monoap, muapde, comdir, tronc, corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,7 +104,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     integer :: ngr,  jdgn, ier, ncompt, nintra
     parameter     ( nbpara = 5 )
     real(kind=8) :: temps
-    logical :: prim, secon, glob
+    logical(kind=1) :: prim, secon, glob
     character(len=4) :: ctyp
     character(len=8) :: k8b, noeu, noma
     character(len=15) :: motfa1

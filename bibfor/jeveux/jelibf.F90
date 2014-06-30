@@ -66,7 +66,7 @@ subroutine jelibf(cond, clas, info)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical :: litlec
+    logical(kind=1) :: litlec
     common /lficje/  litlec(n)
 !
     common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)

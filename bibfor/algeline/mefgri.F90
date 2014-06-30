@@ -38,7 +38,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
 !
     character(len=3) :: k3ig, k3jg
     character(len=24) :: valk(2)
-    logical :: intnul
+    logical(kind=1) :: intnul
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

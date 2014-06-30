@@ -7,7 +7,7 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)
     integer :: nbcycl
-    logical :: lhaigh, lke
+    logical(kind=1) :: lhaigh, lke
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

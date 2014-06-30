@@ -20,11 +20,11 @@ interface
                       sdieto, leinit, icham)
         character(len=24) :: modele
         character(len=24) :: compor
-        logical :: evonol
+        logical(kind=1) :: evonol
         character(len=8) :: result
         integer :: numein
         character(len=24) :: sdieto
-        logical :: leinit
+        logical(kind=1) :: leinit
         integer :: icham
     end subroutine nmetl3
 end interface

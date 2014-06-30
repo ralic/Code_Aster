@@ -34,9 +34,9 @@ interface
         real(kind=8) :: alpha
         real(kind=8) :: alfmc
         real(kind=8) :: ep
-        logical :: lrgm
+        logical(kind=1) :: lrgm
         integer :: ipg
-        logical :: ther
+        logical(kind=1) :: ther
         real(kind=8) :: tref
         real(kind=8) :: dtmoy
         real(kind=8) :: dtgra

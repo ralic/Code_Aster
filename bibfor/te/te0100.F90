@@ -58,7 +58,8 @@ subroutine te0100(option, nomte)
     integer :: ndim, nnos, jgano, idim
     real(kind=8) :: vect1(54), vect2(4*27*27), vect3(4*27*2), dfdi(4*9)
     real(kind=8) :: angmas(7), bary(3)
-    logical :: matsym
+    logical(kind=1) :: matsym
+    logical :: lcond
 !     POUR TGVERI
     real(kind=8) :: sdepl(3*9), svect(3*9), scont(6*9), smatr(3*9*3*9), epsilo
     real(kind=8) :: varia(2*3*9*3*9)
@@ -84,7 +85,8 @@ subroutine te0100(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        ASSERT(lteatt('C_PLAN', 'OUI'))
+        lcond=lteatt('C_PLAN', 'OUI')
+        ASSERT(lcond)
     endif
 !
     if (lteatt('TYPMOD2','ELEMDISC')) then

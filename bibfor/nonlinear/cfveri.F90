@@ -103,7 +103,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
     real(kind=8) :: jeu, dist
     character(len=8) :: nomnoe, nommam, nomnom, k8bla
     character(len=16) :: nompt, noment
-    logical :: lveri
+    logical(kind=1) :: lveri
     integer :: jjeux, jloca, jenti, jzone
 !
 ! ----------------------------------------------------------------------

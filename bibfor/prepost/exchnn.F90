@@ -23,7 +23,7 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 #include "asterfort/iposdg.h"
     integer :: descn(*), tcmp(*), nbc, taber(*), numn, tnueq(*)
     real(kind=8) :: tvale(*), valcmp(*)
-    logical :: b
+    logical(kind=1) :: b
 !
 !**********************************************************************
 !

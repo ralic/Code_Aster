@@ -19,7 +19,7 @@ interface
     subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
                       poinc2, elrefe, ndegre)
         character(len=8) :: typmac
-        logical :: lmaj
+        logical(kind=1) :: lmaj
         integer :: nbf
         integer :: nsomf
         real(kind=8) :: poinc1

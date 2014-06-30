@@ -87,7 +87,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     real(kind=8) :: viscl, dviscl, viscg, dviscg
     real(kind=8) :: mamolg, mamolv
     character(len=16) :: option, thmc
-    logical :: perman, vf
+    logical(kind=1) :: perman, vf
     integer :: ifa
     real(kind=8) :: zero
     parameter    (zero=0.d0)
@@ -98,7 +98,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     real(kind=8) :: lambd1(5), lambd2(5), fv(5), fa(5), visco, dvisco
     real(kind=8) :: krel1, dkrel1, rho12, rho21, masrt
     real(kind=8) :: rho22, kh
-    logical :: yavp
+    logical(kind=1) :: yavp
 !
 ! VARIABLES LOCALES PERMETTANT D'EXPRIMER LES DERIVEES DES
 ! GRADIENTS DES PRESSIONS DE GAZ ET DE VAPEUR

@@ -21,7 +21,7 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
     real(kind=8) :: temps, f1gup, f2gup
     character(len=*) :: typcmo
     character(len=16) :: nomsy
-    logical :: monoap, corfre, muapde
+    logical(kind=1) :: monoap, corfre, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

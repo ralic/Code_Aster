@@ -80,7 +80,7 @@ subroutine penorm(resu, modele)
     integer :: nb_cmp_act
     real(kind=8) :: prec, inst, vnorm(1)
     complex(kind=8) :: c16b
-    logical :: exiord
+    logical(kind=1) :: exiord
     character(len=4) :: tych, ki, exirdm
     character(len=8) :: mailla, k8b, resuco, chamg, typmcl(1), tout
     character(len=8) :: tmpres, nomgd, crit

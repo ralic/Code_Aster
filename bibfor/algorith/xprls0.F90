@@ -100,7 +100,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     real(kind=8) :: armin, longar, longmx, mp(3)
     character(len=8) :: typma
     character(len=19) :: maicou, nomcou, vnouls, vnoult, mai, poifis, trifis
-    logical :: dejain, dejadi, noemai, in, deja, bool
+    logical(kind=1) :: dejain, dejadi, noemai, in, deja
+    logical :: bool
     real(kind=8) :: toll
 !
 !     DOMAIN RESTRICTION
@@ -108,7 +109,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
 !     UPWIND INTEGRATION
     integer ::  jtri, nbpfis, pos
-    logical :: intabl, upwind
+    logical(kind=1) :: intabl, upwind
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
     integer :: iatri(20), ibtri(20), ictri(20)
@@ -751,7 +752,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             zl(ipproj-1+ino) = .true.
         endif
 !
-        ASSERT(dejadi)
+        bool=dejadi
+        ASSERT(bool)
         zl(jzero-1+nuno)=.true.
 !
 300     continue

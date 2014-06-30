@@ -11,7 +11,7 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
     parameter (nmax=10)
     character(len=15) :: noms(nmax)
     integer :: nb, iprec, iretg
-    logical :: alarme
+    logical(kind=1) :: alarme
     save noms,nb,iprec,alarme,iretg
     integer :: iordr
     character(len=*) :: nomsd, nomsy

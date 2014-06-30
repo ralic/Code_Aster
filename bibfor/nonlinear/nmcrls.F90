@@ -30,7 +30,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: numini, numfin, nbtemp
-    logical :: linsti
+    logical(kind=1) :: linsti
     real(kind=8) :: instin
     character(len=19) :: provli
     character(len=19) :: sddisc

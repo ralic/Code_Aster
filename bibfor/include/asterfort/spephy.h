@@ -25,8 +25,8 @@ interface
         integer :: nbn
         integer :: nbmr
         integer :: ioptch
-        logical :: intphy
-        logical :: intmod
+        logical(kind=1) :: intphy
+        logical(kind=1) :: intmod
         character(len=8) :: nomu
         character(len=8) :: table
         real(kind=8) :: freq(2, nbm, *)

@@ -70,7 +70,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 ! ----------------------------------------------------------------------
     integer :: init, iblanc, valloc, lsic
     integer :: ic, ival(4), unmega
-    logical :: linit, ldeps
+    logical(kind=1) :: linit, ldeps
     character(len=8) :: cblanc
     equivalence    ( cblanc,iblanc )
     parameter      ( nde = 6)

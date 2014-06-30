@@ -41,7 +41,7 @@ interface
         real(kind=8) :: riggen(*)
         integer :: descmr
         real(kind=8) :: rgygen(*)
-        logical :: lamor
+        logical(kind=1) :: lamor
         real(kind=8) :: amogen(*)
         integer :: descma
         real(kind=8) :: gyogen(*)
@@ -93,7 +93,7 @@ interface
         integer :: nbpal
         real(kind=8) :: dtsto
         real(kind=8) :: vrotat
-        logical :: prdeff
+        logical(kind=1) :: prdeff
         character(len=8) :: nomres
         integer :: nbexci
         real(kind=8) :: passto(*)

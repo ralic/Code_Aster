@@ -62,7 +62,7 @@ subroutine wppgen(lmasse, lamor, lraide, masseg, amorg,&
     if (lmasse .ne. 0) then
         do 100 ivect = 1, nbvect
             call mcmult('ZERO', lmasse, vect(1, ivect), zc(laux+1), 1,&
-                        .false.)
+                        .false._1)
             rval = zero
             do 110 ieq = 1, neq
                 rval = rval + dconjg(vect(ieq,ivect)) * zc(laux+ieq)
@@ -75,7 +75,7 @@ subroutine wppgen(lmasse, lamor, lraide, masseg, amorg,&
     if (lamor .ne. 0) then
         do 200 ivect = 1, nbvect
             call mcmult('ZERO', lamor, vect(1, ivect), zc(laux+1), 1,&
-                        .false.)
+                        .false._1)
             rval = zero
             do 210 ieq = 1, neq
                 rval = rval + dconjg(vect(ieq,ivect)) * zc(laux+ieq)
@@ -95,7 +95,7 @@ subroutine wppgen(lmasse, lamor, lraide, masseg, amorg,&
                 zc(laux1+ieq) = vect(ieq,ivect)*iddl(ieq)
 305          continue
             call mcmult('ZERO', lraide, zc(laux1+1), zc(laux+1), 1,&
-                        .false.)
+                        .false._1)
             rval = zero
             do 310 ieq = 1, neq
                 rval = rval + dconjg(vect(ieq,ivect))*zc(laux+ieq)* iddl(ieq)

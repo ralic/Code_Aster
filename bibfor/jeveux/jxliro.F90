@@ -47,12 +47,12 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical :: litlec
+    logical(kind=1) :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
 ! ----------------------------------------------------------------------
     integer :: iadmo, kadd, ladd, lgbl, lso2
-    logical :: lpetit
+    logical(kind=1) :: lpetit
     parameter      ( nde = 6)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXECRO

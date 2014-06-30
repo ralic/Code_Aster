@@ -66,8 +66,8 @@ subroutine nmdopo(sddyna, method, sdpost)
     integer :: iflamb, imvibr, iret, iocc, nddle, ibid, numord, nsta
     integer :: jpexcl, jpstab
     integer :: ifm, niv
-    logical :: ldyna, lstat, limpl
-    logical :: lflam, lmvib
+    logical(kind=1) :: ldyna, lstat, limpl
+    logical(kind=1) :: lflam, lmvib
     character(len=16) :: option, optmod, optrig, modrig, opmrig
     character(len=16) :: matrig, motfac, motpas, typmat, ngeo, ddlexc
     character(len=16) :: dlstab, sign

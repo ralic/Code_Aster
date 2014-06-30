@@ -148,7 +148,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 !
     integer :: idfimd
     integer :: iaux
-    logical :: ficexi
+    logical(kind=1) :: ficexi
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
 !

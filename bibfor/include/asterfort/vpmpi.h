@@ -25,7 +25,7 @@ interface
 !!
         integer           , intent(out)   :: icom1
         integer           , intent(out)   :: icom2
-        logical           , intent(inout) :: lcomod
+        logical(kind=1)   , intent(inout) :: lcomod
         mpi_int           , intent(inout) :: mpicou
         mpi_int           , intent(inout) :: mpicow
         integer           , intent(out)   :: nbvecg

@@ -51,7 +51,7 @@ subroutine pechli(resu, modele, mate)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: chrcst
+    logical(kind=1) :: chrcst
     integer :: i, iret, jinst, jpilo
     integer :: nbord, jord, numord
     real(kind=8) :: chlim(3), chmax(3), inst, eta, prec, valer(3), f0u, m

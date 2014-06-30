@@ -94,7 +94,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
     real(kind=8) :: rho11, phi0, kh, rinstp
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical :: yachai
+    logical(kind=1) :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -109,7 +109,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
     real(kind=8) :: padm, rho22, em, cbiot, unsks, alpha0
     real(kind=8) :: eps, mdal(6), dalal, alphfi, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -129,7 +129,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
     real(kind=8) :: zero, sigmp(6), dmdeps(6), rac2, p1m
     parameter(zero=0.d0)
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
     rac2 = sqrt(2.d0)
     p1m = p1-dp1

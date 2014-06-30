@@ -22,7 +22,7 @@ interface
         character(len=19) :: provli
         integer :: numini
         integer :: numfin
-        logical :: linsti
+        logical(kind=1) :: linsti
         real(kind=8) :: instin
         integer :: nbtemp
         real(kind=8) :: dtmin

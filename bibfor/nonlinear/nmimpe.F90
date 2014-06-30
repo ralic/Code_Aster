@@ -28,7 +28,7 @@ subroutine nmimpe(modele, limped)
 #include "asterfort/utmess.h"
 !
     character(len=24) :: modele
-    logical :: limped
+    logical(kind=1) :: limped
 !
 !
 !

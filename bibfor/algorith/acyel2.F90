@@ -61,7 +61,7 @@ subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
     character(len=*) :: nmcolz, nomobz
     complex(kind=8) :: cmat(ndim, ndim)
     integer :: lilig(nblig), licol(nbcol)
-    logical :: okpart
+    logical(kind=1) :: okpart
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

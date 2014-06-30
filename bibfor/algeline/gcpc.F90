@@ -186,7 +186,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
             call dcopy(m, r, 1, zr(jsmbr), 1)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
             call amumph('RESOUD', solvbd, matas, zr(jsmbr), [cbid],&
-                        ' ', 1, ier, .true.)
+                        ' ', 1, ier, .true._1)
             call jeveuo(smbr//'.VALE', 'L', jsmbr)
             call dcopy(m, zr(jsmbr), 1, rr, 1)
         else

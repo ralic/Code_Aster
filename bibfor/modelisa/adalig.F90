@@ -91,7 +91,7 @@ subroutine adalig(ligrz)
 !
 ! --- RECOPIE DE LIEL DANS TLIEL ET DESTRUCTION DE LIEL
     call jelira(liel, 'CLAS', cval=clas)
-    call jedupo(liel, 'V', tliel, .true.)
+    call jedupo(liel, 'V', tliel, .true._1)
     call jedetr(liel)
 !
 !

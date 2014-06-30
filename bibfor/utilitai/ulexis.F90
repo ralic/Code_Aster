@@ -1,6 +1,6 @@
 function ulexis(iul)
     implicit none
-    logical :: ulexis
+    logical(kind=1) :: ulexis
 #include "asterfort/codent.h"
 #include "asterfort/ulopen.h"
     integer :: iul, i, unit
@@ -33,7 +33,7 @@ function ulexis(iul)
     integer :: first, unitfi(mxf), nbfile
     common/ asgfi1 / first, unitfi      , nbfile
     common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
-    logical :: ficexi
+    logical(kind=1) :: ficexi
     character(len=8) :: k8b
     character(len=255) :: namell
 !     ------------------------------------------------------------------

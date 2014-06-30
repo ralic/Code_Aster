@@ -94,7 +94,7 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
 !
 ! --- CONSTRUCTION DE LA LISTE DES INSTANTS
 !
-    call nmdecc(nomlis, .true., optdec, deltat, instam,&
+    call nmdecc(nomlis, .true._1, optdec, deltat, instam,&
                 ratio, typdec, nbrpas, deltac, dtmin,&
                 retdec)
 !

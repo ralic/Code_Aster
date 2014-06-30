@@ -61,7 +61,7 @@ subroutine masyns(matas)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', lgbloc)
 !
 !
-    call jedupo(mat19//'.VALM', 'V', '&&MASYNS.VALM', .false.)
+    call jedupo(mat19//'.VALM', 'V', '&&MASYNS.VALM', .false._1)
     call jedetr(mat19//'.VALM')
 !
     call jecrec(mat19//'.VALM', base//' V '//ktyp, 'NU', 'DISPERSE', 'CONSTANT',&

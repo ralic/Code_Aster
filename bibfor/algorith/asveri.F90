@@ -16,7 +16,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
     integer :: ndir(*), nordr(*), nsupp(*)
     integer :: vali, nbsup
     character(len=*) :: knomsy(*), meca, psmo, stat, nomsup(nbsup, *)
-    logical :: tronc, monoap
+    logical(kind=1) :: tronc, monoap
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

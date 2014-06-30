@@ -84,8 +84,8 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lgrot, ldyna, lnkry
-    logical :: lcont, leltc, lctcc
+    logical(kind=1) :: lgrot, ldyna, lnkry
+    logical(kind=1) :: lcont, leltc, lctcc
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu
@@ -94,7 +94,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
     integer ::  jdepde
     integer :: indro
     character(len=2) :: codret
-    logical :: scotch
+    logical(kind=1) :: scotch
     character(len=24) :: mdecol
     integer :: jmdeco
     integer :: iterat

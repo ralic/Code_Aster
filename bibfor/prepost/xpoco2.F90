@@ -64,14 +64,14 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     integer ::  jcvid1, jcvil1,  jcvid2, jcvil2
     integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
     integer :: ncmv1, ncmv2, ndimc, idecv2, idecl2
-    logical :: lmeca, pre1
+    logical(kind=1) :: lmeca, pre1
     character(len=16) :: tysd
     integer :: iviex, iret
 !
     integer :: jresd1,  jresl1, iadr1
     integer :: jresd2,  jresl2, iadr2
     integer :: jcnsl1
-    logical :: exist(nbno, 7)
+    logical(kind=1) :: exist(nbno, 7)
     real(kind=8), pointer :: cnsv1(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: cesv1(:) => null()

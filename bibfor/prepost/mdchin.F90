@@ -70,7 +70,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
     parameter (edlect=0)
 !
     integer :: idfimd
-    logical :: dejouv
+    logical(kind=1) :: dejouv
 !====
 ! 1. ON OUVRE LE FICHIER EN LECTURE
 !====

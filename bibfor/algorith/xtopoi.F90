@@ -56,7 +56,7 @@ subroutine xtopoi(noma, modele)
 !
     character(len=19) :: ligrel, chgeom
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifm, niv, ifmdbg, nivdbg,  ima, nbma
     integer :: jcesd,  jcesl, iad
     character(len=16) :: option

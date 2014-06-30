@@ -34,7 +34,7 @@ interface
         integer :: iforc
         integer :: itemps
         integer :: ivectu
-        logical :: fonc
-        logical :: fono
+        logical(kind=1) :: fonc
+        logical(kind=1) :: fono
     end subroutine xfovol
 end interface

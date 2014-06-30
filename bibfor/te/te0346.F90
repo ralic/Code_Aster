@@ -49,7 +49,7 @@ subroutine te0346(option, nomte)
     integer :: istrxm, istrxp, ldep
     character(len=4) :: fami
     character(len=24) :: valk(3)
-    logical :: vecteu, matric, reactu
+    logical(kind=1) :: vecteu, matric, reactu
     real(kind=8) :: u(14), du(14), fl(14), pgl(3, 3), klv(105)
     real(kind=8) :: xd(3)
     real(kind=8) :: ey, ez, gamma, xl, xl2

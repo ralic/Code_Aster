@@ -51,7 +51,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     character(len=24) :: nomgr, magrno, manono, magrma, manoma
     real(kind=8) :: zero, x(8), y(8), z(8), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     integer :: iarg
 !
 !-----------------------------------------------------------------------

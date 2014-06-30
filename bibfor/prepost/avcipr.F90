@@ -27,7 +27,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     integer ::jomin, jomax, jvmin, jvmax
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
-    logical :: fordef
+    logical(kind=1) :: fordef
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -150,7 +150,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
 !    real(kind=8) :: vectra(2*nbvec*nbordr), rmima(4*nbvec)
 !    integer :: iflag(nbvec), itrv(2*(nbordr+2))
-!    logical :: lsig0
+!    logical(kind=1) :: lsig0
 !    real(kind=8) :: raxe(nbvec*nbordr), valpoi(nbvec*nbordr)
 !    integer :: npoin(nbvec), valord(nbvec*nbordr)
 !    integer :: npic(nbvec), ordpic(nbvec*(nbordr+2))
@@ -158,7 +158,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 
     real(kind=8) :: rmima(4*nbvec)
     integer :: iflag(nbvec)
-    logical :: lsig0
+    logical(kind=1) :: lsig0
     integer :: npoin(nbvec)
     integer :: npic(nbvec)
 

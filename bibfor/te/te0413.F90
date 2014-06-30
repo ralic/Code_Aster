@@ -60,7 +60,7 @@ subroutine te0413(option, nomte)
     integer :: iret
 !
     character(len=16) :: valk(2)
-    logical :: dkq, lkit, lbid
+    logical(kind=1) :: dkq, lkit, lbid
 !
     if (nomte.eq.'MEDKQG4') then
         dkq = .true.
@@ -129,7 +129,7 @@ subroutine te0413(option, nomte)
 !
             call crgdm(zi(imate), 'GLRC_DM         ', r8b(1), r8b(2), r8b(3),&
                        r8b(4), r8b(5), r8b(6), r8b(7), seuil,&
-                       r8b(8), r8b(9), ep, .false., ipg,&
+                       r8b(8), r8b(9), ep, .false._1, ipg,&
                        lbid, r8b(10), r8b(11), r8b(12), r8b(13),&
                        r8b(14), r8b(15))
 !

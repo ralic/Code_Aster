@@ -18,9 +18,9 @@
 interface
     subroutine i2fspl(tvois2, tplace, n, existe, adrdbt)
         integer :: tvois2(*)
-        logical :: tplace(*)
+        logical(kind=1) :: tplace(*)
         integer :: n
-        logical :: existe
+        logical(kind=1) :: existe
         integer :: adrdbt
     end subroutine i2fspl
 end interface

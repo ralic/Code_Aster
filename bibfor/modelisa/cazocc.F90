@@ -63,8 +63,8 @@ subroutine cazocc(char, motfac, izone)
     real(kind=8) :: algocr, algofr
     real(kind=8) :: typint, ctrini
     integer :: parint
-    logical :: lintno, lfrot, lsscon, lssfro, lexdir
-    logical :: lgliss, lnewtg, lnewtc
+    logical(kind=1) :: lintno, lfrot, lsscon, lssfro, lexdir
+    logical(kind=1) :: lgliss, lnewtg, lnewtc
 !
 ! ----------------------------------------------------------------------
 !

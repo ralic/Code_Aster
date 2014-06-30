@@ -47,7 +47,8 @@ subroutine cescar(cesz, cartz, basz)
     integer ::  jce1d,  jce1l, jce1v, nbmam, ncmp, ncmpmx
     integer ::  jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
     integer ::  k, jvals, nbpaqu, nbcmps,  vali(3)
-    logical :: idprec, premie
+    logical :: idprec
+    logical(kind=1) ::  premie
     character(len=1) :: base
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca

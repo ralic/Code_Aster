@@ -19,7 +19,7 @@ interface
     subroutine nmgpin(ndim, nno, axi, vu)
         integer :: ndim
         integer :: nno
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: vu(3, 27)
     end subroutine nmgpin
 end interface

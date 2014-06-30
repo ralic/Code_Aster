@@ -23,7 +23,7 @@ subroutine mofick(fa, fav, cont, tange, maxfa,&
 ! ======================================================================
     implicit none
 !
-    logical :: cont, tange
+    logical(kind=1) :: cont, tange
     integer :: maxfa
     integer :: nface, nfacev, nfacem
     integer :: jfa, jfav, fa, fav

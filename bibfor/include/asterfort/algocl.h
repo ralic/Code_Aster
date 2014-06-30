@@ -25,6 +25,6 @@ interface
         character(len=19) :: matass
         character(len=8) :: noma
         integer :: ctccvg
-        logical :: ctcfix
+        logical(kind=1) :: ctcfix
     end subroutine algocl
 end interface

@@ -45,7 +45,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     real(kind=8) :: time
     character(len=*) :: modelz, carelz, matelz
     character(len=*) :: lchar(*), mate, basz, compoz
-    logical :: exitim
+    logical(kind=1) :: exitim
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     character(len=19) :: matele, ligrmo, ligrch
     character(len=1) :: base
     integer ::  icha, icode, ilires, iret
-    logical :: lxfem
+    logical(kind=1) :: lxfem
     character(len=24), pointer :: rerr(:) => null()
 !
 ! ----------------------------------------------------------------------

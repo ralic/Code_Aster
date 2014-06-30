@@ -33,8 +33,8 @@ interface
         integer :: jbas
         integer :: jtail
         character(len=8) :: fiss
-        logical :: goinop
+        logical(kind=1) :: goinop
         character(len=19) :: listpt
-        logical :: orient
+        logical(kind=1) :: orient
     end subroutine xptfon
 end interface

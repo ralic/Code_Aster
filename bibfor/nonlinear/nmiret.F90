@@ -29,7 +29,7 @@ subroutine nmiret(codret, tabret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
-    logical :: tabret(0:10)
+    logical(kind=1) :: tabret(0:10)
     character(len=19) :: codret
 !
 ! ----------------------------------------------------------------------

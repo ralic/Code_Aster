@@ -32,7 +32,7 @@ interface
         character(len=8) :: modmec
         character(len=19) :: chamno
         character(len=14) :: num
-        logical :: vrai
+        logical(kind=1) :: vrai
         integer :: i
         integer :: j
         real(kind=8) :: mij

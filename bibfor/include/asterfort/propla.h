@@ -33,7 +33,7 @@ interface
         integer :: i
         character(len=16) :: nomcri
         character(len=16) :: nomfor
-        logical :: fordef
+        logical(kind=1) :: fordef
         real(kind=8) :: fatsoc
         integer :: jvectr
     end subroutine propla

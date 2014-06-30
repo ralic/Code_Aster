@@ -46,7 +46,7 @@ subroutine te0354(option, nomte)
     integer :: nnomax
     parameter (nnomax=27)
 !
-    logical :: axi, resi
+    logical(kind=1) :: axi, resi
 !      INTEGER NDIM,NNO,NPG,NNOS,G,I,OS,OSM,M,N,IW,IVF,IDFDE,IRET,JGANO
     integer :: ndim, nno, npg, nnos, g, os, osm, m, n, iw, ivf, idfde, iret
     integer :: jgano

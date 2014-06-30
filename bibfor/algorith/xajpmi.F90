@@ -12,7 +12,7 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
 !
     integer :: long, ipt, cpt
     real(kind=8) :: newpt(3), longar, list(*)
-    logical :: ajout
+    logical(kind=1) :: ajout
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
     character(len=8) :: noma
     real(kind=8) :: p(3)
     integer :: i, j, ndim, iadzi, iazk24
-    logical :: deja
+    logical(kind=1) :: deja
 !
 ! --------------------------------------------------------------------
 !

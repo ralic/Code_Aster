@@ -34,7 +34,7 @@ subroutine pacouf(x, fvect, vecr1, vecr2, typflu,&
     integer :: veci1(*)
 !
     complex(kind=8) :: fonct, z, xkf
-    logical :: zrigi
+    logical(kind=1) :: zrigi
     real(kind=8) :: depi
 !
 ! ----------------------------------------------------------------------

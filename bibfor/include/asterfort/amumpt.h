@@ -25,11 +25,11 @@ interface
         integer :: rang
         integer :: nbproc
         integer :: kxmps
-        logical :: lquali
+        logical(kind=1) :: lquali
         character(len=1) :: type
         integer :: ietdeb
         integer :: ietrat
         real(kind=8) :: rctdeb
-        logical :: ldist
+        logical(kind=1) :: ldist
     end subroutine amumpt
 end interface

@@ -76,7 +76,7 @@ subroutine te0311(option, nomte)
     character(len=8) :: nompar(4)
     character(len=4) :: fami
 !
-    logical :: fonc
+    logical(kind=1) :: fonc
 !.......................................................................
 !
     call jemarq()

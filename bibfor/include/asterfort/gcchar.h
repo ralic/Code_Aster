@@ -19,11 +19,11 @@ interface
     subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
                       lpchar, lformu, lfmult, lccomb, cartei,&
                       nomfct, newfct, oldfon)
-        logical :: lfchar
-        logical :: lpchar
-        logical :: lformu
-        logical :: lfmult
-        logical :: lccomb
+        logical(kind=1) :: lfchar
+        logical(kind=1) :: lpchar
+        logical(kind=1) :: lformu
+        logical(kind=1) :: lfmult
+        logical(kind=1) :: lccomb
         character(len=24) :: oldfon
         character(len=8) ::  nomfct
         character(len=8) ::  newfct

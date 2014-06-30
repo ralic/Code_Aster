@@ -24,6 +24,6 @@ interface
         character(len=19) :: sddisc
         real(kind=8) :: instan
         integer :: numarc
-        logical :: force
+        logical(kind=1) :: force
     end subroutine nmarce
 end interface

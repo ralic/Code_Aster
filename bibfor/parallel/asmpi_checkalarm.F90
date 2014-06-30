@@ -41,7 +41,7 @@ subroutine asmpi_checkalarm()
     mpi_int :: i, rank, nbpro4, ival(1), mpicou, mpicow, nbv
     mpi_int, parameter :: pr0=0
     integer :: ia, np1, vali(2)
-    logical :: vu
+    logical(kind=1) :: vu
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET_WORLD', mpicow)

@@ -41,7 +41,7 @@ interface
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: crit(*)
         character(len=16) :: compor(*)
-        logical :: matsym
+        logical(kind=1) :: matsym
         real(kind=8) :: coopg(4, npg)
         real(kind=8) :: tm
         real(kind=8) :: tp

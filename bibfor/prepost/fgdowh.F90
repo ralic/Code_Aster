@@ -10,7 +10,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)
     integer :: nbcycl
-    logical :: lhaigh, lke
+    logical(kind=1) :: lhaigh, lke
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
     character(len=8) :: nomres, nompar, kbid
     character(len=10) :: pheno
     real(kind=8) :: nrupt(1), delta
-    logical :: endur
+    logical(kind=1) :: endur
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar

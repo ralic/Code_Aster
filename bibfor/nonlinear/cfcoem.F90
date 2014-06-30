@@ -34,7 +34,7 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
     integer :: posnsm(9)
     integer :: ddl(30)
     real(kind=8) :: coef(30), cofx(30), cofy(30)
-    logical :: lctfd, lctf3d
+    logical(kind=1) :: lctfd, lctf3d
 !
 ! ----------------------------------------------------------------------
 !

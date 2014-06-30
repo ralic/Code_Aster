@@ -34,14 +34,14 @@ interface
         character(len=*) :: knomsy(*)
         integer :: nbopt
         integer :: ndir(*)
-        logical :: monoap
-        logical :: muapde
+        logical(kind=1) :: monoap
+        logical(kind=1) :: muapde
         integer :: nsupp(*)
         character(len=*) :: typcmo
         real(kind=8) :: temps
-        logical :: comdir
+        logical(kind=1) :: comdir
         character(len=*) :: typcdi
-        logical :: tronc
+        logical(kind=1) :: tronc
         real(kind=8) :: amort(*)
         real(kind=8) :: spectr(*)
         real(kind=8) :: gamma0(*)
@@ -49,7 +49,7 @@ interface
         real(kind=8) :: reasup(*)
         real(kind=8) :: depsup(*)
         integer :: tcosup(*)
-        logical :: corfre
+        logical(kind=1) :: corfre
         real(kind=8) :: f1gup
         real(kind=8) :: f2gup
     end subroutine ascalc

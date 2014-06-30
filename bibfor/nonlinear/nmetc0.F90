@@ -61,7 +61,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
     character(len=24) :: lchin(1), lchout(2)
     character(len=19) :: ligrmo
     character(len=24) :: chgeom
-    logical :: lsief, lvari, lstrx
+    logical(kind=1) :: lsief, lvari, lstrx
 !
 ! ----------------------------------------------------------------------
 !

@@ -38,7 +38,7 @@ subroutine op0165()
 #include "asterfort/utmess.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
-    logical :: pmpb, sn, snet, fatigu, lrocht
+    logical(kind=1) :: pmpb, sn, snet, fatigu, lrocht
     integer :: icodre
     character(len=8) :: nommat
     character(len=16) :: typtab, typmec, kopt(4), phenom

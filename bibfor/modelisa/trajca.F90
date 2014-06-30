@@ -99,7 +99,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     complex(kind=8) :: cbid
     character(len=3) :: k3b
     character(len=24) :: coorno, nonoca, nonoma
-    logical :: lsplin
+    logical(kind=1) :: lsplin
 !
     integer :: nbsub, jgmai
     parameter    (nbsub=5)

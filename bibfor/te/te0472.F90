@@ -47,7 +47,7 @@ subroutine te0472(option, nomte)
 ! NPG      NB DE POINTS DE GAUSS DE L'ELEMENT DE BORD
 ! ======================================================================
 ! ======================================================================
-    logical :: axi, perman, vf
+    logical(kind=1) :: axi, perman, vf
     integer :: nno, nno2, nnos, kp, npg, ndim, jgano, jgano2, napre1, napre2
     integer :: ipoids, ipoid2, ivf, ivf2, idfde, idfde2, igeom, natemp
     integer :: ipres, k, kk, i, l, ires, iflux, itemps, iopt, ipresf, ndlnm

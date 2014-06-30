@@ -59,7 +59,7 @@ subroutine ssdmgn(mag)
     character(len=8) :: nomacr, nomail, kbid, mal, nosma, pref
     character(len=24) :: nomgnl, nomgng
     integer :: indi(4)
-    logical :: unaun
+    logical(kind=1) :: unaun
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !

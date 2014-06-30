@@ -56,14 +56,14 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
     real(kind=8) :: valr
     complex(kind=8) :: cmesu(nbmesu, nbabs), ceta(nbmode, nbabs)
     complex(kind=8) :: cetap(nbmode, nbabs), ceta2p(nbmode, nbabs)
-    logical :: lfonct
+    logical(kind=1) :: lfonct
 !
     integer :: imod, jmod, imes, iabs, ierr, ibid, jmes
     integer :: lsecmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
     real(kind=8) :: alpha, eps
     real(kind=8) :: zero, depi, rval
     complex(kind=8) :: cval
-    logical :: nul
+    logical(kind=1) :: nul
     character(len=3) :: method
     character(len=8) :: regul
     character(len=16) :: nomcha

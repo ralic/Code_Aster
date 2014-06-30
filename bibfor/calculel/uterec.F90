@@ -61,7 +61,7 @@ subroutine uterec(ndim, iflup, iflum, ino, mno,&
     integer :: noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     real(kind=8) :: valhp(9), valhm(9), valtp(9), valtm(9)
-    logical :: ltheta
+    logical(kind=1) :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES

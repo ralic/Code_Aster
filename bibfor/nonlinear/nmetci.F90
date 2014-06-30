@@ -28,7 +28,7 @@ subroutine nmetci(sdieto, zioch, icham, nomchs, nomgd,&
     integer :: zioch, icham
     character(len=24) :: nomchs, nomgd
     character(len=24) :: motcei, loccha, motcob
-    logical :: letin, larch
+    logical(kind=1) :: letin, larch
 !
 ! ----------------------------------------------------------------------
 !

@@ -32,8 +32,8 @@ subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
 !
     character(len=24), intent(in) :: sd_cont_defi
     character(len=24), intent(in) :: sd_cont_solv
-    logical, intent(in) :: l_loop_cont
-    logical, intent(in) :: l_frot_zone
+    logical(kind=1), intent(in) :: l_loop_cont
+    logical(kind=1), intent(in) :: l_frot_zone
     integer, intent(in) :: point_index
     real(kind=8), intent(in) :: coef_cont
     real(kind=8), intent(in) :: pres_cont_prev

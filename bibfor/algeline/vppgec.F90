@@ -63,7 +63,7 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg,&
     if (lmasse .ne. 0) then
         do 100 ivect = 1, nbvect
             call mcmult('ZERO', lmasse, vect(1, ivect), zc(laux+1), 1,&
-                        .false.)
+                        .false._1)
             cval = dcmplx(0.d0,0.d0)
             do 110 ieq = 1, neq
                 cval = cval + dconjg(vect(ieq,ivect)) * zc(laux+ieq)
@@ -77,7 +77,7 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg,&
     if (lamor .ne. 0) then
         do 200 ivect = 1, nbvect
             call mcmult('ZERO', lamor, vect(1, ivect), zc(laux+1), 1,&
-                        .false.)
+                        .false._1)
             cval = dcmplx(0.d0,0.d0)
             do 210 ieq = 1, neq
                 cval = cval + dconjg(vect(ieq,ivect)) * zc(laux+ieq)
@@ -98,7 +98,7 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg,&
                 zc(laux1+ieq) = vect(ieq,ivect)*iddl(ieq)
 310          continue
             call mcmult('ZERO', lraide, zc(laux1+1), zc(laux+1), 1,&
-                        .false.)
+                        .false._1)
             cval = dcmplx(0.d0,0.d0)
             do 320 ieq = 1, neq
                 cval = cval + vect(ieq,ivect)*zc(laux+ieq)*iddl(ieq)

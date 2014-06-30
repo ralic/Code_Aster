@@ -26,7 +26,7 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 #include "asterfort/jemarq.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmevel.h"
-    logical :: itemax, conver
+    logical(kind=1) :: itemax, conver
     character(len=19) :: sddisc, tabinc(*)
     integer :: liccvg(*), actite
 !
@@ -64,7 +64,7 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 !
     integer :: ifm, niv
     integer :: faccvg, ldccvg, numins
-    logical :: lerror, lsvimx, ldvres, linsta, lcritl
+    logical(kind=1) :: lerror, lsvimx, ldvres, linsta, lcritl
     character(len=24) :: k24bla
     integer :: ievdac
 !

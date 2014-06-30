@@ -50,7 +50,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=*) :: modelz, caraz, matelz, lchar(*), mate, basez
     character(len=19) :: matel
     real(kind=8) :: time
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     integer :: nchar
 ! ----------------------------------------------------------------------
 !
@@ -116,7 +116,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=19) :: resufv(3)
     character(len=24) :: charge
     integer :: jad, i
-    logical :: ltemp, ltref
+    logical(kind=1) :: ltemp, ltref
 !
 !
     call jemarq()

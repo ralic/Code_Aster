@@ -23,7 +23,7 @@ interface
         integer :: nbocc
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
-        logical :: corfre
+        logical(kind=1) :: corfre
         integer :: ndir(*)
         real(kind=8) :: valspe(3, *)
         real(kind=8) :: asyspe(*)

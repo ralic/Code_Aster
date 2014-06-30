@@ -33,7 +33,7 @@ subroutine ops026()
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
     integer :: unite, ifm, niv, n1, nf, nu
-    logical :: sortie
+    logical(kind=1) :: sortie
     character(len=1) :: kacc, ktyp
     character(len=8) :: action, acces, type
     character(len=16) :: knom

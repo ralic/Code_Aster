@@ -95,7 +95,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     character(len=8) :: k8b, nomma, typmp
     character(len=16) :: k16bid, nomcmd
     character(len=24) :: conec, typp, nommai, nomnoe, mesmai, valk(2), nogrp
-    logical :: bug
+    logical(kind=1) :: bug
     integer, pointer :: noeud_apparies(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
     integer, pointer :: type_noeud(:) => null()

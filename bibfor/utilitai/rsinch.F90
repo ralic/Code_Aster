@@ -93,7 +93,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     integer :: iatava, ibid, idebu, ier1, ier2, ierr1, ierr2
     integer :: iloty, imaxi, inomch, ip1, ip2, iposit, nbord2
     integer :: nbordr
-    logical, pointer :: lexi(:) => null()
+    logical(kind=1), pointer :: lexi(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     acce2 = acces
@@ -162,7 +162,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     endif
     1 end do
 !
-    call rsbary(zr(iaobj), nbordr, .false., lexi, rval,&
+    call rsbary(zr(iaobj), nbordr, .false._1, lexi, rval,&
                 i1, i2, iposit)
     if (iposit .eq. -2) then
         ier = 10

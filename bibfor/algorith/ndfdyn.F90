@@ -60,8 +60,8 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
     character(len=24) :: nu
     integer :: jprov,   neq
     real(kind=8) :: coerma, coeram, coerri
-    logical :: lamor, limpl
-    logical :: lnewma, ltheta, lthetd, lthetv, lkrenk
+    logical(kind=1) :: lamor, limpl
+    logical(kind=1) :: lnewma, ltheta, lthetd, lthetv, lkrenk
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: deeq(:) => null()
 !

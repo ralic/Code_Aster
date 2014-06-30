@@ -159,10 +159,10 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
     else
 !
 !       SI NON : ON RECOPIE TELLE QUELLE LA LISTE DES POINTS DU FOND
-        call jedupo(fontmp, 'V', chfond, .false.)
+        call jedupo(fontmp, 'V', chfond, .false._1)
 !
 !       ET ON RECOPIE TELLE QUELLE LA BASE
-        call jedupo(bastmp, 'V', basfon, .false.)
+        call jedupo(bastmp, 'V', basfon, .false._1)
 !
     endif
 !

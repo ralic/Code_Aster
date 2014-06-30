@@ -94,7 +94,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
         call jeexin(noeuin, ier)
         ASSERT(ier.ne.0)
 !
-        call jedupo(noeuin, 'V', fonoeu, .false.)
+        call jedupo(noeuin, 'V', fonoeu, .false._1)
 !
 !       RECUP DE LNOFF
         call jelira(noeuin, 'LONMAX', lnoff)
@@ -106,7 +106,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
         call jeexin(fondin, ier)
         ASSERT(ier.ne.0)
 !
-        call jedupo(fondin, 'V', chfond, .false.)
+        call jedupo(fondin, 'V', chfond, .false._1)
 !
 !       3) BASFON = BASE LOCALE AU FOND DE FISSURE
         basein=nomfis//'.BASEFOND'
@@ -116,7 +116,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
         if (conf .eq. 'COLLEE') then
             call jeexin(basein, ier)
             ASSERT(ier.ne.0)
-            call jedupo(basein, 'V', basfon, .false.)
+            call jedupo(basein, 'V', basfon, .false._1)
         endif
 !
 !       4) TAILLR = TAILLES DES MAILLES CONNECTEES AUX NOEUDS

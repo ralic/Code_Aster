@@ -120,8 +120,8 @@ subroutine te0378(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical :: yaprp, yarop
-    logical :: yaprd, yarod
+    logical(kind=1) :: yaprp, yarop
+    logical(kind=1) :: yaprd, yarod
 !
 ! ----------------------------------------------------------------------
     1000 format(a,' :',(6(1x,1pe17.10)))
@@ -373,7 +373,7 @@ subroutine te0378(option, nomte)
 !
 ! ------- CALCUL DE L'ORIENTATION DE LA MAILLE -------------------------
 !
-    call utjac(.true., zr(igeom), iaux, idfde, 0,&
+    call utjac(.true._1, zr(igeom), iaux, idfde, 0,&
                ibid, nno, orien)
 !
 ! ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. PRIMAL ---

@@ -14,7 +14,7 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
 !
     integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
     integer :: listno(*), icmp, ifi, ima, nbord2, iadmax, jtype, ordr(nbord2)
-    logical :: iwri, lresu
+    logical(kind=1) :: iwri, lresu
     character(len=*) :: partie, chamsy, nomcon
     character(len=24) :: connex
 !     ------------------------------------------------------------------

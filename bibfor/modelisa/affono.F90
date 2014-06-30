@@ -24,7 +24,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
 #include "asterfort/utmess.h"
     integer :: prnm(1), nbcomp, desc, ino, nsurch, forimp(nbcomp)
     real(kind=8) :: valr(1), valfor(nbcomp)
-    logical :: verif
+    logical(kind=1) :: verif
     character(len=4) :: fonree
     character(len=8) :: valk(1), nomn, valfof(nbcomp)
     character(len=16) :: motcle(nbcomp), valkk(2)

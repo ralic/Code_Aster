@@ -56,7 +56,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
     integer :: ipose, iposit(2), iauth, ibid
     character(len=8) :: k8bid
     character(len=16) :: motclf
-    logical :: lfind
+    logical(kind=1) :: lfind
 !
 ! --- DYNA_LINE_HARM
 !

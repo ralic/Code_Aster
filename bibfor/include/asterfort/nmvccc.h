@@ -26,12 +26,12 @@ interface
         character(len=19) :: lchin(nbin)
         character(len=8) :: lpaout(nbout)
         character(len=19) :: lchout(nbout)
-        logical :: exitem
-        logical :: exihyd
-        logical :: exipto
-        logical :: exisec
-        logical :: exiepa
-        logical :: exipha
+        logical(kind=1) :: exitem
+        logical(kind=1) :: exihyd
+        logical(kind=1) :: exipto
+        logical(kind=1) :: exisec
+        logical(kind=1) :: exiepa
+        logical(kind=1) :: exipha
         character(len=19) :: vecel
     end subroutine nmvccc
 end interface

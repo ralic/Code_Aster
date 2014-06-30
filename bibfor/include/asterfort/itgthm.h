@@ -22,7 +22,7 @@ interface
                       nddlk, nddlm, nddlfa, dimuel, ipoids,&
                       ivf, idfde, ipoid2, ivf2, idfde2,&
                       npi2, jgano)
-        logical :: vf
+        logical(kind=1) :: vf
         integer :: typvf
         character(len=3) :: modint
         integer :: mecani(5)

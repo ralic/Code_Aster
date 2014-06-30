@@ -65,7 +65,7 @@ subroutine te0486(option, nomte)
     real(kind=8) :: rigns(2601), pr
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), valpar(7)
     real(kind=8) :: geom_reac(3*mxnoeu)
-    logical :: locapr
+    logical(kind=1) :: locapr
     character(len=8) :: nomail, nompar(7)
 !     ------------------------------------------------------------------
 !

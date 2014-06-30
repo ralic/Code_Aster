@@ -55,7 +55,7 @@ interface
         integer :: inn
         integer :: nnn
         integer :: contac
-        logical :: lmeca
-        logical :: pre1
+        logical(kind=1) :: lmeca
+        logical(kind=1) :: pre1
     end subroutine xpoajd
 end interface 

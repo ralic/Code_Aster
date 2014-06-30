@@ -53,7 +53,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     integer :: jvecen, jvecab
     character(len=24) :: veol, vaol
     integer :: jveol, jvaol
-    logical :: ldyna
+    logical(kind=1) :: ldyna
     character(len=24) :: cham24
     character(len=19) :: sdammo
     character(len=15) :: sdmuap, sdprmo, sdexso

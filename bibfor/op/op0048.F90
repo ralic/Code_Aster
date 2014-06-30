@@ -90,7 +90,7 @@ subroutine op0048()
     complex(kind=8) :: calpha
     character(len=19) :: force0, force1
 !
-    logical :: lamort, lcrea, lprem, exipou
+    logical(kind=1) :: lamort, lcrea, lprem, exipou
     integer, pointer :: ordr(:) => null()
 !     -----------------------------------------------------------------
     data modele   /'                        '/

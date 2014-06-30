@@ -45,6 +45,6 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         character(len=8) , optional, intent(in)  :: fonrev(*)
         integer          , optional, intent(out) :: jrevc, jrevv
         character(len=4) , optional, intent(in)  :: sauve
-        logical          , optional, intent(in)  :: checkarg
+        logical(kind=1)          , optional, intent(in)  :: checkarg
     end subroutine mdallo
 end interface

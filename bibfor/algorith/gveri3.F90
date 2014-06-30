@@ -71,7 +71,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
     real(kind=8) :: maxtai, mintai, rinf, rsup, xl, valpar(1), valres
     real(kind=8) :: valr(2)
 !
-    logical :: thlagr, thlag2
+    logical(kind=1) :: thlagr, thlag2
 !
 !
     call jemarq()

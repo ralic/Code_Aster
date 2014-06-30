@@ -57,7 +57,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=24) :: noojb
     integer :: iret1, iret2
     integer :: nuprf
-    logical :: leco
+    logical(kind=1) :: leco
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

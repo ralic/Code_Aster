@@ -87,7 +87,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !
     integer :: niveau, ifm, niv, iaux
     real(kind=8) :: valthe, insold, inst
-    logical :: evol
+    logical(kind=1) :: evol
     character(len=8) :: ma, psourc
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt
     character(len=19) :: nomgds

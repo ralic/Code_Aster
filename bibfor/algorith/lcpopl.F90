@@ -45,7 +45,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
 !
     real(kind=8) :: bid66(6, 6), hill, dsig(6), nsig, neps
     real(kind=8) :: zero, un, deux, dix
-    logical :: reorie
+    logical(kind=1) :: reorie
     integer :: i, ndt
 !
     parameter (ndt  = 6   )

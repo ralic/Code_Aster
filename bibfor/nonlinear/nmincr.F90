@@ -64,8 +64,8 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
 !
 !
 !
-    logical :: lstat, ldyna
-    logical :: ldepl, lvite, lacce
+    logical(kind=1) :: lstat, ldyna
+    logical(kind=1) :: ldepl, lvite, lacce
 !
 ! ----------------------------------------------------------------------
 !

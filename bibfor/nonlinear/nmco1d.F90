@@ -59,7 +59,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical :: cine, isot, pinto, com1d, elas, cinegc
+    logical(kind=1) :: cine, isot, pinto, com1d, elas, cinegc
     real(kind=8) :: e, et, sigy
     integer :: nvarpi
     parameter    ( nvarpi=8)

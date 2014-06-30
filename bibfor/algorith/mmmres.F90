@@ -102,8 +102,8 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     integer :: jtabf, japjeu
     real(kind=8) :: deltat, eps, valras
     integer :: ifm, niv
-    logical :: lfrot, lveri, lnoeu
-    logical :: lcolli, laffle
+    logical(kind=1) :: lfrot, lveri, lnoeu
+    logical(kind=1) :: lcolli, laffle
     integer ::  jcnslr,  jcnslp
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: cnsvr(:) => null()

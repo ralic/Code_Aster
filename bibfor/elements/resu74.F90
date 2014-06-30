@@ -216,21 +216,21 @@ subroutine resu74(tran, nomres)
 !
 !     --- DUPLICATION ---
 !
-    call jedupo(resu//'           .DEPL', 'G', tran//'           .DEPL', .false.)
-    call jedupo(resu//'           .VITE', 'G', tran//'           .VITE', .false.)
-    call jedupo(resu//'           .ACCE', 'G', tran//'           .ACCE', .false.)
-    call jedupo(resu//'           .ORDR', 'G', tran//'           .ORDR', .false.)
-    call jedupo(resu//'           .DISC', 'G', tran//'           .DISC', .false.)
+    call jedupo(resu//'           .DEPL', 'G', tran//'           .DEPL', .false._1)
+    call jedupo(resu//'           .VITE', 'G', tran//'           .VITE', .false._1)
+    call jedupo(resu//'           .ACCE', 'G', tran//'           .ACCE', .false._1)
+    call jedupo(resu//'           .ORDR', 'G', tran//'           .ORDR', .false._1)
+    call jedupo(resu//'           .DISC', 'G', tran//'           .DISC', .false._1)
     if (ntem2 .gt. 1) then
-        call jedupo(resu//'           .PTEM', 'G', tran//'           .PTEM', .false.)
+        call jedupo(resu//'           .PTEM', 'G', tran//'           .PTEM', .false._1)
     endif
     if (nbchoc .ne. 0) then
-        call jedupo(resu//'           .FCHO', 'G', tran//'           .FCHO', .false.)
-        call jedupo(resu//'           .DLOC', 'G', tran//'           .DLOC', .false.)
-        call jedupo(resu//'           .VCHO', 'G', tran//'           .VCHO', .false.)
-        call jedupo(resu//'           .ICHO', 'G', tran//'           .ICHO', .false.)
+        call jedupo(resu//'           .FCHO', 'G', tran//'           .FCHO', .false._1)
+        call jedupo(resu//'           .DLOC', 'G', tran//'           .DLOC', .false._1)
+        call jedupo(resu//'           .VCHO', 'G', tran//'           .VCHO', .false._1)
+        call jedupo(resu//'           .ICHO', 'G', tran//'           .ICHO', .false._1)
 !       VARIABLES INTERNES (FLAMBAGE)
-        call jedupo(resu//'           .VINT', 'G', tran//'           .VINT', .false.)
+        call jedupo(resu//'           .VINT', 'G', tran//'           .VINT', .false._1)
     endif
 !
 !     --- DESTRUCTION DES OBJETS PROVISOIRES

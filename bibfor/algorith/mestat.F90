@@ -87,8 +87,8 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     character(len=19) :: maprec, vecass, chdepl, matass
     character(len=24) :: numedd, criter, modele, carele
     character(len=24) :: fomult, noojb
-    logical :: matcst, assmat
-    logical :: lbid, ltemp, lhydr, lsech, lptot
+    logical(kind=1) :: matcst, assmat
+    logical(kind=1) :: lbid, ltemp, lhydr, lsech, lptot
     real(kind=8), pointer :: vale(:) => null()
 !
 ! DEB------------------------------------------------------------------

@@ -50,8 +50,8 @@ subroutine nmsolm(sddyna, solalg)
 !
 !
 !
-    logical :: lstat, ldyna
-    logical :: ldepl, lvite, lacce
+    logical(kind=1) :: lstat, ldyna
+    logical(kind=1) :: ldepl, lvite, lacce
     real(kind=8) :: coevit, coeacc
     character(len=19) :: ddepla, dvitla, daccla
     integer :: ifm, niv

@@ -52,7 +52,7 @@ subroutine cormgi(basez, ligrez)
     character(len=8) :: nmaila
     integer :: i, j, pt, nbmail, nbgrel,  iret
     integer :: jrepe, jgrel, nbmgre
-    logical :: exima
+    logical(kind=1) :: exima
 !
 !
 !

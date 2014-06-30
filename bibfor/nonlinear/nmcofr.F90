@@ -76,7 +76,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
     integer :: ifm, niv
     character(len=24) :: clreac
     integer :: jclrea
-    logical :: reageo, ctcfix, reapre
+    logical(kind=1) :: reageo, ctcfix, reapre
 !
 ! ----------------------------------------------------------------------
 !
@@ -107,8 +107,8 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 ! --- SAUVEGARDE AVANT APPARIEMENT
 !
     if (reageo) then
-        call cfsvmu(defico, resoco, .false.)
-        call cfsvfr(defico, resoco, .false.)
+        call cfsvmu(defico, resoco, .false._1)
+        call cfsvfr(defico, resoco, .false._1)
     endif
 !
 ! --- APPARIEMENT

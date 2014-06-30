@@ -72,7 +72,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
     integer :: nnomax, npgmax, epsmax, ddlmax
     parameter (nnomax=27,npgmax=27,epsmax=20,ddlmax=15*nnomax)
 ! ----------------------------------------------------------------------
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: nepg, g, ieg, cod(npgmax)
     real(kind=8) :: sigm(0:epsmax*npgmax-1), sigp(0:epsmax*npgmax-1)
     real(kind=8) :: epsm(0:epsmax*npgmax-1), epsd(0:epsmax*npgmax-1)

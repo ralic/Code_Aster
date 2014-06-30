@@ -129,7 +129,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     character(len=19) :: numedd
     real(kind=8) :: omecor, omemin, omemax, omeshi
     complex(kind=8) :: sigma
-    logical :: flage
+    logical(kind=1) :: flage
     logical(kind=4) :: bwork(*)
 !
 !-----------------------------------------------------------------------
@@ -150,7 +150,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     complex(kind=8) :: cauxr1
     character(len=1) :: kbal, ksens, valk
     character(len=24) :: nomrai, nommas, nomamo
-    logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
+    logical(kind=1) :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
     integer, pointer :: smdi(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -1126,10 +1126,10 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 fr=zr(lvalpr-1+i)+omeshi
                 freq=fr*cun
                 call mrmult('ZERO', lraide, zr(lvec+iauxh*(i-1)), zr(iaux1), 1,&
-                            .false.)
+                            .false._1)
                 anorm1=dnrm2(iauxh,zr(iaux1),1)
                 call mrmult('ZERO', lmasse, zr(lvec+iauxh*(i-1)), zr(iaux2), 1,&
-                            .false.)
+                            .false._1)
                 call daxpy(iauxh, -fr, zr(iaux2), 1, zr(iaux1),&
                            1)
                 anorm2=dnrm2(iauxh,zr(iaux1),1)
@@ -1140,13 +1140,13 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     freq = zc(lvalpr-1+i)-sigma
                 endif
                 call mcmult('ZERO', lraide, zc(lvec+iauxh*(i-1)), zc(iaux1), 1,&
-                            .false.)
+                            .false._1)
                 anorm1=dznrm2(iauxh,zc(iaux1),1)
                 call mcmult('ZERO', lmasse, zc(lvec+iauxh*(i-1)), zc(iaux2), 1,&
-                            .false.)
+                            .false._1)
                 if (lc) then
                     call mcmult('ZERO', lamor, zc(lvec+iauxh*(i-1)), zc(iaux3), 1,&
-                                .false.)
+                                .false._1)
                     call zaxpy(iauxh, freq, zc(iaux3), 1, zc(iaux1),&
                                1)
                     freq2 = freq*freq

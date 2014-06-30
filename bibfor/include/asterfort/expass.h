@@ -17,6 +17,6 @@
 !
 interface
     subroutine expass(jxvrf)
-        logical :: jxvrf
+        logical(kind=1) :: jxvrf
     end subroutine expass
 end interface

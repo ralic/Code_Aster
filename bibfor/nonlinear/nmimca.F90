@@ -24,7 +24,7 @@ subroutine nmimca(sdimpr, typcoz, laffe)
 #include "asterfort/obsetb.h"
     character(len=24) :: sdimpr
     character(len=*) :: typcoz
-    logical :: laffe
+    logical(kind=1) :: laffe
 !
 ! ----------------------------------------------------------------------
 !

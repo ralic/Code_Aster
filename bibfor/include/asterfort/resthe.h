@@ -23,7 +23,7 @@ interface
                       nomgdt, cartes, nomgds, chgeom, chsour,&
                       psourc, iaux)
         character(len=24) :: ligrel
-        logical :: evol
+        logical(kind=1) :: evol
         character(len=24) :: chtemm
         character(len=24) :: chtemp
         character(len=24) :: chflum

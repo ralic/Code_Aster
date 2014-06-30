@@ -31,8 +31,8 @@ interface
         integer :: dimdef
         integer :: ndim
         character(len=16) :: option
-        logical :: perman
-        logical :: vf
+        logical(kind=1) :: perman
+        logical(kind=1) :: vf
         integer :: ifa
         real(kind=8) :: valfac(maxfa, 14, 6)
         real(kind=8) :: valcen(14, 6)

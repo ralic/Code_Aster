@@ -69,7 +69,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !  HEXA27      27            19                    9
 !
 !
-    logical :: isasup
+    logical(kind=1) :: isasup
 !
     integer ::  iacnx1, ilcnx1,  ii, nbmato,  numma
     integer :: ilcnx2, nbtyma, nbnoto, jj, jmaqu, nbnosu, numamo, nbnomi

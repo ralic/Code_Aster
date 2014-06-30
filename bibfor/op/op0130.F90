@@ -40,7 +40,7 @@ subroutine op0130()
     real(kind=8) :: tdebut, tfin, offset, trepos
     character(len=8) :: trange, noeu, cmp, nomres
     character(len=16) :: nomcmd, concep, koptio
-    logical :: loptio
+    logical(kind=1) :: loptio
     integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
 !

@@ -66,7 +66,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     character(len=8) :: nomres(nbres), fami, poum
     real(kind=8) :: valres(nbres)
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
     integer :: ndimsi, k, nrac, jprol, jvale, nbvale, kpg, spt
     real(kind=8) :: sigmh, epsph, epsdh, s0h, s1h, s0(6), s1(6)
     real(kind=8) :: kron(6)

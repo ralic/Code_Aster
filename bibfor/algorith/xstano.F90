@@ -80,7 +80,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     real(kind=8) :: ab(3), ac(3)
     character(len=8) :: typma
     character(len=19) :: mai, lmafis
-    logical :: ljonc
+    logical(kind=1) :: ljonc
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: ljsv(:) => null()
     real(kind=8), pointer :: lnsv(:) => null()

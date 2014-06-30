@@ -51,7 +51,7 @@ subroutine xfisno(noma, modelx)
     integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
     integer :: ibid, iad, nncp
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
-    logical :: lcont
+    logical(kind=1) :: lcont
     integer, pointer :: xfem_cont(:) => null()
     integer, pointer :: cesfv(:) => null()
     integer, pointer :: cesv2(:) => null()

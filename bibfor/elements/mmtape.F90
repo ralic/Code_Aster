@@ -31,7 +31,7 @@ subroutine mmtape(phasep, leltf, ndim, nnl, nne,&
 #include "asterfort/mmmtff.h"
 #include "asterfort/mmmtfu.h"
     character(len=9) :: phasep
-    logical :: leltf
+    logical(kind=1) :: leltf
     integer :: ndim, nne, nnl, nnm, nbcps
     real(kind=8) :: ffe(9), ffl(9), ffm(9)
     real(kind=8) :: wpg, jacobi

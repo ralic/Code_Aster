@@ -26,7 +26,7 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt,&
 #include "asterfort/zbiter.h"
     real(kind=8) :: mem(2, *), sens
     real(kind=8) :: rho, rhoopt
-    logical :: echec, stite
+    logical(kind=1) :: echec, stite
     integer :: ldcopt, ldccvg
     real(kind=8) :: f, fopt, fcvg
     integer :: opt, act
@@ -55,7 +55,7 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt,&
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical :: bpos, lopti
+    logical(kind=1) :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti

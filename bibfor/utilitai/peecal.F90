@@ -86,7 +86,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     character(len=16) :: motcle(2)
     character(len=19) :: ligrel, cesout, cespoi
     character(len=24) :: mesmai, valk(3)
-    logical :: exist
+    logical(kind=1) :: exist
     real(kind=8), pointer :: pdsm(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

@@ -59,7 +59,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
 #include "asterfort/tbcrsd.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
-    logical :: reprise, suite
+    logical(kind=1) :: reprise, suite
     character(len=4) :: nomsym(1)
     character(len=8) :: nomres, nomrep, baseno, k8b, nomtab, modrep
     character(len=8) :: typpar(12), typpat(11), vk8

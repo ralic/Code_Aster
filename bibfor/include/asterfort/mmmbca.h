@@ -28,7 +28,7 @@ interface
         character(len=19), intent(in) :: valinc(*)
         character(len=19), intent(in) :: solalg(*)
         integer, intent(out) :: ctcsta
-        logical, intent(out) :: mmcvca
+        logical(kind=1), intent(out) :: mmcvca
         real(kind=8), intent(in) :: instan
     end subroutine mmmbca
 end interface

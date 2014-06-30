@@ -55,7 +55,7 @@ subroutine te0528(option, nomte)
     integer :: icodre(1)
     character(len=8) :: nomres, nompar
     character(len=16) :: compo1, compo2, valk(2)
-    logical :: lflu
+    logical(kind=1) :: lflu
 ! DEB ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :

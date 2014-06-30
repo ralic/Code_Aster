@@ -59,7 +59,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
     integer :: in, jfisno, jheafa, ncomph, nfiss, nnos
     real(kind=8) :: ffi, am(3), coefi, hfix(3), h(3), lamb(3), r
     real(kind=8) :: p(3, 3), ptr(3, 3)
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 ! ---------------------------------------------------------------------
 !

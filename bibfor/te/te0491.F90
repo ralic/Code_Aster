@@ -152,7 +152,7 @@ subroutine te0491(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(5), para_type
     character(len=16) :: nomte, option, optio2, compor(3)
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
 !-----------------------------------------------------------------------
 !
 ! ---- INITIALISATIONS :
@@ -339,7 +339,7 @@ subroutine te0491(option, nomte)
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
             call nmgeom(3, nno, axi, grand, zr(igeom),&
                         igau, ipoids, ivf, idfde, zr(idepl),&
-                        .true., poids, dfdbid, f, epsbid,&
+                        .true._1, poids, dfdbid, f, epsbid,&
                         r)
 !
 !

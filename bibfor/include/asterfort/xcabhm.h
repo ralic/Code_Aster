@@ -43,7 +43,7 @@ interface
         integer :: yap1
         integer :: addep1
         integer :: np1
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: ivf
         integer :: ipoids
         integer :: idfde

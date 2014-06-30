@@ -42,7 +42,7 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-    logical :: vrai
+    logical(kind=1) :: vrai
     integer :: ipres, i, iret
     character(len=8) :: k8bid, tcorx(2), tcory(2), tcorz(2)
     character(len=*) :: modmec, chamno, model

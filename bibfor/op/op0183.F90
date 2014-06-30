@@ -81,12 +81,12 @@ subroutine op0183()
     character(len=24) :: vreno, compor, chvive, chacve, raide
     character(len=24) :: bidon, chvarc
     character(len=24) :: numref, valk(3)
-    logical :: l_etat_init
+    logical(kind=1) :: l_etat_init
 !     ------------------------------------------------------------------
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
 !
-    logical :: exitim
+    logical(kind=1) :: exitim
     real(kind=8), pointer :: fono(:) => null()
     real(kind=8), pointer :: noch(:) => null()
 !

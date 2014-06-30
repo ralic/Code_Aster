@@ -189,7 +189,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
             iordr=ordr(j)
             nomch1=zk24(jtach-1+j)
             if (nomch1 .eq. ' ') goto 41
-            call rsutch(nomsdr, nomsym, iordr, nomch2, .false.)
+            call rsutch(nomsdr, nomsym, iordr, nomch2, .false._1)
             if (nomch1 .ne. nomch2) then
                 call copisd('CHAMP', 'G', nomch1, nomch2)
                 call detrsd('CHAMP', nomch1)

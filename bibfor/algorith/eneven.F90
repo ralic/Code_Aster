@@ -22,7 +22,7 @@ subroutine eneven(sddisc, ievent, lacti)
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: ievent
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

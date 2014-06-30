@@ -72,7 +72,7 @@ subroutine te0095(option, nomte)
     integer :: ipesau, ipesav, irotau, irotav, itmpsu, itmpsv
 !
     integer :: kk, ier
-    logical :: fonc
+    logical(kind=1) :: fonc
 !
 !
     call jemarq()
@@ -243,9 +243,9 @@ subroutine te0095(option, nomte)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
-        call nmgeom(ndim, nno, .false., .false., zr(igeom),&
+        call nmgeom(ndim, nno, .false._1, .false._1, zr(igeom),&
                     kp, ipoids, ivf, idfde, zr(idepu),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     rbid)
 !
 ! - CALCULS DES GRADIENTS DE U ET V (DUDM ET DVDM),THETA (DTDM),

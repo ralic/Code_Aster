@@ -57,7 +57,7 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
 !
     integer :: ndglof(4), nbndf, nbf, i, decf, ndloc, adescm, face
     integer :: vali(2)
-    logical :: fink, nonvid
+    logical(kind=1) :: fink, nonvid
 !
 !======================================================================
 !

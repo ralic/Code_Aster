@@ -57,7 +57,7 @@ subroutine dfmdf(dim, f, dsidep)
     real(kind=8) :: sigp(3)
     real(kind=8) :: dspdeb(2, 2), epsp2(2), vecp2(2, 2), sigp2(2)
     real(kind=8) :: rtemp3, rtemp4, rac2
-    logical :: mtg, test
+    logical(kind=1) :: mtg, test
     parameter  (rigmin = 1.d-6)
 !
     t(1,1)=1

@@ -21,7 +21,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
             real(kind=8) :: yy0(nbeq)
             real(kind=8) :: dy0(nbeq)
             real(kind=8) :: dyy(nbeq)
-            logical :: decoup
+            logical(kind=1) :: decoup
         end subroutine rkfct
     end interface
 !
@@ -73,7 +73,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
 !
     integer :: nbbou, ii
     real(kind=8) :: t9, dt9, y9(nbeq), erreur, xbid1, solu(3*nbeq)
-    logical :: decoup
+    logical(kind=1) :: decoup
 !
     real(kind=8) :: puplus, pumoin, creduc, cforce, coeffm, seuil, precis, grlog
 !   puissance pour augmenter le pas de temps

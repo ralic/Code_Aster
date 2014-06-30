@@ -46,7 +46,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3)
     real(kind=8) :: mprojt(3, 3)
-    logical :: laxis, ldyna, lfovit
+    logical(kind=1) :: laxis, ldyna, lfovit
     real(kind=8) :: jacobi, wpg
     real(kind=8) :: jeusup
     real(kind=8) :: dlagrc, dlagrf(2)

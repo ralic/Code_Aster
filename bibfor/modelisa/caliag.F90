@@ -73,7 +73,7 @@ subroutine caliag(fonrez, chargz)
     parameter (nmocl=300)
     real(kind=8) :: beta
     complex(kind=8) :: betac
-    logical :: dnor
+    logical(kind=1) :: dnor
     character(len=2) :: typlag
     character(len=4) :: fonree, typcoe
     character(len=7) :: typcha

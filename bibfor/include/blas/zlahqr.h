@@ -23,8 +23,8 @@ interface
                       z, ldz, info)
         integer, intent(in) :: ldz
         integer, intent(in) :: ldh
-        logical, intent(in) :: wantt
-        logical, intent(in) :: wantz
+        logical(kind=1), intent(in) :: wantt
+        logical(kind=1), intent(in) :: wantz
         integer, intent(in) :: n
         integer, intent(in) :: ilo
         integer, intent(in) :: ihi

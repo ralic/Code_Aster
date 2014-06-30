@@ -46,7 +46,7 @@ subroutine dstedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: bm(3, 6), bdm(3), bdf(3), dcis(2), vf(3), vm(3), vt(2)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), vcm(2), vcf(2)
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    logical :: coupmf
+    logical(kind=1) :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !

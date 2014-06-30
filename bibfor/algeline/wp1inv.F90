@@ -138,7 +138,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !           --- M-NORMALISATION DES VECTEURS XN-1 ET YN-1 ---
             call mcmult('ZERO', lmasse, vecpro(1, imode), zc(lacc2), 1,&
-                        .false.)
+                        .false._1)
 !
 !           --- RENORMALISATION ---
             rnorm = czero
@@ -153,19 +153,19 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !           --- CONSTITUTION DU SECOND MEMBRE POUR CALCULER XN ---
             call mcmult('ZERO', lamor, vecpro(1, imode), zc(lacc2), 1,&
-                        .false.)
+                        .false._1)
             do ieq = 1, neq
                 zc(lacc1+ieq-1) = rp * vecpro(ieq,imode)
             end do
             call mcmult('CUMU', lmasse, zc(lacc1), zc(lacc2), 1,&
-                        .false.)
+                        .false._1)
             call mcmult('CUMU', lmasse, yn_associe_a_xn, zc(lacc2), 1,&
-                        .false.)
+                        .false._1)
 !
 !           --- RESOLUTION ---
             call resoud(matass, k19bid, solveu, chcine, 1,&
                         k19bid, k19bid, kbid, [0.d0], zc(lacc2),&
-                        criter, .false., 0, iret)
+                        criter, .false._1, 0, iret)
 !
 !CC         --- ORTHOGONALISATION DU VECTEUR AVEC LES PRECEDENTS ---
 !CC         CALL WP1ORT(NEQ,VECPRO,ZC(LACC2),ZC(LMORTH),IMODE)
@@ -177,19 +177,19 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !           --- CALCUL DE LA VALEUR PROPRE ---
             call mcmult('ZERO', lmasse, zc(lacc2), zc(lacc1), 1,&
-                        .false.)
+                        .false._1)
             rmasse = czero
             do ieq = 0, neq-1
                 rmasse = rmasse + dconjg(zc(lacc2+ieq))*zc(lacc1+ieq)
             end do
             call mcmult('ZERO', lraide, zc(lacc2), zc(lacc1), 1,&
-                        .false.)
+                        .false._1)
             rraide = czero
             do ieq = 0, neq-1
                 rraide = rraide + dconjg(zc(lacc2+ieq))*zc(lacc1+ieq)
             end do
             call mcmult('ZERO', lamor, zc(lacc2), zc(lacc1), 1,&
-                        .false.)
+                        .false._1)
             ramor = czero
             do ieq = 0, neq-1
                 ramor = ramor + dconjg(zc(lacc2+ieq))*zc(lacc1+ieq)
@@ -229,7 +229,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !        --- M-NORMALISATION DES VECTEURS TROUVEE ---
         call mcmult('ZERO', lmasse, vecpro(1, imode), zc(lacc2), 1,&
-                    .false.)
+                    .false._1)
 !
 !        --- RENORMALISATION ---
         rnorm = czero

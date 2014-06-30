@@ -23,7 +23,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
 !
     character(len=16), intent(in) :: refer
     character(len=16), intent(in) :: legend
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     integer, intent(in) :: nbref
     character(len=*), intent(in) :: rela
     real(kind=8), intent(in) :: tole
@@ -34,7 +34,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
     integer, intent(in), optional :: vali
     complex(kind=8), intent(in), optional :: refc(nbref)
     complex(kind=8), intent(in), optional :: valc
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 !
 !   Interface d'appel à la fonction d'impression en C/Python pour les TEST_RESU
@@ -52,7 +52,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
     complex(kind=8) :: arefc
     complex(kind=8) :: avalc
     real(kind=8) :: arg_cmp
-    logical :: skip, isrela, valabs
+    logical(kind=1) :: skip, isrela, valabs
     integer :: typ
 !
     valabs = .false.

@@ -78,7 +78,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
     integer :: lon1, lontot, iparmx, ibid
     integer :: jrsvi, dim1
     character(len=8) :: scal, nomgd, tymat
-    logical :: lmatvf
+    logical(kind=1) :: lmatvf
 !
 !
     call jemarq()

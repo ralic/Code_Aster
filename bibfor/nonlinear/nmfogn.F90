@@ -55,7 +55,7 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
     integer :: k2(1)
     character(len=8) :: nom(1), fami, poum
 !
-    logical :: grand, axi, nax
+    logical(kind=1) :: grand, axi, nax
     integer :: nddl, ndimsi, g, n, i, kl, kk
     integer :: iu(3*27), ia(8), kpg, spt
     real(kind=8) :: rac2, c, val(1)

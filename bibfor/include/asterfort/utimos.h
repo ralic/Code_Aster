@@ -19,7 +19,7 @@ interface
     subroutine utimos(unit, obin, lattr, lcont)
         integer :: unit
         character(len=*) :: obin
-        logical :: lattr
-        logical :: lcont
+        logical(kind=1) :: lattr
+        logical(kind=1) :: lcont
     end subroutine utimos
 end interface

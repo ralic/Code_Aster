@@ -68,7 +68,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     integer :: idecal, ino2, icmp, ico1, ico2, ino1, nuno1, kalarm
     real(kind=8) :: v1, v2, coef1, coetot, vrmoy
     complex(kind=8) :: v1c, v2c, vcmoy
-    logical :: lexact
+    logical(kind=1) :: lexact
     integer, pointer :: pjef_nu(:) => null()
     character(len=8), pointer :: cns1k(:) => null()
     integer, pointer :: pjef_nb(:) => null()

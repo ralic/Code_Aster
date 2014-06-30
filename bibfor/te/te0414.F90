@@ -34,7 +34,7 @@ subroutine te0414(optioz, nomtz)
 !
     integer :: nb1, jcret, codret
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    logical :: matric
+    logical(kind=1) :: matric
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !

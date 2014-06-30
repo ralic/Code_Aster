@@ -33,7 +33,7 @@ subroutine i2fccl(tplace, n, existe, adrdbt)
 !
 !*****************************************************************
 !
-    logical :: existe, tplace(*)
+    logical(kind=1) :: existe, tplace(*)
     integer :: n, adrdbt
 !
     integer :: i

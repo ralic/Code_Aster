@@ -43,7 +43,7 @@ subroutine te0322(option, nomte)
     integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
     integer :: lgpg1, lgpg
     character(len=8) :: typmod(2), lielrf(10)
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
     resi = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
     rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'

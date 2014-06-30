@@ -74,7 +74,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     parameter        ( nbmx=30 )
     integer :: nbfp
     real(kind=8) :: valrep(nbmx)
-    logical :: change
+    logical(kind=1) :: change
     integer :: icodr2(nbmx)
     character(len=2) :: kstop
     character(len=10) :: phen, phepre

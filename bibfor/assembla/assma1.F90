@@ -40,7 +40,7 @@ subroutine assma1(matas, ldist)
 !
     character(len=*) :: matas
 !---------------------------------------------------------------
-    logical :: lmnsy, exilag, ldist
+    logical(kind=1) :: lmnsy, exilag, ldist
     integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
     integer :: ilig, jcol, kterm, nlong,  nvale, jvalm1, jvalm2, jconl
     character(len=1) :: ktyp, base1

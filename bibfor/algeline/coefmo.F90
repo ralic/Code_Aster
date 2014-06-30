@@ -43,7 +43,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
     real(kind=8) :: xsi0, vgap, x(2), pulsc, xmf, xcf, rkf
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
     integer :: nbm, nmode, indic, veci1(*)
-    logical :: zrigi
+    logical(kind=1) :: zrigi
     complex(kind=8) :: xkf
 !
 ! ----------------------------------------------------------------------

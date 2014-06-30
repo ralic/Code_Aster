@@ -63,7 +63,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp, mult_comp
-    logical :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm, l_etat_init
+    logical(kind=1) :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm, l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
     character(len=16), pointer :: p_info_comp_valk(:) => null()
     integer          , pointer :: p_info_comp_vali(:) => null()

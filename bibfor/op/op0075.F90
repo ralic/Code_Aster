@@ -45,7 +45,7 @@ subroutine op0075()
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
-    logical :: prsimp
+    logical(kind=1) :: prsimp
     integer ::  nbord, i, iord, lpain(3), lpaout(3), ibid, ir1, iret
     integer :: j,  j3refe, jrefn, n1, nbcham
     integer, pointer :: ordr(:) => null()

@@ -3,7 +3,7 @@ function dmvdp2(rho11, rho12, sat, phi, cs,&
     implicit none
     real(kind=8) :: rho11, rho12, sat, phi, cs, pvp, dmvdp2
     real(kind=8) :: em, dphip2
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 !
 ! ======================================================================

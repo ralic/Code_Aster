@@ -46,7 +46,7 @@ interface
         real(kind=8) :: jeu
         real(kind=8) :: coeffp
         real(kind=8) :: coefff
-        logical :: lpenaf
+        logical(kind=1) :: lpenaf
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
         real(kind=8) :: rese(3)

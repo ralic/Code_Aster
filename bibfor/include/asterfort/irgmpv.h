@@ -20,16 +20,16 @@ interface
                       para, nocmp, nbel, scal, vect,&
                       tens, versio)
         integer :: ifi
-        logical :: lresu
+        logical(kind=1) :: lresu
         character(len=*) :: nomcon
         character(len=*) :: chamsy
         integer :: nbordr
         real(kind=8) :: para(*)
         character(len=8) :: nocmp
         integer :: nbel(*)
-        logical :: scal
-        logical :: vect
-        logical :: tens
+        logical(kind=1) :: scal
+        logical(kind=1) :: vect
+        logical(kind=1) :: tens
         integer :: versio
     end subroutine irgmpv
 end interface

@@ -38,7 +38,7 @@ function amgene(i, j, amogen, nbmodes, typbas, method, lamor)
     integer :: i, j, nbmodes
     real(kind=8) :: amogen(*)
     character(len=*) :: typbas, method
-    logical :: lamor
+    logical(kind=1) :: lamor
 !-----------------------------------------------------------------------
     if ((typbas(1:11) .eq. 'MODELE_GENE') .or. &
         (lamor) .or. (method(1:6).eq.'DEVOGE')) then

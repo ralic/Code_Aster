@@ -64,7 +64,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: eps(3), sig(3), cist(2), dcis(2)
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: hicou
-    logical :: coupmf, lcalct
+    logical(kind=1) :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

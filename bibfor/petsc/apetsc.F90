@@ -93,7 +93,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     character(len=4) :: etamat
     character(len=1) :: rouc
     real(kind=8), pointer :: travail(:) => null()
-    logical :: lqr
+    logical(kind=1) :: lqr
 !
 !----------------------------------------------------------------
 !

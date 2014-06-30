@@ -19,8 +19,8 @@ interface
     subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                       nbmail, noment, valpar)
         integer :: ndim
-        logical :: nsymx
-        logical :: nsymy
+        logical(kind=1) :: nsymx
+        logical(kind=1) :: nsymy
         character(len=*) :: noma
         character(len=*) :: motcle
         integer :: nbmail

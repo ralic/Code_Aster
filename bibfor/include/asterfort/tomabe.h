@@ -24,7 +24,7 @@ interface
         integer :: nbmabe
         character(len=8) :: mailla
         integer :: nbnoma
-        logical :: mail2d
+        logical(kind=1) :: mail2d
         integer :: nbnobe
         character(len=19) :: nunobe
         real(kind=8) :: xflu

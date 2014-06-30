@@ -40,7 +40,7 @@ subroutine afdi3d(irep, eta, car, val, jdc,&
     integer :: j, l, dimmat, ibid
     character(len=7) :: ki
     real(kind=8) :: r8bid
-    logical :: nonsym
+    logical(kind=1) :: nonsym
     character(len=8) :: k8bid
     character(len=11) :: carbid
 ! --- ---------------------------------------------------------------

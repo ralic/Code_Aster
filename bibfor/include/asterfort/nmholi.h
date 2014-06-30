@@ -21,7 +21,7 @@ interface
                       depl, chlim)
         integer :: nno
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: npg
         integer :: ipoids
         integer :: ivf

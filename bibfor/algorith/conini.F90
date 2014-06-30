@@ -94,8 +94,8 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     character(len=24) :: valk(2)
     character(len=8) :: ma
 !
-    logical :: inval
-    logical :: cas2d, cas3d
+    logical(kind=1) :: inval
+    logical(kind=1) :: cas2d, cas3d
 !
     integer :: nbnoe, noecon(nbnoe), maicon(nbmar), marcon(nbmar)
     integer :: mbcor(nbmar), jmicor(nbmar)

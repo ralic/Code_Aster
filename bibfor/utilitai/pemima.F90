@@ -60,7 +60,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     character(len=16) :: nompar(nbpar)
     character(len=19) :: knum, cham, kins, lisins
     character(len=24) :: nomcha
-    logical :: exiord
+    logical(kind=1) :: exiord
     character(len=8), pointer :: cmp(:) => null()
     data nompar/'CHAMP_GD','NUME_ORDRE','INST'/
     data typpar/'K16','I','R'/

@@ -33,7 +33,7 @@ interface
         character(len=19) :: grln
         character(len=19) :: cnslt
         character(len=19) :: grlt
-        logical :: tore
+        logical(kind=1) :: tore
         real(kind=8) :: radtor
         real(kind=8) :: radimp
         character(len=19) :: cnsdis

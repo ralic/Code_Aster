@@ -41,7 +41,7 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
     character(len=8) :: mod
 !
     integer :: i
-    logical :: rdctps
+    logical(kind=1) :: rdctps
     character(len=7) :: etatf
     real(kind=8) :: un, bid66(6, 6), zero, somme, matert(22, 2)
 !
@@ -65,7 +65,7 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
 !
 ! --- DEFINITION DU DOMAINE POTENTIEL DES MECANISMES ACTIFS
     call hujpot(mod, matert, vinf, deps, sigd,&
-                sigf, etatf, rdctps, iret, .true.)
+                sigf, etatf, rdctps, iret, .true._1)
 !
 ! --- SI ETATF = 'ELASTIC' --> SEUIL < 0
 !

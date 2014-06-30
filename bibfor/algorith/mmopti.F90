@@ -29,7 +29,7 @@ subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
     character(len=24) :: resoco
     integer :: ctcini, iptc
     real(kind=8) :: seuili, epsint, jeusgn
-    logical :: loptin, lgliss
+    logical(kind=1) :: loptin, lgliss
 !
 ! ----------------------------------------------------------------------
 !

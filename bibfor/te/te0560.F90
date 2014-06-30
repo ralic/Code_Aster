@@ -41,7 +41,7 @@ subroutine te0560(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    logical :: matsym
+    logical(kind=1) :: matsym
 !
     integer :: dlns
     integer :: nno, npg1, i, imatuu, lgpg, lgpg1, ndim

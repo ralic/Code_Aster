@@ -30,7 +30,7 @@ use module_allocate
 #include "asterfort/utmess.h"
 !
     integer :: size
-    logical,           pointer, optional, intent(out) :: vl(:)
+    logical(kind=1),           pointer, optional, intent(out) :: vl(:)
     integer,           pointer, optional, intent(out) :: vi(:)
     integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
     real(kind=8),      pointer, optional, intent(out) :: vr(:)
@@ -59,7 +59,7 @@ use module_allocate
     integer, save :: iprem=0
     integer :: lonty, lsic, unmega, ltot, ival(4)
     character(len=3) :: tsca
-    logical :: alloc
+    logical(kind=1) :: alloc
 
 
     if (iprem .eq. 0) then
@@ -108,7 +108,7 @@ use module_allocate
 !      (on ne peut plus le faire depuis issue21985)
 
 !   -----------------------------------------------------
-    if (.false.) then
+    if (.false._1) then
         alloc=.false.
         if (tsca .eq. 'I') then
             alloc=associated(vi)

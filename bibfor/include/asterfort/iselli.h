@@ -18,6 +18,6 @@
 interface
     function iselli(elrefz)
         character(len=*) :: elrefz
-        logical :: iselli
+        logical(kind=1) :: iselli
     end function iselli
 end interface

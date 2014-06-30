@@ -48,7 +48,7 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 !
 !
     integer ::  neq,   i
-    logical :: lcine
+    logical(kind=1) :: lcine
     integer, pointer :: ccid(:) => null()
     real(kind=8), pointer :: cind(:) => null()
     real(kind=8), pointer :: depla(:) => null()

@@ -69,7 +69,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
     integer :: iret, ibid
     integer :: eximcp
     integer :: nfcplx, nfreel
-    logical :: lcrfcr, lcrfcc
+    logical(kind=1) :: lcrfcr, lcrfcc
 !
 ! ----------------------------------------------------------------------
 !

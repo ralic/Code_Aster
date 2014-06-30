@@ -52,7 +52,7 @@ subroutine cnonua(nx, chno, lno, nuage)
     character(len=4) :: type
     character(len=8) :: noma, nomgd
     character(len=19) :: kchno, klno, knuage, nonu
-    logical :: lnual, prem
+    logical(kind=1) :: lnual, prem
     integer, pointer :: ent_cod(:) => null()
     integer, pointer :: nomcmp(:) => null()
     real(kind=8), pointer :: nuax(:) => null()

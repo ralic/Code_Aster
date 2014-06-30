@@ -63,7 +63,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
     character(len=8) :: basmod, intf
-    logical :: okass
+    logical(kind=1) :: okass
     integer :: idec(nbcpmx), lisnu(nblis)
 !
 !-----------------------------------------------------------------------

@@ -19,6 +19,6 @@ interface
     function lisico(genchz, genrec)
         character(len=*) :: genchz
         integer :: genrec
-        logical :: lisico
+        logical(kind=1) :: lisico
     end function lisico
 end interface

@@ -111,8 +111,8 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !
 !     CREATION DE L'OBJET '.COORDO'
 !     ----------------------------
-    call jedupo(coordi//'.DESC', 'G', coordo//'.DESC', .false.)
-    call jedupo(coordi//'.REFE', 'G', coordo//'.REFE', .false.)
+    call jedupo(coordi//'.DESC', 'G', coordo//'.DESC', .false._1)
+    call jedupo(coordi//'.REFE', 'G', coordo//'.REFE', .false._1)
     call jeveuo(coordo//'.REFE', 'E', vk24=refe)
     refe(1) = maout
     call jecreo(coordo//'.VALE', 'G V R')

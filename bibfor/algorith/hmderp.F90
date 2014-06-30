@@ -36,7 +36,7 @@ subroutine hmderp(yate, yavp, t, r, kh,&
 ! aslint: disable=W1504
     implicit none
     integer :: yate
-    logical :: yavp
+    logical(kind=1) :: yavp
     real(kind=8) :: t, r, kh, pvp, pad, rho11
     real(kind=8) :: rho12, h11, h12, cliq, alpliq
 !

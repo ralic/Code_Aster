@@ -46,7 +46,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     integer ::  i, j, ipar, jvale, jlogq, ideb, ifin
     integer :: nblign,  ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
     integer :: nparaf
-    logical :: erreur
+    logical(kind=1) :: erreur
     character(len=1) :: bacs
     character(len=3) :: type
     character(len=4) :: chfin

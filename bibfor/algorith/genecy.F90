@@ -60,7 +60,7 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 !------CALCUL DU PRODUIT MATRICE ASSEMBLEE REELLE-MODE COMPLEXE---------
 !
     call mcmult('ZERO', lmat, cmod2, ctrav, 1,&
-                .true.)
+                .true._1)
 !
 !-------------------BOUCLE SUR LES SECTEURS-----------------------------
 !

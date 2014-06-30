@@ -48,7 +48,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
     integer :: posmam
     integer :: posnoe, numnoe
     integer :: iliai
-    logical :: lctfd, lctf3d
+    logical(kind=1) :: lctfd, lctf3d
 !
 ! ----------------------------------------------------------------------
 !

@@ -35,7 +35,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
     integer :: nfic, nbele, nbno, icoma, ibid
     character(len=8) :: tymail, nomobj
-    logical :: trouve, ecrma(*)
+    logical(kind=1) :: trouve, ecrma(*)
 ! ----------------------------------------------------------------------
 !     BUT: ECRIRE SUR LE FICHIER DE MAILLAGE ASTER
 !          LES MAILLES CORRESPONDANT A L'OBJET GIBI

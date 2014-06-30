@@ -23,9 +23,9 @@ interface
         integer :: nm
         integer :: m
         real(kind=8) :: w(n)
-        logical :: matu
+        logical(kind=1) :: matu
         real(kind=8) :: u(nm, n)
-        logical :: matv
+        logical(kind=1) :: matv
         real(kind=8) :: v(nm, n)
         real(kind=8) :: eps
         integer :: rg

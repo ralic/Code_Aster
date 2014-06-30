@@ -17,6 +17,6 @@
 !
 interface
     subroutine nthydr(hydrat)
-        logical :: hydrat
+        logical(kind=1) :: hydrat
     end subroutine nthydr
 end interface

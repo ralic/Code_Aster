@@ -77,7 +77,7 @@ subroutine detrsd(typesd, nomsd)
     character(len=19) :: champ, matas, table, solveu, fnc, resu
     character(len=19) :: ligrel, nuage, ligret, mltf, stock, k19, matel, liste
     character(len=24) :: typobj, knomsd
-    logical :: lbid
+    logical(kind=1) :: lbid
     character(len=24), pointer :: ltns(:) => null()
     character(len=24), pointer :: relr(:) => null()
     character(len=24), pointer :: refa(:) => null()

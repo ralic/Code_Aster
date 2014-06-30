@@ -83,7 +83,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 !.......................................................................
 !
 !
-    logical :: grand, axi, resi, rigi
+    logical(kind=1) :: grand, axi, resi, rigi
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, pq
 !
@@ -132,14 +132,14 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 20      continue
         call nmgeom(2, nno, axi, grand, geomi,&
                     kpg, ipoids, ivf, idfde, zr( ideplm),&
-                    .true., poids, dfdi, fm, epsm,&
+                    .true._1, poids, dfdi, fm, epsm,&
                     r)
 !
 ! 5.2.2 - CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
 !
         call nmgeom(2, nno, axi, grand, geomi,&
                     kpg, ipoids, ivf, idfde, zr( ideplp),&
-                    .true., poids, dfdi, f, epsp,&
+                    .true._1, poids, dfdi, f, epsp,&
                     r)
 !
 !
@@ -151,7 +151,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 !
         call nmgeom(2, nno, axi, grand, geomp,&
                     kpg, ipoids, ivf, idfde, zr( ideplp),&
-                    .true., poids, dfdi, fp, epsp,&
+                    .true._1, poids, dfdi, fp, epsp,&
                     r)
 !
         do 57 i = 1, 3

@@ -18,7 +18,7 @@ function lisexi(prefob, indxch)
 ! ======================================================================
 !
     implicit none
-    logical :: lisexi
+    logical(kind=1) :: lisexi
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"

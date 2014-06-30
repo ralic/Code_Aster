@@ -17,7 +17,7 @@
 !
 interface
     subroutine mmappa(loptin, noma, numedd, defico, resoco)
-        logical :: loptin
+        logical(kind=1) :: loptin
         character(len=8) :: noma
         character(len=24) :: numedd
         character(len=24) :: defico

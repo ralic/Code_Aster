@@ -41,7 +41,7 @@ interface
         real(kind=8) :: angmas(3)
         real(kind=8) :: instm
         real(kind=8) :: instp
-        logical :: matsym
+        logical(kind=1) :: matsym
         real(kind=8) :: deplm(*)
         real(kind=8) :: depld(*)
         real(kind=8) :: sigm(2*ndim, npg)

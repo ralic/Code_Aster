@@ -67,7 +67,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 !
     integer :: ifm, niv
-    logical :: lctcc, lctcd, lxfcm, lexiv, lallv
+    logical(kind=1) :: lctcc, lctcd, lxfcm, lexiv, lallv
     character(len=19) :: ddepla, depdel, depplu
     real(kind=8) :: inst(2)
     character(len=19) :: prno

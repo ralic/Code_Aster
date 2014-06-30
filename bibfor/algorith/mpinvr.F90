@@ -51,12 +51,12 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
     real(kind=8) :: phi(nbmesu, nbmode), xabs(nbabs), coef(*)
     real(kind=8) :: valr
     real(kind=8) :: rmesu(nbmesu, nbabs), reta(nbmode, nbabs)
-    logical :: lfonct
+    logical(kind=1) :: lfonct
 !
     integer :: imod, jmod, imes, iabs, ierr, ibid, jmes
     integer :: lsecmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
     real(kind=8) :: alpha, eps
-    logical :: nul
+    logical(kind=1) :: nul
     character(len=3) :: method
     character(len=8) :: regul
     character(len=16) :: nomcha

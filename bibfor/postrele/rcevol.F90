@@ -46,7 +46,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
     integer :: i, j, n1, nbinti, jinti, nbtran
     real(kind=8) :: para(3), sm
-    logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
+    logical(kind=1) :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
     character(len=8) ::  typeke
     character(len=16) :: kinti
     character(len=24) :: cinst, csili, csiex, csno, csne, csneo, csnee, cspo

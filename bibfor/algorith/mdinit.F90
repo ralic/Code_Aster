@@ -26,7 +26,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
     integer :: ier
     real(kind=8) :: tinit
     character(len=8), optional, intent(in) :: intitu(*), noecho(nbchoc,*)
-    logical, optional, intent(out) :: reprise
+    logical(kind=1), optional, intent(out) :: reprise
     real(kind=8), optional, intent(out) :: accgen(*)
 !
 #include "jeveux.h"

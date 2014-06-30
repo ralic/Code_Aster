@@ -30,7 +30,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
 #include "asterfort/jxliro.h"
 #include "asterfort/utmess.h"
     character(len=*) :: schin, claout, schout
-    logical :: dupcol
+    logical(kind=1) :: dupcol
 ! ----------------------------------------------------------------------
 !     RECOPIE L'OBJET DE NOM SCHIN LA CLASSE DANS
 !     SCHOUT AVEC LE NOM DISTINCT SCHOUT
@@ -85,7 +85,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
     integer :: ltypi, iaddi(2)
     character(len=32) :: nomin, nomout, nomcol
     character(len=1) :: kclas, genri, typei
-    logical :: idenba, libcol, x2u
+    logical(kind=1) :: idenba, libcol, x2u
     data             iv / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
     data             csuffi / '$$DESO  ','$$IADD  ','$$IADM  ',&
      &                          '$$MARQ  ','$$NOM   ','        ',&

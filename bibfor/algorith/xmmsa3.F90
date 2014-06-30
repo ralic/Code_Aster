@@ -60,7 +60,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 !
     integer :: i, j, in, ifh, coefi
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 ! ----------------------------------------------------------------------
 !

@@ -46,7 +46,7 @@ subroutine xvelfm(nfiss, fiss, modx)
 ! ----------------------------------------------------------------------
 !
     integer :: ifiss, iret
-    logical :: ltrouv
+    logical(kind=1) :: ltrouv
     character(len=8) :: valk(2)
 !
 ! ----------------------------------------------------------------------

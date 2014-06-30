@@ -113,7 +113,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     real(kind=8) :: ddy(ndt+nvi), dy(ndt+nvi), yd(ndt+nvi), yf(ndt+nvi)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), dt
     real(kind=8) :: timed, timef, tampon(*), drdyb(nr, nr)
-    logical :: lreli
+    logical(kind=1) :: lreli
 !
     character(len=8) :: mod
     character(len=16) :: loi, comp(*)
@@ -130,7 +130,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     character(len=16) :: algo
     character(len=24) :: cpmono(5*nmat+1)
 !
-    logical :: bnews(3), mtrac
+    logical(kind=1) :: bnews(3), mtrac
     integer :: indi(7), nr1
     real(kind=8) :: vind0(nvi), vind1(nvi), ye(nr)
 !

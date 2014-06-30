@@ -61,7 +61,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: lsuiv, lshima, lprem
+    logical(kind=1) :: lsuiv, lshima, lprem
     real(kind=8) :: coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat

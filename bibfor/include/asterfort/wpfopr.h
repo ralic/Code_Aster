@@ -28,7 +28,7 @@ interface
         character(len=*) :: matopa
         character(len=*) :: matpsc
         character(len=*) :: raide
-        logical :: lqz
+        logical(kind=1) :: lqz
         character(len=19) :: solveu
     end subroutine wpfopr
 end interface

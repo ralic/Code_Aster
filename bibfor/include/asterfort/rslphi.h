@@ -49,6 +49,6 @@ interface
         real(kind=8) :: rigeq
         real(kind=8) :: rigm
         real(kind=8) :: p
-        logical :: overfl
+        logical(kind=1) :: overfl
     end subroutine rslphi
 end interface

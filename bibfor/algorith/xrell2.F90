@@ -34,7 +34,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: tabnoz(3, narz)
     real(kind=8) :: tabcoz(ndim, narz), tabcrz(narz)
     character(len=19) :: nliseq
-    logical :: lgroup
+    logical(kind=1) :: lgroup
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: ifm, niv
     real(kind=8) :: tabco(narz, ndim), tabcr(narz)
     integer :: nunoa, nunob
-    logical :: pilo
+    logical(kind=1) :: pilo
 !
 ! ----------------------------------------------------------------------
 !

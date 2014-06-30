@@ -18,8 +18,8 @@
 interface
     subroutine amumpi(option, lquali, ldist, kxmps, type)
         integer :: option
-        logical :: lquali
-        logical :: ldist
+        logical(kind=1) :: lquali
+        logical(kind=1) :: ldist
         integer :: kxmps
         character(len=1) :: type
     end subroutine amumpi

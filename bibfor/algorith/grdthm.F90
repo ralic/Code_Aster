@@ -4,7 +4,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
     implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
-    logical :: perman, vf
+    logical(kind=1) :: perman, vf
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: dimdep, dimdef, dimcon
     integer :: ndim, nmec, np1, np2

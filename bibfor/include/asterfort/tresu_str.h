@@ -21,6 +21,6 @@ interface
         character(len=80), intent(in) :: refk
         character(len=80), intent(in) :: valk
         integer, intent(in) :: ific
-        logical, intent(in) :: llab
+        logical(kind=1), intent(in) :: llab
     end subroutine tresu_str
 end interface

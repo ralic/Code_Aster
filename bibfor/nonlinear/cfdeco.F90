@@ -60,14 +60,14 @@ subroutine cfdeco(defico, resoco)
 !
     jeuite = resoco(1:14)//'.JEUITE'
     jeusav = resoco(1:14)//'.JEUSAV'
-    call jedupo(jeuite, 'V', jeusav, .false.)
+    call jedupo(jeuite, 'V', jeusav, .false._1)
 !
 ! --- SAUVEGARDE DU LAGRANGE DE CONTACT POUR ALGO_CONT='GCP'
 !
-    call cfsvmu(defico, resoco, .true.)
+    call cfsvmu(defico, resoco, .true._1)
 !
 ! --- SAUVEGARDE DU STATUT DE FROTTEMENT POUR ALGO_FROT='LAGRANGIEN'
 !
-    call cfsvfr(defico, resoco, .true.)
+    call cfsvfr(defico, resoco, .true._1)
 !
 end subroutine

@@ -41,7 +41,7 @@ subroutine te0401(optioz, nomtz)
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
     real(kind=8) :: vrs (1326)
     real(kind=8) :: bsigth(51), enerth
-    logical :: indith
+    logical(kind=1) :: indith
 ! DEB
 !
     option = optioz

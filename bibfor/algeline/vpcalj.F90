@@ -72,7 +72,7 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, matopa, matpsc, mxresf,
     character(len=16) :: k16bid, optiof, typres
     character(len=19) :: k19bid, masse, raide
     character(len=24) :: kmetho
-    logical           :: lbid, lc, lkr, lns, lpg
+    logical(kind=1)   :: lbid, lc, lkr, lns, lpg
 
 ! -----------------------
 ! --- CORPS DE LA ROUTINE

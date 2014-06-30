@@ -33,7 +33,7 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical :: fordef
+        logical(kind=1) :: fordef
         character(len=16) :: proaxe
         character(len=19) :: cesr
     end subroutine avgrma

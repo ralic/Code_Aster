@@ -20,7 +20,7 @@ interface
         character(len=8) :: nomu
         character(len=8) :: noma
         integer :: lmax
-        logical :: locamb
+        logical(kind=1) :: locamb
         integer :: nbocc
     end subroutine aceagb
 end interface

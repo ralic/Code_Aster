@@ -55,7 +55,7 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
     real(kind=8) :: coef_frot, coef_frot_maxi, coef_frot_mini
     real(kind=8) :: nrese, nrese_prop, nrese_maxi, nrese_mini
     real(kind=8) :: pres_frot(3), dist_frot(3)
-    logical :: propa, l_frot_zone
+    logical(kind=1) :: propa, l_frot_zone
     real(kind=8) :: tole_stick, tole_slide
     integer :: zone_frot, zone_frot_prop
 !

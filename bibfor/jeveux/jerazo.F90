@@ -94,7 +94,7 @@ subroutine jerazo(nomlu, ni, i1)
             ltypi = ltyp ( jltyp(iclaco) + ixlono )
             lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
             call jxlocs(zi, genri, ltypi, lonoi, iblono,&
-                        .false., jctab)
+                        .false._1, jctab)
             goto 1000
         else
             if (noml8 .ne. '        ') then

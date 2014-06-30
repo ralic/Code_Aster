@@ -28,7 +28,7 @@ subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
     integer :: nbliac, llf, llf1, llf2, indfac
     integer :: ldscon
     integer :: isto
-    logical :: lechec
+    logical(kind=1) :: lechec
 !
 ! ----------------------------------------------------------------------
 !

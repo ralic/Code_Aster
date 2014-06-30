@@ -27,7 +27,7 @@ interface
         character(len=19) :: base
         integer :: nuor(nbm)
         integer :: imodi
-        logical :: ltable
+        logical(kind=1) :: ltable
         integer :: iaxe
         real(kind=8) :: scal(nbexcp, nbmr)
     end subroutine scalep

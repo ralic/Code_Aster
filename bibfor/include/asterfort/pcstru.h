@@ -28,7 +28,7 @@ interface
         integer :: icpcx(*)
         integer :: icplx(0:n)
         integer :: niveau
-        logical :: complt
+        logical(kind=1) :: complt
         integer :: lca
         integer :: imp
         integer :: ier

@@ -42,7 +42,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! SUCCESSIFS à UTTCPI(NOMMES,*,'INCR')
 ! ----------------------------------------------------------------------
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
-    logical :: ljev
+    logical(kind=1) :: ljev
     integer :: indi, jvalms, k,  nbfois, jvalmi
     integer :: rang, nbproc, npromx, i1
     parameter (npromx=1000)
@@ -50,7 +50,7 @@ subroutine uttcpi(nommes, ifm, typimp)
     character(len=50) :: nommel
     real(kind=8) :: xtota, xuser, xsyst, xelap, moyenn(3), ectype(3)
     real(kind=8) :: xtotap(npromx), xsystp(npromx), xelapp(npromx)
-    logical :: lmesur
+    logical(kind=1) :: lmesur
 !
 !
 !     -- COMMONS POUR MESURE DE TEMPS :

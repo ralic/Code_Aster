@@ -93,7 +93,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     character(len=24) :: cinv
     character(len=24) :: chdime, chmesu, chconn, chcinv
     real(kind=8) :: aire, volume
-    logical :: test, complet
+    logical(kind=1) :: test, complet
     integer, pointer :: connex(:) => null()
 !
     call jemarq()

@@ -68,8 +68,8 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
     character(len=8) :: lpaout(mxnbou), lpain(mxnbin)
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
-    logical :: exitem, exihyd, exisec, exiepa
-    logical :: lbid, lxfem
+    logical(kind=1) :: exitem, exihyd, exisec, exiepa
+    logical(kind=1) :: lbid, lxfem
     integer :: nbres, iret
     character(len=6) :: masque
     character(len=8) :: modele

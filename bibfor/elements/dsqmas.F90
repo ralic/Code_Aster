@@ -66,7 +66,7 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: coefm, wgtf, wgtm, detj, wgt, roe, rho, epais
     real(kind=8) :: qsi, eta, jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
     character(len=3) :: stopz
-    logical :: coupmf, exce, iner
+    logical(kind=1) :: coupmf, exce, iner
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
     data (ii(k),k=1,8)/1,10,19,28,37,46,55,64/
@@ -339,13 +339,13 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(4, 6, pgl, zr(jvitg), vite)
-            call dxqloe(flex, memb, mefl, ctor, .false.,&
+            call dxqloe(flex, memb, mefl, ctor, .false._1,&
                         vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(4, 6, pgl, zr(jdepg), depl)
-                call dxqloe(flex, memb, mefl, ctor, .false.,&
+                call dxqloe(flex, memb, mefl, ctor, .false._1,&
                             depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)

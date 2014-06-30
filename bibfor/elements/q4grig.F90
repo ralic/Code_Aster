@@ -66,7 +66,7 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
     real(kind=8) :: mefli(96), mefl(96), kmc(96), kfc(144)
     real(kind=8) :: bsigth(24), enerth, caraq4(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), jacob(5), qsi, eta
-    logical :: coupmf, indith
+    logical(kind=1) :: coupmf, indith
     integer :: i, jcoqu, jdepg, k
     real(kind=8) :: ctor, excent, zero
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano

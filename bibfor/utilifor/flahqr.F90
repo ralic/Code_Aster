@@ -127,7 +127,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
 #include "blas/dcopy.h"
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
-    logical :: wantt, wantz
+    logical(kind=1) :: wantt, wantz
     integer :: ihi, ihiz, ilo, iloz, info, ldh, ldz, n
 !     ..
 !     .. ARRAY ARGUMENTS ..

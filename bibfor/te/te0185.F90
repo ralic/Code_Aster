@@ -46,7 +46,7 @@ subroutine te0185(option, nomte)
 !     EN FONCTION DE LA MODELISATION ET DE LA NATURE DU CALCUL :
 !     LINEAIRE OU NON-LINEAIRE
     integer :: j1, inlin, ibid
-    logical :: line
+    logical(kind=1) :: line
     character(len=3) :: cmod
     character(len=8) :: alias8
 !-----------------------------------------------------------------------

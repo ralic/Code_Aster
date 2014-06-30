@@ -61,7 +61,7 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
     character(len=24) :: ligrch, chgeom, chtime
     integer :: ibid, iret, nchar, ilve, jinf, jchar, icha
     integer :: numdi
-    logical :: bidon
+    logical(kind=1) :: bidon
 !
 ! ----------------------------------------------------------------------
 !

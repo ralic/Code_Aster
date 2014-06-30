@@ -25,6 +25,6 @@ interface
         character(len=24) :: resoco
         character(len=19) :: sddyna
         character(len=19) :: sddisc
-        logical :: loptin
+        logical(kind=1) :: loptin
     end subroutine nmctcl
 end interface

@@ -52,7 +52,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     character(len=16) :: forcri
-    logical :: fordef
+    logical(kind=1) :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLUS PETIT CERCLE CIRCONSCRIT AUX POINTS
@@ -93,7 +93,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=19) :: cesr, ligre, celbid, chsig, chsigs, ces1, ces2
     character(len=19) :: cheps, ces3, ces4, cheppe
     character(len=19) :: chepsp, ces5, ces6, ces7, ces8
-    logical :: lbid, crsigm, crepst, crepse, crepsp, creppe
+    logical(kind=1) :: lbid, crsigm, crepst, crepse, crepsp, creppe
     integer, pointer :: nume_ordre(:) => null()
     integer, pointer :: paqma(:) => null()
     integer, pointer :: cesd(:) => null()

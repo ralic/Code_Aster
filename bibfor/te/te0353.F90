@@ -57,7 +57,7 @@ subroutine te0353(option, nomte)
     integer :: nno, kp, npg1, i, ivectu, jtab(7), l, iret
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jprol, jvale, nbval, ndim, nnos, jgano
-    logical :: laxi
+    logical(kind=1) :: laxi
     data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data acier/'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
     data zirc/'ALPHPUR','ALPHBETA'/

@@ -173,7 +173,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical :: select(1)
+    logical(kind=1) :: select(1)
     integer :: j, msglvl
     complex(kind=8) :: vl(1)
     real(kind=8) :: temp
@@ -214,7 +214,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     call zlaset('A', n, n, zero, one,&
                 q, ldq)
 !
-    call zlahqr(.true., .true., n, 1, n,&
+    call zlahqr(.true._1, .true._1, n, 1, n,&
                 workl, ldh, ritz, 1, n,&
                 q, ldq, ierr4)
     if (ierr4 .ne. 0) goto 9000

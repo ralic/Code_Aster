@@ -6,7 +6,7 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
 #include "asterfort/utmess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp, ifm
     real(kind=8) :: sigw(*), x1, x2, xacc, rtsafe, sk(*)
-    logical :: cals, impr
+    logical(kind=1) :: cals, impr
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -31,7 +31,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
     parameter      ( ilorep=1,ideno=2,ilnom=3,iluti=5,idehc=6)
     integer :: iret
     character(len=32) :: cle, nom, valk(2)
-    logical :: rinser
+    logical(kind=1) :: rinser
 ! DEB ------------------------------------------------------------------
     jjcodn = 0
     rinser = .false.

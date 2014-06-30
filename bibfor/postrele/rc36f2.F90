@@ -26,7 +26,7 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
 !
 !     ------------------------------------------------------------------
     integer :: k, l, i1
-    logical :: colona, colonb, lignea, ligneb
+    logical(kind=1) :: colona, colonb, lignea, ligneb
 !     ------------------------------------------------------------------
 !
     colona = .false.

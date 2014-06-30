@@ -11,7 +11,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
     integer :: sommw, tdisp, tspaq, i, jvectr
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc
-    logical :: fordef
+    logical(kind=1) :: fordef
     character(len=16) :: nomcri, nomfor
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
     integer :: ivect, iordr, n, decal, adrs, decpro, paract(35)
-    logical :: lbid, crsigm, crepst, crepse, crepsp
+    logical(kind=1) :: lbid, crsigm, crepst, crepse, crepsp
     character(len=16) :: typcha
     real(kind=8) :: nx, ny, nz, ux, uy, uz, vx, vy, vz
     real(kind=8) :: cmpxx, cmpyy, cmpzz, cmpxy, cmpxz, cmpyz

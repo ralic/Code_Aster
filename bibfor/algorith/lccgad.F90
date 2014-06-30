@@ -50,7 +50,7 @@ subroutine lccgad(fami, kpg, ksp, mat, option,&
 !       VIP   : VARIABLES INTERNES MISES A JOUR
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas, adh
+    logical(kind=1) :: resi, rigi, elas, adh
     integer :: cod(3)
     real(kind=8) :: val(3), n, courb, de, sut
     real(kind=8) :: frot, r, mult, frotc

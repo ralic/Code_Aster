@@ -14,7 +14,7 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
 #include "asterfort/tbexv1.h"
 #include "asterfort/wkvect.h"
     integer :: nbinti, nbtran
-    logical :: lsn, lfatig
+    logical(kind=1) :: lsn, lfatig
     character(len=24) :: intitu
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -39,7 +39,7 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
 !
 !     ------------------------------------------------------------------
     integer :: n1, jinti, nbint0, i, j, jint0, iocc, n2, n3
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=8) :: typ, table, tabfl0, tabpr0
     character(len=16) :: motclf
     character(len=24) :: intit0

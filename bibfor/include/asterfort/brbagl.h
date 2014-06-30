@@ -34,7 +34,7 @@ interface
         real(kind=8) :: dc1(6, 6)
         real(kind=8) :: dc2(6, 6)
         real(kind=8) :: dtg(6, 6)
-        logical :: bbok
+        logical(kind=1) :: bbok
         real(kind=8) :: normm
         real(kind=8) :: normn
     end subroutine brbagl

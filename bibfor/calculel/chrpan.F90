@@ -47,7 +47,7 @@ subroutine chrpan(modele, carte, option, chelem)
     integer :: iaxe(3), io(3), iad(3), ii
     integer ::  icesd, nncp
     real(kind=8) :: ang(2), vect(3), axez(3), orig(3)
-    logical :: ltout
+    logical(kind=1) :: ltout
     character(len=8) :: k8b, noma, motcls(2), typmcl(2)
     character(len=19) :: chelms
     character(len=24) :: mesmai, ligrmo

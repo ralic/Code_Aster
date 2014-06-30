@@ -117,7 +117,7 @@ subroutine ftrexc(compq, n, t, ldt, q,&
     parameter          ( zero = 0.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: wantq
+    logical(kind=1) :: wantq
     integer :: here, nbf, nbl, nbnext
 !     ..
 !     .. EXTERNAL FUNCTIONS ..

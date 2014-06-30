@@ -79,7 +79,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     character(len=1) :: type
     character(len=12) :: usersm
     character(len=24) :: kvers
-    logical :: lresol
+    logical(kind=1) :: lresol
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
@@ -97,7 +97,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     integer :: info34, icnt33
     integer :: pid
     mpi_int :: mpicou
-    logical :: lpara, lpbmem, lpb1
+    logical(kind=1) :: lpara, lpbmem, lpb1
     character(len=2) :: fstring
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid

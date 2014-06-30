@@ -43,7 +43,7 @@ interface
         integer :: nnom
         integer :: nnos
         integer :: regula(6)
-        logical :: axi
+        logical(kind=1) :: axi
         character(len=2) :: interp
     end subroutine dilini
 end interface

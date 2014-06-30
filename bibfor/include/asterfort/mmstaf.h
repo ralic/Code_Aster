@@ -26,7 +26,7 @@ interface
         integer, intent(in) :: ndim
         character(len=19), intent(in) :: chdepd
         real(kind=8), intent(in) :: coef_frot
-        logical, intent(in) :: lpenaf
+        logical(kind=1), intent(in) :: lpenaf
         integer, intent(in) :: nummae
         character(len=8), intent(in) :: aliase
         integer, intent(in) :: nne

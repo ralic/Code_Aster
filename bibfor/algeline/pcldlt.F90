@@ -64,7 +64,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    logical :: complt
+    logical(kind=1) :: complt
     character(len=1) :: base
     integer :: iret,  jsmhc,  nequ, ncoef, nblc
     integer :: jvalm,  i, nzmax,   niremp

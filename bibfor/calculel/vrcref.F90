@@ -56,7 +56,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     character(len=19) :: dceli, celmod, cart1, ces1, ligrmo, csvref
     character(len=24) :: valk(4)
     real(kind=8) :: valref
-    logical :: avrc
+    logical(kind=1) :: avrc
     real(kind=8), pointer :: cesv1(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: dclv(:) => null()

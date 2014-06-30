@@ -17,6 +17,6 @@
 !
 interface
     subroutine metau2(l_meta)
-        logical, intent(out) :: l_meta
+        logical(kind=1), intent(out) :: l_meta
     end subroutine metau2
 end interface

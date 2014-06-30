@@ -22,8 +22,8 @@ interface
         integer :: g
         integer :: mate
         character(len=16) :: compor
-        logical :: resi
-        logical :: mini
+        logical(kind=1) :: resi
+        logical(kind=1) :: mini
         real(kind=8) :: alpha
         real(kind=8) :: dsbdep(2*ndim, 2*ndim)
         real(kind=8) :: trepst

@@ -30,7 +30,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !     VARIABLES LOCALES
     integer :: nrl, lt, n2, ino, num, nobl, i, j, lmat, i2, iddl, ier, ifm, niv
     integer :: idiai, idiai1, ii, li, iconne, nfois, vali(3)
-    logical :: nivdbg
+    logical(kind=1) :: nivdbg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     nivdbg=.false.

@@ -38,7 +38,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
 ! OUT : COPILO
 !-----------------------------------------------------------------------
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: i, j, kpg
     real(kind=8) :: up(8), ud(8), sup(2), sud(2), b(2, 8), poids
 !-----------------------------------------------------------------------

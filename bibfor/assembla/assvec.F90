@@ -101,7 +101,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu
     character(len=24) :: kmaila, k24prn, knueq
     character(len=24) :: knulil, kvelil, kveref, kvedsc, nomli, kvale
-    logical :: ldist, ldgrel, dbg
+    logical(kind=1) :: ldist, ldgrel, dbg
     integer :: i, i1,  iad, iad1,   ialcha
     integer :: iamail, iancmp,  ianueq, ianulo, iaprol, iapsdl
     integer :: ichar, icmp,  iconx2

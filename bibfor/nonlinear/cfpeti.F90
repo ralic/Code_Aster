@@ -65,7 +65,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
     parameter    (un=1.d0)
     real(kind=8) :: rhorho
     real(kind=8) :: aadelt, jeuold, jeunew, jeuinc
-    logical :: liaiac, delpos, lelpiv
+    logical(kind=1) :: liaiac, delpos, lelpiv
     integer :: btotal, iliai, iliac
     character(len=19) :: liac
     integer :: jliac

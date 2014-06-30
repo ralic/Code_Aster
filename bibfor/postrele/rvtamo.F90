@@ -56,7 +56,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
     integer :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
     integer :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nc, nbvari, jvari, nbcmp2, iord(1)
     real(kind=8) :: prec, valer(12)
-    logical :: exist
+    logical(kind=1) :: exist
     complex(kind=8) :: c16b
     character(len=3) :: typpar
     character(len=7) :: kii

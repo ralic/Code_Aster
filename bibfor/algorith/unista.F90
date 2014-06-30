@@ -142,7 +142,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     err = dnrm2(ldv,zr(vectt),1)
     call dscal(ldv, one/err, zr(vectt), 1)
     call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1,&
-                .true.)
+                .true._1)
 !
     vtest = 0.d0
     do 50 i = 1, ldv
@@ -189,7 +189,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     err = dnrm2(ldv,zr(vect2),1)
     call dscal(ldv, one/err, zr(vect2), 1)
     call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1,&
-                .true.)
+                .true._1)
     vtest = 0.d0
     do 55 i = 1, ldv
         vtest = vtest +zr(vect2+i-1)*zr(xsol+i-1)
@@ -222,7 +222,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     err = dnrm2(ldv,vectp,1)
     call dscal(ldv, one/err, vectp, 1)
     call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1,&
-                .true.)
+                .true._1)
     vtest = 0.d0
     do 65 i = 1, ldv
         vtest = vtest +vectp(i)*zr(xsol+i-1)

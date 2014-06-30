@@ -78,7 +78,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
 !
     complex(kind=8) :: cbid
-    logical :: trouac, delpos, lelpiv
+    logical(kind=1) :: trouac, delpos, lelpiv
     integer :: ier, ifm, niv, ndeci, isingu, npvneg
     integer :: ii, kk, iter, iliac, neqmax
     integer :: indic, kkmin, llmin

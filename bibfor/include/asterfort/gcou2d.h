@@ -28,7 +28,7 @@ interface
         real(kind=8) :: rinf
         real(kind=8) :: rsup
         real(kind=8) :: module
-        logical :: ldirec
+        logical(kind=1) :: ldirec
         real(kind=8) :: dir(3)
     end subroutine gcou2d
 end interface

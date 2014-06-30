@@ -30,7 +30,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
     character(len=24) :: evol
-    logical :: evonol
+    logical(kind=1) :: evonol
     integer :: numein
     real(kind=8) :: instin
 !

@@ -23,7 +23,7 @@ interface
         integer :: lty1
         integer :: lon1
         integer :: jadm
-        logical :: ldeps
+        logical(kind=1) :: ldeps
         integer :: jitab
     end subroutine jxlocs
 end interface

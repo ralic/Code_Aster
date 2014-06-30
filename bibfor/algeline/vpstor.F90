@@ -69,7 +69,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     character(len=19) :: chamno, sd2
     character(len=24) :: nume, nopast(nbpast)
     character(len=24) :: valk, typeba, raide, raide2, k24b
-    logical :: lrefd, lbasm, lstock
+    logical(kind=1) :: lrefd, lbasm, lstock
     character(len=24), pointer :: rerr(:) => null()
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE

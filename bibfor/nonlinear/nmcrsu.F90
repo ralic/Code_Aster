@@ -40,7 +40,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     character(len=19) :: sddisc, lisins, solveu
     character(len=24) :: defico
     real(kind=8) :: parcri(*)
-    logical :: limpex, lctcd
+    logical(kind=1) :: limpex, lctcd
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     integer :: nadapt, iadapt
     integer :: iter1, iter2, ibid
     integer :: ifm, niv, itmx, vali
-    logical :: ldeco, lreapc
+    logical(kind=1) :: ldeco, lreapc
     real(kind=8) :: rgmaxi, rgrela, inikry
     character(len=8) :: k8bid
     character(len=19) :: even

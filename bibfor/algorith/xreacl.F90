@@ -62,7 +62,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     character(len=16) :: option
     character(len=24) :: ainter, cface, faclon, pinter, chgeom, baseco
     character(len=19) :: depplu
-    logical :: debug, lcontx
+    logical(kind=1) :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     integer, pointer :: xfem_cont(:) => null()
 !

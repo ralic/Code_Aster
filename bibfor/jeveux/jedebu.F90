@@ -76,7 +76,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical :: litlec
+    logical(kind=1) :: litlec
     common /lficje/  litlec(n)
     integer :: nrhcod, nremax, nreuti
     common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)

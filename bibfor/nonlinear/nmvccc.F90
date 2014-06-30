@@ -32,7 +32,7 @@ subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=8) :: modele
-    logical :: exitem, exihyd, exipto, exisec, exiepa, exipha
+    logical(kind=1) :: exitem, exihyd, exipto, exisec, exiepa, exipha
     character(len=19) :: vecel
 !
 ! ----------------------------------------------------------------------

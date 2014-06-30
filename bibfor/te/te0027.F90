@@ -79,7 +79,7 @@ subroutine te0027(option, nomte)
     real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho(1), om, omo
     real(kind=8) :: ecin, prod3, prod4, accele(3), e(1), nu(1), mu
 !
-    logical :: grand, fonc, incr, epsini
+    logical(kind=1) :: grand, fonc, incr, epsini
 !
     integer :: icodre(1)
     character(len=4) :: fami
@@ -308,9 +308,9 @@ subroutine te0027(option, nomte)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
-        call nmgeom(ndim, nno, .false., grand, zr(igeom),&
+        call nmgeom(ndim, nno, .false._1, grand, zr(igeom),&
                     kp, ipoids, ivf, idfde, zr(idepl),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     rbid)
 !
 ! - CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)

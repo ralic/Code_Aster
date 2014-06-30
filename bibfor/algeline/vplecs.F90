@@ -58,7 +58,7 @@ subroutine vplecs(eigsol,&
     character(len=14) , intent(out) :: matra, matrb, matrc
     character(len=16) , intent(out) :: modrig, optiof, stoper, sturm, typeqz, typres
     character(len=19) , intent(out) :: amor, masse, raide, tabmod
-    logical           , intent(out) :: lc, lkr, lns, lpg, lqz
+    logical(kind=1)   , intent(out) :: lc, lkr, lns, lpg, lqz
 !
 ! --- INPUT/OUTPUT
 ! None

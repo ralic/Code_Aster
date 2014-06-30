@@ -64,7 +64,7 @@ subroutine op0171()
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: matcst, coecst, prem, reasmt, reasvt
+    logical(kind=1) :: matcst, coecst, prem, reasmt, reasvt
     integer :: parcri(9), iifm,   jlagp, jinst
     integer :: ibid, k, neq, iret
     integer :: itmaxl, iterl, ifm, niv, num

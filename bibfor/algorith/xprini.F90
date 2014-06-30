@@ -27,7 +27,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     character(len=8) :: model, noma, fispre, fiss
     character(len=19) :: cnsln, cnslt, cnsgls, noesom, noresi, cnxinv
     character(len=24) :: vcn, grlr
-    logical :: grille
+    logical(kind=1) :: grille
     real(kind=8) :: lcmin
 !
 ! ======================================================================
@@ -90,7 +90,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     character(len=19) :: celmt, maiff
     character(len=24) :: ligrel, lchin(1), lchout(2)
     real(kind=8) :: p(3), ff(3), dist, lsna, lsnb, lsta, lstb, rayon
-    logical :: coupln, couplt
+    logical(kind=1) :: coupln, couplt
     real(kind=8) :: damax
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -165,8 +165,8 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
             call jedetr(celmt)
 !
         else
-            call jedupo(fispre//'.PRO.MES_EL', 'G', fiss// '.PRO.MES_EL', .false.)
-            call jedupo(fispre//'.PRO.NORMAL', 'G', fiss// '.PRO.NORMAL', .false.)
+            call jedupo(fispre//'.PRO.MES_EL', 'G', fiss// '.PRO.MES_EL', .false._1)
+            call jedupo(fispre//'.PRO.NORMAL', 'G', fiss// '.PRO.NORMAL', .false._1)
         endif
 !
     endif

@@ -38,8 +38,8 @@ subroutine trjeve(ific, nocc)
     character(len=8) :: crit
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=24) :: nomobj
-    logical :: lref
-    logical :: skip
+    logical(kind=1) :: lref
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
@@ -65,12 +65,12 @@ subroutine trjeve(ific, nocc)
         call getvis('OBJET', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
             call tresu_obj(nomobj, 'I', tbtxt, refi, refr,&
-                           epsi, crit, .true., ssigne)
+                           epsi, crit, .true._1, ssigne)
             if (lref) then
                 call getvis('OBJET', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
                 ASSERT(n2.eq.n2r)
                 call tresu_obj(nomobj, 'I', tbref, refir, refrr,&
-                               epsir, crit, .false., ssigne)
+                               epsir, crit, .false._1, ssigne)
             endif
         endif
 !
@@ -81,13 +81,13 @@ subroutine trjeve(ific, nocc)
                 call utmess('A', 'TEST0_11')
             endif
             call tresu_obj(nomobj, 'R', tbtxt, refi, refr,&
-                           epsi, crit, .true., ssigne, ignore=skip, &
+                           epsi, crit, .true._1, ssigne, ignore=skip, &
                            compare=ordgrd)
             if (lref) then
                 call getvr8('OBJET', 'VALE_REFE', iocc=iocc, scal=refrr, nbret=n2r)
                 ASSERT(n2.eq.n2r)
                 call tresu_obj(nomobj, 'R', tbref, refir, refrr,&
-                               epsir, crit, .false., ssigne)
+                               epsir, crit, .false._1, ssigne)
             endif
         endif
         write (ific,*)' '

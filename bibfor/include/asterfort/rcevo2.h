@@ -24,12 +24,12 @@ interface
         character(len=24) :: csigm
         character(len=24) :: cinst
         character(len=24) :: csiex
-        logical :: kemixt
+        logical(kind=1) :: kemixt
         character(len=24) :: cstex
         character(len=24) :: csmex
-        logical :: lfatig
-        logical :: flexio
-        logical :: lrocht
+        logical(kind=1) :: lfatig
+        logical(kind=1) :: flexio
+        logical(kind=1) :: lrocht
         character(len=24) :: cnoc
         character(len=24) :: cresu
         character(len=24) :: cpres

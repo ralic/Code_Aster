@@ -48,7 +48,7 @@ subroutine giecas(nfic, ndim, nbobj)
 !     VARIABLES LOCALES:
     character(len=7) :: k7bid, k7nom(7)
     character(len=8) :: tymail, nomobj, nomno, k8nom(7), nomobg
-    logical :: magoui, trouve, indir
+    logical(kind=1) :: magoui, trouve, indir
 !
     character(len=1) :: cbid
 !-----------------------------------------------------------------------

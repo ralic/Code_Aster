@@ -86,7 +86,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     integer :: n1, n2, n3, n4, nbinst, nbordr, npoint
     integer :: nusp, vali1, vali2
     real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
-    logical, pointer :: lexi(:) => null()
+    logical(kind=1), pointer :: lexi(:) => null()
     real(kind=8), pointer :: nlval2(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -184,7 +184,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     end do
 !
     rval = zr(jinst)
-    call rsbary(zr(jlir8), nbordr, .false., lexi, rval,&
+    call rsbary(zr(jlir8), nbordr, .false._1, lexi, rval,&
                 i1, i2, iposit)
     call rsutro(resu, i1, ip1, ierr1)
     call rsexch('F', resu, nomcha, ip1, ch1,&
@@ -213,7 +213,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call jemarq()
 !
             rval = zr(jinst+iordr)
-            call rsbary(zr(jlir8), nbordr, .false., lexi, rval,&
+            call rsbary(zr(jlir8), nbordr, .false._1, lexi, rval,&
                         i1, i2, iposit)
             if (iposit .eq. -2) then
                 valr (1) = rval
@@ -334,7 +334,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call jemarq()
 !
             rval = zr(jinst+iordr)
-            call rsbary(zr(jlir8), nbordr, .false., lexi, rval,&
+            call rsbary(zr(jlir8), nbordr, .false._1, lexi, rval,&
                         i1, i2, iposit)
             if (iposit .eq. -2) then
                 valr (1) = rval

@@ -58,7 +58,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     character(len=8) :: mailla, caelem
     character(len=24) :: nmabet, gromai
     integer :: nbmabe
-    logical :: mail2d
+    logical(kind=1) :: mail2d
 !
 ! VARIABLES LOCALES
 ! -----------------

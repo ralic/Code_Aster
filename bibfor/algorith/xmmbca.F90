@@ -33,7 +33,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 #include "asterfort/mesomm.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/xmchex.h"
-    logical :: mmcvca
+    logical(kind=1) :: mmcvca
     character(len=8) :: noma, nomo
     character(len=24) :: resoco, mate
     character(len=19) :: valinc(*)
@@ -71,7 +71,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
     character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
     character(len=19) :: fissno, heavno, heavfa
-    logical :: debug, lcontx
+    logical(kind=1) :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
     integer, pointer :: xfem_cont(:) => null()

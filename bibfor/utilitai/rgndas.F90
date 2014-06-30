@@ -54,7 +54,8 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
     integer :: inocmp, nuddl, neq, nusst, nulia, jdeeq, jorig, iexi
     character(len=8) :: noma, nomno2, nomcm2, modgen, kn1, kn2
     character(len=19) :: nume
-    logical :: trouve, lnuge
+    logical :: trouve
+    logical(kind=1) :: lnuge
     integer, pointer :: desc(:) => null()
     integer, pointer :: nueq(:) => null()
 !

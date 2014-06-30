@@ -62,7 +62,7 @@ subroutine ajlipa(modelz, base)
     integer :: icobis,  dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
     integer :: nbgrel, jrepe,  jprti, jprtk, nbsma
 !
-    logical :: plein0
+    logical(kind=1) :: plein0
     integer, pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
     integer, pointer :: maille(:) => null()

@@ -22,7 +22,7 @@ interface
         character(len=24) :: sdimpr
         character(len=19) :: sddisc
         character(len=24) :: sdieto
-        logical :: force
+        logical(kind=1) :: force
         integer :: numarc
         real(kind=8) :: instan
         integer :: icham

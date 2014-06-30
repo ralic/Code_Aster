@@ -28,7 +28,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     character(len=8) :: elrf2d(nbtm)
     integer :: nutm2d(nbtm)
     real(kind=8) :: geom1(*), geom2(*)
-    logical :: lraff
+    logical(kind=1) :: lraff
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !                            INUTILISABLE DANS LE CAS 2.5D
 ! ----------------------------------------------------------------------
 !
-    logical :: lext
+    logical(kind=1) :: lext
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     character(len=8) :: m1, m2, elrefa, fapg(nbfamx), alarme
@@ -81,7 +81,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
     character(len=8) :: nono2
-    logical :: loin2
+    logical(kind=1) :: loin2
     character(len=24), pointer :: pjxx_k1(:) => null()
     integer, pointer :: pjef_tr(:) => null()
     integer, pointer :: tria3(:) => null()

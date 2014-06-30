@@ -59,7 +59,7 @@ subroutine cfflm1(resoco, ndim, nesmax, nbliai, nbliac)
     integer :: jliac, jmu
     character(len=19) :: fro1
     integer :: jfro11, jfro12
-    logical :: liaact
+    logical(kind=1) :: liaact
 !
 ! ----------------------------------------------------------------------
 !

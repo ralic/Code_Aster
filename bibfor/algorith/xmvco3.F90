@@ -53,7 +53,7 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
     integer :: i, j, k, pli, nli, ddlm, ifa, ifh, ifiss
     integer :: in, jfisno, jheafa, ncomph, nfiss, nnos
     real(kind=8) :: ffi, coefi
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 ! ---------------------------------------------------------------------
 !

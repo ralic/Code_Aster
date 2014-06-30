@@ -27,7 +27,7 @@ interface
         character(len=24) :: csne
         character(len=24) :: cspo
         character(len=24) :: cspe
-        logical :: kemixt
+        logical(kind=1) :: kemixt
         character(len=24) :: cspto
         character(len=24) :: cspte
         character(len=24) :: cspmo

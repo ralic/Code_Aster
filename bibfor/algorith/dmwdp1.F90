@@ -26,7 +26,7 @@ function dmwdp1(rho11, signe, sat, dsatp1, phi,&
     real(kind=8) :: rho11, signe, sat, dsatp1, phi, cs, cliq, dp11p1
     real(kind=8) :: dmwdp1, em
     real(kind=8) :: dphip1
-    logical :: emmag
+    logical(kind=1) :: emmag
 !
     if (emmag) then
         dphip1 = - sat*signe*em

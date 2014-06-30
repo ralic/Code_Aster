@@ -48,7 +48,7 @@ subroutine te0274(option, nomte)
     integer :: l, li, iflux, ivectt, nnop2, c(6, 9), ise, nse, itempr, itemps
     integer :: ibid
     character(len=8) :: coef, elrefe, alias8
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
 !====

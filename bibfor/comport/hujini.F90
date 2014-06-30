@@ -47,10 +47,10 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
     real(kind=8) :: mater(nmat, 2), deps(6), yd(18), vind(nvi), sigf(6)
     real(kind=8) :: dy(18), sigd(6)
     integer :: nr, nvi, iret, indi(7), intg, nmat
-    logical :: bnews(3), mtrac
+    logical(kind=1) :: bnews(3), mtrac
 !
     real(kind=8) :: i1f, dsig(6), zero, un, trois, pref, e0, matert(22, 2)
-    logical :: loop, nodef
+    logical(kind=1) :: loop, nodef
     integer :: nbmeca, nbmect, i, ii, ndt, ndi, indis(7), diff
 !
     parameter     (ndi   = 3   )

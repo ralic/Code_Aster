@@ -135,7 +135,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
         call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1,&
-                    .true.)
+                    .true._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE

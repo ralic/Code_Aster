@@ -18,7 +18,7 @@
 interface
     subroutine calcsp(casint, nomu, table, freq, masg,&
                       nbm, nbmr, imod1, nuor, ivite)
-        logical :: casint
+        logical(kind=1) :: casint
         character(len=8) :: nomu
         character(len=8) :: table
         real(kind=8) :: freq(*)

@@ -67,7 +67,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
     character(len=8) :: nompar(4)
     real(kind=8) :: valpar(4)
     real(kind=8) :: dist1, dist2, distst
-    logical :: ldpou, ldcoq, ldescl, ldmait
+    logical(kind=1) :: ldpou, ldcoq, ldescl, ldmait
 !
 ! ----------------------------------------------------------------------
 !

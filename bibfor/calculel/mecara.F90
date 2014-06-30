@@ -21,7 +21,7 @@ subroutine mecara(cara_elem, chcara, exicar)
 !
     character(len=*), intent(in) :: cara_elem
     character(len=*), intent(inout) :: chcara(18)
-    logical, optional, intent(out) :: exicar
+    logical(kind=1), optional, intent(out) :: exicar
 !
 ! --------------------------------------------------------------------------------------------------
 !

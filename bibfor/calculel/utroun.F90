@@ -46,7 +46,7 @@ subroutine utroun(ch1, idec, ch2, isup)
     integer :: lcv, ii, i, iii, itmp, iret, ic1
     character(len=1) :: next(10), c1, c2
     character(len=24) :: chv3, chv1, chv2
-    logical :: lsg, lnext
+    logical(kind=1) :: lsg, lnext
     data next/'1','2','3','4','5','6','7','8','9','0'/
 !
 !

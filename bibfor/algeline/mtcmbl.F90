@@ -97,10 +97,11 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !     -----------------------------------------------------------------
     integer :: jrefar,  jrefai, ier,  ier1
     integer :: i, lres, nbloc,  lgbloc
-    logical :: reutil, symr, symi, matd
+    logical(kind=1) :: reutil, symr, symi, matd
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: lispoint(:) => null()
+    logical :: nosymr
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -142,7 +143,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
             ASSERT(nbloc.eq.1)
         else
             ASSERT(nbloc.eq.2)
-            ASSERT(.not.symr)
+            nosymr=.not.symr
+            ASSERT(nosymr)
         endif
 !        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.

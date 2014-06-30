@@ -60,7 +60,7 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
     character(len=24) :: soumat
     complex(kind=8) :: cmass(*)
     integer :: libid(*), liax(nbliax)
-    logical :: axok, vrai, faux
+    logical(kind=1) :: axok, vrai, faux
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -68,7 +68,7 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
     integer :: nj
     real(kind=8) :: beta
 !-----------------------------------------------------------------------
-    data vrai,faux /.true.,.false./
+    data vrai,faux /.true._1,.false./
 !-----------------------------------------------------------------------
 !
 !

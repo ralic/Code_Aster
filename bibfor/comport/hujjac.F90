@@ -50,9 +50,9 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
     real(kind=8) :: mater(nmat, 2), deps(6), yd(nr), yf(nr), vind(nvi)
     real(kind=8) :: drdy(nr, nr), vins(nr), ye(nr), vinf(nvi)
     integer :: indi(7), nr, nvi, iret, nmat
-    logical :: bnews(3), mtrac
+    logical(kind=1) :: bnews(3), mtrac
 !
-    logical :: prox(4), proxc(4), tracti, probt, modif, neglam(3)
+    logical(kind=1) :: prox(4), proxc(4), tracti, probt, modif, neglam(3)
     real(kind=8) :: r(nr), ydt(nr), yft(nr), dev(3), pf, qf
     real(kind=8) :: pref, e0, ptrac, rtrac, un, deux, zero, yet(nr), prob(3)
     real(kind=8) :: matert(22, 2)

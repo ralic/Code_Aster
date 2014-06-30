@@ -9,7 +9,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 #include "asterfort/wkvect.h"
     integer :: np, nx, nc
     character(len=*) :: nuage, nomgd
-    logical :: lnual
+    logical(kind=1) :: lnual
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

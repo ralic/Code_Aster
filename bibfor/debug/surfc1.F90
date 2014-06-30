@@ -49,7 +49,7 @@ subroutine surfc1(char, ifm)
     integer :: nzoco
     integer :: izone
     character(len=24) :: defico
-    logical :: lveri, lgcp, lgliss
+    logical(kind=1) :: lveri, lgcp, lgliss
     integer :: isto, lgbloc, gcpmax, gcppre, gcprec
     real(kind=8) :: tolint, precis, gcpres, aljeu
     real(kind=8) :: coefpn, coefpt, coefff, coefte

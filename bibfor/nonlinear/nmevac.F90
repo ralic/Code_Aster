@@ -71,7 +71,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
     real(kind=8) :: r8bid
     character(len=16) :: action, nomevd
     integer :: retrpc, retsup, retswa, retpen, retdec
-    logical :: trydec, litmax
+    logical(kind=1) :: trydec, litmax
 !
 ! ----------------------------------------------------------------------
 !

@@ -24,7 +24,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     character(len=8) :: nomtyp(*), typech, sdcarm
     character(len=19) :: chanom
     character(len=24) :: ncaimi, ncaimk
-    logical :: exicmp(nbvato)
+    logical(kind=1) :: exicmp(nbvato)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     character(len=16) :: nomfpg
     character(len=64) :: noprof
 !
-    logical :: exicar, grfidt
+    logical(kind=1) :: exicar, grfidt
     character(len=16), pointer :: tabnofpg(:) => null()
     character(len=16), pointer :: nofpgma(:) => null()
 !

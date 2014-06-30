@@ -41,7 +41,7 @@ subroutine te0314(option, nomte)
 ! NPG      NB DE POINTS DE GAUSS DE L'ELEMENT DE BORD
 ! ======================================================================
 ! ======================================================================
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ires, iflux, itemps, igeom
     real(kind=8) :: flu1, deltat, r
 !

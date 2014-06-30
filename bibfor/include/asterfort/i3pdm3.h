@@ -25,6 +25,6 @@ interface
         integer :: conexk(*)
         real(kind=8) :: coordo(*)
         real(kind=8) :: pt(*)
-        logical :: dedans
+        logical(kind=1) :: dedans
     end subroutine i3pdm3
 end interface

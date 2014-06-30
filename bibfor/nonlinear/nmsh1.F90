@@ -90,7 +90,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 ! OUT IRET    : CODE RETOUR DE L'INTEGRATION DE LA LDC
 !
 !
-    logical :: grand, axi, resi, rigi, lintbo
+    logical(kind=1) :: grand, axi, resi, rigi, lintbo
     integer :: lij(3, 3), vij(3, 3), ia, ja, na, g, kk, i, j
     integer :: nddl, ndu, vu(3, 27), ivf, n, kl, m, j1, kkd, ivash2
     integer :: cod(27), n6, nd, nbcin, numcin(2)
@@ -114,7 +114,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
     real(kind=8) :: rp(3, 3), rpa(3, 3)
     real(kind=8) :: rpat(3, 3), etdm(3, 3), lambp(3, 3)
     real(kind=8) :: rpt(3, 3)
-    parameter (grand = .true.)
+    parameter (grand = .true._1)
     data    vij  / 1, 4, 5,&
      &               4, 2, 6,&
      &               5, 6, 3 /
@@ -224,9 +224,9 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !
 !---------------------TRANSFORMATION DES ARG D ENTRE SUBROUTINE NMCOMP
 !
-        call nmgeom(ndim, nno, .false., grand, geomi,&
+        call nmgeom(ndim, nno, .false._1, grand, geomi,&
                     g, iw, ivf, idff, deplm,&
-                    .true., r8bid, dff, fm, epsm,&
+                    .true._1, r8bid, dff, fm, epsm,&
                     r8bid)
         call prep2(ndim, npg, g, rpa, etdpn1,&
                    sigm, jm, fda, rp, rpat,&

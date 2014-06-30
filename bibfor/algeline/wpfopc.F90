@@ -18,7 +18,7 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
     integer :: lmasse, lamor, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
-    logical :: lqz
+    logical(kind=1) :: lqz
 !
 !     -----------------------------------
 ! ======================================================================

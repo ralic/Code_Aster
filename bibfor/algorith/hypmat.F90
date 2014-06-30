@@ -59,7 +59,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
     real(kind=8) :: valres(nbres)
     real(kind=8) :: nu
     real(kind=8) :: denom
-    logical :: cmpk
+    logical(kind=1) :: cmpk
 !
 ! ----------------------------------------------------------------------
 !

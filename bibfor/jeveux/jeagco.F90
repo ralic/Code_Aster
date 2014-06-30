@@ -91,7 +91,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
     character(len=24) :: nom24
     character(len=32) :: nomin, nomout
     character(len=1) :: kclas, genri, typei
-    logical :: libcol, x2u, lconst, lnom
+    logical(kind=1) :: libcol, x2u, lconst, lnom
     data             iv / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
     data             csuffi / '$$DESO  ','$$IADD  ','$$IADM  ',&
      &                          '$$MARQ  ','$$NOM   ','        ',&

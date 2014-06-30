@@ -44,7 +44,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
     real(kind=8) :: acc
     real(kind=8) :: hh(ih, n), valpi(n), valpr(n), zvps(iz, m)
     real(kind=8) :: b(ib, n), u(n), v(n)
-    logical :: loc(n)
+    logical(kind=1) :: loc(n)
 !
 ! VARIABLES LOCALES
     integer :: i, i1, i2, ii, is, its, j, j2, k, k1
@@ -53,7 +53,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
     real(kind=8) :: w, x, y
     real(kind=8) :: a, h
     real(kind=8) :: xluk, xeps3, zr, zi
-    logical :: conj2
+    logical(kind=1) :: conj2
 !
 !**********************************************************************
 !                        DEBUT DU CODE EXECUTABLE

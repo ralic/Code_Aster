@@ -65,7 +65,7 @@ subroutine jeimpo(unit, nomlu, mess)
     character(len=1) :: genri, typei
     integer :: icre, iret, jctab, ltypi, lonoi, iaddi(2)
     integer :: ibacol, ixiadd, ixdeso
-    logical :: lconst, lcol
+    logical(kind=1) :: lconst, lcol
 !     ------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm, idlong, idlono
     parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2 , idiadm = 3 ,&

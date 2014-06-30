@@ -61,7 +61,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/uttcpu.h"
     integer :: itps
-    logical :: assmat
+    logical(kind=1) :: assmat
     character(len=1) :: base
     character(len=19) :: lischa, solveu
     character(len=19) :: vecass
@@ -127,7 +127,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
                 vecass, chsol, 'V', [0.d0], [cbid],&
-                criter, .true., 0, iret)
+                criter, .true._1, 0, iret)
 !
 ! 5.1. ==> NETTOYAGE DU CHAMP CINEMATIQUE CNCHCI QUI EST RECREE A
 !          CHAQUE FOIS

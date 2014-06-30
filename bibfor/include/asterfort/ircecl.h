@@ -43,13 +43,13 @@ interface
         integer :: numnoe(*)
         integer :: nbmat
         integer :: nummai(*)
-        logical :: lsup
+        logical(kind=1) :: lsup
         real(kind=8) :: borsup
-        logical :: linf
+        logical(kind=1) :: linf
         real(kind=8) :: borinf
-        logical :: lmax
-        logical :: lmin
-        logical :: lcor
+        logical(kind=1) :: lmax
+        logical(kind=1) :: lmin
+        logical(kind=1) :: lcor
         integer :: ndim
         real(kind=8) :: coor(*)
         character(len=19) :: nolili

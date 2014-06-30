@@ -18,9 +18,9 @@
 interface
     subroutine borthm(axi, vf, perman, typvf,&
                       typmod, ndim, ndlno, ndlnm)
-        logical :: axi
-        logical :: vf
-        logical :: perman
+        logical(kind=1) :: axi
+        logical(kind=1) :: vf
+        logical(kind=1) :: perman
         integer :: typvf
         character(len=8) :: typmod(2)
         integer :: ndim

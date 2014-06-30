@@ -42,6 +42,6 @@ subroutine reajeu(resoco)
 !
     jeuite = resoco(1:14)//'.JEUITE'
     jeusav = resoco(1:14)//'.JEUSAV'
-    call jedupo(jeusav, 'V', jeuite, .false.)
+    call jedupo(jeusav, 'V', jeuite, .false._1)
 !
 end subroutine

@@ -47,7 +47,7 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 !-----------------------------------------------------------------------
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
     real(kind=8) :: deuxmu
     real(kind=8) :: valres(3)
     real(kind=8) :: depsmo, e, nu, troisk

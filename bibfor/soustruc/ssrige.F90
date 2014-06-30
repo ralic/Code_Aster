@@ -87,7 +87,7 @@ subroutine ssrige(nomu)
 !
 !        -- CALCULS MATRICES ELEMENTAIRES DE RIGIDITE:
     call merime(nomo, nchaci, zk8(iarefm-1+9+1), mate, cara,&
-                .true., time, ' ', matel, ibid,&
+                .true._1, time, ' ', matel, ibid,&
                 base)
 !
 !        -- NUME_DDL:

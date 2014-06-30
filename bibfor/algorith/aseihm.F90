@@ -104,7 +104,7 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
     real(kind=8) :: sigm(dimcon, npi), varim(nbvari, npi)
     character(len=8) :: nomail
     character(len=16) :: option, compor(*)
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
 !
 ! - VARIABLES SORTIE
     integer :: retcom
@@ -117,7 +117,7 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
     integer :: i, j, m, k, km, kpi, nbpha1, nbpha2, addlh1
     real(kind=8) :: q(dimdef, dimuel), res(dimdef), drde(dimdef, dimdef), wi
     real(kind=8) :: defgem(dimdef), defgep(dimdef), matri
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
 !
 ! =====================================================================

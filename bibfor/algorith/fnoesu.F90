@@ -41,7 +41,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
     integer :: adcp11, adcp12, adcp21, adcp22
     real(kind=8) :: congem(dimcon, maxfa+1)
     real(kind=8) :: vectu(dimuel)
-    logical :: axi
+    logical(kind=1) :: axi
     character(len=16) :: option
     integer :: nno, nnos, nnom, nface
 !

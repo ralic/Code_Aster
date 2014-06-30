@@ -28,7 +28,7 @@ interface
         integer :: pivot
         integer :: ier
         character(len=19) :: solveu
-        logical :: caldet
-        logical :: calfac
+        logical(kind=1) :: caldet
+        logical(kind=1) :: calfac
     end subroutine vpstur
 end interface

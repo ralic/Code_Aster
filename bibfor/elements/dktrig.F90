@@ -54,7 +54,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: xab1(3, 9), depl(18)
     real(kind=8) :: flex(81), memb(36), mefl(54)
     real(kind=8) :: bsigth(24), enerth, ctor
-    logical :: coupmf, indith
+    logical(kind=1) :: coupmf, indith
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
 !     ------------------------------------------------------------------
     enerth = 0.0d0

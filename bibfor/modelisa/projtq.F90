@@ -78,7 +78,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, itria,&
 ! -----------------
     integer :: ino, nbsom
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2
-    logical :: notlin
+    logical(kind=1) :: notlin
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

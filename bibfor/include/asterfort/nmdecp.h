@@ -27,7 +27,7 @@ interface
         real(kind=8) :: deltac
         real(kind=8) :: ratio
         character(len=16) :: optdec
-        logical :: ldcext
+        logical(kind=1) :: ldcext
         real(kind=8) :: durdec
         integer :: retdec
     end subroutine nmdecp

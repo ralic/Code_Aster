@@ -112,7 +112,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     integer :: maxitr, ifm, niv, priram(8), nconv
     real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq), workl(lonwl)
     real(kind=8) :: dsor(nfreq+1, 2), fshift, vaux(nbeq), workv(3*nbvect), alpha, omecor
-    logical :: selec(nbvect), flage
+    logical(kind=1) :: selec(nbvect), flage
     character(len=19) :: solveu
 !
 !
@@ -127,7 +127,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(5)
     real(kind=8) :: sigmar, sigmai, valr(2)
-    logical :: rvec
+    logical(kind=1) :: rvec
     character(len=1) :: bmat, kbid
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
@@ -222,19 +222,19 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
         do j = 1, nbeq
             workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
         end do
 ! X <- (OP)*(X*DDL_BLOQUE)
         call mrmult('ZERO', lmasse, workd(ipntr(1)), vaux, 1,&
-                    .false.)
+                    .false._1)
         do j = 1, nbeq
             vaux(j) = vaux(j) * ddlexc(j)
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)
@@ -246,14 +246,14 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! SEULEMENT (ID)*X VIA IDO= 2 CAR PRODUIT SCALAIRE= L2)
 ! X <- (B)*X*DDL_BLOQUE
         call mrmult('ZERO', lmasse, workd(ipntr(3)), vaux, 1,&
-                    .false.)
+                    .false._1)
         do j = 1, nbeq
             vaux(j) = vaux(j) * ddlexc(j)
         end do
 ! X <- (OP)*X
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)

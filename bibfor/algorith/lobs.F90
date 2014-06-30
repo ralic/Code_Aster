@@ -28,7 +28,7 @@ subroutine lobs(sdobse, numins, inst, lobsv)
     integer :: numins
     real(kind=8) :: inst
     character(len=19) :: sdobse
-    logical :: lobsv
+    logical(kind=1) :: lobsv
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ subroutine lobs(sdobse, numins, inst, lobsv)
     integer :: iobs, nbobsv
     character(len=2) :: chaine
     character(len=19) :: listli
-    logical :: lselec
+    logical(kind=1) :: lselec
 !
 ! ----------------------------------------------------------------------
 !

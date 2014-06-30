@@ -28,8 +28,8 @@ interface
         integer, intent(in) :: nddl
         integer, intent(in) :: nnos
         integer, intent(in) :: stano(*)
-        logical, intent(in) :: lcontx
-        logical, intent(in) :: matsym
+        logical(kind=1), intent(in) :: lcontx
+        logical(kind=1), intent(in) :: matsym
         character(len=16), intent(in) :: option
         character(len=16), intent(in) :: nomte
         integer, intent(in) :: ddlm

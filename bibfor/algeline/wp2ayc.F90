@@ -66,11 +66,11 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
     k19bid=' '
 !
     call mcmult('ZERO', lamor, yh, u1, 1,&
-                .false.)
+                .false._1)
     call mcmult('ZERO', lmasse, yb, u2, 1,&
-                .false.)
+                .false._1)
     call mcmult('ZERO', lmasse, yh, u3, 1,&
-                .false.)
+                .false._1)
 !-RM-DEB
 !     LA BOUCLE 5 REALISE LE PRODUIT PAR MASSE*INV(MASSE_REG)*MASSR
 !     OR CETTE MATRICE EST EGALE A MASSE
@@ -85,7 +85,7 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
     end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
                 k19bid, k19bid, kbid, [0.d0], u1,&
-                criter, .false., 0, iret)
+                criter, .false._1, 0, iret)
     do i = 1, n, 1
         zh(i) = - u1(i)
         zb(i) = (yh(i) - sigma*u1(i))*lbloq(i)

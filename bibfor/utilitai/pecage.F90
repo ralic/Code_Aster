@@ -65,7 +65,7 @@ subroutine pecage(resu, modele, nbocc)
     character(len=24) :: lchin(15), lchout(1), ligrel, mlggma, mlgnma
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
-    logical :: nsymx, nsymy
+    logical(kind=1) :: nsymx, nsymy
     real(kind=8), pointer :: trav1(:) => null()
     ibid = 0
 !     ------------------------------------------------------------------

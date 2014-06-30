@@ -72,7 +72,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !
     character(len=8) :: saux08
     character(len=64) :: nompro, nomloc, nomamd
-    logical :: ficexi, dejouv
+    logical(kind=1) :: ficexi, dejouv
 ! ______________________________________________________________________
 !
 !====

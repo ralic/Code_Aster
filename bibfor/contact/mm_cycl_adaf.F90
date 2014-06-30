@@ -58,7 +58,7 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 !
     real(kind=8) :: nrese, new_coef
     integer :: icoef
-    logical :: l_augm, l_stop
+    logical(kind=1) :: l_augm, l_stop
 !
 ! --------------------------------------------------------------------------------------------------
 !

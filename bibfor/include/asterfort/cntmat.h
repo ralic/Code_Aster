@@ -49,12 +49,12 @@ interface
         real(kind=8) :: q2d(2)
         real(kind=8) :: de33d1
         real(kind=8) :: de33d2
-        logical :: elas
-        logical :: elas1
-        logical :: elas2
-        logical :: coup
-        logical :: rigi
-        logical :: resi
+        logical(kind=1) :: elas
+        logical(kind=1) :: elas1
+        logical(kind=1) :: elas2
+        logical(kind=1) :: coup
+        logical(kind=1) :: rigi
+        logical(kind=1) :: resi
         character(len=16) :: option
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: sig(6)

@@ -67,8 +67,8 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! ----------------------------------------------------------------------
 !
     integer :: n1, nm
-    logical :: lexpl, lprmo
-    logical :: limpex, lctcd
+    logical(kind=1) :: lexpl, lprmo
+    logical(kind=1) :: limpex, lctcd
     character(len=8) :: meca
     character(len=19) :: lisins
     integer ::  numreo

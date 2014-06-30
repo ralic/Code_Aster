@@ -98,7 +98,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     integer :: vali(4)
     integer :: i, j, k, abyh, abyb, io
     real(kind=8) :: a, b, c, sr, si, deuxsr, mods2, invsi, si2, d1, d2
-    logical :: oc, ro
+    logical(kind=1) :: oc, ro
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ii, ips
@@ -189,11 +189,11 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !
 !     --- 1.3. COEFFICIENT DE LA TRIDIAGONALE
     call mrmult('ZERO', lamor, yh(1, 1), zr(au1), 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lmasse, yb(1, 1), zr(au2), 1,&
-                .false.)
+                .false._1)
     call mrmult('ZERO', lmasse, yh(1, 1), zr(au3), 1,&
-                .false.)
+                .false._1)
 !
     a = 0.d0
     do 130 i = 1, neq
@@ -354,11 +354,11 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !
 !        --- 2.5. COEFFICIENTS DE LA TRIDIAGONALE
         call mrmult('ZERO', lamor, yh(1, j), zr(au1), 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmasse, yb(1, j), zr(au2), 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmasse, yh(1, j), zr(au3), 1,&
-                    .false.)
+                    .false._1)
 !
         a = 0.d0
         b = 0.d0

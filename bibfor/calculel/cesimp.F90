@@ -57,7 +57,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     character(len=3) :: tsca
     character(len=19) :: ces
     character(len=60) :: fmt, fmt1
-    logical :: exicmp
+    logical(kind=1) :: exicmp
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     integer, pointer :: connex(:) => null()

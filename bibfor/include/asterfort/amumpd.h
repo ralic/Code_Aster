@@ -26,7 +26,7 @@ interface
         integer :: iret
         character(len=14) :: impr
         integer :: ifmump
-        logical :: prepos
+        logical(kind=1) :: prepos
         integer :: pcentp(2)
     end subroutine amumpd
 end interface

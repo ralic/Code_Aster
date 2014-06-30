@@ -100,7 +100,7 @@ subroutine xlagsc(ndim, nbno, nbarto, mxar, algola,&
 ! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !
         call xrell2(zi(jtabno), ndim, nbarto, zr(jtabin), zr(jtabcr),&
-                    .false., nliseq)
+                    .false._1, nliseq)
     endif
 !
     call jedema()

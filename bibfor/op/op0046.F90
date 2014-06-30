@@ -88,7 +88,7 @@ subroutine op0046()
     character(len=24) :: k24bla, noobj
     character(len=24) :: compor
 !
-    logical :: exipou
+    logical(kind=1) :: exipou
 !
     complex(kind=8) :: calpha
     real(kind=8), pointer :: vale(:) => null()

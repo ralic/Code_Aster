@@ -30,7 +30,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
     real(kind=8) :: instin
     character(len=8) :: mailla
     character(len=19) :: sddisc
-    logical :: levol, lostat, lnonl, lreuse
+    logical(kind=1) :: levol, lostat, lnonl, lreuse
     character(len=19) :: sdobse
     character(len=24) :: resulz, modele
     character(len=24) :: sdieto

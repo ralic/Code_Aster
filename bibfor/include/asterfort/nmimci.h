@@ -20,6 +20,6 @@ interface
         character(len=24) :: sdimpr
         character(len=*) :: typcoz
         integer :: vali
-        logical :: laffe
+        logical(kind=1) :: laffe
     end subroutine nmimci
 end interface

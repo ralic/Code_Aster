@@ -77,7 +77,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1
     real(kind=8) :: temps, coefm(*), psidel(*), deux, pow, fsauv(palmax, 3)
     real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol, coeff, seuil1, seuil2
-    logical :: lamor, prdeff, adapt, flagdt, condrepri
+    logical(kind=1) :: lamor, prdeff, adapt, flagdt, condrepri
     character(len=3) :: finpal(palmax)
     character(len=4) :: intk
     character(len=6) :: typal(palmax)
@@ -90,7 +90,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     character(len=19) :: matasm
     character(len=24) :: cpal
 
-    logical :: okprem
+    logical(kind=1) :: okprem
 !
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass,
@@ -107,7 +107,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     nbobjs=1
     call codent(nbobjs, 'D0', intk)
     namerk='&&RK'//intk
-    call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false.,&
+    call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false._1,&
                 method=method, base=basemo, nbmodes=neqgen, rigi=nomrig, mass=nommas,&
                 amor=nomamo, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
                 jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=noecho,&
@@ -420,7 +420,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                 nbsauv = int(nbsauv*facobj)
                 nbscho = nbsauv * 3 * nbchoc
 !
-                call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false.,&
+                call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false._1,&
                             method=method, base=basemo, nbmodes=neqgen, rigi=nomrig,&
                             mass=nommas, amor=nomamo, jordr=jordr, jdisc=jinst,&
                             jdepl=jdeps, jvite=jvits, jacce=jaccs, dt=dt, jptem=jpass,&

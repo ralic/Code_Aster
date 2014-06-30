@@ -22,7 +22,7 @@ interface
         integer :: ifi
         integer :: versio
         character(len=8) :: noma
-        logical :: lmod
+        logical(kind=1) :: lmod
         character(len=8) :: nomo
         integer :: nive
         integer :: infmai

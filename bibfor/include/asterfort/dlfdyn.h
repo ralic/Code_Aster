@@ -20,7 +20,7 @@ interface
                       v0, f, f0)
         integer :: rigid
         integer :: amort
-        logical :: lamort
+        logical(kind=1) :: lamort
         integer :: neq
         real(kind=8) :: d0(*)
         real(kind=8) :: v0(*)

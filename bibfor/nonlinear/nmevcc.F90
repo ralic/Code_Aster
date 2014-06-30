@@ -60,7 +60,7 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
     real(kind=8) :: fincol, subdur
     integer :: ntpc, iptc
     real(kind=8) :: instam, instap
-    logical :: levent
+    logical(kind=1) :: levent
     integer :: ibid
     character(len=8) :: k8bid
     integer :: zeven

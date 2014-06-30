@@ -70,7 +70,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, typddl(6), nomnoe, tyd, intf, kbid
     real(kind=8) :: xa(10), xta(10), tet0(10, 10), teta(nbtet, nbtet)
-    logical :: nook
+    logical(kind=1) :: nook
     integer :: ideca(nbcpmx)
     integer :: vali(2)
 !

@@ -31,7 +31,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
     integer :: nbliac, llf, llf1, llf2
-    logical :: reapre, reageo
+    logical(kind=1) :: reapre, reageo
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,12 +53,12 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 !
 !
 !
-    logical :: liaact, liaexi
+    logical(kind=1) :: liaact, liaexi
     real(kind=8) :: jeuini, jeuold, jeumin
     integer :: posit, ajliai, spliai, indic, btotin
     integer :: nbliai
     integer :: iliai, iliac
-    logical :: lgcp, llagrc, llagrf, lgliss
+    logical(kind=1) :: lgcp, llagrc, llagrf, lgliss
     character(len=1) :: typeaj
     character(len=2) :: typeli, typec0
     character(len=19) :: liac, typl

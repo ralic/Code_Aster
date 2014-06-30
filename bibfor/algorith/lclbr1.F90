@@ -44,12 +44,12 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! IN  OPTION  : OPTION DEMANDEE
 !                 RIGI_MECA_TANG ->     DSIDEP
 !                 FULL_MECA      -> SIG DSIDEP
-!                 RAPH_MECA      -> SIG      
+!                 RAPH_MECA      -> SIG
 ! OUT SIG     : CONTRAINTE
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical :: rigi, resi, coup, plan, seca
+    logical(kind=1) :: rigi, resi, coup, plan, seca
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), kron(6)
     real(kind=8) :: rac2, e
@@ -136,7 +136,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
             endif
         endif
         if (seca) then
-            if (epsp(i).le.r8prem()) then 
+            if (epsp(i).le.r8prem()) then
                 deumud(i) = e
             else
                 deumud(i)=sigp(i)/epsp(i)

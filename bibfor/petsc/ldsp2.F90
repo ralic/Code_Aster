@@ -52,7 +52,7 @@ subroutine ldsp2(pc, x1, y, ierr)
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
     cbid = dcmplx(0.d0, 0.d0)
     call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid],&
-                ' ', 1, iret, .true.)
+                ' ', 1, iret, .true._1)
 !
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecRestoreArray(xglobal, xx, xidx, ierr)

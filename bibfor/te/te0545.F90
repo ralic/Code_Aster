@@ -43,7 +43,7 @@ subroutine te0545(option, nomte)
     parameter (nnomax=27,npgmax=27,epsmax=20,ddlmax=15*nnomax)
 ! ......................................................................
     character(len=8) :: typmod(2)
-    logical :: resi, rigi, axi
+    logical(kind=1) :: resi, rigi, axi
     integer :: nno, nnob, npg, ndim, nddl, neps, lgpg
     integer :: ipoids, ivf, idfde, ivfb, idfdeb
     integer :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp, icompo

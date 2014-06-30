@@ -65,7 +65,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     real(kind=8) :: m(3)
     integer :: i, nbf, ibid, ifq, j, codret
     integer :: fa(6, 4), ibid3(12, 3), indptf(3)
-    logical :: ajout
+    logical(kind=1) :: ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()

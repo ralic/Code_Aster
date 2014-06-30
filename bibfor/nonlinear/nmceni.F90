@@ -28,7 +28,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
     character(len=24) :: numedd
     character(len=19) :: sdpilo, depdel, deppr1, deppr2
     real(kind=8) :: eta, rho, f
-    logical :: isxfe
+    logical(kind=1) :: isxfe
 !
 ! ----------------------------------------------------------------------
 !

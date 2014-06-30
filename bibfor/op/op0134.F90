@@ -41,7 +41,7 @@ subroutine op0134()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf,  nbnova, lprol
-    logical :: compl
+    logical(kind=1) :: compl
     character(len=8) :: nopn, nopf
     character(len=16) :: nomcmd, typres
     character(len=19) :: nomfon, nomfin, listp, listf, typco

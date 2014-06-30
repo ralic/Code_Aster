@@ -62,7 +62,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: casint
+    logical(kind=1) :: casint
     character(len=8) :: nomu, nomzon
     character(len=19) :: spectr, base
     real(kind=8) :: vite, vmoyzi, vmoyto

@@ -71,7 +71,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=19) :: lischa
     character(len=24) :: nompar, chmate
 !
-    logical :: exipla, newcal
+    logical(kind=1) :: exipla, newcal
 !
     call jemarq()
 !

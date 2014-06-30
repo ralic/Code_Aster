@@ -34,7 +34,7 @@ interface
         integer :: nno
         integer :: nnos
         integer :: nnom
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: regula(6)
         integer :: ipoids
         integer :: ipoid2

@@ -61,7 +61,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
     integer :: ifonc, imode, imode2
     integer :: neq, nbgene, nbmodp
     integer :: j2memb, jaccp, jaccg
-    logical :: lexge, lacce
+    logical(kind=1) :: lexge, lacce
     character(len=19) :: fmodal, valfon
     integer :: jfmoda, jvalfo
     character(len=19) :: depgep, vitgep, accgep

@@ -54,7 +54,7 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
     real(kind=8) :: bm(3, 8), qsi, eta, jacob(5), t2iu(4), t2ui(4), t1ve(9)
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: multic, i, j, k
-    logical :: coupmf
+    logical(kind=1) :: coupmf
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

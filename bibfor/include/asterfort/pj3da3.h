@@ -22,7 +22,7 @@ interface
         real(kind=8) :: a(3)
         real(kind=8) :: b(3)
         real(kind=8) :: c(3)
-        logical :: ok
+        logical(kind=1) :: ok
         real(kind=8) :: la
         real(kind=8) :: lb
         real(kind=8) :: lc

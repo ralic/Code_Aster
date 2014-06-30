@@ -66,7 +66,7 @@ subroutine mmimp1(ifm, noma, defico, resoco)
     integer :: iptm, izone, imae, inoe, iptc
     integer :: ndimg, nzoco, nnoe, nptm, nbmae
     integer ::  ilcnx1
-    logical :: lveri
+    logical(kind=1) :: lveri
     integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------

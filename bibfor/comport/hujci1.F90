@@ -49,7 +49,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     real(kind=8) :: young, poisso, n, pa, piso
     real(kind=8) :: zero, un, deux, d13, c11, c12, c13, c22, c23, c33
     real(kind=8) :: e1, e2, e3, nu12, nu13, nu23, nu21, nu31, nu32, delta
-    logical :: tract, debug
+    logical(kind=1) :: tract, debug
     integer :: i, niter, icmpt
 !
     common /tdim/   ndt, ndi

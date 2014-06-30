@@ -121,7 +121,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     integer :: vali(7), irt, ind
     parameter      ( ncar = 11 )
 ! ----------------------------------------------------------------------
-    logical :: lenrg
+    logical(kind=1) :: lenrg
     integer :: lidbas, lideff
     parameter      ( lidbas = 20 , lideff = 15 )
     character(len=8) :: cidbas(lidbas)

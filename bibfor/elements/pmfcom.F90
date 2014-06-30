@@ -46,7 +46,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !
     character(len=16) :: option
     character(len=24) :: compor(*)
-    logical :: ltemp
+    logical(kind=1) :: ltemp
 ! --- ------------------------------------------------------------------
 !
 !        AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES

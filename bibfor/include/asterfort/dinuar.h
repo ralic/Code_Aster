@@ -19,7 +19,7 @@ interface
     subroutine dinuar(sddisc, numins, force, numarc, numrep)
         character(len=19) :: sddisc
         integer :: numins
-        logical :: force
+        logical(kind=1) :: force
         integer :: numarc
         integer :: numrep
     end subroutine dinuar

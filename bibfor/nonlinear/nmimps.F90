@@ -49,7 +49,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
     integer :: iresi, iarg, nresi
     real(kind=8) :: valr(1)
     character(len=16) :: valk(2)
-    logical :: lprint, maxrel, maxnod
+    logical(kind=1) :: lprint, maxrel, maxnod
 !
 ! ----------------------------------------------------------------------
 !

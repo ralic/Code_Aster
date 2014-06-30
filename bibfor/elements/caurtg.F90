@@ -57,7 +57,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
     real(kind=8) :: xab(3, 3), sigmad(3, 3), sigmat(3, 3)
     real(kind=8) :: drot(3, 3), tetag(3)
 !
-    logical :: lgreen
+    logical(kind=1) :: lgreen
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :

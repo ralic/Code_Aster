@@ -40,7 +40,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    logical :: resi, rigi, matsym
+    logical(kind=1) :: resi, rigi, matsym
     integer :: ndim, nno1, nno2, npg, iw, idff1, lgpg
     integer :: mate
     integer :: vu(3, 27), vp(27)
@@ -95,7 +95,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
 ! OUT CODRET  : CODE RETOUR
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: g, nddl, ndu
     integer :: ia, na, sa, ib, nb, rb, sb, ja, jb
     integer :: lij(3, 3), vij(3, 3), os, kk
@@ -121,7 +121,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: alpha, trepst
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)
 !
-    parameter    (grand = .true.)
+    parameter    (grand = .true._1)
     data         vij  / 1, 4, 5,&
      &                  4, 2, 6,&
      &                  5, 6, 3 /
@@ -220,7 +220,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
 !
 ! - DSIDEP = 2dS/dC = dS/dE_GL
         call poslog(resi, rigi, tn, tp, ftm, lgpg, vip(1, g), ndim, ftp, g,&
-                    dtde, sigm(1, g), .false., 'RIGI', mate, instp, angmas, gn, lamb, logl,&
+                    dtde, sigm(1, g), .false._1, 'RIGI', mate, instp, angmas, gn, lamb, logl,&
                     sigp( 1, g), dsidep, pk2m, pk2, cod(g))
 !
         if (cod(g) .eq. 1) then
@@ -232,7 +232,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
         endif
 !
 ! - CALCUL DE ALPHA ET DE TREPST
-        call tanbul(option, ndim, g, mate, compor(1), resi, .false., alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor(1), resi, .false._1, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then

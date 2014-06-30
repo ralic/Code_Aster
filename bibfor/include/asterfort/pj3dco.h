@@ -29,7 +29,7 @@ interface
         character(len=*) :: geom1
         character(len=*) :: geom2
         character(len=16) :: corres
-        logical :: ldmax
+        logical(kind=1) :: ldmax
         real(kind=8) :: distma
     end subroutine pj3dco
 end interface

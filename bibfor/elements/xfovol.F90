@@ -38,7 +38,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     integer :: igeom, ndim, ddlh, ddlc, nfe, nnop
     integer :: iforc, itemps, ivectu, jlsn, jlst
     real(kind=8) :: he
-    logical :: fonc, fono
+    logical(kind=1) :: fonc, fono
 !-----------------------------------------------------------------------
 ! FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT
 !                     DANS LE CAS D'UNE FORCE VOLUMIQUE IMPOSEE SUR LES
@@ -75,7 +75,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: valpar(ndim+1), fe(4), poids
     character(len=8) :: elrese(6), fami(6), nompar(ndim+1)
-    logical :: grdepl, axi
+    logical(kind=1) :: grdepl, axi
     parameter      (mxstac=1000)
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/

@@ -31,8 +31,8 @@ interface
         integer :: imate
         character(len=8) :: nomail
         character(len=16) :: option
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         integer :: yap1
         integer :: yap2
         integer :: yate

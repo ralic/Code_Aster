@@ -38,7 +38,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     character(len=24) :: defico
     character(len=24) :: deficu
     character(len=19) :: lischa
-    logical :: lcont, lunil
+    logical(kind=1) :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
 !
 ! ----------------------------------------------------------------------
@@ -73,7 +73,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     character(len=8) :: nomch1, nomfc1, fctcst
     character(len=24) :: infoc2
     real(kind=8) :: coef
-    logical :: ltfcm
+    logical(kind=1) :: ltfcm
 ! --- NOMBRE MAXIMUM DE TYPE_INFO
     integer :: nbinmx, nbinfo
     parameter   (nbinmx=99)

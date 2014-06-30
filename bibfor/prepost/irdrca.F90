@@ -18,7 +18,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
     real(kind=8) :: vale(*)
     character(len=*) :: nomgd, ncmpgd(*), ncmput(*)
     character(len=*) :: nomsym
-    logical :: lresu
+    logical(kind=1) :: lresu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

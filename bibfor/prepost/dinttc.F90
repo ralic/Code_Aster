@@ -50,7 +50,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
     real(kind=8) :: a, b, c, delta, lamda1, lamda2, lambda
     real(kind=8) :: dao1, dao2, dxo1, dxo2, pao1o2, pao2o1, pbo1o2
     real(kind=8) :: cos1, cos2, n2, n3, n4
-    logical :: lnoeu(2, 4), lintcy
+    logical(kind=1) :: lnoeu(2, 4), lintcy
 !
     l = 4
     nbi = 0

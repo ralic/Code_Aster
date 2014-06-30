@@ -81,7 +81,7 @@ subroutine te0248(optioz, nomtez)
 !
 !
 !
-    logical :: vecteu
+    logical(kind=1) :: vecteu
 !
 ! *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 !

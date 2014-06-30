@@ -25,6 +25,6 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: valinc(*)
-        logical :: mmcvfr
+        logical(kind=1) :: mmcvfr
     end subroutine nmctcf
 end interface

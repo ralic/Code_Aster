@@ -29,7 +29,7 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 #include "asterfort/ndynlo.h"
 #include "asterfort/wkvect.h"
     integer :: nbmax
-    logical :: chaact(nbmax)
+    logical(kind=1) :: chaact(nbmax)
     integer :: fonact(*)
     character(len=19) :: sddyna
     character(len=24) :: defico
@@ -50,8 +50,8 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lxfcm, ldyna, lxffm, lxczm, lcont, lnoeu, lmuap, lstrx
-    logical :: lvibr, lflam, lstab, lener
+    logical(kind=1) :: lxfcm, ldyna, lxffm, lxczm, lcont, lnoeu, lmuap, lstrx
+    logical(kind=1) :: lvibr, lflam, lstab, lener
     character(len=24) :: trav
     integer :: jtrav
     integer :: icham, istop

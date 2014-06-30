@@ -6,7 +6,7 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
 #include "asterfort/orien2.h"
     integer :: ndim, np
     real(kind=8) :: vale(*), valpar(*), xyp(2)
-    logical :: nsymx, nsymy
+    logical(kind=1) :: nsymx, nsymy
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

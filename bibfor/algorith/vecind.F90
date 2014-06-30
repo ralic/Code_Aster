@@ -90,7 +90,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         if (mat .ne. ' ') then
             call zerlag(nbl, deeq, vectr=zr(lvec+nbl*(i1-1)))
             call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1,&
-                        .true.)
+                        .true._1)
             call zerlag(nbl, deeq, vectr=zr(ltrav1))
             norme=ddot(nbl,zr(ltrav1),1,zr(lvec+nbl*(i1-1)),1)
 !
@@ -111,7 +111,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     do l1 = 1, nbc
         if (mat .ne. ' ') then
             call mrmult('ZERO', lmat, zr(lcopy+nbl*(l1-1)), zr(ltrav1), 1,&
-                        .true.)
+                        .true._1)
         else
             call lceqvn(nbl, zr(lcopy+nbl*(l1-1)), zr(ltrav1))
         endif

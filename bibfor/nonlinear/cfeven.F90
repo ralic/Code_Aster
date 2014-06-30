@@ -57,9 +57,9 @@ subroutine cfeven(phase, defico, resoco)
     character(len=19) :: liac
     integer :: jliac
     integer :: zeven
-    logical :: lactif
+    logical(kind=1) :: lactif
     real(kind=8) :: etacin, etacfi
-    logical :: lexiv
+    logical(kind=1) :: lexiv
 !
 ! ----------------------------------------------------------------------
 !

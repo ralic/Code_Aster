@@ -40,7 +40,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     character(len=19) :: chamn
     integer :: nbchs
     integer :: nbcmps(50), ipcmps(50, 50), impre
-    logical :: ltabl(50), afaire
+    logical(kind=1) :: ltabl(50), afaire
 !
 !  --- INITIALISATIONS ----
 !

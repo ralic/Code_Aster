@@ -44,7 +44,7 @@ subroutine te0156(option, nomte)
     integer :: icompo, ideplm, ideplp, igeom, iretc
     real(kind=8) :: fs(6), pgl(3, 3), vect(6), forref
     real(kind=8) :: w(6), ang1(3), xd(3)
-    logical :: reactu
+    logical(kind=1) :: reactu
 !
 !     ------------------------------------------------------------------
 !

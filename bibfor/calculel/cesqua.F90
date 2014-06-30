@@ -22,7 +22,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
-    logical :: lcumul(nbchs)
+    logical(kind=1) :: lcumul(nbchs)
 ! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
     character(len=3) :: tsca
     character(len=19) :: ces1, ces3
-    logical :: cumul
+    logical(kind=1) :: cumul
     integer, pointer :: corr_cmp(:) => null()
     character(len=8), pointer :: licmp(:) => null()
     integer, pointer :: nbcmp(:) => null()

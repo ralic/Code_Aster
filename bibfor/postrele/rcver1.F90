@@ -48,7 +48,8 @@ subroutine rcver1(phenoz, tablz, tably)
     character(len=8) :: k8b, valk(3), tyva
     character(len=16) :: tabref, tabcom, typmec, valek(5), phenom
     character(len=24) :: ordo1, ordo2, intit1, intit2, inst1, inst2
-    logical :: exi1, exi2, exi3, exist
+    logical(kind=1) :: exi1, exi2, exi3, exist
+    logical :: lcond
 !
     call jemarq()
 !
@@ -127,7 +128,8 @@ subroutine rcver1(phenoz, tablz, tably)
 !     -----------------------------------
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     call tbexip(tabcom, valek(4), exist, k8b)
-    ASSERT(exist)
+    lcond=exist
+    ASSERT(lcond)
     call tbexv1(tabcom, valek(4), intit2, 'V', nbint2,&
                 tyva)
 !     CAS UNITAIRE: 1 SEUL LIGAMENT
@@ -153,7 +155,8 @@ subroutine rcver1(phenoz, tablz, tably)
 !     --------------------------------------------------------
     if (typmec .eq. 'EVOLUTION') then
         call tbexip(tabcom, valek(5), exist, k8b)
-        ASSERT(exist)
+        lcond=exist
+        ASSERT(lcond)
         call tbexve(tabref, valek(5), inst1, 'V', nbins1,&
                     k8b)
         call jeveuo(inst1, 'L', jinst1)

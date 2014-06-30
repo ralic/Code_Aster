@@ -17,7 +17,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 #include "asterfort/wkvect.h"
     integer :: nbordr, kwork, i, nbvec
     integer :: somnow, tdisp, tspaq
-    logical :: fordef, post
+    logical(kind=1) :: fordef, post
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc
     character(len=16) :: nomcri, proaxe, nomfor, forvie

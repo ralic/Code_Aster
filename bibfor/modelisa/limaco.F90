@@ -77,7 +77,7 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
     character(len=24) :: defico
     integer :: iform
     integer :: indqua
-    logical :: lmail, ltfcm
+    logical(kind=1) :: lmail, ltfcm
     integer :: nsuco, nmaco, nnoco
 !
 ! ----------------------------------------------------------------------

@@ -41,7 +41,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: i, j, diss, cass
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan, zero, un
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2

@@ -41,7 +41,7 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     integer :: iachii, iachik, iachix, ialiel, iamaco, iamsco
     integer :: iel, illiel, ilmaco, ilmsco
     integer ::  jparal, iexi
-    logical :: lparal
+    logical(kind=1) :: lparal
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
 #define numail(igr,iel)   zi(ialiel-1+zi(illiel-1+igr)-1+iel)
@@ -71,7 +71,7 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
                 goto 10
             endif
         endif
-        call trigd(zi(desc-1+debgd), 1, dg, deb2, .false.,&
+        call trigd(zi(desc-1+debgd), 1, dg, deb2, .false._1,&
                    0, 0)
 10      continue
         goto 40
@@ -108,7 +108,7 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     debgd = 3 + 2*ngrmx + (ient-1)*nec + 1
     indval = (ient-1)*ncmpmx + 1
 !
-    call trigd(zi(desc-1+debgd), indval, dg, deb2, .false.,&
+    call trigd(zi(desc-1+debgd), indval, dg, deb2, .false._1,&
                0, 0)
     20 end do
 !

@@ -48,7 +48,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     integer :: maxnod, nbtyma, nbmail, nbnoma(nbtyma), nuconn(15, 32), nbnode
 ! -----  VARIABLES LOCALES
     character(len=8) :: k8bid
-    logical :: exisgr
+    logical(kind=1) :: exisgr
 !
 !
     integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym

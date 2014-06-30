@@ -57,7 +57,7 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 !
 !
 !
-    logical :: leltc, leltf, lctfd, lpenac, lallv
+    logical(kind=1) :: leltc, leltf, lctfd, lpenac, lallv
     integer :: ifdo, n
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)

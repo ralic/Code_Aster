@@ -42,7 +42,7 @@ subroutine nmimpr(sdimpr)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: sdtabc
-    logical :: lcsv, lprint
+    logical(kind=1) :: lcsv, lprint
     integer :: larlig, unimes, unicsv
     character(len=1) :: sepcol
 !

@@ -40,7 +40,7 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
     integer ::   npvneg
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    logical :: lqr
+    logical (kind=1) :: lqr
 !
 !
     call jemarq()

@@ -45,7 +45,7 @@ subroutine facmtr(matin, matout, ier)
 #include "asterfort/utmess.h"
     character(len=19) :: matin, matout, matpre, solveu
     character(len=24) :: valk
-    logical :: hplog
+    logical(kind=1) :: hplog
     integer :: ibid
 !
 !-----------------------------------------------------------------------

@@ -6,7 +6,7 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: sm, para(*), symax
-    logical :: fatizh
+    logical(kind=1) :: fatizh
     character(len=8) :: nommat
 !     ------------------------------------------------------------------
 ! ======================================================================

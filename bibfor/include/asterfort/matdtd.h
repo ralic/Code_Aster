@@ -20,8 +20,8 @@ interface
                       x3, cour, r, cosa, kappa,&
                       dtildi)
         character(len=16) :: nomte
-        logical :: testl1
-        logical :: testl2
+        logical(kind=1) :: testl1
+        logical(kind=1) :: testl2
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: cisail
         real(kind=8) :: x3

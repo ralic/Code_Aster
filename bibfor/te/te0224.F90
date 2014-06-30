@@ -43,7 +43,7 @@ subroutine te0224(option, nomte)
     real(kind=8) :: poids, r, z, fx, fy, mz, f1, f3, m2, nx, ny, dfdx(3), cour
     integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
     integer :: itemps, ivectu, k, i, l, iforc
-    logical :: global, locapr
+    logical(kind=1) :: global, locapr
 !
 !
     call elref1(elrefe)

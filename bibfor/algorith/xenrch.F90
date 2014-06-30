@@ -47,7 +47,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     character(len=19) :: cnslt, cnsln, cnslj
     character(len=19) :: cnsen, cnsenr
     character(len=24) :: lismae, lisnoe
-    logical :: goinop
+    logical(kind=1) :: goinop
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +89,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     character(len=24) :: mafis, stano, xcarfo, fonmul
     real(kind=8) :: q(4)
     real(kind=8) :: rayon
-    logical :: orient
+    logical(kind=1) :: orient
     real(kind=8), pointer :: ensvr(:) => null()
 !
 ! ----------------------------------------------------------------------

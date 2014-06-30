@@ -56,7 +56,7 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
     character(len=8) :: cara
     character(len=10) :: pheno
     character(len=16) :: k16b
-    logical :: lke, lhaigh
+    logical(kind=1) :: lke, lhaigh
 !
 !-----------------------------------------------------------------------
     integer :: i, ivcorr,  ivke

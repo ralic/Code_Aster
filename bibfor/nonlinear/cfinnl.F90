@@ -27,7 +27,7 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 #include "asterfort/jemarq.h"
     character(len=24) :: defico, resoco
     integer :: nbliac, llf, llf1, llf2
-    logical :: reageo
+    logical(kind=1) :: reageo
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 !
 !
 !
-    logical :: lpenaf, llagrc
+    logical(kind=1) :: lpenaf, llagrc
 !
 ! ----------------------------------------------------------------------
 !

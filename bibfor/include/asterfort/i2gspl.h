@@ -21,7 +21,7 @@ interface
         integer :: debspl
         integer :: tvois1(*)
         integer :: tvois2(*)
-        logical :: tplace(*)
+        logical(kind=1) :: tplace(*)
         integer :: schm(*)
         integer :: achm(*)
         integer :: pts

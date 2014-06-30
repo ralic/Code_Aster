@@ -92,7 +92,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     integer :: irec, valatt, ifield, iord, ibid, ilu1
     integer :: i, iexp, nbnoe, nbfiel, nbnoeu, nbelem
     integer :: iret, idecal, icmp1, icmp2, inatur, kk, numode
-    logical :: trouve, astock, chamok, zcmplx, ldepl
+    logical(kind=1) :: trouve, astock, chamok, zcmplx, ldepl
     character(len=4) :: tychas, tychid, acce2
     character(len=6) :: kar
     character(len=8) :: nomgd, licmp(1000), nomno, nomma, noma

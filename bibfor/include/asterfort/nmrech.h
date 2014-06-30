@@ -35,6 +35,6 @@ interface
         integer :: ldccvg
         integer :: opt
         integer :: act
-        logical :: stite
+        logical(kind=1) :: stite
     end subroutine nmrech
 end interface

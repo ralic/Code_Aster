@@ -55,7 +55,7 @@ subroutine ualfva(mataz, basz)
     character(len=1) :: base, tyrc
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
-    logical :: ldiag, lplein
+    logical(kind=1) :: ldiag, lplein
     integer ::  neq, nbloc, nblocm, iret
     integer :: jsmhc
     integer :: itbloc, ieq, ibloc, jualf, jvale, kterm, nbterm, ilig

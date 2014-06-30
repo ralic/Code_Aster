@@ -57,7 +57,7 @@ subroutine speph0(nomu, table)
     integer :: i1, lnumi, lnumj, mxval,  lfreq, lrefes, lfreqs
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
-    logical :: intmod, intphy, intdon
+    logical(kind=1) :: intmod, intphy, intdon
     character(len=8) :: k8b, modmec, modsta, noeud, noma, cmp
     character(len=16) :: movrep, optcal, optcha, typcha, acces, typmec, nocham
     character(len=16) :: optch1, maille

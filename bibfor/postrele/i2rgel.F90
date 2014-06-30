@@ -40,7 +40,7 @@ subroutine i2rgel(epsi, s, r, f, sl,&
     real(kind=8) :: s, r, sl(*), r1l(*), r2l(*), epsi
     integer :: f, f1l(*), f2l(*)
 !
-    logical :: trouve, dejala
+    logical(kind=1) :: trouve, dejala
     integer :: i, j
 !
 !-----------------------------------------------------------------------

@@ -36,8 +36,8 @@ interface
         character(len=8) :: nomvi(*)
         character(len=19) :: sddisc
         integer :: liccvg(5)
-        logical :: itemax
-        logical :: conver
+        logical(kind=1) :: itemax
+        logical(kind=1) :: conver
         integer :: actite
     end subroutine pmsta1
 end interface

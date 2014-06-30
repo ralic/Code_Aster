@@ -66,7 +66,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: astock
+    logical(kind=1) :: astock
     integer :: ideas, precis, nbnoch
     character(len=*) :: nomres, mail, typres, acces, listr8, listis, crit
     character(len=*) :: linoch(*)
@@ -93,7 +93,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
     integer :: numord, jcnsv, jcnsl, imes, icmp, ino, ival, jabs, ncmp
     real(kind=8) :: amin, apas, rbid, rval, dir(3)
     complex(kind=8) :: cval, czero, cun
-    logical :: trouve, zcmplx, ficab, ficva, vucont, vudef
+    logical(kind=1) :: trouve, zcmplx, ficab, ficva, vucont, vudef
 !
 !----------------------------------------------------------------------
 !

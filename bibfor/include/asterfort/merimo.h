@@ -36,6 +36,6 @@ interface
         character(len=24), intent(in) :: codere
         character(len=19), intent(in) :: merigi
         character(len=19), intent(in) :: vefint
-        logical, intent(out) :: tabret(0:10)
+        logical(kind=1), intent(out) :: tabret(0:10)
     end subroutine merimo
 end interface

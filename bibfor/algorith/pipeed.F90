@@ -103,7 +103,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
     real(kind=8) :: sigd(2)
     real(kind=8) :: cotmp, sitmp, co, si, rot(2, 2), drot, xa, xb, ya, yb
     real(kind=8) :: def(4, 4, 2), bup(6), bud(6), d(4, 2), rtemp(4, 2)
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
 !
 ! ----------------------------------------------------------------------
 !
@@ -187,7 +187,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 !       CALCUL DE DFDI,F,R(EN AXI) ET POIDS
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, up,&
-                    .true., poids, dfdi, f, bup,&
+                    .true._1, poids, dfdi, f, bup,&
                     r)
 !
 !       CALCUL DE D (LES AUTRES TERMES SONT NULS):

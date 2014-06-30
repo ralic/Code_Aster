@@ -47,7 +47,7 @@ subroutine te0073(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ivectt, i, l, li, itex, icoefh, iray, itemp, nnop2
     integer :: c(6, 9), ise, nse, j, ier, icode, ibid
-    logical :: laxi, ltext
+    logical(kind=1) :: laxi, ltext
 !
 !
     call elref1(elrefe)

@@ -44,6 +44,7 @@ subroutine te0572(option, nomte)
     integer :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
     integer :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
     character(len=8) :: elrefp
+    logical lcond
 !
 ! ----------------------------------------------------------------------
 ! --- PREALABLES AU CALCUL DE LA MASSE ELEMENTAIRE
@@ -51,7 +52,8 @@ subroutine te0572(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    ASSERT(iselli(elrefp))
+    lcond=iselli(elrefp)
+    ASSERT(lcond)
 !
 !     CHAMPS IN 'CLASSIQUES'
     call jevech('PGEOMER', 'L', igeom)

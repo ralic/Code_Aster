@@ -33,7 +33,7 @@ interface
         integer :: typma(*)
         character(len=*) :: nomsym
         integer :: nbmat
-        logical :: lresu
+        logical(kind=1) :: lresu
         integer :: nbcput
         character(len=*) :: ncmput(*)
         integer :: imodl

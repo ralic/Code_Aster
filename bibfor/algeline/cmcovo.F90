@@ -86,7 +86,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     real(kind=8) :: coon1(3), coon2(3), coon3(3), coon4(3), n1n3(3), n1n2(3)
     real(kind=8) :: nx, ny, nz, nt(3), eps2, sinvec, cosvec
     real(kind=8) :: n4n2(3), n4n3(3), nq(3), norme, angl
-    logical :: logic
+    logical(kind=1) :: logic
     character(len=24), pointer :: new_noeuds(:) => null()
     integer, pointer :: noeuds(:) => null()
 ! ----------------------------------------------------------------------

@@ -33,7 +33,7 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
     character(len=8) :: evolsc
-    logical :: matcst, coecst
+    logical(kind=1) :: matcst, coecst
     integer :: parmei(2), parcri(3)
     real(kind=8) :: parmer(2), parcrr(2)
     character(len=19) :: lischa, solveu

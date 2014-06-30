@@ -24,7 +24,7 @@ interface
         character(len=*) :: chamno
         character(len=14) :: num
         integer :: i
-        logical :: vrai
+        logical(kind=1) :: vrai
         character(len=*) :: model
         character(len=19) :: veprj
         character(len=19) :: modx

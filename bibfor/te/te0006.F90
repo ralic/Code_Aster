@@ -33,7 +33,7 @@ subroutine te0006(option, nomte)
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: i, ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
     integer :: ipoid2, dimdef, icompo, ichg, ichn, regula(6), idefo
     integer :: icontm, ideplm, ideplp, igeom, imate, jcret, nddls, nddlm

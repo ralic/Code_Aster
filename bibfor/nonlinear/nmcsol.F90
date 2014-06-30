@@ -25,7 +25,7 @@ subroutine nmcsol(lischa, sddyna, lviss)
 #include "asterfort/ndynkk.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    logical :: lviss
+    logical(kind=1) :: lviss
     character(len=19) :: lischa, sddyna
 !
 ! ----------------------------------------------------------------------

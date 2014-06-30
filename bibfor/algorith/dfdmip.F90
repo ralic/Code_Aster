@@ -24,7 +24,7 @@ subroutine dfdmip(ndim, nno, axi, geom, g,&
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "blas/ddot.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno, g, iw, idfde
     real(kind=8) :: geom(ndim, nno), vff(nno), r, w, dfdi(nno, ndim)
 !

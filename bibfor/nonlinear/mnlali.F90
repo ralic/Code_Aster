@@ -69,7 +69,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical :: reprise
+    logical(kind=1) :: reprise
     integer :: imat(2), ninc, nd, nchoc, h, hf, num_ordr
     character(len=8) :: modini
     character(len=14) :: parcho, adime, xcdl, xvect

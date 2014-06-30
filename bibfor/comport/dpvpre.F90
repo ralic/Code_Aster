@@ -47,7 +47,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    logical :: resi
+    logical(kind=1) :: resi
     integer :: ndt, ndi, ii, pos, nbre
     real(kind=8) :: deux, trois
     real(kind=8) :: ppic, pult

@@ -55,6 +55,6 @@ interface
         integer :: addete
         integer :: np1
         integer :: np2
-        logical :: axi
+        logical(kind=1) :: axi
     end subroutine cabthm
 end interface

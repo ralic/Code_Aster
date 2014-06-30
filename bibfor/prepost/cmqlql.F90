@@ -119,9 +119,9 @@ subroutine cmqlql(main, maout, nbma, lima)
 !     DUPLICATION DE CERTAINS OBJETS DE LA SD MAILLAGE INITIALE
 !     AVANT REACTUALISATION
 !     =========================================================
-    call jedupo(main//'.NOMMAI', 'G', maout//'.NOMMAI', .false.)
-    call jedupo(main//'.DIME', 'G', maout//'.DIME', .false.)
-    call jedupo(main//'.TYPMAIL', 'G', maout//'.TYPMAIL', .false.)
+    call jedupo(main//'.NOMMAI', 'G', maout//'.NOMMAI', .false._1)
+    call jedupo(main//'.DIME', 'G', maout//'.DIME', .false._1)
+    call jedupo(main//'.TYPMAIL', 'G', maout//'.TYPMAIL', .false._1)
 !
     call jeexin(main//'.GROUPEMA', iret)
     if (iret .ne. 0) then

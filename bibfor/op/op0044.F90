@@ -109,7 +109,7 @@ subroutine op0044()
     character(len=24) :: cborne, work(5), camor, cfreq, nopara(nbpara), metres
     character(len=24) :: valk(2)
     complex(kind=8) :: cbid, dcmplx
-    logical :: lbid
+    logical(kind=1) :: lbid
     character(len=1) :: ktyp
     character(len=24), pointer :: nkrefa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -721,14 +721,14 @@ subroutine op0044()
                     lamor, mxresf, neq, nbmod, omecor,&
                     zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari,&
                     nparr, nbpark, nopara, '    ', zi(lresui),&
-                    zr(lresur), zk24(lresuk), ktyp, .false., ibid,&
+                    zr(lresur), zk24(lresuk), ktyp, .false._1, ibid,&
                     ibid, k16bid, ibid)
     else
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nbmod, omecor,&
                     zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari,&
                     nparr, nbpark, nopara, '    ', zi(lresui),&
-                    zr(lresur), zk24(lresuk), ktyp, .false., ibid,&
+                    zr(lresur), zk24(lresuk), ktyp, .false._1, ibid,&
                     ibid, k16bid, ibid)
     endif
 !

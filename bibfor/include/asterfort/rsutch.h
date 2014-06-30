@@ -21,6 +21,6 @@ interface
         character(len=*) :: nomsy
         integer :: iordr
         character(len=*) :: nomcha
-        logical :: lverif
+        logical(kind=1) :: lverif
     end subroutine rsutch
 end interface

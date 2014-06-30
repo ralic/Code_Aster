@@ -49,8 +49,8 @@ subroutine ndxcvg(sddisc, sderro, valinc)
     integer :: ifm, niv
     integer :: ievdac, numins
     character(len=24) :: k24bla
-    logical :: lerrne, lerrst
-    logical :: lsvimx, ldvres, linsta, lcritl, conver
+    logical(kind=1) :: lerrne, lerrst
+    logical(kind=1) :: lsvimx, ldvres, linsta, lcritl, conver
 !
 ! ----------------------------------------------------------------------
 !

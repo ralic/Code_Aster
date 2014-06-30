@@ -49,7 +49,7 @@ subroutine te0032(option, nomte)
     real(kind=8) :: vecl(24), for(6, 4), for2(6, 4), rho, epais
     real(kind=8) :: undemi
     real(kind=8) :: valpar(4), dist, excent, pr
-    logical :: global, locapr
+    logical(kind=1) :: global, locapr
     character(len=8) :: nompar(4), moplan, nomail
     character(len=24) :: valk
 ! DEB ------------------------------------------------------------------

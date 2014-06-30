@@ -66,7 +66,7 @@ subroutine nmdocn(parcri, parcon)
     integer :: iterat, iret, ire1, ire2, ire3, ire4
     character(len=8) :: rep
     integer :: ifm, niv
-    logical :: lretcv
+    logical(kind=1) :: lretcv
 !
 ! ----------------------------------------------------------------------
 !

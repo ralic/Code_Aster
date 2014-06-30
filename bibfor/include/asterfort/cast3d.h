@@ -28,7 +28,7 @@ interface
         real(kind=8) :: nub
         real(kind=8) :: nu
         real(kind=8) :: dsidep(6, 6)
-        logical :: calbn
+        logical(kind=1) :: calbn
         real(kind=8) :: bn(6, 3, 8)
         real(kind=8) :: jac
         real(kind=8) :: matuu(*)

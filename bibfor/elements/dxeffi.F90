@@ -49,7 +49,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     real(kind=8) :: t2iu(2, 2), t2ui(2, 2), t1ve(3, 3)
     real(kind=8) :: hm(3, 3)
     real(kind=8) :: d1i(2, 2), d2i(2, 4)
-    logical :: coupmf
+    logical(kind=1) :: coupmf
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
@@ -119,7 +119,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     endif
     if (multic .gt. 0) then
         iniv = igauh - 2
-        call dxdmul(.false., icou, iniv, t1ve, t2ui,&
+        call dxdmul(.false._1, icou, iniv, t1ve, t2ui,&
                     hm, d1i, d2i, zic, hic)
     endif
 !

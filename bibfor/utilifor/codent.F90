@@ -44,7 +44,7 @@ subroutine codent(entier, cadre, chaine)
 !
 !
     integer :: lg, ent, ival
-    logical :: neg
+    logical(kind=1) :: neg
     character(len=1) :: chiffr(0:9)
 !-----------------------------------------------------------------------
     integer :: i, ier, il, il1

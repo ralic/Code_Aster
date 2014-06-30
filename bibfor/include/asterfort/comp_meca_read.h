@@ -17,7 +17,7 @@
 !
 interface
     subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
-        logical, intent(in) :: l_etat_init
+        logical(kind=1), intent(in) :: l_etat_init
         character(len=16), intent(out) :: info_comp_valk(:)
         integer          , intent(out) :: info_comp_vali(:)
     end subroutine comp_meca_read

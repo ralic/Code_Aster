@@ -20,6 +20,6 @@ interface
         character(len=24) :: sderro
         character(len=4) :: typevt
         character(len=4) :: nombcl
-        logical :: levent
+        logical(kind=1) :: levent
     end subroutine nmltev
 end interface

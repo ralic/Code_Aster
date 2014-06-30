@@ -51,7 +51,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: i, j, kpg, kpg2, spt
     real(kind=8) :: coef1, coef2, coef3
     real(kind=8) :: sigmc, gc, lc, seuil, norma

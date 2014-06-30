@@ -58,7 +58,7 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
     integer :: inoc, inoe, inom, inof, icmp, idim
     integer :: inoe1, inoe2, inom1, inom2, idim1, idim2
     integer :: inoc1, inoc2, inof1, inof2, icmp1, icmp2
-    logical :: debug
+    logical(kind=1) :: debug
 !
 ! ----------------------------------------------------------------------
 !

@@ -49,7 +49,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     integer :: k, nbmeca, kk, ndt, i
     real(kind=8) :: maxi, un, e0, pref, ydt(nr), yft(nr), ratio, cumuli
     real(kind=8) :: matert(22, 2)
-    logical :: negmul(8), chgmec
+    logical(kind=1) :: negmul(8), chgmec
 !
     parameter  (un   = 1.d0)
     parameter  (ndt  = 6   )

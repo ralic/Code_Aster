@@ -30,7 +30,7 @@ interface
         real(kind=8) :: epsml(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: tn(6)
-        logical :: resi
+        logical(kind=1) :: resi
         integer :: iret
     end subroutine prelog
 end interface

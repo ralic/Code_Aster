@@ -62,7 +62,7 @@ subroutine te0288(option, nomte)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
     character(len=16) :: compor(4)
-    logical :: grand, incr
+    logical(kind=1) :: grand, incr
 !
     integer :: isig
 !

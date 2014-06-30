@@ -46,7 +46,7 @@ subroutine te0277(option, nomte)
     real(kind=8) :: z, hechp, nx, ny, tpg, theta
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: iveres, i, l, li, ihechp, nbelr
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
     character(len=8) :: lirefe(2)
 !

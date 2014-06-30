@@ -26,6 +26,6 @@ interface
         character(len=16) :: typnum
         character(len=8) :: repere
         real(kind=8) :: parcho(nbnli, *)
-        logical :: lnoue2
+        logical(kind=1) :: lnoue2
     end subroutine mdchre
 end interface

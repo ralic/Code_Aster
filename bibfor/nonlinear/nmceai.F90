@@ -61,7 +61,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     integer :: neq, i, j
     character(len=19) :: profch, chapil, chapic, selpil
     real(kind=8) :: dn, dc, dp, da
-    logical :: isxfe
+    logical(kind=1) :: isxfe
     real(kind=8), pointer :: coee(:) => null()
     real(kind=8), pointer :: vcoef(:) => null()
     real(kind=8), pointer :: depde(:) => null()

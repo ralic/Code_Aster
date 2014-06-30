@@ -66,7 +66,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
     character(len=8) :: typm
     character(len=24) :: noeord, trav
     character(len=24) :: entree, obtrav
-    logical :: lfon, test
+    logical(kind=1) :: lfon, test
     character(len=8), pointer :: vtype(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()

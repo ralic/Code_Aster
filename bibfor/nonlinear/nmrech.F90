@@ -27,7 +27,7 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
     real(kind=8) :: rhom, rho, rhoopt
     real(kind=8) :: fm, f, fopt, fcvg
-    logical :: stite
+    logical(kind=1) :: stite
     integer :: ldcopt, ldccvg
     integer :: opt, act
 !

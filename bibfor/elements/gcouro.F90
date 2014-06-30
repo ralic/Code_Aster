@@ -101,7 +101,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2
     real(kind=8) :: norme, vecx, vecy, vecz, dir(3), tmpv(3), psca
 !
-    logical :: direc, suiv, milieu
+    logical(kind=1) :: direc, suiv, milieu
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

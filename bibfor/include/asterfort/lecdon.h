@@ -17,8 +17,8 @@
 !
 interface
     subroutine lecdon(ficext, unitpa, prdeff)
-        logical :: ficext
+        logical(kind=1) :: ficext
         integer :: unitpa
-        logical :: prdeff
+        logical(kind=1) :: prdeff
     end subroutine lecdon
 end interface

@@ -33,7 +33,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
 !
     character(len=*) :: matz
     real(kind=8) :: rmin, rmax
-    logical :: ldist
+    logical(kind=1) :: ldist
 ! ---------------------------------------------------------------------
 ! BUT: DONNER LES VALEURS EXTREMES DES VALEURS ABSOLUES
 !      DES TERMES NON NULS DE LA DIAGONALE D'UNE MATR_ASSE

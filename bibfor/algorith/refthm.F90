@@ -16,7 +16,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
-    logical :: fnoevo, perman, axi
+    logical(kind=1) :: fnoevo, perman, axi
     integer :: nno, nnos, npi, ipoids, ipoid2, ivf, ivf2, nnom
     integer :: idfde, idfde2, imate, dimdef, dimcon, dimuel, npg
     integer :: mecani(5), press1(7), press2(7), tempe(5)

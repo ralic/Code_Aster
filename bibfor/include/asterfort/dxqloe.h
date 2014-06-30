@@ -22,7 +22,7 @@ interface
         real(kind=8) :: memb(*)
         real(kind=8) :: mefl(*)
         real(kind=8) :: ctor
-        logical :: coupmf
+        logical(kind=1) :: coupmf
         real(kind=8) :: depl(*)
         real(kind=8) :: ener(*)
     end subroutine dxqloe

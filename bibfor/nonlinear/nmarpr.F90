@@ -28,7 +28,7 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
 #include "asterfort/nmttch.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: insder
-    logical :: lreuse
+    logical(kind=1) :: lreuse
     integer :: numder, numarc
     character(len=19) :: sddisc
     character(len=8) :: result

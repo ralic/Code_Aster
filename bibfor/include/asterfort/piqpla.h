@@ -25,8 +25,8 @@ interface
         real(kind=8) :: xp
         real(kind=8) :: yp
         real(kind=8) :: zp
-        logical :: zone7
-        logical :: zone8
+        logical(kind=1) :: zone7
+        logical(kind=1) :: zone8
         real(kind=8) :: l4
         real(kind=8) :: l6
         real(kind=8) :: epsi

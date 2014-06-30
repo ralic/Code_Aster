@@ -23,7 +23,7 @@ subroutine affich(nomfic, texte)
     character(len=*) :: texte
     character(len=*) :: nomfic
     integer :: ifm, ier
-    logical :: ouvert
+    logical(kind=1) :: ouvert
 !     ----------------------------------------------------------------
     ouvert = .true.
     ifm = iunifi (nomfic)

@@ -30,6 +30,6 @@ interface
         character(len=19), intent(in) :: valinc(*)
         character(len=19), intent(in) :: solalg(*)
         real(kind=8), intent(in) :: instan
-        logical, intent(out) :: mmcvca
+        logical(kind=1), intent(out) :: mmcvca
     end subroutine nmctcc
 end interface

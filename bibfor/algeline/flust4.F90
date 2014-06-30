@@ -72,7 +72,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
     character(len=8) :: typflu, base, noma
     character(len=19) :: melflu
 !
-    logical :: vneg, vpos, calcul(2)
+    logical(kind=1) :: vneg, vpos, calcul(2)
     real(kind=8) :: mcf0, ksi, carac(2)
     character(len=8) :: caelem, mater1, mater2, k8b
     character(len=24) :: fsvi, fsvr, fsvk, fsgm

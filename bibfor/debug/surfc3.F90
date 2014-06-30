@@ -50,7 +50,7 @@ subroutine surfc3(char, noma, ifm)
 !
 !
     integer :: zcmxf, zmesx
-    logical :: ltfcm
+    logical(kind=1) :: ltfcm
     integer :: nzoco
     integer :: izone, statut
     character(len=24) :: mailma, defico

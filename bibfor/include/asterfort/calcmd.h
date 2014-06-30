@@ -51,6 +51,6 @@ interface
         integer :: intge2(*)
         integer :: indx(*)
         integer :: indxf(*)
-        logical :: loc(*)
+        logical(kind=1) :: loc(*)
     end subroutine calcmd
 end interface

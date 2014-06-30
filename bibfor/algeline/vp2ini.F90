@@ -124,7 +124,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         beta(isto) = 0.d0
         lkxsto = lkx + (isto-1)*neq
         call mrmult('ZERO', ldynam, vect(1, isto), zr(lkxsto), 1,&
-                    .false.)
+                    .false._1)
         xikxi = 0.d0
         do ieq = 1, neq
             xikxi = xikxi + vect(ieq,isto)*zr(lkxsto+ieq-1)
@@ -163,7 +163,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
                 k19bid, k19bid, kbid, zr(lx), [cbid],&
-                criter, .false., 0, iret)
+                criter, .false._1, 0, iret)
     do ieq = 1, neq
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)
     end do
@@ -173,18 +173,18 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     lkx1 = lkx + neq* (ivecd-1) + neq*nstoc
 !
     call mrmult('ZERO', lmasse, zr(lx), zr(lmx), 1,&
-                .false.)
+                .false._1)
     do ieq = 1, neq
         vect(ieq,ivecd) = zr(lmx+ieq-1)*ddlexc(ieq)
     end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
                 k19bid, k19bid, kbid, vect(1, ivecd), [cbid],&
-                criter, .false., 0, iret)
+                criter, .false._1, 0, iret)
 !
 !     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
 !
     call mrmult('ZERO', ldynam, vect(1, ivecd), zr(lkx1), 1,&
-                .false.)
+                .false._1)
     xikxi = 0.d0
     do ieq = 1, neq
         xikxi = xikxi + vect(ieq,ivecd)*zr(lkx1+ieq-1)
@@ -205,7 +205,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !     --- CALCUL DE ALPHA(1)
 !
     call mrmult('ZERO', lmasse, vect(1, ivecd), zr(lx), 1,&
-                .false.)
+                .false._1)
     ai = 0.d0
     do ieq = 1, neq
         ai = ai + vect(ieq,ivecd)*zr(lx+ieq-1)
@@ -224,7 +224,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         lkxp1 = lkx + neq*ivec
 !
         call mrmult('ZERO', lmasse, vect(1, ivec), zr(lmx), 1,&
-                    .false.)
+                    .false._1)
         ai = 0.d0
         do ieq = 1, neq
             ai = ai + vect(ieq,ivec)*zr(lmx+ieq-1)
@@ -234,7 +234,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vect(1, ivecp1), [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
 !
         if (ivecm1 .eq. (ivecd-1)) then
             do ieq = 1, neq
@@ -254,7 +254,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !         --- K-NORMALISATION DU VECTEUR IVECP1 ---
 !
         call mrmult('ZERO', ldynam, vect(1, ivecp1), zr(lkxp1), 1,&
-                    .false.)
+                    .false._1)
         xikxi = 0.d0
         do ieq = 1, neq
             xikxi = xikxi + vect(ieq,ivecp1)*zr(lkxp1+ieq-1)
@@ -276,7 +276,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
         do jvec = ivec, ivecp1
             call mrmult('ZERO', lmasse, vect(1, ivecp1), zr(lx), 1,&
-                        .false.)
+                        .false._1)
             xjkxi = 0.d0
             do ieq = 1, neq
                 xjkxi = xjkxi + vect(ieq,jvec)*zr(lx+ieq-1)

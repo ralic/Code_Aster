@@ -51,7 +51,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
     character(len=16) :: ktyp
     character(len=24) :: quest2, nomobj(100)
     character(len=19) :: nomcar2
-    logical :: trouve
+    logical(kind=1) :: trouve
     integer :: nbmax, izone, i
 !-----------------------------------------------------------------------
     integer :: ianorc, iaobj, iaprol, iavale, iavalk, if, ii

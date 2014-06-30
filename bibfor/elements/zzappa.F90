@@ -24,7 +24,7 @@ subroutine zzappa(num, liste, n, app)
 !        SI NON : APP = .FALSE.
 !
     integer :: liste(1)
-    logical :: app
+    logical(kind=1) :: app
 !-----------------------------------------------------------------------
     integer :: i, n, num
 !-----------------------------------------------------------------------

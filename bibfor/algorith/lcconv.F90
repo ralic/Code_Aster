@@ -77,7 +77,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
     real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi), vind1(nvi)
     real(kind=8) :: ye(nr), vind(nvi)
     character(len=16) :: loi
-    logical :: bnews(3), mtrac, lreli
+    logical(kind=1) :: bnews(3), mtrac, lreli
 !     ----------------------------------------------------------------
 !
     if (loi(1:9) .eq. 'VISCOCHAB') then

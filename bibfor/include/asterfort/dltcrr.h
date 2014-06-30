@@ -29,7 +29,7 @@ interface
         character(len=*) :: texte
         integer :: ifm
         real(kind=8) :: t0
-        logical :: lcrea
+        logical(kind=1) :: lcrea
         character(len=16) :: typres
         character(len=8) :: masse
         character(len=8) :: rigid

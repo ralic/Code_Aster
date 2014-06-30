@@ -63,7 +63,7 @@ subroutine dimecz(char, noma, nzoco, iform)
     integer :: nbpt, nnint
     character(len=24) :: defico
     integer :: typint
-    logical :: lveri
+    logical(kind=1) :: lveri
     integer :: nbpc
 !
 ! ----------------------------------------------------------------------

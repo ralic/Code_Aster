@@ -23,7 +23,7 @@ subroutine mepres(nomo, chpres, fonc)
     character(len=8) :: nomo
     character(len=*) :: chpres
 !
-    logical :: fonc
+    logical(kind=1) :: fonc
 !
 !    CETTE ROUTINE GENERE UN CHAMP DE PRESSION NUL (CARTE CONSTANTE)
 !     FONC = .TRUE.  FORCE FONCTION

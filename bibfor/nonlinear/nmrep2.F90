@@ -47,7 +47,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: gauche, droite
+    logical(kind=1) :: gauche, droite
     integer :: i, c, j, pos
     real(kind=8) :: a, b, det, v, d, x, pente, dg, x1, y1, x2, y2, x3, y3
     real(kind=8) :: appuig, appuid, valg, vald, val, valopt, xopt

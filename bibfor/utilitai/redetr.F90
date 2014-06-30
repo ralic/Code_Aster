@@ -45,7 +45,7 @@ subroutine redetr(matelz)
 !
     integer ::  iret1, iexi, iexiav
     integer :: izero, ico, k, nb1, nbdet, nb1av
-    logical :: ldetr
+    logical(kind=1) :: ldetr
     character(len=19) :: matele, resuel
     character(len=24), pointer :: relr(:) => null()
     integer, pointer :: adetr(:) => null()

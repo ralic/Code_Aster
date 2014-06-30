@@ -63,7 +63,7 @@ subroutine op0146()
     parameter   ( nb = 1024 )
     integer :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
     real(kind=8) :: val, vitef
-    logical :: casint
+    logical(kind=1) :: casint
     character(len=8) :: nomu, option, nomzon, nompro
     character(len=16) :: concep, cmd
     character(len=19) :: base, spectr, typflu

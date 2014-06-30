@@ -49,7 +49,7 @@ implicit none
     integer :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
     integer :: ivf, nbsig, ndim, nno, npg
     real(kind=8) :: zero
-    logical :: l_meta
+    logical(kind=1) :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -34,7 +34,7 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
 !
     integer :: intmax, iret, bdim
 !
-    logical :: elas, dbloq
+    logical(kind=1) :: elas, dbloq
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 !     ROUTINE DE RESOLUTION DU SYSTEME NON LINEAIRE

@@ -68,8 +68,8 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lgrot
-    logical :: scotch
+    logical(kind=1) :: lgrot
+    logical(kind=1) :: scotch
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu

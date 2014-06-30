@@ -66,11 +66,11 @@ subroutine te0364(option, nomte)
 ! DECLARATION TYPES RESOLUTION    
     integer :: iresof, iresog
     integer :: ndexfr
-    logical :: laxis, leltf
-    logical :: lpenac, lpenaf
-    logical :: loptf, ldyna, lfovit, lcont
-    logical :: ladhe
-    logical :: debug
+    logical(kind=1) :: laxis, leltf
+    logical(kind=1) :: lpenac, lpenaf
+    logical(kind=1) :: loptf, ldyna, lfovit, lcont
+    logical(kind=1) :: ladhe
+    logical(kind=1) :: debug
     
 ! DECLARATION COEFFICIENTS ET TYPE MAILLE        
     real(kind=8) :: coefff, lambda, lambds

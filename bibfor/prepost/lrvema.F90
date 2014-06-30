@@ -71,7 +71,7 @@ subroutine lrvema(nomail, mfich, nochmd)
     character(len=64) :: nomamd
     character(len=200) :: nofimd
     character(len=255) :: kfic
-    logical :: lfirst
+    logical(kind=1) :: lfirst
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     integer, pointer :: typmail(:) => null()

@@ -138,7 +138,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !     POUR BETON_BURGER_FP - ATTENTION DIMENSION MAXI POUR CE MODELE
     real(kind=8) :: yd(21), yf(21)
     parameter  ( epsi = 1.d-15 )
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !     ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
     common/polycr/irr,decirr,nbsyst,decal,gdef

@@ -20,7 +20,7 @@ subroutine lcgrad(resi, rigi, ndim, ndimsi, neps,&
     implicit none
 !
 #include "asterfort/r8inir.h"
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: ndim, ndimsi, neps
     real(kind=8) :: sigma(6), ktg(6, 6, 4), apg, lag, grad(ndim), aldc, r, c
     real(kind=8) :: sig(neps), dsidep(neps, neps)

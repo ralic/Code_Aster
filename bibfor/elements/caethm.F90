@@ -80,7 +80,7 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 #include "asterfort/itgthm.h"
 #include "asterfort/modthm.h"
 #include "asterfort/typthm.h"
-    logical :: axi, perman, vf
+    logical(kind=1) :: axi, perman, vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: ndim, nno, nnos, nnom

@@ -83,7 +83,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
     real(kind=8) :: a(3), b(3), c(3), lsta, lstb, lstc, m(3), d, vn(3), eps(3)
     real(kind=8) :: bestd, mp(3), v(3), vnele(3), vin(3), pm(3), pmp(3), toll
     real(kind=8) :: d1
-    logical :: in, eps1z, eps2z, eps3z, eps1u, eps2u, mvert, libre, mpin, kink
+    logical(kind=1) :: in, eps1z, eps2z, eps3z, eps1u, eps2u, mvert, libre, mpin, kink
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
     integer :: iatri(20), ibtri(20), ictri(20)

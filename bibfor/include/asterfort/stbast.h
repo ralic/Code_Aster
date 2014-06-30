@@ -19,6 +19,6 @@ interface
     subroutine stbast(nfie, nfis, lgrcou)
         integer :: nfie
         integer :: nfis
-        logical :: lgrcou
+        logical(kind=1) :: lgrcou
     end subroutine stbast
 end interface

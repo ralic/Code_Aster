@@ -178,7 +178,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     integer :: num, anumcp, i, ind, n1, ibid
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
-    logical :: utili
+    logical(kind=1) :: utili
     character(len=8) :: repere
     character(len=24) :: nomjv
 ! ----------------------------------------------------------------------
@@ -376,7 +376,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
             ind = numnd(i)
 !
             call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch),&
-                        [ibid], .false., zr(apval+nbc* (i-1)+1-1), zi(aperr))
+                        [ibid], .false._1, zr(apval+nbc* (i-1)+1-1), zi(aperr))
 !
         end do
 !
@@ -413,7 +413,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
             ind = numnd(i)
 !
             call exchnn(zi(aprno+ (ind-1)* (2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch),&
-                        zi(anueq), .true., zr(apval+nbc* (i-1)+1-1), zi(aperr))
+                        zi(anueq), .true._1, zr(apval+nbc* (i-1)+1-1), zi(aperr))
 !
         end do
 !

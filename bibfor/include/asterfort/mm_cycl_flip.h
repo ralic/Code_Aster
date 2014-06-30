@@ -19,6 +19,6 @@ interface
     subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
         character(len=24), intent(in) :: sd_cont_defi
         character(len=24), intent(in) :: sd_cont_solv
-        logical, intent(out) :: cycl_flip
+        logical(kind=1), intent(out) :: cycl_flip
     end subroutine mm_cycl_flip
 end interface

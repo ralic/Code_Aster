@@ -41,7 +41,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
 !
     real(kind=8) :: b2, c, f, g, r, s, ff
     integer :: i, j, ij, jj, k, l
-    logical :: noconv
+    logical(kind=1) :: noconv
 !
 !
 !***********************************************************************

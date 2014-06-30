@@ -56,7 +56,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     character(len=19) :: masse
     character(len=24) :: posddl, vecau1, vecau2
     real(kind=8) :: rmin, rmax, raux, rval
-    logical :: gene
+    logical(kind=1) :: gene
     character(len=24), pointer :: refn(:) => null()
 !     ------------------------------------------------------------------
     data nomddl / 'DX      ', 'DY      ', 'DZ      ' ,&
@@ -126,7 +126,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 !     ------------------------------------------------------------------
-        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, .false.)
+        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, .false._1)
         do ivect = 1, nbvect
             rval = ddot(neq,vect(1,ivect),1,zr(laux2),1)
             raux = masgen(ivect)

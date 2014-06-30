@@ -4,7 +4,7 @@ subroutine cargri(lexc, densit, distn, dir11)
 #include "asterc/r8dgrd.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jevech.h"
-    logical :: lexc
+    logical(kind=1) :: lexc
     real(kind=8) :: densit, distn, dir11(3)
 !
 ! ======================================================================

@@ -34,7 +34,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 #include "asterfort/as_allocate.h"
     character(len=19) :: sddisc
     integer :: iterat
-    logical :: lextra
+    logical(kind=1) :: lextra
     real(kind=8) :: valext(4)
 !
 ! ----------------------------------------------------------------------

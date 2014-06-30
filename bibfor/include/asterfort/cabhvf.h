@@ -25,7 +25,7 @@ interface
         integer :: maxfa
         integer :: nnos
         integer :: nface
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: geom(1:ndim, 1:nno)
         real(kind=8) :: vol
         real(kind=8) :: mface(1:maxfa)

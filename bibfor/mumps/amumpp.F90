@@ -67,7 +67,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
     integer :: option, nbsol, kxmps, ifmump
-    logical :: ldist, eli2lg, prepos, lpreco
+    logical(kind=1) :: ldist, eli2lg, prepos, lpreco
     character(len=1) :: type
     character(len=14) :: impr
     character(len=19) :: vcine
@@ -89,7 +89,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival
-    logical :: ltypr
+    logical(kind=1) :: ltypr
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
     integer, pointer :: delg(:) => null()

@@ -19,7 +19,7 @@ subroutine dxqloe(flex, memb, mefl, ctor, coupmf,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/utvtsv.h"
-    logical :: coupmf
+    logical(kind=1) :: coupmf
     real(kind=8) :: flex(*), memb(*), mefl(*), ctor
     real(kind=8) :: depl(*), ener(*)
 !----------------------------------------------------------

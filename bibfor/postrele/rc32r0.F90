@@ -10,7 +10,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 #include "asterfort/tbajpa.h"
 !
     character(len=8) :: nomres
-    logical :: pmpb, sn, snet
+    logical(kind=1) :: pmpb, sn, snet
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

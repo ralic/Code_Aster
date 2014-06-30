@@ -96,7 +96,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     character(len=8) :: saux08
     character(len=16) :: saux16
     character(len=64) :: saux64, nomas2
-    logical :: ficexi
+    logical(kind=1) :: ficexi
 !
 !====
 ! 1. PREALABLES

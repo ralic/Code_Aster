@@ -20,7 +20,7 @@ interface
                       ier)
         integer :: nbnli
         character(len=8) :: noecho(nbnli, *)
-        logical :: lnoue2
+        logical(kind=1) :: lnoue2
         integer :: iliai
         integer :: ddlcho(*)
         integer :: ier

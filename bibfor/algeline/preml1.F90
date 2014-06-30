@@ -56,7 +56,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
     integer :: libre, iovflo, ncmpa, ifm, niv, p(neq), q(n2), nrl
     integer :: it
     integer :: nec, prno(*), deeq(*), ino, nbcmp
-    logical :: matgen, liaiso
+    logical(kind=1) :: matgen, liaiso
 !--------------------------------------------------------------
 !
 !     VERSION RENUMEROTATION PAR NOEUD

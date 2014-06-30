@@ -49,7 +49,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(2), lchout(1)
     character(len=19) :: excit
     integer :: vali(2), iexi
-    logical :: lreel, lnoeu, ldetli, lvide
+    logical(kind=1) :: lreel, lnoeu, ldetli, lvide
 !     ------------------------------------------------------------------
 !
     call jemarq()

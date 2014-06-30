@@ -75,7 +75,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: phi, rho11, phi0, rac2
     real(kind=8) :: rinstp, angmas(3)
     character(len=16) :: option, meca, ther, thmc, hydr, phenom
-    logical :: perman, yachai
+    logical(kind=1) :: perman, yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -87,7 +87,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: m11m, satm, mdal(6), dalal, alphfi, cbiot, unsks
     real(kind=8) :: eps, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -103,7 +103,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
     real(kind=8) :: dqeps(6)
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !

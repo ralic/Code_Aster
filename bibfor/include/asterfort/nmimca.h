@@ -19,6 +19,6 @@ interface
     subroutine nmimca(sdimpr, typcoz, laffe)
         character(len=24) :: sdimpr
         character(len=*) :: typcoz
-        logical :: laffe
+        logical(kind=1) :: laffe
     end subroutine nmimca
 end interface

@@ -54,7 +54,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     character(len=24) :: nomgr, magrno, manono, magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    logical :: lfonc, trans
+    logical(kind=1) :: lfonc, trans
     integer :: iarg, appui
 !
 !-----------------------------------------------------------------------

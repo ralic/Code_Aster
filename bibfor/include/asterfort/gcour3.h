@@ -28,14 +28,14 @@ interface
         character(len=24) :: trav2
         character(len=24) :: trav3
         character(len=24) :: chfond
-        logical :: connex
+        logical(kind=1) :: connex
         character(len=19) :: grlt
-        logical :: thlagr
-        logical :: thlag2
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: thlag2
         character(len=24) :: basfon
         integer :: nbre
-        logical :: milieu
-        logical :: pair
+        logical(kind=1) :: milieu
+        logical(kind=1) :: pair
         integer :: ndimte
     end subroutine gcour3
 end interface

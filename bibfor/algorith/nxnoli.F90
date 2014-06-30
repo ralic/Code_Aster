@@ -34,7 +34,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: para(*)
-    logical :: lnonl, lostat, lreuse, levol
+    logical(kind=1) :: lnonl, lostat, lreuse, levol
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele, sdieto
     character(len=19) :: lisch2
@@ -59,7 +59,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
     integer :: numarc, numins
     integer :: ifm, niv
     character(len=24) :: noobj, result
-    logical :: force
+    logical(kind=1) :: force
 !
 ! ----------------------------------------------------------------------
 !

@@ -49,7 +49,7 @@ function csevl(x, cs, n)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
     real(kind=8) :: b0, b1, b2, cs(*), onepl, twox, x
-    logical :: first
+    logical(kind=1) :: first
     save first, onepl
 !-----------------------------------------------------------------------
     integer :: i, n, ni

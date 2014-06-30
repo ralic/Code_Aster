@@ -63,7 +63,7 @@ implicit none
     real(kind=8) :: jeu, varc, jeuref
     integer :: numnoe
     integer :: zresu
-    logical :: lsauv
+    logical(kind=1) :: lsauv
     real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------

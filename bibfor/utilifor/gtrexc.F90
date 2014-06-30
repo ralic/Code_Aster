@@ -94,7 +94,7 @@ subroutine gtrexc(compq, n, t, ldt, q,&
 !     ..
 !
 !     .. LOCAL SCALARS ..
-    logical :: wantq
+    logical(kind=1) :: wantq
     integer :: k, m1, m2, m3
     real(kind=8) :: cs
     complex(kind=8) :: sn, t11, t22, temp

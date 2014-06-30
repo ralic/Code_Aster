@@ -32,7 +32,7 @@ subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, ifm, niv, icompt
     real(kind=8) :: fuijm, ukl
-    logical :: trouve
+    logical(kind=1) :: trouve
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)

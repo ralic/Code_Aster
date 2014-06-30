@@ -55,7 +55,7 @@ subroutine ddlphy(depplu, neq, vect, desc)
     integer :: jdg, inueq, jaux, kaux
     integer :: nbnot
     integer :: nbexcl, ival, pos, ivect2
-    logical :: garder
+    logical(kind=1) :: garder
     integer, pointer :: nueq(:) => null()
 !
     call jemarq()

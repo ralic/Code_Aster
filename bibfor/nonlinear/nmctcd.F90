@@ -86,11 +86,11 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
     integer :: ifm, niv
     integer :: nbvect
-    logical :: lunil, lctcd, lctfd, lallv
-    logical :: lpenac
+    logical(kind=1) :: lunil, lctcd, lctfd, lallv
+    logical(kind=1) :: lpenac
     character(len=6) :: ltypve(20)
     character(len=16) :: loptve(20)
-    logical :: lassve(20), lcalve(20)
+    logical(kind=1) :: lassve(20), lcalve(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,7 +112,7 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
 ! --- INITIALISATIONS
 !
-    call nmcvec('INIT', ' ', ' ', .false., .false.,&
+    call nmcvec('INIT', ' ', ' ', .false._1, .false._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FONCTIONNALITES ACTIVEES
@@ -125,18 +125,18 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 ! --- FORCES DE CONTACT/FROTTEMENT DISCRETS
 !
     if (lctcd) then
-        call nmcvec('AJOU', 'CNCTDC', ' ', .false., .true.,&
+        call nmcvec('AJOU', 'CNCTDC', ' ', .false._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
     endif
     if ((lctfd) .or. (lpenac)) then
-        call nmcvec('AJOU', 'CNCTDF', ' ', .false., .true.,&
+        call nmcvec('AJOU', 'CNCTDF', ' ', .false._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
     endif
 !
 ! --- FORCES DE LIAISON_UNILATER (PAS DE VECT_ELEM)
 !
     if (lunil) then
-        call nmcvec('AJOU', 'CNUNIL', ' ', .false., .true.,&
+        call nmcvec('AJOU', 'CNUNIL', ' ', .false._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
     endif
 !

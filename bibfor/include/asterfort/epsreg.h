@@ -36,7 +36,7 @@ interface
         integer :: nno
         integer :: nnos
         integer :: nnom
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: regula(6)
         real(kind=8) :: deplp(dimuel)
         real(kind=8) :: defgep(npi*dimdef)

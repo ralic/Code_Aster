@@ -67,7 +67,7 @@ subroutine op0195()
     character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
     character(len=8) :: nu1
 !     -----------------------------------------------------------------
-    logical :: dbg
+    logical(kind=1) :: dbg
     character(len=24) :: valk(4)
 !     ------------------------------------------------------------------
 !

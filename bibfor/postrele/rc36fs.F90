@@ -37,7 +37,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
     integer :: icomp
     real(kind=8) :: salt, saltm, nadm(1), u1kl, u2kl, sp, snkl, saltkl, mij, sm
     real(kind=8) :: vale(2)
-    logical :: trouve, endur
+    logical(kind=1) :: trouve, endur
     real(kind=8) :: typeke, spmeca, spther
     integer :: icodre(1)
     character(len=2) :: k2c, k2l

@@ -23,7 +23,7 @@ interface
         character(len=24) :: mesmai
         character(len=24) :: nkcha
         character(len=4) :: tych
-        logical :: toucmp
+        logical(kind=1) :: toucmp
         character(len=24) :: nkcmp
         integer :: nbcmp
         integer :: ndim

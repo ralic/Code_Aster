@@ -24,7 +24,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     character(len=*) :: criter
-    logical :: prepos
+    logical(kind=1) :: prepos
     integer :: istop, iret
 !-----------------------------------------------------------------------
 ! ======================================================================

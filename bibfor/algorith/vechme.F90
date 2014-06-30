@@ -92,7 +92,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     character(len=19) :: lchout, resufv(3), vecele
     character(len=24) :: lchin(nchinx)
     character(len=24) :: charge, infcha
-    logical :: bidon, lxfem
+    logical(kind=1) :: bidon, lxfem
     character(len=8), pointer :: vale(:) => null()
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&

@@ -35,7 +35,7 @@ subroutine i2fspl(tvois2, tplace, n, existe, adrdbt)
 !
 !*****************************************************************
 !
-    logical :: existe, tplace(*)
+    logical(kind=1) :: existe, tplace(*)
     integer :: tvois2(*), n, adrdbt
 !
     integer :: i

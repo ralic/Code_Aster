@@ -29,8 +29,8 @@ interface
         character(len=19), intent(in) :: ligrel_prev
         character(len=48), intent(in) :: comp_comb_1
         character(len=48), intent(in) :: comp_comb_2
-        logical, intent(out) :: no_same_pg
-        logical, intent(out) :: no_same_rela
-        logical, intent(out) :: l_modif_vari
+        logical(kind=1), intent(out) :: no_same_pg
+        logical(kind=1), intent(out) :: no_same_rela
+        logical(kind=1), intent(out) :: l_modif_vari
     end subroutine vrcomp_chck_rela
 end interface

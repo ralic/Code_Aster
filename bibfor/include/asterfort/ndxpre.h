@@ -48,6 +48,6 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        logical :: lerrit
+        logical(kind=1) :: lerrit
     end subroutine ndxpre
 end interface

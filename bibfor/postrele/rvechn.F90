@@ -68,7 +68,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     integer :: indi1, indi2
     integer :: vali, ilong, k, l, lnc, ncom, nspm
 !
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
     character(len=1) :: cbid
     integer, pointer :: nund(:) => null()

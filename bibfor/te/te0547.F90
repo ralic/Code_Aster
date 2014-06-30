@@ -84,7 +84,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: sup2d(2), supp(3), tau1(3), tau2(3), vim(9)
     integer :: ifa, ipgf, isspg, mate, nnol, nvec, pla(27)
     character(len=8) :: job
-    logical :: lbid
+    logical(kind=1) :: lbid
 !......................................................................
     call jemarq()
 !
@@ -179,7 +179,7 @@ subroutine te0547(option, nomte)
 ! LISTE DES LAMBDAS ACTIFS
 !
     call xmulco(contac, ddlc, ddlm, jaint, 1,&
-                ibid, vstnc, lact, .false., lbid,&
+                ibid, vstnc, lact, .false._1, lbid,&
                 ndim, nfe, nfh, 1, ninter,&
                 nlact, nno, nnol, nnom, nnos,&
                 pla, typma)

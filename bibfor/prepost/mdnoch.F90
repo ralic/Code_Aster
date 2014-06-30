@@ -72,7 +72,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
     character(len=16) :: nomsym
     character(len=8) :: noresu
 !
-    logical :: lresu
+    logical(kind=1) :: lresu
 !
     integer :: lnochm
     integer :: codret

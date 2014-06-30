@@ -33,6 +33,6 @@ interface
         real(kind=8) :: radtor
         real(kind=8) :: damax
         character(len=8) :: noma
-        logical :: locdom
+        logical(kind=1) :: locdom
     end subroutine xprvir
 end interface

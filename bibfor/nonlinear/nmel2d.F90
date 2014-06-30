@@ -67,7 +67,7 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
 !
 !
     integer :: kpg, kk, n, i, m, j, j1, kl, pq, kkd
-    logical :: grdepl, axi, cplan
+    logical(kind=1) :: grdepl, axi, cplan
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), r, sigma(6), ftf, detf
     real(kind=8) :: poids, tmp1, tmp2, sigp(6)
 !
@@ -99,7 +99,7 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
 !      CALCUL DE DFDI, F, EPS, R (EN AXI) ET POIDS
         call nmgeom(2, nno, axi, grdepl, geom,&
                     kpg, ipoids, ivf, idfde, zr(idepl),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,

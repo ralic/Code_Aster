@@ -98,7 +98,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
 !-----------------------------------------------------------------------
 !
-    logical :: dbg
+    logical(kind=1) :: dbg
 !     ------------------------------------------------------------------
     integer :: icmp, nec,  jcesd, jcesv, jcesl, gd
     integer :: jnucm2, jnucm1,  i
@@ -109,7 +109,8 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     integer :: jdceld, jdcell,  ima, nbma, nbspt, ispt, icmpmx
     integer :: adiel, jlpt,  lgcata, ncdyn, cumu, nbel, nptmx
     integer :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
-    logical :: diff, prol, prol2
+    logical :: diff
+    logical(kind=1) :: prol, prol2
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomcmp, nompar, nomma, licmp(2)
     character(len=3) :: tsca, knan

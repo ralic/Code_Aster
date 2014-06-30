@@ -31,7 +31,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 ! person_in_charge: sylvie.granet at edf.fr
 !
     character(len=8), intent(in) :: model
-    logical, intent(in) :: l_affe_all
+    logical(kind=1), intent(in) :: l_affe_all
     character(len=24), intent(in) :: list_elem_affe
     integer, intent(in) :: nb_elem_affe
     character(len=16), intent(in) :: rela_thmc

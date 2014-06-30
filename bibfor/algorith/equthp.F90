@@ -150,7 +150,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
     real(kind=8) :: deux, rac2
     real(kind=8) :: angmas(3)
     parameter   (deux = 2.d0)
-    logical :: perman
+    logical(kind=1) :: perman
     character(len=8) :: typmod(2)
     character(len=16) :: option, compor(*)
 ! ======================================================================
@@ -219,7 +219,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
 800  end do
 !
 !
-    call comthm(option, perman, .false., ibid, rbid1,&
+    call comthm(option, perman, .false._1, ibid, rbid1,&
                 rbid2, imate, typmod, compor, crit,&
                 rinstm, rinstp, ndim, dimdef, dimcon,&
                 nbvari, yamec, yap1, yap2, yate,&

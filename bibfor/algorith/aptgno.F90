@@ -52,7 +52,7 @@ subroutine aptgno(sdappa)
     integer :: izone, itype
     integer :: jdecnm, nbnom
     integer :: jdecne, nbnoe
-    logical :: apcald
+    logical(kind=1) :: apcald
     real(kind=8) :: vector(3)
 !
 ! ----------------------------------------------------------------------

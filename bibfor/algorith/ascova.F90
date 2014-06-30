@@ -76,7 +76,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     integer :: kk, nbvec, nchar, iret, jvec, jfonct, jcoef, jtype, k
     integer :: icha, ier, n1, npuis, n2, ibid
     real(kind=8) :: valres, valre, valim, dgrd, omega, phase
-    logical :: fct
+    logical(kind=1) :: fct
     character(len=19) :: chamno
     character(len=24) :: fomult
     complex(kind=8) :: calpha

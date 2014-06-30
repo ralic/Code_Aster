@@ -56,7 +56,7 @@ subroutine forcdy(masse, amort, lamort, neq, c0,&
     real(kind=8) :: d0(*), v0(*), a0(*), f1(*), f2(*), f(*)
     real(kind=8) :: c0, c1, c2, c3, c4, c5
 !
-    logical :: lamort
+    logical(kind=1) :: lamort
 !
 ! DECLARATION VARIABLES LOCALES
 !
@@ -76,7 +76,7 @@ subroutine forcdy(masse, amort, lamort, neq, c0,&
                1)
 !
     call mrmult('ZERO', masse, f1, f2, 1,&
-                .true.)
+                .true._1)
 !
     call daxpy(neq, un, f2, 1, f,&
                1)
@@ -94,7 +94,7 @@ subroutine forcdy(masse, amort, lamort, neq, c0,&
                    1)
 !
         call mrmult('ZERO', amort, f1, f2, 1,&
-                    .true.)
+                    .true._1)
 !
         call daxpy(neq, un, f2, 1, f,&
                    1)

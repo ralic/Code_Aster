@@ -23,6 +23,6 @@ interface
         real(kind=8) :: eigx(3)
         real(kind=8) :: eigy(3)
         real(kind=8) :: edge
-        logical :: outofp
+        logical(kind=1) :: outofp
     end subroutine mctge2
 end interface

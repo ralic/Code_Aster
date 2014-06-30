@@ -45,7 +45,7 @@ subroutine nmcrcg(fonact, sdconv)
 !
     character(len=24) :: cnvtyp, cnvlie, cnvval, cnvact, cnvnco
     integer :: jcnvty, jcnvli, jcnvva, jcnvac, jcnvnc
-    logical :: lnewtf, lnewtg
+    logical(kind=1) :: lnewtf, lnewtg
 !
 ! ----------------------------------------------------------------------
 !

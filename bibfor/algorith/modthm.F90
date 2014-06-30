@@ -22,7 +22,7 @@ subroutine modthm(modint)
 ! --- determination du mode d'integration : CLA/RED/LUM
 !     pour le type_element courant.
 ! =====================================================================
-    logical :: lprincip
+    logical(kind=1) :: lprincip
     integer :: iret
     character(len=1) :: d1,d2
     character(len=3) :: mint

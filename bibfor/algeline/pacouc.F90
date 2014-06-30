@@ -35,7 +35,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
     real(kind=8) :: amor(*), w(*), vecr4(*), vecr5(*)
     character(len=24) :: nom1, nom2
 !
-    logical :: check, veriu0
+    logical(kind=1) :: check, veriu0
     real(kind=8) :: ksi0, kcaj, vgap
 !-----------------------------------------------------------------------
 !

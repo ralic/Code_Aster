@@ -29,6 +29,6 @@ interface
         real(kind=8) :: vip(*)
         integer :: cpl
         integer :: icp
-        logical :: conv
+        logical(kind=1) :: conv
     end subroutine nmcpl3
 end interface

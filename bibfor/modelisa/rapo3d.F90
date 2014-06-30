@@ -79,7 +79,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
     parameter (nmocl=300)
-    logical :: vexcen
+    logical(kind=1) :: vexcen
     character(len=2) :: typlag
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, poslag, cara

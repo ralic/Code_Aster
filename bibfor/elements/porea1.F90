@@ -15,7 +15,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
 !
     real(kind=8) :: pgl(3, 3), xl, angp(3)
-    logical :: vecteu
+    logical(kind=1) :: vecteu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

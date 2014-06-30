@@ -20,10 +20,10 @@ interface
                       lcoc, base, cns3z)
         integer :: nbchs
         character(len=*) :: lichs(nbchs)
-        logical :: lcumul(nbchs)
+        logical(kind=1) :: lcumul(nbchs)
         real(kind=8) :: lcoefr(nbchs)
         complex(kind=8) :: lcoefc(nbchs)
-        logical :: lcoc
+        logical(kind=1) :: lcoc
         character(len=*) :: base
         character(len=*) :: cns3z
     end subroutine cnsfus

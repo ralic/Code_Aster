@@ -48,7 +48,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     integer :: tdisp, nbnop, lisnoe(nbnop), nbnot, nbordr, nnoini
     integer :: tspaq
-    logical :: fordef, post
+    logical(kind=1) :: fordef, post
     real(kind=8) :: vwork(tdisp), resu(7)
     character(len=8) :: nommai, grdvie, nommap
     character(len=16) :: nomcri, proaxe, nomfor, forvie
@@ -96,7 +96,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     real(kind=8) :: nxm(2), nym(2), nzm(2)
     real(kind=8) :: vresu(24)
 !
-    logical :: lbid, crsigm
+    logical(kind=1) :: lbid, crsigm
 !
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio

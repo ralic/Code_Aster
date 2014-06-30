@@ -61,7 +61,7 @@ subroutine comp_meca_save(mesh            , chmate          , compor          , 
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical :: l_affe_all
+    logical(kind=1) :: l_affe_all
     integer :: nb_elem_affe
     integer, pointer :: p_elem_affe(:) => null()
     character(len=16) :: keywordfact
@@ -72,9 +72,9 @@ subroutine comp_meca_save(mesh            , chmate          , compor          , 
     character(len=16), pointer :: p_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(9), type_matg, post_iter
-    logical :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
-    logical :: l_matr_tgsc, l_crit_rupt
-    logical :: l_pmf, l_is_pmf, l_zmat_open
+    logical(kind=1) :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
+    logical(kind=1) :: l_matr_tgsc, l_crit_rupt
+    logical(kind=1) :: l_pmf, l_is_pmf, l_zmat_open
     integer :: nume_comp, nb_vari, nb_vari_comp(9)
     integer :: nb_vari_exte, unit_comp
 !

@@ -101,8 +101,8 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
-    logical :: lxfem, l_ocmp
-    logical :: l_dtan, l_dnor
+    logical(kind=1) :: lxfem, l_ocmp
+    logical(kind=1) :: l_dtan, l_dnor
     integer :: val_nb_dnor, val_nb_dtan
     real(kind=8) :: val_r_dnor, val_r_dtan
     character(len=8) :: val_f_dnor, val_f_dtan

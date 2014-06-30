@@ -44,7 +44,7 @@ subroutine i3trip(lstpt, nbpt)
 !
     integer :: i, j, k, aa, ao
     real(kind=8) :: aux
-    logical :: insert
+    logical(kind=1) :: insert
 !
 !======================================================================
 !

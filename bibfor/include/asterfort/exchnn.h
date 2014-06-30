@@ -24,7 +24,7 @@ interface
         integer :: nbc
         real(kind=8) :: tvale(*)
         integer :: tnueq(*)
-        logical :: b
+        logical(kind=1) :: b
         real(kind=8) :: valcmp(*)
         integer :: taber(*)
     end subroutine exchnn

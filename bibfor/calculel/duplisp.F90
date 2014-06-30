@@ -65,7 +65,7 @@ subroutine duplisp(celssp, celasp, carel, base)
     integer, pointer :: liel(:) => null()
     integer, pointer :: celd1(:) => null()
     integer, pointer :: celd2(:) => null()
-    logical diff
+    logical :: diff
 
 #   define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !------------------------------------------------------------------

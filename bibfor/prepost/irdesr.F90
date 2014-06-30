@@ -23,7 +23,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
     real(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*), nocmpl(*)
     character(len=*) :: titr, nomnoe(*), nomsd, nomsym
-    logical :: lmasu
+    logical(kind=1) :: lmasu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
     character(len=80) :: entete(10), titre, texte
     integer :: nbchs, nbcmpt
     integer :: impre, iente, iutil
-    logical :: afaire, lcmp
+    logical(kind=1) :: afaire, lcmp
 !
 !  --- INITIALISATIONS ----
 !
@@ -83,7 +83,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
     integer :: jj, jl, jmax, jpos, jtitr, k, l
     integer :: ll, nbdats, ncmp, ni
     integer, pointer :: ipcmps(:) => null()
-    logical, pointer :: ltabl(:) => null()
+    logical(kind=1), pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()

@@ -53,14 +53,14 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     integer :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: ch16, messk(2)
-    logical :: global, normal
+    logical(kind=1) :: global, normal
 !
     integer :: ifcx, i, j, nnoc, ncc, lx, iorien, idepla, ideplp, lmate, lpesa
     integer :: lforc, itemps, nbpar, ier, iret, icoer, icoec, iretr, iretc
     integer :: lrota, istrxm
     character(len=8) :: nompav(1)
     real(kind=8) :: valpav(1), fcx, vite2, vp(3), casect(6), gamma
-    logical :: okvent
+    logical(kind=1) :: okvent
     real(kind=8) :: dimag
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------

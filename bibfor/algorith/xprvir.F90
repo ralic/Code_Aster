@@ -18,7 +18,7 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     character(len=24) :: nvit, nbeta
     integer :: numfon, nbptff
     real(kind=8) :: radimp, radtor, damax
-    logical :: locdom
+    logical(kind=1) :: locdom
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

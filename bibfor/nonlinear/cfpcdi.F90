@@ -213,7 +213,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 !
     call resoud(matass, k19bla, solveu, cncin0, 0,&
                 secmbr, ddelt, 'V', [0.d0], [c16bid],&
-                k19bla, .true., 0, iret)
+                k19bla, .true._1, 0, iret)
     call jeveuo(ddelt(1:19)//'.VALE', 'E', jddelt)
 !
 ! --- PAS D'AVANCEMENT

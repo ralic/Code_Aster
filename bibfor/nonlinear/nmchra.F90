@@ -26,7 +26,7 @@ subroutine nmchra(sddyna, optamo, lcamor)
 #include "asterfort/ndynlo.h"
     character(len=19) :: sddyna
     character(len=16) :: optamo
-    logical :: lcamor
+    logical(kind=1) :: lcamor
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ subroutine nmchra(sddyna, optamo, lcamor)
 !
 !
 !
-    logical :: lktan
+    logical(kind=1) :: lktan
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

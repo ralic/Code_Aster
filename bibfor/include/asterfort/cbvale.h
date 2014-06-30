@@ -25,6 +25,6 @@ interface
         character(len=*) :: typres
         integer :: lres
         character(len=*) :: ddlexc
-        logical :: matd
+        logical(kind=1) :: matd
     end subroutine cbvale
 end interface

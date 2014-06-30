@@ -58,7 +58,7 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
     integer :: ifm, niv
     character(len=1) :: base
     character(len=19) :: cncont
-    logical :: lcont
+    logical(kind=1) :: lcont
 !
 ! ----------------------------------------------------------------------
 !

@@ -71,7 +71,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     real(kind=8) :: termv1, termv2, terms2, termf2, terme2, err0, nors, nu0
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
-    logical :: first
+    logical(kind=1) :: first
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
 !

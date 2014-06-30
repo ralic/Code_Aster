@@ -33,7 +33,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     integer :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
@@ -78,7 +78,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR
 ! ----------------------------------------------------------------------
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: nddl, g, cod(27), n, i, m, j, k, l, os, kk
     real(kind=8) :: rbid(1), r(1), mu(3), su(3), wg, b(3, 3, 18), de(6)
     real(kind=8) :: ddedt(6, 6), t1

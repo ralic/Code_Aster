@@ -59,7 +59,7 @@ subroutine te0446(option, nomte)
     real(kind=8) :: effref,momref
     real(kind=8) :: alpha, beta, t2ev(4), t2ve(4), c, s
     real(kind=8) :: foref, moref
-    logical :: reactu
+    logical(kind=1) :: reactu
 !
     if (option.eq.'FORC_NODA') then
 !

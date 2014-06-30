@@ -6,7 +6,7 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
     integer :: icodre(*)
     integer :: nbpar
     real(kind=8) :: valre(*), klv(*), raide(*), param(6, nbpar)
-    logical :: okdire(6)
+    logical(kind=1) :: okdire(6)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -9,7 +9,7 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
     integer :: nbsigr, nocc(*), isk, isl, nk, nl, n0, nsitup, nbp12, nbp23
     integer :: nbp13, sigr(*)
     real(kind=8) :: saltij(*)
-    logical :: yapass
+    logical(kind=1) :: yapass
     character(len=3) :: typass
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -44,7 +44,7 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
     integer ::  ig1, ig2, nbsips, jnpass, i, k, nsitu, numg1, numg2
     integer :: sipass, npass, ioc1, ioc2
     real(kind=8) :: salmia, salt1, saltam
-    logical :: chemin
+    logical(kind=1) :: chemin
     integer, pointer :: situ_group(:) => null()
 !     ------------------------------------------------------------------
 !

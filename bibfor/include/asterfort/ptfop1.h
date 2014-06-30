@@ -24,7 +24,7 @@ interface
         real(kind=8) :: xl
         real(kind=8) :: rad
         real(kind=8) :: angs2
-        logical :: global
+        logical(kind=1) :: global
         real(kind=8) :: qq(12)
         real(kind=8) :: fe(12)
     end subroutine ptfop1

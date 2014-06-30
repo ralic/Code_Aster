@@ -70,7 +70,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical :: reprise, lcine
+    logical(kind=1) :: reprise, lcine
     integer :: imat(2), nd, nchoc, h, hf, ninc
     character(len=14) :: numedd, xcdl, parcho, adime
     character(len=8) :: tabchoc
@@ -291,7 +291,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                 ier2, 0)
     call resoud(matk, ' ', ' ', ' ', 1,&
                 ' ', ' ', 'V', zr(iei), [cbid],&
-                ' ', .false., 0, ier)
+                ' ', .false._1, 0, ier)
     zr(iadim-1+1)=1.d0/zr(iei-1+pdlmax)
 ! --- ON RECUPERE MUi (POUR ADIMENSIONNE LA MATRICE DE MASSE)
     if (lcine) then
@@ -301,18 +301,18 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
         zr(iei-1+pdlmax)=1.d0
         call resoud(matm, ' ', ' ', ' ', 1,&
                     ' ', ' ', 'V', zr(iei), [cbid],&
-                    ' ', .false., 0, ier)
+                    ' ', .false._1, 0, ier)
         zr(iadim-1+2)=1.d0/zr(iei-1+pdlmax)
     else
         do k = 1, neq
             zr(iei-1+k)=1.d0
         end do
         AS_ALLOCATE(vr=ei2, size=neq)
-!        call mrmult('ZERO', imat(1), zr(iei), ei2, 1, .true.)
+!        call mrmult('ZERO', imat(1), zr(iei), ei2, 1, .true._1)
 !        zr(iadim-1+1)=ddot(neq,zr(iei),1,ei2,1)
         call dscal(neq, 0.d0, ei2, 1)
         call mrmult('ZERO', imat(2), zr(iei), ei2, 1,&
-                    .true.)
+                    .true._1)
         zr(iadim-1+2)=ddot(neq,zr(iei),1,ei2,1)
     endif
 ! --- ON RECUPERE OMEGA (POUR ADIMENSIONNE LE TEMPS)

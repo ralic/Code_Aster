@@ -70,7 +70,7 @@ subroutine slegro(iunv, imod, datset)
     integer :: nbmodu, nbtest, datset
     integer :: nbrlig
     real(kind=8) :: rval
-    logical :: lwrit
+    logical(kind=1) :: lwrit
 !
 !  --> DECLARATION INDICES DE BOUCLES
 !

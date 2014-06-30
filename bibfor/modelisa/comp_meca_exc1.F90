@@ -30,9 +30,9 @@ subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: mult_comp
     integer, intent(in) :: nb_vari_exte
-    logical, intent(in) :: l_kit_meta
-    logical, intent(in) :: l_cristal
-    logical, intent(in) :: l_exte_comp
+    logical(kind=1), intent(in) :: l_kit_meta
+    logical(kind=1), intent(in) :: l_cristal
+    logical(kind=1), intent(in) :: l_exte_comp
     integer, intent(inout) :: nb_vari
 !
 ! --------------------------------------------------------------------------------------------------

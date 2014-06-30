@@ -48,7 +48,7 @@ subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lreli, lpilo, lborst
+    logical(kind=1) :: lreli, lpilo, lborst
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,21 +63,21 @@ subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
 ! --- ECRITURE CRITERES RECHERCHE LINEAIRE
 !
     if (lreli .and. (iterat.ne.0)) then
-        call nmimci(sdimpr, 'RELI_NBIT', relite, .true.)
-        call nmimcr(sdimpr, 'RELI_COEF', relcoe, .true.)
+        call nmimci(sdimpr, 'RELI_NBIT', relite, .true._1)
+        call nmimcr(sdimpr, 'RELI_COEF', relcoe, .true._1)
     endif
 !
 ! --- ECRITURE CRITERES PILOTAGE
 !
     if (lpilo) then
-        call nmimcr(sdimpr, 'PILO_COEF', eta, .true.)
+        call nmimcr(sdimpr, 'PILO_COEF', eta, .true._1)
     endif
 !
 !
 ! --- ECRITURE DE BORST
 !
     if (lborst) then
-        call nmimck(sdimpr, 'DEBORST  ', 'DE BORST...', .true.)
+        call nmimck(sdimpr, 'DEBORST  ', 'DE BORST...', .true._1)
     endif
 !
 end subroutine

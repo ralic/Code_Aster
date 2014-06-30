@@ -73,7 +73,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     real(kind=8) :: tmax
 ! -----  ARGUMENTS
     integer :: nbmat
-    logical :: lsym
+    logical(kind=1) :: lsym
     character(len=*) :: matrez, basez, numedd
     character(len=*) :: limat(nbmat)
     character(len=1) :: rouc
@@ -124,13 +124,13 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 ! --- RECOPIE DU PROF_CHNO DE LA PREMIERE MATRICE SUR LA MATRICE
 ! --- RESULTANTE :
 !     ---------
-    call jedupo(numdd1//'.NUME.DEEQ', base, numddl//'.NUME.DEEQ', .false.)
-    call jedupo(numdd1//'.NUME.DELG', base, numddl//'.NUME.DELG', .false.)
-    call jedupo(numdd1//'.NUME.LILI', base, numddl//'.NUME.LILI', .false.)
-    call jedupo(numdd1//'.NUME.NUEQ', base, numddl//'.NUME.NUEQ', .false.)
-    call jedupo(numdd1//'.NUME.PRNO', base, numddl//'.NUME.PRNO', .false.)
-    call jedupo(numdd1//'.NUME.REFN', base, numddl//'.NUME.REFN', .false.)
-    call jedupo(numdd1//'.NUME.NEQU', base, numddl//'.NUME.NEQU', .false.)
+    call jedupo(numdd1//'.NUME.DEEQ', base, numddl//'.NUME.DEEQ', .false._1)
+    call jedupo(numdd1//'.NUME.DELG', base, numddl//'.NUME.DELG', .false._1)
+    call jedupo(numdd1//'.NUME.LILI', base, numddl//'.NUME.LILI', .false._1)
+    call jedupo(numdd1//'.NUME.NUEQ', base, numddl//'.NUME.NUEQ', .false._1)
+    call jedupo(numdd1//'.NUME.PRNO', base, numddl//'.NUME.PRNO', .false._1)
+    call jedupo(numdd1//'.NUME.REFN', base, numddl//'.NUME.REFN', .false._1)
+    call jedupo(numdd1//'.NUME.NEQU', base, numddl//'.NUME.NEQU', .false._1)
 !
 ! --- RECOPIE DU .NSLV DE LA PREMIERE MATRICE SUR LA MATRICE
     call jedup1(numdd1//'.NSLV', base, numddl//'.NSLV')

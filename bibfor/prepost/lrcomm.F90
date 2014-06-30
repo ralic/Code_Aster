@@ -77,7 +77,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 !
     complex(kind=8) :: cbid
 !
-    logical :: matcst, coecst, l_etat_init
+    logical(kind=1) :: matcst, coecst, l_etat_init
 !
 ! ----------------------------------------------------------------------
 !

@@ -69,7 +69,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !-----------------------------------------------------------------------
 !
     integer :: jsmdi, type, iordre
-    logical :: iconvf
+    logical(kind=1) :: iconvf
     character(len=24) :: valm
     complex(kind=8) :: cbid
     character(len=1) :: kbid
@@ -200,7 +200,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vvect, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
         do ll = jj, nbvec
             art = 0.d0
             do kk = 1, neq
@@ -220,7 +220,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     ii = 0
     do jj = 1, nbvec
         call mrmult('ZERO', lmass, vect(1, jj), vvect, 1,&
-                    .false.)
+                    .false._1)
         do ll = jj, nbvec
             brt = 0.0d0
             do kk = 1, neq

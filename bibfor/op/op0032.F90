@@ -72,7 +72,7 @@ subroutine op0032()
     real(kind=8) :: omgmin, omgmax, omin, omax, fcorig, omecor, precsh, rayonc
     real(kind=8) :: dimc1, rzero, calpar(2), calpac(3), calpaf(2), rbid, det(2)
     complex(kind=8) :: centrc, zimc1, cbid
-    logical :: ltest, lc, ldyna, lflamb, lfirst, lcomod, lcoinf
+    logical(kind=1) :: ltest, lc, ldyna, lflamb, lfirst, lcomod, lcoinf
     character(len=1) :: typep, tpparn(1), tpparr(2), tpparc(3), tpparf(2)
     character(len=1) :: tpparm(2)
     character(len=3) :: impr

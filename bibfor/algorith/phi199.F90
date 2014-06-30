@@ -264,9 +264,9 @@ ddl)
 !
         call resoud(ma, maprec, solveu, ' ', 0,&
                     vecso1, chsol, 'V', [0.d0], [cbid],&
-                    criter, .true., 0, iret)
+                    criter, .true._1, 0, iret)
         call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
-                    .false.)
+                    .false._1)
         call detrsd('CHAMP_GD', chsol)
 !
 !------------ CREATION DU VECTEUR PRESSION MODAL-------------------

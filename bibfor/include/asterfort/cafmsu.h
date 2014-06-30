@@ -22,8 +22,8 @@ interface
         integer :: nface
         integer :: maxfa
         integer :: ifa
-        logical :: cont
-        logical :: tange
+        logical(kind=1) :: cont
+        logical(kind=1) :: tange
         real(kind=8) :: fkss
         real(kind=8) :: dfks1(1+maxfa, nface)
         real(kind=8) :: dfks2(1+maxfa, nface)

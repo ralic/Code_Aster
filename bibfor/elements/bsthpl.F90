@@ -9,7 +9,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: bsigth(24)
-    logical :: indith
+    logical(kind=1) :: indith
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

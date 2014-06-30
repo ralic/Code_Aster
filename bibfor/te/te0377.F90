@@ -105,7 +105,7 @@ subroutine te0377(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical :: yapr, yaro
+    logical(kind=1) :: yapr, yaro
 !
 ! ----------------------------------------------------------------------
 ! ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
@@ -294,7 +294,7 @@ subroutine te0377(option, nomte)
 !
 ! ------- CALCUL DE L'ORIENTATION DE LA MAILLE -------------------------
 !
-    call utjac(.true., zr(igeom), ipg, idfde, 0,&
+    call utjac(.true._1, zr(igeom), ipg, idfde, 0,&
                ibid, nno, orien)
 !
 ! ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA --------------

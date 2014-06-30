@@ -46,7 +46,7 @@ subroutine imppiv(nu, ieq)
     integer :: nbmas, k, kk, jnuno, kno
     character(len=8) :: noma, nomeq, nomno
     character(len=19) :: prno, ligrel
-    logical :: trouve
+    logical(kind=1) :: trouve
     integer, pointer :: nueq(:) => null()
 !
 ! DEB-------------------------------------------------------------------

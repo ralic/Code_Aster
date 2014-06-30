@@ -62,7 +62,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     character(len=24) :: chgeom, chlapl, chgeo2
     character(len=24) :: ligrmo, ligrch, lchin(3), kcmp(2)
     integer :: ibid, iret, nchar
-    logical :: bidon
+    logical(kind=1) :: bidon
 !
 !-----------------------------------------------------------------------
     integer :: icha, ifla, j, jchar, jinf, lonlis

@@ -18,7 +18,7 @@
 interface
     subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
                       h, d1i, d2i, x3i, epi)
-        logical :: lcalct
+        logical(kind=1) :: lcalct
         integer :: icou
         integer :: iniv
         real(kind=8) :: t1ve(3, 3)

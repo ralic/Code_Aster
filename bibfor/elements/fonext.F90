@@ -78,7 +78,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     integer :: ibid3(12, 3), inobor(2), fa(6, 4)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
     character(len=8) :: typma
-    logical :: fabord, nofac
+    logical(kind=1) :: fabord, nofac
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
 !     -----------------------------------------------------------------

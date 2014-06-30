@@ -28,7 +28,7 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
     real(kind=8) :: tau1(3), tau2(3), mprojt(3, 3)
     integer :: inadh
     real(kind=8) :: rese(3), nrese
-    logical :: lpenaf
+    logical(kind=1) :: lpenaf
 !
 ! ----------------------------------------------------------------------
 !

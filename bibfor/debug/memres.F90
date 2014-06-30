@@ -103,7 +103,7 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 40  continue
 !
 !      -- ON VERIFIE QUE TMAX EST ASSEZ BIEN EVALUE (+/- PREC):
-    if (.true.) then
+    if (.true._1) then
         call hpalloc(jad, idep-2*incr, ierr, 0)
         ASSERT(ierr.eq.0)
         call hpdeallc(jad, nbfree)

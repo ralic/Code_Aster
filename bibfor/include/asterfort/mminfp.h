@@ -22,6 +22,6 @@ interface
         character(len=*) :: questz
         integer :: irep(*)
         real(kind=8) :: rrep(*)
-        logical :: lrep(*)
+        logical(kind=1) :: lrep(*)
     end subroutine mminfp
 end interface

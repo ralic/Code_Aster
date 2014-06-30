@@ -34,7 +34,7 @@ interface
         character(len=19), intent(in) :: solalg(*)
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat
-        logical, intent(out) :: mmcvca
+        logical(kind=1), intent(out) :: mmcvca
         real(kind=8) :: instan
     end subroutine mmbclc
 end interface

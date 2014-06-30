@@ -63,8 +63,8 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     integer :: idomm, iepsqt, iepsqc, irsigm, idissd
     parameter (idomm=3,iepsqt=4,iepsqc=5,irsigm=6,idissd=8)
 ! --- ------------------------------------------------------------------
-    logical :: rigi, resi
-    logical :: elas, prog
+    logical(kind=1) :: rigi, resi
+    logical(kind=1) :: elas, prog
     integer :: ii, jj, ll
 !
     real(kind=8) :: rac2, grdexp

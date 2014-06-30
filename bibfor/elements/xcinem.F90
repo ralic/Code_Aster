@@ -28,11 +28,11 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
 
-    logical, intent(in) :: axi
+    logical(kind=1), intent(in) :: axi
     integer, intent(in) :: nnop
     integer, intent(in) :: nnos
     integer, intent(in) :: idepl
-    logical, intent(in) :: grand
+    logical(kind=1), intent(in) :: grand
     integer, intent(in) :: ndim
     integer, intent(in) :: nfiss
     real(kind=8), intent(in) :: he(nfiss)
@@ -86,7 +86,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
     real(kind=8) :: zero, un, rac2
     integer :: i, j, k, n, p, ig, cpt, nn
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
-    logical :: ldec
+    logical(kind=1) :: ldec
 !
 ! ----------------------------------------------------------------------
 !

@@ -48,7 +48,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
     real(kind=8) :: sigm(4, npg), sigp(4, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(2*nno)
-    logical :: matsym
+    logical(kind=1) :: matsym
 !
 !.......................................................................
 !
@@ -86,7 +86,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !.......................................................................
 !
 !
-    logical :: grand, axi, cplan
+    logical(kind=1) :: grand, axi, cplan
 !
     integer :: kpg, j
 !
@@ -125,14 +125,14 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
         call r8inir(6, 0.d0, epsp, 1)
         call nmgeom(2, nno, axi, grand, geomi,&
                     kpg, ipoids, ivf, idfde, deplm,&
-                    .true., poids, dfdi, fm, epsm,&
+                    .true._1, poids, dfdi, fm, epsm,&
                     r)
 !
 !        CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
 !
         call nmgeom(2, nno, axi, grand, geomi,&
                     kpg, ipoids, ivf, idfde, deplp,&
-                    .true., poids, dfdi, f, epsp,&
+                    .true._1, poids, dfdi, f, epsp,&
                     r)
 !
 !        CALCUL DE DEPS POUR LDC

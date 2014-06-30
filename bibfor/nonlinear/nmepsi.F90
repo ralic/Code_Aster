@@ -24,7 +24,7 @@ subroutine nmepsi(ndim, nno, axi, grand, vff,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: ndim, nno
     real(kind=8) :: vff(nno), r, dfdi(nno, ndim), depl(ndim, nno), f(3, 3)
     real(kind=8) :: eps(6)

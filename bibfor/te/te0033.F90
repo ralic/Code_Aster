@@ -73,7 +73,7 @@ subroutine te0033(option, nomte)
     real(kind=8) :: effgt(32), effpg(32)
     real(kind=8) :: t2iu(4), t2ui(4), c, s
 !
-    logical :: dkg
+    logical(kind=1) :: dkg
 !
     character(len=2) :: val
     character(len=3) :: num

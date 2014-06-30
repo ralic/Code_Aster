@@ -22,7 +22,7 @@ interface
         character(len=8) :: formaf
         integer :: ifichi
         character(len=8) :: leresu
-        logical :: lresul
+        logical(kind=1) :: lresul
         integer :: nbmato
         character(len=24) :: nonuma
         integer :: nbnoto

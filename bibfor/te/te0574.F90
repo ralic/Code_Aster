@@ -62,7 +62,7 @@ subroutine te0574(option, nomte)
     integer :: ier
     real(kind=8) :: x, y, geom_reac(2*mxnoeu), xf, yf
 !
-    logical :: laxi
+    logical(kind=1) :: laxi
     integer :: ndim, nno, npg, nnos, nddl
     integer :: iddl, ino, ipg
     integer :: jpoids, jvf, jdf, jgano

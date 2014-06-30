@@ -19,7 +19,7 @@ interface
     subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                       nbmesu, labs, amin, apas, lvalc,&
                       lvalr)
-        logical :: zcmplx
+        logical(kind=1) :: zcmplx
         integer :: itype
         integer :: nbabs
         integer :: inatur

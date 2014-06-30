@@ -101,10 +101,10 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=19) :: depmoi, sigmoi, varmoi, commoi
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
-    logical :: debug
+    logical(kind=1) :: debug
     character(len=19) :: xdonco, xindco, lnno, ltno, pinter, ainter, cface
     character(len=19) :: faclon, baseco, xcohes, depplu
-    logical :: lcontx
+    logical(kind=1) :: lcontx
     integer :: ier
     real(kind=8), pointer :: cesv(:) => null()
 !

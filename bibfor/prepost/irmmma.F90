@@ -107,7 +107,7 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !
     character(len=8) :: saux08
 !
-    logical :: lnocen
+    logical(kind=1) :: lnocen
 !====
 ! 1. PREALABLES
 !====

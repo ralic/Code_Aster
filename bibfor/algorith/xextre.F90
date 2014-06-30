@@ -60,7 +60,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
     integer :: h, i, ind, k, nptbom, signe
     real(kind=8) :: maxi, norm, proj, sens, temp
     real(kind=8) :: normal(3), vdir(3), vdirol(3), vnor(3)
-    logical :: change, vecmax
+    logical(kind=1) :: change, vecmax
 ! ----------------------------------------------------------------------
     call jemarq()
 !

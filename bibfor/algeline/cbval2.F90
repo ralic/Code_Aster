@@ -53,7 +53,8 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 !
 !     -----------------------------------------------------------------
 !
-    logical :: symr, symi
+    logical(kind=1) :: symr, symi
+    logical :: symrl
 !
 !     -----------------------------------------------------------------
     integer :: lgbloc
@@ -123,7 +124,8 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         call jeveuo(mati//'.REFA', 'L', vk24=refai)
         valmi = mati//'.VALM'
         symi = refai(9) .eq. 'MS'
-        if (.not.symi) ASSERT(.not.symr)
+        symrl=symr
+        if (.not.symi) ASSERT(.not.symrl)
         call jelira(valmi, 'TYPE', cval=typmat)
         call jeveuo(jexnum(valmi, 1), 'L', jvlmi1)
         ASSERT(typmat.eq.'R')

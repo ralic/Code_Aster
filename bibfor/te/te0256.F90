@@ -41,7 +41,7 @@ subroutine te0256(option, nomte)
     real(kind=8) :: poids, nx, ny, valpar(2)
     integer :: ipoids, ivf, idfde, igeom, ivnor, kpg, spt
     integer :: nno, kp, npg, ivectu, imate, ldec
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ii, jgano, n, ndim, nnos

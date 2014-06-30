@@ -52,7 +52,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !        * SI IORDRE = 1  TRI PAR ORDRE DECROISSANT
 !        * SI IORDRE = 2  PAS DE TRI
 ! ----------------------------------------------------------------------
-    logical :: iconv
+    logical(kind=1) :: iconv
 ! ----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------

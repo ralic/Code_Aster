@@ -82,11 +82,11 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
     real(kind=8) :: valr(2), detect
     real(kind=8) :: chmini
     integer :: iresi
-    logical :: convok(nresi), convno(nresi)
+    logical(kind=1) :: convok(nresi), convno(nresi)
     real(kind=8) :: resi(nresi), resid(nresi)
-    logical :: lrela, lmaxi, lrefe, lcomp, lfrot, lgeom
-    logical :: cvresi, maxrel, maxnod
-    logical :: lcont
+    logical(kind=1) :: lrela, lmaxi, lrefe, lcomp, lfrot, lgeom
+    logical(kind=1) :: cvresi, maxrel, maxnod
+    logical(kind=1) :: lcont
 !
 ! ----------------------------------------------------------------------
 !
@@ -130,12 +130,12 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
     resid(4) = parcri(7)
     if (lcont) resid(5) = cfdisr(defico,'RESI_FROT')
     if (lcont) resid(6) = cfdisr(defico,'RESI_GEOM')
-    call nmcrel(sderro, 'DIVE_RELA', .false.)
-    call nmcrel(sderro, 'DIVE_MAXI', .false.)
-    call nmcrel(sderro, 'DIVE_REFE', .false.)
-    call nmcrel(sderro, 'DIVE_COMP', .false.)
-    call nmcrel(sderro, 'DIVE_FROT', .false.)
-    call nmcrel(sderro, 'DIVE_GEOM', .false.)
+    call nmcrel(sderro, 'DIVE_RELA', .false._1)
+    call nmcrel(sderro, 'DIVE_MAXI', .false._1)
+    call nmcrel(sderro, 'DIVE_REFE', .false._1)
+    call nmcrel(sderro, 'DIVE_COMP', .false._1)
+    call nmcrel(sderro, 'DIVE_FROT', .false._1)
+    call nmcrel(sderro, 'DIVE_GEOM', .false._1)
 !
 ! --- SI CRITERE RESI_COMP_RELA ET PREMIER INSTANT
 ! --- -> ON UTILISE RESI_GLOB_RELA

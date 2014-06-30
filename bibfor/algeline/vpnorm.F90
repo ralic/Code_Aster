@@ -15,7 +15,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr, ddlexc(*)
     real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr, coef(*)
-    logical :: lmasin
+    logical(kind=1) :: lmasin
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,7 +144,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                     poi1(ie) = vecpro(ie,im)
 22              continue
                 call mrmult('ZERO', lmatr, poi1, poi2, 1,&
-                            .true.)
+                            .true._1)
                 xmn = 0.0d0
                 do 24 ie = 1, neq
                     xmn = xmn + ( poi1(ie) * poi2(ie) )

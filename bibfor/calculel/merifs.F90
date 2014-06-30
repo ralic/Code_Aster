@@ -21,7 +21,7 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
     character(len=8) :: modele, cara
     character(len=19) :: matel
     character(len=*) :: lchar(*), mate
-    logical :: exitim
+    logical(kind=1) :: exitim
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

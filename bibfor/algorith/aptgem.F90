@@ -75,7 +75,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
     character(len=8) :: alias, nommai, nomnoe, valk(2)
     integer :: numno(9), longc
     integer :: nnosdm, niverr
-    logical :: lpoutr, lpoint
+    logical(kind=1) :: lpoutr, lpoint
     integer :: jtgeln, jdec
     integer :: ino, ima, ndim
     integer :: posmai, nummai

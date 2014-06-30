@@ -64,7 +64,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     complex(kind=8) :: ck(*), cm(*), ceigen(nbmod)
     complex(kind=8) :: cmod(ndimax, nbmod), cprod, cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim), cvec(ndim), cvec0(ndim)
-    logical :: convok
+    logical(kind=1) :: convok
     integer :: i, idiag, ific, ipivo, iv, ivdiag, j
     integer :: k, niter
     real(kind=8) :: valr(3), xcrit, xer

@@ -40,7 +40,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
     real(kind=8) :: bt6(6), bt33(3, 3), sut33(3, 3), sut3(3)
     real(kind=8) :: bt3(3), vbt33(3, 3), vbt33t(3, 3)
     real(kind=8) :: sget33(3, 3), sgec33(3, 3)
-    logical :: local, lcomp, endoc, aster
+    logical(kind=1) :: local, lcomp, endoc, aster
     real(kind=8) :: x33(3, 3), y33(3, 3), z33(3, 3), y133(3, 3)
     real(kind=8) :: t33(3, 3)
     real(kind=8) :: n33(3, 3), l3(3)

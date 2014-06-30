@@ -77,7 +77,7 @@ subroutine regene(nomres, resgen, profno)
     character(len=19) :: chamno, kint, chamne, raid, numgen, profno
     character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
     character(len=24) :: valk, matric(3)
-    logical :: zcmplx
+    logical(kind=1) :: zcmplx
     character(len=24), pointer :: nllref3(:) => null()
     character(len=24), pointer :: nllref5(:) => null()
     character(len=24), pointer :: refe(:) => null()

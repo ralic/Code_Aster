@@ -33,9 +33,9 @@ interface
         real(kind=8) :: fliai(*)
         real(kind=8) :: fnoda(*)
         real(kind=8) :: fcine(*)
-        logical :: lamort
-        logical :: ldyna
-        logical :: lexpl
+        logical(kind=1) :: lamort
+        logical(kind=1) :: ldyna
+        logical(kind=1) :: lexpl
         character(len=19) :: sdener
         character(len=8) :: schema
     end subroutine enerca

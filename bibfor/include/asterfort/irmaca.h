@@ -28,7 +28,7 @@ interface
         integer :: point(*)
         character(len=8) :: noma
         integer :: typma(*)
-        logical :: lmod
+        logical(kind=1) :: lmod
         integer :: nbgrn
         character(len=24) :: nogn(*)
         integer :: nbgrm

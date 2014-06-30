@@ -48,7 +48,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
     character(len=4) :: k4bid, kbid4
     character(len=6) :: k6bid
     character(len=14) :: kbid14
-    logical :: legrno
+    logical(kind=1) :: legrno
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

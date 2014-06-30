@@ -39,7 +39,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 #   include "asterfort/reeref.h"
 #   include "asterfort/vecini.h"
 #   include "jeveux.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nse, ise, in, ino, nno, j, ndim
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg
     integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde

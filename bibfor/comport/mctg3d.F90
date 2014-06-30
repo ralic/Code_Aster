@@ -41,7 +41,7 @@ subroutine mctg3d(stress, strain, rprops, dsidep, edge,&
     integer :: itri, iorder, mmax, nmax, mxiter, i, j, itjac1
 !
 ! Declaration of integer type variables
-    logical :: epflag
+    logical(kind=1) :: epflag
 !
     parameter&
      &(   mmax=3     ,nmax=6     )

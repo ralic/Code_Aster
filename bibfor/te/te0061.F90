@@ -57,7 +57,7 @@ subroutine te0061(option, nomte)
     integer :: jgano, ipoids, ivf, idfde, igeom, imate, nno, kp, npg1, i, itemp
     integer :: itps, n1, n2, ndim, ivectt, icamas, l, nuno, nnos, npg2, ipoid2
     integer :: ivf2, idfde2
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

@@ -10,7 +10,7 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
 #include "asterfort/lxlgut.h"
     integer :: ifi, nbordr, lch, ich, versio
     real(kind=8) :: para(*)
-    logical :: lresu, scal, vect, tens
+    logical(kind=1) :: lresu, scal, vect, tens
     character(len=8) :: nocmp
     character(len=*) :: nomcon, chamsy
 !     NBRE POUR CHAQUE TYPE D'ELEMENT

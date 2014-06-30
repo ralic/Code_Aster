@@ -66,13 +66,13 @@ subroutine cacoco(char, motfac, noma)
     integer :: jdecme
     integer :: izone, imae, nmaco
     real(kind=8) :: ep, exc
-    logical :: ya
+    logical(kind=1) :: ya
     character(len=8) :: carael, nommae
     character(len=24) :: defico
     character(len=24) :: contma, jeucoq
     integer :: jmaco, jjcoq
     character(len=19) :: carsd, carte
-    logical :: ldcoq
+    logical(kind=1) :: ldcoq
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !

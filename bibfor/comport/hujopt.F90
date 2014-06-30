@@ -62,7 +62,7 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
     real(kind=8) :: dsdeb(6, 6), bid16(6), bid66(6, 6)
     real(kind=8) :: ccond
     character(len=4) :: cargau
-    logical :: reorie
+    logical(kind=1) :: reorie
 !
     parameter (ndt   = 6   )
     parameter (ndi   = 3   )

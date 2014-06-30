@@ -13,7 +13,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical :: fink
+    logical(kind=1) :: fink
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     real(kind=8) :: a(3, 3), b(3), x(3), c, zero, un, r, s, t, normab
     real(kind=8) :: e1(3), e2(3), e3(3), cs(3, 4), lcara, tole
     real(kind=8) :: e1i(3), e2i(3)
-    logical :: dedans, djala1, djala2
+    logical(kind=1) :: dedans, djala1, djala2
 !======================================================================
 !
 !-----------------------------------------------------------------------

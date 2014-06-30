@@ -101,7 +101,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
     integer :: icoupl
     character(len=8) :: tpfl, noecho(nbnl, *)
     integer :: veci1(*), vali
-    logical :: locfl0(*)
+    logical(kind=1) :: locfl0(*)
     real(kind=8) :: dt0, tfexm, ts, dttr, vecdt(*), valr(3)
     integer :: iarch, nbchoc
     real(kind=8) :: vitg0(*), depg0(*), masgi(*), amori(*), pulsi(*)
@@ -131,7 +131,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
     character(len=8) :: nomch(*)
     real(kind=8) :: choc(6, *), orig(6, *), rc(np3, *), theta(np3, *)
     real(kind=8) :: alpha(2, *), beta(2, *), gamma(2, *), old(9, *)
-    logical :: locflc(*), loc(*)
+    logical(kind=1) :: locflc(*), loc(*)
     complex(kind=8) :: s0(*), z0(*), sr0(*), za1(*), za2(*), za3(*), za4(np4, *)
     complex(kind=8) :: za5(np4, *), zin(*), zitr(*)
 !
@@ -146,7 +146,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
     integer :: ifr, ifm, latest, iercpu
     real(kind=8) :: tc, dt, div, tc0, ts0, tol, tolc, toln, tolv, ftest, ftest0
     real(kind=8) :: ttrans, premac, prerel, tps1(4)
-    logical :: lsauv
+    logical(kind=1) :: lsauv
     character(len=8) :: resu, k8b
     character(len=16) :: nomcmd, typres, chain1, chain2, chain3, chain4, chain5
     character(len=16) :: chain6, chain7, chain8, chain9

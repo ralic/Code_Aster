@@ -11,7 +11,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
 #include "asterfort/wkvect.h"
     integer :: nbval
     real(kind=8) :: vale(*)
-    logical :: compl
+    logical(kind=1) :: compl
     character(len=24) :: nopara
     character(len=19) :: nomfin, nomfon
 ! ======================================================================

@@ -19,6 +19,6 @@ interface
     subroutine mepres(nomo, chpres, fonc)
         character(len=8) :: nomo
         character(len=*) :: chpres
-        logical :: fonc
+        logical(kind=1) :: fonc
     end subroutine mepres
 end interface

@@ -20,6 +20,6 @@ interface
         character(len=19) :: geomi
         real(kind=8) :: x(3)
         real(kind=8) :: y(3)
-        logical :: bidim
+        logical(kind=1) :: bidim
     end subroutine chgref
 end interface

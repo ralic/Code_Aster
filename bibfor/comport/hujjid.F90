@@ -93,7 +93,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
     real(kind=8) :: ptrac, piso, pk, dpsi, denom, pcoh
     real(kind=8) :: sc(6), tc(6), xc(6), scxc, xctc, rtrac
     character(len=8) :: mod, nomail
-    logical :: debug, prox(4), proxc(4), dila
+    logical(kind=1) :: debug, prox(4), proxc(4), dila
 ! =====================================================================
     parameter   ( d12    = 0.5d0  )
     parameter   ( d13    = 0.333333333334d0  )

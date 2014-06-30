@@ -58,7 +58,7 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
     character(len=16) :: rela_comp
     integer :: nb_vari
     character(len=16) :: keywordfact
-    logical :: l_affe_all
+    logical(kind=1) :: l_affe_all
     integer, pointer :: vali(:) => null()
     character(len=16), pointer :: valv(:) => null()
     character(len=24), pointer :: valk(:) => null()

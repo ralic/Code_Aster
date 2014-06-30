@@ -22,7 +22,7 @@ interface
         character(len=8) :: model
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        logical :: grille
+        logical(kind=1) :: grille
         character(len=8) :: fispre
         character(len=8) :: fiss
         character(len=19) :: cnsln

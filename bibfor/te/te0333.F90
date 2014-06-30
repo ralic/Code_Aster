@@ -58,7 +58,7 @@ subroutine te0333(option, nomte)
     character(len=8) :: nomres(nbres)
     character(len=8) :: nompar(2), mod3d
     character(len=16) :: optio2, phenom, cmp1, cmp2, cmp3
-    logical :: lflu, ltemp
+    logical(kind=1) :: lflu, ltemp
 ! DEB ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :

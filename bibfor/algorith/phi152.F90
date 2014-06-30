@@ -156,9 +156,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !
             call resoud(ma, maprec, solveu, ' ', 0,&
                         vecso1, chsol, 'V', [0.d0], [cbid],&
-                        criter, .true., 0, iret)
+                        criter, .true._1, 0, iret)
             call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
-                        .false.)
+                        .false._1)
             call detrsd('CHAMP_GD', chsol)
 !
 !------------ CREATION DU VECTEUR PRESSION MODAL-------------------
@@ -177,9 +177,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !
                 call resoud(ma, maprec, solveu, ' ', 0,&
                             vecso2, chsol, 'V', [0.d0], [cbid],&
-                            criter, .true., 0, iret)
+                            criter, .true._1, 0, iret)
                 call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19),&
-                            .false.)
+                            .false._1)
                 call detrsd('CHAMP_GD', chsol)
 !
                 vesto2='&&OP0152.VEST2'
@@ -221,9 +221,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !
                 call resoud(ma, maprec, solveu, ' ', 0,&
                             vecso1, chsol, 'V', [0.d0], [cbid],&
-                            criter, .true., 0, iret)
+                            criter, .true._1, 0, iret)
                 call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
-                            .false.)
+                            .false._1)
                 call detrsd('CHAMP_GD', chsol)
 !
 !--------------- CREATION DU VECTEUR PRESSION -------------------
@@ -240,9 +240,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
                                vecso2, nbdesc, nbrefe, nbvale)
                     call resoud(ma, maprec, solveu, ' ', 0,&
                                 vecso2, chsol, 'V', [0.d0], [cbid],&
-                                criter, .true., 0, iret)
+                                criter, .true._1, 0, iret)
                     call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19),&
-                                .false.)
+                                .false._1)
                     call detrsd('CHAMP_GD', chsol)
 !
                     vesto2='&&OP0152.VEST2'

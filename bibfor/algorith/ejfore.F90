@@ -24,7 +24,7 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
     implicit none
 #include "asterfort/ejcine.h"
 #include "asterfort/r8inir.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, idf2, ipg, nddl, nno1, nno2, npg, iu(3, 16), ip(4)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)

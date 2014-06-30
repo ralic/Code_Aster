@@ -34,21 +34,21 @@ interface
         character(len=24) :: basloc
         character(len=24) :: courb
         integer :: ndeg
-        logical :: thlagr
-        logical :: glagr
-        logical :: thlag2
-        logical :: pair
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: glagr
+        logical(kind=1) :: thlag2
+        logical(kind=1) :: pair
         integer :: ndimte
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=8) :: fiss
         integer :: ivec
         character(len=8) :: resuco
-        logical :: lmelas
-        logical :: lncas
-        logical :: lord(lonvec)
-        logical :: milieu
-        logical :: connex
+        logical(kind=1) :: lmelas
+        logical(kind=1) :: lncas
+        logical(kind=1) :: lord(lonvec)
+        logical(kind=1) :: milieu
+        logical(kind=1) :: connex
         character(len=19) :: lischa
     end subroutine mmaxkl
 end interface

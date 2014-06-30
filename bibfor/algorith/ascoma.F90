@@ -83,7 +83,7 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
 !
 ! --- AJOUT DES MESUIV
 !
-    call jedupo(mesuiv(1:19)//'.RERR', 'V', '&&ASCOMA           .RERR', .true.)
+    call jedupo(mesuiv(1:19)//'.RERR', 'V', '&&ASCOMA           .RERR', .true._1)
     call wkvect('&&ASCOMA.LISTE_COEF', 'V V R', 1, jcoef)
     do 777 k = 1, nbchme
         call jedetr('&&ASCOMA           .RELR')

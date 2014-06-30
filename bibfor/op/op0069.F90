@@ -87,7 +87,7 @@ subroutine op0069()
 !
 !   -- Calcul de la matrice reduite (matred) :
     call elg_gest_common('NOTE', matass, matred, krigi)
-    call elg_calc_matk_red(matass, solv1, matred, 'G', .false.)
+    call elg_calc_matk_red(matass, solv1, matred, 'G', .false._1)
 !
 !   -- On retablit la valeur de ELIM_LAGR :
     zk24(jslvk-1+13)=kellag

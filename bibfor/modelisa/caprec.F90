@@ -94,7 +94,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer :: nb_cmp_depl, nb_cmp_sief
     integer :: j_cmp_depl, j_cmp_sief
     integer :: nbec_depl, nbec_sief
-    logical :: l_sigm_bpel, l_rela_cine
+    logical(kind=1) :: l_sigm_bpel, l_rela_cine
     character(len=24) :: list_cabl, list_anc1, list_anc2
     integer :: nb_cabl, nb_anc1, nb_anc2
     integer :: jlicabl, jlianc1, jlianc2
@@ -102,7 +102,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer :: nb_node, jlino
     character(len=8) :: cabl_prec
     character(len=19) :: cabl_sigm
-    logical :: l_rota_2d, l_rota_3d
+    logical(kind=1) :: l_rota_2d, l_rota_3d
     integer :: i_cabl, i_ancr, i_no, nume_node
     integer :: nb_elem
     integer :: jprnm
@@ -358,7 +358,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
     if (nbchs .gt. 0) then
         call chsfus(nbchs, zk16(jlces), zl(jll), zr(jlr), [cbid],&
-                    .false., 'V', '&&CAPREC.CES')
+                    .false._1, 'V', '&&CAPREC.CES')
         call cescar('&&CAPREC.CES', cabl_sigm, 'G')
     endif
 !

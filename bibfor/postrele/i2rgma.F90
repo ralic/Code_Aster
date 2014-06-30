@@ -26,7 +26,7 @@ subroutine i2rgma(epsi, sor, sex, ror, rex,&
     real(kind=8) :: tsor(*), tsex(*), tror(*), trex(*)
 !
     integer :: i, j
-    logical :: trouve, dejala
+    logical(kind=1) :: trouve, dejala
     real(kind=8) :: s
 !
 !-----------------------------------------------------------------------

@@ -104,7 +104,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     real(kind=8) :: dep0(*), vit0(*), acc0(*), tinit
     real(kind=8) :: fexte(*), famor(*), fliai(*)
 !
-    logical :: lamort, lcrea
+    logical(kind=1) :: lamort, lcrea
 !
 !
     integer :: nbtyar
@@ -142,7 +142,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     integer :: nbpasc, ifnobi, ifcibi
     integer :: adeeq
     integer :: ibid
-    logical :: ener
+    logical(kind=1) :: ener
     real(kind=8), pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------
@@ -494,8 +494,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 ! ON CALCULE LA VITESSE A T N-1
             call enerca(k19bid, zr(jdepl), zr(jvip1), vale, zr(jvip2),&
                         masse1, amort1, rigid1, fexte, famor,&
-                        fliai, zr(ifnobi), zr(ifcibi), lamort, .true.,&
-                        .false., sdener, '&&DLADAP')
+                        fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
+                        .false._1, sdener, '&&DLADAP')
             call jedetr('FNODABID')
             call jedetr('FCINEBID')
         endif

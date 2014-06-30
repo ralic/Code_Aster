@@ -39,7 +39,7 @@ interface
         integer :: jddlm(2)
         integer :: nfhe
         integer :: nfhm
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavfa(*)
         real(kind=8) :: jeu
     end subroutine xmmjeu

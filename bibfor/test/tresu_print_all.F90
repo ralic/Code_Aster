@@ -24,7 +24,7 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
 !
     character(len=16), intent(in) :: refer
     character(len=16), intent(in) :: legend
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     character(len=*), intent(in) :: typres
     integer, intent(in) :: nbref
     character(len=*), intent(in) :: rela
@@ -36,7 +36,7 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
     integer, intent(in) :: vali
     complex(kind=8), intent(in) :: refc(nbref)
     complex(kind=8), intent(in) :: valc
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 !
 !   Pour faciliter la transition à tresu_print
@@ -46,7 +46,7 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
 #include "asterfort/tresu_print.h"
 !
     real(kind=8) :: arg_cmp
-    logical :: skip
+    logical(kind=1) :: skip
     character(len=1) :: typ
 !
     skip = .false.

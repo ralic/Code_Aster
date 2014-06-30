@@ -53,7 +53,7 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
     integer :: nbmat
     character(len=19) :: merigi, mediri, meeltc, meeltf
     character(len=19) :: tlimat(8)
-    logical :: leltc, leltf, lallv
+    logical(kind=1) :: leltc, leltf, lallv
 !
 ! ----------------------------------------------------------------------
 !

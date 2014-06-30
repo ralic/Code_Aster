@@ -50,7 +50,7 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: ldyna, lexpl, limpl
+    logical(kind=1) :: ldyna, lexpl, limpl
     character(len=16) :: optass
     character(len=19) :: masse
 !

@@ -59,7 +59,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
     integer :: nbnmai, jdesm1, jdesm2
     integer :: nbmavo, indi, im3, jcoor
     integer :: nbmaor, ii, kdeb
-    logical :: dime1, dime2, reorie
+    logical(kind=1) :: dime1, dime2, reorie
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo

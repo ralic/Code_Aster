@@ -79,7 +79,7 @@
 #define INTEGER4            ASTERC_FORTRAN_INT4
 #define INTEGER             ASTERC_FORTRAN_INT
 #define DOUBLE              ASTERC_FORTRAN_REAL8
-#define REAL4               ASTERC_FORTRAN_REAL4
+#define REAL4               ASTERC_FORTRAN_REAL4                
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */

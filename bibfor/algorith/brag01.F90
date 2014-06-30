@@ -128,7 +128,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: e0, nu0, mu0, k0
 !
 ! CARACTERISTIQUES DU FLUAGE
-    logical :: fluage, pressn
+    logical(kind=1) :: fluage, pressn
 !      LOGICAL CONSO
     real(kind=8) :: k1, eta1s, eta2s, mu1, eta1d, eta2d
     real(kind=8) :: k2, mu2
@@ -170,7 +170,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: t33(3, 3), n33(3, 3)
 !
     real(kind=8) :: epsi(6), epsf(6)
-    logical :: local
+    logical(kind=1) :: local
 !
     real(kind=8) :: yyi, yyf
     real(kind=8) :: e0df(6)

@@ -51,8 +51,8 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
     integer, intent(in) :: posnoe
     integer, intent(in) :: numnoe
     integer, intent(in) :: iliai
-    logical, intent(in) :: lctfd
-    logical, intent(in) :: lctf3d
+    logical(kind=1), intent(in) :: lctfd
+    logical(kind=1), intent(in) :: lctf3d
 !
 ! ----------------------------------------------------------------------
 !

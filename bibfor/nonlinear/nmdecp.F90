@@ -31,7 +31,7 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
     character(len=19) :: sddisc
     integer :: ievdac, iterat, retdec
     integer :: nbrpas
-    logical :: ldcext
+    logical(kind=1) :: ldcext
     real(kind=8) :: ratio, deltac, durdec
     character(len=4) :: typdec
     character(len=16) :: optdec

@@ -21,6 +21,6 @@ interface
         character(len=24) :: ligrmo
         integer :: nbm
         real(kind=8) :: dir(3, 3)
-        logical :: yang
+        logical(kind=1) :: yang
     end subroutine accep1
 end interface

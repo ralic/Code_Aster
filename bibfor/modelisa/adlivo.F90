@@ -22,7 +22,7 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
     integer :: nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)
     integer :: iv, nsco, isco
-    logical :: trma, trso
+    logical(kind=1) :: trma, trso
 !
 !  AJOUTE A LA LISTE DE TOUS LES VOISINS DE LA MAILLE COURANTE MO
 !  LA MAILLE MV ET LE SOMMET IS SI CETTE MAILE N EXISTE PAS DEJA

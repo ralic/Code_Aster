@@ -63,7 +63,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
     real(kind=8) :: l(3, 3), fmm(3, 3), df(3, 3), f(3, 3)
     real(kind=8) :: volume, surfac
     real(kind=8) :: deplp(3, 27), geomm(3, 27), epsbid(6), id(3, 3)
-    logical :: laxi
+    logical(kind=1) :: laxi
     data    id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
 !
 ! ----------------------------------------------------------------------
@@ -160,13 +160,13 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
         call daxpy(nddl, 1.d0, ddepl, 1, deplp,&
                    1)
         do 200 kpg = 1, npg
-            call nmgeom(ndim, nno, .false., .true., geom,&
+            call nmgeom(ndim, nno, .false._1, .true._1, geom,&
                         kpg, ipoids, ivf, idfde, deplp,&
-                        .true., r8bid, dfdi, f, epsbid,&
+                        .true._1, r8bid, dfdi, f, epsbid,&
                         r)
-            call nmgeom(ndim, nno, .false., .true., geomm,&
+            call nmgeom(ndim, nno, .false._1, .true._1, geomm,&
                         kpg, ipoids, ivf, idfde, ddepl,&
-                        .true., r8bid, dfdi, df, epsbid,&
+                        .true._1, r8bid, dfdi, df, epsbid,&
                         r)
             call daxpy(9, -1.d0, id, 1, df,&
                        1)

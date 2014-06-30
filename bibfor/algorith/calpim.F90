@@ -88,7 +88,7 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
 !
         if (graexc .eq. 'DEPL_R') then
             call mrmult('ZERO', iad, zr(listadrmodsta(i1)), zr(itrav1), 1,&
-                        .true.)
+                        .true._1)
         else if (nvasex .eq. 0) then
             call posddl('NUME_DDL', numer, noexit(i1), cpexit(i1), ibid,&
                         idlre1)

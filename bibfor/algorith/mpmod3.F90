@@ -75,7 +75,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     integer :: jcnsd, jcnsc, jcnsv, jcnsl
     integer :: ibid, indice, nbcham, lch, ich, lcham
 !
-    logical :: zcmplx, orien, dcapt
+    logical(kind=1) :: zcmplx, orien, dcapt
 !
     real(kind=8) :: val, rbid
 !

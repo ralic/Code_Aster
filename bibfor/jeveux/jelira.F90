@@ -73,7 +73,7 @@ subroutine jelira(nomlu, catr, ival, cval)
     character(len=1) :: genri
     character(len=8) :: catrlu
     integer :: lcv, icre, iret
-    logical :: lconst, lconti, llong, lluti, lcol
+    logical(kind=1) :: lconst, lconti, llong, lluti, lcol
 ! DEB ------------------------------------------------------------------
 !
     ipgcex = ipgc

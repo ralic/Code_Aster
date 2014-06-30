@@ -97,7 +97,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! ----------------------------------------------------------------------
     character(len=9) :: typorot
     character(len=1) :: poum
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: ij, indice
     real(kind=8) :: infini, petit
     real(kind=8) :: porom, poro, em(6), ep(6)

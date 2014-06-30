@@ -59,7 +59,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
-    logical :: l_kit_thm
+    logical(kind=1) :: l_kit_thm
     character(len=16) :: texte(3)
 !
 ! --------------------------------------------------------------------------------------------------

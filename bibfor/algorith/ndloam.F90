@@ -35,7 +35,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
     character(len=19) :: sddyna
     character(len=8) :: result
     integer :: nume
-    logical :: evonol
+    logical(kind=1) :: evonol
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
     integer :: nbmodp
     character(len=24) :: trgene
     integer :: jtrgen
-    logical :: linit
+    logical(kind=1) :: linit
     character(len=19) :: depgem, vitgem, accgem
     integer :: jdepgm, jvitgm, jaccgm
     character(len=19) :: depgep, vitgep, accgep

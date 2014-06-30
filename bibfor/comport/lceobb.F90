@@ -32,7 +32,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
     real(kind=8) :: lambda, mu, alpha, rk, rk1, rk2, ecrob, ecrod
     real(kind=8) :: toler
     integer :: intmax, iret
-    logical :: elas, dbloq
+    logical(kind=1) :: elas, dbloq
 !
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
@@ -64,7 +64,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 ! OUT IRET     : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    logical :: reinit, tot1, tot2, tot3
+    logical(kind=1) :: reinit, tot1, tot2, tot3
     integer :: i, j, k, l
     integer :: bdim, compte, t(3, 3)
 !

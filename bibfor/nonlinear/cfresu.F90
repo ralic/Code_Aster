@@ -99,8 +99,8 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
     integer :: jjeuit
     integer :: jcnsvr, jcnslr
     integer :: jdeplu
-    logical :: lpenac, lctfd, lpenaf
-    logical :: lag2d, lcolli, laffle
+    logical(kind=1) :: lpenac, lctfd, lpenaf
+    logical(kind=1) :: lag2d, lcolli, laffle
     real(kind=8) :: imp, impx, impy, impz
     real(kind=8) :: eps, valras
     integer ::  jcnslp

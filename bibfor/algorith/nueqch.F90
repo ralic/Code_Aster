@@ -63,7 +63,7 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
     integer :: nbcmpx, ncmp, ico, itrou
     integer :: icmp, ino, idc, nec
     integer :: jcmp, jnueq, jprno
-    logical :: exis
+    logical(kind=1) :: exis
     character(len=8) :: nom
 !
 ! ----------------------------------------------------------------------

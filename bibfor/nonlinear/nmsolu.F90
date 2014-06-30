@@ -47,7 +47,7 @@ subroutine nmsolu(sddyna, solalg)
 !
 !
 !
-    logical :: lstat, ldyna
+    logical(kind=1) :: lstat, ldyna
     real(kind=8) :: coedep, coevit, coeacc
     character(len=19) :: deppr1, deppr2
     character(len=19) :: vitpr1, vitpr2

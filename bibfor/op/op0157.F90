@@ -51,7 +51,7 @@ subroutine op0157()
     character(len=16) :: nomcmd, typcon, crit, fich
     character(len=19) :: gene, knum, kdisc, krang
     character(len=80) :: titre
-    logical :: lhist
+    logical(kind=1) :: lhist
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer ::  ifi, iocc, ire2, iret, isy, jcmpg

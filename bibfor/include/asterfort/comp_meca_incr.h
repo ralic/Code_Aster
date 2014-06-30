@@ -20,6 +20,6 @@ interface
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(out) :: type_comp
-        logical, optional, intent(in) :: l_etat_init
+        logical(kind=1), optional, intent(in) :: l_etat_init
     end subroutine comp_meca_incr
 end interface

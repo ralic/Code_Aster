@@ -12,7 +12,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-    logical :: intphy, intmod
+    logical(kind=1) :: intphy, intmod
     integer :: nbmode, nbn, nbpf
     real(kind=8) :: cham(nbn, *), specmr(nbpf, *), specmi(nbpf, *)
     character(len=8) :: nomu, nnoe(*), nomcmp(*)

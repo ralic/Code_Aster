@@ -81,7 +81,7 @@ subroutine xstan2(crimax, noma, modele)
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
     integer ::  itypel, nbelr, igeom, nuno2, inoloc, cpt
     integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose, nnot(3)
-    logical :: lelim, ancien
+    logical(kind=1) :: lelim, ancien
     integer, pointer :: xfem_cont(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsv(:) => null()

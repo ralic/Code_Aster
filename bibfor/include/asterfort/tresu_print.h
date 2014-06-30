@@ -24,7 +24,7 @@ interface
         implicit none
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
-        logical, intent(in) :: llab
+        logical(kind=1), intent(in) :: llab
         integer, intent(in) :: nbref
         character(len=*), intent(in) :: rela
         real(kind=8), intent(in) :: tole
@@ -35,7 +35,7 @@ interface
         integer, intent(in), optional :: vali
         complex(kind=8), intent(in), optional :: refc(nbref)
         complex(kind=8), intent(in), optional :: valc
-        logical, intent(in), optional :: ignore
+        logical(kind=1), intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_print
 end interface

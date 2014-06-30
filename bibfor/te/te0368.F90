@@ -129,8 +129,8 @@ subroutine te0368(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical :: yaprp, yarop
-    logical :: yaprd, yarod
+    logical(kind=1) :: yaprp, yarop
+    logical(kind=1) :: yaprd, yarod
 !
 ! --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
 !

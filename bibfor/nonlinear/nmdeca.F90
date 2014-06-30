@@ -33,7 +33,7 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
     integer :: nbrpas
     integer :: ievdac, iterat, retdec
     real(kind=8) :: instam, deltat, dtmin, durdec
-    logical :: ldcext
+    logical(kind=1) :: ldcext
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,7 +94,7 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
 !
 ! --- CONSTRUCTION DE LA LISTE DES INSTANTS
 !
-    call nmdecc(nomlis, .true., optdec, deltat, instam,&
+    call nmdecc(nomlis, .true._1, optdec, deltat, instam,&
                 ratio, typdec, nbrpas, deltac, dtmin,&
                 retdec)
 !

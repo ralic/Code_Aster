@@ -18,7 +18,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu
     character(len=24) :: nkcha, nkcmp
-    logical :: toucmp
+    logical(kind=1) :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -36,7 +36,7 @@ interface
         integer :: ordman
         character(len=14) :: xups
         character(len=14) :: xfpnla
-        logical :: lbif
+        logical(kind=1) :: lbif
         integer :: nextr
         real(kind=8) :: epsbif
     end subroutine mnlcof

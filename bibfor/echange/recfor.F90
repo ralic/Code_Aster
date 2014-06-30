@@ -221,8 +221,8 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !     REPRISE NON PROGRAMMEE AU 16/02/09 MAIS PAR CONCORDANCE EDYOS
 !      (PAPANL, PACONL)
-    logical :: repris
-    parameter(repris=.false.)
+    logical(kind=1) :: repris
+    parameter(repris=.false._1)
 !
 !     A SUPPRIMER QUAND REPRIS = FALSE
     integer(kind=4) :: nsmax
@@ -249,7 +249,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
     character(len=8) :: cnpal(palmax)
     character(len=24) :: ayacs
 !
-    logical :: prdeff
+    logical(kind=1) :: prdeff
 !
 !     DEBUT DU SSP
 !     ============

@@ -78,7 +78,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lctcc
+    logical(kind=1) :: lctcc
     integer :: ieq, ibid, numins
     integer :: iadia, neq, lres, neql
     character(len=8) :: kmatd

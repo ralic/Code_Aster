@@ -103,7 +103,7 @@ subroutine te0375(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical :: yapr, yaro
+    logical(kind=1) :: yapr, yaro
 !
 ! --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
 !

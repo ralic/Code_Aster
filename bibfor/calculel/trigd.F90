@@ -26,7 +26,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 #include "asterfort/assert.h"
 #include "asterfort/exisdg.h"
     integer :: dg1(*), dg2(*), deb1, deb2, ino, nno
-    logical :: cumul
+    logical(kind=1) :: cumul
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !       IGD    : GRANDEUR (COMMON)
@@ -61,7 +61,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
      &       ilchlo,itypgd
 !
 !    -------------------------------------------------------------------
-    logical :: change
+    logical(kind=1) :: change
     integer :: cmp, ind1, nec2, nsav, ksav
     parameter(nec2=12)
     parameter(nsav=5)

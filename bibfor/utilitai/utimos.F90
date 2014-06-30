@@ -25,7 +25,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 #include "asterfort/utmess.h"
     character(len=*) :: obin
     integer :: unit
-    logical :: lattr, lcont
+    logical(kind=1) :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
 !       UNIT   : UNITE LOGIQUE D'IMPRESSION

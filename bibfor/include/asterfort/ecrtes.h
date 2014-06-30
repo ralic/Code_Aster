@@ -26,6 +26,6 @@ interface
         integer :: nbcmp
         integer :: ityp
         character(len=80) :: entete(10)
-        logical :: lcmp
+        logical(kind=1) :: lcmp
     end subroutine ecrtes
 end interface

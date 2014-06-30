@@ -31,7 +31,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
     character(len=24) :: nogn(*), nogm(*)
     real(kind=8) :: coordo(*)
     integer :: connex(*), typma(*), point(*), ifc, nive
-    logical :: lmod
+    logical(kind=1) :: lmod
 
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

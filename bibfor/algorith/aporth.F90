@@ -60,7 +60,7 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 !
 !
 !
-    logical :: lpoutr
+    logical(kind=1) :: lpoutr
     character(len=8) :: aliasm
     character(len=8) :: nommam
     real(kind=8) :: noor

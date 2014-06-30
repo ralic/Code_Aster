@@ -62,7 +62,7 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
     real(kind=8) :: rc(7), dpsids(6, 6), sigd(3), th(2), prod, tole1
     real(kind=8) :: yft(nr), ydt(nr), mul, ps, pk, rtrac, dpsi
     real(kind=8) :: epsvp, pc, matert(22, 2)
-    logical :: prox(4), proxc(4)
+    logical(kind=1) :: prox(4), proxc(4)
 !
     parameter    (ndt   = 6                 )
     parameter    (ndi   = 3                 )

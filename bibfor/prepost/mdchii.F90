@@ -93,7 +93,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     integer :: finupt, finuno, numsau
     integer :: adnume, adinst, nchmed, jnptno, jpasdt
     integer :: typech, nbcmp, jcmp, junit, nseqca, npro
-    logical :: ilocal
+    logical(kind=1) :: ilocal
 !
     character(len=8) :: saux08
     character(len=64) :: saux64, nomcha, nomprf, nomloc, nomam2, nomamd

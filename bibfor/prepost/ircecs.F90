@@ -35,7 +35,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: permut(maxnod, *), typma(*), nbmat, nummai(*), ncmpu, nucmp(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
     complex(kind=8) :: vale(*)
-    logical :: lmasu
+    logical(kind=1) :: lmasu
 !--------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=24) :: nomst
     integer :: nbchs, nbcmpt, entier, nbspt, nnoe
     integer :: impre, iente, impel, ilong, imodel
-    logical :: afaire, lcmp, lnocen
+    logical(kind=1) :: afaire, lcmp, lnocen
 !
 !  --- INITIALISATIONS ----
 !
@@ -101,7 +101,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: jtitr, mode, nbcou, nbdats, nbelgr
     integer :: nbpg, ncmpp, nec, npcalc, nsca, nscal
     integer, pointer :: ipcmps(:) => null()
-    logical, pointer :: ltabl(:) => null()
+    logical(kind=1), pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()

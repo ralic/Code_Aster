@@ -70,7 +70,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     real(kind=8) :: lsnb, solsn, a(ndim), b(ndim), mem(3), memo, normab, coeffk
     real(kind=8) :: prec2, length(12)
     character(len=8) :: alias
-    logical :: chgsgn
+    logical(kind=1) :: chgsgn
     integer, pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
 !

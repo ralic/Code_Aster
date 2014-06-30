@@ -37,7 +37,7 @@ interface
         integer :: nddls
         integer :: nddlm
         integer :: nnom
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: regula(6)
         real(kind=8) :: b(dimdef, dimuel)
         real(kind=8) :: poids

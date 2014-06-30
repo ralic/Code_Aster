@@ -56,7 +56,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
 !
 !---------------------------------------------------------------------
-    logical :: test
+    logical(kind=1) :: test
     integer :: nbvale, nbrefe, nbdesc, ibid
     integer :: ino1, nocmp, icor(2), ichnul, ndble
     real(kind=8) :: tailmi

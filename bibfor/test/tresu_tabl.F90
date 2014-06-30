@@ -22,9 +22,9 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
-    logical, intent(in) :: llab
+    logical(kind=1), intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical, intent(in), optional :: ignore
+    logical(kind=1), intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -60,13 +60,13 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     integer :: vali, jvale, jvall, nblign, nbpara, i,   ipar
     real(kind=8) :: valr
     complex(kind=8) :: valc
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=1) :: typrez
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: inpar
     character(len=24) :: valk(2)
-    logical :: skip
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()

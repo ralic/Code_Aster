@@ -27,7 +27,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
     character(len=8) :: nofdep(nbexci), nofvit(nbexci), nofacc(nbexci)
     character(len=8) :: fk(2), dfk(2), foncp
 !
-    logical :: prdeff
+    logical(kind=1) :: prdeff
     integer :: palmax
 !-----------------------------------------------------------------------
     integer :: nbrfis

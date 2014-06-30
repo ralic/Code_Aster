@@ -28,7 +28,7 @@ subroutine nmvcaf(index, chainz, exicha, comz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    logical :: exicha
+    logical(kind=1) :: exicha
     character(len=4) :: index
     character(len=*) :: comz, chainz
     character(len=19) :: chain

@@ -95,7 +95,7 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
     character(len=16) ::typch, nomcr
     character(len=24) ::chnom, cbid
     character(len=8) :: nompf(35)
-    logical :: lbid, crsigm, crepst, crepse, crepsp, rayon
+    logical(kind=1) :: lbid, crsigm, crepst, crepse, crepsp, rayon
 
     epsilo = 10*r8prem()
     pi = r8pi()

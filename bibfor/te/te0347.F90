@@ -59,7 +59,8 @@ subroutine te0347(option, nomte)
     integer :: isect, igeom, kp, kk, imate
     integer :: istrxm, iretc
 !
-    logical :: lefgno, okelem, reactu
+    logical(kind=1) :: lefgno, reactu
+    logical :: okelem
 !
     real(kind=8) :: pgl(3, 3), fs(14), d1b3(2, 3), ksi1, forref, momref
     real(kind=8) :: sigp(7), d1b(7, 14), co(3), xd(3), ey, ez, xl, temp

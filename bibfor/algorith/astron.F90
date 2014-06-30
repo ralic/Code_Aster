@@ -20,7 +20,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
     real(kind=8) :: recmor(nbsup, neq, *)
     character(len=16) :: nomsy
     character(len=*) :: psmo, nomsup(nbsup, *)
-    logical :: monoap, muapde
+    logical(kind=1) :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

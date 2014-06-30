@@ -43,7 +43,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
     integer :: nmat
     real(kind=8) :: i1, devsig(6), dshds(6), dfdsdx(6), materf(nmat, 2)
     real(kind=8) :: para(3), xi, vara(4), dpardx(3)
-    logical :: plas
+    logical(kind=1) :: plas
 !
     integer :: ndt, ndi, i
     real(kind=8) :: damdx, sigc, h0c, agx, sii, htheta, bgx, dgx, amx, un

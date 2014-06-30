@@ -25,7 +25,7 @@ interface
         real(kind=8) :: rgmaxi
         real(kind=8) :: rgrela
         real(kind=8) :: inikry
-        logical :: lctcd
+        logical(kind=1) :: lctcd
         character(len=24) :: defico
     end subroutine nmcerr
 end interface

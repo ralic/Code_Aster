@@ -70,7 +70,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     real(kind=8) :: eps(6), sig(6), vi, dsidep(6, 6), energi(2)
 !
 ! DECLARATION VARIABLES LOCALES
-    logical :: cplan, elas, vmis, line, nonlin, inco, puis
+    logical(kind=1) :: cplan, elas, vmis, line, nonlin, inco, puis
     integer :: icodre(5)
     character(len=8) :: nomres(5)
     character(len=16) :: phenom

@@ -23,7 +23,7 @@ interface
         integer :: numins
         character(len=19) :: sddisc
         character(len=19) :: sddyna
-        logical :: scotch
+        logical(kind=1) :: scotch
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
     end subroutine ndnpas

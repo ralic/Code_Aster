@@ -81,7 +81,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     integer :: icoud2, mmt, codret, cod
     integer :: jnbspi, iret, ksp
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
-    logical :: vecteu, matric
+    logical(kind=1) :: vecteu, matric
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&

@@ -50,7 +50,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lextra
+    logical(kind=1) :: lextra
     real(kind=8) :: valext(4), ciblen
     integer :: itesup, nbitaj, vali(2), nbiter, mniter
     real(kind=8) :: r8bid

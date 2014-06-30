@@ -20,7 +20,7 @@ interface
                       deplg, epsb, geps)
         integer :: nno
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: vff(nno)
         real(kind=8) :: dfdi(nno, ndim)
         real(kind=8) :: deplg(*)

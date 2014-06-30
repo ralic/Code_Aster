@@ -18,7 +18,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     integer :: nsecm
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
-    logical :: prepos
+    logical(kind=1) :: prepos
 !
 !     ------------------------------------------------------------------
 ! ======================================================================

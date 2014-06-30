@@ -77,7 +77,7 @@ subroutine te0532(option, nomte)
     real(kind=8) :: tau2(3), alpha(3), dnor(3), dtang(3), am3(3), sigma(6)
     real(kind=8) :: cohes(3), mat3bd(3, 3), mat6bd(6, 6)
     parameter    (prec=1.d-16)
-    logical :: imprim, lbid
+    logical(kind=1) :: imprim, lbid
 !......................................................................
 !
     call jemarq()
@@ -189,7 +189,7 @@ subroutine te0532(option, nomte)
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
         call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
-                    jheano, vstnc, lact, .false., lbid,&
+                    jheano, vstnc, lact, .false._1, lbid,&
                     ndim, nfe, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)

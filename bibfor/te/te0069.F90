@@ -51,7 +51,7 @@ subroutine te0069(option, nomte)
     character(len=8) :: nomres(2), elrefe, elref2, fami, poum
     character(len=16) :: phenom
 !
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 !
 ! ----------------------------------------------------------------------
 !

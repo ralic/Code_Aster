@@ -139,7 +139,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 #include "blas/dcopy.h"
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
-    logical :: wantt
+    logical(kind=1) :: wantt
     integer :: ihi, ilo, info, ldh, n
 !
 !     %-----------------%

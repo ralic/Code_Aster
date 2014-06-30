@@ -32,7 +32,7 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    logical, intent(in) :: l_etat_init
+    logical(kind=1), intent(in) :: l_etat_init
     character(len=16), intent(out) :: info_comp_valk(:)
     integer          , intent(out) :: info_comp_vali(:)
 !
@@ -58,9 +58,10 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
     character(len=16) :: kit_comp(9)
     character(len=128) :: libr_name
     integer :: unit_comp, nb_vari_exte
-    logical :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
-    logical :: l_kit
-    logical :: l_matr_tgsc, l_crit_rupt
+    logical(kind=1) :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
+    logical(kind=1) :: l_kit
+    logical :: lcond
+    logical(kind=1) :: l_matr_tgsc, l_crit_rupt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -145,7 +146,8 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
             call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
         endif
         if (l_umat .or. l_mfront) then
-            ASSERT(.not.l_kit)
+            lcond=.not.l_kit
+            ASSERT(lcond)
             if (l_kit) then
                 call utmess('F','COMPOR4_61')
             endif

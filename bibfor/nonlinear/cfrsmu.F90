@@ -25,7 +25,7 @@ subroutine cfrsmu(defico, resoco, reapre)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
-    logical :: reapre
+    logical(kind=1) :: reapre
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine cfrsmu(defico, resoco, reapre)
     integer :: jsvmu, jmu
     character(len=24) :: numlia
     integer :: jnumli
-    logical :: lgcp
+    logical(kind=1) :: lgcp
 !
 ! ----------------------------------------------------------------------
 !

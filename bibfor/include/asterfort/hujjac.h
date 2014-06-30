@@ -34,8 +34,8 @@ interface
         real(kind=8) :: vins(nr)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: drdy(nr, nr)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
         integer :: iret
     end subroutine hujjac
 end interface

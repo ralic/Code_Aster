@@ -69,7 +69,7 @@ subroutine nminim(sdsuiv, sdimpr)
     character(len=16) :: titli1, titli2, titli3
     character(len=1) :: typval, indsui
     integer :: icolo, icolo1, icolo2, isuiv, unite, titcom, titco1
-    logical :: lcsv, lprint
+    logical(kind=1) :: lcsv, lprint
     character(len=24) :: suiinf
     integer :: jsuiin
     integer :: nbcolt, nbsuiv

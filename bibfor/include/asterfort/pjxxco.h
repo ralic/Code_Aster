@@ -22,7 +22,7 @@ interface
         character(len=4) :: typcal
         character(len=19) :: method
         character(len=16) :: lcorre(2)
-        logical :: isole
+        logical(kind=1) :: isole
         character(len=8) :: resuin
         character(len=19) :: cham1
         character(len=8) :: moa1

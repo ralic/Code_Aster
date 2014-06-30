@@ -47,7 +47,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=16) :: option, noprup(*), nomcas
     character(len=19) :: lischa
     character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls
-    logical :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
+    logical(kind=1) :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,7 +110,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
     complex(kind=8) :: livc(nbmxpa)
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     character(len=2) :: codret
     character(len=8) :: resu
     character(len=16) :: opti, valk

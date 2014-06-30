@@ -81,7 +81,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 !.......................................................................
 !
 !
-    logical :: grand, resi, rigi
+    logical(kind=1) :: grand, resi, rigi
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, pq, cod(27)
 !
@@ -124,16 +124,16 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 !
 ! 5.2 - CALCUL DES ELEMENTS GEOMETRIQUES
 !
-        call nmgeom(3, nno, .false., grand, geomi,&
+        call nmgeom(3, nno, .false._1, grand, geomi,&
                     kpg, ipoids, ivf, idfde, deplm,&
-                    .true., poids, dfdi, fm, epsbid,&
+                    .true._1, poids, dfdi, fm, epsbid,&
                     r)
 !
 ! 5.2.2 - CALCUL DE F, DFDI, R ET POIDS EN T+
 !
-        call nmgeom(3, nno, .false., grand, geomi,&
+        call nmgeom(3, nno, .false._1, grand, geomi,&
                     kpg, ipoids, ivf, idfde, deplp,&
-                    .false., poids, dfdi, f, epsbid,&
+                    .false._1, poids, dfdi, f, epsbid,&
                     r)
         do 55 n = 1, nno
             do 56 i = 1, 3
@@ -141,9 +141,9 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 56          continue
 55      continue
 !
-        call nmgeom(3, nno, .false., grand, geomp,&
+        call nmgeom(3, nno, .false._1, grand, geomp,&
                     kpg, ipoids, ivf, idfde, deplp,&
-                    .true., poids, dfdi, fb, epsbid,&
+                    .true._1, poids, dfdi, fb, epsbid,&
                     r)
         do 57 i = 1, 3
             do 58 j = 1, 3

@@ -22,7 +22,7 @@ interface
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: dff(2, nno)
         real(kind=8) :: dir11(3)
-        logical :: lexc
+        logical(kind=1) :: lexc
         real(kind=8) :: vecn(3)
         real(kind=8) :: b(6, nno)
         real(kind=8) :: jac

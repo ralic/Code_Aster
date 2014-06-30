@@ -81,7 +81,7 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
     integer :: iblc
     integer :: niv, ifm
     integer :: bloc, dercol
-    logical :: pivnul
+    logical(kind=1) :: pivnul
     integer, pointer :: scbl(:) => null()
     integer, pointer :: scde(:) => null()
     integer, pointer :: scib(:) => null()

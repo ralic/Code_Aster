@@ -62,7 +62,8 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     integer :: ztabf
     character(len=19) :: ligrel
     character(len=19) :: xindc0, xseuc0, xcohe0
-    logical :: lxffm, lxfcm, lxczm
+    logical(kind=1) :: lxffm, lxczm
+    logical :: lxfcm
     integer, pointer :: nfis(:) => null()
 !
 ! ----------------------------------------------------------------------

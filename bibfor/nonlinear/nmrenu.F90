@@ -32,7 +32,7 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
     character(len=19) :: lischa, solveu
     character(len=24) :: resoco
     integer :: fonact(*)
-    logical :: renume
+    logical(kind=1) :: renume
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
 !
 !
 !
-    logical :: leltc, lxfcm, lctcc
+    logical(kind=1) :: leltc, lxfcm, lctcc
     character(len=24) :: crnudd
     integer :: jcrnud
     integer :: ifm, niv

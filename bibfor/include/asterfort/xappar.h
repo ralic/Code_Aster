@@ -17,7 +17,7 @@
 !
 interface
     subroutine xappar(loptin, noma, modele, defico, resoco)
-        logical :: loptin
+        logical(kind=1) :: loptin
         character(len=8) :: noma
         character(len=8) :: modele
         character(len=24) :: defico

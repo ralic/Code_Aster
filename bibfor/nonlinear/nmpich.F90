@@ -95,7 +95,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
     integer :: nbeffe, nbatte
     real(kind=8) :: proeta(2), residu
     integer :: ifm, niv
-    logical :: irecli
+    logical(kind=1) :: irecli
 !
 ! ----------------------------------------------------------------------
 !

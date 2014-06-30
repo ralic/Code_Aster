@@ -58,7 +58,7 @@ subroutine nmmacv(vecdep, sstru, vecass)
     call jeveuo(vecdep(1:19)//'.VALE', 'L', vr=depl)
     call jeveuo(sstru(1:19) //'.&INT', 'L', jrsst)
     call mrmult('ZERO', jrsst, depl, cnfi, 1,&
-                .true.)
+                .true._1)
 !
     call jedema()
 !

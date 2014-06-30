@@ -102,7 +102,7 @@ subroutine te0031(option, nomte)
     character(len=8) :: nomres, fami, poum
     character(len=10) :: phenom
 !
-    logical :: lcqhom
+    logical(kind=1) :: lcqhom
 !
 !     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 !     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME

@@ -20,6 +20,6 @@ interface
         character(len=24) :: mailc
         character(len=24) :: mailx
         character(len=8) :: mo
-        logical :: xxishm
+        logical(kind=1) :: xxishm
     end function xxishm
 end interface 

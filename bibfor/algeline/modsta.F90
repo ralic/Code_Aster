@@ -96,7 +96,7 @@ position_ddl)
                 end do
             end do
             call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1,&
-                        .true.)
+                        .true._1)
             call jedetr('&&MODSTA.POSITION_DDR')
 !
         end do
@@ -124,9 +124,9 @@ position_ddl)
                     zr(jddr+ila2-1) = un
                     call resoud(matfac, matpre, solveu, ' ', 1,&
                                 ' ', ' ', ' ', zr(jddr), [cbid],&
-                                ' ', .true., 0, iret)
+                                ' ', .true._1, 0, iret)
                     call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1,&
-                                .true.)
+                                .true._1)
                     call jedetr('&&MODSTA.POSITION_DDR')
                 endif
             endif
@@ -137,7 +137,7 @@ position_ddl)
     if (imod .gt. 0) then
         call resoud(matfac, matpre, solveu, ' ', imod,&
                     ' ', ' ', ' ', zrmod, [cbid],&
-                    ' ', .true., 0, iret)
+                    ' ', .true._1, 0, iret)
     endif
     call jedema()
 end subroutine

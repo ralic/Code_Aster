@@ -35,7 +35,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 #include "asterfort/jemarq.h"
     integer, intent(in) :: ndim, jnnm(3), nddl, stano(*), lact(8)
     character(len=16), intent(in) :: option
-    logical, intent(in) :: lesclx, lmaitx, lcontx, lmulti
+    logical(kind=1), intent(in) :: lesclx, lmaitx, lcontx, lmulti
     integer, intent(in) :: jnne(3), ndeple, jddle(2)
     integer, intent(in) :: jddlm(2), nfhe, nfhm, heavno(8)
     real(kind=8), optional, intent(out) :: mmat(336, 336)
@@ -62,7 +62,8 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
     parameter     (ddlmax=336)
     integer :: ddlms, ddlmm, ifh, posddl(ddlmax)
     real(kind=8) :: dmax
-    logical :: lmat, lvec
+    logical :: lmat
+    logical(kind=1) :: lvec
 !
 !----------------------------------------------------------------------
 !

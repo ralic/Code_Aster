@@ -36,7 +36,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
 !-----------------------------------------------------------------
 !
-    logical :: critg, critd
+    logical(kind=1) :: critg, critd
     integer :: i, j, k
     real(kind=8) :: x, xp, fx, dfx, gx, dgx, norms, norma, eta, det
     real(kind=8) :: p(2, 2), valp(2), sp(2), pa(2), qvect(3)

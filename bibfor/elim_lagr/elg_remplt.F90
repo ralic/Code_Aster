@@ -55,7 +55,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib,nzmax
     integer :: nvcont, ifm, niv, posind,compnd
     real(kind=8) :: eps, norm, cmax, normc
-    logical :: info2
+    logical(kind=1) :: info2
     mpi_int :: mpicomm
 !----------------------------------------------------------------------
     eps=r8prem()

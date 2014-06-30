@@ -23,7 +23,7 @@ function xxishm(mailc, mailx, mo)
 #   include "asterfort/jenuno.h"
 #   include "asterfort/jeveuo.h"
 #   include "asterfort/jexnum.h"
-    logical :: xxishm
+    logical(kind=1) :: xxishm
 #   include "jeveux.h"
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL HM?
@@ -38,7 +38,7 @@ function xxishm(mailc, mailx, mo)
     integer :: nbmac1, nbmac2
     integer :: jmac, jmail, ima, i, itypel
     integer :: jmax
-    logical :: pre1
+    logical(kind=1) :: pre1
 !-----------------------------------------------------------------------
 !
     call jemarq()

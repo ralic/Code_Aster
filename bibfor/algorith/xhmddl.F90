@@ -28,7 +28,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 #   include "asterc/r8maem.h"
 #   include "asterfort/teattr.h"
 #   include "jeveux.h"
-    logical :: matsym
+    logical(kind=1) :: matsym
     integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm
     character(len=16) :: option, nomte
     real(kind=8) :: mat(*), vect(*)
@@ -52,7 +52,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !-----------------------------------------------------------------------
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 !
-    logical :: lelim
+    logical(kind=1) :: lelim
     integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
     parameter    (ddlmax=20*7)
     integer :: posddl(ddlmax)

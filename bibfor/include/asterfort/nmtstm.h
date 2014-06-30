@@ -19,6 +19,6 @@ interface
     subroutine nmtstm(compor, imatri, matsym)
         character(len=16) :: compor(*)
         integer :: imatri
-        logical :: matsym
+        logical(kind=1) :: matsym
     end subroutine nmtstm
 end interface

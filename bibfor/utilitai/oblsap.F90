@@ -26,7 +26,7 @@ subroutine oblsap(sdlist, idnvaz, lacti)
 #include "asterfort/oblsai.h"
     character(len=24) :: sdlist
     character(len=*) :: idnvaz
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

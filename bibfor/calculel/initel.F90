@@ -39,7 +39,7 @@ subroutine initel(ligrel, l_calc_rigi)
 ! ======================================================================
 !
     character(len=19), intent(in) :: ligrel
-    logical, optional, intent(out) :: l_calc_rigi
+    logical(kind=1), optional, intent(out) :: l_calc_rigi
 !
 ! ----------------------------------------------------------------------
 !     BUT:

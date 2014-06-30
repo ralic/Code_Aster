@@ -22,7 +22,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     integer :: ifi, nbordr, nbcmpi, versio
     integer :: ordr(*), connx(*), point(*)
     real(kind=8) :: coord(*), para(*)
-    logical :: lresu
+    logical(kind=1) :: lresu
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
     integer :: neletr
@@ -74,7 +74,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     integer :: i, ine
     integer :: ior, k, ncmp, iret, nbord2,  ncmpu
     integer ::     jcnsk, jtype
-    logical :: scal, vect, tens
+    logical(kind=1) :: scal, vect, tens
     character(len=8) :: k8b, nocmp, tbcmp(3)
     character(len=19) :: noch19, champs
     integer, pointer :: cnsc(:) => null()
@@ -187,7 +187,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !        ****************************
         nocmp = 'TENSEUR '
         call irgmpv(ifi, lresu, nomcon, chamsy, nbord2,&
-                    para, nocmp, nbel, .false., .false.,&
+                    para, nocmp, nbel, .false._1, .false._1,&
                     tens, versio)
 !
 ! ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
@@ -218,7 +218,7 @@ cnsd)
 !
         nocmp = 'VECTEUR '
         call irgmpv(ifi, lresu, nomcon, chamsy, nbord2,&
-                    para, nocmp, nbel, .false., vect,&
+                    para, nocmp, nbel, .false._1, vect,&
                     tens, versio)
 !
 !        LISTE DES COMPOSANTES
@@ -264,7 +264,7 @@ cnsd)
 !        ****************************
 !
             call irgmpv(ifi, lresu, nomcon, chamsy, nbord2,&
-                        para, nocmp, nbel, scal, .false.,&
+                        para, nocmp, nbel, scal, .false._1,&
                         tens, versio)
 !
 !        LISTE DES COMPOSANTES

@@ -39,8 +39,8 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     character(len=16) :: noprup(*)
     character(len=19) :: lischa
     character(len=24) :: chfond, mate, compor, basloc, courb
-    logical :: thlagr, glagr, pair, thlag2, lmelas, lncas, lord(lonvec)
-    logical :: milieu, connex
+    logical(kind=1) :: thlagr, glagr, pair, thlag2, lmelas, lncas, lord(lonvec)
+    logical(kind=1) :: milieu, connex
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,7 +102,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     character(len=16) :: k16bid, optio2, nomcas
     character(len=24) :: depla, depmax, chsigi
     character(len=24) :: valk
-    logical :: exitim, lmoda
+    logical(kind=1) :: exitim, lmoda
     real(kind=8), pointer :: coef(:) => null()
     character(len=24), pointer :: dep(:) => null()
     real(kind=8), pointer :: kmax1(:) => null()

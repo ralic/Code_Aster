@@ -19,7 +19,7 @@ interface
     subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar,     &
                       typmai,nbchel,chames,jma1,jma2, &
                       tabcor,proj)
-        logical :: proj
+        logical(kind=1) :: proj
         integer :: iocc
         integer :: nbchel
         integer :: jma1

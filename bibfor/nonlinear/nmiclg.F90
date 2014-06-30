@@ -72,7 +72,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
     real(kind=8) :: valres(4), syc, etc, syt, ett, cr, val(1)
-    logical :: isot, cine, elas, corr, impl, isotli, pinto, asyml, sans
+    logical(kind=1) :: isot, cine, elas, corr, impl, isotli, pinto, asyml, sans
     data nomasl / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
 !
 !

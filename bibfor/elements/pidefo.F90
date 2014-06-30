@@ -53,7 +53,7 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
 !
 !
 !
-    logical :: grand
+    logical(kind=1) :: grand
     integer :: ndimsi
     integer :: indi(6), indj(6), prac(6)
     real(kind=8) :: ff

@@ -64,7 +64,7 @@ subroutine refe99(nomres)
     character(len=19) :: numddl, numbis
     character(len=24) :: raid, mass, intf, intfb, amor, concep(3), valk(4), kbid
 !
-    logical :: noseul
+    logical(kind=1) :: noseul
 !
 !-----------------------------------------------------------------------
 !

@@ -21,6 +21,6 @@ interface
         integer :: ifi
         integer :: nbcmpg
         integer :: cmpg(*)
-        logical :: lhist
+        logical(kind=1) :: lhist
     end subroutine irvgen
 end interface

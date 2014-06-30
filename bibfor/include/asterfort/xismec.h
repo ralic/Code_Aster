@@ -17,6 +17,6 @@
 !
 interface
     function xismec()
-        logical :: xismec
+        logical(kind=1) :: xismec
     end function xismec
 end interface

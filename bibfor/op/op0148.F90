@@ -53,7 +53,7 @@ subroutine op0148()
     integer :: nbmr, nbn, nbp, nbpf, nnn, nplace
     integer :: npv, numod, i1, i3, il, ivitef, lnumi, lrefes
     integer :: ioptch
-    logical :: intmod, intphy
+    logical(kind=1) :: intmod, intphy
     character(len=8) :: nomu, table, nommai, mode, nomcmp, cmp1, k8b, depla(3)
     character(len=16) :: concep, cmd, optcal, optcha
     character(len=19) :: base, typflu, nomcha

@@ -57,7 +57,7 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
 !
     integer :: nb_comp_elem, ikit, icomp, imeca
     character(len=16) :: comp_elem(20), rela_meta, rela_meca
-    logical :: l_umat, l_mfront, l_kit_meta, l_kit_thm
+    logical(kind=1) :: l_umat, l_mfront, l_kit_meta, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !

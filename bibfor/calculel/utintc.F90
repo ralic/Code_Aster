@@ -54,7 +54,7 @@ subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3,&
     real(kind=8) :: zrino2, zrino1, zrjno2, zrjno1, x3, y3, inst, insold
     real(kind=8) :: valfp(9), valfm(9)
     character(len=8) :: k8cart
-    logical :: ltheta
+    logical(kind=1) :: ltheta
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: icode

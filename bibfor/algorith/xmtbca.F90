@@ -32,7 +32,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmchex.h"
-    logical :: mmcvca
+    logical(kind=1) :: mmcvca
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)
@@ -74,7 +74,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     character(len=19) :: cpoint, cainte, heavno, heavfa
     character(len=19) :: oldgeo, depplu
     character(len=16) :: option
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifm, niv, ifmdbg, nivdbg
     integer :: igr, igr2, ngrel, iel, iel2, nel, nel2
     integer :: adiel, adiel2, jad, jad2, debgr, debgr2

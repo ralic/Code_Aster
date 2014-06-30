@@ -59,7 +59,7 @@ subroutine nmevco(sddisc, numins, resoco, iechec, ievdac)
     real(kind=8) :: etacin, etacfi, etacol
     real(kind=8) :: fincol, subdur
     real(kind=8) :: instam, instap
-    logical :: levent
+    logical(kind=1) :: levent
     integer :: ibid
     character(len=8) :: k8bid
     integer :: zeven

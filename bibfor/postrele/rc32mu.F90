@@ -44,7 +44,7 @@ subroutine rc32mu()
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=8) :: k8b, crit, nocmp(ncmp), tbsig(13)
     character(len=16) :: motclf, valek
     character(len=24) :: abscur

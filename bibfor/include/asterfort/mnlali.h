@@ -20,7 +20,7 @@ interface
                       parcho, adime, &
                       ninc, nd, nchoc, h, hf,&
                       ampl, xvect,lnm,num_ordr)
-        logical :: reprise
+        logical(kind=1) :: reprise
         character(len=8) :: modini
         integer :: imat(2)
         character(len=14) :: xcdl

@@ -54,7 +54,7 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 ! OUT VECT    : REFE_FORC_NODA
 !-----------------------------------------------------------------------
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nddl, ndu, g
     integer :: kl, sa, na, ia, ja, kk
     integer :: ndimsi, vij(3, 3), lij(3, 3)

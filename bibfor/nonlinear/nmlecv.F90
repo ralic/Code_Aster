@@ -23,7 +23,7 @@ subroutine nmlecv(sderro, nombcl, lconv)
 #include "asterfort/nmleeb.h"
     character(len=24) :: sderro
     character(len=4) :: nombcl
-    logical :: lconv
+    logical(kind=1) :: lconv
 !
 ! ----------------------------------------------------------------------
 !

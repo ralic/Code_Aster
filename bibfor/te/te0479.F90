@@ -35,7 +35,7 @@ subroutine te0479(option, nomte)
     integer :: ndim, nno, nnos, npg, jgano, kp, icopg, ino
     integer :: idfde, ipoids, ivf, igeom
     real(kind=8) :: xx, yy, rbid81(81), poids
-    logical :: laxi
+    logical(kind=1) :: laxi
 ! DEB ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

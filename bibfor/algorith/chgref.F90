@@ -43,7 +43,7 @@ subroutine chgref(geomi, x, y, bidim)
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
-    logical :: bidim
+    logical(kind=1) :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: x(3), y(3), z(3), p(3), prec, r1, r2

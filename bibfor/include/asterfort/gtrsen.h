@@ -20,7 +20,7 @@ interface
                       ldq, w, m, info)
         integer :: ldq
         integer :: ldt
-        logical :: select(*)
+        logical(kind=1) :: select(*)
         integer :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: q(ldq, *)

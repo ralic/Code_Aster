@@ -44,7 +44,7 @@ subroutine dktedg(xyzl, option, pgl, depl, edgl, multic)
     real(kind=8) :: bdm(3), bdf(3), dcis(2), vf(3), vm(3), vt(2)
     real(kind=8) :: vfm(3), vmf(3)
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    logical :: coupmf
+    logical(kind=1) :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !

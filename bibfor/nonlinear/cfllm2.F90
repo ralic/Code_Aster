@@ -67,13 +67,13 @@ subroutine cfllm2(resoco, resigr, neq, nesmax, nbliai,&
     integer :: ztacf
     character(len=19) :: fro2
     integer :: jfro2
-    logical :: liaact
+    logical(kind=1) :: liaact
     character(len=2) :: typec0, typef0, typef1, typef2
     real(kind=8) :: lambdc, lambdf
     real(kind=8) :: coefff, coefte
     real(kind=8) :: alpha, beta
     character(len=2) :: typli2
-    logical :: lelpiv, lelpi1, lelpi2
+    logical(kind=1) :: lelpiv, lelpi1, lelpi2
     real(kind=8) :: ajeufx, ajeufy, glis
     character(len=19) :: deplc
     integer :: nbddl, jdecal, btotal

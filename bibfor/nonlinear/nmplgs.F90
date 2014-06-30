@@ -90,7 +90,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(*), vect(*)
     real(kind=8) :: dfdi2(nno2, ndim), angmas(3), compar
     integer :: k2(1), kpg, spt
-    logical :: resi, rigi, grand, axi
+    logical(kind=1) :: resi, rigi, grand, axi
     integer :: ndimsi, nddl, g, gg, cod(27), n, i, m, j, kl, pq, os, kk, vivois
     integer :: iu(3, 27), ie(6, 8), kvois, ll
     integer :: nfin, vrarr(nno2), nn, nnn, vivonu, kvoinu, nini, nunu

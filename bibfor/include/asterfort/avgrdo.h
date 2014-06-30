@@ -42,7 +42,7 @@ interface
         integer :: jvmax
         integer :: jomin
         integer :: jomax
-        logical :: post
+        logical(kind=1) :: post
         real(kind=8) :: cudomx
         integer :: vnormx(2)
         integer :: nbplan

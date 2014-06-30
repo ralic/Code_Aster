@@ -48,7 +48,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     character(len=16) :: geofis
     character(len=19) :: cnslt, cnsln
     real(kind=8) :: a, b, r, noeud(3), vect1(3), vect2(3)
-    logical :: grille
+    logical(kind=1) :: grille
 !
 ! ----------------------------------------------------------------------
 !                      CALCUL INITIAL DES LEVEL-SETS
@@ -87,7 +87,8 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     character(len=16) :: k16bid, typdis
     character(len=19) :: chslsn, chslst
     character(len=24) :: lisma, lisse
-    logical :: callst
+    logical(kind=1) :: callst
+    logical :: lcond
     integer :: ifm, niv
     integer, pointer :: cnd(:) => null()
     integer, pointer :: ctd(:) => null()
@@ -248,8 +249,12 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
         do ino = 1, nbno
 !           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
-            ASSERT(zl(jcnl+ino-1))
-            if (callst) ASSERT(zl(jctl+ino-1))
+            lcond=zl(jcnl+ino-1)
+            ASSERT(lcond)
+            if (callst) then
+               lcond=zl(jctl+ino-1)
+               ASSERT(lcond)
+            endif   
             zr(jlnsv-1+(ino-1)+1)=cnv(ino)
             zl(jlnsl-1+(ino-1)+1)=.true.
             if (callst) zr(jltsv-1+(ino-1)+1)=ctv(ino)

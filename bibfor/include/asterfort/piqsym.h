@@ -20,9 +20,9 @@ interface
                       quar4)
         real(kind=8) :: x
         real(kind=8) :: y
-        logical :: quar1
-        logical :: quar2
-        logical :: quar3
-        logical :: quar4
+        logical(kind=1) :: quar1
+        logical(kind=1) :: quar2
+        logical(kind=1) :: quar3
+        logical(kind=1) :: quar4
     end subroutine piqsym
 end interface

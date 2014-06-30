@@ -52,7 +52,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
     integer :: deb, ddl, j, i, nddl
     integer ::  icdl, iadim, itemp, k
     integer ::  ncmp, hind, hfind,   nddlx, nddly
-    logical :: stp
+    logical(kind=1) :: stp
     integer, pointer :: vnddl(:) => null()
     integer, pointer :: neqs(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
@@ -100,7 +100,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
                 endif
             endif
 10      continue
-        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,.false.)
+        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,.false._1)
         i=0
         do 20 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then

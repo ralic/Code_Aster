@@ -26,7 +26,7 @@ interface
         integer :: nbval
         character(len=24) :: nkcha
         character(len=24) :: nkcmp
-        logical :: toucmp
+        logical(kind=1) :: toucmp
         integer :: nbcmp
         character(len=8) :: typac
         integer :: ndim

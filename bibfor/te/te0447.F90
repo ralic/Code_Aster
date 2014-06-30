@@ -35,7 +35,7 @@ subroutine te0447(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: kpg, ksig, nno, nnos, npg, ipoids, ivf, ndim, ncmp
     integer :: idfde, idepl, igeom, idefo, kk, jgano
     real(kind=8) :: poids, dfdi(81), f(3, 3), r, eps(6), vpg(36)
@@ -59,7 +59,7 @@ subroutine te0447(option, nomte)
 !
         call nmgeom(ndim, nno, axi, grand, zr(igeom),&
                     kpg, ipoids, ivf, idfde, zr(idepl),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     r)
 !
 !       RECUPERATION DE LA DEFORMATION

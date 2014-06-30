@@ -42,7 +42,7 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro
     character(len=19) :: valinc(*)
-    logical :: mmcvfr
+    logical(kind=1) :: mmcvfr
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +67,8 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: ltfcm, lctcc, lxfcm
-    logical :: lerrof
+    logical(kind=1) :: ltfcm, lctcc, lxfcm
+    logical(kind=1) :: lerrof
     integer :: maxfro
     real(kind=8) :: epsfro
     integer :: mmitfr
@@ -137,15 +137,15 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 !
     call nmcrel(sderro, 'ERRE_CTCF', lerrof)
     if (mmcvfr) then
-        call nmcrel(sderro, 'DIVE_FIXF', .false.)
+        call nmcrel(sderro, 'DIVE_FIXF', .false._1)
     else
-        call nmcrel(sderro, 'DIVE_FIXF', .true.)
+        call nmcrel(sderro, 'DIVE_FIXF', .true._1)
     endif
 !
 ! --- VALEUR ET ENDROIT OU SE REALISE L'EVALUATION DE LA BOUCLE
 !
-    call nmimck(sdimpr, 'BOUC_NOEU', cvgnoe, .true.)
-    call nmimcr(sdimpr, 'BOUC_VALE', cvgval, .true.)
+    call nmimck(sdimpr, 'BOUC_NOEU', cvgnoe, .true._1)
+    call nmimcr(sdimpr, 'BOUC_VALE', cvgval, .true._1)
 !
 ! --- MISE A JOUR DU SEUIL DE REFERENCE
 !

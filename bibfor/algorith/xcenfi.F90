@@ -58,7 +58,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
     character(len=6) :: name
     character(len=3) :: edge
-    logical :: courbe
+    logical(kind=1) :: courbe
     parameter   (tole=1.d-1)
 !
 ! --------------------------------------------------------------------

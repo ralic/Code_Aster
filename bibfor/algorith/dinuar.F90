@@ -27,7 +27,7 @@ subroutine dinuar(sddisc, numins, force, numarc, numrep)
 #include "asterfort/nmcrpo.h"
     character(len=19) :: sddisc
     integer :: numins, numarc, numrep
-    logical :: force
+    logical(kind=1) :: force
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine dinuar(sddisc, numins, force, numarc, numrep)
     character(len=24) :: arcinf
     integer :: jarinf
     real(kind=8) :: inst
-    logical :: larch
+    logical(kind=1) :: larch
     character(len=19) :: sdarch
 !
 ! ----------------------------------------------------------------------

@@ -99,7 +99,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !
     real(kind=8) :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
 !
-    logical :: newest
+    logical(kind=1) :: newest
     integer, pointer :: nv_type_med(:) => null()
 !
     data nocoor  /'X               ',&

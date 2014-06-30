@@ -32,7 +32,7 @@ subroutine xfnohm(fnoevo, deltat, nno,&
 #   include "asterfort/xfnoda.h"
 #   include "asterfort/xlinhm.h"
 #   include "jeveux.h"
-    logical :: fnoevo, axi
+    logical(kind=1) :: fnoevo, axi
     integer :: nno, npg, imate, dimenr, dimcon, nddls, nddlm
     integer :: dimuel, nmec, np1, ndim, ipoids, ivf, kpi, i, n
     integer :: idfde, mecani(5), press1(7)

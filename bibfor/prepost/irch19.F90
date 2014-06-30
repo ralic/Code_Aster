@@ -70,7 +70,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     integer :: numord, nbmat
     integer :: nbnot, numnoe(*), nummai(*), nbcmp, ncmp
     integer :: nive
-    logical :: lcor, lsup, linf, lmax, lmin, lresu
+    logical(kind=1) :: lcor, lsup, linf, lmax, lmin, lresu
 !
 ! 0.3. ==> VARIABLES LOCALES
 !

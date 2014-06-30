@@ -66,8 +66,8 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
     real(kind=8) :: coeext, coeex2
     character(len=19) :: cnfedo, cnlame, cnondp, cnfepi
     character(len=19) :: cnsstf, cnviss
-    logical :: llapl
-    logical :: londe, lpilo, lsstf, lmpas, ldyna, lviss
+    logical(kind=1) :: llapl
+    logical(kind=1) :: londe, lpilo, lsstf, lmpas, ldyna, lviss
 !
 ! ----------------------------------------------------------------------
 !

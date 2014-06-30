@@ -55,7 +55,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 #include "asterfort/vfnulo.h"
 !
     integer :: ndim, nno, nnos
-    logical :: axi
+    logical(kind=1) :: axi
     real(kind=8) :: geom(1:ndim, 1:nno)
 !
     integer :: maxfa, maxdim, manofa

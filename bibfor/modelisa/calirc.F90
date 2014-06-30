@@ -72,7 +72,8 @@ subroutine calirc(chargz)
     integer :: nbtyp, nddl2, nbma2,  jlistk, jdim, ndim1
     integer ::  jnorm, idim, ij, ima1, jlisv1
     integer :: kno2, kkno2, jcoor, iarg
-    logical :: lrota, dnor
+    logical(kind=1) :: lrota, dnor
+    logical :: lcond
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     complex(kind=8) :: betac, cbid
     character(len=2) :: typlag
@@ -86,11 +87,11 @@ subroutine calirc(chargz)
     character(len=24) :: geom2
     character(len=24) :: valk(2)
     character(len=1) :: kb
-    logical :: l_tran
+    logical(kind=1) :: l_tran
     real(kind=8) :: tran(3)
-    logical :: l_cent
+    logical(kind=1) :: l_cent
     real(kind=8) :: cent(3), dmax
-    logical :: l_angl_naut, l_dmax
+    logical(kind=1) :: l_angl_naut, l_dmax
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
     integer, pointer :: limanu1(:) => null()
@@ -287,7 +288,7 @@ subroutine calirc(chargz)
             call canort(noma, nbma2, limanu2, ndim, nbno2,&
                         ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
-            call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false.)
+            call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false._1)
             call jeveuo('&&CALIRC.LINONU2', 'L', iagno2)
         endif
 !
@@ -335,9 +336,10 @@ subroutine calirc(chargz)
                     l_angl_naut, angl_naut, geom2, lrota, mrota)
 !
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
-        if (typrac .eq. 'COQUE_MASSIF') ASSERT(.not.lrota)
-        if (typrac .eq. 'MASSIF_COQUE') ASSERT(.not.lrota)
-        if (typrac .eq. 'COQUE') ASSERT(.not.lrota)
+        lcond = .not.lrota
+        if (typrac .eq. 'COQUE_MASSIF') ASSERT(lcond)
+        if (typrac .eq. 'MASSIF_COQUE') ASSERT(lcond)
+        if (typrac .eq. 'COQUE') ASSERT(lcond)
 !
 !
 !

@@ -64,7 +64,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
     character(len=19) :: cndumm, cnunil, cnctdc
     character(len=19) :: cnffdo, cnfvdo
     character(len=19) :: fintpr, fintco
-    logical :: lctcd, lunil, lkrenk, lallv
+    logical(kind=1) :: lctcd, lunil, lkrenk, lallv
     integer :: ifdo, n
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)

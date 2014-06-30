@@ -18,7 +18,7 @@ subroutine nmgpin(ndim, nno, axi, vu)
 ! ======================================================================
     implicit none
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno, vu(3, 27)
 ! ----------------------------------------------------------------------
 !        INITIALISATION POUR LES ELEMENTS EN GRANDES DEFORMATIONS

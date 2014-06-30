@@ -62,7 +62,7 @@ subroutine lc0046(fami, kpg, ksp, ndim, imate,&
     if (typmod(2) .eq. 'GRADVARI') then
 !
         call lcesgv(fami, kpg, ksp, neps, typmod, option, imate, lcquma, lcquga, &
-                    epsm, deps, vim, .false., nint(crit(1)), crit(3), &
+                    epsm, deps, vim, .false._1, nint(crit(1)), crit(3), &
                     sigp, vip, dsidep,codret)
 !
 !   ENDO_SCALAIRE N'EST PAS DISOPNIBLE POUR D'AUTRE FORMULATIONS

@@ -84,7 +84,7 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !
 !
     integer :: ifm, niv
-    logical :: lstat, ldyna
+    logical(kind=1) :: lstat, ldyna
 !
 ! ----------------------------------------------------------------------
 !

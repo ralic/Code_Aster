@@ -20,7 +20,7 @@ interface
                       nx, ny, sielnp, adsip, sielnm,&
                       nbcmp, typmav, tbref1, tbref2, ivois,&
                       tm2h1s)
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: ino
         integer :: nbs
         real(kind=8) :: theta

@@ -30,7 +30,7 @@ interface
         integer :: nno
         real(kind=8) :: pgl(3, 3)
         integer :: multic
-        logical :: coupmf
+        logical(kind=1) :: coupmf
         real(kind=8) :: t2iu(4)
         real(kind=8) :: t2ui(4)
         real(kind=8) :: t1ve(9)

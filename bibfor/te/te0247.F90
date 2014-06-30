@@ -81,7 +81,7 @@ subroutine te0247(option, nomte)
     real(kind=8) :: effnom, tempm, tempp
     real(kind=8) :: irram, irrap, epsthe(1)
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
-    logical :: reactu, matric, vecteu
+    logical(kind=1) :: reactu, matric, vecteu
 !
     data nomlma / 'K','N','DE_0','P','P1','P2','M','RM',&
      &              'A_0','Y_0','Y_I','B'/

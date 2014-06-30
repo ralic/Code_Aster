@@ -18,7 +18,7 @@
 interface
     subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
                       nopara)
-        logical :: compl
+        logical(kind=1) :: compl
         character(len=19) :: nomfin
         character(len=19) :: nomfon
         integer :: nbval

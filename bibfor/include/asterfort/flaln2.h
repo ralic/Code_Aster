@@ -23,7 +23,7 @@ interface
         integer :: ldx
         integer :: ldb
         integer :: lda
-        logical :: ltrans
+        logical(kind=1) :: ltrans
         integer :: na
         integer :: nw
         real(kind=8) :: smin

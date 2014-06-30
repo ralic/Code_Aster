@@ -82,7 +82,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     integer :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt
     integer :: l1, l2, l3, l5, l6, l7, ioc, ico, isgt, isp, k, i, n, inoe
     real(kind=8) :: m1, m2, ma, mi, s1, s2, t1, t2, s12, xl, t12, smil
-    logical :: deja
+    logical(kind=1) :: deja
     character(len=1) :: bl
     character(len=4) :: docul, docu
     character(len=24) :: nvale, npnbn, npadr, nabsc, nnocp, ntab

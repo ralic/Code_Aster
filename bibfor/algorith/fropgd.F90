@@ -59,7 +59,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     character(len=19) :: solveu, matass, depdel
     character(len=14) :: numedd
     integer :: ctccvg
-    logical :: ctcfix
+    logical(kind=1) :: ctcfix
 !
 ! ----------------------------------------------------------------------
 !
@@ -116,7 +116,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     integer :: llliai, llliac
     integer :: llf, llf1, llf2
     integer :: indic, indfac, ajliai, spliai
-    logical :: lechec
+    logical(kind=1) :: lechec
     integer :: nbpren
     character(len=14) :: numef1, numef2
     character(len=19) :: maf1, maf2
@@ -394,7 +394,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     call mtdscr(maf1)
     call jeveuo(maf1//'.&INT', 'L', lmaf1)
     call mrmult('ZERO', lmaf1, depc, zr(jafmu), 1,&
-                .true.)
+                .true._1)
 !
 ! --- CREATION DE LA MATRICE FRO2 = E_T*AT (TERME NEGATIF)
 !

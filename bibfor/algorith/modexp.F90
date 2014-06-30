@@ -361,7 +361,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod,&
                 ' ', ' ', ' ', zr(lmodet), [cbid],&
-                ' ', .true., 0, iret)
+                ' ', .true._1, 0, iret)
 !
 !------------C
 !-- MENAGE --C

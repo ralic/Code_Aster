@@ -86,9 +86,9 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
         else
             freq2=dcmplx(fri,ami*fri*2.d0)
             call mcmult('ZERO', lraide, vecp(ivec), zc(iaux1), 1,&
-                        .false.)
+                        .false._1)
             call mcmult('ZERO', lmasse, vecp(ivec), zc(iaux2), 1,&
-                        .false.)
+                        .false._1)
 !
             do 2 j = 0, neq-1
                 zc(iaux2+j)=zc(iaux1+j)-freq2*zc(iaux2+j)

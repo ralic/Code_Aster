@@ -42,7 +42,7 @@ interface
         real(kind=8) :: angmas(*)
         real(kind=8) :: sigm(6, npg)
         real(kind=8) :: vim(lgpg, npg)
-        logical :: matsym
+        logical(kind=1) :: matsym
         real(kind=8) :: dfdi(nno, 3)
         real(kind=8) :: def(6, nno, 3)
         real(kind=8) :: sigp(6, npg)

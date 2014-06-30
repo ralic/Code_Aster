@@ -79,7 +79,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: nomres(nbval), mazars(nbval)
     real(kind=8) :: valres(nbval+1)
 !
-    logical :: resi
+    logical(kind=1) :: resi
     integer :: ndimsi, iret
     real(kind=8) :: epsthe, kdess, bendo, epsane
     real(kind=8) :: ee, nu

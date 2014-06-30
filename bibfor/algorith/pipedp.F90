@@ -59,7 +59,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
 ! ----------------------------------------------------------------------
 !
     integer :: ndimsi, k, nrac1, nrac2
-    logical :: trac, comp, notrac, nocomp
+    logical(kind=1) :: trac, comp, notrac, nocomp
     real(kind=8) :: trsigp, trsigd, sigelp(6), sigeld(6)
     real(kind=8) :: eps1(6), eps2(6), pp(6), dd(6)
     real(kind=8) :: d1, d2, g1, g2, g3, g4

@@ -7,7 +7,7 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
 #include "asterfort/dfdm3d.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nno, npg, ipoids, ivf, idfde
     integer :: nnos, nddls, nnom, nddlm
     character(len=16) :: option, nomte

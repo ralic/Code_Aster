@@ -66,7 +66,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
     integer :: n1, n2, iret
     real(kind=8) :: ktang, ctang, k, coor1(3), coor2(3), xjeu, r8bid
     complex(kind=8) :: cbid
-    logical :: lnoue2
+    logical(kind=1) :: lnoue2
     character(len=8) :: kbid, nomno1, nomno2, sst1, sst2, maya1, maya2, repere
     character(len=8) :: k8typ
     character(len=10) :: motfac

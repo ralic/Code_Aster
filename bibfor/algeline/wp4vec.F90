@@ -57,7 +57,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
     real(kind=8) :: auxik, seuilc
     integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
     integer :: vali(5), ifm, niv, nbfr, ibid
-    logical :: trouve, lconj
+    logical(kind=1) :: trouve, lconj
     character(len=1) :: kmsg
     character(len=16) :: valk, typres
 !

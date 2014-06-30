@@ -73,7 +73,7 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
 !
 !
-    logical :: londe, llapl, ldidi, lreuse
+    logical(kind=1) :: londe, llapl, ldidi, lreuse
     character(len=8) :: result, k8bid
     character(len=16) :: k16bla, k16bid
     character(len=19) :: matass
@@ -131,7 +131,7 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
     call nmchex(valinc, 'VALINC', 'COMMOI', commoi)
     call nmchex(valinc, 'VALINC', 'COMPLU', complu)
     call nmvcex('INST', commoi, insmoi)
-    call nmvcaf('INST', insmoi, .true., complu)
+    call nmvcaf('INST', insmoi, .true._1, complu)
     call nmvcex('INST', complu, insplu)
     k8bid = ' '
     call mecact('V', insmoi, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&

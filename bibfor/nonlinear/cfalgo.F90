@@ -40,7 +40,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    logical :: ctcfix
+    logical(kind=1) :: ctcfix
     character(len=8) :: noma
     real(kind=8) :: resigr
     integer :: iterat
@@ -83,7 +83,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
     integer :: ifm, niv
     integer :: icont, ifrot, ndimg
-    logical :: lgliss
+    logical(kind=1) :: lgliss
 !
 ! ----------------------------------------------------------------------
 !

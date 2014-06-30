@@ -58,7 +58,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! --- : DY     : INCREMENTS (DEVIATEUR, 1ER INVARIANT, GAMP, EVP, DELTA)
 ! ======================================================================
 ! ======================================================================
-    logical :: teste
+    logical(kind=1) :: teste
     integer :: jpara, jderiv, ii, ndt, ndi
     real(kind=8) :: se(6), gamp, delta, siie, pref, epssig
     real(kind=8) :: gamcjs, rcos3t, re, ge

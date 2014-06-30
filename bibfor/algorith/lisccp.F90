@@ -48,8 +48,8 @@ subroutine lisccp(phenom, lischa)
     integer :: ichar, nbchar
     integer :: genrec
     character(len=8) :: phecha, charge
-    logical :: lok
-    logical :: lveac, lveag, lveas
+    logical(kind=1) :: lok
+    logical(kind=1) :: lveac, lveag, lveas
 !
 ! ----------------------------------------------------------------------
 !

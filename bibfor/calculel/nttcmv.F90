@@ -42,7 +42,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 !
-    logical :: reasvt, reasmt
+    logical(kind=1) :: reasvt, reasmt
     real(kind=8) :: tpsthe(6), tpsnp1
     character(len=1) :: creas
     character(len=19) :: infcha, solveu, maprec

@@ -48,7 +48,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(3, nno), maxeps
     real(kind=8) :: pff(6, nno, nno), def(6, nno, 3)
-    logical :: matsym
+    logical(kind=1) :: matsym
 !
 !
 !.......................................................................
@@ -86,7 +86,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !.......................................................................
 !
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
 !
     integer :: kpg, j, cod(27)
 !
@@ -127,16 +127,16 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 !
         call r8inir(6, 0.d0, epsm, 1)
         call r8inir(6, 0.d0, epsp, 1)
-        call nmgeom(3, nno, .false., grand, geomi,&
+        call nmgeom(3, nno, .false._1, grand, geomi,&
                     kpg, ipoids, ivf, idfde, deplm,&
-                    .true., poids, dfdi, fm, epsm,&
+                    .true._1, poids, dfdi, fm, epsm,&
                     r)
 !
 !        CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
 !
-        call nmgeom(3, nno, .false., grand, geomi,&
+        call nmgeom(3, nno, .false._1, grand, geomi,&
                     kpg, ipoids, ivf, idfde, deplp,&
-                    .true., poids, dfdi, f, epsp,&
+                    .true._1, poids, dfdi, f, epsp,&
                     r)
 !
 !

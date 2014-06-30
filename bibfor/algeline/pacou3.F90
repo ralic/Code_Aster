@@ -31,7 +31,7 @@ subroutine pacou3(xold, fold, g, p, x,&
     real(kind=8) :: g(*), p(*), x(*), xold(*), fvec(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
     integer :: veci1(*)
-    logical :: check, first
+    logical(kind=1) :: check, first
     character(len=8) :: typflu
 !
 !

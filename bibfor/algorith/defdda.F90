@@ -55,7 +55,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     character(len=24) :: temddl, temidc
     character(len=24) :: valk
     integer :: nbec, icod(nbec)
-    logical :: ok, okg
+    logical(kind=1) :: ok, okg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iec, ioc, iopt, j, llncmp

@@ -23,6 +23,6 @@ interface
         integer :: nunoa
         integer :: nunob
         integer :: nunoc
-        logical :: fabord
+        logical(kind=1) :: fabord
     end subroutine xfabor
 end interface

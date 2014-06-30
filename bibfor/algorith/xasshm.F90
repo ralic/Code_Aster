@@ -63,7 +63,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     real(kind=8) :: defgem(dimdef), defgep(dimdef)
     real(kind=8) :: dt, ta, ta1, rthmc(1)
     real(kind=8) :: angmas(3)
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: codmes(1)
     character(len=3) :: modint
     character(len=16) :: option, compor(*), thmc, loi

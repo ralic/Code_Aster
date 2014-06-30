@@ -36,7 +36,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
     real(kind=8) :: fint(nddl), ktan(*), coopg(4, npg)
     real(kind=8) :: sigm(3, npg), sigp(3, npg), vim(lgpg, npg), vip(lgpg, npg)
     character(len=16) :: option, compor(*)
-    logical :: matsym
+    logical(kind=1) :: matsym
 !
 !-----------------------------------------------------------------------
 !  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS 3D (TE0206)
@@ -65,7 +65,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 ! IN  COOPG  COORDONNEES GEOMETRIQUES DES PG + POIDS
 ! OUT CODRET CODE RETOUR DE L'INTEGRATION
 !-----------------------------------------------------------------------
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: code(9), ni, mj, kk, p, q, kpg, ibid, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids

@@ -102,7 +102,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     character(len=19) :: cnsls, grls, lsv, grlsv
     character(len=2) :: levset
     integer :: jzero
-    logical :: reinit
+    logical(kind=1) :: reinit
 !
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
     integer :: nbno, nbnoma,  jcnsls, jgrls
@@ -140,7 +140,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     character(len=19) :: poifis, trifis, forced
     integer :: jforce
     real(kind=8) :: p(3), lvsp, lsnpc, lstpc
-    logical :: grad0
+    logical(kind=1) :: grad0
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------

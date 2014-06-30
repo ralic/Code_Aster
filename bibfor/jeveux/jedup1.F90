@@ -29,5 +29,5 @@ subroutine jedup1(o1z, base, o2z)
     o1=o1z
     o2=o2z
     call jeexin(o1, iret)
-    if (iret .gt. 0) call jedupo(o1, base, o2, .false.)
+    if (iret .gt. 0) call jedupo(o1, base, o2, .false._1)
 end subroutine

@@ -19,7 +19,7 @@ interface
     subroutine nmmalu(nno, axi, r, vff, dfdi,&
                       lij)
         integer :: nno
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: r
         real(kind=8) :: vff(nno)
         real(kind=8) :: dfdi(nno, 4)

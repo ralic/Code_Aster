@@ -38,7 +38,7 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 !     ------------------------------------------------------------------
     integer :: jcft(8), icou(6, 2), ncft(3), icft(6, 3), na(4), ia(4, 4)
     real(kind=8) :: x2(12), mat2(144)
-    logical :: ltest
+    logical(kind=1) :: ltest
 !
 !             COUPLAGE FLEXION-TORSION
 !-----------------------------------------------------------------------

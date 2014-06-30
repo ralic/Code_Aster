@@ -105,7 +105,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 #include "asterfort/kitdec.h"
 #include "asterfort/nvithm.h"
 #include "asterfort/thmlec.h"
-    logical :: yachai
+    logical(kind=1) :: yachai
     real(kind=8) :: valcen(14, 6)
     integer :: maxfa
     parameter     (maxfa=6)
@@ -130,7 +130,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
     real(kind=8) :: dsde(1:dimcon, 1:dimdef), crit(*), instam, instap
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
-    logical :: perman, vf
+    logical(kind=1) :: perman, vf
     integer :: ifa
     integer :: vicpr1, vicpr2
 ! ======================================================================

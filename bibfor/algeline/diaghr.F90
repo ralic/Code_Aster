@@ -47,6 +47,7 @@ subroutine diaghr(n, a, lda, eval, evec,&
     integer :: i, j
     complex(kind=8) :: scale
     real(kind=8) :: dble
+    logical(kind=1) :: true
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -85,7 +86,8 @@ subroutine diaghr(n, a, lda, eval, evec,&
                 cwk, cwk(n+1))
 !
 !   --- CALCUL DES VECTEURS ET DES VALEURS PROPRES ---
-    call diatri(n, eval, rwk, .true., rwk(n+1),&
+    true=.true.
+    call diatri(n, eval, rwk, true, rwk(n+1),&
                 n)
 !
 !   --- LES VECTEURS PROPRES SONT STOCKES DANS UNE MATRICE COMPLEXE ---

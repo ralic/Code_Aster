@@ -33,7 +33,7 @@ subroutine postsm(option, fm, df, sigm, sigp,&
 !   IN/OUT  DSIDEP : MATRICE TANGENTE D(SIG)/DF  ->
 !                    D(TAU)/D(FD) * (FD)t
 !-----------------------------------------------------------------------
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: kl, p, q, i
     real(kind=8) :: jm, dj, jp, tau(6), j, mat(6, 3, 3), id(3, 3)
 !

@@ -62,7 +62,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     real(kind=8) :: tabcoz(ndim, nbarvz), tabcrz(nbarvz)
     integer :: jgro1, jgro2, j, jgro, i, l, nreleq, repere, jlis1
     integer :: effac, nar, narm, iret, vali(2)
-    logical :: noeuad
+    logical(kind=1) :: noeuad
     character(len=19) :: nlisco, nlisrl, nlise2
 !
 ! ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     nlisrl = '&&NMARET.LISRL'
     nlisco = '&&NMARET.LISCO'
     call xrell2(tabnoz, ndim, nbarvi, tabcoz, tabcrz,&
-                .true., nlise2)
+                .true._1, nlise2)
     nar=nbarvi
     call jeexin(nlise2, iret)
     if (iret .ne. 0) then

@@ -44,7 +44,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap,r,r1
     real(kind=8) :: dn, tn, t(3), ddndtn

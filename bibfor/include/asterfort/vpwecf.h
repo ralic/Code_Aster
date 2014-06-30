@@ -27,6 +27,6 @@ interface
         character(len=*) :: resufk(mxfreq, *)
         integer :: lamor
         character(len=1) :: ktyp
-        logical :: lns
+        logical(kind=1) :: lns
     end subroutine vpwecf
 end interface

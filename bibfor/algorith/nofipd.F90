@@ -35,7 +35,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 #include "asterfort/uthk.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1, lgpg
     integer :: mate
     integer :: vu(3, 27), vp(27), vpi(3, 27)
@@ -92,7 +92,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 ! OUT CODRET  : CODE RETOUR
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: g, nddl
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: os, kk
@@ -116,7 +116,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)
     real(kind=8) :: stab, hk
 !
-    parameter    (grand = .false.)
+    parameter    (grand = .false._1)
     data         idev / 2.d0,-1.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
      &                 -1.d0, 2.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
      &                 -1.d0,-1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
@@ -253,7 +253,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DE L'INVERSE DE KAPPA
         call tanbul(option, ndim, g, mate, compor(1),&
-                    resi, .false., alpha, dsbdep, trepst)
+                    resi, .false._1, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then

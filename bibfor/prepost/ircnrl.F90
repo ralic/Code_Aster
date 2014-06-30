@@ -18,7 +18,7 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
     integer :: ndim, numnoe(*), nbcmpt, nucmpu(*)
     real(kind=8) :: borsup, borinf, coor(*), vale(*)
     character(len=*) :: nomcmp(*), nomnoe(*), formr
-    logical :: lcor, lsup, linf, lmax, lmin
+    logical(kind=1) :: lcor, lsup, linf, lmax, lmin
 !
 !----------------------------------------------------------------------
 ! ======================================================================

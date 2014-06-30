@@ -61,8 +61,8 @@ interface
         character(len=16) :: compor(*)
         character(len=8) :: typmod(2)
         integer :: typvf
-        logical :: axi
-        logical :: perman
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
         integer :: livois(nvoima)
         integer :: nbnovo(nvoima)
         integer :: nbsoco(nvoima)

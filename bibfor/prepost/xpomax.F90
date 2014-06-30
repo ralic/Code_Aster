@@ -117,7 +117,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=16) :: tysd, k16b, nomcmd, notype
     character(len=19) :: chs(11)
     character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, fisno, hea, nogno
-    logical :: opmail, lmeca, pre1
+    logical(kind=1) :: opmail, lmeca, pre1
     integer :: iad9, irese, nnose, tabse(6), ncomp
     integer :: iviex, iret,  jconq1, jconq2,  jxc
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2

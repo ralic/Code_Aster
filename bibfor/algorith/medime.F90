@@ -71,7 +71,7 @@ subroutine medime(base, cumul, modele, lischa, mediri)
     integer :: iret,   icha, ilires
     integer :: nchar, nluti
     integer :: ifmdbg, nivdbg
-    logical :: debug
+    logical(kind=1) :: debug
     character(len=24), pointer :: lcha(:) => null()
     integer, pointer :: infc(:) => null()
 !

@@ -17,7 +17,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
     integer :: nbmod, lrang(nbmod), iorne
     character(len=8) :: nomres, resul
-    logical :: seul
+    logical(kind=1) :: seul
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

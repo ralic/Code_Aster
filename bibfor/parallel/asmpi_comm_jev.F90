@@ -69,7 +69,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
     mpi_int, parameter :: pr0=0
     character(len=1) :: typsca, xous
     character(len=8) :: kbid,stock
-    logical :: unseul
+    logical(kind=1) :: unseul
 !
 ! ---------------------------------------------------------------------
     call jemarq()

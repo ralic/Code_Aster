@@ -51,7 +51,7 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
 !
 !
     character(len=4) :: etinst, etcalc
-    logical :: lstop, mtcpup
+    logical(kind=1) :: lstop, mtcpup
 !
 ! ----------------------------------------------------------------------
 !

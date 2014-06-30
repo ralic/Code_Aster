@@ -61,7 +61,7 @@ subroutine detlsp(matasz, solvez)
             solvbd = slvk(3)
             call crsmsp(solvbd, matass, 0)
             call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
-                        ' ', 0, iret, .true.)
+                        ' ', 0, iret, .true._1)
             call detrsd('SOLVEUR', solvbd)
         endif
     endif

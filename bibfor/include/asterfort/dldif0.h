@@ -32,7 +32,7 @@ interface
         integer :: istoc
         integer :: iarchi
         integer :: ifm
-        logical :: lamort
+        logical(kind=1) :: lamort
         integer :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
@@ -52,7 +52,7 @@ interface
         integer :: liad(*)
         character(len=24) :: lifo(*)
         character(len=24) :: modele
-        logical :: ener
+        logical(kind=1) :: ener
         character(len=19) :: solveu
         character(len=24) :: mate
         character(len=24) :: carele

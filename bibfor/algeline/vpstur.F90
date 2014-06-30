@@ -60,7 +60,7 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
     complex(kind=8) :: cbid
     character(len=19) :: matpre, matass
     character(len=24) :: metres
-    logical :: caldet, calfac
+    logical(kind=1) :: caldet, calfac
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------

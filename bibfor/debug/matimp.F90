@@ -48,7 +48,7 @@ subroutine matimp(matz, ific, typimz)
     character(len=14) :: nonu
     character(len=1) :: ktyp
     character(len=19) :: mat19
-    logical :: ltypr, lsym, lmd
+    logical(kind=1) :: ltypr, lsym, lmd
     real(kind=8) :: dble, dimag
     integer, pointer :: deeq(:) => null()
     integer, pointer :: smdi(:) => null()

@@ -23,6 +23,6 @@ interface
         integer :: ipos
         character(len=*) :: claout
         character(len=*) :: schout
-        logical :: dupcol
+        logical(kind=1) :: dupcol
     end subroutine jedupc
 end interface

@@ -40,7 +40,7 @@ subroutine caver1()
 #include "asterfort/utmess.h"
 !
     integer :: opt, te
-    logical :: error
+    logical(kind=1) :: error
     character(len=8) :: para, typmai
     character(len=16) :: nomopt, nomte
     character(len=24) :: valk(4)

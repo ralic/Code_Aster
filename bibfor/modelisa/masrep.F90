@@ -27,7 +27,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     character(len=8) :: noma, tabnoe(*)
     character(len=24) :: ligrma(nbgr)
     real(kind=8) :: rignoe(*), rigto(*)
-    logical :: lvale
+    logical(kind=1) :: lvale
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     character(len=24) :: manono, magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     integer :: appui
 !
 !-----------------------------------------------------------------------

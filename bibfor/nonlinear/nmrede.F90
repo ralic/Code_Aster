@@ -66,7 +66,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
     integer :: jccid
     integer :: ifm, niv
-    logical :: ldyna, lcine
+    logical(kind=1) :: ldyna, lcine
     character(len=19) :: cndiri, cnvcfo
     integer :: ieq
     real(kind=8) :: val2, val3, appui, fext

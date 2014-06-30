@@ -28,7 +28,7 @@ subroutine cfsvfr(defico, resoco, lconv)
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
-    logical :: lconv
+    logical(kind=1) :: lconv
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine cfsvfr(defico, resoco, lconv)
 !
 !
     integer :: ifm, niv
-    logical :: llagrf
+    logical(kind=1) :: llagrf
     integer :: nnoco
     integer :: iliac, iliai, posnoe
     integer :: nbliac, llf, llf1, llf2, btotal

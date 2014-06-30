@@ -49,7 +49,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
     real(kind=8) :: ptotm, ptotp, biotp, biotm, em, num, ep, nup, troikp, troikm
     integer :: iret1, iret2, k
 !
-    logical :: lpomec
+    logical(kind=1) :: lpomec
     integer :: dmmeca, ii
     parameter     ( dmmeca = 20 )
     character(len=16) :: pomeca(dmmeca)

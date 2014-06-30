@@ -19,6 +19,6 @@ interface
     function zerosd(typesd, sd)
         character(len=*) :: typesd
         character(len=*) :: sd
-        logical :: zerosd
+        logical(kind=1) :: zerosd
     end function zerosd
 end interface

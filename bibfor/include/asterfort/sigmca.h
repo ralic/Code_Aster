@@ -23,6 +23,6 @@ interface
         integer :: icabl
         integer :: nbnoca(*)
         character(len=19) :: numaca
-        logical :: quad
+        logical(kind=1) :: quad
     end subroutine sigmca
 end interface

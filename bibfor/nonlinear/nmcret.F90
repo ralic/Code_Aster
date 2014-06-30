@@ -120,9 +120,9 @@ subroutine nmcret(sderro, typcod, vali)
 !
         if (ncret .eq. typcod) then
             if (vcret .eq. vali) then
-                call nmcrel(sderro, neven, .true.)
+                call nmcrel(sderro, neven, .true._1)
             else
-                call nmcrel(sderro, neven, .false.)
+                call nmcrel(sderro, neven, .false._1)
             endif
         endif
 15  end do

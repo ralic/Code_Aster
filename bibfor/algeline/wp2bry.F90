@@ -74,9 +74,9 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
         if (sr .eq. zero) then
 !           --- DECALAGE NUL ---
             call mrmult('ZERO', lraide, yh, zh, 1,&
-                        .false.)
+                        .false._1)
             call mrmult('ZERO', lmasse, yb, zb, 1,&
-                        .false.)
+                        .false._1)
             do i = 1, n, 1
                 zb(i) = -zb(i)
             end do
@@ -84,13 +84,13 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
         else
 !           --- DECALAGE NON NUL ---
             call mrmult('ZERO', lamor, yh, u1, 1,&
-                        .false.)
+                        .false._1)
             call mrmult('ZERO', lmasse, yb, u3, 1,&
-                        .false.)
+                        .false._1)
             call mrmult('ZERO', lmasse, yh, u2, 1,&
-                        .false.)
+                        .false._1)
             call mrmult('ZERO', lraide, yh, u4, 1,&
-                        .false.)
+                        .false._1)
             do i = 1, n, 1
                 zh(i) = u4(i) + sr*(u1(i) + u3(i))
                 zb(i) = -u3(i) + sr* u2(i)
@@ -100,29 +100,29 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
     else
 !        --- DECALAGE COMPLEXE ---
         call mrmult('ZERO', lamor, yh, u1, 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmasse, yb, u2, 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmasse, yh, u3, 1,&
-                    .false.)
+                    .false._1)
         do i = 1, n, 1
             u4(i) = u1(i) + sr*u3(i) + u2(i)
         end do
 !
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, u4, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
         call mrmult('ZERO', lamor, u4, zh, 1,&
-                    .false.)
+                    .false._1)
         call mrmult('ZERO', lmasse, u4, zb, 1,&
-                    .false.)
+                    .false._1)
 !
         do i = 1, n, 1
             zh(i) = si2*(zh(i) - u3(i) + sr*zb(i)) + sr*(u1(i) + u2(i) )
             zb(i) = si2* zb(i) + sr*u3(i) - u2(i)
         end do
         call mrmult('CUMU', lraide, yh, zh, 1,&
-                    .false.)
+                    .false._1)
     endif
 !
 end subroutine

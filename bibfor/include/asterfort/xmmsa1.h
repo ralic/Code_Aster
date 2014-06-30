@@ -44,7 +44,7 @@ interface
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
         real(kind=8) :: p(3, 3)
-        logical :: adher
+        logical(kind=1) :: adher
         real(kind=8) :: knp(3, 3)
         real(kind=8) :: ptknp(3, 3)
         real(kind=8) :: ik(3, 3)

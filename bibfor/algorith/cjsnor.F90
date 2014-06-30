@@ -41,7 +41,7 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
 #include "asterfort/cjsc3q.h"
 #include "asterfort/cjst.h"
     real(kind=8) :: mater(14, 2), sig(6), x(6), nor(7)
-    logical :: devnul, trac
+    logical(kind=1) :: devnul, trac
     real(kind=8) :: zero, deux, six
     parameter     ( zero   = 0.d0   )
     parameter     ( deux   = 2.d0   )

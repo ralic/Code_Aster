@@ -85,7 +85,7 @@ subroutine jjlide(nomap, nomlu, itype)
     character(len=4) :: fonc
     character(len=32) :: noml32
     integer :: iadmi, iaddi(2), nld, it(nparm), kt(nparm)
-    logical :: lsauv, ldate, lmarq, llibp, ltout, lattr, lxu, lad
+    logical(kind=1) :: lsauv, ldate, lmarq, llibp, ltout, lattr, lxu, lad
 ! DEB ------------------------------------------------------------------
     do 1 k = 1, nparm
         kt(k) = 0

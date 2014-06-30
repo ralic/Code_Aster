@@ -20,7 +20,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
     integer :: ndim, listma(*), nbmail, norien, ntrait, nbmavo, mailvo(*)
     character(len=8) :: noma
-    logical :: reorie
+    logical(kind=1) :: reorie
 !.======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 ! -----  VARIABLES LOCALES
     integer :: ifm, niv, ima, numa, nutyma, nbnmai, numa3d, noriem, norieg
     integer ::   p1, p2,     jm3d, jdesm, jdes3d
-    logical :: dime1, dime2
+    logical(kind=1) :: dime1, dime2
     character(len=2) :: kdim
     character(len=8) :: tpmail, nomail, typ3d
     character(len=24) :: mailma, nomob1
@@ -153,7 +153,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     ASSERT(kdim.ne.' ')
     nomob1 = '&&ORILMA.MAILLE_3D'
     call utmasu(noma, kdim, nbmail, listma, nomob1,&
-                vale, nbmavo, mailvo, .false.)
+                vale, nbmavo, mailvo, .false._1)
     call jeveuo(nomob1, 'L', jm3d)
 !
     norieg = 0

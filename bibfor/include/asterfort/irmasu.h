@@ -35,13 +35,13 @@ interface
         integer :: codphy(*)
         integer :: codphd(*)
         integer :: permut(maxnod, *)
-        logical :: lmod
+        logical(kind=1) :: lmod
         character(len=8) :: noma
         integer :: nbgrn
         character(len=24) :: nogn(*)
         integer :: nbgrm
         character(len=24) :: nogm(*)
-        logical :: lmasu
+        logical(kind=1) :: lmasu
         character(len=8) :: nomai(*)
         character(len=8) :: nonoe(*)
         integer :: versio

@@ -44,7 +44,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=19) :: lischa
     real(kind=8) :: time, puls
     integer :: iord, nbprup
-    logical :: lmelas, lmoda
+    logical(kind=1) :: lmelas, lmoda
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,7 +104,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: livc(nbmxpa)
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     parameter   (mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain

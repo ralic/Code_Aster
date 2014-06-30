@@ -57,7 +57,7 @@ subroutine celver(celz, typver, arret, iret)
     character(len=19) :: cel
     integer ::  kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
     integer :: imolo, inan, nb1, k, jcelv
-    logical :: lnan
+    logical(kind=1) :: lnan
     integer, pointer :: celd(:) => null()
 !
 !     ------------------------------------------------------------------

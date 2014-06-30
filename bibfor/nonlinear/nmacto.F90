@@ -46,7 +46,7 @@ subroutine nmacto(sddisc, ievdac)
     real(kind=8) :: r8bid
     integer :: ibid, nechec, iechec
     character(len=8) :: k8bid
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

@@ -42,7 +42,7 @@ subroutine coeneu(imod, nbnode)
     character(len=8) :: chnode
     character(len=12) :: chenti, aut
     character(len=80) :: chfone
-    logical :: dim3d
+    logical(kind=1) :: dim3d
     real(kind=8) :: zcte, x, y, z
     real(kind=8), pointer :: coor(:) => null()
     integer, pointer :: detr(:) => null()

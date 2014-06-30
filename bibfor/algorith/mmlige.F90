@@ -78,7 +78,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: ifm, niv
-    logical :: lfrott
+    logical(kind=1) :: lfrott
     integer, pointer :: typmail(:) => null()
 !
 ! ----------------------------------------------------------------------

@@ -21,10 +21,10 @@ interface
         integer :: nbprup
         character(len=8) :: table
         character(len=16) :: option
-        logical :: lmelas
+        logical(kind=1) :: lmelas
         character(len=16) :: cas
         character(len=8) :: typfis
-        logical :: lmoda
+        logical(kind=1) :: lmoda
         character(len=16) :: noprup(nbprup)
         character(len=8) :: typrup(nbprup)
     end subroutine cgcrtb

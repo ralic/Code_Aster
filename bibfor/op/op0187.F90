@@ -53,7 +53,7 @@ subroutine op0187()
     character(len=24) :: mailx, mailc, listno, k24b, logrma, dirgrm, listgr
     character(len=24) :: nivgrm
     character(len=24) :: nogrfi
-    logical :: pre1
+    logical(kind=1) :: pre1
 !
     call jemarq()
     call infmaj()

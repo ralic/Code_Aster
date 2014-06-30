@@ -66,7 +66,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
     character(len=19) :: chins
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
-    logical :: peecal, ltest, cond
+    logical(kind=1) :: peecal, ltest, cond
     integer, pointer :: maille(:) => null()
     real(kind=8), pointer :: chsv(:) => null()
     real(kind=8), pointer :: outv(:) => null()

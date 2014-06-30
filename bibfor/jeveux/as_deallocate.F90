@@ -31,7 +31,7 @@ use module_allocate
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
 !
-    logical,           optional, pointer, intent(inout) :: vl(:)
+    logical(kind=1),           optional, pointer, intent(inout) :: vl(:)
     integer,           optional, pointer, intent(inout) :: vi(:)
     integer(kind=4),   optional, pointer, intent(inout) :: vi4(:)
     real(kind=8),      optional, pointer, intent(inout) :: vr(:)

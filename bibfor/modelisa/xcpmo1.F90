@@ -369,8 +369,8 @@ character(len=8) :: modmes, modthx, modmex
     call jelira(lieltp, 'NUTIOC', nbel2)
     ASSERT( nbel2 .eq. nbelmx )
 
-    call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false.)
-    call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false.)
+    call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false._1)
+    call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false._1)
     call jeveuo(ligrtp//'.LGRF', 'E', vk8=lgrf)
     lgrf(2) = modmex
 

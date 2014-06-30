@@ -35,7 +35,7 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
     character(len=19) :: lischa, solveu, maprec
     character(len=24) :: modele, mate, carele, fomult, charge, infoch, numedd
     character(len=24) :: time, vec2nd, matass, cndirp, cnchci, compor
-    logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
+    logical(kind=1) :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
 !
 ! ----------------------------------------------------------------------
 !     THERMIQUE LINEAIRE - RESOLUTION
@@ -83,7 +83,7 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 ! 2 ==> RESOLUTION AVEC VEC2ND COMME SECOND MEMBRE
     call resoud(matass, maprec, solveu, cnchci, 0,&
                 vec2nd, chsol, 'V', [0.d0], [c16bid],&
-                criter, .true., 0, iret)
+                criter, .true._1, 0, iret)
 !
 ! 3. ==> SAUVEGARDE DE LA SOLUTION
 !

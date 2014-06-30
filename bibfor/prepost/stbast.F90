@@ -6,7 +6,7 @@ subroutine stbast(nfie, nfis, lgrcou)
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
     integer :: nfie, nfis
-    logical :: lgrcou
+    logical(kind=1) :: lgrcou
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

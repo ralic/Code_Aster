@@ -62,7 +62,7 @@ subroutine nmasfr(defico, resoco, matass)
     character(len=24) :: limat(2)
     real(kind=8) :: coefmu(2)
     character(len=1) :: typcst(2)
-    logical :: lmodim
+    logical(kind=1) :: lmodim
 !
 ! ----------------------------------------------------------------------
 !

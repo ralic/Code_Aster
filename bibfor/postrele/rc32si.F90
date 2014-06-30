@@ -48,7 +48,7 @@ subroutine rc32si()
     integer :: nscy, nbm, vali(3), nbgrt, numg1, numg2, nbseis, numgs, nbsg1
     integer :: nbsg2, nbsg3, nbp12, nbp23, nbp13, ndim, jspas, jsigr, jsp12
     integer :: jsp23, jsp13
-    logical :: yapass
+    logical(kind=1) :: yapass
     character(len=8) :: k8b, knume, ouinon
     character(len=16) :: motcl1, motcl2
     integer, pointer :: nume_group(:) => null()

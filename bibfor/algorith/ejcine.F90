@@ -26,7 +26,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 #include "blas/ddot.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno1, nno2, kpg, ipg, idf2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2)
     real(kind=8) :: rot(ndim, ndim)

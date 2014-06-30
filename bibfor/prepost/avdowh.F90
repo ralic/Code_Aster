@@ -33,7 +33,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !    real(kind=8) :: gdeq(nbvec*nbordr)
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
     integer :: jgdeq, jnrupt, jdomel
-    logical :: post
+    logical(kind=1) :: post
     character(len=8) :: nommat, grdvie
     character(len=16) :: nomcri, forvie
 ! ----------------------------------------------------------------------
@@ -63,7 +63,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
     integer :: icodre(1)
     character(len=16) :: phenom, kbid
     character(len=8) :: nomgrd
-    logical :: limit
+    logical(kind=1) :: limit
 !     ------------------------------------------------------------------
 !
 !234567                                                              012

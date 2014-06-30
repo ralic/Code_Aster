@@ -17,8 +17,8 @@
 !
 interface 
     subroutine dspdp2(net, bishop, tbiot, dsdp2)
-        logical :: net
-        logical :: bishop
+        logical(kind=1) :: net
+        logical(kind=1) :: bishop
         real(kind=8) :: tbiot(6)
         real(kind=8) :: dsdp2(6)
     end subroutine dspdp2

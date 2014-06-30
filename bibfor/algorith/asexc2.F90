@@ -30,7 +30,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     real(kind=8) :: parmod(nbmode, *), amort(*), dirspe(3, *), echspe(3, *)
     character(len=8) :: nomsup(3, *), nomspe(3, *), noma
     character(len=*) :: motfac, kvspe, kaspe, knoeu
-    logical :: corfre
+    logical(kind=1) :: corfre
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

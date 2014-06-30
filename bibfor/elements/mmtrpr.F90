@@ -27,7 +27,7 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
     real(kind=8) :: djeut(3)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: rese(3), nrese
-    logical :: lpenaf, ladhe
+    logical(kind=1) :: lpenaf, ladhe
 !
 ! ----------------------------------------------------------------------
 !

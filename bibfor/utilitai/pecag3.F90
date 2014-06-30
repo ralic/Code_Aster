@@ -17,7 +17,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
     real(kind=8) :: valpar(*)
     character(len=*) :: noment(*), noma
     character(len=*) :: motcle
-    logical :: nsymx, nsymy
+    logical(kind=1) :: nsymx, nsymy
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

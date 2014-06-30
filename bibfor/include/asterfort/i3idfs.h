@@ -26,6 +26,6 @@ interface
         real(kind=8) :: coorsm(3, *)
         integer :: nbpt
         integer :: lstpt(*)
-        logical :: fink
+        logical(kind=1) :: fink
     end subroutine i3idfs
 end interface

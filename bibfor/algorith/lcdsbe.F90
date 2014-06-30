@@ -52,7 +52,7 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
 ! OUT PROJ    : PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical :: rigi, resi, elas
+    logical(kind=1) :: rigi, resi, elas
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), epsr(6), treps, sigel(6), sigelr(6)
     real(kind=8) :: rac2, coef

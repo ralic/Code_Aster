@@ -34,7 +34,7 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
 #include "asterfort/lceqvn.h"
     integer :: nvi, nr, nmat
     real(kind=8) :: vind(nvi), vinf(nvi), yd(nr), mater(nmat, 2)
-    logical :: bnews(3), mtrac
+    logical(kind=1) :: bnews(3), mtrac
 !
     integer :: i, ii, nbmeca, ndt
     real(kind=8) :: zero, un

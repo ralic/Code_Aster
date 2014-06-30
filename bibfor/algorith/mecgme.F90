@@ -90,7 +90,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     character(len=24) :: ligrmo, ligrch, evolch
     integer :: iret, ier, i, k, icha, inum
     integer :: somme
-    logical :: prem
+    logical(kind=1) :: prem
     integer :: jchar, jinf
     integer :: nchar, numchm, nbchme
     integer :: ifm, niv

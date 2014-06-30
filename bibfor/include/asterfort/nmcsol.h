@@ -19,6 +19,6 @@ interface
     subroutine nmcsol(lischa, sddyna, lviss)
         character(len=19) :: lischa
         character(len=19) :: sddyna
-        logical :: lviss
+        logical(kind=1) :: lviss
     end subroutine nmcsol
 end interface

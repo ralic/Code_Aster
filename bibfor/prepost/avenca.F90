@@ -25,7 +25,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
 #include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, iflag(nbvec), jrvecp
     real(kind=8) ::  rmima(4*nbvec)
-    logical :: lsig0
+    logical(kind=1) :: lsig0
 ! ----------------------------------------------------------------------
 ! BUT: ENCADRER LES POINTS REPRESANTANT LE CISAILLEMENT TAU
 !      DANS LE PLAN DE CISAILLEMENT (PLAN u, v).

@@ -19,7 +19,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 #include "asterfort/vtdefs.h"
     integer :: neq, ndir(*)
     real(kind=8) :: repdir(neq, *)
-    logical :: comdir, glob, prim
+    logical(kind=1) :: comdir, glob, prim
     character(len=16) :: nomsy
     character(len=*) :: mome, resu, typcdi
 !     ------------------------------------------------------------------

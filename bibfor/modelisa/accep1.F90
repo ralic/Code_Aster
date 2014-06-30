@@ -59,7 +59,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=16) :: option
     character(len=19) :: nomcha, chgeom, matas, chharm
     character(len=24) :: ligrmo, lchin(3), lchout(1)
-    logical :: yang
+    logical(kind=1) :: yang
     character(len=8), pointer :: vec(:) => null()
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: lime(:) => null()

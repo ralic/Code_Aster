@@ -50,7 +50,7 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 !.......................................................................
 !
 !
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
     integer :: kpg, n, i, j, kl, kpgs, proj, npgs
     real(kind=8) :: f(3, 3), eps(6), r
     real(kind=8) :: poids
@@ -126,7 +126,7 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 !
     call nmgeom(2, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, depbid,&
-                .true., poids, dfdi, f, eps,&
+                .true._1, poids, dfdi, f, eps,&
                 r)
 !
 !

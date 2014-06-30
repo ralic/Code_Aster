@@ -100,7 +100,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     real(kind=8) :: mident(6, 6), kron(6), kron2(6, 6), unstro
     real(kind=8) :: dsdsig(6, 6), dgtvds(6, 6), dgtpds(6, 6), kron3(6, 6)
     real(kind=8) :: devgp(6), devgv(6), dgtpdx(6), dgtvdx(6), dxiv
-    logical :: plas
+    logical(kind=1) :: plas
     parameter       (zero  =  0.d0 )
     parameter       (un    =  1.d0 )
     parameter       (deux  =  2.d0 )

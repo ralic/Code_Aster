@@ -26,7 +26,7 @@ interface
         integer :: dimdef
         integer :: ndim
         real(kind=8) :: dt
-        logical :: fnoevo
+        logical(kind=1) :: fnoevo
         integer :: yamec
         integer :: yap1
         integer :: yap2

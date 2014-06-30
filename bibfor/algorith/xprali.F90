@@ -10,7 +10,7 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
 #include "asterfort/provec.h"
     real(kind=8) :: vnele(3), vin(3)
     character(len=19) :: poifis, trifis
-    logical :: libre
+    logical(kind=1) :: libre
     integer :: p1, p2, nelcou
 !
 ! ======================================================================

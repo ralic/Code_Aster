@@ -66,7 +66,7 @@ subroutine chveno(fonree, noma, nomo)
     integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
     integer :: norien, norie1, norie2, jlima, nbmamo
     real(kind=8) :: dnor
-    logical :: reorie, mcfl(nbt)
+    logical(kind=1) :: reorie, mcfl(nbt)
     character(len=8) :: mot, nomma, nommo, typel
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
     character(len=19) :: limamo

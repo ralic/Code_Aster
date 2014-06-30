@@ -28,7 +28,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     real(kind=8) :: depsup(nbsup, *), recmod(nbsup, neq, *)
     character(len=*) :: stat, nomsup(nbsup, *), masse
     character(len=16) :: nomsy
-    logical :: muapde
+    logical(kind=1) :: muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -78,7 +78,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
     real(kind=8) :: ptpb(3), p(3, 3), vitang(3), saut(3), rbid(3, 3)
     real(kind=8) :: r2bid(3, 3)
     real(kind=8) :: r3bid(3, 3)
-    logical :: adher
+    logical(kind=1) :: adher
 !
 ! ----------------------------------------------------------------------
 !

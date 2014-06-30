@@ -70,9 +70,9 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     character(len=16) :: kit_comp(9)
     character(len=16) :: comp_code_py, rela_code_py, meta_code_py
     integer :: j_comp_d,  j_comp_l, iadc
-    logical :: l_kit_meta, l_affe
-    logical :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
-    logical :: l_excl
+    logical(kind=1) :: l_kit_meta, l_affe
+    logical(kind=1) :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
+    logical(kind=1) :: l_excl
     integer :: nb_elem, nocc, nb_vari, nb_vari_all
     integer :: i_elem, iocc, i_kit
     integer :: idummy

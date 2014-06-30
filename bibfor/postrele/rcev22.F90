@@ -25,7 +25,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 #include "asterfort/as_allocate.h"
 !
     integer :: nbinti
-    logical :: lfatig, flexio, lrocht
+    logical(kind=1) :: lfatig, flexio, lrocht
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, ccont, cnoc, cresu, cpres
 !     ------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     parameter  ( ncmp = 6 )
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     complex(kind=8) :: cbid
-    logical :: exist, cfait
+    logical(kind=1) :: exist, cfait
     character(len=8) :: k8b, crit(2), nocmp(ncmp)
     character(len=16) :: motclf, valek(2), table, tabl0, tabfle, tabfl0, tabpre
     character(len=16) :: tabpr0

@@ -34,7 +34,7 @@ Vec :: vx0
 Vec :: vecb
 Vec :: vecc
 integer*4, dimension(:), pointer :: indred
-logical :: lqr ! .true. => on veut la matrice r
+logical(kind=1) :: lqr ! .true. => on veut la matrice r
 end type
 !
 !     -- on prévoit de pouvoir utiliser simultanément ELIM_LAGR='OUI'

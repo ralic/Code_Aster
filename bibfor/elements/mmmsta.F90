@@ -29,9 +29,9 @@ subroutine mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
 
     integer :: ndim
     real(kind=8) :: dlagrf(2), djeut(3)
-    logical :: loptf, lpenaf, leltf
+    logical(kind=1) :: loptf, lpenaf, leltf
     real(kind=8) :: tau1(3), tau2(3)
-    logical :: lcont, ladhe
+    logical(kind=1) :: lcont, ladhe
     real(kind=8) :: rese(3), nrese, lambda
     real(kind=8) :: coefaf
 !

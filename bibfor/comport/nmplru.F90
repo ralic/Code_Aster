@@ -65,7 +65,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !
     integer :: i, jprol, jvale, nbval
 !
-    logical :: cp, trac, line, elas
+    logical(kind=1) :: cp, trac, line, elas
 !
 !
 !-----------------------------------------------------------------------

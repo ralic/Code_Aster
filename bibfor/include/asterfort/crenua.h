@@ -23,6 +23,6 @@ interface
         integer :: np
         integer :: nx
         integer :: nc
-        logical :: lnual
+        logical(kind=1) :: lnual
     end subroutine crenua
 end interface

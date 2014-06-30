@@ -99,7 +99,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(12), test
     character(len=8) :: nomres(12), nomcle(3), zirc(2)
 !
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
     data        kr/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data        pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/

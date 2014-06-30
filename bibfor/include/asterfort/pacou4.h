@@ -21,6 +21,6 @@ interface
         real(kind=8) :: a(n, *)
         real(kind=8) :: c(*)
         real(kind=8) :: d(*)
-        logical :: sing
+        logical(kind=1) :: sing
     end subroutine pacou4
 end interface

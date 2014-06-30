@@ -107,7 +107,8 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
     real(kind=8) :: parame(4), derive(5), pi, fmoins, pphi0, pphi1, pphi2
     character(len=3) :: matcst
     character(len=8) :: mod
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
+    logical :: lcond
     integer :: nvi
 ! ======================================================================
     parameter       ( un     =  1.0d0  )
@@ -150,7 +151,8 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
     etam = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
     resi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RAPH_MECA'
     rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    ASSERT(resi .or. rigi)
+    lcond=resi .or. rigi
+    ASSERT(lcond)
 ! =====================================================================
 ! --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 ! =====================================================================

@@ -71,7 +71,7 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 !                 1 : NOMBRE MAXIMUM D'ITERATIONS ATTEINT
 !
 !
-    logical :: lprmo
+    logical(kind=1) :: lprmo
     character(len=19) :: depso1, depso2
     integer :: ifm, niv
 !

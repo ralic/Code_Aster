@@ -33,7 +33,7 @@ interface
         integer :: nbel(*)
         integer :: nbcmpi
         character(len=*) :: nomcmp(*)
-        logical :: lresu
+        logical(kind=1) :: lresu
         real(kind=8) :: para(*)
         integer :: versio
         character(len=8) :: tycha

@@ -2,7 +2,7 @@ subroutine pj3da3(m, a, b, c, ok,&
                   la, lb, lc, d2)
     implicit none
     real(kind=8) :: m(3), a(3), b(3), c(3), d2, la, lb, lc
-    logical :: ok
+    logical(kind=1) :: ok
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

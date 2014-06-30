@@ -105,7 +105,7 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
 ! NORMALISATION DU PREMIER VECTEUR PROPRE
     if (typeps .ne. 0) then
         call mrmult('ZERO', lmatb, vect(1, 1), vaux, 1,&
-                    .false.)
+                    .false._1)
     else
         do 5 i = 1, nbeq
             vaux(i) = vect(i,1)
@@ -138,7 +138,7 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
 !
             if (typeps .ne. 0) then
                 call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
-                            .false.)
+                            .false._1)
             else
                 do 25 k = 1, nbeq
                     vaux(k) = vect(k,i)
@@ -165,7 +165,7 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
 ! CALCUL DE ||VI+|| (STEP 1) ET ||VI++|| (STEP 2)
             if (typeps .ne. 0) then
                 call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
-                            .false.)
+                            .false._1)
             else if (typeps.eq.0) then
                 do 45 k = 1, nbeq
                     vaux(k) = vect(k,i)

@@ -37,7 +37,7 @@ subroutine ntdcom(evolsc)
     integer :: iocc, k, n1, nbcham
     character(len=8) :: k8b
     character(len=16) :: comp, motcle, k16bid, nomcmd, tysd
-    logical :: lrela, lsech
+    logical(kind=1) :: lrela, lsech
 !
     data         motcle / 'COMPORTEMENT' /
 ! ----------------------------------------------------------------------

@@ -26,7 +26,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 !
     character(len=8) :: noma, nonoe(*)
     integer :: ifc, versio
-    logical :: lgmsh
+    logical(kind=1) :: lgmsh
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

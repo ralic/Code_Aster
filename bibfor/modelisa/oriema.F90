@@ -9,7 +9,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
 #include "blas/ddot.h"
     integer :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
     real(kind=8) :: coor(*)
-    logical :: reorie
+    logical(kind=1) :: reorie
     character(len=8) :: nomail, tpmail, typ3d
     character(len=24) :: valk(2)
 !.======================================================================

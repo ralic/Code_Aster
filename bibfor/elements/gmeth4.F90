@@ -48,7 +48,7 @@ subroutine gmeth4(nnoff, ndimte, fond, gthi, milieu,&
     integer :: kk, ndimte, nn, nnoff, nump
     real(kind=8) :: gthi(1), gs(1), gi(1), s1, s2, s3, delta
     character(len=24) :: matr, fond, objcur
-    logical :: connex, milieu, pair, gxfem
+    logical(kind=1) :: connex, milieu, pair, gxfem
 !
 !
 ! OBJET DECRIVANT LE MAILLAGE

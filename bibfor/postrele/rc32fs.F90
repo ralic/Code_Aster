@@ -29,7 +29,7 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
 !     ------------------------------------------------------------------
     integer :: is1, is2, i, i1, ifm, k, l, niv, ns2, icomp
     real(kind=8) :: salt, fum, u1kl, u2kl
-    logical :: trouve
+    logical(kind=1) :: trouve
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)

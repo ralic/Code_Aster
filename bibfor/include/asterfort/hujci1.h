@@ -23,7 +23,7 @@ interface
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
         real(kind=8) :: i1f
-        logical :: tract
+        logical(kind=1) :: tract
         integer :: iret
     end subroutine hujci1
 end interface

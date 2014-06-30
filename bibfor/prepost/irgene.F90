@@ -22,7 +22,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
     integer :: cmpg(*), ordr(*), nume(*)
     real(kind=8) :: disc(*)
     character(len=*) :: resu, nosy(*), para(*), form
-    logical :: lhist
+    logical(kind=1) :: lhist
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
     character(len=16) :: typcon
     character(len=19) :: gene, noch19
     character(len=24) :: nomst, nuddl, basemo
-    logical :: lordr
+    logical(kind=1) :: lordr
     integer :: iocc, ifi, nbnosy, nbcmpg, nbpara, nbordr, i, im, iord, ibid
     integer :: iret, isy, itresu,  jordr, jpara, jtitr, kdesc
     integer :: krefe, kvale, nbmode, nbtitr, npara, itcal, nbdisc

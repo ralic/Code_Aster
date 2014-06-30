@@ -57,7 +57,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
     integer, pointer :: trav1(:) => null()
-    logical, pointer :: trav2(:) => null()
+    logical(kind=1), pointer :: trav2(:) => null()
     character(len=24), pointer :: refe1(:) => null()
     character(len=24), pointer :: refe2(:) => null()
     integer, pointer :: deeq1(:) => null()

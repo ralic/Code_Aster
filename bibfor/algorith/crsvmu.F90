@@ -66,7 +66,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod
     integer ::  iexi
-    logical :: ldgrel
+    logical(kind=1) :: ldgrel
     character(len=8), pointer :: vpartit(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: prtk(:) => null()

@@ -79,7 +79,7 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
     call ggubs(dseed, neq, x0)
     call vpmort(neq, x0, x, mx, imode)
     call mrmult('ZERO', lmasse, x0, mx(1, imode), 1,&
-                .false.)
+                .false._1)
     do ieq = 1, neq
         mx(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
     end do
@@ -107,14 +107,14 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 !        --- RESOLUTION DE (K-W.M) X = (M).X ---
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, x(1, imode), [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
 !
 !        --- ORTHOGONALISATION EN CAS DE MODES MULTIPLES  ---
         call vpmort(neq, x(1, imode), x, mx, imode)
 !
 !        --- CALCUL DE M.XN ---
         call mrmult('ZERO', lmasse, x(1, imode), mx(1, imode), 1,&
-                    .false.)
+                    .false._1)
         do ieq = 1, neq
             mx(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
         end do
@@ -157,8 +157,8 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 ! --- POUR OPTIMISER ON NE CALCULE PAS LE DET
                 valp = pvalp
                 call vpstur(lraide, valp, lmasse, ldynam, det0,&
-                            idet0, place, ier, solveu, .false.,&
-                            .true.)
+                            idet0, place, ier, solveu, .false._1,&
+                            .true._1)
             endif
 !
         endif

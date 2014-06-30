@@ -50,7 +50,7 @@ subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical :: l_affe_all
+    logical(kind=1) :: l_affe_all
     integer :: nb_elem_affe
     integer :: j_elem_affe
     character(len=8) :: typmcl(2)

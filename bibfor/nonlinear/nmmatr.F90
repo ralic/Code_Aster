@@ -71,7 +71,7 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: ldyna, lctcd, lexpl, lamor, lsuiv, lshima, lprem
+    logical(kind=1) :: ldyna, lctcd, lexpl, lamor, lsuiv, lshima, lprem
     real(kind=8) :: coerig, coeamo, coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat(3)

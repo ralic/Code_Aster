@@ -20,6 +20,6 @@ interface
         character(len=19) :: sdappa
         integer :: izone
         character(len=*) :: questz
-        logical :: vall
+        logical(kind=1) :: vall
     end subroutine apzonl
 end interface

@@ -59,7 +59,7 @@ subroutine ndasva(phase, sddyna, veasse, cnvady)
     character(len=19) :: cnvari(20)
     real(kind=8) :: covari(20)
     character(len=19) :: cndyna, cnmoda, cnimpe
-    logical :: limpe, lammo
+    logical(kind=1) :: limpe, lammo
 !
 ! ----------------------------------------------------------------------
 !

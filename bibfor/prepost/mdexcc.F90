@@ -92,7 +92,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
     integer :: idfimd, nbcham, nbcha2
     integer :: iaux, jaux, kaux, iret, iouv
     integer :: adncmp, aducmp, adncmc, adncfi, nseqca
-    logical :: ficexi, dejouv
+    logical(kind=1) :: ficexi, dejouv
 !
     character(len=8) :: saux08
     character(len=16) :: saux16

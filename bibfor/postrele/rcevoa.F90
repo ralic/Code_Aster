@@ -62,7 +62,7 @@ subroutine rcevoa(typtab, nommat)
     real(kind=8) :: fam, theta, rcal, sittef, aamorc, bamorc, damorc, ramorc, d
     real(kind=8) :: sitt1, sitt2, fkl
     complex(kind=8) :: cbid
-    logical :: exist, trouve
+    logical(kind=1) :: exist, trouve
     integer :: icodre(4)
     character(len=8) :: k8b, nomres, crit(2), nompar, nomval(4)
     character(len=16) :: motclf, valek(4), table, concep, nomcmd

@@ -49,6 +49,6 @@ subroutine mm_cycl_print(sd_impr, sd_stat)
     call nmrvai(sd_stat, 'CTCC_CYCL_3', 'N', cycl_nb(3))
     call nmrvai(sd_stat, 'CTCC_CYCL_4', 'N', cycl_nb(4))
     cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
-    call nmimci(sd_impr, 'CTCC_CYCL', cycl_nb_tot, .true.)
+    call nmimci(sd_impr, 'CTCC_CYCL', cycl_nb_tot, .true._1)
 
 end subroutine

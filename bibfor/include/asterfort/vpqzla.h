@@ -53,6 +53,6 @@
               integer :: ivscal
               integer :: iiscal
               logical(kind=4) :: bwork(*)
-              logical :: flage
+              logical(kind=1) :: flage
             end subroutine vpqzla
           end interface

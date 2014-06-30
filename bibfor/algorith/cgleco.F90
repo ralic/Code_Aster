@@ -38,7 +38,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
     character(len=8), intent(in) :: modele
     character(len=8), intent(in) :: mate
     character(len=19), intent(out) :: compor
-    logical, intent(out) :: incr
+    logical(kind=1), intent(out) :: incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
     character(len=16) :: keywordfact
     character(len=24) :: repk
     character(len=8) :: mesh
-    logical :: limpel, l_etat_init, l_temp
+    logical(kind=1) :: limpel, l_etat_init, l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -48,7 +48,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     character(len=8) :: grdvie
     character(len=16) :: nomcri, proaxe, nomfor, forvie
     character(len=19) :: cesr
-    logical :: fordef, post
+    logical(kind=1) :: fordef, post
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN DANS LEQUEL LE DOMMAGE EST MAXIMAL
 ! ---------------------------------------------------------------------

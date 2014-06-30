@@ -30,7 +30,7 @@ interface
         real(kind=8) :: partps(3)
         character(len=24) :: numedd
         character(len=19) :: vecass
-        logical :: assmat
+        logical(kind=1) :: assmat
         character(len=19) :: solveu
         character(len=19) :: matass
         character(len=19) :: maprec

@@ -68,7 +68,7 @@ subroutine dxsit2(nomte, pgl, sigma)
     character(len=4) :: fami
     character(len=10) :: phenom
 !
-    logical :: dkg
+    logical(kind=1) :: dkg
 !
 ! ----------------------------------------------------------------------
 !

@@ -26,7 +26,7 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/majour.h"
-    logical :: lgrot, lendo
+    logical(kind=1) :: lgrot, lendo
     real(kind=8) :: coef
     character(len=*) :: incplz, incmoz, ddincz
     character(len=24) :: numedd

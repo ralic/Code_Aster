@@ -59,7 +59,7 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical :: l_affe_all
+    logical(kind=1) :: l_affe_all
     integer :: nb_elem_affe
     integer, pointer :: p_elem_affe(:) => null()
     character(len=16) :: keywordfact
@@ -72,7 +72,7 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    logical :: plane_stress
+    logical(kind=1) :: plane_stress
 !
 ! --------------------------------------------------------------------------------------------------
 !

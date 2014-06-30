@@ -130,7 +130,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !     --- MULTIPLICATION DU MODE RIGIDE PAR LA MATRICE MASSE
 !
         call mrmult('ZERO', lmat, zr(ltvec1), zr(ltvec2), 1,&
-                    .true.)
+                    .true._1)
 !
 !     --- PROJECTION SUR LES MODES PROPRES ET LES DEFORMEES NON MODALES
 !

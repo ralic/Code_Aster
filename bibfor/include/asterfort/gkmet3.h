@@ -21,8 +21,8 @@ interface
         integer :: nnoff
         character(len=24) :: chfond
         integer :: iadrgk
-        logical :: milieu
-        logical :: connex
+        logical(kind=1) :: milieu
+        logical(kind=1) :: connex
         integer :: iadgks
         integer :: iadgki
         character(len=24) :: abscur

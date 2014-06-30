@@ -28,7 +28,7 @@ subroutine mmvape(phasep, leltf, ndim, nnl, nbcps,&
 #include "asterfort/mmmvcc.h"
 #include "asterfort/mmmvff.h"
     character(len=9) :: phasep
-    logical :: leltf
+    logical(kind=1) :: leltf
     integer :: ndim, nnl, nbcps
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefff

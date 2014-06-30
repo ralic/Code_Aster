@@ -8,7 +8,7 @@ subroutine i3pdm3(epsi, k, desc, desctm, conexk,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*)
     real(kind=8) :: epsi, pt(*), coordo(*)
-    logical :: dedans
+    logical(kind=1) :: dedans
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ subroutine i3pdm3(epsi, k, desc, desctm, conexk,&
     integer :: vali(2)
     real(kind=8) :: zero, un, deux, cs(3, 4), a(10, 10), fk(4, 4), b(10), val1
     real(kind=8) :: val2, det
-    logical :: fini, gauche
+    logical(kind=1) :: fini, gauche
 !
 !======================================================================
 !

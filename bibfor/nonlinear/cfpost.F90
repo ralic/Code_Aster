@@ -57,7 +57,7 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
     integer :: ifm, niv
     character(len=19) :: ddeplc
     integer :: jddepc
-    logical :: lpenac, lgcp
+    logical(kind=1) :: lpenac, lgcp
 !
 ! ----------------------------------------------------------------------
 !

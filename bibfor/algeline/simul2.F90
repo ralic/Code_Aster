@@ -135,7 +135,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     end do
                     call jelibe(chamno//'.VALE')
                     call mrmult('CUMU', lmat, vecteur, zr(idchm), 1,&
-                                .true.)
+                                .true._1)
                 endif
  20             continue
             end do

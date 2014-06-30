@@ -29,7 +29,7 @@ subroutine nmfinp(sddisc, numins, lstop)
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: numins
-    logical :: lstop
+    logical(kind=1) :: lstop
 !
 ! ----------------------------------------------------------------------
 !

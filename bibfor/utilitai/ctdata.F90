@@ -22,7 +22,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     character(len=8) :: noma
     character(len=24) :: mesnoe, mesmai, nkcha, nkcmp
     character(len=19) :: chpgs
-    logical :: toucmp
+    logical(kind=1) :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     character(len=16) :: motcle(4)
     character(len=19) :: ligrel
     character(len=24) :: chgeom, lchin(6), lchout(1)
-    logical :: exicar
+    logical(kind=1) :: exicar
 !     ------------------------------------------------------------------
 !
     call jemarq()

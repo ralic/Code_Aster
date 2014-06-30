@@ -112,7 +112,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     character(len=64) :: nomcha
     character(len=200) :: nofimd
     character(len=255) :: kfic
-    logical :: ttt
+    logical(kind=1) :: ttt
 !
 !====
 ! 1. ALLOCATION D'UN CHAM_NO_S  (CHAMNS)

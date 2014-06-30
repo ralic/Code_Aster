@@ -22,10 +22,10 @@ subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf, l_excl, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: defo_comp
-    logical, intent(in) :: l_kit_meta
-    logical, intent(in) :: l_mult_comp
-    logical, intent(in) :: l_pmf
-    logical, intent(out) :: l_excl
+    logical(kind=1), intent(in) :: l_kit_meta
+    logical(kind=1), intent(in) :: l_mult_comp
+    logical(kind=1), intent(in) :: l_pmf
+    logical(kind=1), intent(out) :: l_excl
     character(len=16), intent(out) :: vari_excl
 !
 ! --------------------------------------------------------------------------------------------------

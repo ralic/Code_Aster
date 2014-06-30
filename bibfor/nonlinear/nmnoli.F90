@@ -80,7 +80,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
     integer :: numarc, numins
     integer :: ifm, niv
     character(len=24) :: noobj
-    logical :: lreuse
+    logical(kind=1) :: lreuse
 !
 ! ----------------------------------------------------------------------
 !

@@ -66,7 +66,8 @@ subroutine nugllo(nu, base, solveu)
     character(len=8) :: noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
-    logical :: ldgrel, ldist
+    logical(kind=1) :: ldgrel
+    logical :: ldist
     integer, pointer :: ddl_pres(:) => null()
     integer, pointer :: delg_tmp(:) => null()
     integer, pointer :: tab_eq(:) => null()

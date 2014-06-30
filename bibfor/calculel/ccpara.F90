@@ -20,7 +20,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
     integer :: numord, nordm1
     character(len=8) :: modele, resuin, resuou, mateco, carael
     character(len=16) :: option
-    logical :: exitim
+    logical(kind=1) :: exitim
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -7,7 +7,7 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
 #include "asterfort/jemarq.h"
     integer :: desc(*), desctm(*), conek1(*), conek2(*), im1, if1, iao1, iae1
     integer :: im2, if2, iao2
-    logical :: legfa
+    logical(kind=1) :: legfa
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

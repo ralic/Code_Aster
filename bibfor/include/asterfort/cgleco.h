@@ -22,6 +22,6 @@ interface
         character(len=8), intent(in) :: modele
         character(len=8), intent(in) :: mate
         character(len=19), intent(out) :: compor
-        logical, intent(out) :: incr
+        logical(kind=1), intent(out) :: incr
     end subroutine cgleco
 end interface

@@ -51,7 +51,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
     integer :: nnoff, unit, numero, ndeg, iordr, i, i1, imod
     integer :: iadrgk, iadgks, iadgki, ndimte
     real(kind=8) :: time, absc(*)
-    logical :: extim
+    logical(kind=1) :: extim
     character(len=8) :: result
 !
 !

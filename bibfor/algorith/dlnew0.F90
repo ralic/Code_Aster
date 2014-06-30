@@ -122,7 +122,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     real(kind=8) :: a4, a5, a6, a7, a8, c0, c1, c2, c3, c4, c5, tabwk1(neq)
     real(kind=8) :: tabwk2(neq), dt, theta, tempm, temps
 !
-    logical :: lamort, limped, lmodst, ener
+    logical(kind=1) :: lamort, limped, lmodst, ener
 !
     character(len=8) :: nodepl(nbexci), novite(nbexci), noacce(nbexci)
     character(len=8) :: masse, rigid, amort
@@ -398,7 +398,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !====
     call resoud(matres, maprec, solveu, cine, 0,&
                 force1, chsol, 'V', [0.d0], [cbid],&
-                criter, .true., 0, iret)
+                criter, .true._1, 0, iret)
     call copisd('CHAMP_GD', 'V', chsol(1:19), force1(1:19))
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
     call detrsd('CHAMP_GD', chsol)
@@ -438,8 +438,8 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
         call enerca(k19bid, dep0, vit0, depl1, vite1,&
                     masse1, amort1, rigid1, fexte, famor,&
-                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true.,&
-                    .false., sdener, '&&DLNEWI')
+                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
+                    .false._1, sdener, '&&DLNEWI')
         call jedetr('FNODABID')
         call jedetr('FCINEBID')
     endif

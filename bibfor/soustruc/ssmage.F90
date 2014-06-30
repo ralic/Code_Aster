@@ -101,7 +101,7 @@ subroutine ssmage(nomu, option)
     if (option .eq. 'MASS_MECA') then
         compor = ' '
         call memame('MASS_MECA  ', nomo, nchaci, zk8(iarefm-1+9+1), mate,&
-                    cara, .true., time, compor, matel,&
+                    cara, .true._1, time, compor, matel,&
                     base)
     else if (option.eq.'AMOR_MECA') then
         call dismoi('NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', repk=promes)

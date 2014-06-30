@@ -58,7 +58,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*)
     character(len=8) :: nomres, monmot
     character(len=16) :: typbas
-    logical :: lamor, prdeff,condrepri
+    logical(kind=1) :: lamor, prdeff,condrepri
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)

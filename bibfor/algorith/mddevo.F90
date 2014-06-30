@@ -104,7 +104,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-    logical :: prdeff
+    logical(kind=1) :: prdeff
     integer :: vali(2)
     real(kind=8) :: r8bid2, r8bid3, r8bid4, r8bid5, r8b2, tps1(4), valr(3)
     real(kind=8) :: rint1, rint2
@@ -133,7 +133,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
 !   Definition of statement functions giving the appropriate (i,j) term in the mass,
 !   rigidity and damping matrices
 #define mgen(row,col) magene(row, col, masgen, nbmode, ' ', 'DEVOGE')
-#define agen(row,col) amgene(row, col, amogen, nbmode, ' ', 'DEVOGE', .FALSE.)
+#define agen(row,col) amgene(row, col, amogen, nbmode, ' ', 'DEVOGE', .false._1)
 !   ------------------------------------------------------------------------------------
 !
     call jemarq()

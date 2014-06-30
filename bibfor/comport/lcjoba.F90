@@ -76,7 +76,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !   ADN    = CONSTANTE A D'ENDOMMAGEMENT NORMALE
 !   BDN    = CONSTANTE B D'ENDOMMAGEMENT NORMALE
 ! ----------------------------------------------------------------------
-    logical :: rigi, resi, conv, trac, adher
+    logical(kind=1) :: rigi, resi, conv, trac, adher
     integer :: icodre(14)
     character(len=8) :: nomres(14)
     integer :: k, itemax

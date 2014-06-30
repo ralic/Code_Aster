@@ -42,6 +42,6 @@ interface
         integer :: nnom
         integer :: nnos
         integer :: regula(6)
-        logical :: axi
+        logical(kind=1) :: axi
     end subroutine regini
 end interface

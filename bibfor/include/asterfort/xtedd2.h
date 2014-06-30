@@ -25,16 +25,16 @@ interface
         integer, intent(in) :: jnnm(3)
         integer, intent(in) :: nddl
         character(len=16), intent(in) :: option
-        logical, intent(in) :: lesclx
-        logical, intent(in) :: lmaitx
-        logical, intent(in) :: lcontx
+        logical(kind=1), intent(in) :: lesclx
+        logical(kind=1), intent(in) :: lmaitx
+        logical(kind=1), intent(in) :: lcontx
         integer, intent(in) :: stano(*)
         integer, intent(in) :: lact(8)
         integer, intent(in) :: jddle(2)
         integer, intent(in) :: jddlm(2)
         integer, intent(in) :: nfhe
         integer, intent(in) :: nfhm
-        logical, intent(in) :: lmulti
+        logical(kind=1), intent(in) :: lmulti
         integer, intent(in) :: heavno(8)
         real(kind=8), optional, intent(out) :: mmat(336, 336)
         real(kind=8), optional, intent(out) :: vtmp(336)

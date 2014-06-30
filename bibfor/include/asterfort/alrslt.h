@@ -23,6 +23,6 @@ interface
         character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
         character(len=*) :: base
-        logical :: ldist
+        logical(kind=1) :: ldist
     end subroutine alrslt
 end interface

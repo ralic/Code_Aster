@@ -28,7 +28,7 @@ interface
         character(len=24) :: sdcriq
         character(len=24) :: sdieto
         character(len=19) :: solalg(*)
-        logical :: lacc0
+        logical(kind=1) :: lacc0
         real(kind=8) :: instin
     end subroutine nmdoet
 end interface

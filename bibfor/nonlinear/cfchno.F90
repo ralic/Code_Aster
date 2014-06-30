@@ -45,8 +45,8 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1e(3), tau2e(3)
     real(kind=8) :: tau1(3), tau2(3)
-    logical :: lmfixe, lefixe
-    logical :: lmait, lescl
+    logical(kind=1) :: lmfixe, lefixe
+    logical(kind=1) :: lmait, lescl
 !
 ! ----------------------------------------------------------------------
 !

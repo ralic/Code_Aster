@@ -63,7 +63,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     real(kind=8) :: nu, para_vale, valpap
     character(len=8) :: nompar, para_type
     character(len=24) :: valk(2)
-    logical :: plasti
+    logical(kind=1) :: plasti
 !
 !-----------------------------------------------------------------------
     integer :: iret

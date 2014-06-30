@@ -19,6 +19,6 @@ interface
     subroutine mefor0(nomo, chfor0, fonc)
         character(len=8) :: nomo
         character(len=*) :: chfor0
-        logical :: fonc
+        logical(kind=1) :: fonc
     end subroutine mefor0
 end interface

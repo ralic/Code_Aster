@@ -13,7 +13,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: unitpa
-    logical :: prdeff, ficext
+    logical(kind=1) :: prdeff, ficext
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

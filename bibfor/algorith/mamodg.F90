@@ -136,16 +136,16 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
             if (model .eq. '3D') then
                 call jeveuo(zk24(itzsto+i-1)(1:19)//'.VALE', 'L', vr=tpz)
                 call mrmult('ZERO', imatz, tpz, vectz, 1,&
-                            .true.)
+                            .true._1)
             endif
 !
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
             call mrmult('ZERO', imatx, tpx, vectx, 1,&
-                        .true.)
+                        .true._1)
             call mrmult('ZERO', imaty, tpy, vecty, 1,&
-                        .true.)
+                        .true._1)
 !
 ! RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
 !

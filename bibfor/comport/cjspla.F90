@@ -63,7 +63,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     real(kind=8) :: i1f
     real(kind=8) :: seuili, seuild, pa, pref, qinit
     real(kind=8) :: zero
-    logical :: chgmec, noconv, aredec, stopnc, trac
+    logical(kind=1) :: chgmec, noconv, aredec, stopnc, trac
     character(len=6) :: mecani
     character(len=4) :: nivcjs
 !

@@ -2,7 +2,7 @@ function compr8(a, comp, b, eps, crit)
     implicit  none
 !
 #include "asterfort/assert.h"
-    logical :: compr8
+    logical(kind=1) :: compr8
     real(kind=8) :: a, b, eps
     integer :: crit
     character(len=2) :: comp

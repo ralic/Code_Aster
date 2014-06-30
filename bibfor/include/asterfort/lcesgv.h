@@ -35,7 +35,7 @@ interface
         end subroutine lcesga
         end interface
 
-        logical :: fige
+        logical(kind=1) :: fige
         character(len=8) :: typmod(*)
         character(len=16) :: option
         character(len=*) :: fami

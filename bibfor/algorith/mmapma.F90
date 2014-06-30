@@ -49,7 +49,7 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
     integer :: typint
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     character(len=8) :: nommam
-    logical :: lexfro
+    logical(kind=1) :: lexfro
 !
 ! ----------------------------------------------------------------------
 !

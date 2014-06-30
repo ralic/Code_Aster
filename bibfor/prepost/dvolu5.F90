@@ -42,7 +42,7 @@ function dvolu5(numele, coord, norm, volt, coord1,&
 !
     integer :: a, b, c, d, e, f, g, h, i, j, k, ex
     real(kind=8) :: vol3, vol4, xo1a, yo1a, zo1a, xo2a, yo2a, zo2a, do1a, do2a
-    logical :: lnoeu
+    logical(kind=1) :: lnoeu
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES
 !     RQ : 2 POINTS DEDANS

@@ -18,7 +18,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
     character(len=*) :: cumul
     integer :: lmat, nbvect
     complex(kind=8) :: vect(*), xsol(*)
-    logical :: prepos, prepo2
+    logical(kind=1) :: prepos, prepo2
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -55,7 +55,7 @@ subroutine veassc(lischa, vecele)
     character(len=19) :: chamno, lchout
     character(len=13) :: prefob
     integer :: genrec
-    logical :: lveac
+    logical(kind=1) :: lveac
     integer :: nbveac, iexis
 !
 ! ----------------------------------------------------------------------

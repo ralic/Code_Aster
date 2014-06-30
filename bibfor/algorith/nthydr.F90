@@ -2,7 +2,7 @@ subroutine nthydr(hydrat)
     implicit none
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
-    logical :: hydrat
+    logical(kind=1) :: hydrat
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

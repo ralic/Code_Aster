@@ -63,7 +63,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: vij(3, 3), lij(3, 3)
     integer :: nddl, ndu, g
     integer :: kl, sa, na, ia, ja, kk
@@ -79,7 +79,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)
     character(len=16) :: option
 !
-    parameter    (grand = .true.)
+    parameter    (grand = .true._1)
     data         vij  / 1, 4, 5,&
      &                  4, 2, 6,&
      &                  5, 6, 3 /
@@ -143,7 +143,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
 !
 ! - CALCUL DE ALPHA
         call tanbul(option, ndim, g, mate, compor(1),&
-                    .false., .false., alpha, dsbdep, trepst)
+                    .false._1, .false._1, alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U
         do na = 1, nno1

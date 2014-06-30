@@ -33,7 +33,7 @@ interface
         integer :: nbel(28)
         integer :: nbcmpi
         character(len=*) :: nomcmp(*)
-        logical :: lresu
+        logical(kind=1) :: lresu
         real(kind=8) :: para(*)
         character(len=8) :: nomaou
         character(len=8) :: nomain

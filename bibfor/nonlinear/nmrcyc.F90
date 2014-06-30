@@ -18,7 +18,7 @@ function nmrcyc(sddisc, iterat, prec)
 ! ======================================================================
 !
     implicit none
-    logical :: nmrcyc
+    logical(kind=1) :: nmrcyc
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

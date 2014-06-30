@@ -86,8 +86,8 @@ subroutine op0018()
     character(len=24) :: list_node
     integer, pointer :: p_list_node(:) => null()
     integer :: nb_node
-    logical :: l_elem, l_node, l_grandeur_cara
-    logical :: l_calc_rigi, l_veri_elem, l_volu_fini, l_need_neigh
+    logical(kind=1) :: l_elem, l_node, l_grandeur_cara
+    logical(kind=1) :: l_calc_rigi, l_veri_elem, l_volu_fini, l_need_neigh
     integer :: inode, ielem, iaffe
     integer :: vali(4),  ico, imodel, idx_modelisa
     integer, pointer          :: p_cata_dim(:) => null()
@@ -240,7 +240,7 @@ subroutine op0018()
 !
             call jedetr(list_node)
             call getnode(mesh   , keywordfact, iaffe , ' ', list_node,&
-                         nb_node, elem_excl = .true.)
+                         nb_node, elem_excl = .true._1)
 !
 ! --------- Loop on modelisations
 !
@@ -253,7 +253,7 @@ subroutine op0018()
                 call jeveuo(jexnum('&CATA.'//phenom, idx_modelisa), 'L', vi = p_cata_model)
                 phemod = phenom//modeli
 !
-! ------------- Topological dimensions
+! ------------- Topological(kind=1) dimensions
 !
                 call dismoi('DIM_TOPO', phemod, 'PHEN_MODE', repi=dim_topo_curr)
                 if (dim_topo_init .eq. -99) then

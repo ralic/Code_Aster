@@ -40,12 +40,12 @@ subroutine vrrefe(objet1, objet2, ier)
 !                > 0 NOMBRE DE DESCRIPTEURS DIFFERENTS
 !     ------------------------------------------------------------------
 !
-    logical :: ok
+    logical(kind=1) :: ok
 !
     integer :: ival1, ival2
     character(len=19) :: nom1, nom2
     character(len=24) :: refe1, refe2
-    logical :: refa, celk, lgene
+    logical(kind=1) :: refa, celk, lgene
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: irefe1, irefe2, iret

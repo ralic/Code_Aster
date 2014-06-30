@@ -20,8 +20,8 @@ interface
                       b)
         integer :: nno
         integer :: ndim
-        logical :: axi
-        logical :: grand
+        logical(kind=1) :: axi
+        logical(kind=1) :: grand
         real(kind=8) :: dfdi(nno, ndim)
         real(kind=8) :: b(6, 3, nno)
     end subroutine nmmabu

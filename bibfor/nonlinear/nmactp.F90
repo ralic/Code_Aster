@@ -61,7 +61,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
     integer :: retact, ievdac, actpas, iterat, ibid
     character(len=4) :: etinst
-    logical :: arret
+    logical(kind=1) :: arret
     integer :: piless, ireapc
     character(len=16) :: pilcho
     real(kind=8) :: r8bid

@@ -67,7 +67,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
     character(len=80) :: cval
     character(len=255) :: cgen
 !
-    logical :: lfreq
+    logical(kind=1) :: lfreq
 !
 !     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
     parameter          (mxdemo=20)

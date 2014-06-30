@@ -166,7 +166,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical :: select( * )
+    logical(kind=1) :: select( * )
     real(kind=8) :: rwork( * )
     complex(kind=8) :: t( ldt, * ), vl( ldvl, * ), vr( ldvr, * ), work( * )
 !     ..
@@ -178,7 +178,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
      &                   cmone = ( 1.0d+0, 0.0d+0 ) )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: allv, bothv, leftv, over, rightv, somev
+    logical(kind=1) :: allv, bothv, leftv, over, rightv, somev
     integer :: i, ii, is, j, k, ki
     integer(kind=4) :: info4
     real(kind=8) :: remax, scale, smin, smlnum, ulp, unfl

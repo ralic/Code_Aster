@@ -21,7 +21,7 @@ interface
         integer :: n1
         integer :: num1(n1)
         integer :: num2(n2)
-        logical :: reorie
+        logical(kind=1) :: reorie
         integer :: iorim2
     end function iorim2
 end interface

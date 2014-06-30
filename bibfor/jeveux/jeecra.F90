@@ -65,7 +65,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
     character(len=32) :: noml32
     character(len=1) :: genri, typei
     character(len=8) :: catrlu
-    logical :: lconst, lconti, llong, lluti
+    logical(kind=1) :: lconst, lconti, llong, lluti
     integer :: icre, iret, itab(1), jtab, irt
     integer :: ibacol, ixiadd, ixdeso, ixlong, ii
 !     ------------------------------------------------------------------

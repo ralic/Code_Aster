@@ -40,7 +40,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: diss, i, j
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2

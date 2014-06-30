@@ -70,7 +70,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
     real(kind=8) :: sigm, deps, depsth, depsm, tmoins, tplus
     real(kind=8) :: sigp, xrig, val(1)
-    logical :: isot, cine, elas, corr, impl, isotli
+    logical(kind=1) :: isot, cine, elas, corr, impl, isotli
 !
 !
 !----------INITIALISATIONS

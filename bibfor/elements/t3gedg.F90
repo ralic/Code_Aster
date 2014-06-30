@@ -46,7 +46,7 @@ subroutine t3gedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), carat3(21)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: qsi, eta
-    logical :: coupmf
+    logical(kind=1) :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !

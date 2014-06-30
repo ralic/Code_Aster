@@ -74,7 +74,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     integer :: avale, apadr, anumlo, apnco,  nbtnd
     integer :: adr, aconec, i, nd, nloc, j, adrm, adrn, lcoi, lndi, lndo, lcoo
 !
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
 !==================== CORPS DE LA ROUTINE =============================
 !

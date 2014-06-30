@@ -64,10 +64,10 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
 !
 !
 !
-    logical :: lgrot, ldyna, lstat, lexpl
-    logical :: lendo
-    logical :: lexge, ltcha, lmuap
-    logical :: ldepl, lvite, lacce
+    logical(kind=1) :: lgrot, ldyna, lstat, lexpl
+    logical(kind=1) :: lendo
+    logical(kind=1) :: lexge, ltcha, lmuap
+    logical(kind=1) :: ldepl, lvite, lacce
     character(len=19) :: depplu, vitplu, accplu, depmoi, vitmoi
     character(len=19) :: depdel, vitdel, accdel
     character(len=19) :: ddepla, dvitla, daccla

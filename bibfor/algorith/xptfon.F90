@@ -49,7 +49,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
-    logical :: orient, goinop
+    logical(kind=1) :: orient, goinop
 !     ------------------------------------------------------------------
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -89,10 +89,10 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     real(kind=8) :: normi
     character(len=8) :: typma, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn
-    logical :: fabord, indic
+    logical(kind=1) :: fabord, indic
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
-    logical, pointer :: ptbord(:) => null()
+    logical(kind=1), pointer :: ptbord(:) => null()
     integer, pointer :: typmail(:) => null()
     real(kind=8), pointer :: gn(:) => null()
     real(kind=8), pointer :: gt(:) => null()

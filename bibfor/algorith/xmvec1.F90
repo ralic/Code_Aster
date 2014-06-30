@@ -35,7 +35,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
     character(len=8) :: typmai
     integer :: nconta, ndeple, jddle(2), jddlm(2)
     integer :: nfhe, nfhm, heavno(8), heavfa(*)
-    logical :: lpenac, lmulti
+    logical(kind=1) :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !

@@ -95,7 +95,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     integer :: ifm, nivinf,   igrel
     integer :: ierd, jliel, nbgrel, iordr
     integer :: iaux, dimtopo
-    logical :: ljoint, lpenta
+    logical(kind=1) :: ljoint, lpenta
 !
     integer :: lgmax
     parameter (lgmax=1000)

@@ -58,7 +58,7 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
     character(len=19) :: meelem(*), veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: defico, resocu, resoco
-    logical :: lerrit
+    logical(kind=1) :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,12 +103,12 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lcfint, lcrigi, lcdiri, lcbudi
+    logical(kind=1) :: lcfint, lcrigi, lcdiri, lcbudi
     character(len=24) :: codere
     character(len=19) :: vefint, vediri, vebudi, cnfint, cndiri, cnbudi
     character(len=19) :: depplu, vitplu, accplu
     character(len=16) :: option
-    logical :: lctcd, lunil, leltc
+    logical(kind=1) :: lctcd, lunil, leltc
     integer :: ldccvg
     integer :: ifm, niv
 !

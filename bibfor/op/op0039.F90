@@ -65,8 +65,8 @@ subroutine op0039()
     character(len=200) :: nofimd
     character(len=255) :: kfic
 !
-    logical :: lresu, lcasts, lmod, existm
-    logical :: lmail, lrest, lgmsh
+    logical(kind=1) :: lresu, lcasts, lmod, existm
+    logical(kind=1) :: lmail, lrest, lgmsh
 !
 ! ----------------------------------------------------------------------
 !

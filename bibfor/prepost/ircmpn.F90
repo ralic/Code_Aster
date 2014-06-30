@@ -79,7 +79,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     character(len=*) :: nofimd
     character(len=80) :: caimpk(3)
 !
-    logical :: exicmp(nbvato)
+    logical(kind=1) :: exicmp(nbvato)
 !
 ! 0.2. ==> COMMUNS
 !

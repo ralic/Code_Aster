@@ -86,7 +86,7 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: k24bla
-    logical :: lerrit
+    logical(kind=1) :: lerrit
 !
 ! ----------------------------------------------------------------------
 !

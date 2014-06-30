@@ -59,7 +59,7 @@ subroutine ssriu2(nomu)
 !
     integer :: i, scdi, schc, iblo
     character(len=8) :: promes
-    logical :: modif
+    logical(kind=1) :: modif
 !
     real(kind=8) :: rtbloc
     character(len=19) :: nu, matas, stock

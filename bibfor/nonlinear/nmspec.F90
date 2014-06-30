@@ -85,8 +85,8 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lmvib, lflam
-    logical :: calcul
+    logical(kind=1) :: lmvib, lflam
+    logical(kind=1) :: calcul
     integer :: ibid
     real(kind=8) :: r8bid, inst
     character(len=16) :: option

@@ -51,7 +51,7 @@ subroutine nmdiri(modele, mate, carele, lischa, sddyna,&
 !
 !
 !
-    logical :: lstat, ldepl, lvite, lacce
+    logical(kind=1) :: lstat, ldepl, lvite, lacce
     character(len=19) :: veclag
 !
 ! ----------------------------------------------------------------------

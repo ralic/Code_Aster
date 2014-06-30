@@ -27,7 +27,7 @@ interface
         integer :: jgdeq
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical :: post
+        logical(kind=1) :: post
         integer :: jdomel
         integer :: jnrupt
     end subroutine avdowh

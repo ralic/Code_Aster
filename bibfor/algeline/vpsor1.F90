@@ -125,7 +125,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
     real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq)
     real(kind=8) :: workl(lonwl), dsor(nfreq+1, 2), fshift, vaux(nbeq)
     real(kind=8) :: workv(3*nbvect), alpha, omecor, vstab(nbeq), csta
-    logical :: selec(nbvect), flage
+    logical(kind=1) :: selec(nbvect), flage
     character(len=19) :: solveu
     integer :: redem
 !--------------------------------------------------------------------
@@ -140,7 +140,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(5)
     real(kind=8) :: sigmar, sigmai, valr(2)
-    logical :: rvec
+    logical(kind=1) :: rvec
     character(len=1) :: bmat, kbid
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
@@ -251,7 +251,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
         do j = 1, nbeq
             workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
         end do
@@ -263,7 +263,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)
@@ -293,7 +293,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! X <- (OP)*X
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
-                    criter, .false., 0, iret)
+                    criter, .false._1, 0, iret)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)

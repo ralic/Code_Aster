@@ -61,9 +61,9 @@ subroutine nmfext(eta, fonact, sddyna, veasse, cnfext)
     integer :: ifm, niv
     character(len=19) :: cnunil, cnctdc
     character(len=19) :: cnffdo, cnffpi, cnfvdo, cnvady
-    logical :: lctcd, lunil
+    logical(kind=1) :: lctcd, lunil
     real(kind=8) :: coeequ
-    logical :: ldyna, lallv
+    logical(kind=1) :: ldyna, lallv
     integer :: ifdo, n
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)

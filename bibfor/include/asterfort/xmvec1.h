@@ -38,7 +38,7 @@ interface
         integer :: cface(3, 5)
         real(kind=8) :: coefcr
         real(kind=8) :: coefcp
-        logical :: lpenac
+        logical(kind=1) :: lpenac
         real(kind=8) :: jeu
         real(kind=8) :: norm(3)
         character(len=8) :: typmai
@@ -51,7 +51,7 @@ interface
         integer :: jddlm(2)
         integer :: nfhe
         integer :: nfhm
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavno(8)
         integer :: heavfa(*)
         real(kind=8) :: vtmp(336)

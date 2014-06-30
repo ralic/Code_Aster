@@ -134,7 +134,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
     character(len=24) :: valk(2)
 !
     complex(kind=8) :: cbid, valc
-    logical :: yaxfem, yathm, perman
+    logical(kind=1) :: yaxfem, yathm, perman
 !
 !=======================================================================
 ! 1. PREALABLES
@@ -567,7 +567,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 4.2.12. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 !             LOCAUX
-        call erglob(chelem, .false., .false., option, iordr,&
+        call erglob(chelem, .false._1, .false._1, option, iordr,&
                     resuco, leres1)
 !
 ! 4.2.13. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT

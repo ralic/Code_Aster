@@ -58,7 +58,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     real(kind=8) :: depsme(6), rac2, vepst1(6), vepst2(6), epsm2(6)
     integer :: nbsigm, i, j
     character(len=2) :: k2bid
-    logical :: vrai
+    logical(kind=1) :: vrai
 !
     k2bid = '  '
 !

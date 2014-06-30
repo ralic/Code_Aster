@@ -45,7 +45,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
     integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, nsitup, ifm, niv, icompt
     integer ::  nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
     real(kind=8) :: saltm, nadm(1), ukl, vale(2)
-    logical :: trouve, endur, yapass
+    logical(kind=1) :: trouve, endur, yapass
     integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=3) :: typass

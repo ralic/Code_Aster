@@ -18,7 +18,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
     integer :: nbocc, nbmode, ndir(*)
     real(kind=8) :: parmod(nbmode, *), amort(*), valspe(3, *), asyspe(*)
     character(len=*) :: motfac
-    logical :: corfre
+    logical(kind=1) :: corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

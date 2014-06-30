@@ -21,7 +21,7 @@ interface
         character(len=*) :: nofimd
         integer :: idfimd
         character(len=*) :: nomamd
-        logical :: existm
+        logical(kind=1) :: existm
         integer :: ndim
         integer :: codret
     end subroutine mdexpm

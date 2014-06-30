@@ -31,7 +31,7 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=24) :: defico
-    logical :: lctcd
+    logical(kind=1) :: lctcd
     integer :: iter1, iter2
     real(kind=8) :: elasdt, inikry
     real(kind=8) :: rgmaxi, rgrela

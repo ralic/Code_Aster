@@ -187,7 +187,7 @@ subroutine frogdp(sdstat, resoco, numedd, matass, resigr)
     call mtdscr(maf1)
     call jeveuo(maf1//'.&INT', 'L', lmaf1)
     call mrmult('ZERO', lmaf1, vale, zr(jafmu), 1,&
-                .true.)
+                .true._1)
 !
 ! --- CREATION DE FRO2 = E_T*AT
 !

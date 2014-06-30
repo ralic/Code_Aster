@@ -56,7 +56,7 @@ implicit none
 !
     character(len=16) :: noment, nompt
     integer :: interp
-    logical :: lstop
+    logical(kind=1) :: lstop
     real(kind=8) :: jeu, jeuref, varc
     integer :: ipt, izone
     integer :: jjeux, jenti, jzone

@@ -20,8 +20,8 @@ interface
                       nbddlt, nbnom, posnsm, ddl, coef,&
                       cofx, cofy)
         character(len=24) :: resoco
-        logical :: lctfd
-        logical :: lctf3d
+        logical(kind=1) :: lctfd
+        logical(kind=1) :: lctf3d
         integer :: posnoe
         integer :: iliai
         integer :: nbddlt

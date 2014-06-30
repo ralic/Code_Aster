@@ -50,7 +50,7 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(4), lchout(1)
     character(len=24) :: chgeom, chcara(18), chharm
-    logical :: lfonc
+    logical(kind=1) :: lfonc
 !
 !-----------------------------------------------------------------------
     integer :: icha, icode, ilires, iret

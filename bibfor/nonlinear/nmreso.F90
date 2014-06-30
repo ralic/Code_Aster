@@ -61,7 +61,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
 !
 !
-    logical :: lpilo
+    logical(kind=1) :: lpilo
     integer :: ifm, niv
     integer :: rescvg
     complex(kind=8) :: c16bid
@@ -114,7 +114,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
     call resoud(matass, maprec, solveu, cncine, 0,&
                 cndonn, depso1, 'V', [0.d0], [c16bid],&
-                crgc, .true., -9999, rescvg)
+                crgc, .true._1, -9999, rescvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -125,7 +125,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
     if (lpilo) then
         call resoud(matass, maprec, solveu, cncine, 0,&
                     cnpilo, depso2, 'V', [0.d0], [c16bid],&
-                    crgc, .true., -9999, rescvg)
+                    crgc, .true._1, -9999, rescvg)
         if (rescvg .eq. 1) goto 999
     endif
 !

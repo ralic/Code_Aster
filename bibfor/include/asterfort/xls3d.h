@@ -20,8 +20,8 @@ interface
                      jlnsl, nbno, jcoor, jcoorg, nbmaf,&
                      jdlima, nbsef, jdlise, jconx1, jconx2,&
                      noma)
-        logical :: callst
-        logical :: grille
+        logical(kind=1) :: callst
+        logical(kind=1) :: grille
         integer :: jltsv
         integer :: jltsl
         integer :: jlnsv

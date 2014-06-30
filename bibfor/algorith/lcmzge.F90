@@ -61,7 +61,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 ! OUT DSIDPR  : MATRICE TANGENTE DEFO GENERALISEE
 ! OUT PROJ    : PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! ----------------------------------------------------------------------
-    logical :: rigi, resi, elas, rela, prog, cplan
+    logical(kind=1) :: rigi, resi, elas, rela, prog, cplan
     character(len=1) :: poum
     integer :: icodre(7)
     character(len=8) :: nomres(7), nompar
@@ -82,7 +82,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: kron(6)
     real(kind=8) :: epsfp(6), epscou(6), chi, vala, r, a, b
     integer :: idc
-    logical :: coup
+    logical(kind=1) :: coup
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 ! ======================================================================

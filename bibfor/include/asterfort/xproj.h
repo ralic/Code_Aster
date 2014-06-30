@@ -27,6 +27,6 @@ interface
         real(kind=8) :: d
         real(kind=8) :: vn(3)
         real(kind=8) :: eps(3)
-        logical :: in
+        logical(kind=1) :: in
     end subroutine xproj
 end interface

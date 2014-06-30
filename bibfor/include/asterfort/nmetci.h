@@ -26,7 +26,7 @@ interface
         character(len=24) :: motcei
         character(len=24) :: motcob
         character(len=24) :: loccha
-        logical :: letin
-        logical :: larch
+        logical(kind=1) :: letin
+        logical(kind=1) :: larch
     end subroutine nmetci
 end interface

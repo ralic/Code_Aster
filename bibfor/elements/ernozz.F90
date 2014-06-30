@@ -58,7 +58,7 @@ subroutine ernozz(modele, sigma, chmat, signo, chvarc,&
 !
     call zzloca(modele, ligrel, chmat, sigma, signo,&
                 chvarc, champ)
-    call erglob(champ, .false., .false., option, iordr,&
+    call erglob(champ, .false._1, .false._1, option, iordr,&
                 resuco, resuc1)
 !
 end subroutine

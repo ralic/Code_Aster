@@ -24,7 +24,7 @@ interface
         integer :: desctm(*)
         integer :: conexk(*)
         real(kind=8) :: coordo(*)
-        logical :: gauche
+        logical(kind=1) :: gauche
         real(kind=8) :: epsi
     end subroutine i3tstf
 end interface

@@ -35,6 +35,6 @@ interface
         integer :: nbdisc
         real(kind=8) :: disc(*)
         integer :: nume(*)
-        logical :: lhist
+        logical(kind=1) :: lhist
     end subroutine irgene
 end interface

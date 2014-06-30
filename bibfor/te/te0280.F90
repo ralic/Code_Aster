@@ -54,7 +54,7 @@ subroutine te0280(option, nomte)
 !
     character(len=8) :: nompar(4)
 !
-    logical :: fonc
+    logical(kind=1) :: fonc
 !.......................................................................
 !
     call jemarq()

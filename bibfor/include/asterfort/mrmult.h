@@ -23,6 +23,6 @@ interface
         real(kind=8) :: vect(*)
         real(kind=8) :: xsol(*)
         integer :: nbvect
-        logical :: prepos
+        logical(kind=1) :: prepos
     end subroutine mrmult
 end interface

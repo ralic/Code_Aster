@@ -83,7 +83,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     integer :: lonlis, nbma1, nbno1, n1, ndim, ng1, ngm1, nlino, no, nr, nt
     integer :: n2, n3, n4, n5, n6, n7, n8, vali(2)
     real(kind=8) :: centre(3), theta(3), t(3)
-    logical :: dnor
+    logical(kind=1) :: dnor
     character(len=8) :: k8bid, ddl1, ddl2, noma, mod
     character(len=8) :: nom1, nom2
     character(len=24) :: valk(2)

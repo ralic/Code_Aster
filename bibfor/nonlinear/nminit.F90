@@ -118,8 +118,8 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     real(kind=8) :: instin
     character(len=19) :: commoi
     character(len=2) :: codret
-    logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
-    logical :: lcont, lunil
+    logical(kind=1) :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
+    logical(kind=1) :: lcont, lunil
     integer :: ifm, niv
     character(len=19) :: ligrcf, ligrxf
     character(len=8) :: nomo

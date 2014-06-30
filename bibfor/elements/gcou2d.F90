@@ -25,7 +25,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     character(len=1) :: base
     character(len=8) :: noma, noeud
     character(len=24) :: resu, nomno
-    logical :: ldirec
+    logical(kind=1) :: ldirec
 !
 !     ------------------------------------------------------------------
 ! ======================================================================

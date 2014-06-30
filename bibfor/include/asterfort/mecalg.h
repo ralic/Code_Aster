@@ -29,14 +29,14 @@ interface
         character(len=19) :: lischa
         character(len=8) :: symech
         character(len=24) :: compor
-        logical :: incr
+        logical(kind=1) :: incr
         real(kind=8) :: time
         integer :: iord
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
-        logical :: lmelas
+        logical(kind=1) :: lmelas
         character(len=16) :: nomcas
         character(len=8) :: kcalc
     end subroutine mecalg

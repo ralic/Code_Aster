@@ -41,7 +41,7 @@ subroutine remome(promes, modmes, nommac)
 #include "asterfort/wkvect.h"
     character(len=8) :: promes, modmes, nommac
 !
-    logical :: zcmplx
+    logical(kind=1) :: zcmplx
 !
     character(len=1) :: typval
     character(len=8) :: k8bid, scal

@@ -62,7 +62,7 @@ subroutine aprema(sdappa)
     real(kind=8) :: coorpt(3), tau1m(3), tau2m(3), distm, ksi1m, ksi2m
     real(kind=8) :: dir(3), toleou, epsmax, vecpmm(3)
     integer :: itemax
-    logical :: dirapp, lmaesc, lsauve
+    logical(kind=1) :: dirapp, lmaesc, lsauve
     integer :: typapp, entapp
     integer :: vali(2)
     real(kind=8) :: valr(12)

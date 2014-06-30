@@ -25,6 +25,6 @@ interface
         character(len=8) :: typl
         character(len=8) :: typb
         character(len=8) :: mailla
-        logical :: double
+        logical(kind=1) :: double
     end subroutine nodoub
 end interface

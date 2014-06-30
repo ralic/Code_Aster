@@ -20,7 +20,7 @@ interface
                       defo_comp, defo_comp_py)
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: list_elem_affe
-        logical, intent(in) :: l_affe_all
+        logical(kind=1), intent(in) :: l_affe_all
         integer, intent(in) :: nb_elem_affe
         character(len=19), intent(in) :: full_elem_s
         character(len=16), intent(in) :: defo_comp

@@ -68,7 +68,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     integer :: i, j, jj, k, ia, ic, jm, iddlx, iddly, iddlz, nunoe
     real(kind=8) :: cc, cs, ct, scf, rscf, usr, normx
 !
-    logical :: matuv
+    logical(kind=1) :: matuv
     integer :: nm, m, n, ierr, nblig, icolc
     integer :: nbch1, nbch2, neqch1, neqch2
     integer ::  jrfimp
@@ -142,7 +142,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
 !           CALCUL DE RFIMPO : K*N
                 call mrmult('ZERO', irigi, fimpo, rfimpo, 1,&
-                            .true.)
+                            .true._1)
 !
                 if (ifac .eq. 0) then
                     call dismoi('SOLVEUR', marig, 'MATR_ASSE', repk=solveu)
@@ -171,7 +171,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !           FIMPO : DEFORMEE STATIQUE (K-1*N)
                 call resoud(marig, ' ', ' ', ' ', 1,&
                             ' ', ' ', ' ', fimpo, [cbid],&
-                            ' ', .true., 0, iret)
+                            ' ', .true._1, 0, iret)
 !           NORMX : NORME K-1*N
                 normx=ddot(neq,fimpo,1,fimpo,1)
                 normxx(icolc)=normx

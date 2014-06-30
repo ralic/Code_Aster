@@ -30,7 +30,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
     character(len=19) :: compor
     character(len=*) :: nomcmz
     character(len=*) :: nompaz
-    logical :: exist
+    logical(kind=1) :: exist
 !
 ! ----------------------------------------------------------------------
 !

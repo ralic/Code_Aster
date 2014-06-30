@@ -23,7 +23,7 @@
       integer :: jad
       type(c_ptr) :: pteur_c
 
-      logical            , optional, target :: vl(*)
+      logical(kind=1)            , optional, target :: vl(*)
       integer            , optional, target :: vi(*)
       integer(kind=4)    , optional, target :: vi4(*)
       real(kind=8)       , optional, target :: vr(*)

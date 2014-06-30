@@ -53,7 +53,7 @@ subroutine mmglis(defico, resoco)
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: nzoco, nbmae, nptm
-    logical :: lveri, lgliss
+    logical(kind=1) :: lveri, lgliss
     integer :: izone, imae, iptc, iptm
     integer :: xs
     integer :: posmae, jdecme

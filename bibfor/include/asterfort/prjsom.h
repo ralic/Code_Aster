@@ -25,6 +25,6 @@ interface
         real(kind=8) :: b
         real(kind=8) :: siie
         character(len=9) :: type
-        logical :: prjsom
+        logical(kind=1) :: prjsom
     end function prjsom
 end interface

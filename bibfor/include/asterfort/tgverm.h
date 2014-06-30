@@ -46,7 +46,7 @@ interface
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
         real(kind=8) :: smatr(*)
-        logical :: matsym
+        logical(kind=1) :: matsym
         real(kind=8) :: epsilo
         real(kind=8) :: epsilp
         real(kind=8) :: epsilg

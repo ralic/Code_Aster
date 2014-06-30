@@ -48,7 +48,7 @@ subroutine slecol(imod, nbmail)
     character(len=1) :: prfmai
     character(len=4) :: kbid
     character(len=8) :: chmail, chgrou
-    logical :: logiq(256)
+    logical(kind=1) :: logiq(256)
     integer :: jpo(256), jnomb(256), jmax(256)
 !  ------------ FIN DECLARATION -------------
 !

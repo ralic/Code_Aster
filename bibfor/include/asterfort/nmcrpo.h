@@ -20,6 +20,6 @@ interface
         character(len=19) :: nomsd
         integer :: nume
         real(kind=8) :: inst
-        logical :: lselec
+        logical(kind=1) :: lselec
     end subroutine nmcrpo
 end interface

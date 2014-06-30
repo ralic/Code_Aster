@@ -58,7 +58,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*), vvar
     character(len=8) :: nomres, monmot, intitu(*)
     character(len=16) :: typbas, method
-    logical :: lamor, prdeff
+    logical(kind=1) :: lamor, prdeff
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)

@@ -68,7 +68,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
     character(len=24) :: ioinfo, iolcha
     integer :: jioinf, jiolch
     integer :: icham, ich
-    logical :: chaact(nbmax)
+    logical(kind=1) :: chaact(nbmax)
     character(len=8) :: result
     character(len=19) :: resu19
     integer :: ichsy, nbnosy
@@ -78,7 +78,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
 !
     character(len=24) :: nomchs(nbmax), motcob(nbmax)
     character(len=24) :: nomgd(nbmax), motcei(nbmax), loccha(nbmax)
-    logical :: larch(nbmax), letin(nbmax)
+    logical(kind=1) :: larch(nbmax), letin(nbmax)
 ! -- NOM DU CHAMP DANS LA SD RESULTAT
     data nomchs  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,&
      &              'COMPORTEMENT','VITE'        ,'ACCE'        ,&
@@ -113,11 +113,11 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
      &              'NOEU','NOEU'/
 ! -- .TRUE. SI CHAMP EST LU DANS ETAT_INIT
     data letin   /.true. ,.true. ,.true. ,&
-     &              .false.,.true. ,.true. ,&
+     &              .false._1,.true. ,.true. ,&
      &              .true. ,.true. ,.true. ,&
-     &              .false.,.false.,.false.,&
+     &              .false._1,.false._1,.false._1,&
      &              .true. ,.true. ,.true. ,&
-     &              .false.,.true. ,.false.,&
+     &              .false._1,.true. ,.false._1,&
      &              .true. ,.true./
 ! -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
     data larch   /.true. ,.true. ,.true. ,&
@@ -125,7 +125,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
      &              .true. ,.true. ,.true. ,&
      &              .true. ,.true. ,.true. ,&
      &              .true. ,.true. ,.true. ,&
-     &              .false.,.true. ,.true. ,&
+     &              .false._1,.true. ,.true. ,&
      &              .true. ,.true./
 ! -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
     data motcob  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,&

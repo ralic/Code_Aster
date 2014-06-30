@@ -33,7 +33,7 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdstat, sdtime
     character(len=24) :: numedd
-    logical :: loptin
+    logical(kind=1) :: loptin
 !
 ! ----------------------------------------------------------------------
 !

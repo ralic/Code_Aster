@@ -73,7 +73,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
     character(len=8) :: nomch0
     character(len=24) :: nomlis
     integer :: genrec, ier
-    logical :: lneum, lxfem
+    logical(kind=1) :: lneum, lxfem
     integer :: nbch, nbneum
 !
 ! ----------------------------------------------------------------------

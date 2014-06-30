@@ -92,7 +92,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     character(len=1) :: fact, equed, trans2
     character(len=4) :: cara2
     character(len=24) :: valk(2)
-    logical :: ltrans, lstop, ldet, lret
+    logical(kind=1) :: ltrans, lstop, ldet, lret
 !----------------------------------------------------------------------
     call matfpe(-1)
 !

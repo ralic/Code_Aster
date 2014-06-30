@@ -94,7 +94,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 !                       FIXEE EN DUR)
 !               SIGM    CONTRAINTE A T
 ! ======================================================================
-    logical :: cplan, tang, raph
+    logical(kind=1) :: cplan, tang, raph
 !
     integer :: ndimsi, k, l
 !

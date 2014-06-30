@@ -81,7 +81,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     real(kind=8) :: vite(*)
     real(kind=8) :: carac(2)
     integer :: nbm, npv, nivpar, nivdef, n1
-    logical :: calcul(2)
+    logical(kind=1) :: calcul(2)
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -183,12 +183,10 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     do ieq = 0, neq-1
         zr(laux1+ieq) = zi(lddl+ieq)
     end do
-    call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
-                .true.)
+    call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, .true._1)
     do im = 1, nbm
         ior = nuor(im)
-        call rsexch('F', base, 'DEPL', ior, vale(1:19),&
-                    iret)
+        call rsexch('F', base, 'DEPL', ior, vale(1:19), iret)
         call jeveuo(vale, 'L', lvale)
         rval1 = 0.0d0
         do ieq = 0, neq-1
@@ -196,10 +194,8 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
         end do
         zr(kmasg+im-1) = rval1
 !
-        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
-                    0, sjv=lfact, styp=k8b)
-        call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
-                    0, sjv=lmasg, styp=k8b)
+        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior, 0, sjv=lfact, styp=k8b)
+        call rsadpa(base, 'L', 1, 'MASS_GENE', ior, 0, sjv=lmasg, styp=k8b)
         masg(im) = zr(lmasg)
         fact(3*(im-1)+1) = zr(lfact ) * masg(im)
         fact(3*(im-1)+2) = zr(lfact+1) * masg(im)

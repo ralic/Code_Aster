@@ -22,7 +22,7 @@ interface
         character(len=1) :: criter
         real(kind=8) :: x
         real(kind=8) :: y
-        logical :: ok
+        logical(kind=1) :: ok
         real(kind=8) :: eccart
     end subroutine rvegal
 end interface

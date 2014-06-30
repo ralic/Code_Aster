@@ -79,7 +79,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cn2c(:) => null()
     integer, pointer :: cn1d(:) => null()
-    logical, pointer :: exino(:) => null()
+    logical(kind=1), pointer :: exino(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

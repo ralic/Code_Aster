@@ -9,7 +9,7 @@ function xvfimo(modele, fiss)
 #include "asterfort/jeveuo.h"
 !
     character(len=8) :: modele, fiss
-    logical :: xvfimo
+    logical(kind=1) :: xvfimo
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

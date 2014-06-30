@@ -18,7 +18,7 @@ subroutine lcqubo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
     implicit none
     real(kind=8),intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
     real(kind=8),intent(out):: etam, etap
-    logical,intent(out)     :: vide
+    logical(kind=1),intent(out)     :: vide
 !
 ! ----------------------------------------------------------------------
 !  BORNES POUR LE PILOTAGE RELATIF AU CRITERE QUADRATIQUE

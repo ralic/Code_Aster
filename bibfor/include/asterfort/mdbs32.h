@@ -75,7 +75,7 @@ interface
         character(len=6) :: typal(20)
         character(len=3) :: finpal(20)
         character(len=8) :: cnpal(20)
-        logical :: prdeff
+        logical(kind=1) :: prdeff
         real(kind=8) :: conv
         real(kind=8) :: fsauv(20, 3)
         character(len=16) :: typbas
@@ -84,7 +84,7 @@ interface
         integer :: descmm
         real(kind=8) :: riggen(*)
         integer :: descmr
-        logical :: lamor
+        logical(kind=1) :: lamor
         integer :: descma
         real(kind=8) :: work1(*)
         real(kind=8) :: temps

@@ -26,9 +26,9 @@ interface
         integer :: ncv
         integer :: n
         integer :: ldz
-        logical :: rvec
+        logical(kind=1) :: rvec
         character(len=1) :: howmny
-        logical :: select(*)
+        logical(kind=1) :: select(*)
         complex(kind=8) :: d(*)
         complex(kind=8) :: z(ldz, *)
         complex(kind=8) :: sigma

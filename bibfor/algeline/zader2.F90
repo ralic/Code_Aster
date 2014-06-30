@@ -40,7 +40,7 @@ subroutine zader2(uplo, n, alpha, x, incx,&
 !-----------------------------------------------------------------------
     integer :: ix, iy, j
     complex(kind=8) :: tempx, tempy, temp1
-    logical :: upper
+    logical(kind=1) :: upper
     real(kind=8) :: dble
 !
     if (n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0)) goto 9999

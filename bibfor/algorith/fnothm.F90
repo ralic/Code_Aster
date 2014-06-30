@@ -30,7 +30,7 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
     implicit     none
 #include "asterfort/cabthm.h"
 #include "asterfort/fonoda.h"
-    logical :: fnoevo, perman, axi
+    logical(kind=1) :: fnoevo, perman, axi
     integer :: nno, nnos, npg, imate, dimdef, dimcon, nddls, nddlm, nnom
     integer :: dimuel, nmec, np1, np2, ndim, ipoids, ipoid2, ivf, ivf2
     integer :: idfde, idfde2, npi, mecani(5), press1(7), press2(7)

@@ -22,7 +22,7 @@ interface
         real(kind=8) :: excen
         integer :: nbpoin
         integer :: nbcmp
-        logical :: lreel
+        logical(kind=1) :: lreel
         real(kind=8) :: reffin(*)
         real(kind=8) :: reffou(*)
         complex(kind=8) :: ceffin(*)

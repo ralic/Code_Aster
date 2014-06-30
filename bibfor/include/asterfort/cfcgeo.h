@@ -22,8 +22,8 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: solalg(*)
-        logical :: dvgeom
-        logical :: geoerr
+        logical(kind=1) :: dvgeom
+        logical(kind=1) :: geoerr
         character(len=16) :: geonoe
         real(kind=8) :: geoval
     end subroutine cfcgeo

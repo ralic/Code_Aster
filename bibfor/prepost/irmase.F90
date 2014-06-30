@@ -66,7 +66,7 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !
     real(kind=8) :: xmin, xmax, delta, rmin, rmax, theta, dtheta
 !
-    logical :: lmstro
+    logical(kind=1) :: lmstro
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !

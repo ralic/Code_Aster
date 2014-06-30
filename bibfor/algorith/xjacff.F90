@@ -74,7 +74,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     character(len=8) :: k8bid
     real(kind=8) :: xe(3), coor2d(6)
 !
-    logical :: axi
+    logical(kind=1) :: axi
 !
     parameter       (nbnomx = 27)
 ! ----------------------------------------------------------------------

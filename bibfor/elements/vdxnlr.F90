@@ -65,7 +65,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     real(kind=8) :: epsi(5), depsi(5), eps2d(4), deps2d(4)
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3), rbid(1)
-    logical :: vecteu, matric
+    logical(kind=1) :: vecteu, matric
 !-----------------------------------------------------------------------
     integer :: i, ib, icarcr, icompo, icontm, icontp, icou
     integer :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn

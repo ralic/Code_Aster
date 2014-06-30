@@ -50,7 +50,7 @@ subroutine cfliin(noma, defico, resoco)
     integer :: ifm, niv
     character(len=24) :: clreac
     integer :: jclrea
-    logical :: reageo, reapre
+    logical(kind=1) :: reageo, reapre
     integer :: nbliac, llf, llf1, llf2
 !
 ! ----------------------------------------------------------------------

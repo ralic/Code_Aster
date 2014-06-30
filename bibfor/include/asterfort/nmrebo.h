@@ -35,7 +35,7 @@ interface
         real(kind=8) :: rhomax
         real(kind=8) :: rhoexm
         real(kind=8) :: rhoexp
-        logical :: stite
-        logical :: echec
+        logical(kind=1) :: stite
+        logical(kind=1) :: echec
     end subroutine nmrebo
 end interface

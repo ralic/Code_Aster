@@ -44,7 +44,7 @@ subroutine mpistp(imode)
 #include "asterf_constant.h"
     integer :: lout, imod2
     character(len=16) :: compex
-    logical :: labort
+    logical(kind=1) :: labort
 !
     call ststat(ST_ER_OTH)
     labort = .not. gtstat(ST_EXCEPT)

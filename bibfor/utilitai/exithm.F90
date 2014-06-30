@@ -48,7 +48,7 @@ subroutine exithm(modele, yathm, perman)
 #include "asterfort/utmess.h"
     character(len=8) :: modele
 !
-    logical :: yathm, perman
+    logical(kind=1) :: yathm, perman
 !
 ! 0.2. ==> COMMUNS
 ! 0.3. ==> VARIABLES LOCALES

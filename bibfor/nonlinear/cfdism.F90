@@ -28,7 +28,7 @@ subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
     character(len=24) :: defico
     integer :: posnoe
     real(kind=8) :: distst
-    logical :: ldpou, ldcoq
+    logical(kind=1) :: ldpou, ldcoq
 !
 ! ----------------------------------------------------------------------
 !

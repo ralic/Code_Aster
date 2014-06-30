@@ -306,11 +306,11 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !-- CALCUL DU TRAVAIL
         call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
-                    .true.)
+                    .true._1)
         call lceqvn(nbeq1, zr(leff1), zr(lefi1))
         travm=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
         call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), zr(leff1), 1,&
-                    .true.)
+                    .true._1)
         travk=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
         trvint=travk-(zr(lomeg+j1-1)**2)*travm
 !--
@@ -344,12 +344,12 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !-- CALCUL DE L'EFFORT RESIDUEL
 !--
         call mrmult('ZERO', matrice_mass(isst2), zr(lcopy2), zr(leff2), 1,&
-                    .true.)
+                    .true._1)
         call lceqvn(nbeq2, zr(leff2), zr(lefi2))
         travm=ddot(nbeq2,zr(lmod2),1,zr(leff2),1)
 !
         call mrmult('ZERO', matrice_raid(isst2), zr(lcopy2), zr(leff2), 1,&
-                    .true.)
+                    .true._1)
         travk=ddot(nbeq2,zr(lmod2),1,zr(leff2),1)
 !
         trvint=trvint+travk-(zr(lomeg+j1-1)**2)*travm

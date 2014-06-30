@@ -34,20 +34,20 @@ interface
         character(len=24) :: chfond
         integer :: nnoff
         integer :: ndeg
-        logical :: thlagr
-        logical :: glagr
-        logical :: thlag2
-        logical :: milieu
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: glagr
+        logical(kind=1) :: thlag2
+        logical(kind=1) :: milieu
         integer :: ndimte
-        logical :: pair
-        logical :: extim
+        logical(kind=1) :: pair
+        logical(kind=1) :: extim
         real(kind=8) :: timeu
         real(kind=8) :: timev
         integer :: indi
         integer :: indj
         integer :: nbprup
         character(len=16) :: noprup(*)
-        logical :: lmelas
+        logical(kind=1) :: lmelas
         character(len=16) :: nomcas
         character(len=24) :: fonoeu
     end subroutine mbilgl

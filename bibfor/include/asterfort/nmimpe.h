@@ -18,6 +18,6 @@
 interface
     subroutine nmimpe(modele, limped)
         character(len=24) :: modele
-        logical :: limped
+        logical(kind=1) :: limped
     end subroutine nmimpe
 end interface

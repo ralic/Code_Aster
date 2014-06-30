@@ -58,7 +58,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     complex(kind=8) :: cbid
     character(len=16) :: typbas
     character(len=19) :: matr, resu
-    logical :: lsym
+    logical(kind=1) :: lsym
     real(kind=8), pointer :: vectass2(:) => null()
     integer, pointer :: deeq(:) => null()
     integer, pointer :: scbl(:) => null()
@@ -161,7 +161,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
                 call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1,&
-                            .true.)
+                            .true._1)
                 call zerlag(neq, deeq, vectr=vectass2)
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
@@ -196,7 +196,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
             nbj=i-schc(i)+1
             ASSERT(nbj.eq.1)
             call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1,&
-                        .true.)
+                        .true._1)
             call zerlag(neq, deeq, vectr=vectass2)
             do j = 1, nueq
                 pij=ddot(neq,zr(idbase+(j-1)*neq),1,vectass2,1)

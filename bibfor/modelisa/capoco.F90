@@ -61,14 +61,14 @@ subroutine capoco(char, motfac)
     integer :: nbmae
     integer :: rangr0, rangr1, rangr2, iad1, iad2
     real(kind=8) :: r1, r2, rayon
-    logical :: ya
+    logical(kind=1) :: ya
     integer :: nzoco, nmaco
     character(len=8) :: carael
     character(len=24) :: defico
     character(len=24) :: jeupou, contma
     integer :: jmaco, jjpou
     character(len=19) :: carsd, carte
-    logical :: ldpou
+    logical(kind=1) :: ldpou
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !

@@ -158,7 +158,7 @@ subroutine sinoz1(modele, sigma, signo)
         call jeveuo(vect(i) (1:19)//'.VALE', 'E', jvect)
         call resoud('&&MASSAS', matpre, solveu, k19bid, 1,&
                     k19bid, k19bid, k1bid, zr(jvect), [cbid],&
-                    criter, .true., 0, iret)
+                    criter, .true._1, 0, iret)
     end do
 !
 !   CREATION DU CHAM_NO_SIEF_R A PARTIR DES 4 CHAM_NO_SIZZ_R (A 1 CMP)

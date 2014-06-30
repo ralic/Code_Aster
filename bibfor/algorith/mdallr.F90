@@ -48,7 +48,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 #include "asterfort/wkvect.h"
 !
     integer :: nbmode, nbsauv, ldlim, imode, ier, lvale, i, jrefa
-    logical :: lrefe, zcmplx
+    logical(kind=1) :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ
     character(len=14) :: nugene
     character(len=19) :: chamge

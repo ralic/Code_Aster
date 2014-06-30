@@ -26,10 +26,10 @@ interface
         integer :: posnoe
         character(len=4) :: typenm
         integer :: numenm
-        logical :: lmait
-        logical :: lescl
-        logical :: lmfixe
-        logical :: lefixe
+        logical(kind=1) :: lmait
+        logical(kind=1) :: lescl
+        logical(kind=1) :: lmfixe
+        logical(kind=1) :: lefixe
         real(kind=8) :: tau1m(3)
         real(kind=8) :: tau2m(3)
         real(kind=8) :: tau1e(3)

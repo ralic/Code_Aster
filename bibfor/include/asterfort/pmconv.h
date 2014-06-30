@@ -28,7 +28,7 @@ interface
         integer :: iter
         integer :: indimp(6)
         real(kind=8) :: parcri(*)
-        logical :: conver
-        logical :: itemax
+        logical(kind=1) :: conver
+        logical(kind=1) :: itemax
     end subroutine pmconv
 end interface

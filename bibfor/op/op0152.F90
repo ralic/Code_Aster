@@ -58,7 +58,7 @@ subroutine op0152()
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 
-    logical :: vrai
+    logical(kind=1) :: vrai
     integer :: ldblo, ibid
     integer :: nbmo, nbmode, ndble, indice, tabad(5)
     integer :: i, j, jdesc

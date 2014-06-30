@@ -23,7 +23,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "blas/dnrm2.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno, npg, imate, ipoids, ivf, idfde
     real(kind=8) :: geom(ndim, nno), depl(ndim, nno), inst, chlim(3)
 !
@@ -83,9 +83,9 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
 !
 ! -- DEFORMATION
 !
-        call nmgeom(ndim, nno, axi, .false., geom,&
+        call nmgeom(ndim, nno, axi, .false._1, geom,&
                     kpg, ipoids, ivf, idfde, depl,&
-                    .true., poids, dfdi, fbid, eps,&
+                    .true._1, poids, dfdi, fbid, eps,&
                     r)
         epsh = (eps(1)+eps(2)+eps(3))/3
         eps(1)=eps(1)-epsh

@@ -6,7 +6,7 @@ subroutine utfloa(floa, ch1, ch2)
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
-    logical :: floa
+    logical(kind=1) :: floa
     character(len=24) :: ch1, ch2
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -80,7 +80,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !      COMMONS COMMUNS A NMCRI2 ET NMISOT
     common /rconm2/alfafa,unsurn,sieleq
 !
-    logical :: cplan, plasti, inco, dech
+    logical(kind=1) :: cplan, plasti, inco, dech
     real(kind=8) :: depsth(6), valres(3), epsthe, pm, co
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, airerp
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, hydrm, hydrp

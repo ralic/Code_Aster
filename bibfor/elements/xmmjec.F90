@@ -33,7 +33,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     integer :: jnnm(3), jnne(3), jddle(2), jddlm(2)
     integer :: nsinge, nsingm, nfhe, nfhm, heavfa(*)
     real(kind=8) :: rre, rrm
-    logical :: lmulti
+    logical(kind=1) :: lmulti
 !
 ! ----------------------------------------------------------------------
 !

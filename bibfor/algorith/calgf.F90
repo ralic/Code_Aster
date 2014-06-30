@@ -23,7 +23,7 @@ subroutine calgf(ndim, nno, axi, npg, geomi,&
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: ndim, nno, g, iw, idff, i, j, npg
     real(kind=8) :: geomi(ndim, nno), vff(nno, npg)
     real(kind=8) :: deplm(nno*ndim), deplt(nno*ndim)

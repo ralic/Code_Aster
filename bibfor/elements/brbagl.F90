@@ -49,7 +49,7 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 #include "asterfort/dndiss.h"
 #include "asterfort/fplass.h"
 #include "asterfort/r8inir.h"
-    logical :: bbok
+    logical(kind=1) :: bbok
 !
 !      INTEGER NEWPRO(2)
     integer :: nmief, newief, nmprox(2), zimat

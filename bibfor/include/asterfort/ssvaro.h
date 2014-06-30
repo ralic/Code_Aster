@@ -20,7 +20,7 @@ interface
                       iadm1, iadm2)
         real(kind=8) :: l(6, 6)
         character(len=*) :: sens
-        logical :: matrix
+        logical(kind=1) :: matrix
         character(len=4) :: typnoe
         character(len=8) :: nomacr
         integer :: iadm1

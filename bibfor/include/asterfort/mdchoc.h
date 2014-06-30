@@ -40,7 +40,7 @@ interface
         character(len=14) :: numddl
         real(kind=8) :: pulsat(*)
         real(kind=8) :: masgen(*)
-        logical :: lamor
+        logical(kind=1) :: lamor
         real(kind=8) :: amogen(*)
         real(kind=8) :: bmodal(neq, *)
         integer :: info

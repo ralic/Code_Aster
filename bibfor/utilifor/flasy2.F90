@@ -117,7 +117,7 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
 #include "blas/dcopy.h"
 #include "blas/dswap.h"
 #include "blas/idamax.h"
-    logical :: ltranl, ltranr
+    logical(kind=1) :: ltranl, ltranr
     integer :: info, isgn, ldb, ldtl, ldtr, ldx, n1, n2
     real(kind=8) :: scale, xnorm
 !     ..
@@ -131,13 +131,13 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
     parameter          ( two = 2.0d+0, half = 0.5d+0, eight = 8.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: bswap, xswap
+    logical(kind=1) :: bswap, xswap
     integer :: i, ip, ipiv, ipsv, j, jp, jpsv, k
     real(kind=8) :: bet, eps, gam, l21, sgn, smin, smlnum, tau1, temp, u11, u12
     real(kind=8) :: u22, xmax
 !     ..
 !     .. LOCAL ARRAYS ..
-    logical :: bswpiv( 4 ), xswpiv( 4 )
+    logical(kind=1) :: bswpiv( 4 ), xswpiv( 4 )
     integer :: jpiv( 4 ), locl21( 4 ), locu12( 4 ), locu22( 4 )
     real(kind=8) :: btmp( 4 ), t16( 4, 4 ), tmp( 4 ), x2( 2 )
 !     ..
@@ -146,8 +146,8 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
 !     .. DATA STATEMENTS ..
     data               locu12 / 3, 4, 1, 2 / , locl21 / 2, 1, 4, 3 / ,&
      &                   locu22 / 4, 3, 2, 1 /
-    data               xswpiv / .false., .false., .true., .true. /
-    data               bswpiv / .false., .true., .false., .true. /
+    data               xswpiv / .false._1, .false._1, .true._1, .true._1 /
+    data               bswpiv / .false._1, .true._1, .false._1, .true._1 /
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !

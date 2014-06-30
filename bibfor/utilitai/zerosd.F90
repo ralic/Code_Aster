@@ -1,6 +1,6 @@
 function zerosd(typesd, sd)
     implicit none
-    logical :: zerosd
+    logical(kind=1) :: zerosd
 #include "jeveux.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zerobj.h"

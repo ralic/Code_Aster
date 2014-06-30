@@ -42,7 +42,7 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
 !
     integer :: nnoff, unit, numero, ndeg, iordr, i, i1, ndimte
     real(kind=8) :: gs(1), gthi(1), gi(1), time, absc(*)
-    logical :: extim
+    logical(kind=1) :: extim
     character(len=8) :: result
 ! ......................................................................
 !

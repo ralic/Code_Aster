@@ -74,7 +74,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     real(kind=8) :: epsbif
     character(len=14) :: numdrv, xcdl, parcho, adime, xvecu0, xtang, xups, xfpnla
     character(len=19) :: matdrv
-    logical :: lbif
+    logical(kind=1) :: lbif
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- ON CALCUL LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-    call mnldrv(.false., imat, numdrv, matdrv, xcdl,&
+    call mnldrv(.false._1, imat, numdrv, matdrv, xcdl,&
                 parcho, adime, xvecu0, zr(itang), ninc,&
                 nd, nchoc, h, hf)
 ! ----------------------------------------------------------------------
@@ -147,7 +147,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
         call resoud(matdrv, '', '', '', 1,&
                     '', '', 'v', fpnl, [cbid],&
-                    '', .false., 0, iret)
+                    '', .false._1, 0, iret)
         call dcopy(ninc, fpnl, 1, zr(iups+p*ninc), 1)
     end do
 ! ----------------------------------------------------------------------

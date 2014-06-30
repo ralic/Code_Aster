@@ -75,7 +75,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !
     integer :: i, j, in, pli, ifh, coefi
     real(kind=8) :: ffi, dn
-    logical :: lmultc
+    logical(kind=1) :: lmultc
 !
 ! ----------------------------------------------------------------------
 !

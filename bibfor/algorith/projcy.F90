@@ -40,7 +40,7 @@ subroutine projcy(nomres)
     character(len=8) :: nomres, typint
     character(len=24) :: repmat, soumat
     character(len=24) :: valk
-    logical :: nook
+    logical(kind=1) :: nook
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

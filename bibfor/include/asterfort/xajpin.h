@@ -30,6 +30,6 @@ interface
         integer :: ia
         integer :: in
         real(kind=8) :: al
-        logical :: ajout
+        logical(kind=1) :: ajout
     end subroutine xajpin
 end interface

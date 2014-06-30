@@ -33,7 +33,7 @@ interface
         real(kind=8) :: resid(nbeq)
         real(kind=8) :: workd(3*nbeq)
         real(kind=8) :: workl(lonwl)
-        logical :: selec(nbvect)
+        logical(kind=1) :: selec(nbvect)
         real(kind=8) :: dsor(nfreq+1, 2)
         real(kind=8) :: fshift
         real(kind=8) :: vaux(nbeq)
@@ -48,7 +48,7 @@ interface
         real(kind=8) :: alpha
         real(kind=8) :: omecor
         integer :: nconv
-        logical :: flage
+        logical(kind=1) :: flage
         character(len=19) :: solveu
     end subroutine vpsorn
 end interface

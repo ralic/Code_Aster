@@ -56,7 +56,7 @@ subroutine cesver(cesz)
     character(len=3) :: tsca
     character(len=19) :: ces
     real(kind=8) :: rmi1, rma1, rmi2, rma2, rdisp, rdispx, r1, rmax, valr(3)
-    logical :: lexima
+    logical(kind=1) :: lexima
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------

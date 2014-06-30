@@ -21,7 +21,7 @@ interface
         character(len=24) :: modele
         character(len=8) :: result
         character(len=19) :: lischa
-        logical :: lcont
+        logical(kind=1) :: lcont
         character(len=24) :: defico
         character(len=24) :: compor
         character(len=19) :: solveu

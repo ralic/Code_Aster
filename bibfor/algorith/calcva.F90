@@ -33,7 +33,7 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     integer :: kpi, yamec, yate, yap1, yap2
-    logical :: yachai
+    logical(kind=1) :: yachai
     integer :: addeme, addep1, addep2, addete, ndim, retcom
     real(kind=8) :: defgem(*), defgep(*), t0, p10, p20
     real(kind=8) :: depsv, epsv, deps(6), t, p1, p2, dt, dp1, dp2

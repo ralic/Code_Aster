@@ -90,7 +90,7 @@ subroutine gefact(duree, nominf)
     character(len=19) :: k19bid, nominf, nomint
     character(len=24) :: chvale, chdesc, chnuor, nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chval, chrefe
-    logical :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
+    logical(kind=1) :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
     integer :: i1, lnumi, lnumj, lfreq, nbfreq, lrefe
 !
 !     ----------------------------------------------------------------

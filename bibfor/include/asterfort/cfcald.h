@@ -20,6 +20,6 @@ interface
         character(len=24) :: defico
         integer :: izone
         character(len=4) :: typnoe
-        logical :: cfcald
+        logical(kind=1) :: cfcald
     end function cfcald
 end interface

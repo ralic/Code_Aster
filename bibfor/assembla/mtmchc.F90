@@ -57,7 +57,7 @@ subroutine mtmchc(matas, action)
     integer :: jsmhc,  jvalm, jvalm2, jccva,  nelim
     integer ::  jnequ, ieq, k, deciel, neq, ier
     integer ::  nblocm,  decjel, iremp, jccid, keta, imatd
-    logical :: nonsym
+    logical(kind=1) :: nonsym
     integer, pointer :: elim(:) => null()
     integer, pointer :: remplis(:) => null()
     integer, pointer :: ccll(:) => null()

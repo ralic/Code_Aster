@@ -9,7 +9,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
 #include "asterfort/utmess.h"
     integer :: numold(*), tabd(*), tabl(*), tabv(*), jtype
     integer :: icmp, ifi, ima, nbord2, iadmax, nbno
-    logical :: iwri
+    logical(kind=1) :: iwri
     character(len=*) :: partie
 !     ------------------------------------------------------------------
 ! ======================================================================

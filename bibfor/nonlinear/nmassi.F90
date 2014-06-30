@@ -71,7 +71,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
     real(kind=8) :: coef(nbcoef)
     character(len=19) :: vect(nbcoef)
     character(len=19) :: cnfnod, cnbudi, depmoi
-    logical :: londe, llapl
+    logical(kind=1) :: londe, llapl
 !
 ! ----------------------------------------------------------------------
 !

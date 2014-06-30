@@ -19,7 +19,7 @@ interface
     subroutine dlaqrb(wantt, n, ilo, ihi, h,&
                       ldh, wr, wi, z, info)
         integer :: ldh
-        logical :: wantt
+        logical(kind=1) :: wantt
         integer :: n
         integer :: ilo
         integer :: ihi

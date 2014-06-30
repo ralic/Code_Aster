@@ -25,7 +25,7 @@ interface
         character(len=19) :: newgeo
         character(len=24) :: defico
         integer :: posnom
-        logical :: dirapp
+        logical(kind=1) :: dirapp
         real(kind=8) :: dir(3)
         integer :: itemax
         real(kind=8) :: epsmax

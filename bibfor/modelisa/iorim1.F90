@@ -1,7 +1,7 @@
 function iorim1(num1, num2, reorie)
     implicit none
     integer :: iorim1, num1(2), num2(2)
-    logical :: reorie
+    logical(kind=1) :: reorie
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

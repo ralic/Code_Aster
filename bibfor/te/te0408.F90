@@ -34,7 +34,8 @@ subroutine te0408(option, nomte)
     integer :: ier, igauh, icou, jnbspi, iret, itempf, jresu, icacoq
     real(kind=8) :: tpinf, tpmoy, tpsup, cp1, cp2, cp3, tpc, zic, zmin
     real(kind=8) :: inst, valpu(2), hic, h
-    logical :: tempno, grille
+    logical(kind=1) :: tempno
+    logical :: grille
     character(len=8) :: nompu(2), alias8
 !
     call teattr('S', 'ALIAS8', alias8, ibid)

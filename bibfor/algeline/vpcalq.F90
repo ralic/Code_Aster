@@ -60,7 +60,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, mxresf, neqact,&
 !
     integer           , intent(out) :: nconv
     real(kind=8)      , intent(out) :: vpinf, vpmax
-    logical           , intent(out) :: flage
+    logical(kind=1)   , intent(out) :: flage
 !
 ! --- INPUT/OUTPUT
 !
@@ -81,7 +81,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, mxresf, neqact,&
     character(len=16) :: k16bid, optiof, typeqz, typres
     character(len=19) :: amor, k19bid, masse, raide, numedd
     character(len=24) :: k24bid
-    logical           :: lbid, lc, lkr, lns, lpg
+    logical(kind=1)   :: lbid, lc, lkr, lns, lpg
     logical(kind=4), pointer :: bwork(:) => null()
 
 ! -----------------------

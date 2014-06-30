@@ -74,7 +74,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     character(len=8) :: noma, k8b, nomgd, nomva, knmin, knmax
     character(len=19) :: ligrel, cesout
     character(len=24) :: nomnoe
-    logical :: exist
+    logical(kind=1) :: exist
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=16) :: nompar(4*nbcmp+5), nomax(2*nbcmp+3)

@@ -1,6 +1,6 @@
 function lexseg(connex, typmai, nbrma, n1, n2)
     implicit none
-    logical :: lexseg
+    logical(kind=1) :: lexseg
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

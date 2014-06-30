@@ -22,7 +22,7 @@ interface
                       sm, factus)
         integer :: ig
         integer :: iocs
-        logical :: seisme
+        logical(kind=1) :: seisme
         integer :: npass
         integer :: ima
         integer :: ipt

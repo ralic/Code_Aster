@@ -7,7 +7,7 @@ subroutine i3ifqs(epsi, k, f, desc, desctm,&
 #include "asterfort/i3tstf.h"
     integer :: k, f, desc(*), desctm(*), conexk(*), nbpt, lstpt(*)
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical :: fink
+    logical(kind=1) :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -44,7 +44,7 @@ subroutine i3ifqs(epsi, k, f, desc, desctm,&
 ! OUT LSTPT  : I : OBJ LISTE_POINT
 !     ------------------------------------------------------------------
 !
-    logical :: gauche
+    logical(kind=1) :: gauche
 !
 !======================================================================
 !

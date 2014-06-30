@@ -20,7 +20,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
     real(kind=8) :: rr, coeffr, coeffp, p(3, 3), ik(3, 3)
     real(kind=8) :: ffc(8), ffp(27), tau1(3), tau2(3), ptknp(3, 3)
     real(kind=8) :: knp(3, 3), nd(3)
-    logical :: adher
+    logical(kind=1) :: adher
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

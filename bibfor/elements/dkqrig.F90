@@ -56,7 +56,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: xab1(3, 12), depl(24), caraq4(25), jacob(5), qsi, eta
     real(kind=8) :: flex(144), memb(64), mefl(96), t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: bsigth(24), enerth, excent, un, ctor
-    logical :: coupmf, exce, indith
+    logical(kind=1) :: coupmf, exce, indith
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&

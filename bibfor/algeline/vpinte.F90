@@ -111,8 +111,8 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                     idet0 = 0
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
                     call vpstur(lraide, om, lmasse, ldynam, det0,&
-                                idet0, ieme0, ier, solveu, .true.,&
-                                .false.)
+                                idet0, ieme0, ier, solveu, .true._1,&
+                                .false._1)
                     preci = abs(om0-om)/om0
                     if (preci .le. tolf .or. ier .ne. 0) then
                         nbiter = niter

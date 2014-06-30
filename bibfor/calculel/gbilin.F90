@@ -52,7 +52,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     integer :: kp, imate
     real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4), dfdm(3, 4), tgdm(2)
     real(kind=8) :: c1, c2, c3, cs, th, poids, g, bil(3, 3, 3, 3), coef
-    logical :: axi
+    logical(kind=1) :: axi
 !
 ! ----------------------------------------------------------------------
 !     CALCUL DU TAUX DE RESTITUTION D'ENERGIE G SOUS LA FORME

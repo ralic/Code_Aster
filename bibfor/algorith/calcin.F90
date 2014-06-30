@@ -83,9 +83,9 @@ subroutine calcin(option, max, may, maz, model,&
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
     call mrmult('ZERO', imatx, vmodx, vectx, 1,&
-                .true.)
+                .true._1)
     call mrmult('ZERO', imaty, vmody, vecty, 1,&
-                .true.)
+                .true._1)
 !
 !--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
 !
@@ -115,7 +115,7 @@ subroutine calcin(option, max, may, maz, model,&
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
         call mrmult('ZERO', imatz, vmodz, vectz, 1,&
-                    .true.)
+                    .true._1)
         rz= ddot(nbpres,pres, 1,vectz,1)
         AS_DEALLOCATE(vr=vectz)
         call detrsd('CHAM_NO', modz)

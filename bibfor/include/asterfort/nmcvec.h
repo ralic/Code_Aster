@@ -21,12 +21,12 @@ interface
         character(len=4) :: oper
         character(len=*) :: typvez
         character(len=*) :: optioz
-        logical :: lcalc
-        logical :: lasse
+        logical(kind=1) :: lcalc
+        logical(kind=1) :: lasse
         integer :: nbvect
         character(len=6) :: ltypve(20)
         character(len=16) :: loptve(20)
-        logical :: lcalve(20)
-        logical :: lassve(20)
+        logical(kind=1) :: lcalve(20)
+        logical(kind=1) :: lassve(20)
     end subroutine nmcvec
 end interface

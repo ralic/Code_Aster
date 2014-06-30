@@ -93,7 +93,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 !
     real(kind=8) :: t0
 !
-    logical :: lamort
+    logical(kind=1) :: lamort
 !
     character(len=8) :: result, baseno
     character(len=8) :: masse, rigid, amort

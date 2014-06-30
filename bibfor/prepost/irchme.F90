@@ -87,7 +87,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
     integer :: nbnoec, nbmaec, icelk
     integer :: linoec(*), limaec(*)
 !
-    logical :: lvarie
+    logical(kind=1) :: lvarie
 !
     integer :: codret
 !

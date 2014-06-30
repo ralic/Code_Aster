@@ -83,7 +83,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     character(len=14) :: numddl
     character(len=19) :: nu
 !
-    logical :: lredu
+    logical(kind=1) :: lredu
     integer, pointer :: idc_defo(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: mael_mass_desc(:) => null()

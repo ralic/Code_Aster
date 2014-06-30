@@ -74,7 +74,7 @@ subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
     integer :: nbma,ntot,nbligr,numa,ninit
     integer :: icompt,igma,ima,iligr,iret
     integer :: jmail,jrepe,jcompt,jte,jgma,jgroup,jtyel
-    logical :: eltok
+    logical(kind=1) :: eltok
     integer :: liste(nbgma)
 
     character(len=6) :: nompro

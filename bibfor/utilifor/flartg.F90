@@ -87,7 +87,7 @@ subroutine flartg(f, g, cs, sn, r)
     parameter          ( two = 2.0d0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: first
+    logical(kind=1) :: first
     integer :: count, i
     real(kind=8) :: eps, f1, g1, safmin, safmn2, safmx2, scale, base
 !     ..

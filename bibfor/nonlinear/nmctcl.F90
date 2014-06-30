@@ -31,7 +31,7 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 #include "asterfort/xmcart.h"
 #include "asterfort/xmelem.h"
 #include "asterfort/xmligr.h"
-    logical :: loptin
+    logical(kind=1) :: loptin
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco
@@ -59,8 +59,8 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: lctcc, lxfcm
-    logical :: ltfcm
+    logical(kind=1) :: lctcc, lxfcm
+    logical(kind=1) :: ltfcm
     character(len=8) :: nomo
 !
 ! ----------------------------------------------------------------------

@@ -73,7 +73,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
     integer :: aabsc, arefe, adesc, aasgt,     acoor
     integer :: ansdl, acnxo, acnxe, adr, achm, aosgt, aesgt, anumnd, anume
     integer :: nbsd, nbsgt, nbarc, isd, nbpt, ipt, ideb, ifin, ioc, nbm, nboc
-    logical :: sgtarc, okcrb, sgt3d
+    logical(kind=1) :: sgtarc, okcrb, sgt3d
     real(kind=8) :: a, b, c, d, e, f, s, l, zero
     real(kind=8), pointer :: xsarc(:) => null()
     real(kind=8), pointer :: xybsgt(:) => null()

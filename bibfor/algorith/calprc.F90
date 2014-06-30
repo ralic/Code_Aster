@@ -117,7 +117,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
             zc(ltvec1+j-1)=dcmplx(zr(idbase+(i-1)*neq+j-1),0.d0)
         end do
         call mcmult('ZERO', lmat, zc(ltvec1), zc(ltvec2), 1,&
-                    .true.)
+                    .true._1)
         call zeclag(zc(ltvec2), neq, zi(iddeeq))
         do j = 1, neq
         end do

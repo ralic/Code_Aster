@@ -36,7 +36,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
     real(kind=8) :: vecl(51), vecl1(42)
     real(kind=8) :: chgsrg(6, 8), chgsrl(6), chg(6)
     real(kind=8) :: kijkm1(40, 2), pgl(3, 3)
-    logical :: global, locapr
+    logical(kind=1) :: global, locapr
     real(kind=8) :: valpar(4)
     character(len=8) :: nompar(4)
 !

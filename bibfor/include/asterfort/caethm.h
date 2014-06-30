@@ -25,9 +25,9 @@ interface
                       ivf, idfde, ipoid2, ivf2, idfde2,&
                       npi2, jgano)
         character(len=16) :: nomte
-        logical :: axi
-        logical :: perman
-        logical :: vf
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
+        logical(kind=1) :: vf
         integer :: typvf
         character(len=8) :: typmod(2)
         character(len=3) :: modint

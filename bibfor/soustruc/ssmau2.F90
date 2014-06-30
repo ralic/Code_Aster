@@ -59,7 +59,7 @@ subroutine ssmau2(nomu, option)
 !
     integer :: i, scdi, schc, iblo
     character(len=8) :: promes
-    logical :: mostru
+    logical(kind=1) :: mostru
 !
     character(len=16) :: optio2
     character(len=19) :: nu, matas, stock

@@ -44,7 +44,7 @@ function mminfr(defico, questz, izone)
 !
     integer :: ibid(1)
     real(kind=8) :: rrep(1)
-    logical :: lbid(1)
+    logical(kind=1) :: lbid(1)
 !
 ! ----------------------------------------------------------------------
 !

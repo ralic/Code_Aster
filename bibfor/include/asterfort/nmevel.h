@@ -25,11 +25,11 @@ interface
         character(len=24) :: resoco
         character(len=19) :: vale(*)
         character(len=4) :: nombcl
-        logical :: lsvimx
-        logical :: ldvres
-        logical :: linsta
-        logical :: lerrcv
-        logical :: lerror
-        logical :: conver
+        logical(kind=1) :: lsvimx
+        logical(kind=1) :: ldvres
+        logical(kind=1) :: linsta
+        logical(kind=1) :: lerrcv
+        logical(kind=1) :: lerror
+        logical(kind=1) :: conver
     end subroutine nmevel
 end interface

@@ -70,7 +70,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
 !
 !
     integer :: iffg
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: ndimsi
     real(kind=8) :: r, deps(6)
     real(kind=8) :: t9bid(3, 3), t18bid(6, 3)
@@ -91,7 +91,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
 ! ----- CALCUL DE EPSM (LINEAIRE) OU EM (GREEN)  = EPS(UM)
         call nmgeom(ndim, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, deplm,&
-                    .true., poids, dfdi, fm, epsm,&
+                    .true._1, poids, dfdi, fm, epsm,&
                     r)
 !
 ! ----- REACTUALISATION DE LA GEOMETRIE SI GRANDES DEFS
@@ -101,23 +101,23 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
         endif
 !
 ! ----- CALCUL DE DEPS = EPS(DU)
-        call nmgeom(ndim, nno, axi, .false., geom,&
+        call nmgeom(ndim, nno, axi, .false._1, geom,&
                     kpg, ipoids, ivf, idfde, ddepl,&
-                    .true., poids, dfdi, t9bid, deps,&
+                    .true._1, poids, dfdi, t9bid, deps,&
                     r)
 !
 ! ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )
-        call nmgeom(ndim, nno, axi, .false., geom,&
+        call nmgeom(ndim, nno, axi, .false._1, geom,&
                     kpg, ipoids, ivf, idfde, depl0,&
-                    .true., poids, dfdi, t9bid, epsp,&
+                    .true._1, poids, dfdi, t9bid, epsp,&
                     r)
         call daxpy(ndimsi, 1.d0, deps, 1, epsp,&
                    1)
 !
 ! ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)
-        call nmgeom(ndim, nno, axi, .false., geom,&
+        call nmgeom(ndim, nno, axi, .false._1, geom,&
                     kpg, ipoids, ivf, idfde, depl1,&
-                    .true., poids, dfdi, t9bid, epsd,&
+                    .true._1, poids, dfdi, t9bid, epsd,&
                     r)
 !
     else if (typmod(2).eq.'GRADEPSI') then

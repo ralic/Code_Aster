@@ -63,7 +63,7 @@ subroutine carcomp(carte_1, carte_2, iret)
     integer :: vali1, vali2
     integer :: ncmp1, ncmp2, nb_cmp
     character(len=80) :: valk1, valk2
-    logical :: vall1, vall2, lok
+    logical(kind=1) :: vall1, vall2, lok
     real(kind=8) :: epsi
 !
 ! --------------------------------------------------------------------------------------------------

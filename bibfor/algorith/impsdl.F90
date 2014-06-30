@@ -60,8 +60,8 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
     character(len=255) :: ligne
     integer :: longr, precr, longi
     character(len=24) :: slcolo, sdcolo
-    logical :: lacti, linte, lreel, lchai
-    logical :: laffe, lnvvid, lnverr, lnvsan
+    logical(kind=1) :: lacti, linte, lreel, lchai
+    logical(kind=1) :: laffe, lnvvid, lnverr, lnvsan
     integer :: larcol, larlig
     character(len=1) :: marq
 !

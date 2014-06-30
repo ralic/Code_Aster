@@ -20,7 +20,7 @@ interface
         integer :: unit
         character(len=*) :: obin
         integer :: nivo
-        logical :: lattr
-        logical :: lcont
+        logical(kind=1) :: lattr
+        logical(kind=1) :: lcont
     end subroutine utimco
 end interface

@@ -5,7 +5,7 @@ subroutine dimthm(ndlno, ndlnm, ndim)
 #include "asterfort/lteatt.h"
     integer :: ndlno, ndlnm, ndim
     character(len=16) :: nomte
-    logical :: elsufm
+    logical(kind=1) :: elsufm
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

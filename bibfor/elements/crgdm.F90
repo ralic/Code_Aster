@@ -24,7 +24,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    logical :: lrgm, ther
+    logical(kind=1) :: lrgm, ther
     integer :: imate, ipg
     real(kind=8) :: lambda, deuxmu, deumuf, lamf
     real(kind=8) :: gt, gc, gf, seuil, alpha, alfmc

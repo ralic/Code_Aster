@@ -51,7 +51,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     real(kind=8) :: cobary(3), ksi(2), ff(27), coefno(27), crrefe(81)
     character(len=8) :: ntypma, elref, cbt(15)
     character(len=24) :: grpma, grpno
-    logical :: inmail
+    logical(kind=1) :: inmail
     real(kind=8), pointer :: coor2(:) => null()
     integer, pointer :: typmail(:) => null()
 ! ======================================================================

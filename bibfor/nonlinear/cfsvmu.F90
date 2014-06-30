@@ -28,7 +28,7 @@ subroutine cfsvmu(defico, resoco, lconv)
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
-    logical :: lconv
+    logical(kind=1) :: lconv
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine cfsvmu(defico, resoco, lconv)
     integer :: jsvmu, jmu
     character(len=24) :: numlia
     integer :: jnumli
-    logical :: lgcp
+    logical(kind=1) :: lgcp
 !
 ! ----------------------------------------------------------------------
 !

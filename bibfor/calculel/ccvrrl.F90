@@ -84,7 +84,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     character(len=19) :: cnxinv, carsd, ligrmo, carcc, vecsau
     character(len=24) :: carori, carcoq
 !
-    logical :: llimai, lprobm
+    logical(kind=1) :: llimai, lprobm
     integer, pointer :: dime(:) => null()
     parameter    (maxtol = 8.7266463d-2)
     parameter    (pi = 3.14159265358979d0)

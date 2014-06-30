@@ -58,7 +58,7 @@ subroutine nirfpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! OUT VECT    : REFE_FORC_NODA
 !-----------------------------------------------------------------------
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nddl, g
     integer :: kl, sa, ra, na, ia, kk
     integer :: ndimsi

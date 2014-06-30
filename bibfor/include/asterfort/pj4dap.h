@@ -35,9 +35,9 @@ interface
         integer :: btco(*)
         integer :: ifm
         integer :: niv
-        logical :: ldmax
+        logical(kind=1) :: ldmax
         real(kind=8) :: distma
-        logical :: loin
+        logical(kind=1) :: loin
         real(kind=8) :: dmin
     end subroutine pj4dap
 end interface

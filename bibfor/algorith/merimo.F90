@@ -58,7 +58,7 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
     character(len=24), intent(in) :: codere
     character(len=19), intent(in) :: merigi
     character(len=19), intent(in) :: vefint
-    logical, intent(out) :: tabret(0:10)
+    logical(kind=1), intent(out) :: tabret(0:10)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,14 +76,14 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
-    logical :: l_macr_elem 
-    logical :: matrix, vector, codint, conext
+    logical(kind=1) :: l_macr_elem 
+    logical(kind=1) :: matrix, vector, codint, conext
     integer :: ires,  iret, nbin, nbout
     character(len=24) :: caco3d
     character(len=24) :: ligrmo
     character(len=19) :: sigext, sigplu, varplu, strplu
     character(len=16) :: option
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
     integer :: ich_matrixs, ich_matrixn, ich_vector, ich_codret
     character(len=24), pointer :: rerr(:) => null()

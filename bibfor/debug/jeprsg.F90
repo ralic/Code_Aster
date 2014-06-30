@@ -41,7 +41,7 @@ subroutine jeprsg(cunit, tgr, info)
     integer :: idinit, idxaxd, itrech, itiad, itcol, lmots, idfr
     common /ixadje/  idinit(2),idxaxd(2),itrech,itiad,itcol,lmots,idfr
 ! ----------------------------------------------------------------------
-    logical :: lamov
+    logical(kind=1) :: lamov
     character(len=132) :: chaine, init, ente, diese
     integer :: k, id, ida, nbc, is, nn, nc
 ! DEB ------------------------------------------------------------------

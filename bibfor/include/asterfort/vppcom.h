@@ -19,7 +19,7 @@ interface
     subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                       resuk, nbpari, nbparr, nbpark, mxresf,&
                       vectr, nconv, neq, typres)
-        logical :: lcomod
+        logical(kind=1) :: lcomod
         integer :: icom1
         integer :: icom2
         integer :: resui(*)

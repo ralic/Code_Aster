@@ -19,7 +19,7 @@ interface
     subroutine dltini(lcrea, nume, result, depini, vitini,&
                       accini, fexini, famini, fliini, neq,&
                       numedd, inchac, baseno)
-        logical :: lcrea
+        logical(kind=1) :: lcrea
         integer :: nume
         character(len=8) :: result
         real(kind=8) :: depini(*)

@@ -18,6 +18,6 @@ interface
     function exisdg(dg, cmp)
         integer :: dg(*)
         integer :: cmp
-        logical :: exisdg
+        logical(kind=1) :: exisdg
     end function exisdg
 end interface

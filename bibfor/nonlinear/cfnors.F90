@@ -41,7 +41,7 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: vector(3)
     integer :: itype
-    logical :: lnfixe, lliss, lpoutr, lpoint
+    logical(kind=1) :: lnfixe, lliss, lpoutr, lpoint
 !
 ! ----------------------------------------------------------------------
 !

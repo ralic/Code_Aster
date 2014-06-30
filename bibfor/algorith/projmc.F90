@@ -147,7 +147,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 ! --------- CALCUL PRODUIT MATRICE*MODE I
 !
             call mcmult('ZERO', imatra, vectass2, vectass3, 1,&
-                        .true.)
+                        .true._1)
             call zeclag(vectass3, neq, zi(iddeeq))
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I

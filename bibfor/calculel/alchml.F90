@@ -93,7 +93,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     integer :: ibid, modmx, iamolo, itych, itych1, neltot
     integer ::  illiel, jdcesd,    jdcesl
     integer :: ima, ncmpv2, kk, ityplo, nbpoin
-    logical :: lmult
+    logical(kind=1) :: lmult
     integer, pointer :: liel(:) => null()
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()

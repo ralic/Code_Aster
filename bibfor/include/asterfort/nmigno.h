@@ -18,8 +18,8 @@
 interface
     function nmigno(jdiri, lndepl, ieq)
         integer :: jdiri
-        logical :: lndepl
+        logical(kind=1) :: lndepl
         integer :: ieq
-        logical :: nmigno
+        logical(kind=1) :: nmigno
     end function nmigno
 end interface

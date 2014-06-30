@@ -37,7 +37,7 @@ interface
         real(kind=8) :: coef
         real(kind=8) :: rho
         real(kind=8) :: puls
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: g
     end subroutine gbilin
 end interface

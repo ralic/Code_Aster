@@ -133,7 +133,7 @@ subroutine diag99(nomres)
 !
 ! --------- PRODUIT MASSE*MODE PROPRE I
             call mrmult('ZERO', lmasse, zr(idmode+(i-1)*neq), trav2, 1,&
-                        .true.)
+                        .true._1)
 !
 ! --------- (T(MODE STAT J)*MASSE*MODE PROPRE I)
             r8scal=ddot(neq,zr(idstat+(j-1)*neq),1,trav2,1)

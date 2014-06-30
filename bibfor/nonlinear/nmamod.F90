@@ -56,7 +56,7 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
     integer ::   jmoda
     character(len=24) :: valmod, basmod
     character(len=19) :: sdammo
-    logical :: nreavi
+    logical(kind=1) :: nreavi
     integer :: neq
     real(kind=8), pointer :: vitkm(:) => null()
     real(kind=8), pointer :: vitp(:) => null()

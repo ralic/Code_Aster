@@ -76,7 +76,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !         BT = CONSTANTE DE TRACTION    (10 000 A 100 000)[REEL OU FCT]
 !         BC = CONSTANTE DE COMPRESSION (1000 A 2000)[REEL OU FCT]
 ! ----------------------------------------------------------------------
-    logical :: rigi, resi, prog, elas, cplan, coup
+    logical(kind=1) :: rigi, resi, prog, elas, cplan, coup
     character(len=1) :: poum
     integer :: icodre(7)
     character(len=8) :: nomres(7), nompar

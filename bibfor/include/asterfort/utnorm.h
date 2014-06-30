@@ -39,7 +39,7 @@ interface
         real(kind=8) :: xn(9)
         real(kind=8) :: yn(9)
         real(kind=8) :: jac(9)
-        logical :: laxi
+        logical(kind=1) :: laxi
         real(kind=8) :: jacob
         integer :: ifm
         integer :: niv

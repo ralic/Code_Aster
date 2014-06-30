@@ -64,7 +64,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     real(kind=8) :: epsilf, epsd, epsc, d, p, epsp, ecr, fplas, indi
     real(kind=8) :: dfds, dfpds, dfdecr, difecr, lambp, fd, var1
     real(kind=8) :: var2, var3, rv, fini, fplas2, b, val(1)
-    logical :: dconv, pconv, melas
+    logical(kind=1) :: dconv, pconv, melas
     integer :: iter, itemax, i, j, ibid
     pm = vim(1)
     epspm = vim(1)

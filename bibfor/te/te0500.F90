@@ -83,7 +83,7 @@ subroutine te0500(option, nomte)
     real(kind=8) :: fluhpx, fluhmx, fluhpy, fluhmy
     real(kind=8) :: tertps
 !
-    logical :: laxi, perman, vf
+    logical(kind=1) :: laxi, perman, vf
 !
     integer :: codme1(nbre1), codmr1(nbrr1), codme2(nbre2), codmr2(nbrr1), codme3(nbre3), kpg, spt
     integer :: codmr3(nbrr3), codmr4(nbrr3)

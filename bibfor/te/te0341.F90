@@ -44,7 +44,7 @@ subroutine te0341(option, nomte)
     integer :: iu(3, 3), iuc(3), im(3), isect, iddlm, icompo
     real(kind=8) :: tang(3, 3), forref, sigref, depref, a
     real(kind=8) :: geom(3, 3)
-    logical :: reactu
+    logical(kind=1) :: reactu
 !
 !
     call elref2(nomte, 2, lielrf, ntrou)

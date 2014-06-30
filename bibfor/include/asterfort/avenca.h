@@ -21,7 +21,7 @@ interface
         integer :: nbordr
         integer :: nbvec
         integer :: jrvecp
-        logical :: lsig0
+        logical(kind=1) :: lsig0
         integer :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
     end subroutine avenca

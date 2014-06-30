@@ -51,7 +51,7 @@ subroutine nmadev(sddisc, sderro, iterat)
     character(len=8) :: k8bid, cricom, metlis
     character(len=16) :: nopara
     character(len=19) :: even
-    logical :: itemax, lerrit, divres, cvnewt
+    logical(kind=1) :: itemax, lerrit, divres, cvnewt
 !
 ! ----------------------------------------------------------------------
 !

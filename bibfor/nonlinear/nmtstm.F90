@@ -20,7 +20,7 @@ subroutine nmtstm(compor, imatri, matsym)
     implicit none
 #include "asterfort/jevech.h"
     character(len=16) :: compor(*)
-    logical :: matsym
+    logical(kind=1) :: matsym
     integer :: imatri
 !
 ! ----------------------------------------------------------------------

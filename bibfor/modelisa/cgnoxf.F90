@@ -69,7 +69,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=19) :: stno, cnslt, cnsln
     character(len=24) :: stnot
     character(len=24) :: lisnoe
-    logical :: grille
+    logical(kind=1) :: grille
     real(kind=8) :: rayon, dist
     character(len=8), pointer :: vfiss(:) => null()
     integer, pointer :: noeu(:) => null()

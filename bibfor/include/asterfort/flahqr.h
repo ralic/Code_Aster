@@ -21,8 +21,8 @@ interface
                       ihiz, z, ldz, info)
         integer :: ldz
         integer :: ldh
-        logical :: wantt
-        logical :: wantz
+        logical(kind=1) :: wantt
+        logical(kind=1) :: wantz
         integer :: n
         integer :: ilo
         integer :: ihi

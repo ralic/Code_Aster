@@ -6,7 +6,7 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
     integer :: nbprup
-    logical :: lmelas, lmoda
+    logical(kind=1) :: lmelas, lmoda
     character(len=8) :: table, typrup(nbprup), typfis
     character(len=16) :: option, cas, noprup(nbprup)
 !

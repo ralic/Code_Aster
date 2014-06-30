@@ -64,7 +64,7 @@ subroutine t3gsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: bc(2, 9)
     real(kind=8) :: bcdf(2)
     real(kind=8) :: carat3(25), hicou
-    logical :: coupmf, lcalct
+    logical(kind=1) :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

@@ -32,7 +32,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     character(len=24) :: nvit, nbeta
     integer :: ndim
     real(kind=8) :: lcmin, damax, rdimp, rdtor
-    logical :: locdom
+    logical(kind=1) :: locdom
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +112,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
-    logical :: grille, fonvir, fvirtu
+    logical(kind=1) :: grille, fonvir, fvirtu
 !
     character(len=19) :: covir, bavir, vitvir, angvir, numvir
 !
@@ -123,7 +123,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8) :: t0, t180, alfa
     parameter      (t0 = 0.5d0/180.d0*3.1415d0)
     parameter      (t180 = 179.5d0/180.d0*3.1415d0)
-    logical :: endpnt
+    logical(kind=1) :: endpnt
 !
 !     MULTIPLE CRACK FRONTS
     integer :: jfmult, numfon, fon

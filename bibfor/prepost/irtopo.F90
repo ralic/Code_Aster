@@ -21,7 +21,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     integer :: ioccur, nbnoto, nbmato, ifichi, codret
     character(len=8) :: formaf, leresu
     character(len=24) :: nonuma, nonuno
-    logical :: lresul
+    logical(kind=1) :: lresul
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

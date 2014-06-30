@@ -56,7 +56,7 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
     real(kind=8) :: xr1(3), xr2(3), d1, d2
     real(kind=8) :: ff(nbnomx)
     integer :: k, idim, ino, nno
-    logical :: lext
+    logical(kind=1) :: lext
 ! ----------------------------------------------------------------------
 
 !     -- Si le point est exterieur, on ne tient pas compte de x2

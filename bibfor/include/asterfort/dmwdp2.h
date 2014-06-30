@@ -24,7 +24,7 @@ interface
         real(kind=8) :: cs
         real(kind=8) :: cliq
         real(kind=8) :: dp11p2
-        logical :: emmag
+        logical(kind=1) :: emmag
         real(kind=8) :: em
         real(kind=8) :: dmwdp2_0
     end function dmwdp2

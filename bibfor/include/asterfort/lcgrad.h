@@ -21,8 +21,8 @@ interface
                       r, c, ktg, sig, dsidep)
         integer :: neps
         integer :: ndim
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         integer :: ndimsi
         real(kind=8) :: sigma(6)
         real(kind=8) :: apg

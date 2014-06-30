@@ -19,7 +19,7 @@ interface
     subroutine arlcp2(iocc,mail,nomo,typmai, &
                       nom1,nom2,marlel,modarl, &
                       jma1,jma2,tabcor,mailar,proj)
-        logical :: proj
+        logical(kind=1) :: proj
         integer :: jma1
         integer :: jma2
         integer :: iocc

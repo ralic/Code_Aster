@@ -44,7 +44,7 @@ subroutine te0217(option, nomte)
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, nno, ndim, kp, npg1, i, l, ivectt, igrai, imate
 !
-    logical :: fonc
+    logical(kind=1) :: fonc
 !
 !
 !-----------------------------------------------------------------------

@@ -43,7 +43,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro
     character(len=19) :: valinc(*)
-    logical :: mmcvgo
+    logical(kind=1) :: mmcvgo
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +67,8 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical :: lctcc, lctcd, lxfcm
-    logical :: lsans, lmanu, lauto
+    logical(kind=1) :: lctcc, lctcd, lxfcm
+    logical(kind=1) :: lsans, lmanu, lauto
     integer :: nbreag, maxgeo
     integer :: mmitgo
     character(len=19) :: depplu, depgeo, depmoi
@@ -76,7 +76,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
     real(kind=8) :: cvgval, epsgeo
     character(len=24) :: clreac
     integer :: jclrea
-    logical :: ctcgeo, lerrog
+    logical(kind=1) :: ctcgeo, lerrog
 !
 ! ----------------------------------------------------------------------
 !
@@ -187,16 +187,16 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 !
     call nmcrel(sderro, 'ERRE_CTCG', lerrog)
     if (mmcvgo) then
-        call nmcrel(sderro, 'DIVE_FIXG', .false.)
+        call nmcrel(sderro, 'DIVE_FIXG', .false._1)
     else
-        call nmcrel(sderro, 'DIVE_FIXG', .true.)
+        call nmcrel(sderro, 'DIVE_FIXG', .true._1)
     endif
 !
 ! --- VALEUR ET ENDROIT OU SE REALISE L'EVALUATION DE LA BOUCLE
 !
     if (lctcc .or. lxfcm) then
-        call nmimck(sdimpr, 'BOUC_NOEU', cvgnoe, .true.)
-        call nmimcr(sdimpr, 'BOUC_VALE', cvgval, .true.)
+        call nmimck(sdimpr, 'BOUC_NOEU', cvgnoe, .true._1)
+        call nmimcr(sdimpr, 'BOUC_VALE', cvgval, .true._1)
     endif
 !
     call jedema()

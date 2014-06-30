@@ -29,7 +29,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    logical :: lfchar
+    logical(kind=1) :: lfchar
     character(len=8) :: nomfct, newfct
     real(kind=8) :: time
     character(len=19) :: cartei, carteo
@@ -108,7 +108,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                     zk8(jvalou+in-1) = newfct
                 else
                     call utmess('A', 'RUPTURE2_4', sk=charge)
-                    call jedupo(cartei//'.VALE', 'V', carteo//'.VALE', .false.)
+                    call jedupo(cartei//'.VALE', 'V', carteo//'.VALE', .false._1)
                     goto 999
                 endif
             endif

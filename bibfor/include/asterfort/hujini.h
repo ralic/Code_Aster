@@ -31,8 +31,8 @@ interface
         real(kind=8) :: vind(nvi)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
         real(kind=8) :: dy(18)
         integer :: indi(7)
         integer :: iret

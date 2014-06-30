@@ -76,7 +76,7 @@ subroutine te0588(option,nomte)
     integer :: li, ibid, yaenrm, idim
     real(kind=8) :: rho(1), rbid(100)
     integer :: icodre(1)
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HM AVEC XFEM
 !  22 = (9 DEF MECA) + (9 DEF HEAV MECA) + 4 POUR P1
@@ -126,7 +126,7 @@ subroutine te0588(option,nomte)
 ! DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! =====================================================================
-    logical :: fnoevo
+    logical(kind=1) :: fnoevo
     real(kind=8) :: dt
 ! =====================================================================
 ! DECLARATION POUR XFEM
@@ -294,7 +294,7 @@ subroutine te0588(option,nomte)
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------
 ! =====================================================================
         call xhmddl(ndim, nddls, dimuel, nnop, nnops,&
-                    zi(jstno), .false., option, nomte, zr(imatuu),&
+                    zi(jstno), .false._1, option, nomte, zr(imatuu),&
                     zr(ivectu), nddlm)
     endif
 ! =====================================================================
@@ -323,7 +323,7 @@ subroutine te0588(option,nomte)
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------
 ! =====================================================================
         call xhmddl(ndim, nddls, dimuel, nnop, nnops,&
-                    zi(jstno), .false., option, nomte, rbid,&
+                    zi(jstno), .false._1, option, nomte, rbid,&
                     zr(ivectu), nddlm)
     endif
 ! ======================================================================
@@ -368,7 +368,7 @@ subroutine te0588(option,nomte)
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------
 ! =====================================================================
         call xhmddl(ndim, nddls, dimuel, nnop, nnops,&
-                    zi(jstno), .false., option, nomte, rbid,&
+                    zi(jstno), .false._1, option, nomte, rbid,&
                     zr(ivectu), nddlm)
     endif
 ! ======================================================================

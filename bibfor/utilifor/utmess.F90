@@ -61,7 +61,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 !   because it is not supported by older versions of gfortran, we use two different
 !   calls to utmess_core
 !    character(len=:), pointer :: ptrk(:)
-    logical :: use_valk
+    logical(kind=1) :: use_valk
     integer, target :: uvi(1)
     integer, pointer :: ptri(:) => null()
     real(kind=8), target :: uvr(1)

@@ -39,7 +39,7 @@ interface
         integer :: descm
         real(kind=8) :: riggen(*)
         integer :: descr
-        logical :: lamor
+        logical(kind=1) :: lamor
         real(kind=8) :: amogen(*)
         integer :: desca
         character(len=16) :: typbas
@@ -83,7 +83,7 @@ interface
         integer :: nbpal
         real(kind=8) :: dtsto
         real(kind=8) :: vrotat
-        logical :: prdeff
+        logical(kind=1) :: prdeff
         character(len=16) :: method
         character(len=8) :: nomres
         integer :: nbexci

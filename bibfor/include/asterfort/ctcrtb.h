@@ -23,7 +23,7 @@ interface
         character(len=8) :: resu
         character(len=24) :: nkcha
         character(len=8) :: typac
-        logical :: toucmp
+        logical(kind=1) :: toucmp
         integer :: nbcmp
         integer :: nbval
         character(len=24) :: nkcmp

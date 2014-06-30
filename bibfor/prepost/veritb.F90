@@ -39,7 +39,7 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 ! --- : NDIM   : DIMENSION DE L'ESPACE ---------------------------------
 ! --- : ORIDEF : TYPE D'ORIENTATION DU DEFAUT --------------------------
 ! ======================================================================
-    logical :: teste
+    logical(kind=1) :: teste
     integer :: i, ibid, nbval1, nbval2,irev
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
     character(len=19) :: tbins1, tbins2

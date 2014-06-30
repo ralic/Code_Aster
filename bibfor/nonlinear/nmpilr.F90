@@ -59,7 +59,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
     character(len=19) :: cnfext, cnfint, cndiri, cnbudi, cndipi, cndfdo
     integer :: ieq, neq
     integer :: ifm, niv
-    logical :: lcine
+    logical(kind=1) :: lcine
     integer, pointer :: ccid(:) => null()
     real(kind=8), pointer :: budi(:) => null()
     real(kind=8), pointer :: dfdo(:) => null()

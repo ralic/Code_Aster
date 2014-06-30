@@ -21,6 +21,6 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: valinc(*)
-        logical :: mmcvca
+        logical(kind=1) :: mmcvca
     end subroutine xmtbca
 end interface

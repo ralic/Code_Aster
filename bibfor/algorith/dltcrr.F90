@@ -65,7 +65,7 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
     character(len=24) :: numedd, matric(3)
     character(len=*) :: texte
 !
-    logical :: lcrea
+    logical(kind=1) :: lcrea
 !
 !
 !

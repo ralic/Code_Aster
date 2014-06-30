@@ -30,7 +30,7 @@ subroutine cal152(option, max, may, maz, model,&
 #include "asterfort/calamr.h"
 #include "asterfort/calmaj.h"
 #include "asterfort/utmess.h"
-    logical :: vrai
+    logical(kind=1) :: vrai
     integer :: i, j
     integer :: imade
     integer :: iphi1, iphi2

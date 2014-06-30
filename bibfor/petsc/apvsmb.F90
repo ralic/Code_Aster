@@ -32,7 +32,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
-    logical :: lmd
+    logical(kind=1) :: lmd
     real(kind=8) :: rsolu(*)
 !----------------------------------------------------------------
 !
@@ -149,7 +149,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
 #else
     integer :: idummy
-    logical :: ldummy
+    logical(kind=1) :: ldummy
     real(kind=8) :: rdummy
     idummy = kptsc
     ldummy = lmd

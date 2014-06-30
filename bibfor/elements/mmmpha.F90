@@ -21,8 +21,8 @@ subroutine mmmpha(loptf, lcont, ladhe, ndexfr, lpenac,&
 !
     implicit none
 #include "asterfort/assert.h"
-    logical :: lpenaf, lpenac
-    logical :: loptf, lcont, ladhe
+    logical(kind=1) :: lpenaf, lpenac
+    logical(kind=1) :: loptf, lcont, ladhe
     integer :: ndexfr
     character(len=9) :: phasep
 !

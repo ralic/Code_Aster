@@ -17,7 +17,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, neql, lmat
     real(kind=8) :: vect(neq, nbvect), xsol(neq, nbvect), vectmp(neq)
-    logical :: lmatd, prepos
+    logical(kind=1) :: lmatd, prepos
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     integer :: kfin, jvalms, jvalmi, jvec, ki, kdeb, nbloc
     integer :: ilig, jcol, jrefa,  iligg, jcolg, numglo, k
     integer :: keta, iexi,  ieq
-    logical :: nonsym
+    logical(kind=1) :: nonsym
     integer, pointer :: nulg(:) => null()
     integer, pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------

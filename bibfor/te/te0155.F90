@@ -62,7 +62,7 @@ subroutine te0155(option, nomte)
     integer :: ifcx, iadzi, iazk24, kpg, spt
     character(len=8) :: nompav(1), nomail
     real(kind=8) :: valpav(1), fcx, vite2, vp(3), ang1(3), u(3), v(3), instan
-    logical :: normal, global, okvent
+    logical(kind=1) :: normal, global, okvent
 !
     real(kind=8) :: kendog(1), kdessi(1), sech, hydr
 !     ------------------------------------------------------------------

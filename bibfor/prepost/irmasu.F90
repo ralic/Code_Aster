@@ -75,7 +75,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     integer :: nodsup(32), nodast(32), permut(maxnod, *), codgra(*), codphy(*)
     integer :: icodno, icodma, versio, codphd(*)
     integer :: itri7, iqua9, iseg4, ihex27, ipen18
-    logical :: lmasu, lpout, lmod
+    logical(kind=1) :: lmasu, lpout, lmod
 ! ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iagrma, iagrno, ica, icc, icf, icod

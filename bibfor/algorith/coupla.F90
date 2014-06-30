@@ -39,7 +39,7 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
     integer :: veci1(*)
     real(kind=8) :: vgap, vecr4(*), vecr1(*), vecr2(*), vecr5(*), vecr3(*)
     real(kind=8) :: masg(*), puls(*)
-    logical :: locflc(*)
+    logical(kind=1) :: locflc(*)
     real(kind=8) :: amflu0(np1, *), amfluc(np1, *), xsi0(*)
 !
 ! VARIABLES LOCALES
@@ -47,7 +47,7 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
     integer :: i, j
     real(kind=8) :: xcf, r8b1(2), r8b2
     complex(kind=8) :: c16b
-    logical :: lk
+    logical(kind=1) :: lk
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !

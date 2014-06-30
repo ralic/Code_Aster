@@ -52,7 +52,7 @@ subroutine pronua(method, nuag1, nuag2)
     character(len=24) :: valk(2)
     character(len=8) :: nogd
     character(len=3) :: tysca
-    logical :: ldref
+    logical(kind=1) :: ldref
     integer, pointer :: corresp(:) => null()
     real(kind=8), pointer :: dref(:) => null()
     real(kind=8), pointer :: nuax1(:) => null()

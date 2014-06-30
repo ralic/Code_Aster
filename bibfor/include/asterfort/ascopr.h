@@ -18,8 +18,8 @@
 interface
     subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
                       jresl, rcoef, jvalm)
-        logical :: lmasym
-        logical :: lmesym
+        logical(kind=1) :: lmasym
+        logical(kind=1) :: lmesym
         character(len=2) :: tt
         integer :: jtmp2
         integer :: nrmax

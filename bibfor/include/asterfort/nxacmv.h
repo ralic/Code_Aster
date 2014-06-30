@@ -31,14 +31,14 @@ interface
         character(len=24) :: infoch
         character(len=24) :: numedd
         character(len=19) :: solveu
-        logical :: lostat
+        logical(kind=1) :: lostat
         character(len=24) :: time
         real(kind=8) :: tpsthe(6)
-        logical :: reasvc
-        logical :: reasvt
-        logical :: reasmt
-        logical :: reasrg
-        logical :: reasms
+        logical(kind=1) :: reasvc
+        logical(kind=1) :: reasvt
+        logical(kind=1) :: reasmt
+        logical(kind=1) :: reasrg
+        logical(kind=1) :: reasms
         character(len=1) :: creas
         character(len=24) :: vtemp
         character(len=24) :: vhydr

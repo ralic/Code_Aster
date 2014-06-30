@@ -45,7 +45,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
     common /rvarje/zr(1)
     complex(kind=8) :: zc
     common /cvarje/zc(1)
-    logical :: zl
+    logical(kind=1) :: zl
     common /lvarje/zl(1)
     character(len=8) :: zk8
     character(len=16) :: zk16

@@ -42,7 +42,7 @@ subroutine nmpro2(fonact, numedd, numfix)
 !
 !
 !
-    logical :: lmacr, leltc
+    logical(kind=1) :: lmacr, leltc
 !
 ! ----------------------------------------------------------------------
 !

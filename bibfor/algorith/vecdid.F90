@@ -77,7 +77,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=1) :: base
     character(len=24) :: evol, masque
     character(len=24) :: ligrch, chalph
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()

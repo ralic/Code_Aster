@@ -61,7 +61,7 @@ subroutine op0196()
     character(len=19) :: cns1, cns2, ces1, ces2, cel2, ch, cesvi1, cesvi2, k19
     character(len=19) :: comps1, comps2
     character(len=24) :: mailx, mailc, licham, ordr, listno, logrma, k24, listgr, k24b
-    logical :: pre1
+    logical(kind=1) :: pre1
 !
     call jemarq()
     call infmaj()

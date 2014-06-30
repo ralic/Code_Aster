@@ -60,7 +60,7 @@ subroutine nmasdi(fonact, veasse, cndfdo, cndfpi)
     real(kind=8) :: codonn(20)
     character(len=19) :: cndido, cndipi
     character(len=19) :: cncine, cndidi
-    logical :: ldidi, lpilo
+    logical(kind=1) :: ldidi, lpilo
 !
 ! ----------------------------------------------------------------------
 !

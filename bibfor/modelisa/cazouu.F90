@@ -53,7 +53,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
     character(len=16) :: nommc
     character(len=3) :: tymocl(nmocl)
     character(len=16) :: motcle(nmocl)
-    logical :: error
+    logical(kind=1) :: error
     integer :: izone, noc, nval, ival, n
     real(kind=8) :: parar
     integer :: parai

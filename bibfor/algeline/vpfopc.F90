@@ -17,7 +17,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
     integer :: lmasse, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
-    logical :: lqz
+    logical(kind=1) :: lqz
     character(len=19) :: solveu
 !
 !     -----------------------------------

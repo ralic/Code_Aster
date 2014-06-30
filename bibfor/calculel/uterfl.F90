@@ -58,7 +58,7 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno,&
     integer :: niv
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     real(kind=8) :: valfp(9), valfm(9)
-    logical :: ltheta
+    logical(kind=1) :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES

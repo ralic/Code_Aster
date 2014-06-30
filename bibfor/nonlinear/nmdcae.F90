@@ -64,7 +64,7 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
 !
 !
     real(kind=8) :: un
-    logical :: lextra
+    logical(kind=1) :: lextra
     real(kind=8) :: valext(4)
     real(kind=8) :: xxbb, xa0, xa1, xdet, cresi, ciblen
     real(kind=8) :: r8bid

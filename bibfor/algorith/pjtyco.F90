@@ -40,8 +40,8 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 #include "asterfort/utmess.h"
     character(len=8) :: resuin
     character(len=19) :: cham1
-    logical :: isole
-    logical :: lnoeu, lelno, lelem, lelga
+    logical(kind=1) :: isole
+    logical(kind=1) :: lnoeu, lelno, lelem, lelga
 !
 !
 !  LNOEU  : .TRUE.  : IL Y A UN CHAM_NO A PROJETER
@@ -63,7 +63,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
     integer :: i, ie, iret
     integer ::  nbordr
     integer :: iordr, isym, nbsym
-    logical :: acceno
+    logical(kind=1) :: acceno
     real(kind=8) :: prec
     character(len=4) :: tych
     character(len=8) :: crit

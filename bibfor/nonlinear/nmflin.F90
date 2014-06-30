@@ -29,7 +29,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 #include "asterfort/utmess.h"
     character(len=19) :: sdpost
     character(len=19) :: matass
-    logical :: linsta
+    logical(kind=1) :: linsta
     real(kind=8) :: freqr
 !
 ! ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 !
 !
 !
-    logical :: valtst, ldist
+    logical(kind=1) :: valtst, ldist
     character(len=24) :: k24bid
     real(kind=8) :: freqr0, prec, r8bid, minmat, maxmat
     character(len=16) :: optrig, sign

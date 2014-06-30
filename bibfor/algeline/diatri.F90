@@ -13,7 +13,7 @@ subroutine diatri(n, d, e, vector, evec,&
 #include "blas/idamax.h"
     integer :: n, ldevec
     real(kind=8) :: d(*), e(*), evec(ldevec, *)
-    logical :: vector
+    logical(kind=1) :: vector
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -24,6 +24,6 @@ interface
         character(len=19) :: lischa
         character(len=19) :: solveu
         character(len=24) :: resoco
-        logical :: renume
+        logical(kind=1) :: renume
     end subroutine nmrenu
 end interface

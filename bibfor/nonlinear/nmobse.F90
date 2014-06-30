@@ -74,7 +74,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
     character(len=19) :: champ
     character(len=8) :: extrcp, extrch, extrga
     character(len=19) :: chgaus, chnoeu, chelga
-    logical :: lobsv
+    logical(kind=1) :: lobsv
 !
 ! ----------------------------------------------------------------------
 !

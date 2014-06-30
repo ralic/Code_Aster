@@ -18,9 +18,9 @@
 interface
     subroutine typthm(axi, perman, vf, typvf,&
                       typmod, ndim)
-        logical :: axi
-        logical :: perman
-        logical :: vf
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
+        logical(kind=1) :: vf
         integer :: typvf
         character(len=8) :: typmod(2)
         integer :: ndim

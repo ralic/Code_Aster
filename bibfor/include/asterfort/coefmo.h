@@ -21,7 +21,7 @@ interface
                       vecr1, vecr2, vecr3, vecr4, vecr5,&
                       xmf, xkf, xcf)
         character(len=8) :: typflu
-        logical :: zrigi
+        logical(kind=1) :: zrigi
         integer :: nbm
         integer :: nmode
         integer :: indic

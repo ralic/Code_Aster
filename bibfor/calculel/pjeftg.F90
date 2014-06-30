@@ -86,7 +86,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
             geomi='&&PJEFTG.GEOM2'
         endif
         call jedetr(geomi)
-        call jedupo(nomai//'.COORDO    .VALE', 'V', geomi, .false.)
+        call jedupo(nomai//'.COORDO    .VALE', 'V', geomi, .false._1)
         call jelira(geomi, 'LONMAX', n1)
         call jeveuo(geomi, 'E', jgeomi)
         nbnoi=n1/3

@@ -46,7 +46,7 @@ subroutine obtcla(sdtabl)
     character(len=24) :: slcolo, sdcolo
     integer :: icolo, nbcolo
     integer :: nbacti, larcol, larlig
-    logical :: lacti
+    logical(kind=1) :: lacti
 !
 ! ----------------------------------------------------------------------
 !

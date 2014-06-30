@@ -38,7 +38,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=*) :: nomgd, nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
     character(len=*) :: nocmpl(*)
     real(kind=8) :: vale(*)
-    logical :: lmasu
+    logical(kind=1) :: lmasu
 !--------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +90,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=80) :: entete(10), titre, texte
     integer :: nbchs, nbcmpt, entier, nbspt, nnoe, ilong, imodel
     integer :: impre, iente, impel
-    logical :: afaire, lcmp, lnocen
+    logical(kind=1) :: afaire, lcmp, lnocen
 !
 !  --- INITIALISATIONS ----
 !
@@ -109,7 +109,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: ncmpp, nec, ni, npcalc, nsca, nscal
     integer, pointer :: cmp_grel(:) => null()
     integer, pointer :: ipcmps(:) => null()
-    logical, pointer :: ltabl(:) => null()
+    logical(kind=1), pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps_grel(:) => null()
     integer, pointer :: nbcmpt_grel(:) => null()
     character(len=8), pointer :: nomchs(:) => null()

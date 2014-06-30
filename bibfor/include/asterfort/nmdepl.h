@@ -56,6 +56,6 @@ interface
         character(len=19) :: veasse(*)
         real(kind=8) :: eta
         real(kind=8) :: conv(*)
-        logical :: lerrit
+        logical(kind=1) :: lerrit
     end subroutine nmdepl
 end interface

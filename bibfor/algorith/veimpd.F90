@@ -65,7 +65,7 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
     character(len=16) :: option
     character(len=24) :: chgeom, ligrmo
     character(len=19) :: vitent
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
     character(len=8), pointer :: lgrf(:) => null()
 !

@@ -40,7 +40,7 @@ subroutine te0373(option, nomte)
     real(kind=8) :: poids, nx, ny, celer(1)
     integer :: ipoids, ivf, idfde, igeom, ionde, kpg, spt
     integer :: nno, kp, npg, ivectu, imate, ldec
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
 !-----------------------------------------------------------------------

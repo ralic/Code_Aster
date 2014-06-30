@@ -276,7 +276,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     end do
 !
     nodfl1='&&XPRDOM.NODEFLAG1'
-    call jedupo(nodfla, 'V', nodfl1, .false.)
+    call jedupo(nodfla, 'V', nodfl1, .false._1)
     call jeveuo(nodfl1, 'L', jnofl1)
 !
 !     ALL THE ELEMENTS CONTAINING THE SELECTED NODES MUST BE

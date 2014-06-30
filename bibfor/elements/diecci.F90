@@ -73,7 +73,7 @@ subroutine diecci(option, nomte, ndim, nbt, nno,&
     real(kind=8) :: valpar(nbpart), coeflo(6, nbparc), vardnl(nbvint)
     integer :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
-    logical :: okdire(6)
+    logical(kind=1) :: okdire(6)
 !   nbparc paramètres par composante
     data nompar /'LIMU_DX','PUIS_DX','KCIN_DX','LIMY_DX',&
             'LIMU_DY','PUIS_DY','KCIN_DY','LIMY_DY',&

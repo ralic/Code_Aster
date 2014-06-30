@@ -28,7 +28,7 @@ interface
         character(len=8) :: grdvie
         character(len=16) :: forvie
         character(len=16) :: forcri
-        logical :: fordef
+        logical(kind=1) :: fordef
         character(len=16) :: typcha
         character(len=16) :: proaxe
         real(kind=8) :: instic

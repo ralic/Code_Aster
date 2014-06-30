@@ -18,7 +18,7 @@
 interface
     subroutine initia(neq, lgrot, indro, chamro, chamin)
         integer :: neq
-        logical :: lgrot
+        logical(kind=1) :: lgrot
         integer :: indro(*)
         real(kind=8) :: chamro(*)
         real(kind=8) :: chamin(*)

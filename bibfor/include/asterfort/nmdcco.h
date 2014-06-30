@@ -26,7 +26,7 @@ interface
         real(kind=8) :: ratio
         character(len=16) :: optdec
         integer :: retdec
-        logical :: ldcext
+        logical(kind=1) :: ldcext
         real(kind=8) :: subdur
     end subroutine nmdcco
 end interface

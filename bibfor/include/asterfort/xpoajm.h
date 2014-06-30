@@ -47,7 +47,7 @@ interface
         integer :: iagma
         integer :: ngrm
         integer :: jdirgr
-        logical :: opmail
+        logical(kind=1) :: opmail
         integer :: ndim
         integer :: ndime
         integer :: jconx1
@@ -82,7 +82,7 @@ interface
         integer :: jcnsv1
         integer :: jcnsv2
         integer :: jcnsl2
-        logical :: lmeca
-        logical :: pre1
+        logical(kind=1) :: lmeca
+        logical(kind=1) :: pre1
     end subroutine xpoajm
 end interface 

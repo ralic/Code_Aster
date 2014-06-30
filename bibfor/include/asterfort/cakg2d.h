@@ -34,9 +34,9 @@ interface
         integer :: iord
         integer :: nbprup
         character(len=16) :: noprup(*)
-        logical :: lmelas
+        logical(kind=1) :: lmelas
         character(len=16) :: nomcas
-        logical :: lmoda
+        logical(kind=1) :: lmoda
         real(kind=8) :: puls
         character(len=24) :: compor
     end subroutine cakg2d

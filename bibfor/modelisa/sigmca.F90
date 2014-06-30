@@ -49,7 +49,7 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-    logical :: quad
+    logical(kind=1) :: quad
     character(len=19) :: carsig, numaca, tablca
     integer :: icabl, nbnoca(*)
 !
@@ -59,7 +59,7 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
     integer :: nbno, nbpara, numail, nbma, mma
     character(len=24) :: tens
     real(kind=8) :: rtens
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
     character(len=24) :: parcr
     real(kind=8), pointer :: valv(:) => null()

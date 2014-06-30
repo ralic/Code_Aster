@@ -25,6 +25,6 @@ interface
         real(kind=8) :: tsex(*)
         integer :: tm2(*)
         integer :: adrgt
-        logical :: fini
+        logical(kind=1) :: fini
     end subroutine i2fini
 end interface

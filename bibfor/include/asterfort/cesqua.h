@@ -19,7 +19,7 @@ interface
     subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         integer :: nbchs
         character(len=*) :: lichs(nbchs)
-        logical :: lcumul(nbchs)
+        logical(kind=1) :: lcumul(nbchs)
         character(len=*) :: base
         character(len=*) :: ces3z
     end subroutine cesqua

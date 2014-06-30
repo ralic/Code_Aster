@@ -44,7 +44,7 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
     character(len=14) :: comref
     character(len=19) :: champ
     integer :: iret
-    logical :: exi, exiref
+    logical(kind=1) :: exi, exiref
 !
 !
     call jemarq()

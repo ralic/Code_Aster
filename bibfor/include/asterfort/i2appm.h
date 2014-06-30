@@ -24,8 +24,8 @@ interface
         real(kind=8) :: yso(*)
         real(kind=8) :: xin(*)
         real(kind=8) :: yin(*)
-        logical :: cdroi(*)
+        logical(kind=1) :: cdroi(*)
         integer :: nbc
-        logical :: dedans
+        logical(kind=1) :: dedans
     end subroutine i2appm
 end interface

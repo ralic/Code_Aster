@@ -19,7 +19,7 @@ function ndynlo(sddyna, chainz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: ndynlo
+    logical(kind=1) :: ndynlo
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"

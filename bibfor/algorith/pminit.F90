@@ -104,7 +104,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
     real(kind=8) :: parcri(*), parcon(9), angeul(3), id(9), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6)
-    logical :: lctcd, limpex
+    logical(kind=1) :: lctcd, limpex
 !
     data nomeps/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
     data nomsig/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/

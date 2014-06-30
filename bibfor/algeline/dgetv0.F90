@@ -165,7 +165,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     %------------------%
 !
     character(len=1) :: bmat
-    logical :: initv
+    logical(kind=1) :: initv
     integer :: ido, ierr, itry, j, ldv, n
     real(kind=8) :: rnorm, alpha
 !
@@ -187,7 +187,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical :: first, inits, orth
+    logical(kind=1) :: first, inits, orth
     integer(kind=4) :: iseed4(4)
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0

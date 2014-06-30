@@ -44,7 +44,7 @@ subroutine te0550(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: ndi, nno, kp, npg
     integer :: ldec, kpg, spt
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
 !-----------------------------------------------------------------------

@@ -42,7 +42,7 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
     parameter  ( n = 5 )
 !
     common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    logical :: trouve
+    logical(kind=1) :: trouve
     character(len=6) :: pgma
     common /kappje/  pgma
     character(len=2) :: dn2

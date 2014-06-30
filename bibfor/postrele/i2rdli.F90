@@ -20,7 +20,7 @@ subroutine i2rdli(n, t, adr)
 !
     integer :: n, t(*), adr
 !
-    logical :: fini, trouve
+    logical(kind=1) :: fini, trouve
     integer :: i, j
 !
 !-----------------------------------------------------------------------

@@ -17,7 +17,7 @@
 !
 interface
     function arlelt(nomte,mod,cin)
-        logical           :: arlelt
+        logical(kind=1)           :: arlelt
         character(len=16) :: nomte
         character(len=16) :: mod
         character(len=16) :: cin

@@ -79,7 +79,7 @@ subroutine peeint(resu, modele, nbocc)
     character(len=19) :: knum, cham, kins, lisins, chamg, celmod, ligrel, tmpcha
     character(len=19) :: cham2, cham3, chamtm, ligtmp
     character(len=24) :: nomcha, valk2(5), mesmai, mesmaf, mesmae
-    logical :: exiord, toneut
+    logical(kind=1) :: exiord, toneut
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
     character(len=8), pointer :: cmp_init(:) => null()

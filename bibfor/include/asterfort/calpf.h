@@ -23,14 +23,14 @@ interface
         integer :: npg
         integer :: nno
         integer :: ndim
-        logical :: axi
+        logical(kind=1) :: axi
         real(kind=8) :: geomm(ndim, nno)
         integer :: g
         integer :: iw
         real(kind=8) :: vff(nno, npg)
         integer :: idff
         real(kind=8) :: depld(3*27)
-        logical :: grand
+        logical(kind=1) :: grand
         real(kind=8) :: alpha
         real(kind=8) :: r
         real(kind=8) :: dff(nno, ndim)

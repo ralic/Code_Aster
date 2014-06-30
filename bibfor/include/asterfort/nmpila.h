@@ -20,7 +20,7 @@ interface
                       ddepl0, ddepl1, nbeffe, eta, pilcvg)
         character(len=24) :: numedd
         character(len=19) :: sdpilo
-        logical :: isxfe
+        logical(kind=1) :: isxfe
         real(kind=8) :: dtau
         character(len=19) :: depdel
         character(len=19) :: ddepl0

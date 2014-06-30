@@ -41,7 +41,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
     character(len=19) :: ligrel
     character(len=*) :: base, lchout(*)
     character(len=8) :: lpaout(*)
-    logical :: ldist
+    logical(kind=1) :: ldist
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !      IOPT : OPTION

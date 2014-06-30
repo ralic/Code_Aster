@@ -32,7 +32,7 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
     character(len=16) :: motfac
     character(len=19) :: provli
     real(kind=8) :: tole, instin
-    logical :: linsei, linsti
+    logical(kind=1) :: linsei, linsti
     integer :: numini, nbinst, iocc
 !
 ! ----------------------------------------------------------------------

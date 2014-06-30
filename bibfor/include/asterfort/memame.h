@@ -25,7 +25,7 @@ interface
         character(len=8) :: lchar(*)
         character(len=*) :: mate
         character(len=*) :: carele
-        logical :: exitim
+        logical(kind=1) :: exitim
         real(kind=8) :: instan
         character(len=*) :: compor
         character(len=*) :: matelz

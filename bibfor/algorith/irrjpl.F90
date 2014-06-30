@@ -63,7 +63,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     real(kind=8) :: drpdp
 !
     integer :: iret
-    logical :: ldrpdp
+    logical(kind=1) :: ldrpdp
 !     ------------------------------------------------------------------
     data  i4    /1.0d0   , 0.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&
      &             0.0d0   , 1.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&

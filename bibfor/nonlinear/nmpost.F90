@@ -90,7 +90,7 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lmvib, lflam, lerrt, lcont, lener
+    logical(kind=1) :: lmvib, lflam, lerrt, lcont, lener
     character(len=4) :: etfixe
 !
 ! ----------------------------------------------------------------------

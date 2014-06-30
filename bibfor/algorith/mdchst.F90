@@ -81,7 +81,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     real(kind=8) :: ktang, ctang, k, rap, xjeu, r8bid
     real(kind=8) :: alpha, beta, axe(3)
     complex(kind=8) :: cbid
-    logical :: lnoue2, memail
+    logical(kind=1) :: lnoue2, memail
     character(len=8) :: kbid, repere, mailla, nomno1, nomno2, k8typ
     character(len=10) :: motfac
     character(len=24) :: mdgene, refo, nomgr1, nomgr2, mamai

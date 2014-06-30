@@ -93,11 +93,11 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
-    logical :: lxfem
+    logical(kind=1) :: lxfem
     character(len=24) :: list_node
     integer :: jlino
     integer :: nb_node
-    logical :: l_liai, l_ocmp
+    logical(kind=1) :: l_liai, l_ocmp
     integer :: val_nb_liai
     real(kind=8) :: val_r_liai
     character(len=8) :: val_f_liai

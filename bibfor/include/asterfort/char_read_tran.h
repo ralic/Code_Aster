@@ -21,11 +21,11 @@ interface
         character(len=16), intent(in) :: keywordfact
         integer, intent(in) :: iocc
         integer, intent(in) :: ndim
-        logical, intent(out) :: l_tran
+        logical(kind=1), intent(out) :: l_tran
         real(kind=8), intent(out) :: tran(3)
-        logical, intent(out) :: l_cent
+        logical(kind=1), intent(out) :: l_cent
         real(kind=8), intent(out) :: cent(3)  
-        logical, intent(out) :: l_angl_naut
+        logical(kind=1), intent(out) :: l_angl_naut
         real(kind=8), intent(out) :: angl_naut(3) 
     end subroutine char_read_tran
 end interface

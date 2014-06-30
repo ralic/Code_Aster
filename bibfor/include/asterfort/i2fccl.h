@@ -17,9 +17,9 @@
 !
 interface
     subroutine i2fccl(tplace, n, existe, adrdbt)
-        logical :: tplace(*)
+        logical(kind=1) :: tplace(*)
         integer :: n
-        logical :: existe
+        logical(kind=1) :: existe
         integer :: adrdbt
     end subroutine i2fccl
 end interface

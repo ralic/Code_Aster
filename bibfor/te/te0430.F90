@@ -54,7 +54,7 @@ subroutine te0430(option, nomte)
     real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe, epsref
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: sig, rho(1), valres(2), b_max_rot
-    logical :: lexc
+    logical(kind=1) :: lexc
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !

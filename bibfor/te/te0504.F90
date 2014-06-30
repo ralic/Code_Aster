@@ -37,7 +37,7 @@ subroutine te0504(option, nomte)
     real(kind=8) :: poids, r, nx, ny, alpha, alpha0
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: imattt, i, j, ij, l, li, lj, iflux
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !-----------------------------------------------------------------------
     integer :: itemp, itemps, jgano, ndim, nnos

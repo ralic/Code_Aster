@@ -45,7 +45,7 @@ subroutine disell(pz, az, bz, h)
     parameter    (eps  = 1.d-6)
     parameter    (epsc = 1.d-6)
     parameter    (nitmx=100)
-    logical :: linsid
+    logical(kind=1) :: linsid
 !
 ! ----------------------------------------------------------------------
 !

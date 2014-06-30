@@ -29,7 +29,7 @@ interface
         real(kind=8) :: borne(2)
         character(len=8) :: norme
         real(kind=8) :: seuil
-        logical :: lseuil
+        logical(kind=1) :: lseuil
         real(kind=8) :: borpct(dim)
         real(kind=8) :: voltot
     end subroutine pebpct

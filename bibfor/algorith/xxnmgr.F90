@@ -103,7 +103,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe))
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3)
     real(kind=8) :: fmm(3, 3), deplb1(3, 27), deplb2(3, 27)
-    logical :: grdepl, axi, cplan, resi, rigi
+    logical(kind=1) :: grdepl, axi, cplan, resi, rigi
 !
     integer :: indi(6), indj(6)
     real(kind=8) :: rind(6), rind1(6), rac2, angmas(3)

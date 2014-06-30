@@ -1,7 +1,7 @@
 subroutine rc32ms(meca, sa, sb, cmax)
     implicit   none
     real(kind=8) :: sb(2), sa(2)
-    logical :: cmax, meca
+    logical(kind=1) :: cmax, meca
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -65,7 +65,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     common /iextje/  idn(n) , iext(n) , nbenrg(n)
     common /jiacce/  jiacce(n),nbacce(2*n)
 !     ------------------------------------------------------------------
-    logical :: lrab
+    logical(kind=1) :: lrab
     character(len=8) :: nom
     character(len=128) :: nom128
     integer :: lgbl, vali(3)

@@ -21,6 +21,6 @@ interface
         character(len=14) :: numedd
         character(len=14) :: xcdl
         integer :: nd
-        logical :: lcine
+        logical(kind=1) :: lcine
     end subroutine mnlcdl
 end interface 

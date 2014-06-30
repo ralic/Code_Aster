@@ -83,7 +83,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     character(len=24) :: grpno
     real(kind=8) :: som(9), ru, alpha, coorpe(3), don(5), carac(2)
     integer :: irot(3), iddl(6), ndim(14)
-    logical :: calcul(2)
+    logical(kind=1) :: calcul(2)
 !-----------------------------------------------------------------------
     integer :: i, iadmag, iadnog, iaxe, icdg, icency
     integer :: icpg, idefm, iencei, iepaig, iequiv, ifpart, ifreqi

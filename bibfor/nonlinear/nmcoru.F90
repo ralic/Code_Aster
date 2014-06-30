@@ -20,7 +20,7 @@ subroutine nmcoru(vresi, vresid, convok)
 !
     implicit     none
     real(kind=8) :: vresi, vresid
-    logical :: convok
+    logical(kind=1) :: convok
 !
 ! ----------------------------------------------------------------------
 !

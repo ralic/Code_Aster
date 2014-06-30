@@ -34,7 +34,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    logical :: matsym
+    logical(kind=1) :: matsym
     character(len=16) :: option, compor(*)
     integer :: iret, nno1, nno2, nno3, ndim
     integer :: vu(3, 27), vg(27), vp(27)

@@ -61,7 +61,7 @@ subroutine te0583(option, nomte)
     integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano, npg
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1), abscn(4)
-    logical :: normal, global
+    logical(kind=1) :: normal, global
 !----------------------------------------------------------------------
     call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
                      npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&

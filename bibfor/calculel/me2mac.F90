@@ -64,7 +64,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    logical :: lfonc
+    logical(kind=1) :: lfonc
     character(len=8) :: lpain(5), lpaout(1), k8bid
     character(len=16) :: option
     character(len=24) :: chgeom, lchin(5), lchout(1)

@@ -35,7 +35,7 @@ interface
         integer :: nfe
         real(kind=8) :: rho
         real(kind=8) :: puls
-        logical :: lmoda
+        logical(kind=1) :: lmoda
         real(kind=8) :: basloc(3*ndim*nnop)
         integer :: idepl
         real(kind=8) :: lsn(nnop)

@@ -76,7 +76,7 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
     character(len=1) :: base
     character(len=24) :: modele
     character(len=16) :: optrig
-    logical :: tabret(0:10), lendo
+    logical(kind=1) :: tabret(0:10), lendo
 !
 ! ----------------------------------------------------------------------
 !

@@ -36,7 +36,7 @@ subroutine te0453(option, nomte)
 !
 !
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     real(kind=8) :: eps(6), vpg(162), poids, dfdi(60), f(3, 3), rbid, tmp
     integer :: jgano, ndim, ncmp, nno, npg, kpg, kk, ksig, nnos
     integer :: ipoids, ivf, idfde, igeom, idepl, idefo
@@ -59,7 +59,7 @@ subroutine te0453(option, nomte)
     do 20 kpg = 1, npg
         call nmgeom(ndim, nno, axi, grand, zr(igeom),&
                     kpg, ipoids, ivf, idfde, zr(idepl),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     rbid)
 !       RECUPERATION DE LA DEFORMATION
         do 10 ksig = 1, ncmp

@@ -28,6 +28,6 @@ interface
         real(kind=8), intent(in) :: xyzgau(3)
         integer, intent(in) :: nbsig
         real(kind=8), intent(out) :: d(nbsig, nbsig)
-        logical, optional, intent(in) :: l_modi_cp
+        logical(kind=1), optional, intent(in) :: l_modi_cp
     end subroutine dmatmc
 end interface

@@ -49,7 +49,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     integer :: nblign
     real(kind=8) :: vr(2), valr, prec(2)
     complex(kind=8) :: vc(2), valc
-    logical :: erreur
+    logical(kind=1) :: erreur
     character(len=3) :: typec, typel, ctype
     character(len=4) :: kfin, chfin
     character(len=8) :: crit(2), form1

@@ -25,8 +25,8 @@ interface
         integer :: maxdim
         integer :: nface
         integer :: maxfa
-        logical :: cont
-        logical :: tange
+        logical(kind=1) :: cont
+        logical(kind=1) :: tange
         real(kind=8) :: uk
         real(kind=8) :: dukp1
         real(kind=8) :: dukp2

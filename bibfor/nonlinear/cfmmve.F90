@@ -61,7 +61,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
     integer :: ifm, niv
     character(len=19) :: sdappa, oldgeo, newgeo, depplu
-    logical :: lctcc, lctcd, lallv
+    logical(kind=1) :: lctcc, lctcd, lallv
     character(len=24) :: jeux, loca, enti, zone
     integer :: npt
 !

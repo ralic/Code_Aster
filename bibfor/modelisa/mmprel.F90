@@ -55,13 +55,13 @@ subroutine mmprel(char, noma, nomo, ligret)
 !
     character(len=24) :: paraci, contma
     integer :: jparci, jmaco
-    logical :: lfrot, laxis, lveri
+    logical(kind=1) :: lfrot, laxis, lveri
     character(len=24) :: lismae, defico
     character(len=16) :: modeli, phenom
     integer :: jdecme, jlist, izone
     integer :: nzoco, ndimg, nmaco, ntmaec
     integer :: imae, posmae, nummae, nbmae
-    logical :: lallv
+    logical(kind=1) :: lallv
 !
 ! ----------------------------------------------------------------------
 !

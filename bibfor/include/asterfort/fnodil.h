@@ -39,7 +39,7 @@ interface
         integer :: idfde2
         integer :: nddls
         integer :: nddlm
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: regula(6)
         real(kind=8) :: deplm(dimuel)
         real(kind=8) :: contm(dimcon*npi)

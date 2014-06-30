@@ -21,7 +21,7 @@ subroutine bsthco(nomte, bsigth, indith)
 #include "asterfort/verifm.h"
 #include "asterfort/vexpan.h"
     real(kind=8) :: bsigth(51)
-    logical :: indith
+    logical(kind=1) :: indith
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

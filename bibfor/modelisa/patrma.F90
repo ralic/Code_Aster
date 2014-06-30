@@ -68,7 +68,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
 ! OUT  NTYPM  I   : NBRE DE TYPE_MAIL DIFFERENT
 !
 ! ROUTINES APPELEES:
-    logical :: fintyp
+    logical(kind=1) :: fintyp
     integer :: nbnott(3)
     integer :: vali
     character(len=8) :: nomma1, nomma2, nomma3

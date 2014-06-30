@@ -63,8 +63,8 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: linte, lreel, lchai
-    logical :: lnvvid, lnverr, lnvsan
+    logical(kind=1) :: linte, lreel, lchai
+    logical(kind=1) :: lnvvid, lnverr, lnvsan
 !
 ! ----------------------------------------------------------------------
 !
@@ -108,7 +108,7 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
     call obsetb(sdcolo, 'ENTIER', linte)
     call obsetb(sdcolo, 'REEL', lreel)
     call obsetb(sdcolo, 'CHAINE', lchai)
-    call obsetb(sdcolo, 'VALE_AFFE', .false.)
+    call obsetb(sdcolo, 'VALE_AFFE', .false._1)
     lnvvid = .false.
     lnverr = .false.
     lnvsan = .false.

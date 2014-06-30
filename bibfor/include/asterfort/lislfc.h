@@ -23,8 +23,8 @@ interface
         integer :: indic
         integer :: iexcit
         integer :: nexci
-        logical :: lfcplx
-        logical :: lacce
+        logical(kind=1) :: lfcplx
+        logical(kind=1) :: lacce
         character(len=8) :: fctcsr
         character(len=8) :: nomfct
     end subroutine lislfc

@@ -4,7 +4,7 @@ subroutine decod1(rec, irec, ifield, valatt, trouve)
 #include "asterfort/trfmot.h"
     character(len=*) :: rec(20)
     integer :: irec, ifield, valatt
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

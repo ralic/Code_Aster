@@ -53,7 +53,7 @@ subroutine op0031()
     character(len=16) :: concep, nomcmd, typrep
     character(len=24) :: cnom, ccoef, ctypec, valk(2)
     real(kind=8) :: r8val(2)
-    logical :: lcoefc, lreent
+    logical(kind=1) :: lcoefc, lreent
     complex(kind=8) :: cval
     integer :: nbocag, nboccr, nboccc, nbocc, ldesc, l, lnom, iocc, i
     integer :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1

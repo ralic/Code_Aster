@@ -86,7 +86,8 @@ subroutine xaint2(noma, modele)
     integer :: nuno(2), nuno2(2), ino(2), ino2, ima, ima2
     integer :: nfis, ifis
     integer :: i, j, k, nfiss, ifiss, nfis2, ifis2, ifis3
-    logical :: elim(2), verif
+    logical(kind=1) :: elim(2), verif
+    logical :: lcond
     integer :: igrp, nbma,   nmaenr, jg
     integer :: nface, ninter, inter, zxain, ia, ifh, nfh, nmasup, jmasup
     integer :: heav, he, ar(12, 3), nbar, nno2, nngl, inte2, ninte2
@@ -280,7 +281,8 @@ subroutine xaint2(noma, modele)
                         end do
 !     ELIM = TT <=> L'ARETE DOIT ÊTRE ENTIÈREMENT ÉLIMINÉE
 !     SINON IL FAUDRA RECONSIDÉRER PROPREMENT L'ELIM COMPLÈTE DE L'ARETE
-                        ASSERT(verif.eqv.(elim(1).and.elim(2)))
+                        lcond=verif.eqv.(elim(1).and.elim(2))
+                        ASSERT(lcond)
                         do j = 1, 2
                             if (.not.elim(j)) goto 300
 !

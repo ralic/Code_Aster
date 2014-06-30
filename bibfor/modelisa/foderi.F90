@@ -46,7 +46,7 @@ subroutine foderi(nomfon, temp, f, df)
     common /jfdsav/ iaprol(5),iavale(5),luvale(5)
     common /kfdsav/ svnomf(5), svprgd(5)
 !     ------------------------------------------------------------------
-    logical :: tesinf, tessup
+    logical(kind=1) :: tesinf, tessup
     integer :: isave, kk, jpro, jvalf, jv, jp, nbvf
     character(len=19) :: ch19
     character(len=24) :: chpro, chval

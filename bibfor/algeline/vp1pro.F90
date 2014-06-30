@@ -75,8 +75,8 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 20      continue
 ! --- POUR OPTIMISER ON NE CALCULE PAS LE DET
         call vpstur(lraide, valeur, lmasse, ldynam, det,&
-                    idet, place, ier, solveu, .false.,&
-                    .true.)
+                    idet, place, ier, solveu, .false._1,&
+                    .true._1)
         if (ier .gt. 1) then
             valeur = 1.01d0 * valeur
             goto 20
@@ -132,8 +132,8 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS) ET ON NE
 ! --- CALCULE PAS LE DET.
         call vpstur(lraide, valeur, lmasse, ldynam, det,&
-                    idet, place, ier, solveu, .false.,&
-                    .false.)
+                    idet, place, ier, solveu, .false._1,&
+                    .false._1)
         if (ier .ne. 0) then
             nbessa = nbessa + 1
             if (nbessa .gt. nbrssa) then

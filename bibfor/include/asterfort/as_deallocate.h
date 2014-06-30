@@ -27,7 +27,7 @@ interface
     subroutine as_deallocate(vl, vi, vi4, vr, vc, &
                              vk8, vk16, vk24, vk32, vk80, &
                              strdbg)
-    logical,           optional, pointer, intent(inout) :: vl(:)
+    logical(kind=1),           optional, pointer, intent(inout) :: vl(:)
     integer,           optional, pointer, intent(inout) :: vi(:)
     integer(kind=4),   optional, pointer, intent(inout) :: vi4(:)
     real(kind=8),      optional, pointer, intent(inout) :: vr(:)

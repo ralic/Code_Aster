@@ -67,7 +67,7 @@ subroutine mmconv(noma, defico, resoco, valinc, solalg,&
 !
     integer :: ifm, niv
     character(len=19) :: depplu, depmoi, ddepla
-    logical :: lnewtf, lnewtg
+    logical(kind=1) :: lnewtf, lnewtg
 !
 ! ----------------------------------------------------------------------
 !

@@ -35,7 +35,7 @@ subroutine te0482(option, nomte)
 ! VECTEURS DIMENSIONNES POUR  NNO = 8
 !
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: ndim, nno, npg, ipoids, ivf, idfde
     integer :: igeom, imate, idepl, itemps, iechli, nnos, jgano
 ! ......................................................................

@@ -22,6 +22,6 @@ interface
         real(kind=8) :: b
         real(kind=8) :: eps
         integer :: crit
-        logical :: compr8
+        logical(kind=1) :: compr8
     end function compr8
 end interface

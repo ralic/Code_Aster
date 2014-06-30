@@ -32,7 +32,7 @@ interface
         character(len=*) :: ncmpgd(*)
         character(len=*) :: nomsym
         integer :: numnoe(*)
-        logical :: lresu
+        logical(kind=1) :: lresu
         integer :: nbcput
         character(len=*) :: ncmput(*)
         integer :: nive

@@ -37,7 +37,7 @@ interface
         complex(kind=8)   , intent(in)    :: sigma
 !!
         integer           , intent(inout) :: npivot
-        logical           , intent(out)   :: flage
+        logical(kind=1)   , intent(out)   :: flage
         integer           , intent(out)   :: nconv
         real(kind=8)      , intent(out)   :: vpinf
         real(kind=8)      , intent(out)   :: vpmax

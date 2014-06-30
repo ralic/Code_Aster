@@ -77,7 +77,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical :: intphy, intmod, exiind
+    logical(kind=1) :: intphy, intmod, exiind
     integer :: ioptch, nbmr, nbn, imod1, nbpf, nbm, ivitef
     integer :: nuor(nbmr), lnumi, lnumj, ij
     real(kind=8) :: cham(nbn, nbmr), specmr(nbpf, *), specmi(nbpf, *)

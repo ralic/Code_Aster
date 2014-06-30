@@ -19,12 +19,12 @@ interface
     subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
                       nbno, ecrma, icoma)
         integer :: nfic
-        logical :: trouve
+        logical(kind=1) :: trouve
         integer :: nbele
         character(len=8) :: nomobj
         character(len=8) :: tymail
         integer :: nbno
-        logical :: ecrma(*)
+        logical(kind=1) :: ecrma(*)
         integer :: icoma
     end subroutine giecma
 end interface

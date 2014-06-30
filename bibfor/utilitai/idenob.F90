@@ -1,6 +1,6 @@
 function idenob(obj1, obj2)
     implicit none
-    logical :: idenob
+    logical(kind=1) :: idenob
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"

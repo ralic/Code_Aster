@@ -54,9 +54,9 @@ subroutine mmeven(phase, defico, resoco)
     character(len=24) :: ctevco, tabfin
     integer :: jctevc, jtabf
     integer :: zeven, ztabf
-    logical :: lactif
+    logical(kind=1) :: lactif
     real(kind=8) :: etacin, etacfi
-    logical :: lexiv
+    logical(kind=1) :: lexiv
 !
 ! ----------------------------------------------------------------------
 !

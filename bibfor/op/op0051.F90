@@ -78,7 +78,7 @@ subroutine op0051()
     character(len=19) :: nch19
     character(len=24) :: xnumcp, xnomcp, vnomch, vcodop, xnovar
     character(len=24) :: naccis, naccr8, nch24, nlsmac, nlsnac
-    logical :: trouve
+    logical(kind=1) :: trouve
 !     ------------------------------------------------------------------
 !
 !====

@@ -72,7 +72,7 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: tabret(0:10)
+    logical(kind=1) :: tabret(0:10)
     integer :: iter
     integer :: ifm, niv
     character(len=1) :: base

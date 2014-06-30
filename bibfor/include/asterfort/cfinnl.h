@@ -20,7 +20,7 @@ interface
                       llf1, llf2)
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical :: reageo
+        logical(kind=1) :: reageo
         integer :: nbliac
         integer :: llf
         integer :: llf1

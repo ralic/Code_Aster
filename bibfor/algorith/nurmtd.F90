@@ -29,7 +29,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tanbul.h"
-    logical :: mini
+    logical(kind=1) :: mini
     integer :: ndim, nno1, nno2, npg, iw, idff1
     integer :: mate
     integer :: vu(3, 27), vp(27)
@@ -61,7 +61,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
 ! OUT MATR    : MATRICE DE RIGIDITE
 !-----------------------------------------------------------------------
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: g
     integer :: ia, na, sa, ib, nb, sb, ja, jb
     integer :: os, kk
@@ -179,7 +179,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor, .false., .true., alpha, dsidep, trepst)
+        call tanbul(option, ndim, g, mate, compor, .false._1, .true._1, alpha, dsidep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then

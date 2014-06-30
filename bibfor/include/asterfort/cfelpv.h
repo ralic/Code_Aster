@@ -21,6 +21,6 @@ interface
         character(len=2) :: typlia
         character(len=24) :: resoco
         integer :: nbliai
-        logical :: lelpiv
+        logical(kind=1) :: lelpiv
     end subroutine cfelpv
 end interface

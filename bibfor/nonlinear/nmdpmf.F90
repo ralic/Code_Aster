@@ -49,13 +49,13 @@ subroutine nmdpmf(compor, chmate)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, iret
-    logical :: lcumu(2), lcoc(2)
+    logical(kind=1) :: lcumu(2), lcoc(2)
     character(len=8) :: licmp
     character(len=19) :: chs(2), chs3, chsx
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    data lcumu/.false.,.false./
-    data lcoc/.false.,.false./
+    data lcumu/.false._1,.false./
+    data lcoc/.false._1,.false./
     data lcoer/1.d0,1.d0/
 !
 ! --------------------------------------------------------------------------------------------------

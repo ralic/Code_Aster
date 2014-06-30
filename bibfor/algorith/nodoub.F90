@@ -43,7 +43,7 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
     character(len=24) :: valk(3)
     character(len=8) :: nomnoe, mailla, typl, typb
     integer :: nol(nbl), nob(nbb)
-    logical :: double
+    logical(kind=1) :: double
     integer :: i, jf, lcou, lp, nbb, nbl
 !-----------------------------------------------------------------------
 !

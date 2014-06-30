@@ -72,7 +72,7 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !-----------------------------------------------------------------------
 !
 !
-    logical :: grand, axi, resi, rigi, elas
+    logical(kind=1) :: grand, axi, resi, rigi, elas
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, k
 !
@@ -147,11 +147,11 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr( ideplm),&
-                    .true., poids, dfdi, f, bum,&
+                    .true._1, poids, dfdi, f, bum,&
                     r)
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr( iddepl),&
-                    .true., poids, dfdi, f, bdu,&
+                    .true._1, poids, dfdi, f, bdu,&
                     r)
 !
 !
@@ -252,12 +252,12 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr( ideplm),&
-                    .true., poids, dfdi, f, bum,&
+                    .true._1, poids, dfdi, f, bum,&
                     r)
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr( iddepl),&
-                    .true., poids, dfdi, f, bdu,&
+                    .true._1, poids, dfdi, f, bdu,&
                     r)
 !
 !

@@ -64,7 +64,7 @@ subroutine op0038()
     character(len=24) :: chtemp, chtime, chflug, chpres
     character(len=24) :: lchin(8), lchout(1)
 !
-    logical :: exitim
+    logical(kind=1) :: exitim
 !
 ! ----------------------------------------------------------------------
 !

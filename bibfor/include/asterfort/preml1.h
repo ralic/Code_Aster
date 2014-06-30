@@ -61,6 +61,6 @@ interface
         integer :: permnd(*)
         integer :: spndnd(*)
         integer :: xadjd(*)
-        logical :: matgen
+        logical(kind=1) :: matgen
     end subroutine preml1
 end interface

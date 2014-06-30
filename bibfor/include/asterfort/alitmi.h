@@ -118,7 +118,7 @@ interface
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: amfluc(np1, *)
         real(kind=8) :: cmodfa(np1, *)
-        logical :: locflc(*)
+        logical(kind=1) :: locflc(*)
         integer :: npfts
         real(kind=8) :: textts(*)
         real(kind=8) :: fextts(np4, *)
@@ -149,7 +149,7 @@ interface
         real(kind=8) :: u(*)
         real(kind=8) :: w(*)
         real(kind=8) :: dd(*)
-        logical :: loc(*)
+        logical(kind=1) :: loc(*)
         real(kind=8) :: vvg(np1, *)
         real(kind=8) :: vg(np1, *)
         real(kind=8) :: vg0(np1, *)

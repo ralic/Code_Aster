@@ -136,8 +136,8 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! ----------------------------------------------------------------------
 !
     integer :: niveau, iterat
-    logical :: lerrit
-    logical :: lboucl, lctcd
+    logical(kind=1) :: lerrit
+    logical(kind=1) :: lboucl, lctcd
     character(len=4) :: etnewt, etfixe
     real(kind=8) :: time
 !
@@ -289,7 +289,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! --- AFFICHAGE PENDANT LES ITERATIONS DE NEWTON
 !
-    call nmimci(sdimpr, 'ITER_NUME', iterat, .true.)
+    call nmimci(sdimpr, 'ITER_NUME', iterat, .true._1)
     call nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
                 'NEWT')
 !
@@ -333,7 +333,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! --- TEMPS PASSE DANS L'ITERATION
 !
     call nmtimr(sdtime, 'TEMPS_PHASE', 'N', time)
-    call nmimcr(sdimpr, 'ITER_TIME', time, .true.)
+    call nmimcr(sdimpr, 'ITER_TIME', time, .true._1)
 !
 ! --- VERIFICATION DU DECLENCHEMENT DES ERREURS FATALES
 !
@@ -365,7 +365,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
     call nmleeb(sderro, 'NEWT', etnewt)
     if (etnewt .eq. 'CONT') then
         call nmtime(sdtime, 'RUN', 'ITE')
-        call nmcrel(sderro, 'ITER_MAXI', .false.)
+        call nmcrel(sderro, 'ITER_MAXI', .false._1)
         goto 320
     endif
 !

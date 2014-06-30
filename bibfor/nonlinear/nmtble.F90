@@ -85,8 +85,8 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: mmcvca, mmcvfr, mmcvgo
-    logical :: lboucf, lboucg, lboucc
+    logical(kind=1) :: mmcvca, mmcvfr, mmcvgo
+    logical(kind=1) :: lboucf, lboucg, lboucc
     integer :: mmitgo, mmitfr, mmitco
     character(len=4) :: etnewt
     real(kind=8) :: instan
@@ -208,9 +208,9 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
     call mmbouc(resoco, 'CONT', 'READ', mmitco)
     call mmbouc(resoco, 'FROT', 'READ', mmitfr)
     call mmbouc(resoco, 'GEOM', 'READ', mmitgo)
-    call nmimci(sdimpr, 'BOUC_CONT', mmitco, .true.)
-    call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true.)
-    call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true.)
+    call nmimci(sdimpr, 'BOUC_CONT', mmitco, .true._1)
+    call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true._1)
+    call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true._1)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !

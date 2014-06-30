@@ -66,7 +66,8 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     character(len=8) :: nomnoe_m, nomg
     character(len=8) :: cmp_name, nomcmp(3)
     character(len=24) :: geom2
-    logical :: lrota
+    logical(kind=1) :: lrota
+    logical :: lcond
     complex(kind=8) :: c16bid
     real(kind=8) :: vale_real, mrota(3, 3)
     complex(kind=8) :: coef_cplx_unit
@@ -77,7 +78,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     integer :: nbcmp, nbec
     integer :: numnoe_m
     real(kind=8) :: cent(3)
-    logical :: l_angl_naut, l_tran
+    logical(kind=1) :: l_angl_naut, l_tran
     real(kind=8) :: angl_naut(3)
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -116,7 +117,8 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
 !
     call calirg(noma, nb_node, list_node, tran, cent,&
                 l_angl_naut, angl_naut, geom2, lrota, mrota)
-    ASSERT(.not.lrota)
+    lcond=.not.lrota
+    ASSERT(lcond)
     call jeveuo(geom2, 'L', jgeom2)
 !
 ! - Loop on nodes

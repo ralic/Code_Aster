@@ -89,7 +89,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     integer :: iret, nbsol
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
-    logical :: prepos
+    logical(kind=1) :: prepos
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
@@ -103,7 +103,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer ::   nprec, iretz, pcentp(2)
-    logical :: lbid, lpreco
+    logical(kind=1) :: lbid, lpreco
     character(len=1) :: rouc, prec
     character(len=4) :: etamat, etam
     character(len=12) :: k12bid

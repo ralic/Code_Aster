@@ -74,7 +74,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     integer :: mxstac
     character(len=8) :: typma
     integer :: zxain
-    logical :: axi, papillon, ajout
+    logical(kind=1) :: axi, papillon, ajout
     parameter      (mxstac=1000)
 !
 ! ----------------------------------------------------------------------

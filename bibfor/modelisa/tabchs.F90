@@ -80,7 +80,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     character(len=8) :: nono, tsca, noma
     character(len=24) :: objlg, objr, objtmp
     character(len=24) :: valk(3)
-    logical :: lmail, lnoeu, lpoin, lspoin
+    logical(kind=1) :: lmail, lnoeu, lpoin, lspoin
+    logical :: lcond
     character(len=24), pointer :: ncmp1(:) => null()
     integer, pointer :: ncmp2(:) => null()
     integer, pointer :: pg_tot(:) => null()
@@ -257,7 +258,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !           - SI LNOEU, ON CALCULE '&&TABCHS.POINT'
 !           - ON VERIFIE QUE LE NUMERO DE POINT EST POSSIBLE
             if (lnoeu) then
-                ASSERT(.not.lpoin)
+                lcond=.not.lpoin
+                ASSERT(lcond)
                 call wkvect('&&TABCHS.POINT', 'V V I', nblig, jcolpt)
             endif
             do ili = 1, nblig
@@ -267,7 +269,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 if (lpoin) then
                     ipt=zi(jcolpt-1+ili)
                 else
-                    ASSERT(lnoeu)
+                    lcond=lnoeu
+                    ASSERT(lcond)
                     nono=zk8(jcolno-1+ili)
                     call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
                     ipt=indiis(zi(jcon1-1+zi(jcon2-1+numa)),nuno,1,&

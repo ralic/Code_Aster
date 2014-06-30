@@ -47,7 +47,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     integer ::  neq, ieq, neq2,  iret,  jinfc, ichar
     integer :: nbchar, jlchar
     character(len=1) :: typch(2)
-    logical :: lvcine
+    logical(kind=1) :: lvcine
     integer, pointer :: dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
     real(kind=8), pointer :: vale(:) => null()

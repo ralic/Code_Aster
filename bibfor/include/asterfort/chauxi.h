@@ -25,7 +25,7 @@ interface
         real(kind=8) :: r
         real(kind=8) :: t
         real(kind=8) :: invp(3, 3)
-        logical :: lcour
+        logical(kind=1) :: lcour
         real(kind=8) :: courb(3, 3, 3)
         real(kind=8) :: du1dm(3, 3)
         real(kind=8) :: du2dm(3, 3)

@@ -29,7 +29,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrconl.h"
     integer :: kptsc
-    logical :: lmd
+    logical(kind=1) :: lmd
     real(kind=8) :: rsolu(*)
 !----------------------------------------------------------------
 !
@@ -142,7 +142,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
 #else
     integer :: idummy
-    logical :: ldummy
+    logical(kind=1) :: ldummy
     real(kind=8) :: rdummy
     idummy = kptsc
     ldummy = lmd

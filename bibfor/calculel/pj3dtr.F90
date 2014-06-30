@@ -53,7 +53,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !  IN        ELRF3D(10) K8 : NOMS DES 10 TYPES DE MAILLES 3D
 ! ----------------------------------------------------------------------
 !
-    logical :: lext
+    logical(kind=1) :: lext
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     integer :: cntetr(4, 1), cnpent(4, 3), cnhexa(4, 6), cnpyra(4, 2)
@@ -74,7 +74,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
     character(len=8) :: nono2
-    logical :: loin2
+    logical(kind=1) :: loin2
     integer, pointer :: typmail(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()

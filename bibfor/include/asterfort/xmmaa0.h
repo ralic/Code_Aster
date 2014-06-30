@@ -31,12 +31,12 @@ interface
         integer :: jpcai
         real(kind=8) :: coefcr
         real(kind=8) :: coefcp
-        logical :: lpenac
+        logical(kind=1) :: lpenac
         character(len=8) :: typmai
         integer :: jddle(2)
         integer :: nconta
         integer :: nfhe
-        logical :: lmulti
+        logical(kind=1) :: lmulti
         integer :: heavno(8)
         real(kind=8) :: mmat(336, 336)
     end subroutine xmmaa0

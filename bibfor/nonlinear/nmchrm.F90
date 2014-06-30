@@ -44,7 +44,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
     integer, intent(in) :: fonact(*)
     character(len=16), intent(out) :: metcor
     character(len=16), intent(out) :: metpre
-    logical, intent(out) :: reasma
+    logical(kind=1), intent(out) :: reasma
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,9 +78,9 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
     integer :: ifm, niv
     real(kind=8) :: instam, instap, pasmin, deltat
     integer :: reincr, reiter
-    logical :: lmodim
-    logical :: leltc, lctcd, lelas
-    logical :: lprem, ldyna, lamor, lchoc, lvarc, l_elas_fo
+    logical(kind=1) :: lmodim
+    logical(kind=1) :: leltc, lctcd, lelas
+    logical(kind=1) :: lprem, ldyna, lamor, lchoc, lvarc, l_elas_fo
 !
 ! ----------------------------------------------------------------------
 !

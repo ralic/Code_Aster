@@ -6,7 +6,7 @@ subroutine ibmain(lldbg)
 #include "asterc/inisig.h"
 #include "asterfort/ib0mai.h"
 #include "asterfort/lxinit.h"
-    logical :: lldbg
+    logical(kind=1) :: lldbg
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ subroutine ibmain(lldbg)
 !     ENSEMBLE DES INITIALISATIONS POUR L'EXECUTION D'UN JOB
 !     ------------------------------------------------------------------
 !     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-    logical :: ldbg
+    logical(kind=1) :: ldbg
     integer :: ifv
     common /cxsu00/ ldbg , ifv
 !     ------------------------------------------------------------------

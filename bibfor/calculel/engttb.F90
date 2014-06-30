@@ -43,7 +43,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
     integer :: nbpara, nblign, vali, ipar, lg, lg1, lg2, i, jvale, jvall
     real(kind=8) :: valr
-    logical :: exist
+    logical(kind=1) :: exist
     character(len=3) :: type
     character(len=16) :: nomsym
     character(len=90) :: form1, form2, form3

@@ -86,7 +86,7 @@ subroutine op0109()
     character(len=19) :: liar
     character(len=24) :: desc, refd, nopara(nbpara)
     character(len=24) :: valk(3)
-    logical :: tronc, monoap, muapde, comdir, corfre, calmas
+    logical(kind=1) :: tronc, monoap, muapde, comdir, corfre, calmas
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
     data  dir    / 'X' , 'Y' , 'Z' /

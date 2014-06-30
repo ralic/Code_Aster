@@ -20,8 +20,8 @@ interface
                       dfks1, dfks2, mobfa, dmob1, dmob2,&
                       mob1f, mob2f, flux, dflx1, dflx2)
         integer :: maxfa
-        logical :: cont
-        logical :: tange
+        logical(kind=1) :: cont
+        logical(kind=1) :: tange
         integer :: nface
         real(kind=8) :: fks(maxfa)
         real(kind=8) :: dfks1(maxfa+1, maxfa)

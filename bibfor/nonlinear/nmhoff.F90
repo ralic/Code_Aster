@@ -44,7 +44,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 !
 ! --------------------------------------------------------------------
-    logical :: resi, rigi, elas, line
+    logical(kind=1) :: resi, rigi, elas, line
     integer :: k, l, ndimsi
     integer :: cod(1)
     real(kind=8) :: sy(1), m, am

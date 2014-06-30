@@ -21,6 +21,6 @@ interface
         real(kind=8), intent(in) :: salt
         character(len=*), intent(in) :: nomres
         character(len=*), intent(in) :: forvie
-        logical, intent(out) :: limit
+        logical(kind=1), intent(out) :: limit
     end subroutine limend
 end interface

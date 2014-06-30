@@ -23,6 +23,6 @@ interface
         real(kind=8) :: yy0(nbeq)
         real(kind=8) :: dy0(nbeq)
         real(kind=8) :: dyy(nbeq)
-        logical :: decoup
+        logical(kind=1) :: decoup
     end subroutine zengen
 end interface

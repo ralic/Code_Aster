@@ -78,7 +78,7 @@ subroutine calsvd(nm, m, n, a, w,&
 #include "blas/dgesvd.h"
     integer :: nm, m, n, ierr
     real(kind=8) :: a(nm, n), w(n), u(nm, m), v(nm, n)
-    logical :: matu, matv
+    logical(kind=1) :: matu, matv
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -90,7 +90,7 @@ subroutine calsvd(nm, m, n, a, w,&
 !     JE DOUBLE LA TAILLE DE WORK POUR DE MEILLEURS PERFS :
     real(kind=8) :: work(2*(7*nm1**2 + 4*nm1))
     integer(kind=4) :: iwork(8*nm1)
-    logical :: alloc, safe
+    logical(kind=1) :: alloc, safe
     integer(kind=4), pointer :: viwork(:) => null()
     real(kind=8), pointer :: vvt(:) => null()
     real(kind=8), pointer :: vwork(:) => null()

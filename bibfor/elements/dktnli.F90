@@ -150,7 +150,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     integer :: j, k, nbcon, nbsp, nbvar, ndimv
     real(kind=8) :: deux, rac2, qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd
-    logical :: vecteu, matric, dkt, dkq, leul
+    logical(kind=1) :: vecteu, matric, dkt, dkq, leul
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nnoel,nnos=nnos,&

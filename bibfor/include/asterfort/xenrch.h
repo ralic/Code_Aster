@@ -28,7 +28,7 @@ interface
         character(len=19) :: cnsenr
         integer :: ndim
         character(len=8) :: fiss
-        logical :: goinop
+        logical(kind=1) :: goinop
         character(len=24) :: lismae
         character(len=24) :: lisnoe
     end subroutine xenrch

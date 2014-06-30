@@ -70,7 +70,7 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
     integer :: iavalp, iavalm, nbsv, jad, jadv, noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     character(len=8) :: ma
-    logical :: ltheta
+    logical(kind=1) :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES

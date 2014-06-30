@@ -69,7 +69,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     integer :: ifm, niv
     real(kind=8) :: rzero
     complex(kind=8) :: czero, dcmplx
-    logical :: ldebug
+    logical(kind=1) :: ldebug
 !
 ! --- INIT.
     call jemarq()

@@ -66,7 +66,7 @@ subroutine xgecfi(modele, depgeo)
     character(len=19) :: ligrel, pinter, faclon, newges, newgem
     character(len=19) :: gesclo, ltno, fissno, heavfa
     character(len=1) :: base
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg, iret,  nbma, ima
     integer :: jcesd, jcesl,   iad
     integer, pointer :: cesv(:) => null()

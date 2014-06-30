@@ -35,7 +35,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
     real(kind=8) :: defgem(dimdef), defgep(dimdef), sigm(dimcon), varim(nbvari)
     character(len=8) :: nomail
     character(len=16) :: meca, option
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !
 ! VARIABLES DE SORTIE
     real(kind=8) :: sigp(dimcon), varip(nbvari), drde(dimdef, dimdef), tlint

@@ -61,12 +61,12 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
     integer :: reincr
     integer ::  n1
-    logical :: lcont, lallv, lctcc, lctcd, lpena, leltc
-    logical :: lpilo, lreli, lmacr, lunil
-    logical :: lmvib, lflam, lexpl, lxfem, lmodim
-    logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
-    logical :: londe, ldyna, lgrot, ltheta, lnkry
-    logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
+    logical(kind=1) :: lcont, lallv, lctcc, lctcd, lpena, leltc
+    logical(kind=1) :: lpilo, lreli, lmacr, lunil
+    logical(kind=1) :: lmvib, lflam, lexpl, lxfem, lmodim
+    logical(kind=1) :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
+    logical(kind=1) :: londe, ldyna, lgrot, ltheta, lnkry
+    logical(kind=1) :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
     integer :: ifm, niv
     character(len=24) :: typilo, typrel, metres
     character(len=3)  :: mfdet

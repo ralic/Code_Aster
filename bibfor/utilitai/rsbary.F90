@@ -22,7 +22,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 !     ----------
     integer :: nr8, i1, i2, iposit
     real(kind=8) :: lr8(*), x
-    logical :: tous, lexi(*)
+    logical(kind=1) :: tous, lexi(*)
 ! ----------------------------------------------------------------------
 !     BUT:
 !      TROUVER DANS UNE LISTE DE R8 QUELS SONT LES 2 REELS LES PLUS
@@ -51,7 +51,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 ! ----------------------------------------------------------------------
     integer :: ipp, ip, is, iss
     real(kind=8) :: xpp, xp, xs, xss, epsi, inter
-    logical :: afaire
+    logical(kind=1) :: afaire
 !-----------------------------------------------------------------------
     integer :: i, imax, imin
     real(kind=8) :: xmax, xmin

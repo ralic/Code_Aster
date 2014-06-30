@@ -37,7 +37,7 @@ subroutine te0122(option, nomte)
 !
     integer :: jgano, npg, nnos, nno, ndim, ndime, ipoids, ivf, idfde
     integer :: ichg, ichn, jtab(7), ncmp, ibid, i, j, in, ig, ntrou
-    logical :: quadra, jhm, interf, jlin2d, jlin3d, jquad
+    logical(kind=1) :: quadra, jhm, interf, jlin2d, jlin3d, jquad
     character(len=8) :: lielrf(10)
 !     ------------------------------------------------------------------
 !

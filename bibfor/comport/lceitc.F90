@@ -44,7 +44,7 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: regime, regm, i, j, cod(4), cinema
     real(kind=8) :: sc, gc, dc, h, ka, kap, gap, sk, val(4)
     real(kind=8) :: t(3), pr(3, 3), tpo(3), tno, lbd, d

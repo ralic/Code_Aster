@@ -50,7 +50,7 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
 !     OUT DSIDEP  MATRICES TANGENTES
 !     -----------------------------------------------------------------
 !
-    logical :: cplan, resi
+    logical(kind=1) :: cplan, resi
     integer :: ndimsi, ij, kl, i
     real(kind=8) :: val(3), nu, lambda, deuxmu
     real(kind=8) :: e

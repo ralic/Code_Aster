@@ -24,7 +24,7 @@ interface
         real(kind=8) :: i1
         real(kind=8) :: devsig(6)
         real(kind=8) :: dshds(6)
-        logical :: plas
+        logical(kind=1) :: plas
         real(kind=8) :: xi
         real(kind=8) :: para(3)
         real(kind=8) :: vara(4)

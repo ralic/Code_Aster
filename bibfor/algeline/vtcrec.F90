@@ -78,7 +78,7 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
     endif
 !
 !     -- RECOPIE DE L'OBJET .REFE MODELE :
-    call jedupo(chmod2//'.REFE', classe, refe, .false.)
+    call jedupo(chmod2//'.REFE', classe, refe, .false._1)
 !
 !     -- CREATION DE L'OBJET .DESC :
     call wkvect(desc, classe//' V I', 2, lchamp)

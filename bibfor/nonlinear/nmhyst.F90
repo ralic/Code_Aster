@@ -60,7 +60,7 @@ subroutine nmhyst(amort, vitplu, cnhyst)
 ! --- CALCUL FORCES AMORTISSEMENT
 !
     call mrmult('ZERO', jamor, vitp, hyst, 1,&
-                .true.)
+                .true._1)
 !
     call jedema()
 end subroutine

@@ -61,7 +61,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     integer :: nnop
     integer :: zxain
     character(len=8) :: typma, noma, elrese(3)
-    logical :: cut
+    logical(kind=1) :: cut
     integer, pointer :: dime(:) => null()
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/

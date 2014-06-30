@@ -65,7 +65,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 #include "asterfort/r8inir.h"
 #include "asterfort/tanmat.h"
 #include "blas/dcopy.h"
-    logical :: bbok
+    logical(kind=1) :: bbok
 !
     integer :: ncrit, ncrit2, ier, zimat
     integer :: i, j, kk, kkk, ipara(4), codret, kmax

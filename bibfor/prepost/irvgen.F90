@@ -12,7 +12,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 #include "asterfort/utmess.h"
     integer :: cmpg(*)
     character(len=*) :: genein
-    logical :: lhist
+    logical(kind=1) :: lhist
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     character(len=16) :: typrem
     character(len=19) :: gene, basmod
     character(len=24) :: typeba
-    logical :: lbase
+    logical(kind=1) :: lbase
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, ib, ifi, im, imode

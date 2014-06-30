@@ -96,7 +96,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop), dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r, ur
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3), deplb1(3, 27), deplb2(3, 27)
-    logical :: grdepl, axi, cplan
+    logical(kind=1) :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
     real(kind=8) :: rind(6), rac2, angmas(3)

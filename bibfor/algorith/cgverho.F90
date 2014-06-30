@@ -6,7 +6,7 @@ function cgverho(imate)
 #include "asterfort/tecach.h"
 !
     integer :: imate
-    logical :: cgverho
+    logical(kind=1) :: cgverho
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ function cgverho(imate)
 ! ----------------------------------------------------------------------
 !
     integer :: icodre, iret, codrho(1), ipesa, irota, ipuls
-    logical :: rhoabs
+    logical(kind=1) :: rhoabs
     real(kind=8) :: rhobid(1)
     character(len=16) :: phenom
 !

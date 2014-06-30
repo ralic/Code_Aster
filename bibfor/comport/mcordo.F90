@@ -33,7 +33,7 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
     integer :: i, j, mdim, ndim
 !
 ! Declaration of integer type variables
-    logical :: lorder, epflag
+    logical(kind=1) :: lorder, epflag
 !
     parameter&
      &(   mdim=3     ,ndim=6     )

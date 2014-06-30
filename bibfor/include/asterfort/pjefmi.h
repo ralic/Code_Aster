@@ -25,7 +25,7 @@ interface
         real(kind=8) :: xg(ndim)
         real(kind=8) :: x1(ndim)
         real(kind=8) :: x2(ndim)
-        logical :: lext
+        logical(kind=1) :: lext
         real(kind=8) :: xmi(ndim)
         real(kind=8),intent(out) :: distv
     end subroutine pjefmi

@@ -43,7 +43,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     character(len=16) :: optio
 !-----------------------------------------------------------------------
     real(kind=8) :: c1
-    logical :: lmasym, lmesym
+    logical(kind=1) :: lmasym, lmesym
     character(len=2) :: tt
     character(len=19) :: matel
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr

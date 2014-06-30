@@ -45,9 +45,9 @@ interface
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: vind1(nvi)
         integer :: indi(7)
-        logical :: bnews(3)
-        logical :: mtrac
-        logical :: lreli
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
+        logical(kind=1) :: lreli
         integer :: iret
     end subroutine lcconv
 end interface

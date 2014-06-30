@@ -82,7 +82,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
 !
 !
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, kpgs, proj
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
     real(kind=8) :: poids, tmp, sig(6), rbid(1)
@@ -172,13 +172,13 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 70  end do
     call nmgeom(2, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplm,&
-                .true., poids, dfdi, f, eps,&
+                .true._1, poids, dfdi, f, eps,&
                 r)
 !
 !     CALCUL DE DEPS
     call nmgeom(2, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplp,&
-                .true., poids, dfdi, f, deps,&
+                .true._1, poids, dfdi, f, deps,&
                 r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,

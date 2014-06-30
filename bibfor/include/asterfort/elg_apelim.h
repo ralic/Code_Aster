@@ -17,6 +17,6 @@
 interface 
     subroutine elg_apelim(kptsc, lqr)
         integer :: kptsc
-        logical :: lqr
+        logical(kind=1) :: lqr
     end subroutine elg_apelim
 end interface 

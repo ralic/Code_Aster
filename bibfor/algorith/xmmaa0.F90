@@ -27,7 +27,7 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
     real(kind=8) :: mmat(336, 336)
     real(kind=8) :: hpg, ffc(8), jacobi, coefcr, coefcp
     character(len=8) :: typmai
-    logical :: lpenac, lmulti
+    logical(kind=1) :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !

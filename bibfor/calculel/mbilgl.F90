@@ -47,8 +47,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=16) :: option, noprup(*), nomcas
     character(len=24) :: depla1, depla2, chfond, mate, fonoeu
 !
-    logical :: extim, thlagr, glagr, milieu, pair
-    logical :: ufonc, vfonc, thlag2, lmelas
+    logical(kind=1) :: extim, thlagr, glagr, milieu, pair
+    logical(kind=1) :: ufonc, vfonc, thlag2, lmelas
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -317,14 +317,14 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     if (thlag2) then
         num = 5
         call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
-                    pair, valg_s, objcur, zr(iadgi), .false.)
+                    pair, valg_s, objcur, zr(iadgi), .false._1)
     else if ((.not.glagr) .and. (.not.thlagr)) then
         num = 1
         call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
                     xl, zr( iadgi))
     else if (glagr .and. thlagr) then
         call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, valg_s,&
-                    objcur, zr(iadgi), num, .false.)
+                    objcur, zr(iadgi), num, .false._1)
     endif
 !
 !- SYMETRIE DU CHARGEMENT ET IMPRESSION DES RESULTATS

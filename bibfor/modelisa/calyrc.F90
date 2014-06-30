@@ -68,7 +68,7 @@ subroutine calyrc(chargz)
     integer :: nbtyp, nddl2, jlistk, jdim, ndim1
     integer ::   idim, ij, norien, ntrait
     integer :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3
-    logical :: lrota, dnor, lreori
+    logical(kind=1) :: lrota, dnor, lreori
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     real(kind=8) :: r8b
     real(kind=8) :: coef11, coef12, coef3
@@ -84,11 +84,11 @@ subroutine calyrc(chargz)
     character(len=19) :: lisrel
     character(len=24) :: geom3
     character(len=24) :: valk(2)
-    logical :: l_tran
+    logical(kind=1) :: l_tran
     real(kind=8) :: tran(3)
-    logical :: l_cent
+    logical(kind=1) :: l_cent
     real(kind=8) :: cent(3)
-    logical :: l_angl_naut
+    logical(kind=1) :: l_angl_naut
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
     real(kind=8), pointer :: coef(:) => null()
@@ -278,7 +278,7 @@ subroutine calyrc(chargz)
             call canort(noma, nbma3, limanu3, ndim, nbno3,&
                         ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
-            call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false.)
+            call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false._1)
             call jeveuo('&&CALYRC.LINONU', 'L', iagno3)
         endif
 !
@@ -300,23 +300,23 @@ subroutine calyrc(chargz)
 !        -- 1er groupe esclave / 1er groupe maitre --
             call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
-                        .false., r8b)
+                        .false._1, r8b)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
                 call pj2dco('PARTIE', mo, mo, nbma2, limanu2,&
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
-                            .false., r8b)
+                            .false._1, r8b)
             endif
         else if (ndim.eq.3) then
 !        -- 1er groupe esclave / 1er groupe maitre --
             call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
-                        .false., r8b)
+                        .false._1, r8b)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
                 call pj3dco('PARTIE', mo, mo, nbma2, limanu2,&
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
-                            .false., r8b)
+                            .false._1, r8b)
             endif
         endif
 !

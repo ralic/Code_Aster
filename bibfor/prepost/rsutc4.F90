@@ -14,7 +14,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 #include "asterfort/as_allocate.h"
 !
     integer :: iocc, dimlis, nbch
-    logical :: acceno
+    logical(kind=1) :: acceno
     character(len=*) :: resu, lisch(*), motfac
 !
 ! ======================================================================

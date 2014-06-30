@@ -36,7 +36,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
     integer :: icham
     integer :: numarc
     real(kind=8) :: instan
-    logical :: force
+    logical(kind=1) :: force
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
     integer :: jioinf, jiolch
     integer :: zioch
     character(len=24) :: nomcha, nomchs, charch
-    logical :: lprint
+    logical(kind=1) :: lprint
     integer :: iret
 !
 ! ----------------------------------------------------------------------

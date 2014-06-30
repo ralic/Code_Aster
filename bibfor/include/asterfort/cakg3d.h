@@ -38,21 +38,21 @@ interface
         character(len=24) :: courb
         integer :: iord
         integer :: ndeg
-        logical :: thlagr
-        logical :: glagr
-        logical :: thlag2
-        logical :: pair
+        logical(kind=1) :: thlagr
+        logical(kind=1) :: glagr
+        logical(kind=1) :: thlag2
+        logical(kind=1) :: pair
         integer :: ndimte
-        logical :: extim
+        logical(kind=1) :: extim
         real(kind=8) :: time
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=8) :: fiss
-        logical :: lmelas
+        logical(kind=1) :: lmelas
         character(len=16) :: nomcas
-        logical :: lmoda
+        logical(kind=1) :: lmoda
         real(kind=8) :: puls
-        logical :: milieu
-        logical :: connex
+        logical(kind=1) :: milieu
+        logical(kind=1) :: connex
     end subroutine cakg3d
 end interface

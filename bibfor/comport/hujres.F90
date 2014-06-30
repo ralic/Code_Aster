@@ -57,11 +57,11 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
     real(kind=8) :: pf, qf, vec(3), zero, pref
     real(kind=8) :: deux
     real(kind=8) :: tol, asig, adsig, tole1, rtrac
-    logical :: chgmec, noconv, aredec, stopnc, negmul(8)
-    logical :: subd, rdctps, loop, impose
+    logical(kind=1) :: chgmec, noconv, aredec, stopnc, negmul(8)
+    logical(kind=1) :: subd, rdctps, loop, impose
     character(len=8) :: mod
     character(len=7) :: etatf
-    logical :: debug, plas, try, nodec, tract
+    logical(kind=1) :: debug, plas, try, nodec, tract
 !
     common /tdim/   ndt, ndi
     common /meshuj/ debug

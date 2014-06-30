@@ -50,7 +50,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 ! ----------------------------------------------------------------------
 !
 !
-    logical :: rigi, resi, lbid
+    logical(kind=1) :: rigi, resi, lbid
     integer :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
@@ -103,7 +103,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
     call crgdm(imate, 'GLRC_DM         ', lambda, deuxmu, lamf,&
                deumuf, gt, gc, gf, seuil,&
-               alpha, alfmc, ep, .false., 1,&
+               alpha, alfmc, ep, .false._1, 1,&
                lbid, r8bid(1), r8bid(2), r8bid(3), r8bid(4),&
                r8bid(5), r8bid(6))
 !

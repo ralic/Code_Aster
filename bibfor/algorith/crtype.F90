@@ -77,7 +77,7 @@ subroutine crtype()
 !
     parameter  (mxpara=10)
 !
-    logical :: lncas, lfonc, lcopy
+    logical(kind=1) :: lncas, lfonc, lcopy
 !
     real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq
     complex(kind=8) :: cbid
@@ -513,15 +513,15 @@ subroutine crtype()
             if (k24(1:7) .eq. 'CHAM_NO') then
                 o1 = champ//'.DESC'
                 o2 = nomch//'.DESC'
-                call jedupo(o1, 'G', o2, .false.)
+                call jedupo(o1, 'G', o2, .false._1)
 !
                 o1 = champ//'.REFE'
                 o2 = nomch//'.REFE'
-                call jedupo(o1, 'G', o2, .false.)
+                call jedupo(o1, 'G', o2, .false._1)
 !
                 o1 = champ//'.VALE'
                 o2 = nomch//'.VALE'
-                call jedupo(o1, 'G', o2, .false.)
+                call jedupo(o1, 'G', o2, .false._1)
 !
                 call jeveuo(nomch//'.REFE', 'E', jrefe)
                 zk24(jrefe+1) = profch

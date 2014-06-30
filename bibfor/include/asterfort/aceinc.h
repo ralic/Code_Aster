@@ -37,9 +37,9 @@ interface
         integer :: nbegb
         integer :: nbemb
         integer :: nbtel
-        logical :: locaco
-        logical :: locagb
-        logical :: locamb
+        logical(kind=1) :: locaco
+        logical(kind=1) :: locagb
+        logical(kind=1) :: locamb
         integer :: jdlm
         integer :: jdln
         integer :: lmax

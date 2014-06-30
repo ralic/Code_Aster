@@ -28,7 +28,7 @@ subroutine calmaj(option, max, may, maz, model,&
 #include "jeveux.h"
 #include "asterfort/calcin.h"
 #include "asterfort/ploint.h"
-    logical :: vrai
+    logical(kind=1) :: vrai
     integer :: i, j
     character(len=*) :: modmec, chamno, model
     character(len=9) :: option

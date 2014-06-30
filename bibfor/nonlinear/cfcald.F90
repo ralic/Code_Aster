@@ -19,7 +19,7 @@ function cfcald(defico, izone, typnoe)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: cfcald
+    logical(kind=1) :: cfcald
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -49,7 +49,7 @@ function cfcald(defico, izone, typnoe)
 ! ----------------------------------------------------------------------
 !
     integer :: iappa
-    logical :: lliss, lmait, lescl, lmaes
+    logical(kind=1) :: lliss, lmait, lescl, lmaes
 !
 ! ----------------------------------------------------------------------
 !

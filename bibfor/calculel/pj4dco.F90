@@ -86,7 +86,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     integer :: ialim1, ialin1,  ilcnx1, ialin2
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 !
-    logical :: dbg, ldmax, loin, loin2, lraff
+    logical(kind=1) :: dbg, ldmax, loin, loin2, lraff
     real(kind=8) :: distma, dmin, cobary(3)
 !
     integer :: nbmax
@@ -337,9 +337,9 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                 zr(iacoo2), lraff)
     dbg=.false.
     if (dbg) then
-        call utimsd(ifm, 2, .false., .true., '&&PJ4DCO',&
+        call utimsd(ifm, 2, .false._1, .true._1, '&&PJ4DCO',&
                     1, ' ')
-        call utimsd(ifm, 2, .false., .true., corres,&
+        call utimsd(ifm, 2, .false._1, .true._1, corres,&
                     1, ' ')
     endif
     call detrsd('CORRESP_2_MAILLA', cortr3)

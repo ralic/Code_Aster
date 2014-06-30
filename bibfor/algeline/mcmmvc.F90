@@ -16,7 +16,7 @@ subroutine mcmmvc(cumul, lmat, smdi, smhc, neq,&
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, lmat
     complex(kind=8) :: vect(neq, nbvect), xsol(neq, nbvect), vectmp(neq)
-    logical :: prepos
+    logical(kind=1) :: prepos
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ subroutine mcmmvc(cumul, lmat, smdi, smhc, neq,&
     character(len=19) :: nom19
     character(len=24) :: valm
     integer :: nbloc, jmat1, jmat2, jcol, i, j, kdeb, kfin, ki, jvec, k
-    logical :: nonsym
+    logical(kind=1) :: nonsym
     integer :: keta, iexi,  ieq
     integer, pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------

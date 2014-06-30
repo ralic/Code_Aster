@@ -20,8 +20,8 @@ interface
                       r, dfdi, depl, f, eps)
         integer :: nno
         integer :: ndim
-        logical :: axi
-        logical :: grand
+        logical(kind=1) :: axi
+        logical(kind=1) :: grand
         real(kind=8) :: vff(nno)
         real(kind=8) :: r
         real(kind=8) :: dfdi(nno, ndim)

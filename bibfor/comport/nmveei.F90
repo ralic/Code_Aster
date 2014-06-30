@@ -119,7 +119,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
     parameter  ( zero = 0.d0   )
     parameter  (dammax = 0.99d0)
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
 !
     integer :: itmax, i, ier, iter, iret2, iret3, iret4
     integer :: ndt, nvi, nrv, ndi, k, l, isimp

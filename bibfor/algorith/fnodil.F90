@@ -30,7 +30,7 @@ subroutine fnodil(dimuel, dimdef, nno, nnos, nnom,&
 #include "asterfort/dilcge.h"
 #include "asterfort/dilpen.h"
 #include "asterfort/dilsga.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: dimuel, dimdef, nno, nnos, nnom, ndim, npi, dimcon, ipoids
     integer :: ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm, imate
     integer :: regula(6)

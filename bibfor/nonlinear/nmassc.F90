@@ -69,7 +69,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     real(kind=8) :: coef(nbcoef)
     character(len=19) :: vect(nbcoef)
     real(kind=8) :: coeequ
-    logical :: ldyna
+    logical(kind=1) :: ldyna
 !
 !
 ! ----------------------------------------------------------------------

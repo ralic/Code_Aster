@@ -7,7 +7,7 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rke(*), rcorr(*), dom(*)
     integer :: nbcycl
-    logical :: lke, lhaigh
+    logical(kind=1) :: lke, lhaigh
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

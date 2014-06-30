@@ -96,7 +96,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    logical :: perman
+    logical(kind=1) :: perman
     integer :: ino, nbs, ndim
     real(kind=8) :: jac(3), nx(3), ny(3), tx(3), ty(3)
     integer :: nbcmp, ivois, iagd
@@ -109,7 +109,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    logical :: flagm, flagh
+    logical(kind=1) :: flagm, flagh
     integer :: imav, ient2, numgd2, ient3, numgd3
     integer :: jno, mno, ibid
     integer :: idec1, idec2, idec3

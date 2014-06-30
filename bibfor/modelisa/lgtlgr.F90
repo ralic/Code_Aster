@@ -180,7 +180,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---   CREATION DE L'OBJET LIGREL.LGRF :
 !       -------------------------------
-        call jedupo(ligret//'.LGRF', 'V', ligrel//'.LGRF', .false.)
+        call jedupo(ligret//'.LGRF', 'V', ligrel//'.LGRF', .false._1)
         call jeecra(ligrel//'.LGRF', 'DOCU', ibid, 'MECA')
 !
         nutyp1 = lity(1)

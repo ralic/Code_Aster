@@ -45,7 +45,7 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
 !-----------------------------------------------------------------------
     integer :: nbpar
     parameter (nbpar=6)
-    logical :: resi, rigi, elas
+    logical(kind=1) :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, c, h, ka, sk, st, val(nbpar), tmp, kap, skp, gap
     real(kind=8) :: dn, tn, t(3), ddndtn, dele, delp, delc, coee, coep

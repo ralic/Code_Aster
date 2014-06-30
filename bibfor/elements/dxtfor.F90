@@ -5,7 +5,7 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), for(6, *), vecl(*)
-    logical :: global
+    logical(kind=1) :: global
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

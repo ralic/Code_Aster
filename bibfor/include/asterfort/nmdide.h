@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmdide(lreuse, result, numder, insder)
-        logical :: lreuse
+        logical(kind=1) :: lreuse
         character(len=8) :: result
         integer :: numder
         real(kind=8) :: insder

@@ -43,7 +43,7 @@ subroutine te0206(option, nomte)
     integer :: ivarim, ivarip, jtab(7), iret, lgpg, iinstm, iinstp
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,Z,W => 1ER INDICE
     real(kind=8) :: coopg(4, 4)
-    logical :: resi, rigi, matsym
+    logical(kind=1) :: resi, rigi, matsym
 ! ----------------------------------------------------------------------
 !
     resi = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'

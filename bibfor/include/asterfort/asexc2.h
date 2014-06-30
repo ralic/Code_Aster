@@ -25,7 +25,7 @@ interface
         integer :: nbocc
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
-        logical :: corfre
+        logical(kind=1) :: corfre
         character(len=8) :: noma
         integer :: ndir(*)
         character(len=8) :: nomsup(3, *)

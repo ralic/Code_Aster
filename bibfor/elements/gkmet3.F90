@@ -15,7 +15,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
     integer :: nnoff, iadrgk, iadgks, iadgki, num
     character(len=8) :: modele
     character(len=24) :: chfond, abscur
-    logical :: milieu, connex
+    logical(kind=1) :: milieu, connex
 !
 !
 ! ======================================================================

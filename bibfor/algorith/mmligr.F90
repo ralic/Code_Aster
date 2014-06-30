@@ -85,7 +85,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
     character(len=24) :: typelt
     character(len=24) :: nosdco
     integer :: jnosdc
-    logical :: lappar, laxis, lfrot
+    logical(kind=1) :: lappar, laxis, lfrot
     integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -287,7 +287,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 !
 ! --- INITIALISATION DU LIGREL
 !
-    call jedupo(nomo//'.MODELE    .LGRF', 'V', ligrcf//'.LGRF', .false.)
+    call jedupo(nomo//'.MODELE    .LGRF', 'V', ligrcf//'.LGRF', .false._1)
     call adalig(ligrcf)
     call initel(ligrcf)
 !

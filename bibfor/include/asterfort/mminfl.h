@@ -20,6 +20,6 @@ interface
         character(len=24) :: defico
         character(len=*) :: questz
         integer :: izone
-        logical :: mminfl
+        logical(kind=1) :: mminfl
     end function mminfl
 end interface

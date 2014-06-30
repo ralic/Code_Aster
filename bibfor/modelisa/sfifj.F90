@@ -66,7 +66,7 @@ subroutine sfifj(nomres)
     character(len=19) :: base, fonct, chamno, pg, phi, sphi
     character(len=24) :: ligrmo
     character(len=24) :: chnumi, chnumj, chfreq, chvale
-    logical :: yang
+    logical(kind=1) :: yang
     real(kind=8), pointer :: vecx(:) => null()
     real(kind=8), pointer :: vecy(:) => null()
     real(kind=8), pointer :: vecz(:) => null()

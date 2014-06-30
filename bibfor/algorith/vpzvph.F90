@@ -44,7 +44,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
     real(kind=8) :: norm, p, q, r, s, t, w, x, y, z
     integer :: i, itn, its, j, k, l, ll, m, m2, m3, mm
     integer :: n, n2, na, nhs
-    logical :: notlst
+    logical(kind=1) :: notlst
 !
 !**********************************************************************
 !                        DEBUT DU CODE EXECUTABLE

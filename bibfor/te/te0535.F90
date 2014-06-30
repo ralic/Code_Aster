@@ -83,7 +83,7 @@ subroutine te0535(option, nomte)
     real(kind=8) :: vv(12), fv(12), sv(78), ksg(3), sign_noeu
     real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
-    logical :: vecteu, matric, reactu
+    logical(kind=1) :: vecteu, matric, reactu
     character(len=8) :: mator
     character(len=24) :: valk(2)
     real(kind=8), pointer :: defmfib(:) => null()

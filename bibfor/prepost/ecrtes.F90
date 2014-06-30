@@ -21,7 +21,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     character(len=*) :: nomsd, titre, nomgds
     character(len=*) :: fitype
     character(len=80) :: entete(10)
-    logical :: lcmp
+    logical(kind=1) :: lcmp
 !----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

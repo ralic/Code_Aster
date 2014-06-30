@@ -42,7 +42,7 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
     real(kind=8) :: vim(lgpg)
     real(kind=8) :: fm(3, 3), fp(3, 3), epsml(6), epspl(6)
     real(kind=8) :: tn(6), deps(6), gn(3, 3), lamb(3), logl(3)
-    logical :: resi
+    logical(kind=1) :: resi
 ! ---------------------------------------------------------------------
 !
     call deflog(ndim, fm, epsml, gn, lamb,&

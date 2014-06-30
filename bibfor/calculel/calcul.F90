@@ -125,7 +125,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !-----------------------------------------------------------------------
-    logical :: ldist, dbg, ldgrel
+    logical(kind=1) :: ldist, dbg, ldgrel
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel
@@ -152,7 +152,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=8), pointer :: typma(:) => null()
     integer, pointer :: numsd(:) => null()
     character(len=24), pointer :: prtk(:) => null()
-    logical, pointer :: paral(:) => null()
+    logical(kind=1), pointer :: paral(:) => null()
 !----------------------------------------------------------------------
 !
 !   -- FONCTIONS FORMULES :

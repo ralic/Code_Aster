@@ -50,10 +50,10 @@ subroutine nmerro(sderro, sdtime, numins)
     integer :: jtpas, jtite
     real(kind=8) :: rtab(2)
     integer :: itab(2)
-    logical :: echldc, echeq1, echeq2, echco1, echco2, echpil
-    logical :: mtcpui, mtcpup, itemax
-    logical :: echpfg, echpff, echpfc
-    logical :: errres
+    logical(kind=1) :: echldc, echeq1, echeq2, echco1, echco2, echpil
+    logical(kind=1) :: mtcpui, mtcpup, itemax
+    logical(kind=1) :: echpfg, echpff, echpfc
+    logical(kind=1) :: errres
     real(kind=8) :: tpsrst, moyite, moypas
     character(len=16) :: nomevd, action, valk(2)
 !

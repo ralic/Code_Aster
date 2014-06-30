@@ -108,7 +108,7 @@ subroutine op0167()
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, nch, ndinit, niv, k, jgeofi
     integer ::     dimcon, decala, iocct
     real(kind=8) :: shrink, lonmin
-    logical :: lpb
+    logical(kind=1) :: lpb
     integer, pointer :: adrjvx(:) => null()
     integer, pointer :: nbnoma(:) => null()
     integer, pointer :: nbnomb(:) => null()
@@ -456,14 +456,14 @@ subroutine op0167()
     gpptnn=nomaou//'.PTRNOMNOE'
 !
 !
-    call jedupo(nodimv, 'G', nodime, .false.)
-    call jedupo(coodsv, 'G', coodsc, .false.)
-    call jedupo(coorev, 'G', cooref, .false.)
-    call jedupo(nomain//'.NOMACR', 'G', nomaou//'.NOMACR', .false.)
-    call jedupo(nomain//'.PARA_R', 'G', nomaou//'.PARA_R', .false.)
-    call jedupo(nomain//'.SUPMAIL', 'G', nomaou//'.SUPMAIL', .false.)
-    call jedupo(nomain//'.TYPL', 'G', nomaou//'.TYPL', .false.)
-    call jedupo(nomain//'.ABSC_CURV', 'G', nomaou//'.ABSC_CURV', .false.)
+    call jedupo(nodimv, 'G', nodime, .false._1)
+    call jedupo(coodsv, 'G', coodsc, .false._1)
+    call jedupo(coorev, 'G', cooref, .false._1)
+    call jedupo(nomain//'.NOMACR', 'G', nomaou//'.NOMACR', .false._1)
+    call jedupo(nomain//'.PARA_R', 'G', nomaou//'.PARA_R', .false._1)
+    call jedupo(nomain//'.SUPMAIL', 'G', nomaou//'.SUPMAIL', .false._1)
+    call jedupo(nomain//'.TYPL', 'G', nomaou//'.TYPL', .false._1)
+    call jedupo(nomain//'.ABSC_CURV', 'G', nomaou//'.ABSC_CURV', .false._1)
 !
     call jeveuo(cooref, 'E', jrefe)
     zk24(jrefe)=nomaou
@@ -740,8 +740,8 @@ subroutine op0167()
         call jelira(coovav, 'DOCU', cval=cdim)
         call jeecra(cooval, 'DOCU', cval=cdim)
     else
-        call jedupo(nomnov, 'G', nomnoe, .false.)
-        call jedupo(coovav, 'G', cooval, .false.)
+        call jedupo(nomnov, 'G', nomnoe, .false._1)
+        call jedupo(coovav, 'G', cooval, .false._1)
     endif
 !
 ! --- CAS OU L'ON FOURNIT UNE TABLE.

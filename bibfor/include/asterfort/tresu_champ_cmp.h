@@ -35,9 +35,9 @@ interface
         integer, intent(in) :: ific
         integer, intent(in) :: nbcmp
         character(len=8), intent(in) :: nocmp(*)
-        logical, intent(in) :: llab
+        logical(kind=1), intent(in) :: llab
         character(len=*), intent(in) :: ssigne
-        logical, intent(in), optional :: ignore
+        logical(kind=1), intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_champ_cmp
 end interface

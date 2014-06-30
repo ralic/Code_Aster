@@ -22,7 +22,7 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
 #include "asterfort/coqrep.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jevech.h"
-    logical :: global
+    logical(kind=1) :: global
     real(kind=8) :: xyzl(3, *), pgl(3, *)
     real(kind=8) :: for(6, *)
     real(kind=8) :: vecl(*)

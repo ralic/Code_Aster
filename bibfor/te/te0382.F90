@@ -246,7 +246,7 @@ subroutine te0382(option, nomte)
 !
 ! --- CALCUL DE L'ORIENTATION DE LA MAILLE
 !
-    call utjac(.true., zr(igeom), 1, idfde, 0,&
+    call utjac(.true._1, zr(igeom), 1, idfde, 0,&
                ibid, nnop, orien)
 !
 ! --- BOUCLE SUR LES COTES DU PARENT
@@ -377,7 +377,7 @@ subroutine te0382(option, nomte)
 !
 ! ----- CALCUL DE L'ORIENTATION DU SOUS-ELEMENT
 !
-        call utjac(.true., coorse, 1, idfse, 0,&
+        call utjac(.true._1, coorse, 1, idfse, 0,&
                    ibid, nno, orien)
 !
 ! ----------------- CALCUL DU TERME VOLUMIQUE -----------------------

@@ -74,7 +74,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     character(len=19) :: chgeom
     character(len=1) :: base
     integer :: ifm, niv
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
     integer :: nbma
     character(len=8) :: noma
@@ -85,7 +85,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     character(len=19) :: lnno, ltno, stano, fissno, heavno, heavfa
     character(len=19) :: pinter, ainter, cface, faclon, baseco
     character(len=19) :: xdonco, xindco, xseuco, xcohes
-    logical :: lctcc, lxfcm, ltfcm, lexip, lallv, lxczm
+    logical(kind=1) :: lctcc, lxfcm, ltfcm, lexip, lallv, lxczm
     character(len=24) :: nosdco
     integer :: jnosdc
 !

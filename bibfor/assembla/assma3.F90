@@ -37,7 +37,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 #include "asterfort/corddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/voiuti.h"
-    logical :: lmasym, lmesym
+    logical(kind=1) :: lmasym, lmesym
     character(len=*) :: exivf
     character(len=2) :: tt
     real(kind=8) :: c1
@@ -49,7 +49,8 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
     integer :: lcmodl, k1, k2, n2, n3, jnulo2, jposd2
     integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
     integer :: nec, nmxcmp, nnoe, numa, nk2, decael, jdesc
-    logical :: ldist, ldgrel
+    logical(kind=1) :: ldist, ldgrel
+    logical :: lcond
 !
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, jrepe, jptvoi, jelvoi, nbvois
@@ -229,7 +230,8 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !        CONTRIBUTIONS DES ELEMENTS VOISINS :
 !     -----------------------------------------------------------------
     if (exivf .eq. 'OUI') then
-        ASSERT(.not.lmesym)
+        lcond= .not.lmesym       
+        ASSERT(lcond)
         call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
                     jptvoi, jelvoi, nbvois, livois, tyvois,&
                     nbnovo, nbsoco, lisoco)

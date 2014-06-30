@@ -61,7 +61,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: mesma1, mesno2, lisnoi
     character(len=16) :: corres
     character(len=19) :: tablg
-    logical :: ldmax
+    logical(kind=1) :: ldmax
     real(kind=8) :: distma, armin, r8b
     integer, pointer :: litrav(:) => null()
     integer, pointer :: pjef_nb(:) => null()

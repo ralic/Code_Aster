@@ -21,7 +21,7 @@ interface
                       noeud, a, b, r, cote)
         integer :: ndim
         character(len=16) :: geofis
-        logical :: callst
+        logical(kind=1) :: callst
         integer :: jltsv
         integer :: jltsl
         integer :: jlnsv

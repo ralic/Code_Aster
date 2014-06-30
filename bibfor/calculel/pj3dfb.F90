@@ -52,7 +52,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     integer :: iatr3, ntr3,   nno1, nno2, i, iposi, ifm, niv
     integer :: iabtdi, iabtvr, iabtnb, iabtlc, k, ino, ib, lont, iabtco
     integer :: nbtot, nbmax, nbmin, nbtet
-    logical :: dbg
+    logical(kind=1) :: dbg
     integer, pointer :: lino1(:) => null()
     integer, pointer :: lino2(:) => null()
 !
@@ -285,7 +285,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     130 end do
 !
     dbg = .false.
-    if (dbg) call utimsd(ifm, 2, .false., .true., boite,&
+    if (dbg) call utimsd(ifm, 2, .false._1, .true._1, boite,&
                          1, ' ')
     call jedema()
 end subroutine

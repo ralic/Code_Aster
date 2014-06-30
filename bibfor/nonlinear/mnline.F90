@@ -119,7 +119,7 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
 ! --- XLINE(1:ND*(2*H+1))=K*XVECT(1:ND*(2*H+1))
 ! ----------------------------------------------------------------------
     call mrmult('ZERO', imat(1), zr(ivect1), zr(ivect2), 2*h+1,&
-                .false.)
+                .false._1)
 ! --- COPIE DE XVECT1 DANS XVECT EN SUPPRIMANT LES DDLS NON ACTIFS
     do 20 j = 1, 2*h+1
         i=0

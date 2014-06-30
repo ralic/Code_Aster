@@ -22,11 +22,11 @@ interface
         integer :: ndimte
         character(len=24) :: fond
         real(kind=8) :: gthi(1)
-        logical :: milieu
-        logical :: pair
+        logical(kind=1) :: milieu
+        logical(kind=1) :: pair
         real(kind=8) :: gs(1)
         character(len=24) :: objcur
         real(kind=8) :: gi(1)
-        logical :: gxfem
+        logical(kind=1) :: gxfem
     end subroutine gmeth4
 end interface

@@ -26,7 +26,7 @@ interface
         character(len=24) :: resoco
         integer :: ndimg
         integer :: izone
-        logical :: lexfro
+        logical(kind=1) :: lexfro
         integer :: typint
         character(len=8) :: aliase
         integer :: posmae

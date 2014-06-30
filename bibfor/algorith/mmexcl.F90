@@ -32,7 +32,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
     integer :: ndexfr
     integer :: iptc, iptm
     integer :: typapp
-    logical :: lexfro
+    logical(kind=1) :: lexfro
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: lnexfr(9)
-    logical :: prtole, projin
+    logical(kind=1) :: prtole, projin
 !
 ! ----------------------------------------------------------------------
 !

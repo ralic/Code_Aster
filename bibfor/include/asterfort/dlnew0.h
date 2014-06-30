@@ -47,9 +47,9 @@ interface
         integer :: iarchi
         integer :: ifm
         integer :: nmodam
-        logical :: lamort
-        logical :: limped
-        logical :: lmodst
+        logical(kind=1) :: lamort
+        logical(kind=1) :: limped
+        logical(kind=1) :: lmodst
         integer :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
@@ -107,7 +107,7 @@ interface
         character(len=19) :: solveu
         character(len=24) :: criter
         character(len=8) :: chondp(nondp)
-        logical :: ener
+        logical(kind=1) :: ener
         character(len=24) :: vitini
         character(len=24) :: vitent
         character(len=24) :: valmod

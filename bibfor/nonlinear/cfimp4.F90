@@ -87,7 +87,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
     real(kind=8) :: jeuold, dissup
     real(kind=8) :: coefff, coefpn, coefpt, r8bid
     real(kind=8) :: tau1(3), tau2(3), norm(3)
-    logical :: lnodal, lctfd, lfrot
+    logical(kind=1) :: lnodal, lctfd, lfrot
 !
 ! ----------------------------------------------------------------------
 !

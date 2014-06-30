@@ -19,7 +19,7 @@ subroutine subac1(laxi, nno, vff, dff, geom,&
 !
     implicit none
 !
-    logical :: laxi
+    logical(kind=1) :: laxi
     integer :: nno
     real(kind=8) :: vff(nno), dff(nno), geom(2, nno), cova(3, 3)
 !.......................................................................

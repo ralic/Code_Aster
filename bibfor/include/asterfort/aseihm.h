@@ -34,7 +34,7 @@ interface
         integer :: nno1
         integer :: ndim
         character(len=16) :: option
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: npg
         integer :: imate
         integer :: iu(3, 18)
@@ -61,7 +61,7 @@ interface
         real(kind=8) :: geom(ndim, nno2)
         real(kind=8) :: ang(24)
         character(len=16) :: compor(*)
-        logical :: perman
+        logical(kind=1) :: perman
         real(kind=8) :: crit(*)
         real(kind=8) :: vectu(dimuel)
         real(kind=8) :: matuu(dimuel*dimuel)

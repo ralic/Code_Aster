@@ -49,16 +49,16 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
     integer nc
     parameter (nc = 2)
     character(len=19) :: chs(nc)
-    logical :: l_cumu(nc)
+    logical(kind=1) :: l_cumu(nc)
     real (kind = 8) :: coef_real(nc)
     complex (kind = 8) :: coef_cplx(nc)
 !
     integer :: ibid, nb_cmp
     character(len=19) :: comp_elas
     character(len=19) :: comp_elas_s, comp_noli_s, comp_fuse_s
-    logical :: l_cplx, l_etat_init
+    logical(kind=1) :: l_cplx, l_etat_init
 !
-    data l_cumu      /.false.,.false./
+    data l_cumu      /.false._1,.false./
     data coef_real   /1.d0, 1.d0/
 !
 ! --------------------------------------------------------------------------------------------------

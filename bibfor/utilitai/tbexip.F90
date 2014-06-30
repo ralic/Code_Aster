@@ -7,7 +7,7 @@ subroutine tbexip(nomta, para, exist, typpar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomta, para, typpar
-    logical :: exist
+    logical(kind=1) :: exist
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -67,7 +67,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
     character(len=8) :: nomres(nbres), fami, poum
     real(kind=8) :: valres(nbres)
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
     integer :: ndimsi, k, iter, nitmax, ifm, niv, kpg, spt
     real(kind=8) :: trepsd, coplan, sigeld(6)
     real(kind=8) :: tr(6), vecp(3, 3), rac2

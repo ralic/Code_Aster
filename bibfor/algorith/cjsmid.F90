@@ -53,7 +53,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     parameter (nitimp = 200)
 !
     integer :: iter
-    logical :: noconv, aredec, stopnc
+    logical(kind=1) :: noconv, aredec, stopnc
 !
     real(kind=8) :: epsd(6), deps(6)
     real(kind=8) :: sigd(6), sigf(6), gd(6)
@@ -77,7 +77,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     real(kind=8) :: relax(essmax+1), rotagd(essmax+1), xf(6), nor1(7), nor2(7)
     real(kind=8) :: erimp(nitimp, 4)
 !
-    logical :: devnu1, devnu2, tra1, tra2
+    logical(kind=1) :: devnu1, devnu2, tra1, tra2
     integer :: i, j
 !
     character(len=8) :: mod

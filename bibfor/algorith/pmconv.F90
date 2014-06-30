@@ -44,7 +44,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
     real(kind=8) :: inst, parcri(*)
     real(kind=8) :: r(12), rini(12), r1(12), sigp(6), coef, r8b(12)
     real(kind=8) :: ee, e1, e2, toler, e1ini, e2ini, er1, eini
-    logical :: itemax, conver
+    logical(kind=1) :: itemax, conver
     character(len=8) :: fonimp(6)
 !-----------------------------------------------------------------------
 !

@@ -30,9 +30,9 @@ interface
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
         integer, intent(in) :: ific
-        logical, intent(in) :: llab
+        logical(kind=1), intent(in) :: llab
         character(len=*), intent(in) :: ssigne
-        logical, intent(in), optional :: ignore
+        logical(kind=1), intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_champ_all
 end interface

@@ -32,7 +32,7 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=8) :: result
-    logical :: lreuse
+    logical(kind=1) :: lreuse
     integer :: numreo
 !
 ! ----------------------------------------------------------------------

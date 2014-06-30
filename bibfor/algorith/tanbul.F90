@@ -26,7 +26,7 @@ subroutine tanbul(option, ndim, g, mate, compor,&
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-    logical :: resi, mini
+    logical(kind=1) :: resi, mini
     integer :: ndim, g, mate
     real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst
     character(len=16) :: option, compor

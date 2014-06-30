@@ -48,7 +48,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*)
 !
-    logical :: matsym
+    logical(kind=1) :: matsym
 !.......................................................................
 !
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -86,7 +86,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !.......................................................................
 !
-    logical :: grand, axi
+    logical(kind=1) :: grand, axi
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl
 !
@@ -126,14 +126,14 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr(ideplm),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     r)
 !
 !     CALCUL DE DEPS
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr(ideplp),&
-                    .true., poids, dfdi, f, deps,&
+                    .true._1, poids, dfdi, f, deps,&
                     r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,

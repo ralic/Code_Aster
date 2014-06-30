@@ -21,7 +21,7 @@ interface
                       depsup, recmod, nintra, nbdis)
         integer :: nbsup
         integer :: neq
-        logical :: muapde
+        logical(kind=1) :: muapde
         character(len=16) :: nomsy
         integer :: id
         character(len=*) :: stat

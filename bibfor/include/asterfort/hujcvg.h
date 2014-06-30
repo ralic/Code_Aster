@@ -35,10 +35,10 @@ interface
         integer :: itmax
         integer :: intg
         real(kind=8) :: toler
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
         real(kind=8) :: ye(nr)
-        logical :: lreli
+        logical(kind=1) :: lreli
         integer :: iret
     end subroutine hujcvg
 end interface

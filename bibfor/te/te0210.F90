@@ -41,7 +41,7 @@ subroutine te0210(option, nomte)
     real(kind=8) :: nx, ny, tpg, theta, z1, z2
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectt, i, l, li, ihechp, itemp, icode, nbelr, itemps
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
 !====

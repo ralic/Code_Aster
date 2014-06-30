@@ -113,7 +113,7 @@ subroutine op0150()
     integer :: jcmpva, jcmpvm
 !
 !
-    logical :: lprem
+    logical(kind=1) :: lprem
     character(len=8), pointer :: lgrf(:) => null()
 ! ----------------------------------------------------------------------
 !

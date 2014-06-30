@@ -52,7 +52,7 @@ subroutine jxlir1(ic, caralu)
     integer :: lindex, npar
     parameter      ( lindex = 11, npar = 11, np2 = npar+3 )
     integer :: index(lindex), tampon(np2)
-    logical :: lexist
+    logical(kind=1) :: lexist
     character(len=8) :: nom
     character(len=128) :: nom128
 ! DEB ------------------------------------------------------------------

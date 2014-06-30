@@ -88,7 +88,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: jtabno, jtabin, jtabcr
     integer :: zxbas, zxain
     real(kind=8) :: lon, dist1, dist2
-    logical :: lmulti
+    logical(kind=1) :: lmulti
     character(len=19) :: chsoe, chslo, chsba, chsai
     integer :: jcesl2, jcesl3, jcesl4, jcesl5
     integer :: jcesd2, jcesd3, jcesd4, jcesd5
@@ -403,7 +403,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
     if (niv .ge. 2) then
         write(ifm,*) '<XFEM  > LISTE DES RELATIONS LINEAIRES'
-        call utimsd(ifm, -1, .true., .true., nliseq,&
+        call utimsd(ifm, -1, .true._1, .true._1, nliseq,&
                     1, ' ')
     endif
 !

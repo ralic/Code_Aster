@@ -83,7 +83,7 @@ subroutine te0150(option, nomte)
     real(kind=8) :: fer(12), fei(12)
     integer :: ndim, nno, nnos, npg, ipoids
     integer :: ivf, idfdx, jgano
-    logical :: lrho
+    logical(kind=1) :: lrho
 !
     data nomres / 'E', 'NU' /
 !     ------------------------------------------------------------------

@@ -26,15 +26,15 @@ interface
         integer :: posmai
         character(len=4) :: typent
         integer :: nument
-        logical :: lpoutr
-        logical :: lpoint
+        logical(kind=1) :: lpoutr
+        logical(kind=1) :: lpoint
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2
-        logical :: lliss
+        logical(kind=1) :: lliss
         integer :: itype
         real(kind=8) :: vector(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        logical :: lnfixe
+        logical(kind=1) :: lnfixe
     end subroutine cfnors
 end interface

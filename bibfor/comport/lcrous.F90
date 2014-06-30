@@ -83,7 +83,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     real(kind=8) :: dp1, dp2, beta
     real(kind=8) :: terme1, terme2, terme3, sigeq, ebloc
 !
-    logical :: overfl
+    logical(kind=1) :: overfl
 !
     parameter       ( mun  =-1.d0 )
     parameter       ( zero = 0.d0 )

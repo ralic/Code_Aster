@@ -27,7 +27,7 @@ subroutine mmelem(nomte ,ndim  ,nddl  ,typmae,nne   , &
     integer :: nbcps, nbdm
     character(len=8) :: typmae, typmam
     character(len=16) :: nomte
-    logical :: laxis, leltf
+    logical(kind=1) :: laxis, leltf
 !
 ! ----------------------------------------------------------------------
 !

@@ -18,7 +18,7 @@
 interface
     subroutine utjac(l2d, geom, ipg, idfde, niv,&
                      ifm, nno, jacob)
-        logical :: l2d
+        logical(kind=1) :: l2d
         real(kind=8) :: geom(*)
         integer :: ipg
         integer :: idfde

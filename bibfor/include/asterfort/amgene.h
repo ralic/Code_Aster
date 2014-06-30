@@ -23,7 +23,7 @@ interface
         integer :: nbmodes
         character(len=*) :: typbas
         character(len=*) :: method
-        logical :: lamor
+        logical(kind=1) :: lamor
         real(kind=8) :: amgene
     end function amgene
 end interface

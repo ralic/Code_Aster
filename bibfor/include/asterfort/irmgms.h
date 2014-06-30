@@ -24,7 +24,7 @@ interface
         character(len=8) :: noma
         integer :: nbgrm
         character(len=8) :: nonoe(*)
-        logical :: lgmsh
+        logical(kind=1) :: lgmsh
         integer :: versio
     end subroutine irmgms
 end interface

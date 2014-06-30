@@ -67,9 +67,9 @@ subroutine pj3dap(ino2, geom2, ma2, geom1, tetr4,&
     real(kind=8) :: cobar2(4), dmin, d2, dx, dy, dz, xmin, ymin, zmin, volu
     real(kind=8) :: rtr3
     integer :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
-    logical :: ok
+    logical(kind=1) :: ok
 !
-    logical :: ldmax, loin
+    logical(kind=1) :: ldmax, loin
     real(kind=8) :: distma
 ! DEB ------------------------------------------------------------------
     nbtrou=0

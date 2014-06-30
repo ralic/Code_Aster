@@ -114,8 +114,8 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     real(kind=8) :: f0, fm, f, fopt, fcvg
     real(kind=8) :: parmul, relirl, sens
     real(kind=8) :: mem(2, 10)
-    logical :: stite, lnkry
-    logical :: lgrot, lendo
+    logical(kind=1) :: stite, lnkry
+    logical(kind=1) :: lgrot, lendo
     character(len=19) :: cnfins(2), cndirs(2), k19bla
     character(len=19) :: depplu, sigplu, varplu, complu
     character(len=19) :: sigplt, varplt, depplt
@@ -124,7 +124,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     character(len=19) :: cnfint, cndiri, cnfext
     character(len=19) :: depdet, ddepla, depdel
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
-    logical :: echec
+    logical(kind=1) :: echec
     integer :: ifm, niv
     real(kind=8), pointer :: vale(:) => null()
 !

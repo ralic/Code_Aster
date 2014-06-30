@@ -34,7 +34,7 @@ interface
         complex(kind=8) :: workd(*)
         complex(kind=8) :: workl(*)
         integer :: lonwl
-        logical :: selec(*)
+        logical(kind=1) :: selec(*)
         complex(kind=8) :: dsor(*)
         complex(kind=8) :: sigma
         complex(kind=8) :: vaux(*)
@@ -48,7 +48,7 @@ interface
         integer :: priram(8)
         real(kind=8) :: alpha
         integer :: nconv
-        logical :: flage
+        logical(kind=1) :: flage
         complex(kind=8) :: vauc(2*nbeq, *)
         real(kind=8) :: rwork(*)
         character(len=19) :: solveu

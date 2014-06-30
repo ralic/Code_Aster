@@ -105,7 +105,7 @@ subroutine tremno(ncmp, nssche, nomsd)
     integer :: vali
     character(len=24) :: nconec, ncncin
     character(len=8) :: tk8(1), nmaila
-    logical :: trouve
+    logical(kind=1) :: trouve
     integer, pointer :: entier(:) => null()
     integer, pointer :: pnco(:) => null()
     integer, pointer :: pnsp(:) => null()

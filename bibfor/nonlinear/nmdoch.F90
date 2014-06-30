@@ -78,7 +78,7 @@ subroutine nmdoch(lischa, iexcit, excit)
     character(len=19) :: lisch2, lisdbl
     character(len=24) :: ligrch, lchin, k24bid
     integer :: ival, ival1
-    logical :: lfcplx, lacce
+    logical(kind=1) :: lfcplx, lacce
     integer :: nbinfo
 ! --- NOMBRE MAXIMUM DE TYPE_INFO
     integer :: nbinmx

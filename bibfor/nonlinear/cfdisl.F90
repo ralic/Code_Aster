@@ -23,7 +23,7 @@ function cfdisl(deficz, questz)
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mminfl.h"
-    logical :: cfdisl
+    logical(kind=1) :: cfdisl
     character(len=*) :: deficz
     character(len=*) :: questz
 !

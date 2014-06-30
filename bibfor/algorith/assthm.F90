@@ -63,7 +63,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     real(kind=8) :: r(dimdef+1), sigbar(dimdef), c(dimdef)
     real(kind=8) :: dt, ta, ta1, rthmc(1), ck(dimdef), cs(dimdef)
     real(kind=8) :: angmas(3)
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
     integer :: codmes(1)
     character(len=3) :: modint
     character(len=8) :: typmod(2)

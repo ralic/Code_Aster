@@ -25,8 +25,8 @@ interface
         integer :: nbsup
         character(len=16) :: nomsy
         character(len=*) :: psmo
-        logical :: monoap
-        logical :: muapde
+        logical(kind=1) :: monoap
+        logical(kind=1) :: muapde
         integer :: nsupp(*)
         integer :: id
         real(kind=8) :: vecmod(neq, *)

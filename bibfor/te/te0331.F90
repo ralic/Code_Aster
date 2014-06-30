@@ -61,7 +61,7 @@ subroutine te0331(option, nomte)
     integer :: ipoids, ivf, idfde, imate
     integer :: igeom, icong, ivarig
     integer :: isigie, isigis, icompo, nbvari
-    logical :: laxi
+    logical(kind=1) :: laxi
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

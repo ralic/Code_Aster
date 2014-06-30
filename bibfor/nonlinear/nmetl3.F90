@@ -35,7 +35,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
     character(len=24) :: modele, compor
     character(len=24) :: sdieto
     character(len=8) :: result
-    logical :: evonol, leinit
+    logical(kind=1) :: evonol, leinit
     integer :: icham, numein
 !
 ! ----------------------------------------------------------------------

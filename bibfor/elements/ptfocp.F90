@@ -40,7 +40,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
     real(kind=8) :: u(3), v(3), w(6), w2(3)
     real(kind=8) :: qr(12), qqr(12), qi(12), qqi(12)
     character(len=16) :: ch16
-    logical :: global, normal
+    logical(kind=1) :: global, normal
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !     --- INITIALISATION  ---

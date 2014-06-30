@@ -57,7 +57,7 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: nddl, g
     integer :: sa, ra, na, ia, kk
     real(kind=8) :: deplm(3*27), gonfm(27), gm, r
@@ -70,7 +70,7 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     real(kind=8) :: divum
     real(kind=8) :: t1, t2
 !
-    parameter    (grand = .false.)
+    parameter    (grand = .false._1)
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION

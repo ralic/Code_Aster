@@ -37,7 +37,7 @@ subroutine cgvemf(modele, typfis, nomfis)
 ! ======================================================================
 !
     integer :: ixfem
-    logical :: fiinmo
+    logical(kind=1) :: fiinmo
     character(len=8) :: valk(2)
 !
 !     LE MODELE EST-IL X-FEM : SI OUI IXFEM=1

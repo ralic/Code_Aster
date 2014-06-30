@@ -48,7 +48,7 @@ subroutine resu60(resu1, resu2)
     character(len=8) :: resu
     integer :: i
     integer :: flagd1, flagv1, flaga1, flagd2, flagv2, flaga2
-    logical :: flagd, flagv, flaga
+    logical(kind=1) :: flagd, flagv, flaga
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -159,13 +159,13 @@ subroutine resu60(resu1, resu2)
 !     --- DUPLICATION ---
 !
     if (flagd1 .ne. 0) call jedupo(resu//'           .DEPL', 'G', resu1//'           .DEPL',&
-                                   .false.)
+                                   .false._1)
     if (flagv1 .ne. 0) call jedupo(resu//'           .VITE', 'G', resu1//'           .VITE',&
-                                   .false.)
+                                   .false._1)
     if (flaga1 .ne. 0) call jedupo(resu//'           .ACCE', 'G', resu1//'           .ACCE',&
-                                   .false.)
-    call jedupo(resu//'           .ORDR', 'G', resu1//'           .ORDR', .false.)
-    call jedupo(resu//'           .DISC', 'G', resu1//'           .DISC', .false.)
+                                   .false._1)
+    call jedupo(resu//'           .ORDR', 'G', resu1//'           .ORDR', .false._1)
+    call jedupo(resu//'           .DISC', 'G', resu1//'           .DISC', .false._1)
 !
 !
 !     --- COPIE DU NOUVEAU .REFD DANS LA SD FINALE ---

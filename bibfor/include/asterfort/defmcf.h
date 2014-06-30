@@ -19,7 +19,7 @@ interface
     subroutine defmcf(nbm, nbmp, locfl0, locflc)
         integer :: nbm
         integer :: nbmp
-        logical :: locfl0(*)
-        logical :: locflc(*)
+        logical(kind=1) :: locfl0(*)
+        logical(kind=1) :: locflc(*)
     end subroutine defmcf
 end interface

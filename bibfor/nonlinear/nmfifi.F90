@@ -36,7 +36,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 ! OUT : FINT
 !-----------------------------------------------------------------------
 !
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: i, j, kpg
     real(kind=8) :: b(2, 8), poids
 !-----------------------------------------------------------------------

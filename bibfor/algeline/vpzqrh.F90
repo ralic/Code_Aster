@@ -34,7 +34,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     real(kind=8) :: epsmac, t, x, y, w, s, zz
     real(kind=8) :: r, p, q, rnorm, ra, sa, scale, vr, vi
     complex(kind=8) :: z3
-    logical :: notlas
+    logical(kind=1) :: notlas
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ii, mxiter, nn

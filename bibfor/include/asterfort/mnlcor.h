@@ -34,6 +34,6 @@ interface
         integer :: info
         real(kind=8) :: epscor
         character(len=14) :: xvect
-        logical :: cor
+        logical(kind=1) :: cor
     end subroutine mnlcor
 end interface 

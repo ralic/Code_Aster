@@ -20,7 +20,7 @@ subroutine defgen(testl1, testl2, nno, r, x3,&
     implicit none
 !
     integer :: nno
-    logical :: testl1, testl2
+    logical(kind=1) :: testl1, testl2
     real(kind=8) :: r, x3, sina, cosa, cour, vf(*), dfds(*), depl(*), eps(*)
     real(kind=8) :: epsx3
     real(kind=8) :: uxl(3), uyl(3), betasl(3)

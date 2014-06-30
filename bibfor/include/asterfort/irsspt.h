@@ -25,10 +25,10 @@ interface
         integer :: nummai(*)
         integer :: nbcmp
         character(len=*) :: nomcmp(*)
-        logical :: lsup
-        logical :: linf
-        logical :: lmax
-        logical :: lmin
+        logical(kind=1) :: lsup
+        logical(kind=1) :: linf
+        logical(kind=1) :: lmax
+        logical(kind=1) :: lmin
         real(kind=8) :: borinf
         real(kind=8) :: borsup
     end subroutine irsspt

@@ -27,7 +27,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     integer :: nbnuor, nuor(*), nbmfl, numo(*)
     character(len=8) :: nomres, basemo
     character(len=19) :: basefl
-    logical :: newres
+    logical(kind=1) :: newres
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     character(len=19) :: nomcha
     character(len=24) :: chamfl, kvec, nopara(nbpara)
     character(len=24) :: kvali, kvalr, kvalk
-    logical :: lmasin, lnorm
+    logical(kind=1) :: lmasin, lnorm
     real(kind=8), pointer :: coef_mode(:) => null()
     real(kind=8), pointer :: fact(:) => null()
     integer, pointer :: deeq(:) => null()

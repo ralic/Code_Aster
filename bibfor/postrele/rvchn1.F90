@@ -68,7 +68,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
-    call jedupo(depla//'.VALE', 'V', nomjv, .false.)
+    call jedupo(depla//'.VALE', 'V', nomjv, .false._1)
     call jeveuo(nomjv, 'E', iavald)
 !
     do ino = 1, nbno

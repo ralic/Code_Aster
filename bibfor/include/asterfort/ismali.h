@@ -18,6 +18,6 @@
 interface
     function ismali(typma)
         character(len=8) :: typma
-        logical :: ismali
+        logical(kind=1) :: ismali
     end function ismali
 end interface

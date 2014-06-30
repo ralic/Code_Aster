@@ -60,7 +60,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !.......................................................................
 !
 !
-    logical :: grand, calbn, axi
+    logical(kind=1) :: grand, calbn, axi
     integer :: codre(1)
     character(len=8) :: nomres(2)
     character(len=16) :: phenom
@@ -173,7 +173,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     axi = .false.
     call nmgeom(3, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplm,&
-                .true., poids, dfdi, f, eps,&
+                .true._1, poids, dfdi, f, eps,&
                 r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,

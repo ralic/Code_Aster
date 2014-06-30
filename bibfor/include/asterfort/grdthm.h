@@ -20,8 +20,8 @@ interface
                       press1, press2, tempe, dimdep, dimdef,&
                       dimcon, nmec, np1, np2)
         character(len=16) :: nomte
-        logical :: perman
-        logical :: vf
+        logical(kind=1) :: perman
+        logical(kind=1) :: vf
         integer :: ndim
         integer :: mecani(5)
         integer :: press1(7)

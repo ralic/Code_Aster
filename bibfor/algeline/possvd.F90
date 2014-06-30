@@ -71,7 +71,7 @@ subroutine possvd(nm, m, n, w, matu,&
 #include "blas/dswap.h"
     integer :: nm, m, n, rg
     real(kind=8) :: w(n), u(nm, n), v(nm, n), eps, rv1(n)
-    logical :: matu, matv
+    logical(kind=1) :: matu, matv
 !
 ! VARIABLES LOCALES
 ! -----------------

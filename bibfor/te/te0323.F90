@@ -35,7 +35,7 @@ subroutine te0323(option, nomte)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: lielrf(10)
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn, nddl
     integer :: iw, ivf1, idf1, igeom, ivectu, icontm, ndim, ntrou
     integer :: iu(3, 16), ip(4)

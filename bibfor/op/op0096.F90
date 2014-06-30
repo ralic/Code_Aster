@@ -87,7 +87,7 @@ subroutine op0096()
     character(len=24) :: nsds1, nsds2, nsds3, nsds4, nsds5, nsds6, nsds7
     character(len=24) :: nsds8, nsds9, nsds10, nsds11, nsds12, nsds13, nsds14
     character(len=24) :: nommai, lismai, para
-    logical :: coupe, fini, swap, egfac
+    logical(kind=1) :: coupe, fini, swap, egfac
     integer, pointer :: typmail(:) => null()
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()

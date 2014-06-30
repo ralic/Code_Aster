@@ -89,7 +89,7 @@ subroutine zsortc(which, apply, n, x, y)
 #include "asterc/matfpe.h"
 #include "blas/dlapy2.h"
     character(len=2) :: which
-    logical :: apply
+    logical(kind=1) :: apply
     integer :: n
 !
 !     %-----------------%

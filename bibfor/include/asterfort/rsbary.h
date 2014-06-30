@@ -20,8 +20,8 @@ interface
                       i1, i2, iposit)
         real(kind=8) :: lr8(*)
         integer :: nr8
-        logical :: tous
-        logical :: lexi(*)
+        logical(kind=1) :: tous
+        logical(kind=1) :: lexi(*)
         real(kind=8) :: x
         integer :: i1
         integer :: i2

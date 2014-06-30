@@ -172,26 +172,26 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !     %----------------------------------------------------%
 !
     if (which .eq. 'LM') then
-        call dsortc('LR', .true., kev+np, ritzr, ritzi,&
+        call dsortc('LR', .true._1, kev+np, ritzr, ritzi,&
                     bounds)
     else if (which .eq. 'SM') then
-        call dsortc('SR', .true., kev+np, ritzr, ritzi,&
+        call dsortc('SR', .true._1, kev+np, ritzr, ritzi,&
                     bounds)
     else if (which .eq. 'LR') then
-        call dsortc('LM', .true., kev+np, ritzr, ritzi,&
+        call dsortc('LM', .true._1, kev+np, ritzr, ritzi,&
                     bounds)
     else if (which .eq. 'SR') then
-        call dsortc('SM', .true., kev+np, ritzr, ritzi,&
+        call dsortc('SM', .true._1, kev+np, ritzr, ritzi,&
                     bounds)
     else if (which .eq. 'LI') then
-        call dsortc('LM', .true., kev+np, ritzr, ritzi,&
+        call dsortc('LM', .true._1, kev+np, ritzr, ritzi,&
                     bounds)
     else if (which .eq. 'SI') then
-        call dsortc('SM', .true., kev+np, ritzr, ritzi,&
+        call dsortc('SM', .true._1, kev+np, ritzr, ritzi,&
                     bounds)
     endif
 !
-    call dsortc(which, .true., kev+np, ritzr, ritzi,&
+    call dsortc(which, .true._1, kev+np, ritzr, ritzi,&
                 bounds)
 !
 !     %-------------------------------------------------------%
@@ -217,7 +217,7 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !        | BE CAREFUL AND USE 'SR' SINCE WE WANT TO SORT BOUNDS! |
 !        %-------------------------------------------------------%
 !
-        call dsortc('SR', .true., np, bounds, ritzr,&
+        call dsortc('SR', .true._1, np, bounds, ritzr,&
                     ritzi)
     endif
 !

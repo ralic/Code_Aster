@@ -22,7 +22,7 @@ interface
         integer :: jgeom
         real(kind=8) :: ff(9)
         real(kind=8) :: dff(2, 9)
-        logical :: laxis
+        logical(kind=1) :: laxis
         integer :: nne
         integer :: ndim
         real(kind=8) :: jacobi

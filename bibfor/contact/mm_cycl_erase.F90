@@ -57,7 +57,7 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
     integer, pointer :: p_cycl_eta(:) => null()
     integer :: point_number, point_index
     integer :: cycl_index
-    logical :: lctcc
+    logical(kind=1) :: lctcc
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -26,7 +26,7 @@ subroutine chauxi(ndim, mu, ka, r, t,&
     real(kind=8) :: mu, ka, r, t, invp(3, 3), courb(3, 3, 3)
     real(kind=8) :: du1dm(3, 3), du2dm(3, 3), du3dm(3, 3)
     real(kind=8) :: u1l(3), u2l(3), u3l(3)
-    logical :: lcour
+    logical(kind=1) :: lcour
 !
 !     BUT : CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DÉRIVÉES EN (R,T)
 !       (POUR LE CALCUL ENERGÉTIQUE DES SIFS EN MÉCANIQUEDE LA RUPTURE)

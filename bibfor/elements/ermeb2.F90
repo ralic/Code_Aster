@@ -93,7 +93,7 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
     character(len=8) :: prf, cif, fxf, fyf
     character(len=19) :: nomgd1, nomgd2
 !
-    logical :: flag
+    logical(kind=1) :: flag
 !
 ! ----------------------------------------------------------------------
 !

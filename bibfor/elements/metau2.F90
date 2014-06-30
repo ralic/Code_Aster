@@ -30,7 +30,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    logical, intent(out) :: l_meta
+    logical(kind=1), intent(out) :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !

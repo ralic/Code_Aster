@@ -8,7 +8,7 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
     real(kind=8) :: parmod(nbmode, *), repmod(nbsup, neq, *)
     real(kind=8) :: reasup(nbsup, nbmode, *)
     character(len=16) :: nomsy
-    logical :: monoap, corfre, muapde
+    logical(kind=1) :: monoap, corfre, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

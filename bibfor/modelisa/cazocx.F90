@@ -65,7 +65,7 @@ subroutine cazocx(char, nomo, motfac, izone)
     real(kind=8) :: coefff, reacsi, coef, tolj
     character(len=16) :: valk(2)
     integer :: iret
-    logical :: lfrot
+    logical(kind=1) :: lfrot
     integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------

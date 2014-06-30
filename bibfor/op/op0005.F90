@@ -96,7 +96,7 @@ subroutine op0005()
 !
         schout = '&&OP0005'
         call jedupc('G', matin, 1, 'V', schout,&
-                    .false.)
+                    .false._1)
         call jeveuo(schout//'.MATERIAU.NOMRC', 'L', jnorci)
         if (matout .eq. matin) call jedetc('G', matin, 1)
     endif
@@ -105,7 +105,7 @@ subroutine op0005()
 !
     if (nbmati .ne. 0) then
         call jedupc('V', schout, 1, 'G', matout,&
-                    .false.)
+                    .false._1)
         call jedetr(matout//'.MATERIAU.NOMRC')
     endif
 !

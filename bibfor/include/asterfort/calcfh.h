@@ -33,7 +33,7 @@ interface
         integer :: dimdef
         integer :: ndim
         character(len=16) :: option
-        logical :: perman
+        logical(kind=1) :: perman
         character(len=16) :: thmc
         integer :: yamec
         integer :: yate
@@ -82,7 +82,7 @@ interface
         real(kind=8) :: dviscg
         real(kind=8) :: mamolv
         real(kind=8) :: dficks
-        logical :: vf
+        logical(kind=1) :: vf
         integer :: ifa
         real(kind=8) :: valfac(maxfa, 14, 6)
         real(kind=8) :: valcen(14, 6)

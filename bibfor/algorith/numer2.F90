@@ -60,7 +60,7 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 !
     integer ::  i, jlligr, jnslv
 !
-    logical :: l1, l2, l3, l4
+    logical(kind=1) :: l1, l2, l3, l4
     character(len=19) :: solve2
     character(len=2) :: bas2
     character(len=14) :: nu1, nu2
@@ -104,8 +104,8 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 !
         if (l1 .and. l2 .and. l3 .and. l4) then
             call detrsd('NUME_DDL', nu1)
-            call jedupo(nu1//'     .ADNE', 'V', nu2//'     .ADNE', .false.)
-            call jedupo(nu1//'     .ADLI', 'V', nu2//'     .ADLI', .false.)
+            call jedupo(nu1//'     .ADNE', 'V', nu2//'     .ADNE', .false._1)
+            call jedupo(nu1//'     .ADLI', 'V', nu2//'     .ADLI', .false._1)
             call jedetr(nu1//'     .ADLI')
             call jedetr(nu1//'     .ADNE')
             nu1=nu2

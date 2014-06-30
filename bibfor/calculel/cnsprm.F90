@@ -51,7 +51,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    logical :: newk, axe
+    logical(kind=1) :: newk, axe
     character(len=1) :: base
     character(len=3) :: tsca, dir
     character(len=8) :: ma1, ma2, ma3, nomgd, promes, macrel

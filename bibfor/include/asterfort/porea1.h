@@ -24,7 +24,7 @@ interface
         real(kind=8) :: deplp(nno*nc)
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: gamma
-        logical :: vecteu
+        logical(kind=1) :: vecteu
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: xl
         real(kind=8) :: angp(3)

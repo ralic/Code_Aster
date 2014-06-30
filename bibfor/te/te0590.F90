@@ -45,7 +45,7 @@ subroutine te0590(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    logical :: rigi, resi, matsym
+    logical(kind=1) :: rigi, resi, matsym
     integer :: ndim, nno1, nno2, nno3, npg, nnos, jgn, ntrou
     integer :: icoret, codret, iret
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3

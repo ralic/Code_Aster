@@ -46,10 +46,10 @@ subroutine caralv(char, nzoco, iform)
 ! ----------------------------------------------------------------------
 !
     integer :: izone
-    logical :: lmail, lglis
-    logical :: lveri, lall, lsans, lexis, lpena, lnoeu, lxczm
-    logical :: lnewtg
-    logical :: lcinit
+    logical(kind=1) :: lmail, lglis
+    logical(kind=1) :: lveri, lall, lsans, lexis, lpena, lnoeu, lxczm
+    logical(kind=1) :: lnewtg
+    logical(kind=1) :: lcinit
     integer :: ctcini
     character(len=24) :: defico
     character(len=24) :: paraci

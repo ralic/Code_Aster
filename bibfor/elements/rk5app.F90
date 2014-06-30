@@ -3,7 +3,7 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
     implicit none
     integer :: nbeq
     real(kind=8) :: vparam(*), dtemps, yinit(nbeq), dyinit(nbeq), solu(3*nbeq)
-    logical :: decoup
+    logical(kind=1) :: decoup
     interface
         subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
                          decoup)
@@ -12,7 +12,7 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
             real(kind=8) :: yy0(nbeq)
             real(kind=8) :: dy0(nbeq)
             real(kind=8) :: dyy(nbeq)
-            logical :: decoup
+            logical(kind=1) :: decoup
         end subroutine rkfct
     end interface
 !

@@ -50,7 +50,7 @@ subroutine cnocns(cnoz, basez, cnsz)
     integer :: nec, gd, ncmpmx, nbno,  jrefe, jvale, kcmp, ierr
     integer :: iadg, icmp, jprno,  ino, ncmp, ncmp1, jcnsl, jcnsv
     integer :: ival, ico, ieq, icmp1
-    logical :: sdveri
+    logical(kind=1) :: sdveri
     integer, pointer :: corr1(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: nueq(:) => null()

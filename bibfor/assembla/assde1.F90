@@ -37,7 +37,7 @@ subroutine assde1(tych,champ)
 !
 !
     character(len=19) :: champ2
-    logical :: dbg
+    logical(kind=1) :: dbg
 ! -DEB------------------------------------------------------------------
     champ2 = champ
 !

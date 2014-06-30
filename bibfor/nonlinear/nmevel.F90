@@ -34,7 +34,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
     character(len=4) :: nombcl
     character(len=24) :: defico, resoco
     integer :: numins
-    logical :: lsvimx, ldvres, linsta, lerrcv, lerror, conver
+    logical(kind=1) :: lsvimx, ldvres, linsta, lerrcv, lerror, conver
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,7 +99,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 !
 ! ----- PAR DEFAUT: EVENEMENT NON ACTIVE
 !
-        call eneven(sddisc, iechec, .false.)
+        call eneven(sddisc, iechec, .false._1)
 !
         if (nomevd .eq. 'ERRE') then
             if (lsvimx .or. lerrcv .or. lerror) then
@@ -141,7 +141,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 ! --- DECLENCHEMENT DE L'EVENEMENT
 !
     if (ievdac .ne. 0) then
-        call eneven(sddisc, ievdac, .true.)
+        call eneven(sddisc, ievdac, .true._1)
     endif
 !
     call jedema()

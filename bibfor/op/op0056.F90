@@ -100,7 +100,7 @@ subroutine op0056()
     character(len=3) :: num
     character(len=8) :: k8b, multic, mater, nomres(9)
     character(len=16) :: type, nomcmd, fichie
-    logical :: elas, ther
+    logical(kind=1) :: elas, ther
     character(len=16), pointer :: nomrc(:) => null()
     parameter (nv=83)
 !

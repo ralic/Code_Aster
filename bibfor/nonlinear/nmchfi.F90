@@ -34,7 +34,7 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
     character(len=19) :: sddisc, sddyna
     integer :: numins, iterat
     character(len=24) :: defico
-    logical :: lcfint, lcrigi, lcdiri, lcbudi
+    logical(kind=1) :: lcfint, lcrigi, lcdiri, lcbudi
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,9 +63,9 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 !
 !
 !
-    logical :: reasma
+    logical(kind=1) :: reasma
     character(len=16) :: metcor, metpre
-    logical :: lunil, lctcd, lreli, lexpl
+    logical(kind=1) :: lunil, lctcd, lreli, lexpl
 !
 ! ----------------------------------------------------------------------
 !

@@ -50,7 +50,7 @@ subroutine jjcren(nomlu, icre, iret)
     common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
 !     ------------------------------------------------------------------
     character(len=32) :: clel, cle, d32, valk(3)
-    logical :: linser, rinser
+    logical(kind=1) :: linser, rinser
     integer :: iclain, idatin, iin
     data             d32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------

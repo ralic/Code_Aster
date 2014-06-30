@@ -52,7 +52,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: ldyna, lexpl, limpl, lamor, lktan
+    logical(kind=1) :: ldyna, lexpl, limpl, lamor, lktan
     integer :: ifm, niv
     character(len=16) :: optass
     character(len=19) :: masse, amort

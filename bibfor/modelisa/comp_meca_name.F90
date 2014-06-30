@@ -27,9 +27,9 @@ subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl, l_kit_meta, com
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: nb_vari
-    logical, intent(in) :: l_excl
+    logical(kind=1), intent(in) :: l_excl
     character(len=16), intent(in) :: vari_excl
-    logical, intent(in) :: l_kit_meta
+    logical(kind=1), intent(in) :: l_kit_meta
     character(len=16), intent(in) :: comp_code_py
     character(len=16), intent(in) :: rela_code_py
     character(len=16), intent(in) :: meta_code_py

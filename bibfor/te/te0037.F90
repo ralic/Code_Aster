@@ -73,7 +73,7 @@ subroutine te0037(option, nomte)
     integer :: compt, nddlm, nddls, iret
     real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
-    logical :: lbid, pre1, axi
+    logical(kind=1) :: lbid, pre1, axi
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
 !
@@ -406,7 +406,7 @@ subroutine te0037(option, nomte)
 !     SUPPRESSION DES DDLS SUPERFLUS
     if (pre1) then
         call xhmddl(ndim, nddls, nddl, nno, nnos,&
-                    zi(jstno), .false., option, nomte, mat,&
+                    zi(jstno), .false._1, option, nomte, mat,&
                     zr(ires), nddlm)
     else
         call teattr('C', 'XLAG', lag, ibid)
@@ -414,7 +414,7 @@ subroutine te0037(option, nomte)
             nno = nnos
         endif
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false., lbid,&
+                    nno, nnos, zi(jstno), .false._1, lbid,&
                     option, nomte, ddlm,&
                     nfiss, jfisno, vect=zr(ires))
     endif

@@ -70,8 +70,8 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    logical :: grand, axi, resi, rigi, matsym, cplan, lintbo
-    parameter (grand = .true.)
+    logical(kind=1) :: grand, axi, resi, rigi, matsym, cplan, lintbo
+    parameter (grand = .true._1)
     integer :: g, i, nddl, cod(27), ivf
     integer :: ndim, nno, npg, mate, lgpg, codret, iw, idff
     character(len=8) :: typmod(*)

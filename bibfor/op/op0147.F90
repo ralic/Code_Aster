@@ -42,7 +42,7 @@ subroutine op0147()
     integer :: inuor, ivite, jnuor, nbm, nbmr
     integer :: nnn, npv, i1, i3, ivitef
 !-----------------------------------------------------------------------
-    logical :: casint
+    logical(kind=1) :: casint
     character(len=8) :: table, nomu, option
     character(len=16) :: concep, cmd
     character(len=19) :: base

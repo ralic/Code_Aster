@@ -97,7 +97,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     character(len=19) :: cnbudi, cnvcpr
     character(len=19) :: depmoi, vitmoi, accmoi
     character(len=19) :: veclag
-    logical :: ldepl, lvite, lacce
+    logical(kind=1) :: ldepl, lvite, lacce
     real(kind=8) :: coeequ
 !
 ! ----------------------------------------------------------------------

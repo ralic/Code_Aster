@@ -85,14 +85,14 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 !
 !
-    logical :: ldyna, lexpl
-    logical :: londe, llapl, lammo, lsstf, lviss
-    logical :: limpe, lpilo, lmacr, limpex
+    logical(kind=1) :: ldyna, lexpl
+    logical(kind=1) :: londe, llapl, lammo, lsstf, lviss
+    logical(kind=1) :: limpe, lpilo, lmacr, limpex
     character(len=10) :: phase
     integer :: nbvect
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
-    logical :: lassve(20), lcalve(20)
+    logical(kind=1) :: lassve(20), lcalve(20)
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -110,7 +110,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 ! --- INITIALISATIONS
 !
     phase = phasez
-    call nmcvec('INIT', ' ', ' ', .false., .false.,&
+    call nmcvec('INIT', ' ', ' ', .false._1, .false._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FONCTIONNALITES ACTIVEES
@@ -133,75 +133,75 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 ! --- DEPLACEMENTS IMPOSES DONNES
 !
-        call nmcvec('AJOU', 'CNDIDO', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNDIDO', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- DEPLACEMENTS IMPOSES PILOTES
 !
         if (lpilo) then
-            call nmcvec('AJOU', 'CNDIPI', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNDIPI', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- CHARGEMENTS FORCES DE LAPLACE
 !
         if (llapl) then
-            call nmcvec('AJOU', 'CNLAPL', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNLAPL', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- CHARGEMENTS ONDE_PLANE
 !
         if (londe) then
-            call nmcvec('AJOU', 'CNONDP', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNONDP', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- CHARGEMENTS MECANIQUES FIXES DONNES
 !
-        call nmcvec('AJOU', 'CNFEDO', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNFEDO', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- CHARGEMENTS MECANIQUES PILOTES
 !
         if (lpilo) then
-            call nmcvec('AJOU', 'CNFEPI', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNFEPI', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- CONDITIONS CINEMATIQUES IMPOSEES  (AFFE_CHAR_CINE)
 !
-        call nmcvec('AJOU', 'CNCINE', ' ', .false., .true.,&
+        call nmcvec('AJOU', 'CNCINE', ' ', .false._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCE DE REFERENCE LIEE AUX VAR. COMMANDES EN T+
 !
-        call nmcvec('AJOU', 'CNVCF0', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNVCF0', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCES NODALES POUR PREDICTION (SKIP FOR IMPLEX/EXPLICITE)
 !
         if ( .not.(lexpl.or.limpex) ) then
-            call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true., .true.,&
+            call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- FORCES POUR VAR. COMM. (POUR PREDICTION)
 !
-        call nmcvec('AJOU', 'CNVCPR', ' ', .false., .true.,&
+        call nmcvec('AJOU', 'CNVCPR', ' ', .false._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 !
         if (lsstf) then
-            call nmcvec('AJOU', 'CNSSTF', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNSSTF', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- CHARGES VEC_ISS
 !
         if (lviss) then
-            call nmcvec('AJOU', 'CNVISS', ' ', .false., .true.,&
+            call nmcvec('AJOU', 'CNVISS', ' ', .false._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
@@ -221,31 +221,31 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
         if (limpex) then
             if (phase .eq. 'PREDICTION') then
-                call nmcvec('AJOU', 'CNFNOD', 'SIGEXT', .true., .true.,&
+                call nmcvec('AJOU', 'CNFNOD', 'SIGEXT', .true._1, .true._1,&
                             nbvect, ltypve, loptve, lcalve, lassve)
             endif
         endif
 !
 ! --- FORCES SUIVEUSES DONNEES
 !
-        call nmcvec('AJOU', 'CNFSDO', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNFSDO', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
         if (ldyna) then
 !
 ! --- FORCES D'EQUILIBRE DYNAMIQUE
 !
-            call nmcvec('AJOU', 'CNDYNA', ' ', .false., .true.,&
+            call nmcvec('AJOU', 'CNDYNA', ' ', .false._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCES D'AMORTISSEMENT MODAL
 !
             if (lammo) then
                 if (phase .eq. 'PREDICTION') then
-                    call nmcvec('AJOU', 'CNMODP', ' ', .false., .true.,&
+                    call nmcvec('AJOU', 'CNMODP', ' ', .false._1, .true._1,&
                                 nbvect, ltypve, loptve, lcalve, lassve)
                 else if (phase.eq.'CORRECTION') then
-                    call nmcvec('AJOU', 'CNMODC', ' ', .false., .true.,&
+                    call nmcvec('AJOU', 'CNMODC', ' ', .false._1, .true._1,&
                                 nbvect, ltypve, loptve, lcalve, lassve)
                 else
                     ASSERT(.false.)
@@ -256,10 +256,10 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
             if (limpe) then
                 if (phase .eq. 'PREDICTION') then
-                    call nmcvec('AJOU', 'CNIMPP', ' ', .true., .true.,&
+                    call nmcvec('AJOU', 'CNIMPP', ' ', .true._1, .true._1,&
                                 nbvect, ltypve, loptve, lcalve, lassve)
                 else if (phase.eq.'CORRECTION') then
-                    call nmcvec('AJOU', 'CNIMPC', ' ', .true., .true.,&
+                    call nmcvec('AJOU', 'CNIMPC', ' ', .true._1, .true._1,&
                                 nbvect, ltypve, loptve, lcalve, lassve)
                 else
                     ASSERT(.false.)
@@ -271,7 +271,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 ! --- VECT_ASSE(MACR_ELEM) = MATR_ASSE(MACR_ELEM) * VECT_DEPL
 !
         if (lmacr) then
-            call nmcvec('AJOU', 'CNSSTR', ' ', .false., .true.,&
+            call nmcvec('AJOU', 'CNSSTR', ' ', .false._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
@@ -292,54 +292,54 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 ! --- CHARGEMENTS MECANIQUES FIXES DONNES
 !
-        call nmcvec('AJOU', 'CNFEDO', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNFEDO', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCES SUIVEUSES DONNEES
 !
-        call nmcvec('AJOU', 'CNFSDO', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNFSDO', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- DEPLACEMENTS IMPOSES DONNES
 !
-        call nmcvec('AJOU', 'CNDIDO', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNDIDO', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCES NODALES
 !
-        call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true., .true.,&
+        call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- CONDITIONS CINEMATIQUES IMPOSEES  (AFFE_CHAR_CINE)
 !
-        call nmcvec('AJOU', 'CNCINE', ' ', .false., .true.,&
+        call nmcvec('AJOU', 'CNCINE', ' ', .false._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- FORCES ISSUES DES MACRO-ELEMENTS
 !
         if (lmacr) then
-            call nmcvec('AJOU', 'CNSSTR', ' ', .false., .true.,&
+            call nmcvec('AJOU', 'CNSSTR', ' ', .false._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 !
         if (lsstf) then
-            call nmcvec('AJOU', 'CNSSTF', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNSSTF', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- FORCES IMPEDANCES
 !
         if (limpe) then
-            call nmcvec('AJOU', 'CNIMPP', ' ', .true., .true.,&
+            call nmcvec('AJOU', 'CNIMPP', ' ', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !
 ! --- CHARGES VEC_ISS
 !
         if (lviss) then
-            call nmcvec('AJOU', 'CNVISS', ' ', .false., .true.,&
+            call nmcvec('AJOU', 'CNVISS', ' ', .false._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif
 !

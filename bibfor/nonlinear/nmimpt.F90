@@ -53,7 +53,7 @@ subroutine nmimpt(numins, sddisc, sdimpr)
     integer :: lenivo
     character(len=16) :: metlis
     integer :: ibid
-    logical :: lprint
+    logical(kind=1) :: lprint
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,7 +73,7 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 ! --- INSTANT COURANT
 !
     instan = diinst(sddisc,numins)
-    call nmimcr(sdimpr, 'INCR_INST', instan, .true.)
+    call nmimcr(sdimpr, 'INCR_INST', instan, .true._1)
     call nmimr0(sdimpr, 'INST')
 !
 ! --- AFFICHAGE ACTIF ?

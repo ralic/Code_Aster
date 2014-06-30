@@ -28,7 +28,7 @@ subroutine trvpmd(np1, n, m, rr, loc,&
     integer :: np1, n, m
     integer :: indxf(*), npoint(*), lpoint(*)
     real(kind=8) :: rr(*), tp(*), rtp(*)
-    logical :: loc(*)
+    logical(kind=1) :: loc(*)
 !
 ! VARIABLES LOCALES
 ! -----------------

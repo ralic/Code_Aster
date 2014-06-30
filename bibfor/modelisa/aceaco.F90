@@ -19,7 +19,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
 #include "asterfort/wkvect.h"
 !
     integer :: lmax, nbocc
-    logical :: locagb, locamb
+    logical(kind=1) :: locagb, locamb
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -55,7 +55,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     integer :: nvec, iarg, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf, jdls2
     integer :: na, nco, ncr, nex, ng, nin, nk, nm, nv, nvf, nexf
     integer :: iret
-    logical :: lcartf
+    logical(kind=1) :: lcartf
     real(kind=8) :: ang(2), epa, kappa, correc, rigi, excent
     real(kind=8) :: vect(3), pi, xiner
     character(len=8) :: inert, korrec, epaf, excf

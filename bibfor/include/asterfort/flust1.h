@@ -30,7 +30,7 @@ interface
         real(kind=8) :: fact(*)
         real(kind=8) :: vite(*)
         integer :: nbm
-        logical :: calcul(2)
+        logical(kind=1) :: calcul(2)
         integer :: npv
         integer :: nivpar
         integer :: nivdef

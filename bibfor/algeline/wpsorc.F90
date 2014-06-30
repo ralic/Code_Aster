@@ -120,7 +120,7 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
     integer :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
     integer :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, alpha, rwork(*)
-    logical :: selec(*), flage
+    logical(kind=1) :: selec(*), flage
     complex(kind=8) :: sigma, vect(nbeq, *), dsor(*), resid(*), workd(*), workl(*), vaux(*)
     complex(kind=8) :: vauc(2*nbeq, *), workv(*)
     character(len=19) :: solveu
@@ -134,7 +134,7 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
 !
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14)
-    logical :: rvec
+    logical(kind=1) :: rvec
     character(len=1) :: bmat
     character(len=2) :: which
 !

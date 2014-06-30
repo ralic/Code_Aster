@@ -19,6 +19,6 @@ interface
     function iscycl(ccycle, longcy)
         integer :: ccycle
         integer :: longcy
-        logical :: iscycl
+        logical(kind=1) :: iscycl
     end function iscycl
 end interface

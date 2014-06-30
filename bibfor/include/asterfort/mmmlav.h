@@ -18,8 +18,8 @@
 interface
     subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
                       coefaf)
-        logical :: ldyna
-        logical :: lfovit
+        logical(kind=1) :: ldyna
+        logical(kind=1) :: lfovit
         real(kind=8) :: jeusup
         integer :: ndexfr
         real(kind=8) :: coefac

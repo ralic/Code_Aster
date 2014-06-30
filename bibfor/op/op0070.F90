@@ -98,7 +98,7 @@ subroutine op0070()
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    logical :: lexpl, limpl, lstat
+    logical(kind=1) :: lexpl, limpl, lstat
 !
 ! --- STRUCTURES DE DONNEES
 !

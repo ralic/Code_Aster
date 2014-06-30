@@ -10,7 +10,7 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
     real(kind=8) :: dplmod(nbpal, nbmode, *), dt, dtsto, tcf
     real(kind=8) :: vrotat, conv
     integer :: numpas
-    logical :: prdeff
+    logical(kind=1) :: prdeff
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

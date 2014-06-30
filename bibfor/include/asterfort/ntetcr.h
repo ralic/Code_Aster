@@ -21,7 +21,7 @@ interface
         character(len=24) :: numedd
         character(len=24) :: compor
         character(len=24) :: sdieto
-        logical :: lnonl
+        logical(kind=1) :: lnonl
         character(len=24) :: vhydr
         character(len=24) :: hydr0
     end subroutine ntetcr

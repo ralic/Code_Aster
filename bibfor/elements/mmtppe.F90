@@ -47,7 +47,7 @@ subroutine mmtppe(typmae,typmam,ndim  ,nne   ,nnm   , &
     integer :: ndim, nne, nnm, nnl, nbdm
 
     integer :: iresog
-    logical :: laxis, ldyna
+    logical(kind=1) :: laxis, ldyna
 
     real(kind=8) :: jeusup
     real(kind=8) :: jacobi, wpg

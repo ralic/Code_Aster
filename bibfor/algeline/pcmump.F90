@@ -82,9 +82,9 @@ subroutine pcmump(matasz, solvez, iretz)
     iret = 0
     if (iterpr .gt. reacpr .or. iterpr .eq. 0) then
         call amumph('DETR_MAT', solvbd, matass, [0.d0], [cbid],&
-                    ' ', 0, iret, .true.)
+                    ' ', 0, iret, .true._1)
         call amumph('PRERES', solvbd, matass, [0.d0], [cbid],&
-                    ' ', 0, iret, .true.)
+                    ' ', 0, iret, .true._1)
     endif
 !
 ! --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION

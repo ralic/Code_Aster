@@ -62,7 +62,7 @@ subroutine etenca(chinz, ligrlz, iret)
     integer :: nma, nms, nbedit, igd, code, ient, i, ii, nb
     integer :: desc, grpma, lima, ialima, illima, jmalut
     integer :: ptma, ptms, noli, iexi
-    logical :: bonlig, lalloc
+    logical(kind=1) :: bonlig, lalloc
     character(len=8) :: ma
     character(len=24) :: ligri
     integer :: vali(3)

@@ -66,8 +66,8 @@ subroutine jeimpa(unit, nomlu, com)
     character(len=8) :: nac(nnac), nao(nnao)
     character(len=1) :: tac(nnac), tao(nnao), genri
     integer :: lac(nnac), lao(nnao)
-    logical :: tab1(5, 4), tab2(5, 4), tab3(2, 3)
-    logical :: lconst, lconti, lcol
+    logical(kind=1) :: tab1(5, 4), tab2(5, 4), tab3(2, 3)
+    logical(kind=1) :: lconst, lconti, lcol
 !
     data             nume       , nome&
      &               / '$$XNUM  ' , '$$XNOM  '  /

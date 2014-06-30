@@ -49,7 +49,7 @@ subroutine op0073()
     integer :: ifm, niv
     real(kind=8) :: r8bid, rad
     complex(kind=8) :: cbid
-    logical :: crprol
+    logical(kind=1) :: crprol
 !     ------------------------------------------------------------------
     data nopara / 'LIEU'    , 'TYPE'    , 'FONCTION' /
     data typara / 'K8'      , 'K24'     , 'K24'      /

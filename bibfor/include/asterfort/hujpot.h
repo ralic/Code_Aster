@@ -25,8 +25,8 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: sige(6)
         character(len=7) :: etatf
-        logical :: rdctps
+        logical(kind=1) :: rdctps
         integer :: iret
-        logical :: aredec
+        logical(kind=1) :: aredec
     end subroutine hujpot
 end interface

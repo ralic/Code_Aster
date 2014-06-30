@@ -11,7 +11,7 @@ subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
 !
     integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma
-    logical :: rayon
+    logical(kind=1) :: rayon
     integer :: dectau, jresun, jdtaum,jtauma,jsgnma,jdsgma
     character(len=16) ::nommet
 ! ======================================================================

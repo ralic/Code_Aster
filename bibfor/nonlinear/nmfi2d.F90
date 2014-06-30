@@ -62,7 +62,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 !
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, axi
+    logical(kind=1) :: resi, rigi, axi
     integer :: code(9), i, j, q, s, ibid, kpg
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE

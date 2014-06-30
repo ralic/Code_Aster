@@ -12,7 +12,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rc32st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
-    logical :: seisme
+    logical(kind=1) :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------

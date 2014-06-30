@@ -41,7 +41,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
     character(len=8) :: noma
     character(len=24) :: defico, resoco
-    logical :: dvgeom, geoerr
+    logical(kind=1) :: dvgeom, geoerr
     character(len=19) :: solalg(*)
     character(len=16) :: geonoe
     real(kind=8) :: geoval
@@ -72,11 +72,11 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
     integer :: ncmp, mmitgo, nbreag, maxgeo
     real(kind=8) :: autono, temp1, temp2, epsgeo, rmin
     character(len=8) :: nomnoe, licmp(3)
-    logical :: premie, alarme
+    logical(kind=1) :: premie, alarme
     character(len=19) :: depdel
     character(len=24) :: maxdep, autoc1, autoc2
     integer :: jmaxde
-    logical :: geoala
+    logical(kind=1) :: geoala
     real(kind=8), pointer :: auto1(:) => null()
     real(kind=8), pointer :: auto2(:) => null()
     real(kind=8), pointer :: depde(:) => null()

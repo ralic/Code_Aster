@@ -55,7 +55,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=24) :: depla, chfond, mate, compor
     character(len=24) :: chvite, chacce, fonoeu
 !
-    logical :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas, lincr
+    logical(kind=1) :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas, lincr
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: livc(nbmxpa)
-    logical :: fonc, lxfem
+    logical(kind=1) :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: resu, fiss
     character(len=8) :: lpain(30), lpaout(1)

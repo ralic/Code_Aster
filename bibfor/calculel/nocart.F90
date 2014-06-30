@@ -140,7 +140,7 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     integer :: jnocmp2,ncmpmx2,nec2
     character(len=8) :: ma, base,mode2,ctype2
     character(len=24) :: lima, trav
-    logical :: laggr,lrapid
+    logical(kind=1) :: laggr,lrapid
     integer :: lontap, lontav2, jbid
 !-----------------------------------------------------------------------
     chin = carte
@@ -300,7 +300,7 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     if (laggr) then
         trav=chin//'.TRAV'
     call jeveuo(jexatr(lima,'LONCUM'), 'E',jbid)
-        call jedupo(lima, 'V', trav, .false.)
+        call jedupo(lima, 'V', trav, .false._1)
     call jeveuo(jexatr(trav,'LONCUM'), 'E',jbid)
         call jelira(lima, 'CLAS', cval=base)
         call jedetr(lima)
@@ -349,7 +349,5 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
             ASSERT(.false.)
         endif
     end do
-
-
-
+!
 end subroutine

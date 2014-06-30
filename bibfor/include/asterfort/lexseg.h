@@ -22,6 +22,6 @@ interface
         integer :: nbrma
         integer :: n1
         integer :: n2
-        logical :: lexseg
+        logical(kind=1) :: lexseg
     end function lexseg
 end interface

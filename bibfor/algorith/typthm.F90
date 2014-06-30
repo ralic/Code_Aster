@@ -37,7 +37,7 @@ subroutine typthm(axi, perman, vf, typvf,&
 !     --- ARGUMENTS ---
 #include "asterfort/lteatt.h"
 #include "asterfort/lxlgut.h"
-    logical :: axi, perman, vf
+    logical(kind=1) :: axi, perman, vf
     integer :: typvf
     integer :: ndim
     character(len=8) :: typmod(2)

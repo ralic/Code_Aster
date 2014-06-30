@@ -77,8 +77,8 @@ subroutine op0177()
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, travk, travkr
     character(len=80) :: valk
     character(len=200) :: lign1, lign2
-    logical :: lref
-    logical :: skip
+    logical(kind=1) :: lref
+    logical(kind=1) :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
@@ -270,11 +270,11 @@ subroutine op0177()
 !
         call tresu_tabl(newtab, para, typtes, typr, tbtxt,&
                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                    ific, .true., ssigne, ignore=skip, compare=ordgrd)
+                    ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_tabl(newtab, para, typtes, typr, tbref,&
                         zi( irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                        ific, .false., ssigne)
+                        ific, .false._1, ssigne)
         endif
     else
 !
@@ -319,18 +319,18 @@ subroutine op0177()
 !
         if (nk .ne. 0) then
 !       cas des chaînes de caractères
-            call tresu_str(tbtxt, zk80(irefk), valk, ific, .true.)
+            call tresu_str(tbtxt, zk80(irefk), valk, ific, .true._1)
             if (lref) then
-                call tresu_str(tbtxt, zk80(irefkr), valk, ific, .false.)
+                call tresu_str(tbtxt, zk80(irefkr), valk, ific, .false._1)
             endif
         else
 !       cas des réels, entiers, complexes
-            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typr, nref, &
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, typr, nref, &
                         crit, epsi, ssigne, zr(irefr), valr, &
                         zi(irefi), vali, zc(irefc), valc, ignore=skip, &
                         compare=ordgrd)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .false., typr, nref, &
+                call tresu_print_all(tbref(1), tbref(2), .false._1, typr, nref, &
                             crit, epsir, ssigne, zr(irefrr), valr, &
                             zi(irefir), vali, zc(irefcr), valc)
             endif

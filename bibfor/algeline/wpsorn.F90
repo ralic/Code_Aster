@@ -117,7 +117,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
     integer :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, resid(*), workd(*), workl(*), vaux(*), vaur(2*nbeq, *), vpr(*), vpi(*)
     real(kind=8) :: workv(*), alpha, dsor(nfreq+1, *)
-    logical :: selec(*), flage
+    logical(kind=1) :: selec(*), flage
     complex(kind=8) :: sigma, vect(nbeq, *), vauc(2*nbeq, *), vaul(2*nbeq, *)
     character(len=19) :: solveu
 !--------------------------------------------------------------------
@@ -131,7 +131,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14)
     real(kind=8) :: sigmar, sigmai
-    logical :: rvec
+    logical(kind=1) :: rvec
     character(len=1) :: bmat
     character(len=2) :: which
 !

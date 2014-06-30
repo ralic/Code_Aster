@@ -38,7 +38,7 @@ subroutine filter_smd(nommat, vsmb)
     character(len=14) :: nu
     character(len=19) :: mat
     mpi_int :: mrank, msize
-    logical :: is_ddl_cine, iam_sole_owner
+    logical(kind=1) :: is_ddl_cine, iam_sole_owner
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: ccid(:) => null()
     integer, pointer :: nulg(:) => null()

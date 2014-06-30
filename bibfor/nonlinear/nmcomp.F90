@@ -114,7 +114,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
     common /tdim/ ndt,ndi
 !
     character(len=16) :: optio2
-    logical :: cp, convcp
+    logical(kind=1) :: cp, convcp
     integer :: cpl, nvv, ncpmax
     real(kind=8) :: r8bid
 !

@@ -18,7 +18,7 @@
 interface
     subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                       c1, jvalm, jtmp2, lgtmp2)
-        logical :: lmasym
+        logical(kind=1) :: lmasym
         character(len=2) :: tt
         character(len=14) :: nu14
         integer :: ncmp

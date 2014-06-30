@@ -40,7 +40,7 @@ interface
         real(kind=8) :: vecr3(*)
         real(kind=8) :: vgap
         real(kind=8) :: vecr4(*)
-        logical :: locfl0(*)
+        logical(kind=1) :: locfl0(*)
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: xsi0(*)
     end subroutine calvol

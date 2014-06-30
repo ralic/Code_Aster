@@ -95,7 +95,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 #include "asterc/r8miem.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/utmess.h"
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
     integer :: dimuel
     integer :: ndim, nno, nnos, nnom, dimdep, dimdef, nmec, np1, np2
     integer :: nbcmp, npg, nddls, nddlm, ipoids, ivf, idfde

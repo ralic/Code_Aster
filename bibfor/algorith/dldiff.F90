@@ -97,7 +97,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0
     real(kind=8) :: fexte(*), famor(*), fliai(*)
 !
-    logical :: lamort, lcrea
+    logical(kind=1) :: lamort, lcrea
 !
 !
     integer :: nbtyar
@@ -125,7 +125,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     real(kind=8) :: r8bid
     integer :: vali(2)
     real(kind=8) :: valr(2)
-    logical :: ener
+    logical(kind=1) :: ener
     real(kind=8), pointer :: vale(:) => null()
 !
 !

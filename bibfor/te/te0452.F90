@@ -30,7 +30,7 @@ subroutine te0452(option, nomte)
 !     ------------------------------------------------------------------
     integer :: itab1(7), itab2(7), iret, jin, jout, lgcata
     integer :: nbpoin, nbcmp, jcara, ibid
-    logical :: lreel
+    logical(kind=1) :: lreel
     real(kind=8) :: excen
 !     ------------------------------------------------------------------
 !

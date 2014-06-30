@@ -40,7 +40,7 @@ interface
         integer :: lonch(10)
         integer :: cnset(128)
         real(kind=8) :: rho
-        logical :: axi
+        logical(kind=1) :: axi
         integer :: yaenrm
     end subroutine xpeshm
 end interface 

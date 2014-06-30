@@ -27,9 +27,9 @@ interface
         integer :: indcon
         integer :: indfri
         integer :: indfrn
-        logical :: lfrot
-        logical :: lvites
-        logical :: lgliss
+        logical(kind=1) :: lfrot
+        logical(kind=1) :: lvites
+        logical(kind=1) :: lgliss
         real(kind=8) :: jeu
         real(kind=8) :: jeuvit
         real(kind=8) :: lambdc

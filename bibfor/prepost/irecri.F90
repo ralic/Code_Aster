@@ -38,8 +38,8 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     integer :: nive, versio, nbcham, nbpara
     integer :: nbordr, ordr(*), nbcmp, iocc
     integer :: nbnot, numnoe(*), nbmat, nummai(*)
-    logical :: lresu, lcor
-    logical :: lsup, linf, lmax, lmin, lgmsh
+    logical(kind=1) :: lresu, lcor
+    logical(kind=1) :: lsup, linf, lmax, lmin, lgmsh
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     character(len=8) :: nomco
     character(len=19) :: noch19, knacc
     character(len=24) :: nomst
-    logical :: lordr
+    logical(kind=1) :: lordr
     integer :: nbchca, nbacc, nbcara
     integer :: nbrk16, nbk16, ierd, ibid
     integer :: i, icha, ifi, isy, itype

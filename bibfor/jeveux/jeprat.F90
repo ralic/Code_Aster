@@ -68,7 +68,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
     character(len=8) :: nom
     integer :: icre, iret, jctab, ltypi, lonoi
     integer :: ibacol
-    logical :: lcol
+    logical(kind=1) :: lcol
 !     ------------------------------------------------------------------
     integer :: idnum
     parameter    (   idnum  = 10 )

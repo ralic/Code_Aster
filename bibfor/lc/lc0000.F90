@@ -217,7 +217,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    logical :: cp
+    logical(kind=1) :: cp
 !
 !     ----------------------------------------------------------------
 !     VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS

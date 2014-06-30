@@ -54,8 +54,8 @@ subroutine mmapin(modele, noma, defico, resoco, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lctcc, ltfcm, lallv
-    logical :: loptin
+    logical(kind=1) :: lctcc, ltfcm, lallv
+    logical(kind=1) :: loptin
     integer :: mmitgo
 !
 ! ----------------------------------------------------------------------

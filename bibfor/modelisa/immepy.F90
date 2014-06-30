@@ -68,7 +68,7 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 ! -----------------
     real(kind=8) :: d, dx, dy, dz
     integer :: ktest, f1(4), idc, id(6), ii, j
-    logical :: facnp1
+    logical(kind=1) :: facnp1
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !

@@ -64,7 +64,7 @@ subroutine te0313(option, nomte)
 !
 ! =====================================================================
     integer :: li
-    logical :: axi, perman
+    logical(kind=1) :: axi, perman
 !
 ! =====================================================================
 ! AXI       AXISYMETRIQUE?
@@ -88,7 +88,7 @@ subroutine te0313(option, nomte)
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! IVF2      FONCTIONS DE FORMES LINEAIRES
 ! =====================================================================
-    logical :: fnoevo
+    logical(kind=1) :: fnoevo
     real(kind=8) :: dt
 !
 ! =====================================================================

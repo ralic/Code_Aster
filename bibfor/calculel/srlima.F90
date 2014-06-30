@@ -121,7 +121,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !   ---------------------------------------------------------------
     call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
     call utmasu(ma, '3D', nbma2d, zi(jma2d), mail3d,&
-                vale, nbmamo, zi(jlima), .true.)
+                vale, nbmamo, zi(jlima), .true._1)
     call jeveuo(mail3d, 'L', jma3d)
 !
     call wkvect(mailto, 'V V I', nbma2d*2, jmato)

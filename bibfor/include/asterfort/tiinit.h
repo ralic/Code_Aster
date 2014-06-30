@@ -22,13 +22,13 @@ interface
         character(len=8) :: mailla
         character(len=24) :: modele
         character(len=24) :: resulz
-        logical :: lostat
-        logical :: lreuse
-        logical :: lnonl
+        logical(kind=1) :: lostat
+        logical(kind=1) :: lreuse
+        logical(kind=1) :: lnonl
         real(kind=8) :: instin
         character(len=19) :: sddisc
         character(len=24) :: sdieto
         character(len=19) :: sdobse
-        logical :: levol
+        logical(kind=1) :: levol
     end subroutine tiinit
 end interface

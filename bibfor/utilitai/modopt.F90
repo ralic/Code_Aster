@@ -54,7 +54,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     integer :: ierme, iermo, iermno, iqirel, iqiren
     character(len=16) :: tysd
     character(len=24) :: lesop2
-    logical :: yathm, perman
+    logical(kind=1) :: yathm, perman
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     endif
 !
     lesop2 = '&&OP0058.NEW_OPTION'
-    call jedupo(lesopt, 'V', lesop2, .false.)
+    call jedupo(lesopt, 'V', lesop2, .false._1)
     call jedetr(lesopt)
     call wkvect(lesopt, 'V V K16', nbopt+20, jopt)
     call jeveuo(lesop2, 'L', jopt2)

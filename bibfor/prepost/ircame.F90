@@ -136,8 +136,8 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     integer :: nrimpr
     integer :: existc, nbcmfi, nbval
 !
-    logical :: lgaux
-    logical :: existm
+    logical(kind=1) :: lgaux
+    logical(kind=1) :: existm
 !
     call jemarq()
 !

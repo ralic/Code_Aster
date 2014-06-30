@@ -62,7 +62,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
     integer :: jmasse,   jvitm, jvect
     integer :: neq
     real(kind=8) :: coiner
-    logical :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
+    logical(kind=1) :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
     character(len=19) :: vitmoi, vitplu, vector
     character(len=19) :: masse
     real(kind=8), pointer :: foine(:) => null()
@@ -117,7 +117,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 !
     if (lnewma) then
         call mrmult('ZERO', jmasse, vitp, foine, 1,&
-                    .true.)
+                    .true._1)
         call dscal(neq, coiner, foine, 1)
         elseif (lthetv.or.(lkrenk.and.lvite).or.lthetd .or.(&
     lkrenk.and.ldepl)) then
@@ -125,7 +125,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
         call vtaxpy(1.d0, vitmoi, vector)
         call jeveuo(vector(1:19)//'.VALE', 'L', jvect)
         call mrmult('ZERO', jmasse, zr(jvect), foine, 1,&
-                    .true.)
+                    .true._1)
         call dscal(neq, coiner, foine, 1)
     else
         ASSERT(.false.)

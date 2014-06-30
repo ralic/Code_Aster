@@ -24,6 +24,6 @@ interface
         integer :: dimlis
         character(len=*) :: lisch(*)
         integer :: nbch
-        logical :: acceno
+        logical(kind=1) :: acceno
     end subroutine rsutc4
 end interface

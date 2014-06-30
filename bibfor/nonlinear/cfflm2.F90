@@ -76,7 +76,7 @@ subroutine cfflm2(resoco, resigr, ndim, neq, nesmax,&
     integer :: jfro2
     character(len=19) :: deplc
     integer :: jdepc
-    logical :: liaact
+    logical(kind=1) :: liaact
 !
 ! ----------------------------------------------------------------------
 !

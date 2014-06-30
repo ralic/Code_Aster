@@ -25,6 +25,6 @@ interface
         real(kind=8) :: inst
         integer :: freq
         real(kind=8) :: tole
-        logical :: lselec
+        logical(kind=1) :: lselec
     end subroutine nmcrit
 end interface

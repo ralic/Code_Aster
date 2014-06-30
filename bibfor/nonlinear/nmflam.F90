@@ -101,7 +101,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: linsta
+    logical(kind=1) :: linsta
     integer :: nfreq, nfreqc
     integer :: i,  ljeveu, ibid, iret
     integer :: defo, ldccvg, numord

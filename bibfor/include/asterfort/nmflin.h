@@ -20,6 +20,6 @@ interface
         character(len=19) :: sdpost
         character(len=19) :: matass
         real(kind=8) :: freqr
-        logical :: linsta
+        logical(kind=1) :: linsta
     end subroutine nmflin
 end interface

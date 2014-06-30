@@ -53,7 +53,7 @@ subroutine nmarnr(result, typtaz, numreu)
     character(len=19) :: nomtab
     character(len=16) :: typtab
     character(len=2) :: typvar
-    logical :: lexist
+    logical(kind=1) :: lexist
     character(len=19) :: lisres
     integer :: jlisre, nval, ival, vali
     integer, pointer :: tbnp(:) => null()

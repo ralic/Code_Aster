@@ -134,7 +134,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: tmpdmx, tmpfmx, epsth
     real(kind=8) :: alphad, alphaf, bendod, bendof, kdessd, kdessf
 !
-    logical :: cp
+    logical(kind=1) :: cp
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------

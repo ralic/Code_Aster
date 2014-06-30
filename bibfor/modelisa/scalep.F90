@@ -52,7 +52,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
     integer :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
-    logical :: ltable
+    logical(kind=1) :: ltable
     character(len=8) :: noma
     character(len=19) :: spectr, base
     real(kind=8) :: scal(nbexcp, nbmr)

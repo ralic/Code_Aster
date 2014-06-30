@@ -65,7 +65,7 @@ subroutine vpini2(&
     character(len=16) :: k16bid
     character(len=19) :: k19bid, raide
     character(len=24) :: kzero
-    logical           :: lbid, lc, lkr, lns
+    logical(kind=1)   :: lbid, lc, lkr, lns
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE

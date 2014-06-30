@@ -23,7 +23,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     character(len=8) :: modele, nomcmp, norme
     character(len=19) :: cham
     character(len=24) :: lma
-    logical :: lseuil
+    logical(kind=1) :: lseuil
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     character(len=8) :: noma
     character(len=19) :: ligrel, cesout, cespoi, chams
     character(len=24) :: tabval, tabvol
-    logical :: first
+    logical(kind=1) :: first
     character(len=8), pointer :: cesc(:) => null()
     real(kind=8), pointer :: pdsm(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

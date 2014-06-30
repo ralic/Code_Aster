@@ -30,7 +30,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
 #include "asterfort/wkvect.h"
     character(len=24) :: numedd, sdieto, compor
     character(len=24) :: vhydr
-    logical :: lnonl
+    logical(kind=1) :: lnonl
     character(len=24) :: hydr0
 !
 ! ----------------------------------------------------------------------
@@ -54,14 +54,14 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
     character(len=24) :: ioinfo, iolcha
     integer :: jioinf, jiolch
     integer :: icham, ich, neq
-    logical :: lhydr
+    logical(kind=1) :: lhydr
     character(len=19) :: temp0
     character(len=24) :: nomcha, nomchx, nomch0
-    logical :: chaact(nbmax)
+    logical(kind=1) :: chaact(nbmax)
 !
     character(len=24) :: nomchs(nbmax), motcob(nbmax)
     character(len=24) :: nomgd(nbmax), motcei(nbmax), loccha(nbmax)
-    logical :: larch(nbmax), letin(nbmax)
+    logical(kind=1) :: larch(nbmax), letin(nbmax)
 ! -- NOM DU CHAMP DANS LA SD RESULTAT
     data nomchs  /'TEMP'        ,'HYDR_ELNO'   ,'COMPORTHER'  /
 ! -- NOM DE LA GRANDEUR

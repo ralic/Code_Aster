@@ -53,7 +53,7 @@ subroutine te0440(option, nomte)
     integer :: nfiss, jfisno
     real(kind=8) :: he, coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag
-    logical :: fonc, lbid
+    logical(kind=1) :: fonc, lbid
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
@@ -152,7 +152,7 @@ subroutine te0440(option, nomte)
         call xfovol(elrefp, ndim, coorse, igeom, he,&
                     nfh*ndim, ddlc, nfe, nnop, jlsn,&
                     jlst, iforc, itemps, ivectu, fonc,&
-                    .true.)
+                    .true._1)
 !
     end do
 !
@@ -162,7 +162,7 @@ subroutine te0440(option, nomte)
         nnop = nnos
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nnop, nnops, zi(jstno), .false., lbid,&
+                nnop, nnops, zi(jstno), .false._1, lbid,&
                 option, nomte, ddlm,&
                 nfiss, jfisno, vect=zr(ivectu))
 !

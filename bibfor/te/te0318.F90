@@ -45,7 +45,7 @@ subroutine te0318(option, nomte)
     real(kind=8) :: alpha, fluxx, fluxy, xu, yu, xnorm
     integer :: ndim, nno, nnos, kp, j, k, itempe, itemp, iflux, nuno
     integer :: ipoids, ivf, idfde, igeom, imate, npg, jgano, icamas
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 ! DEB ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

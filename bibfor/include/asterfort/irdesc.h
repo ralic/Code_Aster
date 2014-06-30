@@ -35,6 +35,6 @@ interface
         character(len=*) :: nomsym
         integer :: ir
         integer :: numnoe(*)
-        logical :: lmasu
+        logical(kind=1) :: lmasu
     end subroutine irdesc
 end interface

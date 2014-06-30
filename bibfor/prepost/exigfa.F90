@@ -1,6 +1,6 @@
 function exigfa(dgf, ngf)
     implicit none
-    logical :: exigfa
+    logical(kind=1) :: exigfa
     integer :: dgf(*), ngf
 !     ------------------------------------------------------------------
 ! ======================================================================

@@ -24,7 +24,7 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
     real(kind=8) :: vala, coefpa
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     integer :: vnormx(2), ncycl(nbvec), nbplan
-    logical :: post
+    logical(kind=1) :: post
     real(kind=8) :: cudomx
 !
 ! ======================================================================

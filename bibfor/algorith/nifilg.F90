@@ -40,7 +40,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    logical :: resi, rigi, matsym
+    logical(kind=1) :: resi, rigi, matsym
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1, lgpg
     integer :: mate
     integer :: vu(3, 27), vg(27), vp(27)
@@ -98,7 +98,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 ! OUT CODRET  : CODE RETOUR
 !-----------------------------------------------------------------------
 !
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: g, nddl, ndu
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: lij(3, 3), vij(3, 3), os, kk
@@ -124,7 +124,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: tampon(10), id(3, 3), rbid(1)
     real(kind=8) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa
 !
-    parameter    (grand = .true.)
+    parameter    (grand = .true._1)
     data         vij  / 1, 4, 5,&
      &                  4, 2, 6,&
      &                  5, 6, 3 /
@@ -243,7 +243,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
         end do
 !
         call poslog(resi, rigi, tn, tp, ftm, lgpg, vip(1, g), ndim, ftp, g,&
-                    dtde, sigm_ldc, .false., 'RIGI', mate, instp, angmas, gn, lamb, logl,&
+                    dtde, sigm_ldc, .false._1, 'RIGI', mate, instp, angmas, gn, lamb, logl,&
                     sigp_ldc, dsidep, pk2m, pk2, cod(g))
 !
         if (cod(g) .eq. 1) then

@@ -26,6 +26,6 @@ interface
         character(len=24) :: coorn
         integer :: nbnoeu
         character(len=24) :: dire3
-        logical :: milieu
+        logical(kind=1) :: milieu
     end subroutine gdirec
 end interface

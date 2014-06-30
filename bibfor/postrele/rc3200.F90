@@ -10,7 +10,7 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32si.h"
 #include "asterfort/rc32th.h"
     real(kind=8) :: symax
-    logical :: pmpb, sn, snet, fatigu, lrocht
+    logical(kind=1) :: pmpb, sn, snet, fatigu, lrocht
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================

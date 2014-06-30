@@ -54,7 +54,7 @@ subroutine ssdein(ul, ug, mail, nocas)
     character(len=14) :: nul
     character(len=19) :: nug2, nul2
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
-    logical :: exil, exig
+    logical(kind=1) :: exil, exig
     character(len=8) :: rota, ch8(2)
     character(len=19) :: ug2, ul2
     character(len=24) :: valk(2)
@@ -197,7 +197,7 @@ subroutine ssdein(ul, ug, mail, nocas)
                 lambda(i+3,j+3) = pgl(i,j)
             end do
         end do
-        call ssvaro(lambda, 'GL', .false., 'EXTE', nomacr,&
+        call ssvaro(lambda, 'GL', .false._1, 'EXTE', nomacr,&
                     iavall, iavalp)
         do i = 1, nddle
             zr(iavall-1+nddli+i)= zr(iavalp-1+nddli+i)
@@ -222,7 +222,7 @@ subroutine ssdein(ul, ug, mail, nocas)
 !
 !           -- LE CHARGEMENT N'EST PAS "SUIVEUR" :
                 if (rota(1:3) .eq. 'OUI') then
-                    call ssvaro(lambda, 'GL', .false., 'TOUS', nomacr,&
+                    call ssvaro(lambda, 'GL', .false._1, 'TOUS', nomacr,&
                                 ialica, iavalp)
                     call ssvau1(nomacr, iavalp, iavalp)
                     do i = 1, nddli

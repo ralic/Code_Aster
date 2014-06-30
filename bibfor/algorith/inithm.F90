@@ -35,7 +35,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
     real(kind=8) :: elas(nelas)
     character(len=8) :: ncra1(nelas)
     integer :: icodre(nelas)
-    logical :: yachai
+    logical(kind=1) :: yachai
     integer :: imate, yamec, i, aniso
     real(kind=8) :: phi0, em, cs, tbiot(6), epsvm, epsv, depsv
     real(kind=8) :: angmas(3), t, eps, dalal, mdal(6), young, nu

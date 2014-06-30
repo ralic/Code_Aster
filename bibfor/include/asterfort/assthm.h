@@ -82,8 +82,8 @@ interface
         integer :: np2
         character(len=16) :: compor(*)
         character(len=8) :: typmod(2)
-        logical :: axi
-        logical :: perman
+        logical(kind=1) :: axi
+        logical(kind=1) :: perman
         character(len=3) :: modint
         integer :: codret
         real(kind=8) :: angmas(3)

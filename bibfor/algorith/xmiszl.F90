@@ -65,7 +65,7 @@ subroutine xmiszl(vecinc, defico, noma)
     integer :: numno, nummae, nno, posmae
     integer :: ino, imae, i
     integer :: ibid, nbno,  zmesx
-    logical :: lcumul(4)
+    logical(kind=1) :: lcumul(4)
     real(kind=8) :: lcoefr(4)
     character(len=19) :: prno, lichs(4)
     character(len=19) :: cns1, cns1c
@@ -163,7 +163,7 @@ subroutine xmiszl(vecinc, defico, noma)
     lcumul(4) = .false.
     c16bid = dcmplx(0.d0, 0.d0)
     call cnsfus(4, lichs, lcumul, lcoefr, [c16bid],&
-                .false., 'V', cns1c)
+                .false._1, 'V', cns1c)
 !
 ! --- CONSTRUCTION DU CHAM_NO
 !

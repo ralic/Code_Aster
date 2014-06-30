@@ -83,7 +83,7 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
     integer :: k2(1), kpg, spt
     character(len=8) :: fami, poum
 !
-    logical :: resi, rigi, grand, axi
+    logical(kind=1) :: resi, rigi, grand, axi
     integer :: ndimsi, nddl, g, cod(27), n, i, m, j, kl, pq, os, kk
     integer :: iu(3, 27), ie(6, 8)
     real(kind=8) :: rac2, lc(1), c, deplm(3*27), depld(3*27), dfdi1(27, 3)

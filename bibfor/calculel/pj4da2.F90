@@ -40,7 +40,7 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
 !
 ! ----------------------------------------------------------------------
     integer :: k
-    logical :: ok
+    logical(kind=1) :: ok
     real(kind=8) :: dp, l1, l2, l3, la, lb, lc
     real(kind=8) :: a(3), b(3), c(3), m(3), ab(3), ac(3), v(3)
 ! DEB ------------------------------------------------------------------

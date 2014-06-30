@@ -24,7 +24,7 @@ interface
         integer :: ldt
         character(len=1) :: side
         character(len=1) :: howmny
-        logical :: select(*)
+        logical(kind=1) :: select(*)
         integer :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: vl(ldvl, *)

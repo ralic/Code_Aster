@@ -49,7 +49,7 @@ subroutine rfinte(ispec)
     character(len=24) :: chnumi, chnumj, chfreq, chvale, chnum
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj
     character(len=24) :: paray
-    logical :: indice
+    logical(kind=1) :: indice
     character(len=16), pointer :: refe(:) => null()
 !
 ! DEB------------------------------------------------------------------

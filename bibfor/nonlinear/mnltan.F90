@@ -63,7 +63,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical :: lcal
+    logical(kind=1) :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect, xtang
     character(len=19) :: matdrv
@@ -107,7 +107,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     call resoud(matdrv, '', '', '', 1,&
                 '', '', 'v', zr(ib), [cbid],&
-                '', .false., 0, iret)
+                '', .false._1, 0, iret)
     call dcopy(ninc, zr(ib), 1, zr(itang), 1)
 ! ----------------------------------------------------------------------
 ! --- ON NORMALISE LE VECTEUR TANGENT

@@ -93,7 +93,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     character(len=19) :: cnfepi
     character(len=3) :: mfdet
     integer :: ifm, niv
-    logical :: isxfe
+    logical(kind=1) :: isxfe
     real(kind=8), pointer :: dep0(:) => null()
     real(kind=8), pointer :: dep1(:) => null()
     real(kind=8), pointer :: du0(:) => null()

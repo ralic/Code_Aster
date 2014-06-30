@@ -22,10 +22,10 @@ interface
         integer :: iocc
         character(len=19) :: provli
         real(kind=8) :: instin
-        logical :: linsei
+        logical(kind=1) :: linsei
         real(kind=8) :: tole
         integer :: nbinst
-        logical :: linsti
+        logical(kind=1) :: linsti
         integer :: numini
     end subroutine nmdini
 end interface

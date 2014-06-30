@@ -167,7 +167,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     character(len=24) :: chsig, lchin(10), lchout(2)
     character(len=24) :: mlggma, mlgnma
     character(len=24) :: chsigm, chdepm, chbid
-    logical :: evol
+    logical(kind=1) :: evol
     integer :: iarg
     integer, pointer :: ptma(:) => null()
     integer, pointer :: desc(:) => null()

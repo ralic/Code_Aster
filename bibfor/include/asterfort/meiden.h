@@ -25,6 +25,6 @@ interface
         integer :: nec
         integer :: i2
         integer :: i4
-        logical :: meiden
+        logical(kind=1) :: meiden
     end function meiden
 end interface

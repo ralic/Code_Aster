@@ -52,7 +52,7 @@ subroutine nmdesc(modele, numedd, numfix, mate, carele,&
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: measse(*), veasse(*)
-    logical :: lerrit
+    logical(kind=1) :: lerrit
 !
 ! ----------------------------------------------------------------------
 !

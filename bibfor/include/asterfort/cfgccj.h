@@ -19,6 +19,6 @@ interface
     subroutine cfgccj(resoco, nbliai, conjug)
         character(len=24) :: resoco
         integer :: nbliai
-        logical :: conjug
+        logical(kind=1) :: conjug
     end subroutine cfgccj
 end interface

@@ -25,11 +25,11 @@ interface
         integer :: fonact(*)
         character(len=16) :: metpre
         character(len=16) :: metcor
-        logical :: reasma
-        logical :: lcamor
+        logical(kind=1) :: reasma
+        logical(kind=1) :: lcamor
         character(len=16) :: optrig
-        logical :: lcrigi
-        logical :: larigi
-        logical :: lcfint
+        logical(kind=1) :: lcrigi
+        logical(kind=1) :: larigi
+        logical(kind=1) :: lcfint
     end subroutine nmchoi
 end interface

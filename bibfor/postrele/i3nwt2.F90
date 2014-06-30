@@ -38,7 +38,7 @@ subroutine i3nwt2(epsi, seuil, maxitr, fk, x,&
 !
     integer :: i
     real(kind=8) :: valfk(3, 1), d, d1, d2, j11, j12, j21, j22
-    logical :: fini
+    logical(kind=1) :: fini
 !
 !======================================================================
 !

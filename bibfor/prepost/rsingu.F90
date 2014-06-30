@@ -55,7 +55,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
     integer :: inel, iter
     real(kind=8) :: errtot, prec0, cumm, ordre, ae(nelem), be(nelem)
     real(kind=8) :: d, mu, fonc, dfonc
-    logical :: lqi
+    logical(kind=1) :: lqi
 !
 ! 0 - ERREUR EN NORME DE L ENERGIE OU EN QUANTITE D INTERET
 !

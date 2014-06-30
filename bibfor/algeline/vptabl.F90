@@ -58,7 +58,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
     character(len=16) :: lipacr(2), para
     character(len=19) :: tabmof
     character(len=24) :: valk(2), nomob1, nomob2, nomob3, nomob4, nomob5
-    logical :: lexist
+    logical(kind=1) :: lexist
 !
 !
 ! --- INITS.

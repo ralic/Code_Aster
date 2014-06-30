@@ -24,6 +24,6 @@ interface
         real(kind=8) :: b(dim, nb)
         integer :: nordre
         real(kind=8) :: det
-        logical :: iret
+        logical(kind=1) :: iret
     end subroutine mgausw
 end interface

@@ -51,7 +51,7 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
     integer, pointer :: p_cycl_eta(:) => null()
     integer :: cycl_index, cycl_stat
     integer :: point_index, point_number
-    logical :: cont_disc, cont_xfem
+    logical(kind=1) :: cont_disc, cont_xfem
     integer :: cycl_nb(4)
 !
 ! --------------------------------------------------------------------------------------------------

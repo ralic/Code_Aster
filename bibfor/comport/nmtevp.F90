@@ -71,7 +71,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     common /rconm9/acook,bcook,ccook,npuis,mpuis,&
      &               epsp0,troom,tmelt,tp,dinst,sieleq,deuxmu,rprim,pm
 !
-    logical :: plasti, inco, dech
+    logical(kind=1) :: plasti, inco, dech
 !
     integer :: ndimsi
     integer :: k, l, niter, i

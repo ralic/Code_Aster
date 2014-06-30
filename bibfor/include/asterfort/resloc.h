@@ -22,10 +22,10 @@ interface
                       nchar, tabido, chvois, cvoisx, chelem)
         character(len=8) :: modele
         character(len=*) :: ligrel
-        logical :: yaxfem
-        logical :: yathm
+        logical(kind=1) :: yaxfem
+        logical(kind=1) :: yathm
         real(kind=8) :: tbgrca(3)
-        logical :: perman
+        logical(kind=1) :: perman
         character(len=24) :: chtime
         character(len=*) :: mate
         character(len=24) :: sigmam

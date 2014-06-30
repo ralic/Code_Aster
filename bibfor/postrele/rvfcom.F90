@@ -67,7 +67,7 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !
     integer :: n1g, n1d, n2g, n2d
 !
-    logical :: trouve
+    logical(kind=1) :: trouve
 !
 !==================== CORPS DE LA ROUTINE =============================
 !

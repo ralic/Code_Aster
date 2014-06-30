@@ -28,7 +28,7 @@ interface
     real(kind=8), intent(inout) :: rsolu(*)
     complex(kind=8), intent(inout) :: csolu(*)
     character(len=*), intent(in) :: criter
-    logical, intent(in) :: prepos
+    logical(kind=1), intent(in) :: prepos
     integer, intent(in) :: istop
     integer, intent(out) :: iret
     end subroutine elg_resoud

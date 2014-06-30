@@ -55,7 +55,7 @@ subroutine mm_cycl_d4(sd_cont_solv, point_index, indi_cont_eval)
     integer :: statut(30)
     integer :: cycl_type, cycl_long_acti
     integer :: cycl_ecod(1), cycl_long, cycl_stat
-    logical :: detect
+    logical(kind=1) :: detect
 !
 ! --------------------------------------------------------------------------------------------------
 !

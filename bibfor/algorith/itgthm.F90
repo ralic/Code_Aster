@@ -10,7 +10,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
-    logical :: vf
+    logical(kind=1) :: vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: ndim, nno, nno2, nnos, nnom, nface

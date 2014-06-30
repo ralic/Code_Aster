@@ -37,7 +37,7 @@ subroutine hujksi(carac, mater, r, ksi, iret)
     real(kind=8) :: zero, un
     character(len=6) :: carac
     character(len=16) :: nomail
-    logical :: debug
+    logical(kind=1) :: debug
     parameter   (zero = 0.d0)
     parameter   (un = 1.d0)
 !

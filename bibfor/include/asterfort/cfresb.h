@@ -19,7 +19,7 @@ interface
     subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
                       rtx, rty, rtz)
         integer :: ndim
-        logical :: lag2d
+        logical(kind=1) :: lag2d
         character(len=2) :: typlia
         real(kind=8) :: fctf(3)
         real(kind=8) :: tang(6)

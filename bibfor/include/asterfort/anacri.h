@@ -23,10 +23,10 @@ interface
         character(len=16) :: typcha
         character(len=3) :: impgrd
         integer :: paract(35)
-        logical :: fordef
-        logical :: crsigm
-        logical :: crepst
-        logical :: crepse
-        logical :: crepsp
+        logical(kind=1) :: fordef
+        logical(kind=1) :: crsigm
+        logical(kind=1) :: crepst
+        logical(kind=1) :: crepse
+        logical(kind=1) :: crepsp
     end subroutine anacri
 end interface

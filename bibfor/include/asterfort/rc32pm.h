@@ -19,7 +19,7 @@ interface
     subroutine rc32pm(lieu, seisme, pi, mi, mse,&
                       pm, pb, pmpb)
         character(len=4) :: lieu
-        logical :: seisme
+        logical(kind=1) :: seisme
         real(kind=8) :: pi
         real(kind=8) :: mi(*)
         real(kind=8) :: mse(*)

@@ -37,14 +37,14 @@ interface
         real(kind=8) :: h3
         real(kind=8) :: l4
         real(kind=8) :: l5
-        logical :: zone1
-        logical :: zone2
-        logical :: zone3
-        logical :: zone4
-        logical :: zone5
-        logical :: zone6
-        logical :: zone7
-        logical :: zone8
+        logical(kind=1) :: zone1
+        logical(kind=1) :: zone2
+        logical(kind=1) :: zone3
+        logical(kind=1) :: zone4
+        logical(kind=1) :: zone5
+        logical(kind=1) :: zone6
+        logical(kind=1) :: zone7
+        logical(kind=1) :: zone8
         character(len=8) :: typsou
     end subroutine piqpiq
 end interface

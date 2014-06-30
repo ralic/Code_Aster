@@ -63,7 +63,7 @@ subroutine te0517(option, nomte)
     real(kind=8) :: xls2, d1b(7, 14), co(3), aa, e, nu, g, alfay, alfaz, phiy
     real(kind=8) :: phiz
     real(kind=8) :: forref, momref, carsec(6)
-    logical :: reactu
+    logical(kind=1) :: reactu
     integer, pointer :: cpri(:) => null()
 !
 ! ----------------------------------------------------------------------

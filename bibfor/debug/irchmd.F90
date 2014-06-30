@@ -55,7 +55,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
     numord=0
     call irchme(ifichi, chan19, partie, noch64, noresu,&
                 nomsym, typech, numord, 0, [' '],&
-                0, [0], 0, [0], .false.,&
+                0, [0], 0, [0], .false._1,&
                 sdcarm, codret)
 !
 end subroutine

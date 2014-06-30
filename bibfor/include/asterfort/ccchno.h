@@ -30,7 +30,7 @@ interface
         character(len=8) :: carael
         character(len=1) :: basopt
         character(len=24) :: ligrel
-        logical :: ligmod
+        logical(kind=1) :: ligmod
         integer :: codret
     end subroutine ccchno
 end interface

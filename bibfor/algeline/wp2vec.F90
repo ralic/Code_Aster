@@ -71,7 +71,7 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
     integer :: i, j, k, av1, av2, av, iadind, nbfrga, vali(5), nbcmpp, nbcmpc
     integer :: nbreel, nbfr, ibid
     complex(kind=8) :: des, vpq, mhu, vpp, vpm
-    logical :: trouve, lconj
+    logical(kind=1) :: trouve, lconj
     character(len=1) :: kmsg
     character(len=16) :: valk, typres
 !

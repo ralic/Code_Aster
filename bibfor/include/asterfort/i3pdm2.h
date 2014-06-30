@@ -23,6 +23,6 @@ interface
         real(kind=8) :: s(3, *)
         integer :: nbs
         real(kind=8) :: p(*)
-        logical :: dedans
+        logical(kind=1) :: dedans
     end subroutine i3pdm2
 end interface

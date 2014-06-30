@@ -80,7 +80,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     integer :: iadzi, iazk24, ndim, ptmax
     integer :: zxain
     integer :: inm, inc, nm, nbnomx
-    logical :: cut, ajout
+    logical(kind=1) :: cut, ajout
     character(len=8) :: typma, elp, elc
 !
     parameter       (ptmax=4, elc='SE3',nbnomx=27)

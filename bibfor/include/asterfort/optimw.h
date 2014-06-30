@@ -29,15 +29,15 @@ interface
         integer :: nt(*)
         integer :: nur(*)
         integer :: nbres
-        logical :: calm
-        logical :: cals
+        logical(kind=1) :: calm
+        logical(kind=1) :: cals
         real(kind=8) :: mk
         real(kind=8) :: sk(*)
         real(kind=8) :: mkp
         real(kind=8) :: skp(*)
-        logical :: impr
+        logical(kind=1) :: impr
         integer :: ifm
-        logical :: dept
+        logical(kind=1) :: dept
         integer :: indtp(*)
         integer :: nbtp
     end subroutine optimw

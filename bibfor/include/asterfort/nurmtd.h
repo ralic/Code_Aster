@@ -34,7 +34,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: igeom
         integer :: mate
-        logical :: mini
+        logical(kind=1) :: mini
         real(kind=8) :: matr(*)
     end subroutine nurmtd
 end interface

@@ -329,7 +329,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 !           CHAMPS AUXILIARES DANS LA BASE LOCALE : U1L,U2L,U3L
                 call vecini(9, 0.d0, rb9)
                 call chauxi(ndim, mu, ka, -lst, angl(ilev),&
-                            rb9, .false., rb, rb9, rb9,&
+                            rb9, .false._1, rb, rb9, rb9,&
                             rb9, u1l, u2l, u3l)
 !
 !           CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3

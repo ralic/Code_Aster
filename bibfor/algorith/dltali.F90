@@ -89,8 +89,8 @@ subroutine dltali(neq, result, imat, masse, rigid,&
     character(len=24) :: criter
     character(len=19) :: force0, force1
 !
-    logical :: lcrea, lprem
-    logical :: lamort
+    logical(kind=1) :: lcrea, lprem
+    logical(kind=1) :: lamort
 !
     complex(kind=8) :: cbid
 !
@@ -169,7 +169,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 !
         call resoud(matrei, maprei, solveu, cine, 0,&
                     force1, chsol, 'V', [0.d0], [cbid],&
-                    criter, .true., 0, iret)
+                    criter, .true._1, 0, iret)
 !
 ! 5.4. ==> SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL
 !
@@ -193,13 +193,13 @@ subroutine dltali(neq, result, imat, masse, rigid,&
     if (ndy .eq. 0) then
         call wkvect('FEXT0M', 'V V R', neq, ifextm)
         call mrmult('ZERO', imat(1), dep0, fexte0, 1,&
-                    .true.)
+                    .true._1)
         call mrmult('ZERO', imat(2), acc0, zr(ifextm), 1,&
-                    .true.)
+                    .true._1)
         call wkvect('FEXT0C', 'V V R', neq, ifextc)
         if (lamort) then
             call mrmult('ZERO', imat(3), vit0, zr(ifextc), 1,&
-                        .true.)
+                        .true._1)
         endif
         do ieq = 1, neq
             fexte0(ieq)=fexte0(ieq)+zr(ifextm-1+ieq) +zr(ifextc-1+ieq)

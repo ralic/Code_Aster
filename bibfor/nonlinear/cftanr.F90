@@ -84,8 +84,8 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
 !
 !
-    logical :: lliss, lmfixe, lefixe, lmait, lescl
-    logical :: lpoutr, lpoint
+    logical(kind=1) :: lliss, lmfixe, lefixe, lmait, lescl
+    logical(kind=1) :: lpoutr, lpoint
     integer :: ima, ibid
     integer :: posmam, posmae, nummae, nummam
     integer :: itypem, itypee
@@ -218,7 +218,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         lpoint = aliase.eq.'POI1'
         call cfnors(noma, defico, resoco, posmae, typenm,&
                     numenm, lpoutr, lpoint, r8bid, r8bid,&
-                    .false., itypee, vector, tau1e, tau2e,&
+                    .false._1, itypee, vector, tau1e, tau2e,&
                     lefixe)
     endif
 !

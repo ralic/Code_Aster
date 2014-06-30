@@ -54,7 +54,8 @@ subroutine te0515(option, nomte)
     character(len=8) :: typmod(2)
 ! =====================================================================
     integer :: li
-    logical :: axi, perman, vf
+    logical(kind=1) :: axi, perman, vf
+    logical :: lcond
     integer :: typvf
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HH2SUDA OU HH2SUC, (HYDRO NON SATURE
@@ -114,7 +115,8 @@ subroutine te0515(option, nomte)
                 nddlm, nddlfa, nddlk, dimuel, ipoids,&
                 ivf, idfde, ipoid2, ivf2, idfde2,&
                 npi2, jgano)
-    ASSERT(vf)
+    lcond=vf
+    ASSERT(lcond)
 ! =====================================================================
 ! --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 ! =====================================================================

@@ -45,7 +45,7 @@ subroutine contac(macor, nbcor, macoc, nbcoc, lface,&
     integer :: nbcoc, nbcor
     character(len=8) :: macor(nbcor+2), macoc(nbcoc+2), ma
 !
-    logical :: lface, lomodi, locorr, loreor
+    logical(kind=1) :: lface, lomodi, locorr, loreor
 !
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES PERMETTANT DE SAVOIR SI L'APPUI EST POSSIBLE

@@ -57,8 +57,8 @@ subroutine refdcp(resin, resout)
         endif
 !
 !       For debugging purposes only...
-!       call utimsd(8, 1, .false., .true., resout//refd,1, 'G')
-!       call utimsd(8, 1, .false., .true., resout//indi,1, 'G')
+!       call utimsd(8, 1, .false._1, .true._1, resout//refd,1, 'G')
+!       call utimsd(8, 1, .false._1, .true._1, resout//indi,1, 'G')
     endif
 !
     call jedema()

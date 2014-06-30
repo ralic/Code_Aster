@@ -24,7 +24,7 @@ interface
         complex(kind=8) :: sigma
         character(len=*) :: matopa
         character(len=*) :: raide
-        logical :: lqz
+        logical(kind=1) :: lqz
         character(len=19) :: solveu
     end subroutine vpfopc
 end interface

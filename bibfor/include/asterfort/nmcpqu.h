@@ -20,6 +20,6 @@ interface
         character(len=19) :: compor
         character(len=*) :: nomcmz
         character(len=*) :: nompaz
-        logical :: exist
+        logical(kind=1) :: exist
     end subroutine nmcpqu
 end interface

@@ -64,7 +64,7 @@ subroutine gldloc(lambda, deuxmu, deumuf, seuil, alf,&
 !                 1 => ABSENCE DE CONVERGENCE
 ! ----------------------------------------------------------------------
 !
-    logical :: lconv1, lconv2
+    logical(kind=1) :: lconv1, lconv2
 !
     integer :: i
 !

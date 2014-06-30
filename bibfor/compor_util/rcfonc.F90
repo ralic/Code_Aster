@@ -70,7 +70,7 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical :: tessup
+    logical(kind=1) :: tessup
     character(len=1) :: type_prol
     character(len=24) :: func_name
     integer :: jp, jr, i, i0

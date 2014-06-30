@@ -70,7 +70,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     integer :: i, nbf, ibid, ifq, j
     integer :: fa(6, 4), ibid3(12, 3), ifisc, jfisc, ino
     integer :: nnof, na, nb, iret, nne
-    logical :: chgsgn, lajpf, ajout
+    logical(kind=1) :: chgsgn, lajpf, ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()

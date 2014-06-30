@@ -18,6 +18,6 @@
 interface
     subroutine model_check(model, l_veri_elem)
         character(len=8), intent(in) :: model
-        logical, optional, intent(in) :: l_veri_elem 
+        logical(kind=1), optional, intent(in) :: l_veri_elem 
     end subroutine model_check
 end interface

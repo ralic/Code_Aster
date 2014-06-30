@@ -38,7 +38,7 @@ subroutine te0211(option, nomte)
     integer :: igeom2, imatt, k, i, j, l, li, lj, itemps, ihechp, nbelr
     real(kind=8) :: poids, poids1, poids2, nx, ny, theta, mat(6), coefh, r1, r2
     character(len=8) :: lirefe(2)
-    logical :: laxi
+    logical(kind=1) :: laxi
 !     ------------------------------------------------------------------
 !
     call elref2(nomte, 2, lirefe, nbelr)

@@ -71,7 +71,7 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
     integer :: addep1, addep2, addlh1
     real(kind=8) :: vff1(nno1), vff2(nno2), dffr2(ndim-1, nno2)
     real(kind=8) :: wref, geom(ndim, nno2), ang(24)
-    logical :: axi
+    logical(kind=1) :: axi
 !
 ! - VARIABLES SORTIE
 !

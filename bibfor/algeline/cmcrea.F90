@@ -65,6 +65,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     integer :: jnoma, jtyma, jconn, jngma, jgpma
     integer :: jdim, ityin, ityout
     integer :: iret, i, ib
+    logical(kind=1) :: false
 !
     character(len=8) :: knum8, prefix, nomma
     character(len=24) :: linoma, liconn, lityma, lingma, ligpma
@@ -91,6 +92,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    false=.false.
 !
 ! ----------------------------------------------------------------------
 !                          INITIALISATION
@@ -185,7 +187,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !    OBJET .DIME
     dimin = main //'.DIME'
     dimout = maout//'.DIME'
-    call jedupo(dimin, 'G', dimout, .false.)
+    call jedupo(dimin, 'G', dimout, false)
     call jeveuo(dimout, 'E', jdim)
     zi(jdim-1 + 3) = nbmato
 !
@@ -247,18 +249,18 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
 !    DUPLICATION A L'IDENTIQUE .NOMNOE, .GROUPENO, .COORDO
 !    (TANT QUE D'AUTRES MOTS CLES NE SONT PAS TRAITES)
-    call jedupo(main//'.NOMNOE', 'G', maout//'.NOMNOE', .false.)
+    call jedupo(main//'.NOMNOE', 'G', maout//'.NOMNOE', false)
     call cpclma(main, maout, 'GROUPENO', 'G')
     call copisd('CHAMP_GD', 'G', main//'.COORDO', maout//'.COORDO')
     call jeveuo(maout//'.COORDO    .REFE', 'E', jadout)
     zk24(jadout) = maout
 !
 !    DUPLICATION A L'IDENTIQUE DES AUTRES OBJETS NON TRAITES
-    call jedupo(main//'.NOMACR', 'G', maout//'.NOMACR', .false.)
-    call jedupo(main//'.PARA_R', 'G', maout//'.PARA_R', .false.)
-    call jedupo(main//'.SUPMAIL', 'G', maout//'.SUPMAIL', .false.)
-    call jedupo(main//'.TYPL', 'G', maout//'.TYPL', .false.)
-    call jedupo(main//'.ABSC_CURV', 'G', maout//'.ABSC_CURV', .false.)
+    call jedupo(main//'.NOMACR', 'G', maout//'.NOMACR', false)
+    call jedupo(main//'.PARA_R', 'G', maout//'.PARA_R', false)
+    call jedupo(main//'.SUPMAIL', 'G', maout//'.SUPMAIL', false)
+    call jedupo(main//'.TYPL', 'G', maout//'.TYPL', false)
+    call jedupo(main//'.ABSC_CURV', 'G', maout//'.ABSC_CURV', false)
 !
 !
 ! - AJOUT DES NOUVELLES MAILLES, DES NOUVEAUX GROUP_MA

@@ -40,7 +40,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
     character(len=8) :: tpfl
     integer :: veci1(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr5(*), vecr3(*), vgap, vecr4(*)
-    logical :: locfl0(*)
+    logical(kind=1) :: locfl0(*)
     real(kind=8) :: amflu0(np1, *), xsi0(*)
 !
 ! VARIABLES LOCALES
@@ -48,7 +48,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
     integer :: i
     real(kind=8) :: xcf, r8b1(2), r8b2
     complex(kind=8) :: c16b
-    logical :: lk
+    logical(kind=1) :: lk
 !
 ! ROUTINES EXTERNES
 ! -----------------

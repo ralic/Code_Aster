@@ -60,7 +60,7 @@ subroutine crevge(ligrel, bas1)
 !
     character(len=24) :: typmai, connex, coninv, ptvois, elvois
     character(len=8) :: ma, typem0, typemr
-    logical :: troisd
+    logical(kind=1) :: troisd
 !
 !
     integer :: nvoima, nscoma

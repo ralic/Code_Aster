@@ -53,7 +53,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
     integer :: noc
     character(len=16) :: algoc, algof, formul, frott
     integer :: icont, ifrot, izone
-    logical :: lfrot, lmunul
+    logical(kind=1) :: lfrot, lmunul
     character(len=24) :: defico
     character(len=24) :: paraci
     integer :: jparci

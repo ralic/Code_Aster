@@ -73,7 +73,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     real(kind=8) :: grlt(3), normab, norme, norm2, ps
     integer :: ndimf, nbnomx, nnoc, nnos, nn
     integer :: i, j, k, nnof, ipoidf, ivff, idfdef
-    logical :: axi
+    logical(kind=1) :: axi
     character(len=8) :: k8bid
     real(kind=8) :: xe(3)
     integer :: ibid, nptfmx

@@ -40,11 +40,11 @@ subroutine i2gspl(debspl, tvois1, tvois2, tplace, schm,&
 !
 !******************************************************************
 !
-    logical :: tplace(*)
+    logical(kind=1) :: tplace(*)
     integer :: debspl, tvois1(*), tvois2(*)
     integer :: schm(*), achm(*), pts, pta
 !
-    logical :: fini
+    logical(kind=1) :: fini
 !
     integer :: s, s1, s2
 !

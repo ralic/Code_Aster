@@ -95,7 +95,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     integer :: lshift, nuprf
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
-    logical :: lpchno
+    logical(kind=1) :: lpchno
     character(len=3) :: tsca
     character(len=19) :: cns, cno, prchno, messag, prnoav
     integer, pointer :: deeq(:) => null()

@@ -83,11 +83,11 @@ subroutine te0366(option, nomte)
     real(kind=8) :: coefcp, rese(3), nrese
     real(kind=8) :: rre, rrm, jeu
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrc, dlagrf(2)
-    logical :: lpenaf, lesclx, lmaitx, lcontx, lpenac
+    logical(kind=1) :: lpenaf, lesclx, lmaitx, lcontx, lpenac
     integer :: contac, ibid, npte
     integer :: ndeple, nne(3), nnm(3), ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
-    logical :: lmulti
+    logical(kind=1) :: lmulti
 ! ----------------------------------------------------------------------
 !
     call jemarq()

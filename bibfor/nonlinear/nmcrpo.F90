@@ -27,7 +27,7 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
     character(len=19) :: nomsd
     real(kind=8) :: inst
     integer :: nume
-    logical :: lselec
+    logical(kind=1) :: lselec
 !
 ! ----------------------------------------------------------------------
 !

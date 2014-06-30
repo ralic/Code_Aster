@@ -19,7 +19,7 @@ interface
     subroutine nmvcd2(indez, chmat, exivc, exiref)
         character(len=*) :: indez
         character(len=*) :: chmat
-        logical :: exivc
-        logical :: exiref
+        logical(kind=1) :: exivc
+        logical(kind=1) :: exiref
     end subroutine nmvcd2
 end interface

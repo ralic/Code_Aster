@@ -23,11 +23,11 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-    logical :: axi, grand
+    logical(kind=1) :: axi, grand
     integer :: ndim, nno, kpg
     real(kind=8) :: geom(ndim, nno), dfdi(nno, ndim), depl(ndim, nno)
     real(kind=8) :: poids, f(3, 3), eps(6), r
-    logical :: ldfdi
+    logical(kind=1) :: ldfdi
 !
 !.......................................................................
 !
@@ -59,7 +59,7 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
 !  L'ARGUMENT LDFDI : 1ER APPEL .TRUE. ; 2EME APPEL .FALSE.
 !
 !
-    logical :: tridim
+    logical(kind=1) :: tridim
     integer :: i, j, k, n
     real(kind=8) :: grad(3, 3), epstab(3, 3), ur, tmp
     real(kind=8) :: rac2, kron(3, 3)

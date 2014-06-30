@@ -100,7 +100,7 @@ subroutine vefnme(option, base, model, mate, carele,&
     character(len=19) :: pmilto, fissno
     character(len=19) :: sigma, varicom, strx
     character(len=19) :: depl, depl_incr
-    logical :: debug
+    logical(kind=1) :: debug
     integer :: ifmdbg, nivdbg
 !
 ! --------------------------------------------------------------------------------------------------

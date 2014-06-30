@@ -19,6 +19,6 @@ interface
     subroutine iseven(sddisc, nomevz, lacti)
         character(len=19) :: sddisc
         character(len=*) :: nomevz
-        logical :: lacti
+        logical(kind=1) :: lacti
     end subroutine iseven
 end interface

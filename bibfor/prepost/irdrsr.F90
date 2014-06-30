@@ -23,7 +23,7 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
     real(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*), nocmpl(*)
     character(len=*) :: titr, nomnoe(*), nomsd, nomsym
-    logical :: lmasu
+    logical(kind=1) :: lmasu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 !         NCMPS : NUMEROS DES COMPOSANTES DE LA SELECTION A IMPRIMER
 !         NOCMPL: NOMS DES COMPOSANTES DE LA SELECTION A IMPRIMER
 !
-    logical :: lcmp
+    logical(kind=1) :: lcmp
 !     ------------------------------------------------------------------
     character(len=8) :: nocmp, nomgs
     character(len=24) :: nomst

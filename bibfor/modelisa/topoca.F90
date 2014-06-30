@@ -73,7 +73,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     character(len=8) :: mailla
     integer :: icabl, nbf0, nbnoca(*), sens
     character(len=19) :: numaca, tablca
-    logical :: quad
+    logical(kind=1) :: quad
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -83,7 +83,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     integer :: numail, n1, nbse2, nbse3, no3, ntseg2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
-    logical :: ok1, ok2
+    logical(kind=1) :: ok1, ok2
     character(len=3) :: k3b
     character(len=8) :: k8b, noancr(2), nocour, noprec, nosui1, nosui2, nosuiv
     character(len=8) :: novois, tyancr(2)

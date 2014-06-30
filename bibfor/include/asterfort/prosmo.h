@@ -23,7 +23,7 @@ interface
         character(len=*) :: limat(nbmat)
         character(len=*) :: basez
         character(len=*) :: numedd
-        logical :: lsym
+        logical(kind=1) :: lsym
         character(len=1) :: rouc
     end subroutine prosmo
 end interface

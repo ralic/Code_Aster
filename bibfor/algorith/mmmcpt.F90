@@ -64,7 +64,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
     integer :: cont
     character(len=24) :: tabfin
     integer :: jtabf
-    logical :: lveri, lnoeu
+    logical(kind=1) :: lveri, lnoeu
     integer ::  jcnslr
     integer :: nbliac, nbliaf
     character(len=24) :: dejcal

@@ -19,11 +19,11 @@ interface
     subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
                       r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                       fe, dgdgl, ff, dfdi, f, eps, grad)
-        logical, intent(in) :: axi
+        logical(kind=1), intent(in) :: axi
         integer, intent(in) :: nnop
         integer, intent(in) :: nnos
         integer, intent(in) :: idepl
-        logical, intent(in) :: grand
+        logical(kind=1), intent(in) :: grand
         integer, intent(in) :: ndim
         real(kind=8), intent(in) :: he(nfiss)
         real(kind=8), intent(in) :: r

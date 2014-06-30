@@ -34,7 +34,7 @@ subroutine te0328(option, nomte)
 !
     character(len=16) :: nomte, option
 !
-    logical :: posi, nega
+    logical(kind=1) :: posi, nega
     character(len=24) :: valk(2)
     real(kind=8) :: poids
     integer :: igeom, ipoids, ivf, idfde, ndim, npg, nno, jgano, nnos

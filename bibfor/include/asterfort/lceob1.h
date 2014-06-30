@@ -35,8 +35,8 @@ interface
         real(kind=8) :: b(6)
         real(kind=8) :: d
         real(kind=8) :: mult
-        logical :: elas
-        logical :: dbloq
+        logical(kind=1) :: elas
+        logical(kind=1) :: dbloq
         integer :: iret
     end subroutine lceob1
 end interface

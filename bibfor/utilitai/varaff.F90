@@ -51,7 +51,7 @@ subroutine varaff(noma, gran, base, ceselz)
     integer :: nvarmx, jcesd, jcesl,    jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
-    logical :: ltou
+    logical(kind=1) :: ltou
     character(len=8), pointer :: lnova(:) => null()
     character(len=8), pointer :: lnovx(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

@@ -44,7 +44,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
     real(kind=8) :: delta
     real(kind=8) :: piso, tole, c11, c12, c13, c22, c23, c33
     character(len=8) :: mod
-    logical :: tract
+    logical(kind=1) :: tract
 !
     common /tdim/     ndt, ndi
 !

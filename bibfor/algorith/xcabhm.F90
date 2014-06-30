@@ -71,7 +71,7 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 #   include "asterfort/matini.h"
 #   include "asterfort/assert.h"
 #   include "jeveux.h"
-    logical :: axi
+    logical(kind=1) :: axi
     integer :: nddls, nddlm, nmec, np1, ndim, nnop, i, n, kk, yamec
     integer :: nnops, nnopm, kpi, dimuel
     integer :: addeme, yap1, addep1

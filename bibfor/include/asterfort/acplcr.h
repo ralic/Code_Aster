@@ -34,7 +34,7 @@ interface
         character(len=16) :: nommet
         integer :: jvecpg
         integer :: jnorma
-        logical :: rayon
+        logical(kind=1) :: rayon
         integer :: jresun
         integer :: jdtaum
         integer :: jtauma

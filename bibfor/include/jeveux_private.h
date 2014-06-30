@@ -48,7 +48,7 @@
 !
     integer :: iszon(1)
     integer(kind=4)         :: i4zon(1)
-    logical          lszon(1)
+    logical(kind=1)          lszon(1)
     real(kind=8)            :: r8zon(1)
     character(len=1)       :: k1zon
     common /kzonje/  k1zon(8)

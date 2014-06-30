@@ -60,7 +60,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     real(kind=8) :: resi, ecum, ecumm, dcoef, plas
     real(kind=8) :: defe, defc, nuetoi, defpc(3), ecumc, ecumd
     real(kind=8) :: coef1, coef2, j2, rini, crit, crit0
-    logical :: dconv, pconv, premd, mtang, melas
+    logical(kind=1) :: dconv, pconv, premd, mtang, melas
     real(kind=8) :: terme1, terme2(6), terme4(6), terme5, ter11
     real(kind=8) :: deltap, dp
     real(kind=8) :: criten, crit2, crit0d, treps

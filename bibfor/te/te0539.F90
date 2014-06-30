@@ -57,7 +57,8 @@ subroutine te0539(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
-    logical :: matsym
+    logical(kind=1) :: matsym
+    logical :: lcond
     real(kind=8) :: angmas(7), bary(3), crit(1), sig(1), vi(1)
 !
     ivectu=1
@@ -87,7 +88,8 @@ subroutine te0539(option, nomte)
             typmod(1) = 'D_PLAN'
         else
 !          NOM D'ELEMENT ILLICITE
-            ASSERT(lteatt('C_PLAN', 'OUI'))
+            lcond=lteatt('C_PLAN', 'OUI')
+            ASSERT(lcond)
         endif
         typmod(2) = ' '
         codret=0
@@ -326,19 +328,19 @@ subroutine te0539(option, nomte)
 !   OPTIONS RELATIVES A UNE MATRICE UNIQUEMENT
     if     (option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false., matsym,&
+                    nno, nnos, zi(jstno), .false._1, matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&
                     mat=zr(imatuu))
 !   OPTIONS RELATIVES A UN VECTEUR UNIQUEMENT
     elseif (option .eq. 'RAPH_MECA') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false., matsym,&
+                    nno, nnos, zi(jstno), .false._1, matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&
                     vect=zr(ivectu))
 !   OPTIONS RELATIVES A UNE MATRICE ET UN VECTEUR
     elseif (option .eq. 'FULL_MECA') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false., matsym,&
+                    nno, nnos, zi(jstno), .false._1, matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&
                     mat=zr(imatuu), vect=zr(ivectu))
     else

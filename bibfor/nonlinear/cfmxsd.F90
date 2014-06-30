@@ -67,7 +67,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
     integer :: zbouc, ztaco
     integer :: nzoco
     integer :: ifm, niv
-    logical :: lctcd, lctcc, lxfcm, lmail, lallv
+    logical(kind=1) :: lctcd, lctcc, lxfcm, lmail, lallv
     character(len=24) :: mboucl, tabcof
     integer :: jmbouc, jtabco
     character(len=24) :: nosdco

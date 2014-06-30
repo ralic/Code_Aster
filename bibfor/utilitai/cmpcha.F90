@@ -67,7 +67,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     integer :: jcorr1, igr, imolo, jmolo, gd, nbpt, ipt, k, iadg, icmp
     integer :: jdesc, long, jprno, jnueq, nbno, ino, ncmpp, jcorr2
     integer :: ngrmx, nbedit, igd, ient, debgd, dg(50), ior, kpt, kcmp
-    logical :: diff
+    logical(kind=1) :: diff
     character(len=8) :: nomgd, ma
     character(len=16) :: typsd
     character(len=19) :: ch19, profcn

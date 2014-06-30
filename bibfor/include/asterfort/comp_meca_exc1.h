@@ -21,9 +21,9 @@ interface
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(in) :: mult_comp
         integer, intent(in) :: nb_vari_exte
-        logical, intent(in) :: l_kit_meta
-        logical, intent(in) :: l_cristal
-        logical, intent(in) :: l_exte_comp
+        logical(kind=1), intent(in) :: l_kit_meta
+        logical(kind=1), intent(in) :: l_cristal
+        logical(kind=1), intent(in) :: l_exte_comp
         integer, intent(inout) :: nb_vari
     end subroutine comp_meca_exc1
 end interface

@@ -37,7 +37,7 @@ interface
         real(kind=8) :: w(*)
         real(kind=8) :: xold(*)
         real(kind=8) :: work(*)
-        logical :: check
+        logical(kind=1) :: check
         real(kind=8) :: vecr1(*)
         real(kind=8) :: vecr2(*)
         character(len=8) :: typflu

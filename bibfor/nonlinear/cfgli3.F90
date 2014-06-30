@@ -39,7 +39,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
     integer :: ajliai, spliai, nbliai, neq, nesmax
     integer :: nbliac, llf, llf1, llf2
     real(kind=8) :: xmul
-    logical :: liasup
+    logical(kind=1) :: liasup
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +83,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
     integer :: jtacf, japptr, japcof, japddl
     integer :: ztacf
     integer :: lfmin, lfmin1, lfmin2
-    logical :: lelpiv, lelpi1, lelpi2, trouac
+    logical(kind=1) :: lelpiv, lelpi1, lelpi2, trouac
     integer :: nbddl, jdecal, btotal, posit
     integer :: compt0
     real(kind=8) :: ajeufx, ajeufy, glis, coefff

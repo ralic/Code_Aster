@@ -68,7 +68,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     integer :: idfdef, ipoidf, ivff, j, nnof
     real(kind=8) :: depref, ffc(8), ffp(27), jac
     real(kind=8) :: r3bid(3), rr, sigref, vtmp(400)
-    logical :: lbid
+    logical(kind=1) :: lbid
     character(len=8) :: elc, elref, elrefc, fpg, typma
     character(len=16) :: nomte
 !
@@ -155,7 +155,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
         call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
-                    jheano, vstnc, lact, .false., lbid,&
+                    jheano, vstnc, lact, .false._1, lbid,&
                     ndim, nfe, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)

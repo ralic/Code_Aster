@@ -18,7 +18,7 @@
 interface
     subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
                       defico, resoco, depplu, instan)
-        logical :: reageo
+        logical(kind=1) :: reageo
         integer :: iterat
         character(len=8) :: noma
         character(len=24) :: sdtime

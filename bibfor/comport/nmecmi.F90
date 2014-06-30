@@ -76,7 +76,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
 !
 !
-    logical :: cplan, plasti
+    logical(kind=1) :: cplan, plasti
     real(kind=8) :: depsth(6), valres(3), pm, xp(6), plast, para_vale
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, hp, gp, g1, rpm
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, xm(6)

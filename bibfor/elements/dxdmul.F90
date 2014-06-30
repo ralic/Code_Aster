@@ -24,7 +24,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 #include "asterfort/matini.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utbtab.h"
-    logical :: lcalct
+    logical(kind=1) :: lcalct
     integer :: icou
     integer :: iniv
     real(kind=8) :: t1ve(3, 3)

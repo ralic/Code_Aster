@@ -19,7 +19,7 @@
 interface 
     subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
         real(kind=8),intent(in) :: ep0(6),ep1(6),l0,l1,etamin,etamax   
-        logical, intent(out)    :: vide     
+        logical(kind=1), intent(out)    :: vide     
         real(kind=8),intent(out):: etam,etap     
     end subroutine lcmfbo
 end interface 

@@ -67,7 +67,7 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
 !
 !
     integer :: kpg, kk, n, i, m, j, j1, kl, pq, kkd
-    logical :: grdepl
+    logical(kind=1) :: grdepl
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), r, sigma(6), ftf, detf
     real(kind=8) :: poids, tmp1, tmp2
 !
@@ -89,9 +89,9 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !      CALCUL DE DFDI, F, EPS, R (EN AXI) ET POIDS
-        call nmgeom(3, nno, .false., grdepl, geom,&
+        call nmgeom(3, nno, .false._1, grdepl, geom,&
                     kpg, ipoids, ivf, idfde, depl,&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,

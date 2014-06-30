@@ -18,7 +18,7 @@
 interface
     subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
                       longt, nbgr, resuc1)
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: jceld
         integer :: iavale
         integer :: iord

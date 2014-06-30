@@ -26,7 +26,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmgrot.h"
     character(len=19) :: sdnume
-    logical :: lgrot, lendo
+    logical(kind=1) :: lgrot, lendo
     integer :: neq, ordre
     real(kind=8) :: chaini(*), chadel(*), chamaj(*), coef
 !

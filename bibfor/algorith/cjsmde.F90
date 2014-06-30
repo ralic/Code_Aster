@@ -52,7 +52,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     integer :: ndt, ndi, nvi, nr, nmod
     parameter ( nmod = 14 )
     integer :: iter, niter, iret
-    logical :: noconv, aredec, stopnc, trac
+    logical(kind=1) :: noconv, aredec, stopnc, trac
 !
     real(kind=8) :: epsd(6), deps(6)
     real(kind=8) :: sigd(6), sigf(6), gd(6)
@@ -80,7 +80,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !
     integer :: i, j
 !
-    logical :: devnu1, devnu2, tra1, tra2
+    logical(kind=1) :: devnu1, devnu2, tra1, tra2
 !
     character(len=8) :: mod
 !

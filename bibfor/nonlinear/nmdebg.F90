@@ -92,7 +92,7 @@ subroutine nmdebg(typobz, nomobz, ifm)
             endif
         endif
     else
-        call utimsd(ifm, -1, .true., .true., nomobj(1:24),&
+        call utimsd(ifm, -1, .true._1, .true._1, nomobj(1:24),&
                     1, ' ')
     endif
 !

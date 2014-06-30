@@ -43,7 +43,7 @@ subroutine op0023()
 #include "asterfort/utmess.h"
     real(kind=8) :: tstnan, resnan
     integer :: ific, nocc, n
-    logical :: nfac
+    logical(kind=1) :: nfac
     character(len=8) :: repons
     character(len=16) :: nomfi
 !     ------------------------------------------------------------------

@@ -57,7 +57,7 @@ subroutine te0051(option, nomte)
     real(kind=8) :: point(3), angl(3)
     integer :: ipoids, ivf, idfde, igeom, imate, kpg, spt
     integer :: jgano, nno, kp, npg1, i, j, imattt, itemps
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)

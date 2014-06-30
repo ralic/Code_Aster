@@ -38,7 +38,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     integer :: indic
     integer :: ajliai, spliai, nbliai, neq
     integer :: nbliac, llf
-    logical :: liasup
+    logical(kind=1) :: liasup
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +83,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     character(len=1) :: typeaj
     character(len=2) :: typlia, typec0, typef0
     integer :: ztacf
-    logical :: lelpiv
+    logical(kind=1) :: lelpiv
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()

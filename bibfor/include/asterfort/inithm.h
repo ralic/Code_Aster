@@ -22,7 +22,7 @@ interface
                       alphfi, cbiot, unsks, alpha0, ndim,&
                       phenom)
         integer :: imate
-        logical :: yachai
+        logical(kind=1) :: yachai
         integer :: yamec
         real(kind=8) :: phi0
         real(kind=8) :: em

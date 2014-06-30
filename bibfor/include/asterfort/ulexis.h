@@ -18,6 +18,6 @@
 interface
     function ulexis(iul)
         integer :: iul
-        logical :: ulexis
+        logical(kind=1) :: ulexis
     end function ulexis
 end interface

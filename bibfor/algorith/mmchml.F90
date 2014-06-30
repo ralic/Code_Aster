@@ -72,7 +72,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
     character(len=24) :: sd_cycl_his
     integer :: jcyhis
     real(kind=8) :: instam, instap, deltat
-    logical :: ldyna, ltheta, lappar
+    logical(kind=1) :: ldyna, ltheta, lappar
     real(kind=8) :: theta
     integer :: iform
     real(kind=8) :: coefff

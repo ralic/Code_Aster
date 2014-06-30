@@ -30,7 +30,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
     character(len=*) :: obin
     integer :: nivo, unit
-    logical :: lattr, lcont
+    logical(kind=1) :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
 !       UNIT   : UNITE LOGIQUE D'IMPRESSION

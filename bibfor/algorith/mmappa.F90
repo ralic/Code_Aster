@@ -26,7 +26,7 @@ subroutine mmappa(loptin, noma, numedd, defico, resoco)
 #include "asterfort/jemarq.h"
 #include "asterfort/mmapre.h"
 #include "asterfort/mmpoin.h"
-    logical :: loptin
+    logical(kind=1) :: loptin
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico, resoco

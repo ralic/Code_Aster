@@ -47,7 +47,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
     real(kind=8) :: h1s
     real(kind=8) :: h1a1, h1a2, h2a1, h2a2, gq0, gqmax, mumem, qm, gqp, drp, h2s
     real(kind=8) :: rpm
-    logical :: plasti
+    logical(kind=1) :: plasti
     integer :: ndimsi, i, j, l
 !
     rac2 = sqrt(2.d0)

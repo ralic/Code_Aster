@@ -56,7 +56,7 @@ subroutine te0076(option, nomte)
     integer :: nno, kp, npg, i, j, k, itemps, imattt, nnos
     integer :: ipoids, ivf, idfde, igeom, imate, jgano, ndim
     integer :: c(6, 9), ise, nse, nnop2, ibid
-    logical :: aniso, global
+    logical(kind=1) :: aniso, global
 !
     call elref1(elrefe)
 !

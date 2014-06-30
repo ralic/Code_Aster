@@ -78,7 +78,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 !-----------------------------------------------------------------------
 !
-    logical :: resi, rigi, axi, ifhyme
+    logical(kind=1) :: resi, rigi, axi, ifhyme
     integer :: i, j, kk, m, n, os, p, q, ibid, kpg, ncooro
     real(kind=8) :: dsidep(6, 6), b(2*ndim-1, ndim+1, 2*nno1+nno2)
     real(kind=8) :: sigmo(6), sigma(6), epsm(6), deps(6), wg

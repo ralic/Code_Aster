@@ -34,7 +34,7 @@ interface
         integer :: linoec(*)
         integer :: nbmaec
         integer :: limaec(*)
-        logical :: lvarie
+        logical(kind=1) :: lvarie
         character(len=8) :: sdcarm
         integer :: codret
     end subroutine irchme

@@ -22,15 +22,15 @@ interface
         integer :: option
         integer :: nbsol
         integer :: kxmps
-        logical :: ldist
+        logical(kind=1) :: ldist
         character(len=1) :: type
         character(len=14) :: impr
         integer :: ifmump
-        logical :: eli2lg
+        logical(kind=1) :: eli2lg
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
         character(len=19) :: vcine
-        logical :: prepos
-        logical :: lpreco
+        logical(kind=1) :: prepos
+        logical(kind=1) :: lpreco
     end subroutine amumpp
 end interface

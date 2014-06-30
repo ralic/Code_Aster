@@ -56,7 +56,7 @@ subroutine te0234(option, nomte)
     real(kind=8) :: x3
     integer :: nno, nnos, jgano, ndim, kp, npg, i, k, icaco, iret
     integer :: ipoids, ivf, idfdk, igeom, imate
-    logical :: testl1, testl2
+    logical(kind=1) :: testl1, testl2
     real(kind=8) :: zmin, hic
 !
 !

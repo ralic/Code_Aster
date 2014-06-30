@@ -29,7 +29,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
     real(kind=8) :: mmat(336, 336)
     character(len=8) :: typmai
     integer :: nconta, nfhe, heavno(8)
-    logical :: lpenac, lmulti
+    logical(kind=1) :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !

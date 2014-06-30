@@ -87,7 +87,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
     character(len=10) :: ctol, citer, cerr
     character(len=24) :: valk(3)
     integer :: irteti
-    logical :: conver
+    logical(kind=1) :: conver
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------

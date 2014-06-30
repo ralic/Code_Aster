@@ -77,7 +77,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     character(len=8) :: typma
     integer :: zxain, in, jn, iac, ier, ncta, ncte
     integer ::  jcntes, jcnte2,  narcon
-    logical :: lmulti, lconne
+    logical(kind=1) :: lmulti, lconne
     integer :: kk, jgrp, ienr, nmaenr
     integer, pointer :: arcon(:) => null()
     integer, pointer :: connectant(:) => null()

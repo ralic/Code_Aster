@@ -23,11 +23,11 @@ subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
 #include "asterfort/assert.h"
     character(len=4) :: oper
     character(len=*) :: typvez, optioz
-    logical :: lasse, lcalc
+    logical(kind=1) :: lasse, lcalc
     integer :: nbvect
     character(len=6) :: ltypve(20)
     character(len=16) :: loptve(20)
-    logical :: lassve(20), lcalve(20)
+    logical(kind=1) :: lassve(20), lcalve(20)
 !
 ! ----------------------------------------------------------------------
 !

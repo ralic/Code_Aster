@@ -82,7 +82,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     character(len=100) :: chazp4, chazv4, chazp5, chazv5, chazp6, chazv6
     character(len=100) :: chazp7, chazv7, chav40, chaz40
     character(len=255) :: ctrav1, ctrav2, ctrav3
-    logical :: lcor, lsup, linf, lmin, lmax, lresu, calcul(2)
+    logical(kind=1) :: lcor, lsup, linf, lmin, lmax, lresu, calcul(2)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, ik, im, imod, ind

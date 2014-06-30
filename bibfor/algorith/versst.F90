@@ -47,7 +47,7 @@ subroutine versst(nomres)
 !
     character(len=24) :: valk(4)
     character(len=8) :: nomres, nmsstr, nmsst, nmmclr, nmmcl, blanc
-    logical :: pblog
+    logical(kind=1) :: pblog
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

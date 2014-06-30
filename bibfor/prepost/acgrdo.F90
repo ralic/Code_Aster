@@ -102,7 +102,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     character(len=24) :: chnom, cbid
     character(len=16) :: phenom, typcha
     character(len=8) :: nompf(35), nompar(35), nomgrd
-    logical :: endur, plcicr, lbid
+    logical(kind=1) :: endur, plcicr, lbid
 !----------------------------------------------------------------
 !---------------------------------------------------------------
     data  nompar/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&

@@ -18,7 +18,7 @@
 interface
     subroutine greihm(perman, ndim, mecani, press1,&
                       press2, tempe, dimdef, dimcon)
-        logical :: perman
+        logical(kind=1) :: perman
         integer :: ndim
         integer :: mecani(8)
         integer :: press1(9)

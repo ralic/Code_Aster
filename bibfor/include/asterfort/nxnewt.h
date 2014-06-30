@@ -41,7 +41,7 @@ interface
         character(len=24) :: vtempp
         character(len=24) :: vec2nd
         character(len=24) :: mediri
-        logical :: conver
+        logical(kind=1) :: conver
         character(len=24) :: vhydr
         character(len=24) :: vhydrp
         character(len=24) :: tmpchi
@@ -51,7 +51,7 @@ interface
         character(len=24) :: cnresi
         integer :: parcri(3)
         real(kind=8) :: parcrr(2)
-        logical :: reasma
+        logical(kind=1) :: reasma
         real(kind=8) :: testr
         real(kind=8) :: testm
     end subroutine nxnewt

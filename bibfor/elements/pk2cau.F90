@@ -79,7 +79,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
     real(kind=8) :: ft(3, 3), sigmat(3, 3), pk2t(3, 3), pk2g(3, 3)
     real(kind=8) :: ksi3s2
 !
-    logical :: lgreen
+    logical(kind=1) :: lgreen
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :

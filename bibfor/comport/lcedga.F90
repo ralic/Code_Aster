@@ -89,7 +89,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     character(len=8) :: zirc(2)
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data          kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/

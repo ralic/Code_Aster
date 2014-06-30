@@ -25,7 +25,7 @@ interface
         integer :: nno
         integer :: nnos
         integer :: stano(*)
-        logical :: matsym
+        logical(kind=1) :: matsym
         character(len=16) :: option
         character(len=16) :: nomte
         real(kind=8) :: mat(*)

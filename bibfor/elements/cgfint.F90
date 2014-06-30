@@ -83,7 +83,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
 ! OUT CODRET  : CODE RETOUR
 ! ----------------------------------------------------------------------
     character(len=16) :: cmp1, cmp2
-    logical :: resi, rigi
+    logical(kind=1) :: resi, rigi
     integer :: nddl, g, cod(27), n, i, m, j, kk, codm(3), nbvifr, nbvica
     integer :: nbvi
     real(kind=8) ::  r, mu, epsm, deps, wg, l(3), de(1), ddedt, t1

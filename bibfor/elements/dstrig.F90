@@ -74,7 +74,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: kmf12(6, 3), kmf12a(36)
     real(kind=8) :: bsigth(24), enerth, excent, un, zero
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    logical :: coupmf, exce, indith
+    logical(kind=1) :: coupmf, exce, indith
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
     data perm  / 1, 4,   7,  2,  5,  8, 3, 6, 9 /

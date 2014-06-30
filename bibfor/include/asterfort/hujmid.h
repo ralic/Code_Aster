@@ -29,15 +29,15 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        logical :: noconv
-        logical :: aredec
-        logical :: stopnc
-        logical :: negmul(8)
+        logical(kind=1) :: noconv
+        logical(kind=1) :: aredec
+        logical(kind=1) :: stopnc
+        logical(kind=1) :: negmul(8)
         integer :: iret
-        logical :: subd
-        logical :: loop
+        logical(kind=1) :: subd
+        logical(kind=1) :: loop
         integer :: ndec0
         integer :: indi(7)
-        logical :: mectra
+        logical(kind=1) :: mectra
     end subroutine hujmid
 end interface

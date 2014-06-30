@@ -23,11 +23,11 @@ interface
         character(len=*) :: masse
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
-        logical :: corfre
+        logical(kind=1) :: corfre
         integer :: impr
         integer :: ndir(*)
-        logical :: monoap
-        logical :: muapde
+        logical(kind=1) :: monoap
+        logical(kind=1) :: muapde
         character(len=*) :: kspect
         character(len=*) :: kasysp
         integer :: nbsup

@@ -22,10 +22,10 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
-        logical :: lostat
-        logical :: lreuse
-        logical :: lnonl
-        logical :: levol
+        logical(kind=1) :: lostat
+        logical(kind=1) :: lreuse
+        logical(kind=1) :: lnonl
+        logical(kind=1) :: levol
         real(kind=8) :: para(*)
         character(len=19) :: sddisc
         character(len=19) :: sdcrit

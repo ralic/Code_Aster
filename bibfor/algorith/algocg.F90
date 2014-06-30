@@ -89,7 +89,7 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 !
 !
     integer :: ifm, niv
-    logical :: conjug
+    logical(kind=1) :: conjug
     integer :: iliai, iter, premax
     integer :: neq, nbliac, nbliai
     integer :: gcpmax
@@ -146,7 +146,7 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 !
 ! --- INITIALISATION DES VECTEURS DE TRAVAIL
 !
-    call jedupo(mu, 'V', mum, .false.)
+    call jedupo(mu, 'V', mum, .false._1)
     call jeveuo(mum, 'E', jmum)
 !
 ! ======================================================================

@@ -73,7 +73,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     character(len=8) :: k8b, nocmp, nomaiz, nonoez, nommaz, nomgd
     character(len=16) :: nomcmd
     character(len=19) :: noligr, chm19z, ncmp
-    logical :: diff, trouve, nogran
+    logical(kind=1) :: diff, trouve, nogran
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: long_pt_cumu(:) => null()

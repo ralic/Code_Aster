@@ -42,7 +42,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 #include "asterfort/xmrlst.h"
 #include "asterfort/xpivit.h"
 #include "asterfort/xxmmvd.h"
-    logical :: loptin
+    logical(kind=1) :: loptin
     character(len=8) :: noma, modele
     character(len=24) :: defico, resoco
 !
@@ -90,7 +90,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
     character(len=24) :: xfimai, cncte
     character(len=24) :: tabfin, maescx
     integer :: jtabf, jmaesx, ninter
-    logical :: projin, lcinit, lgliss
+    logical(kind=1) :: projin, lcinit, lgliss
     integer ::  jfimai, ifiss, ifism, ipc2, numpi
     integer, pointer :: xfem_cont(:) => null()
 !

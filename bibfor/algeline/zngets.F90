@@ -159,7 +159,7 @@ subroutine zngets(ishift, which, kev, np, ritz,&
 !
     msglvl = mngets
 !
-    call zsortc(which, .true., kev+np, ritz, bounds)
+    call zsortc(which, .true._1, kev+np, ritz, bounds)
 !
     if (ishift .eq. 1) then
 !
@@ -172,7 +172,7 @@ subroutine zngets(ishift, which, kev, np, ritz,&
 !        | BE CAREFUL AND USE 'SM' SINCE WE WANT TO SORT BOUNDS! |
 !        %-------------------------------------------------------%
 !
-        call zsortc('SM', .true., np, bounds, ritz)
+        call zsortc('SM', .true._1, np, bounds, ritz)
 !
     endif
 !

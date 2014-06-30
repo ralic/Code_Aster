@@ -31,6 +31,6 @@ interface
         character(len=19) :: ddepla
         character(len=19) :: depdel
         integer :: ctccvg
-        logical :: ctcfix
+        logical(kind=1) :: ctcfix
     end subroutine cfalgo
 end interface

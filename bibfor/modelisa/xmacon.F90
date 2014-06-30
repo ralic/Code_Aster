@@ -77,7 +77,7 @@ subroutine xmacon(char, noma, nomo)
     character(len=8) :: nomfis, nomzon, typma, elrefe
     character(len=19) :: chs, faclon, chs2, typmai, maille
     character(len=16) :: typele, enr
-    logical :: lmalin
+    logical(kind=1) :: lmalin
     integer :: typint, nnint
     integer, pointer :: cesv2(:) => null()
     character(len=8), pointer :: cesv(:) => null()

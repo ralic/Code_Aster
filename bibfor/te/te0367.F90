@@ -83,12 +83,12 @@ subroutine te0367(option, nomte)
     real(kind=8) :: rre, rrm, jeu
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrc, dlagrf(2)
-    logical :: lfrott, lpenaf, lpenac, lesclx, lmaitx, lcontx
+    logical(kind=1) :: lfrott, lpenaf, lpenac, lesclx, lmaitx, lcontx
     real(kind=8) :: vtmp(n)
     integer :: contac, ibid, npte
     integer :: ndeple, ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
-    logical :: lmulti
+    logical(kind=1) :: lmulti
 !
 ! ----------------------------------------------------------------------
 !

@@ -43,7 +43,7 @@ subroutine hujprc(kk, k, tin, vin, mater,&
     real(kind=8) :: tin(6), tou(3), toud(3), p, pp, q
     real(kind=8) :: epsvp, beta, b, phi, pcref, pcr
     real(kind=8) :: m, un, degr, mater(22, 2), tole
-    logical :: debug
+    logical(kind=1) :: debug
     character(len=8) :: nomail
 !
     parameter (degr = 0.0174532925199d0)

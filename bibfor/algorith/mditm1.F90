@@ -55,7 +55,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
     integer :: icoupl
     character(len=8) :: tpfl
     integer :: veci1(*)
-    logical :: locfl0(*)
+    logical(kind=1) :: locfl0(*)
     real(kind=8) :: dt0, tfexm, ts
     integer :: iarch, nexcit
     character(len=8) :: tabexc(*)

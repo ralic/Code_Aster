@@ -101,7 +101,7 @@ subroutine jeccta(colle1)
 !     RECOPIE DE COLLE2 DANS COLLE1 :
 !     ------------------------------
     call jedetr(colle1)
-    call jedupo(colle2, base, colle1, .false.)
+    call jedupo(colle2, base, colle1, .false._1)
 !
 !
 !     -- MENAGE :

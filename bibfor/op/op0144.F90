@@ -67,7 +67,7 @@ subroutine op0144()
     integer :: ncmp, ncmpmx, jcorr2
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
-    logical :: tmode, calcul(2)
+    logical(kind=1) :: tmode, calcul(2)
     character(len=8) :: nombm, mailla, k8b, gran, nomcmp(6)
     character(len=16) :: concep, cmd, nompar
     character(len=19) :: nomu, cham19, prchno

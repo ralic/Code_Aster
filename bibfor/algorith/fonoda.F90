@@ -21,8 +21,8 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 ! ======================================================================
     implicit none
 #include "asterfort/rcvalb.h"
-    logical :: fnoevo
-    logical :: perman
+    logical(kind=1) :: fnoevo
+    logical(kind=1) :: perman
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimdef, dimcon
     integer :: ndim, imate
     real(kind=8) :: dt, congem(dimcon), r(dimdef+1)

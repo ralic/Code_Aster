@@ -23,7 +23,7 @@ subroutine mefor0(nomo, chfor0, fonc)
     character(len=8) :: nomo
     character(len=*) :: chfor0
 !
-    logical :: fonc
+    logical(kind=1) :: fonc
 !
 ! - CETTE ROUTINE GENERE UN CHAMP DE FORCE NUL (CARTE CONSTANTE)
 !       FONC = .TRUE.  FORCE FONCTION

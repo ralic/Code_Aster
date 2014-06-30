@@ -60,7 +60,7 @@ subroutine jerecu(clas)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical :: litlec
+    logical(kind=1) :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
     common /inbdet/  nblim(n),nbgros(n),nbpeti(n)
@@ -72,7 +72,7 @@ subroutine jerecu(clas)
     real(kind=8) :: svuse, smxuse
     common /statje/  svuse,smxuse
 !     ------------------------------------------------------------------
-    logical :: actu
+    logical(kind=1) :: actu
     character(len=1) :: kclas
     integer :: itp(1), jitp, iaditp, iaddi(2), lgbl, iadyn
 ! DEB ------------------------------------------------------------------

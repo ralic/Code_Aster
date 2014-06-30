@@ -77,7 +77,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     integer :: acpgd, ntc, nin, ntn1, ntn2, nep, nnc, avk8, i, nbcpgd, nso
     integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc
     integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, iexi, nn
-    logical :: dirx, diry, dirz
+    logical(kind=1) :: dirx, diry, dirz
     character(len=8), pointer :: tmp(:) => null()
 !
 !======================================================================

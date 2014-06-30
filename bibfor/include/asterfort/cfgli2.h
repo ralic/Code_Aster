@@ -29,6 +29,6 @@ interface
         integer :: ajliai
         integer :: spliai
         integer :: indic
-        logical :: liasup
+        logical(kind=1) :: liasup
     end subroutine cfgli2
 end interface

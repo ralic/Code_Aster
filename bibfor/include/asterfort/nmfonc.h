@@ -27,8 +27,8 @@ interface
         character(len=24), intent(in) :: modele
         character(len=24), intent(in) :: defico
         character(len=19), intent(in) :: lischa
-        logical, intent(in) :: lcont
-        logical, intent(in) :: lunil
+        logical(kind=1), intent(in) :: lcont
+        logical(kind=1), intent(in) :: lunil
         character(len=19), intent(in) :: sdnume
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sdcriq

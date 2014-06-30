@@ -23,7 +23,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 #include "asterfort/wkvect.h"
 !
     integer :: ifi, nbcham, nbordr, nbcmp, ordr(*), nbmat, nummai(*), versio
-    logical :: lresu, lgmsh
+    logical(kind=1) :: lresu, lgmsh
     character(len=*) :: nomcon
     character(len=*) :: cham(*), nomcmp(*), partie
     character(len=8) :: tycha

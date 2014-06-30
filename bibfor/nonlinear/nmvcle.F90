@@ -53,7 +53,7 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
 !
 !
 !
-    logical :: exivrc
+    logical(kind=1) :: exivrc
     character(len=24) :: charge
     character(len=19) :: ctps, tout
     integer :: iex, iret, nchar, jchar

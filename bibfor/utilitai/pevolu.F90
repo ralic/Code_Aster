@@ -80,7 +80,7 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=16) :: nompar(nbpmax), mocles(1), optio2, nomcha, valk, valr
     character(len=16) :: vali
     character(len=24) :: mesmai, mesmaf, mesmae, borpct, valk2(5), grouma
-    logical :: exiord, toneut, lseuil
+    logical(kind=1) :: exiord, toneut, lseuil
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
     character(len=8), pointer :: cnsc(:) => null()

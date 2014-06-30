@@ -53,7 +53,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
     integer :: icpl(0:n), icpd(n)
     integer :: icplx(0:n), icpcx(*)
 !
-    logical :: complt
+    logical(kind=1) :: complt
 !----------------------------------------------------------------------
 !
 !     TDEB = SECOND()

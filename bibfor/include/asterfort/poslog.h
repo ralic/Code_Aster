@@ -23,8 +23,8 @@ interface
                       sigp, dsidep, pk2m, pk2, codret)
         integer :: ndim
         integer :: lgpg
-        logical :: resi
-        logical :: rigi
+        logical(kind=1) :: resi
+        logical(kind=1) :: rigi
         real(kind=8) :: tn(6)
         real(kind=8) :: tp(6)
         real(kind=8) :: fm(3, 3)
@@ -33,7 +33,7 @@ interface
         integer :: g
         real(kind=8) :: dtde(6, 6)
         real(kind=8) :: sigm(2*ndim)
-        logical :: cplan
+        logical(kind=1) :: cplan
         character(len=*) :: fami
         integer :: mate
         real(kind=8) :: instp

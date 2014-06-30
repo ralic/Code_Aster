@@ -62,7 +62,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: phi, rho11, phi0, rac2
     real(kind=8) :: rinstp, angmas(3)
     character(len=16) :: option, meca, ther, thmc, hydr, phenom
-    logical :: yachai
+    logical(kind=1) :: yachai
 !
 ! DECLARATION POUR XFEM
     integer :: yaenrm, dimenr, adenme
@@ -77,7 +77,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: dsatp1
     real(kind=8) :: m11m, satm, mdal(6), dalal, alphfi, cbiot, unsks
     real(kind=8) :: deps(6)
-    logical :: emmag
+    logical(kind=1) :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -92,7 +92,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: dp2, signe
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
 !
-    logical :: net, bishop
+    logical(kind=1) :: net, bishop
 !
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------

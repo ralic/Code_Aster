@@ -60,7 +60,7 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
     character(len=8) :: nomres(nbres), fami, poum
     real(kind=8) :: valres(nbres)
 !
-    logical :: cplan
+    logical(kind=1) :: cplan
     integer :: ndimsi, k, nrac, kpg, spt
     real(kind=8) :: trepsp, trepsd, coplan, sigelp(6), sigeld(6)
     real(kind=8) :: kron(6)

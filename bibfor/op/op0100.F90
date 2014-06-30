@@ -100,8 +100,8 @@ subroutine op0100()
     character(len=24) :: trav4, courb, depla1, depla2
     parameter  ( resuc2 = '&&MECALG' )
 !
-    logical :: exitim, thlagr, connex, glagr, milieu, direc
-    logical :: thlag2, pair, lncas, lmelas, incr, lmoda
+    logical(kind=1) :: exitim, thlagr, connex, glagr, milieu, direc
+    logical(kind=1) :: thlag2, pair, lncas, lmelas, incr, lmoda
     real(kind=8), pointer :: abscur(:) => null()
     character(len=8), pointer :: vnoeud(:) => null()
     integer, pointer :: ordr(:) => null()

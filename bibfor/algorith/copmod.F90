@@ -90,7 +90,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc
-    logical :: modnum, exnume, chnoeud
+    logical(kind=1) :: modnum, exnume, chnoeud
     integer :: i, iret, neq, nbmode
     integer ::  jdeeq, jval
     character(len=16) :: champ2

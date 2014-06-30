@@ -74,7 +74,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
     integer :: iatyma, itypma
     integer :: nummai, numnoe
     character(len=8) :: nomtm, nommai, nomnoe
-    logical :: lcoque
+    logical(kind=1) :: lcoque
     integer, pointer :: indino(:) => null()
 !
 ! ----------------------------------------------------------------------

@@ -37,7 +37,7 @@ interface
         integer :: iavalm
         integer :: nsomm
         real(kind=8) :: jac(9)
-        logical :: ltheta
+        logical(kind=1) :: ltheta
         real(kind=8) :: valthe
         real(kind=8) :: valunt
         integer :: niv

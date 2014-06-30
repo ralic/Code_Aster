@@ -77,7 +77,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=19) :: knume, kfreq, hrange, prchno, prof, typref(8)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
-    logical :: tousno, leffor, prems
+    logical(kind=1) :: tousno, leffor, prems
     integer :: inocmp, inoecp, inumno, inuddl
     integer :: j, jc, i,  iarchi, ich
     integer ::  idvecg, iret, iretou, jfreq
@@ -200,7 +200,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 !     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
     call rbph01(hrange, nbcham, type, itresu, 0,&
-                basem2, typref, typbas, tousno, .false.)
+                basem2, typref, typbas, tousno, .false._1)
 !
 !     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
 !     ---         DANS LE CAS D'UNE RESTITUTION PARTIELLE          ---

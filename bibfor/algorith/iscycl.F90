@@ -19,7 +19,7 @@ function iscycl(ccycle, longcy)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical :: iscycl
+    logical(kind=1) :: iscycl
 #include "asterfort/assert.h"
     integer :: ccycle, longcy
 !

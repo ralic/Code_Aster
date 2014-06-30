@@ -53,8 +53,8 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: epstr(6)
-        logical :: bnews(3)
-        logical :: mtrac
+        logical(kind=1) :: bnews(3)
+        logical(kind=1) :: mtrac
         integer :: indi(7)
         integer :: iret
     end subroutine lcinit

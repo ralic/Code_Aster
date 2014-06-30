@@ -72,7 +72,7 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
     character(len=8) :: modele
     character(len=19) :: depla, vecele
     integer :: ifmdbg, nivdbg
-    logical :: debug
+    logical(kind=1) :: debug
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !

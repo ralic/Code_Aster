@@ -110,14 +110,14 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lreli, lnkry, limpex, lcont
+    logical(kind=1) :: lreli, lnkry, limpex, lcont
     real(kind=8) :: r8bid
     real(kind=8) :: resi_glob_rela, resi_glob_maxi, pasmin
     real(kind=8) :: instam, instap
     real(kind=8) :: vrela, vmaxi, vrefe, vresi, vchar, vinit, vcomp, vfrot
     real(kind=8) :: vgeom
-    logical :: lerror, itemax, dvdebo
-    logical :: cvnewt, cvresi
+    logical(kind=1) :: lerror, itemax, dvdebo
+    logical(kind=1) :: cvnewt, cvresi
     integer :: nbiter, itesup
     integer :: ifm, niv
     real(kind=8) :: relcoe

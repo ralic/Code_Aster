@@ -17,7 +17,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
     character(len=8) :: nommat
     character(len=24) :: cnoc, csno, csne, cspo, cspe, cfao, cfae, cspto, cspte
     character(len=24) :: cspmo, cspme
-    logical :: kemixt
+    logical(kind=1) :: kemixt
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
     real(kind=8) :: nbid, saltmo, saltme, saltho, salthe, valr(2)
     character(len=8) :: k8b
     integer :: icodre(1)
-    logical :: endur
+    logical(kind=1) :: endur
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

@@ -45,7 +45,7 @@ subroutine uttcpr(nommes, nbv, temps)
 !
 ! RQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
 ! ----------------------------------------------------------------------
-    logical :: ljev
+    logical(kind=1) :: ljev
     integer :: indi, jvalms, k
 !
 !

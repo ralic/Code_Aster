@@ -33,7 +33,7 @@ subroutine hujcrd(k, mater, sig, vin, seuild)
     real(kind=8) :: un, r, epsvp, pcr, pa, tole
     real(kind=8) :: degr, beta, b, m, phi, pcref, ptrac
     real(kind=8) :: sigd(3), p, q
-    logical :: debug
+    logical(kind=1) :: debug
     parameter    (un = 1.d0)
     parameter    (tole = 1.d-7)
     parameter    (degr = 0.0174532925199d0)

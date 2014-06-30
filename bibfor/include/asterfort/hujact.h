@@ -24,8 +24,8 @@ interface
         real(kind=8) :: vins(50)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
-        logical :: negmul(8)
-        logical :: chgmec
+        logical(kind=1) :: negmul(8)
+        logical(kind=1) :: chgmec
         integer :: indi(7)
     end subroutine hujact
 end interface

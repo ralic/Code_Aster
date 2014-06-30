@@ -55,7 +55,7 @@ subroutine te0281(option, nomte)
     integer :: itemps
     integer :: isechi, isechf, ihydr
     integer :: npg2, ipoid2, ivf2, idfde2
-    logical :: lhyd
+    logical(kind=1) :: lhyd
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

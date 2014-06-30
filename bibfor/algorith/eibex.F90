@@ -52,7 +52,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !                 2   -> DD/DT
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
-    logical :: raph, tang
+    logical(kind=1) :: raph, tang
 !
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     integer :: codret, iret

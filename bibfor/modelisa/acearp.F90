@@ -85,7 +85,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     character(len=24) :: tmpdis, mlgnno, mlgnma, tmcinf, tmvinf, modnem
 !
 !
-    logical :: transl, trarot, eurplx, lbid
+    logical(kind=1) :: transl, trarot, eurplx, lbid
     integer :: iarg
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/

@@ -26,7 +26,7 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
-    logical :: laxi
+    logical(kind=1) :: laxi
     integer :: mode, nno, npg
     real(kind=8) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
     real(kind=8) :: geom(2, nno), p(2, npg)

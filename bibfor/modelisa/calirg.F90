@@ -35,12 +35,12 @@ subroutine calirg(mesh, nbno, list_node, tran, cent,&
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nbno
     character(len=24), intent(in) :: list_node
-    logical, intent(in) :: l_angl_naut
+    logical(kind=1), intent(in) :: l_angl_naut
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: cent(3)
     real(kind=8), intent(in) :: tran(3)
     character(len=*) :: geom_defo
-    logical, intent(out) :: l_rota
+    logical(kind=1), intent(out) :: l_rota
     real(kind=8), intent(out) :: matr_rota(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------

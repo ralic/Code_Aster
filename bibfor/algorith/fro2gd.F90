@@ -106,7 +106,7 @@ subroutine fro2gd(sdstat, defico, resoco, solveu, matass,&
     integer :: llliai, llliac
     integer :: llf, llf1, llf2
     integer :: indic, indfac, ajliai, spliai
-    logical :: liasup, lechec
+    logical(kind=1) :: liasup, lechec
     integer :: nbpren
     integer :: neq, nbliac, nbliai, ndim, nesmax
     real(kind=8) :: rho, xjvmax

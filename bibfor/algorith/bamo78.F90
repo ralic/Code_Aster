@@ -103,7 +103,7 @@ subroutine bamo78(nomres, trange, typres)
     character(len=24) :: mate, compor, carele
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    logical :: lcumu(2), lcoc(2)
+    logical(kind=1) :: lcumu(2), lcoc(2)
 !-----------------------------------------------------------------------
     integer :: iarc2, ievnew, iopt,  lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0

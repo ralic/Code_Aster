@@ -56,8 +56,8 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 !
 !
 !
-    logical :: lsvimx, ldvres, linsta
-    logical :: conver, lerror, lerrcv
+    logical(kind=1) :: lsvimx, ldvres, linsta
+    logical(kind=1) :: conver, lerror, lerrcv
 !
 ! ----------------------------------------------------------------------
 !

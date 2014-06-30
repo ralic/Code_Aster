@@ -80,7 +80,7 @@ subroutine te0295(option, nomte)
     character(len=8) :: nomres(4), nompar(4)
     character(len=16) :: phenom, compor(4)
 !
-    logical :: lcour, fonc, lpesa, lrota
+    logical(kind=1) :: lcour, fonc, lpesa, lrota
 !
 ! ----------------------------------------------------------------------
 !
@@ -295,9 +295,9 @@ subroutine te0295(option, nomte)
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
 !
-        call nmgeom(ndim, nno, .false., .false., zr(igeom),&
+        call nmgeom(ndim, nno, .false._1, .false._1, zr(igeom),&
                     kp, ipoids, ivf, idfde, zr(idepl),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     rbid)
 !
 ! ----- CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)

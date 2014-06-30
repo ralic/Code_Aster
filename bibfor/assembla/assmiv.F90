@@ -98,7 +98,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
     character(len=24) :: knequa, kvale
     integer :: admodl, lcmodl, iexi
-    logical :: ldist, ldgrel
+    logical(kind=1) :: ldist, ldgrel
 ! ----------------------------------------------------------------------
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 !     S.D. MANIPULEES DANS LE SOUS PROGRAMME

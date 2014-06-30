@@ -115,7 +115,7 @@ implicit none
 !    character(len=19) :: compor_prev_r, compor_curr_r
 !    character(len=48) :: comp1, comp2
 !    
-!    logical :: modif, exip, exim
+!    logical(kind=1) :: modif, exip, exim
 !    integer, pointer :: repm(:) => null()
 !    integer, pointer :: repp(:) => null()
 !    real(kind=8), pointer :: ce2v(:) => null()
@@ -125,7 +125,7 @@ implicit none
 !    character(len=8), pointer :: copmk(:) => null()
 !    character(len=8), pointer :: coppk(:) => null()
 !   
-    logical :: l_modif_vari
+    logical(kind=1) :: l_modif_vari
     character(len=1) :: stop_erre 
     character(len=19) :: vari_r
     character(len=19) :: compor_curr_r
@@ -133,8 +133,8 @@ implicit none
     character(len=8)  :: mesh_1, mesh_2
     character(len=48) :: comp_comb_1
     character(len=48) :: comp_comb_2
-    logical :: no_same_pg, no_same_spg
-    logical :: no_same_rela, no_same_cmp
+    logical(kind=1) :: no_same_pg, no_same_spg
+    logical(kind=1) :: no_same_rela, no_same_cmp
     character(len=19) :: ligrel_curr, ligrel_prev
     character(len=19) :: dcel
     character(len=8), pointer :: dcelk(:) => null()

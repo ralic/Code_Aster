@@ -24,13 +24,13 @@ subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    logical, intent(in) :: lfmult
-    logical, intent(in) :: lfchar
+    logical(kind=1), intent(in) :: lfmult
+    logical(kind=1), intent(in) :: lfchar
     integer, intent(in) :: ichar
     integer, intent(in) :: iord
     character(len=8), intent(out) :: newfct
     character(len=19), intent(in) :: cartei
-    logical, intent(out) :: lformu
+    logical(kind=1), intent(out) :: lformu
 !
 ! --------------------------------------------------------------------------------------------------
 !

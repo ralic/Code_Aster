@@ -149,11 +149,11 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     if (ndim .eq. 2) then
         call pj2dco('PARTIE', moda, modb, nbmaa, limanua,&
                     nbnob, nldescb, geoma, geomb, corres,&
-                    .false., rbid)
+                    .false._1, rbid)
     else if (ndim.eq.3) then
         call pj3dco('PARTIE', moda, modb, nbmaa, limanua,&
                     nbnob, nldescb, geoma, geomb, corres,&
-                    .false., rbid)
+                    .false._1, rbid)
     endif
 !
     call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)

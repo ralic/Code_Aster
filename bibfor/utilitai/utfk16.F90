@@ -37,7 +37,7 @@ subroutine utfk16(lk16, nbk16, k16, ipos)
 !     ==================================================================
 !
 ! --- VARIABLES LOCALES ---
-    logical :: trouve, fini
+    logical(kind=1) :: trouve, fini
     integer :: i
 !
 ! ====================== DEBUT DU PROGRAMME ============================

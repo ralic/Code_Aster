@@ -139,7 +139,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
     parameter          ( zero = 0.0d+0, one = 1.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: notrna, notrnb
+    logical(kind=1) :: notrna, notrnb
     integer :: ierr, j, k, k1, k2, knext, l, l1, l2, lnext
     real(kind=8) :: a11, bignum, da11, db, eps, scaloc, sgn, smin, smlnum, suml
     real(kind=8) :: sumr, xnorm
@@ -296,7 +296,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l1 ), 1 )
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
-                    call flaln2(.false., 2, 1, smin, one,&
+                    call flaln2(.false._1, 2, 1, smin, one,&
                                 a( k1, k1 ), lda, one, one, vec,&
                                 2, -sgn*b( l1, l1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -321,7 +321,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l2 ), 1 )
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
-                    call flaln2(.true., 2, 1, smin, one,&
+                    call flaln2(.true._1, 2, 1, smin, one,&
                                 b( l1, l1 ), ldb, one, one, vec,&
                                 2, -sgn*a( k1, k1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -354,7 +354,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l2 ), 1 )
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
-                    call flasy2(.false., .false., isgn, 2, 2,&
+                    call flasy2(.false._1, .false._1, isgn, 2, 2,&
                                 a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
                                 2, scaloc, x, 2, xnorm,&
                                 ierr)
@@ -469,7 +469,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l1 ), 1 )
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
-                    call flaln2(.true., 2, 1, smin, one,&
+                    call flaln2(.true._1, 2, 1, smin, one,&
                                 a( k1, k1 ), lda, one, one, vec,&
                                 2, -sgn*b( l1, l1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -494,7 +494,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l2 ), 1 )
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
-                    call flaln2(.true., 2, 1, smin, one,&
+                    call flaln2(.true._1, 2, 1, smin, one,&
                                 b( l1, l1 ), ldb, one, one, vec,&
                                 2, -sgn*a( k1, k1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -527,7 +527,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l2 ), 1 )
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
-                    call flasy2(.true., .false., isgn, 2, 2,&
+                    call flasy2(.true._1, .false._1, isgn, 2, 2,&
                                 a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
                                 2, scaloc, x, 2, xnorm,&
                                 ierr)
@@ -641,7 +641,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
-                    call flaln2(.true., 2, 1, smin, one,&
+                    call flaln2(.true._1, 2, 1, smin, one,&
                                 a( k1, k1 ), lda, one, one, vec,&
                                 2, -sgn*b( l1, l1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -666,7 +666,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
-                    call flaln2(.false., 2, 1, smin, one,&
+                    call flaln2(.false._1, 2, 1, smin, one,&
                                 b( l1, l1 ), ldb, one, one, vec,&
                                 2, -sgn*a( k1, k1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -699,7 +699,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
-                    call flasy2(.true., .true., isgn, 2, 2,&
+                    call flasy2(.true._1, .true._1, isgn, 2, 2,&
                                 a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
                                 2, scaloc, x, 2, xnorm,&
                                 ierr)
@@ -813,7 +813,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
-                    call flaln2(.false., 2, 1, smin, one,&
+                    call flaln2(.false._1, 2, 1, smin, one,&
                                 a( k1, k1 ), lda, one, one, vec,&
                                 2, -sgn*b( l1, l1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -838,7 +838,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
-                    call flaln2(.false., 2, 1, smin, one,&
+                    call flaln2(.false._1, 2, 1, smin, one,&
                                 b( l1, l1 ), ldb, one, one, vec,&
                                 2, -sgn*a( k1, k1 ), zero, x, 2,&
                                 scaloc, xnorm, ierr)
@@ -871,7 +871,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
-                    call flasy2(.false., .true., isgn, 2, 2,&
+                    call flasy2(.false._1, .true._1, isgn, 2, 2,&
                                 a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
                                 2, scaloc, x, 2, xnorm,&
                                 ierr)

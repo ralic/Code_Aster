@@ -20,8 +20,8 @@ interface
                       ipos, base)
         integer :: unit
         integer :: niveau
-        logical :: lattr
-        logical :: lcont
+        logical(kind=1) :: lattr
+        logical(kind=1) :: lcont
         character(len=*) :: sch1
         integer :: ipos
         character(len=*) :: base

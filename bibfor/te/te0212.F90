@@ -45,7 +45,7 @@ subroutine te0212(option, nomte)
     real(kind=8) :: z, z1, z2, hechp, nx, ny, theta, mat(6)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, imatt, k, i, j, l, li, lj, nbelr
-    logical :: laxi
+    logical(kind=1) :: laxi
 !
 !
     call elref2(nomte, 2, lirefe, nbelr)

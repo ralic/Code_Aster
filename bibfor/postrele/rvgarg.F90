@@ -67,7 +67,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     character(len=16) :: nchsym
     character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50)
     character(len=4) :: typech
-    logical :: existe
+    logical(kind=1) :: existe
     integer :: anomcp, anumcp, ancpu1, ancpu2, adesc, acpgd, avchef
     integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
     integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom

@@ -21,6 +21,6 @@ interface
         integer :: fonact(*)
         character(len=19) :: sddyna
         character(len=24) :: defico
-        logical :: chaact(nbmax)
+        logical(kind=1) :: chaact(nbmax)
     end subroutine nmetac
 end interface

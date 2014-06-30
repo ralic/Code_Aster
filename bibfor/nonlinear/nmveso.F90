@@ -26,7 +26,7 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 #include "asterfort/lcpsvn.h"
 #include "asterfort/mgauss.h"
     integer :: nb, np, nr
-    logical :: cplan
+    logical(kind=1) :: cplan
     real(kind=8) :: rb(nb), rp(np), drbdb(nb, nb), drbdp(nb, np)
     real(kind=8) :: dp(np), dbeta(nb), drpdp(np, np), drpdb(np, nb)
 ! ----------------------------------------------------------------------

@@ -55,6 +55,6 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veasse(*)
         character(len=19) :: veelem(*)
-        logical :: lerrit
+        logical(kind=1) :: lerrit
     end subroutine nmdesc
 end interface

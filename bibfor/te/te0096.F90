@@ -86,7 +86,7 @@ subroutine te0096(option, nomte)
     integer :: i, j, k, kk, l, m, kp, ndim, compt, nbvari
     integer :: ij, ij1, matcod, i1, iret, iret1, npg1
 !
-    logical :: grand, axi, cp, fonc, incr, epsini
+    logical(kind=1) :: grand, axi, cp, fonc, incr, epsini
 !
 ! =====================================================================
 ! INITIALISATIONS
@@ -354,7 +354,7 @@ subroutine te0096(option, nomte)
 !
         call nmgeom(ndim, nno, axi, grand, zr(igeom),&
                     kp, ipoids, ivf, idfde, zr(idepl),&
-                    .true., poids, dfdi, f, eps,&
+                    .true._1, poids, dfdi, f, eps,&
                     r)
 ! - CALCULS DES GRADIENTS DE U (DUDM), DE THETA FISSURE (DTDM) ET DE
 !   LA FORCE VOLUMIQUE (DFDM),

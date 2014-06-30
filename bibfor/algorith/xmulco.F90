@@ -53,7 +53,7 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
     integer :: lact(8), ndim, nfe, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, pla(27)
     integer :: pli, i
-    logical :: lelim, lcalel
+    logical(kind=1) :: lelim, lcalel
     character(len=8) :: typma
 ! ----------------------------------------------------------------------
 !

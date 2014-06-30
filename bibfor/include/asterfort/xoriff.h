@@ -26,7 +26,7 @@ interface
         integer :: jtailo
         integer :: nmafon
         character(len=19) :: listpt
-        logical :: goinop
+        logical(kind=1) :: goinop
         integer :: jfon
         integer :: jbas
         integer :: jtail

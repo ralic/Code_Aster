@@ -53,7 +53,7 @@ subroutine numecn(modele, champ, nume)
     integer :: ibid, nb1, jlligr, i1, i2, iret, nb2, iexi
     character(len=14) :: nu14
     character(len=19) :: nu19, k19bid
-    logical :: newnum
+    logical(kind=1) :: newnum
     save numes
 ! DEB ------------------------------------------------------------------
 !
@@ -108,7 +108,7 @@ subroutine numecn(modele, champ, nume)
         if (idenob(lligr,lligrs)) newnum=.false.
         call jedetr(lligrs)
     endif
-    call jedupo(lligr, 'V', lligrs, .false.)
+    call jedupo(lligr, 'V', lligrs, .false._1)
 !
 !
 !

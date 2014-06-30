@@ -69,13 +69,13 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lrefe, ldidi
+    logical(kind=1) :: lrefe, ldidi
     integer :: ifm, niv
     integer :: numins
     integer :: nbvect
     character(len=6) :: ltypve(20)
     character(len=16) :: loptve(20)
-    logical :: lcalve(20), lassve(20)
+    logical(kind=1) :: lcalve(20), lassve(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,27 +97,27 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 !
     numins = 1
 !
-    call nmcvec('INIT', ' ', ' ', .false., .false.,&
+    call nmcvec('INIT', ' ', ' ', .false._1, .false._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- CREATION DU VECT_ELEM POUR DIRICHLET DIFFERENTIEL
 !
     if (ldidi) then
-        call nmcvec('AJOU', 'CNDIDI', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNDIDI', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
     endif
 !
 ! --- CREATION DU VECT_ELEM POUR CRITERE EN CONTRAINTE GENERALISEE
 !
     if (lrefe) then
-        call nmcvec('AJOU', 'CNREFE', ' ', .true., .true.,&
+        call nmcvec('AJOU', 'CNREFE', ' ', .true._1, .true._1,&
                     nbvect, ltypve, loptve, lcalve, lassve)
     endif
 !
 ! --- CREATION DU VECT_ELEM POUR FORCE DE REFERENCE LIEE
 ! --- AUX VAR. COMMANDES EN T-
 !
-    call nmcvec('AJOU', 'CNVCF1', ' ', .true., .true.,&
+    call nmcvec('AJOU', 'CNVCF1', ' ', .true._1, .true._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
 !
 ! --- CALCUL DES VECT_ELEM DE LA LISTE

@@ -26,7 +26,7 @@ interface
         real(kind=8) :: phi
         real(kind=8) :: cs
         real(kind=8) :: pas
-        logical :: emmag
+        logical(kind=1) :: emmag
         real(kind=8) :: em
         real(kind=8) :: dmasp1_0
     end function dmasp1

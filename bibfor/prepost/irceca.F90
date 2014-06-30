@@ -33,7 +33,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: ncmpv, nucmpv(*), nive
     character(len=*) :: nomgd, ncmpgd(*), nomsym, ncmput(*)
     real(kind=8) :: vale(*)
-    logical :: lresu
+    logical(kind=1) :: lresu
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=24) :: valk(2)
     character(len=8) :: nomco, gtype, ktype, k8b
     character(len=16) :: ctype
-    logical :: lmode, first, lnocen
+    logical(kind=1) :: lmode, first, lnocen
 !     ------------------------------------------------------------------
 !
 !  --- INITIALISATIONS ----
@@ -95,7 +95,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: nec, nnoe, npcalc, nsca, nscal
     integer, pointer :: bid(:) => null()
     integer, pointer :: entete(:) => null()
-    logical, pointer :: jlogi(:) => null()
+    logical(kind=1), pointer :: jlogi(:) => null()
     integer, pointer :: jnbva(:) => null()
     integer, pointer :: nbrcmp(:) => null()
     character(len=8), pointer :: nomvar(:) => null()

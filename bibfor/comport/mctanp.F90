@@ -34,7 +34,7 @@ subroutine mctanp(dpstrs, rprops, pstrs, edge, right,&
     integer :: i, j, ii, jj, mm
     real(kind=8) :: degr
 !
-    logical :: epflag
+    logical(kind=1) :: epflag
 !
     parameter ( degr=0.017453292519943295d0 )
 ! Real arrays and variables

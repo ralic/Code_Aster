@@ -56,7 +56,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
     character(len=19) :: numin, numout
     character(len=24) :: nomvec
     character(len=24) :: valk(4)
-    logical :: erreur
+    logical(kind=1) :: erreur
 !
     integer :: ibid
     integer :: vali(2)

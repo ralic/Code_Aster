@@ -33,7 +33,7 @@ subroutine hujmed(k, mater, vin, sig)
     real(kind=8) :: vin(*), tou(3), p, d12
     real(kind=8) :: mater(22, 2), degr, epsvp, un, zero
     real(kind=8) :: xk(2), th(2), sc(2), deux, qsc
-    logical :: debug
+    logical(kind=1) :: debug
 !
 ! ----------------------------------------------------------------------
     common /tdim/   ndt, ndi

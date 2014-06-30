@@ -53,7 +53,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
     integer :: isig
-    logical :: incr
+    logical(kind=1) :: incr
 !
 !    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE
 !                          PAR LA METHODE ENERGETIQUE G-THETA
@@ -97,7 +97,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: tfor, dsidep(6, 6)
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
-    logical :: grdepl, cp,  axi
+    logical(kind=1) :: grdepl, cp,  axi
     integer :: irese, ddli, nnoi, indeni, nnops, fisno(nnop, nfiss), ifiss
 !
 !

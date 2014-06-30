@@ -251,7 +251,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    logical :: cnorm, getv0, initv, update, ushift
+    logical(kind=1) :: cnorm, getv0, initv, update, ushift
     integer :: ierr, iter, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp, i
     integer :: j
     complex(kind=8) :: cpnorm
@@ -596,7 +596,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SI'
         if (which .eq. 'SI') wprime = 'LI'
 !
-        call zsortc(wprime, .true., kplusp, ritz, bounds)
+        call zsortc(wprime, .true._1, kplusp, ritz, bounds)
 !
 !           %--------------------------------------------------%
 !           | SCALE THE RITZ ESTIMATE OF EACH RITZ VALUE       |
@@ -616,7 +616,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !           %---------------------------------------------------%
 !
         wprime = 'LM'
-        call zsortc(wprime, .true., nev0, bounds, ritz)
+        call zsortc(wprime, .true._1, nev0, bounds, ritz)
 !
 !           %----------------------------------------------%
 !           | SCALE THE RITZ ESTIMATE BACK TO ITS ORIGINAL |
@@ -634,7 +634,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !           | RITZ AND BOUND.                               |
 !           %-----------------------------------------------%
 !
-        call zsortc(which, .true., nconv, ritz, bounds)
+        call zsortc(which, .true._1, nconv, ritz, bounds)
 !
         if (msglvl .gt. 1) then
             call zvout(logfil, kplusp, ritz, ndigit, '_NAUP2: SORTED EIGENVALUES')

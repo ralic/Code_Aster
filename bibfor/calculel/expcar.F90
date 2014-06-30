@@ -49,7 +49,7 @@ subroutine expcar(carte)
 !     SORTIES:
 !      ON A CREE QUELQUES OBJETS SUR LA VOLATILE ...
 ! ----------------------------------------------------------------------
-    logical :: dejavu
+    logical(kind=1) :: dejavu
     character(len=8) :: scal, noma
     character(len=24) :: noli
 !

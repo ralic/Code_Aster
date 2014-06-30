@@ -189,7 +189,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
                         zi(jprnm-1+(nume_node-1)*nbec+1), dimension(nume_node),&
                         zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo,&
                         cmp_acti_glo, vale_type, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&
-                        icompt, lisrel, .false., ibid, ibid,&
+                        icompt, lisrel, .false._1, ibid, ibid,&
                         k19bid, k19bid, k19bid, k19bid)
         enddo
         do i_keyword = 1, 6

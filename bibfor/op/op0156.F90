@@ -115,10 +115,10 @@ subroutine op0156()
 !     ----------------------------------
     if (typres .eq. 'R') then
         call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1,&
-                    .true.)
+                    .true._1)
     else if (typres.eq.'C') then
         call mcmult('ZERO', lmat, zc(jchin), zc(jchout), 1,&
-                    .true.)
+                    .true._1)
     endif
 !
 !

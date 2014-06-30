@@ -85,8 +85,8 @@ subroutine surfcl(char, noma, ifm)
     integer :: jjfo1, jjfo2
 !
     integer :: inorm, itypa, ivecm, ivece, iappa
-    logical :: lcoqu, lpout, lveri
-    logical :: lliss, lexiv, lstop
+    logical(kind=1) :: lcoqu, lpout, lveri
+    logical(kind=1) :: lliss, lexiv, lstop
     character(len=8), pointer :: travno(:) => null()
 !
 ! ----------------------------------------------------------------------
