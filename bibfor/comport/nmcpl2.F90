@@ -56,18 +56,41 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
     ndimsi = 2*ndim
     iret=0
     signul=crit(3)
-!
     vecteu = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA'
 !
+!   calcul de la precision
+    prec=crit(8)
+    precr=abs(prec)
+    if (vecteu) then
+        if (prec .gt. 0.d0) then
+!           PRECISION RELATIVE
+            sigpeq=0.d0
+            do k = 1, ndimsi
+               sigpeq = sigpeq + sigp(k)**2
+            enddo
+            sigpeq = sqrt(sigpeq)
+            if (sigpeq .lt. signul) then
+                precr=prec
+            else
+                precr=prec*sigpeq
+            endif
+        else
+    !       PRECISION ABSOLUE
+            precr=abs(prec)
+        endif
+     endif      
+
+ !
     if (cp .eq. 2) then
-        prec=crit(8)
-!        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
+!
+!       ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
         nbvari=nvv+4
         write (compor(2),'(I16)') nbvari
         typmod(1)='C_PLAN'
         option=optio2
 !
-        if (vecteu) then
+        if ((vecteu).and.(abs(dsidep(3,3)).gt.precr)) then
+
             depzz=deps(3)
             d22=dsidep(3,3)
             d21eps=dsidep(3,1)*deps(1)+dsidep(3,2)*deps(2) +dsidep(3,&
@@ -86,24 +109,6 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                 sigp(k)=sigp(k)+scm(k)
 130          continue
 !
-            if (prec .gt. 0.d0) then
-!              PRECISION RELATIVE
-                sigpeq=0.d0
-                do 131 k = 1, ndimsi
-                    sigpeq = sigpeq + sigp(k)**2
-131              continue
-!
-                sigpeq = sqrt(sigpeq)
-                if (sigpeq .lt. signul) then
-                    precr=prec
-                else
-                    precr=prec*sigpeq
-                endif
-            else
-!              PRECISION ABSOLUE
-                precr=abs(prec)
-            endif
-!
 !
             if (abs(sigp(3)) .gt. precr) then
                 iret=3
@@ -120,9 +125,9 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                 do 137 l = 1, ndimsi
 !
                     if (l .eq. 3) goto 137
-!
-                    dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
-                    k,3)*dsidep(3,l)
+                    if (abs(dsidep(3,3)).gt.precr) then
+                        dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
+                    endif
 !
 137              continue
 136          continue
@@ -150,8 +155,8 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
         d31=dsidep(3,1)
         d32=dsidep(3,2)
         d33=dsidep(3,3)
-!
-        if (vecteu) then
+
+        if ((vecteu).and.(abs(d22*d33-d32*d23).gt.precr)) then
 !
             delta=d22*d33-d32*d23
             dy=d23*d31-d21*d33
@@ -179,27 +184,12 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                 sigp(k)=sigp(k)+scm(k)
 140          continue
 !
-            sigpeq=0.d0
-!
-            do 141 k = 1, ndimsi
-                sigpeq = sigpeq + sigp(k)**2
-141          continue
-!
-!            SIGPEQ = SQRT(SIGPEQ)
-            sigpeq = abs(sigx)
-!
-            if (sigpeq .lt. signul) then
-                precr=crit(3)
-            else
-                precr=crit(3)*sigpeq
-            endif
             if (abs(sigp(2)) .gt. precr) iret=3
             if (abs(sigp(3)) .gt. precr) iret=3
 !
         endif
 !
-!         IF (MATRIC) THEN
-        if (option .eq. 'FULL_MECA') then
+        if ((option .eq. 'FULL_MECA').and.(abs(delta).gt.precr)) then
             dsidep(1,1)=d11+(d12*dy+d13*dz)/delta
         endif
 !
