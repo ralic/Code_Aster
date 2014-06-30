@@ -90,6 +90,7 @@ def check_fortran_types(self):
     self.define('HAVE_ASTER_TYPES', 1)
     self.check_sizeof_integer4()
     self.check_sizeof_integer()
+    self.check_sizeof_logical()
     self.check_sizeof_real4()
     self.check_sizeof_real8()
     self.check_sizeof_complex()
@@ -165,7 +166,7 @@ def code_checker(self, define, check, fragment, start_msg, error_msg,
         if setbool:
             self.undefine(define)
     else:
-        self.end_msg(size)
+        self.end_msg(str(size))
 
 @Configure.conf
 def set_define_from_env(self, define, start_msg, error_msg,
@@ -218,6 +219,15 @@ def check_sizeof_integer4(self):
                       'unexpected value for sizeof(aster_int4): %(size)s',
                       into=(4,))
     self.check_c_fortran_integer4()
+
+@Configure.conf
+def check_sizeof_logical(self):
+    """Check fortran logical(kind=1) size"""
+    fragment = '\n'.join(["logical(kind=1) :: i", "print *, sizeof(i)", "end"])
+    self.code_checker('ASTER_LOGICAL_SIZE', self.check_fc, fragment,
+                      'Checking size of logical',
+                      'unexpected value for sizeof(aster_logical): %(size)s',
+                      into=(1, 4, 8))
 
 @Configure.conf
 def check_sizeof_real4(self):
@@ -374,7 +384,7 @@ UU8tXTCiGNuXp22QFbmvgmINfLw7Ph8eLrAtdRU29JYGh7fjKwsufNa3+LF+AEX8l7U=
     legend = 'failed'
     for code, all_opts in cases:
         for opts in all_opts:
-            if testit(fcflags=opts, fragment=code, 
+            if testit(fcflags=opts, fragment=code,
                       mandatory=opts is last_ressort):
                 optflag = opts
                 if code is with_volatile:
@@ -403,5 +413,3 @@ def check_optional_features(self):
     code_checker(self, 'HAVE_TRACEBACKQQ', self.check_fc, fragment,
                  'Check for tracebackqq feature',
                  'failure', mandatory=False, setbool=True)
-
-

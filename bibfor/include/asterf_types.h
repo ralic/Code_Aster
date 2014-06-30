@@ -24,6 +24,13 @@
 #define aster_int integer(kind=aster_int_kind)
 #define to_aster_int(a) int(a, ASTER_INT_SIZE)
 !
+#define aster_logical_kind ASTER_LOGICAL_SIZE
+#define aster_logical logical(kind=aster_logical_kind)
+#define to_aster_logical(a) logical(a, ASTER_LOGICAL_SIZE)
+!
+#define ASTER_TRUE to_aster_logical(.true.)
+#define ASTER_FALSE to_aster_logical(.false.)
+!
 #ifdef _DISABLE_MED
 #   define MED_INT_SIZE 4
 #endif

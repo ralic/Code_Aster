@@ -17,9 +17,9 @@
 !
 ! because macros must be on a single line
 ! aslint: disable=C1509
-#include "asterf.h"
+#include "asterf_types.h"
 
-#define ASSERT(cond) call assert(cond, TO_STRING(cond), __FILE__, __LINE__)
+#define ASSERT(cond) call assert(to_aster_logical(cond), TO_STRING(cond), __FILE__, __LINE__)
 
 #define absent(a)   (.not.present(a))
 
@@ -45,7 +45,7 @@
 
 interface
     subroutine assert(cond, str_cond, fname, line)
-        logical :: cond
+        aster_logical :: cond
         character(len=*) :: str_cond
         character(len=*) :: fname
         integer :: line
