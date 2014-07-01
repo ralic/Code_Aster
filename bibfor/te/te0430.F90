@@ -53,7 +53,7 @@ subroutine te0430(option, nomte)
     integer :: ipesa, iepsin, iadzi, iazk24
     real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe, epsref
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
-    real(kind=8) :: sig, rho(1), valres(2)
+    real(kind=8) :: sig, rho(1), valres(2), b_max_rot
     logical :: lexc
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
@@ -184,7 +184,6 @@ subroutine te0430(option, nomte)
 !
             call terefe('EPSI_REFE', 'GRILLE', epsref)
             if (epsref .eq. r8vide()) ASSERT(.false.)
-            if (lexc) ASSERT(.false.)
 !
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
@@ -193,11 +192,19 @@ subroutine te0430(option, nomte)
             sig=valres(1)*epsref
 !
             do n = 1, nno
-                do i = 1, nddl
+                do i = 1, 3
                     zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sig*sqrt(abs(jac)&
                                                 )*densit/npg
-                end do
-            end do
+                enddo
+                b_max_rot = 0.d0
+                do i = 4, nddl
+                    if (abs(b(i,n)).gt.b_max_rot)b_max_rot = abs(b(i,n))
+                enddo
+                do i = 4, nddl
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + b_max_rot * sig&
+                                                                *sqrt(abs(jac))*densit/npg
+                enddo
+            enddo
 !
 ! - CHAR_MECA_PESA_R
 !
