@@ -95,13 +95,13 @@ def update_i18n(self):
     update_gettext(self)
     update_qtlinguist(self)
     Logs.warn('<i18n> update the source tree by copying the new `.po/.ts` files:')
-    Logs.warn('       cp -r {}_updated/* i18n/'.format(self.path.get_bld().abspath()))
+    Logs.warn('       cp -r %s_updated/* i18n/' % self.path.get_bld().abspath())
 
 ###############################################################################
 @Configure.conf
 def check_i18n_tool(self, program, varname):
     """Check a tool for a i18n program and store it using varname"""
-    self.start_msg('Check for {} programs'.format(program))
+    self.start_msg('Check for %s programs' % program)
     try:
         self.find_program(program, var=varname)
     except Errors.ConfigurationError:
@@ -184,7 +184,7 @@ def run_gettext_compile(self):
 @TaskGen.feature('i18n_pot')
 def make_pot(self):
     """Create task to build the pot file
-    
+
     :param deps: list of the python files to run xgettext on
     :type deps: nodes
     :param target: name of the ``.pot`` file
@@ -202,7 +202,7 @@ def make_pot(self):
 @TaskGen.after('i18n_pot')
 def update_po(self):
     """Create task to update the po files
-    
+
     :param pot: updated .pot file
     :type pot: string
     """
@@ -238,7 +238,7 @@ def update_qtlinguist(self):
     catapy = self.bldnode.find_node('cata.py')
     # create a catapy.pro file
     pro = self.path.get_bld().make_node('catapy.pro')
-    translations = ["TRANSLATIONS += {}".format(osp.basename(i)) \
+    translations = ["TRANSLATIONS += %s" % osp.basename(i) \
                     for i in glob(osp.join(self.path.abspath(), '*.ts'))]
     self(
         features = 'subst',
@@ -257,7 +257,7 @@ def update_qtlinguist(self):
            tsdir = 'i18n_updated',
           always = True,
     )
-    
+
 @TaskGen.feature('qtlinguist_compile')
 def run_qtlinguist_compile(self):
     """compile .ts files into .qm and install them.
