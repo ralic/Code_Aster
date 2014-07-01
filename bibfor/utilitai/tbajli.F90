@@ -11,6 +11,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
+#include "asterfort/tbadap.h"
 #include "asterfort/utmess.h"
 !
     integer :: nbpar, vi(*), nume
@@ -59,6 +60,9 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 !
     call jemarq()
 !
+    call tbadap(nomta, nbpar, nompar, vi, vr,&
+                   vc, vk)
+!
     nomtab = ' '
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
@@ -105,6 +109,8 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         do 20 i = 1, nbpara
             nomjv = tblp(1+4*(i-1)+2)
             call jeecra(nomjv, 'LONUTI', nblign)
+            nomjv = tblp(1+4*(i-1)+3)           
+            call jeecra(nomjv, 'LONUTI', nblign)
 20      continue
 !
         ki = 0
@@ -116,7 +122,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
             do 32 i = 1, nbpara
                 inpar = tblp(1+4*(i-1) )
                 if (jnpar .eq. inpar) then
-                    type = tblp(1+4*(i-1)+1)
+                    type = tblp(1+4*(i-1)+1)(1:3)
                     nomjv = tblp(1+4*(i-1)+2)
                     nomjvl = tblp(1+4*(i-1)+3)
                     call jeveuo(nomjv, 'E', jvale)
@@ -203,7 +209,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
             do 42 i = 1, nbpara
                 inpar = tblp(1+4*(i-1) )
                 if (jnpar .eq. inpar) then
-                    type = tblp(1+4*(i-1)+1)
+                    type = tblp(1+4*(i-1)+1)(1:3)
                     nomjv = tblp(1+4*(i-1)+2)
                     nomjvl = tblp(1+4*(i-1)+3)
                     call jeveuo(nomjv, 'E', jvale)

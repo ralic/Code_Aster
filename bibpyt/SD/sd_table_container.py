@@ -18,7 +18,7 @@
 
 from SD import *
 
-from SD.sd_table import sd_table, Colonne
+from SD.sd_table import sd_table
 from SD.sd_vect_elem import sd_vect_elem
 from SD.sd_matr_elem import sd_matr_elem
 from SD.sd_cham_elem import sd_cham_elem
@@ -48,7 +48,7 @@ class sd_table_container(sd_table):
         shape = self.TBNP.get()
         assert shape[0]>2 # la table à au moins 3 paramètres
         for n in param:
-          col=self.get_column_name(n)
+          col, dummy = self.get_column_name(n)
           if col == None:
              checker.err(self,"Paramètre %s manquant!" %(n))
 
@@ -61,10 +61,10 @@ class sd_table_container(sd_table):
 
 
         # on vérifie le contenu de la colonne NOM_SD
-        col1=self.get_column_name('TYPE_OBJET')
-        col2=self.get_column_name('NOM_SD')
+        col1, dummy =self.get_column_name('TYPE_OBJET')
+        col2, dummy =self.get_column_name('NOM_SD')
         # CARA_CHOC pour MODE_NON_LINE
-        col3=self.get_column_name('CARA_CHOC')
+        col3, dummy =self.get_column_name('CARA_CHOC')
         nbli=col1.data.lonuti
         lnom1=col1.data.get_stripped()
         lnom2=col2.data.get_stripped()

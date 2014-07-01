@@ -18,7 +18,7 @@
 
 from SD import *
 
-from SD.sd_table import sd_table, Colonne
+from SD.sd_table import sd_table
 from SD.sd_fonction import sd_fonction
 
 # --------------------------------------------------------------------
@@ -39,9 +39,8 @@ class sd_table_fonction(sd_table):
         for n in range(shape[0]):
             nomcol=desc[4*n].strip()
             if not (nomcol == 'FONCTION' or nomcol == 'FONCTION_C') : continue
-            nom = desc[4*n+2]
-            col = Colonne(nom)
-            lnom = col.data.get()
+            col_d, col_m = self.get_column_name(nomcol)
+            lnom = col_d.data.get()
             if not lnom : return
             for nom1 in lnom :
                 if not nom1.strip() : continue

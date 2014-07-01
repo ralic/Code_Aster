@@ -115,14 +115,14 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 !
 !  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE
     iret=0
-    do 40 i = 1, nbpara
+    do i = 1, nbpara
         if (paraz .eq. tblp(1+(4*(i-1)))) then
             nomjv=tblp(1+(4*(i-1)+2))
             nomjvl=tblp(1+(4*(i-1)+3))
-            typev=tblp(1+(4*(i-1)+1))
+            typev=tblp(1+(4*(i-1)+1))(1:3)
             iret=1
         endif
-40  end do
+    end do
 !
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_72')
@@ -133,12 +133,13 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
     endif
 !
     call jeecra(nomjv, 'LONUTI', nblign)
+     call jeecra(nomjvl, 'LONUTI', nblign)
     call jeveuo(nomjv, 'E', jvale)
     call jeveuo(nomjvl, 'E', jlogq)
 !
 !  --- REMPLISSAGE DES CELLULES DE LA COLONNE
 !
-    do 50 i = 1, nbval
+    do i = 1, nbval
 !
         if (typez(1:1) .eq. 'I') then
             zi(jvale+zi(iind+i-1)-1) = vi(i)
@@ -165,7 +166,8 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
             zk8(jvale+zi(iind+i-1)-1) = vk(i)
             zi( jlogq+zi(iind+i-1)-1) = 1
         endif
-50  end do
+    end do
+    
     call jedetr(indic)
     call jedema()
 end subroutine

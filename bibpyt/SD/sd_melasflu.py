@@ -141,11 +141,11 @@ class sd_melasflu(AsBase):
         #----------------------------------------------------
         tcham=self.sd_table
         assert tcham.nb_column() == 1  , tcham
-        col1=tcham.get_column_name('NOM_CHAM')
-        assert col1, "Il manque la colonne NOM_CHAM"
+        col1_d, col1_m = tcham.get_column_name('NOM_CHAM')
+        assert col1_d, "Il manque la colonne NOM_CHAM"
 
-        data=col1.data.get()
-        mask=col1.mask.get()
+        data=col1_d.data.get()
+        mask=col1_m.mask.get()
         profchno=''
         for k in range(len(mask)):
             if not mask[k] : continue
@@ -175,16 +175,16 @@ class sd_melasflu(AsBase):
 
             # vérification de la table 'MATR_GENE' :
             tmatgen=sd_table(l_table.LTNS.get()[0])
-            col1=tmatgen.get_column_name('NUME_VITE')
+            col1, dummy = tmatgen.get_column_name('NUME_VITE')
             sdu_assert(None, checker, col1, "Manque colonne NUME_VITE")
-            col1=tmatgen.get_column_name('VITE_FLUI')
+            col1, dummy = tmatgen.get_column_name('VITE_FLUI')
             sdu_assert(None, checker, col1, "Manque colonne VITE_FLUI")
 
             for x in 'MATR_RIGI', 'MATR_MASS', 'MATR_AMOR' :
-                col1=tmatgen.get_column_name(x)
+                col1_d, col1_m = tmatgen.get_column_name(x)
                 sdu_assert(None, checker, col1, "Manque colonne : "+x)
-                data=col1.data.get()
-                mask=col1.mask.get()
+                data=col1_d.data.get()
+                mask=col1_m.mask.get()
                 for k in range(len(mask)):
                     if not mask[k] : continue
                     matgen=sd_matr_asse_gene(data[k])

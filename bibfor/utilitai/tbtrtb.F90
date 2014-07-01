@@ -99,38 +99,39 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
-    do 10 i = 1, npara
+    do i = 1, npara
         inpar = lipara(i)
-        do 12 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
-                type = tblp(1+4*(j-1)+1)
+                type = tblp(1+4*(j-1)+1)(1:4)
                 if (type(1:1) .eq. 'C') then
                     valk = inpar
                     call utmess('F', 'UTILITAI7_2', sk=valk)
                 endif
                 goto 10
             endif
- 12     continue
+        end do
         valk = inpar
         call utmess('F', 'UTILITAI6_89', sk=valk)
- 10 end do
+ 10     continue
+    end do
 !
     call wkvect('&&TBTRTB.TRI', 'V V I', nblign, jnume)
     AS_ALLOCATE(vi=tri2, size=nblign)
-    do 20 i = 1, nblign
+    do i = 1, nblign
         zi(jnume+i-1) = i
- 20 end do
+    end do
 !
     call tbtr01(tabin, nbpara, lipara(1), nblign, zi(jnume))
 !
     if (lcrit(1)(1:2) .eq. 'DE') then
-        do 22 i = 1, nblign
+        do i = 1, nblign
             tri2(i) = zi(jnume-1+i)
- 22     continue
-        do 24 i = 1, nblign
+        end do
+        do i = 1, nblign
             zi(jnume-1+i) = tri2(nblign-i+1)
- 24     continue
+        end do
     endif
 !
     if (npara .eq. 1) then
@@ -141,10 +142,10 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     endif
     i = 1
     inpar = lipara(i)
-    do 102 j = 1, nbpara
+    do j = 1, nbpara
         jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = tblp(1+4*(j-1)+1)
+            type = tblp(1+4*(j-1)+1)(1:4)
             nomjv = tblp(1+4*(j-1)+2)
             nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
@@ -214,12 +215,12 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !           --- ON TESTE AVEC LE PARAMETRE SUIVANT ---
                 call tbtr01(tabin, nbpara, lipara(i+1), nbuti, zi(jnume-1+ideb))
                 if (lcrit(i+1)(1:2) .eq. 'DE') then
-                    do 40 k = 1, nbuti
+                    do k = 1, nbuti
                         tri2(k) = zi(jnume-1+ideb+k-1)
- 40                 continue
-                    do 42 k = 1, nbuti
+                    end do
+                    do k = 1, nbuti
                         zi(jnume-1+ideb+k-1) = tri2(nbuti-k+1)
- 42                 continue
+                    end do
                 endif
             endif
             ii = ifin
@@ -227,7 +228,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
  32         continue
             goto 104
         endif
-102 end do
+    end do
 104 continue
 !
 !     --- ON DUPLIQUE LA TABLE ---
@@ -247,14 +248,14 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     call jeecra(nomta2//'.TBLP', 'LONMAX', ndim)
     call jeecra(nomta2//'.TBLP', 'LONUTI', ndim)
     call jeveuo(nomta2//'.TBLP', 'E', vk24=nktblp)
-    do 300 i = 1, nbpara
+    do i = 1, nbpara
         nktblp(1+4*(i-1) ) = tblp(1+4*(i-1) )
         nktblp(1+4*(i-1)+1) = tblp(1+4*(i-1)+1)
 !
         call codent(i, 'D0', knume)
         nomjv = nomta2//'.'//knume
         nktblp(1+4*(i-1)+2) = nomjv
-        type = tblp(1+4*(i-1)+1)
+        type = tblp(1+4*(i-1)+1)(1:4)
         call jecreo(nomjv, base//' V '//type)
         call jeecra(nomjv, 'LONMAX', nblign)
         call jeecra(nomjv, 'LONUTI', nblign)
@@ -264,6 +265,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
         nktblp(1+4*(i-1)+3) = nomjv
         call jecreo(nomjv, base//' V I')
         call jeecra(nomjv, 'LONMAX', nblign)
+        call jeecra(nomjv, 'LONUTI', nblign)
         call jeveuo(nomjv, 'E', kvall)
 !
         nojv2 = tblp(1+4*(i-1)+2)
@@ -271,7 +273,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
         call jeveuo(nojv2, 'L', jvale)
         call jeveuo(nojvl2, 'L', jvall)
 !
-        do 302 j = 1, nblign
+        do j = 1, nblign
             zi(kvall+j-1) = zi(jvall+zi(jnume+j-1)-1)
             if (type(1:1) .eq. 'I') then
                 zi(kvale+j-1) = zi(jvale+zi(jnume+j-1)-1)
@@ -290,9 +292,9 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
             else if (type(1:3) .eq. 'K8') then
                 zk8(kvale+j-1) = zk8(jvale+zi(jnume+j-1)-1)
             endif
-302     continue
+        end do
 !
-300 end do
+    end do
 !
     call jedetr('&&TBTRTB.TRI')
     AS_DEALLOCATE(vi=tri2)
