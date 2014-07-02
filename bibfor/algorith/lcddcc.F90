@@ -3,6 +3,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
                   vind, dy, dt, rp, nuecou,&
                   dalpha, dgamma, dp, iret)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8pi.h"
@@ -19,7 +20,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     real(kind=8) :: t8, t9
     real(kind=8) :: rs, d1, lambda, alphat, ls, tauslt, tauslr, gamnuc, asr
     real(kind=8) :: delta1, delta2, airr, rhoirr, depdt, tauc, t10
-    logical(kind=1) :: new
+    aster_logical :: new
     common /deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef
@@ -103,7 +104,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     do 55 ir = 1, nbsys
         rhom(ir)=vind(decal+3*(ir-1)+1)
         rhop(ir)=rhom(ir)+dy(ir)
-55  end do
+ 55 end do
 !
     if (rhop(is) .lt. rmin) then
         iret=1
@@ -115,11 +116,11 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 1.  CALCUL de DeltaG approximatif
     rhotot=0.d0
 ! rho tot represente rho_f (foret)
-        do 11 ir = 1, 12
-            if (ir .eq. is) goto 11
-            rhotot=rhotot+rhop(ir)
-11      continue
-
+    do 11 ir = 1, 12
+        if (ir .eq. is) goto 11
+        rhotot=rhotot+rhop(ir)
+ 11 continue
+!
     if (rhotot .lt. rmin) then
         iret=1
         goto 9999
@@ -157,13 +158,13 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     lambda=1.d0/t2 - d
 !
 ! 4.  calcul de Alpha-s_AT et Ls
-
+!
     alphat=0.d0
-        do 21 ir = 1, 12
-            if (ir .eq. is) goto 21
-            alphat=alphat+rhop(ir)*hsr(is,ir)
-21      continue
-
+    do 21 ir = 1, 12
+        if (ir .eq. is) goto 21
+        alphat=alphat+rhop(ir)*hsr(is,ir)
+ 21 continue
+!
     if (alphat .lt. rmin) then
         iret=1
         goto 9999
@@ -179,17 +180,17 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 5.  calcul de Taus_LT
     t3 = 2.d0*alphat*rs+lc
     t4=1.d0/lambda-1.d0/t3
-
+!
     tauslt=max(0.d0,(alphat*mu*b*t4))
-
+!
 ! 6.  calcul de Taus_LR
-
+!
     tauslr=mu*b*sqrt(rhop(is)*hsr(is,is))
-
+!
 ! 7.  calcul de Taus_eff
     tauc=tauf + sqrt( tauslt**2+tauslr**2)
     taueff=abs(taus)-tauc
-
+!
     if (abs(taus) .gt. rmin) then
         sgns=taus/abs(taus)
     else
@@ -206,9 +207,9 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
         t5=sqrt(taueff/tau0)
     endif
     gamnuc=rhomob*b*h*ls*exp(-deltg0*(1.d0-t5)/kboltz/temp)
-
+!
 !     ON POURRAIT DESACTIVER CE SYSTEME SI TAU_EFF < 0
-
+!
     gamnuc=gamnuc*sgns
 !
 ! 9.  calcul de gamma_prob
@@ -253,6 +254,6 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     hs=1.d0/dlat+t7/kself+t8/kf-ys*rhop(is)
     dalpha=hs*dp/b
 !
-9999  continue
+9999 continue
 ! 12. irradiation mise ajout dans LCDPEC / LCDPEQ
 end subroutine

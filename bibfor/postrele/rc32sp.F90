@@ -1,7 +1,8 @@
 subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
                   spij, typeke, spmeca, spther)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/codent.h"
@@ -14,7 +15,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
     real(kind=8) :: spther(2)
-    logical(kind=1) :: seisme
+    aster_logical :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -59,7 +60,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     real(kind=8) :: pij, mij(12), sp, sij(6), sigu, sij0(6), sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     character(len=4) :: typ2
-    character(len=8) ::  type, knumes, knumet
+    character(len=8) :: type, knumes, knumet
 ! DEB ------------------------------------------------------------------
     type = typz
 !
@@ -72,7 +73,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     do 8 i1 = 1, 6
         sqma(i1) = 0.d0
         sqmi(i1) = 0.d0
- 8  end do
+  8 end do
 !
 ! --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 !
@@ -86,7 +87,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 !
     do 10 icmp = 1, 12
         mij(icmp) = mi(icmp) - mj(icmp)
-10  end do
+ 10 end do
 !
 ! --- CALCUL DES CONTRAINTES EN PEAU PAR COMBINAISON LINEAIRE
 !     POUR LE CHARGEMENT PIJ, MIJ
@@ -97,11 +98,11 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
         do 20 icmp = 1, 12
             sigu = zr(jsigu-1+6*(icmp-1)+icmps)
             sij(icmps) = sij(icmps) + mij(icmp)*sigu
-20      continue
+ 20     continue
 ! ----- PRESSION
         sigu = zr(jsigu-1+72+icmps)
         sij(icmps) = sij(icmps) + pij*sigu
-30  end do
+ 30 end do
 !
 !
 ! CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
@@ -145,7 +146,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
             endif
             do 14 i1 = 1, 6
                 spth(i1) = zr(jthunp+6+i1-1) -zr(jthunp+i1-1)
-14          continue
+ 14         continue
             if (typ2 .eq. 'SITU') then
                 if (seisme) then
                     call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
@@ -223,7 +224,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                 if (nbthep .eq. 0) then
                     do 113 i1 = 1, 6
                         sqth(i1) = zr(jthunq+i1-1) - zr(jthunq+6+i1-1)
-113                  continue
+113                 continue
                     if (seisme) then
                         call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
                                     nbinst, sqth, sp)
@@ -235,7 +236,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
                     do 114 i1 = 1, 6
                         sqmi(i1) = zr(jthunp+i1-1) - zr(jthunq+6+i1-1)
                         sqma(i1) = zr(jthunp+6+i1-1) - zr(jthunq+i1-1)
-114                  continue
+114                 continue
                     if (seisme) then
                         call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
                                     1, sqmi, sp1)

@@ -46,10 +46,11 @@ function csevl(x, cs, n)
 !***END PROLOGUE  DCSEVL
     implicit none
     real(kind=8) :: csevl
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
     real(kind=8) :: b0, b1, b2, cs(*), onepl, twox, x
-    logical(kind=1) :: first
+    aster_logical :: first
     save first, onepl
 !-----------------------------------------------------------------------
     integer :: i, n, ni
@@ -70,7 +71,7 @@ function csevl(x, cs, n)
         b1 = b0
         ni = n + 1 - i
         b0 = twox*b1 - b2 + cs(ni)
-10  end do
+ 10 end do
 !
     csevl = 0.5d0*(b0-b2)
 !

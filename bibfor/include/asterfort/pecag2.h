@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
                       vale, valpar)
         integer :: ndim
-        logical(kind=1) :: nsymx
-        logical(kind=1) :: nsymy
+        aster_logical :: nsymx
+        aster_logical :: nsymy
         integer :: np
         real(kind=8) :: xyp(2)
         real(kind=8) :: vale(*)

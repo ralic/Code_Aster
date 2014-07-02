@@ -57,6 +57,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 ! OUT  OPTION : FULL_MECA OU RAPH_MECA
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -104,7 +105,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
     real(kind=8) :: parcri(*), parcon(9), angeul(3), id(9), dsidep(36)
     real(kind=8) :: sigini(6), epsini(6)
-    logical(kind=1) :: lctcd, limpex
+    aster_logical :: lctcd, limpex
 !
     data nomeps/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
     data nomsig/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
@@ -164,32 +165,32 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
         if (igrad .eq. 1) then
             do 132 i = 1, ncmp
                 nompar(1+i)=nomgrd(i)
-132          continue
+132         continue
         else
             do 131 i = 1, ncmp
                 nompar(1+i)=nomeps(i)
-131          continue
+131         continue
         endif
         do 13 i = 1, 6
             nompar(1+ncmp+i)=nomsig(i)
-13      continue
+ 13     continue
         nompar(1+ncmp+6+1)='TRACE'
         nompar(1+ncmp+6+2)='VMIS'
         do 11 i = 1, nbvita
             nompar(1+ncmp+6+2+i)(1:1)='V'
             call codent(i, 'G', nompar(1+ncmp+6+2+i)(2:16))
-11      continue
+ 11     continue
         if (imptgt .eq. 1) then
             do 133 i = 1, 6
                 do 133 j = 1, 6
                     k=1+ncmp+6+2+nbvari+6*(i-1)+j
                     write(nompar(k),'(A,I1,I1)') 'K',i,j
-133              continue
+133             continue
         endif
         nompar(nbpar)='NB_ITER'
         do 10 i = 1, nbpar
             typpar(i)='R'
-10      continue
+ 10     continue
     else
         nbpar=4
         nompar(2)='GRANDEUR'
@@ -269,7 +270,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             if (n1 .ne. 0) then
                 sigm(i)=sigi
             endif
-15      continue
+ 15     continue
         call dscal(3, rac2, sigm(4), 1)
     endif
 !
@@ -280,7 +281,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             if (n1 .ne. 0) then
                 epsm(i)=sigi
             endif
-16      continue
+ 16     continue
         call dscal(3, rac2, epsm(4), 1)
     endif
     call getfac('VARI_INIT', nbocc)
@@ -311,7 +312,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     do 23 i = 1, 9
         indimp(i)=0
         fonimp(i)=f0
-23  end do
+ 23 end do
     do 14 i = 1, 6
         call getvid(' ', nomeps(i), scal=foneps(i), nbret=n1)
         call getvid(' ', nomsig(i), scal=fonsig(i), nbret=n2)
@@ -326,7 +327,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             icont=icont+1
             indimp(i)=0
         endif
-14  end do
+ 14 end do
     do 141 i = 1, 9
         call getvid(' ', nomgrd(i), scal=fongrd(i), nbret=n1)
         if (n1 .ne. 0) then
@@ -334,7 +335,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             igrad=igrad+1
             indimp(i)=2
         endif
-141  end do
+141 end do
     defimp=0
     if (iepsi .eq. 6) defimp=1
     if (igrad .eq. 9) defimp=2
@@ -348,7 +349,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             call getvis('MATR_C1', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
             call getvr8('MATR_C1', 'VALE', iocc=i, scal=vale, nbret=n1)
             cimpo(iligne,icolon)=vale
-55      continue
+ 55     continue
     endif
     call getfac('MATR_C2', nbocc)
     if (nbocc .ne. 0) then
@@ -358,7 +359,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             call getvis('MATR_C2', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
             call getvr8('MATR_C2', 'VALE', iocc=i, scal=vale, nbret=n1)
             cimpo(iligne,icolon+6)=vale
-56      continue
+ 56     continue
     endif
     call getfac('VECT_IMPO', nbocc)
     if (nbocc .ne. 0) then
@@ -366,7 +367,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             call getvis('VECT_IMPO', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
             call getvid('VECT_IMPO', 'VALE', iocc=i, scal=valef, nbret=n1)
             fonimp(iligne)=valef
-57      continue
+ 57     continue
     endif
     if (ic1c2 .eq. 1) then
         do 58 i = 1, 6
@@ -376,11 +377,11 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
                 if (cimpo(i,j) .ne. 0.d0) then
                     k=1
                 endif
-59          continue
+ 59         continue
             if (k .eq. 0) then
                 cimpo(i,i)=1.d0
             endif
-58      continue
+ 58     continue
         defimp=-1
     endif
 !
@@ -417,14 +418,14 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             vk8(2)=nomeps(i)
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
-551      continue
+551     continue
         vk8(1)='SIGM'
         do 552 i = 1, ncmp
             vr(2)=sigm(i)
             vk8(2)=nomsig(i)
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
-552      continue
+552     continue
         vk8(1)='VARI'
         do 553 i = 1, nbvita
             vr(2)=vim(i)
@@ -433,7 +434,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             nomvi(i)=vk8(2)
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
-553      continue
+553     continue
     endif
 !     ----------------------------------------
 !     CREATION SD DISCRETISATION
@@ -461,13 +462,13 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             option='RAPH_MECA'
         endif
     endif
-    
+!
     pred=1
     call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=predic, nbret=n1)
     if (n1 .ne. 0) then
         if (predic .eq. 'ELASTIQUE') then
             pred=0
-        elseif (predic .eq. 'EXTRAPOLE') then
+        else if (predic .eq. 'EXTRAPOLE') then
             pred=-1
         endif
     endif
@@ -495,7 +496,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     do 67 j = 4, 6
         kel(j,j) = kel(j,j)*2.d0
         coef=max(coef,kel(j,j))
-67  end do
+ 67 end do
     if (ic1c2 .eq. 1) then
         coef=1.d0
     endif

@@ -27,6 +27,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
 !
 ! =====================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/tecael.h"
@@ -41,7 +42,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
     integer :: adcp11, adcp12, adcp21, adcp22
     real(kind=8) :: congem(dimcon, maxfa+1)
     real(kind=8) :: vectu(dimuel)
-    logical(kind=1) :: axi
+    aster_logical :: axi
     character(len=16) :: option
     integer :: nno, nnos, nnom, nface
 !
@@ -137,7 +138,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
     do 2 ifa = 1, nface
         vectu(adcf1(ifa))=congem(adcp11+1,ifa+1)
         vectu(adcf2(ifa))=congem(adcp12+1,ifa+1)
- 2  end do
+  2 end do
     sfluw =congem(adcp11+1,1)
     sfluvp =congem(adcp12+1,1)
     sfluas =congem(adcp21+1,1)

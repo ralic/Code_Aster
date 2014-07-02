@@ -18,7 +18,8 @@ subroutine nmevcv(sderro, fonact, nombcl)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -52,7 +53,7 @@ subroutine nmevcv(sderro, fonact, nombcl)
 !
 !
 !
-    logical(kind=1) :: cveven
+    aster_logical :: cveven
     integer :: ieven, zeven
     character(len=24) :: erreni, erreno, errfct
     integer :: jeeniv, jeenom, jeefct
@@ -60,9 +61,9 @@ subroutine nmevcv(sderro, fonact, nombcl)
     integer :: jeinfo
     character(len=9) :: neven, teven
     character(len=24) :: feven
-    logical(kind=1) :: dv, cv, lfonc
+    aster_logical :: dv, cv, lfonc
     character(len=4) :: etabcl
-    logical(kind=1) :: cvresi, cvnewt, cvfixe, cvinst
+    aster_logical :: cvresi, cvnewt, cvfixe, cvinst
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,7 +116,7 @@ subroutine nmevcv(sderro, fonact, nombcl)
             endif
             cveven = cveven.and.(.not.dv).and.cv
         endif
-10  end do
+ 10 end do
 !
 ! --- RECUPERE CONVERGENCES PRECEDENTES
 !

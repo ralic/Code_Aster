@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                       cns1, cns2, ces1, ces2, cesvi1,&
@@ -33,6 +35,6 @@ interface
         character(len=8) :: resuco
         character(len=19) :: comps1
         character(len=19) :: comps2
-        logical(kind=1) :: pre1
+        aster_logical :: pre1
     end subroutine xpoco2
 end interface 

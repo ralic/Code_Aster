@@ -1,6 +1,7 @@
 subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
                   trepos, nbclas, nomres, loptio)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -37,13 +38,13 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 !
 ! ----------------------------------------------------------------------
     character(len=19) :: nomk19
-    logical(kind=1) :: loptio
+    aster_logical :: loptio
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
 !     --- RECUPERATION DES VECTEURS CONTENANT LES RESULTATS ---
 !-----------------------------------------------------------------------
-    integer ::  idvint, idwk1, idwk2, idwk3, idwk4, nbbloc
+    integer :: idvint, idwk1, idwk2, idwk3, idwk4, nbbloc
     integer :: nbchoc, nbclas, nbpt, ifm, info
     real(kind=8) :: offset, tdebut, tfin, tmax, tmin, trepos
     real(kind=8), pointer :: vcho(:) => null()

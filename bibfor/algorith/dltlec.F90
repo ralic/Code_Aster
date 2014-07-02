@@ -64,6 +64,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -93,7 +94,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 !
     real(kind=8) :: t0
 !
-    logical(kind=1) :: lamort
+    aster_logical :: lamort
 !
     character(len=8) :: result, baseno
     character(len=8) :: masse, rigid, amort

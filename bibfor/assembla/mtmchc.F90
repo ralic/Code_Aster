@@ -1,5 +1,6 @@
 subroutine mtmchc(matas, action)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/asmchc.h"
@@ -53,11 +54,11 @@ subroutine mtmchc(matas, action)
     character(len=8) :: kbid
     character(len=14) :: nu
     character(len=19) :: mat, nomsto
-    integer :: typmat, ielim, jelim, kdeb, kfin,  ilig, jcol
-    integer :: jsmhc,  jvalm, jvalm2, jccva,  nelim
-    integer ::  jnequ, ieq, k, deciel, neq, ier
-    integer ::  nblocm,  decjel, iremp, jccid, keta, imatd
-    logical(kind=1) :: nonsym
+    integer :: typmat, ielim, jelim, kdeb, kfin, ilig, jcol
+    integer :: jsmhc, jvalm, jvalm2, jccva, nelim
+    integer :: jnequ, ieq, k, deciel, neq, ier
+    integer :: nblocm, decjel, iremp, jccid, keta, imatd
+    aster_logical :: nonsym
     integer, pointer :: elim(:) => null()
     integer, pointer :: remplis(:) => null()
     integer, pointer :: ccll(:) => null()
@@ -136,20 +137,20 @@ subroutine mtmchc(matas, action)
     AS_ALLOCATE(vi=elim, size=neq)
     call jeveuo(mat//'.CCID', 'L', jccid)
     nelim=0
-    do 1, ieq=1,neq
-    if (imatd .ne. 0) then
-        keta=zi(jccid-1+nulg(ieq))
-    else
-        keta=zi(jccid-1+ieq)
-    endif
-    ASSERT(keta.eq.1 .or. keta.eq.0)
-    if (keta .eq. 1) then
-        nelim=nelim+1
-        elim(ieq)=nelim
-    else
-        elim(ieq)=0
-    endif
-    1 end do
+    do 1 ieq = 1, neq
+        if (imatd .ne. 0) then
+            keta=zi(jccid-1+nulg(ieq))
+        else
+            keta=zi(jccid-1+ieq)
+        endif
+        ASSERT(keta.eq.1 .or. keta.eq.0)
+        if (keta .eq. 1) then
+            nelim=nelim+1
+            elim(ieq)=nelim
+        else
+            elim(ieq)=0
+        endif
+  1 end do
 !
 !
 !     -- RECOPIE DE .CCVA DANS .VALM :
@@ -163,19 +164,19 @@ subroutine mtmchc(matas, action)
 !
         if (jelim .ne. 0) then
             deciel=ccll(3*(jelim-1)+3)
-            do 111, k=kdeb, kfin - 1
-            ilig = zi4(jsmhc-1+k)
-            ielim = elim(ilig)
-            if (ielim .eq. 0) then
-                remplis(jelim)=remplis(jelim)+1
-                iremp=remplis(jelim)
-                if (typmat .eq. 1) then
-                    zr(jvalm-1+k)=zr(jccva-1+deciel+iremp)
-                else
-                    zc(jvalm-1+k)=zc(jccva-1+deciel+iremp)
+            do 111 k = kdeb, kfin - 1
+                ilig = zi4(jsmhc-1+k)
+                ielim = elim(ilig)
+                if (ielim .eq. 0) then
+                    remplis(jelim)=remplis(jelim)+1
+                    iremp=remplis(jelim)
+                    if (typmat .eq. 1) then
+                        zr(jvalm-1+k)=zr(jccva-1+deciel+iremp)
+                    else
+                        zc(jvalm-1+k)=zc(jccva-1+deciel+iremp)
+                    endif
                 endif
-            endif
-111          continue
+111         continue
 !
         else
             do 112 k = kdeb, kfin - 1
@@ -199,10 +200,10 @@ subroutine mtmchc(matas, action)
                         endif
                     endif
                 endif
-112          continue
+112         continue
         endif
 !
-121  end do
+121 end do
 !
 !
     refa(3)='ELIML'
@@ -213,7 +214,7 @@ subroutine mtmchc(matas, action)
     AS_DEALLOCATE(vi=elim)
 !
 !
-9999  continue
+9999 continue
 !     CALL CHEKSD('sd_matr_asse',MAT,IRET)
     call jedema()
 end subroutine

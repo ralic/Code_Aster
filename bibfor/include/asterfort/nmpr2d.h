@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
                       vff, dff, geom, p, vect,&
@@ -22,7 +24,7 @@ interface
         integer :: npg
         integer :: nno
         integer :: mode
-        logical(kind=1) :: laxi
+        aster_logical :: laxi
         real(kind=8) :: poidsg(npg)
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: dff(nno, npg)

@@ -1,6 +1,7 @@
 subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                   mxvect, masmod, facpar)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
@@ -48,15 +49,15 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl,  iadpar(1), l1, ibid
+    integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
     parameter     ( mxddl=6 )
-    character(len=8) :: nomddl(mxddl),basemo,k8b
+    character(len=8) :: nomddl(mxddl), basemo, k8b
     character(len=14) :: nume
     character(len=16) :: nompar(3), typmas, typbas
     character(len=19) :: masse
     character(len=24) :: posddl, vecau1, vecau2
     real(kind=8) :: rmin, rmax, raux, rval
-    logical(kind=1) :: gene
+    aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
 !     ------------------------------------------------------------------
     data nomddl / 'DX      ', 'DY      ', 'DZ      ' ,&
@@ -92,41 +93,45 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !
 ! DETERMINATION DU CAS : BASE PHYSIQUE OU BASE GENERALISEE
     gene = .false.
-    if (typmas(1:14).eq.'MATR_ASSE_GENE') then
+    if (typmas(1:14) .eq. 'MATR_ASSE_GENE') then
 ! SI MATR_ASSE_GENE : BASE GENERALISEE
-           call jeveuo(nume(1:14)//'.NUME.REFN', 'L', vk24=refn)
-           basemo = refn(1)(1:8)
+        call jeveuo(nume(1:14)//'.NUME.REFN', 'L', vk24=refn)
+        basemo = refn(1)(1:8)
 ! SAUF SI NUME.REFN POINTE VERS UN MODELE_GENE ET NON VERS UNE BASE
 ! ALORS CAS DE LA SSD, TRAITE COMME UN MODE_MECA CLASSIQUE
-           call gettco(basemo, typbas)
-           if (typbas(1:14).eq.'MODE_MECA') then
-              gene= .true.
-           endif
+        call gettco(basemo, typbas)
+        if (typbas(1:14) .eq. 'MODE_MECA') then
+            gene= .true.
+        endif
     endif
     do iddl = 1, 3
         if (gene) then
             do ieq = 1, neq
-               call rsvpar( basemo, 1, nompar(iddl), ibid, r8vide(), k8b, l1)
-               if (l1 .eq. 100) then
-                  zr(laux1+ieq-1) = 0.D0
-               else
-                  call rsadpa (basemo, 'L', 1,nompar(iddl),ieq,1,tjv=iadpar)
-                  zr(laux1+ieq-1) = zr(iadpar(1))
-               endif
+                call rsvpar(basemo, 1, nompar(iddl), ibid, r8vide(),&
+                            k8b, l1)
+                if (l1 .eq. 100) then
+                    zr(laux1+ieq-1) = 0.D0
+                else
+                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq,&
+                                1, tjv=iadpar)
+                    zr(laux1+ieq-1) = zr(iadpar(1))
+                endif
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES
-           end do
+            end do
         else
-           call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, zi(lddl))
-           ia = (iddl-1)*neq
-           do ieq = 1, neq
-               zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
-           end do
+            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
+                        zi(lddl))
+            ia = (iddl-1)*neq
+            do ieq = 1, neq
+                zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
+            end do
         endif
 !
 !     ------------------------------------------------------------------
 !     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 !     ------------------------------------------------------------------
-        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, .false._1)
+        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
+                    .false._1)
         do ivect = 1, nbvect
             rval = ddot(neq,vect(1,ivect),1,zr(laux2),1)
             raux = masgen(ivect)

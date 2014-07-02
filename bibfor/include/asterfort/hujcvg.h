@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                       vins, nr, yd, dy, r,&
@@ -35,10 +37,10 @@ interface
         integer :: itmax
         integer :: intg
         real(kind=8) :: toler
-        logical(kind=1) :: bnews(3)
-        logical(kind=1) :: mtrac
+        aster_logical :: bnews(3)
+        aster_logical :: mtrac
         real(kind=8) :: ye(nr)
-        logical(kind=1) :: lreli
+        aster_logical :: lreli
         integer :: iret
     end subroutine hujcvg
 end interface

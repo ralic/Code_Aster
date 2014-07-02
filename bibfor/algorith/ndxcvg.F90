@@ -18,7 +18,8 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -49,8 +50,8 @@ subroutine ndxcvg(sddisc, sderro, valinc)
     integer :: ifm, niv
     integer :: ievdac, numins
     character(len=24) :: k24bla
-    logical(kind=1) :: lerrne, lerrst
-    logical(kind=1) :: lsvimx, ldvres, linsta, lcritl, conver
+    aster_logical :: lerrne, lerrst
+    aster_logical :: lsvimx, ldvres, linsta, lcritl, conver
 !
 ! ----------------------------------------------------------------------
 !

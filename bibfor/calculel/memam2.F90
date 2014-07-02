@@ -2,6 +2,7 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
                   cara, compor, exitim, time, chacce,&
                   vecel, basez, ligrez)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -22,7 +23,7 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
     real(kind=8) :: time
     character(len=8) :: lchar(*)
     character(len=*) :: option, modele, chacce, mate, cara, vecel, basez, ligrez
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +66,7 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
     character(len=24) :: ligrmo, lchin(18), lchout(1), compor
     character(len=24) :: chgeom, chcara(18), chharm, vecelz
 !-----------------------------------------------------------------------
-    integer ::  ibid, icode, iret, nh
+    integer :: ibid, icode, iret, nh
     character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     data chvarc /'&&MEMAM2.VARC'/
@@ -144,7 +145,7 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
 !
     call reajre(vecelz, lchout(1), base)
 !
-10  continue
+ 10 continue
     call detrsd('CHAMP_GD', chvarc)
 !
     call jedema()

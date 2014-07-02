@@ -20,7 +20,8 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfalgo.h"
@@ -76,7 +77,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
     integer :: ifm, niv
     character(len=24) :: clreac
     integer :: jclrea
-    logical(kind=1) :: reageo, ctcfix, reapre
+    aster_logical :: reageo, ctcfix, reapre
 !
 ! ----------------------------------------------------------------------
 !

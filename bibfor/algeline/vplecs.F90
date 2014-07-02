@@ -1,11 +1,13 @@
-subroutine vplecs(eigsol,&
-                  itemax, maxitr, nbborn, nitv, nborto, nbvec2, nbvect, nbrss, nfreq, nperm,&
-                  alpha, omecor, freq1, freq2, precdc, precsh, prorto, prsudg, seuil, tol, toldyn,&
-                  tolsor,&
-                  appr, arret, method, typevp, matra, matrb, matrc, modrig, optiof, stoper, sturm,&
-                  typeqz, typres, amor, masse, raide, tabmod,&
+subroutine vplecs(eigsol, itemax, maxitr, nbborn, nitv,&
+                  nborto, nbvec2, nbvect, nbrss, nfreq,&
+                  nperm, alpha, omecor, freq1, freq2,&
+                  precdc, precsh, prorto, prsudg, seuil,&
+                  tol, toldyn, tolsor, appr, arret,&
+                  method, typevp, matra, matrb, matrc,&
+                  modrig, optiof, stoper, sturm, typeqz,&
+                  typres, amor, masse, raide, tabmod,&
                   lc, lkr, lns, lpg, lqz)
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +34,8 @@ subroutine vplecs(eigsol,&
 ! -------------------------------------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-
+!
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
@@ -44,35 +47,35 @@ subroutine vplecs(eigsol,&
 !
 ! --- INPUT
 !
-    character(len=19) , intent(in) :: eigsol
+    character(len=19), intent(in) :: eigsol
 !
 ! --- OUTPUT
 !
-    integer           , intent(out) :: itemax, maxitr, nbborn, nitv, nborto, nbvec2, nbvect, nbrss
-    integer           , intent(out) :: nfreq, nperm
-    real(kind=8)      , intent(out) :: alpha, omecor, freq1, freq2, precdc, precsh, prorto, prsudg
-    real(kind=8)      , intent(out) :: seuil, tol, toldyn, tolsor
-    character(len=1)  , intent(out) :: appr
-    character(len=8)  , intent(out) :: arret, method
-    character(len=9)  , intent(out) :: typevp
-    character(len=14) , intent(out) :: matra, matrb, matrc
-    character(len=16) , intent(out) :: modrig, optiof, stoper, sturm, typeqz, typres
-    character(len=19) , intent(out) :: amor, masse, raide, tabmod
-    logical(kind=1)   , intent(out) :: lc, lkr, lns, lpg, lqz
+    integer, intent(out) :: itemax, maxitr, nbborn, nitv, nborto, nbvec2, nbvect, nbrss
+    integer, intent(out) :: nfreq, nperm
+    real(kind=8), intent(out) :: alpha, omecor, freq1, freq2, precdc, precsh, prorto, prsudg
+    real(kind=8), intent(out) :: seuil, tol, toldyn, tolsor
+    character(len=1), intent(out) :: appr
+    character(len=8), intent(out) :: arret, method
+    character(len=9), intent(out) :: typevp
+    character(len=14), intent(out) :: matra, matrb, matrc
+    character(len=16), intent(out) :: modrig, optiof, stoper, sturm, typeqz, typres
+    character(len=19), intent(out) :: amor, masse, raide, tabmod
+    aster_logical , intent(out) :: lc, lkr, lns, lpg, lqz
 !
 ! --- INPUT/OUTPUT
 ! None
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: eislvi, eislvk, eislvr, jrefa, indf
-    real(kind=8)      :: undf
-    character(len=1)  :: ktyp
-    logical           :: lnsc, lnsk, lnsm
+    integer :: eislvi, eislvk, eislvr, jrefa, indf
+    real(kind=8) :: undf
+    character(len=1) :: ktyp
+    aster_logical :: lnsc, lnsk, lnsm
 !
 ! --  BUFFERS DE LECTURE (EN CAS D'APPELS AVEC K*BID, PASSAGE PAR REFERENCE)
-    character(len=1)  :: app2
-    character(len=8)  :: arre2, metho2
+    character(len=1) :: app2
+    character(len=8) :: arre2, metho2
     character(len=16) :: modri2, optio2, stope2, stur2, typeq2, typre2
     character(len=19) :: amo2, mass2, raid2, tabmo2
 !
@@ -80,17 +83,17 @@ subroutine vplecs(eigsol,&
 ! --- CORPS DE LA ROUTINE
 ! -----------------------
 !
-
+!
 ! --  INITS.
     call jemarq()
     indf=isnnem()
     undf=r8vide()
-
+!
 ! --  OUVERTURE DE LA SD
     call jeveuo(eigsol//'.ESVK', 'L', eislvk)
     call jeveuo(eigsol//'.ESVI', 'L', eislvi)
     call jeveuo(eigsol//'.ESVR', 'L', eislvr)
-
+!
 ! --  LECTURE PARAMETRES SOLVEURS MODAUX CHARACTER
     typre2=''
     typre2=trim(zk24(eislvk-1+1))
@@ -117,16 +120,16 @@ subroutine vplecs(eigsol,&
     app2=''
     app2  =trim(zk24(eislvk-1+16))
     typeq2=''
-    select case(metho2)
-    case('TRI_DIAG')
-    case('JACOBI')
-    case('SORENSEN')
-    case('QZ')
+    select case (metho2)
+        case('TRI_DIAG')
+        case('JACOBI')
+        case('SORENSEN')
+        case('QZ')
         typeq2=trim(zk24(eislvk-1+17))
     case default
         ASSERT(.false.)
     end select
-
+!
 ! --  LECTURE PARAMETRES SOLVEURS MODAUX ENTIERS
     nfreq =zi(eislvi-1+1)
     nbvect=zi(eislvi-1+2)
@@ -138,20 +141,20 @@ subroutine vplecs(eigsol,&
     itemax=indf
     nperm =indf
     maxitr=indf
-    select case(metho2)
-    case('TRI_DIAG')
+    select case (metho2)
+        case('TRI_DIAG')
         nborto=zi(eislvi-1+11)
         nitv  =zi(eislvi-1+12)
-    case('JACOBI')
+        case('JACOBI')
         itemax=zi(eislvi-1+11)
         nperm =zi(eislvi-1+12)
-    case('SORENSEN')
+        case('SORENSEN')
         maxitr=zi(eislvi-1+11)
-    case('QZ')
+        case('QZ')
     case default
         ASSERT(.false.)
     end select
-
+!
 ! --  LECTURE PARAMETRES SOLVEURS MODAUX REELS
     freq1 =zr(eislvr-1+1)
     freq2 =zr(eislvr-1+2)
@@ -165,34 +168,34 @@ subroutine vplecs(eigsol,&
     toldyn=undf
     tolsor=undf
     alpha =undf
-    select case(metho2)
-    case('TRI_DIAG')
+    select case (metho2)
+        case('TRI_DIAG')
         prorto=zr(eislvr-1+11)
         prsudg=zr(eislvr-1+12)
-    case('JACOBI')
+        case('JACOBI')
         tol   =zr(eislvr-1+11)
         toldyn=zr(eislvr-1+12)
-    case('SORENSEN')
+        case('SORENSEN')
         tolsor=zr(eislvr-1+11)
         alpha =zr(eislvr-1+12)
-    case('QZ')
+        case('QZ')
     case default
         ASSERT(.false.)
     end select
-
+!
 ! --  INIT. MATRA/B/C ET TYPEVP
-    select case(typre2)
-    case('DYNAMIQUE')
+    select case (typre2)
+        case('DYNAMIQUE')
         matra ='MATR_RIGI'
         matrb ='MATR_MASS'
         matrc ='MATR_AMOR'
         typevp='FREQ'
-    case('MODE_FLAMB')
+        case('MODE_FLAMB')
         matra ='MATR_RIGI'
         matrb ='MATR_RIGI_GEOM'
         matrc =''
         typevp='CHAR_CRIT'
-    case('GENERAL')
+        case('GENERAL')
         matra ='MATR_A'
         matrb ='MATR_B'
         matrc ='MATR_C'
@@ -200,43 +203,43 @@ subroutine vplecs(eigsol,&
     case default
         ASSERT(.false.)
     end select
-
+!
 ! --  INIT. LC
-    if (amo2.eq.'') then
+    if (amo2 .eq. '') then
         lc=.false.
     else
         lc=.true.
     endif
-
+!
 ! --  INIT. LPG
-    if (optio2(1:11).eq.'PLUS_GRANDE') then
+    if (optio2(1:11) .eq. 'PLUS_GRANDE') then
         lpg=.true.
         optio2='PLUS_PETITE'
     else
         lpg=.false.
     endif
-
+!
 ! --  INIT. LQZ
-    if (metho2(1:2).eq.'QZ') then
+    if (metho2(1:2) .eq. 'QZ') then
         lqz=.true.
     else
         lqz=.false.
     endif
-
+!
 ! --  INIT. LKR
-
+!
     call jelira(raid2//'.VALM', 'TYPE', cval=ktyp)
-    if (ktyp.eq.'R') then
+    if (ktyp .eq. 'R') then
         lkr=.true.
     else if (ktyp.eq.'C') then
         lkr=.false.
     else
         ASSERT(.false.)
     endif
-
+!
 ! --  INIT. LNS
     call jeveuo(raid2//'.REFA', 'L', jrefa)
-    if (trim(zk24(jrefa-1+9)).eq.'MS') then
+    if (trim(zk24(jrefa-1+9)) .eq. 'MS') then
         lnsk=.false.
     else if (trim(zk24(jrefa-1+9)).eq.'MR') then
         lnsk=.true.
@@ -244,7 +247,7 @@ subroutine vplecs(eigsol,&
         ASSERT(.false.)
     endif 
     call jeveuo(mass2//'.REFA', 'L', jrefa)
-    if (trim(zk24(jrefa-1+9)).eq.'MS') then
+    if (trim(zk24(jrefa-1+9)) .eq. 'MS') then
         lnsm=.false.
     else if (trim(zk24(jrefa-1+9)).eq.'MR') then
         lnsm=.true.
@@ -253,7 +256,7 @@ subroutine vplecs(eigsol,&
     endif
     if (lc) then
         call jeveuo(amo2//'.REFA', 'L', jrefa)
-        if (trim(zk24(jrefa-1+9)).eq.'MS') then
+        if (trim(zk24(jrefa-1+9)) .eq. 'MS') then
             lnsc=.false.
         else if (trim(zk24(jrefa-1+9)).eq.'MR') then
             lnsc=.true.
@@ -263,12 +266,12 @@ subroutine vplecs(eigsol,&
     else
         lnsc=.false.
     endif
-    if (lnsk.or.lnsm.or.lnsc) then
+    if (lnsk .or. lnsm .or. lnsc) then
         lns=.true.
     else
         lns=.false.
     endif
-
+!
 ! --  CHARGEMENT DES VALEURS OUTPUTS CHARACTER
     appr=trim(app2)
     arret=trim(arre2)
@@ -283,7 +286,7 @@ subroutine vplecs(eigsol,&
     masse=trim(mass2)
     raide=trim(raid2)
     tabmod=trim(tabmo2)
-
+!
     call jedema()
 !
 !     FIN DE VPLECS

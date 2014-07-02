@@ -19,6 +19,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -59,10 +60,10 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
 !
 !
-    integer :: ibid, jcesd, jcesl,  n1, i
-    integer :: nbma, ima, iad,  nbinst, nbmcfl
+    integer :: ibid, jcesd, jcesl, n1, i
+    integer :: nbma, ima, iad, nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, r8b
-    logical(kind=1) :: booneg, boopos, exicar
+    aster_logical :: booneg, boopos, exicar
     character(len=6) :: nompro
     character(len=8) :: k8bid, mo, lpain(3), lpaout(1), stocfl, maicfl, mail
     character(len=19) :: chams

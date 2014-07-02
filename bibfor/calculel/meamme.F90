@@ -20,6 +20,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -46,7 +47,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=*) :: modele, optioz, cara, mate
     character(len=*) :: merigi, memass, meamor, varplu
     character(len=8) :: lchar(*)
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
     character(len=1) :: base
 !
 ! ----------------------------------------------------------------------
@@ -87,7 +88,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=24) :: rigich, massch, ligrmo, ligrch
     character(len=24) :: chgeom, chcara(18), chharm, argu
     character(len=16) :: option
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifmdbg, nivdbg
     character(len=24), pointer :: rerr(:) => null()
 !
@@ -202,29 +203,29 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     if (rigich .ne. ' ') then
         call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
         if (nomgd .eq. 'MDNS_R') then
-          lpain(8) = 'PRIGINS'
+            lpain(8) = 'PRIGINS'
         else
-          call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
-          call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
-          if (ires1 .lt. nbres1) then
-            rigich = zk24(ialir1+ires1)
-            call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
-            if (nomgd .eq. 'MDNS_R') then
-              nop=12
-              lpain(12) = 'PRIGINS'
-              lchin(12) = rigich
+            call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
+            call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
+            if (ires1 .lt. nbres1) then
+                rigich = zk24(ialir1+ires1)
+                call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
+                if (nomgd .eq. 'MDNS_R') then
+                    nop=12
+                    lpain(12) = 'PRIGINS'
+                    lchin(12) = rigich
+                endif
             endif
-          endif
         endif
     endif
-    
+!
     lpain(9) = 'PMASSEL'
     lchin(9) = massch(1:19)
     lpain(10) = 'PCADISK'
     lchin(10) = chcara(2)(1:19)
     lpain(11) = 'PCINFDI'
     lchin(11) = chcara(15)(1:19)
-
+!
 !
 ! --- REMPLISSAGE DES CHAMPS DE SORTIE
 !
@@ -245,9 +246,9 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 !
 !    nop = 12
     if (varplu .ne. ' ') then
-      nop=nop+1
-      lpain(nop) = 'PVARIPG'
-      lchin(nop) = varplu(1:19)
+        nop=nop+1
+        lpain(nop) = 'PVARIPG'
+        lchin(nop) = varplu(1:19)
     endif
     call calcul('S', option, ligrmo, nop, lchin,&
                 lpain, 2, lchout, lpaout, base,&

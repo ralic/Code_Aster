@@ -22,6 +22,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 ! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/jedema.h"
@@ -33,7 +34,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
     character(len=16) :: option, compor(*)
     integer :: iret, nno, ndim
     real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
@@ -109,10 +110,10 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
         maxgeo=0.d0
         do 555 i = 1, nddl
             maxdep=max(maxdep,abs(deplp(i)))
-555      continue
+555     continue
         do 556 i = 1, nno*ndim
             maxgeo=max(maxgeo,abs(geom(i)))
-556      continue
+556     continue
         pertu=carcri(7)
         if (maxdep .gt. pertu*maxgeo) then
             epsilo=pertu*maxdep
@@ -139,8 +140,8 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
                     k = k + 1
                     smatr((i-1)*nddl+j) = v
                     smatr((j-1)*nddl+i) = v
-558              continue
-557          continue
+558             continue
+557         continue
         else
             call dcopy(nddl*nddl, matuu, 1, smatr, 1)
         endif
@@ -188,8 +189,8 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
             fp = varia((2*j-1)*nddl+i)
             v = (fp-fm)/(2*epsilo)
             matper((i-1)*nddl+j) = v
-560      continue
-559  end do
+560     continue
+559 end do
 !
 !    MENAGE POUR ARRET DE LA ROUTINE
 !
@@ -241,7 +242,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !         CALL JELIBE(MATRC)
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

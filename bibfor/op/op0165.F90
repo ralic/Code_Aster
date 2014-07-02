@@ -23,6 +23,7 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -38,7 +39,7 @@ subroutine op0165()
 #include "asterfort/utmess.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
-    logical(kind=1) :: pmpb, sn, snet, fatigu, lrocht
+    aster_logical :: pmpb, sn, snet, fatigu, lrocht
     integer :: icodre
     character(len=8) :: nommat
     character(len=16) :: typtab, typmec, kopt(4), phenom
@@ -123,7 +124,7 @@ subroutine op0165()
                 pmpb = .true.
                 sn = .true.
             endif
-30      continue
+ 30     continue
 !
         call getvid(' ', 'MATER', scal=nommat, nbret=n1)
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)

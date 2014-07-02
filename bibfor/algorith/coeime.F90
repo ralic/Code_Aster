@@ -26,6 +26,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
     implicit none
 !
 ! VARIABLES D'ENTREE
+#include "asterf_types.h"
 #include "asterfort/lcejex.h"
 #include "asterfort/lcejli.h"
 #include "asterfort/lcjohm.h"
@@ -35,7 +36,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
     real(kind=8) :: defgem(dimdef), defgep(dimdef), sigm(dimcon), varim(nbvari)
     character(len=8) :: nomail
     character(len=16) :: meca, option
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
 ! VARIABLES DE SORTIE
     real(kind=8) :: sigp(dimcon), varip(nbvari), drde(dimdef, dimdef), tlint
@@ -127,7 +128,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
 !
         do 10 i = 1, ndim
             da(i) = defgep(i) - defgem(i)
-10      continue
+ 10     continue
 !
 ! - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
 !
@@ -154,8 +155,8 @@ subroutine coeime(meca, imate, nomail, option, resi,&
                 do 20 i = 1, ndim
                     do 21 j = 1, ndim
                         drde(i,j)=dsidep(i,j)
-21                  continue
-20              continue
+ 21                 continue
+ 20             continue
                 if ((yap1 .eq. 1) .and.&
                     ((varip(advime+2) .eq. 1) .or.(varip(advime+2).eq. 2) )) then
                     drde(1,addep1)=-1.d0
@@ -198,7 +199,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
 !
         do 40 i = 1, ndim
             da(i) = defgep(i) - defgem(i)
-40      continue
+ 40     continue
 !
 ! - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
 !
@@ -221,8 +222,8 @@ subroutine coeime(meca, imate, nomail, option, resi,&
                 do 120 i = 1, ndim
                     do 121 j = 1, ndim
                         drde(i,j)=dsidep(i,j)
-121                  continue
-120              continue
+121                 continue
+120             continue
                 if ((yap1 .eq. 1) .and. (varip(advime+2) .eq. 1)) then
                     drde(1,addep1)=-1.d0
                 endif

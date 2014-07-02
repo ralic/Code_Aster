@@ -1,5 +1,7 @@
-subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
+subroutine q4grig(nomte, xyzl, option, pgl, rig,&
+                  ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/bsthpl.h"
 #include "asterfort/dsqbfb.h"
@@ -66,14 +68,15 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
     real(kind=8) :: mefli(96), mefl(96), kmc(96), kfc(144)
     real(kind=8) :: bsigth(24), enerth, caraq4(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), jacob(5), qsi, eta
-    logical(kind=1) :: coupmf, indith
+    aster_logical :: coupmf, indith
     integer :: i, jcoqu, jdepg, k
     real(kind=8) :: ctor, excent, zero
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     enerth = zero
@@ -94,7 +97,9 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate('RIGI', df, dm, dmf, dc,&
+                dci, dmc, dfc, nno, pgl,&
+                multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !
@@ -113,13 +118,16 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
 !        ---- CALCUL DE LA MATRICE BF ----------------------------------
         call dsqbfb(qsi, eta, jacob(2), bf)
 !        ---- CALCUL DU PRODUIT BFT.DF.BF ------------------------------
-        call utbtab('ZERO', 3, 12, df, bf, xab1, kf)
+        call utbtab('ZERO', 3, 12, df, bf,&
+                    xab1, kf)
 !        ---- CALCUL DE LA MATRICE BC ----------------------------------
         call q4gbc(qsi, eta, jacob(2), caraq4, bc)
 !        ---- CALCUL DU PRODUIT BCT.DC.BC -----------------------------
-        call utbtab('ZERO', 2, 12, dc, bc, xab2, kc)
+        call utbtab('ZERO', 2, 12, dc, bc,&
+                    xab2, kc)
 !        ----- CALCUL DU PRODUIT BFT.DFC.BC ----------------------
-        call utdtab('ZERO', 3, 2, 12, 12, dfc, bc, bf, xab4, kfc)
+        call utdtab('ZERO', 3, 2, 12, 12,&
+                    dfc, bc, bf, xab4, kfc)
 !        ----- CALCUL DE LA SOMME KF + KC = FLEXI ----------------------
         do k = 1, 144
             flexi(k) = kf(k) + kc(k) + kfc(k)
@@ -134,20 +142,23 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
 !        ----- CALCUL DE LA MATRICE BM ---------------------------------
         call dxqbm(qsi, eta, jacob(2), bm)
 !        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
-        call utbtab('ZERO', 3, 8, dm, bm, xab3, membi)
+        call utbtab('ZERO', 3, 8, dm, bm,&
+                    xab3, membi)
 !        ----- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE ------------
         do k = 1, 64
             memb(k) = memb(k) + membi(k)*wgt
         end do
 !        ----- CALCUL DU PRODUIT BMT.DMC.BC ----------------------
-        call utdtab('ZERO', 3, 2, 12, 8, dmc, bc, bm, xab4, kmc)
+        call utdtab('ZERO', 3, 2, 12, 8,&
+                    dmc, bc, bm, xab4, kmc)
 !
         if (coupmf) then
 !           ------------------------------------------------------------
 !           CALCUL DES MATRICES DE COUPLAGE MEMBRANE/FLEXION
 !           ------------------------------------------------------------
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
-            call utctab('ZERO', 3, 12, 8, dmf, bf, bm, xab1, mefli)
+            call utctab('ZERO', 3, 12, 8, dmf,&
+                        bf, bm, xab1, mefli)
             do k = 1, 96
                 mefl(k) = mefl(k) + (mefli(k)+kmc(k))*wgt
             end do
@@ -160,7 +171,8 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
-        call dxqloe(flex, memb, mefl, ctor, coupmf, depl, ener)
+        call dxqloe(flex, memb, mefl, ctor, coupmf,&
+                    depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 24

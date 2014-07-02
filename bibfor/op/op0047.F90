@@ -23,6 +23,7 @@ subroutine op0047()
 !   - OUT :
 !       IERR   : NON UTILISE
 !     ------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -30,7 +31,7 @@ subroutine op0047()
 #include "asterfort/infmaj.h"
 #include "asterfort/stbast.h"
     integer :: nfie, nfis, n
-    logical(kind=1) :: lgrcou
+    aster_logical :: lgrcou
     character(len=8) :: k8b
     character(len=16) :: k16b, cmd
 !

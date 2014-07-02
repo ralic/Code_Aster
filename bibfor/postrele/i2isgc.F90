@@ -42,18 +42,19 @@ subroutine i2isgc(epsi, xa, ya, xb, yb,&
 !
 !*******************************************************************
 !
+#include "asterf_types.h"
 #include "asterfort/i2req2.h"
     integer :: npi
     real(kind=8) :: epsi, xa, ya, xb, yb, x1, y1, x2, y2, x3, y3, s1, s2, r1, r2
-    logical(kind=1) :: eli
+    aster_logical :: eli
 !
     integer :: nbrac, ord1, ord2
     real(kind=8) :: deltax, deltay, coef0, coef1, coef2, n1, n2, n3, n4
     real(kind=8) :: xr, yr, norm2, rac1, rac2, aux
-    logical(kind=1) :: lsr10, ls1r1, le0r11
-    logical(kind=1) :: lsr20, ls1r2, le0r21
-    logical(kind=1) :: lss10, ls1s1, le0s11
-    logical(kind=1) :: lss20, ls1s2, le0s21
+    aster_logical :: lsr10, ls1r1, le0r11
+    aster_logical :: lsr20, ls1r2, le0r21
+    aster_logical :: lss10, ls1s1, le0s11
+    aster_logical :: lss20, ls1s2, le0s21
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

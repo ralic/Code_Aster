@@ -52,6 +52,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -136,8 +137,8 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     integer :: nrimpr
     integer :: existc, nbcmfi, nbval
 !
-    logical(kind=1) :: lgaux
-    logical(kind=1) :: existm
+    aster_logical :: lgaux
+    aster_logical :: existm
 !
     call jemarq()
 !

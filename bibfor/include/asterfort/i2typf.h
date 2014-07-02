@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i2typf(epsi, x1, y1, x2, y2,&
                       x3, y3, tm, droi)
@@ -26,6 +28,6 @@ interface
         real(kind=8) :: x3
         real(kind=8) :: y3
         character(len=*) :: tm
-        logical(kind=1) :: droi
+        aster_logical :: droi
     end subroutine i2typf
 end interface

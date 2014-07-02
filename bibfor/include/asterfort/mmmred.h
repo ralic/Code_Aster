@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
         integer :: ndimg
-        logical(kind=1) :: lctfc
+        aster_logical :: lctfc
         character(len=19) :: champ
         character(len=19) :: champr
         integer :: ndd1

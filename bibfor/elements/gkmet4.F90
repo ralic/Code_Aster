@@ -4,6 +4,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/gsyste.h"
 #include "asterfort/jedema.h"
@@ -13,7 +14,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
 #include "asterfort/wkvect.h"
     integer :: nnoff, ndimte, iadrgk, iadgks, iadgki, num
     character(len=24) :: chfond, abscur
-    logical(kind=1) :: pair, milieu, connex
+    aster_logical :: pair, milieu, connex
 !
 !
 ! ======================================================================
@@ -79,7 +80,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
     call jeveuo(abscur, 'E', iadabs)
     do 10 i = 1, nnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
-10  end do
+ 10 end do
     do 11 i = 1, ndimte
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
         gthi(i)=zr(iadrgk-1+(i-1)*8+1)
@@ -89,7 +90,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
         g1th(i)=zr(iadrgk-1+(i-1)*8+2)
         g2th(i)=zr(iadrgk-1+(i-1)*8+3)
         g3th(i)=zr(iadrgk-1+(i-1)*8+4)
-11  end do
+ 11 end do
 !
     num = 5
 !
@@ -114,7 +115,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
         zr(imatr+(i-1 )*ndimte+i-1+1)= 1.d0*delta
         zr(imatr+(i-1+1)*ndimte+i-1+1)= 2.d0*delta
 !
-40  end do
+ 40 end do
     i = ndimte -1
     nump = 2*(i-1)
     if (pair) then
@@ -179,7 +180,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
     call gsyste(matr, ndimte, ndimte, g3th, g3s)
     do 50 i = 1, ndimte
         gis(i)=g1s(i)*g1s(i) + g2s(i)*g2s(i) +g3s(i)*g3s(i)
-50  end do
+ 50 end do
 !
 !     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
     do 80 i = 1, ndimte
@@ -191,7 +192,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
                                          ),&
                                          1.0d0&
                                          )
-80  end do
+ 80 end do
 !
     if (nnoff .eq. 2) then
         zr(iadgks-1+1)=gs(1)
@@ -290,7 +291,7 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
                 zr(iadgks-1+(nn-1+1)*6+6)=betas(i)+(s2-s1)* (betas(i+&
                 1)-betas(i))/(s3-s1)
             endif
-60      continue
+ 60     continue
 !
         if (pair) then
             nn=2*(ndimte-2)
@@ -328,8 +329,8 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
     do 70 i = 1, ndimte
         do 71 j = 1, 5
             zr(iadgki-1+5*(i-1)+j)=zr(iadrgk-1+8*(i-1)+j)
-71      continue
-70  end do
+ 71     continue
+ 70 end do
 !
 !
 !

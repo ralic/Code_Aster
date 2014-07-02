@@ -1,5 +1,6 @@
 subroutine engttb(ific, nomsd, typtes, preci, formr)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/ismaem.h"
@@ -43,7 +44,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
     integer :: nbpara, nblign, vali, ipar, lg, lg1, lg2, i, jvale, jvall
     real(kind=8) :: valr
-    logical(kind=1) :: exist
+    aster_logical :: exist
     character(len=3) :: type
     character(len=16) :: nomsym
     character(len=90) :: form1, form2, form3
@@ -55,8 +56,10 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
     lg1 = lxlgut( formr )
     lg2 = lxlgut( typtes )
-    form1 = '('' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', '&
-            //formr(1:lg1)//', '' )'')'
+    form1 = '(&
+            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', ' //formr(1:lg1)//',&
+            '' )''&
+            )'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' )'' )'
 !
     call jeveuo(nomsd//'.TBLP', 'L', vk24=tblp)
@@ -85,22 +88,22 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
                 vali = 0
                 do 410 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = vali+abs(zi(jvale+ i-1))
-410              continue
+410             continue
             else if (typtes .eq. 'SOMM') then
                 vali = 0
                 do 412 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = vali + zi(jvale+i- 1)
-412              continue
+412             continue
             else if (typtes .eq. 'MAX') then
                 vali = -ismaem()
                 do 414 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = max(vali,zi(jvale+ i-1))
-414              continue
+414             continue
             else if (typtes .eq. 'MIN') then
                 vali = ismaem()
                 do 416 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = min(vali,zi(jvale+ i-1))
-416              continue
+416             continue
             endif
             if (vali .eq. 0) write(ific,4010)
             write(ific,form2) vali
@@ -114,27 +117,27 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
                 valr = 0.d0
                 do 420 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = valr+abs(zr(jvale+ i-1))
-420              continue
+420             continue
             else if (typtes .eq. 'SOMM') then
                 valr = 0.d0
                 do 422 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = valr + zr(jvale+i- 1)
-422              continue
+422             continue
             else if (typtes .eq. 'MAX') then
                 valr = -r8maem()
                 do 424 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = max(valr,zr(jvale+ i-1))
-424              continue
+424             continue
             else if (typtes .eq. 'MIN') then
                 valr = r8maem()
                 do 426 i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = min(valr,zr(jvale+ i-1))
-426              continue
+426             continue
             endif
             if (abs(valr) .le. r8prem()) write(ific,4010)
             write(ific,form1) valr
         endif
-400  end do
+400 end do
 !
     call jedema()
 !

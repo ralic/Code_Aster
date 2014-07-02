@@ -18,7 +18,8 @@ subroutine nmdivr(sddisc, sderro, iterat)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmcrel.h"
@@ -53,7 +54,7 @@ subroutine nmdivr(sddisc, sderro, iterat)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: r(1), rm1(1), rm2(1)
-    logical(kind=1) :: divres
+    aster_logical :: divres
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine nmdivr(sddisc, sderro, iterat)
 !
     if (min(r(1),rm1(1)) .gt. rm2(1)) divres = .true.
 !
-999  continue
+999 continue
 !
 ! --- SAUVEGARDE DES EVENEMENTS
 !

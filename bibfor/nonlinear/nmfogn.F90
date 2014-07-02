@@ -22,6 +22,7 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmgvdn.h"
 #include "asterfort/nmmabu.h"
@@ -55,7 +56,7 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
     integer :: k2(1)
     character(len=8) :: nom(1), fami, poum
 !
-    logical(kind=1) :: grand, axi, nax
+    aster_logical :: grand, axi, nax
     integer :: nddl, ndimsi, g, n, i, kl, kk
     integer :: iu(3*27), ia(8), kpg, spt
     real(kind=8) :: rac2, c, val(1)
@@ -107,7 +108,7 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
         if (axi) then
             do 50 n = 1, nno1
                 b(3,1,n) = vff1(n,g)/r
-50          continue
+ 50         continue
         endif
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A
@@ -119,21 +120,21 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
         av = 0
         do 150 n = 1, nno2
             av = av + vff2(n,g)*ddl(ia(n))
-150      continue
+150     continue
 !
         do 200 i = 1, ndim
             ag(i) = 0
             do 202 n = 1, nno2
                 ag(i) = ag(i) + dfdi2(nno2*(i-1)+n)*ddl(ia(n))
-202          continue
-200      continue
+202         continue
+200     continue
 !
         do 210 kl = 1, 3
             sigma(kl) = sigm(kl,g)
-210      continue
+210     continue
         do 220 kl = 4, ndimsi
             sigma(kl) = sigm(kl,g)*rac2
-220      continue
+220     continue
         bp = sigm(ndimsi+1,g)
 !
 !      VECTEUR FINT:U
@@ -144,10 +145,10 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
                 t1 = 0
                 do 320 kl = 1, ndimsi
                     t1 = t1 + sigma(kl)*b(kl,i,n)
-320              continue
+320             continue
                 vect(kk) = vect(kk) + wg*t1
-310          continue
-300      continue
+310         continue
+300     continue
 !
 !      VECTEUR FINT:A
 !
@@ -156,12 +157,12 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
             t2 = 0
             do 370 i = 1, ndim
                 t2 = t2 + c*dfdi2(nno2*(i-1)+n)*ag(i)
-370          continue
+370         continue
             kk = ia(n)
             vect(kk) = vect(kk) + wg*(t2+t1)
-350      continue
+350     continue
 !
-1000  end do
+1000 end do
 !
 !
 end subroutine

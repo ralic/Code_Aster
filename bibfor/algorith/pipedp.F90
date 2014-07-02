@@ -20,6 +20,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/betfpp.h"
 #include "asterfort/betmat.h"
@@ -59,7 +60,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
 ! ----------------------------------------------------------------------
 !
     integer :: ndimsi, k, nrac1, nrac2
-    logical(kind=1) :: trac, comp, notrac, nocomp
+    aster_logical :: trac, comp, notrac, nocomp
     real(kind=8) :: trsigp, trsigd, sigelp(6), sigeld(6)
     real(kind=8) :: eps1(6), eps2(6), pp(6), dd(6)
     real(kind=8) :: d1, d2, g1, g2, g3, g4
@@ -136,7 +137,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
     do 10 k = 1, ndimsi
         sigelp(k) = sigm(k) + (lambda*kron(k)+deuxmu)* (epsp(k)-epsm( k))
         sigeld(k) = (lambda*kron(k)+deuxmu)*epsd(k)
-10  end do
+ 10 end do
 !
     trsigp = sigelp(1) + sigelp(2) + sigelp(3)
     trsigd = sigeld(1) + sigeld(2) + sigeld(3)
@@ -144,7 +145,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
     do 20 k = 1, ndimsi
         pp(k) = sigelp(k)-d13*trsigp*kron(k)
         dd(k) = sigeld(k)-d13*trsigd*kron(k)
-20  end do
+ 20 end do
 !
 !     CRITERE DE TRACTION
     p0 = d13*ddot(ndimsi,pp,1,pp,1)-(d*ft)**2+d23*c*d*ft*trsigp -c**2/neuf*trsigp**2
@@ -187,7 +188,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
             do 30 k = 1, ndimsi
                 eps1(k) = epsp(k) + rac2(1) * epsd(k) - epsm(k)
                 eps2(k) = epsp(k) + rac2(2) * epsd(k) - epsm(k)
-30          continue
+ 30         continue
             d1 = dnrm2(ndimsi, eps1,1)
             d2 = dnrm2(ndimsi, eps2,1)
             if (d1 .le. d2) then
@@ -210,7 +211,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
             do 40 k = 1, ndimsi
                 eps1(k) = epsp(k) + rac1(1) * epsd(k) - epsm(k)
                 eps2(k) = epsp(k) + rac1(2) * epsd(k) - epsm(k)
-40          continue
+ 40         continue
             d1 = dnrm2(ndimsi, eps1,1)
             d2 = dnrm2(ndimsi, eps2,1)
             if (d1 .le. d2) then
@@ -239,7 +240,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
                 do 50 k = 1, ndimsi
                     eps1(k) = epsp(k) + rac1(1) * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + rac1(2) * epsd(k) - epsm(k)
-50              continue
+ 50             continue
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then
@@ -269,7 +270,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
                 do 60 k = 1, ndimsi
                     eps1(k) = epsp(k) + rac2(1) * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + rac2(2) * epsd(k) - epsm(k)
-60              continue
+ 60             continue
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then
@@ -295,7 +296,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
                 do 70 k = 1, ndimsi
                     eps1(k) = epsp(k) + eta1 * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + eta2 * epsd(k) - epsm(k)
-70              continue
+ 70             continue
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then
@@ -321,7 +322,7 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
                 do 80 k = 1, ndimsi
                     eps1(k) = epsp(k) + eta1 * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + eta2 * epsd(k) - epsm(k)
-80              continue
+ 80             continue
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then

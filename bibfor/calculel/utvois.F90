@@ -46,12 +46,13 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: nbf, nsomf, ndegre
     real(kind=8) :: poinc1, poinc2
-    logical(kind=1) :: lmaj
+    aster_logical :: lmaj
     character(len=8) :: elrefe, typmac
 !
 !

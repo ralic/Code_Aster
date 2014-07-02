@@ -22,6 +22,7 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
@@ -97,7 +98,7 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
     character(len=24) :: charge, infoch, fomult, fomul2
     character(len=16) :: typvec
     integer :: jimpe, jvaanc
-    logical(kind=1) :: ltheta
+    aster_logical :: ltheta
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

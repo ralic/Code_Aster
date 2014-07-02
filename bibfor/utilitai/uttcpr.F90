@@ -17,6 +17,7 @@ subroutine uttcpr(nommes, nbv, temps)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -45,7 +46,7 @@ subroutine uttcpr(nommes, nbv, temps)
 !
 ! RQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: ljev
+    aster_logical :: ljev
     integer :: indi, jvalms, k
 !
 !
@@ -79,18 +80,18 @@ subroutine uttcpr(nommes, nbv, temps)
 !
 !     2. RECUPERATION DES TEMPS :
 !     -------------------------------
-9998  continue
+9998 continue
     if (ljev) then
         call jeveuo('&&UTTCPU.VALMES', 'L', jvalms)
-        do 1, k=1,nbv
-        temps(k)= zr(jvalms-1+7*(indi-1)+k)
- 1      continue
+        do 1 k = 1, nbv
+            temps(k)= zr(jvalms-1+7*(indi-1)+k)
+  1     continue
     else
-        do 2, k=1,nbv
-        temps(k)= valmes(7*(indi-1)+k)
- 2      continue
+        do 2 k = 1, nbv
+            temps(k)= valmes(7*(indi-1)+k)
+  2     continue
     endif
 !
 !
-9999  continue
+9999 continue
 end subroutine

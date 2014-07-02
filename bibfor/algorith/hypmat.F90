@@ -21,6 +21,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -59,7 +60,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
     real(kind=8) :: valres(nbres)
     real(kind=8) :: nu
     real(kind=8) :: denom
-    logical(kind=1) :: cmpk
+    aster_logical :: cmpk
 !
 ! ----------------------------------------------------------------------
 !

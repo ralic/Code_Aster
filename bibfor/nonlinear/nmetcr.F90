@@ -19,7 +19,8 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -68,17 +69,16 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
     character(len=24) :: ioinfo, iolcha
     integer :: jioinf, jiolch
     integer :: icham, ich
-    logical(kind=1) :: chaact(nbmax)
+    aster_logical :: chaact(nbmax), lfind
     character(len=8) :: result
     character(len=19) :: resu19
     integer :: ichsy, nbnosy
     character(len=24) :: charch, chnoms, nomsym
     character(len=24) :: chetin, chinit, choper
-    logical :: lfind
 !
     character(len=24) :: nomchs(nbmax), motcob(nbmax)
     character(len=24) :: nomgd(nbmax), motcei(nbmax), loccha(nbmax)
-    logical(kind=1) :: larch(nbmax), letin(nbmax)
+    aster_logical :: larch(nbmax), letin(nbmax)
 ! -- NOM DU CHAMP DANS LA SD RESULTAT
     data nomchs  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,&
      &              'COMPORTEMENT','VITE'        ,'ACCE'        ,&
@@ -159,7 +159,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
     nbchou = 0
     do 1 icham = 1, nbmax
         chaact(icham) = .false.
- 1  end do
+  1 end do
     result = '&&NMETCR'
     resu19 = result
 !
@@ -175,7 +175,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
             if (letin(icham)) nbchin = nbchin + 1
             if (larch(icham)) nbchou = nbchou + 1
         endif
-20  end do
+ 20 end do
 !
 ! --- CREATION SD CHAMPS
 !
@@ -192,7 +192,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
                         motcei(icham), motcob(icham), loccha(icham), letin (icham),&
                         larch (icham))
         endif
-30  end do
+ 30 end do
     ASSERT(ich.eq.nbcham)
 !
 ! --- NOM DES CHAMPS DANS OP0070
@@ -229,7 +229,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
             do 55 ichsy = 1, nbnosy
                 call jenuno(jexnum(resu19//'.DESC', ichsy), nomsym)
                 if (nomsym .eq. chnoms) lfind = .true.
-55          continue
+ 55         continue
 ! ------- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS RSCRSD !
             ASSERT(lfind)
         endif
@@ -239,7 +239,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
         endif
 ! ----- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS NMETCC !
         if (choper .eq. ' ') ASSERT(.false.)
-50  end do
+ 50 end do
     call detrsd('RESULTAT', result)
 !
     call jedema()

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmxvec(modelz, mate, carele, compor, carcri,&
                       sdtime, sddisc, sddyna, numins, valinc,&
@@ -43,8 +45,8 @@ interface
         character(len=19) :: measse(*)
         integer :: nbvect
         character(len=6) :: ltypve(20)
-        logical(kind=1) :: lcalve(20)
+        aster_logical :: lcalve(20)
         character(len=16) :: loptve(20)
-        logical(kind=1) :: lassve(20)
+        aster_logical :: lassve(20)
     end subroutine nmxvec
 end interface

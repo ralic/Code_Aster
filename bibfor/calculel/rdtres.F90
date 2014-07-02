@@ -1,6 +1,7 @@
 subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                   corrm, iocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -64,15 +65,15 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !                 IMA_RE -> IMA
 !-------------------------------------------------------------------
 !
-    integer :: i, nbordr, nbpara,  nbac, nbpa, iad1, iad2, j
-    integer :: iret, nbsym, isym, iordr,  n1, j1, ima2, ima1
-    integer :: nbgrel, igr, jcorrm, iel, nbma1, nbma2,  cret
+    integer :: i, nbordr, nbpara, nbac, nbpa, iad1, iad2, j
+    integer :: iret, nbsym, isym, iordr, n1, j1, ima2, ima1
+    integer :: nbgrel, igr, jcorrm, iel, nbma1, nbma2, cret
     integer :: ite, jmail2
     real(kind=8) :: prec
     character(len=16) :: typres, nomsym(200), nopara
     character(len=8) :: model1, crit, type, model2, kchml
     character(len=19) :: chp, chpre, ligrel
-    logical(kind=1) :: acceno, redpos
+    aster_logical :: acceno, redpos
     integer, pointer :: nume_ordre(:) => null()
     character(len=16), pointer :: noms_para(:) => null()
     integer, pointer :: corrm_inv(:) => null()

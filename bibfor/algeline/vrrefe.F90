@@ -1,5 +1,6 @@
 subroutine vrrefe(objet1, objet2, ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
@@ -40,12 +41,12 @@ subroutine vrrefe(objet1, objet2, ier)
 !                > 0 NOMBRE DE DESCRIPTEURS DIFFERENTS
 !     ------------------------------------------------------------------
 !
-    logical(kind=1) :: ok
+    aster_logical :: ok
 !
     integer :: ival1, ival2
     character(len=19) :: nom1, nom2
     character(len=24) :: refe1, refe2
-    logical(kind=1) :: refa, celk, lgene
+    aster_logical :: refa, celk, lgene
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: irefe1, irefe2, iret

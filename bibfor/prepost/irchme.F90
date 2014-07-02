@@ -58,6 +58,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/utflsh.h"
 #include "asterfort/assert.h"
@@ -87,7 +88,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
     integer :: nbnoec, nbmaec, icelk
     integer :: linoec(*), limaec(*)
 !
-    logical(kind=1) :: lvarie
+    aster_logical :: lvarie
 !
     integer :: codret
 !
@@ -101,7 +102,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
     parameter (ednopt=-1)
 !
     integer :: ifm, nivinf, numpt, iaux, nbgrel, jmaille, j1, n1
-    integer :: nbma,igr,iel,ite,ima
+    integer :: nbma, igr, iel, ite, ima
 !
     character(len=8) :: saux08, modele, ma
     character(len=64) :: nochmd
@@ -211,7 +212,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                 modele='&&IRCHME'
                 call dismoi('NOM_MAILLA', chanom, 'CHAMP', repk=ma)
                 call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
-                call wkvect('&&IRCHME.MAILLE','V V I',nbma,jmaille)
+                call wkvect('&&IRCHME.MAILLE', 'V V I', nbma, jmaille)
                 ligrel = zk24(icelk)(1:19)
                 call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
                 do igr = 1, nbgrel
@@ -221,7 +222,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                     do iel = 1, n1-1
                         ima=zi(j1-1+iel)
                         ASSERT(ima.ge.0 .and. ima.le.nbma)
-                        if (ima.gt.0) zi(jmaille-1+ima)=ite
+                        if (ima .gt. 0) zi(jmaille-1+ima)=ite
                     end do
                 end do
             endif
@@ -282,7 +283,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
         call utflsh(codret)
         write (ifm,10001)
     endif
-
+!
     call jedetr('&&IRCHME.MAILLE')
 !
 end subroutine

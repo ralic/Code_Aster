@@ -25,12 +25,13 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 ! ======================================================================
 ! - VARIABLES D'ENTREE
 !
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
     real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
     character(len=8) :: nomail
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
 ! - VARIABLES DE SORTIE
 !
@@ -40,7 +41,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 !
 ! - VARIABLES LOCALES
 !
-    integer ::  i, kpg, spt
+    integer :: i, kpg, spt
     real(kind=8) :: kni, umc, gamma, kt, clo, para(4), valr(2), tmecn, tmecs
     character(len=8) :: ncra1(4), fami, poum
     integer :: icodre(18)
@@ -83,12 +84,12 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 !
         do 10 i = 1, dimcon
             sigp(i)=0.d0
-10      continue
+ 10     continue
         sigp(1)=sigm(1) -kni/(1-clo/umc)**gamma*(varim(advico)-varip(&
         advico))
         do 20 i = 2, ndim
             sigp(i)=sigm(i)+kt*(defgep(addeme+1)-defgem(addeme+1))
-20      continue
+ 20     continue
     endif
 !
 ! - CALCUP OPERATEUR TANGENT
@@ -100,9 +101,9 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
         drde(addeme,addeme)= tmecn
         do 30 i = 2, ndim
             drde(addeme+i-1,addeme+i-1)= tmecs
-30      continue
+ 30     continue
     endif
 !
-9000  continue
+9000 continue
 !
 end subroutine

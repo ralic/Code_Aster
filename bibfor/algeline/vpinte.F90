@@ -7,8 +7,8 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
     character(len=16) :: option
     integer :: idet(*), ieme(*), npas(*)
     real(kind=8) :: tolf
-    integer :: lraide, lmasse, ldynam, resufi(nfreqb, *)
     integer :: nfreqb
+    integer :: lraide, lmasse, ldynam, resufi(nfreqb, *)
     real(kind=8) :: valp(*), det(*), resufr(nfreqb, *)
     character(len=19) :: solveu
 !     ------------------------------------------------------------------

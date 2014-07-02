@@ -23,6 +23,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     implicit none
 !
 ! PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -32,7 +33,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     real(kind=8) :: resufr(mxfreq, *)
     character(len=*) :: option, resufk(mxfreq, *), typres
     character(len=1) :: ktyp
-    logical(kind=1) :: lns
+    aster_logical :: lns
 !
 ! VARIABLES LOCALES
     integer :: ifm, ifreq, indf, niv, vali(4)
@@ -65,7 +66,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
             endif
             call utmess('I', 'ALGELINE6_61', ni=3, vali=vali, nr=2,&
                         valr=valr)
-10      continue
+ 10     continue
         valr(1)= errmoy/nfreq
         call utmess('I', 'ALGELINE6_58', sr=valr(1))
 !
@@ -100,7 +101,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
             endif
             call utmess('I', 'ALGELINE6_66', ni=2, vali=vali, nr=2,&
                         valr=valr)
-20      continue
+ 20     continue
         if (lamor .eq. 0) then
             valr(1)= errmoy/nfreq
             call utmess('I', 'ALGELINE6_58', sr=valr(1))
@@ -147,7 +148,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                 valr(3)=erc
                 call utmess('I', 'ALGELINE6_72', si=vali(1), nr=3, valr=valr)
             endif
-35      continue
+ 35     continue
         valr(1)= errmoy/nfreq
         call utmess('I', 'ALGELINE6_58', sr=valr(1))
 !
@@ -193,7 +194,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                 valr(3)=erc
                 call utmess('I', 'ALGELINE6_72', si=vali(1), nr=3, valr=valr)
             endif
-36      continue
+ 36     continue
         valr(1)= errmoy/nfreq
         call utmess('I', 'ALGELINE6_58', sr=valr(1))
 !
@@ -224,7 +225,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
             resufi(ifreq,8) = resufi(ifreq,4)
-40      continue
+ 40     continue
         write(ifm,7777)
 !
         elseif ( resufk(nfreq,2) .eq. 'INVERSE_R' .and. option(1:6) .eq.&
@@ -257,7 +258,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
             resufi(ifreq,7) = resufi(ifreq,4)
-50      continue
+ 50     continue
         write(ifm,7777)
 !
         elseif ( resufk(nfreq,2) .eq. 'INVERSE_R' .and. option(1:6) .eq.&
@@ -288,7 +289,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
             resufi(ifreq,6) = resufi(ifreq,4)
-60      continue
+ 60     continue
         write(ifm,7777)
 !
         elseif ( resufk(nfreq,2) .eq. 'INVERSE_C' .and. ( option(1:6)&
@@ -320,7 +321,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
             resufi(ifreq,3) = indf
             resufi(ifreq,4) = indf
             resufi(ifreq,8) = resufi(ifreq,4)
-70      continue
+ 70     continue
         write(ifm,7777)
 !
     endif

@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mminfp(izone, defico, questz, irep, rrep,&
                       lrep)
@@ -22,6 +24,6 @@ interface
         character(len=*) :: questz
         integer :: irep(*)
         real(kind=8) :: rrep(*)
-        logical(kind=1) :: lrep(*)
+        aster_logical :: lrep(*)
     end subroutine mminfp
 end interface

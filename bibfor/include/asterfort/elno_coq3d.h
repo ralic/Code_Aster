@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
                       geom,cara,valpg,outno,lzr,matr, lgreen)
@@ -22,6 +24,6 @@ interface
         character(len=16) :: option
         integer :: nb1,nb2,npgsr,npgsn,nso,nbcou
         real(kind=8) :: geom(*),cara(*),valpg(*),outno(*),lzr(*),matr(*)
-        logical(kind=1) :: lgreen
+        aster_logical :: lgreen
     end subroutine elno_coq3d
 end interface

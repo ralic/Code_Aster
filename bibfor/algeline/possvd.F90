@@ -66,12 +66,13 @@ subroutine possvd(nm, m, n, w, matu,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "blas/dswap.h"
     integer :: nm, m, n, rg
     real(kind=8) :: w(n), u(nm, n), v(nm, n), eps, rv1(n)
-    logical(kind=1) :: matu, matv
+    aster_logical :: matu, matv
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -95,14 +96,14 @@ subroutine possvd(nm, m, n, w, matu,&
                     jmax = i
                     wmax = w(i)
                 endif
-20          continue
+ 20         continue
             if (jmax .ne. j) then
                 w(jmax) = w(j)
                 w(j) = wmax
                 if (matu) call dswap(m, u(1, j), 1, u(1, jmax), 1)
                 if (matv) call dswap(n, v(1, j), 1, v(1, jmax), 1)
             endif
-10      continue
+ 10     continue
     endif
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,8 +119,8 @@ subroutine possvd(nm, m, n, w, matu,&
             call dscal(rgmax, 1.0d0/rv1(1), rv1(1), 1)
             do 30 j = 2, rgmax
                 if (rv1(j) .lt. eps) goto 40
-30          continue
-40          continue
+ 30         continue
+ 40         continue
             rg = j - 1
         else
             rg = 1

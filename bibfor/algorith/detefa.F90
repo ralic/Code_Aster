@@ -2,11 +2,12 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
                   ainter, cnset, n)
     implicit none
 !
-#    include "jeveux.h"
-#    include "asterfort/assert.h"
-#    include "asterfort/conare.h"
-#    include "asterfort/jedema.h"
-#    include "asterfort/jemarq.h"
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 #    include "asterfort/xxmmvd.h"
     integer :: nnose, it, pi1, pi2, cnset(*), n(3)
     real(kind=8) :: ainter(*)
@@ -46,7 +47,7 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
 !
     integer :: ar(12, 3), nbar, a1, a2, n1, n2, n3
     integer :: i, j, zxain
-    logical :: found
+    aster_logical :: found
 !-----------------------------------------------------------------------
     call jemarq()
     zxain=xxmmvd('ZXAIN')

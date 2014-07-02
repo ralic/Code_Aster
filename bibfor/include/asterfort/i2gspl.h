@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i2gspl(debspl, tvois1, tvois2, tplace, schm,&
                       achm, pts, pta)
         integer :: debspl
         integer :: tvois1(*)
         integer :: tvois2(*)
-        logical(kind=1) :: tplace(*)
+        aster_logical :: tplace(*)
         integer :: schm(*)
         integer :: achm(*)
         integer :: pts

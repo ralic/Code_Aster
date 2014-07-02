@@ -30,6 +30,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ECHEC
 !       ---------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/cjsci1.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
@@ -43,7 +44,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
     real(kind=8) :: materf(14, 2), crit(*)
     character(len=8) :: mod
     real(kind=8) :: zero, un, d12, deux, trois, pa, qinit
-    logical(kind=1) :: tract
+    aster_logical :: tract
     integer :: i, j
 !
     common /tdim/   ndt  , ndi
@@ -72,10 +73,10 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
     if (tract) then
         do 10 i = 1, ndi
             sigf(i) = -qinit/3.d0+pa/100.0d0
-10      continue
+ 10     continue
         do 20 i = ndi+1, ndt
             sigf(i) = zero
-20      continue
+ 20     continue
         goto 9999
     endif
 !
@@ -102,11 +103,11 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
             do 40 j = 1, ndi
                 if (i .eq. j) hook(i,j) = al
                 if (i .ne. j) hook(i,j) = la
-40          continue
+ 40         continue
         do 45 i = ndi+1, ndt
             do 45 j = ndi+1, ndt
                 if (i .eq. j) hook(i,j) = deux* mu
-45          continue
+ 45         continue
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
@@ -120,7 +121,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
     call lcsove(sigd, dsig, sigf)
 !
 !
-9999  continue
+9999 continue
 !
 !--->   VINF = VIND, ETAT A T+DT = ELASTIQUE = 0
 !

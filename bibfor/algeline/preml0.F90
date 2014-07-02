@@ -20,6 +20,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
@@ -30,7 +31,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !     VARIABLES LOCALES
     integer :: nrl, lt, n2, ino, num, nobl, i, j, lmat, i2, iddl, ier, ifm, niv
     integer :: idiai, idiai1, ii, li, iconne, nfois, vali(3)
-    logical(kind=1) :: nivdbg
+    aster_logical :: nivdbg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     nivdbg=.false.
@@ -47,7 +48,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
         q(i) = 0
         rl1(i) = 0
         rl2(i) = 0
-10  end do
+ 10 end do
 !---------------------------------------------CALCUL DE ADJNC1
     lmat = diag(n1)
     n2 = 0
@@ -71,7 +72,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
                 nobl = prno((nec+2)* (ino-1)+1)
 !     RECHERCHE DE NOBL : NUMERO DU DDL BLOQUE
 !     DO WHILE (DEEQ(2*NOBL).NE.NUM)
-20              continue
+ 20             continue
                 if (deeq(2*nobl) .ne. num) then
                     nobl = nobl + 1
                     ASSERT(nobl.le.n1)
@@ -104,13 +105,13 @@ subroutine preml0(n1, n2, diag, col, delg,&
                 endif
             endif
         endif
-30  end do
+ 30 end do
 !     CALCUL DE LA TAILLE DE LA LISTE
     lt = 0
     do 40 i = 1, nrl
         i2 = rl(2,i)
         lt = lt + (diag(i2)-diag(i2-1))
-40  end do
+ 40 end do
 !     ON MAJORE LT POUR LES PETITS CAS-TESTS
     if (lt .le. 10) then
         lt = lt**2
@@ -134,7 +135,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
                     do 50 j = idiai1, idiai - 1
                         write(ifm,*) 'LE DDL ', col(j)
                         iconne = iconne + 1
-50                  continue
+ 50                 continue
                 endif
                 do 70 ii = li + 1, n1
                     idiai1 = diag(ii-1) + 1
@@ -151,11 +152,11 @@ subroutine preml0(n1, n2, diag, col, delg,&
                                 iconne = iconne + 1
                             endif
                         endif
-60                  continue
+ 60                 continue
 !
-70              continue
+ 70             continue
             endif
-80      end do
+ 80     end do
         if (iconne .gt. 0) then
             call utmess('A', 'ALGELINE5_53')
             write(ifm,*) 2*iconne ,' TERMES SUPPLEMENTAIRES DANS'&
@@ -182,6 +183,6 @@ subroutine preml0(n1, n2, diag, col, delg,&
                 call utmess('F', 'ALGELINE5_34', ni=3, vali=vali)
             endif
 !
-90      continue
+ 90     continue
     endif
 end subroutine

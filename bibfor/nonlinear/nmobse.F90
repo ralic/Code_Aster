@@ -19,6 +19,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/impfoi.h"
@@ -74,7 +75,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
     character(len=19) :: champ
     character(len=8) :: extrcp, extrch, extrga
     character(len=19) :: chgaus, chnoeu, chelga
-    logical(kind=1) :: lobsv
+    aster_logical :: lobsv
 !
 ! ----------------------------------------------------------------------
 !
@@ -200,9 +201,9 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
         call jedetr(chnoeu)
         call jedetr(chelga)
 !
-99      continue
+ 99     continue
 !
-10  end do
+ 10 end do
 !
 ! --- AFFICHAGE
 !
@@ -219,7 +220,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
     do 45 icham = 1, nbcham
         nomchs = zk24(jobsch+2*(icham-1)+2-1)
         call jedetr(nomchs)
-45  end do
+ 45 end do
 !
     call jedema()
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dlnewi(result, force0, force1, lcrea, lamort,&
                       iinteg, neq, imat, masse, rigid,&
@@ -27,8 +29,8 @@ interface
         character(len=8) :: result
         character(len=19) :: force0
         character(len=19) :: force1
-        logical(kind=1) :: lcrea
-        logical(kind=1) :: lamort
+        aster_logical :: lcrea
+        aster_logical :: lamort
         integer :: iinteg
         integer :: neq
         integer :: imat(3)

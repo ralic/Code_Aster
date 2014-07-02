@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
                       poinc2, elrefe, ndegre)
         character(len=8) :: typmac
-        logical(kind=1) :: lmaj
+        aster_logical :: lmaj
         integer :: nbf
         integer :: nsomf
         real(kind=8) :: poinc1

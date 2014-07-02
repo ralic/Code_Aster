@@ -2,6 +2,7 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/comp_init.h"
@@ -28,7 +29,7 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: comp_noli
     character(len=19), intent(in) :: comp_fuse
 !
@@ -46,28 +47,28 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer nc
+    integer :: nc
     parameter (nc = 2)
     character(len=19) :: chs(nc)
-    logical(kind=1) :: l_cumu(nc)
-    real (kind = 8) :: coef_real(nc)
-    complex (kind = 8) :: coef_cplx(nc)
+    aster_logical :: l_cumu(nc)
+    real(kind = 8) :: coef_real(nc)
+    complex(kind = 8) :: coef_cplx(nc)
 !
     integer :: ibid, nb_cmp
     character(len=19) :: comp_elas
     character(len=19) :: comp_elas_s, comp_noli_s, comp_fuse_s
-    logical(kind=1) :: l_cplx, l_etat_init
+    aster_logical :: l_cplx, l_etat_init
 !
     data l_cumu      /.false._1,.false./
     data coef_real   /1.d0, 1.d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    comp_elas   = '&&DYNA_COMP_ELAS'
+    comp_elas = '&&DYNA_COMP_ELAS'
     comp_elas_s = '&&DYNA_COMP_ELAS_S'
     comp_noli_s = '&&DYNA_COMP_NOLI_S'
     comp_fuse_s = '&&DYNA_COMP_FUSE_S'
-    l_cplx      = .false.
+    l_cplx = .false.
     l_etat_init = .false.
 !
 ! - Create ELAS COMPOR <CARTE>

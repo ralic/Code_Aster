@@ -42,6 +42,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
 !                                   POUR LE TENSEUR D'ELASTICITE
 !
 !========================= DEBUT DES DECLARATIONS ====================
+#include "asterf_types.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmat.h"
     integer :: i, j, nmat
@@ -49,7 +50,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
     real(kind=8) :: angl(3), p(3, 3), passag(6, 6), passal(6, 6)
     real(kind=8) :: vec1(6), vec(6), mat(6, 6), mat1(6, 6), work(6, 6)
     character(len=5) :: sens
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
 !
     data   zero  / 0.d0 /
     data   deux  / 2.d0 /
@@ -61,11 +62,11 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
     do 20 i = 1, 3
         do 20 j = 1, 3
             p(i,j) = zero
-20      continue
+ 20     continue
 !
     do 21 i = 1, 6
         vec1(i) = zero
-21  continue
+ 21 continue
 !
 !
 ! ----   CONSTRUCTION DE LA MATRICE DE PASSAGE (POUR DES VECTEURS)
@@ -124,7 +125,7 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
             do 22 i = 1, 6
                 do 22 j = 1, 6
                     vec1(i) = vec1(i) + passal(i,j)*vec(j)
-22              continue
+ 22             continue
 !
         else if (sens.eq.'GLOBA') then
 !
@@ -173,13 +174,13 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
             do 23 i = 1, 6
                 do 23 j = 1, 6
                     vec1(i) = vec1(i) + passag(i,j)*vec(j)
-23              continue
+ 23             continue
 !
         endif
 !
         do 25 i = 1, 6
             vec(i) = vec1(i)
-25      continue
+ 25     continue
 !
 !
 ! calcul de PASSAG * DSDE *PASSAL et PASSAG * DEPS *PASSAL
@@ -284,9 +285,9 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
         do 30 j = 1, 6
             do 30 i = 1, 6
                 mat(i,j) = mat1(i,j)
-30          continue
+ 30         continue
 !
     endif
 !
-9999  continue
+9999 continue
 end subroutine

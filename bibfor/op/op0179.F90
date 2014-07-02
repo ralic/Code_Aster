@@ -23,6 +23,7 @@ subroutine op0179()
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -53,7 +54,7 @@ subroutine op0179()
     character(len=2) :: nomcmp
     character(len=4) :: nomcha
     real(kind=8) :: a(3), a2(3)
-    logical(kind=1) :: lissf
+    aster_logical :: lissf
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

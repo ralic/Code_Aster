@@ -21,6 +21,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
@@ -71,14 +72,13 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
     character(len=16) :: valk, k16bid
     character(len=19) :: k19bla
     character(len=8) :: k8bid
-    logical(kind=1) :: lerrt, lthm, lflam, lstab, lpilo
-    logical :: ldyna
-    logical(kind=1) :: lvibr, lexge, lmpas
+    aster_logical :: lerrt, lthm, lflam, lstab, lpilo, ldyna
+    aster_logical :: lvibr, lexge, lmpas
     character(len=24) :: errthm, typsel, typpil
     real(kind=8) :: taberr(2), theta, valr, chcrit, freqr, coef, chstab
     real(kind=8) :: instam
     integer :: iret
-    integer :: jinst, jerrt, jpara,   jacces
+    integer :: jinst, jerrt, jpara, jacces
     integer :: jacce2
     real(kind=8), pointer :: plir(:) => null()
     real(kind=8), pointer :: crtr(:) => null()

@@ -2,6 +2,7 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
                       npvneg, istop)
 !
     implicit none
+# include "asterf_types.h"
 # include "jeveux.h"
 # include "asterfort/assert.h"
 # include "asterfort/copisd.h"
@@ -40,7 +41,7 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
     integer ::   npvneg
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    logical (kind=1) :: lqr
+    aster_logical :: lqr
 !
 !
     call jemarq()

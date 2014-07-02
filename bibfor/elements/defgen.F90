@@ -18,9 +18,10 @@ subroutine defgen(testl1, testl2, nno, r, x3,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
     integer :: nno
-    logical(kind=1) :: testl1, testl2
+    aster_logical :: testl1, testl2
     real(kind=8) :: r, x3, sina, cosa, cour, vf(*), dfds(*), depl(*), eps(*)
     real(kind=8) :: epsx3
     real(kind=8) :: uxl(3), uyl(3), betasl(3)
@@ -64,7 +65,7 @@ subroutine defgen(testl1, testl2, nno, r, x3,&
         duxds=duxds+dfds(i)*uxl(i)
         duyds=duyds+dfds(i)*uyl(i)
         dbtds=dbtds+dfds(i)*betasl(i)
-20  end do
+ 20 end do
 !
 !     ESS  ,  KSS  ,  ETT  ,  KTT  ,  GS
 !

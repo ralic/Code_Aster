@@ -1,7 +1,8 @@
 function iselli(elrefz)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-    logical(kind=1) :: iselli
+    aster_logical :: iselli
     character(len=*) :: elrefz
 ! ----------------------------------------------------------------------
 ! ======================================================================

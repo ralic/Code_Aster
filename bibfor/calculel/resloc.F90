@@ -69,6 +69,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -92,7 +93,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     character(len=24) :: chtime, chvois, chsigx, cvoisx, chelem
     character(len=*) :: ligrel, mate
     real(kind=8) :: tbgrca(3)
-    logical(kind=1) :: yaxfem, yathm, perman
+    aster_logical :: yaxfem, yathm, perman
 !
 ! DECLARATION VARIABLES LOCALES
 !

@@ -19,7 +19,8 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisl.h"
@@ -27,7 +28,7 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 #include "asterfort/jemarq.h"
     character(len=24) :: defico, resoco
     integer :: nbliac, llf, llf1, llf2
-    logical(kind=1) :: reageo
+    aster_logical :: reageo
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +50,7 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 !
 !
 !
-    logical(kind=1) :: lpenaf, llagrc
+    aster_logical :: lpenaf, llagrc
 !
 ! ----------------------------------------------------------------------
 !

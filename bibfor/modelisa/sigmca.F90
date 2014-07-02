@@ -42,6 +42,7 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/assert.h"
@@ -49,17 +50,17 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-    logical(kind=1) :: quad
+    aster_logical :: quad
     character(len=19) :: carsig, numaca, tablca
     integer :: icabl, nbnoca(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: idecma, idecno, imail, ipara, jnumac,   jtens,  nblign, nbmaca
+    integer :: idecma, idecno, imail, ipara, jnumac, jtens, nblign, nbmaca
     integer :: nbno, nbpara, numail, nbma, mma
     character(len=24) :: tens
     real(kind=8) :: rtens
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
     character(len=24) :: parcr
     real(kind=8), pointer :: valv(:) => null()
@@ -92,7 +93,7 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
         endif
         if (trouve) goto 11
     end do
-11  continue
+ 11 continue
     idecno = nblign - nbno
 !
 ! 1.2 NUMEROS DES MAILLES APPARTENANT AUX CABLES

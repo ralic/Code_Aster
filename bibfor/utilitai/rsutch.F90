@@ -1,5 +1,6 @@
 subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -11,7 +12,7 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
 #include "asterfort/rsutrg.h"
     integer :: iordr
     character(len=*) :: nomsd, nomsy, nomcha
-    logical(kind=1) :: lverif
+    aster_logical :: lverif
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

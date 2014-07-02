@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
         character(len=8) :: nomu
         character(len=8) :: noma
         integer :: lmax
-        logical(kind=1) :: locamb
+        aster_logical :: locamb
         integer :: nbocc
     end subroutine aceagb
 end interface

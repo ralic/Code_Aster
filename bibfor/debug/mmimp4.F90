@@ -20,7 +20,8 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jenuno.h"
@@ -31,7 +32,7 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
     integer :: iptm
     integer :: indcoi, indcon
     integer :: indfri, indfrn
-    logical(kind=1) :: lfrot, lvites, lgliss
+    aster_logical :: lfrot, lvites, lgliss
     real(kind=8) :: jeu, jeuvit, lambdc
 !
 ! ----------------------------------------------------------------------

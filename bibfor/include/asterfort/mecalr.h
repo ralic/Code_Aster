@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                       resuc1, nbordr, modele, mate, cara,&
                       nchar, ctyp)
-        logical(kind=1) :: newcal
+        aster_logical :: newcal
         character(len=16) :: tysd
         character(len=19) :: knum
         character(len=19) :: kcha

@@ -33,6 +33,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/amgene.h"
@@ -61,15 +62,15 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     character(len=8) :: fonrev(*), nofdep(*), nofvit(*), nofacc(*), monmot
     character(len=8) :: fk(2), dfk(2), foncp, fonca, foncv, vitvar
 !
-    logical(kind=1) :: lamor, prdeff
+    aster_logical :: lamor, prdeff
     real(kind=8) :: zero, teval, dteval, dt, coefm(*), dplmod(nbchoc, neqgen, *)
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
     real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd
     real(kind=8) :: errv, r8bid
     real(kind=8) :: psidel(*), conv, skd, skv, tol, temps, arot
-    real(kind=8) :: cdp(7), adp(6, 6) , b4b5(7), errde, errvi
+    real(kind=8) :: cdp(7), adp(6, 6), b4b5(7), errde, errvi
     real(kind=8) :: fsauv(palmax, 3), vrot, gyogen(*), rgygen(*), amogen(*)
-    real(kind=8) :: saucho(nbchoc,*), saured(*), saurev(*), work1(*), amgy(*), rigy(*), depl(*)
+    real(kind=8) :: saucho(nbchoc, *), saured(*), saurev(*), work1(*), amgy(*), rigy(*), depl(*)
     real(kind=8) :: vite(*), acce(*), fext(*), depli(*), vitei(*)
     real(kind=8) :: kde(*), kvi(*)
 !
@@ -136,20 +137,20 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
 !    b4(7) = 0.0d0
 !
 !   Calcul de b4-b5 pour gagner du temps et de la précision (peut-être)
-    b4b5(1) =  71.0d0/57600.0d0
-    b4b5(2) =  0.0d0
+    b4b5(1) = 71.0d0/57600.0d0
+    b4b5(2) = 0.0d0
     b4b5(3) = -71.0d0/16695.0d0
-    b4b5(4) =  71.0d0/1920.0d0
+    b4b5(4) = 71.0d0/1920.0d0
     b4b5(5) = -17253.0d0/339200.0d0
-    b4b5(6) =  22.0d0/525.0d0
+    b4b5(6) = 22.0d0/525.0d0
     b4b5(7) = -1.0d0/40.0d0
-
+!
 !   Boucle sur les estimations de ki
     do ee = 1, netag
 !       Initialisation des forces extérieures
         fext(1:neqgen) = zero
 !       Calcul classique forces non-linéaires à "teval + dteval"
-        teval  = temps + dt*cdp(ee)
+        teval = temps + dt*cdp(ee)
         dteval = dt*( cdp(ee+1) - cdp(ee) )
         call mdfnli(neqgen, depl, vite, acce, fext,&
                     nbchoc, logcho, dplmod, parcho, noecho,&
@@ -185,9 +186,9 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
         vrot = 0.d0
         arot = 0.d0
         if (vitvar(1:3) .eq. 'OUI') then
-            call fointe('F ', foncv, 1, ['INST'], [teval], &
+            call fointe('F ', foncv, 1, ['INST'], [teval],&
                         vrot, ier)
-            call fointe('F ', fonca, 1, ['INST'], [teval], &
+            call fointe('F ', fonca, 1, ['INST'], [teval],&
                         arot, ier)
             do im = 1, neqgen
                 do jm = 1, neqgen
@@ -207,8 +208,8 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
         endif
 !
         if (nbexci .ne. 0) then
-            call mdfext(teval, r8bid, neqgen, nbexci, idescf, &
-                        nomfon, coefm, liad, inumor, 1, &
+            call mdfext(teval, r8bid, neqgen, nbexci, idescf,&
+                        nomfon, coefm, liad, inumor, 1,&
                         fext)
         endif
 !

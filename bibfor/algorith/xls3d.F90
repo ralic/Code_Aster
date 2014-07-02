@@ -5,6 +5,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -27,7 +28,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
     character(len=8) :: noma
     integer :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
-    logical(kind=1) :: callst, grille
+    aster_logical :: callst, grille
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,13 +52,13 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
     real(kind=8) :: dmin, eps, eps1, eps2, eps3
     integer :: imafis, inoma, inose, isefis, itri, jconx1, jconx2, jma
     integer :: jdlima, jdlise, n1, n2, nbnoma, nbsef, nmaabs
-    integer :: nseabs, ntri, num, nunoc, itypma,  jcrd
+    integer :: nseabs, ntri, num, nunoc, itypma, jcrd
     real(kind=8) :: xln, xlt
     integer :: ino, nbmaf, nuno(4), nunose(2), i, nbnott(3)
     real(kind=8) :: ab(3), ac(3), ap(3), vn(3), vnt(3), bc(3)
     real(kind=8) :: a(3), p(3), b(3), c(3), m(3), pm(3)
     real(kind=8) :: norme, ps, ps1, ps2, d
-    logical(kind=1) :: ma2ff
+    aster_logical :: ma2ff
     character(len=19) :: mai, sens
     character(len=8) :: nomail
     real(kind=8) :: mprim(3), pmprim(3), cos, sin, vect(3), nove, pronor, angle
@@ -86,7 +87,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
         itypma=zi(jma-1+nmaabs)
         call panbno(itypma, nbnott)
         nbno_ma_fondfiss(imafis)=nbnott(1)
- 5  end do
+  5 end do
 !
 !     VERIFICATION DE L'ORIENTATION DES MAILLES DE LA FISSURES
     sens='&&XLS3D.ORI_MAFIS'
@@ -142,7 +143,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                     bc(i)=c(i)-b(i)
                     ap(i)=p(i)-a(i)
                     ac(i)=c(i)-a(i)
-211              continue
+211             continue
 !
 !           CALCUL DE LA NORMALE A LA MAILLE TRIA3
 !           PROJECTION DE P SUR LA MAILLE VOIR R5.03.50-B
@@ -187,7 +188,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                 do 212 i = 1, 3
                     m(i)=a(i)+eps1*ab(i)+eps2*ac(i)
                     pm(i)=m(i)-p(i)
-212              continue
+212             continue
 !
 !           CALCUL DE LA DISTANCE PM
                 d=padist(3,p,m)
@@ -198,9 +199,9 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                     xln=zi(jsens-1+imafis)*ddot(3,vn,1,pm,1)
                 endif
 !
-21          continue
+ 21         continue
 !
- 2      continue
+  2     continue
 !
         zr(jlnsv-1+(ino-1)+1)=xln
         zl(jlnsl-1+(ino-1)+1)=.true.
@@ -244,7 +245,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !             POUR RECUPERER UN 3EME POINT (SOMMET) DE LA MAILLE
 !             QUI NE SOIT PAS SUR LE FOND
                     if ((nunose(1).ne.num) .and. (nunose(2).ne.num)) nunoc=num
-32              continue
+ 32             continue
 !
                 if ((n1*n2) .eq. 1) then
 !
@@ -256,7 +257,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                         ab(i)=b(i)-a(i)
                         ap(i)=p(i)-a(i)
                         ac(i)=c(i)-a(i)
-33                  continue
+ 33                 continue
 !
 !             CALCUL DE LA NORMALE A LA MAILLE
                     call provec(ab, ac, vn)
@@ -276,7 +277,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
                     do 344 i = 1, 3
                         mprim(i)=a(i)+eps*ab(i)
-344                  continue
+344                 continue
 !
 !             ON RAMENE M SUR LES BORDS S'IL LE FAUT
                     if (eps .gt. 1.d0) eps=1.d0
@@ -286,7 +287,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                         m(i)=a(i)+eps*ab(i)
                         pm(i)=m(i)-p(i)
                         pmprim(i)=mprim(i)-p(i)
-34                  continue
+ 34                 continue
 !
 !              CALCUL DE L'ANGLE (PM,PM')
 !                  OU M EST LE PROJETE RAMENE
@@ -320,18 +321,18 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
                 endif
 !
-31          continue
+ 31         continue
 !
             if (.not.ma2ff) then
                 call utmess('F', 'XFEM2_17')
             endif
- 3      continue
+  3     continue
 !
-888      continue
+888     continue
         zr(jltsv-1+(ino-1)+1)=xlt
         zl(jltsl-1+(ino-1)+1)=.true.
 !
-11  end do
+ 11 end do
 !
     AS_DEALLOCATE(vi=nbno_ma_fondfiss)
     call jedetr('&&XLS3D.ORI_MAFIS')

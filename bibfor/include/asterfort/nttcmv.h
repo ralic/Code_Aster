@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nttcmv(modele, mate, carele, fomult, charge,&
                       infcha, infoch, numedd, solveu, time,&
@@ -34,8 +36,8 @@ interface
         character(len=24) :: chlapm
         real(kind=8) :: tpsthe(6)
         real(kind=8) :: tpsnp1
-        logical(kind=1) :: reasvt
-        logical(kind=1) :: reasmt
+        aster_logical :: reasvt
+        aster_logical :: reasmt
         character(len=1) :: creas
         character(len=24) :: vtemp
         character(len=24) :: vtempm

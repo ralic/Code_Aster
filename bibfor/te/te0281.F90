@@ -31,6 +31,7 @@ subroutine te0281(option, nomte)
     implicit none
 !
 ! PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
@@ -55,21 +56,21 @@ subroutine te0281(option, nomte)
     integer :: itemps
     integer :: isechi, isechf, ihydr
     integer :: npg2, ipoid2, ivf2, idfde2
-    logical(kind=1) :: lhyd
+    aster_logical :: lhyd
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
     call uttgel(nomte, typgeo)
     if ((lteatt('LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
-        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     else
-        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     endif
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !C====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -103,8 +104,8 @@ subroutine te0281(option, nomte)
             hydrpg(kp)=0.d0
             do 162 i = 1, nno
                 hydrpg(kp)=hydrpg(kp)+zr(ihydr)*zr(ivf2+l+i-1)
-162          continue
-152      continue
+162         continue
+152     continue
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                     ' ', 'THER_HYDR', 0, ' ', [0.d0],&
@@ -131,7 +132,7 @@ subroutine te0281(option, nomte)
                 dtpgdx = dtpgdx + zr(itemp+i-1)*dfdx(i)
                 dtpgdy = dtpgdy + zr(itemp+i-1)*dfdy(i)
                 dtpgdz = dtpgdz + zr(itemp+i-1)*dfdz(i)
-10          continue
+ 10         continue
 !
 ! CALCUL DES CARACTERISTIQUES MATERIAUX STD EN TRANSITOIRE UNIQUEMENT
 ! ON LES EVALUE AVEC TPG=T-
@@ -143,9 +144,9 @@ subroutine te0281(option, nomte)
                                  &fdy(i)*dtpgdy+ dfdz(i)* dtpgdz)
                 zr(ivecti+i-1) = zr(ivecti+i-1) - poids* (1.0d0-theta) *lambda* (dfdx(i)*dtpgdx+d&
                                  &fdy(i)*dtpgdy+ dfdz(i)* dtpgdz)
-40          continue
+ 40         continue
 ! FIN BOUCLE SUR LES PTS DE GAUSS
-70      end do
+ 70     end do
 !
 !====
 ! 3. CALCULS DU TERME DE MASSE DE L'OPTION
@@ -160,7 +161,7 @@ subroutine te0281(option, nomte)
             do 80 i = 1, nno
 ! CALCUL DE T- ET DE SON GRADIENT
                 tpg = tpg + zr(itemp+i-1)*zr(ivf2+l+i-1)
-80          continue
+ 80         continue
 !
 ! CALCUL DES CARACTERISTIQUES MATERIAUX EN TRANSITOIRE UNIQUEMENT
 ! ON LES EVALUE AVEC TPG=T-
@@ -169,11 +170,11 @@ subroutine te0281(option, nomte)
             if (lhyd) then
 ! THER_HYDR
                 do 81 i = 1, nno
-                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids* ((beta-  chal(1)*hydrpg(kp))* zr(ivf&
-                                     &2+l+i-1)/deltat)
-                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids* ((dbeta*  tpg-chal(1)*hydrpg(kp))* z&
-                                     &r(ivf2+l+i-1)/deltat)
-81              continue
+                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids* ((beta- chal(1)*hydrpg(kp))* zr(ivf2&
+                                     &+l+i-1)/deltat)
+                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids* ((dbeta* tpg-chal(1)*hydrpg(kp))* zr&
+                                     &(ivf2+l+i-1)/deltat)
+ 81             continue
             else
 ! THER_NL
 !
@@ -182,12 +183,12 @@ subroutine te0281(option, nomte)
                 do 110 i = 1, nno
                     zr(ivectt+i-1) = zr(ivectt+i-1) + poids*beta/ deltat*zr(ivf2+l+i-1)
                     zr(ivecti+i-1) = zr(ivecti+i-1) + poids*dbeta*tpg/ deltat*zr(ivf2+l+i-1)
-110              continue
+110             continue
 !
 ! ENDIF THER_HYDR
             endif
 ! FIN BOUCLE SUR LES PTS DE GAUSS
-140      end do
+140     end do
 !
 ! --- SECHAGE
 !
@@ -217,15 +218,15 @@ subroutine te0281(option, nomte)
                 dtpgdx = dtpgdx + zr(itemp+i-1)*dfdx(i)
                 dtpgdy = dtpgdy + zr(itemp+i-1)*dfdy(i)
                 dtpgdz = dtpgdz + zr(itemp+i-1)*dfdz(i)
-160          continue
+160         continue
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
 !
             do 170 i = 1, nno
                 zr(ivectt+i-1) = zr(ivectt+i-1) - poids* ( (1.0d0- theta)*diff* (dfdx(i)*dtpgdx+ &
                                  &dfdy(i)*dtpgdy+dfdz(i)* dtpgdz))
                 zr(ivecti+i-1) = zr(ivectt+i-1)
-170          continue
-150      continue
+170         continue
+150     continue
         do 151 kp = 1, npg2
             l = nno*(kp-1)
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
@@ -241,13 +242,13 @@ subroutine te0281(option, nomte)
                 dtpgdx = dtpgdx + zr(itemp+i-1)*dfdx(i)
                 dtpgdy = dtpgdy + zr(itemp+i-1)*dfdy(i)
                 dtpgdz = dtpgdz + zr(itemp+i-1)*dfdz(i)
-161          continue
+161         continue
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             do 171 i = 1, nno
                 zr(ivectt+i-1) = zr(ivectt+i-1) + poids* (tpg/deltat* zr(ivf2+l+i-1))
                 zr(ivecti+i-1) = zr(ivectt+i-1)
-171          continue
-151      continue
+171         continue
+151     continue
 !
     endif
 ! FIN ------------------------------------------------------------------

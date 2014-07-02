@@ -22,6 +22,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ecpuis.h"
@@ -80,7 +81,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !      COMMONS COMMUNS A NMCRI2 ET NMISOT
     common /rconm2/alfafa,unsurn,sieleq
 !
-    logical(kind=1) :: cplan, plasti, inco, dech
+    aster_logical :: cplan, plasti, inco, dech
     real(kind=8) :: depsth(6), valres(3), epsthe, pm, co
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, airerp
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, hydrm, hydrp
@@ -145,20 +146,27 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     nompar(1) = 'TEMP'
-    call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret3)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tp, iret4)
+    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+                ksp, tm, iret3)
+    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+                ksp, tp, iret4)
     valpam(1) = tm
     valpap(1) = tp
 !
-    call rcvarc(' ', 'HYDR', '-', fami, kpg, ksp, hydrm, iret2)
+    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+                ksp, hydrm, iret2)
     if (iret2 .ne. 0) hydrm=0.d0
-    call rcvarc(' ', 'HYDR', '+', fami, kpg, ksp, hydrp, iret2)
+    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+                ksp, hydrp, iret2)
     if (iret2 .ne. 0) hydrp=0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg, ksp, sechm, iret2)
+    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+                ksp, sechm, iret2)
     if (iret2 .ne. 0) sechm=0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg, ksp, sechp, iret2)
+    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+                ksp, sechp, iret2)
     if (iret2 .ne. 0) sechp=0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg, ksp, sref, iret2)
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+                ksp, sref, iret2)
     if (iret2 .ne. 0) sref=0.d0
 !
     do k = 1, 6
@@ -167,29 +175,34 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     end do
 !
     do k = 1, ndimsi
-        call rcvarc(' ', epsa(k), '-', fami, kpg, ksp, defam(k), iret5)
+        call rcvarc(' ', epsa(k), '-', fami, kpg,&
+                    ksp, defam(k), iret5)
         if (iret5 .ne. 0) defam(k)=0.d0
 !
-        call rcvarc(' ', epsa(k), '+', fami, kpg, ksp, defap(k), iret5)
+        call rcvarc(' ', epsa(k), '+', fami, kpg,&
+                    ksp, defap(k), iret5)
         if (iret5 .ne. 0) defap(k)=0.d0
     end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
-    do  k = 4, ndimsi
+    do k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
     end do
 !
     if (compor(1:14) .eq. 'VMIS_ISOT_TRAC') then
-        call rcvalb(fami, kpg, ksp, '-', imate, ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '-', imate,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, nomres(2), valres(2), icodre(2), 2)
         num = valres(2)
-        call rcvalb(fami, kpg, ksp, '+', imate, ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, nomres(2), valres(2), icodre(2), 2)
         nu = valres(2)
     else
-        call rcvalb(fami, kpg, ksp, '-', imate, ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '-', imate,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     2, nomres(1), valres(1), icodre(1), 2)
         em = valres(1)
         num = valres(2)
@@ -197,7 +210,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !        CRIT_RUPT
         if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, lgpg, em, sigm)
+            call rupmat(fami, kpg, ksp, imate, vim,&
+                        lgpg, em, sigm)
         endif
 !
         if (inco) then
@@ -205,7 +219,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         else
             troikm = em/(1.d0-2.d0*num)
         endif
-        call rcvalb(fami, kpg, ksp, '+', imate, ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     2, nomres(1), valres(1), icodre(1), 2)
         e = valres(1)
         nu = valres(2)
@@ -213,7 +228,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !        CRIT_RUPT
         if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, lgpg, e, sigm)
+            call rupmat(fami, kpg, ksp, imate, vim,&
+                        lgpg, e, sigm)
         endif
 !
         if (inco) then
@@ -231,22 +247,26 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !
     nomres(1)='B_ENDOGE'
     nomres(2)='K_DESSIC'
-    call rcvalb(fami, kpg, ksp, '-', imate, ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, nomres(1), valres(1), icodre(1), 0)
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendom = valres(1)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate, ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, nomres(1), valres(1), icodre(1), 0)
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendop = valres(1)
 !
-    call rcvalb(fami, kpg, ksp, '-', imate, ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, nomres(2), valres(2), icodre(2), 0)
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessm = valres(2)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate, ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, nomres(2), valres(2), icodre(2), 0)
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessp = valres(2)
@@ -260,7 +280,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !         nomres(1)='D_SIGM_EPSI'
         nomres(1)='D_SIGM_E'
         nomres(2)='SY'
-        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate,&
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         dsde=valres(1)
         sigy=valres(2)
@@ -277,7 +298,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         nomres(1)='SY'
         nomres(2)='A_PUIS'
         nomres(3)='N_PUIS'
-        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_PUIS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate,&
+                    ' ', 'ECRO_PUIS', 0, ' ', [0.d0],&
                     3, nomres, valres, icodre, 2)
         sigy = valres(1)
         alfafa = valres(2)
@@ -294,17 +316,20 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         valpam(2)=sechm
         nompar(3)='HYDR'
         valpam(3)=hydrm
-        call rctype(imate, 3, nompar, valpam, para_vale, para_type)
+        call rctype(imate, 3, nompar, valpam, para_vale,&
+                    para_type)
 !
         if ((para_type.eq.'TEMP') .and. (iret3.eq.1)) then
             call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', tm, jprolm, jvalem, nbvalm, em)
+        call rctrac(imate, 1, 'SIGM', tm, jprolm,&
+                    jvalem, nbvalm, em)
 !
 !        CRIT_RUPT VMIS_ISOT_TRAC
         if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, lgpg, em, sigm)
+            call rupmat(fami, kpg, ksp, imate, vim,&
+                        lgpg, em, sigm)
         endif
 !
         deumum = em/(1.d0+num)
@@ -317,20 +342,24 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         valpap(2)=sechp
         nompar(3)='HYDR'
         valpap(3)=hydrp
-        call rctype(imate, 3, nompar, valpap, para_vale, para_type)
+        call rctype(imate, 3, nompar, valpap, para_vale,&
+                    para_type)
         if ((para_type.eq.'TEMP') .and. (iret4.eq.1)) then
             call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', para_vale, jprolp, jvalep, nbvalp, e)
+        call rctrac(imate, 1, 'SIGM', para_vale, jprolp,&
+                    jvalep, nbvalp, e)
 !        CRIT_RUPT VMIS_ISOT_TRAC
         if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, lgpg, e, sigm)
+            call rupmat(fami, kpg, ksp, imate, vim,&
+                        lgpg, e, sigm)
         endif
 !
-        call rcfonc('S', 1, jprolp, jvalep, nbvalp, sigy = sigy)
-        call rcfonc('V', 1, jprolp, jvalep, nbvalp, p =  vim(1),rp = rp,&
-                    rprim = rprim, airerp = airerp)
+        call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
+                    sigy = sigy)
+        call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
+                    p = vim(1), rp = rp, rprim = rprim, airerp = airerp)
         if (inco) then
             deuxmu = 2.d0*e/3.d0
             troisk = deuxmu
@@ -347,8 +376,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 !     --------------------------------
     coef = epsthe - bendop*hydrp + bendom*hydrm - kdessp*(sref-sechp) + kdessm*(sref-sechm)
-    if (cplan) deps(3)=-nu/(1.d0-nu)*(deps(1)+deps(2)) +(1.d0+nu)/(1.d0-nu)*coef + nu*(defap(1)-&
-               defam(1)+defap(2)-defam(2))/(1.d0-nu) + defap(3)-defam(3)
+    if (cplan) deps(3)=-nu/(1.d0-nu)*(deps(1)+deps(2)) +(1.d0+nu)/(1.d0-nu)*coef + nu*(defap(1)- &
+               &defam(1)+defap(2)-defam(2))/(1.d0-nu) + defap(3)-defam(3)
     depsmo = 0.d0
     do k = 1, 3
         depsth(k) = deps(k) -coef -(defap(k)-defam(k))
@@ -401,12 +430,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             vip(2) = 1.d0
             pm = vim(1)
             if (cplan) then
-                niter  = abs(nint(crit(1)))
+                niter = abs(nint(crit(1)))
                 jprol2 = jprolp
                 jvale2 = jvalep
                 nbval2 = nbvalp
-                precr  = abs(crit(3)) * sigy
-
+                precr = abs(crit(3)) * sigy
+!
 !
 !             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
 !
@@ -416,19 +445,21 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 else if (compor(10:14) .eq. '_PUIS') then
                     dp0 = (sieleq - rp)/(1.5d0*deuxmu)
                 else
-                    call rcfonc('E', 1, jprolp, jvalep, nbvalp, e = e, nu = nu, p = pm, rp = rp,&
-                                rprim = rprim, airerp = airerp, sieleq = sieleq, dp = dp0)
+                    call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
+                                e = e, nu = nu, p = pm, rp = rp, rprim = rprim,&
+                                airerp = airerp, sieleq = sieleq, dp = dp0)
                 endif
                 xap = dp0
-                call zerofr(0, 'DEKKER', nmcri1, 0.d0, xap, precr, niter, dp, iret, ibid)
+                call zerofr(0, 'DEKKER', nmcri1, 0.d0, xap,&
+                            precr, niter, dp, iret, ibid)
                 if (iret .eq. 1) goto 999
                 if (line .gt. 0.5d0) then
                     rp = sigy +rprim*(pm+dp)
                 else if (line.lt.-0.5d0) then
                     rp=sigy+sigy*(e*(pm+dp)/alfafa/sigy)**unsurn
                 else
-                    call rcfonc('V', 1, jprolp, jvalep, nbvalp, p = pm+dp, rp = rp,&
-                                airerp = airerp)
+                    call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
+                                p = pm+dp, rp = rp, airerp = airerp)
                 endif
                 dx = 3.d0*(1.d0-2.d0*nu)*sigel(3)*dp/(e*dp+2.d0* (1.d0-nu)*rp)
             else
@@ -445,14 +476,16 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                     xap = dp0
                     precr = crit(3) * sigy
                     niter = nint(crit(1))
-                    call zerofr(0, 'DEKKER', nmcri2, 0.d0, xap, precr, niter, dp, iret, ibid)
+                    call zerofr(0, 'DEKKER', nmcri2, 0.d0, xap,&
+                                precr, niter, dp, iret, ibid)
                     if (iret .eq. 1) goto 999
-                    call ecpuis(e, sigy, alfafa, unsurn, pm, dp, rp, rprim)
+                    call ecpuis(e, sigy, alfafa, unsurn, pm,&
+                                dp, rp, rprim)
 !
                 else if (compor(10:14) .eq. '_TRAC') then
-                    call rcfonc('E', 1, jprolp, jvalep, nbvalp, e = e, nu = nu,&
-                                 p = vim(1), rp = rp,&
-                                rprim = rprim, airerp = airerp, sieleq = sieleq, dp = dp)
+                    call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
+                                e = e, nu = nu, p = vim(1), rp = rp, rprim = rprim,&
+                                airerp = airerp, sieleq = sieleq, dp = dp)
                 endif
             endif
         endif
@@ -486,15 +519,15 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 sigdv(k) = sigmdv(k)
                 rp = rp + sigdv(k)**2
             end do
-             rp = sqrt(1.5d0*rp)
+            rp = sqrt(1.5d0*rp)
 !            condition sur sigeps inoperante pour RIGI_MECA_TANG car deps=0             
-             sigeps=1.d0
+            sigeps=1.d0
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
             do k = 1, ndimsi
                 sigdv(k) = sigpdv(k)
             end do
-             sigeps = 0.d0
+            sigeps = 0.d0
             do k = 1, ndimsi
                 sigeps = sigeps + sigdv(k)*depsdv(k)
             end do
@@ -537,14 +570,15 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 do 137 l = 1, ndimsi
                     if (l .eq. 3) goto 137
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
-137              continue
-136          continue
+137             continue
+136         continue
         endif
     endif
 !
     if (option(1:9) .ne. 'RIGI_MECA') then
         if (crit(10) .gt. 0.d0) then
-            call radial(ndimsi, sigm, sigp, vim(2), vip(2), 0, xm, xp, radi)
+            call radial(ndimsi, sigm, sigp, vim(2), vip(2),&
+                        0, xm, xp, radi)
             if (radi .gt. crit(10)) then
                 iret=2
             endif

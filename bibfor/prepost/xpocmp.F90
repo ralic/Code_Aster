@@ -23,6 +23,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
@@ -31,7 +32,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 #include "asterfort/jeveuo.h"
     integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(nbcmp)
     integer :: ddlc
-    logical(kind=1) :: lmeca, pre1, press
+    aster_logical :: lmeca, pre1, press
     character(len=8) :: elrefp
     character(len=19) :: cns1
 !
@@ -53,8 +54,8 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 !     CMP    : POSITION DES DDLS DE DEPL X-FEM DANS LE CHAMP_NO DE DEPL1
 !
 !
-    integer ::  jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
-    logical(kind=1) :: exist(n, nbcmp), contas
+    integer :: jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
+    aster_logical :: exist(n, nbcmp), contas
     character(len=8) :: nomcmp, k8bid
     character(len=8), pointer :: cnsc(:) => null()
 !
@@ -101,8 +102,8 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             if (press) goto 1
         endif
 !
-        do 24,j=1,n
-        if (.not.exist(j,i)) goto 21
+        do 24 j = 1, n
+            if (.not.exist(j,i)) goto 21
  24     continue
 !
   1     continue

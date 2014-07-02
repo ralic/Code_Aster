@@ -1,5 +1,6 @@
 subroutine speph0(nomu, table)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/dismoi.h"
@@ -51,13 +52,13 @@ subroutine speph0(nomu, table)
 !
     integer :: ibid, nbmod1, nbtrou, lnumor, nbmode, ilmode, im, imod1, iad
     integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn
-    integer ::  nbmail, i,   inoeud, iddl, nupo, ivari, napex1
+    integer :: nbmail, i, inoeud, iddl, nupo, ivari, napex1
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
     integer :: isip, icham, nbn1, nbn2, tmod(1)
-    integer :: i1, lnumi, lnumj, mxval,  lfreq, lrefes, lfreqs
+    integer :: i1, lnumi, lnumj, mxval, lfreq, lrefes, lfreqs
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
-    logical(kind=1) :: intmod, intphy, intdon
+    aster_logical :: intmod, intphy, intdon
     character(len=8) :: k8b, modmec, modsta, noeud, noma, cmp
     character(len=16) :: movrep, optcal, optcha, typcha, acces, typmec, nocham
     character(len=16) :: optch1, maille

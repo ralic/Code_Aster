@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     function xxishm(mailc, mailx, mo)
         character(len=24) :: mailc
         character(len=24) :: mailx
         character(len=8) :: mo
-        logical(kind=1) :: xxishm
+        aster_logical :: xxishm
     end function xxishm
 end interface 

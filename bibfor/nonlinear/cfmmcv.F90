@@ -3,8 +3,9 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
                   numins, iterat, defico, resoco, valinc,&
                   solalg, instan)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfconv.h"
 #include "asterfort/cfdisi.h"
@@ -75,8 +76,8 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical(kind=1) :: lctcd, lctcc, lnewtc
-    logical(kind=1) :: mmcvca
+    aster_logical :: lctcd, lctcc, lnewtc
+    aster_logical :: mmcvca
     character(len=8) :: nomo
     character(len=16) :: k16bla
     real(kind=8) :: r8bid
@@ -89,9 +90,9 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 ! --- INITIALISATIONS
 !
     mmcvca = .false.
-    nomo   = modele(1:8)
+    nomo = modele(1:8)
     k16bla = ' '
-    ntpc   = cfdisi(defico,'NTPC' )
+    ntpc = cfdisi(defico,'NTPC' )
 !
 ! --- FONCTIONNALITES ACTIVEES
 !

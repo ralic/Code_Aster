@@ -27,6 +27,7 @@ subroutine remome(promes, modmes, nommac)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
@@ -41,7 +42,7 @@ subroutine remome(promes, modmes, nommac)
 #include "asterfort/wkvect.h"
     character(len=8) :: promes, modmes, nommac
 !
-    logical(kind=1) :: zcmplx
+    aster_logical :: zcmplx
 !
     character(len=1) :: typval
     character(len=8) :: k8bid, scal
@@ -49,9 +50,9 @@ subroutine remome(promes, modmes, nommac)
     character(len=19) :: chamno, chs
     character(len=24) :: vnoeud, vrange, vmes, vorien, vref
 !
-    integer :: nbmesu, nbmtot, numord, lmesu, imes,  lrange, lori, ii
-    integer :: iret, icmp, ino, lnoeud,  gd, nbcmp, ibid, lref
-    integer ::   jcnsv, jcnsl, jcnsk, tord(1)
+    integer :: nbmesu, nbmtot, numord, lmesu, imes, lrange, lori, ii
+    integer :: iret, icmp, ino, lnoeud, gd, nbcmp, ibid, lref
+    integer :: jcnsv, jcnsl, jcnsk, tord(1)
 !
     real(kind=8) :: rbid, vori(3), val, vect(3)
 !
@@ -93,7 +94,7 @@ subroutine remome(promes, modmes, nommac)
                 cbid, rbid, 'ABSOLU', tord, 1,&
                 ibid)
     nbmtot=tord(1)            
-                
+!
 !
 ! BOUCLE SUR LES NUMEROS ORDRE
 !
@@ -133,50 +134,47 @@ subroutine remome(promes, modmes, nommac)
 ! DIRECTION DE MESURE (VECTEUR DIRECTEUR)
             do 21 ii = 1, 3
                 vori(ii) = zr(lori-1 + (imes-1)*3 +ii)
-21          continue
+ 21         continue
 !
 ! NORMALISATION DU VECTEUR DIRECTEUR
             val = 0.d0
             do 22 ii = 1, 3
                 val = val + vori(ii)*vori(ii)
-22          continue
+ 22         continue
             val = sqrt(val)
             do 23 ii = 1, 3
                 vori(ii) = vori(ii)/val
-23          continue
+ 23         continue
 !
             if (zcmplx) then
                 do 130 icmp = 1, nbcmp
-                    if (cnsc(icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
-                                                                 )
-                    if (cnsc(icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
-                                                                 )
-                    if (cnsc(icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
-                                                                 )
-130              continue
+                    if (cnsc(icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
+                    if (cnsc(icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
+                    if (cnsc(icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
+130             continue
 !
                 valc = dcmplx(0.d0,0.d0)
 !
                 do 300 ii = 1, 3
                     valc = valc + vectc(ii) * vori(ii)
-300              continue
+300             continue
                 zc(lmesu-1 +(numord-1)*nbmesu+imes) = valc
             else
                 do 230 icmp = 1, nbcmp
                     if (cnsc(icmp) .eq. 'DX') vect(1) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
                     if (cnsc(icmp) .eq. 'DY') vect(2) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
                     if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
-230              continue
+230             continue
                 val = 0.d0
                 do 320 ii = 1, 3
                     val = val + vect(ii) * vori(ii)
-320              continue
+320             continue
                 zr(lmesu-1 +(numord-1)*nbmesu+imes) = val
             endif
-120      continue
+120     continue
 !
 ! FIN BOUCLE SUR NUMERO ORDRE
-110  continue
+110 continue
 !
     call detrsd('CHAM_NO_S', chs)
 !

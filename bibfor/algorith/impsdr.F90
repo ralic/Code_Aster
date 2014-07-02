@@ -18,7 +18,8 @@ subroutine impsdr(sdcolo, valk, valr, vali)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/obgetb.h"
 #include "asterfort/obseti.h"
@@ -45,7 +46,7 @@ subroutine impsdr(sdcolo, valk, valr, vali)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: linte, lreel, lchai
+    aster_logical :: linte, lreel, lchai
 !
 ! ----------------------------------------------------------------------
 !

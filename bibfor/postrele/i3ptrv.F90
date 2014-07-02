@@ -2,10 +2,11 @@ subroutine i3ptrv(epsi, lstpt, nbpt, t, trouve,&
                   ipos)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
     integer :: nbpt, lstpt(*), ipos
     real(kind=8) :: epsi, t
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -55,7 +56,7 @@ subroutine i3ptrv(epsi, lstpt, nbpt, t, trouve,&
 !-----------------------------------------------------------------------
     i = 0
     trouve = .false.
-40  continue
+ 40 continue
     if ((i .lt. nbpt) .and. (.not. trouve)) then
         i = i+1
         trouve = ( abs(t-zr(lstpt(1)-1+i)) .le. epsi )

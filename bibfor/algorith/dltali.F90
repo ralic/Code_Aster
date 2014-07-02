@@ -54,6 +54,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ajlagr.h"
 #include "asterfort/copisd.h"
@@ -89,8 +90,8 @@ subroutine dltali(neq, result, imat, masse, rigid,&
     character(len=24) :: criter
     character(len=19) :: force0, force1
 !
-    logical(kind=1) :: lcrea, lprem
-    logical(kind=1) :: lamort
+    aster_logical :: lcrea, lprem
+    aster_logical :: lamort
 !
     complex(kind=8) :: cbid
 !

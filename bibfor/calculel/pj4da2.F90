@@ -1,6 +1,7 @@
 subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
                   cobary, d2, surf)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterfort/pj3da3.h"
 #include "asterfort/pj3da4.h"
@@ -40,19 +41,19 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
 !
 ! ----------------------------------------------------------------------
     integer :: k
-    logical(kind=1) :: ok
+    aster_logical :: ok
     real(kind=8) :: dp, l1, l2, l3, la, lb, lc
     real(kind=8) :: a(3), b(3), c(3), m(3), ab(3), ac(3), v(3)
 ! DEB ------------------------------------------------------------------
 !
-    do 1,k=1,3
-    m(k)=geom2(3*(ino2-1)+k)
-    a(k)=geom1(3*(tria3(1+4*(i-1)+1)-1)+k)
-    b(k)=geom1(3*(tria3(1+4*(i-1)+2)-1)+k)
-    c(k)=geom1(3*(tria3(1+4*(i-1)+3)-1)+k)
-    ab(k)=b(k)-a(k)
-    ac(k)=c(k)-a(k)
-    1 end do
+    do 1 k = 1, 3
+        m(k)=geom2(3*(ino2-1)+k)
+        a(k)=geom1(3*(tria3(1+4*(i-1)+1)-1)+k)
+        b(k)=geom1(3*(tria3(1+4*(i-1)+2)-1)+k)
+        c(k)=geom1(3*(tria3(1+4*(i-1)+3)-1)+k)
+        ab(k)=b(k)-a(k)
+        ac(k)=c(k)-a(k)
+  1 end do
 !
     d2=r8maem()
     dp=r8maem()

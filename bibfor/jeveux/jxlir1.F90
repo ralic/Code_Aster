@@ -18,6 +18,7 @@ subroutine jxlir1(ic, caralu)
 ! ======================================================================
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterc/closdr.h"
 #include "asterc/opendr.h"
 #include "asterc/readdr.h"
@@ -52,7 +53,7 @@ subroutine jxlir1(ic, caralu)
     integer :: lindex, npar
     parameter      ( lindex = 11, npar = 11, np2 = npar+3 )
     integer :: index(lindex), tampon(np2)
-    logical(kind=1) :: lexist
+    aster_logical :: lexist
     character(len=8) :: nom
     character(len=128) :: nom128
 ! DEB ------------------------------------------------------------------
@@ -85,6 +86,6 @@ subroutine jxlir1(ic, caralu)
     endif
     do 1 k = 1, npar
         caralu(k) = tampon(k+3)
- 1  end do
+  1 end do
 ! FIN ------------------------------------------------------------------
 end subroutine

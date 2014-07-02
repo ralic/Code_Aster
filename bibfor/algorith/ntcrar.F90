@@ -17,7 +17,8 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -32,7 +33,7 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=8) :: result
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
     integer :: numreo
 !
 ! ----------------------------------------------------------------------

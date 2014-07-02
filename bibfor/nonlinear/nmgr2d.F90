@@ -26,6 +26,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/codere.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/lcegeo.h"
@@ -48,7 +49,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
     real(kind=8) :: sigm(4, npg), sigp(4, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(2*nno)
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
 !
 !.......................................................................
 !
@@ -86,7 +87,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !.......................................................................
 !
 !
-    logical(kind=1) :: grand, axi, cplan
+    aster_logical :: grand, axi, cplan
 !
     integer :: kpg, j
 !
@@ -111,7 +112,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 !     CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -141,7 +142,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
         do 25 j = 1, 6
             deps (j)=epsp(j)-epsm(j)
             maxeps=max(maxeps,abs(epsp(j)))
-25      continue
+ 25     continue
 !
 !        VERIFICATION QUE EPS RESTE PETIT
         if (maxeps .gt. 0.05d0) then
@@ -191,9 +192,9 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
                         1)
         endif
 !
-800  end do
+800 end do
 !
-1956  continue
+1956 continue
 !
 ! - SYNTHESE DES CODES RETOURS
 !

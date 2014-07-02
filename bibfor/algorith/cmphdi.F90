@@ -57,6 +57,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/cmatve.h"
 #include "asterfort/ctescv.h"
 #include "asterfort/cvalea.h"
@@ -78,7 +79,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     integer :: vali(2)
     complex(kind=8) :: cshift
     real(kind=8) :: ecart, valr(3)
-    logical(kind=1) :: sortie
+    aster_logical :: sortie
     integer :: idiag, iretou, iv, ivdiag
     character(len=6) :: valk
 !-----------------------------------------------------------------------
@@ -100,7 +101,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         cvect(iv)=dcmplx(0.d0,0.d0)
         cvec0(iv)=dcmplx(0.d0,0.d0)
         cmod0(iv)=dcmplx(0.d0,0.d0)
-66  end do
+ 66 end do
 !
     call cvalea(ndim, cmod, ndimax, nbmod)
 !
@@ -114,7 +115,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         cshift=dcmplx((alpha(j)+beta(j))/2.d0,0.d0)
         do 20 i = 1, ndim*(ndim+1)/2
             cmat1(i)=ck(i)-cshift*cm(i)
-20      continue
+ 20     continue
 !
 !        CALCUL DE LA MATRICE CM*(CK-SHIFT*CM)**-1
 !
@@ -136,8 +137,8 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
                     idiag = i*(i-1)/2+1
                     cmat2(i,iv)=dconjg(cm(idiag+i-iv))
                 endif
-60          continue
-50      continue
+ 60         continue
+ 50     continue
         call rrldc(cmat1, ndim, cmat2, ndim)
 !
 !        INITIALISATION DES VARIABLES DE LA BOUCLE
@@ -152,7 +153,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !         ITERATION INVERSE PROPREMENT DITE
 !
-30      continue
+ 30     continue
         if (sortie) goto 40
 !      RECOPIE DU VECTEUR DE L'ITERATION PRECEDENTE
         ct=ct+1
@@ -168,7 +169,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         if (ecart .le. xcrit) sortie=.true.
         if (ct .ge. niter) sortie=.true.
         goto 30
-40      continue
+ 40     continue
 !
 !         CALCUL DE LA VALEUR PROPRE PAR LE COEFFICIENT DE RAYLEIGH
 !
@@ -181,6 +182,6 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         valr(3)=dimag(ceigen(j))
         call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
                     valr=valr)
-10  end do
+ 10 end do
 !
 end subroutine

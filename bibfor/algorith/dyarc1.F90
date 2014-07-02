@@ -1,6 +1,7 @@
 subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                   epsi, crit)
     implicit none
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/utmess.h"
     integer :: nbpas, nbinst, arch(*)
@@ -39,7 +40,7 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
     integer :: inda, indc
     real(kind=8) :: rval
     real(kind=8) :: valr
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     character(len=8) :: k8b
     character(len=16) :: typcon, nomcmd
 !     ------------------------------------------------------------------
@@ -84,7 +85,7 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                 arch(j-1) = 1
                 indc=j+1
             endif
-20      continue
+ 20     continue
         if (nbtrou .eq. 0) then
             valr = rval
             call utmess('F', 'ALGORITH12_97', sr=valr)
@@ -92,6 +93,6 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
             valr = rval
             call utmess('F', 'ALGORITH12_98', sr=valr)
         endif
-10  end do
+ 10 end do
 !
 end subroutine

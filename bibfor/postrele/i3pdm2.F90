@@ -1,10 +1,11 @@
 subroutine i3pdm2(epsi, n, s, nbs, p,&
                   dedans)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     integer :: nbs
     real(kind=8) :: n(*), s(3, *), p(*), epsi
-    logical(kind=1) :: dedans
+    aster_logical :: dedans
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +54,7 @@ subroutine i3pdm2(epsi, n, s, nbs, p,&
     yp = p(2)
     zp = p(3)
     i = 1
-10  continue
+ 10 continue
     if (dedans .and. ( i .le. nbs )) then
         j = max(1,mod(i+1,nbs+1))
         xd = s(1,i)

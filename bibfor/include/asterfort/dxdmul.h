@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
                       h, d1i, d2i, x3i, epi)
-        logical(kind=1) :: lcalct
+        aster_logical :: lcalct
         integer :: icou
         integer :: iniv
         real(kind=8) :: t1ve(3, 3)

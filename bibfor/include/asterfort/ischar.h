@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function ischar(lischa, typcha, soutyp, ichar)
         character(len=19) :: lischa
         character(len=4) :: typcha
         character(len=4) :: soutyp
         integer :: ichar
-        logical(kind=1) :: ischar
+        aster_logical :: ischar
     end function ischar
 end interface

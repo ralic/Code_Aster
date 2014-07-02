@@ -47,6 +47,7 @@ subroutine forcdy(masse, amort, lamort, neq, c0,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
+#include "asterf_types.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
@@ -56,7 +57,7 @@ subroutine forcdy(masse, amort, lamort, neq, c0,&
     real(kind=8) :: d0(*), v0(*), a0(*), f1(*), f2(*), f(*)
     real(kind=8) :: c0, c1, c2, c3, c4, c5
 !
-    logical(kind=1) :: lamort
+    aster_logical :: lamort
 !
 ! DECLARATION VARIABLES LOCALES
 !

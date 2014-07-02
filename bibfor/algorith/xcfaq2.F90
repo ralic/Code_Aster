@@ -3,6 +3,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                   nptf, cface, nbtot, nfiss, ifiss)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8pi.h"
@@ -75,12 +76,12 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     real(kind=8) :: h(3), oh(3), noh, cos, noa, r3(3), theta(6), eps
     real(kind=8) :: ff(27), ksic(3), sc, tabar(9), lambda
     real(kind=8) :: m(3), lsnm, lstm, ksi, milfi(3), smilfi
-    integer :: j, ar(12, 3), nbar, na, nb, ins,n(3)
+    integer :: j, ar(12, 3), nbar, na, nb, ins, n(3)
     integer :: ia, i, ipt, ibid, pp, pd, nno, k
     integer :: iadzi, iazk24, ndim, ptmax
     integer :: zxain
     integer :: inm, inc, nm, nbnomx
-    logical(kind=1) :: cut, ajout
+    aster_logical :: cut, ajout
     character(len=8) :: typma, elp, elc
 !
     parameter       (ptmax=4, elc='SE3',nbnomx=27)
@@ -95,7 +96,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     prec = 1000*r8prem()
     zxain = xxmmvd('ZXAIN')
     call elref1(elp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
     ASSERT(ndim.eq.2)
 !
 !     1) RECHERCHE DES POINTS D'INTERSECTION
@@ -114,13 +115,13 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
     cut=.false.
     i=1
- 1  continue
+  1 continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
     if (zr(jlsn-1+i) .ne. 0 .and. i .lt. nno) then
         do 30 k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
             if (zr(jlsn-1+i)*zr(jlsn-1+k) .lt. 0.d0) cut=.true.
-30      continue
+ 30     continue
     else
         i=i+1
         goto 1
@@ -151,7 +152,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
             a(i)=zr(igeom-1+ndim*(na-1)+i)
             b(i)=zr(igeom-1+ndim*(nb-1)+i)
             m(i)=zr(igeom-1+ndim*(nm-1)+i)
-110      continue
+110     continue
         if (ndim .lt. 3) then
             a(3)=0.d0
             b(3)=0.d0
@@ -218,7 +219,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                     tabar(i)=b(i)
                     tabar(ndim+i)=a(i)
                     tabar(2*ndim+i)=m(i)
-307              continue
+307             continue
 !          CALCUL DES FF DU SE3 (REEREF N'ACCEPTE PAS NDIM=2 & NNO=3)
                 call abscvl(ndim, tabar, c, sc)
                 call xinvac(elp, ndim, tabar, sc, ksic)
@@ -240,7 +241,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !
         endif
 !
-100  end do
+100 end do
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
     call xcfacf(pinter, ptmax, ipt, ainter, zr(jlsn),&
@@ -251,21 +252,22 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     nbtot=ninter+inm
 !
     if (cut .and. ninter .eq. 2 .and. inm .ne. 1) then
-        do 20 j= 1,3
-          n(j)=0
-20      continue
+        do 20 j = 1, 3
+            n(j)=0
+ 20     continue
 ! LE NEWTON NE PEUT PAS CONVERGER QUAND NDIM=3
 ! IL NOUS MANQUE L INFORMATION SUR LA FACE DE L ELT PARENT
 ! TRANSPORTEE PAS N(3)
         ASSERT(ndim.lt.3)
 !       RECHERCHE POINT MILIEU FISSURE
-        call xmilfi(elp, n, ndim, nno, pinter, ndim,&
-                       igeom,jlsn, 1, 2, milfi)
+        call xmilfi(elp, n, ndim, nno, pinter,&
+                    ndim, igeom, jlsn, 1, 2,&
+                    milfi)
         do 10 j = 1, ndim
             coor2d(j)=pinter(j)
             coor2d(ndim+j)=pinter(ndim+j)
             coor2d(2*ndim+j)=milfi(j)
-10      continue
+ 10     continue
         ksi=0.d0
         call abscvf(ndim, coor2d, ksi, smilfi)
 !       ON AJOUTE A LA LISTE LE POINT MILFI
@@ -286,8 +288,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
         do 200 i = 1, 5
             do 201 j = 1, 3
                 cface(i,j)=0
-201          continue
-200      continue
+201         continue
+200     continue
 !
 !       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
         call vecini(3, 0.d0, nd)
@@ -295,20 +297,20 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
             do 211 j = 1, 3
                 nd(j)=nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/&
                 nno
-211          continue
-210      continue
+211         continue
+210     continue
 !
 !       PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
         call vecini(3, 0.d0, bar)
         do 220 i = 1, ninter
             do 221 j = 1, 3
                 bar(j)=bar(j)+pinter((i-1)*3+j)/ninter
-221          continue
-220      continue
+221         continue
+220     continue
         do 230 j = 1, 3
             a(j)=pinter((1-1)*3+j)
             oa(j)=a(j)-bar(j)
-230      continue
+230     continue
         noa=sqrt(oa(1)*oa(1) + oa(2)*oa(2) + oa(3)*oa(3))
 !
 !       BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
@@ -316,7 +318,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
             do 241 j = 1, 3
                 m(j)=pinter((i-1)*3+j)
                 am(j)=m(j)-a(j)
-241          continue
+241         continue
             ps=ddot(3,am,1,nd,1)
 !
             ps1=ddot(3,nd,1,nd,1)
@@ -324,7 +326,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
             do 242 j = 1, 3
                 h(j)=m(j)+lambda*nd(j)
                 oh(j)=h(j)-bar(j)
-242          continue
+242         continue
             ps=ddot(3,oa,1,oh,1)
 !
             noh=sqrt(oh(1)*oh(1) + oh(2)*oh(2) + oh(3)*oh(3))
@@ -336,14 +338,14 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
             ps=ddot(3,r3,1,nd,1)
             if (ps .lt. eps) theta(i) = -1 * theta(i) + 2 * r8pi()
 !
-240      continue
+240     continue
 !
 !       TRI SUIVANT THETA CROISSANT
         do 250 pd = 1, ninter-1
             pp=pd
             do 251 i = pp, ninter
                 if (theta(i) .lt. theta(pp)) pp=i
-251          continue
+251         continue
             tampor(1)=theta(pp)
             theta(pp)=theta(pd)
             theta(pd)=tampor(1)
@@ -351,15 +353,15 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                 tampor(k)=pinter(3*(pp-1)+k)
                 pinter(3*(pp-1)+k)=pinter(3*(pd-1)+k)
                 pinter(3*(pd-1)+k)=tampor(k)
-252          continue
+252         continue
             do 253 k = 1, zxain
                 tampor(k)=ainter(zxain*(pp-1)+k)
                 ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
                 ainter(zxain*(pd-1)+k)=tampor(k)
-253          continue
-250      continue
+253         continue
+250     continue
 !
-500      continue
+500     continue
 !
 !       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
 !       NORMALEMENT, ON A DEJE FAIT LA VERIF DANS XAJPIN
@@ -437,22 +439,22 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
         do 800 i = 1, 5
             do 801 j = 1, 3
                 cface(i,j)=0
-801          continue
-800      continue
+801         continue
+800     continue
         if (ninter .eq. 2) then
 !         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
             call vecini(2, 0.d0, nd)
             do 810 i = 1, nno
                 do 811 j = 1, 2
                     nd(j)=nd(j)+zr(jgrlsn-1+2*(i-1)+j)/nno
-811              continue
-810          continue
+811             continue
+810         continue
 !
             do 841 j = 1, 2
                 a(j)=pinter(j)
                 b(j)=pinter(2+j)
                 ab(j)=b(j)-a(j)
-841          continue
+841         continue
 !
             abprim(1)=-ab(2)
             abprim(2)=ab(1)
@@ -462,12 +464,12 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                     tampor(k)=pinter(k)
                     pinter(k)=pinter(2+k)
                     pinter(2+k)=tampor(k)
-852              continue
+852             continue
                 do 853 k = 1, 4
                     tampor(k)=ainter(k)
                     ainter(k)=ainter(zxain+k)
                     ainter(zxain+k)=tampor(k)
-853              continue
+853             continue
             endif
             nface=1
             nptf=3

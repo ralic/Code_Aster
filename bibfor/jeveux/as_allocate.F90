@@ -1,7 +1,7 @@
 subroutine as_allocate(size, vl, vi, vi4, vr,&
-                       vc, vk8, vk16, vk24, vk32, &
+                       vc, vk8, vk16, vk24, vk32,&
                        vk80, strdbg)
-use module_allocate
+    use module_allocate
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,7 @@ use module_allocate
 ! ======================================================================
 ! aslint: disable=W0104,W1304
     implicit none
+#include "asterf_types.h"
 #include "asterf_debug.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
@@ -30,12 +31,12 @@ use module_allocate
 #include "asterfort/utmess.h"
 !
     integer :: size
-    logical(kind=1),           pointer, optional, intent(out) :: vl(:)
-    integer,           pointer, optional, intent(out) :: vi(:)
-    integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
-    real(kind=8),      pointer, optional, intent(out) :: vr(:)
-    complex(kind=8),   pointer, optional, intent(out) :: vc(:)
-    character(len=8),  pointer, optional, intent(out) :: vk8(:)
+    aster_logical, pointer, optional, intent(out) :: vl(:)
+    integer, pointer, optional, intent(out) :: vi(:)
+    integer(kind=4), pointer, optional, intent(out) :: vi4(:)
+    real(kind=8), pointer, optional, intent(out) :: vr(:)
+    complex(kind=8), pointer, optional, intent(out) :: vc(:)
+    character(len=8), pointer, optional, intent(out) :: vk8(:)
     character(len=16), pointer, optional, intent(out) :: vk16(:)
     character(len=24), pointer, optional, intent(out) :: vk24(:)
     character(len=32), pointer, optional, intent(out) :: vk32(:)
@@ -59,13 +60,13 @@ use module_allocate
     integer, save :: iprem=0
     integer :: lonty, lsic, unmega, ltot, ival(4)
     character(len=3) :: tsca
-    logical(kind=1) :: alloc
-
-
+    aster_logical :: alloc
+!
+!
     if (iprem .eq. 0) then
         cuvtrav=0.d0
         iprem=1
-        call init_slvec(slvec,1000)
+        call init_slvec(slvec, 1000)
     endif
 !
     if (present(vi)) then
@@ -106,7 +107,7 @@ use module_allocate
 !
 !   -- on verifie que le vecteur n'est pas deja alloue :
 !      (on ne peut plus le faire depuis issue21985)
-
+!
 !   -----------------------------------------------------
     if (.false._1) then
         alloc=.false.
@@ -161,29 +162,29 @@ use module_allocate
 !
 !   -- on alloue le vecteur et on l'initialise a "zero" :
 !   -----------------------------------------------------
-
+!
 !   -- recherche de l'indice dans slvec :
-
+!
     if (tsca .eq. 'I') then
-        call allocate_slvec(lon1=size,vi=vi)
+        call allocate_slvec(lon1=size, vi=vi)
     else if (tsca.eq.'S') then
-        call allocate_slvec(lon1=size,vi4=vi4)
+        call allocate_slvec(lon1=size, vi4=vi4)
     else if (tsca.eq.'L') then
-        call allocate_slvec(lon1=size,vl=vl)
+        call allocate_slvec(lon1=size, vl=vl)
     else if (tsca.eq.'R') then
-        call allocate_slvec(lon1=size,vr=vr)
+        call allocate_slvec(lon1=size, vr=vr)
     else if (tsca.eq.'C') then
-        call allocate_slvec(lon1=size,vc=vc)
+        call allocate_slvec(lon1=size, vc=vc)
     else if (tsca.eq.'K8') then
-        call allocate_slvec(lon1=size,vk8=vk8)
+        call allocate_slvec(lon1=size, vk8=vk8)
     else if (tsca.eq.'K16') then
-        call allocate_slvec(lon1=size,vk16=vk16)
+        call allocate_slvec(lon1=size, vk16=vk16)
     else if (tsca.eq.'K24') then
-        call allocate_slvec(lon1=size,vk24=vk24)
+        call allocate_slvec(lon1=size, vk24=vk24)
     else if (tsca.eq.'K32') then
-        call allocate_slvec(lon1=size,vk32=vk32)
+        call allocate_slvec(lon1=size, vk32=vk32)
     else if (tsca.eq.'K80') then
-        call allocate_slvec(lon1=size,vk80=vk80)
+        call allocate_slvec(lon1=size, vk80=vk80)
 !
     else
         ASSERT(.false.)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
                       numins, iterat, defico, lcfint, lcdiri,&
@@ -27,10 +29,10 @@ interface
         integer :: numins
         integer :: iterat
         character(len=24) :: defico
-        logical(kind=1) :: lcfint
-        logical(kind=1) :: lcdiri
-        logical(kind=1) :: lcbudi
-        logical(kind=1) :: lcrigi
+        aster_logical :: lcfint
+        aster_logical :: lcdiri
+        aster_logical :: lcbudi
+        aster_logical :: lcrigi
         character(len=16) :: option
     end subroutine nmchfi
 end interface

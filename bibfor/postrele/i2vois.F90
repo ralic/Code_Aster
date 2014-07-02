@@ -45,6 +45,7 @@ subroutine i2vois(conec, type, maille, n, v1,&
 !
 !**********************************************************************
 !
+#include "asterf_types.h"
 #include "asterfort/i2extf.h"
     integer :: n, v1(*), v2(*), maille(*)
     character(len=24) :: conec, type
@@ -52,7 +53,7 @@ subroutine i2vois(conec, type, maille, n, v1,&
     integer :: i, j, mi, mj
     integer :: nig, njg
     integer :: nid, njd
-    logical(kind=1) :: nonv1, nonv2
+    aster_logical :: nonv1, nonv2
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -74,68 +75,69 @@ subroutine i2vois(conec, type, maille, n, v1,&
     nonv1 = .true.
     nonv2 = .true.
 !
-    do 10, i = 1, n, 1
+    do 10 i = 1, n, 1
 !
-    mi = maille(i)
+        mi = maille(i)
 !
-    call i2extf(mi, 1, conec(1:15), type(1:16), nig,&
-                nid)
+        call i2extf(mi, 1, conec(1:15), type(1:16), nig,&
+                    nid)
 !
-    nonv1 = .true.
-    nonv2 = .true.
+        nonv1 = .true.
+        nonv2 = .true.
 !
-    j = 0
+        j = 0
 !
-20  continue
-    if ((nonv1 .or. nonv2) .and. (j .lt. n)) then
+ 20     continue
+        if ((nonv1 .or. nonv2) .and. (j .lt. n)) then
 !
-        j = j + 1
+            j = j + 1
 !
-        if (i .ne. j) then
+            if (i .ne. j) then
 !
-            mj = maille(j)
+                mj = maille(j)
 !
-            call i2extf(mj, 1, conec(1:15), type(1:16), njg,&
-                        njd)
+                call i2extf(mj, 1, conec(1:15), type(1:16), njg,&
+                            njd)
 !
-            if ((nig .eq. njg) .or. (nid .eq. njg) .or. (nig .eq. njd) .or. (nid .eq. njd)) then
+                if ((nig .eq. njg) .or. (nid .eq. njg) .or. (nig .eq. njd) .or.&
+                    (nid .eq. njd)) then
 !
-                if (nonv1) then
+                    if (nonv1) then
 !
-                    nonv1 = .false.
+                        nonv1 = .false.
 !
-                    v1(i) = j
+                        v1(i) = j
 !
-                else if (nonv2) then
+                    else if (nonv2) then
 !
-                    nonv2 = .false.
+                        nonv2 = .false.
 !
-                    v2(i) = j
+                        v2(i) = j
 !
-                else
+                    else
+!
+                    endif
 !
                 endif
 !
             endif
 !
+            goto 20
+!
         endif
 !
-        goto 20
+        if (nonv1) then
 !
-    endif
+            v1(i) = 0
 !
-    if (nonv1) then
+        endif
 !
-        v1(i) = 0
+        if (nonv2) then
 !
-    endif
+            v2(i) = 0
 !
-    if (nonv2) then
+        endif
 !
-        v2(i) = 0
-!
-    endif
-!
-    10 end do
+ 10 end do
 !
 end subroutine

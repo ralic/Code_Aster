@@ -26,6 +26,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), jnnm(3), nfaes, jpcai, cface(5, 3)
@@ -36,7 +37,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
     real(kind=8) :: tau1(3), tau2(3), rese(3), mproj(3, 3), vtmp(336)
     integer :: nconta, ndeple
     character(len=8) :: typmai
-    logical(kind=1) :: lpenaf
+    aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,18 +100,18 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 !
     do 100 i = 1, 3
         vectt(i) = 0.d0
-100  end do
+100 end do
     do 110 i = 1, 2
         tt(i) = 0.d0
-110  end do
+110 end do
 !
 ! --- CALCUL DE RESE.C(*,I)
 !
     do 120 i = 1, ndim
         do 130 k = 1, ndim
             vectt(i) = rese(k)*mproj(k,i) + vectt(i)
-130      continue
-120  end do
+130     continue
+120 end do
 !
 ! --- CALCUL DE T.(T-P)
 !
@@ -118,7 +119,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
         t = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)-rese(i)
         tt(1)= t*tau1(i)+tt(1)
         if (ndim .eq. 3) tt(2)= t*tau2(i)+tt(2)
-140  end do
+140 end do
 !
 ! --------------------- CALCUL DE [L1_FROT]-----------------------------
 !
@@ -140,8 +141,8 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                 do 25 k = 1, nsinge
                     ii = ii + ndim
                     vtmp(ii) = rre * vv
-25              continue
-20          continue
+ 25             continue
+ 20         continue
             do 30 i = 1, nnm
                 if (nconta .eq. 3 .and. ndim .eq. 3) then
                     vv = jacobi*hpg*coefff* (dlagrc-coefcr*jeu)*vectt( j)*ffm(i)
@@ -156,9 +157,9 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                 do 35 k = 1, nsingm
                     ii = ii + ndim
                     vtmp(ii) = rrm * vv
-35              continue
-30          continue
-10      end do
+ 35             continue
+ 30         continue
+ 10     end do
     else
 !
         do 60 j = 1, ndim
@@ -172,8 +173,8 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                 call indent(i, ddles, ddlem, nnes, iin)
                 ii = iin + j
                 vtmp(ii) = rre * vv
-70          continue
-60      end do
+ 70         continue
+ 60     end do
     endif
 !
 ! --------------------- CALCUL DE [L3]----------------------------------
@@ -193,8 +194,8 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                         vtmp(ii) = jacobi*hpg*tt(j)*ffc(i)*coefff* dlagrc/coeffr
                     endif
                 endif
-50          continue
-40      end do
+ 50         continue
+ 40     end do
     endif
 !
 end subroutine

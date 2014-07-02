@@ -3,6 +3,7 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 ! DECLARATION PARAMETRES D'APPEL
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celver.h"
@@ -58,15 +59,15 @@ subroutine resvoi(moz, maz, chvoiz)
     integer :: ibidt(1), vali(2)
     integer :: nbno, nbma, nbs, nbf, tymvol
     integer :: ima, ino, ino1, ino2, ino3, ino4, kma, jma
-    integer :: iamav1, iamav2, iamav3, iamav4,  iavale
+    integer :: iamav1, iamav2, iamav3, iamav4, iavale
     integer :: ifa, ima1, ima2, ima3, ima4
     integer :: igrel, iel, igrelv, ielv
     integer :: iaval1, iaval2, jad, iad, iadv
-    integer ::  nbmav1, nbmav2, nbmav3, nbmav4
+    integer :: nbmav1, nbmav2, nbmav3, nbmav4
     integer :: numav1, numav2, numav3, numav4, typ, som(4, 6, 4), iatyma
 !
 !
-    logical(kind=1) :: troisd
+    aster_logical :: troisd
 !
     integer :: debugr
     integer, pointer :: repe(:) => null()

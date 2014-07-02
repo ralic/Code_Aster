@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
                       resoco, epsmax, cvgnoe, cvgval, mmconv)
@@ -27,6 +29,6 @@ interface
         real(kind=8) :: epsmax
         character(len=16) :: cvgnoe
         real(kind=8) :: cvgval
-        logical(kind=1) :: mmconv
+        aster_logical :: mmconv
     end subroutine mmmcri
 end interface

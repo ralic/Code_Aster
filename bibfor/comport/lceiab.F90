@@ -19,6 +19,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     integer :: mat, kpg, ksp, codret
@@ -42,7 +43,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: regime, regm, i, j, cod(6), cinema
     real(kind=8) :: sc, dc, alpha, beta, s0, d0, ka, sk, val(6)
     real(kind=8) :: t(3), pr(3, 3), tpo(3), tpon(3), tno, tnon
@@ -209,19 +210,19 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !     2 - DETERMINATION DE BORNES BMIN ET BMAX POUR NEWTON, AINSI
 !         QUE D UN POINT D INITIALISATION JUDICIEUX
         dnon = alpha/beta
-100      continue
+100     continue
         res = dnon**alpha/(dnon+1.d0)**(alpha+beta) - (tnon - rn*dnon)
         if (res .lt. 0) goto 110
         dnon = dnon/100.d0
         goto 100
-110      continue
+110     continue
         bmin = dnon
         bmax = tnon/rn
         dnon = bmax
 !
 !     3 - BOUCLE DE CONVERGENCE DE L ALGORITHME DE NEWTON
         i = 0
-200      continue
+200     continue
 !         TEST DU CRITERE
         res = dnon**alpha/(dnon+1.d0)**(alpha+beta) - (tnon - rn*dnon)
         if (abs(res/rn) .lt. 1.d-12) goto 210
@@ -242,7 +243,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
         if (dnon .gt. bmax) dnon = bmax
         goto 200
 !
-210      continue
+210     continue
         dno = dnon*d0
     endif
 !
@@ -300,17 +301,17 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
             do 300 i = 1, 3
                 do 300 j = 1, 3
                     ddedt(i,j) = ddno * tpon(i)*tpon(j) + dno/tno * ( pr(i,j) - tpon(i)*tpon(j))
-300              continue
+300             continue
         else
 !         CAS OU TNO EST RIGOUREUSEMENT NUL
             do 310 i = 1, 3
                 do 310 j = 1, 3
                     ddedt(i,j) = ddno * tpon(i)*tpon(j)
-310              continue
+310             continue
         endif
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

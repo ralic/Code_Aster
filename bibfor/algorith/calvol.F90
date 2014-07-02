@@ -31,6 +31,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/coefmo.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
@@ -40,7 +41,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
     character(len=8) :: tpfl
     integer :: veci1(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr5(*), vecr3(*), vgap, vecr4(*)
-    logical(kind=1) :: locfl0(*)
+    aster_logical :: locfl0(*)
     real(kind=8) :: amflu0(np1, *), xsi0(*)
 !
 ! VARIABLES LOCALES
@@ -48,7 +49,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
     integer :: i
     real(kind=8) :: xcf, r8b1(2), r8b2
     complex(kind=8) :: c16b
-    logical(kind=1) :: lk
+    aster_logical :: lk
 !
 ! ROUTINES EXTERNES
 ! -----------------
@@ -67,7 +68,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
         cmod00(i,i) = amori(i)/masgi(i)
         amor00(i) = amori(i)/masgi(i)
         puls00(i) = pulsi(i)
-10  end do
+ 10 end do
 !
     if (icoupl .eq. 1) then
 !....... LK = .FALSE. INDIQUE QU'ON NE CALCULE PAS LES TERMES DE RAIDEUR
@@ -80,7 +81,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
                             r8b2, c16b, xcf)
                 amflu0(i,i) = xcf/masgi(i)
             endif
-20      continue
+ 20     continue
     endif
 !
 ! --- FIN DE CALVOL.

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
                       dimuel, dimdef, ndim, kpi, ipoids,&
@@ -55,6 +57,6 @@ interface
         integer :: addete
         integer :: np1
         integer :: np2
-        logical(kind=1) :: axi
+        aster_logical :: axi
     end subroutine cabthm
 end interface

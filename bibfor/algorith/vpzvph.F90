@@ -33,6 +33,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
 ! --- DECLARATIONS
 !
     implicit none
+#include "asterf_types.h"
 !
 ! ARGUMENTS
     integer :: nn, ih, ier
@@ -44,7 +45,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
     real(kind=8) :: norm, p, q, r, s, t, w, x, y, z
     integer :: i, itn, its, j, k, l, ll, m, m2, m3, mm
     integer :: n, n2, na, nhs
-    logical(kind=1) :: notlst
+    aster_logical :: notlst
 !
 !**********************************************************************
 !                        DEBUT DU CODE EXECUTABLE
@@ -63,17 +64,17 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
     do 40 i = 1, n
         do 20 j = k, n
             norm = norm + abs(hh(i,j))
-20      continue
+ 20     continue
         k = i
-40  end do
+ 40 end do
     nhs = n*(n+1)/2 + n - 1
-60  continue
+ 60 continue
     if (n .eq. 0) goto 9999
     its = 0
     na = n - 1
 !
 ! --- RECHERCHE D ELEMENTS SIMPLES DE LA SOUS-DIAGONALE
-80  continue
+ 80 continue
     l = n + 1
     if (n .ge. 2) then
         do 100 ll = 2, n
@@ -85,10 +86,10 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
             if (abs(hh(l,l-1)) .le. acc*s) then
                 goto 120
             endif
-100      continue
+100     continue
     endif
     l = 1
-120  continue
+120 continue
     x = hh(n,n)
     if (l .eq. n) goto 360
     y = hh(na,na)
@@ -105,7 +106,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
         if (na .ge. 1) then
             do 140 i = 1, na
                 hh(i,i) = hh(i,i) - x
-140          continue
+140         continue
         endif
         hh(n,n) = 0.0d0
         s = abs(hh(n,na)) + abs(hh(na,n-2))
@@ -139,20 +140,20 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
                 (acc*abs(p) *(abs(hh(m-1,m-1))+abs(z)+abs(hh(m+1,m+1))))) then
                 goto 180
             endif
-160      continue
+160     continue
     endif
-180  continue
+180 continue
     m2 = m + 2
     if (m2 .le. n) then
         do 200 i = m2, n
             hh(i,i-2) = 0.0d0
-200      continue
+200     continue
     endif
     m3 = m + 3
     if (m3 .le. n) then
         do 220 i = m3, n
             hh(i,i-3) = 0.0d0
-220      continue
+220     continue
     endif
     if (m .gt. na) goto 80
 !
@@ -198,7 +199,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
                     p = hh(k,j) + q*hh(k+1,j)
                     hh(k+1,j) = hh(k+1,j) - p*y
                     hh(k,j) = hh(k,j) - p*x
-240              continue
+240             continue
                 goto 280
             endif
             do 260 j = k, n
@@ -206,9 +207,9 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
                 hh(k+2,j) = hh(k+2,j) - p*z
                 hh(k+1,j) = hh(k+1,j) - p*y
                 hh(k,j) = hh(k,j) - p*x
-260          continue
+260         continue
         endif
-280      continue
+280     continue
         j = n
         if ((k+3) .lt. n) then
             j = k + 3
@@ -221,7 +222,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
                     p = x*hh(i,k) + y*hh(i,k+1)
                     hh(i,k+1) = hh(i,k+1) - p*q
                     hh(i,k) = hh(i,k) - p
-300              continue
+300             continue
                 goto 340
             endif
             do 320 i = l, j
@@ -229,13 +230,13 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
                 hh(i,k+2) = hh(i,k+2) - p*r
                 hh(i,k+1) = hh(i,k+1) - p*q
                 hh(i,k) = hh(i,k) - p
-320          continue
+320         continue
         endif
-340  end do
+340 end do
     goto 80
 !
 ! --- UNE RACINE ETE TROUVEE (REELLE)
-360  continue
+360 continue
     valpr(n) = x + t
     valpi(n) = 0.0d0
     icnt(n) = its
@@ -243,7 +244,7 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
     goto 60
 !
 ! --- DEUX RACINES ONT ETE TROUVEES
-380  continue
+380 continue
     p = (y-x)/2.0d0
     q = p**2 + w
     y = sqrt(abs(q))
@@ -271,5 +272,5 @@ subroutine vpzvph(nn, acc, prerel, hh, ih,&
     n = n - 2
     goto 60
 !
-9999  continue
+9999 continue
 end subroutine

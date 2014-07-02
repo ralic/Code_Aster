@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
                       chflup, mate, valthe, insold, inst,&
@@ -23,7 +25,7 @@ interface
                       nomgdt, cartes, nomgds, chgeom, chsour,&
                       psourc, iaux)
         character(len=24) :: ligrel
-        logical(kind=1) :: evol
+        aster_logical :: evol
         character(len=24) :: chtemm
         character(len=24) :: chtemp
         character(len=24) :: chflum

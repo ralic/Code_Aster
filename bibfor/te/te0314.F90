@@ -1,5 +1,6 @@
 subroutine te0314(option, nomte)
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -41,7 +42,7 @@ subroutine te0314(option, nomte)
 ! NPG      NB DE POINTS DE GAUSS DE L'ELEMENT DE BORD
 ! ======================================================================
 ! ======================================================================
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ires, iflux, itemps, igeom
     real(kind=8) :: flu1, deltat, r
 !
@@ -72,13 +73,13 @@ subroutine te0314(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = HM ---------------------------------------------
 ! ======================================================================
-
-        flu1 = zr(iflux)
-        if (axi) then
-            r = zr(igeom)
-            zr(ires+6) = zr(ires+6) - deltat*flu1*r
-        else
-            zr(ires+6) = zr(ires+6) - deltat*flu1
-        endif
-
+!
+    flu1 = zr(iflux)
+    if (axi) then
+        r = zr(igeom)
+        zr(ires+6) = zr(ires+6) - deltat*flu1*r
+    else
+        zr(ires+6) = zr(ires+6) - deltat*flu1
+    endif
+!
 end subroutine

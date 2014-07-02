@@ -1,5 +1,6 @@
 subroutine w039ca(ifi, form)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -45,7 +46,7 @@ subroutine w039ca(ifi, form)
     character(len=8) :: chmat, carele, mailla, charge, modele
     character(len=80) :: titre
     character(len=19) :: ligrel
-    logical(kind=1) :: lexi
+    aster_logical :: lexi
 ! ----------------------------------------------------------------------
 !
     call jemarq()

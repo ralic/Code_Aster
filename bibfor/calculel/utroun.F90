@@ -1,5 +1,6 @@
 subroutine utroun(ch1, idec, ch2, isup)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
@@ -46,7 +47,7 @@ subroutine utroun(ch1, idec, ch2, isup)
     integer :: lcv, ii, i, iii, itmp, iret, ic1
     character(len=1) :: next(10), c1, c2
     character(len=24) :: chv3, chv1, chv2
-    logical(kind=1) :: lsg, lnext
+    aster_logical :: lsg, lnext
     data next/'1','2','3','4','5','6','7','8','9','0'/
 !
 !
@@ -77,8 +78,8 @@ subroutine utroun(ch1, idec, ch2, isup)
             goto 10
         endif
         goto 11
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 !
 !     SI LA CHAINE NE CONTIENT PAS DE 'E' :
     if (ii .eq. lcv) ASSERT(.false.)
@@ -94,8 +95,8 @@ subroutine utroun(ch1, idec, ch2, isup)
             goto 20
         endif
         goto 21
-20  end do
-21  continue
+ 20 end do
+ 21 continue
 !
 !     SI LA CHAINE NE CONTIENT PAS DE POINT :
     if (ii .eq. lcv) ASSERT(.false.)
@@ -129,7 +130,7 @@ subroutine utroun(ch1, idec, ch2, isup)
 !          1- ON COMMENCE PAR L'EXPOSANT
         do 30 i = 1, 4
             chv3(i:i)=chv1(iii+4-i:iii+4-i)
-30      continue
+ 30     continue
 !
 !          2- ON TRAITE TOUTES LES DECIMALES
         lnext=.true.
@@ -148,7 +149,7 @@ subroutine utroun(ch1, idec, ch2, isup)
                 chv3(4+i:4+i)=c1
                 lnext=.false.
             endif
-40      continue
+ 40     continue
 !
 !          3- ON Y AJOUTE LE '.'
         chv3(4+idec+1:4+idec+1)='.'
@@ -169,7 +170,7 @@ subroutine utroun(ch1, idec, ch2, isup)
                 chv3(4+idec+1+i:4+idec+1+i)=c1
                 lnext=.false.
             endif
-50      continue
+ 50     continue
 !
 !          5. ON PASSE A LA DIZAINE OU A LA CENTAINE SUPERIEURE SI LNEXT
         if (lnext) chv3(4+idec+1+ii:4+idec+1+ii)='1'
@@ -178,7 +179,7 @@ subroutine utroun(ch1, idec, ch2, isup)
         lcv = lxlgut(chv3)
         do 60 i = 1, lcv
             chv2(i:i)=chv3(lcv-i+1:lcv-i+1)
-60      continue
+ 60     continue
 !
     endif
 !

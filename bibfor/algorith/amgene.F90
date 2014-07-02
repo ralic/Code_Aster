@@ -1,5 +1,7 @@
-function amgene(i, j, amogen, nbmodes, typbas, method, lamor)
+function amgene(i, j, amogen, nbmodes, typbas,&
+                method, lamor)
     implicit none
+#include "asterf_types.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,11 +40,10 @@ function amgene(i, j, amogen, nbmodes, typbas, method, lamor)
     integer :: i, j, nbmodes
     real(kind=8) :: amogen(*)
     character(len=*) :: typbas, method
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
 !-----------------------------------------------------------------------
-    if ((typbas(1:11) .eq. 'MODELE_GENE') .or. &
-        (lamor) .or. (method(1:6).eq.'DEVOGE')) then
-        if (i .ne. j) then 
+    if ((typbas(1:11) .eq. 'MODELE_GENE') .or. (lamor) .or. (method(1:6).eq.'DEVOGE')) then
+        if (i .ne. j) then
             amgene = 0.d0
         else 
             amgene = amogen(i)

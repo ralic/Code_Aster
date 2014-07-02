@@ -17,6 +17,7 @@ subroutine dbgcha(valinc, instap, iterat)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/irchmd.h"
@@ -43,7 +44,7 @@ subroutine dbgcha(valinc, instap, iterat)
     character(len=19) :: depplu
     character(len=8) :: instxt, itetxt
     integer :: codret
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
 !
 ! ----------------------------------------------------------------------
 !

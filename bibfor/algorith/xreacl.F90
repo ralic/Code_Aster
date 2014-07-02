@@ -19,6 +19,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
@@ -62,7 +63,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     character(len=16) :: option
     character(len=24) :: ainter, cface, faclon, pinter, chgeom, baseco
     character(len=19) :: depplu
-    logical(kind=1) :: debug, lcontx
+    aster_logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     integer, pointer :: xfem_cont(:) => null()
 !

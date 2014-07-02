@@ -92,10 +92,11 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
     integer :: dimuel
     integer :: ndim, nno, nnos, nnom, dimdep, dimdef, nmec, np1, np2
     integer :: nbcmp, npg, nddls, nddlm, ipoids, ivf, idfde
@@ -132,11 +133,11 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
     ovfl = r8miem()
 !
-    do 10, ii = 1 , 3
+    do 10 ii = 1, 3
 !
-    tm2h1v(ii) = 0.d0
+        tm2h1v(ii) = 0.d0
 !
-    10 end do
+ 10 end do
 !
 ! =====================================================================
 ! 2. ------ BOUCLE SUR LES POINTS DE GAUSS ---------------------------
@@ -204,7 +205,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
     endif
 !
-30  continue
+ 30 continue
 !
 ! =====================================================================
 ! 2.3. --------- CALCUL DE LA DIVERGENCE DES CONTRAINTES MECANIQUES ---
@@ -250,7 +251,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
     endif
 !
-40  continue
+ 40 continue
 !
 ! LA DIVERGENCE DU TENSEUR DES CONTRAINTES EST UN VECTEUR
 ! DE COMPOSANTES :
@@ -323,7 +324,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
         divuxm = divuxm + deplm(iaux+1) * dfdi(ii,1)
         divuym = divuym + deplm(iaux+2) * dfdi(ii,2)
 !
-50      continue
+ 50     continue
 !
         divup = divuxp + divuyp
         divum = divuxm + divuym
@@ -339,7 +340,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
         pressp = pressp + b(addep1,nn) * deplp(nn)
         pressm = pressm + b(addep1,nn) * deplm(nn)
 !
-60      continue
+ 60     continue
 !
         if (deltat .gt. ovfl) then
 !

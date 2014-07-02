@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
-        logical(kind=1), intent(in) :: l_etat_init
+        aster_logical, intent(in) :: l_etat_init
         character(len=16), intent(out) :: info_comp_valk(:)
         integer          , intent(out) :: info_comp_vali(:)
     end subroutine comp_meca_read

@@ -41,6 +41,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -70,7 +71,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     character(len=19) :: infcha, knume, excit
     character(len=24) :: modele, carele, fomult, mate
     real(kind=8) :: prec
-    logical(kind=1) :: matcst, coecst
+    aster_logical :: matcst, coecst
 !
 ! 0.2. ==> COMMUNS
 !
@@ -86,7 +87,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     character(len=8) :: blan8
     character(len=16) :: nommod, nomexc, nomcar
     character(len=24) :: ligrch, lchin, nomfct, nomcha
-    logical(kind=1) :: fmult
+    aster_logical :: fmult
 !
 ! --- NOMBRE MAXIMUM DE TYPE DE CHARGE : NBTYCH
 !

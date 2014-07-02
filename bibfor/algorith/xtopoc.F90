@@ -19,6 +19,7 @@ subroutine xtopoc(modele)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
@@ -55,10 +56,10 @@ subroutine xtopoc(modele)
 !
     character(len=19) :: ligrel, chgeom
     character(len=19) :: lnno, grlnno, ltno, grltno, fissco, champ(7)
-    logical(kind=1) :: debug
+    aster_logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
-    integer :: jcesd,  jcesl, iad, i, nbma, ima
+    integer :: jcesd, jcesl, iad, i, nbma, ima
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: nbsp(:) => null()

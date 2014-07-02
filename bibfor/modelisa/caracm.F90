@@ -19,6 +19,7 @@ subroutine caracm(char, nzoco, iform)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
@@ -45,7 +46,7 @@ subroutine caracm(char, nzoco, iform)
 !
 !
 !
-    logical(kind=1) :: lmail
+    aster_logical :: lmail
     character(len=24) :: defico
     integer :: ztole, zdirn, zmeth
     character(len=24) :: methco, dirapp, toleco, dirnor

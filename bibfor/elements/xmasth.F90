@@ -49,6 +49,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 ! ----
 ! MATTT  --> MATRICE DE MASSE ELEMENTAIRE
 !.......................................................................
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -73,7 +74,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !
     character(len=8) :: elrese(3), fami(3), poum
     character(len=16) :: phenom
-    logical(kind=1) :: axi
+    aster_logical :: axi
     real(kind=8) :: baslog(3*ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
@@ -124,8 +125,8 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     poum = '+'
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IPOIDS,IVF,IDFDE
-    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, npg=npg, jpoids=ipoids,&
+                     jvf=ivf, jdfde=idfde)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
@@ -151,8 +152,8 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 else
                     ASSERT(.false.)
                 endif
-1110          continue
-1100      continue
+1110         continue
+1100     continue
 !
 ! ----------------------------------------------------------------------
 ! ----- BOUCLE SUR LES POINTS DE GAUSS
@@ -166,11 +167,12 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 do 1211 in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
                     in-1)+j)
-1211              continue
-1210          continue
+1211             continue
+1210         continue
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then
@@ -183,8 +185,8 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                     lstg = lstg + lst(inp) * ff(inp)
                     do 1221 j = 1, 3*ndim
                         baslog(j) = baslog(j) + basloc(3*ndim*(inp-1)+ j) * ff(inp)
-1221                  continue
-1220              continue
+1221                 continue
+1220             continue
 !           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
                 if (ndim .eq. 2) then
                     call xcalf2(he, lsng, lstg, baslog, femec,&
@@ -216,7 +218,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 r = 0.d0
                 do 1230 inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
-1230              continue
+1230             continue
                 ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
@@ -239,7 +241,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 if (nfe .eq. 1) then
                     ffenr(inp,1+nfh+nfe) = feth*ff(inp)
                 endif
-1250          continue
+1250         continue
 !
 ! ------- REMPLISSAGE DE LA MATRICE DE MASSE
 !
@@ -268,18 +270,18 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                                               &r(jnp, lddl)
                             endif
 !
-1273                      continue
-1272                  continue
-1271              continue
-1270          continue
+1273                     continue
+1272                 continue
+1271             continue
+1270         continue
 !
-1200      continue
+1200     continue
 !
 ! ----------------------------------------------------------------------
 ! ----- FIN BOUCLE SUR LES POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-1000  continue
+1000 continue
 !
 ! ----------------------------------------------------------------------
 ! --- FIN BOUCLE SUR LES SOUS-ELEMENTS

@@ -33,6 +33,7 @@ subroutine crevge(ligrel, bas1)
 !           A2  (2D PAR ARRETE)  ET S2 (2D PAR SOMMET)
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/adlivo.h"
 #include "asterfort/cncinv.h"
@@ -60,7 +61,7 @@ subroutine crevge(ligrel, bas1)
 !
     character(len=24) :: typmai, connex, coninv, ptvois, elvois
     character(len=8) :: ma, typem0, typemr
-    logical(kind=1) :: troisd
+    aster_logical :: troisd
 !
 !
     integer :: nvoima, nscoma
@@ -80,8 +81,8 @@ subroutine crevge(ligrel, bas1)
 !
     typmai=ma//'.TYPMAIL'
     connex=ma//'.CONNEX'
-    call jeveuo(connex,'L',jconnex0)
-    call jeveuo(jexatr(connex,'LONCUM'),'L',jconnexc)
+    call jeveuo(connex, 'L', jconnex0)
+    call jeveuo(jexatr(connex, 'LONCUM'), 'L', jconnexc)
 !
 ! --------- RECHERCHE DES EVENTUELLES MAILLES 3D DANS LE MODELE --------
 !     SI ON EN TROUVE DIM=3 SINON DIM=2 (CE QUI EXCLUE DIM=1 !!!)
@@ -112,8 +113,8 @@ subroutine crevge(ligrel, bas1)
 !
     coninv='&&CREVGE.CONINV'
     call cncinv(ma, [0], 0, 'G', coninv)
-    call jeveuo(coninv,'L',jconinv0)
-    call jeveuo(jexatr(coninv,'LONCUM'),'L',jconinvc)
+    call jeveuo(coninv, 'L', jconinv0)
+    call jeveuo(jexatr(coninv, 'LONCUM'), 'L', jconinvc)
 !
     typmai=ma//'.TYPMAIL'
 !
@@ -233,8 +234,8 @@ subroutine crevge(ligrel, bas1)
                 endif
             end do
             iad=iadvoi+zi(iaddvo+m0-1)
-            call crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, zi(iad),&
-                        nvtot, nvoima, nscoma, touvoi)
+            call crvloc(dim, adcom0, iatyma, jconnex0, jconnexc,&
+                        zi(iad), nvtot, nvoima, nscoma, touvoi)
         else
 !
 !           POUR LES ELEMENTS NON TARITES ON ECRIT QUAND MEME

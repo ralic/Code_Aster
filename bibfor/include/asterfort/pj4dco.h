@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                       nbno2, lino2, geom1, geom2, corres,&
@@ -29,7 +31,7 @@ interface
         character(len=*) :: geom1
         character(len=*) :: geom2
         character(len=16) :: corres
-        logical(kind=1) :: ldmax
+        aster_logical :: ldmax
         real(kind=8) :: distma
         character(len=*) :: alarm2
     end subroutine pj4dco

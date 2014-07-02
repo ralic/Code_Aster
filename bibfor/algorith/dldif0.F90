@@ -56,6 +56,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dlarch.h"
 #include "asterfort/dlfdyn.h"
@@ -88,7 +89,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
     character(len=19) :: force1
     integer :: numrep
 !
-    logical(kind=1) :: lamort, ener
+    aster_logical :: lamort, ener
 !
 !
 !
@@ -116,10 +117,10 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
                 mate, carele, numedd, zr(iforc1))
 !
     if (ener) then
-        do 433, ieq =1,neq
-        fexte(ieq)=fexte(ieq+neq)
-        fexte(ieq+neq)=zr(iforc1+ieq-1)
-433      continue
+        do 433 ieq = 1, neq
+            fexte(ieq)=fexte(ieq+neq)
+            fexte(ieq+neq)=zr(iforc1+ieq-1)
+433     continue
     endif
 !
     call dlfdyn(imat(1), imat(3), lamort, neq, depl1,&
@@ -158,7 +159,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
         call wkvect('VIT0_TR', 'V V R', neq, ivit0r)
         do 50 ieq = 1, neq
             zr(ivit0r-1+ieq)=vit0(ieq)+r8bid*acc0(ieq)
-50      continue
+ 50     continue
         call enerca(k19bid, dep0, zr(ivit0r), depl1, vite2,&
                     masse1, amort1, rigid1, fexte, famor,&
                     fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&

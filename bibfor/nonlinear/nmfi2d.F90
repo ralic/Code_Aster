@@ -24,6 +24,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codere.h"
@@ -62,7 +63,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 !
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, axi
+    aster_logical :: resi, rigi, axi
     integer :: code(9), i, j, q, s, ibid, kpg
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE
@@ -87,8 +88,8 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
     if (resi) call r8inir(8, 0.d0, fint, 1)
     if (rigi) call r8inir(64, 0.d0, ktan, 1)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS
     call gedisc(2, nno, npg, zr(ivf), geom,&
@@ -109,12 +110,12 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
         do 10 j = 1, 8
             sum(1) = sum(1) + b(1,j)*deplm(j)
             sum(2) = sum(2) + b(2,j)*deplm(j)
-10      continue
+ 10     continue
         if (resi) then
             do 13 j = 1, 8
                 dsu(1) = dsu(1) + b(1,j)*ddepl(j)
                 dsu(2) = dsu(2) + b(2,j)*ddepl(j)
-13          continue
+ 13         continue
         endif
 !
 ! -   APPEL A LA LOI DE COMPORTEMENT
@@ -139,8 +140,8 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
             do 20 i = 1, 8
                 do 40 q = 1, 2
                     fint(i) = fint(i) + poids*b(q,i)*sigma(q,kpg)
-40              continue
-20          continue
+ 40             continue
+ 20         continue
 !
         endif
 !
@@ -154,14 +155,14 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
                     do 60 q = 1, 2
                         do 62 s = 1, 2
                             ktan(i,j) = ktan(i,j)+ poids*b(q,i)* dsidep(q,s)*b(s,j)
-62                      continue
-60                  continue
-52              continue
-50          continue
+ 62                     continue
+ 60                 continue
+ 52             continue
+ 50         continue
 !
         endif
 !
-11  end do
+ 11 end do
 !
     if (resi) call codere(code, npg, codret)
 end subroutine

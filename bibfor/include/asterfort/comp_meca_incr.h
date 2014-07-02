@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(out) :: type_comp
-        logical(kind=1), optional, intent(in) :: l_etat_init
+        aster_logical, optional, intent(in) :: l_etat_init
     end subroutine comp_meca_incr
 end interface

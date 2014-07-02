@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                       ise, nfh, ddlc, ddlm, nfe,&
@@ -35,7 +37,7 @@ interface
         integer :: nfe
         real(kind=8) :: rho
         real(kind=8) :: puls
-        logical(kind=1) :: lmoda
+        aster_logical :: lmoda
         real(kind=8) :: basloc(3*ndim*nnop)
         integer :: idepl
         real(kind=8) :: lsn(nnop)

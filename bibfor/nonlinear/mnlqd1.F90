@@ -31,6 +31,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
@@ -53,9 +54,9 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
     real(kind=8) :: jeu, alpha, coef
     integer :: iq1, itemp1, itemp2, itemp3, itemp4
     integer :: j, i, nddl
-    integer ::  icdl, iadim, itemp, k, ivec, nt, puismax
-    integer ::   neqs, deb, hind, ddl, nddlx, nddly
-    logical(kind=1) :: stp
+    integer :: icdl, iadim, itemp, k, ivec, nt, puismax
+    integer :: neqs, deb, hind, ddl, nddlx, nddly
+    aster_logical :: stp
     character(len=8), pointer :: type(:) => null()
     integer, pointer :: vnddl(:) => null()
     integer, pointer :: vneqs(:) => null()
@@ -96,9 +97,10 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                     i=i+1
                     zr(itemp1-1+(j-1)*neq+k)=zr(ivec-1+j*nd+i)
                 endif
-11          continue
-10      continue
-        call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 2*h,.false._1)
+ 11         continue
+ 10     continue
+        call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 2*h,&
+                    .false._1)
         do 20 j = 1, 2*h
             i=0
             do 21 k = 1, neq
@@ -111,8 +113,8 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                     endif
                     zr(iq1-1+j*nd+i)=-coef*zr(itemp2-1+(j-1)*neq+k)/zr(iadim+1)
                 endif
-21          continue
-20      continue
+ 21         continue
+ 20     continue
     else if (ind.eq.(ninc-3)) then
         call dcopy(nd*h, zr(ivec+nd*(h+1)), 1, zr(iq1-1+nd+1), 1)
         call dscal(nd*h, -1.d0, zr(iq1-1+nd+1), 1)
@@ -120,7 +122,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
         do 50 k = 1, h
             call dscal(nd, dble(k), zr(iq1-1+k*nd+1), 1)
             call dscal(nd, dble(k), zr(iq1-1+(h+k)*nd+1), 1)
-50      continue
+ 50     continue
     endif
 ! ----------------------------------------------------------------------
 ! --- EQUATIONS SUPPLEMENTAIRES
@@ -156,22 +158,21 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                     endif
 !              WRITE(6,*) 'TEMP3',TEMP3(1:2*HF+1)
 !              WRITE(6,*) 'TEMP4',TEMP4(1:2*HF+1)
-                    call mnlaft(zr(itemp3), zr(itemp4), hf, nt,&
-                                zr(iq1-1+deb+(2*hf+1)+1))
+                    call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+(2*hf+1)+1))
                     call dscal(2*hf+1, -1.d0, zr(iq1-1+deb+(2*hf+1)+1), 1)
                 endif
             else if ((ind.gt.deb).and.(ind.le.(deb+(2*hf+1)))) then
 ! ---     -(F/ALPHA-XG)*(F/ALPHA-XG))
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
                 zr(itemp3-1+ind-deb)=1.d0/alpha
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+(2*hf+1)+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+(2*hf+1)+1))
                 call dscal(2*hf+1, -1.d0, zr(iq1-1+deb+(2*hf+1)+1), 1)
 ! ---     -F*Z
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 zr(itemp3-1+ind-deb)=1.d0
                 call dcopy(2*hf+1, zr(ivec-1+deb+(2*hf+1)+1), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+1))
                 call dscal(2*hf+1, -1.d0, zr(iq1-1+deb+1), 1)
             endif
         else if (type(i)(1:6).eq.'CERCLE') then
@@ -190,7 +191,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                     call dcopy(h+1, zr(ivec-1+ddl), nd, zr(itemp4), 1)
                     call dcopy(h, zr(ivec-1+nd*(h+1)+ddl), nd, zr(itemp4-1+hf+ 2), 1)
                     call dscal(2*hf+1, 1.d0/jeu, zr(itemp4), 1)
-                    call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+2*(2*hf+1)+ 1))
+                    call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+2*(2*hf+1)+ 1))
                     call dscal(2*hf+1, -1.d0, zr(iq1-1+deb+2*(2*hf+1)+1), 1)
                 endif
             else if (ind.gt.deb.and.ind.le.deb+(2*hf+1)) then
@@ -199,8 +200,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 zr(itemp3-1+ind-deb)=1.d0
                 call dcopy(2*hf+1, zr(ivec+deb+2*(2*hf+1)), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,&
-                            zr(iq1-1+deb+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+1))
                 else if(ind.gt.deb+(2*hf+1).and.ind.le.deb+2*(2*hf+1))&
             then
 ! ---       [FY]*R - FN*(UY/JEU)
@@ -208,7 +208,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 zr(itemp3-1+ind-deb-(2*hf+1))=1.d0
                 call dcopy(2*hf+1, zr(ivec+deb+2*(2*hf+1)), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+(2*hf+1)+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+(2*hf+1)+1))
                 else if(ind.gt.deb+2*(2*hf+1).and.ind.le.deb+3*(2*hf+1))&
             then
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
@@ -216,13 +216,12 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
 ! ---       [R]*R - (UX/JEU)^2 - (UY/JEU)^2
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 call dcopy(2*hf+1, zr(ivec+deb+2*(2*hf+1)), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,&
-                            zr(iq1-1+deb+2*(2*hf+1)+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+2*(2*hf+1)+1))
 ! ---       (FN/ALPHA - [R])*FN
                 zr(itemp3-1+ind-deb-2*(2*hf+1))=-1.d0
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 call dcopy(2*hf+1, zr(ivec+deb+3*(2*hf+1)), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+3*(2*hf+1)+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+3*(2*hf+1)+1))
                 else if(ind.gt.deb+3*(2*hf+1).and.ind.le.deb+4*(2*hf+1))&
             then
                 call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
@@ -232,20 +231,20 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 call dcopy(h+1, zr(ivec-1+nddlx), nd, zr(itemp4), 1)
                 call dcopy(h, zr(ivec-1+nd*(h+1)+nddlx), nd, zr(itemp4-1+hf+2), 1)
                 call dscal(2*hf+1, 1.d0/jeu, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+1))
                 call dscal(2*hf+1, -1.d0, zr(iq1-1+deb+1), 1)
 ! ---       FY*R - [FN]*(UY/JEU)
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 call dcopy(h+1, zr(ivec-1+nddly), nd, zr(itemp4), 1)
                 call dcopy(h, zr(ivec-1+nd*(h+1)+nddly), nd, zr(itemp4-1+hf+2), 1)
                 call dscal(2*hf+1, 1.d0/jeu, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+(2*hf+1)+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+(2*hf+1)+1))
                 call dscal(2*hf+1, -1.d0, zr(iq1-1+deb+(2*hf+1)+1), 1)
 ! ---       ([FN/ALPHA] - R)*FN
                 zr(itemp3-1+ind-deb-3*(2*hf+1))=1.d0/alpha
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
                 call dcopy(2*hf+1, zr(ivec+deb+3*(2*hf+1)), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+3*(2*hf+1)+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+3*(2*hf+1)+1))
             endif
         else if (type(i)(1:4).eq.'PLAN') then
             nddl=vnddl(6*(i-1)+1)
@@ -260,18 +259,18 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                         zr(itemp3-1+hf+1+hind-h)=-1.d0/jeu
                     endif
                     call dcopy(2*hf+1, zr(ivec+deb), 1, zr(itemp4), 1)
-                    call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+1))
+                    call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+1))
                 endif
             else if (ind.gt.deb.and.ind.le.deb+(2*hf+1)) then
 ! ---       ([F]/ALPHA - XG)*F
                 zr(itemp3-1+ind-deb)=1.d0/alpha
                 call dcopy(2*hf+1, zr(ivec+deb), 1, zr(itemp4), 1)
-                call mnlaft(zr(itemp3), zr(itemp4), hf, nt,zr(iq1-1+deb+1))
+                call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq1-1+deb+1))
             endif
         endif
         neqs=neqs+vneqs(i)
         deb=deb+vneqs(i)*(2*hf+1)
-60  continue
+ 60 continue
 ! ----------------------------------------------------------------------
 ! --- GAMMA1 i.e. ND*(2*H+1)+2*NCHOC(2*HF+1)+1
 ! ----------------------------------------------------------------------
@@ -290,7 +289,7 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
     if (ind .eq. ninc) then
         do 70 k = 1, h
             zr(iq1-1+ninc-1)=zr(iq1-1+ninc-1)+k*zr(ivec-1+(h+k)*nd+1)
-70      continue
+ 70     continue
     endif
 !
     call dcopy(ninc-1, zr(iq1), 1, zr(itemp), 1)

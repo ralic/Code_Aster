@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc32ms(meca, sa, sb, cmax)
-        logical(kind=1) :: meca
+        aster_logical :: meca
         real(kind=8) :: sa(2)
         real(kind=8) :: sb(2)
-        logical(kind=1) :: cmax
+        aster_logical :: cmax
     end subroutine rc32ms
 end interface

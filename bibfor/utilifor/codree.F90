@@ -1,5 +1,6 @@
 subroutine codree(reel, mode, chaine)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: reel
     character(len=*) :: mode, chaine
 !     ------------------------------------------------------------------
@@ -42,7 +43,7 @@ subroutine codree(reel, mode, chaine)
     character(len=10) :: format
     integer :: long, nbchif
     real(kind=8) :: valeur
-    logical(kind=1) :: marktr
+    aster_logical :: marktr
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ient, ii, il, im, ndec
@@ -87,22 +88,22 @@ subroutine codree(reel, mode, chaine)
     if (mode .eq. 'E') then
         im = 0
         marktr = .false.
-        do 50, il = 1,long
-        ii = long-il+1
-        if (((chaine(ii:ii).eq.'+').or.(chaine(ii:ii).eq.'-')) .and. (.not.marktr)) then
-            im = ii
-            marktr = .true.
-        endif
-        if (chaine(ii:ii) .eq. 'E') goto 999
-50      continue
+        do 50 il = 1, long
+            ii = long-il+1
+            if (((chaine(ii:ii).eq.'+').or.(chaine(ii:ii).eq.'-')) .and. (.not.marktr)) then
+                im = ii
+                marktr = .true.
+            endif
+            if (chaine(ii:ii) .eq. 'E') goto 999
+ 50     continue
         if (im .gt. 1) chaine(im-1:im-1) = 'E'
     endif
     goto 999
 !     ------------------------------------------------------------------
-900  continue
+900 continue
     do 910 il = 1, long
         chaine(il:il) = '*'
-910  end do
+910 end do
 !     ------------------------------------------------------------------
-999  continue
+999 continue
 end subroutine

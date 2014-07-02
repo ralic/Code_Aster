@@ -16,7 +16,8 @@ subroutine abscur(ma)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-
+!
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/alcart.h"
@@ -41,37 +42,37 @@ subroutine abscur(ma)
 #include "asterfort/dismoi.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-
+!
     character(len=8) :: ma
 !-----------------------------------------------------------------------
 !     calcul d'une abscisse curviligne pour un groupe de mailles :
 !     toutes les mailles doivent etre du type 'poi1' ou 'seg2,3,4'
-
+!
 !     arguments en entree
 !     ------------------
 !     ma   : nom du maillage
-
+!
 !     en sortie
 !     ---------
 !     creation d'une carte contenant l'abscisse curviligne
 !-----------------------------------------------------------------------
-
-    character(len=8) :: typm,noma, nono
+!
+    character(len=8) :: typm, noma, nono
     character(len=24) :: mesmai, mesnoe
     character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
     character(len=16) :: motcle(3), typmcl(3)
-    integer :: adrm, iseg1,iseg2,isegprev,jtmp,kseg,nbextr,nbnot
-    integer :: iab1, iab2, iadr2, numa2,nuno1,nuno2
-    integer ::  icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
+    integer :: adrm, iseg1, iseg2, isegprev, jtmp, kseg, nbextr, nbnot
+    integer :: iab1, iab2, iadr2, numa2, nuno1, nuno2
+    integer :: icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
     integer :: jpoi, jseg, ind, ing, ino
     integer :: ipoi1, iseg, itypm, jcoor
     integer :: mi, n, n1, n2, nunorig
     integer :: nbpoi1, nbma, nbseg, nbno
-    integer :: jmesma,jmesno,numa,iexi,nbnoseg
+    integer :: jmesma, jmesno, numa, iexi, nbnoseg
     real(kind=8) :: s, stot
-    real(kind=8) :: s13, s32, s34, s42, abscurv(4), coor(3,4)
-    logical(kind=1) :: dbg=.false.
+    real(kind=8) :: s13, s32, s34, s42, abscurv(4), coor(3, 4)
+    aster_logical :: dbg=.false.
     integer, pointer :: icoseg(:) => null()
     integer, pointer :: nu2seg(:) => null()
     integer, pointer :: segordo(:) => null()
@@ -79,14 +80,14 @@ subroutine abscur(ma)
     character(len=8), pointer :: ncmp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-
+!
     call sdmail(ma, nommai, nomnoe, cooval, coodsc,&
                 cooref, grpnoe, gpptnn, grpmai, gpptnm,&
                 connex, titre, typmai, adapma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
     call jeveuo(cooval, 'L', jcoor)
-
-
+!
+!
 !   -- 1. numero du noeud origine :
 !   -------------------------------
     mesnoe='&&ABSCUR.MESNOE'
@@ -99,8 +100,8 @@ subroutine abscur(ma)
     ASSERT(nbno.eq.1)
     call jeveuo(mesnoe, 'L', jmesno)
     nunorig=zi(jmesno)
-
-
+!
+!
 !   -- 2. liste des mailles a traiter :
 !   -----------------------------------
     mesmai='&&ABSCUR.MESMAI'
@@ -113,8 +114,8 @@ subroutine abscur(ma)
     call reliem(' ', ma, 'NU_MAILLE', 'ABSC_CURV', 1,&
                 3, motcle, typmcl, mesmai, nbma)
     call jeveuo(mesmai, 'L', jmesma)
-
-
+!
+!
 !   --  3. creation d'objets temporaires :
 !   ---------------------------------------
     call wkvect('&&ABSCUR.IPOI1', 'V V I', nbma, jpoi)
@@ -122,8 +123,8 @@ subroutine abscur(ma)
     call wkvect('&&ABSCUR.AB1  ', 'V V R', nbma, iab1)
     call wkvect('&&ABSCUR.AB2  ', 'V V R', nbma, iab2)
     call wkvect('&&ABSCUR.COR2 ', 'V V I', nbma, icor2)
-
-
+!
+!
 !   --  4. tri des mailles poi1 et seg
 !   -----------------------------------
     call jeveuo(typmai, 'L', itypm)
@@ -141,9 +142,9 @@ subroutine abscur(ma)
         else
             call utmess('F', 'MODELISA_2')
         endif
-12  end do
-
-
+ 12 end do
+!
+!
 !   --  5. Les segments doivent former une ligne ouverte avec
 !          deux extremites.
 !   --------------------------------------------------------
@@ -157,34 +158,34 @@ subroutine abscur(ma)
         nuno2=zi(jtmp-1+2)
         icoseg(nuno1)=icoseg(nuno1)+1
         icoseg(nuno2)=icoseg(nuno2)+1
-        if (icoseg(nuno1).le.2) nu2seg(2*(nuno1-1)+icoseg(nuno1))=iseg
-        if (icoseg(nuno2).le.2) nu2seg(2*(nuno2-1)+icoseg(nuno2))=iseg
+        if (icoseg(nuno1) .le. 2) nu2seg(2*(nuno1-1)+icoseg(nuno1))=iseg
+        if (icoseg(nuno2) .le. 2) nu2seg(2*(nuno2-1)+icoseg(nuno2))=iseg
     enddo
-
+!
 !   -- 5.2 : on verifie que les segments forment une ligne ouverte
 !            et que l'une des 2 extremites est nunorig :
     vuorig=0
     nbextr=0
     do ino = 1, nbnot
-        if (icoseg(ino).eq.2) then
+        if (icoseg(ino) .eq. 2) then
         else if (icoseg(ino).eq.1) then
             nbextr=nbextr+1
-            if (ino.eq.nunorig) then
+            if (ino .eq. nunorig) then
                 vuorig=vuorig+1
             endif
         else if (icoseg(ino).eq.0) then
         else
             call jenuno(jexnum(nomnoe, ino), nono)
-            call utmess('F','INTEMAIL_36',sk=nono)
+            call utmess('F', 'INTEMAIL_36', sk=nono)
         endif
     enddo
-    if (nbextr.ne.2) call utmess('F','INTEMAIL_37',si=nbextr)
-    if (vuorig.ne.1) call utmess('F','INTEMAIL_38')
-
+    if (nbextr .ne. 2) call utmess('F', 'INTEMAIL_37', si=nbextr)
+    if (vuorig .ne. 1) call utmess('F', 'INTEMAIL_38')
+!
 !   -- 5.3 : on etablit la liste ordonnee des segments
 !   ---------------------------------------------------
     AS_ALLOCATE(vi=segordo,size=nbseg)
-
+!
 !   -- on initialise la recherche (1er segment):
     kseg=1
     nunosuiv=nunorig
@@ -193,7 +194,7 @@ subroutine abscur(ma)
     numa=zi(jseg-1+iseg)
     call jeveuo(jexnum(connex, numa), 'L', jtmp)
     ASSERT(nunosuiv.eq.zi(jtmp) .or. nunosuiv.eq.zi(jtmp+1))
-    if (nunosuiv.eq.zi(jtmp)) then
+    if (nunosuiv .eq. zi(jtmp)) then
         segordo(kseg)=+iseg
         nunosuiv=zi(jtmp+1)
     else
@@ -201,15 +202,15 @@ subroutine abscur(ma)
         nunosuiv=zi(jtmp)
     endif
     isegprev=iseg
-
+!
 !   -- on met les segments bout a bout :
     do while (kseg.lt.nbseg)
         kseg=kseg+1
         iseg1=nu2seg(2*nunosuiv-1)
         iseg2=nu2seg(2*nunosuiv)
-        if (iseg1.eq.isegprev) then
+        if (iseg1 .eq. isegprev) then
             iseg=iseg2
-        elseif (iseg2.eq.isegprev) then
+        else if (iseg2.eq.isegprev) then
             iseg=iseg1
         else
             ASSERT(.false.)
@@ -217,7 +218,7 @@ subroutine abscur(ma)
         numa=zi(jseg-1+iseg)
         call jeveuo(jexnum(connex, numa), 'L', jtmp)
         ASSERT(nunosuiv.eq.zi(jtmp) .or. nunosuiv.eq.zi(jtmp+1))
-        if (nunosuiv.eq.zi(jtmp)) then
+        if (nunosuiv .eq. zi(jtmp)) then
             segordo(kseg)=+iseg
             nunosuiv=zi(jtmp+1)
         else
@@ -226,8 +227,8 @@ subroutine abscur(ma)
         endif
         isegprev=iseg
     enddo
-
-
+!
+!
 !   -- 6. On verifie que les POI1 sont sur des segments :
 !   --------------------------------------------------------
     do 15 ipoi1 = 1, nbpoi1
@@ -246,30 +247,30 @@ subroutine abscur(ma)
                 zi(icor2+ipoi1-1)=-iseg
                 goto 15
             endif
-16      continue
+ 16     continue
         call jenuno(jexnum(nommai, numa), noma)
-        call utmess('F', 'MODELISA_3',sk=noma)
-15  continue
-
-
-
+        call utmess('F', 'MODELISA_3', sk=noma)
+ 15 continue
+!
+!
+!
 !   --  7. allocation de la carte :
 !   ------------------------------
     call exisd('CHAMP', ma//'.ABSC_CURV', iexi)
-    if (iexi.eq.1) then
-        call utmess('F','INTEMAIL_35')
+    if (iexi .eq. 1) then
+        call utmess('F', 'INTEMAIL_35')
         call detrsd('CHAMP', ma//'.ABSC_CURV')
     endif
     call alcart('G', ma//'.ABSC_CURV', ma, 'ABSC_R')
     call jeveuo(ma//'.ABSC_CURV .NCMP', 'E', vk8=ncmp)
     call jeveuo(ma//'.ABSC_CURV .VALV', 'E', vr=valv)
-    ncmp(1)   = 'ABSC1'
+    ncmp(1) = 'ABSC1'
     ncmp(2) = 'ABSC2'
     ncmp(3) = 'ABSC3'
     ncmp(4) = 'ABSC4'
     stot = 0.d0
-
-
+!
+!
 !   --  8. calcul de l'abscisse curviligne
 !   ---------------------------------------
     do 10 kseg = 1, nbseg
@@ -277,26 +278,26 @@ subroutine abscur(ma)
         numa=zi(jseg-1+abs(mi))
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+numa-1)), typm)
         call jeveuo(jexnum(connex, numa), 'L', jtmp)
-        if (mi.gt.0) then
+        if (mi .gt. 0) then
             ing=zi(jtmp-1+1)
             ind=zi(jtmp-1+2)
         else
             ing=zi(jtmp-1+2)
             ind=zi(jtmp-1+1)
         endif
-
+!
 !       noeuds 1 et 2 (extremites) :
         icoo1 = 3*(ing-1)
         icoo2 = 3*(ind-1)
         coor(:,1)=zr(jcoor+icoo1-1+1:jcoor+icoo1-1+3)
         coor(:,2)=zr(jcoor+icoo2-1+1:jcoor+icoo2-1+3)
-
+!
 !       noeuds 3 et 4 (si necessaire) :
-        if (typm.eq.'SEG3') then
+        if (typm .eq. 'SEG3') then
             nbnoseg=3
             icoo3 = 3*(zi(jtmp-1+3)-1)
             coor(:,3)=zr(jcoor+icoo3-1+1:jcoor+icoo3-1+3)
-        elseif (typm.eq.'SEG4') then
+        else if (typm.eq.'SEG4') then
             nbnoseg=4
             icoo3 = 3*(zi(jtmp-1+3)-1)
             icoo4 = 3*(zi(jtmp-1+4)-1)
@@ -306,57 +307,58 @@ subroutine abscur(ma)
             ASSERT(typm.eq.'SEG2')
             nbnoseg=2
         endif
-
+!
 !       -- calcul des abscisses curvilignes :
-        call arcseg34(nbnoseg,coor,abscurv)
-
-        if (nbnoseg.eq.2) then
+        call arcseg34(nbnoseg, coor, abscurv)
+!
+        if (nbnoseg .eq. 2) then
             s = abscurv(2)-abscurv(1)
-        elseif (nbnoseg.eq.3) then
+        else if (nbnoseg.eq.3) then
             s13 = abscurv(3)-abscurv(1)
             s32 = abscurv(2)-abscurv(3)
             s=s13+s32
-        elseif (nbnoseg.eq.4) then
+        else if (nbnoseg.eq.4) then
             s13 = abscurv(3)-abscurv(1)
             s34 = abscurv(4)-abscurv(3)
             s42 = abscurv(2)-abscurv(4)
             s=s13+s34+s42
         endif
-
+!
         if (mi .gt. 0) then
             valv(1) = stot
             zr(iab1+abs(mi)-1)= stot
-
-            if (nbnoseg.eq.3) then
+!
+            if (nbnoseg .eq. 3) then
                 valv(3) = stot+s13
-            elseif (nbnoseg.eq.4) then
+            else if (nbnoseg.eq.4) then
                 valv(3) = stot+s13
                 valv(4) = stot+s13+s34
             endif
-
+!
             stot = stot+s
             valv(2) = stot
             zr(iab2+abs(mi)-1)= stot
         else
             valv(2) = stot
             zr(iab2+abs(mi)-1)= stot
-
-            if (nbnoseg.eq.3) then
+!
+            if (nbnoseg .eq. 3) then
                 valv(3) = stot+s13
-            elseif (nbnoseg.eq.4) then
+            else if (nbnoseg.eq.4) then
                 valv(3) = stot+s13
                 valv(4) = stot+s13+s34
             endif
-
+!
             stot = stot+s
             valv(1) = stot
             zr(iab1+abs(mi)-1)= stot
         endif
-        call nocart(ma//'.ABSC_CURV', 3, nbnoseg, mode='NUM', nma=1, limanu=[numa])
-
-10  end do
-
-
+        call nocart(ma//'.ABSC_CURV', 3, nbnoseg, mode='NUM', nma=1,&
+                    limanu=[numa])
+!
+ 10 end do
+!
+!
 !   --  cas des poi1 :
 !   --------------------
     do 20 ipoi1 = 1, nbpoi1
@@ -368,14 +370,15 @@ subroutine abscur(ma)
             s=zr(iab2-mi-1)
         endif
         valv(1) = s
-        call nocart(ma//'.ABSC_CURV', 3, 1, mode='NUM', nma=1, limanu=[numa])
-20  end do
-
-
+        call nocart(ma//'.ABSC_CURV', 3, 1, mode='NUM', nma=1,&
+                    limanu=[numa])
+ 20 end do
+!
+!
     dbg=.false.
     if (dbg) call imprsd('CHAMP', ma//'.ABSC_CURV', 6, 'ABSC_CURV')
-
-
+!
+!
 !   -- menage
 !   ---------
     AS_DEALLOCATE(vi=icoseg)
@@ -390,6 +393,6 @@ subroutine abscur(ma)
     call jedetr(mesmai)
     call jedetr(ma//'.ABSC_CURV .NCMP')
     call jedetr(ma//'.ABSC_CURV .VALV')
-
+!
     call jedema()
 end subroutine

@@ -1,7 +1,8 @@
 subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
                   nbmode, id, moncha, vecmod, parmod,&
                   gamma0, recmor, recmod, nbdis)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -13,7 +14,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
     real(kind=8) :: recmod(nbsup, neq, *), recmor(nbsup, neq, *)
     character(len=16) :: nomsy
     character(len=*) :: moncha
-    logical(kind=1) :: monoap, muapde
+    aster_logical :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +55,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: im, in, is, jmod, juni, ioc
-    real(kind=8) ::  xxx
+    real(kind=8) :: xxx
     character(len=8) :: nomcmp(3)
 !     ------------------------------------------------------------------
     data nomcmp / 'DX' , 'DY' , 'DZ' /
@@ -68,7 +69,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
             ioc = nbdis(1)
 !         VALEUR DE IOC REFERENCE A ASCORM.F
             recmod(ioc,in,id) = recmod(ioc,in,id)+ (recmor(ioc,in,id)* recmor(ioc,in,id))
-93      continue
+ 93     continue
     endif
 !
     if (nomsy(1:4) .eq. 'ACCE') then
@@ -81,8 +82,8 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
                 xxx = parmod(im,2+id)
                 do 22 in = 1, neq
                     zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
-22              continue
-20          continue
+ 22             continue
+ 20         continue
 !
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
@@ -92,7 +93,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
             do 24 in = 1, neq
                 xxx = gamma0(id) * ( zi(juni+in-1) - zr(jmod+in-1) )
                 recmod(is,in,id) = recmod(is,in,id) + xxx*xxx
-24          continue
+ 24         continue
             call jedetr('&&ASTRON.VECTEUR_UNIT')
             call jedetr('&&ASTRON.VECTEUR_MODA')
         else
@@ -104,8 +105,8 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
                 xxx = parmod(im,2+id)
                 do 42 in = 1, neq
                     zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
-42              continue
-40          continue
+ 42             continue
+ 40         continue
 !
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
@@ -115,7 +116,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
             do 44 in = 1, neq
                 xxx = gamma0(is+nbsup*(id-1)) * ( zi(juni+in-1) - zr(jmod+in-1) )
                 recmod(is,in,id) = recmod(is,in,id) + xxx*xxx
-44          continue
+ 44         continue
             call jedetr('&&ASTRON.VECTEUR_UNIT')
             call jedetr('&&ASTRON.VECTEUR_MODA')
         endif

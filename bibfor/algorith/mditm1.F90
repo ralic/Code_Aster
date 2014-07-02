@@ -38,6 +38,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -55,7 +56,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
     integer :: icoupl
     character(len=8) :: tpfl
     integer :: veci1(*)
-    logical(kind=1) :: locfl0(*)
+    aster_logical :: locfl0(*)
     real(kind=8) :: dt0, tfexm, ts
     integer :: iarch, nexcit
     character(len=8) :: tabexc(*)
@@ -123,7 +124,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
         zr(iamo00+im-1) = amori(im)/masgi(im)
         zr(ipuld +im-1) = pulsi(im)
         zr(ipul00+im-1) = pulsi(im)
-10  end do
+ 10 end do
 !
     call wkvect('&&MDITM1.FMOD0', 'V V R8', nbm, ifmo0)
     call wkvect('&&MDITM1.FMODA', 'V V R8', nbm, ifmoa)
@@ -143,7 +144,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
     call jeveuo(vecgen//'           .VALE', 'L', vr=nktext)
     do 20 i = 1, nbf
         zr(itx+i-1) = nktext(i)
-20  end do
+ 20 end do
     dttr = (zr(itx+1) - zr(itx)) * 1.0d-02
     do 30 i = 1, nexcit
         vecgen = tabexc(i)
@@ -151,8 +152,8 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
         imode = numexc(i)
         do 31 j = 1, nbf
             zr(ifx+(imode-1)*nbf+j-1) = nkfext(1+nbf+j-1)
-31      continue
-30  end do
+ 31     continue
+ 30 end do
 !
     call wkvect('&&MDITM1.OMEGAF', 'V V R8', nbf, iom)
     call wkvect('&&MDITM1.AA', 'V V R8', nbf*nbm, iaa)
@@ -200,7 +201,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
             zr(iamo0 +im-1) = amori(im)/masgi(im)
             zr(ipul +im-1) = pulsi(im)
             zr(ipul0 +im-1) = pulsi(im)
-40      end do
+ 40     end do
 !
         call wkvect('&&MDITM1.FMOD00', 'V V R8', nbm, ifmo00)
         call wkvect('&&MDITM1.FMODT', 'V V R8', nbm, ifmot)
@@ -261,7 +262,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
         do 50 ic = 1, nbnl
             inti(ic) = intitu(ic)
             ncho(ic) = noecho(ic,1)
-50      end do
+ 50     end do
 !
         call wkvect('&&MDITM1.TCONF1', 'V V R8', 4*nbnl, jc1)
         call wkvect('&&MDITM1.TCONF2', 'V V R8', 4*nbnl, jc2)
@@ -298,7 +299,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
             zr(ibet + 2*(ic-1) + 2 - 1) = parcho(ic,20)
             zr(igam + 2*(ic-1) + 1 - 1) = parcho(ic,21)
             zr(igam + 2*(ic-1) + 2 - 1) = parcho(ic,22)
-60      end do
+ 60     end do
 !
         nbseg0 = 1
         do 70 ic = 1, nbnl
@@ -330,7 +331,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
                 zi(jns+ic-1) = nbseg
                 if (nbseg .gt. nbseg0) nbseg0 = nbseg
             endif
-70      end do
+ 70     end do
         np3 = nbseg0
         call wkvect('&&MDITM1.RC', 'V V R8', np3*nbnl, irc)
         call wkvect('&&MDITM1.THETA', 'V V R8', np3*nbnl, ithe)
@@ -349,11 +350,11 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
                 do 81 i = 1, nbseg
                     zr(irc+nbseg0*(ic-1)+i-1) = zr(idrayo + i - 1)
                     zr(ithe+nbseg0*(ic-1)+i-1) = zr(idthet + i - 1)
-81              continue
+ 81             continue
             else
                 zr(irc+nbseg0*(ic-1)) = parcho(ic,1)
             endif
-80      end do
+ 80     end do
         call chveri(nbm, nbnl, np3, nbm, nbm,&
                     nbnl, zi(jtypch), zi(jns), phii, noecho,&
                     zr(ialp), zr(ibet), zr(igam), zr(iorig), zr(irc),&

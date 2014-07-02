@@ -6,6 +6,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrefe_info.h"
@@ -68,7 +69,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     integer :: idfdef, ipoidf, ivff, j, nnof
     real(kind=8) :: depref, ffc(8), ffp(27), jac
     real(kind=8) :: r3bid(3), rr, sigref, vtmp(400)
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
     character(len=8) :: elc, elref, elrefc, fpg, typma
     character(len=16) :: nomte
 !
@@ -139,8 +140,8 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
             endif
         endif
 !
-        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                         jvf=ivff, jdfde=idfdef)
         nface=zi(jlonch+3*(ifiss-1)-1+2)
         nptf=zi(jlonch+3*(ifiss-1)-1+3)
         do i = 1, nface

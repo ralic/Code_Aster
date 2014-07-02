@@ -1,6 +1,7 @@
 subroutine rveche(ssch19, sdlieu, sdeval)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -62,10 +63,10 @@ subroutine rveche(ssch19, sdlieu, sdeval)
     integer :: aopnbn, aovale, aopadr, aopcmp, aoerre, ainugd, aivale, aopnsp
     integer :: arefe, adesc, nbcmp, i, anumnd, acmpgd, lpt
     integer :: nbmpst, nbnpst, nbocer, n, m, adrin, adrou, nbm, numm
-    integer :: nbtcmp,  sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
+    integer :: nbtcmp, sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
     integer :: vali, ilong, k, l, lnc, ncom, nspm
 !
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
     character(len=1) :: cbid
     integer, pointer :: nund(:) => null()
@@ -105,10 +106,10 @@ subroutine rveche(ssch19, sdlieu, sdeval)
     call wkvect(oupcmp, 'V V I', nbtcmp, aopcmp)
 !
     nbcmp = 0
-    do 20, i = 1, nbtcmp, 1
-    nbcmp = nbcmp + min(zi(aipcmp + i-1),1)
-    zi(aopcmp + i-1) = zi(aipcmp + i-1)
-    20 end do
+    do 20 i = 1, nbtcmp, 1
+        nbcmp = nbcmp + min(zi(aipcmp + i-1),1)
+        zi(aopcmp + i-1) = zi(aipcmp + i-1)
+ 20 end do
     call wkvect(ounoma, 'V V K8', 1, adrou)
     call jeveuo(innoma, 'L', adrin)
     mailla = zk8(adrin)
@@ -120,19 +121,19 @@ subroutine rveche(ssch19, sdlieu, sdeval)
 !
     call jecrec(ouerre, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbocer)
-    do 30, iocer = 1, nbocer, 1
-    call jecroc(jexnum(ouerre, iocer))
-    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp)
-    call jeveuo(jexnum(ouerre, iocer), 'E', aoerre)
-    do 31, i = 1, nbcmp, 1
-    zi(aoerre + i-1) = 0
-31  continue
-    30 end do
+    do 30 iocer = 1, nbocer, 1
+        call jecroc(jexnum(ouerre, iocer))
+        call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp)
+        call jeveuo(jexnum(ouerre, iocer), 'E', aoerre)
+        do 31 i = 1, nbcmp, 1
+            zi(aoerre + i-1) = 0
+ 31     continue
+ 30 end do
 !
     call wkvect(nnumnd, 'V V I', nbnpst, anumnd)
-    do 50, i = 1, nbnpst, 1
-    call jenonu(jexnom(mailla//'.NOMNOE', zk8(adesc + i-1)), zi(anumnd + i-1))
-    50 end do
+    do 50 i = 1, nbnpst, 1
+        call jenonu(jexnom(mailla//'.NOMNOE', zk8(adesc + i-1)), zi(anumnd + i-1))
+ 50 end do
     call wkvect(oupadr, 'V V I', nbnpst, aopadr)
     call jeveuo(invale, 'L', aivale)
     call jeveuo(inpadr, 'L', aipadr)
@@ -140,16 +141,16 @@ subroutine rveche(ssch19, sdlieu, sdeval)
     if (docu .eq. 'CHNO') then
         call wkvect(ouvale, 'V V R', nbcmp*nbnpst, aovale)
         zi(aopadr + 1-1) = 1
-        do 100, i = 1, nbnpst-1, 1
-        zi(aopadr + i+1-1) = zi(aopadr + i-1) + nbcmp
-100      continue
-        do 110, i = 1, nbnpst, 1
-        adrin = zi(aipadr + zi(anumnd + i-1)-1)
-        adrou = zi(aopadr + i-1)
-        do 120, j = 1, nbcmp, 1
-        zr(aovale + adrou + j-2) = zr(aivale + adrin + j-2)
-120      continue
-110      continue
+        do 100 i = 1, nbnpst-1, 1
+            zi(aopadr + i+1-1) = zi(aopadr + i-1) + nbcmp
+100     continue
+        do 110 i = 1, nbnpst, 1
+            adrin = zi(aipadr + zi(anumnd + i-1)-1)
+            adrou = zi(aopadr + i-1)
+            do 120 j = 1, nbcmp, 1
+                zr(aovale + adrou + j-2) = zr(aivale + adrin + j-2)
+120         continue
+110     continue
 !
     else if (docu .eq. 'CHLM') then
         nindir = '&&RVECHE.TABLE.INDIR'
@@ -164,103 +165,103 @@ subroutine rveche(ssch19, sdlieu, sdeval)
         call jeveuo(inpnsp, 'L', aipnsp)
         nnmail = sdeval//'.MAIL'
         nrepma = mailla//'.NOMMAI'
-        do 200, i = 1, nbnpst, 1
-        pt = 1
-        trouve = .false.
-        n = zi(anumnd + i-1)
-210      continue
-        if ((.not. trouve) .and. (pt .le. lpt)) then
-            if (nund(pt) .eq. n) then
-                trouve = .true.
-                call jelira(jexnum(sdemno//'.NUMA', pt), 'LONMAX', nbm)
-                zi(aindir + i-1) = pt
-                zi(aopnbn + i-1) = nbm
+        do 200 i = 1, nbnpst, 1
+            pt = 1
+            trouve = .false.
+            n = zi(anumnd + i-1)
+210         continue
+            if ((.not. trouve) .and. (pt .le. lpt)) then
+                if (nund(pt) .eq. n) then
+                    trouve = .true.
+                    call jelira(jexnum(sdemno//'.NUMA', pt), 'LONMAX', nbm)
+                    zi(aindir + i-1) = pt
+                    zi(aopnbn + i-1) = nbm
+                endif
+                pt = pt + 1
+                goto 210
             endif
-            pt = pt + 1
-            goto 210
-        endif
-        if (.not. trouve) then
-            vali = n
-            valk = zk8(adesc+i-1)
-            call utmess('F', 'POSTRELE_40', sk=valk, si=vali)
-        endif
-        call jeveuo(jexnum(sdemno//'.NUMA', pt-1), 'L', anuma)
-        nsp = zi(aipnsp + zi(anuma)-1)
-        nco = zi(aipnco + zi(anuma)-1)
-        do 205, j = 2, nbm, 1
-        nsp = min(nsp,zi(aipnsp + zi(anuma + j-1)-1))
-        nco = min(nco,zi(aipnco + zi(anuma + j-1)-1))
-205      continue
-        zi(aopnsp + i-1) = nsp
-        zi(aopnco + i-1) = nco
-200      continue
+            if (.not. trouve) then
+                vali = n
+                valk = zk8(adesc+i-1)
+                call utmess('F', 'POSTRELE_40', sk=valk, si=vali)
+            endif
+            call jeveuo(jexnum(sdemno//'.NUMA', pt-1), 'L', anuma)
+            nsp = zi(aipnsp + zi(anuma)-1)
+            nco = zi(aipnco + zi(anuma)-1)
+            do 205 j = 2, nbm, 1
+                nsp = min(nsp,zi(aipnsp + zi(anuma + j-1)-1))
+                nco = min(nco,zi(aipnco + zi(anuma + j-1)-1))
+205         continue
+            zi(aopnsp + i-1) = nsp
+            zi(aopnco + i-1) = nco
+200     continue
 !
         zi(aopadr + 1-1) = 1
-        do 240, i = 1, nbnpst-1, 1
-        zi(aopadr + i+1-1) = zi(aopadr+i-1) + nbcmp*zi(aopnbn+i-1) * zi(aopnco+i-1)*zi(aopnsp+i-1&
-                             &)
-240      continue
+        do 240 i = 1, nbnpst-1, 1
+            zi(aopadr + i+1-1) = zi(aopadr+i-1) + nbcmp*zi(aopnbn+i-1) * zi(aopnco+i-1)*zi(aopnsp&
+                                 &+i-1)
+240     continue
         ilong = zi(aopadr+nbnpst-1) + nbcmp*zi(aopnbn+nbnpst-1)* zi(aopnco+nbnpst-1)*zi(aopnsp+nb&
                 &npst-1) - 1
         call wkvect(ouvale, 'V V R', ilong, aovale)
         call jecrec(nnmail, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE',&
                     nbnpst)
-        do 427, i = 1, nbnpst, 1
-        l = zi(aopnbn + i-1)
-        call jecroc(jexnum(nnmail, i))
-        call jeecra(jexnum(nnmail, i), 'LONMAX', l)
-        call jeveuo(jexnum(nnmail, i), 'E', anmail)
-        call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + i-1)), 'L', anuma)
-        do 428, j = 1, l, 1
-        call jenuno(jexnum(nrepma, zi(anuma+j-1)), zk8(anmail+j- 1))
-428      continue
-427      continue
+        do 427 i = 1, nbnpst, 1
+            l = zi(aopnbn + i-1)
+            call jecroc(jexnum(nnmail, i))
+            call jeecra(jexnum(nnmail, i), 'LONMAX', l)
+            call jeveuo(jexnum(nnmail, i), 'E', anmail)
+            call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + i-1)), 'L', anuma)
+            do 428 j = 1, l, 1
+                call jenuno(jexnum(nrepma, zi(anuma+j-1)), zk8(anmail+j- 1))
+428         continue
+427     continue
         call jedetr(sdemno//'.VACP')
         call jedetr(sdemno//'.NUMA')
         call jedetr(sdemno//'.NOCP')
         call jedetr(sdemno//'.NUCP')
         call jedetr(sdemno//'.NUND')
         call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(ainugd)), 'L', acmpgd)
-        do 220, i =1, nbtcmp, 1
+        do 220 i = 1, nbtcmp, 1
 !
-        pt = zi(aopcmp + i-1)
-        if (pt .gt. 0) then
-            call tremno(zk8(acmpgd + i-1), ssch19, sdemno)
-            do 221, j = 1, nbnpst, 1
-            call jeveuo(jexnum(sdemno//'.VACP', zi(aindir + j- 1)), 'L', sdvacp)
-            call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + j- 1)), 'L', anuma)
-            nsp = zi(aopnsp + j-1)
-            nco = zi(aopnco + j-1)
-            nbm = zi(aopnbn + j-1)
-            lnc = zi(aopadr + j-1)
-            lmc = nbcmp*nsp
-            lcc = lmc*nbm
-            lms = 0
-            do 222, m = 1, nbm, 1
-            numm = zi(anuma + m-1)
-            nspm = zi(aipnsp + numm-1)
-            ncom = zi(aipnco + numm-1)
-            do 223, k = 1, nco, 1
-            lsc = (k-1)*lcc
-            do 224, l = 1, nsp, 1
-            zr(aovale + lnc-1 + lsc + (m-1)*lmc +&
+            pt = zi(aopcmp + i-1)
+            if (pt .gt. 0) then
+                call tremno(zk8(acmpgd + i-1), ssch19, sdemno)
+                do 221 j = 1, nbnpst, 1
+                    call jeveuo(jexnum(sdemno//'.VACP', zi(aindir + j- 1)), 'L', sdvacp)
+                    call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + j- 1)), 'L', anuma)
+                    nsp = zi(aopnsp + j-1)
+                    nco = zi(aopnco + j-1)
+                    nbm = zi(aopnbn + j-1)
+                    lnc = zi(aopadr + j-1)
+                    lmc = nbcmp*nsp
+                    lcc = lmc*nbm
+                    lms = 0
+                    do 222 m = 1, nbm, 1
+                        numm = zi(anuma + m-1)
+                        nspm = zi(aipnsp + numm-1)
+                        ncom = zi(aipnco + numm-1)
+                        do 223 k = 1, nco, 1
+                            lsc = (k-1)*lcc
+                            do 224 l = 1, nsp, 1
+                                zr(aovale + lnc-1 + lsc + (m-1)*lmc +&
                                 (l-1)*nbcmp + pt-1) = zr(sdvacp + lms&
                                 + (k-1)*nspm + l-1)
-224          continue
+224                         continue
 !
-223          continue
-            lms = lms + nspm*ncom
-222          continue
+223                     continue
+                        lms = lms + nspm*ncom
+222                 continue
 !
-221          continue
+221             continue
 !
-            call jedetr(sdemno//'.VACP')
-            call jedetr(sdemno//'.NUMA')
-            call jedetr(sdemno//'.NOCP')
-            call jedetr(sdemno//'.NUCP')
-            call jedetr(sdemno//'.NUND')
-        endif
-220      continue
+                call jedetr(sdemno//'.VACP')
+                call jedetr(sdemno//'.NUMA')
+                call jedetr(sdemno//'.NOCP')
+                call jedetr(sdemno//'.NUCP')
+                call jedetr(sdemno//'.NUND')
+            endif
+220     continue
         call jedetr(nindir)
     else
     endif

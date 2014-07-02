@@ -5,6 +5,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                   neq, nexcit, info, monmot, ier)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/gloloc.h"
@@ -28,7 +29,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     real(kind=8) :: ps1del(neq, nexcit), ps2del(nbnli, nexcit, *)
     character(len=8) :: noecho(nbnli, *), intitu(*), monmot
     character(len=14) :: numddl
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,7 +159,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! OUT : IER    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: imode, iamor, im, i, j,  nbparcho, nblogcho
+    integer :: imode, iamor, im, i, j, nbparcho, nblogcho
     integer :: vali
     real(kind=8) :: dpiloc(6), dpiglo(6), ddpilo(3), origob(3), un
     real(kind=8) :: valr(10)
@@ -203,8 +204,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     nbparcho = mdtr74grd('PARCHO')
     nblogcho = mdtr74grd('LOGCHO')
     do i = 1, nbnli
-        logcho(i,1:nblogcho)  = 0
-        noecho(i,1:9)  = ' '
+        logcho(i,1:nblogcho) = 0
+        noecho(i,1:9) = ' '
         parcho(i,1:nbparcho) = 0.d0
     enddo
 !
@@ -272,9 +273,10 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
             valr (10)= parcho(i,22)
             call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
             if (noecho(i,9)(1:2) .eq. 'BI') then
-                xjeu =  (parcho(i,11) - parcho(i,8))**2 + &
-                        (parcho(i,12) - parcho(i,9))**2 + &
-                        (parcho(i,13) - parcho(i,10))**2
+                xjeu = (&
+                       parcho(i,11) - parcho(i,8))**2 + (parcho(i,12) - parcho(i,9))**2 + (parcho&
+                       &(i,13) - parcho(i,10)&
+                       )**2
                 if (i .le. nbchoc) then
                     xjeu = sqrt(xjeu) - (parcho(i,30)+parcho(i,31))
                 else
@@ -338,7 +340,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         enddo
 !       COUPLAGE AVEC EDYOS
         if (nbpal .gt. 0) then
-            do i = nbnli - nbpal +1 , nbnli
+            do i = nbnli - nbpal +1, nbnli
                 do j = 1, nbmode
                     dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
                     dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)

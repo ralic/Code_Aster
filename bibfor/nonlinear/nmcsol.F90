@@ -18,6 +18,7 @@ subroutine nmcsol(lischa, sddyna, lviss)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -25,7 +26,7 @@ subroutine nmcsol(lischa, sddyna, lviss)
 #include "asterfort/ndynkk.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: lviss
+    aster_logical :: lviss
     character(len=19) :: lischa, sddyna
 !
 ! ----------------------------------------------------------------------
@@ -79,7 +80,7 @@ subroutine nmcsol(lischa, sddyna, lviss)
             nfsol = nfsol + 1
             cnfsol = zk24(jalich+ichar-1)(1:8)
         endif
-30  end do
+ 30 end do
 !
 ! --- ACTIVATION CHARGE
 !

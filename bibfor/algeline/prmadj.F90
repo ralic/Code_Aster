@@ -18,18 +18,19 @@ subroutine prmadj(nbnd, neq, n2, adjncy, xadj,&
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "asterfort/prmade.h"
 #include "asterfort/prmadl.h"
     integer :: nbnd, neq, n2
     integer :: adjncy(*), xadj(neq+1), xadjd(*), liste(neq), q(n2)
     integer :: noeud(*), nbnoeu, ndi, ndj, deb, fin, deblis, i, j, ndsuiv
-    logical(kind=1) :: vider
+    aster_logical :: vider
     vider = .false.
     nbnoeu = 0
     deblis=0
     do 50 i = 1, nbnd
         xadjd(i)=1
-50  continue
+ 50 continue
     do 100 i = 1, n2
         ndi = noeud(q(i))
         deb = xadj(i)
@@ -40,7 +41,7 @@ subroutine prmadj(nbnd, neq, n2, adjncy, xadj,&
 !     ON MET  NDJ DANS  LA LISTE
                 call prmadl(ndj, deblis, liste)
             endif
-120      continue
+120     continue
 !     ON ECRIT LA LISTE DANS ADJNCY,XADJD ET ON LA REMET A ZERO
         if (i .eq. n2) then
             vider = .true.
@@ -55,5 +56,5 @@ subroutine prmadj(nbnd, neq, n2, adjncy, xadj,&
             call prmade(deblis, liste, adjncy, xadjd, ndi)
             vider = .false.
         endif
-100  continue
+100 continue
 end subroutine

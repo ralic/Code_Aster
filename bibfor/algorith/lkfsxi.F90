@@ -18,7 +18,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     --------------------------------------------------------------
 !     CALCUL DU TERME DE LETK = D(DF/DS)/DXI
 !     IN  NMAT     : DIMENSION TABLE DES PARAMETRES MATERIAU
@@ -36,6 +36,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
 !         DSDX     : DERIVEE DE M(XI) PAR RAPPORT A XI
 !         DMDX     : DERIVEE DE S(XI) PAR RAPPORT A XI
 !     --------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
@@ -43,7 +44,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
     integer :: nmat
     real(kind=8) :: i1, devsig(6), dshds(6), dfdsdx(6), materf(nmat, 2)
     real(kind=8) :: para(3), xi, vara(4), dpardx(3)
-    logical(kind=1) :: plas
+    aster_logical :: plas
 !
     integer :: ndt, ndi, i
     real(kind=8) :: damdx, sigc, h0c, agx, sii, htheta, bgx, dgx, amx, un
@@ -110,7 +111,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
     call lcinve(zero, vident)
     do 10 i = 1, ndi
         vident(i) = un
-10  end do
+ 10 end do
 !
 ! --- NORME DU DEVIATEUR DES CONTRAINTES
     call lcprsc(devsig, devsig, sii)
@@ -182,7 +183,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
                         &*h0c*((damdx*log(terexp)+(amx- un)/terexp *(dagdx*sii*htheta+dbgdx*i1+dd&
                         &gdx))*terexp** (amx-un))*(agx*dshds(i)+bgx*vident(i))- amx*sigc*h0c* ter&
                         &exp**(amx-un)* (dagdx*dshds(i)+dbgdx*vident(i))
-20      continue
+ 20     continue
     else
         call lcinve(zero, dfdsdx)
     endif

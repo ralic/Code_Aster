@@ -1,5 +1,6 @@
 subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
@@ -40,11 +41,11 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     integer :: debgd, indval, debugr
     integer :: iachii, iachik, iachix, ialiel, iamaco, iamsco
     integer :: iel, illiel, ilmaco, ilmsco
-    integer ::  jparal, iexi
-    logical(kind=1) :: lparal
+    integer :: jparal, iexi
+    aster_logical :: lparal
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-#define numail(igr,iel)   zi(ialiel-1+zi(illiel-1+igr)-1+iel)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel-1+igr)-1+iel)
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -64,16 +65,16 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     if (ngrmx .eq. 1 .and. zi(desc-1+4) .eq. 1) then
         debgd = 3 + 2*ngrmx + 1
         deb2 = debugr
-        do 10,iel = 1,nbelgr
-        if (lparal) then
-            if (.not.zl(jparal-1+iel)) then
-                deb2=deb2+ncmp
-                goto 10
+        do 10 iel = 1, nbelgr
+            if (lparal) then
+                if (.not.zl(jparal-1+iel)) then
+                    deb2=deb2+ncmp
+                    goto 10
+                endif
             endif
-        endif
-        call trigd(zi(desc-1+debgd), 1, dg, deb2, .false._1,&
-                   0, 0)
-10      continue
+            call trigd(zi(desc-1+debgd), 1, dg, deb2, .false._1,&
+                       0, 0)
+ 10     continue
         goto 40
     endif
 !
@@ -84,34 +85,34 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     ptms = zi(iachii-1+11* (iichin-1)+7)
 !
     deb2 = debugr
-    do 20,iel = 1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) then
+    do 20 iel = 1, nbelgr
+        if (lparal) then
+            if (.not.zl(jparal-1+iel)) then
+                deb2=deb2+ncmp
+                goto 20
+            endif
+        endif
+!       RECHERCHE DU NUMERO DE L'ENTITE CORRESPONDANT A LA MAILLE IMA:
+        ima = numail(igr,iel)
+        if (ima .lt. 0) then
+            ient = zi(ptms-1-ima)
+        else
+            ient = zi(ptma-1+ima)
+        endif
+        if (ient .eq. 0) then
             deb2=deb2+ncmp
             goto 20
         endif
-    endif
-!       RECHERCHE DU NUMERO DE L'ENTITE CORRESPONDANT A LA MAILLE IMA:
-    ima = numail(igr,iel)
-    if (ima .lt. 0) then
-        ient = zi(ptms-1-ima)
-    else
-        ient = zi(ptma-1+ima)
-    endif
-    if (ient .eq. 0) then
-        deb2=deb2+ncmp
-        goto 20
-    endif
 !
 !       RECOPIE:
 !       -------
-    debgd = 3 + 2*ngrmx + (ient-1)*nec + 1
-    indval = (ient-1)*ncmpmx + 1
+        debgd = 3 + 2*ngrmx + (ient-1)*nec + 1
+        indval = (ient-1)*ncmpmx + 1
 !
-    call trigd(zi(desc-1+debgd), indval, dg, deb2, .false._1,&
-               0, 0)
-    20 end do
+        call trigd(zi(desc-1+debgd), indval, dg, deb2, .false._1,&
+                   0, 0)
+ 20 end do
 !
-40  continue
+ 40 continue
 !
 end subroutine

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine preml1(neq, n2, diag, delg, col,&
                       xadj, adjncy, parent, adress, supnd,&
@@ -61,6 +63,6 @@ interface
         integer :: permnd(*)
         integer :: spndnd(*)
         integer :: xadjd(*)
-        logical(kind=1) :: matgen
+        aster_logical :: matgen
     end subroutine preml1
 end interface

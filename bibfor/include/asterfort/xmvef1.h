@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                       nfaes, cface, hpg, ffc, ffe,&
@@ -40,7 +42,7 @@ interface
         real(kind=8) :: dlagrf(2)
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
-        logical(kind=1) :: lpenaf
+        aster_logical :: lpenaf
         real(kind=8) :: coefff
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)

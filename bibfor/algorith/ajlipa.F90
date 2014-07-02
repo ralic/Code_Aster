@@ -59,10 +59,10 @@ subroutine ajlipa(modelz, base)
     integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
     integer :: iexi
-    integer :: icobis,  dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
-    integer :: nbgrel, jrepe,  jprti, jprtk, nbsma
+    integer :: icobis, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
+    integer :: nbgrel, jrepe, jprti, jprtk, nbsma
 !
-    logical(kind=1) :: plein0
+    aster_logical :: plein0
     integer, pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
     integer, pointer :: maille(:) => null()

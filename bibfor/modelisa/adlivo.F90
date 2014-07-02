@@ -17,12 +17,13 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     integer :: mv, is, nvtot
     integer :: nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)
     integer :: iv, nsco, isco
-    logical(kind=1) :: trma, trso
+    aster_logical :: trma, trso
 !
 !  AJOUTE A LA LISTE DE TOUS LES VOISINS DE LA MAILLE COURANTE MO
 !  LA MAILLE MV ET LE SOMMET IS SI CETTE MAILE N EXISTE PAS DEJA
@@ -49,8 +50,8 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
                     goto 20
 !
                 endif
-10          continue
-20          continue
+ 10         continue
+ 20         continue
             if (.not.trso) then
                 nsco=nsco+1
                 if (nsco .gt. nscoma) then
@@ -62,8 +63,8 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
             goto 40
 !
         endif
-30  end do
-40  continue
+ 30 end do
+ 40 continue
     if (.not.trma) then
         nvtot=nvtot+1
         if (nvtot .gt. nvoima) then

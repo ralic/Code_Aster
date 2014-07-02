@@ -26,6 +26,7 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
@@ -121,7 +122,7 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnpilo
     real(kind=8) :: r8bid(8)
-    logical(kind=1) :: lstat, limpl, leltc
+    aster_logical :: lstat, limpl, leltc
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -213,7 +214,7 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
                 numedd, instap, maprec, matass, cndonn,&
                 cnpilo, cncine, solalg, rescvg)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

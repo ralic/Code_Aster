@@ -20,6 +20,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -60,7 +61,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
     integer :: retact, ievdac, actnew
-    logical(kind=1) :: arret
+    aster_logical :: arret
     character(len=4) :: etnewt
 !
 ! ----------------------------------------------------------------------

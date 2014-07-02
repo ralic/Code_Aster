@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, &
                       defo_comp, defo_comp_py)
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: list_elem_affe
-        logical(kind=1), intent(in) :: l_affe_all
+        aster_logical, intent(in) :: l_affe_all
         integer, intent(in) :: nb_elem_affe
         character(len=19), intent(in) :: full_elem_s
         character(len=16), intent(in) :: defo_comp

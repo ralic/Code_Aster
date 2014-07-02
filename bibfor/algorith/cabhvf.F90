@@ -46,6 +46,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 ! T(1:MAXDIM,J) :  COORD DU VECTEUR DE L J EME ARETE
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/pdvc2d.h"
@@ -55,7 +56,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 #include "asterfort/vfnulo.h"
 !
     integer :: ndim, nno, nnos
-    logical(kind=1) :: axi
+    aster_logical :: axi
     real(kind=8) :: geom(1:ndim, 1:nno)
 !
     integer :: maxfa, maxdim, manofa
@@ -96,7 +97,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 nbnofa, nosar, nosfa, narfa)
     do 1 idim = 1, ndim
         xg(idim)=geom(idim,nno)
- 1  end do
+  1 end do
     if (ndim .eq. 2) then
 !  ========================================
 !  ========================================
@@ -108,7 +109,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 xface(idim,ifa)=geom(idim,nnos+ifa)
                 t(idim,ifa)=geom(idim,nosfa(ifa,2))- geom(idim,nosfa(&
                 ifa,1))
- 2          continue
+  2         continue
 !
         if (nface .eq. 3) then
             vol=abs(pdvc2d(t(1,1),t(1,2)))/2.d0
@@ -122,7 +123,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
             mface(ifa)=sqrt(t(1,ifa)**2+t(2,ifa)**2)
             normfa(1,ifa)=-t(2,ifa)/mface(ifa)
             normfa(2,ifa)= t(1,ifa)/mface(ifa)
- 3      continue
+  3     continue
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
         do 17 ifa = 1, nface
@@ -133,7 +134,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 normfa(1,ifa)=-normfa(1,ifa)
                 normfa(2,ifa)=-normfa(2,ifa)
             endif
-17      continue
+ 17     continue
     else
 !  ========================================
 !  ========================================
@@ -145,9 +146,9 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
             xg(idim)=0.d0
             do 18 is = 1, nnos
                 xg(idim)=xg(idim)+geom(idim,is)
-18          continue
+ 18         continue
             xg(idim)=xg(idim)/nnos
-10      continue
+ 10     continue
 !
         do 20 ifa = 1, nface
 ! T(DIM,IAR) : VECTEURS DES ARETES DE LA FACE
@@ -156,14 +157,14 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 ns2=nosar(narfa(ifa,iar),2)
                 do 21 idim = 1, ndim
                     t(idim,iar)=geom(idim,ns2)-geom(idim,ns1)
-21              continue
-22          continue
+ 21             continue
+ 22         continue
 ! XS(DIM,NS) : COORD DES SOMMETS DE LA FACE
             do 23 is = 1, nbnofa(ifa)
                 do 24 idim = 1, ndim
                     xs(idim,is)=geom(idim,nosfa(ifa,is))
-24              continue
-23          continue
+ 24             continue
+ 23         continue
             call vfgefa(maxdi1, ndim, nbnofa(ifa), xs, t,&
                         xg, mface(ifa), normfa(1, ifa), xface(1, ifa), dface(ifa),&
                         iret)
@@ -174,6 +175,6 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 call utmess('F', 'VOLUFINI_13', sk=nomail, si=ifa)
             endif
             vol=vol+dface(ifa)*mface(ifa)/3.d0
-20      continue
+ 20     continue
     endif
 end subroutine

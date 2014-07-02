@@ -19,13 +19,14 @@ subroutine utimos(unit, obin, lattr, lcont)
 !     --
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeimpa.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: obin
     integer :: unit
-    logical(kind=1) :: lattr, lcont
+    aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
 !       UNIT   : UNITE LOGIQUE D'IMPRESSION
@@ -60,5 +61,5 @@ subroutine utimos(unit, obin, lattr, lcont)
         call jeimpo(unit, ob1, ' ')
     endif
 !
-9999  continue
+9999 continue
 end subroutine

@@ -1,5 +1,6 @@
 subroutine trchno(ific, nocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -51,7 +52,7 @@ subroutine trchno(ific, nocc)
     character(len=6) :: nompro
     parameter (nompro='TRCHNO')
 !
-    integer :: iocc, iret, nbcmp,  n1, n2, n3, n4
+    integer :: iocc, iret, nbcmp, n1, n2, n3, n4
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: epsi, epsir
@@ -66,9 +67,9 @@ subroutine trchno(ific, nocc)
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
     character(len=200) :: lign1, lign2
     integer :: iarg
-    logical(kind=1) :: lref
+    aster_logical :: lref
     character(len=8), pointer :: nom_cmp(:) => null()
-    logical(kind=1) :: skip
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
@@ -230,12 +231,12 @@ subroutine trchno(ific, nocc)
                     tbtxt(1)='NON_REGRESSION'
                 endif
                 call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
-                            zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                            ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
+                                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
+                                     ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
-                                zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                                ific, .false._1, ssigne)
+                                         zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
+                                         ific, .false._1, ssigne)
                 endif
 !
             else
@@ -249,14 +250,14 @@ subroutine trchno(ific, nocc)
                     tbtxt(1)='NON_REGRESSION'
                 endif
                 call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
-                            zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
-                            lign2, crit, ific, nbcmp, nom_cmp,&
-                            .true._1, ssigne, ignore=skip, compare=ordgrd)
+                                     zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
+                                     lign2, crit, ific, nbcmp, nom_cmp,&
+                                     .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
-                                zi( irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
-                                lign2, crit, ific, nbcmp, nom_cmp,&
-                                .false._1, ssigne)
+                                         zi( irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
+                                         lign2, crit, ific, nbcmp, nom_cmp,&
+                                         .false._1, ssigne)
                 endif
                 AS_DEALLOCATE(vk8=nom_cmp)
             endif
@@ -308,7 +309,7 @@ subroutine trchno(ific, nocc)
             endif
             call tresu_champ_no(cham19, nonoeu, noddl, nref, tbtxt,&
                                 zi(irefi), zr( irefr), zc(irefc), typres, epsi,&
-                                crit, ific, .true._1, ssigne, ignore=skip, &
+                                crit, ific, .true._1, ssigne, ignore=skip,&
                                 compare=ordgrd)
             if (lref) then
                 call tresu_champ_no(cham19, nonoeu, noddl, nref, tbref,&

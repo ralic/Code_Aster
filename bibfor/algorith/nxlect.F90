@@ -5,6 +5,7 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/cresol.h"
 #include "asterfort/nxdocc.h"
@@ -33,7 +34,7 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
     character(len=8) :: evolsc
-    logical(kind=1) :: matcst, coecst
+    aster_logical :: matcst, coecst
     integer :: parmei(2), parcri(3)
     real(kind=8) :: parmer(2), parcrr(2)
     character(len=19) :: lischa, solveu

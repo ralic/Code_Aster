@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                      jlnsl, nbno, jcoor, jcoorg, nbmaf,&
                      jdlima, nbsef, jdlise, jconx1, jconx2)
-        logical(kind=1) :: callst
-        logical(kind=1) :: grille
+        aster_logical :: callst
+        aster_logical :: grille
         integer :: jltsv
         integer :: jltsl
         integer :: jlnsv

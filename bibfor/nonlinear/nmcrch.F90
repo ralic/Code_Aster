@@ -19,7 +19,8 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
@@ -55,11 +56,11 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: ldyna, lammo, lmpas, lrefe, lmacr, lmuap, lviss
-    logical(kind=1) :: leltc, leltf
-    logical(kind=1) :: lunil, lctcd, lctfd, lpenac, lallv
-    logical(kind=1) :: lsstf, limpe
-    logical(kind=1) :: ldidi, lpilo, lener
+    aster_logical :: ldyna, lammo, lmpas, lrefe, lmacr, lmuap, lviss
+    aster_logical :: leltc, leltf
+    aster_logical :: lunil, lctcd, lctfd, lpenac, lallv
+    aster_logical :: lsstf, limpe
+    aster_logical :: ldidi, lpilo, lener
     integer :: neq
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depmoi, vitmoi, accmoi

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                       nk, nl, n0, nbp12, nbp23,&
@@ -31,7 +33,7 @@ interface
         integer :: nbp23
         integer :: nbp13
         integer :: sigr(*)
-        logical(kind=1) :: yapass
+        aster_logical :: yapass
         character(len=3) :: typass
         integer :: nsitup
     end subroutine rc36f1

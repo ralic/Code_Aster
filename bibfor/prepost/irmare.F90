@@ -4,6 +4,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
                   nomai, nonoe, formar)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -20,7 +21,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     character(len=16) :: formar
     real(kind=8) :: coordo(*)
     integer :: connex(*), typma(*), point(*), typel(*), ifc, nbtitr
-    logical(kind=1) :: lmod
+    aster_logical :: lmod
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,7 +84,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     write (ifc,*)      'TITRE'
     do 10 it = 1, nbtitr
         write (ifc,'(A)') titre(it)
-10  end do
+ 10 end do
     write (ifc,*)      'FINSF'
     write (ifc,*)      '%'
 !
@@ -101,7 +102,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     endif
     do 1 ino = 1, nno
         write (ifc,fmt) nonoe(ino),(coordo(3*(ino-1)+j),j=1,ndim)
- 1  end do
+  1 end do
 !
 !
 !     ECRITURE DES MAILLES
@@ -136,7 +137,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
             do 12 i = 2, nbfois
                 write(ifc,1004) (nonoe(connex(ipoin-1+k)),k=ico,ico+6)
                 ico=ico+7
-12          continue
+ 12         continue
             if (nbrest .ne. 0) then
                 write(ifc,1004) (nonoe(connex(ipoin-1+i)),i=ico,nnoe)
             endif
@@ -144,7 +145,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
             write(ifc,1003) nomai(ima), (nonoe(connex(ipoin-1+i)),i=1,&
             nnoe)
         endif
-21  continue
+ 21 continue
     if (ifin .eq. 1) then
         write(ifc,*) 'FINSF'
         write(ifc,*) '%'
@@ -164,7 +165,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
         endif
         write(ifc,*) 'FINSF'
         write(ifc,*) '%'
-752  end do
+752 end do
 !
 !
 !     ECRITURE DES GROUPES DE MAILLES
@@ -184,7 +185,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
                 endif
                 zk8(jmai-1+ipo+1)= nomai(zi(iagrma-1+jm))
                 ipo=ipo+1
-756          continue
+756         continue
             if (ipo .ne. 0) then
                 write(ifc,'(7(1X,A8))') (zk8(jmai-1+jm),jm=1,ipo)
             endif
@@ -192,7 +193,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
         endif
         write(ifc,*) 'FINSF'
         write(ifc,*) '%'
-754  end do
+754 end do
 !
 !
     write(ifc,*) 'FIN'

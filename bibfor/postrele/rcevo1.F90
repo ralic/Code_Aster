@@ -1,12 +1,13 @@
 subroutine rcevo1(nommat, fatizh, sm, para, symax)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: sm, para(*), symax
-    logical(kind=1) :: fatizh
+    aster_logical :: fatizh
     character(len=8) :: nommat
 !     ------------------------------------------------------------------
 ! ======================================================================

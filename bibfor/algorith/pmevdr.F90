@@ -19,14 +19,15 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmevel.h"
-    logical(kind=1) :: itemax, conver
+    aster_logical :: itemax, conver
     character(len=19) :: sddisc, tabinc(*)
     integer :: liccvg(*), actite
 !
@@ -64,7 +65,7 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 !
     integer :: ifm, niv
     integer :: faccvg, ldccvg, numins
-    logical(kind=1) :: lerror, lsvimx, ldvres, linsta, lcritl
+    aster_logical :: lerror, lsvimx, ldvres, linsta, lcritl
     character(len=24) :: k24bla
     integer :: ievdac
 !

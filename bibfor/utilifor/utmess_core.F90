@@ -19,6 +19,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 ! person_in_charge: mathieu.courtois at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterc/isjvup.h"
 #include "asterc/uexcep.h"
@@ -53,7 +54,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     character(len=16) :: compex
     character(len=8) :: nomres, k8b
     character(len=2) :: typm
-    logical(kind=1) :: lerror, lvalid, labort, suite, lstop, lerrm, ltrb
+    aster_logical :: lerror, lvalid, labort, suite, lstop, lerrm, ltrb
     integer :: lout, idf, i, lc, imaap
     integer :: numex
 !

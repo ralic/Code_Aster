@@ -17,6 +17,7 @@ subroutine mltpre(mat19, renumz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -48,7 +49,7 @@ subroutine mltpre(mat19, renumz)
     integer :: nec, i, icol
     character(len=8) :: nomgd
     character(len=8) :: renum, renum2
-    integer ::  ismhc,   iprno, diag
+    integer :: ismhc, iprno, diag
     integer :: lgadjn, adjnc1, adjnc2, desc
     integer :: supnd, anc, nouv, fils, frere, lgsn, lfront, nbass
     integer :: debfsn, adpile, adress, nblign, lgbloc, ncbloc, lbd1, lbd2, rl
@@ -68,7 +69,7 @@ subroutine mltpre(mat19, renumz)
     character(len=24) :: nomp01, nomp02, nomp03, nomp04, nomp05, nomp06, nomp07
     character(len=24) :: nomp08, nomp09, nomp10, nomp11, nomp12, nomp13
     character(len=24) :: nomp14, nomp15, nomp16, nomp17, nomp18, nomp19, nomp20
-    logical(kind=1) :: nivdbg, matgen
+    aster_logical :: nivdbg, matgen
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: nueq(:) => null()

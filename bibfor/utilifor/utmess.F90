@@ -1,5 +1,5 @@
-subroutine utmess(typ, idmess, nk, valk, sk, &
-                  ni, vali, si, nr, valr, &
+subroutine utmess(typ, idmess, nk, valk, sk,&
+                  ni, vali, si, nr, valr,&
                   sr, num_except, fname)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 ! See comments in utmess_core for details
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess_core.h"
 !
@@ -61,7 +62,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 !   because it is not supported by older versions of gfortran, we use two different
 !   calls to utmess_core
 !    character(len=:), pointer :: ptrk(:)
-    logical(kind=1) :: use_valk
+    aster_logical :: use_valk
     integer, target :: uvi(1)
     integer, pointer :: ptri(:) => null()
     real(kind=8), target :: uvr(1)
@@ -126,10 +127,10 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     endif
 !
     if (use_valk) then
-        call utmess_core(typ, idmess, unk, valk, uni, &
+        call utmess_core(typ, idmess, unk, valk, uni,&
                          ptri, unr, ptrr, ufname)
     else
-        call utmess_core(typ, idmess, unk, uvk, uni, &
+        call utmess_core(typ, idmess, unk, uvk, uni,&
                          ptri, unr, ptrr, ufname)
     endif
 !

@@ -22,9 +22,10 @@ subroutine eifore(ndim, axi, nno1, nno2, npg,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/eicine.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno1, nno2, npg, iu(3, 18), im(3, 9)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)
@@ -70,10 +71,10 @@ subroutine eifore(ndim, axi, nno1, nno2, npg,&
                 t1 = 0
                 do 320 k = 1, ndim
                     t1 = t1 + abs(b(k,i,n))*sigref/ndim
-320              continue
+320             continue
                 vect(kk) = vect(kk) + wg*t1
-301          continue
-300      continue
+301         continue
+300     continue
 !
 !      VECTEUR FINT:M
         do 350 n = 1, nno2
@@ -81,8 +82,8 @@ subroutine eifore(ndim, axi, nno1, nno2, npg,&
                 kk = im(i,n)
                 t1 = abs(vff2(n,g))*depref
                 vect(kk) = vect(kk) + wg*t1
-351          continue
-350      continue
+351         continue
+350     continue
 !
-1000  end do
+1000 end do
 end subroutine

@@ -7,6 +7,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/cakg3d.h"
@@ -39,8 +40,8 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     character(len=16) :: noprup(*)
     character(len=19) :: lischa
     character(len=24) :: chfond, mate, compor, basloc, courb
-    logical(kind=1) :: thlagr, glagr, pair, thlag2, lmelas, lncas, lord(lonvec)
-    logical(kind=1) :: milieu, connex
+    aster_logical :: thlagr, glagr, pair, thlag2, lmelas, lncas, lord(lonvec)
+    aster_logical :: milieu, connex
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,10 +91,10 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, j, k,     nbcol
+    integer :: i, j, k, nbcol
     integer :: iad, init
-    integer ::   iret, iord, jinst, nborn,  nbval
-    integer ::  ityp, mxval, nbv, itmp
+    integer :: iret, iord, jinst, nborn, nbval
+    integer :: ityp, mxval, nbv, itmp
     real(kind=8) :: kmoy, time, puls
     complex(kind=8) :: cbid
 !
@@ -102,7 +103,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     character(len=16) :: k16bid, optio2, nomcas
     character(len=24) :: depla, depmax, chsigi
     character(len=24) :: valk
-    logical(kind=1) :: exitim, lmoda
+    aster_logical :: exitim, lmoda
     real(kind=8), pointer :: coef(:) => null()
     character(len=24), pointer :: dep(:) => null()
     real(kind=8), pointer :: kmax1(:) => null()
@@ -123,7 +124,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-!    
+!
     cbid=(0.d0,0.d0)
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
@@ -170,7 +171,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                     exitim, time, nbprup, noprup, fiss,&
                     lmelas, nomcas, lmoda, puls, milieu,&
                     connex)
- 1  continue
+  1 continue
 !
 ! EXTRACTION DES RESULTATS DE LA TABLE
 !
@@ -203,7 +204,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                     nbret=nbv)
         do 2 i = 1, mxval
             type_char(1+zi(itmp+i-1)-1) = 'NON_SIGN'
- 2      continue
+  2     continue
         call jedetr('&&MMAXKL.TMP')
         call getvis('SIGNES', 'CHARGE_S', iocc=1, nbval=0, nbret=nbv)
         mxval = -nbv
@@ -212,7 +213,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                     nbret=nbv)
         do 3 i = 1, mxval
             type_char(1+zi(itmp+i-1)-1) = 'SIGNE'
- 3      continue
+  3     continue
         call jedetr('&&MMAXKL.TMP')
     endif
 !
@@ -222,7 +223,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         if (type_char(i) .ne. 'SIGNE') then
             do 11 j = 1, nnoff
                 kmoy = kmoy + k1loc(1+j-1+(i-1)*nnoff)
-11          continue
+ 11         continue
             if (kmoy .le. 0.d0) then
                 coef(i) = -1
             else
@@ -231,7 +232,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         else
             coef(i) = 1
         endif
-10  continue
+ 10 continue
 !
     AS_ALLOCATE(vr=kmax1, size=nnoff)
     AS_ALLOCATE(vr=kmax2, size=nnoff)
@@ -247,8 +248,8 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             nnoff)
             kmax3(j)=kmax3(j)+coef(i)*k3loc(1+j-1+(i-1)*&
             nnoff)
-21      continue
-20  continue
+ 21     continue
+ 20 continue
 !
 !
 !
@@ -262,7 +263,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                     iret)
         dep(i) = depla
         zk8(ityp+i-1) = 'R'
-60  continue
+ 60 continue
 !
     depmax = 'MMAXKL.DEPMAX'
     call vtcmbl(lonvec, zk8(ityp), coef, zk8(ityp), dep,&
@@ -293,7 +294,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         call codent(i, 'G', chnu)
         noru(i) = 'Q_'//chnu
         typr(i) = 'I'
-30  continue
+ 30 continue
     noru(lonvec+1) = 'NUM_PT'
     typr(lonvec+1) = 'I'
     noru(1+lonvec+1) = 'ABSC_CURV'
@@ -309,14 +310,14 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
 !
     call tbcrsd('T4', 'V')
-    call tbajpa('T4', nbcol, noru,typr)
+    call tbajpa('T4', nbcol, noru, typr)
     AS_ALLOCATE(vr=tabr, size=5)
     AS_ALLOCATE(vi=tabi, size=lonvec+1)
 !
     do 40 i = 1, lonvec
         do 41 k = 1, lonvec
             tabi(k) = 0
-41      continue
+ 41     continue
         tabi(i) = 1
 !
         do 42 j = 1, nnoff
@@ -328,13 +329,13 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             tabr(1+4) = gloc(1+j+(i-1)*nnoff-1)
             call tbajli('T4', nbcol, noru, tabi, tabr,&
                         [cbid], k8b, 0)
-42      continue
-40  continue
+ 42     continue
+ 40 continue
 !
     do 50 j = 1, nnoff
         do 51 k = 1, lonvec
             tabi(k) = nint(coef(k))
-51      continue
+ 51     continue
         tabi(lonvec+1) = j
         tabr(1) = abscur(j)
         tabr(1+1) = kmax1(j)
@@ -343,7 +344,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         tabr(1+4) = gmax(1+j-1+nnoff*lonvec)
         call tbajli('T4', nbcol, noru, tabi, tabr,&
                     [cbid], k8b, 0)
-50  continue
+ 50 continue
 !
     call copisd('TABLE', 'G', 'T4', latabl)
 !

@@ -8,6 +8,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -24,8 +25,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: nbcmp, cmp(nbcmp), nfe, ima, jconx1, jconx2, jcnsv1
     integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac
     integer :: nfiss, jfisno, he(nfiss), nfh, inn, nnn, ninter
-    logical(kind=1) :: lmeca
-    logical :: lcond
+    aster_logical :: lmeca
     character(len=8) :: elrefp, typma
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
@@ -102,7 +102,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8)
     integer :: lact(8), nlact
-    logical(kind=1) :: lpint, lcont, pre1
+    aster_logical :: lpint, lcont, pre1
     parameter    (crilsn = 1.d-4)
 !
 !     ------------------------------------------------------------------
@@ -140,9 +140,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         endif
     endif
     if (ddlc .gt. 0) then
-       lcond=lmeca
-       ASSERT(lcond)
-    endif   
+        ASSERT(lmeca)
+    endif 
     lcont = (ddlc.gt.0).and.(ndime.eq.ndim) .and.(ninter.gt.0).and.(nfiss.eq.1)
 !
     inn = inn + 1

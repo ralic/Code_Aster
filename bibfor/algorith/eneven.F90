@@ -18,11 +18,12 @@ subroutine eneven(sddisc, ievent, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: ievent
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !

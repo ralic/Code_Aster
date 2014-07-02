@@ -33,6 +33,7 @@ subroutine copmat(matr, numddl, mat)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -45,12 +46,12 @@ subroutine copmat(matr, numddl, mat)
     character(len=8) :: kbid, matr
     character(len=14) :: numddl
     real(kind=8) :: mat(*), pij
-    logical(kind=1) :: lsym
+    aster_logical :: lsym
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ib,   j, jblo2, jbloc
-    integer ::    n1bloc, n2bloc, nbbloc, neq
+    integer :: i, ib, j, jblo2, jbloc
+    integer :: n1bloc, n2bloc, nbbloc, neq
 !
     real(kind=8) :: pji
     integer, pointer :: schc(:) => null()
@@ -95,9 +96,9 @@ subroutine copmat(matr, numddl, mat)
                         pij = zr(jbloc+scdi(j)+i-j-1)
                         mat(i+ (j-1)*neq) = pij
                         mat(j+ (i-1)*neq) = pij
-30                  continue
+ 30                 continue
                 call jelibe(jexnum(matr//'           .VALM', ib))
-20          continue
+ 20         continue
         else
             ASSERT(nbbloc.eq.1)
 !          TRIANGULAIRE SUPERIEURE
@@ -118,7 +119,7 @@ subroutine copmat(matr, numddl, mat)
                     pji = zr(jblo2+scdi(j)+i-j-1)
                     mat(i+ (j-1)*neq) = pij
                     mat(j+ (i-1)*neq) = pji
-50              continue
+ 50             continue
             call jelibe(jexnum(matr//'           .VALM', 1))
             call jelibe(jexnum(matr//'           .VALM', 2))
         endif

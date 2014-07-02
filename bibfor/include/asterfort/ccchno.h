@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ccchno(option, numord, resuin, resuou, lichou,&
                       mesmai, nomail, modele, carael, basopt,&
@@ -30,7 +32,7 @@ interface
         character(len=8) :: carael
         character(len=1) :: basopt
         character(len=24) :: ligrel
-        logical(kind=1) :: ligmod
+        aster_logical :: ligmod
         integer :: codret
     end subroutine ccchno
 end interface

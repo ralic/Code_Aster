@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
                       resoco, renume)
@@ -24,6 +26,6 @@ interface
         character(len=19) :: lischa
         character(len=19) :: solveu
         character(len=24) :: resoco
-        logical(kind=1) :: renume
+        aster_logical :: renume
     end subroutine nmrenu
 end interface

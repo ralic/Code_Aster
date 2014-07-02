@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
                      deumuf, gt, gc, gf, seuil,&
@@ -34,9 +36,9 @@ interface
         real(kind=8) :: alpha
         real(kind=8) :: alfmc
         real(kind=8) :: ep
-        logical(kind=1) :: lrgm
+        aster_logical :: lrgm
         integer :: ipg
-        logical(kind=1) :: ther
+        aster_logical :: ther
         real(kind=8) :: tref
         real(kind=8) :: dtmoy
         real(kind=8) :: dtgra

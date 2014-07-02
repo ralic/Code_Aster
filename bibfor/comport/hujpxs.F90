@@ -1,5 +1,6 @@
 subroutine hujpxs(mater, sig, vin, prox)
     implicit none
+#include "asterf_types.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +29,7 @@ subroutine hujpxs(mater, sig, vin, prox)
     real(kind=8) :: mater(22, 2), r4, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, pc, epsvpm, dist
     real(kind=8) :: d13, zero, aexp, exptol, rh
-    logical(kind=1) :: prox
+    aster_logical :: prox
 !
     common /tdim/   ndt , ndi
 !
@@ -51,7 +52,7 @@ subroutine hujpxs(mater, sig, vin, prox)
     i1 = zero
     do 10 i = 1, ndi
         i1 = i1 + d13*sig(i)
-10  continue
+ 10 continue
 !
     r4 = abs(i1)/abs(d*pc)
 !

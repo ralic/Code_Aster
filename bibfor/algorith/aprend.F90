@@ -18,7 +18,8 @@ subroutine aprend(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/apcopt.h"
@@ -63,7 +64,7 @@ subroutine aprend(sdappa)
     real(kind=8) :: vecpml(3), vecpmm(3)
     integer :: jdecnm, numnom, posnom
     integer :: posmin, typapp
-    logical(kind=1) :: dirapp, prtole, lexcl
+    aster_logical :: dirapp, prtole, lexcl
     integer :: vali(2)
     real(kind=8) :: valr(4)
 !
@@ -197,7 +198,7 @@ subroutine aprend(sdappa)
                     endif
                 endif
 !
-30          continue
+ 30         continue
 !
 ! ------- APPARIEMENT HORS TOLE_APPA ?
 !
@@ -235,8 +236,8 @@ subroutine aprend(sdappa)
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     ASSERT((ip-1).eq.ntpt)
 !

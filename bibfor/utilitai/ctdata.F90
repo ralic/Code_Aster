@@ -2,6 +2,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                   nkcmp, nbcmp, ndim, chpgs, noma,&
                   nbno, nbma, nbval, tsca)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -22,7 +23,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     character(len=8) :: noma
     character(len=24) :: mesnoe, mesmai, nkcha, nkcmp
     character(len=19) :: chpgs
-    logical(kind=1) :: toucmp
+    aster_logical :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +70,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     character(len=16) :: motcle(4)
     character(len=19) :: ligrel
     character(len=24) :: chgeom, lchin(6), lchout(1)
-    logical(kind=1) :: exicar
+    aster_logical :: exicar
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -1,7 +1,8 @@
 subroutine apverl(sdappa)
 !
-   implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
@@ -78,7 +79,7 @@ subroutine apverl(sdappa)
     integer :: jlistn, jlista
     real(kind=8) :: prosca, angle, oldang, val
     integer :: inoeu
-    logical(kind=1) :: apcald
+    aster_logical :: apcald
 !
 ! ----------------------------------------------------------------------
 !
@@ -203,10 +204,10 @@ subroutine apverl(sdappa)
                         endif
                     endif
                 endif
-31              continue
+ 31             continue
             end do
         end do
-27      continue
+ 27     continue
     end do
 !
     call jeecra(apverk, 'LONUTI', inoeu)

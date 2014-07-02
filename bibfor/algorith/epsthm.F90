@@ -10,6 +10,7 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
 !
 ! DECLARATION PARAMETRES D'APPEL
 !
+#include "asterf_types.h"
 #include "asterfort/cabthm.h"
     integer :: nddls, nddlm, nno, nnos, nnom, nmec
     integer :: dimdef, dimuel, ndim, npi
@@ -18,7 +19,7 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
     integer :: np1, np2
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     real(kind=8) :: geom(ndim, nno), depla(dimuel), epsm(6, npi)
-    logical(kind=1) :: axi
+    aster_logical :: axi
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,9 +127,9 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
 !
         do 211 , j = 1,dimuel
         epsm(iaux,ipi) = epsm(iaux,ipi)+b(iaux+ndim,j)* depla(j)
-211      continue
+211     continue
 !
-210      continue
+210     continue
 !
     endif
 !

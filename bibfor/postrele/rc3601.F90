@@ -2,7 +2,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
                   ipt, nbm, adrm, c, k,&
                   cara, nommat, snmax, samax, utot,&
                   sm, factus)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/infniv.h"
@@ -25,7 +26,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 #include "asterfort/as_allocate.h"
     integer :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
     real(kind=8) :: c(*), k(*), cara(*), snmax, samax, utot, sm, factus(*)
-    logical(kind=1) :: seisme
+    aster_logical :: seisme
     character(len=8) :: nommat
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -64,9 +65,9 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !     ------------------------------------------------------------------
 !
     integer :: nbsigr, jnsg, is1, ioc1, is2, ioc2, inds, ifm, niv, jcombi
-    integer ::      nbth1, jth1, nbth2, jth2
-    integer ::   ndim,  nscy, ns,  nbsig2, i1, i2, indi
-    integer ::   nbsitu
+    integer :: nbth1, jth1, nbth2, jth2
+    integer :: ndim, nscy, ns, nbsig2, i1, i2, indi
+    integer :: nbsitu
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij, ug, sn, sp, smm, mpi(3), mpj(3)
     real(kind=8) :: mqi(3), mqj(3), mse(3), matpi(14), matpj(14), matqi(14)
     real(kind=8) :: matqj(14), matse(14)
@@ -409,9 +410,9 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
                 sm = smm
             endif
 !
-10      continue
+ 10     continue
 !
-20  end do
+ 20 end do
 !
 ! --- CALCUL DU FACTEUR D'USAGE
 !

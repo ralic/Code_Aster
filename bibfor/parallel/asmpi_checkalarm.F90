@@ -41,7 +41,7 @@ subroutine asmpi_checkalarm()
     mpi_int :: i, rank, nbpro4, ival(1), mpicou, mpicow, nbv
     mpi_int, parameter :: pr0=0
     integer :: ia, np1, vali(2)
-    logical(kind=1) :: vu
+    aster_logical :: vu
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET_WORLD', mpicow)
@@ -86,12 +86,12 @@ subroutine asmpi_checkalarm()
                     call utmess('A+', 'APPELMPI_2', ni=2, vali=vali)
                 endif
             endif
-10      continue
+ 10     continue
         if (vu) then
             call utmess('A', 'VIDE_1')
         endif
 !
     endif
-9999  continue
+9999 continue
 #endif
 end subroutine

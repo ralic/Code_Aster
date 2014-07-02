@@ -5,6 +5,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                   jdln, lmax, ier)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/codent.h"
@@ -29,7 +30,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
     integer :: nbmcf, ntyele(*), nbocc(*), ivr(*)
     integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbegb, nbemb, nbtel
     integer :: jdlm, jdln, lmax, ier
-    logical(kind=1) :: locaco, locagb, locamb
+    aster_logical :: locaco, locagb, locamb
     character(len=8) :: noma, nomo
     character(len=16) :: mclf(*)
 ! ----------------------------------------------------------------------

@@ -19,6 +19,7 @@ subroutine dfmdf(dim, f, dsidep)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/diago2.h"
 #include "asterfort/diago3.h"
 #include "asterfort/r8inir.h"
@@ -57,7 +58,7 @@ subroutine dfmdf(dim, f, dsidep)
     real(kind=8) :: sigp(3)
     real(kind=8) :: dspdeb(2, 2), epsp2(2), vecp2(2, 2), sigp2(2)
     real(kind=8) :: rtemp3, rtemp4, rac2
-    logical(kind=1) :: mtg, test
+    aster_logical :: mtg, test
     parameter  (rigmin = 1.d-6)
 !
     t(1,1)=1
@@ -101,15 +102,15 @@ subroutine dfmdf(dim, f, dsidep)
                     test=.false.
                 endif
             endif
-30      end do
+ 30     end do
 ! SI TEST = .TRUE. : CORRECTION DES VECTEURS PROPRES
         if (test) then
             do 31 i = 1, 3
                 do 32 j = 1, 3
                     vecp(i,j)=0.d0
-32              continue
+ 32             continue
                 vecp(i,i)=1.d0
-31          continue
+ 31         continue
         endif
 ! FIN CORRECTION DES VALEURS PROPRES
         if (abs(epsp(2)) .gt. rtemp) rtemp=abs(epsp(2))
@@ -120,15 +121,15 @@ subroutine dfmdf(dim, f, dsidep)
                     epsp(i)=epsp(i)+rigmin*rtemp
                     epsp(j)=epsp(j)-rigmin*rtemp
                 endif
-501          continue
-500      end do
+501         continue
+500     end do
         do 600 i = 1, 3
             if (epsp(i) .lt. 0.d0) then
                 sigp(i)=epsp(i)
             else
                 sigp(i)=0.d0
             endif
-600      end do
+600     end do
         mtg = .true.
         call r8inir(9, 0.d0, dspdep, 1)
         call r8inir(36, 0.d0, dsidep, 1)
@@ -138,7 +139,7 @@ subroutine dfmdf(dim, f, dsidep)
             else
                 dspdep(k,k)=0.d0
             endif
-120      end do
+120     end do
         do 20 i = 1, 3
             do 21 j = i, 3
                 do 22 k = 1, 3
@@ -177,19 +178,19 @@ subroutine dfmdf(dim, f, dsidep)
                                         mtg= .false.
                                     endif
                                 endif
-25                          continue
-24                      continue
-23                  continue
-22              continue
-21          continue
-20      continue
+ 25                         continue
+ 24                     continue
+ 23                 continue
+ 22             continue
+ 21         continue
+ 20     continue
 !
         if (.not.mtg) then
             do 70 k = 1, 6
                 do 71 l = 1, 6
                     dsidep(k,l)=0.d0
-71              continue
-70          continue
+ 71             continue
+ 70         continue
             dsidep(1,1)=1.d0
             dsidep(2,2)=1.d0
             dsidep(3,3)=1.d0
@@ -230,16 +231,16 @@ subroutine dfmdf(dim, f, dsidep)
                     test=.false.
                 endif
             endif
-40      end do
+ 40     end do
 ! SI TEST = .TRUE. : CORRECTION DES VECTEURS PROPRES
         if (test) then
             if (ordre(1) .eq. 1) then
                 do 41 i = 1, 2
                     do 42 j = 1, 2
                         vecp2(i,j)=0.d0
-42                  continue
+ 42                 continue
                     vecp2(i,i)=1.d0
-41              continue
+ 41             continue
             else
                 vecp2(1,1)=0.d0
                 vecp2(1,2)=1.d0
@@ -260,7 +261,7 @@ subroutine dfmdf(dim, f, dsidep)
             else
                 sigp2(i)=0.d0
             endif
-700      end do
+700     end do
         mtg = .true.
         call r8inir(4, 0.d0, dspdeb, 1)
 !
@@ -270,7 +271,7 @@ subroutine dfmdf(dim, f, dsidep)
             else
                 dspdeb(k,k)=0.d0
             endif
-7200      continue
+7200     continue
         do 720 i = 1, 2
             do 721 j = i, 2
                 do 722 k = 1, 2
@@ -314,12 +315,12 @@ subroutine dfmdf(dim, f, dsidep)
                                         mtg= .false.
                                     endif
                                 endif
-725                          continue
-724                      continue
-723                  continue
-722              continue
-721          continue
-720      continue
+725                         continue
+724                     continue
+723                 continue
+722             continue
+721         continue
+720     continue
         if (.not.mtg) then
             dsidep(1,1)=1.d0
             dsidep(2,2)=1.d0

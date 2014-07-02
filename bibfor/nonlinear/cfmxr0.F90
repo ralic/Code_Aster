@@ -2,6 +2,7 @@ subroutine cfmxr0(defico, resoco, noma)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -71,10 +72,10 @@ subroutine cfmxr0(defico, resoco, noma)
     character(len=24) :: nochco
     integer :: jnochc
     character(len=19) :: cnsinr, cnsper, cnoinr
-    integer ::  jcnslr
-    integer ::  jcnslp
+    integer :: jcnslr
+    integer :: jcnslp
     integer :: jdecne
-    logical(kind=1) :: lctcc, lctcd, lmail
+    aster_logical :: lctcc, lctcd, lmail
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: cnsvr(:) => null()
 ! ----------------------------------------------------------------------

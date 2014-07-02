@@ -19,10 +19,11 @@ subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
     integer :: ndim
-    logical(kind=1) :: lag2d
+    aster_logical :: lag2d
     character(len=2) :: typlia
     real(kind=8) :: fctf(3)
     real(kind=8) :: tang(6)
@@ -94,6 +95,6 @@ subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
         rtz = proj1 * tang(3) + proj2 * tang(6)
     endif
 !
-100  continue
+100 continue
 !
 end subroutine

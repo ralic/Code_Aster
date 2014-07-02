@@ -21,6 +21,7 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascoma.h"
 #include "asterfort/detrsd.h"
@@ -71,7 +72,7 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: ldyna, lctcd, lexpl, lamor, lsuiv, lshima, lprem
+    aster_logical :: ldyna, lctcd, lexpl, lamor, lsuiv, lshima, lprem
     real(kind=8) :: coerig, coeamo, coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat(3)
@@ -223,7 +224,7 @@ subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
         call nmasfr(defico, resoco, matass)
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

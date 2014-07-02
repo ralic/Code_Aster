@@ -1,5 +1,6 @@
 subroutine te0413(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/crgdm.h"
 #include "asterfort/dxqpgl.h"
@@ -60,9 +61,9 @@ subroutine te0413(option, nomte)
     integer :: iret
 !
     character(len=16) :: valk(2)
-    logical(kind=1) :: dkq, lkit, lbid
+    aster_logical :: dkq, lkit, lbid
 !
-    if (nomte.eq.'MEDKQG4') then
+    if (nomte .eq. 'MEDKQG4') then
         dkq = .true.
     else if (nomte.eq.'MEDKTG3') then
         dkq = .false.
@@ -70,9 +71,9 @@ subroutine te0413(option, nomte)
         call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnoel,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnoel, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCOMPOR', 'L', icompo)

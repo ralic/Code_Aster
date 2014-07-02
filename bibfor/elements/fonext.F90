@@ -3,6 +3,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cengra.h"
 #include "asterfort/confac.h"
@@ -72,13 +73,13 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, ifa, ima, ino, itypma
-    integer ::  jconx2, jcoor,  jmanoe
+    integer :: jconx2, jcoor, jmanoe
     integer :: nbf, nbfacb, nbno, ndime, nmaext, nmanoe, nuno
     integer :: nunoa, nunob, nunoc, numpt
     integer :: ibid3(12, 3), inobor(2), fa(6, 4)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
     character(len=8) :: typma
-    logical(kind=1) :: fabord, nofac
+    aster_logical :: fabord, nofac
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
 !     -----------------------------------------------------------------

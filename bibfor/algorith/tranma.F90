@@ -1,5 +1,5 @@
 subroutine tranma(geomi, d, bidim)
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,13 +30,14 @@ subroutine tranma(geomi, d, bidim)
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     integer :: n1, i, iadcoo
-    logical(kind=1) :: bidim
+    aster_logical :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: d(3)
@@ -51,13 +52,13 @@ subroutine tranma(geomi, d, bidim)
         do 10 i = 1, n1
             zr(iadcoo+3*(i-1)+1)=zr(iadcoo+3*(i-1)+1)+d(1)
             zr(iadcoo+3*(i-1)+2)=zr(iadcoo+3*(i-1)+2)+d(2)
-10      continue
+ 10     continue
     else
         do 20 i = 1, n1
             zr(iadcoo+3*(i-1)+1)=zr(iadcoo+3*(i-1)+1)+d(1)
             zr(iadcoo+3*(i-1)+2)=zr(iadcoo+3*(i-1)+2)+d(2)
             zr(iadcoo+3*(i-1)+3)=zr(iadcoo+3*(i-1)+3)+d(3)
-20      continue
+ 20     continue
     endif
     call jedema()
 end subroutine

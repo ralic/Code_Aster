@@ -25,6 +25,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
@@ -39,7 +40,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
     integer :: lonch
-    logical(kind=1) :: conver, reasma
+    aster_logical :: conver, reasma
     character(len=19) :: infcha, solveu, maprec
     character(len=24) :: modele, mate, carele, charge, infoch, numedd, time
     character(len=24) :: matass, cnchci, cnresi, vtemp, vtempm, vtempp, vec2nd
@@ -61,8 +62,8 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     complex(kind=8) :: cbid
 !
 !
-    integer :: k,  j2nd,  ibid
-    integer ::  jmed, jmer, nbmat, ierr
+    integer :: k, j2nd, ibid
+    integer :: jmed, jmer, nbmat, ierr
     real(kind=8) :: r8bid
     character(len=1) :: typres
     character(len=19) :: chsol

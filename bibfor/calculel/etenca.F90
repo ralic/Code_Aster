@@ -20,6 +20,7 @@ subroutine etenca(chinz, ligrlz, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -62,7 +63,7 @@ subroutine etenca(chinz, ligrlz, iret)
     integer :: nma, nms, nbedit, igd, code, ient, i, ii, nb
     integer :: desc, grpma, lima, ialima, illima, jmalut
     integer :: ptma, ptms, noli, iexi
-    logical(kind=1) :: bonlig, lalloc
+    aster_logical :: bonlig, lalloc
     character(len=8) :: ma
     character(len=24) :: ligri
     integer :: vali(3)

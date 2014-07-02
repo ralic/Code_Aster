@@ -19,6 +19,7 @@ subroutine op0026()
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -93,9 +94,9 @@ subroutine op0026()
     character(len=19) :: commoi, complu, depplu
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
     character(len=19) :: mediri, merigi, vediri, vefint, veforc
-    logical(kind=1) :: lmatr, lvnod, lvfin, lcomp
-    logical(kind=1) :: l_merimo, l_medime, l_vefnme, l_etat_init
-    logical(kind=1) :: tabret(0:10)
+    aster_logical :: lmatr, lvnod, lvfin, lcomp
+    aster_logical :: l_merimo, l_medime, l_vefnme, l_etat_init
+    aster_logical :: tabret(0:10)
     integer :: fonact(100)
 !-----------------------------------------------------------------------
     data lischa     /'&&OP0026.LISCHA'/
@@ -205,8 +206,8 @@ subroutine op0026()
     call jeexin(compor(1:19)//'.CESD', iret)
     if (iret .gt. 0) then
         call vrcomp(compor, varmoi, ligrmo, iret)
-        if (iret.eq.1) then
-            call utmess('F','CALCUL1_5')
+        if (iret .eq. 1) then
+            call utmess('F', 'CALCUL1_5')
         endif
     endif
 !

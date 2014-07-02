@@ -21,6 +21,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -36,8 +37,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
     integer :: ndim, jltsv, jltsl, jlnsv, jlnsl
     character(len=8) :: noma, cote
     character(len=16) :: geofis
-    logical(kind=1) :: callst
-    logical :: lcond
+    aster_logical :: callst
     real(kind=8) :: vect1(3), vect2(3), noeud(3), a, b, r
 !
 ! ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !            QUANTITES DEFINISSANT LA GEO DE LA FISS
 !     ------------------------------------------------------------------
 !
-    integer :: ino, nbno,  i, j
+    integer :: ino, nbno, i, j
     real(kind=8) :: p2d(2), p3d(3), norme, vect3(3), mat(3, 3), ploc(3)
     real(kind=8) :: h
     real(kind=8) :: nori(3), next(3), nmil(3), vseg(3), nseg
@@ -179,8 +179,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                 zl(jlnsl-1+(ino-1)+1)=.true.
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                lcond=.not.callst
-                ASSERT(lcond)
+                ASSERT(.not.callst)
                 zr(jltsv-1+(ino-1)+1)= -1.d0
                 zl(jltsl-1+(ino-1)+1)=.true.
 !
@@ -352,8 +351,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             else if (geofis.eq.'DROITE') then
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                lcond=.not.callst
-                ASSERT(lcond)
+                ASSERT(.not.callst)
                 zr(jltsv-1+(ino-1)+1)= -1.d0
                 zl(jltsl-1+(ino-1)+1)=.true.
 !

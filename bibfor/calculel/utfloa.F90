@@ -1,12 +1,13 @@
 subroutine utfloa(floa, ch1, ch2)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
-    logical(kind=1) :: floa
+    aster_logical :: floa
     character(len=24) :: ch1, ch2
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,8 +91,8 @@ subroutine utfloa(floa, ch1, ch2)
             goto 10
         endif
         goto 11
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 !
 !     SI LA CHAINE NE CONTINENT PAS DE 'E' : ON S'ARRETE
     if (ii .eq. lcv) ASSERT(.false.)
@@ -118,8 +119,8 @@ subroutine utfloa(floa, ch1, ch2)
             goto 20
         endif
         goto 21
-20  end do
-21  continue
+ 20 end do
+ 21 continue
 !
 !     SI LA CHAINE NE CONTINENT PAS DE POINT : ON S'ARRETE
     if (ii .eq. lcv) ASSERT(.false.)
@@ -138,10 +139,10 @@ subroutine utfloa(floa, ch1, ch2)
         chv3(2:2)='.'
         do 30 i = 1, ii-2
             chv3(i+2:i+2)=chv1(i+1:i+1)
-30      continue
+ 30     continue
         do 40 i = 1, iii-ii-1
             chv3(i+ii:i+ii)=chv1(i+ii:i+ii)
-40      continue
+ 40     continue
         chv3(iii:iii)='E'
         in=ii-2+sign*nexpo
         if (in .ge. 0) then
@@ -171,13 +172,13 @@ subroutine utfloa(floa, ch1, ch2)
                 chv2(1:1)=chv3(1:1)
                 do 50 i = 1, nexpo
                     chv2(1+i:1+i)=chv3(2+i:2+i)
-50              continue
+ 50             continue
                 chv2(2+nexpo:2+nexpo)='.'
 !
                 do 60 i = 1, ndeci-nexpo
                     chv2(i+2+nexpo:i+2+nexpo)=chv3(2+nexpo+i:2+nexpo+&
                     i)
-60              continue
+ 60             continue
                 n=lxlgut(chv2)
                 itmp=0
                 do 61 i = n, 1, -1
@@ -189,8 +190,8 @@ subroutine utfloa(floa, ch1, ch2)
                     else
                         goto 66
                     endif
-61              continue
-66              continue
+ 61             continue
+ 66             continue
                 if (itmp .gt. 0) then
                     chwk=chv2
                     chv2=' '
@@ -204,13 +205,13 @@ subroutine utfloa(floa, ch1, ch2)
                 chv2(1:1)=chv3(1:1)
                 do 150 i = 1, ndeci
                     chv2(1+i:1+i)=chv3(2+i:2+i)
-150              continue
+150             continue
                 if (ndeci .eq. nexpo) then
                     chv2(2+ndeci:3+ndeci)='.0'
                 else
                     do 151 i = 1, nexpo-ndeci
                         chv2(1+ndeci+i:1+ndeci+i)='0'
-151                  continue
+151                 continue
                     chv2(2+nexpo:3+nexpo)='.0'
                 endif
             endif
@@ -222,11 +223,11 @@ subroutine utfloa(floa, ch1, ch2)
             chv2(1:2)='0.'
             do 70 i = 1, nexpo-1
                 chv2(2+i:2+i)='0'
-70          continue
+ 70         continue
             chv2(2+nexpo:2+nexpo)=chv3(1:1)
             do 80 i = 1, ndeci
                 chv2(2+nexpo+i:2+nexpo+i)=chv3(2+i:2+i)
-80          continue
+ 80         continue
 !
         endif
 !
@@ -248,8 +249,8 @@ subroutine utfloa(floa, ch1, ch2)
             else
                 goto 266
             endif
-261      continue
-266      continue
+261     continue
+266     continue
         if (itmp .gt. 0) then
             chv2=chv3(1:iii-1-itmp)
             if (chv2(iii-1-itmp:iii-1-itmp) .eq. '.') then

@@ -20,6 +20,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/nmfisa.h"
 #include "asterfort/pipeba.h"
@@ -38,7 +39,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
 ! OUT : COPILO
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: i, j, kpg
     real(kind=8) :: up(8), ud(8), sup(2), sud(2), b(2, 8), poids
 !-----------------------------------------------------------------------
@@ -67,8 +68,8 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
             do 40 j = 1, 8
                 sup(i) = sup(i) + b(i,j)*up(j)
                 sud(i) = sud(i) + b(i,j)*ud(j)
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
 !      INITIALISATION DES COEFFICIENTS DE PILOTAGE
         call r8inir(4, 0.d0, copilo(1, kpg), 1)
@@ -78,6 +79,6 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
         call pipeba(2, mate, sup, sud, vim(1, kpg),&
                     dtau, copilo(1, kpg))
 !
-10  end do
+ 10 end do
 !
 end subroutine

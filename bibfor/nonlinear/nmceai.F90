@@ -21,6 +21,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -57,11 +58,11 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 !
 !
     real(kind=8) :: sca, nodup, coef, nodup1, nodup2
-    integer ::   jdu1
+    integer :: jdu1
     integer :: neq, i, j
     character(len=19) :: profch, chapil, chapic, selpil
     real(kind=8) :: dn, dc, dp, da
-    logical(kind=1) :: isxfe
+    aster_logical :: isxfe
     real(kind=8), pointer :: coee(:) => null()
     real(kind=8), pointer :: vcoef(:) => null()
     real(kind=8), pointer :: depde(:) => null()
@@ -113,10 +114,9 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
         do i = 1, neq
             if (deeq(2*i) .gt. 0) then
                 if (coee(i) .eq. 0.d0) then
-                    sca = sca + depol(i)* vcoef(i)**2*(depde(i) + rho*du0(1+i&
-                          &-1) + eta*zr(jdu1+i-1))
-                    nodup1 = nodup1 + vcoef(i)**2*(depde(i) + rho*du0(i) + eta*z&
-                             &r(jdu1+i-1))**2
+                    sca = sca + depol(i)* vcoef(i)**2*(depde(i) + rho*du0(1+i-1) + eta*zr(jdu1+i-&
+                          &1))
+                    nodup1 = nodup1 + vcoef(i)**2*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))**2
                     nodup2 = nodup2 + vcoef(i)**2*depol(i) **2
                 else
                     da = 0.d0
@@ -141,8 +141,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     else
         do i = 1, neq
             coef = plsl(i)
-            sca = sca + (depol(i)*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))&
-                  )*coef
+            sca = sca + (depol(i)*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1)) )*coef
             nodup = nodup + ( depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))**2
         end do
     endif

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
                       cham1, moa1, moa2, noma1, noma2,&
@@ -22,7 +24,7 @@ interface
         character(len=4) :: typcal
         character(len=19) :: method
         character(len=16) :: lcorre(2)
-        logical(kind=1) :: isole
+        aster_logical :: isole
         character(len=8) :: resuin
         character(len=19) :: cham1
         character(len=8) :: moa1

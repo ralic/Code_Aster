@@ -1,7 +1,8 @@
-subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf, l_excl, &
+subroutine comp_meca_exc2(defo_comp, l_kit_meta, l_mult_comp, l_pmf, l_excl,&
                           vari_excl)
 !
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +23,10 @@ subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf, l_excl, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: defo_comp
-    logical(kind=1), intent(in) :: l_kit_meta
-    logical(kind=1), intent(in) :: l_mult_comp
-    logical(kind=1), intent(in) :: l_pmf
-    logical(kind=1), intent(out) :: l_excl
+    aster_logical, intent(in) :: l_kit_meta
+    aster_logical, intent(in) :: l_mult_comp
+    aster_logical, intent(in) :: l_pmf
+    aster_logical, intent(out) :: l_excl
     character(len=16), intent(out) :: vari_excl
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,13 +46,13 @@ subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf, l_excl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_excl    = .false.
+    l_excl = .false.
     vari_excl = ' '
 !
 ! - KIT META
 !
     if (l_kit_meta) then
-        if ((defo_comp .eq. 'SIMO_MIEHE').or.(defo_comp .eq. 'GDEF_LOG')) then
+        if ((defo_comp .eq. 'SIMO_MIEHE') .or. (defo_comp .eq. 'GDEF_LOG')) then
             l_excl = .true.
             vari_excl = '&&KMET'
         endif
@@ -60,15 +61,15 @@ subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf, l_excl, &
 ! - Multiple comportment (*CRISTAL)
 !
     if (l_mult_comp) then
-        l_excl    = .true.
+        l_excl = .true.
         vari_excl = '&&POLY'
-        if (defo_comp.eq.'SIMO_MIEHE') vari_excl = '&&POLY_SIMO'
+        if (defo_comp .eq. 'SIMO_MIEHE') vari_excl = '&&POLY_SIMO'
     endif
 !
 ! - Multi-fiber
 !
     if (l_pmf) then
-        l_excl    = .true.
+        l_excl = .true.
         vari_excl = '&&PMF'
     endif
 !

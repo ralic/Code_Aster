@@ -39,6 +39,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 ! OPTION  /I/ : INDIQUE SI ON EST EN CLASSIQUE OU EN REDUIT
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -70,11 +71,11 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !   PARAMETRE REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    logical(kind=1) :: saut, ordre
+    aster_logical :: saut, ordre
     integer :: nbno, icrit, nliais, ldlid, llint3, llint4, iret, nbec, nbcmpm
     integer :: ival, nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, i, j, k, l
     integer :: ibid, nbno1, nbno2, llint1, llint2
-    integer ::   llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
+    integer :: llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
     integer :: nuno, ldac2
     parameter   (nbcmpm=10)
     character(len=4) :: nliai

@@ -2,6 +2,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                   nomtab, iocc, ncheff, i1, ioc,&
                   isd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
@@ -55,7 +56,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     integer :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(10)
     complex(kind=8) :: c16b
-    logical(kind=1) :: exist
+    aster_logical :: exist
     character(len=3) :: typpar
     character(len=8) :: acces, nomres, ctype, courbe, crit, k8b
     character(len=16) :: intitu
@@ -158,7 +159,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                         ik = ik + 1
                         valek(ik) = zk8(iadr)
                     endif
-10              continue
+ 10             continue
                 call jedetr(nomjv)
             endif
         else if (acces(1:1) .eq. 'M') then
@@ -210,10 +211,10 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
         nopara(nbpar) = 'NUME_GAUSS'
     endif
 !
-    do 20, icp = 1, nbcmp, 1
-    nbpar = nbpar + 1
-    nopara(nbpar) = nomcmp(icp)
-    20 end do
+    do 20 icp = 1, nbcmp, 1
+        nbpar = nbpar + 1
+        nopara(nbpar) = nomcmp(icp)
+ 20 end do
 !
     ASSERT(nbpar .le. 15)
     ASSERT(ii+2 .le. 10)
@@ -224,22 +225,22 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     lc = nbsp * ls
     ilign = 0
 !
-    do 200, ico = 1, nbco, 1
-    valei(ii+1) = ico
+    do 200 ico = 1, nbco, 1
+        valei(ii+1) = ico
 !
-    do 204, isp = 1, nbsp, 1
-    valei(ii+2) = isp
+        do 204 isp = 1, nbsp, 1
+            valei(ii+2) = isp
 !
-    do 206, icp = 1, nbcmp, 1
-    valer(ir+icp) = releve(icp+lc*(ico-1)+ls*(isp-1))
-206  continue
+            do 206 icp = 1, nbcmp, 1
+                valer(ir+icp) = releve(icp+lc*(ico-1)+ls*(isp-1))
+206         continue
 !
-    call tbajli(nomtab, nbpar, nopara, valei, valer,&
-                [c16b], valek, ilign)
+            call tbajli(nomtab, nbpar, nopara, valei, valer,&
+                        [c16b], valek, ilign)
 !
-204  continue
+204     continue
 !
-    200 end do
+200 end do
 !
     call jedema()
 end subroutine

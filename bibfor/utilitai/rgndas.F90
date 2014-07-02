@@ -1,6 +1,7 @@
 subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                   ligrel, infobl)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -48,14 +49,13 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 ! OUT : LIGREL : NOM DU LIGREL SI LE NOEUD EST 'B' OU 'C' (BLANC SINON)
 ! OUT : INFOBL : INFORMATIONS COMPLEMENTAIRES
 ! ----------------------------------------------------------------------
-    integer :: gd, nec, jprno,  ico
-    integer ::  nlili, i, ilo, nbno, ino, ideb, ncmp
+    integer :: gd, nec, jprno, ico
+    integer :: nlili, i, ilo, nbno, ino, ideb, ncmp
     integer :: icmp, iieq, nuno, nucmp, ncmpmx, iadg1, jrefe
     integer :: inocmp, nuddl, neq, nusst, nulia, jdeeq, jorig, iexi
     character(len=8) :: noma, nomno2, nomcm2, modgen, kn1, kn2
     character(len=19) :: nume
-    logical :: trouve
-    logical(kind=1) :: lnuge
+    aster_logical :: trouve, lnuge
     integer, pointer :: desc(:) => null()
     integer, pointer :: nueq(:) => null()
 !

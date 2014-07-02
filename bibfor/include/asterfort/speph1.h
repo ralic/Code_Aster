@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                       specmi, nnoe, nomcmp, nbmode, nbn,&
                       nbpf)
         integer :: nbpf
         integer :: nbn
-        logical(kind=1) :: intphy
-        logical(kind=1) :: intmod
+        aster_logical :: intphy
+        aster_logical :: intmod
         character(len=8) :: nomu
         real(kind=8) :: cham(nbn, *)
         real(kind=8) :: specmr(nbpf, *)

@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                       vint, ier, tinit, intitu, noecho, &
@@ -28,7 +30,7 @@ interface
         real(kind=8) :: tinit
         character(len=8), optional, intent(in) :: intitu(*)
         character(len=8), optional, intent(in) :: noecho(nbchoc,*)
-        logical(kind=1), optional, intent(out) :: reprise
+        aster_logical, optional, intent(out) :: reprise
         real(kind=8), optional, intent(out) :: accgen(*)
     end subroutine mdinit
 end interface

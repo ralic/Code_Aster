@@ -24,6 +24,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -102,7 +103,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     integer :: zvalin, zsolal
     parameter    (zvalin=28,zsolal=17)
 !
-    logical(kind=1) :: lgrot, lendo
+    aster_logical :: lgrot, lendo
     integer :: neq, nmax
     character(len=19) :: vefint, vediri, vebudi
     character(len=19) :: cnfint, cndiri, cnfext, cnbudi

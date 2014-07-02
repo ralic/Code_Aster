@@ -18,6 +18,7 @@ subroutine te0511(option, nomte)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! =====================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -37,7 +38,7 @@ subroutine te0511(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! =====================================================================
 ! =====================================================================
-    logical(kind=1) :: logthm
+    aster_logical :: logthm
     integer :: imate, icompo, ivarip, icontp, ilocal, ic, iv
     integer :: nbvari, rindic, kpg, nbsig, imat, ibid
     integer :: icode, iret, tabthm(3), dimmax, npgu
@@ -90,8 +91,8 @@ subroutine te0511(option, nomte)
 ! =====================================================================
 ! --- RECUPERATION DU ELREFE ------------------------------------------
 ! =====================================================================
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! =====================================================================
 ! --- PARAMETRES EN ENTREE --------------------------------------------
 ! =====================================================================
@@ -145,10 +146,10 @@ subroutine te0511(option, nomte)
 ! =====================================================================
             do 20 ic = 1, nbsig
                 sig(ic) = zr(icontp-1+(kpg-1)*nbsig+ic )
-20          continue
+ 20         continue
             do 30 iv = 1, nbvari
                 vin(iv) = zr(ivarip-1+(kpg-1)*nbvari+iv )
-30          continue
+ 30         continue
             imat = zi(imate)
             call evala1(mod, relcom, sig, vin, imat,&
                         module, icode)
@@ -156,7 +157,7 @@ subroutine te0511(option, nomte)
 ! --- SURCHARGE DE L'INDICATEUR DE LOCALISATION -----------------------
 ! =====================================================================
             zr(ilocal-1+1+(kpg-1)*rindic) = module
-10      continue
+ 10     continue
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)

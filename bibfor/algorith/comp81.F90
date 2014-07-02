@@ -1,5 +1,6 @@
 subroutine comp81(nomres, basmod, raidf, noma)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -68,11 +69,11 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
 !
 !
-    integer :: iarefm, iret, nbnoe,  iaconx
+    integer :: iarefm, iret, nbnoe, iaconx
     integer :: nbmtot, nbmdef, ier
     integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
-    integer :: iacon1,  iadesm, ialica, ialich, iaprno, icas
-    integer :: igex, instdy, iocc,  ldgn, ldgn0, lnocmp
+    integer :: iacon1, iadesm, ialica, ialich, iaprno, icas
+    integer :: igex, instdy, iocc, ldgn, ldgn0, lnocmp
     integer :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
 !
     real(kind=8) :: rbndyn, rbndef
@@ -83,7 +84,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     character(len=14) :: numddl
     character(len=19) :: nu
 !
-    logical(kind=1) :: lredu
+    aster_logical :: lredu
     integer, pointer :: idc_defo(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: mael_mass_desc(:) => null()

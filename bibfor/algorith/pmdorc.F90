@@ -2,6 +2,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
 #include "asterc/zaswri.h"
 #include "asterc/getfac.h"
@@ -62,22 +63,24 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     integer :: iocc, unit_comp, i, nume_comp, nbocc_compor, nbocc_carcri
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
-    character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp, mult_comp
-    logical(kind=1) :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm, l_etat_init
+    character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp
+    character(len=16) :: mult_comp
+    aster_logical :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm
+    aster_logical :: l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
     character(len=16), pointer :: p_info_comp_valk(:) => null()
-    integer          , pointer :: p_info_comp_vali(:) => null()
-    integer          , pointer :: p_info_comp_nvar(:) => null()
+    integer, pointer :: p_info_comp_vali(:) => null()
+    integer, pointer :: p_info_comp_nvar(:) => null()
     character(len=16), pointer :: p_info_carc_valk(:) => null()
-    real(kind=8)     , pointer :: p_info_carc_valr(:) => null()
+    real(kind=8), pointer :: p_info_carc_valr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     list_vari_name = '&&PMDORC.LIST_VARI'
-    keywordfact    = 'COMPORTEMENT'
-    do i = 1,20
+    keywordfact = 'COMPORTEMENT'
+    do i = 1, 20
         compor(i) = 'VIDE'
     end do
 !
@@ -91,7 +94,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 ! - Create comportment informations objects
 !
     call comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
-    if (nbocc_compor.eq.0) then
+    if (nbocc_compor .eq. 0) then
         call utmess('F', 'COMPOR4_63')
     endif
 !
@@ -106,45 +109,45 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 ! - Save it
 !
     iocc = 1
-    nb_vari      = p_info_comp_nvar(10*(iocc-1) + 2)
-    nume_comp    = p_info_comp_nvar(10*(iocc-1) + 1)
-    unit_comp    = p_info_comp_vali(2*(iocc-1) + 2)
-    rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
-    defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
-    type_comp    = p_info_comp_valk(16*(iocc-1) + 3)
-    mult_comp    = p_info_comp_valk(16*(iocc-1) + 14)
-    type_matg    = p_info_comp_valk(16*(iocc-1) + 15)
-    post_iter    = p_info_comp_valk(16*(iocc-1) + 16)
+    nb_vari = p_info_comp_nvar(10*(iocc-1) + 2)
+    nume_comp = p_info_comp_nvar(10*(iocc-1) + 1)
+    unit_comp = p_info_comp_vali(2*(iocc-1) + 2)
+    rela_comp = p_info_comp_valk(16*(iocc-1) + 1)
+    defo_comp = p_info_comp_valk(16*(iocc-1) + 2)
+    type_comp = p_info_comp_valk(16*(iocc-1) + 3)
+    mult_comp = p_info_comp_valk(16*(iocc-1) + 14)
+    type_matg = p_info_comp_valk(16*(iocc-1) + 15)
+    post_iter = p_info_comp_valk(16*(iocc-1) + 16)
     call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
     call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-    call comp_meca_l(rela_comp, 'ZMAT'     , l_zmat)
-    call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
+    call comp_meca_l(rela_comp, 'ZMAT', l_zmat)
+    call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
     call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-    call comp_meca_l(rela_comp, 'KIT_THM'  , l_kit_thm)
+    call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
     if (l_kit_thm) then
         call utmess('F', 'COMPOR2_7')
     endif
 !
-    if (type_comp.eq.'COMP_ELAS') then
+    if (type_comp .eq. 'COMP_ELAS') then
         incela = 2
-    elseif (type_comp.eq.'COMP_INCR') then
+    else if (type_comp.eq.'COMP_INCR') then
         incela = 1
     else
         ASSERT(.false.)
     endif
 !
-    compor(1)  = rela_comp
+    compor(1) = rela_comp
     write (compor(2),'(I16)') nb_vari
-    compor(3)  = defo_comp
-    compor(4)  = type_comp    
+    compor(3) = defo_comp
+    compor(4) = type_comp
     write (compor(6),'(I16)') nume_comp
     if (l_cristal) then
         compor(7) = mult_comp
     else
-         write (compor(7),'(I16)') unit_comp
+        write (compor(7),'(I16)') unit_comp
     endif
-    compor(8)  = p_info_comp_valk(16*(iocc-1) + 5)
-    compor(9)  = p_info_comp_valk(16*(iocc-1) + 6)
+    compor(8) = p_info_comp_valk(16*(iocc-1) + 5)
+    compor(9) = p_info_comp_valk(16*(iocc-1) + 6)
     compor(10) = p_info_comp_valk(16*(iocc-1) + 7)
     compor(11) = p_info_comp_valk(16*(iocc-1) + 8)
     if (l_exte_comp) then
@@ -153,8 +156,8 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
         write (compor(12),'(I16)') iocc
     endif
     if (l_exte_comp) then
-        if (l_matr_tgsc) call utmess('F','COMPOR4_59')
-        if (l_crit_rupt) call utmess('F','COMPOR4_60')
+        if (l_matr_tgsc) call utmess('F', 'COMPOR4_59')
+        if (l_crit_rupt) call utmess('F', 'COMPOR4_60')
         compor(13) = p_info_comp_valk(16*(iocc-1) + 10)
         compor(14) = p_info_comp_valk(16*(iocc-1) + 11)
     else
@@ -193,24 +196,24 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     call carc_read(p_info_carc_valk, p_info_carc_valr)
     iocc = 1
 !
-    algo_inte  = p_info_carc_valk(2*(iocc-1) + 2)
-    call nmdocv(keywordfact   , iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
-    call nmdocv(keywordfact   , iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
+    algo_inte = p_info_carc_valk(2*(iocc-1) + 2)
+    call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+    call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
     call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !
-    carcri(1)  =  iter_inte_maxi
-    carcri(2)  =  p_info_carc_valr(13*(iocc-1) + 2) 
-    carcri(3)  =  resi_inte_rela
-    carcri(4)  =  p_info_carc_valr(13*(iocc-1) + 4) 
-    carcri(5)  =  p_info_carc_valr(13*(iocc-1) + 5) 
-    carcri(6)  =  algo_inte_r
-    carcri(7)  =  p_info_carc_valr(13*(iocc-1) + 7) 
-    carcri(8)  =  p_info_carc_valr(13*(iocc-1) + 8) 
-    carcri(9)  =  p_info_carc_valr(13*(iocc-1) + 9) 
-    carcri(10) =  p_info_carc_valr(13*(iocc-1) + 10)
-    carcri(11) =  p_info_carc_valr(13*(iocc-1) + 11)
-    carcri(12) =  p_info_carc_valr(13*(iocc-1) + 12)
-    carcri(13) =  p_info_carc_valr(13*(iocc-1) + 13)
+    carcri(1) = iter_inte_maxi
+    carcri(2) = p_info_carc_valr(13*(iocc-1) + 2)
+    carcri(3) = resi_inte_rela
+    carcri(4) = p_info_carc_valr(13*(iocc-1) + 4)
+    carcri(5) = p_info_carc_valr(13*(iocc-1) + 5)
+    carcri(6) = algo_inte_r
+    carcri(7) = p_info_carc_valr(13*(iocc-1) + 7)
+    carcri(8) = p_info_carc_valr(13*(iocc-1) + 8)
+    carcri(9) = p_info_carc_valr(13*(iocc-1) + 9)
+    carcri(10) = p_info_carc_valr(13*(iocc-1) + 10)
+    carcri(11) = p_info_carc_valr(13*(iocc-1) + 11)
+    carcri(12) = p_info_carc_valr(13*(iocc-1) + 12)
+    carcri(13) = p_info_carc_valr(13*(iocc-1) + 13)
 !
     AS_DEALLOCATE(vk16 = p_info_comp_valk)
     AS_DEALLOCATE(vi   = p_info_comp_vali)

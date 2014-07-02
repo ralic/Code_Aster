@@ -30,6 +30,7 @@ subroutine op0061()
 !-----------------------------------------------------------------------
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8depi.h"
@@ -88,7 +89,7 @@ subroutine op0061()
     integer :: prodsci
     character(len=14) :: xcdl, parcho, adime
     real(kind=8) :: ampl, amax, ap, epscor2, vr
-    logical(kind=1) :: cor, lbif, reprise, lcine
+    aster_logical :: cor, lbif, reprise, lcine
     integer :: iraid, ireg, iorig, ijeu, inddl, ifres, vi, num_ordr, num_lig, nbno, info
     integer :: ivec, iutj, iut1, iups, ius, ifpnl, ieng, isort, icdl, ivect, numrep, ntab
     character(len=14) :: xvect, xut1, xutj, xups, xus, xfpnl, xeng, xsort, xbif

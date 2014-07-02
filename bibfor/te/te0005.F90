@@ -17,7 +17,8 @@ subroutine te0005(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dilcar.h"
@@ -33,7 +34,7 @@ subroutine te0005(option, nomte)
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: i, ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
     integer :: ipoid2, dimdef, icompo, ichg, ichn, regula(6), idefo
     integer :: icontm, ideplm, ideplp, igeom, imate, jcret, nddls, nddlm
@@ -73,7 +74,7 @@ subroutine te0005(option, nomte)
     .eq.'FULL_MECA' ) then
         do 10 i = 1, dimuel
             zr(ideplp-1+i)=zr(ideplm-1+i)+zr(ideplp-1+i)
-10      continue
+ 10     continue
         call dilele(option, typmod, npi, ndim, dimuel,&
                     nddls, nddlm, nno, nnos, nnom,&
                     axi, regula, dimcon, ipoids, ipoid2,&

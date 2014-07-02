@@ -18,7 +18,8 @@ subroutine nmimcr(sdimpr, typcoz, valr, laffe)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/impsdr.h"
 #include "asterfort/obgeto.h"
 #include "asterfort/oblgop.h"
@@ -26,7 +27,7 @@ subroutine nmimcr(sdimpr, typcoz, valr, laffe)
     character(len=24) :: sdimpr
     character(len=*) :: typcoz
     real(kind=8) :: valr
-    logical(kind=1) :: laffe
+    aster_logical :: laffe
 !
 ! ----------------------------------------------------------------------
 !

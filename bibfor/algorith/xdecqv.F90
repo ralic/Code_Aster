@@ -3,6 +3,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                   heav, nsemax, pinter, pintt)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
@@ -56,19 +57,19 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps
     real(kind=8) :: lsnbc
     integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim
-    integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime,  n(18)
+    integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime, n(18)
     integer :: d, e, f, g, h, l, ia, ip1
     integer :: nnop
     integer :: zxain
     character(len=8) :: typma, noma, elrese(3)
-    logical(kind=1) :: cut
+    aster_logical :: cut
     integer, pointer :: dime(:) => null()
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 ! --------------------------------------------------------------------
     call jemarq()
 !
-    call elrefe_info(fami='RIGI',ndim=ndime,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop)
     zxain = xxmmvd('ZXAIN')
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)
@@ -78,8 +79,8 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     do 10 in = 1, 6
         do 20 j = 1, 10
             cnse(in,j)=0
-20      continue
-10  continue
+ 20     continue
+ 10 continue
 !
     typma=elrese(ndime)
 !
@@ -88,16 +89,16 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
     cut=.false.
     do 30 ia = 1, nbar
-      if(lsn(cnset(nnose*(it-1)+ar(ia,1)))*lsn(cnset(nnose*(it-1)+ar(ia,2))) &
-                        .lt. 0.d0) cut=.true.
-30  continue
+        if (lsn(cnset(nnose*(it-1)+ar(ia,1)))*lsn(cnset(nnose*(it-1)+ar(ia,2))) .lt. 0.d0) &
+        cut=.true.
+ 30 continue
 !
 !     STOCKAGE DE LA CONNECTIVITE D'UN SOUS-ELEMENT NON COUPE
     if (.not.cut) then
         nse=1
         do 31 in = 1, nnose
             cnse(1,in)=cnset(nnose*(it-1)+in)
-31      continue
+ 31     continue
     endif
 !
 ! --------------------------------------------------------------------
@@ -112,7 +113,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
             nse=1
             do 40 in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
-40          continue
+ 40         continue
 !
         else if (ninter .eq. 2) then
             a1=nint(ainter(zxain*(1-1)+1))
@@ -128,8 +129,8 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                             c=ar(a2,3-j)
                             e=ar(6-(a1+a2),3)
                         endif
-51                  continue
-50              continue
+ 51                 continue
+ 50             continue
                 cnse(1,1)=101
                 cnse(1,2)=102
                 cnse(1,3)=cnset(nnose*(it-1)+a)
@@ -159,14 +160,14 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 c = ar(a2,2)
                 e=0
                 f=0
-                do 52 i=1,3
-                 do 53 j=1,2
-                   if (cnset(nnose*(it-1)+ar(i,j)).eq.ip1.and.&
-                      ar(i,3-j).eq.b) e= ar(i,3)
-                    if (cnset(nnose*(it-1)+ar(i,j)).eq.ip1.and.&
-                      ar(i,3-j).eq.c) f= ar(i,3)
-53                continue
-52              continue
+                do 52 i = 1, 3
+                    do 53 j = 1, 2
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. ip1 .and. ar(i,3-j) .eq. b) &
+                        e= ar(i,3)
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. ip1 .and. ar(i,3-j) .eq. c) &
+                        f= ar(i,3)
+ 53                 continue
+ 52             continue
                 ASSERT((e*f).gt.0)
                 cnse(1,1)=ip1
                 cnse(1,2)=102
@@ -187,7 +188,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 nse=1
                 do 60 in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
-60              continue
+ 60             continue
             endif
 !
         else if (ninter .eq.3) then
@@ -198,7 +199,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 nse=1
                 do 70 in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
-70              continue
+ 70             continue
 !
             else if (npts .eq.1) then
 !           DECOUPAGE EN 3 ELEMENTS
@@ -215,8 +216,8 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                             c=ar(a2,3-j)
                             e=ar(6-(a1+a2),3)
                         endif
-81                  continue
-80              continue
+ 81                 continue
+ 80             continue
                 cnse(1,1)=102
                 cnse(1,2)=103
                 cnse(1,3)=cnset(nnose*(it-1)+a)
@@ -242,7 +243,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 nse=1
                 do 90 in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
-90              continue
+ 90             continue
 !
             endif
 !           ENDIF SUR NPTS DE NINTER=3
@@ -251,7 +252,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
             nse=1
             do 100 in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
-100          continue
+100         continue
 !
         endif
 !
@@ -263,7 +264,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
             nse=1
             do 110 in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
-110          continue
+110         continue
 !
         else if (ninter .eq.1) then
             a1=nint(ainter(zxain*(1-1)+1))
@@ -289,7 +290,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
             nse=1
             do 120 in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
-120          continue
+120         continue
 !
         endif
 !
@@ -306,7 +307,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
             nse=1
             do 200 in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
-200          continue
+200         continue
 !
         else if (ninter.eq.3) then
 !
@@ -321,14 +322,14 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 nse=1
                 do 210 in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
-210              continue
+210             continue
 !
             else if (npts .eq. 2) then
 !           ON A UN SEUL ELEMENT
                 nse=1
                 do 220 in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
-220              continue
+220             continue
 !
             else if (npts.eq.1) then
 !           ON A TROIS SOUS-ELEMENTS
@@ -350,16 +351,19 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                             b=ar(a2,3-i)
                             c=ar(a3,3-j)
                         endif
-45                  continue
-35              continue
+ 45                 continue
+ 35             continue
                 do 36 i = 1, 6
                     do 46 j = 1, 2
-                       if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
-                       if (ar(i,j) .eq. b .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) f=ar(i,3)
-                       if (ar(i,j) .eq. c .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) g=ar(i,3)
-                       if (ar(i,j) .eq. a .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) h=ar(i,3)
-46                  continue
-36              continue
+                        if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
+                        if (ar(i,j) .eq. b .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) &
+                        f=ar(i,3)
+                        if (ar(i,j) .eq. c .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) &
+                        g=ar(i,3)
+                        if (ar(i,j) .eq. a .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) &
+                        h=ar(i,3)
+ 46                 continue
+ 36             continue
                 ASSERT((a*b*c*e*f*g*h).gt.0)
 !           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPÉ
                 cnse(1,1)=ip1
@@ -410,18 +414,18 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                             b=ar(a1,3-i)
                             c=ar(a2,3-j)
                         endif
-48                  continue
-38              continue
+ 48                 continue
+ 38             continue
                 do 39 i = 1, 2
                     if (ar(a3,i) .eq. a) d=ar(a3,3-i)
-39              continue
+ 39             continue
                 do 59 i = 1, 6
                     do 69 j = 1, 2
                         if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
                         if (ar(i,j) .eq. c .and. ar(i,3-j) .eq. d) f=ar(i,3)
                         if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. d) g=ar(i,3)
-69                  continue
-59              continue
+ 69                 continue
+ 59             continue
                 ASSERT((a*b*c*d*e*f*g).gt.0)
 !           ON A QUATRE SOUS-ELEMENTS
                 cnse(1,1)=101
@@ -458,35 +462,39 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
         else if (ninter.eq.4) then
 !
-               a1=nint(ainter(zxain*(1-1)+1))
-               a2=nint(ainter(zxain*(2-1)+1))
-               a3=nint(ainter(zxain*(3-1)+1))
-               a4=nint(ainter(zxain*(4-1)+1))
+            a1=nint(ainter(zxain*(1-1)+1))
+            a2=nint(ainter(zxain*(2-1)+1))
+            a3=nint(ainter(zxain*(3-1)+1))
+            a4=nint(ainter(zxain*(4-1)+1))
 !
-           if (npts.eq.2) then
+            if (npts .eq. 2) then
 !            ON A DEUX SOUS-ELEMENTS
-               nse=2
+                nse=2
 !            LES DEUX PREMIERS NOEUDS STOCKES SONT FORCEMNT DES NOEUDS SOMMETS ET LES AUTRES NON
-               ASSERT(a1.eq.0.and.a2.eq.0.and.a3.gt.0.and.a4.gt.0)
-               a=ar(a3,1)
-               b=ar(a3,2)
-               c=nint(ainter(2))
-               d=nint(ainter(zxain+2))
-               do 771 i=1,6
-                 do 772 j=1,2
-                   if (cnset(nnose*(it-1)+ar(i,j)).eq.c.and.&
-                      cnset(nnose*(it-1)+ar(i,3-j)).eq.d) e=ar(i,3)
-772              continue
-771            continue
-               do 773 i=1,6
-                 do 774 j=1,2
-                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and. ar(i,3-j) .eq. a) f=ar(i,3)
-                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. d .and. ar(i,3-j) .eq. a) g=ar(i,3)
-                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and. ar(i,3-j) .eq. b) h=ar(i,3)
-                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. d .and. ar(i,3-j) .eq. b) l=ar(i,3)
-774              continue
-773            continue
-               ASSERT((e*f*g*h*l).gt.0)
+                ASSERT(a1.eq.0.and.a2.eq.0.and.a3.gt.0.and.a4.gt.0)
+                a=ar(a3,1)
+                b=ar(a3,2)
+                c=nint(ainter(2))
+                d=nint(ainter(zxain+2))
+                do 771 i = 1, 6
+                    do 772 j = 1, 2
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and.&
+                            cnset(nnose*(it-1)+ar(i,3-j)) .eq. d) e=ar(i,3)
+772                 continue
+771             continue
+                do 773 i = 1, 6
+                    do 774 j = 1, 2
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and. ar(i,3-j) .eq. a) &
+                        f=ar(i,3)
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. d .and. ar(i,3-j) .eq. a) &
+                        g=ar(i,3)
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and. ar(i,3-j) .eq. b) &
+                        h=ar(i,3)
+                        if (cnset(nnose*(it-1)+ar(i,j)) .eq. d .and. ar(i,3-j) .eq. b) &
+                        l=ar(i,3)
+774                 continue
+773             continue
+                ASSERT((e*f*g*h*l).gt.0)
                 cnse(1,1)=nint(ainter(2))
                 cnse(1,2)=nint(ainter(zxain+2))
                 cnse(1,3)=103
@@ -508,70 +516,70 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(2,9)=cnset(nnose*(it-1)+l)
                 cnse(2,10)=202
 !
-            elseif (npts .eq.0) then
-            nse=6
-            ASSERT((a1*a2*a3*a4).ne.0)
-            a=0
-            b=0
-            c=0
-            d=0
-            e=0
-            f=0
-            do 78 i = 1, 2
-                do 88 j = 1, 2
-                    if (ar(a1,i) .eq. ar(a2,j)) then
-                        a=ar(a1,i)
-                        b=ar(a1,3-i)
-                        c=ar(a2,3-j)
-                    endif
-                    if (ar(a3,i).eq.ar(a4,j)) d=ar(a3,i)
-88              continue
-78          continue
-            do 79 i = 1, 6
-                do 89 j = 1, 2
-                    if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
-                    if (ar(i,j) .eq. a .and. ar(i,3-j) .eq. d) f=ar(i,3)
-89              continue
-79          continue
-            ASSERT((a*b*c*d*e*f).gt.0)
-            n(1)=104
-            n(2)=102
-            n(3)=cnset(nnose*(it-1)+c)
-            n(4)=103
-            n(5)=101
-            n(6)=cnset(nnose*(it-1)+b)
-            n(7)=210
-            n(8)=203
-            n(9)=207
-            n(10)=211
-            n(11)=209
-            n(12)=cnset(nnose*(it-1)+e)
-            n(13)=212
-            n(14)=201
-            n(15)=205
-            n(16)=213
-            n(17)=214
-            n(18)=216
-            call xpente(1, cnse, n)
-            n(1)=cnset(nnose*(it-1)+a)
-            n(2)=101
-            n(3)=102
-            n(4)=cnset(nnose*(it-1)+d)
-            n(5)=103
-            n(6)=104
-            n(7)=202
-            n(8)=209
-            n(9)=204
-            n(10)=cnset(nnose*(it-1)+f)
-            n(11)=212
-            n(12)=210
-            n(13)=206
-            n(14)=211
-            n(15)=208
-            n(16)=217
-            n(17)=213
-            n(18)=215
-            call xpente(4, cnse, n)
+            else if (npts .eq.0) then
+                nse=6
+                ASSERT((a1*a2*a3*a4).ne.0)
+                a=0
+                b=0
+                c=0
+                d=0
+                e=0
+                f=0
+                do 78 i = 1, 2
+                    do 88 j = 1, 2
+                        if (ar(a1,i) .eq. ar(a2,j)) then
+                            a=ar(a1,i)
+                            b=ar(a1,3-i)
+                            c=ar(a2,3-j)
+                        endif
+                        if (ar(a3,i) .eq. ar(a4,j)) d=ar(a3,i)
+ 88                 continue
+ 78             continue
+                do 79 i = 1, 6
+                    do 89 j = 1, 2
+                        if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
+                        if (ar(i,j) .eq. a .and. ar(i,3-j) .eq. d) f=ar(i,3)
+ 89                 continue
+ 79             continue
+                ASSERT((a*b*c*d*e*f).gt.0)
+                n(1)=104
+                n(2)=102
+                n(3)=cnset(nnose*(it-1)+c)
+                n(4)=103
+                n(5)=101
+                n(6)=cnset(nnose*(it-1)+b)
+                n(7)=210
+                n(8)=203
+                n(9)=207
+                n(10)=211
+                n(11)=209
+                n(12)=cnset(nnose*(it-1)+e)
+                n(13)=212
+                n(14)=201
+                n(15)=205
+                n(16)=213
+                n(17)=214
+                n(18)=216
+                call xpente(1, cnse, n)
+                n(1)=cnset(nnose*(it-1)+a)
+                n(2)=101
+                n(3)=102
+                n(4)=cnset(nnose*(it-1)+d)
+                n(5)=103
+                n(6)=104
+                n(7)=202
+                n(8)=209
+                n(9)=204
+                n(10)=cnset(nnose*(it-1)+f)
+                n(11)=212
+                n(12)=210
+                n(13)=206
+                n(14)=211
+                n(15)=208
+                n(16)=217
+                n(17)=213
+                n(18)=215
+                call xpente(4, cnse, n)
             endif
         endif
     endif
@@ -588,22 +596,22 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 if (inh .lt. 100) then
                     do 510 j = 1, 3
                         xyz(in,j)=zr(igeom-1+ndim*(inh-1)+j)
-510                  continue
+510                 continue
                 else if (inh.gt.100.and.inh.lt.1000) then
                     do 511 j = 1, 3
                         xyz(in,j)=pinter(ndim*(inh-100-1)+j)
-511                  continue
+511                 continue
                 else
                     do 512 j = 1, 3
                         xyz(in,j)=pintt(ndim*(inh-1001)+j)
-512                  continue
+512                 continue
                 endif
-505          continue
+505         continue
             do 506 j = 1, 3
                 ab(j)=xyz(2,j)-xyz(1,j)
                 ac(j)=xyz(3,j)-xyz(1,j)
                 ad(j)=xyz(4,j)-xyz(1,j)
-506          continue
+506         continue
             call provec(ab, ac, vn)
             ps=ddot(3,vn,1,ad,1)
             if (ps .lt. 0) then
@@ -619,7 +627,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(ise,7)=cnse(ise,8)
                 cnse(ise,8)=inh
             endif
-500      continue
+500     continue
     endif
 !
 !-----------------------------------------------------------------------
@@ -628,21 +636,21 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! --------------------------------------------------------------------
 !
     ASSERT(nse.le.nsemax)
-    if(ninter.eq.3.and.npts.eq.1.and.ndime.eq.2) then
-      lsnbc=lsn(cnset(nnose*(it-1)+b))+lsn(cnset(nnose*(it-1)+c))
-      heav(1)=-sign(1.d0,lsnbc)
-      heav(2)=sign(1.d0,lsnbc)
-      heav(3)=sign(1.d0,lsnbc)
+    if (ninter .eq. 3 .and. npts .eq. 1 .and. ndime .eq. 2) then
+        lsnbc=lsn(cnset(nnose*(it-1)+b))+lsn(cnset(nnose*(it-1)+c))
+        heav(1)=-sign(1.d0,lsnbc)
+        heav(2)=sign(1.d0,lsnbc)
+        heav(3)=sign(1.d0,lsnbc)
     else
-      do 300 ise = 1, nse
-        heav(ise)=1.d0
-        do 310 in = 1, ndime+1
-            inh=cnse(ise,in)
-            if (inh .lt. 100) then
-                if (lsn(inh) .lt. 0.d0) heav(ise)=-1.d0
-            endif
-310      continue
-300   continue
+        do 300 ise = 1, nse
+            heav(ise)=1.d0
+            do 310 in = 1, ndime+1
+                inh=cnse(ise,in)
+                if (inh .lt. 100) then
+                    if (lsn(inh) .lt. 0.d0) heav(ise)=-1.d0
+                endif
+310         continue
+300     continue
     endif
 !
 !     REMARQUE IMPORTANTE :

@@ -1,6 +1,7 @@
 subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                   ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/bsthpl.h"
@@ -82,13 +83,13 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: kmpmt(8, 8), kmpm(8, 8), membcf(8, 8), bcapm(2, 8)
     real(kind=8) :: bsigth(24), enerth, ctor, un, zero, eta, excent, qsi
     real(kind=8) :: jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
-    logical(kind=1) :: coupmf, exce, indith
+    aster_logical :: coupmf, exce, indith
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     un = 1.0d0
@@ -240,18 +241,18 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
         do 20 i = 1, 12
             do 30 j = 1, 12
                 kfc11(i,j) = kf11(i,j) + kbb(i,j)
-30          continue
-20      continue
+ 30         continue
+ 20     continue
         do 40 i = 1, 12
             do 50 j = 1, 4
                 kfc12(i,j) = kf12(i,j) + kba(i,j) + kfcg11(i,j)
-50          continue
-40      continue
+ 50         continue
+ 40     continue
         do 60 i = 1, 4
             do 70 j = 1, 4
                 kfc22(i,j) = kf22(i,j) + kaa(i,j) + kfc21(i,j) + kfc21(j,i)
-70          continue
-60      continue
+ 70         continue
+ 60     continue
 !
         if (coupmf .or. exce) then
 !
@@ -298,9 +299,9 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                 do 90 j = 1, 8
                     do 100 k = 1, 4
                         kmpmt(i,j) = kmpmt(i,j) + pm(k,i)*(kma(j,k)+ kmf12(j,k))
-100                  continue
-90              continue
-80          continue
+100                 continue
+ 90             continue
+ 80         continue
 !
 ! ---     DETERMINATION DU TERME ([KMA]+[KMF12])*[PM] :
 !         --------------------------------------------
@@ -308,9 +309,9 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                 do 120 j = 1, 8
                     do 130 k = 1, 4
                         kmpm(i,j) = kmpm(i,j) + (kma(i,k)+kmf12(i,k))* pm(k,j)
-130                  continue
-120              continue
-110          continue
+130                 continue
+120             continue
+110         continue
 !
 ! ---     DETERMINATION DU TERME [KMA]*[PB] :
 !         ---------------------------------
@@ -318,9 +319,9 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                 do 150 j = 1, 12
                     do 160 k = 1, 4
                         kmapb(i,j) = kmapb(i,j) + kma(i,k)*pb(k,j)
-160                  continue
-150              continue
-140          continue
+160                 continue
+150             continue
+140         continue
 !
         endif
 !=======================================================================
@@ -339,28 +340,28 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
         do 170 i = 1, 12
             do 170 j = 1, 12
                 kfb(i,j) = zero
-170          continue
+170         continue
 !
         do 180 i = 1, 12
             do 190 j = 1, 12
                 do 200 k = 1, 4
                     kfb(i,j) = kfb(i,j) + kfc12(i,k)*pb(k,j)
-200              continue
+200             continue
                 kfc(j,i) = kfb(i,j)
-190          continue
-180      continue
+190         continue
+180     continue
 !
         do 210 i = 1, 12
             do 220 j = 1, 12
                 flexi(i,j) = flexi(i,j) + kfc11(i,j) + kfb(i,j) + kfc( i,j)
-220          continue
-210      continue
+220         continue
+210     continue
 !
         wgt = zr(ipoids+int-1)*jacob(1)
         do 230 i = 1, 12
             do 230 j = 1, 12
                 flex(i,j) = flex(i,j) + flexi(i,j)*wgt
-230          continue
+230         continue
 !
 !============================================================
 ! --- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE          =
@@ -398,8 +399,8 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                             &))*wgt
 !     +                            MEMBI(I,J)*WGT
 !*****************************************************************
-250          continue
-240      continue
+250         continue
+240     continue
 !
 !====================================================================
 ! --- CALCUL DE LA MATRICE DE RIGIDITE DE COUPLAGE MEMBRANE-FLEXION =
@@ -413,8 +414,8 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
             do 260 i = 1, 8
                 do 270 j = 1, 12
                     kmf(i,j) = zero
-270              continue
-260          continue
+270             continue
+260         continue
 !
 ! ---     CALCUL DU TERME  [PM]T*([KF22] + [KAA])*[PB]
 !         --------------------------------------------
@@ -425,20 +426,20 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                 do 290 j = 1, 12
                     do 300 k = 1, 4
                         kmf(i,j) = kmf(i,j) + (kmf12(i,k)+kmc(i,k))* pb(k,j) + pm(k,i)*kfc12(j,k)
-300                  continue
+300                 continue
                     mefli(i,j) = kmf11(i,j) + kmf(i,j) + kmb(i,j) + kmapb(i,j)
-290              continue
-280          continue
+290             continue
+280         continue
 !
             do 310 i = 1, 8
                 do 320 j = 1, 12
                     mefl(i,j) = mefl(i,j) + mefli(i,j)*wgt
-320              continue
-310          continue
+320             continue
+310         continue
 !
         endif
 !
-10  end do
+ 10 end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxqloc(flex, memb, mefl, ctor, rig)
@@ -452,7 +453,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
         if (indith) then
             do 330 i = 1, 24
                 enerth = enerth + depl(i)*bsigth(i)
-330          continue
+330         continue
             ener(1) = ener(1) - enerth
         endif
     endif

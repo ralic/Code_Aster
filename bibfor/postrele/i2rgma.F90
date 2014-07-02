@@ -3,6 +3,7 @@ subroutine i2rgma(epsi, sor, sex, ror, rex,&
                   tsex, tror, trex, tfor, tfex,&
                   tm1, tm2, adr)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +27,7 @@ subroutine i2rgma(epsi, sor, sex, ror, rex,&
     real(kind=8) :: tsor(*), tsex(*), tror(*), trex(*)
 !
     integer :: i, j
-    logical(kind=1) :: trouve, dejala
+    aster_logical :: trouve, dejala
     real(kind=8) :: s
 !
 !-----------------------------------------------------------------------
@@ -38,7 +39,7 @@ subroutine i2rgma(epsi, sor, sex, ror, rex,&
     i = 1
     j = 0
 !
-10  continue
+ 10 continue
     if ((.not. trouve) .and. (i .lt. adr)) then
 !
         s = tsor(i)
@@ -70,18 +71,18 @@ subroutine i2rgma(epsi, sor, sex, ror, rex,&
 !
         if (trouve) then
 !
-            do 20, j = adr, i+1, -1
+            do 20 j = adr, i+1, -1
 !
-            tsor(j) = tsor(j-1)
-            tsex(j) = tsex(j-1)
-            tror(j) = tror(j-1)
-            trex(j) = trex(j-1)
-            tfor(j) = tfor(j-1)
-            tfex(j) = tfex(j-1)
-            tm1 (j) = tm1 (j-1)
-            tm2 (j) = tm2 (j-1)
+                tsor(j) = tsor(j-1)
+                tsex(j) = tsex(j-1)
+                tror(j) = tror(j-1)
+                trex(j) = trex(j-1)
+                tfor(j) = tfor(j-1)
+                tfex(j) = tfex(j-1)
+                tm1 (j) = tm1 (j-1)
+                tm2 (j) = tm2 (j-1)
 !
-20          continue
+ 20         continue
 !
             tsor(i) = sor
             tsex(i) = sex

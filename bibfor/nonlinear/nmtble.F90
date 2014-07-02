@@ -5,6 +5,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
@@ -85,8 +86,8 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: mmcvca, mmcvfr, mmcvgo
-    logical(kind=1) :: lboucf, lboucg, lboucc
+    aster_logical :: mmcvca, mmcvfr, mmcvgo
+    aster_logical :: lboucf, lboucg, lboucc
     integer :: mmitgo, mmitfr, mmitco
     character(len=4) :: etnewt
     real(kind=8) :: instan
@@ -121,15 +122,15 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 ! --- EVALUATION STATUTS DU CONTACT
 !
-    if (lboucc) then
-        niveau = 1
-        call nmtime(sdtime, 'INI', 'CTCC_CONT')
-        call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call nmctcc(noma  , modele, mate  , sddyna, sderro, &
-                    sdstat, defico, resoco, valinc, solalg, &
-                    mmcvca, instan)
-        call nmtime(sdtime, 'END', 'CTCC_CONT')
-        call nmrinc(sdstat, 'CTCC_CONT')
+        if (lboucc) then
+            niveau = 1
+            call nmtime(sdtime, 'INI', 'CTCC_CONT')
+            call nmtime(sdtime, 'RUN', 'CTCC_CONT')
+            call nmctcc(noma, modele, mate, sddyna, sderro,&
+                        sdstat, defico, resoco, valinc, solalg,&
+                        mmcvca, instan)
+            call nmtime(sdtime, 'END', 'CTCC_CONT')
+            call nmrinc(sdstat, 'CTCC_CONT')
 !
 ! ----- ON CONTINUE LA BOUCLE
 !

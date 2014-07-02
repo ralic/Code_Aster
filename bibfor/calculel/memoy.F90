@@ -1,6 +1,7 @@
 subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                  nbmail, numail)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/celver.h"
 #include "asterfort/digdel.h"
@@ -57,10 +58,10 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     real(kind=8) :: rzero
     character(len=8) :: scal1, scal2
     character(len=19) :: champ1, champ2, ligrel, ligre1, ligre2
-    logical(kind=1) :: first
+    aster_logical :: first
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacelk,   ibid, icoef, idecg1
+    integer :: i, iacelk, ibid, icoef, idecg1
     integer :: idecg2, iel, im, inum
     integer :: k, mode1, mode2, nbgr, nel
     integer, pointer :: liel(:) => null()
@@ -166,9 +167,9 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
 !     ------------------------------------
-    do 10, i = 1,2
-    vr(i) = rzero
-    10 end do
+    do 10 i = 1, 2
+        vr(i) = rzero
+ 10 end do
 !
 ! --- ON MOYENNE :
 !     ------------
@@ -184,11 +185,10 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
         idecg1 = celd1(celd1(4+j)+8)
         idecg2 = celd2(celd2(4+j)+8)
         do 3 , k = 1,nel
-        vr(1) = vr(1) + val1(idecg1+(k-1)*longt1+ncpa- 1) *val2(idecg2+(k-1)*longt2&
-                &+ncpb-1)
+        vr(1) = vr(1) + val1(idecg1+(k-1)*longt1+ncpa- 1) *val2(idecg2+(k-1)*longt2+ncpb-1)
         vr(2) = vr(2) + val2(idecg2+(k-1)*longt2+ncpb- 1)
- 3      continue
- 2      continue
+  3     continue
+  2     continue
         vr(1) = vr(1)/vr(2)
     else
         call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
@@ -212,10 +212,10 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                     vr(2)= vr(2) + val2(idecg2+(k-1)*longt2+&
                     ncpb-1)
                     goto 30
-22              continue
+ 22             continue
                 inum = inum + nel + 1
-20          continue
-30      continue
+ 20         continue
+ 30     continue
         vr(1) = vr(1)/vr(2)
     endif
 !

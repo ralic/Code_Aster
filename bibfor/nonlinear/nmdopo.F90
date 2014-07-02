@@ -19,6 +19,7 @@ subroutine nmdopo(sddyna, method, sdpost)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -66,8 +67,8 @@ subroutine nmdopo(sddyna, method, sdpost)
     integer :: iflamb, imvibr, iret, iocc, nddle, ibid, numord, nsta
     integer :: jpexcl, jpstab
     integer :: ifm, niv
-    logical(kind=1) :: ldyna, lstat, limpl
-    logical(kind=1) :: lflam, lmvib
+    aster_logical :: ldyna, lstat, limpl
+    aster_logical :: lflam, lmvib
     character(len=16) :: option, optmod, optrig, modrig, opmrig
     character(len=16) :: matrig, motfac, motpas, typmat, ngeo, ddlexc
     character(len=16) :: dlstab, sign
@@ -255,7 +256,7 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
         call getvr8(motfac, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=bande,&
                     nbret=iret, isdefault=iarg)
-        if (iret.eq.0) then
+        if (iret .eq. 0) then
             optmod = 'PLUS_PETITE'
         else
             optmod = 'BANDE'

@@ -5,6 +5,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                   nroimp, chanom, sdcarm)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/infniv.h"
@@ -24,7 +25,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     character(len=8) :: nomtyp(*), typech, sdcarm
     character(len=19) :: chanom
     character(len=24) :: ncaimi, ncaimk
-    logical(kind=1) :: exicmp(nbvato)
+    aster_logical :: exicmp(nbvato)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +106,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     character(len=16) :: nomfpg
     character(len=64) :: noprof
 !
-    logical(kind=1) :: exicar, grfidt
+    aster_logical :: exicar, grfidt
     character(len=16), pointer :: tabnofpg(:) => null()
     character(len=16), pointer :: nofpgma(:) => null()
 !
@@ -140,9 +141,9 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
         exicmp(iaux) = .true.
         goto 21
     endif
-2112  continue
-2111  continue
-211  continue
+2112 continue
+2111 continue
+211 continue
     21 end do
 !
 !====
@@ -160,7 +161,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
             nval = nval + 1
             profas(nval) = iaux
         endif
-31      continue
+ 31     continue
 !
 ! 3.2. ==> AVEC FILTRAGE : C'EST LA LISTE DES MAILLES REQUISES ET AVEC
 !          UNE COMPOSANTE VALIDE
@@ -171,7 +172,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
             nval = nval + 1
             profas(nval) = iaux
         endif
-32      continue
+ 32     continue
     endif
 !
 !====
@@ -251,9 +252,9 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                                 nbcou2, nbsec2, nbfib2, nbgrf2, nugrf2)
                     if (nbfib2 .eq. nbfib .and. nbgrf2 .eq. nbgrf) then
                         grfidt = .true.
-                        do 10, igrfi = 1, nbgrf2
-                        if (nugrf2(igrfi) .ne. nugrfi( igrfi)) grfidt = .false.
-10                      continue
+                        do 10 igrfi = 1, nbgrf2
+                            if (nugrf2(igrfi) .ne. nugrfi( igrfi)) grfidt = .false.
+ 10                     continue
                         if (grfidt) then
                             nrimpr = jaux
                             goto 423
@@ -261,8 +262,8 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                     endif
                 endif
             else
-                if (tabnofpg(jaux) .eq. nomfpg .and. zi(adcaii+10*(jaux-1)+3) .eq.&
-                    nbcou .and. zi(adcaii+10*(jaux-1)+4) .eq. nbsec) then
+                if (tabnofpg(jaux) .eq. nomfpg .and. zi(adcaii+10*(jaux-1)+3) .eq. nbcou&
+                    .and. zi(adcaii+10*(jaux-1)+4) .eq. nbsec) then
                     nrimpr = jaux
                     goto 423
                 endif
@@ -274,7 +275,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
             goto 423
         endif
     endif
-421  continue
+421 continue
 !
 ! 4.2.2. ==> ON CREE UNE NOUVELLE IMPRESSION
 !            SI ON DEPASSE LA LONGUEUR RESERVEE, ON DOUBLE
@@ -314,7 +315,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !
 ! 4.2.3. ==> MEMORISATION DE L'IMPRESSION DE CETTE MAILLE
 !            CUMUL DU NOMBRE DE MAILLES POUR CETTE IMPRESSION
-423  continue
+423 continue
 !
     nroimp(ima) = nrimpr
     jaux = adcaii+10*(nrimpr-1)+6
@@ -443,7 +444,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
         jaux = adcaii+10*(iaux-1)
         if (zi(jaux+6) .gt. 0) write (ifm, 8002) nomtyp(zi(jaux+7)), zi(jaux+6), zi(jaux+1),&
                                zi(jaux+2)
-81      continue
+ 81     continue
         write (ifm,8003)
         write (ifm,1001) 'FIN DE IRCMPE'
     endif

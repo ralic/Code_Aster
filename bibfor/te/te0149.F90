@@ -1,5 +1,6 @@
 subroutine te0149(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -57,7 +58,7 @@ subroutine te0149(option, nomte)
     real(kind=8) :: zero, e, nu, rho, valpar, r1, ep1, absmoy, rhos, rhofi
     real(kind=8) :: rhofe, cm, phie, phii
     real(kind=8) :: klv(78), klc(12, 12), efge(12)
-    logical :: okopt
+    aster_logical :: okopt
 !     ------------------------------------------------------------------
     data nomres / 'E', 'NU', 'RHO'/
     data nomref / 'E', 'NU' , 'RHO' , 'RHO_F_IN' , 'RHO_F_EX' ,&

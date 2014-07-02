@@ -1,8 +1,9 @@
 subroutine nthydr(hydrat)
     implicit none
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
-    logical(kind=1) :: hydrat
+    aster_logical :: hydrat
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +36,7 @@ subroutine nthydr(hydrat)
 !
         if (comp(1:9) .eq. 'THER_HYDR') hydrat = .true.
 !
-10  end do
+ 10 end do
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

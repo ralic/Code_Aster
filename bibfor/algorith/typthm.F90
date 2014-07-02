@@ -1,5 +1,5 @@
-subroutine typthm(axi, perman, vf, typvf,&
-                  typmod, ndim)
+subroutine typthm(axi, perman, vf, typvf, typmod,&
+                  ndim)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +35,10 @@ subroutine typthm(axi, perman, vf, typvf,&
     implicit none
 !
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/lxlgut.h"
-    logical(kind=1) :: axi, perman, vf
+    aster_logical :: axi, perman, vf
     integer :: typvf
     integer :: ndim
     character(len=8) :: typmod(2)
@@ -75,7 +76,7 @@ subroutine typthm(axi, perman, vf, typvf,&
     endif
 !
 ! MODELISATIONS SUSHI VOLUMES FINIS
-    if (lteatt('CODMOD','3DM').or.lteatt('CODMOD','2DM')) then
+    if (lteatt('CODMOD','3DM') .or. lteatt('CODMOD','2DM')) then
         vf = .true.
         typvf=2
     else if (lteatt('CODMOD','3AD').or.lteatt('CODMOD','2DA')) then

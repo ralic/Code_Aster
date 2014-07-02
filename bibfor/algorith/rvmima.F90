@@ -1,5 +1,6 @@
 subroutine rvmima(nomres, iocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -62,7 +63,7 @@ subroutine rvmima(nomres, iocc)
     character(len=19) :: knum, champ
     character(len=24) :: nomjv
     character(len=80) :: valk(200)
-    logical(kind=1) :: exist
+    aster_logical :: exist
 !
     data nopano / 'INTITULE', 'CHAM_GD',&
      &              'EXTREMA', 'NOEUD', 'CMP', 'VALE' /

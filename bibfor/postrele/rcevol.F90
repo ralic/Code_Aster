@@ -1,5 +1,6 @@
 subroutine rcevol(typtab, nommat, symax, nbopt, option)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/getvtx.h"
@@ -46,8 +47,8 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
     integer :: i, j, n1, nbinti, jinti, nbtran
     real(kind=8) :: para(3), sm
-    logical(kind=1) :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
-    character(len=8) ::  typeke
+    aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
+    character(len=8) :: typeke
     character(len=16) :: kinti
     character(len=24) :: cinst, csili, csiex, csno, csne, csneo, csnee, cspo
     character(len=24) :: cspe, cfao, cfae, cnoc, cresu, cresp, intitu, cspto
@@ -119,7 +120,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
         else if (option(i) .eq. 'AMORCAGE') then
             lamorc = .true.
         endif
-10  end do
+ 10 end do
 !
     if (lamorc .and. (lpmpb .or. lsn .or. lfatig)) then
         call utmess('F', 'POSTRCCM_3')
@@ -243,12 +244,12 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
                 call jedetr(cspte)
             endif
 !
-110      continue
+110     continue
 !
-100  end do
+100 end do
 !
     call jedetr(intitu)
 !
-9999  continue
+9999 continue
 !
 end subroutine

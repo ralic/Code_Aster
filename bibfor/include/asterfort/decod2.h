@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine decod2(rec, irec, ifield, itype, ilu,&
                       rlu, trouve)
@@ -24,6 +26,6 @@ interface
         integer :: itype
         integer :: ilu
         real(kind=8) :: rlu
-        logical(kind=1) :: trouve
+        aster_logical :: trouve
     end subroutine decod2
 end interface

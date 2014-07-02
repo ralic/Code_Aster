@@ -4,6 +4,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 ! aslint: disable=W1501
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/getvr8.h"
@@ -30,7 +31,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     character(len=8) :: nomcp(*), repere, courbe
     integer :: nbcpnc, nbcpcd, codir
     real(kind=8) :: valdir(*), vec1(*), vec2(*)
-    logical(kind=1) :: tridim
+    aster_logical :: tridim
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +89,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     integer :: nbpt, lpadr, lpnbn, apnbnq, avaleq, apadrq, anocpq, apncoe
     integer :: apnbne, avalee, apadre, idecq, idece, nvp, n, nboc
     integer :: adre, adrq, ll, i, j, k, ioc, apcmpe, anumcp, iadr, acpgd, apnspe
-    integer ::     ipadr, apnspq
+    integer :: ipadr, apnspq
     integer :: kd1, kd2, kd3, kd4, kd5, kd6, idec, ny, il
     integer :: l, lnq, lne, m, mder, nbadrq, nbnd, nc, num, pt, apncoq
     integer :: nperm, itype, iordre, ifm, niv
@@ -273,9 +274,9 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     else
         call jelira(npnbne, 'LONMAX', lpnbn)
         call jeveuo(npnbne, 'L', apnbne)
-        do 10,i = 1,lpnbn,1
-        nbpt = nbpt + zi(apnbne+i-1)
-10      continue
+        do 10 i = 1, lpnbn, 1
+            nbpt = nbpt + zi(apnbne+i-1)
+ 10     continue
         call jeveuo(npncoe, 'L', apncoe)
         call jeveuo(npnspe, 'L', apnspe)
         icoef = zi(apncoe+1-1)*zi(apnspe+1-1)
@@ -289,26 +290,26 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         call wkvect('&&RVCALQ.CHNO.PNSP', 'V V I', lpadr, apnspe)
         call wkvect('&&RVCALQ.CHNO.PNCO', 'V V I', lpadr, apncoe)
         call wkvect('&&RVCALQ.CHNO.PNBN', 'V V I', lpadr, apnbne)
-        do 20,i = 1,lpadr,1
-        zi(apadrq+i-1) = 1 + (i-1)*lnq
-        zi(apnbnq+i-1) = 1
-        zi(apncoq+i-1) = 1
-        zi(apnspq+i-1) = 1
-        zi(apnbne+i-1) = 1
-        zi(apncoe+i-1) = 1
-        zi(apnspe+i-1) = 1
-20      continue
+        do 20 i = 1, lpadr, 1
+            zi(apadrq+i-1) = 1 + (i-1)*lnq
+            zi(apnbnq+i-1) = 1
+            zi(apncoq+i-1) = 1
+            zi(apnspq+i-1) = 1
+            zi(apnbne+i-1) = 1
+            zi(apncoe+i-1) = 1
+            zi(apnspe+i-1) = 1
+ 20     continue
     else
         zi(apadrq+1-1) = 1
-        do 30,i = 1,lpnbn - 1,1
-        nbco = zi(apncoe+i-1)
-        nbsp = zi(apnspe+i-1)
-        nbnd = zi(apnbne+i-1)
-        zi(apnbnq+i-1) = nbnd
-        zi(apadrq+i) = zi(apadrq+i-1) + lnq*nbnd*nbsp*nbco
-        zi(apncoq+i-1) = nbco
-        zi(apnspq+i-1) = nbsp
-30      continue
+        do 30 i = 1, lpnbn - 1, 1
+            nbco = zi(apncoe+i-1)
+            nbsp = zi(apnspe+i-1)
+            nbnd = zi(apnbne+i-1)
+            zi(apnbnq+i-1) = nbnd
+            zi(apadrq+i) = zi(apadrq+i-1) + lnq*nbnd*nbsp*nbco
+            zi(apncoq+i-1) = nbco
+            zi(apnspq+i-1) = nbsp
+ 30     continue
         zi(apnbnq+lpnbn-1) = zi(apnbne+lpnbn-1)
         zi(apncoq+lpnbn-1) = zi(apncoe+lpnbn-1)
         zi(apnspq+lpnbn-1) = zi(apnspe+lpnbn-1)
@@ -317,171 +318,172 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     k1 = quant(1:1)
     if (k1 .eq. 'I') then
         if (tq .eq. 'T3') then
-            do 70,ipadr = 1,lpadr,1
-            idece = zi(apadre+ipadr-1)
-            idecq = zi(apadrq+ipadr-1)
-            nbsp = zi(apnspe+ipadr-1)
-            nbco = zi(apncoe+ipadr-1)
-            nbnd = zi(apnbne+ipadr-1)
-            tnde = 6*nbsp
-            tndq = 4*nbsp
-            tcoq = tndq*nbnd
-            tcoe = tnde*nbnd
-            do 60,ico = 1,nbco,1
-            adre = (ico-1)*tcoe
-            adrq = (ico-1)*tcoq
-            do 50,ind = 1,nbnd,1
-            do 40,isp = 1,nbsp,1
-            call rvinvt(zr(avalee+idece-1+adre+ (isp- 1)*6), zr(avaleq+idecq-1+adrq+ (isp-1)*4),&
-                        zr(avaleq+idecq-1+adrq+ (isp-1)*4+1),&
-                        zr(avaleq+idecq-1+adrq+ (isp-1)*4+2),&
-                        zr(avaleq+idecq-1+adrq+ (isp-1)*4+3))
-40          continue
-            adre = adre + tnde
-            adrq = adrq + tndq
-50          continue
-60          continue
-70          continue
+            do 70 ipadr = 1, lpadr, 1
+                idece = zi(apadre+ipadr-1)
+                idecq = zi(apadrq+ipadr-1)
+                nbsp = zi(apnspe+ipadr-1)
+                nbco = zi(apncoe+ipadr-1)
+                nbnd = zi(apnbne+ipadr-1)
+                tnde = 6*nbsp
+                tndq = 4*nbsp
+                tcoq = tndq*nbnd
+                tcoe = tnde*nbnd
+                do 60 ico = 1, nbco, 1
+                    adre = (ico-1)*tcoe
+                    adrq = (ico-1)*tcoq
+                    do 50 ind = 1, nbnd, 1
+                        do 40 isp = 1, nbsp, 1
+                            call rvinvt(zr(avalee+idece-1+adre+ (isp- 1)*6),&
+                                        zr(avaleq+idecq-1+adrq+ (isp-1)*4),&
+                                        zr(avaleq+idecq-1+adrq+ (isp-1)*4+1),&
+                                        zr(avaleq+idecq-1+adrq+ (isp-1)*4+2),&
+                                        zr(avaleq+idecq-1+adrq+ (isp-1)*4+3))
+ 40                     continue
+                        adre = adre + tnde
+                        adrq = adrq + tndq
+ 50                 continue
+ 60             continue
+ 70         continue
         else
-            do 110,ipadr = 1,lpadr,1
-            idece = zi(apadre+ipadr-1)
-            idecq = zi(apadrq+ipadr-1)
-            nbsp = zi(apnspe+ipadr-1)
-            nbco = zi(apncoe+ipadr-1)
-            nbnd = zi(apnbne+ipadr-1)
-            tnde = lne*nbsp
-            tndq = lnq*nbsp
-            tcoq = tndq*nbnd
-            tcoe = tnde*nbnd
-            do 100,ico = 1,nbco,1
-            adre = (ico-1)*tcoe
-            adrq = (ico-1)*tcoq
-            do 90,ind = 1,zi(apnbnq+ipadr-1),1
-            do 80,isp = 1,nbsp,1
-            if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
-                a = 0.d0
-            else
-                a = zr(avalee+idece-1+adre+ (isp-1)*6)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+1) .eq. r8vide()) then
-                b = 0.d0
-            else
-                b = zr(avalee+idece-1+adre+ (isp-1)*6+ 1)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+2) .eq. r8vide()) then
-                c = 0.d0
-            else
-                c = zr(avalee+idece-1+adre+ (isp-1)*6+ 2)
-            endif
-            tr = a + b
-            det = a*b - c*c
-            tx = max(abs(a),abs(b),abs(c))
-            if (tx .eq. zero) then
-                vp1 = zero
-                vp2 = zero
-                vm = zero
-            else
-                tx = 0.5d0* (a-b)
-                if (abs(tx) .gt. abs(c)) then
-                    aux = c/tx
-                    aux = tx*sqrt(1.0d0+aux*aux)
-                else
-                    aux = tx/c
-                    aux = c*sqrt(1.0d0+aux*aux)
-                endif
-                vp1 = 0.5d0*tr + aux
-                vp2 = 0.5d0*tr - aux
-                a = a - tr/3.0d0
-                b = b - tr/3.0d0
-                c = sqrt(2.0d0)*c
-                if (abs(a) .gt. max(abs(b),abs(c))) then
-                    aux = abs(a)
-                    tx = b/a
-                    ty = c/a
-                    else if (abs(b).gt.max(abs(a),abs(c)))&
+            do 110 ipadr = 1, lpadr, 1
+                idece = zi(apadre+ipadr-1)
+                idecq = zi(apadrq+ipadr-1)
+                nbsp = zi(apnspe+ipadr-1)
+                nbco = zi(apncoe+ipadr-1)
+                nbnd = zi(apnbne+ipadr-1)
+                tnde = lne*nbsp
+                tndq = lnq*nbsp
+                tcoq = tndq*nbnd
+                tcoe = tnde*nbnd
+                do 100 ico = 1, nbco, 1
+                    adre = (ico-1)*tcoe
+                    adrq = (ico-1)*tcoq
+                    do 90 ind = 1, zi(apnbnq+ipadr-1), 1
+                        do 80 isp = 1, nbsp, 1
+                            if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
+                                a = 0.d0
+                            else
+                                a = zr(avalee+idece-1+adre+ (isp-1)*6)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+1) .eq. r8vide()) then
+                                b = 0.d0
+                            else
+                                b = zr(avalee+idece-1+adre+ (isp-1)*6+ 1)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+2) .eq. r8vide()) then
+                                c = 0.d0
+                            else
+                                c = zr(avalee+idece-1+adre+ (isp-1)*6+ 2)
+                            endif
+                            tr = a + b
+                            det = a*b - c*c
+                            tx = max(abs(a),abs(b),abs(c))
+                            if (tx .eq. zero) then
+                                vp1 = zero
+                                vp2 = zero
+                                vm = zero
+                            else
+                                tx = 0.5d0* (a-b)
+                                if (abs(tx) .gt. abs(c)) then
+                                    aux = c/tx
+                                    aux = tx*sqrt(1.0d0+aux*aux)
+                                else
+                                    aux = tx/c
+                                    aux = c*sqrt(1.0d0+aux*aux)
+                                endif
+                                vp1 = 0.5d0*tr + aux
+                                vp2 = 0.5d0*tr - aux
+                                a = a - tr/3.0d0
+                                b = b - tr/3.0d0
+                                c = sqrt(2.0d0)*c
+                                if (abs(a) .gt. max(abs(b),abs(c))) then
+                                    aux = abs(a)
+                                    tx = b/a
+                                    ty = c/a
+                                    else if (abs(b).gt.max(abs(a),abs(c)))&
                                 then
-                    aux = abs(b)
-                    tx = a/b
-                    ty = c/b
-                else
-                    aux = abs(c)
-                    tx = a/c
-                    ty = b/c
-                endif
-                vm = sqrt((1.0d0+tx*tx+ty*ty)*3.0d0/ 2.0d0)
-                vm = aux*vm
-            endif
-            c = abs(vp1-vp2)
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8) = vm
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+1) = c
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+2) = tr
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+3) =&
+                                    aux = abs(b)
+                                    tx = a/b
+                                    ty = c/b
+                                else
+                                    aux = abs(c)
+                                    tx = a/c
+                                    ty = b/c
+                                endif
+                                vm = sqrt((1.0d0+tx*tx+ty*ty)*3.0d0/ 2.0d0)
+                                vm = aux*vm
+                            endif
+                            c = abs(vp1-vp2)
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8) = vm
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+1) = c
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+2) = tr
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+3) =&
                             det
-            if (zr(avalee+idece-1+adre+(isp-1)*6+3) .eq. r8vide()) then
-                a = 0.d0
-            else
-                a = zr(avalee+idece-1+adre+ (isp-1)*6+ 3)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+4) .eq. r8vide()) then
-                b = 0.d0
-            else
-                b = zr(avalee+idece-1+adre+ (isp-1)*6+ 4)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+5) .eq. r8vide()) then
-                c = 0.d0
-            else
-                c = zr(avalee+idece-1+adre+ (isp-1)*6+ 5)
-            endif
-            tr = a + b
-            det = a*b - c*c
-            tx = max(abs(a),abs(b),abs(c))
-            if (tx .eq. zero) then
-                vp1 = zero
-                vp2 = zero
-                vm = zero
-            else
-                tx = 0.5d0* (a-b)
-                if (abs(tx) .gt. abs(c)) then
-                    aux = c/tx
-                    aux = tx*sqrt(1.0d0+aux*aux)
-                else
-                    aux = tx/c
-                    aux = c*sqrt(1.0d0+aux*aux)
-                endif
-                vp1 = 0.5d0*tr + aux
-                vp2 = 0.5d0*tr - aux
-                a = a - tr/3.0d0
-                b = b - tr/3.0d0
-                c = sqrt(2.0d0)*c
-                if (abs(a) .gt. max(abs(b),abs(c))) then
-                    aux = abs(a)
-                    tx = b/a
-                    ty = c/a
-                    else if (abs(b).gt.max(abs(a),abs(c)))&
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+3) .eq. r8vide()) then
+                                a = 0.d0
+                            else
+                                a = zr(avalee+idece-1+adre+ (isp-1)*6+ 3)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+4) .eq. r8vide()) then
+                                b = 0.d0
+                            else
+                                b = zr(avalee+idece-1+adre+ (isp-1)*6+ 4)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+5) .eq. r8vide()) then
+                                c = 0.d0
+                            else
+                                c = zr(avalee+idece-1+adre+ (isp-1)*6+ 5)
+                            endif
+                            tr = a + b
+                            det = a*b - c*c
+                            tx = max(abs(a),abs(b),abs(c))
+                            if (tx .eq. zero) then
+                                vp1 = zero
+                                vp2 = zero
+                                vm = zero
+                            else
+                                tx = 0.5d0* (a-b)
+                                if (abs(tx) .gt. abs(c)) then
+                                    aux = c/tx
+                                    aux = tx*sqrt(1.0d0+aux*aux)
+                                else
+                                    aux = tx/c
+                                    aux = c*sqrt(1.0d0+aux*aux)
+                                endif
+                                vp1 = 0.5d0*tr + aux
+                                vp2 = 0.5d0*tr - aux
+                                a = a - tr/3.0d0
+                                b = b - tr/3.0d0
+                                c = sqrt(2.0d0)*c
+                                if (abs(a) .gt. max(abs(b),abs(c))) then
+                                    aux = abs(a)
+                                    tx = b/a
+                                    ty = c/a
+                                    else if (abs(b).gt.max(abs(a),abs(c)))&
                                 then
-                    aux = abs(b)
-                    tx = a/b
-                    ty = c/b
-                else
-                    aux = abs(c)
-                    tx = a/c
-                    ty = b/c
-                endif
-                vm = sqrt((1.0d0+tx*tx+ty*ty)*3.0d0/ 2.0d0)
-                vm = aux*vm
-            endif
-            c = abs(vp1-vp2)
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+4) = vm
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+5) = c
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+6) = tr
-            zr(avaleq+idecq-1+adrq+ (isp-1)*8+7) =&
+                                    aux = abs(b)
+                                    tx = a/b
+                                    ty = c/b
+                                else
+                                    aux = abs(c)
+                                    tx = a/c
+                                    ty = b/c
+                                endif
+                                vm = sqrt((1.0d0+tx*tx+ty*ty)*3.0d0/ 2.0d0)
+                                vm = aux*vm
+                            endif
+                            c = abs(vp1-vp2)
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+4) = vm
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+5) = c
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+6) = tr
+                            zr(avaleq+idecq-1+adrq+ (isp-1)*8+7) =&
                             det
-80          continue
-            adre = adre + tnde
-            adrq = adrq + tndq
-90          continue
-100          continue
-110          continue
+ 80                     continue
+                        adre = adre + tnde
+                        adrq = adrq + tndq
+ 90                 continue
+100             continue
+110         continue
         endif
     else if (k1.eq.'E') then
         if (tq .eq. 'T3') then
@@ -490,285 +492,285 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             toldyn = 1.d-2
             itype = 0
             iordre = 0
-            do 150,ipadr = 1,lpadr,1
-            idece = zi(apadre+ipadr-1)
-            idecq = zi(apadrq+ipadr-1)
-            nbsp = zi(apnspe+ipadr-1)
-            nbco = zi(apncoe+ipadr-1)
-            nbnd = zi(apnbne+ipadr-1)
-            tnde = lne*nbsp
-            tndq = lnq*nbsp
-            tcoq = tndq*nbnd
-            tcoe = tnde*nbnd
-            do 140,ico = 1,nbco,1
-            adre = (ico-1)*tcoe
-            adrq = (ico-1)*tcoq
-            do 130,ind = 1,zi(apnbnq+ipadr-1),1
-            do 120,isp = 1,nbsp,1
-            if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
-                ar(1) = 0.d0
-            else
-                ar(1) = zr(avalee+idece-1+adre+(isp-1) *6)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+3) .eq. r8vide()) then
-                ar(2) = 0.d0
-            else
-                ar(2) = zr(avalee+idece-1+adre+(isp-1) *6+3)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+4) .eq. r8vide()) then
-                ar(3) = 0.d0
-            else
-                ar(3) = zr(avalee+idece-1+adre+(isp-1) *6+4)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+1) .eq. r8vide()) then
-                ar(4) = 0.d0
-            else
-                ar(4) = zr(avalee+idece-1+adre+(isp-1) *6+1)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+5) .eq. r8vide()) then
-                ar(5) = 0.d0
-            else
-                ar(5) = zr(avalee+idece-1+adre+(isp-1) *6+5)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+2) .eq. r8vide()) then
-                ar(6) = 0.d0
-            else
-                ar(6) = zr(avalee+idece-1+adre+(isp-1) *6+2)
-            endif
-            br(1) = 1.d0
-            br(2) = 0.d0
-            br(3) = 0.d0
-            br(4) = 1.d0
-            br(5) = 0.d0
-            br(6) = 1.d0
-            call jacobi(nvp, nperm, tol, toldyn, ar,&
-                        br, vecpro, valpro, jacaux, nitjac,&
-                        itype, iordre)
-            indice = avaleq + idecq - 1 + adrq + (isp- 1)*lnq
-            zr(indice) = valpro(1)
-            zr(indice+1) = valpro(2)
-            zr(indice+2) = valpro(3)
-            zr(indice+3) = vecpro(1,1)
-            zr(indice+4) = vecpro(2,1)
-            zr(indice+5) = vecpro(3,1)
-            zr(indice+6) = vecpro(1,2)
-            zr(indice+7) = vecpro(2,2)
-            zr(indice+8) = vecpro(3,2)
-            zr(indice+9) = vecpro(1,3)
-            zr(indice+10) = vecpro(2,3)
-            zr(indice+11) = vecpro(3,3)
-120          continue
-            adre = adre + tnde
-            adrq = adrq + tndq
-130          continue
-140          continue
-150          continue
+            do 150 ipadr = 1, lpadr, 1
+                idece = zi(apadre+ipadr-1)
+                idecq = zi(apadrq+ipadr-1)
+                nbsp = zi(apnspe+ipadr-1)
+                nbco = zi(apncoe+ipadr-1)
+                nbnd = zi(apnbne+ipadr-1)
+                tnde = lne*nbsp
+                tndq = lnq*nbsp
+                tcoq = tndq*nbnd
+                tcoe = tnde*nbnd
+                do 140 ico = 1, nbco, 1
+                    adre = (ico-1)*tcoe
+                    adrq = (ico-1)*tcoq
+                    do 130 ind = 1, zi(apnbnq+ipadr-1), 1
+                        do 120 isp = 1, nbsp, 1
+                            if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
+                                ar(1) = 0.d0
+                            else
+                                ar(1) = zr(avalee+idece-1+adre+(isp-1) *6)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+3) .eq. r8vide()) then
+                                ar(2) = 0.d0
+                            else
+                                ar(2) = zr(avalee+idece-1+adre+(isp-1) *6+3)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+4) .eq. r8vide()) then
+                                ar(3) = 0.d0
+                            else
+                                ar(3) = zr(avalee+idece-1+adre+(isp-1) *6+4)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+1) .eq. r8vide()) then
+                                ar(4) = 0.d0
+                            else
+                                ar(4) = zr(avalee+idece-1+adre+(isp-1) *6+1)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+5) .eq. r8vide()) then
+                                ar(5) = 0.d0
+                            else
+                                ar(5) = zr(avalee+idece-1+adre+(isp-1) *6+5)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+2) .eq. r8vide()) then
+                                ar(6) = 0.d0
+                            else
+                                ar(6) = zr(avalee+idece-1+adre+(isp-1) *6+2)
+                            endif
+                            br(1) = 1.d0
+                            br(2) = 0.d0
+                            br(3) = 0.d0
+                            br(4) = 1.d0
+                            br(5) = 0.d0
+                            br(6) = 1.d0
+                            call jacobi(nvp, nperm, tol, toldyn, ar,&
+                                        br, vecpro, valpro, jacaux, nitjac,&
+                                        itype, iordre)
+                            indice = avaleq + idecq - 1 + adrq + (isp- 1)*lnq
+                            zr(indice) = valpro(1)
+                            zr(indice+1) = valpro(2)
+                            zr(indice+2) = valpro(3)
+                            zr(indice+3) = vecpro(1,1)
+                            zr(indice+4) = vecpro(2,1)
+                            zr(indice+5) = vecpro(3,1)
+                            zr(indice+6) = vecpro(1,2)
+                            zr(indice+7) = vecpro(2,2)
+                            zr(indice+8) = vecpro(3,2)
+                            zr(indice+9) = vecpro(1,3)
+                            zr(indice+10) = vecpro(2,3)
+                            zr(indice+11) = vecpro(3,3)
+120                     continue
+                        adre = adre + tnde
+                        adrq = adrq + tndq
+130                 continue
+140             continue
+150         continue
         else
-            do 190,ipadr = 1,lpadr,1
-            idece = zi(apadre+ipadr-1)
-            idecq = zi(apadrq+ipadr-1)
-            nbsp = zi(apnspe+ipadr-1)
-            nbco = zi(apncoe+ipadr-1)
-            nbnd = zi(apnbne+ipadr-1)
-            tnde = lne*nbsp
-            tndq = lnq*nbsp
-            tcoq = tndq*nbnd
-            tcoe = tnde*nbnd
-            do 180,ico = 1,nbco,1
-            adre = (ico-1)*tcoe
-            adrq = (ico-1)*tcoq
-            do 170,ind = 1,zi(apnbnq+ipadr-1),1
-            do 160,isp = 1,nbsp
-            if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
-                a = 0.d0
-            else
-                a = zr(avalee+idece-1+adre+(isp-1)*6)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+1) .eq. r8vide()) then
-                b = 0.d0
-            else
-                b = zr(avalee+idece-1+adre+(isp-1)*6+ 1)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+2) .eq. r8vide()) then
-                c = 0.d0
-            else
-                c = zr(avalee+idece-1+adre+(isp-1)*6+ 2)
-            endif
-            tr = max(abs(a),abs(b),abs(c))
-            if (tr .eq. zero) then
-                vp1 = zero
-                vp2 = zero
-            else
-                tr = 0.5d0* (a-b)
-                if (abs(tr) .gt. abs(c)) then
-                    aux = c/tr
-                    aux = tr*sqrt(1.0d0+aux*aux)
-                else
-                    aux = tr/c
-                    aux = c*sqrt(1.0d0+aux*aux)
-                endif
-                vp1 = 0.5d0* (a+b) + aux
-                vp2 = 0.5d0* (a+b) - aux
-            endif
-            indice = avaleq + idecq - 1 + adrq + (isp- 1)*lnq
-            zr(indice) = vp1
-            zr(indice+1) = vp2
-            zr(indice+2) = 1.d0
-            zr(indice+3) = 0.d0
-            if (zr(avalee+idece-1+adre+(isp-1)*6+3) .eq. r8vide()) then
-                a = 0.d0
-            else
-                a = zr(avalee+idece-1+adre+(isp-1)*6+ 3)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+4) .eq. r8vide()) then
-                b = 0.d0
-            else
-                b = zr(avalee+idece-1+adre+(isp-1)*6+ 4)
-            endif
-            if (zr(avalee+idece-1+adre+(isp-1)*6+5) .eq. r8vide()) then
-                c = 0.d0
-            else
-                c = zr(avalee+idece-1+adre+(isp-1)*6+ 5)
-            endif
-            tr = max(abs(a),abs(b),abs(c))
-            if (tr .eq. zero) then
-                vp1 = zero
-                vp2 = zero
-            else
-                tr = 0.5d0* (a-b)
-                if (abs(tr) .gt. abs(c)) then
-                    aux = c/tr
-                    aux = tr*sqrt(1.0d0+aux*aux)
-                else
-                    aux = tr/c
-                    aux = c*sqrt(1.0d0+aux*aux)
-                endif
-                vp1 = 0.5d0* (a+b) + aux
-                vp2 = 0.5d0* (a+b) - aux
-            endif
-            zr(indice+4) = vp1
-            zr(indice+5) = vp2
-            zr(indice+6) = 0.d0
-            zr(indice+7) = 1.d0
-160          continue
-            adre = adre + tnde
-            adrq = adrq + tndq
-170          continue
-180          continue
-190          continue
+            do 190 ipadr = 1, lpadr, 1
+                idece = zi(apadre+ipadr-1)
+                idecq = zi(apadrq+ipadr-1)
+                nbsp = zi(apnspe+ipadr-1)
+                nbco = zi(apncoe+ipadr-1)
+                nbnd = zi(apnbne+ipadr-1)
+                tnde = lne*nbsp
+                tndq = lnq*nbsp
+                tcoq = tndq*nbnd
+                tcoe = tnde*nbnd
+                do 180 ico = 1, nbco, 1
+                    adre = (ico-1)*tcoe
+                    adrq = (ico-1)*tcoq
+                    do 170 ind = 1, zi(apnbnq+ipadr-1), 1
+                        do 160 isp = 1, nbsp
+                            if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
+                                a = 0.d0
+                            else
+                                a = zr(avalee+idece-1+adre+(isp-1)*6)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+1) .eq. r8vide()) then
+                                b = 0.d0
+                            else
+                                b = zr(avalee+idece-1+adre+(isp-1)*6+ 1)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+2) .eq. r8vide()) then
+                                c = 0.d0
+                            else
+                                c = zr(avalee+idece-1+adre+(isp-1)*6+ 2)
+                            endif
+                            tr = max(abs(a),abs(b),abs(c))
+                            if (tr .eq. zero) then
+                                vp1 = zero
+                                vp2 = zero
+                            else
+                                tr = 0.5d0* (a-b)
+                                if (abs(tr) .gt. abs(c)) then
+                                    aux = c/tr
+                                    aux = tr*sqrt(1.0d0+aux*aux)
+                                else
+                                    aux = tr/c
+                                    aux = c*sqrt(1.0d0+aux*aux)
+                                endif
+                                vp1 = 0.5d0* (a+b) + aux
+                                vp2 = 0.5d0* (a+b) - aux
+                            endif
+                            indice = avaleq + idecq - 1 + adrq + (isp- 1)*lnq
+                            zr(indice) = vp1
+                            zr(indice+1) = vp2
+                            zr(indice+2) = 1.d0
+                            zr(indice+3) = 0.d0
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+3) .eq. r8vide()) then
+                                a = 0.d0
+                            else
+                                a = zr(avalee+idece-1+adre+(isp-1)*6+ 3)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+4) .eq. r8vide()) then
+                                b = 0.d0
+                            else
+                                b = zr(avalee+idece-1+adre+(isp-1)*6+ 4)
+                            endif
+                            if (zr(avalee+idece-1+adre+(isp-1)*6+5) .eq. r8vide()) then
+                                c = 0.d0
+                            else
+                                c = zr(avalee+idece-1+adre+(isp-1)*6+ 5)
+                            endif
+                            tr = max(abs(a),abs(b),abs(c))
+                            if (tr .eq. zero) then
+                                vp1 = zero
+                                vp2 = zero
+                            else
+                                tr = 0.5d0* (a-b)
+                                if (abs(tr) .gt. abs(c)) then
+                                    aux = c/tr
+                                    aux = tr*sqrt(1.0d0+aux*aux)
+                                else
+                                    aux = tr/c
+                                    aux = c*sqrt(1.0d0+aux*aux)
+                                endif
+                                vp1 = 0.5d0* (a+b) + aux
+                                vp2 = 0.5d0* (a+b) - aux
+                            endif
+                            zr(indice+4) = vp1
+                            zr(indice+5) = vp2
+                            zr(indice+6) = 0.d0
+                            zr(indice+7) = 1.d0
+160                     continue
+                        adre = adre + tnde
+                        adrq = adrq + tndq
+170                 continue
+180             continue
+190         continue
         endif
     else if (quant(1:7).eq.'TRACE_D') then
         if (docu .eq. 'CHLM') then
-            do 230,ipadr = 1,lpadr,1
-            idece = zi(apadre+ipadr-1)
-            idecq = zi(apadrq+ipadr-1)
-            nbsp = zi(apnspe+ipadr-1)
-            nbco = zi(apncoe+ipadr-1)
-            nbnd = zi(apnbne+ipadr-1)
-            tnde = lne*nbsp
-            tndq = lnq*nbsp
-            tcoq = tndq*nbnd
-            tcoe = tnde*nbnd
-            do 220,ico = 1,nbco,1
-            adre = (ico-1)*tcoe
-            adrq = (ico-1)*tcoq
-            do 210,ind = 1,zi(apnbnq+ipadr-1),1
-            do 200,isp = 1,nbsp,1
-            call rvpstd(zr(avalee+idece-1+adre+ (isp- 1)*lne), tq, codir, valdir,&
-                        zr(avaleq+idecq- 1+adrq+ (isp- 1)*lnq))
-200          continue
-            adre = adre + tnde
-            adrq = adrq + tndq
-210          continue
-220          continue
-230          continue
+            do 230 ipadr = 1, lpadr, 1
+                idece = zi(apadre+ipadr-1)
+                idecq = zi(apadrq+ipadr-1)
+                nbsp = zi(apnspe+ipadr-1)
+                nbco = zi(apncoe+ipadr-1)
+                nbnd = zi(apnbne+ipadr-1)
+                tnde = lne*nbsp
+                tndq = lnq*nbsp
+                tcoq = tndq*nbnd
+                tcoe = tnde*nbnd
+                do 220 ico = 1, nbco, 1
+                    adre = (ico-1)*tcoe
+                    adrq = (ico-1)*tcoq
+                    do 210 ind = 1, zi(apnbnq+ipadr-1), 1
+                        do 200 isp = 1, nbsp, 1
+                            call rvpstd(zr(avalee+idece-1+adre+ (isp- 1)*lne), tq, codir, valdir,&
+                                        zr(avaleq+idecq- 1+adrq+ (isp- 1)*lnq))
+200                     continue
+                        adre = adre + tnde
+                        adrq = adrq + tndq
+210                 continue
+220             continue
+230         continue
         else
-            do 240,ipadr = 1,lpadr,1
-            idece = zi(apadre+ipadr-1)
-            idecq = zi(apadrq+ipadr-1)
-            nbnd = zi(apnbne+ipadr-1)
-            call rvpstd(zr(avalee+idece-1), tq, codir, valdir, zr(avaleq+idecq-1))
-240          continue
+            do 240 ipadr = 1, lpadr, 1
+                idece = zi(apadre+ipadr-1)
+                idecq = zi(apadrq+ipadr-1)
+                nbnd = zi(apnbne+ipadr-1)
+                call rvpstd(zr(avalee+idece-1), tq, codir, valdir, zr(avaleq+idecq-1))
+240         continue
         endif
 !
     else if (quant(1:7).eq.'TRACE_N') then
         call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
         if (docu .eq. 'CHNO') then
             call jelira(npadrq, 'LONMAX', l)
-            do 250,n = 1,l,1
-            idece = zi(apadre+n-1)
-            idecq = zi(apadrq+n-1)
-            v2(1) = vec2(2*(n-1)+1)
-            v2(2) = vec2(2*(n-1)+2)
-            call rvpstd(zr(avalee+idece-1), tq, 4, v2, zr(avaleq+ idecq-1))
-250          continue
+            do 250 n = 1, l, 1
+                idece = zi(apadre+n-1)
+                idecq = zi(apadrq+n-1)
+                v2(1) = vec2(2*(n-1)+1)
+                v2(2) = vec2(2*(n-1)+2)
+                call rvpstd(zr(avalee+idece-1), tq, 4, v2, zr(avaleq+ idecq-1))
+250         continue
         else
             if (docul .eq. 'LSTN') then
                 call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
-                do 290,m = 1,l,1
-                idece = zi(apadre+m-1)
-                idecq = zi(apadrq+m-1)
-                nbsp = zi(apnspe+m-1)
-                nbco = zi(apncoe+m-1)
-                nbnd = zi(apnbne+m-1)
-                tnde = lne*nbsp
-                tndq = lnq*nbsp
-                tcoq = tndq*nbnd
-                tcoe = tnde*nbnd
-                v2(1) = vec2(2*(m-1)+1)
-                v2(2) = vec2(2*(m-1)+2)
-                do 280,ico = 1,nbco,1
-                adre = (ico-1)*tcoe
-                adrq = (ico-1)*tcoq
-                do 270,ind = 1,zi(apnbnq+m-1),1
-                do 260,isp = 1,nbsp,1
-                call rvpstd(zr(avalee+idece-1+adre+( isp-1)*lne), tq, 4, v2,&
-                            zr(avaleq+idecq- 1+adrq+(isp-1)*lnq))
-260              continue
-                adre = adre + tnde
-                adrq = adrq + tndq
-270              continue
-280              continue
-290              continue
+                do 290 m = 1, l, 1
+                    idece = zi(apadre+m-1)
+                    idecq = zi(apadrq+m-1)
+                    nbsp = zi(apnspe+m-1)
+                    nbco = zi(apncoe+m-1)
+                    nbnd = zi(apnbne+m-1)
+                    tnde = lne*nbsp
+                    tndq = lnq*nbsp
+                    tcoq = tndq*nbnd
+                    tcoe = tnde*nbnd
+                    v2(1) = vec2(2*(m-1)+1)
+                    v2(2) = vec2(2*(m-1)+2)
+                    do 280 ico = 1, nbco, 1
+                        adre = (ico-1)*tcoe
+                        adrq = (ico-1)*tcoq
+                        do 270 ind = 1, zi(apnbnq+m-1), 1
+                            do 260 isp = 1, nbsp, 1
+                                call rvpstd(zr(avalee+idece-1+adre+( isp-1)*lne), tq, 4, v2,&
+                                            zr(avaleq+idecq- 1+adrq+(isp-1)*lnq))
+260                         continue
+                            adre = adre + tnde
+                            adrq = adrq + tndq
+270                     continue
+280                 continue
+290             continue
             else
                 mder = 0
-                do 330,ioc = 1,nboc,1
-                call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', l)
-                do 320,m = mder + 1,mder + l - 1,1
-                n = m + ioc - 1
-                idece = zi(apadre+m-1)
-                idecq = zi(apadrq+m-1)
-                nbsp = zi(apnspe+m-1)
-                nbco = zi(apncoe+m-1)
-                nbnd = zi(apnbne+m-1)
-                tnde = lne*nbsp
-                tndq = lnq*nbsp
-                tcoq = tndq*nbnd
-                tcoe = tnde*nbnd
-                v2(1) = vec2(2*(m-1)+1)
-                v2(2) = vec2(2*(m-1)+2)
-                do 310,ico = 1,nbco,1
-                adre = (ico-1)*tcoe
-                adrq = (ico-1)*tcoq
-                do 300,isp = 1,nbsp,1
-                call rvpstd(zr(avalee+idece-1+adre+( isp-1)*lne), tq, 4, v2,&
-                            zr(avaleq+idecq- 1+adrq+(isp-1)*lnq))
-                call rvpstd(zr(avalee+idece-1+adre+( isp-1+nbsp)*lne), tq, 4, v2,&
-                            zr(avaleq+ idecq-1+adrq+(isp-1+nbsp)*lnq))
-300              continue
-310              continue
-320              continue
-                mder = mder + l - 1
-330              continue
+                do 330 ioc = 1, nboc, 1
+                    call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', l)
+                    do 320 m = mder + 1, mder + l - 1, 1
+                        n = m + ioc - 1
+                        idece = zi(apadre+m-1)
+                        idecq = zi(apadrq+m-1)
+                        nbsp = zi(apnspe+m-1)
+                        nbco = zi(apncoe+m-1)
+                        nbnd = zi(apnbne+m-1)
+                        tnde = lne*nbsp
+                        tndq = lnq*nbsp
+                        tcoq = tndq*nbnd
+                        tcoe = tnde*nbnd
+                        v2(1) = vec2(2*(m-1)+1)
+                        v2(2) = vec2(2*(m-1)+2)
+                        do 310 ico = 1, nbco, 1
+                            adre = (ico-1)*tcoe
+                            adrq = (ico-1)*tcoq
+                            do 300 isp = 1, nbsp, 1
+                                call rvpstd(zr(avalee+idece-1+adre+( isp-1)*lne), tq, 4, v2,&
+                                            zr(avaleq+idecq- 1+adrq+(isp-1)*lnq))
+                                call rvpstd(zr(avalee+idece-1+adre+( isp-1+nbsp)*lne), tq, 4, v2,&
+                                            zr(avaleq+ idecq-1+adrq+(isp-1+nbsp)*lnq))
+300                         continue
+310                     continue
+320                 continue
+                    mder = mder + l - 1
+330             continue
             endif
         endif
     else if (repere(1:1).eq.'L' .and. tridim) then
 !               -------------------------------
         call wkvect(nnocpq, 'V V K8', nbcpcd, anocpq)
         call jeveuo(courbe//'S1   '//'.DESC', 'L', vr=desc)
-        do 340,i = 1,nbcpcd,1
-        zk8(anocpq+i-1) = nomcp(i)
-340      continue
+        do 340 i = 1, nbcpcd, 1
+            zk8(anocpq+i-1) = nomcp(i)
+340     continue
         call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
         call jelira(npadrq, 'LONMAX', nbadrq)
         call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
@@ -779,170 +781,170 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         call wkvect('&&RVCALQ.NUM.CP.CD', 'V V I', nbcpcd, anumcp)
         call numek8(zk8(acpgd), nomcp, nc, nbcpcd, zi(anumcp))
         ioc = 1
-        do 400,i = 1,nbadrq,1
-        adre = zi(apadre+i-1)
-        adrq = zi(apadrq+i-1)
-        nbsp = zi(apnspe+i-1)
-        nbco = zi(apncoe+i-1)
-        nbnd = zi(apnbne+i-1)
-        tnde = lne*nbsp
-        tndq = lnq*nbsp
-        tcoq = tndq*nbnd
-        tcoe = tnde*nbnd
+        do 400 i = 1, nbadrq, 1
+            adre = zi(apadre+i-1)
+            adrq = zi(apadrq+i-1)
+            nbsp = zi(apnspe+i-1)
+            nbco = zi(apncoe+i-1)
+            nbnd = zi(apnbne+i-1)
+            tnde = lne*nbsp
+            tndq = lnq*nbsp
+            tcoq = tndq*nbnd
+            tcoe = tnde*nbnd
 !         -- VECTEUR COLINEAIRE AU CHEMIN
-        v1x = sgtu(4) - sgtu(1)
-        v1y = sgtu(5) - sgtu(2)
-        v1z = sgtu(6) - sgtu(3)
-        v1n = sqrt(v1x**2+v1y**2+v1z**2)
-        v1x = v1x/v1n
-        v1y = v1y/v1n
-        v1z = v1z/v1n
+            v1x = sgtu(4) - sgtu(1)
+            v1y = sgtu(5) - sgtu(2)
+            v1z = sgtu(6) - sgtu(3)
+            v1n = sqrt(v1x**2+v1y**2+v1z**2)
+            v1x = v1x/v1n
+            v1y = v1y/v1n
+            v1z = v1z/v1n
 !         -- VECTEUR VECT_Y FOURNI
-        v2x = vecty(1)
-        v2y = vecty(2)
-        v2z = vecty(3)
+            v2x = vecty(1)
+            v2y = vecty(2)
+            v2z = vecty(3)
 !         -- PROJECTION / NORMALISATION
-        v2p = v1x*v2x + v1y*v2y + v1z*v2z
-        v2x = v2x - v2p*v1x
-        v2y = v2y - v2p*v1y
-        v2z = v2z - v2p*v1z
-        v2n = sqrt(v2x**2+v2y**2+v2z**2)
-        v2x = v2x/v2n
-        v2y = v2y/v2n
-        v2z = v2z/v2n
+            v2p = v1x*v2x + v1y*v2y + v1z*v2z
+            v2x = v2x - v2p*v1x
+            v2y = v2y - v2p*v1y
+            v2z = v2z - v2p*v1z
+            v2n = sqrt(v2x**2+v2y**2+v2z**2)
+            v2x = v2x/v2n
+            v2y = v2y/v2n
+            v2z = v2z/v2n
 !         -- VECTEUR TANGENT
-        v3x = v1y*v2z - v2y*v1z
-        v3y = v1z*v2x - v2z*v1x
-        v3z = v1x*v2y - v2x*v1y
-        if (niv .ge. 2) then
-            write(ifm,1000) iocc
-            write(ifm,1002) 'V1 : ', v1x, v1y, v1z
-            write(ifm,1002) 'V2 : ', v2x, v2y, v2z
-            write(ifm,1002) 'V3 : ', v3x, v3y, v3z
-            1000       format( 'OCCURRENCE ', i4 )
-            1002       format( 1p, a5, e12.5, 2x, e12.5, 2x, e12.5 )
-        endif
-        do 390,ico = 1,nbco,1
-        do 380,j = 1,nbnd,1
-        do 370,isp = 1,nbsp,1
-        idece = (ico-1)*tcoe + (j-1)*tnde + (isp-1)* lne
-        idecq = (ico-1)*tcoq + (j-1)*tndq + (isp-1)* lnq
-        pt = 1
-        if (tq .eq. 'V3') then
-            do 350,k = 1,nbcpcd,1
-            num = zi(anumcp+k-1)
-            if (num .ge. 1 .and. num .le. 3) then
-                idec = 0
-            else
-                idec = 3
+            v3x = v1y*v2z - v2y*v1z
+            v3y = v1z*v2x - v2z*v1x
+            v3z = v1x*v2y - v2x*v1y
+            if (niv .ge. 2) then
+                write(ifm,1000) iocc
+                write(ifm,1002) 'V1 : ', v1x, v1y, v1z
+                write(ifm,1002) 'V2 : ', v2x, v2y, v2z
+                write(ifm,1002) 'V3 : ', v3x, v3y, v3z
+                1000       format( 'OCCURRENCE ', i4 )
+                1002       format( 1p, a5, e12.5, 2x, e12.5, 2x, e12.5 )
             endif
-            kd1 = zi(apcmpe+idec+1-1)
-            kd2 = zi(apcmpe+idec+2-1)
-            kd3 = zi(apcmpe+idec+3-1)
-            if (zr(avalee+adre+idece+kd1-2) .eq. r8vide()) then
-                tx = 0.d0
-            else
-                tx = zr(avalee+adre+idece+kd1-2)
-            endif
-            if (zr(avalee+adre+idece+kd2-2) .eq. r8vide()) then
-                ty = 0.d0
-            else
-                ty = zr(avalee+adre+idece+kd2-2)
-            endif
-            if (zr(avalee+adre+idece+kd3-2) .eq. r8vide()) then
-                tz = 0.d0
-            else
-                tz = zr(avalee+adre+idece+kd3-2)
-            endif
-            if (num .eq. 1 .or. num .eq. 4) then
-                val = v1x*tx + v1y*ty + v1z*tz
-            else if (num.eq.2 .or. num.eq.5) then
-                val = v2x*tx + v2y*ty + v2z*tz
-            else if (num.eq.3 .or. num.eq.6) then
-                val = v3x*tx + v3y*ty + v3z*tz
-            endif
-            zr(avaleq+adrq+idecq+pt-2) = val
-            pt = pt + 1
-350          continue
-        else if (tq.eq.'T3') then
-            do 360,k = 1,nbcpcd,1
-            num = zi(anumcp+k-1)
-            kd1 = zi(apcmpe+1-1)
-            kd2 = zi(apcmpe+2-1)
-            kd3 = zi(apcmpe+3-1)
-            kd4 = zi(apcmpe+4-1)
-            kd5 = zi(apcmpe+5-1)
-            kd6 = zi(apcmpe+6-1)
-            if (zr(avalee+adre+idece+kd1-2) .eq. r8vide()) then
-                txx = 0.d0
-            else
-                txx = zr(avalee+adre+idece+kd1-2)
-            endif
-            if (zr(avalee+adre+idece+kd2-2) .eq. r8vide()) then
-                tyy = 0.d0
-            else
-                tyy = zr(avalee+adre+idece+kd2-2)
-            endif
-            if (zr(avalee+adre+idece+kd3-2) .eq. r8vide()) then
-                tzz = 0.d0
-            else
-                tzz = zr(avalee+adre+idece+kd3-2)
-            endif
-            if (zr(avalee+adre+idece+kd4-2) .eq. r8vide()) then
-                txy = 0.d0
-            else
-                txy = zr(avalee+adre+idece+kd4-2)
-            endif
-            if (zr(avalee+adre+idece+kd5-2) .eq. r8vide()) then
-                txz = 0.d0
-            else
-                txz = zr(avalee+adre+idece+kd5-2)
-            endif
-            if (zr(avalee+adre+idece+kd6-2) .eq. r8vide()) then
-                tyz = 0.d0
-            else
-                tyz = zr(avalee+adre+idece+kd6-2)
-            endif
-            if (num .eq. 1) then
-                val = vtv(v1x,v1y,v1z,v1x,v1y,v1z)
-            else if (num.eq.2) then
-                val = vtv(v2x,v2y,v2z,v2x,v2y,v2z)
-            else if (num.eq.3) then
-                val = vtv(v3x,v3y,v3z,v3x,v3y,v3z)
-            else if (num.eq.4) then
-                val = vtv(v1x,v1y,v1z,v2x,v2y,v2z)
-            else if (num.eq.5) then
-                val = vtv(v1x,v1y,v1z,v3x,v3y,v3z)
-            else
-                val = vtv(v2x,v2y,v2z,v3x,v3y,v3z)
-            endif
-            zr(avaleq+adrq+idecq+pt-2) = val
-            pt = pt + 1
-360          continue
-        else if (tq.eq.'AS') then
-            call jelira(nvalee, 'LONMAX', l)
-            do 362,il = 1,l,1
-            zr(avaleq+il-1) = zr(avalee+il-1)
-362          continue
-        else
-            call utmess('F', 'POSTRELE_14', sk=k4)
-        endif
-370      continue
-380      continue
-390      continue
-400      continue
+            do 390 ico = 1, nbco, 1
+                do 380 j = 1, nbnd, 1
+                    do 370 isp = 1, nbsp, 1
+                        idece = (ico-1)*tcoe + (j-1)*tnde + (isp-1)* lne
+                        idecq = (ico-1)*tcoq + (j-1)*tndq + (isp-1)* lnq
+                        pt = 1
+                        if (tq .eq. 'V3') then
+                            do 350 k = 1, nbcpcd, 1
+                                num = zi(anumcp+k-1)
+                                if (num .ge. 1 .and. num .le. 3) then
+                                    idec = 0
+                                else
+                                    idec = 3
+                                endif
+                                kd1 = zi(apcmpe+idec+1-1)
+                                kd2 = zi(apcmpe+idec+2-1)
+                                kd3 = zi(apcmpe+idec+3-1)
+                                if (zr(avalee+adre+idece+kd1-2) .eq. r8vide()) then
+                                    tx = 0.d0
+                                else
+                                    tx = zr(avalee+adre+idece+kd1-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd2-2) .eq. r8vide()) then
+                                    ty = 0.d0
+                                else
+                                    ty = zr(avalee+adre+idece+kd2-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd3-2) .eq. r8vide()) then
+                                    tz = 0.d0
+                                else
+                                    tz = zr(avalee+adre+idece+kd3-2)
+                                endif
+                                if (num .eq. 1 .or. num .eq. 4) then
+                                    val = v1x*tx + v1y*ty + v1z*tz
+                                else if (num.eq.2 .or. num.eq.5) then
+                                    val = v2x*tx + v2y*ty + v2z*tz
+                                else if (num.eq.3 .or. num.eq.6) then
+                                    val = v3x*tx + v3y*ty + v3z*tz
+                                endif
+                                zr(avaleq+adrq+idecq+pt-2) = val
+                                pt = pt + 1
+350                         continue
+                        else if (tq.eq.'T3') then
+                            do 360 k = 1, nbcpcd, 1
+                                num = zi(anumcp+k-1)
+                                kd1 = zi(apcmpe+1-1)
+                                kd2 = zi(apcmpe+2-1)
+                                kd3 = zi(apcmpe+3-1)
+                                kd4 = zi(apcmpe+4-1)
+                                kd5 = zi(apcmpe+5-1)
+                                kd6 = zi(apcmpe+6-1)
+                                if (zr(avalee+adre+idece+kd1-2) .eq. r8vide()) then
+                                    txx = 0.d0
+                                else
+                                    txx = zr(avalee+adre+idece+kd1-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd2-2) .eq. r8vide()) then
+                                    tyy = 0.d0
+                                else
+                                    tyy = zr(avalee+adre+idece+kd2-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd3-2) .eq. r8vide()) then
+                                    tzz = 0.d0
+                                else
+                                    tzz = zr(avalee+adre+idece+kd3-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd4-2) .eq. r8vide()) then
+                                    txy = 0.d0
+                                else
+                                    txy = zr(avalee+adre+idece+kd4-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd5-2) .eq. r8vide()) then
+                                    txz = 0.d0
+                                else
+                                    txz = zr(avalee+adre+idece+kd5-2)
+                                endif
+                                if (zr(avalee+adre+idece+kd6-2) .eq. r8vide()) then
+                                    tyz = 0.d0
+                                else
+                                    tyz = zr(avalee+adre+idece+kd6-2)
+                                endif
+                                if (num .eq. 1) then
+                                    val = vtv(v1x,v1y,v1z,v1x,v1y,v1z)
+                                else if (num.eq.2) then
+                                    val = vtv(v2x,v2y,v2z,v2x,v2y,v2z)
+                                else if (num.eq.3) then
+                                    val = vtv(v3x,v3y,v3z,v3x,v3y,v3z)
+                                else if (num.eq.4) then
+                                    val = vtv(v1x,v1y,v1z,v2x,v2y,v2z)
+                                else if (num.eq.5) then
+                                    val = vtv(v1x,v1y,v1z,v3x,v3y,v3z)
+                                else
+                                    val = vtv(v2x,v2y,v2z,v3x,v3y,v3z)
+                                endif
+                                zr(avaleq+adrq+idecq+pt-2) = val
+                                pt = pt + 1
+360                         continue
+                        else if (tq.eq.'AS') then
+                            call jelira(nvalee, 'LONMAX', l)
+                            do 362 il = 1, l, 1
+                                zr(avaleq+il-1) = zr(avalee+il-1)
+362                         continue
+                        else
+                            call utmess('F', 'POSTRELE_14', sk=k4)
+                        endif
+370                 continue
+380             continue
+390         continue
+400     continue
         call jedetr('&&RVCALQ.NUM.CP.CD')
 !
     else
         call wkvect(nnocpq, 'V V K8', nbcpcd, anocpq)
-        do 410,i = 1,nbcpcd,1
-        zk8(anocpq+i-1) = nomcp(i)
-410      continue
+        do 410 i = 1, nbcpcd, 1
+            zk8(anocpq+i-1) = nomcp(i)
+410     continue
         if (repere(1:1) .eq. 'G') then
             call jelira(nvalee, 'LONMAX', l)
-            do 420,i = 1,l,1
-            zr(avaleq+i-1) = zr(avalee+i-1)
-420          continue
+            do 420 i = 1, l, 1
+                zr(avaleq+i-1) = zr(avalee+i-1)
+420         continue
         else
             call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
 !
@@ -955,315 +957,315 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             call wkvect('&&RVCALQ.NUM.CP.CD', 'V V I', nbcpcd, anumcp)
             call numek8(zk8(acpgd), nomcp, nc, nbcpcd, zi(anumcp))
             ioc = 1
-            do 500,i = 1,nbadrq,1
-            adre = zi(apadre+i-1)
-            adrq = zi(apadrq+i-1)
-            nbsp = zi(apnspe+i-1)
-            nbco = zi(apncoe+i-1)
-            nbnd = zi(apnbne+i-1)
-            tnde = lne*nbsp
-            tndq = lnq*nbsp
-            tcoq = tndq*nbnd
-            tcoe = tnde*nbnd
-            AS_ALLOCATE(vr=vv1x, size=nbnd)
-            AS_ALLOCATE(vr=vv1y, size=nbnd)
-            AS_ALLOCATE(vr=vv2x, size=nbnd)
-            AS_ALLOCATE(vr=vv2y, size=nbnd)
-            if ((docu.eq.'CHNO') .or. (docul.eq.'LSTN')) then
-                if (repere .eq. 'LOCAL') then
-                    v1x = vec1(2* (i-1)+1)
-                    v1y = vec1(2* (i-1)+2)
-                    v2x = vec2(2* (i-1)+1)
-                    v2y = vec2(2* (i-1)+2)
-                else if (repere.eq.'POLAIRE') then
-                    v1x = vec1(2* (i-1)+1)
-                    v1y = vec1(2* (i-1)+2)
-                    v2x = -vec2(2* (i-1)+1)
-                    v2y = -vec2(2* (i-1)+2)
+            do 500 i = 1, nbadrq, 1
+                adre = zi(apadre+i-1)
+                adrq = zi(apadrq+i-1)
+                nbsp = zi(apnspe+i-1)
+                nbco = zi(apncoe+i-1)
+                nbnd = zi(apnbne+i-1)
+                tnde = lne*nbsp
+                tndq = lnq*nbsp
+                tcoq = tndq*nbnd
+                tcoe = tnde*nbnd
+                AS_ALLOCATE(vr=vv1x, size=nbnd)
+                AS_ALLOCATE(vr=vv1y, size=nbnd)
+                AS_ALLOCATE(vr=vv2x, size=nbnd)
+                AS_ALLOCATE(vr=vv2y, size=nbnd)
+                if ((docu.eq.'CHNO') .or. (docul.eq.'LSTN')) then
+                    if (repere .eq. 'LOCAL') then
+                        v1x = vec1(2* (i-1)+1)
+                        v1y = vec1(2* (i-1)+2)
+                        v2x = vec2(2* (i-1)+1)
+                        v2y = vec2(2* (i-1)+2)
+                    else if (repere.eq.'POLAIRE') then
+                        v1x = vec1(2* (i-1)+1)
+                        v1y = vec1(2* (i-1)+2)
+                        v2x = -vec2(2* (i-1)+1)
+                        v2y = -vec2(2* (i-1)+2)
+                    else
+                        v1x = vec2(2* (i-1)+1)
+                        v1y = vec2(2* (i-1)+2)
+                        v2x = vec1(2* (i-1)+1)
+                        v2y = vec1(2* (i-1)+2)
+                    endif
+                    do 430 j = 1, nbnd, 1
+                        vv1x(j) = v1x
+                        vv1y(j) = v1y
+                        vv2x(j) = v2x
+                        vv2y(j) = v2y
+430                 continue
                 else
-                    v1x = vec2(2* (i-1)+1)
-                    v1y = vec2(2* (i-1)+2)
-                    v2x = vec1(2* (i-1)+1)
-                    v2y = vec1(2* (i-1)+2)
+                    if (i .lt. l) then
+                        n = i + ioc - 1
+                    else
+                        n = n + 2
+                        ioc = ioc + 1
+                        if (ioc .le. nboc) then
+                            call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', ll)
+                            l = l + ll - 1
+                        endif
+                    endif
+                    if (repere .eq. 'LOCAL') then
+                        vv1x(1) = vec1(2* (n-1)+1)
+                        vv1y(1) = vec1(2* (n-1)+2)
+                        vv2x(1) = vec2(2* (n-1)+1)
+                        vv2y(1) = vec2(2* (n-1)+2)
+                        vv1x(2) = vec1(2*n+1)
+                        vv1y(2) = vec1(2*n+2)
+                        vv2x(2) = vec2(2*n+1)
+                        vv2y(2) = vec2(2*n+2)
+                    else
+                        vv1x(1) = vec1(2* (n-1)+1)
+                        vv1y(1) = vec1(2* (n-1)+2)
+                        vv2x(1) = -vec2(2* (n-1)+1)
+                        vv2y(1) = -vec2(2* (n-1)+2)
+                        vv1x(2) = vec1(2*n+1)
+                        vv1y(2) = vec1(2*n+2)
+                        vv2x(2) = -vec2(2*n+1)
+                        vv2y(2) = -vec2(2*n+2)
+                    endif
                 endif
-                do 430,j = 1,nbnd,1
-                vv1x(j) = v1x
-                vv1y(j) = v1y
-                vv2x(j) = v2x
-                vv2y(j) = v2y
-430              continue
-            else
-                if (i .lt. l) then
-                    n = i + ioc - 1
-                else
-                    n = n + 2
-                    ioc = ioc + 1
-                    if (ioc .le. nboc) then
-                        call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', ll)
-                        l = l + ll - 1
-                    endif
-                endif
-                if (repere .eq. 'LOCAL') then
-                    vv1x(1) = vec1(2* (n-1)+1)
-                    vv1y(1) = vec1(2* (n-1)+2)
-                    vv2x(1) = vec2(2* (n-1)+1)
-                    vv2y(1) = vec2(2* (n-1)+2)
-                    vv1x(2) = vec1(2*n+1)
-                    vv1y(2) = vec1(2*n+2)
-                    vv2x(2) = vec2(2*n+1)
-                    vv2y(2) = vec2(2*n+2)
-                else
-                    vv1x(1) = vec1(2* (n-1)+1)
-                    vv1y(1) = vec1(2* (n-1)+2)
-                    vv2x(1) = -vec2(2* (n-1)+1)
-                    vv2y(1) = -vec2(2* (n-1)+2)
-                    vv1x(2) = vec1(2*n+1)
-                    vv1y(2) = vec1(2*n+2)
-                    vv2x(2) = -vec2(2*n+1)
-                    vv2y(2) = -vec2(2*n+2)
-                endif
-            endif
-            do 490,ico = 1,nbco,1
-            do 480,j = 1,nbnd,1
-            v1x = vv1x(j)
-            v1y = vv1y(j)
-            v2x = vv2x(j)
-            v2y = vv2y(j)
-            do 470,isp = 1,nbsp,1
-            idece = (ico-1)*tcoe + (j-1)*tnde + (isp- 1)*lne
-            idecq = (ico-1)*tcoq + (j-1)*tndq + (isp- 1)*lnq
-            pt = 1
-            if (tq .eq. 'V3') then
-                do 440,k = 1,nbcpcd,1
-                num = zi(anumcp+k-1)
-                if (num .eq. 1) then
-                    kd1 = zi(apcmpe+1-1)
-                    kd2 = zi(apcmpe+2-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        tx = 0.d0
-                    else
-                        tx = zr(avalee+adre+idece+kd1- 2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        ty = 0.d0
-                    else
-                        ty = zr(avalee+adre+idece+kd2- 2)
-                    endif
-                    val = v1x*tx + v1y*ty
-                else if (num.eq.2) then
-                    kd1 = zi(apcmpe+1-1)
-                    kd2 = zi(apcmpe+2-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        tx = 0.d0
-                    else
-                        tx = zr(avalee+adre+idece+kd1- 2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        ty = 0.d0
-                    else
-                        ty = zr(avalee+adre+idece+kd2- 2)
-                    endif
-                    val = v2x*tx + v2y*ty
-                else if (num.eq.3) then
-                    kd1 = zi(apcmpe+3-1)
-                    val = zr(avalee+adre+idece+ kd1-2)
-                else if (num.eq.4) then
-                    kd1 = zi(apcmpe+4-1)
-                    kd2 = zi(apcmpe+5-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        tx = 0.d0
-                    else
-                        tx = zr(avalee+adre+idece+kd1- 2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        ty = 0.d0
-                    else
-                        ty = zr(avalee+adre+idece+kd2- 2)
-                    endif
-                    val = v1x*tx + v1y*ty
-                else if (num.eq.5) then
-                    kd1 = zi(apcmpe+4-1)
-                    kd2 = zi(apcmpe+5-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        tx = 0.d0
-                    else
-                        tx = zr(avalee+adre+idece+kd1- 2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        ty = 0.d0
-                    else
-                        ty = zr(avalee+adre+idece+kd2- 2)
-                    endif
-                    val = v2x*tx + v2y*ty
-                else
-                    kd1 = zi(apcmpe+6-1)
-                    val = zr(avalee+adre+idece+ kd1-2)
-                endif
-                zr(avaleq+adrq+idecq+pt-2) = val
-                pt = pt + 1
-440              continue
-            else if (tq.eq.'T3') then
-                do 450,k = 1,nbcpcd,1
-                num = zi(anumcp+k-1)
-                if (num .eq. 1) then
-                    kd1 = zi(apcmpe+1-1)
-                    kd2 = zi(apcmpe+2-1)
-                    kd3 = zi(apcmpe+4-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        txx = 0.d0
-                    else
-                        txx = zr(avalee+adre+idece+ kd1-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        tyy = 0.d0
-                    else
-                        tyy = zr(avalee+adre+idece+ kd2-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd3- 2) .eq. r8vide()) then
-                        txy = 0.d0
-                    else
-                        txy = zr(avalee+adre+idece+ kd3-2)
-                    endif
-                    val = v1x* (v1x*txx+v1y*txy) + v1y* (v1x*txy+v1y*tyy)
-                else if (num.eq.2) then
-                    kd1 = zi(apcmpe+1-1)
-                    kd2 = zi(apcmpe+2-1)
-                    kd3 = zi(apcmpe+4-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        txx = 0.d0
-                    else
-                        txx = zr(avalee+adre+idece+ kd1-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        tyy = 0.d0
-                    else
-                        tyy = zr(avalee+adre+idece+ kd2-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd3- 2) .eq. r8vide()) then
-                        txy = 0.d0
-                    else
-                        txy = zr(avalee+adre+idece+ kd3-2)
-                    endif
-                    val = v2x* (v2x*txx+v2y*txy) + v2y* (v2x*txy+v2y*tyy)
-                else if (num.eq.3) then
-                    kd1 = zi(apcmpe+3-1)
-                    val = zr(avalee+adre+idece+ kd1-2)
-                else if (num.eq.4) then
-                    kd1 = zi(apcmpe+1-1)
-                    kd2 = zi(apcmpe+2-1)
-                    kd3 = zi(apcmpe+4-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        txx = 0.d0
-                    else
-                        txx = zr(avalee+adre+idece+ kd1-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        tyy = 0.d0
-                    else
-                        tyy = zr(avalee+adre+idece+ kd2-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd3- 2) .eq. r8vide()) then
-                        txy = 0.d0
-                    else
-                        txy = zr(avalee+adre+idece+ kd3-2)
-                    endif
-                    val = v1x* (v2x*txx+v2y*txy) + v1y* (v2x*txy+v2y*tyy)
-                else if (num.eq.5) then
-                    kd1 = zi(apcmpe+5-1)
-                    kd2 = zi(apcmpe+6-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        txz = 0.d0
-                    else
-                        txz = zr(avalee+adre+idece+ kd1-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        tyz = 0.d0
-                    else
-                        tyz = zr(avalee+adre+idece+ kd2-2)
-                    endif
-                    val = v1x*txz + v1y*tyz
-                else
-                    kd1 = zi(apcmpe+5-1)
-                    kd2 = zi(apcmpe+6-1)
-                    if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
-                        txz = 0.d0
-                    else
-                        txz = zr(avalee+adre+idece+ kd1-2)
-                    endif
-                    if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
-                        tyz = 0.d0
-                    else
-                        tyz = zr(avalee+adre+idece+ kd2-2)
-                    endif
-                    val = v2x*txz + v2y*tyz
-                endif
-                zr(avaleq+adrq+idecq+pt-2) = val
-                pt = pt + 1
-450              continue
-            else
-                kd1 = zi(apcmpe+7-1)
-                kd2 = zi(apcmpe+8-1)
-                kd3 = zi(apcmpe+9-1)
-                if (zr(avalee+adre+idece+(j-1)*lne+ kd1-2) .eq. r8vide()) then
-                    txx = 0.d0
-                else
-                    txx = zr(avalee+adre+idece+(j-1)* lne+kd1-2)
-                endif
-                if (zr(avalee+adre+idece+(j-1)*lne+ kd2-2) .eq. r8vide()) then
-                    tyy = 0.d0
-                else
-                    tyy = zr(avalee+adre+idece+(j-1)* lne+kd2-2)
-                endif
-                if (zr(avalee+adre+idece+(j-1)*lne+ kd3-2) .eq. r8vide()) then
-                    txy = 0.d0
-                else
-                    txy = zr(avalee+adre+idece+(j-1)* lne+kd3-2)
-                endif
-                kd1 = zi(apcmpe+10-1)
-                kd2 = zi(apcmpe+11-1)
-                kd3 = zi(apcmpe+12-1)
-                if (zr(avalee+adre+idece+(j-1)*lne+ kd1-2) .eq. r8vide()) then
-                    sxx = 0.d0
-                else
-                    sxx = zr(avalee+adre+idece+(j-1)* lne+kd1-2)
-                endif
-                if (zr(avalee+adre+idece+(j-1)*lne+ kd2-2) .eq. r8vide()) then
-                    syy = 0.d0
-                else
-                    syy = zr(avalee+adre+idece+(j-1)* lne+kd2-2)
-                endif
-                if (zr(avalee+adre+idece+(j-1)*lne+ kd3-2) .eq. r8vide()) then
-                    sxy = 0.d0
-                else
-                    sxy = zr(avalee+adre+idece+(j-1)* lne+kd3-2)
-                endif
-                do 460,k = 1,nbcpcd,1
-                num = zi(anumcp+k-1)
-                if (num .eq. 7) then
-                    val = v1x* (v1x*txx+v1y*txy) + v1x* (v1x*txy+v1y*tyy)
-                else if (num.eq.8) then
-                    val = v2x* (v2x*txx+v2y*txy) + v2x* (v2x*txy+v2y*tyy)
-                else if (num.eq.9) then
-                    val = v1x* (v2x*txx+v2y*txy) + v1x* (v2x*txy+v2y*tyy)
-                else if (num.eq.10) then
-                    val = v1x* (v1x*sxx+v1y*sxy) + v1x* (v1x*sxy+v1y*syy)
-                else if (num.eq.11) then
-                    val = v2x* (v2x*sxx+v2y*sxy) + v2x* (v2x*sxy+v2y*syy)
-                else
-                    val = v1x* (v2x*sxx+v2y*sxy) + v1x* (v2x*sxy+v2y*syy)
-                endif
-                zr(avaleq+adrq+idecq+pt-2) = val
-                pt = pt + 1
-460              continue
-            endif
-470          continue
-480          continue
-490          continue
-            AS_DEALLOCATE(vr=vv1x)
-            AS_DEALLOCATE(vr=vv1y)
-            AS_DEALLOCATE(vr=vv2x)
-            AS_DEALLOCATE(vr=vv2y)
-500          continue
+                do 490 ico = 1, nbco, 1
+                    do 480 j = 1, nbnd, 1
+                        v1x = vv1x(j)
+                        v1y = vv1y(j)
+                        v2x = vv2x(j)
+                        v2y = vv2y(j)
+                        do 470 isp = 1, nbsp, 1
+                            idece = (ico-1)*tcoe + (j-1)*tnde + (isp- 1)*lne
+                            idecq = (ico-1)*tcoq + (j-1)*tndq + (isp- 1)*lnq
+                            pt = 1
+                            if (tq .eq. 'V3') then
+                                do 440 k = 1, nbcpcd, 1
+                                    num = zi(anumcp+k-1)
+                                    if (num .eq. 1) then
+                                        kd1 = zi(apcmpe+1-1)
+                                        kd2 = zi(apcmpe+2-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            tx = 0.d0
+                                        else
+                                            tx = zr(avalee+adre+idece+kd1- 2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            ty = 0.d0
+                                        else
+                                            ty = zr(avalee+adre+idece+kd2- 2)
+                                        endif
+                                        val = v1x*tx + v1y*ty
+                                    else if (num.eq.2) then
+                                        kd1 = zi(apcmpe+1-1)
+                                        kd2 = zi(apcmpe+2-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            tx = 0.d0
+                                        else
+                                            tx = zr(avalee+adre+idece+kd1- 2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            ty = 0.d0
+                                        else
+                                            ty = zr(avalee+adre+idece+kd2- 2)
+                                        endif
+                                        val = v2x*tx + v2y*ty
+                                    else if (num.eq.3) then
+                                        kd1 = zi(apcmpe+3-1)
+                                        val = zr(avalee+adre+idece+ kd1-2)
+                                    else if (num.eq.4) then
+                                        kd1 = zi(apcmpe+4-1)
+                                        kd2 = zi(apcmpe+5-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            tx = 0.d0
+                                        else
+                                            tx = zr(avalee+adre+idece+kd1- 2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            ty = 0.d0
+                                        else
+                                            ty = zr(avalee+adre+idece+kd2- 2)
+                                        endif
+                                        val = v1x*tx + v1y*ty
+                                    else if (num.eq.5) then
+                                        kd1 = zi(apcmpe+4-1)
+                                        kd2 = zi(apcmpe+5-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            tx = 0.d0
+                                        else
+                                            tx = zr(avalee+adre+idece+kd1- 2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            ty = 0.d0
+                                        else
+                                            ty = zr(avalee+adre+idece+kd2- 2)
+                                        endif
+                                        val = v2x*tx + v2y*ty
+                                    else
+                                        kd1 = zi(apcmpe+6-1)
+                                        val = zr(avalee+adre+idece+ kd1-2)
+                                    endif
+                                    zr(avaleq+adrq+idecq+pt-2) = val
+                                    pt = pt + 1
+440                             continue
+                            else if (tq.eq.'T3') then
+                                do 450 k = 1, nbcpcd, 1
+                                    num = zi(anumcp+k-1)
+                                    if (num .eq. 1) then
+                                        kd1 = zi(apcmpe+1-1)
+                                        kd2 = zi(apcmpe+2-1)
+                                        kd3 = zi(apcmpe+4-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            txx = 0.d0
+                                        else
+                                            txx = zr(avalee+adre+idece+ kd1-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            tyy = 0.d0
+                                        else
+                                            tyy = zr(avalee+adre+idece+ kd2-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd3- 2) .eq. r8vide()) then
+                                            txy = 0.d0
+                                        else
+                                            txy = zr(avalee+adre+idece+ kd3-2)
+                                        endif
+                                        val = v1x* (v1x*txx+v1y*txy) + v1y* (v1x*txy+v1y*tyy)
+                                    else if (num.eq.2) then
+                                        kd1 = zi(apcmpe+1-1)
+                                        kd2 = zi(apcmpe+2-1)
+                                        kd3 = zi(apcmpe+4-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            txx = 0.d0
+                                        else
+                                            txx = zr(avalee+adre+idece+ kd1-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            tyy = 0.d0
+                                        else
+                                            tyy = zr(avalee+adre+idece+ kd2-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd3- 2) .eq. r8vide()) then
+                                            txy = 0.d0
+                                        else
+                                            txy = zr(avalee+adre+idece+ kd3-2)
+                                        endif
+                                        val = v2x* (v2x*txx+v2y*txy) + v2y* (v2x*txy+v2y*tyy)
+                                    else if (num.eq.3) then
+                                        kd1 = zi(apcmpe+3-1)
+                                        val = zr(avalee+adre+idece+ kd1-2)
+                                    else if (num.eq.4) then
+                                        kd1 = zi(apcmpe+1-1)
+                                        kd2 = zi(apcmpe+2-1)
+                                        kd3 = zi(apcmpe+4-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            txx = 0.d0
+                                        else
+                                            txx = zr(avalee+adre+idece+ kd1-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            tyy = 0.d0
+                                        else
+                                            tyy = zr(avalee+adre+idece+ kd2-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd3- 2) .eq. r8vide()) then
+                                            txy = 0.d0
+                                        else
+                                            txy = zr(avalee+adre+idece+ kd3-2)
+                                        endif
+                                        val = v1x* (v2x*txx+v2y*txy) + v1y* (v2x*txy+v2y*tyy)
+                                    else if (num.eq.5) then
+                                        kd1 = zi(apcmpe+5-1)
+                                        kd2 = zi(apcmpe+6-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            txz = 0.d0
+                                        else
+                                            txz = zr(avalee+adre+idece+ kd1-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            tyz = 0.d0
+                                        else
+                                            tyz = zr(avalee+adre+idece+ kd2-2)
+                                        endif
+                                        val = v1x*txz + v1y*tyz
+                                    else
+                                        kd1 = zi(apcmpe+5-1)
+                                        kd2 = zi(apcmpe+6-1)
+                                        if (zr(avalee+adre+idece+kd1- 2) .eq. r8vide()) then
+                                            txz = 0.d0
+                                        else
+                                            txz = zr(avalee+adre+idece+ kd1-2)
+                                        endif
+                                        if (zr(avalee+adre+idece+kd2- 2) .eq. r8vide()) then
+                                            tyz = 0.d0
+                                        else
+                                            tyz = zr(avalee+adre+idece+ kd2-2)
+                                        endif
+                                        val = v2x*txz + v2y*tyz
+                                    endif
+                                    zr(avaleq+adrq+idecq+pt-2) = val
+                                    pt = pt + 1
+450                             continue
+                            else
+                                kd1 = zi(apcmpe+7-1)
+                                kd2 = zi(apcmpe+8-1)
+                                kd3 = zi(apcmpe+9-1)
+                                if (zr(avalee+adre+idece+(j-1)*lne+ kd1-2) .eq. r8vide()) then
+                                    txx = 0.d0
+                                else
+                                    txx = zr(avalee+adre+idece+(j-1)* lne+kd1-2)
+                                endif
+                                if (zr(avalee+adre+idece+(j-1)*lne+ kd2-2) .eq. r8vide()) then
+                                    tyy = 0.d0
+                                else
+                                    tyy = zr(avalee+adre+idece+(j-1)* lne+kd2-2)
+                                endif
+                                if (zr(avalee+adre+idece+(j-1)*lne+ kd3-2) .eq. r8vide()) then
+                                    txy = 0.d0
+                                else
+                                    txy = zr(avalee+adre+idece+(j-1)* lne+kd3-2)
+                                endif
+                                kd1 = zi(apcmpe+10-1)
+                                kd2 = zi(apcmpe+11-1)
+                                kd3 = zi(apcmpe+12-1)
+                                if (zr(avalee+adre+idece+(j-1)*lne+ kd1-2) .eq. r8vide()) then
+                                    sxx = 0.d0
+                                else
+                                    sxx = zr(avalee+adre+idece+(j-1)* lne+kd1-2)
+                                endif
+                                if (zr(avalee+adre+idece+(j-1)*lne+ kd2-2) .eq. r8vide()) then
+                                    syy = 0.d0
+                                else
+                                    syy = zr(avalee+adre+idece+(j-1)* lne+kd2-2)
+                                endif
+                                if (zr(avalee+adre+idece+(j-1)*lne+ kd3-2) .eq. r8vide()) then
+                                    sxy = 0.d0
+                                else
+                                    sxy = zr(avalee+adre+idece+(j-1)* lne+kd3-2)
+                                endif
+                                do 460 k = 1, nbcpcd, 1
+                                    num = zi(anumcp+k-1)
+                                    if (num .eq. 7) then
+                                        val = v1x* (v1x*txx+v1y*txy) + v1x* (v1x*txy+v1y*tyy)
+                                    else if (num.eq.8) then
+                                        val = v2x* (v2x*txx+v2y*txy) + v2x* (v2x*txy+v2y*tyy)
+                                    else if (num.eq.9) then
+                                        val = v1x* (v2x*txx+v2y*txy) + v1x* (v2x*txy+v2y*tyy)
+                                    else if (num.eq.10) then
+                                        val = v1x* (v1x*sxx+v1y*sxy) + v1x* (v1x*sxy+v1y*syy)
+                                    else if (num.eq.11) then
+                                        val = v2x* (v2x*sxx+v2y*sxy) + v2x* (v2x*sxy+v2y*syy)
+                                    else
+                                        val = v1x* (v2x*sxx+v2y*sxy) + v1x* (v2x*sxy+v2y*syy)
+                                    endif
+                                    zr(avaleq+adrq+idecq+pt-2) = val
+                                    pt = pt + 1
+460                             continue
+                            endif
+470                     continue
+480                 continue
+490             continue
+                AS_DEALLOCATE(vr=vv1x)
+                AS_DEALLOCATE(vr=vv1y)
+                AS_DEALLOCATE(vr=vv2x)
+                AS_DEALLOCATE(vr=vv2y)
+500         continue
             call jedetr('&&RVCALQ.NUM.CP.CD')
         endif
     endif

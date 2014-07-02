@@ -22,6 +22,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdmip.h"
@@ -70,7 +71,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
 !
 !
     integer :: iffg
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: ndimsi
     real(kind=8) :: r, deps(6)
     real(kind=8) :: t9bid(3, 3), t18bid(6, 3)

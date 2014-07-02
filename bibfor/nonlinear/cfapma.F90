@@ -22,6 +22,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfaddm.h"
@@ -48,7 +49,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
     integer :: posmam
     integer :: posnoe, numnoe
     integer :: iliai
-    logical(kind=1) :: lctfd, lctf3d
+    aster_logical :: lctfd, lctf3d
 !
 ! ----------------------------------------------------------------------
 !

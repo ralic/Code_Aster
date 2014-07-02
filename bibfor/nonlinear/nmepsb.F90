@@ -20,10 +20,11 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno
     real(kind=8) :: vff(nno), dfdi(nno, ndim), deplg(*)
     real(kind=8) :: epsb(6), geps(6, 3)
@@ -55,8 +56,8 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
         epsb(kl)=ddot(nno,deplg(kl+ndim),ndl,vff,1)
         do 20 i = 1, ndim
             geps(kl,i) = ddot(nno,deplg(kl+ndim),ndl,dfdi(1,i),1)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     if (axi) then
         call utmess('F', 'ALGORITH7_76')

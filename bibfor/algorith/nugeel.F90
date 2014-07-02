@@ -39,6 +39,7 @@ subroutine nugeel(nugene, modgen)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indlia.h"
 #include "asterfort/iunifi.h"
@@ -67,7 +68,7 @@ subroutine nugeel(nugene, modgen)
     character(len=19) :: prgene
     character(len=24) :: defli, nomsst, sizlia, sst
     character(len=24) :: valk, seliai
-    logical(kind=1) :: pbcone
+    aster_logical :: pbcone
 !
 !
 !---------- VARIABLES PERSOS -------------------------------------------
@@ -200,7 +201,7 @@ subroutine nugeel(nugene, modgen)
     do 20 i1 = 1, nindep
         zi(ldnueq+i1-1)=i1
         zi(lddelg+i1-1)=0
-20  end do
+ 20 end do
 !
     call wkvect('&&'//pgc//'.SST.NBLIA', 'V V I', nbsst, ltssnb)
 !
@@ -228,7 +229,7 @@ subroutine nugeel(nugene, modgen)
         zi(ltssnb+nusst1-1)=1
         zi(ltssnb+nusst2-1)=1
         zi(ltlia+i1-1)=max(nusst1,nusst2)
-30  end do
+ 30 end do
 !
 !   BOUCLE PERMETTANT DE DETERMINER L'INVERSE
 !   NUMERO TARDIF  SOUS-STRUCTURE --> NUMEROS TARDIF LIAISONS
@@ -253,8 +254,8 @@ subroutine nugeel(nugene, modgen)
                 icomp=icomp+1
                 zi(ltsst+icomp-1)=j1
             endif
-40      continue
-50  end do
+ 40     continue
+ 50 end do
 !
     if (pbcone) then
         call utmess('F', 'ALGORITH13_76')
@@ -269,7 +270,7 @@ subroutine nugeel(nugene, modgen)
     do 120 i1 = 1, nindep
         zi(lddeeq+(i1-1)*2)=i1
         zi(lddeeq+(i1-1)*2+1)=1
-120  end do
+120 end do
 !
     call jedema()
 end subroutine

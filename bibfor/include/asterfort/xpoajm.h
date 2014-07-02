@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                       n, nnose, prefno, jdirno, nnm,&
@@ -47,7 +49,7 @@ interface
         integer :: iagma
         integer :: ngrm
         integer :: jdirgr
-        logical(kind=1) :: opmail
+        aster_logical :: opmail
         integer :: ndim
         integer :: ndime
         integer :: jconx1
@@ -82,7 +84,7 @@ interface
         integer :: jcnsv1
         integer :: jcnsv2
         integer :: jcnsl2
-        logical(kind=1) :: lmeca
-        logical(kind=1) :: pre1
+        aster_logical :: lmeca
+        aster_logical :: pre1
     end subroutine xpoajm
 end interface 

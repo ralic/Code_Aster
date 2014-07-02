@@ -18,7 +18,8 @@ subroutine nmcrel(sderro, nomevt, vall)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -28,7 +29,7 @@ subroutine nmcrel(sderro, nomevt, vall)
 #include "asterfort/nmeceb.h"
     character(len=24) :: sderro
     character(len=9) :: nomevt
-    logical(kind=1) :: vall
+    aster_logical :: vall
 !
 ! ----------------------------------------------------------------------
 !
@@ -96,9 +97,9 @@ subroutine nmcrel(sderro, nomevt, vall)
             ievact = ieven
             goto 66
         endif
-15  end do
+ 15 end do
 !
-66  continue
+ 66 continue
 !
     ASSERT(ievact.ne.0)
 !

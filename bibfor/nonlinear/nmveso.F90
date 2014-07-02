@@ -21,12 +21,13 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 !-----------------------------------------------------------------------
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcpsvn.h"
 #include "asterfort/mgauss.h"
     integer :: nb, np, nr
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     real(kind=8) :: rb(nb), rp(np), drbdb(nb, nb), drbdp(nb, np)
     real(kind=8) :: dp(np), dbeta(nb), drpdp(np, np), drpdb(np, nb)
 ! ----------------------------------------------------------------------
@@ -77,7 +78,7 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
         do 110 i = 1, nr
             drdy(i,3) = zero
             drdy(3,i) = zero
-110      continue
+110     continue
         drdy(3,3) = un
     endif
 !

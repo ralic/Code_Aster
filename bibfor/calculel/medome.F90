@@ -1,6 +1,7 @@
 subroutine medome(modele, mate, cara, kcha, ncha,&
                   ctyp, result)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/dismoi.h"
@@ -57,7 +58,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     character(len=6) :: nompro
 !-----------------------------------------------------------------------
     integer :: i, ie, ier, ierd, in, inuord
-    integer :: iordr,   jordr, n1, n2, n3
+    integer :: iordr, jordr, n1, n2, n3
     integer :: n4, nbordr, nc, np, nuord
     real(kind=8) :: prec
 !-----------------------------------------------------------------------
@@ -66,7 +67,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit, knum
     character(len=8) :: crit
-    logical(kind=1) :: lpost
+    aster_logical :: lpost
     character(len=24), pointer :: lcha(:) => null()
     integer, pointer :: infc(:) => null()
     call jemarq()

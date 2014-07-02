@@ -17,12 +17,13 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
 !     ARGUMENTS:
 !     ----------
     integer :: nr8, i1, i2, iposit
     real(kind=8) :: lr8(*), x
-    logical(kind=1) :: tous, lexi(*)
+    aster_logical :: tous, lexi(*)
 ! ----------------------------------------------------------------------
 !     BUT:
 !      TROUVER DANS UNE LISTE DE R8 QUELS SONT LES 2 REELS LES PLUS
@@ -51,7 +52,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 ! ----------------------------------------------------------------------
     integer :: ipp, ip, is, iss
     real(kind=8) :: xpp, xp, xs, xss, epsi, inter
-    logical(kind=1) :: afaire
+    aster_logical :: afaire
 !-----------------------------------------------------------------------
     integer :: i, imax, imin
     real(kind=8) :: xmax, xmin
@@ -76,50 +77,50 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 !
 !     -- CAS DE LA LISTE VIDE:
 !     ------------------------
-    do 100,i = 1,nr8
-    if (tous) then
-        afaire = .true.
-    else
-        if (lexi(i)) then
+    do 100 i = 1, nr8
+        if (tous) then
             afaire = .true.
         else
-            afaire = .false.
+            if (lexi(i)) then
+                afaire = .true.
+            else
+                afaire = .false.
+            endif
         endif
-    endif
-    if (afaire) then
-        imin = i
-        imax = i
-        xmax = lr8(i)
-        xmin = lr8(i)
-        goto 101
-    endif
-    100 end do
-    iposit = -2
-    goto 9999
-101  continue
-!
-!     RECHERCHE DE XMAX ET XMIN:
-    do 1,i = 1,nr8
-    if (tous) then
-        afaire = .true.
-    else
-        if (lexi(i)) then
-            afaire = .true.
-        else
-            afaire = .false.
-        endif
-    endif
-    if (afaire) then
-        if (lr8(i) .ge. xmax) then
+        if (afaire) then
+            imin = i
             imax = i
             xmax = lr8(i)
-        endif
-        if (lr8(i) .le. xmin) then
-            imin = i
             xmin = lr8(i)
+            goto 101
         endif
-    endif
-    1 end do
+100 end do
+    iposit = -2
+    goto 9999
+101 continue
+!
+!     RECHERCHE DE XMAX ET XMIN:
+    do 1 i = 1, nr8
+        if (tous) then
+            afaire = .true.
+        else
+            if (lexi(i)) then
+                afaire = .true.
+            else
+                afaire = .false.
+            endif
+        endif
+        if (afaire) then
+            if (lr8(i) .ge. xmax) then
+                imax = i
+                xmax = lr8(i)
+            endif
+            if (lr8(i) .le. xmin) then
+                imin = i
+                xmin = lr8(i)
+            endif
+        endif
+  1 end do
 !
 !
     inter=epsi*(xmax-xmin)
@@ -132,27 +133,27 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
         is = imax
         xp = xmin
         xs = xmax
-        do 2,i = 1,nr8
-        if (tous) then
-            afaire = .true.
-        else
-            if (lexi(i)) then
+        do 2 i = 1, nr8
+            if (tous) then
                 afaire = .true.
             else
-                afaire = .false.
+                if (lexi(i)) then
+                    afaire = .true.
+                else
+                    afaire = .false.
+                endif
             endif
-        endif
-        if (afaire) then
-            if ((lr8(i).ge.x) .and. (lr8(i).le.xs)) then
-                is = i
-                xs = lr8(i)
+            if (afaire) then
+                if ((lr8(i).ge.x) .and. (lr8(i).le.xs)) then
+                    is = i
+                    xs = lr8(i)
+                endif
+                if ((lr8(i).le.x) .and. (lr8(i).ge.xp)) then
+                    ip = i
+                    xp = lr8(i)
+                endif
             endif
-            if ((lr8(i).le.x) .and. (lr8(i).ge.xp)) then
-                ip = i
-                xp = lr8(i)
-            endif
-        endif
- 2      continue
+  2     continue
         i1 = ip
         i2 = is
         goto 9999
@@ -166,24 +167,24 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
         xp = xmax
         ipp = imin
         xpp = xmin
-        do 31,i = 1,nr8
-        if (tous) then
-            afaire = .true.
-        else
-            if (lexi(i)) then
+        do 31 i = 1, nr8
+            if (tous) then
                 afaire = .true.
             else
-                afaire = .false.
+                if (lexi(i)) then
+                    afaire = .true.
+                else
+                    afaire = .false.
+                endif
             endif
-        endif
-        if (afaire) then
-            if (i .eq. imax) goto 31
-            if (lr8(i) .ge. xpp) then
-                ipp = i
-                xpp = lr8(i)
+            if (afaire) then
+                if (i .eq. imax) goto 31
+                if (lr8(i) .ge. xpp) then
+                    ipp = i
+                    xpp = lr8(i)
+                endif
             endif
-        endif
-31      continue
+ 31     continue
         i1 = ipp
         i2 = ip
         goto 9999
@@ -196,24 +197,24 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
         xs = xmin
         iss = imax
         xss = xmax
-        do 41,i = 1,nr8
-        if (tous) then
-            afaire = .true.
-        else
-            if (lexi(i)) then
+        do 41 i = 1, nr8
+            if (tous) then
                 afaire = .true.
             else
-                afaire = .false.
+                if (lexi(i)) then
+                    afaire = .true.
+                else
+                    afaire = .false.
+                endif
             endif
-        endif
-        if (afaire) then
-            if (i .eq. imin) goto 41
-            if (lr8(i) .le. xss) then
-                iss = i
-                xss = lr8(i)
+            if (afaire) then
+                if (i .eq. imin) goto 41
+                if (lr8(i) .le. xss) then
+                    iss = i
+                    xss = lr8(i)
+                endif
             endif
-        endif
-41      continue
+ 41     continue
         i1 = is
         i2 = iss
         goto 9999
@@ -221,5 +222,5 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 !
 !
 !
-9999  continue
+9999 continue
 end subroutine

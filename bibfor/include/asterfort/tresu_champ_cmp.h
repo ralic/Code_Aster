@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                       refi, refr, refc, epsi, lign1,&
@@ -35,9 +37,9 @@ interface
         integer, intent(in) :: ific
         integer, intent(in) :: nbcmp
         character(len=8), intent(in) :: nocmp(*)
-        logical(kind=1), intent(in) :: llab
+        aster_logical, intent(in) :: llab
         character(len=*), intent(in) :: ssigne
-        logical(kind=1), intent(in), optional :: ignore
+        aster_logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_champ_cmp
 end interface

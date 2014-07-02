@@ -2,6 +2,7 @@ subroutine i3icfp(epsi, fglo, sgt, floc1, floc2,&
                   floc3, typf, nbpt, iret)
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/i3icfs.h"
     integer :: nbpt, typf, iret
     real(kind=8) :: epsi, fglo(3, *), sgt(*), floc1(*), floc2(*), floc3(*)
@@ -47,7 +48,7 @@ subroutine i3icfp(epsi, fglo, sgt, floc1, floc2,&
     real(kind=8) :: zero, unsur2, un, deux
     real(kind=8) :: x1, x2, y1, y2, x3, y3, xa, ya, xb, yb, dx, dy, a, b, c, d
     real(kind=8) :: r1, r2, t1, t2
-    logical(kind=1) :: okt1, okt2, okr1, okr2
+    aster_logical :: okt1, okt2, okr1, okr2
 !
 !======================================================================
 !

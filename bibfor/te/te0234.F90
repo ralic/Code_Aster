@@ -1,5 +1,6 @@
 subroutine te0234(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/defgen.h"
 #include "asterfort/dfdm1d.h"
@@ -56,7 +57,7 @@ subroutine te0234(option, nomte)
     real(kind=8) :: x3
     integer :: nno, nnos, jgano, ndim, kp, npg, i, k, icaco, iret
     integer :: ipoids, ivf, idfdk, igeom, imate
-    logical(kind=1) :: testl1, testl2
+    aster_logical :: testl1, testl2
     real(kind=8) :: zmin, hic
 !
 !
@@ -69,8 +70,8 @@ subroutine te0234(option, nomte)
 !DEB
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
 !-- LECTURE DU COMPORTEMENT
@@ -115,7 +116,7 @@ subroutine te0234(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
     do 10 i = 1, 3*nno
         zr(ivectu+i-1) = 0.d0
-10  end do
+ 10 end do
 !
     kpki = 0
     do 60 kp = 1, npg
@@ -132,7 +133,7 @@ subroutine te0234(option, nomte)
 !
         do 20 i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-20      continue
+ 20     continue
 !
         call rcvala(zi(imate), ' ', 'ELAS', 1, 'TEMP',&
                     [tpg], 2, nomres, valres, icodre,&
@@ -218,16 +219,16 @@ subroutine te0234(option, nomte)
 !
                 do 30 i = 1, 5
                     sigmtd(i) = sigmtd(i) + sigtdi(i)*0.5d0*hic*coef
-30              continue
+ 30             continue
 !
-40          continue
-50      continue
+ 40         continue
+ 50     continue
 !
 !-- CALCUL DES EFFORTS INTERIEURS
 !
         call effi(nomte, sigmtd, zr(ivf+k), dfdx, jacp,&
                   sina, cosa, r, zr(ivectu))
 !
-60  continue
+ 60 continue
 !
 end subroutine

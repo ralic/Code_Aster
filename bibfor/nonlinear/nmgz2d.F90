@@ -26,6 +26,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codere.h"
 #include "asterfort/lcegeo.h"
@@ -83,7 +84,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 !.......................................................................
 !
 !
-    logical(kind=1) :: grand, axi, resi, rigi
+    aster_logical :: grand, axi, resi, rigi
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, pq
 !
@@ -116,7 +117,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 !
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 ! 5 - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -129,7 +130,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
         do 20 j = 1, 6
             epsm (j)=0.d0
             epsp (j)=0.d0
-20      continue
+ 20     continue
         call nmgeom(2, nno, axi, grand, geomi,&
                     kpg, ipoids, ivf, idfde, zr( ideplm),&
                     .true._1, poids, dfdi, fm, epsm,&
@@ -146,8 +147,8 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
         do 55 n = 1, nno
             do 56 i = 1, 2
                 geomp(i,n) = geomi(i,n) + zr(ideplp-1+2*(n-1)+i)
-56          continue
-55      continue
+ 56         continue
+ 55     continue
 !
         call nmgeom(2, nno, axi, grand, geomp,&
                     kpg, ipoids, ivf, idfde, zr( ideplp),&
@@ -157,8 +158,8 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
         do 57 i = 1, 3
             do 58 j = 1, 3
                 fr(i,j) = kron(i,j)
-58          continue
-57      continue
+ 58         continue
+ 57     continue
 !
 !
         do 40 n = 1, nno
@@ -167,15 +168,15 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
                 def(2,n,i) = fr(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (fr(i,1)*dfdi(n,2) + fr(i,2)*dfdi(n,1))/ rac2
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
 ! 5.2.5 - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 !
         if (axi) then
             do 50 n = 1, nno
                 def(3,n,1) = fr(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
-50          continue
+ 50         continue
         endif
 !
 ! 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
@@ -188,14 +189,14 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
                     pff(3,n,m) = 0.d0
                     pff(4,n,m) =(dfdi(n,1)*dfdi(m,2)+dfdi(n,2)*dfdi(m,&
                     1))/rac2
-126              continue
-125          continue
+126             continue
+125         continue
         endif
 !
 !         CAUCHY
         do 59 i = 1, 4
             sign(i)=sigm(i,kpg)
-59      continue
+ 59     continue
         sign(4)=sign(4)*rac2
 !
 ! 5.3.2 - INTEGRATION
@@ -215,13 +216,13 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
         if (rigi) then
             do 160 n = 1, nno
                 do 150 i = 1, 2
-                    do 151,kl=1,4
-                    sig(kl)=0.d0
-                    sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                    sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                    sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                    sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-151                  continue
+                    do 151 kl = 1, 4
+                        sig(kl)=0.d0
+                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+151                 continue
                     do 140 j = 1, 2
                         do 130 m = 1, n
                             if (m .eq. n) then
@@ -273,10 +274,10 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
                                 matuu(kk) = matuu(kk) + (tmp1+tmp2)* poids
                             endif
 !
-130                      continue
-140                  continue
-150              continue
-160          continue
+130                     continue
+140                 continue
+150             continue
+160         continue
         endif
 !
 ! 5.5 - CALCUL DE LA FORCE INTERIEURE
@@ -288,23 +289,23 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 !            VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
                         zr(ivectu-1+2*(n-1)+i)= zr(ivectu-1+2*(n-1)+i)&
                         +def(kl,n,i)*sigma(kl)*poids
-210                  continue
-220              continue
-230          continue
+210                 continue
+220             continue
+230         continue
 !
 ! 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
 !
 !
             do 255 pq = 1, 4
                 sigp(pq,kpg) = sigma(pq)
-255          continue
+255         continue
 !
 !
         endif
 !
-800  end do
+800 end do
 !
-1956  continue
+1956 continue
 !
 ! - SYNTHESE DES CODES RETOURS
 !

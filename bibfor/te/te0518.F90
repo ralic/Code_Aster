@@ -18,6 +18,7 @@ subroutine te0518(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefv.h"
 #include "asterfort/jevech.h"
@@ -36,7 +37,7 @@ subroutine te0518(option, nomte)
 ! ......................................................................
     character(len=8) :: typmod(2)
     character(len=16) :: typilo
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nno, nnob, npg, ndim, nddl, neps, lgpg, jtab(7)
     integer :: iret, nnos, jgano, ipoids, ivf, idfde, ivfb, idfdeb, jganob
     integer :: igeom, imate, itype, icontm, ivarim, icopil, iborne, ictau

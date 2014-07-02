@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine recfor(numpas, nbpal, force, typal, finpal,&
                       cnpal, prdeff, conv)
@@ -24,7 +26,7 @@ interface
         character(len=6) :: typal(20)
         character(len=3) :: finpal(20)
         character(len=8) :: cnpal(20)
-        logical(kind=1) :: prdeff
+        aster_logical :: prdeff
         real(kind=8) :: conv
     end subroutine recfor
 end interface

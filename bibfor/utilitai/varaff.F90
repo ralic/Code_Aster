@@ -1,5 +1,6 @@
 subroutine varaff(noma, gran, base, ceselz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -48,10 +49,10 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: ceselm
     character(len=24) :: mesmai
-    integer :: nvarmx, jcesd, jcesl,    jlvavx
+    integer :: nvarmx, jcesd, jcesl, jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
-    logical(kind=1) :: ltou
+    aster_logical :: ltou
     character(len=8), pointer :: lnova(:) => null()
     character(len=8), pointer :: lnovx(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

@@ -22,6 +22,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
 !
 ! aslint: disable=W1501
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dfmdf.h"
 #include "asterfort/dfpdf.h"
@@ -63,8 +64,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
 ! OUT         : IRET CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: rigi, resi, elas, reinit
-    logical(kind=1) :: total, tot1, tot2, tot3, dbloq
+    aster_logical :: rigi, resi, elas, reinit
+    aster_logical :: total, tot1, tot2, tot3, dbloq
     integer :: ndimsi, i, j, k, l, p, q, m, n, t(3, 3)
     integer :: bdim, r1(6), r2(6)
 !
@@ -139,7 +140,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre, 1)
+                [0.d0], 2, nomres, valres, icodre,&
+                1)
     e = valres(1)
     nu = valres(2)
     lambda = e * nu / (un+nu) / (un - deux*nu)
@@ -154,7 +156,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
     nomres(5) = 'ECROB'
     nomres(6) = 'ECROD'
     call rcvala(imate, ' ', 'ENDO_ORTH_BETON', 0, ' ',&
-                [0.d0], 6, nomres, valres, icodre, 1)
+                [0.d0], 6, nomres, valres, icodre,&
+                1)
     alpha = valres(1)
     rk = valres(2)
     rk1 = valres(3)
@@ -179,11 +182,11 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
     if (resi) then
         do 1 k = 1, ndimsi
             eps(k) = epsm(k) + deps(k)
- 1      continue
+  1     continue
     else
         do 2 k = 1, ndimsi
             eps(k) = epsm(k)
- 2      continue
+  2     continue
         elas=.true.
     endif
 !
@@ -192,25 +195,25 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
             eps(i)=0.d0
             epsm(i)=0.d0
             deps(i)=0.d0
-456      continue
+456     continue
     endif
 !
     do 301 i = 4, 6
         eps(i)=eps(i)/rac2
         epsm(i)=epsm(i)/rac2
         deps(i)=deps(i)/rac2
-301  end do
+301 end do
 !-------------------------------------------------
 ! -- ENDOMMAGEMENT DANS LE REPERE GLOBAL
 !-------------------------------------------------
     do 3 i = 1, 3
         bm(i) = un-vim(i)
         b(i) = bm(i)
- 3  end do
+  3 end do
     do 300 i = 4, 6
         bm(i) = -vim(i)
         b(i) = bm(i)
-300  end do
+300 end do
     dm=vim(7)
     d=dm
 !
@@ -225,7 +228,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
         if (valb(i)-tolb .le. 0.d0) then
             bdim=bdim-1
         endif
-201  end do
+201 end do
     dbloq=.false.
     if (d-(un-tolb) .ge. 0.d0) then
         dbloq=.true.
@@ -266,7 +269,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                     valb(i)=tolb-r8prem()
                     total=.true.
                 endif
-101          continue
+101         continue
             if (d .gt. 1.d0) then
                 reinit=.true.
             endif
@@ -283,9 +286,9 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                             do 214 k = 1, 3
                                 b(t(i,j))=b(t(i,j))+vecb(i,k)*valb(k)*&
                                 vecb(j,k)
-214                          continue
-213                      continue
-212                  continue
+214                         continue
+213                     continue
+212                 continue
                 endif
             else
                 call lceobb(intmax, toler, epsm, deps, bm,&
@@ -308,12 +311,12 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                 do 203 l = 1, 3
                     do 204 k = 1, 3
                         interm(i,l)=interm(i,l)+vecb(k,i)*eps(t(k,l))
-204                  continue
+204                 continue
                     do 205 j = i, 3
                         epi(t(i,j))=epi(t(i,j))+interm(i,l)*vecb(l,j)
-205                  continue
-203              continue
-202          continue
+205                 continue
+203             continue
+202         continue
             tot1=.false.
             tot2=.false.
             tot3=.false.
@@ -323,21 +326,21 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                 bmr(2)=valb(3)
                 do 801 i = 1, 6
                     epsr(i)=epi(r1(i))
-801              continue
+801             continue
                 tot1=.true.
             else if (valb(2)-tolb.le.0.d0) then
                 bmr(1)=valb(3)
                 bmr(2)=valb(1)
                 do 802 i = 1, 6
                     epsr(i)=epi(r2(i))
-802              continue
+802             continue
                 tot2=.true.
             else if (valb(3)-tolb.le.0.d0) then
                 bmr(1)=valb(1)
                 bmr(2)=valb(2)
                 do 803 i = 1, 6
                     epsr(i)=epi(i)
-803              continue
+803             continue
                 tot3=.true.
             endif
 !
@@ -359,7 +362,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                     valbr(i)=tolb-r8prem()
                     total=.true.
                 endif
-102          continue
+102         continue
             if (d .gt. 1.d0) then
                 reinit=.true.
             endif
@@ -375,9 +378,9 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                             do 224 k = 1, 3
                                 br(t(i,j))=br(t(i,j))+vecbr(i,k)*&
                                 valbr(k)*vecbr(j,k)
-224                          continue
-223                      continue
-222                  continue
+224                         continue
+223                     continue
+222                 continue
                 endif
                 call r8inir(6, 0.d0, binter, 1)
                 if (tot1) then
@@ -403,12 +406,12 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                         do 234 k = 1, 3
                             interm(i,l)=interm(i,l)+vecb(i,k)*binter(&
                             t(k,l))
-234                      continue
+234                     continue
                         do 235 j = i, 3
                             b(t(i,j))=b(t(i,j))+interm(i,l)*vecb(j,l)
-235                      continue
-233                  continue
-232              continue
+235                     continue
+233                 continue
+232             continue
             else
                 call lceobb(intmax, toler, epsm, deps, bm,&
                             dm, lambda, mu, alpha, ecrob,&
@@ -430,12 +433,12 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                 do 243 l = 1, 3
                     do 244 k = 1, 3
                         interm(i,l)=interm(i,l)+vecb(k,i)*eps(t(k,l))
-244                  continue
+244                 continue
                     do 245 j = i, 3
                         epi(t(i,j))=epi(t(i,j))+interm(i,l)*vecb(l,j)
-245                  continue
-243              continue
-242          continue
+245                 continue
+243             continue
+242         continue
             tot1=.false.
             tot2=.false.
             tot3=.false.
@@ -444,19 +447,19 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                 bmr(1)=valb(1)
                 do 804 i = 1, 6
                     epsr(i)=epi(i)
-804              continue
+804             continue
                 tot1=.true.
             else if (valb(2)-tolb.gt.0.d0) then
                 bmr(1)=valb(2)
                 do 805 i = 1, 6
                     epsr(i)=epi(r1(i))
-805              continue
+805             continue
                 tot2=.true.
             else if (valb(3)-tolb.gt.0.d0) then
                 bmr(1)=valb(3)
                 do 806 i = 1, 6
                     epsr(i)=epi(r2(i))
-806              continue
+806             continue
                 tot3=.true.
             endif
 !
@@ -495,9 +498,9 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                         do 254 k = 1, 3
                             b(t(i,j))=b(t(i,j))+vecb(i,k)*valb(k)*&
                             vecb(j,k)
-254                      continue
-253                  continue
-252              continue
+254                     continue
+253                 continue
+252             continue
             else
                 call lceobb(intmax, toler, epsm, deps, bm,&
                             dm, lambda, mu, alpha, ecrob,&
@@ -512,10 +515,10 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
 !-----------------------------------------------------
         do 262 i = 1, 3
             vip(i)=un-b(i)
-262      continue
+262     continue
         do 263 i = 4, 6
             vip(i)=-b(i)
-263      continue
+263     continue
         vip(7)=d
         call sigeob(eps, b, d, 3, lambda,&
                     mu, sigm)
@@ -533,12 +536,12 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
         if ((b(1).eq.1.d0) .and. (b(2).eq.1.d0) .and. (b(3).eq.1.d0) .and. (d.eq.0.d0)) then
             do 910 i = 1, 6
                 dsidep(i,i)=dsidep(i,i)+deux*mu
-910          continue
+910         continue
             do 911 i = 1, 3
                 do 912 j = 1, 3
                     dsidep(i,j)=dsidep(i,j)+lambda
-912              continue
-911          continue
+912             continue
+911         continue
 !
         else
 !
@@ -553,15 +556,15 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                     do 100 k = 1, 3
                         cc(t(i,j))=cc(t(i,j))+b(t(i,k))*eps(t(k,j))+&
                         b(t(j,k))*eps(t(k,i))
-100                  continue
-99              continue
-98          continue
+100                 continue
+ 99             continue
+ 98         continue
             treps=0.d0
             treb=0.d0
             do 181 i = 1, 3
                 treb=treb+cc(i)/deux
                 treps=treps+eps(i)
-181          continue
+181         continue
             if (treb .ge. 0.d0) then
                 do 182 i = 1, 6
                     if (i .gt. 3) then
@@ -577,8 +580,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                         endif
                         dsidep(i,j)=dsidep(i,j)+lambda*b(i)*b(j)*&
                         rtemp2*rtemp3
-103                  continue
-182              continue
+103                 continue
+182             continue
             endif
             if (treps .lt. 0.d0) then
                 do 104 i = 1, 6
@@ -595,15 +598,15 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                         endif
                         dsidep(i,j)=dsidep(i,j)+lambda*ad*kron(i)*&
                         kron(j) *rtemp2*rtemp3
-105                  continue
-104              continue
+105                 continue
+104             continue
             endif
             call dfmdf(6, eps, zozo)
             do 106 i = 1, 6
                 do 107 j = 1, 6
                     dsidep(i,j)=dsidep(i,j)+deux*ad*mu*zozo(i,j)
-107              continue
-106          continue
+107             continue
+106         continue
             call dfpdf(6, cc, zaza)
             call r8inir(36, 0.d0, bobo, 1)
             do 108 i = 1, 3
@@ -647,18 +650,18 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                         kron(t(q,n))+kron(t(m,p))*&
                                         b(t(q,n)))*b(t(i,k))))*rtemp2*&
                                         rtemp3*rtemp6
-114                                  continue
-113                              continue
-112                          continue
-111                      continue
-110                  continue
-109              continue
-108          continue
+114                                 continue
+113                             continue
+112                         continue
+111                     continue
+110                 continue
+109             continue
+108         continue
             do 115 i = 1, 6
                 do 116 j = 1, 6
                     dsidep(i,j)=dsidep(i,j)+mu/deux*bobo(i,j)
-116              continue
-115          continue
+116             continue
+115         continue
             call r8inir(36, 0.d0, dsisup, 1)
             if (option(10:14) .ne. '_ELAS') then
                 if (.not.elas) then
@@ -668,7 +671,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                         call r8inir(6, 0.d0, deltab, 1)
                         do 250 i = 1, 6
                             deltab(i)=b(i)-bm(i)
-250                      continue
+250                     continue
                         deltad=d-dm
 !
                         call meobl3(eps, b, d, deltab, deltad,&
@@ -690,15 +693,15 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     eps(t(k,l))
                                     interb(i,l)=interb(i,l)+vecb(k,i)*&
                                     bm(t(k,l))
-304                              continue
+304                             continue
                                 do 305 j = i, 3
                                     epi(t(i,j))=epi(t(i,j))+interm(i,&
                                     l)*vecb(l,j)
                                     epib(t(i,j))=epib(t(i,j))+interb(&
                                     i,l)*vecb(l,j)
-305                              continue
-303                          continue
-302                      continue
+305                             continue
+303                         continue
+302                     continue
                         tot1=.false.
                         tot2=.false.
                         tot3=.false.
@@ -710,7 +713,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                             br(2)=valb(3)
                             do 807 i = 1, 6
                                 epsr(i)=epi(r1(i))
-807                          continue
+807                         continue
                             deltab(1)=valb(2)-epib(2)
                             deltab(2)=valb(3)-epib(3)
                             deltab(4)=-epib(6)
@@ -722,7 +725,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                             br(2)=valb(1)
                             do 808 i = 1, 6
                                 epsr(i)=epi(r2(i))
-808                          continue
+808                         continue
                             deltab(1)=valb(3)-epib(3)
                             deltab(2)=valb(1)-epib(1)
                             deltab(4)=-epib(5)
@@ -735,7 +738,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                             br(2)=valb(2)
                             do 809 i = 1, 6
                                 epsr(i)=epi(i)
-809                          continue
+809                         continue
                             deltab(1)=valb(1)-epib(1)
                             deltab(2)=valb(2)-epib(2)
                             deltab(4)=-epib(4)
@@ -763,8 +766,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     endif
                                     dsimed(r1(i),r1(j))=dsiint(i,j)*&
                                     rtemp1*rtemp2
-812                              continue
-811                          continue
+812                             continue
+811                         continue
                         else if (tot2) then
                             do 813 i = 1, 6
                                 do 814 j = 1, 6
@@ -780,8 +783,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     endif
                                     dsimed(r2(i),r2(j))=dsiint(i,j)*&
                                     rtemp1*rtemp2
-814                              continue
-813                          continue
+814                             continue
+813                         continue
                         else if (tot3) then
                             do 815 i = 1, 6
                                 do 816 j = 1, 6
@@ -797,8 +800,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     endif
                                     dsimed(i,j)=dsiint(i,j)*rtemp1*&
                                     rtemp2
-816                              continue
-815                          continue
+816                             continue
+815                         continue
                         endif
 !
                         call r8inir(36, 0.d0, dsisup, 1)
@@ -827,14 +830,14 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                         vecb(j,l)*vecb(p,m)*vecb(q,n)&
                                         *dsimed(t(k,l),t(m,n))*rtemp1*&
                                         rtemp2
-863                                                  continue
-862                                              continue
-861                                          continue
-860                                      continue
-853                                  continue
-852                              continue
-851                          continue
-850                      continue
+863                                                 continue
+862                                             continue
+861                                         continue
+860                                     continue
+853                                 continue
+852                             continue
+851                         continue
+850                     continue
 !
 !--------------------------------------------------------
 !--------------------------------------------------------
@@ -854,15 +857,15 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     eps(t(k,l))
                                     interb(i,l)=interb(i,l)+vecb(k,i)*&
                                     bm(t(k,l))
-604                              continue
+604                             continue
                                 do 605 j = i, 3
                                     epi(t(i,j))=epi(t(i,j))+interm(i,&
                                     l)*vecb(l,j)
                                     epib(t(i,j))=epib(t(i,j))+interb(&
                                     i,l)*vecb(l,j)
-605                              continue
-603                          continue
-602                      continue
+605                             continue
+603                         continue
+602                     continue
 !
                         tot1=.false.
                         tot2=.false.
@@ -875,7 +878,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                             br(1)=valb(1)
                             do 607 i = 1, 6
                                 epsr(i)=epi(i)
-607                          continue
+607                         continue
                             deltab(1)=valb(1)-epib(1)
                             deltad=d-dm
                             tot1=.true.
@@ -886,7 +889,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
 !
                             do 608 i = 1, 6
                                 epsr(i)=epi(r1(i))
-608                          continue
+608                         continue
                             deltab(1)=valb(2)-epib(2)
                             deltad=d-dm
                             tot2=.true.
@@ -897,7 +900,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
 !
                             do 609 i = 1, 6
                                 epsr(i)=epi(r2(i))
-609                          continue
+609                         continue
                             deltab(1)=valb(3)-epib(3)
                             deltad=d-dm
                             tot3=.true.
@@ -923,8 +926,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     endif
                                     dsimed(i,j)=dsiint(i,j)*rtemp1*&
                                     rtemp2
-612                              continue
-611                          continue
+612                             continue
+611                         continue
                         else if (tot2) then
                             do 613 i = 1, 6
                                 do 614 j = 1, 6
@@ -940,8 +943,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     endif
                                     dsimed(r1(i),r1(j))=dsiint(i,j)*&
                                     rtemp1*rtemp2
-614                              continue
-613                          continue
+614                             continue
+613                         continue
                         else if (tot3) then
                             do 615 i = 1, 6
                                 do 616 j = 1, 6
@@ -957,8 +960,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                     endif
                                     dsimed(r2(i),r2(j))=dsiint(i,j)*&
                                     rtemp1*rtemp2
-616                              continue
-615                          continue
+616                             continue
+615                         continue
                         endif
 !
                         call r8inir(36, 0.d0, dsisup, 1)
@@ -987,14 +990,14 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                                         vecb(j,l)*vecb(p,m)*vecb(q,n)&
                                         *dsimed(t(k,l),t(m,n))*rtemp1*&
                                         rtemp2
-663                                                  continue
-662                                              continue
-661                                          continue
-660                                      continue
-653                                  continue
-652                              continue
-651                          continue
-650                      continue
+663                                                 continue
+662                                             continue
+661                                         continue
+660                                     continue
+653                                 continue
+652                             continue
+651                         continue
+650                     continue
 !
                     endif
 !
@@ -1004,8 +1007,8 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
             do 120 i = 1, 6
                 do 121 j = 1, 6
                     dsidep(i,j)=dsidep(i,j)+dsisup(i,j)
-121              continue
-120          continue
+121             continue
+120         continue
 !
         endif
     endif

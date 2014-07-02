@@ -49,12 +49,13 @@ subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "asterfort/fointe.h"
     integer :: nsomm, ifm, niv, option
     real(kind=8) :: zrino2, zrino1, zrjno2, zrjno1, x3, y3, inst, insold
     real(kind=8) :: valfp(9), valfm(9)
     character(len=8) :: k8cart
-    logical(kind=1) :: ltheta
+    aster_logical :: ltheta
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: icode

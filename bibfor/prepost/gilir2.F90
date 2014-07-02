@@ -1,6 +1,7 @@
 subroutine gilir2(nfic, niv, ndim, nbobo)
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/gicnx2.h"
 #include "asterfort/gidoma.h"
@@ -48,7 +49,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
     character(len=4) :: k4bid, kbid4
     character(len=6) :: k6bid
     character(len=14) :: kbid14
-    logical(kind=1) :: legrno
+    aster_logical :: legrno
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -57,7 +58,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
     call jemarq()
 !
     legrno = .false.
- 1  continue
+  1 continue
     read(nfic,1001,end=9997) kbid14, kbid4, ityp
 !
     if (kbid14 .eq. 'ENREGISTREMENT' .and. kbid4 .eq. 'TYPE') then
@@ -115,7 +116,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
                     call wkvect('&&GILIRE.INDIRECT', 'V V I', nboblu, iaptin)
                     do 10 i = 1, nboblu
                         zi(iaptin+i-1) = i
-10                  continue
+ 10                 continue
                 endif
                 goto 1
 !
@@ -151,7 +152,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
         goto 1
     endif
 !
-9997  continue
+9997 continue
 !
 !     -- ON CREE .CONNEX2:
     call gicnx2()

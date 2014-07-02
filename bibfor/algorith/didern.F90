@@ -19,12 +19,13 @@ function didern(sddisc, numins)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: didern
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+    aster_logical :: didern
     integer :: numins
     character(len=19) :: sddisc
 !

@@ -37,6 +37,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 !     IN : NBNOCH : I     : NOMBRE DE CHAMPS A LIRE
 !     -----------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/cnscno.h"
@@ -66,7 +67,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: astock
+    aster_logical :: astock
     integer :: ideas, precis, nbnoch
     character(len=*) :: nomres, mail, typres, acces, listr8, listis, crit
     character(len=*) :: linoch(*)
@@ -93,7 +94,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
     integer :: numord, jcnsv, jcnsl, imes, icmp, ino, ival, jabs, ncmp
     real(kind=8) :: amin, apas, rbid, rval, dir(3)
     complex(kind=8) :: cval, czero, cun
-    logical(kind=1) :: trouve, zcmplx, ficab, ficva, vucont, vudef
+    aster_logical :: trouve, zcmplx, ficab, ficva, vucont, vudef
 !
 !----------------------------------------------------------------------
 !

@@ -3,6 +3,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
                   codret)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/ccchel.h"
@@ -85,7 +86,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    logical(kind=1) :: exitim, exipou, optdem
+    aster_logical :: exitim, exipou, optdem
 !
     integer :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt
     integer :: nbtrou, minord, maxord, jlinst, iordr, nbordl
@@ -106,7 +107,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=24) :: chaout, ligrel, mateco, ligres
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt
 !
-    logical(kind=1) :: ligmod
+    aster_logical :: ligmod
 !
     call jemarq()
     codret = 1

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
                       numarc, instan, icham)
@@ -22,7 +24,7 @@ interface
         character(len=24) :: sdimpr
         character(len=19) :: sddisc
         character(len=24) :: sdieto
-        logical(kind=1) :: force
+        aster_logical :: force
         integer :: numarc
         real(kind=8) :: instan
         integer :: icham

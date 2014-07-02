@@ -20,13 +20,14 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmcmat.h"
     integer :: fonact(*)
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +48,7 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: leltc, leltf
+    aster_logical :: leltc, leltf
 !
 ! ----------------------------------------------------------------------
 !

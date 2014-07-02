@@ -1,5 +1,6 @@
 subroutine pecage(resu, modele, nbocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/calcul.h"
@@ -52,7 +53,7 @@ subroutine pecage(resu, modele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_GEOM"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret,  iocc, nt, ng, nm, nbgrma, jgr
+    integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nm, nbgrma, jgr
     integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
     integer :: np, ifm, niv, iorig, i, icage
     parameter (mxvale=29,nbparr=46)
@@ -65,7 +66,7 @@ subroutine pecage(resu, modele, nbocc)
     character(len=24) :: lchin(15), lchout(1), ligrel, mlggma, mlgnma
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
-    logical(kind=1) :: nsymx, nsymy
+    aster_logical :: nsymx, nsymy
     real(kind=8), pointer :: trav1(:) => null()
     ibid = 0
 !     ------------------------------------------------------------------

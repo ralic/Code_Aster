@@ -2,6 +2,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
                   lraide, lmasse, ldynam, solveu, lamor,&
                   lc, impr, ifapm, ind)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8pi.h"
@@ -17,7 +18,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 #include "asterfort/utmess.h"
 !
     integer :: nk, lraide, lmasse, ldynam, lamor, ifapm, ind
-    logical(kind=1) :: lc
+    aster_logical :: lc
     real(kind=8) :: theta
     complex(kind=8) :: lambda
     character(len=3) :: impr
@@ -67,7 +68,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    integer :: j, nkm1, nbcmb, ibid, iret, jmatc,   lmatsh
+    integer :: j, nkm1, nbcmb, ibid, iret, jmatc, lmatsh
     real(kind=8) :: rauxx, rauxy, rauxm, prec, prec1, pi, coef(6), valr(2), rmin
     real(kind=8) :: rayon, r8bid, rindc
     complex(kind=8) :: caux2
@@ -105,7 +106,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
         caux2=zc(jmatc+nk)
         do 10 j = nkm1, 0, -1
             caux2=caux2*lambda+zc(jmatc+j)
-10      continue
+ 10     continue
 !
 !     ------------------------------------------------------------------
 !     ------------------- METHOD LDLT ----------------------------------

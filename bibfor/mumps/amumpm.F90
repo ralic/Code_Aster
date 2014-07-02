@@ -61,7 +61,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: kxmps, ifmump
-    logical(kind=1) :: ldist, lmd, lpreco
+    aster_logical :: ldist, lmd, lpreco
     real(kind=8) :: epsmat
     character(len=1) :: type
     character(len=5) :: klag2
@@ -75,14 +75,14 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "jeveux.h"
 !
 !
-    type (smumps_struc) , pointer :: smpsk => null()
-    type (cmumps_struc) , pointer :: cmpsk => null()
-    type (dmumps_struc) , pointer :: dmpsk => null()
-    type (zmumps_struc) , pointer :: zmpsk => null()
-    integer ::  nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
+    type(smumps_struc), pointer :: smpsk => null()
+    type(cmumps_struc), pointer :: cmpsk => null()
+    type(dmumps_struc), pointer :: dmpsk => null()
+    type(zmumps_struc), pointer :: zmpsk => null()
+    integer :: nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
     integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k
     integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
-    integer ::  kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
+    integer :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
     integer :: nfilt3, isizemu, nsizemu, rang, esizemu
     mumps_int :: nbeq, nz2, iligg, jcolg
     character(len=4) :: etam
@@ -93,7 +93,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest
     complex(kind=8) :: caux
-    logical(kind=1) :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
+    aster_logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
     integer, pointer :: smdi(:) => null()
     integer, pointer :: nequ(:) => null()
 !

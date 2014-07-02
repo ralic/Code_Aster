@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a, &
                            numnoe_b, numnoe_c, ab, ac, l_trian)
@@ -27,6 +29,6 @@ interface
         integer, intent(out) :: numnoe_c
         real(kind=8), intent(out) :: ab(3)
         real(kind=8), intent(out) :: ac(3)
-        logical(kind=1), intent(out) :: l_trian
+        aster_logical, intent(out) :: l_trian
     end subroutine drz03d_tria
 end interface

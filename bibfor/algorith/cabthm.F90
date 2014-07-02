@@ -70,11 +70,12 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
 !
 ! ======================================================================
 ! ======================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/matini.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nddls, nddlm, nmec, np1, np2, ndim, nno, i, n, kk, yamec
     integer :: nnos, nnom, kpi, dimdef, dimuel, ipoids, idfde, ivf
     integer :: addeme, yap1, yap2, addep1, addep2, yate, addete
@@ -122,10 +123,10 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
 !
         do 200 n = 1, nnos
             dfdi2(n,3)=0.d0
-200      continue
+200     continue
         do 201 n = 1, nno
             dfdi(n,3)=0.d0
-201      continue
+201     continue
     endif
 ! ======================================================================
 ! --- MODIFICATION DU POIDS POUR LES MODELISATIONS AXIS ----------------
@@ -135,7 +136,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
         r = 0.d0
         do 10 n = 1, nno
             r = r + zr(ivf + n + kk - 1)*geom(1,n)
-10      continue
+ 10     continue
 ! ======================================================================
 ! --- DANS LE CAS OU R EGAL 0, ON A UN JACOBIEN NUL --------------------
 ! --- EN UN POINT DE GAUSS, ON PREND LE MAX DU RAYON -------------------
@@ -145,7 +146,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
             rmax=geom(1,1)
             do 15 n = 2, nno
                 rmax=max(geom(1,n),rmax)
-15          continue
+ 15         continue
             poids = poids*1.d-03*rmax
         else
             poids = poids*r
@@ -163,14 +164,14 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
             do 103 i = 1, ndim
                 b(addeme-1+i,(n-1)*nddls+i)= b(addeme-1+i,(n-1)*nddls+&
                 i)+zr(ivf+n+(kpi-1)*nno-1)
-103          continue
+103         continue
 ! ======================================================================
 ! --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D) -------
 ! ======================================================================
             do 104 i = 1, ndim
                 b(addeme+ndim-1+i,(n-1)*nddls+i)= b(addeme+ndim-1+i,(&
                 n-1)*nddls+i)+dfdi(n,i)
-104          continue
+104         continue
 ! ======================================================================
 ! --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
 ! ======================================================================
@@ -218,7 +219,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
             do 105 i = 1, ndim
                 b(addep1+i,(n-1)*nddls+nmec+1)= b(addep1+i,(n-1)*&
                 nddls+nmec+1)+dfdi2(n,i)
-105          continue
+105         continue
         endif
 ! ======================================================================
 ! --- SI PRESS2 --------------------------------------------------------
@@ -229,7 +230,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
             do 106 i = 1, ndim
                 b(addep2+i,(n-1)*nddls+nmec+np1+1)= b(addep2+i,(n-1)*&
                 nddls+nmec+np1+1)+dfdi2(n,i)
-106          continue
+106         continue
         endif
 ! ======================================================================
 ! --- SI TEMPE ---------------------------------------------------------
@@ -240,9 +241,9 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
             do 107 i = 1, ndim
                 b(addete+i,(n-1)*nddls+nmec+np1+np2+1)= b(addete+i,(n-&
                 1)*nddls+nmec+np1+np2+1)+dfdi2(n,i)
-107          continue
+107         continue
         endif
-102  end do
+102 end do
 ! ======================================================================
 ! --- ON REMPLIT MAINTENANT LE COIN SUPERIEUR DROIT DE B CORRESPONDANT -
 ! --- AUX NOEUDS MILIEUX (MECANIQUE - FONCTIONS DE FORMES P2) ----------
@@ -253,14 +254,14 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
                 b(addeme-1+i,nnos*nddls+(n-1)*nddlm+i)= b(addeme-1+i,&
                 nnos*nddls+(n-1)*nddlm+i) +zr(ivf+n+nnos+(kpi-1)*nno-&
                 1)
-301          continue
+301         continue
 ! ======================================================================
 ! --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D) -------
 ! ======================================================================
             do 304 i = 1, ndim
                 b(addeme+ndim-1+i,nnos*nddls+(n-1)*nddlm+i)= b(addeme+&
                 ndim-1+i,nnos*nddls+(n-1)*nddlm+i) +dfdi(n+nnos,i)
-304          continue
+304         continue
 ! ======================================================================
 ! --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
 ! ======================================================================
@@ -298,7 +299,7 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
                 b(addeme+ndim+5,nnos*nddls+(n-1)*nddlm+3)= b(addeme+&
                 ndim+5,nnos*nddls+(n-1)*nddlm+3) +dfdi(n+nnos,2)/rac
             endif
-300      continue
+300     continue
     endif
 ! ======================================================================
 ! --- LE COIN INFERIEUR DROIT EST NUL ----------------------------------

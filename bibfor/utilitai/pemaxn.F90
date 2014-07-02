@@ -3,6 +3,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8maem.h"
@@ -65,8 +66,8 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 !     IN  INST    : INSTANT
 !     ------------------------------------------------------------------
 !
-    integer :: nbma, i,  jcesl
-    integer ::  jcmpgd, ncmpm
+    integer :: nbma, i, jcesl
+    integer :: jcmpgd, ncmpm
     integer :: icmp, nbpara, nbno
     integer :: ino, nmin, nmax, npara, nbcmpm
     real(kind=8) :: vmin, vmax, inst
@@ -74,7 +75,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     character(len=8) :: noma, k8b, nomgd, nomva, knmin, knmax
     character(len=19) :: ligrel, cesout
     character(len=24) :: nomnoe
-    logical(kind=1) :: exist
+    aster_logical :: exist
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=16) :: nompar(4*nbcmp+5), nomax(2*nbcmp+3)

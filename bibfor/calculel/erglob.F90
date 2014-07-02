@@ -1,6 +1,7 @@
 subroutine erglob(cheler, yathm, perman, option, iord,&
                   resuco, resuc1)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/celver.h"
 #include "asterfort/digdel.h"
@@ -17,7 +18,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
     character(len=*) :: resuco
     character(len=19) :: resuc1
     character(len=*) :: cheler, option
-    logical(kind=1) :: yathm, perman
+    aster_logical :: yathm, perman
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +68,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
     integer :: ibid, longt, long2, mode, j, iavale, icoef, nbgr, jceld
     character(len=4) :: docu
     character(len=19) :: chele2, ligrel
-    logical(kind=1) :: first
+    aster_logical :: first
     character(len=24), pointer :: celk(:) => null()
 !
 ! ----------------------------------------------------------------------

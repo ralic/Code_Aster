@@ -18,6 +18,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jxdeps.h"
 #include "asterfort/jxecrb.h"
@@ -52,7 +53,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical(kind=1) :: litlec
+    aster_logical :: litlec
     common /lficje/  litlec(n)
     integer :: idn, iext, nbenrg
     common /iextje/  idn(n) , iext(n) , nbenrg(n)
@@ -61,7 +62,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
     common /jusadi/  jusadi(n)
 !     ------------------------------------------------------------------
     integer :: iadmo, kadd, ladd, nde, lgbl, lso2
-    logical(kind=1) :: lpetit
+    aster_logical :: lpetit
     parameter      ( nde = 6)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXLIRO
@@ -128,12 +129,12 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                         do 103 k = numdeb, numext
                             call jxouvr(ic, k+1)
                             iext(ic) = iext(ic)+1
-103                      continue
+103                     continue
                     endif
                     goto 104
-101              continue
+101             continue
                 call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax(ic))
-104              continue
+104             continue
                 iitecr(ic) = kd
                 iusadi(jusadi(ic)+ 3*iitecr(ic)-2) = 0
                 iusadi(jusadi(ic)+ 3*iitecr(ic)-1) = 0
@@ -152,12 +153,12 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                             do 203 k = numdeb, numext
                                 call jxouvr(ic, k+1)
                                 iext(ic) = iext(ic)+1
-203                          continue
+203                         continue
                         endif
                         goto 204
-201                  continue
+201                 continue
                     call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax( ic))
-204                  continue
+204                 continue
                     iitecr(ic) = kd
                     iusadi(jusadi(ic)+ 3*iitecr(ic)-2) = 0
                     iusadi(jusadi(ic)+ 3*iitecr(ic)-1) = 0
@@ -183,7 +184,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
             nbl = lso2 / lgbl
             if (mod ( lso2 , lgbl ) .ne. 0) nbl = nbl + 1
             kd = 1
-301          continue
+301         continue
             if (kd .le. nblmax(ic)-nbl) then
                 lsadi = jusadi(ic)+3*kd-2
                 do 302 kl = 1, nbl
@@ -193,7 +194,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                         kd = kd + kl
                         goto 301
                     endif
-302              continue
+302             continue
                 iaddi(1) = kd
                 nbluti(ic) = max (kd+nbl-1,nbluti(ic))
                 numext = (nbluti(ic)-1)/nbenrg(ic)
@@ -202,12 +203,12 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                     do 303 k = numdeb, numext
                         call jxouvr(ic, k+1)
                         iext(ic) = iext(ic)+1
-303                  continue
+303                 continue
                 endif
                 goto 304
             endif
             call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax(ic))
-304          continue
+304         continue
             call jxecrb(ic, kd, iadmo, lso2, idco,&
                         idos)
         endif

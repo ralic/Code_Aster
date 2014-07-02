@@ -1,8 +1,9 @@
 subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
-                  refi, refr, refc, epsi, lign1,&
-                  lign2, crit, ific, nbcmp, nocmp,&
-                  llab, ssigne, ignore, compare)
+                           refi, refr, refc, epsi, lign1,&
+                           lign2, crit, ific, nbcmp, nocmp,&
+                           llab, ssigne, ignore, compare)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -33,9 +34,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     integer, intent(in) :: ific
     integer, intent(in) :: nbcmp
     character(len=8), intent(in) :: nocmp(*)
-    logical(kind=1), intent(in) :: llab
+    aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -80,7 +81,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=4) :: type
     character(len=8) :: tych, noddl
     character(len=19) :: cham19, cnsinr
-    logical(kind=1) :: skip
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
@@ -440,9 +441,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         endif
     endif
 !
-    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
-                         crit, epsi, ssigne, refr, valr, &
-                         refi, vali, refc, valc, ignore=skip, &
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
+                         crit, epsi, ssigne, refr, valr,&
+                         refi, vali, refc, valc, ignore=skip,&
                          compare=ordgrd)
 !
     call detrsd('CHAM_NO_S', cnsinr)

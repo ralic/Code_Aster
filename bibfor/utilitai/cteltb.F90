@@ -2,7 +2,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                   nkcmp, toucmp, nbcmp, typac, ndim,&
                   nrval, resu, nomtb, nsymb, chpgs,&
                   tych, nival, niord)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/indik8.h"
@@ -28,7 +29,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     character(len=16) :: nsymb
     character(len=19) :: chpgs
     character(len=24) :: nkcha, nkcmp, mesmai, nival, nrval, niord
-    logical(kind=1) :: toucmp
+    aster_logical :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,12 +72,12 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcmp, jkcha, jlma, jrval, jival, jniord,   jconx2
-    integer ::  jcpgl, jcpgd, i, j,  jcesl, jcesd,  nbmax
+    integer :: jcmp, jkcha, jlma, jrval, jival, jniord, jconx2
+    integer :: jcpgl, jcpgd, i, j, jcesl, jcesd, nbmax
     integer :: nbcmpx
-    integer :: n,   ima, ipt, ispt, icmp, indma, nbpt, kk
+    integer :: n, ima, ipt, ispt, icmp, indma, nbpt, kk
     integer :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr
-    integer :: nbpara,  iret
+    integer :: nbpara, iret
     character(len=8) :: kma, kno
     complex(kind=8) :: cbid
     character(len=19) :: chames
@@ -220,7 +221,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                 nom_cmp(kcp)=cesc(icmp)
                             endif
 !
-230                      continue
+230                     continue
                         if (kcp .eq. 0) goto 225
 !                   -- POUR NE PAS DEBORDER DES OBJETS (L=250):
                         ASSERT(kcp.le.200)
@@ -266,7 +267,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                             do 240 j = 1, ndim
                                 table_valr(kk+1)=vale(1+3*(inot-1)+j-1)
                                 kk=kk+1
-240                          continue
+240                         continue
                         else if (tych.eq.'ELGA') then
                             do 241 j = 1, ndim
                                 call cesexi('C', jcpgd, jcpgl, ima, ipt,&
@@ -275,12 +276,12 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                     table_valr(kk+1)=cpgv(iad)
                                     kk=kk+1
                                 endif
-241                          continue
+241                         continue
                         endif
                         do 250 j = 1, kcp
                             table_valr(kk+1)=val_cmp(j)
                             kk=kk+1
-250                      continue
+250                     continue
                         ASSERT(kk .eq. nr)
 !
                         kk=0
@@ -377,7 +378,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                         do 260 j = 1, kcp
                             table_parak(kk+1)=nom_cmp(j)
                             kk=kk+1
-260                      continue
+260                     continue
 !
                         ASSERT(kk .le. nbpara)
 !                       ON AJOUTE LA LIGNE A LA TABLE
@@ -385,9 +386,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                     [cbid], table_valk, 0)
 !
                         AS_DEALLOCATE(vk16=table_parak)
-225                  continue
+225                 continue
 !
-220              continue
+220             continue
 !
 210         continue
             AS_DEALLOCATE(vk8=nom_cmp)
@@ -395,7 +396,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
         endif
 !
-100  end do
+100 end do
 !
     AS_DEALLOCATE(vr=table_valr)
     AS_DEALLOCATE(vi=table_vali)

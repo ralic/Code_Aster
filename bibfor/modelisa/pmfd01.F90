@@ -28,6 +28,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
 !
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -53,7 +54,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     character(len=1) :: ki1
     character(len=2) :: ki2
     character(len=19) :: ces1, lichs(2), ces3, ligrmo, cel
-    logical(kind=1) :: lcumul(2), exipmf
+    aster_logical :: lcumul(2), exipmf
     real(kind=8) :: lcoefr(2)
     character(len=8) :: licmp(2+99)
     complex(kind=8) :: cbid

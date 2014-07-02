@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ftrsen(job, compq, select, n, t,&
                       ldt, q, ldq, wr, wi,&
@@ -24,7 +26,7 @@ interface
         integer :: ldt
         character(len=1) :: job
         character(len=1) :: compq
-        logical(kind=1) :: select(*)
+        aster_logical :: select(*)
         integer :: n
         real(kind=8) :: t(ldt, *)
         real(kind=8) :: q(ldq, *)

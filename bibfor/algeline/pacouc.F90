@@ -22,6 +22,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/jedema.h"
@@ -35,15 +36,15 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
     real(kind=8) :: amor(*), w(*), vecr4(*), vecr5(*)
     character(len=24) :: nom1, nom2
 !
-    logical(kind=1) :: check, veriu0
+    aster_logical :: check, veriu0
     real(kind=8) :: ksi0, kcaj, vgap
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, itypfl, j, jcompt, jextr
-    integer ::  k, k1, k10, k11, k12, k2
+    integer :: k, k1, k10, k11, k12, k2
     integer :: k3, k4, k5, k6, k7, k8, k9
-    integer :: l1, l2, l3,   nb, nt
+    integer :: l1, l2, l3, nb, nt
     integer :: nzone
     real(kind=8) :: bmax, bmin, delta, hmoy, pi, pulsam
     real(kind=8) :: visc
@@ -223,11 +224,11 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
                         nzone + 3*(k-1) + 1) = l2
                         zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
                         nzone + 3*(k-1) + 2) = l3
-30                  continue
+ 30                 continue
                 endif
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     if (.not.check) ier = 0
 !

@@ -3,6 +3,7 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -71,9 +72,9 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
     character(len=16) :: nomobj(nbobje), typobj(nbobje)
 !
     character(len=19) :: nomtab
-    logical(kind=1) :: l_new_table, l_copy_table, l_repl_object
+    aster_logical :: l_new_table, l_copy_table, l_repl_object
     integer :: i_repl_object
-    integer ::   jnobj, jnosd, jnuor, jtobj, jrins, jlins
+    integer :: jnobj, jnosd, jnuor, jtobj, jrins, jlins
     integer :: nboldp, nblign
     integer :: ipara, ilign, iobje, iobja, ibid
     character(len=24) :: vk(3)

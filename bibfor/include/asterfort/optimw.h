@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine optimw(method, nrupt, x, y, prob,&
                       sigw, nt, nur, nbres, calm,&
@@ -29,15 +31,15 @@ interface
         integer :: nt(*)
         integer :: nur(*)
         integer :: nbres
-        logical(kind=1) :: calm
-        logical(kind=1) :: cals
+        aster_logical :: calm
+        aster_logical :: cals
         real(kind=8) :: mk
         real(kind=8) :: sk(*)
         real(kind=8) :: mkp
         real(kind=8) :: skp(*)
-        logical(kind=1) :: impr
+        aster_logical :: impr
         integer :: ifm
-        logical(kind=1) :: dept
+        aster_logical :: dept
         integer :: indtp(*)
         integer :: nbtp
     end subroutine optimw

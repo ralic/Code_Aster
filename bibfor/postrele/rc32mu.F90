@@ -23,6 +23,7 @@ subroutine rc32mu()
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
@@ -40,11 +41,11 @@ subroutine rc32mu()
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
-    integer ::  ncmp, jcorp
+    integer :: ncmp, jcorp
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid
-    logical(kind=1) :: exist
+    aster_logical :: exist
     character(len=8) :: k8b, crit, nocmp(ncmp), tbsig(13)
     character(len=16) :: motclf, valek
     character(len=24) :: abscur
@@ -183,7 +184,7 @@ subroutine rc32mu()
                     valk (3) = valek
                     call utmess('F', 'POSTRCCM_44', nk=3, valk=valk, sr=zr( jabsc+k-1))
                 endif
-14          continue
+ 14         continue
 !
             l = ncmp*(i-1) + j
             zr(jmuno-1+l) = contraintes(1)
@@ -203,9 +204,9 @@ subroutine rc32mu()
             zr(jmuno-1+l) = 0.5d0*momen1
             zr(jmune-1+l) = 0.5d0*momen1
 !
-12      continue
+ 12     continue
 !
-10  end do
+ 10 end do
 !
     call jedetr(abscur)
     AS_DEALLOCATE(vr=contraintes)

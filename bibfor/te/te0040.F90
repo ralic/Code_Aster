@@ -1,5 +1,6 @@
 subroutine te0040(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/caurtg.h"
@@ -43,26 +44,26 @@ subroutine te0040(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  icompo,  iinpg
-    integer ::  ioutno, iret
+    integer :: icompo, iinpg
+    integer :: ioutno, iret
     integer :: jcara, jgeom
-    integer :: lzi, lzr, nbcou,  nso
+    integer :: lzi, lzr, nbcou, nso
 !
-
+!
 !-----------------------------------------------------------------------
-
+!
 !
     integer :: jmat, jnbspi
     integer :: nb1, nb2, npgsr, npgsn
 !
-
-
 !
-    logical(kind=1) :: lgreen
+!
+!
+    aster_logical :: lgreen
 !
 ! ----------------------------------------------------------------------
 !
-
+!
     lgreen=.false.
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
@@ -88,11 +89,10 @@ subroutine te0040(option, nomte)
         call jevech('PDEFONO', 'E', ioutno)
 !
         else if ((option.eq.'SIEF_ELNO') .or. (option.eq.'SIGM_ELNO'))&
-
-    then
+        then
         call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
                     iinpg, 'S')
-        
+!
         call jevech('PSIEFNOR', 'E', ioutno)
         call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
@@ -104,7 +104,7 @@ subroutine te0040(option, nomte)
         ASSERT(.false.)
     endif
 !
-
+!
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
 !
@@ -112,9 +112,9 @@ subroutine te0040(option, nomte)
 !---  EXTRAPOLATION VERS LES NOEUDS SOMMETS
 !
     call jevete('&INEL.'//nomte//'.B', ' ', jmat)
-
-    call elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
-                   zr(jgeom),zr(jcara),zr(iinpg),zr(ioutno),zr(lzr), &
-                   zr(jmat), lgreen)
-   !
+!
+    call elno_coq3d(option, nomte, nb1, nb2, npgsr,&
+                    npgsn, nso, nbcou, zr(jgeom), zr(jcara),&
+                    zr(iinpg), zr(ioutno), zr(lzr), zr(jmat), lgreen)
+    !
 end subroutine

@@ -16,6 +16,7 @@ subroutine te0535(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -71,11 +72,11 @@ subroutine te0535(option, nomte)
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
     real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
     real(kind=8) :: zero
-    integer ::   jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
+    integer :: jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
     integer :: jtab(7), ivarmp, istrxp, istrxm
     integer :: ip, inbf, jcret, codret, codrep
     integer :: iposcp, iposig, ipomod, iinstp, iinstm
-    integer :: icomax, ico, nbgf, isdcom, nbgfmx,ncomp
+    integer :: icomax, ico, nbgf, isdcom, nbgfmx, ncomp
     integer :: npg, nnoel, ipoids, ivf
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
@@ -83,7 +84,7 @@ subroutine te0535(option, nomte)
     real(kind=8) :: vv(12), fv(12), sv(78), ksg(3), sign_noeu
     real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
-    logical(kind=1) :: vecteu, matric, reactu
+    aster_logical :: vecteu, matric, reactu
     character(len=8) :: mator
     character(len=24) :: valk(2)
     real(kind=8), pointer :: defmfib(:) => null()
@@ -93,7 +94,7 @@ subroutine te0535(option, nomte)
 !
 ! --- ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nnoel,  npg=npg, jpoids=ipoids, jvf=ivf)
+    call elrefe_info(fami='RIGI', nno=nnoel, npg=npg, jpoids=ipoids, jvf=ivf)
     ASSERT(nno.eq.nnoel)
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
     ncomp = 18
@@ -265,10 +266,10 @@ subroutine te0535(option, nomte)
 ! ---       DEFORMATIONS '-' ET INCREMENT DE DEFORMATION PAR FIBRE
 !           MOINS --> M
             call pmfdge(b, gg, deplm, alicom, dege)
-            call pmfdef(nbfib, ncarfi, zr(jacf), dege,defmfib)
+            call pmfdef(nbfib, ncarfi, zr(jacf), dege, defmfib)
 !  --       INCREMENT --> P
             call pmfdge(b, gg, deplp, dalico, dege)
-            call pmfdef(nbfib, ncarfi, zr(jacf), dege,defpfib)
+            call pmfdef(nbfib, ncarfi, zr(jacf), dege, defpfib)
 !
             iposig=jsigfb + nbfib*(ip-1)
             ipomod=jmodfb + nbfib*(ip-1)
@@ -292,7 +293,7 @@ subroutine te0535(option, nomte)
 ! ---       CALCULS MODE INCOMPATIBLE HV=INT(GT KS G), HE=INT(GT FS)
             hv = hv+wi*gg*gg*matsec(1)
             he = he+wi*gg*vs(1)
-500      continue
+500     continue
 ! ---    FIN BOUCLE POINTS DE GAUSS
 ! ---    ENCORE UN PEU DE MODE INCOMPATIBLE
         if (abs(hv) .le. r8prem()) then
@@ -311,12 +312,12 @@ subroutine te0535(option, nomte)
         endif
     end do
 ! --- FIN BOUCLE CALCUL ALICO
-710  continue
+710 continue
 !
 ! --- QUAND ON A CONVERGE SUR ALICO, ON PEUT INTEGRER SUR L'ELEMENT
     do ip = 1, npg
         call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi,&
-                     wi, b, gg)
+                    wi, b, gg)
 ! ---    CALCUL LA MATRICE ELEMENTAIRE (SAUF POUR RAPH_MECA)
         if (option .ne. 'RAPH_MECA') then
             ipomod = jmodfb + nbfib*(ip-1)
@@ -327,7 +328,7 @@ subroutine te0535(option, nomte)
             call pmfbkb(matsec, b, wi, gxjx, sk)
             do 320 i = 1, nk
                 klv(i) = klv(i)+sk(i)
-320          continue
+320         continue
 ! ---       ON SE SERT DE PMFBTS POUR CALCULER BT,KS,G. G EST SCALAIRE
             ksg(1) = matsec(1)*gg
             ksg(2) = matsec(2)*gg
@@ -335,7 +336,7 @@ subroutine te0535(option, nomte)
             call pmfbts(b, wi, ksg, vv)
             do 340 i = 1, 12
                 fv(i) = fv(i)+vv(i)
-340          continue
+340         continue
         endif
 ! ---    SI PAS RIGI_MECA_TANG, ON CALCULE LES FORCES INTERNES
         if (option .ne. 'RIGI_MECA_TANG') then
@@ -344,7 +345,7 @@ subroutine te0535(option, nomte)
             call pmfbts(b, wi, vs, ve)
             do 360 i = 1, 12
                 fl(i) = fl(i)+ve(i)
-360          continue
+360         continue
         endif
     end do
 ! --  ON MODIFIE LA MATRICE DE RAIDEUR PAR CONDENSATION STATIQUE
@@ -352,7 +353,7 @@ subroutine te0535(option, nomte)
         call pmffft(fv, sv)
         do 380 i = 1, nk
             klv(i) = klv(i) - sv(i)/hv
-380      continue
+380     continue
     endif
 !
 ! --- TORSION A PART POUR LES FORCES INTERNE
@@ -367,7 +368,7 @@ subroutine te0535(option, nomte)
             iposig=jsigfb + nbfib*(ip-1)
             do 300 i = 0, nbfib-1
                 zr(iposcp+i) = zr(iposig+i)
-300          continue
+300         continue
 !           STOCKAGE DES FORCES INTEGREES
             if (ip .eq. 1) then
                 sign_noeu = -1.d0
@@ -381,7 +382,7 @@ subroutine te0535(option, nomte)
             zr(istrxp-1+ncomp*(ip-1)+5) = fl(6*(ip-1)+5)
             zr(istrxp-1+ncomp*(ip-1)+6) = fl(6*(ip-1)+6)
             zr(istrxp-1+ncomp*(ip-1)+15)= alicom+dalico
-310      continue
+310     continue
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
     endif
 !
@@ -391,7 +392,7 @@ subroutine te0535(option, nomte)
         do 15 i = 1, nc
             sigma(i) = - zr(istrxp+i-1)
             sigma(i+nc) = zr(istrxp+ncomp+i-1)
-15      continue
+ 15     continue
 !
         call r8inir(nk, zero, rgeom, 1)
         call pmfitg(nbfib, 3, zr(jacf), cars1)
@@ -412,7 +413,7 @@ subroutine te0535(option, nomte)
     endif
 !
 !
-900  continue
+900 continue
 ! --- SORTIE PROPRE: CODE RETOUR ET LIBERATION DES RESSOURCES
     if (vecteu) then
         call jevech('PCODRET', 'E', jcret)

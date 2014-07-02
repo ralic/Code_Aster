@@ -49,6 +49,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -61,7 +62,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
     character(len=8) :: mailla
     integer :: nbcoc
     character(len=8) :: macoc(2+nbcoc)
-    logical(kind=1) :: loreor
+    aster_logical :: loreor
     integer :: nbcor
     character(len=8) :: macor(2+nbcor)
 !
@@ -136,7 +137,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
         xg=xg+zr(jcoor+3*(no-1)+0)
         yg=yg+zr(jcoor+3*(no-1)+1)
         zg=zg+zr(jcoor+3*(no-1)+2)
-10  end do
+ 10 end do
     xg=xg/nbcor
     yg=yg/nbcor
     zg=zg/nbcor

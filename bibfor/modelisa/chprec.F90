@@ -25,6 +25,7 @@ subroutine chprec(chou)
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -67,7 +68,7 @@ subroutine chprec(chou)
     character(len=19) :: chextr, noch19, knum
     character(len=24) :: valk(3)
     character(len=8) :: k8bid, ma, fis
-    logical(kind=1) :: grille
+    aster_logical :: grille
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -5,6 +5,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                   yb, solveu)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/ggubs.h"
@@ -98,7 +99,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     integer :: vali(4)
     integer :: i, j, k, abyh, abyb, io
     real(kind=8) :: a, b, c, sr, si, deuxsr, mods2, invsi, si2, d1, d2
-    logical(kind=1) :: oc, ro
+    aster_logical :: oc, ro
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ii, ips
@@ -133,24 +134,24 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     call wkvect('&&WP2INI.PT.B.LANCZO.H', 'V V I', nbvect, aptbyh)
     call wkvect('&&WP2INI.PT.B.LANCZO.B', 'V V I', nbvect, aptbyb)
 !
-    do 10, i = 1, nbvect, 1
-    call codent(i, 'G', strg)
-    call jecreo('&&WP2INI.BYH'//strg, 'V V R')
-    call jeecra('&&WP2INI.BYH'//strg, 'LONMAX', neq)
-    call jeecra('&&WP2INI.BYH'//strg, 'LONUTI', neq)
-    call jeveut('&&WP2INI.BYH'//strg, 'E', zi(aptbyh + i-1))
-    call jecreo('&&WP2INI.BYB'//strg, 'V V R')
-    call jeecra('&&WP2INI.BYB'//strg, 'LONMAX', neq)
-    call jeecra('&&WP2INI.BYB'//strg, 'LONUTI', neq)
-    call jeveut('&&WP2INI.BYB'//strg, 'E', zi(aptbyb + i-1))
-    10 end do
+    do 10 i = 1, nbvect, 1
+        call codent(i, 'G', strg)
+        call jecreo('&&WP2INI.BYH'//strg, 'V V R')
+        call jeecra('&&WP2INI.BYH'//strg, 'LONMAX', neq)
+        call jeecra('&&WP2INI.BYH'//strg, 'LONUTI', neq)
+        call jeveut('&&WP2INI.BYH'//strg, 'E', zi(aptbyh + i-1))
+        call jecreo('&&WP2INI.BYB'//strg, 'V V R')
+        call jeecra('&&WP2INI.BYB'//strg, 'LONMAX', neq)
+        call jeecra('&&WP2INI.BYB'//strg, 'LONUTI', neq)
+        call jeveut('&&WP2INI.BYB'//strg, 'E', zi(aptbyb + i-1))
+ 10 end do
 !
     dseed = 773218.d0
     call ggubs(dseed, neq, xb)
     do 15 ii = 1, neq
         xh(ii) = 0.d0
         xb(ii) = lbloq(ii)*lddl(ii)*xb(ii)
-15  end do
+ 15 end do
 !
 !     1 - GENERATION DU PREMIER VECTEUR
 !
@@ -163,13 +164,13 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     do 100 i = 1, neq
         zr(abayh + i-1) = -zr(au1 + i-1) - zr(au2 + i-1)
         zr(abayb + i-1) = -zr(au3 + i-1)
-100  end do
+100 end do
 !
 !     --- 1.2. B_NORMALISATION
     c = 0.d0
     do 110 ips = 1, neq
         c = c + zr(abayh+ips-1)*yh(ips,1) + zr(abayb+ips-1)*yb(ips,1)
-110  end do
+110 end do
     a = 1.d0/sqrt(abs(c))
     if (c .gt. 0.d0) then
         signe(1) = 1.d0
@@ -185,7 +186,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         yb(i,1) = a*yb(i,1)
         zr(abyh + i-1) = a*zr(abayh + i-1)
         zr(abyb + i-1) = a*zr(abayb + i-1)
-120  end do
+120 end do
 !
 !     --- 1.3. COEFFICIENT DE LA TRIDIAGONALE
     call mrmult('ZERO', lamor, yh(1, 1), zr(au1), 1,&
@@ -198,7 +199,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     a = 0.d0
     do 130 i = 1, neq
         a = a - yh(i,1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i,1)* zr( au3 + i-1)
-130  end do
+130 end do
     alpha(1) = a
     beta(1) = 0.d0
 !
@@ -214,12 +215,12 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         do 210 i = 1, neq
             zr(abayh + i-1) = -zr(au1 + i-1) - zr(au2 + i-1)
             zr(abayb + i-1) = -zr(au3 + i-1)
-210      continue
+210     continue
 !
         a = 0.d0
         do 215 ips = 1, neq
             a = a + zr(abayh+ips-1)*yh(ips,j-1) + zr(abayb+ips-1)*yb( ips,j-1)
-215      continue
+215     continue
 !
         d1 = signe(j-1)
         a = d1*a
@@ -228,18 +229,18 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             do 220 i = 1, neq
                 yh(i,j) = yh(i,j) - a*yh(i,j-1)
                 yb(i,j) = yb(i,j) - a*yb(i,j-1)
-220          continue
+220         continue
         else
             b = 0.d0
             do 225 ips = 1, neq
                 b = b + zr(abayh+ips-1)*yh(ips,j-2) + zr(abayb+ips-1)* yb(ips,j-2)
-225          continue
+225         continue
             d2 = signe(j-2)
             b = d2*b
             do 230 i = 1, neq
                 yh(i,j) = yh(i,j) - a*yh(i,j-1) - b*yh(i,j-2)
                 yb(i,j) = yb(i,j) - a*yb(i,j-1) - b*yb(i,j-2)
-230          continue
+230         continue
         endif
 !
 !        --- 2.2. NORMALISATION
@@ -259,7 +260,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         c = 0.d0
         do 235 ips = 1, neq
             c = c + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb(ips, j)
-235      continue
+235     continue
 !
         a = 1.d0/sqrt(abs(c))
         if (c .gt. 0.d0) then
@@ -274,7 +275,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             zr(abyb + i-1) = a*zr(abyb + i-1)
             yh(i,j) = a*yh(i,j)
             yb(i,j) = a*yb(i,j)
-240      continue
+240     continue
 !
 !        --- 2.3. REORTHOGONALISTION
         ro = .false.
@@ -284,22 +285,22 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             a = 0.d0
             do 310 ips = 1, neq
                 a = a + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb( ips,j)
-310          continue
+310         continue
             oc = ( abs(a) .lt. prorto )
             ro = (.not. oc) .or. ro
 !
             io = 1
-600          continue
+600         continue
             if ((.not. oc) .and. (io .le. nborto)) then
                 a = a*signe(i)
                 do 315 k = 1, neq
                     yh(k,j) = yh(k,j) - a*yh(k,i)
                     yb(k,j) = yb(k,j) - a*yb(k,i)
-315              continue
+315             continue
                 b = 0.d0
                 do 320 ips = 1, neq
                     b = b + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)* yb(ips,j)
-320              continue
+320             continue
                 if (abs(b) .gt. abs(a)) then
                     vali (1) = io
                     vali (2) = io
@@ -315,7 +316,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 endif
                 goto 600
             endif
-300      continue
+300     continue
 !
 !        --- 2.4. REACTUALISATION
         if (ro) then
@@ -335,7 +336,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             c = 0.d0
             do 350 ips = 1, neq
                 c = c + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb( ips,j)
-350          continue
+350         continue
             a = 1.d0/sqrt(abs(c))
             if (c .gt. 0.d0) then
                 signe(j) = 1.d0
@@ -349,7 +350,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 zr(abyb + i-1) = a*zr(abyb + i-1)
                 yh(i,j) = a*yh(i,j)
                 yb(i,j) = a*yb(i,j)
-400          continue
+400         continue
         endif
 !
 !        --- 2.5. COEFFICIENTS DE LA TRIDIAGONALE
@@ -362,13 +363,13 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !
         a = 0.d0
         b = 0.d0
-        do 500, i = 1, neq, 1
-        a = a - yh(i,j)*(zr(au1+ i-1) + zr(au2 + i-1)) - yb(i,j)* zr(au3 + i-1)
-        b = b - yh(i,j-1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i, j-1)* zr(au3 + i-1)
-500      continue
+        do 500 i = 1, neq, 1
+            a = a - yh(i,j)*(zr(au1+ i-1) + zr(au2 + i-1)) - yb(i,j)* zr(au3 + i-1)
+            b = b - yh(i,j-1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i, j-1)* zr(au3 + i-1)
+500     continue
         alpha(j) = a
         beta (j) = b
-200  end do
+200 end do
 !
 !     --- DESTRUCTION DES OJB TEMPORAIRES
     call jedetr('&&WP2INI.VECTEUR.AUX.U1R')
@@ -380,11 +381,11 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     call jedetr('&&WP2INI.B_A.VECT.LANC.B')
     call jedetr('&&WP2INI.PT.B.LANCZO.H')
     call jedetr('&&WP2INI.PT.B.LANCZO.B')
-    do 700, i = 1, nbvect, 1
-    call codent(i, 'G', strg)
-    call jedetr('&&WP2INI.BYH'//strg)
-    call jedetr('&&WP2INI.BYB'//strg)
-    700 end do
+    do 700 i = 1, nbvect, 1
+        call codent(i, 'G', strg)
+        call jedetr('&&WP2INI.BYH'//strg)
+        call jedetr('&&WP2INI.BYB'//strg)
+700 end do
 !
     call jedema()
 end subroutine

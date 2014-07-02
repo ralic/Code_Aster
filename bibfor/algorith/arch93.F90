@@ -38,6 +38,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -82,8 +83,8 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
     complex(kind=8) :: c16b
 !
-    logical(kind=1) :: direct
-    logical(kind=1) :: lbid
+    aster_logical :: direct
+    aster_logical :: lbid
 !
 !-----------------------------------------------------------------------
 !

@@ -48,6 +48,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
@@ -72,7 +73,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: lcal
+    aster_logical :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
     character(len=19) :: matdrv
@@ -82,7 +83,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     integer :: ivect, ismct, ivat1, ivat2, ivinf, iiinf, ininf
     integer :: ivei, itemp, idrvj, ninf, ndrdv, ind, i, j, ival1, ival2
-    integer :: ismhc, ismdi,  iret, ibid, irefa, ndrva, nzmk, nind
+    integer :: ismhc, ismdi, iret, ibid, irefa, ndrva, nzmk, nind
     character(len=14) :: xei, xtemp, xdrvj, xiinf, xsmct, xvat1, xvat2, xvinf
     character(len=14) :: xninf, numedd, xtemp2
     character(len=8) :: kbid

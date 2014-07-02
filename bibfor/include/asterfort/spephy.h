@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                       freq, cham, specmr, specmi, disc,&
@@ -25,8 +27,8 @@ interface
         integer :: nbn
         integer :: nbmr
         integer :: ioptch
-        logical(kind=1) :: intphy
-        logical(kind=1) :: intmod
+        aster_logical :: intphy
+        aster_logical :: intmod
         character(len=8) :: nomu
         character(len=8) :: table
         real(kind=8) :: freq(2, nbm, *)

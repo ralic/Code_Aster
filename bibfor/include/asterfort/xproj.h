@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xproj(p, a, b, c, m,&
                      mp, d, vn, eps, in)
@@ -27,6 +29,6 @@ interface
         real(kind=8) :: d
         real(kind=8) :: vn(3)
         real(kind=8) :: eps(3)
-        logical(kind=1) :: in
+        aster_logical :: in
     end subroutine xproj
 end interface

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                       ninter, iainc, typma, co, igeom,&
@@ -55,7 +57,7 @@ interface
         integer :: inn
         integer :: nnn
         integer :: contac
-        logical(kind=1) :: lmeca
-        logical(kind=1) :: pre1
+        aster_logical :: lmeca
+        aster_logical :: pre1
     end subroutine xpoajd
 end interface 

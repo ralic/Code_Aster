@@ -19,7 +19,8 @@ subroutine nmetci(sdieto, zioch, icham, nomchs, nomgd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -28,7 +29,7 @@ subroutine nmetci(sdieto, zioch, icham, nomchs, nomgd,&
     integer :: zioch, icham
     character(len=24) :: nomchs, nomgd
     character(len=24) :: motcei, loccha, motcob
-    logical(kind=1) :: letin, larch
+    aster_logical :: letin, larch
 !
 ! ----------------------------------------------------------------------
 !

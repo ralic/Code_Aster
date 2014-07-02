@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function lexseg(connex, typmai, nbrma, n1, n2)
         character(len=24) :: connex
@@ -22,6 +24,6 @@ interface
         integer :: nbrma
         integer :: n1
         integer :: n2
-        logical(kind=1) :: lexseg
+        aster_logical :: lexseg
     end function lexseg
 end interface

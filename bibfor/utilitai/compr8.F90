@@ -1,8 +1,9 @@
 function compr8(a, comp, b, eps, crit)
-    implicit  none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-    logical(kind=1) :: compr8
+    aster_logical :: compr8
     real(kind=8) :: a, b, eps
     integer :: crit
     character(len=2) :: comp

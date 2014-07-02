@@ -22,11 +22,12 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
 ! ======================================================================
 ! ======================================================================
 ! aslint: disable=W1306,W1504
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/cabr2g.h"
 #include "asterfort/dilsga.h"
 #include "asterfort/regcge.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: dimuel, dimdef, nno, nnos, nnom, ndim, npi, dimcon, ipoids
     integer :: ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm, imate
     integer :: regula(6)
@@ -42,7 +43,7 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
 ! ======================================================================
     do 10 i = 1, dimuel
         vectu(i)=0.0d0
-10  end do
+ 10 end do
 !
     do 100 kpi = 1, npi
 ! ======================================================================
@@ -50,7 +51,7 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
 ! ======================================================================
         do 22 i = 1, dimdef
             r(i) = 0.0d0
-22      continue
+ 22     continue
 ! ======================================================================
         call cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
                     idfde, idfde2, geom, dimdef, dimuel,&
@@ -64,8 +65,8 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
             defgem(i)=0.0d0
             do 120 n = 1, dimuel
                 defgem(i)=defgem(i)+b(i,n)*deplm(n)
-120          continue
-110      continue
+120         continue
+110     continue
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES GENERALISEES FINALES ----------------------
 ! ======================================================================
@@ -75,6 +76,6 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
         call dilsga(dimdef, dimuel, poids, poids2, b,&
                     r, vectu)
 ! ======================================================================
-100  end do
+100 end do
 ! ======================================================================
 end subroutine

@@ -20,6 +20,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8prem.h"
@@ -70,7 +71,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     integer :: i, nbf, ibid, ifq, j
     integer :: fa(6, 4), ibid3(12, 3), ifisc, jfisc, ino
     integer :: nnof, na, nb, iret, nne
-    logical(kind=1) :: chgsgn, lajpf, ajout
+    aster_logical :: chgsgn, lajpf, ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -96,7 +97,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
         somlsn = 0.d0
         do 100 i = 1, nnof
             somlsn = somlsn + abs( lsn(fa(ifq,i)) )
-100      continue
+100     continue
         if (somlsn .eq. 0.d0) goto 200
 !
         do 110 ifisc = 1, nfisc
@@ -124,7 +125,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                 if (abs(lsna-lsnb) .gt. r8prem() .and. (lsjb-lsnb*(lsja- lsjb)/(lsna-lsnb))&
                     .lt. prec .or. abs(lsna-lsnb) .le. r8prem() .and. (lsja*lsjb) .lt. r8prem()) &
                 chgsgn = .true.
-120          continue
+120         continue
             if (.not. chgsgn) goto 110
 !
 !         ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT À LSN=LSJ=0
@@ -150,19 +151,19 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                 do 140 j = 1, nnof
                     ino = fa(ifq,j)
                     lsj = lsj + lsn( (ino-1)*nfiss+fisco(2*jfisc-1))* fisco(2*jfisc)*ff(j)
-140              continue
+140             continue
                 if (lsj .gt. 0) goto 110
-130          continue
+130         continue
             lajpf = .true.
             do 150 i = 1, ndim
                 m(i)=0
                 do 160 j = 1, nnof
                     ino = fa(ifq,j)
                     m(i) = m(i) + zr(igeom-1+ndim*(ino-1)+i) * ff(j)
-160              continue
-150          continue
+160             continue
+150         continue
 !
-110      continue
+110     continue
 !
         if (lajpf) then
 !       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX
@@ -170,7 +171,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
             do 250 j = 1, ipt
                 dst=padist(ndim,m,ptint(ndim*(j-1)+1))
                 if (dst .le. r8prem()) lajpf = .false.
-250          continue
+250         continue
         endif
 !
         if (lajpf) then
@@ -179,13 +180,13 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                 a(i) = zr(igeom-1+ndim*(fa(ifq,1)-1)+i)
                 b(i) = zr(igeom-1+ndim*(fa(ifq,2)-1)+i)
                 c(i) = zr(igeom-1+ndim*(fa(ifq,3)-1)+i)
-260          continue
+260         continue
             loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
             call xajpin(ndim, ptint, ptmax, ipt, ibid,&
                         m, loncar, ainter, 0, 0,&
                         0.d0, ajout)
         endif
-200  end do
+200 end do
 !
 !
     call jedema()

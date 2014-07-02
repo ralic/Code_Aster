@@ -3,6 +3,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
                   neq, nbmode, typmod, nbpari, nbparr,&
                   nbpark)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/irparb.h"
 #include "asterfort/jedema.h"
@@ -84,7 +85,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     character(len=24) :: vale, nomjv
     character(len=24) :: valk(2)
     complex(kind=8) :: c16b
-    logical(kind=1) :: recunp
+    aster_logical :: recunp
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, ieq, ii, ik, imode, ir, tmod(1)
@@ -105,14 +106,14 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmode, lnumor)
         call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, zi(lnumor), nbmode,&
-                    nbtrou)           
+                    nbtrou)
     else if (nbvect .gt. 0) then
 !        --- A PARTIR D'UNE LISTE DE NUMEROS D'ORDRE ---
         nbmode = nbvect
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmode, lnumor)
         do 10 i = 1, nbvect
             zi(lnumor+i-1) = lposi(i)
-10      continue
+ 10     continue
 !
     else
 !        --- RIEN ---
@@ -125,7 +126,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmodt, lnumor)
         call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, zi(lnumor), nbmodt,&
-                    nbtrou)         
+                    nbtrou)
         goto 100
     endif
 !     ------------------------------------------------------------------
@@ -176,18 +177,18 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
             if (typmod(1:1) .eq. 'R') then
                 do 22 ieq = 0, neq-1
                     zr(lmode+neq*(imode-1)+ieq) = zr(lvale+ieq)
-22              continue
+ 22             continue
             else if (typmod(1:1) .eq. 'C') then
                 do 24 ieq = 0, neq-1
                     zc(lmode+neq*(imode-1)+ieq) = zc(lvale+ieq)
-24              continue
+ 24             continue
             endif
             call jelibe(vale)
         else
             call utmess('F', 'ALGELINE3_71')
         endif
-20  end do
-100  continue
+ 20 end do
+100 continue
 !     ------------------------------------------------------------------
 !
 !        *************** ON RECUPERE LES PARAMETRES ***************
@@ -227,7 +228,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
             nbpark = nbpark + 1
         else
         endif
-40  end do
+ 40 end do
     if (recunp) then
         nbtpar = nbpari + nbparr + nbpark
         call wkvect(nopara, 'V V K16', nbtpar, lnopar)
@@ -268,9 +269,9 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
                     zk16(lnopar+nbpari+nbparr+ik-1) = zk16(jpara+i-1)
                 endif
             endif
-52      continue
-50  end do
-200  continue
+ 52     continue
+ 50 end do
+200 continue
 !
 !     --- DESTRUCTION DES OBJET DE TRAVAIL ---
     call jeexin('&&VPRECU.NOM_PARA', iret)

@@ -48,16 +48,17 @@ subroutine askcyc(craid, ndim, soumat, beta, ni,&
 ! LIBID    /I/: LISTE BIDON LIBID(I)=I DE DIM >=MAX(NI,NJ)
 !
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/acyel1.h"
 #include "asterfort/acyel2.h"
 #include "asterfort/acyel4.h"
 #include "asterfort/acyelt.h"
-
+!
     character(len=24) :: soumat
     complex(kind=8) :: craid(*)
     integer :: nbliax, libid(*), liax(nbliax)
-    logical(kind=1) :: axok, vrai, faux
+    aster_logical :: axok, vrai, faux
     integer :: i, ia, ibid, id, na, ndim
     integer :: ni, nj
     real(kind=8) :: beta
@@ -69,9 +70,10 @@ subroutine askcyc(craid, ndim, soumat, beta, ni,&
 !
 !-----------------MISE A ZERO DES MATRICES COMPLEXES--------------------
 !
+    ibid=0
     do 10 i = 1, ndim*(ndim+1)/2
         craid(i)=dcmplx(0.d0,0.d0)
-10  end do
+ 10 end do
 !
 !
 !--------------DETERMINATION DES DIMENSIONS DES SOUS-MATRICES-----------

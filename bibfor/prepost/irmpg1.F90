@@ -53,6 +53,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfiope.h"
 #include "asterfort/as_mlclci.h"
@@ -96,7 +97,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     character(len=8) :: saux08
     character(len=16) :: saux16
     character(len=64) :: saux64, nomas2
-    logical(kind=1) :: ficexi
+    aster_logical :: ficexi
 !
 !====
 ! 1. PREALABLES
@@ -226,18 +227,18 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
             if (refcoo(jaux) .ne. raux1(jaux)) then
                 goto 22
             endif
-2221          continue
+2221         continue
             kaux = nbrepg*ndim
             do 2222 , jaux = 1 , kaux
             if (gscoo(jaux) .ne. raux2(jaux)) then
                 goto 22
             endif
-2222          continue
+2222         continue
             do 2223 , jaux = 1 , nbrepg
             if (wg(jaux) .ne. raux3(jaux)) then
                 goto 22
             endif
-2223          continue
+2223         continue
 !
 !           SI ON ARRIVE ICI, C'EST QUE LES LOCALISATIONS SONT
 !           IDENTIQUES ; ON LE NOTIFIE ET ON TERMINE LE PROGRAMME
@@ -279,12 +280,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
             write (ifm,60001) 'NOEUDS         '
             do 6011 , iaux = 1 , nbnoto
             write (ifm,60011) iaux,refcoo(iaux)
-6011          continue
+6011         continue
             write (ifm,60021)
             write (ifm,60001) 'POINTS DE GAUSS'
             do 6021 , iaux = 1 , nbrepg
             write (ifm,60011) iaux,gscoo(iaux)
-6021          continue
+6021         continue
             write (ifm,60021)
 !
 !     6.2. DIMENSION 2
@@ -294,13 +295,13 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
             do 6012 , iaux = 1 , nbnoto
             write (ifm,60012) iaux, refcoo(ndim*(iaux-1)+1),&
                 refcoo(ndim*(iaux-1)+2)
-6012          continue
+6012         continue
             write (ifm,60022)
             write (ifm,60002) 'POINTS DE GAUSS'
             do 6022 , iaux = 1 , nbrepg
             write (ifm,60012) iaux, gscoo(ndim*(iaux-1)+1),&
                 gscoo(ndim*(iaux-1)+2)
-6022          continue
+6022         continue
             write (ifm,60022)
 !
 !     6.3. DIMENSION 3
@@ -310,20 +311,20 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
             do 6013 , iaux = 1 , nbnoto
             write (ifm,60013) iaux, refcoo(ndim*(iaux-1)+1),&
                 refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
-6013          continue
+6013         continue
             write (ifm,60023)
             write (ifm,60003) 'POINTS DE GAUSS'
             do 6023 , iaux = 1 , nbrepg
             write (ifm,60013) iaux, gscoo(ndim*(iaux-1)+1),&
                 gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
-6023          continue
+6023         continue
             write (ifm,60023)
         endif
 !
         write (ifm,60004)
         do 6024 , iaux = 1 , nbrepg
         write (ifm,60011) iaux, wg(iaux)
-6024      continue
+6024     continue
         write (ifm,60021)
 !
     endif
@@ -365,7 +366,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     kaux = -1
 !
-30  continue
+ 30 continue
 !
 ! 3.1. ==> CREATION D'UN NOM POUR LA LOCALISATION
 !      NOLOPG( 1:16) = NOM DE LA FAMILLE DES POINTS DE GAUSS
@@ -402,7 +403,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
         if (nolopg(iaux:iaux) .eq. ' ') then
             nolopg(iaux:iaux) = '_'
         endif
-313      continue
+313     continue
     endif
 !
 ! 3.1.4 ==> INSERTION DU COMPTEUR AU DELA DE 1
@@ -415,7 +416,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
         if (nolopg(iaux:iaux) .eq. ' ') then
             nolopg(iaux:iaux) = '_'
         endif
-314      continue
+314     continue
     endif
 !
 ! 3.2. ==> LECTURE DES CARACTERISTIQUES DE LA IAUX-EME LOCALISATION
@@ -472,7 +473,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 ! 4. LA FIN
 !====
 !
-40  continue
+ 40 continue
 !
 ! 4.1. ==> FERMETURE DU FICHIER MED
 !

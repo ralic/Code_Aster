@@ -30,6 +30,7 @@ subroutine op0060()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/gcucon.h"
@@ -93,14 +94,14 @@ subroutine op0060()
     integer :: lamor1, lamor, limpe, lfreq, nbfreq
     integer :: neq, nbmat
     integer :: ifreq, ieq, inom, ier
-    integer :: lsecmb,   jvezer
+    integer :: lsecmb, jvezer
     integer :: icoef, icode
-    integer ::  linst, iret, ladpa
+    integer :: linst, iret, ladpa
     integer :: ldgec, lvgec, lagec, jordr, jfreq
     integer :: jdepl, jvite, jacce
     integer :: lmat(4), nbord, icomb
     integer :: jpomr
-    logical(kind=1) :: newcal, calgen
+    aster_logical :: newcal, calgen
     real(kind=8) :: depi, freq, omega
     real(kind=8) :: rval, coef(6), tps1(4), rtab(2)
     complex(kind=8) :: cval, czero
@@ -289,12 +290,12 @@ subroutine op0060()
             nomsym(2) = 'VITE'
             nomsym(3) = 'ACCE'
         endif
-
+!
         call mdallo(result, 'HARM', nbfreq, sauve='GLOB', base=basemo,&
                     mass=masse, rigi=raide, amor=amor, nbmodes=neq, jordr=jordr,&
                     jdisc=jfreq, jdepl=jdepl, jvite=jvite, jacce=jacce, nbsym=nbsym,&
                     nomsym=nomsym)
-
+!
 !
     else if (newcal) then
 !     --- SI NOUVEAU CALCUL SUR BASE PHYSIQUE
@@ -521,9 +522,9 @@ subroutine op0060()
                 endif
 !
             end do
-            call mdarch('HARM', isto1, ifreq-1, freq, neq, zi(jordr), zr(jfreq),&
-                        nbsym=nbsym, nomsym=nomsym, depgec=zc(ldgec), vitgec=zc(lvgec),&
-                        accgec=zc(lagec), depstc=zc(jdepl), vitstc=zc(jvite),&
+            call mdarch('HARM', isto1, ifreq-1, freq, neq,&
+                        zi(jordr), zr(jfreq), nbsym=nbsym, nomsym=nomsym, depgec=zc(ldgec),&
+                        vitgec=zc(lvgec), accgec=zc(lagec), depstc=zc(jdepl), vitstc=zc(jvite),&
                         accstc=zc(jacce))
             isto1=isto1+1
         endif

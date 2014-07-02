@@ -1,6 +1,7 @@
 subroutine i2gccl(debccl, tvois1, tvois2, tplace, schm,&
                   achm, pts, pta)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,11 +41,11 @@ subroutine i2gccl(debccl, tvois1, tvois2, tplace, schm,&
 !
 !******************************************************************
 !
-    logical(kind=1) :: tplace(*)
+    aster_logical :: tplace(*)
     integer :: debccl, tvois1(*), tvois2(*)
     integer :: schm(*), achm(*), pts, pta
 !
-    logical(kind=1) :: fini
+    aster_logical :: fini
 !
     integer :: s, s1, s2
 !
@@ -66,7 +67,7 @@ subroutine i2gccl(debccl, tvois1, tvois2, tplace, schm,&
     pts = pts + 1
     pta = pta + 1
 !
-10  continue
+ 10 continue
     if (.not. fini) then
 !
         s1 = tvois1(s)

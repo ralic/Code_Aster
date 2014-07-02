@@ -9,6 +9,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
                   cnpal, prdeff, conv, fsauv)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/mdfcho.h"
 #include "asterfort/mdfedy.h"
 #include "asterfort/mdfred.h"
@@ -19,7 +20,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
     integer :: numpas
     real(kind=8) :: dt, dtsto, vrotat, conv, angini
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*)
-    real(kind=8) :: parcho(*), saucho(nbchoc,*)
+    real(kind=8) :: parcho(*), saucho(nbchoc, *)
     real(kind=8) :: saured(*), dplrev(*), dplred(*), saurev(*)
     real(kind=8) :: accgen(*), dplmod(nbchoc, nbmode, *)
     real(kind=8) :: temps, psidel(nbchoc, nbexci, *), ltemps(3)
@@ -27,7 +28,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
     character(len=8) :: nofdep(nbexci), nofvit(nbexci), nofacc(nbexci)
     character(len=8) :: fk(2), dfk(2), foncp
 !
-    logical(kind=1) :: prdeff
+    aster_logical :: prdeff
     integer :: palmax
 !-----------------------------------------------------------------------
     integer :: nbrfis

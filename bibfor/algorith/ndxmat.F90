@@ -20,6 +20,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascoma.h"
 #include "asterfort/detrsd.h"
@@ -61,7 +62,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: lsuiv, lshima, lprem
+    aster_logical :: lsuiv, lshima, lprem
     real(kind=8) :: coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat

@@ -56,8 +56,8 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 ! ----------------------------------------------------------
 !
     integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
-    integer :: monit(12),  n1, vali(2), compt
-    integer ::  nbma
+    integer :: monit(12), n1, vali(2), compt
+    integer :: nbma
     real(kind=8) :: eps
     character(len=5) :: klag2
     character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
@@ -65,8 +65,8 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     character(len=19) :: k19b
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod
-    integer ::  iexi
-    logical(kind=1) :: ldgrel
+    integer :: iexi
+    aster_logical :: ldgrel
     character(len=8), pointer :: vpartit(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: prtk(:) => null()
@@ -109,8 +109,8 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             if (ibid .ne. 1) goto 70
         else
             matra=' '
-            if (eximo2.eq.1) call getvid(' ', 'MATR_RIGI', scal=matra, nbret=ibid)
-            if (eximo3.eq.1) call getvid(' ', 'MATR_A', scal=matra, nbret=ibid)
+            if (eximo2 .eq. 1) call getvid(' ', 'MATR_RIGI', scal=matra, nbret=ibid)
+            if (eximo3 .eq. 1) call getvid(' ', 'MATR_A', scal=matra, nbret=ibid)
             if (matra .eq. ' ') goto 70
             k19b=matra
             call jeveuo(k19b//'.REFA', 'L', vk24=refa)

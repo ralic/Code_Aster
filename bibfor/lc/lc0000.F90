@@ -101,6 +101,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
 !
 !    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/lc0001.h"
 #include "asterfort/lc0002.h"
 #include "asterfort/lc0003.h"
@@ -217,7 +218,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    logical(kind=1) :: cp
+    aster_logical :: cp
 !
 !     ----------------------------------------------------------------
 !     VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
@@ -636,11 +637,11 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                     nvi, dsidep, codret)
     case (57)
         call lc0057(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, nsig, sigm, vim,&
-                option, angmas, sigp, vip, nwkin,&
-                wkin, typmod, icomp, nvi, ndsde,&
-                dsidep, nwkout, wkout, codret)
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, angmas, sigp, vip, nwkin,&
+                    wkin, typmod, icomp, nvi, ndsde,&
+                    dsidep, nwkout, wkout, codret)
     case (58)
         call lc0058(fami, kpg, ksp, ndim, imate,&
                     compor, crit, instam, instap, epsm,&

@@ -19,9 +19,10 @@ subroutine zbroot(mem, rhonew, echec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
     real(kind=8) :: mem(2, *), rhonew
-    logical(kind=1) :: echec
+    aster_logical :: echec
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,7 +41,7 @@ subroutine zbroot(mem, rhonew, echec)
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical(kind=1) :: bpos, lopti
+    aster_logical :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti
@@ -82,7 +83,7 @@ subroutine zbroot(mem, rhonew, echec)
 !
     endif
 !
-9999  continue
+9999 continue
 !
 !
 end subroutine

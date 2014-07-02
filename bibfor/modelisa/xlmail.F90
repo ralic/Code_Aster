@@ -21,6 +21,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -32,7 +33,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
     integer :: nfon
     integer :: jfon, jbas, jtail, jfonmu
     integer :: nbfond, ndim
-    logical(kind=1) :: goinop
+    aster_logical :: goinop
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,7 +92,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             call wkvect(xheav, 'G V I', nmaen1, jma1)
             do 810 i = 1, nmaen1
                 zi(jma1-1+i) = zi(jmaen1-1+i)
-810          continue
+810         continue
         endif
 !
 ! --- ENREGISTREMENT DES GROUP_MA 'CRACKTIP'
@@ -100,7 +101,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             call wkvect(xctip, 'G V I', nmaen2, jma2)
             do 820 i = 1, nmaen2
                 zi(jma2-1+i) = zi(jmaen2-1+i)
-820          continue
+820         continue
         endif
 !
 ! --- ENREGISTREMENT DES GROUP_MA ''HEAVISIDE-CRACKTIP'
@@ -109,7 +110,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             call wkvect(xhect, 'G V I', nmaen3, jma3)
             do 830 i = 1, nmaen3
                 zi(jma3-1+i) = zi(jmaen3-1+i)
-830          continue
+830         continue
         endif
 !
 ! --- ENREGISTREMENT DES MAILLES CONTENANT LE FOND DE FISSURE
@@ -118,7 +119,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             call wkvect(xmafon, 'G V I', nmafon, jma4)
             do 840 i = 1, nmafon
                 zi(jma4-1+i) = zi(jmafon-1+i)
-840          continue
+840         continue
         endif
 !
 ! --- ENREGISTREMENT DES COORD ET DES ABS CURV
@@ -128,21 +129,21 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do 860 i = 1, nfon
                 do 850 k = 1, 4
                     zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
-850              continue
-860          continue
+850             continue
+860         continue
 !
             call wkvect(xbasfo, 'G V R', 2*ndim*nfon, jba)
             do 940 i = 1, nfon
                 do 950 k = 1, ndim
                     zr(jba-1+2*ndim*(i-1)+k) = zr(jbas-1+2*ndim*(i-1)+ k)
                     zr(jba-1+2*ndim*(i-1)+k+ndim) = zr( jbas-1+2*ndim*(i-1)+k+ndim)
-950              continue
-940          continue
+950             continue
+940         continue
 !
             call wkvect(xtailr, 'G V R', nfon, jta)
             do 960 i = 1, nfon
                 zr(jta-1+i) = zr(jtail-1+i)
-960          continue
+960         continue
 !
         endif
 !
@@ -153,7 +154,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do 870 i = 1, nbfond
                 zi(jfomu-1+2*(i-1)+1) = zi(jfonmu-1+2*(i-1)+1)
                 zi(jfomu-1+2*(i-1)+2) = zi(jfonmu-1+2*(i-1)+2)
-870          continue
+870         continue
         endif
 !
 !
@@ -169,8 +170,8 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
         do 880 i = 1, nfon
             do 890 k = 1, 4
                 zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
-890          continue
-880      continue
+890         continue
+880     continue
     endif
 !
     call jedema()

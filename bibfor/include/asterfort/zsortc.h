@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine zsortc(which, apply, n, x, y)
         integer :: n
         character(len=2) :: which
-        logical(kind=1) :: apply
+        aster_logical :: apply
         complex(kind=8) :: x(0:n-1)
         complex(kind=8) :: y(0:n-1)
     end subroutine zsortc

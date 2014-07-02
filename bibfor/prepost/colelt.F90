@@ -35,6 +35,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jecrec.h"
@@ -48,11 +49,11 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     integer :: maxnod, nbtyma, nbmail, nbnoma(nbtyma), nuconn(15, 32), nbnode
 ! -----  VARIABLES LOCALES
     character(len=8) :: k8bid
-    logical(kind=1) :: exisgr
+    aster_logical :: exisgr
 !
 !
     integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym
-    integer :: jindma,  ij, icurgr, nbgrou, indgro, ima
+    integer :: jindma, ij, icurgr, nbgrou, indgro, ima
     integer :: ityp, ino, node, i, indmax, jgr
     integer, pointer :: noeuds(:) => null()
     integer, pointer :: mailles(:) => null()
@@ -129,7 +130,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
         do 12 ino = 1, nbnoma(ityp)
             node = zi(jnoma+ij+nuconn(ityp,ino)-1)
             noeuds(node+1) = 1
-12      continue
+ 12     continue
 !
         if (icurgr .ne. mailles(ima)) then
             icurgr = mailles(ima)
@@ -141,8 +142,8 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
                     indgro = i
                     goto 30
                 endif
-20          continue
-30          continue
+ 20         continue
+ 30         continue
             if (.not.exisgr) then
                 nbgrou = nbgrou + 1
                 indgro = nbgrou
@@ -156,7 +157,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !
         ij = ij + zi(jnbnma+ima-1)
         zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+ 1
-10  end do
+ 10 end do
 !
     indmax = nbgrou
 !MH
@@ -173,7 +174,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     do 40 i = 1, indmax
         call jeecra(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'LONMAX', zi( jnbmag+i-1))
         zi(jnbmag+i-1) = 0
-40  end do
+ 40 end do
 !
 ! --- AFFECTATION DES OBJETS RELATIFS AUX GROUPES DE MAILLES :
 !     ------------------------------------------------------
@@ -193,8 +194,8 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
                     indgro = i
                     goto 70
                 endif
-60          continue
-70          continue
+ 60         continue
+ 70         continue
             if (.not.exisgr) then
                 nbgrou = nbgrou + 1
                 indgro = nbgrou
@@ -208,7 +209,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
         zi(jindma+indgro-1) = mailles(ima)
         call jeveuo(jexnum('&&PRECOU.LISTE.GROUP_MA', indgro), 'E', jgr)
         zi(jgr+zi(jnbmag+indgro-1)-1) = zi(jnuma+ima-1)
-50  end do
+ 50 end do
 !
     call jedema()
 !

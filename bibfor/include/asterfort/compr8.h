@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function compr8(a, comp, b, eps, crit)
         real(kind=8) :: a
@@ -22,6 +24,6 @@ interface
         real(kind=8) :: b
         real(kind=8) :: eps
         integer :: crit
-        logical(kind=1) :: compr8
+        aster_logical :: compr8
     end function compr8
 end interface

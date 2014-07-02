@@ -20,10 +20,11 @@ subroutine nmmalu(nno, axi, r, vff, dfdi,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nno, lij(3, 3)
     real(kind=8) :: dfdi(nno, 4), vff(nno), r
 !
@@ -73,5 +74,5 @@ subroutine nmmalu(nno, axi, r, vff, dfdi,&
 !    TERME NUL : DERIVATION 1,3  2,3  3,1  3,2
     call r8inir(nno, 0.d0, dfdi(1, 4), 1)
 !
-9999  continue
+9999 continue
 end subroutine

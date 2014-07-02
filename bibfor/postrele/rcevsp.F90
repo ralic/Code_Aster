@@ -1,7 +1,8 @@
 subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                   cspo, cspe, cspto, cspte, cspmo,&
                   cspme)
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -11,7 +12,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
 #include "asterfort/wkvect.h"
     character(len=24) :: csiex, cinst, cspo, cspe, cstex, csmex, cspto, cspte
     character(len=24) :: cspmo, cspme
-    logical(kind=1) :: kemixt
+    aster_logical :: kemixt
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +79,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                 spm1o(icmp) = zr(jsmoe-1+l1)
                 spm1e(icmp) = zr(jsmoe-1+l2)
             endif
-102      continue
+102     continue
         ind = ind + 1
 !
         zr(jspo+ind-1) = 0.d0
@@ -103,7 +104,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                     spm2o(icmp) = zr(jsmoe-1+l1)
                     spm2e(icmp) = zr(jsmoe-1+l2)
                 endif
-112          continue
+112         continue
             ind = ind + 1
 ! ======================================================================
 ! ---       COMBINAISON DES CONTRAINTES AUX 2 INSTANTS TEMP1 ET TEMP2 :
@@ -117,7 +118,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                     spm12o(icmp) = spm1o(icmp) - spm2o(icmp)
                     spm12e(icmp) = spm1e(icmp) - spm2e(icmp)
                 endif
-114          continue
+114         continue
 ! ======================================================================
 ! ---       CALCUL DE LA NORME DE TRESCA DE LA DIFFERENCE DES TENSEURS
 ! ---       DE CONTRAINTES TOTALES
@@ -151,9 +152,9 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
 !
             endif
 !
-110      continue
+110     continue
 !
-100  end do
+100 end do
 !
     call jedema()
 end subroutine

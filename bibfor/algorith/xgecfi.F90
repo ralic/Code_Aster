@@ -18,6 +18,7 @@ subroutine xgecfi(modele, depgeo)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -66,9 +67,9 @@ subroutine xgecfi(modele, depgeo)
     character(len=19) :: ligrel, pinter, faclon, newges, newgem
     character(len=19) :: gesclo, ltno, fissno, heavfa
     character(len=1) :: base
-    logical(kind=1) :: debug
-    integer :: ifmdbg, nivdbg, iret,  nbma, ima
-    integer :: jcesd, jcesl,   iad
+    aster_logical :: debug
+    integer :: ifmdbg, nivdbg, iret, nbma, ima
+    integer :: jcesd, jcesl, iad
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: cesd2(:) => null()

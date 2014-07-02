@@ -23,10 +23,11 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
     integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
     integer :: regula(6)
@@ -82,13 +83,13 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf1,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npi,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrf1, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf2,fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos2,&
-  npg=npi2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2)
+    call elrefe_info(elrefe=elrf2, fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos2,&
+                     npg=npi2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
 ! ======================================================================
 ! --- NNOC DESIGNE LE NOMBRE DE NOEUD AU CENTRE DES ELEMENTS -----------
 ! ======================================================================

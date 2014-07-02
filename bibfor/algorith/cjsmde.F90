@@ -39,6 +39,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !          EPSCON   :  VALEUR ERR FINALE
 !       ----------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/cjside.h"
 #include "asterfort/cjsjde.h"
 #include "asterfort/cjsncn.h"
@@ -52,7 +53,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     integer :: ndt, ndi, nvi, nr, nmod
     parameter ( nmod = 14 )
     integer :: iter, niter, iret
-    logical(kind=1) :: noconv, aredec, stopnc, trac
+    aster_logical :: noconv, aredec, stopnc, trac
 !
     real(kind=8) :: epsd(6), deps(6)
     real(kind=8) :: sigd(6), sigf(6), gd(6)
@@ -80,7 +81,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !
     integer :: i, j
 !
-    logical(kind=1) :: devnu1, devnu2, tra1, tra2
+    aster_logical :: devnu1, devnu2, tra1, tra2
 !
     character(len=8) :: mod
 !
@@ -105,11 +106,11 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         dy(i) = 0.d0
         yd(i) = 0.d0
         yf(i) = 0.d0
-10  continue
+ 10 continue
 !
     do 15 i = 1, ndt
         gd(i) = 0.d0
-15  continue
+ 15 continue
 !
 !
 ! -> INITIALISATION DE YD PAR LES CHAMPS (SIGD, VIND, ZERO)
@@ -119,7 +120,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !
     do 30 i = 1, ndt
         yd(ndt+1+i) = vind(i+2)
-30  continue
+ 30 continue
     yd(2*ndt+2) = 0.d0
 !
 ! -> INITIALISATION : DY : CALCUL DE LA SOLUTION D ESSAI INITIALE EN DY
@@ -135,7 +136,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !---------------------------------------
 !
     iter = 0
-100  continue
+100 continue
 !
     iter = iter + 1
 !
@@ -161,10 +162,10 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !
         do 31 i = 1, ndi
             sigf(i) = -qinit/3.d0+pa/100.0d0
-31      continue
+ 31     continue
         do 32 i = ndi+1, ndt
             sigf(i) = 0.d0
-32      continue
+ 32     continue
         call lceqvn(nvi-1, vind, vinf)
 !
 !
@@ -183,8 +184,8 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         r(i) = 0.d0
         do 60 j = 1, nr
             drdy(i,j) = 0.d0
-60      continue
-50  continue
+ 60     continue
+ 50 continue
 !
 !
     call cjsjde(mod, mater, epsd, deps, yd,&
@@ -203,12 +204,12 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     do 24 i = 1, ndt
         sigf(i) = yd(i)+dy(i)
         xf(i) = yd(ndt+1+i)+dy(ndt+1+i)
-24  continue
+ 24 continue
     call cjsnor(mater, sigf, xf, nor1, devnu1,&
                 tra1)
 !
     essai = 0
-40  continue
+ 40 continue
     essai = essai + 1
     if ((.not.devnu1) .and. (.not.tra1)) then
         if (essai .gt. essmax) then
@@ -227,14 +228,14 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         do 25 i = 1, ndt
             sigf(i) = yd(i)+dy(i)+relax(essai)*ddy(i)
             xf(i) = yd(ndt+1+i)+dy(ndt+1+i)+ relax(essai)*ddy(ndt+1+i)
-25      continue
+ 25     continue
         call cjsnor(mater, sigf, xf, nor2, devnu2,&
                     tra2)
 !
         rotagd(essai) = 0.d0
         do 26 i = 1, ndt
             rotagd(essai) = rotagd(essai)+nor1(i)*nor2(i)
-26      continue
+ 26     continue
         rotagd(essai) = rotagd(essai)/(nor1(ndt+1)*nor2(ndt+1))
 !
         if (abs(rotagd(essai)) .lt. tolrot .and. (.not.devnu2) .and. ( .not.tra2)) then
@@ -251,7 +252,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     do 42 i = 1, nr
         dy(i) = dy(i)+relax(essai)*ddy(i)
         yf(i) = yd(i)+dy(i)
-42  continue
+ 42 continue
 !
 ! -> VERIFICATION DE LA CONVERGENCE : ERREUR = !!DDY!!/!!DY!! < TOLER
 !
@@ -292,7 +293,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         endif
     endif
 !
-200  continue
+200 continue
 !
 !
 !
@@ -311,9 +312,9 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     vinf(2) = yf(ndt+1)
     do 250 i = 1, ndt
         vinf(2+i) = yf(ndt+1+i)
-250  continue
+250 continue
     vinf(nvi-1) = signe
 !
 !
-9999  continue
+9999 continue
 end subroutine

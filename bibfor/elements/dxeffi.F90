@@ -1,6 +1,7 @@
 subroutine dxeffi(option, nomte, pgl, cont, ind,&
                   effint)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dxdmul.h"
 #include "asterfort/dxmate.h"
@@ -49,12 +50,12 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     real(kind=8) :: t2iu(2, 2), t2ui(2, 2), t1ve(3, 3)
     real(kind=8) :: hm(3, 3)
     real(kind=8) :: d1i(2, 2), d2i(2, 4)
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     deux = 2.0d0
@@ -98,55 +99,55 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 !===============================================================
 !     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     -------------------------------------------------
-    do 100, ipg = 1,npg
-    call r8inir(3, zero, n, 1)
-    call r8inir(3, zero, m, 1)
-    call r8inir(2, zero, t, 1)
+    do 100 ipg = 1, npg
+        call r8inir(3, zero, n, 1)
+        call r8inir(3, zero, m, 1)
+        call r8inir(2, zero, t, 1)
 !
-    do 110, icou = 1,nbcou
-    do 120, igauh = 1,npgh
-    icpg = nbcon*npgh*nbcou*(ipg-1) + nbcon*npgh*(icou-1) + nbcon*(igauh-1)
+        do 110 icou = 1, nbcou
+            do 120 igauh = 1, npgh
+                icpg = nbcon*npgh*nbcou*(ipg-1) + nbcon*npgh*(icou-1) + nbcon*(igauh-1)
 !
-    if (igauh .eq. 1) then
-        zic = zmin + (icou-1)*hic
-        coef = 1.d0/3.d0
-    else if (igauh.eq.2) then
-        zic = zmin + hic/2.d0 + (icou-1)*hic
-        coef = 4.d0/3.d0
-    else
-        zic = zmin + hic + (icou-1)*hic
-        coef = 1.d0/3.d0
-    endif
-    if (multic .gt. 0) then
-        iniv = igauh - 2
-        call dxdmul(.false._1, icou, iniv, t1ve, t2ui,&
-                    hm, d1i, d2i, zic, hic)
-    endif
+                if (igauh .eq. 1) then
+                    zic = zmin + (icou-1)*hic
+                    coef = 1.d0/3.d0
+                else if (igauh.eq.2) then
+                    zic = zmin + hic/2.d0 + (icou-1)*hic
+                    coef = 4.d0/3.d0
+                else
+                    zic = zmin + hic + (icou-1)*hic
+                    coef = 1.d0/3.d0
+                endif
+                if (multic .gt. 0) then
+                    iniv = igauh - 2
+                    call dxdmul(.false._1, icou, iniv, t1ve, t2ui,&
+                                hm, d1i, d2i, zic, hic)
+                endif
 !
 !         -- CALCUL DES EFFORTS GENERALISES DANS L'EPAISSEUR (N, M ET T)
 !         --------------------------------------------------------------
-    coehsd = coef*hic/2.d0
-    n(1) = n(1) + coehsd*cont(icpg+1)
-    n(2) = n(2) + coehsd*cont(icpg+2)
-    n(3) = n(3) + coehsd*cont(icpg+4)
-    m(1) = m(1) + coehsd*zic*cont(icpg+1)
-    m(2) = m(2) + coehsd*zic*cont(icpg+2)
-    m(3) = m(3) + coehsd*zic*cont(icpg+4)
-    t(1) = t(1) + coehsd*cont(icpg+5)
-    t(2) = t(2) + coehsd*cont(icpg+6)
+                coehsd = coef*hic/2.d0
+                n(1) = n(1) + coehsd*cont(icpg+1)
+                n(2) = n(2) + coehsd*cont(icpg+2)
+                n(3) = n(3) + coehsd*cont(icpg+4)
+                m(1) = m(1) + coehsd*zic*cont(icpg+1)
+                m(2) = m(2) + coehsd*zic*cont(icpg+2)
+                m(3) = m(3) + coehsd*zic*cont(icpg+4)
+                t(1) = t(1) + coehsd*cont(icpg+5)
+                t(2) = t(2) + coehsd*cont(icpg+6)
 !
-120  continue
-110  continue
+120         continue
+110     continue
 !
-    do 140,k = 1,3
-    effint((ipg-1)*ind+k) = n(k)
-    effint((ipg-1)*ind+k+3) = m(k)
-140  continue
-    if (ind .gt. 6) then
-        effint((ipg-1)*ind+7) = t(1)
-        effint((ipg-1)*ind+8) = t(2)
-    endif
+        do 140 k = 1, 3
+            effint((ipg-1)*ind+k) = n(k)
+            effint((ipg-1)*ind+k+3) = m(k)
+140     continue
+        if (ind .gt. 6) then
+            effint((ipg-1)*ind+7) = t(1)
+            effint((ipg-1)*ind+8) = t(2)
+        endif
 !
-    100 end do
+100 end do
 !
 end subroutine

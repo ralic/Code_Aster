@@ -22,6 +22,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -91,7 +92,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
-    integer :: jcesd, jcesl,  ja0a1, ja0, ja1, ja2, ja3, jtrav
+    integer :: jcesd, jcesl, ja0a1, ja0, ja1, ja2, ja3, jtrav
     integer :: iret, ja4
     real(kind=8) :: result
     character(len=8) :: cpar
@@ -101,10 +102,10 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=19) :: depmoi, sigmoi, varmoi, commoi
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
-    logical(kind=1) :: debug
+    aster_logical :: debug
     character(len=19) :: xdonco, xindco, lnno, ltno, pinter, ainter, cface
     character(len=19) :: faclon, baseco, xcohes, depplu
-    logical(kind=1) :: lcontx
+    aster_logical :: lcontx
     integer :: ier
     real(kind=8), pointer :: cesv(:) => null()
 !
@@ -156,7 +157,8 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
+    call inical(nbin, lpain, lchin, nbout, lpaout,&
+                lchout)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -290,10 +292,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
             if (lcontx) then
 ! - XFEM : SI PAS DE SOL AU PT DE GAUSS, ON N AJOUTE PAS DE DROITE
-                result = abs(&
-                         cesv(ja0))+abs(cesv(ja1))+ abs(cesv(ja2))+abs(cesv(1&
-                         &-1+ja3)&
-                         )
+                result = abs( cesv(ja0))+abs(cesv(ja1))+ abs(cesv(ja2))+abs(cesv(1-1+ja3) )
                 if (result .eq. 0) then
                     goto 200
                 endif
@@ -311,13 +310,13 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
 ! ---     COEFFICIENTS DE LA OU DES DROITES
 !
-            if (ja0.ne.0) then
-                if (cesv(ja0).ne.r8vide()) then
-                    zr(ja0a1 + icmp    ) = cesv(ja0)
+            if (ja0 .ne. 0) then
+                if (cesv(ja0) .ne. r8vide()) then
+                    zr(ja0a1 + icmp ) = cesv(ja0)
                     zr(ja0a1 + icmp + 1) = cesv(ja1)
                     icmp = icmp+2
-                    if (cesv(ja2).ne.r8vide()) then
-                        zr(ja0a1 + icmp )    = cesv(ja2)
+                    if (cesv(ja2) .ne. r8vide()) then
+                        zr(ja0a1 + icmp ) = cesv(ja2)
                         zr(ja0a1 + icmp + 1) = cesv(ja3)
                         icmp = icmp+2
                     endif
@@ -337,7 +336,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
         pilcvg = 1
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

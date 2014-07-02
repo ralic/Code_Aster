@@ -3,6 +3,7 @@ subroutine pj4dap(ino2, geom2, ma2, geom1, tria3,&
                   btnb, btlc, btco, ifm, niv,&
                   ldmax, distma, loin, dmin)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8maem.h"
@@ -65,7 +66,7 @@ subroutine pj4dap(ino2, geom2, ma2, geom1, tria3,&
     real(kind=8) :: cobar2(3), dmin, d2, surf, rtr3
     integer :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
 !
-    logical(kind=1) :: ldmax, loin
+    aster_logical :: ldmax, loin
     real(kind=8) :: distma
 ! DEB ------------------------------------------------------------------
     nbtrou=0
@@ -89,28 +90,28 @@ subroutine pj4dap(ino2, geom2, ma2, geom1, tria3,&
                 btdi, btvr, btnb, btlc, btco,&
                 p1, q1, r1, p2, q2,&
                 r2)
-    do 40,p=p1,p2
-    do 30,q=q1,q2
-    do 20,r=r1,r2
-    ntrbt=btnb((r-1)*nx*ny+(q-1)*nx+p)
-    iposi=btlc((r-1)*nx*ny+(q-1)*nx+p)
-    do 10,k=1,ntrbt
-    i=btco(iposi+k)
-    call pj4da2(ino2, geom2, i, geom1, tria3,&
-                cobar2, d2, surf)
-    if (sqrt(d2) .lt. dmin) then
-        rtr3=surf
-        itr3=i
-        dmin=sqrt(d2)
-        nbtrou=1
-        cobary(1)=cobar2(1)
-        cobary(2)=cobar2(2)
-        cobary(3)=cobar2(3)
-    endif
-10  continue
-20  continue
-30  continue
-    40 end do
+    do 40 p = p1, p2
+        do 30 q = q1, q2
+            do 20 r = r1, r2
+                ntrbt=btnb((r-1)*nx*ny+(q-1)*nx+p)
+                iposi=btlc((r-1)*nx*ny+(q-1)*nx+p)
+                do 10 k = 1, ntrbt
+                    i=btco(iposi+k)
+                    call pj4da2(ino2, geom2, i, geom1, tria3,&
+                                cobar2, d2, surf)
+                    if (sqrt(d2) .lt. dmin) then
+                        rtr3=surf
+                        itr3=i
+                        dmin=sqrt(d2)
+                        nbtrou=1
+                        cobary(1)=cobar2(1)
+                        cobary(2)=cobar2(2)
+                        cobary(3)=cobar2(3)
+                    endif
+ 10             continue
+ 20         continue
+ 30     continue
+ 40 end do
 !
 !
     if (nbtrou .eq. 1) then

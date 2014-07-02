@@ -4,7 +4,8 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
                   xmax, ymax, lmax, nt, mailla,&
                   nogrno, typsou)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8pi.h"
@@ -51,10 +52,10 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
     real(kind=8) :: x0, y0, z0, x1, y1, z1
     real(kind=8) :: xp, yp, zp, x, y, z
     real(kind=8) :: alp, r1, tetax
-    logical(kind=1) :: rotati, allong
-    logical(kind=1) :: rota, plaq, piqu, allo
-    logical(kind=1) :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
-    logical(kind=1) :: quar1, quar2, quar3, quar4
+    aster_logical :: rotati, allong
+    aster_logical :: rota, plaq, piqu, allo
+    aster_logical :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
+    aster_logical :: quar1, quar2, quar3, quar4
     character(len=24) :: grpnoe, cooval
 !     ------------------------------------------------------------------
 !
@@ -211,7 +212,7 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
         zr(jvale-1+3*(nume-1)+2) = y
         zr(jvale-1+3*(nume-1)+3) = z
 !
-10  end do
+ 10 end do
 !
     call jedema()
 !

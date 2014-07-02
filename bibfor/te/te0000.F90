@@ -20,6 +20,7 @@ subroutine te0000(numc, opt, te)
 ! ======================================================================
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/jeexin.h"
@@ -651,7 +652,7 @@ subroutine te0000(numc, opt, te)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: iret, jparal
-    logical(kind=1) :: lparal
+    aster_logical :: lparal
     character(len=16) :: nomte, nomopt
     character(len=8) :: k8bid
 ! DEB-------------------------------------------------------------------

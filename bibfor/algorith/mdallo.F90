@@ -7,6 +7,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                   fonrev, jrevc, jrevv, sauve, checkarg)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -20,31 +21,31 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !   Obligatory arguments
-    character(len=8) , intent(in) :: nomres
-    character(len=4) , intent(in) :: typcal
-    integer          , intent(in) :: nbsauv
+    character(len=8), intent(in) :: nomres
+    character(len=4), intent(in) :: typcal
+    integer, intent(in) :: nbsauv
 !   Optional arguments
-    character(len=*) , optional, intent(in)  :: base
-    integer          , optional, intent(in)  :: nbmodes
-    character(len=*) , optional, intent(in)  :: rigi, mass, amor
-    integer          , optional, intent(out) :: jordr, jdisc
-    integer          , optional, intent(in)  :: nbsym
-    character(len=4) , optional, intent(in)  :: nomsym(*)
-    integer          , optional, intent(out) :: jdepl, jvite, jacce
-    character(len=*) , optional, intent(in)  :: method
-    real(kind=8)     , optional, intent(in)  :: dt
-    integer          , optional, intent(out) :: jptem
-    integer          , optional, intent(in)  :: nbchoc
-    character(len=8) , optional, intent(in)  :: noecho(*), intitu(*)
-    integer          , optional, intent(out) :: jfcho, jdcho, jvcho, jadcho
-    integer          , optional, intent(in)  :: nbrede
-    character(len=8) , optional, intent(in)  :: fonred(*)
-    integer          , optional, intent(out) :: jredc, jredd
-    integer          , optional, intent(in)  :: nbrevi
-    character(len=8) , optional, intent(in)  :: fonrev(*)
-    integer          , optional, intent(out) :: jrevc, jrevv
-    character(len=4) , optional, intent(in)  :: sauve
-    logical(kind=1)          , optional, intent(in)  :: checkarg
+    character(len=*), optional, intent(in) :: base
+    integer, optional, intent(in) :: nbmodes
+    character(len=*), optional, intent(in) :: rigi, mass, amor
+    integer, optional, intent(out) :: jordr, jdisc
+    integer, optional, intent(in) :: nbsym
+    character(len=4), optional, intent(in) :: nomsym(*)
+    integer, optional, intent(out) :: jdepl, jvite, jacce
+    character(len=*), optional, intent(in) :: method
+    real(kind=8), optional, intent(in) :: dt
+    integer, optional, intent(out) :: jptem
+    integer, optional, intent(in) :: nbchoc
+    character(len=8), optional, intent(in) :: noecho(*), intitu(*)
+    integer, optional, intent(out) :: jfcho, jdcho, jvcho, jadcho
+    integer, optional, intent(in) :: nbrede
+    character(len=8), optional, intent(in) :: fonred(*)
+    integer, optional, intent(out) :: jredc, jredd
+    integer, optional, intent(in) :: nbrevi
+    character(len=8), optional, intent(in) :: fonrev(*)
+    integer, optional, intent(out) :: jrevc, jrevv
+    character(len=4), optional, intent(in) :: sauve
+    aster_logical , optional, intent(in) :: checkarg
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +87,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 ! IN  : SAUVE :  VAUT 'GLOB' OU 'VOLA'
 ! IN  : CHECKARG : VERIFIER LA COHERENCE DANS LES ARGUMENTS OPTIONNELS D'ENTREE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: checkargs, entvid, saved
+    aster_logical :: checkargs, entvid, saved
     integer :: nbstoc, j1refe, inom, i, ic, iret, jchmp, nbchoc2, nbrede2, nbrevi2, nbvint
     integer :: jdesc, jinti, jncho, nbsym2, jsst, jvint, nbmode, nbsto1, jredn, jrevn
     real(kind=8) :: dt2
@@ -95,7 +96,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     character(len=8) :: basemo, riggen, masgen, amogen, numgen, blanc
     character(len=5) :: attrib
     character(len=12) :: bl11pt
-    character(len=16) :: method2   
+    character(len=16) :: method2
     character(len=24) :: matric(3)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -103,7 +104,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !   --- 0 - Obligatory arguments, validation of the input values
     ASSERT((typcal.eq.'TRAN').or.(typcal.eq.'HARM'))
     ASSERT(nbsauv.ge.0)
-
+!
 !   --- Default values of input arguments
     basemo = ' '
     nbmode = 0
@@ -119,19 +120,19 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     nbrevi2 = 0
     sauve2 = 'GLOB'
     checkargs = .true.
-    if (present(base))    basemo = base
+    if (present(base)) basemo = base
     if (present(nbmodes)) nbmode = nbmodes
-    if (present(rigi))    riggen = rigi
-    if (present(mass))    masgen = mass
-    if (present(amor))    amogen = amor
-    if (present(method))  method2 = method
-    if (present(dt))      dt2 = dt
-    if (present(nbchoc))  nbchoc2 = nbchoc
-    if (present(nbrede))  nbrede2 = nbrede
-    if (present(nbrevi))  nbrevi2 = nbrevi
-    if (present(sauve))   sauve2 = sauve
+    if (present(rigi)) riggen = rigi
+    if (present(mass)) masgen = mass
+    if (present(amor)) amogen = amor
+    if (present(method)) method2 = method
+    if (present(dt)) dt2 = dt
+    if (present(nbchoc)) nbchoc2 = nbchoc
+    if (present(nbrede)) nbrede2 = nbrede
+    if (present(nbrevi)) nbrevi2 = nbrevi
+    if (present(sauve)) sauve2 = sauve
     if (present(checkarg)) checkargs = checkarg
-    if (present(nbsym).and.present(nomsym)) then 
+    if (present(nbsym) .and. present(nomsym)) then
         nbsym2 = nbsym
         do inom = 1, nbsym2
             nomsym2(inom) = nomsym(inom)
@@ -140,7 +141,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #define noechoc(i,j) noecho(i+(j-1)*nbchoc2)
 #define fonrede(i,j) fonred(i+(j-1)*nbrede2)
 #define fonrevi(i,j) fonrev(i+(j-1)*nbrevi2)
-
+!
 !   --- Initialize all output jeveux pointers to 1 
     if (present(jdepl)) jdepl = 1
     if (present(jvite)) jvite = 1
@@ -162,14 +163,14 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !       --- 1 - Coherence between the modal basis and the number of modes
         ASSERT(AU_MOINS_UN2(base,nbmodes))
         if (present(base)) then
-            if (base.ne.' ') call dismoi('NB_MODES_TOT', base, 'RESULTAT' , repi=nbmode)
+            if (base .ne. ' ') call dismoi('NB_MODES_TOT', base, 'RESULTAT', repi=nbmode)
         endif
         if (present(nbmodes)) then
             ASSERT((nbmode.eq.0).or.(nbmode.eq.nbmodes))
             nbmode = nbmodes
         endif
 !       --- 2 - If nbsauv = 0, then only initialize some objects => no vector retrieval
-        if (nbsauv.eq.0) then
+        if (nbsauv .eq. 0) then
             ASSERT((absent(jordr)).and.(absent(jdisc)))
             ASSERT((absent(jdepl)).and.(absent(jvite)).and.(absent(jacce)))
             ASSERT(absent(jptem))
@@ -177,42 +178,42 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         else
 !           --- 3.1 - Get the symbolic names of the saved fields or use def vals
             ASSERT(ENSEMBLE2(nbsym,nomsym))
-            if (typcal.eq.'TRAN') ASSERT(absent(nbsym))
+            if (typcal .eq. 'TRAN') ASSERT(absent(nbsym))
 !           --- 3.2 - Verify according to nomsym if it possible to retrieve the 
 !                     displacement, velocity, and acceleration vectors.
             saved = .false.
             do inom = 1, nbsym2
-                if (nomsym2(inom).eq.'DEPL') saved = .true.
+                if (nomsym2(inom) .eq. 'DEPL') saved = .true.
             end do
             if (.not.(saved)) ASSERT(absent(jdepl))
             saved = .false.
             do inom = 1, nbsym2
-                if (nomsym2(inom).eq.'VITE') saved = .true.
+                if (nomsym2(inom) .eq. 'VITE') saved = .true.
             end do
             if (.not.(saved)) ASSERT(absent(jvite))
             saved = .false.
             do inom = 1, nbsym2
-                if (nomsym2(inom).eq.'ACCE') saved = .true.
+                if (nomsym2(inom) .eq. 'ACCE') saved = .true.
             end do
             if (.not.(saved)) ASSERT(absent(jacce))
 !           --- 3.3 - No time step or integration method are allowed in harmonic case
-            if (typcal.eq.'HARM') then
+            if (typcal .eq. 'HARM') then
                 ASSERT(absent(dt))
                 ASSERT(absent(method))
                 ASSERT(absent(jptem))
             endif
         endif
 !       --- 4 - Treatment of choc parameters/arguments
-        if (nbchoc2.ne.0) ASSERT((present(noecho)).and.(present(intitu)))
-        if (nbchoc2.eq.0) then 
+        if (nbchoc2 .ne. 0) ASSERT((present(noecho)).and.(present(intitu)))
+        if (nbchoc2 .eq. 0) then
             ASSERT((absent(jfcho)).and.(absent(jdcho)))
             ASSERT((absent(jvcho)).and.(absent(jadcho)))
         endif
 !       --- 5 - Treatment of rela effo depl/vite parameters/arguments
-        if (nbrede2.ne.0) ASSERT(present(fonred))
-        if (nbrede2.eq.0) ASSERT((absent(jredc)).and.(absent(jredd)))
-        if (nbrevi2.ne.0) ASSERT(present(fonrev))
-        if (nbrevi2.eq.0) ASSERT((absent(jrevc)).and.(absent(jrevv)))
+        if (nbrede2 .ne. 0) ASSERT(present(fonred))
+        if (nbrede2 .eq. 0) ASSERT((absent(jredc)).and.(absent(jredd)))
+        if (nbrevi2 .ne. 0) ASSERT(present(fonrev))
+        if (nbrevi2 .eq. 0) ASSERT((absent(jrevc)).and.(absent(jrevv)))
 !       --- 6 - Treatment of sauv parameter, global (default) or volatile saving
         ASSERT((sauve2(1:4).eq.'GLOB'.or.sauve2(1:4).eq.'VOLA'))
 !   --- End of argument verification
@@ -349,12 +350,12 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         call jeexin(nomres//'           .SST', iret)
         if (iret .eq. 0) call wkvect(nomres//'           .SST', typsau//' K8', 2*nbchoc2, jsst)
         if (nbsauv .ne. 0) then
-            call wkvect(nomres//'           .FCHO', typsau//' R', nbstoc  , jfcho)
+            call wkvect(nomres//'           .FCHO', typsau//' R', nbstoc, jfcho)
             call wkvect(nomres//'           .DLOC', typsau//' R', 2*nbstoc, jdcho)
-            call wkvect(nomres//'           .VCHO', typsau//' R', nbstoc  , jvcho)
-            call wkvect(nomres//'           .ICHO', typsau//' I', nbsto1  , jadcho)
+            call wkvect(nomres//'           .VCHO', typsau//' R', nbstoc, jvcho)
+            call wkvect(nomres//'           .ICHO', typsau//' I', nbsto1, jadcho)
 !           objet variables internes
-            call wkvect(nomres//'           .VINT', typsau//' R', nbvint  , jvint)
+            call wkvect(nomres//'           .VINT', typsau//' R', nbvint, jvint)
 !           initialisation
             call r8inir(nbvint, 0.d0, zr(jvint), 1)
         endif
@@ -375,8 +376,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (nbrede2 .ne. 0) then
         nbstoc = nbrede2 * nbsauv
         if (nbsauv .ne. 0) then
-            call wkvect(nomres//'           .REDC', typsau//' I', nbstoc  , jredc)
-            call wkvect(nomres//'           .REDD', typsau//' R', nbstoc  , jredd)
+            call wkvect(nomres//'           .REDC', typsau//' I', nbstoc, jredc)
+            call wkvect(nomres//'           .REDD', typsau//' R', nbstoc, jredd)
         endif
         call jeexin(nomres//'           .REDN', iret)
         if (iret .eq. 0) then
@@ -391,8 +392,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (nbrevi2 .ne. 0) then
         nbstoc = nbrevi2 * nbsauv
         if (nbsauv .ne. 0) then
-            call wkvect(nomres//'           .REVC', typsau//' I', nbstoc  , jrevc)
-            call wkvect(nomres//'           .REVV', typsau//' R', nbstoc  , jrevv)
+            call wkvect(nomres//'           .REVC', typsau//' I', nbstoc, jrevc)
+            call wkvect(nomres//'           .REVV', typsau//' R', nbstoc, jrevv)
         endif
         call jeexin(nomres//'           .REVN', iret)
         if (iret .eq. 0) then

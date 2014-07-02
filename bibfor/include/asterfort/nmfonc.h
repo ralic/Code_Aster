@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmfonc(parcri, parmet, method, solveu, modele,&
                       defico, lischa, lcont, lunil, sdnume,&
@@ -27,8 +29,8 @@ interface
         character(len=24), intent(in) :: modele
         character(len=24), intent(in) :: defico
         character(len=19), intent(in) :: lischa
-        logical(kind=1), intent(in) :: lcont
-        logical(kind=1), intent(in) :: lunil
+        aster_logical, intent(in) :: lcont
+        aster_logical, intent(in) :: lunil
         character(len=19), intent(in) :: sdnume
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sdcriq

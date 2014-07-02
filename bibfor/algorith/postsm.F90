@@ -19,6 +19,7 @@ subroutine postsm(option, fm, df, sigm, sigp,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
     character(len=16) :: option
@@ -33,7 +34,7 @@ subroutine postsm(option, fm, df, sigm, sigp,&
 !   IN/OUT  DSIDEP : MATRICE TANGENTE D(SIG)/DF  ->
 !                    D(TAU)/D(FD) * (FD)t
 !-----------------------------------------------------------------------
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
     integer :: kl, p, q, i
     real(kind=8) :: jm, dj, jp, tau(6), j, mat(6, 3, 3), id(3, 3)
 !
@@ -74,10 +75,10 @@ subroutine postsm(option, fm, df, sigm, sigp,&
                     dsidep(kl,p,q) = tau(kl)*id(p,q)
                     do 400 i = 1, 3
                         dsidep(kl,p,q) = dsidep(kl,p,q) + mat(kl,p,i)* df(q,i)
-400                  continue
-300              continue
-200          continue
-100      continue
+400                 continue
+300             continue
+200         continue
+100     continue
     endif
 !
 end subroutine

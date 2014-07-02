@@ -20,6 +20,7 @@ subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"
@@ -48,7 +49,7 @@ subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lreli, lpilo, lborst
+    aster_logical :: lreli, lpilo, lborst
 !
 ! ----------------------------------------------------------------------
 !

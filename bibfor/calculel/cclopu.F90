@@ -1,6 +1,7 @@
 subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
                   nbropt)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -66,8 +67,8 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     integer :: ntymax
     parameter (ntymax = 9)
 !
-    integer :: i, ityp, n1, jopt,  postmp, nbopfa, ioc, ibid
-    integer :: nuti, nsup,  jord, iordr, iret
+    integer :: i, ityp, n1, jopt, postmp, nbopfa, ioc, ibid
+    integer :: nuti, nsup, jord, iordr, iret
 !
     character(len=9) :: mcfact
     character(len=12) :: typopt, tygrop(ntymax)
@@ -75,7 +76,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=24) :: chn
     parameter   (mcfact='CHAM_UTIL')
 !
-    logical(kind=1) :: newcal, vu
+    aster_logical :: newcal, vu
     integer, pointer :: nb_op_ty(:) => null()
     character(len=16), pointer :: oputil(:) => null()
 !
@@ -93,7 +94,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         call getvtx(' ', typopt, nbval=0, nbret=n1)
         nb_op_ty(ityp) = -n1
         nbropt = nbropt-n1
-10  end do
+ 10 end do
 !
     call wkvect(lisopt, 'V V K16', max(1, nbropt), jopt)
 !
@@ -105,7 +106,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         if (nbopfa .eq. 0) goto 20
         call getvtx(' ', typopt, nbval=nbopfa, vect=zk16(jopt+postmp), nbret=n1)
         postmp = postmp+nbopfa
-20  end do
+ 20 end do
 !
 ! --- MOT-CLE FACTEUR CHAM_UTIL
 !     POUR EVITER L'ALARME LIE AU RECALCUL D'UNE OPTION DEJA PRESENTE
@@ -139,10 +140,10 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
                     goto 32
                 endif
             endif
-31      continue
+ 31     continue
         goto 38
 !
-32      continue
+ 32     continue
 !       OPTION DEJA DANS LA LISTE ?
         vu = .false.
         do 33 i = 1, nbropt
@@ -150,21 +151,21 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
                 vu = .true.
                 goto 30
             endif
-33      continue
+ 33     continue
         do 34 i = 1, nsup
             if (oputil(i) .eq. option) then
                 vu = .true.
                 goto 30
             endif
-34      continue
+ 34     continue
 !
-38      continue
+ 38     continue
 !       ON AJOUTE L'OPTION A LA LISTE
         if (.not.vu) then
             nsup = nsup + 1
             oputil(nsup) = option
         endif
-30  end do
+ 30 end do
 !
 ! --- REFAIRE OU AGRANDIR LISOPT
     if (nsup .gt. 0) then
@@ -176,11 +177,11 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         endif
         do 41 i = 1, nsup
             zk16(jopt-1+nbropt+i) = oputil(i)
-41      continue
+ 41     continue
         nbropt = nbropt + nsup
     endif
 !
-9999  continue
+9999 continue
     AS_DEALLOCATE(vi=nb_op_ty)
     AS_DEALLOCATE(vk16=oputil)
     call jedema()

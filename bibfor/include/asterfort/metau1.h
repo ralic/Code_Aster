@@ -15,8 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine metau1(l_meta)
-        logical(kind=1), intent(out) :: l_meta
+        aster_logical, intent(out) :: l_meta
     end subroutine metau1
 end interface

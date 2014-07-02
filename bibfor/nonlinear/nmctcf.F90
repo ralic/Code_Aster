@@ -19,7 +19,8 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -42,7 +43,7 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro
     character(len=19) :: valinc(*)
-    logical(kind=1) :: mmcvfr
+    aster_logical :: mmcvfr
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +68,8 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: ltfcm, lctcc, lxfcm
-    logical(kind=1) :: lerrof
+    aster_logical :: ltfcm, lctcc, lxfcm
+    aster_logical :: lerrof
     integer :: maxfro
     real(kind=8) :: epsfro
     integer :: mmitfr

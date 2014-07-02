@@ -18,6 +18,7 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 # include "jeveux.h"
 # include "asterfort/apetsc.h"
 # include "asterfort/asmpi_info.h"
@@ -32,7 +33,7 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 # include "asterfort/utmess.h"
     character(len=*) :: mat1z, mat2z, solv1z
     character(len=1) :: bas1
-    logical(kind=1) :: lqr
+    aster_logical :: lqr
 !--------------------------------------------------------------
 ! but :
 !   calculer la matrice reduite mat2z correspondant a mat1z
@@ -54,7 +55,7 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
     character(len=19) :: matas1, matas2, solve1
     character(len=1) :: ktyp
     mpi_int :: rang, nbproc
-    integer :: iret,  ibid, iexi
+    integer :: iret, ibid, iexi
     real(kind=8) :: rbid(1)
     character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
                       tau1, tau2, mprojt, inadh, rese,&
@@ -31,7 +33,7 @@ interface
         real(kind=8) :: rese(3)
         real(kind=8) :: nrese
         real(kind=8) :: coeffp
-        logical(kind=1) :: lpenaf
+        aster_logical :: lpenaf
         real(kind=8) :: dvitet(3)
     end subroutine ttprsm
 end interface

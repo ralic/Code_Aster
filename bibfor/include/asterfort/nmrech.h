@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
                       rhomax, rhoexm, rhoexp, rhom, rho,&
@@ -35,6 +37,6 @@ interface
         integer :: ldccvg
         integer :: opt
         integer :: act
-        logical(kind=1) :: stite
+        aster_logical :: stite
     end subroutine nmrech
 end interface

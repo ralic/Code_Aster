@@ -1,6 +1,7 @@
 subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
                   lres, ddlexc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -53,9 +54,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 !
 !     -----------------------------------------------------------------
 !
-    logical(kind=1) :: symr, symi
-    logical :: symrl
-!
+    aster_logical :: symr, symi, symrl
 !     -----------------------------------------------------------------
     integer :: lgbloc
     character(len=1) :: clas, typmat
@@ -63,8 +62,8 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     character(len=14) :: numr, numi
     character(len=19) :: matres, mati
     character(len=24) :: valmi, valmr
-    integer :: neq, mxddl, lddl,   jsmhcr
-    integer :: iconst, imat, jsmhci,  jvlmi1, jvlmr1, k
+    integer :: neq, mxddl, lddl, jsmhcr
+    integer :: iconst, imat, jsmhci, jvlmi1, jvlmr1, k
     integer :: jvlmi2, jvlmr2
     real(kind=8) :: zero
     character(len=24), pointer :: refai(:) => null()

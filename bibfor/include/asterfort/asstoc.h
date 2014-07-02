@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                       ndir, comdir, typcdi, glob, prim)
@@ -24,9 +26,9 @@ interface
         character(len=16) :: nomsy
         real(kind=8) :: repdir(neq, *)
         integer :: ndir(*)
-        logical(kind=1) :: comdir
+        aster_logical :: comdir
         character(len=*) :: typcdi
-        logical(kind=1) :: glob
-        logical(kind=1) :: prim
+        aster_logical :: glob
+        aster_logical :: prim
     end subroutine asstoc
 end interface

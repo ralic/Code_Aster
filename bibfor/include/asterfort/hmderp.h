@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hmderp(yate, yavp, t, r, kh,&
                       pvp, pad, rho11, rho12, h11,&
@@ -24,7 +26,7 @@ interface
                       dp1pp1, dp2pp1, dtpp1, dp1pp2, dp2pp2,&
                       dtpp2, dp1pt, dp2pt, dtpt)
         integer :: yate
-        logical(kind=1) :: yavp
+        aster_logical :: yavp
         real(kind=8) :: t
         real(kind=8) :: r
         real(kind=8) :: kh

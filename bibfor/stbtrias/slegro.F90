@@ -36,6 +36,7 @@ subroutine slegro(iunv, imod, datset)
 !     !                                                              !
 !     ================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
@@ -70,7 +71,7 @@ subroutine slegro(iunv, imod, datset)
     integer :: nbmodu, nbtest, datset
     integer :: nbrlig
     real(kind=8) :: rval
-    logical(kind=1) :: lwrit
+    aster_logical :: lwrit
 !
 !  --> DECLARATION INDICES DE BOUCLES
 !
@@ -96,7 +97,7 @@ subroutine slegro(iunv, imod, datset)
     chnomi='NUMIN=      '
     chnoma='NUMAX=      '
 !
- 1  continue
+  1 continue
     lwrit = .true.
     read (iunv,'(A)') cbuf
     read (cbuf,'(I6)') ind
@@ -140,7 +141,7 @@ subroutine slegro(iunv, imod, datset)
                 nblign = int(nbenti/nbrlig)
                 do 145 i = 1, nblign
                     read(iunv,'(I3)')
-145              continue
+145             continue
                 if (nbenti .gt. (nbrlig*nblign)) read(iunv,'(I3)')
                 goto 1
             endif
@@ -210,9 +211,9 @@ subroutine slegro(iunv, imod, datset)
                     nbmail= nbmail+ 1
                     zk8(jgrm-1+nbmail) = chmail
                 endif
- 3          continue
+  3         continue
 !
- 2      continue
+  2     continue
 !
         if (nbenti .gt. (nbrlig*nblign)) then
             if (datset .eq. 752 .or. datset .eq. 2417 .or. datset .eq. 2429 .or. datset&
@@ -251,7 +252,7 @@ subroutine slegro(iunv, imod, datset)
                     nbmail= nbmail+ 1
                     zk8(jgrm-1+nbmail) = chmail
                 endif
- 4          continue
+  4         continue
         endif
 !
 ! --> ECRITURE SUR LE FICHIER NEUTRE DES GROUPES DE NOEUDS

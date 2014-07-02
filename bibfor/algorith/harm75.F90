@@ -31,6 +31,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
@@ -77,12 +78,12 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=19) :: knume, kfreq, hrange, prchno, prof, typref(8)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
-    logical(kind=1) :: tousno, leffor, prems
+    aster_logical :: tousno, leffor, prems
     integer :: inocmp, inoecp, inumno, inuddl
-    integer :: j, jc, i,  iarchi, ich
-    integer ::  idvecg, iret, iretou, jfreq
+    integer :: j, jc, i, iarchi, ich
+    integer :: idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
-    integer :: n1, n2, n3, n4,  idec, idefm, idinsg, idresu
+    integer :: n1, n2, n3, n4, idec, idefm, idinsg, idresu
     integer :: nbfreq, neq, nbnoeu, ncmp
     real(kind=8), pointer :: base(:) => null()
     character(len=24), pointer :: refn(:) => null()
@@ -276,7 +277,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 ! CAS DE LA RESTITUTION SUR TOUTE LA STRUCTURE
         if (tousno) then
 !           fournir nequa est indispensable parce que nous passons un prof_chno a copmod
-            call copmod(basemo, bmodr=base, champ=typcha, numer=prchno(1:14), nequa=neq )
+            call copmod(basemo, bmodr=base, champ=typcha, numer=prchno(1:14), nequa=neq)
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
             do j = 1, nbmode

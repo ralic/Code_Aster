@@ -57,6 +57,7 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cotfac.h"
 #include "asterfort/tstbar.h"
@@ -68,7 +69,7 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 ! -----------------
     real(kind=8) :: d, dx, dy, dz
     integer :: ktest, f1(4), idc, id(6), ii, j
-    logical(kind=1) :: facnp1
+    aster_logical :: facnp1
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -147,7 +148,7 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
         ktest=0
         do 10 j = 1, 6
             ktest=ktest+id(j)
-10      continue
+ 10     continue
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD IMMERGE DANS LE VOLUME DE LA MAILLE
@@ -166,7 +167,7 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
                         immer=2
                         goto 9999
                     endif
-20              continue
+ 20             continue
             endif
 !
 !     TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE, PAR DETERMINATION
@@ -215,7 +216,7 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
         endif
     endif
 !
-9999  continue
+9999 continue
 !
 ! --- FIN DE IMMEPY.
 end subroutine

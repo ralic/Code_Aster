@@ -8,6 +8,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -47,7 +48,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=16) :: option, noprup(*), nomcas
     character(len=19) :: lischa
     character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls
-    logical(kind=1) :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
+    aster_logical :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,7 +111,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
     complex(kind=8) :: livc(nbmxpa)
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     character(len=2) :: codret
     character(len=8) :: resu
     character(len=16) :: opti, valk
@@ -165,7 +166,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
     call vrcins(modele, mate, ' ', time, chvarc,&
                 codret)
-
+!
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))
 !
 !     TRAITEMENT DES CHARGES
@@ -290,8 +291,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             lpain(26) = 'PBASECO'
             lchin(26) = modele(1:8)//'.TOPOFAC.BA'
         endif
-       lpain(27) = 'PPMILTO'
-       lchin(27) = pmilto
+        lpain(27) = 'PPMILTO'
+        lchin(27) = pmilto
 !
         nchin = 27
 !
@@ -410,7 +411,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     diff2g = 0.d0
     difrel = 0.d0
-
+!
     do i = 1, nnoff
         call tbajvi(result, nbprup, 'NUM_PT', i, livi)
         call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
@@ -422,15 +423,16 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+6*(i-1)+5), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-        if ( (codret .eq. 'OK') .and. (zr(iadgks-1+6*(i-1)+1) .ne. 0.d0  ) ) then
-          difrel= abs((zr(iadgks-1+6*(i-1)+1)- zr(iadgks-1+6*(i-1)+5))/zr(iadgks-1+6*(i-1)+1))
-          diff2g = diff2g + difrel
+        if ((codret .eq. 'OK') .and. (zr(iadgks-1+6*(i-1)+1) .ne. 0.d0 )) then
+            difrel= abs((zr(iadgks-1+6*(i-1)+1)- zr(iadgks-1+6*(i-1)+5))/zr(iadgks-1+6*(i-1)+1))
+            diff2g = diff2g + difrel
         endif
-
+!
     end do
-
-    if ((codret .eq. 'OK').and.(diff2g/nnoff.gt.0.5)) call utmess('A','RUPTURE1_71', sr = diff2g)
-
+!
+    if ((codret .eq. 'OK') .and. (diff2g/nnoff.gt.0.5)) call utmess('A', 'RUPTURE1_71',&
+                                                                    sr = diff2g)
+!
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

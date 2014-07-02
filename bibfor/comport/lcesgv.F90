@@ -1,4 +1,5 @@
-subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, epsm,&
+subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
+                  option, mat, lccrma, lcesga, epsm,&
                   deps, vim, fige, itemax, precvg,&
                   sig, vip, dsidep, iret)
 ! ======================================================================
@@ -18,6 +19,7 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "asterfort/lcesma.h"
@@ -27,21 +29,22 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
 #include "asterfort/r8inir.h"
 #include "asterc/r8prem.h"
     interface
-    subroutine lccrma(mat, fami, kpg, ksp, poum)
-        integer,intent(in) :: mat, kpg, ksp
-        character(len=1),intent(in):: poum
-        character(len=*),intent(in) :: fami
-    end subroutine lccrma
-
-    subroutine lcesga(mode, eps, gameps, dgamde, itemax, precvg, iret)
-        integer,intent(in) :: mode, itemax
-        real(kind=8),intent(in) :: eps(6), precvg
-        integer,intent(out):: iret
-        real(kind=8),intent(out):: gameps, dgamde(6)
-    end subroutine lcesga
+        subroutine lccrma(mat, fami, kpg, ksp, poum)
+            integer, intent(in) :: mat, kpg, ksp
+            character(len=1), intent(in) :: poum
+            character(len=*), intent(in) :: fami
+        end subroutine lccrma
+!
+        subroutine lcesga(mode, eps, gameps, dgamde, itemax,&
+                          precvg, iret)
+            integer, intent(in) :: mode, itemax
+            real(kind=8), intent(in) :: eps(6), precvg
+            integer, intent(out) :: iret
+            real(kind=8), intent(out) :: gameps, dgamde(6)
+        end subroutine lcesga
     end interface
-
-    logical(kind=1) :: fige
+!
+    aster_logical :: fige
     character(len=8) :: typmod(*)
     character(len=16) :: option
     character(len=*) :: fami
@@ -73,9 +76,9 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
 ! OUT DSIDEP  MATRICE TANGENTE
 ! OUT IRET    CODE RETOUR (0=OK, 1=ECHEC CVG)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8), dimension(6), parameter :: kr = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), dimension(6), parameter :: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
-    logical(kind=1) :: cplan, rigi, resi, elas
+    aster_logical :: cplan, rigi, resi, elas
     integer :: ndim, ndimsi, ij, kl, etat
     real(kind=8) :: phi, lag, apg, grad(3)
     real(kind=8) :: coplan, cor33, vplan(6), eps(6), sigel(6), treps
@@ -108,12 +111,13 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
     eps(6) = 0
     ndimsi = 2*ndim
     iret = 0
-    poum = merge('+','-',resi)    
+    poum = merge('+','-',resi)
 !
 !
 ! -- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    call lcesma(mat, fami, kpg, ksp, poum, lccrma)
+    call lcesma(mat, fami, kpg, ksp, poum,&
+                lccrma)
 !
 !
 ! -- DEFORMATIONS COURANTES
@@ -125,8 +129,10 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
     lag = epsm(ndimsi+2)
 !
     if (resi) then
-        call daxpy(ndimsi, 1.d0, deps, 1, eps, 1)
-        call daxpy(ndim, 1.d0, deps(ndimsi+3), 1, grad, 1)
+        call daxpy(ndimsi, 1.d0, deps, 1, eps,&
+                   1)
+        call daxpy(ndim, 1.d0, deps(ndimsi+3), 1, grad,&
+                   1)
         apg = apg + deps(ndimsi+1)
         lag = lag + deps(ndimsi+2)
     endif
@@ -143,13 +149,13 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
         coplan = -lambda / (lambda + deuxmu)
         eps(3) = coplan*(eps(1)+eps(2))
     endif
-
-
+!
+!
 !  CONTRAINTE ELASTIQUE
     treps = eps(1)+eps(2)+eps(3)
     sigel = lambda*treps*kr + deuxmu*eps
-
-
+!
+!
 !  SEUIL DES CRITERES DE CONVERGENCE
     yng = deuxmu*(3*lambda+deuxmu)/(2*lambda+deuxmu)
     sigref = sqrt(2*yng*pk/pm)
@@ -159,13 +165,14 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
     preca = precvg*minval((/1.d0, pk/pr, sigref/max(r8prem(),d1a0*nrmela)/))
     precga = pr*preca/max(r8prem(),d1a0)
 !     write (6,*) 'preca = ',preca
-
+!
 !
 !
 ! -- PSEUDO-ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
 !
 !
-    call lcesga(0, eps, gameps, dgamde, itemax, precga, iret)
+    call lcesga(0, eps, gameps, dgamde, itemax,&
+                precga, iret)
     if (iret .ne. 0) goto 999
 !
 !
@@ -266,7 +273,8 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
 ! -- CORRECTION DISSIPATIVE
     if (etat .eq. 1 .and. .not.elas .and. .not.fige) then
 !
-        call lcesga(1, eps, gameps, dgamde, itemax, precga, iret)
+        call lcesga(1, eps, gameps, dgamde, itemax,&
+                    precga, iret)
         drda = lcesvf(1,a)
         d2rda2 = lcesvf(2,a)
         dgda = d2rda2*gameps+pr
@@ -314,7 +322,9 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, eps
 ! -- PRISE EN CHARGE DES TERMES DU LAGRANGIEN AUGMENTE
 !
 800 continue
-    call lcgrad(resi, rigi, ndim, ndimsi, neps, sigma, apg, lag, grad, a, pr, pc, ktg, sig, dsidep)
+    call lcgrad(resi, rigi, ndim, ndimsi, neps,&
+                sigma, apg, lag, grad, a,&
+                pr, pc, ktg, sig, dsidep)
 !
 !
 999 continue

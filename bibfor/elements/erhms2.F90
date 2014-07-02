@@ -64,9 +64,10 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indiis.h"
-    logical(kind=1) :: perman
+    aster_logical :: perman
     integer :: ino, nbs
     integer :: ivois, nbcmp, adsip
     integer :: tbref1(12), tbref2(12)

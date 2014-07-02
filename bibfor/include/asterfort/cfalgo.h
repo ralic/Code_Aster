@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
                       resoco, solveu, numedd, matass, ddepla,&
@@ -31,6 +33,6 @@ interface
         character(len=19) :: ddepla
         character(len=19) :: depdel
         integer :: ctccvg
-        logical(kind=1) :: ctcfix
+        aster_logical :: ctcfix
     end subroutine cfalgo
 end interface

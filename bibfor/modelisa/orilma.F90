@@ -1,6 +1,7 @@
 subroutine orilma(noma, ndim, listma, nbmail, norien,&
                   ntrait, reorie, nbmavo, mailvo)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -20,7 +21,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
     integer :: ndim, listma(*), nbmail, norien, ntrait, nbmavo, mailvo(*)
     character(len=8) :: noma
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
 !.======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,8 +68,8 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: ifm, niv, ima, numa, nutyma, nbnmai, numa3d, noriem, norieg
-    integer ::   p1, p2,     jm3d, jdesm, jdes3d
-    logical(kind=1) :: dime1, dime2
+    integer :: p1, p2, jm3d, jdesm, jdes3d
+    aster_logical :: dime1, dime2
     character(len=2) :: kdim
     character(len=8) :: tpmail, nomail, typ3d
     character(len=24) :: mailma, nomob1
@@ -143,7 +144,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
             call utmess('F', 'MODELISA5_98')
         endif
 !
-10  end do
+ 10 end do
 !
 ! --- RECHERCHE DES MAILLES SUPPORTS
 !
@@ -179,7 +180,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
         norieg = norieg + noriem
 !
-100  end do
+100 end do
 !
     norien = norien + norieg
 !
@@ -189,6 +190,6 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     AS_DEALLOCATE(vk8=ori4)
     call jedetr(nomob1)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

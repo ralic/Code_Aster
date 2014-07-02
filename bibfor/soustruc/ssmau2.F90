@@ -19,6 +19,7 @@ subroutine ssmau2(nomu, option)
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/crmeam.h"
@@ -59,16 +60,16 @@ subroutine ssmau2(nomu, option)
 !
     integer :: i, scdi, schc, iblo
     character(len=8) :: promes
-    logical(kind=1) :: mostru
+    aster_logical :: mostru
 !
     character(len=16) :: optio2
     character(len=19) :: nu, matas, stock
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iampee, iaphi0, iaphie, iascdi,   iatmi0
+    integer :: iampee, iaphi0, iaphie, iascdi, iatmi0
     integer :: iatmie, iblold, iblph, ii, iiblph, j
-    integer :: jblph,  jjblph,  jualf, k, kk
+    integer :: jblph, jjblph, jualf, k, kk
     integer :: lgblph, lmat, nblph, nddle, nddli, nlblph
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: desm(:) => null()

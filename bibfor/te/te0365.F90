@@ -18,7 +18,8 @@ subroutine te0365(option, nomte)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -69,11 +70,11 @@ subroutine te0365(option, nomte)
     real(kind=8) :: jeu, djeu(3), djeut(3)
     character(len=8) :: typmae, typmam
     character(len=9) :: phasep
-    logical(kind=1) :: laxis, leltf
-    logical(kind=1) :: lpenac, lpenaf
-    logical(kind=1) :: loptf, ldyna, lfovit, lcont
-    logical(kind=1) :: ladhe
-    logical(kind=1) :: debug
+    aster_logical :: laxis, leltf
+    aster_logical :: lpenac, lpenaf
+    aster_logical :: loptf, ldyna, lfovit, lcont
+    aster_logical :: ladhe
+    aster_logical :: debug
     real(kind=8) :: ffe(9), ffm(9), ffl(9)
 !
     real(kind=8) :: vectcc(9)
@@ -137,8 +138,8 @@ subroutine te0365(option, nomte)
 ! ----- STATUTS
 !
         call mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
-                    dlagrf, coefaf,  tau1, tau2,&
-                    lcont, ladhe, lambda, rese, nrese)
+                    dlagrf, coefaf, tau1, tau2, lcont,&
+                    ladhe, lambda, rese, nrese)
 !
 ! ----- PHASE DE CALCUL
 !
@@ -189,14 +190,14 @@ subroutine te0365(option, nomte)
 !
 ! --- RECOPIE VALEURS FINALES
 !
-    do  iddl = 1, nddl
+    do iddl = 1, nddl
         zr(jvect-1+iddl) = vtmp(iddl)
         if (debug) then
             if (vtmp(iddl) .ne. 0.d0) then
                 write(6,*) 'TE0365: ',iddl,vtmp(iddl)
             endif
         endif
-  end do
+    end do
 !
     call jedema()
 end subroutine

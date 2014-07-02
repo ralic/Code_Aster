@@ -21,6 +21,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -78,11 +79,11 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lctcc
+    aster_logical :: lctcc
     integer :: ieq, ibid, numins
     integer :: iadia, neq, lres, neql
     character(len=8) :: kmatd
-    integer :: jvalm,  zislv1, zislv3
+    integer :: jvalm, zislv1, zislv3
     integer :: ifm, niv
     character(len=16) :: optass
     character(len=19) :: masse

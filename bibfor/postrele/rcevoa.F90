@@ -17,6 +17,7 @@ subroutine rcevoa(typtab, nommat)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -62,7 +63,7 @@ subroutine rcevoa(typtab, nommat)
     real(kind=8) :: fam, theta, rcal, sittef, aamorc, bamorc, damorc, ramorc, d
     real(kind=8) :: sitt1, sitt2, fkl
     complex(kind=8) :: cbid
-    logical(kind=1) :: exist, trouve
+    aster_logical :: exist, trouve
     integer :: icodre(4)
     character(len=8) :: k8b, nomres, crit(2), nompar, nomval(4)
     character(len=16) :: motclf, valek(4), table, concep, nomcmd
@@ -162,7 +163,7 @@ subroutine rcevoa(typtab, nommat)
             vale(2) = damorc
             call utmess('A', 'POSTRCCM_33', sk=table, nr=2, valr=vale)
         endif
-10  end do
+ 10 end do
 !
 ! --- DETERMINATION DU NOMBRE DE SITUATION
 !        = NOMBRE D'INSTANTS DES TRANSITOIRES
@@ -180,7 +181,7 @@ subroutine rcevoa(typtab, nommat)
                 valk(2) = valek(i1)
                 call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
             endif
-22      continue
+ 22     continue
 !
         call getvr8(motclf, 'INST', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -207,11 +208,11 @@ subroutine rcevoa(typtab, nommat)
             call jeveuo(jexnum('&&RCEVOA.SITUATION', ioc), 'E', kinst)
             do 24 i = 1, nbins0
                 zr(kinst-1+i) = zr(jinst-1+i)
-24          continue
+ 24         continue
             call jedetr(instan)
         endif
         nbitot = nbitot + nbins0
-20  end do
+ 20 end do
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
@@ -234,8 +235,8 @@ subroutine rcevoa(typtab, nommat)
             zk8(jtabl-1+ind) = table
             zr(jinst-1+ind) = zr(kinst-1+i)
             zi(jnbcy-1+ind) = nbcycl
-32      continue
-30  end do
+ 32     continue
+ 30 end do
 !
 ! --- CALCUL DU FACTEUR D'AMORCAGE
 !
@@ -301,13 +302,13 @@ subroutine rcevoa(typtab, nommat)
                     fam = ( sittef / aamorc ) ** ( -1.d0 / bamorc )
                     zr(jfaij-1+nbitot*(i1-1)+i2) = fam
                 endif
-220          continue
-210      continue
+220         continue
+210     continue
 !
         fatot = 0.d0
 !
         ind = 0
-100      continue
+100     continue
         ind = ind + 1
         if (niv .eq. 2) then
             if (ind .eq. 1) then
@@ -320,7 +321,7 @@ subroutine rcevoa(typtab, nommat)
                 i1 = nbitot*(k-1)
                 write(ifm,1000) zi(jnock-1+k), (zr(jfaij-1+i1+l),l=1,&
                 nbitot)
-700          continue
+700         continue
         endif
 !
         fam = 0.d0
@@ -343,9 +344,9 @@ subroutine rcevoa(typtab, nommat)
                     nk = zi(jnock-1+k)
                 endif
 !
-112          continue
+112         continue
 !
-110      continue
+110     continue
 !
         if (trouve) then
 !
@@ -374,7 +375,7 @@ subroutine rcevoa(typtab, nommat)
                 if (zi(jnocl-1+is2) .eq. 0) then
                     zr(jfaij-1+nbitot*(i-1)+is2) = 0.d0
                 endif
-40          continue
+ 40         continue
 !
             goto 100
 !
@@ -392,14 +393,14 @@ subroutine rcevoa(typtab, nommat)
                         [cbid], k8b, 0)
         endif
 !
-200  end do
+200 end do
 !
     1000 format(1p,i10,'|',40(e10.3,'|'))
     1010 format(1p,' NB_OCCUR ','|',40(i10,'|'))
     1020 format(1p,a28,e12.5,', LIGNE:',i4,', COLONNE:',i4)
     1030 format(1p,'   NB_OCCUR = ',i8,', FA_KL = ',e9.2)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

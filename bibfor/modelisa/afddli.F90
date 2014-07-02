@@ -6,6 +6,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/indik8.h"
@@ -53,7 +54,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
     complex(kind=8), intent(in) :: vale_cplx(cmp_nb)
     integer, intent(inout) :: cmp_count(cmp_nb)
     character(len=19), intent(in) :: list_rela
-    logical(kind=1), intent(in) :: lxfem
+    aster_logical, intent(in) :: lxfem
     integer, intent(in) :: jnoxfl
     integer, intent(in) :: jnoxfv
     character(len=19), intent(in) :: connex_inv

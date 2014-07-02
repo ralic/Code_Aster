@@ -18,7 +18,8 @@ subroutine nmimpx(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/impfok.h"
 #include "asterfort/implis.h"
@@ -47,7 +48,7 @@ subroutine nmimpx(sdimpr)
     integer :: larlig
     character(len=255) :: ligsep
     integer :: unimes
-    logical(kind=1) :: lprint
+    aster_logical :: lprint
 !
 ! ----------------------------------------------------------------------
 !

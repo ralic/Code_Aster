@@ -21,6 +21,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "blas/daxpy.h"
@@ -41,7 +42,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: i, j, diss, cass
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan, zero, un
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2
@@ -94,7 +95,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
     rtan = 0.d0
     do 10 i = 2, ndim
         rtan=rtan+a(i)**2
-10  end do
+ 10 end do
     na = sqrt( max(zero,a(1))**2 + rtan )
 !
     rk = sc*(1.d0-ka/lc)/ka
@@ -142,7 +143,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
             sigma(1) = sigma(1) + rk*max(zero,a(1))
             do 20 i = 2, ndim
                 sigma(i) = sigma(i) + rk*a(i)
-20          continue
+ 20         continue
 !
         else
 !
@@ -152,7 +153,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
             sigma(1) = sigma(1) + ra*max(zero,a(1))
             do 30 i = 2, ndim
                 sigma(i) = sigma(i) + ra*a(i)
-30          continue
+ 30         continue
 !
         endif
 !
@@ -191,7 +192,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
 ! -- MATRICE TANGENTE
 !
-5000  continue
+5000 continue
     if (.not. rigi) goto 9999
 !
     call r8inir(36, 0.d0, dsidep, 1)
@@ -207,7 +208,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
         if (a(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) - 1.d-8*sc/lc
         do 39 i = 2, ndim
             dsidep(i,i) = dsidep(i,i) - 1.d-8*sc/lc
-39      continue
+ 39     continue
         goto 9999
     endif
 !
@@ -218,7 +219,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
         do 40 i = 2, ndim
             dsidep(i,i) = dsidep(i,i) + rk
-40      continue
+ 40     continue
 !
     else
 !
@@ -229,7 +230,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
             do 42 i = 2, ndim
                 dsidep(i,i) = dsidep(i,i) + coef + coef2*a(i)*a(i)
-42          continue
+ 42         continue
 !
             if (ndim .eq. 3) then
                 dsidep(2,3) = dsidep(2,3) + coef2*a(2)*a(3)
@@ -240,20 +241,20 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
             do 44 i = 1, ndim
                 dsidep(i,i) = dsidep(i,i) + coef + coef2*a(i)*a(i)
-44          continue
+ 44         continue
 !
             do 46 j = 1, ndim-1
                 do 47 i = j+1, ndim
                     dsidep(j,i) = dsidep(j,i) + coef2*a(j)*a(i)
                     dsidep(i,j) = dsidep(i,j) + coef2*a(i)*a(j)
-47              continue
-46          continue
+ 47             continue
+ 46         continue
 !
 !
         endif
 !
     endif
-9999  continue
+9999 continue
 !
 !
 end subroutine

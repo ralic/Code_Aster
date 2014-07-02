@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine crenua(nuage, nomgd, np, nx, nc,&
                       lnual)
@@ -23,6 +25,6 @@ interface
         integer :: np
         integer :: nx
         integer :: nc
-        logical(kind=1) :: lnual
+        aster_logical :: lnual
     end subroutine crenua
 end interface

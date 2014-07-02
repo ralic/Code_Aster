@@ -17,6 +17,7 @@ subroutine xfisno(noma, modelx)
 ! ======================================================================
 ! person_in_charge: patrick.massin at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -46,12 +47,12 @@ subroutine xfisno(noma, modelx)
 !
 !
 !
-    integer :: jlcnx,   jcesfd, jcesfl,  jcesd, jcesl
-    integer :: jcesd2,  jcesl2
+    integer :: jlcnx, jcesfd, jcesfl, jcesd, jcesl
+    integer :: jcesd2, jcesl2
     integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
     integer :: ibid, iad, nncp
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
-    logical(kind=1) :: lcont
+    aster_logical :: lcont
     integer, pointer :: xfem_cont(:) => null()
     integer, pointer :: cesfv(:) => null()
     integer, pointer :: cesv2(:) => null()

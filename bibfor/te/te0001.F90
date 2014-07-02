@@ -1,5 +1,6 @@
 subroutine te0001(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/fointe.h"
@@ -34,7 +35,7 @@ subroutine te0001(option, nomte)
     real(kind=8) :: dgrd
     real(kind=8) :: valpar(4), angl(3), mat(3, 3), vect(6)
     character(len=8) :: nompar(4), nomfon
-    logical(kind=1) :: langl
+    aster_logical :: langl
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ier, j, jdimp, jgeom, jtime, jvec
@@ -54,11 +55,11 @@ subroutine te0001(option, nomte)
 !CDIR$ IVDEP
         do 10 i = 1, nddl1
             zr(jvec-1+i) = zr(jdimp-1+i)
-10      continue
+ 10     continue
         langl = zr(jdimp+nddl1) .lt. 0.d0
         do 11 i = 1, 3
             angl(i) = zr(jdimp+nddl1+i)
-11      continue
+ 11     continue
     else if (option.eq. 'CHAR_MECA_FORC_F') then
         nbpar = 4
         nompar(1) = 'X'
@@ -78,7 +79,7 @@ subroutine te0001(option, nomte)
             ier=0
             call fointe('FM', nomfon, nbpar, nompar, valpar,&
                         zr(jvec-1+i), ier)
-20      continue
+ 20     continue
         langl = zk8(jdimp+nddl1) .eq. 'UTILISAT'
         if (langl) then
             dgrd = r8dgrd()
@@ -88,7 +89,7 @@ subroutine te0001(option, nomte)
                 call fointe('FM', nomfon, nbpar, nompar, valpar,&
                             angl(i), ier)
                 angl(i) = angl(i) * dgrd
-21          continue
+ 21         continue
         endif
     else
         call utmess('F', 'ELEMENTS2_61', sk=option)
@@ -101,14 +102,14 @@ subroutine te0001(option, nomte)
             vect(i) = 0.d0
             do 101 j = 1, min(nddl, 3)
                 vect(i) = vect(i) + mat(j,i)*zr(jvec-1+j)
-101          continue
+101         continue
         do 102 i = 4, min(nddl, 6)
             vect(i) = 0.d0
             do 102 j = 4, min(nddl, 6)
                 vect(i) = vect(i) + mat(j-3,i-3)*zr(jvec-1+j)
-102          continue
+102         continue
         do 103 i = 1, nddl
             zr(jvec-1+i) = vect(i)
-103      continue
+103     continue
     endif
 end subroutine

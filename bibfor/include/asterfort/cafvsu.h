@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cafvsu(cont, tange, maxfa, nface, fks,&
                       dfks1, dfks2, mobfa, dmob1, dmob2,&
@@ -23,8 +25,8 @@ interface
         integer :: nvoima
         integer :: nface
         integer :: maxfa
-        logical(kind=1) :: cont
-        logical(kind=1) :: tange
+        aster_logical :: cont
+        aster_logical :: tange
         real(kind=8) :: fks(1:nface)
         real(kind=8) :: dfks1(1:maxfa+1, nface)
         real(kind=8) :: dfks2(1:maxfa+1, nface)

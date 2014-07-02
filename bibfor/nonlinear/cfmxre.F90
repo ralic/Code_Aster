@@ -20,6 +20,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -67,7 +68,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 !
     integer :: ifm, niv
-    logical(kind=1) :: lctcc, lctcd, lxfcm, lexiv, lallv
+    aster_logical :: lctcc, lctcd, lxfcm, lexiv, lallv
     character(len=19) :: ddepla, depdel, depplu
     real(kind=8) :: inst(2)
     character(len=19) :: prno

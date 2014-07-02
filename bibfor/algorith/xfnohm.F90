@@ -1,11 +1,11 @@
-subroutine xfnohm(fnoevo, deltat, nno,&
-                  npg, ipoids, ivf, idfde,&
-                  geom, congem, b, dfdi, dfdi2,&
-                  r, vectu, imate, mecani, press1,&
-                  dimcon, nddls, nddlm, dimuel, nmec,&
-                  np1, ndim, axi, dimenr, nnop,&
-                  nnops, nnopm, igeom, jpintt, jpmilt,&
-                  lonch, cnset, heavt, enrmec)
+subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
+                  ivf, idfde, geom, congem, b,&
+                  dfdi, dfdi2, r, vectu, imate,&
+                  mecani, press1, dimcon, nddls, nddlm,&
+                  dimuel, nmec, np1, ndim, axi,&
+                  dimenr, nnop, nnops, nnopm, igeom,&
+                  jpintt, jpmilt, lonch, cnset, heavt,&
+                  enrmec)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -26,13 +26,14 @@ subroutine xfnohm(fnoevo, deltat, nno,&
 ! ======================================================================
 ! ======================================================================
     implicit none
-#   include "asterfort/reeref.h"
-#   include "asterfort/vecini.h"
-#   include "asterfort/xcabhm.h"
-#   include "asterfort/xfnoda.h"
-#   include "asterfort/xlinhm.h"
-#   include "jeveux.h"
-    logical(kind=1) :: fnoevo, axi
+#include "asterf_types.h"
+# include "asterfort/reeref.h"
+# include "asterfort/vecini.h"
+# include "asterfort/xcabhm.h"
+# include "asterfort/xfnoda.h"
+# include "asterfort/xlinhm.h"
+# include "jeveux.h"
+    aster_logical :: fnoevo, axi
     integer :: nno, npg, imate, dimenr, dimcon, nddls, nddlm
     integer :: dimuel, nmec, np1, ndim, ipoids, ivf, kpi, i, n
     integer :: idfde, mecani(5), press1(7)
@@ -123,8 +124,8 @@ subroutine xfnohm(fnoevo, deltat, nno,&
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-620          continue
-610      continue
+620         continue
+610     continue
 !
 !     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT
         he=1.d0*heavt(ise)
@@ -145,7 +146,7 @@ subroutine xfnohm(fnoevo, deltat, nno,&
                 do 511 in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpi-1)+in)* coorse(ndim*&
                     (in-1)+j)
-511              continue
+511             continue
 510         continue
 !
 !     XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE

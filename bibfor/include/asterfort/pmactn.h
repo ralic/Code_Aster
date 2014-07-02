@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
                       sderro, liccvg, actite, action)
@@ -22,7 +24,7 @@ interface
         real(kind=8) :: parcri(*)
         integer :: iterat
         integer :: numins
-        logical(kind=1) :: itemax
+        aster_logical :: itemax
         character(len=24) :: sderro
         integer :: liccvg(5)
         integer :: actite

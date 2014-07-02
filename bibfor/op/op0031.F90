@@ -17,10 +17,11 @@ subroutine op0031()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-
+!
 !     COMBINAISON LINEAIRE DE MATRICE
 !     ------------------------------------------------------------------
-
+!
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -53,19 +54,19 @@ subroutine op0031()
     character(len=16) :: concep, nomcmd, typrep
     character(len=24) :: cnom, ccoef, ctypec, valk(2)
     real(kind=8) :: r8val(2)
-    logical(kind=1) :: lcoefc, lreent
+    aster_logical :: lcoefc, lreent
     complex(kind=8) :: cval
     integer :: nbocag, nboccr, nboccc, nbocc, ldesc, l, lnom, iocc, i
     integer :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1
-    integer :: jrefe, jpomr, n1,n2,k,iexi,jlime,jlime1
+    integer :: jrefe, jpomr, n1, n2, k, iexi, jlime, jlime1
 ! ------------------------------------------------------------------
-
+!
     call jemarq()
     call infmaj()
     call getres(matres, concep, nomcmd)
     call gettco(matres, typrep)
     matr19=matres
-
+!
 !     -- LA MATRICE RESULTAT  EST-ELLE REENTRANTE ?
     call jeexin(matr19//'.REFA', iret)
     lreent=(iret.ne.0)
@@ -74,13 +75,13 @@ subroutine op0031()
         matr19='&&OP0031.MATRES'
         base='V'
     endif
-
+!
     call getfac('CALC_AMOR_GENE', nbocag)
     if (nbocag .ne. 0) then
         call amogen(matr19)
         goto 9999
     endif
-
+!
     call getfac('COMB_R', nboccr)
     call getfac('COMB_C', nboccc)
     if (nboccr .ne. 0) then
@@ -92,33 +93,33 @@ subroutine op0031()
         typres = 'C'
         combrc = 'COMB_C'
     endif
-
-
-
+!
+!
+!
 !   -- Creation du .DESC pour la MATR_ASSE_GENE resultat :
 !   -----------------------------------------------------
     if (typrep(1:14) .eq. 'MATR_ASSE_GENE') then
         call wkvect(matr19//'.DESC', base//' V I', 3, ldesc)
-        do iocc=1,nbocc
+        do iocc = 1, nbocc
             call getvid(combrc, 'MATR_ASSE', iocc=iocc, scal=matri1, nbret=l)
             call jeveuo(matri1//'           .DESC', 'L', ides1)
-            if (iocc.eq.1) then
+            if (iocc .eq. 1) then
                 do i = 1, 3
                     zi(ldesc+i-1)=zi(ides1+i-1)
                 enddo
             else
                 ASSERT (zi(ldesc).eq.zi(ides1))
-                if (zi(ldesc-1+2).ne.zi(ides1-1+2)) call utmess('F','ALGELINE2_29')
-                ! si l'une des matr_asse_gene est pleine, le resultat le sera aussi :
-                if (zi(ides1-1+3).eq.2) zi(ldesc-1+3)=2
-                if (zi(ides1-1+3).eq.3) then
-                   if (zi(ldesc-1+3).eq.1) zi(ldesc-1+3)=3
+                if (zi(ldesc-1+2) .ne. zi(ides1-1+2)) call utmess('F', 'ALGELINE2_29')
+! si l'une des matr_asse_gene est pleine, le resultat le sera aussi :
+                if (zi(ides1-1+3) .eq. 2) zi(ldesc-1+3)=2
+                if (zi(ides1-1+3) .eq. 3) then
+                    if (zi(ldesc-1+3) .eq. 1) zi(ldesc-1+3)=3
                 endif
             endif
         enddo
     endif
-
-
+!
+!
     cnom = '&&OP0031.LISTE_MATRICE'
     call wkvect(cnom, 'V V K8', nbocc, lnom)
     jpomr=0
@@ -130,22 +131,22 @@ subroutine op0031()
         if (zk24(jrefe-1+9) .eq. 'MR') then
             jpomr=iocc
         endif
-10  end do
-
-
+ 10 end do
+!
+!
     nomddl=' '
     call getvtx(' ', 'SANS_CMP', scal=nomddl, nbret=ibid)
-
-
+!
+!
 !   --- recuperation des coefficients :
 !   ------------------------------------
 !   remarque : pour partie='imag', on fait coef=-j*coef
-
+!
     ccoef = '&&OP0031.COEF_VALEURS'
     call wkvect(ccoef, 'V V R', 2*nbocc, lcoef)
     ctypec = '&&OP0031.COEF_TYPE'
     call wkvect(ctypec, 'V V K8', nbocc, ltypec)
-
+!
     nbcst = 0
     do 25 iocc = 0, nbocc - 1
         call getvr8(combrc, 'COEF_R', iocc=iocc+1, scal=r8val(1), nbret=lr)
@@ -156,7 +157,7 @@ subroutine op0031()
                 call getvtx(combrc, 'PARTIE', iocc=iocc+1, scal=partie, nbret=ibid)
                 if (partie .eq. 'IMAG') lcoefc=.true.
             endif
-
+!
             if (.not.lcoefc) then
                 zr(lcoef+nbcst) = r8val(1)
                 nbcst = nbcst + 1
@@ -175,9 +176,9 @@ subroutine op0031()
             nbcst = nbcst + 2
             zk8(ltypec+iocc) = 'C'
         endif
-25  end do
-
-
+ 25 end do
+!
+!
 !   --- controle des references :
 !   --------------------------------
     do 30 iocc = 0, nbocc - 2
@@ -187,29 +188,29 @@ subroutine op0031()
             valk(2)=zk8(lnom+iocc+1)
             call utmess('F', 'ALGELINE2_28', nk=2, valk=valk)
         endif
-30  end do
-
-
-
+ 30 end do
+!
+!
+!
 !   -- combinaison des matrices :
 !   ------------------------------------------------------------------
-    ! initialisation de la matrice resultat :
+! initialisation de la matrice resultat :
     call mtdefs(matr19, zk8(lnom+jpomr), base, typres)
     call mtcmbl(nbocc, zk8(ltypec), zr(lcoef), zk8(lnom), matr19,&
                 nomddl, ' ', 'ELIM=')
-
-
-    ! la matrice resultat de la combinaison n'a pas de raison de contenir l'objet .LIME :
-    ! call jedetr(matr19//'.LIME')
-
+!
+!
+! la matrice resultat de la combinaison n'a pas de raison de contenir l'objet .LIME :
+! call jedetr(matr19//'.LIME')
+!
 !   -- Il faut concatener les objets .LIME (voir issue21327) :
 !   -----------------------------------------------------------
     if (typrep(1:14) .ne. 'MATR_ASSE_GENE') then
         n1=0
-        do iocc=1,nbocc
+        do iocc = 1, nbocc
             call getvid(combrc, 'MATR_ASSE', iocc=iocc, scal=matri1, nbret=l)
             call jeexin(matri1//'           .LIME', iexi)
-            if (iexi.gt.0) then
+            if (iexi .gt. 0) then
                 call jelira(matri1//'           .LIME', 'LONMAX', n2)
                 n1=n1+n2
             endif
@@ -217,21 +218,21 @@ subroutine op0031()
         call jedetr(matr19//'.LIME')
         call wkvect(matr19//'.LIME', base//' V K24', n1, jlime)
         n1=0
-        do iocc=1,nbocc
+        do iocc = 1, nbocc
             call getvid(combrc, 'MATR_ASSE', iocc=iocc, scal=matri1, nbret=l)
             call jeexin(matri1//'           .LIME', iexi)
-            if (iexi.gt.0) then
+            if (iexi .gt. 0) then
                 call jelira(matri1//'           .LIME', 'LONMAX', n2)
                 call jeveuo(matri1//'           .LIME', 'L', jlime1)
-                do k=1,n2
+                do k = 1, n2
                     zk24(jlime-1+n1+k)=zk24(jlime1-1+k)
                 enddo
                 n1=n1+n2
             endif
         enddo
     endif
-
-
+!
+!
 !   -- si la matrice est reentrante, on la detruit et on recopie
 !      la matrice intermediaire :
 !   -------------------------------------------------------------
@@ -241,7 +242,7 @@ subroutine op0031()
         call copisd('MATR_ASSE', 'G', matr19, matres)
         call detrsd('MATR_ASSE', matr19)
     endif
-
-9999  continue
+!
+9999 continue
     call jedema()
 end subroutine

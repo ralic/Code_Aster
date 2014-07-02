@@ -21,6 +21,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -66,8 +67,8 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 ! ----------------------------------------------------------------------
 !
     integer :: mmitgo, mmitca, mmitfr
-    logical(kind=1) :: lboucf, lboucg, lboucc
-    logical(kind=1) :: lappa, loptin
+    aster_logical :: lboucf, lboucg, lboucc
+    aster_logical :: lappa, loptin
 !
 ! ----------------------------------------------------------------------
 !

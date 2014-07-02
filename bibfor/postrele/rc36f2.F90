@@ -1,6 +1,7 @@
 subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
                   isl, nk, nl, n0)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
     integer :: nbsigr, nocc(*), i1a4, isk, isl, nk, nl, n0
     real(kind=8) :: saltij(*)
 !     ------------------------------------------------------------------
@@ -26,7 +27,7 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
 !
 !     ------------------------------------------------------------------
     integer :: k, l, i1
-    logical(kind=1) :: colona, colonb, lignea, ligneb
+    aster_logical :: colona, colonb, lignea, ligneb
 !     ------------------------------------------------------------------
 !
     colona = .false.
@@ -55,12 +56,12 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isl-1)+1) = 0.d0
             saltij(i1+4*(isl-1)+2) = 0.d0
-30      continue
+ 30     continue
         i1 = 4*nbsigr*(isl-1)
         do 32 l = 1, nbsigr
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
-32      continue
+ 32     continue
     endif
 !
     if (colonb) then
@@ -68,12 +69,12 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isl-1)+3) = 0.d0
             saltij(i1+4*(isl-1)+4) = 0.d0
-40      continue
+ 40     continue
         i1 = 4*nbsigr*(isl-1)
         do 42 l = 1, nbsigr
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
-42      continue
+ 42     continue
     endif
 !
     if (lignea) then
@@ -81,12 +82,12 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isk-1)+1) = 0.d0
             saltij(i1+4*(isk-1)+2) = 0.d0
-50      continue
+ 50     continue
         i1 = 4*nbsigr*(isk-1)
         do 52 l = 1, nbsigr
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
-52      continue
+ 52     continue
     endif
 !
     if (ligneb) then
@@ -94,12 +95,12 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isk-1)+3) = 0.d0
             saltij(i1+4*(isk-1)+4) = 0.d0
-60      continue
+ 60     continue
         i1 = 4*nbsigr*(isk-1)
         do 62 l = 1, nbsigr
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
-62      continue
+ 62     continue
     endif
 !
 end subroutine

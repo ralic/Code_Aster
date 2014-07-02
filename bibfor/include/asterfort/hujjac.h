@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujjac(mod, nmat, mater, indi, deps,&
                       nr, yd, yf, ye, nvi,&
@@ -34,8 +36,8 @@ interface
         real(kind=8) :: vins(nr)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: drdy(nr, nr)
-        logical(kind=1) :: bnews(3)
-        logical(kind=1) :: mtrac
+        aster_logical :: bnews(3)
+        aster_logical :: mtrac
         integer :: iret
     end subroutine hujjac
 end interface

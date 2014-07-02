@@ -3,7 +3,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
 !
     implicit none
 ! Declaration of real type variables
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -21,15 +21,8 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    real(kind=8) :: stress(6)
-    real(kind=8) :: strain(6)
-    real(kind=8) :: rprops(6)
-    real(kind=8) :: dsidep(6,6)
-    real(kind=8) :: edge
-    real(kind=8) :: right
-    real(kind=8) :: apex
-    logical(kind=1) :: outofp
 !
+#include "asterf_types.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
@@ -37,18 +30,27 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
 #include "asterfort/mctge2.h"
 #include "asterfort/vecini.h"
 !
+    real(kind=8) :: stress(6)
+    real(kind=8) :: strain(6)
+    real(kind=8) :: rprops(6)
+    real(kind=8) :: dsidep(6, 6)
+    real(kind=8) :: edge
+    real(kind=8) :: right
+    real(kind=8) :: apex
+    aster_logical :: outofp
+!
 ! Declaration of integer type variables
     integer :: itri, iorder, mmax, nmax, mxiter, i, j, itjac1
 !
 ! Declaration of integer type variables
-    logical(kind=1) :: epflag
+    aster_logical :: epflag
 !
     parameter&
      &(   mmax=3     ,nmax=6     )
 !
 ! Declaration of vector and matrix type variables
-    real(kind=8) :: dpstrs(mmax,mmax), pstra(mmax), pstrs(mmax), r0, r1, r2, r3, r4
-    real(kind=8) :: eigprj(mmax,mmax), eigxpr(mmax,mmax)
+    real(kind=8) :: dpstrs(mmax, mmax), pstra(mmax), pstrs(mmax), r0, r1, r2, r3, r4
+    real(kind=8) :: eigprj(mmax, mmax), eigxpr(mmax, mmax)
     real(kind=8) :: small, vaux(mmax), sqr, tol, tu(nmax), tr(nmax), t1(nmax), refe
     real(kind=8) :: dmax1
 !

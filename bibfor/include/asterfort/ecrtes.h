@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                       nbcmp, ityp, entete, lcmp)
@@ -26,6 +28,6 @@ interface
         integer :: nbcmp
         integer :: ityp
         character(len=80) :: entete(10)
-        logical(kind=1) :: lcmp
+        aster_logical :: lcmp
     end subroutine ecrtes
 end interface

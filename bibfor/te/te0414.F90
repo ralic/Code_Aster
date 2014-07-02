@@ -1,5 +1,6 @@
 subroutine te0414(optioz, nomtz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cosiro.h"
 #include "asterfort/jevech.h"
@@ -34,13 +35,13 @@ subroutine te0414(optioz, nomtz)
 !
     integer :: nb1, jcret, codret
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    logical(kind=1) :: matric
+    aster_logical :: matric
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, ibid, icompo, ideplm, ideplp
-    integer :: jgeom, jmatr,  lzr, nb2, nddlet
+    integer :: jgeom, jmatr, lzr, nb2, nddlet
     integer, pointer :: desi(:) => null()
 !-----------------------------------------------------------------------
     option = optioz
@@ -75,14 +76,14 @@ subroutine te0414(optioz, nomtz)
 !       DEFORMATION DE GREEN
 !
         if (zk16(icompo)(1:5) .eq. 'ELAS ') then
-        
+!
 !           HYPER-ELASTICITE
 !
             call vdgnlr(option, nomte)
             goto 9999
 !
         else
-
+!
 !           HYPO-ELASTICITE
 !
             call vdpnlr(option, nomte, codret)
@@ -90,57 +91,57 @@ subroutine te0414(optioz, nomtz)
             goto 9999
 !
         endif
-        
+!
     else if (zk16(icompo+2)(1:5) .eq. 'PETIT') then
-    
+!
         if (zk16(icompo+2)(6:10) .eq. '_REAC') then
 !
             call utmess('A', 'ELEMENTS3_94')
 !
             do 90 i = 1, nb2-1
-               i1=3*(i-1)
-               i2=6*(i-1)
-               zr(jgeom+i1) = zr(jgeom+i1) +zr(ideplm+i2) +zr(ideplp+ i2)
-               zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(ideplm+i2+1) +zr(ideplp+i2+1)
-               zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(ideplm+i2+2) +zr(ideplp+i2+2)
-90          continue
-
+                i1=3*(i-1)
+                i2=6*(i-1)
+                zr(jgeom+i1) = zr(jgeom+i1) +zr(ideplm+i2) +zr(ideplp+ i2)
+                zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(ideplm+i2+1) +zr(ideplp+i2+1)
+                zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(ideplm+i2+2) +zr(ideplp+i2+2)
+ 90         continue
+!
         endif
 !
         call vdxnlr(option, nomte, zr(jgeom), matloc, nb1,&
-                codret)
+                    codret)
 !
         if (matric) then
 !
-           call jevech('PMATUUR', 'E', jmatr)
+            call jevech('PMATUUR', 'E', jmatr)
 !
 ! -----    MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
 !
-           call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
-           call matpgl(nb2, zr(lzr), plg)
+            call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
+            call matpgl(nb2, zr(lzr), plg)
 !
 ! -----    OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL
 !          ET STOCKAGE DANS ZR
 !
-           nddlet = 6*nb1+3
-           call tranlg(nb1, 51, nddlet, plg, matloc,&
-                       zr(jmatr))
-                       
+            nddlet = 6*nb1+3
+            call tranlg(nb1, 51, nddlet, plg, matloc,&
+                        zr(jmatr))
+!
         endif
     else 
 !
 ! ----- AUTRES MESURES DE DEFORMATIONS
 !
         call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
-        
+!
     endif
-    
+!
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret
     endif
 !
-9999  continue
+9999 continue
 !
     if (option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !        -- PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :

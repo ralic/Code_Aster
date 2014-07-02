@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                       jmaen1, jmaen2, jmaen3, jmafon, nfon,&
@@ -36,6 +38,6 @@ interface
         integer :: jtail
         integer :: jfonmu
         integer :: ndim
-        logical(kind=1) :: goinop
+        aster_logical :: goinop
     end subroutine xlmail
 end interface

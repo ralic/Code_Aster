@@ -1,7 +1,9 @@
-subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
-                      geom,cara,valpg,outno,lzr,matr, lgreen)
-
+subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
+                      npgsn, nso, nbcou, geom, cara,&
+                      valpg, outno, lzr, matr, lgreen)
+!
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/caurtg.h"
 #include "asterfort/pk2cau.h"
@@ -36,10 +38,10 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
 !          -----------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, icmp,  ii, ino
-    integer :: inte, intsn, intsr,  isp, j
+    integer :: i, ic, icmp, ii, ino
+    integer :: inte, intsn, intsr, isp, j
     integer :: jj, k, k1, kpgs, l
-    integer ::  nbcou, ncmp, npge, npgt, nso
+    integer :: nbcou, ncmp, npge, npgt, nso
 !
     real(kind=8) :: s, zero
 !-----------------------------------------------------------------------
@@ -53,16 +55,16 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: epais
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
-    real(kind=8) :: geom(*),cara(*),valpg(*),outno(*),lzr(*),matr(*)
+    real(kind=8) :: geom(*), cara(*), valpg(*), outno(*), lzr(*), matr(*)
     real(kind=8) :: matpg(6, 27*nbcou), matno(6, 12*nbcou), matgn(6, 12*nbcou)
     real(kind=8) :: pk2(6, 27*nbcou), matgnu(6, 12*nbcou), signo(6, 12*nbcou)
 !
-    logical(kind=1) :: lgreen
+    aster_logical :: lgreen
 !
 ! ----------------------------------------------------------------------
 !
     zero=0.0d0
-
+!
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
     endif
@@ -80,10 +82,10 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
                 k1=6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                 do 10 i = 1, 6
                     matpg(i,kpgs)=valpg(k1+i)
-10              continue
-20          continue
-30      continue
-40  continue
+ 10             continue
+ 20         continue
+ 30     continue
+ 40 continue
 !
     ncmp=6
 !
@@ -95,8 +97,8 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
         do 60 i = 1, 6
             do 50 j = 1, kpgs
                 pk2(i,j)=matpg(i,j)
-50          continue
-60      continue
+ 50         continue
+ 60     continue
 !
 ! --- TRANSFORMATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
 ! --- SECONDE ESPECE PK2 EN CONTRAINTES DE CAUCHY :
@@ -116,10 +118,10 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
             do 70 i = 1, 3
                 k=k+1
                 lzr(2000+k)=vectt(i,j)
-70          continue
-80      continue
-90  continue
-
+ 70         continue
+ 80     continue
+ 90 continue
+!
 !
     do 130 icou = 1, nbcou
         do 120 ic = 1, ncmp
@@ -129,13 +131,13 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
                 do 100 j = 1, npge*npgsn
                     jj=(icou-1)*npge*npgsn+j
                     s=s+matr(l+j)*matpg(ic,jj)
-100              continue
+100             continue
                 ii=(icou-1)*npge*nso+i
                 matno(ic,ii)=s
-110          continue
-120      continue
-130  continue
-
+110         continue
+120     continue
+130 continue
+!
 !
 ! --- DETERMINATION DES MATRICE DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
@@ -156,7 +158,7 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
                 do 140 j = 1, nso
                     jj=nso*(nordo+1)+nso*npge*(icou-1)+j
                     matgn(i,j)=matno(i,jj)
-140              continue
+140             continue
                 if (nomte .eq. 'MEC3QU9H') then
                     matgn(i,5)=(matgn(i,1)+matgn(i,2))/2.d0
                     matgn(i,6)=(matgn(i,2)+matgn(i,3))/2.d0
@@ -171,7 +173,7 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
                     matgn(i,7)=(matgn(i,1)+matgn(i,2)+matgn(i,3))/&
                     3.d0
                 endif
-150          continue
+150         continue
 !
             if (lgreen) then
                 call vdsiro(nb2, 1, matevn, 'IU', 'N',&
@@ -186,19 +188,19 @@ subroutine elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
                 do 170 icmp = 1, ncmp
                     do 160 ino = 1, nb2
                         outno ( (ino-1)*ncmp*nbcou*npge+(isp-1)* ncmp+icmp)= matgn(icmp,ino)
-160                  continue
-170              continue
+160                 continue
+170             continue
                 else if ((option.eq.'SIEF_ELNO') .or. (&
             option.eq.'SIGM_ELNO')) then
                 do 190 icmp = 1, ncmp
                     do 180 ino = 1, nb2
                         outno((ino-1)*ncmp*nbcou*npge+(isp-1)*ncmp+icmp)= signo(icmp,ino)
-180                  continue
-190              continue
+180                 continue
+190             continue
             else
                 ASSERT(.false.)
             endif
 !
-200      continue
-210  continue
-  end subroutine
+200     continue
+210 continue
+end subroutine

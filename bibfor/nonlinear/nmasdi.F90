@@ -19,6 +19,7 @@ subroutine nmasdi(fonact, veasse, cndfdo, cndfpi)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -60,7 +61,7 @@ subroutine nmasdi(fonact, veasse, cndfdo, cndfpi)
     real(kind=8) :: codonn(20)
     character(len=19) :: cndido, cndipi
     character(len=19) :: cncine, cndidi
-    logical(kind=1) :: ldidi, lpilo
+    aster_logical :: ldidi, lpilo
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,7 +116,7 @@ subroutine nmasdi(fonact, veasse, cndfdo, cndfpi)
      &                   codonn(n)
             call nmdebg('VECT', cndonn(n), ifm)
         endif
-17  end do
+ 17 end do
 !
 ! --- VECTEUR RESULTANT DEPLACEMENTS PILOTES
 !

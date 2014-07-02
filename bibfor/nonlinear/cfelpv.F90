@@ -17,10 +17,11 @@ subroutine cfelpv(numlia, typlia, resoco, nbliai, lelpiv)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
-    logical(kind=1) :: lelpiv
+    aster_logical :: lelpiv
     integer :: numlia
     integer :: nbliai
     character(len=2) :: typlia
@@ -66,29 +67,29 @@ subroutine cfelpv(numlia, typlia, resoco, nbliai, lelpiv)
                 lelpiv = .true.
                 goto 100
             endif
-10      continue
+ 10     continue
     else if (typlia.eq.typef0) then
         do 20 iote = 1, zi(jliot+4*nbliai+1)
             if (zi(jliot-1+iote+nbliai) .eq. numlia) then
                 lelpiv = .true.
                 goto 100
             endif
-20      continue
+ 20     continue
     else if (typlia.eq.typef1) then
         do 30 iote = 1, zi(jliot+4*nbliai+2)
             if (zi(jliot-1+iote+2*nbliai) .eq. numlia) then
                 lelpiv = .true.
                 goto 100
             endif
-30      continue
+ 30     continue
     else if (typlia.eq.typef2) then
         do 40 iote = 1, zi(jliot+4*nbliai+3)
             if (zi(jliot-1+iote+3*nbliai) .eq. numlia) then
                 lelpiv = .true.
                 goto 100
             endif
-40      continue
+ 40     continue
     endif
-100  continue
+100 continue
 ! ======================================================================
 end subroutine

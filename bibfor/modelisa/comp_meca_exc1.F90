@@ -1,8 +1,9 @@
-subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_cristal, &
-                          l_exte_comp, nb_vari    )
+subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cristal,&
+                          l_exte_comp, nb_vari)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
@@ -30,9 +31,9 @@ subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: mult_comp
     integer, intent(in) :: nb_vari_exte
-    logical(kind=1), intent(in) :: l_kit_meta
-    logical(kind=1), intent(in) :: l_cristal
-    logical(kind=1), intent(in) :: l_exte_comp
+    aster_logical, intent(in) :: l_kit_meta
+    aster_logical, intent(in) :: l_cristal
+    aster_logical, intent(in) :: l_exte_comp
     integer, intent(inout) :: nb_vari
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,7 +65,7 @@ subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_
 !
     if (l_kit_meta) then
         if (defo_comp .eq. 'SIMO_MIEHE') nb_vari = nb_vari + 1
-        if (defo_comp .eq. 'GDEF_LOG')   nb_vari = nb_vari + 6
+        if (defo_comp .eq. 'GDEF_LOG') nb_vari = nb_vari + 6
     endif
 !
 ! - Multi comportment (*CRISTAL)

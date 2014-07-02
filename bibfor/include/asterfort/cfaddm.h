@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
                       ndimg, nbnom, posnsm, coefno, tau1,&
                       tau2, norm, jeu, coornp)
         character(len=24) :: resoco
-        logical(kind=1) :: lctfd
-        logical(kind=1) :: lctf3d
+        aster_logical :: lctfd
+        aster_logical :: lctf3d
         integer :: posnoe
         integer :: iliai
         integer :: ndimg

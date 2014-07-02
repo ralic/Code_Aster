@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
                       nsingm, ffe, ffm, norm, jgeom,&
@@ -39,7 +41,7 @@ interface
         integer :: jddlm(2)
         integer :: nfhe
         integer :: nfhm
-        logical(kind=1) :: lmulti
+        aster_logical :: lmulti
         integer :: heavfa(*)
         real(kind=8) :: jeu
     end subroutine xmmjeu

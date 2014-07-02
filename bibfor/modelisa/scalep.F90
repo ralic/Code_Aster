@@ -40,6 +40,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 ! OUT : SCAL   : TABLEAU DES PRODUITS SCALAIRES (NBEXCP,NBMR)
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8dgrd.h"
@@ -52,7 +53,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
     integer :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
-    logical(kind=1) :: ltable
+    aster_logical :: ltable
     character(len=8) :: noma
     character(len=19) :: spectr, base
     real(kind=8) :: scal(nbexcp, nbmr)
@@ -117,7 +118,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
             zr(iteta+2*(iex-1)) = dble(cos(theta))
             zr(iteta+2*(iex-1)+1) = dble(sin(theta))
             zk8(inatu+iex-1) = zk16(ispte+4+iex-1)(1:8)
-10      continue
+ 10     continue
 !
     else
 !
@@ -132,7 +133,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
             else
                 zk8(inatu+iex-1) = 'FORCE'
             endif
-11      continue
+ 11     continue
 !
     endif
 !
@@ -157,11 +158,11 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
                 zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+irot1- 1)
                 zr(idefm+idec+1) = zr(ivale+6*(zi(inuno+iex-1)-1)+ irot2-1)
             endif
-21      continue
+ 21     continue
 !
         call jelibe(chvale)
 !
-20  end do
+ 20 end do
 !
 ! --- 4.CALCUL DES PRODUITS SCALAIRES
 !
@@ -170,8 +171,8 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
             idec = 2*nbexcp*(imr-1)+2*(iex-1)
             scal(iex,imr) = zr(idefm+idec)*zr(iteta+2*(iex-1)) + zr(idefm+idec+1)*zr(iteta+2*(iex&
                             &-1)+1)
-31      continue
-30  end do
+ 31     continue
+ 30 end do
 !
     call jedetr('&&SCALEP.TEMP.NUNO')
     call jedetr('&&SCALEP.TEMP.TETA')

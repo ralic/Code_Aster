@@ -23,6 +23,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
@@ -40,7 +41,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
     character(len=24) :: matass, cndirp, cnchci, cnresi
     character(len=24) :: vtempm, vtempp, vtemp, vec2nd, vec2ni
     character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
-    logical(kind=1) :: lostat
+    aster_logical :: lostat
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,9 +56,9 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
     complex(kind=8) :: cbid
 !
 !
-    integer :: k, j2nd,  j2ni
-    integer ::  jtempm
-    integer ::   jbuem
+    integer :: k, j2nd, j2ni
+    integer :: jtempm
+    integer :: jbuem
     real(kind=8) :: rbid
     character(len=1) :: typres
     character(len=19) :: chsol
@@ -133,8 +134,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
         call jeveuo(cnvabu(1:19)//'.VALE', 'L', jbuem)
 !
         do k = 1, lonch
-            tempp(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jb&
-                             &uem+k-1)
+            tempp(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jbuem+k-1)
         end do
 !
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pacou0(x, fvec, qt, r, c,&
                       d, fvcold, g, p, s,&
@@ -37,7 +39,7 @@ interface
         real(kind=8) :: w(*)
         real(kind=8) :: xold(*)
         real(kind=8) :: work(*)
-        logical(kind=1) :: check
+        aster_logical :: check
         real(kind=8) :: vecr1(*)
         real(kind=8) :: vecr2(*)
         character(len=8) :: typflu

@@ -18,6 +18,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -54,14 +55,14 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !
 !
 !     ------------------------------------------------------------------
-    integer :: ilig, jcol, kterm, n, nz,   nsmdi, jsmhc, nsmhc
+    integer :: ilig, jcol, kterm, n, nz, nsmdi, jsmhc, nsmhc
     integer :: jdelg, n1, nvale, jvale, nlong, jval2, nucmp, k, jcmp
-    integer ::   kcmp
+    integer :: kcmp
     character(len=8) :: nomgd, nocmp
     character(len=14) :: nonu
     character(len=1) :: ktyp
     character(len=19) :: mat19
-    logical(kind=1) :: ltypr, lsym, eliml, elimc
+    aster_logical :: ltypr, lsym, eliml, elimc
     real(kind=8) :: kmax
     complex(kind=8) :: ckmax
     integer, pointer :: smdi(:) => null()
@@ -124,19 +125,19 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     nomgd=refn(2)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     ASSERT(n1.eq.2*n)
-    do 20,k=1,n
-    nucmp=deeq(2*(k-1)+2)
-    if (nucmp .gt. 0) then
-        nocmp=zk8(jcmp-1+nucmp)
-        do 10,kcmp=1,nbcmp
-        if (nocmp .eq. licmp(kcmp)) then
-            lddlelim(k)=1
+    do 20 k = 1, n
+        nucmp=deeq(2*(k-1)+2)
+        if (nucmp .gt. 0) then
+            nocmp=zk8(jcmp-1+nucmp)
+            do 10 kcmp = 1, nbcmp
+                if (nocmp .eq. licmp(kcmp)) then
+                    lddlelim(k)=1
+                endif
+ 10         continue
+        else if (modlag(1:13) .eq. 'MODI_LAGR_OUI') then
+            llag(k)=1
         endif
-10      continue
-    else if (modlag(1:13) .eq. 'MODI_LAGR_OUI') then
-        llag(k)=1
-    endif
-    20 end do
+ 20 end do
 !
 !
 !
@@ -148,28 +149,28 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     ckmax = dcmplx(0.d0,0.d0)
     if (tdiag(1:7) .eq. 'MAX_ABS') then
         if (ltypr) then
-            do 25,kterm=1,nz
-            kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
-25          continue
+            do 25 kterm = 1, nz
+                kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
+ 25         continue
             kmax = kmax*vdiag
         else
-            do 26,kterm=1,nz
-            ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
-26          continue
+            do 26 kterm = 1, nz
+                ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
+ 26         continue
             ckmax = ckmax*vdiag
         endif
     else if (tdiag(1:7) .eq. 'MIN_ABS') then
         if (ltypr) then
             kmax = abs(zr(jvale))
-            do 27,kterm=1,nz
-            kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
-27          continue
+            do 27 kterm = 1, nz
+                kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
+ 27         continue
             kmax = kmax*vdiag
         else
             ckmax = abs(zc(jvale))
-            do 28,kterm=1,nz
-            ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
-28          continue
+            do 28 kterm = 1, nz
+                ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
+ 28         continue
             ckmax = ckmax*vdiag
         endif
     else if (tdiag(1:6) .eq. 'IMPOSE') then
@@ -178,52 +179,50 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
         ASSERT(.false.)
     endif
 !
-    do 30,kterm=1,nz
-    if (smdi(jcol) .lt. kterm) jcol=jcol+1
-    ilig=zi4(jsmhc-1+kterm)
-    elimc=.false.
-    eliml=.false.
-    if ((lddlelim(jcol).eq.1) .and. (llag(jcol).eq.0) .and. (llag(ilig).eq.0)) &
-    elimc=.true.
-    if ((lddlelim(ilig).eq.1) .and. (llag(ilig).eq.0) .and. (llag(jcol).eq.0)) &
-    eliml=.true.
+    do 30 kterm = 1, nz
+        if (smdi(jcol) .lt. kterm) jcol=jcol+1
+        ilig=zi4(jsmhc-1+kterm)
+        elimc=.false.
+        eliml=.false.
+        if ((lddlelim(jcol).eq.1) .and. (llag(jcol).eq.0) .and. (llag(ilig).eq.0)) elimc=.true.
+        if ((lddlelim(ilig).eq.1) .and. (llag(ilig).eq.0) .and. (llag(jcol).eq.0)) eliml=.true.
 !
-    if (elimc .or. eliml) then
+        if (elimc .or. eliml) then
 !
 !         -- PARTIE TRIANGULAIRE SUPERIEURE :
-        if (jcol .eq. ilig) then
-            if (ltypr) then
-                zr(jvale-1+kterm)=kmax
-            else
-                zc(jvale-1+kterm)=ckmax
-            endif
-        else
-            if (ltypr) then
-                zr(jvale-1+kterm)=0.d0
-            else
-                zc(jvale-1+kterm)=dcmplx(0.d0,0.d0)
-            endif
-        endif
-!
-!         -- PARTIE TRIANGULAIRE INFERIEURE (SI NON-SYMETRIQUE):
-        if (.not.lsym) then
             if (jcol .eq. ilig) then
                 if (ltypr) then
-                    zr(jval2-1+kterm)=kmax
+                    zr(jvale-1+kterm)=kmax
                 else
                     zc(jvale-1+kterm)=ckmax
                 endif
             else
                 if (ltypr) then
-                    zr(jval2-1+kterm)=0.d0
+                    zr(jvale-1+kterm)=0.d0
                 else
-                    zc(jval2-1+kterm)=dcmplx(0.d0,0.d0)
+                    zc(jvale-1+kterm)=dcmplx(0.d0,0.d0)
+                endif
+            endif
+!
+!         -- PARTIE TRIANGULAIRE INFERIEURE (SI NON-SYMETRIQUE):
+            if (.not.lsym) then
+                if (jcol .eq. ilig) then
+                    if (ltypr) then
+                        zr(jval2-1+kterm)=kmax
+                    else
+                        zc(jvale-1+kterm)=ckmax
+                    endif
+                else
+                    if (ltypr) then
+                        zr(jval2-1+kterm)=0.d0
+                    else
+                        zc(jval2-1+kterm)=dcmplx(0.d0,0.d0)
+                    endif
                 endif
             endif
         endif
-    endif
 !
-    30 end do
+ 30 end do
 !
     AS_DEALLOCATE(vi=lddlelim)
     AS_DEALLOCATE(vi=llag)

@@ -21,6 +21,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
 ! ======================================================================
 ! aslint: disable=W1501
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/matini.h"
 #include "asterfort/nzcalc.h"
@@ -97,7 +98,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(20)
     character(len=8) :: nomres(20), acier(4)
 !
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
     data         kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !

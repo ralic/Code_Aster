@@ -19,6 +19,7 @@ subroutine nmdide(lreuse, result, numder, insder)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jedema.h"
@@ -26,7 +27,7 @@ subroutine nmdide(lreuse, result, numder, insder)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
     character(len=8) :: result
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
     integer :: numder
     real(kind=8) :: insder
 !

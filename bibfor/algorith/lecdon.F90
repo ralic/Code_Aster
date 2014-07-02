@@ -1,5 +1,6 @@
 subroutine lecdon(ficext, unitpa, prdeff)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -13,7 +14,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: unitpa
-    logical(kind=1) :: prdeff, ficext
+    aster_logical :: prdeff, ficext
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -205,7 +206,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
 !   REMPLISSAGE "COMMON" ASTER POUR LES NUMEROS DES NOEUDS DES PALIERS
 !   ------------------------------------------------------------------
             zi(znpal+1+(ipal-1))=ipal
-100      end do
+100     end do
 !
 !     FIN DE BOUCLE DE LECTURE SUR LES PALIERS
 !     ----------------------------------------
@@ -220,7 +221,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
             do 110 ipal = 1, nbpal
                 write(ifm,*)'ASTEREDYOS PALIER :',ipal,' TYPE :',&
                 typpal(ipal), ' NOEUD ASTER : ',cnpal(ipal)
-110          continue
+110         continue
         endif
 !
         if (ulisop ( unitpa, k16nom ) .ne. 0) call ulopen(-unitpa, ' ', ' ', 'NEW', 'O')
@@ -256,7 +257,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
                         nbret=n2)
             zk8(zcpal+(2*palmax)+(ipal-1))=cnpal(ipal)
             zk8(zcpal+(ipal-1))=ctype
-201      continue
+201     continue
 !
         niv = 3
 !
@@ -274,7 +275,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
                             zk8(zcpal+(ipal-1)), ' -- ', finpal(ipal), ' -- ',&
                             zk8(zcpal+(2*palmax)+(ipal-1))
             zi(znpal+1+(ipal-1))=ipal
-101      continue
+101     continue
         if (niv .ge. 2) then
             write(ifm,*)'ASTEREDYOS: ',nomprg,&
      &              ' - FIN LECTURE ARGUMENTS PALIERS '

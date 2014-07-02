@@ -20,6 +20,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diincl.h"
 #include "asterfort/exisd.h"
@@ -36,7 +37,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
     integer :: icham
     integer :: numarc
     real(kind=8) :: instan
-    logical(kind=1) :: force
+    aster_logical :: force
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +63,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
     integer :: jioinf, jiolch
     integer :: zioch
     character(len=24) :: nomcha, nomchs, charch
-    logical(kind=1) :: lprint
+    aster_logical :: lprint
     integer :: iret
 !
 ! ----------------------------------------------------------------------
@@ -105,7 +106,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
         call nmarcc(result, numarc, nomchs, nomcha)
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

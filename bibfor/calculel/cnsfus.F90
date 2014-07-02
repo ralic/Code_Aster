@@ -19,6 +19,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -38,7 +39,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), cns3z, base
-    logical(kind=1) :: lcumul(nbchs), lcoc
+    aster_logical :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
     complex(kind=8) :: lcoefc(nbchs)
 ! ---------------------------------------------------------------------
@@ -71,7 +72,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ------------------------------------------------------------------
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
     integer :: jcn3d, jcn3v, jcn3l
-    integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
+    integer :: jcmpgd, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1
     integer :: ino, coefi, k1, k3
     character(len=8) :: ma, nomgd, nocmp
@@ -79,7 +80,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     character(len=19) :: cns1, cns3
     real(kind=8) :: coefr
     complex(kind=8) :: coefc
-    logical(kind=1) :: cumul
+    aster_logical :: cumul
     character(len=8), pointer :: cn3c(:) => null()
     character(len=8), pointer :: licmp(:) => null()
     integer, pointer :: nucmp(:) => null()

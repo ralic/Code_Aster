@@ -27,6 +27,7 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
 !        VIN    :  VARIABLES INTERNES A T
 !    OUT SEUIL  :  SEUIL DU MECANISME DEVIATOIRE
 !   ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
     integer :: k, ndt, ndi
     integer :: ifm, niv
@@ -37,7 +38,7 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
     real(kind=8) :: p, q, x(2)
     real(kind=8) :: tou(3), th(2), touc(2)
     real(kind=8) :: d12, dd, deux
-    logical(kind=1) :: debug
+    aster_logical :: debug
     parameter    (un = 1.d0)
     parameter    (tole = 1.d-7)
     parameter    (degr = 0.0174532925199d0)
@@ -83,7 +84,7 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
             tou(j) = sig(i)
             j = j+1
         endif
-10  continue
+ 10 continue
 !
     tou(3) = sig(ndt+1-k)
     dd = d12*( tou(1)-tou(2) )
@@ -114,5 +115,5 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
 ! ==================================================================
     seuil = -q /m/p - r*(un-b*log(p/pcr))
 !
-999  continue
+999 continue
 end subroutine

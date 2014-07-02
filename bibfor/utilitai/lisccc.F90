@@ -17,7 +17,8 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/iscode.h"
@@ -56,7 +57,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
     integer :: ipose, iposit(2), iauth, ibid
     character(len=8) :: k8bid
     character(len=16) :: motclf
-    logical(kind=1) :: lfind
+    aster_logical :: lfind
 !
 ! --- DYNA_LINE_HARM
 !
@@ -86,7 +87,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
     nbtota = 0
     do 1 ipose = 1, 60
         tabaut(ipose) = 0
- 1  continue
+  1 continue
 !
 ! --- DECODAGE DU CHARGEMENT
 !
@@ -123,7 +124,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
                 endif
                 ASSERT(iposit(1).ne.0)
                 if (iposit(1) .eq. ipose) lfind = .true.
-21          continue
+ 21         continue
             if (lfind) then
                 nbauth = nbauth + 1
                 tabaut(ipose) = 1
@@ -131,7 +132,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
         else
             tabaut(ipose) = 0
         endif
-20  continue
+ 20 continue
 !
 ! --- CODAGE MOT-CLEFS AUTORISES
 !

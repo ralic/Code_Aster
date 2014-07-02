@@ -17,6 +17,7 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -25,7 +26,7 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 #include "asterfort/jeveuo.h"
     character(len=*) :: indez
     character(len=*) :: chmat
-    logical(kind=1) :: exivc, exiref
+    aster_logical :: exivc, exiref
 !
 !
 ! ------------------------------------------------------------------
@@ -41,7 +42,7 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 !
 !
 !
-    integer :: nmax,  i, iret1
+    integer :: nmax, i, iret1
     character(len=8) :: index, chmat8
     character(len=8), pointer :: cvrcvarc(:) => null()
 !
@@ -58,8 +59,8 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
                 exivc=.true.
                 goto 2
             endif
- 1      continue
- 2      continue
+  1     continue
+  2     continue
     endif
 !
 !

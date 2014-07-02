@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                       nno, nnos, stano, lcontx, matsym,&
@@ -28,8 +30,8 @@ interface
         integer, intent(in) :: nddl
         integer, intent(in) :: nnos
         integer, intent(in) :: stano(*)
-        logical(kind=1), intent(in) :: lcontx
-        logical(kind=1), intent(in) :: matsym
+        aster_logical, intent(in) :: lcontx
+        aster_logical, intent(in) :: matsym
         character(len=16), intent(in) :: option
         character(len=16), intent(in) :: nomte
         integer, intent(in) :: ddlm

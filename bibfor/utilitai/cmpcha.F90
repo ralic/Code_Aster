@@ -1,6 +1,7 @@
 subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
                   ncmpmx)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -67,7 +68,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     integer :: jcorr1, igr, imolo, jmolo, gd, nbpt, ipt, k, iadg, icmp
     integer :: jdesc, long, jprno, jnueq, nbno, ino, ncmpp, jcorr2
     integer :: ngrmx, nbedit, igd, ient, debgd, dg(50), ior, kpt, kcmp
-    logical(kind=1) :: diff
+    aster_logical :: diff
     character(len=8) :: nomgd, ma
     character(len=16) :: typsd
     character(len=19) :: ch19, profcn
@@ -198,7 +199,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             zi(jcorr1-1+icmp)=ncmp
         endif
     end do
-    if (ncmp.eq.0) call utmess('F','MODELISA_12',sk=nomcha)
+    if (ncmp .eq. 0) call utmess('F', 'MODELISA_12', sk=nomcha)
 !
 !
 !

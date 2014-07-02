@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nxlect(result, modele, mate, carele, matcst,&
                       coecst, fomult, lischa, charge, infoch,&
@@ -24,8 +26,8 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
-        logical(kind=1) :: matcst
-        logical(kind=1) :: coecst
+        aster_logical :: matcst
+        aster_logical :: coecst
         character(len=24) :: fomult
         character(len=19) :: lischa
         character(len=24) :: charge

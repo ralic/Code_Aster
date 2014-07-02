@@ -1,6 +1,7 @@
 subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                   axez, nbnac, nnoeud)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dgmode.h"
@@ -44,11 +45,11 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: debugr
-    integer ::  gd, iad, ncmpmx, nec, tabec(10), iavale
-    integer ::  im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
+    integer :: gd, iad, ncmpmx, nec, tabec(10), iavale
+    integer :: im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
     integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
     integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
-    integer ::  jpnt, ipoin,  nunoe,   imodel, ilong
+    integer :: jpnt, ipoin, nunoe, imodel, ilong
     integer :: ind
     real(kind=8) :: sg(6), sl(6), pgl(3, 3), pscal
     real(kind=8) :: valr
@@ -57,7 +58,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
-    logical(kind=1) :: inivid
+    aster_logical :: inivid
     integer, pointer :: connex(:) => null()
     integer, pointer :: repe(:) => null()
     character(len=24), pointer :: celk(:) => null()

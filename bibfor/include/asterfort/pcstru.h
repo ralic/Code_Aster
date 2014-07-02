@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pcstru(n, in, ip, icpl, icpc,&
                       icpd, icpcx, icplx, niveau, complt,&
@@ -28,7 +30,7 @@ interface
         integer :: icpcx(*)
         integer :: icplx(0:n)
         integer :: niveau
-        logical(kind=1) :: complt
+        aster_logical :: complt
         integer :: lca
         integer :: imp
         integer :: ier

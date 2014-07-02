@@ -19,6 +19,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -68,7 +69,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::   jcn1v, jcn1l,  nbnom, ncmp2,  kno
+    integer :: jcn1v, jcn1l, nbnom, ncmp2, kno
     integer :: icmp2
     integer :: jcn2d, jcn2v, jcn2l
     integer :: ncmpmx, ncmp1, icmp1
@@ -79,7 +80,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cn2c(:) => null()
     integer, pointer :: cn1d(:) => null()
-    logical(kind=1), pointer :: exino(:) => null()
+    aster_logical, pointer :: exino(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

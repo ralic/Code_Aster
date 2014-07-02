@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine itgthm(vf, typvf, modint, mecani, press1,&
                       press2, tempe, ndim, nno, nnos,&
@@ -22,7 +24,7 @@ interface
                       nddlk, nddlm, nddlfa, dimuel, ipoids,&
                       ivf, idfde, ipoid2, ivf2, idfde2,&
                       npi2, jgano)
-        logical(kind=1) :: vf
+        aster_logical :: vf
         integer :: typvf
         character(len=3) :: modint
         integer :: mecani(5)

@@ -21,6 +21,7 @@ subroutine op0199()
 ! OPERATEUR CALCULANT LA FORCE AJOUTEE : CALC_FORC_AJOU
 !
 !---------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/cal152.h"
@@ -50,7 +51,7 @@ subroutine op0199()
     integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9
     real(kind=8) :: rbid, tps(6), mij, cij, kij
     complex(kind=8) :: cbid
-    logical(kind=1) :: vrai
+    aster_logical :: vrai
     character(len=2) :: model
     character(len=3) :: nd
     character(len=8) :: nomres, k8bid, modmec, phibar, moint, char
@@ -217,7 +218,7 @@ subroutine op0199()
 !
             zr(ivale+i-1) = mij
 !
-10      continue
+ 10     continue
     endif
 !
 !

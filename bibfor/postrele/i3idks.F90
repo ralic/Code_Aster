@@ -2,6 +2,7 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
                   conexk, coordo, nbpt, lstpt)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3ctpv.h"
 #include "asterfort/i3ifqs.h"
@@ -57,7 +58,7 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
 !
     integer :: ndglof(4), nbndf, nbf, i, decf, ndloc, adescm, face
     integer :: vali(2)
-    logical(kind=1) :: fink, nonvid
+    aster_logical :: fink, nonvid
 !
 !======================================================================
 !
@@ -68,15 +69,15 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
     fink = .false.
     adescm = desctm(desc(k))
     nbf = zi(adescm)
-100  continue
+100 continue
     if (.not. fink) then
         face = face + 1
         nbndf = zi(adescm-1 + 2 + face)
         decf = 8 + face
-        do 10, i = 1, nbndf, 1
-        ndloc = zi(adescm -1 + decf + (i-1)*6)
-        ndglof(i) = conexk(ndloc)
-10      continue
+        do 10 i = 1, nbndf, 1
+            ndloc = zi(adescm -1 + decf + (i-1)*6)
+            ndglof(i) = conexk(ndloc)
+ 10     continue
         call i3ctpv(epsi, ndglof, nbndf, coordo, sgt,&
                     nonvid)
         if (nonvid) then

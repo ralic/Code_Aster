@@ -1,7 +1,8 @@
 subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,7 +28,7 @@ subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 !
     character(len=24), intent(in) :: sd_cont_defi
     character(len=24), intent(in) :: sd_cont_solv
-    logical(kind=1), intent(out) :: cycl_flip
+    aster_logical, intent(out) :: cycl_flip
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +67,8 @@ subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 !
     point_number = cfdisi(sd_cont_defi,'NTPC' )
     do point_index = 1, point_number
-      cycl_stat  = p_cycl_eta(4*(point_index-1)+cycl_index)
-      if (cycl_stat.gt.0) cycl_flip = .true.
+        cycl_stat = p_cycl_eta(4*(point_index-1)+cycl_index)
+        if (cycl_stat .gt. 0) cycl_flip = .true.
     end do
 !
     call jedema()

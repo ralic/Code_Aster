@@ -29,12 +29,13 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
 !       ----------------------------------------------------------------
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: pic(*), x, y, e1, e2, e3, sigmax(*), sigmin(*)
     real(kind=8) :: r1, r2, rd, rad
     integer :: npic, ncyc, itrv(*), npicb
-    logical(kind=1) :: lresi, cyczer
+    aster_logical :: lresi, cyczer
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ifm, j, k, niv, npicr
@@ -49,14 +50,14 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
 !
     do 20 i = 1, npicb
         itrv(i) = i
-20  continue
+ 20 continue
     ncyc = 0
 !
     do 21 i = 2, npicb
         if ((pic(i) .gt. pic(1)) .or. (pic(i) .lt. pic(1))) then
             cyczer = .false.
         endif
-21  continue
+ 21 continue
 !
     if (cyczer) then
         sigmax(1) = pic(1)
@@ -69,11 +70,11 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
     endif
 !
 !
- 1  continue
+  1 continue
     i = 1
     j = 1
 !
- 2  continue
+  2 continue
     if (i+3 .gt. npicb) then
         goto 100
     endif
@@ -92,7 +93,7 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
         endif
         do 3 k = i+2, j+2, -1
             itrv(k) = itrv(k-2)
- 3      continue
+  3     continue
         j=j+2
         i=j
         goto 2
@@ -103,12 +104,12 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
 !
 !  --- TRAITEMENT DU RESIDU -------
 !
-100  continue
+100 continue
     if (.not.lresi) then
         npicr = npicb-2*ncyc
         do 101 i = 1, npicr
             itrv(i)= itrv(2*ncyc+i)
-101      continue
+101     continue
         r1 = pic(itrv(1))
         r2 = pic(itrv(2))
         rad= pic(itrv(npicr-1))
@@ -118,25 +119,25 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
         if (x .gt. 0.d0 .and. y .lt. 0.d0) then
             do 102 i = 1, npicr
                 itrv(i+npicr)= itrv(i)
-102          continue
+102         continue
             npicb = 2*npicr
         else if (x.gt.0.d0.and.y.ge.0.d0) then
 ! -- ON ELIMINE  R1 ET RN
             do 103 i = npicr, 2, -1
                 itrv(i+npicr-2)= itrv(i)
-103          continue
+103         continue
             npicb = 2*npicr-2
         else if (x.lt.0.d0.and.y.lt.0.d0) then
 ! -- ON ELIMINE R1
             do 104 i = npicr, 2, -1
                 itrv(i+npicr-1)= itrv(i)
-104          continue
+104         continue
             npicb = 2*npicr-1
         else if (x.lt.0.d0.and.y.ge.0.d0) then
 ! -- ON ELIMINE RN
             do 105 i = npicr, 1, -1
                 itrv(i+npicr-1)= itrv(i)
-105          continue
+105         continue
             npicb = 2*npicr-1
         endif
         lresi = .true.
@@ -160,7 +161,7 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
     endif
 !
 !
-999  continue
+999 continue
 !
 !
 !

@@ -1,6 +1,7 @@
 subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                   lcrit, prec, crit)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -53,15 +54,15 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 ! IN  : CRIT   : RELATIF / ABSOLU
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jnume,  ii, jj
-    integer ::  i, j, k, n, m, ideb, ifin, nbuti, ndim
-    integer :: jvall, kvall, jvale, kvale,  ktbnp, ktbba
+    integer :: iret, nbpara, nblign, jnume, ii, jj
+    integer :: i, j, k, n, m, ideb, ifin, nbuti, ndim
+    integer :: jvall, kvall, jvale, kvale, ktbnp, ktbba
     character(len=1) :: base
     character(len=4) :: type, knume
     character(len=19) :: nomtab, nomta2
     character(len=24) :: nomjv, nojv2, nomjvl, nojvl2, inpar, jnpar
     character(len=24) :: valk
-    logical(kind=1) :: lok
+    aster_logical :: lok
     integer, pointer :: tri2(:) => null()
     integer, pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
@@ -110,26 +111,26 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                 endif
                 goto 10
             endif
-12      continue
+ 12     continue
         valk = inpar
         call utmess('F', 'UTILITAI6_89', sk=valk)
-10  end do
+ 10 end do
 !
     call wkvect('&&TBTRTB.TRI', 'V V I', nblign, jnume)
     AS_ALLOCATE(vi=tri2, size=nblign)
     do 20 i = 1, nblign
         zi(jnume+i-1) = i
-20  end do
+ 20 end do
 !
     call tbtr01(tabin, nbpara, lipara(1), nblign, zi(jnume))
 !
     if (lcrit(1)(1:2) .eq. 'DE') then
         do 22 i = 1, nblign
             tri2(i) = zi(jnume-1+i)
-22      continue
+ 22     continue
         do 24 i = 1, nblign
             zi(jnume-1+i) = tri2(nblign-i+1)
-24      continue
+ 24     continue
     endif
 !
     if (npara .eq. 1) then
@@ -149,7 +150,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             ii = 0
-30          continue
+ 30         continue
             ii = ii + 1
             if (ii .ge. nblign) goto 32
             ideb = ii
@@ -206,8 +207,8 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                         goto 36
                     endif
                 endif
-34          continue
-36          continue
+ 34         continue
+ 36         continue
             nbuti = ifin-ideb+1
             if (nbuti .gt. 1) then
 !           --- ON TESTE AVEC LE PARAMETRE SUIVANT ---
@@ -215,19 +216,19 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                 if (lcrit(i+1)(1:2) .eq. 'DE') then
                     do 40 k = 1, nbuti
                         tri2(k) = zi(jnume-1+ideb+k-1)
-40                  continue
+ 40                 continue
                     do 42 k = 1, nbuti
                         zi(jnume-1+ideb+k-1) = tri2(nbuti-k+1)
-42                  continue
+ 42                 continue
                 endif
             endif
             ii = ifin
             goto 30
-32          continue
+ 32         continue
             goto 104
         endif
-102  end do
-104  continue
+102 end do
+104 continue
 !
 !     --- ON DUPLIQUE LA TABLE ---
 !
@@ -289,9 +290,9 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
             else if (type(1:3) .eq. 'K8') then
                 zk8(kvale+j-1) = zk8(jvale+zi(jnume+j-1)-1)
             endif
-302      continue
+302     continue
 !
-300  end do
+300 end do
 !
     call jedetr('&&TBTRTB.TRI')
     AS_DEALLOCATE(vi=tri2)

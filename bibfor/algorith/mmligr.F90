@@ -19,6 +19,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/adalig.h"
@@ -72,7 +73,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 !
     integer :: ztabf
     integer :: ico, jco, iptc, ityp, ino, izone
-    integer :: jtynma,  ilcnx1
+    integer :: jtynma, ilcnx1
     integer :: nummam, nummae
     integer :: jnbno, long, jad, ityte, ityma
     integer :: nndel, ntpc, nbnom, nbnoe, nbgrel, nndtot
@@ -85,7 +86,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
     character(len=24) :: typelt
     character(len=24) :: nosdco
     integer :: jnosdc
-    logical(kind=1) :: lappar, laxis, lfrot
+    aster_logical :: lappar, laxis, lfrot
     integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -179,22 +180,22 @@ subroutine mmligr(noma, nomo, defico, resoco)
 !
         do 30 ino = 1, nbnoe
             zi(jad-1+ino) = connex(1+zi(ilcnx1-1+nummae)-2+ino)
-30      continue
+ 30     continue
 !
 ! --- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 !
         do 40 ino = 1, nbnom
             zi(jad-1+nbnoe+ino) = connex(1+zi(ilcnx1-1+nummam)-2+ino)
-40      continue
+ 40     continue
 !
-50  end do
+ 50 end do
 !
 ! --- LONGUEUR TOTALE DU LIEL
 !
     long = nbgrel
     do 70 ityp = 1, nbtyp
         long = long + comptc(ityp) + comptf(ityp)
-70  end do
+ 70 end do
 !
 ! --- CREATION DE L'OBJET .LIEL
 !
@@ -242,7 +243,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
                         zi(jad-1+jco) = -iptc
                     endif
                 endif
-80          continue
+ 80         continue
             ASSERT(jco.eq.comptc(ityp))
         endif
         if (comptf(ityp) .ne. 0) then
@@ -279,10 +280,10 @@ subroutine mmligr(noma, nomo, defico, resoco)
                         zi(jad-1+jco) = -iptc
                     endif
                 endif
-85          continue
+ 85         continue
             ASSERT(jco.eq.comptf(ityp))
         endif
-90  end do
+ 90 end do
     ASSERT(ico.eq.nbgrel)
 !
 ! --- INITIALISATION DU LIGREL
@@ -298,7 +299,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 ! --- MENAGE
 !
     call jedetr(typelt)
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

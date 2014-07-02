@@ -20,6 +20,7 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: dlagrf(2)
@@ -27,7 +28,7 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
     real(kind=8) :: djeut(3)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: rese(3), nrese
-    logical(kind=1) :: lpenaf, ladhe
+    aster_logical :: lpenaf, ladhe
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,23 +62,23 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
     nrese = 0.d0
     do 10 idim = 1, 3
         rese(idim) = 0.d0
-10  end do
+ 10 end do
 !
 ! --- SEMI-MULTIPLICATEUR DE FROTTEMENT RESE
 !
     if (lpenaf) then
         do 32 idim = 1, 3
             rese(idim) = coefaf*djeut(idim)
-32      continue
+ 32     continue
     else
         if (ndim .eq. 2) then
             do 30 idim = 1, 2
                 rese(idim) = dlagrf(1)*tau1(idim)+coefaf*djeut(idim)
-30          continue
+ 30         continue
         else if (ndim.eq.3) then
             do 31 idim = 1, 3
                 rese(idim) = dlagrf(1)*tau1(idim)+ dlagrf(2)*tau2( idim)+ coefaf*djeut(idim)
-31          continue
+ 31         continue
         else
             ASSERT(.false.)
         endif
@@ -87,7 +88,7 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
 !
     do 40 idim = 1, 3
         nrese = rese(idim)*rese(idim) + nrese
-40  end do
+ 40 end do
     nrese = sqrt(nrese)
 !
 ! --- ADHERENCE OU GLISSEMENT ?

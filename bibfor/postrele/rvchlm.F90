@@ -19,6 +19,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -71,10 +72,10 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     character(len=24) :: nvale, npadr, nnumlo, nnoma
     character(len=8) :: mailla
 !
-    integer :: avale, apadr, anumlo, apnco,  nbtnd
+    integer :: avale, apadr, anumlo, apnco, nbtnd
     integer :: adr, aconec, i, nd, nloc, j, adrm, adrn, lcoi, lndi, lndo, lcoo
 !
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -108,48 +109,48 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
 !
     call wkvect(nnumlo, 'V V I', nbn, anumlo)
 !
-    do 100, i = 1, nbn, 1
+    do 100 i = 1, nbn, 1
 !
-    trouve = .false.
-    nd = noeud(i)
-    nloc = 1
+        trouve = .false.
+        nd = noeud(i)
+        nloc = 1
 !
-110  continue
-    if (.not. trouve) then
+110     continue
+        if (.not. trouve) then
 !
-        if (zi(aconec + nloc-1) .eq. nd) then
+            if (zi(aconec + nloc-1) .eq. nd) then
 !
-            trouve = .true.
+                trouve = .true.
 !
-        else
+            else
 !
-            nloc = nloc +1
+                nloc = nloc +1
+!
+            endif
+!
+            goto 110
 !
         endif
 !
-        goto 110
+        zi(anumlo + i-1) = nloc
 !
-    endif
+100 end do
 !
-    zi(anumlo + i-1) = nloc
+    do 200 i = 1, nbn, 1
 !
-    100 end do
+        adrn = adrm + (zi(anumlo + i-1)-1)*lndi
 !
-    do 200, i = 1, nbn, 1
+        do 210 j = 1, nbco, 1
 !
-    adrn = adrm + (zi(anumlo + i-1)-1)*lndi
+            do 211 k = 1, lndo, 1
 !
-    do 210, j = 1, nbco, 1
+                val(k + (j-1)*lcoo + lndo*(i-1)) = zr(avale + adrn-1 + (j-1)*lcoi + k-1)
 !
-    do 211, k = 1, lndo, 1
+211         continue
 !
-    val(k + (j-1)*lcoo + lndo*(i-1)) = zr(avale + adrn-1 + (j-1)*lcoi + k-1)
+210     continue
 !
-211  continue
-!
-210  continue
-!
-    200 end do
+200 end do
 !
     call jedetr(nnumlo)
 !

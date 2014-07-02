@@ -21,6 +21,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 ! person_in_charge: van-xuan.tran at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -48,7 +49,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     character(len=8) :: grdvie
     character(len=16) :: nomcri, proaxe, nomfor, forvie
     character(len=19) :: cesr
-    logical(kind=1) :: fordef, post
+    aster_logical :: fordef, post
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN DANS LEQUEL LE DOMMAGE EST MAXIMAL
 ! ---------------------------------------------------------------------
@@ -80,8 +81,8 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::    nbvecm
-    integer :: jcerd, jcerl,  iret, icesd, icesl, icesv, ibid
+    integer :: nbvecm
+    integer :: jcerd, jcerl, iret, icesd, icesl, icesv, ibid
     integer :: tneces, tdisp2(1), jvecpg, n, k
     integer :: ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, nbpg, nbpgp, kwork, sompgw, imap
@@ -186,9 +187,9 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
         call vecnuv(ideb, ifin, gamma, phi0, dphi,&
                     n, k, dim, vect_norma, vect_tangu,&
-vect_tangv)
+                    vect_tangv)
 !
-300  end do
+300 end do
 !
 ! CONSTRUCTION DU VECTEUR : CISAILLEMENT = F(NUMERO D'ORDRE) EN CHAQUE
 ! POINT DE GAUSS DU PAQUET DE MAILLES.
@@ -244,7 +245,7 @@ vect_tangv)
 ! RECUPERER LES RESULTATS
             do 600 icmp = 1, 24
                 vresu(icmp) = 0.0d0
-600          continue
+600         continue
 !
             vresu(2) = nxm(1)
             vresu(3) = nym(1)
@@ -265,10 +266,10 @@ vect_tangv)
                 zl(jcerl - 1 + jad) = .true.
                 cerv(jad) = vresu(icmp)
 !
-610          continue
+610         continue
 !
-420      continue
-400  end do
+420     continue
+400 end do
 !
 ! MENAGE
 !

@@ -56,6 +56,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
@@ -123,7 +124,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     character(len=200) :: nofimd
     character(len=255) :: kfic
 !
-    logical(kind=1) :: ttt
+    aster_logical :: ttt
 !
     call jemarq()
 !
@@ -169,11 +170,11 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
                     if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) then
                         ttt=.true.
                     endif
-30              continue
+ 30             continue
                 if (.not.ttt) then
                     call utmess('F', 'MED_66')
                 endif
-20          continue
+ 20         continue
         else
             call utmess('F', 'MED_70')
         endif
@@ -201,18 +202,18 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
                 call wkvect('&&LRCEME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
                 do 778 j = 1, nbcmp
                     zk8(jnocmp+j-1)=zk16(jcmp+j-1)(1:8)
-778              continue
+778             continue
                 call jedetr('&&LRCEME.NOMCMP_K16')
                 call jedetr('&&LRCEME.UNITCMP')
                 goto 780
             endif
             call jedetr('&&LRCEME.NOMCMP_K16')
             call jedetr('&&LRCEME.UNITCMP')
-777      continue
+777     continue
         call as_mficlo(idfimd, iret)
     endif
 !
-780  continue
+780 continue
 !
 !====
 ! 3. LECTURE POUR CHAQUE TYPE DE SUPPORT
@@ -243,7 +244,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
         call jelira(chames//'.CESL', 'LONMAX', naux)
         do 40 i = 1, naux
             if (zl(jcesl+i-1)) iaux=iaux+1
-40      continue
+ 40     continue
         vali (1) = iaux
         vali (2) = nncp
         call utmess('A', 'MED_83', ni=2, vali=vali)

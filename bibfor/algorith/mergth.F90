@@ -17,6 +17,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/calcul.h"
@@ -56,7 +57,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
     character(len=19) :: chvarc, stano, pintto, cnseto, heavto, loncha, basloc
     character(len=19) :: lsn, lst, pinter, ainter, cface, longco, baseco
     integer :: iret, nchar, ilires, icha, jchar, jinf
-    logical(kind=1) :: lxfem
+    aster_logical :: lxfem
 ! ----------------------------------------------------------------------
     integer :: nbchmx
 !-----------------------------------------------------------------------
@@ -230,9 +231,9 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
                                     'OUI')
                         call reajre(merigi, lchout(1), 'V')
                     endif
-10              continue
+ 10             continue
             endif
-20      continue
+ 20     continue
 !
     endif
 ! FIN ------------------------------------------------------------------

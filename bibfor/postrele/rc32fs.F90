@@ -1,6 +1,7 @@
 subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
                   fuse, ns, nscy, ug)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
     integer :: nbsigr, nocc(*), situ(*), ns, nscy
     real(kind=8) :: fuijs(*), fuij(*), fuse, ug
@@ -29,7 +30,7 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
 !     ------------------------------------------------------------------
     integer :: is1, is2, i, i1, ifm, k, l, niv, ns2, icomp
     real(kind=8) :: salt, fum, u1kl, u2kl
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -41,14 +42,14 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
         do 100 i = 1, nbsigr
             i1 = nbsigr*(i-1)
             write(ifm,1000) situ(i), nocc(i), (fuijs(i1+l),l=1,nbsigr)
-100      continue
+100     continue
     endif
 !
     ug = 0.d0
     ns2 = ns / 2
     icomp = 0
 !
-10  continue
+ 10 continue
     fum = 0.d0
     trouve = .false.
     icomp = icomp + 1
@@ -70,9 +71,9 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
                 trouve = .true.
             endif
 !
-22      continue
+ 22     continue
 !
-20  end do
+ 20 end do
 !
     if (trouve) then
 !
@@ -106,7 +107,7 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
                 i1 = nbsigr*(i-1)
                 write(ifm,1000) situ(i), nocc(i), (fuijs(i1+l),l=1,&
                 nbsigr)
-110          continue
+110         continue
         endif
 !
         ug = ug + u1kl + u2kl
@@ -114,7 +115,7 @@ subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
     1000 format(1p,i7,i9,'|',40(e9.2,'|'))
     1010 format(1p,7x,'NB_OCCUR ','|',40(i9,'|'))

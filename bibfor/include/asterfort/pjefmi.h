@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
                       x1, x2, lext, xmi, distv)
@@ -25,7 +27,7 @@ interface
         real(kind=8) :: xg(ndim)
         real(kind=8) :: x1(ndim)
         real(kind=8) :: x2(ndim)
-        logical(kind=1) :: lext
+        aster_logical :: lext
         real(kind=8) :: xmi(ndim)
         real(kind=8),intent(out) :: distv
     end subroutine pjefmi

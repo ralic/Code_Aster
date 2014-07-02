@@ -26,6 +26,7 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dbgcha.h"
 #include "asterfort/diinst.h"
@@ -57,7 +58,7 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: defico, deficu, resocu, resoco
-    logical(kind=1) :: lerrit
+    aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,7 +111,7 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
 !
     real(kind=8) :: etan, offset, rho
     real(kind=8) :: instam, instap, deltat, resigr
-    logical(kind=1) :: lpilo, lreli, lctcd, lunil
+    aster_logical :: lpilo, lreli, lctcd, lunil
     character(len=19) :: cnfext
     integer :: ctccvg, ldccvg, pilcvg
     integer :: ifm, niv
@@ -224,7 +225,7 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
     call nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
                 valinc, solalg)
 !
-9999  continue
+9999 continue
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

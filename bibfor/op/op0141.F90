@@ -21,6 +21,7 @@ subroutine op0141()
 !     OPERATEUR DE CALCUL DU MAC DE DEUX BASES MODALES
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -57,7 +58,7 @@ subroutine op0141()
 !
     integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
     integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
-    integer :: idvec1,  idvec2, ifm, niv,  neq1, llneq2, iret
+    integer :: idvec1, idvec2, ifm, niv, neq1, llneq2, iret
     integer :: iddl, indv, tmod(1)
     real(kind=8) :: rbid, pij, pii, pjj
     complex(kind=8) :: cbid, dcmplx, ztemp, dconjg
@@ -67,7 +68,7 @@ subroutine op0141()
     character(len=16) :: nomcmd, typcon, typba1, typba2, matri1, matri2, depl
     character(len=19) :: matr, pronu1, pronu2, pronua
     character(len=24) :: chamol
-    logical(kind=1) :: c1, c2, zcmplx, ieri
+    aster_logical :: c1, c2, zcmplx, ieri
     integer, pointer :: deeq(:) => null()
     integer, pointer :: nllneq1(:) => null()
 !     ------------------------------------------------------------------

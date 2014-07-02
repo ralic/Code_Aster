@@ -1,7 +1,8 @@
-subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
-                  nbhar, imat, numedd, parcho, nbchoc, vk8, modrep)
+subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
+                  nbpt, neq, nbhar, imat, numedd,&
+                  parcho, nbchoc, vk8, modrep)
 ! aslint: disable=W1306
-
+!
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +35,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
 ! IN NBCHOC : NB DE LIEUX DE CHOC
 !     -----------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !     -----------------------------------------------------------------
 #include "asterfort/assert.h"
@@ -59,7 +61,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
 #include "asterfort/tbcrsd.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: reprise, suite
+    aster_logical :: reprise, suite
     character(len=4) :: nomsym(1)
     character(len=8) :: nomres, nomrep, baseno, k8b, nomtab, modrep
     character(len=8) :: typpar(12), typpat(11), vk8
@@ -72,7 +74,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
     integer :: neq, imat(2), iadd, ieq, ier, ihar, ladpa
     integer :: nbpar, neqv, nmodes, iomega, valit(1), nbpart
     integer :: nbchoc
-    integer :: harmaxa, harmax,  inspec
+    integer :: harmaxa, harmax, inspec
     real(kind=8) :: rvide, valr(2), freq, energ, xnorm, valrt(6)
     real(kind=8) :: espec(nbhar+1), nspec(neq)
     complex(kind=8) :: cvide
@@ -87,14 +89,14 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
     real(kind=8), pointer :: reg(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
-    call getres(nomres, typres, nomcmd)   
+    call getres(nomres, typres, nomcmd)
 !
     if (nomres .ne. modrep) then
         suite = .true.
     else
         suite = .false.
     endif
-
+!
     rvide = r8vide()
     cvide = dcmplx(rvide,rvide)
 !
@@ -124,7 +126,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
     typpar(11)='K16'
     nompar(12)='NUME_REPRISE'
     typpar(12)='I'
-
+!
     if ((.not. reprise) .or. (suite)) then
 !-- INITIALISATION DE LA TABLE_CONTAINER
         call detrsd('TABLE_CONTAINER', nomres)
@@ -158,7 +160,8 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
         matrice(1) = rigid
         matrice(2) = masse
         matrice(3) = ' '
-        call refdaj ('F', nomrep,nmodes,numedd,'DYNAMIQUE',matrice,ier)
+        call refdaj('F', nomrep, nmodes, numedd, 'DYNAMIQUE',&
+                    matrice, ier)
         do 200 ihar = 1, nmodes
             call rsexch(' ', nomrep, nomsym(1), ihar, chamno,&
                         ier)
@@ -175,7 +178,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
                 iadd = (iordr-1)*(neq*nmodes+2)+(ihar-1)*neq+ieq
                 vale(ieq) = zr(isort-1+iadd)
                 xnorm = xnorm + zr(isort-1+iadd)*zr(isort-1+iadd)
-44          continue
+ 44         continue
             call rsnoch(nomrep, nomsym(1), ihar)
 !
             call rsadpa(nomrep, 'E', 1, 'NUME_MODE', ihar,&
@@ -202,7 +205,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
             call rsadpa(nomrep, 'E', 1, 'FACT_PARTICI_DX', ihar,&
                         0, sjv=ladpa, styp=k8b)
             zr(ladpa) = sqrt(xnorm)
-200      continue
+200     continue
 !
         iadd = (iordr-1)*(neq*nmodes+2)+neq*nmodes+1
         freq = zr(isort-1+iadd)
@@ -224,9 +227,9 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
         do 20 ihar = 1, nbhar
             espec(ihar+1)=(zr(isort-1+iadd+ihar*neq)**2+&
             zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/nspec(inspec)
-20      continue
+ 20     continue
         harmaxa=idamax(nbhar+1,espec,1)-1
-        if(harmaxa.gt.harmax) then
+        if (harmaxa .gt. harmax) then
             harmax=harmaxa
         endif
         if (bif(1+int(iordr/(nbpt-1))) .eq. 1) then
@@ -258,7 +261,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
         call tbajli(nomres, nbpar, nompar, vali, valr,&
                     [cvide], valk, 0)
 !
-100  continue
+100 continue
 !
     if (.not. reprise) then
 ! TABLE POUR LES CARACTERISTIQUES DE CHOC
@@ -309,8 +312,8 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
             valrt(5) = orig((iordr-1)*3+2)
             valrt(6) = orig((iordr-1)*3+3)
             call tbajli(nomtab, nbpart, nompat, valit, valrt,&
-                    [cvide], valkt, 0)
-300      continue
+                        [cvide], valkt, 0)
+300     continue
     endif
 !
     call jedema()

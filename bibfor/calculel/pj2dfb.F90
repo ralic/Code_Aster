@@ -1,5 +1,6 @@
 subroutine pj2dfb(boite, tria3, geom1, geom2)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -45,12 +46,12 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     real(kind=8) :: xmin
     real(kind=8) :: yymax, yymin, ymax, ymin
     integer :: p1, q1, p2, q2, p, q, nx, ny
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
 !
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iabtco, iabtdi, iabtlc, iabtnb, iabtvr
-    integer ::  ib, ifm, ino, iposi, k
+    integer :: ib, ifm, ino, iposi, k
     integer :: lont, nno1, nno2, ntr3
     integer, pointer :: lino2(:) => null()
     integer, pointer :: lino1(:) => null()
@@ -72,20 +73,20 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     ymin = rbig
     xmax = -rbig
     ymax = -rbig
-    do 10,i = 1,nno1
-    if (lino1(i) .eq. 0) goto 10
-    xmin = min(xmin,geom1(3* (i-1)+1))
-    xmax = max(xmax,geom1(3* (i-1)+1))
-    ymin = min(ymin,geom1(3* (i-1)+2))
-    ymax = max(ymax,geom1(3* (i-1)+2))
-    10 end do
-    do 20,i = 1,nno2
-    if (lino2(i) .eq. 0) goto 20
-    xmin = min(xmin,geom2(3* (i-1)+1))
-    xmax = max(xmax,geom2(3* (i-1)+1))
-    ymin = min(ymin,geom2(3* (i-1)+2))
-    ymax = max(ymax,geom2(3* (i-1)+2))
-    20 end do
+    do 10 i = 1, nno1
+        if (lino1(i) .eq. 0) goto 10
+        xmin = min(xmin,geom1(3* (i-1)+1))
+        xmax = max(xmax,geom1(3* (i-1)+1))
+        ymin = min(ymin,geom1(3* (i-1)+2))
+        ymax = max(ymax,geom1(3* (i-1)+2))
+ 10 end do
+    do 20 i = 1, nno2
+        if (lino2(i) .eq. 0) goto 20
+        xmin = min(xmin,geom2(3* (i-1)+1))
+        xmax = max(xmax,geom2(3* (i-1)+1))
+        ymin = min(ymin,geom2(3* (i-1)+2))
+        ymax = max(ymax,geom2(3* (i-1)+2))
+ 20 end do
     stotal = (xmax-xmin)* (ymax-ymin)
     sboite = (stotal/ntr3)*5.d0
     dx = sqrt(sboite)
@@ -123,70 +124,70 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !     3. : ON COMPTE COMBIEN DE TRIA3 SERONT CONTENUS
 !             DANS CHAQUE BOITE(P,Q)
 !     -------------------------------------------------------
-    do 60,i = 1,ntr3
-    xxmin = rbig
-    yymin = rbig
-    xxmax = -rbig
-    yymax = -rbig
-    do 30,k = 1,3
-    ino = tria3(1+4* (i-1)+k)
-    xxmin = min(xxmin,geom1(3* (ino-1)+1))
-    xxmax = max(xxmax,geom1(3* (ino-1)+1))
-    yymin = min(yymin,geom1(3* (ino-1)+2))
-    yymax = max(yymax,geom1(3* (ino-1)+2))
-30  continue
-    p1 = int((xxmin-xmin)/dx) + 1
-    p2 = int((xxmax-xmin)/dx) + 1
-    q1 = int((yymin-ymin)/dy) + 1
-    q2 = int((yymax-ymin)/dy) + 1
-    do 50,p = p1,p2
-    do 40,q = q1,q2
-    zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
-40  continue
-50  continue
+    do 60 i = 1, ntr3
+        xxmin = rbig
+        yymin = rbig
+        xxmax = -rbig
+        yymax = -rbig
+        do 30 k = 1, 3
+            ino = tria3(1+4* (i-1)+k)
+            xxmin = min(xxmin,geom1(3* (ino-1)+1))
+            xxmax = max(xxmax,geom1(3* (ino-1)+1))
+            yymin = min(yymin,geom1(3* (ino-1)+2))
+            yymax = max(yymax,geom1(3* (ino-1)+2))
+ 30     continue
+        p1 = int((xxmin-xmin)/dx) + 1
+        p2 = int((xxmax-xmin)/dx) + 1
+        q1 = int((yymin-ymin)/dy) + 1
+        q2 = int((yymax-ymin)/dy) + 1
+        do 50 p = p1, p2
+            do 40 q = q1, q2
+                zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
+ 40         continue
+ 50     continue
 !
-    60 end do
+ 60 end do
 !
 !
 !
 !     4. : ON REMPLIT .BT2DCO  ET .BT2DLC :
 !     -------------------------------------------------------
     zi(iabtlc-1+1) = 0
-    do 70,ib = 1,nx*ny
-    zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)
-    zi(iabtnb-1+ib) = 0
-    70 end do
+    do 70 ib = 1, nx*ny
+        zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)
+        zi(iabtnb-1+ib) = 0
+ 70 end do
 !
 !
     lont = zi(iabtlc-1+1+nx*ny)
     call wkvect(boite//'.BT2DCO', 'V V I', lont, iabtco)
 !
-    do 110,i = 1,ntr3
-    xxmin = rbig
-    yymin = rbig
-    xxmax = -rbig
-    yymax = -rbig
-    do 80,k = 1,3
-    ino = tria3(1+4* (i-1)+k)
-    xxmin = min(xxmin,geom1(3* (ino-1)+1))
-    xxmax = max(xxmax,geom1(3* (ino-1)+1))
-    yymin = min(yymin,geom1(3* (ino-1)+2))
-    yymax = max(yymax,geom1(3* (ino-1)+2))
-80  continue
-    p1 = int((xxmin-xmin)/dx) + 1
-    p2 = int((xxmax-xmin)/dx) + 1
-    q1 = int((yymin-ymin)/dy) + 1
-    q2 = int((yymax-ymin)/dy) + 1
-    do 100,p = p1,p2
-    do 90,q = q1,q2
-    zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
-    iposi = zi(iabtlc-1+ (q-1)*nx+p) + zi(iabtnb-1+ (q-1)* nx+p)
-    ASSERT((iposi.ge.1) .and. (iposi.le.lont))
-    zi(iabtco-1+iposi) = i
-90  continue
-100  continue
+    do 110 i = 1, ntr3
+        xxmin = rbig
+        yymin = rbig
+        xxmax = -rbig
+        yymax = -rbig
+        do 80 k = 1, 3
+            ino = tria3(1+4* (i-1)+k)
+            xxmin = min(xxmin,geom1(3* (ino-1)+1))
+            xxmax = max(xxmax,geom1(3* (ino-1)+1))
+            yymin = min(yymin,geom1(3* (ino-1)+2))
+            yymax = max(yymax,geom1(3* (ino-1)+2))
+ 80     continue
+        p1 = int((xxmin-xmin)/dx) + 1
+        p2 = int((xxmax-xmin)/dx) + 1
+        q1 = int((yymin-ymin)/dy) + 1
+        q2 = int((yymax-ymin)/dy) + 1
+        do 100 p = p1, p2
+            do 90 q = q1, q2
+                zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
+                iposi = zi(iabtlc-1+ (q-1)*nx+p) + zi(iabtnb-1+ (q-1)* nx+p)
+                ASSERT((iposi.ge.1) .and. (iposi.le.lont))
+                zi(iabtco-1+iposi) = i
+ 90         continue
+100     continue
 !
-    110 end do
+110 end do
 !
     dbg = .false.
     if (dbg) then

@@ -1,5 +1,6 @@
 subroutine te0090(option, nomte)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -35,11 +36,11 @@ subroutine te0090(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, iforc, ii
     real(kind=8) :: poids, r, fx, fy, nx, ny
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
@@ -60,21 +61,21 @@ subroutine te0090(option, nomte)
             ii = 2* (i-1)
             fx = fx + zr(iforc+ii)*zr(ivf+k+i-1)
             fy = fy + zr(iforc+ii+1)*zr(ivf+k+i-1)
-10      continue
+ 10     continue
 !
         if (laxi) then
             r = 0.d0
             do 20 i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-20          continue
+ 20         continue
             poids = poids*r
         endif
 !
         do 30 i = 1, nno
             zr(ivectu+2* (i-1)) = zr(ivectu+2* (i-1)) + fx*zr(ivf+k+i- 1)*poids
             zr(ivectu+2* (i-1)+1) = zr(ivectu+2* (i-1)+1) + fy*zr(ivf+ k+i-1 )*poids
-30      continue
+ 30     continue
 !
-40  end do
+ 40 end do
 !
 end subroutine

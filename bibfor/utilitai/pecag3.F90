@@ -1,6 +1,7 @@
 subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                   nbmail, noment, valpar)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8maem.h"
@@ -17,7 +18,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
     real(kind=8) :: valpar(*)
     character(len=*) :: noment(*), noma
     character(len=*) :: motcle
-    logical(kind=1) :: nsymx, nsymy
+    aster_logical :: nsymx, nsymy
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +96,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
             zmax = 0.d0
             zmin= 0.d0
             rmax = max ( rmax , r )
-10      continue
+ 10     continue
 !
     else if (motcle(1:6) .eq. 'MAILLE') then
         do 20 im = 1, nbmail
@@ -116,8 +117,8 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                 zmax = 0.d0
                 zmin = 0.d0
                 rmax = max ( rmax , r )
-22          continue
-20      continue
+ 22         continue
+ 20     continue
 !
     else if (motcle(1:8) .eq. 'GROUP_MA') then
         do 30 ig = 1, nbmail
@@ -141,9 +142,9 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                     zmax = 0.d0
                     zmin = 0.d0
                     rmax = max ( rmax , r )
-34              continue
-32          continue
-30      continue
+ 34             continue
+ 32         continue
+ 30     continue
     endif
     rx=max(abs(xmax),(abs(xmin)))
     ry=max(abs(ymax),(abs(ymin)))

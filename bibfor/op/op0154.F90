@@ -22,6 +22,7 @@ subroutine op0154()
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -55,7 +56,7 @@ subroutine op0154()
 #include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
     integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier
-    logical(kind=1) :: bidim
+    aster_logical :: bidim
     character(len=8) :: ma, ma2, depla, coutur, mab
     character(len=16) :: kbi1, kbi2, option
     character(len=19) :: geomi, geomf
@@ -288,7 +289,7 @@ subroutine op0154()
         if (coutur .eq. 'OUI') call asceli(ma)
         call asctub(ma)
     endif
-
+!
     call getfac('TUBE_COUDE', nboc2)
     if (nboc2 .ne. 0) then
         call getvr8('TUBE_COUDE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)

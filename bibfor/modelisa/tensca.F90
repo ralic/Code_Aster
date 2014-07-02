@@ -83,6 +83,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/getvid.h"
@@ -108,11 +109,11 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf,   nblign
+    integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, nblign
     integer :: nbpara, n1, irt, jtabx, jtaby, nbval
     real(kind=8) :: df, flim, krelax, fi, f2
     complex(kind=8) :: cbid
-    logical(kind=1) :: trouv1, trouv2, exi1, exi2
+    aster_logical :: trouv1, trouv2, exi1, exi2
     character(len=3) :: k3b
     character(len=24) :: abscca, alphca
     character(len=8) :: ntable, k8b
@@ -146,7 +147,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
         do 10 ino = 1, nbnoca
             call tbajli(tablca, 1, param, [ibid], [0.d0],&
                         [cbid], k3b, idecno+ino)
-10      continue
+ 10     continue
         goto 9999
     endif
 !
@@ -171,13 +172,13 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             call jeveuo(alphca, 'L', jalph)
         endif
         if (trouv1 .and. trouv2) goto 30
-20  end do
+ 20 end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   CALCUL DE LA TENSION LE LONG DU CABLE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-30  continue
+ 30 continue
 !
 !
     call wkvect('&&TENSCA.F', 'V V R', nbnoca, jf)
@@ -214,7 +215,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
         do 40 ino = 1, nbnoca
             zr(jf+ino-1) = zr(jf+ino-1) * ( 1.0d0 - krelax * (zr(jf+ ino-1)/flim-mu0) )
-40      continue
+ 40     continue
 !
     else if (typrel.eq.'ETCC_DIRECT') then
 !----------------------------------
@@ -226,7 +227,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             zr(jf+ino-1) = fi - 0.8d0 * fi * 0.66d-05 *rh1000*exp( 9.1d0*fi/flim)* (trelax/1000.d&
                            &0)**(0.75d0*(1.d0-(fi/flim) ))
 !
-45      continue
+ 45     continue
     else if (typrel.eq.'ETCC_REPRISE') then
 !----------------------------------
 !        CAS ETCC_REPRISE
@@ -267,7 +268,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             if (zr(jtabx+ino-1)-zr(jabsc+ino-1) .ge. r8prem()) then
                 call utmess('F', 'MODELISA2_69')
             endif
-50      continue
+ 50     continue
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !  MISE A JOUR DE LA TENSION
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,7 +277,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             f2 = zr(jtaby+ino-1)
             zr(jf+ino-1) = zr(jf+ino-1) - 0.8d0 * 0.66d-05 *rh1000* exp(9.1d0*f2/fprg/sa)* (trela&
                            &x/1000.d0)**(0.75d0*(1.d0-( f2/fprg/sa) ))*f2
-60      continue
+ 60     continue
 !
 !
         call jedetr(tabx)
@@ -294,7 +295,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             df = ( xflu + xret ) * f0
             do 80 ino = 1, nbnoca
                 zr(jf+ino-1) = zr(jf+ino-1) - df
-80          continue
+ 80         continue
         endif
 !
     endif
@@ -307,9 +308,9 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
     do 90 ino = 1, nbnoca
         call tbajli(tablca, 1, param, [ibid], zr(jf+ino-1),&
                     [cbid], k3b, idecno+ ino)
-90  end do
+ 90 end do
 !
-9999  continue
+9999 continue
     call jedetr('&&TENSCA.F')
     call jedema()
 !

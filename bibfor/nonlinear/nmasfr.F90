@@ -19,6 +19,7 @@ subroutine nmasfr(defico, resoco, matass)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisl.h"
@@ -62,7 +63,7 @@ subroutine nmasfr(defico, resoco, matass)
     character(len=24) :: limat(2)
     real(kind=8) :: coefmu(2)
     character(len=1) :: typcst(2)
-    logical(kind=1) :: lmodim
+    aster_logical :: lmodim
 !
 ! ----------------------------------------------------------------------
 !

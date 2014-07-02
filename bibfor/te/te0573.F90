@@ -18,7 +18,8 @@ subroutine te0573(option, nomte)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -54,7 +55,7 @@ subroutine te0573(option, nomte)
     integer :: mxnoeu, mxnpg, mxvect, mxmatr
     parameter     (mxnoeu=3,mxnpg=4,mxvect=2*3,mxmatr=2*3*2*3)
 !
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     integer :: ndim, nno, npg, nnos, nddl
     integer :: iddl, ino, ipg
     integer :: jpoids, jvf, jdf, jgano
@@ -71,8 +72,8 @@ subroutine te0573(option, nomte)
 ! --- CARACTERISTIQUES ELEMENT
 !
     laxi = lteatt('AXIS','OUI')
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=jpoids,jvf=jvf,jdfde=jdf,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=jpoids, jvf=jvf, jdfde=jdf, jgano=jgano)
     nddl = 2*nno
     ASSERT(nno .le.mxnoeu)
     ASSERT(npg .le.mxnpg)
@@ -88,7 +89,7 @@ subroutine te0573(option, nomte)
 !
     do 10 iddl = 1, nddl
         zr(jgeom+iddl-1) = zr(jgeom+iddl-1) + zr(jdepm+iddl-1) + zr(jdepp+iddl-1)
-10  end do
+ 10 end do
 !
 ! --- CALCUL DE LA PRESSION AUX POINTS DE GAUSS (A PARTIR DES NOEUDS)
 !
@@ -99,8 +100,8 @@ subroutine te0573(option, nomte)
         do 105 ino = 1, nno
             p(1,ipg) = p(1,ipg) + zr(jpres+2*(ino-1)+1-1) * zr(jvf+ kdec+ino-1)
             p(2,ipg) = p(2,ipg) + zr(jpres+2*(ino-1)+2-1) * zr(jvf+ kdec+ino-1)
-105      continue
-100  end do
+105     continue
+100 end do
 !
 ! --- CALCUL EFFECTIF DE LA RIGIDITE
 !
@@ -128,8 +129,8 @@ subroutine te0573(option, nomte)
             do 120 j = 1, nddl
                 k = k + 1
                 zr(jmatr-1+k) = matr((j-1)*nddl+i)
-120          continue
-110      end do
+120         continue
+110     end do
         ASSERT(k.eq.nddl*nddl)
 !
     else

@@ -109,6 +109,7 @@ subroutine te0491(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
@@ -152,7 +153,7 @@ subroutine te0491(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(5), para_type
     character(len=16) :: nomte, option, optio2, compor(3)
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
 !-----------------------------------------------------------------------
 !
 ! ---- INITIALISATIONS :
@@ -177,8 +178,8 @@ subroutine te0491(option, nomte)
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     axi = .false.
 !
@@ -438,8 +439,7 @@ subroutine te0491(option, nomte)
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
                 call rcfonc('V', 1, jprol, jvale, nbval,&
-                            p = p, rp = rp,&
-                            rprim = rprim, airerp = airep)
+                            p = p, rp = rp, rprim = rprim, airerp = airep)
 !
                 eplast = airep
             endif
@@ -626,8 +626,8 @@ subroutine te0491(option, nomte)
 ! --- CONTRAINTE EQUIVALENTE :
 !
                 call rcfonc('E', 1, jprol, jvale, nbval,&
-                            e = e, nu = nu, p = zero, rp = rp,&
-                            rprim = rprim, airerp = airep, sieleq = sigeq, dp = p)
+                            e = e, nu = nu, p = zero, rp = rp, rprim = rprim,&
+                            airerp = airep, sieleq = sigeq, dp = p)
 !
 ! --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 !
@@ -833,8 +833,7 @@ subroutine te0491(option, nomte)
 ! ---          TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
                 call rcfonc('V', 1, jprol, jvale, nbval,&
-                            p = p, rp = rp,&
-                            rprim = rprim, airerp = airep)
+                            p = p, rp = rp, rprim = rprim, airerp = airep)
 !
                 eplaeq = rp*p
             else

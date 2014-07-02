@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                       lcoc, base, ces3z)
         integer :: nbchs
         character(len=*) :: lichs(nbchs)
-        logical(kind=1) :: lcumul(nbchs)
+        aster_logical :: lcumul(nbchs)
         real(kind=8) :: lcoefr(nbchs)
         complex(kind=8) :: lcoefc(nbchs)
-        logical(kind=1) :: lcoc
+        aster_logical :: lcoc
         character(len=*) :: base
         character(len=*) :: ces3z
     end subroutine cesfus

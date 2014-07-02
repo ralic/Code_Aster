@@ -21,6 +21,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 ! person_in_charge: van-xuan.tran at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -48,7 +49,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     integer :: tdisp, nbnop, lisnoe(nbnop), nbnot, nbordr, nnoini
     integer :: tspaq
-    logical(kind=1) :: fordef, post
+    aster_logical :: fordef, post
     real(kind=8) :: vwork(tdisp), resu(7)
     character(len=8) :: nommai, grdvie, nommap
     character(len=16) :: nomcri, proaxe, nomfor, forvie
@@ -83,7 +84,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
     integer :: i
-    integer :: jcnrd, jcnrl,  iret, icesd, icesl, icesv
+    integer :: jcnrd, jcnrl, iret, icesd, icesl, icesv
     integer :: tneces, tdisp2(1), n, k
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, cnbno, ibidno, kwork, somnow, inop
@@ -96,7 +97,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     real(kind=8) :: nxm(2), nym(2), nzm(2)
     real(kind=8) :: vresu(24)
 !
-    logical(kind=1) :: lbid, crsigm
+    aster_logical :: lbid, crsigm
 !
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
@@ -332,7 +333,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     AS_DEALLOCATE(vr=vect_norma)
     AS_DEALLOCATE(vr=vect_tangu)
     AS_DEALLOCATE(vr=vect_tangv)
-
+!
     call jedetr('&&AVGRNO.CNCINV')
 !
     call jedema()

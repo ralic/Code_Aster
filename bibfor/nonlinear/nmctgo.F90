@@ -20,6 +20,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -43,7 +44,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro
     character(len=19) :: valinc(*)
-    logical(kind=1) :: mmcvgo
+    aster_logical :: mmcvgo
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +68,8 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: lctcc, lctcd, lxfcm
-    logical(kind=1) :: lsans, lmanu, lauto
+    aster_logical :: lctcc, lctcd, lxfcm
+    aster_logical :: lsans, lmanu, lauto
     integer :: nbreag, maxgeo
     integer :: mmitgo
     character(len=19) :: depplu, depgeo, depmoi
@@ -76,7 +77,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
     real(kind=8) :: cvgval, epsgeo
     character(len=24) :: clreac
     integer :: jclrea
-    logical(kind=1) :: ctcgeo, lerrog
+    aster_logical :: ctcgeo, lerrog
 !
 ! ----------------------------------------------------------------------
 !

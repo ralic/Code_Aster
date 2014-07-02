@@ -2,6 +2,7 @@ function isfonc(list_func_acti, func_name_z)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 !
 ! ======================================================================
@@ -22,7 +23,7 @@ function isfonc(list_func_acti, func_name_z)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    logical(kind=1) :: isfonc
+    aster_logical :: isfonc
     integer, intent(in) :: list_func_acti(*)
     character(len=*), intent(in) :: func_name_z
 !

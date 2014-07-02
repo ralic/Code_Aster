@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mecalg(optioz, result, modele, depla, theta,&
                       mate, lischa, symech, compor, incr, &
@@ -29,14 +31,14 @@ interface
         character(len=19) :: lischa
         character(len=8) :: symech
         character(len=24) :: compor
-        logical(kind=1) :: incr
+        aster_logical :: incr
         real(kind=8) :: time
         integer :: iord
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
-        logical(kind=1) :: lmelas
+        aster_logical :: lmelas
         character(len=16) :: nomcas
         character(len=8) :: kcalc
     end subroutine mecalg

@@ -19,6 +19,7 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/infniv.h"
@@ -53,14 +54,14 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: lreli, lpilo, lctcd, lctcc
-    logical(kind=1) :: lborst, lrefe, lcomp
-    logical(kind=1) :: lboucc, lboucf, lboucg, lallv, lnewtf, lnewtc, lnewtg
+    aster_logical :: lreli, lpilo, lctcd, lctcc
+    aster_logical :: lborst, lrefe, lcomp
+    aster_logical :: lboucc, lboucf, lboucg, lallv, lnewtf, lnewtc, lnewtg
     character(len=24) :: sdtabc, slcolo, sdcolo
     integer :: icolo, nbcolo
     character(len=24) :: suiinf
     integer :: jsuiin
-    logical(kind=1) :: linfre, linftp, lcsv
+    aster_logical :: linfre, linftp, lcsv
     integer :: isuiv, nbsuiv
     character(len=1) :: indsui
     character(len=9) :: typcol

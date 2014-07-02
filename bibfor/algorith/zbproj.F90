@@ -19,8 +19,9 @@ subroutine zbproj(rho, echec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: rho
-    logical(kind=1) :: echec
+    aster_logical :: echec
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,7 +40,7 @@ subroutine zbproj(rho, echec)
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical(kind=1) :: bpos, lopti
+    aster_logical :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti

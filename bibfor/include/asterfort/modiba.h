@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                       itypfl, imasse, nuor, nbnuor, numo,&
@@ -23,7 +25,7 @@ interface
         character(len=8) :: basemo
         character(len=19) :: basefl
         integer :: numvit
-        logical(kind=1) :: newres
+        aster_logical :: newres
         integer :: itypfl
         integer :: imasse
         integer :: nuor(*)

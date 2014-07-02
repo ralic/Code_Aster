@@ -17,6 +17,8 @@
 !
 ! person_in_charge: mathieu.courtois at edf.fr
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
                                rela, tole, ssigne, refr, valr, &
@@ -25,7 +27,7 @@ interface
         implicit none
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
-        logical(kind=1), intent(in) :: llab
+        aster_logical, intent(in) :: llab
         character(len=*), intent(in) :: typres
         integer, intent(in) :: nbref
         character(len=*), intent(in) :: rela
@@ -37,7 +39,7 @@ interface
         integer, intent(in) :: vali
         complex(kind=8), intent(in) :: refc(nbref)
         complex(kind=8), intent(in) :: valc
-        logical(kind=1), intent(in), optional :: ignore
+        aster_logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_print_all
 end interface

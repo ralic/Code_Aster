@@ -19,6 +19,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
@@ -50,7 +51,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     character(len=24) :: numedd
     character(len=16) :: method(*)
     character(len=19) :: sdpilo
-    logical(kind=1) :: lreli
+    aster_logical :: lreli
 !
 ! ----------------------------------------------------------------------
 !
@@ -108,12 +109,12 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     character(len=16) :: limocl(2), tymocl(2)
     integer :: ifm, niv
     integer :: jlino1, jlino2, nbnom, noeu1, noeu2
-    integer ::  jeq2, ierm
+    integer :: jeq2, ierm
     character(len=8) :: compo
     character(len=19) :: grln, cnsln, grlt
     character(len=24) :: liseq2, lisno1, lisno2
     real(kind=8) :: coef1, coef2, coefi, vect(3)
-    logical(kind=1) :: isxfe, selxfe, selfem
+    aster_logical :: isxfe, selxfe, selfem
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: plsl(:) => null()
 !

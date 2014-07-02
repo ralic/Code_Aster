@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
                       coor, nbmavo, mailvo, coince)
@@ -26,6 +28,6 @@ interface
         real(kind=8) :: coor(*)
         integer :: nbmavo
         integer :: mailvo(*)
-        logical(kind=1) :: coince
+        aster_logical :: coince
     end subroutine utmasu
 end interface

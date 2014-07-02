@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                       nbmesu, labs, amin, apas, lvalc,&
                       lvalr)
-        logical(kind=1) :: zcmplx
+        aster_logical :: zcmplx
         integer :: itype
         integer :: nbabs
         integer :: inatur

@@ -118,6 +118,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -127,7 +128,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
 #include "blas/dcopy.h"
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
-    logical(kind=1) :: wantt, wantz
+    aster_logical :: wantt, wantz
     integer :: ihi, ihiz, ilo, iloz, info, ldh, ldz, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
@@ -199,7 +200,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
 !     H(L,L-1) IS NEGLIGIBLE SO THAT THE MATRIX SPLITS.
 !
     i = ihi
-10  continue
+ 10 continue
     l = ilo
     if (i .lt. ilo) goto 150
 !
@@ -215,8 +216,8 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
             tst1 = abs( h( k-1, k-1 ) ) + abs( h( k, k ) )
             if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h( l, l ), ldh, work)
             if (abs( h( k, k-1 ) ) .le. max( ulp*tst1, smlnum )) goto 30
-20      continue
-30      continue
+ 20     continue
+ 30     continue
         l = k
         if (l .gt. ilo) then
 !
@@ -284,8 +285,8 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
             h10 = h( m, m-1 )
             tst1 = abs( v1 )*( abs( h00 )+abs( h11 )+abs( h22 ) )
             if (abs( h10 )*( abs( v2 )+abs( v3 ) ) .le. ulp*tst1) goto 50
-40      continue
-50      continue
+ 40     continue
+ 50     continue
 !
 !        DOUBLE-SHIFT QR STEP
 !
@@ -324,7 +325,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                     h( k, j ) = h( k, j ) - sum*t1
                     h( k+1, j ) = h( k+1, j ) - sum*t2
                     h( k+2, j ) = h( k+2, j ) - sum*t3
-60              continue
+ 60             continue
 !
 !              APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF THE
 !              MATRIX IN ROWS I1 TO MIN(K+3,I).
@@ -334,7 +335,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                     h( j, k ) = h( j, k ) - sum*t1
                     h( j, k+1 ) = h( j, k+1 ) - sum*t2
                     h( j, k+2 ) = h( j, k+2 ) - sum*t3
-70              continue
+ 70             continue
 !
                 if (wantz) then
 !
@@ -345,7 +346,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                         z( j, k ) = z( j, k ) - sum*t1
                         z( j, k+1 ) = z( j, k+1 ) - sum*t2
                         z( j, k+2 ) = z( j, k+2 ) - sum*t3
-80                  continue
+ 80                 continue
                 endif
             else if (nr.eq.2) then
 !
@@ -356,7 +357,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                     sum = h( k, j ) + v2*h( k+1, j )
                     h( k, j ) = h( k, j ) - sum*t1
                     h( k+1, j ) = h( k+1, j ) - sum*t2
-90              continue
+ 90             continue
 !
 !              APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF THE
 !              MATRIX IN ROWS I1 TO MIN(K+3,I).
@@ -365,7 +366,7 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                     sum = h( j, k ) + v2*h( j, k+1 )
                     h( j, k ) = h( j, k ) - sum*t1
                     h( j, k+1 ) = h( j, k+1 ) - sum*t2
-100              continue
+100             continue
 !
                 if (wantz) then
 !
@@ -375,19 +376,19 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                         sum = z( j, k ) + v2*z( j, k+1 )
                         z( j, k ) = z( j, k ) - sum*t1
                         z( j, k+1 ) = z( j, k+1 ) - sum*t2
-110                  continue
+110                 continue
                 endif
             endif
-120      continue
+120     continue
 !
-130  end do
+130 end do
 !
 !     FAILURE TO CONVERGE IN REMAINING NUMBER OF ITERATIONS
 !
     info = i
     goto 1000
 !
-140  continue
+140 continue
 !
     if (l .eq. i) then
 !
@@ -430,8 +431,8 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
     i = l - 1
     goto 10
 !
-150  continue
-1000  continue
+150 continue
+1000 continue
 !
     call matfpe(1)
 !

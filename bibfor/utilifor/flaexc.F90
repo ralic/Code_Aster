@@ -96,6 +96,7 @@ subroutine flaexc(wantq, n, t, ldt, q,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -108,7 +109,7 @@ subroutine flaexc(wantq, n, t, ldt, q,&
 #include "blas/dlange.h"
 #include "blas/dlarfx.h"
 #include "blas/drot.h"
-    logical(kind=1) :: wantq
+    aster_logical :: wantq
     integer :: info, j1, ldq, ldt, n, n1, n2
 !     ..
 !     .. ARRAY ARGUMENTS ..

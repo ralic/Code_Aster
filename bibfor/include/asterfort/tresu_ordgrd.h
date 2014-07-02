@@ -15,11 +15,13 @@
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tresu_ordgrd(valr, ignore, compare, mcf, iocc)
         implicit none
         real(kind=8), intent(in) :: valr
-        logical(kind=1), intent(out) :: ignore
+        aster_logical, intent(out) :: ignore
         real(kind=8), intent(out) :: compare
         character(len=*), intent(in), optional :: mcf
         integer, intent(in), optional :: iocc

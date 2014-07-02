@@ -18,7 +18,8 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/infdbg.h"
@@ -54,7 +55,7 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
     character(len=24) :: jeuite
     integer :: jjeuit
     real(kind=8) :: jeufin, pnmaxi
-    logical(kind=1) :: levent
+    aster_logical :: levent
     real(kind=8) :: penmax
     integer :: ibid
     character(len=8) :: k8bid
@@ -97,7 +98,7 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
                 levent = .true.
             endif
         endif
-10  end do
+ 10 end do
 !
 ! --- ACTIVATION EVENEMENT
 !

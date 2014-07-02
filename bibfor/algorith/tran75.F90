@@ -30,6 +30,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !                (SI CALCUL MODAL PAR SOUS-STRUCTURATION)
 !                BLANC SINON
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8prem.h"
@@ -84,15 +85,15 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=19) :: typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod
-    logical(kind=1) :: tousno, multap, leffor, prems
+    aster_logical :: tousno, multap, leffor, prems
     integer :: iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  iarchi, ibid, ich, id
-    integer ::  idec, idefm,  idresu,  ie
+    integer :: iarchi, ibid, ich, id
+    integer :: idec, idefm, idresu, ie
     integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
-    integer :: irou,  jc,  jinst
-    integer ::   jnume, jpsdel, jvec, linst, llcha
+    integer :: irou, jc, jinst
+    integer :: jnume, jpsdel, jvec, linst, llcha
     integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbdir, nbexci, nbinsg, nbinst
     integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0
@@ -357,8 +358,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
-            call copmod(basemo, champ=typcha, numer=prchno(1:14), bmodr=base, &
-                                nequa=neq, nbmodes=nbmode)
+            call copmod(basemo, champ=typcha, numer=prchno(1:14), bmodr=base, nequa=neq,&
+                        nbmodes=nbmode)
         else
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
@@ -425,11 +426,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
             else
                 ASSERT(.false.)
             endif
-
+!
             chamno(20:24) = '.VALE'
             call jeexin(chamno, ibid)
             if (ibid .le. 0) chamno(20:24) = '.CELV'
-
+!
             call jeveuo(chamno, 'E', lvale)
 !
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
@@ -438,8 +439,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                             zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
                 call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else
-                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode),&
-                            zr(lvale))
+                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode), zr(lvale))
             endif
             if (multap) then
                 if (type(ich) .eq. 'DEPL') call mdgep3(neq, nbexci, zr( lpsdel), zr(jinst+i),&
@@ -449,8 +449,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 if (type(ich) .eq. 'ACCE') call mdgep3(neq, nbexci, zr( lpsdel), zr(jinst+i),&
                                                        facc, zr(lval2))
                 if (type(ich) .eq. 'ACCE_ABSOLU') call mdgep3(neq, nbexci, zr(lpsdel),&
-                                                              zr(jinst+i), facc,&
-                                                              zr(lval2))
+                                                              zr(jinst+i), facc, zr(lval2))
                 do ie = 1, neq
                     zr(lvale+ie-1)=zr(lvale+ie-1)+zr(lval2+ie-1)
                 end do
@@ -464,7 +463,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
                 AS_ALLOCATE(vi=ddl, size=neq*nbdir)
                 call pteddl('NUME_DDL', numddl, nbdir, nomcmp, neq,&
-ddl)
+                            ddl)
                 do id = 1, nbdir
                     do ie = 0, neq-1
                         zr(jvec+ie) = zr(jvec+ie) + ddl(1+neq*(id-1) +ie)*alpha*depl(id)

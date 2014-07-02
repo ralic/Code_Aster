@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpzqrs(n, m, hh, ih, loc,&
                       valpi, valpr, zvps, iz, b,&
@@ -25,7 +27,7 @@ interface
         integer :: m
         integer :: n
         real(kind=8) :: hh(ih, n)
-        logical(kind=1) :: loc(n)
+        aster_logical :: loc(n)
         real(kind=8) :: valpi(n)
         real(kind=8) :: valpr(n)
         real(kind=8) :: zvps(iz, m)

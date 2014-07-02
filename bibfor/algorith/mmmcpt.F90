@@ -19,6 +19,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -64,8 +65,8 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
     integer :: cont
     character(len=24) :: tabfin
     integer :: jtabf
-    logical(kind=1) :: lveri, lnoeu
-    integer ::  jcnslr
+    aster_logical :: lveri, lnoeu
+    integer :: jcnslr
     integer :: nbliac, nbliaf
     character(len=24) :: dejcal
     integer :: jdejca

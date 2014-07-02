@@ -20,6 +20,7 @@ subroutine nmassd(modele, numedd, lischa, fonact, depest,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -67,7 +68,7 @@ subroutine nmassd(modele, numedd, lischa, fonact, depest,&
     character(len=19) :: vect(nbcoef)
     character(len=19) :: vebest
     character(len=19) :: cnbest, cndido, cndidi, cndipi
-    logical(kind=1) :: ldidi
+    aster_logical :: ldidi
 !
 ! ----------------------------------------------------------------------
 !
@@ -123,7 +124,7 @@ subroutine nmassd(modele, numedd, lischa, fonact, depest,&
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
-10  end do
+ 10 end do
 !
 ! --- CHARGEMENT PILOTE
 !

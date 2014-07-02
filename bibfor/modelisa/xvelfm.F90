@@ -18,6 +18,7 @@ subroutine xvelfm(nfiss, fiss, modx)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
@@ -46,7 +47,7 @@ subroutine xvelfm(nfiss, fiss, modx)
 ! ----------------------------------------------------------------------
 !
     integer :: ifiss, iret
-    logical(kind=1) :: ltrouv
+    aster_logical :: ltrouv
     character(len=8) :: valk(2)
 !
 ! ----------------------------------------------------------------------
@@ -72,7 +73,7 @@ subroutine xvelfm(nfiss, fiss, modx)
             call utmess('F', 'XFEM_73', nk=2, valk=valk)
         endif
 !
-100  end do
+100 end do
 !
     call jedema()
 end subroutine

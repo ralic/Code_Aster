@@ -40,6 +40,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -86,7 +87,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
     character(len=19) :: matir, matim, matia, amort
     character(len=24) :: valer, valem, valea
     character(len=24) :: valk(2)
-    logical(kind=1) :: cpx
+    aster_logical :: cpx
 !
 ! ----------------------------------------------------------------------
 !
@@ -187,7 +188,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do 201 iam = 1, nbmode
                     zr(jamog+iam-1) = zr(iamog+iam-1)
-201              continue
+201             continue
             endif
         else if (nbamor.lt.nbmode) then
 !
@@ -199,7 +200,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do 210 iam = 1, nbamor
                     zr(jamog+iam-1) = zr(iamog+iam-1)
-210              continue
+210             continue
             endif
             idiff = nbmode - nbamor
             vali (1) = idiff
@@ -209,10 +210,10 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
             call wkvect(baseno//'.AMORTI2', 'V V R8', nbmode, jamo2)
             do 20 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamog+iam-1)
-20          continue
+ 20         continue
             do 22 iam = nbamor+1, nbmode
                 zr(jamo2+iam-1) = zr(jamog+nbamor-1)
-22          continue
+ 22         continue
             jamog = jamo2
         else if (nbamor.eq.nbmode) then
             call wkvect(baseno//'.AMORTI', 'V V R8', nbamor, jamog)
@@ -223,7 +224,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do 220 iam = 1, nbamor
                     zr(jamog+iam-1) = zr(iamog+iam-1)
-220              continue
+220             continue
             endif
         endif
 !
@@ -257,8 +258,8 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
                     endif
                     zr(iatmat-1+i2) = zr(jamog-1+i)*acrit
                 endif
-14          continue
-230      continue
+ 14         continue
+230     continue
 !
     endif
 !

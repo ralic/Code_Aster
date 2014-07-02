@@ -20,6 +20,7 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -55,8 +56,8 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 !
 !
     integer :: ifm, niv
-    logical(kind=1) :: ldyna, lstat
-    logical(kind=1) :: lnewma, lthetd, lthetv, lkrenk, ldepl, lvite
+    aster_logical :: ldyna, lstat
+    aster_logical :: lnewma, lthetd, lthetv, lkrenk, ldepl, lvite
 !
 ! ----------------------------------------------------------------------
 !

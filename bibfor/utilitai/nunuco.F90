@@ -19,6 +19,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -36,7 +37,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: numedd, defico
-    logical(kind=1) :: lcont
+    aster_logical :: lcont
     character(len=24) :: sdnuco
 !
 ! ----------------------------------------------------------------------
@@ -58,7 +59,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
     character(len=8) :: nomgd, modele, noma
     character(len=24) :: nolili
-    logical(kind=1) :: lxfcm
+    aster_logical :: lxfcm
     integer :: nec, nbnoeu, ncmpmx
     integer :: nlili, neq
     integer :: ico

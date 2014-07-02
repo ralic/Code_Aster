@@ -46,6 +46,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -86,7 +87,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
     character(len=24) :: ligrel(3), lchin(nchinx), resuel, chgeom, chcara(18)
     character(len=24) :: modele, charge, infoch, carele, inst, chtn, mate
     character(len=24) :: vecele, ligcal
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
 ! ----------------------------------------------------------------------
     integer :: nbchmx
     parameter (nbchmx=6)
@@ -362,7 +363,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
     call jeecra(vecelz, 'LONUTI', ilve)
 !
 ! SORTIE DE SECOURS EN CAS D'ABSENCE DE CHARGE
-80  continue
+ 80 continue
 !
     call jedema()
 end subroutine

@@ -1,6 +1,7 @@
 subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/getvtx.h"
@@ -17,7 +18,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     character(len=8) :: resu
     character(len=19) :: vecord
     character(len=24) :: melord
-    logical(kind=1) :: lmelas, lncas
+    aster_logical :: lmelas, lncas
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,13 +111,13 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
                 iind=indiis(zi(ivec),nutrou(1),1,nbord)
                 zl(jnord+iind-1)=.true.
             endif
-10      continue
+ 10     continue
 !
         call jedetr(melcas)
 !
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

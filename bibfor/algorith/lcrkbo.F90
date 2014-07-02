@@ -1,4 +1,5 @@
-subroutine lcrkbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
+subroutine lcrkbo(a, b, l0, l1, etamin,&
+                  etamax, vide, nsol, sol, sgn)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,12 +17,13 @@ subroutine lcrkbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lcvpbo.h"
 #include "asterfort/utmess.h"
-    real(kind=8),intent(in) :: a, b, l0, l1, etamin, etamax 
-    logical(kind=1),intent(out)     :: vide
-    integer,intent(out)     :: nsol, sgn(2)
-    real(kind=8),intent(out):: sol(2)
+    real(kind=8), intent(in) :: a, b, l0, l1, etamin, etamax
+    aster_logical,intent(out) :: vide
+    integer, intent(out) :: nsol, sgn(2)
+    real(kind=8), intent(out) :: sol(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !  SOLUTION Q(ETA) := (POS(A*ETA+B))**2 + L0 + ETA*L1 = 0
@@ -35,9 +37,9 @@ subroutine lcrkbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
 !  OUT SOL    VALEURS DES SOLUTIONS
 !  OUT SGN    SIGNE DE DQ/DETA EN CHAQUE SOLUTION
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8),parameter:: zero=0.d0
+    real(kind=8), parameter :: zero=0.d0
 ! --------------------------------------------------------------------------------------------------
-    logical(kind=1) :: vide1, vide2
+    aster_logical :: vide1, vide2
     integer :: i, nsol1, nsol2, sgn1(2), sgn2(2), ptr
     real(kind=8) :: smin, smax, etas, sol1(2), sol2(2)
 ! --------------------------------------------------------------------------------------------------
@@ -50,14 +52,16 @@ subroutine lcrkbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
 !
 !  TERME QUADRATIQUE NUL PARTOUT
     if (smin .le. 0 .and. smax .le. 0) then
-        call lcvpbo(zero, zero, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
+        call lcvpbo(zero, zero, l0, l1, etamin,&
+                    etamax, vide, nsol, sol, sgn)
         goto 999
     endif
 !
 !
 !  TERME QUADRATIQUE NON NUL PARTOUT : Q = (A*ETA)**2 + M1*ETA + M0
     if (smin .ge. 0 .and. smax .ge. 0) then
-        call lcvpbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
+        call lcvpbo(a, b, l0, l1, etamin,&
+                    etamax, vide, nsol, sol, sgn)
         goto 999
     endif
 !
@@ -67,13 +71,17 @@ subroutine lcrkbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
 !
 !  QUADRATIQUE PUIS NUL
     if (a .le. 0) then
-        call lcvpbo(a, b, l0, l1, etamin, etas, vide1, nsol1, sol1, sgn1)
-        call lcvpbo(zero, zero, l0, l1, etas, etamax, vide2, nsol2, sol2, sgn2)
+        call lcvpbo(a, b, l0, l1, etamin,&
+                    etas, vide1, nsol1, sol1, sgn1)
+        call lcvpbo(zero, zero, l0, l1, etas,&
+                    etamax, vide2, nsol2, sol2, sgn2)
 !
 !  NUL PUIS QUADRATIQUE
     else
-        call lcvpbo(zero, zero, l0, l1, etamin, etas, vide1, nsol1, sol1, sgn1)
-        call lcvpbo(a, b, l0, l1, etas, etamax, vide2, nsol2, sol2, sgn2)
+        call lcvpbo(zero, zero, l0, l1, etamin,&
+                    etas, vide1, nsol1, sol1, sgn1)
+        call lcvpbo(a, b, l0, l1, etas,&
+                    etamax, vide2, nsol2, sol2, sgn2)
     endif
 !
     vide = vide1 .and. vide2

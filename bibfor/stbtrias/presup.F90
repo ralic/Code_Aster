@@ -1,5 +1,6 @@
 subroutine presup(iunv, imod, lgrcou)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/ecrelt.h"
 #include "asterfort/ecrneu.h"
 #include "asterfort/inistb.h"
@@ -14,7 +15,7 @@ subroutine presup(iunv, imod, lgrcou)
 #include "asterfort/sleneu.h"
 #include "asterfort/snecol.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: lgrcou
+    aster_logical :: lgrcou
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +81,7 @@ subroutine presup(iunv, imod, lgrcou)
 !
 ! --> DECLARATIONS DES VARIABLES
 !
-    logical(kind=1) :: larret
+    aster_logical :: larret
     integer :: min, man, imod, imes, iunv, mxtyma, mxperm, mxperf
     integer :: maxfa, i, nbtyma, ites, maxnod
     parameter (mxtyma=99,maxnod=32,mxperm=maxnod*mxtyma)
@@ -109,14 +110,14 @@ subroutine presup(iunv, imod, lgrcou)
     do 1234 i = 1, mxtyma
         nbmail(i) = 0
         nomail(i) = rquoi
-1234  end do
+1234 end do
 !
     call inistb(maxnod, nbtyma, nomail, indic, permut,&
                 limail, indicf, permuf, maxfa)
 !
 !     RECHERCHE DU PREMIER '    -1'
 !
-1000  continue
+1000 continue
     read (iunv,'(A)',end=9999) char
     if (char .ne. moins1) goto 1000
 !
@@ -131,7 +132,7 @@ subroutine presup(iunv, imod, lgrcou)
     write (imod,'(A)') '%'
 !
 !
- 1  continue
+  1 continue
 !
     read (iunv,'(I6)',end=9999, iostat=io) datset
 !     LORSQU'ON A UN ECHEC LORS DE LA LECTURE DU DATASET
@@ -190,12 +191,12 @@ subroutine presup(iunv, imod, lgrcou)
 !
 !  -->   LECTURE D'UNE RUBRIQUE INCONNUE
         write (imes,*) 'ON NE TRAITE PAS LE DATASET:',datset
- 2      continue
+  2     continue
         read (iunv,'(A)',end=9999) char
         if (char .ne. moins1) goto 2
     endif
     goto 1
-9999  continue
+9999 continue
     if (larret) then
         call utmess('F', 'STBTRIAS_1')
     endif

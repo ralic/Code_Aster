@@ -23,6 +23,7 @@ subroutine op0096()
 !     REPERAGE DE SEGMENT DE DROITE PAR RAPPORT AUX HEXA TETRA ET PENTA
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -67,7 +68,7 @@ subroutine op0096()
     integer :: atmp1, atmp2, atmp3, atmp4, atmp5, atmp6, atmp7, atmp8
     integer :: atmp9, atmp10, atmp13, atmp14
     integer :: nbsgt, nbsgel, isgt, nbtma, nbnma, nbn, tete, queue, nil
-    integer :: asucc, aprec, adesc,  axyzn,  adrvlc, adrmc
+    integer :: asucc, aprec, adesc, axyzn, adrvlc, adrmc
     integer :: asds, adescm, aindir, cpsgt, nnbm, inn
     integer :: k, im1, if1, iao1, iae1, im2, if2, iao2
     integer :: jnuma, ima, n1, n2, ndim, iret, nbpar, ibid
@@ -87,7 +88,7 @@ subroutine op0096()
     character(len=24) :: nsds1, nsds2, nsds3, nsds4, nsds5, nsds6, nsds7
     character(len=24) :: nsds8, nsds9, nsds10, nsds11, nsds12, nsds13, nsds14
     character(len=24) :: nommai, lismai, para
-    logical(kind=1) :: coupe, fini, swap, egfac
+    aster_logical :: coupe, fini, swap, egfac
     integer, pointer :: typmail(:) => null()
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()

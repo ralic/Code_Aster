@@ -1,6 +1,7 @@
 subroutine cjsci1(crit, mater, deps, sigd, i1f,&
                   tract, iret)
     implicit none
+#include "asterf_types.h"
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +46,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
     real(kind=8) :: trdeps, coef, pa, n, multi
     real(kind=8) :: x0, x1, x2, oldx2, y0, y1, y2
     real(kind=8) :: zero, un, deux, trois, qinit
-    logical(kind=1) :: tract
+    aster_logical :: tract
     integer :: i
 !
     common /tdim/   ndt , ndi
@@ -67,7 +68,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
     trdeps = zero
     do 5 i = 1, ndi
         trdeps = trdeps + deps(i)
- 5  continue
+  5 continue
 !
     coef = mater(1,1)/( un - deux*mater(2,1) )*trdeps
     pa = mater(12,2)
@@ -76,7 +77,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
     i1d = zero
     do 10 i = 1, ndi
         i1d = i1d + sigd(i)
-10  continue
+ 10 continue
     if ((i1d +qinit) .ge. 0.d0) then
         i1d = -qinit+1.d-12 * pa
     endif
@@ -118,10 +119,10 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
             x1 = multi*x1
             y1 = x1-i1d-coef*((x1+qinit)/trois/pa)**n
             if (y1 .lt. zero) goto 25
-20      continue
+ 20     continue
         iret = 1
         goto 9999
-25      continue
+ 25     continue
 !
 !
 !
@@ -144,10 +145,10 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
                 y1 = y2
             endif
 !
-30      continue
+ 30     continue
         iret = 1
         goto 9999
-40      continue
+ 40     continue
 !
         i1f=x2
 !
@@ -185,15 +186,15 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
                 y0 = y2
             endif
 !
-60      continue
+ 60     continue
         iret = 1
         goto 9999
-70      continue
+ 70     continue
 !
         i1f=x2
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

@@ -18,6 +18,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
@@ -44,7 +45,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 !
 ! --------------------------------------------------------------------
-    logical(kind=1) :: resi, rigi, elas, line
+    aster_logical :: resi, rigi, elas, line
     integer :: k, l, ndimsi
     integer :: cod(1)
     real(kind=8) :: sy(1), m, am
@@ -75,7 +76,8 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 ! -- CARACTERISTIQUES MATERIAU (SY) ET RIGIDITE
 !
     call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                [0.d0], 1, 'SY', sy, cod,2)
+                [0.d0], 1, 'SY', sy, cod,&
+                2)
     m = 1 + 10**(1-inst)
     am = sy(1) * rac23**m
     if (line) then
@@ -90,7 +92,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
     if (resi) then
         do 100 k = 1, ndimsi
             sigp(k) = coef*eps(k)
-100      continue
+100     continue
     endif
 !
 !
@@ -102,15 +104,15 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 !
         do 210 k = 1, ndimsi
             dsidep(k,k) = coef
-210      continue
+210     continue
 !
         if (rigi .and. .not. line) then
             coef = coef * (m-2) / epsno**2
             do 220 k = 1, ndimsi
                 do 221 l = 1, ndimsi
                     dsidep(k,l) = dsidep(k,l) + coef*eps(k)*eps(l)
-221              continue
-220          continue
+221             continue
+220         continue
         endif
     endif
 !

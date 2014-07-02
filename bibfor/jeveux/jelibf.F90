@@ -30,6 +30,7 @@ subroutine jelibf(cond, clas, info)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/rmfile.h"
 #include "asterfort/assert.h"
@@ -66,7 +67,7 @@ subroutine jelibf(cond, clas, info)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical(kind=1) :: litlec
+    aster_logical :: litlec
     common /lficje/  litlec(n)
 !
     common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
@@ -104,7 +105,7 @@ subroutine jelibf(cond, clas, info)
     character(len=32) :: nomcar
     integer :: iadcar, iaddac(2), lgbl, vali(8), iadcdy, iaddad(2)
     real(kind=8) :: valr(2)
-    logical :: bool
+    aster_logical :: bool
 ! DEB ------------------------------------------------------------------
     kcond = cond
     kclas = clas
@@ -131,7 +132,7 @@ subroutine jelibf(cond, clas, info)
                 call jjlide('JELIBF', nomco, 2)
             endif
         endif
-10  end do
+ 10 end do
 !     -- DECHARGER TOUS LES OBJETS SIMPLES Y COMPRIS AVEC $$ -------
     do 20 i = lidbas+1, nreuti(ic)
         iadmi = iadm( jiadm(ic) + 2*i-1 )
@@ -140,7 +141,7 @@ subroutine jelibf(cond, clas, info)
             nomos = rnom ( jrnom(ic) + i )
             call jjlide('JELIBF', nomos, 1)
         endif
-20  end do
+ 20 end do
 !     ----------- DECHARGER TOUS LES OBJETS SYSTEME ----------------
     iad2 = iadm(jiadm(ic) + 2*2-1)
     iadcar = iadm(jiadm(ic) + 2*1-1)
@@ -181,12 +182,12 @@ subroutine jelibf(cond, clas, info)
                 nomos = rnom ( jrnom(ic) + i )
                 call jjlide('SYSTEM', nomos, 1)
             endif
-30      continue
+ 30     continue
         do 33 i = lidbas+1, nreuti(ic)
             iadmi = iadm( jiadm(ic) + 2*i-1 )
             iadyn = iadm( jiadm(ic) + 2*i )
             call jjlidy(iadyn, iadmi)
-33      continue
+ 33     continue
         idebug = idb
     endif
 !
@@ -215,7 +216,7 @@ subroutine jelibf(cond, clas, info)
             iadmi = iadm( jiadm(ic) + 2*i-1 )
             iadyn = iadm( jiadm(ic) + 2*i )
             call jjlidy(iadyn, iadmi)
-32      continue
+ 32     continue
     endif
 !
 !

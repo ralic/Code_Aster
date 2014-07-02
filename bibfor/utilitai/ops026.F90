@@ -20,6 +20,7 @@ subroutine ops026()
 !    OPERATEUR DEFI_FICHIER
 !
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/putvir.h"
 #include "asterc/rmfile.h"
 #include "asterfort/getvis.h"
@@ -33,7 +34,7 @@ subroutine ops026()
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
     integer :: unite, ifm, niv, n1, nf, nu
-    logical(kind=1) :: sortie
+    aster_logical :: sortie
     character(len=1) :: kacc, ktyp
     character(len=8) :: action, acces, type
     character(len=16) :: knom
@@ -109,7 +110,7 @@ subroutine ops026()
 !
     if (sortie) call putvir(unite)
 !
-999  continue
+999 continue
     if (niv .gt. 1) call ulimpr(ifm)
 !
 end subroutine

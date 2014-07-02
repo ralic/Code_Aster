@@ -32,6 +32,7 @@ subroutine hujprc(kk, k, tin, vin, mater,&
 !      Q     :  NORME DEVIATEUR CYCLIQUE K
 !      TOUD  :  TENSEUR DEVIATOIRE CYCLIQUE DES CONTRAINTES
 !  --------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/tecael.h"
@@ -43,7 +44,7 @@ subroutine hujprc(kk, k, tin, vin, mater,&
     real(kind=8) :: tin(6), tou(3), toud(3), p, pp, q
     real(kind=8) :: epsvp, beta, b, phi, pcref, pcr
     real(kind=8) :: m, un, degr, mater(22, 2), tole
-    logical(kind=1) :: debug
+    aster_logical :: debug
     character(len=8) :: nomail
 !
     parameter (degr = 0.0174532925199d0)
@@ -90,7 +91,7 @@ subroutine hujprc(kk, k, tin, vin, mater,&
             tou(j) = tin(i)
             j = j+1
         endif
-10  continue
+ 10 continue
 !
     tou(3) = tin(ndt+1-k)
     dd = d12*(tou(1)-tou(2))
@@ -127,5 +128,5 @@ subroutine hujprc(kk, k, tin, vin, mater,&
     q = sqrt(q)
     p = pp +ptrac
 !
-999  continue
+999 continue
 end subroutine

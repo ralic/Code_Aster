@@ -26,6 +26,7 @@ subroutine te0178(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -41,14 +42,14 @@ subroutine te0178(option, nomte)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: imattt, i, j, ij, l, li, lj
     integer :: imate, iimpe, kpg, spt
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
     integer :: jgano, mater, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -81,7 +82,7 @@ subroutine te0178(option, nomte)
             do 10 i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
-10          continue
+ 10         continue
             poids = poids*r
         endif
         ij = imattt - 1
@@ -91,8 +92,8 @@ subroutine te0178(option, nomte)
                 lj = ivf + (kp-1)*nno + j - 1
                 ij = ij + 1
                 zc(ij) = zc(ij) + poids*rhosz*zr(li)*zr(lj)
-20          continue
-30      continue
-40  end do
-50  continue
+ 20         continue
+ 30     continue
+ 40 end do
+ 50 continue
 end subroutine

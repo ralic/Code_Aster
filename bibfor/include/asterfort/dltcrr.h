@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
                       ifm, t0, lcrea, typres, masse,&
@@ -29,7 +31,7 @@ interface
         character(len=*) :: texte
         integer :: ifm
         real(kind=8) :: t0
-        logical(kind=1) :: lcrea
+        aster_logical :: lcrea
         character(len=16) :: typres
         character(len=8) :: masse
         character(len=8) :: rigid

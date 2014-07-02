@@ -3,7 +3,7 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
                   ddissi, dc1, dc2, dtg, bbok,&
                   normm, normn)
 !
-    implicit  none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,11 +45,12 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 ! OUT BBOK : CRITERE DE CV DE L ALGO BRINGBACK
 !
+#include "asterf_types.h"
 #include "asterfort/critnu.h"
 #include "asterfort/dndiss.h"
 #include "asterfort/fplass.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: bbok
+    aster_logical :: bbok
 !
 !      INTEGER NEWPRO(2)
     integer :: nmief, newief, nmprox(2), zimat
@@ -78,87 +79,87 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !      NCRIT = CRITNU(ZIMAT,NMNBN,NMDPLA,DEPSLO,DTG,NORMM)
     ncrit = critnu(zimat,nmnbn,depslo,dtg,normm)
 !
-    do 190, nbb = 1, nbbmax
+    do 190 nbb = 1, nbbmax
 !
 !       NEWZFG(1) = NEWZEF
 !       NEWZFG(2) = NEWZEG
-    ipara(1) = zimat
-    ipara(2) = ncrit
+        ipara(1) = zimat
+        ipara(2) = ncrit
 !       IPARA(3) = NEWIEF
 !       IPARA(4) = IER
 !
 !     CALCUL DU NOUVEAU MOMENT
 !     DE L INCREMENT DE COURBURE PLASTIQUE ET DE LA DISSIPATION
-    call dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
-                nmprox, depslo, newnbn, newpla, newdpl,&
-                newddp, newzfg, depsbb, ddisbb, dc1,&
-                dc2, dtg, normm, normn)
+        call dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
+                    nmprox, depslo, newnbn, newpla, newdpl,&
+                    newddp, newzfg, depsbb, ddisbb, dc1,&
+                    dc2, dtg, normm, normn)
 !
-    zimat = ipara(1)
-    ncrit = ipara(2)
-    newief = ipara(3)
-    ier = ipara(4)
-    newzef = newzfg(1)
-    newzeg = newzfg(2)
+        zimat = ipara(1)
+        ncrit = ipara(2)
+        newief = ipara(3)
+        ier = ipara(4)
+        newzef = newzfg(1)
+        newzeg = newzfg(2)
 !
-    if (ier .gt. 0) goto 200
+        if (ier .gt. 0) goto 200
 !
 !     MISE A JOUR DES VARIABLE
-    do 125, j = 1,6
-    nmnbn(j) = newnbn(j)
-125  continue
+        do 125 j = 1, 6
+            nmnbn(j) = newnbn(j)
+125     continue
 !
-    do 140, j = 1,3
-    do 130, i = 1,2
-    nmplas(i,j) = newpla(i,j)
-130  continue
-140  continue
+        do 140 j = 1, 3
+            do 130 i = 1, 2
+                nmplas(i,j) = newpla(i,j)
+130         continue
+140     continue
 !
-    do 160, j = 1,2
-    do 150, i = 1,2
-    nmdpla(i,j) = newdpl(i,j)
-    nmddpl(i,j) = newddp(i,j)
-150  continue
-160  continue
+        do 160 j = 1, 2
+            do 150 i = 1, 2
+                nmdpla(i,j) = newdpl(i,j)
+                nmddpl(i,j) = newddp(i,j)
+150         continue
+160     continue
 !
-    nmzef = newzef
-    nmzeg = newzeg
-    nmief = newief
+        nmzef = newzef
+        nmzeg = newzeg
+        nmief = newief
 !
 !        DO 170, J = 1,2
 !          NMPROX(J) = NEWPRO(J)
 ! 170    CONTINUE
 !
-    do 180, j = 1,6
-    depsp(j) = depsp(j) + depsbb(j)
-180  continue
+        do 180 j = 1, 6
+            depsp(j) = depsp(j) + depsbb(j)
+180     continue
 !
-    ddissi = ddissi + ddisbb
+        ddissi = ddissi + ddisbb
 !
 !     CALCUL DES CRITERES DE PLASTICITE F
-    f1 = fplass(nmnbn,nmplas,1)
-    f2 = fplass(nmnbn,nmplas,2)
+        f1 = fplass(nmnbn,nmplas,1)
+        f2 = fplass(nmnbn,nmplas,2)
 !
-    if (f1 .lt. nmzef .and. f2 .lt. nmzef .and. (f1 .gt. -nmzef .or. f2 .gt. -nmzef)) then
+        if (f1 .lt. nmzef .and. f2 .lt. nmzef .and. (f1 .gt. -nmzef .or. f2 .gt. -nmzef)) then
 !
 !     NMNBN PROCHE DE LA SURFACE DE PLASTICITE
-        bbok = .true.
-        goto 200
-    endif
+            bbok = .true.
+            goto 200
+        endif
 !
 !     CALCUL DU PREDICTEUR ELASTIQUE ET DU NOMBRE DE CRITERES ACTIVES
 !        NCRNEW = CRITNU(ZIMAT,NMNBN,NMDPLA,DEPSLO,DTG,NORMM)
-    ncrnew = critnu(zimat,nmnbn,depslo,dtg,normm)
+        ncrnew = critnu(zimat,nmnbn,depslo,dtg,normm)
 !
 !     SI NCRNEW = 0 CELA VEUT DIRE QUE MBACKM EST DANS LE VOLUME ELAST
 !     ON UTILISE LE CRITERE DU PAS PRECEDENT
 !     POUR CALCULER LA COURBURE PLASTIQUE
 !     C EST POURQUOI NCRIT N EST PAS MIS A JOUR
-    if (ncrnew .gt. 0) then
-        ncrit = ncrnew
-    endif
-    190 end do
+        if (ncrnew .gt. 0) then
+            ncrit = ncrnew
+        endif
+190 end do
 !
-200  continue
+200 continue
 !
 end subroutine

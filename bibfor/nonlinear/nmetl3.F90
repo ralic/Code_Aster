@@ -20,6 +20,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
@@ -35,7 +36,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
     character(len=24) :: modele, compor
     character(len=24) :: sdieto
     character(len=8) :: result
-    logical(kind=1) :: evonol, leinit
+    aster_logical :: evonol, leinit
     integer :: icham, numein
 !
 ! ----------------------------------------------------------------------
@@ -149,13 +150,12 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
                             iret)
                 if (iret .ne. 0) compom = ' '
             endif
-            if (compom.eq.' ') then
+            if (compom .eq. ' ') then
                 call vrcomp(compor, nomcha, ligrmo, iret)
             else
-                call vrcomp(compor, nomcha, ligrmo, iret,&
-                            compor_prev = compom)
+                call vrcomp(compor, nomcha, ligrmo, iret, compor_prev = compom)
             endif
-            if (iret.eq.1) then
+            if (iret .eq. 1) then
                 call utmess('F', 'MECANONLINE5_2')
             endif
         endif

@@ -15,21 +15,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
                       para, nocmp, nbel, scal, vect,&
                       tens, versio)
         integer :: ifi
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
         character(len=*) :: nomcon
         character(len=*) :: chamsy
         integer :: nbordr
         real(kind=8) :: para(*)
         character(len=8) :: nocmp
         integer :: nbel(*)
-        logical(kind=1) :: scal
-        logical(kind=1) :: vect
-        logical(kind=1) :: tens
+        aster_logical :: scal
+        aster_logical :: vect
+        aster_logical :: tens
         integer :: versio
     end subroutine irgmpv
 end interface

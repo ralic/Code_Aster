@@ -19,6 +19,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -80,9 +81,9 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !    LA SD INITIALE (CES1Z) EST ALORS PERDUE.
 !
 !-----------------------------------------------------------------------
-    logical(kind=1) :: loter
-    integer ::  jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2
-    integer :: jce2d, jce2v, jce2l,  jnbpt, jnbsp, jnbcmp, nbpt
+    aster_logical :: loter
+    integer :: jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2
+    integer :: jce2d, jce2v, jce2l, jnbpt, jnbsp, jnbcmp, nbpt
     integer :: kma, isp, iad1, iad2, jce3c, nbsp, ipt
     integer :: ncmpmx, ncmp1, icmp1, icmp2, icmp3
     integer :: ima
@@ -91,7 +92,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     character(len=19) :: ces1, ces2
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: ce2c(:) => null()
-    logical(kind=1), pointer :: exima(:) => null()
+    aster_logical, pointer :: exima(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

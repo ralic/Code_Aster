@@ -1,5 +1,6 @@
 subroutine te0211(option, nomte)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -38,13 +39,13 @@ subroutine te0211(option, nomte)
     integer :: igeom2, imatt, k, i, j, l, li, lj, itemps, ihechp, nbelr
     real(kind=8) :: poids, poids1, poids2, nx, ny, theta, mat(6), coefh, r1, r2
     character(len=8) :: lirefe(2)
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
     call elref2(nomte, 2, lirefe, nbelr)
     ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -74,7 +75,7 @@ subroutine te0211(option, nomte)
                 l = (kp-1)*nno + i
                 r1 = r1 + zr(igeom+2*i-2)*zr(ivf+l-1)
                 r2 = r2 + zr(igeom2+2*i-2)*zr(ivf+l-1)
-10          continue
+ 10         continue
             poids1 = poids1*r1
             poids2 = poids2*r2
         endif
@@ -86,8 +87,8 @@ subroutine te0211(option, nomte)
                 lj = ivf + (kp-1)*nno + j - 1
                 k = k + 1
                 mat(k) = poids*theta*zr(li)*zr(lj)*coefh
-20          continue
-30      continue
+ 20         continue
+ 30     continue
         if (nomte(5:8) .eq. 'SE22') then
             zr(imatt-1+1) = zr(imatt-1+1) + mat(1)
             zr(imatt-1+2) = zr(imatt-1+2) + mat(2)
@@ -122,7 +123,7 @@ subroutine te0211(option, nomte)
             zr(imatt-1+20) = zr(imatt-1+20) + mat(5)
             zr(imatt-1+21) = zr(imatt-1+21) + mat(6)
             do 40 i = 1, 21
-40          continue
+ 40         continue
         endif
-50  end do
+ 50 end do
 end subroutine

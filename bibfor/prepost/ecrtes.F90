@@ -2,6 +2,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                   nbcmp, ityp, entete, lcmp)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -21,7 +22,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     character(len=*) :: nomsd, titre, nomgds
     character(len=*) :: fitype
     character(len=80) :: entete(10)
-    logical(kind=1) :: lcmp
+    aster_logical :: lcmp
 !----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,7 +74,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, iret, istmax, itimax
-    integer ::  jtitr, nbac, nbcmp, nbpa
+    integer :: jtitr, nbac, nbcmp, nbpa
     character(len=16), pointer :: nom_acc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

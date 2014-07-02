@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                       mater)
-        logical(kind=1) :: lpmpb
-        logical(kind=1) :: lsn
-        logical(kind=1) :: lsnet
-        logical(kind=1) :: lfatig
-        logical(kind=1) :: lrocht
+        aster_logical :: lpmpb
+        aster_logical :: lsn
+        aster_logical :: lsnet
+        aster_logical :: lfatig
+        aster_logical :: lrocht
         character(len=8) :: mater
     end subroutine rc32ac
 end interface

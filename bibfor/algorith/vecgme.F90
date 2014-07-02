@@ -19,6 +19,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
@@ -75,7 +76,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     character(len=19) :: resuel, resufv(1), depmoi, depdel, vites, strmoi
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
     integer :: jlchin, ier
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
     integer :: nbchmx, ii, somme
     parameter (nbchmx=7)
     integer :: nbopt(nbchmx), tab(nbchmx)
@@ -251,7 +252,8 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
             resufv(ii) (10:16) = newnom(2:8)
         end do
         call nmvgme(modele, ligrel, carele, charge, icha,&
-                    instap, resufv, depmoi, depdel, vites, strmoi)
+                    instap, resufv, depmoi, depdel, vites,&
+                    strmoi)
         do ii = 1, 1
             call reajre(vecele, resufv(ii), 'V')
         end do

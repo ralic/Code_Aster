@@ -1,5 +1,6 @@
 subroutine op0115()
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -44,14 +45,14 @@ subroutine op0115()
     integer :: iocpf, iockt, ioccs
     integer :: ipf, ifonc, inum, ifreq, ikt, ics, ispec
     integer :: mxval, ibid, nbabs, nbfreq, nbval
-    integer :: lnumi, lnumj, lfonc,   lfreq, lrefe, nbvalr
+    integer :: lnumi, lnumj, lfonc, lfreq, lrefe, nbvalr
     integer :: lnoei, lnoej, lcmpi, lcmpj, n2, n3, n4, n5, n6, n7
 !
     real(kind=8) :: valr, fmoy, ared, fmin, fmax, pas, freq, depi, num, den
     real(kind=8) :: rbid
 !
     complex(kind=8) :: valc
-    logical(kind=1) :: diag
+    aster_logical :: diag
 !
     character(len=8) :: nomu, fonc, k8bid, tfonc, nomref
     character(len=16) :: concep, nomcmd, motfac(3)

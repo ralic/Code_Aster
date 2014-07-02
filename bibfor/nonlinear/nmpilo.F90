@@ -22,6 +22,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -93,7 +94,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     character(len=19) :: cnfepi
     character(len=3) :: mfdet
     integer :: ifm, niv
-    logical(kind=1) :: isxfe
+    aster_logical :: isxfe
     real(kind=8), pointer :: dep0(:) => null()
     real(kind=8), pointer :: dep1(:) => null()
     real(kind=8), pointer :: du0(:) => null()
@@ -145,8 +146,8 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 ! --- VERIFICATION QUE LES VARIABLES DE COMMANDE NE DEPENDENT PAS DU TEMPS
 !
     call dismoi('VARC_F_INST', mate, 'CHAM_MATER', repk=mfdet)
-    if (mfdet.eq.'OUI') then
-       call utmess('F', 'CALCULEL2_58', nk=1, valk=mate)
+    if (mfdet .eq. 'OUI') then
+        call utmess('F', 'CALCULEL2_58', nk=1, valk=mate)
     endif
 !
 ! --- INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1

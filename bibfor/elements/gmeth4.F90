@@ -37,6 +37,7 @@ subroutine gmeth4(nnoff, ndimte, fond, gthi, milieu,&
 !   GI      --> VALEUR DE GI
 ! ......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/gsyste.h"
 #include "asterfort/jedema.h"
@@ -48,7 +49,7 @@ subroutine gmeth4(nnoff, ndimte, fond, gthi, milieu,&
     integer :: kk, ndimte, nn, nnoff, nump
     real(kind=8) :: gthi(1), gs(1), gi(1), s1, s2, s3, delta
     character(len=24) :: matr, fond, objcur
-    logical(kind=1) :: connex, milieu, pair, gxfem
+    aster_logical :: connex, milieu, pair, gxfem
 !
 !
 ! OBJET DECRIVANT LE MAILLAGE
@@ -83,7 +84,7 @@ subroutine gmeth4(nnoff, ndimte, fond, gthi, milieu,&
         zr(imatr+(i-1+1)*ndimte+i-1 )= 1.d0*delta
         zr(imatr+(i-1 )*ndimte+i-1+1)= 1.d0*delta
         zr(imatr+(i-1+1)*ndimte+i-1+1)= 2.d0*delta
-120  end do
+120 end do
 !
     i = ndimte -1
     nump = 2*(i-1)
@@ -159,7 +160,7 @@ subroutine gmeth4(nnoff, ndimte, fond, gthi, milieu,&
                 s3 = zr(iabsc-1+nn+2)
                 gs(nn+1) = gi(i)+(s2-s1)*(gi(i+1)-gi(i))/(s3-s1)
             endif
-200      continue
+200     continue
         gs(nnoff) = gi(ndimte)
 !
 !     SI PAIR, ON CORRIGE LA VALEUR DE G AU DERNIER NOEUD

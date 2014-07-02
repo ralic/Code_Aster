@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
                       jresl, rcoef, jvalm)
-        logical(kind=1) :: lmasym
-        logical(kind=1) :: lmesym
+        aster_logical :: lmasym
+        aster_logical :: lmesym
         character(len=2) :: tt
         integer :: jtmp2
         integer :: nrmax

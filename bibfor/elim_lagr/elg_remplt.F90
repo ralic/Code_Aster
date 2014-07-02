@@ -18,6 +18,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 # include "jeveux.h"
 # include "asterc/asmpi_comm.h"
 # include "asterc/r8prem.h"
@@ -32,30 +33,30 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
 !
-    Mat, intent(in)               :: c
+    Mat, intent(in) :: c
     character(len=14), intent(in) :: nonu
-    integer, intent(in)           :: nworkt
-    Mat, intent(inout)            :: t
-    integer, intent(inout)        :: nbnvco
-
+    integer, intent(in) :: nworkt
+    Mat, intent(inout) :: t
+    integer, intent(inout) :: nbnvco
+!
 !
 !================================================================
 !
     PetscInt :: ierr, nbeq, nlag, nbnzc
-    PetscInt :: one = 1 
-    Vec :: c_temp, v_temp, c_elim,  v
-    Mat :: t_elim_elim 
+    PetscInt :: one = 1
+    Vec :: c_temp, v_temp, c_elim, v
+    Mat :: t_elim_elim
     IS :: is_elim
-    PetscInt :: n1,n2
+    PetscInt :: n1, n2
     PetscInt :: nn_is(1)
     PetscOffset :: xx_i, nn_i
-    ! Mimics a C pointer
+! Mimics a C pointer
     PetscScalar, dimension(1) :: xx_v
     integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nelim
-    integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib,nzmax
-    integer :: nvcont, ifm, niv, posind,compnd
+    integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib, nzmax
+    integer :: nvcont, ifm, niv, posind, compnd
     real(kind=8) :: eps, norm, cmax, normc
-    logical(kind=1) :: info2
+    aster_logical :: info2
     mpi_int :: mpicomm
 !----------------------------------------------------------------------
     eps=r8prem()
@@ -84,10 +85,10 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !   La matrice des contraintes C est de taille nlag x nbeq 
     call MatGetSize(c, nlag, nbeq, ierr)
     ASSERT(ierr == 0 ) 
-    if (info2) then 
-       write(6,*),'C est de taille nlag= ', nlag,' x neq= ', nbeq
+    if (info2) then
+        write(6,*),'C est de taille nlag= ', nlag,' x neq= ', nbeq
     endif
-
+!
 !
 !--
 !-- Reinitialisation de CONTR et initialisation de diag. de T
@@ -105,7 +106,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
         endif
         if (zi4(nnzt+i1-1) .gt. nzmax) nzmax=zi4(nnzt+i1-1)
     end do
-    !write(6,*),'NZMAX=',nzmax
+!write(6,*),'NZMAX=',nzmax
     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
 !--
@@ -114,11 +115,11 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     call wkvect('&&ELG_REMPLT.C_I1.CON', 'V V R', nzmax, lccon)
     call wkvect('&&ELG_REMPLT.C_I1.LIB', 'V V R', nzmax, lclib)
     call wkvect('&&ELG_REMPLT.VEC_WORK1', 'V V R', nzmax, lwork1)
-! 
+!
     call wkvect('&&ELG_REMPLT.T_LIB.CON', 'V V R', nworkt, ltlib)
     call wkvect('&&ELG_REMPLT.COMP_IND', 'V V S', to_aster_int(nbeq), compnd)
     posind=0
-    call VecCreateSeq(mpicomm, to_petsc_int(nbeq) , c_temp, ierr)
+    call VecCreateSeq(mpicomm, to_petsc_int(nbeq), c_temp, ierr)
     call VecCreateSeq(mpicomm, to_petsc_int(nbeq), v_temp, ierr)
 !
 !--------------------------------!
@@ -127,15 +128,15 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--                            --!
 !--------------------------------!
 !
-    !write(6,*),'%-- REMPLT.F90'
-    !write(6,*),'    nworkt=',nworkt
+!write(6,*),'%-- REMPLT.F90'
+!write(6,*),'    nworkt=',nworkt
     do i1 = 1, nlag
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,'(A14,I3)'),' CONTRAINTE : ',i1
         if (info2) write(ifm,*),' '
-        call MatGetRow(c, to_petsc_int(i1-1), nbnzc,  zi4(nzrow), zr(valrow),&
-                       ierr)       
+        call MatGetRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
+                       ierr)
 !--
 !-- Normalisation de C
 !-- Normalement, les lignes de C sont deja normees
@@ -157,7 +158,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !-- Recopie de la contrainte, en normalisant
         call VecSet(c_temp, 0.d0, ierr)
         call VecSet(v_temp, 0.d0, ierr)
-        
+!
         do j1 = 1, nbnz
             numcon=zi4(nzrow+zi4(indnz+j1-1))
             call VecSetValues(c_temp, one, [to_petsc_int(numcon)], zr(ctemp+j1-1), INSERT_VALUES,&
@@ -194,13 +195,13 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         imax=nblib-1
                     endif
                 else
-                      zi4(indcon+nelim)=numcon
-                      zr(lccon+nelim)=zr(ctemp+j1-1)
+                    zi4(indcon+nelim)=numcon
+                    zr(lccon+nelim)=zr(ctemp+j1-1)
                     nelim=nelim+1
                 endif
             end do
-            !write(6,*),'  imax=',imax
-            !write(6,*),'  cmax=',cmax
+!write(6,*),'  imax=',imax
+!write(6,*),'  cmax=',cmax
 !
             if (nelim .eq. 0) then
 !--------------------------------------------------------------------------!
@@ -214,9 +215,9 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(nzrow + zi4(indnz+j1-1))
                     do k1 = 1, nbnz
                         icol=zi4(nzrow + zi4(indnz+k1-1))
-                        call MatSetValues(t, one, [to_petsc_int(numcon)],&
-                                          one, [to_petsc_int(icol)],&
-                                          [zr(ltlib+ nbnz*(k1-1)+j1-1)], INSERT_VALUES, ierr)
+                        call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                          [to_petsc_int(icol)], [zr(ltlib+ nbnz*(k1-1)+j1-1)],&
+                                          INSERT_VALUES, ierr)
                         zr(ltlib+nbnz*(k1-1)+j1-1)=0.d0
                     end do
                     zi4(contr + numcon) = 1
@@ -249,13 +250,13 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         do k1 = 1, nbnz
                             icol=zi4(nzrow + zi4(indnz+k1-1))
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
-                                                  [to_petsc_int(icol)], [1.d0], &
-                                                  INSERT_VALUES, ierr)
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                                  [to_petsc_int(icol)], [1.d0], INSERT_VALUES,&
+                                                  ierr)
                             else
-                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
-                                                  [to_petsc_int(icol)], &
-                                                  [0.d0], INSERT_VALUES, ierr)
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                                  [to_petsc_int(icol)], [0.d0], INSERT_VALUES,&
+                                                  ierr)
                             endif
                         end do
                         zi4(contr + numcon) = 0
@@ -268,8 +269,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     do j1 = 1, nblib
                         numcon=zi4(indlib+j1-1)
                         zi4(compnd+posind+j1-1)=numcon
-                     end do
-                     posind=posind+nblib
+                    end do
+                    posind=posind+nblib
                     if (info2) write(ifm,*),'CAS nelim = 0'
                     if (info2) write(ifm,*),'CONTRAINTE BIEN ELIMINEE - ', norm
                 endif
@@ -285,28 +286,29 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !-- Partie T(lib,con) = -C(i1,lib) \ (C(i1,con) * T(con,con)) ;
 !--
 !
-               ! Nombre de degrés de liberté intervenant dans les contraintes 
-               ! précédemment éliminées.   
-
+! Nombre de degrés de liberté intervenant dans les contraintes 
+! précédemment éliminées.   
+!
                 nelim=posind
-               ! is_elim = index set désignant les indices colonnes de C qui sont impliqués dans 
-               ! une contrainte déjà éliminée. 
-               ! Ces indices ont été stockés dans zi4(compnd:compnd-1+nelim)
-               call ISCreateGeneral(mpicomm, to_petsc_int(nelim), zi4(compnd), PETSC_USE_POINTER, &
-                    is_elim, ierr)
-               ! Tri de is_elim  
-               call ISSort(is_elim, ierr)
-               ! On extrait de la contrainte courante le vecteur correspondant à is_elim 
-               call VecGetSubVector(c_temp, is_elim, c_elim, ierr)
-               ! Et de la matrice T la sous-matrice T_elim_elim correspondant à is_elim x is_elim 
-               call MatGetSubMatrix(t, is_elim, is_elim, MAT_INITIAL_MATRIX, t_elim_elim, ierr )
-               ! Calcul de v = c_elim * t_elim_elim
-               call MatGetVecs( t_elim_elim, PETSC_NULL_OBJECT, v, ierr )
-               call MatMultTranspose(t_elim_elim, c_elim, v, ierr )
-               call MatDestroy(t_elim_elim, ierr)
-               call VecDestroy(c_elim,ierr)
-               ! 
-               if (cmax .lt. 1.d-10) then
+! is_elim = index set désignant les indices colonnes de C qui sont impliqués dans 
+! une contrainte déjà éliminée. 
+! Ces indices ont été stockés dans zi4(compnd:compnd-1+nelim)
+                call ISCreateGeneral(mpicomm, to_petsc_int(nelim), zi4(compnd),&
+                                     PETSC_USE_POINTER, is_elim, ierr)
+! Tri de is_elim  
+                call ISSort(is_elim, ierr)
+! On extrait de la contrainte courante le vecteur correspondant à is_elim 
+                call VecGetSubVector(c_temp, is_elim, c_elim, ierr)
+! Et de la matrice T la sous-matrice T_elim_elim correspondant à is_elim x is_elim 
+                call MatGetSubMatrix(t, is_elim, is_elim, MAT_INITIAL_MATRIX, t_elim_elim,&
+                                     ierr)
+! Calcul de v = c_elim * t_elim_elim
+                call MatGetVecs(t_elim_elim, PETSC_NULL_OBJECT, v, ierr)
+                call MatMultTranspose(t_elim_elim, c_elim, v, ierr)
+                call MatDestroy(t_elim_elim, ierr)
+                call VecDestroy(c_elim, ierr)
+! 
+                if (cmax .lt. 1.d-10) then
 !--
 !-- On ne peut pas eliminer correctement la contrainte -> On sort
 !--
@@ -314,20 +316,20 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     nbnvco=nbnvco+1
                     goto 123
                 endif
-                ! Le bloc T_free_elim doit satisfaire le pb sous-déterminé
-                ! c_free * T_free_elim = -v
-                ! Soit imax l'indice colonne du plus grand terme de c_free 
-                ! T_free_elim(imax,:) = -v / c(i1,imax) 
-                call VecScale(v,-1./zr(lclib+imax) ,ierr)
-                ! Insertion des valeurs de v à la ligne imax de T 
-                call VecGetArray(v,xx_v,xx_i,ierr)
+! Le bloc T_free_elim doit satisfaire le pb sous-déterminé
+! c_free * T_free_elim = -v
+! Soit imax l'indice colonne du plus grand terme de c_free 
+! T_free_elim(imax,:) = -v / c(i1,imax) 
+                call VecScale(v, -1./zr(lclib+imax), ierr)
+! Insertion des valeurs de v à la ligne imax de T 
+                call VecGetArray(v, xx_v, xx_i, ierr)
                 call ISGetIndices(is_elim, nn_is, nn_i, ierr)
-                call MatSetValues(t, one, zi4(indlib+imax), to_petsc_int(nelim), nn_is(nn_i+1), &
+                call MatSetValues(t, one, zi4(indlib+imax), to_petsc_int(nelim), nn_is(nn_i+1),&
                                   xx_v(xx_i+1), INSERT_VALUES, ierr)
-                call ISRestoreIndices(is_elim,nn_is,nn_i,ierr)
+                call ISRestoreIndices(is_elim, nn_is, nn_i, ierr)
                 call ISDestroy(is_elim, ierr)
-                call VecRestoreArray(v,xx_v, xx_i, ierr)
-                call VecDestroy(v,ierr)
+                call VecRestoreArray(v, xx_v, xx_i, ierr)
+                call VecDestroy(v, ierr)
 !
 !--
 !-- Partie elg_nllspc lib-lib
@@ -338,9 +340,9 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(indlib+j1-1)
                     do k1 = 1, nblib
                         icol=zi4(indlib+k1-1)
-                        call MatSetValues(t, one, [to_petsc_int(numcon)], &
-                                          one, [to_petsc_int(icol)],&
-                                          [zr(ltlib+ nblib*(k1-1)+j1-1)], INSERT_VALUES, ierr)
+                        call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                          [to_petsc_int(icol)], [zr(ltlib+ nblib*(k1-1)+j1-1)],&
+                                          INSERT_VALUES, ierr)
                         zr(ltlib+nblib*(k1-1)+j1-1)=0.d0
                     end do
                     zi4(contr + numcon) = 1
@@ -372,9 +374,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(indlib+imax)
                     do j1 = 1, nelim
                         icol=zi4(indcon+j1-1)
-                        call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
-                                          [to_petsc_int(icol)],&
-                                          [0.d0], INSERT_VALUES, ierr)
+                        call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                          [to_petsc_int(icol)], [0.d0], INSERT_VALUES, ierr)
                     end do
 !
 !
@@ -383,13 +384,13 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         do k1 = 1, nblib
                             icol=zi4(indlib+k1-1)
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
-                                                  [to_petsc_int(icol)],&
-                                                  [1.d0], INSERT_VALUES, ierr)
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                                  [to_petsc_int(icol)], [1.d0], INSERT_VALUES,&
+                                                  ierr)
                             else
-                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
-                                                  [to_petsc_int(icol)],&
-                                                  [0.d0], INSERT_VALUES, ierr)
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one,&
+                                                  [to_petsc_int(icol)], [0.d0], INSERT_VALUES,&
+                                                  ierr)
                             endif
                         end do
 !-- On laisse garde le "tag" sur les DDL, sinon, ca fout le bordel
@@ -405,9 +406,9 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     do j1 = 1, nblib
                         numcon=zi4(indlib+j1-1)
                         zi4(compnd+posind+j1-1)=numcon
-                     end do
-                     posind=posind+nblib
-                    
+                    end do
+                    posind=posind+nblib
+!
                     if (info2) write(ifm,*),'CAS NBLIB < NBNZ'
                     if (info2) write(ifm,*),'CONTRAINTE BIEN ELIMINEE - ', norm
                 endif
@@ -424,9 +425,9 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
         else
             numcon=zi4(nzrow+zi4(indnz))
             iscons=zi4(contr + numcon)
-            !write(6,*),'numcon=',numcon
-            !write(6,*),'iscons=',iscons
-            
+!write(6,*),'numcon=',numcon
+!write(6,*),'iscons=',iscons
+!
             if (iscons .eq. 0) then
                 call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(numcon)],&
                                   [0.d0], INSERT_VALUES, ierr)
@@ -451,8 +452,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--
 123     continue
 !
-        call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc,  zi4(nzrow), zr(valrow),&
-                           ierr)              
+        call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
+                           ierr)
 !
     end do
 !

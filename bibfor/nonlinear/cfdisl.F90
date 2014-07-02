@@ -18,12 +18,13 @@ function cfdisl(deficz, questz)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mminfl.h"
-    logical(kind=1) :: cfdisl
+    aster_logical :: cfdisl
     character(len=*) :: deficz
     character(len=*) :: questz
 !

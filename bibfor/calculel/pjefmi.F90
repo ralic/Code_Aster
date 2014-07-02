@@ -18,6 +18,7 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/vecini.h"
@@ -56,14 +57,14 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
     real(kind=8) :: xr1(3), xr2(3), d1, d2
     real(kind=8) :: ff(nbnomx)
     integer :: k, idim, ino, nno
-    logical(kind=1) :: lext
+    aster_logical :: lext
 ! ----------------------------------------------------------------------
-
+!
 !     -- Si le point est exterieur, on ne tient pas compte de x2
 !        => on choisit xmi=x1
 !     -----------------------------------------------------------
-
-
+!
+!
 !   -- calcul de xr1 : geometrie reelle de x1 :
 !   --------------------------------------------
     call elrfvf(elrefp, x1, nbnomx, ff, nno)
@@ -72,10 +73,10 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
     do 20 idim = 1, ndim
         do 10 ino = 1, nno
             xr1(idim)=xr1(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
-10      continue
-20  end do
-
-
+ 10     continue
+ 20 end do
+!
+!
 !   -- calcul de xr2 : geometrie reelle de x2 :
 !   --------------------------------------------
     if (.not.lext) then
@@ -84,11 +85,11 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
         do 40 idim = 1, ndim
             do 30 ino = 1, nno
                 xr2(idim)=xr2(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
-30          continue
-40      end do
+ 30         continue
+ 40     end do
     endif
-
-
+!
+!
 !   -- calcul de distv
 !   -- quelle est la meilleure approximation de xg ?
 !   -------------------------------------------------
@@ -97,8 +98,8 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
     do 50 k = 1, ndim
         d1=d1+(xr1(k)-xg(k))**2
         if (.not.lext) d2=d2+(xr2(k)-xg(k))**2
-50  end do
-
+ 50 end do
+!
     if (lext) then
         xmi(1:ndim)=x1(1:ndim)
         distv=sqrt(d1)
@@ -111,5 +112,5 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
             distv=sqrt(d2)
         endif
     endif
-
+!
 end subroutine

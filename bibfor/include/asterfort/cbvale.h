@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
                       lres, ddlexc, matd)
@@ -25,6 +27,6 @@ interface
         character(len=*) :: typres
         integer :: lres
         character(len=*) :: ddlexc
-        logical(kind=1) :: matd
+        aster_logical :: matd
     end subroutine cbvale
 end interface

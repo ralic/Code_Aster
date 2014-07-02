@@ -44,6 +44,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdcsi.h"
 #include "asterfort/as_mfdfdi.h"
@@ -93,7 +94,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     integer :: finupt, finuno, numsau
     integer :: adnume, adinst, nchmed, jnptno, jpasdt
     integer :: typech, nbcmp, jcmp, junit, nseqca, npro
-    logical(kind=1) :: ilocal
+    aster_logical :: ilocal
 !
     character(len=8) :: saux08
     character(len=64) :: saux64, nomcha, nomprf, nomloc, nomam2, nomamd
@@ -122,7 +123,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     ilocal = .true.
     numsau = 0
 !
-    do iaux = 1 , nbcham
+    do iaux = 1, nbcham
 !
 ! 1.2.1. ==> NBCMFI : NOMBRE DE COMPOSANTES DANS LE FICHIER POUR
 !                     LE CHAMP NUMERO IAUX
@@ -169,23 +170,23 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
         endif
 !
     end do
-    if (numsau.eq.0) then
+    if (numsau .eq. 0) then
         call utmess('F', 'MED_43', sk=nochmd(1:lnochm))
     endif
 !
     if (existc .ne. 1) then
         call as_mfdnfd(idfimd, nchmed, codret)
         call utmess('F+', 'MED_57', sk=nochmd(1:lnochm))
-        do 50, iaux = 1, nchmed
-        call as_mfdnfc(idfimd, iaux, nbcmp, codret)
-        call wkvect('&&MDCHII.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
-        call wkvect('&&MDCHII.UNITCMP', 'V V K16', nbcmp, junit)
-        call as_mfdfdi(idfimd, iaux, nomcha, typech, zk16(jcmp),&
-                       zk16(junit), nseqca, codret)
-        call utmess('F+', 'MED2_2', sk=nomcha)
-        call jedetr('&&MDCHII.NOMCMP_K16')
-        call jedetr('&&MDCHII.UNITCMP')
-50      continue
+        do 50 iaux = 1, nchmed
+            call as_mfdnfc(idfimd, iaux, nbcmp, codret)
+            call wkvect('&&MDCHII.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
+            call wkvect('&&MDCHII.UNITCMP', 'V V K16', nbcmp, junit)
+            call as_mfdfdi(idfimd, iaux, nomcha, typech, zk16(jcmp),&
+                           zk16(junit), nseqca, codret)
+            call utmess('F+', 'MED2_2', sk=nomcha)
+            call jedetr('&&MDCHII.NOMCMP_K16')
+            call jedetr('&&MDCHII.UNITCMP')
+ 50     continue
         call utmess('F', 'VIDE_1')
     endif
 !
@@ -233,23 +234,23 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     if (codret .eq. 0) then
         call wkvect('&&MDCHI2.'//saux08, 'V V I', 2*nbtv, jnptno)
         call wkvect('&&MDCHI3.'//saux08, 'V V R', nbtv, jpasdt)
-        do 60, iaux = 1 , nbtv
+        do 60 iaux = 1, nbtv
 !
 ! 4.1. ==> LECTURE
 !    . NUMERO, UNITE ET VALEUR DU PAS DE TEMPS : FINUPT, FIINST
 !    . NUMERO D'ORDRE : FINUNO
 !
-        call as_mfdcsi(idfimd, nochmd, iaux, finupt, finuno,&
-                       fiinst, codret)
+            call as_mfdcsi(idfimd, nochmd, iaux, finupt, finuno,&
+                           fiinst, codret)
 !
-        if (codret .ne. 0) then
-            saux08='mfdcsi'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
-        zi(jnptno+iaux*2-2) = finupt
-        zi(jnptno+iaux*2-1) = finuno
-        zr(jpasdt+iaux-1) = fiinst
-60      continue
+            if (codret .ne. 0) then
+                saux08='mfdcsi'
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            endif
+            zi(jnptno+iaux*2-2) = finupt
+            zi(jnptno+iaux*2-1) = finuno
+            zr(jpasdt+iaux-1) = fiinst
+ 60     continue
     else
         call jeveuo('&&MDCHI2.'//saux08, 'L', jnptno)
         call jeveuo('&&MDCHI3.'//saux08, 'L', jpasdt)

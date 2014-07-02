@@ -3,6 +3,7 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                   listno, icmp, ifi, iwri, iadmax,&
                   ordr, chamsy, nomcon, lresu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
@@ -14,7 +15,7 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
 !
     integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
     integer :: listno(*), icmp, ifi, ima, nbord2, iadmax, jtype, ordr(nbord2)
-    logical(kind=1) :: iwri, lresu
+    aster_logical :: iwri, lresu
     character(len=*) :: partie, chamsy, nomcon
     character(len=24) :: connex
 !     ------------------------------------------------------------------
@@ -117,10 +118,10 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                         endif
                         goto 15
                     endif
-13              continue
-15              continue
+ 13             continue
+ 15             continue
                 if (iwri) write(ifi,1000) vale
-14          continue
+ 14         continue
             if (itrou .eq. 0) then
                 call utmess('F', 'PREPOST2_58')
             endif
@@ -147,18 +148,18 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                         endif
                         goto 25
                     endif
-23              continue
+ 23             continue
                 if (itrou .eq. 0) then
                     call utmess('F', 'PREPOST2_58')
                 endif
-25              continue
+ 25             continue
                 if (iwri) write(ifi,1000) vale
-24          continue
+ 24         continue
             if (itrou .eq. 0) then
                 call utmess('F', 'PREPOST2_58')
             endif
         endif
-11  end do
+ 11 end do
 !
     call jedema()
 !

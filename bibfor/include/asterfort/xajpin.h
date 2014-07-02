@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xajpin(ndim, list, long, ipt, cpt,&
                       newpt, longar, ainter, ia, in,&
@@ -30,6 +32,6 @@ interface
         integer :: ia
         integer :: in
         real(kind=8) :: al
-        logical(kind=1) :: ajout
+        aster_logical :: ajout
     end subroutine xajpin
 end interface

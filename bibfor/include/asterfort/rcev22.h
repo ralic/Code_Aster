@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                       ccont, lfatig, flexio, lrocht, cnoc,&
@@ -25,9 +27,9 @@ interface
         character(len=24) :: csigm
         character(len=24) :: cinst
         character(len=24) :: ccont
-        logical(kind=1) :: lfatig
-        logical(kind=1) :: flexio
-        logical(kind=1) :: lrocht
+        aster_logical :: lfatig
+        aster_logical :: flexio
+        aster_logical :: lrocht
         character(len=24) :: cnoc
         character(len=24) :: cresu
         character(len=24) :: cpres

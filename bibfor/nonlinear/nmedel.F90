@@ -20,6 +20,7 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     integer :: ndim, imate
@@ -47,7 +48,7 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     real(kind=8) :: deuxmu
     real(kind=8) :: valres(3)
     real(kind=8) :: depsmo, e, nu, troisk
@@ -87,12 +88,12 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
     depsmo = (deps(1)+deps(2)+deps(3))/3.d0
     do 115 k = 1, ndimsi
         depsdv(k) = deps(k) - depsmo * kron(k)
-115  end do
+115 end do
 !
 !
     do 145 k = 1, ndimsi
         sigp(k) = sigm(k)+deuxmu*depsdv(k)+troisk*depsmo*kron(k)
-145  end do
+145 end do
 !
 !
 !      CALCUL DE DSIDEP(6,6) :
@@ -104,11 +105,11 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
         do 130 k = 1, 3
             do 131 j = 1, 3
                 dsidep(k,j) = troisk/3.d0-deuxmu/(3.d0)
-131          continue
-130      continue
+131         continue
+130     continue
         do 120 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu
-120      continue
+120     continue
 !
     endif
 !

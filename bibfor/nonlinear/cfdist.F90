@@ -19,7 +19,8 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdism.h"
@@ -67,7 +68,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
     character(len=8) :: nompar(4)
     real(kind=8) :: valpar(4)
     real(kind=8) :: dist1, dist2, distst
-    logical(kind=1) :: ldpou, ldcoq, ldescl, ldmait
+    aster_logical :: ldpou, ldcoq, ldescl, ldmait
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,6 @@
 subroutine dsqmas(xyzl, option, pgl, mas, ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/dialum.h"
@@ -66,7 +67,7 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: coefm, wgtf, wgtm, detj, wgt, roe, rho, epais
     real(kind=8) :: qsi, eta, jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
     character(len=3) :: stopz
-    logical(kind=1) :: coupmf, exce, iner
+    aster_logical :: coupmf, exce, iner
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
     data (ii(k),k=1,8)/1,10,19,28,37,46,55,64/
@@ -74,9 +75,9 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
     data (ll(k),k=1,16)/3,7,12,16,17,21,26,30,35,39,44,48,49,53,58,62/
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     unquar = 0.25d0
@@ -147,17 +148,17 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
     coefm = caraq4(21)*roe/neuf
     do 30 k = 1, 64
         amemb(k) = zero
-30  end do
+ 30 end do
     do 40 k = 1, 8
         amemb(ii(k)) = un
         amemb(jj(k)) = unquar
-40  end do
+ 40 end do
     do 50 k = 1, 16
         amemb(ll(k)) = undemi
-50  end do
+ 50 end do
     do 60 k = 1, 64
         memb(k,1) = coefm*amemb(k)
-60  end do
+ 60 end do
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
@@ -214,8 +215,8 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
         do 80 i = 1, 12
             do 90 j = 1, 12
                 flex(i,j) = flex(i,j) + wsq(i)*wsq(j)*wgt
-90          continue
-80      continue
+ 90         continue
+ 80     continue
 !
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 ! ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
@@ -227,8 +228,8 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
         do 100 i = 1, 12
             do 110 j = 1, 12
                 flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
-110          continue
-100      continue
+110         continue
+100     continue
 !==============================================================
 ! ---   CAS D'UN ELEMENT EXCENTRE : IL APPARAIT DE TERMES DE  =
 ! ---   COUPLAGE MEMBRANE-FLEXION ET DE NOUVEAUX TERMES POUR  =
@@ -266,16 +267,16 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
                 do 130 j = 1, 12
                     mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
                     mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
-130              continue
-120          continue
+130             continue
+120         continue
 ! ---      2) TERMES DE COUPLAGE MEMBRANE-FLEXION W*W ET BETA*BETA :
 !             ----------------------------------------------------
             do 140 i = 1, 8
                 do 150 j = 1, 12
                     mefl(i,j) = mefl(i,j) + wmesq(i)*wsq(j)*wgtm + (nmx(i)*nfx(j) + nmy(i)*nfy(j)&
                                 &)*wgtf
-150              continue
-140          continue
+150             continue
+140         continue
 !
 !===========================================================
 ! ---  AJOUT DE NOUVEAUX TERMES A LA PARTIE MEMBRANE       =
@@ -301,21 +302,21 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
                     memb(i1,j2) = memb(i1,j2)+ (nmi(k)*nmx(j2)+nmi(p)* nmy(i1))*wgtmf
                     memb(i2,j1) = memb(i2,j1)+ (nmi(k)*nmy(j1)+nmi(p)* nmx(i2))*wgtmf
                     memb(i2,j2) = memb(i2,j2)+ (nmi(k)*nmy(j2)+nmi(p)* nmy(i2))*wgtmf
-170              continue
-160          continue
+170             continue
+160         continue
 ! ---      2) TERMES DE MEMBRANE WMESQ*WMESQ ET BETA*BETA :
 !           -------------------------------------------
             do 180 i = 1, 8
                 do 190 j = 1, 8
                     memb(i,j) = memb(i,j) + wmesq(i)*wmesq(j)*wgtm + (nmx(i)*nmx(j) + nmy(i)*nmy(&
                                 &j))*wgtf
-190              continue
-180          continue
+190             continue
+180         continue
 !
         endif
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
-70  end do
+ 70 end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !

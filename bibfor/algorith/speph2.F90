@@ -1,6 +1,7 @@
 subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                   table, specmr, specmi)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jelira.h"
@@ -8,7 +9,7 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
 #include "asterfort/jexnum.h"
     integer :: napexc, nbmode, nbpf
     real(kind=8) :: specmr(nbpf, *), specmi(nbpf, *)
-    logical(kind=1) :: intmod
+    aster_logical :: intmod
     character(len=8) :: table
     character(len=16) :: movrep
 !-----------------------------------------------------------------------
@@ -74,7 +75,7 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                 if ((zi(lnumi-1+i1) .eq. ival(1)) .and. (zi(lnumj-1+ i1) .eq. ival(2))) then
                     call jeveuo(jexnum(chvale, i1), 'L', ifon)
                 endif
-200          continue
+200         continue
 !
             isj = j * ( j - 1 ) / 2 + i
 !
@@ -86,8 +87,8 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                     specmr(if1,isj) = zr(ifon+ (if1-1)*2)
                     specmi(if1,isj) = zr(ifon+ (if1-1)*2+1)
                 endif
-50          continue
-40      continue
+ 50         continue
+ 40     continue
 !
-30  end do
+ 30 end do
 end subroutine

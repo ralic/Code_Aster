@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dlnew0(result, force0, force1, iinteg, neq,&
                       istoc, iarchi, ifm, nbexci, nondp,&
@@ -47,9 +49,9 @@ interface
         integer :: iarchi
         integer :: ifm
         integer :: nmodam
-        logical(kind=1) :: lamort
-        logical(kind=1) :: limped
-        logical(kind=1) :: lmodst
+        aster_logical :: lamort
+        aster_logical :: limped
+        aster_logical :: lmodst
         integer :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
@@ -107,7 +109,7 @@ interface
         character(len=19) :: solveu
         character(len=24) :: criter
         character(len=8) :: chondp(nondp)
-        logical(kind=1) :: ener
+        aster_logical :: ener
         character(len=24) :: vitini
         character(len=24) :: vitent
         character(len=24) :: valmod

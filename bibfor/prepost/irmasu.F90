@@ -50,6 +50,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !          NOGN : NOM DES GROUPES DE NOEUDS
 !          NBGRM: NOMBRE DE GROUPES DE MAILLES
 !          NOGM : NOM DES GROUPES DE MAILLES
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -75,7 +76,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     integer :: nodsup(32), nodast(32), permut(maxnod, *), codgra(*), codphy(*)
     integer :: icodno, icodma, versio, codphd(*)
     integer :: itri7, iqua9, iseg4, ihex27, ipen18
-    logical(kind=1) :: lmasu, lpout, lmod
+    aster_logical :: lmasu, lpout, lmod
 ! ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iagrma, iagrno, ica, icc, icf, icod
@@ -109,8 +110,8 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
             lpout=.true.
             goto 2
         endif
- 1  end do
- 2  continue
+  1 end do
+  2 continue
 !
 !     ECRITURE D'UN DATASET 775 (PROPRIETES DES POUTRES) BIDON
 !
@@ -167,7 +168,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !       - ON ECRIT TOUJOURS 3 COORDONNEES (PARAMETRE NDIM ECRASE)
         do 6 m = 1, ndim
             r(m) = coordo(3*(i-1)+m)
- 6      continue
+  6     continue
 !       - RECUPERATION DU NUMERO DE NOEUDS (RECHERCHE SI MAILLAGE IDEAS)
         if (lmasu) then
             call lxliis(nonoe(i)(2:8), ino, ier)
@@ -180,7 +181,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
         else if (versio.eq.4) then
             write (ifc,fmt='(4I10,3E13.6)') ino,j,k,l, (r(m),m=1,ndim)
         endif
- 5  end do
+  5 end do
     write (ifc,'(A)') '    -1'
 !
 !     --- ECRITURE DES CONNECTIVITES
@@ -243,7 +244,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
             nodast(j) = connex(ipoin-1+j)
             isup=permut(j,itype)
             nodsup(isup)=nodast(j)
-20      continue
+ 20     continue
 !       - CODE GRAPHIQUE DE LA MAILLE
         icod1=codgra(itype)
 !       - SI LMOD =.TRUE. ON IMPRIME LE MODELE SINON LE MAILLAGE
@@ -272,7 +273,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
                 call lxliis(nomai(ima)(2:8), imas, ier)
                 do 751 j = 1, nnoe
                     call lxliis(nonoe(nodsup(j))(2:8), nodsup(j), ier)
-751              continue
+751             continue
             else
                 imas = ima
             endif
@@ -292,7 +293,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
             endif
             write (ifc,fmt='(8I10)') (nodsup(j),j=1,nnoe)
         endif
-21  end do
+ 21 end do
     write (ifc,'(A)') '    -1'
 !
 !     --- ECRITURE DES GROUPES DE NOEUDS ET DE MAILLES
@@ -314,10 +315,10 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
             if (lmasu) then
                 call lxliis(nonoe(zi(jnogr-1+jn))(2:8), zi(jnogr-1+jn), ier)
             endif
-755      continue
+755     continue
         write (ifc,fmt='(8I10)') (icodno,zi(jnogr-1+jn),0,0,jn=1,nbn)
         call jedetr('&&IRMASU.NOGR')
-752  end do
+752 end do
 !     --- TRAITEMENT DES GROUPES DE MAILLES
     igm2=0
     call jeexin('&&IRMASU.MAGR', iret)
@@ -343,7 +344,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !           - SI MAILLAGE IDEAS RECUPERATION DU NUMERO DE MAILLE
                 call lxliis(nomai(zi(jmagr-1+nbm2))(2:8), zi(jmagr-1+ nbm2), ier)
             endif
-756      continue
+756     continue
         if (nbm2 .ne. 0) then
             igm2=igm2+1
             write (ifc,fmt='(8I10)') nbgrn+igm2,0,0,0,0,0,0,nbm2
@@ -352,7 +353,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
             nbm2)
         endif
         call jedetr('&&IRMASU.MAGR')
-754  end do
+754 end do
     write (ifc,'(A)') '    -1'
     call jedema()
 end subroutine

@@ -21,6 +21,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/apcoma.h"
@@ -75,7 +76,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
     character(len=8) :: alias, nommai, nomnoe, valk(2)
     integer :: numno(9), longc
     integer :: nnosdm, niverr
-    logical(kind=1) :: lpoutr, lpoint
+    aster_logical :: lpoutr, lpoint
     integer :: jtgeln, jdec
     integer :: ino, ima, ndim
     integer :: posmai, nummai
@@ -122,7 +123,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
         call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdec)
         do 30 ino = 1, nnosdm
             numno(ino) = zi(jdec+ino-1)
-30      continue
+ 30     continue
 !
 ! ----- LONGUEUR EFFECTIVE
 !
@@ -203,8 +204,8 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
                 zr(jtgeln+6*(ino-1)+6 -1) = tau2(3)
             endif
 !
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
     call jedema()
 end subroutine

@@ -4,7 +4,8 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
                   nlact, nno, nnol, nnom, nnos,&
                   pla, typma)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +54,7 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
     integer :: lact(8), ndim, nfe, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, pla(27)
     integer :: pli, i
-    logical(kind=1) :: lelim, lcalel
+    aster_logical :: lelim, lcalel
     character(len=8) :: typma
 ! ----------------------------------------------------------------------
 !
@@ -63,11 +64,11 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
         if (nfiss .eq. 1) then
             do 50 i = 1, nnos
                 if (lact(i) .eq. 0) vstnc(i)=0
-50          continue
+ 50         continue
         else
             do 60 i = 1, nnos
                 if (lact(i) .eq. 0) vstnc( (i-1)*nfh+ zi(jheano-1+(i-1)* nfiss+ifiss) )=0
-60          continue
+ 60         continue
         endif
     endif
 ! --- NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
@@ -81,5 +82,5 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
         else
             pla(i) = pli+ndim*(zi(jheano-1+(i-1)*nfiss+ifiss)-1)
         endif
-15  end do
+ 15 end do
 end subroutine

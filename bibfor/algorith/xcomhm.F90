@@ -1,12 +1,11 @@
-subroutine xcomhm(option, imate, compor,instap,&
-                  ndim, dimdef, dimcon,nbvari,&
-                  yamec, yap1, yap2, yate,&
-                  addeme, adcome, addep1, adcp11,&
-                  addep2, addete, defgem,&
-                  defgep, congem, congep, vintm,&
-                  vintp, dsde, pesa, retcom, kpi,&
-                  npg, p10, p20, yaenrm, dimenr,&
-                  adenme, idecpg, angmas)
+subroutine xcomhm(option, imate, compor, instap, ndim,&
+                  dimdef, dimcon, nbvari, yamec, yap1,&
+                  yap2, yate, addeme, adcome, addep1,&
+                  adcp11, addep2, addete, defgem, defgep,&
+                  congem, congep, vintm, vintp, dsde,&
+                  pesa, retcom, kpi, npg, p10,&
+                  p20, yaenrm, dimenr, adenme, idecpg,&
+                  angmas)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -68,13 +67,14 @@ subroutine xcomhm(option, imate, compor,instap,&
     implicit none
 !
 ! aslint: disable=W1306
-#   include "asterfort/kitdec.h"
-#   include "asterfort/nvithm.h"
-#   include "asterfort/thmlec.h"
-#   include "asterfort/xcalfh.h"
-#   include "asterfort/xcalme.h"
-#   include "asterfort/xhmsat.h"
-    logical(kind=1) :: yachai
+#include "asterf_types.h"
+# include "asterfort/kitdec.h"
+# include "asterfort/nvithm.h"
+# include "asterfort/thmlec.h"
+# include "asterfort/xcalfh.h"
+# include "asterfort/xcalme.h"
+# include "asterfort/xhmsat.h"
+    aster_logical :: yachai
     integer :: retcom, kpi, npg, vicpr1, vicpr2
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec, yap1
     integer :: yap2, yate, addeme, addep1, addep2, addete
@@ -101,7 +101,7 @@ subroutine xcomhm(option, imate, compor,instap,&
     real(kind=8) :: lambs, dlambs, viscl, dviscl
     real(kind=8) :: viscg, dviscg, mamolg
     real(kind=8) :: fickad, dfadt, alpha
-    real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim),tdlamt(ndim, ndim)
+    real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim), tdlamt(ndim, ndim)
     real(kind=8) :: dficks
     real(kind=8) :: angmas(3)
     character(len=16) :: meca, thmc, ther, hydr, phenom
@@ -142,8 +142,8 @@ subroutine xcomhm(option, imate, compor,instap,&
                 addep1, adcp11, congem, congep, vintm,&
                 vintp, dsde, epsv, depsv, p1,&
                 dp1, t, phi, rho11, phi0,&
-                sat, retcom, tbiot, instap,&
-                angmas, aniso, phenom)
+                sat, retcom, tbiot, instap, angmas,&
+                aniso, phenom)
     if (retcom .ne. 0) then
         goto 900
     endif
@@ -154,10 +154,9 @@ subroutine xcomhm(option, imate, compor,instap,&
 ! ======================================================================
     if (yamec .eq. 1 .and. kpi .le. npg) then
         call xcalme(option, meca, imate, ndim, dimenr,&
-                    dimcon, addeme, adcome, congep,&
-                    yaenrm, adenme, dsde, deps,&
-                    t, idecpg, kpi, angmas, aniso,&
-                    phenom)
+                    dimcon, addeme, adcome, congep, yaenrm,&
+                    adenme, dsde, deps, t, idecpg,&
+                    kpi, angmas, aniso, phenom)
         if (retcom .ne. 0) then
             goto 900
         endif
@@ -182,8 +181,7 @@ subroutine xcomhm(option, imate, compor,instap,&
         call xcalfh(option, thmc, ndim, dimcon, yamec,&
                     addep1, adcp11, addeme, congep, dsde,&
                     grap1, rho11, pesa, tperm, unsurk,&
-                    viscl, dviscl, yaenrm, dimenr,&
-                    adenme)
+                    viscl, dviscl, yaenrm, dimenr, adenme)
         if (retcom .ne. 0) then
             goto 900
         endif

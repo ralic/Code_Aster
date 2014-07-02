@@ -20,6 +20,7 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerop2.h"
@@ -60,7 +61,7 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
     character(len=8) :: nomres(nbres), fami, poum
     real(kind=8) :: valres(nbres)
 !
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     integer :: ndimsi, k, nrac, kpg, spt
     real(kind=8) :: trepsp, trepsd, coplan, sigelp(6), sigeld(6)
     real(kind=8) :: kron(6)
@@ -147,7 +148,7 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
     do 60 k = 1, ndimsi
         sigelp(k) = lambda*trepsp*kron(k) + deuxmu*epsp(k)
         sigeld(k) = lambda*trepsd*kron(k) + deuxmu*epsd(k)
-60  end do
+ 60 end do
     p0 = 0.5d0 * ddot(ndimsi,epsp,1,sigelp,1) / wrel
     p1 = 1.0d0 * ddot(ndimsi,epsp,1,sigeld,1) / wrel
     p2 = 0.5d0 * ddot(ndimsi,epsd,1,sigeld,1) / wrel
@@ -174,5 +175,5 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
         a2 = tau - a3*eta
     endif
 !
-9999  continue
+9999 continue
 end subroutine

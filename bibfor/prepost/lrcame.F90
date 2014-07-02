@@ -62,6 +62,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mficom.h"
@@ -157,8 +158,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     integer :: typgeo(ntymax), lygeom(ntymax), lypent(ntymax), ltyp(ntymax)
     integer :: renumd(ntymax), nlyval(ntymax), nuanom(ntymax, nnomax)
     integer :: nbtylu, iaux2, k, nbty(ntymax)
-    integer ::  nbnoma, nmatyp, jntpro, lgprof, cptyma
-    integer :: jnumty, numma, ima, hdfok, medok,  jmaill
+    integer :: nbnoma, nmatyp, jntpro, lgprof, cptyma
+    integer :: jnumty, numma, ima, hdfok, medok, jmaill
 !
     character(len=1) :: saux01
     character(len=8) :: saux08, modele
@@ -174,8 +175,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
     real(kind=8) :: valr
 !
-    logical(kind=1) :: existm, existt
-    logical(kind=1) :: logaux
+    aster_logical :: existm, existt
+    aster_logical :: logaux
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: nume(:) => null()
     integer, pointer :: typmail(:) => null()

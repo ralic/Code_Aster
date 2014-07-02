@@ -26,6 +26,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codere.h"
 #include "asterfort/lcegeo.h"
@@ -81,7 +82,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 !.......................................................................
 !
 !
-    logical(kind=1) :: grand, resi, rigi
+    aster_logical :: grand, resi, rigi
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, pq, cod(27)
 !
@@ -115,7 +116,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 !
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 ! 5 - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -138,8 +139,8 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
         do 55 n = 1, nno
             do 56 i = 1, 3
                 geomp(i,n) = geomi(i,n) + deplp(i,n)
-56          continue
-55      continue
+ 56         continue
+ 55     continue
 !
         call nmgeom(3, nno, .false._1, grand, geomp,&
                     kpg, ipoids, ivf, idfde, deplp,&
@@ -148,8 +149,8 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
         do 57 i = 1, 3
             do 58 j = 1, 3
                 fr(i,j) = kron(i,j)
-58          continue
-57      continue
+ 58         continue
+ 57     continue
 !
         do 40 n = 1, nno
             do 30 i = 1, 3
@@ -159,8 +160,8 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
                 def(4,n,i) = (fr(i,1)*dfdi(n,2) + fr(i,2)*dfdi(n,1))/ rac2
                 def(5,n,i) = (fr(i,1)*dfdi(n,3) + fr(i,3)*dfdi(n,1))/ rac2
                 def(6,n,i) = (fr(i,2)*dfdi(n,3) + fr(i,3)*dfdi(n,2))/ rac2
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
 !
 ! 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
@@ -177,17 +178,17 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
                     1))/rac2
                     pff(6,n,m) =(dfdi(n,2)*dfdi(m,3)+dfdi(n,3)*dfdi(m,&
                     2))/rac2
-126              continue
-125          continue
+126             continue
+125         continue
         endif
 !
 !         CAUCHY
         do 59 i = 1, 6
             sign(i)=sigm(i,kpg)
-59      continue
+ 59     continue
         do 60 i = 1, 3
             sign(3+i)=sign(3+i)*rac2
-60      continue
+ 60     continue
 !
 ! 5.3.2 - INTEGRATION
 !
@@ -208,15 +209,15 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
         if (rigi) then
             do 160 n = 1, nno
                 do 150 i = 1, 3
-                    do 151,kl=1,6
-                    sig(kl)=0.d0
-                    sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                    sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                    sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                    sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                    sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                    sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-151                  continue
+                    do 151 kl = 1, 6
+                        sig(kl)=0.d0
+                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+                        sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
+                        sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
+151                 continue
                     do 140 j = 1, 3
                         do 130 m = 1, n
                             if (m .eq. n) then
@@ -267,10 +268,10 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
                                 matuu(kk) = matuu(kk) + (tmp1+tmp2)* poids
                             endif
 !
-130                      continue
-140                  continue
-150              continue
-160          continue
+130                     continue
+140                 continue
+150             continue
+160         continue
         endif
 !
 ! 5.5 - CALCUL DE LA FORCE INTERIEURE
@@ -281,20 +282,20 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
                     do 210 kl = 1, 6
                         vectu(i,n)=vectu(i,n)+def(kl,n,i)*sigma(kl)*&
                         poids
-210                  continue
-220              continue
-230          continue
+210                 continue
+220             continue
+230         continue
 !
 ! 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
             do 255 pq = 1, 6
                 sigp(pq,kpg) = sigma(pq)
-255          continue
+255         continue
 !
         endif
 !
-800  end do
+800 end do
 !
-1956  continue
+1956 continue
 !
 ! - SYNTHESE DES CODES RETOURS
 !

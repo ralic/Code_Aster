@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
                       nmaini, nbmap, numpaq, tspaq, nomcri,&
@@ -33,7 +35,7 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical(kind=1) :: fordef
+        aster_logical :: fordef
         character(len=16) :: proaxe
         character(len=19) :: cesr
     end subroutine avgrma

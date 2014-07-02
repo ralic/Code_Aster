@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ploint(vesto, modmec, chamno, num, i,&
                       vrai, model, veprj, modx, mody,&
@@ -24,7 +26,7 @@ interface
         character(len=*) :: chamno
         character(len=14) :: num
         integer :: i
-        logical(kind=1) :: vrai
+        aster_logical :: vrai
         character(len=*) :: model
         character(len=19) :: veprj
         character(len=19) :: modx

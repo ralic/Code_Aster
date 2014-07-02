@@ -20,9 +20,10 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 ! ======================================================================
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
-    logical(kind=1) :: fnoevo
-    logical(kind=1) :: perman
+    aster_logical :: fnoevo
+    aster_logical :: perman
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimdef, dimcon
     integer :: ndim, imate
     real(kind=8) :: dt, congem(dimcon), r(dimdef+1)
@@ -78,7 +79,7 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
         do 100 i = 4, 6
             congem(adcome+6+i-1) = congem(adcome+6+i-1)*rac2
             congem(adcome+i-1) = congem(adcome+i-1)*rac2
-100      continue
+100     continue
     endif
 ! ======================================================================
 ! --- CALCUL DU RESIDU R -----------------------------------------------
@@ -90,26 +91,26 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 ! ======================================================================
         do 6 i = 1, 6
             r(addeme+ndim+i-1)= r(addeme+ndim+i-1)+congem(adcome-1+i)
- 6      continue
+  6     continue
 ! ======================================================================
 ! --- TENSEUR SIGPPLUS -------------------------------------------------
 ! ======================================================================
 !
         do 7 i = 1, 6
             r(addeme+ndim-1+i)=r(addeme+ndim-1+i)+congem(adcome+6+i-1)
- 7      continue
+  7     continue
 ! ======================================================================
 ! --- CONTRIBUTION A R DEPENDANTE DE YAP1 ------------------------------
 ! ======================================================================
         if (yap1 .eq. 1) then
             do 8 i = 1, ndim
                 r(addeme+i-1)=r(addeme+i-1) - pesa(i)*congem(adcp11)
- 8          continue
+  8         continue
             if (nbpha1 .gt. 1) then
                 do 9 i = 1, ndim
                     r(addeme+i-1)=r(addeme+i-1)- pesa(i)*congem(&
                     adcp12)
- 9              continue
+  9             continue
             endif
         endif
 ! ======================================================================
@@ -118,12 +119,12 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
         if (yap2 .eq. 1) then
             do 11 i = 1, ndim
                 r(addeme+i-1)=r(addeme+i-1)- pesa(i)*congem(adcp21)
-11          continue
+ 11         continue
             if (nbpha2 .gt. 1) then
                 do 12 i = 1, ndim
                     r(addeme+i-1)=r(addeme+i-1)- pesa(i)*congem(&
                     adcp22)
-12              continue
+ 12             continue
             endif
         endif
     endif
@@ -136,37 +137,37 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 !
             do 112 i = 1, ndim
                 r(addep1+i)=r(addep1+i)+dt*congem(adcp11+i)
-112          continue
+112         continue
 !
             if (nbpha1 .gt. 1) then
                 do 13 i = 1, ndim
                     r(addep1+i)=r(addep1+i)+dt*congem(adcp12+i)
-13              continue
+ 13             continue
             endif
 !
             if (yate .eq. 1) then
 !
                 do 14 i = 1, ndim
                     r(addete)=r(addete)+dt*congem(adcp11+i)*pesa(i)
-14              continue
+ 14             continue
 !
                 if (nbpha1 .gt. 1) then
                     do 15 i = 1, ndim
                         r(addete)=r(addete) +dt*congem(adcp12+i)*pesa(&
                         i)
-15                  continue
+ 15                 continue
                 endif
 !
                 do 16 i = 1, ndim
                     r(addete+i)=r(addete+i)+ dt*congem(adcp11+ndim+1)*&
                     congem(adcp11+i)
-16              continue
+ 16             continue
 !
                 if (nbpha1 .gt. 1) then
                     do 17 i = 1, ndim
                         r(addete+i)=r(addete+i)+ dt*congem(adcp12+&
                         ndim+1)*congem(adcp12+i)
-17                  continue
+ 17                 continue
                 endif
 !
             endif
@@ -175,32 +176,32 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
         if (yap2 .eq. 1) then
             do 18 i = 1, ndim
                 r(addep2+i)=r(addep2+i)+dt*congem(adcp21+i)
-18          continue
+ 18         continue
             if (nbpha2 .gt. 1) then
                 do 19 i = 1, ndim
                     r(addep2+i)=r(addep2+i)+dt*congem(adcp22+i)
-19              continue
+ 19             continue
             endif
 !
             if (yate .eq. 1) then
                 do 20 i = 1, ndim
                     r(addete)=r(addete)+dt*congem(adcp21+i)*pesa(i)
-20              continue
+ 20             continue
                 if (nbpha2 .gt. 1) then
                     do 21 i = 1, ndim
                         r(addete)=r(addete)+dt*congem(adcp22+i)*pesa(&
                         i)
-21                  continue
+ 21                 continue
                 endif
                 do 122 i = 1, ndim
                     r(addete+i)=r(addete+i)+ dt*congem(adcp21+ndim+1)*&
                     congem(adcp21+i)
-122              continue
+122             continue
                 if (nbpha2 .gt. 1) then
                     do 23 i = 1, ndim
                         r(addete+i)=r(addete+i)+ dt*congem(adcp22+&
                         ndim+1)*congem(adcp22+i)
-23                  continue
+ 23                 continue
                 endif
             endif
         endif
@@ -208,7 +209,7 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
         if (yate .eq. 1) then
             do 24 i = 1, ndim
                 r(addete+i)=r(addete+i)+dt*congem(adcote+i)
-24          continue
+ 24         continue
         endif
     endif
 ! ======================================================================

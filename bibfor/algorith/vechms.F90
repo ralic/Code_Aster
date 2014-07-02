@@ -18,7 +18,8 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -73,7 +74,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
     character(len=8) :: nomch0
     character(len=24) :: nomlis
     integer :: genrec, ier
-    logical(kind=1) :: lneum, lxfem
+    aster_logical :: lneum, lxfem
     integer :: nbch, nbneum
 !
 ! ----------------------------------------------------------------------
@@ -122,9 +123,9 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
             call vechmx(nomo, lischa, ichar, nbch, nomlis,&
                         nbin, lpain, lchin, lastin, vecele)
         endif
-80  continue
+ 80 continue
 !
-99  continue
+ 99 continue
 !
     call jedetr(nomlis)
 !

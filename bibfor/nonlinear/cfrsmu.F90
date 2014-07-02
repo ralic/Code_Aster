@@ -16,7 +16,8 @@ subroutine cfrsmu(defico, resoco, reapre)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisl.h"
@@ -25,7 +26,7 @@ subroutine cfrsmu(defico, resoco, reapre)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
-    logical(kind=1) :: reapre
+    aster_logical :: reapre
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +50,7 @@ subroutine cfrsmu(defico, resoco, reapre)
     integer :: jsvmu, jmu
     character(len=24) :: numlia
     integer :: jnumli
-    logical(kind=1) :: lgcp
+    aster_logical :: lgcp
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,9 +87,9 @@ subroutine cfrsmu(defico, resoco, reapre)
     do 10 iliai = 1, nbliai
         posnoe = zi(jnumli-1+4*(iliai-1)+2)
         zr(jmu-1+iliai) = zr(jsvmu-1+posnoe)
-10  end do
+ 10 end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -1,4 +1,5 @@
-subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
+subroutine tecach(stopz, nmparz, louez, iret, nval,&
+                  itab, iad, numa)
     implicit none
 !
 ! ======================================================================
@@ -22,6 +23,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
 !----------------------------------------------------------------------
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -110,7 +112,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
 !     -----------------------------------------------------------------
     character(len=8) :: nompar, stop8
     character(len=1) :: loue
-    logical(kind=1) :: exichl, etendu
+    aster_logical :: exichl, etendu
     integer :: iaoptt, lgco, iaopmo, ilopmo, iaopno, ilopno, iaopds, iaoppa
     integer :: iamloc, ilmloc, iadsgd, inuma, inval, jtab(8)
     integer :: npario, iel, iparg
@@ -131,7 +133,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !
     character(len=24) :: valk(3)
-    logical(kind=1) :: stpcat, stpexi, stpinc
+    aster_logical :: stpcat, stpexi, stpinc
 !
 !   DEB--------------------------------------------------------------
     if (present(numa)) then
@@ -303,20 +305,20 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
 !        COMPLETE SUR L'ELEMENT:
 !     ----------------------------------------------------------
     if (ilchlo .ne. -1) then
-        do 10,k = 1,lonchl
-        if (.not.zl(ilchlo+debugr-1+decael-1+k)) then
-            if (stpinc) then
-                valk(1) = nompar
-                valk(2) = option
-                valk(3) = nomte
-                call utmess('E', 'CALCULEL4_96', nk=3, valk=valk)
-                call contex(option, nompar)
-            else
-                iret = 3
-                if (inval .lt. 8) jtab(1)=0
+        do 10 k = 1, lonchl
+            if (.not.zl(ilchlo+debugr-1+decael-1+k)) then
+                if (stpinc) then
+                    valk(1) = nompar
+                    valk(2) = option
+                    valk(3) = nomte
+                    call utmess('E', 'CALCULEL4_96', nk=3, valk=valk)
+                    call contex(option, nompar)
+                else
+                    iret = 3
+                    if (inval .lt. 8) jtab(1)=0
+                endif
             endif
-        endif
-10      continue
+ 10     continue
     endif
 !
     if (inval .lt. 2) goto 20
@@ -375,13 +377,13 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
     jtab(8) = ilchlo+debugr-1+decael
     if (inval .lt. 9) goto 20
 !
-20  continue
-    if ( present(iad) ) then
-         iad = jtab(1)
+ 20 continue
+    if (present(iad)) then
+        iad = jtab(1)
     else
-         do k=1,inval
-              itab(k) =  jtab(k)
-         end do
+        do k = 1, inval
+            itab(k) = jtab(k)
+        end do
     endif
 !
 end subroutine

@@ -2,6 +2,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                   cnslt, isozro, levset, nodtor, eletor,&
                   poifi, trifi)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -93,23 +94,22 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     integer :: jnomco, nbnoco, nuno, nmaabs, nptint, ntri, itypma, itri
     integer :: jnosom, nbnozo, ia, ib, ic, cptzo, jlsno, jltno, jnouls, jnoult
     integer :: ar(12, 3), nbar, iar, na, nb, ibid, ipt, nblsn0, ibid2(12, 3)
-    integer :: ifq, nbf, fa(6, 4), nbsom,  ndime, i
+    integer :: ifq, nbf, fa(6, 4), nbsom, ndime, i
     real(kind=8) :: p(3), x(7), y(7), z(7), xa, ya, za, xb, yb, zb, s, a(3)
     real(kind=8) :: b(3), c(3), eps(3), m(3), d, vn(3), lsna, lsnb, lsta, lstb
     real(kind=8) :: lstc, lst(6), bestd, bestdi, lsn, bestlt, bestli, dist
     real(kind=8) :: armin, longar, longmx, mp(3)
     character(len=8) :: typma
     character(len=19) :: maicou, nomcou, vnouls, vnoult, mai, poifis, trifis
-    logical(kind=1) :: dejain, dejadi, noemai, in, deja
-    logical :: bool
+    aster_logical :: dejain, dejadi, noemai, in, deja, bool
     real(kind=8) :: toll
 !
 !     DOMAIN RESTRICTION
     integer :: jnodto, jeleto, node, elem, nbno, nbma
 !
 !     UPWIND INTEGRATION
-    integer ::  jtri, nbpfis, pos
-    logical(kind=1) :: intabl, upwind
+    integer :: jtri, nbpfis, pos
+    aster_logical :: intabl, upwind
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
     integer :: iatri(20), ibtri(20), ictri(20)
@@ -644,8 +644,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     do pos = 1, nbpfis
                         dist = sqrt(&
                                (&
-                               x(ipt)-vpoifis(4*(pos-1)+1))** 2+ (y(ipt)-vpoifis(4*(pos-1)+2)&
-                               &)**2+ (z(ipt)-vpoifis(4*(pos-1)+3)&
+                               x(ipt)-vpoifis(4*(pos-1)+1))** 2+ (y(ipt)-vpoifis(4*(pos-1)+2))**2&
+                               &+ (z(ipt)-vpoifis(4*(pos-1)+3)&
                                )**2&
                                )
                         if (dist .lt. r8prem()) then

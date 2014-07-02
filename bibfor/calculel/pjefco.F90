@@ -26,6 +26,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8maem.h"
@@ -64,9 +65,9 @@ subroutine pjefco(moa1, moa2, corres, base)
     character(len=16) :: tymocl(5), motcle(5)
     character(len=24) :: geom2, geom1
     integer :: n1, nbocc, iocc, nbno2, nbma1
-    integer ::   iexi
+    integer :: iexi
 !
-    logical(kind=1) :: ldmax, dbg
+    aster_logical :: ldmax, dbg
     real(kind=8) :: distma
     integer, pointer :: limanu1(:) => null()
     integer, pointer :: linonu2(:) => null()

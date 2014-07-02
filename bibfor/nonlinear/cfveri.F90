@@ -1,8 +1,10 @@
 subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
-                  npt, jeux, loca, enti, zone, instan)
+                  npt, jeux, loca, enti, zone,&
+                  instan)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -103,7 +105,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
     real(kind=8) :: jeu, dist
     character(len=8) :: nomnoe, nommam, nomnom, k8bla
     character(len=16) :: nompt, noment
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     integer :: jjeux, jloca, jenti, jzone
 !
 ! ----------------------------------------------------------------------
@@ -300,7 +302,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
             ip = ip + 1
 !
         end do
-25      continue
+ 25     continue
     end do
 !
     ASSERT(npt0.eq.npt)

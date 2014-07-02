@@ -1,10 +1,11 @@
 subroutine i3tstf(k, f, desc, desctm, conexk,&
                   coordo, gauche, epsi)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
     integer :: k, f, desc(*), desctm(*), conexk(*)
     real(kind=8) :: coordo(*), epsi
-    logical(kind=1) :: gauche
+    aster_logical :: gauche
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,13 +46,13 @@ subroutine i3tstf(k, f, desc, desctm, conexk,&
 !
     decf = 8 + f
     adescm = desctm(desc(k))
-    do 10, i = 1, 4, 1
-    ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
-    sm(i) = conexk(zi(adescm-1 + decf + (i-1)*6))
-    do 11, j = 1, 3, 1
-    cs(j,i) = coordo(3*(ds1-1) + j)
-11  continue
-    10 end do
+    do 10 i = 1, 4, 1
+        ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
+        sm(i) = conexk(zi(adescm-1 + decf + (i-1)*6))
+        do 11 j = 1, 3, 1
+            cs(j,i) = coordo(3*(ds1-1) + j)
+ 11     continue
+ 10 end do
 !
 ! --- DEFINITION DU REPERE LOCAL DE LA FACE
 !     E1 : DEFINIT PAR L'ARETE N1 N2
@@ -61,27 +62,27 @@ subroutine i3tstf(k, f, desc, desctm, conexk,&
     zero = 0.0d0
     c = zero
     t = zero
-    do 15, i = 1, 3, 1
-    s = cs(i,2) - cs(i,1)
-    r = cs(i,4) - cs(i,1)
-    e1(i) = s
-    e2(i) = r
-    c = c + s*s
-    t = t + r*r
-    15 end do
+    do 15 i = 1, 3, 1
+        s = cs(i,2) - cs(i,1)
+        r = cs(i,4) - cs(i,1)
+        e1(i) = s
+        e2(i) = r
+        c = c + s*s
+        t = t + r*r
+ 15 end do
     c = sqrt(c)
     t = sqrt(t)
-    do 16, i = 1, 3, 1
-    e1(i) = e1(i)/c
-    e2(i) = e2(i)/t
-    16 end do
+    do 16 i = 1, 3, 1
+        e1(i) = e1(i)/c
+        e2(i) = e2(i)/t
+ 16 end do
     e3(1) = e1(2)*e2(3) - e1(3)*e2(2)
     e3(2) = e1(3)*e2(1) - e1(1)*e2(3)
     e3(3) = e1(1)*e2(2) - e1(2)*e2(1)
     c = zero
-    do 17, i = 1, 3, 1
-    c = c + e3(i)*e3(i)
-    17 end do
+    do 17 i = 1, 3, 1
+        c = c + e3(i)*e3(i)
+ 17 end do
     e3(1) = e3(1)/c
     e3(2) = e3(2)/c
     e3(3) = e3(3)/c
@@ -90,29 +91,29 @@ subroutine i3tstf(k, f, desc, desctm, conexk,&
 !     AFIN DE DEFINIR UNE PRECISION RELATIVE
 !
     lcara = 1.d+50
-    do 20, j = 1, 3, 1
+    do 20 j = 1, 3, 1
+        c = zero
+        do 22 i = 1, 3, 1
+            s = coordo(3*(sm(j+1)-1)+i)-coordo(3*(sm(j)-1)+i)
+            c = c + s*s
+ 22     continue
+        c = sqrt( c )
+        lcara = min ( c, lcara )
+ 20 end do
     c = zero
-    do 22, i = 1, 3, 1
-    s = coordo(3*(sm(j+1)-1)+i)-coordo(3*(sm(j)-1)+i)
-    c = c + s*s
-22  continue
-    c = sqrt( c )
-    lcara = min ( c, lcara )
-    20 end do
-    c = zero
-    do 24, i = 1, 3, 1
-    s = coordo(3*(sm(4)-1)+i)-coordo(3*(sm(1)-1)+i)
-    c = c + s*s
-    24 end do
+    do 24 i = 1, 3, 1
+        s = coordo(3*(sm(4)-1)+i)-coordo(3*(sm(1)-1)+i)
+        c = c + s*s
+ 24 end do
     c = sqrt( c )
     lcara = min ( c, lcara )
 !
 ! --- FACE GAUCHE A UNE TOLERANCE PRES
 !
     t = zero
-    do 80, i = 1, 3, 1
-    t = t + ( (cs(i,3)-cs(i,1)) * e3(i) )
-    80 end do
+    do 80 i = 1, 3, 1
+        t = t + ( (cs(i,3)-cs(i,1)) * e3(i) )
+ 80 end do
     tole = lcara * epsi
     gauche = ( abs(t) .gt. tole )
 !

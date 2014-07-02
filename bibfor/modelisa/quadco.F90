@@ -18,7 +18,8 @@ subroutine quadco(char, indqua)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -53,7 +54,7 @@ subroutine quadco(char, indqua)
 !
     integer :: iform
     character(len=24) :: defico
-    logical(kind=1) :: lallv, lpenac, lgliss
+    aster_logical :: lallv, lpenac, lgliss
 !
 ! ----------------------------------------------------------------------
 !

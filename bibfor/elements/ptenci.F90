@@ -1,6 +1,7 @@
 subroutine ptenci(neq, x, mat, omeg, en,&
                   itype, kanl, idis)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/vtmv.h"
     integer :: neq, itype, kanl, idis
     real(kind=8) :: x(*), mat(neq, neq), omeg, en(*)
@@ -38,7 +39,7 @@ subroutine ptenci(neq, x, mat, omeg, en,&
 !     ------------------------------------------------------------------
     integer :: jcft(8), icou(6, 2), ncft(3), icft(6, 3), na(4), ia(4, 4)
     real(kind=8) :: x2(12), mat2(144)
-    logical(kind=1) :: ltest
+    aster_logical :: ltest
 !
 !             COUPLAGE FLEXION-TORSION
 !-----------------------------------------------------------------------
@@ -87,11 +88,11 @@ subroutine ptenci(neq, x, mat, omeg, en,&
                 x2(i) = x(icou(i,l))
                 do 323 j = 1, 6
                     mat2(6*(j-1)+i) = mat ( icou(i,l) , icou(j,l) )
-323              continue
-324          continue
+323             continue
+324         continue
             call vtmv(6, x2, mat2, r)
             en(1+l) = r * const
-325      continue
+325     continue
     else if (kanl.eq.0) then
 !
 !        NEQ  : NOMBRE D'EQUATION DE LA MATRICE ( 12, 6, 3 )
@@ -113,18 +114,18 @@ subroutine ptenci(neq, x, mat, omeg, en,&
         do 10 i = 1, neq-1
             do 12 j = i+1, neq
                 if (mat(i,j) .ne. zero) goto 500
-12          continue
-10      continue
+ 12         continue
+ 10     continue
 !
         if (itype .eq. 20 .or. itype .eq. 21 .or. itype .eq. 22 .or. itype .eq. 23) then
             do 14 i = 1, nddl
                 en(i+1) = ( x(i) * mat(i,i) * x(i) ) * const
-14          continue
+ 14         continue
         else
             do 16 i = 1, nddl
                 en(i+1) = (x(i+nddl) * mat(i+nddl,i+nddl) * x(i+nddl) + x(i) * mat(i,i) * x(i)&
                           ) * const
-16          continue
+ 16         continue
         endif
         iform = 10
         if (itype .eq. 40 .or. itype .eq. 20) iform = 11
@@ -133,14 +134,14 @@ subroutine ptenci(neq, x, mat, omeg, en,&
         goto 900
 !
 !        --- ON TIENT COMPTE DES TERMES D'INERTIE ---
-500      continue
+500     continue
 !
         if (nddl .ge. 6) then
             do 20 i = 1, 3
                 do 22 j = i+1, 6
                     if (mat(i,j) .ne. zero) goto 600
-22              continue
-20          continue
+ 22             continue
+ 20         continue
         else
             goto 600
         endif
@@ -148,20 +149,20 @@ subroutine ptenci(neq, x, mat, omeg, en,&
         if (itype .eq. 21 .or. itype .eq. 23) then
             do 24 i = 1, nddl
                 en(i+1) = ( x(i) * mat(i,i) * x(i) ) * const
-24          continue
+ 24         continue
         else
             do 26 i = 1, nddl
                 en(i+1) = (x(i+nddl) * mat(i+nddl,i+nddl) * x(i+nddl) + x(i) * mat(i,i) * x(i)&
                           ) * const
-26          continue
+ 26         continue
         endif
         if (nddl .eq. 6) then
             do 203 i = 1, 3
                 x2(i) = x(i+3)
                 do 204 j = 1, 3
                     mat2(3*(j-1)+i) = mat(i+3,j+3)
-204              continue
-203          continue
+204             continue
+203         continue
         else
             do 205 i = 1, 3
                 x2(i) = x(i+3)
@@ -169,8 +170,8 @@ subroutine ptenci(neq, x, mat, omeg, en,&
                 do 206 j = 1, 3
                     mat2(6*(j-1)+i ) = mat(i+3,j+3)
                     mat2(6*(j+2)+i+3) = mat(i+9,j+9)
-206              continue
-205          continue
+206             continue
+205         continue
         endif
         call vtmv(nddl, x2, mat2, r)
         en(5) = r * const
@@ -178,7 +179,7 @@ subroutine ptenci(neq, x, mat, omeg, en,&
         nn = 5
         goto 900
 !
-600      continue
+600     continue
 !
 !
     else if (itype.eq.0 .or. itype.eq.1 .or. itype.eq.2) then
@@ -193,16 +194,16 @@ subroutine ptenci(neq, x, mat, omeg, en,&
                         x2(i) = x(icft(i,l))
                         do 303 j = 1, ncft(l)
                             mat2(ncft(l)*(j-1)+i) = mat(icft(i,l), icft(j,l) )
-303                      continue
-304                  continue
+303                     continue
+304                 continue
                     call vtmv(ncft(l), x2, mat2, r)
                     en(1+l) = r * const
-305              continue
+305             continue
                 iform = 101
                 nn = 4
                 goto 900
             endif
-310      continue
+310     continue
 !
 !       --- ELEMENT DROIT CLASSIQUE ---
         iform = 101
@@ -212,21 +213,21 @@ subroutine ptenci(neq, x, mat, omeg, en,&
                 x2(i) = x(ia(i,l))
                 do 313 j = 1, na(l)
                     mat2(na(l)*(j-1)+i) = mat ( ia(i,l) , ia(j,l) )
-313              continue
-314          continue
+313             continue
+314         continue
             call vtmv(na(l), x2, mat2, r)
             en(1+l) = r * const
-315      continue
+315     continue
     endif
-900  continue
+900 continue
 !
 !     --- POURCENTAGE ----
     do 410 i = 2, nn
         en(i) = en(i)/en(1)
-410  end do
+410 end do
 !
 !     -- SORTIE --------------------------------------------------------
-910  continue
+910 continue
     if (ltest) then
         write(6,*)'--->> PTENCI     ITYPE = ',itype
         write(6,*)'                  KANL = ',kanl

@@ -2,6 +2,7 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/lctest.h"
 #include "asterc/lccree.h"
 !
@@ -26,7 +27,7 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(out) :: type_comp
-    logical(kind=1), optional, intent(in) :: l_etat_init
+    aster_logical, optional, intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +49,7 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call lccree(1, rela_comp, rela_code_py) 
+    call lccree(1, rela_comp, rela_code_py)
     call lctest(rela_code_py, 'PROPRIETES', 'COMP_ELAS', iret)
     if (iret .eq. 0) then
         type_comp = 'COMP_INCR'
@@ -59,10 +60,9 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
                 type_comp = 'COMP_INCR'
             endif
         endif
-        if (defo_comp.eq.'PETIT_REAC') then
+        if (defo_comp .eq. 'PETIT_REAC') then
             type_comp = 'COMP_INCR'
         endif
     endif
 !
 end subroutine
-

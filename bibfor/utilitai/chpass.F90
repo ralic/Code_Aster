@@ -1,6 +1,7 @@
 subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                   chou)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -61,8 +62,8 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
 !
     integer :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
-    logical(kind=1) :: chgcmp, cumul, lcumul(2)
-    integer :: ncmp, jlicmp, gd, jcmpgd,  iret, nncp, nchg
+    aster_logical :: chgcmp, cumul, lcumul(2)
+    integer :: ncmp, jlicmp, gd, jcmpgd, iret, nncp, nchg
     real(kind=8) :: coefr, lcoefr(2)
     complex(kind=8) :: coefc, lcoefc(2)
     character(len=8) :: kbid, modele
@@ -73,7 +74,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     character(len=19) :: chs3, ligrel
     character(len=24) :: cnom, valk(3)
 !
-    logical(kind=1) :: lcoc, bool(1) 
+    aster_logical :: lcoc, bool(1)
     character(len=8), pointer :: licmp2(:) => null()
 !     -----------------------------------------------------------------
 !

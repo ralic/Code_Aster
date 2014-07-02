@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3iqgs(epsi, k, f, desc, desctm,&
                       conexk, coordo, sgt, nbpt, lstpt,&
@@ -29,6 +31,6 @@ interface
         real(kind=8) :: sgt(*)
         integer :: nbpt
         integer :: lstpt(*)
-        logical(kind=1) :: fink
+        aster_logical :: fink
     end subroutine i3iqgs
 end interface

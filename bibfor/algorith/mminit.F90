@@ -1,7 +1,8 @@
 subroutine mminit(noma, defico, resoco, sddyna, valinc)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -58,8 +59,8 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: ldyna
-    logical(kind=1) :: lctcc, ltfcm, lxfcm
+    aster_logical :: ldyna
+    aster_logical :: lctcc, ltfcm, lxfcm
     character(len=19) :: depgeo, deplam
     character(len=19) :: vitini, accini
     character(len=19) :: depmoi, accplu, vitplu

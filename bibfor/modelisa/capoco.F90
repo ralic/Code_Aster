@@ -19,6 +19,7 @@ subroutine capoco(char, motfac)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -54,21 +55,21 @@ subroutine capoco(char, motfac)
 !
 !
     integer :: iret, noc
-    integer ::  icesd, icesl,  npmax, isec
+    integer :: icesd, icesl, npmax, isec
     integer :: posmae, nummae
     integer :: jdecme
     integer :: izone, imae
     integer :: nbmae
     integer :: rangr0, rangr1, rangr2, iad1, iad2
     real(kind=8) :: r1, r2, rayon
-    logical(kind=1) :: ya
+    aster_logical :: ya
     integer :: nzoco, nmaco
     character(len=8) :: carael
     character(len=24) :: defico
     character(len=24) :: jeupou, contma
     integer :: jmaco, jjpou
     character(len=19) :: carsd, carte
-    logical(kind=1) :: ldpou
+    aster_logical :: ldpou
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !
@@ -104,7 +105,7 @@ subroutine capoco(char, motfac)
                 ASSERT(.false.)
             endif
         endif
-10  end do
+ 10 end do
 !
     if (.not. ya) then
         goto 999
@@ -187,13 +188,13 @@ subroutine capoco(char, motfac)
 ! --- STOCKAGE
 !
                 zr(jjpou+posmae-1) = rayon
-30          continue
+ 30         continue
         endif
-20  end do
+ 20 end do
 !
     call detrsd('CHAM_ELEM_S', carsd)
 !
-999  continue
+999 continue
 !
     call jedema()
 !

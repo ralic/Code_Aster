@@ -1,5 +1,6 @@
 subroutine liimpr(noml, impr, fichie)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/iunifi.h"
@@ -36,7 +37,7 @@ subroutine liimpr(noml, impr, fichie)
     character(len=16) :: nomcmd
     character(len=19) :: nomlis
     character(len=24) :: lpas, nbpa, vale, bint, titr
-    logical(kind=1) :: lisree
+    aster_logical :: lisree
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iret, iul, jbor, jnbp
@@ -73,7 +74,7 @@ subroutine liimpr(noml, impr, fichie)
         call jelira(titr, 'LONMAX', nbtitr)
         do 10 i = 1, nbtitr
             write(iul,*) zk80(ltitr+i-1)
-10      continue
+ 10     continue
     endif
 !
     call jelira(vale, 'LONMAX', nbval)
@@ -100,13 +101,13 @@ subroutine liimpr(noml, impr, fichie)
             do 20 i = 1, nbint
                 write(iul,'(3X,7X,I3,5X,1PE12.5,5X,1PE12.5,5X,1PE12.5,5X,I6)')&
      &              i,zr(jbor+i-1),zr(jbor+i),zr(jpas+i-1),zi(jnbp+i-1)
-20          continue
+ 20         continue
             if (impr .gt. 1) then
                 write(iul,'(3X,A)')'IMPRESSION DE LA LISTE DE REELS'
                 do 21 l = 1, nl
                     write(iul,1000) 5*(l-1)+1,(zr( jval + 5*(l-1)+k-1)&
                     ,k=1,5)
-21              continue
+ 21             continue
                 if (nd .ne. 0) then
                     write(iul,1000) 5*nl+1,(zr( jval +5*nl+k-1),k=1,&
                     nd)
@@ -125,13 +126,13 @@ subroutine liimpr(noml, impr, fichie)
             do 30 i = 1, nbint
                 write(iul,'(3X,7X,I3,5X,I12,5X,I12,5X,I12,5X,I6)')&
                 i,zi(jbor+i-1),zi(jbor+i),zi(jpas+i-1),zi(jnbp+i-1)
-30          continue
+ 30         continue
             if (impr .gt. 1) then
                 write(iul,'(3X,A)')'IMPRESSION DE LA LISTE D ENTIERS'
                 do 31 l = 1, nl
                     write(iul,'((I7,'' - '',5(I12,1X)))') 5*(l-1)+1,(&
                     zi( jval + 5*(l-1)+k-1),k=1,5)
-31              continue
+ 31             continue
                 if (nd .ne. 0) then
                     write(iul,'(I7,'' - '',5(I12,1X))') 5*nl+1,(zi(&
                     jval +5*nl+k-1),k=1,nd)
@@ -140,7 +141,7 @@ subroutine liimpr(noml, impr, fichie)
         endif
     endif
 !
-9999  continue
+9999 continue
     call jedema()
 !
     1000 format(i7,' - ',5(1pe16.9,1x))

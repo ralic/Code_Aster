@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine meacmv(modele, mate, carele, fomult, lischa,&
                       partps, numedd, assmat, solveu, vecass,&
@@ -26,7 +28,7 @@ interface
         character(len=19) :: lischa
         real(kind=8) :: partps(3)
         character(len=24) :: numedd
-        logical(kind=1) :: assmat
+        aster_logical :: assmat
         character(len=19) :: solveu
         character(len=19) :: vecass
         character(len=19) :: matass

@@ -17,6 +17,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
@@ -91,7 +92,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
     character(len=24) :: nom24
     character(len=32) :: nomin, nomout
     character(len=1) :: kclas, genri, typei
-    logical(kind=1) :: libcol, x2u, lconst, lnom
+    aster_logical :: libcol, x2u, lconst, lnom
     data             iv / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
     data             csuffi / '$$DESO  ','$$IADD  ','$$IADM  ',&
      &                          '$$MARQ  ','$$NOM   ','        ',&
@@ -208,7 +209,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
                             do 20 ioc = 1, luti(jluti(icin) + ixnom)
                                 call jenuno(jexnum(nomin, ioc), nom24)
                                 call jecroc(jexnom(nomout, nom24))
-20                          continue
+ 20                         continue
                         endif
 !
                     else if (iv(k) .eq. 1) then
@@ -229,7 +230,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
                 endif
                 iszon(jiszon+ibaout+k) = idatos
             endif
- 1      continue
+  1     continue
 !
 ! ----- POUR UNE COLLECTION DISPERSEE, RECOPIE DES SEGMENTS DE VALEURS
 ! ----- ASSOCIES AUX OBJETS DE COLLECTION
@@ -287,7 +288,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
                 else
                     call utmess('F', 'JEVEUX1_65', sk=nomin, si=k)
                 endif
- 2          continue
+  2         continue
         endif
         if (libcol) call jjlide('JELIBE', nomin(1:24), iret1)
         call jjlide('JELIBE', nomout(1:24), iret2)

@@ -20,6 +20,7 @@ subroutine exresl(modatt, iparg, chin)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -60,7 +61,7 @@ subroutine exresl(modatt, iparg, chin)
 !     ------------------
     integer :: desc, mode, ncmpel, iret, jparal, iel, iaux1, iaux2, iaux0, k
     integer :: jresl, debugr, lggrel
-    logical(kind=1) :: lparal
+    aster_logical :: lparal
 !
 !
     call jemarq()
@@ -102,7 +103,7 @@ subroutine exresl(modatt, iparg, chin)
                 iaux2=iachlo+debugr-1+iaux0
                 call jacopo(ncmpel, typegd, iaux1, iaux2)
             endif
-10      continue
+ 10     continue
     else
         call jacopo(lggrel, typegd, jresl, iachlo+debugr-1)
     endif
@@ -114,15 +115,15 @@ subroutine exresl(modatt, iparg, chin)
                 iaux1=ilchlo+debugr-1+(iel-1)*ncmpel
                 do 20 k = 1, ncmpel
                     zl(iaux1-1+k)=.true.
-20              continue
+ 20             continue
             endif
-30      continue
+ 30     continue
     else
         do 40 k = 1, lggrel
             zl(ilchlo+debugr-1-1+k)=.true.
-40      continue
+ 40     continue
     endif
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

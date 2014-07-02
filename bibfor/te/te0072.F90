@@ -16,6 +16,7 @@ subroutine te0072(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8t0.h"
 #include "asterfort/connec.h"
@@ -42,7 +43,7 @@ subroutine te0072(option, nomte)
     integer :: ivectt, i, j, l, li, icoefh, itex, iray, itemp, itemps
     integer :: nnop2, c(6, 9), ise, nse, ibid
     real(kind=8) :: sigma, epsil, tpinf, tz0
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
     call elref1(elrefe)
@@ -52,8 +53,8 @@ subroutine te0072(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     tz0 = r8t0()
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -78,7 +79,7 @@ subroutine te0072(option, nomte)
 !
     do 10 i = 1, nnop2
         vectt(i) = 0.d0
-10  end do
+ 10 end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
@@ -87,8 +88,8 @@ subroutine te0072(option, nomte)
         do 30 i = 1, nno
             do 20 j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
-20          continue
-30      continue
+ 20         continue
+ 30     continue
 !
         do 70 kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -99,7 +100,7 @@ subroutine te0072(option, nomte)
                 l = (kp-1)*nno + i
                 r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
                 tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
-40          continue
+ 40         continue
             if (laxi) poids = poids*r
             if (option(11:14) .eq. 'TEXT') then
                 do 50 i = 1, nno
@@ -108,7 +109,7 @@ subroutine te0072(option, nomte)
                                       c(ise,i)) + poids*zr(li)* zr(icoefh)* (zr(itex)- (1.0d0-the&
                                       &ta)*tpg&
                                       )
-50              continue
+ 50             continue
             else if (option(11:14).eq.'RAYO') then
                 do 60 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
@@ -116,13 +117,13 @@ subroutine te0072(option, nomte)
                                       c(ise,i)) + poids*zr(li)* sigma*epsil* ((tpinf+tz0)**4- (1.&
                                       &0d0-theta)* (tpg+tz0)**4&
                                       )
-60              continue
+ 60             continue
             endif
-70      continue
-80  end do
+ 70     continue
+ 80 end do
 !
     do 90 i = 1, nnop2
         zr(ivectt-1+i) = vectt(i)
-90  end do
+ 90 end do
 !
 end subroutine

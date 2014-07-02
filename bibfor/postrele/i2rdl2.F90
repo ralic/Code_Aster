@@ -1,5 +1,6 @@
 subroutine i2rdl2(n, t, k, nom, adr)
     implicit none
+#include "asterf_types.h"
     integer :: n, t(*), adr
     character(len=8) :: k, nom(*)
 !
@@ -22,14 +23,14 @@ subroutine i2rdl2(n, t, k, nom, adr)
 !       COPIE DE I2RDLI
 !
     integer :: i, j
-    logical(kind=1) :: fini, trouve
+    aster_logical :: fini, trouve
 !
     i = 1
     j = 0
     trouve = .false.
     fini = .false.
 !
-10  continue
+ 10 continue
     if ((.not. fini) .and. (i .lt. adr)) then
 !
         if (t(i) .lt. n) then
@@ -53,12 +54,12 @@ subroutine i2rdl2(n, t, k, nom, adr)
 !
     if (.not. trouve) then
 !
-        do 20, j = adr-1, i, -1
+        do 20 j = adr-1, i, -1
 !
-        t(j+1) = t(j)
-        nom(j+1) = nom(j)
+            t(j+1) = t(j)
+            nom(j+1) = nom(j)
 !
-20      continue
+ 20     continue
 !
         t(i) = n
         nom(i) = k

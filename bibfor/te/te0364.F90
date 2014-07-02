@@ -18,7 +18,8 @@ subroutine te0364(option, nomte)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -38,8 +39,8 @@ subroutine te0364(option, nomte)
 #include "asterfort/mmtfpe.h"
 #include "asterfort/mmtgeo.h"
 #include "asterfort/mmtppe.h"
-
-
+!
+!
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -56,22 +57,22 @@ subroutine te0364(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
- 
+!
 ! DECLARATION VARIABLES LOCALES
     integer :: i, j, ij
     integer :: nne, nnm, nnl
     integer :: nddl, ndim, nbcps, nbdm
     integer :: jmatt
-    
+!
 ! DECLARATION TYPES RESOLUTION    
     integer :: iresof, iresog
     integer :: ndexfr
-    logical(kind=1) :: laxis, leltf
-    logical(kind=1) :: lpenac, lpenaf
-    logical(kind=1) :: loptf, ldyna, lfovit, lcont
-    logical(kind=1) :: ladhe
-    logical(kind=1) :: debug
-    
+    aster_logical :: laxis, leltf
+    aster_logical :: lpenac, lpenaf
+    aster_logical :: loptf, ldyna, lfovit, lcont
+    aster_logical :: ladhe
+    aster_logical :: debug
+!
 ! DECLARATION COEFFICIENTS ET TYPE MAILLE        
     real(kind=8) :: coefff, lambda, lambds
     real(kind=8) :: coefac, coefaf
@@ -82,38 +83,38 @@ subroutine te0364(option, nomte)
     real(kind=8) :: jeusup
     real(kind=8) :: dlagrc, dlagrf(2)
     real(kind=8) :: jeu, djeut(3)
-
+!
     character(len=8) :: typmae, typmam
     character(len=9) :: phasep
     real(kind=8) :: ffe(9), ffm(9), ffl(9), dffm(2, 9)
-    
+!
     real(kind=8) :: mprt1n(3, 3), mprt2n(3, 3)
     real(kind=8) :: mprt11(3, 3), mprt21(3, 3), mprt22(3, 3)
-    
-    real(kind=8) :: gene11(3, 3), gene21(3, 3),gene22(3,3)
-    real(kind=8) :: kappa(2,2),a(2,2),h(2,2),ha(2,2),hah(2,2)
-    
-    real(kind=8) :: vech1(3),vech2(3)
-
+!
+    real(kind=8) :: gene11(3, 3), gene21(3, 3), gene22(3, 3)
+    real(kind=8) :: kappa(2, 2), a(2, 2), h(2, 2), ha(2, 2), hah(2, 2)
+!
+    real(kind=8) :: vech1(3), vech2(3)
+!
 ! DECLARATION MATRICES CONTACT-FROTTEMENT
     real(kind=8) :: mmat(81, 81)
-    
+!
     real(kind=8) :: matrcc(9, 9)
-    
+!
     real(kind=8) :: matree(27, 27), matrmm(27, 27)
     real(kind=8) :: matnee(27, 27), matnmm(27, 27)
     real(kind=8) :: matfee(27, 27), matfmm(27, 27)
-
+!
     real(kind=8) :: matrem(27, 27), matrme(27, 27)
     real(kind=8) :: matnem(27, 27), matnme(27, 27)
     real(kind=8) :: matfem(27, 27), matfme(27, 27)
-        
+!
     real(kind=8) :: matrce(9, 27), matrcm(9, 27)
     real(kind=8) :: matrmc(27, 9), matrec(27, 9)
     real(kind=8) :: matrff(18, 18)
     real(kind=8) :: matrfe(18, 27), matrfm(18, 27)
     real(kind=8) :: matrmf(27, 18), matref(27, 18)
-    
+!
 !  TYPE ELEMENT
     character(len=24) :: typelt
 !
@@ -123,26 +124,26 @@ subroutine te0364(option, nomte)
 !
 ! --- INITIALISATIONS DES MATRICES
 !
-    call matini(81, 81, 0.d0,   mmat)
-    
-    call matini(9, 9, 0.d0,   matrcc)
-    
+    call matini(81, 81, 0.d0, mmat)
+!
+    call matini(9, 9, 0.d0, matrcc)
+!
     call matini(27, 27, 0.d0, matree)
     call matini(27, 27, 0.d0, matnee)
     call matini(27, 27, 0.d0, matfee)
-    
+!
     call matini(27, 27, 0.d0, matrmm)
     call matini(27, 27, 0.d0, matnmm)
     call matini(27, 27, 0.d0, matfmm)
-    
+!
     call matini(27, 27, 0.d0, matrem)
     call matini(27, 27, 0.d0, matnem)
     call matini(27, 27, 0.d0, matfem)
-    
+!
     call matini(27, 27, 0.d0, matrme)
     call matini(27, 27, 0.d0, matnme)
     call matini(27, 27, 0.d0, matfme)
-    
+!
     call matini(9, 27, 0.d0, matrce)
     call matini(9, 27, 0.d0, matrcm)
     call matini(27, 9, 0.d0, matrec)
@@ -159,22 +160,22 @@ subroutine te0364(option, nomte)
 !
     typelt = 'POIN_ELEM'
     loptf = option.eq.'RIGI_FROT'
-
+!
 !
 ! --- PREPARATION DES CALCULS - INFOS SUR LA MAILLE DE CONTACT
 !
-    call mmelem(nomte ,ndim  ,nddl  ,typmae,nne   , &
-                typmam,nnm   ,nnl   ,nbcps ,nbdm  , &
+    call mmelem(nomte, ndim, nddl, typmae, nne,&
+                typmam, nnm, nnl, nbcps, nbdm,&
                 laxis, leltf)
 !
 ! --- PREPARATION DES CALCULS - LECTURE DES COEFFICIENTS
 !
-    call mmmlcf(coefff,coefac,coefaf,lpenac,lpenaf, &
-                iresof,iresog,lambds)
+    call mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
+                iresof, iresog, lambds)
 !
 ! --- PREPARATION DES CALCULS - LECTURE FONCTIONNALITES AVANCEES
 !
-    call mmmlav(ldyna ,lfovit,jeusup,ndexfr,coefac, &
+    call mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
                 coefaf)
 !
 ! --- PREPARATION DES DONNEES
@@ -183,17 +184,17 @@ subroutine te0364(option, nomte)
 !
 ! ----- CALCUL DES QUANTITES
 !
-        call mmtppe(typmae,typmam,ndim  ,nne   ,nnm   , &
-                    nnl   ,nbdm  ,iresog,laxis ,ldyna , &
-                    jeusup,ffe   ,ffm   ,dffm  ,ffl   , &
-                    jacobi,wpg   ,jeu   ,djeut ,dlagrc, &
-                    dlagrf,norm  ,tau1  ,tau2  ,mprojn, &
-                    mprojt,mprt1n,mprt2n,gene11,gene21, &
-            gene22,kappa ,h     ,vech1 ,vech2 , &
-            a     ,ha    ,hah   ,mprt11,mprt21, &
-            mprt22)
-          
-
+        call mmtppe(typmae, typmam, ndim, nne, nnm,&
+                    nnl, nbdm, iresog, laxis, ldyna,&
+                    jeusup, ffe, ffm, dffm, ffl,&
+                    jacobi, wpg, jeu, djeut, dlagrc,&
+                    dlagrf, norm, tau1, tau2, mprojn,&
+                    mprojt, mprt1n, mprt2n, gene11, gene21,&
+                    gene22, kappa, h, vech1, vech2,&
+                    a, ha, hah, mprt11, mprt21,&
+                    mprt22)
+!
+!
 !
 ! ----- CHOIX DU LAGRANGIEN DE CONTACT
 !
@@ -201,10 +202,10 @@ subroutine te0364(option, nomte)
 !
 ! ----- STATUTS
 !
-
-        call mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
-                    dlagrf,coefaf,tau1  ,tau2  , &
-                    lcont ,ladhe ,lambda,rese  ,nrese)
+!
+        call mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
+                    dlagrf, coefaf, tau1, tau2, lcont,&
+                    ladhe, lambda, rese, nrese)
 !
 ! ----- PHASE DE CALCUL
 !
@@ -220,32 +221,31 @@ subroutine te0364(option, nomte)
     if (typelt .eq. 'POIN_ELEM') then
 !
 ! ----- CONTRIBUTIONS STANDARDS : POINT FIXE/NEWTON GENE /NEWTON PARTIEL
-    
-        call mmtfpe(phasep,iresof,ndim  ,nne   ,nnm   , &
-                  nnl   ,nbcps ,wpg   ,jacobi, ffl  , &
-                  ffe   ,ffm    ,norm  ,tau1  , &
-                  tau2  ,mprojn,mprojt,rese  ,nrese , &
-                  lambda,coefff,coefaf,coefac, &
-                  dlagrf,djeut ,matree,matrmm, &
-                  matrem,matrme,matrec,matrmc,matref, &
-                  matrmf)
+!
+        call mmtfpe(phasep, iresof, ndim, nne, nnm,&
+                    nnl, nbcps, wpg, jacobi, ffl,&
+                    ffe, ffm, norm, tau1, tau2,&
+                    mprojn, mprojt, rese, nrese, lambda,&
+                    coefff, coefaf, coefac, dlagrf, djeut,&
+                    matree, matrmm, matrem, matrme, matrec,&
+                    matrmc, matref, matrmf)
 !
 ! ----- CONTRIBUTIONS NON-LINEARITES GEOMETRIQUES NEWTON GENE
 !
-    if (iresog .eq. 1) then
+        if (iresog .eq. 1) then
 !    WRITE (6,*) matree(1,1),"valeur sortie MMTFPE" 
-       call mmtgeo(phasep,ndim  ,nne   ,nnm   ,mprt1n, &
-              mprt2n,mprojn,mprt11,mprt21,mprt22, &
-          wpg   ,ffe   ,ffm   ,dffm  ,jacobi, &
-          coefac,jeu   ,dlagrc,kappa ,vech1 , &
-          vech2 ,h        ,hah  , &
-          matree,matrmm,matrem, matrme)   
-    endif
-    
-
-
-
-
+            call mmtgeo(phasep, ndim, nne, nnm, mprt1n,&
+                        mprt2n, mprojn, mprt11, mprt21, mprt22,&
+                        wpg, ffe, ffm, dffm, jacobi,&
+                        coefac, jeu, dlagrc, kappa, vech1,&
+                        vech2, h, hah, matree, matrmm,&
+                        matrem, matrme)
+        endif
+!
+!
+!
+!
+!
 !
     else
         ASSERT(.false.)
@@ -295,8 +295,8 @@ subroutine te0364(option, nomte)
                 if (debug) then
                     call mmmtdb(mmat(i, j), 'IJ', i, j)
                 endif
-750          continue
-760      continue
+750         continue
+760     continue
     else
 !
 ! --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
@@ -312,8 +312,8 @@ subroutine te0364(option, nomte)
                 if (debug) then
                     call mmmtdb(mmat(i, j), 'IJ', i, j)
                 endif
-751          continue
-761      continue
+751         continue
+761     continue
 !
     endif
 !

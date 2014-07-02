@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cgcrtb(table, option, lmelas, cas, typfis,&
                       lmoda, nbprup, noprup, typrup)
         integer :: nbprup
         character(len=8) :: table
         character(len=16) :: option
-        logical(kind=1) :: lmelas
+        aster_logical :: lmelas
         character(len=16) :: cas
         character(len=8) :: typfis
-        logical(kind=1) :: lmoda
+        aster_logical :: lmoda
         character(len=16) :: noprup(nbprup)
         character(len=8) :: typrup(nbprup)
     end subroutine cgcrtb

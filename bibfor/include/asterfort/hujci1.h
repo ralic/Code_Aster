@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujci1(crit, mater, deps, sigd, i1f,&
                       tract, iret)
@@ -23,7 +25,7 @@ interface
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
         real(kind=8) :: i1f
-        logical(kind=1) :: tract
+        aster_logical :: tract
         integer :: iret
     end subroutine hujci1
 end interface

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
         integer :: nbmax
         integer :: fonact(*)
         character(len=19) :: sddyna
         character(len=24) :: defico
-        logical(kind=1) :: chaact(nbmax)
+        aster_logical :: chaact(nbmax)
     end subroutine nmetac
 end interface

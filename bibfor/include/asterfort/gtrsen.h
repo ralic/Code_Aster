@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gtrsen(select, n, t, ldt, q,&
                       ldq, w, m, info)
         integer :: ldq
         integer :: ldt
-        logical(kind=1) :: select(*)
+        aster_logical :: select(*)
         integer :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: q(ldq, *)

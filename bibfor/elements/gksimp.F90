@@ -1,7 +1,7 @@
 subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
                   iadgks, ndeg, ndimte, iadgki, extim,&
                   time, iordr, unit)
-    implicit  none
+    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,12 +46,13 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
 !    UNIT         --> UNITE DU FICHIER D'AFFICHAGE
 ! ......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
     integer :: nnoff, unit, numero, ndeg, iordr, i, i1, imod
     integer :: iadrgk, iadgks, iadgki, ndimte
     real(kind=8) :: time, absc(*)
-    logical(kind=1) :: extim
+    aster_logical :: extim
     character(len=8) :: result
 !
 !
@@ -97,11 +98,11 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
         if (numero .eq. 5) then
             do 20 i = 1, ndimte
                 write(unit,110) i,zr(iadgki-1+(i-1)*5+1)
-20          continue
+ 20         continue
         else
             do 21 i = 1, nnoff
                 write(unit,110) i,zr(iadgki-1+(i-1)*5+1)
-21          continue
+ 21         continue
         endif
         write(unit,*)
     endif
@@ -112,7 +113,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
         do 10 i = 1, ndeg+1
             i1 = i-1
             write(unit,*) 'DEGRE ',i1,' : ',zr(iadgki-1+i1*5+1)
-10      continue
+ 10     continue
         write(unit,*)
     endif
 !
@@ -121,7 +122,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
     write(unit,*)
     do 30 i = 1, nnoff
         write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+1)
-30  end do
+ 30 end do
     write(unit,*)
 !
 !
@@ -138,11 +139,11 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
             if (numero .eq. 5) then
                 do 401 i = 1, ndimte
                     write(unit,110) i,zr(iadgki-1+(i-1)*5+imod+1)
-401              continue
+401             continue
             else
                 do 402 i = 1, nnoff
                     write(unit,110) i,zr(iadgki-1+(i-1)*5+imod+1)
-402              continue
+402             continue
             endif
             write(unit,*)
         endif
@@ -153,7 +154,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
                 i1 = i-1
                 write(unit,*) 'DEGRE ',i1,' : ',zr(iadgki-1+i1*5+&
                 imod+1)
-41          continue
+ 41         continue
             write(unit,*)
         endif
 !
@@ -162,9 +163,9 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
         write(unit,*)
         do 42 i = 1, nnoff
             write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+imod+1)
-42      continue
+ 42     continue
         write(unit,*)
-40  end do
+ 40 end do
 !
 !- IMPRESSION DE L'ANGLE DE PROPAGATION DE FISSURE BETA
 !
@@ -176,7 +177,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
     write(unit,*)
     do 50 i = 1, nnoff
         write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+6)
-50  end do
+ 50 end do
     write(unit,*)
 !
 !- IMPRESSION DE G_IRWIN
@@ -189,7 +190,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
     write(unit,*)
     do 60 i = 1, nnoff
         write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+5)
-60  end do
+ 60 end do
     write(unit,*)
 !
     110 format(1x,i2,6x,1pd12.5)

@@ -16,6 +16,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -56,7 +57,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     character(len=24) :: ligrch, lchin(3), lchout(1), chgeom, chtime
     integer :: ibid, iret, nchar, jinf, jchar, icha
     integer :: numdi
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
     character(len=19) :: lvedip
 !
 ! ----------------------------------------------------------------------
@@ -121,11 +122,11 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call reajre(lvedip, lchout(1), 'V')
-15      continue
+ 15     continue
 !
-10  end do
+ 10 end do
 !
-20  continue
+ 20 continue
 !
     lvediz = lvedip//'.RELR'
     call jedema()

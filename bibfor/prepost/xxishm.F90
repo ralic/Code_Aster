@@ -17,14 +17,15 @@ function xxishm(mailc, mailx, mo)
 ! ======================================================================
 !
     implicit none
-#   include "asterfort/jedema.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jenuno.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/jexnum.h"
-    logical(kind=1) :: xxishm
-#   include "jeveux.h"
+# include "asterf_types.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jelira.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jenuno.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/jexnum.h"
+# include "jeveux.h" 
+    aster_logical :: xxishm
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL HM?
 !
@@ -38,7 +39,7 @@ function xxishm(mailc, mailx, mo)
     integer :: nbmac1, nbmac2
     integer :: jmac, jmail, ima, i, itypel
     integer :: jmax
-    logical(kind=1) :: pre1
+    aster_logical :: pre1
 !-----------------------------------------------------------------------
 !
     call jemarq()

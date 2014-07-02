@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdoin(evol, evonol, instin, numein)
         character(len=24) :: evol
-        logical(kind=1) :: evonol
+        aster_logical :: evonol
         real(kind=8) :: instin
         integer :: numein
     end subroutine nmdoin

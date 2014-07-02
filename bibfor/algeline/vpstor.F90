@@ -3,6 +3,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                   nbpark, nopara, mod45, resufi, resufr,&
                   resufk, iprec)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/dismoi.h"
@@ -69,7 +70,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     character(len=19) :: chamno, sd2
     character(len=24) :: nume, nopast(nbpast)
     character(len=24) :: valk, typeba, raide, raide2, k24b
-    logical(kind=1) :: lrefd, lbasm, lstock
+    aster_logical :: lrefd, lbasm, lstock
     character(len=24), pointer :: rerr(:) => null()
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE

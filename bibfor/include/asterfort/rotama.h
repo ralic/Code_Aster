@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rotama(geomi, pt, d, angl, bidim)
         character(len=19) :: geomi
         real(kind=8) :: pt(3)
         real(kind=8) :: d(3)
         real(kind=8) :: angl
-        logical(kind=1) :: bidim
+        aster_logical :: bidim
     end subroutine rotama
 end interface

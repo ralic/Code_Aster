@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rslphi(fami, kpg, ksp, loi, imat,&
                       troisk, troimu, depsmo, rigdmo, rieleq,&
@@ -49,6 +51,6 @@ interface
         real(kind=8) :: rigeq
         real(kind=8) :: rigm
         real(kind=8) :: p
-        logical(kind=1) :: overfl
+        aster_logical :: overfl
     end subroutine rslphi
 end interface

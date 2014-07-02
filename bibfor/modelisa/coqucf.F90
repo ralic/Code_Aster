@@ -1,5 +1,6 @@
 subroutine coqucf(nomu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -48,7 +49,7 @@ subroutine coqucf(nomu)
 !
 !
     integer :: ifm, niv, iret, ibid, ii, jj, kk
-    integer :: jcesdf, jcesdo,   nbmail, adrm, iad
+    integer :: jcesdf, jcesdo, nbmail, adrm, iad
     integer :: nbcmpf, nbcmpo, icompo, inoeu, nbno, nunoe, igeom
     integer :: jceslf, jceslo
     integer :: jconne, iadr1, iadr2, jtabco
@@ -56,7 +57,7 @@ subroutine coqucf(nomu)
     character(len=8) :: nomma, nmcmpf, nomval(3), nomfct
     character(len=19) :: cartco, cartcf, celsco, celscf, connex
     character(len=24) :: k24bid
-    logical(kind=1) :: lcoor
+    aster_logical :: lcoor
     character(len=8), pointer :: cesvf(:) => null()
     real(kind=8), pointer :: cesvo(:) => null()
     character(len=8), pointer :: cescf(:) => null()

@@ -20,6 +20,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -50,14 +51,14 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: nbnoma, nbnore
-    logical(kind=1) :: exilag
+    aster_logical :: exilag
 !
 !
 !
 !     -- SI LE MODELE N'A PAS DE SOUS-STRUCTURES ON RESSORT :
 !     --------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i,  iamail,    ico
+    integer :: i, iamail, ico
     integer :: icol, il, ima, ino, inomax, inomin
     integer :: iold, iprem, iret, itypi, nbnm, nbsma, nbssa
     integer, pointer :: avap(:) => null()

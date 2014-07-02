@@ -18,7 +18,8 @@ subroutine nmcrar(result, sddisc, fonact, numreo)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -61,7 +62,7 @@ subroutine nmcrar(result, sddisc, fonact, numreo)
     integer :: jarinf
     character(len=19) :: sdarch
     integer :: ifm, niv
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
     character(len=1) :: base
     real(kind=8) :: insder
 !

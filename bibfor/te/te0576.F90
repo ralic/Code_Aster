@@ -1,5 +1,6 @@
 subroutine te0576(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
@@ -65,15 +66,15 @@ subroutine te0576(option, nomte)
     real(kind=8) :: poids, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
     character(len=16) :: compor(3)
-    logical(kind=1) :: grand
+    aster_logical :: grand
 ! DEB ------------------------------------------------------------------
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------

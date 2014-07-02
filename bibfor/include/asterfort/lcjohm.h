@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lcjohm(imate, resi, rigi, kpi, npg,&
                       nomail, addeme, advico, ndim, dimdef,&
@@ -25,8 +27,8 @@ interface
         integer :: dimcon
         integer :: dimdef
         integer :: imate
-        logical(kind=1) :: resi
-        logical(kind=1) :: rigi
+        aster_logical :: resi
+        aster_logical :: rigi
         integer :: kpi
         integer :: npg
         character(len=8) :: nomail

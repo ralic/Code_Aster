@@ -18,6 +18,7 @@ subroutine te0545(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefv.h"
 #include "asterfort/jevech.h"
@@ -43,7 +44,7 @@ subroutine te0545(option, nomte)
     parameter (nnomax=27,npgmax=27,epsmax=20,ddlmax=15*nnomax)
 ! ......................................................................
     character(len=8) :: typmod(2)
-    logical(kind=1) :: resi, rigi, axi
+    aster_logical :: resi, rigi, axi
     integer :: nno, nnob, npg, ndim, nddl, neps, lgpg
     integer :: ipoids, ivf, idfde, ivfb, idfdeb
     integer :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp, icompo

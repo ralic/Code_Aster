@@ -19,6 +19,7 @@ subroutine te0360(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/eiangl.h"
 #include "asterfort/eifint.h"
@@ -41,7 +42,7 @@ subroutine te0360(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: typmod(2), nomail, lielrf(10)
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
     integer :: iw, ivf1, idf1, igeom, imate
     integer :: ivf2, idf2, nnos, jgn
@@ -59,10 +60,10 @@ subroutine te0360(option, nomte)
 ! - FONCTIONS DE FORME
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
     ndim = ndim + 1
     axi = lteatt('AXIS','OUI')
 !

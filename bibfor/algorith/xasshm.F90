@@ -1,17 +1,16 @@
 subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                   idfde, igeom, geom, crit, deplm,&
-                  deplp, contm, contp, varim,&
-                  varip, defgem, defgep, drds,&
-                  drdsr, dsde, b, dfdi, dfdi2,&
-                  r, sigbar, c, ck, cs,&
-                  matuu, vectu, rinstm, rinstp, option,&
-                  imate, mecani, press1, press2, tempe,&
-                  dimdef, dimcon, dimuel, nbvari, nddls,&
-                  nddlm, nmec, np1, ndim,&
-                  compor, axi, modint, codret,&
-                  nnop, nnops, nnopm, enrmec,&
+                  deplp, contm, contp, varim, varip,&
+                  defgem, defgep, drds, drdsr, dsde,&
+                  b, dfdi, dfdi2, r, sigbar,&
+                  c, ck, cs, matuu, vectu,&
+                  rinstm, rinstp, option, imate, mecani,&
+                  press1, press2, tempe, dimdef, dimcon,&
+                  dimuel, nbvari, nddls, nddlm, nmec,&
+                  np1, ndim, compor, axi, modint,&
+                  codret, nnop, nnops, nnopm, enrmec,&
                   dimenr, heavt, lonch, cnset, jpintt,&
-                  jpmilt, angmas,dimmat)
+                  jpmilt, angmas, dimmat)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -33,19 +32,20 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! ======================================================================
     implicit none
 !
-#   include "jeveux.h"
-#   include "asterfort/lceqvn.h"
-#   include "asterfort/matini.h"
-#   include "asterfort/pmathm.h"
-#   include "asterc/r8prem.h"
-#   include "asterfort/rcvala.h"
-#   include "asterfort/reeref.h"
-#   include "asterfort/utmess.h"
-#   include "asterfort/vecini.h"
-#   include "asterfort/xcabhm.h"
-#   include "asterfort/xdefhm.h"
-#   include "asterfort/xequhm.h"
-#   include "asterfort/xlinhm.h"
+#include "asterf_types.h"
+# include "jeveux.h"
+# include "asterfort/lceqvn.h"
+# include "asterfort/matini.h"
+# include "asterfort/pmathm.h"
+# include "asterc/r8prem.h"
+# include "asterfort/rcvala.h"
+# include "asterfort/reeref.h"
+# include "asterfort/utmess.h"
+# include "asterfort/vecini.h"
+# include "asterfort/xcabhm.h"
+# include "asterfort/xdefhm.h"
+# include "asterfort/xequhm.h"
+# include "asterfort/xlinhm.h"
     integer :: dimmat, npg, dimuel
 !     DIMENSION DE LA MATRICE DE RIGIDITE DIMMAT=NDDLS*NNOP
 !    parameter    (dimmat=8*5)
@@ -58,12 +58,12 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     integer :: i, j, n, k, kji, nvim, nbcomp
     real(kind=8) :: geom(ndim, nnop), crit(*), poids
     real(kind=8) :: deplp(dimuel), deplm(dimuel)
-    real(kind=8) :: matuu(dimuel*dimuel), matri(dimmat,dimmat)
+    real(kind=8) :: matuu(dimuel*dimuel), matri(dimmat, dimmat)
     real(kind=8) :: rinstp, rinstm, vectu(dimuel)
     real(kind=8) :: defgem(dimdef), defgep(dimdef)
     real(kind=8) :: dt, ta, ta1, rthmc(1)
     real(kind=8) :: angmas(3)
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: codmes(1)
     character(len=3) :: modint
     character(len=16) :: option, compor(*), thmc, loi
@@ -321,11 +321,10 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! --- ELEMENT COURANT ISE ----------------------------------------------
 ! ======================================================================
             call xequhm(imate, option, ta, ta1, ndim,&
-                        compor, kpi, npg, dimenr,&
-                        enrmec, dimdef, dimcon, nbvari, defgem,&
-                        contm( npi*(ise-1)*dimcon+1), varim(npi*(ise-1)*nbvari+1), defgep,&
-                        contp(npi*(ise-1)*dimcon+1), varip(npi*(ise-1)* nbvari+1), mecani,&
-                        press1, press2, tempe,&
+                        compor, kpi, npg, dimenr, enrmec,&
+                        dimdef, dimcon, nbvari, defgem, contm( npi*(ise-1)*dimcon+1),&
+                        varim(npi*(ise-1)*nbvari+1), defgep, contp(npi*(ise-1)*dimcon+1),&
+                        varip(npi*(ise-1)* nbvari+1), mecani, press1, press2, tempe,&
                         rinstp, dt, r, drds, dsde,&
                         codret, idecpg, angmas)
 ! ======================================================================

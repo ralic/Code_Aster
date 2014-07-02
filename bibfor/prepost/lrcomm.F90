@@ -1,6 +1,7 @@
 subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                   modele)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/copisd.h"
@@ -77,7 +78,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 !
     complex(kind=8) :: cbid
 !
-    logical(kind=1) :: matcst, coecst, l_etat_init
+    aster_logical :: matcst, coecst, l_etat_init
 !
 ! ----------------------------------------------------------------------
 !
@@ -166,7 +167,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         end do
         call copisd(' ', 'G', lischa, lisch2)
     endif
-60  continue
+ 60 continue
 !
 ! - Check comportment 
 !
@@ -175,15 +176,14 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
             iordr=zi(lordr+i-1)
             call rsexch(' ', resu, 'VARI_ELGA', iordr, vari,&
                         iret)
-            if (iret.eq.0) then
+            if (iret .eq. 0) then
                 call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
                 mod24 = modele
                 car24 = carael
                 call nmdoco(mod24, car24, compor)
-                call vrcomp(compor, vari, ligrmo, iret, &
-                            type_stop = 'A')
-                if (iret.eq.1) then
-                    call utmess('A','RESU1_1')
+                call vrcomp(compor, vari, ligrmo, iret, type_stop = 'A')
+                if (iret .eq. 1) then
+                    call utmess('A', 'RESU1_1')
                 endif
             endif
         end do

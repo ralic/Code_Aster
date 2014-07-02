@@ -1,5 +1,6 @@
 subroutine te0209(option, nomte)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -39,7 +40,7 @@ subroutine te0209(option, nomte)
     real(kind=8) :: poids, poids1, poids2, coefh
     real(kind=8) :: r1, r2, nx, ny, tpg, theta
     character(len=8) :: lirefe(2)
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
     laxi = .false.
@@ -47,8 +48,8 @@ subroutine te0209(option, nomte)
 !
     call elref2(nomte, 2, lirefe, nbelr)
     ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -73,7 +74,7 @@ subroutine te0209(option, nomte)
             r1 = r1 + zr(igeom+2*i-2)*zr(ivf+l-1)
             r2 = r2 + zr(igeom+2* (nno+i)-2)*zr(ivf+l-1)
             tpg = tpg + (zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+l-1)
-10      continue
+ 10     continue
         if (laxi) then
             poids1 = poids1*r1
             poids2 = poids2*r2
@@ -84,6 +85,6 @@ subroutine te0209(option, nomte)
             li = ivf + (kp-1)*nno + i - 1
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(li)*coefh* ( 1.0d0-theta)*tpg
             zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno) - poids*zr(li)* coefh* (1.0d0-theta)*tpg
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 end subroutine

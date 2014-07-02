@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                       c1, jvalm, jtmp2, lgtmp2)
-        logical(kind=1) :: lmasym
+        aster_logical :: lmasym
         character(len=2) :: tt
         character(len=14) :: nu14
         integer :: ncmp

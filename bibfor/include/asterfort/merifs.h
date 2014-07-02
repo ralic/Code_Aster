@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine merifs(modele, nchar, lchar, mate, cara,&
                       exitim, time, matel, nh)
@@ -23,7 +25,7 @@ interface
         character(len=*) :: lchar(*)
         character(len=*) :: mate
         character(len=8) :: cara
-        logical(kind=1) :: exitim
+        aster_logical :: exitim
         real(kind=8) :: time
         character(len=19) :: matel
         integer :: nh

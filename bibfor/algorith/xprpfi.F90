@@ -1,6 +1,7 @@
 subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
                   fiss, ndim, lsn, lst)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -79,11 +80,11 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
 !     UPWIND INTEGRATION
     integer :: jtri, jpoi, elcut, ntri, itri, ia, ib, ic, nptint, pa, pb, pc
-    integer :: psx, pdx, pter, nelcou, np,  jfmult, numpon
+    integer :: psx, pdx, pter, nelcou, np, jfmult, numpon
     real(kind=8) :: a(3), b(3), c(3), lsta, lstb, lstc, m(3), d, vn(3), eps(3)
     real(kind=8) :: bestd, mp(3), v(3), vnele(3), vin(3), pm(3), pmp(3), toll
     real(kind=8) :: d1
-    logical(kind=1) :: in, eps1z, eps2z, eps3z, eps1u, eps2u, mvert, libre, mpin, kink
+    aster_logical :: in, eps1z, eps2z, eps3z, eps1u, eps2u, mvert, libre, mpin, kink
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
     integer :: iatri(20), ibtri(20), ictri(20)
@@ -369,9 +370,9 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
             endif
 !
-350      continue
+350     continue
 !
-1000  end do
+1000 end do
 !
 !     ******************************************************************
 !     IN ORDER TO CORRECTLY CALCULATE LSN, THE NORMAL DISTANCE TO THE
@@ -458,11 +459,11 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
                     goto 1600
                 endif
 !
-1500          continue
+1500         continue
 !
 !             CONTINUE WITH THE CALCULATIONS. THE KINK CONDITION WILL
 !             BE CONSIDERED LATER.
-1600          continue
+1600         continue
 !
 !             RETREIVE THE NUMBER OF INTERSECTION POINTS FOR THE
 !             ELEMENT
@@ -511,9 +512,9 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
                 endif
 !
-2000          continue
+2000         continue
 !
-2100          continue
+2100         continue
 !
 !             IF THE POINT IS EFFECTIVELY OUTSIDE THE DOMAIN, CALCULATE
 !             THE DISTANCE BETWEEN POINT P AND THE PROJECTION POINT
@@ -556,9 +557,9 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
             endif
 !
-3000      continue
+3000     continue
 !
-3100      continue
+3100     continue
 !
 !          IF THE POINT IS EFFECTIVELY OUTSIDE THE DOMAIN, CALCULATE
 !          THE DISTANCE BETWEEN POINT P AND THE PROJECTION POINT

@@ -17,13 +17,14 @@ subroutine mepres(nomo, chpres, fonc)
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fozerv.h"
 #include "asterfort/mecact.h"
     character(len=8) :: nomo
     character(len=*) :: chpres
 !
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
 !
 !    CETTE ROUTINE GENERE UN CHAMP DE PRESSION NUL (CARTE CONSTANTE)
 !     FONC = .TRUE.  FORCE FONCTION

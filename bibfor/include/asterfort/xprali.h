@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xprali(p1, p2, vnele, nelcou, poifis,&
                       trifis, libre, vin)
@@ -24,7 +26,7 @@ interface
         integer :: nelcou
         character(len=19) :: poifis
         character(len=19) :: trifis
-        logical(kind=1) :: libre
+        aster_logical :: libre
         real(kind=8) :: vin(3)
     end subroutine xprali
 end interface

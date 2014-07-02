@@ -2,6 +2,7 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
                   chextr, option, iret)
     implicit none
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/rsexch.h"
@@ -11,7 +12,7 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
     parameter (nmax=10)
     character(len=15) :: noms(nmax)
     integer :: nb, iprec, iretg
-    logical(kind=1) :: alarme
+    aster_logical :: alarme
     save noms,nb,iprec,alarme,iretg
     integer :: iordr
     character(len=*) :: nomsd, nomsy
@@ -88,7 +89,7 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
         do 10 j = 2, i2
             valk(1) = noms(j)
             call utmess('A+', 'UTILITAI8_14', sk=valk(1))
-10      continue
+ 10     continue
         call utmess('A+', 'UTILITAI8_15')
         vali = iordr
         valk(1) = option
@@ -96,6 +97,6 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
         call utmess('A', 'UTILITAI8_16', nk=2, valk=valk, si=vali)
     endif
     iretg=min(icode,iretg)
-20  continue
+ 20 continue
     iret=iretg
 end subroutine

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
                       nmec, np1, np2, ndim, nno,&
@@ -31,8 +33,8 @@ interface
         integer :: ndim
         integer :: dimdef
         integer :: dimdep
-        logical(kind=1) :: axi
-        logical(kind=1) :: perman
+        aster_logical :: axi
+        aster_logical :: perman
         real(kind=8) :: deltat
         integer :: nmec
         integer :: np1

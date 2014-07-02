@@ -2,8 +2,9 @@ function i3egfa(desc, desctm, conex, vlc, im1,&
                 if1, iao1, iae1, im2, if2,&
                 iao2)
     implicit none
-    logical(kind=1) :: i3egfa
+#include "asterf_types.h"
 #include "asterfort/i3egf1.h"
+    aster_logical :: i3egfa
     integer :: desc(*), desctm(*), conex(*), vlc(*), im1, if1, iao1, iae1, im2
     integer :: if2, iao2
 !     ------------------------------------------------------------------
@@ -24,7 +25,7 @@ function i3egfa(desc, desctm, conex, vlc, im1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    logical(kind=1) :: lret
+    aster_logical :: lret
 !
     call i3egf1(desc, desctm, conex(vlc(im1)), conex(vlc(im2)), im1,&
                 if1, iao1, iae1, im2, if2,&

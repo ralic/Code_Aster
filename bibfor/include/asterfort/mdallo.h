@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
 subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                   rigi, mass, amor, jordr, jdisc,&
@@ -45,6 +47,6 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         character(len=8) , optional, intent(in)  :: fonrev(*)
         integer          , optional, intent(out) :: jrevc, jrevv
         character(len=4) , optional, intent(in)  :: sauve
-        logical(kind=1)          , optional, intent(in)  :: checkarg
+        aster_logical          , optional, intent(in)  :: checkarg
     end subroutine mdallo
 end interface

@@ -101,17 +101,17 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu
     character(len=24) :: kmaila, k24prn, knueq
     character(len=24) :: knulil, kvelil, kveref, kvedsc, nomli, kvale
-    logical(kind=1) :: ldist, ldgrel, dbg
-    integer :: i, i1,  iad, iad1,   ialcha
-    integer :: iamail, iancmp,  ianueq, ianulo, iaprol, iapsdl
-    integer :: ichar, icmp,  iconx2
-    integer :: idprn1, idprn2, jresl, idveds, idverf,  iec, iel
+    aster_logical :: ldist, ldgrel, dbg
+    integer :: i, i1, iad, iad1, ialcha
+    integer :: iamail, iancmp, ianueq, ianulo, iaprol, iapsdl
+    integer :: ichar, icmp, iconx2
+    integer :: idprn1, idprn2, jresl, idveds, idverf, iec, iel
     integer :: igr, il, ilim, ilimnu
     integer :: ilinu, ilive, ilivec, ima, imat, inold
-    integer :: iresu, iret, j, jec,  jvale, k1
+    integer :: iresu, iret, j, jec, jvale, k1
     integer :: lgncmp, mode, n1, nbchar, nbelm, nbnoss
     integer :: nbresu, nbsma, nbssa, ncmp, ncmpel, nddl1, nel, nequa
-    integer :: nm, nmxcmp, nnoe, nugd, numa, iexi,  k, jvale1
+    integer :: nm, nmxcmp, nnoe, nugd, numa, iexi, k, jvale1
     integer :: icodla(nbecmx), icodge(nbecmx), lshift
     integer :: admodl, lcmodl, ifm, niv, rang, nbproc
 !

@@ -43,6 +43,7 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 ! OUT: NI      I      : NOMBRE DE VALEURS IGNOREES DANS SOMMR
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -65,9 +66,9 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     integer(kind=8) :: sommi3
     integer :: iret, iadm, iadd, long, lon2, iad, kk, nbign
     integer :: nbob2, itrou, iobj
-    logical(kind=1) :: contig
+    aster_logical :: contig
     character(len=24) :: k24
-    character(len=8) ::  stock
+    character(len=8) :: stock
     character(len=3) :: type
     character(len=1) :: genr
 !
@@ -132,17 +133,17 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
             lonmax=lon2
             call wkvect('&&TSTOBJ.PTEUR_NOM', 'V V '//type, long, iad)
             if (type .eq. 'K8') then
-                do 51, kk=1,long
-                call jenuno(jexnum(ob1, kk), zk8(iad-1+kk))
-51              continue
+                do 51 kk = 1, long
+                    call jenuno(jexnum(ob1, kk), zk8(iad-1+kk))
+ 51             continue
             else if (type.eq.'K16') then
-                do 52, kk=1,long
-                call jenuno(jexnum(ob1, kk), zk16(iad-1+kk))
-52              continue
+                do 52 kk = 1, long
+                    call jenuno(jexnum(ob1, kk), zk16(iad-1+kk))
+ 52             continue
             else if (type.eq.'K24') then
-                do 53, kk=1,long
-                call jenuno(jexnum(ob1, kk), zk24(iad-1+kk))
-53              continue
+                do 53 kk = 1, long
+                    call jenuno(jexnum(ob1, kk), zk24(iad-1+kk))
+ 53             continue
             endif
         endif
 !
@@ -164,31 +165,31 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
         lonmax=0
         sommi3=0
         sommr=0.d0
-        do 2, iobj=1,nbob2
-        call jeexin(jexnum(ob1, iobj), iret0)
-        if (iret0 .le. 0) goto 2
+        do 2 iobj = 1, nbob2
+            call jeexin(jexnum(ob1, iobj), iret0)
+            if (iret0 .le. 0) goto 2
 !
 !            -- POUR SE PROTEGER DES OBJETS EN COURS DE CREATION :
-        call jelira(jexnum(ob1, iobj), 'IADM', iadm)
-        call jelira(jexnum(ob1, iobj), 'IADD', iadd)
-        if (abs(iadm)+abs(iadd) .eq. 0) goto 2
+            call jelira(jexnum(ob1, iobj), 'IADM', iadm)
+            call jelira(jexnum(ob1, iobj), 'IADD', iadd)
+            if (abs(iadm)+abs(iadd) .eq. 0) goto 2
 !
-        itrou=1
+            itrou=1
 !
-        call jelira(jexnum(ob1, iobj), 'LONUTI', lon2)
-        call jelira(jexnum(ob1, iobj), 'LONMAX', long)
-        lonuti=lonuti+lon2
-        lonmax=lonmax+long
-        call jeveuo(jexnum(ob1, iobj), 'L', iad)
+            call jelira(jexnum(ob1, iobj), 'LONUTI', lon2)
+            call jelira(jexnum(ob1, iobj), 'LONMAX', long)
+            lonuti=lonuti+lon2
+            lonmax=lonmax+long
+            call jeveuo(jexnum(ob1, iobj), 'L', iad)
 !
-        call tstvec(perm, iad, long, type, sommi2,&
-                    sommr2, nbign)
-        ni=ni+nbign
-        sommi3=sommi3+sommi2
-        sommr=sommr+sommr2
-        if (.not.contig) call jelibe(jexnum(ob1, iobj))
+            call tstvec(perm, iad, long, type, sommi2,&
+                        sommr2, nbign)
+            ni=ni+nbign
+            sommi3=sommi3+sommi2
+            sommr=sommr+sommr2
+            if (.not.contig) call jelibe(jexnum(ob1, iobj))
 !
- 2      continue
+  2     continue
         if (itrou .eq. 0) goto 9999
         write(k24,'(I24)') sommi3
         read(k24(16:24),'(I9)') sommi
@@ -201,6 +202,6 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 !     -- POUR L'INSTANT : RESUME= SOMMI
     resume=sommi
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

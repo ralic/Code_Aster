@@ -19,6 +19,7 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
@@ -53,7 +54,7 @@ subroutine nmimpt(numins, sddisc, sdimpr)
     integer :: lenivo
     character(len=16) :: metlis
     integer :: ibid
-    logical(kind=1) :: lprint
+    aster_logical :: lprint
 !
 ! ----------------------------------------------------------------------
 !

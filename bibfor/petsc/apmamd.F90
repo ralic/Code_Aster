@@ -70,13 +70,13 @@ subroutine apmamd(kptsc)
     integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
     integer :: k, iligl, jcoll, nzdeb, nzfin
     integer :: iterm, jterm, jcolg, iligg, jnugll
-    integer :: jnequ, nloc, nglo,  jnequl
+    integer :: jnequ, nloc, nglo, jnequl
 !
     character(len=19) :: nomat, nosolv
     character(len=16) :: idxi1, idxi2, trans1, trans2
     character(len=14) :: nonu
 !
-    logical(kind=1) :: lmnsy
+    aster_logical :: lmnsy
 !
     real(kind=8) :: valm
 !
@@ -88,7 +88,7 @@ subroutine apmamd(kptsc)
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: neql, neqg, ierr
-    PetscInt :: one = 1 
+    PetscInt :: one = 1
     Mat :: a
 !----------------------------------------------------------------
     call jemarq()
@@ -144,56 +144,56 @@ subroutine apmamd(kptsc)
 !  Recopie de la matrice
 !  C'est PETSc qui s'occupe de la recopie des termes vers
 !  le bon processeur
-! 
+!
 ! Envoi de Aloc(1,1)
-    call MatSetValue(a, to_petsc_int(zi(jnugll)-1), to_petsc_int(zi(jnugll)-1), &
-                     zr(jvalm), ADD_VALUES, ierr)
+    call MatSetValue(a, to_petsc_int(zi(jnugll)-1), to_petsc_int(zi(jnugll)-1), zr(jvalm),&
+                     ADD_VALUES, ierr)
     ASSERT(ierr==0)
-! 
+!
     do jcoll = 2, nloc
         nzdeb = zi(jsmdi+jcoll-2) + 1
         nzfin = zi(jsmdi+jcoll-1)
-        ! Indice colonne global (F) de la colonne locale jcoll
+! Indice colonne global (F) de la colonne locale jcoll
         jcolg = zi(jnugll+jcoll-1)
         do k = nzdeb, nzfin
             iligl = zi4(jsmhc-1+k)
             iligg = zi(jnugll-1+iligl)
-            ! Compteur de termes sur la colonne locale jcoll
+! Compteur de termes sur la colonne locale jcoll
             iterm=iterm+1
             valm=zr(jvalm-1+k)
-            ! Stockage dans val1 de A(iligg,jcolg)  
+! Stockage dans val1 de A(iligg,jcolg)  
             zr(jdval1+iterm-1)=valm
-            ! et de son indice ligne global (C)
+! et de son indice ligne global (C)
             zi4(jdxi1+iterm-1)=iligg-1
-            ! On passe à la *ligne* jcoll
+! On passe à la *ligne* jcoll
             if (iligg .ne. jcolg) then
-              ! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg) 
-              ! qui a déjà été rencontré dans la *colonne* jcoll
-              ! Compteur de termes sur la ligne jcoll
-              jterm=jterm+1  
-              if ( .not. lmnsy ) then 
-                ! si la matrice ASTER est symétrique
-                ! la ligne jcoll est la transposée de la colonne jcoll  
-                ! on reprend la valeur lue depuis valm
-                valm=zr(jvalm-1+k)  
-              else 
-              ! si la matrice ASTER n'est pas symétrique
-              ! on lit les termes de la ligne jcoll depuis valm2
-                valm=zr(jvalm2-1+k) 
-              endif
-              ! on stocke dans val2 
-              zr(jdval2+jterm-1)=valm
-              ! avec l'indice colonne global (C) correspondant 
-              zi4(jdxi2+jterm-1)=iligg-1
+! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg) 
+! qui a déjà été rencontré dans la *colonne* jcoll
+! Compteur de termes sur la ligne jcoll
+                jterm=jterm+1  
+                if (.not. lmnsy) then
+! si la matrice ASTER est symétrique
+! la ligne jcoll est la transposée de la colonne jcoll  
+! on reprend la valeur lue depuis valm
+                    valm=zr(jvalm-1+k)  
+                else 
+! si la matrice ASTER n'est pas symétrique
+! on lit les termes de la ligne jcoll depuis valm2
+                    valm=zr(jvalm2-1+k) 
+                endif
+! on stocke dans val2 
+                zr(jdval2+jterm-1)=valm
+! avec l'indice colonne global (C) correspondant 
+                zi4(jdxi2+jterm-1)=iligg-1
             endif
         end do
-        ! Envoi de la colonne jcolg 
+! Envoi de la colonne jcolg 
         call MatSetValues(a, to_petsc_int(iterm), zi4(jdxi1), one, [to_petsc_int(jcolg-1)],&
                           zr(jdval1), ADD_VALUES, ierr)
         ASSERT(ierr==0)
-        ! Envoi de la ligne jcolg
+! Envoi de la ligne jcolg
         call MatSetValues(a, one, [to_petsc_int(jcolg-1)], to_petsc_int(jterm), zi4(jdxi2),&
-                          zr(jdval2), ADD_VALUES, ierr)      
+                          zr(jdval2), ADD_VALUES, ierr)
         ASSERT(ierr==0) 
         iterm=0
         jterm=0

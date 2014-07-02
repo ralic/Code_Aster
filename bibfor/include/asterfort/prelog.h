@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine prelog(ndim, lgpg, vim, gn, lamb,&
                       logl, fm, fp, epsml, deps,&
@@ -30,7 +32,7 @@ interface
         real(kind=8) :: epsml(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: tn(6)
-        logical(kind=1) :: resi
+        aster_logical :: resi
         integer :: iret
     end subroutine prelog
 end interface

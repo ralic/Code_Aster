@@ -46,6 +46,7 @@ subroutine crlidd(nomres, mailla)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cheris.h"
 #include "asterfort/copvis.h"
@@ -65,7 +66,7 @@ subroutine crlidd(nomres, mailla)
     character(len=8) :: nomres, mailla, cb, mn, ha, au, nomtyp
     character(len=24) :: temmn, temcb, temha, temau, temmas
     character(len=24) :: typint, noeint, desdef
-    logical(kind=1) :: doubok
+    aster_logical :: doubok
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -26,6 +26,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codere.h"
 #include "asterfort/crirup.h"
@@ -46,7 +47,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(3, nno)
 !
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
     common / nmpale / unsurk,unsurm,valden
     real(kind=8) :: unsurk, unsurm, valden
 !
@@ -86,7 +87,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !......................................................................
 !
-    logical(kind=1) :: grand
+    aster_logical :: grand
 !
     integer :: kpg, kk, n, i, m, j, j1, kl, kkd, cod(27), ipoids, ivf, idfde
 !
@@ -109,7 +110,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! - INITIALISATION CODES RETOURS
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -123,7 +124,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
         do 20 j = 1, 6
             eps (j)=0.d0
             deps(j)=0.d0
-20      continue
+ 20     continue
 !
         call nmgeom(3, nno, .false._1, grand, geom,&
                     kpg, ipoids, ivf, idfde, deplm,&
@@ -146,15 +147,15 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
                 def(5,n,i) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1))/ rac2
                 def(6,n,i) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2))/ rac2
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
         do 60 i = 1, 3
             sign(i) = sigm(i,kpg)
-60      continue
+ 60     continue
         do 65 i = 4, 6
             sign(i) = sigm(i,kpg)*rac2
-65      continue
+ 65     continue
 !
 !
 ! - LOI DE COMPORTEMENT
@@ -179,15 +180,15 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                 do 160 n = 1, nno
                     do 150 i = 1, 3
                         kkd = (3*(n-1)+i-1) * (3*(n-1)+i) /2
-                        do 151,kl=1,6
-                        sig(kl)=0.d0
-                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                        sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                        sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-151                      continue
+                        do 151 kl = 1, 6
+                            sig(kl)=0.d0
+                            sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                            sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                            sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                            sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+                            sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
+                            sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
+151                     continue
                         do 140 j = 1, 3
                             do 130 m = 1, n
                                 if (m .eq. n) then
@@ -211,22 +212,22 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                                     matuu(kk) = matuu(kk) + tmp*poids
                                 endif
 !
-130                          continue
-140                      continue
-150                  continue
-160              continue
+130                         continue
+140                     continue
+150                 continue
+160             continue
             else
                 do 560 n = 1, nno
                     do 550 i = 1, 3
-                        do 551,kl=1,6
-                        sig(kl)=0.d0
-                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                        sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                        sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-551                      continue
+                        do 551 kl = 1, 6
+                            sig(kl)=0.d0
+                            sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                            sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                            sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                            sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+                            sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
+                            sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
+551                     continue
                         do 540 j = 1, 3
                             do 530 m = 1, nno
 !
@@ -243,10 +244,10 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                                 kk = 3*nno*(3*(n-1)+i-1) + 3*(m-1)+j
                                 matuu(kk) = matuu(kk) + tmp*poids
 !
-530                          continue
-540                      continue
-550                  continue
-560              continue
+530                         continue
+540                     continue
+550                 continue
+560             continue
             endif
         endif
 !
@@ -262,14 +263,14 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                 def(4,n,2)*sigma(4)+ def(6,n,2)*sigma(6))
                 vectu(3,n)=vectu(3,n)+ poids* (def(3,n,3)*sigma(3)+&
                 def(5,n,3)*sigma(5)+ def(6,n,3)*sigma(6))
-230          continue
+230         continue
 !
             do 310 kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-310          continue
+310         continue
             do 320 kl = 4, 6
                 sigp(kl,kpg) = sigma(kl)/rac2
-320          continue
+320         continue
 !
         endif
 !
@@ -279,15 +280,15 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 !
             do 330 kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-330          continue
+330         continue
             do 340 kl = 4, 6
                 sigp(kl,kpg) = sigma(kl)/rac2
-340          continue
+340         continue
 !
         endif
 !
 !
-800  end do
+800 end do
 !
 !     POST_ITER='CRIT_RUPT'
     if (crit(11) .gt. 0.d0) then
@@ -297,7 +298,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
                     instam, instap)
     endif
 !
-1956  continue
+1956 continue
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 end subroutine

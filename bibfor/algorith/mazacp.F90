@@ -18,6 +18,7 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/bptobg.h"
 #include "asterfort/diago3.h"
@@ -63,8 +64,8 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     integer :: idomm, iepsqt, iepsqc, irsigm, idissd
     parameter (idomm=3,iepsqt=4,iepsqc=5,irsigm=6,idissd=8)
 ! --- ------------------------------------------------------------------
-    logical(kind=1) :: rigi, resi
-    logical(kind=1) :: elas, prog
+    aster_logical :: rigi, resi
+    aster_logical :: elas, prog
     integer :: ii, jj, ll
 !
     real(kind=8) :: rac2, grdexp
@@ -137,7 +138,7 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
 !       EPSEQ  = sqrt( tr(<EPSE>  * <EPSE> )  )
     epseqt = 0.0d0
     epseqc = 0.0d0
-    epseq  = 0.0d0
+    epseq = 0.0d0
     call r8inir(6, 0.d0, tr, 1)
     call r8inir(6, 0.d0, epsplu, 1)
     do ii = 1, 3
@@ -170,7 +171,7 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     trsigc = 0.0d0
     sigeqt = 0.0d0
     sigeqc = 0.0d0
-    sigeq  = 0.0d0
+    sigeq = 0.0d0
     do ii = 1, 3
         trsiga = trsiga + abs(sigpri(ii))
         sigeq = sigeq + (sigpri(ii)**2)

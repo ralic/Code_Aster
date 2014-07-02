@@ -19,6 +19,7 @@ subroutine cazocd(char, motfac, izone, nzoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
@@ -57,7 +58,7 @@ subroutine cazocd(char, motfac, izone, nzoco)
     character(len=16) :: glis
     real(kind=8) :: aljeu
     real(kind=8) :: coefpt, coefpn, coefff, coefte
-    logical(kind=1) :: lcact, lfrot, lpenac, lpenaf
+    aster_logical :: lcact, lfrot, lpenac, lpenaf
 !
 ! ----------------------------------------------------------------------
 !

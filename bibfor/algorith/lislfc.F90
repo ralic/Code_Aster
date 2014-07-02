@@ -19,6 +19,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -31,7 +32,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    logical(kind=1) :: lfcplx, lacce
+    aster_logical :: lfcplx, lacce
     integer :: ichar, indic
     integer :: iexcit, nexci
     character(len=19) :: excit
@@ -52,7 +53,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
 !
 !
-    integer ::  jinfc2, jlcha2
+    integer :: jinfc2, jlcha2
     character(len=24) :: k24bid
     integer :: nfcplx, nfreel
     integer :: nccplx, ncreel

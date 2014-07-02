@@ -20,6 +20,7 @@ subroutine te0409(option, nomte)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -64,7 +65,7 @@ subroutine te0409(option, nomte)
     integer :: codret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: ul(6, 4), dul(6, 4)
-    real(kind=8) :: matloc((6*4)*(6*4+1)/2), vecloc(6,4)
+    real(kind=8) :: matloc((6*4)*(6*4+1)/2), vecloc(6, 4)
     character(len=16) :: option, nomte, compor
 !
 ! ---------------------------------------------------------------------
@@ -141,11 +142,11 @@ subroutine te0409(option, nomte)
 !
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), c, s
 !
-    logical(kind=1) :: t3g, q4g
-    logical(kind=1) :: leul, lrgm
-    logical(kind=1) :: lbid, resi, rigi
-    logical(kind=1) :: q4gg
-    logical(kind=1) :: coupmf, ther
+    aster_logical :: t3g, q4g
+    aster_logical :: leul, lrgm
+    aster_logical :: lbid, resi, rigi
+    aster_logical :: q4gg
+    aster_logical :: coupmf, ther
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx
     integer :: idfd2, jgano
@@ -159,7 +160,7 @@ subroutine te0409(option, nomte)
 !
     real(kind=8) :: delas(6, 6), dsidep(6, 6)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
-    real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth,win(1),wout(1)
+    real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth, win(1), wout(1)
     real(kind=8) :: khith
     real(kind=8) :: alpha, beta
 ! VARIABLES POUR DHRC
@@ -179,15 +180,15 @@ subroutine te0409(option, nomte)
     character(len=24) :: valk(2)
 !
     codret = 0
-    nbsig  = 6
-    q4gg   = .false.
-    t3g    = .false.
-    q4g    = .false.
-    leul   = .false.
+    nbsig = 6
+    q4gg = .false.
+    t3g = .false.
+    q4g = .false.
+    leul = .false.
 !
-    if (nomte.eq.'MEDKTG3' .or. nomte.eq.'MET3GG3') then
+    if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
         t3g = .true.
-    else if(nomte.eq.'MEDKQG4' .or. nomte.eq.'MEQ4GG4') then
+    else if (nomte.eq.'MEDKQG4' .or. nomte.eq.'MEQ4GG4') then
         q4g = .true.
     else
         valk(1) = nomte
@@ -195,7 +196,7 @@ subroutine te0409(option, nomte)
         call utmess('F', 'CALCULEL3_27', nk=2, valk=valk)
     endif
 !
-    if (nomte.eq.'MEQ4GG4' .or. nomte.eq.'MET3GG3') then
+    if (nomte .eq. 'MEQ4GG4' .or. nomte .eq. 'MET3GG3') then
         q4gg = .true.
         nbsig = 8
     endif
@@ -204,8 +205,9 @@ subroutine te0409(option, nomte)
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
     lrgm = option.eq.'RIGI_MECA     '
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                     jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
     call jevech('PGEOMER', 'L', igeom)
 !
     if (nno .eq. 3) then
@@ -216,21 +218,22 @@ subroutine te0409(option, nomte)
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-    if (option.eq.'FULL_MECA'      .or. option.eq.'RAPH_MECA' .or.&
-        option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
+    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
+        'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA') then
 !
         if (.not. lrgm) then
             call jevech('PCARCRI', 'L', icarcr)
             call jevech('PVARIMR', 'L', ivarim)
             call jevech('PCOMPOR', 'L', icompo)
             compor = zk16(icompo)
-            comp3  = zk16(icompo+3)
-            leul   = zk16(icompo+2).eq.'GROT_GDEP'
+            comp3 = zk16(icompo+3)
+            leul = zk16(icompo+2).eq.'GROT_GDEP'
             read (zk16(icompo-1+2),'(I16)') nbvari
 !     ON VERIFIE QUE LE NOMBRE DE VARINT TIENT DANS ECR
             ASSERT(nbvari.le.24)
 !
-            call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+            call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+                        itab=jtab)
             icontm=jtab(1)
             ASSERT(npg.eq.jtab(3))
 !
@@ -243,7 +246,7 @@ subroutine te0409(option, nomte)
                 do i = 1, nno
                     i1 = 3* (i-1)
                     i2 = 6* (i-1)
-                    zr(igeom+i1)   = zr(igeom+i1)   + zr(ideplm+i2)   + zr(ideplp+i2)
+                    zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr(ideplp+i2)
                     zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
                     zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
                 end do
@@ -275,7 +278,7 @@ subroutine te0409(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PCACOQU', 'L', icacoq)
 !     EPAISSEUR TOTALE
-        ep   = zr(icacoq)
+        ep = zr(icacoq)
         ctor = zr(icacoq+3)
 !
         if (resi) then
@@ -298,29 +301,29 @@ subroutine te0409(option, nomte)
 !
         if (rigi) then
             call r8inir((3*nno)*(3*nno), 0.d0, flexi, 1)
-            call r8inir((3*nno)*(3*nno), 0.d0, flex,  1)
-            call r8inir((2*nno)*(2*nno), 0.d0, memb,  1)
-            call r8inir((2*nno)*(3*nno), 0.d0, mefl,  1)
+            call r8inir((3*nno)*(3*nno), 0.d0, flex, 1)
+            call r8inir((2*nno)*(2*nno), 0.d0, memb, 1)
+            call r8inir((2*nno)*(3*nno), 0.d0, mefl, 1)
         endif
 !
         if (resi) then
             call r8inir(6*nno, 0.d0, vecloc, 1)
-            call r8inir(   32, 0.d0, effint, 1)
-            call r8inir(   32, 0.d0, efforp, 1)
+            call r8inir(32, 0.d0, effint, 1)
+            call r8inir(32, 0.d0, efforp, 1)
         endif
 !
-        call r8inir(36, 0.d0,  delas, 1)
+        call r8inir(36, 0.d0, delas, 1)
         call r8inir(32, 0.d0, sigmam, 1)
         call r8inir(32, 0.d0, efform, 1)
 !
 !     PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 !
         do ino = 1, nno
-            um(1,ino)  =  ul(1,ino)
-            um(2,ino)  =  ul(2,ino)
-            uf(1,ino)  =  ul(3,ino)
-            uf(2,ino)  =  ul(5,ino)
-            uf(3,ino)  = -ul(4,ino)
+            um(1,ino) = ul(1,ino)
+            um(2,ino) = ul(2,ino)
+            uf(1,ino) = ul(3,ino)
+            uf(2,ino) = ul(5,ino)
+            uf(3,ino) = -ul(4,ino)
             dum(1,ino) = dul(1,ino)
             dum(2,ino) = dul(2,ino)
             duf(1,ino) = dul(3,ino)
@@ -344,8 +347,9 @@ subroutine te0409(option, nomte)
 !     T2UI : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
 !
             alpha = zr(icacoq+1) * r8dgrd()
-            beta  = zr(icacoq+2) * r8dgrd()
-            call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+            beta = zr(icacoq+2) * r8dgrd()
+            call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                        c, s)
 !
 ! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !     DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
@@ -357,13 +361,13 @@ subroutine te0409(option, nomte)
 !
         do ipg = 1, npg
             call r8inir(24, 0.d0, ecrp, 1)
-            call r8inir( 3, 0.d0, n   , 1)
-            call r8inir( 3, 0.d0, m   , 1)
-            call r8inir( 2, 0.d0, q   , 1)
-            call r8inir( 9, 0.d0, df  , 1)
-            call r8inir( 9, 0.d0, dm  , 1)
-            call r8inir( 9, 0.d0, dmf , 1)
-            call r8inir( 4, 0.d0, dc  , 1)
+            call r8inir(3, 0.d0, n, 1)
+            call r8inir(3, 0.d0, m, 1)
+            call r8inir(2, 0.d0, q, 1)
+            call r8inir(9, 0.d0, df, 1)
+            call r8inir(9, 0.d0, dm, 1)
+            call r8inir(9, 0.d0, dmf, 1)
+            call r8inir(4, 0.d0, dc, 1)
 !
             qsi = zr(icoopg-1+ndim*(ipg-1)+1)
             eta = zr(icoopg-1+ndim*(ipg-1)+2)
@@ -371,7 +375,7 @@ subroutine te0409(option, nomte)
             icpg = (ipg-1)*nbcont
             icpv = (ipg-1)*nbvari
 !
-            if (nomte.eq.'MEDKTG3') then
+            if (nomte .eq. 'MEDKTG3') then
                 call dxtbm(carat3(9), bm)
                 call dktbf(qsi, eta, carat3, bf)
                 poids = zr(ipoids+ipg-1)*carat3(7)
@@ -393,13 +397,19 @@ subroutine te0409(option, nomte)
                 poids = carat3(8)
             endif
 !
-            call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
-            call pmrvec('ZERO', 3, 2*nno, bm, dum, deps)
-            call pmrvec('ZERO', 3, 3*nno, bf, uf, khi)
-            call pmrvec('ZERO', 3, 3*nno, bf, duf, dkhi)
+            call pmrvec('ZERO', 3, 2*nno, bm, um,&
+                        eps)
+            call pmrvec('ZERO', 3, 2*nno, bm, dum,&
+                        deps)
+            call pmrvec('ZERO', 3, 3*nno, bf, uf,&
+                        khi)
+            call pmrvec('ZERO', 3, 3*nno, bf, duf,&
+                        dkhi)
             if (q4gg) then
-                call pmrvec('ZERO', 2, 3*nno, bc, uf, gam)
-                call pmrvec('ZERO', 2, 3*nno, bc, duf, dgam)
+                call pmrvec('ZERO', 2, 3*nno, bc, uf,&
+                            gam)
+                call pmrvec('ZERO', 2, 3*nno, bc, duf,&
+                            dgam)
             endif
 !     EULER_ALMANSI - TERMES QUADRATIQUES
             if (leul) then
@@ -426,22 +436,23 @@ subroutine te0409(option, nomte)
 !
             if (.not. lrgm) then
                 do i = 1, 3
-                    epst(i)   = eps(i) + deps(i)
+                    epst(i) = eps(i) + deps(i)
                     epst(i+3) = khi(i) + dkhi(i)
                     deps(i+3) = dkhi(i)
-                    epsm(i)   = eps(i)
+                    epsm(i) = eps(i)
                     epsm(i+3) = khi(i)
                 end do
 !
                 do i = 1, nbsig
-                    sig(i)  = efform(icpg + i)
+                    sig(i) = efform(icpg + i)
                     sigm(i) = sig(i)
                 end do
             endif
 !
             if (compor(1:4) .eq. 'ELAS') then
-                call dxmate('RIGI', dff, dmm, dmff, dcc, dci, dmc, dfc, nno, pgl, multic, coupmf,&
-                            t2iu, t2ui, t1ve)
+                call dxmate('RIGI', dff, dmm, dmff, dcc,&
+                            dci, dmc, dfc, nno, pgl,&
+                            multic, coupmf, t2iu, t2ui, t1ve)
                 call r8inir(36, 0.d0, dsidep, 1)
                 do i = 1, 3
                     do j = 1, 3
@@ -492,11 +503,12 @@ subroutine te0409(option, nomte)
                 surfgp = poids
 !
                 call r8inir(36, 0.d0, dsidep, 1)
-                call glrcmm(zi(imate), matr, ep, surfgp, pgl, epst, deps, dsig, ecr, delas,&
+                call glrcmm(zi(imate), matr, ep, surfgp, pgl,&
+                            epst, deps, dsig, ecr, delas,&
                             dsidep, zr(icarcr), codret)
 !
                 do i = 1, 3
-                    dsig(i)   = dsig(i)*ep
+                    dsig(i) = dsig(i)*ep
                     dsig(3+i) = dsig(3+i)*ep*ep/6.d0
                 end do
 !
@@ -520,21 +532,24 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
-                call crgdm(zi(imate), compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,&
-                        alphaf, alfmc, ep, lrgm, ipg, ther, tref, dtmoy, dtgra, tmoy, tgra, alphat)
+                call crgdm(zi(imate), compor, lambda, deuxmu, lamf,&
+                           deumuf, gt, gc, gf, seuil,&
+                           alphaf, alfmc, ep, lrgm, ipg,&
+                           ther, tref, dtmoy, dtgra, tmoy,&
+                           tgra, alphat)
 !
 !     CALCUL DE LA DEFORMATION THERMIQUE
                 if (ther) then
                     epsth = alphat * (tmoy-tref)
                     khith = alphat * tgra
                     do i = 1, 2
-                        epsm(i)   = epsm(i)   - epsth
+                        epsm(i) = epsm(i) - epsth
                         epsm(i+3) = epsm(i+3) - khith
                     end do
                     depsth = alphat * dtmoy
                     dkhith = alphat * dtgra
                     do i = 1, 2
-                        deps(i)   = deps(i)   - depsth
+                        deps(i) = deps(i) - depsth
                         deps(i+3) = deps(i+3) - dkhith
                     end do
                 endif
@@ -542,8 +557,10 @@ subroutine te0409(option, nomte)
 !     ENDOMMAGEMENT SEULEMENT
 !
                 call r8inir(36, 0.d0, dsidep, 1)
-                call lcgldm(epsm, deps, ecr, option, sig, ecrp, dsidep, lambda, deuxmu, lamf,&
-                            deumuf, gt, gc, gf, seuil, alphaf, alfmc, zr(icarcr), codret)
+                call lcgldm(epsm, deps, ecr, option, sig,&
+                            ecrp, dsidep, lambda, deuxmu, lamf,&
+                            deumuf, gt, gc, gf, seuil,&
+                            alphaf, alfmc, zr(icarcr), codret)
 !
             else if (compor(1:4).eq. 'DHRC') then
 !
@@ -556,13 +573,17 @@ subroutine te0409(option, nomte)
                 endif
 !
                 call dhrc_recup_mate(zi(imate), compor, ep, a0, c0,&
-                                    aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu)
+                                     aa_t, ga_t, ab_, gb_, ac_,&
+                                     gc_, aa_c, ga_c, cstseu)
 !
 !     ENDOMMAGEMENT COUPLÉ PLASTICITÉ
 !
                 call r8inir(36, 0.d0, dsidep, 1)
-                call dhrc_lc(epsm, deps, ecr, pgl, option, sig, ecrp, a0, c0, aa_t, ga_t, ab_,&
-                           gb_, ac_, gc_, aa_c, ga_c, cstseu, zr(icarcr), codret, dsidep)
+                call dhrc_lc(epsm, deps, ecr, pgl, option,&
+                             sig, ecrp, a0, c0, aa_t,&
+                             ga_t, ab_, gb_, ac_, gc_,&
+                             aa_c, ga_c, cstseu, zr(icarcr), codret,&
+                             dsidep)
 !
             else if (compor(1:7).eq. 'KIT_DDI') then
 !     ENDOMMAGEMENT PLUS PLASTICITE
@@ -573,9 +594,12 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
-                call nmcoup('RIGI', ipg, 1, 3, k8bid, zi(imate), zk16(icompo), lbid, zr(icarcr),&
-                            r8bid, r8bid, 6, epsm, deps, 6, sigm, ecr, option, 1, win,&
-                            sig, ecrp, 36, dsidep, 1, wout, codret)
+                call nmcoup('RIGI', ipg, 1, 3, k8bid,&
+                            zi(imate), zk16(icompo), lbid, zr(icarcr), r8bid,&
+                            r8bid, 6, epsm, deps, 6,&
+                            sigm, ecr, option, 1, win,&
+                            sig, ecrp, 36, dsidep, 1,&
+                            wout, codret)
             else
                 valk(1) = compor
                 call utmess('F', 'ELEMENTS4_79', nk=1, valk=valk)
@@ -604,7 +628,7 @@ subroutine te0409(option, nomte)
 !     BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
 !
                 do k = 1, 3
-                    effint((ipg-1)*8+k)   = n(k)
+                    effint((ipg-1)*8+k) = n(k)
                     effint((ipg-1)*8+3+k) = m(k)
                 end do
 !
@@ -643,9 +667,9 @@ subroutine te0409(option, nomte)
                 do i = 1, 3
                     do j = 1, 3
                         l = l + 1
-                        dm(l) = dm(l)  + poids*dsidep(j,i)
+                        dm(l) = dm(l) + poids*dsidep(j,i)
                         dmf(l)= dmf(l) + poids*dsidep(j,i+3)
-                        df(l) = df(l)  + poids*dsidep(j+3,i+3)
+                        df(l) = df(l) + poids*dsidep(j+3,i+3)
                     end do
                 end do
 !
@@ -661,17 +685,21 @@ subroutine te0409(option, nomte)
 !     KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
 !                   + BCT*DC*BC
 !     MEMBRANE
-                call utbtab('CUMUL', 3, 2*nno, dm, bm, work, memb)
+                call utbtab('CUMUL', 3, 2*nno, dm, bm,&
+                            work, memb)
 !
 !     FLEXION
-                call utbtab('CUMUL', 3, 3*nno, df, bf, work, flex)
+                call utbtab('CUMUL', 3, 3*nno, df, bf,&
+                            work, flex)
 !
 !     CISAILLEMENT
                 if (q4gg) then
-                    call utbtab('CUMUL', 2, 3*nno, dc, bc, work, flex)
+                    call utbtab('CUMUL', 2, 3*nno, dc, bc,&
+                                work, flex)
                 endif
 !     COUPLAGE
-                call utctab('CUMUL', 3, 3*nno, 2*nno, dmf, bf, bm, work, mefl)
+                call utctab('CUMUL', 3, 3*nno, 2*nno, dmf,&
+                            bf, bm, work, mefl)
             endif
 !
 !     FIN BOUCLE SUR LES POINTS DE GAUSS
@@ -700,7 +728,7 @@ subroutine te0409(option, nomte)
 !     ACCUMULATION DES SOUS MATRICES DANS MATLOC
             if (t3g) then
                 call dxtloc(flex, memb, mefl, ctor, matloc)
-            else if(q4g) then
+            else if (q4g) then
                 call dxqloc(flex, memb, mefl, ctor, matloc)
             endif
 !     STOCKAGE DE MATLOC

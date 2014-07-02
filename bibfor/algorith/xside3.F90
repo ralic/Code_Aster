@@ -6,6 +6,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
@@ -79,7 +80,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     integer :: nno, npgbis, ddlm, ddld, ndimb, ino
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
     integer :: nbsig, nnops
-    logical(kind=1) :: grdepl
+    aster_logical :: grdepl
     real(kind=8) :: f(3, 3), eps(6), baslog(9)
     real(kind=8) :: fe(4), instan, lsng, lstg
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
@@ -119,16 +120,16 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
     nbsig = nbsigm()
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------
     call jevech('PDEPLAR', 'L', idepl)
 !
 !       TE4-'XINT' : SCHÉMAS À 15 POINTS
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, npg=npgbis,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -147,7 +148,8 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
@@ -171,10 +173,13 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(.false._1, nnop, nnops, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
+        call xcinem(.false._1, nnop, nnops, idepl, grdepl,&
+                    ndim, he, rbid, rbid, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f,&
+                    eps, grad)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)
@@ -184,9 +189,8 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 !
 !       CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
-        call dmatmc('XFEM', imate, instan, '+',&
-                    ipg, 1, r8bi7, r8bi3, nbsig,&
-                    d)
+        call dmatmc('XFEM', imate, instan, '+', ipg,&
+                    1, r8bi7, r8bi3, nbsig, d)
 !
 ! --- VECTEUR DES CONTRAINTES
 !      ----------------------

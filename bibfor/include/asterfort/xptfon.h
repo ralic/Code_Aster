@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                       cnxinv, jmafon, nxptff, jfon, nfon,&
@@ -33,8 +35,8 @@ interface
         integer :: jbas
         integer :: jtail
         character(len=8) :: fiss
-        logical(kind=1) :: goinop
+        aster_logical :: goinop
         character(len=19) :: listpt
-        logical(kind=1) :: orient
+        aster_logical :: orient
     end subroutine xptfon
 end interface

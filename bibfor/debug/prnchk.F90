@@ -2,6 +2,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
                   lgsn, lfront, invsup, seq)
 ! aslint: disable=W1304
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +24,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
     integer :: adress(*), fils(*), frere(*), lgsn(*), lfront(*)
     integer :: invsup(*), seq(*), nbsn
     integer :: sni, sn, sn0, vois, m, vali(2), i
-    logical(kind=1) :: trouv
+    aster_logical :: trouv
     do 1 i = 1, nbsn
         sni=seq(i)
         m = lfront(sni)
@@ -34,7 +35,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
             trouv=.false.
             sn = fils(sn0)
 !
- 2          continue
+  2         continue
             if (sn .ne. 0) then
                 if (sn .eq. sni) trouv=.true.
                 sn=frere(sn)
@@ -47,5 +48,5 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
                 call utmess('A', 'ALGELINE5_59', ni=2, vali=vali)
             endif
         endif
- 1  end do
+  1 end do
 end subroutine

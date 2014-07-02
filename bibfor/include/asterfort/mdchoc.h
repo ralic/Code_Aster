@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                       nbpal, logcho, dplmod, parcho, noecho,&
@@ -40,7 +42,7 @@ interface
         character(len=14) :: numddl
         real(kind=8) :: pulsat(*)
         real(kind=8) :: masgen(*)
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amogen(*)
         real(kind=8) :: bmodal(neq, *)
         integer :: info

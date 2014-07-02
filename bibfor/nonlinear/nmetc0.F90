@@ -20,6 +20,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
@@ -61,7 +62,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
     character(len=24) :: lchin(1), lchout(2)
     character(len=19) :: ligrmo
     character(len=24) :: chgeom
-    logical(kind=1) :: lsief, lvari, lstrx
+    aster_logical :: lsief, lvari, lstrx
 !
 ! ----------------------------------------------------------------------
 !

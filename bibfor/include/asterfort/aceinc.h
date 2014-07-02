@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                       nbocc, ivr, nbepo, nbedi, nbeco,&
@@ -37,9 +39,9 @@ interface
         integer :: nbegb
         integer :: nbemb
         integer :: nbtel
-        logical(kind=1) :: locaco
-        logical(kind=1) :: locagb
-        logical(kind=1) :: locamb
+        aster_logical :: locaco
+        aster_logical :: locagb
+        aster_logical :: locamb
         integer :: jdlm
         integer :: jdln
         integer :: lmax

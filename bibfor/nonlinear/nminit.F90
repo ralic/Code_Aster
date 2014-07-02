@@ -29,6 +29,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/accel0.h"
 #include "asterfort/assert.h"
@@ -118,8 +119,8 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     real(kind=8) :: instin
     character(len=19) :: commoi
     character(len=2) :: codret
-    logical(kind=1) :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
-    logical(kind=1) :: lcont, lunil
+    aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
+    aster_logical :: lcont, lunil
     integer :: ifm, niv
     character(len=19) :: ligrcf, ligrxf
     character(len=8) :: nomo

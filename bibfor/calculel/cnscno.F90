@@ -20,6 +20,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -88,14 +89,14 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     character(len=24) :: noojb
     character(len=24) :: valk(3)
 !     -----------------------------------------------------------------
-    integer :: icmp, nec,   jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
+    integer :: icmp, nec, jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
     integer :: reste, iec, code, nbno
     integer :: ncmpmx, jrefe, ncmp1, neq2, jcmpgd, icmp1, k, ieq2, iexi2, nbec
-    integer :: jprn2, ino, idg2, ico, jdesc,  jvale, iret, n1
+    integer :: jprn2, ino, idg2, ico, jdesc, jvale, iret, n1
     integer :: lshift, nuprf
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
-    logical(kind=1) :: lpchno
+    aster_logical :: lpchno
     character(len=3) :: tsca
     character(len=19) :: cns, cno, prchno, messag, prnoav
     integer, pointer :: deeq(:) => null()

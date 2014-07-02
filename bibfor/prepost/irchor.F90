@@ -2,6 +2,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                   nlicmp, novcmp, nnopar, nbnosy, nbordr,&
                   nbrcmp, nbcmdu, nbpara, codret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -25,7 +26,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     integer :: ioccur, nbnosy, nbordr, nbrcmp, nbcmdu, nbpara, codret
     character(len=8) :: leresu
     character(len=*) :: nchsym, nnuord, nlicmp, novcmp, nnopar
-    logical(kind=1) :: lresul
+    aster_logical :: lresul
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +77,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !
 !
     integer :: jnosy, jncmed, jpa, jordr, n23, iret, n21, nvcmp
-    integer :: n22, nnrmed, isy, nnocha, nnocmp, nchar,  ibid, npreci
+    integer :: n22, nnrmed, isy, nnocha, nnocmp, nchar, ibid, npreci
     integer :: vali, ncrit, innosy, jnordr, icmp, nbcmpt, gd, ncmpmx, iad
     integer :: ntpara, nnpara, jcmp, nparam
 !
@@ -88,7 +89,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     character(len=19) :: noch19, knum
     character(len=24) :: valk(6)
 !
-    logical(kind=1) :: afaire
+    aster_logical :: afaire
     character(len=8), pointer :: veri_nom_cmp(:) => null()
 !
     call jemarq()

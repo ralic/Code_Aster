@@ -25,6 +25,7 @@ subroutine expcar(carte)
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -49,7 +50,7 @@ subroutine expcar(carte)
 !     SORTIES:
 !      ON A CREE QUELQUES OBJETS SUR LA VOLATILE ...
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: dejavu
+    aster_logical :: dejavu
     character(len=8) :: scal, noma
     character(len=24) :: noli
 !
@@ -58,7 +59,7 @@ subroutine expcar(carte)
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, i3, i4, i5, iadesc, iadgp
-    integer :: ialima,    iavale, iavalp, icode
+    integer :: ialima, iavale, iavalp, icode
     integer :: iedit, ient, igd, ima, iret, j
     integer :: nbedit, nbgdmx, nbma, nbmato, ncmpmx, nec, num1
     integer :: num2, numat

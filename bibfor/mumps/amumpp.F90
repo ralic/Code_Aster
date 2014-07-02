@@ -67,7 +67,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
     integer :: option, nbsol, kxmps, ifmump
-    logical(kind=1) :: ldist, eli2lg, prepos, lpreco
+    aster_logical :: ldist, eli2lg, prepos, lpreco
     character(len=1) :: type
     character(len=14) :: impr
     character(len=19) :: vcine
@@ -78,18 +78,18 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (smumps_struc) , pointer :: smpsk => null()
-    type (cmumps_struc) , pointer :: cmpsk => null()
-    type (dmumps_struc) , pointer :: dmpsk => null()
-    type (zmumps_struc) , pointer :: zmpsk => null()
-    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc,  k, ifm, niv
-    integer ::  jj
+    type(smumps_struc), pointer :: smpsk => null()
+    type(cmumps_struc), pointer :: cmpsk => null()
+    type(dmumps_struc), pointer :: dmpsk => null()
+    type(zmumps_struc), pointer :: zmpsk => null()
+    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, k, ifm, niv
+    integer :: jj
     character(len=1) :: rouc
     character(len=4) :: etam
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival
-    logical(kind=1) :: ltypr
+    aster_logical :: ltypr
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
     integer, pointer :: delg(:) => null()

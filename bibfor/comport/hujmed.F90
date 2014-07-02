@@ -26,6 +26,7 @@ subroutine hujmed(k, mater, vin, sig)
 !   OUT VIN    :  VARIABLES INTERNES MODIFIEES
 !         (VARIABLES MEMOIRES + COMPOSANTES DE LA NORMALE A LA SURFACE)
 !   --------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
     integer :: ndt, ndi, k, i, j, kp
     real(kind=8) :: dd, beta, b, m, pcr, rc
@@ -33,7 +34,7 @@ subroutine hujmed(k, mater, vin, sig)
     real(kind=8) :: vin(*), tou(3), p, d12
     real(kind=8) :: mater(22, 2), degr, epsvp, un, zero
     real(kind=8) :: xk(2), th(2), sc(2), deux, qsc
-    logical(kind=1) :: debug
+    aster_logical :: debug
 !
 ! ----------------------------------------------------------------------
     common /tdim/   ndt, ndi
@@ -99,7 +100,7 @@ subroutine hujmed(k, mater, vin, sig)
             tou(j) = sig(i)
             j = j+1
         endif
-10  continue
+ 10 continue
     tou(3) = sig(ndt+1-kp)
 !
     dd= d12*( tou(1)-tou(2) )

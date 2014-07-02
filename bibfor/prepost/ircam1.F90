@@ -69,6 +69,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/utflsh.h"
 #include "asterfort/as_mfdfin.h"
@@ -148,7 +149,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 !
     integer :: idfimd
     integer :: iaux
-    logical(kind=1) :: ficexi
+    aster_logical :: ficexi
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
 !

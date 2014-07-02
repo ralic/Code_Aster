@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine memam2(option, modele, nchar, lchar, mate,&
                       cara, compor, exitim, time, chacce,&
@@ -26,7 +28,7 @@ interface
         character(len=*) :: mate
         character(len=*) :: cara
         character(len=24) :: compor
-        logical(kind=1) :: exitim
+        aster_logical :: exitim
         real(kind=8) :: time
         character(len=*) :: chacce
         character(len=*) :: vecel

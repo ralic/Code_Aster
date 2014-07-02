@@ -18,6 +18,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -78,7 +79,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=8) :: parain, paraou, typech
     integer :: ibid, iret
     integer :: ichar, nbchar, genrec
-    logical(kind=1) :: ldual
+    aster_logical :: ldual
     character(len=24) :: nomlis
     integer :: jlisci, nbch, indxch
     integer :: nbdual
@@ -190,9 +191,9 @@ subroutine vedimd(nomo, lischa, instan, vecele)
             ASSERT(iret.gt.0)
             call reajre(vecele, lchout(1), 'V')
         endif
-30  continue
+ 30 continue
 !
-99  continue
+ 99 continue
 !
     call jedetr(nomlis)
 !

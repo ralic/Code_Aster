@@ -20,6 +20,7 @@ subroutine op0195()
 ! person_in_charge: jacques.pellet at edf.fr
 !     COMMANDE CREA_CHAMP
 !     -----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
@@ -67,7 +68,7 @@ subroutine op0195()
     character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
     character(len=8) :: nu1
 !     -----------------------------------------------------------------
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
     character(len=24) :: valk(4)
 !     ------------------------------------------------------------------
 !
@@ -316,7 +317,7 @@ subroutine op0195()
                 call utmess('F', 'UTILITAI6_5', nk=2, valk=valk)
             endif
   1         continue
-
+!
             call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
             if (prchn1 .ne. prchn2) then
                 cns1 = '&&OP0195.CNS1'
@@ -330,13 +331,13 @@ subroutine op0195()
             endif
         endif
     endif
-
-
+!
+!
 ! 4.2  SI ON A CREE UN CHAM_ELEM, ON PEUT VOULOIR AFFECTER TOUS LES SOUS-POINTS :
 ! -------------------------------------------------------------------------------
     if (tychr(1:2) .eq. 'EL') then
         call getfac('AFFE_SP', nocc)
-        if (nocc.eq.1) then
+        if (nocc .eq. 1) then
             call getvid('AFFE_SP', 'CARA_ELEM', iocc=1, scal=carel)
             chou2='&&OP0195.CHOU2'
             call duplisp(chou, chou2, carel, 'V')
@@ -345,18 +346,18 @@ subroutine op0195()
             call detrsd('CHAMP', chou2)
         endif
     endif
-
-
+!
+!
 ! 5.  AJOUT DU TITRE :
 ! -----------------------------------------------------
     call titre()
-
-
+!
+!
 ! 6.  SI INFO:2    ON IMPRIME LE CHAMP RESULTAT :
 ! ----------------------------------------------
     if (niv .eq. 2) call imprsd('CHAMP', chou, ifm, 'CHAMP RESULTAT DE LA COMMANDE CREA_CHAMP :')
-
-
+!
+!
 ! 7.  VERIFICATION PROL_ZERO='NON' POUR LES CHAM_ELEM :
 ! ------------------------------------------------------
     if ((tychr(1:2).eq.'EL') .and. (prol0.eq.'NAN')) then
@@ -366,8 +367,8 @@ subroutine op0195()
         call cheksd(chou, 'SD_CHAM_ELEM', iret)
         ASSERT(iret.eq.0)
     endif
-
-
+!
+!
 ! 8.  VERIFICATION DE LA COHERENCE DU MAILLAGE SOUS-JACENT :
 ! ---------------------------------------------------------
     if (ma .ne. ' ') then
@@ -378,8 +379,8 @@ subroutine op0195()
             call utmess('F', 'CALCULEL4_78', nk=2, valk=valk)
         endif
     endif
-
-
+!
+!
 ! 9.  VERIFICATION DE LA COHERENCE DU CHAMP CREE AVEC TYPE_CHAM :
 ! ---------------------------------------------------------------
     call dismoi('TYPE_CHAMP', chou, 'CHAMP', repk=tych)
@@ -388,15 +389,15 @@ subroutine op0195()
         valk(2)=tych
         call utmess('F', 'CALCULEL4_70', nk=2, valk=valk)
     endif
-
+!
     call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
     if (nogd .ne. nomgd) then
         valk(1)=nomgd
         valk(2)=nogd
         call utmess('F', 'CALCULEL4_71', nk=2, valk=valk)
     endif
-
-
+!
+!
     call jedema()
-
+!
 end subroutine

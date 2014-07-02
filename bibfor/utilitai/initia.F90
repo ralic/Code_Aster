@@ -19,8 +19,9 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-    logical(kind=1) :: lgrot
+    aster_logical :: lgrot
     integer :: neq, indro(*)
     real(kind=8) :: chamro(*), chamin(*)
 !
@@ -59,7 +60,7 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
     if (.not.lgrot) then
         do 10 i = 1, neq
             chamin(i) = zero
-10      continue
+ 10     continue
     else
         do 20 i = 1, neq
             if (indro(i) .eq. 0) then
@@ -69,6 +70,6 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
             else
                 ASSERT(.false.)
             endif
-20      continue
+ 20     continue
     endif
 end subroutine

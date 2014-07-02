@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3ctpv(epsi, noeud, nbn, coordo, pave,&
                       coupe)
@@ -23,6 +25,6 @@ interface
         integer :: nbn
         real(kind=8) :: coordo(*)
         real(kind=8) :: pave(*)
-        logical(kind=1) :: coupe
+        aster_logical :: coupe
     end subroutine i3ctpv
 end interface

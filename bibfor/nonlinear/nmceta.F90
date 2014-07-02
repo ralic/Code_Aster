@@ -25,6 +25,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
@@ -36,7 +37,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 #include "asterfort/nmcere.h"
 #include "asterfort/nmcese.h"
     integer :: fonact(*)
-    logical(kind=1) :: irecli
+    aster_logical :: irecli
     integer :: iterat, nbeffe
     integer :: ldccvg, pilcvg
     real(kind=8) :: etaf, proeta(2), rho, offset, residu
@@ -95,8 +96,8 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 !
 !
-    logical(kind=1) :: bormin, bormax
-    integer ::   j, i
+    aster_logical :: bormin, bormax
+    integer :: j, i
     integer :: licite(2)
     real(kind=8) :: infini
     real(kind=8) :: etamin, etamax, conmin, conmax
@@ -172,7 +173,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
             eta(j) = proeta(i)
             licite(j) = licite(i)
         endif
-20  end do
+ 20 end do
     nbeffe = j
 !
     if (nbeffe .eq. 0) then
@@ -198,7 +199,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
                 licite(i) = 2
             endif
         endif
-50  end do
+ 50 end do
 !
 ! --- SELECTION DU PARAMETRE DE PILOTAGE ETAF
 !     S'IL EXISTE DEUX ETA SOLUTIONS :
@@ -236,7 +237,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
         write (ifm,*) '<PILOTAGE> ...... RESIDU OPTI.: ',residu
     endif
 !
-9999  continue
+9999 continue
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !

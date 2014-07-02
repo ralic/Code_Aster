@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                       jlnsv, jlnsl, noma, vect1, vect2,&
                       noeud, a, b, r, cote)
         integer :: ndim
         character(len=16) :: geofis
-        logical(kind=1) :: callst
+        aster_logical :: callst
         integer :: jltsv
         integer :: jltsl
         integer :: jlnsv

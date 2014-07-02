@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cjsc3q(sig, x, pa, qinit, q,&
                       qii, cos3tq, devnul, trac)
@@ -25,7 +27,7 @@ interface
         real(kind=8) :: q(6)
         real(kind=8) :: qii
         real(kind=8) :: cos3tq
-        logical(kind=1) :: devnul
-        logical(kind=1) :: trac
+        aster_logical :: devnul
+        aster_logical :: trac
     end subroutine cjsc3q
 end interface

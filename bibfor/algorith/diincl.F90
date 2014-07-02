@@ -19,16 +19,17 @@ function diincl(sddisc, nomchz, force)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: diincl
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+    aster_logical :: diincl
     character(len=19) :: sddisc
     character(len=*) :: nomchz
-    logical(kind=1) :: force
+    aster_logical :: force
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,10 +85,10 @@ function diincl(sddisc, nomchz, force)
             diincl = .false.
             goto 999
         endif
-10  end do
+ 10 end do
     diincl = .true.
 !
-999  continue
+999 continue
 !
 ! --- ON STOCKE LES CHAMPS EXCLUS SI ON FORCE L'ARCHIVAGE
 !
@@ -95,7 +96,7 @@ function diincl(sddisc, nomchz, force)
         diincl = .true.
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end function

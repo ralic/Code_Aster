@@ -16,6 +16,7 @@ subroutine te0066(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
@@ -49,13 +50,13 @@ subroutine te0066(option, nomte)
     real(kind=8) :: angmas(7), point(3), fluglo(3), fluloc(3), p(3, 3)
     integer :: i, ipoids, ivf, idfde, igeom, imate, kpg, spt, ino
     integer :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe, l
-    logical(kind=1) :: aniso
+    aster_logical :: aniso
 !
 !-----------------------------------------------------------------------
     integer :: iret, nbpar, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -77,7 +78,7 @@ subroutine te0066(option, nomte)
         valpar = zr(itemp)
     endif
 !
-    call rccoma(zi(imate),'THER', 1, phenom, iret)
+    call rccoma(zi(imate), 'THER', 1, phenom, iret)
     if (phenom .ne. 'THER_ORTH') then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
                     ' ', 'THER', nbpar, nompar, [valpar],&
@@ -113,7 +114,7 @@ subroutine te0066(option, nomte)
             fluy = fluy + zr(itempe-1+i)*dfdy(i)
             fluz = fluz + zr(itempe-1+i)*dfdz(i)
         enddo
-
+!
         if (.not.aniso) then
             fluglo(1) = lambda(1)*flux
             fluglo(2) = lambda(1)*fluy

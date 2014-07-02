@@ -1,6 +1,7 @@
 subroutine chpchd(chin, type, celmod, prol0, base,&
                   chou)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -84,7 +85,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     character(len=16) :: cas, option, nomcmd, kbid
     character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2
     character(len=24) :: valk(4)
-    logical :: bool
+    aster_logical :: bool
 !
 !     ------------------------------------------------------------------
     mnoga = '&&CHPCHD.MANOGA'

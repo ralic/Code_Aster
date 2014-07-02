@@ -1,5 +1,6 @@
 subroutine imppiv(nu, ieq)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -40,13 +41,13 @@ subroutine imppiv(nu, ieq)
 ! IN  : NU     : NOM D'UN NUME_DDL OU D'UN PROF_CHNO
 ! IN  : IEQ    : NUMERO D'UNE EQUATION DANS UN SYSTEME ASSEMBLE
 ! ----------------------------------------------------------------------
-    integer :: gd, nec, jprno,  ifm
+    integer :: gd, nec, jprno, ifm
     integer :: nlili, i, ilo, nbno, ino, ideb, ncmp, icmp, iieq, nuli
     integer :: nuno
     integer :: nbmas, k, kk, jnuno, kno
     character(len=8) :: noma, nomeq, nomno
     character(len=19) :: prno, ligrel
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     integer, pointer :: nueq(:) => null()
 !
 ! DEB-------------------------------------------------------------------

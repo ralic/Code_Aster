@@ -1,6 +1,7 @@
 subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                   prefix, ndinit)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -54,7 +55,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     integer :: ino, ima2, imav, iatyma, jrefe, jvg, jtypm, jdime, jopt, jnpt
     integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
     integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
-    logical(kind=1) :: logic
+    aster_logical :: logic
     character(len=1) :: base
     character(len=24) :: valk
     character(len=8) :: typm, nima

@@ -18,7 +18,8 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8vide.h"
@@ -76,7 +77,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
     character(len=24) :: autoc1, autoc2
     character(len=24) :: clreac, tacfin, tangco
     integer :: jclrea, jtacf, jtango
-    logical(kind=1) :: lctfd, lpenac, lpenaf, lmatrc, lgcp, lctf3d, ldiric
+    aster_logical :: lctfd, lpenac, lpenaf, lmatrc, lgcp, lctf3d, ldiric
 !
 ! ----------------------------------------------------------------------
 !
@@ -294,7 +295,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
             call jeecra(enat, 'LONMAX', ival=30)
             do 30 ii = 1, nbenat
                 call jecroc(jexnum(enat, ii))
-30          continue
+ 30         continue
         else
 !
 ! ---   MATRICE PRINCIPALE C-1*AT (POUR CONTACT DUALISE)
@@ -306,7 +307,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
             call jeecra(cm1a, 'LONMAX', ival=neq)
             do 40 ii = 1, nbcm1a
                 call jecroc(jexnum(cm1a, ii))
-40          continue
+ 40         continue
 !
         endif
 !
@@ -325,10 +326,10 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
             call jeecra(fro2, 'LONMAX', ival=30)
             do 41 ii = 1, nbfro1
                 call jecroc(jexnum(fro1, ii))
-41          continue
+ 41         continue
             do 42 ii = 1, nbfro2
                 call jecroc(jexnum(fro2, ii))
-42          continue
+ 42         continue
         endif
     endif
 !

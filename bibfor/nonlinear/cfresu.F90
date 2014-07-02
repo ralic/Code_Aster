@@ -21,6 +21,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -99,11 +100,11 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
     integer :: jjeuit
     integer :: jcnsvr, jcnslr
     integer :: jdeplu
-    logical(kind=1) :: lpenac, lctfd, lpenaf
-    logical(kind=1) :: lag2d, lcolli, laffle
+    aster_logical :: lpenac, lctfd, lpenaf
+    aster_logical :: lag2d, lcolli, laffle
     real(kind=8) :: imp, impx, impy, impz
     real(kind=8) :: eps, valras
-    integer ::  jcnslp
+    integer :: jcnslp
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: ddepl(:) => null()
     real(kind=8), pointer :: depde(:) => null()
@@ -208,16 +209,16 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
         do 11 icmp = 1, zresu
             zl(jcnslr-1+zresu*(numnoe-1)+icmp) = .true.
             zr(jcnsvr-1+zresu*(numnoe-1)+icmp) = 0.d0
-11      continue
+ 11     continue
         do 12 icmp = 1, zperc
             zl(jcnslp-1+zperc*(numnoe-1)+icmp) = .true.
             cnsvp(zperc*(numnoe-1)+icmp) = 0.d0
-12      continue
+ 12     continue
 !
 ! ----- JEU
 !
         zr(jcnsvr-1+zresu*(numnoe-1)+2 ) = zr(jjeuit+3*(iliai-1)+1-1)
-10  end do
+ 10 end do
 !
 ! ======================================================================
 !
@@ -295,10 +296,10 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
             gliy = 0.d0
 !
             if (ndimg .eq. 3) then
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            depde, val1)
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            ddepl, val2)
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), depde,&
+                            val1)
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), ddepl,&
+                            val2)
                 gliy = val1 + val2
             endif
 !
@@ -365,7 +366,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
                                         zr(jtango+6*(lliac- 1)), rtax, rtay, rtaz)
                             goto 100
                         endif
-50                  continue
+ 50                 continue
 !
 ! --- NOEUD EN CONTACT GLISSANT
 !
@@ -376,7 +377,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
                     call cfresb(ndimg, lag2d, 'GL', zr(jafmu+zi(japddl+ jdecal)-1),&
                                 zr(jtango+6*(lliac-1)), rtgx, rtgy, rtgz)
 !
-100                  continue
+100                 continue
 !
                 else
 !
@@ -472,8 +473,8 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
         zr(jcnsvr-1+zresu*(numnoe-1)+26)= 0.d0
         zr(jcnsvr-1+zresu*(numnoe-1)+27)= 0.d0
 !
-150      continue
-20  end do
+150     continue
+ 20 end do
 !
 ! --- ECRITURE DES RELATIONS DE CONTACT A LA FIN DU PAS DE TEMPS
 !

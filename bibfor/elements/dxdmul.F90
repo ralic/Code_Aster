@@ -17,6 +17,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/codent.h"
@@ -24,7 +25,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 #include "asterfort/matini.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utbtab.h"
-    logical(kind=1) :: lcalct
+    aster_logical :: lcalct
     integer :: icou
     integer :: iniv
     real(kind=8) :: t1ve(3, 3)
@@ -64,10 +65,11 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
     do 10 i = 1, 27
         call codent(i, 'G', val)
         nomres(i) = 'C'//num//'_V'//val
-10  end do
+ 10 end do
     r8bid = 0.d0
     call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                [r8bid], 9, nomres, valres, icodre, 1)
+                [r8bid], 9, nomres, valres, icodre,&
+                1)
     epi = valres(1)
     ordi = valres(3)
     h(1,1) = valres(4)
@@ -100,15 +102,18 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
         do 60 i = 1, 27
             call codent(i, 'G', val)
             nomres(i) = 'C'//num//'_V'//val
-60      continue
+ 60     continue
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 1, nomres, valres, icodre, 1)
+                    [r8bid], 1, nomres, valres, icodre,&
+                    1)
         epi = valres(1)
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 1, nomres(3), valres(3), icodre(3), 1)
+                    [r8bid], 1, nomres(3), valres(3), icodre(3),&
+                    1)
         ordi = valres(3)
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 12, nomres(16), valres(16), icodre(16), 1)
+                    [r8bid], 12, nomres(16), valres(16), icodre(16),&
+                    1)
 !
 !      RECUP MATRICE AI = H(Z).HF-1
 !
@@ -157,8 +162,8 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
             do 70 l = 1, 2
                 d1i(k,l) = dx1i(k,l) + ((ordi-epi/2.d0)**2-x3i*x3i)* da1i(k,l)/4.d0
                 dx1i(k,l) = dx1i(k,l) - epi*ordi*da1i(k,l)/2.d0
-70          continue
-80      continue
+ 70         continue
+ 80     continue
 !
 !      D2(Z)=SOMME(-T,Z)(-Z/2*DA2I DZ)
 !      TOUS CALCULS FAITS : K INDICE MAX TEL QUE ZK < X3I
@@ -168,11 +173,11 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
             do 90 l = 1, 4
                 d2i(k,l) = dx2i(k,l) + ((ordi-epi/2.d0)**2-x3i*x3i)* da2i(k,l)/4.d0
                 dx2i(k,l) = dx2i(k,l) - epi*ordi*da2i(k,l)/2.d0
-90          continue
-100      continue
-110  end do
+ 90         continue
+100     continue
+110 end do
 !
-999  continue
+999 continue
 !
 !     MATRICE H DANS LE REPERE INTRINSEQUE DE L'ELEMENT
 !

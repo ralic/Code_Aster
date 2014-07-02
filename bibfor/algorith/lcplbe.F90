@@ -56,6 +56,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 !       OUT VINF   :  VARIABLES INTERNES A T+DT
 !           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/betfpp.h"
 #include "asterfort/betinc.h"
@@ -87,7 +88,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
     character(len=10) :: ctol, citer, cerr
     character(len=24) :: valk(3)
     integer :: irteti
-    logical(kind=1) :: conver
+    aster_logical :: conver
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------
@@ -173,7 +174,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --        DEBUT DES ITERATIONS DE L'ALGORITHME DE NEWTON
 !
             iter1 = 0
- 1          continue
+  1         continue
             iter1 = iter1 + 1
             ddpt0 = ddpt
             if (osci .eq. 0) then
@@ -345,7 +346,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --        DEBUT DES ITERATIONS DE L'ALGORITHME DE NEWTON
 !
             iter2 = 0
- 2          continue
+  2         continue
             iter2 = iter2 + 1
 !
 ! --        CALCUL DU JACOBIEN
@@ -508,7 +509,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --        DEBUT DES ITERATIONS DE L'ALGORITHME DE NEWTON
 !
             iter3 = 0
- 3          continue
+  3         continue
             iter3 = iter3 + 1
             ddpc0 = ddpc
             if (osci .eq. 0) then
@@ -673,7 +674,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --     DEBUT DES ITERATIONS DE L'ALGORITHME DE NEWTON
 !
         iter4 = 0
- 4      continue
+  4     continue
         iter4 = iter4 + 1
         ddpc0 = ddpc
         ddpt0 = ddpt
@@ -902,9 +903,9 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 !
     irteti = 0
     goto 9999
- 5  continue
+  5 continue
     irteti = 1
     goto 9999
 !
-9999  continue
+9999 continue
 end subroutine

@@ -61,36 +61,36 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
-
+!
 ! DECLARATION VARIABLES LOCALES
     integer :: jnomjv, iexi, bcrank, ibid
     integer :: iobj, nbobj, nlong
     mpi_int :: nbpro4, mpicou, nbv
     mpi_int, parameter :: pr0=0
     character(len=1) :: typsca, xous
-    character(len=8) :: kbid,stock
-    logical(kind=1) :: unseul
+    character(len=8) :: kbid, stock
+    aster_logical :: unseul
 !
 ! ---------------------------------------------------------------------
     call jemarq()
-
-
+!
+!
 !   -- s'il n'y a qu'un seul proc, il n'y a rien a faire :
 !   ------------------------------------------------------
     call asmpi_comm('GET', mpicou)
     call asmpi_info(mpicou, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
-
-
+!
+!
     call jelira(nomjev, 'XOUS', ibid, xous)
     ASSERT(xous.eq.'S'.or. xous.eq.'X')
     call jelira(nomjev, 'TYPE', ibid, typsca)
-
+!
     if (xous .eq. 'X') then
         call jelira(nomjev, 'NMAXOC', nbobj, kbid)
         call jelira(nomjev, 'STOCKAGE', cval=stock)
         unseul=.false.
-        if (stock.eq.'CONTIG') then
+        if (stock .eq. 'CONTIG') then
             nbobj=1
             unseul=.true.
         endif
@@ -98,11 +98,11 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         nbobj=1
         unseul=.true.
     endif
-
-
+!
+!
     bcrank=0
-
-    do 10, iobj = 1,nbobj
+!
+    do 10 iobj = 1, nbobj
         if (unseul) then
             ASSERT (nbobj.eq.1)
             call jeveuo(nomjev, 'E', jnomjv)
@@ -113,9 +113,9 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
             call jeveuo(jexnum(nomjev, iobj), 'E', jnomjv)
             call jelira(jexnum(nomjev, iobj), 'LONMAX', nlong, kbid)
         endif
-
+!
         nbv = to_mpi_int(nlong)
-
+!
         if (typsca .eq. 'R') then
             call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vr=zr(jnomjv))
         else if (typsca.eq.'C') then
@@ -127,11 +127,11 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         else
             ASSERT(.false.)
         endif
-
+!
         if (xous .eq. 'X') call jelibe(jexnum(nomjev, iobj))
-10  continue
-
-
+ 10 continue
+!
+!
 999 continue
     call jedema()
 #else

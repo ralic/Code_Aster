@@ -1,8 +1,8 @@
 subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                   comp, nbcomm, cpmono, pgl, nfs,&
-                  nsg, toutms, hsr, nr, nvi, sigd,&
-                  itmax, toler, vinf, vind, dsde,&
-                  drdy, option, iret)
+                  nsg, toutms, hsr, nr, nvi,&
+                  sigd, itmax, toler, vinf, vind,&
+                  dsde, drdy, option, iret)
 ! aslint: disable=W1306,W1504
     implicit none
 ! ----------------------------------------------------------------------
@@ -51,6 +51,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 !                   DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 !         IRET   :  CODE RETOUR
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/lcmmja.h"
 #include "asterfort/lcmmkg.h"
 #include "asterfort/mgauss.h"
@@ -72,7 +73,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     character(len=8) :: mod
     character(len=16) :: comp(*), option
     character(len=24) :: cpmono(5*nmat+1)
-        logical(kind=1) :: bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
     parameter       ( un   =  1.d0   )
     parameter       ( zero =  0.d0   )
     common /tdim/ ndt,ndi
@@ -92,13 +93,13 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 !
 !     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
     if (option .eq. 'RIGI_MECA_TANG') then
-
+!
         call r8inir(nr, 0.d0, dy, 1)
         call r8inir(9, 0.d0, df, 1)
- !       call r8inir(ndt, 0.d0, sigd, 1)
+!       call r8inir(ndt, 0.d0, sigd, 1)
         call lcafyd(comp, mater, mater, nbcomm, cpmono,&
-                nmat, mod, nvi, vind, vinf,&
-                sigd, nr, yd, bnews, mtrac)
+                    nmat, mod, nvi, vind, vinf,&
+                    sigd, nr, yd, bnews, mtrac)
         call dcopy(nr, yd, 1, yf, 1)
         call lcmmja(comp, mod, nmat, mater, timed,&
                     timef, itmax, toler, nbcomm, cpmono,&
@@ -113,20 +114,20 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     do 101 k = 1, 6
         do 101 j = 1, 6
             z0(k,j)=drdy(k,j)
-101      continue
+101     continue
     do 201 k = 1, 6
         do 201 j = 1, ns
             z1(k,j)=drdy(k,ndt+j)
-201      continue
+201     continue
 !
     do 301 k = 1, ns
         do 301 j = 1, 6
             z2(k,j)=drdy(ndt+k,j)
-301      continue
+301     continue
     do 401 k = 1, ns
         do 401 j = 1, ns
             z3(k,j)=drdy(ndt+k,ndt+j)
-401      continue
+401     continue
 !     Z2=INVERSE(Z3)*Z2
 !     CALL MGAUSS ('NCSP',Z3, Z2, NS, NS, 6, DET, IRET )
     call mgauss('NCWP', z3, z2, ns, ns,&
@@ -141,7 +142,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     do 501 k = 1, 6
         do 501 j = 1, 6
             z0(k,j)=z0(k,j)-kyl(k,j)
-501      continue
+501     continue
 !
     call dcopy(36, i6, 1, zinv, 1)
 !     CALL MGAUSS ('NCSP',Z0, ZINV, 6, 6, 6, DET, IRET )
@@ -161,5 +162,5 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                     mater, mod, nr, dsde)
 !
     endif
-9999  continue
+9999 continue
 end subroutine

@@ -19,6 +19,7 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
@@ -57,7 +58,7 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 !
 !
 !
-    logical(kind=1) :: leltc, leltf, lctfd, lpenac, lallv
+    aster_logical :: leltc, leltf, lctfd, lpenac, lallv
     integer :: ifdo, n
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)
@@ -112,7 +113,7 @@ subroutine nmasco(typvec, fonact, defico, veasse, cncont)
 !
     do 10 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cncont)
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

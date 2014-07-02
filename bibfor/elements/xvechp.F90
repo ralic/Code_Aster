@@ -51,6 +51,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 ! ----
 ! IVECTT --> ADRESSE DU VECTEUR ELEMENTAIRE
 !.......................................................................
+#include "asterf_types.h"
 #include "jeveux.h"
 !-----------------------------------------------------------------------
 !
@@ -72,7 +73,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !-----------------------------------------------------------------------
 !
     character(len=8) :: typma, fpg, elc, elrefc, nompar(4)
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nbddl, zxain, iadzi, iazk24, ibid, ibid2(12, 3), nbf
     integer :: fac(6, 4), nbar, ar(12, 3), cface(5, 3), ninter, nface, nptf
     integer :: i, j, ifa, nli, in(3), cpt, ino, nnof, npgf, ipoidf, ivff, idfdef
@@ -134,8 +135,8 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
     do 11 i = 1, nface
         do 12 j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
-12      continue
-11  end do
+ 12     continue
+ 11 end do
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES FACETTES
@@ -148,7 +149,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
         do 101 i = 1, ndim
             nli=cface(ifa,i)
             in(i)=nint(zr(jaint-1+zxain*(nli-1)+2))
-101      continue
+101     continue
 !       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
         if (ndim .eq. 3) then
             if (in(1) .ne. 0 .and. in(2) .ne. 0 .and. in(3) .ne. 0) then
@@ -157,12 +158,12 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                     do 103 ino = 1, 4
                         if (in(1) .eq. fac(i,ino) .or. in(2) .eq. fac(i,ino) .or. in(3) .eq.&
                             fac(i,ino)) cpt=cpt+1
-103                  continue
+103                 continue
                     if (cpt .eq. 3) then
                         mult=0.5d0
                         goto 104
                     endif
-102              continue
+102             continue
             endif
         else if (ndim .eq. 2) then
             if (in(1) .ne. 0 .and. in(2) .ne. 0) then
@@ -170,18 +171,18 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                     cpt=0
                     do 1031 ino = 1, 2
                         if (in(1) .eq. ar(i,ino) .or. in(2) .eq. ar(i,ino)) cpt=cpt+1
-1031                  continue
+1031                 continue
                     if (cpt .eq. 2) then
                         mult=0.5d0
                         goto 104
                     endif
-1021              continue
+1021             continue
             endif
         endif
-104      continue
+104     continue
 !
-        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                         jvf=ivff, jdfde=idfdef)
 !
 !-----------------------------------------------------------------------
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
@@ -211,7 +212,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                 lst=0.d0
                 do 210 i = 1, nnop
                     lst=lst+zr(jlst-1+i)*ff(i)
-210              continue
+210             continue
                 ASSERT(lst.lt.0.d0)
                 rr(1)=-sqrt(-lst)
                 rr(2)= sqrt(-lst)
@@ -238,7 +239,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                 r = 0.d0
                 do 220 inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
-220              continue
+220             continue
                 ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
@@ -261,7 +262,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                     if (nfe .eq. 1) then
                         ffenr(i,1+nfh+nfe) = rr(ilev)*ff(i)
                     endif
-310              continue
+310             continue
 !
 !           REMPLISSAGE DU VECTEUR
                 ipos = 0
@@ -278,32 +279,32 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                                                          itemp-1+nbddl*(jnp-1)+lddl) *ffenr( jnp,&
                                                          lddl&
                                                          )
-421                          continue
-420                      continue
+421                         continue
+420                     continue
                         r8tmp = -2.d0*r8tmp
 !
                         zr(ivectt-1+ipos) = zr(ivectt-1+ipos) + ( 1.0d0-theta)* hechp*jac*mult*ff&
                                             &enr(inp,kddl)* r8tmp
 !
-410                  continue
-400              continue
+410                 continue
+400             continue
 !
-300          continue
+300         continue
 !
 !-----------------------------------------------------------------------
 !         FIN BOUCLE SUR LES (DEUX) LEVRES DE LA FISSURES
 !-----------------------------------------------------------------------
 !
-200      continue
+200     continue
 !-----------------------------------------------------------------------
 !       FIN BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !-----------------------------------------------------------------------
 !
-100  end do
+100 end do
 !-----------------------------------------------------------------------
 !     FIN BOUCLE SUR LES FACETTES
 !-----------------------------------------------------------------------
 !
-9999  continue
+9999 continue
 !
 end subroutine

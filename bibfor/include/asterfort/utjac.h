@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utjac(l2d, geom, ipg, idfde, niv,&
                      ifm, nno, jacob)
-        logical(kind=1) :: l2d
+        aster_logical :: l2d
         real(kind=8) :: geom(*)
         integer :: ipg
         integer :: idfde

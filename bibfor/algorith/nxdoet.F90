@@ -19,6 +19,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -38,7 +39,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 #include "asterfort/ntetl3.h"
 #include "asterfort/utmess.h"
     character(len=24) :: modele
-    logical(kind=1) :: lostat, lreuse
+    aster_logical :: lostat, lreuse
     character(len=24) :: numedd, sdieto
     real(kind=8) :: instin
     integer :: initpr
@@ -79,7 +80,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
     integer :: i, neq, nocc, numein
     real(kind=8) :: tempct
     integer :: ifm, niv
-    logical(kind=1) :: evonol, leinit
+    aster_logical :: evonol, leinit
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------

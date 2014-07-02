@@ -16,6 +16,7 @@ subroutine gidoma(nbnoto)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -43,12 +44,12 @@ subroutine gidoma(nbnoto)
 !     VARIABLES LOCALES:
 !     ------------------
 !
-    logical(kind=1) :: iden
+    aster_logical :: iden
 !
 !
 !     -- RECUPERATION DU NOMBRE DE MAILLES TOTAL (AVANT COMPACTAGE):
 !-----------------------------------------------------------------------
-    integer ::  ianema, iawk1, iawk2, iawk3, ico, ilcnx2
+    integer :: ianema, iawk1, iawk2, iawk3, ico, ilcnx2
     integer :: ima, imaj, imak, ino, ipos, j, k
     integer :: l, nbma, nbmato, nbnoj, nbnok, nuno1, nunoj
     integer :: nunok
@@ -70,7 +71,7 @@ subroutine gidoma(nbnoto)
     do 20 ima = 1, nbmato
         nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
         zi(iawk1-1+nuno1) =zi(iawk1-1+nuno1) +1
-20  end do
+ 20 end do
 !
 !     -- CREATION ET REMPLISSAGE DE L'OBJET &&GILIRE.OBJET_WK2
 !        CET OBJET CONTIENT LA LISTE DES MAILLES QUI COMMENCENT
@@ -90,7 +91,7 @@ subroutine gidoma(nbnoto)
         if (nbma .eq. 0) goto 21
         zi(iawk3-1+ino) = ico
         ico = ico + nbma
-21  end do
+ 21 end do
 !
 !     -- CALCUL DE OBJET_WK2: (ON MODIFIE _WK3 A CHAQUE MAILLE TRAITEE)
     do 22 ima = 1, nbmato
@@ -100,7 +101,7 @@ subroutine gidoma(nbnoto)
         ASSERT(zi(iawk2-1+ipos).eq.0)
         zi(iawk2-1+ipos) = ima
         zi(iawk3-1+nuno1) = ipos + 1
-22  end do
+ 22 end do
 !
 !     -- ON DECLARE IDENTIQUES 2 MAILLES AYANT MEME CONNECTIVITE:
     ico=0
@@ -123,18 +124,18 @@ subroutine gidoma(nbnoto)
                         iden=.true.
                         goto 5
                     endif
- 4              continue
- 3          continue
- 5          continue
+  4             continue
+  3         continue
+  5         continue
             if (iden) then
                 zi(ianema-1+imaj) =zi(ianema-1+imak)
                 goto 2
             else
                 zi(ianema-1+imaj) =imaj
             endif
- 2      continue
+  2     continue
         ico = ico + nbma
- 1  end do
+  1 end do
 !
     call jedema()
 end subroutine

@@ -18,7 +18,8 @@ subroutine mmeven(phase, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -54,9 +55,9 @@ subroutine mmeven(phase, defico, resoco)
     character(len=24) :: ctevco, tabfin
     integer :: jctevc, jtabf
     integer :: zeven, ztabf
-    logical(kind=1) :: lactif
+    aster_logical :: lactif
     real(kind=8) :: etacin, etacfi
-    logical(kind=1) :: lexiv
+    aster_logical :: lexiv
 !
 ! ----------------------------------------------------------------------
 !
@@ -120,9 +121,9 @@ subroutine mmeven(phase, defico, resoco)
         endif
         zr(jctevc+zeven*(iptc-1)+1-1) = etacin
         zr(jctevc+zeven*(iptc-1)+2-1) = etacfi
-20  end do
+ 20 end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

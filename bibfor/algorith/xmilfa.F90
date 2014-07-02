@@ -1,8 +1,10 @@
-subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
-                  ainter, ip1, ip2, pm2, typma, pinref, &
-                  pmiref, ksi, milfa)
+subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
+                  nnose, it, ainter, ip1, ip2,&
+                  pm2, typma, pinref, pmiref, ksi,&
+                  milfa)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "blas/ddot.h"
@@ -18,7 +20,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
     integer :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
     real(kind=8) :: pinref(*), geom(*), milfa(ndim), ainter(*)
     real(kind=8) :: pmiref(*), ksi(ndime)
-    character(len=8) ::elrefp, typma
+    character(len=8) :: elrefp, typma
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +60,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
     integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
     integer :: i, j, zxain, nno
     real(kind=8) :: xref(81), tole, crit
-    logical(kind=1) :: courbe
+    aster_logical :: courbe
     parameter   (tole=1.d-1)
 !
 ! --------------------------------------------------------------------
@@ -79,45 +81,46 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
                 a=ar(a1,3-i)
                 b=ar(a2,3-j)
             endif
-31      continue
-  end do
+ 31     continue
+    end do
     do i = 1, nbar
         do 41 j = 1, 2
-          if ((ar(i,j).eq.a) .and. (ar(i,3-j).eq.b)) d=ar(i,3)
-41      continue
-  end do
+            if ((ar(i,j).eq.a) .and. (ar(i,3-j).eq.b)) d=ar(i,3)
+ 41     continue
+    end do
     ASSERT((a*b*d).gt.0)
 !   INDICE CORRECPONDANT DANS L ELEMENT PARENT
     ia=cnset(nnose*(it-1)+a)
     ib=cnset(nnose*(it-1)+b)
     id=cnset(nnose*(it-1)+d)
-!   
+!
     call xelrex(elrefp, nno, xref)
 !
     do i = 1, ndime
-       ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
+        ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
     end do
 ! --- TEST SI LSN COURBE :
     courbe=.false.
-    call xcedge(ndime, pinref, ip1, ip2, pmiref, pm2, crit)
+    call xcedge(ndime, pinref, ip1, ip2, pmiref,&
+                pm2, crit)
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
-    if ( crit .gt. tole ) courbe = .true.
+    if (crit .gt. tole) courbe = .true.
 !
-    if ( .not. courbe ) then
-       do i = 1, ndime
-          ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
-       end do
+    if (.not. courbe) then
+        do i = 1, ndime
+            ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
+        end do
     else
 !   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
-       do i = 1, ndime   
-           ksi(i)=(pmiref(ndime*(pm2-1)+i)+xref(ndime*(id-1)+i))/2.d0
-       enddo
+        do i = 1, ndime
+            ksi(i)=(pmiref(ndime*(pm2-1)+i)+xref(ndime*(id-1)+i))/2.d0
+        enddo
     endif
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
 !
-    do i = 1, ndime 
-     ASSERT(abs(ksi(i)) .le. 1.d0)
+    do i = 1, ndime
+        ASSERT(abs(ksi(i)) .le. 1.d0)
     enddo
     call reerel(elrefp, nno, ndim, geom, ksi,&
                 milfa)

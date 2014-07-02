@@ -18,6 +18,7 @@ subroutine cfflm1(resoco, ndim, nesmax, nbliai, nbliac)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -59,7 +60,7 @@ subroutine cfflm1(resoco, ndim, nesmax, nbliai, nbliac)
     integer :: jliac, jmu
     character(len=19) :: fro1
     integer :: jfro11, jfro12
-    logical(kind=1) :: liaact
+    aster_logical :: liaact
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,7 +98,7 @@ subroutine cfflm1(resoco, ndim, nesmax, nbliai, nbliac)
         liaact = .false.
         do 200 iliac = 1, nbliac
             if (zi(jliac-1+iliac) .eq. iliai) liaact = .true.
-200      continue
+200     continue
 !
 ! ----- CALCUL
 !
@@ -117,7 +118,7 @@ subroutine cfflm1(resoco, ndim, nesmax, nbliai, nbliac)
         if (ndim .eq. 3) then
             call jelibe(jexnum(fro1, iliai+nbliai))
         endif
-100  end do
+100 end do
 !
     call jedema()
 !

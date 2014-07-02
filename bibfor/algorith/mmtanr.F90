@@ -21,6 +21,7 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cftanr.h"
 #include "asterfort/mmexfr.h"
@@ -32,7 +33,7 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
     character(len=24) :: defico, resoco
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1(3), tau2(3)
-    logical(kind=1) :: lexfro
+    aster_logical :: lexfro
 !
 ! ----------------------------------------------------------------------
 !

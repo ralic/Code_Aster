@@ -1,5 +1,6 @@
 subroutine i3chgr(a, b, t1, t2, n)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/rvegal.h"
     integer :: n
@@ -33,7 +34,7 @@ subroutine i3chgr(a, b, t1, t2, n)
 !
     integer :: i, j
     real(kind=8) :: epsi, un, xa, xb, ya, yb, za, zb, ct, st, cp, sp, d
-    logical(kind=1) :: egalx, egaly
+    aster_logical :: egalx, egaly
 !
 !======================================================================
 !
@@ -53,12 +54,12 @@ subroutine i3chgr(a, b, t1, t2, n)
                 d)
 !
     if (.not. (egalx .and. egaly)) then
-        do 10, i = 1, n, 1
-        t2(j+1) = t1(j+1) - xa
-        t2(j+2) = t1(j+2) - ya
-        t2(j+3) = t1(j+3) - za
-        j = j + 3
-10      continue
+        do 10 i = 1, n, 1
+            t2(j+1) = t1(j+1) - xa
+            t2(j+2) = t1(j+2) - ya
+            t2(j+3) = t1(j+3) - za
+            j = j + 3
+ 10     continue
         xb = xb - xa
         yb = yb - ya
         zb = zb - za
@@ -74,30 +75,30 @@ subroutine i3chgr(a, b, t1, t2, n)
         za = st*cp
         d = st*sp
         j = 0
-        do 20, i = 1, n, 1
-        xb = t2(j+1)
-        yb = t2(j+2)
-        zb = t2(j+3)
-        t2(j+1) = ya*xb + d*yb - cp*zb
-        t2(j+2) = -st*xb + ct*yb
-        t2(j+3) = xa*xb + za*yb + sp*zb
-        j = j + 3
-20      continue
+        do 20 i = 1, n, 1
+            xb = t2(j+1)
+            yb = t2(j+2)
+            zb = t2(j+3)
+            t2(j+1) = ya*xb + d*yb - cp*zb
+            t2(j+2) = -st*xb + ct*yb
+            t2(j+3) = xa*xb + za*yb + sp*zb
+            j = j + 3
+ 20     continue
     else
         if (zb .ge. za) then
-            do 30, i = 1, n, 1
-            t2(j+1) = t1(j+1) - xa
-            t2(j+2) = t1(j+2) - ya
-            t2(j+3) = t1(j+3) - za
-            j = j + 3
-30          continue
+            do 30 i = 1, n, 1
+                t2(j+1) = t1(j+1) - xa
+                t2(j+2) = t1(j+2) - ya
+                t2(j+3) = t1(j+3) - za
+                j = j + 3
+ 30         continue
         else
-            do 32, i = 1, n, 1
-            t2(j+1) = t1(j+1) - xb
-            t2(j+2) = t1(j+2) - yb
-            t2(j+3) = t1(j+3) - zb
-            j = j + 3
-32          continue
+            do 32 i = 1, n, 1
+                t2(j+1) = t1(j+1) - xb
+                t2(j+2) = t1(j+2) - yb
+                t2(j+3) = t1(j+3) - zb
+                j = j + 3
+ 32         continue
             a(1) = xb
             a(2) = yb
             a(3) = zb

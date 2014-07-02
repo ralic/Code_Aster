@@ -1,5 +1,6 @@
-subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
-                           vi4, vr, vc, sci, sci4, scr, scc)
+subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
+                            vi, vi4, vr, vc, sci,&
+                            sci4, scr, scc)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -49,7 +50,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
 ! inout scc    : complexe a echanger  (si typsca='C')
 !----------------------------------------------------------------------
     implicit none
-
+!
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -75,7 +76,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jxveri.h"
-
+!
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
     integer, intent(in), optional :: nbval
@@ -89,11 +90,11 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
     integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
     complex(kind=8), intent(inout), optional :: scc
-
+!
 #ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
-
+!
     character(len=1) :: typsc1
     integer, parameter :: tpetit=1000
     integer :: vi2(tpetit), wki(1)
@@ -103,18 +104,18 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
     integer :: k, nbv
     mpi_int :: lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4, proc
     mpi_int, parameter :: pr0=0
-    logical(kind=1) :: scal
+    aster_logical :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
-
+!
 !   -- communicateur mpi de travail :
     call asmpi_comm('GET', mpicou)
-
+!
 !   -- s'il n'y a qu'un seul proc, il n'y a rien a faire :
     call asmpi_info(mpicou, rank=proc, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
-
-
+!
+!
 !   -- initialisations :
 !   --------------------
     if (loisem() .eq. 8) then
@@ -124,8 +125,8 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
     endif
     lr8 = MPI_DOUBLE_PRECISION
     lc8 = MPI_DOUBLE_COMPLEX
-
-
+!
+!
 !   -- Cas d'un scalaire :
 !   ----------------------
     typsc1=typsca
@@ -137,8 +138,8 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
         nbv = 1
     endif
     nbv4=nbv
-
-
+!
+!
 !   -- Choix operation mpi  :
 !   ---------------------------
     if (optmpi .eq. 'MPI_MAX') then
@@ -150,8 +151,8 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
     else
         lopmpi=MPI_SUM4
     endif
-
-
+!
+!
 !   -- si reduce ou allreduce, il faut un 2eme buffer
 !        - si nbv <= tpetit : on utilise un tableau statique
 !        - sinon on alloue un tableau jeveux
@@ -175,19 +176,19 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
             if (typsc1 .eq. 'R') then
                 do 1 k = 1, nbv
                     vr2(k)=vr(k)
- 1              continue
+  1             continue
             else if (typsc1.eq.'C') then
                 do 2 k = 1, nbv
                     vc2(k)=vc(k)
- 2              continue
+  2             continue
             else if (typsc1.eq.'I') then
                 do 3 k = 1, nbv
                     vi2(k)=vi(k)
- 3              continue
+  3             continue
             else if (typsc1.eq.'S') then
                 do 4 k = 1, nbv
                     vi42(k)=vi4(k)
- 4              continue
+  4             continue
             else
                 ASSERT(.false.)
             endif
@@ -196,29 +197,29 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
                 ASSERT(jtrav.ne.0)
                 do 6 k = 1, nbv
                     zr(jtrav-1+k)=vr(k)
- 6              continue
+  6             continue
             else if (typsc1.eq.'C') then
                 ASSERT(jtrav.ne.0)
                 do 7 k = 1, nbv
                     zc(jtrav-1+k)=vc(k)
- 7              continue
+  7             continue
             else if (typsc1.eq.'I') then
                 ASSERT(jtrav.ne.0)
                 do 8 k = 1, nbv
                     zi(jtrav-1+k)=vi(k)
- 8              continue
+  8             continue
             else if (typsc1.eq.'S') then
                 ASSERT(jtrav.ne.0)
                 do 9 k = 1, nbv
                     zi4(jtrav-1+k)=vi4(k)
- 9              continue
+  9             continue
             else
                 ASSERT(.false.)
             endif
         endif
     endif
-
-
+!
+!
     if (optmpi .eq. 'BCAST') then
 !   ---------------------------------
         ASSERT(present(bcrank))
@@ -234,8 +235,8 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
         else
             ASSERT(.false.)
         endif
-
-
+!
+!
     else if (optmpi.eq.'REDUCE') then
 !   ---------------------------------
         if (typsc1 .eq. 'R') then
@@ -252,7 +253,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
                 call asmpi_reduce_r(zr(jtrav), vr, nbv4, lopmpi, pr0,&
                                     mpicou)
             endif
-
+!
         else if (typsc1.eq.'C') then
             if (scal) then
                 call asmpi_reduce_c(vc2, wkc, nbv4, lopmpi, pr0,&
@@ -267,7 +268,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
                 call asmpi_reduce_c(zc(jtrav), vc, nbv4, lopmpi, pr0,&
                                     mpicou)
             endif
-
+!
         else if (typsc1.eq.'I') then
             if (scal) then
                 call asmpi_reduce_i(vi2, wki, nbv4, lopmpi, pr0,&
@@ -282,27 +283,27 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
                 call asmpi_reduce_i(zi(jtrav), vi, nbv4, lopmpi, pr0,&
                                     mpicou)
             endif
-
+!
         else if (typsc1.eq.'S') then
             if (scal) then
                 call asmpi_reduce_i4(vi42, wki4, nbv4, lopmpi, pr0,&
-                                    mpicou)
+                                     mpicou)
                 if (proc .eq. pr0) then
                     sci4 = wki4(1)
                 endif
             else if (nbv .le. tpetit) then
                 call asmpi_reduce_i4(vi42, vi4, nbv4, lopmpi, pr0,&
-                                    mpicou)
+                                     mpicou)
             else
                 call asmpi_reduce_i4(zi4(jtrav), vi4, nbv4, lopmpi, pr0,&
-                                    mpicou)
+                                     mpicou)
             endif
-
+!
         else
             ASSERT(.false.)
         endif
-
-
+!
+!
     else if (optmpi(1:4).eq.'MPI_') then
 !   -------------------------------------
         if (typsc1 .eq. 'R') then
@@ -344,17 +345,17 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
         else
             ASSERT(.false.)
         endif
-
+!
     else
         ASSERT(.false.)
     endif
-
+!
     if (nbv .gt. tpetit) then
     endif
-
-999  continue
+!
+999 continue
     call jedema()
-
+!
 #else
     character(len=1) :: kdummy
     integer :: idummy

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
                       ratio, optdec, retdec, ldcext, subdur)
@@ -26,7 +28,7 @@ interface
         real(kind=8) :: ratio
         character(len=16) :: optdec
         integer :: retdec
-        logical(kind=1) :: ldcext
+        aster_logical :: ldcext
         real(kind=8) :: subdur
     end subroutine nmdcco
 end interface

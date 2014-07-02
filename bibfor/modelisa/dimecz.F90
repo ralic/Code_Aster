@@ -18,7 +18,8 @@ subroutine dimecz(char, noma, nzoco, iform)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
@@ -63,7 +64,7 @@ subroutine dimecz(char, noma, nzoco, iform)
     integer :: nbpt, nnint
     character(len=24) :: defico
     integer :: typint
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     integer :: nbpc
 !
 ! ----------------------------------------------------------------------
@@ -118,7 +119,7 @@ subroutine dimecz(char, noma, nzoco, iform)
         zi(jmeth+zmeth*(izone-1)+13-1) = nbnoec
         zi(jmeth+zmeth*(izone-1)+14-1) = nbmamc
         zi(jmeth+zmeth*(izone-1)+15-1) = nbnomc
-30  end do
+ 30 end do
 !
 ! --- DECALAGES PAR ZONE
 !
@@ -133,7 +134,7 @@ subroutine dimecz(char, noma, nzoco, iform)
         zi(jmeth+zmeth*(izone-1)+17-1) = jdecmm
         zi(jmeth+zmeth*(izone-1)+18-1) = jdecne
         zi(jmeth+zmeth*(izone-1)+19-1) = jdecnm
-31  end do
+ 31 end do
 !
 ! --- NOMBRE DE POINTS DE CONTACT PAR ZONE
 !
@@ -150,7 +151,7 @@ subroutine dimecz(char, noma, nzoco, iform)
                 call cfnumm(defico, posmae, nummae)
                 call mmelin(noma, nummae, typint, nnint)
                 nbpt = nbpt + nnint
-45          continue
+ 45         continue
         else
             ASSERT(.false.)
         endif
@@ -168,7 +169,7 @@ subroutine dimecz(char, noma, nzoco, iform)
 !
         zi(jmeth+zmeth*(izone-1)+21-1) = nbpc
 !
-40  end do
+ 40 end do
 !
     call jedema()
 end subroutine

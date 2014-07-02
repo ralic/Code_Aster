@@ -1,6 +1,7 @@
 subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                   charg)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -23,7 +24,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     character(len=19) :: char1, char2, charg
     integer :: ichar
-    logical(kind=1) :: fonc1, fonc2
+    aster_logical :: fonc1, fonc2
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,14 +55,14 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-    integer :: jzcar1, nbma, p1, p2, nmazo,   jdes
+    integer :: jzcar1, nbma, p1, p2, nmazo, jdes
     integer :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
     integer :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
     integer :: k, jval1, icmp, jval2, kk
     character(len=8) :: ma, k8b, val1, val2, nomfct, noms2f
     character(len=19) :: charg1, charg2
     character(len=40) :: acces
-    logical(kind=1) :: s2f
+    aster_logical :: s2f
     integer, pointer :: des1(:) => null()
     integer, pointer :: des2(:) => null()
 !

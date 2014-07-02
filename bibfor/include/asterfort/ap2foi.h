@@ -20,7 +20,7 @@
                 integer :: kptsc
                 mpi_int :: mpicou
                 character(len=19) :: nosolv
-                logical(kind=1) :: lmd
+                aster_logical :: lmd
 
 # ifdef _HAVE_PETSC
                 KSPConvergedReason :: indic

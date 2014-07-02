@@ -20,6 +20,7 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "blas/daxpy.h"
@@ -50,7 +51,7 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
 !     OUT DSIDEP  MATRICES TANGENTES
 !     -----------------------------------------------------------------
 !
-    logical(kind=1) :: cplan, resi
+    aster_logical :: cplan, resi
     integer :: ndimsi, ij, kl, i
     real(kind=8) :: val(3), nu, lambda, deuxmu
     real(kind=8) :: e
@@ -87,7 +88,8 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
     nom(3) = 'SY'
 !
     call rcvala(mat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nom(1), val(1), k2, 2)
+                [0.d0], 2, nom(1), val(1), k2,&
+                2)
 !
     nu = val(2)
     e = val(1)
@@ -96,7 +98,8 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
     kk = lambda + deuxmu/(3.0d0)
 !
     call rcvala(mat, ' ', 'ECRO_LINE', 0, ' ',&
-                [0.d0], 1, nom(3), val(3), k2, 2)
+                [0.d0], 1, nom(3), val(3), k2,&
+                2)
 !
     sigm = val(3)
 !
@@ -124,13 +127,13 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
 !
     do 2 i = 1, ndimsi
         epsd(i) = eps(i) - treps*kron(i)/(3.0d0)
- 2  end do
+  2 end do
 !
     epseps = ddot(ndimsi,eps,1,eps,1)
     w = 0.5d0 * (lambda*treps**2 + deuxmu*epseps)
     do 5 ij = 1, ndimsi
         sigel(ij) = lambda*treps*kron(ij) + deuxmu*eps(ij)
- 5  end do
+  5 end do
 !
 !     CORRECTION 1 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 !
@@ -162,14 +165,14 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
     if (treps .lt. 0.d0) then
         do 20 ij = 1, ndimsi
             sig(ij) = kk*treps*kron(ij) + deuxmu*epsd(ij)*fd
-20      continue
+ 20     continue
     else
         do 10 ij = 1, ndimsi
             sig(ij) = sigel(ij)*fd
-10      continue
+ 10     continue
     endif
 !
-5000  continue
+5000 continue
 !
 !     -----------------------------------------------------------------
 !     CALCUL DES MATRICES TANGENTES
@@ -188,11 +191,11 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
             else
                 dsidep(ij,kl,1) = fd*lambda
             endif
-90      continue
-80  end do
+ 90     continue
+ 80 end do
     do 100 ij = 1, ndimsi
         dsidep(ij,ij,1) = dsidep(ij,ij,1) + fd*deuxmu
-100  end do
+100 end do
 !
 !     -- CORRECTION POUR LES CONTRAINTES PLANES
 !
@@ -203,8 +206,8 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
                 if (kl .eq. 3) goto 140
                 dsidep(ij,kl,1)=dsidep(ij,kl,1) - 1.d0/dsidep(3,3,1)*&
                 dsidep(ij,3,1)*dsidep(3,kl,1)
-140          continue
-130      continue
+140         continue
+130     continue
     endif
 !
 !     -- CORRECTION DISSIPATIVE
@@ -214,14 +217,14 @@ subroutine lckimp(ndim, typmod, option, mat, epsm,&
     if (treps .lt. 0.d0) then
         do 220 ij = 1, ndimsi
             sigel(ij) = deuxmu*epsd(ij)
-220      continue
+220     continue
     endif
 !
 !     DERIVEES CROISEES
 !
     do 200 ij = 1, ndimsi
         dsidep(ij,1,2) = -2.d0*(1.0d0-phi)*sigel(ij)
-200  end do
+200 end do
 !
 !     DERIVEE SECONDE /ENDO
 !

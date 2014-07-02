@@ -29,6 +29,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/r8prem.h"
@@ -77,7 +78,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1
     real(kind=8) :: temps, coefm(*), psidel(*), deux, pow, fsauv(palmax, 3)
     real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol, coeff, seuil1, seuil2
-    logical(kind=1) :: lamor, prdeff, adapt, flagdt, condrepri
+    aster_logical :: lamor, prdeff, adapt, flagdt, condrepri
     character(len=3) :: finpal(palmax)
     character(len=4) :: intk
     character(len=6) :: typal(palmax)
@@ -89,8 +90,8 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     character(len=16) :: typbas, method
     character(len=19) :: matasm
     character(len=24) :: cpal
-
-    logical(kind=1) :: okprem
+!
+    aster_logical :: okprem
 !
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass,
@@ -254,7 +255,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
 !   conditions initiales
     call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite),&
-                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho ,&
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho,&
                 reprise=condrepri, accgen=zr(jacce))
     if (iret .ne. 0) goto 9999
     if (nbchoc .gt. 0 .and. nbpal .eq. 0) then
@@ -288,7 +289,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !   cas classique
     if (nbpal .ne. 0) nbchoc = 0
 !   Si ce n'est pas une reprise : on calcule l'état initial
-    if ( .not. condrepri ) then
+    if (.not. condrepri) then
         call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
                     nbchoc, logcho, dplmod, parcho, noecho,&
                     zr(jchor), nbrede, dplred, fonred, zr(jredr),&
@@ -307,7 +308,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     endif
 !
 !   accélérations généralisées initiales : si pas de reprise on calcule
-    if ( .not. condrepri ) then
+    if (.not. condrepri) then
         call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
                     riggen, descmr, zr(jfext), lamor, zr(jamgy),&
                     descma, zr(jtra1), zr(jdepl), zr(jvite), zr(jacce))
@@ -346,7 +347,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
 !   BOUCLE TEMPORELLE
     okprem = .true.
-6666  continue
+6666 continue
     if (temps .lt. tfin) then
 !       GESTION DU DERNIER PAS DE TEMPS
         if (temps+dt .ge. tfin) dt=tfin-temps
@@ -421,16 +422,15 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                 nbscho = nbsauv * 3 * nbchoc
 !
                 call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false._1,&
-                            method=method, base=basemo, nbmodes=neqgen, rigi=nomrig,&
-                            mass=nommas, amor=nomamo, jordr=jordr, jdisc=jinst,&
-                            jdepl=jdeps, jvite=jvits, jacce=jaccs, dt=dt, jptem=jpass,&
-                            nbchoc=nbchoc, noecho=noecho, intitu=intitu, jfcho=jfcho,&
-                            jdcho=jdcho, jvcho=jvcho, jadcho=jicho, nbrede=nbrede,&
-                            fonred=fonred, jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
-                            fonrev=fonrev, jrevc=jrevc, jrevv=jrevv)
+                            method=method, base=basemo, nbmodes=neqgen, rigi=nomrig, mass=nommas,&
+                            amor=nomamo, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
+                            jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=noecho,&
+                            intitu=intitu, jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jicho,&
+                            nbrede=nbrede, fonred=fonred, jredc=jredc, jredd=jredd,&
+                            nbrevi=nbrevi, fonrev=fonrev, jrevc=jrevc, jrevv=jrevv)
 !               Le pointeur des variables internes n'est pas en OUT de mdallo.
 !               Il faut le mettre à jour sinon on cartonne. La taille du tableau est *facobj
-                if ( nbchoc .ne. 0 ) then
+                if (nbchoc .ne. 0) then
                     call jeveuo(namerk//'           .VINT', 'E', jvint)
                 endif
 !
@@ -468,9 +468,9 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !                   diminution   maximale de : 0.2*dt
             seuil1 = (0.9/5.0d0)**(1.0d0/pow)
             seuil2 = (0.9/0.2d0)**(1.0d0/pow)
-            if ( errt .lt. seuil1 ) then
+            if (errt .lt. seuil1) then
                 coeff = 5.0d0
-            else if ( errt .gt. seuil2 ) then
+            else if (errt .gt. seuil2) then
                 coeff = 0.2d0
             else
                 coeff=0.9d0*(1.d0/errt)**pow
@@ -506,7 +506,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !   Le nombre de sauvegarde est iarchi
     nbsauv = iarchi
 !
-9999  continue
+9999 continue
 !
     call jedetr('&&RUKUT.DEPL')
     call jedetr('&&RUKUT.VITE')

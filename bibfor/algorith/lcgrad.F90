@@ -19,8 +19,9 @@ subroutine lcgrad(resi, rigi, ndim, ndimsi, neps,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
     integer :: ndim, ndimsi, neps
     real(kind=8) :: sigma(6), ktg(6, 6, 4), apg, lag, grad(ndim), aldc, r, c
     real(kind=8) :: sig(neps), dsidep(neps, neps)
@@ -56,12 +57,12 @@ subroutine lcgrad(resi, rigi, ndim, ndimsi, neps,&
     if (resi) then
         do 10 i = 1, ndimsi
             sig(i) = sigma(i)
-10      continue
+ 10     continue
         sig(ndimsi+1) = lag + r*(apg-aldc)
         sig(ndimsi+2) = apg-aldc
         do 20 i = 1, ndim
             sig(ndimsi+2+i) = c*grad(i)
-20      continue
+ 20     continue
     endif
 !
 !
@@ -74,20 +75,20 @@ subroutine lcgrad(resi, rigi, ndim, ndimsi, neps,&
         do 30 i = 1, ndimsi
             do 40 j = 1, ndimsi
                 dsidep(i,j) = ktg(i,j,1)
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
 !      SIG - A ET SIG - MU
         do 50 i = 1, ndimsi
             dsidep(i,ndimsi+1) = r*ktg(i,1,2)
             dsidep(i,ndimsi+2) = ktg(i,1,2)
-50      continue
+ 50     continue
 !
 !      SIGA - EPS ET SIGMU - EPS
         do 60 i = 1, ndimsi
             dsidep(ndimsi+1,i) = -r*ktg(i,1,3)
             dsidep(ndimsi+2,i) = -ktg(i,1,3)
-60      continue
+ 60     continue
 !
 !      SIGA - A
         dsidep(ndimsi+1,ndimsi+1) = (1-r*ktg(1,1,4))*r
@@ -102,7 +103,7 @@ subroutine lcgrad(resi, rigi, ndim, ndimsi, neps,&
 !      SIGG - GRAD
         do 70 i = 1, ndim
             dsidep(ndimsi+2+i,ndimsi+2+i) = c
-70      continue
+ 70     continue
 !
     endif
 !

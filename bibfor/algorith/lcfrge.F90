@@ -23,6 +23,7 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
 !
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "blas/daxpy.h"
@@ -57,7 +58,7 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
 !
 !
 !
-    logical(kind=1) :: cplan, resi, rigi, elas, nonlin
+    aster_logical :: cplan, resi, rigi, elas, nonlin
     integer :: ndimsi, k, l, etat
 !
     real(kind=8) :: eps(6), epsr(6), treps, coplan, sigel(6)
@@ -97,7 +98,8 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre, 1)
+                [0.d0], 2, nomres, valres, icodre,&
+                1)
 !
     e = valres(1)
     nu = valres(2)
@@ -109,7 +111,8 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
     nomres(1) = 'SY'
     nomres(2) = 'D_SIGM_EPSI'
     call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre, 1)
+                [0.d0], 2, nomres, valres, icodre,&
+                1)
     sy = valres(1)
     gamma = - valres(2)/e
     wy = sy**2 / (2*e)
@@ -153,7 +156,7 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
     do 60 k = 1, ndimsi
         sigel(k) = lambda*treps*kron(k) + deuxmu*eps(k)
         sigelr(k) = lambda*trepsr*kron(k) + deuxmu*epsr(k)
-60  end do
+ 60 end do
     ener = 0.5d0 * ddot(ndimsi,epsr,1,sigelr,1)
 !
 !
@@ -194,7 +197,7 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
 !
         do 30 k = 1, ndimsi
             sig(k) = (1-d) * sigel(k)
-30      continue
+ 30     continue
 !
 !
 ! -- STOCKAGE DES VARIABLES INTERNES
@@ -224,11 +227,11 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
         do 100 k = 1, 3
             do 110 l = 1, 3
                 dsidpt(k,l,1) = fd*lambda
-110          continue
-100      continue
+110         continue
+100     continue
         do 120 k = 1, ndimsi
             dsidpt(k,k,1) = dsidpt(k,k,1) + fd*deuxmu
-120      continue
+120     continue
 !
 !
 ! -- CONTRIBUTION DISSIPATIVE
@@ -238,8 +241,8 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
             do 200 k = 1, ndimsi
                 do 210 l = 1, ndimsi
                     dsidpt(k,l,2) = dsidpt(k,l,2)-coef*sigel(k)* sigelr(l)
-210              continue
-200          continue
+210             continue
+200         continue
         endif
 !
 !
@@ -252,8 +255,8 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
                     if (l .eq. 3) goto 310
                     dsidpt(k,l,1)=dsidpt(k,l,1) - 1.d0/dsidpt(3,3,1)*&
                     dsidpt(k,3,1)*dsidpt(3,l,1)
-310              continue
-300          continue
+310             continue
+300         continue
         endif
 !
 !

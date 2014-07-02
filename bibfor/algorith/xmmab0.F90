@@ -21,6 +21,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)
 !
@@ -29,7 +30,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
     real(kind=8) :: mmat(336, 336)
     character(len=8) :: typmai
     integer :: nconta, nfhe, heavno(8)
-    logical(kind=1) :: lpenac, lmulti
+    aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,8 +70,8 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
     do 300 i = 1, 2
         do 290 j = 1, 2
             tt(i,j) = 0.d0
-290      continue
-300  end do
+290     continue
+300 end do
 !
 ! --- MATRICE
 !
@@ -79,7 +80,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
         tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
         tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
         tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
-301  end do
+301 end do
 !
     do 284 i = 1, nnc
         do 283 j = 1, nnc
@@ -98,9 +99,9 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
                     else
                         mmat(ii,jj) = hpg*ffc(i)*ffc(j)* jacobi*tt(l, k)
                     endif
-281              continue
-282          continue
-283      continue
-284  end do
+281             continue
+282         continue
+283     continue
+284 end do
 !
 end subroutine

@@ -49,6 +49,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 ! OUT : TORCO  : TABLEAU CONTENANT LES ORDRES DE COQUE ET DEPHASAGES
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
@@ -70,7 +71,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     real(kind=8) :: modmax, module
     character(len=3) :: kmod
     character(len=8) :: nompar
-    logical(kind=1) :: defini
+    aster_logical :: defini
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -130,7 +131,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
             nbnocr = nbnocr + 1
             zi(inocr+nbnocr-1) = numnoe
         endif
-10  end do
+ 10 end do
 !
     if (nbnocr .le. 8) then
         call utmess('F', 'ALGELINE3_12')
@@ -169,7 +170,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         dr = dble(cos(theta)) * defm(1, numnoe, imod) + dble(sin(theta)) * defm(2, numnoe, imod)
         zr(itheta+ino-1) = theta
         zr(idr+ino-1) = dr
-20  end do
+ 20 end do
 !
 !
 ! --- 5.ON REORDONNE LA DISCRETISATION PAR VALEURS CROISSANTES DE THETA
@@ -184,7 +185,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
                 themin = zr(itheta+jno-1)
                 imin = jno
             endif
-31      continue
+ 31     continue
         zr(itheta+imin-1) = zr(itheta+ino-1)
         zr(itheta+ino-1) = themin
         dr = zr(idr+imin-1)
@@ -193,7 +194,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         numnoe = zi(inocr+imin-1)
         zi(inocr+imin-1) = zi(inocr+ino-1)
         zi(inocr+ino-1) = numnoe
-30  end do
+ 30 end do
 !
 !
 ! --- 6.CONSTRUCTION D'UNE DISCRETISATION REGULIERE EN THETA SUR 0,2*PI
@@ -210,7 +211,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     nbpt = 1
     do 40 i = 1, pui
         nbpt = nbpt*2
-40  end do
+ 40 end do
 !
 ! --- 6.2.CONSTRUCTION DE LA DISCRETISATION REGULIERE EN THETA
 !
@@ -218,7 +219,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     pas = 2.d0*pi/dble(nbpt)
     do 50 ip = 1, nbpt
         zr(idisc+ip-1) = dble(ip-1)*pas
-50  end do
+ 50 end do
 !
 ! --- 6.3.CALCUL D'UNE NOUVELLE DISTRIBUTION EN DR PAR INTERPOLATION
 !
@@ -240,7 +241,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     call wkvect('&&ORDCOQ.TEMP.FFTDR', 'V V C', nbpt, ifftdr)
     do 60 ip = 1, nbpt
         zc(ifftdr+ip-1) = dcmplx(zr(idr2+ip-1),0.d0)
-60  end do
+ 60 end do
     call fft(zc(ifftdr), nbpt, 1)
 !
 !
@@ -261,7 +262,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
             modmax = module
             ipmax = ip
         endif
-70  end do
+ 70 end do
     crit = 1.d0 - modmax*modmax/somm
 !
     if (ipmax .eq. 1) then
@@ -291,7 +292,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         s22 = s22 + bn*bn
         y1 = y1 + dr*an
         y2 = y2 + dr*bn
-80  end do
+ 80 end do
 !
     delta = s11*s22 - s12*s12
     if (dble(abs(delta)) .lt. tole) then
@@ -339,7 +340,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         gamma = rki*(zr(itheta+ino-1)-theta0)
         fonc = drmax*dble(cos(gamma))
         somm2 = somm2 + (dr-fonc) * (dr-fonc)
-90  end do
+ 90 end do
 !
     err = dble(sqrt(somm2/somm1)) * 100.d0
 !
@@ -350,8 +351,8 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     do 100 ino = 1, nbnocr
         theta2 = zr(itheta+ino-1)
         if (theta2 .gt. theta0) goto 101
-100  end do
-101  continue
+100 end do
+101 continue
     if (ino .eq. 1) then
         theta1 = zr(itheta+nbnocr-1) - 2.d0*pi
         dif1 = dble(abs(theta1-theta0))

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                       nsupp, neq, nbmode, id, vecmod,&
@@ -25,8 +27,8 @@ interface
         integer :: nbsup
         character(len=16) :: nomsy
         character(len=*) :: psmo
-        logical(kind=1) :: monoap
-        logical(kind=1) :: muapde
+        aster_logical :: monoap
+        aster_logical :: muapde
         integer :: nsupp(*)
         integer :: id
         real(kind=8) :: vecmod(neq, *)

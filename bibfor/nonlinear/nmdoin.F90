@@ -19,6 +19,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/getvis.h"
@@ -30,7 +31,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
     character(len=24) :: evol
-    logical(kind=1) :: evonol
+    aster_logical :: evonol
     integer :: numein
     real(kind=8) :: instin
 !

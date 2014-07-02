@@ -19,6 +19,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -31,7 +32,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 #include "asterfort/jexnum.h"
     character(len=8) :: nomo
     integer :: numail
-    logical(kind=1) :: lcoque
+    aster_logical :: lcoque
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,9 +99,9 @@ subroutine iscoqu(nomo, numail, lcoque)
                     lcoque = .true.
                     goto 40
                 endif
-30          continue
+ 30         continue
         endif
-40  end do
+ 40 end do
 !
     call jedema()
 end subroutine

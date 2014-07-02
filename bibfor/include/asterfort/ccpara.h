@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ccpara(option, modele, resuin, resuou, numord,&
                       nordm1, exitim, mateco, carael)
@@ -24,7 +26,7 @@ interface
         character(len=8) :: resuou
         integer :: numord
         integer :: nordm1
-        logical(kind=1) :: exitim
+        aster_logical :: exitim
         character(len=8) :: mateco
         character(len=8) :: carael
     end subroutine ccpara

@@ -25,7 +25,8 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -58,7 +59,7 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
     character(len=19) :: meelem(*), veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: defico, resocu, resoco
-    logical(kind=1) :: lerrit
+    aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,12 +104,12 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lcfint, lcrigi, lcdiri, lcbudi
+    aster_logical :: lcfint, lcrigi, lcdiri, lcbudi
     character(len=24) :: codere
     character(len=19) :: vefint, vediri, vebudi, cnfint, cndiri, cnbudi
     character(len=19) :: depplu, vitplu, accplu
     character(len=16) :: option
-    logical(kind=1) :: lctcd, lunil, leltc
+    aster_logical :: lctcd, lunil, leltc
     integer :: ldccvg
     integer :: ifm, niv
 !
@@ -223,7 +224,7 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
 !
-9999  continue
+9999 continue
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

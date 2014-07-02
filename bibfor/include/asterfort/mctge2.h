@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
                       edge, outofp)
@@ -23,6 +25,6 @@ interface
         real(kind=8) :: eigx(3)
         real(kind=8) :: eigy(3)
         real(kind=8) :: edge
-        logical(kind=1) :: outofp
+        aster_logical :: outofp
     end subroutine mctge2
 end interface

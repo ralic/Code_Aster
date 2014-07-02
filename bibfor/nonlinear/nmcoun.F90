@@ -21,7 +21,8 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -82,8 +83,8 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 !
 !
 !
-    logical(kind=1) :: lunil, lctcd
-    logical(kind=1) :: lallv
+    aster_logical :: lunil, lctcd
+    aster_logical :: lallv
     character(len=19) :: depdel, ddepla, cncine
     character(len=19) :: depplu
     character(len=14) :: numedd

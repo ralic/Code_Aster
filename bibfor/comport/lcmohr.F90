@@ -1,5 +1,5 @@
-subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
-                  dstrai, stresm, stres, vim, vip, &
+subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
+                  dstrai, stresm, stres, vim, vip,&
                   dsidep, codret)
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DE MOHR-COULOMB
@@ -47,19 +47,20 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        character(len=16) :: option
-        real(kind=8) :: tmpp
-        real(kind=8) :: dstrai(6)
-        real(kind=8) :: stresm(6)
-        real(kind=8) :: stres(6)
-        real(kind=8) :: vim(*)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: dsidep(*)
-        integer :: codret
+    integer :: ndim
+    character(len=8) :: typmod(*)
+    integer :: imate
+    character(len=16) :: option
+    real(kind=8) :: tmpp
+    real(kind=8) :: dstrai(6)
+    real(kind=8) :: stresm(6)
+    real(kind=8) :: stres(6)
+    real(kind=8) :: vim(*)
+    real(kind=8) :: vip(*)
+    real(kind=8) :: dsidep(*)
+    integer :: codret
 !
+#include "asterf_types.h"
 #include "asterfort/bptobg.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lceqvn.h"
@@ -79,7 +80,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
     real(kind=8) :: rprops(nmax), strait(nmax), vaux(mmax)
     real(kind=8) :: strest(nmax), young, poiss
     real(kind=8) :: sinphi, cosphi, sinpsi
-    real(kind=8) :: cohe, eigprj(mmax,mmax), pstrs(mmax), gmodu, bulk, r2g, r4g
+    real(kind=8) :: cohe, eigprj(mmax, mmax), pstrs(mmax), gmodu, bulk, r2g, r4g
     real(kind=8) :: r2bulk, r2cphi, r2spsi, r1d3, eetv
     real(kind=8) :: pt, eetvd3, pstrs1, pstrs2, pstrs3, smct, phia, phib, res, scaprd, sphsps
     real(kind=8) :: consta, r4c2ph, ddgama, dgama, delta, dmax1, smcta, smctb, constb, drvaa
@@ -93,7 +94,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
     integer :: mxiter, i, j, itjac1
 !
 ! Declaration of integer type variables
-    logical(kind=1) :: epflag, tridim, outofp
+    aster_logical :: epflag, tridim, outofp
 ! Declaration of character type variables
     character(len=8) :: mod, nomres(3)
 !
@@ -141,14 +142,16 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
     nomres(2)= 'E       '
     nomres(3)= 'NU      '
     call rcvala(imate, ' ', 'ELAS', 0, '   ',&
-                [tmpp], 3, nomres, rprops, icode, 2)
+                [tmpp], 3, nomres, rprops, icode,&
+                2)
 !
 ! Reading material Mohr-Coulomb properties
     nomres(1)= 'PHI     '
     nomres(2)= 'ANGDIL  '
     nomres(3)= 'COHESION'
     call rcvala(imate, ' ', 'MOHR_COULOMB', 0, '   ',&
-                [tmpp], 3, nomres, rprops(4), icode(4), 2)
+                [tmpp], 3, nomres, rprops(4), icode(4),&
+                2)
 !
 ! Initialize some algorithmic and internal variables
     dgama =r0
@@ -361,7 +364,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
         if (epflag) write (6,'(A)')'LCMOHR :: Projection Failure on plane'
 !
         goto 999
-30      continue
+ 30     continue
 !
 ! Apply two-vector return mapping to appropriate EDGE
 ! ---------------------------------------------------
@@ -437,7 +440,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
         if (epflag) write(6,'(A)')'LCMOHR :: Projection Failure on edge'
 !
         goto 999
-50      continue
+ 50     continue
 ! Apply multi-vector return mapping to APEX
 ! ---------------------------------------
 ! Check conditions for which return to apex does not make sense
@@ -482,7 +485,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
         if (epflag) write (6,'(A)') 'LCMOHR :: Projection Failure on apex'
 !
         goto 999
-70      continue
+ 70     continue
 ! update internal variables and output stress components
 ! ------------------------------------------------------
         call vecini(nmax, r0, tr)
@@ -492,7 +495,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
         call bptobg(tr, stres, eigprj)
         do 80 i = mmax+1, nmax
             stres(i)=sqr*stres(i)
-80      continue
+ 80     continue
 ! Update internal variables
         if (apex .eq. r1) then
             vip(1)=vim(1)+p/bulk
@@ -508,7 +511,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
         do 90 i = 1, mmax
             stres(i) =strest(i)
             stres(mmax+i)=sqr*strest(mmax+i)
-90      continue
+ 90     continue
 ! Update internal variables
         vip(1)=vim(1)
         vip(2)=vim(2)

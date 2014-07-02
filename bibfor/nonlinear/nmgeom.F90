@@ -20,14 +20,15 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: ndim, nno, kpg
     real(kind=8) :: geom(ndim, nno), dfdi(nno, ndim), depl(ndim, nno)
     real(kind=8) :: poids, f(3, 3), eps(6), r
-    logical(kind=1) :: ldfdi
+    aster_logical :: ldfdi
 !
 !.......................................................................
 !
@@ -59,7 +60,7 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
 !  L'ARGUMENT LDFDI : 1ER APPEL .TRUE. ; 2EME APPEL .FALSE.
 !
 !
-    logical(kind=1) :: tridim
+    aster_logical :: tridim
     integer :: i, j, k, n
     real(kind=8) :: grad(3, 3), epstab(3, 3), ur, tmp
     real(kind=8) :: rac2, kron(3, 3)
@@ -89,7 +90,7 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
         do 10 n = 1, nno
             r = r + zr(ivf-1+n+(kpg-1)*nno)*geom(1,n)
             ur = ur + zr(ivf-1+n+(kpg-1)*nno)*depl(1,n)
-10      continue
+ 10     continue
         if (ldfdi) poids = poids*r
     endif
 !
@@ -99,33 +100,33 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
         do 16 j = 1, 3
             f(i,j) = kron(i,j)
             grad(i,j) = 0.d0
-16      continue
-13  end do
+ 16     continue
+ 13 end do
 !
     if (tridim) then
         do 20 n = 1, nno
             do 22 i = 1, 3
                 do 24 j = 1, 3
                     grad(i,j) = grad(i,j) + dfdi(n,j)*depl(i,n)
-24              continue
-22          continue
-20      continue
+ 24             continue
+ 22         continue
+ 20     continue
     else
         do 30 n = 1, nno
             do 32 i = 1, 2
                 do 34 j = 1, 2
                     grad(i,j) = grad(i,j) + dfdi(n,j)*depl(i,n)
-34              continue
-32          continue
-30      continue
+ 34             continue
+ 32         continue
+ 30     continue
     endif
 !
     if (grand) then
         do 40 i = 1, 3
             do 42 j = 1, 3
                 f(i,j) = f(i,j) + grad(i,j)
-42          continue
-40      continue
+ 42         continue
+ 40     continue
         if (axi) f(3,3) = 1.d0 + ur/r
     endif
 !
@@ -138,13 +139,13 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
             if (grand) then
                 do 110 k = 1, ndim
                     tmp = tmp + grad(k,i)*grad(k,j)
-110              continue
+110             continue
             endif
 !
             epstab(i,j) = 0.5d0*tmp
 !
-100      continue
-90  end do
+100     continue
+ 90 end do
 !
     eps(1) = epstab(1,1)
     eps(2) = epstab(2,2)

@@ -26,6 +26,7 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/nmcret.h"
@@ -46,7 +47,7 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    logical(kind=1) :: lerrit
+    aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !

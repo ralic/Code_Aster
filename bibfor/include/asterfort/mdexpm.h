@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
                       codret)
         character(len=*) :: nofimd
         integer :: idfimd
         character(len=*) :: nomamd
-        logical(kind=1) :: existm
+        aster_logical :: existm
         integer :: ndim
         integer :: codret
     end subroutine mdexpm

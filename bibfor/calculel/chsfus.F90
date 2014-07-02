@@ -19,13 +19,14 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
+#include "asterf_types.h"
 #include "asterfort/cesfus.h"
 #include "asterfort/cnsfus.h"
 #include "asterfort/exisd.h"
 #include "asterfort/utmess.h"
     integer :: nbchs
     character(len=*) :: lichs(nbchs), chs3, base
-    logical(kind=1) :: lcumul(nbchs), lcoc
+    aster_logical :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
     complex(kind=8) :: lcoefc(nbchs)
 ! ---------------------------------------------------------------------
@@ -63,13 +64,13 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     j1 = 0
     j2 = 0
-    do 10,k = 1,nbchs
-    chs = lichs(k)
-    call exisd('CHAM_NO_S', chs, i1)
-    call exisd('CHAM_ELEM_S', chs, i2)
-    j1 = max(j1,i1)
-    j2 = max(j2,i2)
-    10 end do
+    do 10 k = 1, nbchs
+        chs = lichs(k)
+        call exisd('CHAM_NO_S', chs, i1)
+        call exisd('CHAM_ELEM_S', chs, i2)
+        j1 = max(j1,i1)
+        j2 = max(j2,i2)
+ 10 end do
     if (j1*j2 .ne. 0) then
         call utmess('F', 'CALCULEL_99')
     endif

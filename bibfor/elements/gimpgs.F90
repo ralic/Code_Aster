@@ -1,7 +1,8 @@
 subroutine gimpgs(result, nnoff, absc, gs, numero,&
                   gi, ndeg, ndimte, gthi, extim,&
                   time, iordr, unit)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +43,7 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
 !
     integer :: nnoff, unit, numero, ndeg, iordr, i, i1, ndimte
     real(kind=8) :: gs(1), gthi(1), gi(1), time, absc(*)
-    logical(kind=1) :: extim
+    aster_logical :: extim
     character(len=8) :: result
 ! ......................................................................
 !
@@ -71,11 +72,11 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
         if (numero .eq. 5) then
             do 20 i = 1, ndimte
                 write(unit,110) i,gthi(i)
-20          continue
+ 20         continue
         else
             do 21 i = 1, nnoff
                 write(unit,110) i,gthi(i)
-21          continue
+ 21         continue
         endif
         write(unit,*)
     endif
@@ -86,7 +87,7 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
         do 10 i = 1, ndeg+1
             i1 = i-1
             write(unit,*) 'DEGRE ',i1,' : ',gi(i)
-10      continue
+ 10     continue
         write(unit,*)
     endif
 !
@@ -104,7 +105,7 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
     write(unit,*)
     do 30 i = 1, nnoff
         write(unit,111) absc(i), gs(i)
-30  end do
+ 30 end do
     write(unit,*)
 !
     110 format(1x,i2,6x,1pd12.5)

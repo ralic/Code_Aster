@@ -19,6 +19,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/matini.h"
 #include "asterfort/nzcalc.h"
@@ -96,7 +97,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(12)
     character(len=8) :: nomres(12), zirc(2)
 !
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !

@@ -20,6 +20,7 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -54,7 +55,7 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
     character(len=19) :: ddepla, deppr1, deppr2
     character(len=19) :: dvitla, vitpr1, vitpr2
     character(len=19) :: daccla, accpr1, accpr2
-    logical(kind=1) :: ldyna
+    aster_logical :: ldyna
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

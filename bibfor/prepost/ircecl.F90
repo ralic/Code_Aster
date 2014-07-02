@@ -8,6 +8,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
@@ -32,7 +33,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
     complex(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, nomnos(*), formr
     character(len=19) :: nolili
-    logical(kind=1) :: lsup, linf, lmax, lmin, lcor
+    aster_logical :: lsup, linf, lmax, lmin, lcor
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +91,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
     character(len=10) :: format
     character(len=24) :: nrepe
     character(len=50) :: fmt, fmv, fmt1, fmt2, fmt3, fmv2, form1
-    logical(kind=1) :: limpr
+    aster_logical :: limpr
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -127,7 +128,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
             if = i-1
             goto 2
         endif
- 2  end do
+  2 end do
     if (id .ne. 0 .and. if .ge. id) then
         forcmp = 'A'//format(id:if)
     else
@@ -139,7 +140,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
     do 4 igre = 1, nbgrel
         icoef=max(1,celd(4))
         if (icoef .gt. icomax) icomax = icoef
- 4  end do
+  4 end do
     ncmp = ncmpv
     if (ncmp .gt. 0) then
         ncmp = 0
@@ -151,7 +152,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                 nomcp = 'V'//cbid
                 call utmess('A', 'PREPOST_74', sk=nomcp)
             endif
-141      continue
+141     continue
         if (ncmp .eq. 0) then
             call utmess('A', 'PREPOST_75')
             goto 9999
@@ -172,11 +173,11 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                     endif
                     nomcp = nomcmp(i)
                     zk16(inot-1+(i-1)*icomax+jco) = 'V'//cbid
- 7              continue
+  7             continue
             else
                 zk16(inot-1+i)=nomcmp(i)
             endif
- 6      continue
+  6     continue
     endif
     if (lmax) then
         call jedetr('&&IRCECL.MAXR')
@@ -189,7 +190,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
         call wkvect('&&IRCECL.NBVMAX', 'V V I', ncmpmx*icomax, ivmax)
         do 90 i = 1, ncmpmx*icomax
             zr(irmax-1+i)=rundf
-90      continue
+ 90     continue
     endif
     if (lmin) then
         call jedetr('&&IRCECL.MINR')
@@ -202,7 +203,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
         call wkvect('&&IRCECL.NBVMIN', 'V V I', ncmpmx*icomax, ivmin)
         do 91 i = 1, ncmpmx*icomax
             zr(irmin-1+i)=rundf
-91      continue
+ 91     continue
     endif
     if (loc .eq. 'ELGA' .or. loc .eq. 'ELEM' .or. .not.lcor) ndim = 0
     nrepe = nolili//'.REPE'
@@ -259,10 +260,10 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
             call wkvect('&&IRCECL.VALC', 'V V R', ncmpmx*icoef2, icval)
             do 5 i = 1, ncmpmx*icoef2
                 zi(iposg-1+i)=0
- 5          continue
+  5         continue
             do 26 i = 1, ncmpmx
                 zi(iposv-1+i)=0
-26          continue
+ 26         continue
             do 23 i = 1, ncmpmx
                 if (exisdg(zi(iaec),i)) then
                     ncmpp=ncmpp+1
@@ -273,17 +274,17 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 ncmp2=ncmp2+1
                                 do 92 jco = 1, icoef2
                                     zi(iposg-1+(icm-1)*icoef2+jco)=i
-92                              continue
+ 92                             continue
                                 zi(iposv-1+icm) = ncmpp
                             endif
- 8                      continue
+  8                     continue
                     else
                         do 93 jco = 1, icoef2
                             zi(iposg-1+(ncmpp-1)*icoef2+jco)=i
-93                      continue
+ 93                     continue
                     endif
                 endif
-23          continue
+ 23         continue
             if (nbcmpt .eq. 0) ncmp2=ncmpp
             npcalc = nscal/ncmpp
 !
@@ -296,7 +297,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                         i2=i2+1
                         zi(iposg-1+i2)= zi(iposg-1+i)
                     endif
- 9              continue
+  9             continue
             endif
 !
 ! --- STOCKAGE DES NOMS DE COMPOSANTES ---
@@ -310,11 +311,11 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                         endif
                         nomcp = nomcmp(zi(iposg-1+i))
                         zk16(inom-1+(i-1)*icoef2+jco) = 'V'//cbid
-43                  continue
+ 43                 continue
                 else
                     zk16(inom-1+i)=nomcmp(zi(iposg-1+i))
                 endif
-42          continue
+ 42         continue
 !
 ! --- CREATION DES FORMATS D'ECRITURE ---
 !
@@ -393,7 +394,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zr(icval-1+(i-1)*icoef2+jco)= dimag(&
                                 vale(j+i+(nucmp(jco)-1)*ncmpp))
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
-551                          continue
+551                         continue
                         else
                             do 55 jco = 1, icoef2
                                 zr(irval-1+(i-1)*icoef2+jco)= dble(&
@@ -401,9 +402,9 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zr(icval-1+(i-1)*icoef2+jco)= dimag(&
                                 vale(j+i+(jco-1)*ncmpp))
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
-55                          continue
+ 55                         continue
                         endif
-10                  continue
+ 10                 continue
                 else
                     do 20 i = 1, ncmp2
                         inu=zi(iposv-1+i)
@@ -414,7 +415,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zr(icval-1+(i-1)*icoef2+jco)= dimag(&
                                 vale(j+inu+(nucmp(jco)-1)*ncmpp))
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
-301                          continue
+301                         continue
                         else
                             do 30 jco = 1, icoef2
                                 zr(irval-1+(i-1)*icoef2+jco)= dble(&
@@ -422,9 +423,9 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zr(icval-1+(i-1)*icoef2+jco)= dimag(&
                                 vale(j+inu+(jco-1)*ncmpp))
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
-30                          continue
+ 30                         continue
                         endif
-20                  continue
+ 20                 continue
                 endif
 !
 ! --  TRI DES COMPOSANTES DANS L'INTERVALLE BORINF,BORSUP
@@ -438,7 +439,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                         if (linf) then
                             if ((value-borinf) .lt. 0.d0) zi(icoe-1+iva)= 0
                         endif
-35                  continue
+ 35                 continue
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
@@ -452,7 +453,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                             zr(icval-1+icomp2)=zr(icval-1+i)
                             zk16(inop-1+icomp2)=zk16(inom-1+i)
                         endif
-36                  continue
+ 36                 continue
                     if (icomp2 .eq. 0) goto 16
 !
 ! -- IMPRESSION ----
@@ -465,10 +466,14 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                         fmt3 = ' '
                         if (loc .eq. 'ELGA') then
                             if (ires .ne. 0) then
-                                fmt1 = '(9X, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, '//forcmp//')))'
-                                fmt2 = '(2X, I7, 6(1X, '//format//'),30(/, 9X, 6(1X, '&
-                                       //format//')))'
-                                fmt3 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//')))'
+                                fmt1 = '(9X, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, '//forcmp//'))&
+                                       )'
+                                fmt2 = '(&
+                                       2X, I7, 6(1X, '//format//'),&
+                                       30(/, 9X, 6(1X, ' //format//'))&
+                                       )'
+                                fmt3 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//'))&
+                                       )'
                             else if (ires.eq.0.and.ilig.eq.1) then
                                 fmt1 = '(9X,6(1X,'//forcmp//'))'
                                 fmt2 = '(2X,I7,6(1X,'//format//'))'
@@ -483,9 +488,12 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                             endif
                         else
                             if (ires .ne. 0) then
-                                fmt1 = '(9X, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, ' //forcmp//')))'
-                                fmt2 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//')))'
-                                fmt3 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//')))'
+                                fmt1 = '(9X, 6(1X, '//forcmp//'), 30(/, 9X, 6(1X, ' //forcmp//'))&
+                                       )'
+                                fmt2 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//'))&
+                                       )'
+                                fmt3 = '(9X, 6(1X, '//format//'), 30(/, 9X, 6(1X, ' //format//'))&
+                                       )'
                             else if (ires.eq.0.and.ilig.eq.1) then
                                 fmt1 = '(9X,6(1X,'//forcmp//'))'
                                 fmt2 = '(9X,6(1X,'//format//'))'
@@ -556,7 +564,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zi(ivmax-1+iadr)=zi(ivmax-1+iadr)+1
                             endif
                         endif
-101                  continue
+101                 continue
                 endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
@@ -585,9 +593,9 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zi(ivmin-1+iadr)=zi(ivmin-1+iadr)+1
                             endif
                         endif
-102                  continue
+102                 continue
                 endif
-16          continue
+ 16         continue
 !CCCCC
         else if (loc.eq.'ELNO') then
             ipoin=point(iel)
@@ -610,9 +618,9 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                     if (nbnot .ne. 0) then
                         do 187 iino = 1, nbnot
                             if (nuno .eq. numnoe(iino)) goto 189
-187                      continue
+187                     continue
                         goto 18
-189                      continue
+189                     continue
                     endif
                     nomno= nomnos(nuno)
                     j=iachml-1+ncmpp*icoef*(in-1) +(icou-1)*ncmpp*&
@@ -628,7 +636,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                     dimag(vale(j+i+(nucmp(jco)-1)*&
                                     ncmpp))
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
-511                              continue
+511                             continue
                             else
                                 do 51 jco = 1, icoef2
                                     zr(irval-1+(i-1)*icoef2+jco)=&
@@ -636,9 +644,9 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                     zr(icval-1+(i-1)*icoef2+jco)=&
                                     dimag(vale(j+i+(jco-1)*ncmpp))
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
-51                              continue
+ 51                             continue
                             endif
-50                      continue
+ 50                     continue
                     else
                         do 60 i = 1, ncmp2
                             inu=zi(iposv-1+i)
@@ -651,7 +659,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                     dimag(vale(j+inu+(nucmp(jco)-1)*&
                                     ncmpp))
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
-701                              continue
+701                             continue
                             else
                                 do 70 jco = 1, icoef2
                                     zr(irval-1+(i-1)*icoef2+jco)=&
@@ -659,9 +667,9 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                     zr(icval-1+(i-1)*icoef2+jco)=&
                                     dimag(vale(j+inu+(jco-1)*ncmpp))
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
-70                              continue
+ 70                             continue
                             endif
-60                      continue
+ 60                     continue
                     endif
 !
 ! --  TRI DES COMPOSANTES DANS L'INTERVALLE BORINF,BORSUP
@@ -676,7 +684,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                             if (linf) then
                                 if ((value-borinf) .lt. 0.d0) zi(icoe-1+ iva)=0
                             endif
-65                      continue
+ 65                     continue
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
@@ -690,7 +698,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zr(icval-1+icomp2)=zr(icval-1+i)
                                 zk16(inop-1+icomp2)=zk16(inom-1+i)
                             endif
-66                      continue
+ 66                     continue
                         if (icomp2 .eq. 0) goto 18
 !
 ! -- IMPRESSION  --
@@ -701,9 +709,12 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                             fmt1 = ' '
                             fmt2 = ' '
                             if (ires .ne. 0) then
-                                fmt1 = '(9X, 6(1X, '//forcmp// '), 30(/, 9X, 6(1X, '//forcmp//')))'
-                                fmt2 = '(1X, A8, 6(1X, '//format// '),30(/, 9X, 6(1X, '&
-                                       //format//')))'
+                                fmt1 = '(9X, 6(1X, '//forcmp// '), 30(/, 9X, 6(1X, '//forcmp//'))&
+                                       )'
+                                fmt2 = '(&
+                                       1X, A8, 6(1X, '//format// '),&
+                                       30(/, 9X, 6(1X, ' //format//'))&
+                                       )'
                             else if (ires.eq.0.and.ilig.eq.1) then
                                 fmt1 = '(9X,6(1X,'//forcmp//'))'
                                 fmt2 = '(1X,A8,6(1X,'//format//'))'
@@ -790,7 +801,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                     1
                                 endif
                             endif
-103                      continue
+103                     continue
                     endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
@@ -824,12 +835,12 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                                     1
                                 endif
                             endif
-104                      continue
+104                     continue
                     endif
-18              continue
-17          continue
+ 18             continue
+ 17         continue
         endif
-12  end do
+ 12 end do
     write (ifi,*) ' '
 !
 ! --- IMPRESSION DE LA VALEUR MAXIMALE ---
@@ -842,7 +853,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                 i), ' EST ',zr(irmax-1+i),zr(icmax-1+i), ' EN ',zi(&
                 ivmax-1+i),' MAILLE(S) : ',zk8(inmax-1+i)
             endif
-95      continue
+ 95     continue
     endif
 !
 ! --- IMPRESSION DE LA VALEUR MINIMALE ---
@@ -855,7 +866,7 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
                 i), ' EST ',zr(irmin-1+i),zr(icmin-1+i), ' EN ',zi(&
                 ivmin-1+i),' MAILLE(S) : ',zk8(inmin-1+i)
             endif
-96      continue
+ 96     continue
     endif
 !
     call jedetr('&&IRCECL.NCMT')
@@ -877,6 +888,6 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
     call jedetr('&&IRCECL.VALR')
     call jedetr('&&IRCECL.VALC')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

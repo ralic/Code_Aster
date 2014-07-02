@@ -49,6 +49,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
@@ -92,7 +93,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
     integer :: idfimd, nbcham, nbcha2
     integer :: iaux, jaux, kaux, iret, iouv
     integer :: adncmp, aducmp, adncmc, adncfi, nseqca
-    logical(kind=1) :: ficexi, dejouv
+    aster_logical :: ficexi, dejouv
 !
     character(len=8) :: saux08
     character(len=16) :: saux16
@@ -150,10 +151,10 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
             nbcha2 = zi(jnbcha)
             if (nbcha2 .ne. nbcham) then
                 call jeveuo(nocmch, 'L', jcmpch)
-                do 999, iaux = 1,nbcha2
-                nomcmp = zk24( jcmpch+iaux-1 )
-                call jedetr(nomcmp)
-999              continue
+                do 999 iaux = 1, nbcha2
+                    nomcmp = zk24( jcmpch+iaux-1 )
+                    call jedetr(nomcmp)
+999             continue
                 call jedetr(nonbch)
                 call jedetr(nonoch)
                 call jedetr(nocmch)
@@ -208,7 +209,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
             zk80( jnocha+iaux-1 ) = saux64
             zk24( jcmpch+iaux-1 ) = '&&'//nompro//saux08//'N'
             call jedetr('&&'//nompro//saux08//'U')
-10          continue
+ 10         continue
         endif
 !
 !====
@@ -253,7 +254,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
             do 2241 , kaux = 0 , nbcmfi-1
             zk16(adncfi+kaux) = zk16(adncmp+kaux)
-2241          continue
+2241         continue
 !
 ! 2.2.4.2. ==> TEST DES NOMS DES COMPOSANTES
 !
@@ -276,14 +277,14 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
                 if (saux16 .eq. zk16(adncmp+kaux)) then
                     goto 2242
                 endif
-2243              continue
+2243             continue
 !
 !           AUCUNE COMPOSANTE DU CHAMP LU NE CORRESPOND A LA COMPOSANTE
 !           SOUHAITEE
 !
                 existc = 2
 !
-2242              continue
+2242             continue
 !
             endif
 !
@@ -291,13 +292,13 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
         endif
 !
-22      continue
+ 22     continue
 !
 !====
 ! 3. LA FIN
 !====
 !
-30      continue
+ 30     continue
 !
 !====
 ! 4. ==> FERMETURE DU FICHIER S'IL Y A BESOIN
@@ -313,6 +314,6 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
         endif
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

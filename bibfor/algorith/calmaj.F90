@@ -25,10 +25,11 @@ subroutine calmaj(option, max, may, maz, model,&
 ! IN : VECSOL : VECTEUR SOLUTION K*
 ! OUT : VESTO : VECTEUR STOCKE K*
 !---------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcin.h"
 #include "asterfort/ploint.h"
-    logical(kind=1) :: vrai
+    aster_logical :: vrai
     integer :: i, j
     character(len=*) :: modmec, chamno, model
     character(len=9) :: option

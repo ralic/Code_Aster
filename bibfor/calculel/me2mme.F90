@@ -21,6 +21,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -50,7 +51,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=*) :: modelz, caraz, matelz, lchar(*), mate, basez
     character(len=19) :: matel
     real(kind=8) :: time
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     integer :: nchar
 ! ----------------------------------------------------------------------
 !
@@ -95,7 +96,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !        LCHAR(ICHA)//'.CHME.EVOL.CHAR'
 !
 ! ----------------------------------------------------------------------
-
+!
     character(len=1) :: base
     character(len=2) :: codret
     integer :: nbin
@@ -116,7 +117,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=19) :: resufv(3)
     character(len=24) :: charge
     integer :: jad, i
-    logical(kind=1) :: ltemp, ltref
+    aster_logical :: ltemp, ltref
 !
 !
     call jemarq()

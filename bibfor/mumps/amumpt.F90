@@ -34,6 +34,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -49,16 +50,16 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
     character(len=1) :: type
     character(len=24) :: kmonit(12)
     real(kind=8) :: temps(6), rctdeb
-    logical(kind=1) :: lquali, ldist
+    aster_logical :: lquali, ldist
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (smumps_struc) , pointer :: smpsk => null()
-    type (cmumps_struc) , pointer :: cmpsk => null()
-    type (dmumps_struc) , pointer :: dmpsk => null()
-    type (zmumps_struc) , pointer :: zmpsk => null()
+    type(smumps_struc), pointer :: smpsk => null()
+    type(cmumps_struc), pointer :: cmpsk => null()
+    type(dmumps_struc), pointer :: dmpsk => null()
+    type(zmumps_struc), pointer :: zmpsk => null()
     integer :: ifm, niv, ibid, iaux1, iaux2, iaux3, k, i, n, info(100), iret
     integer :: monit(12), ietfin, ietmax, isizemu, execmu
     character(len=8) :: k8bid
@@ -67,7 +68,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
     character(len=24) :: ksizemu
     character(len=80) :: nvers
     real(kind=8) :: rmonit(18), rinfog(100), rctfin, retfin
-    logical(kind=1) :: ldebug, lcmde
+    aster_logical :: ldebug, lcmde
 !
     call jemarq()
     call infniv(ifm, niv)
@@ -398,11 +399,11 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 write(ifm,*)&
                 '*********************************************'&
                 //'*********************************'
-101 format(' N ',i4,' :    ',i12,'    ',i12,'    ',i12)
-103 format('TOTAL   : ',i15,' ',i15,' ',i15)
-107 format('MOYENNE :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
-108 format('MINIMUM :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
-109 format('MAXIMUM :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
+                101 format(' N ',i4,' :    ',i12,'    ',i12,'    ',i12)
+                103 format('TOTAL   : ',i15,' ',i15,' ',i15)
+                107 format('MOYENNE :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
+                108 format('MINIMUM :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
+                109 format('MAXIMUM :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
 ! FIN DU IF RANG
             endif
 !

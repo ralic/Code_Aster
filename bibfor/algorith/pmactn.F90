@@ -19,6 +19,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -30,7 +31,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
     character(len=24) :: sderro
     real(kind=8) :: parcri(*)
     integer :: liccvg(5)
-    logical(kind=1) :: itemax
+    aster_logical :: itemax
     integer :: action, actite
     integer :: iterat, numins
 !
@@ -65,7 +66,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 !
 !
     integer :: retact, ievdac
-    logical(kind=1) :: arret
+    aster_logical :: arret
     integer :: ldccvg, faccvg
     character(len=24) :: sdimpr, k24bla
     character(len=19) :: solveu
@@ -170,7 +171,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
         call utmess('A', 'MECANONLINE9_7')
     endif
 !
-999  continue
+999 continue
 !
     itemax = .false.
 !

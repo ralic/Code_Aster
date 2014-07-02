@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine initel(ligrel, l_calc_rigi)
         character(len=19), intent(in) :: ligrel
-        logical(kind=1), optional, intent(out) :: l_calc_rigi
+        aster_logical, optional, intent(out) :: l_calc_rigi
     end subroutine initel
 end interface

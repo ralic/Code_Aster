@@ -2,6 +2,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvid.h"
@@ -35,8 +36,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=16),  intent(out) :: info_carc_valk(:)
-    real(kind=8)     ,  intent(out) :: info_carc_valr(:)
+    character(len=16), intent(out) :: info_carc_valk(:)
+    real(kind=8), intent(out) :: info_carc_valr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +60,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
-    logical(kind=1) :: l_kit_thm
+    aster_logical :: l_kit_thm
     character(len=16) :: texte(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,7 +69,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 !
 ! - Initializations
 !
-    nbocc       = 0
+    nbocc = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
 !
@@ -79,7 +80,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 ! ----- Get RELATION
 !
         call getvtx(keywordfact, 'RELATION', iocc = iocc, scal = rela_comp)
-        l_kit_thm  = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
+        l_kit_thm = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
 !
 ! ----- Coding comportment (Python)
 !
@@ -120,7 +121,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
         resi_deborst_max = 1.d-6
         iter_deborst_max = 1
         call getvis(keywordfact, 'ITER_CPLAN_MAXI', iocc = iocc, scal = iter_deborst_max)
-        call getvr8(keywordfact, 'RESI_CPLAN_MAXI', iocc = iocc, scal = resi_deborst_max, &
+        call getvr8(keywordfact, 'RESI_CPLAN_MAXI', iocc = iocc, scal = resi_deborst_max,&
                     nbret = iret)
         if (iret .ne. 0) then
             resi_deborst_max = -resi_deborst_max
@@ -131,13 +132,13 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 ! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA/SEUIL/AMPLITUDE/TAUX_RETOUR
 !
         vale_pert_rela = 0.d0
-        seuil          = -1.d0
-        amplitude      = -1.d0
-        taux_retour    = -1.d0
-        type_matr_t    = 0
+        seuil = -1.d0
+        amplitude = -1.d0
+        taux_retour = -1.d0
+        type_matr_t = 0
         type_matr_tang = ' '
-        call getvtx(keywordfact, 'TYPE_MATR_TANG', iocc = iocc, &
-                    scal = type_matr_tang, nbret = iret)
+        call getvtx(keywordfact, 'TYPE_MATR_TANG', iocc = iocc, scal = type_matr_tang,&
+                    nbret = iret)
         if (iret .eq. 0) then
             type_matr_t = 0
         else
@@ -147,7 +148,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
             else if (type_matr_tang .eq. 'VERIFICATION') then
                 type_matr_t = 2
                 call getvr8(keywordfact, 'VALE_PERT_RELA', iocc = iocc, scal = vale_pert_rela)
-            elseif (type_matr_tang .eq. 'TANGENTE_SECANTE') then
+            else if (type_matr_tang .eq. 'TANGENTE_SECANTE') then
                 call getvr8(keywordfact, 'SEUIL', iocc = iocc, scal = seuil)
                 call getvr8(keywordfact, 'AMPLITUDE', iocc = iocc, scal = amplitude)
                 call getvr8(keywordfact, 'TAUX_RETOUR', iocc = iocc, scal = taux_retour)
@@ -207,8 +208,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 ! ----- Get POST_ITER
 !
         if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
-            call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter,&
-                        nbret = iret)
+            call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter, nbret = iret)
             if (iret .eq. 1) then
                 amplitude = 1.d0
             endif
@@ -216,15 +216,15 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 !
 ! ----- Save options in list
 !
-        info_carc_valr(13*(iocc-1) + 1)  = 0.d0
-        info_carc_valr(13*(iocc-1) + 2)  = type_matr_t
-        info_carc_valr(13*(iocc-1) + 3)  = 0.d0
-        info_carc_valr(13*(iocc-1) + 4)  = parm_theta
-        info_carc_valr(13*(iocc-1) + 5)  = iter_inte_pas
-        info_carc_valr(13*(iocc-1) + 6)  = 0.d0
-        info_carc_valr(13*(iocc-1) + 7)  = vale_pert_rela
-        info_carc_valr(13*(iocc-1) + 8)  = resi_deborst_max
-        info_carc_valr(13*(iocc-1) + 9)  = iter_deborst_max
+        info_carc_valr(13*(iocc-1) + 1) = 0.d0
+        info_carc_valr(13*(iocc-1) + 2) = type_matr_t
+        info_carc_valr(13*(iocc-1) + 3) = 0.d0
+        info_carc_valr(13*(iocc-1) + 4) = parm_theta
+        info_carc_valr(13*(iocc-1) + 5) = iter_inte_pas
+        info_carc_valr(13*(iocc-1) + 6) = 0.d0
+        info_carc_valr(13*(iocc-1) + 7) = vale_pert_rela
+        info_carc_valr(13*(iocc-1) + 8) = resi_deborst_max
+        info_carc_valr(13*(iocc-1) + 9) = iter_deborst_max
         info_carc_valr(13*(iocc-1) + 10) = seuil
         info_carc_valr(13*(iocc-1) + 11) = amplitude
         info_carc_valr(13*(iocc-1) + 12) = taux_retour

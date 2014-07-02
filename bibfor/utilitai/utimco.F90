@@ -19,6 +19,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeimpa.h"
@@ -30,7 +31,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
     character(len=*) :: obin
     integer :: nivo, unit
-    logical(kind=1) :: lattr, lcont
+    aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
 !       UNIT   : UNITE LOGIQUE D'IMPRESSION
@@ -65,7 +66,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
     if (lattr) call jeimpa(unit, ob1, ' ')
     if ((lcont) .and. (acces(1:2).eq.'NO')) then
-        call jeprat(unit, ob1, '$$NOM','REPERTOIRE DE NOMS DE LA COLLECTION :'//ob1)
+        call jeprat(unit, ob1, '$$NOM', 'REPERTOIRE DE NOMS DE LA COLLECTION :'//ob1)
     endif
 !
 !     -- BOUCLE SUR LES ELEMENTS DE LA COLLECTION :
@@ -80,8 +81,8 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
         if (lcont) then
             call jeimpo(unit, jexnum(ob1, ioc), ' ')
         endif
- 1      continue
+  1     continue
     end do
 !
-999  continue
+999 continue
 end subroutine

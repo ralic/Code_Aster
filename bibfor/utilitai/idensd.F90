@@ -1,11 +1,12 @@
 function idensd(typesd, sd1, sd2)
     implicit none
-    logical :: idensd
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/idenob.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
+    aster_logical :: idensd
     character(len=*) :: sd1, sd2, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -37,7 +38,7 @@ function idensd(typesd, sd1, sd2)
 !                .FALSE.   SINON
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: iden
+    aster_logical :: iden
     character(len=16) :: typ2sd
     character(len=19) :: pchn1, pchn2
 !
@@ -69,10 +70,10 @@ function idensd(typesd, sd1, sd2)
     endif
 !
     goto 9999
-9998  continue
+9998 continue
     idensd=.false.
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end function

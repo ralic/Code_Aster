@@ -1,5 +1,6 @@
 subroutine asasve(vechar, numedd, typres, vachar)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
@@ -74,9 +75,9 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec,  ityp, neq, jass, i, ibid, iret, icha
+    integer :: nbvec, ityp, neq, jass, i, ibid, iret, icha
     integer :: n1, jvacha
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
     character(len=4) :: tych
     character(len=8) :: modele, newnom, vacha8
     character(len=19) :: chamno, resuel, vecele

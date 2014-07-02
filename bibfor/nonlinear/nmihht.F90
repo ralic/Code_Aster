@@ -24,6 +24,7 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
@@ -61,7 +62,7 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
 !
     integer :: ifm, niv
     integer :: nocc, iret
-    logical(kind=1) :: evonol
+    aster_logical :: evonol
     character(len=19) :: commoi, insmoi
     character(len=24) :: k24bid
 !

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc32pm(lieu, seisme, pi, mi, mse,&
                       pm, pb, pmpb)
         character(len=4) :: lieu
-        logical(kind=1) :: seisme
+        aster_logical :: seisme
         real(kind=8) :: pi
         real(kind=8) :: mi(*)
         real(kind=8) :: mse(*)

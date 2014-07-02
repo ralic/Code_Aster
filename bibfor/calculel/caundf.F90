@@ -19,6 +19,7 @@ subroutine caundf(code, opt, te)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/iisnan.h"
 #include "asterc/indik8.h"
@@ -56,8 +57,7 @@ subroutine caundf(code, opt, te)
     integer :: iachok, iparg, lggrel, iachlo
     character(len=3) :: typsca
     character(len=8) :: nompar
-    logical(kind=1) :: ecras
-    logical :: arret
+    aster_logical :: arret, ecras
     character(len=16) :: nomte, nomopt
     integer :: ich, debugr, lgcata
     real(kind=8) :: rnnem
@@ -102,7 +102,7 @@ subroutine caundf(code, opt, te)
             else
                 ASSERT(.false.)
             endif
-10      continue
+ 10     continue
 !
 !
 !
@@ -149,7 +149,7 @@ subroutine caundf(code, opt, te)
                 call utmess('E', 'CALCULEL_42', nk=3, valk=valk)
             endif
 !
-30      continue
+ 30     continue
 !
         ASSERT(.not.arret)
 !

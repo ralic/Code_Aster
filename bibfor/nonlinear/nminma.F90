@@ -20,6 +20,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -52,7 +53,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: ldyna, lexpl, limpl, lamor, lktan
+    aster_logical :: ldyna, lexpl, limpl, lamor, lktan
     integer :: ifm, niv
     character(len=16) :: optass
     character(len=19) :: masse, amort

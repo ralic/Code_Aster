@@ -1,6 +1,7 @@
 subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
                   proldr, prolga, istop, base, ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/barych.h"
@@ -89,11 +90,11 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacces,  iaobj, iatach
+    integer :: i, i1, i2, iacces, iaobj, iatach
     integer :: iatava, ibid, idebu, ier1, ier2, ierr1, ierr2
     integer :: iloty, imaxi, inomch, ip1, ip2, iposit, nbord2
     integer :: nbordr
-    logical(kind=1), pointer :: lexi(:) => null()
+    aster_logical, pointer :: lexi(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     acce2 = acces
@@ -153,14 +154,14 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     call jenonu(jexnom(noms2//'.DESC', nomc2), ibid)
     call jeveuo(jexnum(noms2//'.TACH', ibid), 'L', iatach)
     nbord2=0
-    do 1,i = 1,nbordr
-    if (zk24(iatach-1+i) (1:1) .eq. ' ') then
-        lexi(i) = .false.
-    else
-        lexi(i) = .true.
-        nbord2=nbord2+1
-    endif
-    1 end do
+    do 1 i = 1, nbordr
+        if (zk24(iatach-1+i) (1:1) .eq. ' ') then
+            lexi(i) = .false.
+        else
+            lexi(i) = .true.
+            nbord2=nbord2+1
+        endif
+  1 end do
 !
     call rsbary(zr(iaobj), nbordr, .false._1, lexi, rval,&
                 i1, i2, iposit)
@@ -242,7 +243,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         goto 9998
 !
     endif
-9998  continue
+9998 continue
 !
 !     -- MESSAGES, ARRET?
 !     -------------------
@@ -279,7 +280,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     endif
 !
 !
-9999  continue
+9999 continue
     call jedetr('&&RSINCH.LIR8')
     AS_DEALLOCATE(vl=lexi)
 !

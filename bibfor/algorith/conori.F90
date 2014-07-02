@@ -68,6 +68,7 @@ subroutine conori(ma)
     implicit none
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/chkmsg.h"
 #include "asterfort/conini.h"
@@ -100,7 +101,7 @@ subroutine conori(ma)
     character(len=8) :: kmac, ktyc, knoc, kmar, ktyr, knor
     character(len=8) :: ma, kbid
 !
-    logical(kind=1) :: lomodi, loreo0, loreor, lomod0, locor0, lface, lface0
+    aster_logical :: lomodi, loreo0, loreor, lomod0, locor0, lface, lface0
 !
 !-----------------------------------------------------------------------
     integer :: i, ikmar, iktyr, imai, imarc, imaz, inoe
@@ -145,7 +146,7 @@ subroutine conori(ma)
             if (niv .eq. 2) then
                 write (ifm,*)'   GROUP_MA     : ',kbid
             endif
-10      continue
+ 10     continue
         write (ifm,*)' '
 !     ------------------------------------------------------------------
 !     CREATION D UN TABLEAU DE TRAVAIL
@@ -162,7 +163,7 @@ subroutine conori(ma)
             write (ifm,*)' '
             do 20 igco = 1, nbgco
                 write (ifm,*)'   ORIE_FISSURE: ',zk24(io8gco+igco-1)
-20          continue
+ 20         continue
             write (ifm,*)' '
         endif
 !     ------------------------------------------------------------------
@@ -266,14 +267,14 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
                         call jenuno(jexnum(ma//'.NOMNOE', inoc), knoc)
                         macoc(icoc+2)=knoc
-30                  continue
+ 30                 continue
 !
 !     ------------------------------------------------------------------
 !     SAUVEGARDE DE LA MAILLE DE FISSURE
 !     ------------------------------------------------------------------
                     do 40 idum = 1, nbcoc+2
                         macos(idum)=macoc(idum)
-40                  continue
+ 40                 continue
 !     ==================================================================
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
@@ -313,7 +314,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
                             call jenuno(jexnum(ma//'.NOMNOE', inor), knor)
                             macor(icor+2)=knor
-50                      continue
+ 50                     continue
 !     ==================================================================
 !     ------------------------------------------------------------------
 !     APPEL DE CONTAC
@@ -365,7 +366,7 @@ subroutine conori(ma)
                         endif
 !
 !     ==================================================================
-60                  continue
+ 60                 continue
                     if (nbmac .eq. 0) then
                         call utmess('F', 'ALGORITH2_30')
                     endif
@@ -397,15 +398,15 @@ subroutine conori(ma)
 !     MODIFICATION DE L ORIENTATION DE LA MAILLE
 !     ------------------------------------------------------------------
                             zi(imicoc+icoc-1)=inoc
-70                      continue
+ 70                     continue
                     endif
 !     ==================================================================
 !
-80              continue
+ 80             continue
 !     ------------------------------------------------------------------
             endif
 !     ------------------------------------------------------------------
-90      continue
+ 90     continue
 !
     endif
 !     ------------------------------------------------------------------

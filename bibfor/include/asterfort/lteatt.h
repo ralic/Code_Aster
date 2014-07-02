@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
 function lteatt(noattr, vattr, typel)
-    logical(kind=1)  :: lteatt
+    aster_logical  :: lteatt
     character(len=*), intent(in) :: noattr
     character(len=*), intent(in) :: vattr
     character(len=*), intent(in), optional :: typel

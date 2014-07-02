@@ -103,6 +103,7 @@ subroutine ftrexc(compq, n, t, ldt, q,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterfort/flaexc.h"
 #include "asterfort/xerbla.h"
 #include "blas/lsame.h"
@@ -117,7 +118,7 @@ subroutine ftrexc(compq, n, t, ldt, q,&
     parameter          ( zero = 0.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: wantq
+    aster_logical :: wantq
     integer :: here, nbf, nbl, nbnext
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
@@ -183,7 +184,7 @@ subroutine ftrexc(compq, n, t, ldt, q,&
 !
         here = ifst
 !
-10      continue
+ 10     continue
 !
 !        SWAP BLOCK WITH NEXT ONE BELOW
 !
@@ -270,7 +271,7 @@ subroutine ftrexc(compq, n, t, ldt, q,&
     else
 !
         here = ifst
-20      continue
+ 20     continue
 !
 !        SWAP BLOCK WITH NEXT ONE ABOVE
 !
@@ -356,7 +357,7 @@ subroutine ftrexc(compq, n, t, ldt, q,&
     endif
     ilst = here
 !
-1000  continue
+1000 continue
 !
 !     END OF FTREXC
 !

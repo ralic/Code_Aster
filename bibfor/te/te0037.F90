@@ -1,5 +1,6 @@
 subroutine te0037(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -73,7 +74,7 @@ subroutine te0037(option, nomte)
     integer :: compt, nddlm, nddls, iret
     real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
-    logical(kind=1) :: lbid, pre1, axi
+    aster_logical :: lbid, pre1, axi
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
 !
@@ -89,8 +90,8 @@ subroutine te0037(option, nomte)
     zxain = xxmmvd('ZXAIN')
 !
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -217,18 +218,18 @@ subroutine te0037(option, nomte)
                     cpt=0
                     do ino = 1, 2
                         if (in(1) .eq. ar(i,ino) .or. in(2) .eq. ar(i,ino)) cpt=cpt+1
-                     end do
+                    end do
                     if (cpt .eq. 2) then
                         mult=0.5d0
                         goto 104
                     endif
-                 end do
+                end do
             endif
         endif
-104    continue
+104     continue
 !
-        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                         jvf=ivff, jdfde=idfdef)
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         do ipgf = 1, npgf
@@ -415,8 +416,8 @@ subroutine te0037(option, nomte)
         endif
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, lbid,&
-                    option, nomte, ddlm,&
-                    nfiss, jfisno, vect=zr(ires))
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    vect=zr(ires))
     endif
 !
 !

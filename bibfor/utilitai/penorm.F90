@@ -1,5 +1,6 @@
 subroutine penorm(resu, modele)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -80,7 +81,7 @@ subroutine penorm(resu, modele)
     integer :: nb_cmp_act
     real(kind=8) :: prec, inst, vnorm(1)
     complex(kind=8) :: c16b
-    logical(kind=1) :: exiord
+    aster_logical :: exiord
     character(len=4) :: tych, ki, exirdm
     character(len=8) :: mailla, k8b, resuco, chamg, typmcl(1), tout
     character(len=8) :: tmpres, nomgd, crit
@@ -353,7 +354,7 @@ subroutine penorm(resu, modele)
                 mesmai = mesmaf
             else
                 call utmess('F', 'PREPOST2_6')
-            endif    
+            endif 
         else
             infoma='-'
         endif

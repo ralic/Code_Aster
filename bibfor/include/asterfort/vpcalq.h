@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, mxresf, neqact,&
                       nblagr, omemax, omemin, omeshi, vecblo, sigma,&
@@ -34,7 +36,7 @@ interface
         complex(kind=8)   , intent(in)    :: sigma
 !!
         integer           , intent(inout) :: npivot
-        logical(kind=1)   , intent(out)   :: flage
+        aster_logical   , intent(out)   :: flage
         integer           , intent(out)   :: nconv
         real(kind=8)      , intent(out)   :: vpinf
         real(kind=8)      , intent(out)   :: vpmax

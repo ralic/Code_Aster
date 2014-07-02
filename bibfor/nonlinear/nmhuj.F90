@@ -98,6 +98,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 !  PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !  ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -132,7 +133,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
     real(kind=8) :: det, bid16(6), bid66(6, 6)
     real(kind=8) :: materf(22, 2), zero, un, deux, dix
     real(kind=8) :: neps, nsig, ptrac, rtrac
-    logical(kind=1) :: debug, conv, reorie, tract
+    aster_logical :: debug, conv, reorie, tract
 !
     parameter     ( degr  = 0.0174532925199d0 )
 !
@@ -218,25 +219,25 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 !
         do 20 i = 1, ndi
             depsth(i) = deps(i)
-20      continue
+ 20     continue
 !
     else
 !
         do 25 i = 1, ndi
             depsth(i) = deps(i) - alpha(i)*(tempf-tref) + alpha(i)*( tempm-tref)
-25      continue
+ 25     continue
 !
     endif
 !
     do 21 i = ndi+1, ndt
         depsth(i) = deps(i)
-21  continue
+ 21 continue
 !
     if (ndtt .lt. 6) then
         do 22 i = ndtt+1, 6
             depsth(i) = zero
             sigd(i) = zero
-22      continue
+ 22     continue
     endif
 !
 ! ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
@@ -268,7 +269,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
             endif
 !
         endif
-30  continue
+ 30 continue
 !
 ! ---> INITIALISATION SEUIL ISOTROPE SI NUL
     if (vind(4) .eq. zero) then
@@ -306,7 +307,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
                 vind(4+i) = materf(18,2)
             endif
         endif
-40  continue
+ 40 continue
 !
     if (vind(8) .eq. zero) then
         if (materf(19, 2) .eq. zero) then
@@ -319,7 +320,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 !ONTROLE DES INDICATEURS DE PLASTICITE
     do 39 i = 1, 4
         if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i)=-un
-39  continue
+ 39 continue
 !
     if (opt(1:9) .ne. 'RIGI_MECA') call lceqvn(50, vind, vinf)
 !
@@ -343,12 +344,12 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
         do 44 i = 1, 3
             call hujprj(i, sigd, tin, piso, q)
             if (abs(piso+deux*rtrac-ptrac) .lt. r8prem()) tract = .true.
-44      continue
+ 44     continue
 !
 ! ---> INTEGRATION ELASTIQUE SUR DT
         do 45 i = 1, ndt
             depsq(i) = zero
-45      continue
+ 45     continue
 !
 ! -----------------------------------------------
 ! ---> INCREMENT TOTAL DE DEFORMATION A APPLIQUER
@@ -368,7 +369,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 ! -----------------------------------------------------
         inc = 0
         incmax = 1
-100      continue
+100     continue
 !
         inc = inc + 1
         call lceqve(depsq, depsr)
@@ -397,7 +398,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
             do 48 i = 1, ndt
                 depsq(i)=deps0(i) /incmax
                 depsr(i)=deps0(i) /incmax
-48          continue
+ 48         continue
             call hujpre(etatd, mod, crit, imat, materf,&
                         depsr, sigd, sigf, vind0, iret)
         endif
@@ -435,7 +436,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
             hill = hill + dsig(i)*deps0(i)
             nsig = nsig + dsig(i)**2.d0
             neps = neps + deps0(i)**2.d0
-57      continue
+ 57     continue
 !
 ! --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
         if ((neps.gt.r8prem()) .and. (nsig.gt.r8prem())) then
@@ -537,7 +538,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
                 if (i .eq. 7) vinf(34)=vinf(34)+dix**6.d0
                 if (i .eq. 8) vinf(34)=vinf(34)+dix**7.d0
             endif
-60      continue
+ 60     continue
 !
 !
     endif
@@ -548,7 +549,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
     if (opt .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA') call hujori('GLOBA', 1, reorie,&
                                                                          angmas, sigf, bid66)
 !
-9999  continue
+9999 continue
 !
     if (opt(1:9) .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA') then
         if (iret .eq. 1) then
@@ -574,7 +575,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
                 do 61 i = 1, 3
                     sigf(i) = -deux*rtrac+ptrac
                     sigf(i+3) = zero
-61              continue
+ 61             continue
                 call lceqvn(50, vind0, vinf)
                 iret = 0
             endif

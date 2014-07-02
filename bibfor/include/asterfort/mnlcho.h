@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
                       h, hf, parcho, adime, ninc, tabchoc, lcine)
-        logical(kind=1) :: reprise
+        aster_logical :: reprise
         integer :: imat(2)
         character(len=14) :: numedd
         character(len=14) :: xcdl
@@ -30,6 +32,6 @@ interface
         character(len=14) :: adime
         integer :: ninc
         character(len=8) :: tabchoc
-        logical(kind=1) :: lcine
+        aster_logical :: lcine
     end subroutine mnlcho
 end interface 

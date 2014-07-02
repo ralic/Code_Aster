@@ -1,5 +1,6 @@
 subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/dismoi.h"
@@ -60,10 +61,10 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=15) :: nrepnd
     character(len=8) :: nresu, nomcmp, nmaich, nmaili, nomcrb, nomnd
     character(len=4) :: docu
-    integer :: acheff, amaicb,  alneud, anumcp, anomcp, nbcmp
+    integer :: acheff, amaicb, alneud, anumcp, anomcp, nbcmp
     integer :: nbgrpn, nbneud, nbcrb, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ibid
-    logical(kind=1) :: chelok
+    aster_logical :: chelok
     character(len=24), pointer :: grpn(:) => null()
 !
 !=====================================================================

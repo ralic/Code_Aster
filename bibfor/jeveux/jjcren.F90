@@ -16,6 +16,7 @@ subroutine jjcren(nomlu, icre, iret)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjarep.h"
 #include "asterfort/jxhcod.h"
@@ -50,7 +51,7 @@ subroutine jjcren(nomlu, icre, iret)
     common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
 !     ------------------------------------------------------------------
     character(len=32) :: clel, cle, d32, valk(3)
-    logical(kind=1) :: linser, rinser
+    aster_logical :: linser, rinser
     integer :: iclain, idatin, iin
     data             d32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------
@@ -59,7 +60,7 @@ subroutine jjcren(nomlu, icre, iret)
             call utmess('F', 'JEVEUX_19')
         endif
     endif
-500  continue
+500 continue
     iclasi = iclas
     iret = 0
     linser = .false.
@@ -76,7 +77,7 @@ subroutine jjcren(nomlu, icre, iret)
             endif
             ne = 1
             i = iref
- 5          continue
+  5         continue
             if (hcod(jhcod(icla)+i) .eq. 0 .and. .not. rinser) then
                 if (icre .eq. 1 .or. icre .eq. 2) then
                     if (icla .eq. iclas) then
@@ -155,7 +156,7 @@ subroutine jjcren(nomlu, icre, iret)
                 endif
             endif
         endif
-10  end do
+ 10 end do
     if (linser) then
         iclas = iclain
         if (icre .eq. 1) then
@@ -171,7 +172,7 @@ subroutine jjcren(nomlu, icre, iret)
         hcod(jhcod(iclas)+iin) = idatin
         rnom(jrnom(iclas)+idatin) = nomlu
     endif
-15  continue
+ 15 continue
     if (iret .eq. 1) then
         nomos = nomlu
         if (iclasi .ne. iclaos) then

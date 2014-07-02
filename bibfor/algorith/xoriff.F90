@@ -21,6 +21,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -36,7 +37,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
     integer :: nbfond
     character(len=19) :: info, listpt
     character(len=24) :: fonmul
-    logical(kind=1) :: goinop
+    aster_logical :: goinop
 !
 ! ----------------------------------------------------------------------
 !       ORIENTATION DES POINTS DU FOND DE FISSURE DANS LE CADRE DE XFEM
@@ -120,7 +121,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                 do 700 k = 1, 3
                     p(k)=zr(jfono-1+11*(indipt-1)+k)
                     m(k)=zr(jfono-1+11*(indicm-1)+k)
-700              continue
+700             continue
                 absc = zr(jfono-1+11*(indicm-1)+4)
                 zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
 !
@@ -144,12 +145,12 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                 do 800 k = 1, 3
                     p(k)=zr(jfono-1+11*(indipt-1)+k)
                     m(k)=zr(jfono-1+11*(indicm-1)+k)
-800              continue
+800             continue
                 absc = zr(jfono-1+11*(indicm-1)+4)
                 zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
 !
             endif
-11      continue
+ 11     continue
 !
 !       ON N'A PAS TROUVE DE POINT A ASSOCIER A IPT: C'EST UN POINT
 !       EXTREMITE ( CAS DES FONDS MULTIPLES )
@@ -167,8 +168,8 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                     indice = 1
                     goto 13
                 endif
-12          continue
-13          continue
+ 12         continue
+ 13         continue
 !
             ASSERT(indice.ne.0)
             zi(jptext-1+iptext) = 0
@@ -188,18 +189,18 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
                     goto 15
                 endif
-14          continue
+ 14         continue
 !
 !         PRESENCE DE FONDS OUVERTS ET DE FONDS FERMES INTERDIT
             call utmess('F', 'XFEM_21')
 !
         endif
-15      continue
-10  continue
+ 15     continue
+ 10 continue
 !
     zi(jfonmu-1+2*(nbfond-1)+2) = nfon
 !
-    if (typfon .eq. 'FERME')then
+    if (typfon .eq. 'FERME') then
         zi(jfonmu-1+2*(nbfond-1)+2) = nfon+1
     endif
 !

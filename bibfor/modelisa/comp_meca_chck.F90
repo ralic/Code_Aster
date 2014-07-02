@@ -2,6 +2,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/lccree.h"
@@ -56,7 +57,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical(kind=1) :: l_affe_all
+    aster_logical :: l_affe_all
     integer :: nb_elem_affe
     character(len=16) :: texte(2)
     character(len=16) :: defo_comp, rela_comp, rela_thmc, type_cpla
@@ -68,19 +69,19 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     integer :: nt
-    logical(kind=1) :: l_kit_thm
+    aster_logical :: l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc       = 0
+    nbocc = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
 !
     list_elem_affe = '&&COMPMECASAVE.LIST'
-    motcle(1)   = 'GROUP_MA'
-    motcle(2)   = 'MAILLE'
-    typmcl(1)   = 'GROUP_MA'
-    typmcl(2)   = 'MAILLE'
+    motcle(1) = 'GROUP_MA'
+    motcle(2) = 'MAILLE'
+    typmcl(1) = 'GROUP_MA'
+    typmcl(2) = 'MAILLE'
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -93,17 +94,17 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
             l_affe_all = .true.
         else
             l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
+            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                         2, motcle, typmcl, list_elem_affe, nb_elem_affe)
             if (nb_elem_affe .eq. 0) l_affe_all = .true.
         endif
 !
 ! ----- Get infos
 !
-        rela_comp    = info_comp_valk(16*(iocc-1) + 1)
-        defo_comp    = info_comp_valk(16*(iocc-1) + 2)
-        kit_comp(1)  = info_comp_valk(16*(iocc-1) + 5)
-        rela_thmc    = kit_comp(1)
+        rela_comp = info_comp_valk(16*(iocc-1) + 1)
+        defo_comp = info_comp_valk(16*(iocc-1) + 2)
+        kit_comp(1) = info_comp_valk(16*(iocc-1) + 5)
+        rela_thmc = kit_comp(1)
 !
 ! ----- Detection of specific cases
 !
@@ -138,7 +139,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 !
 ! ----- Check deformation with Comportement.py
 !
-        call nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, &
+        call nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                     defo_comp, defo_comp_py)
     end do
 !

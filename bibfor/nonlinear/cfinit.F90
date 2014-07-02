@@ -19,7 +19,8 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
@@ -57,11 +58,11 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
 !
 !
 !
-    logical(kind=1) :: lreac(3)
+    aster_logical :: lreac(3)
     character(len=24) :: clreac
     integer :: jclrea
     character(len=24) :: autoc1, autoc2
-    logical(kind=1) :: leltc, lctcd, lallv
+    aster_logical :: leltc, lctcd, lallv
     integer :: mmitgo
 !
 ! ----------------------------------------------------------------------
@@ -119,7 +120,7 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
         call mminit(noma, defico, resoco, sddyna, valinc)
     endif
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

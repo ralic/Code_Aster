@@ -20,6 +20,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/nmfisa.h"
 #include "asterfort/r8inir.h"
     integer :: npg
@@ -36,7 +37,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 ! OUT : FINT
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: i, j, kpg
     real(kind=8) :: b(2, 8), poids
 !-----------------------------------------------------------------------
@@ -58,8 +59,8 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
         do 20 i = 1, 8
             do 40 j = 1, 2
                 fint(i) = fint(i) + poids*b(j,i)*sigma(j,kpg)
-40          continue
-20      continue
+ 40         continue
+ 20     continue
 !
-11  end do
+ 11 end do
 end subroutine

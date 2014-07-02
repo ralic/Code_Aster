@@ -1,5 +1,6 @@
 subroutine i2rdli(n, t, adr)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +21,7 @@ subroutine i2rdli(n, t, adr)
 !
     integer :: n, t(*), adr
 !
-    logical(kind=1) :: fini, trouve
+    aster_logical :: fini, trouve
     integer :: i, j
 !
 !-----------------------------------------------------------------------
@@ -31,7 +32,7 @@ subroutine i2rdli(n, t, adr)
     trouve = .false.
     fini = .false.
 !
-10  continue
+ 10 continue
     if ((.not. fini) .and. (i .lt. adr)) then
 !
         if (t(i) .lt. n) then
@@ -55,11 +56,11 @@ subroutine i2rdli(n, t, adr)
 !
     if (.not. trouve) then
 !
-        do 20, j = adr-1, i, -1
+        do 20 j = adr-1, i, -1
 !
-        t(j+1) = t(j)
+            t(j+1) = t(j)
 !
-20      continue
+ 20     continue
 !
         t(i) = n
         adr = adr + 1

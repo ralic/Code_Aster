@@ -19,6 +19,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
@@ -53,7 +54,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
     integer :: noc
     character(len=16) :: algoc, algof, formul, frott
     integer :: icont, ifrot, izone
-    logical(kind=1) :: lfrot, lmunul
+    aster_logical :: lfrot, lmunul
     character(len=24) :: defico
     character(len=24) :: paraci
     integer :: jparci
@@ -169,7 +170,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
             do 10 izone = 1, nzoco
                 call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
                 lmunul = lmunul.or.(coefff.ne.0.d0)
-10          continue
+ 10         continue
             if (.not.lmunul) then
                 call utmess('A', 'CONTACT3_1')
                 lfrot = .false.

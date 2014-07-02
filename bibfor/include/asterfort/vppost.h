@@ -16,6 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "asterf_types.h"
+!
 interface
     subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, nbpari, nbparr, mxresf,&
                       nconv, nblagr, nfreqg, modes, typcon, compex, eigsol, matopa, matpsc, solveu,&
@@ -41,7 +42,7 @@ interface
         character(len=19) , intent(in)    :: solveu
         character(len=24) , intent(in)    :: vecblo
         character(len=24) , intent(in)    :: veclag
-        logical(kind=1)   , intent(in)    :: flage
+        aster_logical   , intent(in)    :: flage
 !!
         integer           , intent(inout) :: icom1
         integer           , intent(inout) :: icom2
@@ -51,6 +52,6 @@ interface
         real(kind=8)      , intent(inout) :: omemin
         real(kind=8)      , intent(inout) :: vpinf
         real(kind=8)      , intent(inout) :: vpmax
-        logical(kind=1)   , intent(inout) :: lcomod
+        aster_logical   , intent(inout) :: lcomod
     end subroutine vppost
 end interface

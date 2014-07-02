@@ -1,5 +1,6 @@
 subroutine numek8(tglok8, tlock8, nbgk8, nblk8, tind)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +32,7 @@ subroutine numek8(tglok8, tlock8, nbgk8, nblk8, tind)
 !***********************************************************************
 !
     character(len=8) :: nlk8
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     integer :: i, j
 !
 !-----------------------------------------------------------------------
@@ -41,41 +42,41 @@ subroutine numek8(tglok8, tlock8, nbgk8, nblk8, tind)
     i = 0
     j = 0
 !
-    do 10, i =1, nblk8, 1
+    do 10 i = 1, nblk8, 1
 !
-    tind (i) = 0
+        tind (i) = 0
 !
-    10 end do
+ 10 end do
 !
-    do 100, i = 1, nblk8, 1
+    do 100 i = 1, nblk8, 1
 !
-    nlk8 = tlock8(i)
+        nlk8 = tlock8(i)
 !
-    j = 0
+        j = 0
 !
-    trouve = .false.
+        trouve = .false.
 !
-110  continue
-    if ((.not. trouve) .and. (j .lt. nbgk8)) then
+110     continue
+        if ((.not. trouve) .and. (j .lt. nbgk8)) then
 !
-        j = j + 1
+            j = j + 1
 !
-        if (nlk8 .eq. tglok8(j)) then
+            if (nlk8 .eq. tglok8(j)) then
 !
-            trouve = .true.
+                trouve = .true.
+!
+            endif
+!
+            goto 110
 !
         endif
 !
-        goto 110
+        if (trouve) then
 !
-    endif
+            tind(i) = j
 !
-    if (trouve) then
+        endif
 !
-        tind(i) = j
-!
-    endif
-!
-    100 end do
+100 end do
 !
 end subroutine

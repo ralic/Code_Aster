@@ -19,7 +19,8 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmappa.h"
@@ -33,7 +34,7 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdstat, sdtime
     character(len=24) :: numedd
-    logical(kind=1) :: loptin
+    aster_logical :: loptin
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,6 +94,6 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
     call nmtime(sdtime, 'END', 'CONT_GEOM')
     call nmrinc(sdstat, 'CONT_GEOM')
 !
-99  continue
+ 99 continue
 !
 end subroutine

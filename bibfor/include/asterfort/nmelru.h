@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
                       compor, epseq, p, divu, nonlin,&
@@ -29,7 +31,7 @@ interface
         real(kind=8) :: epseq
         real(kind=8) :: p
         real(kind=8) :: divu
-        logical(kind=1) :: nonlin
+        aster_logical :: nonlin
         real(kind=8) :: ener(2)
     end subroutine nmelru
 end interface

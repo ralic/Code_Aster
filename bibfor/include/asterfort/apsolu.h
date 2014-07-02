@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine apsolu(kptsc, lmd, rsolu)
         integer :: kptsc
-        logical(kind=1) :: lmd
+        aster_logical :: lmd
         real(kind=8) :: rsolu(*)
     end subroutine apsolu
 end interface

@@ -25,9 +25,10 @@ subroutine fneihm(fnoevo, deltat, perman, nno1, nno2,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/fonoei.h"
 #include "asterfort/matthm.h"
-    logical(kind=1) :: fnoevo, perman, axi
+    aster_logical :: fnoevo, perman, axi
     integer :: dimdef, dimcon, nno1, nno2
     integer :: dimuel, ndim
     integer :: npi, npg, mecani(8), press1(9), press2(9)
@@ -113,7 +114,7 @@ subroutine fneihm(fnoevo, deltat, perman, nno1, nno2,&
 ! ======================================================================
     do 1 i = 1, dimuel
         vectu(i)=0.d0
- 1  end do
+  1 end do
 ! ======================================================================
 ! --- CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG ---------------
 ! ======================================================================
@@ -124,7 +125,7 @@ subroutine fneihm(fnoevo, deltat, perman, nno1, nno2,&
 ! ======================================================================
         do 22 i = 1, dimdef
             r(i)=0.d0
-22      continue
+ 22     continue
 !
 ! ======================================================================
 ! --- CALCUL DE LA MATRICE Q AU POINT DE GAUSS -------------------------
@@ -151,10 +152,10 @@ subroutine fneihm(fnoevo, deltat, perman, nno1, nno2,&
         do 117 i = 1, dimuel
             do 118 n = 1, dimdef
                 vectu(i)=vectu(i)+q(n,i)*r(n)*wi
-118          continue
-117      continue
+118         continue
+117     continue
 !
 ! ======================================================================
-10  end do
+ 10 end do
 ! ======================================================================
 end subroutine

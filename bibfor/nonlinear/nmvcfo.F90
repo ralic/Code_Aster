@@ -20,6 +20,7 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/calcul.h"
@@ -68,8 +69,8 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
     character(len=8) :: lpaout(mxnbou), lpain(mxnbin)
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
-    logical(kind=1) :: exitem, exihyd, exisec, exiepa
-    logical(kind=1) :: lbid, lxfem
+    aster_logical :: exitem, exihyd, exisec, exiepa
+    aster_logical :: lbid, lxfem
     integer :: nbres, iret
     character(len=6) :: masque
     character(len=8) :: modele

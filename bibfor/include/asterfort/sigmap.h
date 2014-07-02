@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine sigmap(net, bishop, sat, signe, tbiot,&
                       dp2, dp1, sigmp)
-        logical(kind=1) :: net
-        logical(kind=1) :: bishop
+        aster_logical :: net
+        aster_logical :: bishop
         real(kind=8) :: sat
         real(kind=8) :: signe
         real(kind=8) :: tbiot(6)

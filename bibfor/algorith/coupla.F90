@@ -31,15 +31,16 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/coefmo.h"
 #include "asterfort/matini.h"
-
+!
     integer :: np1, nbm, indic
     character(len=8) :: tpfl
     integer :: veci1(*)
     real(kind=8) :: vgap, vecr4(*), vecr1(*), vecr2(*), vecr5(*), vecr3(*)
     real(kind=8) :: masg(*), puls(*)
-    logical(kind=1) :: locflc(*)
+    aster_logical :: locflc(*)
     real(kind=8) :: amflu0(np1, *), amfluc(np1, *), xsi0(*)
 !
 ! VARIABLES LOCALES
@@ -47,7 +48,7 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
     integer :: i, j
     real(kind=8) :: xcf, r8b1(2), r8b2
     complex(kind=8) :: c16b
-    logical(kind=1) :: lk
+    aster_logical :: lk
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -66,7 +67,7 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
                         r8b2, c16b, xcf)
             amfluc(i,i) = xcf/masg(i)
         endif
-10  end do
+ 10 end do
 !
 ! 2.  CALCUL DU SAUT DE MATRICE D'AMORTISSEMENT AJOUTE ADIMENSIONALISEE
 !     PAR RAPPORT A LA MATRICE DE REFERENCE EN VOL
@@ -74,8 +75,8 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
     do 20 j = 1, nbm
         do 21 i = 1, nbm
             amfluc(i,j) = amfluc(i,j) - amflu0(i,j)
-21      continue
-20  end do
+ 21     continue
+ 20 end do
 !
 ! --- FIN DE COUPLA.
 end subroutine

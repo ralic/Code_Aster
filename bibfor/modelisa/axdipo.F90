@@ -1,5 +1,6 @@
 subroutine axdipo(noma, caelem, modele, iaxe)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
@@ -62,7 +63,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     integer :: ncmpor, nummai, nutyel, pobali, iaux1
     integer :: ntyele(nbtel)
 !
-    logical(kind=1) :: ntrouv
+    aster_logical :: ntrouv
 !
     real(kind=8) :: alpha, alpha2, beta, beta2, cosa, cosa2, cosb
     real(kind=8) :: cosb2, cosg, cosg2, dif1, dif2, dif3, dife1

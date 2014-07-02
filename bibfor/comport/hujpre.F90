@@ -50,6 +50,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ECHEC
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hujela.h"
 #include "asterfort/hujprj.h"
@@ -66,7 +67,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
     real(kind=8) :: ptrac, pref, maxi, cohes, factor
     character(len=7) :: etat
     character(len=8) :: mod, nomail
-    logical(kind=1) :: debug
+    aster_logical :: debug
 !
     common /tdim/   ndt, ndi
     common /meshuj/ debug
@@ -122,7 +123,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
 ! ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
     do 10 i = 1, ndt
         dsig(i)= sigf(i) - sigd(i)
-10  continue
+ 10 continue
 !
     maxi = un
     cohes = -rtrac+ptrac
@@ -138,14 +139,14 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
                 maxi = factor
             endif
         endif
-20  continue
+ 20 continue
 !
 !
 ! ---> SI IL EXISTE PF(I)>0, ALORS MODIFICATION DE LA PREDICTION
     if (maxi .lt. un) then
         do 30 i = 1, ndt
             dsig(i) = maxi * dsig(i)
-30      continue
+ 30     continue
         call lcsovn(ndt, sigd, dsig, sigf)
         if (debug) then
             write (6,'(A,A,E12.5)')&

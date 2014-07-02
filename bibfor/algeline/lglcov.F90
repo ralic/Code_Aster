@@ -1,7 +1,8 @@
 function lglcov(seuil, toler)
 !
     implicit none
-    logical(kind=1) :: lglcov
+#include "asterf_types.h"
+    aster_logical :: lglcov
     real(kind=8) :: seuil, toler
 ! ======================================================================
 ! ======================================================================

@@ -1,5 +1,6 @@
 subroutine modthm(modint)
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
     character(len=3), intent(out) :: modint
@@ -22,21 +23,21 @@ subroutine modthm(modint)
 ! --- determination du mode d'integration : CLA/RED/LUM
 !     pour le type_element courant.
 ! =====================================================================
-    logical(kind=1) :: lprincip
+    aster_logical :: lprincip
     integer :: iret
-    character(len=1) :: d1,d2
+    character(len=1) :: d1, d2
     character(len=3) :: mint
 ! =====================================================================
 !
 !   -- l'element est-il principal ?
-    call teattr('S','DIM_TOPO_MODELI',d1,iret)
-    call teattr('S','DIM_TOPO_MAILLE',d2,iret)
+    call teattr('S', 'DIM_TOPO_MODELI', d1, iret)
+    call teattr('S', 'DIM_TOPO_MAILLE', d2, iret)
     lprincip=(d1.eq.d2)
-
+!
     modint='CLA'
     if (lprincip) then
-        call teattr('C','INTTHM',mint,iret)
-        if (iret.eq.0) modint=mint
+        call teattr('C', 'INTTHM', mint, iret)
+        if (iret .eq. 0) modint=mint
     endif
 ! =====================================================================
 end subroutine

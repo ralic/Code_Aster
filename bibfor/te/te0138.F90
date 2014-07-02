@@ -30,6 +30,7 @@ subroutine te0138(option, nomte)
 ! CORPS DU PROGRAMME
     implicit none
 ! PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/connec.h"
@@ -52,7 +53,7 @@ subroutine te0138(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom, i, j
     integer :: l, li, iflux, iveres, nse, c(6, 9), ise, nnop2, itemps, itempi
     integer :: ibid
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     character(len=8) :: elrefe
 !
 !====
@@ -66,8 +67,8 @@ subroutine te0138(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -85,7 +86,7 @@ subroutine te0138(option, nomte)
     call connec(nomte, nse, nnop2, c)
     do 10 i = 1, nnop2
         vectt(i) = 0.d0
-10  end do
+ 10 end do
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
@@ -94,8 +95,8 @@ subroutine te0138(option, nomte)
         do 30 i = 1, nno
             do 20 j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
-20          continue
-30      continue
+ 20         continue
+ 30     continue
         do 70 kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         coorse, nx, ny, poids)
@@ -104,7 +105,7 @@ subroutine te0138(option, nomte)
                 do 40 i = 1, nno
                     l = (kp-1)*nno + i
                     r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-40              continue
+ 40             continue
                 poids = poids*r
             endif
 !
@@ -112,21 +113,21 @@ subroutine te0138(option, nomte)
             do 50 i = 1, nno
                 l = (kp-1)*nno + i
                 tpg = tpg + zr(itempi-1+c(ise,i))*zr(ivf+l-1)
-50          continue
+ 50         continue
             call foderi(coef, tpg, alpha, rbid)
 !
 !CDIR$ IVDEP
             do 60 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) - poids*theta*alpha* zr(li)
-60          continue
-70      continue
-80  end do
+ 60         continue
+ 70     continue
+ 80 end do
 !
     do 90 i = 1, nnop2
         zr(iveres-1+i) = vectt(i)
-90  end do
-100  continue
+ 90 end do
+100 continue
 ! FIN ------------------------------------------------------------------
     call jedema()
 end subroutine

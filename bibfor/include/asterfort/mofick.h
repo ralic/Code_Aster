@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mofick(fa, fav, cont, tange, maxfa,&
                       nface, nfacev, nfacem, fluxk, flux1k,&
@@ -26,8 +28,8 @@ interface
         integer :: maxfa
         integer :: fa
         integer :: fav
-        logical(kind=1) :: cont
-        logical(kind=1) :: tange
+        aster_logical :: cont
+        aster_logical :: tange
         real(kind=8) :: fluxk(nface)
         real(kind=8) :: flux1k(1:maxfa+1, nface)
         real(kind=8) :: flux2k(1:maxfa+1, nface)

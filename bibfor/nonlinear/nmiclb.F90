@@ -22,6 +22,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
 ! ------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lcimpl.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dco.h"
@@ -70,7 +71,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
     real(kind=8) :: sigm, deps, depsth, depsm, tmoins, tplus
     real(kind=8) :: sigp, xrig, val(1)
-    logical(kind=1) :: isot, cine, elas, corr, impl, isotli
+    aster_logical :: isot, cine, elas, corr, impl, isotli
 !
 !
 !----------INITIALISATIONS
@@ -83,7 +84,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
     isotli = .false.
     if (compor(1) .eq. 'ELAS') then
         elas = .true.
-        else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1).eq.'VMIS_ISOT_TRAC')) then
+    else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1).eq.'VMIS_ISOT_TRAC')) then
         isot = .true.
         if (compor(1) .eq. 'VMIS_ISOT_LINE') then
             isotli = .true.

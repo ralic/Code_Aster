@@ -3,6 +3,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
                   toldyn, vect, valpro, nitjac, nitbat,&
                   solveu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ggubs.h"
 #include "asterfort/jacobi.h"
@@ -69,7 +70,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !-----------------------------------------------------------------------
 !
     integer :: jsmdi, type, iordre
-    logical(kind=1) :: iconvf
+    aster_logical :: iconvf
     character(len=24) :: valm
     complex(kind=8) :: cbid
     character(len=1) :: kbid
@@ -78,8 +79,8 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iaa, iar, ibr, icomp, iconv
-    integer :: ii,      iter
-    integer ::    jj, kk, ll, nfrcv
+    integer :: ii, iter
+    integer :: jj, kk, ll, nfrcv
     integer :: nitja
     real(kind=8) :: art, brt, dseed
     integer, pointer :: fpos(:) => null()
@@ -288,7 +289,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
     nitbat = iter
     call vpordi(1, 0, nbvec, valpro, vect,&
-                neq,fpos)
+                neq, fpos)
     if (.not.iconvf) then
         call utmess('A', 'ALGELINE3_45')
     endif

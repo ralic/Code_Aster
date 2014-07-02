@@ -1,5 +1,6 @@
 subroutine i3inei(e1, e2, n1, n2, iret)
     implicit none
+#include "asterf_types.h"
 !
     integer :: e1(*), e2(*), n1, n2, iret
 !
@@ -31,7 +32,7 @@ subroutine i3inei(e1, e2, n1, n2, iret)
 !     ------------------------------------------------------------------
 !
     integer :: i1, i2, n, cmpt
-    logical(kind=1) :: inclus
+    aster_logical :: inclus
 !
 !======================================================================
 !
@@ -39,13 +40,13 @@ subroutine i3inei(e1, e2, n1, n2, iret)
 !-----------------------------------------------------------------------
     inclus = .true.
     i1 = 1
-100  continue
+100 continue
     if (inclus .and. (i1 .le. n1)) then
         n = e1(i1)
         cmpt = 0
-        do 10, i2 = 1, n2, 1
-        cmpt = cmpt + max(0,1-abs(n-e2(i2)))
-10      continue
+        do 10 i2 = 1, n2, 1
+            cmpt = cmpt + max(0,1-abs(n-e2(i2)))
+ 10     continue
         inclus = (cmpt .gt. 0)
         i1 = i1 + 1
         goto 100

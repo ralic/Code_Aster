@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine limend(nommaz, salt, nomres, forvie, limit)
         character(len=*), intent(in) :: nommaz
         real(kind=8), intent(in) :: salt
         character(len=*), intent(in) :: nomres
         character(len=*), intent(in) :: forvie
-        logical(kind=1), intent(out) :: limit
+        aster_logical, intent(out) :: limit
     end subroutine limend
 end interface

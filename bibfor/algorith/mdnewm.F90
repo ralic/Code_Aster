@@ -6,6 +6,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                   nomfon, coefm, liad, inumor, passto)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/amgene.h"
@@ -43,7 +44,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     real(kind=8) :: rgygen(*)
     character(len=8) :: basemo, nomres, nomfon(*), foncv, fonca
     character(len=16) :: typbas
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
     integer :: descmm, descmr, descma, liad(*), inumor(*)
     real(kind=8) :: r8b, coefm(*), passto(*)
 !-----------------------------------------------------------------------
@@ -101,7 +102,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     integer :: i, ia, iarchi, ib, ier
     integer :: if, ife, im, im1, ind, ipas, ipm(1)
     integer :: iret, isto1, jacce, jdepl, jfext, jm, jmass
-    integer ::       jvite
+    integer :: jvite
     integer :: n100, nbbloc, nbexci, nbmod1, nbmode, nbpas, nbpasb
     integer :: nbpasf, nbpp, ndim, ndt
     real(kind=8) :: a0, a1, a2, a3, a4, a5, a6
@@ -306,8 +307,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
     call mdarch('TRAN', isto1, 0, tinit, nbmode,&
                 iorsto, temsto, dt=dt, depger=zr(jdepl), vitger=zr(jvite),&
-                accger=zr(jacce), depstr=depsto, vitstr=vitsto, accstr=accsto,&
-                passto=passto)
+                accger=zr(jacce), depstr=depsto, vitstr=vitsto, accstr=accsto, passto=passto)
 !
     temps = tinit + dt
     call uttcpu('CPU.MDNEWM', 'INIT', ' ')
@@ -382,8 +382,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                     do im = 1, nbmode
                         do jm = 1, nbmode
                             ind = jm + nbmode*(im-1)
-                            ktilda(ind) = a0*masgen(ind) + riggyr(ind) + a1*amogyr(1+ind&
-                                              &-1)
+                            ktilda(ind) = a0*masgen(ind) + riggyr(ind) + a1*amogyr(1+ind-1)
                             ftild1(ind) = a2*masgen(ind)+a4*amogyr(ind)
                             ftild2(ind) = a0*masgen(ind)+a1*amogyr(ind)
                             ftild3(ind) = a3*masgen(ind)+a5*amogyr(ind)
@@ -415,9 +414,10 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                 temps = tinit + iarchi*dt
                 tarchi = temps
 !
-                call mdarch('TRAN', isto1, iarchi, temps, nbmode, iorsto, temsto,&
-                            dt=dt, depger=zr(jdepl), vitger=zr(jvite), accger=zr(jacce),&
-                            depstr=depsto, vitstr=vitsto, accstr=accsto, passto=passto)
+                call mdarch('TRAN', isto1, iarchi, temps, nbmode,&
+                            iorsto, temsto, dt=dt, depger=zr(jdepl), vitger=zr(jvite),&
+                            accger=zr(jacce), depstr=depsto, vitstr=vitsto, accstr=accsto,&
+                            passto=passto)
             endif
 !
 !       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---

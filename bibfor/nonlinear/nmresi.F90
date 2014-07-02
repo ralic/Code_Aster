@@ -1,12 +1,13 @@
 subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                   sddyna, sdconv, sdimpr, defico, resoco,&
-                  matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta,&
-                  comref, valinc, solalg, veasse, measse,&
-                  vrela, vmaxi, vchar, vresi, vrefe,&
-                  vinit, vcomp, vfrot, vgeom)
+                  matass, numins, conv, resi_glob_rela, resi_glob_maxi,&
+                  eta, comref, valinc, solalg, veasse,&
+                  measse, vrela, vmaxi, vchar, vresi,&
+                  vrefe, vinit, vcomp, vfrot, vgeom)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -102,22 +103,22 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jccid,  jdiri,  jvcfo,  jiner
+    integer :: jccid, jdiri, jvcfo, jiner
     integer :: ifm, niv, nocc
     integer :: neq
     character(len=8) :: noddlm
-    logical(kind=1) :: ldyna, lstat, lcine, lctcc
+    aster_logical :: ldyna, lstat, lcine, lctcc
     character(len=19) :: profch, foiner
     character(len=19) :: commoi, depmoi
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
-    integer ::  jfnod
+    integer :: jfnod
     integer :: ieq
-    logical(kind=1) :: lrefe, linit, lcmp
+    aster_logical :: lrefe, linit, lcmp
     real(kind=8) :: val1, val4, val5
     real(kind=8) :: maxres
     integer :: irela, imaxi, iresi, irefe, ichar, icomp
-    logical(kind=1) :: lndepl, lpilo
+    aster_logical :: lndepl, lpilo
     character(len=16) :: nfrot, ngeom
     character(len=24) :: sdnuco
     integer :: jnuco
@@ -284,15 +285,10 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- CALCUL DU RESIDU A PROPREMENT PARLER
 !
         if (lpilo) then
-            val1 = abs(&
-                   fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-&
-                   &1)-eta*dipi(ieq)&
+            val1 = abs(fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-1)-eta*dipi(ieq)&
                    )
         else
-            val1 = abs(&
-                   fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-&
-                   &1)&
-                   )
+            val1 = abs( fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-1) )
         endif
 !
 ! --- VRESI: MAX RESIDU D'EQUILIBRE
@@ -307,8 +303,8 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
         if (lrefe) then
             if (deeq(2*ieq) .gt. 0) then
                 val4 = abs(&
-                       fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1&
-                       &+ieq-1))/refe(1+ieq- 1&
+                       fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-1))/refe(1+ieq- &
+                       &1&
                        )
                 if (vrefe .le. val4) then
                     vrefe = val4
@@ -367,7 +363,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- A DES FORCES NODALES NULLES
 !
     if (linit) then
-        if (resi_glob_rela.eq.r8vide()) then
+        if (resi_glob_rela .eq. r8vide()) then
             if (vinit .gt. resi_glob_maxi) then
                 call nmvcmx(mate, noma, comref, commoi)
             endif
@@ -378,7 +374,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                     call nmvcmx(mate, noma, comref, commoi)
                 endif
             endif
-        endif  
+        endif 
     endif
 !
     call jedema()

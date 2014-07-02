@@ -50,6 +50,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfiope.h"
 #include "asterfort/mdchii.h"
@@ -70,7 +71,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
     parameter (edlect=0)
 !
     integer :: idfimd
-    logical(kind=1) :: dejouv
+    aster_logical :: dejouv
 !====
 ! 1. ON OUVRE LE FICHIER EN LECTURE
 !====

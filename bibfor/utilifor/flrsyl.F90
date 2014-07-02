@@ -116,6 +116,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -139,7 +140,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
     parameter          ( zero = 0.0d+0, one = 1.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: notrna, notrnb
+    aster_logical :: notrna, notrnb
     integer :: ierr, j, k, k1, k2, knext, l, l1, l2, lnext
     real(kind=8) :: a11, bignum, da11, db, eps, scaloc, sgn, smin, smlnum, suml
     real(kind=8) :: sumr, xnorm
@@ -281,7 +282,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 10 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-10                      continue
+ 10                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -305,7 +306,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 20 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-20                      continue
+ 20                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -330,7 +331,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 30 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-30                      continue
+ 30                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -363,7 +364,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 40 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-40                      continue
+ 40                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -372,9 +373,9 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-50          continue
+ 50         continue
 !
-60      continue
+ 60     continue
 !
     else if (.not.notrna .and. notrnb) then
 !
@@ -454,7 +455,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 70 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-70                      continue
+ 70                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -478,7 +479,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 80 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-80                      continue
+ 80                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -503,7 +504,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 90 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-90                      continue
+ 90                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -536,7 +537,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 100 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-100                      continue
+100                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -545,8 +546,8 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-110          continue
-120      continue
+110         continue
+120     continue
 !
     else if (.not.notrna .and. .not.notrnb) then
 !
@@ -626,7 +627,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 130 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-130                      continue
+130                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -650,7 +651,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 140 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-140                      continue
+140                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -675,7 +676,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 150 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-150                      continue
+150                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -708,7 +709,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 160 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-160                      continue
+160                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -717,8 +718,8 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-170          continue
-180      continue
+170         continue
+180     continue
 !
     else if (notrna .and. .not.notrnb) then
 !
@@ -798,7 +799,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 190 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-190                      continue
+190                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -822,7 +823,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 200 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-200                      continue
+200                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -847,7 +848,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 210 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-210                      continue
+210                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -880,7 +881,7 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     if (scaloc .ne. one) then
                         do 220 j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-220                      continue
+220                     continue
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -889,12 +890,12 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-230          continue
-240      continue
+230         continue
+240     continue
 !
     endif
 !
-1000  continue
+1000 continue
     call matfpe(1)
 !
 !     END OF FLRSYL

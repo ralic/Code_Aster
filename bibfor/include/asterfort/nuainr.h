@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nuainr(method, np1, nx1, nc1, ic1,&
                       nuax1, nual1, nuav1, x2, dref,&
@@ -25,7 +27,7 @@ interface
         integer :: nc1
         integer :: ic1
         real(kind=8) :: nuax1(*)
-        logical(kind=1) :: nual1(*)
+        aster_logical :: nual1(*)
         real(kind=8) :: nuav1(*)
         real(kind=8) :: x2(nx1)
         real(kind=8) :: dref

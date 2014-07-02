@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmgeom(ndim, nno, axi, grand, geom,&
                       kpg, ipoids, ivf, idfde, depl,&
@@ -22,15 +24,15 @@ interface
                       r)
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
-        logical(kind=1) :: grand
+        aster_logical :: axi
+        aster_logical :: grand
         real(kind=8) :: geom(ndim, nno)
         integer :: kpg
         integer :: ipoids
         integer :: ivf
         integer :: idfde
         real(kind=8) :: depl(ndim, nno)
-        logical(kind=1) :: ldfdi
+        aster_logical :: ldfdi
         real(kind=8) :: poids
         real(kind=8) :: dfdi(nno, ndim)
         real(kind=8) :: f(3, 3)

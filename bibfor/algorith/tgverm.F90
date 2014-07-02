@@ -23,6 +23,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/jedema.h"
@@ -34,7 +35,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
     character(len=16) :: option, compor(*)
     integer :: iret, nno1, nno2, nno3, ndim
     integer :: vu(3, 27), vg(27), vp(27)
@@ -110,17 +111,17 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
         do 555 i = 1, nno1
             do 600 j = 1, ndim
                 maxdep=max(maxdep,abs(deplp(vu(j,i))))
-600          continue
-555      continue
+600         continue
+555     continue
         do 601 i = 1, nno2
             maxgon=max(maxgon,abs(deplp(vg(i))))
-601      continue
+601     continue
         do 602 i = 1, nno3
             maxpre=max(maxpre,abs(deplp(vp(i))))
-602      continue
+602     continue
         do 556 i = 1, nno1*ndim
             maxgeo=max(maxgeo,abs(geom(i)))
-556      continue
+556     continue
         pertu=carcri(7)
         if (maxdep .gt. pertu*maxgeo) then
             epsilo=pertu*maxdep
@@ -154,8 +155,8 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
                     k = k + 1
                     smatr((i-1)*nddl+j) = v
                     smatr((j-1)*nddl+i) = v
-558              continue
-557          continue
+558             continue
+557         continue
         else
             call dcopy(nddl*nddl, matuu, 1, smatr, 1)
         endif
@@ -191,24 +192,24 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
                     deplp(nvar) = sdepl(nvar) + indi*epsilo
                     goto 800
                 endif
-710          continue
-700      continue
+710         continue
+700     continue
 !
         do 720 i = 1, nno2
             if (nvar .eq. vg(i)) then
                 deplp(nvar) = sdepl(nvar) + indi*epsilg
                 goto 800
             endif
-720      continue
+720     continue
 !
         do 730 i = 1, nno3
             if (nvar .eq. vp(i)) then
                 deplp(nvar) = sdepl(nvar) + indi*epsilp
                 goto 800
             endif
-730      continue
+730     continue
 !
-800      continue
+800     continue
 !      INITIALISATION DES CHAMPS 'E'
         call r8inir(ncont, 0.d0, contp, 1)
         call r8inir(nddl, 0.d0, vectu, 1)
@@ -228,24 +229,24 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
                         v = (fp-fm)/(2*epsilo)
                         goto 900
                     endif
-920              continue
-910          continue
+920             continue
+910         continue
             do 930 k = 1, nno2
                 if (j .eq. vg(k)) then
                     v = (fp-fm)/(2*epsilg)
                     goto 900
                 endif
-930          continue
+930         continue
             do 940 k = 1, nno3
                 if (j .eq. vp(k)) then
                     v = (fp-fm)/(2*epsilp)
                     goto 900
                 endif
-940          continue
-900          continue
+940         continue
+900         continue
             matper((i-1)*nddl+j) = v
-560      continue
-559  end do
+560     continue
+559 end do
 !
 !    MENAGE POUR ARRET DE LA ROUTINE
 !
@@ -295,7 +296,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
         call dcopy(nddl*nddl, matper, 1, zr(ematrc), 1)
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

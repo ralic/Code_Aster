@@ -3,6 +3,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                   fink)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3crtp.h"
 #include "asterfort/i3idfs.h"
@@ -12,7 +13,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical(kind=1) :: fink
+    aster_logical :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +55,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
     integer :: sm(3), i, j, ds1, decf, adescm, arete, nba, iret, ipos, vali(3)
     real(kind=8) :: c, zero, un, r, s, t, lcara, unsur2, eps
     real(kind=8) :: a(3, 3), b(3), x(3), cs(3, 3), e1(3), e2(3), e3(3)
-    logical(kind=1) :: djala1, djala2
+    aster_logical :: djala1, djala2
 !
 !======================================================================
 !
@@ -67,27 +68,27 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
     un = 1.0d0
     unsur2 = 0.5d0
     c = zero
-    do 10, i = 1, 3, 1
-    ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
-    sm(i) = ds1
-    do 11, j = 1, 3, 1
-    cs(j,i) = coordo(3*(ds1-1) + j)
-11  continue
-    c = c + (sgt(i+3)-sgt(i))*(sgt(i+3)-sgt(i))
-    10 end do
+    do 10 i = 1, 3, 1
+        ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
+        sm(i) = ds1
+        do 11 j = 1, 3, 1
+            cs(j,i) = coordo(3*(ds1-1) + j)
+ 11     continue
+        c = c + (sgt(i+3)-sgt(i))*(sgt(i+3)-sgt(i))
+ 10 end do
     a(1,3) = zero
     a(2,3) = zero
     a(3,3) = -sqrt(c)
     c = zero
     t = zero
-    do 15, i = 1, 3, 1
-    s = cs(i,2) - cs(i,1)
-    r = cs(i,3) - cs(i,1)
-    e1(i) = s
-    e2(i) = r
-    c = c + s*s
-    t = t + r*r
-    15 end do
+    do 15 i = 1, 3, 1
+        s = cs(i,2) - cs(i,1)
+        r = cs(i,3) - cs(i,1)
+        e1(i) = s
+        e2(i) = r
+        c = c + s*s
+        t = t + r*r
+ 15 end do
     c = sqrt(c)
     t = sqrt(t)
     lcara = unsur2*(c + t)
@@ -99,17 +100,17 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
     else
         c = un/c
         t = un/t
-        do 16, i = 1, 3, 1
-        e1(i) = e1(i)*c
-        e2(i) = e2(i)*t
-16      continue
+        do 16 i = 1, 3, 1
+            e1(i) = e1(i)*c
+            e2(i) = e2(i)*t
+ 16     continue
         e3(1) = e1(2)*e2(3) - e1(3)*e2(2)
         e3(2) = e1(3)*e2(1) - e1(1)*e2(3)
         e3(3) = e1(1)*e2(2) - e1(2)*e2(1)
         c = zero
-        do 17, i = 1, 3, 1
-        c = c + e3(i)*e3(i)
-17      continue
+        do 17 i = 1, 3, 1
+            c = c + e3(i)*e3(i)
+ 17     continue
         c = sqrt(c)
         if (c .le. abs(e1(1))*epsi) then
             vali(1) = k
@@ -130,26 +131,26 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
         endif
     endif
     ds1 = 3*(sm(1) - 1)
-    do 20, i = 1, 3, 1
-    c = coordo(ds1 + i)
-    b(i) = -c
-    do 21, j = 1, 2, 1
-    a(i,j) = coordo(3*(sm(j+1)-1)+i) - c
-21  continue
-    20 end do
-    do 30, i = 1, 3, 1
-    c = zero
-    do 31, j = 1, 3, 1
-    c = max(c,abs(a(i,j)))
-31  continue
-    if (abs(c) .gt. epsi*coordo(ds1+i)) then
-        c = un/c
-        do 32, j = 1, 3, 1
-        a(i,j) = a(i,j)*c
-32      continue
-        b(i) = b(i)*c
-    endif
-    30 end do
+    do 20 i = 1, 3, 1
+        c = coordo(ds1 + i)
+        b(i) = -c
+        do 21 j = 1, 2, 1
+            a(i,j) = coordo(3*(sm(j+1)-1)+i) - c
+ 21     continue
+ 20 end do
+    do 30 i = 1, 3, 1
+        c = zero
+        do 31 j = 1, 3, 1
+            c = max(c,abs(a(i,j)))
+ 31     continue
+        if (abs(c) .gt. epsi*coordo(ds1+i)) then
+            c = un/c
+            do 32 j = 1, 3, 1
+                a(i,j) = a(i,j)*c
+ 32         continue
+            b(i) = b(i)*c
+        endif
+ 30 end do
     call i3sl33(eps, a, b, x, typsl)
     if (typsl .eq. 'INCO') then
 !        PLAN INTER DROITE = VIDE ==> FACE INTER SGT = VIDE

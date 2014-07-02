@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lcinit(fami, kpg, ksp, loi, typess,&
                       essai, mod, nmat, materd, materf,&
@@ -53,8 +55,8 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: epstr(6)
-        logical(kind=1) :: bnews(3)
-        logical(kind=1) :: mtrac
+        aster_logical :: bnews(3)
+        aster_logical :: mtrac
         integer :: indi(7)
         integer :: iret
     end subroutine lcinit

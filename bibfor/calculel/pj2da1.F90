@@ -1,9 +1,10 @@
 subroutine pj2da1(ino2, geom2, i, geom1, tria3,&
                   cobar2, ok)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: cobar2(3), geom1(*), geom2(*)
     integer :: i, tria3(*), ino2
-    logical(kind=1) :: ok
+    aster_logical :: ok
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,5 +82,5 @@ subroutine pj2da1(ino2, geom2, i, geom1, tria3,&
     endif
 !
 !
-9999  continue
+9999 continue
 end subroutine

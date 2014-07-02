@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmevel(sddisc, numins, defico, resoco, vale,&
                       nombcl, lsvimx, ldvres, linsta, lerrcv,&
@@ -25,11 +27,11 @@ interface
         character(len=24) :: resoco
         character(len=19) :: vale(*)
         character(len=4) :: nombcl
-        logical(kind=1) :: lsvimx
-        logical(kind=1) :: ldvres
-        logical(kind=1) :: linsta
-        logical(kind=1) :: lerrcv
-        logical(kind=1) :: lerror
-        logical(kind=1) :: conver
+        aster_logical :: lsvimx
+        aster_logical :: ldvres
+        aster_logical :: linsta
+        aster_logical :: lerrcv
+        aster_logical :: lerror
+        aster_logical :: conver
     end subroutine nmevel
 end interface

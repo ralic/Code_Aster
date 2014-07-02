@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
                       sddyna, numins, iterat, defico, metpre,&
@@ -30,6 +32,6 @@ interface
         integer, intent(in) :: fonact(*)
         character(len=16), intent(out) :: metcor
         character(len=16), intent(out) :: metpre
-        logical(kind=1), intent(out) :: reasma
+        aster_logical, intent(out) :: reasma
     end subroutine nmchrm
 end interface

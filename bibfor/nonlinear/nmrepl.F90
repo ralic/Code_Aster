@@ -26,6 +26,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
@@ -116,7 +117,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     integer :: zveass, zsolal, zvalin
     parameter    (zveass=32,zsolal=17,zvalin=28)
 !
-    logical(kind=1) :: exopt, mieux, irecli
+    aster_logical :: exopt, mieux, irecli
     integer :: itrlmx, iterho, act, opt
     integer :: pilopt
     integer :: nbeffe
@@ -260,7 +261,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
         offset = etan*(1-rho)
         do 21 n = 1, nbeffe
             proeta(n) = proeta(n) + offset
-21      continue
+ 21     continue
 !
 ! ----- CHOIX DU ETA_PILOTAGE
 !
@@ -326,12 +327,12 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
         call nmrep2(nr, r, g, fcvg, rhomin,&
                     rhomax, rhoexm, rhoexp, pos)
         rho = r(pos)
-20  end do
+ 20 end do
     iterho = itrlmx
 !
 ! --- STOCKAGE DU RHO OPTIMAL ET DES CHAMPS CORRESPONDANTS
 !
-100  continue
+100 continue
 !
 ! --- CALCUL DE ETA_PILOTAGE
 !
@@ -357,7 +358,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     conv(1) = iterho
     conv(2) = rhoopt
     pilcvg = pilopt
-9999  continue
+9999 continue
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !

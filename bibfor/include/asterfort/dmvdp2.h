@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     function dmvdp2(rho11, rho12, sat, phi, cs,&
                     pvp, emmag, em)
@@ -24,7 +26,7 @@ interface
         real(kind=8) :: phi
         real(kind=8) :: cs
         real(kind=8) :: pvp
-        logical(kind=1) :: emmag
+        aster_logical :: emmag
         real(kind=8) :: em
         real(kind=8) :: dmvdp2_0
     end function dmvdp2

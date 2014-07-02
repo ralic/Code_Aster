@@ -6,6 +6,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
     integer :: ndim, nno, nnos, nnol
@@ -65,7 +66,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
     integer :: i, j, k, l, jn, in, ifh, jfh, coefi, coefj
     integer :: pli
     real(kind=8) :: ffi
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,9 +98,9 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
                     mmat(jn+ndim*jfh+l,pli) = mmat(jn+ndim*jfh+l,pli) + coefj * ffi * ffp(j) * nd&
                                               &(l) * jac
-132              continue
+132             continue
 !
-134          continue
+134         continue
             do 133 l = 1, singu*ndim
                 mmat(pli,jn+ndim*(1+nfh)+l) = mmat(&
                                               pli,&
@@ -109,11 +110,11 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
                 mmat(jn+ndim*(1+nfh)+l,pli)= mmat(jn+ndim*(1+nfh)+l,&
                 pli) + coefj * ffi * ffp(j) * rr * nd(l) * jac
-133          continue
+133         continue
 !
-131      continue
+131     continue
 !
-130  end do
+130 end do
 !
 !     I.2. CALCUL DE A_U
 !
@@ -145,17 +146,17 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                             mmat(in+ndim*ifh+k,jn+ndim*jfh+l) +&
                             coefi*coefj*cstaco*ffp(i)*ffp(j)*nd(k)*nd(&
                             l)*jac
-143                      continue
+143                     continue
 !
                         do 144 l = 1, singu*ndim
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) =&
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) +&
                             4.d0*cstaco*ffp(i)*ffp(j)*rr*nd(k)*nd(l)*&
                             jac
-144                      continue
-142                  continue
-149              continue
-148          continue
+144                     continue
+142                 continue
+149             continue
+148         continue
 !
             do 145 k = 1, singu*ndim
                 do 146 l = 1, nfh*ndim
@@ -164,17 +165,17 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                                                         jn+ndim+l) + 4.d0*cstaco*ffp(i)*ffp(j)* r&
                                                         &r*nd(k)*nd(l&
                                                         )*jac
-146              continue
+146             continue
 !
                 do 147 l = 1, singu*ndim
                     mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) =&
                     mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) +&
                     4.d0*cstaco*ffp(i)*ffp(j)*rr*rr*nd(k)*nd(l)&
                     *jac
-147              continue
-145          continue
+147             continue
+145         continue
 !
-141      continue
-140  continue
+141     continue
+140 continue
 !
 end subroutine

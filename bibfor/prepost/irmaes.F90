@@ -2,6 +2,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
                   modnum, nuanom, nomtyp, nnotyp, sdcarm)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/as_mmhcyw.h"
@@ -64,11 +65,11 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !
     integer :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad
     integer :: jcnxma(ntymax), ima, nbsect, nbfibr, nbcouc
-    integer :: nbmail,  jpoin,  nmatyp(ntymax), icmpse
-    integer :: jattma(ntymax),  jccesl, jccesd
-    integer :: edfuin, edelst, ednoda,  jocesl, jocesd
-    integer ::  jorima(ntymax), icmpor,  jpcesl, jpcesd
-    integer ::  icmpr1, icmpep, jrmin(ntymax), jrmax(ntymax)
+    integer :: nbmail, jpoin, nmatyp(ntymax), icmpse
+    integer :: jattma(ntymax), jccesl, jccesd
+    integer :: edfuin, edelst, ednoda, jocesl, jocesd
+    integer :: jorima(ntymax), icmpor, jpcesl, jpcesd
+    integer :: icmpr1, icmpep, jrmin(ntymax), jrmax(ntymax)
     parameter   (edfuin=0)
     parameter   (edelst=5)
     parameter   (ednoda=0)
@@ -80,7 +81,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     parameter   (atrmin = 'RAYON MIN')
     parameter   (atrmax = 'RAYON MAX')
 !
-    logical(kind=1) :: exicoq, exituy, exipmf
+    aster_logical :: exicoq, exituy, exipmf
     real(kind=8), pointer :: ccesv(:) => null()
     real(kind=8), pointer :: ocesv(:) => null()
     real(kind=8), pointer :: pcesv(:) => null()
@@ -224,80 +225,80 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
         do 2421 , ino = 1, nnotyp(ityp)
         zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
                 connex(ipoin-1+ino)
-2421      continue
+2421     continue
 !       II) POUR LES TYPES DE MAILLE DONT LA NUMEROTATION DES NOEUDS
 !          ENTRE ASTER ET MED EST DIFFERENTE (CF LRMTYP):
     else
         do 2422 , ino = 1, nnotyp(ityp)
         zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
                 connex(ipoin-1+nuanom(ityp,ino))
-2422      continue
+2422     continue
     endif
 !
     242 end do
 !
 !     -- ECRITURE
-    do 31, letype = 1, nbimpr
+    do 31 letype = 1, nbimpr
 !
 !       -- PASSAGE DU NUMERO DE TYPE MED AU NUMERO DE TYPE ASTER
-    ityp = caimpi(8,letype)
-    nvtyge = caimpi(9,letype)
-    nbcouc = caimpi(4,letype)
-    nbsect = caimpi(5,letype)
-    nbfibr = caimpi(6,letype)
+        ityp = caimpi(8,letype)
+        nvtyge = caimpi(9,letype)
+        nbcouc = caimpi(4,letype)
+        nbsect = caimpi(5,letype)
+        nbfibr = caimpi(6,letype)
 !
-    if (nmatyp(ityp) .ne. 0 .and. (nbcouc.ne.0.or. nbsect.ne.0.or. nbfibr.ne.0)) then
+        if (nmatyp(ityp) .ne. 0 .and. (nbcouc.ne.0.or. nbsect.ne.0.or. nbfibr.ne.0)) then
 !
 !         -- LES CONNECTIVITES
 !          LA CONNECTIVITE EST FOURNIE EN STOCKANT TOUS LES NOEUDS A
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
-        call as_mmhcyw(idfimd, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
-                       nmatyp(ityp), edelst, nvtyge, ednoda, codret)
-        if (codret .ne. 0) then
-            saux08='mmhcyw'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+            call as_mmhcyw(idfimd, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
+                           nmatyp(ityp), edelst, nvtyge, ednoda, codret)
+            if (codret .ne. 0) then
+                saux08='mmhcyw'
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI L'EPAISSEUR
-        if (nbcouc .ne. 0 .and. nbsect .eq. 0) then
-            call as_mmhraw(idfimd, nomamd, nvtyge, atepai, nmatyp(ityp),&
-                           zr(jattma(ityp)), codret)
-            if (codret .ne. 0) then
-                saux08='mmhraw'
-                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            if (nbcouc .ne. 0 .and. nbsect .eq. 0) then
+                call as_mmhraw(idfimd, nomamd, nvtyge, atepai, nmatyp(ityp),&
+                               zr(jattma(ityp)), codret)
+                if (codret .ne. 0) then
+                    saux08='mmhraw'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                endif
             endif
-        endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI GAMMA
-        if (nbfibr .ne. 0 .or. nbsect .ne. 0) then
-            call as_mmhraw(idfimd, nomamd, nvtyge, atangv, nmatyp(ityp),&
-                           zr(jorima(ityp)), codret)
-            if (codret .ne. 0) then
-                saux08='mmhraw'
-                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            if (nbfibr .ne. 0 .or. nbsect .ne. 0) then
+                call as_mmhraw(idfimd, nomamd, nvtyge, atangv, nmatyp(ityp),&
+                               zr(jorima(ityp)), codret)
+                if (codret .ne. 0) then
+                    saux08='mmhraw'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                endif
             endif
-        endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI RMIN ET RMAX
-        if (nbsect .ne. 0) then
-            call as_mmhraw(idfimd, nomamd, nvtyge, atrmin, nmatyp(ityp),&
-                           zr(jrmin(ityp)), codret)
-            if (codret .ne. 0) then
-                saux08='mmhraw'
-                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            if (nbsect .ne. 0) then
+                call as_mmhraw(idfimd, nomamd, nvtyge, atrmin, nmatyp(ityp),&
+                               zr(jrmin(ityp)), codret)
+                if (codret .ne. 0) then
+                    saux08='mmhraw'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                endif
+                call as_mmhraw(idfimd, nomamd, nvtyge, atrmax, nmatyp(ityp),&
+                               zr(jrmax(ityp)), codret)
+                if (codret .ne. 0) then
+                    saux08='mmhraw'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                endif
             endif
-            call as_mmhraw(idfimd, nomamd, nvtyge, atrmax, nmatyp(ityp),&
-                           zr(jrmax(ityp)), codret)
-            if (codret .ne. 0) then
-                saux08='mmhraw'
-                call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+!
         endif
 !
-    endif
-!
-    31 end do
+ 31 end do
 !
     do 41 , ityp = 1, ntymax
     if (nmatyp(ityp) .ne. 0) then

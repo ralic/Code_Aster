@@ -21,6 +21,7 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -71,7 +72,7 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 !                 1 : NOMBRE MAXIMUM D'ITERATIONS ATTEINT
 !
 !
-    logical(kind=1) :: lprmo
+    aster_logical :: lprmo
     character(len=19) :: depso1, depso2
     integer :: ifm, niv
 !

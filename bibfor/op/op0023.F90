@@ -26,6 +26,7 @@ subroutine op0023()
 !     PREC1 ET CRIT1 SONT LA PRECISION ET LE CRITERE DU TEST
 !     PREC2 ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
@@ -43,7 +44,7 @@ subroutine op0023()
 #include "asterfort/utmess.h"
     real(kind=8) :: tstnan, resnan
     integer :: ific, nocc, n
-    logical(kind=1) :: nfac
+    aster_logical :: nfac
     character(len=8) :: repons
     character(len=16) :: nomfi
 !     ------------------------------------------------------------------

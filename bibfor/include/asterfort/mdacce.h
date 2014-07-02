@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
                       riggen, descr, fexgen, lamor, amogen,&
@@ -27,7 +29,7 @@ interface
         real(kind=8) :: riggen(*)
         integer :: descr
         real(kind=8) :: fexgen(*)
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amogen(*)
         integer :: desca
         real(kind=8) :: work1(*)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                       lgroup, nliseq)
@@ -23,7 +25,7 @@ interface
         integer :: tabnoz(3, narz)
         real(kind=8) :: tabcoz(ndim, narz)
         real(kind=8) :: tabcrz(narz)
-        logical(kind=1) :: lgroup
+        aster_logical :: lgroup
         character(len=19) :: nliseq
     end subroutine xrell2
 end interface

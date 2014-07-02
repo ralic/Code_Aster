@@ -37,6 +37,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -83,11 +84,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
 !
 !
-    integer :: ibid, ie,  iret, jordr, nbordr, i, iordr, tmod(1)
+    integer :: ibid, ie, iret, jordr, nbordr, i, iordr, tmod(1)
     integer :: iains1, iains2, nbsym, isym, ico, ind, nbmax
     parameter (nbmax=50)
     integer :: ipar, ipar1, ipar2
-    logical(kind=1) :: acceno
+    aster_logical :: acceno
     character(len=4) :: tychv
     character(len=8) :: kb, ma1, ma2, nume, prol0, k8b, typ1, typ2, crit, mo2
     character(len=16) :: nomsym(200), k16b, nomcmd

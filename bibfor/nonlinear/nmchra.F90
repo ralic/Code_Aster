@@ -19,6 +19,7 @@ subroutine nmchra(sddyna, optamo, lcamor)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -26,7 +27,7 @@ subroutine nmchra(sddyna, optamo, lcamor)
 #include "asterfort/ndynlo.h"
     character(len=19) :: sddyna
     character(len=16) :: optamo
-    logical(kind=1) :: lcamor
+    aster_logical :: lcamor
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,7 +46,7 @@ subroutine nmchra(sddyna, optamo, lcamor)
 !
 !
 !
-    logical(kind=1) :: lktan
+    aster_logical :: lktan
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

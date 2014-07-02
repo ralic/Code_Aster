@@ -2,6 +2,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                   minord, maxord, resuin, resuou, lisout)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/codent.h"
@@ -10,7 +11,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: optdem
+    aster_logical :: optdem
     integer :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord
@@ -118,7 +119,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
 !         ELLE EST DONC CROISSANTE
             curmax = min(curmax,zi(jordo2+2)+decal)
             curmin = max(curmin,zi(jordo2+1)+decal)
-10      continue
+ 10     continue
 !
         nopous = 0
         do 30 iordr = 1, nbordr
@@ -146,9 +147,9 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                     zi(jordop+nopous+2) = numord
                 endif
             endif
-30      continue
+ 30     continue
 !
-40      continue
+ 40     continue
         zi(jordop+1) = curmin
         zi(jordop+2) = curmax
         zi(jordop) = nopous
@@ -179,7 +180,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                 nopous = nopous+1
                 zi(jordop+nopous+2) = numord
             endif
-20      continue
+ 20     continue
         zi(jordop+1) = zi(jordr-1+1)
         zi(jordop+2) = zi(jordr-1+nbordr)
         zi(jordop) = nopous

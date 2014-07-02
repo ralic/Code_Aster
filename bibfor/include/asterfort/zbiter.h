@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine zbiter(rho, f, rhoopt, fopt, mem,&
                       rhonew, echec)
@@ -24,6 +26,6 @@ interface
         real(kind=8) :: fopt
         real(kind=8) :: mem(2, *)
         real(kind=8) :: rhonew
-        logical(kind=1) :: echec
+        aster_logical :: echec
     end subroutine zbiter
 end interface

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmetci(sdieto, zioch, icham, nomchs, nomgd,&
                       motcei, motcob, loccha, letin, larch)
@@ -26,7 +28,7 @@ interface
         character(len=24) :: motcei
         character(len=24) :: motcob
         character(len=24) :: loccha
-        logical(kind=1) :: letin
-        logical(kind=1) :: larch
+        aster_logical :: letin
+        aster_logical :: larch
     end subroutine nmetci
 end interface

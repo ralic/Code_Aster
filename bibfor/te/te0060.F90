@@ -29,6 +29,7 @@ subroutine te0060(option, nomte)
 ! CORPS DU PROGRAMME
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8t0.h"
@@ -44,14 +45,14 @@ subroutine te0060(option, nomte)
     integer :: ipoids, ivf, idfdx, idfdy, igeom, itemps, i, ndim, nno, ipg, npg1
     integer :: ivectt, itext, iech, iray, ino, idec, jdec, kdec, ldec, itemp
     integer :: jno, j, ier, jgano, nnos
-    logical(kind=1) :: ltext
+    aster_logical :: ltext
 !
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !
     tz0 = r8t0()
@@ -99,7 +100,7 @@ subroutine te0060(option, nomte)
     nompar(4) = 'INST'
     do 10 i = 1, nno
         zr(ivectt+i-1) = 0.0d0
-10  end do
+ 10 end do
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
@@ -110,8 +111,8 @@ subroutine te0060(option, nomte)
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
- 2      continue
- 1  end do
+  2     continue
+  1 end do
 !
 !====
 ! 2. CALCULS TERMES DE MASSE
@@ -136,7 +137,7 @@ subroutine te0060(option, nomte)
                 i,j)
                 nz=nz+zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(&
                 i,j)
-102          continue
+102         continue
         jac = sqrt(nx*nx + ny*ny + nz*nz)
         tem = 0.d0
         xx = 0.d0
@@ -147,7 +148,7 @@ subroutine te0060(option, nomte)
             do 104 i = 1, nno
 ! CALCUL DE T-
                 tem = tem + zr(itemp+i-1) * zr(ivf+ldec+i-1)
-104          continue
+104         continue
         endif
 !
         do 106 i = 1, nno
@@ -155,7 +156,7 @@ subroutine te0060(option, nomte)
             xx = xx + zr(igeom+3*i-3) * zr(ivf+ldec+i-1)
             yy = yy + zr(igeom+3*i-2) * zr(ivf+ldec+i-1)
             zz = zz + zr(igeom+3*i-1) * zr(ivf+ldec+i-1)
-106      continue
+106     continue
 !
         valpar(1) = xx
         valpar(2) = yy
@@ -195,7 +196,7 @@ subroutine te0060(option, nomte)
             do 120 i = 1, nno
                 zr(ivectt+i-1) = zr(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zr(ivf+ldec+i-1) * ( &
                                  &theta*echnp1*texnp1+(1.0d0- theta)*echn*(texn-tem))
-120          continue
+120         continue
 !
 !====
 ! 2.2 OPTION CHAR_THER_RAYO_F/R
@@ -238,9 +239,9 @@ subroutine te0060(option, nomte)
                 zr(ivectt+i-1) = zr(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zr(ivf+ldec+i-1) * ( &
                                  &theta *sigm1*eps1* (tpf1+ tz0)**4+ (1.0d0-theta)*sigmn*epsn*((t&
                                  &pfn+tz0)**4-(tem+ tz0)**4))
-130          continue
+130         continue
 ! FIN DU IF LTEXT
         endif
 ! FIN BOUCLE SUR LES PTS DE GAUSS
-101  end do
+101 end do
 end subroutine

@@ -1,7 +1,8 @@
 subroutine rc32ms(meca, sa, sb, cmax)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
     real(kind=8) :: sb(2), sa(2)
-    logical(kind=1) :: cmax, meca
+    aster_logical :: cmax, meca
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +53,7 @@ subroutine rc32ms(meca, sa, sb, cmax)
                 sa(i3) = sb(i3)
                 cmax = .true.
             endif
- 2      continue
+  2     continue
 !
     endif
 !

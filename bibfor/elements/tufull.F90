@@ -2,6 +2,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                   b, ktild, effint, pass, vtemp,&
                   codret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/bcoudc.h"
@@ -81,11 +82,11 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     integer :: icoud2, mmt, codret, cod
     integer :: jnbspi, iret, ksp
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
-    logical(kind=1) :: vecteu, matric
+    aster_logical :: vecteu, matric
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
     nc = nbrddl* (nbrddl+1)/2
     pi = r8pi()
@@ -416,8 +417,8 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
             call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                         pgl4, effint, 'LG', pass, vtemp)
         endif
-        do i = 1,nbrddl
-           zr(ivectu-1+i) = effint(i)
+        do i = 1, nbrddl
+            zr(ivectu-1+i) = effint(i)
         end do
     endif
 !

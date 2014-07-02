@@ -21,6 +21,7 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     integer :: mat, kpg, ksp
@@ -44,7 +45,7 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: regime, regm, i, j, cod(4), cinema
     real(kind=8) :: sc, gc, dc, h, ka, kap, gap, sk, val(4)
     real(kind=8) :: t(3), pr(3, 3), tpo(3), tno, lbd, d
@@ -277,8 +278,8 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
         do 100 i = 1, 3
             do 110 j = 1, 3
                 ddedt(i,j) = d * tpo(i)*tpo(j) + lbd*pr(i,j)
-110          continue
-100      continue
+110         continue
+100     continue
 !
     endif
 !

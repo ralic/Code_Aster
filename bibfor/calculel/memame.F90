@@ -22,6 +22,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -46,7 +47,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     character(len=8) :: lchar(*)
     character(len=1) :: base
     character(len=*) :: option, modele, mate, carele, compor, matelz
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +88,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     integer :: nbout2
     integer :: nh, iret, icode
     integer :: ifmdbg, nivdbg, ier
-    logical(kind=1) :: debug
+    aster_logical :: debug
     character(len=24), pointer :: rerr(:) => null()
     data chvarc /'&&MEMAME.VARC'/
 !
@@ -259,7 +260,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
         call reajre(matelz, lchout(2), base)
     endif
 !
-10  continue
+ 10 continue
 !
 !     -- DESTRUCTION DES RESUELEM NULS :
     call redetr(matelz)

@@ -19,6 +19,7 @@ subroutine nmevdt(sdtime, sderro, timer)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -49,7 +50,7 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: mtcpup, mtcpui, stopus
+    aster_logical :: mtcpup, mtcpui, stopus
     character(len=4) :: etnewt
     integer :: itcpup, itcpui, isusr1
 !

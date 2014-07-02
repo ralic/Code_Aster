@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dfdmip(ndim, nno, axi, geom, g,&
                       iw, vff, idfde, r, w,&
                       dfdi)
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         real(kind=8) :: geom(ndim, nno)
         integer :: g
         integer :: iw

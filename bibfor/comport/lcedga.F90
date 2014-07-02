@@ -3,6 +3,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                   deps2, sigm2, vim, option, sigp,&
                   vip, dsidep, iret)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/edgani.h"
 #include "asterfort/edgequ.h"
@@ -89,7 +90,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     character(len=8) :: zirc(2)
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data          kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -143,7 +144,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
             call rcvarc(' ', zirc(k), '-', fami, kpg,&
                         ksp, phasm(k), ire2)
             if (ire2 .eq. 1) phasm(k)=0.d0
- 5      continue
+  5     continue
 !
     else
 !
@@ -153,7 +154,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
             call rcvarc(' ', zirc(k), '-', fami, kpg,&
                         ksp, phase(k), ire2)
             if (ire2 .eq. 1) phase(k)=0.d0
-10      continue
+ 10     continue
 !
     endif
 !
@@ -165,7 +166,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     do 15 k = 1, nz
         if (phase(k) .le. zero) phase(k)=0.d0
         if (phase(k) .ge. 1.d0) phase(k)=1.d0
-15  continue
+ 15 continue
     if (zalpha .le. zero) zalpha=0.d0
     if (zalpha .ge. 1.d0) zalpha=1.d0
 !
@@ -204,7 +205,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 sigm(i)=sigm2(i)/sqrt(2.d0)
                 deps(i)=deps2(i)/sqrt(2.d0)
             endif
-20      continue
+ 20     continue
 !
 ! 3.2 - TRACE
 !
@@ -218,11 +219,11 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
         do 25 i = 1, ndimsi
             dvdeps(i) = deps(i) - trdeps * kron(i)
             dvsigm(i) = sigm(i) - trsigm * kron(i)
-25      continue
+ 25     continue
 !
         do 30 i = 1, ndimsi
             dvsitr(i) = mu*dvsigm(i)/mum + 2.d0*mu*dvdeps(i)
-30      continue
+ 30     continue
 !
 ! 3.4 - CONTRAINTE EQUIVALENTE ESSAI CONNUE EQSITR
 !
@@ -240,7 +241,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !
             do 35 i = 1, ndimsi
                 sigp(i) = dvsitr(i)+trsigp*kron(i)
-35          continue
+ 35         continue
             vip(1)=vim(1)
             vip(2)=0.d0
 !
@@ -292,7 +293,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 dvsigp(i) = (1.d0-3.d0*mu*dp/eqsitr)*dvsitr(i)
                 dvepel(i)= dvsigp(i)/(2.d0*mu)
                 y(i)=dvepel(i)
-40          continue
+ 40         continue
             y(ndimsi+1)=dp
 !
 ! 4.2.2 - CALCUL DE G SA DERIVEE ET LE CRITERE D ARRET
@@ -319,7 +320,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 do 55 i = 1, ndimsi+1
                     y(i)=y(i)+g(i)
                     if (i .le. ndimsi) dvsigp(i)=2.d0*mu*y(i)
-55              continue
+ 55             continue
 !
                 if (y(ndimsi+1) .le. 0.d0) then
                     iret = 1
@@ -330,18 +331,18 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                             mu, ani, gamma, m, n,&
                             g, maxg, dgdy)
 !
-50          continue
+ 50         continue
 !
             iret = 1
             goto 998
 !
-999          continue
+999         continue
 !
 ! 4.2.3 - CALCUL DE SIGMA ET P
 !
             do 60 i = 1, ndimsi
                 sigp(i) = dvsigp(i)+trsigp*kron(i)
-60          continue
+ 60         continue
             dp=y(ndimsi+1)
             vip(1)=vim(1)+dp
             vip(2)=1.d0
@@ -362,19 +363,19 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
             do 70 i = 1, ndimsi
                 do 75 j = 1, ndimsi
                     dsidep(i,j)=0.d0
-75              continue
-70          continue
+ 75             continue
+ 70         continue
 !
             do 80 i = 1, ndimsi
                 if (i .le. 3) dsidep(i,i)=(4.d0*mu/3.d0)+troisk/3.d0
                 if (i .gt. 3) dsidep(i,i)=2.d0*mu
-80          continue
+ 80         continue
 !
             do 90 i = 1, 3
                 do 95 j = 1, 3
                     if (i .ne. j) dsidep(i,j)=(-2.d0*mu/3.d0)+troisk/ 3.d0
-95              continue
-90          continue
+ 95             continue
+ 90         continue
         endif
 !
         if ((option(1:4).eq.'FULL') .and. (vip(2).eq.1.d0)) then
@@ -382,16 +383,16 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
             do 200 j = 1, ndimsi
                 do 201 i = 1, ndimsi+1
                     r1(i,j)=0.d0
-201              continue
+201             continue
                 r1(j,j)=1.d0
-200          continue
+200         continue
 !
             do 202 i = 1, ndimsi+1
                 do 203 k = 1, ndimsi+1
                     mat(i,k)=dgdy(i,k)
                     if (k .ge. 4) mat(i,k)=mat(i,k)/2.d0
-203              continue
-202          continue
+203             continue
+202         continue
 !
             call mgauss('NFSP', mat, r1, ndimsi+1, ndimsi+1,&
                         ndimsi, rbid, ire2)
@@ -403,8 +404,8 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
             do 204 j = 1, ndimsi
                 do 205 i = 1, ndimsi
                     h1(i,j)=r1(i,j)
-205              continue
-204          continue
+205             continue
+204         continue
 !
 ! ON COMPLETE
 !
@@ -413,14 +414,14 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 vect(i)=-2.d0*mu*vect(i)
                 if (i .le. 3) vect(i)=vect(i)+troisk
                 vect(i)=vect(i)/3.d0
-206          continue
+206         continue
 !
             do 207 i = 1, ndimsi
                 do 208 j = 1, ndimsi
                     h1(i,j)=2.d0*mu*h1(i,j)
                     if (j .le. 3) h1(i,j)=h1(i,j)+vect(i)
-208              continue
-207          continue
+208             continue
+207         continue
 !
 ! ON AFFECTE H1 A DSIDEP AVEC LES RACINE DE 2 POUR I NE J
 !
@@ -431,8 +432,8 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                     if ((i.ne.j) .and. ((i.ge.4).or.(j.ge.4))) then
                         dsidep(i,j)=sqrt(2.d0)*dsidep(i,j)/2.d0
                     endif
-410              continue
-400          continue
+410             continue
+400         continue
         endif
     endif
 !
@@ -443,9 +444,9 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     if (resi) then
         do 160 i = 4, ndimsi
             sigp(i)=sigp(i)*sqrt(2.d0)
-160      continue
+160     continue
     endif
 !
-998  continue
+998 continue
 !
 end subroutine

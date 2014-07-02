@@ -20,6 +20,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -36,7 +37,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
     character(len=8) :: nomacr
     character(len=*) :: sens
-    logical(kind=1) :: matrix
+    aster_logical :: matrix
     character(len=4) :: typnoe
     integer :: iadm1, iadm2
     real(kind=8) :: l(6, 6)
@@ -90,7 +91,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     ------------------
     integer :: long
     character(len=2) :: sens2
-    integer :: i, i1, iacagd,   iaiino, icmp
+    integer :: i, i1, iacagd, iaiino, icmp
     integer :: icmpp, icumul, ieq, ieqdeb, ieqp, ier
     integer :: ii, ino, iret, j, j1, jj, k
     integer :: n1, nbno, nddle, nddli, nddlt, nulag, nuno

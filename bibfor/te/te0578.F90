@@ -40,7 +40,6 @@ subroutine te0578(option, nomte)
     integer :: ndim, nfh, nfe, itempn, igeom, nnop, itempg, jpintt
     integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
     character(len=8) :: elrefp
-    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 ! --- PREALABLES AU CALCUL
@@ -48,8 +47,7 @@ subroutine te0578(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    lcond=iselli(elrefp)
-    ASSERT(lcond)
+    ASSERT(iselli(elrefp))
 !
 !     CHAMPS IN
     call jevech('PGEOMER', 'L', igeom)

@@ -20,6 +20,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/critet.h"
 #include "asterfort/diagp3.h"
@@ -67,7 +68,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
     character(len=8) :: nomres(nbres), fami, poum
     real(kind=8) :: valres(nbres)
 !
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     integer :: ndimsi, k, iter, nitmax, ifm, niv, kpg, spt
     real(kind=8) :: trepsd, coplan, sigeld(6)
     real(kind=8) :: tr(6), vecp(3, 3), rac2
@@ -158,7 +159,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
                 trepsm = 0.d0
                 do 1 k = 1, ndim
                     trepsm = trepsm+epsm(k)
- 1              continue
+  1             continue
                 if (trepsm .gt. 0.d0) then
                     trepsm = 0.d0
                 endif
@@ -193,18 +194,18 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
     do 44 k = 1, 3
         epsp(k) = epspc(k)
         epsd(k) = epsdc(k)
-44  end do
+ 44 end do
 !
     do 45 k = 4, ndimsi
         epsp(k) = epspc(k)
         epsd(k) = epsdc(k)
-45  end do
+ 45 end do
 !
     if (ndimsi .lt. 6) then
         do 46 k = ndimsi+1, 6
             epsp(k)=0.d0
             epsd(k)=0.d0
-46      continue
+ 46     continue
     endif
 !
 ! Calcul du nombre de solutions sur un intervalle raisonnable
@@ -236,13 +237,13 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
     trepsd = epsd(1)+epsd(2)+epsd(3)
     do 60 k = 1, ndimsi
         sigeld(k) = lambda*trepsd*kron(k) + deuxmu*epsd(k)
-60  end do
+ 60 end do
 !
     epsnor = 1.d0/sqrt(0.5d0 * ddot(ndimsi,epsd,1,sigeld,1))
 !
     do 678 k = 1, 6
         epsd(k) = epsd(k)*epsnor
-678  end do
+678 end do
 !
 !
 !
@@ -333,14 +334,14 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
                 goto 555
             endif
             call zerod2(x, y, z)
-555          continue
+555         continue
 !
             call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
 !
-200      continue
+200     continue
         call utmess('F', 'PILOTAGE_87')
-201      continue
+201     continue
 !
         a1 =z(3)/epsnor
         a0 = tau-x(3)*a1*epsnor
@@ -370,13 +371,13 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
                 goto 556
             endif
             call zerod2(x, y, z)
-556          continue
+556         continue
 !
             call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
-202      continue
+202     continue
         call utmess('F', 'PILOTAGE_87')
-203      continue
+203     continue
 !
         a1 =z(3)/epsnor
         a0 = tau-x(3)*a1*epsnor
@@ -415,7 +416,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
         iter=0
 !
-750      continue
+750     continue
 !
         if (iter .lt. nitmax) then
             xs=(y2-y1+z1*x1-z2*x2)/(z1-z2)
@@ -446,7 +447,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
             goto 666
         endif
 !
-751      continue
+751     continue
 !
 !
 ! il y a une solution sur [ETAINF,XS] et une sur [XS,ETASUP]
@@ -472,14 +473,14 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
                 goto 557
             endif
             call zerod2(x, y, z)
-557          continue
+557         continue
 !
             call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
 !
-204      continue
+204     continue
         call utmess('F', 'PILOTAGE_87')
-205      continue
+205     continue
 !
         a1 =z(3)/epsnor
         a0 = tau-x(3)*a1*epsnor
@@ -505,14 +506,14 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
                 goto 558
             endif
             call zerod2(x, y, z)
-558          continue
+558         continue
 !
             call critet(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, y(3), z(3))
 !
-206      continue
+206     continue
         call utmess('F', 'PILOTAGE_87')
-207      continue
+207     continue
 !
         a3 =z(3)/epsnor
         a2 = tau-x(3)*a3*epsnor
@@ -522,19 +523,19 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
     endif
 !
-666  continue
+666 continue
     a0 = 0.d0
     a1 = 0.d0
     a2 = r8vide()
     a3 = r8vide()
 !
 !
-9999  continue
+9999 continue
 !
 ! on "redonne" le vrai EPSD
     do 679 k = 1, 6
         epsd(k)=epsd(k)/epsnor
-679  end do
+679 end do
 !
 !
 end subroutine

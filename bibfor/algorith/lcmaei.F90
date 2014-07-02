@@ -34,6 +34,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !     OUT NBVAL  :  NB DE COEFFICIENTS MATERIAU
 !     OUT HSR    :  MATRICE D'INTERACTION
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcmhsr.h"
@@ -48,7 +49,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
     character(len=8) :: nomres(nmat)
     integer :: icodre(nmat)
     character(len=16) :: nmater, necris, nomfam, necoul, phenom
-    logical(kind=1) :: zecris
+    aster_logical :: zecris
 !     ----------------------------------------------------------------
 !
     nbval=0
@@ -233,7 +234,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                 if (icodre(i) .ne. 0) then
                     ASSERT(.false.)
                 endif
- 1          continue
+  1         continue
 !
             if (icodre(5) .eq. 0) then
                 if (icodre(6) .eq. 0) then
@@ -267,5 +268,5 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         endif
 !
     endif
-9999  continue
+9999 continue
 end subroutine

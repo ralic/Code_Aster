@@ -21,13 +21,14 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), nfaes, jddle(2), nconta
     integer :: cface(5, 3), jpcai, nfhe, heavno(8)
     real(kind=8) :: mmat(336, 336)
     real(kind=8) :: hpg, ffc(8), jacobi, coefcr, coefcp
     character(len=8) :: typmai
-    logical(kind=1) :: lpenac, lmulti
+    aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +87,7 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
             else
                 mmat(pli,plj) = -hpg*ffc(j)*ffc(i)*jacobi/coefcr
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 end subroutine

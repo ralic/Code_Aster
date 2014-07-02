@@ -336,6 +336,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -368,7 +369,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
     character(len=1) :: bmat, howmny
     character(len=2) :: which
-    logical(kind=1) :: rvec
+    aster_logical :: rvec
     integer :: info, ldz, ldv, lworkl, n, ncv, nev
     real(kind=8) :: sigmar, sigmai, tol
 !
@@ -377,7 +378,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !     %-----------------%
 !
     integer :: iparam(11), ipntr(14)
-    logical(kind=1) :: select(ncv)
+    aster_logical :: select(ncv)
     real(kind=8) :: dr(nev+1), di(nev+1), resid(n), v(ldv, ncv), z(ldz, *)
     real(kind=8) :: workd(3*n), workl(lworkl), workev(3*ncv)
 !
@@ -398,7 +399,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
     integer :: iuptri, iwork(1), j, k, ktrord, ldh, ldq, mode, msglvl, outncv
     integer :: ritzr, ritzi, irr, iri, ibd
 ! DUE TO CRS512 INTEGER IWEV, WRR, WRI
-    logical(kind=1) :: reord
+    aster_logical :: reord
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps
 !
 !     %--------------------%

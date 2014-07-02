@@ -16,6 +16,7 @@ subroutine te0091(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -41,11 +42,11 @@ subroutine te0091(option, nomte)
     real(kind=8) :: valpar(nbres), poids, r, tx, ty, z, nx, ny
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ivectu, i, l, iforc
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -70,7 +71,7 @@ subroutine te0091(option, nomte)
             l = (kp-1)*nno + i
             r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
             z = z + zr(igeom+2*i-1)*zr(ivf+l-1)
-10      continue
+ 10     continue
         if (laxi) poids = poids*r
         valpar(1) = r
         valpar(2) = z
@@ -82,6 +83,6 @@ subroutine te0091(option, nomte)
             l = (kp-1)*nno + i
             zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + tx*zr( ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+1) = zr(ivectu+nddl* (i-1)+1) + ty*zr(ivf+l-1 )*poids
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 end subroutine

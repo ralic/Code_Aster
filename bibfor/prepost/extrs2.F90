@@ -2,6 +2,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                   modele, nbordr, nuordr, nbacc, nomacc,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -25,7 +26,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     character(len=*) :: resu0, resu1
     character(len=16) :: typcon
     character(len=8) :: mailla, modele
-    logical(kind=1) :: lrest
+    aster_logical :: lrest
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +54,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     integer :: vali(2)
 !
     integer :: i, j, ire1, ire2, iadin, iadou, iret
-    integer ::  cret
+    integer :: cret
     character(len=3) :: type, kchml
     character(len=4) :: tych
     character(len=8) :: noma1, noma2, nomavr

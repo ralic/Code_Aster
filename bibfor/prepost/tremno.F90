@@ -1,5 +1,6 @@
 subroutine tremno(ncmp, nssche, nomsd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/i2trgi.h"
@@ -105,7 +106,7 @@ subroutine tremno(ncmp, nssche, nomsd)
     integer :: vali
     character(len=24) :: nconec, ncncin
     character(len=8) :: tk8(1), nmaila
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     integer, pointer :: entier(:) => null()
     integer, pointer :: pnco(:) => null()
     integer, pointer :: pnsp(:) => null()

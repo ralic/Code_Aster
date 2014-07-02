@@ -25,6 +25,7 @@ subroutine op0187()
 !           DES MAILLES FISSUREES
 !     =================================================================
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/cargeo.h"
@@ -53,7 +54,7 @@ subroutine op0187()
     character(len=24) :: mailx, mailc, listno, k24b, logrma, dirgrm, listgr
     character(len=24) :: nivgrm
     character(len=24) :: nogrfi
-    logical(kind=1) :: pre1
+    aster_logical :: pre1
 !
     call jemarq()
     call infmaj()

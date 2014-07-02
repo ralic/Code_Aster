@@ -18,7 +18,8 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisl.h"
@@ -56,7 +57,7 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
     integer :: jatmu, jafmu
     character(len=19) :: ddeplc, ddepl0, ddelt
     character(len=19) :: depl0
-    logical(kind=1) :: lgcp, lctfd
+    aster_logical :: lgcp, lctfd
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
@@ -125,7 +126,7 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
         call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
         do 10 ieq = 1, neq
             vdepl0(ieq) = ddep0(ieq)+depde(ieq)
-10      continue
+ 10     continue
     endif
 !
 ! --- INTIALISATIONS DES FORCES

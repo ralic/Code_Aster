@@ -19,6 +19,7 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
@@ -44,7 +45,7 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
     character(len=14) :: comref
     character(len=19) :: champ
     integer :: iret
-    logical(kind=1) :: exi, exiref
+    aster_logical :: exi, exiref
 !
 !
     call jemarq()

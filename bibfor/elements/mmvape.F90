@@ -24,11 +24,12 @@ subroutine mmvape(phasep, leltf, ndim, nnl, nbcps,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmmvcc.h"
 #include "asterfort/mmmvff.h"
     character(len=9) :: phasep
-    logical(kind=1) :: leltf
+    aster_logical :: leltf
     integer :: ndim, nnl, nbcps
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefff

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine erhmb2(perman, ino, nbs, ndim, theta,&
                       instpm, jac, nx, ny, tx,&
@@ -23,7 +25,7 @@ interface
                       iava2, ncmpm2, iaptm2, iade3, iava3,&
                       ncmpm3, iaptm3, tm2h1b)
         integer :: ndim
-        logical(kind=1) :: perman
+        aster_logical :: perman
         integer :: ino
         integer :: nbs
         real(kind=8) :: theta

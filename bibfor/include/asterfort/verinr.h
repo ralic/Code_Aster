@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function verinr(nbval, tbins1, tbins2)
         integer :: nbval
         character(len=19) :: tbins1
         character(len=19) :: tbins2
-        logical(kind=1) :: verinr
+        aster_logical :: verinr
     end function verinr
 end interface

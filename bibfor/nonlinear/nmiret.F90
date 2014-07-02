@@ -19,6 +19,7 @@ subroutine nmiret(codret, tabret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -29,7 +30,7 @@ subroutine nmiret(codret, tabret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: tabret(0:10)
+    aster_logical :: tabret(0:10)
     character(len=19) :: codret
 !
 ! ----------------------------------------------------------------------
@@ -50,7 +51,7 @@ subroutine nmiret(codret, tabret)
 !
 !
 !
-    integer :: iret,  jcesd,  jcesl, nbmail, icmp
+    integer :: iret, jcesd, jcesl, nbmail, icmp
     integer :: ima, iad, vali
     character(len=8) :: nomgd
     character(len=19) :: chamns
@@ -63,7 +64,7 @@ subroutine nmiret(codret, tabret)
 !
     do 10 iret = 0, 10
         tabret(iret) = .false.
-10  end do
+ 10 end do
 !
 ! --- ON TRANSFORME LE "CHAM_ELEM" EN UN "CHAM_ELEM_S"
 !
@@ -112,11 +113,11 @@ subroutine nmiret(codret, tabret)
             call utmess('A', 'MECANONLINE2_67', si=vali)
         endif
 !
-20  end do
+ 20 end do
 !
     do 30 iret = 1, 10
         if (tabret(iret)) tabret(0) = .true.
-30  end do
+ 30 end do
 !
     call detrsd('CHAM_ELEM_S', chamns)
 !

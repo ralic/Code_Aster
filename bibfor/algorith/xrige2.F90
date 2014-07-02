@@ -1,10 +1,11 @@
 subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
-                  he, ddlh, ddlc, nfe,&
-                  basloc, nnop, npg, lsn, lst,&
-                  sig, matuu)
+                  he, ddlh, ddlc, nfe, basloc,&
+                  nnop, npg, lsn, lst, sig,&
+                  matuu)
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -74,7 +75,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: rac2
     integer :: nnops
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
     data     rac2 / 1.4142135623731d0 /
 !
@@ -89,13 +90,13 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     ddls=ddld+ddlc
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
@@ -112,7 +113,8 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE AU POINT DE GAUSS
@@ -139,7 +141,8 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
 !
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF

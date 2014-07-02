@@ -20,6 +20,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -32,7 +33,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
     character(len=*) :: questz
     integer :: irep(*)
     real(kind=8) :: rrep(*)
-    logical(kind=1) :: lrep(*)
+    aster_logical :: lrep(*)
 !
 ! ----------------------------------------------------------------------
 !

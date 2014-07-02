@@ -81,6 +81,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ABSENCE DE CONVERGENCE
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/iisnan.h"
 #include "asterc/lccree.h"
@@ -134,7 +135,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: tmpdmx, tmpfmx, epsth
     real(kind=8) :: alphad, alphaf, bendod, bendof, kdessd, kdessf
 !
-    logical(kind=1) :: cp
+    aster_logical :: cp
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------
@@ -160,14 +161,13 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     call granvi(mod, ndt, ndi, ibid)
 !
     nn = nvi1 + 1
-    if (cmp2(1)(1:5) .eq. 'ELAS ' .or. &
-        cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. &
-        cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') then
+    if (cmp2(1)(1:5) .eq. 'ELAS ' .or. cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1)(1:14)&
+        .eq. 'VMIS_ISOT_LINE') then
         if (cmp2(1)(1:5) .eq. 'ELAS ') nvi2 = 1
         if (cmp2(1)(1:9) .eq. 'VMIS_ISOT') nvi2 = 2
         if (cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') nvi2 = 2
 !
-    elseif (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
+    else if (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
 !
         if (cmp2(1)(1:8) .eq. 'ROUSS_PR') call rslnvi(mod3d, ibid, ibid2, ibid3, nvi2)
         if (cmp2(1)(1:15) .eq. 'BETON_DOUBLE_DP') call betnvi(mod3d, ibid, ibid2, ibid3, nvi2)
@@ -222,7 +222,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         depst2(k) = depst(k)
     end do
 !
-20  continue
+ 20 continue
 !
 ! --- RESOLUTION LOI DE FLUAGE
 !
@@ -305,7 +305,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
                     vind(nn), opt, sigf, vinf(nn), dsde,&
                     rbid, rbid, iret)
 !
-    elseif (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
+    else if (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
 !
         call lccree(1, cmp2, comcod)
         call lcinfo(comcod, numlc2, nbvar2)
@@ -384,7 +384,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
             epsthe = alphaf*(tempf-tref) - alphad*(tempd-tref)
         endif
         epsth = epsthe - bendof*hydrf + bendod*hydrd - kdessf*(sref- sechf) + kdessd*(sref-sechd)
-        do  k = 1, 3
+        do k = 1, 3
             depsel(k) = depsel(k) + epsth
         enddo
         if (mod(1:6) .eq. 'C_PLAN') then

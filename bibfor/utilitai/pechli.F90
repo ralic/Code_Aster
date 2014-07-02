@@ -1,5 +1,6 @@
 subroutine pechli(resu, modele, mate)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/calcul.h"
@@ -51,7 +52,7 @@ subroutine pechli(resu, modele, mate)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: chrcst
+    aster_logical :: chrcst
     integer :: i, iret, jinst, jpilo
     integer :: nbord, jord, numord
     real(kind=8) :: chlim(3), chmax(3), inst, eta, prec, valer(3), f0u, m

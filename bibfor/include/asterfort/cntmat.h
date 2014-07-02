@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
                       alfmc, emp, efp, eps, vmp,&
@@ -49,12 +51,12 @@ interface
         real(kind=8) :: q2d(2)
         real(kind=8) :: de33d1
         real(kind=8) :: de33d2
-        logical(kind=1) :: elas
-        logical(kind=1) :: elas1
-        logical(kind=1) :: elas2
-        logical(kind=1) :: coup
-        logical(kind=1) :: rigi
-        logical(kind=1) :: resi
+        aster_logical :: elas
+        aster_logical :: elas1
+        aster_logical :: elas2
+        aster_logical :: coup
+        aster_logical :: rigi
+        aster_logical :: resi
         character(len=16) :: option
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: sig(6)

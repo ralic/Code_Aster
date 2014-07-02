@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
                       nbch, acceno)
@@ -24,6 +26,6 @@ interface
         integer :: dimlis
         character(len=*) :: lisch(*)
         integer :: nbch
-        logical(kind=1) :: acceno
+        aster_logical :: acceno
     end subroutine rsutc4
 end interface

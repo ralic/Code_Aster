@@ -73,6 +73,7 @@ subroutine flartg(f, g, cs, sn, r)
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -87,7 +88,7 @@ subroutine flartg(f, g, cs, sn, r)
     parameter          ( two = 2.0d0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: first
+    aster_logical :: first
     integer :: count, i
     real(kind=8) :: eps, f1, g1, safmin, safmn2, safmx2, scale, base
 !     ..
@@ -123,7 +124,7 @@ subroutine flartg(f, g, cs, sn, r)
         scale = max( abs( f1 ), abs( g1 ) )
         if (scale .ge. safmx2) then
             count = 0
-10          continue
+ 10         continue
             count = count + 1
             f1 = f1*safmn2
             g1 = g1*safmn2
@@ -134,10 +135,10 @@ subroutine flartg(f, g, cs, sn, r)
             sn = g1 / r
             do 20 i = 1, count
                 r = r*safmx2
-20          continue
+ 20         continue
         else if (scale.le.safmn2) then
             count = 0
-30          continue
+ 30         continue
             count = count + 1
             f1 = f1*safmx2
             g1 = g1*safmx2
@@ -148,7 +149,7 @@ subroutine flartg(f, g, cs, sn, r)
             sn = g1 / r
             do 40 i = 1, count
                 r = r*safmn2
-40          continue
+ 40         continue
         else
             r = sqrt( f1**2+g1**2 )
             cs = f1 / r

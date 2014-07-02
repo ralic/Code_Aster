@@ -1,5 +1,6 @@
 subroutine trcart(ific, nocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -56,8 +57,8 @@ subroutine trcart(ific, nocc)
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=200) :: lign1, lign2
     integer :: iarg
-    logical(kind=1) :: lref
-    logical(kind=1) :: skip
+    aster_logical :: lref
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
@@ -148,12 +149,12 @@ subroutine trcart(ific, nocc)
             tbtxt(1)='NON_REGRESSION'
         endif
         call tresu_carte(cham19, nomail, noddl, tbtxt, vali,&
-                    valr, valc, typres, epsi, crit,&
-                    ific, .true._1, ignore=skip, compare=ordgrd)
+                         valr, valc, typres, epsi, crit,&
+                         ific, .true._1, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_carte(cham19, nomail, noddl, tbref, valir,&
-                        valrr, valcr, typres, epsir, crit,&
-                        ific, .false._1)
+                             valrr, valcr, typres, epsir, crit,&
+                             ific, .false._1)
         endif
         write (ific,*)' '
 !

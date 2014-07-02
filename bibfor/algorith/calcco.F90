@@ -45,6 +45,7 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/hmgazp.h"
 #include "asterfort/hmladg.h"
 #include "asterfort/hmlgat.h"
@@ -65,7 +66,7 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
     real(kind=8) :: pvp0, sat, rinstp
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, thmc, ther, hydr, phenom
-    logical(kind=1) :: perman, yachai
+    aster_logical :: perman, yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 ! ======================================================================

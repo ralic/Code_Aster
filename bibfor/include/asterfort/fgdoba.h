@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
                       rke, lhaigh, rcorr, dom)
@@ -21,9 +23,9 @@ interface
         integer :: nbcycl
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)
-        logical(kind=1) :: lke
+        aster_logical :: lke
         real(kind=8) :: rke(*)
-        logical(kind=1) :: lhaigh
+        aster_logical :: lhaigh
         real(kind=8) :: rcorr(*)
         real(kind=8) :: dom(*)
     end subroutine fgdoba

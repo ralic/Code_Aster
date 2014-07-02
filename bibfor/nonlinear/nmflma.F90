@@ -26,6 +26,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascoma.h"
 #include "asterfort/asmama.h"
@@ -126,10 +127,10 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
     integer :: zvalin
     parameter    (zvalin=28)
 !
-    logical(kind=1) :: reasma
-    logical(kind=1) :: lcrigi, lcfint, lmacr
-    logical(kind=1) :: lamor
-    logical(kind=1) :: lsuiv
+    aster_logical :: reasma
+    aster_logical :: lcrigi, lcfint, lmacr
+    aster_logical :: lamor
+    aster_logical :: lsuiv
     character(len=16) :: optrig, optamo
     integer :: reincr, iterat
     character(len=8) :: tdiag, syme
@@ -140,7 +141,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
     integer :: nbmatr, jexx
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20), modlag
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

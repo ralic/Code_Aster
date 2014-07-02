@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
                       iadgks, iadgki, abscur, num, modele)
         integer :: nnoff
         character(len=24) :: chfond
         integer :: iadrgk
-        logical(kind=1) :: milieu
-        logical(kind=1) :: connex
+        aster_logical :: milieu
+        aster_logical :: connex
         integer :: iadgks
         integer :: iadgki
         character(len=24) :: abscur

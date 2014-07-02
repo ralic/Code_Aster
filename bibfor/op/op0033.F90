@@ -26,6 +26,7 @@ subroutine op0033()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -91,7 +92,7 @@ subroutine op0033()
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
     real(kind=8) :: vimp2(3, 3), coef, parcri(7), jm, jp, jd, rbid(1), coefextra
-    logical(kind=1) :: finpas, itemax, conver
+    aster_logical :: finpas, itemax, conver
     character(len=19) :: nomvi
     character(len=19) :: vim, vip, vim2, svip
     integer :: lvim, lvip, lvim2, lsvip, lnomvi
@@ -123,7 +124,7 @@ subroutine op0033()
     itemax=.false.
     do 10 i = 1, 5
         liccvg(i)=0
-10  end do
+ 10 end do
 !
 !     RECUPERATION DES OPTIONS DEMANDEES
 !     ----------------------------------
@@ -172,10 +173,10 @@ subroutine op0033()
 !     BOUCLE SUR lES INSTANTS
 !==================================
 !
-200  continue
+200 continue
     do 11 i = 1, 5
         liccvg(i)=0
-11  continue
+ 11 continue
 !        RECUPERATION DU NUMERO D'ORDRE ET DE L'INSTANT COURANTS
 !        DECOUPE INITIALE DU PAS DE TEMPS
 !
@@ -193,7 +194,7 @@ subroutine op0033()
                         valimp(i), ier)
 !               NORMALISATION DES TERMES EN CONTRAINTES
             if (indimp(i) .eq. 0) valimp(i)=valimp(i)/coef
-20      continue
+ 20     continue
 !            NORMALEMENT DEJA VERIFIE PAR SIMU_POINT_MAT_OPS
         ASSERT(compor(3).eq.'PETIT')
     else if (defimp.eq.2) then
@@ -202,7 +203,7 @@ subroutine op0033()
         do 21 i = 1, 9
             call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
-21      continue
+ 21     continue
     endif
 !
     if (irota .eq. 1) then
@@ -224,7 +225,7 @@ subroutine op0033()
             ncmp=6
             do 30 i = 1, ncmp
                 deps(i)=valimp(i)-epsm(i)
-30          continue
+ 30         continue
         else if (defimp.eq.2) then
             ncmp=9
             call matinv('S', 3, epsm, fem, jm)
@@ -294,7 +295,7 @@ subroutine op0033()
             call pmdrdy(dsidep, coef, cimpo, valimp, ym,&
                         sigm, r, drdy)
         endif
-    elseif ((pred .eq. 0).or.((pred.eq.-1).and.(numins.eq.1))) then
+    else if ((pred .eq. 0).or.((pred.eq.-1).and.(numins.eq.1))) then
         call r8inir(12, 0.d0, dy, 1)
         call r8inir(6, 0.d0, deps, 1)
         call pmdrdy(kel, coef, cimpo, valimp, ym,&
@@ -312,37 +313,39 @@ subroutine op0033()
 !           ITERATIONS DE NEWTON
 !:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 !
-300  continue
+300 continue
 !
     iter = iter + 1
-
-    if ((iter.eq.1).and.(pred.eq.-1).and.(numins.gt.1)) then
+!
+    if ((iter.eq.1) .and. (pred.eq.-1) .and. (numins.gt.1)) then
 !   prediction='extrapole'
-       coefextra = (instap-instam)/(instam-diinst(sddisc, numins-2))
+        coefextra = (instap-instam)/(instam-diinst(sddisc, numins-2))
 !       dy = dy * (ti - ti-1)/(ti-1 - ti-2)
-       call dscal(12, coefextra, dy, 1)
+        call dscal(12, coefextra, dy, 1)
     else
-    
-       call dcopy(12, r, 1, ddy, 1)
+!
+        call dcopy(12, r, 1, ddy, 1)
 !
 !      RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
-       cargau = 'NCWP'
-       call mgauss(cargau, drdy, ddy, 12, 12, 1, r8b, iret)
-       if (iret .ne. 0) then
-           liccvg(5) = 1
-           conver = .false.
-           goto 500
-       endif
+        cargau = 'NCWP'
+        call mgauss(cargau, drdy, ddy, 12, 12,&
+                    1, r8b, iret)
+        if (iret .ne. 0) then
+            liccvg(5) = 1
+            conver = .false.
+            goto 500
+        endif
 !
 !      REACTUALISATION DE DY = DY + DDY
-       call daxpy(12, 1.d0, ddy, 1, dy, 1)
-       
+        call daxpy(12, 1.d0, ddy, 1, dy,&
+                   1)
+!
     endif
-    
+!
     call dcopy(6, dy(7), 1, deps, 1)
 !
 !           POUR LE CALCUL DE LA MATRICE TANGENTE PAR PERTURBATION
-1000  continue
+1000 continue
 !
 !           CALCUL DU RESIDU
     liccvg(2) = 0
@@ -401,7 +404,7 @@ subroutine op0033()
     call dierre(sddisc, sdcrit, iter)
 !
 !           VERIFICATION DES EVENT-DRIVEN
-500  continue
+500 continue
     call pmsta1(sigm, sigp, deps, zr(lvim), zr(lvip),&
                 nbvari, nbvita, iforta, nbpar, nompar,&
                 vr, igrad, typpar, zk8(lnomvi), sddisc,&
@@ -436,7 +439,7 @@ subroutine op0033()
     endif
 !:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 !
-550  continue
+550 continue
 !
 !        ---------------------------------------------------------------
 !        CONVERGENCE => MISE A JOUR DE SIGM,ZR(LVIM), TABLE
@@ -457,7 +460,7 @@ subroutine op0033()
                 iter, deps, sigp, zr(lvip), nbvari,&
                 r, r8b, r8b)
 !
-600  continue
+600 continue
 !
 ! --- DERNIER INSTANT DE CALCUL ? -> ON SORT DE STAT_NON_LINE
 !
@@ -469,7 +472,7 @@ subroutine op0033()
 !     FIN BOUCLE SUR LES INSTANTS
 !==================================
 !
-900  continue
+900 continue
 !
 !     GESTION DES VARIABLES DE COMMANDE
     call vrcinp(nbvrcm, 0, instam, instap)

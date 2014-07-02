@@ -19,7 +19,8 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -56,8 +57,8 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 !
 !
 !
-    logical(kind=1) :: lsvimx, ldvres, linsta
-    logical(kind=1) :: conver, lerror, lerrcv
+    aster_logical :: lsvimx, ldvres, linsta
+    aster_logical :: conver, lerror, lerrcv
 !
 ! ----------------------------------------------------------------------
 !

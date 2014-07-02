@@ -18,6 +18,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -42,7 +43,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 #include "asterfort/xmrlst.h"
 #include "asterfort/xpivit.h"
 #include "asterfort/xxmmvd.h"
-    logical(kind=1) :: loptin
+    aster_logical :: loptin
     character(len=8) :: noma, modele
     character(len=24) :: defico, resoco
 !
@@ -90,8 +91,8 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
     character(len=24) :: xfimai, cncte
     character(len=24) :: tabfin, maescx
     integer :: jtabf, jmaesx, ninter
-    logical(kind=1) :: projin, lcinit, lgliss
-    integer ::  jfimai, ifiss, ifism, ipc2, numpi
+    aster_logical :: projin, lcinit, lgliss
+    integer :: jfimai, ifiss, ifism, ipc2, numpi
     integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -132,7 +133,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
         geom(i) = 0.d0
         t1min(i) = 0.d0
         t2min(i) = 0.d0
- 9  end do
+  9 end do
     ndim = cfdisi(defico,'NDIM' )
     ntmae = cfdisi(defico,'NTMAE')
 !
@@ -155,7 +156,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
         call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
         call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-10  end do
+ 10 end do
 !
 ! --- BOUCLE SUR LES MAILLES ESCLAVES
 !
@@ -233,9 +234,9 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                         call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
                                     ifiss, zxain*(numpi-1)+2, iad)
                         if (zr(jcesv(2)-1+iad) .ne. 0) goto 130
-120                  continue
+120                 continue
                     ASSERT(.false.)
-130                  continue
+130                 continue
                     call mmgaus(alias, tyco, ipc2, ksipc1, ksipc2,&
                                 wpc)
                 else
@@ -425,10 +426,10 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                 else
                     zr(jtabf+ztabf*ntpc+ztabf*(ipc-1)+22) = 0.d0
                 endif
-110          continue
+110         continue
             ntpc = ntpc + nbpc
-105      continue
-100  end do
+105     continue
+100 end do
     zr(jtabf-1+1) = ntpc
     ASSERT(ntpc.eq.cfdisi(defico, 'NTPC'))
 !
@@ -436,7 +437,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 !
     do 200 i = 1, 7
         call detrsd('CHAM_ELEM_S', chs(i))
-200  end do
+200 end do
 !
     call jedema()
 end subroutine

@@ -18,6 +18,7 @@ subroutine te0440(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -53,7 +54,7 @@ subroutine te0440(option, nomte)
     integer :: nfiss, jfisno
     real(kind=8) :: he, coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag
-    logical(kind=1) :: fonc, lbid
+    aster_logical :: fonc, lbid
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
@@ -64,7 +65,7 @@ subroutine te0440(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnops)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnops)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG
     if (.not.iselli(elrefp)) then
@@ -72,8 +73,8 @@ subroutine te0440(option, nomte)
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,nnos=nnos,&
-  npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, nnos=nnos,&
+                     npg=npg)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -97,8 +98,7 @@ subroutine te0440(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-        .and. .not.iselli(elrefp)) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -163,8 +163,8 @@ subroutine te0440(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nnop, nnops, zi(jstno), .false._1, lbid,&
-                option, nomte, ddlm,&
-                nfiss, jfisno, vect=zr(ivectu))
+                option, nomte, ddlm, nfiss, jfisno,&
+                vect=zr(ivectu))
 !
     call jedema()
 end subroutine

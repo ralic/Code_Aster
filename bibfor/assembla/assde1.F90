@@ -1,4 +1,4 @@
-subroutine assde1(tych,champ)
+subroutine assde1(tych, champ)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ subroutine assde1(tych,champ)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/chlici.h"
 #include "asterfort/jedetr.h"
@@ -37,7 +38,7 @@ subroutine assde1(tych,champ)
 !
 !
     character(len=19) :: champ2
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
 ! -DEB------------------------------------------------------------------
     champ2 = champ
 !
@@ -48,17 +49,17 @@ subroutine assde1(tych,champ)
 !
 !
 !   -- POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
-    if (tych.eq.'CHAM_ELEM') then
+    if (tych .eq. 'CHAM_ELEM') then
         call jedetr(champ2//'.CELD')
         call jedetr(champ2//'.CELV')
         call jedetr(champ2//'.CELK')
-
-    elseif (tych.eq.'CHAM_NO') then
+!
+    else if (tych.eq.'CHAM_NO') then
         call jedetr(champ2//'.VALE')
         call jedetr(champ2//'.REFE')
         call jedetr(champ2//'.DESC')
-
-    elseif (tych.eq.'CARTE') then
+!
+    else if (tych.eq.'CARTE') then
         call jedetr(champ2//'.DESC')
         call jedetr(champ2//'.NOMA')
         call jedetr(champ2//'.VALE')
@@ -68,14 +69,14 @@ subroutine assde1(tych,champ)
         call jedetr(champ2//'.NCMP')
         call jedetr(champ2//'.PTMA')
         call jedetr(champ2//'.PTMS')
-
-    elseif (tych.eq.'RESUELEM') then
+!
+    else if (tych.eq.'RESUELEM') then
         call jedetr(champ2//'.NOLI')
         call jedetr(champ2//'.DESC')
         call jedetr(champ2//'.RESL')
         call jedetr(champ2//'.RSVI')
-
-    elseif (tych.eq.'CHAMP') then
+!
+    else if (tych.eq.'CHAMP') then
         call jedetr(champ2//'.CELD')
         call jedetr(champ2//'.CELK')
         call jedetr(champ2//'.CELV')
@@ -94,7 +95,7 @@ subroutine assde1(tych,champ)
     else
         ASSERT(.false.)
     endif
-
-
+!
+!
 !
 end subroutine

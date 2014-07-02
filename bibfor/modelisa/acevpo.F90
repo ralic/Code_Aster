@@ -1,5 +1,6 @@
 subroutine acevpo(nbocc, nlm, nlg, ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -36,7 +37,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: bon
+    aster_logical :: bon
     character(len=8) :: nomu, cara(100), kioc
     character(len=16) :: sec, vsec, concep, cmd
     integer :: vali(3)
@@ -81,7 +82,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
                 bon = .false.
                 do 20 i = 1, ncar
                     if (cara(i) .eq. 'R') bon = .true.
-20              continue
+ 20             continue
                 if (.not. bon) then
                     call utmess('E', 'MODELISA_66', sk=kioc)
                     ier = ier + 1
@@ -100,7 +101,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
             nlg = max(nlg,-ng)
         endif
 !
-100  end do
+100 end do
 !
     call jedema()
 end subroutine

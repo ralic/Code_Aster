@@ -34,6 +34,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8dgrd.h"
@@ -44,7 +45,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 #include "asterfort/utmess.h"
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
-    logical(kind=1) :: bidim
+    aster_logical :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: angl, pt(3), d(3), p1mx, p1my, p1mz, ca, sa, p1m, prec
@@ -69,7 +70,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
             p1my=zr(iadcoo+3*(i-1)+2)-pt(2)
             zr(iadcoo+3*(i-1)+1)=pt(1)+ca*p1mx-sa*p1my
             zr(iadcoo+3*(i-1)+2)=pt(2)+ca*p1my+sa*p1mx
-10      continue
+ 10     continue
     else
         if (dnrm2(3,d,1) .lt. prec) then
             call utmess('F', 'ALGORITH10_48')
@@ -89,7 +90,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
                 sa*(d(3)*p1mx-d(1)*p1mz)
                 zr(iadcoo+3*(i-1)+3)=pt(3)+ ca*p1mz+(1-ca)*p1m*d(3)+&
                 sa*(d(1)*p1my-d(2)*p1mx)
-20          continue
+ 20         continue
         endif
     endif
     call jedema()

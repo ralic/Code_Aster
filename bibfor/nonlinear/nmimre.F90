@@ -21,7 +21,8 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -74,7 +75,7 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
     real(kind=8) :: vale
     character(len=16) :: lieu
     character(len=9) :: colonn
-    logical(kind=1) :: laffe
+    aster_logical :: laffe
 !
 ! ----------------------------------------------------------------------
 !
@@ -139,7 +140,7 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
         endif
         zr(jcnvva-1+iresi) = vale
         zk16(jcnvli-1+iresi) = lieu
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

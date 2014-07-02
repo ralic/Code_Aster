@@ -19,6 +19,7 @@ subroutine ntcrli(instin, lisins, sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
@@ -64,7 +65,7 @@ subroutine ntcrli(instin, lisins, sddisc)
     real(kind=8) :: tole
     real(kind=8) :: r8bid
     real(kind=8) :: dtmin, dt0
-    logical(kind=1) :: linsti, linsei
+    aster_logical :: linsti, linsei
     character(len=8) :: k8bid
     character(len=24) :: lisifr, lisdit
     character(len=24) :: tpsipo, tpsinf
@@ -175,7 +176,7 @@ subroutine ntcrli(instin, lisins, sddisc)
     call wkvect(tpsdin, 'V V I', nbtemp, jnivtp)
     do 30 numins = 1, nbtemp
         zi(jnivtp-1+numins) = 1
-30  end do
+ 30 end do
 !
 ! --- ENREGISTREMENT DES INFORMATIONS
 !

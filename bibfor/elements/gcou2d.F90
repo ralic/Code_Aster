@@ -2,6 +2,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                   coor, rinf, rsup, module, ldirec,&
                   dir)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -25,7 +26,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     character(len=1) :: base
     character(len=8) :: noma, noeud
     character(len=24) :: resu, nomno
-    logical(kind=1) :: ldirec
+    aster_logical :: ldirec
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -74,7 +75,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 !
     integer :: itheta, i, irefe, idesc, num, nbel, numa
-    integer :: nec, ibid,  numfon, n1, n2, ndim,  jgtl
+    integer :: nec, ibid, numfon, n1, n2, ndim, jgtl
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy
     character(len=8) :: k8b, fiss

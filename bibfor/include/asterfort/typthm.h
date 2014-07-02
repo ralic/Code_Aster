@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine typthm(axi, perman, vf, typvf,&
                       typmod, ndim)
-        logical(kind=1) :: axi
-        logical(kind=1) :: perman
-        logical(kind=1) :: vf
+        aster_logical :: axi
+        aster_logical :: perman
+        aster_logical :: vf
         integer :: typvf
         character(len=8) :: typmod(2)
         integer :: ndim

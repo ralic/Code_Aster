@@ -2,6 +2,7 @@ subroutine nmdpmf(compor, chmate)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvid.h"
 #include "asterfort/carces.h"
@@ -49,7 +50,7 @@ subroutine nmdpmf(compor, chmate)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, iret
-    logical(kind=1) :: lcumu(2), lcoc(2)
+    aster_logical :: lcumu(2), lcoc(2)
     character(len=8) :: licmp
     character(len=19) :: chs(2), chs3, chsx
     real(kind=8) :: lcoer(2)
@@ -87,7 +88,7 @@ subroutine nmdpmf(compor, chmate)
                 'A', ibid)
 !     ON ENLEVE LA COMPOSANTE 'DEFORM' DE LA CARTE
     licmp = 'DEFORM'
-    call cesred(chsx,0,[ibid],-1,licmp,&
+    call cesred(chsx, 0, [ibid], -1, licmp,&
                 'V', chs(2))
 !
 !     FUSION DES CHAM_ELEM_S + COPIE DANS "COMPOR"

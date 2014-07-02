@@ -1,6 +1,7 @@
 subroutine lrvema(nomail, mfich, nochmd)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfin.h"
 #include "asterfort/as_mfdncn.h"
@@ -71,7 +72,7 @@ subroutine lrvema(nomail, mfich, nochmd)
     character(len=64) :: nomamd
     character(len=200) :: nofimd
     character(len=255) :: kfic
-    logical(kind=1) :: lfirst
+    aster_logical :: lfirst
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     integer, pointer :: typmail(:) => null()

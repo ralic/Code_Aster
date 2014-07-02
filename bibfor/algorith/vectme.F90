@@ -17,6 +17,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -55,7 +56,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
     character(len=19) :: vecele, resuel, chvref, chsith
     character(len=24) :: chgeom, chcara(18), chtime, ligrmo, vrcplu
     character(len=24) :: lchin(mxnbin), lchout(mxnbou), modele, carele
-    logical(kind=1) :: ltemp, lbid, lxfem
+    aster_logical :: ltemp, lbid, lxfem
 !
     call jemarq()
     newnom = '.0000000'

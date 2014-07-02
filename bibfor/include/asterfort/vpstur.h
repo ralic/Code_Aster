@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
                       expo, pivot, ier, solveu, caldet,&
@@ -28,7 +30,7 @@ interface
         integer :: pivot
         integer :: ier
         character(len=19) :: solveu
-        logical(kind=1) :: caldet
-        logical(kind=1) :: calfac
+        aster_logical :: caldet
+        aster_logical :: calfac
     end subroutine vpstur
 end interface

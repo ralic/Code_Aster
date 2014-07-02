@@ -1,6 +1,7 @@
 subroutine dibili(option, nomte, ndim, nbt, nno,&
                   nc, ulm, dul, pgl, iret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dinon4.h"
 #include "asterfort/dinona.h"
@@ -74,7 +75,7 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
     real(kind=8) :: valpar(nbpart), coeflo(6, nbparc), vardnl(nbvint)
     integer :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
-    logical(kind=1) :: okdire(6)
+    aster_logical :: okdire(6)
 !   nbparc paramètres par composante
     data nompar /'KDEB_DX','KFIN_DX','FPRE_DX',&
                  'KDEB_DY','KFIN_DY','FPRE_DY',&

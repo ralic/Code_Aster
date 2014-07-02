@@ -1,5 +1,6 @@
-subroutine wkvect(nom, carac, dim, jadr, &
-              & vl,vi,vi4,vr,vc,vk8,vk16,vk24,vk32,vk80)
+subroutine wkvect(nom, carac, dim, jadr, vl,&
+                  vi, vi4, vr, vc, vk8,&
+                  vk16, vk24, vk32, vk80)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +19,10 @@ subroutine wkvect(nom, carac, dim, jadr, &
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W1304
-    use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
+    use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none
-
+!
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jeecra.h"
@@ -28,23 +30,23 @@ subroutine wkvect(nom, carac, dim, jadr, &
 #include "asterfort/jelira.h"
 #include "asterfort/assert.h"
 #include "asterfort/jgetptc.h"
-
+!
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
     integer, intent(in) :: dim
     integer, intent(out), optional :: jadr
-
-    logical(kind=1),   pointer, optional, intent(out) :: vl(:)
-    integer,           pointer, optional, intent(out) :: vi(:)
-    integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
-    real(kind=8),      pointer, optional, intent(out) :: vr(:)
-    complex(kind=8),   pointer, optional, intent(out) :: vc(:)
-    character(len=8),  pointer, optional, intent(out) :: vk8(:)
+!
+    aster_logical, pointer, optional, intent(out) :: vl(:)
+    integer, pointer, optional, intent(out) :: vi(:)
+    integer(kind=4), pointer, optional, intent(out) :: vi4(:)
+    real(kind=8), pointer, optional, intent(out) :: vr(:)
+    complex(kind=8), pointer, optional, intent(out) :: vc(:)
+    character(len=8), pointer, optional, intent(out) :: vk8(:)
     character(len=16), pointer, optional, intent(out) :: vk16(:)
     character(len=24), pointer, optional, intent(out) :: vk24(:)
     character(len=32), pointer, optional, intent(out) :: vk32(:)
     character(len=80), pointer, optional, intent(out) :: vk80(:)
-
+!
 !
 ! ------------------------------------------------------------------
 ! Creation d'un vecteur jeveux
@@ -63,79 +65,79 @@ subroutine wkvect(nom, carac, dim, jadr, &
 ! 2) recuperation du contenu de l'objet 'XXX' dans le vecteur XXX
 !    call wkvect('XXX', 'V V R', 10, vr=XXX)
 !-----------------------------------------------------------------------
-      integer :: jad
-      character(len=8) :: ktyp
-      type(c_ptr) :: pc
+    integer :: jad
+    character(len=8) :: ktyp
+    type(c_ptr) :: pc
 !---------------------------------------------------------------------------
-      call jecreo(nom, carac)
-      call jeecra(nom, 'LONMAX', ival=dim)
-      call jeecra(nom, 'LONUTI', ival=dim)
-      call jeveuo(nom, 'E', jad)
-
-
+    call jecreo(nom, carac)
+    call jeecra(nom, 'LONMAX', ival=dim)
+    call jeecra(nom, 'LONUTI', ival=dim)
+    call jeveuo(nom, 'E', jad)
+!
+!
 !     -- cas : on veut l'adresse
-      if (present(jadr)) then
-          jadr=jad
-          goto 999
-      endif
-
-
+    if (present(jadr)) then
+        jadr=jad
+        goto 999
+    endif
+!
+!
 !     -- cas : on veut un pointeur
-      call jelira(nom,'TYPELONG',cval=ktyp)
-      if (present(vl)) then
-          ASSERT(ktyp.eq.'L')
-          call jgetptc(jad,pc,vl=zl(1))
-          call c_f_pointer(pc,vl,[dim])
-
-      elseif (present(vi)) then
-          ASSERT(ktyp.eq.'I')
-          call jgetptc(jad,pc,vi=zi(1))
-          call c_f_pointer(pc,vi,[dim])
-
-      elseif (present(vi4)) then
-          ASSERT(ktyp.eq.'S')
-          call jgetptc(jad,pc,vi4=zi4(1))
-          call c_f_pointer(pc,vi4,[dim])
-
-      elseif (present(vr)) then
-          ASSERT(ktyp.eq.'R')
-          call jgetptc(jad,pc,vr=zr(1))
-          call c_f_pointer(pc,vr,[dim])
-
-      elseif (present(vc)) then
-          ASSERT(ktyp.eq.'C')
-          call jgetptc(jad,pc,vc=zc(1))
-          call c_f_pointer(pc,vc,[dim])
-
-      elseif (present(vk8)) then
-          ASSERT(ktyp.eq.'K8')
-          call jgetptc(jad,pc,vk8=zk8(1))
-          call c_f_pointer(pc,vk8,[dim])
-
-      elseif (present(vk16)) then
-          ASSERT(ktyp.eq.'K16')
-          call jgetptc(jad,pc,vk16=zk16(1))
-          call c_f_pointer(pc,vk16,[dim])
-
-      elseif (present(vk24)) then
-          ASSERT(ktyp.eq.'K24')
-          call jgetptc(jad,pc,vk24=zk24(1))
-          call c_f_pointer(pc,vk24,[dim])
-
-      elseif (present(vk32)) then
-          ASSERT(ktyp.eq.'K32')
-          call jgetptc(jad,pc,vk32=zk32(1))
-          call c_f_pointer(pc,vk32,[dim])
-
-      elseif (present(vk80)) then
-          ASSERT(ktyp.eq.'K80')
-          call jgetptc(jad,pc,vk80=zk80(1))
-          call c_f_pointer(pc,vk80,[dim])
-
-      else
-          ASSERT(.false.)
-      endif
-
-999   continue
-
+    call jelira(nom, 'TYPELONG', cval=ktyp)
+    if (present(vl)) then
+        ASSERT(ktyp.eq.'L')
+        call jgetptc(jad, pc, vl=zl(1))
+        call c_f_pointer(pc, vl, [dim])
+!
+    else if (present(vi)) then
+        ASSERT(ktyp.eq.'I')
+        call jgetptc(jad, pc, vi=zi(1))
+        call c_f_pointer(pc, vi, [dim])
+!
+    else if (present(vi4)) then
+        ASSERT(ktyp.eq.'S')
+        call jgetptc(jad, pc, vi4=zi4(1))
+        call c_f_pointer(pc, vi4, [dim])
+!
+    else if (present(vr)) then
+        ASSERT(ktyp.eq.'R')
+        call jgetptc(jad, pc, vr=zr(1))
+        call c_f_pointer(pc, vr, [dim])
+!
+    else if (present(vc)) then
+        ASSERT(ktyp.eq.'C')
+        call jgetptc(jad, pc, vc=zc(1))
+        call c_f_pointer(pc, vc, [dim])
+!
+    else if (present(vk8)) then
+        ASSERT(ktyp.eq.'K8')
+        call jgetptc(jad, pc, vk8=zk8(1))
+        call c_f_pointer(pc, vk8, [dim])
+!
+    else if (present(vk16)) then
+        ASSERT(ktyp.eq.'K16')
+        call jgetptc(jad, pc, vk16=zk16(1))
+        call c_f_pointer(pc, vk16, [dim])
+!
+    else if (present(vk24)) then
+        ASSERT(ktyp.eq.'K24')
+        call jgetptc(jad, pc, vk24=zk24(1))
+        call c_f_pointer(pc, vk24, [dim])
+!
+    else if (present(vk32)) then
+        ASSERT(ktyp.eq.'K32')
+        call jgetptc(jad, pc, vk32=zk32(1))
+        call c_f_pointer(pc, vk32, [dim])
+!
+    else if (present(vk80)) then
+        ASSERT(ktyp.eq.'K80')
+        call jgetptc(jad, pc, vk80=zk80(1))
+        call c_f_pointer(pc, vk80, [dim])
+!
+    else
+        ASSERT(.false.)
+    endif
+!
+999 continue
+!
 end subroutine

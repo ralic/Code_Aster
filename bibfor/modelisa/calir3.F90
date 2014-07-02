@@ -44,7 +44,6 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     character(len=19) :: chnorm, csnorm
     integer, pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
-    logical :: lcond
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -71,8 +70,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     if (.not.zl(jcnsl-1+3*(nuno2-1)+k)) then
         call utmess('F', 'CHAMPS_2', sk=chnorm)
     endif
-    lcond=zl(jcnsl-1+3*(nuno2-1)+k)
-    ASSERT(lcond)
+    ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
     zr(jlisv1-1+3*(nuno2-1)+k)=cnsv(3*(nuno2-1)+k)*&
             epais
 10  continue

@@ -20,6 +20,7 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -28,7 +29,7 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 #include "asterfort/rssepa.h"
     character(len=8) :: result
     integer :: numarc
-    logical(kind=1) :: lnonl
+    aster_logical :: lnonl
     real(kind=8) :: instan, para(*)
     character(len=19) :: lisch2, sdcrit
     character(len=24) :: modele, mate, carele
@@ -59,7 +60,7 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 !
 !
     character(len=8) :: k8bid
-    integer :: jpara,  jcrk, jinst
+    integer :: jpara, jcrk, jinst
     real(kind=8), pointer :: crtr(:) => null()
 !
 ! ----------------------------------------------------------------------

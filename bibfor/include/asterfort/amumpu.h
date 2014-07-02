@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
         integer :: option, nbfact
@@ -22,7 +24,7 @@ interface
         integer :: kxmps
         character(len=12) :: usersm
         integer :: nprec
-        logical(kind=1) :: lresol
+        aster_logical :: lresol
         character(len=24) :: kvers
     end subroutine amumpu
 end interface

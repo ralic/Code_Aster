@@ -19,7 +19,8 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -30,7 +31,7 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
     character(len=19) :: sddisc
     integer :: numarc
     real(kind=8) :: instan
-    logical(kind=1) :: force
+    aster_logical :: force
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,7 +72,7 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
     do 10 icham = 1, nbcham
         call nmeteo(result, sdimpr, sddisc, sdieto, force,&
                     numarc, instan, icham)
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

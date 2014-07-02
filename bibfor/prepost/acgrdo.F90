@@ -4,6 +4,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
                   forcri, valpar, vresu)
 ! aslint: disable=W1501
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -102,7 +103,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     character(len=24) :: chnom, cbid
     character(len=16) :: phenom, typcha
     character(len=8) :: nompf(35), nompar(35), nomgrd
-    logical(kind=1) :: endur, plcicr, lbid
+    aster_logical :: endur, plcicr, lbid
 !----------------------------------------------------------------
 !---------------------------------------------------------------
     data  nompar/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&

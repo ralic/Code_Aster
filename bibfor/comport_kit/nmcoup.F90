@@ -25,6 +25,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/kit_glrc_dm_vmis.h"
 #include "asterfort/lcumfe.h"
@@ -42,7 +43,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: vind(*), vinf(*)
 !
     real(kind=8) :: dsde(*)
-    logical(kind=1) :: lcpdb
+    aster_logical :: lcpdb
 !
     character(len=16) :: comp(*), opt
     character(len=*) :: fami
@@ -98,7 +99,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ABSENCE DE CONVERGENCE
 !
-    character(len=16) :: option(2), cmp1, cmp2,  cmp4
+    character(len=16) :: option(2), cmp1, cmp2, cmp4
     character(len=16) :: texte(2)
 !
     cmp1(1:16) = comp(8)
@@ -107,9 +108,9 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 !
 !
     if (cmp1(1:10) .eq. 'GRANGER_FP') then
-        if (cmp2(1:5) .eq. 'ELAS ' .or. cmp2(1:9) .eq. 'VMIS_ISOT' .or.  &
-            cmp2(1:14) .eq. 'VMIS_ISOT_LINE' .or. cmp2(1:8) .eq. 'ROUSS_PR' .or.  &
-            cmp2(1:15) .eq. 'BETON_DOUBLE_DP') then
+        if (cmp2(1:5) .eq. 'ELAS ' .or. cmp2(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1:14) .eq.&
+            'VMIS_ISOT_LINE' .or. cmp2(1:8) .eq. 'ROUSS_PR' .or. cmp2(1:15) .eq.&
+            'BETON_DOUBLE_DP') then
             call nmcpla(fami, kpg, ksp, ndim, typmod,&
                         imat, comp, crit, timed, timef,&
                         neps, epsdt, depst, nsig, sigd,&
@@ -124,7 +125,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
     else if (cmp1(1:13).eq.'BETON_UMLV_FP') then
 !
         if (cmp2(1:15) .eq. 'ENDO_ISOT_BETON' .or. cmp2(1:6) .eq. 'MAZARS') then
-
+!
             cmp4(1:16) = typmod(2)
             option(2)(1:16) = cmp2(1:16)
 !
@@ -160,8 +161,8 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
     else if (cmp1(1:4).eq.'GLRC') then
 !
 !
-        if (cmp2 .eq. 'VMIS_ISOT_TRAC' .or. cmp2 .eq. 'VMIS_ISOT_LINE' .or. &
-            cmp2 .eq. 'VMIS_CINE_LINE') then
+        if (cmp2 .eq. 'VMIS_ISOT_TRAC' .or. cmp2 .eq. 'VMIS_ISOT_LINE' .or. cmp2 .eq.&
+            'VMIS_CINE_LINE') then
 !
             option(2)(1:16) = cmp2(1:16)
 !
@@ -177,5 +178,5 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
         call utmess('F', 'COMPOR3_6', nk=1, valk=cmp1)
     endif
 !
-999  continue
+999 continue
 end subroutine

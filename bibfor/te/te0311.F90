@@ -1,5 +1,6 @@
 subroutine te0311(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
@@ -76,7 +77,7 @@ subroutine te0311(option, nomte)
     character(len=8) :: nompar(4)
     character(len=4) :: fami
 !
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
 !.......................................................................
 !
     call jemarq()
@@ -84,8 +85,8 @@ subroutine te0311(option, nomte)
     depi = r8depi()
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call jevech('PTHETAR', 'L', ithet)
     tcla = 0.d0
     tcla1 = 0.d0
@@ -107,7 +108,7 @@ subroutine te0311(option, nomte)
         if ((abs(thetx).lt.epsi) .and. (abs(thety).lt.epsi) .and. (abs(thetz).lt.epsi)) then
             compt = compt + 1
         endif
-20  end do
+ 20 end do
     if (compt .eq. nno) goto 9999
 !
 ! RECUPERATION CHARGE, MATER...
@@ -144,14 +145,14 @@ subroutine te0311(option, nomte)
         do 70 i = 1, nno
             do 80 j = 1, 3
                 valpar(j) = zr(igeom+3*(i-1)+j-1)
-80          continue
+ 80         continue
             call fointe('FM', zk8(ipref), 4, nompar, valpar,&
                         presn(i), icode)
             do 75 j = 1, 3
                 call fointe('FM', zk8(iforf+j-1), 4, nompar, valpar,&
                             forcn(3*(i-1)+j), icode)
-75          continue
-70      continue
+ 75         continue
+ 70     continue
     endif
 !
 ! CALCUL DU REPERE LOCAL (A1, A2, A3)
@@ -159,7 +160,7 @@ subroutine te0311(option, nomte)
     do 130 j = 1, 3
         a1(j) = zr(igeom+3*(2-1)+j-1) - zr(igeom+3*(1-1)+j-1)
         a2(j) = zr(igeom+3*(3-1)+j-1) - zr(igeom+3*(1-1)+j-1)
-130  end do
+130 end do
 !
     a3(1) = a1(2)*a2(3) - a1(3)*a2(2)
     a3(2) = a1(3)*a2(1) - a1(1)*a2(3)
@@ -178,7 +179,7 @@ subroutine te0311(option, nomte)
         i1(i) = a1(i) / a1norm
         i2(i) = i2(i) / i2norm
         a3(i) = a3(i) / a3norm
-150  end do
+150 end do
 !
     do 1400 i = 1, nno
         coor(2*i-1) = 0.d0
@@ -186,8 +187,8 @@ subroutine te0311(option, nomte)
         do 1410 j = 1, 3
             coor(2*i-1) = coor(2*i-1) + (zr(igeom+3*(i-1)+j-1)-zr( igeom+j-1))*i1(j)
             coor(2*i) = coor(2*i) + (zr(igeom+3*(i-1)+j-1)-zr(igeom+j- 1))*i2(j)
-1410      continue
-1400  end do
+1410     continue
+1400 end do
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -201,7 +202,7 @@ subroutine te0311(option, nomte)
             dford2(j) = 0.d0
             dfor(j) = 0.d0
             coorg(j) = 0.d0
-810      continue
+810     continue
 !
 !
         th1 = 0.d0
@@ -218,8 +219,8 @@ subroutine te0311(option, nomte)
 !
             do 830 j = 1, 3
                 coorg(j) = coorg(j) + zr(ivf+k+i-1)*zr(igeom+3*(i-1)+ j-1)
-830          continue
-820      continue
+830         continue
+820     continue
 !
 !       BASE LOCALE ASSOCIEE AU POINT DE GAUSS KP
 !       (E1=GRLT,E2=GRLN,E3=E1^E2)
@@ -230,8 +231,8 @@ subroutine te0311(option, nomte)
                 ff = zr(ivf-1+nno*(kp-1)+ino)
                 e1(i) = e1(i) + zr(ibalo-1+9*(ino-1)+i+3)*ff
                 e2(i) = e2(i) + zr(ibalo-1+9*(ino-1)+i+6)*ff
-321          continue
-123      continue
+321         continue
+123     continue
 !
 !       NORMALISATION DE LA BASE
         call normev(e1, norme)
@@ -245,7 +246,7 @@ subroutine te0311(option, nomte)
             p(i,1) = e1(i)
             p(i,2) = e2(i)
             p(i,3) = e3(i)
-124      continue
+124     continue
 !
 !       COORDONNÉES POLAIRES DU POINT
         rg=sqrt(lsng**2+lstg**2)
@@ -276,7 +277,7 @@ subroutine te0311(option, nomte)
             prsc = 0.0d0
             do 1111 i = 1, 3
                 prsc = prsc + e2(i)*a3(i)
-1111          continue
+1111         continue
             if (prsc .gt. 0.0d0) then
 !            ON EST SUR LA LEVRE X2 < 0
                 phig = -1.0d0 * abs(phig)
@@ -328,8 +329,8 @@ subroutine te0311(option, nomte)
             u1g(i) = 0.0d0
             do 5190 ind = 1, 3
                 u1g(i) = u1g(i) + p(i,ind)*u1l(ind)
-5190          continue
-5090      continue
+5190         continue
+5090     continue
 !
 !-----------------------------------------------------------------------
 !       DEFINITION DU CHAMP SINGULIER AUXILIAIRE U2
@@ -344,8 +345,8 @@ subroutine te0311(option, nomte)
             u2g(i) = 0.0d0
             do 6190 ind = 1, 3
                 u2g(i) = u2g(i) + p(i,ind)*u2l(ind)
-6190          continue
-6090      continue
+6190         continue
+6090     continue
 !
 !-----------------------------------------------------------------------
 !       DEFINITION DU CHAMP SINGULIER AUXILIAIRE U3
@@ -360,8 +361,8 @@ subroutine te0311(option, nomte)
             u3g(i) = 0.0d0
             do 7190 ind = 1, 3
                 u3g(i) = u3g(i) + p(i,ind)*u3l(ind)
-7190          continue
-7090      continue
+7190         continue
+7090     continue
 !
         call dfdm2d(nno, kp, ipoids, idfde, coor,&
                     poids, dfdx, dfdy)
@@ -369,20 +370,20 @@ subroutine te0311(option, nomte)
         if (fonc) then
             do 60 j = 1, 3
                 valpar(j) = coorg(j)
-60          continue
+ 60         continue
             call fointe('FM', zk8(ipref), 4, nompar, valpar,&
                         presg, icode)
             do 65 j = 1, 3
                 call fointe('FM', zk8(iforf+j-1), 4, nompar, valpar,&
                             forcg( j), icode)
-65          continue
+ 65         continue
 !
             do 400 i = 1, nno
                 do 410 j = 1, 3
                     dford1(j) = dford1(j) + (forcn(3*(i-1)+j)-presn(i) *a3(j))*dfdx(i)
                     dford2(j) = dford2(j) + (forcn(3*(i-1)+j)-presn(i) *a3(j))*dfdy(i)
-410              continue
-400          continue
+410             continue
+400         continue
         else
             presg = 0.d0
             forcg(1) = 0.d0
@@ -392,8 +393,8 @@ subroutine te0311(option, nomte)
                 presg = presg + zr(ipres+i-1)*zr(ivf+k+i-1)
                 do 6 j = 1, 3
                     forcg(j) = forcg(j) + zr(iforc+3*(i-1)+j-1)*zr( ivf+k+i-1)
- 6              continue
- 4          continue
+  6             continue
+  4         continue
         endif
 !
         do 300 i = 1, nno
@@ -403,12 +404,12 @@ subroutine te0311(option, nomte)
                 th2 = th2 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i2(j)
                 dth1d1 = dth1d1 + zr(ithet+3*(i-1)+j-1)*i1(j)*dfdx(i)
                 dth2d2 = dth2d2 + zr(ithet+3*(i-1)+j-1)*i2(j)*dfdy(i)
-310          continue
-300      continue
+310         continue
+300     continue
 !
         do 320 j = 1, 3
             dfor(j) = dfor(j) + dford1(j)*th1 + dford2(j)*th2
-320      continue
+320     continue
 !
         divt = dth1d1 + dth2d2
 !
@@ -419,10 +420,10 @@ subroutine te0311(option, nomte)
             tcla2 = tcla2 + 0.5d0*poids*(forc*divt+dfor(j))*u2g(j)
             tcla3 = tcla3 + 0.5d0*poids*(forc*divt+dfor(j))*u3g(j)
 !
-510      continue
+510     continue
 !
-800  end do
-9999  continue
+800 end do
+9999 continue
 !
     g = tcla
     k1 = tcla1 * coeff

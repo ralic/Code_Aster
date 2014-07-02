@@ -25,6 +25,7 @@ subroutine ndxpre(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -50,7 +51,7 @@ subroutine ndxpre(modele, numedd, numfix, mate, carele,&
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    logical(kind=1) :: lerrit
+    aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -169,7 +170,7 @@ subroutine ndxpre(modele, numedd, numfix, mate, carele,&
                 numedd, instap, maprec, matass, cndonn,&
                 cnzero, cncine, solalg, rescvg)
 !
-9999  continue
+9999 continue
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

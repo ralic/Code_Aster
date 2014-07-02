@@ -18,7 +18,7 @@ function lisexi(prefob, indxch)
 ! ======================================================================
 !
     implicit none
-    logical(kind=1) :: lisexi
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"
@@ -26,6 +26,7 @@ function lisexi(prefob, indxch)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lisdef.h"
+    aster_logical :: lisexi
     character(len=13) :: prefob
     integer :: indxch
 !

@@ -91,6 +91,7 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
 !
 !
 ! - VARIABLES ENTREE
+#include "asterf_types.h"
 #include "asterfort/coeihm.h"
 #include "asterfort/matthm.h"
     integer :: ndim, nno1, nno2, npi, npg, dimuel, dimdef, dimcon, nbvari
@@ -104,7 +105,7 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
     real(kind=8) :: sigm(dimcon, npi), varim(nbvari, npi)
     character(len=8) :: nomail
     character(len=16) :: option, compor(*)
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
 !
 ! - VARIABLES SORTIE
     integer :: retcom
@@ -117,7 +118,7 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
     integer :: i, j, m, k, km, kpi, nbpha1, nbpha2, addlh1
     real(kind=8) :: q(dimdef, dimuel), res(dimdef), drde(dimdef, dimdef), wi
     real(kind=8) :: defgem(dimdef), defgep(dimdef), matri
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
 !
 ! =====================================================================
@@ -152,13 +153,13 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
     if (resi) then
         do 1 i = 1, dimuel
             vectu(i)=0.d0
- 1      continue
+  1     continue
     endif
 !
     if (rigi) then
         do 3 i = 1, dimuel*dimuel
             matuu(i)=0.d0
- 3      continue
+  3     continue
 !
     endif
 !
@@ -187,8 +188,8 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
             do 109 j = 1, dimuel
                 defgem(i)=defgem(i)+q(i,j)*deplm(j)
                 defgep(i)=defgep(i)+q(i,j)*deplp(j)
-109          continue
-108      continue
+109         continue
+108     continue
 !
 !
 ! =====================================================================
@@ -198,12 +199,12 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
         call coeihm(option, perman, resi, rigi, imate,&
                     compor, crit, instam, instap, nomail,&
                     ndim, dimdef, dimcon, nbvari, yamec,&
-                    yap1, yap2, yate,&
-                    addeme, adcome, addep1, adcp11, adcp12,&
-                    addlh1, adcop1, addep2, adcp21, adcp22,&
-                    addete, adcote, defgem, defgep,&
-                    kpi, npg, npi, sigm(1, kpi), sigp(1, kpi),&
-                    varim(1, kpi), varip(1, kpi), res, drde, retcom)
+                    yap1, yap2, yate, addeme, adcome,&
+                    addep1, adcp11, adcp12, addlh1, adcop1,&
+                    addep2, adcp21, adcp22, addete, adcote,&
+                    defgem, defgep, kpi, npg, npi,&
+                    sigm(1, kpi), sigp(1, kpi), varim(1, kpi), varip(1, kpi), res,&
+                    drde, retcom)
 !
 ! =====================================================================
 ! --- CALCUL DES FORCES INTERIEURES ET DE L'OPERATEUR TANGENT ---------
@@ -213,8 +214,8 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
             do 699 k = 1, dimuel
                 do 700 i = 1, dimdef
                     vectu(k)=vectu(k)+wi*q(i,k)*res(i)
-700              continue
-699          continue
+700             continue
+699         continue
         endif
 !
         if (rigi) then
@@ -225,14 +226,14 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
                     do 704 i = 1, dimdef
                         do 705 j = 1, dimdef
                             matri = matri + wi*q(i,k)*drde(i,j)*q(j,m)
-705                      continue
-704                  continue
+705                     continue
+704                 continue
                     matuu(km) = matuu(km) + matri
                     km = km + 1
-703              continue
-702          continue
+703             continue
+702         continue
         endif
 !
-10  end do
+ 10 end do
 !
 end subroutine

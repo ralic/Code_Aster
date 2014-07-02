@@ -1,11 +1,12 @@
 function verinr(nbval, tbins1, tbins2)
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: verinr
+    aster_logical :: verinr
     integer :: nbval
     character(len=19) :: tbins1, tbins2
 ! ======================================================================
@@ -54,7 +55,7 @@ function verinr(nbval, tbins1, tbins2)
     do 10 ii = 1, nbval
         zr(jtbini-1+ii) = zr(jtbin1-1+ii) - zr(jtbin2-1+ii)
         somme = somme + zr(jtbini-1+ii)
-10  end do
+ 10 end do
     if (somme .gt. 0.0d0) verinr = .true.
 ! ======================================================================
 ! --- DESTRUCTION DE VECTEURS INUTILES ---------------------------------

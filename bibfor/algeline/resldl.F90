@@ -1,6 +1,7 @@
 subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
                   csolu, prepos)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
@@ -18,7 +19,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     integer :: nsecm
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
-    logical(kind=1) :: prepos
+    aster_logical :: prepos
 !
 !     ------------------------------------------------------------------
 ! ======================================================================

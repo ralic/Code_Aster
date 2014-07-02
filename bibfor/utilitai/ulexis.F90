@@ -1,8 +1,9 @@
 function ulexis(iul)
     implicit none
-    logical(kind=1) :: ulexis
+#include "asterf_types.h"
 #include "asterfort/codent.h"
 #include "asterfort/ulopen.h"
+    aster_logical :: ulexis
     integer :: iul, i, unit
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -33,7 +34,7 @@ function ulexis(iul)
     integer :: first, unitfi(mxf), nbfile
     common/ asgfi1 / first, unitfi      , nbfile
     common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
-    logical(kind=1) :: ficexi
+    aster_logical :: ficexi
     character(len=8) :: k8b
     character(len=255) :: namell
 !     ------------------------------------------------------------------
@@ -46,7 +47,7 @@ function ulexis(iul)
             ulexis = .true.
             goto 12
         endif
-10  end do
+ 10 end do
     call codent(iul, 'G', k8b)
     namell = 'fort.'//k8b
     inquire(file=namell,exist=ficexi)
@@ -54,6 +55,6 @@ function ulexis(iul)
         call ulopen(iul, ' ', ' ', 'A', 'O')
         ulexis = .true.
     endif
-12  continue
+ 12 continue
 !
 end function

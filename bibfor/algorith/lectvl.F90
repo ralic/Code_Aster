@@ -33,11 +33,12 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 !     IN : LVALR : ADRESSE DU VECTEUR CONTENANT LES VALEURS REELLES
 !     ------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: zcmplx
+    aster_logical :: zcmplx
     integer :: itype, nbabs, inatur, ideas, nbmesu, labs, lvalc, lvalr
     real(kind=8) :: amin, apas
 !
@@ -73,8 +74,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-100                  continue
-151              continue
+100                 continue
+151             continue
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
                     do 152 incr = 1, int(rest/2)
@@ -86,7 +87,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-152                  continue
+152                 continue
                 endif
             else
 ! COMPLEXE EVEN DOUBLE PRECISION
@@ -103,8 +104,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-153                  continue
-154              continue
+153                 continue
+154             continue
                 if (rest .ge. 1) then
                     read (ideas,'(4E20.12)',err=160) (val(i),i=1,rest)
                     do 155 incr = 1, int(rest/2)
@@ -116,7 +117,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-155                  continue
+155                 continue
                 endif
             endif
         else
@@ -138,8 +139,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-162                  continue
-161              continue
+162                 continue
+161             continue
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
                     iabs = iabs + 1
@@ -162,7 +163,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         zr(labs-1 + iabs) = val(icmpa)
                     endif
                     zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) = dcmplx( val(icmpr), val(icmpi) )
-164              continue
+164             continue
             endif
         endif
 !
@@ -182,8 +183,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-172                  continue
-171              continue
+172                 continue
+171             continue
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
                     do 173 incr = 1, rest
@@ -192,7 +193,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-173                  continue
+173                 continue
                 endif
             else
 ! REAL EVEN DOUBLE PRECISION
@@ -206,8 +207,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-183                  continue
-184              continue
+183                 continue
+184             continue
                 if (rest .ge. 1) then
                     read (ideas,'(4E20.12)',err=160) (val(i),i=1,rest)
                     do 185 incr = 1, rest
@@ -216,7 +217,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-185                  continue
+185                 continue
                 endif
             endif
         else
@@ -236,8 +237,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-190                  continue
-191              continue
+190                 continue
+191             continue
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
                     do 192 incr = 1, int(rest/2)
@@ -248,7 +249,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-192                  continue
+192                 continue
                 endif
             else
 ! REAL UNEVEN DOUBLE PRECISION
@@ -265,8 +266,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-143                  continue
-144              continue
+143                 continue
+144             continue
                 if (rest .ge. 1) then
                     read (ideas,'(2(E13.5,E20.12))',err=160) (val(i),&
                     i=1,rest)
@@ -278,7 +279,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-145                  continue
+145                 continue
                 endif
             endif
         endif
@@ -286,11 +287,11 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 ! FIN LECTURE DU DATASET
     goto 9999
 !
-160  continue
+160 continue
 ! EN CAS D ERREUR DE LECTURE DU FICHIER UNV
     call utmess('F', 'ALGORITH5_5')
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

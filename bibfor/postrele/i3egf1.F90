@@ -2,12 +2,13 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
                   if1, iao1, iae1, im2, if2,&
                   iao2, legfa)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: desc(*), desctm(*), conek1(*), conek2(*), im1, if1, iao1, iae1
     integer :: im2, if2, iao2
-    logical(kind=1) :: legfa
+    aster_logical :: legfa
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,9 +43,9 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
     nbndf2 = zi(adesc2-1 + 2 + if2)
 !
     if (iae1 .eq. 0) then
-        do 10, i = 1, nbndf1, 1
-        numno1(i) = conek1( zi(adesc1-1 + decf1 + (i-1)*6) )
-10      continue
+        do 10 i = 1, nbndf1, 1
+            numno1(i) = conek1( zi(adesc1-1 + decf1 + (i-1)*6) )
+ 10     continue
         nbno1 = nbndf1
         nbnt = nbndf1
     else if (iae1 .eq. 1) then
@@ -82,9 +83,9 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
     endif
 !
     if (iao2 .eq. 0) then
-        do 12, i = 1, nbndf1, 1
-        numno2(i) = conek2( zi(adesc2-1 + decf2 + (i-1)*6) )
-12      continue
+        do 12 i = 1, nbndf1, 1
+            numno2(i) = conek2( zi(adesc2-1 + decf2 + (i-1)*6) )
+ 12     continue
         nbno2 = nbndf1
     else if (iao2 .eq. 1) then
         numno2(1) = conek2( zi(adesc2-1 + decf2 + (1-1)*6) )
@@ -111,15 +112,15 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
     endif
 !
     l = 0
-    do 20, i1 = 1, nbno1, 1
-    j1 = numno1(i1)
-    do 22, i2 = 1, nbno2, 1
-    j2 = numno2(i2)
-    if (j2 .eq. j1) l = l + 1
-22  continue
-    20 end do
+    do 20 i1 = 1, nbno1, 1
+        j1 = numno1(i1)
+        do 22 i2 = 1, nbno2, 1
+            j2 = numno2(i2)
+            if (j2 .eq. j1) l = l + 1
+ 22     continue
+ 20 end do
     if (l .eq. nbnt) legfa = .true.
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

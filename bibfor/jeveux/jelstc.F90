@@ -18,6 +18,7 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/utmess.h"
     character(len=*) :: clas, souch, klst(*)
@@ -42,7 +43,7 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
     parameter  ( n = 5 )
 !
     common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     character(len=6) :: pgma
     common /kappje/  pgma
     character(len=2) :: dn2
@@ -90,8 +91,8 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
                     klst(nbl) = crnom(1:24)
                 endif
             endif
-150      continue
-100  end do
+150     continue
+100 end do
     if (nbl .gt. maxval) then
         nbval = -nbl
     else

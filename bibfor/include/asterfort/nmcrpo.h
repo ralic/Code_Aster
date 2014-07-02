@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcrpo(nomsd, nume, inst, lselec)
         character(len=19) :: nomsd
         integer :: nume
         real(kind=8) :: inst
-        logical(kind=1) :: lselec
+        aster_logical :: lselec
     end subroutine nmcrpo
 end interface

@@ -58,6 +58,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !     ------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -101,7 +102,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2
     real(kind=8) :: norme, vecx, vecy, vecz, dir(3), tmpv(3), psca
 !
-    logical(kind=1) :: direc, suiv, milieu
+    aster_logical :: direc, suiv, milieu
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

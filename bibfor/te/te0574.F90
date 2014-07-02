@@ -18,7 +18,8 @@ subroutine te0574(option, nomte)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -62,7 +63,7 @@ subroutine te0574(option, nomte)
     integer :: ier
     real(kind=8) :: x, y, geom_reac(2*mxnoeu), xf, yf
 !
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     integer :: ndim, nno, npg, nnos, nddl
     integer :: iddl, ino, ipg
     integer :: jpoids, jvf, jdf, jgano
@@ -79,8 +80,8 @@ subroutine te0574(option, nomte)
 ! --- CARACTERISTIQUES ELEMENT
 !
     laxi = lteatt('AXIS','OUI')
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=jpoids,jvf=jvf,jdfde=jdf,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=jpoids, jvf=jvf, jdfde=jdf, jgano=jgano)
     nddl = 2*nno
     ASSERT(nno.le.mxnoeu)
     ASSERT(npg .le.mxnpg)
@@ -104,18 +105,18 @@ subroutine te0574(option, nomte)
 !
 ! --- REACTUALISATION DE LA GEOMETRIE PAR LE DEPLACEMENT
 !
-    do  iddl = 1, nddl
+    do iddl = 1, nddl
         geom_reac(iddl) = zr(jgeom+iddl-1) + zr(jdepm+iddl-1) + zr(jdepp+iddl-1)
     end do
-
-
+!
+!
     do ipg = 1, npg
         kdec = (ipg-1) * nno
         x = 0.d0
         y = 0.d0
         xf = 0.d0
         yf = 0.d0
-        do  ino = 1, nno
+        do ino = 1, nno
             x = x + zr(jgeom+2*(ino-1)+1-1) * zr(jvf+kdec+ino-1)
             y = y + zr(jgeom+2*(ino-1)+2-1) * zr(jvf+kdec+ino-1)
             xf = xf + geom_reac(2*(ino-1)+1) * zr(jvf+kdec+ino-1)
@@ -129,7 +130,7 @@ subroutine te0574(option, nomte)
                     p(1, ipg), ier)
         call fointe('FM', zk8(jpres+1), mxpara, nompar, valpar,&
                     p(2, ipg), ier)
-     end do
+    end do
 !
 ! --- CALCUL EFFECTIF DE LA RIGIDITE
 !

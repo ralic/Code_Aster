@@ -20,6 +20,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -102,9 +103,9 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     integer :: jtabf, japjeu
     real(kind=8) :: deltat, eps, valras
     integer :: ifm, niv
-    logical(kind=1) :: lfrot, lveri, lnoeu
-    logical(kind=1) :: lcolli, laffle
-    integer ::  jcnslr,  jcnslp
+    aster_logical :: lfrot, lveri, lnoeu
+    aster_logical :: lcolli, laffle
+    integer :: jcnslr, jcnslp
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: cnsvr(:) => null()
     real(kind=8), pointer :: vcont(:) => null()
@@ -508,15 +509,15 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                     cnsvp(1+zperc*(numnoe-1)+4-1) = impz
                     zl(jcnslp+zperc*(numnoe-1)+4-1) = .true.
                 endif
-99              continue
+ 99             continue
 !
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
-30          continue
-20      continue
-25      continue
-10  end do
+ 30         continue
+ 20     continue
+ 25     continue
+ 10 end do
 !
 ! --- MENAGE
 !
@@ -537,6 +538,6 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
         call utmess('A', 'CONTACT3_98')
     endif
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

@@ -21,12 +21,13 @@ subroutine chauxi(ndim, mu, ka, r, t,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8depi.h"
     integer :: ndim
     real(kind=8) :: mu, ka, r, t, invp(3, 3), courb(3, 3, 3)
     real(kind=8) :: du1dm(3, 3), du2dm(3, 3), du3dm(3, 3)
     real(kind=8) :: u1l(3), u2l(3), u3l(3)
-    logical(kind=1) :: lcour
+    aster_logical :: lcour
 !
 !     BUT : CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DÉRIVÉES EN (R,T)
 !       (POUR LE CALCUL ENERGÉTIQUE DES SIFS EN MÉCANIQUEDE LA RUPTURE)
@@ -84,7 +85,7 @@ subroutine chauxi(ndim, mu, ka, r, t,&
         du1dl(i,1)=cos(t)*du1dpo(i,1)-sin(t)/r*du1dpo(i,2)
         du1dl(i,2)=sin(t)*du1dpo(i,1)+cos(t)/r*du1dpo(i,2)
         du1dl(i,3)=0.d0
-140  end do
+140 end do
 !
 !     MATRICE DES DÉRIVÉES DE U1 DANS LA BASE GLOBALE (3X3)
     do 141 i = 1, ndim
@@ -93,12 +94,12 @@ subroutine chauxi(ndim, mu, ka, r, t,&
                 do 144 l = 1, ndim
                     du1dm(i,j)=du1dm(i,j)+du1dl(k,l)*invp(l,j)*invp(k,&
                     i)
-144              continue
+144             continue
 !           PRISE EN COMPTE DE LA BASE MOBILE
                 if (lcour) du1dm(i,j)=du1dm(i,j)+u1l(k)*courb(k,i,j)
-143          continue
-142      continue
-141  end do
+143         continue
+142     continue
+141 end do
 !
 !-----------------------------------------------------------------------
 !     DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U2 ET DE SA DÉRIVÉE
@@ -123,7 +124,7 @@ subroutine chauxi(ndim, mu, ka, r, t,&
         du2dl(i,1)=cos(t)*du2dpo(i,1)-sin(t)/r*du2dpo(i,2)
         du2dl(i,2)=sin(t)*du2dpo(i,1)+cos(t)/r*du2dpo(i,2)
         du2dl(i,3)=0.d0
-150  end do
+150 end do
 !
 !     MATRICE DES DÉRIVÉES DE U2 DANS LA BASE GLOBALE (3X3)
     do 151 i = 1, ndim
@@ -132,12 +133,12 @@ subroutine chauxi(ndim, mu, ka, r, t,&
                 do 154 l = 1, ndim
                     du2dm(i,j)=du2dm(i,j)+du2dl(k,l)*invp(l,j)*invp(k,&
                     i)
-154              continue
+154             continue
 !           PRISE EN COMPTE DE LA BASE MOBILE
                 if (lcour) du2dm(i,j)=du2dm(i,j)+u2l(k)*courb(k,i,j)
-153          continue
-152      continue
-151  end do
+153         continue
+152     continue
+151 end do
 !
 !-----------------------------------------------------------------------
 !     DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U3 ET DE SA DÉRIVÉE
@@ -160,7 +161,7 @@ subroutine chauxi(ndim, mu, ka, r, t,&
         du3dl(i,1)=cos(t)*du3dpo(i,1)-sin(t)/r*du3dpo(i,2)
         du3dl(i,2)=sin(t)*du3dpo(i,1)+cos(t)/r*du3dpo(i,2)
         du3dl(i,3)=0.d0
-160  end do
+160 end do
 !
 !     MATRICE DES DÉRIVÉES DE U3 DANS LA BASE GLOBALE (3X3)
     do 161 i = 1, ndim
@@ -169,11 +170,11 @@ subroutine chauxi(ndim, mu, ka, r, t,&
                 do 164 l = 1, ndim
                     du3dm(i,j)=du3dm(i,j)+du3dl(k,l)*invp(l,j)*invp(k,&
                     i)
-164              continue
+164             continue
 !           PRISE EN COMPTE DE LA BASE MOBILE
                 if (lcour) du3dm(i,j)=du3dm(i,j)+u3l(k)*courb(k,i,j)
-163          continue
-162      continue
-161  end do
+163         continue
+162     continue
+161 end do
 !
 end subroutine

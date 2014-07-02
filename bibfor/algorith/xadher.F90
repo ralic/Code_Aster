@@ -21,6 +21,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/matini.h"
@@ -28,7 +29,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
     integer :: algofr
     real(kind=8) :: p(3, 3), saut(3), lamb1(3), cstafr, cpenfr, pboul(3)
     real(kind=8) :: vitang(3), ptknp(3, 3), ik(3, 3), kn(3, 3)
-    logical(kind=1) :: adher
+    aster_logical :: adher
 !
 ! ----------------------------------------------------------------------
 !                      TEST DE L'ADHÉRENCE AVEC X-FEM
@@ -61,27 +62,27 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
     real(kind=8) :: prec, norme, xab(3, 3), gt(3)
     real(kind=8) :: p2(2, 2), ptknp2(2, 2), kn2(2, 2), xab2(2, 2)
     real(kind=8) :: gt2(3), norme2
-    logical(kind=1) :: lpenaf
+    aster_logical :: lpenaf
     parameter  (prec=1.d-12)
 !
 !-----------------------------------------------------------------------
 !     CALCUL DE GT = LAMDBA + RHO [[DX]]/DELTAT ET DE SA PROJECTION
 !
-    call elrefe_info(fami='RIGI',ndim=ndim)
+    call elrefe_info(fami='RIGI', ndim=ndim)
     lpenaf = (algofr.eq.2)
     do 10 i = 1, ndim
         vitang(i)=0.d0
 !       "VITESSE TANGENTE" : PROJECTION DU SAUT
         do 20 k = 1, ndim
             vitang(i)=vitang(i)+p(i,k)*saut(k)
-20      continue
+ 20     continue
         if (lpenaf) then
 !         PENALISATION SEULE
             gt(i)=cpenfr * vitang(i)
         else
             gt(i)=lamb1(i)+cstafr*vitang(i)
         endif
-10  end do
+ 10 end do
     if (ndim .eq. 3) then
         norme=sqrt(gt(1)*gt(1)+gt(2)*gt(2)+gt(3)*gt(3))
     else
@@ -92,11 +93,11 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !       PENALISATION SEULE
         do 24 i = 1, ndim
             gt2(i)=cpenfr * vitang(i)
-24      continue
+ 24     continue
     else
         do 23 i = 1, ndim
             gt2(i)=lamb1(i)+cstafr * vitang(i)
-23      continue
+ 23     continue
     endif
     if (ndim .eq. 3) then
         norme2=sqrt(gt2(1)*gt2(1)+gt2(2)*gt2(2)+gt2(3)*gt2(3))
@@ -109,12 +110,12 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
         adher = .true.
         do 21 j = 1, ndim
             pboul(j)=gt2(j)
-21      end do
+ 21     end do
     else
         adher = .false.
         do 22 j = 1, ndim
             pboul(j)=gt2(j)/norme2
-22      end do
+ 22     end do
     endif
 !
 !-----------------------------------------------------------------------
@@ -128,7 +129,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
         call matini(3, 3, 0.d0, kn)
         do 30 i = 1, ndim
             kn(i,i)=1.d0
-30      continue
+ 30     continue
 !
 !     GLISSANT
 !       ET LAMBDA + CSTA [[DX]]/DELTAT N'EST PAS DANS LA BOULE UNITE
@@ -137,18 +138,18 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
         do 40 i = 1, ndim
             do 41 j = 1, ndim
                 kn(i,j)=-gt2(i)*gt2(j)/(norme2*norme2)
-41          continue
-40      continue
+ 41         continue
+ 40     continue
 !
         do 42 i = 1, ndim
             kn(i,i)= kn(i,i) + 1.d0
-42      continue
+ 42     continue
 !
         do 421 i = 1, ndim
             do 422 j = 1, ndim
                 kn(i,j)= kn(i,j)/norme2
-422          continue
-421      continue
+422         continue
+421     continue
 !
     endif
 !
@@ -163,26 +164,26 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
             do 44 j = 1, ndim
                 p2(i,j)=p(i,j)
                 kn2(i,j)=kn(i,j)
-44          continue
-43      continue
+ 44         continue
+ 43     continue
         call utbtab('ZERO', ndim, ndim, kn2, p2,&
                     xab2, ptknp2)
         do 45 i = 1, ndim
             do 46 j = 1, ndim
                 ptknp(i,j)=ptknp2(i,j)
-46          continue
-45      continue
+ 46         continue
+ 45     continue
     endif
 !
 !     CALCUL DE Id-KN
     do 50 i = 1, ndim
         do 51 j = 1, ndim
             ik(i,j)= -1.d0 * kn(i,j)
-51      continue
-50  end do
+ 51     continue
+ 50 end do
     do 52 i = 1, ndim
         ik(i,i)= 1.d0 + ik(i,i)
-52  end do
+ 52 end do
 !
 !-----------------------------------------------------------------------
 end subroutine

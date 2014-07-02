@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine assma3(lmasym, lmesym, tt, igr, iel,&
                       c1, rang, jnueq, jnumsd, jresl,&
@@ -24,8 +26,8 @@ interface
                       jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
                       lgtmp2, jvalm, ilinu, ellagr, exivf,&
                       jdesc, jrepe, jptvoi, jelvoi, codvoi)
-        logical(kind=1) :: lmasym
-        logical(kind=1) :: lmesym
+        aster_logical :: lmasym
+        aster_logical :: lmesym
         character(len=2) :: tt
         integer :: igr
         integer :: iel
@@ -37,8 +39,8 @@ interface
         integer :: jrsvi
         integer :: nbvel
         integer :: nnoe
-        logical(kind=1) :: ldist
-        logical(kind=1) :: ldgrel
+        aster_logical :: ldist
+        aster_logical :: ldgrel
         integer :: ilima
         integer :: jadli
         integer :: jadne

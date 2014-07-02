@@ -1,6 +1,7 @@
 subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
                   repere, nbnli, parcho, lnoue2)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -13,7 +14,7 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
 !
     integer :: ioc, iliai, nbnli
     real(kind=8) :: parcho(nbnli, *)
-    logical(kind=1) :: lnoue2
+    aster_logical :: lnoue2
     character(len=8) :: repere
     character(len=10) :: motfac
     character(len=16) :: typnum

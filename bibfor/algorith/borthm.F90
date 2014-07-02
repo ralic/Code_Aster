@@ -1,5 +1,5 @@
-subroutine borthm(axi, vf, perman, typvf,&
-                  typmod, ndim, ndlno, ndlnm)
+subroutine borthm(axi, vf, perman, typvf, typmod,&
+                  ndim, ndlno, ndlnm)
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,10 @@ subroutine borthm(axi, vf, perman, typvf,&
 ! ======================================================================
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dimthm.h"
 #include "asterfort/typthm.h"
-    logical(kind=1) :: axi, perman, vf
+    aster_logical :: axi, perman, vf
     integer :: ndim, ndlno, ndlnm
     character(len=8) :: typmod(2)
     integer :: typvf
@@ -32,8 +33,8 @@ subroutine borthm(axi, vf, perman, typvf,&
 ! ======================================================================
 ! --- TYPE DE MODELISATION ? AXI/DPLAN/3D ET HM INSTAT/PERM ------------
 ! ======================================================================
-    call typthm(axi, perman, vf, typvf,&
-                typmod, ndim)
+    call typthm(axi, perman, vf, typvf, typmod,&
+                ndim)
 ! ======================================================================
 ! --- MISE A JOUR DES DIMENSIONS POUR ELEMENTS DE BORD -----------------
 ! ======================================================================

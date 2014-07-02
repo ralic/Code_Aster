@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                       cspo, cspe, cspto, cspte, cspmo,&
                       cspme)
         character(len=24) :: csiex
-        logical(kind=1) :: kemixt
+        aster_logical :: kemixt
         character(len=24) :: cstex
         character(len=24) :: csmex
         character(len=24) :: cinst

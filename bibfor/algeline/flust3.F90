@@ -2,6 +2,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
                   freq, masg, fact, vite, nbm,&
                   npv, nivpar, nivdef)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/codent.h"
@@ -83,7 +84,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     character(len=24) :: grpno
     real(kind=8) :: som(9), ru, alpha, coorpe(3), don(5), carac(2)
     integer :: irot(3), iddl(6), ndim(14)
-    logical(kind=1) :: calcul(2)
+    aster_logical :: calcul(2)
 !-----------------------------------------------------------------------
     integer :: i, iadmag, iadnog, iaxe, icdg, icency
     integer :: icpg, idefm, iencei, iepaig, iequiv, ifpart, ifreqi
@@ -92,7 +93,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     integer :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
     integer :: ior, iphix, iphiy, ireq, irint
     integer :: irugg, ixint, iyint, iz, izg, izint, j
-    integer ::  jtypg, lfacx, lmasg, lrigg, n, n1
+    integer :: jtypg, lfacx, lmasg, lrigg, n, n1
     integer :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
     integer :: nbnoe, nbtot, nbtron, nbz, ncoor, ndir, neq
     integer :: nima, nima2, nn, nt, ntypg, numno1, numno2

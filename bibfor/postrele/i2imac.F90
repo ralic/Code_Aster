@@ -24,6 +24,7 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !
 !--------------ENTREES----------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/i2appm.h"
@@ -72,7 +73,7 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !---------------------GESTION DE L' INTERSECTION---------------------
 !
     integer :: i, adrgt, k, f1or, f2or, f1ex, f2ex, fcom, m1, m2, pt, f1
-    logical(kind=1) :: adansm, bdansm, elimin, atrouv, btrouv, fini, fincal
+    aster_logical :: adansm, bdansm, elimin, atrouv, btrouv, fini, fincal
     real(kind=8) :: or, ex, ror, rex, xm, ym
     real(kind=8) :: s, r1, xa, ya, xb, yb, sm
 !
@@ -195,7 +196,7 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !
 !---------BOUCLE DE BALAYAGE DES MAILLES-----------------------------
 !
-10  continue
+ 10 continue
     if (.not. fini) then
 !
 !---------------INITIALISATION DE L' INTERSECTION---------------------
@@ -220,50 +221,50 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !
             pt = 1
 !
-            do 100, i = 1, 16, 1
+            do 100 i = 1, 16, 1
 !
-            zr(asloc + i-1) = -1.0d0
-            zr(ar1loc + i-1) = -1.0d0
-            zr(ar2loc + i-1) = -1.0d0
-            zi(af1loc + i-1) = 0
-            zi(af2loc + i-1) = 0
+                zr(asloc + i-1) = -1.0d0
+                zr(ar1loc + i-1) = -1.0d0
+                zr(ar2loc + i-1) = -1.0d0
+                zi(af1loc + i-1) = 0
+                zi(af2loc + i-1) = 0
 !
-100          continue
+100         continue
 !
-            do 110, i = 1, 4, 1
+            do 110 i = 1, 4, 1
 !
-            zl(acotdr + i-1) = .true.
+                zl(acotdr + i-1) = .true.
 !
-110          continue
+110         continue
 !
 !---------------SAISIE DE LA MAILLE COURANTE--------------------------
 !
             call i2nbrf(nbneud, nbcote)
 !
-            do 120, i = 1, nbcote, 1
+            do 120 i = 1, nbcote, 1
 !
-            nums = zi(adrvlc+i-1)
-            adrs = 3*(nums-1)
-!
-            zr(axsom + i-1) = zr(acoord + adrs)
-            zr(aysom + i-1) = zr(acoord + adrs+1)
-!
-            if (nbneud .gt. nbcote) then
-!
-                nums = zi(adrvlc+i-1+ nbcote)
+                nums = zi(adrvlc+i-1)
                 adrs = 3*(nums-1)
 !
-                zr(axint + i-1) = zr(acoord + adrs)
-                zr(ayint + i-1) = zr(acoord + adrs+1)
+                zr(axsom + i-1) = zr(acoord + adrs)
+                zr(aysom + i-1) = zr(acoord + adrs+1)
 !
-            else
+                if (nbneud .gt. nbcote) then
 !
-                zr(axint + i-1) = 0.0d0
-                zr(ayint + i-1) = 0.0d0
+                    nums = zi(adrvlc+i-1+ nbcote)
+                    adrs = 3*(nums-1)
 !
-            endif
+                    zr(axint + i-1) = zr(acoord + adrs)
+                    zr(ayint + i-1) = zr(acoord + adrs+1)
 !
-120          continue
+                else
+!
+                    zr(axint + i-1) = 0.0d0
+                    zr(ayint + i-1) = 0.0d0
+!
+                endif
+!
+120         continue
 !
             zr(axsom + nbcote) = zr(axsom)
             zr(aysom + nbcote) = zr(aysom)
@@ -273,14 +274,14 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
             xf = zr(axsom)
             yf = zr(aysom)
 !
-            do 20, c = 1, nbcote, 1
+            do 20 c = 1, nbcote, 1
 !
 !-------------SAISIE DU COTE COURANT-------------------------------
 !
-            xd = xf
-            yd = yf
-            xf = zr(axsom + c)
-            yf = zr(aysom + c)
+                xd = xf
+                yd = yf
+                xf = zr(axsom + c)
+                yf = zr(aysom + c)
 !
 !-------------CALCUL DE L' INTERSECTION SEGMENT-COTE-----------------
 !-------------ET RANGEMENT DES RESULTAS ELEMENTAIRES-----------------
@@ -288,34 +289,34 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !
 !----------------------CAS D' UN COTE DROIT--------------------------
 !
-            call i2iacs(epsi, xc, yc, r, alfinf,&
-                        alfsup, xd, yd, xf, yf,&
-                        nbpf, abs1, abs2, abr1, abr2,&
-                        elimin)
+                call i2iacs(epsi, xc, yc, r, alfinf,&
+                            alfsup, xd, yd, xf, yf,&
+                            nbpf, abs1, abs2, abr1, abr2,&
+                            elimin)
 !
-            if (.not. elimin) then
+                if (.not. elimin) then
 !
-                if (nbpf .ge. 1) then
+                    if (nbpf .ge. 1) then
 !
-                    call i2rgel(epsi, abs1, abr1, c, zr(asloc),&
-                                zr( ar1loc), zr(ar2loc), zi(af1loc), zi(af2loc), pt)
+                        call i2rgel(epsi, abs1, abr1, c, zr(asloc),&
+                                    zr( ar1loc), zr(ar2loc), zi(af1loc), zi(af2loc), pt)
+!
+                    endif
+!
+                    if (nbpf .eq. 2) then
+!
+                        call i2rgel(epsi, abs2, abr2, c, zr(asloc),&
+                                    zr( ar1loc), zr(ar2loc), zi(af1loc), zi(af2loc), pt)
+!
+                    endif
 !
                 endif
-!
-                if (nbpf .eq. 2) then
-!
-                    call i2rgel(epsi, abs2, abr2, c, zr(asloc),&
-                                zr( ar1loc), zr(ar2loc), zi(af1loc), zi(af2loc), pt)
-!
-                endif
-!
-            endif
 !
 !
 !-------------------CAS D' UN COTE COURBE NON TRAITE (FICHE 19855)
 !
 !
-20          continue
+ 20         continue
 !
             nbpm = pt - 1
             if (nbpm .ge. 1) then
@@ -497,91 +498,91 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
                 f1ex = zi(af1loc)
                 f2ex = zi(af2loc)
 !
-                do 200, k = 1, nbpm-1, 1
+                do 200 k = 1, nbpm-1, 1
 !
-                or = ex
-                ex = zr(asloc + k)
-                f1or = f1ex
-                f2or = f2ex
-                f1ex = zi(af1loc + k)
-                f2ex = zi(af2loc + k)
-                fcom = 0
+                    or = ex
+                    ex = zr(asloc + k)
+                    f1or = f1ex
+                    f2or = f2ex
+                    f1ex = zi(af1loc + k)
+                    f2ex = zi(af2loc + k)
+                    fcom = 0
 !
-                if (f1or .eq. f1ex) then
+                    if (f1or .eq. f1ex) then
 !
-                    fcom = f1or
-                    ror = zr(ar1loc + k-1)
-                    rex = zr(ar1loc + k)
+                        fcom = f1or
+                        ror = zr(ar1loc + k-1)
+                        rex = zr(ar1loc + k)
 !
-                else if (f1or .eq. f2ex) then
+                    else if (f1or .eq. f2ex) then
 !
-                    fcom = f1or
-                    ror = zr(ar1loc + k-1)
-                    rex = zr(ar2loc + k)
+                        fcom = f1or
+                        ror = zr(ar1loc + k-1)
+                        rex = zr(ar2loc + k)
 !
-                else if (f2or .eq.f1ex) then
+                    else if (f2or .eq.f1ex) then
 !
-                    fcom = f2or
-                    ror = zr(ar2loc + k-1)
-                    rex = zr(ar1loc + k)
+                        fcom = f2or
+                        ror = zr(ar2loc + k-1)
+                        rex = zr(ar1loc + k)
 !
-                    else if ((f2or .ne. 0) .and. (f2or .eq. f2ex))&
+                        else if ((f2or .ne. 0) .and. (f2or .eq. f2ex))&
                     then
 !
-                    fcom = f2or
-                    ror = zr(ar2loc + k-1)
-                    rex = zr(ar2loc + k)
+                        fcom = f2or
+                        ror = zr(ar2loc + k-1)
+                        rex = zr(ar2loc + k)
 !
-                else
-!
-                endif
-!
-                sm = 0.5d0*(or+ex)
-                xm = xc + r*cos(sm)
-                ym = yc + r*sin(sm)
-!
-                call i2appm(xm, ym, zr(axsom), zr(aysom), zr(axint),&
-                            zr(ayint), zl(acotdr), nbcote, elimin)
-!
-                if (elimin) then
-!
-                    ror = zr(ar1loc + k-1)
-                    rex = zr(ar1loc + k)
-                    m1 = ima
-                    m2 = 0
-!
-                    if (fcom .ne. 0) then
-!
-                        f1or = fcom
-                        f2or = fcom
+                    else
 !
                     endif
 !
-                    call i2rgma(epsi, or, ex, ror, rex,&
-                                m1, m2, f1or, f1ex, sgtor,&
-                                sgtex, paror, parex, facor, facex,&
-                                mail1, mail2, adrgt)
+                    sm = 0.5d0*(or+ex)
+                    xm = xc + r*cos(sm)
+                    ym = yc + r*sin(sm)
 !
-                    call i2fini(epsi, alfinf, alfsup, sgtor, sgtex,&
-                                mail2, adrgt, fincal)
+                    call i2appm(xm, ym, zr(axsom), zr(aysom), zr(axint),&
+                                zr(ayint), zl(acotdr), nbcote, elimin)
 !
-                    if ((.not. atrouv) .and.&
-                        ( (abs(or-alfinf) .lt.epsi) .or. (abs(ex-alfinf).lt.epsi) )) then
+                    if (elimin) then
 !
-                        atrouv = .true.
+                        ror = zr(ar1loc + k-1)
+                        rex = zr(ar1loc + k)
+                        m1 = ima
+                        m2 = 0
+!
+                        if (fcom .ne. 0) then
+!
+                            f1or = fcom
+                            f2or = fcom
+!
+                        endif
+!
+                        call i2rgma(epsi, or, ex, ror, rex,&
+                                    m1, m2, f1or, f1ex, sgtor,&
+                                    sgtex, paror, parex, facor, facex,&
+                                    mail1, mail2, adrgt)
+!
+                        call i2fini(epsi, alfinf, alfsup, sgtor, sgtex,&
+                                    mail2, adrgt, fincal)
+!
+                        if ((.not. atrouv) .and.&
+                            ( (abs(or-alfinf) .lt.epsi) .or. (abs(ex-alfinf).lt.epsi) )) then
+!
+                            atrouv = .true.
+!
+                        endif
+!
+                        if ((.not. btrouv) .and.&
+                            ( (abs(or-alfsup) .lt.epsi) .or. (abs(ex-alfsup).lt.epsi) )) then
+!
+                            btrouv = .true.
+!
+                        endif
 !
                     endif
 !
-                    if ((.not. btrouv) .and.&
-                        ( (abs(or-alfsup) .lt.epsi) .or. (abs(ex-alfsup).lt.epsi) )) then
-!
-                        btrouv = .true.
-!
-                    endif
-!
-                endif
-!
-200              continue
+200             continue
 !
 !--------------CAS PATHOLOGIQUE DU A LA POSSIBILITE-----------------
 !--------------DE PRESENCE DE A ET/OU B DANS LA    -----------------

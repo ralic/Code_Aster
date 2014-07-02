@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
                       defico, resoco, depplu, instan)
-        logical(kind=1) :: reageo
+        aster_logical :: reageo
         integer :: iterat
         character(len=8) :: noma
         character(len=24) :: sdtime

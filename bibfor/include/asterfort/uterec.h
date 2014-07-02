@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine uterec(ndim, iflup, iflum, ino, mno,&
                       jno, nsomm, jac, term22, aux,&
@@ -32,7 +34,7 @@ interface
         real(kind=8) :: jac(9)
         real(kind=8) :: term22
         real(kind=8) :: aux
-        logical(kind=1) :: ltheta
+        aster_logical :: ltheta
         real(kind=8) :: valthe
         real(kind=8) :: valunt
         integer :: niv

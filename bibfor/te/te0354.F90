@@ -17,6 +17,7 @@ subroutine te0354(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -46,7 +47,7 @@ subroutine te0354(option, nomte)
     integer :: nnomax
     parameter (nnomax=27)
 !
-    logical(kind=1) :: axi, resi
+    aster_logical :: axi, resi
 !      INTEGER NDIM,NNO,NPG,NNOS,G,I,OS,OSM,M,N,IW,IVF,IDFDE,IRET,JGANO
     integer :: ndim, nno, npg, nnos, g, os, osm, m, n, iw, ivf, idfde, iret
     integer :: jgano
@@ -85,8 +86,8 @@ subroutine te0354(option, nomte)
 !
 !    ACCES AUX CARACTERISTIQUES DE L'ELEMENT FINI
     call elref1(elrefe)
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf, jdfde=idfde, jgano=jgano)
     axi = lteatt('AXIS','OUI')
 !
     do 100 g = 1, npg
@@ -134,10 +135,10 @@ subroutine te0354(option, nomte)
                     zr(imatr+osm)=zr(imatr+osm)+coef*zr(ivf+os+n)*zr(&
                     ivf+os+m)
                     osm = osm + 1
-115              continue
-110          continue
+115             continue
+110         continue
         endif
-100  end do
+100 end do
 !
-9999  continue
+9999 continue
 end subroutine

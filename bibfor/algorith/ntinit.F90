@@ -22,6 +22,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterfort/copisd.h"
@@ -38,7 +39,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 #include "asterfort/nxnoli.h"
 #include "asterfort/rsnume.h"
 #include "asterfort/tiinit.h"
-    logical(kind=1) :: lostat, levol, lnonl
+    aster_logical :: lostat, levol, lnonl
     character(len=19) :: lischa, lisch2, solveu
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
@@ -71,7 +72,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
     character(len=19) :: k19bla
     character(len=24) :: noojb, k24bla, vhydr, hydr0
     real(kind=8) :: instin
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
 !
 ! ----------------------------------------------------------------------
 !

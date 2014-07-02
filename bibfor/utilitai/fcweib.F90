@@ -2,11 +2,12 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                   nt, nbres, indtp, nbtp, m,&
                   fc, dfc)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterfort/utmess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp
     real(kind=8) :: sigw(*), m, fc, dfc, s1, s2, sk(*)
-    logical(kind=1) :: cals
+    aster_logical :: cals
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +82,7 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
             slw = slw + log ( sigw(i) )
         endif
 !
-10  continue
+ 10 continue
 !
     s1 = 0.d0
     s2 = 0.d0
@@ -93,7 +94,7 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
 !
             if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-200      continue
+200     continue
 !
         swm = 0.d0
         slwm = 0.d0
@@ -106,12 +107,12 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                 sl2wm = sl2wm + ( sigw(i) ** m )* ( log ( sigw(i) ) * log ( sigw(i) ))
             endif
 !
-300      continue
+300     continue
 !
         s1 = s1 + snt * slwm/swm
         s2 = s2 + snt * ( (sl2wm/swm)*swm - (slwm/swm)*slwm ) /swm
 !
-210  continue
+210 continue
 !
     if (cals) then
         fc = nrupt

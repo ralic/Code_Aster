@@ -74,6 +74,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/jedema.h"
@@ -87,7 +88,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !
     integer :: niveau, ifm, niv, iaux
     real(kind=8) :: valthe, insold, inst
-    logical(kind=1) :: evol
+    aster_logical :: evol
     character(len=8) :: ma, psourc
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt
     character(len=19) :: nomgds

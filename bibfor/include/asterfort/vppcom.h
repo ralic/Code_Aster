@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                       resuk, nbpari, nbparr, nbpark, mxresf,&
                       vectr, nconv, neq, typres)
-        logical(kind=1) :: lcomod
+        aster_logical :: lcomod
         integer :: icom1
         integer :: icom2
         integer :: resui(*)

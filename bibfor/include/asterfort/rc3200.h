@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
                       mater, symax)
-        logical(kind=1) :: pmpb
-        logical(kind=1) :: sn
-        logical(kind=1) :: snet
-        logical(kind=1) :: fatigu
-        logical(kind=1) :: lrocht
+        aster_logical :: pmpb
+        aster_logical :: sn
+        aster_logical :: snet
+        aster_logical :: fatigu
+        aster_logical :: lrocht
         character(len=8) :: mater
         real(kind=8) :: symax
     end subroutine rc3200

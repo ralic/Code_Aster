@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine piqpla(x1, y1, z1, xp, yp,&
                       zp, zone7, zone8, l4, l6,&
@@ -25,8 +27,8 @@ interface
         real(kind=8) :: xp
         real(kind=8) :: yp
         real(kind=8) :: zp
-        logical(kind=1) :: zone7
-        logical(kind=1) :: zone8
+        aster_logical :: zone7
+        aster_logical :: zone8
         real(kind=8) :: l4
         real(kind=8) :: l6
         real(kind=8) :: epsi

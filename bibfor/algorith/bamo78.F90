@@ -1,5 +1,6 @@
 subroutine bamo78(nomres, trange, typres)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -83,7 +84,7 @@ subroutine bamo78(nomres, trange, typres)
     integer :: neq
     integer :: nbinst
     integer :: nbmode
-    integer ::  jrestr, ldnew, linst
+    integer :: jrestr, ldnew, linst
     character(len=14) :: numddl
     character(len=24) :: numedd
     character(len=19) :: chamel, chamgd, chamno, chgene, ligrel, chs(2)
@@ -103,9 +104,9 @@ subroutine bamo78(nomres, trange, typres)
     character(len=24) :: mate, compor, carele
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    logical(kind=1) :: lcumu(2), lcoc(2)
+    aster_logical :: lcumu(2), lcoc(2)
 !-----------------------------------------------------------------------
-    integer :: iarc2, ievnew, iopt,  lpar, n, nbins2
+    integer :: iarc2, ievnew, iopt, lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0
     real(kind=8) :: alpha, epsi, rundf, time
     real(kind=8), pointer :: base(:) => null()
@@ -162,7 +163,7 @@ subroutine bamo78(nomres, trange, typres)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     AS_ALLOCATE(vr=base, size=nbmode*neq)
     call copmod(basemo, bmodr=base, numer=numddl)
-
+!
     call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=modele)
 !
 ! --- CHAMPS SUR LESQUELS ON RESTITUE

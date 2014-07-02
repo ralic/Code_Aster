@@ -2,6 +2,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                   jdirol, jnvdir)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -60,7 +61,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
     integer :: h, i, ind, k, nptbom, signe
     real(kind=8) :: maxi, norm, proj, sens, temp
     real(kind=8) :: normal(3), vdir(3), vdirol(3), vnor(3)
-    logical(kind=1) :: change, vecmax
+    aster_logical :: change, vecmax
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -143,7 +144,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                     ind = h
                 endif
 !
-330          continue
+330         continue
 !
             normal(1) = vectn(1+3*(ind-1))
             normal(2) = vectn(2+3*(ind-1))
@@ -174,17 +175,17 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                 do 340 k = 1, 3
                     zr(jbas-1+6*(iptbor(i)-1)+k+3) = sens*vdir(k)
                     zl(jborl-1+iptbor(i)) = .true.
-340              continue
+340             continue
 !          SINON ON L'AJOUTE (ON NORMALISE LE VECTEUR PAR LA SUITE, CE
 !          QUI REVIENT A FAIRE UNE MOYENNE DES VECTEURS CALCULES)
             else
                 do 350 k = 1, 3
                     temp = zr(jbas-1+6*(iptbor(i)-1)+k+3)
                     zr(jbas-1+6*(iptbor(i)-1)+k+3) = temp + sens*vdir( k)
-350              continue
+350             continue
             endif
         endif
-300  end do
+300 end do
 !
     call jedema()
 end subroutine

@@ -20,6 +20,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -71,7 +72,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
     real(kind=8) :: coef(nbcoef)
     character(len=19) :: vect(nbcoef)
     character(len=19) :: cnfnod, cnbudi, depmoi
-    logical(kind=1) :: londe, llapl
+    aster_logical :: londe, llapl
 !
 ! ----------------------------------------------------------------------
 !
@@ -142,7 +143,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

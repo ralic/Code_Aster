@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
                       pla, ffc, ffp, idepd, idepm,&
@@ -44,7 +46,7 @@ interface
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
         real(kind=8) :: p(3, 3)
-        logical(kind=1) :: adher
+        aster_logical :: adher
         real(kind=8) :: knp(3, 3)
         real(kind=8) :: ptknp(3, 3)
         real(kind=8) :: ik(3, 3)

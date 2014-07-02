@@ -18,6 +18,7 @@ subroutine chlici(chaine, long)
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=*) :: chaine
     integer :: long
@@ -32,7 +33,7 @@ subroutine chlici(chaine, long)
 ! IN  LONG      : LA CHAINE EST VERIFIEE DE (1:LONG)
 ! ----------------------------------------------------------------------
     integer :: i, k
-    logical :: bool
+    aster_logical :: bool
 !-----------------------------------------------------------------------
 !
     do i = 1,long

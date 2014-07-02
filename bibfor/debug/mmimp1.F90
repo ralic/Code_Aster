@@ -18,7 +18,8 @@ subroutine mmimp1(ifm, noma, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -65,8 +66,8 @@ subroutine mmimp1(ifm, noma, defico, resoco)
     integer :: jtabf
     integer :: iptm, izone, imae, inoe, iptc
     integer :: ndimg, nzoco, nnoe, nptm, nbmae
-    integer ::  ilcnx1
-    logical(kind=1) :: lveri
+    integer :: ilcnx1
+    aster_logical :: lveri
     integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -133,7 +134,7 @@ subroutine mmimp1(ifm, noma, defico, resoco)
                 numnoe = connex(1+zi(ilcnx1-1+nummae)-2+inoe)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
                 write (ifm,1001) nomnoe
-21          continue
+ 21         continue
             1001    format (' <CONTACT>        NOEUD :',a8)
 !
 ! ------- BOUCLE SUR LES POINTS
@@ -214,10 +215,10 @@ subroutine mmimp1(ifm, noma, defico, resoco)
 !
                 iptc = iptc + 1
 !
-30          continue
-20      continue
-25      continue
-10  end do
+ 30         continue
+ 20     continue
+ 25     continue
+ 10 end do
 !
     call jedema()
 !

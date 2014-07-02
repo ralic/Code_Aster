@@ -5,6 +5,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -65,12 +66,12 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nnof, i, j, k, nne, ino, iret,  jconx2, numnoa, numnob
+    integer :: nnof, i, j, k, nne, ino, iret, jconx2, numnoa, numnob
     real(kind=8) :: coorma(8), prec, mp(2), epsi(2), ff(nno), lsta, lsna, lstb
     real(kind=8) :: lsnb, solsn, a(ndim), b(ndim), mem(3), memo, normab, coeffk
     real(kind=8) :: prec2, length(12)
     character(len=8) :: alias
-    logical(kind=1) :: chgsgn
+    aster_logical :: chgsgn
     integer, pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
 !
@@ -221,7 +222,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
                 glt(i) = glt(i) + zr(jglst-1+ndim*(ino-1)+i) * ff(j)
                 gln(i) = gln(i) + zr(jglsn-1+ndim*(ino-1)+i) * ff(j)
             endif
-240      continue
+240     continue
 230 continue
 !
 !     TRAITEMENT DES POINTS M PROCHES DES SOMMETS (FIT TO VERTEX)
@@ -231,28 +232,28 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
             do 556 j = 1, ndim
                 a(j)=zr(igeom-1+ndim*(fa(ifq,i)-1)+j)
                 memo=memo+(a(j)-m(j))**2
-556          continue
+556         continue
             length(3*(i-1)+1)=sqrt(memo)
             length(3*(i-1)+2)= connex(zi(jconx2+nmaabs-1)+fa(ifq,&
             i)-1)
             length(3*(i-1)+3)= 0
-555      continue
+555     continue
 !       ON TRIE LE VECTEUR LENGTH
         do 655 i = 1, nnof-1
             do 755 j = i+1, nnof
                 if (length(3*(j-1)+1) .lt. length(3*(i-1)+1)) then
                     do 756 k = 1, 3
                         mem(k) = length(3*(i-1)+k)
-756                  continue
+756                 continue
                     do 757 k = 1, 3
                         length(3*(i-1)+k) = length(3*(j-1)+k)
-757                  continue
+757                 continue
                     do 758 k = 1, 3
                         length(3*(j-1)+k) = mem(k)
-758                  continue
+758                 continue
                 endif
-755          continue
-655      continue
+755         continue
+655     continue
 !       M EST PROCHE D'UN SOMMET ? SI OUI, ON LE REPLACE SUR LE SOMMET
         if (length(1) .lt. (prec2*length(4))) then
             indptf(1)= 1
@@ -267,17 +268,17 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
         do 955 i = 1, nnof
             do 105 j = 1, ndim
                 a(j)=zr(igeom-1+ndim*(fa(ifq,i)-1)+j)
-105          continue
+105         continue
             numnoa=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
             if (i .eq. nnof) then
                 do 106 j = 1, ndim
                     b(j)=zr(igeom-1+ndim*(fa(ifq,1)-1)+j)
-106              continue
+106             continue
                 numnob=connex(zi(jconx2+nmaabs-1)+fa(ifq,1)-1)
             else
                 do 107 j = 1, ndim
                     b(j)=zr(igeom-1+ndim*(fa(ifq,i+1)-1)+j)
-107              continue
+107             continue
                 numnob=connex(zi(jconx2+nmaabs-1)+fa(ifq,i+1)-1)
             endif
             normab=0.d0
@@ -286,30 +287,30 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
             do 108 k = 1, ndim
                 normab=normab+(b(k)-a(k))**2
                 coeffk=coeffk+(b(k)-a(k))*(m(k)-a(k))
-108          continue
+108         continue
             do 109 k = 1, ndim
                 memo=memo+ (a(k)-m(k)+(coeffk/normab)*(b(k)-a(k)))**2
-109          continue
+109         continue
             length(3*(i-1)+1)= memo
             length(3*(i-1)+2)= numnoa
             length(3*(i-1)+3)= numnob
-955      continue
+955     continue
 !       ON TRIE LE VECTEUR LENGTH
         do 958 i = 1, nnof-1
             do 959 j = i+1, nnof
                 if (length(3*(j-1)+1) .lt. length(3*(i-1)+1)) then
                     do 960 k = 1, 3
                         mem(k) = length(3*(i-1)+k)
-960                  continue
+960                 continue
                     do 961 k = 1, 3
                         length(3*(i-1)+k) = length(3*(j-1)+k)
-961                  continue
+961                 continue
                     do 962 k = 1, 3
                         length(3*(j-1)+k) = mem(k)
-962                  continue
+962                 continue
                 endif
-959          continue
-958      continue
+959         continue
+958     continue
 !       M EST PROCHE D'UNE ARETE ? SI OUI, ON LE REPLACE SUR L'ARETE
         if (length(1) .lt. (prec2*length(4))) then
             indptf(1) = 2
@@ -319,12 +320,12 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
         endif
     endif
 !
-222  continue
+222 continue
 !
 !     TOUT S'EST BIEN PASSE
     codret = 1
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

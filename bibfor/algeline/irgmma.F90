@@ -1,6 +1,7 @@
 subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
                   nobj, nbel, versio)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
@@ -49,7 +50,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
     integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma, jrefe
     integer :: jtitr
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
-    logical(kind=1) :: logic
+    aster_logical :: logic
     character(len=1) :: base
     character(len=8) :: k8b, nomg, typm, typm2
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, cooval, coodsc
@@ -79,7 +80,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
     do 101 i = 1, ntyele
         nbel(i) = 0
         jel(i) = 0
-101  end do
+101 end do
 !
 ! --- TABLEAU DES INFOS DE DECOUPAGE
     call irgmtb(tdec, typd, versio)
@@ -119,13 +120,13 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
         call wkvect('&&IRGMMA.NUME_MAILLE', 'V V I', nbmac, jmail)
         do 20 ima = 1, nbmac
             zi(jmail+ima-1) = nummai(ima)
-20      continue
+ 20     continue
     else
         nbmac = nbma
         call wkvect('&&IRGMMA.NUME_MAILLE', 'V V I', nbmac, jmail)
         do 22 ima = 1, nbmac
             zi(jmail+ima-1) = ima
-22      continue
+ 22     continue
     endif
 !
 ! --- COMBIEN D'ELEMENTS DE CHAQUE TYPE VA-T-ON CREER ?
@@ -143,7 +144,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
         else
             call utmess('A', 'ALGELINE_64', sk=typm)
         endif
-10  end do
+ 10 end do
 !
     nbmail = 0
     impr = 0
@@ -172,7 +173,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
                 endif
             endif
         endif
-102  end do
+102 end do
 !
     call wkvect(numold, 'V V I', max(1, nbmail), jnumol)
 !
@@ -203,7 +204,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
 !
     do 103 i = 1, ntyele
         nbel(i) = 0
-103  end do
+103 end do
     imav = 0
 !
     do 100 im = 1, nbmac
@@ -237,12 +238,12 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 115 ino = 1, nbp
                 zi(jnpt-1+ino) = zi(jopt-1+tdec(ind,i,ino))
-115          continue
+115         continue
             nbel(numel) = nbel(numel) + 1
             zi(jel(numel)-1+nbel(numel)) = imav
-110      continue
+110     continue
 !
-100  end do
+100 end do
 !
     call jedetr('&&IRGMMA.NUME_MAILLE')
 !

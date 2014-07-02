@@ -26,6 +26,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !       MAIS POUR L'INSTANT "-", IL FAUT PARTIR DU "VRAI" CHAMP
 !       DE DEPLACEMENT.
 !----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascavc.h"
 #include "asterfort/assert.h"
@@ -44,10 +45,10 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     character(len=24) :: l2cnci(2), cncinm, cncinp
     character(len=8) :: char1
     real(kind=8) :: instap, coefr(2)
-    integer ::  neq, ieq, neq2,  iret,  jinfc, ichar
+    integer :: neq, ieq, neq2, iret, jinfc, ichar
     integer :: nbchar, jlchar
     character(len=1) :: typch(2)
-    logical(kind=1) :: lvcine
+    aster_logical :: lvcine
     integer, pointer :: dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -63,9 +64,9 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call jelira(depmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
     ASSERT(neq.eq.neq2)
     call jeveuo(cncine(1:19)//'.VALE', 'E', vr=vale)
-    do 2, ieq=1,neq
-    vale(ieq)=0.d0
-    2 end do
+    do 2 ieq = 1, neq
+        vale(ieq)=0.d0
+  2 end do
 !
 !
 !     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
@@ -74,7 +75,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call jeveuo(infoch, 'L', jinfc)
     do 10 ichar = 1, zi(jinfc)
         if (zi(jinfc+ichar) .lt. 0) lvcine=.true.
-10  end do
+ 10 end do
 !
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
@@ -82,7 +83,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call jelira(charge, 'LONMAX', ival=nbchar)
     do 11 ichar = 1, nbchar
         char1=zk24(jlchar-1+ichar)(1:8)
-11  end do
+ 11 end do
 !
 !     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, IL N'Y A RIEN A FAIRE:
 !     -----------------------------------------------------------------
@@ -107,11 +108,11 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !     ---------------------------------------------------------
     call copisd('CHAMP_GD', 'V', depmoi, cncinm)
     call jeveuo(cncinm(1:19)//'.VALE', 'E', vr=cncim)
-    do 1, ieq=1,neq
-    if (dlci(ieq) .eq. 0) then
-        cncim(ieq)=0.d0
-    endif
-    1 end do
+    do 1 ieq = 1, neq
+        if (dlci(ieq) .eq. 0) then
+            cncim(ieq)=0.d0
+        endif
+  1 end do
 !
 !     DIFFERENCE UIMP+ - UIMP- :
 !     ---------------------------
@@ -129,7 +130,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call detrsd('CHAM_NO', cncinm)
     call detrsd('CHAM_NO', cncinp)
 !
-9999  continue
+9999 continue
     call jedema()
 !
 end subroutine

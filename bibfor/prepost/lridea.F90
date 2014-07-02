@@ -2,6 +2,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                   listrz, listiz, precis, crit, epsi,&
                   acces, mfich, noma, ligrez, nbvari)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -85,14 +86,14 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     character(len=24) :: noojb
     real(kind=8) :: rbid, val(1000), iouf, masgen, amrge
     integer :: vali, nbval, iaux, ichamp
-    integer ::  jcnsv, jcnsl, jcesd,  jcesl
-    integer :: nbrec, numdat, numch,  iast, isup,  itype
+    integer :: jcnsv, jcnsl, jcesd, jcesl
+    integer :: nbrec, numdat, numch, iast, isup, itype
     integer :: inoide, inoast, ielast, ielide, knoide, knoast
     integer :: nbcmp, nbcmid, ich, icmp, nbcmp1, maxnod, lon1, versio
     integer :: irec, valatt, ifield, iord, ibid, ilu1
     integer :: i, iexp, nbnoe, nbfiel, nbnoeu, nbelem
     integer :: iret, idecal, icmp1, icmp2, inatur, kk, numode
-    logical(kind=1) :: trouve, astock, chamok, zcmplx, ldepl
+    aster_logical :: trouve, astock, chamok, zcmplx, ldepl
     character(len=4) :: tychas, tychid, acce2
     character(len=6) :: kar
     character(len=8) :: nomgd, licmp(1000), nomno, nomma, noma

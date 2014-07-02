@@ -1,7 +1,8 @@
 subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                   specmi, nnoe, nomcmp, nbmode, nbn,&
                   nbpf)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jecrec.h"
@@ -12,7 +13,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: intphy, intmod
+    aster_logical :: intphy, intmod
     integer :: nbmode, nbn, nbpf
     real(kind=8) :: cham(nbn, *), specmr(nbpf, *), specmi(nbpf, *)
     character(len=8) :: nomu, nnoe(*), nomcmp(*)
@@ -150,8 +151,8 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                         endif
 !                 -----
 !
-110                  continue
-100              continue
+110                 continue
+100             continue
 !
                 if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4) )) then
                     zr(ispec-1+il) = specr
@@ -159,11 +160,11 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                     zr(ispec+2*(il-1) ) = specr
                     zr(ispec+2*(il-1)+1) = speci
                 endif
-90          continue
+ 90         continue
 !
-70      continue
+ 70     continue
 !
-60  continue
+ 60 continue
 !
     call jedema()
 end subroutine

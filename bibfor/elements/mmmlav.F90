@@ -20,9 +20,10 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
-    logical(kind=1) :: lfovit, ldyna
+    aster_logical :: lfovit, ldyna
     real(kind=8) :: jeusup
     integer :: ndexfr
     real(kind=8) :: coefac, coefaf

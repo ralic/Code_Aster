@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nxnewt(modele, mate, carele, charge, infcha,&
                       infoch, numedd, solveu, time, lonch,&
@@ -41,7 +43,7 @@ interface
         character(len=24) :: vtempp
         character(len=24) :: vec2nd
         character(len=24) :: mediri
-        logical(kind=1) :: conver
+        aster_logical :: conver
         character(len=24) :: vhydr
         character(len=24) :: vhydrp
         character(len=24) :: tmpchi
@@ -51,7 +53,7 @@ interface
         character(len=24) :: cnresi
         integer :: parcri(3)
         real(kind=8) :: parcrr(2)
-        logical(kind=1) :: reasma
+        aster_logical :: reasma
         real(kind=8) :: testr
         real(kind=8) :: testm
     end subroutine nxnewt

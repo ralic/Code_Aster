@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dlaqrb(wantt, n, ilo, ihi, h,&
                       ldh, wr, wi, z, info)
         integer :: ldh
-        logical(kind=1) :: wantt
+        aster_logical :: wantt
         integer :: n
         integer :: ilo
         integer :: ihi

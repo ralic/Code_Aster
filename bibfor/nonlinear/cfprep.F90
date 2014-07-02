@@ -19,7 +19,8 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdiag.h"
 #include "asterfort/cfdisd.h"
@@ -68,8 +69,8 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
     integer :: jmu, jcopo
     character(len=24) :: clreac
     integer :: jclrea
-    logical(kind=1) :: lpenac, lctfd, lpenaf
-    logical(kind=1) :: llagrc, llagrf, reapre, reageo
+    aster_logical :: lpenac, lctfd, lpenaf
+    aster_logical :: llagrc, llagrf, reapre, reageo
     real(kind=8) :: vdiagm
 !
 ! ----------------------------------------------------------------------
@@ -125,7 +126,7 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
                 zi(jliot+1*ntpc-1+iliai) = 0
                 zi(jliot+2*ntpc-1+iliai) = 0
                 zi(jliot+3*ntpc-1+iliai) = 0
-100          continue
+100         continue
             zi(jliot+4*ntpc ) = 0
             zi(jliot+4*ntpc+1) = 0
             zi(jliot+4*ntpc+2) = 0
@@ -146,13 +147,13 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
             zr(jmu+2*ntpc+iliai-1) = 0.d0
             zr(jmu+ ntpc+iliai-1) = 0.d0
             zr(jmu+ iliai-1) = 0.d0
-331      continue
+331     continue
     endif
     if (lpenac .and. lpenaf .and. reapre) then
         do 332 iliai = 1, ntpc
             zr(jmu+2*ntpc+iliai-1) = 0.d0
             zr(jmu+ ntpc+iliai-1) = 0.d0
-332      continue
+332     continue
     endif
 !
     if (lpenac) then
@@ -161,7 +162,7 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
             if (lpenaf) then
                 zr(jmu+3*ntpc+iliai-1) = 0.d0
             endif
-40      continue
+ 40     continue
     endif
 !
 ! --- RESTAURATION DU LAGRANGE DE CONTACT

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                       dim, bfix, borne, norme, seuil,&
@@ -29,7 +31,7 @@ interface
         real(kind=8) :: borne(2)
         character(len=8) :: norme
         real(kind=8) :: seuil
-        logical(kind=1) :: lseuil
+        aster_logical :: lseuil
         real(kind=8) :: borpct(dim)
         real(kind=8) :: voltot
     end subroutine pebpct

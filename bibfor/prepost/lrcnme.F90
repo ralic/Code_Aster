@@ -53,6 +53,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
@@ -112,7 +113,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     character(len=64) :: nomcha
     character(len=200) :: nofimd
     character(len=255) :: kfic
-    logical(kind=1) :: ttt
+    aster_logical :: ttt
 !
 !====
 ! 1. ALLOCATION D'UN CHAM_NO_S  (CHAMNS)
@@ -143,11 +144,11 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
                 ttt=.false.
                 do 30 j = 1, ncmprf
                     if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) ttt= .true.
-30              continue
+ 30             continue
                 if (.not.ttt) then
                     call utmess('F', 'MED_66')
                 endif
-20          continue
+ 20         continue
         else
             call utmess('F', 'MED_70')
         endif
@@ -173,14 +174,14 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
                 call wkvect('&&LRCNME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
                 do 778 j = 1, nbcmp
                     zk8(jnocmp+j-1)=zk16(jcmp+j-1)(1:8)
-778              continue
+778             continue
                 call jedetr('&&LRCNME.NOMCMP_K16')
                 call jedetr('&&LRCNME.UNITCMP')
                 goto 780
             endif
             call jedetr('&&LRCNME.NOMCMP_K16')
             call jedetr('&&LRCNME.UNITCMP')
-780      continue
+780     continue
         call as_mficlo(idfimd, iret)
 !
     endif

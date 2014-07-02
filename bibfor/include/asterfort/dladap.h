@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dladap(result, tinit, lcrea, lamort, neq,&
                       imat, masse, rigid, amort, dep0,&
@@ -24,8 +26,8 @@ interface
                       numedd, nume, solveu, numrep)
         character(len=8) :: result
         real(kind=8) :: tinit
-        logical(kind=1) :: lcrea
-        logical(kind=1) :: lamort
+        aster_logical :: lcrea
+        aster_logical :: lamort
         integer :: neq
         integer :: imat(*)
         character(len=8) :: masse

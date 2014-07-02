@@ -25,6 +25,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/dsde2d.h"
@@ -40,7 +41,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    logical(kind=1) :: resi, rigi, matsym
+    aster_logical :: resi, rigi, matsym
     integer :: ndim, nno1, nno2, npg, iw, idff1, lgpg
     integer :: mate
     integer :: vu(3, 27), vp(27)
@@ -95,7 +96,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
 ! OUT CODRET  : CODE RETOUR
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: g, nddl, ndu
     integer :: ia, na, sa, ib, nb, rb, sb, ja, jb
     integer :: lij(3, 3), vij(3, 3), os, kk
@@ -173,19 +174,24 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
     do g = 1, npg
 !
 ! - CALCUL DES DEFORMATIONS
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplp, fp, epsp)
-        call dfdmip(ndim, nno1, axi, geomp, g, iw, vff1(1, g), idff1, r, wp, dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplp, fp, epsp)
+        call dfdmip(ndim, nno1, axi, geomp, g,&
+                    iw, vff1(1, g), idff1, r, wp,&
+                    dff1)
 !
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+                    lij)
 !
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
-           - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
-           + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
-        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2))&
-           - fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2))&
-           + fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
+        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)&
+             &) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2)) - fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2)&
+             &) + fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
 !
         if (jp .le. 0.d0) then
             codret = 1
@@ -212,15 +218,22 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
         call r8inir(6, 0.d0, tp, 1)
         call r8inir(6, 0.d0, taup, 1)
 !
-        call prelog(ndim, lgpg, vim(1, g), gn, lamb, logl, ftm, ftp, epsml, deps, tn, resi, cod(g))
+        call prelog(ndim, lgpg, vim(1, g), gn, lamb,&
+                    logl, ftm, ftp, epsml, deps,&
+                    tn, resi, cod(g))
 !
-        call nmcomp('RIGI', g, 1, ndim, typmod, mate, compor, crit, instm, instp,&
-                    6, epsml, deps, 6, tn, vim(1, g), option, angmas, 10, tampon,&
-                    tp, vip(1, g), 36, dtde, 1, rbid, cod(g))
+        call nmcomp('RIGI', g, 1, ndim, typmod,&
+                    mate, compor, crit, instm, instp,&
+                    6, epsml, deps, 6, tn,&
+                    vim(1, g), option, angmas, 10, tampon,&
+                    tp, vip(1, g), 36, dtde, 1,&
+                    rbid, cod(g))
 !
 ! - DSIDEP = 2dS/dC = dS/dE_GL
-        call poslog(resi, rigi, tn, tp, ftm, lgpg, vip(1, g), ndim, ftp, g,&
-                    dtde, sigm(1, g), .false._1, 'RIGI', mate, instp, angmas, gn, lamb, logl,&
+        call poslog(resi, rigi, tn, tp, ftm,&
+                    lgpg, vip(1, g), ndim, ftp, g,&
+                    dtde, sigm(1, g), .false._1, 'RIGI', mate,&
+                    instp, angmas, gn, lamb, logl,&
                     sigp( 1, g), dsidep, pk2m, pk2, cod(g))
 !
         if (cod(g) .eq. 1) then
@@ -232,7 +245,8 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
         endif
 !
 ! - CALCUL DE ALPHA ET DE TREPST
-        call tanbul(option, ndim, g, mate, compor(1), resi, .false._1, alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor(1),&
+                    resi, .false._1, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then

@@ -20,13 +20,14 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/matrot.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno1, nno2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2), ang(*)
     real(kind=8) :: dffr2(ndim-1, nno2), wg, b(3, 3, 2*nno1)
@@ -72,7 +73,7 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
             rmax=geom(1,1)
             do 11 n = 2, nno2
                 rmax=max(geom(1,n),rmax)
-11          continue
+ 11         continue
             wg = wg*1.d-03*rmax
         else
             wg = r*wg
@@ -86,7 +87,7 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
     call r8inir(3, 0.d0, angloc, 1)
     do 10 i = 1, nang
         angloc(i) = ddot(nno2,ang(i),nang,vff2,1)
-10  end do
+ 10 end do
 !
 !    CALCUL DE LA MATRICE DE ROTATION GLOBAL -> LOCAL
 !
@@ -99,8 +100,8 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
             do 40 n = 1, nno1
                 b(i,j,n) = - rot(i,j)*vff1(n)
                 b(i,j,n+nno1) = rot(i,j)*vff1(n)
-40          continue
-30      continue
-20  end do
+ 40         continue
+ 30     continue
+ 20 end do
 !
 end subroutine

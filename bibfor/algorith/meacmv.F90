@@ -20,6 +20,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
@@ -42,7 +43,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 #include "asterfort/vedime.h"
 #include "asterfort/velame.h"
 #include "asterfort/vrcref.h"
-    logical(kind=1) :: assmat
+    aster_logical :: assmat
     character(len=1) :: base
     character(len=19) :: lischa, solveu, vecass, matass, maprec
     character(len=24) :: cnchci, modele, carele, fomult, numedd, compor
@@ -96,7 +97,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     character(len=24) :: k24bid, blan24, vediri, vadiri, velapl, valapl, vecham
     character(len=24) :: vacham, chlapl, chdiri, chcham, chths, charge, infoch
     character(len=24) :: vecths
-    logical(kind=1) :: ass1er, lbid, lhydr, lsech, ltemp, lptot
+    aster_logical :: ass1er, lbid, lhydr, lsech, ltemp, lptot
 !
 ! DEB-------------------------------------------------------------------
 !====

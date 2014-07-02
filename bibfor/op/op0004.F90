@@ -20,6 +20,7 @@ subroutine op0004()
 !     OPERATEUR DEFI_NAPPE
 !     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 !     -----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -50,7 +51,7 @@ subroutine op0004()
     character(len=8) :: k8b
     character(len=16) :: nomcmd, typfon, verif
     character(len=19) :: nomfon
-    logical(kind=1) :: defonc
+    aster_logical :: defonc
     integer :: iret, iret2
     integer :: vali(2)
 !     ------------------------------------------------------------------
@@ -113,7 +114,7 @@ subroutine op0004()
                             nbret=nbval)
                 do 12 i = 0, nbcoup-1
                     zr(lpar2+i) = zr(lpara+2*i)
-12              continue
+ 12             continue
 !              VERIF QUE LES PARA SONT STRICT CROISSANTS
                 iret=2
                 call foverf(zr(lpar2), nbcoup, iret)
@@ -123,7 +124,7 @@ subroutine op0004()
                 call jedetr('&&OP0004.TEMP.PARA')
                 call jedetr('&&OP0004.TEMP.PAR2')
             endif
-10      continue
+ 10     continue
     endif
 !
 !
@@ -156,7 +157,7 @@ subroutine op0004()
         do 20 ifonc = 1, nbfonc
             call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=0, nbret=nbval)
             mxva = max(mxva,-nbval)
-20      continue
+ 20     continue
         call wkvect('&&OP0004.VALEURS.LUES', 'V V R', mxva, jval)
         call wkvect('&&OP0004.POINTEURS.F', 'V V I', nbfonc, ladrf)
         do 30 ifonc = 1, nbfonc
@@ -171,7 +172,7 @@ subroutine op0004()
             do 32 ival = 1, nbcoup
                 zr(lval-1+ival) = zr(jval-1+2*ival-1)
                 zr(lval-1+nbcoup+ival) = zr(jval-1+2*ival)
-32          continue
+ 32         continue
 !
 !           --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 !               ET REMISE DES ABSCISSES EN ORDRE CROISSANT
@@ -199,7 +200,7 @@ subroutine op0004()
                         scal=zk24(lpro+6+2*ifonc)(1:1), nbret=l)
             call getvtx('DEFI_FONCTION', 'PROL_DROITE', iocc=ifonc,&
                         scal=zk24(lpro+6+2*ifonc)(2:2), nbret=l)
-30      continue
+ 30     continue
     else
         call getvid(' ', 'FONCTION', nbval=nbfonc, vect=zk24(lnomf), nbret=n)
         call fovern(zk24(lnomf), nbfonc, zk24(lpro), iret)

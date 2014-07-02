@@ -20,6 +20,7 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -72,7 +73,7 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
     character(len=8) :: modele
     character(len=19) :: depla, vecele
     integer :: ifmdbg, nivdbg
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !
@@ -145,8 +146,8 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
 !
             call reajre(vecele, lchout(1), 'V')
         endif
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

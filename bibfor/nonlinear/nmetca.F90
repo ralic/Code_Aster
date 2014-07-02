@@ -19,6 +19,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cetule.h"
@@ -88,7 +89,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     real(kind=8) :: r8bid
     real(kind=8) :: taberr(2), tbgrca(3)
     character(len=16) :: option
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifmdbg, nivdbg
 !
 ! ----------------------------------------------------------------------

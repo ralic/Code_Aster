@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
         integer :: imat(2)
         character(len=14) :: numedd
         character(len=14) :: xcdl
         integer :: nd
-        logical(kind=1) :: lcine
+        aster_logical :: lcine
     end subroutine mnlcdl
 end interface 

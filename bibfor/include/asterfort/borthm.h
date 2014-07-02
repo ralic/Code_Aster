@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine borthm(axi, vf, perman, typvf,&
                       typmod, ndim, ndlno, ndlnm)
-        logical(kind=1) :: axi
-        logical(kind=1) :: vf
-        logical(kind=1) :: perman
+        aster_logical :: axi
+        aster_logical :: vf
+        aster_logical :: perman
         integer :: typvf
         character(len=8) :: typmod(2)
         integer :: ndim

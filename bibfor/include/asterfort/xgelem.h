@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                       ise, nfh, ddlc, ddlm, nfe,&
@@ -41,6 +43,6 @@ interface
         real(kind=8) :: fno(ndim*nnop)
         integer :: jfisno
         integer :: isig
-        logical(kind=1) :: incr
+        aster_logical :: incr
     end subroutine xgelem
 end interface

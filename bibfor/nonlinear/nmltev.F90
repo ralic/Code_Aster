@@ -18,7 +18,8 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -26,7 +27,7 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
     character(len=24) :: sderro
     character(len=4) :: typevt
     character(len=4) :: nombcl
-    logical(kind=1) :: levent
+    aster_logical :: levent
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,7 +95,7 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
                 endif
             endif
         endif
-15  end do
+ 15 end do
 !
     call jedema()
 end subroutine

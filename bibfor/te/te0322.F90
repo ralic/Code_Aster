@@ -19,6 +19,7 @@ subroutine te0322(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/ejinit.h"
@@ -43,17 +44,17 @@ subroutine te0322(option, nomte)
     integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
     integer :: lgpg1, lgpg
     character(len=8) :: typmod(2), lielrf(10)
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
     resi = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
     rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
 !
 ! FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
 !
 ! LA DIMENSION DE L'ESPACE EST CELLE DE L'ELEM DE REF SURFACIQUE PLUS 1
     ndim = ndim + 1

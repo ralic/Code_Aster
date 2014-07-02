@@ -18,6 +18,7 @@ subroutine ssdmgn(mag)
     implicit none
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getltx.h"
@@ -59,13 +60,13 @@ subroutine ssdmgn(mag)
     character(len=8) :: nomacr, nomail, kbid, mal, nosma, pref
     character(len=24) :: nomgnl, nomgng
     integer :: indi(4)
-    logical(kind=1) :: unaun
+    aster_logical :: unaun
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i1noe,   iagnl, iagno, ialino
-    integer ::   igno, ii, inol
+    integer :: i1, i1noe, iagnl, iagno, ialino
+    integer :: igno, ii, inol
     integer :: iocc, iret, isma, kk, lgnl, lmail, longt
     integer :: lont, lpref, n, n1, n2, n3, nbgno, lpr(1)
     integer :: nbgno2, nbgnot, nbid, nbno, nbnoex, nbsma, nocc

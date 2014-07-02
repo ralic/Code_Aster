@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
                       nbchre, ioccur, suropt, ligrel, exipou)
@@ -27,6 +29,6 @@ interface
         integer :: ioccur
         character(len=24) :: suropt
         character(len=24) :: ligrel
-        logical(kind=1) :: exipou
+        aster_logical :: exipou
     end subroutine ccvepo
 end interface

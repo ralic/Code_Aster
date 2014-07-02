@@ -16,6 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 
+#include "asterf_types.h"
+!
 interface 
     subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, epsm,&
                       deps, vim, fige, itemax, precvg,&
@@ -35,7 +37,7 @@ interface
         end subroutine lcesga
         end interface
 
-        logical(kind=1) :: fige
+        aster_logical :: fige
         character(len=8) :: typmod(*)
         character(len=16) :: option
         character(len=*) :: fami

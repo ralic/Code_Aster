@@ -19,6 +19,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "blas/daxpy.h"
@@ -76,7 +77,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !   ADN    = CONSTANTE A D'ENDOMMAGEMENT NORMALE
 !   BDN    = CONSTANTE B D'ENDOMMAGEMENT NORMALE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: rigi, resi, conv, trac, adher
+    aster_logical :: rigi, resi, conv, trac, adher
     integer :: icodre(14)
     character(len=8) :: nomres(14)
     integer :: k, itemax
@@ -111,7 +112,8 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !    LECTURE DES CARACTERISTIQUES ELASTIQUES
     nomres(1) = 'E'
     call rcvala(imate, ' ', 'ELAS', 1, ' ',&
-                [0.d0], 1, nomres, valres, icodre, 1)
+                [0.d0], 1, nomres, valres, icodre,&
+                1)
     e = valres(1)
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -131,7 +133,8 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
     nomres(14) = 'BDN'
 !
     call rcvala(imate, ' ', 'JOINT_BA', 1, ' ',&
-                [0.d0], 14, nomres, valres, icodre, 1)
+                [0.d0], 14, nomres, valres, icodre,&
+                1)
     hpen = valres(1)
     gtt = valres(2)
     gamd0 = valres(3)
@@ -319,7 +322,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 ! --------EVALUATION DE LA CONVERGENCE
                     conv = ((abs(fx/fini) .le. 0.d0) .or. (lamdap .le. crit(3)) )
                     if (conv) goto 100
-40              continue
+ 40             continue
 !
                 if (.not. conv) then
                     iret = 1
@@ -327,7 +330,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
             endif
         endif
 !
-100      continue
+100     continue
 !
 !   5 -  CALCUL DES CONTRAINTES REELLES
 !----------------------------------------------------------------

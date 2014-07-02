@@ -5,6 +5,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assach.h"
 #include "asterfort/assert.h"
@@ -78,7 +79,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     character(len=8) :: nomgd
     integer :: k, iexi, iexi1, iexi2
     integer :: inddec(nin)
-    logical(kind=1) :: lcmplx, lsspt, ldbg, lopdec
+    aster_logical :: lcmplx, lsspt, ldbg, lopdec
 ! ----------------------------------------------------------------------
 !
     call jemarq()

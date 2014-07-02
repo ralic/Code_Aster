@@ -3,6 +3,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
                   timev, indi, indj, nbprup, noprup)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
@@ -70,7 +71,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 !
     complex(kind=8) :: livc(nbmxpa)
 !
-    logical(kind=1) :: ufonc, vfonc
+    aster_logical :: ufonc, vfonc
 !
     character(len=2) :: codret
     character(len=8) :: lpain(20), lpaout(1)

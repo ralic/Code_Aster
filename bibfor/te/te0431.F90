@@ -16,6 +16,7 @@ subroutine te0431(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8nnem.h"
@@ -59,7 +60,7 @@ subroutine te0431(option, nomte)
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: epsm, deps, sigm, sig, tmp, rig, valres(2)
     real(kind=8) :: angmas(3)
-    logical(kind=1) :: vecteu, matric, lexc
+    aster_logical :: vecteu, matric, lexc
 !
 ! - BOOLEEN UTILES
 !
@@ -70,8 +71,8 @@ subroutine te0431(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
 !
@@ -184,7 +185,7 @@ subroutine te0431(option, nomte)
 !
 ! --- RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
-        elseif ((option .eq.'RAPH_MECA').or. (option(1:9)&
+            elseif ((option .eq.'RAPH_MECA').or. (option(1:9)&
         .eq.'FULL_MECA').or. (option(1:10).eq.'RIGI_MECA_')) then
             sigm = zr(icontm+kpg-1)
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                       nbordr, coord, connx, point, nobj,&
@@ -33,7 +35,7 @@ interface
         integer :: nbel(28)
         integer :: nbcmpi
         character(len=*) :: nomcmp(*)
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
         real(kind=8) :: para(*)
         character(len=8) :: nomaou
         character(len=8) :: nomain

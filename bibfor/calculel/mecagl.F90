@@ -7,6 +7,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alchml.h"
@@ -55,7 +56,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=24) :: depla, chfond, mate, compor
     character(len=24) :: chvite, chacce, fonoeu
 !
-    logical(kind=1) :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas, lincr
+    aster_logical :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas, lincr
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,13 +109,13 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, ibid, iadrg,  iret, jresu, nchin
+    integer :: i, ibid, iadrg, iret, jresu, nchin
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
     integer :: ndeg, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: livc(nbmxpa)
-    logical(kind=1) :: fonc, lxfem
+    aster_logical :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: resu, fiss
     character(len=8) :: lpain(30), lpaout(1)

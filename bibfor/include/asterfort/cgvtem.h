@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function cgvtem(resu, iord0)
         character(len=8), intent(in) :: resu
         integer, intent(in) :: iord0
-        logical(kind=1) :: cgvtem
+        aster_logical :: cgvtem
     end function cgvtem
 end interface

@@ -19,6 +19,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -72,7 +73,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
     character(len=24) :: sd_cycl_his
     integer :: jcyhis
     real(kind=8) :: instam, instap, deltat
-    logical(kind=1) :: ldyna, ltheta, lappar
+    aster_logical :: ldyna, ltheta, lappar
     real(kind=8) :: theta
     integer :: iform
     real(kind=8) :: coefff
@@ -115,7 +116,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 ! - Acces to cycling objects
 !
     sd_cycl_his = resoco(1:14)//'.CYCHIS'
-    call jeveuo(sd_cycl_his,'L',jcyhis)
+    call jeveuo(sd_cycl_his, 'L', jcyhis)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !

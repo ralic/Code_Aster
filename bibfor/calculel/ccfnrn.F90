@@ -2,6 +2,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                   lischa, ncharg, chtype, typesd)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
@@ -65,8 +66,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: jordr, iret, iordr, i, jinfc, nbchar, ic, jref
     integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, iad, ind
-    integer :: neq,  jfo,  lonch
-    integer ::    lonc2, ltrav, j, inume, jddl, jddr, lacce
+    integer :: neq, jfo, lonch
+    integer :: lonc2, ltrav, j, inume, jddl, jddr, lacce
     integer :: cret
     real(kind=8) :: etan, time, partps(3), omega2, coef(3)
     character(len=1) :: stop
@@ -83,7 +84,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
     character(len=24) :: strx, raide
     character(len=24) :: bidon, chacce, k24b, modele, kstr
-    logical(kind=1) :: exitim, lbid, lstr, lstr2
+    aster_logical :: exitim, lbid, lstr, lstr2
     real(kind=8), pointer :: cgmp(:) => null()
     real(kind=8), pointer :: chmp(:) => null()
     real(kind=8), pointer :: fono(:) => null()

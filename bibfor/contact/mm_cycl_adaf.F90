@@ -1,8 +1,9 @@
-subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot, &
+subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,&
                         dist_frot, coef_adap, stat_adap)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mm_cycl_laugf.h"
 !
@@ -24,12 +25,12 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) , intent(in) :: adap_type
+    character(len=8), intent(in) :: adap_type
     real(kind=8), intent(in) :: tole_stick
     real(kind=8), intent(in) :: tole_slide
-    real(kind=8), intent(in)  :: coef_init
-    real(kind=8), intent(in)  :: pres_frot(3)
-    real(kind=8), intent(in)  :: dist_frot(3)
+    real(kind=8), intent(in) :: coef_init
+    real(kind=8), intent(in) :: pres_frot(3)
+    real(kind=8), intent(in) :: dist_frot(3)
     real(kind=8), intent(out) :: coef_adap
     integer, intent(out) :: stat_adap
 !
@@ -58,7 +59,7 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 !
     real(kind=8) :: nrese, new_coef
     integer :: icoef
-    logical(kind=1) :: l_augm, l_stop
+    aster_logical :: l_augm, l_stop
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,53 +67,53 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 ! - Initialisations
 !
     stat_adap = -1
-    l_augm    = .true.
-    l_stop    = .false.
+    l_augm = .true.
+    l_stop = .false.
 !
 ! - Trying to adapt coef
 !
-10  continue
+ 10 continue
     new_coef = coef_init
-    do icoef = 1,30
+    do icoef = 1, 30
         call mm_cycl_laugf(pres_frot, dist_frot, new_coef, nrese)
-
-        if (adap_type.eq.'Sticking') then
-            if (nrese.le.tole_stick) then
+!
+        if (adap_type .eq. 'Sticking') then
+            if (nrese .le. tole_stick) then
                 stat_adap = 0
                 goto 99
             endif
         endif
-
-        if (adap_type.eq.'Sliding') then
-            if (nrese.ge.tole_slide) then
+!
+        if (adap_type .eq. 'Sliding') then
+            if (nrese .ge. tole_slide) then
                 ASSERT(.false.)
                 stat_adap = 0
                 goto 99
             endif
         endif
-
+!
         if (l_augm) then
             new_coef = new_coef*2.d0
         else
             new_coef = new_coef/2.d0
         endif
-
-        if ((new_coef.ge.1.d8).or.(new_coef.le.1.d-8)) l_stop = .true.
-
+!
+        if ((new_coef.ge.1.d8) .or. (new_coef.le.1.d-8)) l_stop = .true.
+!
         if (l_stop) goto 15
     enddo
 !
-15  continue
+ 15 continue
     if (l_stop) then
         new_coef = coef_init
-        if (l_augm) then 
+        if (l_augm) then
             l_augm = .false.
             goto 10
         endif
         stat_adap = -1
     endif
-
-99  continue
+!
+ 99 continue
 !
     coef_adap = new_coef
 end subroutine

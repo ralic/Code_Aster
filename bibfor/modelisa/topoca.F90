@@ -46,6 +46,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !  OUT    : QUAD   : VRAI SI MAILLAGE QUADRATIQUE (SEG3)
 !           SENS   : ORIENTATION DES MAILLES
 !-------------------   DECLARATION DES VARIABLES   ---------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
@@ -73,17 +74,17 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     character(len=8) :: mailla
     integer :: icabl, nbf0, nbnoca(*), sens
     character(len=19) :: numaca, tablca
-    logical(kind=1) :: quad
+    aster_logical :: quad
 !
 ! VARIABLES LOCALES
 ! -----------------
     integer :: ibid, imail, ino, iret, isuiv, isuiv0(2), ivois, jcxma
-    integer ::      jnumac, jnumad, jtyma
+    integer :: jnumac, jnumad, jtyma
     integer :: lonuti, nbchem, nbmail, nbno1, nbno2, nbsuiv, no1, no2, ntseg
     integer :: numail, n1, nbse2, nbse3, no3, ntseg2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
-    logical(kind=1) :: ok1, ok2
+    aster_logical :: ok1, ok2
     character(len=3) :: k3b
     character(len=8) :: k8b, noancr(2), nocour, noprec, nosui1, nosui2, nosuiv
     character(len=8) :: novois, tyancr(2)
@@ -139,7 +140,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     iarg, nbmail, nomail_def, ibid)
         do 10 imail = 1, nbmail
             call jenonu(jexnom(nomama, nomail_def(imail)), zi(jnumad+ imail-1))
-10      continue
+ 10     continue
 !
 !.... SAISIE INDIRECTE PAR UN GROUPE DE MAILLES
 !
@@ -309,7 +310,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     nocour = nosui1
 !
 !.... REPETER (DEBUT)
-40  continue
+ 40 continue
     if (nocour .eq. noancr(2)) then
         nbno1 = nbno1 + 1
         nomnoe_ch1(nbno1) = noancr(2)
@@ -332,7 +333,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 isuiv = ivois
             endif
         endif
-50  continue
+ 50 continue
     if (nbsuiv .eq. 0) goto 60
     nbno1 = nbno1 + 1
     nomnoe_ch1(nbno1) = nocour
@@ -347,7 +348,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     if (nbno1 .lt. nbmail+1) goto 40
 !
 !.... REPETER (FIN)
-60  continue
+ 60 continue
 !
 ! 2.3 TENTATIVE DE PARCOURS DU SECOND CHEMIN POSSIBLE LE CAS ECHEANT
 ! ---
@@ -370,7 +371,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         nocour = nosui2
 !
 !....... REPETER (DEBUT)
-70      continue
+ 70     continue
         if (nocour .eq. noancr(2)) then
             nbno2 = nbno2 + 1
             nomnoe_ch2(nbno2) = noancr(2)
@@ -393,7 +394,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     isuiv = ivois
                 endif
             endif
-80      continue
+ 80     continue
         if (nbsuiv .eq. 0) goto 90
         nbno2 = nbno2 + 1
         nomnoe_ch2(nbno2) = nocour
@@ -408,7 +409,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         if (nbno2 .lt. nbmail+1) goto 70
 !
 !....... REPETER (FIN)
-90      continue
+ 90     continue
 !
     endif
 !
@@ -476,7 +477,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     else
 !                   TOUTES LES MAILLES DOIVENT ETRE DANS LE MEME SENS
                         if (nomnoe_ch1(ino) .eq. vk(1)) then
-                            if (sens .ne.1) call utmess('F', 'MODELISA7_14', nk=1, valk=nogrma)
+                            if (sens .ne. 1) call utmess('F', 'MODELISA7_14', nk=1, valk=nogrma)
 !                             ASSERT(sens.eq.1)
                         else
                             ASSERT(sens.eq.-1)
@@ -490,7 +491,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     call tbajli(tablca, 6, param, [icabl], [rbid],&
                                 [cbid], vk, 0)
                 endif
-100          continue
+100         continue
             vk(1) = nomnoe_ch1(nbno1)
             vk(2) = nogrma
             vk(3) = nogrno(1)
@@ -558,7 +559,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     call tbajli(tablca, 6, param, [icabl], [rbid],&
                                 [cbid], vk, 0)
                 endif
-150          continue
+150         continue
             vk(1) = nomnoe_ch2(nbno2)
             vk(2) = nogrma
             vk(3) = nogrno(1)

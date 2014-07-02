@@ -4,6 +4,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
                   nive)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -21,7 +22,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     real(kind=8) :: vale(*)
     character(len=*) :: nomgd, ncmpgd(*), ncmput(*)
     character(len=*) :: nomsym
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,12 +71,12 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadr,  ibid, ic, icm
+    integer :: i, iad, iadr, ibid, ic, icm
     integer :: icmc, icmcca, icmp, icompt, iec, inno, ino
-    integer ::  inum, iret, irval, iun, ival, ivari
-    integer :: izero,  ncmp
+    integer :: inum, iret, irval, iun, ival, ivari
+    integer :: izero, ncmp
     integer, pointer :: bid(:) => null()
-    logical(kind=1), pointer :: ltabl(:) => null()
+    aster_logical, pointer :: ltabl(:) => null()
     character(len=8), pointer :: nom(:) => null()
     integer, pointer :: last(:) => null()
 !-----------------------------------------------------------------------

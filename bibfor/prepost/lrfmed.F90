@@ -46,6 +46,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfinvr.h"
@@ -92,7 +93,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     integer :: ipas, iaux2
     integer :: j
     integer :: mfich, jinst, itps
-    integer :: ifm, nivinf,  jnuom
+    integer :: ifm, nivinf, jnuom
     integer :: nbma, jnbpgm, jnbpmm, ordins
     real(kind=8) :: epsi
     character(len=3) :: prolz
@@ -139,7 +140,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !
     character(len=64) :: k64b
 !
-    logical(kind=1) :: existm, logaux
+    aster_logical :: existm, logaux
     character(len=24), pointer :: refe(:) => null()
 !
 ! ----------------------------------------------------------------------

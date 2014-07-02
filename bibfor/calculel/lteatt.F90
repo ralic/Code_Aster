@@ -18,8 +18,9 @@ function lteatt(noattr, vattr, typel)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "asterfort/teattr.h"
-    logical(kind=1)  :: lteatt
+    aster_logical :: lteatt
     character(len=*), intent(in) :: noattr
     character(len=*), intent(in) :: vattr
     character(len=*), intent(in), optional :: typel
@@ -36,7 +37,7 @@ function lteatt(noattr, vattr, typel)
 !    (o) out lteatt (l)   : .true. : l'attribut existe pour le type_element
 !                                    et sa valeur vaut vattr
 !                           .false. : sinon
-
+!
 !-----------------------------------------------------------------------
 !  Cette routine est utilisable partout dans le code.
 !  Si elle est appelee en dehors de te0000 il faut fournir typel.

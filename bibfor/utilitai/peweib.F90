@@ -1,6 +1,7 @@
 subroutine peweib(resu, modele, mate, cara, chmat,&
                   nh, nbocc, iresu, nomcmd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/calcul.h"
@@ -64,13 +65,13 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: valr(3)
-    integer :: nbparr, nbpard, nbmtcm,  inum, nbout
+    integer :: nbparr, nbpard, nbmtcm, inum, nbout
     integer :: vali
     integer :: ibid, ibik, mxvale, ifm, niv
     integer :: nd, ng, ni, nm, np, nq, nr, nt, i, n1, n2, n3
     integer :: iret, nbordr, jord, jins, nc, nbgrma, jgr, ig, nbma, jad
     integer :: nbmail, jma, im, nume, imc, ier
-    integer :: numord, iainst, iord, nbmtrc,  nbin, iocc
+    integer :: numord, iainst, iord, nbmtrc, nbin, iocc
     parameter (mxvale=3,nbparr=7,nbpard=5)
     real(kind=8) :: rtval(mxvale), prec, inst, valer(4), vref, coesym, mref, sref, probaw
     real(kind=8) :: sigmaw
@@ -86,7 +87,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     character(len=24) :: mlggma, mlgnma, ligrel, lchin(9), compor
     character(len=24) :: lchout(2), contg, defog, varig, depla, ssoup
     character(len=24) :: kvalrc, kvalrk, vale2(2)
-    logical(kind=1) :: opti
+    aster_logical :: opti
     complex(kind=8) :: c16b
     integer :: iarg
     character(len=8), pointer :: l_nom_mat(:) => null()

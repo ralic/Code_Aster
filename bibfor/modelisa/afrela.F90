@@ -4,6 +4,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/crelrl.h"
@@ -95,12 +96,12 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     integer :: imult
     character(len=8) :: dof_name_tran(3), dof_name_rota(3)
     character(len=19) :: lisrel
-    integer :: idbeta, idcoef,  idim,  idnbre
-    integer ::  idpoin, idsurc,  ifm, ipoint, iret
+    integer :: idbeta, idcoef, idim, idnbre
+    integer :: idpoin, idsurc, ifm, ipoint, iret
     integer :: iterm, idirect, lonuti, lveclr, mdim, nbrel0
     integer :: nbrela, nbrmax, nbterr, niv, k
     real(kind=8) :: norm_coef
-    logical(kind=1) :: l_rota
+    aster_logical :: l_rota
     character(len=8), pointer :: rlla(:) => null()
     integer, pointer :: rlnt(:) => null()
     character(len=8), pointer :: rlno(:) => null()

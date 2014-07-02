@@ -30,6 +30,7 @@ subroutine hujksi(carac, mater, r, ksi, iret)
 !    KSI (R)    :  VALEUR DE KSI OU DKSIDR
 !     --------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
     integer :: ifm, niv, iret
@@ -37,7 +38,7 @@ subroutine hujksi(carac, mater, r, ksi, iret)
     real(kind=8) :: zero, un
     character(len=6) :: carac
     character(len=16) :: nomail
-    logical(kind=1) :: debug
+    aster_logical :: debug
     parameter   (zero = 0.d0)
     parameter   (un = 1.d0)
 !

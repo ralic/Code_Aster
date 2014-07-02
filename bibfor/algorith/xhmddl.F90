@@ -21,14 +21,15 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#   include "asterfort/assert.h"
-#   include "asterfort/hmdeca.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterc/r8maem.h"
-#   include "asterfort/teattr.h"
-#   include "jeveux.h"
-    logical(kind=1) :: matsym
+#include "asterf_types.h"
+# include "asterfort/assert.h"
+# include "asterfort/hmdeca.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jemarq.h"
+# include "asterc/r8maem.h"
+# include "asterfort/teattr.h"
+# include "jeveux.h"
+    aster_logical :: matsym
     integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm
     character(len=16) :: option, nomte
     real(kind=8) :: mat(*), vect(*)
@@ -52,7 +53,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !-----------------------------------------------------------------------
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 !
-    logical(kind=1) :: lelim
+    aster_logical :: lelim
     integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
     parameter    (ddlmax=20*7)
     integer :: posddl(ddlmax)

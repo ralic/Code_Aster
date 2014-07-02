@@ -23,11 +23,12 @@ subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! ======================================================================
 ! aslint: disable=W1306,W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/cabrp0.h"
 #include "asterfort/cabrp1.h"
 #include "asterfort/cabrsl.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, dimdef, dimuel
     integer :: ndim, nddls, nddlm, nno, nnos, nnom, regula(6)
     real(kind=8) :: geom(ndim, *), deplp(dimuel), defgep(npi*dimdef)
@@ -70,8 +71,8 @@ subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
             defgep((kpi-1)*dimdef+i)=0.0d0
             do 20 n = 1, dimuel
                 defgep((kpi-1)*dimdef+i) = defgep( (kpi-1)*dimdef+i)+ b(i,n)*deplp(n)
-20          continue
-10      continue
-100  end do
+ 20         continue
+ 10     continue
+100 end do
 ! ======================================================================
 end subroutine

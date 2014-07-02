@@ -19,6 +19,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
@@ -62,7 +63,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
     integer :: nuno(8), ndim, j
     character(len=8) :: noeud(8), k8bid, ddl(8)
     complex(kind=8) :: cbid
-    logical(kind=1) :: lmulti
+    aster_logical :: lmulti
 !
     data ddlc /'LAGS_C','LAGS_F1','LAGS_F2',&
      &            'LAG2_C','LAG2_F1','LAG2_F2',&

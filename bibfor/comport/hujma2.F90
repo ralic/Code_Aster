@@ -40,6 +40,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/hujcrd.h"
@@ -54,7 +55,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
     real(kind=8) :: tempf, materd(nmat, 2), materf(nmat, 2), vind(50)
     real(kind=8) :: sigd(6), angmas(3)
 !
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
     real(kind=8) :: zero, bid66(6, 6), seuil, tin(3), piso, q
     real(kind=8) :: ptrac, b, phi, m, pc0, degr, d, un, trois
     real(kind=8) :: matert(22, 2)
@@ -80,8 +81,8 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
         do 20 j = 1, 2
             materd(i,j) = matert(i,j)
             materf(i,j) = matert(i,j)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! ----------------------------------------------------------------------
 ! --- CONTROLE DE LA DIMENSION DE LA MODELISATION
@@ -130,7 +131,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
                 vind(23+i) = un
             endif
         endif
-30  continue
+ 30 continue
 !
 ! ---> 3 INITIALISATION SEUIL ISOTROPE SI NUL
     if (vind(4) .eq. zero) then
@@ -167,7 +168,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
                 vind(4+i) = materf(18,2)
             endif
         endif
-40  continue
+ 40 continue
 !
     if (vind(8) .eq. zero) then
         if (materf(19, 2) .eq. zero) then
@@ -180,7 +181,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 ! --- 5 CONTROLE DES INDICATEURS DE PLASTICITE
     do 50 i = 1, 4
         if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i)=-un
-50  continue
+ 50 continue
 !
 ! --- 7 ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE GLOBAL
     call hujori('GLOBA', 1, reorie, angmas, sigd,&

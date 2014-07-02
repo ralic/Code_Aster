@@ -4,6 +4,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -75,10 +76,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !     IN  IOCC    : NUMERO DE L'OCCURENCE DE INTEGRALE
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbma, nbmai, i,  jcesl, jcesd,  jpoil, jpoid
-    integer :: nucmp,  jcmpgd, ncmpm, iad, jintr, jintk, indma
+    integer :: iret, nbma, nbmai, i, jcesl, jcesd, jpoil, jpoid
+    integer :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara
-    integer ::  ico, ind1, ind2, ifm, niv
+    integer :: ico, ind1, ind2, ifm, niv
     real(kind=8) :: vol, val, inst, volpt
     complex(kind=8) :: cbid
     character(len=8) :: noma, k8b, typmcl(2), nomgd, nomva
@@ -86,7 +87,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     character(len=16) :: motcle(2)
     character(len=19) :: ligrel, cesout, cespoi
     character(len=24) :: mesmai, valk(3)
-    logical(kind=1) :: exist
+    aster_logical :: exist
     real(kind=8), pointer :: pdsm(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

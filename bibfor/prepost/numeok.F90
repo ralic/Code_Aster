@@ -1,12 +1,13 @@
 subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                   precis, crit, epsi, astock)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    logical(kind=1) :: astock
+    aster_logical :: astock
     character(len=*) :: acces, listrz, listiz, crit
     integer :: ilu, precis
     real(kind=8) :: rlu, epsi
@@ -74,7 +75,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                 astock = .true.
                 goto 70
             endif
-10      continue
+ 10     continue
     endif
 !
 !- INST
@@ -87,7 +88,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                 astock = .true.
                 goto 70
             endif
-20      continue
+ 20     continue
     endif
 !
 !- LIST_INST
@@ -100,7 +101,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                 astock = .true.
                 goto 70
             endif
-30      continue
+ 30     continue
     endif
 !
 !- FREQ
@@ -113,7 +114,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                 astock = .true.
                 goto 70
             endif
-40      continue
+ 40     continue
     endif
 !
 !- LIST_FREQ
@@ -126,7 +127,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                 astock = .true.
                 goto 70
             endif
-50      continue
+ 50     continue
     endif
 !
 !- VERIFICATION DE LA PRECISION ET DU CRITERE ---
@@ -146,11 +147,11 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                         goto 70
                     endif
                 endif
-60          continue
+ 60         continue
         endif
     endif
 !
-70  continue
+ 70 continue
 !
     call jedema()
 !

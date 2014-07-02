@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
                       lfcplx, lacce, fctcsr, nomfct)
@@ -23,8 +25,8 @@ interface
         integer :: indic
         integer :: iexcit
         integer :: nexci
-        logical(kind=1) :: lfcplx
-        logical(kind=1) :: lacce
+        aster_logical :: lfcplx
+        aster_logical :: lacce
         character(len=8) :: fctcsr
         character(len=8) :: nomfct
     end subroutine lislfc

@@ -19,6 +19,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
@@ -53,11 +54,11 @@ subroutine mecgm2(lischa, instan, mesuiv)
 !
     integer :: nbchme, nchar
     integer :: iret, ichar, icha, ier
-    logical(kind=1) :: fct
+    aster_logical :: fct
     character(len=24) :: licoef, fomult
     integer :: jlicoe, jfonct
     real(kind=8) :: valres
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
     character(len=24), pointer :: relr(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -125,9 +126,9 @@ subroutine mecgm2(lischa, instan, mesuiv)
             valres = 1.d0
         endif
         zr(jlicoe+ichar-1) = valres
- 1  end do
+  1 end do
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

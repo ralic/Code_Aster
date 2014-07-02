@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                       lsym, rouc)
@@ -23,7 +25,7 @@ interface
         character(len=*) :: limat(nbmat)
         character(len=*) :: basez
         character(len=*) :: numedd
-        logical(kind=1) :: lsym
+        aster_logical :: lsym
         character(len=1) :: rouc
     end subroutine prosmo
 end interface

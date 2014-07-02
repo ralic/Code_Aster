@@ -132,7 +132,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
     integer :: jk24c, jkpar, nbrow, frecou
     real(kind=8) :: valr(2), omgmin, omgmax, omgshi, rbid, prec, omgdec
-    logical(kind=1) :: caldet, ldyna
+    aster_logical :: caldet, ldyna
 !
     call infniv(ifm, niv)
 ! MAUVAISE VALEUR DE OPTION
@@ -186,7 +186,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         omgshi = omemin
         nbessa = 0
         prec=precsh
-10      continue
+ 10     continue
         ier=0
         call vpstur(lraide, omgshi, lmasse, ldynam, rbid,&
                     ibid, npivot(1), ier, solveu, .false._1,&
@@ -254,7 +254,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         then
             nbessa=0
             prec=precsh
-21          continue
+ 21         continue
             ier=0
             call vpstur(lraide, omgmin, lmasse, ldynam, det(1),&
                         idet(1), npivot(1), ier, solveu, caldet,&
@@ -305,7 +305,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         if ((option.ne.'BANDEA') .and. (option.ne.'STURML10')) then
             nbessa=0
             prec=precsh
-22          continue
+ 22         continue
             ier=0
             call vpstur(lraide, omgmax, lmasse, ldynam, det(2),&
                         idet(2), npivot(2), ier, solveu, caldet,&
@@ -443,7 +443,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !          --- CENTRAGE DE L INTERVALLE ---
             nbessa=0
             prec=precsh
-23          continue
+ 23         continue
             ier=0
             call vpstur(lraide, omgshi, lmasse, ldynam, rbid,&
                         ibid, npivot( 1), ier, solveu, .false._1,&
@@ -519,7 +519,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         omgshi = 0.d0
         nbessa = 0
         prec=precsh
-30      continue
+ 30     continue
         ier=0
         call vpstur(lraide, omgshi, lmasse, ldynam, rbid,&
                     ibid, npivot(1), ier, solveu, .false._1,&

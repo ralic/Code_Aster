@@ -19,6 +19,7 @@ subroutine te0560(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefv.h"
@@ -41,7 +42,7 @@ subroutine te0560(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
 !
     integer :: dlns
     integer :: nno, npg1, i, imatuu, lgpg, lgpg1, ndim
@@ -137,8 +138,8 @@ subroutine te0560(option, nomte)
         do 150 i = 1, nno
             do 140 idim = 1, ndim
                 xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140          continue
-150      continue
+140         continue
+150     continue
         call rcangm(ndim, xyz, angmas)
 !
 !     VARIABLES DE COMMANDE

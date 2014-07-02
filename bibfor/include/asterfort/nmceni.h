@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
                       sdpilo, eta, isxfe, f)
@@ -25,7 +27,7 @@ interface
         real(kind=8) :: rho
         character(len=19) :: sdpilo
         real(kind=8) :: eta
-        logical(kind=1) :: isxfe
+        aster_logical :: isxfe
         real(kind=8) :: f
     end subroutine nmceni
 end interface

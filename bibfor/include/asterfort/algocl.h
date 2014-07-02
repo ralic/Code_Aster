@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine algocl(sdstat, defico, resoco, solveu, matass,&
                       noma, ctccvg, ctcfix)
@@ -25,6 +27,6 @@ interface
         character(len=19) :: matass
         character(len=8) :: noma
         integer :: ctccvg
-        logical(kind=1) :: ctcfix
+        aster_logical :: ctcfix
     end subroutine algocl
 end interface

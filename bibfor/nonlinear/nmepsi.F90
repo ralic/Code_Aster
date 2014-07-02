@@ -20,11 +20,12 @@ subroutine nmepsi(ndim, nno, axi, grand, vff,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: ndim, nno
     real(kind=8) :: vff(nno), r, dfdi(nno, ndim), depl(ndim, nno), f(3, 3)
     real(kind=8) :: eps(6)
@@ -60,8 +61,8 @@ subroutine nmepsi(ndim, nno, axi, grand, vff,&
     do 10 i = 1, ndim
         do 20 j = 1, ndim
             grad(i,j) = ddot(nno,dfdi(1,j),1,depl(i,1),ndim)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 !
 ! - CALCUL DU DEPLACEMENT RADIAL

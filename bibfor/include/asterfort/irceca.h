@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                       vale, nomgd, ncmpgd, celd, nbnoma,&
@@ -33,7 +35,7 @@ interface
         integer :: typma(*)
         character(len=*) :: nomsym
         integer :: nbmat
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
         integer :: nbcput
         character(len=*) :: ncmput(*)
         integer :: imodl

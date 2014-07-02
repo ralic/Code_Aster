@@ -35,6 +35,7 @@ subroutine op0048()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -73,7 +74,7 @@ subroutine op0048()
     integer :: ialifo, iaadve, nondp, ifexte, ifamor, ifliai
     integer :: neq, idepl0, ivite0, iacce0, iwk, iordr
     integer :: iinteg, iret
-    integer ::  nbord, jchar
+    integer :: nbord, jchar
     integer :: lresu, lcrre, iresu, nbexre, l
     integer :: nbchre, iocc, nfon
     real(kind=8) :: t0, time, rundf, alpha
@@ -90,7 +91,7 @@ subroutine op0048()
     complex(kind=8) :: calpha
     character(len=19) :: force0, force1
 !
-    logical(kind=1) :: lamort, lcrea, lprem, exipou
+    aster_logical :: lamort, lcrea, lprem, exipou
     integer, pointer :: ordr(:) => null()
 !     -----------------------------------------------------------------
     data modele   /'                        '/

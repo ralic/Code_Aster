@@ -22,6 +22,7 @@ subroutine op0148()
 !   PHYSIQUE  OPERATEUR REST_SPEC_PHYS
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/getvem.h"
@@ -53,7 +54,7 @@ subroutine op0148()
     integer :: nbmr, nbn, nbp, nbpf, nnn, nplace
     integer :: npv, numod, i1, i3, il, ivitef, lnumi, lrefes
     integer :: ioptch
-    logical(kind=1) :: intmod, intphy
+    aster_logical :: intmod, intphy
     character(len=8) :: nomu, table, nommai, mode, nomcmp, cmp1, k8b, depla(3)
     character(len=16) :: concep, cmd, optcal, optcha
     character(len=19) :: base, typflu, nomcha
@@ -102,8 +103,8 @@ subroutine op0148()
     if (ioptch .le. 3) then
         do 10 idep = 1, 3
             if (nomcmp .eq. depla(idep)) goto 11
-10      continue
-11      continue
+ 10     continue
+ 11     continue
     else
         if (nomcmp(1:4) .eq. 'SMFY') then
             ismf = 5
@@ -151,7 +152,7 @@ subroutine op0148()
         if (abs(val) .lt. epsi) then
             ivitef = i3
         endif
-300  end do
+300 end do
 !
     numo = base//'.NUMO'
     call jeveuo(numo, 'L', inumo)
@@ -187,7 +188,7 @@ subroutine op0148()
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
     do 150 i1 = 1, nbmr
         zi(jnuor-1+i1) = zi(lnumi-1+i1)
-150  end do
+150 end do
     call ordis(zi(jnuor), nbmr)
     call wkvect('&&OP0148.MODE', 'V V I', nbmr, inuor)
     nnn = 1
@@ -196,16 +197,16 @@ subroutine op0148()
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 20
         nnn = nnn + 1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
-20  end do
+ 20 end do
     nbmr = nnn
     do 30 im = 1, nbm
         if (zi(inumo+im-1) .eq. zi(inuor)) then
             imod1 = im
             goto 31
         endif
-30  end do
+ 30 end do
     call utmess('F', 'MODELISA5_78')
-31  continue
+ 31 continue
 !
     call jelira(chfreq, 'LONMAX', nbpf)
     call jeveuo(chfreq, 'L', lfreq)
@@ -224,7 +225,7 @@ subroutine op0148()
 !
     do 40 in = 0, nbn-1
         call jenonu(jexnom(nomnoe, zk8(inoen+in)), zi(inoei+in))
-40  end do
+ 40 end do
 !
 !
 ! --- 5.SI RESTITUTION D'INTERSPECTRES DE DEPLACEMENTS, VITESSES ---
@@ -249,9 +250,9 @@ subroutine op0148()
                 icham1 = icham + nbn*(imr-1) + in - 1
                 ivale1 = ivale + 6*(nplace-1) + idep - 1
                 zr(icham1) = zr(ivale1)
-60          continue
+ 60         continue
             call jelibe(chvale)
-50      continue
+ 50     continue
 !
     else
 !
@@ -274,8 +275,8 @@ subroutine op0148()
                     isip2 = isip1 + 6
                     zr(icham1) = (zr(isip1)+zr(isip2))/2.d0
                 endif
-80          continue
-70      continue
+ 80         continue
+ 70     continue
 !
     endif
 !
@@ -294,7 +295,7 @@ subroutine op0148()
 !
     do 380 il = 1, nbpf
         zr(idis+il-1) = zr(lfreq+il-1)
-380  continue
+380 continue
 !
 ! --- 7.REALISATION DU CALCUL ---
 !
@@ -306,6 +307,6 @@ subroutine op0148()
     call titre()
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

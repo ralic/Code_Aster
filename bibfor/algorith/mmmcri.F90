@@ -19,6 +19,7 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8prem.h"
@@ -40,7 +41,7 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
     character(len=19) :: depplu
     character(len=24) :: resoco
     real(kind=8) :: epsmax
-    logical(kind=1) :: mmconv
+    aster_logical :: mmconv
     character(len=16) :: cvgnoe
     real(kind=8) :: cvgval
 !
@@ -71,7 +72,7 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
     character(len=24) :: vtdiff, vtdif2
     character(len=8) :: licmp(3), nomnoe
     integer :: ncmp, numno1, numno2, numno3, numno4, numnoe
-    logical(kind=1) :: mmcvge, mmcvfr
+    aster_logical :: mmcvge, mmcvfr
     character(len=24) :: maxdep
     integer :: jmaxde
 !

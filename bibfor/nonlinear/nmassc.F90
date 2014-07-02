@@ -20,6 +20,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -69,7 +70,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     real(kind=8) :: coef(nbcoef)
     character(len=19) :: vect(nbcoef)
     real(kind=8) :: coeequ
-    logical(kind=1) :: ldyna
+    aster_logical :: ldyna
 !
 !
 ! ----------------------------------------------------------------------
@@ -150,7 +151,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
-10  end do
+ 10 end do
 !
 ! --- CHARGEMENTS PILOTES
 !
@@ -164,7 +165,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     endif
     do 15 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cnpilo)
-15  end do
+ 15 end do
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
 !

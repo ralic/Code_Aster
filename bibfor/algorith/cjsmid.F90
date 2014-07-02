@@ -37,6 +37,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !          NITER    :  NOMBRE D ITERATIONS A CONVERGENCE
 !          EPSCON   :  VALEUR ERR FINALE
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/cjsiid.h"
 #include "asterfort/cjsjid.h"
 #include "asterfort/cjsncn.h"
@@ -53,7 +54,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     parameter (nitimp = 200)
 !
     integer :: iter
-    logical(kind=1) :: noconv, aredec, stopnc
+    aster_logical :: noconv, aredec, stopnc
 !
     real(kind=8) :: epsd(6), deps(6)
     real(kind=8) :: sigd(6), sigf(6), gd(6)
@@ -77,7 +78,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     real(kind=8) :: relax(essmax+1), rotagd(essmax+1), xf(6), nor1(7), nor2(7)
     real(kind=8) :: erimp(nitimp, 4)
 !
-    logical(kind=1) :: devnu1, devnu2, tra1, tra2
+    aster_logical :: devnu1, devnu2, tra1, tra2
     integer :: i, j
 !
     character(len=8) :: mod
@@ -109,12 +110,12 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
         dy(i) = 0.d0
         yd(i) = 0.d0
         yf(i) = 0.d0
-10  continue
+ 10 continue
 !
 !
     do 15 i = 1, ndt
         gd(i) = 0.d0
-15  continue
+ 15 continue
 !
 !
 ! -> INITIALISATION DE YD PAR LES CHAMPS (SIGD, VIND, ZERO)
@@ -125,7 +126,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
     do 20 i = 1, ndt
         yd(ndt+2+i) = vind(i+2)
-20  continue
+ 20 continue
     yd(2*ndt+3) = 0.d0
     yd(2*ndt+4) = 0.d0
 !
@@ -149,7 +150,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !---------------------------------------
 !
     iter = 0
-100  continue
+100 continue
 !
     iter = iter + 1
 !
@@ -167,10 +168,10 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     if ((yf(1)+yf(2)+yf(3)) .ge. -qinit) then
         do 31 i = 1, ndi
             sigf(i) = -qinit/3.d0+pa/100.0d0
-31      continue
+ 31     continue
         do 32 i = ndi+1, ndt
             sigf(i) = 0.d0
-32      continue
+ 32     continue
         call lceqvn(nvi-1, vind, vinf)
         vinf(nvi) = 0.d0
         goto 9999
@@ -185,8 +186,8 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
         r(i) = 0.d0
         do 60 j = 1, nr
             drdy(i,j) = 0.d0
-60      continue
-50  continue
+ 60     continue
+ 50 continue
 !
     call cjsjid(mod, mater, epsd, deps, yd,&
                 yf, gd, r, signe, drdy)
@@ -205,13 +206,13 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     do 24 i = 1, ndt
         sigf(i) = yd(i)+dy(i)
         xf(i) = yd(ndt+2+i)+dy(ndt+2+i)
-24  continue
+ 24 continue
     call cjsnor(mater, sigf, xf, nor1, devnu1,&
                 tra1)
 !
     essai = 0
 !
-40  continue
+ 40 continue
     essai = essai + 1
     if ((.not.devnu1) .and. (.not.tra1)) then
         if (essai .gt. essmax) then
@@ -230,14 +231,14 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
         do 25 i = 1, ndt
             sigf(i) = yd(i)+dy(i)+relax(essai)*ddy(i)
             xf(i) = yd(ndt+2+i)+dy(ndt+2+i)+ relax(essai)*ddy(ndt+2+i)
-25      continue
+ 25     continue
         call cjsnor(mater, sigf, xf, nor2, devnu2,&
                     tra2)
 !
         rotagd(essai) = 0.d0
         do 26 i = 1, ndt
             rotagd(essai) = rotagd(essai)+nor1(i)*nor2(i)
-26      continue
+ 26     continue
         rotagd(essai) = rotagd(essai)/(nor1(ndt+1)*nor2(ndt+1))
 !
         if (abs(rotagd(essai)) .lt. tolrot .and. (.not.devnu2) .and. ( .not.tra2)) then
@@ -254,7 +255,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     do 42 i = 1, nr
         dy(i) = dy(i)+relax(essai)*ddy(i)
         yf(i) = yd(i)+dy(i)
-42  continue
+ 42 continue
 !
 !
 !
@@ -300,7 +301,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
         endif
     endif
 !
-200  continue
+200 continue
     niter = iter
     epscon = err
 !
@@ -312,10 +313,10 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     vinf(2) = yf(ndt+2)
     do 250 i = 1, ndt
         vinf(2+i) = yf(ndt+2+i)
-250  continue
+250 continue
     vinf(nvi-1) = signe
 !
 !
-9999  continue
+9999 continue
 !
 end subroutine

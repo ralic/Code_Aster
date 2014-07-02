@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                       masgen, riggen, rgygen, lamor, amogen,&
@@ -30,7 +32,7 @@ interface
         real(kind=8) :: masgen(*)
         real(kind=8) :: riggen(*)
         real(kind=8) :: rgygen(*)
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amogen(*)
         real(kind=8) :: gyogen(*)
         character(len=8) :: foncv

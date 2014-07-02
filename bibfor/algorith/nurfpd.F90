@@ -1,5 +1,6 @@
-subroutine nurfpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
-                  vu, vp, typmod, geomi, sigref, epsref, vect)
+subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
+                  vff1, vff2, idff1, vu, vp,&
+                  typmod, geomi, sigref, epsref, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +21,7 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/r8inir.h"
 #include "blas/ddot.h"
@@ -54,7 +56,7 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 ! OUT VECT    : REFE_FORC_NODA
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nddl, g
     integer :: kl, sa, na, ia, kk
     integer :: ndimsi
@@ -80,7 +82,9 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 !
     do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
 ! - DEF (XX,YY,ZZ,2/RAC(2)XY,2/RAC(2)XZ,2/RAC(2)YZ)

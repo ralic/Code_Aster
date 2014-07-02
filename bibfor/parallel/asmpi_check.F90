@@ -55,7 +55,7 @@ subroutine asmpi_check(nbpro4, iret)
 #include "asterc/asmpi_send_i4.h"
 #include "asterc/asmpi_test.h"
 !
-    logical(kind=1) :: isterm(nbpro4), lcont
+    aster_logical :: isterm(nbpro4), lcont
     mpi_int :: term
     integer :: i, nbterm, np1, resp0
     mpi_int :: rank, istat, mpicou, wki(1), nbv, ip4
@@ -97,12 +97,12 @@ subroutine asmpi_check(nbpro4, iret)
             ip4 = i
             call asmpi_irecv_i4(diag(i), nbv, ip4, ST_TAG_CHK, mpicou,&
                                 request(i))
-10      continue
+ 10     continue
 !
         nbterm = 0
         t0 = asmpi_wtime()
         lcont = .true.
-100      continue
+100     continue
 !       WHILE LCONT
         do 101 i = 1, np1
             if (.not. isterm(i)) then
@@ -116,7 +116,7 @@ subroutine asmpi_check(nbpro4, iret)
                     endif
                 endif
             endif
-101      continue
+101     continue
         lcont = nbterm .lt. np1
 !         TIMOUT
         tf = asmpi_wtime()
@@ -130,7 +130,7 @@ subroutine asmpi_check(nbpro4, iret)
                     call utmess('E', 'APPELMPI_83', sk='MPI_IRECV')
                     call ststat(ST_UN_OTH)
                 endif
-102          continue
+102         continue
         endif
         if (lcont) goto 100
 !       END WHILE
@@ -153,7 +153,7 @@ subroutine asmpi_check(nbpro4, iret)
                 ip4 = i
                 call asmpi_send_i4(wki, nbv, ip4, ST_TAG_CNT, mpicou)
             endif
-103      continue
+103     continue
 !
         if (.not. gtstat(ST_OK)) then
             iret = 1
@@ -164,7 +164,7 @@ subroutine asmpi_check(nbpro4, iret)
             endif
         endif
     endif
-999  continue
+999 continue
 # endif
 !
 #else

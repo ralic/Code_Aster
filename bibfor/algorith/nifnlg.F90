@@ -1,5 +1,7 @@
-subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
-                  idff2, vu, vg, vp, typmod, mate, geomi, sig, ddl, vect)
+subroutine nifnlg(ndim, nno1, nno2, nno3, npg,&
+                  iw, vff1, vff2, vff3, idff1,&
+                  idff2, vu, vg, vp, typmod,&
+                  mate, geomi, sig, ddl, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +23,7 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nirela.h"
 #include "asterfort/nmepsi.h"
@@ -65,8 +68,8 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
-    logical(kind=1) :: nonloc
+    aster_logical :: axi, grand
+    aster_logical :: nonloc
     integer :: k2ret(1), vij(3, 3), lij(3, 3)
     integer :: nddl, ndu, g
     integer :: kl, sa, ra, na, ia, ja, kk
@@ -122,18 +125,25 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
         c(1)=0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', [0.d0], 1, 'C_GONF', c(1), k2ret(1), 0)
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ',&
+                    [0.d0], 1, 'C_GONF', c(1), k2ret(1),&
+                    0)
         nonloc = k2ret(1).eq.0 .and. c(1).ne.0.d0
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
-        call dfdmip(ndim, nno1, axi, geomm, g, iw, vff1(1,g), idff1, r, wm, dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
+        call dfdmip(ndim, nno1, axi, geomm, g,&
+                    iw, vff1(1, g), idff1, r, wm,&
+                    dff1)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+                    lij)
 !
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
-           - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
-           + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)&
+             &) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT
         gm = ddot(nno2,vff2(1,g),1,gonfm,1)
@@ -141,7 +151,9 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - CALCUL DU GRADIENT DU GONFLEMENT POUR LA REGULARISATION
         if (nonloc) then
-            call dfdmip(ndim, nno2, axi, geomi, g, iw, vff2(1, g), idff2, r, w, dff2)
+            call dfdmip(ndim, nno2, axi, geomi, g,&
+                        iw, vff2(1, g), idff2, r, w,&
+                        dff2)
             do ia = 1, ndim
                 gradgm(ia) = ddot(nno2,dff2(1,ia),1,gonfm,1)
             end do
@@ -162,7 +174,9 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         end do
 !
 ! - CALCUL DES FONCTIONS A,B,... QUI LIENT G ET J
-        call nirela(2, jm, gm, gm, am, ap, bm, boa, aa, bb, daa, dbb, dboa, d2boa)
+        call nirela(2, jm, gm, gm, am,&
+                    ap, bm, boa, aa, bb,&
+                    daa, dbb, dboa, d2boa)
 !
 ! - VECTEUR FINT:U
         do na = 1, nno1

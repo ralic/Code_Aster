@@ -17,6 +17,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -50,14 +51,14 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  jcesd, jcesv, jcesl,  iad,  jconx2
+    integer :: jcesd, jcesv, jcesl, iad, jconx2
     integer :: nbma, k, ima, ncmp, jlval, ipt, isp, nbpt, nbsp, ino, iret
     integer :: ik, ncmpu, licmpu(997), nbmai, im
     character(len=8) :: ma, nomgd, nomma, poin, spoin, typces
     character(len=3) :: tsca
     character(len=19) :: ces
     character(len=60) :: fmt, fmt1
-    logical(kind=1) :: exicmp
+    aster_logical :: exicmp
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     integer, pointer :: connex(:) => null()

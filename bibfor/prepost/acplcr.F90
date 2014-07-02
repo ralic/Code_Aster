@@ -1,9 +1,10 @@
-subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
-                  kwork, sompgw, jrwork, tspaq, ipg, dectau,nommet, &
-                  jvecpg, jnorma,rayon,jresun, jdtaum,jtauma,&
-                  jsgnma,jdsgma )
-
-    implicit   none
+subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
+                  kwork, sompgw, jrwork, tspaq, ipg,&
+                  dectau, nommet, jvecpg, jnorma, rayon,&
+                  jresun, jdtaum, jtauma, jsgnma, jdsgma)
+!
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/raycir.h"
@@ -11,9 +12,9 @@ subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
 !
     integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma
-    logical(kind=1) :: rayon
-    integer :: dectau, jresun, jdtaum,jtauma,jsgnma,jdsgma
-    character(len=16) ::nommet
+    aster_logical :: rayon
+    integer :: dectau, jresun, jdtaum, jtauma, jsgnma, jdsgma
+    character(len=16) :: nommet
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,45 +74,44 @@ subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
 ! ----------------------------------------------------------------------
     integer :: ivect, iordr, n
     real(kind=8) :: norm, cutau, cvtau
-    real(kind=8) ::epsilo, tau, dnomin, dnomax
-
+    real(kind=8) :: epsilo, tau, dnomin, dnomax
+!
 !     ------------------------------------------------------------------
-
+!
 !    call jemarq()
-
+!
     epsilo = 1.0d-7
-
+!
     call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                kwork, sompgw, jrwork, tspaq, ipg,dectau,&
-                jvecpg, jnorma)
-
+                kwork, sompgw, jrwork, tspaq, ipg,&
+                dectau, jvecpg, jnorma)
+!
 !  CDU RAYON CIRCONSCRIT
 !
     if (rayon) then
         call raycir(jvecpg, jdtaum, jresun, nbordr, nbvec,&
-            nommet)
+                    nommet)
     endif
-
+!
 ! SHEAR MAX
     n = 0
     do 10 ivect = 1, nbvec
         zr(jtauma+ivect-1) = r8prem()
         do 20 iordr = 1, nbordr
             n = n + 1
-            cutau = zr( jvecpg + (n-1)*2 ) 
-            cvtau = zr( jvecpg + (n-1)*2 + 1 ) 
+            cutau = zr( jvecpg + (n-1)*2 )
+            cvtau = zr( jvecpg + (n-1)*2 + 1 )
             tau = sqrt(cutau**2 +cvtau**2)
-            if ((tau .gt. epsilo) .and. & 
-                ((tau-zr(jtauma+ivect)) .gt. epsilo)) then
+            if ((tau .gt. epsilo) .and. ((tau-zr(jtauma+ivect)) .gt. epsilo)) then
                 zr(jtauma+ivect-1) = tau
             endif
-20      continue
+ 20     continue
 !
-10  end do
-
-
+ 10 end do
+!
+!
 !! AMPLITUDE NORMAL MAX    
-    do 12 ivect = 1, nbvec      
+    do 12 ivect = 1, nbvec
         dnomin = zr(jnorma)
         dnomax = zr(jnorma)
         do 22 iordr = 1, nbordr
@@ -122,12 +122,12 @@ subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
             if ((dnomax - norm) .lt. epsilo) then
                 dnomax = norm
             endif 
-22     continue
-
-       zr(jdsgma+ivect-1) = (dnomax - dnomin)/2
-       zr(jsgnma+ivect-1) = dnomax
-  
+ 22     continue
 !
-12 end do
-
+        zr(jdsgma+ivect-1) = (dnomax - dnomin)/2
+        zr(jsgnma+ivect-1) = dnomax
+!
+!
+ 12 end do
+!
 end subroutine

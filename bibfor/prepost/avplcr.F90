@@ -6,6 +6,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                   nzm)
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
@@ -17,7 +18,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 #include "asterfort/wkvect.h"
     integer :: nbordr, kwork, i, nbvec
     integer :: somnow, tdisp, tspaq
-    logical(kind=1) :: fordef, post
+    aster_logical :: fordef, post
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc
     character(len=16) :: nomcri, proaxe, nomfor, forvie
@@ -145,7 +146,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         nxm(kp) = vectn((vnorm(kp)-1)*3+1)
         nym(kp) = vectn((vnorm(kp)-1)*3+2)
         nzm(kp) = vectn((vnorm(kp)-1)*3+3)
-901  end do
+901 end do
 !
     do 900 kp = 1, 2
 !
@@ -214,7 +215,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn2, vecu2,&
                             vecv2)
-430          continue
+430         continue
 !
             nbvec1 = 9
 !
@@ -303,7 +304,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn1, vecu1,&
                             vecv1)
-440          continue
+440         continue
 !
             nbvec1 = 9
 !
@@ -390,7 +391,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn2, vecu2,&
                             vecv2)
-460          continue
+460         continue
 !
             nbvec1 = 9
 !
@@ -476,7 +477,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn1, vecu1,&
                             vecv1)
-480          continue
+480         continue
 !
             nbvec1 = 9
 !
@@ -503,7 +504,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         if (kp .eq. 1) cudom1 = cudomx
         if (kp .eq. 2) cudom2 = cudomx
 !
-900  end do
+900 end do
 !
 !      ENDIF
     if (abs(cudom1-cudom2) .lt. prec) then

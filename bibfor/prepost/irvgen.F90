@@ -1,5 +1,6 @@
 subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/dismoi.h"
@@ -12,7 +13,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 #include "asterfort/utmess.h"
     integer :: cmpg(*)
     character(len=*) :: genein
-    logical(kind=1) :: lhist
+    aster_logical :: lhist
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,12 +41,12 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     character(len=16) :: typrem
     character(len=19) :: gene, basmod
     character(len=24) :: typeba
-    logical(kind=1) :: lbase
+    aster_logical :: lbase
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, ib, ifi, im, imode
-    integer :: ir, istru, j,  jdesc, jfreq, jnume
-    integer :: jordr, jpara,  jvale, nbcmpg, nbmode
+    integer :: ir, istru, j, jdesc, jfreq, jnume
+    integer :: jordr, jpara, jvale, nbcmpg, nbmode
 !
     real(kind=8) :: ximag, xreal
     integer, pointer :: deeq(:) => null()

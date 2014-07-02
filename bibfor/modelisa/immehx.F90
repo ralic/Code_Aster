@@ -57,6 +57,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cotfac.h"
 #include "asterfort/tstbar.h"
@@ -69,7 +70,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
     integer :: idc, id(12), ii, j, ktest
     real(kind=8) :: d, dx, dy, dz
     integer :: f1(4), f2(4), f3(4), f4(4), f5(4), f6(4)
-    logical(kind=1) :: facnp1, facnp2, facnp3, facnp4, facnp5, facnp6
+    aster_logical :: facnp1, facnp2, facnp3, facnp4, facnp5, facnp6
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -274,7 +275,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
         ktest=0
         do 10 j = 1, 12
             ktest=ktest+id(j)
-10      continue
+ 10     continue
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD IMMERGE DANS LE VOLUME DE LA MAILLE
@@ -294,7 +295,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                         immer=2
                         goto 9999
                     endif
-20              continue
+ 20             continue
             endif
             if (nbcnx .eq. 27) then
                 do 30 j = 21, 27, 1
@@ -306,7 +307,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                         immer=2
                         goto 9999
                     endif
-30              continue
+ 30             continue
             endif
 !
 !     TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE PAR DETERMINATION
@@ -422,7 +423,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
     endif
 !
 !
-9999  continue
+9999 continue
 !
 ! --- FIN DE IMMEHX.
 end subroutine

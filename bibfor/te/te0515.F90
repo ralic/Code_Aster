@@ -1,5 +1,6 @@
 subroutine te0515(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterfort/assert.h"
@@ -54,8 +55,7 @@ subroutine te0515(option, nomte)
     character(len=8) :: typmod(2)
 ! =====================================================================
     integer :: li
-    logical(kind=1) :: axi, perman, vf
-    logical :: lcond
+    aster_logical :: axi, perman, vf
     integer :: typvf
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HH2SUDA OU HH2SUC, (HYDRO NON SATURE
@@ -115,8 +115,7 @@ subroutine te0515(option, nomte)
                 nddlm, nddlfa, nddlk, dimuel, ipoids,&
                 ivf, idfde, ipoid2, ivf2, idfde2,&
                 npi2, jgano)
-    lcond=vf
-    ASSERT(lcond)
+    ASSERT(vf)
 ! =====================================================================
 ! --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 ! =====================================================================
@@ -173,7 +172,7 @@ subroutine te0515(option, nomte)
 !  ASSESU UTILISE DELTAP ET PM
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-30          continue
+ 30         continue
             call assesu(nno, nnos, nface, zr(igeom), zr(icarcr),&
                         zr( ideplm), zr(ideplp), zr(icontm), zr(icontp), zr(ivarim),&
                         zr( ivarip), defgem, defgep, dsde, zr(imatuu),&

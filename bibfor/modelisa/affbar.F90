@@ -2,6 +2,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                   car, val, exp, nbo, kioc,&
                   ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8maem.h"
@@ -53,7 +54,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
     character(len=8) :: resu
     character(len=24) :: valk(2)
     character(len=16) :: concep, cmd
-    logical(kind=1) :: secple
+    aster_logical :: secple
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -84,7 +85,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
         call jeveuo(jexnom(tmp, nommai), 'E', jdge)
         do 5 i = 1, nbo
             zr(jdge+i-1) = tst
- 5      continue
+  5     continue
     endif
 !
 !     --- NOM DE LA FONCTION DU CX
@@ -98,7 +99,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
     if (isec .eq. 0) then
         do 20 j = 1, nbo
             if (car(j) .eq. 'A       ') zr(jdge) = val(j)
-20      continue
+ 20     continue
     else if (isec.eq.1) then
         do 22 j = 1, nbo
             if (car(j) .eq. 'HY      ') then
@@ -119,7 +120,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                 zr(jdge+4) = val(j)
                 secple = .false.
             endif
-22      continue
+ 22     continue
     else if (isec.eq.2) then
         do 24 j = 1, nbo
             if (car(j) .eq. 'R       ') then
@@ -128,7 +129,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                 zr(jdge+6) = val(j)
                 secple = .false.
             endif
-24      continue
+ 24     continue
     endif
     zr(jdge+7) = isec
 !
@@ -162,7 +163,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                 call utmess('A', 'MODELISA_73', nk=2, valk=valk)
                 ier = ier + 1
             endif
-40      continue
+ 40     continue
         if (.not. secple) then
             do 42 j = 3, 4
                 if (zr(jdge+j) .eq. tst) then
@@ -177,7 +178,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                     call utmess('A', 'MODELISA_73', nk=2, valk=valk)
                     ier = ier + 1
                 endif
-42          continue
+ 42         continue
         endif
 !
 ! --- COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
@@ -237,8 +238,8 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
     endif
     do 50 i = 1, nbo
         if (zr(jdge+i-1) .eq. tst) zr(jdge+i-1) = zero
-50  end do
+ 50 end do
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

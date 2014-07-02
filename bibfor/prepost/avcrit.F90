@@ -21,6 +21,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/anacri.h"
 #include "asterfort/aveppr.h"
@@ -76,7 +77,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
     integer :: jvsipn, jvsieq, jveteq
 !
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
     character(len=8) :: nompf(30), nompar(30)
     character(len=16) :: typcha
     character(len=24) :: chnom, cbid
@@ -221,7 +222,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 !  Pour le critère de FATEMI_SOCIE? il faut utiliser le tenseur de déformation du 
 !  type d'ingéneire gamma_ij = 2*eps_ij avec i #j
-
+!
             if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
                 zr(jgdreq+ad1)= coepre*abs((zr(jvmax+ad2) - zr(jvmin+ad2))/2.0d0*2.0d0)&
                 *(1.0d0 + vala*max(zr(jvsign+ad0+zi(jomax+ad2)), &
@@ -268,7 +269,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                             goto 75
                         endif
                     end do
-75              continue
+ 75             continue
 !
                 call fointe('F', nomfor, np, nompf, valpu,&
                             zr(jgdreq+ad1), ibid)

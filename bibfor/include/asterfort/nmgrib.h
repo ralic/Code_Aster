@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmgrib(nno, geom, dff, dir11, lexc,&
                       vecn, b, jac, p)
@@ -22,7 +24,7 @@ interface
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: dff(2, nno)
         real(kind=8) :: dir11(3)
-        logical(kind=1) :: lexc
+        aster_logical :: lexc
         real(kind=8) :: vecn(3)
         real(kind=8) :: b(6, nno)
         real(kind=8) :: jac

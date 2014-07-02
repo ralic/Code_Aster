@@ -23,6 +23,7 @@ subroutine calcyc(nomres)
 ! NOMRES  /I/: NOM UTILISATEUR DU CONCEPT RESULTAT
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/askcyc.h"
 #include "asterfort/asmcyc.h"
@@ -53,14 +54,14 @@ subroutine calcyc(nomres)
     character(len=24) :: repmat, soumat
     character(len=24) :: valk
     complex(kind=8) :: comshi
-    logical(kind=1) :: axok
+    aster_logical :: axok
     real(kind=8) :: rlome2(2)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, icone, idia, idiam
     integer :: if, imes, ldfre, ldmoc, ldnbd, llitmp
-    integer ::  llnum,   lteig, ltkcom, ltlax0
+    integer :: llnum, lteig, ltkcom, ltlax0
     integer :: ltlax1, ltlbid, ltmcom, ltnbd, ltrv1, ltrv2, lttrge
     integer :: ltzm1, ltzm2, ltzv1, ltzv2, ltzv3, maxdia, nbdax
     integer :: nbdax0, nbdax1, nbddef, nbddg, nbddr, nbdia, nbdia1
@@ -125,7 +126,7 @@ subroutine calcyc(nomres)
     if (nbdia2 .ne. 0) then
         do 10 i = 1, nbdia2
             zi(ltnbd+nbdia1+i-1)=i-1
-10      continue
+ 10     continue
     endif
 !
 !
@@ -145,7 +146,7 @@ subroutine calcyc(nomres)
             vali (1) = idia
             call utmess('I', 'ALGORITH14_82', si=vali(1))
         endif
-30  end do
+ 30 end do
 !
     if (icomp .lt. nbdia) then
         vali (1) = maxdia
@@ -163,7 +164,7 @@ subroutine calcyc(nomres)
 !
     do 40 i = 1, nbdia
         zi(ldnbd+i-1)=zi(ltnbd+i-1)
-40  end do
+ 40 end do
 !
     call jedetr('&&'//pgc//'.DIAM.TOUT')
 !
@@ -241,7 +242,7 @@ subroutine calcyc(nomres)
         call wkvect('&&'//pgc//'.LISTE.BIDON', 'V V I', ntt, ltlbid)
         do 5 i = 1, ntt
             zi(ltlbid+i-1)=i
- 5      continue
+  5     continue
     endif
 !
 !
@@ -385,7 +386,7 @@ subroutine calcyc(nomres)
             else
                 zr(ldfre+icone+if-1)=-((-omeg2)**0.5d0)/(2.d0*pi)
             endif
-110      continue
+110     continue
 !
 !
 !--------------REORGANISATION DES DDL GENERALISEE-----------------------
@@ -398,7 +399,7 @@ subroutine calcyc(nomres)
         icone=icone+nbmobt
         zi(ldnbd+nbdia+i-1)=nbmobt
 !
-80  end do
+ 80 end do
 !
 !
 !   GRAND MENAGE DE PRINTEMPS !!!

@@ -1,11 +1,10 @@
-subroutine vrcomp_chck_cmp(mesh, nb_elem,&
-                           compor_curr, compor_curr_r, compor_prev_r, &
-                           vari_r, comp_comb_2,&
-                           ligrel_curr, ligrel_prev,&
-                           no_same_spg, no_same_cmp, l_modif_vari)
+subroutine vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_prev_r,&
+                           vari_r, comp_comb_2, ligrel_curr, ligrel_prev, no_same_spg,&
+                           no_same_cmp, l_modif_vari)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -33,16 +32,16 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nb_elem
-    character(len=*), intent(in)  :: compor_curr
+    character(len=*), intent(in) :: compor_curr
     character(len=19), intent(in) :: compor_curr_r
     character(len=19), intent(in) :: compor_prev_r
     character(len=19), intent(in) :: vari_r
     character(len=48), intent(in) :: comp_comb_2
     character(len=19), intent(in) :: ligrel_curr
     character(len=19), intent(in) :: ligrel_prev
-    logical(kind=1), intent(out) :: no_same_spg
-    logical(kind=1), intent(out) :: no_same_cmp
-    logical(kind=1), intent(out) :: l_modif_vari
+    aster_logical, intent(out) :: no_same_spg
+    aster_logical, intent(out) :: no_same_cmp
+    aster_logical, intent(out) :: l_modif_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,9 +68,9 @@ implicit none
 !
     integer :: iad1, iad2, iadp, iadm
     integer :: i_elem, k, vali(3)
-    logical(kind=1) :: elem_in_curr, elem_in_prev
+    aster_logical :: elem_in_curr, elem_in_prev
     integer :: idx_comb_prev, idx_comb_curr
-    logical(kind=1) :: all_is_zero
+    aster_logical :: all_is_zero
     integer :: nb_pg_prev, nb_spg_prev, nb_cmp_prev
     integer :: nb_spg_curr, nb_cmp_curr
     character(len=16) :: rela_comp_prev, rela_comp_curr
@@ -79,7 +78,7 @@ implicit none
     character(len=19) :: dcel
     integer, pointer :: repm(:) => null()
     integer, pointer :: repp(:) => null()
-    integer :: jdceld,  jdcell
+    integer :: jdceld, jdcell
     integer, pointer :: dcelv(:) => null()
     character(len=8), pointer :: dcelk(:) => null()
     integer :: jcoppl, jcoppd
@@ -87,14 +86,14 @@ implicit none
     character(len=8), pointer :: coppk(:) => null()
     integer :: jcopmd, jcopml
     character(len=16), pointer :: copmv(:) => null()
-    integer :: jce2d,  jce2l
+    integer :: jce2d, jce2l
     real(kind=8), pointer :: ce2v(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_modif_vari = .false.
-    no_same_cmp  = .false.
-    no_same_spg  = .false.
+    no_same_cmp = .false.
+    no_same_spg = .false.
 !
 ! - Access to LIGREL
 !
@@ -124,14 +123,14 @@ implicit none
 !
 ! - Acces to reduced CARTE on previous comportement
 !
-    if (compor_prev_r.ne.' ') then
+    if (compor_prev_r .ne. ' ') then
         call jeveuo(compor_prev_r//'.CESD', 'L', jcopmd)
         call jeveuo(compor_prev_r//'.CESV', 'L', vk16=copmv)
         call jeveuo(compor_prev_r//'.CESL', 'L', jcopml)
     endif
 !
 ! - Check on mesh
-!  
+!
     do i_elem = 1, nb_elem
         elem_in_prev = repm(2*(i_elem-1)+1).gt.0
         elem_in_curr = repp(2*(i_elem-1)+1).gt.0
@@ -153,7 +152,7 @@ implicit none
         ASSERT(iad2.gt.0)
         nb_spg_curr = dcelv(iad1)
         nb_cmp_curr = dcelv(iad2)
-        nb_pg_prev  = zi(jce2d-1+5+4*(i_elem-1)+1)
+        nb_pg_prev = zi(jce2d-1+5+4*(i_elem-1)+1)
         nb_spg_prev = zi(jce2d-1+5+4*(i_elem-1)+2)
         nb_cmp_prev = zi(jce2d-1+5+4*(i_elem-1)+3)
 !
@@ -185,15 +184,15 @@ implicit none
 !
             ASSERT(iadp.gt.0)
             rela_comp_curr = coppv(iadp)
-            idx_comb_curr  = index(comp_comb_2, rela_comp_curr)
-            if (idx_comb_curr.gt.0) then
+            idx_comb_curr = index(comp_comb_2, rela_comp_curr)
+            if (idx_comb_curr .gt. 0) then
                 l_modif_vari = .true.
                 goto 40
             endif
 !
 ! --------- Previous comportement can been mixed -> no problem
 !
-            if (compor_prev_r.ne.' ') then
+            if (compor_prev_r .ne. ' ') then
 !
 ! ------------- Easy to check
 !
@@ -201,8 +200,8 @@ implicit none
                             1, 1, iadm)
                 ASSERT(iadm.gt.0)
                 rela_comp_prev = copmv(iadm)
-                idx_comb_prev  = index(comp_comb_2, rela_comp_prev)
-                if (idx_comb_prev.gt.0) then
+                idx_comb_prev = index(comp_comb_2, rela_comp_prev)
+                if (idx_comb_prev .gt. 0) then
                     l_modif_vari = .true.
                     goto 40
                 endif
@@ -232,7 +231,7 @@ implicit none
 !
         if (nb_cmp_curr .ne. nb_cmp_prev) then
             l_modif_vari = .true.
-            no_same_cmp  = .true.
+            no_same_cmp = .true.
             call jenuno(jexnum(mesh//'.NOMMAI', i_elem), name_elem)
             vali(1) = nb_cmp_prev
             vali(2) = nb_cmp_curr

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
         character(len=*) :: nomsd
         character(len=*) :: nomsy
         integer :: iordr
         character(len=*) :: nomcha
-        logical(kind=1) :: lverif
+        aster_logical :: lverif
     end subroutine rsutch
 end interface

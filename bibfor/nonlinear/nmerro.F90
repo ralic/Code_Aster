@@ -19,6 +19,7 @@ subroutine nmerro(sderro, sdtime, numins)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/jedema.h"
@@ -50,10 +51,10 @@ subroutine nmerro(sderro, sdtime, numins)
     integer :: jtpas, jtite
     real(kind=8) :: rtab(2)
     integer :: itab(2)
-    logical(kind=1) :: echldc, echeq1, echeq2, echco1, echco2, echpil
-    logical(kind=1) :: mtcpui, mtcpup, itemax
-    logical(kind=1) :: echpfg, echpff, echpfc
-    logical(kind=1) :: errres
+    aster_logical :: echldc, echeq1, echeq2, echco1, echco2, echpil
+    aster_logical :: mtcpui, mtcpup, itemax
+    aster_logical :: echpfg, echpff, echpfc
+    aster_logical :: errres
     real(kind=8) :: tpsrst, moyite, moypas
     character(len=16) :: nomevd, action, valk(2)
 !

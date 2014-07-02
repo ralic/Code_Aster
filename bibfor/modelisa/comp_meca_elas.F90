@@ -2,6 +2,7 @@ subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
@@ -24,9 +25,9 @@ subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19) , intent(in) :: comp_elas
+    character(len=19), intent(in) :: comp_elas
     integer, intent(in) :: nb_cmp
-    logical(kind=1), intent(in) :: l_etat_init
+    aster_logical, intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,15 +62,15 @@ subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 !
 ! - Set for ELASTIQUE
 !
-    p_compelas_valv(1)  = 'ELAS'
-    p_compelas_valv(2)  = '1'
-    p_compelas_valv(3)  = 'PETIT'
+    p_compelas_valv(1) = 'ELAS'
+    p_compelas_valv(2) = '1'
+    p_compelas_valv(3) = 'PETIT'
     if (l_etat_init) then
-        p_compelas_valv(4)  = 'COMP_INCR' 
+        p_compelas_valv(4) = 'COMP_INCR'
     else
-        p_compelas_valv(4)  = 'COMP_ELAS'
+        p_compelas_valv(4) = 'COMP_ELAS'
     endif
-    p_compelas_valv(5)  = 'ANALYTIQUE'
+    p_compelas_valv(5) = 'ANALYTIQUE'
     write (p_compelas_valv(6) ,'(I16)') 1
 ! 99999 = Not affected
     write (p_compelas_valv(12),'(I16)') 99999
@@ -81,6 +82,5 @@ subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 ! - Create <CARTE>
 !
     call nocart(comp_elas, 1, nb_cmp)
-
+!
 end subroutine
-

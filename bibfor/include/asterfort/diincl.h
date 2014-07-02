@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function diincl(sddisc, nomchz, force)
         character(len=19) :: sddisc
         character(len=*) :: nomchz
-        logical(kind=1) :: force
-        logical(kind=1) :: diincl
+        aster_logical :: force
+        aster_logical :: diincl
     end function diincl
 end interface

@@ -2,6 +2,7 @@ subroutine op5903(nbocci, sdcomp)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
@@ -61,7 +62,7 @@ subroutine op5903(nbocci, sdcomp)
     character(len=16) :: kit_comp(9)
     character(len=16) :: texte(2), moclef
     character(len=24) :: vnbfig, rnomgf, kgroup
-    logical(kind=1) :: l_kit
+    aster_logical :: l_kit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,8 +91,7 @@ subroutine op5903(nbocci, sdcomp)
     do iocc = 1, nbocci
         call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval=0, nbret=nbg)
         nbg=-nbg
-        call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval = nbg, &
-                    vect = zk24(img))
+        call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval = nbg, vect = zk24(img))
         call getvid(moclef, 'MATER', iocc=iocc, scal = materi)
         call getvtx(moclef, 'RELATION', iocc=iocc, scal = rela_comp)
         defo_comp = 'VIDE'
@@ -109,13 +109,13 @@ subroutine op5903(nbocci, sdcomp)
             texte(2) = rela_comp
             call utmess('I', 'COMPOR1_48', nk = 2, valk=texte)
             algo1d = 'DEBORST'
-            idbor  = idbor+1
+            idbor = idbor+1
         endif
 !
 ! ----- Get number of internal variables
 !
-        if (rela_comp(1:4).eq.'KIT_') ASSERT(rela_comp.eq.'KIT_DDI')
-        l_kit   = (rela_comp.eq.'KIT')
+        if (rela_comp(1:4) .eq. 'KIT_') ASSERT(rela_comp.eq.'KIT_DDI')
+        l_kit = (rela_comp.eq.'KIT')
         if (l_kit) then
             call comp_meca_rkit(moclef, iocc, rela_comp, kit_comp)
         endif

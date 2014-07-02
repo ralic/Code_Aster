@@ -20,6 +20,7 @@ subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assvec.h"
 #include "asterfort/detrsd.h"
@@ -72,8 +73,8 @@ subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
     character(len=8) :: lpaout(mxnbou), lpain(mxnbin)
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
-    logical(kind=1) :: exitem, exihyd, exipto, exisec, exiepa, exipha
-    logical(kind=1) :: lbid, exiph1, exiph2, lxfem
+    aster_logical :: exitem, exihyd, exipto, exisec, exiepa, exipha
+    aster_logical :: lbid, exiph1, exiph2, lxfem
     integer :: iret
     real(kind=8) :: x(2)
     character(len=19) :: vecel(2), vecelp, vecelm

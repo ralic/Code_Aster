@@ -43,6 +43,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdonp.h"
 #include "asterfort/as_mfdonv.h"
@@ -72,7 +73,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !
     character(len=8) :: saux08
     character(len=64) :: nompro, nomloc, nomamd
-    logical(kind=1) :: ficexi, dejouv
+    aster_logical :: ficexi, dejouv
 ! ______________________________________________________________________
 !
 !====
@@ -107,14 +108,14 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
             call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
                            typgeo, iterma, nomamd, nompro, nomloc,&
                            nbprof, codret)
-            do 10, iprof = 1, nbprof
-            call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
-                           numpt, numord, iprof, nompro, edcomp,&
-                           npr, nomloc, nip, ntmp, codret)
-            if (codret .eq. 0) then
-                nbval = nbval + nip*ntmp
-            endif
-            10         end do
+            do 10 iprof = 1, nbprof
+                call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
+                               numpt, numord, iprof, nompro, edcomp,&
+                               npr, nomloc, nip, ntmp, codret)
+                if (codret .eq. 0) then
+                    nbval = nbval + nip*ntmp
+                endif
+ 10         end do
 !
 !====
 ! 3. FERMETURE DU FICHIER

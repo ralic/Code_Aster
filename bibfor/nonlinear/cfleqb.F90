@@ -18,7 +18,8 @@ subroutine cfleqb(noma, defico, nzoco, nnoqua)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -66,7 +67,7 @@ subroutine cfleqb(noma, defico, nzoco, nnoqua)
     integer :: nbsurf, nbma, nbnomi
     integer :: iatyma, itypma
     character(len=8) :: nomtm
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
 !
 ! ----------------------------------------------------------------------
 !
@@ -157,20 +158,20 @@ subroutine cfleqb(noma, defico, nzoco, nnoqua)
                         zi(jnoqu+jdecqu+3*(inoqua-1)+1-1) = nomili(1, inoqua)
                         zi(jnoqu+jdecqu+3*(inoqua-1)+2-1) = nomili(2, inoqua)
                         zi(jnoqu+jdecqu+3*(inoqua-1)+3-1) = nomili(3, inoqua)
-92                  continue
+ 92                 continue
                     jdecqu = jdecqu + 3*nbnomi
                     inoqto = inoqto + 3*nbnomi
                 endif
 !
-30          continue
-20      continue
-21      continue
+ 30         continue
+ 20     continue
+ 21     continue
 !
 ! ----- MISE A JOUR POINTEUR
 !
         zi(jnoqua+izone) = zi(jnoqua+izone-1)+inoqto
 !
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

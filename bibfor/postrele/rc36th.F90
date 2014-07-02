@@ -1,6 +1,7 @@
 subroutine rc36th(noma, nbma, listma, chth, iocs,&
                   nbths, liths)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/cescre.h"
@@ -51,13 +52,13 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 !     ------------------------------------------------------------------
 !
     integer :: nbreth, nbcmp, iths, ith, iret, n1, n2, iocc, ino, iad, in
-    integer :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu,  jcesl
-    integer ::  nbpt, decal, i, ipt,  jconx2, icmp, it1, vali(4)
+    integer :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu, jcesl
+    integer :: nbpt, decal, i, ipt, jconx2, icmp, it1, vali(4)
     integer :: jinst, jther, jmoye, jabsc, nbabsc, nbinst, ibid
     parameter   ( nbcmp = 2 )
     real(kind=8) :: inst, epsi, vmoy, ta, tint, text, vale(2), prec(2)
     complex(kind=8) :: cbid
-    logical(kind=1) :: exist
+    aster_logical :: exist
     character(len=8) :: k8b, nomgd, licmp(nbcmp), tbther, tbmoye, kioc, crit(2)
     character(len=16) :: motclf, motcls(2), typmcs(2), motcln(2), typmcn(2)
     character(len=16) :: nopara(2)

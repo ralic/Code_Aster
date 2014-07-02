@@ -47,6 +47,7 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
 !           RIGM   :  CONTRAINTE MOYENNE
 !           P      :  PLASTICITE CUMULE
 !       -------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterfort/rsliso.h"
     integer :: imat, kpg, ksp
@@ -63,7 +64,7 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
     real(kind=8) :: sig0, eps0, mexpo, puiss
     real(kind=8) :: seuil, dseuil, dpuiss, asinh, lv1, lv2, lv3
 !
-    logical(kind=1) :: overfl
+    aster_logical :: overfl
 !
     parameter       ( un     = 1.d0  )
     parameter       ( zero   = 0.d0  )
@@ -152,5 +153,5 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
     endif
 !
 ! ----- ET C EST FINI -------------
-9999  continue
+9999 continue
 end subroutine

@@ -16,6 +16,7 @@ subroutine te0318(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm2d.h"
@@ -45,11 +46,11 @@ subroutine te0318(option, nomte)
     real(kind=8) :: alpha, fluxx, fluxy, xu, yu, xnorm
     integer :: ndim, nno, nnos, kp, j, k, itempe, itemp, iflux, nuno
     integer :: ipoids, ivf, idfde, igeom, imate, npg, jgano, icamas
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -118,7 +119,7 @@ subroutine te0318(option, nomte)
             do 103 nuno = 1, nno
                 point(1) = point(1)+ zr(ivf+k+nuno-1)*zr(igeom+2*nuno- 2)
                 point(2) = point(2)+ zr(ivf+k+nuno-1)*zr(igeom+2*nuno- 1)
-103          continue
+103         continue
 !
             xu = orig(1) - point(1)
             yu = orig(2) - point(2)
@@ -135,7 +136,7 @@ subroutine te0318(option, nomte)
             tpg = tpg + zr(itempe+j-1)*zr(ivf+k+j-1)
             fluxx = fluxx + zr(itempe+j-1)*dfdx(j)
             fluxy = fluxy + zr(itempe+j-1)*dfdy(j)
-110      continue
+110     continue
 !
         if (phenom .eq. 'THER_NL') then
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
@@ -159,8 +160,8 @@ subroutine te0318(option, nomte)
         endif
         a = a - fluglo(1) / npg
         b = b - fluglo(2) / npg
-101  end do
+101 end do
     do 102 kp = 1, npg
         zr(iflux+(kp-1)) = ( a**2 + b**2 ) / lambda
-102  end do
+102 end do
 end subroutine

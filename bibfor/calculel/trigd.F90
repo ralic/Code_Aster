@@ -21,12 +21,13 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
 #include "asterfort/exisdg.h"
     integer :: dg1(*), dg2(*), deb1, deb2, ino, nno
-    logical(kind=1) :: cumul
+    aster_logical :: cumul
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !       IGD    : GRANDEUR (COMMON)
@@ -61,7 +62,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
      &       ilchlo,itypgd
 !
 !    -------------------------------------------------------------------
-    logical(kind=1) :: change
+    aster_logical :: change
     integer :: cmp, ind1, nec2, nsav, ksav
     parameter(nec2=12)
     parameter(nsav=5)
@@ -75,19 +76,19 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 !     1. ON REGARDE SI ON NE TROUVE PAS UN POSCMP(*,KSAV) QUI CONVIENT.
 !        (CALCUL DE KSAV)
 !     -----------------------------------------------------------------
-    do 20,k=1,nsav
-    if (nec .ne. necold(k)) goto 20
-    change=.false.
-    do 10,i=1,nec
-    if (dg1(i) .ne. dg1old(i,k)) change=.true.
-    if (dg2(i) .ne. dg2old(i,k)) change=.true.
-10  continue
-    if (change) goto 20
+    do 20 k = 1, nsav
+        if (nec .ne. necold(k)) goto 20
+        change=.false.
+        do 10 i = 1, nec
+            if (dg1(i) .ne. dg1old(i,k)) change=.true.
+            if (dg2(i) .ne. dg2old(i,k)) change=.true.
+ 10     continue
+        if (change) goto 20
 !       -- ON A TROUVE UN KSAV CONVENABLE :
-    ksav=k
-    goto 80
+        ksav=k
+        goto 80
 !
-    20 end do
+ 20 end do
 !
 !
 !----------------------------------------------------------------
@@ -97,24 +98,24 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 !     2.1 ON DECALE LES TABLEAUX VERS LE "FOND" :
 !         ET ON AJOUTE LES NOUVELLES VALEURS EN KSAV=1
 !     ------------------------------------------------
-    do 50,k=nsav-1,1,-1
-    do 30,i=1,necold(k)
-    dg1old(i,k+1)=dg1old(i,k)
-    dg2old(i,k+1)=dg2old(i,k)
-30  continue
-    do 40,i=1,ind2(k)
-    poscmp(i,k+1)=poscmp(i,k)
-40  continue
-    ind2(k+1)=ind2(k)
-    necold(k+1)=necold(k)
-    50 end do
+    do 50 k = nsav-1, 1, -1
+        do 30 i = 1, necold(k)
+            dg1old(i,k+1)=dg1old(i,k)
+            dg2old(i,k+1)=dg2old(i,k)
+ 30     continue
+        do 40 i = 1, ind2(k)
+            poscmp(i,k+1)=poscmp(i,k)
+ 40     continue
+        ind2(k+1)=ind2(k)
+        necold(k+1)=necold(k)
+ 50 end do
 !
     ksav=1
     necold(ksav)=nec
-    do 60,i=1,nec
-    dg1old(i,ksav)=dg1(i)
-    dg2old(i,ksav)=dg2(i)
-    60 end do
+    do 60 i = 1, nec
+        dg1old(i,ksav)=dg1(i)
+        dg2old(i,ksav)=dg2(i)
+ 60 end do
 !
 !
 !     2.2 REMPLISSAGE DE POSCMP(KSAV):
@@ -131,12 +132,12 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                 poscmp(ind2(ksav),ksav)=0
             endif
         endif
-70  end do
+ 70 end do
 !
 !
 !
 !----------------------------------------------------------------
-80  continue
+ 80 continue
 !     3. RECOPIE DES VALEURS DANS LE CHAMP_LOCAL :
 !     --------------------------------------------
     do 90 cmp = 1, ind2(ksav)
@@ -186,7 +187,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
         else
             zl(ilchlo-1+deb2-1+cmp)=.false.
         endif
-90  end do
+ 90 end do
 !
 !
 !----------------------------------------------------------------

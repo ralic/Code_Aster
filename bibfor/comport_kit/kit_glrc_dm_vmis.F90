@@ -1,5 +1,6 @@
-subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, vip, dsidep, crit,&
-                            iret)
+subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
+                            option, sigm, sig, vip, dsidep,&
+                            crit, iret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/crgdm.h"
@@ -50,7 +52,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 ! ----------------------------------------------------------------------
 !
 !
-    logical(kind=1) :: rigi, resi, lbid
+    aster_logical :: rigi, resi, lbid
     integer :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
@@ -216,13 +218,13 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !---------VMIS_ISOT_LINE--------------------
             else if (compor(1:14) .eq. 'VMIS_ISOT_LINE') then
 !     --    POUR POUVOIR UTILISER NMISOT
-            typmod(1) = '3D  '
-            typmod(2) = '        '
-            call nmisot('RIGI', 1, 1, 3, typmod,&
-                        imate,  'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm,&
-                        vim(8), 'FULL_MECA       ', sig2dp, vip(8), tan3d,&
-                        r8bid(1), r8bid(2), iret)
-        endif
+                typmod(1) = '3D  '
+                typmod(2) = '        '
+                call nmisot('RIGI', 1, 1, 3, typmod,&
+                            imate, 'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm,&
+                            vim(8), 'FULL_MECA       ', sig2dp, vip(8), tan3d,&
+                            r8bid(1), r8bid(2), iret)
+            endif
 !
             d22 = tan3d(3,3)
 !

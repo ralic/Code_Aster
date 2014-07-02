@@ -17,7 +17,8 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfdisd.h"
@@ -89,7 +90,7 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 !
 !
     integer :: ifm, niv
-    logical(kind=1) :: conjug
+    aster_logical :: conjug
     integer :: iliai, iter, premax
     integer :: neq, nbliac, nbliai
     integer :: gcpmax
@@ -190,7 +191,7 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
-40  continue
+ 40 continue
 !
     if (niv .eq. 2) then
         write (ifm,*) '<CONTACT><CALC> --------------------------------'
@@ -263,8 +264,8 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
             endif
             goto 100
         endif
-90  end do
-100  continue
+ 90 end do
+100 continue
 !
 ! --- MISE A JOUR DES GRADIENTS ET DES DIRECTIONS DE RECHERCHE
 !
@@ -289,7 +290,7 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 !                            ON A CONVERGE
 ! ======================================================================
 !
-160  continue
+160 continue
 !
 ! --- ACTIVATION DES LIAISONS ET CALCUL DE LA FORCE DE CONTACT
 !

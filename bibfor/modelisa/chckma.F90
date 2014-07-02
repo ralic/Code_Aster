@@ -30,6 +30,7 @@ subroutine chckma(nomu, dtol)
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
@@ -64,7 +65,7 @@ subroutine chckma(nomu, dtol)
     character(len=24) :: cooval, connex, nommai, nomnoe, nsolo, mdoubl
     integer :: nbmail, nbnoeu
     integer :: insolo, imdoub, iatyma, nmdoub
-    logical(kind=1) :: indic, alarme, erreur
+    aster_logical :: indic, alarme, erreur
 !
     call jemarq()
     call infniv(ifm, niv)

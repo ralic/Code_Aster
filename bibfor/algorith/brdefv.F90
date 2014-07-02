@@ -25,10 +25,11 @@ subroutine brdefv(e1i, e2i, a, t, b,&
 !     E2P(C OU T)=DEFORMATION PLASTIQUE ETAGE 2 EN +(T) OU -(C)
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/bre1bl.h"
 #include "asterfort/bre1ec.h"
 #include "asterfort/bre2ec.h"
-    logical(kind=1) :: h1, h2
+    aster_logical :: h1, h2
 !
 !     EFLIM=3.0E-2
 !-----------------------------------------------------------------------
@@ -89,6 +90,6 @@ subroutine brdefv(e1i, e2i, a, t, b,&
 !
 !     CALCUL DE E0(T)
 !
-10  continue
+ 10 continue
     e0f=a*t+b-e1f-e2f
 end subroutine

@@ -20,6 +20,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8gaem.h"
     integer :: n, posopt
     real(kind=8) :: r(*), g(*)
@@ -47,7 +48,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: gauche, droite
+    aster_logical :: gauche, droite
     integer :: i, c, j, pos
     real(kind=8) :: a, b, det, v, d, x, pente, dg, x1, y1, x2, y2, x3, y3
     real(kind=8) :: appuig, appuid, valg, vald, val, valopt, xopt
@@ -144,7 +145,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
         c = 0
         do 10 j = 1, n
             if (abs(r(j)-x) .le. diff) c = j
-10      continue
+ 10     continue
         if (c .eq. 0) goto 20
 !      LES CHOIX VERS LA GAUCHE OU LA DROITE SONT-ILS LICITES
         gauche = r(c) - rmin .gt. diff
@@ -180,7 +181,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
                 x = (r(c)+appuid)/2
             endif
         endif
-20      continue
+ 20     continue
 !
 !
 ! ----------------------------------------------------------------------
@@ -194,8 +195,8 @@ subroutine nmrep2(n, r, g, gu, rmin,&
                 pos = j
                 goto 40
             endif
-30      continue
-40      continue
+ 30     continue
+ 40     continue
 !
 !      SI DEUX POINTS : INTERPOLATION LINEAIRE
         if (n .eq. 2) then
@@ -255,7 +256,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
             posopt = pos
         endif
 !
-50  end do
+ 50 end do
 !
 !
 ! --- INSERTION DU MINIMUM
@@ -267,9 +268,9 @@ subroutine nmrep2(n, r, g, gu, rmin,&
         endif
         r(i+1) = r(i)
         g(i+1) = g(i)
-60  end do
+ 60 end do
     posopt = 1
-70  continue
+ 70 continue
 !
     n = n + 1
     r(posopt) = xopt

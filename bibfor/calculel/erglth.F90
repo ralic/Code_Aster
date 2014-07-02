@@ -45,6 +45,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/celver.h"
@@ -65,13 +66,13 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
 ! ------------------------------------------------------------------
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ifi, longt, long2, mode, j, ibid, nbgr,  icoef, nel
+    integer :: ifi, longt, long2, mode, j, ibid, nbgr, icoef, nel
     integer :: idecgr, k, iad, iavale, nbel
     real(kind=8) :: termvo, termsa, termfl, termec, ovfl, terms1, termf1, terme1
     real(kind=8) :: termv1, termv2, terms2, termf2, terme2, err0, nors, nu0
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
-    logical(kind=1) :: first
+    aster_logical :: first
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
 !
@@ -111,7 +112,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
             endif
         endif
         first = .false.
- 1  end do
+  1 end do
 !
 !        -- ON CUMULE :
     call jeveuo(champ2//'.CELV', 'E', iavale)
@@ -154,8 +155,8 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
                 terme1 = terme1 + zr(iad+14)**2
             endif
             nbel = nbel + 1
- 3      continue
- 2  continue
+  3     continue
+  2 continue
     err0 = sqrt(err0)
     nors = sqrt(nors)
     if (niveau .eq. 2) then

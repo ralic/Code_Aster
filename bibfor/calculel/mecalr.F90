@@ -38,6 +38,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 !     --- ARGUMENTS ---
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -87,7 +88,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     character(len=16) :: tysd
     character(len=19) :: knum, kcha
     character(len=24) :: mate
-    logical(kind=1) :: newcal
+    aster_logical :: newcal
 !
 !
 !     --- VARIABLES LOCALES ---
@@ -106,7 +107,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     integer :: n1, n2
     integer :: jpa, jopt, jcha
     integer :: nbac, nbpa, nbpara
-    integer ::  jcoor,  ltymo
+    integer :: jcoor, ltymo
     integer :: nnoem, nelem, ndim, nncp
 !
     character(len=4) :: type

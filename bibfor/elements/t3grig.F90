@@ -1,5 +1,7 @@
-subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
+subroutine t3grig(nomte, xyzl, option, pgl, rig,&
+                  ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/bsthpl.h"
 #include "asterfort/dstbfb.h"
@@ -61,15 +63,16 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
     real(kind=8) :: mefl(54)
     real(kind=8) :: bsigth(24), enerth, carat3(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), qsi, eta
-    logical(kind=1) :: coupmf, indith
+    aster_logical :: coupmf, indith
     integer :: i, jcoqu, jdepg, k
     real(kind=8) :: ctor, excent, zero
     real(kind=8) :: aire
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     enerth = zero
@@ -92,7 +95,9 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate('RIGI', df, dm, dmf, dc,&
+                dci, dmc, dfc, nno, pgl,&
+                multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE --------
     call gtria3(xyzl, carat3)
@@ -103,7 +108,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
 !     ------ CALCUL DE LA MATRICE BM -----------------------------------
     call dxtbm(carat3(9), bm)
 !     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
-    call utbtab('ZERO', 3, 6, dm, bm, xab1, memb)
+    call utbtab('ZERO', 3, 6, dm, bm,&
+                xab1, memb)
     aire = carat3(8)
     do k = 1, 36
         memb(k) = memb(k)* aire
@@ -118,7 +124,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
     call dstbfb(carat3(9), bfb)
 !
 !     ------- CALCUL DU PRODUIT BFBT.DF.BFB --------------------------
-    call utbtab('ZERO', 3, 9, df, bfb, xab2, flex)
+    call utbtab('ZERO', 3, 9, df, bfb,&
+                xab2, flex)
 !
 !        ---- CALCUL DE LA MATRICE BC ----------------------------------
     qsi = 1.d0/3.d0
@@ -126,7 +133,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
     call t3gbc(xyzl, qsi, eta, bc)
 !
 !        ---- CALCUL DU PRODUIT BCT.DC.BC -----------------------------
-    call utbtab('ZERO', 2, 9, dc, bc, xab3, kc)
+    call utbtab('ZERO', 2, 9, dc, bc,&
+                xab3, kc)
 !
     do k = 1, 81
         flexi(k) = (flex(k)+ kc(k))*aire
@@ -137,7 +145,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, ener)
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(3, 6, pgl, zr(jdepg), depl)
-        call dxtloe(flex, memb, mefl, ctor, coupmf, depl, ener)
+        call dxtloe(flex, memb, mefl, ctor, coupmf,&
+                    depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 24

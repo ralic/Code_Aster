@@ -38,6 +38,7 @@ subroutine te0036(option, nomte)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/abscvf.h"
@@ -80,7 +81,7 @@ subroutine te0036(option, nomte)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
     real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81)
     real(kind=8) :: ad(3), ae(3), af(3)
-    logical(kind=1) :: lbid, axi
+    aster_logical :: lbid, axi
     real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
     integer :: kk
     data          elrese /'SE2','TR3','SE3','TR6'/
@@ -91,7 +92,7 @@ subroutine te0036(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndime,nno=nnop,nnos=nnops)
+    call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop, nnos=nnops)
     ASSERT(ndime.eq.1.or.ndime.eq.2)
 !
     axi = lteatt('AXIS','OUI')
@@ -113,8 +114,8 @@ subroutine te0036(option, nomte)
         irese=0
     endif
     elref=elrese(ndime+irese)
-    call elrefe_info(elrefe=elref,fami='RIGI',nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(elrefe=elref, fami='RIGI', nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 !     IL NE FAUT PAS APPELER XTEINI CAR IL NE GERE PAS LES ELEMENTS
@@ -184,8 +185,7 @@ subroutine te0036(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
     if (ier .eq. 0 .and. (.not. axi) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-         .and..not.iselli(elref))&
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -231,12 +231,12 @@ subroutine te0036(option, nomte)
             if (ndim .eq. 3) then
                 ac(j)=c(j)-a(j)
                 if (.not.iselli(elref)) then
-                   ad(j)=coorse(ndim*(4-1)+j)-a(j)
-                   ae(j)=coorse(ndim*(5-1)+j)-a(j)
-                   af(j)=coorse(ndim*(6-1)+j)-a(j)
+                    ad(j)=coorse(ndim*(4-1)+j)-a(j)
+                    ae(j)=coorse(ndim*(5-1)+j)-a(j)
+                    af(j)=coorse(ndim*(6-1)+j)-a(j)
                 endif
             endif
-         end do
+        end do
 !
         call vecini(12, 0.d0, coorlo)
         if (ndime .eq. 2) then
@@ -253,12 +253,12 @@ subroutine te0036(option, nomte)
             coorlo(5)=ddot(3,ac,1,ab,1)
             coorlo(6)=ddot(3,ac,1,y ,1)
             if (.not. iselli(elref)) then
-            coorlo(7)=ddot(3,ad,1,ab,1)
-            coorlo(8)=ddot(3,ad,1,y,1)
-            coorlo(9)=ddot(3,ae,1,ab,1)
-            coorlo(10)=ddot(3,ae,1,y,1)
-            coorlo(11)=ddot(3,af,1,ab,1)
-            coorlo(12)=ddot(3,af,1,y,1)
+                coorlo(7)=ddot(3,ad,1,ab,1)
+                coorlo(8)=ddot(3,ad,1,y,1)
+                coorlo(9)=ddot(3,ae,1,ab,1)
+                coorlo(10)=ddot(3,ae,1,y,1)
+                coorlo(11)=ddot(3,af,1,ab,1)
+                coorlo(12)=ddot(3,af,1,y,1)
             endif
         else if (ndime.eq.1) then
             if (iselli(elref)) then
@@ -372,7 +372,8 @@ subroutine te0036(option, nomte)
 !
 !         JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
 !
-            call reeref(elrefp, nnop, geomlo, gloc, ndime, xe, ff)
+            call reeref(elrefp, nnop, geomlo, gloc, ndime,&
+                        xe, ff)
 !
 !         COORDONNES REELLES DU POINT DE GAUSS
             call vecini(4, 0.d0, xg)
@@ -526,8 +527,8 @@ subroutine te0036(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nnop, nnops, zi(jstno), .false._1, lbid,&
-                option, nomte, ddls,&
-                nfiss, jfisno, vect=zr(ires))
+                option, nomte, ddls, nfiss, jfisno,&
+                vect=zr(ires))
 !
 !-----------------------------------------------------------------------
 !     FIN

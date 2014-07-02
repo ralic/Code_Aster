@@ -42,17 +42,18 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
 !          MTRAC  :  INDICATEUR LIE A LA TRACTION
 !          IRET   :  CODE RETOUR (>0 -> PB)
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujjid.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/lceqvn.h"
+    integer :: indi(7), nr, nvi, iret, nmat
     character(len=8) :: mod
     real(kind=8) :: mater(nmat, 2), deps(6), yd(nr), yf(nr), vind(nvi)
     real(kind=8) :: drdy(nr, nr), vins(nr), ye(nr), vinf(nvi)
-    integer :: indi(7), nr, nvi, iret, nmat
-    logical(kind=1) :: bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
 !
-    logical(kind=1) :: prox(4), proxc(4), tracti, probt, modif, neglam(3)
+    aster_logical :: prox(4), proxc(4), tracti, probt, modif, neglam(3)
     real(kind=8) :: r(nr), ydt(nr), yft(nr), dev(3), pf, qf
     real(kind=8) :: pref, e0, ptrac, rtrac, un, deux, zero, yet(nr), prob(3)
     real(kind=8) :: matert(22, 2)
@@ -67,8 +68,8 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
     do 10 i = 1, nr
         do 20 j = 1, nr
             drdy(i,j) = zero
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! --- PROPRIETES MATERIAU
     pref = mater(8,2)
@@ -86,32 +87,32 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
         ydt(i) = yd(i)*e0
         yft(i) = yf(i)*e0
         yet(i) = ye(i)*e0
-30  end do
+ 30 end do
 !
     nbmeca = 0
     do 40 k = 1, 7
         if (indi(k) .gt. 0) then
             if (indi(k) .le. 8) nbmeca = nbmeca + 1
         endif
-40  end do
+ 40 end do
 !
     nbmect = nbmeca
     do 50 i = 1, 7
         if (indi(i) .gt. 8) then
             nbmect = nbmect + 1
         endif
-50  end do
+ 50 end do
 !
     do 60 i = 1, nbmeca
         ydt(ndt+1+i) = yd(ndt+1+i)*e0/abs(pref)
         yft(ndt+1+i) = yf(ndt+1+i)*e0/abs(pref)
         yet(ndt+1+i) = ye(ndt+1+i)*e0/abs(pref)
-60  end do
+ 60 end do
 !
     do 70 i = 1, 22
         matert(i,1) = mater(i,1)
         matert(i,2) = mater(i,2)
-70  end do
+ 70 end do
 !
     call hujjid(mod, matert, indi, deps, prox,&
                 proxc, ydt, yft, vind, r,&
@@ -135,13 +136,13 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
                 prob(i) = deux
                 probt = .true.
             endif
-80      continue
+ 80     continue
         do 90 i = 1, 3
             call hujprj(i, yft, dev, pf, qf)
             if (((rtrac+pf-ptrac)/abs(pref)) .ge. -r8prem()) then
                 tracti = .true.
             endif
-90      continue
+ 90     continue
     endif
 !
     if (probt) then
@@ -163,7 +164,7 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
             else if (prob(i).eq.deux) then
                 vind(27+i) = zero
             endif
-100      continue
+100     continue
         iret = 2
         probt = .false.
 !
@@ -177,13 +178,13 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
                 j = j+1
                 msup(j) = i
             endif
-110      end do
+110     end do
 ! --- MECANISME CYCLIQUE A DESACTIVE
 ! --- ET DEJA DESACTIVE ANTERIEUREMENT
         if (j .ne. 0) then
             do 120 i = 1, j
                 vind(23+msup(i)) = zero
-120          continue
+120         continue
         endif
 !
         call lceqvn(nvi, vind, vinf)
@@ -213,14 +214,14 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
                 endif
                 tracti = .false.
             endif
-130      continue
+130     continue
 !
         do 140 i = 1, nbmect
             if (indi(i) .eq. 8) then
                 vind(23+indi(i)) = zero
                 modif = .true.
             endif
-140      continue
+140     continue
 !
         mtrac = .false.
         do 150 i = 1, 3
@@ -236,7 +237,7 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
                     if(.not.modif)mtrac = .true.
                 endif
             endif
-150      continue
+150     continue
         call lceqvn(nvi, vind, vinf)
         iret = 2
     endif

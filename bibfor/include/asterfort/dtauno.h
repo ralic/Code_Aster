@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                       nnoini, nbnop, tspaq, nommet, nomcri,&
@@ -37,7 +39,7 @@ interface
         character(len=8) :: nommai
         character(len=19) :: cnsr
         character(len=8) :: nommap
-        logical(kind=1) :: post
+        aster_logical :: post
         real(kind=8) :: valpar(35)
         real(kind=8) :: vresu(24)
     end subroutine dtauno

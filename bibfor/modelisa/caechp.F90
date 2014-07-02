@@ -1,6 +1,7 @@
-subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
+subroutine caechp(char, ligrch, ligrmo, mesh, fonree,&
                   ndim)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
@@ -60,10 +61,10 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
 ! IN   NOMA   K8  : NOM DU MAILLAGE
 ! IN   FONREE K4  : 'FONC' OU 'REEL'
 !
-    integer :: nbtymx, nechp, ibid,  jvalv, iocc, nh, nt, i, j
+    integer :: nbtymx, nechp, ibid, jvalv, iocc, nh, nt, i, j
     integer :: nbtyp, jlistt, nbm, nfiss, nfismx, jma, ntcon
     parameter    (nfismx=100)
-    logical(kind=1) :: ltcon, lcoefh
+    aster_logical :: ltcon, lcoefh
     integer :: igrel, inema
 !-----------------------------------------------------------------------
     integer :: jligr, ncmp
@@ -91,16 +92,16 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
     igrel = 0
     inema = 0
     call dismoi('MODELISATION', mo, 'MODELE', repk=modelisa)
-
+!
 !
 ! - Count number of late elements
 !
-    call char_nb_ligf(mesh  , keywordfact, 'Elem', nb_elem_late, nb_noel_maxi, &
+    call char_nb_ligf(mesh, keywordfact, 'Elem', nb_elem_late, nb_noel_maxi,&
                       suffix = '_1')
 !
 ! - Create <LIGREL> on late elements
 !
-    if (nb_elem_late.ne.0) then
+    if (nb_elem_late .ne. 0) then
         call char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
     endif
 !
@@ -243,7 +244,7 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
                 igrel = igrel+1
                 call jeveuo(jexnum(llistt, j), 'L', jlistt)
                 call paligi(modelisa, ligrch, igrel, inema, zi(jlistt))
-
+!
 !           STOCKAGE DANS LA CARTE
                 call jeveuo(jexnum(liel, igrel), 'E', jligr)
                 call jelira(jexnum(liel, igrel), 'LONMAX', nbm)

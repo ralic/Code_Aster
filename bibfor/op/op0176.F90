@@ -36,6 +36,7 @@ subroutine op0176()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -75,7 +76,7 @@ subroutine op0176()
     character(len=19) :: resuou, resuin
     character(len=24) :: lisarc, lichex, nompar
 !
-    logical(kind=1) :: fals, true, lbid, lrest
+    aster_logical :: fals, true, lbid, lrest
 !
     complex(kind=8) :: c16b
     integer :: nmail, nmode

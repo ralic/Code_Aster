@@ -16,6 +16,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
@@ -79,7 +80,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
     parameter (nmocl=300)
-    logical(kind=1) :: vexcen
+    aster_logical :: vexcen
     character(len=2) :: typlag
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, poslag, cara
@@ -92,11 +93,11 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
     character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma, nogrno
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, narl, nrl, ibid,   inom
-    integer :: nbcmp, nddla, nbec,  nlili, k, iaprno, lonlis, ilisno
+    integer :: iop, nliai, i, narl, nrl, ibid, inom
+    integer :: nbcmp, nddla, nbec, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
-    integer :: ino, j,  idch1, idch2, nbterm
-    integer ::       ival
+    integer :: ino, j, idch1, idch2, nbterm
+    integer :: ival
     integer :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
     real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme

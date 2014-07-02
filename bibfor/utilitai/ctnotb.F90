@@ -2,7 +2,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                   nkcmp, toucmp, nbcmp, typac, ndim,&
                   nrval, resu, nomtb, nsymb, nival,&
                   niord)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/indik8.h"
@@ -22,7 +23,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
     character(len=24) :: nkcha, nkcmp, mesnoe, nival, nrval, niord
-    logical(kind=1) :: toucmp
+    aster_logical :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,10 +64,10 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcmp, jkcha, jlno, jrval, jival, jniord,  i,  nbnox
-    integer :: jcnsl,   nbcmpx, n,   ino, indno
-    integer :: kcp, icmp, indcmp, ni, nr, nk,    kk, nbpara
-    integer ::  j, ibid
+    integer :: jcmp, jkcha, jlno, jrval, jival, jniord, i, nbnox
+    integer :: jcnsl, nbcmpx, n, ino, indno
+    integer :: kcp, icmp, indcmp, ni, nr, nk, kk, nbpara
+    integer :: j, ibid
     complex(kind=8) :: cbid
     character(len=8) :: kno
     character(len=19) :: chamns
@@ -190,11 +191,11 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                 do 121 j = 1, ndim
                     table_valr(kk+1)=vale(1+3*(ino-1)+j-1)
                     kk=kk+1
-121              continue
+121             continue
                 do 122 j = 1, kcp
                     table_valr(kk+1)=val_cmp(j)
                     kk=kk+1
-122              continue
+122             continue
 !
                 kk=0
                 if (resu .eq. ' ') then
@@ -248,7 +249,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                 do 123 j = 1, kcp
                     table_parak(kk+1)=nom_cmp(j)
                     kk=kk+1
-123              continue
+123             continue
 !
 !
 !               ON AJOUTE LA LIGNE A LA TABLE
@@ -267,7 +268,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
         endif
 !
-100  end do
+100 end do
 !
     AS_DEALLOCATE(vr=table_valr)
     AS_DEALLOCATE(vi=table_vali)

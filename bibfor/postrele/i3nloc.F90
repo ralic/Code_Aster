@@ -1,5 +1,6 @@
 subroutine i3nloc(t1, t2, n1, n2, t3)
     implicit none
+#include "asterf_types.h"
 !
     integer :: t1(*), t2(*), t3(*)
 !     ------------------------------------------------------------------
@@ -31,26 +32,26 @@ subroutine i3nloc(t1, t2, n1, n2, t3)
 !            :   :            J=0 => T1(I) NON DANS T2
 !     ------------------------------------------------------------------
     integer :: i, j, i1
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     integer :: n1, n2
 !-----------------------------------------------------------------------
 !
-    do 100, i = 1, n1, 1
-    i1 = t1(i)
-    j = 1
-    trouve = .false.
-10  continue
-    if ((.not. trouve) .and. (j .le. n2)) then
-        if (t2(j) .eq. i1) then
-            trouve = .true.
-        else
-            j = j + 1
+    do 100 i = 1, n1, 1
+        i1 = t1(i)
+        j = 1
+        trouve = .false.
+ 10     continue
+        if ((.not. trouve) .and. (j .le. n2)) then
+            if (t2(j) .eq. i1) then
+                trouve = .true.
+            else
+                j = j + 1
+            endif
+            goto 10
         endif
-        goto 10
-    endif
-    if (.not. trouve) then
-        j = 0
-    endif
-    t3(i) = j
-    100 end do
+        if (.not. trouve) then
+            j = 0
+        endif
+        t3(i) = j
+100 end do
 end subroutine

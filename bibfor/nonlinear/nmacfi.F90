@@ -19,6 +19,7 @@ subroutine nmacfi(fonact, veasse, cnffdo, cndfdo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -58,8 +59,8 @@ subroutine nmacfi(fonact, veasse, cnffdo, cndfdo)
     real(kind=8) :: cofixe(20)
     character(len=19) :: cnfedo, cndido
     character(len=19) :: cncine, cndidi, cnsstr, cnsstf
-    logical(kind=1) :: ldidi
-    logical(kind=1) :: lmacr, lsstf
+    aster_logical :: ldidi
+    aster_logical :: lmacr, lsstf
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,7 +116,7 @@ subroutine nmacfi(fonact, veasse, cnffdo, cndfdo)
      &                   cofixe(n)
             call nmdebg('VECT', cnfixe(n), ifm)
         endif
-17  end do
+ 17 end do
 !
     ifdo = 0
 !
@@ -154,7 +155,7 @@ subroutine nmacfi(fonact, veasse, cnffdo, cndfdo)
      &                 cofixe(n)
             call nmdebg('VECT', cnfixe(n), ifm)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

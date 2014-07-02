@@ -3,6 +3,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                   mse, sn, nommat, c, k,&
                   cara, ug)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/limend.h"
 #include "asterfort/rc36sa.h"
@@ -37,7 +38,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
     integer :: icomp
     real(kind=8) :: salt, saltm, nadm(1), u1kl, u2kl, sp, snkl, saltkl, mij, sm
     real(kind=8) :: vale(2)
-    logical(kind=1) :: trouve, endur
+    aster_logical :: trouve, endur
     real(kind=8) :: typeke, spmeca, spther
     integer :: icodre(1)
     character(len=2) :: k2c, k2l
@@ -56,7 +57,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
             i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,nbsig2)
             write(ifm,1002) sit1(2*(i-1)+2), noc1(2*(i-1)+2), (saltij(&
             i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,nbsig2)
-100      continue
+100     continue
     endif
 !
     ug = 0.d0
@@ -66,12 +67,12 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
     mij = 0.d0
     do 50 icmp = 1, 3
         mij = mij + mse(icmp)**2
-50  end do
+ 50 end do
     mij = sqrt( mij )
 !
     sp = k(2)*c(2)*cara(2)*mij / 4 / cara(1)
 !
-10  continue
+ 10 continue
     saltm = 0.d0
     trouve = .false.
     icomp = icomp + 1
@@ -94,11 +95,11 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                     saltm = salt
                     trouve = .true.
                 endif
-24          continue
+ 24         continue
 !
-22      continue
+ 22     continue
 !
-20  end do
+ 20 end do
 !
     if (trouve) then
 !
@@ -183,7 +184,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                 write(ifm,1002) sit1(2*(i-1)+2), noc1(2*(i-1)+2),&
                 (saltij(i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,&
                 nbsig2)
-110          continue
+110         continue
         endif
 !
         ug = ug + u1kl + u2kl
@@ -191,7 +192,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
     1000 format(1p,i7,'_A',i9,'|',40(e9.2,1x,e9.2,'|'))
     1002 format(1p,i7,'_B',i9,'|',40(e9.2,1x,e9.2,'|'))

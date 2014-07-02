@@ -18,7 +18,8 @@ subroutine apzonl(sdappa, izone, questz, vall)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apzoni.h"
 #include "asterfort/assert.h"
@@ -27,7 +28,7 @@ subroutine apzonl(sdappa, izone, questz, vall)
 #include "asterfort/jemarq.h"
     character(len=19) :: sdappa
     integer :: izone
-    logical(kind=1) :: vall
+    aster_logical :: vall
     character(len=*) :: questz
 !
 ! ----------------------------------------------------------------------

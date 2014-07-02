@@ -19,13 +19,14 @@ function ndynlo(sddyna, chainz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: ndynlo
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynin.h"
+    aster_logical :: ndynlo
     character(len=19) :: sddyna
     character(len=*) :: chainz
 !
@@ -249,7 +250,7 @@ function ndynlo(sddyna, chainz)
         ASSERT(.false.)
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

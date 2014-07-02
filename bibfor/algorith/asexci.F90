@@ -2,6 +2,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
                   impr, ndir, monoap, muapde, kspect,&
                   kasysp, nbsup, nsupp, knoeu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/asexc1.h"
@@ -20,7 +21,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
     integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*)
     character(len=*) :: masse, kspect, kasysp, knoeu
-    logical(kind=1) :: monoap, muapde, corfre
+    aster_logical :: monoap, muapde, corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +65,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 ! IN  : KNOEU  : NOM DU VECTEUR DES NOMS DES SUPPORTS
 !     ------------------------------------------------------------------
     integer :: ier, im1, im2, ioc, nm, nn, ng, nbocc, jasy, neq, jddl1
-    integer :: nba, nbbloq, nbl, nbliai,     jspe,  noc
+    integer :: nba, nbbloq, nbl, nbliai, jspe, noc
     character(len=5) :: motfac
     character(len=8) :: k8b, noma
     character(len=14) :: nume

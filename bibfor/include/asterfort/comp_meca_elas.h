@@ -15,11 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
         character(len=19) , intent(in) :: comp_elas
         integer, intent(in) :: nb_cmp
-        logical(kind=1), intent(in) :: l_etat_init
+        aster_logical, intent(in) :: l_etat_init
     end subroutine comp_meca_elas
 end interface
-

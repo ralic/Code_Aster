@@ -1,11 +1,12 @@
-subroutine xxbsig(elrefp, elrese, ndim, coorse,&
-                  igeom, he, nfh, ddlc, ddlm,&
-                  nfe, basloc, nnop, npg, sigma,&
-                  compor, idepl, lsn, lst, nfiss,&
-                  fisno, codopt, ivectu)
+subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
+                  he, nfh, ddlc, ddlm, nfe,&
+                  basloc, nnop, npg, sigma, compor,&
+                  idepl, lsn, lst, nfiss, fisno,&
+                  codopt, ivectu)
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -77,14 +78,14 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 !......................................................................
     integer :: kpg, i, ig, n, nn, m, dec(nnop)
     integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt, iret
-    integer ::  idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: rbid, rbid6(6), rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
     real(kind=8) :: dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), sign(2*ndim)
     real(kind=8) :: r
-    logical(kind=1) :: grdepl, axi
+    aster_logical :: grdepl, axi
 !
     real(kind=8) :: rac2
     data     rac2 / 1.4142135623731d0 /
@@ -104,7 +105,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
     grdepl = compor(3) .eq. 'GROT_GDEP'
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
     if (ndim .eq. 2) then
         axi = lteatt('AXIS','OUI')
@@ -112,9 +113,9 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
         axi = .false.
     endif
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
 !
     ASSERT(npg.eq.npgbis)
     do n = 1, nnop
@@ -135,7 +136,8 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 !
 !       JUSTE POUR CALCULER LES FF
 !
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
 !
         if (nfe .gt. 0) then
@@ -180,11 +182,14 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
         if (grdepl) then
-            call xcinem(axi, nnop, nnops, idepl, .true._1, ndim, he,&
-                        r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                        fe, dgdgl, ff, dfdi, f, rbid6, rbid33)
+            call xcinem(axi, nnop, nnops, idepl, .true._1,&
+                        ndim, he, r, rbid, fisno,&
+                        nfiss, nfh, nfe, ddls, ddlm,&
+                        fe, dgdgl, ff, dfdi, f,&
+                        rbid6, rbid33)
         else
 !           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
 !                      l'adresse idepl est un argument bidon...)

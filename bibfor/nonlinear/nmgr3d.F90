@@ -26,6 +26,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/codere.h"
 #include "asterfort/lcdetf.h"
@@ -48,7 +49,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(3, nno), maxeps
     real(kind=8) :: pff(6, nno, nno), def(6, nno, 3)
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
 !
 !
 !.......................................................................
@@ -86,7 +87,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !.......................................................................
 !
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
 !
     integer :: kpg, j, cod(27)
 !
@@ -110,7 +111,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 !
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 !     ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 !     INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
@@ -146,7 +147,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
         do 25 j = 1, 6
             deps (j)=epsp(j)-epsm(j)
             maxeps=max(maxeps,abs(epsp(j)))
-25      continue
+ 25     continue
 !
 !        VERIFICATION QUE EPS RESTE PETIT
 !
@@ -193,9 +194,9 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
                         1)
         endif
 !
-800  end do
+800 end do
 !
-1956  continue
+1956 continue
 !
 ! - SYNTHESE DES CODES RETOURS
 !

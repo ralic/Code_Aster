@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dldiff(result, force1, lcrea, lamort, neq,&
                       imat, masse, rigid, amort, dep0,&
@@ -24,8 +26,8 @@ interface
                       fomult, numedd, nume, solveu, numrep)
         character(len=8) :: result
         character(len=19) :: force1
-        logical(kind=1) :: lcrea
-        logical(kind=1) :: lamort
+        aster_logical :: lcrea
+        aster_logical :: lamort
         integer :: neq
         integer :: imat(*)
         character(len=8) :: masse

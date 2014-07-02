@@ -22,12 +22,13 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
     character(len=16) :: metcor, metpre, optrig
     integer :: numins
-    logical(kind=1) :: reasma, lcamor, lcrigi, lcfint, larigi
+    aster_logical :: reasma, lcamor, lcrigi, lcfint, larigi
     character(len=19) :: sddyna
     character(len=10) :: phase
     integer :: fonact(*)
@@ -58,7 +59,7 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: limpex, lshima, lprem
+    aster_logical :: limpex, lshima, lprem
 !
 ! ----------------------------------------------------------------------
 !

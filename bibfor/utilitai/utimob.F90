@@ -20,12 +20,13 @@ subroutine utimob(unit, obin, nivo, lattr, lcont,&
 !     --
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "asterfort/utimco.h"
 #include "asterfort/utimos.h"
 #include "asterfort/utmess.h"
     character(len=*) :: obin, xous
     integer :: nivo, unit
-    logical(kind=1) :: lattr, lcont
+    aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
 !       UNIT   : UNITE LOGIQUE D'IMPRESSION

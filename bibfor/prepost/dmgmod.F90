@@ -3,6 +3,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
                   impr, vdomag)
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/getvtx.h"
@@ -69,9 +70,9 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     real(kind=8) :: valr(3), r8b, dmin, smax, coeff, r8min
 !
     integer :: ipt, iord, icmp, nbr, nbk, nbc, nbf
-    integer :: ivch,  ivpt, ibid, ivalk
+    integer :: ivch, ivpt, ibid, ivalk
     integer :: numsym, ivch2, ivord2(nbordr), numord
-    logical(kind=1) :: crit
+    aster_logical :: crit
 !
 ! ---   VECTEURS DE TRAVAIL
 !
@@ -130,7 +131,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             call jeveuo(nomfon//'           .VALE', 'L', vr=vale)
             salt0=vale(1)
         endif
-50  end do
+ 50 end do
 !
     valr(1) = su
     valr(2) = salt0
@@ -163,7 +164,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             call utmess('F', 'PREPOST_52', nk=3, valk=valk)
         endif
         call jeveuo(chequ2(iord)//'.CELV', 'L', ivord2(iord))
-11  continue
+ 11 continue
 !
 ! ---     BOUCLE SUR LES POINTS
 !
@@ -174,7 +175,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         do 12 iord = 1, nbordr
             coeff = zr(jcoef+iord-1)
             zr(ivpt+1) = zr(ivpt+1) + coeff* abs(zr(ivord2(iord)+(ipt- 1)*ntcmp+numcmp(icmp)-1))
-12      continue
+ 12     continue
 !
         if (zr(ivpt) .gt. su) then
             if (impr .ge. 2) then
@@ -208,7 +209,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             call utmess('I', 'FATIGUE1_79', si=ipt, nr=3, valr=valr)
         endif
 !
-10  continue
+ 10 continue
 !
     if (crit) then
         valr (1) = smax

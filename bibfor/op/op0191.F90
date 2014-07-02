@@ -23,6 +23,7 @@ subroutine op0191()
 !
 ! ----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -72,7 +73,7 @@ subroutine op0191()
     character(len=24) :: nompar, champ0, champ1
     character(len=24) :: valk(2)
 !
-    logical(kind=1) :: lreuse, lcumu(2), lcoc(2)
+    aster_logical :: lreuse, lcumu(2), lcoc(2)
 !
     data lcumu/.false._1,.false./
     data lcoc/.false._1,.false./

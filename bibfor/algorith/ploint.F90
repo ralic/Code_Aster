@@ -36,13 +36,14 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
 !
 !------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/chnucn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-    logical(kind=1) :: vrai
+    aster_logical :: vrai
     integer :: ipres, i, iret
     character(len=8) :: k8bid, tcorx(2), tcory(2), tcorz(2)
     character(len=*) :: modmec, chamno, model

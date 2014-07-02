@@ -44,6 +44,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !          EPSCON   :  VALEUR ERR FINALE
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/cjsjis.h"
 #include "asterfort/cjsncv.h"
 #include "asterfort/iunifi.h"
@@ -56,7 +57,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
     parameter     (nmod = 8 )
     parameter     (nitimp = 100)
     integer :: iter
-    logical(kind=1) :: noconv, aredec, stopnc
+    aster_logical :: noconv, aredec, stopnc
 !
 !
     real(kind=8) :: epsd(6), deps(6), det
@@ -98,7 +99,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
         dy(i) = 0.d0
         yd(i) = 0.d0
         yf(i) = 0.d0
-10  continue
+ 10 continue
 !
 !
 ! -> INITIALISATION DE YD PAR LA PREDICTION ELASTIQUE (SIGF, VIND, ZERO)
@@ -118,7 +119,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !---------------------------------------
 !
     iter = 0
-100  continue
+100 continue
 !
     iter = iter + 1
 !
@@ -134,8 +135,8 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
         r(i) = 0.d0
         do 60 j = 1, nr
             drdy(i,j) = 0.d0
-60      continue
-50  continue
+ 60     continue
+ 50 continue
 !
     call cjsjis(mod, mater, deps, yd, yf,&
                 r, drdy)
@@ -192,7 +193,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
         endif
     endif
 !
-200  continue
+200 continue
     niter = iter
     epscon = err
 !

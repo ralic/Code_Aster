@@ -40,6 +40,7 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 ! VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST
 !
     implicit none
+#include "asterf_types.h"
     integer :: ndimsi, k, l, iret, ndim, nvv, nbvari, cp
     character(len=8) :: typmod(*)
     character(len=16) :: option, optio2
@@ -48,7 +49,7 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
     real(kind=8) :: depy, depz, d11, d22, d33, d12, d13, d21, d23, d31, d32
     real(kind=8) :: delta, dy, dz
     real(kind=8) :: sigy, sigz, depx, sigx, vip1, vip2, vip3, vip4, signul
-    logical(kind=1) :: vecteu
+    aster_logical :: vecteu
 !
     real(kind=8) :: d21eps, scm(4), sigpeq, precr, prec
 !
@@ -107,7 +108,7 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 !
             do 130 k = 1, ndimsi
                 sigp(k)=sigp(k)+scm(k)
-130          continue
+130         continue
 !
 !
             if (abs(sigp(3)) .gt. precr) then
@@ -129,8 +130,8 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                         dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
                     endif
 !
-137              continue
-136          continue
+137             continue
+136         continue
 !
         endif
 !
@@ -182,7 +183,7 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 !
             do 140 k = 1, ndimsi
                 sigp(k)=sigp(k)+scm(k)
-140          continue
+140         continue
 !
             if (abs(sigp(2)) .gt. precr) iret=3
             if (abs(sigp(3)) .gt. precr) iret=3

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
                       deltac, ratio, optdec, ldcext, durdec,&
@@ -27,7 +29,7 @@ interface
         real(kind=8) :: deltac
         real(kind=8) :: ratio
         character(len=16) :: optdec
-        logical(kind=1) :: ldcext
+        aster_logical :: ldcext
         real(kind=8) :: durdec
         integer :: retdec
     end subroutine nmdecp

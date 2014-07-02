@@ -22,6 +22,7 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/mmnewt.h"
 #include "asterfort/mmtole.h"
@@ -30,7 +31,7 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
     integer :: nno
     real(kind=8) :: coorma(27)
     real(kind=8) :: coorpt(3)
-    logical(kind=1) :: dirapp
+    aster_logical :: dirapp
     real(kind=8) :: dir(3)
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: tau1(3), tau2(3)
@@ -95,6 +96,6 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
     call mmtole(alias, nno, ndim, coorma, toleou,&
                 ksi1, ksi2, tau1, tau2, iproj)
 !
-999  continue
+999 continue
 !
 end subroutine

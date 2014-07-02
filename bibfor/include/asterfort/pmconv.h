@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pmconv(r, rini, r1, inst, sigp,&
                       coef, iter, indimp, parcri, conver,&
@@ -28,7 +30,7 @@ interface
         integer :: iter
         integer :: indimp(6)
         real(kind=8) :: parcri(*)
-        logical(kind=1) :: conver
-        logical(kind=1) :: itemax
+        aster_logical :: conver
+        aster_logical :: itemax
     end subroutine pmconv
 end interface

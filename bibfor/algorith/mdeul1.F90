@@ -11,11 +11,12 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   nofvit, nofacc, nomfon, psidel, monmot,&
                   nbrfis, fk, dfk, angini, foncp,&
                   nbpal, dtsto, vrotat, prdeff, nomres,&
-                  nbexci, passto, intitu )
+                  nbexci, passto, intitu)
 !
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/amgene.h"
@@ -58,7 +59,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*)
     character(len=8) :: nomres, monmot
     character(len=16) :: typbas
-    logical(kind=1) :: lamor, prdeff,condrepri
+    aster_logical :: lamor, prdeff, condrepri
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)
@@ -278,8 +279,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     endif
 !
 !   conditions initiales
-    call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite), &
-                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho, &
+    call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite),&
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho,&
                 reprise=condrepri, accgen=acce)
     if (iret .ne. 0) goto 9999
     if (nbchoc .gt. 0 .and. nbpal .eq. 0) then
@@ -313,7 +314,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !   cas classique
     if (nbpal .ne. 0) nbchoc = 0
 !   Si ce n'est pas une reprise : on calcule l'état initial
-    if ( .not. condrepri ) then
+    if (.not. condrepri) then
         call mdfnli(neqgen, zr(jdepl), zr(jvite), acce, fext,&
                     nbchoc, logcho, dplmod, parcho, noecho,&
                     zr(jchor), nbrede, dplred, fonred, zr(jredr),&
@@ -332,7 +333,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     endif
 !
 !   accélérations généralisées initiales : si pas de reprise on calcule
-    if ( .not. condrepri ) then
+    if (.not. condrepri) then
         call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
                     riggen, descmr, fext, lamor, zr(jamgy),&
                     descma, tra1, zr(jdepl), zr(jvite), acce)
@@ -431,7 +432,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !       ACCELERATIONS GENERALISEES ---
         call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
                     riggen, descmr, fext, lamor, zr(jamgy),&
-                    descma, tra1, zr(jdepl), zr(jvite),acce)
+                    descma, tra1, zr(jdepl), zr(jvite), acce)
 !
 !        --- ARCHIVAGE ---
 !
@@ -484,7 +485,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
         temps = temps + dt
     enddo
 !
-9999  continue
+9999 continue
     call jedetr('&&MDEUL1.DEPL')
     call jedetr('&&MDEUL1.VITE')
     AS_DEALLOCATE(vr=acce)

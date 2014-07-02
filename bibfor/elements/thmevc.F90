@@ -2,12 +2,13 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                   ipoids, ivf, idfde, nddls, nnos,&
                   nddlm, nnom)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nno, npg, ipoids, ivf, idfde
     integer :: nnos, nddls, nnom, nddlm
     character(len=16) :: option, nomte
@@ -78,14 +79,14 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                 fx = fx + zr(ivf+k+i-1) * zr(iforc+ii )
                 fy = fy + zr(ivf+k+i-1) * zr(iforc+ii+1)
                 fz = fz + zr(ivf+k+i-1) * zr(iforc+ii+2)
-20          continue
+ 20         continue
 !
             do 30 i = 1, nnos
                 ii = nddls * (i-1)
                 zr(ivectu+ii) = zr(ivectu+ii) + poids * fx * zr(ivf+k+ i-1)
                 zr(ivectu+ii+1) = zr(ivectu+ii+1) + poids * fy * zr( ivf+k+i-1)
                 zr(ivectu+ii+2) = zr(ivectu+ii+2) + poids * fz * zr( ivf+k+i-1)
-30          continue
+ 30         continue
 !
             do 40 i = 1, nnom
                 ii = nnos*nddls+nddlm*(i-1)
@@ -95,8 +96,8 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                 ivf+k+i+nnos-1)
                 zr(ivectu+ii+2)= zr(ivectu+ii+2) + poids * fz * zr(&
                 ivf+k+i+nnos-1)
-40          continue
-10      continue
+ 40         continue
+ 10     continue
     endif
 ! ======================================================================
 ! --- 2. OPTION : CHAR_MECA_FR2D2D -------------------------------------
@@ -118,13 +119,13 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                 ii = 2 * (i-1)
                 fx = fx + zr(ivf+k+i-1) * zr(iforc+ii )
                 fy = fy + zr(ivf+k+i-1) * zr(iforc+ii+1)
-110          continue
+110         continue
 !
             if (axi) then
                 rx = 0.d0
                 do 120 i = 1, nno
                     rx = rx + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-120              continue
+120             continue
                 poids = poids*rx
             endif
 !
@@ -132,7 +133,7 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                 ii = nddls* (i-1)
                 zr(ivectu+ii) = zr(ivectu+ii) + poids * fx * zr(ivf+k+ i-1)
                 zr(ivectu+ii+1) = zr(ivectu+ii+1) + poids * fy * zr( ivf+k+i-1)
-130          continue
+130         continue
 !
             do 140 i = 1, nnom
                 ii = nnos*nddls+nddlm*(i-1)
@@ -140,8 +141,8 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                 i+nnos-1)
                 zr(ivectu+ii+1)= zr(ivectu+ii+1) + poids * fy * zr(&
                 ivf+k+i+nnos-1)
-140          continue
-100      continue
+140         continue
+100     continue
     endif
 !
 end subroutine

@@ -18,9 +18,10 @@ subroutine nmcoru(vresi, vresid, convok)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
     real(kind=8) :: vresi, vresid
-    logical(kind=1) :: convok
+    aster_logical :: convok
 !
 ! ----------------------------------------------------------------------
 !

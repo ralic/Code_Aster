@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                       nt, nbres, indtp, nbtp, m,&
                       fc, dfc)
         integer :: nrupt
-        logical(kind=1) :: cals
+        aster_logical :: cals
         real(kind=8) :: sk(*)
         real(kind=8) :: sigw(*)
         integer :: nur(*)

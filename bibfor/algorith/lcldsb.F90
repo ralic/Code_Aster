@@ -19,6 +19,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diagp3.h"
 #include "asterfort/evolts.h"
@@ -53,7 +54,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical(kind=1) :: rigi, resi, elas, coup
+    aster_logical :: rigi, resi, elas, coup
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret, iterat
     real(kind=8) :: eps(6), treps, sigel(6), kron(6)
     real(kind=8) :: rac2, coef, coef2
@@ -111,21 +112,21 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
         do 10 k = 1, ndimsi
             eps(k) = epsm(k) + deps(k) - kron(k) * ( epsthe(2) - kdess * (sref-sechp) - bendo * h&
                      &ydrp )
-10      continue
+ 10     continue
     else
         do 40 k = 1, ndimsi
             eps(k) = epsm(k) - ( epsthe(1) - kdess * (sref-sechm) - bendo * hydrm ) * kron(k)
-40      continue
+ 40     continue
     endif
 !
 !
     do 45 k = 4, ndimsi
         eps(k) = eps(k)/rac2
-45  end do
+ 45 end do
     if (ndimsi .lt. 6) then
         do 46 k = ndimsi+1, 6
             eps(k)=0.d0
-46      continue
+ 46     continue
     endif
 !
 ! -- DIAGONALISATION DES DEFORMATIONS
@@ -144,17 +145,17 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
     if (treps .gt. 0.d0) then
         do 60 k = 1, 3
             sigel(k) = lambda*treps
-60      continue
+ 60     continue
     else
         do 61 k = 1, 3
             sigel(k) = 0.d0
-61      continue
+ 61     continue
     endif
     do 15 k = 1, 3
         if (epsp(k) .gt. 0.d0) then
             sigel(k) = sigel(k) + deuxmu*epsp(k)
         endif
-15  end do
+ 15 end do
     ener = 0.5d0 * ddot(3,epsp,1,sigel,1)
 !
 ! -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
@@ -222,10 +223,10 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
             sig(4)=sig(4)+vecp(1,i)*vecp(2,i)*rtemp
             sig(5)=sig(5)+vecp(1,i)*vecp(3,i)*rtemp
             sig(6)=sig(6)+vecp(2,i)*vecp(3,i)*rtemp
-1010      continue
+1010     continue
         do 18 k = 4, ndimsi
             sig(k)=rac2*sig(k)
-18      continue
+ 18     continue
     endif
 !
 ! -- CALCUL DE LA MATRICE TANGENTE
@@ -267,11 +268,11 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
         do 100 k = 1, 3
             do 110 l = 1, 3
                 dspdep(k,l) = lambdd
-110          continue
-100      continue
+110         continue
+100     continue
         do 120 k = 1, 3
             dspdep(k,k) = dspdep(k,k) + deumud(k)
-120      continue
+120     continue
         if (epsp(1)*epsp(2) .ge. 0.d0) then
             dspdep(4,4)=deumud(1)
         else
@@ -310,8 +311,8 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                                 do 25 n = 1, 3
                                     rtemp2=rtemp2+vecp(k,m)* vecp(i,n)&
                                     *vecp(j,n)*vecp(l,m)*dspdep(n,m)
-25                              continue
-24                          continue
+ 25                             continue
+ 24                         continue
                             rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,&
                             1)*vecp(l,2)*dspdep(4,4)
                             rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,&
@@ -327,16 +328,16 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                             dsidep(t(i,j),t(k,l))=dsidep(t(i,j),t(k,l)&
                             )+rtemp2*rtemp4
                         endif
-23                  continue
-22              continue
-21          continue
-20      continue
+ 23                 continue
+ 22             continue
+ 21         continue
+ 20     continue
 !
         do 26 i = 1, 6
             do 27 j = i+1, 6
                 dsidep(i,j)=dsidep(j,i)
-27          continue
-26      continue
+ 27         continue
+ 26     continue
 ! -- CONTRIBUTION DISSIPATIVE
         if ((.not. elas) .and. (ener.gt.0.d0)) then
             if (coup) then
@@ -364,11 +365,11 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                 do 500 k = 1, 3
                     do 510 l = 1, 3
                         dspdep(k,l) = lambdd
-510                  continue
-500              continue
+510                 continue
+500             continue
                 do 515 k = 1, 3
                     dspdep(k,k) = dspdep(k,k) + deumud(k)
-515              continue
+515             continue
                 if (epsp(1)*epsp(2) .ge. 0.d0) then
                     dspdep(4,4)=deumud(1)
                 else
@@ -408,8 +409,8 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                                             rtemp2=rtemp2+vecp(k,m)*&
                                         vecp(i,n)*vecp(j,n)*vecp(l,m)*&
                                         dspdep(n,m)
-525                                      continue
-524                                  continue
+525                                     continue
+524                                 continue
                                     rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*&
                                     vecp(k,1)*vecp(l,2)*dspdep(4,4)
                                     rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*&
@@ -425,16 +426,16 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                                     dsidep(t(i,j),t(k,l)+6)=dsidep(t(&
                                     i,j),t(k,l)+6)+rtemp2*rtemp4
                                 endif
-523                          continue
-522                      continue
-521                  continue
-520              continue
+523                         continue
+522                     continue
+521                 continue
+520             continue
 !
                 do 526 i = 1, 6
                     do 527 j = i+1, 6
                         dsidep(i,j+6)=dsidep(j,i+6)
-527                  continue
-526              continue
+527                 continue
+526             continue
 !
             else
                 tr(1) = sigel(1)
@@ -449,10 +450,10 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                     sigel(4)=sigel(4)+vecp(1,i)*vecp(2,i)*rtemp
                     sigel(5)=sigel(5)+vecp(1,i)*vecp(3,i)*rtemp
                     sigel(6)=sigel(6)+vecp(2,i)*vecp(3,i)*rtemp
-1020              continue
+1020             continue
                 do 28 k = 4, ndimsi
                     sigel(k)=rac2*sigel(k)
-28              continue
+ 28             continue
                 coef = (1+gamma)/(2*gamma*(1+gamma*d)*ener)
 !
 ! CALCUL DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE
@@ -468,8 +469,8 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                 do 200 k = 1, ndimsi
                     do 210 l = 1, ndimsi
                         dsidep(k,l) = dsidep(k,l) - coef * sigel(k) * sigel(l)
-210                  continue
-200              continue
+210                 continue
+200             continue
             endif
         endif
     endif

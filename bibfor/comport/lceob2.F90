@@ -21,6 +21,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/ceobfb.h"
 #include "asterfort/ceobfd.h"
 #include "asterfort/dfbdb.h"
@@ -34,7 +35,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
 !
     integer :: intmax, iret, bdim
 !
-    logical(kind=1) :: elas, dbloq
+    aster_logical :: elas, dbloq
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 !     ROUTINE DE RESOLUTION DU SYSTEME NON LINEAIRE
@@ -87,7 +88,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
 !
     do 100 i = 1, 6
         b(i)=bm(i)
-100  end do
+100 end do
     d=dm
 !
 !-------------------------------------------------------
@@ -135,14 +136,14 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
 !
         do 32 i = 1, 3
             resb(i)=-bs(i)+bms(i)+alpha*mult*fbsm(i)
-32      continue
+ 32     continue
         resd=-d+dm+(un-alpha)*mult*fd
         resb(3)=rac2*resb(3)
 !
         tata=0.d0
         do 37 i = 1, 3
             tata=tata+resb(i)*resb(i)
-37      continue
+ 37     continue
 !
         normrb=sqrt(tata)
 !
@@ -153,7 +154,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
 !--------------------------------------------------------
 !
 !
-38      continue
+ 38     continue
         if (((crit.gt.tolc).or.(normrb.gt.tole).or.(abs(resd).gt.tole))) then
             if ((compte.lt.intmax) .and. (coupl.ne.0.d0)) then
 ! Rajout du test sur COUPL (fiche 15020) : lorsque c'est le cas,
@@ -187,19 +188,19 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
                         do 42 k = 1, 3
                             ksi(i,j)=ksi(i,j)-mult*alpha*mte1(i,k)*&
                             mte2s(k,j)
-42                      continue
-41                  continue
-40              continue
+ 42                     continue
+ 41                 continue
+ 40             continue
 !
                 do 43 i = 1, 3
                     ksi(i,i)=ksi(i,i)+un
-43              continue
+ 43             continue
 !
                 do 44 i = 1, 3
                     do 45 j = 1, 3
                         toti(i,j)=ksi(i,j)
-45                  continue
-44              continue
+ 45                 continue
+ 44             continue
 !
                 do 46 i = 1, 3
                     do 47 j = 1, 3
@@ -208,22 +209,22 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
                         else
                             ide(i,j)=0.d0
                         endif
-47                  continue
-46              continue
+ 47                 continue
+ 46             continue
                 call r8inir(9, 0.d0, teme, 1)
                 do 48 i = 1, 3
                     do 49 j = 1, 3
                         teme(i,j)=ide(i,j)
-49                  continue
-48              continue
+ 49                 continue
+ 48             continue
                 call mgauss('NFVP', toti, teme, 3, 3,&
                             3, det, iret1)
                 call r8inir(9, 0.d0, iksi, 1)
                 do 51 i = 1, 3
                     do 52 j = 1, 3
                         iksi(i,j)=teme(i,j)
-52                  continue
-51              continue
+ 52                 continue
+ 51             continue
 !
                 psi=un-mult*(un-alpha)*dfddd
 !
@@ -237,8 +238,8 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
                         endif
                         delta1(i)=delta1(i)+alpha/coupl*rtemp2*fbsm(j)&
                         *mte2s(j,i)
-54                  continue
-53              continue
+ 54                 continue
+ 53             continue
 !
                 delta2=(un-alpha)/coupl*fd*dfddd
 !
@@ -254,8 +255,8 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
                         inter1=inter1+delta1(i)*iksi(i,j)*resb(j)
                         inter3=inter3+alpha*rtemp2*delta1(i) *iksi(i,&
                         j)*fbsm(j)
-56                  continue
-55              continue
+ 56                 continue
+ 55             continue
 !
                 inter2=delta2/psi*resd
                 inter4=delta2/psi*(un-alpha)*fd
@@ -278,12 +279,12 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
                         endif
                         dbs(i)=dbs(i)+rtemp2*iksi(i,j)* (resb(j)+ddg*&
                         alpha*fbsm(j)*rtemp3)
-58                  continue
-57              continue
+ 58                 continue
+ 57             continue
 !
                 do 59 i = 1, 3
                     bs(i)=bs(i)+dbs(i)
-59              continue
+ 59             continue
                 d=d+dd
                 compte=compte+1
                 mult=mult+ddg
@@ -319,14 +320,14 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
 !
                 do 132 i = 1, 3
                     resb(i)=-bs(i)+bms(i)+alpha*mult*fbsm(i)
-132              continue
+132             continue
                 resd=-d+dm+(un-alpha)*mult*fd
                 resb(3)=rac2*resb(3)
 !
                 tata=0.d0
                 do 137 i = 1, 3
                     tata=tata+resb(i)*resb(i)
-137              continue
+137             continue
 !
                 normrb=sqrt(tata)
 !
@@ -338,7 +339,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
         endif
 !
     endif
-999  continue
+999 continue
 !
 !
 end subroutine

@@ -2,6 +2,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
@@ -46,7 +47,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 !
     integer :: igeom, imate, iforc, iforf, itemps, ipesa, irota
     integer :: iret, ino, j, kk, mxstac
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
     real(kind=8) :: valpar(4), rbid=0.d0, om, omo, val(1), rhocst
     integer :: icodre(1)
     character(len=8) :: nompar(4)
@@ -61,11 +62,10 @@ subroutine xcgfvo(option, ndim, nnop, fno)
     call jevech('PMATERC', 'L', imate)
 !
 !     PARAMETRES DES FORCES VOLUMIQUES
-    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_K_G'&
-    .or. option .eq. 'CALC_GTP') then
+    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_K_G' .or. option .eq. 'CALC_GTP') then
         fonc=.false.
         call jevech('PFRVOLU', 'L', iforc)
-    else if (option.eq.'CALC_G_F'.or. option.eq.'CALC_K_G_F'&
+        else if (option.eq.'CALC_G_F'.or. option.eq.'CALC_K_G_F'&
     .or. option .eq. 'CALC_GTP_F') then
         fonc=.true.
         call jevech('PFFVOLU', 'L', iforf)
@@ -101,13 +101,13 @@ subroutine xcgfvo(option, ndim, nnop, fno)
         do 30 ino = 1, nnop
             do 31 j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(ino-1)+j-1)
-31          continue
+ 31         continue
             do 32 j = 1, ndim
                 kk = ndim*(ino-1)+j
                 call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
                             fno(kk), iret)
-32          continue
-30      continue
+ 32         continue
+ 30     continue
 !
 !     FORCES VOLUMIQUES CONSTANTES (AUX NOEUDS)
     else
@@ -115,8 +115,8 @@ subroutine xcgfvo(option, ndim, nnop, fno)
         do 33 ino = 1, nnop
             do 34 j = 1, ndim
                 fno(ndim*(ino-1)+j) = zr(iforc+ndim*(ino-1)+j-1)
-34          continue
-33      continue
+ 34         continue
+ 33     continue
 !
     endif
 !
@@ -138,8 +138,8 @@ subroutine xcgfvo(option, ndim, nnop, fno)
                 do 61 j = 1, ndim
                     kk = ndim*(ino-1)+j
                     fno(kk) = fno(kk) + rhocst*zr(ipesa)*zr(ipesa+j)
-61              continue
-60          continue
+ 61             continue
+ 60         continue
         endif
 !
         if (irota .ne. 0) then
@@ -148,13 +148,13 @@ subroutine xcgfvo(option, ndim, nnop, fno)
                 omo = 0.d0
                 do 63 j = 1, ndim
                     omo = omo + zr(irota+j)* zr(igeom+ndim*(ino-1)+j- 1)
-63              continue
+ 63             continue
                 do 64 j = 1, ndim
                     kk = ndim*(ino-1)+j
                     fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
-64              continue
-62          continue
+ 64             continue
+ 62         continue
         endif
 !
     endif

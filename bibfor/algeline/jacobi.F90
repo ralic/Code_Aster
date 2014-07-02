@@ -2,6 +2,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                   br, vecpro, valpro, valaux, nitjac,&
                   type, iordre)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/matini.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpordo.h"
@@ -52,7 +53,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !        * SI IORDRE = 1  TRI PAR ORDRE DECROISSANT
 !        * SI IORDRE = 2  PAS DE TRI
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: iconv
+    aster_logical :: iconv
 ! ----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
@@ -80,7 +81,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
         valaux(i) = ar(ii) / br(ii)
         valpro(i) = valaux(i)
         ii = ii + nbvec + 1 - i
-10  end do
+ 10 end do
 !
 !     --- INITIALISATION DES VECTEURS PROPRES (MATRICE IDENTITE) ---
 !
@@ -89,7 +90,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !
     do 20 i = 1, nbvec
         vecpro(i,i) = 1.0d0
-20  end do
+ 20 end do
 !
 !     ------------------------------------------------------------------
 !     ------------------- ALGORITHME DE JACOBI -------------------------
@@ -98,7 +99,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
     niter = 0
     nitjac = 0
 !
-30  continue
+ 30 continue
 !
     niter = niter + 1
     eps = (toldyn**niter)**2
@@ -157,7 +158,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                         br(ij) = bj + cg * bk
                         ar(ik) = ak + ca * aj
                         br(ik) = bk + ca * bj
-51                  continue
+ 51                 continue
                 endif
                 if (kp1-nbvec .le. 0) then
                     lji = jm1 * nbvec - jm1 * j / 2
@@ -173,7 +174,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                         br(ji) = bj + cg * bk
                         ar(ki) = ak + ca * aj
                         br(ki) = bk + ca * bj
-52                  continue
+ 52                 continue
                 endif
                 if (jp1-km1 .le. 0) then
                     lji = jm1 * nbvec - jm1 * j /2
@@ -189,7 +190,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                         br(ji) = bj + cg * bk
                         ar(ik) = ak + ca * aj
                         br(ik) = bk + ca * bj
-53                  continue
+ 53                 continue
                 endif
             endif
             ak = ar(kk)
@@ -206,10 +207,10 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                 xk = vecpro(i,k)
                 vecpro(i,j) = xj + cg * xk
                 vecpro(i,k) = xk + ca * xj
-54          continue
+ 54         continue
 !
-41      continue
-40  end do
+ 41     continue
+ 40 end do
 !
 !     --- CALCUL DES NOUVELLES VALEURS PROPRES ---
 !
@@ -220,7 +221,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
         endif
         valpro(i) = ar(ii) / br(ii)
         ii = ii + nbvec + 1 - i
-60  end do
+ 60 end do
 !
 !     --- TEST DE CONVERGENCE SUR LES VALEURS PROPRES ---
 !
@@ -232,7 +233,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
             iconv = .false.
             goto 9998
         endif
-70  end do
+ 70 end do
 !
 !     ---    CALCUL DES FACTEURS DE COUPLAGE   ---
 !     --- TEST DE CONVERGENCE SUR CES FACTEURS ---
@@ -255,10 +256,10 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                 iconv = .false.
                 goto 9998
             endif
-81      continue
-80  end do
+ 81     continue
+ 80 end do
 !
-9998  continue
+9998 continue
 !
 !     ---  SI ON N'A PAS CONVERGE ---
 !
@@ -268,7 +269,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !
         do 82 i = 1, nbvec
             valaux(i) = valpro(i)
-82      continue
+ 82     continue
 !
 !        --- TEST SUR LE NOMBRE D'ITERATIONS ---
 !
@@ -288,9 +289,9 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
         endif
         do 91 k = 1, nbvec
             vecpro(k,i) = vecpro(k,i) / bb
-91      continue
+ 91     continue
         ii = ii + nbvec + 1 - i
-90  end do
+ 90 end do
 !
     nitjac = niter
 !

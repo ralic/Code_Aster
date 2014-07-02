@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine model_check(model, l_veri_elem)
         character(len=8), intent(in) :: model
-        logical(kind=1), optional, intent(in) :: l_veri_elem 
+        aster_logical, optional, intent(in) :: l_veri_elem 
     end subroutine model_check
 end interface

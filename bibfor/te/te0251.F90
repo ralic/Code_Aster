@@ -16,6 +16,7 @@ subroutine te0251(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/connec.h"
@@ -43,7 +44,7 @@ subroutine te0251(option, nomte)
     integer :: imattt, i, j, ij, l, li, lj, ibid
     integer :: c(6, 9), ise, nse, nnop2
     integer :: igeom, iflux, itempi, itemps
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     character(len=8) :: elrefe, alias8
 !
 !
@@ -54,8 +55,8 @@ subroutine te0251(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -74,8 +75,8 @@ subroutine te0251(option, nomte)
     do 20 i = 1, nnop2
         do 10 j = 1, nnop2
             mrigt(i,j) = 0.d0
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
@@ -84,8 +85,8 @@ subroutine te0251(option, nomte)
         do 40 i = 1, nno
             do 30 j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
         do 80 kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -96,7 +97,7 @@ subroutine te0251(option, nomte)
                 l = (kp-1)*nno + i
                 r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
                 tpg = tpg + zr(itempi-1+c(ise,i))*zr(ivf+l-1)
-50          continue
+ 50         continue
             if (laxi) poids = poids*r
             call foderi(zk8(iflux), tpg, rbid, alphap)
             ij = imattt - 1
@@ -110,10 +111,10 @@ subroutine te0251(option, nomte)
                                                c(ise, i),&
                                                c(ise, j) ) - poids*theta*alphap*zr(li)* zr(lj&
                                                )
-60              continue
-70          continue
-80      continue
-90  end do
+ 60             continue
+ 70         continue
+ 80     continue
+ 90 end do
 !
 ! MISE SOUS FORME DE VECTEUR
 !
@@ -122,7 +123,7 @@ subroutine te0251(option, nomte)
         do 100 j = 1, i
             ij = ij + 1
             zr(ij) = mrigt(i,j)
-100      continue
-110  end do
-120  continue
+100     continue
+110 end do
+120 continue
 end subroutine

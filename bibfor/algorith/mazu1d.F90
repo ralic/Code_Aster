@@ -22,7 +22,8 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
 !              LOI DE MAZARS UNILATERALE EN 1D
 !
 ! ----------------------------------------------------------------------
-    implicit       none
+    implicit none
+#include "asterf_types.h"
     character(len=*) :: option
     real(kind=8) :: ee, sigm, epsm, deps, esout, sigp
     real(kind=8) :: mazars(*), varm(*), varp(*)
@@ -62,7 +63,7 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
     integer :: idomm, iepsqt, iepsqc, irsigm, itemp, idissd
     parameter (idomm=3,iepsqt=4,iepsqc=5,irsigm=6,itemp=7,idissd=8)
 ! --- ------------------------------------------------------------------
-    logical(kind=1) :: rigi, resi
+    aster_logical :: rigi, resi
 !
     integer :: indxvp
     real(kind=8) :: grdexp, rac2

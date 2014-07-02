@@ -1,6 +1,7 @@
 subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                   nbocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/alcart.h"
@@ -19,7 +20,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
 #include "asterfort/wkvect.h"
 !
     integer :: lmax, nbocc
-    logical(kind=1) :: locagb, locamb
+    aster_logical :: locagb, locamb
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -55,7 +56,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     integer :: nvec, iarg, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf, jdls2
     integer :: na, nco, ncr, nex, ng, nin, nk, nm, nv, nvf, nexf
     integer :: iret
-    logical(kind=1) :: lcartf
+    aster_logical :: lcartf
     real(kind=8) :: ang(2), epa, kappa, correc, rigi, excent
     real(kind=8) :: vect(3), pi, xiner
     character(len=8) :: inert, korrec, epaf, excf
@@ -100,8 +101,8 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                 lcartf = .true.
                 goto 110
             endif
-100      continue
-110      continue
+100     continue
+110     continue
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
         if (lcartf) then
@@ -186,11 +187,11 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
         if (ng .gt. 0) then
             do 20 i = 1, ng
                 call nocart(cartco, 2, 8, groupma=zk24(jdls+i-1))
-20          continue
+ 20         continue
             if (lcartf) then
                 do 25 i = 1, ng
                     call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
-25              continue
+ 25             continue
             endif
         endif
 !
@@ -204,7 +205,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
             endif
         endif
 !
-10  end do
+ 10 end do
 !
     call jedetr('&&TMPCOQUE')
     call jedetr('&&TMPCOQUE2')

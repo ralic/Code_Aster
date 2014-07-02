@@ -16,6 +16,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -62,7 +63,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     character(len=24) :: chgeom, chlapl, chgeo2
     character(len=24) :: ligrmo, ligrch, lchin(3), kcmp(2)
     integer :: ibid, iret, nchar
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
 !
 !-----------------------------------------------------------------------
     integer :: icha, ifla, j, jchar, jinf, lonlis
@@ -149,12 +150,12 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
             else
                 goto 20
             endif
-10      continue
-20      continue
+ 10     continue
+ 20     continue
 !
-30  end do
+ 30 end do
 !
-40  continue
+ 40 continue
     vecelz = vecele
 !
     call jedema()

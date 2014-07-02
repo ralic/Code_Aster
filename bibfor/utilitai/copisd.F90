@@ -100,7 +100,7 @@ subroutine copisd(typesd, base, sd1, sd2)
     else if ((typesd.eq.'CHAMP') .or. (typesd.eq.'CHAMP_GD')) then
 !     ----------------------------------------------------------------
         ch1 = sd1
-        ch2 = sd2
+        ch2 = sd2    
         call copich(bas2, ch1, ch2)
 !
 ! ----------------------------------------------------------------------

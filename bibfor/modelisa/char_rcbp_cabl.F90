@@ -1,8 +1,9 @@
-subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
+subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl,&
                           nb_anc1, nb_anc2)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -55,8 +56,7 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: table
-    logical(kind=1) :: l_para_exis
-    logical :: lcond
+    aster_logical :: l_para_exis
     character(len=8) :: k8bid
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,18 +76,15 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 ! - Check table
 !
     call tbexip(table, 'NUME_CABLE', l_para_exis, k8bid)
-    lcond=l_para_exis
-    ASSERT(lcond)
+    ASSERT(l_para_exis)
     call tbexip(table, 'NOM_ANCRAGE1', l_para_exis, k8bid)
-    lcond=l_para_exis
-    ASSERT(lcond)
+    ASSERT(l_para_exis)
     call tbexip(table, 'NOM_ANCRAGE2', l_para_exis, k8bid)
-    lcond=l_para_exis
-    ASSERT(lcond)
+    ASSERT(l_para_exis)
 !
 ! - Get informations in table
 !
-    call tbexve(table, 'NUME_CABLE'  , list_cabl, 'V', nb_cabl,&
+    call tbexve(table, 'NUME_CABLE', list_cabl, 'V', nb_cabl,&
                 k8bid)
     call tbexve(table, 'NOM_ANCRAGE1', list_anc1, 'V', nb_anc1,&
                 k8bid)

@@ -17,6 +17,7 @@ subroutine te0597(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
@@ -39,7 +40,7 @@ subroutine te0597(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: mini
+    aster_logical :: mini
     integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, idf1, idf2
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
@@ -59,10 +60,10 @@ subroutine te0597(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
@@ -77,14 +78,18 @@ subroutine te0597(option, nomte)
     typmod(2) = '        '
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+    call niinit(nomte, typmod, ndim, nno1, 0,&
+                nno2, 0, vu, vg, vp,&
+                vpi)
 !
 ! - PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call nurmtd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), ivf1, idf1, vu, vp,&
-                typmod, igeom, zi(imate), mini, zr(imatuu))
+    call nurmtd(ndim, nno1, nno2, npg, iw,&
+                zr(ivf1), zr(ivf2), ivf1, idf1, vu,&
+                vp, typmod, igeom, zi(imate), mini,&
+                zr(imatuu))
 !
 end subroutine

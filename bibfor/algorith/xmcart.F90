@@ -18,6 +18,7 @@ subroutine xmcart(noma, defico, modele, resoco)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -97,10 +98,10 @@ subroutine xmcart(noma, defico, modele, resoco)
     character(len=24) :: tabfin, nosdco
     integer :: jvalv(7), jncmp(7), jcesl(7), jcesd(7), jcesv(7), iad
     character(len=2) :: ch2
-    character(len=8) ::  nomgd
+    character(len=8) :: nomgd
     character(len=19) :: ligrxf, chs(7), carte(7)
     integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier
-    logical(kind=1) :: lmulti
+    aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -165,7 +166,7 @@ subroutine xmcart(noma, defico, modele, resoco)
         call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
         call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-100  end do
+100 end do
 !
 ! --- CHAMPS ELEM XFEM MULTI-HEAVISIDE
 !
@@ -180,7 +181,7 @@ subroutine xmcart(noma, defico, modele, resoco)
             call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
             call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
             call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-110      continue
+110     continue
     endif
 !
 ! --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
@@ -200,9 +201,9 @@ subroutine xmcart(noma, defico, modele, resoco)
         call detrsd('CARTE', carte(i))
         if (i .eq. 1) then
             nomgd = 'N120_R'
-        elseif (i .eq. 2 .or. i .eq. 6) then
+        else if (i .eq. 2 .or. i .eq. 6) then
             nomgd = 'N120_I'
-        elseif (i .eq. 3 .or. i .eq. 4) then
+        else if (i .eq. 3 .or. i .eq. 4) then
             nomgd = 'NEUT_R'
         else
             nomgd = 'NEUT_I'
@@ -210,11 +211,11 @@ subroutine xmcart(noma, defico, modele, resoco)
         call alcart('V', carte(i), noma, nomgd)
         call jeveuo(carte(i)//'.NCMP', 'E', jncmp(i))
         call jeveuo(carte(i)//'.VALV', 'E', jvalv(i))
-        do 130,k = 1,ncmp(i)
-        call codent(k, 'G', ch2)
-        zk8(jncmp(i)-1+k) = 'X'//ch2
-130      continue
-120  end do
+        do 130 k = 1, ncmp(i)
+            call codent(k, 'G', ch2)
+            zk8(jncmp(i)-1+k) = 'X'//ch2
+130     continue
+120 end do
 !
 ! --- REMPLISSAGE DES CARTES
 !
@@ -299,8 +300,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                             jfiss, 1, iad)
                 ASSERT(iad.gt.0)
                 zi(jvalv(2)-1+nfhe*(i-1)+j)=zi(jcesv(1)-1+iad)
-220          continue
-210      continue
+220         continue
+210     continue
         do 230 i = 1, nnom
             do 240 j = 1, nfhm
                 jfiss = 1
@@ -314,8 +315,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                 ASSERT(iad.gt.0)
                 zi(jvalv(2)-1+nfhe*nnoe+nfhm*(i-1)+j)=zi(jcesv(1)-1+&
                 iad)
-240          continue
-230      continue
+240         continue
+230     continue
         call nocart(carte(2), -3, ncmp(2), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
@@ -327,8 +328,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                             ifise, ndim*(j-1)+i, iad)
                 ASSERT(iad.gt.0)
                 zr(jvalv(3)-1+ndim*(j-1)+i)=zr(jcesv(2)-1+iad)
-20          continue
-10      continue
+ 20         continue
+ 10     continue
         call nocart(carte(3), -3, ncmp(3), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
@@ -340,8 +341,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                             ifise, zxain*(j-1)+i, iad)
                 ASSERT(iad.gt.0)
                 zr(jvalv(4)-1+zxain*(j-1)+i)=zr(jcesv(3)-1+iad)
-50          continue
-40      continue
+ 50         continue
+ 40     continue
         call nocart(carte(4), -3, ncmp(4), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
@@ -353,8 +354,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                             ifise, npte*(j-1)+i, iad)
                 ASSERT(iad.gt.0)
                 zi(jvalv(5)-1+npte*(j-1)+i)=zi(jcesv(4)-1+iad)
-80          continue
-70      continue
+ 80         continue
+ 70     continue
         call nocart(carte(5), -3, ncmp(5), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
 !
@@ -378,8 +379,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                         else
                             zi(jvalv(6)-1+nfhe*(i-1)+j)=-1
                         endif
-260                  continue
-250              continue
+260                 continue
+250             continue
                 nfiss = zi(jcesd(6)-1+5+4*(nummam-1)+2)
                 do 270 i = 1, nnom
                     do 280 j = 1, nfhm
@@ -395,8 +396,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                         else
                             zi(jvalv(6)-1+nfhe*nnoe+nfhm*(i-1)+j)=1
                         endif
-280                  continue
-270              continue
+280                 continue
+270             continue
                 call nocart(carte(6), -3, ncmp(6), ligrel=ligrxf, nma=1,&
                             limanu=[-ipc])
 !
@@ -410,7 +411,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                     else
                         zi(jvalv(7)-1+i)=1
                     endif
-290              continue
+290             continue
                 call nocart(carte(7), -3, ncmp(7), ligrel=ligrxf, nma=1,&
                             limanu=[-ipc])
             endif
@@ -420,19 +421,19 @@ subroutine xmcart(noma, defico, modele, resoco)
             call xmimp3(ifm, noma, ipc, jvalv(1), jtabf)
         endif
 !
-200  end do
+200 end do
 !
 ! --- MENAGE
 !
     do 140 i = 1, 7
         call jeexin(chs(i)//'.CESD', ier)
         if (ier .ne. 0) call detrsd('CHAM_ELEM_S', chs(i))
-140  end do
+140 end do
 !
     do 150 i = 1, 7
         call jedetr(carte(i)//'.NCMP')
         call jedetr(carte(i)//'.VALV')
-150  end do
+150 end do
 !
     call jedema()
 end subroutine

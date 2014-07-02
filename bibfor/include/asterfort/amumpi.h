@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumpi(option, lquali, ldist, kxmps, type)
         integer :: option
-        logical(kind=1) :: lquali
-        logical(kind=1) :: ldist
+        aster_logical :: lquali
+        aster_logical :: ldist
         integer :: kxmps
         character(len=1) :: type
     end subroutine amumpi

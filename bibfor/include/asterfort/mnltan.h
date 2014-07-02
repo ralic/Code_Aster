@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
                       parcho, adime, xvect, ninc, nd,&
                       nchoc, h, hf, xtang)
         integer :: ninc
-        logical(kind=1) :: lcal
+        aster_logical :: lcal
         integer :: imat(2)
         character(len=14) :: numdrv
         character(len=19) :: matdrv

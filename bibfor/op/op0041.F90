@@ -56,6 +56,7 @@ subroutine op0041()
 !         FISS//'.INFO'
 !         FISS//'.MODELE'
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8maem.h"
@@ -102,7 +103,7 @@ subroutine op0041()
     character(len=19) :: ltno, lnno, grltno, grlnno, stnor, stno, info, ltnofa
     character(len=19) :: lnnofa, grltfa, grlnfa
     character(len=24) :: lismae, lisnoe, pheno, poro
-    logical(kind=1) :: grille, ldmax, goinop
+    aster_logical :: grille, ldmax, goinop
     character(len=8) :: fisgri
 !
 ! ----------------------------------------------------------------------

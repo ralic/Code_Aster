@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
                       rmima)
         integer :: nbordr
         integer :: nbvec
         integer :: jrvecp
-        logical(kind=1) :: lsig0
+        aster_logical :: lsig0
         integer :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
     end subroutine avenca

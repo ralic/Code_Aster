@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine decod1(rec, irec, ifield, valatt, trouve)
         character(len=*) :: rec(20)
         integer :: irec
         integer :: ifield
         integer :: valatt
-        logical(kind=1) :: trouve
+        aster_logical :: trouve
     end subroutine decod1
 end interface

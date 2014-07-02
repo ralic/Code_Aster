@@ -2,7 +2,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
                   edge, outofp)
     implicit none
 ! Declaration of real type variables
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -20,28 +20,30 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    real(kind=8) :: deigy(3,3)
-    real(kind=8) :: dydx(6,6)
-    real(kind=8) :: direig(3,3)
+!
+#include "asterf_types.h"
+#include "asterfort/matini.h"
+#include "asterfort/vecini.h"
+!
+    real(kind=8) :: deigy(3, 3)
+    real(kind=8) :: dydx(6, 6)
+    real(kind=8) :: direig(3, 3)
     real(kind=8) :: eigx(3)
     real(kind=8) :: eigy(3)
     real(kind=8) :: edge
-    logical(kind=1) :: outofp
-!
-#include "asterfort/matini.h"
-#include "asterfort/vecini.h"
+    aster_logical :: outofp
 !
 ! Declaration of integer type variables
     integer :: i, j, mcomp, mdim, ndim
 !
     parameter (   mcomp=4    ,mdim=3     ,ndim=2     )
-    real(kind=8) :: r1, r2, r3, r4, rp5, eigpr3(mcomp), foid(mcomp,mcomp)
-    real(kind=8) :: sopid(mcomp), a1, sqr, r0,eigprj(mcomp,ndim)
+    real(kind=8) :: r1, r2, r3, r4, rp5, eigpr3(mcomp), foid(mcomp, mcomp)
+    real(kind=8) :: sopid(mcomp), a1, sqr, r0, eigprj(mcomp, ndim)
     data&
      &    r0    ,r1    ,r2    ,r3    ,r4    ,rp5   ,sqr/&
      &    0.0d0 ,1.0d0 ,2.0d0 ,3.0d0 ,4.0d0 ,0.5d0 ,&
      &    1.4142135623730951d0/
-    logical(kind=1) :: epflag
+    aster_logical :: epflag
 ! Declaration of Common space variables
     common / debug / epflag
 !***********************************************************************
@@ -90,7 +92,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
             do 10 j = 1, mcomp
                 dydx(i,j)=(deigy(1,1)-deigy(1,2))*foid(i,j)+ deigy(1,&
                 2)*sopid(i)*sopid(j)
-10          continue
+ 10         continue
 ! out-of-plane components required
         if (outofp) then
             do 30 i = 1, mcomp
@@ -98,7 +100,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
                     if (i .eq. mdim .or. j .eq. mdim) dydx(i,j)= deigy(1,3)* sopid(i)*eigpr3(j)+ &
                                                       &deigy(3,1)*eigpr3(i)*sopid(j)+ deigy(3,3)*&
                                                       &eigpr3(i)*eigpr3(j)
-30              continue
+ 30             continue
         endif
     else
 ! Derivative dY/dX for distinct in-plane eigenvalues of X
@@ -112,7 +114,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
                 eigprj(j,1)+ deigy(1,2)*eigprj(i,1)*eigprj(j,2)+&
                 deigy(2,1)*eigprj(i,2)*eigprj(j,1)+ deigy(2,2)*eigprj(&
                 i,2)*eigprj(j,2)
-60          continue
+ 60         continue
 ! out-of-plane components required
         if (outofp) then
             do 80 i = 1, mcomp
@@ -122,7 +124,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
                                                       &y(3,1)*eigpr3(i)*eigprj(j,1)+ deigy(3,2)*e&
                                                       &igpr3(i)*eigprj(j,2)+ deigy(3,3)* eigpr3(i&
                                                       &)*eigpr3(j)
-80              continue
+ 80             continue
         endif
     endif
 !

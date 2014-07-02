@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function prjsom(nbmat, mater, invare, invars, b,&
                     siie, type)
@@ -25,6 +27,6 @@ interface
         real(kind=8) :: b
         real(kind=8) :: siie
         character(len=9) :: type
-        logical(kind=1) :: prjsom
+        aster_logical :: prjsom
     end function prjsom
 end interface

@@ -48,6 +48,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getran.h"
 #include "asterfort/jedema.h"
@@ -63,7 +64,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: lcal
+    aster_logical :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect, xtang
     character(len=19) :: matdrv

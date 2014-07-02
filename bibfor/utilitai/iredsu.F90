@@ -1,5 +1,6 @@
 subroutine iredsu(macr, form, ifc, versio)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/irecri.h"
@@ -65,7 +66,7 @@ subroutine iredsu(macr, form, ifc, versio)
     integer :: iero, ifor, im, imat
     integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
     integer :: j, k, m2, nbordr, nstat
-    integer ::     jnoeu
+    integer :: jnoeu
     integer :: nbnoeu, nbmodt, nbmode, nbmods
 !
     real(kind=8) :: zero
@@ -77,7 +78,7 @@ subroutine iredsu(macr, form, ifc, versio)
     character(len=24) :: manono
     character(len=80) :: titre
 !
-    logical(kind=1) :: f, lbid
+    aster_logical :: f, lbid
     real(kind=8), pointer :: mass_gene(:) => null()
     real(kind=8), pointer :: mass_jonc(:) => null()
     character(len=24), pointer :: mode_stat(:) => null()

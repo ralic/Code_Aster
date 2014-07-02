@@ -44,7 +44,6 @@ subroutine te0571(option, nomte)
     integer :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
     integer :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
     character(len=8) :: elrefp
-    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 ! --- PREALABLES AU CALCUL DE LA RIGIDITE ELEMENTAIRE
@@ -52,8 +51,7 @@ subroutine te0571(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    lcond=iselli(elrefp)
-    ASSERT(lcond)
+    ASSERT(iselli(elrefp))
 !
 !     CHAMPS IN 'CLASSIQUES'
     call jevech('PGEOMER', 'L', igeom)

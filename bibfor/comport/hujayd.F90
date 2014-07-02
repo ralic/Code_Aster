@@ -31,10 +31,11 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
 !          VIND   :  IMAGE DE VINF (COHERENCE AVEC ROUTINE HUJMID.F)
 !          NR     :  DIMENSION DU SYSTEME NL A RESOUDRE
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/lceqvn.h"
     integer :: nvi, nr, nmat
     real(kind=8) :: vind(nvi), vinf(nvi), yd(nr), mater(nmat, 2)
-    logical(kind=1) :: bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
 !
     integer :: i, ii, nbmeca, ndt
     real(kind=8) :: zero, un
@@ -47,7 +48,7 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
     nbmeca = 0
     do 10 i = 1, 8
         if (vinf(23+i) .eq. un) nbmeca = nbmeca + 1
-10  end do
+ 10 end do
 ! ---  DIMENSION DU SYSTEME NL A RESOUDRE FONCTION DE NBMECA
     nr = ndt + 1 + 2*nbmeca
 !
@@ -73,22 +74,22 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
             endif
 !
         endif
-30  end do
+ 30 end do
 !
 ! --- REDIMENSIONNEMENT DE YD ET YF POUR S'ADAPTER A HUJJID
 ! --- SIGMA/E0, R * PREF/ E0
     do 40 i = 1, 6
         yd(i) = yd(i)/mater(1,1)
-40  end do
+ 40 end do
 !
     do 50 i = 1, nbmeca
         yd(ndt+1+i) = yd(ndt+1+i)/mater(1,1)*abs(mater(8,2))
-50  end do
+ 50 end do
 !
 ! --- VARIABLE DE GESTION DES MECANISMES DE TRACTION
     do 60 i = 1, 3
         bnews(i) = .true.
-60  end do
+ 60 end do
     mtrac = .false.
 !
 ! --- MISE A ZERO DU COMPTEUR D'ITERATIONS LOCALES

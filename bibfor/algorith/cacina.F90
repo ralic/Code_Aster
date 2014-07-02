@@ -21,6 +21,7 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/lctr2m.h"
@@ -31,7 +32,7 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
 #include "blas/dcopy.h"
     character(len=16) :: compor(*)
     integer :: ndim, nno, g, iw, idff, i, j, npg, lgpg, ivash2
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     real(kind=8) :: fm(3, 3), fma(3, 3)
     real(kind=8) :: depld(3*27), geomm(3, nno), vff(nno, npg)
     real(kind=8) :: r, rbid, dff(nno, 3), tbid(6)
@@ -103,8 +104,8 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
             w(i,j)=0.5d0*(hnal(i,j)-hnalt(i,j))
             wa(i,j)=0.5d0*0.5d0*(hnal(i,j)-hnalt(i,j))
 !       WA EST THETA /2
-80      continue
-70  end do
+ 80     continue
+ 70 end do
 !--------------------------------CALCUL DE VECTEUR VW------------
     vw(1)=w(3,2)
     vw(2)=w(1,3)
@@ -120,7 +121,7 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
     do 89 i = 1, 3
         ind= ind + vw(i)*vw(i)
         inda= inda + vwa(i)*vwa(i)
-89  end do
+ 89 end do
     norm = sqrt(ind)
     norm2=norm/2.d0
 !
@@ -173,8 +174,8 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
                 rw(i,j)= a*w(i,j)+0.5d0*b*ww(i,j)
                 rwa(i,j)= aa*wa(i,j)+0.5d0*ba*wwa(i,j)
             endif
-27      continue
-17  end do
+ 27     continue
+ 17 end do
 !
 !-----------------------CALCUL DE LAMBDA_N+1----------
 !     RECUPERATION DE LAMBDA_N

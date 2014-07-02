@@ -1,6 +1,7 @@
 subroutine cmcovo(main, maout, nbma, lima, prefno,&
                   prefma, inima, epais, plan, trans)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/codent.h"
@@ -69,9 +70,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 ! ----------------------------------------------------------------------
     integer :: jdime, jcoor, nbnin, nbmin, nbnot, nbgrno, ifm, niv
     integer :: jnorn, ima, n1, n2, n3, nnoaj, ic, i, ij, iq4, it3
-    integer ::  jlisma, jnbnum, ino, jnorm
+    integer :: jlisma, jnbnum, ino, jnorm
     integer :: jtypm, numa, nbno, lgno, inov, jnewm
-    integer :: iret,  jvale, kvale, lgnu, lgpref, nbgrmv
+    integer :: iret, jvale, kvale, lgnu, lgpref, nbgrmv
     integer :: typhex, typpen, iatyma, nbnomx, imav, lgnd, nbgrmn
     integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg, jrefe
     integer :: nbmai, jgg, nbmat, jno, ima2
@@ -86,7 +87,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     real(kind=8) :: coon1(3), coon2(3), coon3(3), coon4(3), n1n3(3), n1n2(3)
     real(kind=8) :: nx, ny, nz, nt(3), eps2, sinvec, cosvec
     real(kind=8) :: n4n2(3), n4n3(3), nq(3), norme, angl
-    logical(kind=1) :: logic
+    aster_logical :: logic
     character(len=24), pointer :: new_noeuds(:) => null()
     integer, pointer :: noeuds(:) => null()
 ! ----------------------------------------------------------------------

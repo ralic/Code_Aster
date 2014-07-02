@@ -17,6 +17,7 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
@@ -25,13 +26,13 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-
+!
     character(len=1), intent(in) :: kstop
     character(len=*), intent(in) :: noattr
     character(len=*), intent(out) :: vattr
     integer, intent(out) :: iret
     character(len=*), intent(in), optional :: typel
-
+!
 !---------------------------------------------------------------------
 ! but : Recuperer la valeur d'un attribut d'un type_element
 !---------------------------------------------------------------------
@@ -60,20 +61,20 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
 !   COMMON(s) CALCUL :
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
-
+!
     character(len=16) :: option, nomte, nomtm
     common /cakk01/option,nomte,nomtm
-
+!
     integer :: nbgr, igr, nbelgr, jcteat, lcteat, iawloc, iawlo2, iawtyp
     common /caii06/nbgr,igr,nbelgr,jcteat,lcteat,iawloc,iawlo2,iawtyp
-
+!
 !-----------------------------------------------------------------------
 !   VARIABLES LOCALES :
     character(len=16) :: nomt2, noatt2, vattr2
     character(len=24) :: valk(2)
     integer :: jcte, n1, nbattr, k, ite
-    logical(kind=1) :: apelje
-
+    aster_logical :: apelje
+!
 !----------------------------------------------------------------------
     if (present(typel)) then
         nomt2=typel
@@ -81,24 +82,24 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
     else
         nomt2=' '
     endif
-
+!
     noatt2=noattr
-
-    if (noattr.eq.'CODPHE') noatt2='ALIAS8'
-    if (noattr.eq.'CODMOD') noatt2='ALIAS8'
-    if (noattr.eq.'CODTMA') noatt2='ALIAS8'
-
+!
+    if (noattr .eq. 'CODPHE') noatt2='ALIAS8'
+    if (noattr .eq. 'CODMOD') noatt2='ALIAS8'
+    if (noattr .eq. 'CODTMA') noatt2='ALIAS8'
+!
     if (nomt2 .eq. ' ') then
         ASSERT(iactif.eq.1)
         nomt2=nomte
     endif
-
+!
     apelje=.true.
-    if (iactif.eq.1) then
-       if (nomt2.eq.nomte)  apelje=.false.
+    if (iactif .eq. 1) then
+        if (nomt2 .eq. nomte) apelje=.false.
     endif
-
-
+!
+!
     if (apelje) then
         call jenonu(jexnom('&CATA.TE.NOMTE', nomt2), ite)
         call jelira(jexnum('&CATA.TE.CTE_ATTR', ite), 'LONMAX', n1)
@@ -111,15 +112,15 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
         jcte=jcteat
         n1=lcteat
     endif
-
+!
     nbattr=n1/2
-    do 1, k=1,nbattr
-    if (zk16(jcte-1+2*(k-1)+1) .eq. noatt2) then
-        vattr2=zk16(jcte-1+2*(k-1)+2)
-        goto 2
-    endif
-    1 end do
-
+    do 1 k = 1, nbattr
+        if (zk16(jcte-1+2*(k-1)+1) .eq. noatt2) then
+            vattr2=zk16(jcte-1+2*(k-1)+2)
+            goto 2
+        endif
+  1 end do
+!
     iret=1
     vattr='NON_DEFINI'
     if (kstop .eq. 'S') then
@@ -129,15 +130,15 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
     endif
     ASSERT(kstop.eq.'C')
     goto 3
-
- 2  continue
+!
+  2 continue
     iret=0
     vattr=vattr2
-
-    if (noattr.eq.'CODPHE') vattr=vattr2(1:2)
-    if (noattr.eq.'CODMOD') vattr=vattr2(3:5)
-    if (noattr.eq.'CODTMA') vattr=vattr2(6:8)
-
- 3  continue
-
+!
+    if (noattr .eq. 'CODPHE') vattr=vattr2(1:2)
+    if (noattr .eq. 'CODMOD') vattr=vattr2(3:5)
+    if (noattr .eq. 'CODTMA') vattr=vattr2(6:8)
+!
+  3 continue
+!
 end subroutine

@@ -17,7 +17,8 @@ subroutine nmondp(lischa, londe, chondp, nondp)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/getfac.h"
@@ -28,7 +29,7 @@ subroutine nmondp(lischa, londe, chondp, nondp)
     integer :: nondp
     character(len=24) :: chondp
     character(len=19) :: lischa
-    logical(kind=1) :: londe
+    aster_logical :: londe
 !
 !
 !
@@ -53,7 +54,7 @@ subroutine nmondp(lischa, londe, chondp, nondp)
         if (zi(jinf+nchar+ich) .eq. 6) then
             nondp = nondp + 1
         endif
-30  end do
+ 30 end do
 !
 ! --- RECUPERATION DES DONNEES DE CHARGEMENT PAR ONDE PLANE
     chondp = '&&NMONDP.ONDP'
@@ -68,7 +69,7 @@ subroutine nmondp(lischa, londe, chondp, nondp)
                 nond = nond + 1
                 zk8(iondp+nond-1) = zk24(ialich+ich-1)
             endif
-40      continue
+ 40     continue
     endif
     call jedema()
 end subroutine

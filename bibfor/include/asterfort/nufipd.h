@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nufipd(ndim, nno1, nno2, npg, iw,&
                       vff1, vff2, idff1, vu, vp,&
@@ -49,9 +51,9 @@ interface
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: sigp(2*ndim+1, npg)
         real(kind=8) :: vip(lgpg, npg)
-        logical(kind=1) :: resi
-        logical(kind=1) :: rigi
-        logical(kind=1) :: mini
+        aster_logical :: resi
+        aster_logical :: rigi
+        aster_logical :: mini
         real(kind=8) :: vect(*)
         real(kind=8) :: matr(*)
         integer :: codret

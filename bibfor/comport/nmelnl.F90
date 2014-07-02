@@ -1,6 +1,7 @@
-subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
-                  typmod, imate, compor, crit, option,&
-                  eps, sig, vi, dsidep, energi)
+subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
+                  ndim, typmod, imate, compor, crit,&
+                  option, eps, sig, vi, dsidep,&
+                  energi)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +25,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 !
 ! IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
 !               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
-
+!
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : NATURE DU MATERIAU
@@ -48,6 +49,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ecpuis.h"
 #include "asterfort/nmcri1.h"
@@ -70,7 +72,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     real(kind=8) :: eps(6), sig(6), vi, dsidep(6, 6), energi(2)
 !
 ! DECLARATION VARIABLES LOCALES
-    logical(kind=1) :: cplan, elas, vmis, line, nonlin, inco, puis
+    aster_logical :: cplan, elas, vmis, line, nonlin, inco, puis
     integer :: icodre(5)
     character(len=8) :: nomres(5)
     character(len=16) :: phenom
@@ -124,17 +126,17 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                 epsth=epsthe)
 !
     if (fami(1:4) .eq. 'XFEM') then
-
+!
         call verift(fami, kpg + idecpg, ksp, poum, imate,&
                     epsth=epsthe)
     else
-
+!
         call verift(fami, kpg, ksp, poum, imate,&
                     epsth=epsthe)
-
+!
     endif
-
-
+!
+!
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret)
     call rcvarc(' ', 'HYDR', poum, fami, kpg,&
@@ -303,13 +305,12 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                 jvale2 = jvale
                 nbval2 = nbvale
                 call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            p = 0.d0, rp = rp,&
-                            rprim = rprim, airerp = airerp)
+                            p = 0.d0, rp = rp, rprim = rprim, airerp = airerp)
                 lin = 0.d0
             endif
 !         CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
             approx = 2.d0*epseq/3.d0 - sigy/1.5d0/deuxmu
-            prec  = abs(crit(3)) * sigy
+            prec = abs(crit(3)) * sigy
             niter = abs(nint(crit(1)))
             call zerofr(0, 'DEKKER', nmcri1, 0.d0, approx,&
                         prec, niter, p, iret, ibid)
@@ -323,8 +324,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                 call utmess('F', 'ALGORITH_1')
             else
                 call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            p = p, rp = rp,&
-                            rprim = rprim, airerp = airerp)
+                            p = p, rp = rp, rprim = rprim, airerp = airerp)
             endif
 !
             epseq = 1.5d0*p + rp/deuxmu
@@ -363,8 +363,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                             p, rp, rprim)
             else
                 call rcfonc('E', 1, jprol, jvale, nbvale,&
-                            e = e, nu = nu, p = 0.d0, rp = rp,&
-                            rprim = rprim, airerp = airerp, sieleq = sieleq, dp = p)
+                            e = e, nu = nu, p = 0.d0, rp = rp, rprim = rprim,&
+                            airerp = airerp, sieleq = sieleq, dp = p)
             endif
             g = rp/epseq
         endif
@@ -401,8 +401,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option(1:9) .eq.&
         'FULL_MECA') then
 !
-        do k=1,ndimsi
-            do l=1,ndimsi
+        do k = 1, ndimsi
+            do l = 1, ndimsi
                 dsidep(k,l) = 0.d0
             end do
         end do
@@ -443,8 +443,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 ! CALCUL DE L'ENERGIE LIBRE ENERGI(1) ET DE SA DERIVEE / T ENERGI(2)
     if (option(1:7) .eq. 'RUPTURE') then
         divu = 3.d0*epsmo
-        call nmelru(fami, kpg, ksp, idecpg, poum, imate,&
-                    compor, epseq, p, divu, nonlin,&
-                    energi)
+        call nmelru(fami, kpg, ksp, idecpg, poum,&
+                    imate, compor, epseq, p, divu,&
+                    nonlin, energi)
     endif
 end subroutine

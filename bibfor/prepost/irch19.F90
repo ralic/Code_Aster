@@ -59,6 +59,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 ! 0.1. ==> ARGUMENTS
 !
 !
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/irchml.h"
 #include "asterfort/irdepl.h"
@@ -70,7 +71,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     integer :: numord, nbmat
     integer :: nbnot, numnoe(*), nummai(*), nbcmp, ncmp
     integer :: nive
-    logical(kind=1) :: lcor, lsup, linf, lmax, lmin, lresu
+    aster_logical :: lcor, lsup, linf, lmax, lmin, lresu
 !
 ! 0.3. ==> VARIABLES LOCALES
 !

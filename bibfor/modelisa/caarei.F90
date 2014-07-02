@@ -2,6 +2,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
@@ -87,7 +88,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=8) :: vale_func(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer ::   jdirec, jprnm
+    integer :: jdirec, jprnm
     integer :: iocc, nume_node, ibid
     integer :: ino, inom, idim
     integer :: nbnoeu, narei, nbcmp, nbec, ndim
@@ -108,8 +109,8 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
-    logical(kind=1) :: lxfem, l_ocmp
-    logical(kind=1) :: l_dtan
+    aster_logical :: lxfem, l_ocmp
+    aster_logical :: l_dtan
     integer :: val_nb_dtan
     real(kind=8) :: val_r_dtan
     character(len=8) :: val_f_dtan
@@ -185,9 +186,9 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
         list_node = '&&CAAREI.LIST_NODE'
         list_elem = '&&CAAREI.LIST_ELEM'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+        call getnode(mesh, keywordfact, iocc, 'F', list_node,&
                      nb_node)
-        call getelem(mesh, keywordfact, iocc, 'F', list_elem, &
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem,&
                      nb_elem)
         call jeveuo(list_node, 'L', jlino)
         call jeveuo(list_elem, 'L', jlima)

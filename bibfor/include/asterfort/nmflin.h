@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmflin(sdpost, matass, freqr, linsta)
         character(len=19) :: sdpost
         character(len=19) :: matass
         real(kind=8) :: freqr
-        logical(kind=1) :: linsta
+        aster_logical :: linsta
     end subroutine nmflin
 end interface

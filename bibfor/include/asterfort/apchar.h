@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine apchar(typcha, k24rc, nk, lambda, theta,&
                       lraide, lmasse, ldynam, solveu, lamor,&
@@ -29,7 +31,7 @@ interface
         integer :: ldynam
         character(len=19) :: solveu
         integer :: lamor
-        logical(kind=1) :: lc
+        aster_logical :: lc
         character(len=3) :: impr
         integer :: ifapm
         integer :: ind

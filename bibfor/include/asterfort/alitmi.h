@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine alitmi(np1, np2, np3, np4, n2,&
                       nbm, nbmcd, icoupl, tc, dt0,&
@@ -118,7 +120,7 @@ interface
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: amfluc(np1, *)
         real(kind=8) :: cmodfa(np1, *)
-        logical(kind=1) :: locflc(*)
+        aster_logical :: locflc(*)
         integer :: npfts
         real(kind=8) :: textts(*)
         real(kind=8) :: fextts(np4, *)
@@ -149,7 +151,7 @@ interface
         real(kind=8) :: u(*)
         real(kind=8) :: w(*)
         real(kind=8) :: dd(*)
-        logical(kind=1) :: loc(*)
+        aster_logical :: loc(*)
         real(kind=8) :: vvg(np1, *)
         real(kind=8) :: vg(np1, *)
         real(kind=8) :: vg0(np1, *)

@@ -1,6 +1,7 @@
 subroutine refdaj(arret, result, nbordr, numer, typre,&
                   conre, codret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -94,7 +95,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
-    logical(kind=1) :: oktres, newref, oktref
+    aster_logical :: oktres, newref, oktref
     integer :: lonref(4), indref, jrefe, nbrefs, nbrefsmax, nbinit, nbord1
     integer :: ibid, jbid, jindi, nbord0, ir, nbcham
     character(len=1) :: jvb

@@ -30,6 +30,7 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
 !                  .TRUE. MECANISMES ASSEZ PROCHES POUR ACTIVER
 !                  LE MECANISME MONOTONE
 !    ---------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
     integer :: k, ndt, ndi
@@ -38,7 +39,7 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
     real(kind=8) :: un, r, epsvp, pcr, pa, tole1, tole2
     real(kind=8) :: degr, beta, b, m, phi, pcref, ptrac
     real(kind=8) :: sigd(3), p, q, dist, rh
-    logical(kind=1) :: debug, prox, proxc
+    aster_logical :: debug, prox, proxc
     parameter    (un = 1.d0)
     parameter    (tole1 = 1.d-6)
     parameter    (tole2 = 1.d-7)
@@ -107,5 +108,5 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
         proxc = .true.
     endif
 !
-999  continue
+999 continue
 end subroutine

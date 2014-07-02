@@ -21,6 +21,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -72,7 +73,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: fe(4), poids, r
     character(len=8) :: elrese(6), fami(6)
-    logical(kind=1) :: grdepl, axi
+    aster_logical :: grdepl, axi
     integer :: irese
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
@@ -83,7 +84,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !
     axi = lteatt('AXIS','OUI')
 !
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
@@ -91,9 +92,9 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), ndim=ndimb, nno=nno,&
+                     nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
+                     jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim.eq.ndimb)
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
@@ -116,7 +117,8 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT

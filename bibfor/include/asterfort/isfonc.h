@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function isfonc(list_func_acti, func_name_z)
         integer, intent(in) :: list_func_acti(*)
         character(len=*), intent(in) :: func_name_z
-        logical(kind=1) :: isfonc
+        aster_logical :: isfonc
     end function isfonc
 end interface

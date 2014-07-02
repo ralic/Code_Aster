@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
                       nmzef, nmzeg, nmief, nmprox, depsp,&
@@ -34,7 +36,7 @@ interface
         real(kind=8) :: dc1(6, 6)
         real(kind=8) :: dc2(6, 6)
         real(kind=8) :: dtg(6, 6)
-        logical(kind=1) :: bbok
+        aster_logical :: bbok
         real(kind=8) :: normm
         real(kind=8) :: normn
     end subroutine brbagl

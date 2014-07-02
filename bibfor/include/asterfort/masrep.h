@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                       ligrma, nbno, tabnoe, rignoe, rigto,&
@@ -23,7 +25,7 @@ interface
         character(len=8) :: noma
         integer :: ioc
         real(kind=8) :: rigi(6)
-        logical(kind=1) :: lvale
+        aster_logical :: lvale
         character(len=24) :: ligrma(nbgr)
         integer :: nbno
         character(len=8) :: tabnoe(*)

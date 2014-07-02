@@ -1,5 +1,6 @@
 subroutine refe99(nomres)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
@@ -64,7 +65,7 @@ subroutine refe99(nomres)
     character(len=19) :: numddl, numbis
     character(len=24) :: raid, mass, intf, intfb, amor, concep(3), valk(4), kbid
 !
-    logical(kind=1) :: noseul
+    aster_logical :: noseul
 !
 !-----------------------------------------------------------------------
 !
@@ -108,15 +109,15 @@ subroutine refe99(nomres)
                 do i = 1, nbmome
                     zi(ltnbmax+i-1) = nbmax
                 end do
-            elseif (nbli .eq. nbmome) then
+            else if (nbli .eq. nbmome) then
 !               Use the NMAX_MODE criteria, defined for each modal base separately
-                call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, &
-                            vect=zi(ltnbmax), nbret=ier)
+                call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax),&
+                            nbret=ier)
             else
 !               Incoherence in the input data
                 vali(1) = nbmome
                 vali(2) = nbli
-                call utmess('F+','ALGORITH14_31', ni=2, vali=vali)
+                call utmess('F+', 'ALGORITH14_31', ni=2, vali=vali)
                 call utmess('F', 'ALGORITH14_32')
             endif
         endif

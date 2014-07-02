@@ -4,6 +4,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 ! aslint: disable=W1501
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -77,7 +78,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     integer :: acpgd, ntc, nin, ntn1, ntn2, nep, nnc, avk8, i, nbcpgd, nso
     integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc
     integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, iexi, nn
-    logical(kind=1) :: dirx, diry, dirz
+    aster_logical :: dirx, diry, dirz
     character(len=8), pointer :: tmp(:) => null()
 !
 !======================================================================
@@ -223,8 +224,8 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !
 !      /* LA NORMALE N' EST CALCULEE QUE POUR (X,Y) */
 !
-        if ((option .eq. 'FLUX_ELNO') .or. (option .eq. 'FLUX_NOEU_DEPL')&
-             .or. (option .eq. 'FLUX_NOEU')) then
+        if ((option .eq. 'FLUX_ELNO') .or. (option .eq. 'FLUX_NOEU_DEPL') .or.&
+            (option .eq. 'FLUX_NOEU')) then
             call wkvect(nomojb, 'V V K8', 3, avk8)
             do i = 1, 3, 1
                 zk8(avk8 + i-1) = zk8(acpgd + i-1)

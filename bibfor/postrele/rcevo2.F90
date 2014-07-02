@@ -2,6 +2,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                   kemixt, cstex, csmex, lfatig, flexio,&
                   lrocht, cnoc, cresu, cpres)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -26,7 +27,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 #include "asterfort/as_allocate.h"
 !
     integer :: nbinti
-    logical(kind=1) :: lfatig, flexio, lrocht, kemixt
+    aster_logical :: lfatig, flexio, lrocht, kemixt
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, csiex, cnoc, cresu, cpres, cstex, csmex
 !     ------------------------------------------------------------------
@@ -52,14 +53,14 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst,   ncmpr, i, j, k, l, ndim
+    integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, ndim
     integer :: nbabsc, jabsc, jsigm, jinst, ncmp, iret, nbtran, jsioe, iocc
-    integer :: nbins0, jnocc, ii, jresu, nbcycl,  jresp, jstoe, lo, le
+    integer :: nbins0, jnocc, ii, jresu, nbcycl, jresp, jstoe, lo, le
     integer :: jsmoe
     parameter  ( ncmp = 6 )
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     complex(kind=8) :: cbid
-    logical(kind=1) :: exist, cfait, flexii
+    aster_logical :: exist, cfait, flexii
     character(len=8) :: k8b, crit(2), nocmp(ncmp)
     character(len=16) :: motclf, valek(2), table, tabl0, tabfle, tabfl0, tabpre
     character(len=16) :: tabpr0
@@ -99,24 +100,94 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
     nbinst = 0
     flexio = .false.
-    do 10, iocc = 1, nbtran, 1
-    cfait = .false.
+    do 10 iocc = 1, nbtran, 1
+        cfait = .false.
 !
-    call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=tabl0, nbret=n1)
-    call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n1)
-    if (n1 .ne. 0) flexio = .true.
-    call getvid(motclf, 'TABL_RESU_PRES', iocc=iocc, scal=tabpr0, nbret=n1)
-    if (n1 .ne. 0) lrocht = .true.
+        call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=tabl0, nbret=n1)
+        call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n1)
+        if (n1 .ne. 0) flexio = .true.
+        call getvid(motclf, 'TABL_RESU_PRES', iocc=iocc, scal=tabpr0, nbret=n1)
+        if (n1 .ne. 0) lrocht = .true.
 !
-    nbins0 = 0
-    call getvr8(motclf, 'INST', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
-        nbins0 = -n1
-    else
-        call getvid(motclf, 'LIST_INST', iocc=iocc, scal=nomf, nbret=n1)
+        nbins0 = 0
+        call getvr8(motclf, 'INST', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call jelira(nomf//'.VALE', 'LONMAX', nbins0)
+            nbins0 = -n1
         else
+            call getvid(motclf, 'LIST_INST', iocc=iocc, scal=nomf, nbret=n1)
+            if (n1 .ne. 0) then
+                call jelira(nomf//'.VALE', 'LONMAX', nbins0)
+            else
+                if (nbinti .eq. 1) then
+                    table = tabl0
+                    tabfle = tabfl0
+                    tabpre = tabpr0
+                else
+                    cfait = .true.
+                    table = '&&RCEVO2.RESU_ME'
+                    tabfle = '&&RCEVO2.SIGM_TH'
+                    tabpre = '&&RCEVO2.RESU_PR'
+                    call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
+                                'EQ', [ibid], [r8b], [cbid], kinti,&
+                                [r8b], k8b, iret)
+                    if (iret .eq. 10) then
+                        valk(1) = 'INTITULE'
+                        valk(2) = tabl0
+                        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
+                    else if (iret .eq. 20) then
+                        valk(1) = tabl0
+                        valk(2) = 'INTITULE'
+                        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                    endif
+                    if (flexio) then
+                        call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
+                                    'EQ', [ibid], [r8b], [cbid], kinti,&
+                                    [r8b], k8b, iret)
+                        if (iret .eq. 10) then
+                            valk(1) = 'INTITULE'
+                            valk(2) = tabfl0
+                            call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
+                        else if (iret .eq. 20) then
+                            valk(1) = tabfl0
+                            valk(2) = 'INTITULE'
+                            call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                        endif
+                    endif
+                    if (lrocht) then
+                        call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
+                                    'EQ', [ibid], [r8b], [cbid], kinti,&
+                                    [r8b], k8b, iret)
+                        if (iret .eq. 10) then
+                            valk(1) = 'INTITULE'
+                            valk(2) = tabpr0
+                            call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
+                        else if (iret .eq. 20) then
+                            valk(1) = tabpr0
+                            valk(2) = 'INTITULE'
+                            call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                        endif
+                    endif
+                endif
+                call tbexip(table, valek(1), exist, k8b)
+                if (.not. exist) then
+                    valk (1) = table
+                    valk (2) = 'INTITULE'
+                    valk (3) = kinti
+                    valk (4) = valek(1)
+                    call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
+                endif
+                call tbexv1(table, valek(1), instan, 'V', nbins0,&
+                            k8b)
+                call jedetr(instan)
+            endif
+        endif
+        nbinst = nbinst + nbins0
+!
+! ----- PRESENCE DES COMPOSANTES DANS LA TABLE
+!
+        if (iocc .ne. 1) goto 14
+!
+        if (.not. cfait) then
             if (nbinti .eq. 1) then
                 table = tabl0
                 tabfle = tabfl0
@@ -167,133 +238,63 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     endif
                 endif
             endif
-            call tbexip(table, valek(1), exist, k8b)
+        endif
+!
+        ncmpr = 6
+        do 12 i = 1, 4
+            call tbexip(table, nocmp(i), exist, k8b)
             if (.not. exist) then
                 valk (1) = table
                 valk (2) = 'INTITULE'
                 valk (3) = kinti
-                valk (4) = valek(1)
+                valk (4) = nocmp(i)
                 call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
             endif
-            call tbexv1(table, valek(1), instan, 'V', nbins0,&
-                        k8b)
-            call jedetr(instan)
-        endif
-    endif
-    nbinst = nbinst + nbins0
-!
-! ----- PRESENCE DES COMPOSANTES DANS LA TABLE
-!
-    if (iocc .ne. 1) goto 14
-!
-    if (.not. cfait) then
-        if (nbinti .eq. 1) then
-            table = tabl0
-            tabfle = tabfl0
-            tabpre = tabpr0
-        else
-            cfait = .true.
-            table = '&&RCEVO2.RESU_ME'
-            tabfle = '&&RCEVO2.SIGM_TH'
-            tabpre = '&&RCEVO2.RESU_PR'
-            call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                        'EQ', [ibid], [r8b], [cbid], kinti,&
-                        [r8b], k8b, iret)
-            if (iret .eq. 10) then
-                valk(1) = 'INTITULE'
-                valk(2) = tabl0
-                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
-            else if (iret .eq. 20) then
-                valk(1) = tabl0
-                valk(2) = 'INTITULE'
-                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-            endif
             if (flexio) then
-                call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
-                            'EQ', [ibid], [r8b], [cbid], kinti,&
-                            [r8b], k8b, iret)
-                if (iret .eq. 10) then
-                    valk(1) = 'INTITULE'
-                    valk(2) = tabfl0
-                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
-                else if (iret .eq. 20) then
-                    valk(1) = tabfl0
-                    valk(2) = 'INTITULE'
-                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                call tbexip(tabfle, nocmp(i), exist, k8b)
+                if (.not. exist) then
+                    valk (1) = tabfle
+                    valk (2) = 'INTITULE'
+                    valk (3) = kinti
+                    valk (4) = nocmp(i)
+                    call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
                 endif
             endif
             if (lrocht) then
-                call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                            'EQ', [ibid], [r8b], [cbid], kinti,&
-                            [r8b], k8b, iret)
-                if (iret .eq. 10) then
-                    valk(1) = 'INTITULE'
-                    valk(2) = tabpr0
-                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
-                else if (iret .eq. 20) then
-                    valk(1) = tabpr0
-                    valk(2) = 'INTITULE'
-                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                call tbexip(tabpre, nocmp(i), exist, k8b)
+                if (.not. exist) then
+                    valk (1) = tabpre
+                    valk (2) = 'INTITULE'
+                    valk (3) = kinti
+                    valk (4) = nocmp(i)
+                    call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
                 endif
             endif
-        endif
-    endif
+ 12     continue
+        call tbexip(table, nocmp(5), exist, k8b)
+        if (.not. exist) ncmpr = 4
 !
-    ncmpr = 6
-    do 12 i = 1, 4
-        call tbexip(table, nocmp(i), exist, k8b)
+! ----- ON RECUPERE L'ABSC_CURV DANS LA TABLE
+!
+        call tbexip(table, valek(2), exist, k8b)
         if (.not. exist) then
             valk (1) = table
             valk (2) = 'INTITULE'
             valk (3) = kinti
-            valk (4) = nocmp(i)
+            valk (4) = valek(2)
             call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
         endif
-        if (flexio) then
-            call tbexip(tabfle, nocmp(i), exist, k8b)
-            if (.not. exist) then
-                valk (1) = tabfle
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = nocmp(i)
-                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
+        call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
+                    k8b)
+!
+ 14     continue
+        if (cfait) then
+            call detrsd('TABLE', table)
+            if (flexio) call detrsd('TABLE', tabfle)
+            if (lrocht) call detrsd('TABLE', tabpre)
         endif
-        if (lrocht) then
-            call tbexip(tabpre, nocmp(i), exist, k8b)
-            if (.not. exist) then
-                valk (1) = tabpre
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = nocmp(i)
-                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
-        endif
-12  continue
-    call tbexip(table, nocmp(5), exist, k8b)
-    if (.not. exist) ncmpr = 4
 !
-! ----- ON RECUPERE L'ABSC_CURV DANS LA TABLE
-!
-    call tbexip(table, valek(2), exist, k8b)
-    if (.not. exist) then
-        valk (1) = table
-        valk (2) = 'INTITULE'
-        valk (3) = kinti
-        valk (4) = valek(2)
-        call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-    endif
-    call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
-                k8b)
-!
-14  continue
-    if (cfait) then
-        call detrsd('TABLE', table)
-        if (flexio) call detrsd('TABLE', tabfle)
-        if (lrocht) call detrsd('TABLE', tabpre)
-    endif
-!
-    10 end do
+ 10 end do
 !
     call jeveuo(abscur, 'L', jabsc)
     AS_ALLOCATE(vr=contraintes, size=nbabsc)
@@ -322,232 +323,232 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 ! --- RECUPERATION DES INFORMATIONS
 !
     ii = 0
-    do 100, iocc = 1, nbtran, 1
+    do 100 iocc = 1, nbtran, 1
 !
-    call getvis(motclf, 'NB_OCCUR', iocc=iocc, scal=nbcycl, nbret=n1)
+        call getvis(motclf, 'NB_OCCUR', iocc=iocc, scal=nbcycl, nbret=n1)
 !
-    call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=tabl0, nbret=n1)
+        call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=tabl0, nbret=n1)
 !
-    flexii = .false.
-    call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n1)
-    if (n1 .ne. 0) flexii = .true.
+        flexii = .false.
+        call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n1)
+        if (n1 .ne. 0) flexii = .true.
 !
-    call getvid(motclf, 'TABL_RESU_PRES', iocc=iocc, scal=tabpr0, nbret=n1)
-    if (n1 .ne. 0) then
-        lrocht = .true.
-        zk8(jresp-1+iocc) = tabpr0
-    endif
-!
-    if (nbinti .eq. 1) then
-        table = tabl0
-        tabfle = tabfl0
-        tabpre = tabpr0
-    else
-        table = '&&RCEVO2.RESU_ME'
-        tabfle = '&&RCEVO2.SIGM_TH'
-        tabpre = '&&RCEVO2.RESU_PR'
-        call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                    'EQ', [ibid], [r8b], [cbid], kinti,&
-                    [r8b], k8b, iret)
-        if (iret .eq. 10) then
-            valk(1) = 'INTITULE'
-            valk(2) = tabl0
-            call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
-        else if (iret .eq. 20) then
-            valk(1) = tabl0
-            valk(2) = 'INTITULE'
-            call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+        call getvid(motclf, 'TABL_RESU_PRES', iocc=iocc, scal=tabpr0, nbret=n1)
+        if (n1 .ne. 0) then
+            lrocht = .true.
+            zk8(jresp-1+iocc) = tabpr0
         endif
-        if (flexii) then
-            call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
+!
+        if (nbinti .eq. 1) then
+            table = tabl0
+            tabfle = tabfl0
+            tabpre = tabpr0
+        else
+            table = '&&RCEVO2.RESU_ME'
+            tabfle = '&&RCEVO2.SIGM_TH'
+            tabpre = '&&RCEVO2.RESU_PR'
+            call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
                         'EQ', [ibid], [r8b], [cbid], kinti,&
                         [r8b], k8b, iret)
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
-                valk(2) = tabfl0
+                valk(2) = tabl0
                 call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
             else if (iret .eq. 20) then
-                valk(1) = tabfl0
+                valk(1) = tabl0
                 valk(2) = 'INTITULE'
                 call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
             endif
-        endif
-        if (lrocht) then
-            call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                        'EQ', [ibid], [r8b], [cbid], kinti,&
-                        [r8b], k8b, iret)
-            if (iret .eq. 10) then
-                valk(1) = 'INTITULE'
-                valk(2) = tabpr0
-                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
-            else if (iret .eq. 20) then
-                valk(1) = tabpr0
-                valk(2) = 'INTITULE'
-                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+            if (flexii) then
+                call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
+                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                            [r8b], k8b, iret)
+                if (iret .eq. 10) then
+                    valk(1) = 'INTITULE'
+                    valk(2) = tabfl0
+                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
+                else if (iret .eq. 20) then
+                    valk(1) = tabfl0
+                    valk(2) = 'INTITULE'
+                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                endif
+            endif
+            if (lrocht) then
+                call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
+                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                            [r8b], k8b, iret)
+                if (iret .eq. 10) then
+                    valk(1) = 'INTITULE'
+                    valk(2) = tabpr0
+                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
+                else if (iret .eq. 20) then
+                    valk(1) = tabpr0
+                    valk(2) = 'INTITULE'
+                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
+                endif
             endif
         endif
-    endif
 !
 ! ----- ON RECUPERE LES INSTANTS DANS LA TABLE
 !
-    call getvr8(motclf, 'INST', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
-        nbins0 = -n1
-        call wkvect(instan, 'V V R', nbins0, kinst)
-        call getvr8(motclf, 'INST', iocc=iocc, nbval=nbins0, vect=zr(kinst),&
-                    nbret=n1)
-        call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec(1), nbret=n1)
-        call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit(1), nbret=n1)
-    else
-        call getvid(motclf, 'LIST_INST', iocc=iocc, scal=nomf, nbret=n1)
+        call getvr8(motclf, 'INST', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call jelira(nomf//'.VALE', 'LONMAX', nbins0)
-            call jeveuo(nomf//'.VALE', 'L', kinst)
+            nbins0 = -n1
+            call wkvect(instan, 'V V R', nbins0, kinst)
+            call getvr8(motclf, 'INST', iocc=iocc, nbval=nbins0, vect=zr(kinst),&
+                        nbret=n1)
             call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec(1), nbret=n1)
             call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit(1), nbret=n1)
         else
-            prec(1) = 1.0d-06
-            crit(1) = 'RELATIF'
-            call tbexip(table, valek(1), exist, k8b)
-            if (.not. exist) then
-                valk (1) = table
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = valek(1)
-                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
-            call tbexv1(table, valek(1), instan, 'V', nbins0,&
-                        k8b)
-            call jeveuo(instan, 'L', kinst)
-        endif
-    endif
-!
-    do 102 i = 1, nbins0
-!
-        ii = ii + 1
-        zr (jinst+ii-1) = zr(kinst+i-1)
-        zi (jnocc-1+ii) = nbcycl
-        zk8(jresu-1+ii) = tabl0
-!
-        vale(1) = zr(kinst+i-1)
-!
-        do 104 j = 1, ncmpr
-!
-            do 106 k = 1, nbabsc
-                vale(2) = zr(jabsc+k-1)
-!
-                call tbliva(table, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintes(k), cbid, k8b,&
-                            iret)
-                if (iret .ne. 0) then
+            call getvid(motclf, 'LIST_INST', iocc=iocc, scal=nomf, nbret=n1)
+            if (n1 .ne. 0) then
+                call jelira(nomf//'.VALE', 'LONMAX', nbins0)
+                call jeveuo(nomf//'.VALE', 'L', kinst)
+                call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec(1), nbret=n1)
+                call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit(1), nbret=n1)
+            else
+                prec(1) = 1.0d-06
+                crit(1) = 'RELATIF'
+                call tbexip(table, valek(1), exist, k8b)
+                if (.not. exist) then
                     valk (1) = table
-                    valk (2) = nocmp(j)
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                                valr=vale)
+                    valk (2) = 'INTITULE'
+                    valk (3) = kinti
+                    valk (4) = valek(1)
+                    call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
                 endif
+                call tbexv1(table, valek(1), instan, 'V', nbins0,&
+                            k8b)
+                call jeveuo(instan, 'L', kinst)
+            endif
+        endif
+!
+        do 102 i = 1, nbins0
+!
+            ii = ii + 1
+            zr (jinst+ii-1) = zr(kinst+i-1)
+            zi (jnocc-1+ii) = nbcycl
+            zk8(jresu-1+ii) = tabl0
+!
+            vale(1) = zr(kinst+i-1)
+!
+            do 104 j = 1, ncmpr
+!
+                do 106 k = 1, nbabsc
+                    vale(2) = zr(jabsc+k-1)
+!
+                    call tbliva(table, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintes(k), cbid, k8b,&
+                                iret)
+                    if (iret .ne. 0) then
+                        valk (1) = table
+                        valk (2) = nocmp(j)
+                        valk (3) = valek(1)
+                        valk (4) = valek(2)
+                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                    valr=vale)
+                    endif
+!
+                    if (flexii) then
+                        call tbliva(tabfle, 2, valek, [ibid], vale,&
+                                    [cbid], k8b, crit, prec, nocmp(j),&
+                                    k8b, ibid, cont_flexio(k), cbid, k8b,&
+                                    iret)
+                        if (iret .ne. 0) then
+                            valk (1) = tabfle
+                            valk (2) = nocmp(j)
+                            valk (3) = valek(1)
+                            valk (4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                        valr=vale)
+                        endif
+                    endif
+!
+                    if (lrocht) then
+                        call tbliva(tabpre, 2, valek, [ibid], vale,&
+                                    [cbid], k8b, crit, prec, nocmp(j),&
+                                    k8b, ibid, cont_pressi(k), cbid, k8b,&
+                                    iret)
+                        if (iret .ne. 0) then
+                            valk (1) = tabpre
+                            valk (2) = nocmp(j)
+                            valk (3) = valek(1)
+                            valk (4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                        valr=vale)
+                        endif
+                    endif
+!
+106             continue
+!
+                if (lfatig) then
+                    lo = ncmp*(ii-1) + j
+                    le = ncmp*nbinst + ncmp*(ii-1) + j
+                    zr(jsioe-1+lo) = contraintes(1)
+                    zr(jsioe-1+le) = contraintes(nbabsc)
+                    if (kemixt) then
+                        if (flexii) then
+                            zr(jstoe-1+lo) = cont_flexio(1)
+                            zr(jstoe-1+le) = cont_flexio(nbabsc)
+                        else
+                            zr(jstoe-1+lo) = 0.d0
+                            zr(jstoe-1+le) = 0.d0
+                        endif
+                        zr(jsmoe-1+lo) = contraintes(1) - zr(jstoe-1+lo)
+                        zr(jsmoe-1+le) = contraintes(nbabsc) - zr( jstoe-1+le)
+                    endif
+                endif
+!
+                call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
+                momen1 = 0.5d0*momen1
+!
+                l = ncmp*(ii-1) + j
+                zr(jsigm-1+l) = momen0
+                l = ncmp*nbinst + ncmp*(ii-1) + j
+                zr(jsigm-1+l) = momen1
 !
                 if (flexii) then
-                    call tbliva(tabfle, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, cont_flexio(k), cbid, k8b,&
-                                iret)
-                    if (iret .ne. 0) then
-                        valk (1) = tabfle
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        valk (4) = valek(2)
-                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                                    valr=vale)
-                    endif
+                    call rc32my(nbabsc, zr(jabsc), cont_flexio, momen0, momen1)
+                    momen1 = 0.5d0*momen1
+                else
+                    momen0 = 0.d0
+                    momen1 = 0.d0
                 endif
+                l = 2*ncmp*nbinst + ncmp*(ii-1) + j
+                zr(jsigm-1+l) = momen0
+                l = 3*ncmp*nbinst + ncmp*(ii-1) + j
+                zr(jsigm-1+l) = momen1
 !
                 if (lrocht) then
-                    call tbliva(tabpre, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, cont_pressi(k), cbid, k8b,&
-                                iret)
-                    if (iret .ne. 0) then
-                        valk (1) = tabpre
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        valk (4) = valek(2)
-                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                                    valr=vale)
-                    endif
+                    call rc32my(nbabsc, zr(jabsc), cont_pressi, momen0, momen1)
+                    momen1 = 0.5d0*momen1
+                else
+                    momen0 = r8vide()
+                    momen1 = r8vide()
                 endif
+                l = 4*ncmp*nbinst + ncmp*(ii-1) + j
+                zr(jsigm-1+l) = momen0
+                l = 5*ncmp*nbinst + ncmp*(ii-1) + j
+                zr(jsigm-1+l) = momen1
 !
-106          continue
+104         continue
 !
-            if (lfatig) then
-                lo = ncmp*(ii-1) + j
-                le = ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsioe-1+lo) = contraintes(1)
-                zr(jsioe-1+le) = contraintes(nbabsc)
-                if (kemixt) then
-                    if (flexii) then
-                        zr(jstoe-1+lo) = cont_flexio(1)
-                        zr(jstoe-1+le) = cont_flexio(nbabsc)
-                    else
-                        zr(jstoe-1+lo) = 0.d0
-                        zr(jstoe-1+le) = 0.d0
-                    endif
-                    zr(jsmoe-1+lo) = contraintes(1) - zr(jstoe-1+lo)
-                    zr(jsmoe-1+le) = contraintes(nbabsc) - zr( jstoe-1+le)
-                endif
-            endif
+102     continue
+        call jedetr(instan)
+        if (nbinti .ne. 1) then
+            call detrsd('TABLE', table)
+            if (flexii) call detrsd('TABLE', tabfle)
+            if (lrocht) call detrsd('TABLE', tabpre)
+        endif
 !
-            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
-            momen1 = 0.5d0*momen1
-!
-            l = ncmp*(ii-1) + j
-            zr(jsigm-1+l) = momen0
-            l = ncmp*nbinst + ncmp*(ii-1) + j
-            zr(jsigm-1+l) = momen1
-!
-            if (flexii) then
-                call rc32my(nbabsc, zr(jabsc), cont_flexio, momen0, momen1)
-                momen1 = 0.5d0*momen1
-            else
-                momen0 = 0.d0
-                momen1 = 0.d0
-            endif
-            l = 2*ncmp*nbinst + ncmp*(ii-1) + j
-            zr(jsigm-1+l) = momen0
-            l = 3*ncmp*nbinst + ncmp*(ii-1) + j
-            zr(jsigm-1+l) = momen1
-!
-            if (lrocht) then
-                call rc32my(nbabsc, zr(jabsc), cont_pressi, momen0, momen1)
-                momen1 = 0.5d0*momen1
-            else
-                momen0 = r8vide()
-                momen1 = r8vide()
-            endif
-            l = 4*ncmp*nbinst + ncmp*(ii-1) + j
-            zr(jsigm-1+l) = momen0
-            l = 5*ncmp*nbinst + ncmp*(ii-1) + j
-            zr(jsigm-1+l) = momen1
-!
-104      continue
-!
-102  continue
-    call jedetr(instan)
-    if (nbinti .ne. 1) then
-        call detrsd('TABLE', table)
-        if (flexii) call detrsd('TABLE', tabfle)
-        if (lrocht) call detrsd('TABLE', tabpre)
-    endif
-!
-    100 end do
+100 end do
 !
     call jedetr(abscur)
     AS_DEALLOCATE(vr=contraintes)
     AS_DEALLOCATE(vr=cont_flexio)
     AS_DEALLOCATE(vr=cont_pressi)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

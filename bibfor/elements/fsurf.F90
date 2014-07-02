@@ -17,6 +17,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fointe.h"
 #include "asterfort/forsrg.h"
@@ -36,7 +37,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
     real(kind=8) :: vecl(51), vecl1(42)
     real(kind=8) :: chgsrg(6, 8), chgsrl(6), chg(6)
     real(kind=8) :: kijkm1(40, 2), pgl(3, 3)
-    logical(kind=1) :: global, locapr
+    aster_logical :: global, locapr
     real(kind=8) :: valpar(4)
     character(len=8) :: nompar(4)
 !
@@ -64,24 +65,24 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
             do 20 j = 1, nb1
                 do 10 i = 1, 6
                     chgsrg(i,j)=zr(jpres-1+7*(j-1)+i)
-10              continue
-20          continue
+ 10             continue
+ 20         continue
         else
             do 70 j = 1, nb1
                 do 30 i = 1, 5
                     chgsrl(i)=zr(jpres-1+7*(j-1)+i)
-30              continue
+ 30             continue
                 chgsrl(i)=0.d0
                 do 50 jp = 1, 3
                     do 40 ip = 1, 3
                         pgl(jp,ip)=vectpt(j,jp,ip)
-40                  continue
-50              continue
+ 40                 continue
+ 50             continue
                 call utpvlg(1, 6, pgl, chgsrl, chg)
                 do 60 i = 1, 6
                     chgsrg(i,j)=chg(i)
-60              continue
-70          continue
+ 60             continue
+ 70         continue
         endif
 !
 !
@@ -115,7 +116,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
                             chgsrg( 5, j), ier)
                 call fointe('FM', zk8(jpres+5), 4, nompar, valpar,&
                             chgsrg( 6, j), ier)
-100          continue
+100         continue
 !
         else if (locapr) then
 ! --        BASE LOCALE - CAS D UNE PRESSION
@@ -136,13 +137,13 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
                 do 120 jp = 1, 3
                     do 110 ip = 1, 3
                         pgl(jp,ip)=vectpt(j,jp,ip)
-110                  continue
-120              continue
+110                 continue
+120             continue
                 call utpvlg(1, 6, pgl, chgsrl, chg)
                 do 130 i = 1, 6
                     chgsrg(i,j)=chg(i)
-130              continue
-140          continue
+130             continue
+140         continue
         else
 !
 ! --        BASE LOCALE - CAS DE F1, F2, F3, MF1, MF2
@@ -166,13 +167,13 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
                 do 160 jp = 1, 3
                     do 150 ip = 1, 3
                         pgl(jp,ip)=vectpt(j,jp,ip)
-150                  continue
-160              continue
+150                 continue
+160             continue
                 call utpvlg(1, 6, pgl, chgsrl, chg)
                 do 170 i = 1, 6
                     chgsrg(i,j)=chg(i)
-170              continue
-180          continue
+170             continue
+180         continue
         endif
 !
     endif
@@ -183,7 +184,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
 !
         call forsrg(intsn, nb1, nb2, zr(lzr), chgsrg,&
                     rnormc, vectpt, vecl1)
-200  end do
+200 end do
 !
 !     RESTITUTION DE KIJKM1 POUR CONDENSER LES FORCES
 !     ATTENTION LA ROUTINE N'EST PAS UTILISEE DANS LE CAS DES
@@ -193,22 +194,22 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
         do 210 i = 1, i1
             k=(j-1)*i1+i
             kijkm1(i,j)=zr(lzr-1+1000+k)
-210      end do
-220  end do
+210     end do
+220 end do
 !
     do 240 i = 1, i1
         f1=0.d0
         do 230 k = 1, 2
             f1=f1+kijkm1(i,k)*vecl1(i1+k)
-230      continue
+230     continue
         vecl1(i)=vecl1(i)-f1
-240  end do
+240 end do
 !
 !     EXPANSION DU VECTEUR VECL1 : DUE A L'AJOUT DE LA ROTATION FICTIVE
 !
     call vexpan(nb1, vecl1, vecl)
     do 90 i = 1, 3
         vecl(6*nb1+i)=0.d0
-90  end do
+ 90 end do
 !
 end subroutine

@@ -21,7 +21,8 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -69,13 +70,13 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lrefe, ldidi
+    aster_logical :: lrefe, ldidi
     integer :: ifm, niv
     integer :: numins
     integer :: nbvect
     character(len=6) :: ltypve(20)
     character(len=16) :: loptve(20)
-    logical(kind=1) :: lcalve(20), lassve(20)
+    aster_logical :: lcalve(20), lassve(20)
 !
 ! ----------------------------------------------------------------------
 !

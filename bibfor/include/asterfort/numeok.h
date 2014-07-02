@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                       precis, crit, epsi, astock)
@@ -26,6 +28,6 @@ interface
         integer :: precis
         character(len=*) :: crit
         real(kind=8) :: epsi
-        logical(kind=1) :: astock
+        aster_logical :: astock
     end subroutine numeok
 end interface

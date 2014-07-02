@@ -17,6 +17,7 @@ subroutine te0590(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
@@ -45,7 +46,7 @@ subroutine te0590(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: rigi, resi, matsym
+    aster_logical :: rigi, resi, matsym
     integer :: ndim, nno1, nno2, nno3, npg, nnos, jgn, ntrou
     integer :: icoret, codret, iret
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3
@@ -66,12 +67,12 @@ subroutine te0590(option, nomte)
 ! - FONCTIONS DE FORME
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.3)
-    call elrefe_info(elrefe=lielrf(3),fami='RIGI',ndim=ndim,nno=nno3,nnos=nnos,npg=npg,&
-                     jpoids=iw,jvf=ivf3,jdfde=idf3,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(3), fami='RIGI', ndim=ndim, nno=nno3, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf3, jdfde=idf3, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
     nddl = nno1*ndim + nno2 + nno3
     matsym = .true.
 !
@@ -89,7 +90,9 @@ subroutine te0590(option, nomte)
     codret = 0
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
+    call niinit(nomte, typmod, ndim, nno1, nno2,&
+                nno3, 0, vu, vg, vp,&
+                vpi)
 !
 ! - OPTION
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
@@ -108,7 +111,8 @@ subroutine te0590(option, nomte)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 ! - ORIENTATION DU MASSIF
@@ -137,7 +141,7 @@ subroutine te0590(option, nomte)
         ivarix=1
     endif
 !
-100  continue
+100 continue
 ! - PETITES DEFORMATIONS
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
 !
@@ -199,7 +203,7 @@ subroutine te0590(option, nomte)
                 epsilo, epsilp, epsilg, varia, iret)
     if (iret .ne. 0) goto 100
 !
-200  continue
+200 continue
 !
     if (resi) then
         call jevech('PCODRET', 'E', icoret)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vppara(modes, typcon, knega, lraide, lmasse,&
                       lamor, mxresf, neq, nfreq, omecor,&
@@ -45,7 +47,7 @@ interface
         real(kind=8) :: resur(*)
         character(len=*) :: resuk(*)
         character(len=1) :: ktyp
-        logical(kind=1) :: lcomod
+        aster_logical :: lcomod
         integer :: icom1
         integer :: icom2
         character(len=16) :: typres

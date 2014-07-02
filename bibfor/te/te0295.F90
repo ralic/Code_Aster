@@ -1,5 +1,6 @@
 subroutine te0295(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -66,11 +67,11 @@ subroutine te0295(option, nomte)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4), du3dm(3, 4)
     real(kind=8) :: p(3, 3), invp(3, 3)
     real(kind=8) :: courb(3, 3, 3)
-    real(kind=8) :: rhocst,rho, om, omo, rbid, e, nu, alpha, tref
+    real(kind=8) :: rhocst, rho, om, omo, rbid, e, nu, alpha, tref
     real(kind=8) :: thet, tpg(27), tno(20), tgdm(3), ttrg, la, mu, ka
     real(kind=8) :: xg, yg, zg, ff
     real(kind=8) :: c1, c2, c3, rg, phig
-    real(kind=8) :: val(1),valres(4)
+    real(kind=8) :: val(1), valres(4)
     real(kind=8) :: coeff, coeff3
     real(kind=8) :: guv, guv1, guv2, guv3, k1, k2, k3, g, poids
     real(kind=8) :: norme, k3a, ttrgv, tgvdm(3)
@@ -80,15 +81,15 @@ subroutine te0295(option, nomte)
     character(len=8) :: nomres(4), nompar(4)
     character(len=16) :: phenom, compor(4)
 !
-    logical(kind=1) :: lcour, fonc, lpesa, lrota
+    aster_logical :: lcour, fonc, lpesa, lrota
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- RECUPERATION DES CHAMPS IN
 !
@@ -124,14 +125,14 @@ subroutine te0295(option, nomte)
         thet = 0.d0
         do 11 j = 1, ndim
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
-11      continue
+ 11     continue
         if (thet .lt. r8prem()) compt = compt + 1
-10  end do
+ 10 end do
     if (compt .eq. nno) goto 9999
 !
 ! --- VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
 !
-    if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
+    if (.not. cgverho(imate)) call utmess('F', 'RUPTURE1_26')
 !
 ! --- RECUPERATION DES FORCES
 !
@@ -175,7 +176,7 @@ subroutine te0295(option, nomte)
 !
     do 20 i = 1, 4
         compor(i) = zk16(icomp+i-1)
-20  end do
+ 20 end do
 !
     if ((compor(1).ne.'ELAS' ) .or. (compor(3).eq.'GROT_GDEP') .or.&
         (compor(4).eq.'COMP_INCR')) then
@@ -199,19 +200,19 @@ subroutine te0295(option, nomte)
         do 50 i = 1, nno
             do 30 j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
-30          continue
+ 30         continue
             do 40 j = 1, ndim
                 kk = ndim*(i-1) + j
                 call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
                             fno(kk), ier)
-40          continue
-50      continue
+ 40         continue
+ 50     continue
     else
         do 80 i = 1, nno
             do 60 j = 1, ndim
                 fno(ndim*(i-1)+j) = zr(iforc+ndim*(i-1)+j-1)
-60          continue
-80      end do
+ 60         continue
+ 80     end do
     endif
 !
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
@@ -227,8 +228,8 @@ subroutine te0295(option, nomte)
                 do 90 j = 1, ndim
                     kk = ndim*(i-1)+j
                     fno(kk)=fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
-90              continue
-95          continue
+ 90             continue
+ 95         continue
         endif
 !
         if (lrota) then
@@ -237,13 +238,13 @@ subroutine te0295(option, nomte)
                 omo = 0.d0
                 do 100 j = 1, ndim
                     omo = omo + zr(irota+j)* zr(igeom+ndim*(i-1)+j-1)
-100              continue
+100             continue
                 do 103 j = 1, ndim
                     kk = ndim*(i-1)+j
                     fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
-103              continue
-105          continue
+103             continue
+105         continue
         endif
     endif
 !
@@ -256,13 +257,13 @@ subroutine te0295(option, nomte)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, tpg(kp), iret)
         if (iret .ne. 0) tpg(kp) = 0.d0
-645  end do
+645 end do
 !
     do 646 ino = 1, nno
         call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
                     1, tno(ino), iret)
         if (iret .ne. 0) tno(ino) = 0.d0
-646  end do
+646 end do
 !
 ! ----------------------------------------------------------------------
 !
@@ -289,8 +290,8 @@ subroutine te0295(option, nomte)
                 dtdm(i,j) = 0.d0
                 dfdm(i,j) = 0.d0
                 dfvdm(i,j) = 0.d0
-111          continue
-110      continue
+111         continue
+110     continue
 !
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
@@ -323,12 +324,12 @@ subroutine te0295(option, nomte)
                     dudm(j,k) = dudm(j,k) + zr(idepl+ndim*(i-1)+j-1)* der(k)
                     dtdm(j,k) = dtdm(j,k) + zr(ithet+ndim*(i-1)+j-1)* der(k)
                     dfdm(j,k) = dfdm(j,k) + fno(ndim*(i-1)+j)*der(k)
-300              continue
+300             continue
                 dudm(j,4) = dudm(j,4) + zr(idepl+ndim*(i-1)+j-1)*der( 4)
                 dtdm(j,4) = dtdm(j,4) + zr(ithet+ndim*(i-1)+j-1)*der( 4)
                 dfdm(j,4) = dfdm(j,4) + fno(ndim*(i-1)+j)*der(4)
-310          continue
-320      continue
+310         continue
+320     continue
 !
         ttrg = tpg(kp) - tref
         ttrgv = 0.d0
@@ -402,8 +403,8 @@ subroutine te0295(option, nomte)
                 ff=zr(ivf-1+nno*(kp-1)+ino)
                 e1(i) = e1(i)+zr(ibalo-1+9*(ino-1)+i+3)* ff
                 e2(i) = e2(i)+zr(ibalo-1+9*(ino-1)+i+6)* ff
-125          continue
-124      continue
+125         continue
+124     continue
 !
 !       NORMALISATION DE LA BASE
         call normev(e1, norme)
@@ -416,15 +417,15 @@ subroutine te0295(option, nomte)
             p(i,1)=e1(i)
             p(i,2)=e2(i)
             p(i,3)=e3(i)
-120      continue
+120     continue
 !
 ! ----- CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
 !
         do 130 i = 1, 3
             do 131 j = 1, 3
                 invp(i,j)=p(j,i)
-131          continue
-130      continue
+131         continue
+130     continue
 !
 !       PRISE EN COMPTE DE LA COURBURE : OUI
 !
@@ -436,8 +437,8 @@ subroutine te0295(option, nomte)
                 courb(i,1,j)=zr(icour-1+ndim*(i-1)+j)
                 courb(i,2,j)=zr(icour-1+ndim*(i+3-1)+j)
                 courb(i,3,j)=zr(icour-1+ndim*(i+6-1)+j)
-501          continue
-500      continue
+501         continue
+500     continue
 !
 !
         call chauxi(ndim, mu, ka, rg, phig,&
@@ -452,35 +453,35 @@ subroutine te0295(option, nomte)
         coef = 2.d0
         call gbil3d(dudm, dudm, dtdm, dfdm, dfdm,&
                     tgdm, tgdm, ttrg, ttrg, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho,&
-                    puls, guv)
+                    c1, c2, c3, k3a, alpha,&
+                    coef, rho, puls, guv)
         g = g + guv
 !
         guv1 = 0.d0
         coef = 1.d0
         call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho,&
-                    puls, guv1)
+                    c1, c2, c3, k3a, alpha,&
+                    coef, rho, puls, guv1)
         k1 = k1 + guv1
 !
         guv2 = 0.d0
         coef = 1.d0
         call gbil3d(dudm, du2dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho,&
-                    puls, guv2)
+                    c1, c2, c3, k3a, alpha,&
+                    coef, rho, puls, guv2)
         k2 = k2 + guv2
 !
         guv3 = 0.d0
         coef = 1.d0
         call gbil3d(dudm, du3dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho,&
-                    puls, guv3)
+                    c1, c2, c3, k3a, alpha,&
+                    coef, rho, puls, guv3)
         k3 = k3 + guv3
 !
-800  end do
+800 end do
 !
     k1 = k1 * coeff
     k2 = k2 * coeff
@@ -494,7 +495,7 @@ subroutine te0295(option, nomte)
     zr(ificg+5) = k2
     zr(ificg+6) = k3
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

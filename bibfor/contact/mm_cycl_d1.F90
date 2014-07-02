@@ -1,9 +1,9 @@
-subroutine mm_cycl_d1(sd_cont_solv  , point_index   , &
-                      coef_cont     , pres_cont_prev, dist_cont_prev, &
-                      indi_cont_eval, dist_cont     , pres_cont)
+subroutine mm_cycl_d1(sd_cont_solv, point_index, coef_cont, pres_cont_prev, dist_cont_prev,&
+                      indi_cont_eval, dist_cont, pres_cont)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/iscode.h"
 #include "asterfort/iscycl.h"
 #include "asterfort/isdeco.h"
@@ -69,7 +69,7 @@ subroutine mm_cycl_d1(sd_cont_solv  , point_index   , &
     integer :: statut(30)
     integer :: cycl_type, cycl_long_acti
     integer :: cycl_ecod(1), cycl_long, cycl_sub_type, cycl_stat
-    logical(kind=1) :: detect
+    aster_logical :: detect
     real(kind=8) :: laug_cont_prev, laug_cont_curr
     real(kind=8) :: pres_near
     integer :: zone_cont_prev, zone_cont_curr
@@ -104,14 +104,14 @@ subroutine mm_cycl_d1(sd_cont_solv  , point_index   , &
 ! - Cycle state
 !
     cycl_ecod(1) = p_cycl_lis(4*(point_index-1)+cycl_type)
-    cycl_long    = p_cycl_nbr(4*(point_index-1)+cycl_type)
-    call isdeco(cycl_ecod(1),statut,30)
+    cycl_long = p_cycl_nbr(4*(point_index-1)+cycl_type)
+    call isdeco(cycl_ecod(1), statut, 30)
 !
 ! - New iteration in cycle
 !
     cycl_long = cycl_long + 1
     statut(cycl_long) = indi_cont_eval
-    call iscode(statut,cycl_ecod(1),30)
+    call iscode(statut, cycl_ecod(1), 30)
 !
 ! - Cycling detection
 !
@@ -120,7 +120,7 @@ subroutine mm_cycl_d1(sd_cont_solv  , point_index   , &
         detect = iscycl(cycl_ecod(1), cycl_long_acti)
         if (detect) then
             cycl_stat = 10
-            call mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev, &
+            call mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev,&
                                zone_cont_curr, cycl_sub_type)
             cycl_stat = cycl_stat + cycl_sub_type
         endif
@@ -128,7 +128,8 @@ subroutine mm_cycl_d1(sd_cont_solv  , point_index   , &
 !
 ! - End of cycling detection zone: shifting
 !
-    if (cycl_long .eq. cycl_long_acti) call mm_cycl_shift(cycl_long_acti, cycl_ecod(1), cycl_long)
+    if (cycl_long .eq. cycl_long_acti) call mm_cycl_shift(cycl_long_acti, cycl_ecod(1),&
+                                                          cycl_long)
 !
 ! - Cycling save
 !

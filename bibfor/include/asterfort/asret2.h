@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                       jsmdi, nbi1, ti1, ti2)
         integer :: nbi1
-        logical(kind=1) :: lmasym
+        aster_logical :: lmasym
         integer :: jtmp2
         integer :: lgtmp2
         integer :: nbterm

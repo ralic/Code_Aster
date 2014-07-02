@@ -2,6 +2,7 @@ subroutine cgvein(resu, compor, iord0, l_temp)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -33,7 +34,7 @@ subroutine cgvein(resu, compor, iord0, l_temp)
     integer, intent(in) :: iord0
     character(len=8), intent(in) :: resu
     character(len=19), intent(in) :: compor
-    logical(kind=1), intent(in) :: l_temp
+    aster_logical, intent(in) :: l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,11 +52,11 @@ subroutine cgvein(resu, compor, iord0, l_temp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret,  jcald, jcall,  nbma, iadc, ima
+    integer :: iret, jcald, jcall, nbma, iadc, ima
     character(len=8) :: noma
     character(len=16) :: k16ldc
     character(len=19) :: chcalc, chtmp
-    logical(kind=1) :: lldcok
+    aster_logical :: lldcok
     character(len=16), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()
 !
@@ -65,11 +66,13 @@ subroutine cgvein(resu, compor, iord0, l_temp)
 !
 ! - les relations de comportement dans la carte compor sont elles autorisees ?
 !
-    chtmp  = '&&CGVEIN_CHTMP'
+    chtmp = '&&CGVEIN_CHTMP'
     chcalc = '&&CGVEIN_CHCALC'
 !
-    call carces(compor, 'ELEM', ' ', 'V', chtmp, 'A', iret)
-    call cesred(chtmp, 0, [0], 1, 'RELCOM', 'V', chcalc)
+    call carces(compor, 'ELEM', ' ', 'V', chtmp,&
+                'A', iret)
+    call cesred(chtmp, 0, [0], 1, 'RELCOM',&
+                'V', chcalc)
     call detrsd('CHAM_ELEM_S', chtmp)
     call jeveuo(chcalc//'.CESD', 'L', jcald)
     call jeveuo(chcalc//'.CESV', 'L', vk16=cesv)
@@ -81,14 +84,14 @@ subroutine cgvein(resu, compor, iord0, l_temp)
 !
     do ima = 1, nbma
 !
-        call cesexi('C', jcald, jcall, ima, 1, 1, 1, iadc)
+        call cesexi('C', jcald, jcall, ima, 1,&
+                    1, 1, iadc)
         ASSERT(iadc .gt. 0)
         k16ldc = cesv(iadc)
 !
 !       seules relations de type COMP_INCR autorisees
-        lldcok = k16ldc .eq. 'ELAS            ' .or.&
-               & k16ldc .eq. 'VMIS_ISOT_LINE  ' .or.&
-               & k16ldc .eq. 'VMIS_ISOT_TRAC  '
+        lldcok = k16ldc .eq. 'ELAS            ' .or. k16ldc .eq. 'VMIS_ISOT_LINE  ' .or. k16ldc&
+                 .eq. 'VMIS_ISOT_TRAC  '
         if (.not.lldcok) call utmess('F', 'RUPTURE1_69', sk=k16ldc)
 !
 !       on interdit VMIS_ISOT_TRAC en presence de thermique

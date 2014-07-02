@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine getnode(mesh   , keywordfact, iocc, stop_void, list_node, &
                        nb_node, model      , suffix, elem_excl)
@@ -26,6 +28,6 @@ interface
         character(len=24), intent(in) :: list_node
         character(len=8), intent(in), optional :: model
         character(len=*), intent(in), optional :: suffix
-        logical(kind=1), intent(in), optional :: elem_excl
+        aster_logical, intent(in), optional :: elem_excl
     end subroutine getnode
 end interface

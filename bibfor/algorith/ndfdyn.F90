@@ -19,6 +19,7 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -58,10 +59,10 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
     character(len=19) :: vites, accel, vite2
     character(len=19) :: cniner, cnhyst
     character(len=24) :: nu
-    integer :: jprov,   neq
+    integer :: jprov, neq
     real(kind=8) :: coerma, coeram, coerri
-    logical(kind=1) :: lamor, limpl
-    logical(kind=1) :: lnewma, ltheta, lthetd, lthetv, lkrenk
+    aster_logical :: lamor, limpl
+    aster_logical :: lnewma, ltheta, lthetd, lthetv, lkrenk
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: deeq(:) => null()
 !

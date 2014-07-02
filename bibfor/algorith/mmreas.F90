@@ -18,7 +18,8 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -66,7 +67,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
     integer :: izone, imae, iptm
     integer :: nne, nbmae, nptm
     integer :: ndimg, nzoco
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     real(kind=8) :: lambdc(1), ksipc1, ksipc2
     real(kind=8) :: mlagc(9)
     character(len=8) :: aliase
@@ -169,10 +170,10 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
-30          continue
-20      continue
-25      continue
-10  end do
+ 30         continue
+ 20     continue
+ 25     continue
+ 10 end do
 !
     call detrsd('CHAM_NO_S', cnsplu)
     call detrsd('CHAM_NO_S', cnslbd)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mditm2(np2, np3, np4, n2, nbm,&
                       nbmcd, nbmp, nbnl, indic, impr,&
@@ -60,7 +62,7 @@ interface
         integer :: icoupl
         character(len=8) :: tpfl
         integer :: veci1(*)
-        logical(kind=1) :: locfl0(*)
+        aster_logical :: locfl0(*)
         real(kind=8) :: dt0
         real(kind=8) :: tfexm
         real(kind=8) :: ts
@@ -173,8 +175,8 @@ interface
         real(kind=8) :: beta(2, *)
         real(kind=8) :: gamma(2, *)
         real(kind=8) :: old(9, *)
-        logical(kind=1) :: locflc(*)
-        logical(kind=1) :: loc(*)
+        aster_logical :: locflc(*)
+        aster_logical :: loc(*)
         complex(kind=8) :: s0(*)
         complex(kind=8) :: z0(*)
         complex(kind=8) :: sr0(*)

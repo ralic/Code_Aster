@@ -2,6 +2,7 @@ subroutine initel(ligrel, l_calc_rigi)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/creprn.h"
 #include "asterfort/dismoi.h"
@@ -39,7 +40,7 @@ subroutine initel(ligrel, l_calc_rigi)
 ! ======================================================================
 !
     character(len=19), intent(in) :: ligrel
-    logical(kind=1), optional, intent(out) :: l_calc_rigi
+    aster_logical, optional, intent(out) :: l_calc_rigi
 !
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -59,7 +60,7 @@ subroutine initel(ligrel, l_calc_rigi)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: igr, ngr, nmaxob, nbobj, nbprin
-    integer :: nbno,    jlliel,  iconx2
+    integer :: nbno, jlliel, iconx2
     integer :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter (nmaxob=30)
     integer :: adobj(nmaxob)

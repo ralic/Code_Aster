@@ -2,6 +2,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
                   vinf, dsde)
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/irrfss.h"
 #include "asterfort/lcdevi.h"
@@ -63,7 +64,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     real(kind=8) :: drpdp
 !
     integer :: iret
-    logical(kind=1) :: ldrpdp
+    aster_logical :: ldrpdp
 !     ------------------------------------------------------------------
     data  i4    /1.0d0   , 0.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&
      &             0.0d0   , 1.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&

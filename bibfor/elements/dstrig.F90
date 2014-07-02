@@ -1,6 +1,7 @@
 subroutine dstrig(nomte, xyzl, option, pgl, rig,&
                   ener)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/bsthpl.h"
@@ -74,7 +75,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: kmf12(6, 3), kmf12a(36)
     real(kind=8) :: bsigth(24), enerth, excent, un, zero
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    logical(kind=1) :: coupmf, exce, indith
+    aster_logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
     data perm  / 1, 4,   7,  2,  5,  8, 3, 6, 9 /
@@ -86,9 +87,9 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
      &             6, 12, 18, 24, 30, 36 /
 !     ----------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     un = 1.0d0
@@ -126,7 +127,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     aire = carat3(8)
     do 10 k = 1, 36
         memb(k) = memb(k)*aire
-10  end do
+ 10 end do
 !
 !     ------------------------------------------------------------------
 !     CALCUL DES MATRICES DE RIGIDITE DE L'ELEMENT EN FLEXION ET
@@ -169,11 +170,11 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
     do 20 k = 1, 81
         flex(k) = 0.d0
-20  end do
+ 20 end do
     do 30 i = 1, 6
         do 30 j = 1, 9
             mefl(i,j) = 0.d0
-30      continue
+ 30     continue
 !
     do 170 int = 1, npg
 !
@@ -231,7 +232,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !       -----------------------------
         do 40 k = 1, 9
             ka(k) = kf22(k) + kaa(k) + kfc21(k) + kfc21(perm(k))
-40      continue
+ 40     continue
 !
 ! ---   CALCUL DU PRODUIT PBT.KA.PB :
 !       ---------------------------
@@ -239,25 +240,25 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
                     xab2, flexi)
         do 50 k1 = 1, 81
             kfb(k1) = 0.d0
-50      continue
+ 50     continue
         do 80 i = 1, 9
             do 70 j = 1, 9
                 k1 = 9* (j-1) + i
                 k2 = 9* (i-1) + j
                 do 60 k = 1, 3
                     kfb(k1) = kfb(k1) + (kf12(i,k)+kfc11(i,k))*pb(k,j)
-60              continue
+ 60             continue
                 kfc(k2) = kfb(k1)
-70          continue
-80      continue
+ 70         continue
+ 80     continue
         do 90 k = 1, 81
             flexi(k) = flexi(k) + kf11(k) + kfb(k) + kfc(k)
-90      continue
+ 90     continue
 !
         wgt = zr(ipoids+int-1)*carat3(7)
         do 100 k = 1, 81
             flex(k) = flex(k) + flexi(k)*wgt
-100      continue
+100     continue
 !
         if (coupmf .or. exce) then
 !
@@ -293,7 +294,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !         -----------------------------
             do 110 i = 1, 36
                 memb(i) = memb(i) + (memexc(i)+kmf12a(i)+kmf12a(perm2( i)))*wgt
-110          continue
+110         continue
 !
         endif
 !
@@ -308,7 +309,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
             do 120 k = 1, 54
                 kmf(k,1) = 0.d0
-120          continue
+120         continue
 !
             if (exce) then
 !
@@ -327,18 +328,18 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
                 do 140 j = 1, 6
                     do 150 k = 1, 3
                         kmf(j,i) = kmf(j,i) + (kmf12(j,k)+kmc(j,k))* pb(k,i) + pm(k,j)*kf12(i,k)
-150                  continue
+150                 continue
                     k = 6* (i-1) + j
                     mefli(j,i) = kmf11(j,i) + kmf(j,i)
-140              continue
-130          continue
+140             continue
+130         continue
             do 160 i = 1, 6
                 do 160 j = 1, 9
                     mefl(i,j) = mefl(i,j) + mefli(i,j)*wgt
-160              continue
+160             continue
         endif
 !
-170  end do
+170 end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxtloc(flex, memb, mefl, ctor, rig)
@@ -352,7 +353,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
         if (indith) then
             do 180 i = 1, 18
                 enerth = enerth + depl(i)*bsigth(i)
-180          continue
+180         continue
             ener(1) = ener(1) - enerth
         endif
     endif

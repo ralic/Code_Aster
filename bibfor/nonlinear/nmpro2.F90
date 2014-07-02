@@ -19,6 +19,7 @@ subroutine nmpro2(fonact, numedd, numfix)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/isfonc.h"
@@ -42,7 +43,7 @@ subroutine nmpro2(fonact, numedd, numfix)
 !
 !
 !
-    logical(kind=1) :: lmacr, leltc
+    aster_logical :: lmacr, leltc
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,6 @@
 subroutine mnlind(n, deb, cle, vect, ind)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,14 +42,14 @@ subroutine mnlind(n, deb, cle, vect, ind)
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     integer :: indt
-    logical(kind=1) :: lstp
+    aster_logical :: lstp
 !
     if (n .lt. 0) then
         ind=-999
     else
         lstp=.true.
         indt=1
-10      continue
+ 10     continue
         if (lstp) then
             if (abs(cle-vect(indt)) .lt. 1.d-8) then
                 lstp=.false.

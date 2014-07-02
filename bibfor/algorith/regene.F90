@@ -1,5 +1,6 @@
 subroutine regene(nomres, resgen, profno)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/copmod.h"
@@ -65,9 +66,9 @@ subroutine regene(nomres, resgen, profno)
 !
 !
 !
-    integer :: i, j,  iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
+    integer :: i, j, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
     integer :: jbid, ldnew, llchol, llinsk, llnueq, nbmod, nbnot, neq
-    integer :: nno, iadpar(13), iadpas(13), nbmo2,     tmod(1)
+    integer :: nno, iadpar(13), iadpas(13), nbmo2, tmod(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typsca
@@ -77,7 +78,7 @@ subroutine regene(nomres, resgen, profno)
     character(len=19) :: chamno, kint, chamne, raid, numgen, profno
     character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
     character(len=24) :: valk, matric(3)
-    logical(kind=1) :: zcmplx
+    aster_logical :: zcmplx
     character(len=24), pointer :: nllref3(:) => null()
     character(len=24), pointer :: nllref5(:) => null()
     character(len=24), pointer :: refe(:) => null()
@@ -204,7 +205,7 @@ subroutine regene(nomres, resgen, profno)
                     ibid)
         nbmo2=tmod(1)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
-        call copmod(basmod,numer=profno(1:14),bmodr=zr(idbase), nequa=neq)
+        call copmod(basmod, numer=profno(1:14), bmodr=zr(idbase), nequa=neq)
 !
 ! ------ BOUCLE SUR LES MODES A RESTITUER
 !
@@ -239,8 +240,8 @@ subroutine regene(nomres, resgen, profno)
             call rsnoch(nomres, depl, i)
             call rsadpa(nomres, 'E', 13, nompar, i,&
                         0, tjv=iadpas, styp=kbid)
-            do j=1,11
-               zr(iadpas(j)) = zr(iadpar(j))
+            do j = 1, 11
+                zr(iadpas(j)) = zr(iadpar(j))
             enddo
             zi(iadpas(12)) = zi(iadpar(12))
             zk16(iadpas(13)) = 'MODE_DYN'
@@ -303,8 +304,8 @@ subroutine regene(nomres, resgen, profno)
 !
             call rsadpa(nomres, 'E', 13, nompar, i,&
                         0, tjv=iadpas, styp=kbid)
-            do j=1,11
-               zr(iadpas(j)) = zr(iadpar(j))
+            do j = 1, 11
+                zr(iadpas(j)) = zr(iadpar(j))
             enddo
             zi(iadpas(12)) = zi(iadpar(12))
             zk16(iadpas(13)) = 'MODE_DYN'

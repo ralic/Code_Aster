@@ -22,6 +22,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/apatta.h"
@@ -42,7 +43,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
     character(len=24) :: defico
     integer :: posnom
     integer :: itemax
-    logical(kind=1) :: dirapp
+    aster_logical :: dirapp
     real(kind=8) :: epsmax, toleou
     real(kind=8) :: dir(3), coorpt(3)
     real(kind=8) :: tau1m(3), tau2m(3), vecpmm(3)
@@ -91,7 +92,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
     real(kind=8) :: ksi1l, ksi2l, distl
     integer :: iprojl, imam, posmal, nummal
     integer :: jdeciv
-    logical(kind=1) :: lpoint
+    aster_logical :: lpoint
 !
 ! ----------------------------------------------------------------------
 !
@@ -185,7 +186,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
                     ksi2l, ksi2m, iprojl, iprojm, vecpml,&
                     vecpmm)
 !
-10  end do
+ 10 end do
 !
     call jedema()
 !

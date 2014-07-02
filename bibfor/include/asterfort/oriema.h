@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
                       lnm3d, ndim, coor, reorie, norien,&
@@ -27,7 +29,7 @@ interface
         integer :: lnm3d(*)
         integer :: ndim
         real(kind=8) :: coor(*)
-        logical(kind=1) :: reorie
+        aster_logical :: reorie
         integer :: norien
         integer :: ifm
         integer :: niv

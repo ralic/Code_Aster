@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
                       hpg, ffc, jacobi, coefcr, lpenac,&
@@ -29,7 +31,7 @@ interface
         real(kind=8) :: ffc(9)
         real(kind=8) :: jacobi
         real(kind=8) :: coefcr
-        logical(kind=1) :: lpenac
+        aster_logical :: lpenac
         real(kind=8) :: dlagrf(2)
         integer :: cface(5, 3)
         character(len=8) :: typmai
@@ -38,7 +40,7 @@ interface
         integer :: jddle(2)
         integer :: nconta
         integer :: nfhe
-        logical(kind=1) :: lmulti
+        aster_logical :: lmulti
         integer :: heavno(8)
         real(kind=8) :: vtmp(336)
     end subroutine xmvef0

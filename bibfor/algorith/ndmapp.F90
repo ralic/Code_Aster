@@ -19,6 +19,7 @@ subroutine ndmapp(sddyna, valinc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -45,7 +46,7 @@ subroutine ndmapp(sddyna, valinc)
 !
 !
 !
-    logical(kind=1) :: lmuap
+    aster_logical :: lmuap
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
@@ -97,7 +98,7 @@ subroutine ndmapp(sddyna, valinc)
             depab(ie) = depen(ie) + depp(ie)
             vitab(ie) = viten(ie) + vitp(ie)
             accab(ie) = accen(ie) + accp(ie)
-20      continue
+ 20     continue
     endif
 !
     call jedema()

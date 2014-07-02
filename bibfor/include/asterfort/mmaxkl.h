@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
                       symech, chfond, nnoff, basloc, courb, &
@@ -34,21 +36,21 @@ interface
         character(len=24) :: basloc
         character(len=24) :: courb
         integer :: ndeg
-        logical(kind=1) :: thlagr
-        logical(kind=1) :: glagr
-        logical(kind=1) :: thlag2
-        logical(kind=1) :: pair
+        aster_logical :: thlagr
+        aster_logical :: glagr
+        aster_logical :: thlag2
+        aster_logical :: pair
         integer :: ndimte
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=8) :: fiss
         integer :: ivec
         character(len=8) :: resuco
-        logical(kind=1) :: lmelas
-        logical(kind=1) :: lncas
-        logical(kind=1) :: lord(lonvec)
-        logical(kind=1) :: milieu
-        logical(kind=1) :: connex
+        aster_logical :: lmelas
+        aster_logical :: lncas
+        aster_logical :: lord(lonvec)
+        aster_logical :: milieu
+        aster_logical :: connex
         character(len=19) :: lischa
     end subroutine mmaxkl
 end interface

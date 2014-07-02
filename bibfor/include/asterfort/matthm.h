@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
                       dimdef, iu, ip, ipf, iq,&
@@ -26,7 +28,7 @@ interface
         integer :: nno2
         integer :: nno1
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: iu(3, 18)
         integer :: ip(2, 9)
         integer :: ipf(2, 2, 9)

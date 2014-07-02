@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mereso(result, modele, mate, carele, fomult,&
                       lischa, itps, partps, numedd, vecass,&
@@ -30,7 +32,7 @@ interface
         real(kind=8) :: partps(3)
         character(len=24) :: numedd
         character(len=19) :: vecass
-        logical(kind=1) :: assmat
+        aster_logical :: assmat
         character(len=19) :: solveu
         character(len=19) :: matass
         character(len=19) :: maprec

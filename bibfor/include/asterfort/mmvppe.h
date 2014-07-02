@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
                       nnm, nnl, nbdm, laxis, ldyna,&
@@ -30,9 +32,9 @@ interface
         integer :: nnm
         integer :: nnl
         integer :: nbdm
-        logical(kind=1) :: laxis
-        logical(kind=1) :: ldyna
-        logical(kind=1) :: lfovit
+        aster_logical :: laxis
+        aster_logical :: ldyna
+        aster_logical :: lfovit
         real(kind=8) :: jeusup
         real(kind=8) :: ffe(9)
         real(kind=8) :: ffm(9)

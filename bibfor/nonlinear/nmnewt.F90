@@ -27,7 +27,8 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmactf.h"
 #include "asterfort/nmactn.h"
@@ -136,8 +137,8 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! ----------------------------------------------------------------------
 !
     integer :: niveau, iterat
-    logical(kind=1) :: lerrit
-    logical(kind=1) :: lboucl, lctcd
+    aster_logical :: lerrit
+    aster_logical :: lboucl, lctcd
     character(len=4) :: etnewt, etfixe
     real(kind=8) :: time
 !
@@ -194,7 +195,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !     BOUCLE POINTS FIXES
 ! ======================================================================
 !
-100  continue
+100 continue
 !
     iterat = 0
     nbiter = nbiter + 1
@@ -233,7 +234,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !     BOUCLE SUR LES ITERATIONS DE NEWTON
 ! ======================================================================
 !
-300  continue
+300 continue
     if (iterat .ne. 0) call nmtime(sdtime, 'RUN', 'ITE')
 !
 ! --- CALCUL PROPREMENT DIT DE L'INCREMENT DE DEPLACEMENT
@@ -268,7 +269,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !
-315  continue
+315 continue
     call nmconv(noma, modele, mate, numedd, sdnume,&
                 fonact, sddyna, sdconv, sdimpr, sdstat,&
                 sddisc, sdtime, sdcrit, sderro, parmet,&
@@ -297,7 +298,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! --- ON CONTINUE LES ITERATIONS DE NEWTON : CALCUL DE LA DESCENTE
 !
-320  continue
+320 continue
 !
     call nmdesc(modele, numedd, numfix, mate, carele,&
                 comref, compor, lischa, resoco, method,&
@@ -323,7 +324,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
         goto 300
     endif
 !
-330  continue
+330 continue
 !
 ! --- TEMPS CPU ITERATION DE NEWTON
 !
@@ -370,7 +371,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
     endif
 !
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
-!  
+!
     call nmtble(modele, noma, mate, defico, resoco,&
                 niveau, fonact, sdimpr, sdstat, sdtime,&
                 sddyna, sderro, sdconv, sddisc, numins,&

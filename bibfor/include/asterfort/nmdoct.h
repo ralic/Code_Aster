@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
                       ligrcf, ligrxf)
         character(len=19) :: lischa
         character(len=24) :: defico
         character(len=24) :: deficu
-        logical(kind=1) :: lcont
-        logical(kind=1) :: lunil
+        aster_logical :: lcont
+        aster_logical :: lunil
         character(len=19) :: ligrcf
         character(len=19) :: ligrxf
     end subroutine nmdoct

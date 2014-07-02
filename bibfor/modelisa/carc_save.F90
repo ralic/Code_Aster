@@ -1,8 +1,9 @@
-subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
-                     info_carc_valk, info_carc_valr)
+subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
+                     info_carc_valr)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -39,7 +40,7 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
     character(len=19), intent(in) :: carcri
     integer, intent(in) :: nb_cmp
     character(len=16), intent(in) :: info_carc_valk(:)
-    real(kind=8)     , intent(in) :: info_carc_valr(:)
+    real(kind=8), intent(in) :: info_carc_valr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +60,7 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical(kind=1) :: l_affe_all
+    aster_logical :: l_affe_all
     integer :: nb_elem_affe
     integer, pointer :: p_elem_affe(:) => null()
     character(len=16) :: keywordfact
@@ -72,18 +73,18 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    logical(kind=1) :: plane_stress
+    aster_logical :: plane_stress
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc       = 0
+    nbocc = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
     list_elem_affe = '&&CARCSAVE.LIST'
-    motcle(1)   = 'GROUP_MA'
-    motcle(2)   = 'MAILLE'
-    typmcl(1)   = 'GROUP_MA'
-    typmcl(2)   = 'MAILLE'
+    motcle(1) = 'GROUP_MA'
+    motcle(2) = 'MAILLE'
+    typmcl(1) = 'GROUP_MA'
+    typmcl(2) = 'MAILLE'
 !
 ! - Access to <CARTE>
 !
@@ -95,37 +96,37 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 !
 ! ----- Get infos
 !
-        type_matr_t     = int(info_carc_valr(13*(iocc-1) + 2))
-        parm_theta      =     info_carc_valr(13*(iocc-1) + 4)
-        iter_inte_pas   = int(info_carc_valr(13*(iocc-1) + 5))
-        algo_inte_r     =     info_carc_valr(13*(iocc-1) + 6)
-        vale_pert_rela  =     info_carc_valr(13*(iocc-1) + 7)
-        resi_deborst_max =     info_carc_valr(13*(iocc-1) + 8)
+        type_matr_t = int(info_carc_valr(13*(iocc-1) + 2))
+        parm_theta = info_carc_valr(13*(iocc-1) + 4)
+        iter_inte_pas = int(info_carc_valr(13*(iocc-1) + 5))
+        algo_inte_r = info_carc_valr(13*(iocc-1) + 6)
+        vale_pert_rela = info_carc_valr(13*(iocc-1) + 7)
+        resi_deborst_max = info_carc_valr(13*(iocc-1) + 8)
         iter_deborst_max = int(info_carc_valr(13*(iocc-1) + 9))
-        seuil           =     info_carc_valr(13*(iocc-1) + 10)
-        amplitude       =     info_carc_valr(13*(iocc-1) + 11)
-        taux_retour     =     info_carc_valr(13*(iocc-1) + 12)
-        parm_alpha      =     info_carc_valr(13*(iocc-1) + 13)
-        rela_comp       =     info_carc_valk(2*(iocc-1) + 1)
-        algo_inte       =     info_carc_valk(2*(iocc-1) + 2)
+        seuil = info_carc_valr(13*(iocc-1) + 10)
+        amplitude = info_carc_valr(13*(iocc-1) + 11)
+        taux_retour = info_carc_valr(13*(iocc-1) + 12)
+        parm_alpha = info_carc_valr(13*(iocc-1) + 13)
+        rela_comp = info_carc_valk(2*(iocc-1) + 1)
+        algo_inte = info_carc_valk(2*(iocc-1) + 2)
 !
 ! ----- Get mesh
 !
-        call getvtx(keywordfact, 'TOUT',  iocc = iocc, nbret = nt)
+        call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
         if (nt .ne. 0) then
             l_affe_all = .true.
         else
             l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
+            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                         2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe.eq.0) l_affe_all = .true.
+            if (nb_elem_affe .eq. 0) l_affe_all = .true.
         endif
 !
 ! ----- Get ALGO_INTE - Plane stress
 !
         plane_stress = exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
         if (plane_stress) then
-            if (rela_comp .eq. 'VMIS_ECMI_LINE' .or. rela_comp .eq. 'VMIS_ECMI_TRAC' .or. &
+            if (rela_comp .eq. 'VMIS_ECMI_LINE' .or. rela_comp .eq. 'VMIS_ECMI_TRAC' .or.&
                 rela_comp .eq. 'VMIS_ISOT_LINE' .or. rela_comp .eq. 'VMIS_ISOT_TRAC') then
                 algo_inte = 'SECANTE'
             endif
@@ -134,20 +135,20 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 !
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !
-        call nmdocv(keywordfact   , iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
-        call nmdocv(keywordfact   , iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
+        call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+        call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
 !
 ! ----- Set in <CARTE>
 !
-        p_carc_valv(1)  = iter_inte_maxi
-        p_carc_valv(2)  = type_matr_t
-        p_carc_valv(3)  = resi_inte_rela
-        p_carc_valv(4)  = parm_theta
-        p_carc_valv(5)  = iter_inte_pas
-        p_carc_valv(6)  = algo_inte_r
-        p_carc_valv(7)  = vale_pert_rela
-        p_carc_valv(8)  = resi_deborst_max
-        p_carc_valv(9)  = iter_deborst_max
+        p_carc_valv(1) = iter_inte_maxi
+        p_carc_valv(2) = type_matr_t
+        p_carc_valv(3) = resi_inte_rela
+        p_carc_valv(4) = parm_theta
+        p_carc_valv(5) = iter_inte_pas
+        p_carc_valv(6) = algo_inte_r
+        p_carc_valv(7) = vale_pert_rela
+        p_carc_valv(8) = resi_deborst_max
+        p_carc_valv(9) = iter_deborst_max
         p_carc_valv(10) = seuil
         p_carc_valv(11) = amplitude
         p_carc_valv(12) = taux_retour
@@ -168,4 +169,3 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
     call jedetr(carcri//'.NCMP')
 !
 end subroutine
-

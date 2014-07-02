@@ -34,9 +34,10 @@ subroutine nmcpl3(compor, option, crit, deps, dsidep,&
 ! VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST
 !
     implicit none
+#include "asterf_types.h"
     character(len=16) :: option, compor(*)
     integer :: k, ndim, ncpmax, icp, cpl
-    logical(kind=1) :: conv, vecteu
+    aster_logical :: conv, vecteu
     real(kind=8) :: vip(*), deps(*), crit(*), dsidep(6, 6), sigp(4), sigpeq
     real(kind=8) :: prec, signul, precr, ddezz
 !
@@ -61,7 +62,7 @@ subroutine nmcpl3(compor, option, crit, deps, dsidep,&
             sigpeq=0.d0
             do 141 k = 1, 2*ndim
                 sigpeq = sigpeq + sigp(k)**2
-141          continue
+141         continue
             sigpeq = sqrt(sigpeq)
             if (sigpeq .lt. signul) then
                 precr=prec
@@ -97,5 +98,5 @@ subroutine nmcpl3(compor, option, crit, deps, dsidep,&
         endif
 !
     endif
-9999  continue
+9999 continue
 end subroutine

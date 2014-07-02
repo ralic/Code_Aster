@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3ptrv(epsi, lstpt, nbpt, t, trouve,&
                       ipos)
@@ -22,7 +24,7 @@ interface
         integer :: lstpt(*)
         integer :: nbpt
         real(kind=8) :: t
-        logical(kind=1) :: trouve
+        aster_logical :: trouve
         integer :: ipos
     end subroutine i3ptrv
 end interface

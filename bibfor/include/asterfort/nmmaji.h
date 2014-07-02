@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
                       incmoz, ddincz, incplz, ordre)
         character(len=24) :: numedd
-        logical(kind=1) :: lgrot
-        logical(kind=1) :: lendo
+        aster_logical :: lgrot
+        aster_logical :: lendo
         character(len=19) :: sdnume
         real(kind=8) :: coef
         character(len=*) :: incmoz

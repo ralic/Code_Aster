@@ -1,5 +1,8 @@
-subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
+subroutine dxmate(fami, df, dm, dmf, dc,&
+                  dci, dmc, dfc, nno, pgl,&
+                  multic, coupmf, t2iu, t2ui, t1ve)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
@@ -18,7 +21,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 #include "asterfort/utbtab.h"
 #include "asterfort/utdtab.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
     integer :: nno, multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
@@ -77,8 +80,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
     call r8inir(6, zero, dmc, 1)
     call r8inir(6, zero, dfc, 1)
 !
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call tecael(iazi, iazk24)
     nomte = zk24(iazk24-1+3+nno+1)(1:16)
 !
@@ -106,8 +109,9 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !
-     
-        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+!
+        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                    c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
 !
@@ -132,7 +136,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         nomres(2) = 'NU'
     else if (phenom.eq.'ELAS_GLRC') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                    c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
 !
@@ -161,7 +166,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
     else if (phenom.eq.'ELAS_COQUE') then
         call utmess('A', 'ELEMENTS_93', sk=phenom)
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                    c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
         t1ve(1) = c*c
@@ -174,9 +180,13 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         t1ve(6) = t1ve(7) + t1ve(7)
         t1ve(9) = t1ve(1) - t1ve(4)
 !
-        call rcvala(zi(jmate), ' ', phenom, 0, ' ', [zero], 1, 'MEMB_L  ', valres(1), icodre, 0)
+        call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
+                    [zero], 1, 'MEMB_L  ', valres(1), icodre,&
+                    0)
         if (icodre(1) .eq. 1) then
-            call rcvala(zi(jmate), ' ', phenom, 0, ' ', [zero], 1, 'M_LLLL  ', valres(1), icodre, 0)
+            call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
+                        [zero], 1, 'M_LLLL  ', valres(1), icodre,&
+                        0)
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'ELEMENTS_41')
             else
@@ -187,28 +197,28 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         endif
         if (elasco .eq. 1) then
             nbv = 10
-            nomres(1)  = 'MEMB_L  '
-            nomres(2)  = 'MEMB_LT '
-            nomres(3)  = 'MEMB_T  '
-            nomres(4)  = 'MEMB_G_L'
-            nomres(5)  = 'FLEX_L  '
-            nomres(6)  = 'FLEX_LT '
-            nomres(7)  = 'FLEX_T  '
-            nomres(8)  = 'FLEX_G_L'
-            nomres(9)  = 'CISA_L  '
+            nomres(1) = 'MEMB_L  '
+            nomres(2) = 'MEMB_LT '
+            nomres(3) = 'MEMB_T  '
+            nomres(4) = 'MEMB_G_L'
+            nomres(5) = 'FLEX_L  '
+            nomres(6) = 'FLEX_LT '
+            nomres(7) = 'FLEX_T  '
+            nomres(8) = 'FLEX_G_L'
+            nomres(9) = 'CISA_L  '
             nomres(10) = 'CISA_T  '
         else if (elasco.eq.2) then
             nbv = 33
             coupmf = .true.
-            nomres(1) =  'M_LLLL  '
-            nomres(2) =  'M_LLTT  '
-            nomres(3) =  'M_LLLT  '
-            nomres(4) =  'M_TTTT  '
-            nomres(5) =  'M_TTLT  '
-            nomres(6) =  'M_LTLT  '
-            nomres(7) =  'F_LLLL  '
-            nomres(8) =  'F_LLTT  '
-            nomres(9) =  'F_LLLT  '
+            nomres(1) = 'M_LLLL  '
+            nomres(2) = 'M_LLTT  '
+            nomres(3) = 'M_LLLT  '
+            nomres(4) = 'M_TTTT  '
+            nomres(5) = 'M_TTLT  '
+            nomres(6) = 'M_LTLT  '
+            nomres(7) = 'F_LLLL  '
+            nomres(8) = 'F_LLTT  '
+            nomres(9) = 'F_LLLT  '
             nomres(10) = 'F_TTTT  '
             nomres(11) = 'F_TTLT  '
             nomres(12) = 'F_LTLT  '
@@ -236,7 +246,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         endif
     else if (phenom.eq.'ELAS_DHRC') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                    c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
 !
@@ -256,15 +267,15 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         end do
 !
         nbv = 21
-        nomres(1)  = 'A011'
-        nomres(2)  = 'A012'
-        nomres(3)  = 'A013'
-        nomres(4)  = 'A014'
-        nomres(5)  = 'A015'
-        nomres(6)  = 'A016'
-        nomres(7)  = 'A022'
-        nomres(8)  = 'A023'
-        nomres(9)  = 'A024'
+        nomres(1) = 'A011'
+        nomres(2) = 'A012'
+        nomres(3) = 'A013'
+        nomres(4) = 'A014'
+        nomres(5) = 'A015'
+        nomres(6) = 'A016'
+        nomres(7) = 'A022'
+        nomres(8) = 'A023'
+        nomres(9) = 'A024'
         nomres(10) = 'A025'
         nomres(11) = 'A026'
         nomres(12) = 'A033'
@@ -278,7 +289,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         nomres(20) = 'A056'
         nomres(21) = 'A066'
     else if (phenom.eq.'ELAS_ORTH') then
-        call utmess('F', 'ELEMENTS_91', sk=phenom) 
+        call utmess('F', 'ELEMENTS_91', sk=phenom)
     else if (phenom.eq.'ELAS_ISTR') then
         call utmess('F', 'ELEMENTS_92', sk=phenom)
     else
@@ -288,7 +299,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
     if (nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEDKTG3') then
         call moyte2(fami, npg, '+', valpar, iret1)
     else
-        call moytem(fami, npg, npgh*ncou, '+', valpar, iret1)
+        call moytem(fami, npg, npgh*ncou, '+', valpar,&
+                    iret1)
     endif
     nbpar = 1
     nompar = 'TEMP'
@@ -297,8 +309,9 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !
 !        ------ MATERIAU ISOTROPE AVEC DECOUPLAGE MEMBRANE FLEXION----
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], nbv,&
-                    nomres, valres, icodre, 1)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    nbv, nomres, valres, icodre, 1)
 !
         young = valres(1)
         nu = valres(2)
@@ -353,14 +366,16 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !
 !        ------ MATERIAU ISOTROPE --------------------------------------
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 2,&
-                    nomres, valres, icodre, 1)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    2, nomres, valres, icodre, 1)
 !
         em = valres(1)
         num = valres(2)
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 2,&
-                    nomres(3), valres, icodre, 0)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    2, nomres(3), valres, icodre, 0)
 !
         if (icodre(1) .eq. 0) then
             ef = valres(1)
@@ -399,8 +414,9 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         dm(2,2) = dm(1,1)
         dm(3,3) = cdm* (1.d0-num)/2.d0
 !      --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 2,&
-                    nomres(5), valres, icodre, 0)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    2, nomres(5), valres, icodre, 0)
 !
         if (icodre(1) .eq. 0) then
             dc(1,1) = valres(1)
@@ -430,8 +446,9 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         end do
 !
     else if (phenom.eq.'ELAS_COQUE') then
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], nbv,&
-                    nomres, valres, icodre, 1)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    nbv, nomres, valres, icodre, 1)
         if (elasco .eq. 1) then
             multic = 0
 !
@@ -557,21 +574,29 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !
         if (nomte .ne. 'MEDKQG4' .and. nomte .ne. 'MEDKTG3') then
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-            call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
-            call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
-            call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
-            call utbtab('ZERO', 2, 2, dc, t2ui, xab2, dc)
-            call utbtab('ZERO', 2, 2, dci, t2ui, xab2, dci)
+            call utbtab('ZERO', 3, 3, dm, t1ve,&
+                        xab1, dm)
+            call utbtab('ZERO', 3, 3, df, t1ve,&
+                        xab1, df)
+            call utbtab('ZERO', 3, 3, dmf, t1ve,&
+                        xab1, dmf)
+            call utbtab('ZERO', 2, 2, dc, t2ui,&
+                        xab2, dc)
+            call utbtab('ZERO', 2, 2, dci, t2ui,&
+                        xab2, dci)
             if (elasco .eq. 2) then
-                call utdtab('ZERO', 3, 2, 2, 3, dmc, t2ui, t1ve, xab3, dmc)
-                call utdtab('ZERO', 3, 2, 2, 3, dfc, t2ui, t1ve, xab3, dfc)
+                call utdtab('ZERO', 3, 2, 2, 3,&
+                            dmc, t2ui, t1ve, xab3, dmc)
+                call utdtab('ZERO', 3, 2, 2, 3,&
+                            dfc, t2ui, t1ve, xab3, dfc)
             endif
         endif
 !
     else if (phenom.eq.'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 18,&
-                    nomres, valres, icodre, 1)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    18, nomres, valres, icodre, 1)
         dm(1,1) = valres(1)
         dm(1,2) = valres(2)
         dm(1,3) = valres(3)
@@ -599,8 +624,9 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         df(2,1) = df(1,2)
         df(3,1) = df(1,3)
         df(3,2) = df(2,3)
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 6,&
-                    nomres(21), valres(21), icodre(21), 1)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    6, nomres(21), valres(21), icodre(21), 1)
         dci(1,1) = valres(21)
         dci(2,2) = valres(22)
         dci(1,2) = valres(23)
@@ -621,11 +647,16 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         end do
 !
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
-        call utbtab('ZERO', 2, 2, dc, t2ui, xab2, dc)
-        call utbtab('ZERO', 2, 2, dci, t2ui, xab2, dci)
+        call utbtab('ZERO', 3, 3, dm, t1ve,&
+                    xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve,&
+                    xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve,&
+                    xab1, dmf)
+        call utbtab('ZERO', 2, 2, dc, t2ui,&
+                    xab2, dc)
+        call utbtab('ZERO', 2, 2, dci, t2ui,&
+                    xab2, dci)
 !
         multic = 1
 !
@@ -633,8 +664,9 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         multic = 0
         coupmf = .true.
 !        ------ MATERIAU DHRC -----------------------------------
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 21,&
-                    nomres, valres, icodre, 1)
+        call rcvalb(fami, 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
+                    21, nomres, valres, icodre, 1)
         dm(1,1) = valres(1)
         dm(1,2) = valres(2)
         dm(1,3) = valres(3)
@@ -674,9 +706,12 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         end do
 !
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
+        call utbtab('ZERO', 3, 3, dm, t1ve,&
+                    xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve,&
+                    xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve,&
+                    xab1, dmf)
     endif
 !
     do k = 1, 9

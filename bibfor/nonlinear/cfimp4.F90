@@ -18,7 +18,8 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apnomp.h"
@@ -87,7 +88,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
     real(kind=8) :: jeuold, dissup
     real(kind=8) :: coefff, coefpn, coefpt, r8bid
     real(kind=8) :: tau1(3), tau2(3), norm(3)
-    logical(kind=1) :: lnodal, lctfd, lfrot
+    aster_logical :: lnodal, lctfd, lfrot
 !
 ! ----------------------------------------------------------------------
 !
@@ -219,7 +220,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
         3007 format (' <CONTACT><APPA>  * TANGENTE ET NORMALE NON CALCULEES')
 !
 !
-30  end do
+ 30 end do
 !
 ! ----------------------------------------------------------------------
 ! --- INFOS SUR LES NOEUDS ESCLAVES
@@ -423,11 +424,11 @@ subroutine cfimp4(defico, resoco, noma, ifm)
                         iddlm-1), iddlm=1,nbddlm)
                     endif
                 endif
-50          continue
+ 50         continue
 !
         endif
 !
-40  end do
+ 40 end do
 !
     4000 format (' <CONTACT><APPA> LIAISON NUMERO ',i6,' (',&
      &        a16,')')

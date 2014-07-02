@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine affono(valr, valk, desc, prnm, nbcomp,&
                       fonree, nomn, ino, nsurch, forimp,&
@@ -32,7 +34,7 @@ interface
         real(kind=8) :: valfor(nbcomp)
         character(len=8) :: valfof(nbcomp)
         character(len=16) :: motcle(nbcomp)
-        logical(kind=1) :: verif
+        aster_logical :: verif
         integer :: nbec
     end subroutine affono
 end interface

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tbexip(nomta, para, exist, typpar)
         character(len=*) :: nomta
         character(len=*) :: para
-        logical(kind=1) :: exist
+        aster_logical :: exist
         character(len=*) :: typpar
     end subroutine tbexip
 end interface

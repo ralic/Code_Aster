@@ -1,5 +1,6 @@
 subroutine pevolu(resu, modele, nbocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/alchml.h"
@@ -67,7 +68,7 @@ subroutine pevolu(resu, modele, nbocc)
     integer :: nn, nbmaf
     integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
     integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
-    integer ::    nucmp, ivali, bfix, ivol(2), tord(1)
+    integer :: nucmp, ivali, bfix, ivol(2), tord(1)
     parameter(nbpmax=13)
     character(len=4) :: tych, ki
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
@@ -80,7 +81,7 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=16) :: nompar(nbpmax), mocles(1), optio2, nomcha, valk, valr
     character(len=16) :: vali
     character(len=24) :: mesmai, mesmaf, mesmae, borpct, valk2(5), grouma
-    logical(kind=1) :: exiord, toneut, lseuil
+    aster_logical :: exiord, toneut, lseuil
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
@@ -378,7 +379,7 @@ subroutine pevolu(resu, modele, nbocc)
                     mesmae = mesmaf
                 else
                     call utmess('F', 'PREPOST2_6')
-                endif    
+                endif 
             else
                 infoma='-'
             endif

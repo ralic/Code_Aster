@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rsbary(lr8, nr8, tous, lexi, x,&
                       i1, i2, iposit)
         real(kind=8) :: lr8(*)
         integer :: nr8
-        logical(kind=1) :: tous
-        logical(kind=1) :: lexi(*)
+        aster_logical :: tous
+        aster_logical :: lexi(*)
         real(kind=8) :: x
         integer :: i1
         integer :: i2

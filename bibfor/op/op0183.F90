@@ -23,6 +23,7 @@ subroutine op0183()
 !     COMMANDE :  CALC_FORC_NONL
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/asasve.h"
@@ -62,8 +63,8 @@ subroutine op0183()
     integer :: ibid
     integer :: i, iachar, iad, ichar
     integer :: iordr, iret, iret2, j
-    integer :: jfo,  jinfc
-    integer ::  jordr
+    integer :: jfo, jinfc
+    integer :: jordr
     integer :: lonch, lvafon, n0, n2, nbchar
     integer :: nbddl, nbordr, nc, neq, nh, np
     integer :: ii, ltps, ltps2
@@ -81,12 +82,12 @@ subroutine op0183()
     character(len=24) :: vreno, compor, chvive, chacve, raide
     character(len=24) :: bidon, chvarc
     character(len=24) :: numref, valk(3)
-    logical(kind=1) :: l_etat_init
+    aster_logical :: l_etat_init
 !     ------------------------------------------------------------------
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
 !
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
     real(kind=8), pointer :: fono(:) => null()
     real(kind=8), pointer :: noch(:) => null()
 !

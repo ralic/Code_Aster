@@ -19,7 +19,7 @@ function ischar(lischa, typcha, soutyp, ichar)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: ischar
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -27,6 +27,7 @@ function ischar(lischa, typcha, soutyp, ichar)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+    aster_logical :: ischar
     character(len=19) :: lischa
     character(len=4) :: typcha
     character(len=4) :: soutyp
@@ -65,8 +66,8 @@ function ischar(lischa, typcha, soutyp, ichar)
 !
     integer :: iret, icha, deb, fin
     integer :: nchar
-    logical(kind=1) :: ldiri, lelim, ldual, ldidi
-    logical(kind=1) :: lneum, londe, llapl, lsigm, lelem, lsuiv
+    aster_logical :: ldiri, lelim, ldual, ldidi
+    aster_logical :: lneum, londe, llapl, lsigm, lelem, lsuiv
     character(len=24) :: charge, infcha
     integer :: jalich, jinfch
 !
@@ -185,7 +186,7 @@ function ischar(lischa, typcha, soutyp, ichar)
                     ldidi = .true.
                 endif
             endif
-10      continue
+ 10     continue
     endif
 !
 ! --- REPONSE SUIVANT QUESTION
@@ -237,7 +238,7 @@ function ischar(lischa, typcha, soutyp, ichar)
         ASSERT(.false.)
     endif
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end function

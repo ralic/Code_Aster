@@ -1,8 +1,9 @@
 subroutine pj3da3(m, a, b, c, ok,&
                   la, lb, lc, d2)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: m(3), a(3), b(3), c(3), d2, la, lb, lc
-    logical(kind=1) :: ok
+    aster_logical :: ok
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,11 +42,11 @@ subroutine pj3da3(m, a, b, c, ok,&
     real(kind=8) :: delta, p(3)
     real(kind=8) :: ab(3), ac(3), am(3), a11, a22, a12, b1, b2
 ! DEB ------------------------------------------------------------------
-    do 1,k=1,3
-    ab(k)=b(k)-a(k)
-    ac(k)=c(k)-a(k)
-    am(k)=m(k)-a(k)
-    1 end do
+    do 1 k = 1, 3
+        ab(k)=b(k)-a(k)
+        ac(k)=c(k)-a(k)
+        am(k)=m(k)-a(k)
+  1 end do
 !
     a11=ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3)
     a22=ac(1)*ac(1)+ac(2)*ac(2)+ac(3)*ac(3)
@@ -66,14 +67,14 @@ subroutine pj3da3(m, a, b, c, ok,&
     if ((la.ge.0.d0) .and. (la.le.1.d0) .and. (lb.ge.0.d0) .and. (lb.le.1.d0) .and.&
         (lc.ge.0.d0) .and. (lc.le.1.d0)) then
         ok=.true.
-        do 2,k=1,3
-        p(k)=la*a(k)+lb*b(k)+lc*c(k)
-        p(k)=m(k)-p(k)
- 2      continue
+        do 2 k = 1, 3
+            p(k)=la*a(k)+lb*b(k)+lc*c(k)
+            p(k)=m(k)-p(k)
+  2     continue
         d2=p(1)*p(1)+p(2)*p(2)+p(3)*p(3)
     else
         ok=.false.
     endif
 !
-9999  continue
+9999 continue
 end subroutine

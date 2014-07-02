@@ -24,6 +24,7 @@ subroutine op0171()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
@@ -64,13 +65,13 @@ subroutine op0171()
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: matcst, coecst, prem, reasmt, reasvt
-    integer :: parcri(9), iifm,   jlagp, jinst
+    aster_logical :: matcst, coecst, prem, reasmt, reasvt
+    integer :: parcri(9), iifm, jlagp, jinst
     integer :: ibid, k, neq, iret
     integer :: itmaxl, iterl, ifm, niv, num
     integer :: iocc, n1, n2
     integer :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
-    integer :: jlcha,  nchar, jinfc
+    integer :: jlcha, nchar, jinfc
     integer :: i, jfcha, ialifc
     real(kind=8) :: tpsthe(6), tpsnp1, testn, testr
     real(kind=8) :: tps1(4), tps2(4), tpex
@@ -255,7 +256,7 @@ subroutine op0171()
 !        ITERATIONS DU PROBLEME DE TRANSPORT EN THERMIQUE N_LINEAIRE
 ! ======================================================================
 !
-2000  continue
+2000 continue
     call uttcpu('CPU.OP0171.2', 'DEBUT', ' ')
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
@@ -303,7 +304,7 @@ subroutine op0171()
                 testr = testr + (lagpp(k)-lagpm(k))**2
                 testn = testn + lagpp(k)**2
                 lagpm(k) = lagpp(k)
-200          continue
+200         continue
             testr = sqrt(testr/testn)
 !
         endif
@@ -360,13 +361,13 @@ subroutine op0171()
     do 51 i = 1, nchar
         zk24(jlcha+i-1)=lcha(i)
         zk24(jfcha+i-1)=zk24(ialifc+i-1)
-51  continue
+ 51 continue
     call jedetr(lischa//'.INFC')
     call wkvect(lischa//'.INFC', 'G V IS', 2*nchar+1, jinfc)
     call jeveuo(infcha//'.INFC', 'L', vi=infc)
     do 52 i = 1, 2*nchar+1
         zi(jinfc+i-1)=infc(i)
-52  continue
+ 52 continue
 !
     call uttcpu('CPU.OP0171.1', 'FIN', ' ')
     call uttcpr('CPU.OP0171.1', 4, tps1)

@@ -25,6 +25,7 @@ subroutine op0196()
 !     =================================================================
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/cescar.h"
@@ -61,7 +62,7 @@ subroutine op0196()
     character(len=19) :: cns1, cns2, ces1, ces2, cel2, ch, cesvi1, cesvi2, k19
     character(len=19) :: comps1, comps2
     character(len=24) :: mailx, mailc, licham, ordr, listno, logrma, k24, listgr, k24b
-    logical(kind=1) :: pre1
+    aster_logical :: pre1
 !
     call jemarq()
     call infmaj()
@@ -242,7 +243,7 @@ subroutine op0196()
         call detrsd('CHAM_ELEM_S', comps1)
         call detrsd('CHAM_ELEM_S', comps2)
 !
-10  continue
+ 10 continue
 !
     call jeexin(mailc, iret)
     if (iret .ne. 0) call jedetr(mailc)

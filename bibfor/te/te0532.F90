@@ -1,5 +1,6 @@
 subroutine te0532(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -77,7 +78,7 @@ subroutine te0532(option, nomte)
     real(kind=8) :: tau2(3), alpha(3), dnor(3), dtang(3), am3(3), sigma(6)
     real(kind=8) :: cohes(3), mat3bd(3, 3), mat6bd(6, 6)
     parameter    (prec=1.d-16)
-    logical(kind=1) :: imprim, lbid
+    aster_logical :: imprim, lbid
 !......................................................................
 !
     call jemarq()
@@ -93,8 +94,8 @@ subroutine te0532(option, nomte)
     end do
 !
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 nnom, ddls, nddl, ddlm, nfiss,&

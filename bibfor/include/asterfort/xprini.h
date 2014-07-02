@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xprini(model, noma, cnxinv, grille, fispre,&
                       fiss, cnsln, cnslt, cnsgls, noesom,&
@@ -22,7 +24,7 @@ interface
         character(len=8) :: model
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        logical(kind=1) :: grille
+        aster_logical :: grille
         character(len=8) :: fispre
         character(len=8) :: fiss
         character(len=19) :: cnsln

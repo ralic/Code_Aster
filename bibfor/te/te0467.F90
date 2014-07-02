@@ -16,6 +16,7 @@ subroutine te0467(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/dfdm1d.h"
@@ -37,10 +38,10 @@ subroutine te0467(option, nomte)
     integer :: ndim, nno, nnos, npg, jgano, kp, icopg, ino
     integer :: idfde, ipoids, ivf, igeom
     real(kind=8) :: xx, yy, poids, jacp, rbid, rbid2(2)
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
-    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe='SE2', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
@@ -53,7 +54,7 @@ subroutine te0467(option, nomte)
         do 50 ino = 1, nno
             xx=xx+zr(igeom+2*(ino-1)+0)*zr(ivf+(kp-1)*nno+ino-1)
             yy=yy+zr(igeom+2*(ino-1)+1)*zr(ivf+(kp-1)*nno+ino-1)
-50      continue
+ 50     continue
         zr(icopg+3*(kp-1)+0)=xx
         zr(icopg+3*(kp-1)+1)=yy
         poids=zr(ipoids-1+kp)
@@ -62,6 +63,6 @@ subroutine te0467(option, nomte)
 !       EN AXI R C'EST XX
         if (laxi) jacp=jacp*xx
         zr(icopg+3*(kp-1)+2)=jacp
-100  end do
+100 end do
 !
 end subroutine

@@ -19,7 +19,8 @@ subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -29,7 +30,7 @@ subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
     character(len=19) :: nomsd
     real(kind=8) :: inst
     character(len=4) :: typsel
-    logical(kind=1) :: lselec
+    aster_logical :: lselec
     integer :: nume, freq, nbinst
     real(kind=8) :: tole
 !

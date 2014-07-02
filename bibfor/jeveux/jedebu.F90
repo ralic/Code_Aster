@@ -18,6 +18,7 @@ subroutine jedebu(nbfi, mxzon, idb)
 ! ======================================================================
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "jeveux_private.h"
 #include "asterc/gtoptk.h"
@@ -76,7 +77,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical(kind=1) :: litlec
+    aster_logical :: litlec
     common /lficje/  litlec(n)
     integer :: nrhcod, nremax, nreuti
     common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
@@ -132,7 +133,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     common /jiacce/  jiacce(n),nbacce(2*n)
 ! --------------------------------- ------------------------------------
     integer :: mxlici, iret
-    real(kind=8) ::  rval(6)
+    real(kind=8) :: rval(6)
     character(len=8) :: k8tab(6)
     parameter      ( mxlici = 67 )
     character(len=mxlici) :: clicit
@@ -201,7 +202,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     isstat = ispbem( lbis - 3 )
     do 2 k = 1, 4
         istat(k) = k * isstat
- 2  end do
+  2 end do
     idebug = idb
 ! -----------------  ZONE MEMOIRE  -------------------------------------
     vmxdyn = mxzon
@@ -240,7 +241,7 @@ subroutine jedebu(nbfi, mxzon, idb)
 ! -------------------  POINTEURS D'ATTRIBUTS  --------------------------
     do 5 i = 1, len(classe)
         classe(i:i) = '$'
- 5  end do
+  5 end do
     do 10 i = 1, nbfic
         jgenr(i) = 0
         jtype(i) = 0
@@ -278,13 +279,13 @@ subroutine jedebu(nbfi, mxzon, idb)
         dn2(i) = ' '
         nbacce(2*i-1) = 0
         nbacce(2*i ) = 0
-10  end do
+ 10 end do
 ! -------------------  CONSTANTES DE GESTION  --------------------------
     lsstat = lbis-4
     msstat = 0
     do 20 k = 1, lbis-4
         msstat = msstat + ispbem(k)
-20  end do
+ 20 end do
     bl32 = ' '
 !
     call jxdate(datei)
@@ -292,10 +293,10 @@ subroutine jedebu(nbfi, mxzon, idb)
     illici = -1
     do 30 k = 0, 255
         jclass(k) = illici
-30  end do
+ 30 end do
     do 31 k = 1, mxlici
         jclass(ichar( clicit(k:k) ) ) = k
-31  end do
+ 31 end do
 !
     kdesma(1) = 0
     kdesma(2) = 0

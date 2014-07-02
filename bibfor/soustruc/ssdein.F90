@@ -29,6 +29,7 @@ subroutine ssdein(ul, ug, mail, nocas)
 ! IN_F     : NOCAS: NOM DU CHARGEMENT CORRESPONDANT (EN PRINCIPE) A UG.
 !                   (EVENTUELLEMENT : ' ')
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -54,19 +55,19 @@ subroutine ssdein(ul, ug, mail, nocas)
     character(len=14) :: nul
     character(len=19) :: nug2, nul2
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
-    logical(kind=1) :: exil, exig
+    aster_logical :: exil, exig
     character(len=8) :: rota, ch8(2)
     character(len=19) :: ug2, ul2
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i,   iadesc, iadgg, iadgl, ialica
-    integer :: ialich,     iaphi0, iaphie
-    integer :: iaprng, iaprnl, iarefe, iasupm,  iavall, iavalp
-    integer ::  ibid, iblph, icmp, icog, icol
+    integer :: i, iadesc, iadgg, iadgl, ialica
+    integer :: ialich, iaphi0, iaphie
+    integer :: iaprng, iaprnl, iarefe, iasupm, iavall, iavalp
+    integer :: ibid, iblph, icmp, icog, icol
     integer :: ieqg, ieql, iiblph, ili, inoe, inog
-    integer :: inol, iret, isma, j,  lgblph, nblph
+    integer :: inol, iret, isma, j, lgblph, nblph
     integer :: nbnoet, ncmpmx, nddle, nddli, nddlt, nec, nlblph
     integer :: nueqg, nueql
     integer, pointer :: desm(:) => null()

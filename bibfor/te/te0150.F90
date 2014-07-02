@@ -1,5 +1,6 @@
 subroutine te0150(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/carapo.h"
@@ -83,7 +84,7 @@ subroutine te0150(option, nomte)
     real(kind=8) :: fer(12), fei(12)
     integer :: ndim, nno, nnos, npg, ipoids
     integer :: ivf, idfdx, jgano
-    logical(kind=1) :: lrho
+    aster_logical :: lrho
 !
     data nomres / 'E', 'NU' /
 !     ------------------------------------------------------------------
@@ -95,8 +96,8 @@ subroutine te0150(option, nomte)
     nc = 6
     istruc = 1
 !
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
 !     -- POUR LA PESANTEUR ET LA ROTATION, ON N'A BESOIN QUE DE RHO
 !        QUI EST FORCEMENT CONSTANT DANS LA MAILLE
@@ -204,7 +205,7 @@ subroutine te0150(option, nomte)
                 zc(lvect+i-1) = dcmplx(fgr(i),fgi(i))
             enddo
         endif
-    else if( option.eq.'CHAR_MECA_FR1D1D' .or.&
+        else if( option.eq.'CHAR_MECA_FR1D1D' .or.&
      &         option.eq.'CHAR_MECA_FF1D1D' .or.&
      &         option.eq.'CHAR_MECA_SR1D1D' .or.&
      &         option.eq.'CHAR_MECA_SF1D1D' .or.&
@@ -239,7 +240,7 @@ subroutine te0150(option, nomte)
 !
 !     --- REMPLISSAGE DE LA MATRICE CARREE ---
         ind = 0
-        do  i = 1, nc*2
+        do i = 1, nc*2
             de(i) = 0.d0
             do j = 1, i-1
                 ind = ind + 1

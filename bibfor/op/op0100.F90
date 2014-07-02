@@ -25,6 +25,7 @@ subroutine op0100()
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -78,8 +79,8 @@ subroutine op0100()
 #include "asterfort/xcourb.h"
     integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
     integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
-    integer :: iord1, iord2, nborn, nbco, ibor, ig,   nbval
-    integer :: ndimte, ier, ndim,  jopt
+    integer :: iord1, iord2, nborn, nbco, ibor, ig, nbval
+    integer :: ndimte, ier, ndim, jopt
     integer :: nxpara
     parameter (nxpara = 11)
 !
@@ -100,8 +101,8 @@ subroutine op0100()
     character(len=24) :: trav4, courb, depla1, depla2
     parameter  ( resuc2 = '&&MECALG' )
 !
-    logical(kind=1) :: exitim, thlagr, connex, glagr, milieu, direc
-    logical(kind=1) :: thlag2, pair, lncas, lmelas, incr, lmoda
+    aster_logical :: exitim, thlagr, connex, glagr, milieu, direc
+    aster_logical :: thlag2, pair, lncas, lmelas, incr, lmoda
     real(kind=8), pointer :: abscur(:) => null()
     character(len=8), pointer :: vnoeud(:) => null()
     integer, pointer :: ordr(:) => null()
@@ -170,7 +171,8 @@ subroutine op0100()
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
 !     -> COMPOR, INCR
-    call cgleco(resu, modele, mate, iord0, compor(1:19), incr)
+    call cgleco(resu, modele, mate, iord0, compor(1:19),&
+                incr)
 !
 !     ATTENTION, INCR EST MAL GERE : VOIR MECAGL !!
 !

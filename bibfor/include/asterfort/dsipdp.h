@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dsipdp(thmc, adcome, addep1, addep2, dimcon,&
                       dimdef, dsde, dspdp1, dspdp2, pre2tr)
@@ -27,6 +29,6 @@ interface
         real(kind=8) :: dsde(dimcon, dimdef)
         real(kind=8) :: dspdp1
         real(kind=8) :: dspdp2
-        logical(kind=1) :: pre2tr
+        aster_logical :: pre2tr
     end subroutine dsipdp
 end interface

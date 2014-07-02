@@ -19,6 +19,7 @@ subroutine surfc2(char, noma, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -56,7 +57,7 @@ subroutine surfc2(char, noma, ifm)
 !
     integer :: nzoco, nnoco, nmaco
     real(kind=8) :: tolint
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     integer :: izone
     character(len=24) :: mailma, defico
     integer :: jnomno, jnomma
@@ -174,7 +175,7 @@ subroutine surfc2(char, noma, ifm)
      &                      zr(jcmcf+zcmcf*(izone-1)-1+12)
         endif
 !
-320  end do
+320 end do
 !
 ! ---  MAILLES ESCLAVES
 !
@@ -200,8 +201,8 @@ subroutine surfc2(char, noma, ifm)
             write (ifm,1070) 'NDEXFR          ',ndexfr
 !
 !
-901      continue
-900  end do
+901     continue
+900 end do
     1080 format (' <CONTACT> ... MAILLE : ',a8)
 !
 ! --- MENAGE

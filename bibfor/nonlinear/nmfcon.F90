@@ -20,7 +20,8 @@ subroutine nmfcon(modele, numedd, mate, fonact, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmfocc.h"
     integer :: fonact(*)
@@ -53,7 +54,7 @@ subroutine nmfcon(modele, numedd, mate, fonact, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: leltc
+    aster_logical :: leltc
 !
 ! ----------------------------------------------------------------------
 !

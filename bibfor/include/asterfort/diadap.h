@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function diadap(sddisc, iadapt)
         character(len=19) :: sddisc
         integer :: iadapt
-        logical(kind=1) :: diadap
+        aster_logical :: diadap
     end function diadap
 end interface

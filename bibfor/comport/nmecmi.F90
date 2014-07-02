@@ -21,6 +21,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/nmcri5.h"
 #include "asterfort/radial.h"
@@ -76,7 +77,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
 !
 !
-    logical(kind=1) :: cplan, plasti
+    aster_logical :: cplan, plasti
     real(kind=8) :: depsth(6), valres(3), pm, xp(6), plast, para_vale
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, hp, gp, g1, rpm
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, xm(6)
@@ -205,9 +206,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
 !
         call rcfon2('S', jprolp, jvalep, nbvalp, sigy = sigy)
-        call rcfon2('V', jprolp, jvalep, nbvalp,&
-                    p = pm, rp = rpm, rprim = rprim,&
-                    c = prag)
+        call rcfon2('V', jprolp, jvalep, nbvalp, p = pm,&
+                    rp = rpm, rprim = rprim, c = prag)
     endif
 !
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :
@@ -274,7 +274,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         else
             plast = 1.d0
             if (cplan) then
-                prec  = abs(crit(3))
+                prec = abs(crit(3))
                 niter = abs(nint(crit(1)))
                 precr = prec * sigy
 !
@@ -287,9 +287,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     jprol2 = jprolp
                     jvale2 = jvalep
                     nbval2 = nbvalp
-                    call rcfon2('E', jprolp, jvalep, nbvalp,&
-                                e = e, nu = nu, p = pm, rp = rp, rprim = rprim,&
-                                c = prag, sieleq = sieleq, dp=dp0)
+                    call rcfon2('E', jprolp, jvalep, nbvalp, e = e,&
+                                nu = nu, p = pm, rp = rp, rprim = rprim, c = prag,&
+                                sieleq = sieleq, dp=dp0)
                 endif
                 xap = dp0
                 call zerofr(0, 'DEKKER', nmcri5, 0.d0, xap,&
@@ -298,9 +298,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                 if (line .ge. 0.5d0) then
                     rp = sigy +rprim*(pm+dp)
                 else
-                    call rcfon2('V', jprolp, jvalep, nbvalp,&
-                                p = pm+dp, rp = rp, rprim = rprim,&
-                                c = prag)
+                    call rcfon2('V', jprolp, jvalep, nbvalp, p = pm+dp,&
+                                rp = rp, rprim = rprim, c = prag)
                 endif
             else
                 if (compor(1)(10:14) .eq. '_LINE') then
@@ -308,9 +307,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     dp = dp / (rprim+1.5d0*(deuxmu+prag))
                     rp = sigy +rprim*(pm+dp)
                 else
-                    call rcfon2('E', jprolp, jvalep, nbvalp,&
-                                e = e, nu = nu, p = pm, rp = rp, rprim = rprim,&
-                                c = prag, sieleq = sieleq, dp = dp)
+                    call rcfon2('E', jprolp, jvalep, nbvalp, e = e,&
+                                nu = nu, p = pm, rp = rp, rprim = rprim, c = prag,&
+                                sieleq = sieleq, dp = dp)
                 endif
             endif
         endif

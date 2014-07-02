@@ -1,8 +1,9 @@
-subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl, l_kit_meta, comp_code_py, &
+subroutine comp_meca_name(nb_vari, l_excl, vari_excl, l_kit_meta, comp_code_py,&
                           rela_code_py, meta_code_py, name_vari)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcvari.h"
@@ -27,9 +28,9 @@ subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl, l_kit_meta, com
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: nb_vari
-    logical(kind=1), intent(in) :: l_excl
+    aster_logical, intent(in) :: l_excl
     character(len=16), intent(in) :: vari_excl
-    logical(kind=1), intent(in) :: l_kit_meta
+    aster_logical, intent(in) :: l_kit_meta
     character(len=16), intent(in) :: comp_code_py
     character(len=16), intent(in) :: rela_code_py
     character(len=16), intent(in) :: meta_code_py
@@ -74,18 +75,18 @@ subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl, l_kit_meta, com
             do i_vari_meta = 1, nb_vari_meta
                 do i_vari_rela = 1, nb_vari_rela
                     i_vari = i_vari + 1
-                    name_vari(i_vari) = phas_name(i_vari_meta)//rela_name(i_vari_rela)  
+                    name_vari(i_vari) = phas_name(i_vari_meta)//rela_name(i_vari_rela)
                 enddo
             enddo
             do i_vari_rela = 1, nb_vari_rela
                 i_vari = i_vari + 1
-                name_vari(i_vari) = rela_name(i_vari_rela)  
+                name_vari(i_vari) = rela_name(i_vari_rela)
             enddo
             ASSERT(i_vari.eq.(nb_vari-1))
             name_vari(nb_vari) = 'INDIPLAS'
         else
             call lcvari(comp_code_py, nb_vari, name_vari)
-        endif    
+        endif 
     endif
 !
 end subroutine

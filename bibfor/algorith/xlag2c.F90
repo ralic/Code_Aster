@@ -56,7 +56,6 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
     character(len=19) :: noxfem, heavno
     integer, pointer :: cesv(:) => null()
     integer, pointer :: cnsv(:) => null()
-    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,8 +89,7 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 !
     do 10 i = 1, neq
         nuno = zi(jliseq-1+i)
-        lcond=zl(jcnsl-1+2*nuno)
-        ASSERT(lcond)
+        ASSERT(zl(jcnsl-1+2*nuno))
         ima = cnsv(2*(nuno-1)+1)
         ino = cnsv(2*(nuno-1)+2)
         ifiss = zi(jnbpt-1+ima)

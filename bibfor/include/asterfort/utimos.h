@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utimos(unit, obin, lattr, lcont)
         integer :: unit
         character(len=*) :: obin
-        logical(kind=1) :: lattr
-        logical(kind=1) :: lcont
+        aster_logical :: lattr
+        aster_logical :: lcont
     end subroutine utimos
 end interface

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utimco(unit, obin, nivo, lattr, lcont)
         integer :: unit
         character(len=*) :: obin
         integer :: nivo
-        logical(kind=1) :: lattr
-        logical(kind=1) :: lcont
+        aster_logical :: lattr
+        aster_logical :: lcont
     end subroutine utimco
 end interface

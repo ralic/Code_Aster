@@ -21,6 +21,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, numlc
     real(kind=8) :: crit(*)
@@ -32,7 +33,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    logical(kind=1) :: cp
+    aster_logical :: cp
 !
 !     KIT_DDI
 !       CALL NMCOUP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CP,

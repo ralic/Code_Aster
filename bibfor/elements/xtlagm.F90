@@ -22,6 +22,7 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/xtlagc.h"
 #include "asterfort/xtlagf.h"
     integer :: ndim, nnc, jnn(3), nddls, nconta, nfhe, heavno(8)
@@ -30,7 +31,7 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
     character(len=8) :: typmai
     real(kind=8) :: dlagrc, dlagrf(2)
     integer :: cface(5, 3), nface
-    logical(kind=1) :: lfrott, lmulti
+    aster_logical :: lfrott, lmulti
 !
 ! ----------------------------------------------------------------------
 !

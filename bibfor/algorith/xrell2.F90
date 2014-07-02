@@ -21,6 +21,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -34,7 +35,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: tabnoz(3, narz)
     real(kind=8) :: tabcoz(ndim, narz), tabcrz(narz)
     character(len=19) :: nliseq
-    logical(kind=1) :: lgroup
+    aster_logical :: lgroup
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +69,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: ifm, niv
     real(kind=8) :: tabco(narz, ndim), tabcr(narz)
     integer :: nunoa, nunob
-    logical(kind=1) :: pilo
+    aster_logical :: pilo
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,18 +83,18 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     do 100 i = 1, nar
         do 101 j = 1, 3
             tabno(i,j)=tabnoz(j,i)
-101      continue
+101     continue
         do 102 j = 1, ndim
             tabco(i,j)=tabcoz(j,i)
-102      continue
+102     continue
         tabcr(i)=tabcrz(i)
-100  end do
+100 end do
 !     COMPTEUR D'ARETES HYPERSTATIQUES
     nbarhy = 0
     do 200 i = 1, 2*nar
         scorno(i)=0
         noeud(i)=0
-200  end do
+200 end do
 !
 ! --- SELECTION DES ARETES VITALES
 !
@@ -109,7 +110,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                     deja=1
                     ik=k
                 endif
-203          continue
+203         continue
             if (deja .eq. 0) then
                 cpt=cpt+1
                 noeud(cpt)=tabno(i,j)
@@ -118,8 +119,8 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                 tabdir(i,j)=ik
             endif
             scorno(tabdir(i,j))=scorno(tabdir(i,j))+1
-202      continue
-201  end do
+202     continue
+201 end do
 !
 ! --- NOMBRE DE NOEUDS
 !
@@ -144,7 +145,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                     endif
                 endif
             endif
-211      continue
+211     continue
 !
 !       ARETE AU SCORE MAX
         maxi=-1
@@ -159,7 +160,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                     endif
                 endif
             endif
-212      continue
+212     continue
 !
 !       SI SCORE DE LA MEILLEURE ARETE =1 ALORS IL RESTE QUE DES ARETES
 !       VITALES ET DONC ON SORT DE LA BOUCLE 210
@@ -182,9 +183,9 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                 tabdir(i,2)= tabdir(i+1,2)
                 do 230 j = 1, ndim
                     tabco(i,j) = tabco(i+1,j)
-230              continue
+230             continue
                 tabcr(i)=tabcr(i+1)
-220          continue
+220         continue
             tabno(nar,1)=0
             tabno(nar,2)=0
             tabno(nar,3)=0
@@ -192,14 +193,14 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
             tabdir(nar,2)=0
             do 240 j = 1, ndim
                 tabco(nar,j)=0
-240          continue
+240         continue
             tabcr(nar) = 0.d0
             nar=nar-1
         endif
 !
-210  end do
+210 end do
 !
-299  continue
+299 continue
 !
     if (.not.pilo) then
         call xneuvi(narz, nar, nbno, tabdir, scorno,&
@@ -226,7 +227,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
         nreleq=nreleq+1
         liseqt(nreleq,1)=nunoa
         liseqt(nreleq,2)=nunob
-602  end do
+602 end do
     goto 700
 !
 ! --- DETECTION PAQUETS D ARETES
@@ -234,11 +235,11 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 ! --- CREATION DES RELATIONS D'EGALITE A IMPOSER
 ! --- TABLEAU T1 : PAQUET DE NOEUDS  DIM : NBNO
 !
-600  continue
+600 continue
     ipaq=0
     do 400 i = 1, 2*narz
         t1(i)=0
-400  end do
+400 end do
     do 401 ir = 1, nbarvi
         if (t1(tabdir(ir,1)) .eq. 0 .and. t1(tabdir(ir,2)) .eq. 0) then
             ipaq=ipaq+1
@@ -259,10 +260,10 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                 ma=max(t1(tabdir(ir,1)) , t1(tabdir(ir,2)))
                 do 402 i = 1, nbno
                     if (t1(i) .eq. ma) t1(i)=mi
-402              continue
+402             continue
             endif
         endif
-401  end do
+401 end do
 !     NOMBRE DE PAQUETS
     npaq=ipaq
 !
@@ -270,7 +271,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     do 410 ia = 1, nbarvi
         ASSERT(t1(tabdir(ia, 1)) .eq. t1(tabdir(ia, 2)))
         t2(ia)=t1(tabdir(ia,1))
-410  end do
+410 end do
 !
 !     CREATION DU TABLEAU TEMPORAIRE DES RELATIONS D'EGALITE : LISEQT
     nreleq=0
@@ -282,18 +283,18 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                 dimeq=dimeq+1
                 eq(dimeq)=tabno(ia,3)
             endif
-441      continue
+441     continue
         ASSERT(dimeq-1.ge.0)
         do 442 ie = 1, dimeq-1
             nreleq=nreleq+1
             liseqt(nreleq,1)=eq(ie)
             liseqt(nreleq,2)=eq(ie+1)
-442      continue
-440  end do
+442     continue
+440 end do
 !
 ! --- FIN DETECTION DES PAQUETS
 !
-700  continue
+700 continue
 !
     write(ifm,*)'NOMBRE DE RELATIONS D''EGALITE : ',nreleq
 !
@@ -303,7 +304,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
         do 450 ie = 1, nreleq
             zi(jlis1-1+2*(ie-1)+1)=liseqt(ie,1)
             zi(jlis1-1+2*(ie-1)+2)=liseqt(ie,2)
-450      continue
+450     continue
     endif
     call jedema()
 end subroutine

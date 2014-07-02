@@ -1,6 +1,7 @@
 subroutine projmr(matras, nomres, basemo, nugene, nu,&
                   neq, nbmo)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -51,14 +52,14 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
 !-----------------------------------------------------------------------
 !
-    integer ::   nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
-    integer :: i, j, imatra,    iblo, ldblo, n1bloc, n2bloc
-    integer ::  idbase, nbj, ldblo1, ldblo2
+    integer :: nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
+    integer :: i, j, imatra, iblo, ldblo, n1bloc, n2bloc
+    integer :: idbase, nbj, ldblo1, ldblo2
     real(kind=8) :: pij
     complex(kind=8) :: cbid
     character(len=16) :: typbas
     character(len=19) :: matr, resu
-    logical(kind=1) :: lsym
+    aster_logical :: lsym
     real(kind=8), pointer :: vectass2(:) => null()
     integer, pointer :: deeq(:) => null()
     integer, pointer :: scbl(:) => null()

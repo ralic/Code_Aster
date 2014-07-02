@@ -20,6 +20,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -41,7 +42,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
     character(len=8) :: noma
     character(len=24) :: defico, resoco
-    logical(kind=1) :: dvgeom, geoerr
+    aster_logical :: dvgeom, geoerr
     character(len=19) :: solalg(*)
     character(len=16) :: geonoe
     real(kind=8) :: geoval
@@ -67,16 +68,16 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
 !
 !
-    integer ::  ii, numno1, numno2
+    integer :: ii, numno1, numno2
     integer :: neq
     integer :: ncmp, mmitgo, nbreag, maxgeo
     real(kind=8) :: autono, temp1, temp2, epsgeo, rmin
     character(len=8) :: nomnoe, licmp(3)
-    logical(kind=1) :: premie, alarme
+    aster_logical :: premie, alarme
     character(len=19) :: depdel
     character(len=24) :: maxdep, autoc1, autoc2
     integer :: jmaxde
-    logical(kind=1) :: geoala
+    aster_logical :: geoala
     real(kind=8), pointer :: auto1(:) => null()
     real(kind=8), pointer :: auto2(:) => null()
     real(kind=8), pointer :: depde(:) => null()
@@ -125,7 +126,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
     do 10 ii = 1, neq
         auto2(ii) = auto2(ii) + auto1(ii)
         auto1(ii) = depde(ii) - auto2(ii)
-10  end do
+ 10 end do
 !
 ! --- CALCUL DU MAX DE LA NORME DU DEPLACEMENT (SAUF LAGRANGES)
 !

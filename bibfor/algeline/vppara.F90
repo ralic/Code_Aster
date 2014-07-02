@@ -7,6 +7,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -35,7 +36,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
     integer :: nbpari, nbparr, nbpark, icom1, icom2, nfreqg
     real(kind=8) :: vectr(*), resur(*), omecor
     complex(kind=8) :: vectc(*)
-    logical(kind=1) :: lcomod
+    aster_logical :: lcomod
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,7 +84,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
     integer :: ineg, iprec, iret, ilgcon, nrscr
     real(kind=8) :: rbid
     complex(kind=8) :: zbid
-    logical(kind=1) :: lns
+    aster_logical :: lns
 !     ------------------------------------------------------------------
 !
     call jemarq()

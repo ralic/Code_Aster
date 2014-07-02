@@ -1,6 +1,7 @@
 subroutine xprali(p1, p2, vnele, nelcou, poifis,&
                   trifis, libre, vin)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -10,7 +11,7 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
 #include "asterfort/provec.h"
     real(kind=8) :: vnele(3), vin(3)
     character(len=19) :: poifis, trifis
-    logical(kind=1) :: libre
+    aster_logical :: libre
     integer :: p1, p2, nelcou
 !
 ! ======================================================================
@@ -108,7 +109,7 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
 !           ONE OCCURRENCE FOUND
             if ((np.eq.p1) .or. (np.eq.p2)) occur=occur+1
 !
-2500      continue
+2500     continue
 !
 !        ELEMENT "I" SHARES THE EDGE
         if (occur .eq. 2) then
@@ -117,9 +118,9 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
             if (elshar .gt. 1) goto 1000
         endif
 !
-2000  end do
+2000 end do
 !
-1000  continue
+1000 continue
 !
 !     ******************************************************************
 !     IF THE EDGE BELONGS ONLY TO ONE ELEMENT, WE SHOULD CHECK IF IT
@@ -172,7 +173,7 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
 !              THE SAME SEMISPACE OF THE NORMAL
                 if (pdir .ge. 0.d0) occur=occur+1
             endif
-3000      continue
+3000     continue
 !
 !        YES, THE EDGE IS A FREE EDGE. THE NORMAL DISTANCE MUST BE
 !        CALCULATED

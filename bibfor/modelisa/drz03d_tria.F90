@@ -1,8 +1,9 @@
-subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a, &
+subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a,&
                        numnoe_b, numnoe_c, ab, ac, l_trian)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/provec.h"
 !
 ! ======================================================================
@@ -31,7 +32,7 @@ subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a, &
     integer, intent(out) :: numnoe_c
     real(kind=8), intent(out) :: ab(3)
     real(kind=8), intent(out) :: ac(3)
-    logical(kind=1), intent(out) :: l_trian
+    aster_logical, intent(out) :: l_trian
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,9 +95,10 @@ subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a, &
                 lac = sqrt(ac(1)*ac(1)+ac(2)*ac(2)+ac(3)*ac(3))
                 if (lac .gt. dist_mini) then
                     call provec(ab, ac, norm_abc)
-                    sabc = sqrt(norm_abc(1)*norm_abc(1)+&
-                                norm_abc(2)*norm_abc(2)+&
-                                norm_abc(3)*norm_abc(3))
+                    sabc = sqrt(&
+                           norm_abc(1)*norm_abc(1)+ norm_abc(2)*norm_abc(2)+ norm_abc(3)*norm_abc&
+                           &(3)&
+                           )
                     if (sabc/max(lab,lac) .le. dist_mini) then
 !
 ! --------------------- Another edge
@@ -112,8 +114,8 @@ subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a, &
                 endif
             enddo
         endif
-60      continue
+ 60     continue
     end do
-80  continue
+ 80 continue
 !
 end subroutine

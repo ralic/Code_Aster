@@ -23,12 +23,13 @@ subroutine trvpmd(np1, n, m, rr, loc,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/indexx.h"
 #include "asterfort/vecini.h"
     integer :: np1, n, m
     integer :: indxf(*), npoint(*), lpoint(*)
     real(kind=8) :: rr(*), tp(*), rtp(*)
-    logical(kind=1) :: loc(*)
+    aster_logical :: loc(*)
 !
 ! VARIABLES LOCALES
 ! -----------------

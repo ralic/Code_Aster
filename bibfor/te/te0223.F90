@@ -1,5 +1,6 @@
 subroutine te0223(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/dfdm1d.h"
@@ -37,7 +38,7 @@ subroutine te0223(option, nomte)
     real(kind=8) :: poids, r, fx, fy, mz, f1, f3, m2, nx, ny, cour, dfdx(3)
     integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
     integer :: ivectu, k, i, l, iforc
-    logical(kind=1) :: global
+    aster_logical :: global
 !
 !
 !-----------------------------------------------------------------------
@@ -45,8 +46,8 @@ subroutine te0223(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -83,7 +84,7 @@ subroutine te0223(option, nomte)
                 mz = mz + m2*zr(ivf+l-1)
             endif
             r = r + zr(igeom+2* (i-1))*zr(ivf+l-1)
-10      continue
+ 10     continue
         if (nomte .eq. 'MECXSE3') then
             poids = poids*r
         endif
@@ -92,6 +93,6 @@ subroutine te0223(option, nomte)
             zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + fx*zr( ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+1) = zr(ivectu+nddl* (i-1)+1) + fy*zr(ivf+l-1 )*poids
             zr(ivectu+nddl* (i-1)+2) = zr(ivectu+nddl* (i-1)+2) + mz*zr(ivf+l-1 )*poids
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 end subroutine

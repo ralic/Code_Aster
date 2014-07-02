@@ -22,6 +22,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/alresl.h"
@@ -41,7 +42,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
     character(len=19) :: ligrel
     character(len=*) :: base, lchout(*)
     character(len=8) :: lpaout(*)
-    logical(kind=1) :: ldist
+    aster_logical :: ldist
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !      IOPT : OPTION

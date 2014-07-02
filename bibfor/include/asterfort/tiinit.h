@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
                       lnonl, instin, sddisc, sdieto, sdobse,&
@@ -22,13 +24,13 @@ interface
         character(len=8) :: mailla
         character(len=24) :: modele
         character(len=24) :: resulz
-        logical(kind=1) :: lostat
-        logical(kind=1) :: lreuse
-        logical(kind=1) :: lnonl
+        aster_logical :: lostat
+        aster_logical :: lreuse
+        aster_logical :: lnonl
         real(kind=8) :: instin
         character(len=19) :: sddisc
         character(len=24) :: sdieto
         character(len=19) :: sdobse
-        logical(kind=1) :: levol
+        aster_logical :: levol
     end subroutine tiinit
 end interface

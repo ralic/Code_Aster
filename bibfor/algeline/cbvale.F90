@@ -1,6 +1,7 @@
 subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
                   lres, ddlexc, matd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -23,7 +24,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: ddlexc, typcst(*), typres
     real(kind=8) :: const(*)
-    logical(kind=1) :: matd
+    aster_logical :: matd
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +61,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !     -----------------------------------------------------------------
 !     LGBLOC = LONGUEUR DES BLOCS
     integer :: lgbloc
-    logical(kind=1) :: symr, symi
+    aster_logical :: symr, symi
 !     -----------------------------------------------------------------
     character(len=1) :: clas, typmat
     character(len=19) :: matres, mati
@@ -69,7 +70,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     character(len=14) :: nume
     character(len=19) :: noma
     character(len=2) :: rouc
-    integer :: neq, mxddl, lddl, jsmdi,  jsmhc
+    integer :: neq, mxddl, lddl, jsmdi, jsmhc
     integer :: iconst, imat, jvamr1, jvamr2, jvami1, jvami2
     real(kind=8) :: zero, r8cst, rbid
     complex(kind=8) :: czero, c8cst, cbid
@@ -123,11 +124,11 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !     ----------------------------------------
     if (typres .eq. 'R') then
         call vecini(lgbloc, zero, zr(jvamr1))
-        if (.not.symr)  call vecini(lgbloc, zero, zr(jvamr2))
+        if (.not.symr) call vecini(lgbloc, zero, zr(jvamr2))
 !
     else if (typres.eq.'C') then
         call vecinc(lgbloc, czero, zc(jvamr1))
-        if (.not.symr)  call vecinc(lgbloc, czero, zc(jvamr2))
+        if (.not.symr) call vecinc(lgbloc, czero, zc(jvamr2))
     endif
 !
 !

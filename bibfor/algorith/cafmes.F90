@@ -53,7 +53,8 @@ subroutine cafmes(ifa, cont, tange, maxfa, nface,&
 !     FMW =  MOB * F_{K,SIGMA}
 !================================================
     implicit none
-    logical(kind=1) :: cont, tange
+#include "asterf_types.h"
+    aster_logical :: cont, tange
     integer :: maxfa
     integer :: nface
     real(kind=8) :: fmw(1:maxfa)
@@ -75,7 +76,7 @@ subroutine cafmes(ifa, cont, tange, maxfa, nface,&
         do 4 jfa = 2, nface+1
             fm1w(jfa,ifa)= fm1w(jfa,ifa) + mobfas * dfks1(jfa,ifa)
             fm2w(jfa,ifa)= fm2w(jfa,ifa) + mobfas * dfks2(jfa,ifa)
- 4      continue
+  4     continue
         fm1w(1+ifa,ifa)= fm1w(1+ifa,ifa) + dmob1f(ifa) * fkss
         fm2w(1+ifa,ifa)= fm2w(1+ifa,ifa) + dmob2f(ifa) * fkss
     endif

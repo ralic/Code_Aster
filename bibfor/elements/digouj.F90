@@ -4,6 +4,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
                   sip, nomte)
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/mavec.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/rcfonc.h"
@@ -63,7 +64,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     real(kind=8) :: nu, para_vale, valpap
     character(len=8) :: nompar, para_type
     character(len=24) :: valk(2)
-    logical(kind=1) :: plasti
+    aster_logical :: plasti
 !
 !-----------------------------------------------------------------------
     integer :: iret
@@ -127,7 +128,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
             sip(i+nc) = dfl(i+nc) + sim(i+nc)
             fl(i) = dfl(i) - sim(i)
             fl(i+nc) = dfl(i+nc) + sim(i+nc)
-100      continue
+100     continue
 !
         if (compor(1) .eq. 'DIS_GOUJ2E_ELAS') then
             sip(2 ) = sigel
@@ -140,8 +141,8 @@ subroutine digouj(option, compor, nno, nbt, neq,&
                 varip(2) = 1.d0
                 nu=0.5d0
                 call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                            e = e, nu = nu, p = varim(1), rp = rp,&
-                            rprim = rprim, airerp = airerp, sieleq = sieleq, dp = dp)
+                            e = e, nu = nu, p = varim(1), rp = rp, rprim = rprim,&
+                            airerp = airerp, sieleq = sieleq, dp = dp)
             endif
             varip(1) = varim(1) + dp
             plasti=(varip(2).ge.0.5d0)

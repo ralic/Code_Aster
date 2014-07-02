@@ -1,5 +1,6 @@
 subroutine te0452(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/excent.h"
@@ -30,7 +31,7 @@ subroutine te0452(option, nomte)
 !     ------------------------------------------------------------------
     integer :: itab1(7), itab2(7), iret, jin, jout, lgcata
     integer :: nbpoin, nbcmp, jcara, ibid
-    logical(kind=1) :: lreel
+    aster_logical :: lreel
     real(kind=8) :: excen
 !     ------------------------------------------------------------------
 !

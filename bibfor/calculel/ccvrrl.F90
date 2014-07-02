@@ -18,6 +18,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 ! ======================================================================
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/angvec.h"
@@ -71,7 +72,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: jmai, nbma, ier, nbno, jconi1, jconi2, ima, ncmax, i
     integer :: posit, posma, numma, ima2, numma2, ino, jcesd, jcesl
-    integer :: jcesv, iexori, jrepe, iepais, nbmato,  jvect, idir
+    integer :: jcesv, iexori, jrepe, iepais, nbmato, jvect, idir
     integer :: jconx1, jconx2, jcoord, jcesdc, ialpha, ibeta
     integer :: jalpha, jbeta, jgamma, jcesc, jcescc, jcesdd, jceslc, jcesvc
     integer :: adcar1(3), adcar2(3)
@@ -84,7 +85,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     character(len=19) :: cnxinv, carsd, ligrmo, carcc, vecsau
     character(len=24) :: carori, carcoq
 !
-    logical(kind=1) :: llimai, lprobm
+    aster_logical :: llimai, lprobm
     integer, pointer :: dime(:) => null()
     parameter    (maxtol = 8.7266463d-2)
     parameter    (pi = 3.14159265358979d0)
@@ -167,7 +168,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     call wkvect(vecsau, 'V V R', 6*nbmato, jvect)
     do 80 i = 1, 6*nbmato
         zr(jvect+i-1) = 0.d0
-80  end do
+ 80 end do
 !
     call jelira(cnxinv, 'NUTIOC', nbno)
 !
@@ -238,19 +239,19 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                 if (modeli .ne. 'COQUE_3D') then
                     do 40 idir = 1, 3
                         zr(jvect+6*(numma-1)+idir-1) = vg1(idir)
-40                  continue
+ 40                 continue
                     do 45 idir = 1, 3
                         zr(jvect+3+6*(numma-1)+idir-1) = vg2(idir)
-45                  continue
+ 45                 continue
                 endif
 !
             else
                 do 60 idir = 1, 3
                     vg1(idir) = zr(jvect+6*(numma-1)+idir-1)
-60              continue
+ 60             continue
                 do 65 idir = 1, 3
                     vg2(idir) = zr(jvect+3+6*(numma-1)+idir-1)
-65              continue
+ 65             continue
             endif
 !
 !         ON COMPARE LES REPERES DES AUTRES MAILLES
@@ -299,19 +300,19 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                     if (modeli .ne. 'COQUE_3D') then
                         do 50 idir = 1, 3
                             zr(jvect+6*(numma2-1)+idir-1) = vg3(idir)
-50                      continue
+ 50                     continue
                         do 55 idir = 1, 3
                             zr(jvect+3+6*(numma2-1)+idir-1) = vg4( idir)
-55                      continue
+ 55                     continue
                     endif
 !
                 else
                     do 70 idir = 1, 3
                         vg3(idir) = zr(jvect+6*(numma2-1)+idir-1)
-70                  continue
+ 70                 continue
                     do 75 idir = 1, 3
                         vg4(idir) = zr(jvect+3+6*(numma2-1)+idir-1)
-75                  continue
+ 75                 continue
                 endif
 !
                 call angvec(vg1, vg3, angle1)
@@ -322,9 +323,9 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                     lprobm = .true.
                 endif
 !
-30          continue
-20      continue
-10  end do
+ 30         continue
+ 20     continue
+ 10 end do
 !
     if (lprobm) then
         if (cmperr .ne. ' ') then

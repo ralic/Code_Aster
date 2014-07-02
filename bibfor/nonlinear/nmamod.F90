@@ -20,6 +20,7 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -53,10 +54,10 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
 !
 !
 !
-    integer ::   jmoda
+    integer :: jmoda
     character(len=24) :: valmod, basmod
     character(len=19) :: sdammo
-    logical(kind=1) :: nreavi
+    aster_logical :: nreavi
     integer :: neq
     real(kind=8), pointer :: vitkm(:) => null()
     real(kind=8), pointer :: vitp(:) => null()

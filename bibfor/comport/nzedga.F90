@@ -21,6 +21,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/matini.h"
@@ -102,7 +103,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(12), test
     character(len=8) :: nomres(12), nomcle(3), zirc(2)
 !
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
     data         kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
@@ -444,7 +445,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)
                 call rcfonc('V', 2, jprol, jvale, nbval(k),&
-                            p =  vi(k), rp = r(k), rprim = h(k))
+                            p = vi(k), rp = r(k), rprim = h(k))
                 r(k) = r(k) + sy(k)
  75         continue
 !

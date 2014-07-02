@@ -19,6 +19,7 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
 ! ======================================================================
 ! person_in_charge: ludovic.idoux at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -50,7 +51,7 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: ldyna, lexpl, limpl
+    aster_logical :: ldyna, lexpl, limpl
     character(len=16) :: optass
     character(len=19) :: masse
 !

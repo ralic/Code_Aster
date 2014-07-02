@@ -1,6 +1,6 @@
 subroutine i2typf(epsi, x1, y1, x2, y2,&
                   x3, y3, tm, droi)
-    implicit  none
+    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,9 +33,10 @@ subroutine i2typf(epsi, x1, y1, x2, y2,&
 !
 !******************************************************************
 !
+#include "asterf_types.h"
 #include "asterfort/rvdet2.h"
     character(len=*) :: tm
-    logical(kind=1) :: droi
+    aster_logical :: droi
     real(kind=8) :: epsi, d, l2, x1, x2, x3, y1, y2, y3, crit
 !
     droi = .false.

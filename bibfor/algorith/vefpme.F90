@@ -1,6 +1,7 @@
 subroutine vefpme(modele, carele, mate, chargz, infchz,&
                   partps, templu, lvechz, ligrez)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
@@ -72,7 +73,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     character(len=24) :: chgeom, chcara(18), chtime, ligrel
     character(len=24) :: ligrmo, ligrch, lchin(27), lchout(1)
     character(len=24) :: charge, infcha
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
     character(len=8), pointer :: type(:) => null()
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
@@ -257,7 +258,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
 !
     end do
 !
-99  continue
+ 99 continue
 !
     lvechz = lvechp//'.RELR'
     call jedema()

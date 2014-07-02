@@ -20,6 +20,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assvec.h"
 #include "asterfort/dismoi.h"
@@ -62,11 +63,11 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 !
     integer :: ifm, niv
     character(len=1) :: base
-    logical(kind=1) :: lcont, lmacr
+    aster_logical :: lcont, lmacr
     character(len=19) :: cncont, cnsstr
     integer :: neq, i, endo
     integer :: endop1, endop2
-    logical(kind=1) :: lendo
+    aster_logical :: lendo
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------

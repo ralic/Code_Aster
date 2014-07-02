@@ -1,5 +1,6 @@
 subroutine te0446(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
@@ -56,18 +57,18 @@ subroutine te0446(option, nomte)
     integer :: jcara
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24)
     real(kind=8) :: effgt(32), effort(32)
-    real(kind=8) :: effref,momref
+    real(kind=8) :: effref, momref
     real(kind=8) :: alpha, beta, t2ev(4), t2ve(4), c, s
     real(kind=8) :: foref, moref
-    logical(kind=1) :: reactu
+    aster_logical :: reactu
 !
-    if (option.eq.'FORC_NODA') then
+    if (option .eq. 'FORC_NODA') then
 !
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                         jvf=ivf,jdfde=idfdx,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
         call jevech('PGEOMER', 'L', igeom)
 !
@@ -88,16 +89,18 @@ subroutine te0446(option, nomte)
 !
         call jevech('PCACOQU', 'L', jcara)
         alpha = zr(jcara+1) * r8dgrd()
-        beta  = zr(jcara+2) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2ev, t2ve, c, s)
+        beta = zr(jcara+2) * r8dgrd()
+        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+                    c, s)
 !
 ! --- VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL
-        call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
+        call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+                    itab=jtab)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
-        do ipg=1, npg
+        do ipg = 1, npg
             icontm=jtab(1)+8*(ipg-1)
             call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
         end do
@@ -142,11 +145,11 @@ subroutine te0446(option, nomte)
                 zr(ivectu+k-1) = bsigma(k)
             end do
         end do
-    else if (option.eq.'REFE_FORC_NODA')then
+    else if (option.eq.'REFE_FORC_NODA') then
 !     -------------------------------------
 !
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                        jvf=ivf,jdfde=idfdx,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
         call jevech('PGEOMER', 'L', igeom)
 !
         if (nno .eq. 3) then
@@ -156,17 +159,17 @@ subroutine te0446(option, nomte)
         endif
 !
         call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
-
+!
         call terefe('EFFORT_REFE', 'MECA_COQUE', foref)
         call terefe('MOMENT_REFE', 'MECA_COQUE', moref)
 !
         ind=8
         do i = 1, nno
-            do j = 1,3
+            do j = 1, 3
                 effgt((i-1)*ind+j) = foref
                 effgt((i-1)*ind+3+j) = moref
-            effgt((i-1)*ind+7) = foref
-            effgt((i-1)*ind+8) = foref
+                effgt((i-1)*ind+7) = foref
+                effgt((i-1)*ind+8) = foref
             enddo
         enddo
 !
@@ -177,14 +180,14 @@ subroutine te0446(option, nomte)
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', ivectu)
         k=0
-       do  i = 1, nno
+        do i = 1, nno
             effref=(abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
             momref=(abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
             ASSERT(abs(effref).gt.r8prem())
             ASSERT(abs(momref).gt.r8prem())
-            do  j = 1, 6
+            do j = 1, 6
                 k=k+1
-                if (j.lt.4) then
+                if (j .lt. 4) then
                     zr(ivectu+k-1) = effref
                 else
                     zr(ivectu+k-1) = momref

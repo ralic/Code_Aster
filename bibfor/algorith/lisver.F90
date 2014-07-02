@@ -18,6 +18,7 @@ subroutine lisver(lischa)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -47,7 +48,7 @@ subroutine lisver(lischa)
     character(len=8) :: charge
     integer :: genrec
     character(len=16) :: typapp
-    logical(kind=1) :: lelim, ldual, levoc
+    aster_logical :: lelim, ldual, levoc
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,9 +111,9 @@ subroutine lisver(lischa)
             endif
         endif
 !
-10  continue
+ 10 continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

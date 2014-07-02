@@ -42,15 +42,16 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
 !          NR     :  NR MIS A JOUR SI TRACTION PRESENTE
 !          IRET   :  IRET = 0 (OK) - 3 (NON CVG)
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/hujiid.h"
     character(len=8) :: mod
+    integer :: nr, nvi, iret, indi(7), intg, nmat
     real(kind=8) :: mater(nmat, 2), deps(6), yd(18), vind(nvi), sigf(6)
     real(kind=8) :: dy(18), sigd(6)
-    integer :: nr, nvi, iret, indi(7), intg, nmat
-    logical(kind=1) :: bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
 !
     real(kind=8) :: i1f, dsig(6), zero, un, trois, pref, e0, matert(22, 2)
-    logical(kind=1) :: loop, nodef
+    aster_logical :: loop, nodef
     integer :: nbmeca, nbmect, i, ii, ndt, ndi, indis(7), diff
 !
     parameter     (ndi   = 3   )
@@ -70,31 +71,31 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
         loop = .true.
         do 10 i = 1, 7
             indis(i) = indi(i)
-10      continue
+ 10     continue
     else
         loop = .false.
         do 20 i = 1, 7
             indis(i) = 0
-20      continue
+ 20     continue
     endif
 !
     iret = 0
 !
 ! --- PREPARATION DE L'APPEL A HUJIID (ROUTINE DE L'ALGO SPECIFIQUE)
- 1  continue
+  1 continue
 !
     if (iret .eq. 3) goto 999
 !
 ! ---  INITIALISATION VECTEUR D'INDICE INDI(I=1,7)
     do 30 i = 1, 7
         indi(i) = 0
-30  end do
+ 30 end do
 !
 ! ---  DEFINITION DU NOMBRE DE MECANISMES POTENTIELS ACTIFS
     nbmeca = 0
     do 40 i = 1, 8
         if (vind(23+i) .eq. un) nbmeca = nbmeca + 1
-40  end do
+ 40 end do
 !
 ! --- REMPLISSAGE DES MECANISMES POTENTIELLEMENT ACTIFS
 !
@@ -114,13 +115,13 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
             endif
 !
         endif
-50  end do
+ 50 end do
 !
 ! --- REDIMENSIONNEMENT DE YD POUR S'ADAPTER A HUJIID
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
     do 60 i = 1, 6
         yd(i) = yd(i)*e0
-60  end do
+ 60 end do
 !
 !
 ! --- PREPARATION DE L'INCREMENT DE CONTRAINTES
@@ -128,17 +129,17 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
     diff = 0
     do 70 i = 1, 7
         diff = diff + indi(i)-indis(i)
-70  end do
+ 70 end do
     if ((diff.eq.0) .and. (nbmeca.eq.1)) loop=.false.
 !
     if (loop) then
         do 80 i = 1, ndt
             dsig(i) = sigf(i) - sigd(i)
-80      continue
+ 80     continue
     else
         do 90 i = 1, ndt
             dsig(i) = zero
-90      continue
+ 90     continue
     endif
 !
     i1f = (sigf(1)+sigf(2)+sigf(3))/trois
@@ -149,7 +150,7 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
     do 100 i = 1, 22
         matert(i,1) = mater(i,1)
         matert(i,2) = mater(i,2)
-100  end do
+100 end do
 !
     call hujiid(mod, matert, indi, deps, i1f,&
                 yd, vind, dy, loop, dsig,&
@@ -163,13 +164,13 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
         if (indi(i) .gt. 8) then
             nbmect = nbmect + 1
         endif
-110  end do
+110 end do
 !
     nodef = .false.
     if (nbmeca .ne. nbmect) then
         do 120 i = 1, ndi
             if (abs(yd(i)+dsig(i)) .gt. pref**2.d0) nodef = .true.
-120      continue
+120     continue
         if (nodef) then
             iret = 3
             if (intg .gt. 5) then
@@ -180,7 +181,7 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
                         bnews(indi(i)-8) = .true.
                         iret = 2
                     endif
-130              continue
+130             continue
                 goto 1
             endif
         endif
@@ -191,19 +192,19 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
     do 140 i = 1, 6
         yd(i) = yd(i)/e0
         dy(i) = dy(i)/e0
-140  end do
+140 end do
 !
     do 150 i = 1, nbmeca
         yd(ndt+1+i) = yd(ndt+1+i)/e0*abs(pref)
         dy(ndt+1+i) = dy(ndt+1+i)/e0*abs(pref)
-150  end do
+150 end do
 !
     nr = ndt+1+nbmeca+nbmect
 !
     do 160 i = nr+1, 18
         dy(i) = zero
-160  end do
+160 end do
 !
-999  continue
+999 continue
 !
 end subroutine

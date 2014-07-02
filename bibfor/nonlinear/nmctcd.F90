@@ -23,7 +23,8 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
@@ -86,11 +87,11 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
     integer :: ifm, niv
     integer :: nbvect
-    logical(kind=1) :: lunil, lctcd, lctfd, lallv
-    logical(kind=1) :: lpenac
+    aster_logical :: lunil, lctcd, lctfd, lallv
+    aster_logical :: lpenac
     character(len=6) :: ltypve(20)
     character(len=16) :: loptve(20)
-    logical(kind=1) :: lassve(20), lcalve(20)
+    aster_logical :: lassve(20), lcalve(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -148,7 +149,7 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
                 numedd, parcon, veelem, veasse, measse,&
                 nbvect, ltypve, lcalve, loptve, lassve)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

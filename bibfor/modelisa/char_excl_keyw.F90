@@ -2,6 +2,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -39,8 +40,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  n_suffix    : number of sufixes excluded for topological(kind=1) keywords
-! In  list_suffix : list of sufixes excluded for topological(kind=1) keywords
+! In  n_suffix    : number of sufixes excluded for topoaster_logical keywords
+! In  list_suffix : list of sufixes excluded for topoaster_logical keywords
 ! In  keywordfact : factor keyword
 ! In  keywordexcl : name of JEVEUX object for excluded keywords
 ! Out n_keyexcl   : number of excluded keywords
@@ -97,21 +98,21 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! - Other keywords - Count
 !
-    if (keywordfact.eq.'FACE_IMPO') then
+    if (keywordfact .eq. 'FACE_IMPO') then
         n_keyexcl = n_keyexcl + 2
-    elseif (keywordfact.eq.'ARETE_IMPO') then
+    else if (keywordfact.eq.'ARETE_IMPO') then
         n_keyexcl = n_keyexcl + 1
-    elseif (keywordfact.eq.'LIAISON_OBLIQUE') then
+    else if (keywordfact.eq.'LIAISON_OBLIQUE') then
         n_keyexcl = n_keyexcl + 1
-    elseif (keywordfact.eq.'DDL_IMPO') then
+    else if (keywordfact.eq.'DDL_IMPO') then
         n_keyexcl = n_keyexcl + 1
-    elseif (keywordfact.eq.'TEMP_IMPO') then
+    else if (keywordfact.eq.'TEMP_IMPO') then
 ! ----- Nothing else components
-    elseif (keywordfact.eq.'PRES_IMPO') then
+    else if (keywordfact.eq.'PRES_IMPO') then
 ! ----- Nothing else components
-    elseif (keywordfact.eq.'DDL_POUTRE') then
+    else if (keywordfact.eq.'DDL_POUTRE') then
         n_keyexcl = n_keyexcl + 4
-    elseif (keywordfact.eq.'LIAISON_SOLIDE') then
+    else if (keywordfact.eq.'LIAISON_SOLIDE') then
         n_keyexcl = n_keyexcl + 3
     else
         ASSERT(.false.)
@@ -119,11 +120,11 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! - Create excluded keyword object
 !
-    if (n_keyexcl.ne.0) then
+    if (n_keyexcl .ne. 0) then
 !
 ! ----- Allocate keyword object
 !
-        call wkvect(keywordexcl,'V V K24', n_keyexcl, vk24 = p_keywordexcl)
+        call wkvect(keywordexcl, 'V V K24', n_keyexcl, vk24 = p_keywordexcl)
 !
 ! ----- Global affectation keywords - Affect
 !
@@ -156,28 +157,28 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! ----- Other keywords - Affect
 !
-        if (keywordfact.eq.'FACE_IMPO') then
+        if (keywordfact .eq. 'FACE_IMPO') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'DNOR'
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'DTAN'
-        elseif (keywordfact.eq.'ARETE_IMPO') then
+        else if (keywordfact.eq.'ARETE_IMPO') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'DTAN'
-        elseif (keywordfact.eq.'ARETE_IMPO') then
+        else if (keywordfact.eq.'ARETE_IMPO') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'DTAN'
-        elseif (keywordfact.eq.'LIAISON_OBLIQUE') then
+        else if (keywordfact.eq.'LIAISON_OBLIQUE') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'ANGL_NAUT'
-        elseif (keywordfact.eq.'DDL_IMPO') then
+        else if (keywordfact.eq.'DDL_IMPO') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'LIAISON'
-        elseif (keywordfact.eq.'TEMP_IMPO') then
+        else if (keywordfact.eq.'TEMP_IMPO') then
 ! ----- Nothing else components
-        elseif (keywordfact.eq.'PRES_IMPO') then
+        else if (keywordfact.eq.'PRES_IMPO') then
 ! ----- Nothing else components
-        elseif (keywordfact.eq.'DDL_POUTRE') then
+        else if (keywordfact.eq.'DDL_POUTRE') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'ANGL_VRIL'
             n_keyexcl = n_keyexcl + 1
@@ -186,7 +187,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
             p_keywordexcl(n_keyexcl) = 'MAILLE_REPE'
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'GROUP_MA_REPE'
-        elseif (keywordfact.eq.'LIAISON_SOLIDE') then
+        else if (keywordfact.eq.'LIAISON_SOLIDE') then
             n_keyexcl = n_keyexcl + 1
             p_keywordexcl(n_keyexcl) = 'TRAN'
             n_keyexcl = n_keyexcl + 1
@@ -197,6 +198,6 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
             ASSERT(.false.)
         endif
     endif
-
+!
     call jedema()
 end subroutine

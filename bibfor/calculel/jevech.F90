@@ -20,6 +20,7 @@ subroutine jevech(nmparz, louez, itab)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -67,7 +68,7 @@ subroutine jevech(nmparz, louez, itab)
     integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !
-    logical(kind=1) :: etendu
+    aster_logical :: etendu
     character(len=24) :: valk(5)
 !
 !
@@ -144,9 +145,9 @@ subroutine jevech(nmparz, louez, itab)
         npari2 = zi(iaopd2-1+2)
         do 20 ipara = 1, npari2
             if (zk8(iapara+ipara-1) .eq. nompar) goto 30
-20      continue
+ 20     continue
         goto 40
-30      continue
+ 30     continue
         valk(1) = option
 !        ON PEUT TROUVER D'OU VIENT LE PROBLEME DANS 3 CAS
         if (zk24(iaoplo+3*ipara-3) .eq. 'CARA') then
@@ -156,7 +157,7 @@ subroutine jevech(nmparz, louez, itab)
         else if (zk24(iaoplo+3*ipara-3).eq.'MODL') then
             call utmess('E', 'CALCULEL2_55', sk=valk(1))
         endif
-40      continue
+ 40     continue
         valk(1) = nompar
         valk(2) = option
         valk(3) = nomte
@@ -194,36 +195,36 @@ subroutine jevech(nmparz, louez, itab)
 !        COMPLETE SUR L'ELEMENT:
 !     ----------------------------------------------------------
     if (ilchlo .ne. -1) then
-        do 10,k = 1,lonchl
-        if (.not.zl(ilchlo+debugr-1+decael-1+k)) then
-            call tecael(iadzi, iazk24)
-            nommai=zk24(iazk24-1+3)(1:8)
-            valk(1) = nompar
-            valk(2) = option
-            valk(3) = nomte
-            valk(4) = nommai
+        do 10 k = 1, lonchl
+            if (.not.zl(ilchlo+debugr-1+decael-1+k)) then
+                call tecael(iadzi, iazk24)
+                nommai=zk24(iazk24-1+3)(1:8)
+                valk(1) = nompar
+                valk(2) = option
+                valk(3) = nomte
+                valk(4) = nommai
 !
 !           -- POUR CERTAINS PARAMETRES "COURANTS" ON EMET
 !              UN MESSAGE PLUS CLAIR :
-            if (nompar .eq. 'PMATERC') then
-                call utmess('F', 'CALCULEL2_74', nk=4, valk=valk)
-            else if (nompar.eq.'PCACOQU') then
-                call utmess('F', 'CALCULEL2_75', nk=4, valk=valk)
-            else if (nompar.eq.'PCAGNPO') then
-                call utmess('F', 'CALCULEL2_76', nk=4, valk=valk)
-            else if (nompar.eq.'PCAORIE') then
-                call utmess('F', 'CALCULEL2_77', nk=4, valk=valk)
+                if (nompar .eq. 'PMATERC') then
+                    call utmess('F', 'CALCULEL2_74', nk=4, valk=valk)
+                else if (nompar.eq.'PCACOQU') then
+                    call utmess('F', 'CALCULEL2_75', nk=4, valk=valk)
+                else if (nompar.eq.'PCAGNPO') then
+                    call utmess('F', 'CALCULEL2_76', nk=4, valk=valk)
+                else if (nompar.eq.'PCAORIE') then
+                    call utmess('F', 'CALCULEL2_77', nk=4, valk=valk)
 !
-            else
-                call utmess('E', 'CALCULEL2_73', nk=4, valk=valk)
+                else
+                    call utmess('E', 'CALCULEL2_73', nk=4, valk=valk)
 !
-                write (6,*) 'ERREUR JEVECH ZL :',nompar, (zl(&
+                    write (6,*) 'ERREUR JEVECH ZL :',nompar, (zl(&
                     ilchlo+debugr-1+decael-1+kk),kk=1,lonchl)
-                write (6,*) 'MAILLE: ',zk24(iazk24-1+3)
-                call contex(option, nompar)
+                    write (6,*) 'MAILLE: ',zk24(iazk24-1+3)
+                    call contex(option, nompar)
+                endif
             endif
-        endif
-10      continue
+ 10     continue
     endif
 !
 end subroutine

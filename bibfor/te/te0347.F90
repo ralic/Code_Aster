@@ -16,6 +16,7 @@ subroutine te0347(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -59,8 +60,7 @@ subroutine te0347(option, nomte)
     integer :: isect, igeom, kp, kk, imate
     integer :: istrxm, iretc
 !
-    logical(kind=1) :: lefgno, reactu
-    logical :: okelem
+    aster_logical :: lefgno, reactu, okelem
 !
     real(kind=8) :: pgl(3, 3), fs(14), d1b3(2, 3), ksi1, forref, momref
     real(kind=8) :: sigp(7), d1b(7, 14), co(3), xd(3), ey, ez, xl, temp
@@ -80,7 +80,7 @@ subroutine te0347(option, nomte)
     nno = 2
     fami = 'RIGI'
 ! --- NOMBRE DE POINTS DE GAUSS
-    call elrefe_info(fami=fami,npg=npg)
+    call elrefe_info(fami=fami, npg=npg)
     ASSERT((npg.eq.2).or.(npg.eq.3))
 !
     if (nomte .eq. 'MECA_POU_D_TG') then

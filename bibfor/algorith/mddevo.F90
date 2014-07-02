@@ -1,10 +1,10 @@
-subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
-                  masgen, amogen, basemo, tinit,  iparch,&
+subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
+                  masgen, amogen, basemo, tinit, iparch,&
                   nbsauv, nbchoc, logcho, dplmod, parcho,&
                   noecho, nbrede, dplred, fonred, nbrevi,&
                   dplrev, fonrev, depsto, vitsto, accsto,&
                   iorsto, temsto, fchost, dchost, vchost,&
-                  ichost, iredst, dredst, coefm,  liad,&
+                  ichost, iredst, dredst, coefm, liad,&
                   inumor, idescf, nofdep, nofvit, nofacc,&
                   nomfon, psidel, monmot, nomres, nbexci,&
                   passto, irevst, drevst, intitu)
@@ -12,6 +12,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/amgene.h"
@@ -104,7 +105,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-    logical(kind=1) :: prdeff
+    aster_logical :: prdeff
     integer :: vali(2)
     real(kind=8) :: r8bid2, r8bid3, r8bid4, r8bid5, r8b2, tps1(4), valr(3)
     real(kind=8) :: rint1, rint2
@@ -212,7 +213,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
 !
 !     --- CONDITIONS INITIALES ---
     call mdinit(basemo, nbmode, nbchoc, zr(jdep2), zr(jvit2),&
-                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho )
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho)
     if (iret .ne. 0) goto 9999
     if (nbchoc .gt. 0) then
         nbvint = nbchoc*mdtr74grd('MAXVINT')
@@ -243,12 +244,15 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
         amogen(im1) = deux * pulsat(im1) * agen(im1,im1)
         zr(jfex1+im) = zr(jfex2+im)
         g2 = ( zr(jfex2+im) / mgen(im1,im1) ) - pulsa2(im1)*zr(jdep2+im)
-        zr(jdep1+im) = zr(jdep2+im) - dt1*zr(jvit2+im) + &
-                       dt6 * ( g2 - agen(im1,im1)*zr(jvit2+im) )
+        zr(jdep1+im) = zr(jdep2+im) - dt1*zr(jvit2+im) + dt6 * ( g2 - agen(im1,im1)*zr(jvit2+im) &
+                       &)
         g1 = (zr(jfex1+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep1+im)
-        zr(jvit1+im) = ( 1.d0 / (4.d0 - dt * agen(im1,im1) ) ) &
-                          * ( zr(jvit2+im)*( 4.d0 + dt*agen(im1,im1) ) &
-                            - dt * ( g1 + g2) )
+        zr(jvit1+im) = (&
+                       1.d0 / (&
+                       4.d0 - dt * agen(im1,im1) ) ) * ( zr(jvit2+im)*( 4.d0 + dt*agen(im1,im1) )&
+                       &  - dt * ( g1 + g2&
+                       )&
+                       )
         acce(im+1) = g2 - agen(im1,im1)*zr(jvit2+im)
 !
     enddo
@@ -353,8 +357,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
 !
 !           --- VITESSES GENERALISEES AU PAS ---
             x1 = six / ( six + dt*agen(im1,im1) )
-            x2 = g4 + quatre*g3 + g2 - ( agen(im1,im1) * &
-                    ( quatre*zr( jvit3+im) + zr(jvit2+im) ))
+            x2 = g4 + quatre*g3 + g2 - (agen(im1,im1) *  ( quatre*zr( jvit3+im) + zr(jvit2+im) ))
             zr(jvit4+im) = x1 * ( zr(jvit2+im) + dt3*x2 )
 !
 !           --- ACCELERATIONS GENERALISEES AU PAS ---
@@ -420,7 +423,7 @@ subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
         temps = temps+dt1
     enddo
 !
-9999  continue
+9999 continue
     call jedetr('&&MDDEVO.DEPL')
     call jedetr('&&MDDEVO.VITE')
     AS_DEALLOCATE(vr=acce)

@@ -3,6 +3,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   nomaou, nomain, versio, tycha)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/celces.h"
@@ -28,7 +29,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou, nomain, tycha
     real(kind=8) :: coord(*), para(*)
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
     integer :: nbcmpi, ifi, nbordr, versio
     integer :: ordr(*), connx(*), point(*)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
@@ -84,13 +85,13 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !     ------------------------------------------------------------------
 !
     integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
-    integer :: iq, ifm, niv, jtype,  ncmpme
+    integer :: iq, ifm, niv, jtype, ncmpme
     integer :: nbcmp, ipoin, iret, jcesc, jcesl
-    integer ::      jcesd
-    integer :: icmp,  ipt, isp, nbpt, nbsp, jnumol
+    integer :: jcesd
+    integer :: icmp, ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
     parameter(ncmpme=12)
-    logical(kind=1) :: iwri, tens, scal, vect, lcmp
+    aster_logical :: iwri, tens, scal, vect, lcmp
     character(len=1) :: tsca
     character(len=8) :: k8b, nomgd, type, nocmp
     character(len=19) :: noch19, champs

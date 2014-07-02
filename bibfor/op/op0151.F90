@@ -51,6 +51,7 @@ subroutine op0151()
 !                                                      /DOMA_ELGA_EPME
 !                                                      /DOMA_ELNO_EPME
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/alchml.h"
@@ -90,7 +91,7 @@ subroutine op0151()
     character(len=16) :: mexpic, mcompt, mdomag, typeq, typoi, typdg, option
     character(len=19) :: nomsd, chelem, chelrs, ligrel, nomsd2
     character(len=24) :: valk(6)
-    logical(kind=1) :: fordef, crsigm, crepst, crepse, crepsp
+    aster_logical :: fordef, crsigm, crepst, crepse, crepsp
     real(kind=8) :: prec, instic
 !
     integer :: nval, impr, ifm, jordr, jcoef, jcelk
@@ -152,12 +153,12 @@ subroutine op0151()
         if (nval .eq. 0) then
             forvie = '        '
         endif
-
+!
         call getvid(' ', 'FORMULE_CRITIQUE', scal=forcri, nbret=nval)
         if (nval .eq. 0) then
             forcri = '        '
         endif
-
+!
 !
 ! ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
         call getvtx(' ', 'METHODE', scal=nommet, nbret=nval)
@@ -205,15 +206,15 @@ subroutine op0151()
 !
 ! ---   CONSTRUCTION DES PAQUETS DE MAILLES
             call paqmai(nomres, nomu, nommai, nommet, nomcri,&
-                        nomfor, grdvie, forvie, forcri, fordef, typcha,&
-                        proaxe, instic, inscri, prec)
+                        nomfor, grdvie, forvie, forcri, fordef,&
+                        typcha, proaxe, instic, inscri, prec)
 !
         else if (nomopt .eq. 'DOMA_NOEUD') then
 !
 ! ---   CONSTRUCTION DES PAQUETS DE NOEUDS
             call paqnoe(nomres, nomu, nommai, nommet, nomcri,&
-                        nomfor, grdvie, forvie, forcri, fordef, typcha,&
-                        proaxe, instic, inscri, prec)
+                        nomfor, grdvie, forvie, forcri, fordef,&
+                        typcha, proaxe, instic, inscri, prec)
         endif
 !
 !
@@ -593,10 +594,10 @@ subroutine op0151()
     ASSERT(ibid.eq.nbpt)
     do 222 i = 1, nbpt
         celv(i) = zr(ivdmg+i-1)
-222  end do
+222 end do
     call jedetr('&&OP0151.DOMMAGE')
 !
-7777  continue
+7777 continue
 !
     call jedema()
 end subroutine

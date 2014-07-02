@@ -24,6 +24,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
@@ -42,7 +43,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 !
-    logical(kind=1) :: reasvt, reasmt
+    aster_logical :: reasvt, reasmt
     real(kind=8) :: tpsthe(6), tpsnp1
     character(len=1) :: creas
     character(len=19) :: infcha, solveu, maprec
@@ -60,7 +61,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
 !
     integer :: ibid, k, iret, ierr, nbmat, jmet
-    integer :: jmer, jmed, j2nd,   lonch
+    integer :: jmer, jmed, j2nd, lonch
     character(len=1) :: typres
     character(len=8) :: nomcmp(6)
     character(len=24) :: ligrmo, merigi, mediri, tlimat(3)
@@ -138,7 +139,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
         call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
         do 120 k = 1, lonch
             zr(j2nd+k-1) = chtp(k) + dirp(k)
-120      continue
+120     continue
 !
     endif
 !

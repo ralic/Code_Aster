@@ -19,7 +19,8 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8maem.h"
@@ -78,7 +79,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
 !
     complex(kind=8) :: cbid
-    logical(kind=1) :: trouac, delpos, lelpiv
+    aster_logical :: trouac, delpos, lelpiv
     integer :: ier, ifm, niv, ndeci, isingu, npvneg
     integer :: ii, kk, iter, iliac, neqmax
     integer :: indic, kkmin, llmin
@@ -167,6 +168,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     nbliac = 0
     xjvmax = 0.0d0
     iter = 0
+    cbid=(0.0d0,0.0d0)
 ! ======================================================================
 !                             INITIALISATIONS
 !
@@ -178,7 +180,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     do 10 kk = 1, neq
         zr(jdelt0-1+kk) = vale(kk)
         vale(kk) = 0.0d0
-10  end do
+ 10 end do
 ! ======================================================================
 ! --- DETECTION DES COUPLES DE NOEUDS ACTIVES
 ! --- ON CALCULE LE NOUVEAU JEU : AJEU+ = AJEU/I/N - A.DDEPLA
@@ -205,7 +207,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
                 endif
             endif
 !
-30      continue
+ 30     continue
     endif
 !
     if (niv .ge. 2) then
@@ -218,7 +220,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
-40  continue
+ 40 continue
 !
 ! ======================================================================
 ! ---
@@ -235,7 +237,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     if (nbliac .eq. 0) then
         do 50 kk = 1, neq
             zr(jdelta+kk-1) = zr(jdelt0+kk-1) - vale(kk)
-50      continue
+ 50     continue
     endif
 !
 ! ======================================================================
@@ -308,7 +310,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
         do 70 kk = 1, neq
             zr(jdelta-1+kk) = zr(jdelt0-1+kk) - vale(kk)
-70      continue
+ 70     continue
 !
 ! --- MISE A JOUR DU VECTEUR DEPLACEMENT <DU> CORRIGE
 !
@@ -320,7 +322,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
             call daxpy(neq, -zr(jmu-1+posnbl), zr(jcm1a), 1, zr(jdelta),&
                        1)
             call jelibe(jexnum(cm1a, lliac))
-71      continue
+ 71     continue
 !
     endif
 !
@@ -348,7 +350,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 ! ======================================================================
             do 90 iliac = 1, nbliac
                 if (zi(jliac-1+iliac) .eq. ii) trouac = .true.
-90          continue
+ 90         continue
 ! ======================================================================
 ! -- CALCUL DE A.DELTA SI LA LIAISON II N'EST PAS ACTIVE
 ! ======================================================================
@@ -384,7 +386,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
                     endif
                 endif
             endif
-112      continue
+112     continue
 ! ======================================================================
 ! -- SI TOUS LES (A.DELTA)II SONT NEGATIFS : RHO = 1
 ! ======================================================================
@@ -400,7 +402,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
     do 120 kk = 1, neq
         vale(kk) = vale(kk) + rhorho*zr(jdelta-1+kk)
-120  end do
+120 end do
 !
 ! -- SI RHO < 1 (AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE) :
 ! -- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE (LLMIN)
@@ -428,7 +430,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
                 rminmu = zr(jmu-1+iliac)
                 kkmin = iliac
             endif
-130      continue
+130     continue
 !
 !
 ! - SI TOUS LES MU SONT > 0 -> ON A CONVERGE
@@ -454,7 +456,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 ! ======================================================================
 ! - ON PASSE A L'ITERATION DE CONTRAINTES ACTIVES SUIVANTES
 ! ======================================================================
-150  continue
+150 continue
     iter = iter + 1
 !
 !
@@ -471,7 +473,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !                            ON A CONVERGE
 ! ======================================================================
 !
-160  continue
+160 continue
 !
 !
 ! --- CALCUL DES FORCES (AT.MU)
@@ -490,7 +492,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
         compts = compts + 1
         call calatm(neq, nbddl, zr(jmu-1+compts), zr(japcoe+jdecal), zi( japddl+jdecal),&
                     zr(jatmu))
-161  end do
+161 end do
 !
 !
 ! --- MAJ DU JEU (IL N'EST RECALCULE QU'EN DEBUT DE PAS DE TPS)
@@ -502,7 +504,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
         call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
                     val)
         zr(japjeu+iliac-1) = zr(japjeu+iliac-1) - val
-162  end do
+162 end do
 !
     zi(jcoco+2) = nbliac
 !
@@ -514,7 +516,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
         call cuimp1(deficu, resocu, ifm)
     endif
 !
-999  continue
+999 continue
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES
 ! ======================================================================

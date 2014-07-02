@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
                       stano, matsym, option, nomte, mat,&
@@ -25,7 +27,7 @@ interface
         integer :: nno
         integer :: nnos
         integer :: stano(*)
-        logical(kind=1) :: matsym
+        aster_logical :: matsym
         character(len=16) :: option
         character(len=16) :: nomte
         real(kind=8) :: mat(*)

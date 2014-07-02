@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
                       lelem, lelga)
-        logical(kind=1) :: isole
+        aster_logical :: isole
         character(len=8) :: resuin
         character(len=19) :: cham1
-        logical(kind=1) :: lnoeu
-        logical(kind=1) :: lelno
-        logical(kind=1) :: lelem
-        logical(kind=1) :: lelga
+        aster_logical :: lnoeu
+        aster_logical :: lelno
+        aster_logical :: lelem
+        aster_logical :: lelga
     end subroutine pjtyco
 end interface

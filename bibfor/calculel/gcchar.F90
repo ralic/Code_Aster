@@ -4,6 +4,7 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -30,11 +31,11 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    logical(kind=1) :: lfchar
-    logical(kind=1) :: lpchar
-    logical(kind=1) :: lformu
-    logical(kind=1) :: lfmult
-    logical(kind=1) :: lccomb
+    aster_logical :: lfchar
+    aster_logical :: lpchar
+    aster_logical :: lformu
+    aster_logical :: lfmult
+    aster_logical :: lccomb
     character(len=24) :: oldfon
     character(len=8) :: nomfct
     character(len=8) :: newfct
@@ -74,7 +75,7 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
 ! ----------------------------------------------------------------------
 !
     character(len=19) :: chtmp1, chtmp2
-    logical(kind=1) :: fonc1, fonc2
+    aster_logical :: fonc1, fonc2
     integer :: jfonci
 !
 ! ----------------------------------------------------------------------

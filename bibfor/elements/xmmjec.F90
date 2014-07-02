@@ -21,6 +21,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/indent.h"
@@ -33,7 +34,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     integer :: jnnm(3), jnne(3), jddle(2), jddlm(2)
     integer :: nsinge, nsingm, nfhe, nfhm, heavfa(*)
     real(kind=8) :: rre, rrm
-    logical(kind=1) :: lmulti
+    aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,20 +106,20 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
                 if (lmulti) then
                     do 30 ifh = 1, nfhe
                         iescl(1+ifh)=heavfa(nfhe*(inoes-1)+ifh)
-30                  continue
+ 30                 continue
                 endif
                 pos = zr(jgeom-1+ndim*(inoes-1)+idim)
                 do 40 iddl = 1, 1+nfhe+nsinge
                     pl = in + (iddl-1)*ndim + idim
                     pos = pos + iescl(iddl)*zr(jdepde-1+pl)
-40              continue
+ 40             continue
                 pose(idim) = pose(idim) + pos*ffe(inoes)
             else
                 pl = in + idim
                 pose(idim) = pose(idim) - rre*ffe(inoes)*zr(jdepde-1+ pl)
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! --- CALCUL DE LA POSITION COURANTE DU POINT MAITRE
 !
@@ -129,21 +130,21 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
             if (lmulti) then
                 do 70 ifh = 1, nfhm
                     imait(1+ifh)=heavfa(nfhe*nne+nfhm*(inom-1)+ifh)
-70              continue
+ 70             continue
             endif
             pos = zr(jgeom-1+nne*ndim+(inom-1)*ndim+idim)
             do 80 iddl = 1, 1+nfhm+nsingm
                 pl = in + (iddl-1)*ndim + idim
                 pos = pos + imait(iddl)*zr(jdepde-1+pl)
-80          continue
+ 80         continue
             posm(idim) = posm(idim) + pos*ffm(inom)
-60      continue
-50  end do
+ 60     continue
+ 50 end do
 !
 ! --- CALCUL DU JEU
 !
     do 90 idim = 1, ndim
         jeuca = jeuca + norm(idim)*(pose(idim)-posm(idim))
-90  end do
+ 90 end do
 !
 end subroutine

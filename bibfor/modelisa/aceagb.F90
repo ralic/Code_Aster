@@ -1,5 +1,6 @@
 subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/alcart.h"
@@ -25,7 +26,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 #include "asterfort/as_allocate.h"
 !
     integer :: lmax, nbocc
-    logical(kind=1) :: locamb
+    aster_logical :: locamb
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -58,8 +59,8 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE GRILLE
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, n3, n4, n5, jdls2
-    integer :: i,  nbmat, nbma, n1f, n3f, iret
-    integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
+    integer :: i, nbmat, nbma, n1f, n3f, iret
+    integer :: ima, nbno, adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg, jdccf, jdvcf
     real(kind=8) :: ang(2), sl, ez, ctr, axey(3), xnorm, epsi
     real(kind=8) :: axex(3), vn1n2(3), vn1n3(3), vecnor(3)
@@ -67,7 +68,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     character(len=19) :: cartgr, cartcf
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex, tmpncf, tmpvcf
     character(len=32) :: kjexn
-    logical(kind=1) :: lcartf
+    aster_logical :: lcartf
     integer, pointer :: nume_ma(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------

@@ -19,6 +19,7 @@ subroutine dinuar(sddisc, numins, force, numarc, numrep)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/jedema.h"
@@ -27,7 +28,7 @@ subroutine dinuar(sddisc, numins, force, numarc, numrep)
 #include "asterfort/nmcrpo.h"
     character(len=19) :: sddisc
     integer :: numins, numarc, numrep
-    logical(kind=1) :: force
+    aster_logical :: force
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +50,7 @@ subroutine dinuar(sddisc, numins, force, numarc, numrep)
     character(len=24) :: arcinf
     integer :: jarinf
     real(kind=8) :: inst
-    logical(kind=1) :: larch
+    aster_logical :: larch
     character(len=19) :: sdarch
 !
 ! ----------------------------------------------------------------------

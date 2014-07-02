@@ -18,6 +18,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/bptobg.h"
 #include "asterfort/jacobi.h"
@@ -61,7 +62,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 ! OUT DSIDPR  : MATRICE TANGENTE DEFO GENERALISEE
 ! OUT PROJ    : PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: rigi, resi, elas, rela, prog, cplan
+    aster_logical :: rigi, resi, elas, rela, prog, cplan
     character(len=1) :: poum
     integer :: icodre(7)
     character(len=8) :: nomres(7), nompar
@@ -82,7 +83,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: kron(6)
     real(kind=8) :: epsfp(6), epscou(6), chi, vala, r, a, b
     integer :: idc
-    logical(kind=1) :: coup
+    aster_logical :: coup
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 ! ======================================================================
@@ -218,7 +219,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         epsrm(i)=epstm(i+6)
         deps(i)=depst(i)
         depsr(i)=depst(i+6)
-10  end do
+ 10 end do
 ! -   M.B.: CALCUL DE LA DEFORMATION DE FLUAGE AU TEMP P
     if (coup .and. resi) then
         call lcumvi('FT', vip, epsfp)
@@ -234,12 +235,12 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         do 20 j = 1, ndimsi
             eps(j) = epsm(j) + deps(j)
             epsr(j) = epsrm(j) + depsr(j)
-20      continue
+ 20     continue
     else
         do 30 j = 1, ndimsi
             eps(j)=epsm(j)
             epsr(j)=epsrm(j)
-30      continue
+ 30     continue
         d=vim(1)
     endif
 ! -  MODIF M.B.: ON MET DANS EPS LES DEFORMATIONS REELES
@@ -249,7 +250,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         if (coup .and. resi) then
             epsfp(j) = epsfp(j)/rac2
         endif
-40  end do
+ 40 end do
 !
 !
 !    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
@@ -260,7 +261,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
     do 35 j = 1, ndimsi
         epse(j) = eps(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
         epser(j) = epsr(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
-35  end do
+ 35 end do
 !
 !
 !  M.B.: SI CONTRAINTES PLAN (COUP)
@@ -279,7 +280,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         do 1010 j = 1, ndimsi
             epse(j) = epse(j) - epsfp(j)
             epscou(j) = epser(j) - (1.d0-chi)*epsfp(j)
-1010      continue
+1010     continue
     endif
 !  -   ON PASSE DANS LE REPERE PROPRE DE EPS
     nperm = 12
@@ -353,23 +354,23 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         if (epsp(j) .gt. 0.d0) then
             epstil = epstil + (epsp(j)**2)
         endif
-50  end do
+ 50 end do
     epseq = sqrt(epseq)
     epstil = sqrt(epstil)
 ! -     CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
     treps = epsp(1)+epsp(2)+epsp(3)
     do 60 j = 1, 3
         sigelp(j) = lambda*treps
-60  end do
+ 60 end do
     do 70 j = 1, 3
         sigelp(j) = sigelp(j) + deuxmu*epsp(j)
-70  end do
+ 70 end do
     tmp1 = 0.d0
     do 80 j = 1, 3
         if (sigelp(j) .lt. 0.d0) then
             tmp1 = tmp1 + sigelp(j)
         endif
-80  end do
+ 80 end do
     if (resi) then
 !   5 -     CALCUL DE R
 !----------------------------------------------------------------
@@ -377,7 +378,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         r=0.d0
         do 81 i = 1, 3
             r = r + max(0.00000000d0,sigelp(i))
-81      end do
+ 81     end do
         if (vala .gt. 1.d-10) then
             r=(r/ vala)
         else
@@ -390,7 +391,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         do 69 i = 1, 3
             rap = rap + min(0.d0,sigelp(i))
             gama = gama + (min(0.d0,sigelp(i)))**2
-69      end do
+ 69     end do
         if ((abs(rap).gt.1.d-10) .and. (r.eq.0.d0)) then
             gama = -(sqrt(gama)/ rap)
         else
@@ -425,7 +426,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         call bptobg(tr, sig, vecpe)
         do 100 j = 4, ndimsi
             sig(j)=rac2*sig(j)
-100      continue
+100     continue
         vip(idc+1) = d
         if (d .eq. 0.d0) then
             vip(idc+2) = 0.d0
@@ -449,11 +450,11 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
         do 110 j = 1, 3
             do 120 l = 1, 3
                 dsidpt(j,l,1) = (1.d0-d)*lambda
-120          continue
-110      continue
+120         continue
+110     continue
         do 130 j = 1, ndimsi
             dsidpt(j,j,1) = dsidpt(j,j,1) + (1-d)*deuxmu
-130      continue
+130     continue
         if ((.not.elas) .and. prog .and. (.not.rela) .and. (d.lt.0.99999d0)) then
             if (epseq .lt. 1.d-10) then
                 coef=0.d0
@@ -469,11 +470,11 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
                 if (epspr(j) .gt. 0.d0) then
                     tr(j) = epspr(j)
                 endif
-160          continue
+160         continue
             call bptobg(tr, epsplu, vecper)
             do 170 j = 4, ndimsi
                 epsplu(j) = epsplu(j)*rac2
-170          continue
+170         continue
             call r8inir(6, 0.d0, sigel, 1)
             tr(1) = sigelp(1)
             tr(2) = sigelp(2)
@@ -484,12 +485,12 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
             call bptobg(tr, sigel, vecpe)
             do 180 j = 4, ndimsi
                 sigel(j)=rac2*sigel(j)
-180          continue
+180         continue
             do 190 i = 1, 6
                 do 200 j = 1, 6
                     dsidpt(i,j,2) = - coef * sigel(i)* epsplu(j)
-200              continue
-190          continue
+200             continue
+190         continue
         endif
     endif
 end subroutine

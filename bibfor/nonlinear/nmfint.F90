@@ -22,6 +22,7 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -72,7 +73,7 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: tabret(0:10)
+    aster_logical :: tabret(0:10)
     integer :: iter
     integer :: ifm, niv
     character(len=1) :: base

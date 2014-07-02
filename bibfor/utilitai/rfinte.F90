@@ -19,6 +19,7 @@ subroutine rfinte(ispec)
 !     OPERATEUR "RECU_FONCTION"   MOT CLE "INTE_SPEC"
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -41,7 +42,7 @@ subroutine rfinte(ispec)
     integer :: lpro, i1, indi
     integer :: i, kvale
     integer :: ifm, niv, n2, n3, n4, n5, mxval, numi, numj, nbfreq, ifreq, num
-    integer :: lnumi, lnumj, lvale, lfreq,  lnum
+    integer :: lnumi, lnumj, lvale, lfreq, lnum
     integer :: lnoei, lnoej, lcmpi, lcmpj
     character(len=8) :: nospec, noei, noej, cmpi, cmpj
     character(len=16) :: nomcmd, typcon, noch, nocham, abscisse
@@ -49,7 +50,7 @@ subroutine rfinte(ispec)
     character(len=24) :: chnumi, chnumj, chfreq, chvale, chnum
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj
     character(len=24) :: paray
-    logical(kind=1) :: indice
+    aster_logical :: indice
     character(len=16), pointer :: refe(:) => null()
 !
 ! DEB------------------------------------------------------------------
@@ -117,7 +118,7 @@ subroutine rfinte(ispec)
                 indi = i1
                 indice = .true.
             endif
-120      continue
+120     continue
     else if (n3 .lt. 0) then
         call getvis(' ', 'NUME_ORDRE_I', scal=numi, nbret=n4)
         call getvis(' ', 'NUME_ORDRE_J', nbval=0, nbret=n4)
@@ -136,7 +137,7 @@ subroutine rfinte(ispec)
                 indi = i1
                 indice = .true.
             endif
-110      continue
+110     continue
     else if (n5 .lt. 0) then
         call getvis(' ', 'NUME_ORDRE', scal=num, nbret=n4)
         chnum = nospec//'.NUME_ORDRE'
@@ -173,14 +174,14 @@ subroutine rfinte(ispec)
 ! --- SURCHARGE EVENTUELLE DU .PROL
 !
     call foattr(' ', 1, nomfon)
-
+!
     if (nbval .eq. nbfreq) then
         zk24(lpro) = 'FONCTION'
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbfreq, kvale)
         do 31 i = 1, nbfreq
             zr(kvale+i-1) = zr(ifreq+i-1)
             zr(kvale+nbfreq+i-1) = zr(lvale+i-1)
-31      continue
+ 31     continue
     else
         zk24(lpro) = 'FONCT_C'
         call wkvect(nomfon//'.VALE', 'G V R', 3*nbfreq, kvale)
@@ -188,7 +189,7 @@ subroutine rfinte(ispec)
             zr(kvale+i-1) = zr(ifreq+i-1)
             zr(kvale+nbfreq+2*(i-1)) = zr(lvale+2*(i-1))
             zr(kvale+nbfreq+2*(i-1)+1) = zr(lvale+2*(i-1)+1)
-32      continue
+ 32     continue
     endif
 !
     call jedema()

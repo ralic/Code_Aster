@@ -1,6 +1,7 @@
 subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
                   nbnoff)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
@@ -66,7 +67,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
     character(len=8) :: typm
     character(len=24) :: noeord, trav
     character(len=24) :: entree, obtrav
-    logical(kind=1) :: lfon, test
+    aster_logical :: lfon, test
     character(len=8), pointer :: vtype(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
@@ -155,10 +156,10 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
 !           DANS LE CAS (OUVERT OU FERME) IL N'EST NECESSAIRE PAS
 !           D'AVOIR DES MAILLES SEG
                 if (.not.lfon .and. numa .eq. numb) goto 216
-214          continue
-212      continue
+214         continue
+212     continue
         call utmess('F', 'RUPTURE0_66')
-216      continue
+216     continue
         if (typmp .eq. '        ') then
             numa = zi(jcncin-1 + adra)
             ityp = iatyma-1+numa
@@ -171,7 +172,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
             endif
         endif
         call jedetr(trav)
-210  end do
+210 end do
 !
 !       CONSTRUCTION DES NOEUDS DU FOND SI "NOEUD" RENSEIGNE
 !     -------------------------------------------------------------
@@ -180,14 +181,14 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
     if (iret .ne. 0) then
         do 213 ino = 1, nbnoff
             zk8(jnoe1-1 + ino) = zk24(jjj-1 + ino)(1:8)
-213      continue
+213     continue
 !
     else
         call jeveuo(jexnom(entree, zk24(jjj)), 'L', jadr)
         do 2223 ino = 1, nbnoff
             call jenuno(jexnum(noma//'.NOMNOE', zi(jadr-1 + ino)), noeud)
             zk8(jnoe1-1 + ino) = noeud
-2223      continue
+2223     continue
     endif
 !
 !

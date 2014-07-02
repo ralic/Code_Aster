@@ -24,6 +24,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -104,10 +105,10 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in
     integer :: jcesd(11), jcesv(11), jcesl(11), iad, jconx1, jconx2
     integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
-    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime,  inm
-    integer ::  jtypm2, inmtot, itypse(6), iad1, iadc, iadv
-    integer :: jcnse, iad4, iad3,  itypel, nbelr, jhea
-    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50),  jlst, jfisno
+    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm
+    integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv
+    integer :: jcnse, iad4, iad3, itypel, nbelr, jhea
+    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50), jlst, jfisno
     integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi
     integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter
@@ -117,9 +118,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=16) :: tysd, k16b, nomcmd, notype
     character(len=19) :: chs(11)
     character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, fisno, hea, nogno
-    logical(kind=1) :: opmail, lmeca, pre1
+    aster_logical :: opmail, lmeca, pre1
     integer :: iad9, irese, nnose, tabse(6), ncomp
-    integer :: iviex, iret,  jconq1, jconq2,  jxc
+    integer :: iviex, iret, jconq1, jconq2, jxc
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
     integer, pointer :: maille(:) => null()
     integer, pointer :: cnsd(:) => null()

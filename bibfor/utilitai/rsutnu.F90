@@ -1,6 +1,7 @@
 subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                   prec, crit, ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getres.h"
@@ -74,7 +75,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     character(len=19) :: knacc, kvacc, knmod, listr, resuin, knum2
     complex(kind=8) :: c16b
     integer :: ltout, linst, lfreq, lordr, tord(1)
-    logical(kind=1) :: verifi
+    aster_logical :: verifi
 !     ------------------------------------------------------------------
     call jemarq()
     call getres(k8b, concep, nomcmd)
@@ -153,7 +154,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                                     vect=zk8(jnch), nbret=n2)
                         do 10 ii = 1, nbval
                             zk16(jval+ii-1) = zk8( jnch+ (2*ii-1)-1)// zk8(jnch+ (2*ii)-1 )
-10                      continue
+ 10                     continue
                         call jedetr(knmod)
                     else
                         call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
@@ -174,7 +175,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     if (ctyp(1:1) .eq. 'I') then
                         call rsorac(resu, zk16(jpara-1+iacc), zi(jval-1+ ival), r8b, k8b,&
                                     c16b, prec, crit, zi(jord2), nbordt,&
-                                    nbtrou)                                    
+                                    nbtrou)
                     else if (ctyp(1:1).eq.'R') then
                         call rsorac(resu, zk16(jpara-1+iacc), ibid, zr(jval-1+ival), k8b,&
                                     c16b, prec, crit, zi(jord2), nbordt,&
@@ -284,19 +285,19 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     else if (nbtrou.lt.0) then
                         call utmess('F', 'DVP_1')
                     endif
-20              continue
+ 20             continue
                 nbordr = nbordr - 1
                 if (nbordr .ne. 0) then
                     call wkvect(knum, 'V V I', nbordr, jordr)
                     do 30 iord = 0, nbordr - 1
                         zi(jordr+iord) = zi(jord1+iord)
-30                  continue
+ 30                 continue
                 endif
                 call jedetr('&&RSUTNU.N1')
                 call jedetr('&&RSUTNU.N2')
                 goto 100
             endif
-40      continue
+ 40     continue
     endif
 !
     linst = getexm(motcle,'LIST_INST')
@@ -333,13 +334,13 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     endif
                     call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                 endif
-50          continue
+ 50         continue
             nbordr = nbordr - 1
             if (nbordr .ne. 0) then
                 call wkvect(knum, 'V V I', nbordr, jordr)
                 do 60 iord = 0, nbordr - 1
                     zi(jordr+iord) = zi(jord1+iord)
-60              continue
+ 60             continue
             endif
             call jedetr('&&RSUTNU.N1')
             call jedetr('&&RSUTNU.N2')
@@ -381,13 +382,13 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     endif
                     call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                 endif
-70          continue
+ 70         continue
             nbordr = nbordr - 1
             if (nbordr .ne. 0) then
                 call wkvect(knum, 'V V I', nbordr, jordr)
                 do 80 iord = 0, nbordr - 1
                     zi(jordr+iord) = zi(jord1+iord)
-80              continue
+ 80             continue
             endif
             call jedetr('&&RSUTNU.N1')
             call jedetr('&&RSUTNU.N2')
@@ -404,7 +405,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             call wkvect(knum, 'V V I', nbordr, jordr)
             do 90 iord = 0, nbordr - 1
                 zi(jordr+iord) = zi(laccr+iord)
-90          continue
+ 90         continue
             goto 100
         endif
     endif
@@ -423,7 +424,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     ibid)
     endif
 !
-100  continue
+100 continue
 !
 !
 !     9- ON VERIFIE QUE LES NUMEROS D'ORDRE TROUVES APPARTIENNENT
@@ -434,10 +435,10 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
         call jeveuo(resuin//'.ORDR', 'L', jordr1)
         call jeveuo(knum, 'L', jordr2)
         nbtrop=0
-        do 777,i=1,nbordr
-        itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
-        if (itrou .eq. 0) nbtrop=nbtrop+1
-777      continue
+        do 777 i = 1, nbordr
+            itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
+            if (itrou .eq. 0) nbtrop=nbtrop+1
+777     continue
 !
         if (nbtrop .gt. 0) then
             knum2='&&RSUTNU.KNUM2'
@@ -446,13 +447,13 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             endif
             call wkvect(knum2, 'V V I', nbordr-nbtrop, jordr3)
             indi=0
-            do 778,i=1,nbordr
-            itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
-            if (itrou .gt. 0) then
-                indi=indi+1
-                zi(jordr3-1+indi)= zi(jordr2-1+i)
-            endif
-778          continue
+            do 778 i = 1, nbordr
+                itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
+                if (itrou .gt. 0) then
+                    indi=indi+1
+                    zi(jordr3-1+indi)= zi(jordr2-1+i)
+                endif
+778         continue
             call jedetr(knum)
             call jedupo(knum2, 'V', knum, .false._1)
             call jedetr(knum2)
@@ -461,11 +462,11 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
         verifi=.false.
         call jeveuo(knum, 'L', jordr2)
-        do 779,i=1,nbordr-1
-        if (zi(jordr2-1+i) .gt. zi(jordr2+i)) then
-            verifi=.true.
-        endif
-779      continue
+        do 779 i = 1, nbordr-1
+            if (zi(jordr2-1+i) .gt. zi(jordr2+i)) then
+                verifi=.true.
+            endif
+779     continue
         if (verifi) then
             call ordis(zi(jordr2), nbordr)
         endif

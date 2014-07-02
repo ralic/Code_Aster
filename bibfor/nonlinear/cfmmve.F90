@@ -19,6 +19,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apcalc.h"
 #include "asterfort/assert.h"
@@ -61,7 +62,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
     integer :: ifm, niv
     character(len=19) :: sdappa, oldgeo, newgeo, depplu
-    logical(kind=1) :: lctcc, lctcd, lallv
+    aster_logical :: lctcc, lctcd, lallv
     character(len=24) :: jeux, loca, enti, zone
     integer :: npt
 !
@@ -128,10 +129,12 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
     if (lctcc) then
         call mmveri(noma, defico, resoco, newgeo, sdappa,&
-                    npt, jeux, loca, enti, zone, instan)
+                    npt, jeux, loca, enti, zone,&
+                    instan)
     else if (lctcd) then
         call cfveri(noma, defico, resoco, newgeo, sdappa,&
-                    npt, jeux, loca, enti, zone, instan)
+                    npt, jeux, loca, enti, zone,&
+                    instan)
     else
         ASSERT(.false.)
     endif
@@ -142,7 +145,8 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! --- SAUVEGARDE DANS LA SD RESULTAT
 !
-    call cfmmvs(defico, resoco, npt, jeux, loca, zone)
+    call cfmmvs(defico, resoco, npt, jeux, loca,&
+                zone)
 !
 ! --- NETTOYAGE
 !

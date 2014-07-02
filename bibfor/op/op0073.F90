@@ -21,6 +21,7 @@ subroutine op0073()
 !     DEFINITION D UN OBSTACLE DE CHOC DISCRETISE PAR FACETTES
 !
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8dgrd.h"
@@ -49,7 +50,7 @@ subroutine op0073()
     integer :: ifm, niv
     real(kind=8) :: r8bid, rad
     complex(kind=8) :: cbid
-    logical(kind=1) :: crprol
+    aster_logical :: crprol
 !     ------------------------------------------------------------------
     data nopara / 'LIEU'    , 'TYPE'    , 'FONCTION' /
     data typara / 'K8'      , 'K24'     , 'K24'      /
@@ -104,7 +105,7 @@ subroutine op0073()
             do 10 i = 1, nbpair
                 zr(lval-1+i) = zr(idtemp+2*(i-1)) * rad
                 zr(lfon-1+i) = zr(idtemp+2*(i-1)+1)
-10          continue
+ 10         continue
         endif
 !
 ! --- CAS CERCLE, PLAN... SEUL LE .REFO ETAIT PRODUIT DANS L'ANCIENNE SD

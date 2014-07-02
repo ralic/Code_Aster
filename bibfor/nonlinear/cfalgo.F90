@@ -20,7 +20,8 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/algocg.h"
 #include "asterfort/algocl.h"
@@ -40,7 +41,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    logical(kind=1) :: ctcfix
+    aster_logical :: ctcfix
     character(len=8) :: noma
     real(kind=8) :: resigr
     integer :: iterat
@@ -83,7 +84,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
     integer :: ifm, niv
     integer :: icont, ifrot, ndimg
-    logical(kind=1) :: lgliss
+    aster_logical :: lgliss
 !
 ! ----------------------------------------------------------------------
 !

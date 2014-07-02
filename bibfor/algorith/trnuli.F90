@@ -1,5 +1,6 @@
 subroutine trnuli(itab, nblig, nbcol, icol, nures)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,28 +39,21 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: itab(nblig, nbcol), icol(nbcol)
-    logical(kind=1) :: ok
-!
-!-----------------------------------------------------------------------
-!     DATA
-!-----------------------------------------------------------------------
-!
-!
-!-----------------------------------------------------------------------
     integer :: i, j, nbcol, nblig, nures
+    integer :: itab(nblig, nbcol), icol(nbcol)
+    aster_logical :: ok
 !-----------------------------------------------------------------------
     i=0
     nures=0
 !
-10  continue
+ 10 continue
     i=i+1
 !
     ok=.true.
 !
     do 20 j = 1, nbcol
         if (itab(i,j) .ne. icol(j)) ok=.false.
-20  end do
+ 20 end do
 !
     if (ok) then
         nures=i
@@ -73,5 +67,5 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
     endif
 !
 !
-9999  continue
+9999 continue
 end subroutine

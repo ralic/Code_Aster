@@ -16,6 +16,7 @@ subroutine rcfode(ifon, temp, f, df)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     integer :: ifon
@@ -33,7 +34,7 @@ subroutine rcfode(ifon, temp, f, df)
 !
 !
     integer :: jpro, jvalf, jv, jp, nbvf
-    logical(kind=1) :: tesinf, tessup, entre, deja, avant
+    aster_logical :: tesinf, tessup, entre, deja, avant
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !
@@ -92,8 +93,8 @@ subroutine rcfode(ifon, temp, f, df)
                     isave = jp-jvalf
                     goto 5
                 endif
- 8          continue
- 5          continue
+  8         continue
+  5         continue
         else
             do 9 jp = ideb, ifin, incr
                 jv = jp + nbvf
@@ -103,8 +104,8 @@ subroutine rcfode(ifon, temp, f, df)
                     isave = jp-jvalf+1
                     goto 6
                 endif
- 9          continue
- 6          continue
+  9         continue
+  6         continue
         endif
     else if (tesinf) then
         jv = jvalf+nbvf
@@ -135,8 +136,8 @@ subroutine rcfode(ifon, temp, f, df)
         endif
         isave = nbvf - 1
     endif
-100  continue
+100 continue
     zi(ifon+indfct) = isave
-101  continue
+101 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

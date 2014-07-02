@@ -1,9 +1,10 @@
 function dmadp2(rho22, sat, phi, cs, mamolg,&
                 kh, dp21p2, emmag, em)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: rho22, sat, phi, cs, mamolg, kh, dp21p2, dmadp2
     real(kind=8) :: dphip2, em
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 !
 ! ======================================================================

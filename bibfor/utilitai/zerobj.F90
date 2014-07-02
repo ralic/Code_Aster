@@ -1,8 +1,7 @@
 function zerobj(obj)
     implicit none
-    logical(kind=1) :: zerobj
+#include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jaexin.h"
 #include "asterfort/jedema.h"
@@ -11,6 +10,7 @@ function zerobj(obj)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+    aster_logical :: zerobj
     character(len=*) :: obj
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -65,13 +65,13 @@ function zerobj(obj)
         call jelira(obj2, 'LONMAX', long)
 !
         if (typsca .eq. 'R') then
-            do 2, j=1,long
-            if (zr(jval-1+j) .ne. 0.d0) goto 9998
- 2          continue
+            do 2 j = 1, long
+                if (zr(jval-1+j) .ne. 0.d0) goto 9998
+  2         continue
         else
-            do 3, j=1,long
-            if (zc(jval-1+j) .ne. (0.d0,0.d0)) goto 9998
- 3          continue
+            do 3 j = 1, long
+                if (zc(jval-1+j) .ne. (0.d0,0.d0)) goto 9998
+  3         continue
         endif
     endif
 !
@@ -81,35 +81,35 @@ function zerobj(obj)
     if (xous .eq. 'X') then
         call jelira(obj2, 'NMAXOC', n)
 !
-        do 10,i=1,n
-        call jeexin(jexnum(obj2, i), iret)
-        if (iret .eq. 0) goto 10
+        do 10 i = 1, n
+            call jeexin(jexnum(obj2, i), iret)
+            if (iret .eq. 0) goto 10
 !         -- SI UN OBJET N'A PAS D'ADRESSE DISQUE, C'EST QU'IL EST NUL :
 !            (CELA PEUT ARRIVER SI PARALLELISME='GROUP_ELEM')
-        call jaexin(jexnum(obj2, i), iexi)
-        if (iexi .eq. 0) goto 10
-        call jeveuo(jexnum(obj2, i), 'L', jval)
-        call jelira(jexnum(obj2, i), 'LONMAX', long)
+            call jaexin(jexnum(obj2, i), iexi)
+            if (iexi .eq. 0) goto 10
+            call jeveuo(jexnum(obj2, i), 'L', jval)
+            call jelira(jexnum(obj2, i), 'LONMAX', long)
 !
-        if (typsca .eq. 'R') then
-            do 20, j=1,long
-            if (zr(jval-1+j) .ne. 0.d0) goto 9998
-20          continue
-        else
-            do 30, j=1,long
-            if (zc(jval-1+j) .ne. (0.d0,0.d0)) goto 9998
-30          continue
-        endif
-10      continue
+            if (typsca .eq. 'R') then
+                do 20 j = 1, long
+                    if (zr(jval-1+j) .ne. 0.d0) goto 9998
+ 20             continue
+            else
+                do 30 j = 1, long
+                    if (zc(jval-1+j) .ne. (0.d0,0.d0)) goto 9998
+ 30             continue
+            endif
+ 10     continue
     endif
 !
 !
 !
     goto 9999
-9998  continue
+9998 continue
     zerobj=.false.
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end function

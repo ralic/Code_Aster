@@ -22,6 +22,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dinuar.h"
@@ -87,7 +88,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
     integer :: numarc
     real(kind=8) :: instam, instan
     character(len=8) :: k8bid
-    logical(kind=1) :: force, lprint
+    aster_logical :: force, lprint
     character(len=19) :: k19bid
     character(len=4) :: etcalc
     integer :: numrep
@@ -171,7 +172,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
                     numarc, force)
     endif
 !
-999  continue
+999 continue
 !
 ! --- FIN MESURE TEMPS
 !

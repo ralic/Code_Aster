@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                       resufr, resufk, lamor, ktyp, lns)
@@ -27,6 +29,6 @@ interface
         character(len=*) :: resufk(mxfreq, *)
         integer :: lamor
         character(len=1) :: ktyp
-        logical(kind=1) :: lns
+        aster_logical :: lns
     end subroutine vpwecf
 end interface

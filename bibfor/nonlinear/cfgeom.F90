@@ -19,7 +19,8 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfappa.h"
 #include "asterfort/cfimp4.h"
@@ -31,7 +32,7 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 #include "asterfort/nmtime.h"
 #include "asterfort/reajeu.h"
     integer :: iterat
-    logical(kind=1) :: reageo
+    aster_logical :: reageo
     character(len=8) :: noma
     character(len=24) :: defico, resoco, sdtime, sdstat
     character(len=19) :: depplu

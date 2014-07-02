@@ -1,5 +1,5 @@
 subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
-                  vint, ier, tinit, intitu, noecho, &
+                  vint, ier, tinit, intitu, noecho,&
                   reprise, accgen)
 !
 ! ======================================================================
@@ -19,16 +19,8 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-    character(len=8) :: basemo
-    integer :: nbmode, nbchoc
-    real(kind=8) :: depgen(*), vitgen(*), vint(*)
-    integer :: ier
-    real(kind=8) :: tinit
-    character(len=8), optional, intent(in) :: intitu(*), noecho(nbchoc,*)
-    logical(kind=1), optional, intent(out) :: reprise
-    real(kind=8), optional, intent(out) :: accgen(*)
-!
+   implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/extrac.h"
@@ -41,6 +33,15 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/utmess.h"
+    character(len=8) :: basemo
+    integer :: nbmode, nbchoc
+    real(kind=8) :: depgen(*), vitgen(*), vint(*)
+    integer :: ier
+    real(kind=8) :: tinit
+    character(len=8), optional, intent(in) :: intitu(*), noecho(nbchoc, *)
+    aster_logical, optional, intent(out) :: reprise
+    real(kind=8), optional, intent(out) :: accgen(*)
+!
 !
 ! DONNEES INITIALES
 !
@@ -54,11 +55,11 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !                 EST DANS UN CAS  DE REPRISE)
 ! OUT : IER    : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
-    integer :: im,   ic
+    integer :: im, ic
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
 ! --------------------------------------------------------------------------------------------------
-    integer ::  jdesc,  jrefe, jvint,   n1
+    integer :: jdesc, jrefe, jvint, n1
     integer :: nbinst, nc, ni, np, nt, nbvint, nbchoc0
     real(kind=8) :: prec
     integer :: vmessi(2)
@@ -74,7 +75,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     ier = 0
-    if ( present(reprise) ) reprise = .false.
+    if (present(reprise)) reprise = .false.
 !
 !     --- DEPLACEMENT ---
     call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=nomdep, nbret=n1)
@@ -124,27 +125,26 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !       récupération du descripteur
         call jeveuo(tran//'           .DESC', 'L', jdesc)
         nbchoc0 = zi(jdesc+2)
-        if ( nbchoc0 .ne. nbchoc ) then
+        if (nbchoc0 .ne. nbchoc) then
             vmessi(1) = nbchoc0
             vmessi(2) = nbchoc
-            call utmess('F', 'ALGORITH5_82',ni=2,vali=vmessi)
+            call utmess('F', 'ALGORITH5_82', ni=2, vali=vmessi)
         endif
-        if ( nbchoc .ne. 0 ) then
+        if (nbchoc .ne. 0) then
             ASSERT( present(intitu) .and. present(noecho) )
 !           récupération des données sur les dipositifs de choc (cf mdallo)
             call jeveuo(tran//'           .INTI', 'L', vk8=inti)
             call jeveuo(tran//'           .NCHO', 'L', vk8=ncho)
-            do ic = 1 , nbchoc
-                if ( (inti(ic).ne.intitu(ic)).or. &
-                     (ncho(ic).ne.noecho(ic,1)).or. &
-                     (ncho(1+nbchoc+ic-1).ne.noecho(ic,5)) ) then
+            do ic = 1, nbchoc
+                if ((inti(ic).ne.intitu(ic)) .or. (ncho(ic).ne.noecho(ic,1)) .or.&
+                    (ncho(1+nbchoc+ic-1).ne.noecho(ic,5))) then
                     vmessk(1)=inti(ic)
                     vmessk(2)=intitu(ic)
                     vmessk(3)=ncho(ic)
                     vmessk(4)=noecho(ic,1)
                     vmessk(5)=ncho(1+nbchoc+ic-1)
                     vmessk(6)=noecho(ic,5)
-                    call utmess('F', 'ALGORITH5_83',nk=6,valk=vmessk)
+                    call utmess('F', 'ALGORITH5_83', nk=6, valk=vmessk)
                 endif
             enddo
         endif
@@ -173,7 +173,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             call utmess('F', 'ALGORITH5_47')
         endif
 !       Accelération
-        if ( present(accgen) ) then
+        if (present(accgen)) then
             call jeveuo(tran//'           .ACCE', 'E', vr=acce)
             inter = 'NON'
             call extrac(inter, prec, crit, nbinst, disc,&
@@ -193,7 +193,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                 call utmess('F', 'ALGORITH5_48')
             endif
         endif
-        if ( present(reprise) ) reprise = .true.
+        if (present(reprise)) reprise = .true.
     endif
 !
     call jedema()

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xprtor(method, model, noma, cnxinv, fispre,&
                       fiss, vcn, grlr, cnsln, grln,&
@@ -33,7 +35,7 @@ interface
         character(len=19) :: grln
         character(len=19) :: cnslt
         character(len=19) :: grlt
-        logical(kind=1) :: tore
+        aster_logical :: tore
         real(kind=8) :: radtor
         real(kind=8) :: radimp
         character(len=19) :: cnsdis

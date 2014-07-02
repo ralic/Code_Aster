@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine erglob(cheler, yathm, perman, option, iord,&
                       resuco, resuc1)
         character(len=*) :: cheler
-        logical(kind=1) :: yathm
-        logical(kind=1) :: perman
+        aster_logical :: yathm
+        aster_logical :: perman
         character(len=*) :: option
         integer :: iord
         character(len=*) :: resuco

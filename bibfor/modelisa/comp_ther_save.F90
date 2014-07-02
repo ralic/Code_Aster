@@ -2,6 +2,7 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -58,7 +59,7 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
     character(len=16) :: rela_comp
     integer :: nb_vari
     character(len=16) :: keywordfact
-    logical(kind=1) :: l_affe_all
+    aster_logical :: l_affe_all
     integer, pointer :: vali(:) => null()
     character(len=16), pointer :: valv(:) => null()
     character(len=24), pointer :: valk(:) => null()
@@ -89,12 +90,12 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
 ! ----- Get options
 !
-        nb_vari   = vali(1)
+        nb_vari = vali(1)
         rela_comp = valk(1)(1:16)
 !
 ! ----- Set options in COMPOR <CARTE>
 !
-        valv(1)  = rela_comp
+        valv(1) = rela_comp
         write (valv(2),'(I16)') nb_vari
 !
 ! ----- Get mesh
@@ -104,9 +105,9 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
             l_affe_all = .true.
         else
             l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
+            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                         2, motcle(1), typmcl(1), list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe.eq.0) l_affe_all = .true.
+            if (nb_elem_affe .eq. 0) l_affe_all = .true.
         endif
 !
 ! ----- Affect in COMPOR <CARTE>
@@ -125,4 +126,3 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
     call jedetr(compor//'.VALV')
 !
 end subroutine
-

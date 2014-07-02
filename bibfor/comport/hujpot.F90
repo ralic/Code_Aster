@@ -35,6 +35,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 !                    IRET=0 => PAS DE PROBLEME
 !                    IRET=1 => ECHEC
 !   ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujcdc.h"
 #include "asterfort/hujcic.h"
@@ -61,7 +62,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
     real(kind=8) :: e1, e2, e3, nu12, nu13, nu23, g1, g2, g3, nu21, nu31, nu32
     real(kind=8) :: delta
     real(kind=8) :: piso
-    logical(kind=1) :: debug, prox, rdctps, aredec, bid
+    aster_logical :: debug, prox, rdctps, aredec, bid
     character(len=7) :: etatf
     character(len=8) :: mod
     real(kind=8) :: vinm(50), seuilm
@@ -84,7 +85,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
     do 10 i = 1, ndt
         deps(i) = depsh(i)
         if (abs(deps(i)) .lt. r8prem()) deps(i)=zero
-10  continue
+ 10 continue
     elas = 0
     rdctps = .false.
 !
@@ -100,7 +101,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
             vinm(4*i+8) = vind(5*i+34)
             vinm(i+4) = vind(5*i+35)
         endif
-50  continue
+ 50 continue
 !
 ! ====================================================================
 ! --- PROPRIETES MATERIAU HUJEUX -------------------------------------
@@ -117,16 +118,16 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
     do 14 i = 1, 7
         mono(i) = 0
         indi(i) = 0
-14  continue
+ 14 continue
     do 15 i = 1, 4
         hist(i,1) = 0
         hist(i,2) = 0
         mono(i) = i
-15  continue
+ 15 continue
     do 25 i = 1, ndt
         ye(i) = sige(i)
         yd(i) = sigd(i)
-25  continue
+ 25 continue
     ye(ndt+1) = vind(23)
     yd(ndt+1) = vind(23)
 !
@@ -150,10 +151,10 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
                 do 30 j = 1, ndi
                     if (i .eq. j) hooknl(i,j) = al
                     if (i .ne. j) hooknl(i,j) = la
-30              continue
+ 30             continue
             do 35 i = ndi+1, ndt
                 hooknl(i,i) = demu
-35          continue
+ 35         continue
 !
         else if (mater(17,1).eq.deux) then
 !
@@ -249,7 +250,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
         actif = zero
         do 45 jj = 1, ndt
             actif = actif + dsig(jj)*dfds(jj)
-45      continue
+ 45     continue
 !
         actif = actif/mater(1,1)
         charge = -un
@@ -274,7 +275,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
             charge = zero
             do 46 jj = 1, ndt
                 charge = charge + dsig(jj)*dfds(jj)
-46          continue
+ 46         continue
             charge = charge/mater(1,1)
         endif
 !
@@ -460,7 +461,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
             endif
         endif
 !
-400  continue
+400 continue
 !
 !
 ! ======================================================================
@@ -472,6 +473,6 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
         etatf = 'PLASTIC'
     endif
 !
-999  continue
+999 continue
     if (debug) write(6,*)'FIN - VIND=',(vind(23+i),i=1,8)
 end subroutine

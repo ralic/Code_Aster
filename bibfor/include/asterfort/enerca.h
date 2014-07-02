@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
                       masse, amort, rigid, fexte, famor,&
@@ -33,9 +35,9 @@ interface
         real(kind=8) :: fliai(*)
         real(kind=8) :: fnoda(*)
         real(kind=8) :: fcine(*)
-        logical(kind=1) :: lamort
-        logical(kind=1) :: ldyna
-        logical(kind=1) :: lexpl
+        aster_logical :: lamort
+        aster_logical :: ldyna
+        aster_logical :: lexpl
         character(len=19) :: sdener
         character(len=8) :: schema
     end subroutine enerca

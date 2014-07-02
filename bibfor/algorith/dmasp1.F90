@@ -1,9 +1,10 @@
 function dmasp1(rho11, rho12, rho21, sat, dsatp1,&
                 phi, cs, pas, emmag, em)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: rho11, rho12, rho21, sat, dsatp1, phi, cs, pas, dmasp1
     real(kind=8) :: em, dphip1
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 !
 ! ======================================================================

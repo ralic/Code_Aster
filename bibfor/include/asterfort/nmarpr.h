@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
                       numarc)
         character(len=8) :: result
         character(len=19) :: sddisc
-        logical(kind=1) :: lreuse
+        aster_logical :: lreuse
         integer :: numder
         real(kind=8) :: insder
         integer :: numarc

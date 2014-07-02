@@ -16,6 +16,7 @@ subroutine te0447(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -35,15 +36,15 @@ subroutine te0447(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: kpg, ksig, nno, nnos, npg, ipoids, ivf, ndim, ncmp
     integer :: idfde, idepl, igeom, idefo, kk, jgano
     real(kind=8) :: poids, dfdi(81), f(3, 3), r, eps(6), vpg(36)
     real(kind=8) :: tmp
 ! ......................................................................
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     ncmp = 2*ndim
     axi = lteatt('AXIS','OUI')
@@ -70,12 +71,12 @@ subroutine te0447(option, nomte)
                 tmp = sqrt(2.d0)
             endif
             vpg(ncmp*(kpg-1)+ksig)=eps(ksig)/tmp
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 !     AFFECTATION DU VECTEUR EN SORTIE
     do 30 kk = 1, npg*ncmp
         zr(idefo+kk-1)= vpg(kk)
-30  end do
+ 30 end do
 !
 end subroutine

@@ -19,6 +19,7 @@ subroutine cacoco(char, motfac, noma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -59,20 +60,20 @@ subroutine cacoco(char, motfac, noma)
 !
 !
     integer :: iret, noc, nbnma, iacnex
-    integer ::  icesd, icesl,  npmax
+    integer :: icesd, icesl, npmax
     integer :: rangr0, rangr1, iad1
     integer :: nzoco, nbmae
     integer :: posmae, nummae
     integer :: jdecme
     integer :: izone, imae, nmaco
     real(kind=8) :: ep, exc
-    logical(kind=1) :: ya
+    aster_logical :: ya
     character(len=8) :: carael, nommae
     character(len=24) :: defico
     character(len=24) :: contma, jeucoq
     integer :: jmaco, jjcoq
     character(len=19) :: carsd, carte
-    logical(kind=1) :: ldcoq
+    aster_logical :: ldcoq
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !
@@ -108,7 +109,7 @@ subroutine cacoco(char, motfac, noma)
                 ASSERT(.false.)
             endif
         endif
-10  end do
+ 10 end do
 !
     if (.not. ya) then
         goto 999
@@ -177,13 +178,13 @@ subroutine cacoco(char, motfac, noma)
 ! --- STOCKAGE
 !
                 zr(jjcoq+posmae-1) = 0.5d0 * ep
-30          continue
+ 30         continue
         endif
-20  end do
+ 20 end do
 !
     call detrsd('CHAM_ELEM_S', carsd)
 !
-999  continue
+999 continue
 !
     call jedema()
 !

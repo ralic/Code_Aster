@@ -2,6 +2,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                   rval, kval, cval, epsi, crit,&
                   nbordr, nbtrou, nutrou, ndim)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     integer :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
@@ -53,7 +54,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
 !                   RENDANT NBTROU = - NBTROU
 ! ----------------------------------------------------------------------
     character(len=8) :: crit2
-    logical(kind=1) :: depass, trouve
+    aster_logical :: depass, trouve
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -87,7 +88,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-10      continue
+ 10     continue
     else if (tysca(1:1).eq.'I') then
         do 20 i = 1, nbordr
             if (zi(iaobj+(i-1)*paobj) .eq. ival) then
@@ -98,7 +99,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-20      continue
+ 20     continue
     else if (tysca.eq.'K8  ') then
         do 30 i = 1, nbordr
             if (zk8(iaobj+(i-1)*paobj) .eq. kval) then
@@ -109,7 +110,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-30      continue
+ 30     continue
     else if (tysca.eq.'K16 ') then
         do 40 i = 1, nbordr
             if (zk16(iaobj+(i-1)*paobj) .eq. kval) then
@@ -120,7 +121,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-40      continue
+ 40     continue
     else if (tysca.eq.'K24 ') then
         do 50 i = 1, nbordr
             if (zk24(iaobj+(i-1)*paobj) .eq. kval) then
@@ -131,7 +132,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-50      continue
+ 50     continue
     else if (tysca.eq.'K32 ') then
         do 60 i = 1, nbordr
             if (zk32(iaobj+(i-1)*paobj) .eq. kval) then
@@ -142,7 +143,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-60      continue
+ 60     continue
     else if (tysca.eq.'K80 ') then
         do 70 i = 1, nbordr
             if (zk80(iaobj+(i-1)*paobj) .eq. kval) then
@@ -153,7 +154,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-70      continue
+ 70     continue
     else if (tysca(1:1).eq.'C') then
         do 80 i = 1, nbordr
             if (crit2(1:4) .eq. 'RELA') then
@@ -179,7 +180,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     depass = .true.
                 endif
             endif
-80      continue
+ 80     continue
     else
         call utmess('F', 'UTILITAI4_33', sk=tysca)
     endif

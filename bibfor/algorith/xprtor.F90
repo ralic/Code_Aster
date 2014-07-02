@@ -6,6 +6,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -33,7 +34,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     character(len=19) :: cnsln, grln, cnslt, grlt, nodcal, elecal, cnsdis, disfr
     character(len=19) :: cnsbl, cnxinv, liggrd
     character(len=24) :: vcn, grlr, vcnt, grlrt
-    logical(kind=1) :: tore
+    aster_logical :: tore
     real(kind=8) :: radtor, radimp
 !
 ! ======================================================================
@@ -123,8 +124,8 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
 !     TORUS
     integer :: jlisno, nnodgr, jnocal, jdisfr, nnodto, nbelno, jnoel
-    integer :: jconx2, nocur, numelm,  itypma, nbma, jelcal, neleto, jeleca
-    integer :: jaux,  nodins
+    integer :: jconx2, nocur, numelm, itypma, nbma, jelcal, neleto, jeleca
+    integer :: jaux, nodins
     integer :: jndsup
     character(len=19) :: listel
     real(kind=8) :: rdnew

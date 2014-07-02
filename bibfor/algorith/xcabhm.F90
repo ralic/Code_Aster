@@ -66,12 +66,13 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 !
 ! =====================================================================================
 ! =====================================================================================
-#   include "asterfort/dfdm2d.h"
-#   include "asterfort/dfdm3d.h"
-#   include "asterfort/matini.h"
-#   include "asterfort/assert.h"
-#   include "jeveux.h"
-    logical(kind=1) :: axi
+#include "asterf_types.h"
+# include "asterfort/dfdm2d.h"
+# include "asterfort/dfdm3d.h"
+# include "asterfort/matini.h"
+# include "asterfort/assert.h"
+# include "jeveux.h"
+    aster_logical :: axi
     integer :: nddls, nddlm, nmec, np1, ndim, nnop, i, n, kk, yamec
     integer :: nnops, nnopm, kpi, dimuel
     integer :: addeme, yap1, addep1
@@ -80,7 +81,7 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: ff(nnop), ff2(nnops)
     real(kind=8) :: b(dimenr, dimuel), rac, r, rmax, geom(ndim, nnop)
-    real(kind=8) :: rbid1(nno), rbid2(nno),rbid3(nno)
+    real(kind=8) :: rbid1(nno), rbid2(nno), rbid3(nno)
     real(kind=8) :: he, poids, coorse(81)
 ! ======================================================================
 ! --- CALCUL DE CONSTANTES UTILES --------------------------------------
@@ -96,11 +97,11 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! ======================================================================
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
     if (ndim .eq. 2) then
-    call dfdm2d(nno, kpi, ipoids, idfde, coorse,&
-                poids, rbid1, rbid2)
-    else if (ndim .eq. 3) then    
-    call dfdm3d(nno, kpi,ipoids, idfde, coorse, &
-                poids, rbid1, rbid2, rbid3)
+        call dfdm2d(nno, kpi, ipoids, idfde, coorse,&
+                    poids, rbid1, rbid2)
+    else if (ndim .eq. 3) then
+        call dfdm3d(nno, kpi, ipoids, idfde, coorse,&
+                    poids, rbid1, rbid2, rbid3)
     endif
 ! ======================================================================
 ! --- MODIFICATION DU POIDS POUR LES MODELISATIONS AXIS ----------------
@@ -164,23 +165,23 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 !
             b(addeme+ndim+3,(n-1)*nddls+2)= b(addeme+ndim+3,(n-1)*&
             nddls+2)+dfdi(n,1)/rac
-         
+!
             if (ndim .eq. 3) then
 ! ======================================================================
 ! --- CALCUL DE EPSXZ --------------------------------------------------
 ! ======================================================================
-            b(addeme+ndim+4,(n-1)*nddls+1)= b(addeme+ndim+4,(n-1)*&
+                b(addeme+ndim+4,(n-1)*nddls+1)= b(addeme+ndim+4,(n-1)*&
             nddls+1)+dfdi(n,3)/rac
 !
-            b(addeme+ndim+4,(n-1)*nddls+3)= b(addeme+ndim+4,(n-1)*&
+                b(addeme+ndim+4,(n-1)*nddls+3)= b(addeme+ndim+4,(n-1)*&
             nddls+3)+dfdi(n,1)/rac
 ! ======================================================================
 ! --- CALCUL DE EPSYZ --------------------------------------------------
 ! ======================================================================
-            b(addeme+ndim+5,(n-1)*nddls+2)= b(addeme+ndim+5,(n-1)*&
+                b(addeme+ndim+5,(n-1)*nddls+2)= b(addeme+ndim+5,(n-1)*&
             nddls+2)+dfdi(n,3)/rac
 !
-            b(addeme+ndim+5,(n-1)*nddls+3)= b(addeme+ndim+5,(n-1)*&
+                b(addeme+ndim+5,(n-1)*nddls+3)= b(addeme+ndim+5,(n-1)*&
             nddls+3)+dfdi(n,2)/rac
             endif
         endif
@@ -226,16 +227,16 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
             n-1)*nddls+nmec+np1+2)+he*dfdi(n,1)/rac
 !
             if (ndim .eq. 3) then
-            b(adenme+ndim+4,(n-1)*nddls+nmec+np1+1)= b(adenme+ndim+4,(&
+                b(adenme+ndim+4,(n-1)*nddls+nmec+np1+1)= b(adenme+ndim+4,(&
             n-1)*nddls+nmec+np1+1)+he*dfdi(n,3)/rac
 !
-            b(adenme+ndim+4,(n-1)*nddls+nmec+np1+3)= b(adenme+ndim+4,(&
+                b(adenme+ndim+4,(n-1)*nddls+nmec+np1+3)= b(adenme+ndim+4,(&
             n-1)*nddls+nmec+np1+3)+he*dfdi(n,1)/rac
 !
-            b(adenme+ndim+5,(n-1)*nddls+nmec+np1+2)= b(adenme+ndim+5,(&
+                b(adenme+ndim+5,(n-1)*nddls+nmec+np1+2)= b(adenme+ndim+5,(&
             n-1)*nddls+nmec+np1+2)+he*dfdi(n,3)/rac
 !
-            b(adenme+ndim+5,(n-1)*nddls+nmec+np1+3)= b(adenme+ndim+5,(&
+                b(adenme+ndim+5,(n-1)*nddls+nmec+np1+3)= b(adenme+ndim+5,(&
             n-1)*nddls+nmec+np1+3)+he*dfdi(n,2)/rac
             endif
         endif
@@ -282,18 +283,18 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! ======================================================================
 ! --- CALCUL DE EPSXZ POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
-            b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+1)= b(addeme+ndim+&
+                b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+1)= b(addeme+ndim+&
             4,nnops*nddls+(n-1)*nddlm+1) +dfdi(n+nnops,3)/rac
 !
-            b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+3)= b(addeme+ndim+&
+                b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+3)= b(addeme+ndim+&
             4,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,1)/rac
 ! ======================================================================
 ! --- CALCUL DE EPSYZ POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
-            b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+2)= b(addeme+ndim+&
+                b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+2)= b(addeme+ndim+&
             5,nnops*nddls+(n-1)*nddlm+2) +dfdi(n+nnops,3)/rac
 !
-            b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+3)= b(addeme+ndim+&
+                b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+3)= b(addeme+ndim+&
             5,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,2)/rac
             endif
         endif
@@ -332,19 +333,19 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
             /rac
 !
             if (ndim .eq. 3) then
-            b(adenme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+1)= b(adenme+&
+                b(adenme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+1)= b(adenme+&
             ndim+4,nnops*nddls+(n-1)*nddlm+nmec+1) +he*dfdi(n+nnops,3)&
             /rac
 !
-            b(adenme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+3)= b(adenme+&
+                b(adenme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+3)= b(adenme+&
             ndim+4,nnops*nddls+(n-1)*nddlm+nmec+3) +he*dfdi(n+nnops,1)&
             /rac
 !
-            b(adenme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+2)= b(adenme+&
+                b(adenme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+2)= b(adenme+&
             ndim+5,nnops*nddls+(n-1)*nddlm+nmec+2) +he*dfdi(n+nnops,3)&
             /rac
 !
-            b(adenme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+3)= b(adenme+&
+                b(adenme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+3)= b(adenme+&
             ndim+5,nnops*nddls+(n-1)*nddlm+nmec+3) +he*dfdi(n+nnops,2)&
             /rac
             endif

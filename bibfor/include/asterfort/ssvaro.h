@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
                       iadm1, iadm2)
         real(kind=8) :: l(6, 6)
         character(len=*) :: sens
-        logical(kind=1) :: matrix
+        aster_logical :: matrix
         character(len=4) :: typnoe
         character(len=8) :: nomacr
         integer :: iadm1

@@ -20,6 +20,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -30,7 +31,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: numini, numfin, nbtemp
-    logical(kind=1) :: linsti
+    aster_logical :: linsti
     real(kind=8) :: instin
     character(len=19) :: provli
     character(len=19) :: sddisc
@@ -93,7 +94,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
     do 20 i = numini, numfin
         zr(jtemps+pos) = zr(jinst+i)
         pos = pos+1
-20  end do
+ 20 end do
 !
 ! --- NOUVEL INTERVALLE DE TEMPS MINIMAL : DTMIN
 !
@@ -101,7 +102,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
     do 25 i = 1, nbtemp-1
         deltat = zr(jtemps-1+i+1) - zr(jtemps-1+i)
         dtmin = min(deltat,dtmin)
-25  end do
+ 25 end do
 !
 ! --- SI L'INSTANT INITIAL N'EXISTAIT PAS DANS LA LISTE D'INSTANTS
 ! --- ON A PRIS PLUS HAUT L'INSTANT LE PLUS PROCHE PRECEDENT : ICI

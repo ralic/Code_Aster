@@ -18,6 +18,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -149,8 +150,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
     character(len=24) :: liscns
     character(len=6) :: ligcal, nomcar
     integer :: jlisci, jlisck
-    logical(kind=1) :: lfirst, ldoub
-    logical(kind=1) :: lveas, lveac, lveag
+    aster_logical :: lfirst, ldoub
+    aster_logical :: lveas, lveac, lveag
     character(len=13) :: prefob
 !
 ! --- OBJETS DEFINISSANT LES CHARGEMENTS: ON NE MET QUE CEUX DEFINIS

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
                       itemax, epsmax, toleou, dirapp, dir,&
@@ -28,7 +30,7 @@ interface
         integer :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: toleou
-        logical(kind=1) :: dirapp
+        aster_logical :: dirapp
         real(kind=8) :: dir(3)
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

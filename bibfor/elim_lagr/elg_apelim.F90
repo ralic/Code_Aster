@@ -19,6 +19,7 @@ subroutine elg_apelim(kptsc, lqr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 # include "jeveux.h"
 # include "asterc/asmpi_comm.h"
 # include "asterc/getres.h"
@@ -39,7 +40,7 @@ subroutine elg_apelim(kptsc, lqr)
 # include "asterfort/wkvect.h"
 !
     integer :: kptsc
-    logical(kind=1) :: lqr
+    aster_logical :: lqr
 !--------------------------------------------------------------
 ! BUT : calculer (dans PETSC) les matrices nécessaires à
 !       ELIM_LAGR='OUI' :
@@ -65,15 +66,15 @@ subroutine elg_apelim(kptsc, lqr)
     character(len=19) :: nomat, nosolv, rigi1
     character(len=14) :: nonu
     character(len=16) :: concep, nomcmd
-    logical(kind=1) :: lmd, info2
+    aster_logical :: lmd, info2
     PetscInt :: ierr
     PetscInt :: one = 1
     Mat :: c, ct, c2, t, t2, mtemp
     IS :: isfull, islag1, isphys, isred
     IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
-    PetscInt ::  nterm
-    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr, pos, istat 
+    PetscInt :: nterm
+    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr, pos, istat
     integer :: nzrow, valrow, indnz, indcon, indlib, nworkt
     integer :: ctemp, redem, nvcont, nbnvco, ifull, nbred
     integer :: ilig, jcol, ico, kterm, ieq, k, kptscr, ktrou
@@ -217,7 +218,7 @@ subroutine elg_apelim(kptsc, lqr)
 !   -- On extrait la matrice C transposée
     call MatGetSubMatrix(ap(kptscr), isfull, islag1, MAT_INITIAL_MATRIX, melim(ke)%ctrans,&
                          ierr)
-    call ISDestroy(islag1,ierr)
+    call ISDestroy(islag1, ierr)
 !
 !
 !   --On annule les lignes associées a ILAG1 et ILAG2
@@ -234,19 +235,16 @@ subroutine elg_apelim(kptsc, lqr)
     do i1 = 1, nbeq
         zi4(nnzt+i1-1)=1
     end do
-    call MatCreateSeqAIJ(mpicomm, to_petsc_int(nbeq), to_petsc_int(nbeq), &
-                         PETSC_NULL_INTEGER, zi4(nnzt),&
-                         melim(ke)%tfinal, ierr)
+    call MatCreateSeqAIJ(mpicomm, to_petsc_int(nbeq), to_petsc_int(nbeq), PETSC_NULL_INTEGER,&
+                         zi4(nnzt), melim(ke)%tfinal, ierr)
 !
     do i1 = 1, nbeq
         if (delg(i1) .eq. 0) then
-            call MatSetValues(melim(ke)%tfinal, one, [to_petsc_int(i1-1)], &
-                              one, [to_petsc_int(i1-1)],&
-                              [1.d0], INSERT_VALUES, ierr)
+            call MatSetValues(melim(ke)%tfinal, one, [to_petsc_int(i1-1)], one,&
+                              [to_petsc_int(i1-1)], [1.d0], INSERT_VALUES, ierr)
         else
-            call MatSetValues(melim(ke)%tfinal, one, [to_petsc_int(i1-1)], &
-                              one, [to_petsc_int(i1-1)],&
-                              [0.d0], INSERT_VALUES, ierr)
+            call MatSetValues(melim(ke)%tfinal, one, [to_petsc_int(i1-1)], one,&
+                              [to_petsc_int(i1-1)], [0.d0], INSERT_VALUES, ierr)
         endif
     end do
     call MatAssemblyBegin(melim(ke)%tfinal, MAT_FINAL_ASSEMBLY, ierr)
@@ -313,12 +311,12 @@ subroutine elg_apelim(kptsc, lqr)
         call MatDestroy(c, ierr)
 ! On extrait de CT la sous-matrice des contraintes qui n'ont pas été éliminées
 ! On nomme C cette nouvelle matrice des contraintes 
-        call ISCreateGeneral(mpicomm, to_petsc_int(nbnvco), zi4(nvcont), PETSC_USE_POINTER, isnvco,&
-                             ierr)
+        call ISCreateGeneral(mpicomm, to_petsc_int(nbnvco), zi4(nvcont), PETSC_USE_POINTER,&
+                             isnvco, ierr)
         call MatGetSubMatrix(ct, isnvco, isfull, MAT_INITIAL_MATRIX, c,&
                              ierr)
         call MatDestroy(ct, ierr)
-        call ISDestroy(isfull, ierr) 
+        call ISDestroy(isfull, ierr)
         call ISDestroy(isnvco, ierr)
 ! T2 = TFinal 
         call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, t2, ierr)
@@ -326,7 +324,7 @@ subroutine elg_apelim(kptsc, lqr)
 ! TFinal = T2 * T 
         call MatMatMult(t2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION,&
                         melim(ke)%tfinal, ierr)
-! 
+!
         call MatDestroy(t, ierr)
 !
         do i1 = 1, nbnvco
@@ -351,7 +349,7 @@ subroutine elg_apelim(kptsc, lqr)
     call MatDestroy(melim(ke)%tfinal, ierr)
     call MatMatMult(t2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION, melim(ke)%tfinal,&
                     ierr)
-    call MatDestroy(t2,ierr)
+    call MatDestroy(t2, ierr)
 !
 !
 !   -- Verif de la qualite de la base
@@ -364,11 +362,11 @@ subroutine elg_apelim(kptsc, lqr)
 !-- Changement de version PETSc 3.2 -> 3.3 
 !   Renamed MatMatMultTranspose() for C=A^T*B to MatTransposeMatMult()
 #ifdef ASTER_PETSC_VERSION_32
-        call MatMatMultTranspose(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
-                                     PETSC_DEFAULT_DOUBLE_PRECISION, c2, ierr)
+    call MatMatMultTranspose(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX,&
+                             PETSC_DEFAULT_DOUBLE_PRECISION, c2, ierr)
 #else
-    call MatTransposeMatMult(melim(ke)%tfinal,melim(ke)%ctrans,MAT_INITIAL_MATRIX, &
-                           PETSC_DEFAULT_DOUBLE_PRECISION,C2,ierr)
+    call MatTransposeMatMult(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX,&
+                             PETSC_DEFAULT_DOUBLE_PRECISION, C2, ierr)
 #endif
 !
     call MatGetColumnNorms(c2, norm_2, zr(ctemp), ierr)
@@ -379,8 +377,8 @@ subroutine elg_apelim(kptsc, lqr)
         if (info2) write(ifm, '(A11,I3,A3,E11.4)') 'CONTRAINTE ', i1, ' : ',&
                    zr(ctemp+i1-1)/zr(valrow+i1-1)
     end do
-    
-    call MatDestroy(c2,ierr)
+!
+    call MatDestroy(c2, ierr)
 !
 !
 !   -- on "retasse" les matrices Ctrans, Tfinal :
@@ -403,28 +401,28 @@ subroutine elg_apelim(kptsc, lqr)
     AS_ALLOCATE( vr=norm_t, size=nbeq )
     call MatGetColumnNorms(melim(ke)%tfinal, norm_2, norm_t(1), ierr)
     ASSERT( ierr == 0 ) 
-    ! Nombre de colonnes non-nulles de Tfinal 
+! Nombre de colonnes non-nulles de Tfinal 
     nbred=count( norm_t > r8prem()) 
-    ! Le tableau melim(ke)%indred est dans le common elim_lagr.h 
-    ! il n'est pas forcément désalloué à la fin de la commande courante
-    ! -> allocation avec allocate (et pas AS_ALLOCATE)
-    if (nbred > 0 ) then 
-      allocate( melim(ke)%indred(nbred), stat = istat ) 
-      ASSERT( istat == 0 ) 
-    endif   
-    ! Indices FORTRAN des colonnes non-nulles de Tfinal
+! Le tableau melim(ke)%indred est dans le common elim_lagr.h 
+! il n'est pas forcément désalloué à la fin de la commande courante
+! -> allocation avec allocate (et pas AS_ALLOCATE)
+    if (nbred > 0) then
+        allocate( melim(ke)%indred(nbred), stat = istat ) 
+        ASSERT( istat == 0 ) 
+    endif 
+! Indices FORTRAN des colonnes non-nulles de Tfinal
     pos = 0
     do ieq = 1, nbeq
-      if ( norm_t(ieq) > r8prem()) then
-        pos = pos+1  
-        melim(ke)%indred(pos) = ieq
-      endif
+        if (norm_t(ieq) > r8prem()) then
+            pos = pos+1
+            melim(ke)%indred(pos) = ieq
+        endif
     enddo
 !
 !   -- On passe en convention C 
     melim(ke)%indred(:)=melim(ke)%indred(:)-1
-    call ISCreateGeneral(mpicomm, to_petsc_int(nbred), melim(ke)%indred, PETSC_USE_POINTER, isred,&
-                         ierr)
+    call ISCreateGeneral(mpicomm, to_petsc_int(nbred), melim(ke)%indred, PETSC_USE_POINTER,&
+                         isred, ierr)
 !
     call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, mtemp, ierr)
     call MatDestroy(melim(ke)%tfinal, ierr)
@@ -433,7 +431,7 @@ subroutine elg_apelim(kptsc, lqr)
 !     -- on revient aux indices FORTRAN :
     melim(ke)%indred(:)=melim(ke)%indred(:)+1
     call MatDestroy(mtemp, ierr)
-    call ISDestroy(isred,ierr)
+    call ISDestroy(isred, ierr)
 !
 !
 !
@@ -441,7 +439,7 @@ subroutine elg_apelim(kptsc, lqr)
 !   -----------------------------------------
     call MatGetSubMatrix(ap(kptsc), isphys, isphys, MAT_INITIAL_MATRIX, melim(ke)%matb,&
                          ierr)
-    call ISDestroy(isphys,ierr)
+    call ISDestroy(isphys, ierr)
 !
 !
 !   -- Projection T'*(MatB*T) :
@@ -482,7 +480,7 @@ subroutine elg_apelim(kptsc, lqr)
 !-- factorisation QR, sans assembler Q  => RCt
 !--
 !
-    lqr = .false. 
+    lqr = .false.
     if (lqr) then
         call elg_matrqr(melim(ke)%ctrans, melim(ke)%rct, nbphys, nblag)
         melim(ke)%lqr=.true.

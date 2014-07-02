@@ -33,6 +33,7 @@ subroutine calcmd(np1, a, a0, n, m,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/indexx.h"
 #include "asterfort/prmama.h"
 #include "asterfort/trvpmd.h"
@@ -53,7 +54,7 @@ subroutine calcmd(np1, a, a0, n, m,&
     real(kind=8) :: premac, prerel, mtmp1(np1, *), mtmp2(np1, *), ttr(n2, *)
     real(kind=8) :: u(*), w(*), d(*)
     integer :: intge1(*), intge2(*), indx(*), indxf(*)
-    logical(kind=1) :: loc(*)
+    aster_logical :: loc(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -120,8 +121,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 1 j = 1, n
                     do 2 i = 1, n
                         mtmp2(i,j) = a(i,j)
- 2                  continue
- 1              continue
+  2                 continue
+  1             continue
 !
 !............. CONDITIONNEMENT DE LA MATRICE MTMP2
                 call vpzbaa(n, ib, mtmp2, np1, k,&
@@ -131,8 +132,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 3 j = 1, n
                     do 4 i = 1, n
                         mtmp1(i,j) = mtmp2(i,j)
- 4                  continue
- 3              continue
+  4                 continue
+  3             continue
 !
 !............. CALCUL DE LA MATRICE DE HESSENBERG, ECRASEMENT DE MTMP1
                 call vpzhea(n, k, l, mtmp1, np1,&
@@ -142,8 +143,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 5 j = 1, n
                     do 6 i = 1, n
                         mtmp2(i,j) = mtmp1(i,j)
- 6                  continue
- 5              continue
+  6                 continue
+  5             continue
 !
 !............. CALCUL DES VALEURS PROPRES DE LA MATRICE MTMP2
                 call vpzvph(n, eps, prerel, mtmp2, np1,&
@@ -160,7 +161,7 @@ subroutine calcmd(np1, a, a0, n, m,&
                         if (rr(i) .lt. 0.0d0) ineg = 1
                         if (ri(i) .gt. abs(tol*rr(i))) iima = 1
                     endif
-100              continue
+100             continue
 !
                 if (ier .ne. 0) then
 !
@@ -180,11 +181,11 @@ subroutine calcmd(np1, a, a0, n, m,&
 !............. DES VALEURS PROPRES DE LA MATRICE MTMP2)
                 do 7 i = 1, n
                     loc(i) = .false.
- 7              continue
+  7             continue
                 call indexx(n, rr, indx)
                 do 8 i = 1, m
                     loc(indx(i)) = .true.
- 8              continue
+  8             continue
 !
 !............. CALCUL DES M PREMIERS VECTEURS PROPRES
 !............. DE LA MATRICE MTMP1
@@ -215,13 +216,13 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 11 j = 1, n
                     do 12 i = 1, n
                         mtmp1(i,j) = vd(i,indxf(j))
-12                  continue
-11              continue
+ 12                 continue
+ 11             continue
                 do 13 j = 1, n
                     do 14 i = 1, n
                         vd(i,j) = mtmp1(i,j)
-14                  continue
-13              continue
+ 14                 continue
+ 13             continue
 !
 !=======================================================================
 ! 3.           TRANSPOSEE DE LA MATRICE A ET VECTEURS PROPRES
@@ -233,8 +234,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 15 j = 1, n
                     do 16 i = 1, n
                         mtmp2(i,j) = a(j,i)
-16                  continue
-15              continue
+ 16                 continue
+ 15             continue
 !
 !............. CONDITIONNEMENT DE LA MATRICE MTMP2
                 call vpzbaa(n, ib, mtmp2, np1, k,&
@@ -245,8 +246,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 19 j = 1, n
                     do 20 i = 1, n
                         mtmp1(i,j) = mtmp2(i,j)
-20                  continue
-19              continue
+ 20                 continue
+ 19             continue
 !
 !............. CALCUL DE LA MATRICE DE HESSENBERG, ECRASEMENT DE MTMP1
                 call vpzhea(n, k, l, mtmp1, np1,&
@@ -256,8 +257,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 21 j = 1, n
                     do 22 i = 1, n
                         mtmp2(i,j) = mtmp1(i,j)
-22                  continue
-21              continue
+ 22                 continue
+ 21             continue
 !
 !............. CALCUL DES VALEURS PROPRES DE LA MATRICE MTMP2
                 call vpzvph(n, eps, prerel, mtmp2, np1,&
@@ -277,7 +278,7 @@ subroutine calcmd(np1, a, a0, n, m,&
                         if (rr(i) .lt. 0.0d0) ineg = 1
                         if (ri(i) .gt. abs(tol*rr(i))) iima = 1
                     endif
-200              continue
+200             continue
 !
                 if (ier .ne. 0) then
 !
@@ -297,11 +298,11 @@ subroutine calcmd(np1, a, a0, n, m,&
 !............. DES VALEURS PROPRES DE LA MATRICE MTMP2)
                 do 23 i = 1, n
                     loc(i) = .false.
-23              continue
+ 23             continue
                 call indexx(n, rr, indx)
                 do 24 i = 1, m
                     loc(indx(i)) = .true.
-24              continue
+ 24             continue
 !
 !............. CALCUL DES M PREMIERS VECTEURS PROPRES
 !............. DE LA MATRICE MTMP1
@@ -332,20 +333,20 @@ subroutine calcmd(np1, a, a0, n, m,&
                 do 27 j = 1, n
                     do 28 i = 1, n
                         mtmp2(i,j) = vg(i,indxf(j))
-28                  continue
-27              continue
+ 28                 continue
+ 27             continue
                 do 29 j = 1, n
                     do 30 i = 1, n
                         vg(i,j) = mtmp2(i,j)
-30                  continue
-29              continue
+ 30                 continue
+ 29             continue
 !
 !............. CALCUL DE LA MATRICE DIAGONALE B = (TRANSPOSEE DE VG)*VD
                 do 31 j = 1, n
                     do 32 i = 1, n
                         mtmp2(j,i) = vg(i,j)
-32                  continue
-31              continue
+ 32                 continue
+ 31             continue
                 iprod = 1
                 call prmama(iprod, mtmp2, np1, n, n,&
                             vd, np1, n, n, mtmp1,&
@@ -360,8 +361,8 @@ subroutine calcmd(np1, a, a0, n, m,&
                     temp1 = sign(temp,mtmp1(j,j))
                     do 34 i = 1, n
                         vd(i,j) = vd(i,j)/temp1
-34                  continue
-33              continue
+ 34                 continue
+ 33             continue
                 do 35 j = 1, n
                     do 36 i = 1, n
                         if (j .le. m) then
@@ -369,26 +370,26 @@ subroutine calcmd(np1, a, a0, n, m,&
                         else
                             vgt(j,i) = 0.0d0
                         endif
-36                  continue
-35              continue
+ 36                 continue
+ 35             continue
                 do 37 i = 1, n
                     rr(i) = sqrt(rr(i))
-37              continue
+ 37             continue
 !
 !............. SAUVEGARDE DES RESULTATS DANS RR0, VGT0, ET VD0
                 do 38 i = 1, n
                     rr0(i) = rr(i)
-38              continue
+ 38             continue
                 do 39 j = 1, n
                     do 40 i = 1, m
                         vgt0(i,j) = vgt(i,j)
-40                  continue
-39              continue
+ 40                 continue
+ 39             continue
                 do 41 j = 1, m
                     do 42 i = 1, n
                         vd0(i,j) = vd(i,j)
-42                  continue
-41              continue
+ 42                 continue
+ 41             continue
 !
             endif
 !
@@ -404,17 +405,17 @@ subroutine calcmd(np1, a, a0, n, m,&
 !
             do 43 i = 1, n
                 rr(i) = rr0(i)
-43          continue
+ 43         continue
             do 44 j = 1, n
                 do 45 i = 1, m
                     vgt(i,j) = vgt0(i,j)
-45              continue
-44          continue
+ 45             continue
+ 44         continue
             do 46 j = 1, m
                 do 47 i = 1, n
                     vd(i,j) = vd0(i,j)
-47              continue
-46          continue
+ 47             continue
+ 46         continue
 !
         endif
 !
@@ -427,11 +428,11 @@ subroutine calcmd(np1, a, a0, n, m,&
 !
         do 48 i = 1, n
             rr(i) = sqrt(a(i,i))
-48      continue
+ 48     continue
 !
     endif
 !
-999  continue
+999 continue
 !
 ! --- FIN DE CALCMD.
 end subroutine

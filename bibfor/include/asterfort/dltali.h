@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dltali(neq, result, imat, masse, rigid,&
                       liad, lifo, nchar, nveca, lcrea,&
@@ -32,9 +34,9 @@ interface
         character(len=24) :: lifo(*)
         integer :: nchar
         integer :: nveca
-        logical(kind=1) :: lcrea
-        logical(kind=1) :: lprem
-        logical(kind=1) :: lamort
+        aster_logical :: lcrea
+        aster_logical :: lprem
+        aster_logical :: lamort
         real(kind=8) :: t0
         character(len=24) :: mate
         character(len=24) :: carele

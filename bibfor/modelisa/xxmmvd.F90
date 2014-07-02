@@ -20,6 +20,7 @@ function xxmmvd(vect)
 !
     implicit none
     integer :: xxmmvd
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=5) :: vect
 !
@@ -42,7 +43,7 @@ function xxmmvd(vect)
     parameter (zxbas=12,zxedg=25)
     integer :: zxain
     parameter (zxain=5)
-    logical :: lvect
+    aster_logical :: lvect
 !
 ! ----------------------------------------------------------------------
 !

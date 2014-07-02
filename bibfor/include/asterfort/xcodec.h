@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xcodec(noma, modelx, ndim, crimax, linter)
         character(len=8) :: noma
         character(len=8) :: modelx
         integer :: ndim
         real(kind=8) :: crimax
-        logical(kind=1) :: linter
+        aster_logical :: linter
     end subroutine xcodec
 end interface

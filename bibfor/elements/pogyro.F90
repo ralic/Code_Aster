@@ -1,6 +1,7 @@
 subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
                   nl)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmfitx.h"
@@ -45,7 +46,7 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2
-    logical(kind=1) :: euler
+    aster_logical :: euler
 !     ------------------------------------------------------------------
 !
     zero = 0.d0
@@ -84,11 +85,11 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
         istruc = 1
         alfinv = zero
-    else if (nomte.eq.'MECA_POU_D_T'.or. nomte.eq.'MECA_POU_D_TG' ) then
+    else if (nomte.eq.'MECA_POU_D_T'.or. nomte.eq.'MECA_POU_D_TG') then
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
         alfinv = deux/(alfay+alfaz)
-    else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM' ) then
+    else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM') then
 !        --- POUTRE DROITE MULTI-FIBRES---
         istruc = 1
         itype = 0

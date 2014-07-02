@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                       tronc, monoap, nbsup, nsupp, nomsup,&
@@ -25,8 +27,8 @@ interface
         character(len=*) :: meca
         character(len=*) :: psmo
         character(len=*) :: stat
-        logical(kind=1) :: tronc
-        logical(kind=1) :: monoap
+        aster_logical :: tronc
+        aster_logical :: monoap
         integer :: nsupp(*)
         character(len=*) :: nomsup(nbsup, *)
         integer :: ndir(*)

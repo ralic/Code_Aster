@@ -3,6 +3,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   pmilie, nmilie, mfis, tx, txlsn)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -76,7 +77,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     integer :: ntm, nm, inm, nptm, nnop
     integer :: zxain
     character(len=8) :: typma, elrese(3), elrefp
-    logical(kind=1) :: cut, papillon, ajout
+    aster_logical :: cut, papillon, ajout
 !
     parameter       (ptmax=6)
     data            elrese /'SEG3','TRIA6','TETRA10'/
@@ -89,7 +90,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     zxain = xxmmvd('ZXAIN')
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndime,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop)
 !
 !     VECTEUR REEL A 4 COMPOSANTES, POUR CHAQUE PT D'INTER :
 !     - NUMERO ARETE CORRESPONDANTE (0 SI C'EST UN NOEUD SOMMET)
@@ -117,8 +118,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                 val=zr(igeom-1+ndim*(cnset(nnose*(it-1)+j)-1)+i)
             endif
             tabco(ndim*(j-1)+i)=val
-51      continue
-50  continue
+ 51     continue
+ 50 continue
 !
     call vecini(27, 0.d0, tabls)
 !
@@ -131,7 +132,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             val=zr(jlsn-1+cnset(nnose*(it-1)+j))
         endif
         tabls(j)=val
-40  continue
+ 40 continue
 !
     call conare(typma, ar, nbar)
 !     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMET
@@ -146,8 +147,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
     cut=.false.
     do 30 ia = 1, nbar
-      if((tabls(ar(ia,1))*tabls(ar(ia,2))) .lt. 0.d0) cut=.true.
-30  continue
+        if ((tabls(ar(ia,1))*tabls(ar(ia,2))) .lt. 0.d0) cut=.true.
+ 30 continue
 !
 !     BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
     do 100 ia = 1, nbar
@@ -176,7 +177,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             a(i)=tabco(ndim*(nta-1)+i)
             b(i)=tabco(ndim*(ntb-1)+i)
             m(i)=tabco(ndim*(ntm-1)+i)
-101      continue
+101     continue
 !
 !     BLINDAGE PARTIEL : FISSURE RENTRANTE SUR UNE ARETE
         if (lsna*lsnm .lt. 0 .and. lsnb*lsnm .lt. 0) then
@@ -199,11 +200,11 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                             a, longar, ainter, 0, na,&
                             0.d0, ajout)
 !
-               if (ajout) then
-                 do k = 1, ndime
-                 pinref(ndime*(ipi-1)+k)=xref(ndime*(na-1)+k)
-                 enddo
-               endif
+                if (ajout) then
+                    do k = 1, ndime
+                        pinref(ndime*(ipi-1)+k)=xref(ndime*(na-1)+k)
+                    enddo
+                endif
             endif
 !
 !         SI LA FISSURE COUPE L'EXTREMITE B
@@ -213,11 +214,11 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                             b, longar, ainter, 0, nb,&
                             longar, ajout)
 !
-               if (ajout) then
-                 do k = 1, ndime
-                 pinref(ndime*(ipi-1)+k)=xref(ndime*(nb-1)+k)
-                 enddo
-               endif
+                if (ajout) then
+                    do k = 1, ndime
+                        pinref(ndime*(ipi-1)+k)=xref(ndime*(nb-1)+k)
+                    enddo
+                endif
             endif
 !
 !         SI LA FISSURE COUPE LE MILIEU M
@@ -231,9 +232,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                                 alpha, ajout)
 !
                     if (ajout) then
-                      do k = 1, ndime
-                        pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
-                      enddo
+                        do k = 1, ndime
+                            pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
+                        enddo
                     endif
                 else if (.not.cut) then
                     call xajpin(ndim, pinter, ptmax, ipi, inm,&
@@ -241,18 +242,18 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                                 alpha, ajout)
 !
                     if (ajout) then
-                      do k = 1, ndime
-                       pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
-                    enddo
-                   endif
+                        do k = 1, ndime
+                            pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
+                        enddo
+                    endif
                 endif
             endif
 !
 !         SI LA FISSURE COUPE AILLEURS
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-                call xinter(ndim, ndime, elrefp, zr(igeom), zr(jlsn), na, nb,&
-                  cref, c)
+                call xinter(ndim, ndime, elrefp, zr(igeom), zr(jlsn),&
+                            na, nb, cref, c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
 !           ON AJOUTE A LA LISTE LE POINT C
@@ -260,17 +261,17 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                             c, longar, ainter, ia, 0,&
                             alpha, ajout)
 !
-                 if (ajout) then
-                   do k = 1, ndime
-                     pinref(ndime*(ipi-1)+k)=cref(k)
-                   enddo
-                 endif
+                if (ajout) then
+                    do k = 1, ndime
+                        pinref(ndime*(ipi-1)+k)=cref(k)
+                    enddo
+                endif
 !           ON RAJOUTE A LA LISTE DES COORDONNEES DE REFERENCE
             endif
 !
         endif
 !
-100  continue
+100 continue
 !
 !       NB DE POINTS D'INTERSECTION
     ninter=ipi
@@ -284,12 +285,12 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
         pp=pd
         do 201 i = pp, ninter
             if (ainter(zxain*(i-1)+1) .lt. ainter(zxain*(pp-1)+1)) pp=i
-201      continue
+201     continue
         do 202 k = 1, 4
             tampor(k)=ainter(zxain*(pp-1)+k)
             ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
             ainter(zxain*(pd-1)+k)=tampor(k)
-202      continue
+202     continue
         do 203 k = 1, ndim
             tampor(k)=pinter(ndim*(pp-1)+k)
             pinter(ndim*(pp-1)+k)=pinter(ndim*(pd-1)+k)
@@ -298,39 +299,39 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             tampor(k)=pinref(ndim*(pp-1)+k)
             pinref(ndim*(pp-1)+k)=pinref(ndim*(pd-1)+k)
             pinref(ndim*(pd-1)+k)=tampor(k)
-203      continue
-200  continue
+203     continue
+200 continue
 !
 !      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
 !      IP1 IP2 ET IP3 ONT UN SOMMET EN COMMUN
 !      IP1 ET IP4 N ONT PAS DE SOMMET COMMUN
-    if (ninter .eq. 4 .and. npts.eq.0) then
+    if (ninter .eq. 4 .and. npts .eq. 0) then
         a1=nint(ainter(1))
-        do 220 ia = 2,3
-          a2=nint(ainter(zxain*(ia-1)+1))
-          papillon=.true.
-          do 224 i = 1,2
-            do 225 j = 1,2
-              if(ar(a1,i).eq.ar(a2,j)) papillon=.false.
-225         continue
-224       continue
-          if(papillon) then
+        do 220 ia = 2, 3
+            a2=nint(ainter(zxain*(ia-1)+1))
+            papillon=.true.
+            do 224 i = 1, 2
+                do 225 j = 1, 2
+                    if (ar(a1,i) .eq. ar(a2,j)) papillon=.false.
+225             continue
+224         continue
+            if (papillon) then
 !        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C
-            do 226 k = 1, 4
-              tampor(k)=ainter(zxain*(ia-1)+k)
-              ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
-              ainter(zxain*(4-1)+k)=tampor(k)
-226         continue
-            do 227 k = 1, ndim
-              tampor(k)=pinter(ndim*(ia-1)+k)
-              pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
-              pinter(ndim*(4-1)+k)=tampor(k)
+                do 226 k = 1, 4
+                    tampor(k)=ainter(zxain*(ia-1)+k)
+                    ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
+                    ainter(zxain*(4-1)+k)=tampor(k)
+226             continue
+                do 227 k = 1, ndim
+                    tampor(k)=pinter(ndim*(ia-1)+k)
+                    pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
+                    pinter(ndim*(4-1)+k)=tampor(k)
 !  TRAITEMENT DE PINREF
-              tampor(k)=pinref(ndim*(ia-1)+k)
-              pinref(ndim*(ia-1)+k)=pinref(ndim*(4-1)+k)
-              pinref(ndim*(4-1)+k)=tampor(k)
-227         continue
-          endif
+                    tampor(k)=pinref(ndim*(ia-1)+k)
+                    pinref(ndim*(ia-1)+k)=pinref(ndim*(4-1)+k)
+                    pinref(ndim*(4-1)+k)=tampor(k)
+227             continue
+            endif
 220     continue
     endif
 !
@@ -339,36 +340,36 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !       SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M
 !       L ALGO NE DOIT PAS LE TRAITER COMME UN POINT D INTERSECTION CLASSIQUE
 !             ==> C EST UN CAS DEGENERE TRES ENNUYEUX
-    if (ndime.eq.3.and.ninter .eq. 4 .and. npts.eq.2.and.cut) then
+    if (ndime .eq. 3 .and. ninter .eq. 4 .and. npts .eq. 2 .and. cut) then
 !      SOLUTION : ON MET LE POINT MILIEU EN 4 EME POSITION => POUR LE DISTINGUER DES AUTRES PI
-      noeua=nint(ainter(2))
-      noeub=nint(ainter(zxain+2))
-      im=0
-      do 230 i=1,6
-        do 231 j=1,2
-          if (cnset(nnose*(it-1)+ar(i,j)).eq.noeua.and.&
-            cnset(nnose*(it-1)+ar(i,3-j)).eq.noeub) im=i
-231     continue
-230   continue
-      ASSERT(im.gt.0)
-      do ipt=1,3
-        if (nint(ainter(zxain*(ipt-1)+1)).eq.im) then
-          do i=1,(zxain-1)
-            rbid=ainter(zxain*(4-1)+i)
-            ainter(zxain*(4-1)+i)=ainter(zxain*(ipt-1)+i)
-            ainter(zxain*(ipt-1)+i)=rbid
-          enddo
-          do  k=1,ndim
-            tampor(k)=pinter(ndim*(4-1)+k)
-            pinter(ndim*(4-1)+k)=pinter(ndim*(ipt-1)+k)
-            pinter(ndim*(ipt-1)+k)=tampor(k)
+        noeua=nint(ainter(2))
+        noeub=nint(ainter(zxain+2))
+        im=0
+        do 230 i = 1, 6
+            do 231 j = 1, 2
+                if (cnset(nnose*(it-1)+ar(i,j)) .eq. noeua .and. cnset(nnose*(it-1)+ar(i,3-j))&
+                    .eq. noeub) im=i
+231         continue
+230     continue
+        ASSERT(im.gt.0)
+        do ipt = 1, 3
+            if (nint(ainter(zxain*(ipt-1)+1)) .eq. im) then
+                do i = 1, (zxain-1)
+                    rbid=ainter(zxain*(4-1)+i)
+                    ainter(zxain*(4-1)+i)=ainter(zxain*(ipt-1)+i)
+                    ainter(zxain*(ipt-1)+i)=rbid
+                enddo
+                do k = 1, ndim
+                    tampor(k)=pinter(ndim*(4-1)+k)
+                    pinter(ndim*(4-1)+k)=pinter(ndim*(ipt-1)+k)
+                    pinter(ndim*(ipt-1)+k)=tampor(k)
 !  TRAITEMENT DE PINREF
-            tampor(k)=pinref(ndim*(4-1)+k)
-            pinref(ndim*(4-1)+k)=pinref(ndim*(ipt-1)+k)
-            pinref(ndim*(ipt-1)+k)=tampor(k)
-         enddo
-        endif
-      enddo
+                    tampor(k)=pinref(ndim*(4-1)+k)
+                    pinref(ndim*(4-1)+k)=pinref(ndim*(ipt-1)+k)
+                    pinref(ndim*(ipt-1)+k)=tampor(k)
+                enddo
+            endif
+        enddo
 !    ON FORCE ainter(zxain*(4-1)+1)=0
 !       CAR LE NOEUD MILIEU EST REELLEMENT DANS LE PLAN DE LA FISSURE
 !       ainter(zxain*(4-1)+1)=0.d0
@@ -384,13 +385,17 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     pmmax=pmmaxi(ndim)
     call loncar(ndim, typma, tabco, lonref)
 !
-    if (ndim.le.2) call xalgo2(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref)
+    if (ndim .le. 2) call xalgo2(ndim, elrefp, nnop, it, nnose,&
+                                 cnset, typma, ndime, igeom, jlsn,&
+                                 pmilie, ninter, ainter, ar, npts,&
+                                 nptm, pmmax, nmilie, mfis, lonref,&
+                                 pinref)
 !
-    if (ndim.eq.3) call xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref)
+    if (ndim .eq. 3) call xalgo3(ndim, elrefp, nnop, it, nnose,&
+                                 cnset, typma, ndime, igeom, jlsn,&
+                                 pmilie, ninter, ainter, ar, npts,&
+                                 nptm, pmmax, nmilie, mfis, lonref,&
+                                 pinref)
 !
 999 continue
     call jedema()

@@ -29,7 +29,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrconl.h"
     integer :: kptsc
-    logical(kind=1) :: lmd
+    aster_logical :: lmd
     real(kind=8) :: rsolu(*)
 !----------------------------------------------------------------
 !
@@ -108,9 +108,11 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !       -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
         call VecScatterCreateToAll(x, ctx, xgth, ierr)
         ASSERT(ierr.eq.0)
-        call VecScatterBegin(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD, ierr)
+        call VecScatterBegin(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD,&
+                             ierr)
         ASSERT(ierr.eq.0)
-        call VecScatterEnd(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD, ierr)
+        call VecScatterEnd(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD,&
+                           ierr)
         ASSERT(ierr.eq.0)
         call VecScatterDestroy(ctx, ierr)
         ASSERT(ierr.eq.0)
@@ -136,13 +138,14 @@ subroutine apsolu(kptsc, lmd, rsolu)
     call jeveuo(nomat//'.&INT', 'L', lmat)
 !
 !     -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
-    call mrconl('MULT', lmat, 0, 'R', rsolu,1)
+    call mrconl('MULT', lmat, 0, 'R', rsolu,&
+                1)
 !
     call jedema()
 !
 #else
     integer :: idummy
-    logical(kind=1) :: ldummy
+    aster_logical :: ldummy
     real(kind=8) :: rdummy
     idummy = kptsc
     ldummy = lmd

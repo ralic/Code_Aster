@@ -7,6 +7,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfmmcv.h"
@@ -110,14 +111,14 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lreli, lnkry, limpex, lcont
+    aster_logical :: lreli, lnkry, limpex, lcont
     real(kind=8) :: r8bid
     real(kind=8) :: resi_glob_rela, resi_glob_maxi, pasmin
     real(kind=8) :: instam, instap
     real(kind=8) :: vrela, vmaxi, vrefe, vresi, vchar, vinit, vcomp, vfrot
     real(kind=8) :: vgeom
-    logical(kind=1) :: lerror, itemax, dvdebo
-    logical(kind=1) :: cvnewt, cvresi
+    aster_logical :: lerror, itemax, dvdebo
+    aster_logical :: cvnewt, cvresi
     integer :: nbiter, itesup
     integer :: ifm, niv
     real(kind=8) :: relcoe
@@ -201,11 +202,11 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! --- CALCUL DES RESIDUS
 !
     call nmresi(noma, mate, numedd, sdnume, fonact,&
-                sddyna, sdconv, sdimpr, defico, resoco, &
-                matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta, &
-                comref, valinc, solalg, veasse, measse, &
-                vrela, vmaxi, vchar, vresi, vrefe, &
-                vinit, vcomp, vfrot, vgeom)
+                sddyna, sdconv, sdimpr, defico, resoco,&
+                matass, numins, conv, resi_glob_rela, resi_glob_maxi,&
+                eta, comref, valinc, solalg, veasse,&
+                measse, vrela, vmaxi, vchar, vresi,&
+                vrefe, vinit, vcomp, vfrot, vgeom)
 !
 ! --- VERIFICATION DES CRITERES D'ARRET SUR RESIDUS
 !

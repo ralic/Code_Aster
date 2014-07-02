@@ -2,6 +2,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                   conexk, coordo, sgt, nbpt, lstpt,&
                   fink)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3crqp.h"
 #include "asterfort/i3idfs.h"
@@ -13,7 +14,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical(kind=1) :: fink
+    aster_logical :: fink
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +55,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     real(kind=8) :: a(3, 3), b(3), x(3), c, zero, un, r, s, t, normab
     real(kind=8) :: e1(3), e2(3), e3(3), cs(3, 4), lcara, tole
     real(kind=8) :: e1i(3), e2i(3)
-    logical(kind=1) :: dedans, djala1, djala2
+    aster_logical :: dedans, djala1, djala2
 !======================================================================
 !
 !-----------------------------------------------------------------------
@@ -68,31 +69,31 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     nbs = 4
     decf = 8 + f
     adescm = desctm(desc(k))
-    do 10, i = 1, 4, 1
-    ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
-    do 11, j = 1, 3, 1
-    cs(j,i) = coordo(3*(ds1-1) + j)
-11  continue
-    10 end do
+    do 10 i = 1, 4, 1
+        ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
+        do 11 j = 1, 3, 1
+            cs(j,i) = coordo(3*(ds1-1) + j)
+ 11     continue
+ 10 end do
 !
 ! --- LCARA : LONGUEUR DE LA PLUS PETITE ARETE
 !     AFIN DE DEFINIR UNE PRECISION RELATIVE
 !
     lcara = 1.d+50
-    do 20, j = 1, 3, 1
+    do 20 j = 1, 3, 1
+        c = zero
+        do 22 i = 1, 3, 1
+            s = cs(i,j+1) - cs(i,j)
+            c = c + s*s
+ 22     continue
+        c = sqrt( c )
+        lcara = min ( c, lcara )
+ 20 end do
     c = zero
-    do 22, i = 1, 3, 1
-    s = cs(i,j+1) - cs(i,j)
-    c = c + s*s
-22  continue
-    c = sqrt( c )
-    lcara = min ( c, lcara )
-    20 end do
-    c = zero
-    do 24, i = 1, 3, 1
-    s = cs(i,4) - cs(i,1)
-    c = c + s*s
-    24 end do
+    do 24 i = 1, 3, 1
+        s = cs(i,4) - cs(i,1)
+        c = c + s*s
+ 24 end do
     c = sqrt( c )
     lcara = min ( c, lcara )
     tole = lcara * epsi
@@ -104,14 +105,14 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
 !
     c = zero
     t = zero
-    do 15, i = 1, 3, 1
-    s = cs(i,2) - cs(i,1)
-    r = cs(i,4) - cs(i,1)
-    e1(i) = s
-    e2(i) = r
-    c = c + s*s
-    t = t + r*r
-    15 end do
+    do 15 i = 1, 3, 1
+        s = cs(i,2) - cs(i,1)
+        r = cs(i,4) - cs(i,1)
+        e1(i) = s
+        e2(i) = r
+        c = c + s*s
+        t = t + r*r
+ 15 end do
     c = sqrt(c)
     t = sqrt(t)
     if ((c.le.epsi) .or. (t.le.epsi)) then
@@ -119,17 +120,17 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
         vali(2) = f
         call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     endif
-    do 16, i = 1, 3, 1
-    e1(i) = e1(i)/c
-    e2(i) = e2(i)/t
-    16 end do
+    do 16 i = 1, 3, 1
+        e1(i) = e1(i)/c
+        e2(i) = e2(i)/t
+ 16 end do
     e3(1) = e1(2)*e2(3) - e1(3)*e2(2)
     e3(2) = e1(3)*e2(1) - e1(1)*e2(3)
     e3(3) = e1(1)*e2(2) - e1(2)*e2(1)
     c = zero
-    do 17, i = 1, 3, 1
-    c = c + e3(i)*e3(i)
-    17 end do
+    do 17 i = 1, 3, 1
+        c = c + e3(i)*e3(i)
+ 17 end do
     c = sqrt(c)
     if (c .le. epsi) then
         vali(1) = k
@@ -236,41 +237,41 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
 !     PLAN DE LA FACE
 !
     c = zero
-    do 80, i = 1, 3, 1
-    c = c - ( (cs(i,3)-cs(i,1)) * e3(i) )
-    80 end do
-    do 82, j = 1, 3, 1
-    cs(j,3) = cs(j,3) + ( c * e3(j) )
-    82 end do
+    do 80 i = 1, 3, 1
+        c = c - ( (cs(i,3)-cs(i,1)) * e3(i) )
+ 80 end do
+    do 82 j = 1, 3, 1
+        cs(j,3) = cs(j,3) + ( c * e3(j) )
+ 82 end do
 !
 ! --- RECHERCHE DE L'INTERSECTION FACE SEGMENT AB
 !     MATRICE A : VECTEUR DE LA FACE
 !     VECTEUR B : COORDONNEES DU NOEUD 1 DE LA FACE
 !     VECTEUR C : SEGMENT AB
 !
-    do 25, i = 1, 3, 1
-    a(i,1) = e1(i)
-    a(i,2) = e2(i)
-    c = sgt(i+3) - sgt(i)
-    normab = normab + c*c
-    b(i) = -cs(i,1)
-    25 end do
+    do 25 i = 1, 3, 1
+        a(i,1) = e1(i)
+        a(i,2) = e2(i)
+        c = sgt(i+3) - sgt(i)
+        normab = normab + c*c
+        b(i) = -cs(i,1)
+ 25 end do
     normab = sqrt(normab)
     a(1,3) = zero
     a(2,3) = zero
     a(3,3) = -normab
-    do 30, i = 1, 3, 1
-    c = zero
-    do 31, j = 1, 3, 1
-    c = max(c,abs(a(i,j)))
-31  continue
-    if (c .gt. epsi) then
-        do 32, j = 1, 3, 1
-        a(i,j) = a(i,j)/c
-32      continue
-        b(i) = b(i)/c
-    endif
-    30 end do
+    do 30 i = 1, 3, 1
+        c = zero
+        do 31 j = 1, 3, 1
+            c = max(c,abs(a(i,j)))
+ 31     continue
+        if (c .gt. epsi) then
+            do 32 j = 1, 3, 1
+                a(i,j) = a(i,j)/c
+ 32         continue
+            b(i) = b(i)/c
+        endif
+ 30 end do
 !
 ! --- RESOLUTION DU SYSTEME
 !
@@ -310,10 +311,10 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
             call i3pdm2(epsi, e3, cs, nbs, x,&
                         dedans)
             if (dedans) then
-                do 50, i = 1, 3, 1
-                x(i) = cs(i,1)
-                cs(i,1) = zero
-50              continue
+                do 50 i = 1, 3, 1
+                    x(i) = cs(i,1)
+                    cs(i,1) = zero
+ 50             continue
                 call i3rpqp(x, e1, e2, e3, cs(1, 2),&
                             nbs-1)
                 call i3crqp(epsi, epsi, cs, r, s,&
@@ -364,12 +365,12 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
             call i3pdm2(epsi, e3, cs, nbs, sgt(4),&
                         djala2)
             if (djala1 .and. djala2) then
-                do 60, i = 1, 3, 1
-                x(i) = cs(i,1)
-                cs(i,1) = zero
-                a (i,1) = sgt(i)
-                a (i,2) = sgt(i+3)
-60              continue
+                do 60 i = 1, 3, 1
+                    x(i) = cs(i,1)
+                    cs(i,1) = zero
+                    a (i,1) = sgt(i)
+                    a (i,2) = sgt(i+3)
+ 60             continue
                 call i3rpqp(x, e1, e2, e3, cs(1, 2),&
                             nbs-1)
                 call i3rpqp(x, e1, e2, e3, a,&
@@ -419,12 +420,12 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                 call i3pdm2(epsi, e3, cs, nbs, sgt(i),&
                             djala1)
                 if (djala1) then
-                    do 61, ds1 = 1, 3, 1
-                    x (ds1) = cs(ds1,1)
-                    cs(ds1,1) = zero
-                    a (ds1,1) = sgt(i-1+ds1)
-                    a (ds1,2) = sgt(j-1+ds1)
-61                  continue
+                    do 61 ds1 = 1, 3, 1
+                        x (ds1) = cs(ds1,1)
+                        cs(ds1,1) = zero
+                        a (ds1,1) = sgt(i-1+ds1)
+                        a (ds1,2) = sgt(j-1+ds1)
+ 61                 continue
                     call i3rpqp(x, e1, e2, e3, cs(1, 2),&
                                 nbs-1)
                     call i3rpqp(x, e1, e2, e3, a,&
@@ -458,11 +459,11 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                 call i3pdm2(epsi, e3, cs, nbs, sgt,&
                             djala1)
                 if (djala1) then
-                    do 62, i = 1, 3, 1
-                    x (i) = cs(i,1)
-                    cs(i,1) = zero
-                    a (i,1) = sgt(i)
-62                  continue
+                    do 62 i = 1, 3, 1
+                        x (i) = cs(i,1)
+                        cs(i,1) = zero
+                        a (i,1) = sgt(i)
+ 62                 continue
                     call i3rpqp(x, e1, e2, e3, cs(1, 2),&
                                 nbs-1)
                     call i3rpqp(x, e1, e2, e3, a,&
@@ -486,11 +487,11 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                     call i3pdm2(epsi, e3, cs, nbs, sgt(4),&
                                 djala1)
                     if (djala1) then
-                        do 63, i = 1, 3, 1
-                        x (i) = cs(i,1)
-                        cs(i,1) = zero
-                        a (i,1) = sgt(i+3)
-63                      continue
+                        do 63 i = 1, 3, 1
+                            x (i) = cs(i,1)
+                            cs(i,1) = zero
+                            a (i,1) = sgt(i+3)
+ 63                     continue
                         call i3rpqp(x, e1, e2, e3, cs(1, 2),&
                                     nbs-1)
                         call i3rpqp(x, e1, e2, e3, a,&

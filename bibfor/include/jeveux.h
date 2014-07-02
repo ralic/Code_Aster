@@ -18,6 +18,8 @@
 !
 !---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 ! aslint: disable=W1304
+#include "asterf_types.h"
+!
     volatile           zi4, zi, zr, zc, zl
     volatile           zk8, zk16, zk24, zk32, zk80
 !
@@ -29,7 +31,7 @@
     common  / rvarje / zr(1)
     complex(kind=8)          :: zc
     common  / cvarje / zc(1)
-    logical(kind=1)          :: zl
+    aster_logical          :: zl
     common  / lvarje / zl(1)
     character(len=8)         :: zk8
     character(len=16)                :: zk16

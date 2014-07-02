@@ -21,6 +21,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
@@ -75,7 +76,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     character(len=19) :: depmoi, depplu
     character(len=19) :: depdel, ddepla
     character(len=19) :: vitini, accini, vitplu, accplu
-    logical(kind=1) :: loptin, lallv, leltc, ldyna
+    aster_logical :: loptin, lallv, leltc, ldyna
     integer :: mmitgo, mmitfr, mmitca
     real(kind=8), pointer :: ddepl(:) => null()
     real(kind=8), pointer :: depde(:) => null()

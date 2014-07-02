@@ -21,6 +21,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assvec.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -68,7 +69,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: leltc, leltf, lallv, lnewtc, lnewtg
+    aster_logical :: leltc, leltf, lallv, lnewtc, lnewtg
     character(len=19) :: veeltc, veeltf
     character(len=19) :: cneltf, cneltc, cnfint
     character(len=19) :: depmoi, depdel, vitmoi, accmoi, vitplu

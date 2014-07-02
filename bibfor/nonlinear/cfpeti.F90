@@ -19,6 +19,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -65,7 +66,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
     parameter    (un=1.d0)
     real(kind=8) :: rhorho
     real(kind=8) :: aadelt, jeuold, jeunew, jeuinc
-    logical(kind=1) :: liaiac, delpos, lelpiv
+    aster_logical :: liaiac, delpos, lelpiv
     integer :: btotal, iliai, iliac
     character(len=19) :: liac
     integer :: jliac
@@ -132,7 +133,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
 !
             do 170 iliac = 1, btotal
                 if (zi(jliac-1+iliac) .eq. iliai) liaiac = .true.
-170          continue
+170         continue
 !
 ! ------- CALCUL DE RHOMIN
 !
@@ -183,7 +184,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
                     endif
                 endif
             endif
-180      continue
+180     continue
 !
 ! ----- TOUS LES {A.DELTA} SONT NEGATIFS
 !

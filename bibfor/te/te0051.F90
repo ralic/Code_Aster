@@ -28,6 +28,7 @@ subroutine te0051(option, nomte)
 !.......................................................................
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm3d.h"
@@ -57,10 +58,10 @@ subroutine te0051(option, nomte)
     real(kind=8) :: point(3), angl(3)
     integer :: ipoids, ivf, idfde, igeom, imate, kpg, spt
     integer :: jgano, nno, kp, npg1, i, j, imattt, itemps
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -134,7 +135,7 @@ subroutine te0051(option, nomte)
                 point(1) = point(1) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-3)
                 point(2) = point(2) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-2)
                 point(3) = point(3) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-1)
-20          continue
+ 20         continue
             call utrcyl(point, dire, orig, p)
         endif
 !
@@ -162,9 +163,9 @@ subroutine te0051(option, nomte)
                 ij = (i-1)*i/2 + j
                 zr(imattt+ij-1) = zr(imattt+ij-1) + theta*poids* ( fluglo(1)*dfdx(j)+ fluglo(2)*d&
                                   &fdy(j)+fluglo(3)*dfdz(j) )
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
-50  end do
+ 50 end do
 !
 end subroutine

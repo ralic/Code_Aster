@@ -28,6 +28,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/copisd.h"
@@ -57,16 +58,16 @@ subroutine rec110(nomres, nomsqu, modgen)
     character(len=24) :: valk(4)
     character(len=8) :: nomres, nomsqu, modgen, tt, lintf, ljntf
     character(len=8) :: k8bid, nomnoe, crit, nomsst
-    logical(kind=1) :: fusion
+    aster_logical :: fusion
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iadres, ibid, igr, in
     integer :: incr, inew, iocc, iold, iposi, ireco
-    integer :: istac,  jn, jncr, jposi, jstac, lconn
-    integer ::  lcorr, lcort, ldime, lintd, linver, ljntd
-    integer ::  lsk, lsk2,  ltabi, ltabj, lvnew
-    integer ::  nbcoor, nbec, nbfuse, nbma, nbmoin, nbn
+    integer :: istac, jn, jncr, jposi, jstac, lconn
+    integer :: lcorr, lcort, ldime, lintd, linver, ljntd
+    integer :: lsk, lsk2, ltabi, ltabj, lvnew
+    integer :: nbcoor, nbec, nbfuse, nbma, nbmoin, nbn
     integer :: nbnd, nbnd2, nbnew, nbni, nbnj, nbocc, nbreco
     integer :: nbstac, ndist, nnodes, nr, numero
     real(kind=8) :: dist, distij, prec, xii, xj, yii, yj

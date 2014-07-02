@@ -2,6 +2,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
@@ -94,7 +95,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer :: nb_cmp_depl, nb_cmp_sief
     integer :: j_cmp_depl, j_cmp_sief
     integer :: nbec_depl, nbec_sief
-    logical(kind=1) :: l_sigm_bpel, l_rela_cine
+    aster_logical :: l_sigm_bpel, l_rela_cine
     character(len=24) :: list_cabl, list_anc1, list_anc2
     integer :: nb_cabl, nb_anc1, nb_anc2
     integer :: jlicabl, jlianc1, jlianc2
@@ -102,7 +103,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer :: nb_node, jlino
     character(len=8) :: cabl_prec
     character(len=19) :: cabl_sigm
-    logical(kind=1) :: l_rota_2d, l_rota_3d
+    aster_logical :: l_rota_2d, l_rota_3d
     integer :: i_cabl, i_ancr, i_no, nume_node
     integer :: nb_elem
     integer :: jprnm
@@ -289,7 +290,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
                                     if (l_rota_2d) then
                                         call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
-                                                cmp_index_drz, lagr_type, list_rela, nom_noeuds_tmp)
+                                                    cmp_index_drz, lagr_type, list_rela,&
+                                                    nom_noeuds_tmp)
                                     else
                                         call drz02d(mesh, vale_type, dist_mini, nb_node,&
                                                     list_node, lagr_type, list_rela,&

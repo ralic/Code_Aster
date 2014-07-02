@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                       connex, point, noma, typma, lmod,&
@@ -28,7 +30,7 @@ interface
         integer :: point(*)
         character(len=8) :: noma
         integer :: typma(*)
-        logical(kind=1) :: lmod
+        aster_logical :: lmod
         integer :: nbgrn
         character(len=24) :: nogn(*)
         integer :: nbgrm

@@ -26,6 +26,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/alchml.h"
@@ -97,13 +98,13 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !
 !
-    integer :: ier, nbmac, nbma2, nbno, nbno2, iret,  igeomr, nbid
-    integer :: iadesc, iarefe, iacoo2, jtypm2,  jno, jmac
+    integer :: ier, nbmac, nbma2, nbno, nbno2, iret, igeomr, nbid
+    integer :: iadesc, iarefe, iacoo2, jtypm2, jno, jmac
     integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
-    integer ::    jdirgr
+    integer :: jdirgr
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
-    integer ::  jresc1, nbcmp
-    logical(kind=1) :: pre1
+    integer :: jresc1, nbcmp
+    aster_logical :: pre1
     character(len=3) :: tsca
     character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1), ldep1(3), ldep4(4)
     character(len=16) :: k16b, nomcmd

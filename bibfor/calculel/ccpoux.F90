@@ -3,6 +3,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                   suropt, iret)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -68,10 +69,10 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 !   IRET    I    CODE RETOUR (0 SI OK, 1 SINON)
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    logical(kind=1) :: exif1d
+    aster_logical :: exif1d
 !
-    integer :: ltymo,  lfreq, neq, lvale, lacce, ii, i
-    integer :: l1, l3,   n1, ipara, ier, linst
+    integer :: ltymo, lfreq, neq, lvale, lacce, ii, i
+    integer :: l1, l3, n1, ipara, ier, linst
 !
     real(kind=8) :: zero, un, coeff, valres
     real(kind=8) :: alpha, tps(11), freq, inst

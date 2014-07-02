@@ -49,6 +49,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 ! ----
 ! MATTT  --> MATRICE DE RIGIDITE ELEMENTAIRE
 !.......................................................................
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -72,7 +73,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !
     character(len=8) :: elrese(3), fami(3), poum
     character(len=16) :: phenom
-    logical(kind=1) :: axi
+    aster_logical :: axi
     real(kind=8) :: baslog(3*ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
@@ -121,8 +122,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     poum = '+'
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IPOIDS,IVF,IDFDE
-    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, npg=npg, jpoids=ipoids,&
+                     jvf=ivf, jdfde=idfde)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
@@ -148,8 +149,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                 else
                     ASSERT(.false.)
                 endif
-1110          continue
-1100      continue
+1110         continue
+1100     continue
 !
 ! ----------------------------------------------------------------------
 ! ----- BOUCLE SUR LES POINTS DE GAUSS
@@ -163,11 +164,12 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                 do 1211 in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
                     in-1)+j)
-1211              continue
-1210          continue
+1211             continue
+1210         continue
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then
@@ -180,8 +182,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                     lstg = lstg + lst(inp) * ff(inp)
                     do 1221 j = 1, 3*ndim
                         baslog(j) = baslog(j) + basloc(3*ndim*(inp-1)+ j) * ff(inp)
-1221                  continue
-1220              continue
+1221                 continue
+1220             continue
 !           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
                 if (ndim .eq. 2) then
                     call xcalf2(he, lsng, lstg, baslog, femec,&
@@ -198,7 +200,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                 feth = femec(1)
                 do 1230 j = 1, ndim
                     dgdth(j) = dgdmec(1,j)
-1230              continue
+1230             continue
             endif
 ! ------- FIN SI ENRICHISSEMENT SINGULIER
 !
@@ -217,7 +219,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                 r = 0.d0
                 do 1240 inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
-1240              continue
+1240             continue
                 ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
@@ -233,20 +235,20 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !           DDL CLASSIQUE (TEMP)
                 do 1251 j = 1, ndim
                     dffenr(inp,1,j) = dfdi(inp,j)
-1251              continue
+1251             continue
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
                     do 1252 j = 1, ndim
                         dffenr(inp,1+nfh,j) = he*dfdi(inp,j)
-1252                  continue
+1252                 continue
                 endif
 !           DDL CRACK-TIP (E1)
                 if (nfe .eq. 1) then
                     do 1253 j = 1, ndim
                         dffenr(inp,1+nfh+nfe,j) = feth*dfdi(inp,j) + ff(inp)*dgdth(j)
-1253                  continue
+1253                 continue
                 endif
-1250          continue
+1250         continue
 !
 ! ------- REMPLISSAGE DE LA MATRICE DE RIGIDITE
 !
@@ -274,23 +276,23 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                                 do 1274 idim = 1, ndim
                                     pdscal = pdscal + dffenr(inp,kddl, idim) * dffenr(jnp,lddl,id&
                                              &im)
-1274                              continue
+1274                             continue
                                 ind2 = ind1 + nbddl*(jnp-1)+lddl
                                 mattt(ind2) = mattt(ind2 )+pdscal*jac* lambda*theta
                             endif
 !
-1273                      continue
-1272                  continue
-1271              continue
-1270          continue
+1273                     continue
+1272                 continue
+1271             continue
+1270         continue
 !
-1200      continue
+1200     continue
 !
 ! ----------------------------------------------------------------------
 ! ----- FIN BOUCLE SUR LES POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-1000  continue
+1000 continue
 !
 ! ----------------------------------------------------------------------
 ! --- FIN BOUCLE SUR LES SOUS-ELEMENTS

@@ -20,6 +20,7 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
@@ -53,7 +54,7 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
 !
 !
 !
-    logical(kind=1) :: grand
+    aster_logical :: grand
     integer :: ndimsi
     integer :: indi(6), indj(6), prac(6)
     real(kind=8) :: ff
@@ -90,8 +91,8 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
                 ff = (fm(i,k)*fm(j,l) + fm(i,l)*fm(j,k)) / 2
                 ff = ff * rac2**prac(ij) * rac2**prac(kl)
                 epsm(ij) = epsm(ij) + ff*em(kl)
-55          continue
-50      continue
+ 55         continue
+ 50     continue
     endif
 !
 ! --- INCREMENT DE DEFORMATION PROJETE

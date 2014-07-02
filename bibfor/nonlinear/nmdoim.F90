@@ -19,6 +19,7 @@ subroutine nmdoim(sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -42,8 +43,8 @@ subroutine nmdoim(sdimpr)
 !
     integer :: ifm, niv
     character(len=16) :: motfac, repk
-    logical(kind=1) :: ltcvfi, linfre, linftp
-    integer ::  noc, utcvfi, pasaff
+    aster_logical :: ltcvfi, linfre, linftp
+    integer :: noc, utcvfi, pasaff
 !
 ! ----------------------------------------------------------------------
 !

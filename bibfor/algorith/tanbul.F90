@@ -18,6 +18,7 @@ subroutine tanbul(option, ndim, g, mate, compor,&
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/epstmc.h"
@@ -26,7 +27,7 @@ subroutine tanbul(option, ndim, g, mate, compor,&
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-    logical(kind=1) :: resi, mini
+    aster_logical :: resi, mini
     integer :: ndim, g, mate
     real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst
     character(len=16) :: option, compor
@@ -126,12 +127,12 @@ subroutine tanbul(option, ndim, g, mate, compor,&
         trepst = 0.d0
         do 90 k = 1, 6
             if (abs(epsth(k)) .gt. r8miem()) iepsv=1
-90      continue
+ 90     continue
 ! - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
         if (iepsv .ne. 0) then
             do 50 k = 1, 3
                 trepst = trepst + epsth(k)
-50          continue
+ 50         continue
         endif
     endif
 !

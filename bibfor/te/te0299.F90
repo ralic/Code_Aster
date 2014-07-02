@@ -31,6 +31,7 @@ subroutine te0299(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -74,16 +75,16 @@ subroutine te0299(option, nomte)
     character(len=8) :: nomres(3), nompar(4)
     character(len=16) :: phenom, compor(4)
 !
-    logical(kind=1) :: lcour, fonc, lpesa, lrota
-    logical(kind=1) :: axi
+    aster_logical :: lcour, fonc, lpesa, lrota
+    aster_logical :: axi
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- RECUPERATION DES CHAMPS IN
 !
@@ -123,7 +124,7 @@ subroutine te0299(option, nomte)
 !
 ! --- VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
 !
-    if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
+    if (.not. cgverho(imate)) call utmess('F', 'RUPTURE1_26')
 !
 ! --- RECUPERATION DES FORCES
 !
@@ -465,7 +466,7 @@ subroutine te0299(option, nomte)
     zr(ificg+3) = k1
     zr(ificg+4) = k2
 !
-999  continue
+999 continue
 !
     call jedema()
 !

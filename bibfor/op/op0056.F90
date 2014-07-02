@@ -46,6 +46,7 @@ subroutine op0056()
 !.......................................................................
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -72,7 +73,7 @@ subroutine op0056()
 #include "asterfort/utctab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifr, nbcou, icou, n,  jepor, jrela, k, lonobj, jmate, jobme
+    integer :: ifr, nbcou, icou, n, jepor, jrela, k, lonobj, jmate, jobme
     integer :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
     integer :: nv, n1
     real(kind=8) :: laml, lamt, lamn, cp, qt(31), valres(9)
@@ -100,7 +101,7 @@ subroutine op0056()
     character(len=3) :: num
     character(len=8) :: k8b, multic, mater, nomres(9)
     character(len=16) :: type, nomcmd, fichie
-    logical(kind=1) :: elas, ther
+    aster_logical :: elas, ther
     character(len=16), pointer :: nomrc(:) => null()
     parameter (nv=83)
 !
@@ -130,8 +131,8 @@ subroutine op0056()
                 valk (1) = mater
                 call utmess('F', 'MODELISA8_71', sk=valk(1))
             endif
-10      continue
-20  end do
+ 10     continue
+ 20 end do
     if (ther .and. elas) then
         valk (1) = 'MECANIQUE'
         valk (2) = 'THERMIQUE'
@@ -170,7 +171,7 @@ subroutine op0056()
         do 30 i = 1, 56
             call codent(i, 'G', num)
             zk8(jmate+i-1) = 'HOM_'//num
-30      continue
+ 30     continue
         do 50 icou = 1, nbcou
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
             call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
@@ -180,16 +181,16 @@ subroutine op0056()
             do 40 i = 1, nv
                 call codent(i, 'G', val)
                 zk8(jmate+56+nv* (icou-1)+i-1) = 'C'//num//'_V'//val
-40          continue
+ 40         continue
             zr(jepor-1+3*icou-2) = epais
             zr(jepor-1+3*icou-1) = orien
             eptot = eptot + epais
-50      continue
+ 50     continue
         epais = -0.5d0*eptot
         rhohom = 0.d0
         do 60 i = 1, 56
             qm(i) = 0.d0
-60      continue
+ 60     continue
         iret = 0
         do 70 i = 1, nbcou
             nbres = 9
@@ -449,7 +450,7 @@ subroutine op0056()
             zr(jobme+56 -1 + (i-1)*nv+81) = yt
             zr(jobme+56 -1 + (i-1)*nv+82) = yc
             zr(jobme+56 -1 + (i-1)*nv+83) = slt
-70      continue
+ 70     continue
         if (iret .eq. 0) then
         else if (iret.ne.nbcou) then
             call utmess('F', 'MODELISA5_63')
@@ -473,11 +474,11 @@ subroutine op0056()
         do 90 k = 1, 3
             do 80 j = 1, 3
                 hfinv(k,j) = 0.d0
-80          continue
-90      continue
+ 80         continue
+ 90     continue
         do 100 i = 1, 3
             hfinv(i,i) = 1.d0
-100      continue
+100     continue
         call mgauss('NFVD', hf, hfinv, 3, 3,&
                     3, det, iret)
         do 120 k = 1, 2
@@ -486,8 +487,8 @@ subroutine op0056()
                 c11(k,j) = 0.d0
                 idi(k,j) = 0.d0
                 ezd(k,j) = 0.d0
-110          continue
-120      continue
+110         continue
+120     continue
         hc11 = 0.d0
         hc22 = 0.d0
         hc12 = 0.d0
@@ -507,15 +508,15 @@ subroutine op0056()
             do 140 k = 1, 3
                 do 130 j = 1, 3
                     ai(k,j) = 0.d0
-130              continue
-140          continue
+130             continue
+140         continue
             do 170 i = 1, 3
                 do 160 j = 1, 3
                     do 150 k = 1, 3
                         ai(i,j) = ai(i,j) + hi(i,k)*hfinv(k,j)
-150                  continue
-160              continue
-170          continue
+150                 continue
+160             continue
+170         continue
 !         TERMES DE LA MATRICE INTERVENANT DANS D1(Z)
 !      CF. DHAT-BATOZ VOL 2 PAGE 243
 !      DAI1 MATRICE (2,2) CONSTANTE PAR COUCHE
@@ -541,8 +542,8 @@ subroutine op0056()
                 do 180 j = 1, 2
                     idi(k,j) = ezd(k,j) - ((ordi-epi/2.d0)**2)*da1i(k, j)/2.d0
                     ezd(k,j) = ezd(k,j) + epi*ordi*da1i(k,j)
-180              continue
-190          continue
+180             continue
+190         continue
 !          MATRICE DE COMPORTEMENT HTAU DANS REPERE UTILISATEUR
             hti(1,1) = zr(jobme+56+ (icou-1)*nv+12)
             hti(2,2) = zr(jobme+56+ (icou-1)*nv+13)
@@ -582,8 +583,8 @@ subroutine op0056()
                 do 200 j = 1, 2
                     c11i(k,j) = x1*c11i1(k,j) + x2*c11i2(k,j) + x3*c11i3(k,j) + x4*c11i4(k,j)
                     c11(k,j) = c11(k,j) + c11i(k,j)
-200              continue
-210          continue
+200             continue
+210         continue
             hc11 = hc11 + epi*hti(1,1)
             hc22 = hc22 + epi*hti(2,2)
             hc12 = hc12 + epi*hti(1,2)
@@ -606,7 +607,7 @@ subroutine op0056()
             zr(jobme+56+ (icou-1)*nv+75) = c11inv(1,1)
             zr(jobme+56+ (icou-1)*nv+76) = c11inv(2,2)
             zr(jobme+56+ (icou-1)*nv+77) = c11inv(1,2)
-220      continue
+220     continue
 ! FIN BOUCLE SUR LES COUCHES
 !        -- INVERSION DE C11 INTEGREE SUR L'EPAISSEUR
 !        -- INVERSION DE C11 GLOBALE --- HC = C11INV GLOBALE
@@ -670,10 +671,10 @@ subroutine op0056()
         do 230 i = 1, 56
             zr(jobme-1+i) = qm(i)
             zc(jobmc-1+i) = 0.d0
-230      continue
+230     continue
         do 240 i = 57, 56 + nv*nbcou
             zc(jobmc-1+i) = 0.d0
-240      continue
+240     continue
     endif
 !
     if (ther) then
@@ -697,7 +698,7 @@ subroutine op0056()
         do 250 i = 1, 31
             call codent(i, 'G', num)
             zk8(jmate+i-1) = 'HOM_'//num
-250      continue
+250     continue
         do 270 icou = 1, nbcou
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
             call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
@@ -707,11 +708,11 @@ subroutine op0056()
             do 260 i = 1, 3
                 call codent(i, 'G', val)
                 zk8(jmate+31+3* (icou-1)+i-1) = 'C'//num//'_V'//val
-260          continue
+260         continue
             zr(jepor-1+3*icou-2) = epais
             zr(jepor-1+3*icou-1) = orien
             eptot = eptot + epais
-270      continue
+270     continue
 !
         epais = -0.5d0*eptot
         h = 0.5d0*eptot
@@ -720,7 +721,7 @@ subroutine op0056()
         h4 = h*h3
         do 280 i = 1, 31
             qt(i) = 0.d0
-280      continue
+280     continue
         do 290 i = 1, nbcou
             nbres = 4
             nomres(1) = 'LAMBDA_L'
@@ -795,7 +796,7 @@ subroutine op0056()
             qt(28) = qt(28) + a22*cp
             qt(29) = qt(29) + a23*cp
             qt(30) = qt(30) + a33*cp
-290      continue
+290     continue
         qt(31) = eptot
         if (nimpr .gt. 0) then
             write (ifr,1000)
@@ -808,7 +809,7 @@ subroutine op0056()
         do 300 i = 1, 31
             zr(jobth-1+i) = qt(i)
             zc(jobtc-1+i) = dcmplx(0.d0,0.d0)
-300      continue
+300     continue
     endif
 !
     1000 format (/,80 ('-'))

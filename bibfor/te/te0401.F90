@@ -17,6 +17,7 @@ subroutine te0401(optioz, nomtz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/bsthco.h"
@@ -41,7 +42,7 @@ subroutine te0401(optioz, nomtz)
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
     real(kind=8) :: vrs (1326)
     real(kind=8) :: bsigth(51), enerth
-    logical(kind=1) :: indith
+    aster_logical :: indith
 ! DEB
 !
     option = optioz
@@ -89,8 +90,8 @@ subroutine te0401(optioz, nomtz)
             do 110 i = 1, j
                 kompt = kompt + 1
                 zr ( imatuu - 1 + kompt ) = vrs ( kompt )
-110          continue
-100      continue
+110         continue
+100     continue
 !
     endif
 !
@@ -118,7 +119,7 @@ subroutine te0401(optioz, nomtz)
         if (indith) then
             do 120 i = 1, 6 * nb1 + 3
                 enerth = enerth + bsigth(i)*zr(iu+i-1)
-120          continue
+120         continue
             zr(jener) = zr(jener) - enerth
         endif
 !

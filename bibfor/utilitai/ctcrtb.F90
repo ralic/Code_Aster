@@ -1,6 +1,7 @@
 subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                   toucmp, nbcmp, nbval, nkcmp, ndim)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -18,7 +19,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu
     character(len=24) :: nkcha, nkcmp
-    logical(kind=1) :: toucmp
+    aster_logical :: toucmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +54,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpara, n, jkcha,   jcesd, jcesc
+    integer :: nbpara, n, jkcha, jcesd, jcesc
     integer :: kk, i, j, jcmp, iret
     character(len=19) :: chamns, chames
     character(len=16), pointer :: table_parak(:) => null()
@@ -152,7 +153,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                 endif
             endif
         endif
-60  end do
+ 60 end do
     kk=kk+n
 !
     nbpara=kk
@@ -231,21 +232,21 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                 table_parak(kk+1)=cnsc(j)
                 table_typek(kk+1)='R'
                 kk=kk+1
-90          continue
+ 90         continue
         else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
             do 91 j = 1, n
                 table_parak(kk+1)=zk8(jcesc+j-1)
                 table_typek(kk+1)='R'
 !
                 kk=kk+1
-91          continue
+ 91         continue
         endif
     else
         do 95 j = 1, n
             table_parak(kk+1)=zk8(jcmp+j-1)
             table_typek(kk+1)='R'
             kk=kk+1
-95      continue
+ 95     continue
     endif
 !
 !    ------------------------------------------------------------------

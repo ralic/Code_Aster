@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
                       rtx, rty, rtz)
         integer :: ndim
-        logical(kind=1) :: lag2d
+        aster_logical :: lag2d
         character(len=2) :: typlia
         real(kind=8) :: fctf(3)
         real(kind=8) :: tang(6)

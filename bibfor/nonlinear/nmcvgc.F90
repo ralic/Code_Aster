@@ -18,7 +18,8 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -51,7 +52,7 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
 !
 !
     character(len=4) :: etinst, etcalc
-    logical(kind=1) :: lstop, mtcpup
+    aster_logical :: lstop, mtcpup
 !
 ! ----------------------------------------------------------------------
 !
@@ -96,7 +97,7 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
         call nmeceb(sderro, 'CALC', 'CONV')
     endif
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

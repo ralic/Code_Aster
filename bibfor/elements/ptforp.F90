@@ -3,6 +3,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
                   nc, pgl, pgl1, pgl2, fer,&
                   fei)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/angvx.h"
@@ -53,14 +54,14 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     integer :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: ch16, messk(2)
-    logical(kind=1) :: global, normal
+    aster_logical :: global, normal
 !
     integer :: ifcx, i, j, nnoc, ncc, lx, iorien, idepla, ideplp, lmate, lpesa
     integer :: lforc, itemps, nbpar, ier, iret, icoer, icoec, iretr, iretc
     integer :: lrota, istrxm
     character(len=8) :: nompav(1)
     real(kind=8) :: valpav(1), fcx, vite2, vp(3), casect(6), gamma
-    logical(kind=1) :: okvent
+    aster_logical :: okvent
     real(kind=8) :: dimag
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -98,19 +99,19 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         if (nomte .eq. 'MECA_POU_C_T') goto 998
         call jevech('PDEPLMR', 'L', idepla)
         call jevech('PDEPLPR', 'L', ideplp)
-
+!
         call tecach('NNN', 'PSTRXMR', 'L', iret, iad=istrxm)
-        if (iret.ne.0) then
+        if (iret .ne. 0) then
             messk(1) = option
             messk(2) = nomte
-            call utmess('F', 'ELEMENTS2_2', nk=2 , valk = messk)
+            call utmess('F', 'ELEMENTS2_2', nk=2, valk = messk)
         endif
         if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
             gamma = zr(istrxm+18-1)
         else
             gamma = zr(istrxm+3-1)
         endif
-        call porea2(nno, nc, zr(lx+1), gamma, pgl, &
+        call porea2(nno, nc, zr(lx+1), gamma, pgl,&
                     xl)
         do i = 1, 12
             dw(i) = zr(idepla-1+i) + zr(ideplp-1+i)
@@ -125,7 +126,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             w(i) = zr(lx+i)
             w(i+4) = zr(lx+i+3)
             w2(i) = w(i+4) - w(i)
-15      continue
+ 15     continue
     endif
 !
 ! *********************************************************************
@@ -142,12 +143,12 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         else if (option.eq.'CHAR_MECA_ROTA_R') then
             call jevech('PROTATR', 'L', lrota)
             omeg2=zr(lrota-1+1)**2
-            do 778, k=1,3
-            dir(k)=zr(lrota-1+1+k)
-            pta(k)=zr(lrota-1+4+k)
-            x1(k)=zr(lx+k) - pta(k)
-            x2(k)=zr(lx+3+k) - pta(k)
-778          continue
+            do 778 k = 1, 3
+                dir(k)=zr(lrota-1+1+k)
+                pta(k)=zr(lrota-1+4+k)
+                x1(k)=zr(lx+k) - pta(k)
+                x2(k)=zr(lx+3+k) - pta(k)
+778         continue
             call provec(dir, x1, v1)
             call provec(dir, x2, v2)
             call normev(v1, d1)
@@ -157,7 +158,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         endif
 !
         call jevech('PMATERC', 'L', lmate)
-        if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM') then
+        if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
             if (ist .eq. 1) then
                 call pmfitx(zi(lmate), 2, casect, r8bid)
             else
@@ -190,11 +191,11 @@ subroutine ptforp(itype, option, nomte, a, a2,&
                 q(i) = rho(1) * omeg2 * d1 * dir1(i)
                 q(i+6) = rho(1) * omeg2 * d2 * dir2(i)
             endif
-20      continue
+ 20     continue
 !
 !        ---UN CAS DE CHARGE DE PESANTEUR SE PASSE EN REPERE GLOBAL ---
 !        --- PASSAGE REPERE LOCAL DU VECTEUR FORCE ---
-        if (nomte.eq.'MECA_POU_C_T') then
+        if (nomte .eq. 'MECA_POU_C_T') then
             call utpvgl(nnoc, ncc, pgl1, q(1), qq(1))
             call utpvgl(nnoc, ncc, pgl2, q(7), qq(7))
         else
@@ -221,7 +222,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             do 30 i = 1, 3
                 q(i) = zr(lforc-1+i)
                 q(i+6) = zr(lforc+2+i)
-30          continue
+ 30         continue
         else
             call jevech('PFR1D1D', 'L', lforc)
             xxx = abs(zr(lforc+6))
@@ -230,10 +231,10 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             do 40 i = 1, 6
                 q(i) = zr(lforc-1+i)
                 q(i+6) = q(i)
-40          continue
+ 40         continue
         endif
 !
-    elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
+        elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
     'CHAR_MECA_SF1D1D' ) then
 !     --- FORCES REPARTIES PAR FONCTIONS ---
         call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
@@ -270,7 +271,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
                     call utmess('F', 'ELEMENTS2_50')
                 endif
             endif
-342      continue
+342     continue
     endif
 !
     if (okvent) then
@@ -357,7 +358,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     endif
 !     --- PASSAGE REPERE LOCAL DU VECTEUR FORCE  ---
     if (global .or. normal .or. okvent) then
-        if (nomte.eq.'MECA_POU_C_T') then
+        if (nomte .eq. 'MECA_POU_C_T') then
             call utpvgl(nnoc, ncc, pgl1, q(1), qq(1))
             call utpvgl(nnoc, ncc, pgl2, q(7), qq(7))
         else
@@ -366,14 +367,14 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     else
         do 343 i = 1, 12
             qq(i) = q(i)
-343      continue
+343     continue
     endif
 !
 !      ---A CAUSE DES CHARGEMENTS VARIABLES ---
     coef1 = un
     coef2 = un
 !
-777  continue
+777 continue
 !
 ! *********************************************************************
 !
@@ -385,7 +386,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     if (iretr .eq. 0) then
         do 400 i = 1, 12
             qq(i) = qq(i) * zr(icoer)
-400      continue
+400     continue
         call ptfop1(itype, coef1, coef2, xl, rad,&
                     angs2, global, qq, fer)
 !
@@ -393,7 +394,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         do 410 i = 1, 12
             qqr(i) = qq(i) * dble( zc(icoec) )
             qqi(i) = qq(i) * dimag( zc(icoec) )
-410      continue
+410     continue
         call ptfop1(itype, coef1, coef2, xl, rad,&
                     angs2, global, qqr, fer)
         call ptfop1(itype, coef1, coef2, xl, rad,&
@@ -408,15 +409,15 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
     goto 1000
 !
-997  continue
+997 continue
     call utmess('F', 'ELEMENTS2_51')
 !
-998  continue
+998 continue
     call utmess('F', 'ELEMENTS2_52')
 !
-999  continue
+999 continue
     call utmess('F', 'ELEMENTS2_53')
 !
 !
-1000  continue
+1000 continue
 end subroutine

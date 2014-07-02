@@ -24,6 +24,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !-----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -49,8 +50,8 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/as_allocate.h"
 !
     integer :: nbm, i
-    integer :: iret,   ngrel, ipg, n1
-    integer :: ncham,  nn, nbelto, nbelgr, ntail, ialiel
+    integer :: iret, ngrel, ipg, n1
+    integer :: ncham, nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
@@ -59,7 +60,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=16) :: option
     character(len=19) :: nomcha, chgeom, matas, chharm
     character(len=24) :: ligrmo, lchin(3), lchout(1)
-    logical(kind=1) :: yang
+    aster_logical :: yang
     character(len=8), pointer :: vec(:) => null()
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: lime(:) => null()

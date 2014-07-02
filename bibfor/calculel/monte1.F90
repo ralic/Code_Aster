@@ -21,6 +21,7 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/indik8.h"
@@ -68,7 +69,7 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
     integer :: iparg, iachlo, lggrel, jcelv, jresl
     integer :: descgd, jceld, code, debugr, ncmpel, debgr2
     character(len=8) :: nompar, typsca
-    logical(kind=1) :: lparal
+    aster_logical :: lparal
 !
     call jemarq()
 !
@@ -127,7 +128,7 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
                         iaux2=jresl+iaux0
                         call jacopo(ncmpel, typsca, iaux1, iaux2)
                     endif
-10              continue
+ 10             continue
             else
                 call jacopo(lggrel, typsca, iachlo+debugr-1, jresl)
             endif
@@ -136,7 +137,7 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
         endif
 !
 !
-20  end do
+ 20 end do
 !
     call jedema()
 end subroutine

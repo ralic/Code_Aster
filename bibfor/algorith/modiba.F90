@@ -2,6 +2,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                   itypfl, imasse, nuor, nbnuor, numo,&
                   nbmfl)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/assert.h"
@@ -27,7 +28,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     integer :: nbnuor, nuor(*), nbmfl, numo(*)
     character(len=8) :: nomres, basemo
     character(len=19) :: basefl
-    logical(kind=1) :: newres
+    aster_logical :: newres
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,8 +72,8 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 ! IN  : NBMFL  : NOMBRE DE MODES PERTURBES PAR LE COUPLAGE
 !
 !
-    integer :: iddl(6),    neq, nbmode, j, i
-    integer :: lmod, iret,  ivit, numod, imas
+    integer :: iddl(6), neq, nbmode, j, i
+    integer :: lmod, iret, ivit, numod, imas
     integer :: ifac, ifre, ieq, k, icm, iprec
     integer :: lmat(2), lddl, lvali, lvalr, lvalk
     integer :: npari, nparr, npark
@@ -86,7 +87,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     character(len=19) :: nomcha
     character(len=24) :: chamfl, kvec, nopara(nbpara)
     character(len=24) :: kvali, kvalr, kvalk
-    logical(kind=1) :: lmasin, lnorm
+    aster_logical :: lmasin, lnorm
     real(kind=8), pointer :: coef_mode(:) => null()
     real(kind=8), pointer :: fact(:) => null()
     integer, pointer :: deeq(:) => null()
@@ -229,14 +230,14 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
                     zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
-                    0, 0,coef_mode)
+                    0, 0, coef_mode)
 !        --- ON STOCKE LES DEFORMEES
         call vpstor(-1, typmod, nomres, nbnuor, neq,&
                     zr(lmod), zc(1), nbnuor, nbpari, nbparr,&
                     nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
                     zk24(lvalk), iprec)
 !        --- ON NORMALISE LES AUTRES CHAMPS
-        call vpnor2(nomres, nbmode, nuor,coef_mode)
+        call vpnor2(nomres, nbmode, nuor, coef_mode)
         AS_DEALLOCATE(vr=coef_mode)
     else
 !        --- ON STOCKE LES DEFORMEES

@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmepsi(ndim, nno, axi, grand, vff,&
                       r, dfdi, depl, f, eps)
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
-        logical(kind=1) :: grand
+        aster_logical :: axi
+        aster_logical :: grand
         real(kind=8) :: vff(nno)
         real(kind=8) :: r
         real(kind=8) :: dfdi(nno, ndim)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmveso(rb, nb, rp, np, drbdb,&
                       drbdp, drpdb, drpdp, dp, dbeta,&
@@ -30,6 +32,6 @@ interface
         real(kind=8) :: dp(np)
         real(kind=8) :: dbeta(nb)
         integer :: nr
-        logical(kind=1) :: cplan
+        aster_logical :: cplan
     end subroutine nmveso
 end interface

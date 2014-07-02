@@ -1,5 +1,6 @@
 subroutine meimme(modele, nchar, lchar, mate, matel)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -50,7 +51,7 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(4), lchout(1)
     character(len=24) :: chgeom, chcara(18), chharm
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
 !
 !-----------------------------------------------------------------------
     integer :: icha, icode, ilires, iret

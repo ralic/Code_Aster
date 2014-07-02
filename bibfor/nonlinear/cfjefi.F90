@@ -18,7 +18,8 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/caladu.h"
@@ -55,7 +56,7 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
     integer :: iliai, jdecal, nbddl
     real(kind=8) :: jeuini, jeuold, jeuinc
     real(kind=8) :: jexnew, jexold, jexinc
-    logical(kind=1) :: lpenac, llagrf, lctfd
+    aster_logical :: lpenac, llagrf, lctfd
     character(len=24) :: apcoef, apddl, appoin
     integer :: japcoe, japddl, japptr
     character(len=24) :: apcofr
@@ -129,7 +130,7 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
                 zr(jjeuit+3*(iliai-1)+2-1) = jexnew
             endif
         endif
-15  end do
+ 15 end do
 !
 ! --- AFFICHAGE
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
                       vff1, vff2, ivf1, idff1, vu,&
@@ -34,7 +36,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: igeom
         integer :: mate
-        logical(kind=1) :: mini
+        aster_logical :: mini
         real(kind=8) :: matr(*)
     end subroutine nurmtd
 end interface

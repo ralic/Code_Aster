@@ -22,6 +22,7 @@ subroutine op0144()
 !     OPERATEUR "CALC_FLUI_STRU"
 !
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -67,7 +68,7 @@ subroutine op0144()
     integer :: ncmp, ncmpmx, jcorr2
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
-    logical(kind=1) :: tmode, calcul(2)
+    aster_logical :: tmode, calcul(2)
     character(len=8) :: nombm, mailla, k8b, gran, nomcmp(6)
     character(len=16) :: concep, cmd, nompar
     character(len=19) :: nomu, cham19, prchno
@@ -81,7 +82,7 @@ subroutine op0144()
     integer :: iec, ifact, ifm, ifr, ifreq, ifsic
     integer :: ii, imasg, inec, ino, inumo, io, ipar
     integer :: irefe, itypfl, iv, ivite
-    integer :: j, jcdesc, jcrefe, jdesc, jj,  long
+    integer :: j, jcdesc, jcrefe, jdesc, jj, long
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
     real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas

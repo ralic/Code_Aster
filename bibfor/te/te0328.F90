@@ -24,6 +24,7 @@ subroutine te0328(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2j.h"
 #include "asterfort/dfdm3j.h"
@@ -34,7 +35,7 @@ subroutine te0328(option, nomte)
 !
     character(len=16) :: nomte, option
 !
-    logical(kind=1) :: posi, nega
+    aster_logical :: posi, nega
     character(len=24) :: valk(2)
     real(kind=8) :: poids
     integer :: igeom, ipoids, ivf, idfde, ndim, npg, nno, jgano, nnos
@@ -45,8 +46,8 @@ subroutine te0328(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCODRET', 'E', icodr)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     posi=.false.
     nega=.false.
@@ -60,7 +61,7 @@ subroutine te0328(option, nomte)
         endif
         if (poids .lt. 0.d0) nega=.true.
         if (poids .gt. 0.d0) posi=.true.
- 1  end do
+  1 end do
 !
 !
     if (posi .and. nega) then
@@ -72,7 +73,7 @@ subroutine te0328(option, nomte)
         codret=1
     endif
 !
-9999  continue
+9999 continue
     zi(icodr-1+1)=codret
 !
 end subroutine

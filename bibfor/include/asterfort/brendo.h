@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine brendo(sige6, bt6, sut, bc1, suc,&
                       local, t33, n33, lct, bw,&
@@ -27,7 +29,7 @@ interface
         real(kind=8) :: sut
         real(kind=8) :: bc1
         real(kind=8) :: suc
-        logical(kind=1) :: local
+        aster_logical :: local
         real(kind=8) :: t33(3, 3)
         real(kind=8) :: n33(3, 3)
         real(kind=8) :: lct

@@ -3,6 +3,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
@@ -77,14 +78,14 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
     integer :: posmae, posnoe(1), posmam, posnom(1)
     integer :: numnoe(1)
     integer :: entapp, typapp
-    logical(kind=1) :: lctfd, lctf3d
+    aster_logical :: lctfd, lctf3d
     integer :: nzoco, ndimg, nbpt, nbliai
     integer :: nesmax
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     character(len=8) :: nomnoe
     real(kind=8) :: ksipr1, ksipr2, tau1m(3), tau2m(3)
     real(kind=8) :: coorne(3), dissup
-    real(kind=8) :: coefff, coefpn, coefpt, coefte 
+    real(kind=8) :: coefff, coefpn, coefpt, coefte
 !
 ! ----------------------------------------------------------------------
 !
@@ -211,7 +212,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
                         coefte, dissup, izone, ip, numnoe(1),&
                         posnoe(1))
 !
-35          continue
+ 35         continue
 !
 ! ------- POINT SUIVANT
 !
@@ -219,7 +220,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
             ASSERT(iliai.le.ip)
 !
         end do
-25      continue
+ 25     continue
     end do
 !
 ! --- NOMBRE DE LIAISONS EFFECTIVES

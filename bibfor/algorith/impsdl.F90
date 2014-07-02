@@ -18,7 +18,8 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/impfok.h"
@@ -60,8 +61,8 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
     character(len=255) :: ligne
     integer :: longr, precr, longi
     character(len=24) :: slcolo, sdcolo
-    logical(kind=1) :: lacti, linte, lreel, lchai
-    logical(kind=1) :: laffe, lnvvid, lnverr, lnvsan
+    aster_logical :: lacti, linte, lreel, lchai
+    aster_logical :: laffe, lnvvid, lnverr, lnvsan
     integer :: larcol, larlig
     character(len=1) :: marq
 !
@@ -151,7 +152,7 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
 !
             pos = pos + larcol + 1
         endif
-100  end do
+100 end do
 !
 ! --- IMPRESSION DE LA LIGNE DU TABLEAU
 !

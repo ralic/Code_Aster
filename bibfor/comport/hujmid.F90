@@ -42,6 +42,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !      NDEC0   :  NOMBRE D'INCREMENTS DE SUBDIVISION LIE A SUBD
 !      IRET    :  CODE RETOUR
 !   -------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujiid.h"
 #include "asterfort/hujjid.h"
@@ -59,8 +60,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     integer :: nitimp, nbmeca, compt, msup(2)
     integer :: umess, ifm, niv
     integer :: essai, essmax, resi, nmax, imin
-    logical(kind=1) :: debug, noconv, aredec, stopnc, negmul(8), subd
-    logical(kind=1) :: loop, euler
+    aster_logical :: debug, noconv, aredec, stopnc, negmul(8), subd
+    aster_logical :: loop, euler
 !
     common    /tdim/ ndt, ndi
     common    /meshuj/ debug
@@ -85,9 +86,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     real(kind=8) :: ptrac, ye(nmod), tole1, rtrac
 !
     real(kind=8) :: predi0(6), sigd0(6), deps0(6), vind0(50), prob(4)
-    logical(kind=1) :: arede0, stopn0, loop0, prox(4), probt, proxc(4)
-    logical(kind=1) :: tracti, cycl, negtra, bnews(3), nodef
-    logical(kind=1) :: neglam(3), mectra, ltry, modif, mtrac
+    aster_logical :: arede0, stopn0, loop0, prox(4), probt, proxc(4)
+    aster_logical :: tracti, cycl, negtra, bnews(3), nodef
+    aster_logical :: neglam(3), mectra, ltry, modif, mtrac
 !
     character(len=8) :: mod
 !
@@ -105,7 +106,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     do 10 i = 1, 3
         bnews(i) = .true.
         dev(i) = zero
-10  continue
+ 10 continue
 !
     mectra = .false.
     mtrac = .false.
@@ -128,9 +129,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     do 20 i = 1, 4
         prox(i) = .false.
         proxc(i) = .false.
-20  continue
+ 20 continue
 !
-30  continue
+ 30 continue
     if (compt .gt. 5) goto 9999
     compt = compt + 1
     if (debug) write(6,*)'DEBUT --- VINF =',(vinf(i),i=24,31)
@@ -149,7 +150,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
     do 40 k = 1, 4
         prob(k) = zero
-40  continue
+ 40 continue
 !
     ptrac = mater(21,2)
 !
@@ -157,7 +158,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     do 50 k = 1, 8
         if (vind(23+k) .eq. un) nbmeca = nbmeca + 1
         negmul(k) = .false.
-50  continue
+ 50 continue
     nr = ndt + 1 + 2*nbmeca
 !
 ! ----------------------------
@@ -169,7 +170,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         yd(i) = zero
         yf(i) = zero
         r(i) = zero
-60  continue
+ 60 continue
 !
 !
 ! --------------------------------------------------
@@ -181,7 +182,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
     do 70 k = 1, 7
         indi(k)=0
-70  continue
+ 70 continue
 !
     kk = 1
     do 80 k = 1, 8
@@ -199,7 +200,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             endif
 !
         endif
-80  continue
+ 80 continue
 !
     if (debug) then
         write(6,*)'INDI = ',(indi(i),i=1,nbmeca)
@@ -224,11 +225,11 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     if (loop) then
         do 90 i = 1, ndt
             dsig(i) = sigf(i) - sigd(i)
-90      continue
+ 90     continue
     else
         do 100 i = 1, ndt
             dsig(i) = zero
-100      continue
+100     continue
     endif
 !
 ! ------------------------------------------------------------------
@@ -251,7 +252,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             nr = nr + 1
             nbmect = nbmect + 1
         endif
-110  continue
+110 continue
     if(nbmect.ne.nbmeca)mectra = .true.
 ! ------------------------------------
 ! ---> INCREMENTATION DE YF = YD + DY
@@ -280,7 +281,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     if (nbmeca .ne. nbmect) then
         do 120 i = 1, ndi
             if (abs(ye(i)) .gt. pref**2.d0) nodef = .true.
-120      continue
+120     continue
         if (nodef) then
             iret = 1
             goto 9999
@@ -292,15 +293,15 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! ---> BOUCLE SUR LES ITERATIONS DE NEWTON
 !----------------------------------------------------------
     iter = 0
-130  continue
+130 continue
 !
     iter = iter + 1
     do 140 i = 1, nmod
         r(i) = zero
         do 150 j = 1, nmod
             drdy(i,j) = zero
-150      continue
-140  continue
+150     continue
+140 continue
 ! ---> CALCUL DU SECOND MEMBRE A T+DT : -R(DY)
 !      ET CALCUL DU JACOBIEN DU SYSTEME A T+DT : DRDY(DY)
 !
@@ -322,7 +323,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             prob(i) = deux
             probt = .true.
         endif
-160  continue
+160 continue
 !
 !
 ! ------------------------------------------------------------
@@ -338,7 +339,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             if (((rtrac+pf-ptrac)/abs(pref)) .ge. -r8prem()) then
                 tracti = .true.
             endif
-170      continue
+170     continue
         goto 9999
     endif
 !
@@ -369,7 +370,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             iret = 1
             goto 9999
         endif
-180  end do
+180 end do
     call lcnrvn(nr, r, err)
     if (debug) write(6,*)'ERREUR =',err
 !
@@ -400,10 +401,10 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
             do 190 i = 1, ndt
                 ddy(i) = ddy(i)*mater(1,1)
-190          continue
+190         continue
             do 200 i = 1, nbmeca
                 ddy(ndt+1+i) = ddy(ndt+1+i)*mater(1,1)/ abs(mater(8,2) )
-200          continue
+200         continue
 !
 ! -----------------------------------
 ! --- MISE A JOUR DU VECTEUR SOLUTION
@@ -411,7 +412,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             do 210 i = 1, nr
                 dy(i) = dy(i) + ddy(i)
                 yf(i) = yd(i) + dy(i)
-210          continue
+210         continue
 !
             if (debug) then
 !
@@ -442,12 +443,12 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                                 tracti = .true.
                                 goto 9999
                             endif
-230                      continue
+230                     continue
                     endif
-220              continue
+220             continue
             endif
 !
-240          continue
+240         continue
 !
             goto 130
         endif
@@ -466,7 +467,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         endif
 !
     endif
-250  continue
+250 continue
 !
 ! ---------------------------------------------------
 ! --- CONTROLE DES RESULTATS OBTENUS APRES RESOLUTION
@@ -479,7 +480,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     maxi = abs(crit(3))
     do 260 k = 1, nbmect
         if (yf(ndt+1+nbmeca+k) .gt. maxi) maxi = yf(ndt+1+nbmeca+k)
-260  continue
+260 continue
 !
     negtra = .false.
 !
@@ -498,7 +499,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                 negtra = .true.
             endif
         endif
-270  continue
+270 continue
 !
 !
 ! -------------------------------------------------------
@@ -548,7 +549,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             bnews(i) = .false.
             tracti = .true.
         endif
-280  end do
+280 end do
     if ((tracti) .and. (nbmeca.gt.0)) then
         iret = 1
         goto 9999
@@ -588,7 +589,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         else
             vinf(kk) = vind(kk)
         endif
-290  end do
+290 end do
 !
 ! -------------------------------------
 ! --- CONTROLE DE L'EVOLUTION DE R(K)
@@ -607,7 +608,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             if (ndec .gt. nmax) ndec=nmax
             ndec0 = max(ndec, ndec0)
         endif
-300  end do
+300 end do
 !
 ! -------------------------------------------------
 ! --- CONTROLE DE L'EVOLUTION DE EPS_V^P
@@ -629,7 +630,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! ETIQUETTE 9999 ---> GESTION DES NON CONVERGENCES LOCALES
 !                     LIMITEES A 5 TENTATIVES
 ! ----------------------------------------------------------
-9999  continue
+9999 continue
     if (compt .gt. 5) then
         noconv = .true.
 ! --- ON REGARDE SI L'ETAT INITIAL MATERIAU AVAIT SOLLICITE
@@ -640,7 +641,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                 noconv=.false.
                 iret = 0
             endif
-310      continue
+310     continue
         if (.not.noconv) then
 ! --- EN POSANT NOCONV = .TRUE., ON CONDUIT L'ALGORITHME PRESENT
 ! --- DANS HUJRES A IMPOSER UN ETAT DE CONTRAINTES ISOTROPE COMMUN
@@ -667,7 +668,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             j = j+1
             msup(j) = i
         endif
-320  end do
+320 end do
 !
     if (probt) then
         if (debug) write(6,'(A)')'HUJMID :: 9999 PROBT'
@@ -696,7 +697,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             else if (prob(i).eq.deux) then
                 vind(27+i) = zero
             endif
-330      continue
+330     continue
         iret = 0
         probt = .false.
 !
@@ -705,7 +706,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         if (j .ne. 0) then
             do 340 i = 1, j
                 vind(23+msup(i)) = zero
-340          continue
+340         continue
         endif
 !
         call lceqvn(nvi, vind, vinf)
@@ -737,14 +738,14 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                 endif
                 tracti = .false.
             endif
-350      continue
+350     continue
 !
         do 360 i = 1, nbmect
             if (indi(i) .eq. 8) then
                 vind(23+indi(i)) = zero
                 modif = .true.
             endif
-360      continue
+360     continue
 !
         if (debug) write(6,*)'NEGLAM =',(neglam(i),i=1,3)
         mtrac = .false.
@@ -763,7 +764,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                     if(.not.modif)mtrac = .true.
                 endif
             endif
-370      continue
+370     continue
         call lceqve(predi0, sigf)
         call lceqve(sigd0, sigd)
         call lceqvn(nvi, vind, vinf)
@@ -785,13 +786,13 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             maxi = abs(r(i))
             resi = i
         endif
-380  end do
+380 end do
     cycl = .false.
     do 390 i = 1, nbmeca
         if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi(i)) .eq.mater(18,2))) then
             cycl = .true.
         endif
-390  end do
+390 end do
     if (debug) write(6,*) '9999 RESI:',resi
 !
 ! ---------------------------------------------------------------
@@ -813,7 +814,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             if (j .ne. 0) then
                 do 410 i = 1, j
                     vind(23+msup(i)) = zero
-410              continue
+410             continue
             endif
 !
 ! --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT
@@ -823,7 +824,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                     (((maxi- abs(r(7+i)))/tole1).lt.tole1) .and. (i.ne.resi)) then
                     vind(23+indi(i)) = zero
                 endif
-420          continue
+420         continue
 !
             iret = 0
             probt = .false.
@@ -853,7 +854,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi( i)).eq.mater(18,2))) then
                 vind(23+indi(i)) = zero
             endif
-430      continue
+430     continue
         iret = 0
         probt = .false.
         call lceqvn(nvi, vind, vinf)
@@ -878,7 +879,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             if (ye(ndt+1+nbmeca+i) .eq. zero) then
                 bnews(indi(i)-8) = .true.
             endif
-440      continue
+440     continue
         probt = .false.
         call lceqvn(nvi, vind, vinf)
         goto 30
@@ -917,7 +918,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             lamin = ye(ndt+1+nbmeca+i)
             imin = i
         endif
-450  end do
+450 end do
 !
     if (.not.euler) then
 ! --- MECANISME CYCLIQUE A DESACTIVE
@@ -925,7 +926,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         if (j .ne. 0) then
             do 455 i = 1, j
                 vind(23+msup(i)) = zero
-455          continue
+455         continue
         endif
 !
         call lceqvn(nvi, vind, vinf)
@@ -975,7 +976,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             bnews(i) = .false.
             ltry = .true.
         endif
-460  end do
+460 end do
 !
     if (ltry) then
         call lceqvn(nvi, vind, vinf)
@@ -989,7 +990,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     1000 format(a,15(1x,e12.5))
     1001 format(a,2(i3))
 !
-2000  continue
+2000 continue
 !
     if (debug) write(6,*)'HUJMID --- VINF =',(vinf(i),i=24,31)
     if (debug) write(6,*)'IRET - HUJMID =',iret

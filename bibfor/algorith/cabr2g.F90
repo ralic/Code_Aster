@@ -23,13 +23,14 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/matini.h"
 #include "asterfort/utmess.h"
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: kpi, ipoids, ipoid2, idfde, idfde2, ndim, regula(6), dimdef, ivf
     integer :: ivf2, nno, nnos, nnom, nddls, nddlm, dimuel
     real(kind=8) :: geom(ndim, *), poids, poids2, b(dimdef, dimuel)
@@ -110,18 +111,18 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
                 b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+ndim+(j-1)*ndim+i)&
                 = b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+ndim+(j-1)*ndim+&
                 i) + zr(ivf2+n+(kpi-1)*nnos-1)
-30          continue
-20      continue
-10  end do
+ 30         continue
+ 20     continue
+ 10 end do
     do 40 n = 1, nnom
         do 50 j = 1, ndim
             do 60 i = 1, ndim
                 b(adder1-1+(j-1)*ndim+i,nnos*nddls+(n-1)*nddlm+j) =&
                 b(adder1-1+(j-1)*ndim+i,nnos*nddls+(n-1)*nddlm+j) -&
                 dfdi(n+nnos,i)
-60          continue
-50      continue
-40  end do
+ 60         continue
+ 50     continue
+ 40 end do
 ! ======================================================================
 ! --- POUR LES GRADIENTS DE VARIATIONS VOLUMIQUE -----------------------
 ! --- ON UTILISE LES FONCTIONS DE FORME D'ORDRE 1 ----------------------
@@ -136,10 +137,10 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
                     nddls+ndim+(k-1)*ndim+j)= b(adder2-1+(k-1)*ndim*&
                     ndim+(j-1)*ndim+i, (n-1)*nddls+ndim+(k-1)*ndim+j)+&
                     dfdi2(n,i)
-150              continue
-140          continue
-130      continue
-120  end do
+150             continue
+140         continue
+130     continue
+120 end do
 ! ======================================================================
 ! --- POUR LE MULTIPLICATEUR DE LAGRANGE -------------------------------
 ! --- (PRES) -----------------------------------------------------------
@@ -151,7 +152,7 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
         do 210 j = 1, ndim
             b(adder3-1+(i-1)*ndim+j,nnos*nddls+nnom*nddlm+(i-1)*ndim+&
             j)= 1.0d0
-210      continue
-190  end do
+210     continue
+190 end do
 ! ======================================================================
 end subroutine

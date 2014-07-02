@@ -1,6 +1,7 @@
 subroutine diaghr(n, a, lda, eval, evec,&
                   ldevec, acopy, rwk, cwk)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cvrmzm.h"
 #include "asterfort/diares.h"
@@ -47,7 +48,7 @@ subroutine diaghr(n, a, lda, eval, evec,&
     integer :: i, j
     complex(kind=8) :: scale
     real(kind=8) :: dble
-    logical(kind=1) :: true
+    aster_logical :: true
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -74,7 +75,7 @@ subroutine diaghr(n, a, lda, eval, evec,&
 !    --- A EST COPIEE DANS ACOPY
     do 10 i = 1, n
         call zcopy(i, a(1, i), 1, acopy(1, i), 1)
-10  end do
+ 10 end do
 !
     call mexthr(n, acopy, n)
 !
@@ -102,6 +103,6 @@ subroutine diaghr(n, a, lda, eval, evec,&
         scale = evec(izamax(n,evec(1,j),1),j)
         if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale,&
                                                                             evec(1, j), 1)
-20  end do
+ 20 end do
 !
 end subroutine

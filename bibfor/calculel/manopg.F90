@@ -17,6 +17,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -110,7 +111,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     character(len=32) :: noflpg
     real(kind=8) :: xno(3*nbnomx), xpg(3*nbpgmx), vol, ff(nbnomx)
     real(kind=8) :: poipg(nbnomx)
-    logical :: econom
+    aster_logical :: econom
     integer, pointer :: nolocfpg(:) => null()
     integer, pointer :: celd(:) => null()
     character(len=32), pointer :: pnlocfpg(:) => null()

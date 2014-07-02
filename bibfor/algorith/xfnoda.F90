@@ -19,8 +19,9 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
 ! ======================================================================
 ! ======================================================================
     implicit none
-#   include "asterfort/rcvalb.h"
-    logical(kind=1) :: fnoevo
+#include "asterf_types.h"
+# include "asterfort/rcvalb.h"
+    aster_logical :: fnoevo
     integer :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
     integer :: ndim, imate, yaenrm, adenme
     real(kind=8) :: dt, congem(dimcon), r(dimenr)

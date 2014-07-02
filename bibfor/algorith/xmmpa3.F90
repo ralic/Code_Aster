@@ -6,6 +6,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
     integer :: ndim, nno, nnos, nnol
@@ -64,7 +65,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
     integer :: i, j, l, jn, jfh, coefj
     integer :: pli, plj
     real(kind=8) :: ffi, ffj
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,9 +96,9 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
                     mmat(jn+ndim*jfh+l,pli) = mmat(jn+ndim*jfh+l,pli) + coefj * ffi * ffp(j) * nd&
                                               &(l) * jac
-132              continue
+132             continue
 !
-134          continue
+134         continue
             do 133 l = 1, singu*ndim
                 mmat(pli,jn+ndim*(1+nfh)+l) = mmat(&
                                               pli,&
@@ -107,11 +108,11 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
                 mmat(jn+ndim*(1+nfh)+l,pli)= mmat(jn+ndim*(1+nfh)+l,&
                 pli) + coefj * ffi * ffp(j) * rr * nd(l) * jac
-133          continue
+133         continue
 !
-131      continue
+131     continue
 !
-130  end do
+130 end do
 !
 !     CALCUL DE C
 !
@@ -127,7 +128,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
             mmat(pli,plj) = mmat(pli,plj) - ffj * ffi * jac / cpenco
 !
-221      continue
-220  end do
+221     continue
+220 end do
 !
 end subroutine

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nunuco(numedd, defico, lcont, sdnuco)
         character(len=24) :: numedd
         character(len=24) :: defico
-        logical(kind=1) :: lcont
+        aster_logical :: lcont
         character(len=24) :: sdnuco
     end subroutine nunuco
 end interface

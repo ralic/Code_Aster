@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                       seul)
@@ -23,6 +25,6 @@ interface
         character(len=8) :: resul
         integer :: lrang(nbmod)
         integer :: iorne
-        logical(kind=1) :: seul
+        aster_logical :: seul
     end subroutine moco99
 end interface

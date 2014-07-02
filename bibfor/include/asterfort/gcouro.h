@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcouro(base, resu, noma, nomno, coorn,&
                       lobj2, trav1, trav2, trav3, dir,&
@@ -31,7 +33,7 @@ interface
         real(kind=8) :: dir(3)
         character(len=8) :: nomnoe(*)
         character(len=8) :: fond
-        logical(kind=1) :: direc
+        aster_logical :: direc
         character(len=24) :: stok4
     end subroutine gcouro
 end interface

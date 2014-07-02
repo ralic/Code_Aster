@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine meamme(optioz, modele, nchar, lchar, mate,&
                       cara, exitim, time, base, merigi,&
@@ -25,7 +27,7 @@ interface
         character(len=8) :: lchar(*)
         character(len=*) :: mate
         character(len=*) :: cara
-        logical(kind=1) :: exitim
+        aster_logical :: exitim
         real(kind=8) :: time
         character(len=1) :: base
         character(len=*) :: merigi

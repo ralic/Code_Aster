@@ -1,5 +1,6 @@
 subroutine pdadom(xm0, xm2, xm4, dom)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/erfcam.h"
 #include "asterc/r8pi.h"
@@ -45,12 +46,12 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     character(len=16) :: pheno, phenom
     real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
-    integer :: ibask, ifonc, ihosin,  nbval
-    logical(kind=1) :: endur
+    integer :: ibask, ifonc, ihosin, nbval
+    aster_logical :: endur
 !
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  ipoint, nbpar, nbpoin
+    integer :: ipoint, nbpar, nbpoin
     real(kind=8) :: rbid, x1, x2, xnpoin
     real(kind=8) :: xp, y, y1, yd1, yd2, ypic1, ypic2
     real(kind=8), pointer :: dispics(:) => null()
@@ -138,7 +139,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         endif
         dispics(ipoint) = x1
         dispics(nbpoin+ipoint) = y1
-305  end do
+305 end do
 !
 !---------CORRECTION ELASTO-PLASTIQUE
 !
@@ -166,7 +167,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                     rvke = 1.d0/val(1)
                 endif
                 dispics(ipoint) = rvke * dispics(ipoint)
-304          continue
+304         continue
         endif
     endif
 !
@@ -192,7 +193,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                                 1, nomres(1), nrupt(1), icodre(1), 2)
                     wohler2(ipoint) = 1.d0 / nrupt(1)
                 endif
-307          continue
+307         continue
         else if (ibask.ne.0) then
             nompar = ' '
             nbpar = 0
@@ -202,7 +203,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                         2, nomres, val, icodre, 2)
             do 308 ipoint = 1, nbpoin
                 wohler2(ipoint) = val(1)*dispics(ipoint)**val( 2)
-308          continue
+308         continue
         else if (ihosin.ne.0) then
             nomres(1) = 'E_REFE'
             nomres(2) = 'A0'
@@ -226,7 +227,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                 else
                     wohler2(ipoint) = 0.d0
                 endif
-309          continue
+309         continue
         endif
     endif
 !
@@ -241,7 +242,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         ypic2 = dispics(nbpoin+ipoint)
         ypic1 = dispics(nbpoin+ipoint-1)
         dom = dom + (yd2*ypic2+yd1*ypic1)* (x2-x1)/2.d0
-310  end do
+310 end do
 !
     AS_DEALLOCATE(vr=dispics)
     AS_DEALLOCATE(vr=wohler2)

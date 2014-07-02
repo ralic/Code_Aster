@@ -1,5 +1,6 @@
 subroutine pemima(indch, chamgd, resu, modele, nbocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -49,7 +50,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbcmp, nzero, nbordr, iocc, jnuma, nbma
-    integer ::  n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
+    integer :: n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
     integer :: nbgma, jgma, nma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0,nbpar=3)
     real(kind=8) :: prec, inst
@@ -60,7 +61,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     character(len=16) :: nompar(nbpar)
     character(len=19) :: knum, cham, kins, lisins
     character(len=24) :: nomcha
-    logical(kind=1) :: exiord
+    aster_logical :: exiord
     character(len=8), pointer :: cmp(:) => null()
     data nompar/'CHAMP_GD','NUME_ORDRE','INST'/
     data typpar/'K16','I','R'/

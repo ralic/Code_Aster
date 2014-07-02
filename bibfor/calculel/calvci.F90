@@ -20,6 +20,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -82,7 +83,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
     integer :: nbcmp1,  imaill, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
-    logical :: fonc
+    aster_logical :: fonc
     real(kind=8) :: valp(4), res, valr(1)
     character(len=8) :: nomma, gd, nomf, evoim, nocmp, nomch
     character(len=14) :: nu

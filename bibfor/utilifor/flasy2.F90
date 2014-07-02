@@ -111,13 +111,14 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "blas/dcopy.h"
 #include "blas/dswap.h"
 #include "blas/idamax.h"
-    logical(kind=1) :: ltranl, ltranr
+    aster_logical :: ltranl, ltranr
     integer :: info, isgn, ldb, ldtl, ldtr, ldx, n1, n2
     real(kind=8) :: scale, xnorm
 !     ..
@@ -131,13 +132,13 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
     parameter          ( two = 2.0d+0, half = 0.5d+0, eight = 8.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: bswap, xswap
+    aster_logical :: bswap, xswap
     integer :: i, ip, ipiv, ipsv, j, jp, jpsv, k
     real(kind=8) :: bet, eps, gam, l21, sgn, smin, smlnum, tau1, temp, u11, u12
     real(kind=8) :: u22, xmax
 !     ..
 !     .. LOCAL ARRAYS ..
-    logical(kind=1) :: bswpiv( 4 ), xswpiv( 4 )
+    aster_logical :: bswpiv( 4 ), xswpiv( 4 )
     integer :: jpiv( 4 ), locl21( 4 ), locu12( 4 ), locu22( 4 )
     real(kind=8) :: btmp( 4 ), t16( 4, 4 ), tmp( 4 ), x2( 2 )
 !     ..

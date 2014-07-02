@@ -1,5 +1,6 @@
 subroutine te0483(option, nomte)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -34,7 +35,7 @@ subroutine te0483(option, nomte)
 ! VECTEURS DIMENSIONNES POUR  NNO = 8
 !
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno, npg
     integer :: ipoi, ivf, jgano, idfde, nnos
     integer :: igeom, imate, idepl, itemps, iechli
@@ -47,8 +48,8 @@ subroutine te0483(option, nomte)
     ndim = 3
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoi,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoi, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)

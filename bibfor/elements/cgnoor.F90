@@ -2,6 +2,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
                   motcle, typmcl, typlig, nbma, ndorig,&
                   ndextr, typm, vecori)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/dismoi.h"
@@ -91,11 +92,11 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     integer :: ier, im, n1, n2, nid, nig, nbnot
     integer :: nunori, trouv, ibid, in, nd
     integer :: existe, iret, ima
-    integer ::  jcour2
+    integer :: jcour2
     character(len=8) :: k8b, nomma, typmp
     character(len=16) :: k16bid, nomcmd
     character(len=24) :: conec, typp, nommai, nomnoe, mesmai, valk(2), nogrp
-    logical(kind=1) :: bug
+    aster_logical :: bug
     integer, pointer :: noeud_apparies(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
     integer, pointer :: type_noeud(:) => null()

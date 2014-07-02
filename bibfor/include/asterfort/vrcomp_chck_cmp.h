@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vrcomp_chck_cmp(mesh, nb_elem,&
                                compor_curr, compor_curr_r, compor_prev_r, &
@@ -30,8 +32,8 @@ interface
         character(len=48), intent(in) :: comp_comb_2
         character(len=19), intent(in) :: ligrel_curr
         character(len=19), intent(in) :: ligrel_prev
-        logical(kind=1), intent(out) :: no_same_spg
-        logical(kind=1), intent(out) :: no_same_cmp
-        logical(kind=1), intent(out) :: l_modif_vari
+        aster_logical, intent(out) :: no_same_spg
+        aster_logical, intent(out) :: no_same_cmp
+        aster_logical, intent(out) :: l_modif_vari
     end subroutine vrcomp_chck_cmp
 end interface

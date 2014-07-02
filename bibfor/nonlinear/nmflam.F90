@@ -25,6 +25,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
@@ -101,9 +102,9 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: linsta
+    aster_logical :: linsta
     integer :: nfreq, nfreqc
-    integer :: i,  ljeveu, ibid, iret
+    integer :: i, ljeveu, ibid, iret
     integer :: defo, ldccvg, numord
     integer :: nddle, nsta, ljeve2, cdsp
     real(kind=8) :: bande(2), r8bid
@@ -196,7 +197,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
             freqm = freqa
             freqr = freqv
         endif
-60  end do
+ 60 end do
     if (nsta .ne. 0) then
         call rsadpa(sdstab, 'L', 1, 'CHAR_STAB', 1,&
                     0, sjv=ljeve2, styp=k16bid)
@@ -252,7 +253,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! --- ARRET
 !
-999  continue
+999 continue
 !
 ! --- MODE SELECTIONNE ECRIT DANS SDPOST
 !

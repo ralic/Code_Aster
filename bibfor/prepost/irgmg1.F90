@@ -2,6 +2,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
                   tabv, partie, jtype, nbno, icmp,&
                   ifi, iwri, iadmax)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
@@ -9,7 +10,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
 #include "asterfort/utmess.h"
     integer :: numold(*), tabd(*), tabl(*), tabv(*), jtype
     integer :: icmp, ifi, ima, nbord2, iadmax, nbno
-    logical(kind=1) :: iwri
+    aster_logical :: iwri
     character(len=*) :: partie
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -81,7 +82,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
                     iadmax = iad
                     vale = vale + zr(jcesv-1+iad)
                 endif
-13          continue
+ 13         continue
         else if (zk8(jtype-1+ior).eq.'C') then
             if (partie .eq. 'REEL') then
                 do 15 ipt = 1, nbpt
@@ -91,7 +92,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
                         iadmax = iad
                         vale = vale + dble(zc(jcesv-1+iad))
                     endif
-15              continue
+ 15             continue
             else if (partie.eq.'IMAG') then
                 do 17 ipt = 1, nbpt
                     call cesexi('C', jcesd, jcesl, imaold, ipt,&
@@ -100,7 +101,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
                         iadmax = iad
                         vale = vale + dimag(zc(jcesv-1+iad))
                     endif
-17              continue
+ 17             continue
             endif
         endif
         if (abs(vale) .le. 1.d-99) vale = 0.d0
@@ -108,9 +109,9 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
         if (iwri) then
             do 19 ino = 1, nbno
                 write(ifi,1000) vale
-19          continue
+ 19         continue
         endif
-11  end do
+ 11 end do
 !
     call jedema()
 !

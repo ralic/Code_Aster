@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
                       quad)
@@ -23,6 +25,6 @@ interface
         integer :: icabl
         integer :: nbnoca(*)
         character(len=19) :: numaca
-        logical(kind=1) :: quad
+        aster_logical :: quad
     end subroutine sigmca
 end interface

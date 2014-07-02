@@ -25,13 +25,14 @@ subroutine mmtape(phasep, leltf, ndim, nnl, nne,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmmtcc.h"
 #include "asterfort/mmmtcu.h"
 #include "asterfort/mmmtff.h"
 #include "asterfort/mmmtfu.h"
     character(len=9) :: phasep
-    logical(kind=1) :: leltf
+    aster_logical :: leltf
     integer :: ndim, nne, nnl, nnm, nbcps
     real(kind=8) :: ffe(9), ffl(9), ffm(9)
     real(kind=8) :: wpg, jacobi

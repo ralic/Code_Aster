@@ -23,6 +23,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER LES MACRO-ELEMENTS DANS UNE MATR_ASSE
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/ascopr.h"
@@ -43,7 +44,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     character(len=16) :: optio
 !-----------------------------------------------------------------------
     real(kind=8) :: c1
-    logical(kind=1) :: lmasym, lmesym
+    aster_logical :: lmasym, lmesym
     character(len=2) :: tt
     character(len=19) :: matel
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
@@ -51,10 +52,10 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     integer :: nbecmx
     parameter(nbecmx=10)
     integer :: icodla(nbecmx), icodge(nbecmx)
-    integer :: i1, i2,  iad1, iad11, iad2, iad21
-    integer :: jsupma,   jnulo1, jprno, jposd1
+    integer :: i1, i2, iad1, iad11, iad2, iad21
+    integer :: jsupma, jnulo1, jprno, jposd1
     integer :: iec, ima, inold, nbterm, jprn1, jprn2
-    integer :: jresl, jsmdi, jsmhc,  jvalm(2), k1
+    integer :: jresl, jsmdi, jsmhc, jvalm(2), k1
     integer :: k2, n1, nugd, iancmp, lgncmp, icmp
     integer :: nbsma, nbssa, ncmp, nbvel, nddl1, nddl2, jtmp2, lgtmp2
     integer :: nec, nm, nmxcmp, nnoe, i, jec

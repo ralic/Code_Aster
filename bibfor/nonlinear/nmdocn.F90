@@ -19,6 +19,7 @@ subroutine nmdocn(parcri, parcon)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterc/r8vide.h"
@@ -66,7 +67,7 @@ subroutine nmdocn(parcri, parcon)
     integer :: iterat, iret, ire1, ire2, ire3, ire4
     character(len=8) :: rep
     integer :: ifm, niv
-    logical(kind=1) :: lretcv
+    aster_logical :: lretcv
 !
 ! ----------------------------------------------------------------------
 !

@@ -25,6 +25,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/ejcine.h"
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
@@ -78,7 +79,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, axi, ifhyme
+    aster_logical :: resi, rigi, axi, ifhyme
     integer :: i, j, kk, m, n, os, p, q, ibid, kpg, ncooro
     real(kind=8) :: dsidep(6, 6), b(2*ndim-1, ndim+1, 2*nno1+nno2)
     real(kind=8) :: sigmo(6), sigma(6), epsm(6), deps(6), wg
@@ -125,16 +126,16 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                 do 161 n = 1, 2*nno1
                     epsm(i) = epsm(i) + b(i,j,n)*ddlm(iu(j,n))
                     deps(i) = deps(i) + b(i,j,n)*ddld(iu(j,n))
-161              continue
-160          continue
-150      continue
+161             continue
+160         continue
+150     continue
 !
         do 151 i = ndim+1, 2*ndim-1
             do 163 n = 1, nno2
                 epsm(i) = epsm(i) + b(i,ndim+1,2*nno1+n)*ddlm(ip(n))
                 deps(i) = deps(i) + b(i,ndim+1,2*nno1+n)*ddld(ip(n))
-163          continue
-151      continue
+163         continue
+151     continue
 !
 !       CALCUL DE LA PRESSION AU POINT DE GAUSS
         presgm = 0.d0
@@ -142,7 +143,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
         do 164 n = 1, nno2
             presgm = presgm + ddlm(ip(n))*vff2(n,kpg)
             presgd = presgd + ddld(ip(n))*vff2(n,kpg)
-164      continue
+164     continue
 !
 !       STOCKAGE DE LA PRESSION DE FLUIDE AU PG
 !       POUR LA VI DE POST-TRAITEMENT DANS LA LDC
@@ -153,17 +154,17 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !       (MATRICE UTILE POUR LES VI DE POST-TRAITEMENT DANS LA LDC)
         do 165 j = 1, ndim
             coorot(j,kpg)=coopg(j,kpg)
-165      continue
+165     continue
         do 166 j = 1, ndim*ndim
             coorot(ndim+j,kpg)=rot(j)
-166      continue
+166     continue
         ncooro=ndim+ndim*ndim
 !
 !       CONTRAINTES -
         call r8inir(6, 0.d0, sigmo, 1)
         do 13 n = 1, 2*ndim-1
             sigmo(n) = sigm(n,kpg)
-13      continue
+ 13     continue
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
         call nmcomp('RIGI', kpg, 1, ndim, typmod,&
@@ -180,7 +181,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !         CONTRAINTES +
             do 12 n = 1, 2*ndim-1
                 sigp(n,kpg) = sigma(n)
-12          continue
+ 12         continue
 !
 !         VECTEUR FINT : U
             do 300 n = 1, 2*nno1
@@ -190,12 +191,12 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                     temp = 0.d0
                     do 320 j = 1, ndim
                         temp = temp + b(j,i,n)*sigp(j,kpg)
-320                  continue
+320                 continue
 !
                     vect(kk) = vect(kk) + wg*temp
 !
-301              continue
-300          continue
+301             continue
+300         continue
 !
 !         VECTEUR FINT : P
             do 302 n = 1, nno2
@@ -204,7 +205,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                 temp = 0.d0
                 do 321 i = ndim+1, 2*ndim-1
                     temp = temp + b(i,ndim+1,2*nno1+n)*sigp(i,kpg)
-321              continue
+321             continue
                 if (ifhyme) then
                     vect(kk) = vect(kk) + wg*temp
                 else
@@ -212,7 +213,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                     vect(kk) = 0.d0
                 endif
 !
-302          continue
+302         continue
 !
         endif
 !
@@ -235,16 +236,16 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                             do 540 p = 1, ndim
                                 do 550 q = 1, ndim
                                     temp = temp + b(p,i,n)*dsidep(p,q) *b(q,j,m)
-550                              continue
-540                          continue
+550                             continue
+540                         continue
 !
                             matr(kk) = matr(kk) + wg*temp
 !
-521                      continue
-520                  continue
+521                     continue
+520                 continue
 !
-501              continue
-500          continue
+501             continue
+500         continue
 !
 !         MATRICE K:P(N),P(M)
             do 502 n = 1, nno2
@@ -259,8 +260,8 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                     do 542 p = ndim+1, 2*ndim-1
                         do 552 q = ndim+1, 2*ndim-1
                             temp = temp + b(p,ndim+1,2*nno1+n)*dsidep( p,q) *b(q,ndim+1,2*nno1+m)
-552                      continue
-542                  continue
+552                     continue
+542                 continue
                     if (ifhyme) then
                         matr(kk) = matr(kk) + wg*temp
                     else
@@ -272,8 +273,8 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                         endif
                     endif
 !
-522              continue
-502          continue
+522             continue
+502         continue
 !
 !         MATRICE K:P(N),U(J,M)
 !         ATTENTION, TERME MIS A ZERO, VERIFICATION NECESSAIRE
@@ -291,8 +292,8 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                             do 553 q = 1, ndim
 !
                                 temp = temp + b(p,ndim+1,2*nno1+n) *dsidep(p,q)*b(q,j,m)*0.d0
-553                          continue
-543                      continue
+553                         continue
+543                     continue
 !
                         if (ifhyme) then
                             matr(kk) = matr(kk) + wg*temp
@@ -301,9 +302,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                             matr(kk)=0.d0
                         endif
 !
-533                  continue
-523              continue
-503          continue
+533                 continue
+523             continue
+503         continue
 !
 !         MATRICE K:U(I,N),P(M)
             do 504 n = 1, 2*nno1
@@ -323,13 +324,13 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                             matr(kk)=0.d0
                         endif
 !
-524                  continue
+524                 continue
 !
-514              continue
-504          continue
+514             continue
+504         continue
 !
         endif
 !
-11  end do
+ 11 end do
 !
 end subroutine

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine caelca(modele, chmat, caelem, irana1, icabl,&
                       nbnoca, numaca, quad, regl, relax, &
@@ -27,9 +29,9 @@ interface
         integer :: icabl
         integer :: nbnoca(*)
         character(len=19) :: numaca
-        logical(kind=1) :: quad
+        aster_logical :: quad
         character(len=4) :: regl
-        logical(kind=1) :: relax
+        aster_logical :: relax
         real(kind=8) :: ea
         real(kind=8) :: rh1000
         real(kind=8) :: prelax

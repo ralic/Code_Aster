@@ -27,6 +27,7 @@ subroutine assma1(matas, ldist)
 ! IN LDIST (LOGICAL): INDIQUE SI LE CALCUL EST DISTRIBUE AU SENS
 !                     DONNEE INCOMPLETE PAR PROC
 !---------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/echmat.h"
@@ -40,9 +41,9 @@ subroutine assma1(matas, ldist)
 !
     character(len=*) :: matas
 !---------------------------------------------------------------
-    logical(kind=1) :: lmnsy, exilag, ldist
-    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
-    integer :: ilig, jcol, kterm, nlong,  nvale, jvalm1, jvalm2, jconl
+    aster_logical :: lmnsy, exilag, ldist
+    integer :: nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
+    integer :: ilig, jcol, kterm, nlong, nvale, jvalm1, jvalm2, jconl
     character(len=1) :: ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19

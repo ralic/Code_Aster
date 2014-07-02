@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
                       fabord)
@@ -23,6 +25,6 @@ interface
         integer :: nunoa
         integer :: nunob
         integer :: nunoc
-        logical(kind=1) :: fabord
+        aster_logical :: fabord
     end subroutine xfabor
 end interface

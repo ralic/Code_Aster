@@ -19,6 +19,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 ! person_in_charge: sam.cuvilliez at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -49,13 +50,12 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 !
     integer :: ier, istatu, ino, i, j, ielim, in, ddlmax
-    integer ::  nddl
+    integer :: nddl
 !      AU PLUS 8*3=24 DDL (MAX ATTEINT POUR L'HEXA8 XHT)
     parameter    (ddlmax=24)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical(kind=1) :: lelim
-    logical :: lmat, lvec
+    aster_logical :: lelim, lmat, lvec
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------
@@ -70,13 +70,11 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     lvec = .false.
 !
 !   OPTIONS RELATIVES A UNE MATRICE
-    if     (     option .eq. 'RIGI_THER'&
-            .or. option .eq. 'RIGI_THER_PARO_F'&
-            .or. option .eq. 'RIGI_THER_PARO_R'&
-            .or. option .eq. 'MASS_THER'        ) then
+    if (option .eq. 'RIGI_THER' .or. option .eq. 'RIGI_THER_PARO_F' .or. option .eq.&
+        'RIGI_THER_PARO_R' .or. option .eq. 'MASS_THER') then
         lmat = .true.
 !   OPTIONS RELATIVES A UN VECTEUR
-    elseif (     option .eq. 'CHAR_THER_EVOL'&
+        elseif (     option .eq. 'CHAR_THER_EVOL'&
             .or. option .eq. 'CHAR_THER_PARO_F'&
             .or. option .eq. 'CHAR_THER_PARO_R' ) then
         lvec = .true.
@@ -90,7 +88,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
     if (present(mat) .and. .not.present(vect)) then
         ASSERT(lmat .and. .not.lvec)
-    elseif (.not.present(mat) .and. present(vect)) then
+    else if (.not.present(mat) .and. present(vect)) then
         ASSERT(.not.lmat .and. lvec)
 !   EXACTEMENT UN DES 2 ARGUMENTS mat OU vect EST OBLIGATOIRE
     else
@@ -112,7 +110,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     ASSERT(nddl.le.ddlmax)
     do 99 ino = 1, ddlmax
         posddl(ino)=0
-99  end do
+ 99 end do
 !
 !     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
     lelim=.false.
@@ -168,7 +166,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
         endif
 !
-100  end do
+100 end do
 !
     if (lelim) then
 !
@@ -185,7 +183,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
                 else if (codia.lt.dmin) then
                     dmin=codia
                 endif
-110          continue
+110         continue
             codia=(dmax+dmin)/2.0d0
             if (codia .eq. 0) codia = 1
         endif
@@ -201,12 +199,12 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
                     if (j .lt. i) mat((i-1)*i/2+j) = 0.d0
                     if (j .eq. i) mat((i-1)*i/2+j) = codia
                     if (j .gt. i) mat((j-1)*j/2+i) = 0.d0
-210              continue
+210             continue
             endif
 !         POUR LES OPTIONS CONCERNANT DES VECTEURS :
 !           MISE A ZERO DES TERMES I
             if (lvec) vect(i) = 0.d0
-200      continue
+200     continue
 !
     endif
 !

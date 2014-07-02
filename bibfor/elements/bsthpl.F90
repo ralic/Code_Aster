@@ -1,5 +1,6 @@
 subroutine bsthpl(nomte, bsigth, indith)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefgt.h"
@@ -9,7 +10,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: bsigth(24)
-    logical(kind=1) :: indith
+    aster_logical :: indith
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -49,15 +50,15 @@ subroutine bsthpl(nomte, bsigth, indith)
 !
     do 10 i = 1, 24
         bsigth(i) = zero
-10  end do
+ 10 end do
 !
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
 !     ----------------------------------------------------
     call jevech('PGEOMER', 'L', jgeom)
 !
-    if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDSTR3' .or. nomte .eq. 'MEDKTG3' .or.&
-        nomte .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
+    if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDSTR3' .or. nomte .eq. 'MEDKTG3' .or. nomte&
+        .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
         nno = 3
         call dxtpgl(zr(jgeom), pgl)
         else if (nomte.eq.'MEDKQU4' .or.&
@@ -83,7 +84,8 @@ subroutine bsthpl(nomte, bsigth, indith)
 !
 ! --- CALCUL DE BT*SIGTH :
 !     ------------------
-    call dxbsig(nomte, xyzl, pgl, sigth, bsigth,'FORC_NODA')
+    call dxbsig(nomte, xyzl, pgl, sigth, bsigth,&
+                'FORC_NODA')
 !
 !
 end subroutine

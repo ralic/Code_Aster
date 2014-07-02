@@ -29,6 +29,7 @@ subroutine op0051()
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -78,7 +79,7 @@ subroutine op0051()
     character(len=19) :: nch19
     character(len=24) :: xnumcp, xnomcp, vnomch, vcodop, xnovar
     character(len=24) :: naccis, naccr8, nch24, nlsmac, nlsnac
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !     ------------------------------------------------------------------
 !
 !====

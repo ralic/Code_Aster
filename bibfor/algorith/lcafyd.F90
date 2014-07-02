@@ -42,6 +42,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !         BNEWS   :  GESTION MECANISMES TRACTION POUR HUJEUX
 !         MTRAC   :  GESTION MECANISMES TRACTION POUR HUJEUX (BIS)
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/hujayd.h"
 #include "asterfort/lceqvn.h"
@@ -59,7 +60,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
     character(len=16) :: loi, comp(*), necoul
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
-    logical(kind=1) :: bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
     common /tdim/   ndt  , ndi
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef
@@ -85,7 +86,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
             ASSERT(nbcomm(nmat, 2).eq.1)
             do 102 i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+1)
-102          continue
+102         continue
             necoul=cpmono(3)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 irr=1
@@ -99,7 +100,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !           AUTRES COMPORTEMENTS MONOCRISTALLINS
             do 103 i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+2)
-103          continue
+103         continue
         endif
 !
 !
@@ -154,13 +155,13 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 ! ===    ============================================================
         do 200 i = 1, ndi
             epsfi(i)=epsfi(i)+eisp
-200      continue
+200     continue
 ! ===    ============================================================
 ! ---    AFFECTATION DES VALEURS AU VECTEUR YD(NDT+I)
 ! ===    ============================================================
         do 210 i = 1, ndt
             yd(ndt+i) = epsfi(i)
-210      continue
+210     continue
 !
     else if (loi(1:4) .eq. 'LETK') then
 ! --- INITIALISATION A ZERO DU MULTIPLICATEUR PLASTIQUE

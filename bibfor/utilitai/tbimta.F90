@@ -17,6 +17,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 ! ======================================================================
 ! aslint: disable=W1303
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -42,14 +43,14 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 ! IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer ::  i, j, k, ipar, jvale, jlogq, ideb, ifin
+    integer :: i, j, k, ipar, jvale, jlogq, ideb, ifin
     integer :: itc, itl, lgt, jcol, jlig, ifinc, il, ic
     integer :: lgl, vi(2), vali, iret, i1, i2, i3, i4, itc1, itc2
-    integer :: ilon, id, if, ir, nbpara,  npara, icf
+    integer :: ilon, id, if, ir, nbpara, npara, icf
     integer :: nblign
     real(kind=8) :: vr(2), valr, prec(2)
     complex(kind=8) :: vc(2), valc
-    logical(kind=1) :: erreur
+    aster_logical :: erreur
     character(len=3) :: typec, typel, ctype
     character(len=4) :: kfin, chfin
     character(len=8) :: crit(2), form1
@@ -83,7 +84,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
         else if (formar(i:i) .eq. '.') then
             if = i-1
         endif
- 2  end do
+  2 end do
     if (id .eq. if .and. id .ne. 0) then
         read(formar(id:if),'(I1)') ir
     else if (id+1 .eq. if) then
@@ -112,11 +113,11 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
                 nom_para(npara) = j
                 goto 10
             endif
-12      continue
+ 12     continue
         erreur = .true.
         valkk (1) = inpar
         call utmess('A', 'UTILITAI6_89', sk=valkk(1))
-10  end do
+ 10 end do
     if (erreur) then
         call utmess('F', 'PREPOST_60')
     endif
@@ -183,54 +184,54 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
             if (typec(1:1) .eq. 'I') then
                 do 120 j = 1, ic
                     if (zi(jcol+j-1) .eq. zi(jvale+i-1)) goto 100
-120              continue
+120             continue
                 ic = ic + 1
                 zi(jcol+ic-1) = zi(jvale+i-1)
             else if (typec(1:1) .eq. 'R') then
                 do 121 j = 1, ic
                     if (zr(jcol+j-1) .eq. zr(jvale+i-1)) goto 100
-121              continue
+121             continue
                 ic = ic + 1
                 zr(jcol+ic-1) = zr(jvale+i-1)
             else if (typec(1:1) .eq. 'C') then
                 do 122 j = 1, ic
                     if (zc(jcol+j-1) .eq. zc(jvale+i-1)) goto 100
-122              continue
+122             continue
                 ic = ic + 1
                 zc(jcol+ic-1) = zc(jvale+i-1)
             else if (typec(1:3) .eq. 'K80') then
                 do 123 j = 1, ic
                     if (zk80(jcol+j-1) .eq. zk80(jvale+i-1)) goto 100
-123              continue
+123             continue
                 ic = ic + 1
                 zk80(jcol+ic-1) = zk80(jvale+i-1)
             else if (typec(1:3) .eq. 'K32') then
                 do 124 j = 1, ic
                     if (zk32(jcol+j-1) .eq. zk32(jvale+i-1)) goto 100
-124              continue
+124             continue
                 ic = ic + 1
                 zk32(jcol+ic-1) = zk32(jvale+i-1)
             else if (typec(1:3) .eq. 'K24') then
                 do 125 j = 1, ic
                     if (zk24(jcol+j-1) .eq. zk24(jvale+i-1)) goto 100
-125              continue
+125             continue
                 ic = ic + 1
                 zk24(jcol+ic-1) = zk24(jvale+i-1)
             else if (typec(1:3) .eq. 'K16') then
                 do 126 j = 1, ic
                     if (zk16(jcol+j-1) .eq. zk16(jvale+i-1)) goto 100
-126              continue
+126             continue
                 ic = ic + 1
                 zk16(jcol+ic-1) = zk16(jvale+i-1)
             else if (typec(1:2) .eq. 'K8') then
                 do 127 j = 1, ic
                     if (zk8(jcol+j-1) .eq. zk8(jvale+i-1)) goto 100
-127              continue
+127             continue
                 ic = ic + 1
                 zk8(jcol+ic-1) = zk8(jvale+i-1)
             endif
         endif
-100  end do
+100 end do
 !
     ipar = nom_para(2)
     lipacr(1) = tblp(1+4*(ipar-1) )
@@ -271,54 +272,54 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
             if (typel(1:1) .eq. 'I') then
                 do 220 j = 1, il
                     if (zi(jlig+j-1) .eq. zi(jvale+i-1)) goto 200
-220              continue
+220             continue
                 il = il + 1
                 zi(jlig+il-1) = zi(jvale+i-1)
             else if (typel(1:1) .eq. 'R') then
                 do 221 j = 1, il
                     if (zr(jlig+j-1) .eq. zr(jvale+i-1)) goto 200
-221              continue
+221             continue
                 il = il + 1
                 zr(jlig+il-1) = zr(jvale+i-1)
             else if (typel(1:1) .eq. 'C') then
                 do 222 j = 1, il
                     if (zc(jlig+j-1) .eq. zc(jvale+i-1)) goto 200
-222              continue
+222             continue
                 il = il + 1
                 zc(jlig+il-1) = zc(jvale+i-1)
             else if (typel(1:3) .eq. 'K80') then
                 do 223 j = 1, il
                     if (zk80(jlig+j-1) .eq. zk80(jvale+i-1)) goto 200
-223              continue
+223             continue
                 il = il + 1
                 zk80(jlig+il-1) = zk80(jvale+i-1)
             else if (typel(1:3) .eq. 'K32') then
                 do 224 j = 1, il
                     if (zk32(jlig+j-1) .eq. zk32(jvale+i-1)) goto 200
-224              continue
+224             continue
                 il = il + 1
                 zk32(jlig+il-1) = zk32(jvale+i-1)
             else if (typel(1:3) .eq. 'K24') then
                 do 225 j = 1, il
                     if (zk24(jlig+j-1) .eq. zk24(jvale+i-1)) goto 200
-225              continue
+225             continue
                 il = il + 1
                 zk24(jlig+il-1) = zk24(jvale+i-1)
             else if (typel(1:3) .eq. 'K16') then
                 do 226 j = 1, il
                     if (zk16(jlig+j-1) .eq. zk16(jvale+i-1)) goto 200
-226              continue
+226             continue
                 il = il + 1
                 zk16(jlig+il-1) = zk16(jvale+i-1)
             else if (typel(1:2) .eq. 'K8') then
                 do 227 j = 1, il
                     if (zk8(jlig+j-1) .eq. zk8(jvale+i-1)) goto 200
-227              continue
+227             continue
                 il = il + 1
                 zk8(jlig+il-1) = zk8(jvale+i-1)
             endif
         endif
-200  end do
+200 end do
     lgt = lgl + itl + 1
 !
     icf = ic
@@ -352,8 +353,8 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
             chainc(ideb:ifin) = zk8(jcol+i-1)
         endif
         ideb = ifin + 2
-300  end do
-302  continue
+300 end do
+302 continue
     ifinc = ifin + 2
 !
     call codent(ifinc, 'D', kfin)
@@ -469,13 +470,13 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
                 valkk (3) = lipacr(2)
                 call utmess('F', 'UTILITAI6_99', nk=3, valk=valkk)
             endif
-420      continue
+420     continue
 !
         call codent(ifin, 'G', chfin)
         form1 = '(A'//chfin//')'
         write(ifr,form1) chaine(1:ifin)
 !
-410  end do
+410 end do
 !
     write ( ifr , formd )
 !

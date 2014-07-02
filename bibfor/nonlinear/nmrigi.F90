@@ -22,6 +22,7 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/merimo.h"
 #include "asterfort/nmchex.h"
@@ -76,7 +77,7 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
     character(len=1) :: base
     character(len=24) :: modele
     character(len=16) :: optrig
-    logical(kind=1) :: tabret(0:10), lendo
+    aster_logical :: tabret(0:10), lendo
 !
 ! ----------------------------------------------------------------------
 !

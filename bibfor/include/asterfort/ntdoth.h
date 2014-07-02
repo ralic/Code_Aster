@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ntdoth(modele, mate, carele, fomult, matcst,&
                       coecst, infcha, result, nuord)
@@ -22,8 +24,8 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: fomult
-        logical(kind=1) :: matcst
-        logical(kind=1) :: coecst
+        aster_logical :: matcst
+        aster_logical :: coecst
         character(len=19) :: infcha
         character(len=8) :: result
         integer :: nuord

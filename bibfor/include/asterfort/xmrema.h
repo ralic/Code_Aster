@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                       ifise, defico, izone, alias, mmait,&
@@ -45,7 +47,7 @@ interface
         real(kind=8) :: t2min(3)
         real(kind=8) :: ximin
         real(kind=8) :: yimin
-        logical(kind=1) :: projin
+        aster_logical :: projin
         integer :: stamin
         integer :: ifism
     end subroutine xmrema

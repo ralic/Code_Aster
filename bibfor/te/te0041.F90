@@ -73,14 +73,12 @@ subroutine te0041(option, nomte)
     integer :: ntermx
     parameter     (zero=0.0d0,un=1.0d0,ntermx=144)
     real(kind=8) :: tempo(ntermx)
-    logical :: lcond
 ! --- ------------------------------------------------------------------
     call jemarq()
 !
 !
     ! Ce sont bien des elements discrets :
-    lcond=lteatt('DIM_TOPO_MODELI','-1')
-    ASSERT(lcond)
+    ASSERT(lteatt('DIM_TOPO_MODELI','-1'))
     fami='FPG1'
     kpg=1
     spt=1

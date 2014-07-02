@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cjspla(mod, crit, mater, seuili, seuild,&
                       nvi, epsd, deps, sigd, vind,&
@@ -38,6 +40,6 @@ interface
         integer :: ndec
         real(kind=8) :: epscon
         integer :: iret
-        logical(kind=1) :: trac
+        aster_logical :: trac
     end subroutine cjspla
 end interface

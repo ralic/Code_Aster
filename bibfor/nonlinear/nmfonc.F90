@@ -5,6 +5,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterc/getfac.h"
@@ -55,8 +56,8 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     character(len=24), intent(in) :: modele
     character(len=24), intent(in) :: defico
     character(len=19), intent(in) :: lischa
-    logical(kind=1), intent(in) :: lcont
-    logical(kind=1), intent(in) :: lunil
+    aster_logical, intent(in) :: lcont
+    aster_logical, intent(in) :: lunil
     character(len=19), intent(in) :: sdnume
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sdcriq
@@ -96,17 +97,17 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
     integer :: nocc, iret, nbss, nbsst
     integer :: nbfonc, iform
-    logical(kind=1) :: lbors, lfrot, lchoc, lallv
-    logical(kind=1) :: lboucg, lboucf, lboucc
+    aster_logical :: lbors, lfrot, lchoc, lallv
+    aster_logical :: lboucg, lboucf, lboucc
     integer :: ixfem, ichar, iflamb, imvibr, istab, nmatdi
-    logical(kind=1) :: lsuiv, llapl, lcine, ldidi
+    aster_logical :: lsuiv, llapl, lcine, ldidi
     character(len=8) :: k8bid, repk
     character(len=16) :: nomcmd, k16bid, matdis
     character(len=19) :: compor
     character(len=24) :: metres, precon, errthm
-    logical(kind=1) :: lstat, ldyna, larrno
-    logical(kind=1) :: lnewtc, lnewtf, lnewtg
-    logical(kind=1) :: lexpl
+    aster_logical :: lstat, ldyna, larrno
+    aster_logical :: lnewtc, lnewtf, lnewtg
+    aster_logical :: lexpl
     integer :: ifm, niv
     integer :: nsta
     character(len=24), pointer :: slvk(:) => null()

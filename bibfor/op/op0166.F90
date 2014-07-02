@@ -33,6 +33,7 @@ subroutine op0166()
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -55,8 +56,8 @@ subroutine op0166()
 #include "asterfort/utmess.h"
     integer :: iret
     integer :: ie, n1, n2, n3
-    logical(kind=1) :: isole
-    logical(kind=1) :: lnoeu, lelno, lelem, lelga
+    aster_logical :: isole
+    aster_logical :: lnoeu, lelno, lelem, lelga
     character(len=4) :: tychv, typcal
     character(len=8) :: k8b, noma1, noma2, noma3, resuin, prol0, projon, norein
     character(len=8) :: nomo1, nomo2, moa1, moa2, cnref, nomare, noca

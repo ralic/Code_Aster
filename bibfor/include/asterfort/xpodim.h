@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                       nnntot, ncotot, listno, cns1, cns2,&
@@ -47,6 +49,6 @@ interface
         integer :: ngfon
         character(len=19) :: comps1
         character(len=19) :: comps2
-        logical(kind=1) :: pre1
+        aster_logical :: pre1
     end subroutine xpodim
 end interface 

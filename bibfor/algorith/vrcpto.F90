@@ -19,6 +19,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 !
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -49,7 +50,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
     real(kind=8) :: ptotm, ptotp, biotp, biotm, em, num, ep, nup, troikp, troikm
     integer :: iret1, iret2, k
 !
-    logical(kind=1) :: lpomec
+    aster_logical :: lpomec
     integer :: dmmeca, ii
     parameter     ( dmmeca = 20 )
     character(len=16) :: pomeca(dmmeca)
@@ -94,7 +95,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
         lpomec = .false.
         do 1 ii = 1, dmmeca
             if (compor(1) .eq. pomeca(ii)) lpomec = .true.
- 1      continue
+  1     continue
 !
         if (.not.lpomec) then
             call utmess('F', 'CHAINAGE_9', sk=compor(1))
@@ -149,10 +150,10 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 !
         do 10 k = 1, 3
             deps(k) = deps(k)-(biotp/troikp*ptotp-biotm/troikm*ptotm)
-10      continue
+ 10     continue
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

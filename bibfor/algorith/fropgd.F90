@@ -20,7 +20,8 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfacat.h"
 #include "asterfort/cfaduf.h"
@@ -59,7 +60,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     character(len=19) :: solveu, matass, depdel
     character(len=14) :: numedd
     integer :: ctccvg
-    logical(kind=1) :: ctcfix
+    aster_logical :: ctcfix
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,11 +113,11 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !
 !
     integer :: ifm, niv
-    integer ::  ieq, iter
+    integer :: ieq, iter
     integer :: llliai, llliac
     integer :: llf, llf1, llf2
     integer :: indic, indfac, ajliai, spliai
-    logical(kind=1) :: lechec
+    aster_logical :: lechec
     integer :: nbpren
     character(len=14) :: numef1, numef2
     character(len=19) :: maf1, maf2
@@ -128,7 +129,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     character(len=19) :: macont
     integer :: ldscon, lmat, lmaf1
     character(len=19) :: matrcf, fro1, fro2
-    integer ::  nmult
+    integer :: nmult
     character(len=19) :: atmu, afmu
     integer :: jatmu, jafmu
     character(len=19) :: ddeplc, ddepl0, ddelt, deplc
@@ -236,13 +237,13 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
-40  continue
+ 40 continue
 !
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
     do 50 ieq = 1, neq
         vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
-50  end do
+ 50 end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
 !
@@ -323,7 +324,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !
 ! --- ON PASSE A L'ITERATION DE CONTRAINTES ACTIVES SUIVANTES
 !
-150  continue
+150 continue
 !
     iter = iter + 1
 !
@@ -340,7 +341,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !                            ON A CONVERGE
 ! ======================================================================
 !
-160  continue
+160 continue
 !
 ! --- ON ENLEVE TOUTES LES LIAISONS DE CONTACT POUR LESQUELLES
 ! --- LA PRESSION EST NEGATIVE
@@ -354,7 +355,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !
     do 240 ieq = 1, neq
         depc(ieq) = depde(ieq) + ddepc(ieq)
-240  end do
+240 end do
 !
 ! --- CALCUL DES FORCES DE CONTACT (AT.MU)
 !
@@ -419,7 +420,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
         ctcfix = .true.
     endif
 !
-999  continue
+999 continue
 !
 ! --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 !

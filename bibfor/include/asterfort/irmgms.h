@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                       nonoe, lgmsh, versio)
@@ -24,7 +26,7 @@ interface
         character(len=8) :: noma
         integer :: nbgrm
         character(len=8) :: nonoe(*)
-        logical(kind=1) :: lgmsh
+        aster_logical :: lgmsh
         integer :: versio
     end subroutine irmgms
 end interface

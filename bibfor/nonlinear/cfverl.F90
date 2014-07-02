@@ -19,6 +19,7 @@ subroutine cfverl(defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/jedema.h"
@@ -51,7 +52,7 @@ subroutine cfverl(defico, resoco)
     character(len=19) :: sdappa
     character(len=24) :: apverk, apvera
     integer :: jlistn, jlista
-    logical(kind=1) :: lliss
+    aster_logical :: lliss
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,11 +82,11 @@ subroutine cfverl(defico, resoco)
         if (nomnoe .ne. ' ') then
             write(6,1000) nomnoe,angle
         endif
-10  end do
+ 10 end do
 !
     1000 format (a8,3x,f8.2)
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,6 @@
 subroutine q4gedg(xyzl, option, pgl, depl, edgl)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dsqbfb.h"
 #include "asterfort/dxmate.h"
@@ -45,20 +46,20 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: vf(3), vm(3), vt(2)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), vcm(2), vcf(2), caraq4(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), jacob(5), qsi, eta
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                         jgano=jgano)
         ne = npg
         fami='RIGI'
     else if (option(6:9).eq.'ELNO') then
-        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                         jgano=jgano)
         ne = nno
         fami='NOEU'
     endif
@@ -76,11 +77,11 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
     do 20 j = 1, nno
         do 10 i = 1, 2
             depm(i+2* (j-1)) = depl(i+6* (j-1))
-10      continue
+ 10     continue
         depf(1+3* (j-1)) = depl(1+2+6* (j-1))
         depf(2+3* (j-1)) = depl(3+2+6* (j-1))
         depf(3+3* (j-1)) = -depl(2+2+6* (j-1))
-20  end do
+ 20 end do
     if (option(1:4) .eq. 'DEGE') then
         do 90 ie = 1, ne
 !
@@ -101,23 +102,23 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             do 30 j = 1, 12
                 bcdf(1) = bcdf(1) + bc(1,j)*depf(j)
                 bcdf(2) = bcdf(2) + bc(2,j)*depf(j)
-30          continue
+ 30         continue
             do 40 k = 1, 3
                 bdf(k) = 0.d0
                 bdm(k) = 0.d0
-40          continue
+ 40         continue
             do 70 i = 1, 3
                 do 50 j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-50              continue
+ 50             continue
                 do 60 j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
-60              continue
-70          continue
+ 60             continue
+ 70         continue
             do 80 i = 1, 3
                 edgl(i+8* (ie-1)) = bdm(i)
                 edgl(i+3+8* (ie-1)) = bdf(i)
-80          continue
+ 80         continue
             edgl(7+8* (ie-1)) = bcdf(1)
             edgl(8+8* (ie-1)) = bcdf(2)
 !           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
@@ -125,7 +126,7 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             edgl(6+8* (ie-1)) = edgl(6+8* (ie-1))/2.d0
             edgl(7+8* (ie-1)) = bcdf(1)/2.d0
             edgl(8+8* (ie-1)) = bcdf(2)/2.d0
-90      continue
+ 90     continue
     else
         do 180 ie = 1, ne
 !
@@ -148,7 +149,7 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             do 100 j = 1, 12
                 bcdf(1) = bcdf(1) + bc(1,j)*depf(j)
                 bcdf(2) = bcdf(2) + bc(2,j)*depf(j)
-100          continue
+100         continue
             vt(1) = dc(1,1)*bcdf(1) + dc(1,2)*bcdf(2)
             vt(2) = dc(2,1)*bcdf(1) + dc(2,2)*bcdf(2)
             do 110 k = 1, 3
@@ -160,7 +161,7 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
                 vmf(k) = 0.d0
                 vmc(k) = 0.0d0
                 vfc(k) = 0.0d0
-110          continue
+110         continue
             vcm(1) = 0.0d0
             vcm(2) = 0.0d0
             vcf(1) = 0.0d0
@@ -170,19 +171,19 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             do 140 i = 1, 3
                 do 120 j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-120              continue
+120             continue
                 do 130 j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
-130              continue
-140          continue
+130             continue
+140         continue
             do 160 i = 1, 3
                 do 150 j = 1, 3
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
                     vm(i) = vm(i) + dm(i,j)*bdm(j)
                     vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
-150              continue
-160          continue
+150             continue
+160         continue
 !
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
             dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
@@ -204,10 +205,10 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             do 170 i = 1, 3
                 edgl(i+8* (ie-1)) = vm(i) + vmf(i) + vmc(i)
                 edgl(i+3+8* (ie-1)) = vf(i) + vfm(i) + vfc(i)
-170          continue
+170         continue
             edgl(7+8* (ie-1)) = vt(1) + vcm(1) + vcf(1)
             edgl(8+8* (ie-1)) = vt(2) + vcm(2) + vcf(2)
-180      continue
+180     continue
     endif
 !
 end subroutine

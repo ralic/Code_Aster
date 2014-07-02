@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irmail(form, ifi, versio, noma, lmod,&
                       nomo, nive, infmai, formar)
@@ -22,7 +24,7 @@ interface
         integer :: ifi
         integer :: versio
         character(len=8) :: noma
-        logical(kind=1) :: lmod
+        aster_logical :: lmod
         character(len=8) :: nomo
         integer :: nive
         integer :: infmai

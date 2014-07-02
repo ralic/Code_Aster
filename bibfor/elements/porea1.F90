@@ -1,6 +1,7 @@
 subroutine porea1(nno, nc, deplm, deplp, geom,&
                   gamma, vecteu, pgl, xl, angp)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/angvx.h"
@@ -15,7 +16,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
 !
     real(kind=8) :: pgl(3, 3), xl, angp(3)
-    logical(kind=1) :: vecteu
+    aster_logical :: vecteu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +72,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
     do 20 i = 1, 3
         xug(i) = deplm(i) + geom(i,1)
         xug(i+3) = deplm(i+nc) + geom(i,2)
-20  end do
+ 20 end do
     call vdiff(3, xug(4), xug(1), xd)
 !     CALCUL DES DEUX PREMIERS ANGLES NAUTIQUES AU TEMPS T-
     call angvx(xd, alfa0, beta0)
@@ -79,12 +80,12 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
 !     DEPLACEMENT TOTAL A T+
     do 110 i = 1, nno*nc
         utg(i) = deplm(i) + deplp(i)
-110  continue
+110 continue
 !     CALCUL DU VECTEUR XLOCAL AU TEMPS T+
     do 120 i = 1, 3
         xug(i) = utg(i) + geom(i,1)
         xug(i+3) = utg(i+nc) + geom(i,2)
-120  end do
+120 end do
     call vdiff(3, xug(4), xug(1), xd)
 !     CALCUL DES DEUX PREMIERS ANGLES NAUTIQUES AU TEMPS T+
     call angvx(xd, alfa1, beta1)
@@ -112,7 +113,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
         do 130 i = 1, 3
             xugm(i ) = geom(i,1) + deplm(i)
             xugm(i+3) = geom(i,2) + deplm(nc+i)
-130      continue
+130     continue
         call vdiff(3, xugm(4), xugm(1), xdm)
 !        MISE A JOUR DU 3EME ANGLE NAUTIQUE AU TEMPS T+
         call gareac(xdm, xd, dgamma)

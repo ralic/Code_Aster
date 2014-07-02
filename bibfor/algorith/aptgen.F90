@@ -19,6 +19,7 @@ subroutine aptgen(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apnomk.h"
 #include "asterfort/appari.h"
@@ -54,7 +55,7 @@ subroutine aptgen(sdappa)
     integer :: jdecmm, nbmam
     integer :: jdecme, nbmae
     character(len=4) :: typzon
-    logical(kind=1) :: apcald
+    aster_logical :: apcald
     real(kind=8) :: epsmax
     integer :: itemax
 !
@@ -115,7 +116,7 @@ subroutine aptgen(sdappa)
                         izone, typzon, itemax, epsmax, jdecme,&
                         nbmae)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

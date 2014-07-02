@@ -1,6 +1,7 @@
 subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
                   nbc, indic, nsschn, mcf, iocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -178,7 +179,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     integer :: num, anumcp, i, ind, n1, ibid
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
-    logical(kind=1) :: utili
+    aster_logical :: utili
     character(len=8) :: repere
     character(len=24) :: nomjv
 ! ----------------------------------------------------------------------

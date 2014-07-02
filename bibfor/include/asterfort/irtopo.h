@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                       nbmato, nonuma, nbnoto, nonuno, codret)
@@ -22,7 +24,7 @@ interface
         character(len=8) :: formaf
         integer :: ifichi
         character(len=8) :: leresu
-        logical(kind=1) :: lresul
+        aster_logical :: lresul
         integer :: nbmato
         character(len=24) :: nonuma
         integer :: nbnoto

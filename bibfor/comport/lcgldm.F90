@@ -22,6 +22,7 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/ceps33.h"
 #include "asterfort/cntmat.h"
 #include "asterfort/cstgld.h"
@@ -77,8 +78,8 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
 !       QM1 ET QM2 = Tm DANS R7.01.32
 !       QFF        = Tf DANS R7.01.32
 !
-    logical(kind=1) :: rigi, resi, coup
-    logical(kind=1) :: lelas, elas, elas1, elas2
+    aster_logical :: rigi, resi, coup
+    aster_logical :: lelas, elas, elas1, elas2
     integer :: k, kdmax
     real(kind=8) :: eps(6), emp(2), efp(2), qff(2)
     real(kind=8) :: vmp(2, 2), vfp(2, 2)
@@ -127,7 +128,8 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
     trot = efp(1)+efp(2)
 !
 ! --  CALCUL DES CONSTANTES INDEPENDANTES DE DA1, DA2 ET EPS33
-    call cstgld(lamf, muf, alf, gf, emp, efp, qff)
+    call cstgld(lamf, muf, alf, gf, emp,&
+                efp, qff)
 !
 ! --  INITIALISATION DE DA1, DA2 ET EPS33
     if (lelas) then

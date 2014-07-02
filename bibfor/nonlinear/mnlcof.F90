@@ -51,6 +51,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -74,18 +75,18 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     real(kind=8) :: epsbif
     character(len=14) :: numdrv, xcdl, parcho, adime, xvecu0, xtang, xups, xfpnla
     character(len=19) :: matdrv
-    logical(kind=1) :: lbif
+    aster_logical :: lbif
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ivecu0, iups, itang, p, r, ivecu1, ivecu2, iqnl,  iret
+    integer :: ivecu0, iups, itang, p, r, ivecu1, ivecu2, iqnl, iret
     integer :: ifpnla
     character(len=14) :: xvecu1, xvecu2, xqnl
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES POUR EXTRACTION GEOMETRIQUE
 ! ----------------------------------------------------------------------
     integer :: k
-
+!
     real(kind=8) :: nvec, nratio, necar, ac, nudom
     complex(kind=8) :: cbid
     real(kind=8), pointer :: alpha(:) => null()
@@ -168,7 +169,8 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         alpha(k)=alpha(k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
         1, zr(iups+(ordman-k+2-1)*ninc),1)
         call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
-        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),1)
+        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),&
+                   1)
         nvec=dnrm2(ninc, zr(ivecu1), 1)
         ratio(k)=nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
         if (k .gt. 1) then
@@ -186,7 +188,8 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         call dscal(ninc, ac**ordman, zr(ivecu1), 1)
         nudom=dnrm2(ninc,zr(ivecu1),1)
         do k = 1, ordman
-            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc), 1)
+            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc),&
+                       1)
         end do
     endif
 !
@@ -207,9 +210,12 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ---   VECU2 = UPS(:,ORDMAN+2-R)
         call dcopy(ninc, zr(iups+(ordman+1-r)*ninc), 1, zr(ivecu2), 1)
 ! ---   Q(VECU1,VECU2)
-        call mnlqnl(imat, xcdl, parcho, adime, xvecu1, xvecu2, ninc, nd, nchoc, h, hf, xqnl)
+        call mnlqnl(imat, xcdl, parcho, adime, xvecu1,&
+                    xvecu2, ninc, nd, nchoc, h,&
+                    hf, xqnl)
 !       AJOUT DES DEUX VECTEURS DANS XFPNLA
-        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla), 1)
+        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla),&
+                   1)
     end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES

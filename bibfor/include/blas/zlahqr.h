@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "asterf_types.h"
-
+!
 interface
     subroutine zlahqr(wantt, wantz, n, ilo, ihi,&
                       h, ldh, w, iloz, ihiz,&
                       z, ldz, info)
         integer, intent(in) :: ldz
         integer, intent(in) :: ldh
-        logical(kind=1), intent(in) :: wantt
-        logical(kind=1), intent(in) :: wantz
+        aster_logical, intent(in) :: wantt
+        aster_logical, intent(in) :: wantz
         integer, intent(in) :: n
         integer, intent(in) :: ilo
         integer, intent(in) :: ihi

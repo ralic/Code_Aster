@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
                       nmat, mod, nvi, vind, vinf,&
@@ -32,7 +34,7 @@ interface
         real(kind=8) :: sigd(6)
         integer :: nr
         real(kind=8) :: yd(*)
-        logical(kind=1) :: bnews(3)
-        logical(kind=1) :: mtrac
+        aster_logical :: bnews(3)
+        aster_logical :: mtrac
     end subroutine lcafyd
 end interface

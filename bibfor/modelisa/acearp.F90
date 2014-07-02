@@ -1,6 +1,7 @@
 subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                   ivr, ifm)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -85,7 +86,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     character(len=24) :: tmpdis, mlgnno, mlgnma, tmcinf, tmvinf, modnem
 !
 !
-    logical(kind=1) :: transl, trarot, eurplx, lbid
+    aster_logical :: transl, trarot, eurplx, lbid
     integer :: iarg
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/

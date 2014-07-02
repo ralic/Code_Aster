@@ -2,6 +2,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                   ccont, lfatig, flexio, lrocht, cnoc,&
                   cresu, cpres)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/detrsd.h"
@@ -25,7 +26,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 #include "asterfort/as_allocate.h"
 !
     integer :: nbinti
-    logical(kind=1) :: lfatig, flexio, lrocht
+    aster_logical :: lfatig, flexio, lrocht
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, ccont, cnoc, cresu, cpres
 !     ------------------------------------------------------------------
@@ -51,13 +52,13 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst,   ncmpr, i, j, k, l, ndim
+    integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, ndim
     integer :: nbabsc, jabsc, jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
-    integer :: jnocc, jresu, nbcycl,  jresp
+    integer :: jnocc, jresu, nbcycl, jresp
     parameter  ( ncmp = 6 )
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     complex(kind=8) :: cbid
-    logical(kind=1) :: exist, cfait
+    aster_logical :: exist, cfait
     character(len=8) :: k8b, crit(2), nocmp(ncmp)
     character(len=16) :: motclf, valek(2), table, tabl0, tabfle, tabfl0, tabpre
     character(len=16) :: tabpr0
@@ -263,7 +264,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
             endif
         endif
-12  end do
+ 12 end do
     call tbexip(table, nocmp(5), exist, k8b)
     if (.not. exist) ncmpr = 4
 !
@@ -392,7 +393,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                     endif
                 endif
 !
-106          continue
+106         continue
 !
             if (lfatig) then
                 l = ncmp*(i-1) + j
@@ -433,9 +434,9 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             l = 5*ncmp*nbinst + ncmp*(i-1) + j
             zr(jsigm-1+l) = momen1
 !
-104      continue
+104     continue
 !
-102  end do
+102 end do
 !
     call jedetr(instan)
     call jedetr(abscur)

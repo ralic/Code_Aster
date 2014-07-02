@@ -18,7 +18,8 @@ subroutine nmimpr(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/impsdl.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -42,7 +43,7 @@ subroutine nmimpr(sdimpr)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: sdtabc
-    logical(kind=1) :: lcsv, lprint
+    aster_logical :: lcsv, lprint
     integer :: larlig, unimes, unicsv
     character(len=1) :: sepcol
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                       nosy, nbcmpg, cmpg, nbpara, para,&
@@ -35,6 +37,6 @@ interface
         integer :: nbdisc
         real(kind=8) :: disc(*)
         integer :: nume(*)
-        logical(kind=1) :: lhist
+        aster_logical :: lhist
     end subroutine irgene
 end interface

@@ -1,13 +1,13 @@
 subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
                   jresl, rcoef, jvalm)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
     character(len=2) :: tt
     integer :: jtmp2, nrmax, jresl
     integer :: jvalm(2)
-    logical(kind=1) :: lmasym, lmesym
-    logical :: lcond
+    aster_logical :: lmasym, lmesym
     real(kind=8) :: rcoef
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -48,64 +48,63 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !        UNE MATRICE ASSEMBLEE NON SYMETRIQUE, IL FAUT COPIER 2 FOIS
     nbfois=1
     if (lmasym) then
-        lcond=lmesym
-        ASSERT(lcond)
+        ASSERT(lmesym)
     else
         if (lmesym) nbfois=2
     endif
 !
 !
-    do 1, kfois=1,nbfois
+    do 1 kfois = 1, nbfois
 !
-    if (kfois .eq. 1) then
-        permbl(1)=1
-        permbl(2)=2
-    else
-        permbl(1)=2
-        permbl(2)=1
-    endif
+        if (kfois .eq. 1) then
+            permbl(1)=1
+            permbl(2)=2
+        else
+            permbl(1)=2
+            permbl(2)=1
+        endif
 !
 !
-    if (tt .eq. 'RR') then
+        if (tt .eq. 'RR') then
 !       ---------------------------
 !CDIR$   IVDEP
-        do 10,j=1,nrmax
-        ibloc=zi(jtmp2-1+2*(j-1)+1)
-        jvalb=jvalm(permbl(ibloc))
-        iadloc=zi(jtmp2-1+2*(j-1)+2)
-        zr(jvalb+iadloc-1)=zr(jvalb+iadloc-1)+rcoef*zr(jresl-&
+            do 10 j = 1, nrmax
+                ibloc=zi(jtmp2-1+2*(j-1)+1)
+                jvalb=jvalm(permbl(ibloc))
+                iadloc=zi(jtmp2-1+2*(j-1)+2)
+                zr(jvalb+iadloc-1)=zr(jvalb+iadloc-1)+rcoef*zr(jresl-&
                 1+j)
-10      continue
+ 10         continue
 !
 !
-    else if (tt.eq.'CC') then
+        else if (tt.eq.'CC') then
 !       ---------------------------
 !CDIR$   IVDEP
-        do 11,j=1,nrmax
-        ibloc=zi(jtmp2-1+2*(j-1)+1)
-        jvalb=jvalm(permbl(ibloc))
-        iadloc=zi(jtmp2-1+2*(j-1)+2)
-        zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+rcoef*zc(jresl-&
+            do 11 j = 1, nrmax
+                ibloc=zi(jtmp2-1+2*(j-1)+1)
+                jvalb=jvalm(permbl(ibloc))
+                iadloc=zi(jtmp2-1+2*(j-1)+2)
+                zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+rcoef*zc(jresl-&
                 1+j)
-11      continue
+ 11         continue
 !
 !
-    else if (tt.eq.'RC') then
+        else if (tt.eq.'RC') then
 !       ---------------------------
 !CDIR$   IVDEP
-        do 12,j=1,nrmax
-        ibloc=zi(jtmp2-1+2*(j-1)+1)
-        jvalb=jvalm(permbl(ibloc))
-        iadloc=zi(jtmp2-1+2*(j-1)+2)
-        zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+ dcmplx(rcoef*&
+            do 12 j = 1, nrmax
+                ibloc=zi(jtmp2-1+2*(j-1)+1)
+                jvalb=jvalm(permbl(ibloc))
+                iadloc=zi(jtmp2-1+2*(j-1)+2)
+                zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+ dcmplx(rcoef*&
                 zr(jresl-1+j),0.d0)
-12      continue
+ 12         continue
 !
 !
-    else
-        ASSERT(.false.)
-    endif
+        else
+            ASSERT(.false.)
+        endif
 !
-    1 end do
+  1 end do
 !
 end subroutine

@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
                       nopara)
-        logical(kind=1) :: compl
+        aster_logical :: compl
         character(len=19) :: nomfin
         character(len=19) :: nomfon
         integer :: nbval

@@ -25,6 +25,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, jnne(3), jnnm(3), nnc, nfaes
@@ -35,7 +36,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
     character(len=8) :: typmai
     integer :: nconta, ndeple, jddle(2), jddlm(2)
     integer :: nfhe, nfhm, heavno(8), heavfa(*)
-    logical(kind=1) :: lpenac, lmulti
+    aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,13 +113,13 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 if (lmulti) then
                     do 15 ifh = 1, nfhe
                         iescl(1+ifh)=heavfa(nfhe*(i-1)+ifh)
-15                  continue
+ 15                 continue
                 endif
                 do 25 iddl = 1, 1+nfhe+nsinge
                     ii = iin + (iddl-1)*ndim + j
                     vtmp(ii) = -iescl(iddl)*vv
-25              continue
-20          continue
+ 25             continue
+ 20         continue
             do 30 i = 1, nnm
                 call indent(i, ddlms, ddlmm, nnms, iin)
                 iin = iin + nddle
@@ -130,14 +131,14 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 if (lmulti) then
                     do 35 ifh = 1, nfhm
                         imait(1+ifh)=heavfa(nfhe*nne+nfhm*(i-1)+ifh)
-35                  continue
+ 35                 continue
                 endif
                 do 45 iddl = 1, 1+nfhm+nsingm
                     ii = iin + (iddl-1)*ndim + j
                     vtmp(ii) = imait(iddl)*vv
-45              continue
-30          continue
-10      end do
+ 45             continue
+ 30         continue
+ 10     end do
     else
         do 50 j = 1, ndim
             do 60 i = 1, ndeple
@@ -150,8 +151,8 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 call indent(i, ddles, ddlem, nnes, iin)
                 ii = iin + j
                 vtmp(ii) = rre * vv
-60          continue
-50      end do
+ 60         continue
+ 50     end do
     endif
 !
 ! --------------------- CALCUL DE [L2]----------------------------------
@@ -165,6 +166,6 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
         else
             vtmp(pl) = -hpg*jacobi*jeu*ffc(i)
         endif
-40  end do
+ 40 end do
 !
 end subroutine

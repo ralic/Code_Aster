@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utfloa(floa, ch1, ch2)
-        logical(kind=1) :: floa
+        aster_logical :: floa
         character(len=24) :: ch1
         character(len=24) :: ch2
     end subroutine utfloa

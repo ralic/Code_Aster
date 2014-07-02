@@ -3,13 +3,14 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
                   al, ajout)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/xxmmvd.h"
-    logical(kind=1) :: ajout
+    aster_logical :: ajout
     integer :: ndim, long, ipt, cpt, ia, in
     real(kind=8) :: newpt(3), longar, al, list(*), ainter(*)
 ! ======================================================================
@@ -49,7 +50,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 !     ------------------------------------------------------------------
     real(kind=8) :: p(3)
     integer :: i, j
-    logical(kind=1) :: deja
+    aster_logical :: deja
     integer :: zxain
 ! ----------------------------------------------------------------------
 !
@@ -63,9 +64,9 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
     do 100 i = 1, ipt
         do 99 j = 1, ndim
             p(j) = list(ndim*(i-1)+j)
-99      continue
+ 99     continue
         if (padist(ndim,p,newpt) .lt. (longar*1.d-6)) deja = .true.
-100  end do
+100 end do
 !
     if (.not. deja) then
 !       CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
@@ -75,7 +76,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
         ASSERT(ipt .le. long)
         do 101 j = 1, ndim
             list(ndim*(ipt-1)+j) = newpt(j)
-101      continue
+101     continue
         ainter(zxain*(ipt-1)+1)=ia
         ainter(zxain*(ipt-1)+2)=in
         ainter(zxain*(ipt-1)+3)=longar

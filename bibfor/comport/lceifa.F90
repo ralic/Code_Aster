@@ -20,6 +20,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
 ! ======================================================================
 ! person_in_charge: jerome.laverne at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     character(len=16) :: option
@@ -42,7 +43,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, dc, dc0, c, h, ka, sk, rk, val(4), kap, gap, incr
     real(kind=8) :: dn, tn, t(3), ddndtn, deltam
@@ -182,7 +183,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
 !
 ! -- MATRICE TANGENTE
 !
-5000  continue
+5000 continue
     if (.not. rigi) goto 9999
 !
 !    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
@@ -208,6 +209,6 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     endif
     ddedt(1,1) = ddndtn
 !
-9999  continue
+9999 continue
 !
 end subroutine

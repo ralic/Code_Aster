@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
                       tolsor, vect, resid, workd, workl,&
@@ -33,7 +35,7 @@ interface
         complex(kind=8) :: workd(*)
         complex(kind=8) :: workl(*)
         integer :: lonwl
-        logical(kind=1) :: selec(nbvect)
+        aster_logical :: selec(nbvect)
         complex(kind=8) :: dsor(*)
         complex(kind=8) :: sigma
         complex(kind=8) :: vaux(*)
@@ -48,7 +50,7 @@ interface
         integer :: priram(8)
         real(kind=8) :: alpha
         integer :: nconv
-        logical(kind=1) :: flage
+        aster_logical :: flage
         character(len=19) :: solveu
     end subroutine vpsorc
 end interface

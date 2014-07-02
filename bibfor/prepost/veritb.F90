@@ -1,6 +1,7 @@
 subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -39,8 +40,8 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 ! --- : NDIM   : DIMENSION DE L'ESPACE ---------------------------------
 ! --- : ORIDEF : TYPE D'ORIENTATION DU DEFAUT --------------------------
 ! ======================================================================
-    logical(kind=1) :: teste
-    integer :: i, ibid, nbval1, nbval2,irev
+    aster_logical :: teste
+    integer :: i, ibid, nbval1, nbval2, irev
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
     character(len=19) :: tbins1, tbins2
 ! ======================================================================
@@ -57,10 +58,10 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
     call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=irev)
     call getvid(motfac, 'TABL_MECA_MDB', iocc=1, scal=tabmdb, nbret=ibid)
     call getvid(motfac, 'TABL_THER', iocc=1, scal=tabthr, nbret=ibid)
-    if(profil(1:7).eq.'ELLIPSE') then
-       if(deklag.lt.0.D0.and.irev.eq.0) call utmess('F', 'PREPOST_7')
+    if (profil(1:7) .eq. 'ELLIPSE') then
+        if (deklag .lt. 0.D0 .and. irev .eq. 0) call utmess('F', 'PREPOST_7')
     endif
-    if(irev.eq.0) tabrev=tabmdb
+    if (irev .eq. 0) tabrev=tabmdb
 ! ======================================================================
 ! --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 ! ======================================================================
@@ -135,7 +136,7 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
         call jedetr(tabrev)
         call jedetr(tabmdb)
         call jedetr(tabthr)
-10  end do
+ 10 end do
     call jedetr(tbins1)
 ! ======================================================================
 ! --- VERIFICATION DE LA PRESENCE DES BONNES COMPOSANTES POUR LE -------
@@ -198,7 +199,7 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
         call jedetr(tabrev)
         call jedetr(tabmdb)
         call jedetr(tabthr)
-20  end do
+ 20 end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

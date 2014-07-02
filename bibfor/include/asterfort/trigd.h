@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                      ino, nno)
@@ -22,7 +24,7 @@ interface
         integer :: deb1
         integer :: dg2(*)
         integer :: deb2
-        logical(kind=1) :: cumul
+        aster_logical :: cumul
         integer :: ino
         integer :: nno
     end subroutine trigd

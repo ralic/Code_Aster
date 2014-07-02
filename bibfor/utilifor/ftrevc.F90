@@ -173,6 +173,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -189,14 +190,14 @@ subroutine ftrevc(side, howmny, select, n, t,&
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical(kind=1) :: select( * )
+    aster_logical :: select( * )
     real(kind=8) :: t( ldt, * ), vl( ldvl, * ), vr( ldvr, * ), work( * )
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
     parameter          ( zero = 0.0d+0, one = 1.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: allv, bothv, leftv, over, pair, rightv, somev
+    aster_logical :: allv, bothv, leftv, over, pair, rightv, somev
     integer :: i, ierr, ii, ip, is, j, j1, j2, jnxt, k, ki, n2
     real(kind=8) :: beta, bignum, emax, rec, remax, scale, smin, smlnum, ulp
     real(kind=8) :: unfl, vcrit, vmax, wi, wr, xnorm
@@ -260,7 +261,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                         if (select( n )) m = m + 1
                     endif
                 endif
-10          continue
+ 10         continue
         else
             m = n
         endif
@@ -294,8 +295,8 @@ subroutine ftrevc(side, howmny, select, n, t,&
         work( j ) = zero
         do 20 i = 1, j - 1
             work( j ) = work( j ) + abs( t( i, j ) )
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 !
 !     INDEX IP IS USED TO SPECIFY THE REAL OR COMPLEX EIGENVALUE:
 !       IP = 0, REAL EIGENVALUE,
@@ -317,7 +318,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
             if (t( ki, ki-1 ) .eq. zero) goto 40
             ip = -1
 !
-40          continue
+ 40         continue
             if (somev) then
                 if (ip .eq. 0) then
                     if (.not.select( ki )) goto 130
@@ -343,7 +344,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
                 do 50 k = 1, ki - 1
                     work( k+n ) = -t( k, ki )
-50              continue
+ 50             continue
 !
 !              SOLVE THE UPPER QUASI-TRIANGULAR SYSTEM:
 !                 (T(1:KI-1,1:KI-1) - WR)*X = SCALE*WORK.
@@ -424,7 +425,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                         call daxpy(j-2, -x( 2, 1 ), t( 1, j ), 1, work( 1+n ),&
                                    1)
                     endif
-60              continue
+ 60             continue
 !
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
@@ -437,7 +438,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
                     do 70 k = ki + 1, n
                         vr( k, is ) = zero
-70                  continue
+ 70                 continue
                 else
                     if (ki .gt. 1) call dgemv('N', n, ki-1, one, vr,&
                                               ldvr, work( 1+n ), 1, work( ki+n ), vr( 1, ki ),&
@@ -471,7 +472,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                 do 80 k = 1, ki - 2
                     work( k+n ) = -work( ki-1+n )*t( k, ki-1 )
                     work( k+n2 ) = -work( ki+n2 )*t( k, ki )
-80              continue
+ 80             continue
 !
 !              SOLVE UPPER QUASI-TRIANGULAR SYSTEM:
 !              (T(1:KI-2,1:KI-2) - (WR+I*WI))*X = SCALE*(WORK+I*WORK2)
@@ -571,7 +572,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                         call daxpy(j-2, -x( 2, 2 ), t( 1, j ), 1, work( 1+n2 ),&
                                    1)
                     endif
-90              continue
+ 90             continue
 !
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
@@ -582,7 +583,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                     emax = zero
                     do 100 k = 1, ki
                         emax = max( emax, abs( vr( k, is-1 ) )+ abs( vr( k, is ) ))
-100                  continue
+100                 continue
 !
                     remax = one / emax
                     call dscal(ki, remax, vr( 1, is-1 ), 1)
@@ -591,7 +592,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                     do 110 k = ki + 1, n
                         vr( k, is-1 ) = zero
                         vr( k, is ) = zero
-110                  continue
+110                 continue
 !
                 else
 !
@@ -610,7 +611,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                     emax = zero
                     do 120 k = 1, n
                         emax = max( emax, abs( vr( k, ki-1 ) )+ abs( vr( k, ki ) ))
-120                  continue
+120                 continue
                     remax = one / emax
                     call dscal(n, remax, vr( 1, ki-1 ), 1)
                     call dscal(n, remax, vr( 1, ki ), 1)
@@ -619,10 +620,10 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
             is = is - 1
             if (ip .ne. 0) is = is - 1
-130          continue
+130         continue
             if (ip .eq. 1) ip = 0
             if (ip .eq. -1) ip = 1
-140      continue
+140     continue
     endif
 !
     if (leftv) then
@@ -638,7 +639,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
             if (t( ki+1, ki ) .eq. zero) goto 150
             ip = 1
 !
-150          continue
+150         continue
             if (somev) then
                 if (.not.select( ki )) goto 250
             endif
@@ -660,7 +661,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
                 do 160 k = ki + 1, n
                     work( k+n ) = -t( ki, k )
-160              continue
+160             continue
 !
 !              SOLVE THE QUASI-TRIANGULAR SYSTEM:
 !                 (T(KI+1:N,KI+1:N) - WR)'*X = SCALE*WORK
@@ -752,7 +753,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                         vcrit = bignum / vmax
 !
                     endif
-170              continue
+170             continue
 !
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
@@ -765,7 +766,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
                     do 180 k = 1, ki - 1
                         vl( k, is ) = zero
-180                  continue
+180                 continue
 !
                 else
 !
@@ -802,7 +803,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                 do 190 k = ki + 2, n
                     work( k+n ) = -work( ki+n )*t( ki, k )
                     work( k+n2 ) = -work( ki+1+n2 )*t( ki+1, k )
-190              continue
+190             continue
 !
 !              SOLVE COMPLEX QUASI-TRIANGULAR SYSTEM:
 !              ( T(KI+2,N:KI+2,N) - (WR-I*WI) )*X = WORK1+I*WORK2
@@ -915,7 +916,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                         vcrit = bignum / vmax
 !
                     endif
-200              continue
+200             continue
 !
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
@@ -926,7 +927,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                     emax = zero
                     do 220 k = ki, n
                         emax = max( emax, abs( vl( k, is ) )+ abs( vl( k, is+1 ) ))
-220                  continue
+220                 continue
                     remax = one / emax
                     call dscal(n-ki+1, remax, vl( ki, is ), 1)
                     call dscal(n-ki+1, remax, vl( ki, is+1 ), 1)
@@ -934,7 +935,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                     do 230 k = 1, ki - 1
                         vl( k, is ) = zero
                         vl( k, is+1 ) = zero
-230                  continue
+230                 continue
                 else
                     if (ki .lt. n-1) then
                         call dgemv('N', n, n-ki-1, one, vl( 1, ki+2 ),&
@@ -951,7 +952,7 @@ subroutine ftrevc(side, howmny, select, n, t,&
                     emax = zero
                     do 240 k = 1, n
                         emax = max( emax, abs( vl( k, ki ) )+ abs( vl( k, ki+1 ) ))
-240                  continue
+240                 continue
                     remax = one / emax
                     call dscal(n, remax, vl( 1, ki ), 1)
                     call dscal(n, remax, vl( 1, ki+1 ), 1)
@@ -962,15 +963,15 @@ subroutine ftrevc(side, howmny, select, n, t,&
 !
             is = is + 1
             if (ip .ne. 0) is = is + 1
-250          continue
+250         continue
             if (ip .eq. -1) ip = 0
             if (ip .eq. 1) ip = -1
 !
-260      continue
+260     continue
 !
     endif
 !
-1000  continue
+1000 continue
 !
 !     END OF FTREVC
 !

@@ -3,6 +3,7 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/impfot.h"
@@ -60,10 +61,10 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lctcd, lallv, lcont, lctcc
-    logical(kind=1) :: lctcg, lboucc, lboucf, lfrot
-    logical(kind=1) :: lmvib, lflam, lpost, lnewtg
-    logical(kind=1) :: lprint
+    aster_logical :: lctcd, lallv, lcont, lctcc
+    aster_logical :: lctcg, lboucc, lboucf, lfrot
+    aster_logical :: lmvib, lflam, lpost, lnewtg
+    aster_logical :: lprint
     real(kind=8) :: tpsint, tpsasm, tpsfac, tps2mb, tpssol
     real(kind=8) :: tps, tpsmoy, tpspst, tpslst, tpsrst
     real(kind=8) :: effica
@@ -305,10 +306,10 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
                 call utmess('I', 'MECANONLINE7_32', si=nbliaf)
             endif
             if (lctcc) then
-                if (cycl_nb(1).ne.0) call utmess('I', 'MECANONLINE7_33', si=cycl_nb(1))
-                if (cycl_nb(2).ne.0) call utmess('I', 'MECANONLINE7_34', si=cycl_nb(2))
-                if (cycl_nb(3).ne.0) call utmess('I', 'MECANONLINE7_35', si=cycl_nb(3))
-                if (cycl_nb(4).ne.0) call utmess('I', 'MECANONLINE7_36', si=cycl_nb(4))
+                if (cycl_nb(1) .ne. 0) call utmess('I', 'MECANONLINE7_33', si=cycl_nb(1))
+                if (cycl_nb(2) .ne. 0) call utmess('I', 'MECANONLINE7_34', si=cycl_nb(2))
+                if (cycl_nb(3) .ne. 0) call utmess('I', 'MECANONLINE7_35', si=cycl_nb(3))
+                if (cycl_nb(4) .ne. 0) call utmess('I', 'MECANONLINE7_36', si=cycl_nb(4))
             endif
         endif
 !

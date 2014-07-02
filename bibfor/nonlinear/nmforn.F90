@@ -20,6 +20,7 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmgvdn.h"
 #include "asterfort/nmmabu.h"
@@ -46,7 +47,7 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! ---------------------------------------------------------------------
 !
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
     integer :: nddl, ndimsi, g, n, i, kl, kk
     integer :: iu(3*27), ia(8)
     real(kind=8) :: dfdi1(27, 3)
@@ -86,17 +87,17 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
                 t1 = 0
                 do 320 kl = 1, ndimsi
                     t1 = t1 + abs(b(kl,i,n))
-320              continue
+320             continue
                 vect(kk) = vect(kk) + wg*t1*sigref
-310          continue
-300      continue
+310         continue
+300     continue
 !
         do 400 n = 1, nno2
             kk = ia(n)
             vect(kk) = vect(kk) + wg*vff2(n,g)*varref
-400      continue
+400     continue
 !
 !
-1000  end do
+1000 end do
 !
 end subroutine

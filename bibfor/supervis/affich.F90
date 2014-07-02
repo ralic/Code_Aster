@@ -17,13 +17,14 @@ subroutine affich(nomfic, texte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/isjvup.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/uldefi.h"
     character(len=*) :: texte
     character(len=*) :: nomfic
     integer :: ifm, ier
-    logical(kind=1) :: ouvert
+    aster_logical :: ouvert
 !     ----------------------------------------------------------------
     ouvert = .true.
     ifm = iunifi (nomfic)

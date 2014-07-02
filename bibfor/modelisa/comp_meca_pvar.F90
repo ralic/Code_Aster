@@ -2,6 +2,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
@@ -69,10 +70,10 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     character(len=16) :: rela_comp, defo_comp, type_cpla, type_matg, post_iter
     character(len=16) :: kit_comp(9)
     character(len=16) :: comp_code_py, rela_code_py, meta_code_py
-    integer :: j_comp_d,  j_comp_l, iadc
-    logical(kind=1) :: l_kit_meta, l_affe
-    logical(kind=1) :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
-    logical(kind=1) :: l_excl
+    integer :: j_comp_d, j_comp_l, iadc
+    aster_logical :: l_kit_meta, l_affe
+    aster_logical :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
+    aster_logical :: l_excl
     integer :: nb_elem, nocc, nb_vari, nb_vari_all
     integer :: i_elem, iocc, i_kit
     integer :: idummy
@@ -81,20 +82,20 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()  
+    call jemarq()
 !
 ! - Initializations
 !
     compor_s = '&&COMPOR.CARCES'
-    list_occ = '&&COMPMECA.LISTOCC'  
-    nocc = 0  
+    list_occ = '&&COMPMECA.LISTOCC'
+    nocc = 0
     nb_vari_all = 0
 !
 ! - Transform COMPOR in CHAM_ELEM_S
 !
     if (present(compor_cart)) then
         ASSERT(.not.present(compor_list))
-        call carces(compor_cart, 'ELEM', ' ', 'V', compor_s, &
+        call carces(compor_cart, 'ELEM', ' ', 'V', compor_s,&
                     'A', idummy)
         call jeveuo(compor_s//'.CESD', 'L', j_comp_d)
         call jeveuo(compor_s//'.CESV', 'L', vk16=cesv)
@@ -106,9 +107,9 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     if (present(compor_list)) then
         ASSERT(.not.present(compor_cart))
         nb_elem = 1
-    elseif (present(compor_cart)) then
+    else if (present(compor_cart)) then
         ASSERT(.not.present(compor_list))
-        nb_elem = zi(j_comp_d)  
+        nb_elem = zi(j_comp_d)
     endif
 !
 ! - Object to define reference element
@@ -125,8 +126,8 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
             if (iadc .gt. 0) then
                 rela_comp = cesv(1+iadc-2+1)
                 call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-                call comp_meca_l(rela_comp, 'PMF'      , l_pmf)
-                
+                call comp_meca_l(rela_comp, 'PMF', l_pmf)
+!
                 if (.not.l_exte_comp .and. .not. l_pmf) then
                     read (cesv(1+iadc-2+12),'(I16)') iocc
                     l_affe = (iocc.ne.99999)
@@ -140,11 +141,11 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                         endif
                     endif
                 else
-                    nb_vari     = 1
+                    nb_vari = 1
                     nb_vari_all = nb_vari_all + nb_vari
                 endif
             endif
-        elseif (present(compor_list)) then
+        else if (present(compor_list)) then
             rela_comp = compor_list(1)
             call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
             if (.not.l_exte_comp) then
@@ -159,11 +160,11 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
 ! - No internal variables names
 !
-    if (nocc.eq.0) goto 99
+    if (nocc .eq. 0) goto 99
 !
 ! - Create list of internal variables names
 !
-    call jecrec(list_vari_name(1:19)//'.NAME', 'V V K16', 'NU', 'CONTIG', 'VARIABLE', &
+    call jecrec(list_vari_name(1:19)//'.NAME', 'V V K16', 'NU', 'CONTIG', 'VARIABLE',&
                 nocc)
     call jeecra(list_vari_name(1:19)//'.NAME', 'LONT', nb_vari_all)
 !
@@ -202,14 +203,14 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                 call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
                 call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
                 call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-                do i_kit = 1,9
+                do i_kit = 1, 9
                     kit_comp(i_kit) = cesv(1+iadc-2+7+i_kit)
                 end do
                 if (.not.l_exte_comp) kit_comp(5) = 'VIDE'
                 if (.not.l_matr_tgsc) kit_comp(6) = 'VIDE'
                 if (.not.l_crit_rupt) kit_comp(7) = 'VIDE'
             endif
-        elseif (present(compor_list)) then
+        else if (present(compor_list)) then
             rela_comp = compor_list(1)
             read (compor_list(2),'(I16)') nb_vari
             defo_comp = compor_list(3)
@@ -219,7 +220,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
             call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
             call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
             call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-            do i_kit = 1,9
+            do i_kit = 1, 9
                 kit_comp(i_kit) = compor_list(7+i_kit)
             end do
             if (.not.l_exte_comp) kit_comp(5) = 'VIDE'
@@ -229,18 +230,18 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
 ! ----- Detection of specific cases
 !
-        call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
-        call comp_meca_l(rela_comp, 'KIT_META' , l_kit_meta)
-        call comp_meca_l(rela_comp, 'PMF'      , l_pmf)
+        call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
+        call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
+        call comp_meca_l(rela_comp, 'PMF', l_pmf)
 !
 ! ----- Coding composite comportment
 !
-        call comp_meca_code(rela_comp   , defo_comp , type_cpla, kit_comp, comp_code_py, &
+        call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_py,&
                             rela_code_py, meta_code_py)
 !
 ! ----- Exception for name of internal variables
 !
-        call comp_meca_exc2(defo_comp, l_kit_meta , l_cristal, l_pmf, l_excl, &
+        call comp_meca_exc2(defo_comp, l_kit_meta, l_cristal, l_pmf, l_excl,&
                             vari_excl)
 !
 ! ----- Save name of internal variables
@@ -248,7 +249,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
         call jecroc(jexnum(list_vari_name(1:19)//'.NAME', iocc))
         call jeecra(jexnum(list_vari_name(1:19)//'.NAME', iocc), 'LONMAX', nb_vari)
         call jeveuo(jexnum(list_vari_name(1:19)//'.NAME', iocc), 'E', j_vari_name)
-        call comp_meca_name(nb_vari     , l_excl      , vari_excl   , l_kit_meta  , comp_code_py, &
+        call comp_meca_name(nb_vari, l_excl, vari_excl, l_kit_meta, comp_code_py,&
                             rela_code_py, meta_code_py, zk16(j_vari_name))
 !
  10     continue

@@ -19,6 +19,7 @@ subroutine cacoeq(chargz, nomaz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/aflrch.h"
@@ -69,7 +70,7 @@ subroutine cacoeq(chargz, nomaz)
     integer :: suppo1, suppo2, suppo3
     integer :: izone, nzoco, nnoco
     character(len=24) :: defico
-    logical(kind=1) :: lreli
+    aster_logical :: lreli
     data direct/0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0/
 !
 ! ----------------------------------------------------------------------
@@ -159,7 +160,7 @@ subroutine cacoeq(chargz, nomaz)
                 lreli = .false.
                 goto 30
             endif
-20      continue
+ 20     continue
 !
 ! --- CAS DES MAILLAGES MIXTES TRIA6/QUAD8
 ! --- SI NOEUD PARTAGE ENTRE TRIA6/QUAD8: ON STOCKE POUR ELIMINER NOEUD
@@ -191,9 +192,9 @@ subroutine cacoeq(chargz, nomaz)
                         endif
                     endif
 !
-26              continue
+ 26             continue
             endif
-25      continue
+ 25     continue
 !
 ! --- RELATION LINEAIRE
 !
@@ -215,7 +216,7 @@ subroutine cacoeq(chargz, nomaz)
         call afrela(coemur, coemuc, ddl, nono, idim,&
                     direct, 3, beta, betac, betaf,&
                     typcoe, fonree, typlag, 0.d0, lisrel)
-30  end do
+ 30 end do
 !
     if (lreli) then
         call aflrch(lisrel, char)
@@ -225,7 +226,7 @@ subroutine cacoeq(chargz, nomaz)
         call jedetr(noesup)
     endif
 !
-40  continue
+ 40 continue
 !
 !
     call jedema()

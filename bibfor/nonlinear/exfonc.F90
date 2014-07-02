@@ -3,6 +3,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/getvtx.h"
@@ -60,16 +61,16 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! ---------------------------------------------------------------------
 !
     integer :: reincr
-    integer ::  n1
-    logical(kind=1) :: lcont, lallv, lctcc, lctcd, lpena, leltc
-    logical(kind=1) :: lpilo, lreli, lmacr, lunil
-    logical(kind=1) :: lmvib, lflam, lexpl, lxfem, lmodim
-    logical(kind=1) :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
-    logical(kind=1) :: londe, ldyna, lgrot, ltheta, lnkry
-    logical(kind=1) :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
+    integer :: n1
+    aster_logical :: lcont, lallv, lctcc, lctcd, lpena, leltc
+    aster_logical :: lpilo, lreli, lmacr, lunil
+    aster_logical :: lmvib, lflam, lexpl, lxfem, lmodim
+    aster_logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
+    aster_logical :: londe, ldyna, lgrot, ltheta, lnkry
+    aster_logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
     integer :: ifm, niv
     character(len=24) :: typilo, typrel, metres
-    character(len=3)  :: mfdet
+    character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
 !
 ! ---------------------------------------------------------------------
@@ -256,10 +257,10 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
 !       --- VERIFICATION QUE LES VARIABLES DE COMMANDE NE DEPENDENT PAS DU TEMPS
         call dismoi('VARC_F_INST', mate, 'CHAM_MATER', repk=mfdet)
-        if (mfdet.eq.'OUI') then
-           call utmess('F', 'CALCULEL2_58', nk=1, valk=mate(1:8))
+        if (mfdet .eq. 'OUI') then
+            call utmess('F', 'CALCULEL2_58', nk=1, valk=mate(1:8))
         endif
-
+!
     endif
     if (lreli) then
         call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=typrel, nbret=n1)

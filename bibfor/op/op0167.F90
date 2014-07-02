@@ -21,6 +21,7 @@ subroutine op0167()
 !     OPERATEUR CREA_MAILLAGE
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -106,9 +107,9 @@ subroutine op0167()
     integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, nch, ndinit, niv, k, jgeofi
-    integer ::     dimcon, decala, iocct
+    integer :: dimcon, decala, iocct
     real(kind=8) :: shrink, lonmin
-    logical(kind=1) :: lpb
+    aster_logical :: lpb
     integer, pointer :: adrjvx(:) => null()
     integer, pointer :: nbnoma(:) => null()
     integer, pointer :: nbnomb(:) => null()

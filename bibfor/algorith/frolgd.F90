@@ -19,7 +19,8 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfacat.h"
 #include "asterfort/cfadh3.h"
@@ -113,11 +114,11 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
 !
     integer :: ifm, niv
-    integer ::  ieq, iter
+    integer :: ieq, iter
     integer :: llliai, llliac
     integer :: llf, llf1, llf2
     integer :: indic, indfac, ajliai, spliai
-    logical(kind=1) :: liasup, lechec
+    aster_logical :: liasup, lechec
     integer :: nbpren
     integer :: neq, nbliac, nbliai, ndim, nesmax
     real(kind=8) :: rho, xjvmax
@@ -131,7 +132,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
     integer :: itemax, isto, itemul
     character(len=24) :: clreac
     integer :: jclrea
-    logical(kind=1) :: reapre
+    aster_logical :: reapre
     integer :: incr
     real(kind=8) :: xmul
     integer :: nmult
@@ -256,13 +257,13 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
-40  continue
+ 40 continue
 !
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
     do 50 ieq = 1, neq
         vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
-50  end do
+ 50 end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
 !
@@ -355,7 +356,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
 ! --- ON PASSE A L'ITERATION DE CONTRAINTES ACTIVES SUIVANTES
 !
-150  continue
+150 continue
 !
     iter = iter + 1
 !
@@ -372,7 +373,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !                            ON A CONVERGE
 ! ======================================================================
 !
-160  continue
+160 continue
 !
 ! --- ON ENLEVE TOUTES LES LIAISONS DE CONTACT POUR LESQUELLES
 ! --- LA PRESSION EST NEGATIVE
@@ -392,7 +393,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
     do 240 ieq = 1, neq
         depc(ieq) = depde(ieq) + ddepc(ieq)
-240  end do
+240 end do
 !
 ! --- LES LIAISONS CONSIDEREES GLISSANTES LE SONT-ELLES VRAIMENT ?
 !
@@ -453,7 +454,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
     ctccvg = 0
 !
-999  continue
+999 continue
 !
 ! --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 !

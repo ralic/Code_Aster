@@ -20,6 +20,7 @@ subroutine te0346(option, nomte)
     implicit none
     character(len=16) :: option, nomte
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -49,7 +50,7 @@ subroutine te0346(option, nomte)
     integer :: istrxm, istrxp, ldep
     character(len=4) :: fami
     character(len=24) :: valk(3)
-    logical(kind=1) :: vecteu, matric, reactu
+    aster_logical :: vecteu, matric, reactu
     real(kind=8) :: u(14), du(14), fl(14), pgl(3, 3), klv(105)
     real(kind=8) :: xd(3)
     real(kind=8) :: ey, ez, gamma, xl, xl2
@@ -78,7 +79,7 @@ subroutine te0346(option, nomte)
         call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
     endif
 !
-    if ( zk16(icompo) .ne. 'ELAS' ) then
+    if (zk16(icompo) .ne. 'ELAS') then
         valk(1) = option
         valk(2) = zk16(icompo)
         valk(3) = nomte
@@ -138,8 +139,8 @@ subroutine te0346(option, nomte)
         du(j+3) = du(j+3) + ey*du(j+4)
     enddo
 !
-    call nmvmpo(fami, npg, nno, option, nc, &
-                xl, zr(ipoids), zi(imate), zr(isect), u, &
+    call nmvmpo(fami, npg, nno, option, nc,&
+                xl, zr(ipoids), zi(imate), zr(isect), u,&
                 du, zr(icontm), zr(icontp), fl, klv)
 !   FL dans le repère global
     if (vecteu) then
@@ -173,12 +174,12 @@ subroutine te0346(option, nomte)
     endif
 !
 !   Matrice tangente
-    if ( matric ) then
+    if (matric) then
         call pouex7(klv, ey, ez)
         call utpslg(nno, nc, pgl, klv, zr(imat))
     endif
 !
-    if ( vecteu ) then
+    if (vecteu) then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = 0
     endif

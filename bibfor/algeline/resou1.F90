@@ -65,6 +65,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
 !-----------------------------------------------------------------------
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterfort/amumph.h"
@@ -94,7 +95,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     character(len=*) :: criter
-    logical(kind=1) :: prepos
+    aster_logical :: prepos
     integer :: istop, iret
 !-----------------------------------------------------------------------
 !
@@ -104,11 +105,11 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     character(len=19) :: secm19, csol19, crit19
     character(len=24) :: metres
 !
-    integer ::    idbgav, neq, neq1, ier, niter, lmat, jvals
-    integer :: jtrav, jval2, imd,  istopz
+    integer :: idbgav, neq, neq1, ier, niter, lmat, jvals
+    integer :: jtrav, jval2, imd, istopz
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
     character(len=1) :: ftype(2)
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()

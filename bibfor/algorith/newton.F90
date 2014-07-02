@@ -53,6 +53,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/adimve.h"
 #include "asterfort/calcmd.h"
 #include "asterfort/calcmi.h"
@@ -86,7 +87,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     real(kind=8) :: depgc(*), vitgt(*), depgt(*), cmod(np1, *), kmod(np1, *)
     real(kind=8) :: cmod0(np1, *), kmod0(np1, *), cmodca(np1, *), kmodca(np1, *)
     real(kind=8) :: amflu0(np1, *), amfluc(np1, *)
-    logical(kind=1) :: locflc(*)
+    aster_logical :: locflc(*)
     real(kind=8) :: cmodfa(np1, *)
     integer :: npfts
     real(kind=8) :: textts(*), fextts(np4, *)
@@ -95,7 +96,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     real(kind=8) :: fmod00(*), fmodt(*), fmod0t(*), vitg0t(*), depg0t(*)
     real(kind=8) :: ftmp(*), mtmp1(np1, *), mtmp2(np1, *), mtmp6(3, *)
     real(kind=8) :: ttr(n2, *), u(*), w(*), dd(*)
-    logical(kind=1) :: loc(*)
+    aster_logical :: loc(*)
     integer :: intge1(*), intge2(*), indx(*), indxf(*)
     real(kind=8) :: vvg(np1, *), vg(np1, *), vg0(np1, *), vd(np1, *)
     real(kind=8) :: vd0(np1, *), rr(*), rr0(*), ri(*), premac, prerel
@@ -191,8 +192,8 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                 endif
             endif
             if (icompt .eq. nbcha) goto 11
-10      continue
-11      continue
+ 10     continue
+ 11     continue
 ! ...... SI DTC = 0.0D0 ON EFFECTUE UN DEMI-TOUR ENTRE LES INSTANTS N
 ! ...... ET N+1 => DTC = -DT0/2.0D0
         if (dtc .eq. 0.0d0) then
@@ -228,7 +229,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                         vitg0, ddist2)
             tdt = -dist2 / ddist2
             if ((tdt.gt.0.0d0) .and. (tdt.lt.dt)) dt = tdt
-20      continue
+ 20     continue
 ! DEBUG
 ! ------ ON VALIDE L'INSTANT N+1 EN CAS D'ELOIGNEMENT DU CHANGEMENT DE
 ! ------ CONFIGURATION
@@ -258,7 +259,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     maxvit = 0.0d0
     do 30 i = 1, nbm
         if (abs(vitg0(i)) .gt. maxvit) maxvit = abs(vitg0(i))
-30  end do
+ 30 end do
 !
 ! 2.2 ESTIMATION DES DDLS GENERALISES A L'INSTANT N+1 PAR LE SCHEMA
 !     D'EULER AFIN DE DETERMINER UNE POSITION AUTOUR DE LAQUELLE
@@ -272,7 +273,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
 ! 3.  CALCUL DES DDLS GENERALISES A L'INSTANT N+1 PAR LE SCHEMA ITMI
 !     JUSQU'A VALIDATION DE L'INSTANT N+1 (BLOC REPETER)
 !-----------------------------------------------------------------------
-100  continue
+100 continue
     call vecini(nbm, 0.d0, depg)
     call vecini(nbm, 0.d0, vitg)
 !
@@ -307,13 +308,13 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     endif
     do 110 i = 1, nbm
         puls(i) = rr(i)
-110  end do
+110 end do
     do 120 i = 1, nbm
         if ((puls(i).eq.0.0d0) .and. (i.le.nbmcd)) then
             puls(i) = puls0(i)
             call utmess('I', 'ALGORITH_11')
         endif
-120  end do
+120 end do
 !
     if ((testc0.eq.1) .and. (testc.eq.0)) typj = 1
 !
@@ -510,7 +511,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                 tdtc = tdt - dt0
 ! POUR ECRITURE
             endif
-140      continue
+140     continue
 !
 ! ------ ON VALIDE L'INSTANT N+1 EN CAS D'ELOIGNEMENT DU CHANGEMENT DE
 ! ------ CONFIGURATION
@@ -621,8 +622,8 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                 endif
             endif
             if (icompt .eq. nbcha) goto 151
-150      continue
-151      continue
+150     continue
+151     continue
 ! DEBUG
 ! ------ SI DTC = 0.0D0 ON EFFECTUE UN DEMI-TOUR ENTRE LES INSTANTS N
 ! ------ ET N+1 => DTC = -DT0/2.0D0
@@ -668,7 +669,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
         goto 100
 !
     endif
-999  continue
+999 continue
 !
 ! --- FIN DE NEWTON.
 end subroutine

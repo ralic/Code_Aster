@@ -1,5 +1,6 @@
 subroutine te0032(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dxqfor.h"
 #include "asterfort/dxqpgl.h"
@@ -49,13 +50,13 @@ subroutine te0032(option, nomte)
     real(kind=8) :: vecl(24), for(6, 4), for2(6, 4), rho, epais
     real(kind=8) :: undemi
     real(kind=8) :: valpar(4), dist, excent, pr
-    logical(kind=1) :: global, locapr
+    aster_logical :: global, locapr
     character(len=8) :: nompar(4), moplan, nomail
     character(len=24) :: valk
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
     undemi = 0.5d0
     iplan = 0
@@ -80,13 +81,13 @@ subroutine te0032(option, nomte)
             do 100 i = 1, 6
                 for(i,j) = 0.d0
                 for2(i,j) = 0.d0
-100          continue
+100         continue
 !----------------------------------------------------------------------
 !           LE SIGNE MOINS CORRESPOND A LA CONVENTION :
 !              UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !----------------------------------------------------------------------
             for(3,j) = - zr(jpres+j-1)
-110      continue
+110     continue
 !
     else if (option .eq. 'CHAR_MECA_FRCO3D') then
 !              ------------------------------
@@ -109,9 +110,9 @@ subroutine te0032(option, nomte)
             do 210 j = 1, nno
                 do 200 i = 1, 5
                     for(i,j) = zr(jpres-1+8*(j-1)+i)
-200              continue
+200             continue
                 for(6,j) = 0.d0
-210          continue
+210         continue
         endif
         iplan = nint(zr(jpres+7))
 !
@@ -139,7 +140,7 @@ subroutine te0032(option, nomte)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
             endif
-222      continue
+222     continue
         goto 9999
 !
     else if (option .eq. 'CHAR_MECA_FFCO3D') then
@@ -185,7 +186,7 @@ subroutine te0032(option, nomte)
                             for2(5, j+1), ier)
                 call fointe('FM', zk8(jpres+5), 4, nompar, valpar,&
                             for2(6, j+1), ier)
-220          continue
+220         continue
 !
             call utpvgl(1, 6, pgl, for2(1, 1), for(1, 1))
             call utpvgl(1, 6, pgl, for2(1, 2), for(1, 2))
@@ -214,7 +215,7 @@ subroutine te0032(option, nomte)
                 for(4,j+1) = 0.d0
                 for(5,j+1) = 0.d0
                 for(6,j+1) = 0.d0
-230          continue
+230         continue
 !
         else
 ! --        REPERE LOCAL - CAS DE F1, F2, F3, MF1, MF2
@@ -238,7 +239,7 @@ subroutine te0032(option, nomte)
                 call fointe('FM', zk8(jpres+4), 4, nompar, valpar,&
                             for(5, j+ 1), ier)
                 for(6,j+1) = 0.d0
-235          continue
+235         continue
         endif
 !
     else if (option.eq.'CHAR_MECA_PESA_R') then
@@ -249,14 +250,14 @@ subroutine te0032(option, nomte)
         call jevech('PPESANR', 'L', lpesa)
         do 240 i = 1, 3
             pglo(i) = zr(lpesa) * zr(lpesa+i) * rho * epais
-240      continue
+240     continue
         call utpvgl(1, 3, pgl, pglo, ploc)
         do 260 i = 1, nno
             do 250 j = 1, 3
                 for(j ,i) = ploc(j)
                 for(j+3,i) = 0.d0
-250          continue
-260      continue
+250         continue
+260     continue
     endif
 !
     if (iplan .ne. 0) then
@@ -273,7 +274,7 @@ subroutine te0032(option, nomte)
         do 270 i = 1, nno
             for(4,i) = for(4,i) - dist*for(2,i)
             for(5,i) = for(5,i) + dist*for(1,i)
-270      continue
+270     continue
     endif
 !
     if (nno .eq. 3) then
@@ -284,5 +285,5 @@ subroutine te0032(option, nomte)
 !
     call utpvlg(nno, 6, pgl, vecl, zr(jvecg))
 !
-9999  continue
+9999 continue
 end subroutine

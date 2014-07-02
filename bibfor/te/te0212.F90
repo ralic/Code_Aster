@@ -17,6 +17,7 @@ subroutine te0212(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -45,13 +46,13 @@ subroutine te0212(option, nomte)
     real(kind=8) :: z, z1, z2, hechp, nx, ny, theta, mat(6)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, imatt, k, i, j, l, li, lj, nbelr
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
     call elref2(nomte, 2, lirefe, nbelr)
     ASSERT(nbelr.eq.2)
-    call elrefe_info(elrefe=lirefe(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=lirefe(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -84,7 +85,7 @@ subroutine te0212(option, nomte)
             r2 = r2 + zr(igeom2+2*i-2)*zr(ivf+l-1)
             z1 = z1 + zr(igeom+2*i-1)*zr(ivf+l-1)
             z2 = z2 + zr(igeom2+2*i-1)*zr(ivf+l-1)
-10      continue
+ 10     continue
         poids = (poids1+poids2)/2.0d0
         r = (r1+r2)/2.d0
         z = (z1+z2)/2.d0
@@ -104,8 +105,8 @@ subroutine te0212(option, nomte)
                 lj = ivf + (kp-1)*nno + j - 1
                 k = k + 1
                 mat(k) = poids*theta*zr(li)*zr(lj)*hechp
-20          continue
-30      continue
+ 20         continue
+ 30     continue
         if (nomte(5:8) .eq. 'SE22') then
             zr(imatt-1+1) = zr(imatt-1+1) + mat(1)
             zr(imatt-1+2) = zr(imatt-1+2) + mat(2)
@@ -140,5 +141,5 @@ subroutine te0212(option, nomte)
             zr(imatt-1+20) = zr(imatt-1+20) + mat(5)
             zr(imatt-1+21) = zr(imatt-1+21) + mat(6)
         endif
-40  end do
+ 40 end do
 end subroutine

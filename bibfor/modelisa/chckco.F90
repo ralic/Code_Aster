@@ -2,6 +2,7 @@ subroutine chckco(char, noma, ndimg)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfcald.h"
@@ -64,7 +65,7 @@ subroutine chckco(char, noma, ndimg)
     integer :: posnno(9), numnno(9)
     character(len=4) :: typno, typma
     character(len=8) :: alias, nomma
-    logical(kind=1) :: lpoutr, lpoint
+    aster_logical :: lpoutr, lpoint
     integer :: itype
     integer :: nmaco
 !
@@ -161,10 +162,10 @@ subroutine chckco(char, noma, ndimg)
                 goto 15
             endif
 !
-16          continue
+ 16         continue
 !
         end do
-15      continue
+ 15     continue
     end do
 !
     call jedema()

@@ -21,6 +21,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -34,7 +35,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: para(*)
-    logical(kind=1) :: lnonl, lostat, lreuse, levol
+    aster_logical :: lnonl, lostat, lreuse, levol
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele, sdieto
     character(len=19) :: lisch2
@@ -59,7 +60,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
     integer :: numarc, numins
     integer :: ifm, niv
     character(len=24) :: noobj, result
-    logical(kind=1) :: force
+    aster_logical :: force
 !
 ! ----------------------------------------------------------------------
 !

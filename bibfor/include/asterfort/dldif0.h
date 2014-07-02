@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dldif0(result, force1, neq, istoc, iarchi,&
                       ifm, lamort, imat, masse, rigid,&
@@ -32,7 +34,7 @@ interface
         integer :: istoc
         integer :: iarchi
         integer :: ifm
-        logical(kind=1) :: lamort
+        aster_logical :: lamort
         integer :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
@@ -52,7 +54,7 @@ interface
         integer :: liad(*)
         character(len=24) :: lifo(*)
         character(len=24) :: modele
-        logical(kind=1) :: ener
+        aster_logical :: ener
         character(len=19) :: solveu
         character(len=24) :: mate
         character(len=24) :: carele

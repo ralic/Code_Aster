@@ -1,8 +1,12 @@
-subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,&
-                 alpha, alfmc, ep, lrgm, ipg, ther, tref, dtmoy, dtgra, tmoym, tgram, alph)
+subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
+                 deumuf, gt, gc, gf, seuil,&
+                 alpha, alfmc, ep, lrgm, ipg,&
+                 ther, tref, dtmoy, dtgra, tmoym,&
+                 tgram, alph)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
@@ -24,7 +28,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    logical(kind=1) :: lrgm, ther
+    aster_logical :: lrgm, ther
     integer :: imate, ipg
     real(kind=8) :: lambda, deuxmu, deumuf, lamf
     real(kind=8) :: gt, gc, gf, seuil, alpha, alfmc
@@ -84,26 +88,33 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
 !
     fami='RIGI'
 !
-    call rcvarc(' ', 'TEMP_INF', '+', fami, ipg, 1, t2p, iret)
-    call rcvarc(' ', 'TEMP_SUP', '+', fami, ipg, 1, t3p, iret)
+    call rcvarc(' ', 'TEMP_INF', '+', fami, ipg,&
+                1, t2p, iret)
+    call rcvarc(' ', 'TEMP_SUP', '+', fami, ipg,&
+                1, t3p, iret)
     if (iret .eq. 0) then
-        call rcvarc(' ', 'TEMP', '+', fami, ipg, 1, t1p, iretm)
+        call rcvarc(' ', 'TEMP', '+', fami, ipg,&
+                    1, t1p, iretm)
 ! SI TEMP N'EST PAS FOURNI ON MET LA MOYENNE DE TSUP ET TINF
         if (iretm .ne. 0) then
             t1p=(t2p+t3p)/2.d0
         endif
         tmoyp=(4.d0*t1p+t2p+t3p)/6.d0
         tgrap=(t3p-t2p)/ep
-        call rcvarc(' ', 'TEMP', 'REF', fami, 1, 1, tref, iret1)
+        call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
+                    1, tref, iret1)
         if (iret1 .eq. 0) then
             ther=.true.
         endif
     endif
     if (ther) then
-        call rcvarc(' ', 'TEMP_INF', '-', fami, ipg, 1, t2m, iret)
-        call rcvarc(' ', 'TEMP_SUP', '-', fami, ipg, 1, t3m, iret)
+        call rcvarc(' ', 'TEMP_INF', '-', fami, ipg,&
+                    1, t2m, iret)
+        call rcvarc(' ', 'TEMP_SUP', '-', fami, ipg,&
+                    1, t3m, iret)
         if (iret .eq. 0) then
-            call rcvarc(' ', 'TEMP', '-', fami, ipg, 1, t1m, iretm)
+            call rcvarc(' ', 'TEMP', '-', fami, ipg,&
+                        1, t1m, iretm)
 ! SI TEMP N'EST PAS FOURNI ON MET LA MOYENNE DE TSUP ET TINF
             if (iretm .ne. 0) then
                 t1m=(t2m+t3m)/2.d0
@@ -123,11 +134,15 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
 !
     if (iret .eq. 0) then
         nomres(3) = 'ALPHA'
-        call rcvala(imate, ' ', 'ELAS_GLRC', 1, 'TEMP', [tmoyp], 3, nomres, valres, icodre, 1)
+        call rcvala(imate, ' ', 'ELAS_GLRC', 1, 'TEMP',&
+                    [tmoyp], 3, nomres, valres, icodre,&
+                    1)
         alph = valres(3)
 !
     else
-        call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ', [0.d0], 2, nomres, valres, icodre, 1)
+        call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ',&
+                    [0.d0], 2, nomres, valres, icodre,&
+                    1)
 !
     endif
     e = valres(1)
@@ -138,7 +153,9 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
     nomres(1) = 'E_F'
     nomres(2) = 'NU_F'
 !
-    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ', [0.d0], 2, nomres, valres, icodre, 0)
+    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ',&
+                [0.d0], 2, nomres, valres, icodre,&
+                0)
 !
     if (icodre(1) .eq. 0) then
         ef = valres(1)
@@ -163,7 +180,9 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
     nomres(5) = 'NYC'
     nomres(6) = 'MYF'
     nomres(7) = 'ALPHA_C'
-    call rcvala(imate, ' ', 'GLRC_DM', 0, ' ', [0.d0], 7, nomres, valres, icodre, 0)
+    call rcvala(imate, ' ', 'GLRC_DM', 0, ' ',&
+                [0.d0], 7, nomres, valres, icodre,&
+                0)
 !
     gt = valres(1)
     gf = valres(3)
@@ -225,8 +244,8 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,
         alfmc = 1.d0
         seuil = 0.d0
     else
-        seuil = lambda*(1.0d0 - gt)*(1.0d0-2.0d0*nu)**2&
-              + deuxmu*( 1.0d0 - gt + (1.0d0 - gc)*nu**2/alfmc)
+        seuil = lambda*(1.0d0 - gt)*(1.0d0-2.0d0*nu)**2 + deuxmu*( 1.0d0 - gt + (1.0d0 - gc)*nu**&
+                &2/alfmc)
 !
         seuil = seuil/(2.0d0*(lambda*(1.0d0-2.0d0*nu) + deuxmu))**2
         seuil = seuil*nyt**2

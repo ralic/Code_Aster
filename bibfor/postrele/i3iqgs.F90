@@ -3,6 +3,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
                   fink)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3afk2.h"
 #include "asterfort/i3crqp.h"
@@ -16,7 +17,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
 #include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
-    logical(kind=1) :: fink
+    aster_logical :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -61,7 +62,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
     real(kind=8) :: e1(3), e2(3), e3(3), cs(3, 4), sgtp(6), x(3), r(3), s(3)
     real(kind=8) :: t(3)
     real(kind=8) :: e1i(3), e2i(3)
-    logical(kind=1) :: pb, djala1, djala2
+    aster_logical :: pb, djala1, djala2
 !
 !======================================================================
 !
@@ -79,31 +80,31 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
 !
 ! --- RECUPERATION DES NOEUDS SOMMET DE LA FACE ET DE SES COORDONNEES
 !
-    do 10, i = 1, 4, 1
-    ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
-    do 11, j = 1, 3, 1
-    cs(j,i) = coordo(3*(ds1-1) + j)
-11  continue
-    10 end do
+    do 10 i = 1, 4, 1
+        ds1 = conexk(zi(adescm-1 + decf + (i-1)*6))
+        do 11 j = 1, 3, 1
+            cs(j,i) = coordo(3*(ds1-1) + j)
+ 11     continue
+ 10 end do
 !
 ! --- LCARA : LONGUEUR DE LA PLUS PETITE ARETE
 !     AFIN DE DEFINIR UNE PRECISION RELATIVE
 !
     lcara = 1.d+50
-    do 20, j = 1, 3, 1
+    do 20 j = 1, 3, 1
+        c = zero
+        do 22 i = 1, 3, 1
+            s1 = cs(i,j+1) - cs(i,j)
+            c = c + s1*s1
+ 22     continue
+        c = sqrt( c )
+        lcara = min ( c, lcara )
+ 20 end do
     c = zero
-    do 22, i = 1, 3, 1
-    s1 = cs(i,j+1) - cs(i,j)
-    c = c + s1*s1
-22  continue
-    c = sqrt( c )
-    lcara = min ( c, lcara )
-    20 end do
-    c = zero
-    do 24, i = 1, 3, 1
-    s1 = cs(i,4) - cs(i,1)
-    c = c + s1*s1
-    24 end do
+    do 24 i = 1, 3, 1
+        s1 = cs(i,4) - cs(i,1)
+        c = c + s1*s1
+ 24 end do
     c = sqrt( c )
     lcara = min ( c, lcara )
     tole = lcara * epsi
@@ -115,14 +116,14 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
 !
     c = zero
     t1 = zero
-    do 15, i = 1, 3, 1
-    s1 = cs(i,2) - cs(i,1)
-    r1 = cs(i,4) - cs(i,1)
-    e1(i) = s1
-    e2(i) = r1
-    c = c + s1*s1
-    t1 = t1 + r1*r1
-    15 end do
+    do 15 i = 1, 3, 1
+        s1 = cs(i,2) - cs(i,1)
+        r1 = cs(i,4) - cs(i,1)
+        e1(i) = s1
+        e2(i) = r1
+        c = c + s1*s1
+        t1 = t1 + r1*r1
+ 15 end do
     c = sqrt(c)
     t1 = sqrt(t1)
     if ((c.le.epsi) .or. (t1.le.epsi)) then
@@ -130,20 +131,20 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
     else
         c = un/c
         t1 = un/t1
-        do 16, i = 1, 3, 1
-        e1(i) = e1(i)*c
-        e2(i) = e2(i)*t1
-16      continue
+        do 16 i = 1, 3, 1
+            e1(i) = e1(i)*c
+            e2(i) = e2(i)*t1
+ 16     continue
         e3(1) = e1(2)*e2(3) - e1(3)*e2(2)
         e3(2) = e1(3)*e2(1) - e1(1)*e2(3)
         e3(3) = e1(1)*e2(2) - e1(2)*e2(1)
         c = zero
-        do 17, i = 1, 3, 1
-        c = c + e3(i)*e3(i)
-        x(i) = cs(i,1)
-        a(i,1) = sgt(i)
-        a(i,2) = sgt(i+3)
-17      continue
+        do 17 i = 1, 3, 1
+            c = c + e3(i)*e3(i)
+            x(i) = cs(i,1)
+            a(i,1) = sgt(i)
+            a(i,2) = sgt(i+3)
+ 17     continue
         c = sqrt(c)
         if (c .le. epsi) then
             pb = .true.
@@ -252,15 +253,15 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
                         2)
             call i3rpqp(x, e1, e2, e3, cs(1, 2),&
                         3)
-            do 18, i = 1, 2, 1
-            c = a(i,2) - a(i,1)
-            sgtp(i) = a(i,1)
-            sgtp(i+3) = a(i,2)
-            sgtf(i) = a(i,1)
-            sgtf(i+3) = a(i,2)
-            cs(i,1) = zero
-            normab = normab + c*c
-18          continue
+            do 18 i = 1, 2, 1
+                c = a(i,2) - a(i,1)
+                sgtp(i) = a(i,1)
+                sgtp(i+3) = a(i,2)
+                sgtf(i) = a(i,1)
+                sgtf(i+3) = a(i,2)
+                cs(i,1) = zero
+                normab = normab + c*c
+ 18         continue
             sgtp(3) = zero
             sgtf(3) = a(3,1)
             sgtp(6) = zero
@@ -281,14 +282,14 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
                         s2 = a(2,2)
                         t1 = a(3,1)
                         t2 = a(3,2)
-                        do 42, i = 1,2, 1
-                        r(i) = a(1,i)
-                        s(i) = a(2,i)
-42                      continue
+                        do 42 i = 1, 2, 1
+                            r(i) = a(1,i)
+                            s(i) = a(2,i)
+ 42                     continue
                         call i3efk2(fk, 2, r, s, a)
-                        do 40, i = 1, 3, 1
-                        a(i,3) = (a(i,1)+a(i,2))*unsur2
-40                      continue
+                        do 40 i = 1, 3, 1
+                            a(i,3) = (a(i,1)+a(i,2))*unsur2
+ 40                     continue
                         r(1) = zero
                         r(2) = a(3,1)
                         s(1) = abs(t2-t1)*normab
@@ -370,11 +371,11 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
                         call i3efk2(fk, 1, x, t, a)
                         t1 = zero
                         t2 = zero
-                        do 30, i = 1, 3, 1
-                        c = sgtf(3+i)-sgtf(i)
-                        t2 = t2 + c* c
-                        t1 = t1 + c*(a(i,1)-sgtf(i))
-30                      continue
+                        do 30 i = 1, 3, 1
+                            c = sgtf(3+i)-sgtf(i)
+                            t2 = t2 + c* c
+                            t1 = t1 + c*(a(i,1)-sgtf(i))
+ 30                     continue
                         t2 = un/sqrt(t2)
                         t1 = t1*t2
                         call i3ptrv(tole, lstpt, nbpt, t1, djala1,&

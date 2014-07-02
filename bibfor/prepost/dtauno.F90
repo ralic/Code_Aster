@@ -20,6 +20,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -47,7 +48,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     integer :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
     integer :: tspaq, ordini
-    logical(kind=1) :: post
+    aster_logical :: post
     real(kind=8) :: vresu(24), valpar(35)
     character(len=8) :: nommai, grdvie, nommap
     character(len=16) :: nomcri, nommet, nomfor, forvie, forcri
@@ -84,7 +85,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !    NOEUDS DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: ki, l, jcnrd, jcnrl,  ibidno
+    integer :: ki, l, jcnrd, jcnrl, ibidno
     integer :: iret, nbma, adrma, icesd, icesl, icesv
     integer :: inop, nunoe
     integer :: jtypma

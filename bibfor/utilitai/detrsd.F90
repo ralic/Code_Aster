@@ -1,5 +1,6 @@
 subroutine detrsd(typesd, nomsd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/amumph.h"
 #include "asterfort/apetsc.h"
@@ -67,9 +68,9 @@ subroutine detrsd(typesd, nomsd)
 ! ----------------------------------------------------------------------
     complex(kind=8) :: cbid
 !
-    integer :: iret, iad, long, i, nbch,  ibid
+    integer :: iret, iad, long, i, nbch, ibid
     integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
-    integer ::  iexi
+    integer :: iexi
     character(len=8) :: metres, k8
     character(len=12) :: vge
     character(len=14) :: nu, com
@@ -77,7 +78,7 @@ subroutine detrsd(typesd, nomsd)
     character(len=19) :: champ, matas, table, solveu, fnc, resu
     character(len=19) :: ligrel, nuage, ligret, mltf, stock, k19, matel, liste
     character(len=24) :: typobj, knomsd
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
     character(len=24), pointer :: ltns(:) => null()
     character(len=24), pointer :: relr(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -551,13 +552,13 @@ subroutine detrsd(typesd, nomsd)
     else if (typ2sd.eq.'VARI_COM') then
 !     -------------------------------------
         com = nomsd
-        call assde1('CHAMP',com//'.TEMP')
-        call assde1('CHAMP',com//'.HYDR')
-        call assde1('CHAMP',com//'.SECH')
-        call assde1('CHAMP',com//'.PHAS')
-        call assde1('CHAMP',com//'.EPAN')
-        call assde1('CHAMP',com//'.INST')
-        call assde1('CHAMP',com//'.TOUT')
+        call assde1('CHAMP', com//'.TEMP')
+        call assde1('CHAMP', com//'.HYDR')
+        call assde1('CHAMP', com//'.SECH')
+        call assde1('CHAMP', com//'.PHAS')
+        call assde1('CHAMP', com//'.EPAN')
+        call assde1('CHAMP', com//'.INST')
+        call assde1('CHAMP', com//'.TOUT')
         call jedetr(com//'.EXISTENCE')
 !
 !     ------------------------------------------------------------------
@@ -592,7 +593,7 @@ subroutine detrsd(typesd, nomsd)
         if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', vk24=relr)
         do i = 1, nbch
             champ=relr(i)(1:19)
-            call assde1('RESUELEM',champ)
+            call assde1('RESUELEM', champ)
         end do
  61     continue
         call jedetr(matel//'.RELR')

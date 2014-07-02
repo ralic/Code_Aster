@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine mnlali(reprise, modini, imat, xcdl,&
                       parcho, adime, &
                       ninc, nd, nchoc, h, hf,&
                       ampl, xvect,lnm,num_ordr)
-        logical(kind=1) :: reprise
+        aster_logical :: reprise
         character(len=8) :: modini
         integer :: imat(2)
         character(len=14) :: xcdl

@@ -18,6 +18,7 @@ subroutine xmiszl(vecinc, defico, noma)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -61,11 +62,11 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 !
 !
-    integer :: ntmae,  jconx2
+    integer :: ntmae, jconx2
     integer :: numno, nummae, nno, posmae
     integer :: ino, imae, i
-    integer :: ibid, nbno,  zmesx
-    logical(kind=1) :: lcumul(4)
+    integer :: ibid, nbno, zmesx
+    aster_logical :: lcumul(4)
     real(kind=8) :: lcoefr(4)
     character(len=19) :: prno, lichs(4)
     character(len=19) :: cns1, cns1c

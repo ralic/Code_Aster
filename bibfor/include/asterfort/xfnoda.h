@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
                       dimcon, ndim, dt, fnoevo, congem,&
@@ -27,7 +29,7 @@ interface
         integer :: enrmec(3)
         integer :: ndim
         real(kind=8) :: dt
-        logical(kind=1) :: fnoevo
+        aster_logical :: fnoevo
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimenr)
     end subroutine xfnoda

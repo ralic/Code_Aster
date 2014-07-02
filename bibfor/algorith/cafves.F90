@@ -58,7 +58,8 @@ subroutine cafves(cont, tange, maxfa, nface, fks,&
 !
 !================================================
     implicit none
-    logical(kind=1) :: cont, tange
+#include "asterf_types.h"
+    aster_logical :: cont, tange
     integer :: maxfa
     integer :: nface
     real(kind=8) :: flux
@@ -72,19 +73,19 @@ subroutine cafves(cont, tange, maxfa, nface, fks,&
     if (cont) then
         do 2 ifa = 1, nface
             flux = flux +mobfa(ifa) * fks(ifa)
- 2      continue
+  2     continue
     endif
     if (tange) then
         do 3 jfa = 1, nface
             dflx1(1) = dflx1(1) + dmob1(jfa) * fks(jfa) + mobfa(jfa) * dfks1(1,jfa)
             dflx2(1) = dflx2(1) + dmob2(jfa) * fks(jfa) + mobfa(jfa) * dfks2(1,jfa)
- 3      continue
+  3     continue
         do 4 ifa = 1, nface
             dflx1(1+ifa) = dflx1(1+ifa) + mob1f(ifa)* fks(ifa)
             dflx2(1+ifa) = dflx2(1+ifa) + mob2f(ifa)* fks(ifa)
             do 4 jfa = 1, nface
                 dflx1(1+ifa) = dflx1(1+ifa) + mobfa(jfa) * dfks1(ifa+ 1,jfa)
                 dflx2(1+ifa) = dflx2(1+ifa) + mobfa(jfa) * dfks2(ifa+ 1,jfa)
- 4          continue
+  4         continue
     endif
 end subroutine

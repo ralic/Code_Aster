@@ -18,6 +18,7 @@ subroutine contex(nomop, nompar)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -47,9 +48,9 @@ subroutine contex(nomop, nompar)
 !
 !
     character(len=8) :: nompa2, nomail, nomgd
-    integer ::  jdesop, iapara, nbin, nbou, iadzi, iazk24
+    integer :: jdesop, iapara, nbin, nbou, iadzi, iazk24
     integer :: nblig, indic, k, itrou, iopt, igd, jdsgd
-    logical(kind=1) :: lopt, lpara, lgd
+    aster_logical :: lopt, lpara, lgd
     character(len=80), pointer :: comlibr(:) => null()
 !
 !
@@ -84,9 +85,9 @@ subroutine contex(nomop, nompar)
         nblig=zi(jdesop-1+4+nbin+nbou+1)
         indic=zi(jdesop-1+4+nbin+nbou+2)
         if (nblig .gt. 0) then
-            do 10,k=indic,indic-1+nblig
-            call utmess('I', 'ELEMENT_17', sk=comlibr(k))
-10          continue
+            do 10 k = indic, indic-1+nblig
+                call utmess('I', 'ELEMENT_17', sk=comlibr(k))
+ 10         continue
         endif
     endif
 !
@@ -113,9 +114,9 @@ subroutine contex(nomop, nompar)
             igd=zi(jdesop-1+4+nbin+itrou)
         endif
         if (nblig .gt. 0) then
-            do 20,k=indic,indic-1+nblig
-            call utmess('I', 'ELEMENT_17', sk=comlibr(k))
-20          continue
+            do 20 k = indic, indic-1+nblig
+                call utmess('I', 'ELEMENT_17', sk=comlibr(k))
+ 20         continue
         endif
     endif
 !
@@ -133,9 +134,9 @@ subroutine contex(nomop, nompar)
             nblig=zi(jdsgd-1+6)
             indic=zi(jdsgd-1+7)
             if (nblig .gt. 0) then
-                do 30,k=indic,indic-1+nblig
-                call utmess('I', 'ELEMENT_17', sk=comlibr(k))
-30              continue
+                do 30 k = indic, indic-1+nblig
+                    call utmess('I', 'ELEMENT_17', sk=comlibr(k))
+ 30             continue
             endif
         endif
 !

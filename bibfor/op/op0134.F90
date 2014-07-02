@@ -19,6 +19,7 @@ subroutine op0134()
 ! ======================================================================
 !     CALCUL D'UNE FONCTION INTERPRETEE
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -40,8 +41,8 @@ subroutine op0134()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf,  nbnova, lprol
-    logical(kind=1) :: compl
+    integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, nbnova, lprol
+    aster_logical :: compl
     character(len=8) :: nopn, nopf
     character(len=16) :: nomcmd, typres
     character(len=19) :: nomfon, nomfin, listp, listf, typco

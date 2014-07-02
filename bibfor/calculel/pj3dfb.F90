@@ -1,5 +1,6 @@
 subroutine pj3dfb(boite, maillz, geom1, geom2)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
@@ -49,10 +50,10 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     real(kind=8) :: dz, ddz, zmin, zmax, zzmin, zzmax
     character(len=24) :: maille
     integer :: p1, q1, r1, p2, q2, r2, p, q, r, nx, ny, nz, ndec, nno
-    integer :: iatr3, ntr3,   nno1, nno2, i, iposi, ifm, niv
+    integer :: iatr3, ntr3, nno1, nno2, i, iposi, ifm, niv
     integer :: iabtdi, iabtvr, iabtnb, iabtlc, k, ino, ib, lont, iabtco
     integer :: nbtot, nbmax, nbmin, nbtet
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
     integer, pointer :: lino1(:) => null()
     integer, pointer :: lino2(:) => null()
 !
@@ -93,24 +94,24 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     xmax = -rbig
     ymax = -rbig
     zmax = -rbig
-    do 10,i = 1,nno1
-    if (lino1(i) .eq. 0) goto 10
-    xmin = min(xmin,geom1(3* (i-1)+1))
-    xmax = max(xmax,geom1(3* (i-1)+1))
-    ymin = min(ymin,geom1(3* (i-1)+2))
-    ymax = max(ymax,geom1(3* (i-1)+2))
-    zmin = min(zmin,geom1(3* (i-1)+3))
-    zmax = max(zmax,geom1(3* (i-1)+3))
-    10 end do
-    do 20,i = 1,nno2
-    if (lino2(i) .eq. 0) goto 20
-    xmin = min(xmin,geom2(3* (i-1)+1))
-    xmax = max(xmax,geom2(3* (i-1)+1))
-    ymin = min(ymin,geom2(3* (i-1)+2))
-    ymax = max(ymax,geom2(3* (i-1)+2))
-    zmin = min(zmin,geom2(3* (i-1)+3))
-    zmax = max(zmax,geom2(3* (i-1)+3))
-    20 end do
+    do 10 i = 1, nno1
+        if (lino1(i) .eq. 0) goto 10
+        xmin = min(xmin,geom1(3* (i-1)+1))
+        xmax = max(xmax,geom1(3* (i-1)+1))
+        ymin = min(ymin,geom1(3* (i-1)+2))
+        ymax = max(ymax,geom1(3* (i-1)+2))
+        zmin = min(zmin,geom1(3* (i-1)+3))
+        zmax = max(zmax,geom1(3* (i-1)+3))
+ 10 end do
+    do 20 i = 1, nno2
+        if (lino2(i) .eq. 0) goto 20
+        xmin = min(xmin,geom2(3* (i-1)+1))
+        xmax = max(xmax,geom2(3* (i-1)+1))
+        ymin = min(ymin,geom2(3* (i-1)+2))
+        ymax = max(ymax,geom2(3* (i-1)+2))
+        zmin = min(zmin,geom2(3* (i-1)+3))
+        zmax = max(zmax,geom2(3* (i-1)+3))
+ 20 end do
 !
 !
     stotal = max((xmax-xmin), (ymax-ymin), (zmax-zmin))
@@ -180,54 +181,55 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !     3. : ON COMPTE COMBIEN DE MAILLES SERONT CONTENUES
 !             DANS CHAQUE BOITE(P,Q,R)
 !     -------------------------------------------------------
-    do 70,i = 1,ntr3
-    xxmin = rbig
-    yymin = rbig
-    zzmin = rbig
-    xxmax = -rbig
-    yymax = -rbig
-    zzmax = -rbig
-    do 30,k = 1,nno
-    ino = zi(iatr3+ndec* (i-1)+k)
-    xxmin = min(xxmin,geom1(3* (ino-1)+1))
-    xxmax = max(xxmax,geom1(3* (ino-1)+1))
-    yymin = min(yymin,geom1(3* (ino-1)+2))
-    yymax = max(yymax,geom1(3* (ino-1)+2))
-    zzmin = min(zzmin,geom1(3* (ino-1)+3))
-    zzmax = max(zzmax,geom1(3* (ino-1)+3))
-30  continue
-    p1 = int((xxmin-xmin)/dx) + 1
-    p2 = int((xxmax-xmin)/dx) + 1
-    q1 = int((yymin-ymin)/dy) + 1
-    q2 = int((yymax-ymin)/dy) + 1
-    r1 = int((zzmin-zmin)/dz) + 1
-    r2 = int((zzmax-zmin)/dz) + 1
-    do 60,p = p1,p2
-    do 50,q = q1,q2
-    do 40,r = r1,r2
-    zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi( iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p ) + 1
-40  continue
-50  continue
-60  continue
+    do 70 i = 1, ntr3
+        xxmin = rbig
+        yymin = rbig
+        zzmin = rbig
+        xxmax = -rbig
+        yymax = -rbig
+        zzmax = -rbig
+        do 30 k = 1, nno
+            ino = zi(iatr3+ndec* (i-1)+k)
+            xxmin = min(xxmin,geom1(3* (ino-1)+1))
+            xxmax = max(xxmax,geom1(3* (ino-1)+1))
+            yymin = min(yymin,geom1(3* (ino-1)+2))
+            yymax = max(yymax,geom1(3* (ino-1)+2))
+            zzmin = min(zzmin,geom1(3* (ino-1)+3))
+            zzmax = max(zzmax,geom1(3* (ino-1)+3))
+ 30     continue
+        p1 = int((xxmin-xmin)/dx) + 1
+        p2 = int((xxmax-xmin)/dx) + 1
+        q1 = int((yymin-ymin)/dy) + 1
+        q2 = int((yymax-ymin)/dy) + 1
+        r1 = int((zzmin-zmin)/dz) + 1
+        r2 = int((zzmax-zmin)/dz) + 1
+        do 60 p = p1, p2
+            do 50 q = q1, q2
+                do 40 r = r1, r2
+                    zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi(iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p&
+                                                            ) + 1
+ 40             continue
+ 50         continue
+ 60     continue
 !
-    70 end do
+ 70 end do
 !
 !     3.2: IMPRESSION DU NOMBRE DE TETRAEDRES PAR BOITE :
     if (niv .gt. 1) then
         nbtot=0
         nbmax=0
         nbmin=ismaem()
-        do 61,p = 1,nx
-        do 51,q = 1,ny
-        do 41,r = 1,nz
-        nbtet= zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p)
-        write (ifm,*)'P,Q,R,NBTET=',p,q,r,nbtet
-        nbtot=nbtot+ nbtet
-        nbmin=min(nbmin,nbtet)
-        nbmax=max(nbmax,nbtet)
-41      continue
-51      continue
-61      continue
+        do 61 p = 1, nx
+            do 51 q = 1, ny
+                do 41 r = 1, nz
+                    nbtet= zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p)
+                    write (ifm,*)'P,Q,R,NBTET=',p,q,r,nbtet
+                    nbtot=nbtot+ nbtet
+                    nbmin=min(nbmin,nbtet)
+                    nbmax=max(nbmax,nbtet)
+ 41             continue
+ 51         continue
+ 61     continue
         write (ifm,*)
         write (ifm,*)'NOMBRE DE TETRAEDRES PAR BOITE:'
         write (ifm,*)'   EN MOYENNE :',nbtot/(nx*ny*nz)
@@ -240,49 +242,53 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !     4. : ON REMPLIT .BT3DCO  ET .BT3DLC :
 !     -------------------------------------------------------
     zi(iabtlc-1+1) = 0
-    do 80,ib = 1,nx*ny*nz
-    zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)
-    zi(iabtnb-1+ib) = 0
-    80 end do
+    do 80 ib = 1, nx*ny*nz
+        zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)
+        zi(iabtnb-1+ib) = 0
+ 80 end do
 !
 !
     lont = zi(iabtlc-1+1+nx*ny*nz)
     call wkvect(boite//'.BT3DCO', 'V V I', lont, iabtco)
 !
-    do 130,i = 1,ntr3
-    xxmin = rbig
-    yymin = rbig
-    zzmin = rbig
-    xxmax = -rbig
-    yymax = -rbig
-    zzmax = -rbig
-    do 90,k = 1,nno
-    ino = zi(iatr3+ndec* (i-1)+k)
-    xxmin = min(xxmin,geom1(3* (ino-1)+1))
-    xxmax = max(xxmax,geom1(3* (ino-1)+1))
-    yymin = min(yymin,geom1(3* (ino-1)+2))
-    yymax = max(yymax,geom1(3* (ino-1)+2))
-    zzmin = min(zzmin,geom1(3* (ino-1)+3))
-    zzmax = max(zzmax,geom1(3* (ino-1)+3))
-90  continue
-    p1 = int((xxmin-xmin)/dx) + 1
-    p2 = int((xxmax-xmin)/dx) + 1
-    q1 = int((yymin-ymin)/dy) + 1
-    q2 = int((yymax-ymin)/dy) + 1
-    r1 = int((zzmin-zmin)/dz) + 1
-    r2 = int((zzmax-zmin)/dz) + 1
-    do 120,p = p1,p2
-    do 110,q = q1,q2
-    do 100,r = r1,r2
-    zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi( iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p ) + 1
-    iposi = zi( iabtlc-1+ (r-1)*nx*ny+ (q-1)*nx+p) + zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p )
-    ASSERT((iposi.ge.1) .and. (iposi.le.lont))
-    zi(iabtco-1+iposi) = i
-100  continue
-110  continue
-120  continue
+    do 130 i = 1, ntr3
+        xxmin = rbig
+        yymin = rbig
+        zzmin = rbig
+        xxmax = -rbig
+        yymax = -rbig
+        zzmax = -rbig
+        do 90 k = 1, nno
+            ino = zi(iatr3+ndec* (i-1)+k)
+            xxmin = min(xxmin,geom1(3* (ino-1)+1))
+            xxmax = max(xxmax,geom1(3* (ino-1)+1))
+            yymin = min(yymin,geom1(3* (ino-1)+2))
+            yymax = max(yymax,geom1(3* (ino-1)+2))
+            zzmin = min(zzmin,geom1(3* (ino-1)+3))
+            zzmax = max(zzmax,geom1(3* (ino-1)+3))
+ 90     continue
+        p1 = int((xxmin-xmin)/dx) + 1
+        p2 = int((xxmax-xmin)/dx) + 1
+        q1 = int((yymin-ymin)/dy) + 1
+        q2 = int((yymax-ymin)/dy) + 1
+        r1 = int((zzmin-zmin)/dz) + 1
+        r2 = int((zzmax-zmin)/dz) + 1
+        do 120 p = p1, p2
+            do 110 q = q1, q2
+                do 100 r = r1, r2
+                    zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi(iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p&
+                                                            ) + 1
+                    iposi = zi(&
+                            iabtlc-1+ (r-1)*nx*ny+ (q-1)*nx+p) + zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*&
+                            &nx+p&
+                            )
+                    ASSERT((iposi.ge.1) .and. (iposi.le.lont))
+                    zi(iabtco-1+iposi) = i
+100             continue
+110         continue
+120     continue
 !
-    130 end do
+130 end do
 !
     dbg = .false.
     if (dbg) call utimsd(ifm, 2, .false._1, .true._1, boite,&

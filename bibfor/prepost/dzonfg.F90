@@ -50,6 +50,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 !
 ! DECLARATION GLOBALE
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     integer :: nsommx, icnc(nsommx+2, *), nelcom, numeli(nelcom+2, *)
     integer :: inno
@@ -59,7 +60,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 !
     integer :: j, inel, nuef, ind, noeud, iel, elem, n
     integer :: nedep, nefin, nbelco, nbnoco
-    logical(kind=1) :: test
+    aster_logical :: test
 !
 ! 1 - EFS DES COUCHES 1, 2 ET 3
 ! 1.1 - COUCHE 1
@@ -68,7 +69,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
     ASSERT(nbelzo(1).le.1000)
     do 10 inel = 1, nbelzo(1)
         tbelzo(inel) = numeli(inel+2,inno)
-10  end do
+ 10 end do
 !
 ! 1.2 - COUCHES 2 ET 3
 !
@@ -85,7 +86,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                     elem = numeli(iel+2,noeud)
                     test = .true.
                     n = 1
-60                  continue
+ 60                 continue
                     if (n .le. (nefin+nbelco) .and. test) then
                         if (tbelzo(n) .eq. elem) test = .false.
                         n=n+1
@@ -96,9 +97,9 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                         ASSERT((nefin+nbelco).le.1000)
                         tbelzo(nefin+nbelco) = elem
                     endif
-50              continue
-40          continue
-30      continue
+ 50             continue
+ 40         continue
+ 30     continue
         if (j .eq. 1) then
             nbelzo(2) = nbelco
             nedep = nbelzo(1)+1
@@ -106,7 +107,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
         else
             nbelzo(3) = nbelco
         endif
-20  end do
+ 20 end do
 !
 ! 2 - NOEUDS DES COUCHES 1 2 ET 3
 !
@@ -126,7 +127,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                 noeud = icnc(ind+2,nuef)
                 n = 1
                 test = .true.
-100              continue
+100             continue
                 if (n .le. nbnoco .and. test) then
                     if (tbnozo(n) .eq. noeud) test = .false.
                     n=n+1
@@ -138,13 +139,13 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                     ASSERT(nbnoco.le.1000)
                     tbnozo(nbnoco) = noeud
                 endif
-90          continue
-80      continue
+ 90         continue
+ 80     continue
         if (j .ne. 3) then
             nedep=nefin
             nefin=nedep+nbelzo(j+1)
         endif
-70  end do
+ 70 end do
 !
     nbelzo(2)=nbelzo(1)+nbelzo(2)
     nbelzo(3)=nbelzo(2)+nbelzo(3)

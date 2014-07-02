@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
                       nbno, ecrma, icoma)
         integer :: nfic
-        logical(kind=1) :: trouve
+        aster_logical :: trouve
         integer :: nbele
         character(len=8) :: nomobj
         character(len=8) :: tymail
         integer :: nbno
-        logical(kind=1) :: ecrma(*)
+        aster_logical :: ecrma(*)
         integer :: icoma
     end subroutine giecma
 end interface

@@ -26,6 +26,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codere.h"
 #include "asterfort/crirup.h"
@@ -48,7 +49,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*)
 !
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
 !.......................................................................
 !
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -86,7 +87,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 ! OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !.......................................................................
 !
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl
 !
@@ -109,7 +110,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 ! - INITIALISATION CODES RETOURS
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -122,7 +123,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
         do 20 j = 1, 6
             eps (j)=0.d0
             deps(j)=0.d0
-20      continue
+ 20     continue
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr(ideplm),&
@@ -143,19 +144,19 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
 !      TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         if (axi) then
             do 50 n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
-50          continue
+ 50         continue
         endif
 !
         do 60 i = 1, 3
             sign(i) = sigm(i,kpg)
-60      continue
+ 60     continue
         sign(4) = sigm(4,kpg)*rac2
 !
 !
@@ -179,13 +180,13 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
             if (matsym) then
                 do 160 n = 1, nno
                     do 150 i = 1, 2
-                        do 151,kl=1,4
-                        sig(kl)=0.d0
-                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-151                      continue
+                        do 151 kl = 1, 4
+                            sig(kl)=0.d0
+                            sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                            sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                            sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                            sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+151                     continue
                         do 140 j = 1, 2
                             do 130 m = 1, n
                                 if (m .eq. n) then
@@ -208,20 +209,20 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                                     matuu(kk) = matuu(kk) + tmp*poids
                                 endif
 !
-130                          continue
-140                      continue
-150                  continue
-160              continue
+130                         continue
+140                     continue
+150                 continue
+160             continue
             else
                 do 560 n = 1, nno
                     do 550 i = 1, 2
-                        do 551,kl=1,4
-                        sig(kl)=0.d0
-                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-551                      continue
+                        do 551 kl = 1, 4
+                            sig(kl)=0.d0
+                            sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                            sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                            sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                            sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+551                     continue
                         do 540 j = 1, 2
                             do 530 m = 1, nno
 !
@@ -236,10 +237,10 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                                 kk = 2*nno*(2*(n-1)+i-1) + 2*(m-1)+j
                                 matuu(kk) = matuu(kk) + tmp*poids
 !
-530                          continue
-540                      continue
-550                  continue
-560              continue
+530                         continue
+540                     continue
+550                 continue
+560             continue
             endif
         endif
 !
@@ -254,13 +255,13 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 !               VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
                         zr(ivectu-1+2*(n-1)+i)= zr(ivectu-1+2*(n-1)+i)&
                         +def(kl,n,i)*sigma(kl)*poids
-210                  continue
-220              continue
-230          continue
+210                 continue
+220             continue
+230         continue
 !
             do 310 kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-310          continue
+310         continue
             sigp(4,kpg) = sigma(4)/rac2
 !
         endif
@@ -271,12 +272,12 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 !
             do 320 kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-320          continue
+320         continue
             sigp(4,kpg) = sigma(4)/rac2
 !
         endif
 !
-800  end do
+800 end do
 !
 !     POST_ITER='CRIT_RUPT'
     if (crit(11) .gt. 0.d0) then
@@ -286,7 +287,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                     instam, instap)
     endif
 !
-1956  continue
+1956 continue
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 end subroutine

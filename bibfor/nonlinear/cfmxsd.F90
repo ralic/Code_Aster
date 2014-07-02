@@ -20,6 +20,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfcrsd.h"
 #include "asterfort/cfdisi.h"
@@ -67,7 +68,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
     integer :: zbouc, ztaco
     integer :: nzoco
     integer :: ifm, niv
-    logical(kind=1) :: lctcd, lctcc, lxfcm, lmail, lallv
+    aster_logical :: lctcd, lctcc, lxfcm, lmail, lallv
     character(len=24) :: mboucl, tabcof
     integer :: jmbouc, jtabco
     character(len=24) :: nosdco
@@ -183,7 +184,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
         call xxmxme(noma, nomo, fonact, defico, resoco)
     endif
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

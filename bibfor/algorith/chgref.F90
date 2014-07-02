@@ -32,6 +32,7 @@ subroutine chgref(geomi, x, y, bidim)
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/matfpe.h"
 #include "asterfort/jedema.h"
@@ -43,7 +44,7 @@ subroutine chgref(geomi, x, y, bidim)
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
-    logical(kind=1) :: bidim
+    aster_logical :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: x(3), y(3), z(3), p(3), prec, r1, r2
@@ -72,7 +73,7 @@ subroutine chgref(geomi, x, y, bidim)
                 p(2)=zr(iadcoo+3*(i-1)+2)
                 zr(iadcoo+3*(i-1)+1)=ddot(2,x,1,p,1)
                 zr(iadcoo+3*(i-1)+2)=ddot(2,y,1,p,1)
-10          continue
+ 10         continue
         else
             call utmess('F', 'ALGORITH_96')
         endif
@@ -94,7 +95,7 @@ subroutine chgref(geomi, x, y, bidim)
                 zr(iadcoo+3*(i-1)+1)=ddot(3,x,1,p,1)
                 zr(iadcoo+3*(i-1)+2)=ddot(3,y,1,p,1)
                 zr(iadcoo+3*(i-1)+3)=ddot(3,z,1,p,1)
-20          continue
+ 20         continue
         else
             call utmess('F', 'ALGORITH_97')
         endif

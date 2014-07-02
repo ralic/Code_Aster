@@ -2,6 +2,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                   prec, erreur, alpha, types, re)
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     integer :: ndim, nelem, nbr(nelem), nalpha, degre
     real(kind=8) :: prec, erreur(nelem), alpha(nelem), re(nelem)
@@ -55,7 +56,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
     integer :: inel, iter
     real(kind=8) :: errtot, prec0, cumm, ordre, ae(nelem), be(nelem)
     real(kind=8) :: d, mu, fonc, dfonc
-    logical(kind=1) :: lqi
+    aster_logical :: lqi
 !
 ! 0 - ERREUR EN NORME DE L ENERGIE OU EN QUANTITE D INTERET
 !
@@ -69,7 +70,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
         errtot=errtot+erreur(inel)**2
 ! ------POUR L ERREUR EN QUANTITE D INTERET QUI PEUT ETRE NEGATIVE
         erreur(inel)=abs(erreur(inel))
-10  end do
+ 10 end do
     errtot=sqrt(errtot)
 !
 ! 2 - CALCUL DE RE
@@ -92,7 +93,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     cumm=cumm+(erreur(inel)**(2.d0*d/(2.d0*ordre+d)))
                 endif
             endif
-20      continue
+ 20     continue
 !
         cumm=cumm**(1.d0/(2.d0*ordre))
 !
@@ -108,7 +109,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     re(inel)=(prec0**(1.d0/2.d0*ordre))*re(inel)
                 endif
             endif
-30      continue
+ 30     continue
 !
 ! 2.2 - CAS OU CERTAINS ELEMENTS SONT SINGULIERS
 ! 2.2.1 - CALCUL DES COEFFICIENTS AE ET BE POUR SIMPLIFIER EXPRESSION
@@ -127,7 +128,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                 be(inel)=be(inel)**ae(inel)
                 mu=mu+(erreur(inel)**(2.d0*ordre/(2.d0*ordre+d)))
             endif
-40      continue
+ 40     continue
 !
 ! 2.2.2 - RECHERCHE DU LAGRANGIEN MU PAR MEHODE DE NEWTON
 !         OU DICHOTOMIE
@@ -137,7 +138,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
         mu=d*mu/(2.d0*ordre)
         iter=1
 !
-70      continue
+ 70     continue
 !
         if (iter .le. 15) then
             if (lqi) then
@@ -152,7 +153,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     dfonc=dfonc-ae(inel)*be(inel)/(mu**(ae(inel)+1.d0)&
                     )
                 endif
-50          continue
+ 50         continue
 !
             if (abs(fonc) .le. 1.d-06) goto 60
             if (fonc .ge. 0.d0) then
@@ -165,7 +166,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                 goto 70
             endif
 !
-60          continue
+ 60         continue
 !
             do 80 inel = 1, nelem
                 if (nbr(inel) .eq. 3) then
@@ -177,7 +178,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     endif
                     re(inel)=re(inel)**(1.d0/(2.d0*alpha(inel)+d))
                 endif
-80          continue
+ 80         continue
 !
         else
 !

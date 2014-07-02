@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3idfs(epsi, k, f, nba, sgt,&
                       coorsm, nbpt, lstpt, fink)
@@ -26,6 +28,6 @@ interface
         real(kind=8) :: coorsm(3, *)
         integer :: nbpt
         integer :: lstpt(*)
-        logical(kind=1) :: fink
+        aster_logical :: fink
     end subroutine i3idfs
 end interface

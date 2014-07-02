@@ -6,6 +6,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 ! aslint: disable=W1501,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -32,7 +33,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     character(len=24) :: nvit, nbeta
     integer :: ndim
     real(kind=8) :: lcmin, damax, rdimp, rdtor
-    logical(kind=1) :: locdom
+    aster_logical :: locdom
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,29 +102,29 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j,  nbno, jmin, nbptff, ibid, jdelta
-    integer :: jfonf,   jvtl,  jvnl,  ifm, niv, jvit
+    integer :: i, j, nbno, jmin, nbptff, ibid, jdelta
+    integer :: jfonf, jvtl, jvnl, ifm, niv, jvit
     integer :: jbeta, jdisfr, cfv, bfv, vfv, afv, nfv
     real(kind=8) :: eps, xm, ym, zm, dmin, smin, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
     character(len=8) :: typcmp(6), method
-    integer ::  jbasef,   k
+    integer :: jbasef, k
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
-    logical(kind=1) :: grille, fonvir, fvirtu
+    aster_logical :: grille, fonvir, fvirtu
 !
     character(len=19) :: covir, bavir, vitvir, angvir, numvir
 !
 !     EULER AXIS AND EULER ANGLE CALCULATIONS
-    integer ::  jcnsb, jlistp, jvp
+    integer :: jcnsb, jlistp, jvp
     real(kind=8) :: ni(3), ti(3), bi(3), nj(3), tj(3), bj(3), rij(3, 3), tpl(3)
     real(kind=8) :: npl(3), bpl(3), axeul(3), calfa, salfa, modvec
     real(kind=8) :: t0, t180, alfa
     parameter      (t0 = 0.5d0/180.d0*3.1415d0)
     parameter      (t180 = 179.5d0/180.d0*3.1415d0)
-    logical(kind=1) :: endpnt
+    aster_logical :: endpnt
 !
 !     MULTIPLE CRACK FRONTS
     integer :: jfmult, numfon, fon
@@ -457,8 +458,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        CALCULATE THE PROPAGATION SPEED VECTOR V IN THE GLOBAL
 !        REFERENCE SYSTEM USED FOR THE MESH
         do j = 1, ndim
-            v_propa_ff(ndim*(i-1)+j) = vn_propa_ff(i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+&
-                                 vt_propa_ff(i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
+            v_propa_ff(ndim*(i-1)+j) = vn_propa_ff(i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+ vt_pro&
+                                       &pa_ff(i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
         end do
 !
 !        ***************************************************************

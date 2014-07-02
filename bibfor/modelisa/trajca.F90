@@ -62,6 +62,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
@@ -88,9 +89,9 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid, idecal, ino, ipara, iret, isub,  jalph, jcoor
-    integer :: jnoca,      jx, jy, jz, nblign, nbno
-    integer :: nbpara, numnoe, icmima,  nbvar, nbvar2, svar, vali(3)
+    integer :: ibid, idecal, ino, ipara, iret, isub, jalph, jcoor
+    integer :: jnoca, jx, jy, jz, nblign, nbno
+    integer :: nbpara, numnoe, icmima, nbvar, nbvar2, svar, vali(3)
     real(kind=8) :: absc, alpha, corde, alphcu, d1m, d1p, dcp, d1x, d1x1
     real(kind=8) :: d1xn, d1y, d1y1, d1yn, d1z, d1z1, d1zn, d2x, d2y, d2z, dc
     real(kind=8) :: dc1, dcn, det1, det2, det3, du, dx, dy, dz, normv2
@@ -99,7 +100,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     complex(kind=8) :: cbid
     character(len=3) :: k3b
     character(len=24) :: coorno, nonoca, nonoma
-    logical(kind=1) :: lsplin
+    aster_logical :: lsplin
 !
     integer :: nbsub, jgmai
     parameter    (nbsub=5)
@@ -149,9 +150,9 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             call jeveuo(nonoca, 'L', jnoca)
             goto 20
         endif
-10  end do
+ 10 end do
 !
-20  continue
+ 20 continue
     idecal = nblign - nbno
 !
     call jeecra(xnoca, 'LONUTI', nblign)
@@ -184,7 +185,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         if (zr(jx+idecal+ino-1) .gt. xmax) xmax=zr(jx+idecal+ino-1)
         if (zr(jy+idecal+ino-1) .gt. ymax) ymax=zr(jy+idecal+ino-1)
         if (zr(jz+idecal+ino-1) .gt. zmax) zmax=zr(jz+idecal+ino-1)
-30  end do
+ 30 end do
 !     CONSTRUCTION DES 6 PLANS DEFINISSANT DE PAVE CONTENANT LE CABLE
     call jeveuo(gromai, 'L', jgmai)
     rr = zr(jgmai)
@@ -236,7 +237,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             alpha_disc(ino) = alphcu
         endif
 !
-40  end do
+ 40 end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   INTERPOLATION SPLINE CUBIQUE DE LA TRAJECTOIRE DU CABLE
@@ -290,13 +291,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             if (svar .eq. 1) nbvar = nbvar + 1
             svar = -1
         endif
-45  end do
+ 45 end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
     do 46 ino = 2, nbno
         if (vd2x(ino)*vd2x(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
-46  end do
+ 46 end do
 !
     if (nbvar2 .ge. nbvar+10) then
         vali(1) = icabl
@@ -324,13 +325,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             if (svar .eq. 1) nbvar = nbvar + 1
             svar = -1
         endif
-55  end do
+ 55 end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
     do 56 ino = 2, nbno
         if (vd2y(ino)*vd2y(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
-56  end do
+ 56 end do
 !
     if (nbvar2 .ge. nbvar+10) then
         vali(1) = icabl
@@ -358,13 +359,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             if (svar .eq. 1) nbvar = nbvar + 1
             svar = -1
         endif
-65  end do
+ 65 end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
     do 66 ino = 2, nbno
         if (vd2z(ino)*vd2z(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
-66  end do
+ 66 end do
 !
     if (nbvar2 .ge. nbvar+10) then
         vali(1) = icabl
@@ -439,7 +440,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             det2 = d1z * d2x - d1x * d2z
             det3 = d1x * d2y - d1y * d2x
             alpha = alpha + dble(sqrt(det1*det1+det2*det2+det3*det3)) / normv2
-60      continue
+ 60     continue
 !
 !....... CONTRIBUTION DU DERNIER POINT
 !
@@ -474,27 +475,27 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         alpha = alpha * dc
         zr(jalph+ino-1) = zr(jalph+ino-2) + alpha
 !
-50  end do
+ 50 end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 6   MISE A JOUR DES OBJETS DE SORTIE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-888  continue
+888 continue
     if (lsplin) then
         do 70 ino = 1, nbno
             valpar(1) = absc_curv(ino)
             valpar(2) = zr(jalph+ino-1)
             call tbajli(tablca, 2, param, [ibid], valpar,&
                         [cbid], k3b, idecal+ ino)
-70      continue
+ 70     continue
     else
         do 71 ino = 1, nbno
             valpar(1) = corde_cumu(ino)
             valpar(2) = alpha_disc(ino)
             call tbajli(tablca, 2, param, [ibid], valpar,&
                         [cbid], k3b, idecal+ ino)
-71      continue
+ 71     continue
     endif
 !
 ! --- MENAGE

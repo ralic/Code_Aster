@@ -7,6 +7,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
@@ -20,7 +21,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
     real(kind=8) :: rr, coeffr, coeffp, p(3, 3), ik(3, 3)
     real(kind=8) :: ffc(8), ffp(27), tau1(3), tau2(3), ptknp(3, 3)
     real(kind=8) :: knp(3, 3), nd(3)
-    logical(kind=1) :: adher
+    aster_logical :: adher
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,11 +104,11 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
         do 155 j = 1, nfh*ndim
             saut(j) = saut(j) - 2.d0 * ffp(ino) * zr(idepd-1+in+ndim+ j)
-155      continue
+155     continue
         do 156 j = 1, singu*ndim
             saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepd-1+in+ ndim*(1+nfh)+j)
-156      continue
-154  end do
+156     continue
+154 end do
 !
     do 158 i = 1, nnol
         pli=pla(i)
@@ -121,8 +122,8 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
             if (ndim .eq. 3) lamb1(j)=lamb1(j) + ffi * tau2(j) * (zr(idepd-1+pli+2) + zr(idepm-1+&
                              &pli+2))
-159      continue
-158  end do
+159     continue
+158 end do
 !
 !
 ! --- TEST DE L'ADHERENCE ET CALCUL DES MATRICES DE FROTTEMENT UTILES

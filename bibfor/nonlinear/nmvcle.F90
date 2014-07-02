@@ -20,6 +20,7 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
@@ -53,7 +54,7 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
 !
 !
 !
-    logical(kind=1) :: exivrc
+    aster_logical :: exivrc
     character(len=24) :: charge
     character(len=19) :: ctps, tout
     integer :: iex, iret, nchar, jchar

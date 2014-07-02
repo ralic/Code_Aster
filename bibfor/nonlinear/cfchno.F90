@@ -22,6 +22,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -45,8 +46,8 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1e(3), tau2e(3)
     real(kind=8) :: tau1(3), tau2(3)
-    logical(kind=1) :: lmfixe, lefixe
-    logical(kind=1) :: lmait, lescl
+    aster_logical :: lmfixe, lefixe
+    aster_logical :: lmait, lescl
 !
 ! ----------------------------------------------------------------------
 !
@@ -142,7 +143,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     else if (lmait.and.lescl) then
         do 20 i = 1, 3
             norm(i) = (enorm(i) + mnorm(i))/2.d0
-20      continue
+ 20     continue
     else if (lescl) then
         call dcopy(3, enorm, 1, norm, 1)
     else

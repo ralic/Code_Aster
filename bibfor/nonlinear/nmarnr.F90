@@ -18,7 +18,8 @@ subroutine nmarnr(result, typtaz, numreu)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"
@@ -49,11 +50,11 @@ subroutine nmarnr(result, typtaz, numreu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret,  nblign
+    integer :: iret, nblign
     character(len=19) :: nomtab
     character(len=16) :: typtab
     character(len=2) :: typvar
-    logical(kind=1) :: lexist
+    aster_logical :: lexist
     character(len=19) :: lisres
     integer :: jlisre, nval, ival, vali
     integer, pointer :: tbnp(:) => null()
@@ -111,11 +112,11 @@ subroutine nmarnr(result, typtaz, numreu)
         do 10 ival = 1, nval
             vali = zi(jlisre-1+ival)
             if (vali .gt. numreu) numreu = vali
-10      continue
+ 10     continue
         numreu = numreu + 1
     endif
 !
-99  continue
+ 99 continue
 !
     call jedetr(lisres)
     ASSERT(numreu.ge.0)

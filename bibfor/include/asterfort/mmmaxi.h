@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function mmmaxi(modelz, lisma, nbma)
         character(len=8) :: modelz
         character(len=24) :: lisma
         integer :: nbma
-        logical(kind=1) :: mmmaxi
+        aster_logical :: mmmaxi
     end function mmmaxi
 end interface

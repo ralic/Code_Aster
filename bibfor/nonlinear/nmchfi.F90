@@ -21,6 +21,7 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -34,7 +35,7 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
     character(len=19) :: sddisc, sddyna
     integer :: numins, iterat
     character(len=24) :: defico
-    logical(kind=1) :: lcfint, lcrigi, lcdiri, lcbudi
+    aster_logical :: lcfint, lcrigi, lcdiri, lcbudi
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,9 +64,9 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 !
 !
 !
-    logical(kind=1) :: reasma
+    aster_logical :: reasma
     character(len=16) :: metcor, metpre
-    logical(kind=1) :: lunil, lctcd, lreli, lexpl
+    aster_logical :: lunil, lctcd, lreli, lexpl
 !
 ! ----------------------------------------------------------------------
 !

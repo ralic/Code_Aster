@@ -20,6 +20,7 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/dismoi.h"
@@ -63,7 +64,7 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
     integer :: nbcmpx, ncmp, ico, itrou
     integer :: icmp, ino, idc, nec
     integer :: jcmp, jnueq, jprno
-    logical(kind=1) :: exis
+    aster_logical :: exis
     character(len=8) :: nom
 !
 ! ----------------------------------------------------------------------

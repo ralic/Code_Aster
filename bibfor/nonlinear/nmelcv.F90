@@ -21,6 +21,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -71,7 +72,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
     character(len=19) :: chgeom
     character(len=1) :: base
     integer :: ifm, niv
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifmdbg, nivdbg
     character(len=19) :: ligrel
     character(len=19) :: chmlcf
@@ -80,7 +81,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
     character(len=19) :: lnno, ltno, stano, fissno, heavno, heavfa
     character(len=19) :: pinter, ainter, cface, faclon, baseco
     character(len=19) :: xdonco, xindco, xseuco, xcohes
-    logical(kind=1) :: lctcc, lxfcm, ltfcm, lallv
+    aster_logical :: lctcc, lxfcm, ltfcm, lallv
     character(len=24) :: nosdco
     integer :: jnosdc
 !
@@ -297,7 +298,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
                 'OUI')
     call reajre(vectce, lchout(1), base)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

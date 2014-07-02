@@ -39,6 +39,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/amppr.h"
@@ -67,7 +68,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     character(len=8) :: basmod, mailla, typddl(10), nomnoe, tyd, intf, kbid
     real(kind=8) :: xd(10), xg(10), xtd(10), xtg(10), tet0(10, 10)
     real(kind=8) :: teta(nbtet, nbtet)
-    logical(kind=1) :: nook
+    aster_logical :: nook
     integer :: idecd(nbcpmx), idecg(nbcpmx)
     integer :: vali(2)
 !

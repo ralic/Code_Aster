@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine caeihm(nomte, axi, perman, mecani, press1,&
                       press2, tempe, dimdef, dimcon, ndim,&
@@ -23,8 +25,8 @@ interface
                       jgano1, iu, ip, ipf, iq,&
                       modint)
         character(len=16) :: nomte
-        logical(kind=1) :: axi
-        logical(kind=1) :: perman
+        aster_logical :: axi
+        aster_logical :: perman
         integer :: mecani(8)
         integer :: press1(9)
         integer :: press2(9)

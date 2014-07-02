@@ -3,6 +3,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   versio, tycha)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/codent.h"
@@ -22,7 +23,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     integer :: ifi, nbordr, nbcmpi, versio
     integer :: ordr(*), connx(*), point(*)
     real(kind=8) :: coord(*), para(*)
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
     integer :: neletr
@@ -72,9 +73,9 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !     ------------------------------------------------------------------
 !
     integer :: i, ine
-    integer :: ior, k, ncmp, iret, nbord2,  ncmpu
-    integer ::     jcnsk, jtype
-    logical(kind=1) :: scal, vect, tens
+    integer :: ior, k, ncmp, iret, nbord2, ncmpu
+    integer :: jcnsk, jtype
+    aster_logical :: scal, vect, tens
     character(len=8) :: k8b, nocmp, tbcmp(3)
     character(len=19) :: noch19, champs
     integer, pointer :: cnsc(:) => null()
@@ -117,7 +118,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
         call jelira(champs//'.CNSV', 'TYPE', cval=zk8(jtype+ior-1))
 !
 !
-100  end do
+100 end do
 !
 ! --- RECUPERATION DES COMPOSANTES POUR L'IMPRESSION
 !     D'UN CHAMP SCALAIRE PAR COMPOSANTE
@@ -130,12 +131,12 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
             nocmp = zk8(cnsc(1)-1+k)
             ncmpu = ncmpu + 1
             vnocmp(ncmpu) = nocmp
-180      continue
+180     continue
     else
         do 190 k = 1, nbcmpi
             ncmpu = ncmpu + 1
             vnocmp(ncmpu) = nomcmp(k)
-190      continue
+190     continue
     endif
 !
 ! -- VERSION GMSH = 1.0 :
@@ -164,7 +165,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                 else
                     scal = .true.
                 endif
-200          continue
+200         continue
         else
             scal = .true.
         endif
@@ -197,9 +198,9 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
             if (nbel(i) .ne. 0) then
                 call irgnte(ifi, nbord2, coord, connx, point,&
                             nobj(i), nbel(i), cnsv, partie, jtype,&
-cnsd)
+                            cnsd)
             endif
-101      continue
+101     continue
 !
 !        FIN D'ECRITURE DE View
 !        **********************
@@ -230,7 +231,7 @@ cnsd)
             tbcmp(3)='        '
             do 104 i = 1, nbcmpi
                 tbcmp(i)=vnocmp(i)
-104          continue
+104         continue
         endif
 !
 ! ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
@@ -241,9 +242,9 @@ cnsd)
                 call irgnal(ifi, nbord2, coord, connx, point,&
                             tbcmp, 3, i, nobj(i), nbel(i),&
                             cnsc, cnsl, cnsv, partie, jtype,&
-cnsd)
+                            cnsd)
             endif
-102      continue
+102     continue
 !
 !        FIN D'ECRITURE DE View
 !        **********************
@@ -278,16 +279,16 @@ cnsd)
                     call irgnal(ifi, nbord2, coord, connx, point,&
                                 tbcmp, 1, i, nobj(i), nbel(i),&
                                 cnsc, cnsl, cnsv, partie, jtype,&
-cnsd)
+                                cnsd)
                 endif
-103          continue
+103         continue
 !
 !        FIN D'ECRITURE DE View
 !        **********************
 !
             write(ifi,1000) '$EndView'
 !
-300      continue
+300     continue
     endif
 !
     AS_DEALLOCATE(vi=cnsd)

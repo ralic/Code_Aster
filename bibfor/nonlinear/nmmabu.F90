@@ -20,10 +20,11 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
     integer :: ndim, nno
     real(kind=8) :: dfdi(nno, ndim), b(6, 3, nno)
 !
@@ -61,7 +62,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
             b(2,2,n) = dfdi(n,2)
             b(4,1,n) = r2*dfdi(n,2)
             b(4,2,n) = r2*dfdi(n,1)
-10      continue
+ 10     continue
 !
     else if (ndim.eq.3) then
         do 20 n = 1, nno
@@ -74,7 +75,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
             b(5,3,n) = r2*dfdi(n,1)
             b(6,2,n) = r2*dfdi(n,3)
             b(6,3,n) = r2*dfdi(n,2)
-20      continue
+ 20     continue
 !
     endif
 !

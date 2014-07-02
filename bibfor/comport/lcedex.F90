@@ -20,6 +20,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/nmedal.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -51,7 +52,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: i, j, kpg, kpg2, spt
     real(kind=8) :: coef1, coef2, coef3
     real(kind=8) :: sigmc, gc, lc, seuil, norma
@@ -126,7 +127,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
                 vip(5,kpg) = vim(5,kpg)
                 vip(6,kpg) = s(1) + q(1,1)*alphap(1) + q(1,2)*alphap( 2)
                 vip(7,kpg) = s(2) + q(2,1)*alphap(1) + q(2,2)*alphap( 2)
-67          continue
+ 67         continue
 !
         else
 !
@@ -139,7 +140,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
                 vip(5,kpg) = 1.d0 - exp(-norma/lc)
                 vip(6,kpg) = s(1) + q(1,1)*alphap(1) + q(1,2)*alphap( 2)
                 vip(7,kpg) = s(2) + q(2,1)*alphap(1) + q(2,2)*alphap( 2)
-68          continue
+ 68         continue
 !
         endif
 !
@@ -195,8 +196,8 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
             do 71 i = 1, 2
                 do 72 j = 1, 2
                     h(i,j) = dsialf(i,j) - q(i,j)
-72              continue
-71          continue
+ 72             continue
+ 71         continue
 !
             det = h(1,1)*h(2,2) - h(1,2)**2
 !

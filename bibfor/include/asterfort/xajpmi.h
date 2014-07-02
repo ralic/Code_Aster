@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xajpmi(list, long, ipt, cpt, newpt,&
                       longar, ajout)
@@ -24,6 +26,6 @@ interface
         integer :: cpt
         real(kind=8) :: newpt(3)
         real(kind=8) :: longar
-        logical(kind=1) :: ajout
+        aster_logical :: ajout
     end subroutine xajpmi
 end interface

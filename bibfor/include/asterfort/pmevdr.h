@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
                       actite)
         character(len=19) :: sddisc
         character(len=19) :: tabinc(*)
         integer :: liccvg(*)
-        logical(kind=1) :: itemax
-        logical(kind=1) :: conver
+        aster_logical :: itemax
+        aster_logical :: conver
         integer :: actite
     end subroutine pmevdr
 end interface

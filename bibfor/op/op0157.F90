@@ -19,6 +19,7 @@ subroutine op0157()
 ! ======================================================================
 !     PROCEDURE IMPR_GENE
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -51,10 +52,10 @@ subroutine op0157()
     character(len=16) :: nomcmd, typcon, crit, fich
     character(len=19) :: gene, knum, kdisc, krang
     character(len=80) :: titre
-    logical(kind=1) :: lhist
+    aster_logical :: lhist
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  ifi, iocc, ire2, iret, isy, jcmpg
+    integer :: ifi, iocc, ire2, iret, isy, jcmpg
     integer :: jdisc, jnosy, jordr, jpara, jrang, n, n01
     integer :: n10, n11, n21, n22, nbcmpg, nbdisc, nbnosy
     integer :: nbordr, nbpara, nc, nocc, np, nr
@@ -117,7 +118,7 @@ subroutine op0157()
                 call wkvect('&&OP0157.NOM_SYMB', 'V V K16', nbnosy, jnosy)
                 do 20 isy = 1, nbnosy
                     call jenuno(jexnum(gene//'.DESC', isy), zk16(jnosy- 1+isy))
-20              continue
+ 20             continue
             else
                 nbnosy = 3
                 call wkvect('&&OP0157.NOM_SYMB', 'V V K16', nbnosy, jnosy)
@@ -203,13 +204,13 @@ subroutine op0157()
                     nbordr, zi(jordr), nbdisc, zr(jdisc), zi(jrang),&
                     lhist)
 !
-12      continue
+ 12     continue
         call jedetr('&&OP0157.NOM_SYMB')
         call jedetr('&&OP0157.NOM_CMPG')
         call jedetr('&&OP0157.NOMUTI_PARA')
         call jedetr('&&OP0157.NUME_ORDRE')
         call jedetr('&&OP0157.DISCRET')
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

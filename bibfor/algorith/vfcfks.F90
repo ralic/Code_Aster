@@ -49,8 +49,9 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
 !                      INCONNUE FACE
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 !
-    logical(kind=1) :: cont, tange
+    aster_logical :: cont, tange
     integer :: maxfa, maxdim
     integer :: nface, ndim
     real(kind=8) :: fks(nface)
@@ -70,7 +71,7 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
                 do 42 idim = 1, ndim
                     gravi(jfa)=gravi(jfa)+pesa(idim)* (xk(idim)-xfa(&
                     idim,jfa))
-42              continue
+ 42             continue
                 fks(ifa) = fks(ifa) + c(ifa,jfa)* (uk-ufa(jfa)-rho* gravi(jfa) )
             endif
             if (tange) then
@@ -82,6 +83,6 @@ subroutine vfcfks(cont, tange, maxfa, nface, uk,&
                 -drho2*gravi(jfa))
                 dfks2(kfa,ifa)=dfks2(kfa,ifa)-c(ifa,jfa)*dufa2(jfa)
             endif
-41      continue
- 4  end do
+ 41     continue
+  4 end do
 end subroutine

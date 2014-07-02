@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                       numsiq, pj, mj, seisme, mse,&
@@ -27,7 +29,7 @@ interface
         integer :: numsiq
         real(kind=8) :: pj
         real(kind=8) :: mj(*)
-        logical(kind=1) :: seisme
+        aster_logical :: seisme
         real(kind=8) :: mse(*)
         real(kind=8) :: snij
     end subroutine rc32sn

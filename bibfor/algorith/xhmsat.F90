@@ -40,19 +40,20 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     implicit none
 !
 ! aslint: disable=W1306
-#   include "asterfort/appmas.h"
-#   include "asterfort/dmdepv.h"
-#   include "asterfort/dmwdp1.h"
-#   include "asterfort/dspdp1.h"
-#   include "asterfort/inithm.h"
-#   include "asterfort/netbis.h"
-#   include "asterfort/sigmap.h"
-#   include "asterfort/dilata.h"
-#   include "asterfort/thmrcp.h"
-#   include "asterfort/utmess.h"
-#   include "asterfort/unsmfi.h"
-#   include "asterfort/viporo.h"
-#   include "asterfort/virhol.h"
+#include "asterf_types.h"
+# include "asterfort/appmas.h"
+# include "asterfort/dmdepv.h"
+# include "asterfort/dmwdp1.h"
+# include "asterfort/dspdp1.h"
+# include "asterfort/inithm.h"
+# include "asterfort/netbis.h"
+# include "asterfort/sigmap.h"
+# include "asterfort/dilata.h"
+# include "asterfort/thmrcp.h"
+# include "asterfort/utmess.h"
+# include "asterfort/unsmfi.h"
+# include "asterfort/viporo.h"
+# include "asterfort/virhol.h"
     integer :: ndim, dimcon, nbvari, imate, yamec
     integer :: adcome, adcp11, vihrho, vicphi
     integer :: addeme, addep1, advihy, advico, retcom
@@ -62,7 +63,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: phi, rho11, phi0, rac2
     real(kind=8) :: rinstp, angmas(3)
     character(len=16) :: option, meca, ther, thmc, hydr, phenom
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
 !
 ! DECLARATION POUR XFEM
     integer :: yaenrm, dimenr, adenme
@@ -77,7 +78,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: dsatp1
     real(kind=8) :: m11m, satm, mdal(6), dalal, alphfi, cbiot, unsks
     real(kind=8) :: deps(6)
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -92,7 +93,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: dp2, signe
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
 !
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 !
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
@@ -156,7 +157,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
                         dp1, dp2, signe, sat, cs,&
                         tbiot, phi, phim, retcom, cbiot,&
                         unsks, alpha0, aniso, phenom)
-       endif
+        endif
 ! =====================================================================
 ! --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
 ! --- SELON FORMULE DOCR ----------------------------------------------
@@ -196,11 +197,11 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
                         dp2, dp1, sigmp)
             do 10 i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
-10          continue
+ 10         continue
             do 14 i = 4, 6
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
                 rac2
-14          continue
+ 14         continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -224,33 +225,33 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
             do 11 i = 1, 3
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
                 + dsdp1(i)
-11          continue
+ 11         continue
 !
             do 88 i = 4, 6
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
                 + dsdp1(i)*rac2
-88          continue
+ 88         continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! ======================================================================
-                call dmdepv(rho11, sat, tbiot, dmdeps)
-                do 12 i = 1, 6
-                    dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
-12              continue
+            call dmdepv(rho11, sat, tbiot, dmdeps)
+            do 12 i = 1, 6
+                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
+ 12         continue
         endif
         if (yaenrm .eq. 1) then
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES AVEC XFEM --------------
 ! ======================================================================
-                do 40 i = 1, 6
-                    dsde(adcp11,adenme+ndim-1+i) = dsde(adcp11,adenme+ ndim-1+i) + dmdeps(i)
-40              continue
+            do 40 i = 1, 6
+                dsde(adcp11,adenme+ndim-1+i) = dsde(adcp11,adenme+ ndim-1+i) + dmdeps(i)
+ 40         continue
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! ======================================================================
-            dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cli&
-                                  &q,1.0d0, emmag,bid)
+        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cliq,1.&
+                              &0d0, emmag,bid)
     endif
 ! ======================================================================
  30 continue

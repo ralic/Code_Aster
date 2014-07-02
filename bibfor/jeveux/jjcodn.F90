@@ -18,6 +18,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "asterfort/jxhcod.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomrep, nomec, crep(*)
@@ -31,7 +32,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
     parameter      ( ilorep=1,ideno=2,ilnom=3,iluti=5,idehc=6)
     integer :: iret
     character(len=32) :: cle, nom, valk(2)
-    logical(kind=1) :: rinser
+    aster_logical :: rinser
 ! DEB ------------------------------------------------------------------
     jjcodn = 0
     rinser = .false.
@@ -47,7 +48,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
     valk(1) = nom
     valk(2) = nomrep
 !
- 5  continue
+  5 continue
     if (irep(idehco+i) .eq. 0 .and. .not. rinser) then
         if (icre .eq. 3) then
             if (nuti .ge. nmax) then
@@ -56,7 +57,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
                 j = nuti + 1
                 do 12 k = 1, ll
                     crep(idenom+lnom*(j-1)+k) = nomec(k:k)
-12              continue
+ 12             continue
                 nuti = nuti + 1
                 irep(iluti) = nuti
                 irep(idehco+i) = j
@@ -73,10 +74,10 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
         j = irep(idehco+i)
         do 15 k = 1, ll
             cle(k:k) = crep(idenom+lnom*(abs(j)-1)+k)
-15      continue
+ 15     continue
         do 16 k = ll+1, 32
             cle(k:k) = ' '
-16      continue
+ 16     continue
         if (cle .eq. nom) then
             if (icre .eq. 3) then
                 call utmess('F', 'JEVEUX1_35', nk=2, valk=valk)
@@ -111,12 +112,12 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
             endif
         endif
     endif
-10  continue
+ 10 continue
     if (rinser) then
         irep(idehco+iin) = -jin
         do 25 k = 1, ll
             crep(idenom+lnom*(-jin-1)+k) = nomec(k:k)
-25      continue
+ 25     continue
         iret = -jin
     endif
     jjcodn = iret

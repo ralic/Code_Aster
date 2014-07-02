@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
                       algofr, vitang, pboul, kn, ptknp,&
@@ -30,6 +32,6 @@ interface
         real(kind=8) :: kn(3, 3)
         real(kind=8) :: ptknp(3, 3)
         real(kind=8) :: ik(3, 3)
-        logical(kind=1) :: adher
+        aster_logical :: adher
     end subroutine xadher
 end interface

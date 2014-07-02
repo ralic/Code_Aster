@@ -23,6 +23,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -31,7 +32,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 #include "asterfort/jemarq.h"
 #include "asterfort/teattr.h"
     integer, intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
-    logical(kind=1), intent(in) :: matsym, lcontx
+    aster_logical, intent(in) :: matsym, lcontx
     character(len=16), intent(in) :: option, nomte
     integer, intent(in) :: ddlm, nfiss, jfisno
     real(kind=8), optional, intent(inout) :: mat(*)
@@ -67,8 +68,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     parameter    (ddlmax=1053)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical(kind=1) :: lelim, lmultc
-    logical :: lmat, lvec
+    aster_logical :: lelim, lmultc, lmat, lvec
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------
@@ -83,35 +83,20 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     lvec = .false.
 !
 !   OPTIONS RELATIVES A UNE MATRICE
-    if (     option .eq. 'FULL_MECA'&
-        .or. option .eq. 'RIGI_MECA_GE'&
-        .or. option .eq. 'RIGI_MECA_TANG'&
-        .or. option .eq. 'RIGI_MECA'&
-        .or. option .eq. 'RIGI_CONT'&
-        .or. option .eq. 'RIGI_FROT'&
-        .or. option .eq. 'MASS_MECA') lmat = .true.
+    if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_GE' .or. option .eq.&
+        'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_CONT' .or. option&
+        .eq. 'RIGI_FROT' .or. option .eq. 'MASS_MECA') lmat = .true.
 !
 !   OPTIONS RELATIVES A UN VECTEUR
-    if (     option .eq. 'FULL_MECA'&
-        .or. option .eq. 'RAPH_MECA'&
-        .or. option .eq. 'FORC_NODA'&
-        .or. option .eq. 'CHAR_MECA_PRES_R'&
-        .or. option .eq. 'CHAR_MECA_PRES_F'&
-        .or. option .eq. 'CHAR_MECA_FR2D3D'&
-        .or. option .eq. 'CHAR_MECA_FR1D2D'&
-        .or. option .eq. 'CHAR_MECA_FF2D3D'&
-        .or. option .eq. 'CHAR_MECA_FF1D2D'&
-        .or. option .eq. 'CHAR_MECA_CONT'&
-        .or. option .eq. 'CHAR_MECA_FROT'&
-        .or. option .eq. 'CHAR_MECA_FR3D3D'&
-        .or. option .eq. 'CHAR_MECA_FR2D2D'&
-        .or. option .eq. 'CHAR_MECA_FF3D3D'&
-        .or. option .eq. 'CHAR_MECA_FF2D2D'&
-        .or. option .eq. 'CHAR_MECA_PESA_R'&
-        .or. option .eq. 'CHAR_MECA_ROTA_R'&
-        .or. option .eq. 'CHAR_MECA_TEMP_R'&
-        .or. option .eq. 'CHAR_MECA_EFON_R'&
-        .or. option .eq. 'CHAR_MECA_EFON_F') lvec = .true.
+    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq. 'FORC_NODA' .or.&
+        option .eq. 'CHAR_MECA_PRES_R' .or. option .eq. 'CHAR_MECA_PRES_F' .or. option .eq.&
+        'CHAR_MECA_FR2D3D' .or. option .eq. 'CHAR_MECA_FR1D2D' .or. option .eq.&
+        'CHAR_MECA_FF2D3D' .or. option .eq. 'CHAR_MECA_FF1D2D' .or. option .eq.&
+        'CHAR_MECA_CONT' .or. option .eq. 'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_FR3D3D'&
+        .or. option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FF3D3D' .or. option&
+        .eq. 'CHAR_MECA_FF2D2D' .or. option .eq. 'CHAR_MECA_PESA_R' .or. option .eq.&
+        'CHAR_MECA_ROTA_R' .or. option .eq. 'CHAR_MECA_TEMP_R' .or. option .eq.&
+        'CHAR_MECA_EFON_R' .or. option .eq. 'CHAR_MECA_EFON_F') lvec = .true.
 !
     ASSERT(lmat .or. lvec)
 !
@@ -121,9 +106,9 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
     if (present(mat) .and. present(vect)) then
         ASSERT(lmat .and. lvec)
-    elseif (present(mat) .and. .not.present(vect)) then
+    else if (present(mat) .and. .not.present(vect)) then
         ASSERT(lmat .and. .not.lvec)
-    elseif (.not.present(mat) .and. present(vect)) then
+    else if (.not.present(mat) .and. present(vect)) then
         ASSERT(.not.lmat .and. lvec)
 !   AU MOINS UN DES 2 ARGUMENTS mat OU vect EST OBLIGATOIRE
     else
@@ -176,7 +161,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         -------------------------
 !
 !         PB DE STATUT DES NOEUDS ENRICHIS
-            do  ifh = 1, nfh
+            do ifh = 1, nfh
                 istatu = stano((ino-1)*nfiss+fisno(ino,ifh))
                 ASSERT(istatu.le.1)
                 if (istatu .eq. 0) then
@@ -188,7 +173,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                     enddo
                     lelim=.true.
                 endif
-             enddo
+            enddo
         else if (ielim.eq.2) then
 !
 !         2) CAS DES MAILLES 'CARRÉ'
@@ -245,11 +230,11 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         ------------------------------
             if (ino .le. nnos) then
 !
-                do  ifh = 1, max(1, nfh)
+                do ifh = 1, max(1, nfh)
                     istatu = stano((ino-1)*max(1,nfh)+ifh)
                     if (istatu .eq. 0) then
 !             ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
-                        do  k = 1, ndim
+                        do k = 1, ndim
                             posddl(in+ndim*(nfh+nfe+ifh)+k)=1
                         enddo
                         lelim=.true.
@@ -279,7 +264,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                 else if (codia.lt.dmin) then
                     dmin=codia
                 endif
-             enddo
+            enddo
             codia=(dmax+dmin)/2.0d0
             if (codia .eq. 0) codia = 1
         endif
@@ -308,7 +293,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
             endif
             if (lvec) vect(i) = 0.d0
 199         continue
-       enddo
+        enddo
 !
     endif
 !

@@ -20,6 +20,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
@@ -33,7 +34,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 #include "asterfort/mesomm.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/xmchex.h"
-    logical(kind=1) :: mmcvca
+    aster_logical :: mmcvca
     character(len=8) :: noma, nomo
     character(len=24) :: resoco, mate
     character(len=19) :: valinc(*)
@@ -71,7 +72,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
     character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
     character(len=19) :: fissno, heavno, heavfa
-    logical(kind=1) :: debug, lcontx
+    aster_logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
     integer, pointer :: xfem_cont(:) => null()

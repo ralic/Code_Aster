@@ -22,6 +22,7 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/nmcpel.h"
 #include "asterfort/nmgeom.h"
@@ -67,7 +68,7 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
 !
 !
     integer :: kpg, kk, n, i, m, j, j1, kl, pq, kkd
-    logical(kind=1) :: grdepl, axi, cplan
+    aster_logical :: grdepl, axi, cplan
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), r, sigma(6), ftf, detf
     real(kind=8) :: poids, tmp1, tmp2, sigp(6)
 !
@@ -109,14 +110,14 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
-122          continue
-120      continue
+122         continue
+120     continue
 !
 !      TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         if (axi) then
             do 124 n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
-124          continue
+124         continue
         endif
 !
 !      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
@@ -129,8 +130,8 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
                     pff(3,n,m) = 0.d0
                     pff(4,n,m) =(dfdi(n,1)*dfdi(m,2)+dfdi(n,2)*dfdi(m,&
                     1))/rac2
-126              continue
-125          continue
+126             continue
+125         continue
         endif
 !
 !
@@ -149,13 +150,13 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
             do 130 n = 1, nno
                 do 131 i = 1, 2
                     kkd = (2*(n-1)+i-1) * (2*(n-1)+i) /2
-                    do 151,kl=1,4
-                    sigp(kl)=0.d0
-                    sigp(kl)=sigp(kl)+def(1,n,i)*dsidep(1,kl)
-                    sigp(kl)=sigp(kl)+def(2,n,i)*dsidep(2,kl)
-                    sigp(kl)=sigp(kl)+def(3,n,i)*dsidep(3,kl)
-                    sigp(kl)=sigp(kl)+def(4,n,i)*dsidep(4,kl)
-151                  continue
+                    do 151 kl = 1, 4
+                        sigp(kl)=0.d0
+                        sigp(kl)=sigp(kl)+def(1,n,i)*dsidep(1,kl)
+                        sigp(kl)=sigp(kl)+def(2,n,i)*dsidep(2,kl)
+                        sigp(kl)=sigp(kl)+def(3,n,i)*dsidep(3,kl)
+                        sigp(kl)=sigp(kl)+def(4,n,i)*dsidep(4,kl)
+151                 continue
                     do 140 j = 1, 2
                         do 141 m = 1, n
                             if (m .eq. n) then
@@ -188,10 +189,10 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
                                 matuu(kk) = matuu(kk) + (tmp1+tmp2)* poids
                             endif
 !
-141                      continue
-140                  continue
-131              continue
-130          continue
+141                     continue
+140                 continue
+131             continue
+130         continue
         endif
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
@@ -203,9 +204,9 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
                     do 187 kl = 1, 4
                         zr(ivectu-1+2*(n-1)+i)= zr(ivectu-1+2*(n-1)+i)&
                         +def(kl,n,i)*sigma(kl)*poids
-187                  continue
-186              continue
-185          continue
+187                 continue
+186             continue
+185         continue
 !
 !
             if (grdepl) then
@@ -222,15 +223,15 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
                               )*rind(kl&
                               )
                         sig(pq,kpg) = sig(pq,kpg)+ ftf*sigma(kl)
-200                  continue
+200                 continue
                     sig(pq,kpg) = sig(pq,kpg)/detf
-190              continue
+190             continue
             else
                 do 210 kl = 1, 3
                     sig(kl,kpg) = sigma(kl)
-210              continue
+210             continue
                 sig(4,kpg) = sigma(4)/rac2
             endif
         endif
-10  end do
+ 10 end do
 end subroutine

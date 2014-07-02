@@ -1,6 +1,7 @@
 subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                   iligs, icols, formr)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -57,7 +58,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
     integer :: ival, igen, iposa, iposb, iposc, mxdemo, iacc, iad, lenf
     integer :: ibid, iclass, ideb, ierd, ilg, iplace, iret, itit, iuti, jad
-    integer :: jpara,  nbacce, nbpa, nbpara, nl, itmp
+    integer :: jpara, nbacce, nbpa, nbpara, nl, itmp
     integer :: deb, fin, leng
 !
     real(kind=8) :: rval, rbid
@@ -67,7 +68,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
     character(len=80) :: cval
     character(len=255) :: cgen
 !
-    logical(kind=1) :: lfreq
+    aster_logical :: lfreq
 !
 !     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
     parameter          (mxdemo=20)

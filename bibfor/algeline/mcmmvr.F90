@@ -2,6 +2,7 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
                   vect, xsol, nbvect, vectmp, prepos)
 ! aslint: disable=W1304
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -16,7 +17,7 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, lmat
     complex(kind=8) :: vect(neq, nbvect), xsol(neq, nbvect), vectmp(neq)
-    logical(kind=1) :: prepos
+    aster_logical :: prepos
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,8 +49,8 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
     character(len=19) :: nom19
     character(len=24) :: valm
     complex(kind=8) :: czero
-    logical(kind=1) :: nonsym
-    integer :: keta, iexi,  ieq
+    aster_logical :: nonsym
+    integer :: keta, iexi, ieq
     integer, pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -66,8 +67,8 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
         do 20 i = 1, nbvect
             do 10 j = 1, neq
                 xsol(j,i)=czero
-10          continue
-20      continue
+ 10         continue
+ 20     continue
     endif
 !     -- VALM(1) : AU DESSUS DE LA DIAGONALE
     call jeveuo(jexnum(valm, 1), 'L', jmat1)
@@ -80,9 +81,9 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
 !
 !
     do 60 jvec = 1, nbvect
-        do 30,k=1,neq
-        vectmp(k)=vect(k,jvec)
-30      continue
+        do 30 k = 1, neq
+            vectmp(k)=vect(k,jvec)
+ 30     continue
 !        -- LES LAGRANGE DOIVENT ETRE MIS A L'ECHELLE AVANT LA
 !           MULTIPLICATION :
         if (prepos) call mcconl('DIVI', lmat, 0, 'C', vectmp,&
@@ -101,12 +102,12 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
                 xsol(jcol,jvec)=xsol(jcol,jvec)+zr(jmat1-1+ki)*vectmp(&
                 i)
                 xsol(i,jvec)=xsol(i,jvec)+zr(jmat2-1+ki)*vectmp(jcol)
-40          continue
+ 40         continue
             xsol(i,jvec)=xsol(i,jvec)+zr(jmat1+kfin)*vectmp(i)
-50      continue
+ 50     continue
         if (prepos) call mcconl('DIVI', lmat, 0, 'C', xsol(1, jvec),&
                                 1)
-60  end do
+ 60 end do
 !
 !
 !     -- POUR LES DDLS ELIMINES PAR AFFE_CHAR_CINE, ON NE PEUT PAS
@@ -116,12 +117,12 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
     if (iexi .ne. 0) then
         call jeveuo(nom19//'.CCID', 'L', vi=ccid)
         do 110 jvec = 1, nbvect
-            do 111, ieq=1,neq
-            keta=ccid(ieq)
-            ASSERT(keta.eq.1 .or. keta.eq.0)
-            if (keta .eq. 1) xsol(ieq,jvec)=dcmplx(0.d0,0.d0)
-111          continue
-110      continue
+            do 111 ieq = 1, neq
+                keta=ccid(ieq)
+                ASSERT(keta.eq.1 .or. keta.eq.0)
+                if (keta .eq. 1) xsol(ieq,jvec)=dcmplx(0.d0,0.d0)
+111         continue
+110     continue
     endif
 !
 !

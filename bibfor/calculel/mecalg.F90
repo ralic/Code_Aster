@@ -1,6 +1,6 @@
 subroutine mecalg(optioz, result, modele, depla, theta,&
-                  mate, lischa, symech, compor,incr,&
-                  time, iord, nbprup, noprup,chvite,&
+                  mate, lischa, symech, compor, incr,&
+                  time, iord, nbprup, noprup, chvite,&
                   chacce, lmelas, nomcas, kcalc)
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -47,6 +47,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -79,7 +80,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     character(len=24) :: chvite, chacce
     real(kind=8) :: time
     integer :: iord, nbprup
-    logical(kind=1) :: lmelas, incr
+    aster_logical :: lmelas, incr
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -95,7 +96,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     integer :: nchin, nsig, ino1, ino2, inga
     real(kind=8) :: g(1), livr(nbmxpa)
     complex(kind=8) :: livc(nbmxpa)
-    logical(kind=1) :: lfonc, lxfem
+    aster_logical :: lfonc, lxfem
     character(len=8) :: resu, lpain(50), lpaout(2), k8b, resuco
     character(len=8) :: fiss
     character(len=16) :: option
@@ -164,7 +165,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
                 call utmess('F', 'RUPTURE1_12')
             else if (inga.eq.0) then
                 ligrmo = modele//'.MODELE'
-                call detrsd('CHAMP',celmod)
+                call detrsd('CHAMP', celmod)
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
                 call chpchd(chsigi(1:19), 'ELNO', celmod, 'NON', 'V',&
@@ -187,7 +188,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                 chpres, chepsi, chpesa, chrota, lfonc,&
-                time  , iord)
+                time, iord)
 !
     if (lfonc) then
         pavolu = 'PFFVOLU'
@@ -219,7 +220,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         papres = 'PPRESSR'
         pepsin = 'PEPSINR'
     endif
-
+!
 !
     if (lxfem) then
 !       RECUPERATION DES DONNEES XFEM (TOPOSE)

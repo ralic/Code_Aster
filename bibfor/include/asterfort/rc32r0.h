@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc32r0(nomres, pmpb, sn, snet)
         character(len=8) :: nomres
-        logical(kind=1) :: pmpb
-        logical(kind=1) :: sn
-        logical(kind=1) :: snet
+        aster_logical :: pmpb
+        aster_logical :: sn
+        aster_logical :: snet
     end subroutine rc32r0
 end interface

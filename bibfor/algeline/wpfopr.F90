@@ -2,6 +2,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
                   sigma, matopa, matpsc, raide, lqz,&
                   solveu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/getvr8.h"
@@ -19,7 +20,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
     integer :: lmasse, lamor, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
-    logical(kind=1) :: lqz
+    aster_logical :: lqz
 !     -----------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,7 +102,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
             if (zk24(jrefe-1+9) .eq. 'MR') then
                 jpomr=icomb
             endif
-15      continue
+ 15     continue
 !
 !        --- DECALAGE REEL ---
         if (jpomr .eq. 0) then
@@ -115,7 +116,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
         do 10 icomb = 1, 3
             typcst(icomb) = 'R'
-10      continue
+ 10     continue
         constr(1) = ashift*ashift
         constr(2) = ashift
         constr(3) = 1.d0
@@ -132,7 +133,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
             if (zk24(jrefe-1+9) .eq. 'MR') then
                 jpomr=icomb
             endif
-25      continue
+ 25     continue
 !
 !        --- DECALAGE COMPLEXE ---
         if (jpomr .eq. 0) then
@@ -146,7 +147,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
         do 20 icomb = 1, 3
             typcst(icomb) = 'C'
-20      continue
+ 20     continue
         constc(1) = dble(sigma*sigma)
         constc(2) = dimag(sigma*sigma)
         constc(3) = dble(sigma)
@@ -167,7 +168,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
             call jeveuo(matpsc(1:19)//'.&INT', 'E', lmtpsc)
             do 30 icomb = 1, 3
                 typcst(icomb) = 'R'
-30          continue
+ 30         continue
             constr(1) = ashift*ashift
             constr(2) = ashift
             constr(3) = 1.d0
@@ -195,6 +196,6 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
                     jbid, 1)
     endif
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

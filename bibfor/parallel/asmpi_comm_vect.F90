@@ -1,5 +1,6 @@
 subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
-                           vi4, vr, vc, sci, sci4, scr, scc)
+                           vi4, vr, vc, sci, sci4,&
+                           scr, scc)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -46,7 +47,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 ! inout scc    : complexe a echanger  (si typsca='C')
 !----------------------------------------------------------------------
     implicit none
-
+!
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -63,7 +64,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jxveri.h"
-
+!
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
     integer, intent(in), optional :: nbval
@@ -76,32 +77,32 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
     complex(kind=8), intent(inout), optional :: scc
-
+!
 #ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
-
+!
     character(len=1) :: typsc1
 !   attention : tpetit doit etre le meme dans asmpi_comm_mvect.F90
     integer, parameter :: tpetit=1000
     integer :: iret, nbv
-    integer :: km,nbm,nbv1,nbv2,nbv3,idecal,jtrav
+    integer :: km, nbm, nbv1, nbv2, nbv3, idecal, jtrav
     real(kind=8) :: taill1, taillmax
     mpi_int :: nbpro4, mpicou, proc
-    logical(kind=1) :: scal
+    aster_logical :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
-
+!
 !   -- communicateur mpi de travail :
     call asmpi_comm('GET', mpicou)
 !   -- compteur de temps CPU :
     call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
-
+!
 !   -- s'il n'y a qu'un seul proc, il n'y a rien a faire :
     call asmpi_info(mpicou, rank=proc, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
-
-
+!
+!
 !   -- verification rendez-vous
     iret=1
     call asmpi_check(nbpro4, iret)
@@ -109,8 +110,8 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
         call utmess('I', 'APPELMPI_83', sk=optmpi)
         goto 999
     endif
-
-
+!
+!
 !   -- Calcul de scal, nbv, typsc1 :
 !   ---------------------------------------
     typsc1=typsca
@@ -126,18 +127,18 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     ASSERT(typsc1.ne.'C' .or. present(vc) .or. present(scc))
     ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
     ASSERT(typsc1.ne.'S' .or. present(vi4) .or. present(sci4))
-
-
+!
+!
 !   -- calcul de : nbm  : nombre de "morceaux"
 !   ----------------------------------------------------------
-    ! taillmax : la taille maximale des "morceaux" (en Mo) :
+! taillmax : la taille maximale des "morceaux" (en Mo) :
     taillmax=10.d0
     taill1=dble(8*nbv)/(1.e6)
-    if (typsc1.eq.'C') taill1=taill1*2
-    if (typsc1.eq.'S') taill1=taill1/2
+    if (typsc1 .eq. 'C') taill1=taill1*2
+    if (typsc1 .eq. 'S') taill1=taill1/2
     nbm=int(taill1/taillmax)+1
-
-
+!
+!
 !   -- calcul (ou modification) de :
 !     nbm  : nombre de morceaux (+1)
 !     nbv1 : nombre d'elements pour les morceaux [1:nbm-1]
@@ -146,11 +147,11 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     nbv1=nbv/nbm
     nbv2=nbv-(nbm*nbv1)
     nbm=nbm+1
-
+!
     ASSERT(nbv1.gt.0)
     ASSERT(nbv1.ge.nbv2)
-
-
+!
+!
 !   -- allocation d'un vecteur de travail :
 !   ---------------------------------------
     jtrav=0
@@ -169,47 +170,55 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
             endif
         endif
     endif
-
-
+!
+!
 !   -- boucle sur les morceaux :
 !   ----------------------------
     idecal=1
-    do km=1,nbm
-        if (km.lt.nbm) then
+    do km = 1, nbm
+        if (km .lt. nbm) then
             nbv3=nbv1
         else
             nbv3=nbv2
         endif
-        if (nbv3.eq.0) goto 10
-
+        if (nbv3 .eq. 0) goto 10
+!
         if (present(sci)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, sci=sci)
-        elseif (present(sci4)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, sci4=sci4)
-        elseif (present(scr)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, scr=scr)
-        elseif (present(scc)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, scc=scc)
-        elseif (present(vi)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vi=vi(idecal))
-        elseif (present(vi4)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vi4=vi4(idecal))
-        elseif (present(vr)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vr=vr(idecal))
-        elseif (present(vc)) then
-            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vc=vc(idecal))
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  sci=sci)
+        else if (present(sci4)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  sci4=sci4)
+        else if (present(scr)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  scr=scr)
+        else if (present(scc)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  scc=scc)
+        else if (present(vi)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  vi=vi(idecal))
+        else if (present(vi4)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  vi4=vi4(idecal))
+        else if (present(vr)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  vr=vr(idecal))
+        else if (present(vc)) then
+            call asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank,&
+                                  vc=vc(idecal))
         else
             ASSERT(.false.)
         endif
         idecal=idecal+nbv3
-10      continue
+ 10     continue
     enddo
     call jedetr('&&ASMPI_COMM_VECT.TRAV')
-
-999  continue
+!
+999 continue
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
-
+!
 #else
     character(len=1) :: kdummy
     integer :: idummy

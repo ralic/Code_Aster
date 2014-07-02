@@ -39,6 +39,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/indik8.h"
@@ -58,7 +59,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     character(len=8) :: mailla, caelem
     character(len=24) :: nmabet, gromai
     integer :: nbmabe
-    logical(kind=1) :: mail2d
+    aster_logical :: mail2d
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -72,7 +73,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     integer :: i, j, k, iad2, inok
     integer :: jmabet, jconn, jtabco, jgmai
     integer :: nunoe(27)
-    integer ::   igrand, iasmax, iasedi, inomcp
+    integer :: igrand, iasmax, iasedi, inomcp
     integer :: nbcmp, nbec, irep, iasbon, ii, icode, izone
     integer :: ilima, nbmaza, irvep, jj
     real(kind=8), pointer :: vale(:) => null()
@@ -185,7 +186,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
                 call utmess('F', 'MODELISA8_3', sk=nomai)
             endif
             ep=vale(1+(iasbon-1)*nbcmp + irvep - 1)
-            if (ep.gt.epmax) epmax = ep
+            if (ep .gt. epmax) epmax = ep
         enddo
 !
         epmax = epmax*sqrt(2.d0)

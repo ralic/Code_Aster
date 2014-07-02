@@ -17,6 +17,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
@@ -69,9 +70,9 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !  HEXA27      27            19                    9
 !
 !
-    logical(kind=1) :: isasup
+    aster_logical :: isasup
 !
-    integer ::  iacnx1, ilcnx1,  ii, nbmato,  numma
+    integer :: iacnx1, ilcnx1, ii, nbmato, numma
     integer :: ilcnx2, nbtyma, nbnoto, jj, jmaqu, nbnosu, numamo, nbnomi
     integer :: ponomi, jco, nunomi, nbm1, kk, numa2, jnomi
     parameter(nbtyma=27)
@@ -104,17 +105,17 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
     AS_ALLOCATE(vi=tab_ma, size=nbmato)
     do 10 ii = 1, nbmato
         tab_ma(ii) = 0
-10  end do
+ 10 end do
 !
     do 20 ii = 1, nbma
         numma = zi(jmaqu+ii-1)
         tab_ma(numma) = 1
-20  end do
+ 20 end do
 !
     AS_ALLOCATE(vi=tab_no, size=nbnoto)
     do 70 ii = 1, nbnoto
         tab_no(ii) = 0
-70  end do
+ 70 end do
 !
 !     CREATION DE LA CONNECTIVITE INVERSE
     call cncinv(main, [0], 0, 'V', '&&CMQLNM.CONINV')
@@ -145,15 +146,15 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !           SI UNE DE CES MAILLES N'EST PAS A MODIFIER ALORS ON
 !           NE DOIT PAS SUPPRIMER LE NOEUD
                 if (tab_ma(numa2) .eq. 0) isasup = .false.
-50          continue
+ 50         continue
             if (isasup) then
                 tab_no(nunomi) = 2
                 nbnosu = nbnosu + 1
             else
                 tab_no(nunomi) = 1
             endif
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 !
     AS_DEALLOCATE(vi=tab_ma)
 !
@@ -170,7 +171,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
             nbnosu = nbnosu+1
             zi(jnomi+nbnosu-1) = ii
         endif
-60  end do
+ 60 end do
 !
     ASSERT(nbnosu.eq.nbnm)
 !

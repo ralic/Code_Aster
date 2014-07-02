@@ -18,6 +18,7 @@ subroutine dfllec(sdlist, dtmin)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdevn.h"
 #include "asterfort/dfllac.h"
@@ -59,7 +60,7 @@ subroutine dfllec(sdlist, dtmin)
     parameter    (nbordr = 6)
     character(len=16) :: evdord(nbordr)
     integer :: lisord(nbordr)
-    logical(kind=1) :: oblord(nbordr)
+    aster_logical :: oblord(nbordr)
 !
     character(len=16) :: mcfact
     integer :: ibid
@@ -78,8 +79,8 @@ subroutine dfllec(sdlist, dtmin)
     character(len=24) :: lisevr, lisevk, lisesu
     integer :: leevr, leevk, lesur
     integer :: jeevr, jeevk, jesur
-    logical(kind=1) :: loblig, lsave
-    integer ::  ilast, iplus
+    aster_logical :: loblig, lsave
+    integer :: ilast, iplus
     integer, pointer :: trav(:) => null()
 !
     data evdord  /'ERRE'     ,'DELTA_GRANDEUR'  ,&
@@ -102,7 +103,7 @@ subroutine dfllec(sdlist, dtmin)
     nivmax = 0.d0
     do 10 iordr = 1, nbordr
         lisord(iordr) = 0
-10  end do
+ 10 end do
     lisifr = sdlist(1:8)//'.LIST.INFOR'
     call jeveuo(lisifr, 'E', jlinr)
 !
@@ -155,8 +156,8 @@ subroutine dfllec(sdlist, dtmin)
                     endif
                 endif
             endif
-101      continue
-100  end do
+101     continue
+100 end do
 !
 ! --- TRAITEMENT DES OCCURRENCES
 !
@@ -173,7 +174,7 @@ subroutine dfllec(sdlist, dtmin)
 !
 ! ----- EVENEMENT A CREER
 !
-157      continue
+157     continue
         if (iechec .eq. 0) then
             if (loblig) then
                 even = evd
@@ -233,7 +234,7 @@ subroutine dfllec(sdlist, dtmin)
         endif
         if (iplus .ne. 0) goto 157
 !
-110  end do
+110 end do
 !
 ! --- TRAITEMENT PARTICULIER DU MOT-CLE 'SUBD_NIVEAU' QUI EST EN FAIT
 ! --- UN MOT-CLE GLOBAL A TOUTE LES METHODES DE SOUS-DECOUPAGE
@@ -242,13 +243,13 @@ subroutine dfllec(sdlist, dtmin)
     do 120 iechec = 1, neche2
         nivear = zr(jesur-1+lesur*(iechec-1)+4)
         nivmax = max(nivear,nivmax)
-120  end do
+120 end do
 !
 ! --- ENREGISTREMENT DU NIVEAU MAX
 !
     do 130 iechec = 1, neche2
         zr(jesur-1+lesur*(iechec-1)+4) = nivmax
-130  end do
+130 end do
 !
     AS_DEALLOCATE(vi=trav)
     call jedema()

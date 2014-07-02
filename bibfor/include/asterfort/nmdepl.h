@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdepl(modele, numedd, mate, carele, comref,&
                       compor, lischa, fonact, sdstat, parmet,&
@@ -56,6 +58,6 @@ interface
         character(len=19) :: veasse(*)
         real(kind=8) :: eta
         real(kind=8) :: conv(*)
-        logical(kind=1) :: lerrit
+        aster_logical :: lerrit
     end subroutine nmdepl
 end interface

@@ -1,6 +1,7 @@
 subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
                   prec, lima1, lima2, linoeu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -48,7 +49,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
     integer :: iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
     real(kind=8) :: x1, y1, z1, x2, y2, z2, v1, v2, v3
     real(kind=8) :: valr(3)
-    logical(kind=1) :: erreur
+    aster_logical :: erreur
     character(len=8) :: noma1, noma2
     character(len=24) :: valk(4)
     character(len=24) :: grpma1, grpma2, coova1, coova2, typma1, typma2, conne1
@@ -128,7 +129,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !
                 linoeu(ino2) = ino1
 !
-20          continue
+ 20         continue
 !
             if (nutyp1 .ne. nutyp2) then
                 valk (1) = gma1
@@ -139,7 +140,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
             zi(jnum1+ima-1) = ima1
             zi(jnum2+ima-1) = ima2
             goto 10
-100      continue
+100     continue
 !
         call jenuno(jexnum(ma1//'.NOMMAI', ima1 ), noma1)
         call jenuno(jexnum(ma2//'.NOMMAI', ima2 ), noma2)
@@ -151,7 +152,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
         valr(2) = tran(2)
         valr(3) = tran(3)
         call utmess('F', 'CALCULEL5_69', nk=4, valk=valk, sr=valr(1))
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

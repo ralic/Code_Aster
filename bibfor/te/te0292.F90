@@ -1,5 +1,6 @@
 subroutine te0292(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -56,14 +57,14 @@ subroutine te0292(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(2)
 !
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 ! ----------------------------------------------------------------------
     call jemarq()
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.

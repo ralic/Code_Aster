@@ -17,6 +17,7 @@ subroutine elg_calcxl(x1, vlag)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+# include "asterf_types.h"
 # include "jeveux.h"
 # include "asterc/asmpi_comm.h"
 # include "asterfort/assert.h"
@@ -57,7 +58,7 @@ subroutine elg_calcxl(x1, vlag)
     Vec :: bx, y, ay, xtmp, xlag
     PetscInt :: its
     real(kind=8) :: norm
-    logical :: info 
+    aster_logical :: info 
 !----------------------------------------------------------------
     call jemarq()
     info =.true. 

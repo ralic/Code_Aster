@@ -23,6 +23,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -53,7 +54,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
     integer :: isig
-    logical(kind=1) :: incr
+    aster_logical :: incr
 !
 !    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE
 !                          PAR LA METHODE ENERGETIQUE G-THETA
@@ -97,7 +98,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: tfor, dsidep(6, 6)
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
-    logical(kind=1) :: grdepl, cp,  axi
+    aster_logical :: grdepl, cp, axi
     integer :: irese, ddli, nnoi, indeni, nnops, fisno(nnop, nfiss), ifiss
 !
 !
@@ -158,7 +159,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -174,9 +175,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     end do
 !
 !     SOUS-ELEMENT DE REFERENCE
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), ndim=ndimb, nno=nno,&
+                     nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
+                     jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim.eq.ndimb)
 !
 !     TEMPERATURE DE REF
@@ -215,9 +216,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 !     ------------------------------------------------------------------
 !
-
+!
     idecpg = (ise-1)*npgbis
-
+!
     do kpg = 1, npgbis
         l = (kpg-1)*nno
 !
@@ -229,8 +230,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             epsref(i)= 0.d0
             do 13 j = 1, 3
                 dsigin(i,j) = 0.d0
-13          continue
-12      continue
+ 13         continue
+ 12     continue
 !
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
@@ -242,7 +243,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
@@ -383,10 +385,13 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnos, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnos, idepl, grdepl,&
+                    ndim, he, rbid, rbid, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f,&
+                    eps, grad)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         do i = 1, ndim
@@ -448,10 +453,11 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         crit(3) = 1.d-3
         crit(9) = 300
         crit(8) = 1.d-3
-
-        call nmelnl('XFEM', kpg, 1, idecpg, '+', ndim,&
-                    typmod, matcod, compor, crit, oprupt,&
-                    eps, sigl, rbid, dsidep, energi)
+!
+        call nmelnl('XFEM', kpg, 1, idecpg, '+',&
+                    ndim, typmod, matcod, compor, crit,&
+                    oprupt, eps, sigl, rbid, dsidep,&
+                    energi)
 !
 !       --------------------------------------------------
 !       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM DE CALC_G)
@@ -474,7 +480,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 450                 continue
 455             continue
 460         continue
-
+!
 !
 !         TRAITEMENTS PARTICULIERS DES TERMES CROISES
             do 463 i = 4, ncmp
@@ -554,9 +560,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                 end do
             end do
         end do
-
+!
         prod2 = poids*( prod - energi(1)*divt)
-
+!
         tcla = tcla + prod2
 !
 !
@@ -596,8 +602,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !                     prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*theta(&
 !                     j)
                     prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*dtdm(j,4)
-660              continue
-670          continue
+660             continue
+670         continue
             tini = tini + prod1*poids
         endif
     end do
@@ -606,8 +612,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 !     ------------------------------------------------------------------
 !
-     zr(igthet) = zr(igthet) + tcla + tthe + tfor + tini
-
+    zr(igthet) = zr(igthet) + tcla + tthe + tfor + tini
+!
 !
     call jedema()
 end subroutine

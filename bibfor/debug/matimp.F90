@@ -17,6 +17,7 @@ subroutine matimp(matz, ific, typimz)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -41,14 +42,14 @@ subroutine matimp(matz, ific, typimz)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: iligl, jcoll, kterm, n, nz,   nsmdi, jsmhc, nsmhc
+    integer :: iligl, jcoll, kterm, n, nz, nsmdi, jsmhc, nsmhc
     integer :: jdelg, n1, nvale, jvale, nlong, jval2, nuno, nucmp, k, jcmp
-    integer ::   iligg, jcolg, jnlogl, coltmp
+    integer :: iligg, jcolg, jnlogl, coltmp
     character(len=8) :: nomgd, nocmp, noma, nono, typimp
     character(len=14) :: nonu
     character(len=1) :: ktyp
     character(len=19) :: mat19
-    logical(kind=1) :: ltypr, lsym, lmd
+    aster_logical :: ltypr, lsym, lmd
     real(kind=8) :: dble, dimag
     integer, pointer :: deeq(:) => null()
     integer, pointer :: smdi(:) => null()
@@ -146,51 +147,51 @@ subroutine matimp(matz, ific, typimz)
 !     ------------------------------------------------
     if ((typimp.eq.' ') .or. (typimp.eq.'ASTER')) write(ific, 1003) 'ILIGL', 'JCOLL', 'VALEUR'
     jcoll=1
-    do 1,kterm=1,nz
+    do 1 kterm = 1, nz
 !
 !       --- PARTIE TRIANGULAIRE SUPERIEURE
-    if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
-    iligl=zi4(jsmhc-1+kterm)
-    if (lmd) then
-        iligg=zi(jnlogl+iligl-1)
-        jcolg=zi(jnlogl+jcoll-1)
-    else
-        iligg=iligl
-        jcolg=jcoll
-    endif
-    if ((.not.lsym) .and. (iligg.ge.jcolg)) then
-        coltmp=jcolg
-        jcolg=iligg
-        iligg=coltmp
-    endif
-    if (ltypr) then
-        write(ific,1001) iligg,jcolg,zr(jvale-1+kterm)
-    else
-        write(ific,1002) iligg,jcolg,dble(zc(jvale-1+kterm)),&
+        if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
+        iligl=zi4(jsmhc-1+kterm)
+        if (lmd) then
+            iligg=zi(jnlogl+iligl-1)
+            jcolg=zi(jnlogl+jcoll-1)
+        else
+            iligg=iligl
+            jcolg=jcoll
+        endif
+        if ((.not.lsym) .and. (iligg.ge.jcolg)) then
+            coltmp=jcolg
+            jcolg=iligg
+            iligg=coltmp
+        endif
+        if (ltypr) then
+            write(ific,1001) iligg,jcolg,zr(jvale-1+kterm)
+        else
+            write(ific,1002) iligg,jcolg,dble(zc(jvale-1+kterm)),&
             dimag(zc(jvale-1+kterm))
-    endif
+        endif
 !
 !        --- PARTIE TRIANGULAIRE INFERIEURE
-    if ((.not.lsym) .and. (iligg.ne.jcolg)) then
-        if (ltypr) then
-            write(ific,1001) jcolg,iligg,zr(jval2-1+kterm)
-        else
-            write(ific,1002) jcolg,iligg,dble(zc(jval2-1+kterm)),&
+        if ((.not.lsym) .and. (iligg.ne.jcolg)) then
+            if (ltypr) then
+                write(ific,1001) jcolg,iligg,zr(jval2-1+kterm)
+            else
+                write(ific,1002) jcolg,iligg,dble(zc(jval2-1+kterm)),&
                 dimag(zc(jval2-1+kterm))
+            endif
         endif
-    endif
 !
 !       --- SI 'MATLAB' ET SYMETRIQUE , PSEUDO PARTIE INFERIEURE
-    if (lsym .and. (typimp.eq.'MATLAB') .and. (iligg.ne.jcolg)) then
-        if (ltypr) then
-            write(ific,1001) jcolg,iligg,zr(jvale-1+kterm)
-        else
-            write(ific,1002) jcolg,iligg,dble(zc(jvale-1+kterm)),&
+        if (lsym .and. (typimp.eq.'MATLAB') .and. (iligg.ne.jcolg)) then
+            if (ltypr) then
+                write(ific,1001) jcolg,iligg,zr(jvale-1+kterm)
+            else
+                write(ific,1002) jcolg,iligg,dble(zc(jvale-1+kterm)),&
                 dimag(zc(jvale-1+kterm))
+            endif
         endif
-    endif
 !
-    1 end do
+  1 end do
 !
 !
 !
@@ -209,35 +210,35 @@ subroutine matimp(matz, ific, typimz)
         nomgd=refn(2)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
         ASSERT(n1.eq.2*n)
-        do 2, k=1,n
-        nuno=deeq(2*(k-1)+1)
-        nucmp=deeq(2*(k-1)+2)
-        if (nuno .gt. 0 .and. nucmp .gt. 0) then
-            call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
-            nocmp=zk8(jcmp-1+nucmp)
-            write(ific,1004) k,nono,nocmp
-        else if (nucmp.lt.0) then
-            ASSERT(nuno.gt.0)
-            call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
-            nocmp=zk8(jcmp-1-nucmp)
-            if (zi(jdelg-1+k) .eq. -1) then
-                write(ific,1005) k,nono,nocmp,' LAGR1 BLOCAGE'
+        do 2 k = 1, n
+            nuno=deeq(2*(k-1)+1)
+            nucmp=deeq(2*(k-1)+2)
+            if (nuno .gt. 0 .and. nucmp .gt. 0) then
+                call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
+                nocmp=zk8(jcmp-1+nucmp)
+                write(ific,1004) k,nono,nocmp
+            else if (nucmp.lt.0) then
+                ASSERT(nuno.gt.0)
+                call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
+                nocmp=zk8(jcmp-1-nucmp)
+                if (zi(jdelg-1+k) .eq. -1) then
+                    write(ific,1005) k,nono,nocmp,' LAGR1 BLOCAGE'
+                else
+                    ASSERT(zi(jdelg-1+k).eq.-2)
+                    write(ific,1005) k,nono,nocmp,' LAGR2 BLOCAGE'
+                endif
             else
-                ASSERT(zi(jdelg-1+k).eq.-2)
-                write(ific,1005) k,nono,nocmp,' LAGR2 BLOCAGE'
+                ASSERT(nuno.eq.0 .and. nucmp.eq.0)
+                nono=' '
+                nocmp=' '
+                if (zi(jdelg-1+k) .eq. -1) then
+                    write(ific,1005) k,nono,nocmp,' LAGR1 RELATION LINEAIRE'
+                else
+                    ASSERT(zi(jdelg-1+k).eq.-2)
+                    write(ific,1005) k,nono,nocmp,' LAGR2 RELATION LINEAIRE'
+                endif
             endif
-        else
-            ASSERT(nuno.eq.0 .and. nucmp.eq.0)
-            nono=' '
-            nocmp=' '
-            if (zi(jdelg-1+k) .eq. -1) then
-                write(ific,1005) k,nono,nocmp,' LAGR1 RELATION LINEAIRE'
-            else
-                ASSERT(zi(jdelg-1+k).eq.-2)
-                write(ific,1005) k,nono,nocmp,' LAGR2 RELATION LINEAIRE'
-            endif
-        endif
- 2      continue
+  2     continue
     endif
 !
 !     --- FIN IMPRESSION

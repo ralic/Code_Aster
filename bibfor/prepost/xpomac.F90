@@ -23,6 +23,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -72,7 +73,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !
     integer :: jdirma, jmac, iret, nbno, jdirno, ino, i
     integer :: nbma, ima, jno, ier, jnivgr
-    logical(kind=1) :: pre1
+    aster_logical :: pre1
     character(len=8) :: k8b
     character(len=16) :: k16b, nomcmd
     character(len=24) :: dirmai, dirnoe

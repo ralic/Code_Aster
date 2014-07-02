@@ -1,5 +1,6 @@
 subroutine te0533(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/confac.h"
@@ -71,7 +72,7 @@ subroutine te0533(option, nomte)
     real(kind=8) :: rr, coheo(3)
     integer :: jheano, ifiss, jheafa, ncomph
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
-    logical(kind=1) :: matsym, lelim
+    aster_logical :: matsym, lelim
     character(len=8) :: elref, elrefc, typma
     character(len=8) :: elc, fpg
 !......................................................................
@@ -91,8 +92,8 @@ subroutine te0533(option, nomte)
 ! INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
     jmate=1
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -302,15 +303,15 @@ subroutine te0533(option, nomte)
         call jevech('PSTANO', 'L', jstno)
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, matsym,&
-                    option, nomte, ddlm,&
-                    nfiss, jfisno, mat=zr(imatt))
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    mat=zr(imatt))
     endif
 ! --- SUPPRESSION DES DDLS DE CONTACT
     if (lelim) then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, vstnc, .true._1, matsym,&
-                    option, nomte, ddlm,&
-                    nfiss, jfisno, mat=zr(imatt))
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    mat=zr(imatt))
     endif
 !
     call jedema()

@@ -38,6 +38,7 @@ subroutine contac(macor, nbcor, macoc, nbcoc, lface,&
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/conhex.h"
 #include "asterfort/conpen.h"
 #include "asterfort/conqua.h"
@@ -45,21 +46,21 @@ subroutine contac(macor, nbcor, macoc, nbcoc, lface,&
     integer :: nbcoc, nbcor
     character(len=8) :: macor(nbcor+2), macoc(nbcoc+2), ma
 !
-    logical(kind=1) :: lface, lomodi, locorr, loreor
+    aster_logical :: lface, lomodi, locorr, loreor
 !
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES PERMETTANT DE SAVOIR SI L'APPUI EST POSSIBLE
 #define qua() (ktyc.eq.'QUAD4'.and.(ktyr.eq.'QUAD4'.or.ktyr.eq.'TRIA3')) \
-        .or. (ktyc.eq.'QUAD8'.and.(ktyr.eq.'QUAD9'.or.ktyr.eq.'QUAD8' \
-        .or.ktyr.eq.'TRIA6'))
+    .or. (ktyc.eq.'QUAD8'.and.(ktyr.eq.'QUAD9'.or.ktyr.eq.'QUAD8' \
+    .or.ktyr.eq.'TRIA6'))
 #define pen() (ktyc.eq.'PENTA6 '.and. \
-        (ktyr.eq.'PENTA6 '.or.ktyr.eq.'TETRA4')) \
-        .or. (ktyc.eq.'PENTA15'.and. \
-        (ktyr.eq.'PENTA15'.or.ktyr.eq.'TETRA10'))
+    (ktyr.eq.'PENTA6 '.or.ktyr.eq.'TETRA4')) \
+    .or. (ktyc.eq.'PENTA15'.and. \
+    (ktyr.eq.'PENTA15'.or.ktyr.eq.'TETRA10'))
 #define hex() (ktyc.eq.'HEXA8 '.and. \
-        (ktyr.eq.'HEXA8 '.or.ktyr.eq.'PENTA6 '.or.ktyr.eq.'PYRAM5 ')) \
-        .or. (ktyc.eq.'HEXA20'.and. \
-        (ktyr.eq.'HEXA20'.or.ktyr.eq.'PENTA15'.or.ktyr.eq.'PYRAM13'))
+    (ktyr.eq.'HEXA8 '.or.ktyr.eq.'PENTA6 '.or.ktyr.eq.'PYRAM5 ')) \
+    .or. (ktyc.eq.'HEXA20'.and. \
+    (ktyr.eq.'HEXA20'.or.ktyr.eq.'PENTA15'.or.ktyr.eq.'PYRAM13'))
 !     ------------------------------------------------------------------
 !
     ktyc = macoc(2)

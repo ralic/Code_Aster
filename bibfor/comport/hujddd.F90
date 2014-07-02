@@ -38,6 +38,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !                  = 0   OK
 !                  = 1   NOOK
 ! =====================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/hujksi.h"
@@ -62,7 +63,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     real(kind=8) :: vhist(6), sxh, scxh, fac, ptrac
     character(len=6) :: carac
     character(len=8) :: nomail
-    logical(kind=1) :: consol, tract, debug, dila
+    aster_logical :: consol, tract, debug, dila
 ! =====================================================================
     parameter     ( d12   = 0.5d0  )
     parameter     ( d14   = 0.25d0 )
@@ -104,11 +105,11 @@ subroutine hujddd(carac, k, mater, ind, yf,&
             nbmect = nbmect+1
             if (ind(i) .le. 8) nbmeca = nbmeca + 1
         endif
- 4  end do
+  4 end do
 !
     do 5 i = 1, nbmeca
         if (ind(i) .eq. k) r = yf(ndt+1+i)
- 5  continue
+  5 continue
 !
     epsvpd = yf(ndt+1)
 !
@@ -129,7 +130,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
     do 25 i = 1, ndt
         sigf(i) = yf(i)
-25  continue
+ 25 continue
 !
 !
 ! ---> PROJECTION DES CONTRAINTES DANS LE PLAN DEVIATEUR K
@@ -141,7 +142,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
     do 27 i = 1, 6
         sigd(i) = zero
-27  continue
+ 27 continue
 !
     dd = zero
     p = zero
@@ -160,7 +161,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 si = -si
             endif
         endif
-10  continue
+ 10 continue
     dd = d12*dd
     p = d12*p
 !
@@ -187,7 +188,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 si = -si
             endif
         endif
-11  continue
+ 11 continue
     if (k .lt. 4) then
         sigkij = sigf( ndt+1-k )
         sigd( ndt+1-k ) = sigkij
@@ -224,7 +225,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     if ((k.gt.4) .and. (k.lt.8)) then
         do 29 i = 1, ndt
             sigdc(i)=zero
-29      continue
+ 29     continue
 !
         xk(1) = vin(4*k-11)
         xk(2) = vin(4*k-10)
@@ -236,14 +237,14 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 sigdc(i) = sigd(i)-(xk(1)-r*th(1))*(p -ptrac)*si* (un-b*log((p -ptrac)/pc))*m
                 si = -si
             endif
-30      continue
+ 30     continue
 !
         sigdc(ndt+5-k) = sigd(ndt+5-k)-(xk(2)-r*th(2))*(p -ptrac)* (un-b*log((p -ptrac)/pc))*m
         qc = sqrt(&
              d12*( sigdc(1)**2+sigdc(2)**2+ sigdc(3)**2+sigdc(4)** 2+sigdc(5)**2+sigdc(6)**2 ))
         consol = (-qc/pref).le.tole1
     endif
-100  continue
+100 continue
 !
 !
 ! ====================================================================
@@ -292,13 +293,13 @@ subroutine hujddd(carac, k, mater, ind, yf,&
         do 62 i = 1, ndt
             vp(i) = zero
             vhist(i) = zero
-62      continue
+ 62     continue
 !
         do 63 i = 1, ndi
             if (i .ne. (kk)) then
                 vp(i) = un
             endif
-63      continue
+ 63     continue
 !
         do 64 i = 1, ndi
             do 64 j = 1, ndi
@@ -309,7 +310,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                         dsdds(i,j) = -d12
                     endif
                 endif
-64          continue
+ 64         continue
         dsdds(ndt+1-kk,ndt+1-kk) = un
 !
         if (k .lt. 4) then
@@ -321,7 +322,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     sxs(i,j) = sigd(i)*sigd(j)
                     sxp(i,j) = sigd(i)*vp(j)
                     pxp(i,j) = vp(i)*vp(j)
-65              continue
+ 65             continue
 !
             if (.not. dila) then
                 do 66 i = 1, ndt
@@ -330,7 +331,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                                    dsdds(i,j)/q - d12* sxs(i,j)/ q**3.d0 - alpha*ksi*(sxp(i,j)/ (&
                                    &q*p)-pxp(i,j)* q/p**2.d0)&
                                    )
-66                  continue
+ 66                 continue
             else
                 do 96 i = 1, ndt
                     do 96 j = 1, ndt
@@ -338,7 +339,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                                    dsdds(i,j)/q - d12* sxs(i,j)/ q**3.d0 - alpha*ksi*sxp(i,j)/ (q&
                                    &*pcoh)&
                                    )
-96                  continue
+ 96                 continue
             endif
 !
         else if ((k.gt.4) .and. (k.lt.8)) then
@@ -353,7 +354,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     vhist(i) = si*(xk(1)-th(1)*r)
                     si = -si
                 endif
-670          continue
+670         continue
             vhist(ndt+5-k) = xk(2)-th(2)*r
 !
             do 67 i = 1, ndt
@@ -363,7 +364,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     scxp(i,j) = sigdc(i)*vp(j)
                     pxp(i,j) = vp(i)*vp(j)
                     pxh(i,j) = vhist(i)*vp(j)
-67              continue
+ 67             continue
 !
             ps = zero
             sxh = zero
@@ -372,7 +373,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 ps = ps + sigd(i)*sigdc(i)
                 sxh = sxh + sigd(i)*vhist(i)
                 scxh = scxh + sigdc(i)*vhist(i)
-671          continue
+671         continue
 !
             fac = d12*m*(un-b*(un+log((p -ptrac)/pc)))
             do 68 i = 1, ndt
@@ -393,10 +394,10 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     else
                         mat(i,j) = zero
                     endif
-68              continue
+ 68             continue
 !
         endif
-600      continue
+600     continue
 !af 15/05/07 Fin
 !
 !
@@ -411,7 +412,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
         do 70 i = 1, ndt
             vec(i) = zero
             vhist(i) = zero
-70      continue
+ 70     continue
 !
         if (k .lt. 4) then
 !
@@ -431,19 +432,19 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     vec(i) = d12*m*r*(un-b*(un+log(p/pc)))
                     if (.not.consol) vec(i) = vec(i)+d12*sigd(i) /q
                 endif
-71          continue
+ 71         continue
 !
             if (.not.consol) then
                 do 72 i = ndi+1, ndt
                     vec(i) = d12*sigd(i)/q
-72              continue
+ 72             continue
             endif
 !
         else if (k .eq. 4) then
 !
             do 73 i = 1, ndi
                 vec(i) = -d13
-73          continue
+ 73         continue
 !
 !af 09/05/07 Debut
 !
@@ -466,13 +467,13 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     vhist(i) = si*(xk(1)-th(1)*r)
                     si = -si
                 endif
-730          continue
+730         continue
 !
             vhist(ndt+5-k) = xk(2)-th(2)*r
             scxh = zero
             do 731 i = 1, ndt
                 scxh = scxh + sigdc(i)*vhist(i)
-731          continue
+731         continue
 !
             fac = d12*m*(un-b*(1+log(p/pc)))
 !
@@ -480,7 +481,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 if (i .ne. (k-4)) then
                     if (.not. consol) vec(i) = fac*(r-scxh*d12/qc)+ d12*sigdc(i)/qc
                 endif
-74          continue
+ 74         continue
             if (.not. consol) vec(ndt+5-k)= d12*sigdc(ndt+5-k)/qc
         else if (k .eq. 8) then
             do 77 i = 1, ndi
@@ -489,7 +490,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 else
                     vec(i)=-d13
                 endif
-77          continue
+ 77         continue
 !
 !af 09/05/07 Fin
 !
@@ -497,7 +498,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
             do 78 i = 1, 3
                 if (i .ne. (k-8)) vec(i) = d12
-78          continue
+ 78         continue
 !
         endif
 !
@@ -508,7 +509,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     else if (carac(1:3) .eq. 'PSI') then
         do 80 i = 1, ndt
             vec(i) = zero
-80      continue
+ 80     continue
 !
         if (k .lt. 4) then
 !
@@ -531,7 +532,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     vec(i) = -alpha*ksi*(sin(degr*angdil) + q/pcoh)
                     if (.not.consol) vec(i) = vec(i) + sigd(i) /q/ 2.d0
                 endif
-81          continue
+ 81         continue
 !
             if (.not.consol) vec(ndt+1-k) = sigd(ndt+1-k) /q/2.d0
 !
@@ -539,7 +540,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
             do 82 i = 1, ndi
                 vec(i) = -d13
-82          continue
+ 82         continue
 !
 !af 09/05/07 Debut
         else if (k .eq. 8) then
@@ -558,7 +559,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                         vec(i) = -d13
                     endif
                 endif
-83          continue
+ 83         continue
 !
         else if ((k .gt. 4) .and. (k .lt. 8)) then
 ! --- MECANISME DEVIATOIRE CYCLIQUE
@@ -578,7 +579,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
             prod = zero
             do 85 i = 1, ndt
                 prod = prod + sigd(i)*sigdc(i)
-85          continue
+ 85         continue
             if (.not.consol) then
                 prod = prod / (2.d0*qc)
             else
@@ -595,7 +596,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                     endif
                 endif
 !
-84          continue
+ 84         continue
             if (.not.consol) vec(ndt+5-k) = sigdc(ndt+5-k)/qc/2.d0
 !
 !af 09/05/07 Fin
@@ -603,9 +604,9 @@ subroutine hujddd(carac, k, mater, ind, yf,&
         else if (k .gt. 8) then
             do 86 i = 1, 3
                 if (i .ne. (k-8)) vec(i) = d12
-86          continue
+ 86         continue
         endif
 !
     endif
-999  continue
+999 continue
 end subroutine

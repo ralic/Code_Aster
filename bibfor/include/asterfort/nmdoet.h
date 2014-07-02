@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
                       sddyna, sdcriq, sdieto, solalg, lacc0,&
@@ -28,7 +30,7 @@ interface
         character(len=24) :: sdcriq
         character(len=24) :: sdieto
         character(len=19) :: solalg(*)
-        logical(kind=1) :: lacc0
+        aster_logical :: lacc0
         real(kind=8) :: instin
     end subroutine nmdoet
 end interface

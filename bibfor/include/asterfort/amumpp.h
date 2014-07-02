@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                       impr, ifmump, eli2lg, rsolu, csolu,&
@@ -22,15 +24,15 @@ interface
         integer :: option
         integer :: nbsol
         integer :: kxmps
-        logical(kind=1) :: ldist
+        aster_logical :: ldist
         character(len=1) :: type
         character(len=14) :: impr
         integer :: ifmump
-        logical(kind=1) :: eli2lg
+        aster_logical :: eli2lg
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
         character(len=19) :: vcine
-        logical(kind=1) :: prepos
-        logical(kind=1) :: lpreco
+        aster_logical :: prepos
+        aster_logical :: lpreco
     end subroutine amumpp
 end interface

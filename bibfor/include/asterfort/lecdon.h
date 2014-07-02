@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lecdon(ficext, unitpa, prdeff)
-        logical(kind=1) :: ficext
+        aster_logical :: ficext
         integer :: unitpa
-        logical(kind=1) :: prdeff
+        aster_logical :: prdeff
     end subroutine lecdon
 end interface

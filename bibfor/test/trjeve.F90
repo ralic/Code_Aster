@@ -1,5 +1,6 @@
 subroutine trjeve(ific, nocc)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -38,8 +39,8 @@ subroutine trjeve(ific, nocc)
     character(len=8) :: crit
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=24) :: nomobj
-    logical(kind=1) :: lref
-    logical(kind=1) :: skip
+    aster_logical :: lref
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
@@ -81,7 +82,7 @@ subroutine trjeve(ific, nocc)
                 call utmess('A', 'TEST0_11')
             endif
             call tresu_obj(nomobj, 'R', tbtxt, refi, refr,&
-                           epsi, crit, .true._1, ssigne, ignore=skip, &
+                           epsi, crit, .true._1, ssigne, ignore=skip,&
                            compare=ordgrd)
             if (lref) then
                 call getvr8('OBJET', 'VALE_REFE', iocc=iocc, scal=refrr, nbret=n2r)
@@ -91,7 +92,7 @@ subroutine trjeve(ific, nocc)
             endif
         endif
         write (ific,*)' '
-100  end do
+100 end do
 !
 !
 end subroutine

@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine bsthco(nomte, bsigth, indith)
         character(len=16) :: nomte
         real(kind=8) :: bsigth(51)
-        logical(kind=1) :: indith
+        aster_logical :: indith
     end subroutine bsthco
 end interface

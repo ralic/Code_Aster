@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                       coef, xabs, lfonct, ceta, cetap,&
@@ -26,7 +28,7 @@ interface
         complex(kind=8) :: cmesu(nbmesu, nbabs)
         real(kind=8) :: coef(*)
         real(kind=8) :: xabs(nbabs)
-        logical(kind=1) :: lfonct
+        aster_logical :: lfonct
         complex(kind=8) :: ceta(nbmode, nbabs)
         complex(kind=8) :: cetap(nbmode, nbabs)
         complex(kind=8) :: ceta2p(nbmode, nbabs)

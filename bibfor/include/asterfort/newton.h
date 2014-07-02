@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine newton(np1, np2, np3, np4, nbm,&
                       n2, nbmcd, icoupl, tc, dt,&
@@ -98,7 +100,7 @@ interface
         real(kind=8) :: kmodca(np1, *)
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: amfluc(np1, *)
-        logical(kind=1) :: locflc(*)
+        aster_logical :: locflc(*)
         real(kind=8) :: cmodfa(np1, *)
         integer :: npfts
         real(kind=8) :: textts(*)
@@ -123,7 +125,7 @@ interface
         real(kind=8) :: u(*)
         real(kind=8) :: w(*)
         real(kind=8) :: dd(*)
-        logical(kind=1) :: loc(*)
+        aster_logical :: loc(*)
         integer :: intge1(*)
         integer :: intge2(*)
         integer :: indx(*)

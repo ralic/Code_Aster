@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
                       llf, llf1, llf2)
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical(kind=1) :: reapre
-        logical(kind=1) :: reageo
+        aster_logical :: reapre
+        aster_logical :: reageo
         integer :: nbliac
         integer :: llf
         integer :: llf1

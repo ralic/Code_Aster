@@ -19,11 +19,12 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/iposdg.h"
     integer :: descn(*), tcmp(*), nbc, taber(*), numn, tnueq(*)
     real(kind=8) :: tvale(*), valcmp(*)
-    logical(kind=1) :: b
+    aster_logical :: b
 !
 !**********************************************************************
 !
@@ -82,34 +83,34 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 !
     endif
 !
-    do 10,i = 1,nbc,1
+    do 10 i = 1, nbc, 1
 !
-    poscmp = iposdg(descn(3),tcmp(i))
+        poscmp = iposdg(descn(3),tcmp(i))
 !
-    if (poscmp .gt. 0) then
+        if (poscmp .gt. 0) then
 !
-        if (b) then
+            if (b) then
 !
-            iiad = tnueq(adr+poscmp-1)
+                iiad = tnueq(adr+poscmp-1)
+!
+            else
+!
+                iiad = adr + poscmp - 1
+!
+            endif
+!
+            valcmp(i) = tvale(iiad)
+!
+            taber(i) = 1
 !
         else
 !
-            iiad = adr + poscmp - 1
+            valcmp(i) = r8vide()
+!
+            taber(i) = 0
 !
         endif
 !
-        valcmp(i) = tvale(iiad)
-!
-        taber(i) = 1
-!
-    else
-!
-        valcmp(i) = r8vide()
-!
-        taber(i) = 0
-!
-    endif
-!
-    10 end do
+ 10 end do
 !
 end subroutine

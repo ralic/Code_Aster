@@ -16,6 +16,7 @@ subroutine jelira(nomlu, catr, ival, cval)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/codent.h"
 #include "asterfort/jjallc.h"
@@ -73,7 +74,7 @@ subroutine jelira(nomlu, catr, ival, cval)
     character(len=1) :: genri
     character(len=8) :: catrlu
     integer :: lcv, icre, iret
-    logical(kind=1) :: lconst, lconti, llong, lluti, lcol
+    aster_logical :: lconst, lconti, llong, lluti, lcol
 ! DEB ------------------------------------------------------------------
 !
     ipgcex = ipgc
@@ -297,7 +298,7 @@ subroutine jelira(nomlu, catr, ival, cval)
             call utmess('F', 'JEVEUX1_04', sk=catrlu)
         endif
     endif
-100  continue
+100 continue
     if (lcv .ne. 0) then
         if (present(cval)) then
             cval = cva(1:lcv)

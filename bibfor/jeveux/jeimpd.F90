@@ -17,6 +17,7 @@ subroutine jeimpd(unit, clas, cmess)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjlide.h"
@@ -77,7 +78,7 @@ subroutine jeimpd(unit, clas, cmess)
 ! ---------------------------------------------------------------------
     character(len=1) :: kclas, cgenr, ctype, clasi, cgen2
     character(len=32) :: crnom
-    logical(kind=1) :: lcol, lente
+    aster_logical :: lcol, lente
     integer :: ipgcex, lgbl
 ! DEB -----------------------------------------------------------------
     ipgcex = ipgc
@@ -131,7 +132,7 @@ subroutine jeimpd(unit, clas, cmess)
                 iacc = iacce(jiacce(i)+iiadd)
                 write(unit , 1001) j,crnom,cgenr,ctype,iltyp, ilono,&
                 iiadd,liadd,iacc
- 6              continue
+  6             continue
                 if (cgenr .eq. 'X') then
                     idatco = j
                     iclaco = i
@@ -169,17 +170,17 @@ subroutine jeimpd(unit, clas, cmess)
                         write( crnom(25:32) , '(I8)' ) koc
                         write(unit,1001) j,crnom,cgen2,ctype,iltyp,&
                         ilono,iiadd,liadd,iacc
-50                  continue
-51                  continue
+ 50                 continue
+ 51                 continue
                     if (lcol) then
                         call jjlide('JEIMPO', crnom(1:24), 2)
                     endif
                 endif
- 5          continue
+  5         continue
             write ( unit , '(/)' )
         endif
-10  end do
-9999  continue
+ 10 end do
+9999 continue
     ipgc = ipgcex
     1001 format(i8,1x,a,'  -',2(a,'-'),i3,i7,i7,i9,i6)
 ! FIN -----------------------------------------------------------------

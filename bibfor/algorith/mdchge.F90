@@ -2,6 +2,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
                   masgen, amogen, nbnli, noecho, parcho,&
                   intitu, ddlcho, ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -66,7 +67,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
     integer :: n1, n2, iret
     real(kind=8) :: ktang, ctang, k, coor1(3), coor2(3), xjeu, r8bid
     complex(kind=8) :: cbid
-    logical(kind=1) :: lnoue2
+    aster_logical :: lnoue2
     character(len=8) :: kbid, nomno1, nomno2, sst1, sst2, maya1, maya2, repere
     character(len=8) :: k8typ
     character(len=10) :: motfac
@@ -176,7 +177,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
         do 110 j = 1, 3
             parcho(i,7+j) = coor1(j)
             parcho(i,10+j) = coor2(j)
-110      continue
+110     continue
 !
         ktang = 0.d0
         ctang = 0.d0
@@ -234,6 +235,6 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
         call mdchan(motfac, i, i, mdgene, typnum,&
                     repere, xjeu, nbnli, noecho, parcho)
 !
-100  end do
+100 end do
 !
 end subroutine

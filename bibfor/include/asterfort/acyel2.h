@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
                       lilig, nblig, licol, nbcol, cmat,&
@@ -26,7 +28,7 @@ interface
         character(len=*) :: nomobz
         integer :: nobl
         integer :: nobc
-        logical(kind=1) :: okpart
+        aster_logical :: okpart
         integer :: lilig(nblig)
         integer :: licol(nbcol)
         complex(kind=8) :: cmat(ndim, ndim)

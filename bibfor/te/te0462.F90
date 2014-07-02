@@ -16,6 +16,7 @@ subroutine te0462(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dxqpgl.h"
@@ -46,7 +47,7 @@ subroutine te0462(option, nomte)
     integer :: ifpg, ig, icou, iniv, ino
     real(kind=8) :: pgl(3, 3), xx, yy, zz
     real(kind=8) :: epais, excen, gm1(3), gm2(3), epc, bas, hh
-    logical(kind=1) :: grille
+    aster_logical :: grille
     character(len=8) :: fami(nfpgmx)
     data gm1 / 0.d0,0.d0,1.d0/
 ! ----------------------------------------------------------------------
@@ -102,8 +103,8 @@ subroutine te0462(option, nomte)
     decfpg = 0
     do 200 ifpg = 1, nfpg
 !
-        call elrefe_info(fami=fami(ifpg),ndim=ndim1,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami=fami(ifpg), ndim=ndim1, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
         do 100 ig = 1, npg
 !
@@ -115,7 +116,7 @@ subroutine te0462(option, nomte)
                 xx = xx + zr(igeom+3* (ino-1)+0)*zr(ivf+ (ig-1)*nno+ ino-1)
                 yy = yy + zr(igeom+3* (ino-1)+1)*zr(ivf+ (ig-1)*nno+ ino-1)
                 zz = zz + zr(igeom+3* (ino-1)+2)*zr(ivf+ (ig-1)*nno+ ino-1)
-10          continue
+ 10         continue
 !
             if (grille) then
                 decpo=ndim*(decfpg+ig-1)
@@ -132,12 +133,12 @@ subroutine te0462(option, nomte)
                         zr(iad+0) = xx + hh*gm2(1)
                         zr(iad+1) = yy + hh*gm2(2)
                         zr(iad+2) = zz + hh*gm2(3)
-120                  continue
-110              continue
+120                 continue
+110             continue
             endif
-100      continue
+100     continue
         decfpg = decfpg + npg
-200  end do
+200 end do
 !
 !
 !

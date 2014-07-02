@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
                           base, rsolu, csolu, criter, prepos,&
@@ -28,7 +30,7 @@ interface
     real(kind=8), intent(inout) :: rsolu(*)
     complex(kind=8), intent(inout) :: csolu(*)
     character(len=*), intent(in) :: criter
-    logical(kind=1), intent(in) :: prepos
+    aster_logical, intent(in) :: prepos
     integer, intent(in) :: istop
     integer, intent(out) :: iret
     end subroutine elg_resoud

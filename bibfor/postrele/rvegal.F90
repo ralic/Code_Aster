@@ -1,6 +1,7 @@
 subroutine rvegal(epsi, criter, x, y, ok,&
                   eccart)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +21,7 @@ subroutine rvegal(epsi, criter, x, y, ok,&
 ! ======================================================================
 !
     character(len=1) :: criter
-    logical(kind=1) :: ok
+    aster_logical :: ok
     real(kind=8) :: epsi, x, y, eccart
 !
 !********************************************************************

@@ -24,6 +24,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -80,15 +81,15 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: opmass, oprigi
-    logical(kind=1) :: lmacr, ldyna, lexpl, lbid
-    logical(kind=1) :: lamor, lktan, lelas, lvarc, lcfint, lamra
+    aster_logical :: lmacr, ldyna, lexpl, lbid
+    aster_logical :: lamor, lktan, lelas, lvarc, lcfint, lamra
     integer :: ifm, niv
     integer :: numins, iterat, ldccvg
     integer :: nbmatr
     character(len=16) :: optrig, optamo
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !

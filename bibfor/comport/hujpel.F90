@@ -35,6 +35,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 !           VINF   :  VARIABLES INTERNES A T+DT
 !           IRET   :  CODE RETOUR (O-->OK / 1-->NOOK)
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/hujori.h"
 #include "asterfort/hujpre.h"
@@ -48,7 +49,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 !
     integer :: i
     real(kind=8) :: zero, un, bid66(6, 6), matert(22, 2)
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
     parameter      (zero = 0.d0)
     parameter      (un   = 1.d0)
 !       ----------------------------------------------------------------
@@ -56,7 +57,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
         do 10 i = 5, 6
             deps(i) = zero
             sigd(i) = zero
-10      continue
+ 10     continue
     endif
 !
     if (( (vind(24) .eq. zero) .or. (vind(24) .eq. -un .and. vind(28) .eq. zero) ) .and.&
@@ -82,7 +83,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
     do 20 i = 1, 22
         matert(i,1) = materf(i,1)
         matert(i,2) = materf(i,2)
-20  continue
+ 20 continue
 !
     call hujpre(etatd, mod, crit, imat, matert,&
                 deps, sigd, sigf, vind, iret)

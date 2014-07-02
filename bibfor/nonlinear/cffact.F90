@@ -19,6 +19,7 @@ subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,7 @@ subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
     integer :: nbliac, llf, llf1, llf2, indfac
     integer :: ldscon
     integer :: isto
-    logical(kind=1) :: lechec
+    aster_logical :: lechec
 !
 ! ----------------------------------------------------------------------
 !

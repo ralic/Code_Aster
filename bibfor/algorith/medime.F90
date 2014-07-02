@@ -19,6 +19,7 @@ subroutine medime(base, cumul, modele, lischa, mediri)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -68,10 +69,10 @@ subroutine medime(base, cumul, modele, lischa, mediri)
     character(len=8) :: nomcha
     character(len=16) :: option
     character(len=19) :: ligrch
-    integer :: iret,   icha, ilires
+    integer :: iret, icha, ilires
     integer :: nchar, nluti
     integer :: ifmdbg, nivdbg
-    logical(kind=1) :: debug
+    aster_logical :: debug
     character(len=24), pointer :: lcha(:) => null()
     integer, pointer :: infc(:) => null()
 !
@@ -166,8 +167,8 @@ subroutine medime(base, cumul, modele, lischa, mediri)
             call reajre(mediri, lchout(1), base)
             ilires = ilires + 1
         endif
-10  end do
-20  continue
+ 10 end do
+ 20 continue
 !
     call jedema()
 end subroutine

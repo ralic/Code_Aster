@@ -158,10 +158,11 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "blas/dladiv.h"
-    logical(kind=1) :: ltrans
+    aster_logical :: ltrans
     integer :: info, lda, ldb, ldx, na, nw
     real(kind=8) :: ca, d1, d2, scale, smin, wi, wr, xnorm
 !     ..
@@ -182,7 +183,7 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
     real(kind=8) :: ur12s, ur22, xi1, xi2, xr1, xr2
 !     ..
 !     .. LOCAL ARRAYS ..
-    logical(kind=1) :: rswap( 4 ), zswap( 4 )
+    aster_logical :: rswap( 4 ), zswap( 4 )
     integer :: ipivot( 4, 4 )
     real(kind=8) :: ci( 2, 2 ), civ( 4 ), cr( 2, 2 ), crv( 4 )
 !     ..

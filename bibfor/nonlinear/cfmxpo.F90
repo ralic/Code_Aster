@@ -19,7 +19,8 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdeco.h"
 #include "asterfort/cfdisl.h"
@@ -60,7 +61,7 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
 !
 !
     integer :: ifm, niv
-    logical(kind=1) :: lctcd, lctcc, lallv, lxfcm
+    aster_logical :: lctcd, lctcc, lallv, lxfcm
     character(len=8) :: nomo
 !
 ! ----------------------------------------------------------------------

@@ -1,5 +1,6 @@
 subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -69,15 +70,15 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
 !
 !
-    integer :: jcsd1, jcsl1,  jcsd2, jcsl2,   jconx2
-    integer :: jlis1, ima,  pin, iad, iret, ninter, ifiss
+    integer :: jcsd1, jcsl1, jcsd2, jcsl2, jconx2
+    integer :: jlis1, ima, pin, iad, iret, ninter, ifiss
     integer :: ar(12, 3), i, ia, nbar, nloc(2), nglo(2), nuno(2), neq, no
     character(len=24) :: grp(3)
     character(len=19) :: nliseq
     character(len=8) :: typma
     integer :: zxain, in, jn, iac, ier, ncta, ncte
-    integer ::  jcntes, jcnte2,  narcon
-    logical(kind=1) :: lmulti, lconne
+    integer :: jcntes, jcnte2, narcon
+    aster_logical :: lmulti, lconne
     integer :: kk, jgrp, ienr, nmaenr
     integer, pointer :: arcon(:) => null()
     integer, pointer :: connectant(:) => null()
@@ -196,7 +197,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                 do 31 i = 1, 2
                     nloc(i) = ar(ia,i)
                     nglo(i) = connex(zi(jconx2+ima-1)+nloc(i)-1)
-31              continue
+ 31             continue
 !
 ! --- COMPARAISON AVEC LES NOEUDS DE LA LISTE DE NOEUDS CONNECTANTS
 !
@@ -211,16 +212,16 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                                 narcon = narcon + 1
                                 goto 21
                             endif
-61                      continue
+ 61                     continue
                     endif
-51              continue
-21          continue
-11      continue
-81  end do
+ 51             continue
+ 21         continue
+ 11     continue
+ 81 end do
     ASSERT(narcon.gt.0)
     AS_ALLOCATE(vi=arcon, size=4*narcon)
 !
-41  continue
+ 41 continue
 !
 ! --- BOUCLE SUR LES GRP
 !
@@ -275,7 +276,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                     do 30 i = 1, 2
                         nloc(i) = ar(ia,i)
                         nglo(i) = connex(zi(jconx2+ima-1)+nloc(i) -1)
-30                  continue
+ 30                 continue
 !
 ! --- COMPARAISON AVEC LES COUPLES DE NO DE LA LISTE DE RELAT D'EGALITÉS
 !
@@ -319,21 +320,21 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                                             arcon(4*(iac-1)+4) = jn
                                             goto 20
                                         endif
-70                                  continue
+ 70                                 continue
                                 endif
-60                          continue
+ 60                         continue
                             goto 20
                         else
                             csv2(iad)=0
                             zl(jcsl2-1+iad)=.true.
                         endif
 !
-50                  continue
+ 50                 continue
                 endif
 !
-20          continue
-10      continue
-80  end do
+ 20         continue
+ 10     continue
+ 80 end do
 !
     ASSERT(iac.eq.narcon)
     if (narcon .gt. 0) then
@@ -362,8 +363,8 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                     zi(jcntes-1+4*(ncte-1)+3) = arcon(4*(iac-1)+ 2)
                     zi(jcntes-1+4*(ncte-1)+4) = arcon(4*(iac-1)+ 3)
                 endif
-100          continue
-90      continue
+100         continue
+ 90     continue
 !
 ! --- MENAGE
 !

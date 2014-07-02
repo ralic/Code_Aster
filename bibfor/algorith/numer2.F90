@@ -18,6 +18,7 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/idenob.h"
@@ -58,9 +59,9 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 !----------------------------------------------------------------------
 !
 !
-    integer ::  i, jlligr, jnslv
+    integer :: i, jlligr, jnslv
 !
-    logical(kind=1) :: l1, l2, l3, l4
+    aster_logical :: l1, l2, l3, l4
     character(len=19) :: solve2
     character(len=2) :: bas2
     character(len=14) :: nu1, nu2

@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
                       nface, cface, jdepde, jpcai, ffc,&
@@ -29,10 +31,10 @@ interface
         integer :: jdepde
         integer :: jpcai
         real(kind=8) :: ffc(9)
-        logical(kind=1) :: lfrott
+        aster_logical :: lfrott
         integer :: nconta
         integer :: nfhe
-        logical(kind=1) :: lmulti
+        aster_logical :: lmulti
         integer :: heavno(8)
         real(kind=8) :: dlagrc
         real(kind=8) :: dlagrf(2)

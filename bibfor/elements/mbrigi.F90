@@ -27,6 +27,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
 ! ----------------------------------------------------------------------
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
@@ -45,7 +46,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
     common /rvarje/zr(1)
     complex(kind=8) :: zc
     common /cvarje/zc(1)
-    logical(kind=1) :: zl
+    aster_logical :: zl
     common /lvarje/zl(1)
     character(len=8) :: zk8
     character(len=16) :: zk16

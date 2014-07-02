@@ -17,7 +17,8 @@ subroutine veassc(lischa, vecele)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -55,7 +56,7 @@ subroutine veassc(lischa, vecele)
     character(len=19) :: chamno, lchout
     character(len=13) :: prefob
     integer :: genrec
-    logical(kind=1) :: lveac
+    aster_logical :: lveac
     integer :: nbveac, iexis
 !
 ! ----------------------------------------------------------------------
@@ -103,9 +104,9 @@ subroutine veassc(lischa, vecele)
             call copisd('CHAMP_GD', 'V', chamno, lchout)
             call reajre(vecele, lchout, 'V')
         endif
-10  continue
+ 10 continue
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

@@ -41,6 +41,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfiope.h"
 #include "asterfort/as_mmhmii.h"
@@ -50,7 +51,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 #include "asterfort/utmess.h"
     character(len=*) :: nofimd, nomamd
 !
-    logical(kind=1) :: existm, ficexi, dejouv
+    aster_logical :: existm, ficexi, dejouv
 !
     integer :: ndim, codret
 !

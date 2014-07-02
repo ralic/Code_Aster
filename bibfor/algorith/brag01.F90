@@ -93,6 +93,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 ! aslint: disable=,W1504
     implicit none
 !      IMPLICIT REAL*8(A-Z)
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
 #include "asterfort/brdefv.h"
 #include "asterfort/brendo.h"
@@ -128,7 +129,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: e0, nu0, mu0, k0
 !
 ! CARACTERISTIQUES DU FLUAGE
-    logical(kind=1) :: fluage, pressn
+    aster_logical :: fluage, pressn
 !      LOGICAL CONSO
     real(kind=8) :: k1, eta1s, eta2s, mu1, eta1d, eta2d
     real(kind=8) :: k2, mu2
@@ -170,7 +171,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: t33(3, 3), n33(3, 3)
 !
     real(kind=8) :: epsi(6), epsf(6)
-    logical(kind=1) :: local
+    aster_logical :: local
 !
     real(kind=8) :: yyi, yyf
     real(kind=8) :: e0df(6)
@@ -371,12 +372,12 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         do 40 j = 1, 3
             t33(i,j) = 0.0d0
             n33(i,j) = 0.0d0
-40      continue
-50  end do
+ 40     continue
+ 50 end do
     do 60 i = 1, 3
         t33(i,i) = 1.0d0
         n33(i,i) = 1.0d0
-60  end do
+ 60 end do
 !  ---- CARACTERISTIQUES DU COUPLAGE FLUIDE/SQUELETTE ET GEL/SQUELETTE
 !
 !        MILIEU NON SATURE PARAMETRES DE VAN GENUCHTEN
@@ -450,11 +451,11 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     do 70 j = 1, 6
         epsti(j)=epsm(j)
         epstf(j)=epsm(j)+deps(j)
-70  end do
+ 70 end do
     do 80 j = 4, 6
         epsti(j)=epsti(j)*sqrt(2.d0)
         epstf(j)=epstf(j)*sqrt(2.d0)
-80  end do
+ 80 end do
 !     APPORTS DE MASSE NORMALISES  ********** A CORRIGER ***********
 !      WW=XMAT(22)
     ww = 0.0d0
@@ -508,7 +509,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         yyf=yyf+epstf(i)
         yyi=yyi+epsti(i)
 !       PRINT*,EPSTI(I),EPSTF(I)
-90  end do
+ 90 end do
 !      PRINT*, YYI,YYF
 !
 !     ON PEUT AMELIORER EN SUPPOSANT PW(T)=APW*T+BPW DANS
@@ -609,7 +610,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
                         evpmax, (bch*pch), eragmx)
             do 100 i = 1, 6
                 evp16(i)=evp06(i)+devpt(i)*dt
-100          continue
+100         continue
         endif
 !
         if (fluor .eq. 2) then
@@ -622,7 +623,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         if (fluor .eq. 3) then
             do 110 i = 1, 6
                 evp16(i)=evp06(i)+devpt(i)*dt
-110          continue
+110         continue
         endif
 !   STOCKAGE DES DEFORMATIONS VISCOPLASTIQUES DE TRACTION EN FIN DE PAS
 !
@@ -636,7 +637,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         do 120 i = 1, 6
             epsi(i)=epsti(i)-evp06(i)
             epsf(i)=epstf(i)-evp16(i)
-120      end do
+120     end do
 !
 !     *** FLUAGE SPHERIQUE *****************************
 !
@@ -646,7 +647,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         do 130 i = 1, 3
             yyf=yyf+epsf(i)
             yyi=yyi+epsi(i)
-130      end do
+130     end do
 !
 !        CHARGEMENT DES VARIABLES INTERNES POUR LA PARTIE SPHERIQUE
         e1si=vim(1)
@@ -750,7 +751,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
             vip(33+(j-1)*2+1)=e2min
             vip(33+(j-1)*2+2)=e2max
 !
-140      continue
+140     continue
 !
     else
 !      PRINT *,'PAS FLUAGE'
@@ -759,14 +760,14 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         e0sf=0.d0
         do 150 i = 1, 3
             e0sf=e0sf+epstf(i)
-150      continue
+150     continue
         do 160 i = 1, 6
             if (i .le. 3) then
                 e0df(i)=2.d0*(epstf(i)-e0sf/3.d0)
             else
                 e0df(i)=epstf(i)
             endif
-160      continue
+160     continue
 !
     endif
 !
@@ -805,14 +806,14 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     i0=57
     do 170 i = 1, 6
         bt6(i)=vim(i0+i)
-170  end do
+170 end do
     bc1=vim(64)
 !
 !       ON CHARGE LES CONTRAINTES DANS SIGE6 QUI EST MODIFIEE
 !        PAR LA PROCEDURE DE TRAITEMENT DE LOCALISATION SI LOCAL=VRAI
     do 180 j = 1, 6
         sige6(j)=sigeff(j)
-180  end do
+180 end do
     call brendo(sige6, bt6, sut, bc1, suc,&
                 local, t33, n33, lct, bw,&
                 pw2, bch, pch, delta, lcc,&
@@ -838,7 +839,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     i0=57
     do 190 i = 1, 6
         vip(i0+i)=bt6(i)
-190  end do
+190 end do
     vip(64)=bc1
 !
     vip(15)=dt6(1)
@@ -859,7 +860,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     do 200 i = 4, 6
         sigp(i)=sigp(i)*sqrt(2.d0)
         epstf(i)=epstf(i)/2.d0*sqrt(2.d0)
-200  end do
-210  continue
+200 end do
+210 continue
 !*****************************************************************
 end subroutine

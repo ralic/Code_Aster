@@ -17,6 +17,7 @@ subroutine celver(celz, typver, arret, iret)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/iisnan.h"
 #include "asterc/isnnem.h"
@@ -55,9 +56,9 @@ subroutine celver(celz, typver, arret, iret)
     character(len=8) :: tsca, nomgd
     character(len=3) :: knan
     character(len=19) :: cel
-    integer ::  kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
+    integer :: kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
     integer :: imolo, inan, nb1, k, jcelv
-    logical(kind=1) :: lnan
+    aster_logical :: lnan
     integer, pointer :: celd(:) => null()
 !
 !     ------------------------------------------------------------------

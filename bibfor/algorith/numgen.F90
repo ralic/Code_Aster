@@ -31,6 +31,7 @@ subroutine numgen(nugene, modgen)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
@@ -59,7 +60,7 @@ subroutine numgen(nugene, modgen)
     character(len=19) :: prgene
     character(len=24) :: defli, fprofl, nomsst
     character(len=24) :: valk
-    logical(kind=1) :: assok, pbcone
+    aster_logical :: assok, pbcone
 !
 !
 !-----------------------------------------------------------------------
@@ -143,7 +144,7 @@ subroutine numgen(nugene, modgen)
         zi(ldprs+(i-1)*2+1)=nbmod
         icomp=icomp+nbmod
         icomps=icomps+nbmod
-10  end do
+ 10 end do
 !
 !   BOUCLE SUR LES LIAISONS
 !   (ON SUPPOSE QUE LES MATRICES DES LIAISONS 1 ET 2 ONT
@@ -163,7 +164,7 @@ subroutine numgen(nugene, modgen)
         zi(ldprl+(i-1)*4+3)=nblig
         icomp=icomp+2*nblig
         icompl=icompl+2*nblig
-20  end do
+ 20 end do
 !
     neq=icomp
 !
@@ -202,7 +203,7 @@ subroutine numgen(nugene, modgen)
         zi(ltssnb+nusst1-1)=1
         zi(ltssnb+nusst2-1)=1
         zi(ltlia+i-1)=max(nusst1,nusst2)
-30  end do
+ 30 end do
 !
 !   BOUCLE PERMETTANT DE DETERMINER L'INVERSE
 !   NUMERO TARDIF  SOUS-STRUCTURE --> NUMEROS TARDIF LIAISONS
@@ -227,8 +228,8 @@ subroutine numgen(nugene, modgen)
                 icomp=icomp+1
                 zi(ltsst+icomp-1)=j
             endif
-40      continue
-50  end do
+ 40     continue
+ 50 end do
 !
     if (pbcone) then
         call utmess('F', 'ALGORITH13_76')
@@ -266,14 +267,14 @@ subroutine numgen(nugene, modgen)
                         nult=zi(ltsst+k-1)
                         null=zi(ldorl+nult-1)
                         if (null .eq. nulia .and. nult .ne. 0) assok= .false.
-60                  continue
+ 60                 continue
                 endif
                 if (assok) then
                     icomp=icomp+1
                     zi(ltoras+icomp-1)=-nutarl
                 endif
             endif
-70      continue
+ 70     continue
 !
 !  ASSEMBLAGE DE LA SOUS-STRUCTURE COURANTE
 !
@@ -289,14 +290,14 @@ subroutine numgen(nugene, modgen)
                 do 80 k = 1, icomp
                     nut=-zi(ltoras+k-1)
                     if (nut .eq. nutarl) assok=.false.
-80              continue
+ 80             continue
                 if (assok) then
                     icomp=icomp+1
                     zi(ltoras+icomp-1)=-nutarl
                 endif
             endif
-90      continue
-100  end do
+ 90     continue
+100 end do
 !
     call jedetr('&&'//pgc//'.SST.LIA')
 !
@@ -323,9 +324,9 @@ subroutine numgen(nugene, modgen)
             zi(lddelg+j-1)=0
             zi(lddeeq+2*j-1)=nuas
             zi(lddeeq+2*j-2)=j-icomp+1
-110      continue
+110     continue
         icomp=icomp+nbddl
-120  end do
+120 end do
 !
 !----------------------SAUVEGARDES DIVERSES-----------------------------
 !

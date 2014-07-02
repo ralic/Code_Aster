@@ -20,6 +20,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
@@ -72,7 +73,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 !
 !
-    logical(kind=1) :: cplan, plasti, inco, dech
+    aster_logical :: cplan, plasti, inco, dech
     integer :: ndimsi, jprol2, jvale2, nbval2
     integer :: imate2, k, l, niter, ibid
     integer :: iret5
@@ -138,7 +139,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
-    do  k = 4, ndimsi
+    do k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
     end do
@@ -433,7 +434,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                     if (l .eq. 3) goto 137
 !
                     dsidep(k,l) = dsidep(k,l) - 1.d0/dsidep(3,3)* dsidep(k,3)*dsidep(3,l)
-
+!
 137             continue
 136         continue
         endif

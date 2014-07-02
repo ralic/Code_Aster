@@ -27,6 +27,7 @@ subroutine te0256(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -41,15 +42,15 @@ subroutine te0256(option, nomte)
     real(kind=8) :: poids, nx, ny, valpar(2)
     integer :: ipoids, ivf, idfde, igeom, ivnor, kpg, spt
     integer :: nno, kp, npg, ivectu, imate, ldec
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ii, jgano, n, ndim, nnos
 !
     real(kind=8) :: r, rho(1), vnorf, x, y
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -69,7 +70,7 @@ subroutine te0256(option, nomte)
 !
     do 10 i = 1, 2*nno
         zr(ivectu+i-1) = 0.0d0
-10  end do
+ 10 end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -84,7 +85,7 @@ subroutine te0256(option, nomte)
         do 20 n = 0, nno - 1
             x = x + zr(igeom+2*n)*zr(ivf+ldec+n)
             y = y + zr(igeom+2*n+1)*zr(ivf+ldec+n)
-20      continue
+ 20     continue
 !
 !        VALEUR DE LA VITESSE
         valpar(1) = x
@@ -101,15 +102,15 @@ subroutine te0256(option, nomte)
             r = 0.d0
             do 30 i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
-30          continue
+ 30         continue
             poids = poids*r
         endif
 !
         do 40 i = 1, nno
             ii = 2*i
             zr(ivectu+ii-1) = zr(ivectu+ii-1) - poids*vnorf*rho(1)*zr( ivf+ldec+i-1)
-40      continue
+ 40     continue
 !
-50  end do
+ 50 end do
 !
 end subroutine

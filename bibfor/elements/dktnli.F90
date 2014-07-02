@@ -1,6 +1,7 @@
 subroutine dktnli(nomte, opt, xyzl, ul, dul,&
                   btsig, ktan, codret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -150,12 +151,12 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     integer :: j, k, nbcon, nbsp, nbvar, ndimv
     real(kind=8) :: deux, rac2, qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd
-    logical(kind=1) :: vecteu, matric, dkt, dkq, leul
+    aster_logical :: vecteu, matric, dkt, dkq, leul
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnoel,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnoel, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     deux = 2.d0
     rac2 = sqrt(deux)
@@ -235,18 +236,18 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
 !     -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 !     -------------------------------------------------
-    do 30,ino = 1,nnoel
-    um(1,ino) = ul(1,ino)
-    um(2,ino) = ul(2,ino)
-    uf(1,ino) = ul(3,ino)
-    uf(2,ino) = ul(5,ino)
-    uf(3,ino) = -ul(4,ino)
-    dum(1,ino) = dul(1,ino)
-    dum(2,ino) = dul(2,ino)
-    duf(1,ino) = dul(3,ino)
-    duf(2,ino) = dul(5,ino)
-    duf(3,ino) = -dul(4,ino)
-    30 end do
+    do 30 ino = 1, nnoel
+        um(1,ino) = ul(1,ino)
+        um(2,ino) = ul(2,ino)
+        uf(1,ino) = ul(3,ino)
+        uf(2,ino) = ul(5,ino)
+        uf(3,ino) = -ul(4,ino)
+        dum(1,ino) = dul(1,ino)
+        dum(2,ino) = dul(2,ino)
+        duf(1,ino) = dul(3,ino)
+        duf(2,ino) = dul(5,ino)
+        duf(3,ino) = -dul(4,ino)
+ 30 end do
 !
 !     -- INTEGRATIONS SUR LA SURFACE DE L'ELEMENT:
 !     --------------------------------------------
@@ -280,195 +281,195 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
 !     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     -------------------------------------------------
-    do 130,ipg = 1,npg
-    call r8inir(3, 0.d0, n, 1)
-    call r8inir(3, 0.d0, m, 1)
-    call r8inir(9, 0.d0, df, 1)
-    call r8inir(9, 0.d0, dm, 1)
-    call r8inir(9, 0.d0, dmf, 1)
-    qsi = zr(icoopg-1+ndim*(ipg-1)+1)
-    eta = zr(icoopg-1+ndim*(ipg-1)+2)
-    if (dkq) then
-        call jquad4(xyzl, qsi, eta, jacob)
-        poids = zr(ipoids+ipg-1)*jacob(1)
-        call dxqbm(qsi, eta, jacob(2), bm)
-        call dkqbf(qsi, eta, jacob(2), cara, bf)
-    else
-        poids = zr(ipoids+ipg-1)*cara(7)
-        call dxtbm(cara(9), bm)
-        call dktbf(qsi, eta, cara, bf)
-    endif
+    do 130 ipg = 1, npg
+        call r8inir(3, 0.d0, n, 1)
+        call r8inir(3, 0.d0, m, 1)
+        call r8inir(9, 0.d0, df, 1)
+        call r8inir(9, 0.d0, dm, 1)
+        call r8inir(9, 0.d0, dmf, 1)
+        qsi = zr(icoopg-1+ndim*(ipg-1)+1)
+        eta = zr(icoopg-1+ndim*(ipg-1)+2)
+        if (dkq) then
+            call jquad4(xyzl, qsi, eta, jacob)
+            poids = zr(ipoids+ipg-1)*jacob(1)
+            call dxqbm(qsi, eta, jacob(2), bm)
+            call dkqbf(qsi, eta, jacob(2), cara, bf)
+        else
+            poids = zr(ipoids+ipg-1)*cara(7)
+            call dxtbm(cara(9), bm)
+            call dktbf(qsi, eta, cara, bf)
+        endif
 !       -- CALCUL DE EPS, DEPS, KHI, DKHI :
 !       -----------------------------------
-    call pmrvec('ZERO', 3, 2*nnoel, bm, um,&
-                eps)
-    call pmrvec('ZERO', 3, 2*nnoel, bm, dum,&
-                deps)
-    call pmrvec('ZERO', 3, 3*nnoel, bf, uf,&
-                khi)
-    call pmrvec('ZERO', 3, 3*nnoel, bf, duf,&
-                dkhi)
+        call pmrvec('ZERO', 3, 2*nnoel, bm, um,&
+                    eps)
+        call pmrvec('ZERO', 3, 2*nnoel, bm, dum,&
+                    deps)
+        call pmrvec('ZERO', 3, 3*nnoel, bf, uf,&
+                    khi)
+        call pmrvec('ZERO', 3, 3*nnoel, bf, duf,&
+                    dkhi)
 !
 !     -- EULER_ALMANSI - TERMES QUADRATIQUES
-    if (leul) then
-        call r8inir(6, 0.d0, bmq, 1)
-        do 145,i = 1,2
-        do 146,k = 1,nnoel
-        do 142,j = 1,2
-        bmq(i,j) = bmq(i,j) + bm(i,2*(k-1)+i)*dum(j,k)
-142      continue
-        bmq(i,3) = bmq(i,3) + bm(i,2*(k-1)+i)*duf(1,k)
-146      continue
-145      continue
+        if (leul) then
+            call r8inir(6, 0.d0, bmq, 1)
+            do 145 i = 1, 2
+                do 146 k = 1, nnoel
+                    do 142 j = 1, 2
+                        bmq(i,j) = bmq(i,j) + bm(i,2*(k-1)+i)*dum(j,k)
+142                 continue
+                    bmq(i,3) = bmq(i,3) + bm(i,2*(k-1)+i)*duf(1,k)
+146             continue
+145         continue
 !
-        do 150, k = 1,3
-        do 155, i = 1,2
-        deps(i) = deps(i) - 0.5d0*bmq(i,k)*bmq(i,k)
-155      continue
-        deps(3) = deps(3) - bmq(1,k)*bmq(2,k)
-150      continue
-    endif
+            do 150 k = 1, 3
+                do 155 i = 1, 2
+                    deps(i) = deps(i) - 0.5d0*bmq(i,k)*bmq(i,k)
+155             continue
+                deps(3) = deps(3) - bmq(1,k)*bmq(2,k)
+150         continue
+        endif
 !
 !       -- CALCUL DE L'ECOULEMENT PLASTIQUE SUR CHAQUE COUCHE:
 !          PAR INTEGRATION EN TROIS POINTS
 !       ------------------------------------------------------
-    do 80,icou = 1,nbcou
-    do 70,igauh = 1,npgh
-    ksp=(icou-1)*npgh+igauh
-    isp=(icou-1)*npgh+igauh
-    ivpg = ((ipg-1)*nbsp + isp-1)*nbvar
-    icpg = ((ipg-1)*nbsp + isp-1)*nbcon
+        do 80 icou = 1, nbcou
+            do 70 igauh = 1, npgh
+                ksp=(icou-1)*npgh+igauh
+                isp=(icou-1)*npgh+igauh
+                ivpg = ((ipg-1)*nbsp + isp-1)*nbvar
+                icpg = ((ipg-1)*nbsp + isp-1)*nbcon
 !
 !       -- COTE DES POINTS D'INTEGRATION
 !       --------------------------------
-    if (igauh .eq. 1) then
-        zic = zmin + (icou-1)*hic
-        coef = 1.d0/3.d0
-    else if (igauh.eq.2) then
-        zic = zmin + hic/deux + (icou-1)*hic
-        coef = 4.d0/3.d0
-    else
-        zic = zmin + hic + (icou-1)*hic
-        coef = 1.d0/3.d0
-    endif
+                if (igauh .eq. 1) then
+                    zic = zmin + (icou-1)*hic
+                    coef = 1.d0/3.d0
+                else if (igauh.eq.2) then
+                    zic = zmin + hic/deux + (icou-1)*hic
+                    coef = 4.d0/3.d0
+                else
+                    zic = zmin + hic + (icou-1)*hic
+                    coef = 1.d0/3.d0
+                endif
 !
 !         -- CALCUL DE EPS2D ET DEPS2D :
 !         --------------------------
-    eps2d(1) = eps(1) + zic*khi(1)
-    eps2d(2) = eps(2) + zic*khi(2)
-    eps2d(3) = 0.0d0
-    eps2d(4) = (eps(3)+zic*khi(3))/rac2
-    eps2d(5) = 0.d0
-    eps2d(6) = 0.d0
-    deps2d(1) = deps(1) + zic*dkhi(1)
-    deps2d(2) = deps(2) + zic*dkhi(2)
-    deps2d(3) = 0.0d0
-    deps2d(4) = (deps(3)+zic*dkhi(3))/rac2
-    deps2d(5) = 0.d0
-    deps2d(6) = 0.d0
+                eps2d(1) = eps(1) + zic*khi(1)
+                eps2d(2) = eps(2) + zic*khi(2)
+                eps2d(3) = 0.0d0
+                eps2d(4) = (eps(3)+zic*khi(3))/rac2
+                eps2d(5) = 0.d0
+                eps2d(6) = 0.d0
+                deps2d(1) = deps(1) + zic*dkhi(1)
+                deps2d(2) = deps(2) + zic*dkhi(2)
+                deps2d(3) = 0.0d0
+                deps2d(4) = (deps(3)+zic*dkhi(3))/rac2
+                deps2d(5) = 0.d0
+                deps2d(6) = 0.d0
 !
 !
 !         -- APPEL A NMCOMP POUR RESOUDRE LE PB SUR LA COUCHE :
 !         -----------------------------------------------------
-    do 1 j = 1, 4
-        sigm(j)=zr(icontm+icpg-1+j)
- 1  continue
-    sigm(4)=sigm(4)*rac2
+                do 1 j = 1, 4
+                    sigm(j)=zr(icontm+icpg-1+j)
+  1             continue
+                sigm(4)=sigm(4)*rac2
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 ! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
-    call r8inir(3, r8vide(), angmas, 1)
-    call nmcomp('RIGI', ipg, ksp, 2, typmod,&
-                zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
-                6, eps2d, deps2d, 6, sigm,&
-                zr(ivarim+ivpg), opt, angmas, 1, [0.d0],&
-                zr(icontp+ icpg), zr(ivarip+ivpg), 36, dsidep, 1,&
-                wk, cod)
+                call r8inir(3, r8vide(), angmas, 1)
+                call nmcomp('RIGI', ipg, ksp, 2, typmod,&
+                            zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
+                            6, eps2d, deps2d, 6, sigm,&
+                            zr(ivarim+ivpg), opt, angmas, 1, [0.d0],&
+                            zr(icontp+ icpg), zr(ivarip+ivpg), 36, dsidep, 1,&
+                            wk, cod)
 !
 !            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)
 !            POUR STOCKER LA VALEUR REELLE
 !
-    zr(icontp+icpg+3)=zr(icontp+icpg+3)/rac2
+                zr(icontp+icpg+3)=zr(icontp+icpg+3)/rac2
 !
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
-    if (cod .ne. 0) then
-        if (codret .ne. 1) then
-            codret=cod
-        endif
-    endif
+                if (cod .ne. 0) then
+                    if (codret .ne. 1) then
+                        codret=cod
+                    endif
+                endif
 !
 !         -- CALCUL DES EFFORTS RESULTANTS DANS L'EPAISSEUR (N ET M) :
 !         ------------------------------------------------------------
-    if (vecteu) then
-        coehsd = coef*hic/deux
-        n(1) = n(1) + coehsd*zr(icontp+icpg-1+1)
-        n(2) = n(2) + coehsd*zr(icontp+icpg-1+2)
-        n(3) = n(3) + coehsd*zr(icontp+icpg-1+4)
-        m(1) = m(1) + coehsd*zic*zr(icontp+icpg-1+1)
-        m(2) = m(2) + coehsd*zic*zr(icontp+icpg-1+2)
-        m(3) = m(3) + coehsd*zic*zr(icontp+icpg-1+4)
-    endif
+                if (vecteu) then
+                    coehsd = coef*hic/deux
+                    n(1) = n(1) + coehsd*zr(icontp+icpg-1+1)
+                    n(2) = n(2) + coehsd*zr(icontp+icpg-1+2)
+                    n(3) = n(3) + coehsd*zr(icontp+icpg-1+4)
+                    m(1) = m(1) + coehsd*zic*zr(icontp+icpg-1+1)
+                    m(2) = m(2) + coehsd*zic*zr(icontp+icpg-1+2)
+                    m(3) = m(3) + coehsd*zic*zr(icontp+icpg-1+4)
+                endif
 !
 !         -- CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
 !         ---------------------------------------------------------
-    if (matric) then
+                if (matric) then
 !           -- ON EXTRAIT DE DSIDEP LA SOUS-MATRICE INTERESSANTE D2D:
-        d2d(1) = dsidep(1,1)
-        d2d(2) = dsidep(1,2)
-        d2d(3) = dsidep(1,4)/rac2
-        d2d(4) = dsidep(2,1)
-        d2d(5) = dsidep(2,2)
-        d2d(6) = dsidep(2,4)/rac2
-        d2d(7) = dsidep(4,1)/rac2
-        d2d(8) = dsidep(4,2)/rac2
-        d2d(9) = dsidep(4,4)/deux
-        do 60,k = 1,9
-        dm(k) = dm(k) + coef*hic/deux*poids*d2d(k)
-        dmf(k) = dmf(k) + coef*hic/deux*poids*zic*d2d( k)
-        df(k) = df(k) + coef*hic/deux*poids*zic*zic* d2d(k)
-60      continue
-    endif
-70  continue
-80  continue
+                    d2d(1) = dsidep(1,1)
+                    d2d(2) = dsidep(1,2)
+                    d2d(3) = dsidep(1,4)/rac2
+                    d2d(4) = dsidep(2,1)
+                    d2d(5) = dsidep(2,2)
+                    d2d(6) = dsidep(2,4)/rac2
+                    d2d(7) = dsidep(4,1)/rac2
+                    d2d(8) = dsidep(4,2)/rac2
+                    d2d(9) = dsidep(4,4)/deux
+                    do 60 k = 1, 9
+                        dm(k) = dm(k) + coef*hic/deux*poids*d2d(k)
+                        dmf(k) = dmf(k) + coef*hic/deux*poids*zic*d2d( k)
+                        df(k) = df(k) + coef*hic/deux*poids*zic*zic* d2d(k)
+ 60                 continue
+                endif
+ 70         continue
+ 80     continue
 !
 !       -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 !       ----------------------------------------------------------
 !       BTSIG = BTSIG + BFT*M + BMT*N
-    if (vecteu) then
-        do 120,ino = 1,nnoel
-        do 110,k = 1,3
-        btsig(1,ino) = btsig(1,ino) + bm(k,2* (ino-1)+1)* n(k)*poids
-        btsig(2,ino) = btsig(2,ino) + bm(k,2* (ino-1)+2)* n(k)*poids
-        btsig(3,ino) = btsig(3,ino) + bf(k,3* (ino-1)+1)* m(k)*poids
-        btsig(5,ino) = btsig(5,ino) + bf(k,3* (ino-1)+2)* m(k)*poids
-        btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
-110      continue
-120      continue
-    endif
+        if (vecteu) then
+            do 120 ino = 1, nnoel
+                do 110 k = 1, 3
+                    btsig(1,ino) = btsig(1,ino) + bm(k,2* (ino-1)+1)* n(k)*poids
+                    btsig(2,ino) = btsig(2,ino) + bm(k,2* (ino-1)+2)* n(k)*poids
+                    btsig(3,ino) = btsig(3,ino) + bf(k,3* (ino-1)+1)* m(k)*poids
+                    btsig(5,ino) = btsig(5,ino) + bf(k,3* (ino-1)+2)* m(k)*poids
+                    btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
+110             continue
+120         continue
+        endif
 !
 !
 !       -- CALCUL DE LA MATRICE TANGENTE :
 !       ----------------------------------
 !       KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
-    if (matric) then
+        if (matric) then
 !         -- MEMBRANE :
 !         -------------
-        call utbtab('CUMU', 3, 2*nnoel, dm, bm,&
-                    work, memb)
+            call utbtab('CUMU', 3, 2*nnoel, dm, bm,&
+                        work, memb)
 !
 !         -- FLEXION :
 !         ------------
-        call utbtab('CUMU', 3, 3*nnoel, df, bf,&
-                    work, flex)
+            call utbtab('CUMU', 3, 3*nnoel, df, bf,&
+                        work, flex)
 !
 !         -- COUPLAGE:
 !         ------------
-        call utctab('CUMU', 3, 3*nnoel, 2*nnoel, dmf,&
-                    bf, bm, work, mefl)
-    endif
+            call utctab('CUMU', 3, 3*nnoel, 2*nnoel, dmf,&
+                        bf, bm, work, mefl)
+        endif
 !
 !       -- FIN BOUCLE SUR LES POINTS DE GAUSS
-    130 end do
+130 end do
 !
 !     -- ACCUMULATION DES SOUS MATRICES DANS KTAN :
 !     -----------------------------------------------

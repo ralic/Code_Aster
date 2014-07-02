@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
                       k24rc, pivot2, ltest, typcha, lraide,&
@@ -27,14 +29,14 @@ interface
         integer :: nk
         character(len=24) :: k24rc
         integer :: pivot2
-        logical(kind=1) :: ltest
+        aster_logical :: ltest
         character(len=8) :: typcha
         integer :: lraide
         integer :: lmasse
         integer :: ldynam
         character(len=19) :: solveu
         integer :: lamor
-        logical(kind=1) :: lc
+        aster_logical :: lc
         character(len=3) :: impr
         integer :: ifapm
     end subroutine apm345

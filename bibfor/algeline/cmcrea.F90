@@ -17,6 +17,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cmfiss.h"
 #include "asterfort/codent.h"
@@ -65,7 +66,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     integer :: jnoma, jtyma, jconn, jngma, jgpma
     integer :: jdim, ityin, ityout
     integer :: iret, i, ib
-    logical(kind=1) :: false
+    aster_logical :: false
 !
     character(len=8) :: knum8, prefix, nomma
     character(len=24) :: linoma, liconn, lityma, lingma, ligpma

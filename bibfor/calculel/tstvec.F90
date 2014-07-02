@@ -37,6 +37,7 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
 !                       (UNDEF OU TRES GRAND )
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/iisnan.h"
@@ -45,7 +46,7 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
     real(kind=8) :: sommr
     integer :: sommi, nbign
     character(len=24) :: k24
-    logical(kind=1) :: l
+    aster_logical :: l
     character(len=*) :: perm
     character(len=8) :: k8
     real(kind=8) :: x
@@ -70,34 +71,34 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
     ico=0
     nbign=0
     if (type .eq. 'R') then
-        do 10,k = 1,nlong
-        x = zr(iad-1+k)
-        if (iisnan(x) .eq. 0) then
-            if (abs(x) .lt. 1.d300) then
-                ico=ico+1
-                sommr = sommr + (c1*mod(k,3)+1)*x
+        do 10 k = 1, nlong
+            x = zr(iad-1+k)
+            if (iisnan(x) .eq. 0) then
+                if (abs(x) .lt. 1.d300) then
+                    ico=ico+1
+                    sommr = sommr + (c1*mod(k,3)+1)*x
+                endif
             endif
-        endif
-10      continue
+ 10     continue
         nbign=nlong-ico
     endif
     if (type .eq. 'C') then
-        do 20,k = 1,nlong
-        x = dble(zc(iad-1+k))
-        if (iisnan(x) .eq. 0) then
-            if (abs(x) .lt. 1.d300) then
-                ico=ico+1
-                sommr = sommr + (c1*mod(k,3)+1)*x
+        do 20 k = 1, nlong
+            x = dble(zc(iad-1+k))
+            if (iisnan(x) .eq. 0) then
+                if (abs(x) .lt. 1.d300) then
+                    ico=ico+1
+                    sommr = sommr + (c1*mod(k,3)+1)*x
+                endif
             endif
-        endif
-        x = dimag(zc(iad-1+k))
-        if (iisnan(x) .eq. 0) then
-            if (abs(x) .lt. 1.d300) then
-                ico=ico+1
-                sommr = sommr + (c1*mod(k,3)+1)*x
+            x = dimag(zc(iad-1+k))
+            if (iisnan(x) .eq. 0) then
+                if (abs(x) .lt. 1.d300) then
+                    ico=ico+1
+                    sommr = sommr + (c1*mod(k,3)+1)*x
+                endif
             endif
-        endif
-20      continue
+ 20     continue
         nbign=2*nlong-ico
     endif
 !
@@ -106,44 +107,44 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
 !     --------------------
     sommi2 = 0
     if (type .eq. 'I') then
-        do 30,k = 1,nlong
-        i8= zi(iad-1+k)
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*i8
-30      continue
+        do 30 k = 1, nlong
+            i8= zi(iad-1+k)
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*i8
+ 30     continue
     else if (type.eq.'S') then
-        do 31,k = 1,nlong
-        i8= zi4(iad-1+k)
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*i8
-31      continue
+        do 31 k = 1, nlong
+            i8= zi4(iad-1+k)
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*i8
+ 31     continue
     else if (type.eq.'L') then
-        do 40,k = 1,nlong
-        l = zl(iad-1+k)
-        if (l) sommi2 = sommi2 + (c1*mod(k,3)+1)
-40      continue
+        do 40 k = 1, nlong
+            l = zl(iad-1+k)
+            if (l) sommi2 = sommi2 + (c1*mod(k,3)+1)
+ 40     continue
     else if (type.eq.'R') then
         sommi2=0
     else if (type.eq.'C') then
         sommi2=0
     else if (type.eq.'K8') then
-        do 70,k = 1,nlong
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(8,zk8(iad-1+k))
-70      continue
+        do 70 k = 1, nlong
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(8,zk8(iad-1+k))
+ 70     continue
     else if (type.eq.'K16') then
-        do 80,k = 1,nlong
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(16,zk16(iad-1+k))
-80      continue
+        do 80 k = 1, nlong
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(16,zk16(iad-1+k))
+ 80     continue
     else if (type.eq.'K24') then
-        do 90,k = 1,nlong
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(24,zk24(iad-1+k))
-90      continue
+        do 90 k = 1, nlong
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(24,zk24(iad-1+k))
+ 90     continue
     else if (type.eq.'K32') then
-        do 100,k = 1,nlong
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(32,zk32(iad-1+k))
-100      continue
+        do 100 k = 1, nlong
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(32,zk32(iad-1+k))
+100     continue
     else if (type.eq.'K80') then
-        do 110,k = 1,nlong
-        sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(80,zk80(iad-1+k))
-110      continue
+        do 110 k = 1, nlong
+            sommi2 = sommi2 + (c1*mod(k,3)+1)*tstk2i(80,zk80(iad-1+k))
+110     continue
     endif
 !
 !     -- ON TRONQUE SOMMI2 (9 DERNIERS CHIFFRES) POUR AVOIR

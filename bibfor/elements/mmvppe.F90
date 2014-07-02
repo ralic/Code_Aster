@@ -24,7 +24,8 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -46,7 +47,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3)
     real(kind=8) :: mprojt(3, 3)
-    logical(kind=1) :: laxis, ldyna, lfovit
+    aster_logical :: laxis, ldyna, lfovit
     real(kind=8) :: jacobi, wpg
     real(kind=8) :: jeusup
     real(kind=8) :: dlagrc, dlagrf(2)
@@ -127,7 +128,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     tau2(2) = zr(jpcf-1+9)
     tau2(3) = zr(jpcf-1+10)
     wpg = zr(jpcf-1+11)
-    ppe = 0.d0 
+    ppe = 0.d0
 !
 ! --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 !
@@ -139,8 +140,8 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
         call jevech('PVITE_M', 'L', jvitm)
         call jevech('PACCE_M', 'L', jaccm)
     endif
-    if (iresog.eq.1) then
-      ppe = 1.0d0
+    if (iresog .eq. 1) then
+        ppe = 1.0d0
     endif
 !
 ! --- FONCTIONS DE FORMES ET DERIVEES
@@ -159,15 +160,15 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 !     POINT_FIXE          --> PPE=0.0d0
 !     NEWTON_GENE         --> PPE=1.0d0
 !     NEWTON_GENE INEXACT --> 0.0d0<PPE<1.0d0
-
+!
     call mmreac(nbdm, ndim, nne, nnm, jgeom,&
-                jdepm,jdepde,ppe, geomae, geomam)
+                jdepm, jdepde, ppe, geomae, geomam)
 !
 ! --- CALCUL DES COORDONNEES ACTUALISEES
 !
-    call mmgeom(ndim  ,nne   ,nnm   ,ffe   ,ffm   , &
-                geomae,geomam,tau1  ,tau2  , &
-        norm  ,mprojn,mprojt,geome ,geomm )
+    call mmgeom(ndim, nne, nnm, ffe, ffm,&
+                geomae, geomam, tau1, tau2, norm,&
+                mprojn, mprojt, geome, geomm)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT ET FROTTEMENT
 !

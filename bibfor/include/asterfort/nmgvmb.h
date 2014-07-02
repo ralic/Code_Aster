@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
                       geom, vff1, vff2, idfde1, idfde2,&
@@ -24,7 +26,7 @@ interface
         integer :: nno2
         integer :: nno1
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         real(kind=8) :: geom(ndim, nno1)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)

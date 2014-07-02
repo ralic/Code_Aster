@@ -53,12 +53,13 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
     integer :: iflup, iflum, ndim, ino, mno, jno, nsomm, ityp, noe(9, 6, 3), ifm
     integer :: niv
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     real(kind=8) :: valfp(9), valfm(9)
-    logical(kind=1) :: ltheta
+    aster_logical :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -144,7 +145,7 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno,&
             endif
             term22 = term22 + term23*term23*jac(in)
             aux = aux + aux1*aux1*jac(in)
-100      continue
+100     continue
 !
     endif
 !

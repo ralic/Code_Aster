@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
                       typapp, lexfro)
@@ -24,6 +26,6 @@ interface
         integer :: iptm
         integer :: ndexfr
         integer :: typapp
-        logical(kind=1) :: lexfro
+        aster_logical :: lexfro
     end subroutine mmexcl
 end interface

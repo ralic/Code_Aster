@@ -1,10 +1,11 @@
-subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
-                  compor   , carcri   , iterat   , acti_func, sddyna   ,&
-                  hval_incr, hval_algo, merigi   , vefint   , optioz   ,&
-                  tabret   , codere)
+subroutine merimo(base, model, cara_elem, mate, varc_refe,&
+                  compor, carcri, iterat, acti_func, sddyna,&
+                  hval_incr, hval_algo, merigi, vefint, optioz,&
+                  tabret, codere)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -58,7 +59,7 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
     character(len=24), intent(in) :: codere
     character(len=19), intent(in) :: merigi
     character(len=19), intent(in) :: vefint
-    logical(kind=1), intent(out) :: tabret(0:10)
+    aster_logical, intent(out) :: tabret(0:10)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,14 +77,14 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
-    logical(kind=1) :: l_macr_elem 
-    logical(kind=1) :: matrix, vector, codint, conext
-    integer :: ires,  iret, nbin, nbout
+    aster_logical :: l_macr_elem
+    aster_logical :: matrix, vector, codint, conext
+    integer :: ires, iret, nbin, nbout
     character(len=24) :: caco3d
     character(len=24) :: ligrmo
     character(len=19) :: sigext, sigplu, varplu, strplu
     character(len=16) :: option
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifmdbg, nivdbg
     integer :: ich_matrixs, ich_matrixn, ich_vector, ich_codret
     character(len=24), pointer :: rerr(:) => null()
@@ -120,9 +121,9 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
 !
 ! - Input fields
 !
-    call merimp(model    , cara_elem, mate  , varc_refe, compor,&
-                carcri   , acti_func, iterat, sddyna   , hval_incr, &
-                hval_algo, caco3d   , mxchin, nbin     , lpain    , &
+    call merimp(model, cara_elem, mate, varc_refe, compor,&
+                carcri, acti_func, iterat, sddyna, hval_incr,&
+                hval_algo, caco3d, mxchin, nbin, lpain,&
                 lchin)
 !
 ! - Output fields
@@ -224,7 +225,7 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
         nbout = nbout+1
         lpaout(nbout) = 'PVECTUR'
         lchout(nbout) = vefint(1:15)//'.R01'
-        ich_vector = nbout 
+        ich_vector = nbout
     endif
     if (codint) then
         nbout = nbout+1

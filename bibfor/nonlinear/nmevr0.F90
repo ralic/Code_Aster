@@ -19,6 +19,7 @@ subroutine nmevr0(sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dieven.h"
 #include "asterfort/jedema.h"
@@ -46,7 +47,7 @@ subroutine nmevr0(sddisc)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=16) :: action, nomevd
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,7 +74,7 @@ subroutine nmevr0(sddisc)
             itesup = 0
             call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
         endif
-100  end do
+100 end do
 !
     call jedema()
 !

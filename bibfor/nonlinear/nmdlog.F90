@@ -57,6 +57,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
@@ -70,7 +71,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    logical(kind=1) :: grand, axi, resi, rigi, matsym, cplan, lintbo
+    aster_logical :: grand, axi, resi, rigi, matsym, cplan, lintbo
     parameter (grand = .true._1)
     integer :: g, i, nddl, cod(27), ivf
     integer :: ndim, nno, npg, mate, lgpg, codret, iw, idff
@@ -115,7 +116,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !
     do 9 i = 1, 27
         cod(i)=0
- 9  end do
+  9 end do
     lintbo = .false.
 !
 !------------------------------DEPLACEMENT ET GEOMETRIE-------------
@@ -185,9 +186,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
                     r, fm, fp, dsidep, pk2m,&
                     pk2, matsym, matuu, fint)
 !
-10  end do
+ 10 end do
     if (lintbo) cod(1) = 4
-9999  continue
+9999 continue
 ! - SYNTHESE DES CODES RETOURS
 !
     call codere(cod, npg, codret)

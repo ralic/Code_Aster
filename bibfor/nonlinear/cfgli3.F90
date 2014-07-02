@@ -20,7 +20,8 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/caladu.h"
@@ -39,7 +40,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
     integer :: ajliai, spliai, nbliai, neq, nesmax
     integer :: nbliac, llf, llf1, llf2
     real(kind=8) :: xmul
-    logical(kind=1) :: liasup
+    aster_logical :: liasup
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
     integer :: jtacf, japptr, japcof, japddl
     integer :: ztacf
     integer :: lfmin, lfmin1, lfmin2
-    logical(kind=1) :: lelpiv, lelpi1, lelpi2, trouac
+    aster_logical :: lelpiv, lelpi1, lelpi2, trouac
     integer :: nbddl, jdecal, btotal, posit
     integer :: compt0
     real(kind=8) :: ajeufx, ajeufy, glis, coefff
@@ -178,8 +179,8 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
 !
             call cfelpv(iliai1, typef2, resoco, nbliai, lelpi2)
             if (.not.lelpi2) then
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            vale, ajeufy)
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), vale,&
+                            ajeufy)
             endif
             glis = sqrt( ajeufx**2 + ajeufy**2 )
 !
@@ -198,7 +199,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
                 do 157 iliac2 = iliac1 + 1, btotal
                     iliai2 = zi(jliac+iliac2-1)
                     if (iliai1 .eq. iliai2) trouac = .true.
-157              continue
+157             continue
                 if (.not.trouac) then
                     call cfelpv(iliai1, typef0, resoco, nbliai, lelpiv)
                     if (.not.lelpiv) then
@@ -220,7 +221,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
                 endif
             endif
         endif
-100  end do
+100 end do
 !
 ! --- AJOUTER LIAISON ADHERENTE
 !
@@ -232,7 +233,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
                     iliai, typef0)
         call cfimp2(defico, resoco, noma, iliai, typef0,&
                     'ADH')
-197  end do
+197 end do
     do 198 iliac = 1, lfmin1
         iliai = zi(jgli1+iliac-1)
         posit = nbliac + llf + llf1 + llf2 + 1
@@ -241,7 +242,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
                     iliai, typef1)
         call cfimp2(defico, resoco, noma, iliai, typef1,&
                     'ADH')
-198  end do
+198 end do
     do 199 iliac = 1, lfmin2
         iliai = zi(jgli2+iliac-1)
         posit = nbliac + llf + llf1 + llf2 + 1
@@ -250,7 +251,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
                     iliai, typef2)
         call cfimp2(defico, resoco, noma, iliai, typef2,&
                     'ADH')
-199  end do
+199 end do
 !
 ! --- A-TON MODIFIE DES LIAISONS ?
 !
@@ -270,7 +271,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
     call jedetr(nmgli2)
     call jedetr(nmadhr)
 !
-999  continue
+999 continue
     call jedema()
 !
 end subroutine

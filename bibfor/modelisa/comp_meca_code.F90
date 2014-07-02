@@ -1,8 +1,9 @@
-subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp_code_py,  &
+subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_py,&
                           rela_code_py, meta_code_py)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterfort/comp_meca_l.h"
@@ -57,18 +58,18 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
 !
     integer :: nb_comp_elem, ikit, icomp, imeca
     character(len=16) :: comp_elem(20), rela_meta, rela_meca
-    logical(kind=1) :: l_umat, l_mfront, l_kit_meta, l_kit_thm
+    aster_logical :: l_umat, l_mfront, l_kit_meta, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nb_comp_elem = 0
     do icomp = 1, 20
-       comp_elem(icomp) = 'VIDE'
+        comp_elem(icomp) = 'VIDE'
     enddo
-    call comp_meca_l(rela_comp, 'UMAT'    , l_umat)
-    call comp_meca_l(rela_comp, 'MFRONT'  , l_mfront)
+    call comp_meca_l(rela_comp, 'UMAT', l_umat)
+    call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
     call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
-    call comp_meca_l(rela_comp, 'KIT_THM' , l_kit_thm)
+    call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
 !
 ! - Create composite comportment
 !
@@ -107,7 +108,7 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
 !
 ! - Coding RELATION comportment
 !
-    call lccree(1, rela_comp, rela_code_py) 
+    call lccree(1, rela_comp, rela_code_py)
 !
 ! - Coding composite comportment (Python)
 !

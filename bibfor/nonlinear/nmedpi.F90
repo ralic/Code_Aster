@@ -21,6 +21,7 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     integer :: nno, npg, mate
@@ -41,7 +42,7 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
     real(kind=8) :: xa, xb, ya, yb
     character(len=8) :: nomres(2), fami, poum
     integer :: icodre(2), kpg, spt
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
     axi = typmod(1) .eq. 'AXIS'
 !
@@ -91,11 +92,11 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
     do 130 k = 1, 3
         do 131 j = 1, 3
             dsidep(k,j) = troisk/3.d0 - deuxmu/(3.d0)
-131      continue
-130  end do
+131     continue
+130 end do
     do 120 k = 1, 4
         dsidep(k,k) = dsidep(k,k) + deuxmu
-120  end do
+120 end do
 !
 ! CALCUL DE MATS = Dt E B = Dt*DSIDEP*DEF
     call r8inir(8, 0.d0, mtemp, 1)
@@ -104,10 +105,10 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
             val=0.d0
             do 12 k = 1, 4
                 val = val + d(k,i)*dsidep(k,j)
-12          continue
+ 12         continue
             mtemp(i,j)=val
-11      continue
-10  end do
+ 11     continue
+ 10 end do
 !
     call r8inir(16, 0.d0, mats, 1)
     do 13 k = 1, 2
@@ -116,10 +117,10 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
                 kl=2*(n-1)+i
                 do 16 j = 1, 4
                     mats(k,kl) = mats(k,kl) + mtemp(k,j)*def(j,n,i)
-16              continue
-15          continue
-14      continue
-13  end do
+ 16             continue
+ 15         continue
+ 14     continue
+ 13 end do
 !
 !
 ! CALCUL DE SPG ET SDG :
@@ -128,8 +129,8 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
         do 50 kl = 1, 8
             spg(i) = spg(i) - mats(i,kl)*up(kl)/long
             sdg(i) = sdg(i) - mats(i,kl)*ud(kl)/long
-50      continue
-40  end do
+ 50     continue
+ 40 end do
 !
 !
 ! CALCUL DE QG = Dt E D (Dt*DSIDEP*D)
@@ -139,10 +140,10 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
             val=0.d0
             do 19 k = 1, 4
                 val = val - mtemp(i,k)*d(k,j)/long
-19          continue
+ 19         continue
             qg(i,j)=val
-18      continue
-17  end do
+ 18     continue
+ 17 end do
 !
 !
 end subroutine

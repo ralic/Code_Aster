@@ -18,13 +18,13 @@
           interface
             subroutine wkvect(nom,carac,dim,jadr,vl,vi,vi4,vr,vc,vk8,   &
      &vk16,vk24,vk32,vk80)
-
+#include "asterf_types.h"
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
     integer, intent(in) :: dim
     integer, intent(out), optional :: jadr
 
-    logical(kind=1),           pointer, optional, intent(out) :: vl(:)
+    aster_logical,           pointer, optional, intent(out) :: vl(:)
     integer,           pointer, optional, intent(out) :: vi(:)
     integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
     real(kind=8),      pointer, optional, intent(out) :: vr(:)

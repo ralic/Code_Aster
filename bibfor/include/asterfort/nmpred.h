@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmpred(modele, numedd, numfix, mate, carele,&
                       comref, compor, lischa, method, solveu,&
@@ -55,6 +57,6 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        logical(kind=1) :: lerrit
+        aster_logical :: lerrit
     end subroutine nmpred
 end interface

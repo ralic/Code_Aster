@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                       lcmin, cnsvt, cnsvn, vpoint, cnsbl,&
@@ -36,7 +38,7 @@ interface
         character(len=19) :: cnsbet
         character(len=19) :: listp
         real(kind=8) :: damax
-        logical(kind=1) :: locdom
+        aster_logical :: locdom
         real(kind=8) :: rdimp
         real(kind=8) :: rdtor
         character(len=19) :: delta

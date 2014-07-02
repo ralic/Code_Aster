@@ -51,6 +51,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
 !-----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/smcarc.h"
 #include "asterfort/utmess.h"
@@ -73,7 +74,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
     character(len=8) :: fami, poum
 !
     integer :: i, j, nbpas
-    logical(kind=1) :: lrefr
+    aster_logical :: lrefr
 !
 !-----------------------------------------------------------------------
 !
@@ -133,7 +134,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
     z1 = zero
     do 209 j = 1, 4
         z1 = z1+tamp(j)
-209  continue
+209 continue
     z1 = un - z1
     zeq1 = min( (tpg1-ac1)/(ac3-ac1) , un )
     zeq2 = min( (tpg2-ac1)/(ac3-ac1) , un )
@@ -158,7 +159,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
             dt21 = dt21/dble(nbpas)
             do 33 j = 1, 7
                 tempo(j) = tamp(j)
-33          continue
+ 33         continue
             do 50 i = 1, nbpas
                 ti = tpg1+(tpg2-tpg1)*dble(i-1)/dble(nbpas)
                 metapg(6) = tpg1+(dble(i)*(tpg2-tpg1)) /dble(nbpas)
@@ -168,8 +169,8 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
                             dt10, tempo, metapg)
                 do 40 j = 1, 7
                     tempo(j) = metapg(j)
-40              continue
-50          continue
+ 40             continue
+ 50         continue
         else
             call smcarc(nbhist, ftrc, trc, coef, fmod,&
                         ctes, ckm, nbtrc, tpg1, tpoint,&
@@ -229,7 +230,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
                     dmoins = metapg(5)
                 endif
 !
-51          continue
+ 51         continue
         else
 !
             taux = taux1 + (taux3-taux1)*zeq1
@@ -275,11 +276,11 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
         if (z1 .ne. un) then
             do 210 j = 1, 4
                 metapg(j) = tamp(j)*(un-(z2-z1)/(un-z1))
-210          continue
+210         continue
         else
             do 211 j = 1, 4
                 metapg(j) = tamp(j)
-211          continue
+211         continue
         endif
 !
     endif

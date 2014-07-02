@@ -16,6 +16,7 @@ subroutine te0076(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/connec.h"
@@ -56,7 +57,7 @@ subroutine te0076(option, nomte)
     integer :: nno, kp, npg, i, j, k, itemps, imattt, nnos
     integer :: ipoids, ivf, idfde, igeom, imate, jgano, ndim
     integer :: c(6, 9), ise, nse, nnop2, ibid
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 !
     call elref1(elrefe)
 !
@@ -66,8 +67,8 @@ subroutine te0076(option, nomte)
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -119,7 +120,7 @@ subroutine te0076(option, nomte)
     do 11 i = 1, nnop2
         do 11 j = 1, nnop2
             mrigt(i,j)=0.d0
-11      continue
+ 11     continue
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
@@ -128,7 +129,7 @@ subroutine te0076(option, nomte)
         do 105 i = 1, nno
             do 105 j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-105          continue
+105         continue
 !
         do 101 kp = 1, npg
             k=(kp-1)*nno
@@ -138,7 +139,7 @@ subroutine te0076(option, nomte)
                 r = 0.d0
                 do 102 i = 1, nno
                     r = r + coorse(2*(i-1)+1)*zr(ivf+k+i-1)
-102              continue
+102             continue
                 poids = poids*r
             endif
 !
@@ -150,7 +151,7 @@ subroutine te0076(option, nomte)
                     nuno-1)+1)
                     point(2)= point(2) + zr(ivf+k+nuno-1)*coorse(2*(&
                     nuno-1)+2)
-104              continue
+104             continue
 !
                 xu = orig(1) - point(1)
                 yu = orig(2) - point(2)
@@ -183,10 +184,10 @@ subroutine te0076(option, nomte)
                                                &luglo(2)* dfdy(j)&
                                                )
 !
-103              continue
-101      continue
+103             continue
+101     continue
 !
-100  end do
+100 end do
 !
 ! MISE SOUS FORME DE VECTEUR
 !
@@ -195,5 +196,5 @@ subroutine te0076(option, nomte)
         do 106 j = 1, i
             ij = ij + 1
             zr(ij)=mrigt(i,j)
-106      continue
+106     continue
 end subroutine

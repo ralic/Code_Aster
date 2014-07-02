@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ccchel(option, modele, resuin, resuou, numord,&
                       nordm1, mateco, carael, typesd, ligrel,&
@@ -30,8 +32,8 @@ interface
         character(len=8) :: carael
         character(len=16) :: typesd
         character(len=24) :: ligrel
-        logical(kind=1) :: exipou
-        logical(kind=1) :: exitim
+        aster_logical :: exipou
+        aster_logical :: exitim
         character(len=19) :: lischa
         integer :: nbchre
         integer :: ioccur

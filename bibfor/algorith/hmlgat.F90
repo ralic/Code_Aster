@@ -41,6 +41,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
 ! ======================================================================
     implicit none
 ! aslint: disable=W1306
+#include "asterf_types.h"
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"
@@ -73,7 +74,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
     real(kind=8) :: p1, dp1, t, dt, phi, rho11, phi0, rinstp
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -84,7 +85,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
     real(kind=8) :: em, mdal(6), dalal, alphfi, cbiot, unsks, alpha0
     real(kind=8) :: eps, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -101,7 +102,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
     real(kind=8) :: dsdp1(6), sigmp(6)
     real(kind=8) :: dmdeps(6), cp22, rac2
 !
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !
@@ -257,11 +258,11 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
                         dp2, dp1, sigmp)
             do 10 i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
-10          continue
+ 10         continue
             do 14 i = 4, 6
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
                 rac2
-14          continue
+ 14         continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -288,11 +289,11 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
             do 111 i = 1, 3
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
                 + dsdp1(i)
-111          continue
+111         continue
             do 112 i = 4, 6
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
                 + dsdp1(i)*rac2
-112          continue
+112         continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
@@ -300,7 +301,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
             call dmdepv(rho11, sat, tbiot, dmdeps)
             do 12 i = 1, 6
                 dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
-12          continue
+ 12         continue
         endif
         if (yate .eq. 1) then
 ! ======================================================================
@@ -331,7 +332,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
                 call dqdeps(mdal, t, dqeps)
                 do 20 i = 1, 6
                     dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
-20              continue
+ 20             continue
             endif
         endif
 ! ======================================================================
@@ -342,7 +343,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
                               &0d0, emmag,em)
     endif
 ! =====================================================================
-30  continue
+ 30 continue
 ! =====================================================================
 !
 end subroutine

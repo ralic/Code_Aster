@@ -35,6 +35,7 @@ subroutine te0249(option, nomte)
     implicit none
 !
 ! PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
@@ -53,7 +54,7 @@ subroutine te0249(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: c(6, 9), imattt, i, j, ij, l, li, lj, iray, itemp, ise, nse
     integer :: nnop2, iech, itemps, ibid
-    logical(kind=1) :: laxi, lcoef
+    aster_logical :: laxi, lcoef
     character(len=8) :: elrefe, alias8
 !
 !====
@@ -67,8 +68,8 @@ subroutine te0249(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! INITS.
     if (option(11:14) .eq. 'COEF') then
@@ -101,8 +102,8 @@ subroutine te0249(option, nomte)
     do 20 i = 1, nnop2
         do 10 j = 1, nnop2
             mrigt(i,j) = 0.d0
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
@@ -111,8 +112,8 @@ subroutine te0249(option, nomte)
         do 40 i = 1, nno
             do 30 j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
         do 110 kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -122,7 +123,7 @@ subroutine te0249(option, nomte)
                 do 50 i = 1, nno
                     l = (kp-1)*nno + i
                     r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-50              continue
+ 50             continue
                 poids = poids*r
             endif
             ij = imattt - 1
@@ -136,14 +137,14 @@ subroutine te0249(option, nomte)
                                                    c(ise, i),&
                                                    c( ise, j)) + poids*theta*zr(li)*zr(lj&
                                                    )* hech
-60                  continue
-70              continue
+ 60                 continue
+ 70             continue
             else
                 tpg = 0.d0
                 do 80 i = 1, nno
                     l = (kp-1)*nno + i
                     tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
-80              continue
+ 80             continue
                 do 100 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     do 90 j = 1, i
@@ -154,11 +155,11 @@ subroutine te0249(option, nomte)
                                                    c( ise, j)) + poids*theta*zr(li)*zr(lj)* 4.d0*&
                                                    & sigma*epsil* (tpg+tz0&
                                                    )**3
-90                  continue
-100              continue
+ 90                 continue
+100             continue
             endif
-110      continue
-120  end do
+110     continue
+120 end do
 !
 ! MISE SOUS FORME DE VECTEUR
 !
@@ -167,6 +168,6 @@ subroutine te0249(option, nomte)
         do 130 j = 1, i
             ij = ij + 1
             zr(ij) = mrigt(i,j)
-130      continue
-140  end do
+130     continue
+140 end do
 end subroutine

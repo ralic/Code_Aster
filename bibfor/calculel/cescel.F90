@@ -19,6 +19,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/indik8.h"
@@ -98,19 +99,18 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
 !     ------------------------------------------------------------------
-    integer :: icmp, nec,  jcesd, jcesv, jcesl, gd
-    integer :: jnucm2, jnucm1,  i
+    integer :: icmp, nec, jcesd, jcesv, jcesl, gd
+    integer :: jnucm2, jnucm1, i
     integer :: ncmpmx, ncmp1, jcmpgd, icmp1, k, iopt, iadg
-    integer :: jcelv, neq, nbvces,  nbvcop, nbvaco
-    integer :: igr, iel,  illiel,  nbgr, imolo, jmolo
+    integer :: jcelv, neq, nbvces, nbvcop, nbvaco
+    integer :: igr, iel, illiel, nbgr, imolo, jmolo
     integer :: nbpt, ico, ipt, numa, iad, ieq, iad2
-    integer :: jdceld, jdcell,  ima, nbma, nbspt, ispt, icmpmx
-    integer :: adiel, jlpt,  lgcata, ncdyn, cumu, nbel, nptmx
+    integer :: jdceld, jdcell, ima, nbma, nbspt, ispt, icmpmx
+    integer :: adiel, jlpt, lgcata, ncdyn, cumu, nbel, nptmx
     integer :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
-    logical :: diff
-    logical(kind=1) :: prol, prol2
+    aster_logical :: diff, prol, prol2
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomcmp, nompar, nomma, licmp(2)
     character(len=3) :: tsca, knan

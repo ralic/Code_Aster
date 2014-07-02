@@ -38,6 +38,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !   ICPLX      : IDEM ICPL
 !----------------------------------------------------------------------
 !----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedetr.h"
@@ -53,7 +54,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
     integer :: icpl(0:n), icpd(n)
     integer :: icplx(0:n), icpcx(*)
 !
-    logical(kind=1) :: complt
+    aster_logical :: complt
 !----------------------------------------------------------------------
 !
 !     TDEB = SECOND()
@@ -64,7 +65,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 ! IN-IP---> IPL-IPC
 ! =================
 !-----------------------------------------------------------------------
-    integer :: i, ier, imp,  k, k1, k2
+    integer :: i, ier, imp, k, k1, k2
     integer :: kk, lca, niv, niveau, nz
     integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
@@ -97,9 +98,9 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
             complt = .true.
             goto 20
         endif
-10  end do
+ 10 end do
 !
-20  continue
+ 20 continue
 !     WRITE(6,*)' MATRICE APRES FACTORISATION SYMBOLIQUE'
 !
 ! ICPL,ICPC FORMAT LU ---> FORMAT SYMETRIQUE
@@ -114,11 +115,11 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
         do 30 k = k1, k2
             kk = kk + 1
             icpc(kk) = icpc(k)
-30      continue
+ 30     continue
 !   TERME DIAG
         kk = kk + 1
         icpc(kk) = int(i, 4)
-40  end do
+ 40 end do
     icpl(n-1) = kk
 !
 !     TFIN = SECOND() - TDEB
@@ -127,11 +128,11 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !     WRITE (6,*) ' DUREE  ',TFIN
     goto 60
 !
-50  continue
+ 50 continue
 !     TFIN = SECOND() - TDEB
 !     WRITE (6,*) ' S-P PCSTRU FIN ANORMALE !!! '
 !     WRITE (6,*) ' DUREE  ',TFIN
-60  continue
+ 60 continue
 !
     AS_DEALLOCATE(vi=ind)
 !

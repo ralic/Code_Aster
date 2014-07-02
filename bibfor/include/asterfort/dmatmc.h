@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dmatmc(fami, mater , time, poum ,ipg,&
                       ispg, repere, xyzgau, nbsig,d,&
@@ -28,6 +30,6 @@ interface
         real(kind=8), intent(in) :: xyzgau(3)
         integer, intent(in) :: nbsig
         real(kind=8), intent(out) :: d(nbsig, nbsig)
-        logical(kind=1), optional, intent(in) :: l_modi_cp
+        aster_logical, optional, intent(in) :: l_modi_cp
     end subroutine dmatmc
 end interface

@@ -20,6 +20,7 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/zbarch.h"
 #include "asterfort/zbborn.h"
 #include "asterfort/zbopti.h"
@@ -28,7 +29,7 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
     real(kind=8) :: mem(2, *)
     real(kind=8) :: rho, rhoopt, rhonew
     real(kind=8) :: f, fopt
-    logical(kind=1) :: echec
+    aster_logical :: echec
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +52,7 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical(kind=1) :: bpos, lopti
+    aster_logical :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti
@@ -85,6 +86,6 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
 !
     call zbproj(rhonew, echec)
 !
-999  continue
+999 continue
 !
 end subroutine

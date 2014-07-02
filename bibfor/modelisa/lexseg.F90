@@ -1,6 +1,5 @@
 function lexseg(connex, typmai, nbrma, n1, n2)
     implicit none
-    logical(kind=1) :: lexseg
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +30,9 @@ function lexseg(connex, typmai, nbrma, n1, n2)
 ! IN : N1     : INTEGER , NUMERO DU NOEUD ORIGINE
 ! IN : N2     : INTEGER , NUMERO DU NOEUD EXTREMITE
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/i2extf.h"
+    aster_logical :: lexseg
     character(len=24) :: connex, typmai
     integer :: nbrma, n1, n2
 !-----------------------------------------------------------------------
@@ -46,6 +47,6 @@ function lexseg(connex, typmai, nbrma, n1, n2)
             lexseg = .true.
             goto 11
         endif
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 end function

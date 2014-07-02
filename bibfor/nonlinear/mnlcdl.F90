@@ -1,4 +1,4 @@
-subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
+subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
     implicit none
 !
 ! ======================================================================
@@ -34,6 +34,7 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
 !                     .FALSE. SINON  
 ! ----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
@@ -43,14 +44,14 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    logical(kind=1) :: lcine
+    aster_logical :: lcine
     integer :: imat(2), nd
     character(len=14) :: xcdl, numedd
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     character(len=19) :: matk
-    integer :: lccid, iind, neq,  k,  j, tcmp, ndlag
+    integer :: lccid, iind, neq, k, j, tcmp, ndlag
     integer, pointer :: ccid(:) => null()
     integer, pointer :: deeq(:) => null()
 !
@@ -68,12 +69,12 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
     neq = zi(imat(1)+2)
 !
 ! --- CAS MATR_ASSE_GENE
-    if (lccid.gt.0) then
+    if (lccid .gt. 0) then
 ! --- CAS AFFE_CHAR_CINE
         call jeveuo(matk//'.CCID', 'L', vi=ccid)
         do 10 k = 1, neq
             zi(iind-1+k)=ccid(k)
-10      continue
+ 10     continue
         nd=neq-ccid(neq+1)
         lcine = .true.
     else
@@ -87,21 +88,20 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
                 zi(iind-1+k)=1
                 j=1
                 tcmp=-deeq(2*(k-1)+2)
-21              continue
-                if (deeq(2*(j-1)+1) .ne. deeq(2*(k-1)+1) .or.&
-                    deeq(2*(j-1)+2) .ne. tcmp) then
+ 21             continue
+                if (deeq(2*(j-1)+1) .ne. deeq(2*(k-1)+1) .or. deeq(2*(j-1)+2) .ne. tcmp) then
                     j=j+1
                     goto 21
                 endif
                 zi(iind-1+j)=1
             endif
-20      continue
+ 20     continue
         ndlag=0
         do 30 k = 1, neq
             if (zi(iind-1+k) .eq. 1) then
                 ndlag=ndlag+1
             endif
-30      continue
+ 30     continue
         nd=neq-ndlag
     endif
 !

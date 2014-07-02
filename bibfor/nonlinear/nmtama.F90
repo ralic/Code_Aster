@@ -19,6 +19,7 @@ subroutine nmtama(fami, kpg, ksp, imate, instam,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     integer :: kpg, ksp, imate
@@ -52,7 +53,7 @@ subroutine nmtama(fami, kpg, ksp, imate, instam,&
 !            14 = UN_SUR_M          (VISCOSITE)
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: visco
+    aster_logical :: visco
     character(len=8) :: nom(14)
     integer :: ok(14)
     real(kind=8) :: e, nu

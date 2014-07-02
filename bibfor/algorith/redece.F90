@@ -115,6 +115,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
 !
 ! ----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/lc0000.h"
 #include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
@@ -138,7 +139,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    logical(kind=1) :: cp
+    aster_logical :: cp
 !
 !       ----------------------------------------------------------------
 !       VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS

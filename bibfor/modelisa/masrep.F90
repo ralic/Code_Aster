@@ -2,6 +2,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                   ligrma, nbno, tabnoe, rignoe, rigto,&
                   ndim)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/compma.h"
@@ -27,7 +28,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     character(len=8) :: noma, tabnoe(*)
     character(len=24) :: ligrma(nbgr)
     real(kind=8) :: rignoe(*), rigto(*)
-    logical(kind=1) :: lvale
+    aster_logical :: lvale
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,16 +52,16 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     character(len=24) :: manono, magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     integer :: appui
 !
 !-----------------------------------------------------------------------
-    integer :: i,    ii, iunite
+    integer :: i, ii, iunite
     integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldnm, ltyp, nb, nbma
     integer :: nfg, nm, nn, noemax, ntopo, numa
-
-
+!
+!
     real(kind=8) :: coef, hc, r1, r2, r3, r4, r5, r6
     real(kind=8) :: surf, surtot, xc
     real(kind=8) :: yc, z0

@@ -66,6 +66,7 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
@@ -93,7 +94,7 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
     character(len=8) :: prf, cif, fxf, fyf
     character(len=19) :: nomgd1, nomgd2
 !
-    logical(kind=1) :: flag
+    aster_logical :: flag
 !
 ! ----------------------------------------------------------------------
 !

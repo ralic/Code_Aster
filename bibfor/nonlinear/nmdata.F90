@@ -22,6 +22,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/eninit.h"
 #include "asterfort/infdbg.h"
@@ -80,7 +81,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
     integer :: n1, n2
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
-    logical(kind=1) :: l_etat_init
+    aster_logical :: l_etat_init
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,8 +101,8 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! - Initial state
 !
     call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, nbret=n1)
-    call getvid('ETAT_INIT', 'SIGM',      iocc=1, nbret=n2)
-    l_etat_init =  ((n1.ne.0).or.(n2.ne.0)) 
+    call getvid('ETAT_INIT', 'SIGM', iocc=1, nbret=n2)
+    l_etat_init = ((n1.ne.0).or.(n2.ne.0))
 !
 ! --- LECTURE DONNEES GENERALES
 !

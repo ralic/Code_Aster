@@ -21,6 +21,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/matinv.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/r8inir.h"
@@ -67,7 +68,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: invrot(ndim, ndim), rigart
     character(len=8) :: nom(nbpa), nompar(ndim+1)
     character(len=1) :: poum
-    logical(kind=1) :: resi, rigi, elas, ifpahm, ifhyme
+    aster_logical :: resi, rigi, elas, ifpahm, ifhyme
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 ! CALCUL DE CONTRAINTE (RESIDU)
@@ -227,19 +228,19 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !     A=A+DA
     if (resi) call daxpy(ndim, 1.d0, deps, 1, a,&
                          1)
-
+!
 ! DANS LE CAS DU SCIAGE
 ! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
 !-----------------------
 ! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
     doset = 0.d0
     sciage = sciage - max(0.,epsm(1))
-    if (sciage.gt.0.d0) doset = doset - sciage
+    if (sciage .gt. 0.d0) doset = doset - sciage
     oset = vim(10) + doset
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
     a(1) = a(1) - oset
-
+!
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
     if (ifhyme) then
@@ -247,7 +248,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
         do 10 n = 1, ndim-1
             gp(n) = epsm(ndim+n)
             if (resi) gp(n) = gp(n) + deps(ndim+n)
-10      continue
+ 10     continue
 !
         presg = epsm(2*ndim)
         if (resi) presg = presg + deps(2*ndim)
@@ -260,7 +261,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     lambda=vim(1)
     do 11 i = 2, ndim
         plasti(i) = vim(i+1)
-11  end do
+ 11 end do
 !     IDICATEUR DE PLASTIFICATION A L'INSTANT ACTUEL
     if (elas) then
         ifplas = 0
@@ -281,7 +282,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     if (ifhyme) then
         do 44 n = 1, ndim-1
             sigma(ndim+n) = -rhof*gp(n)*(max(amin,a(1)+amin))**3/(12* visf)
-44      continue
+ 44     continue
     endif
 !
 !     CONTRAINTE NORMALE DE CONTACT PENALISE +
@@ -298,19 +299,19 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !     CONTRAINTE TANGENTIELLE
     do 20 i = 2, ndim
         sigma(i) = kt*( a(i)-plasti(i) )
-20  end do
+ 20 end do
 !
 !     DIRECTION DE GLISSEMENT = SIGMA TANG SANS INCREMENT PLASTIQUE
     do 27 i = 2, ndim
         tau(i) = sigma(i)
-27  end do
+ 27 end do
 !
 !     MODULE DE SIGMA TANGENTE SANS INCREMENT PLASTIQUE
 !     NB:SI ABSTAU==0 ON EST TOUJOURS DANS LE REGIME ELASTIQUE
     abstau=0.d0
     do 30 i = 2, ndim
         abstau = abstau+tau(i)**2
-30  end do
+ 30 end do
     abstau=sqrt(abstau)
 !
 ! ###########################################################
@@ -326,7 +327,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
         ifplas=0
         do 32 i = 2, ndim
             dplas(i) = 0.d0
-32      continue
+ 32     continue
         dlam=0.d0
     else
 !     AVEC LA PLASTICITE
@@ -334,7 +335,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
         do 34 i = 2, ndim
             dplas(i) = criter/(kt+kappa)*tau(i)/abstau
             sigma(i) = sigma(i)-kt*dplas(i)
-34      continue
+ 34     continue
         dlam=criter/(kt+kappa)
     endif
 !
@@ -368,18 +369,18 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     vip(2) = ifplas
     do 36 i = 2, ndim
         vip(i+1) = vim(i+1)+dplas(i)
-36  end do
+ 36 end do
     vip(5) = max(nint(vim(5)),ifouv)
 !
     vip(6)=vim(6)
     do 37 i = 2, ndim
         vip(6) = vip(6)+sigma(i)**2
         vip(6)=sqrt(vip(6))
-37  end do
+ 37 end do
     vip(7) = a(1) + oset
     do 38 i = 2, ndim
         vip(i+6)=a(i)
-38  end do
+ 38 end do
 !
 !     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE SCIAGE
 !     LE SCIAGE FAIT DIMINUER L'EPAISSEUR DU JOINT
@@ -449,7 +450,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! CALCUL DE LA MATRICE TANGENTE
 ! #####################################
 !
-5000  continue
+5000 continue
     if (.not. rigi) goto 9999
 !
 !     INITIALISATION DE DSIDEP
@@ -466,7 +467,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
             dsidep(ndim+n,ndim+n)=-rhof*(max(amin,a(1)+amin))**3/(12*&
             visf)
 !
-42      continue
+ 42     continue
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
         do 43 n = 1, ndim-1
@@ -477,7 +478,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
                 dsidep(ndim+n,1) = -3*rhof*gp(n)*(a(1)+amin)**2/(12* visf)
             endif
 !
-43      continue
+ 43     continue
 !
     endif
 !
@@ -490,7 +491,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! DSIGMA_N/DDELTA_T
     do 40 i = 2, ndim
         dsidep(1,i)=0.d0
-40  end do
+ 40 end do
 ! DSIGMA_T/DDELTA_N
     do 50 i = 2, ndim
         if ((ifouv.eq.0) .and. (ifplas.eq.1)) then
@@ -498,7 +499,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
         else
             dsidep(i,1)=0.d0
         endif
-50  end do
+ 50 end do
 ! DSIGMA_T/DDELTA_T
     if (ifplas .eq. 1) then
         coefhd= - (kappa*lambda+adhe-mu*sigma(1)) *kt**2/abstau**3/(&
@@ -513,12 +514,12 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
                 endif
                 dsidep(j,i) = coefhd*tau(j)*tau(i) + coefd*kronec
                 dsidep(i,j) = coefhd*tau(i)*tau(j) + coefd*kronec
-70          continue
-60      continue
+ 70         continue
+ 60     continue
     else
         do 80 i = 2, ndim
             dsidep(i,i)=kt
-80      continue
+ 80     continue
     endif
 !
 !
@@ -540,10 +541,10 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !     COMPLETEMENT CASSE TANGENTE
         do 90 i = 2, ndim
             dsidep(i,i) = dsidep(i,i) + kt*rigart
-90      continue
+ 90     continue
     endif
 !
 !
-9999  continue
+9999 continue
 !
 end subroutine

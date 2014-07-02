@@ -34,6 +34,7 @@ subroutine facmtr(matin, matout, ier)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -45,7 +46,7 @@ subroutine facmtr(matin, matout, ier)
 #include "asterfort/utmess.h"
     character(len=19) :: matin, matout, matpre, solveu
     character(len=24) :: valk
-    logical(kind=1) :: hplog
+    aster_logical :: hplog
     integer :: ibid
 !
 !-----------------------------------------------------------------------
@@ -96,6 +97,6 @@ subroutine facmtr(matin, matout, ier)
         ier=-2
     endif
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

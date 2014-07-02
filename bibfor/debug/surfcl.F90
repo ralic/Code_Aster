@@ -18,7 +18,8 @@ subroutine surfcl(char, noma, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit    none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/cfdisi.h"
@@ -77,7 +78,7 @@ subroutine surfcl(char, noma, ifm)
     character(len=24) :: psans, sansno
     integer :: jpsans, jsans
     character(len=24) :: noeuma
-
+!
 !
     character(len=24) :: dirapp, dirnor
     integer :: jdirap, jdirno
@@ -85,8 +86,8 @@ subroutine surfcl(char, noma, ifm)
     integer :: jjfo1, jjfo2
 !
     integer :: inorm, itypa, ivecm, ivece, iappa
-    logical(kind=1) :: lcoqu, lpout, lveri
-    logical(kind=1) :: lliss, lexiv, lstop
+    aster_logical :: lcoqu, lpout, lveri
+    aster_logical :: lliss, lexiv, lstop
     character(len=8), pointer :: travno(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -250,13 +251,13 @@ subroutine surfcl(char, noma, ifm)
             do 801 ino = 1, nsno
                 numnoe = zi(jsans+jdec+ino-1)
                 call jenuno(jexnum(noeuma, numnoe), travno(ino))
-801          continue
+801         continue
 !
             write (ifm,1040) '     LISTE DES NOEUDS  : '
             write (ifm,1050) (travno(ino), ino = 1,nsno)
         endif
 !
- 9  end do
+  9 end do
 !
     1040 format (' <CONTACT> ...... ',a25)
     1050 format ((' <CONTACT> ...... ',17x,4(a8,1x)))
@@ -296,7 +297,7 @@ subroutine surfcl(char, noma, ifm)
         if (lcoqu) then
             write (ifm,*) '<CONTACT> ...... JEU SUPP. PAR DIST_COQUE'
         endif
-21  end do
+ 21 end do
 !
     1031 format (' <CONTACT> ...... JEU SUPP. TYPE FONC. SUR ESCLAVE : ',&
      &        a8)
@@ -325,7 +326,7 @@ subroutine surfcl(char, noma, ifm)
                 write (ifm,1071) 'TOLE_INTERP   ',&
      &                    mminfr(defico,'TOLE_INTERP',izone )
             endif
-31      continue
+ 31     continue
     endif
 !
 ! --- IMPRESSIONS GLOBALES (TOUTES ZONES)

@@ -1,5 +1,6 @@
 subroutine piqeli(mailla)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -50,13 +51,13 @@ subroutine piqeli(mailla)
     integer :: nbno3, nbno4, nbnor, jgrnr, ino1, ino2, i, nb1, nb2
     integer :: numno(10), inc, nbnor2, jgrnr2, nbgno, nbno2, jgg, jvg
 !
-    character(len=8) ::  nomgrm, nogrn1, nogrn2
+    character(len=8) :: nomgrm, nogrn1, nogrn2
     character(len=8) :: nogrn3, nogrn4, nogrnr, nomgno
     integer :: in, nbnoms
     parameter    (nbnoms=8)
     character(len=8) :: noms1(nbnoms), noms2(nbnoms)
     character(len=24) :: grpmai, grpnoe, connex, liso1, liso2, liso3, grpnov
-    logical(kind=1) :: recosf
+    aster_logical :: recosf
     real(kind=8) :: dmin0
 !
     data noms1 / 'S_LAT1','S_LAT1_C','S_LAT1_T','S_FOND1',&
@@ -134,10 +135,10 @@ subroutine piqeli(mailla)
                         if (zi(jvi2+inov-1) .eq. zi(jpoin+ino-1)) then
                             zi(jpoin+ino-1) = zi(jvi1+inov-1)
                         endif
-204                  continue
-202              continue
-200          continue
-100      end do
+204                 continue
+202             continue
+200         continue
+100     end do
 !
 ! --- CORRECTION DES GROUPES DE NOEUDS S_FOND1 ET S_FOND2 APRES
 !     RECOLLEMENT DES AUTRES GROUPES DE NOEUDS
@@ -153,10 +154,10 @@ subroutine piqeli(mailla)
                                 ASSERT(inc.le.10)
                                 numno(inc) = zi(jvi2+ino1-1)
                             endif
-402                      continue
+402                     continue
                     endif
-401              continue
-400          continue
+401             continue
+400         continue
 !
 !
             if (inc .gt. 0) then
@@ -166,10 +167,10 @@ subroutine piqeli(mailla)
                 do 404 ino = 1, nbnor
                     do 405 ino1 = 1, inc
                         if (numno(ino1) .eq. zi(jgrnr+ino-1)) goto 404
-405                  continue
+405                 continue
                     ino2 = ino2 + 1
                     zi(jgrnr2+ino2-1) = zi(jgrnr+ino-1)
-404              continue
+404             continue
 !
                 call jelira(grpnoe, 'NOMUTI', nbgno)
                 call cpclma(mailla, '&&PIQELI', 'GROUPENO', 'V')
@@ -183,26 +184,26 @@ subroutine piqeli(mailla)
 !
                     if (nomgno .ne. nogrnr) then
                         call jecroc(jexnom(grpnoe, nomgno))
-                        call jeecra(jexnom(grpnoe, nomgno), 'LONMAX', max(1,nbno2))
+                        call jeecra(jexnom(grpnoe, nomgno), 'LONMAX', max(1, nbno2))
                         call jeecra(jexnom(grpnoe, nomgno), 'LONUTI', nbno2)
                         call jeveuo(jexnom(grpnoe, nomgno), 'E', jgg)
                         do 406 ino = 0, nbno2-1
                             zi(jgg+ino) = zi(jvg+ino)
-406                      continue
+406                     continue
                     else
                         call jecroc(jexnom(grpnoe, nogrnr))
-                        call jeecra(jexnom(grpnoe, nogrnr), 'LONMAX', max(1,nbnor2))
+                        call jeecra(jexnom(grpnoe, nogrnr), 'LONMAX', max(1, nbnor2))
                         call jeecra(jexnom(grpnoe, nogrnr), 'LONUTI', nbnor2)
                         call jeveuo(jexnom(grpnoe, nogrnr), 'E', jgrnr)
                         do 407 ino = 1, nbnor2
                             zi(jgrnr+ino-1) = zi(jgrnr2+ino-1)
-407                      continue
+407                     continue
                     endif
-408              continue
+408             continue
             endif
         endif
 !
-300  end do
+300 end do
 !
 ! --- ELIMINATION SUR LES GROUPES DE MAILLES
 !
@@ -236,12 +237,12 @@ subroutine piqeli(mailla)
                         if (zi(jvi2+inov-1) .eq. zi(jpoin+ino-1)) then
                             zi(jpoin+ino-1) = zi(jvi1+inov-1)
                         endif
-504                  continue
-502              continue
-500          continue
-600      end do
+504                 continue
+502             continue
+500         continue
+600     end do
 !
-800  end do
+800 end do
 !
     call jedetr(liso1)
     call jedetr(liso2)

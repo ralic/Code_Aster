@@ -30,6 +30,7 @@ subroutine versst(nomres)
 ! NOMRES   /I/: NOM UTILISATEUR DU RESULTAT
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -47,7 +48,7 @@ subroutine versst(nomres)
 !
     character(len=24) :: valk(4)
     character(len=8) :: nomres, nmsstr, nmsst, nmmclr, nmmcl, blanc
-    logical(kind=1) :: pblog
+    aster_logical :: pblog
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -95,7 +96,7 @@ subroutine versst(nomres)
             call utmess('E', 'ALGORITH14_73', nk=4, valk=valk, ni=2,&
                         vali=vali)
         endif
-10  end do
+ 10 end do
 !
     if (pblog) then
         call utmess('F', 'ALGORITH14_74')

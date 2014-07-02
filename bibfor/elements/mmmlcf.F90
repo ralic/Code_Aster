@@ -1,5 +1,5 @@
-subroutine mmmlcf(coefff,coefac,coefaf,lpenac,lpenaf, &
-                  iresof,iresog,lambds)
+subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
+                  iresof, iresog, lambds)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,12 @@ subroutine mmmlcf(coefff,coefac,coefaf,lpenac,lpenaf, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefff, lambds
-    logical(kind=1) :: lpenac, lpenaf
+    aster_logical :: lpenac, lpenaf
     integer :: iresof, iresog
 !
 ! ----------------------------------------------------------------------

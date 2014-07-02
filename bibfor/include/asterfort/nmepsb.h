@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
                       deplg, epsb, geps)
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         real(kind=8) :: vff(nno)
         real(kind=8) :: dfdi(nno, ndim)
         real(kind=8) :: deplg(*)

@@ -63,12 +63,13 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/greihm.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/modthm.h"
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
     integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
     integer :: ndim, nnos, nno1, nno2, ntrou
     integer :: dimdef, dimcon
@@ -88,8 +89,8 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 ! ======================================================================
 ! --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 ! ======================================================================
-    call greihm(perman, ndim, mecani, press1,&
-                press2, tempe, dimdef, dimcon)
+    call greihm(perman, ndim, mecani, press1, press2,&
+                tempe, dimdef, dimcon)
 !
 !
     call modthm(modint)
@@ -102,10 +103,10 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 ! ======================================================================
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npi,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgano1)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npi,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgano2)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npi, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgano1)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npi, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgano2)
 !
     if (modint .eq. 'RED') then
         npg= npi-nnos
@@ -130,23 +131,23 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
         do 10 n = 1, 5
             do 11 i = 1, 2
                 iu(i,n) = i + (f1q8(n)-1)*3
-11          continue
-10      continue
+ 11         continue
+ 10     continue
         do 12 i = 1, 2
             iu(i,6) = iu(i,3) + 4
-12      continue
+ 12     continue
 !
         do 20 n = 1, 2
             ip(1,n) = 16 + (f2q8(n)-6)*2
-20      continue
+ 20     continue
 !
         do 30 n = 1, 2
             ipf(1,1,n) = 3+(f4q8(n)-1)*3
-30      continue
+ 30     continue
 !
         do 40 n = 1, 2
             ipf(1,2,n) = 3+(f3q8(n)-1)*3
-40      continue
+ 40     continue
         iq(1,1,1)=iu(2,6)+1
         iq(1,2,1)=iu(2,3)+1
     endif

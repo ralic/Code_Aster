@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                       nkcmp, nbcmp, ndim, chpgs, noma,&
@@ -23,7 +25,7 @@ interface
         character(len=24) :: mesmai
         character(len=24) :: nkcha
         character(len=4) :: tych
-        logical(kind=1) :: toucmp
+        aster_logical :: toucmp
         character(len=24) :: nkcmp
         integer :: nbcmp
         integer :: ndim

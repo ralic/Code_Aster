@@ -26,6 +26,7 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -114,7 +115,7 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 !
     character(len=19) :: incest, depest, depmoi
     character(len=19) :: depso1, depso2
-    logical(kind=1) :: lproj
+    aster_logical :: lproj
     integer :: iret
 !
 ! ----------------------------------------------------------------------

@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine dspdp2(net, bishop, tbiot, dsdp2)
-        logical(kind=1) :: net
-        logical(kind=1) :: bishop
+        aster_logical :: net
+        aster_logical :: bishop
         real(kind=8) :: tbiot(6)
         real(kind=8) :: dsdp2(6)
     end subroutine dspdp2

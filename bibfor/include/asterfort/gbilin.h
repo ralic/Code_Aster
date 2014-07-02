@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gbilin(fami, kp, imate, dudm, dvdm,&
                       dtdm, dfdm, tgdm, poids, c1,&
@@ -37,7 +39,7 @@ interface
         real(kind=8) :: coef
         real(kind=8) :: rho
         real(kind=8) :: puls
-        logical(kind=1) :: axi
+        aster_logical :: axi
         real(kind=8) :: g
     end subroutine gbilin
 end interface

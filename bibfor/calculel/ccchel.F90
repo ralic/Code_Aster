@@ -4,6 +4,7 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
                   suropt, basopt, resout)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ccaccl.h"
 #include "asterfort/cclpci.h"
@@ -12,7 +13,7 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
 #include "asterfort/ccpoux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/meceuc.h"
-    logical(kind=1) :: exipou, exitim
+    aster_logical :: exipou, exitim
     integer :: nbchre, ioccur, numord, nordm1
     character(len=1) :: basopt
     character(len=8) :: modele, resuin, resuou, carael
@@ -103,8 +104,8 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
         endif
     endif
 !
-    call ccaccl(option, modele, mateco(1:8), carael, ligrel, &
-                typesd, nbpain, lipain, lichin, lichou, &
+    call ccaccl(option, modele, mateco(1:8), carael, ligrel,&
+                typesd, nbpain, lipain, lichin, lichou,&
                 iret)
     if (iret .ne. 0) then
         goto 999

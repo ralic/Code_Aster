@@ -43,6 +43,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cheddl.h"
 #include "asterfort/dismoi.h"
@@ -56,7 +57,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
     character(len=19) :: numin, numout
     character(len=24) :: nomvec
     character(len=24) :: valk(4)
-    logical(kind=1) :: erreur
+    aster_logical :: erreur
 !
     integer :: ibid
     integer :: vali(2)

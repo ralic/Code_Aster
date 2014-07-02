@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcou2d(base, resu, noma, nomno, noeud,&
                       coor, rinf, rsup, module, ldirec,&
@@ -28,7 +30,7 @@ interface
         real(kind=8) :: rinf
         real(kind=8) :: rsup
         real(kind=8) :: module
-        logical(kind=1) :: ldirec
+        aster_logical :: ldirec
         real(kind=8) :: dir(3)
     end subroutine gcou2d
 end interface

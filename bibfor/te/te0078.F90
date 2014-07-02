@@ -27,6 +27,7 @@ subroutine te0078(option, nomte)
     implicit none
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/connec.h"
@@ -52,7 +53,7 @@ subroutine te0078(option, nomte)
     integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, ivectt, jgano, nnop2
     integer :: c(6, 9), ise, nse, nuno, ipoids, ivf, idfde, igeom, imate, itemp
     integer :: icamas, npg2, ipoid2, ivf2, idfde2, ibid
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
@@ -64,15 +65,15 @@ subroutine te0078(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
-        call elrefe_info(elrefe=elrefe,fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     else
-        call elrefe_info(elrefe=elrefe,fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -140,7 +141,7 @@ subroutine te0078(option, nomte)
     call connec(nomte, nse, nnop2, c)
     do 10 i = 1, nnop2
         vectt(i)=0.d0
-10  continue
+ 10 continue
 !
 ! ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
 ! BOUCLE SUR LES SOUS-ELEMENTS
@@ -149,7 +150,7 @@ subroutine te0078(option, nomte)
         do 205 i = 1, nno
             do 205 j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-205          continue
+205         continue
         do 201 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
@@ -163,7 +164,7 @@ subroutine te0078(option, nomte)
                 r = r + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
                 dtpgdx = dtpgdx + zr(itemp-1+c(ise,i)) * dfdx(i)
                 dtpgdy = dtpgdy + zr(itemp-1+c(ise,i)) * dfdy(i)
-202          continue
+202         continue
             if (lteatt('AXIS','OUI')) poids = poids*r
             if (.not.aniso) then
                 fluglo(1) = lambda*dtpgdx
@@ -177,7 +178,7 @@ subroutine te0078(option, nomte)
                         (nuno-1)+1)
                         point(2)= point(2)+ zr(ivf+k+nuno-1)*coorse(2*&
                         (nuno-1)+2)
-204                  continue
+204                 continue
                     xu = orig(1) - point(1)
                     yu = orig(2) - point(2)
                     xnorm = sqrt( xu**2 + yu**2 )
@@ -202,8 +203,8 @@ subroutine te0078(option, nomte)
                                   c(ise,i)) + poids * (theta- 1.0d0)*( fluglo(1)*dfdx(i) + fluglo&
                                   &(2)*dfdy(i)&
                                   )
-203          continue
-201      continue
+203         continue
+201     continue
 !
 !====
 ! 3.2 CALCULS TERMES DE MASSE
@@ -213,7 +214,7 @@ subroutine te0078(option, nomte)
         do 305 i = 1, nno
             do 305 j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-305          continue
+305         continue
         do 301 kp = 1, npg2
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
@@ -224,7 +225,7 @@ subroutine te0078(option, nomte)
 ! CALCUL DE T-
                 r = r + coorse(2*(i-1)+1) * zr(ivf2+k+i-1)
                 tpg = tpg + zr(itemp-1+c(ise,i)) * zr(ivf2+k+i-1)
-302          continue
+302         continue
             if (lteatt('AXIS','OUI')) then
                 poids = poids*r
                 if (r .eq. 0.d0) then
@@ -234,14 +235,14 @@ subroutine te0078(option, nomte)
 !
             do 303 i = 1, nno
                 vectt(c(ise,i)) = vectt( c(ise,i)) + poids * ( cp/ deltat*zr(ivf2+k+i-1)*tpg )
-303          continue
-301      continue
-200  continue
+303         continue
+301     continue
+200 continue
 !
 ! MISE SOUS FORME DE VECTEUR
 !
     do 306 i = 1, nnop2
         zr(ivectt-1+i)=vectt(i)
-306  continue
+306 continue
 !
 end subroutine

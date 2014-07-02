@@ -1,6 +1,7 @@
 subroutine porigy(nomte, e, rho, xnu, icdmat,&
                   klv, nl)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmfitx.h"
@@ -45,13 +46,13 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, xjx, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, xjx2, alfay2, alfaz2
-    logical(kind=1) :: euler
+    aster_logical :: euler
 !     ------------------------------------------------------------------
 !
     zero = 0.d0
     deux = 2.d0
     euler=lteatt('EULER','OUI')
-
+!
 !
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -91,7 +92,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
         alfinv = deux/(alfay+alfaz)
-        elseif (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM' ) then
+    else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM') then
 !        --- POUTRE DROITE MULTI-FIBRES---
         itype = 0
         istruc = 1

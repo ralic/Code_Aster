@@ -20,6 +20,7 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,7 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
 #include "asterfort/nmttch.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: insder
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
     integer :: numder, numarc
     character(len=19) :: sddisc
     character(len=8) :: result

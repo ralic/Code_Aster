@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                       kwork, somnow, vwork, tdisp, tspaq,&
@@ -37,13 +39,13 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical(kind=1) :: fordef
+        aster_logical :: fordef
         real(kind=8) :: fatsoc
         character(len=16) :: proaxe
         character(len=8) :: nommat
         real(kind=8) :: vala
         real(kind=8) :: coefpa
-        logical(kind=1) :: post
+        aster_logical :: post
         real(kind=8) :: cudomx
         real(kind=8) :: nxm(2)
         real(kind=8) :: nym(2)

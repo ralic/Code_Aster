@@ -3,6 +3,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                   vectmp, prepos)
 ! aslint: disable=W1304
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -17,7 +18,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, neql, lmat
     real(kind=8) :: vect(neq, nbvect), xsol(neq, nbvect), vectmp(neq)
-    logical(kind=1) :: lmatd, prepos
+    aster_logical :: lmatd, prepos
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,9 +52,9 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     character(len=19) :: nom19
     character(len=24) :: valm, refa
     integer :: kfin, jvalms, jvalmi, jvec, ki, kdeb, nbloc
-    integer :: ilig, jcol, jrefa,  iligg, jcolg, numglo, k
-    integer :: keta, iexi,  ieq
-    logical(kind=1) :: nonsym
+    integer :: ilig, jcol, jrefa, iligg, jcolg, numglo, k
+    integer :: keta, iexi, ieq
+    aster_logical :: nonsym
     integer, pointer :: nulg(:) => null()
     integer, pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------
@@ -74,8 +75,8 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
         do 20 jvec = 1, nbvect
             do 10 ilig = 1, neq
                 xsol(ilig,jvec)=zero
-10          continue
-20      continue
+ 10         continue
+ 20     continue
     endif
 !
 !
@@ -93,9 +94,9 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
 !     ----------------------------------------
     if (.not.lmatd) then
         do 60 jvec = 1, nbvect
-            do 30,k=1,neq
-            vectmp(k)=vect(k,jvec)
-30          continue
+            do 30 k = 1, neq
+                vectmp(k)=vect(k,jvec)
+ 30         continue
 !         -- LES LAGRANGE DOIVENT ETRE MIS A L'ECHELLE AVANT LA
 !            MULTIPLICATION :
             if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
@@ -111,13 +112,13 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                     vectmp(jcol)
                     xsol(jcol,jvec)=xsol(jcol,jvec)+ zr(jvalms-1+ki)*&
                     vectmp(ilig)
-40              continue
+ 40             continue
                 xsol(ilig,jvec)=xsol(ilig,jvec)+zr(jvalms+kfin)*&
                 vectmp(ilig)
-50          continue
+ 50         continue
             if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
                                     1)
-60      continue
+ 60     continue
 !
 !
 !     -- CAS D'UNE MATRICE DISTRIBUEE :
@@ -128,10 +129,11 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
         numddl=zk24(jrefa+2-1)(1:14)
         call jeveuo(numddl//'.NUML.NULG', 'L', vi=nulg)
         do 100 jvec = 1, nbvect
-            do 70,k=1,neq
-            vectmp(k)=vect(k,jvec)
-70          continue
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,1)
+            do 70 k = 1, neq
+                vectmp(k)=vect(k,jvec)
+ 70         continue
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
+                                    1)
             numglo=nulg(1)
             xsol(numglo,jvec)=xsol(numglo,jvec)+ zr(jvalms-1+1)*&
             vectmp(numglo)
@@ -147,12 +149,13 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                     *vectmp(jcolg)
                     xsol(jcolg,jvec)=xsol(jcolg,jvec)+ zr(jvalms-1+ki)&
                     *vectmp(iligg)
-80              continue
+ 80             continue
                 xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalms+kfin)*&
                 vectmp(iligg)
-90          continue
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),1)
-100      continue
+ 90         continue
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
+                                    1)
+100     continue
     endif
 !
 !
@@ -163,7 +166,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     if (iexi .ne. 0) then
         call jeveuo(nom19//'.CCID', 'L', vi=ccid)
         do jvec = 1, nbvect
-            do ieq=1,neql
+            do ieq = 1, neql
                 if (lmatd) then
                     keta=ccid(nulg(ieq))
                 else

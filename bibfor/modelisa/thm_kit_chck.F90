@@ -2,6 +2,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -31,7 +32,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 ! person_in_charge: sylvie.granet at edf.fr
 !
     character(len=8), intent(in) :: model
-    logical(kind=1), intent(in) :: l_affe_all
+    aster_logical, intent(in) :: l_affe_all
     character(len=24), intent(in) :: list_elem_affe
     integer, intent(in) :: nb_elem_affe
     character(len=16), intent(in) :: rela_thmc
@@ -53,10 +54,10 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: notype
-    integer ::  j_elem_affe
+    integer :: j_elem_affe
     integer :: nb_elem_mesh, nb_elem
     integer :: nume_elem
-    integer ::  ielem
+    integer :: ielem
     integer :: nutyel
     character(len=16) :: modeli
     character(len=8) :: mesh, name_elem
@@ -131,7 +132,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
                     valk(2) = modeli
                     call utmess('F', 'THM1_35', nk=2, valk=valk)
                 endif
-            else if ((rela_thmc(1:16).eq.'LIQU_AD_GAZ_VAPE').or.&
+                else if ((rela_thmc(1:16).eq.'LIQU_AD_GAZ_VAPE').or.&
                      (rela_thmc(1:16).eq.'LIQU_AD_GAZ')) then
                 if ((modeli(1:9).ne.'AXIS_HH2M') .and. (modeli(1:9) .ne.'AXIS_THH2') .and.&
                     (modeli(1:8).ne.'AXIS_HH2') .and. (modeli(1:11).ne.'D_PLAN_HH2M') .and.&

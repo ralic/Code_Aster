@@ -20,10 +20,11 @@ subroutine calpf(ndim, nno, axi, npg, geomm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: ndim, nno, g, iw, idff, i, npg
     real(kind=8) :: geomm(ndim, nno), vff(nno, npg)
     real(kind=8) :: r, dff(nno, ndim), depld(3*27)
@@ -86,7 +87,7 @@ subroutine calpf(ndim, nno, axi, npg, geomm,&
 !      CALCUL DU DEPLACEMENT MULTIPLIE PAR ALPHA
     do 10 i = 1, nno*ndim
         deplda(i)=alpha*depld(i)
-10  continue
+ 10 continue
 !
 !      CALCUL DE  FDA = f_(n+alpha)
     call dfdmip(ndim, nno, axi, geomm, g,&

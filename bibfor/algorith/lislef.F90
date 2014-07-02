@@ -19,6 +19,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -69,7 +70,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
     integer :: iret, ibid
     integer :: eximcp
     integer :: nfcplx, nfreel
-    logical(kind=1) :: lcrfcr, lcrfcc
+    aster_logical :: lcrfcr, lcrfcc
 !
 ! ----------------------------------------------------------------------
 !
@@ -131,7 +132,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
         typfct = 'FONCT_REEL'
     endif
 !
-99  continue
+ 99 continue
 !
 ! --- CREATION FONCTION CONSTANTE REELLE
 !

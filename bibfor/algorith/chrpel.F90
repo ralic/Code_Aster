@@ -17,8 +17,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W1501
-
+!
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/angvxy.h"
@@ -84,9 +85,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! ---------------------------------------------------------------------
     !
     integer :: i, ii, ino, iad, ipt, isp
-    integer :: jcesd, jcesv, jcesl, nbpt,  ncmp
-    integer ::  jconx2, nbsp, inel,  npain
-    integer :: ibid, nbma,  iret, inbno
+    integer :: jcesd, jcesv, jcesl, nbpt, ncmp
+    integer :: jconx2, nbsp, inel, npain
+    integer :: ibid, nbma, iret, inbno
     integer :: ndim, nbm, idmail, nbmail, imai
     integer :: inoeu, iret0, iret1, nbgno, igno, nncp
     integer :: ierk, mnogav, iadr, ipaxe, ipaxe2
@@ -96,7 +97,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! nb max de points (noeuds|gauss) par élément
     integer, parameter :: nptmax = 30
     integer, dimension(6) :: permvec
-    logical(kind=1) :: exi_cmp
+    aster_logical :: exi_cmp
     real(kind=8) :: valr, xnormr
     real(kind=8), dimension(3) :: xbary, angnot
     real(kind=8), dimension(3) :: orig, axez, vectx, vecty, angrep
@@ -385,7 +386,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
             nbcmp = zi(jcesd-1+5+4* (imai-1)+3)
             !
 ! Coordonnées des noeuds de la maille courante
-! 
+!
             xno(:,:) = 0.d0
             do ino = 1, nbno
                 nuno = connex(zi(jconx2+imai-1)+ino-1)
@@ -425,7 +426,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! Calcul de la matrice de passage vers le repère cylindrique 
                 call cylrep(ndim, xpt(:, ipt), axez, orig, pgcyl,&
                             ipaxe)
-!   
+!
 ! Si le point x appartient à l'axe du repère cylindrique 
                 if (ipaxe > 0) then
                     call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
@@ -524,7 +525,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
                     ncmp=9, lnomcmp=licmp, vr=angrep)
         !
 !  CREATION D UN CHAM_ELEM D'ANGLES EN LISANT LES ANGL_REP
-! 
+!
         changl = '&&CHRPEL.ANGL'
         call chrpan(modele, carte, option, changl)
         !
@@ -537,7 +538,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         lchin(4) = champ1
         lpain(5) = 'PNBSP_I'
         lchin(5) = chcara(16)
-!  
+!
         call dismoi('NOM_GD', lchin(4), 'CHAMP', repk=nomgdr)
         !
         if (type_cham .eq. 'COQUE_GENE') then

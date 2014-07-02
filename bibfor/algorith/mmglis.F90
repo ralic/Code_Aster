@@ -19,6 +19,7 @@ subroutine mmglis(defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -53,7 +54,7 @@ subroutine mmglis(defico, resoco)
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: nzoco, nbmae, nptm
-    logical(kind=1) :: lveri, lgliss
+    aster_logical :: lveri, lgliss
     integer :: izone, imae, iptc, iptm
     integer :: xs
     integer :: posmae, jdecme
@@ -122,13 +123,13 @@ subroutine mmglis(defico, resoco)
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                     iptc = iptc + 1
-30              continue
+ 30             continue
             else
                 iptc = iptc + nptm
             endif
-20      continue
-25      continue
-10  end do
+ 20     continue
+ 25     continue
+ 10 end do
 !
     call jedema()
 end subroutine

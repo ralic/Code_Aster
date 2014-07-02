@@ -21,6 +21,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/getvid.h"
 #include "asterfort/nmcrob.h"
 #include "asterfort/ntcra0.h"
@@ -30,7 +31,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
     real(kind=8) :: instin
     character(len=8) :: mailla
     character(len=19) :: sddisc
-    logical(kind=1) :: levol, lostat, lnonl, lreuse
+    aster_logical :: levol, lostat, lnonl, lreuse
     character(len=19) :: sdobse
     character(len=24) :: resulz, modele
     character(len=24) :: sdieto
@@ -96,6 +97,6 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
                     sdobse)
     endif
 !
-999  continue
+999 continue
 !
 end subroutine

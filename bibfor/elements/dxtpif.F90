@@ -1,11 +1,12 @@
 subroutine dxtpif(temp, ltemp)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
     real(kind=8) :: temp(3)
-    logical(kind=1) :: ltemp(3)
+    aster_logical :: ltemp(3)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

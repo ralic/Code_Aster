@@ -35,6 +35,7 @@ subroutine te0282(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
@@ -64,7 +65,7 @@ subroutine te0282(option, nomte)
 !
     character(len=8) :: nompar(3), elrefe
 !
-    logical(kind=1) :: fonc, chargn, axis
+    aster_logical :: fonc, chargn, axis
 !
 ! =====================================================================
 ! INITIALISATIONS
@@ -75,9 +76,9 @@ subroutine te0282(option, nomte)
     axis=lteatt('AXIS','OUI')
 !
 ! RECUPERATION DES DONNEES GEOMETRIQUES LIEES AU CALCUL ELEMENTAIRE
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
 !
 ! INIT. POUR LE CALCUL DE G
@@ -96,7 +97,7 @@ subroutine te0282(option, nomte)
         if ((abs(thx).lt.epsi) .and. (abs(thy).lt.epsi)) then
             compt = compt + 1
         endif
-250  end do
+250 end do
     if (compt .eq. nno) goto 9999
 !
 ! =====================================================================
@@ -105,7 +106,7 @@ subroutine te0282(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
-    if (option .eq. 'CALC_G_F'.or.option .eq. 'CALC_GTP_F') then
+    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F') then
         fonc = .true.
         call jevech('PFF1D2D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)
@@ -128,14 +129,14 @@ subroutine te0282(option, nomte)
         do 70 i = 1, nno
             do 80 j = 1, 2
                 valpar(j) = zr(igeom+2*(i-1)+j-1)
-80          continue
+ 80         continue
             do 75 j = 1, 2
                 call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
                             presn(2*(i-1)+j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcn(2*(i-1)+j), icode)
-75          continue
-70      continue
+ 75         continue
+ 70     continue
     endif
 !
 ! ======================================================================
@@ -183,7 +184,7 @@ subroutine te0282(option, nomte)
             thy = thy + vf *zr(ithet+2*(i-1)+1)
             dthxde = dthxde + dfde*zr(ithet+2*(i-1) )
             dthyde = dthyde + dfde*zr(ithet+2*(i-1)+1)
-10      continue
+ 10     continue
 !
 ! ===========================================
 ! CALCUL DU CHARGEMENT ET DE SON GRADIENT
@@ -197,7 +198,7 @@ subroutine te0282(option, nomte)
                             presg(j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcg(j), icode)
-65          continue
+ 65         continue
         else
             presg(1) = 0.d0
             presg(2) = 0.d0
@@ -207,8 +208,8 @@ subroutine te0282(option, nomte)
                 do 6 j = 1, 2
                     presg(j) = presg(j) + zr(ipres+2*(i-1)+j-1)*zr( ivf+k+i-1)
                     forcg(j) = forcg(j) + zr(iforc+2*(i-1)+j-1)*zr( ivf+k+i-1)
- 6              continue
- 4          continue
+  6             continue
+  4         continue
         endif
 !
 ! VALEURS DU CHARGEMENT AUX POINTS DE GAUSS (FX,FY)
@@ -230,7 +231,7 @@ subroutine te0282(option, nomte)
                 fyno = forcn(2*(i-1)+2)+(dxde*presno+dyde*cisano)/ dsde
                 dfxde = dfxde + dfde*fxno
                 dfyde = dfyde + dfde*fyno
-300          continue
+300         continue
         endif
 !
 ! TESTS SUR LA NULLITE DES CHARGEMENTS ET DE LEURS GRADIENTS POUR EVITER
@@ -278,15 +279,15 @@ subroutine te0282(option, nomte)
         tcla = tcla + prod*poids
 !
 ! BRANCHEMENT POUR F=0 ET DF=0
-799      continue
+799     continue
 !
 ! ======================================================================
 ! FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! ======================================================================
-800  end do
+800 end do
 !
 ! EXIT EN CAS DE THETA FISSURE NUL PARTOUT
-9999  continue
+9999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G
     tsom = tcla + tsurf + tsurp

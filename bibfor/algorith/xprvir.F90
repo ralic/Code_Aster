@@ -3,6 +3,7 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
                   radimp, radtor, damax, noma, locdom)
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
@@ -18,7 +19,7 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     character(len=24) :: nvit, nbeta
     integer :: numfon, nbptff
     real(kind=8) :: radimp, radtor, damax
-    logical(kind=1) :: locdom
+    aster_logical :: locdom
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,10 +74,10 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, jcoor, nbno,  ifm, niv, jvit, jbeta, cfv, bfv
+    integer :: i, j, jcoor, nbno, ifm, niv, jvit, jbeta, cfv, bfv
     integer :: vfv, afv, cfvpr, bfvpr, vfvpr, afvpr, nfv, npoin, nfvpr
     real(kind=8) :: v1, v2, ai, aj, ak, al, da1, da2, a1, a2
-    integer ::  k
+    integer :: k
 !
     real(kind=8) :: pi(3), pj(3), pk(3), pl(3), pij(3), pkl(3), p1(3), p2(3), vi
     real(kind=8) :: vj, vk, vl, dv1, dv2, normij, normkl, normj1, normk2, normjk

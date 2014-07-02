@@ -98,6 +98,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
     implicit none
 !
 ! aslint: disable=W1306
+#include "asterf_types.h"
 #include "asterfort/calcco.h"
 #include "asterfort/calcfh.h"
 #include "asterfort/calcft.h"
@@ -105,7 +106,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 #include "asterfort/kitdec.h"
 #include "asterfort/nvithm.h"
 #include "asterfort/thmlec.h"
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
     real(kind=8) :: valcen(14, 6)
     integer :: maxfa
     parameter     (maxfa=6)
@@ -130,7 +131,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
     real(kind=8) :: dsde(1:dimcon, 1:dimdef), crit(*), instam, instap
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
-    logical(kind=1) :: perman, vf
+    aster_logical :: perman, vf
     integer :: ifa
     integer :: vicpr1, vicpr2
 ! ======================================================================
@@ -147,7 +148,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
     real(kind=8) :: lambs, dlambs, viscl, dviscl
     real(kind=8) :: viscg, dviscg, mamolg
     real(kind=8) :: fickad, dfadt, kh, alpha
-    real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim),tdlamt(ndim, ndim)
+    real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim), tdlamt(ndim, ndim)
     real(kind=8) :: dficks
     real(kind=8) :: deltat
     real(kind=8) :: angmas(3)
@@ -237,9 +238,9 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                     ndim, dimdef, dimcon, nvim, yate,&
                     addeme, adcome, addete, defgem, congem,&
                     congep, vintm, vintp, addep1, addep2,&
-                    dsde, deps, p1, p2,&
-                    t, dt, retcom, dp1, dp2,&
-                    sat, tbiot, angmas, aniso, phenom)
+                    dsde, deps, p1, p2, t,&
+                    dt, retcom, dp1, dp2, sat,&
+                    tbiot, angmas, aniso, phenom)
         if (retcom .ne. 0) then
             goto 9000
         endif
@@ -315,6 +316,6 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
         endif
     endif
 ! ======================================================================
-9000  continue
+9000 continue
 ! ======================================================================
 end subroutine

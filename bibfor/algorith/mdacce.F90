@@ -2,6 +2,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
                   riggen, descr, fexgen, lamor, amogen,&
                   desca, work1, depgen, vitgen, accgen)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
@@ -18,7 +19,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
     real(kind=8) :: depgen(*), vitgen(*), accgen(*)
     real(kind=8) :: work1(*), pulsa2(*)
     character(len=16) :: typbas
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
     complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
 ! ======================================================================

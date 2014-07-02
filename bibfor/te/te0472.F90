@@ -1,5 +1,6 @@
 subroutine te0472(option, nomte)
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/borthm.h"
 #include "asterfort/elrefe_info.h"
@@ -47,7 +48,7 @@ subroutine te0472(option, nomte)
 ! NPG      NB DE POINTS DE GAUSS DE L'ELEMENT DE BORD
 ! ======================================================================
 ! ======================================================================
-    logical(kind=1) :: axi, perman, vf
+    aster_logical :: axi, perman, vf
     integer :: nno, nno2, nnos, kp, npg, ndim, jgano, jgano2, napre1, napre2
     integer :: ipoids, ipoid2, ivf, ivf2, idfde, idfde2, igeom, natemp
     integer :: ipres, k, kk, i, l, ires, iflux, itemps, iopt, ipresf, ndlnm
@@ -59,8 +60,8 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- CARACTERISTIQUES DE LA MODELISATION ------------------------------
 ! ======================================================================
-    call borthm(axi, vf, perman, typvf,&
-                typmod, ndim, ndlno, ndlnm)
+    call borthm(axi, vf, perman, typvf, typmod,&
+                ndim, ndlno, ndlnm)
 ! ======================================================================
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 ! ======================================================================
@@ -69,13 +70,13 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- INTERPOLATION (QUADRATIQUE) POUR LA MECANIQUE --------------------
 ! ======================================================================
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! ======================================================================
 ! --- INTERPOLATION (LINEAIRE) POUR LA THERMO-HYDRAULIQUE --------------
 ! ======================================================================
-    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npg,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano2)
+    call elrefe_info(elrefe='SE2', fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
 ! ======================================================================
 ! --- RECUPERATION DES CHAMPS IN ET DES CHAMPS OUT ---------------------
 ! ======================================================================
@@ -141,7 +142,7 @@ subroutine te0472(option, nomte)
             do 10 i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
-10          continue
+ 10         continue
             poids = poids*r
         endif
 ! ======================================================================
@@ -162,7 +163,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THHM, THH OU THH2 ------------------------------
 ! ======================================================================
-            if (lteatt('MODTHM','THHM').or.lteatt('MODTHM','THH').or. &
+            if (lteatt('MODTHM','THHM') .or. lteatt('MODTHM','THH') .or.&
                 lteatt('MODTHM','THH2')) then
                 napre1 = 0
                 napre2 = 1
@@ -178,7 +179,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-20                  continue
+ 20                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -191,26 +192,26 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THHM, OU THH2M ---------------------------------
 ! ======================================================================
-                if (lteatt('MODTHM','THHM').or.lteatt('MODTHM','THH2M')) then
+                if (lteatt('MODTHM','THHM') .or. lteatt('MODTHM','THH2M')) then
                     do 30 i = 1, nno2
                         l = 5* (i-1) - 1
                         zr(ires+l+3) = zr(ires+l+3) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                         zr(ires+l+4) = zr(ires+l+4) - poids*deltat* flu2*zr(ivf2+kk+i-1)
                         zr(ires+l+5) = zr(ires+l+5) - poids*deltat* fluth*zr(ivf2+kk+i-1)
-30                  continue
+ 30                 continue
                 else
                     do 40 i = 1, nno2
                         l = 3* (i-1) - 1
                         zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                         zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(ivf2+kk+i-1)
                         zr(ires+l+3) = zr(ires+l+3) - poids*deltat* fluth*zr(ivf2+kk+i-1)
-40                  continue
+ 40                 continue
                 endif
             endif
 ! ======================================================================
 ! --- SI MODELISATION = HH, OU HH2 -------------------------------------
 ! ======================================================================
-            if (lteatt('MODTHM','HH').or.lteatt('MODTHM','HH2').or. &
+            if (lteatt('MODTHM','HH') .or. lteatt('MODTHM','HH2') .or.&
                 lteatt('MODTHM','SUSHI')) then
                 napre1 = 0
                 napre2 = 1
@@ -224,7 +225,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-201                  continue
+201                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 2, nompar, valpar,&
@@ -240,7 +241,7 @@ subroutine te0472(option, nomte)
                     do 401 i = 1, nno2
                         zr(ires) = zr(ires) - poids*flu1*zr(ivf2+kk+i- 1)
                         zr(ires+1) = zr(ires+1) - poids*flu2*zr(ivf2+ kk+i-1)
-401                  continue
+401                 continue
                 else
 ! ======================================================================
 ! --- SI MODELISATION = HH*, OU HH2*------------------------------------
@@ -249,7 +250,7 @@ subroutine te0472(option, nomte)
                         l = 2* (i-1) - 1
                         zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                         zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(ivf2+kk+i-1)
-402                  continue
+402                 continue
                 endif
             endif
 ! ======================================================================
@@ -268,7 +269,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-50                  continue
+ 50                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -282,7 +283,7 @@ subroutine te0472(option, nomte)
                     l = 2* (i-1) - 1
                     zr(ires+l+1) = zr(ires+l+1) - poids*deltat*flu1* zr(ivf2+kk+i-1)
                     zr(ires+l+2) = zr(ires+l+2) - poids*deltat*fluth* zr(ivf2+kk+i-1)
-60              continue
+ 60             continue
             endif
 ! ======================================================================
 ! --- SI MODELISATION = H ---------------------------------------------
@@ -298,7 +299,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-69                  continue
+ 69                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -307,7 +308,7 @@ subroutine te0472(option, nomte)
                 do 79 i = 1, nno2
                     l = 1* (i-1) - 1
                     zr(ires+l+1) = zr(ires+l+1) - poids*deltat*flu1* zr(ivf2+kk+i-1)
-79              continue
+ 79             continue
             endif
 ! ======================================================================
 ! --- SI MODELISATION = HM ---------------------------------------------
@@ -323,7 +324,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-70                  continue
+ 70                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -336,12 +337,12 @@ subroutine te0472(option, nomte)
                     else
                         zr(ires+l+3) = zr(ires+l+3) - poids2*flu1*zr( ivf2+kk+i-1)
                     endif
-80              continue
+ 80             continue
             endif
 ! ======================================================================
 ! --- SI MODELISATION = HHM OU HH2M ------------------------------------
 ! ======================================================================
-            if (lteatt('MODTHM','HHM').or.lteatt('MODTHM','HH2M')) then
+            if (lteatt('MODTHM','HHM') .or. lteatt('MODTHM','HH2M')) then
                 napre1 = 0
                 napre2 = 1
                 if (iopt .eq. 1) then
@@ -354,7 +355,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-90                  continue
+ 90                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -366,7 +367,7 @@ subroutine te0472(option, nomte)
                     l = 4* (i-1) - 1
                     zr(ires+l+3) = zr(ires+l+3) - poids*deltat*flu1* zr(ivf2+kk+i-1)
                     zr(ires+l+4) = zr(ires+l+4) - poids*deltat*flu2* zr(ivf2+kk+i-1)
-100              continue
+100             continue
             endif
 ! ======================================================================
 ! --- SI MODELISATION = THM --------------------------------------------
@@ -384,7 +385,7 @@ subroutine te0472(option, nomte)
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-110                  continue
+110                 continue
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -396,7 +397,7 @@ subroutine te0472(option, nomte)
                     l = 4* (i-1) - 1
                     zr(ires+l+3) = zr(ires+l+3) - poids*deltat*flu1* zr(ivf2+kk+i-1)
                     zr(ires+l+4) = zr(ires+l+4) - poids*deltat*fluth* zr(ivf2+kk+i-1)
-120              continue
+120             continue
             endif
 ! ======================================================================
 ! --- OPTION CHAR_MECA_PRES_R OU CHAR_MECA_PRES_F ----------------------
@@ -409,7 +410,7 @@ subroutine te0472(option, nomte)
                 do 160 i = 1, nno
                     l = (kp-1)*nno + i
                     pres = pres + zr(ipres+i-1)*zr(ivf+l-1)
-160              continue
+160             continue
             else if (iopt.eq.4) then
                 pres = 0.d0
                 do 170 i = 1, nno
@@ -419,7 +420,7 @@ subroutine te0472(option, nomte)
                                 presf, iret)
                     l = (kp-1)*nno + i
                     pres = pres + presf*zr(ivf+l-1)
-170              continue
+170             continue
             endif
             tx = -nx*pres
             ty = -ny*pres
@@ -427,13 +428,13 @@ subroutine te0472(option, nomte)
                 l = ndlno* (i-1) - 1
                 zr(ires+l+1) = zr(ires+l+1) + tx*zr(ivf+k+i-1)*poids
                 zr(ires+l+2) = zr(ires+l+2) + ty*zr(ivf+k+i-1)*poids
-180          continue
+180         continue
             do 181 i = 1, (nno - nnos)
                 l = ndlno*nnos+ndlnm* (i-1) -1
                 zr(ires+l+1) = zr(ires+l+1) + tx*zr(ivf+k+i+nnos-1)* poids
                 zr(ires+l+2) = zr(ires+l+2) + ty*zr(ivf+k+i+nnos-1)* poids
-181          continue
+181         continue
         endif
-190  end do
+190 end do
 ! ======================================================================
 end subroutine

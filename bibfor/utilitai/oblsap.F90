@@ -18,7 +18,8 @@ subroutine oblsap(sdlist, idnvaz, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -26,7 +27,7 @@ subroutine oblsap(sdlist, idnvaz, lacti)
 #include "asterfort/oblsai.h"
     character(len=24) :: sdlist
     character(len=*) :: idnvaz
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !

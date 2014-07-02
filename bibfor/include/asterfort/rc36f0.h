@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc36f0(nbsigr, nocc, saltij, saltm, trouve,&
                       isk, isl, i1a4, nk, nl)
@@ -22,7 +24,7 @@ interface
         integer :: nocc(*)
         real(kind=8) :: saltij(*)
         real(kind=8) :: saltm
-        logical(kind=1) :: trouve
+        aster_logical :: trouve
         integer :: isk
         integer :: isl
         integer :: i1a4

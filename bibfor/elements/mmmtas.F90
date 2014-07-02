@@ -24,6 +24,7 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/mmmtdb.h"
     integer :: nbdm, ndim, nnl, nne, nnm, nbcps
     real(kind=8) :: matrcc(9, 9)
@@ -58,7 +59,7 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
     integer :: inoc, inoe, inom, inof, icmp, idim
     integer :: inoe1, inoe2, inom1, inom2, idim1, idim2
     integer :: inoc1, inoc2, inof1, inof2, icmp1, icmp2
-    logical(kind=1) :: debug
+    aster_logical :: debug
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,8 +76,8 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
             ll = inoc2
             mmat(ii,jj) = mmat(ii,jj)+matrcc(kk,ll)
             if (debug) call mmmtdb(matrcc(kk, ll), 'CC', ii, jj)
-11      continue
-10  end do
+ 11     continue
+ 10 end do
 !
 ! --- CONTACT/ESCL
 !
@@ -89,9 +90,9 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                 ll = ndim*(inoe-1)+idim
                 mmat(ii,jj) = mmat(ii,jj)+matrce(kk,ll)
                 if (debug) call mmmtdb(matrce(kk, ll), 'CE', ii, jj)
-22          continue
-21      continue
-20  end do
+ 22         continue
+ 21     continue
+ 20 end do
 !
 ! --- ESCL/CONTACT
 !
@@ -104,9 +105,9 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                 ll = ndim*(inoe-1)+idim
                 mmat(jj,ii) = mmat(jj,ii)+matrec(ll,kk)
                 if (debug) call mmmtdb(matrec(ll, kk), 'EC', jj, ii)
-25          continue
-24      continue
-23  end do
+ 25         continue
+ 24     continue
+ 23 end do
 !
 ! --- CONTACT/MAIT
 !
@@ -119,9 +120,9 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                 ll = ndim*(inom-1)+idim
                 mmat(ii,jj) = mmat(ii,jj)+matrcm(kk,ll)
                 if (debug) call mmmtdb(matrcm(kk, ll), 'CM', ii, jj)
-32          continue
-31      continue
-30  end do
+ 32         continue
+ 31     continue
+ 30 end do
 !
 ! --- MAIT/CONTACT
 !
@@ -134,9 +135,9 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                 ll = inoc
                 mmat(jj,ii) = mmat(jj,ii)+matrmc(kk,ll)
                 if (debug) call mmmtdb(matrmc(kk, ll), 'MC', jj, ii)
-35          continue
-34      continue
-33  end do
+ 35         continue
+ 34     continue
+ 33 end do
 !
 ! --- ESCL/ESCL
 !
@@ -150,10 +151,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     ll = ndim*(inoe2-1)+idim2
                     mmat(ii,jj) = mmat(ii,jj)+matree(kk,ll)
                     if (debug) call mmmtdb(matree(kk, ll), 'EE', ii, jj)
-43              continue
-42          continue
-41      continue
-40  end do
+ 43             continue
+ 42         continue
+ 41     continue
+ 40 end do
 !
 ! --- MAIT/MAIT
 !
@@ -167,10 +168,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     jj = nbdm*nne+ndim*(inom2-1)+idim2
                     mmat(ii,jj) = mmat(ii,jj)+matrmm(kk,ll)
                     if (debug) call mmmtdb(matrmm(kk, ll), 'MM', ii, jj)
-53              continue
-52          continue
-51      continue
-50  end do
+ 53             continue
+ 52         continue
+ 51     continue
+ 50 end do
 !
 ! --- ESCL/MAIT
 !
@@ -184,10 +185,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     jj = nbdm*nne+ndim*(inom-1)+idim2
                     mmat(ii,jj) = mmat(ii,jj)+matrem(kk,ll)
                     if (debug) call mmmtdb(matrem(kk, ll), 'EM', ii, jj)
-63              continue
-62          continue
-61      continue
-60  end do
+ 63             continue
+ 62         continue
+ 61     continue
+ 60 end do
 !
 ! --- MAIT/ESCL
 !
@@ -201,10 +202,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     ll = ndim*(inoe-1)+idim1
                     mmat(ii,jj) = mmat(ii,jj)+matrme(kk,ll)
                     if (debug) call mmmtdb(matrme(kk, ll), 'ME', ii, jj)
-73              continue
-72          continue
-71      continue
-70  end do
+ 73             continue
+ 72         continue
+ 71     continue
+ 70 end do
 !
     if (nbcpf .eq. 0) goto 999
 !
@@ -220,10 +221,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     ll = (ndim-1)*(inof2-1)+icmp2
                     mmat(ii,jj) = mmat(ii,jj)+matrff(kk,ll)
                     if (debug) call mmmtdb(matrff(kk, ll), 'FF', ii, jj)
-113              continue
-112          continue
-111      continue
-110  end do
+113             continue
+112         continue
+111     continue
+110 end do
 !
 ! --- FROTTEMENT/ESCL
 !
@@ -237,10 +238,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     jj = nbdm*(inoe-1)+idim
                     mmat(ii,jj) = mmat(ii,jj)+matrfe(kk,ll)
                     if (debug) call mmmtdb(matrfe(kk, ll), 'FE', ii, jj)
-123              continue
-122          continue
-121      continue
-120  end do
+123             continue
+122         continue
+121     continue
+120 end do
 !
 ! --- ESCL/FROTTEMENT
 !
@@ -254,10 +255,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     jj = nbdm*(inof-1)+ndim+1+icmp
                     mmat(ii,jj) = mmat(ii,jj)+matref(kk,ll)
                     if (debug) call mmmtdb(matrfe(kk, ll), 'FE', ii, jj)
-223              continue
-222          continue
-221      continue
-220  end do
+223             continue
+222         continue
+221     continue
+220 end do
 !
 ! --- FROTTEMENT/MAITRE
 !
@@ -271,10 +272,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     jj = nbdm*nne+ndim*(inom-1)+idim
                     mmat(ii,jj) = mmat(ii,jj)+matrfm(kk,ll)
                     if (debug) call mmmtdb(matrfm(kk, ll), 'FM', ii, jj)
-323              continue
-322          continue
-321      continue
-320  end do
+323             continue
+322         continue
+321     continue
+320 end do
 !
 ! --- MAITRE/FROTTEMENT
 !
@@ -288,10 +289,10 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
                     jj = nbdm*(inof-1)+ndim+1+icmp
                     mmat(ii,jj) = mmat(ii,jj)+matrmf(kk,ll)
                     if (debug) call mmmtdb(matrmf(kk, ll), 'MF', ii, jj)
-423              continue
-422          continue
-421      continue
-420  end do
-999  continue
+423             continue
+422         continue
+421     continue
+420 end do
+999 continue
 !
 end subroutine

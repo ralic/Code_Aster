@@ -21,6 +21,7 @@ subroutine op0130()
 !     OPERATEUR "POST_DYNA_MODA_T"
 !
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -36,11 +37,11 @@ subroutine op0130()
 #include "asterfort/pochpv.h"
 #include "asterfort/porefd.h"
 #include "asterfort/titre.h"
-    integer :: nbbloc, nbclas, n1, n2, i,  nbind
+    integer :: nbbloc, nbclas, n1, n2, i, nbind
     real(kind=8) :: tdebut, tfin, offset, trepos
     character(len=8) :: trange, noeu, cmp, nomres
     character(len=16) :: nomcmd, concep, koptio
-    logical(kind=1) :: loptio
+    aster_logical :: loptio
     integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -74,7 +75,7 @@ subroutine op0130()
                 call pochpv(trange, nbbloc, tdebut, tfin, offset,&
                             trepos, nbclas, nomres, loptio)
             endif
-10      continue
+ 10     continue
     endif
 !
     call getfac('RELA_EFFO_DEPL', nbind)
@@ -84,7 +85,7 @@ subroutine op0130()
             call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=cmp, nbret=n2)
 !
             call porefd(trange, noeu, cmp, nomres)
-20      continue
+ 20     continue
     endif
 !
     call titre()

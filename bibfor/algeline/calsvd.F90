@@ -68,6 +68,7 @@ subroutine calsvd(nm, m, n, a, w,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/matfpe.h"
 #include "asterfort/jedetr.h"
@@ -78,19 +79,19 @@ subroutine calsvd(nm, m, n, a, w,&
 #include "blas/dgesvd.h"
     integer :: nm, m, n, ierr
     real(kind=8) :: a(nm, n), w(n), u(nm, m), v(nm, n)
-    logical(kind=1) :: matu, matv
+    aster_logical :: matu, matv
 !
 ! VARIABLES LOCALES
 ! -----------------
     integer(kind=4) :: ierr1
-    integer ::    nm1, nm2, ldvt, i, j, lwork
+    integer :: nm1, nm2, ldvt, i, j, lwork
     character(len=1) :: code
     parameter (nm1=20)
     real(kind=8) :: vt(nm1*nm1)
 !     JE DOUBLE LA TAILLE DE WORK POUR DE MEILLEURS PERFS :
     real(kind=8) :: work(2*(7*nm1**2 + 4*nm1))
     integer(kind=4) :: iwork(8*nm1)
-    logical(kind=1) :: alloc, safe
+    aster_logical :: alloc, safe
     integer(kind=4), pointer :: viwork(:) => null()
     real(kind=8), pointer :: vvt(:) => null()
     real(kind=8), pointer :: vwork(:) => null()
@@ -146,11 +147,11 @@ subroutine calsvd(nm, m, n, a, w,&
                         work, lwork, iwork, ierr1)
         endif
         if (matv) then
-            do 1, i=1,nm
-            do 2, j=1,n
-            v(i,j)=vt((i-1)*ldvt+j)
- 2          continue
- 1          continue
+            do 1 i = 1, nm
+                do 2 j = 1, n
+                    v(i,j)=vt((i-1)*ldvt+j)
+  2             continue
+  1         continue
         endif
 !
     else
@@ -164,11 +165,11 @@ subroutine calsvd(nm, m, n, a, w,&
                         vwork, lwork, viwork, ierr1)
         endif
         if (matv) then
-            do 3, i=1,nm
-            do 4, j=1,n
-            v(i,j)=vvt((i-1)*ldvt+j)
- 4          continue
- 3          continue
+            do 3 i = 1, nm
+                do 4 j = 1, n
+                    v(i,j)=vvt((i-1)*ldvt+j)
+  4             continue
+  3         continue
         endif
     endif
 !

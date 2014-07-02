@@ -19,6 +19,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -52,7 +53,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     character(len=16) :: forcri
-    logical(kind=1) :: fordef
+    aster_logical :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLUS PETIT CERCLE CIRCONSCRIT AUX POINTS
@@ -70,7 +71,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! TYPCHA     IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
 ! PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 !-----------------------------------------------------------------------
-    integer :: ibid, ierd, lordr,  nbordr, ndim, iret
+    integer :: ibid, ierd, lordr, nbordr, ndim, iret
     integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
     integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax
     integer :: nmaini, nbmap, tspaq, iordr, jad, tord(1)
@@ -93,7 +94,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=19) :: cesr, ligre, celbid, chsig, chsigs, ces1, ces2
     character(len=19) :: cheps, ces3, ces4, cheppe
     character(len=19) :: chepsp, ces5, ces6, ces7, ces8
-    logical(kind=1) :: lbid, crsigm, crepst, crepse, crepsp, creppe
+    aster_logical :: lbid, crsigm, crepst, crepse, crepsp, creppe
     integer, pointer :: nume_ordre(:) => null()
     integer, pointer :: paqma(:) => null()
     integer, pointer :: cesd(:) => null()

@@ -22,6 +22,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/gnomsd.h"
@@ -80,7 +81,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
     integer :: numarc, numins
     integer :: ifm, niv
     character(len=24) :: noobj
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
 !
 ! ----------------------------------------------------------------------
 !

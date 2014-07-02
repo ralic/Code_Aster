@@ -1,6 +1,7 @@
 subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
                   prepos)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -18,7 +19,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
     character(len=*) :: cumul
     integer :: lmat, nbvect
     complex(kind=8) :: vect(*), xsol(*)
-    logical(kind=1) :: prepos, prepo2
+    aster_logical :: prepos, prepo2
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +58,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic
     character(len=19) :: matas
-    integer ::  jsmdi, jsmhc,  neq
+    integer :: jsmdi, jsmhc, neq
     complex(kind=8), pointer :: vectmp(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !

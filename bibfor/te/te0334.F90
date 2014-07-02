@@ -1,5 +1,6 @@
 subroutine te0334(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcgr.h"
 #include "asterfort/elrefe_info.h"
@@ -54,15 +55,15 @@ subroutine te0334(option, nomte)
     character(len=8) :: nomres(nbres), nompar, mod3d
     character(len=16) :: optio2, phenom, cmp1, cmp2
     character(len=16) :: compor
-    logical(kind=1) :: lflu
+    aster_logical :: lflu
 ! DEB ------------------------------------------------------------------
 !
 ! --- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! --- GEOMETRIE ET INTEGRATION
 !     ------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     ---------------
@@ -90,7 +91,7 @@ subroutine te0334(option, nomte)
 !
     do 200 i = 1, 7
         repere(i)=0.d0
-200  end do
+200 end do
 !
 ! --- RECUPERATION DE L'INSTANT COURANT :
 !     ---------------------------------
@@ -166,10 +167,10 @@ subroutine te0334(option, nomte)
         lflu = .false.
         do 40 i = 1, mxcmel
             epspla(i) = zero
-40      continue
+ 40     continue
         do 50 i = 1, nbsig
             epsflf(i) = zero
-50      continue
+ 50     continue
     else
         call granvi(mod3d, ibid, ibid, nvif)
         lflu = .true.
@@ -218,7 +219,7 @@ subroutine te0334(option, nomte)
 !           ------------------------------------------------------
         do 100 i = 1, nbsig
             sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-100      continue
+100     continue
 !
         if (lteatt('C_PLAN','OUI')) then
             trsig = sigma(1) + sigma(2)
@@ -245,7 +246,7 @@ subroutine te0334(option, nomte)
         endif
         epspla(nbsig* (igau-1)+4) = epsm( nbsig* (igau-1)+4) - c1* sigma(4) - epsflf(4 )
 !
-120  end do
+120 end do
 !
 !
 ! --- RECUPERATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
@@ -260,6 +261,6 @@ subroutine te0334(option, nomte)
     do 140 igau = 1, npg
         do 130 isig = 1, nbsig
             zr(idefp+nbsig* (igau-1)+isig-1) = epspla(nbsig* (igau-1)+ isig)
-130      continue
-140  end do
+130     continue
+140 end do
 end subroutine

@@ -20,6 +20,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8t0.h"
 #include "asterfort/ftprim.h"
@@ -86,7 +87,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     real(kind=8) :: amdv(6, 9), apdv(6, 9), ammo(9), apmo(9), ap(6, 9), am(6, 9)
     real(kind=8) :: ther, coefa(9), coefc(9), coeff(9), coefb, coefd, coeft
     real(kind=8) :: coefg, coefh, coefi, coefj, coefv, coefk(9), epsthp, epsthm
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 ! DEB -----------------------------------------------------------------
 !
@@ -126,16 +127,16 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         do 41 k = 1, ndimsi
             l=l+1
             am(k,i)=vim(l)
-41      continue
+ 41     continue
         ammo(i)=0.d0
         do 42 n = 1, 3
             ammo(i)=ammo(i)+am(n,i)
-42      continue
+ 42     continue
         ammo(i)=ammo(i)/3.d0
         do 43 k = 1, ndimsi
             amdv(k,i)=am(k,i)-ammo(i)*kron(k)
-43      continue
-40  end do
+ 43     continue
+ 40 end do
     agem = vim(l+1)
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES
@@ -262,7 +263,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         j(i)=valres(i)
         taux(i)=valres(i+8)
         coefj=coefj+j(i)
-110  end do
+110 end do
 !
 !  ------- CARACTERISTIQUES EFFET DE LA TEMPERATURE
 !
@@ -342,46 +343,46 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     sigmmo = 0.d0
     do 113 k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113  end do
+113 end do
     sigmmo = sigmmo /3.d0
     do 140 k = 1, ndimsi
         sigmdv(k) = sigm(k)- sigmmo * kron(k)
         sigmp(k)=deuxmu/deumum*sigmdv(k) + troisk/troikm*sigmmo*kron(&
         k)
-140  end do
+140 end do
     sigmpo = 0.d0
     do 116 k = 1, 3
         sigmpo = sigmpo + sigmp(k)
-116  end do
+116 end do
     sigmpo = sigmpo /3.d0
     do 127 k = 1, ndimsi
         sigmpd(k) = sigmp(k)- sigmpo * kron(k)
-127  end do
+127 end do
 !
 ! -------  QUELQUES COEFFICIENTS-------------------------
 !
     coefb=0.d0
     do 150 i = 1, 8
         coefb=coefb+j(i)*(1-(taux(i)/delta)*(1-exp(-dteqt/taux(i))))
-150  end do
+150 end do
     coefd=(hygrp*tpprim*vieil)*coefb
     do 135 k = 1, ndimsi
         coefa(k)=0.d0
         do 130 i = 1, 8
             coefa(k)=coefa(k)+amdv(k,i)*(1-exp(-dteqt/taux(i)))
-130      continue
+130     continue
         coefc(k)= (sigmdv(k)*hygrm*tmprim)*vieil*coefb
         coeff(k)=coefa(k)-coefc(k)
-135  end do
+135 end do
     coefa(9)=0.d0
     do 118 i = 1, 8
         coefa(9)=coefa(9)+ammo(i)*(1-exp(-dteqt/taux(i)))
-118  end do
+118 end do
     coefc(9)= (sigmmo*hygrm*tmprim)*vieil*coefb
     coeff(9)=coefa(9)-coefc(9)
     do 125 k = 1, 3
         coefk(k)= coeff(k)+coeff(9)
-125  end do
+125 end do
 !
 ! ------- CALCUL DE DEPSMO ET DEPSDV
 !
@@ -414,7 +415,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         deps(k) = depst(k)-ther
         deps(k+3) = depst(k+3)
         depsmo = depsmo + deps(k)
-111  end do
+111 end do
     if (cplan) then
         deps(3) = deps3-ther
         depsmo = deps(1) + deps(2) + deps(3)
@@ -422,11 +423,11 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     depsmo = depsmo/3.d0
     do 115 k = 1, ndimsi
         depsdv(k) = deps(k) - depsmo * kron(k)
-115  end do
+115 end do
 !
     do 129 k = 1, ndimsi
         sigldv(k) = sigmpd(k) + deuxmu * depsdv(k)
-129  end do
+129 end do
     siglmo = sigmpo +troisk*depsmo
 !
 !--4-CALCUL DE SIGP
@@ -436,12 +437,12 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         do 117 k = 1, ndimsi
             sigpdv(k)=sigldv(k)-e*coeff(k)
             sigpdv(k)=sigpdv(k)/(1+e*coefd)
-117      continue
+117     continue
         sigpmo= siglmo-e*coeff(9)
         sigpmo = sigpmo/(1+e*coefd)
         do 151 k = 1, ndimsi
             sigp(k)=sigpdv(k)+sigpmo*kron(k)
-151      continue
+151     continue
 !
 !-- 6 CALCUL DE VIP
 !   -------------------
@@ -450,7 +451,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
             smdv(k)=sigmdv(k)*hygrm*tmprim
             spdv(k)=sigpdv(k)*hygrp*tpprim
             dsdv(k)=spdv(k)-smdv(k)
-119      continue
+119     continue
         smmo=sigmmo*hygrm*tmprim
         spmo=sigpmo*hygrp*tpprim
         dsmo = spmo-smmo
@@ -460,22 +461,22 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 apdv(k,i)=amdv(k,i)*exp(-dteqt/taux(i))
                 apdv(k,i)=apdv(k,i)+ dsdv(k)*vieil *j(i)*(taux(i)/&
                 delta)*(1-exp(-dteqt/taux(i)))
-170          continue
+170         continue
             apmo(i)= ammo(i)*exp(-dteqt/taux(i))
             apmo(i)=apmo(i)+ dsmo*vieil *j(i)*(taux(i)/delta)*(1-exp(-&
             dteqt/taux(i)))
-160      continue
+160     continue
 !
         do 180 k = 1, ndimsi
             apdv(k,9)=amdv(k,9)
             do 190 i = 1, 8
                 apdv(k,9)=apdv(k,9)+j(i)*vieil*dsdv(k)
-190          continue
-180      continue
+190         continue
+180     continue
         apmo(9)= ammo(9)
         do 200 i = 1, 8
             apmo(9)=apmo(9)+j(i)*vieil*dsmo
-200      continue
+200     continue
 !--------CALCUL DES AP ET DES VIP
         l=0
         do 210 i = 1, 9
@@ -483,8 +484,8 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 ap(k,i)=apdv(k,i)+apmo(i)*kron(k)
                 l=l+1
                 vip(l)=ap(k,i)
-220          continue
-210      continue
+220         continue
+210     continue
         vip(l+1)=agep
     endif
 !
@@ -504,11 +505,11 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
             do 270 l = 1, 3
                 dsidep(k,l) = dsidep(k,l)+(troisk/(3.d0*coefi))
                 dsidep(k,l) = dsidep(k,l)-deuxmu/(3.d0*coefh)
-270          continue
-260      continue
+270         continue
+260     continue
         do 280 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu/coefh
-280      continue
+280     continue
 !
 !----------- CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -518,8 +519,8 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                     if (l .eq. 3) goto 137
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
                     k,3)*dsidep(3,l)
-137              continue
-136          continue
+137             continue
+136         continue
         endif
     endif
 end subroutine

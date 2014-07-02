@@ -1,6 +1,6 @@
 subroutine lceiex(fami, kpg, ksp, mat, option,&
                   mu, su, de, ddedt, vim,&
-                  vip, r,codret)
+                  vip, r, codret)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,12 +21,13 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerofr.h"
     character(len=16) :: option
-    integer :: mat, kpg, ksp,i,codret
-    real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*),bmin,bmax,res,deriv
+    integer :: mat, kpg, ksp, i, codret
+    real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), bmin, bmax, res, deriv
     character(len=*) :: fami
 !
 !-----------------------------------------------------------------------
@@ -44,9 +45,9 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: regime
-    real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap,r,r1
+    real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap, r, r1
     real(kind=8) :: dn, tn, t(3), ddndtn
     integer :: cod(4)
     character(len=8) :: nom(4)
@@ -75,9 +76,9 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
     gc = val(1)
     sc = val(2)
-
-
-    dc = 3.2*gc/sc  
+!
+!
+    dc = 3.2*gc/sc
     h=sc*exp(-sc*su(1)/gc)
     r = h * val(3)
     c = h * val(4)
@@ -93,18 +94,18 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     tmp = max(0.d0,tmp)
     tmp = min(dc,tmp)
     ka = tmp
-
+!
     sk = max(0.d0,sc*exp(-sc*ka/gc))
-
-
+!
+!
 !    FORCES COHESIVES AUGMENTEES
     t(1) = mu(1) + r*su(1)
     t(2) = mu(2) + r*su(2)
     t(3) = mu(3) + r*su(3)
     tn = t(1)
 !
-
-
+!
+!
 ! -- CALCUL DE DELTA
 !
 !    SI RIGI_MECA_*
@@ -131,32 +132,32 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !    ENDOMMAGEMENT
     else if (tn .lt. r*dc) then
         regime = 1
-! 
-  !    UTILISATION D UN ALGORITHME DE NEWTON
+!
+!    UTILISATION D UN ALGORITHME DE NEWTON
 ! ! ! 
 ! !
 !     1 - DETERMINATION DE BORNES BMIN ET BMAX POUR NEWTON, AINSI
 !         QUE D UN POINT D INITIALISATION JUDICIEUX  (solution de la bi-lineaire)
-
+!
         dc1=dc*0.22
-        dn = (tn-sc)/(r-(sc*3)/(3.2*dc)) 
-        if (dn >= dc1 ) then
-             dn=(tn-(3/7)*sc)/(r-(sc*3)/(7*3.2*(dc)))
-             if (dn >= dc ) then 
-                     dn=0.999*dc
-             endif
+        dn = (tn-sc)/(r-(sc*3)/(3.2*dc))
+        if (dn >= dc1) then
+            dn=(tn-(3/7)*sc)/(r-(sc*3)/(7*3.2*(dc)))
+            if (dn >= dc) then
+                dn=0.999*dc
+            endif
         endif
-        
+!
         bmin = dn/4
         bmax = max(dn*3,dc)
-
+!
 !
 !     3 - BOUCLE DE CONVERGENCE DE L ALGORITHME DE NEWTON
         i = 0
-200      continue
+200     continue
 !         TEST DU CRITERE
         res = sc*exp(-sc*dn/gc) + r*dn-tn
-        if (abs(res) .lt. 1.d-4 .or. i > 1000  ) goto 210
+        if (abs(res) .lt. 1.d-4 .or. i > 1000) goto 210
         i = i + 1
 !
 !         NOUVEL ESTIMATEUR
@@ -167,20 +168,20 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
         if (dn .lt. bmin) dn = bmin
         if (dn .gt. bmax) dn = bmax
         goto 200
- 
-210      continue
-
+!
+210     continue
+!
         if (abs(res) .lt. 1.d-6 .and. i > 10) then
-        print *," Attention: + 50 iterations pour la methode de newton"
+            print *," Attention: + 50 iterations pour la methode de newton"
         endif
-
-        if(abs(res) .lt. 1.d-6 .and. i> 30) then
-                print *," Erreur : Algorithme de Newton non réussie"
+!
+        if (abs(res) .lt. 1.d-6 .and. i> 30) then
+            print *," Erreur : Algorithme de Newton non réussie"
 !          DIAGNOSTIC DE NON-CONVERGENCE
-        if (i .ge. 30) then
+            if (i .ge. 30) then
                 codret = 1
                 goto 9999
-        endif
+            endif
         endif
 !    SURFACE LIBRE FINALE (RUPTURE)
     else
@@ -196,22 +197,22 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 !
 ! -- actualisation des variables internes
-    !   V1 :  plus grande norme du saut (SEUIL EN SAUT)
-    !   V2 :  regime de la loi
-    !        -1 : contact
-    !         0 : adherence initiale ou courante
-    !         1 : dissipation
-    !         2 : surface libre finale (RUPTURE)
-    !         3 : SURFACE LIBRE (SOUS CONTRAINTE)
-    !   V3 :  INDICATEUR D'ENDOMMAGEMENT
-    !         0 : SAIN
-    !         1 : ENDOMMAGE
-    !         2 : CASSE
-    !   V4 :  POURCENTAGE D'ENERGIE DISSIPEE
-    !   V5 :  VALEUR DE L'ENERGIE DISSIPEE (V4*GC)
-    !   V6 :  ENERGIE RESIDUELLE COURANTE
-    !        (NULLE POUR CE TYPE D'IRREVERSIBILITE)
-    !   V7 A V9 : VALEURS DE delta
+!   V1 :  plus grande norme du saut (SEUIL EN SAUT)
+!   V2 :  regime de la loi
+!        -1 : contact
+!         0 : adherence initiale ou courante
+!         1 : dissipation
+!         2 : surface libre finale (RUPTURE)
+!         3 : SURFACE LIBRE (SOUS CONTRAINTE)
+!   V3 :  INDICATEUR D'ENDOMMAGEMENT
+!         0 : SAIN
+!         1 : ENDOMMAGE
+!         2 : CASSE
+!   V4 :  POURCENTAGE D'ENERGIE DISSIPEE
+!   V5 :  VALEUR DE L'ENERGIE DISSIPEE (V4*GC)
+!   V6 :  ENERGIE RESIDUELLE COURANTE
+!        (NULLE POUR CE TYPE D'IRREVERSIBILITE)
+!   V7 A V9 : VALEURS DE delta
 !
     kap = min( max(ka,dn) , dc )
     gap = kap/dc * (2.d0 - kap/dc)
@@ -239,12 +240,12 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 ! -- MATRICE TANGENTE
 !
-5000  continue
+5000 continue
     if (.not. rigi) goto 9999
 !
 !    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
     if (elas) then
-         if (regime .eq. 1) regime = 0
+        if (regime .eq. 1) regime = 0
     endif
 !
     call r8inir(36, 0.d0, ddedt, 1)
@@ -265,6 +266,6 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     endif
     ddedt(1,1) = ddndtn
 !
-9999  continue
+9999 continue
 !
 end subroutine

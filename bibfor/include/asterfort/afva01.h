@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine afva01(typsd, nomsd, nomsym, lautr)
         character(len=16) :: typsd
         character(len=16) :: nomsd
         character(len=16) :: nomsym
-        logical(kind=1) :: lautr
+        aster_logical :: lautr
     end subroutine afva01
 end interface

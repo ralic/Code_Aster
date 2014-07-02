@@ -17,6 +17,7 @@ subroutine jeprsg(cunit, tgr, info)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/iunifi.h"
     character(len=*) :: cunit
@@ -41,7 +42,7 @@ subroutine jeprsg(cunit, tgr, info)
     integer :: idinit, idxaxd, itrech, itiad, itcol, lmots, idfr
     common /ixadje/  idinit(2),idxaxd(2),itrech,itiad,itcol,lmots,idfr
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: lamov
+    aster_logical :: lamov
     character(len=132) :: chaine, init, ente, diese
     integer :: k, id, ida, nbc, is, nn, nc
 ! DEB ------------------------------------------------------------------
@@ -54,14 +55,14 @@ subroutine jeprsg(cunit, tgr, info)
     do 10 k = 1, 132
         init(k:k) = '.'
         diese(k:k) = '#'
-10  end do
+ 10 end do
     ente = ' '
     do 20 k = 1, 132
         ente(k:k) = '-'
-20  end do
+ 20 end do
     do 30 k = 1, 132, 10
         ente(k:k) = '+'
-30  end do
+ 30 end do
     do 80 iz = 1, 2
         id = idinit(iz)
         if (id .eq. 0) goto 80
@@ -86,7 +87,7 @@ subroutine jeprsg(cunit, tgr, info)
         chaine = init
         nbc = 0
         nc = 1
-40      continue
+ 40     continue
         nc0 = nc
         is = iszon(jiszon+id)
         if (is .eq. 0) goto 60
@@ -105,7 +106,7 @@ subroutine jeprsg(cunit, tgr, info)
                 endif
                 do 50 k = nbc + 1, (nn/132) - 1
                     write (julist,'(A,/,A,/,A,/)') ente,chaine,ente
-50              continue
+ 50             continue
                 chaine = init
                 if (iszon(jiszon+id+3) .eq. istat(2)) then
                     chaine(1:nc) = diese
@@ -123,7 +124,7 @@ subroutine jeprsg(cunit, tgr, info)
             id = is
             goto 40
         endif
-60      continue
+ 60     continue
         if (lamov) then
             lamov = .false.
             maplac = id - ida - 8
@@ -141,7 +142,7 @@ subroutine jeprsg(cunit, tgr, info)
                 do 70 k = nbc, (nn/132) - 1
                     write (julist,'(A,/,A,/,A,/)') ente,chaine,ente
                     chaine = init
-70              continue
+ 70             continue
             endif
         endif
         chaine(nc:132) = ' '
@@ -152,7 +153,7 @@ subroutine jeprsg(cunit, tgr, info)
             write (julist,'(A)')&
      &      '----------------------------------------------------------'
         endif
-80  end do
-90  continue
+ 80 end do
+ 90 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

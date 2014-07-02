@@ -16,6 +16,7 @@ subroutine zzappa(num, liste, n, app)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
 !    ESTIMATEUR ZZ (2-EME VERSION 92)
 !
@@ -24,7 +25,7 @@ subroutine zzappa(num, liste, n, app)
 !        SI NON : APP = .FALSE.
 !
     integer :: liste(1)
-    logical(kind=1) :: app
+    aster_logical :: app
 !-----------------------------------------------------------------------
     integer :: i, n, num
 !-----------------------------------------------------------------------
@@ -33,5 +34,5 @@ subroutine zzappa(num, liste, n, app)
         if (num .eq. liste(i)) then
             app = .true.
         endif
- 1  end do
+  1 end do
 end subroutine

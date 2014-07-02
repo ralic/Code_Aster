@@ -29,6 +29,7 @@ subroutine te0061(option, nomte)
     implicit none
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm3d.h"
@@ -57,7 +58,7 @@ subroutine te0061(option, nomte)
     integer :: jgano, ipoids, ivf, idfde, igeom, imate, nno, kp, npg1, i, itemp
     integer :: itps, n1, n2, ndim, ivectt, icamas, l, nuno, nnos, npg2, ipoid2
     integer :: ivf2, idfde2
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
@@ -66,15 +67,15 @@ subroutine te0061(option, nomte)
 !
     call uttgel(nomte, typgeo)
     if ((lteatt('LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
-        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     else
-        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -163,7 +164,7 @@ subroutine te0061(option, nomte)
             dtemdx = dtemdx + zr(itemp+i-1)*dfdx(i)
             dtemdy = dtemdy + zr(itemp+i-1)*dfdy(i)
             dtemdz = dtemdz + zr(itemp+i-1)*dfdz(i)
-110      continue
+110     continue
 !
         if (.not.aniso) then
             fluglo(1) = lambda*dtemdx
@@ -178,7 +179,7 @@ subroutine te0061(option, nomte)
                     point(1) = point(1) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-3)
                     point(2) = point(2) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-2)
                     point(3) = point(3) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-1)
-130              continue
+130             continue
                 call utrcyl(point, dire, orig, p)
             endif
             fluglo(1) = dtemdx
@@ -200,8 +201,8 @@ subroutine te0061(option, nomte)
         do 140 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) - poids* ((1.0d0-theta)* (dfdx(i)*fluglo(1)+dfdy(i)*f&
                              &luglo(2)+ dfdz(i)*fluglo(3)))
-140      continue
-160  continue
+140     continue
+160 continue
 !
 !====
 ! 3.2 CALCULS TERMES DE MASSE
@@ -219,14 +220,14 @@ subroutine te0061(option, nomte)
         do 170 i = 1, nno
 ! CALCUL DE T-
             tem = tem + zr(itemp+i-1)*zr(ivf2+l+i-1)
-170      continue
+170     continue
 !
 ! --- AFFECTATION DU TERME DE MASSE :
 !     -----------------------------
         do 190 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*cp/deltat*zr(ivf2+ l+i-1)*tem
-190      continue
-210  continue
+190     continue
+210 continue
 !
 !
 end subroutine

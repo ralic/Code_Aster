@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
                       lasse, nbmatr, ltypma, loptme, loptma,&
@@ -23,13 +25,13 @@ interface
         character(len=*) :: typmaz
         character(len=*) :: optcaz
         character(len=*) :: optasz
-        logical(kind=1) :: lcalc
-        logical(kind=1) :: lasse
+        aster_logical :: lcalc
+        aster_logical :: lasse
         integer :: nbmatr
         character(len=6) :: ltypma(20)
         character(len=16) :: loptme(20)
         character(len=16) :: loptma(20)
-        logical(kind=1) :: lcalme(20)
-        logical(kind=1) :: lassme(20)
+        aster_logical :: lcalme(20)
+        aster_logical :: lassme(20)
     end subroutine nmcmat
 end interface

@@ -19,6 +19,7 @@ subroutine xstan2(crimax, noma, modele)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -74,14 +75,14 @@ subroutine xstan2(crimax, noma, modele)
     character(len=8) :: typma, lirefe(10), elrefp
     character(len=2) :: ch2
     real(kind=8) :: crit, vmoin, vplus, vtot
-    integer ::  jcesd(7), jcesl(7), jcesv(7), iad
-    integer :: jnoxfl,   itypma, nncp, ibid, ier
-    integer :: ifm, niv,   jpint,  jcnse
-    integer ::  jconx2, adrma,  ndime, ndim, nbno
+    integer :: jcesd(7), jcesl(7), jcesv(7), iad
+    integer :: jnoxfl, itypma, nncp, ibid, ier
+    integer :: ifm, niv, jpint, jcnse
+    integer :: jconx2, adrma, ndime, ndim, nbno
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
-    integer ::  itypel, nbelr, igeom, nuno2, inoloc, cpt
+    integer :: itypel, nbelr, igeom, nuno2, inoloc, cpt
     integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose, nnot(3)
-    logical(kind=1) :: lelim, ancien
+    aster_logical :: lelim, ancien
     integer, pointer :: xfem_cont(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsv(:) => null()
@@ -186,11 +187,11 @@ subroutine xstan2(crimax, noma, modele)
                 itypma = typmail(numa2)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                 if ((.not.ancien) .and. (.not.ismali(typma) )) then
-                  if (ndim .eq. 2) then
-                    nnose = 6
-                  else
-                    nnose = 10
-                  endif
+                    if (ndim .eq. 2) then
+                        nnose = 6
+                    else
+                        nnose = 10
+                    endif
                 else
                     nnose = ndim+1
                 endif

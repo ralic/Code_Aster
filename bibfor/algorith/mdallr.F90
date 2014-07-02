@@ -29,6 +29,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 ! ----------------------------------------------------------------------
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/crnslv.h"
@@ -48,7 +49,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 #include "asterfort/wkvect.h"
 !
     integer :: nbmode, nbsauv, ldlim, imode, ier, lvale, i, jrefa
-    logical(kind=1) :: lrefe, zcmplx
+    aster_logical :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ
     character(len=14) :: nugene
     character(len=19) :: chamge

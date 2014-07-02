@@ -16,6 +16,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
@@ -26,7 +27,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    logical(kind=1), intent(out) :: limit
+    aster_logical, intent(out) :: limit
     character(len=*), intent(in) :: nommaz, nomres, forvie
     real(kind=8), intent(in) :: salt
 ! ----------------------------------------------------------------------
@@ -102,9 +103,9 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 endif
                 goto 20
             endif
-10      continue
+ 10     continue
         call utmess('F', 'MODELISA4_89')
-20      continue
+ 20     continue
 !
     else if (nomres(1:8) .eq. 'MANSON_C') then
 !
@@ -144,9 +145,9 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 endif
                 goto 40
             endif
-30      continue
+ 30     continue
         call utmess('F', 'MODELISA4_91')
-40      continue
+ 40     continue
 !
     else if (nomres(1:8) .eq. 'FORM_VIE') then
 !
@@ -181,9 +182,9 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                     endif
                 endif
                 goto 60
-50          continue
+ 50         continue
             call utmess('F', 'MODELISA4_91')
-60          continue
+ 60         continue
 !
         else
 ! C'EST UNE FORMULE

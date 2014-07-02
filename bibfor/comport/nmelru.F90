@@ -1,6 +1,6 @@
-subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
-                  compor, epseq, p, divu, nonlin,&
-                  ener)
+subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
+                  imate, compor, epseq, p, divu,&
+                  nonlin, ener)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
@@ -56,7 +57,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
     real(kind=8) :: epseq, p, divu, ener(2)
     character(len=*) :: fami, poum
     character(len=16) :: compor(*)
-    logical(kind=1) :: nonlin
+    aster_logical :: nonlin
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: icodre(3)
@@ -71,7 +72,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
 !
     character(len=8) :: nomres(3), para_type
 !
-    logical(kind=1) :: trac, line, puis
+    aster_logical :: trac, line, puis
 !
     common        /rconm2/alfafa,unsurn,sieleq
     real(kind=8) :: alfafa, unsurn, sieleq
@@ -86,22 +87,22 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
 ! -  LECTURE DE E, NU, ALPHA ET DERIVEES / TEMPERATRURE
 !====================================================================
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
-               ksp, tref, iret2)
-
+                ksp, tref, iret2)
+!
     if (iret2 .ne. 0) tref=0.d0
-
+!
     if (fami(1:4) .eq. 'XFEM') then
-
+!
         call rcvarc(' ', 'TEMP', poum, fami, kpg + idecpg,&
-                1, temp, iret1)
+                    1, temp, iret1)
     else
         call rcvarc(' ', 'TEMP', poum, 'RIGI', kpg,&
-                1, temp, iret1)
-
+                    1, temp, iret1)
+!
     endif
-
+!
     if (iret1 .ne. 0) temp=0.d0
-
+!
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
@@ -172,7 +173,8 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
 !
         else if (trac) then
             sieleq = demu * epseq
-            call rctype(imate, 1, 'TEMP', [temp], para_vale, para_type)
+            call rctype(imate, 1, 'TEMP', [temp], para_vale,&
+                        para_type)
             if ((para_type.eq.'TEMP') .and. (iret1.eq.1)) then
                 call utmess('F', 'COMPOR5_5', sk = para_type)
             endif
@@ -181,8 +183,8 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
             call rcfonc('S', 1, jprol, jvale, nbvale,&
                         sigy = sigy)
             call rcfonc('E', 1, jprol, jvale, nbvale,&
-                        e = e, nu = nu, p = 0.d0, rp = rp,&
-                        rprim = rprim, airerp = airep, sieleq = sieleq, dp = p)
+                        e = e, nu = nu, p = 0.d0, rp = rp, rprim = rprim,&
+                        airerp = airep, sieleq = sieleq, dp = p)
             dp = 0.d0
             drp = 0.d0
             dairep = 0.d0
@@ -207,9 +209,9 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
 !  CALCUL DE L'ENERGIE LIBRE ET DE LA DERIVEE /TEMPERATURE
 !=====================================================================
 !
-
+!
     nrj = 0.5d0*k*divu*divu
-
+!
 !    POUR COMPARER AVEC CALC_K_G, enlener le terme constant   
 !    nrj = 0.5d0*k*divu*divu - 9/2*k*alpha*alpha*(temp- tref)*(temp- tref)
     if (iret1 .eq. 0) then
@@ -221,7 +223,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
     else
         dnrj = 0.5d0*dk*divu*divu-k3*divu*alpha
     endif
-    
+!
 !    POUR COMPARER AVEC CALC_K_G, enlener le terme constant
 !    dnrj = dnrj - 9*k*alpha*alpha*(temp- tref)
 !

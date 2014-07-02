@@ -19,6 +19,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/getmjm.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
@@ -53,7 +54,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
     character(len=16) :: nommc
     character(len=3) :: tymocl(nmocl)
     character(len=16) :: motcle(nmocl)
-    logical(kind=1) :: error
+    aster_logical :: error
     integer :: izone, noc, nval, ival, n
     real(kind=8) :: parar
     integer :: parai
@@ -123,13 +124,13 @@ subroutine cazouu(motfac, nzoco, nommcz)
                             ASSERT(.false.)
                         endif
                     endif
-14                  continue
+ 14                 continue
                 endif
-16          continue
-15      continue
+ 16         continue
+ 15     continue
     endif
 !
-20  continue
+ 20 continue
 !
     if (error) then
         call utmess('F', 'CONTACT3_4', sk=nommc)

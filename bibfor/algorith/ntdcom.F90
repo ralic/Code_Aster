@@ -17,6 +17,7 @@ subroutine ntdcom(evolsc)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -37,7 +38,7 @@ subroutine ntdcom(evolsc)
     integer :: iocc, k, n1, nbcham
     character(len=8) :: k8b
     character(len=16) :: comp, motcle, k16bid, nomcmd, tysd
-    logical(kind=1) :: lrela, lsech
+    aster_logical :: lrela, lsech
 !
     data         motcle / 'COMPORTEMENT' /
 ! ----------------------------------------------------------------------

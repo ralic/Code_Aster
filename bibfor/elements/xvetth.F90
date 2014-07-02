@@ -50,6 +50,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 ! ----
 ! VECTT  --> VECTEUR ELEMENTAIRE
 !.......................................................................
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -75,7 +76,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
     character(len=8) :: nomres(2), elrese(3), fami(3), poum
     character(len=16) :: phenom
-    logical(kind=1) :: axi
+    aster_logical :: axi
     real(kind=8) :: baslog(3*ndim), tem, lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
@@ -123,8 +124,8 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
     poum = '+'
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IPOIDS,IVF,IDFDE
-    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, npg=npg, jpoids=ipoids,&
+                     jvf=ivf, jdfde=idfde)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
@@ -169,7 +170,8 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
             end do
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then

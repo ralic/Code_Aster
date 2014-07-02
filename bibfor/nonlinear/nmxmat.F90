@@ -26,6 +26,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
 #include "asterfort/nmassm.h"
@@ -37,7 +38,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lcalme(20), lassme(20)
+    aster_logical :: lcalme(20), lassme(20)
     character(len=*) :: modelz
     character(len=*) :: mate
     character(len=24) :: sdtime, sdstat
@@ -50,7 +51,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     character(len=19) :: meelem(*), measse(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
-    logical(kind=1) :: lcfint
+    aster_logical :: lcfint
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,7 +106,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
     character(len=19) :: matele, matass
     character(len=1) :: base
     real(kind=8) :: instam, instap
-    logical(kind=1) :: lcalc, lasse
+    aster_logical :: lcalc, lasse
 !
 ! ----------------------------------------------------------------------
 !
@@ -171,6 +172,6 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
                         typmat, optass, meelem, matass)
             call nmtime(sdtime, 'END', 'ASSE_MATR')
         endif
-10  end do
+ 10 end do
 !
 end subroutine

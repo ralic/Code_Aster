@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                       geom2, lraff)
@@ -24,6 +26,6 @@ interface
         character(len=8) :: elrf2d(6)
         real(kind=8) :: geom1(*)
         real(kind=8) :: geom2(*)
-        logical(kind=1) :: lraff
+        aster_logical :: lraff
     end subroutine pj2dtr
 end interface

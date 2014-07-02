@@ -23,6 +23,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 ! IN  : NOMIN  : NOM UTILISATEUR DU CONCEPT TRAN_GENE AMONT
 ! IN  : BASEMO : NOM UTILISATEUR DU CONCEPT MODE_MECA AMONT
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -70,13 +71,13 @@ subroutine tran77(nomres, typres, nomin, basemo)
     character(len=19) :: kinst, knume, trange, typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, objve1, k24bid
     character(len=24) :: objve2, objve3, objve4
-    logical(kind=1) :: tousno, multap, leffor, prems
+    aster_logical :: tousno, multap, leffor, prems
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  iarchi, ibid, ich,  iadrif
-    integer :: idec, idefm,  idresu,  inocmp
+    integer :: iarchi, ibid, ich, iadrif
+    integer :: idec, idefm, idresu, inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
-    integer ::  jc, jinst, jnume, linst, llcha
+    integer :: jc, jinst, jnume, linst, llcha
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
     integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
     real(kind=8), pointer :: base(:) => null()
@@ -347,8 +348,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                             zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
                 call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else
-                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode),&
-                            zr(lvale))
+                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode), zr(lvale))
             endif
 !
             call rsnoch(nomres, type(ich), iarchi)

@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmetl3(modele, compor, evonol, result, numein,&
                       sdieto, leinit, icham)
         character(len=24) :: modele
         character(len=24) :: compor
-        logical(kind=1) :: evonol
+        aster_logical :: evonol
         character(len=8) :: result
         integer :: numein
         character(len=24) :: sdieto
-        logical(kind=1) :: leinit
+        aster_logical :: leinit
         integer :: icham
     end subroutine nmetl3
 end interface

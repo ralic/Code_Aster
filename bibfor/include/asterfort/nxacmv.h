@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nxacmv(modele, mate, carele, fomult, charge,&
                       infcha, infoch, numedd, solveu, lostat,&
@@ -31,14 +33,14 @@ interface
         character(len=24) :: infoch
         character(len=24) :: numedd
         character(len=19) :: solveu
-        logical(kind=1) :: lostat
+        aster_logical :: lostat
         character(len=24) :: time
         real(kind=8) :: tpsthe(6)
-        logical(kind=1) :: reasvc
-        logical(kind=1) :: reasvt
-        logical(kind=1) :: reasmt
-        logical(kind=1) :: reasrg
-        logical(kind=1) :: reasms
+        aster_logical :: reasvc
+        aster_logical :: reasvt
+        aster_logical :: reasmt
+        aster_logical :: reasrg
+        aster_logical :: reasms
         character(len=1) :: creas
         character(len=24) :: vtemp
         character(len=24) :: vhydr

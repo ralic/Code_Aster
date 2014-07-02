@@ -18,14 +18,15 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, iflag(nbvec), jrvecp
-    real(kind=8) ::  rmima(4*nbvec)
-    logical(kind=1) :: lsig0
+    real(kind=8) :: rmima(4*nbvec)
+    aster_logical :: lsig0
 ! ----------------------------------------------------------------------
 ! BUT: ENCADRER LES POINTS REPRESANTANT LE CISAILLEMENT TAU
 !      DANS LE PLAN DE CISAILLEMENT (PLAN u, v).
@@ -114,7 +115,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
             if (cvi .gt. cvmax) then
                 cvmax = cvi
             endif
-40      continue
+ 40     continue
 !
 !-----------------------------------------------------------------------
 !   ------------------------------------
@@ -152,7 +153,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
             lsig0 = .true.
         endif
 !
-30  end do
+ 30 end do
 !
     call jedema()
 end subroutine

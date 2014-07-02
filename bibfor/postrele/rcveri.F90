@@ -1,5 +1,6 @@
 subroutine rcveri(tablz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -53,7 +54,7 @@ subroutine rcveri(tablz)
     character(len=8) :: k8b, crit, tyva
     character(len=16) :: valek(5), table, tbtmp1, tbtmp2, titu, valk(2), typmec
     character(len=24) :: coorx, coory, coorz, instan, intitu
-    logical(kind=1) :: exi1, exi2, exi3, exist, noinst, impnm
+    aster_logical :: exi1, exi2, exi3, exist, noinst, impnm
     parameter(crit='RELATIF ',eps=1.0d-6, eps2=1.0d-2)
 !
     call jemarq()
@@ -176,7 +177,7 @@ subroutine rcveri(tablz)
             if (ps .le. eps) then
                 call utmess('F', 'POSTRCCM_37', sk=table)
             endif
-10      continue
+ 10     continue
 !
 !       ON VERIFIE QUE LES NOEUDS SONT ALIGNES
         maxdis=eps2
@@ -192,7 +193,7 @@ subroutine rcveri(tablz)
                 impnm=.true.
                 maxdis=max(disrel,maxdis)
             endif
-20      continue
+ 20     continue
 !
         if (impnm) then
             if (tyva(1:2) .eq. 'K8') then
@@ -213,13 +214,13 @@ subroutine rcveri(tablz)
         call jedetr(coorz)
 !
 !
-100  end do
+100 end do
 !
 !
 !
 ! ------------------------
 !
-999  continue
+999 continue
 !
     call jedetr(intitu)
 !

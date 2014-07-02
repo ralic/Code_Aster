@@ -20,13 +20,14 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/majour.h"
-    logical(kind=1) :: lgrot, lendo
+    aster_logical :: lgrot, lendo
     real(kind=8) :: coef
     character(len=*) :: incplz, incmoz, ddincz
     character(len=24) :: numedd

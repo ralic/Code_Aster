@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfnors(noma, defico, resoco, posmai, typent,&
                       nument, lpoutr, lpoint, ksi1, ksi2,&
@@ -26,15 +28,15 @@ interface
         integer :: posmai
         character(len=4) :: typent
         integer :: nument
-        logical(kind=1) :: lpoutr
-        logical(kind=1) :: lpoint
+        aster_logical :: lpoutr
+        aster_logical :: lpoint
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2
-        logical(kind=1) :: lliss
+        aster_logical :: lliss
         integer :: itype
         real(kind=8) :: vector(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        logical(kind=1) :: lnfixe
+        aster_logical :: lnfixe
     end subroutine cfnors
 end interface

@@ -2,6 +2,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
@@ -93,11 +94,11 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
-    logical(kind=1) :: lxfem
+    aster_logical :: lxfem
     character(len=24) :: list_node
     integer :: jlino
     integer :: nb_node
-    logical(kind=1) :: l_liai, l_ocmp
+    aster_logical :: l_liai, l_ocmp
     integer :: val_nb_liai
     real(kind=8) :: val_r_liai
     character(len=8) :: val_f_liai
@@ -178,7 +179,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLI.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, ' ', list_node, &
+        call getnode(mesh, keywordfact, iocc, ' ', list_node,&
                      nb_node)
 !
 ! ----- No nodes (empty groups)

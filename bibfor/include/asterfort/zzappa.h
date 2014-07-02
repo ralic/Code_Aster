@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine zzappa(num, liste, n, app)
         integer :: num
         integer :: liste(1)
         integer :: n
-        logical(kind=1) :: app
+        aster_logical :: app
     end subroutine zzappa
 end interface

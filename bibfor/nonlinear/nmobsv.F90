@@ -18,7 +18,8 @@ subroutine nmobsv(noma, sddisc, sdieto, sdobse, numins)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/diinst.h"
 #include "asterfort/lobs.h"
 #include "asterfort/nmobse.h"
@@ -45,7 +46,7 @@ subroutine nmobsv(noma, sddisc, sdieto, sdobse, numins)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: inst
-    logical(kind=1) :: lobsv
+    aster_logical :: lobsv
 !
 ! ----------------------------------------------------------------------
 !

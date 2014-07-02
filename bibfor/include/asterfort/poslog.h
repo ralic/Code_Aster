@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine poslog(resi, rigi, tn, tp, fm,&
                       lgpg, vip, ndim, fp, g,&
@@ -23,8 +25,8 @@ interface
                       sigp, dsidep, pk2m, pk2, codret)
         integer :: ndim
         integer :: lgpg
-        logical(kind=1) :: resi
-        logical(kind=1) :: rigi
+        aster_logical :: resi
+        aster_logical :: rigi
         real(kind=8) :: tn(6)
         real(kind=8) :: tp(6)
         real(kind=8) :: fm(3, 3)
@@ -33,7 +35,7 @@ interface
         integer :: g
         real(kind=8) :: dtde(6, 6)
         real(kind=8) :: sigm(2*ndim)
-        logical(kind=1) :: cplan
+        aster_logical :: cplan
         character(len=*) :: fami
         integer :: mate
         real(kind=8) :: instp

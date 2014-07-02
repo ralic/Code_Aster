@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujpot(mod, mater, vind, depsh, sigd,&
                       sige, etatf, rdctps, iret, aredec)
@@ -25,8 +27,8 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: sige(6)
         character(len=7) :: etatf
-        logical(kind=1) :: rdctps
+        aster_logical :: rdctps
         integer :: iret
-        logical(kind=1) :: aredec
+        aster_logical :: aredec
     end subroutine hujpot
 end interface

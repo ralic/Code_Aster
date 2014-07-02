@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ascalc(resu, masse, mome, psmo, stat,&
                       nbmode, neq, nordr, knomsy, nbopt,&
@@ -34,14 +36,14 @@ interface
         character(len=*) :: knomsy(*)
         integer :: nbopt
         integer :: ndir(*)
-        logical(kind=1) :: monoap
-        logical(kind=1) :: muapde
+        aster_logical :: monoap
+        aster_logical :: muapde
         integer :: nsupp(*)
         character(len=*) :: typcmo
         real(kind=8) :: temps
-        logical(kind=1) :: comdir
+        aster_logical :: comdir
         character(len=*) :: typcdi
-        logical(kind=1) :: tronc
+        aster_logical :: tronc
         real(kind=8) :: amort(*)
         real(kind=8) :: spectr(*)
         real(kind=8) :: gamma0(*)
@@ -49,7 +51,7 @@ interface
         real(kind=8) :: reasup(*)
         real(kind=8) :: depsup(*)
         integer :: tcosup(*)
-        logical(kind=1) :: corfre
+        aster_logical :: corfre
         real(kind=8) :: f1gup
         real(kind=8) :: f2gup
     end subroutine ascalc

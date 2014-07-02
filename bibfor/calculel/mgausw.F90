@@ -2,10 +2,11 @@ subroutine mgausw(a, b, dim, nordre, nb,&
                   det, iret)
 !
     implicit none
+#include "asterf_types.h"
 !
     integer :: dim, nb, nordre
     real(kind=8) :: a(dim, dim), b(dim, nb), det
-    logical(kind=1) :: iret
+    aster_logical :: iret
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +51,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
     integer :: i, j, k
     real(kind=8) :: c, d, cmin, cmax
-    logical(kind=1) :: flag, ldet
+    aster_logical :: flag, ldet
 !
     iret = .true.
 !
@@ -76,7 +77,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
                 j = k
                 flag = .true.
             endif
-20      continue
+ 20     continue
 !
 ! ----- DETERMINANT
 !
@@ -105,7 +106,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
             endif
         endif
 !
-30      continue
+ 30     continue
 !
 ! ----- PERMUTATION
 !
@@ -115,13 +116,13 @@ subroutine mgausw(a, b, dim, nordre, nb,&
                 d = a(i,k)
                 a(i,k) = a(j,k)
                 a(j,k) = d
-40          continue
+ 40         continue
 !
             do 50 k = 1, nb
                 d = b(i,k)
                 b(i,k) = b(j,k)
                 b(j,k) = d
-50          continue
+ 50         continue
 !
             det = (-1.d0)*det
 !
@@ -137,15 +138,15 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
                 do 60 k = 1, nb
                     b(j,k) = b(j,k) - d*b(i,k)
-60              continue
+ 60             continue
 !
                 do 70 k = i+1, nordre
                     a(j,k) = a(j,k) - d*a(i,k)
-70              continue
+ 70             continue
 !
             endif
 !
-10      continue
+ 10     continue
 !
 ! --- RESOLUTION
 !
@@ -156,12 +157,12 @@ subroutine mgausw(a, b, dim, nordre, nb,&
             d = 0.d0
             do 90 j = i+1, nordre
                 d = d + a(i,j) * b(j, k)
-90          continue
+ 90         continue
 !
             b(i,k) = (b(i,k) - d) / a(i,i)
 !
-80      continue
+ 80     continue
 !
-100  continue
+100 continue
 !
 end subroutine

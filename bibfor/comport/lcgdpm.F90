@@ -22,6 +22,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
 ! aslint: disable=W1501
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/nzcalc.h"
@@ -65,7 +66,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !.......................................................................
 !
     integer :: jprol, jvale, nbval(5), maxval, nz
-    integer :: i, j, k, l, mode, ire2,  iret2
+    integer :: i, j, k, l, mode, ire2, iret2
     integer :: ind(3, 3), nbr
 !
     real(kind=8) :: phase(5), phasm(5), zalpha
@@ -101,7 +102,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(20), test
     character(len=8) :: nomres(20), nomcle(5), acier(4)
 !
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
     data        kr/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data        pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/
@@ -770,7 +771,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 tau(i)=taum(i)
             end do
         else
-            do  i = 1, 6
+            do i = 1, 6
                 tau(i)=taup(i)
             end do
         endif

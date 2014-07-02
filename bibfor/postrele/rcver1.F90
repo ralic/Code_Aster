@@ -1,5 +1,6 @@
 subroutine rcver1(phenoz, tablz, tably)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
@@ -48,8 +49,7 @@ subroutine rcver1(phenoz, tablz, tably)
     character(len=8) :: k8b, valk(3), tyva
     character(len=16) :: tabref, tabcom, typmec, valek(5), phenom
     character(len=24) :: ordo1, ordo2, intit1, intit2, inst1, inst2
-    logical(kind=1) :: exi1, exi2, exi3, exist
-    logical :: lcond
+    aster_logical :: exi1, exi2, exi3, exist
 !
     call jemarq()
 !
@@ -102,7 +102,7 @@ subroutine rcver1(phenoz, tablz, tably)
                     call utmess('F', 'POSTRCCM_41', nk=3, valk=valk, nr=2,&
                                 valr=valr)
                 endif
-20          continue
+ 20         continue
 !       ON COMPARE LES COORDONNEES DES NOEUDS EXTREMITES
 !       (CAR ON N'A PAS FORCEMENT NBNO1 = NBNO2)
         else if (phenom.eq.'THERMIQUE') then
@@ -118,18 +118,17 @@ subroutine rcver1(phenoz, tablz, tably)
                     call utmess('F', 'POSTRCCM_41', nk=3, valk=valk, nr=2,&
                                 valr=valr)
                 endif
-40          continue
+ 40         continue
         endif
         call jedetr(ordo1)
         call jedetr(ordo2)
-10  end do
+ 10 end do
 !
 ! --- VERIFICATION DU NOMBRE DE LIGAMENTS
 !     -----------------------------------
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     call tbexip(tabcom, valek(4), exist, k8b)
-    lcond=exist
-    ASSERT(lcond)
+    ASSERT(exist)
     call tbexv1(tabcom, valek(4), intit2, 'V', nbint2,&
                 tyva)
 !     CAS UNITAIRE: 1 SEUL LIGAMENT
@@ -155,8 +154,7 @@ subroutine rcver1(phenoz, tablz, tably)
 !     --------------------------------------------------------
     if (typmec .eq. 'EVOLUTION') then
         call tbexip(tabcom, valek(5), exist, k8b)
-        lcond=exist
-        ASSERT(lcond)
+        ASSERT(exist)
         call tbexve(tabref, valek(5), inst1, 'V', nbins1,&
                     k8b)
         call jeveuo(inst1, 'L', jinst1)
@@ -173,13 +171,13 @@ subroutine rcver1(phenoz, tablz, tably)
                 call utmess('F', 'POSTRCCM_43', nk=2, valk=valk, nr=2,&
                             valr=valr)
             endif
-30      continue
+ 30     continue
         call jedetr(inst1)
         call jedetr(inst2)
     endif
 !
 !
-999  continue
+999 continue
 !
     call jedema()
 !

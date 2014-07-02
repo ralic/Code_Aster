@@ -22,6 +22,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterfort/calcdp.h"
 #include "asterfort/ecpuis.h"
 #include "asterfort/gdsmci.h"
@@ -104,7 +105,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
      &            kr,id,rac2,rc,ind,ind1,ind2
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: i, ij, line, n
     real(kind=8) :: dp, seuil
     real(kind=8) :: rp, pentep, airerp
@@ -172,8 +173,8 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
                 pente=rprim
             else if (compor.eq.'VMIS_ISOT_TRAC') then
                 call rcfonc('E', 1, jprol, jvale, nbval,&
-                            e = young* trbetr/3, nu = nu, p = pm, rp = rp,&
-                            rprim = pente, airerp = airerp, sieleq = mu*eqbetr, dp = dp)
+                            e = young* trbetr/3, nu = nu, p = pm, rp = rp, rprim = pente,&
+                            airerp = airerp, sieleq = mu*eqbetr, dp = dp)
             else
 ! CAS VISQUEUX : CALCUL DE DP PAR RESOLUTION DE
 !  FPLAS - (R'+MU TR BEL)DP - PHI(DP) = 0
@@ -195,7 +196,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
                                         p = vim(1)+dp, rp = rp, rprim = pentep)
                         endif
                     end do
-20                  continue
+ 20                 continue
                 endif
             endif
         endif
@@ -214,7 +215,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !
 ! 4.2 - CORRECTION HYDROSTATIQUE A POSTERIORI
 !
-        do  ij = 1, 6
+        do ij = 1, 6
             ep(ij)=(kr(ij)-jp**(2.d0/3.d0)*(dvbe(ij)+trbetr/3.d0*kr(&
             ij))) /2.d0
         end do

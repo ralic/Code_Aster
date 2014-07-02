@@ -30,6 +30,7 @@ subroutine projcy(nomres)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -40,11 +41,11 @@ subroutine projcy(nomres)
     character(len=8) :: nomres, typint
     character(len=24) :: repmat, soumat
     character(len=24) :: valk
-    logical(kind=1) :: nook
+    aster_logical :: nook
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  llref
+    integer :: llref
     character(len=8), pointer :: cycl_type(:) => null()
 !-----------------------------------------------------------------------
     data nook /.true./

@@ -1,12 +1,13 @@
 function cgverho(imate)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 !
     integer :: imate
-    logical(kind=1) :: cgverho
+    aster_logical :: cgverho
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,15 +41,16 @@ function cgverho(imate)
 ! ----------------------------------------------------------------------
 !
     integer :: icodre, iret, codrho(1), ipesa, irota, ipuls
-    logical(kind=1) :: rhoabs
+    aster_logical :: rhoabs
     real(kind=8) :: rhobid(1)
     character(len=16) :: phenom
 !
 ! ----------------------------------------------------------------------
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),' ', phenom, 0, ' ',&
-                [0.d0], 1, 'RHO', rhobid(1), codrho(1), 0)
+    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
+                ' ', phenom, 0, ' ', [0.d0],&
+                1, 'RHO', rhobid(1), codrho(1), 0)
 !
 !   rhoabs -> .true. si rho est absent
     rhoabs = codrho(1).ne.0
@@ -59,8 +61,8 @@ function cgverho(imate)
 !
 !   si le champ est present, et rho absent -> NOOK
     cgverho = .true.
-    if ( (ipesa.ne.0) .and. rhoabs ) cgverho = .false.
-    if ( (irota.ne.0) .and. rhoabs ) cgverho = .false.
-    if ( (ipuls.ne.0) .and. rhoabs ) cgverho = .false.
+    if ((ipesa.ne.0) .and. rhoabs) cgverho = .false.
+    if ((irota.ne.0) .and. rhoabs) cgverho = .false.
+    if ((ipuls.ne.0) .and. rhoabs) cgverho = .false.
 !
 end function

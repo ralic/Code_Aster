@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujact(mater, vind, vinf, vins, sigd,&
                       sigf, negmul, chgmec, indi)
@@ -24,8 +26,8 @@ interface
         real(kind=8) :: vins(50)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
-        logical(kind=1) :: negmul(8)
-        logical(kind=1) :: chgmec
+        aster_logical :: negmul(8)
+        aster_logical :: chgmec
         integer :: indi(7)
     end subroutine hujact
 end interface

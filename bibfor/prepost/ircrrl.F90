@@ -6,6 +6,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/exisdg.h"
@@ -18,7 +19,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
     integer :: ndim, numnoe(*), nbcmpt, nucmpu(*)
     real(kind=8) :: borsup, borinf, coor(*), vale(*)
     character(len=*) :: nomcmp(*), nomnoe(*), formr
-    logical(kind=1) :: lcor, lsup, linf, lmax, lmin
+    aster_logical :: lcor, lsup, linf, lmax, lmin
 !
 !----------------------------------------------------------------------
 ! ======================================================================
@@ -98,7 +99,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
             if = i-1
             goto 2
         endif
- 2  end do
+  2 end do
     if (id .ne. 0 .and. if .ge. id) then
         forcmp = 'A'//format(id:if)
     else
@@ -116,7 +117,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
     if (nec .gt. 0) then
         do 16 iec = 1, nec
             dg(iec)=desc(3+iec-1)
-16      continue
+ 16     continue
     endif
     if (lmax) then
         call jedetr('&&IRCRRL.MAX')
@@ -127,7 +128,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
         call wkvect('&&IRCRRL.NBVMAX', 'V V I', ncmpmx, ivmax)
         do 70 i = 1, ncmpmx
             zr(imax-1+i)=rundf
-70      continue
+ 70     continue
     endif
     if (lmin) then
         call jedetr('&&IRCRRL.MIN')
@@ -138,13 +139,13 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
         call wkvect('&&IRCRRL.NBVMIN', 'V V I', ncmpmx, ivmin)
         do 71 i = 1, ncmpmx
             zr(imin-1+i)=rundf
-71      continue
+ 71     continue
     endif
 !
     ncmp = -desc(2)
     do 21 i = 1, ncmpmx
         zi(ipos-1+i) = 0
-21  end do
+ 21 end do
     icompt = 0
     impre = 1
     ipres = 0
@@ -158,12 +159,12 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
                         zi(ipos-1+icm) = icmp
                         goto 12
                     endif
-13              continue
+ 13             continue
             else
                 zi(ipos-1+ipres) = icmp
             endif
         endif
-12  end do
+ 12 end do
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES ORDRE UTILISATEUR---
 !
@@ -174,7 +175,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
                 icompt=icompt+1
                 zi(ipos-1+icompt)=zi(ipos-1+i)
             endif
-14      continue
+ 14     continue
     else
         icompt=ncmp
     endif
@@ -202,7 +203,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
-22      continue
+ 22     continue
         icomp2 = icompt
         if (lsup .or. linf) then
             icomp2=0
@@ -212,7 +213,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
                     zi(ipol-1+icomp2)=zi(ipol-1+i)
                     zr(irval-1+icomp2)=zr(irval-1+i)
                 endif
-36          continue
+ 36         continue
         endif
         if (icomp2 .eq. 0) then
             goto 11
@@ -234,7 +235,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
                     zi(ivmax-1+zi(ipol-1+i))=zi(ivmax-1+zi(ipol-1+i))+&
                     1
                 endif
-90          continue
+ 90         continue
         endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
@@ -253,7 +254,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
                     zi(ivmin-1+zi(ipol-1+i))=zi(ivmin-1+zi(ipol-1+i))+&
                     1
                 endif
-91          continue
+ 91         continue
         endif
 !
 ! - IMPRESSION DES VALEURS ---
@@ -315,7 +316,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
             write (ifi,fmt) nomnoe(inno),(zr(irval-1+i),i=1,icomp2)
         endif
         impre = 0
-11  end do
+ 11 end do
     write (ifi,'(A)') ' '
 !
 ! --- IMPRESSION DE LA VALEUR MAXIMALE ---
@@ -328,7 +329,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
      &       ' EST',zr(imax-1+i),&
      &       ' EN ',zi(ivmax-1+i),' NOEUD(S) : ',zk8(inmax-1+i)
             endif
-95      continue
+ 95     continue
     endif
 !
 ! --- IMPRESSION DE LA VALEUR MINIMALE ---
@@ -341,7 +342,7 @@ subroutine ircrrl(ifi, nbno, desc, nec, dg,&
      &       ' EST',zr(imin-1+i),&
      &       ' EN ',zi(ivmin-1+i),' NOEUD(S) : ',zk8(inmin-1+i)
             endif
-96      continue
+ 96     continue
     endif
 !
     call jedetr('&&IRCRRL.VAL')

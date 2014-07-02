@@ -23,6 +23,7 @@ subroutine op0146()
 !     MODALE PERTURBEE PAR PRISE EN COMPTE DU COUPLAGE FLUIDE STRUCTURE
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/getvid.h"
@@ -53,7 +54,7 @@ subroutine op0146()
 !-----------------------------------------------------------------------
     integer :: ideb, idisc, ifreq, ik, im1, im2
     integer :: inumo, ipf, ipv, is, ispect, iv, ivali
-    integer ::  ivite, iz, js,  lbaref, lfsvi
+    integer :: ivite, iz, js, lbaref, lfsvi
     integer :: lfsvk, linds, lnoe, lnozo, lpasf, lspec
     integer :: nbpf, nbspec, nff, nfi, nmodf, nmodi, npoi
     integer :: npv, nspelo, nuzo, nzex
@@ -63,7 +64,7 @@ subroutine op0146()
     parameter   ( nb = 1024 )
     integer :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
     real(kind=8) :: val, vitef
-    logical(kind=1) :: casint
+    aster_logical :: casint
     character(len=8) :: nomu, option, nomzon, nompro
     character(len=16) :: concep, cmd
     character(len=19) :: base, spectr, typflu
@@ -131,13 +132,13 @@ subroutine op0146()
         vali = spectr//'.VAIN'
         call jeveuo(vali, 'L', ivali)
         zi(linds+is-1) = zi(ivali)
-10  end do
+ 10 end do
 !
     if (nbspec .gt. 1) then
         nspelo = 0
         do 20 is = 1, nbspec
             if (zi(linds+is-1) .lt. 10) nspelo = nspelo + 1
-20      continue
+ 20     continue
         if (nspelo .gt. 0 .and. nspelo .lt. nbspec) then
             call utmess('F', 'MODELISA5_73')
         endif
@@ -180,7 +181,7 @@ subroutine op0146()
             if (abs(val) .lt. epsi) then
                 ivitef = i3
             endif
-300      continue
+300     continue
         if (ivitef .eq. 0) then
             call utmess('F', 'ALGELINE3_25', sr=vitef)
         endif
@@ -202,7 +203,7 @@ subroutine op0146()
                 spectr = zk8(lspec+is-1)
                 call jeveuo(spectr//'.VAVF', 'L', vk8=vavf)
                 zk16(lnozo+is-1) = vavf(1)
-11          continue
+ 11         continue
 !
 !
 ! --- 2.2.VERIFICATION DE L EXISTENCE DES ZONES ASSOCIEES DANS LE   ---
@@ -226,16 +227,16 @@ subroutine op0146()
                 nomzon = zk16(lnozo+is-1)(1:8)
                 do 30 iz = 1, nzex
                     if (nomzon .eq. zk8(lfsvk+3+iz)) goto 31
-30              continue
+ 30             continue
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = nomzon
                 valk(3) = typflu
                 call utmess('F', 'MODELISA5_74', nk=3, valk=valk)
-31              continue
+ 31             continue
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = zk8(lfsvk+iz+3)
                 call utmess('I', 'MODELISA5_75', nk=2, valk=valk)
-40          continue
+ 40         continue
 !
 ! --- 2.2.ON VERIFIE QUE TOUS LES SPECTRES SONT ASSOCIES A DES ZONES ---
 ! ---     DIFFERENTES ET SONT DIFFERENTS                             ---
@@ -253,8 +254,8 @@ subroutine op0146()
                         valk(3) = nomzon
                         call utmess('F', 'MODELISA5_77', nk=3, valk=valk)
                     endif
-60              continue
-50          continue
+ 60             continue
+ 50         continue
 !
 ! --- 2.3.CALCUL DES VITESSES MOYENNES DE CHAQUE ZONE D EXCITATION ---
 ! ---     ET DE LA VITESSE MOYENNE DE L ENSEMBLE DES ZONES         ---
@@ -273,16 +274,16 @@ subroutine op0146()
                         n1 = ik
                         goto 121
                     endif
-120              continue
-121              continue
+120             continue
+121             continue
 !
                 do 130 ik = lnoe, 1, -1
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n2 = ik
                         goto 131
                     endif
-130              continue
-131              continue
+130             continue
+131             continue
 !
                 aire = 0.d0
                 x1 = zr(ipv+n1-1)
@@ -292,7 +293,7 @@ subroutine op0146()
                            zr(ipv+lnoe+ik-1) + zr(ipv+lnoe+ ik-2) ) * ( zr(ipv+ ik-1) - zr(ipv+ i&
                            &k-2)&
                            )/2.d0
-140              continue
+140             continue
 !
                 vmoy = aire / (x2-x1)
                 zr(lvmoy+nuzo-1) = vmoy
@@ -300,7 +301,7 @@ subroutine op0146()
                 alonto = alonto + (x2-x1)
 !
 ! ---   FIN DE BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
-160          continue
+160         continue
 !
             vmoyto = vmoyto / alonto
 !
@@ -341,7 +342,7 @@ subroutine op0146()
             pas = (freqf-freqi)/dble(nbpf-1)
             do 190 ipf = 1, nbpf
                 zr(lpasf+ipf-1) = freqi + dble(ipf-1)*pas
-190          continue
+190         continue
         endif
         call wkvect('&&OP0146.TEMP.DISC', 'V V R', 8*dim, idisc)
 !
@@ -368,7 +369,7 @@ subroutine op0146()
 !
         do 200 ipf = 1, nbpf
             zr(lfreq-1+ipf) = zr(lpasf-1+ipf)
-200      continue
+200     continue
 !
         ij = 0
         do 220 im2 = nmodi, nmodf
@@ -391,8 +392,8 @@ subroutine op0146()
                 call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
                 call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
 !
-210          continue
-220      continue
+210         continue
+220     continue
 !
 !
 ! --- 6.CALCUL DES INTERSPECTRES D'EXCITATIONS MODALES
@@ -413,7 +414,7 @@ subroutine op0146()
                 call specep(casint, nomu, spectr, base, vitef,&
                             zi(inumo), nmodi, nmodf, nbm, nbpf)
             endif
-240      end do
+240     end do
 ! FINSI ALTERNATIVE SPEC-LONG-COR-5
     endif
 !

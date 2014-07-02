@@ -1,5 +1,6 @@
 subroutine te0332(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -52,13 +53,13 @@ subroutine te0332(option, nomte)
     integer :: issopt, ima, nbvari, ipopp, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, ii, iret, iadzi, ivarmg, iazk24
     integer :: igeom, icong, ivarpg, isdrmr, isdrpr, kq
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     RECUPERATION DU NUMERO DE LA MAILLE :
 !     -------------------------------------
@@ -105,7 +106,7 @@ subroutine te0332(option, nomte)
 !
     do 150 ii = 1, 4
         cong(ii)=0.d0
-150  end do
+150 end do
     varigm =0.d0
     varigp =0.d0
 !
@@ -120,17 +121,17 @@ subroutine te0332(option, nomte)
             if (laxi) then
                 do 160 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-160              continue
+160             continue
                 poids=poids*r
             endif
             dvol=poids
             volume=volume+dvol
             do 165 ii = 1, 4
                 cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
-165          continue
+165         continue
             varigm = varigm+dvol*zr(ivarmg+nbvari*(kp-1)+ipopp-1)
             varigp = varigp+dvol*zr(ivarpg+nbvari*(kp-1)+ipopp-1)
-200      continue
+200     continue
 !        ------- SIGXX MOYENNEE SUR L'ELEMENT -----------
         sig(1) =cong(1)/volume
 !        ------- SIGYY MOYENNEE SUR L'ELEMENT -----------
@@ -154,7 +155,7 @@ subroutine te0332(option, nomte)
         depseq = varigp-varigm
         do 167 kq = 1, npg
             zr(isdrpr+kq-1) = zr(isdrmr+kq-1)
-167      continue
+167     continue
 !
 !
         elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'OUI'))&
@@ -168,13 +169,13 @@ subroutine te0332(option, nomte)
             if (laxi) then
                 do 170 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-170              continue
+170             continue
                 poids=poids*r
             endif
             volume=poids
             do 180 ii = 1, 4
                 cong(ii)=zr(icong+4*kp+ii-5)
-180          continue
+180         continue
             varigm =zr(ivarmg+nbvari*(kp-1)+ipopp-1)
             varigp =zr(ivarpg+nbvari*(kp-1)+ipopp-1)
 !
@@ -196,7 +197,7 @@ subroutine te0332(option, nomte)
                 volu=volume
             endif
 !
-300      continue
+300     continue
 !
 !
         elseif ((optcal(1).eq.'SIGM_ELMOY').and.(optcal(2).eq.'OUI'))&
@@ -209,17 +210,17 @@ subroutine te0332(option, nomte)
             if (laxi) then
                 do 210 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-210              continue
+210             continue
                 poids=poids*r
             endif
             dvol=poids
             volume=volume+dvol
             do 220 ii = 1, 4
                 cong(ii)=cong(ii)+zr(icong+4*kp+ii-5)*dvol
-220          continue
+220         continue
             varigm=varigm+dvol*zr(ivarmg+nbvari*(kp-1)+ipopp-1)
             varigp=varigp+dvol*zr(ivarpg+nbvari*(kp-1)+ipopp-1)
-400      continue
+400     continue
 !        ------- SIGXX MOYENNEE SUR L'ELEMENT -----------
         sig(1) =cong(1)/volume
 !        ------- SIGYY MOYENNEE SUR L'ELEMENT -----------
@@ -245,7 +246,7 @@ subroutine te0332(option, nomte)
         sdrsrp = sdrsrm+0.283d0*sign(1.d0,triax)*exp(1.5d0* abs(triax) )*depseq
         do 225 kq = 1, npg
             zr(isdrpr+kq-1) = sdrsrp
-225      continue
+225     continue
         rsr0 = exp(sdrsrp)
 !
 !
@@ -256,7 +257,7 @@ subroutine te0332(option, nomte)
             r=0.d0
             do 175 ii = 1, 4
                 cong(ii)=zr(icong+(4*kp)-5+ii)
-175          continue
+175         continue
             varigm=zr(ivarmg+nbvari*(kp-1)+ipopp-1)
             varigp=zr(ivarpg+nbvari*(kp-1)+ipopp-1)
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -264,7 +265,7 @@ subroutine te0332(option, nomte)
             if (laxi) then
                 do 240 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-240              continue
+240             continue
                 poids=poids*r
             endif
             dvol=poids
@@ -278,14 +279,14 @@ subroutine te0332(option, nomte)
             triax = triax+dvol*sigm/sigeq
             depseq = depseq+(varigp-varigm)*dvol
 !
-100      continue
+100     continue
 !
         triax = triax/volume
         depseq = depseq/volume
         volu = volume
         do 177 kq = 1, npg
             zr(isdrpr+kq-1) = zr(isdrmr+kq-1)
-177      continue
+177     continue
 !
 !
     else

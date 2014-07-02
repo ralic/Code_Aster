@@ -20,6 +20,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -38,7 +39,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     character(len=24) :: defico
     character(len=24) :: deficu
     character(len=19) :: lischa
-    logical(kind=1) :: lcont, lunil
+    aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
 !
 ! ----------------------------------------------------------------------
@@ -73,7 +74,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     character(len=8) :: nomch1, nomfc1, fctcst
     character(len=24) :: infoc2
     real(kind=8) :: coef
-    logical(kind=1) :: ltfcm
+    aster_logical :: ltfcm
 ! --- NOMBRE MAXIMUM DE TYPE_INFO
     integer :: nbinmx, nbinfo
     parameter   (nbinmx=99)
@@ -173,7 +174,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
                         lisinf, ival1)
             call liscad(lisch2, ich, nomch1, nomfc1, nbinfo,&
                         lisinf, ival1)
-24      continue
+ 24     continue
 !
         if (iform .eq. 2) then
             infoc2 = 'ELEM_TARDIF'
@@ -222,7 +223,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 !
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

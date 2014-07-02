@@ -21,6 +21,7 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/ceobfb.h"
 #include "asterfort/ceobfd.h"
 #include "asterfort/dfbdb.h"
@@ -33,7 +34,7 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
 !
     integer :: intmax, iret, bdim
 !
-    logical(kind=1) :: elas, dbloq
+    aster_logical :: elas, dbloq
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 !     ROUTINE DE RESOLUTION DU SYSTEME NON LINEAIRE
@@ -82,7 +83,7 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
     deux=2.d0
     do 100 i = 1, 6
         b(i)=bm(i)
-100  end do
+100 end do
     d=dm
 !-------------------------------------------------------
 !-------------------------------------------------------
@@ -130,7 +131,7 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
 !--BOUCLE DU NEWTON SUR LES VARIABLES INTERNES-----------
 !--------------------------------------------------------
 !
-38      continue
+ 38     continue
         if (((crit.gt.tolc).or.(normrb.gt.tole).or.(abs(resd).gt.tole))) then
             if ((compte.lt.intmax) .and. (coupl.ne.0.d0)) then
 ! Rajout du test sur COUPL (fiche 15020) : lorsque c'est le cas,
@@ -222,6 +223,6 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
         endif
 !
     endif
-999  continue
+999 continue
 !
 end subroutine

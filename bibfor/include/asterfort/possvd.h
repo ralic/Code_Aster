@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine possvd(nm, m, n, w, matu,&
                       u, matv, v, eps, rg,&
@@ -23,9 +25,9 @@ interface
         integer :: nm
         integer :: m
         real(kind=8) :: w(n)
-        logical(kind=1) :: matu
+        aster_logical :: matu
         real(kind=8) :: u(nm, n)
-        logical(kind=1) :: matv
+        aster_logical :: matv
         real(kind=8) :: v(nm, n)
         real(kind=8) :: eps
         integer :: rg

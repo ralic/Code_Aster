@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
                       sddisc, sddyna, sdimpr, defico, resoco,&
@@ -34,7 +36,7 @@ interface
         character(len=19), intent(in) :: solalg(*)
         character(len=24), intent(in) :: sdtime
         character(len=24), intent(in) :: sdstat
-        logical(kind=1), intent(out) :: mmcvca
+        aster_logical, intent(out) :: mmcvca
         real(kind=8) :: instan
     end subroutine mmbclc
 end interface

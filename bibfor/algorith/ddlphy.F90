@@ -30,6 +30,7 @@ subroutine ddlphy(depplu, neq, vect, desc)
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/iposdg.h"
@@ -51,11 +52,11 @@ subroutine ddlphy(depplu, neq, vect, desc)
 !
     character(len=8) :: nomgd, noma, exclus(200)
     character(len=19) :: prno
-    integer :: iaux, jnocmp, ncmpmx, jprno,  nec
+    integer :: iaux, jnocmp, ncmpmx, jprno, nec
     integer :: jdg, inueq, jaux, kaux
     integer :: nbnot
     integer :: nbexcl, ival, pos, ivect2
-    logical(kind=1) :: garder
+    aster_logical :: garder
     integer, pointer :: nueq(:) => null()
 !
     call jemarq()

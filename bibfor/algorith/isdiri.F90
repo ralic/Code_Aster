@@ -19,12 +19,13 @@ function isdiri(lischa, soutyp)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: isdiri
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/ischar.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+    aster_logical :: isdiri
     character(len=19) :: lischa
     character(len=4) :: soutyp
 !
@@ -47,7 +48,7 @@ function isdiri(lischa, soutyp)
 !
 !
     integer :: ichar
-    logical(kind=1) :: lelim, ldual
+    aster_logical :: lelim, ldual
 !
 ! ----------------------------------------------------------------------
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                       masgen, descm, riggen, descr, lamor,&
@@ -39,7 +41,7 @@ interface
         integer :: descm
         real(kind=8) :: riggen(*)
         integer :: descr
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amogen(*)
         integer :: desca
         character(len=16) :: typbas
@@ -83,7 +85,7 @@ interface
         integer :: nbpal
         real(kind=8) :: dtsto
         real(kind=8) :: vrotat
-        logical(kind=1) :: prdeff
+        aster_logical :: prdeff
         character(len=16) :: method
         character(len=8) :: nomres
         integer :: nbexci

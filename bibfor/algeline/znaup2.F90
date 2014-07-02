@@ -194,6 +194,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !     | INCLUDE FILES FOR DEBUGGING AND TIMING INFORMATION |
 !     %----------------------------------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dvout.h"
@@ -251,7 +252,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    logical(kind=1) :: cnorm, getv0, initv, update, ushift
+    aster_logical :: cnorm, getv0, initv, update, ushift
     integer :: ierr, iter, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp, i
     integer :: j
     complex(kind=8) :: cpnorm

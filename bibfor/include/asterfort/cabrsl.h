@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
                       idfde, idfde2, geom, dimdef, dimuel,&
@@ -37,7 +39,7 @@ interface
         integer :: nddls
         integer :: nddlm
         integer :: nnom
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: regula(6)
         real(kind=8) :: b(dimdef, dimuel)
         real(kind=8) :: poids

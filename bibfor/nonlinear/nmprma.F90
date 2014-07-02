@@ -25,7 +25,8 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -112,9 +113,9 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: reasma, renume
-    logical(kind=1) :: lcrigi, lcfint, lcamor, larigi
-    logical(kind=1) :: ldyna, lamor, lsuiv
+    aster_logical :: reasma, renume
+    aster_logical :: lcrigi, lcfint, lcamor, larigi
+    aster_logical :: ldyna, lamor, lsuiv
     character(len=16) :: metcor, metpre, k16bla
     character(len=16) :: optrig, optamo
     integer :: ifm, niv, ibid
@@ -122,7 +123,7 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -256,6 +257,6 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
         call nmrinc(sdstat, 'FACTOR')
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

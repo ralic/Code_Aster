@@ -129,6 +129,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/gtrevc.h"
 #include "asterfort/zmout.h"
@@ -173,7 +174,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical(kind=1) :: select(1)
+    aster_logical :: select(1)
     integer :: j, msglvl
     complex(kind=8) :: vl(1)
     real(kind=8) :: temp
@@ -248,7 +249,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     do 10 j = 1, n
         temp = dznrm2( n, q(1,j), 1 )
         call zdscal(n, rone / temp, q(1, j), 1)
-10  end do
+ 10 end do
 !
     if (msglvl .gt. 1) then
         call zcopy(n, q(n, 1), ldq, workl, 1)
@@ -268,7 +269,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     endif
 !
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !     %---------------%

@@ -1,6 +1,7 @@
 subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                   nbno, tabnoe, rignoe)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/compma.h"
 #include "asterfort/fointe.h"
@@ -51,13 +52,13 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     character(len=24) :: nomgr, magrno, manono, magrma, manoma
     real(kind=8) :: zero, x(8), y(8), z(8), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     integer :: iarg
 !
 !-----------------------------------------------------------------------
-    integer :: i,     ifr, ii
+    integer :: i, ifr, ii
     integer :: ij, im, in, inoe, iret
-    integer ::  ldgm, ldgn, ldnm, nb, nbma, ncf
+    integer :: ldgm, ldgn, ldnm, nb, nbma, ncf
     integer :: ncg, nfg, ngn, nm, nn, nno, noemax
 !
     real(kind=8) :: coef, dist, hc, r1, r2, r3
@@ -152,9 +153,9 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
             do 24 nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
-24          continue
-22      continue
-20  end do
+ 24         continue
+ 22     continue
+ 20 end do
     AS_ALLOCATE(vr=coeno, size=noemax)
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
@@ -186,7 +187,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
-25          continue
+ 25         continue
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -221,8 +222,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
             endif
             surtot = surtot + surmai(im)
             surmai(im) = surmai(im)/nm
-23      continue
-21  end do
+ 23     continue
+ 21 end do
 !
 !     CALCUL DES PONDERATIONS ELEMENTAIRES
 !
@@ -240,10 +241,10 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                     if (zi(ldnm+nn-1) .eq. ij) then
                         coeno(ij) = coeno(ij) + surmai(im)/surtot
                     endif
-37              continue
-35          continue
-33      continue
-31  end do
+ 37             continue
+ 35         continue
+ 33     continue
+ 31 end do
     nbma = im
 !
 !     CALCUL DES RAIDEURS DE TORSION
@@ -267,7 +268,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         rig45 = rig45 - rigi(3)*xx*yy*coeno(ij)
         rig46 = rig46 - rigi(2)*xx*zz*coeno(ij)
         rig56 = rig56 - rigi(1)*yy*zz*coeno(ij)
-50  end do
+ 50 end do
     nbno = ii
     rig4 = rigi(4) - rig4
     rig5 = rigi(5) - rig5
@@ -291,7 +292,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = ij
-51  end do
+ 51 end do
 !
     1001 format(1x,'RAIDEURS DE ROTATION A REPARTIR:',/&
      &      1x,' KRX: ',1x,1pe12.5,' KRY: ',1x,1pe12.5,&

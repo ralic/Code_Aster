@@ -18,7 +18,8 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
@@ -28,7 +29,7 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 #include "asterfort/jemarq.h"
     integer :: ndimg
     character(len=19) :: champ, champr
-    logical(kind=1) :: lctfc
+    aster_logical :: lctfc
     integer :: ndd1
 !
 ! ----------------------------------------------------------------------

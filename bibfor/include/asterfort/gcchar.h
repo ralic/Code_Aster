@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
                       lpchar, lformu, lfmult, lccomb, cartei,&
                       nomfct, newfct, oldfon)
-        logical(kind=1) :: lfchar
-        logical(kind=1) :: lpchar
-        logical(kind=1) :: lformu
-        logical(kind=1) :: lfmult
-        logical(kind=1) :: lccomb
+        aster_logical :: lfchar
+        aster_logical :: lpchar
+        aster_logical :: lformu
+        aster_logical :: lfmult
+        aster_logical :: lccomb
         character(len=24) :: oldfon
         character(len=8) ::  nomfct
         character(len=8) ::  newfct

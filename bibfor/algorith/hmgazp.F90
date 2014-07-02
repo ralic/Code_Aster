@@ -41,6 +41,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! aslint: disable=W1504
     implicit none
 ! aslint: disable=W1306
+#include "asterf_types.h"
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"
@@ -71,7 +72,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: phi, rho11, phi0, rac2
     real(kind=8) :: angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -82,7 +83,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: r, rho0, csigm, alp11, em
     real(kind=8) :: eps, rinstp, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -100,7 +101,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: dqeps(6)
     real(kind=8) :: sigmp(6)
 !
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !
@@ -233,8 +234,8 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! --- CALCUL DE LA CHALEUR REDUITE Q' SELON FORMULE DOCR ---------------
 ! ======================================================================
-            congep(adcote) = congep(adcote) + calor(mdal,t,dt,deps, dp1,dp2,signe,alp11,alp21,&
-                             coeps,ndim)
+            congep(adcote) = congep(adcote) + calor(mdal,t,dt,deps, dp1,dp2,signe,alp11,alp21, co&
+                             &eps,ndim)
         endif
     endif
 ! ======================================================================
@@ -249,11 +250,11 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
                         dp2, dp1, sigmp)
             do 10 i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
-10          continue
+ 10         continue
             do 14 i = 4, 6
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
                 rac2
-14          continue
+ 14         continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -275,11 +276,11 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
             do 11 i = 1, 3
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)+&
                 dsdp2(i)
-11          continue
+ 11         continue
             do 22 i = 4, 6
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)+&
                 dsdp2(i)*rac2
-22          continue
+ 22         continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
@@ -287,7 +288,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
             call dmdepv(rho21, 1.0d0-sat, tbiot, dmdeps)
             do 12 i = 1, 6
                 dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
-12          continue
+ 12         continue
         endif
         if (yate .eq. 1) then
 ! ======================================================================
@@ -316,15 +317,15 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
                 call dqdeps(mdal, t, dqeps)
                 do 20 i = 1, 6
                     dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
-20              continue
+ 20             continue
             endif
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- POUR LES AUTRES CAS ----------------------------------------------
 ! ======================================================================
-        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmasp2(1.0d0,0.0d0,rho21,sat,phi,cs,p2,emmag&
-                              ,em)
+        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmasp2(1.0d0,0.0d0,rho21,sat,phi,cs,p2,emmag &
+                              &,em)
     endif
 ! =====================================================================
 ! --- MISE A JOUR DES VARIABLES P1 ET DP1 POUR CONFOMITE AUX FORMULES -
@@ -333,6 +334,6 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     dp1 = dp2
     rho11 = rho21
 ! =====================================================================
-30  continue
+ 30 continue
 ! =====================================================================
 end subroutine

@@ -1,12 +1,13 @@
 subroutine stbast(nfie, nfis, lgrcou)
 ! aslint: disable=
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/presup.h"
 #include "asterfort/uldefi.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
     integer :: nfie, nfis
-    logical(kind=1) :: lgrcou
+    aster_logical :: lgrcou
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

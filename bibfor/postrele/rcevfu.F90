@@ -1,5 +1,6 @@
 subroutine rcevfu(cnoc, cfat, fut)
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/infniv.h"
@@ -38,9 +39,9 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
     integer :: nbinst, jnocr, jfu, i1, i2, ind, noc1, noc2, i1m, i2m, noc1m
     integer :: noc2m, nbcycl
-    integer ::    indi, inds, k, l, ifm, niv
+    integer :: indi, inds, k, l, ifm, niv
     real(kind=8) :: fum, fukl
-    logical(kind=1) :: encore
+    aster_logical :: encore
     real(kind=8), pointer :: matr_fu(:) => null()
     integer, pointer :: nb_occ_k(:) => null()
     integer, pointer :: nb_occ_l(:) => null()
@@ -60,7 +61,7 @@ subroutine rcevfu(cnoc, cfat, fut)
     do 10 i1 = 1, nbinst
         nb_occ_k(i1) = zi(jnocr+i1-1)
         nb_occ_l(i1) = zi(jnocr+i1-1)
-10  end do
+ 10 end do
 !
     AS_ALLOCATE(vr=matr_fu, size=nbinst*nbinst)
     ind = 0
@@ -74,13 +75,13 @@ subroutine rcevfu(cnoc, cfat, fut)
             ind = ind + 1
             matr_fu(inds) = zr(jfu-1+5*(ind-1)+4)
             matr_fu(indi) = zr(jfu-1+5*(ind-1)+4)
-22      continue
-20  end do
+ 22     continue
+ 20 end do
 !
     ifm = 6
     ind = 0
 !
-100  continue
+100 continue
     ind = ind + 1
 !
     if (niv .eq. 2) then
@@ -94,7 +95,7 @@ subroutine rcevfu(cnoc, cfat, fut)
             i1 = nbinst*(k-1)
             write(ifm,1000) nb_occ_k(k), (matr_fu(i1+l), l=1,&
             nbinst)
-700      continue
+700     continue
     endif
 !
     fum = 0.d0
@@ -119,9 +120,9 @@ subroutine rcevfu(cnoc, cfat, fut)
                 fum = fukl
             endif
 !
-112      continue
+112     continue
 !
-110  end do
+110 end do
     nbcycl = min( noc1m , noc2m )
 !
     if (fum .lt. r8prem()) goto 999
@@ -146,7 +147,7 @@ subroutine rcevfu(cnoc, cfat, fut)
             matr_fu((i2m-1)*nbinst+k) = 0.d0
             matr_fu((k-1)*nbinst+i1m) = 0.d0
             matr_fu((i1m-1)*nbinst+k) = 0.d0
-120      continue
+120     continue
     else if (noc1m .lt. noc2m) then
         nb_occ_l(i2m) = nb_occ_l(i2m) - noc1m
         nb_occ_k(i2m) = nb_occ_k(i2m) - noc1m
@@ -155,7 +156,7 @@ subroutine rcevfu(cnoc, cfat, fut)
         do 122 k = 1, nbinst
             matr_fu((i1m-1)*nbinst+k) = 0.d0
             matr_fu((k-1)*nbinst+i1m) = 0.d0
-122      continue
+122     continue
     else
         nb_occ_l(i2m) = 0
         nb_occ_k(i2m) = 0
@@ -164,7 +165,7 @@ subroutine rcevfu(cnoc, cfat, fut)
         do 124 k = 1, nbinst
             matr_fu((k-1)*nbinst+i2m) = 0.d0
             matr_fu((i2m-1)*nbinst+k) = 0.d0
-124      continue
+124     continue
     endif
 !
 ! --- EXISTE-T-IL DES ETATS TELS QUE NB_OCCUR > 0
@@ -174,10 +175,10 @@ subroutine rcevfu(cnoc, cfat, fut)
         if (nb_occ_k(i1) .gt. 0) then
             encore = .true.
         endif
-200  continue
+200 continue
     if (encore) goto 100
 !
-999  continue
+999 continue
 !
     if (niv .eq. 2) write(ifm,*)'-->> FACTEUR D''USAGE CUMULE = ', fut
 !

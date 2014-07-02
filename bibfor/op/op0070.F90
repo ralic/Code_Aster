@@ -29,6 +29,7 @@ subroutine op0070()
 !
 ! --- PARAMETRES DE MECA_NON_LINE
 !
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/infmaj.h"
@@ -98,7 +99,7 @@ subroutine op0070()
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    logical(kind=1) :: lexpl, limpl, lstat
+    aster_logical :: lexpl, limpl, lstat
 !
 ! --- STRUCTURES DE DONNEES
 !
@@ -203,7 +204,7 @@ subroutine op0070()
 !  DEBUT DU PAS DE TEMPS
 ! ======================================================================
 !
-200  continue
+200 continue
 !
 ! --- AUCUNE BOUCLE N'EST CONVERGE
 !
@@ -334,7 +335,7 @@ subroutine op0070()
 !     GESTION DES ERREURS
 ! ======================================================================
 !
-1000  continue
+1000 continue
 !
 ! --- ON COMMENCE PAR ARCHIVER LE PAS DE TEMPS PRECEDENT
 !
@@ -353,7 +354,7 @@ subroutine op0070()
 !     SORTIE
 ! ======================================================================
 !
-900  continue
+900 continue
 !
 ! --- IMPRESSION STATISTIQUES FINALES
 !

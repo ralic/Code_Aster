@@ -54,6 +54,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -90,7 +91,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
     integer :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
     integer :: ifm, nivinf
 !
-    logical(kind=1) :: logaux, lprolz
+    aster_logical :: logaux, lprolz
 !
 !====
 ! 1. PREALABLES

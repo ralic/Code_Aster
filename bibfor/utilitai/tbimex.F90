@@ -2,6 +2,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                   formar)
 ! aslint: disable=W1303
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -43,10 +44,10 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 ! IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer ::  i, j, ipar, jvale, jlogq, ideb, ifin
-    integer :: nblign,  ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
+    integer :: i, j, ipar, jvale, jlogq, ideb, ifin
+    integer :: nblign, ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
     integer :: nparaf
-    logical(kind=1) :: erreur
+    aster_logical :: erreur
     character(len=1) :: bacs
     character(len=3) :: type
     character(len=4) :: chfin
@@ -80,7 +81,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         else if (formar(i:i) .eq. '.') then
             if = i-1
         endif
- 2  end do
+  2 end do
     if (id .eq. if .and. id .ne. 0) then
         read(formar(id:if),'(I1)') ir
     else if (id+1 .eq. if) then
@@ -119,11 +120,11 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 ilmp = max ( ilon , ilmp )
                 goto 10
             endif
-12      continue
+ 12     continue
         erreur = .true.
         valk = inpar
         call utmess('A', 'UTILITAI6_89', sk=valk)
-10  end do
+ 10 end do
     if (erreur) then
         call utmess('F', 'PREPOST_60')
     endif
@@ -230,8 +231,8 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         endif
 !
         ideb = ifin + 2
-20  end do
-22  continue
+ 20 end do
+ 22 continue
     if (nparaf .ne. npara) then
         call utmess('A', 'UTILITAI4_84')
     endif
@@ -351,11 +352,11 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 endif
                 ideb = ifin + 2
             endif
-32      continue
+ 32     continue
         call codent(ifin, 'G', chfin)
         form1 = '(A'//chfin//')'
         write(ifr,form1) chaine(1:ifin)
-30  end do
+ 30 end do
 !
     AS_DEALLOCATE(vi=nom_para)
     AS_DEALLOCATE(vi=val_para)

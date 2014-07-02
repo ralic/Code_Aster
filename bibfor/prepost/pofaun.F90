@@ -22,6 +22,7 @@ subroutine pofaun()
 !              CHARGEMENT PUREMENT UNIAXIAL
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -71,7 +72,7 @@ subroutine pofaun()
     character(len=24) :: fvale
     real(kind=8) :: r8b, pseuil, rdomm, val(3), rampl
     complex(kind=8) :: cbid
-    logical(kind=1) :: lhaigh, fateps, lke
+    aster_logical :: lhaigh, fateps, lke
 !     --- POST_FATI_UNIAX ----------------------------------------------
     parameter (nbpapf=5)
     character(len=1) :: typppf(nbpapf)
@@ -118,7 +119,7 @@ subroutine pofaun()
         write (ifm,'(1X,A)') 'VALEURS DE LA FONCTION CHARGEMENT:'
         do 10 i = 1, nbpts
             write (ifm,1000) zr(ifonc+i-1),zr(ifonc+nbpts+i-1)
-10      continue
+ 10     continue
     endif
 !
 !
@@ -174,7 +175,7 @@ subroutine pofaun()
         call fgpic2(method, zr(ivtrav), zr(ivpoin), nbpoin, zr(ivpics),&
                     nbpics)
         call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, sigmin1,&
-sigmax1)
+                    sigmax1)
 !
         call fgrmax(nbcycl, sigmin1, sigmax1, zr(ivmin), zr(ivmax))
 !
@@ -302,7 +303,7 @@ sigmax1)
         val(3) = zr(ivdome+i-1)
         call tbajli(result, nbp, nomppf, [i], val,&
                     [cbid], k8b, 0)
-20  end do
+ 20 end do
 !
 !     --- CALCUL DU DOMMAGE TOTAL ---
 !

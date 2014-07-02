@@ -5,6 +5,7 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lcmaza.h"
 #include "asterfort/lcmzcp.h"
 #include "asterfort/lcmzge.h"
@@ -85,7 +86,7 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate,&
 !
     real(kind=8) :: tp, tm, tref
     integer :: iret
-    logical(kind=1) :: cplane, coup
+    aster_logical :: cplane, coup
 !
 !     NORMALEMENT, LES VERIF ONT ETE FAITES AVANT POUR INTERDIRE
 !     GRAD_VARI

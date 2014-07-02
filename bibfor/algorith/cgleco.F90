@@ -1,6 +1,8 @@
-subroutine cgleco(resu, modele, mate, iord0, compor, incr)
+subroutine cgleco(resu, modele, mate, iord0, compor,&
+                  incr)
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgvein.h"
@@ -38,7 +40,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
     character(len=8), intent(in) :: modele
     character(len=8), intent(in) :: mate
     character(len=19), intent(out) :: compor
-    logical(kind=1), intent(out) :: incr
+    aster_logical, intent(out) :: incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +63,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
     character(len=16) :: keywordfact
     character(len=24) :: repk
     character(len=8) :: mesh
-    logical(kind=1) :: limpel, l_etat_init, l_temp
+    aster_logical :: limpel, l_etat_init, l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,22 +127,22 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
 !  -Si Comportement dans CALC_G(alors RELATION est renseigne) ---> emission d'un message d'alarme !
 !    normalement le comportement est recupere dans Meca_stat ou stat_non_line.
 !
-   if (nbcomp .gt. 0) then
-       call utmess('A', 'RUPTURE1_41')
-   end if
+    if (nbcomp .gt. 0) then
+        call utmess('A', 'RUPTURE1_41')
+        end if
 !
 ! - Check is CALG_G COMPOR <CARTE> is coherent with result COMPOR <CARTE>
 !
-    call gverlc(resu, compor, iord0)
+        call gverlc(resu, compor, iord0)
 !
 ! - Check if TEMP is present or not in result cham_mater
 !
-    l_temp = cgvtem(resu, iord0)
+        l_temp = cgvtem(resu, iord0)
 !
 ! - Check COMPORTEMENT / RELATION in result for incremental comportement 
 !
-    if (incr) call cgvein(resu, compor, iord0, l_temp)
+        if (incr) call cgvein(resu, compor, iord0, l_temp)
 !
-    call jedema()
+        call jedema()
 !
-end subroutine
+    end subroutine

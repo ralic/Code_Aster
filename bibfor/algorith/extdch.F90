@@ -19,6 +19,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit     none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
@@ -68,7 +69,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     character(len=16) :: typch
     character(len=19) :: dch, dchs, chplu, chmoi
     parameter   (nompro = 'EXTDCH')
-    logical :: bool
+    aster_logical :: bool
     real(kind=8), pointer :: cnsv(:) => null()
     integer, pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

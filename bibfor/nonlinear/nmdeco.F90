@@ -19,6 +19,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
@@ -66,7 +67,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
     real(kind=8) :: deltat, instam, instap
     real(kind=8) :: insref, deltac
     character(len=24) :: nomlis
-    logical(kind=1) :: ldcext
+    aster_logical :: ldcext
     integer :: retdex
 !
 ! ----------------------------------------------------------------------
@@ -151,7 +152,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 !
 ! --- EXTENSION DE LA DECOUPE AUX PAS SUIVANTS
 !
-888  continue
+888 continue
     if (ldcext) then
         instam = diinst(sddisc,numins-1)
         instap = diinst(sddisc,numins)
@@ -168,7 +169,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
         if (retdex .eq. 0) retdec = 0
     endif
 !
-999  continue
+999 continue
 !
 ! --- AFFICHAGE
 !

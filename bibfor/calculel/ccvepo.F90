@@ -2,6 +2,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
                   nbchre, ioccur, suropt, ligrel, exipou)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -19,7 +20,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmamo.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: exipou
+    aster_logical :: exipou
     integer :: nbchre, ioccur, nbchar
     character(len=8) :: modele, resuin
     character(len=16) :: typesd
@@ -64,8 +65,8 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 !   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: ierd,  ltymo, nbmaal
-    integer ::  n1, n2
+    integer :: ierd, ltymo, nbmaal
+    integer :: n1, n2
 !
     character(len=8) :: k8b
     character(len=16) :: typemo

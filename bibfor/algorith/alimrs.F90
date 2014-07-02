@@ -1,6 +1,7 @@
 subroutine alimrs(mate, ma1, ma2, moint, ndble,&
                   num, cn1, chno, cmp, icor)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calflu.h"
 #include "asterfort/crchno.h"
@@ -56,7 +57,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
 !
 !---------------------------------------------------------------------
-    logical(kind=1) :: test
+    aster_logical :: test
     integer :: nbvale, nbrefe, nbdesc, ibid
     integer :: ino1, nocmp, icor(2), ichnul, ndble
     real(kind=8) :: tailmi
@@ -69,8 +70,8 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
 !
 !-----------------------------------------------------------------------
-    integer :: iadg1,   ieq1, ieq2, igeom1
-    integer :: igeom2,   iprn1, iprn2, ival1, ival2
+    integer :: iadg1, ieq1, ieq2, igeom1
+    integer :: igeom2, iprn1, iprn2, ival1, ival2
     integer :: nbid, nbno1, nbno2, ncmp2, nec1, nec2, neq
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()

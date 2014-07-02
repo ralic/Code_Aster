@@ -230,6 +230,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !
 !     ARGUMENTS
 !     =========
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cpedb.h"
 #include "asterc/r8pi.h"
@@ -240,7 +241,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 #include "asterfort/jeveuo.h"
     integer :: numpas, nbpal
     real(kind=8) :: temps, dep(nbpal, *), vit(nbpal, *), dt, dtsto, vrotat
-    logical(kind=1) :: prdeff
+    aster_logical :: prdeff
 !
 !
 !
@@ -349,7 +350,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
             do 20 ipat = 1, 6
                 deppal(ipat)=dep(ipal,ipat)
                 vitpal(ipat)=vit(ipal,ipat)
-20          continue
+ 20         continue
             posvit(3)=deppal(1)
             posvit(4)=deppal(2)
             posvit(5)=vitpal(1)
@@ -401,7 +402,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
             call errcou(nomprg, npas, nomvar, info, onze,&
                         onze)
         endif
-10  end do
+ 10 end do
 !     FIN DE LA BOUCLE SUR LES PALIERS
     call jedema()
 !

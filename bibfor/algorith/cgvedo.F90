@@ -1,6 +1,7 @@
 subroutine cgvedo(ndim, option)
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: ndim
@@ -35,7 +36,7 @@ subroutine cgvedo(ndim, option)
 !
     integer :: nbop3d, i
     parameter   (nbop3d=4)
-    logical :: bool
+    aster_logical :: bool
     character(len=16) :: liop3d(nbop3d)
     data         liop3d / 'CALC_G_GLOB','G_MAX_GLOB','G_BILI_GLOB',&
      &                      'CALC_K_MAX' /

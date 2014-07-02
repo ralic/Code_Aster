@@ -23,6 +23,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)
     real(kind=8) :: hpg, ffc(9), jacobi, coefcr
@@ -31,7 +32,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
     real(kind=8) :: vtmp(336)
     character(len=8) :: typmai
     integer :: nconta, nfhe, heavno(8)
-    logical(kind=1) :: lpenac, lmulti
+    aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,7 +70,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
 !
     do 100 i = 1, 2
         tt(i) = 0.d0
-100  end do
+100 end do
 !
 ! --- CALCUL DE T.T
 !
@@ -77,7 +78,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
         t = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)
         tt(1) = t*tau1(i)+tt(1)
         if (ndim .eq. 3) tt(2) = t*tau2(i)+tt(2)
-200  end do
+200 end do
 !
 ! --------------------- CALCUL DE {L3_FROT}----------------------------
 !
@@ -92,7 +93,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
             else
                 vtmp(ii)= jacobi*hpg*ffc(i)*tt(l)
             endif
-600      continue
-500  end do
+600     continue
+500 end do
 !
 end subroutine

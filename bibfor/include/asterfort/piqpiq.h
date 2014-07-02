@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine piqpiq(xp, yp, zp, x, y,&
                       z, rep, ret, rit, bet,&
@@ -37,14 +39,14 @@ interface
         real(kind=8) :: h3
         real(kind=8) :: l4
         real(kind=8) :: l5
-        logical(kind=1) :: zone1
-        logical(kind=1) :: zone2
-        logical(kind=1) :: zone3
-        logical(kind=1) :: zone4
-        logical(kind=1) :: zone5
-        logical(kind=1) :: zone6
-        logical(kind=1) :: zone7
-        logical(kind=1) :: zone8
+        aster_logical :: zone1
+        aster_logical :: zone2
+        aster_logical :: zone3
+        aster_logical :: zone4
+        aster_logical :: zone5
+        aster_logical :: zone6
+        aster_logical :: zone7
+        aster_logical :: zone8
         character(len=8) :: typsou
     end subroutine piqpiq
 end interface

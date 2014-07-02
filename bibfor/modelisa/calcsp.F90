@@ -38,6 +38,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 ! IN  : IVITE : NUMERO VITESSE DU FLUIDE
 !     ----------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/jecrec.h"
@@ -52,7 +53,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: casint
+    aster_logical :: casint
     character(len=8) :: nomu, table
     integer :: nbm, nbmr, imod1, nuor(*), ivite
     real(kind=8) :: freq(*), masg(*)
@@ -95,7 +96,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     call wkvect(crfreq, 'G V R', nbpf, lrfreq)
     do 240 ip = 1, nbpf
         zr(lrfreq+ip-1) = zr(lfreq+ip-1)
-240  end do
+240 end do
 !
     mrxval = 0
     do 250 im2 = 1, nbmr
@@ -103,8 +104,8 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
         if (casint) ideb = 1
         do 260 im1 = ideb, im2
             mrxval = mrxval+1
-260      continue
-250  end do
+260     continue
+250 end do
 !
     call wkvect(crnumi, 'G V I', mrxval, lrnumi)
     call wkvect(crnumj, 'G V I', mrxval, lrnumj)
@@ -126,7 +127,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             call utmess('F', 'MODELISA2_90', ni=2, vali=vali)
             goto 20
         endif
-25  continue
+ 25 continue
 !
     do 30 im = imod1, imodf
 !
@@ -144,8 +145,8 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             zr(ihr1) = (mgi*(fri*fri - fr*fr))
             zr(ihi1) = (mgi*ksi*fr*fri*2.d0)
 !
-40      continue
-30  continue
+ 40     continue
+ 30 continue
 !
     ipf = 1
     do 50 im2 = 1, nbmr
@@ -163,7 +164,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
                 if ((zi(lnumi-1+i1) .eq. ival(3)) .and. (zi(lnumj-1+ i1) .eq. ival(2))) then
                     call jeveuo(jexnum(chvale, i1), 'L', ifonc)
                 endif
-200          continue
+200         continue
 !
             call jecroc(jexnum(crvale, ipf))
             zi(lrnumi-1+ipf) = ival(3)
@@ -194,11 +195,11 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
                     zr(lvale+2*(il-1)+1)= hhr*zr(ifonc+2*(il-1)+1)+&
                     hhi*zr(ifonc+2*(il-1))
                 endif
-80          continue
+ 80         continue
 !
-60      continue
-50  continue
-20  continue
+ 60     continue
+ 50 continue
+ 20 continue
 !
 !
 ! --- MENAGE

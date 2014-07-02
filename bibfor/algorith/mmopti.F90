@@ -20,6 +20,7 @@ subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
@@ -29,7 +30,7 @@ subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
     character(len=24) :: resoco
     integer :: ctcini, iptc
     real(kind=8) :: seuili, epsint, jeusgn
-    logical(kind=1) :: loptin, lgliss
+    aster_logical :: loptin, lgliss
 !
 ! ----------------------------------------------------------------------
 !

@@ -19,6 +19,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -59,10 +60,10 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 !
 !
     integer :: ifm, niv
-    integer :: jmasse,   jvitm, jvect
+    integer :: jmasse, jvitm, jvect
     integer :: neq
     real(kind=8) :: coiner
-    logical(kind=1) :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
+    aster_logical :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
     character(len=19) :: vitmoi, vitplu, vector
     character(len=19) :: masse
     real(kind=8), pointer :: foine(:) => null()

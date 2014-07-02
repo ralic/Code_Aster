@@ -32,7 +32,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
-    logical(kind=1) :: lmd
+    aster_logical :: lmd
     real(kind=8) :: rsolu(*)
 !----------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
-
+!
 !   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
 !
@@ -106,7 +106,8 @@ subroutine apvsmb(kptsc, lmd, rsolu)
             numglo = zi(jnugl+jcoll)
             zr(jvaleu+jcoll) = rsolu(numglo)
         end do
-        call VecSetValues(b, to_petsc_int(nloc), zi4(jindic), zr(jvaleu), ADD_VALUES, ierr)
+        call VecSetValues(b, to_petsc_int(nloc), zi4(jindic), zr(jvaleu), ADD_VALUES,&
+                          ierr)
         call jedetr('&&APVSMB.INDICES')
         call jedetr('&&APVSMB.VALEURS')
         call VecAssemblyBegin(b, ierr)
@@ -149,7 +150,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
 #else
     integer :: idummy
-    logical(kind=1) :: ldummy
+    aster_logical :: ldummy
     real(kind=8) :: rdummy
     idummy = kptsc
     ldummy = lmd

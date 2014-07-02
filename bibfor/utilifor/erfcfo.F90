@@ -53,13 +53,14 @@ function erfcfo(x)
 !***END PROLOGUE  DERFC
     implicit none
     real(kind=8) :: erfcfo
+#include "asterf_types.h"
 #include "asterc/rminem.h"
 #include "asterc/rmirem.h"
 #include "asterfort/csevl.h"
 #include "asterfort/inits.h"
     real(kind=8) :: x, erfcs(21), erfccs(59), erc2cs(49), sqeps, sqrtpi, xmax
     real(kind=8) :: txmax, xsml, y
-    logical(kind=1) :: first
+    aster_logical :: first
     save erfcs,erc2cs,erfccs,sqrtpi,nterf,nterfc,nterc2,xsml,xmax,&
      &     sqeps,first
 !-----------------------------------------------------------------------
@@ -218,7 +219,7 @@ function erfcfo(x)
     erfcfo=2.0d0
     goto 40
 !
-10  continue
+ 10 continue
     if (x .gt. xmax) goto 30
     y=abs(x)
     if (y .gt. 1.0d0) goto 20
@@ -231,18 +232,18 @@ function erfcfo(x)
 !
 ! ERFC(X) = 1.0 - ERF(X)  FOR  1.0 .LT. ABS(X) .LE. XMAX
 !
-20  continue
+ 20 continue
     y=y*y
     if (y .le. 4.d0) erfcfo=exp(-y)/abs(x)* (0.5d0+csevl((8.d0/y-5.d0)/3.d0,erc2cs, nterc2))
     if (y .gt. 4.d0) erfcfo=exp(-y)/abs(x)* (0.5d0+csevl(8.d0/y-1.d0,erfccs,nterfc))
     if (x .lt. 0.d0) erfcfo=2.0d0-erfcfo
     goto 40
 !
-30  continue
+ 30 continue
 !
 !     CAS X TROP GRAND
 !
     erfcfo=0.d0
 !
-40  continue
+ 40 continue
 end function

@@ -22,6 +22,7 @@ subroutine op0109()
 !     COMMANDE : COMB_SISM_MODAL
 !
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -86,7 +87,7 @@ subroutine op0109()
     character(len=19) :: liar
     character(len=24) :: desc, refd, nopara(nbpara)
     character(len=24) :: valk(3)
-    logical(kind=1) :: tronc, monoap, muapde, comdir, corfre, calmas
+    aster_logical :: tronc, monoap, muapde, comdir, corfre, calmas
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
     data  dir    / 'X' , 'Y' , 'Z' /
@@ -185,7 +186,7 @@ subroutine op0109()
             end do
             nbamor = nbmode
             jamor = jamo2
-
+!
         endif
     else
 ! Traitement du cas LIST_AMOR
@@ -210,13 +211,13 @@ subroutine op0109()
             nbamor = nbmode
         else
 !Traitement du cas AMOR_GENE
-            call getvid(' ','AMOR_GENE', scal=liar, nbret=nla)
-            if ( nla .ne. 0)then
+            call getvid(' ', 'AMOR_GENE', scal=liar, nbret=nla)
+            if (nla .ne. 0) then
                 call jeveuo(liar//'.DESC', 'L', jamor)
 !               On verifie que AMOR_GENE est une matrice (+ diagonale)
-                if (zi(jamor-1+1).ne.2) ASSERT(.false.)
-                if (zi(jamor-1+3).ne.1) ASSERT(.false.)
-                call jelira(liar//'.VALM','LONO', nbamor)
+                if (zi(jamor-1+1) .ne. 2) ASSERT(.false.)
+                if (zi(jamor-1+3) .ne. 1) ASSERT(.false.)
+                call jelira(liar//'.VALM', 'LONO', nbamor)
                 if (nbamor .gt. nbmode) then
                     vali(1) = nbamor
                     vali(2) = nbmode
@@ -234,11 +235,13 @@ subroutine op0109()
                 endif
                 nbamor = nbmode
                 do iam = 1, nbmode
-                    call rsadpa(meca, 'L', 1, 'MASS_GENE', iam, 0, sjv=jmasg)
-                    call rsadpa(meca, 'L', 1, 'OMEGA2', iam, 0, sjv=jomeg)
+                    call rsadpa(meca, 'L', 1, 'MASS_GENE', iam,&
+                                0, sjv=jmasg)
+                    call rsadpa(meca, 'L', 1, 'OMEGA2', iam,&
+                                0, sjv=jomeg)
                     zr(jamor - 1+iam) = zr(jamor-1 +iam)/(2 * sqrt(zr(jomeg)) * zr(jmasg))
                 enddo
-                else
+            else
                 ASSERT(.false.)
             endif
         endif

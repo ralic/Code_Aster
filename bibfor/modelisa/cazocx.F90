@@ -19,6 +19,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -65,7 +66,7 @@ subroutine cazocx(char, nomo, motfac, izone)
     real(kind=8) :: coefff, reacsi, coef, tolj
     character(len=16) :: valk(2)
     integer :: iret
-    logical(kind=1) :: lfrot
+    aster_logical :: lfrot
     integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------

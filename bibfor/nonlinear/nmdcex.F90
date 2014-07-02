@@ -20,6 +20,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
@@ -58,12 +59,12 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
 !
     integer :: numins
-    logical(kind=1) :: lstop
+    aster_logical :: lstop
     real(kind=8) :: instam, instap, deltat, insfin
     real(kind=8) :: dtmin, ratio
     real(kind=8) :: valr(2)
     integer :: nbrpas
-    logical(kind=1) :: ldeco
+    aster_logical :: ldeco
     character(len=4) :: typdec
     character(len=24) :: nomlis
     character(len=16) :: optdec
@@ -92,7 +93,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
     numins = 1
 !
-10  continue
+ 10 continue
 !
 ! ----- INFORMATIONS SUR LE PAS DE TEMPS
 !
@@ -125,7 +126,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
             call nmdcdc(sddisc, numins, nomlis, nbrpas)
             ldeco = .true.
-888          continue
+888         continue
             call jedetr(nomlis)
         endif
     endif
@@ -135,7 +136,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
     numins = numins + 1
     goto 10
 !
-99  continue
+ 99 continue
 !
     if (ldeco) then
         retdex = 1
@@ -143,7 +144,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
         retdex = 2
     endif
 !
-999  continue
+999 continue
 !
     if (retdex .eq. 0) then
 !

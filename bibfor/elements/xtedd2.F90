@@ -1,5 +1,5 @@
 subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
-                   option, lesclx, lmaitx, lcontx, stano,&
+                  option, lesclx, lmaitx, lcontx, stano,&
                   lact, jddle, jddlm, nfhe, nfhm,&
                   lmulti, heavno, mmat, vtmp)
 !
@@ -27,6 +27,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !     TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -35,7 +36,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 #include "asterfort/jemarq.h"
     integer, intent(in) :: ndim, jnnm(3), nddl, stano(*), lact(8)
     character(len=16), intent(in) :: option
-    logical(kind=1), intent(in) :: lesclx, lmaitx, lcontx, lmulti
+    aster_logical, intent(in) :: lesclx, lmaitx, lcontx, lmulti
     integer, intent(in) :: jnne(3), ndeple, jddle(2)
     integer, intent(in) :: jddlm(2), nfhe, nfhm, heavno(8)
     real(kind=8), optional, intent(out) :: mmat(336, 336)
@@ -62,8 +63,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
     parameter     (ddlmax=336)
     integer :: ddlms, ddlmm, ifh, posddl(ddlmax)
     real(kind=8) :: dmax
-    logical :: lmat
-    logical(kind=1) :: lvec
+    aster_logical :: lmat, lvec
 !
 !----------------------------------------------------------------------
 !
@@ -77,11 +77,10 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
     lvec = .false.
 !
 !   OPTIONS RELATIVES A UNE MATRICE
-    if     (     option .eq. 'RIGI_CONT'&
-            .or. option .eq. 'RIGI_FROT') then 
+    if (option .eq. 'RIGI_CONT' .or. option .eq. 'RIGI_FROT') then
         lmat = .true.
 !   OPTIONS RELATIVES A UN VECTEUR
-    elseif (     option .eq. 'CHAR_MECA_CONT'&
+        elseif (     option .eq. 'CHAR_MECA_CONT'&
             .or. option .eq. 'CHAR_MECA_FROT') then
         lvec = .true.
     else
@@ -94,7 +93,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !
     if (present(mmat) .and. .not.present(vtmp)) then
         ASSERT(lmat .and. .not.lvec)
-    elseif (.not.present(mmat) .and. present(vtmp)) then
+    else if (.not.present(mmat) .and. present(vtmp)) then
         ASSERT(.not.lmat .and. lvec)
 !   EXACTEMENT UN DES 2 ARGUMENTS mmat OU vtmp EST OBLIGATOIRE
     else
@@ -117,7 +116,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
     ASSERT(nddl.le.ddlmax)
     do 9 i = 1, ddlmax
         posddl(i)=0
- 9  end do
+  9 end do
 !
     if (lesclx) then
         do 10 i = 1, ndeple
@@ -127,14 +126,14 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 ! --- NOEUD HEAVISIDE, ON ELIMINE LES DDL CRACK-TIP
                 do 20 j = 1, ndim
                     posddl(in+2*ndim+j)=1
-20              continue
+ 20             continue
             else if (stano(i).eq.2) then
 ! --- NOEUD CRACK-TIP, ON ELIMINE LES DDL HEAVISIDE
                 do 30 j = 1, ndim
                     posddl(in+ndim+j)=1
-30              continue
+ 30             continue
             endif
-10      continue
+ 10     continue
     else
         do 130 i = 1, ndeple
             call indent(i, ddles, ddlem, nnes, in)
@@ -143,10 +142,10 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 ! --- DANS LE CAS DE MAILLE HEAVISIDE, ON ELIMINE LE DDL HEAVISIDE
                     do 140 j = 1, ndim
                         posddl(in+ndim*ifh+j)=1
-140                  continue
+140                 continue
                 endif
-135          continue
-130      continue
+135         continue
+130     continue
     endif
     if (lmaitx) then
         do 40 i = 1, nnm
@@ -156,14 +155,14 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 ! --- NOEUD HEAVISIDE, ON ELIMINE LES DDL CRACK-TIP
                 do 50 j = 1, ndim
                     posddl(in+2*ndim+j)=1
-50              continue
+ 50             continue
             else if (stano(ndeple+i).eq.2) then
 ! --- LE NOEUD EST CRACK-TIP, ON ELIMINE HEAVISIDE
                 do 60 j = 1, ndim
                     posddl(in+ndim+j)=1
-60              continue
+ 60             continue
             endif
-40      continue
+ 40     continue
     else
         do 150 i = 1, nnm
             call indent(i, ddlms, ddlmm, nnm, in)
@@ -173,10 +172,10 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 ! --- DANS LE CAS DE MAILLE HEAVISIDE, ON ELIMINE LE DDL HEAVISIDE
                     do 160 j = 1, ndim
                         posddl(in+ndim*ifh+j)=1
-160                  continue
+160                 continue
                 endif
-155          continue
-150      continue
+155         continue
+150     continue
     endif
     if (lcontx) then
         do 110 i = 1, nnes
@@ -185,9 +184,9 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
                 do 120 j = 1, ndim
                     if (.not.lmulti) posddl(ddles*i-ndim+j)=1
                     if (lmulti) posddl(ddles*(i-1)+ndim*(nfhe+heavno(i)) +j)=1
-120              continue
+120             continue
             endif
-110      continue
+110     continue
     endif
 !
 ! --- POUR LES OPTIONS RELATIVES AUX MATRICES
@@ -209,8 +208,8 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
                     mmat(j,i) = 0.d0
                 endif
                 if (j .eq. i) mmat(i,j) = dmax
-90          continue
-80      continue
+ 90         continue
+ 80     continue
 !
 ! --- POUR LES OPTIONS RELATIVES AUX VECTEURS
     else if (lvec) then
@@ -218,7 +217,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
         do 100 i = 1, nddl
             if (posddl(i) .eq. 0) goto 100
             vtmp(i) = 0.d0
-100      continue
+100     continue
     endif
 !
     call jedema()

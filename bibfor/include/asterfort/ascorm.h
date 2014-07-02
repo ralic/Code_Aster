@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                       nbmode, repmo1, repmo2, amort, modal,&
@@ -25,7 +27,7 @@ interface
         integer :: nbmode
         integer :: neq
         integer :: nbsup
-        logical(kind=1) :: monoap
+        aster_logical :: monoap
         character(len=*) :: typcmo
         integer :: nsupp(*)
         real(kind=8) :: repmo1(nbsup, neq, *)
@@ -41,8 +43,8 @@ interface
         real(kind=8) :: vecmod(neq, *)
         real(kind=8) :: reasup(nbsup, nbmode, *)
         real(kind=8) :: spectr(*)
-        logical(kind=1) :: corfre
-        logical(kind=1) :: muapde
+        aster_logical :: corfre
+        aster_logical :: muapde
         integer :: tcosup(nbsup, *)
         integer :: nintra
         integer :: nbdis(nbsup)

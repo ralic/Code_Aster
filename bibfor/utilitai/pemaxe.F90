@@ -4,6 +4,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8maem.h"
@@ -68,8 +69,8 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !     IN  IOCC    : NUMERO DE L'OCCURENCE
 !     ------------------------------------------------------------------
 !
-    integer :: nbma, nbmai, i,  jcesl, jcesd
-    integer :: nucmp,  jcmpgd, ncmpm, iad, indma
+    integer :: nbma, nbmai, i, jcesl, jcesd
+    integer :: nucmp, jcmpgd, ncmpm, iad, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara, nbno
     integer :: nmin, nmax, npara, pmax, pmin
     real(kind=8) :: vmin, vmax, inst
@@ -78,7 +79,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
     character(len=16) :: motcle(2)
     character(len=19) :: ligrel, cesout
     character(len=24) :: mesmai, nommai
-    logical(kind=1) :: exist
+    aster_logical :: exist
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=16) :: nompar(6*nbcmp+5), mamax(2*nbcmp+3)

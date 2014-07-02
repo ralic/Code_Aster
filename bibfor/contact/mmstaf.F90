@@ -1,11 +1,12 @@
-subroutine mmstaf(mesh          , ndim  , chdepd, coef_frot   , lpenaf      , &
-                  nummae        , aliase, nne   , nummam      , ksipc1      , &
-                  ksipc2        , ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2, &
-                  tang_1        , tang_2, norm  , pres_frot   , dist_frot   , &
+subroutine mmstaf(mesh, ndim, chdepd, coef_frot, lpenaf,&
+                  nummae, aliase, nne, nummam, ksipc1,&
+                  ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
+                  tang_1, tang_2, norm, pres_frot, dist_frot,&
                   indi_frot_eval)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -37,7 +38,7 @@ subroutine mmstaf(mesh          , ndim  , chdepd, coef_frot   , lpenaf      , &
     integer, intent(in) :: ndim
     character(len=19), intent(in) :: chdepd
     real(kind=8), intent(in) :: coef_frot
-    logical(kind=1), intent(in) :: lpenaf
+    aster_logical, intent(in) :: lpenaf
     integer, intent(in) :: nummae
     character(len=8), intent(in) :: aliase
     integer, intent(in) :: nne

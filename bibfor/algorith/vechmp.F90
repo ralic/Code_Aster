@@ -19,6 +19,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -30,7 +31,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
     character(len=8) :: lpain(nbin)
     character(len=19) :: lchin(nbin)
     character(len=8) :: nomo
-    logical(kind=1) :: lxfem
+    aster_logical :: lxfem
     real(kind=8) :: partps(3)
     character(len=19) :: varplu
     character(len=24) :: mate, carele

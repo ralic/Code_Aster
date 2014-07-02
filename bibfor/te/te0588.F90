@@ -1,28 +1,29 @@
-subroutine te0588(option,nomte)
+subroutine te0588(option, nomte)
     implicit none
-#   include "asterfort/epsthm.h"
-#   include "asterfort/eulnau.h"
-#   include "asterc/r8dgrd.h"
-#   include "asterfort/elref1.h"
-#   include "asterfort/iselli.h"
-#   include "asterc/ismaem.h"
-#   include "asterfort/jevech.h"
-#   include "asterfort/naueul.h"
-#   include "asterfort/posthm.h"
-#   include "asterfort/rcangm.h"
-#   include "asterfort/rccoma.h"
-#   include "asterfort/rcvalb.h"
-#   include "asterfort/refthm.h"
-#   include "asterfort/teattr.h"
-#   include "asterfort/tecach.h"
-#   include "asterfort/vecini.h"
-#   include "asterfort/xasshm.h"
-#   include "asterfort/xcaehm.h"
-#   include "asterfort/xfnohm.h"
-#   include "asterfort/xhmddl.h"
-#   include "asterfort/xhmini.h"
-#   include "asterfort/xpeshm.h"
-#   include "jeveux.h"
+#include "asterf_types.h"
+# include "asterfort/epsthm.h"
+# include "asterfort/eulnau.h"
+# include "asterc/r8dgrd.h"
+# include "asterfort/elref1.h"
+# include "asterfort/iselli.h"
+# include "asterc/ismaem.h"
+# include "asterfort/jevech.h"
+# include "asterfort/naueul.h"
+# include "asterfort/posthm.h"
+# include "asterfort/rcangm.h"
+# include "asterfort/rccoma.h"
+# include "asterfort/rcvalb.h"
+# include "asterfort/refthm.h"
+# include "asterfort/teattr.h"
+# include "asterfort/tecach.h"
+# include "asterfort/vecini.h"
+# include "asterfort/xasshm.h"
+# include "asterfort/xcaehm.h"
+# include "asterfort/xfnohm.h"
+# include "asterfort/xhmddl.h"
+# include "asterfort/xhmini.h"
+# include "asterfort/xpeshm.h"
+# include "jeveux.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! =====================================================================
@@ -76,7 +77,7 @@ subroutine te0588(option,nomte)
     integer :: li, ibid, yaenrm, idim
     real(kind=8) :: rho(1), rbid(100)
     integer :: icodre(1)
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HM AVEC XFEM
 !  22 = (9 DEF MECA) + (9 DEF HEAV MECA) + 4 POUR P1
@@ -126,7 +127,7 @@ subroutine te0588(option,nomte)
 ! DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! =====================================================================
-    logical(kind=1) :: fnoevo
+    aster_logical :: fnoevo
     real(kind=8) :: dt
 ! =====================================================================
 ! DECLARATION POUR XFEM
@@ -171,8 +172,8 @@ subroutine te0588(option,nomte)
 ! PARAMÈTRES PROPRES AUX ÉLÉMENTS 1D ET 2D QUADRATIQUES
 !
     call teattr('S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (enr.eq.'XH') .and. .not.&
-         iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
+    if ((ibid.eq.0) .and. (enr.eq.'XH') .and. .not. iselli(elref)) call jevech('PPMILTO', 'L',&
+                                                                               jpmilt)
 ! =====================================================================
 ! --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 ! =====================================================================
@@ -209,8 +210,8 @@ subroutine te0588(option,nomte)
         do 150 i = 1, nno
             do 140 idim = 1, ndim
                 coor(idim) = coor(idim)+zr(igeom+idim+ndim*(i-1)-1)/ nno
-140          continue
-150      continue
+140         continue
+150     continue
         call rcangm(ndim, coor, angmas)
 !# ANGMAS : donne par affe_cara_elem en degre et ici en fourni en radian
 !# CAS OU AFFE_CARA_ELEM EST EN ANGLE D EULER => On CONVERTIT EN NAUTIQUE
@@ -256,38 +257,36 @@ subroutine te0588(option,nomte)
         retloi = 0
         dimmat = nddls*nnop
         if (option(1:9) .eq. 'RIGI_MECA') then
-            call xasshm(nno, npg, npi,&
-                        ipoids, ivf, idfde, igeom, zr(igeom),&
-                        zr(icarcr), zr(ideplm), zr(ideplm), zr(icontm), zr(icontm),&
-                        zr(ivarim), zr(ivarim), defgem, defgep, drds,&
-                        drdsr, dsde, b, dfdi, dfdi2,&
-                        r, sigbar, c, ck, cs,&
-                        zr(imatuu), zr( ivectu), zr(iinstm), zr(iinstp), option,&
-                        zi(imate), mecani, press1, press2, tempe,&
-                        dimdef, dimcon, dimuel, nbvari, nddls,&
-                        nddlm, nmec, np1, ndim,&
-                        zk16(icompo), axi, modint, retloi,&
-                        nnop, nnops, nnopm, enrmec,&
+            call xasshm(nno, npg, npi, ipoids, ivf,&
+                        idfde, igeom, zr(igeom), zr(icarcr), zr(ideplm),&
+                        zr(ideplm), zr(icontm), zr(icontm), zr(ivarim), zr(ivarim),&
+                        defgem, defgep, drds, drdsr, dsde,&
+                        b, dfdi, dfdi2, r, sigbar,&
+                        c, ck, cs, zr(imatuu), zr( ivectu),&
+                        zr(iinstm), zr(iinstp), option, zi(imate), mecani,&
+                        press1, press2, tempe, dimdef, dimcon,&
+                        dimuel, nbvari, nddls, nddlm, nmec,&
+                        np1, ndim, zk16(icompo), axi, modint,&
+                        retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, angnau,dimmat)
+                        jpmilt, angnau, dimmat)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
  30         continue
-            call xasshm(nno, npg, npi,&
-                        ipoids, ivf, idfde, igeom, zr(igeom),&
-                        zr(icarcr), zr(ideplm), zr(ideplp), zr(icontm), zr(icontp),&
-                        zr(ivarim), zr(ivarip), defgem, defgep, drds,&
-                        drdsr, dsde, b, dfdi, dfdi2,&
-                        r, sigbar, c, ck, cs,&
-                        zr(imatuu), zr( ivectu), zr(iinstm), zr(iinstp), option,&
-                        zi(imate), mecani, press1, press2, tempe,&
-                        dimdef, dimcon, dimuel, nbvari, nddls,&
-                        nddlm, nmec, np1, ndim,&
-                        zk16(icompo), axi, modint, retloi,&
-                        nnop, nnops, nnopm, enrmec,&
+            call xasshm(nno, npg, npi, ipoids, ivf,&
+                        idfde, igeom, zr(igeom), zr(icarcr), zr(ideplm),&
+                        zr(ideplp), zr(icontm), zr(icontp), zr(ivarim), zr(ivarip),&
+                        defgem, defgep, drds, drdsr, dsde,&
+                        b, dfdi, dfdi2, r, sigbar,&
+                        c, ck, cs, zr(imatuu), zr( ivectu),&
+                        zr(iinstm), zr(iinstp), option, zi(imate), mecani,&
+                        press1, press2, tempe, dimdef, dimcon,&
+                        dimuel, nbvari, nddls, nddlm, nmec,&
+                        np1, ndim, zk16(icompo), axi, modint,&
+                        retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, angnau,dimmat)
+                        jpmilt, angnau, dimmat)
             zi(jcret) = retloi
         endif
 ! =====================================================================
@@ -355,14 +354,14 @@ subroutine te0588(option,nomte)
 ! ======================================================================
         call jevech('PVECTUR', 'E', ivectu)
 !
-        call xfnohm(fnoevo, dt, nno,&
-                    npg, ipoids, ivf, idfde,&
-                    zr(igeom), zr(icontm), b, dfdi, dfdi2,&
-                    r, zr(ivectu), zi(imate), mecani, press1,&
-                    dimcon, nddls, nddlm, dimuel, nmec,&
-                    np1, ndim, axi, dimenr, nnop,&
-                    nnops, nnopm, igeom, jpintt, jpmilt,&
-                    zi(jlonch), zi( jcnset), zi(jheavt), enrmec)
+        call xfnohm(fnoevo, dt, nno, npg, ipoids,&
+                    ivf, idfde, zr(igeom), zr(icontm), b,&
+                    dfdi, dfdi2, r, zr(ivectu), zi(imate),&
+                    mecani, press1, dimcon, nddls, nddlm,&
+                    dimuel, nmec, np1, ndim, axi,&
+                    dimenr, nnop, nnops, nnopm, igeom,&
+                    jpintt, jpmilt, zi(jlonch), zi( jcnset), zi(jheavt),&
+                    enrmec)
 !
 ! =====================================================================
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------

@@ -38,6 +38,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
@@ -56,14 +57,14 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
     real(kind=8) :: valr
     complex(kind=8) :: cmesu(nbmesu, nbabs), ceta(nbmode, nbabs)
     complex(kind=8) :: cetap(nbmode, nbabs), ceta2p(nbmode, nbabs)
-    logical(kind=1) :: lfonct
+    aster_logical :: lfonct
 !
     integer :: imod, jmod, imes, iabs, ierr, ibid, jmes
     integer :: lsecmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
     real(kind=8) :: alpha, eps
     real(kind=8) :: zero, depi, rval
     complex(kind=8) :: cval
-    logical(kind=1) :: nul
+    aster_logical :: nul
     character(len=3) :: method
     character(len=8) :: regul
     character(len=16) :: nomcha
@@ -126,9 +127,9 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                                                      lphitp-1 + imod+nbmode*(jmod-1)) + phi(imes,&
                                                      imod)*phi(imes, jmod&
                                                      )
-10          continue
-20      continue
-30  end do
+ 10         continue
+ 20     continue
+ 30 end do
 !
     if (nbmesu .lt. nbmode) then
 ! ===============================
@@ -143,9 +144,9 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                                                          ) + phi(imes,&
                                                          imod)*phi(jmes, imod&
                                                          )
-60              continue
-50          continue
-40      continue
+ 60             continue
+ 50         continue
+ 40     continue
     endif
 !
 ! =======================================
@@ -185,7 +186,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 ! ****************************************
             do 80 jmod = 1, nbmode
                 zr(lmatsy-1 +imod+nbmode*(jmod-1)) = zr( lphitp-1 + imod+nbmode*( jmod-1) )
-80          continue
+ 80         continue
 !
             zr(lmatsy-1 +imod+nbmode*(imod-1)) = zr( lmatsy-1 +imod+ nbmode*(imod-1 ) ) + alpha
 !
@@ -201,7 +202,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 ! TRAITEMENT PARTIE REELLE / PARTIE IMAGINAIRE
                 zr(lsecmb-1 +imod) = zr(lsecmb-1 +imod) +phi(imes, imod)*dble(cval)
                 zr(lsecmb-1 +nbmode+imod) = zr(lsecmb-1 +nbmode+imod) +phi(imes,imod)*dimag(cval)
-70          continue
+ 70         continue
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
                 cval = ceta(imod,iabs-1)
@@ -212,7 +213,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 !
 ! FIN DE LA BOUCLE SUR LES MODES
 ! ******************************
-90      continue
+ 90     continue
 !
 !
 ! RESOLUTION DU SYSTEME :
@@ -232,8 +233,8 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                     zr(lsecmb-1 +nbmode+imes) = dimag(cval)
                     do 77 jmes = 1, nbmesu
                         zr(lmatsy-1 +imes+nbmode*(jmes-1)) = zr(lphiph-1 +imes+nbmesu*( jmes-1))
-77                  continue
-71              continue
+ 77                 continue
+ 71             continue
 !
 ! CHOIX POUR LA METHODE D INVERSION
                 if (method .eq. 'SVD') then
@@ -242,7 +243,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                     do 75 jmes = 1, nbmesu
                         zr(leta-1 +jmes) = zr(lsecmb-1 +jmes)
                         zr(leta-1 +nbmode+jmes) = zr(lsecmb-1 +nbmode+ jmes)
-75                  continue
+ 75                 continue
 !
                     call rslsvd(nbmode, nbmesu, nbmesu, zr(lmatsy), zr( lvals),&
                                 zr(lu), zr(lv), 2, zr(leta), eps,&
@@ -271,10 +272,10 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                     do 74 jmes = 1, nbmesu
                         ceta(jmod,iabs) = phi(jmes,jmod) *dcmplx(zr( leta-1 +jmes),zr(leta-1 +nbm&
                                           &ode+jmes))
-74                  continue
+ 74                 continue
                     cetap(jmod,iabs) = cval * ceta(jmod,iabs)
                     ceta2p(jmod,iabs) = rval * ceta(jmod,iabs)
-76              continue
+ 76             continue
 !
                 goto 100
             endif
@@ -289,7 +290,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
             do 81 jmod = 1, nbmode
                 zr(leta-1 +jmod) = zr(lsecmb-1 +jmod)
                 zr(leta-1 +nbmode+jmod) = zr(lsecmb-1 +nbmode+jmod)
-81          continue
+ 81         continue
 !
             call rslsvd(nbmode, nbmode, nbmode, zr(lmatsy), zr( lvals),&
                         zr(lu), zr(lv), 2, zr(leta), eps,&
@@ -319,11 +320,11 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
             jmod))
             cetap(jmod,iabs) = cval * ceta(jmod,iabs)
             ceta2p(jmod,iabs) = rval * ceta(jmod,iabs)
-73      continue
+ 73     continue
 !
 ! FIN DE LA BOUCLE SUR LES ABSCISSES (FREQUENCE)
 ! ***************************
-100  end do
+100 end do
 !
     if (nomcha .eq. 'VITE') then
         cval = dcmplx(zero,depi*xabs(iabs))
@@ -332,8 +333,8 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                 cetap(jmod,iabs) = ceta(jmod,iabs)
                 ceta2p(jmod,iabs) = cval * cetap(jmod,iabs)
                 ceta(jmod,iabs) = -cval * cetap(jmod,iabs)
-201          continue
-200      continue
+201         continue
+200     continue
     endif
 !
     if (nomcha .eq. 'ACCE') then
@@ -343,8 +344,8 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                 ceta2p(jmod,iabs) = ceta(jmod,iabs)
                 cetap(jmod,iabs) = -cval * ceta2p(jmod,iabs)
                 ceta(jmod,iabs) = -cval * cetap(jmod,iabs)
-203          continue
-202      continue
+203         continue
+202     continue
     endif
 !
 ! DESTRUCTION DES VECTEURS DE TRAVAIL

@@ -3,6 +3,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -31,10 +32,10 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=*),  intent(in) :: phenom
+    character(len=*), intent(in) :: phenom
     character(len=16), intent(in) :: load_type
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: vale_type
     integer, intent(out) :: nb_carte
@@ -64,8 +65,8 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
     character(len=13) :: obje_pref
     character(len=8) :: gran_name(2)
     character(len=4) :: cart_type(2)
-    integer ::  jvalv, i_carte, i_cmp, iret
-    logical(kind=1) :: l_init(2)
+    integer :: jvalv, i_carte, i_cmp, iret
+    aster_logical :: l_init(2)
     character(len=8), pointer :: ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,7 +79,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
 !
 ! - Number of <CARTE> objects - TODO: using lisdef utility
 !
-    if (load_type.eq.'EFFE_FOND') then
+    if (load_type .eq. 'EFFE_FOND') then
         nb_carte = 2
     else if (load_type.eq.'ONDE_PLANE') then
         nb_carte = 2

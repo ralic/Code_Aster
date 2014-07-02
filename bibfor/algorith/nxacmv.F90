@@ -57,6 +57,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/asasve.h"
@@ -81,7 +82,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 #include "asterfort/vedith.h"
 #include "asterfort/vetnth.h"
 #include "asterfort/vrcins.h"
-    logical(kind=1) :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
+    aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas
     character(len=19) :: infcha, solveu, maprec
@@ -108,7 +109,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
     character(len=24) :: ligrmo, merigi, memass, mediri, tlimat(3), bidon
     character(len=24) :: vediri, vechtp, vetntp, vetnti, vadirp, vachtp, vechtn
     character(len=24) :: vachtn, vtemp2
-    logical(kind=1) :: llin
+    aster_logical :: llin
     data typres /'R'/
     data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &             'R       ','RHO     '/

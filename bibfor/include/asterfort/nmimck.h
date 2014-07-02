@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmimck(sdimpr, typcoz, valk, laffe)
         character(len=24) :: sdimpr
         character(len=*) :: typcoz
         character(len=*) :: valk
-        logical(kind=1) :: laffe
+        aster_logical :: laffe
     end subroutine nmimck
 end interface

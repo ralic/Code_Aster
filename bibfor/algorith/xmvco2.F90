@@ -7,6 +7,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
@@ -59,7 +60,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
     integer :: in, jfisno, jheafa, ncomph, nfiss, nnos
     real(kind=8) :: ffi, am(3), coefi, hfix(3), h(3), lamb(3), r
     real(kind=8) :: p(3, 3), ptr(3, 3)
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 ! ---------------------------------------------------------------------
 !
@@ -74,7 +75,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
     do 1 i = 1, ndim
         h(i) = - lamb(i) - r*am(i) + r*delta(i)
- 1  end do
+  1 end do
 !
 ! CONVERSION DE H EN BASE FIXE : {HFIX} = [P]T {H}
 ! RAPPEL : P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
@@ -102,12 +103,12 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
             endif
             do 12 j = 1, ndim
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) - coefi*ffp( i)*hfix(j)*jac
-12          continue
-11      continue
+ 12         continue
+ 11     continue
         do 13 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) - coefi*ffp(i)*rr*hfix(j )*jac
-13      continue
-10  continue
+ 13     continue
+ 10 continue
 !
 ! SECOND MEMBRE DE L EQUATION D INTERFACE: EXPRESSION DIRECTE
 ! ATTENTION INVERSION DE CONVENTIONS
@@ -119,7 +120,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
         if (nli .eq. 0) goto 20
         do 21 k = 1, ndim
             vtmp(pli-1+k) = vtmp(pli-1+k) + (am(k)-delta(k))*ffi*jac
-21      continue
-20  continue
+ 21     continue
+ 20 continue
 !
 end subroutine

@@ -19,6 +19,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 !     APPELANT : FLUST3
@@ -38,7 +39,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
 !
     character(len=3) :: k3ig, k3jg
     character(len=24) :: valk(2)
-    logical(kind=1) :: intnul
+    aster_logical :: intnul
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -52,7 +53,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
             write(k3ig,'(I3.3)') ig
             call utmess('F', 'ALGELINE_83', sk=k3ig)
         endif
-10  end do
+ 10 end do
 !
     if (nbgtot .gt. 1) then
         do 20 ig = 1, nbgtot-1
@@ -69,8 +70,8 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
                     valk(2) = k3jg
                     call utmess('F', 'ALGELINE_84', nk=2, valk=valk)
                 endif
-21          continue
-20      continue
+ 21         continue
+ 20     continue
     endif
 !
 ! --- FIN DE MEFGRI.

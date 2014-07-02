@@ -33,6 +33,7 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
 !       SEUIL  :  POSITIF SI PLASTICITE A PRENDRE EN COMPTE
 !       IRET   :  CODE RETOUR
 !   ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujpot.h"
     integer :: iret, nmat
@@ -41,7 +42,7 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
     character(len=8) :: mod
 !
     integer :: i
-    logical(kind=1) :: rdctps
+    aster_logical :: rdctps
     character(len=7) :: etatf
     real(kind=8) :: un, bid66(6, 6), zero, somme, matert(22, 2)
 !
@@ -55,13 +56,13 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
     somme = zero
     do 10 i = 1, 6
         somme = somme + abs(deps(i))
-10  end do
+ 10 end do
     if (somme .lt. r8prem()) goto 999
 !
     do 20 i = 1, 22
         matert(i,1) = materf(i,1)
         matert(i,2) = materf(i,2)
-20  end do
+ 20 end do
 !
 ! --- DEFINITION DU DOMAINE POTENTIEL DES MECANISMES ACTIFS
     call hujpot(mod, matert, vinf, deps, sigd,&
@@ -69,7 +70,7 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
 !
 ! --- SI ETATF = 'ELASTIC' --> SEUIL < 0
 !
-999  continue
+999 continue
     if(etatf.eq.'ELASTIC')seuil = - un
 !
 !

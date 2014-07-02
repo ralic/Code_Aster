@@ -1,6 +1,7 @@
 function exigfa(dgf, ngf)
     implicit none
-    logical(kind=1) :: exigfa
+#include "asterf_types.h"
+    aster_logical :: exigfa
     integer :: dgf(*), ngf
 !     ------------------------------------------------------------------
 ! ======================================================================

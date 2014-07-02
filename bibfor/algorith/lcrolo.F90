@@ -20,6 +20,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/gdclci.h"
@@ -73,7 +74,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
      &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
      &               itemax, jprolp, jvalep, nbvalp
@@ -97,7 +98,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! ----------------------------------------------------------------------
     character(len=9) :: typorot
     character(len=1) :: poum
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: ij, indice
     real(kind=8) :: infini, petit
     real(kind=8) :: porom, poro, em(6), ep(6)
@@ -137,11 +138,11 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
 !    CARACTERISTIQUES MATERIAU
     call lcroma(fami, kpg, ksp, poum, mate)
-    
-    
+!
+!
     if (typoro .eq. 1) typorot = 'IMPLICITE'
     if (typoro .eq. 2) typorot = 'EXPLICITE'
-    
+!
     call gdclel(fami, kpg, ksp, poum, mate,&
                 young, nu)
 !
@@ -154,8 +155,8 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! 3 - CALCUL DE LA POROSITE ET TESTS ASSOCIES
 !
     if (typorot .eq. 'EXPLICITE') then
-
-
+!
+!
 !
 !      POROSITE EXPLICITE
         porom = max(f0,porom)
@@ -248,7 +249,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
         call lcrofg(y, dp, s, seuil, dseuil)
         indice=1
 !
-600      continue
+600     continue
         x = sig1*y/unk
 !
 ! 4.5 - CALCUL DE LA DEFORMATION ELASTIQUE
@@ -258,11 +259,11 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
         else
             do 55 ij = 1, 6
                 ep(ij) = (x+tretr)/3.d0*kr(ij)
-55          continue
+ 55         continue
             if (indice .eq. 1 .and. eqetr .gt. petit) then
                 do 60 ij = 1, 6
                     ep(ij) = ep(ij) + dvetr(ij)*(1.d0-3.d0*dp/(2.d0* eqetr))
-60              continue
+ 60             continue
             endif
         endif
 !
@@ -318,5 +319,5 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
     endif
 !
-9999  continue
+9999 continue
 end subroutine

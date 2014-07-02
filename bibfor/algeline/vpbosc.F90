@@ -36,6 +36,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/freqom.h"
 #include "asterfort/infniv.h"
@@ -48,7 +49,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
 !     ------------------------------------------------------------------
     real(kind=8) :: vpinf2, vpmax2, tole
     real(kind=8) :: valr(2)
-    logical(kind=1) :: loginf, logmax
+    aster_logical :: loginf, logmax
     integer :: niv, ifm, i
 !     ------------------------------------------------------------------
 !
@@ -63,7 +64,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
 !
     do 5 i = 1, nbvect
         valpro(i) = valpro(i) + omeshi
- 5  end do
+  5 end do
 !
     vpinf = dble(valpro(1))
     vpmax = dble(valpro(1))
@@ -74,7 +75,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
         if (dble(valpro(i)) .gt. vpmax) then
             vpmax = dble(valpro(i))
         endif
-10  end do
+ 10 end do
     if (niv .ge. 1) then
         write(ifm,1600)
         if (typres .eq. 'DYNAMIQUE') then
@@ -117,7 +118,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                     vpmax2 = dble(valpro(i))
                 endif
             endif
-20      end do
+ 20     end do
 !
 !     ----ON REGARDE L'ECART QU'IL Y A ENTRE FREQMIN ET LA
 !         FREQUENCE PRECEDENTE, PUIS ON RECALCULE FREQMIN-----

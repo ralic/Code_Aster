@@ -33,6 +33,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !        NIVE  : NIVEAU IMPRESSION CASTEM 3 OU 10
 !        INFMAI: POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/iradhs.h"
@@ -54,7 +55,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
 !---------------- ARGUMENTS --------------------------------------------
     integer :: versio, nive, infmai
-    logical(kind=1) :: lmod
+    aster_logical :: lmod
     character(len=8) :: noma, nomo
     character(len=16) :: formar
     character(len=*) :: form
@@ -62,14 +63,14 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
     integer :: ifi, igm, ign
     integer :: ima, ino, iret
-    integer ::  jnogm, jnogn
-    integer :: jnomai, jnonoe,  jpoin
+    integer :: jnogm, jnogn
+    integer :: jnomai, jnonoe, jpoin
     integer :: jtitr, jtypl
 !
     integer :: lon1, maxnod, nbgrm, nbgrn
     integer :: nbmai, nbnoe, nbtitr, ndim
 !
-    logical(kind=1) :: lmasu, lgmsh
+    aster_logical :: lmasu, lgmsh
 !
     character(len=80) :: titmai
     real(kind=8), pointer :: vale(:) => null()

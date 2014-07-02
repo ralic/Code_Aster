@@ -19,6 +19,7 @@ subroutine surfc1(char, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -49,7 +50,7 @@ subroutine surfc1(char, ifm)
     integer :: nzoco
     integer :: izone
     character(len=24) :: defico
-    logical(kind=1) :: lveri, lgcp, lgliss
+    aster_logical :: lveri, lgcp, lgliss
     integer :: isto, lgbloc, gcpmax, gcppre, gcprec
     real(kind=8) :: tolint, precis, gcpres, aljeu
     real(kind=8) :: coefpn, coefpt, coefff, coefte
@@ -128,7 +129,7 @@ subroutine surfc1(char, ifm)
             write (ifm,1071) 'E_T             ',coefpt
             write (ifm,1071) 'COULOMB         ',coefff
         endif
-50  end do
+ 50 end do
 !
     1070 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)
     1071 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',e12.5)

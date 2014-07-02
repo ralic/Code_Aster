@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine coeime(meca, imate, nomail, option, resi,&
                       rigi, ndim, dimdef, dimcon, yap1,&
@@ -31,8 +33,8 @@ interface
         integer :: imate
         character(len=8) :: nomail
         character(len=16) :: option
-        logical(kind=1) :: resi
-        logical(kind=1) :: rigi
+        aster_logical :: resi
+        aster_logical :: rigi
         integer :: yap1
         integer :: yap2
         integer :: yate

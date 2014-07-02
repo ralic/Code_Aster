@@ -1,5 +1,6 @@
 subroutine rscopi(base, sd1, sd2)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/copich.h"
@@ -53,9 +54,9 @@ subroutine rscopi(base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer ::  i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
+    integer :: i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
     integer :: iatava
-    logical(kind=1) :: dejfai
+    aster_logical :: dejfai
     character(len=1) :: bas2
     character(len=4) :: type, typacc
     character(len=5) :: nomobj
@@ -83,7 +84,7 @@ subroutine rscopi(base, sd1, sd2)
     call jedupo(sdr1//'.ORDR', bas2, sdr2//'.ORDR', .false._1)
     call jedupo(sdr1//'.REFD', bas2, sdr2//'.REFD', .false._1)
     call jedupo(sdr1//'.INDI', bas2, sdr2//'.INDI', .false._1)
-
+!
 !
 !     --- LE .TACH ---
 !
@@ -105,8 +106,8 @@ subroutine rscopi(base, sd1, sd2)
                 call copich(bas2, ch1, ch2)
                 call rsnoch(sd2, nomsy, ordr(1+j))
             endif
-10      continue
-20  continue
+ 10     continue
+ 20 continue
 !
 !     --- LES VARIABLES ET PARAMETRES D'ACCES ---
 !
@@ -132,7 +133,7 @@ subroutine rscopi(base, sd1, sd2)
         endif
         call jedupo(sdr1//nomobj, bas2, sdr2//nomobj, .false._1)
 !
-30  continue
+ 30 continue
     call jedetr(nompar)
 !
     call jedema()

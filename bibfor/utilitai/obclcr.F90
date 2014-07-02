@@ -19,7 +19,8 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -63,8 +64,8 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: linte, lreel, lchai
-    logical(kind=1) :: lnvvid, lnverr, lnvsan
+    aster_logical :: linte, lreel, lchai
+    aster_logical :: lnvvid, lnverr, lnvsan
 !
 ! ----------------------------------------------------------------------
 !

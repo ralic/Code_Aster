@@ -1,6 +1,7 @@
 subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
                   ug, factus)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/limend.h"
 #include "asterfort/rc36f0.h"
@@ -35,7 +36,7 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, ifm, niv, icompt
     real(kind=8) :: saltm, nadm(1), ukl, vale(2)
-    logical(kind=1) :: trouve, endur
+    aster_logical :: trouve, endur
     integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=8) :: kbid
@@ -53,13 +54,13 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
             i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,nbsigr)
             write(ifm,1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), (saltij(&
             i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,nbsigr)
-100      continue
+100     continue
     endif
 !
     icompt = 0
     ug = 0.d0
 !
-10  continue
+ 10 continue
     saltm = 0.d0
     trouve = .false.
 !
@@ -127,13 +128,13 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
             i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,nbsigr)
             write(ifm,1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), (saltij(&
             i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,nbsigr)
-110      continue
+110     continue
     endif
 !
     ug = ug + ukl
     goto 10
 !
-9999  continue
+9999 continue
 !
     1000 format(1p,i7,'_A',i9,'|',40(e9.2,1x,e9.2,'|'))
     1002 format(1p,i7,'_B',i9,'|',40(e9.2,1x,e9.2,'|'))

@@ -4,6 +4,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -44,7 +45,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
     integer, intent(in) :: fonact(*)
     character(len=16), intent(out) :: metcor
     character(len=16), intent(out) :: metpre
-    logical(kind=1), intent(out) :: reasma
+    aster_logical, intent(out) :: reasma
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,9 +79,9 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
     integer :: ifm, niv
     real(kind=8) :: instam, instap, pasmin, deltat
     integer :: reincr, reiter
-    logical(kind=1) :: lmodim
-    logical(kind=1) :: leltc, lctcd, lelas
-    logical(kind=1) :: lprem, ldyna, lamor, lchoc, lvarc, l_elas_fo
+    aster_logical :: lmodim
+    aster_logical :: leltc, lctcd, lelas
+    aster_logical :: lprem, ldyna, lamor, lchoc, lvarc, l_elas_fo
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,9 +102,9 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 !
 ! --- PARAMETRES
 !
-
-
-
+!
+!
+!
     reincr = nint(parmet(1))
     reiter = nint(parmet(2))
     metcor = method(2)

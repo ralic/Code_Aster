@@ -18,7 +18,8 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfjefi.h"
@@ -57,7 +58,7 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
     integer :: ifm, niv
     character(len=19) :: ddeplc
     integer :: jddepc
-    logical(kind=1) :: lpenac, lgcp
+    aster_logical :: lpenac, lgcp
 !
 ! ----------------------------------------------------------------------
 !
@@ -102,7 +103,7 @@ subroutine cfpost(noma, defico, resoco, ddepla, ctccvg)
 !
     call cfjefi(noma, defico, resoco, ddepla)
 !
-999  continue
+999 continue
 !
     call jedema()
 !

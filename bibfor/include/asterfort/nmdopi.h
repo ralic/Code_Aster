@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         character(len=*) :: modelz
         character(len=24) :: numedd
         character(len=16) :: method(*)
-        logical(kind=1) :: lreli
+        aster_logical :: lreli
         character(len=19) :: sdpilo
     end subroutine nmdopi
 end interface

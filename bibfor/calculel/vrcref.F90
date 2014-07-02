@@ -16,6 +16,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -49,14 +50,14 @@ subroutine vrcref(modele, chmat, carele, chvref)
     character(len=8) :: models, chmats, carels
     character(len=19) :: chvres
     integer :: n1, iad, isp, ipt
-    integer :: k, k2, nbma, ncmp, icmp, jcesl1,  jcesd1
-    integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc,  ibid
-    integer :: jdcld, jdcll,  nncp, iret
+    integer :: k, k2, nbma, ncmp, icmp, jcesl1, jcesd1
+    integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, ibid
+    integer :: jdcld, jdcll, nncp, iret
     character(len=8) :: varc, noma1, noma2
     character(len=19) :: dceli, celmod, cart1, ces1, ligrmo, csvref
     character(len=24) :: valk(4)
     real(kind=8) :: valref
-    logical(kind=1) :: avrc
+    aster_logical :: avrc
     real(kind=8), pointer :: cesv1(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: dclv(:) => null()

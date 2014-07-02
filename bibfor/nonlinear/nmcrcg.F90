@@ -18,7 +18,8 @@ subroutine nmcrcg(fonact, sdconv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -45,7 +46,7 @@ subroutine nmcrcg(fonact, sdconv)
 !
     character(len=24) :: cnvtyp, cnvlie, cnvval, cnvact, cnvnco
     integer :: jcnvty, jcnvli, jcnvva, jcnvac, jcnvnc
-    logical(kind=1) :: lnewtf, lnewtg
+    aster_logical :: lnewtf, lnewtg
 !
 ! ----------------------------------------------------------------------
 !

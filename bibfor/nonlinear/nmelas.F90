@@ -46,10 +46,11 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
-    logical(kind=1) :: cplan, inco
+    aster_logical :: cplan, inco
     integer :: ndim, imate, kpg, ksp, iret, ndimsi
     integer :: k, l, iret2, iret3, iret4, iret5, icodre(3)
     real(kind=8) :: sigm(6), sigp(6), vip(1), dsidep(6, 6)
@@ -231,8 +232,8 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
 !     -------------------------------------
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. &
-        & option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&
+        .eq. 'RIGI_MECA_IMPLEX') then
 !
 !
         do k = 1, ndimsi
@@ -247,8 +248,8 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !     ----------------------------
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
 !
-        do k=1,ndimsi
-            do l=1,ndimsi
+        do k = 1, ndimsi
+            do l = 1, ndimsi
                 dsidep(k,l) = 0.d0
             end do
         end do

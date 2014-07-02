@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                       numaca, quad, sens)
@@ -24,7 +26,7 @@ interface
         integer :: nbf0
         integer :: nbnoca(*)
         character(len=19) :: numaca
-        logical(kind=1) :: quad
+        aster_logical :: quad
         integer :: sens
     end subroutine topoca
 end interface

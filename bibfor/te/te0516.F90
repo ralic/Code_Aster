@@ -20,6 +20,7 @@ subroutine te0516(option, nomte)
     implicit none
     character(len=16) :: option, nomte
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/bsigma.h"
@@ -66,7 +67,7 @@ subroutine te0516(option, nomte)
     integer :: nc, nno, dimklv, npg, iret, codrep
     parameter ( nc = 7 , dimklv = 2*nc*(2*nc+1)/2 ,nno = 2 , npg = 3)
     real(kind=8) :: hoel(nc), fl(2*nc), hota(nc, nc), d1b(nc, 2*nc)
-    real(kind=8) :: rg0(2*nc,2*nc), eps(nc), deps(nc), u(2*nc), du(2*nc)
+    real(kind=8) :: rg0(2*nc, 2*nc), eps(nc), deps(nc), u(2*nc), du(2*nc)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc)
     real(kind=8) :: co(npg), epsm
 !
@@ -74,13 +75,13 @@ subroutine te0516(option, nomte)
     real(kind=8) :: pgl(3, 3), ffp(3), matsct(6)
     real(kind=8) :: xd(3), ang1(3)
     real(kind=8) :: ey, ez, gamma, xl, xl2, xls2
-    logical(kind=1) :: vecteu, matric, reactu
+    aster_logical :: vecteu, matric, reactu
     integer :: i, jcret, npge
     integer :: igeom, imate, icontm, isect, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
     integer :: inbfib, ncarfi, nbfib, jacf, jtab(7), ivarmp, codret
 !
-    integer :: ncomp,     nbvalc,  isdcom
+    integer :: ncomp, nbvalc, isdcom
     integer :: kp, j, k, kk, istrxm, istrxp, istrmp, ncomp2
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg
     real(kind=8) :: e, g, nu, temp, temm, phiy, phiz
@@ -90,7 +91,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: rigge0(2*nc, 2*nc), ksi1, d1b3(2, 3), sigfib, mflex(4)
     real(kind=8) :: ddu(2*nc), carsec(6)
     integer :: ne, cara, idepla, iiter, iterat, nint, ifgp
-    integer :: nbgf,  nbgfmx
+    integer :: nbgf, nbgfmx
     character(len=8) :: mator
     character(len=4) :: fami
     character(len=24) :: valk(2)
@@ -103,7 +104,7 @@ subroutine te0516(option, nomte)
 !     ------------------------------------------------------------------
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,npg=npge,jpoids=ipoids)
+    call elrefe_info(fami=fami, npg=npge, jpoids=ipoids)
     ASSERT( npg.ge.npge )
     co(1:npg)=zr(ipoids:ipoids+npg-1)
 !
@@ -193,7 +194,7 @@ subroutine te0516(option, nomte)
 !
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
         call utmess('F', 'ELEMENTS2_90')
-    else if ( (zk16(icompo+2) .ne. 'PETIT').and.(zk16(icompo+2).ne.'GROT_GDEP') ) then
+    else if ((zk16(icompo+2) .ne. 'PETIT').and.(zk16(icompo+2).ne.'GROT_GDEP')) then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte
         call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
@@ -340,8 +341,8 @@ subroutine te0516(option, nomte)
             endif
         endif
 !       CALCUL DES DEFORMATIONS ET DES INCREMENTS DE DEF SUR LES FIBRES
-        call pmfdef(nbfib, ncarfi, zr(jacf), eps,defmfib)
-        call pmfdef(nbfib, ncarfi, zr(jacf), deps,defpfib)
+        call pmfdef(nbfib, ncarfi, zr(jacf), eps, defmfib)
+        call pmfdef(nbfib, ncarfi, zr(jacf), deps, defpfib)
         epsm = (u(8)-u(1))/xl
 !
 !       MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
@@ -405,10 +406,9 @@ subroutine te0516(option, nomte)
             zr(istrxp+ifgp+2) = zr(istrxm+ifgp+2) + hoel(2)*deps(2)
             zr(istrxp+ifgp+3) = zr(istrxm+ifgp+3) + hoel(3)*deps(3)
 !           ON RAJOUTE L'EFFET WAGNER DU AU GAUCHISSEMENT
-            zr(istrxp+ifgp+4) = zr(istrxm+ifgp+4) + hoel(4)*deps(4) + &
-                               (ffp(1)*((xiy+xiz)/aa+ey**2+ez**2))*deps(4) + &
-                               (ffp(2)*(xizr2/xiy-2*ez))*deps(4) - &
-                               (ffp(3)*(xiyr2/xiz-2*ey))*deps(4)
+            zr(istrxp+ifgp+4) = zr(istrxm+ifgp+4) + hoel(4)*deps(4) + (ffp(1)*((xiy+xiz)/aa+ey**2&
+                                &+ez**2))*deps(4) + (ffp(2)*(xizr2/xiy-2*ez))*deps(4) - (ffp(3)*(&
+                                &xiyr2/xiz-2*ey))*deps(4)
 !
             zr(istrxp+ifgp+5) = ffp(2)
             zr(istrxp+ifgp+6) = ffp(3)
@@ -429,8 +429,10 @@ subroutine te0516(option, nomte)
             enddo
             hotage(1,2) = -effgep(3)
             hotage(1,3) = effgep(2)
-            hotage(1,4) = -(ey*effgep(2)+ez*effgep(3)) + (0.5d0*(xiyr2/ xiz)*effgep(2)) + &
-                           (0.5d0*(xizr2/xiy)*effgep(3))
+            hotage(1,4) = -(&
+                          ey*effgep(2)+ez*effgep(3)) + (0.5d0*(xiyr2/ xiz)*effgep(2)) + (0.5d0*(x&
+                          &izr2/xiy)*effgep(3)&
+                          )
 !           TERME NON CALCULE EXACTEMENT (ON FAIT L'HYPOTHESE D'UNE TORSION DE SAINT-VENANT)
             hotage(2,1) = hotage(1,2)
             hotage(2,2) = effgep(1)
@@ -444,8 +446,10 @@ subroutine te0516(option, nomte)
             hotage(4,2) = hotage(2,4)
             hotage(4,3) = hotage(3,4)
 !           MOMENT DE WAGNER
-            hotage(4,4) = (effgep(1)*((xiy+xiz)/aa+ey**2+ez**2)) + (effgep(5)*(xizr2/xiy-2*ez)) - &
-                          (effgep(6)*(xiyr2/xiz-2*ey))
+            hotage(4,4) = (&
+                          effgep(1)*((xiy+xiz)/aa+ey**2+ez**2)) + (effgep(5)*(xizr2/xiy-2*ez)) - &
+                          &(effgep(6)*(xiyr2/xiz-2*ey)&
+                          )
 !           TERME NON CALCULE ACTUELLEMENT CAR XIWR2 N'EST PAS FOURNI PAR L'UTILISATEUR :
 !               XIWR2 = INT(W*(Y*Y+Z*Z)*DS) + (EFFGEP(7)*(XIWR2/XJG))
             call dscal(4*4, xls2, hotage, 1)

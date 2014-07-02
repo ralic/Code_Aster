@@ -18,6 +18,7 @@ subroutine te0542(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
@@ -47,7 +48,7 @@ subroutine te0542(option, nomte)
     integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icompo
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
     real(kind=8) :: sigref(1), depref
     character(len=8) :: enr, elref
 ! DEB ------------------------------------------------------------------
@@ -56,8 +57,8 @@ subroutine te0542(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elref)
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -84,8 +85,7 @@ subroutine te0542(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-         .and..not.iselli(elref))&
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -95,16 +95,16 @@ subroutine te0542(option, nomte)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PSTANO', 'L', jstno)
 !       CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
-        call xbsig(ndim, nno, nfh, nfe,&
-                   ddlc, ddlm, igeom, zk16( icompo), jpintt,&
-                   zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm),&
-                   nbsig, ideplm, zr(jlsn), zr(jlst), ivectu,&
-                   jpmilt, nfiss, jfisno)
+        call xbsig(ndim, nno, nfh, nfe, ddlc,&
+                   ddlm, igeom, zk16( icompo), jpintt, zi(jcnset),&
+                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm), nbsig,&
+                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
+                   nfiss, jfisno)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, lbid,&
-                    option, nomte, ddlm,&
-                    nfiss, jfisno, vect=zr(ivectu))
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    vect=zr(ivectu))
 !
     else if (option.eq.'REFE_FORC_NODA') then
 !

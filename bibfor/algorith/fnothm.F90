@@ -27,10 +27,11 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
 ! ======================================================================
 ! ======================================================================
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/fonoda.h"
-    logical(kind=1) :: fnoevo, perman, axi
+    aster_logical :: fnoevo, perman, axi
     integer :: nno, nnos, npg, imate, dimdef, dimcon, nddls, nddlm, nnom
     integer :: dimuel, nmec, np1, np2, ndim, ipoids, ipoid2, ivf, ivf2
     integer :: idfde, idfde2, npi, mecani(5), press1(7), press2(7)
@@ -108,7 +109,7 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
 ! ======================================================================
     do 1 i = 1, dimuel
         vectu(i)=0.d0
- 1  end do
+  1 end do
 ! ======================================================================
 ! --- CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG ---------------
 ! ======================================================================
@@ -118,7 +119,7 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
 ! ======================================================================
         do 22 i = 1, dimdef+1
             r(i)=0.d0
-22      continue
+ 22     continue
 ! ======================================================================
 ! --- CALCUL DE LA MATRICE B AU POINT DE GAUSS -------------------------
 ! ======================================================================
@@ -139,9 +140,9 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
         do 117 i = 1, dimuel
             do 118 n = 1, dimdef
                 vectu(i)=vectu(i)+b(n,i)*r(n)*poids
-118          continue
-117      continue
+118         continue
+117     continue
 ! ======================================================================
-10  end do
+ 10 end do
 ! ======================================================================
 end subroutine

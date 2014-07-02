@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcfonc(ichar ,iord  ,cartei,lfchar,lfmult,&
                       newfct,lformu)
-        logical(kind=1), intent(in) :: lfmult
-        logical(kind=1), intent(in) :: lfchar
+        aster_logical, intent(in) :: lfmult
+        aster_logical, intent(in) :: lfchar
         integer, intent(in) :: ichar
         integer, intent(in) :: iord
         character(len=8), intent(out) :: newfct
         character(len=19), intent(in) :: cartei
-        logical(kind=1), intent(out) :: lformu
+        aster_logical, intent(out) :: lformu
     end subroutine gcfonc
 end interface

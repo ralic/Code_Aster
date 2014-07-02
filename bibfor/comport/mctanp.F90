@@ -3,7 +3,7 @@ subroutine mctanp(dpstrs, rprops, pstrs, edge, right,&
 !
     implicit none
 ! Declaration of real type variables
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -21,20 +21,21 @@ subroutine mctanp(dpstrs, rprops, pstrs, edge, right,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    real(kind=8) :: dpstrs(3,3)
+    real(kind=8) :: dpstrs(3, 3)
     real(kind=8) :: rprops(*)
     real(kind=8) :: pstrs(3)
     real(kind=8) :: edge
     real(kind=8) :: right
     real(kind=8) :: apex
 !
+#include "asterf_types.h"
 #include "asterfort/matini.h"
 !
 ! Declaration of integer type variables
     integer :: i, j, ii, jj, mm
     real(kind=8) :: degr
 !
-    logical(kind=1) :: epflag
+    aster_logical :: epflag
 !
     parameter ( degr=0.017453292519943295d0 )
 ! Real arrays and variables

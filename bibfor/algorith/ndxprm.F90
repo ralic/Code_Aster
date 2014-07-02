@@ -25,6 +25,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -102,9 +103,9 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: reasma
-    logical(kind=1) :: lcrigi, lcfint, lcamor, larigi, lprem
-    logical(kind=1) :: lamor, lsuiv, lshima, lprmo
+    aster_logical :: reasma
+    aster_logical :: lcrigi, lcfint, lcamor, larigi, lprem
+    aster_logical :: lamor, lsuiv, lshima, lprmo
     character(len=16) :: metpre
     character(len=16) :: optrig, optamo
     integer :: ifm, niv, ibid
@@ -113,7 +114,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
     character(len=24) :: k24bla
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -251,7 +252,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
         call nmrinc(sdstat, 'FACTOR')
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

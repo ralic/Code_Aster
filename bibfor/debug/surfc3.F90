@@ -19,6 +19,7 @@ subroutine surfc3(char, noma, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/cfdisi.h"
@@ -50,7 +51,7 @@ subroutine surfc3(char, noma, ifm)
 !
 !
     integer :: zcmxf, zmesx
-    logical(kind=1) :: ltfcm
+    aster_logical :: ltfcm
     integer :: nzoco
     integer :: izone, statut
     character(len=24) :: mailma, defico
@@ -114,7 +115,7 @@ subroutine surfc3(char, noma, ifm)
 !        WRITE (IFM,1011) ZI(JSIMAI-1+IZONE)
 !       WRITE (IFM,1090) ZK8(JFIESC-1+IZONE)
 !       WRITE (IFM,1091) ZI(JSIESC-1+IZONE)
-610  end do
+610 end do
 !
     1010 format (' <CONTACT> ...... FISS. MAITRE : ',a18)
 !
@@ -139,7 +140,7 @@ subroutine surfc3(char, noma, ifm)
         write (ifm,1071) 'COEF_ECHELLE    ',zr(jcmxf+zcmxf*(izone-1)+8-1)
         write (ifm,1071) 'ALGO_LAGR       ',zr(jcmxf+zcmxf*(izone-1)+9-1)
         write (ifm,1071) 'GLISSIERE       ',zr(jcmxf+zcmxf*(izone-1)+10-1)
-320  end do
+320 end do
 !
 ! ---  MAILLES ESCLAVES SPECIFIQUES
 !
@@ -181,8 +182,8 @@ subroutine surfc3(char, noma, ifm)
 !
 !
 !
-901          continue
-900      continue
+901         continue
+900     continue
     endif
 !
     1040 format (' <CONTACT> ...... ',a25)

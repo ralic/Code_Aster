@@ -17,6 +17,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
@@ -30,7 +31,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
 #include "asterfort/jxliro.h"
 #include "asterfort/utmess.h"
     character(len=*) :: schin, claout, schout
-    logical(kind=1) :: dupcol
+    aster_logical :: dupcol
 ! ----------------------------------------------------------------------
 !     RECOPIE L'OBJET DE NOM SCHIN LA CLASSE DANS
 !     SCHOUT AVEC LE NOM DISTINCT SCHOUT
@@ -85,7 +86,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
     integer :: ltypi, iaddi(2)
     character(len=32) :: nomin, nomout, nomcol
     character(len=1) :: kclas, genri, typei
-    logical(kind=1) :: idenba, libcol, x2u
+    aster_logical :: idenba, libcol, x2u
     data             iv / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
     data             csuffi / '$$DESO  ','$$IADD  ','$$IADM  ',&
      &                          '$$MARQ  ','$$NOM   ','        ',&
@@ -241,7 +242,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
                 endif
                 iszon(jiszon+ibaout+k) = idatos
             endif
- 1      continue
+  1     continue
 !
 ! ----- POUR UNE COLLECTION DISPERSEE, RECOPIE DES SEGMENTS DE VALEURS
 ! ----- ASSOCIES AUX OBJETS DE COLLECTION
@@ -303,7 +304,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
                     call utmess('F', 'JEVEUX1_65', sk=nomin, si=k)
                 endif
                 call jjlide('JELIBE', nomout(1:24)//'$$XNUM  ', 2)
- 2          continue
+  2         continue
         endif
         if (libcol) call jjlide('JELIBE', nomin(1:24), iret1)
         call jjlide('JELIBE', nomout(1:24), iret2)

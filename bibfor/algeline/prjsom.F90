@@ -1,10 +1,11 @@
 function prjsom(nbmat, mater, invare, invars, b,&
                 siie, type)
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cosphi.h"
-    logical(kind=1) :: prjsom
+    aster_logical :: prjsom
     integer :: nbmat
     real(kind=8) :: invare, invars, mater(nbmat, 2), b, siie
     character(len=9) :: type

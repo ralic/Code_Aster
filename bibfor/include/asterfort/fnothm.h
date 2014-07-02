@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
                       nnom, npi, npg, ipoids, ipoid2,&
@@ -31,9 +33,9 @@ interface
         integer :: npi
         integer :: nnos
         integer :: nno
-        logical(kind=1) :: fnoevo
+        aster_logical :: fnoevo
         real(kind=8) :: deltat
-        logical(kind=1) :: perman
+        aster_logical :: perman
         integer :: nnom
         integer :: npg
         integer :: ipoids
@@ -59,6 +61,6 @@ interface
         integer :: nmec
         integer :: np1
         integer :: np2
-        logical(kind=1) :: axi
+        aster_logical :: axi
     end subroutine fnothm
 end interface

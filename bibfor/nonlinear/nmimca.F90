@@ -18,13 +18,14 @@ subroutine nmimca(sdimpr, typcoz, laffe)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/obgeto.h"
 #include "asterfort/oblgop.h"
 #include "asterfort/obsetb.h"
     character(len=24) :: sdimpr
     character(len=*) :: typcoz
-    logical(kind=1) :: laffe
+    aster_logical :: laffe
 !
 ! ----------------------------------------------------------------------
 !

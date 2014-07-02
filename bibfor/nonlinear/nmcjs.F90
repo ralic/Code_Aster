@@ -96,6 +96,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/iisnan.h"
 #include "asterfort/cjsela.h"
 #include "asterfort/cjsinp.h"
@@ -135,7 +136,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     real(kind=8) :: epscon
     real(kind=8) :: epsthe, epsthm
     real(kind=8) :: depsth(6), epsdth(6), alphaf, alpham
-    logical(kind=1) :: trac
+    aster_logical :: trac
 !
     real(kind=8) :: i1d
 !
@@ -172,7 +173,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     i1d = 0.d0
     do 10 i = 1, ndi
         i1d = i1d + sigd(i)
-10  continue
+ 10 continue
 !
 !     --  CALCUL DE DEPSTH ET EPSDTH
 !     --------------------------------
@@ -189,16 +190,16 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     do 20 i = 1, ndi
         depsth(i) = deps(i) - epsthe
         epsdth(i) = epsd(i) - epsthm
-20  continue
+ 20 continue
     do 21 i = ndi+1, ndt
         depsth(i) = deps(i)
         epsdth(i) = epsd(i)
-21  continue
+ 21 continue
     if (ndt .lt. 6) then
         do 22 i = ndt+1, 6
             depsth(i) = 0.d0
             epsdth(i) = 0.d0
-22      continue
+ 22     continue
     endif
 !
 !  TESTER QUE VIND DE NVI EST 1 2 OU 3
@@ -427,5 +428,5 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
                     niter, nvi, nivcjs, ndec, epscon)
     endif
 !
-9999  continue
+9999 continue
 end subroutine

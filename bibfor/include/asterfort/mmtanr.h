@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
                       lexfro, posnoe, ksi1, ksi2, posmam,&
@@ -24,7 +26,7 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         integer :: izone
-        logical(kind=1) :: lexfro
+        aster_logical :: lexfro
         integer :: posnoe
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

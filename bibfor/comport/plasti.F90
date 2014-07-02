@@ -103,6 +103,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !     POUR LE MONOCRISTAL, DIMENSIONS MAX
 !     NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
 !     NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
+#include "asterf_types.h"
 #include "asterfort/lccnvx.h"
 #include "asterfort/lcdedi.h"
 #include "asterfort/lcdehy.h"
@@ -138,7 +139,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !     POUR BETON_BURGER_FP - ATTENTION DIMENSION MAXI POUR CE MODELE
     real(kind=8) :: yd(21), yf(21)
     parameter  ( epsi = 1.d-15 )
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !     ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
     common/polycr/irr,decirr,nbsyst,decal,gdef

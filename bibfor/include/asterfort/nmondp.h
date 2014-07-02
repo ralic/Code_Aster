@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmondp(lischa, londe, chondp, nondp)
         character(len=19) :: lischa
-        logical(kind=1) :: londe
+        aster_logical :: londe
         character(len=24) :: chondp
         integer :: nondp
     end subroutine nmondp

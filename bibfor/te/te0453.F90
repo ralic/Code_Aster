@@ -1,5 +1,6 @@
 subroutine te0453(option, nomte)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -36,14 +37,14 @@ subroutine te0453(option, nomte)
 !
 !
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     real(kind=8) :: eps(6), vpg(162), poids, dfdi(60), f(3, 3), rbid, tmp
     integer :: jgano, ndim, ncmp, nno, npg, kpg, kk, ksig, nnos
     integer :: ipoids, ivf, idfde, igeom, idepl, idefo
 ! ......................................................................
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     grand = .false.
     axi = .false.
@@ -69,13 +70,13 @@ subroutine te0453(option, nomte)
                 tmp = sqrt(2.d0)
             endif
             vpg(ncmp* (kpg-1)+ksig) = eps(ksig)/tmp
-10      continue
+ 10     continue
 !
-20  end do
+ 20 end do
 !
 !      AFFECTATION DU VECTEUR EN SORTIE
     do 30 kk = 1, npg*ncmp
         zr(idefo+kk-1) = vpg(kk)
-30  end do
+ 30 end do
 !
 end subroutine

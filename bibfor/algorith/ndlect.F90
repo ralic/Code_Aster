@@ -19,6 +19,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -90,8 +91,8 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     integer :: ifm, niv
     real(kind=8) :: alpha, beta, gamma, theta, phi, kappa
     real(kind=8) :: rcmp(3), shima
-    logical(kind=1) :: lmuap, lammo, lshima, lviss, lamra
-    logical(kind=1) :: lamor, lktan, londe, limped, ldyna, lexpl
+    aster_logical :: lmuap, lammo, lshima, lviss, lamra
+    aster_logical :: lamor, lktan, londe, limped, ldyna, lexpl
 !
     character(len=19) :: vefsdo, vefint, vedido, vesstf
     character(len=19) :: vefedo, veondp, vedidi, velapl

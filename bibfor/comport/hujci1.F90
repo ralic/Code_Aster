@@ -39,6 +39,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 !                 IRET=0 => PAS DE PROBLEME
 !                 IRET=1 => ECHEC
 ! -----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
@@ -49,7 +50,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     real(kind=8) :: young, poisso, n, pa, piso
     real(kind=8) :: zero, un, deux, d13, c11, c12, c13, c22, c23, c33
     real(kind=8) :: e1, e2, e3, nu12, nu13, nu23, nu21, nu31, nu32, delta
-    logical(kind=1) :: tract, debug
+    aster_logical :: tract, debug
     integer :: i, niter, icmpt
 !
     common /tdim/   ndt, ndi

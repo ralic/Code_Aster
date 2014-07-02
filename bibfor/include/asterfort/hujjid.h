@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujjid(mod, mater, indi, deps, prox,&
                       proxc, yd, yf, vind, r,&
@@ -23,8 +25,8 @@ interface
         real(kind=8) :: mater(22, 2)
         integer :: indi(7)
         real(kind=8) :: deps(6)
-        logical(kind=1) :: prox(4)
-        logical(kind=1) :: proxc(4)
+        aster_logical :: prox(4)
+        aster_logical :: proxc(4)
         real(kind=8) :: yd(18)
         real(kind=8) :: yf(18)
         real(kind=8) :: vind(*)

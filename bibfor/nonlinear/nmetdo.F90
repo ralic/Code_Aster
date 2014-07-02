@@ -19,6 +19,7 @@ subroutine nmetdo(sdcriq)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
@@ -48,7 +49,7 @@ subroutine nmetdo(sdcriq)
 !
     integer :: nbocc, n1, n2, ii, jj, iocc
     integer :: idebut, iret
-    logical(kind=1) :: ellisq
+    aster_logical :: ellisq
     character(len=16) :: comp1, comel(dimaki), argii, argjj
     character(len=24) :: errthm
 !
@@ -72,8 +73,8 @@ subroutine nmetdo(sdcriq)
         do 10 iocc = 1, nbocc
             call getvtx('COMPORTEMENT', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
             if (comp1(1:6) .eq. 'KIT_HM') then
-                call getvtx('COMPORTEMENT', 'RELATION_KIT', iocc=iocc, nbval=dimaki, vect=comel(1),&
-                            nbret=n2)
+                call getvtx('COMPORTEMENT', 'RELATION_KIT', iocc=iocc, nbval=dimaki,&
+                            vect=comel(1), nbret=n2)
                 if (n2 .eq. 0) then
                     ASSERT(.false.)
                 else if (n2.gt.dimaki) then
@@ -89,19 +90,19 @@ subroutine nmetdo(sdcriq)
                                 if ((argjj(1:4).eq.'ELAS') .or. (argjj(1:9).eq.'LIQU_SATU')) then
                                     ellisq = .true.
                                 endif
-102                          continue
+102                         continue
                         endif
-101                  continue
+101                 continue
                 endif
             endif
-10      continue
+ 10     continue
     endif
 !
     if (.not.ellisq) then
         call utmess('F', 'INDICATEUR_23')
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

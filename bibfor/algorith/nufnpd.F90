@@ -22,6 +22,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/calkbb.h"
 #include "asterfort/calkbp.h"
 #include "asterfort/calkce.h"
@@ -30,7 +31,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 #include "asterfort/r8inir.h"
 #include "asterfort/tanbul.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: mini
+    aster_logical :: mini
     integer :: ndim, nno1, nno2, npg, iw, idff1
     integer :: mate
     integer :: vu(3, 27), vp(27)
@@ -65,7 +66,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: nddl, g
     integer :: sa, na, ia, kk
     real(kind=8) :: deplm(3*27)

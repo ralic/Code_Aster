@@ -18,7 +18,8 @@ subroutine obsetb(nomstr, nompaz, vall)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -27,7 +28,7 @@ subroutine obsetb(nomstr, nompaz, vall)
 #include "asterfort/obpara.h"
     character(len=24) :: nomstr
     character(len=*) :: nompaz
-    logical(kind=1) :: vall
+    aster_logical :: vall
 !
 ! ----------------------------------------------------------------------
 !

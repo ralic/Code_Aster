@@ -32,6 +32,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
 !         VINF   :  VARIABLES INTERNES A T+DT
 !     ----------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/hujori.h"
@@ -45,7 +46,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
 !
     real(kind=8) :: bid66(6, 6), hill, dsig(6), nsig, neps
     real(kind=8) :: zero, un, deux, dix
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
     integer :: i, ndt
 !
     parameter (ndt  = 6   )
@@ -93,7 +94,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
             hill = hill + dsig(i)*deps(i)
             nsig = nsig + dsig(i)**2.d0
             neps = neps + deps(i)**2.d0
-10      continue
+ 10     continue
 !
 ! --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
         if ((neps.gt.r8prem()) .and. (nsig.gt.r8prem())) then
@@ -114,7 +115,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
                 if (i .eq. 7) vinf(34)=vinf(34)+dix**6.d0
                 if (i .eq. 8) vinf(34)=vinf(34)+dix**7.d0
             endif
-20      continue
+ 20     continue
 !
     endif
 !

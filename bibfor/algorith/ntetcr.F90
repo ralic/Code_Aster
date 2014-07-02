@@ -19,7 +19,8 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -30,7 +31,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
 #include "asterfort/wkvect.h"
     character(len=24) :: numedd, sdieto, compor
     character(len=24) :: vhydr
-    logical(kind=1) :: lnonl
+    aster_logical :: lnonl
     character(len=24) :: hydr0
 !
 ! ----------------------------------------------------------------------
@@ -54,14 +55,14 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
     character(len=24) :: ioinfo, iolcha
     integer :: jioinf, jiolch
     integer :: icham, ich, neq
-    logical(kind=1) :: lhydr
+    aster_logical :: lhydr
     character(len=19) :: temp0
     character(len=24) :: nomcha, nomchx, nomch0
-    logical(kind=1) :: chaact(nbmax)
+    aster_logical :: chaact(nbmax)
 !
     character(len=24) :: nomchs(nbmax), motcob(nbmax)
     character(len=24) :: nomgd(nbmax), motcei(nbmax), loccha(nbmax)
-    logical(kind=1) :: larch(nbmax), letin(nbmax)
+    aster_logical :: larch(nbmax), letin(nbmax)
 ! -- NOM DU CHAMP DANS LA SD RESULTAT
     data nomchs  /'TEMP'        ,'HYDR_ELNO'   ,'COMPORTHER'  /
 ! -- NOM DE LA GRANDEUR
@@ -88,7 +89,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
     nbchou = 0
     do 1 icham = 1, nbmax
         chaact(icham) = .false.
- 1  end do
+  1 end do
     temp0 = '&&NTETCR.TEMP0'
 !
 ! --- FONCTIONNALITES ACTIVEES
@@ -124,7 +125,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
             if (letin(icham)) nbchin = nbchin + 1
             if (larch(icham)) nbchou = nbchou + 1
         endif
-20  end do
+ 20 end do
 !
 ! --- CREATION SD CHAMPS
 !
@@ -141,7 +142,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
                         motcei(icham), motcob(icham), loccha(icham), letin (icham),&
                         larch (icham))
         endif
-30  end do
+ 30 end do
     ASSERT(ich.eq.nbcham)
 !
 ! --- NOM DU CHAMP
@@ -159,7 +160,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
             ASSERT(.false.)
         endif
         zk24(jiolch+zioch*(icham-1)+6-1) = nomchx
-40  end do
+ 40 end do
 !
 ! --- NOM DU CHAMP NUL
 !
@@ -176,7 +177,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
             ASSERT(.false.)
         endif
         zk24(jiolch+zioch*(icham-1)+2-1) = nomch0
-50  end do
+ 50 end do
 !
 ! --- CREATION SD INFOS
 !

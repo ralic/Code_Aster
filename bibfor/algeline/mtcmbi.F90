@@ -1,5 +1,6 @@
 subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -53,12 +54,12 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     character(len=19) :: matres, noma
     character(len=24) :: valm, valmr
     complex(kind=8) :: czero
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef
     integer :: idebli, iequa, ifinli, ilig, ind, ival
-    integer ::  jsmdi, jsmhc, kin, lddl, neq
+    integer :: jsmdi, jsmhc, kin, lddl, neq
 !
     real(kind=8) :: coef, zero
     character(len=24), pointer :: refa(:) => null()

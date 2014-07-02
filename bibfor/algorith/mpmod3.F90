@@ -40,6 +40,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -71,11 +72,11 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     integer :: lord, lori, lrange, lref
     integer :: imesu, ii, imode, iret, nbord, tmod(1)
     integer :: icmp, ino, inomes, inocap
-    integer :: lnoeud,  gd, nbnoeu, nbcmp
+    integer :: lnoeud, gd, nbnoeu, nbcmp
     integer :: jcnsd, jcnsc, jcnsv, jcnsl
     integer :: ibid, indice, nbcham, lch, ich, lcham
 !
-    logical(kind=1) :: zcmplx, orien, dcapt
+    aster_logical :: zcmplx, orien, dcapt
 !
     real(kind=8) :: val, rbid
 !
@@ -142,7 +143,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         nnoema = nnoema + nbnoeu
         ncmpma = ncmpma + nbcmp
 !
-150  end do
+150 end do
 !
 ! ORDRE DE RANGEMENT MESURE SELON VRANGE ET VNOEUD
     vnoeud = nomres//'.PROJM    .PJMNO'
@@ -209,7 +210,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                 if (zk8(jcnsc-1 +icmp) .eq. licmp(ii)) then
                                     orien = .true.
                                 endif
-140                          continue
+140                         continue
 ! ON NE TRAITE PAS NON PLUS LES DRX DRY DRZ
                             if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DR') then
                                 orien = .true.
@@ -238,7 +239,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             zr(lori-1 +(nbmesu-1)*3+3) =&
                                         val
                                         endif
-141                                  continue
+141                                 continue
                                 endif
                                 if (zk8(jcnsc-1 +icmp) .eq. 'D2') then
                                     zk8(lrange-1 +nbmesu) = 'D2'
@@ -260,7 +261,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             zr(lori-1 +(nbmesu-1)*3+3) =&
                                         val
                                         endif
-142                                  continue
+142                                 continue
                                 endif
                                 if (zk8(jcnsc-1 +icmp) .eq. 'D3') then
                                     zk8(lrange-1 +nbmesu) = 'D3'
@@ -282,7 +283,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             zr(lori-1 +(nbmesu-1)*3+3) =&
                                         val
                                         endif
-143                                  continue
+143                                 continue
                                 endif
 !
                                 if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DX') then
@@ -314,8 +315,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                 endif
                             endif
                         endif
-130                  continue
-120              continue
+130                 continue
+120             continue
             else if (typres(1:9).eq.'MODE_GENE') then
 !  SI RESULTAT DE TYPE MODE_GENE ON SUPPOSE QUE L'ORIENTATION
 !  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 55
@@ -354,7 +355,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             .and. (inocap .eq. inomes)) then
                                             dcapt = .false.
                                         endif
-210                                  continue
+210                                 continue
                                     if (dcapt) then
                                         nbmesu = nbmesu+1
                                         zi(lnoeud-1 +nbmesu) = ino
@@ -364,9 +365,9 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                     endif
                                 endif
                             endif
-231                      continue
-221                  continue
-200              continue
+231                     continue
+221                 continue
+200             continue
 !
                 do 121 imesu = 1, nbmesu
                     if (zk8(lrange-1 +imesu) .eq. 'DX') then
@@ -384,7 +385,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                         zr(lori-1 +(imesu-1)*3+2) = 0.0d0
                         zr(lori-1 +(imesu-1)*3+3) = 1.0d0
                     endif
-121              continue
+121             continue
             endif
         endif
 !
@@ -398,8 +399,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                         zk16(lcham-1 +nbmesu) = nomcha
                         zk8(lrange-1 +nbmesu) = zk8(jcnsc-1 +icmp)
                     endif
-230              continue
-220          continue
+230             continue
+220         continue
         endif
 !
         call jeveuo(basemo//'           .ORDR', 'L', lord)
@@ -408,7 +409,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         ch2s='&&PJEFPR.CH2S'
 !
 ! FIN BOUCLE SUR LES NOMCHA
-151  end do
+151 end do
 !
     call getvid('MODELE_MESURE', 'MODELE', iocc=1, scal=modmes, nbret=ibid)
 !

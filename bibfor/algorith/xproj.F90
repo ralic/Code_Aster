@@ -1,6 +1,7 @@
 subroutine xproj(p, a, b, c, m,&
                  mp, d, vn, eps, in)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/normev.h"
@@ -8,7 +9,7 @@ subroutine xproj(p, a, b, c, m,&
 #include "asterfort/provec.h"
 #include "blas/ddot.h"
     real(kind=8) :: p(3), a(3), b(3), c(3), m(3), mp(3), vn(3), eps(3), d
-    logical(kind=1) :: in
+    aster_logical :: in
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +65,7 @@ subroutine xproj(p, a, b, c, m,&
         bc(i)=c(i)-b(i)
         ac(i)=c(i)-a(i)
         ap(i)=p(i)-a(i)
-100  end do
+100 end do
 !
 !  CALCUL DE LA NORMALE A L'ISOZERO
 !  PROJECTION DE P SUR LE TRIANGLE VOIR R5.03.50-B
@@ -84,7 +85,7 @@ subroutine xproj(p, a, b, c, m,&
 !  CALCULATE THE COORDINATES OF THE PROJECTED POINT
     do 150 i = 1, 3
         mp(i)=a(i)+eps(1)*ab(i)+eps(2)*ac(i)
-150  end do
+150 end do
 !
 !  SI M EST DS LE SECTEUR 1
     if (eps(1) .lt. 0.d0) then
@@ -119,7 +120,7 @@ subroutine xproj(p, a, b, c, m,&
 !
     do 200 i = 1, 3
         m(i)=a(i)+eps(1)*ab(i)+eps(2)*ac(i)
-200  end do
+200 end do
 !
 !  CALCUL DE LA DISTANCE PM
     d=padist(3,p,m)

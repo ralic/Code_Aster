@@ -26,10 +26,11 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
 !          SIGMIN  CONTRAINTES MINIMALES DES CYCLES
 !       ----------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: pic(*), e1, e2, sigmax(*), sigmin(*)
     integer :: npic, ncyc, k
-    logical(kind=1) :: cyczer
+    aster_logical :: cyczer
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i
@@ -43,7 +44,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
         if ((pic(k) .gt. pic(1)) .or. (pic(k) .lt. pic(1))) then
             cyczer = .false.
         endif
-21  end do
+ 21 end do
 !
     if (cyczer) then
         sigmax(1) = pic(1)
@@ -55,7 +56,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
         goto 999
     endif
 !
- 2  continue
+  2 continue
     if (i+2 .gt. npic) then
         goto 100
     endif
@@ -86,7 +87,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
 !
 !  --- TRAITEMENT DU RESIDU -------
 !
-100  continue
+100 continue
     if (i+1 .eq. npic) then
         ncyc = ncyc+1
         if (pic(i) .ge. pic(i+1)) then
@@ -98,6 +99,6 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
         endif
     endif
 !
-999  continue
+999 continue
 !
 end subroutine

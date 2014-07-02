@@ -16,13 +16,14 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jevech.h"
-    logical(kind=1) :: global
+    aster_logical :: global
     real(kind=8) :: xyzl(3, *), pgl(3, *)
     real(kind=8) :: for(6, *)
     real(kind=8) :: vecl(*)
@@ -64,24 +65,24 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
             fy = for(5,i)
             for(4,i) = t2iu(1)*fx + t2iu(3)*fy
             for(5,i) = t2iu(2)*fx + t2iu(4)*fy
-50      continue
+ 50     continue
     endif
 !
     do 100 ino = 1, nno
         airetr(ino) = caraq4(21+ino)
-100  end do
+100 end do
 !
     do 110 i = 1, 6
         do 111 j = 1, nno
             do 112 k = 1, nno
                 fno(i,j,k) = 0.d0
-112          continue
-111      continue
-110  end do
+112         continue
+111     continue
+110 end do
 !
     do 120 i = 1, 6*nno
         vecl(i) = 0.d0
-120  end do
+120 end do
 !
     c1 = 1.d0 / 6.d0
     c2 = 1.d0 / 12.d0
@@ -102,9 +103,9 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
         do 160 ino = 1, nno
             do 150 it = 1, nno
                 vecl(i+6*(ino-1)) = vecl(i+6*(ino-1)) + fno(i,it,ino)
-150          continue
+150         continue
             vecl(i+6*(ino-1)) = vecl(i+6*(ino-1)) / 2.d0
-160      continue
-200  end do
+160     continue
+200 end do
 !
 end subroutine

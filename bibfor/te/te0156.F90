@@ -16,6 +16,7 @@ subroutine te0156(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/angvx.h"
 #include "asterfort/jevech.h"
@@ -44,7 +45,7 @@ subroutine te0156(option, nomte)
     integer :: icompo, ideplm, ideplp, igeom, iretc
     real(kind=8) :: fs(6), pgl(3, 3), vect(6), forref
     real(kind=8) :: w(6), ang1(3), xd(3)
-    logical(kind=1) :: reactu
+    aster_logical :: reactu
 !
 !     ------------------------------------------------------------------
 !
@@ -60,8 +61,8 @@ subroutine te0156(option, nomte)
         do 101 ino = 1, nno
             do 102 i = 1, nc
                 zr(ivectu+(ino-1)*nc+i-1)=forref
-102          continue
-101      continue
+102         continue
+101     continue
 !
     else if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontg)
@@ -76,7 +77,7 @@ subroutine te0156(option, nomte)
         nc=3
         do 13 i = 1, nno*nc
             fs(i)=0.d0
-13      continue
+ 13     continue
         fs(1) = -zr(icontg)
         fs(4) = zr(icontg)
 !
@@ -90,7 +91,7 @@ subroutine te0156(option, nomte)
                     w(i) = zr(igeom-1+i) + zr(ideplm-1+i) + zr(ideplp- 1+i)
                     w(i+3) = zr(igeom+2+i) + zr(ideplm+2+i) + zr( ideplp+2+i)
                     xd(i) = w(i+3) - w(i)
-10              continue
+ 10             continue
             else if (nomte.eq.'MECA_2D_BARRE') then
                 w(1) = zr(igeom-1+1) + zr(ideplm-1+1) + zr(ideplp-1+1)
                 w(2) = zr(igeom-1+2) + zr(ideplm-1+2) + zr(ideplp-1+2)
@@ -115,7 +116,7 @@ subroutine te0156(option, nomte)
         if (nomte .eq. 'MECA_BARRE') then
             do 30 i = 1, 6
                 zr(ivectu+i-1)=vect(i)
-30          continue
+ 30         continue
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(ivectu) = vect(1)
             zr(ivectu +1) = vect(2)

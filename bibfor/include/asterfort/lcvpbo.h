@@ -16,10 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 
+#include "asterf_types.h"
+!
 interface 
     subroutine lcvpbo(a, b, l0, l1, etamin,&
                       etamax, vide, nsol, sol, sgn)
-        logical(kind=1),intent(out)     :: vide
+        aster_logical,intent(out)     :: vide
         integer,intent(out)     :: nsol, sgn(2)
         real(kind=8),intent(in) :: a, b, l0, l1, etamin, etamax
         real(kind=8),intent(out):: sol(2)

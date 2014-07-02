@@ -1,13 +1,14 @@
 subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
                   rke, lhaigh, rcorr, dom)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/rcvale.h"
     character(len=8) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)
     integer :: nbcycl
-    logical(kind=1) :: lhaigh, lke
+    aster_logical :: lhaigh, lke
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +61,6 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
         if (lke) delta = delta * rke(i)
         if (lhaigh) delta = delta / rcorr(i)
         dom(i) = val(1)* delta**val(2)
-10  end do
+ 10 end do
 !
 end subroutine

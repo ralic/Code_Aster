@@ -1,12 +1,11 @@
-subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
-                          l_loop_cont   , l_frot_zone   , point_index, &
-                          coef_cont     , pres_cont_prev, dist_cont_prev, &
-                          indi_frot_prev, dist_frot_prev, &
-                          indi_cont_eval, indi_frot_eval, &
-                          dist_cont_curr, pres_cont_curr, dist_frot_curr)
+subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, point_index,&
+                          coef_cont, pres_cont_prev, dist_cont_prev, indi_frot_prev,&
+                          dist_frot_prev, indi_cont_eval, indi_frot_eval, dist_cont_curr,&
+                          pres_cont_curr, dist_frot_curr)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/mm_cycl_d1.h"
 #include "asterfort/mm_cycl_d2.h"
 #include "asterfort/mm_cycl_d3.h"
@@ -32,8 +31,8 @@ subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
 !
     character(len=24), intent(in) :: sd_cont_defi
     character(len=24), intent(in) :: sd_cont_solv
-    logical(kind=1), intent(in) :: l_loop_cont
-    logical(kind=1), intent(in) :: l_frot_zone
+    aster_logical, intent(in) :: l_loop_cont
+    aster_logical, intent(in) :: l_frot_zone
     integer, intent(in) :: point_index
     real(kind=8), intent(in) :: coef_cont
     real(kind=8), intent(in) :: pres_cont_prev
@@ -72,27 +71,24 @@ subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
 !
 ! - Detection of cycling: contact/no contact
 !
-    call mm_cycl_d1(sd_cont_solv  , point_index   , pres_cont_prev, dist_cont_prev, coef_cont, &
-                    indi_cont_eval, dist_cont_curr, pres_cont_curr) 
+    call mm_cycl_d1(sd_cont_solv, point_index, pres_cont_prev, dist_cont_prev, coef_cont,&
+                    indi_cont_eval, dist_cont_curr, pres_cont_curr)
 !
 ! - Detection of cycling: sliding/sticking
 !
     if (l_frot_zone) then
-        call mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
-                        indi_cont_eval, indi_frot_eval)
+        call mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont_eval, indi_frot_eval)
     endif
 !
 ! - Detection of cycling: sliding forward/backward
 !
     if (l_frot_zone) then
-        call mm_cycl_d3(sd_cont_defi  , sd_cont_solv, point_index, &
-                        indi_frot_prev, dist_frot_prev, &
-                        indi_cont_eval, indi_frot_eval, &
-                        dist_frot_curr)
+        call mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_frot_prev, dist_frot_prev,&
+                        indi_cont_eval, indi_frot_eval, dist_frot_curr)
     endif
 !
 ! - Detection of cycling: old flip/flop
@@ -100,5 +96,5 @@ subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
     if (l_loop_cont) then
         call mm_cycl_d4(sd_cont_solv, point_index, indi_cont_eval)
     endif
-
+!
 end subroutine

@@ -2,6 +2,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
                   errmax, y0, dy0, rkfct, resu,&
                   iret)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/rk5app.h"
     integer :: nbeq
     real(kind=8) :: param(*)
@@ -21,7 +22,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
             real(kind=8) :: yy0(nbeq)
             real(kind=8) :: dy0(nbeq)
             real(kind=8) :: dyy(nbeq)
-            logical(kind=1) :: decoup
+            aster_logical :: decoup
         end subroutine rkfct
     end interface
 !
@@ -73,7 +74,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
 !
     integer :: nbbou, ii
     real(kind=8) :: t9, dt9, y9(nbeq), erreur, xbid1, solu(3*nbeq)
-    logical(kind=1) :: decoup
+    aster_logical :: decoup
 !
     real(kind=8) :: puplus, pumoin, creduc, cforce, coeffm, seuil, precis, grlog
 !   puissance pour augmenter le pas de temps
@@ -95,7 +96,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
     dt9 = dt0
     y9(:) = y0(:)
 !   ON COMMENCE
-100  continue
+100 continue
 !
 !   dépassement du nombre d'itération maximum ==> découpage global
     if (nbbou .gt. nbmax) then
@@ -155,5 +156,5 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
     endif
 !   résultat
     resu = solu(1:2*nbeq)
-999  continue
+999 continue
 end subroutine

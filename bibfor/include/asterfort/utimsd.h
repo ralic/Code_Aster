@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
                       ipos, base)
         integer :: unit
         integer :: niveau
-        logical(kind=1) :: lattr
-        logical(kind=1) :: lcont
+        aster_logical :: lattr
+        aster_logical :: lcont
         character(len=*) :: sch1
         integer :: ipos
         character(len=*) :: base

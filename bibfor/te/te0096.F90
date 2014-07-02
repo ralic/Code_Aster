@@ -37,6 +37,7 @@ subroutine te0096(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
@@ -71,7 +72,7 @@ subroutine te0096(option, nomte)
     real(kind=8) :: eps(6), epsin(6), depsin(6, 3), epsp(6), depsp(6, 3)
     real(kind=8) :: epsino(36), fno(18)
     real(kind=8) :: thet, tn(20), tgdm(3), prod, prod1, prod2, divt
-    real(kind=8) :: valpar(3), tcla, tthe, tfor, tplas, tini, poids, r, rbid, dsidep(6,6)
+    real(kind=8) :: valpar(3), tcla, tthe, tfor, tplas, tini, poids, r, rbid, dsidep(6, 6)
     real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho(1), om, omo
     real(kind=8) :: dtdm(3, 5), der(6), dfdm(3, 5), dudm(3, 4), dvdm(3, 4)
     real(kind=8) :: vepscp
@@ -86,15 +87,15 @@ subroutine te0096(option, nomte)
     integer :: i, j, k, kk, l, m, kp, ndim, compt, nbvari
     integer :: ij, ij1, matcod, i1, iret, iret1, npg1
 !
-    logical(kind=1) :: grand, axi, cp, fonc, incr, epsini
+    aster_logical :: grand, axi, cp, fonc, incr, epsini
 !
 ! =====================================================================
 ! INITIALISATIONS
 ! =====================================================================
     call jemarq()
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     epsi = r8prem()
     rac2 = sqrt(2.d0)
@@ -139,9 +140,9 @@ subroutine te0096(option, nomte)
         thet = 0.d0
         do 2 j = 1, ndim
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
- 2      continue
+  2     continue
         if (thet .lt. epsi) compt = compt+1
- 3  end do
+  3 end do
     if (compt .eq. nno) goto 9999
 !
 ! =====================================================================
@@ -155,11 +156,11 @@ subroutine te0096(option, nomte)
     matcod = zi(imate)
     do 10 i = 1, 4
         compor(i)= zk16(icomp+i-1)
-10  end do
+ 10 end do
 !
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
-    if (option .eq. 'CALC_G_F'.or. option .eq. 'CALC_GTP_F') then
+    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F') then
         fonc = .true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -194,15 +195,15 @@ subroutine te0096(option, nomte)
 !      WRITE(6,*)'EPSINI',EPSINI
 !      WRITE(6,*)'IEPSF',IEPSF
 !      WRITE(6,*)'IEPSR',IEPSR
-    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F'.or. option .eq. 'CALC_GTP_F'&
-    .or. option .eq. 'CALC_GTP') then
+    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F' .or.&
+        option .eq. 'CALC_GTP') then
         call tecach('ONN', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONN', 'PACCELE', 'L', iret, iad=iaccel)
     endif
 !
     do 20 i = 1, ncmp*nno
         epsino(i) = 0.d0
-20  end do
+ 20 end do
 !
 ! =====================================================================
 ! MESSAGES D'ERREURS
@@ -222,20 +223,20 @@ subroutine te0096(option, nomte)
             ij = igeom+ndim*i1-1
             do 30 j = 1, ndim
                 valpar(j) = zr(ij+j)
-30          continue
+ 30         continue
             do 40 j = 1, ndim
                 kk = ndim*i1+j
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             fno( kk), ier)
-40          continue
+ 40         continue
             if (epsini) then
                 do 45 j = 1, ncmp
                     kk = ncmp*i1+j
                     call fointe('FM', zk8(iepsf+j-1), 3, nompar, valpar,&
                                 epsino(kk), ier)
-45              continue
+ 45             continue
             endif
-50      continue
+ 50     continue
     else
         do 80 i = 1, nno
             i1 = i-1
@@ -243,16 +244,16 @@ subroutine te0096(option, nomte)
             ij1 = iforc+ij-1
             do 60 j = 1, ndim
                 fno(ij+j)= zr(ij1+j)
-60          continue
+ 60         continue
             if (epsini) then
                 ij = ncmp*i1
                 ij1 = iepsr+ij-1
                 do 70 j = 1, 3
                     epsino(ij+j) = zr(ij1+j)
-70              continue
+ 70             continue
                 epsino(ij+4) = zr(ij1+4)*rac2
             endif
-80      continue
+ 80     continue
     endif
 !
     if (ivites .ne. 0) then
@@ -277,8 +278,8 @@ subroutine te0096(option, nomte)
                 do 90 j = 1, ndim
                     kk = ij + j
                     fno(kk)=fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
-90              continue
-95          continue
+ 90             continue
+ 95         continue
         endif
         if (irota .ne. 0) then
             om = zr(irota)
@@ -287,13 +288,13 @@ subroutine te0096(option, nomte)
                 ij = ndim*(i-1)
                 do 100 j = 1, ndim
                     omo = omo + zr(irota+j)* zr(igeom+ij+j-1)
-100              continue
+100             continue
                 do 103 j = 1, ndim
                     kk = ij + j
                     fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
-103              continue
-105          continue
+103             continue
+105         continue
         endif
     endif
 !
@@ -307,7 +308,7 @@ subroutine te0096(option, nomte)
         call rcvarc(' ', 'TEMP', '+', 'NOEU', kp,&
                     1, tn(kp), iret1)
 !
-645  end do
+645 end do
 !
 ! ======================================================================
 ! BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
@@ -324,16 +325,16 @@ subroutine te0096(option, nomte)
             accele(i) = 0.d0
             do 200 j = 1, 3
                 sr(i,j) = 0.d0
-200          continue
+200         continue
             do 210 j = 1, 4
                 dudm(i,j) = 0.d0
                 dvdm(i,j) = 0.d0
                 dtdm(i,j) = 0.d0
                 dfdm(i,j) = 0.d0
-210          continue
+210         continue
             dfdm(i,5) = 0.d0
             dtdm(i,5) = 0.d0
-220      continue
+220     continue
         do 240 i = 1, 6
             sigl (i) = 0.d0
             sigin(i) = 0.d0
@@ -345,8 +346,8 @@ subroutine te0096(option, nomte)
                 dsigin(i,j) = 0.d0
                 depsin(i,j) = 0.d0
                 depsp(i,j) = 0.d0
-230          continue
-240      continue
+230         continue
+240     continue
 !
 ! ===========================================
 ! CALCUL DES ELEMENTS GEOMETRIQUES
@@ -367,7 +368,7 @@ subroutine te0096(option, nomte)
             if (iret1 .eq. 0) then
                 do 309 j = 1, ndim
                     tgdm(j) = tgdm(j) + tn(i)*der(j)
-309              continue
+309             continue
             endif
             do 310 j = 1, ndim
                 ij1 = ndim*i1+j
@@ -376,11 +377,11 @@ subroutine te0096(option, nomte)
                     dudm(j,k) = dudm(j,k) + zr(idepl+ij)*der(k)
                     dtdm(j,k) = dtdm(j,k) + zr(ithet+ij)*der(k)
                     dfdm(j,k) = dfdm(j,k) + fno(ij1)*der(k)
-300              continue
+300             continue
                 if (ivites .ne. 0) then
                     do 305 k = 1, ndim
                         dvdm(j,k) = dvdm(j,k) + zr(ivites+ij)*der(k)
-305                  continue
+305                 continue
                     dvdm(j,4) = dvdm(j,4) + zr(ivites+ij)*der(4)
                     accele(j) = accele(j) + zr(iaccel+ij)*der(4)
                     if (cp) then
@@ -390,8 +391,8 @@ subroutine te0096(option, nomte)
                 dudm(j,4) = dudm(j,4) + zr(idepl+ij)*der(4)
                 dtdm(j,4) = dtdm(j,4) + zr(ithet+ij)*der(4)
                 dfdm(j,4) = dfdm(j,4) + fno(ij1)*der(4)
-310          continue
-320      continue
+310         continue
+320     continue
 !
 ! =======================================================
 ! PLASTICITE
@@ -409,31 +410,31 @@ subroutine te0096(option, nomte)
                 ppg = ppg + p*der(4)
                 do 350 j = 1, ncmp
                     epsp(j) = epsp(j)+ zr(iepsp+ncmp*(i-1)+j-1)*der(4)
-350              continue
+350             continue
                 if (p .ge. epsi) then
                     do 360 j = 1, ndim
                         dpdm(j)= dpdm(j) + zr(ivari+(i-1)*nbvari)*der(&
                         j)
-360                  continue
+360                 continue
                     do 370 k = 1, ndim
                         do 365 j = 1, ncmp
                             depsp(j,k)=depsp(j,k)+zr(iepsp+ncmp*(i-1)+&
                             j-1)*der(k)
-365                      continue
-370                  continue
+365                     continue
+370                 continue
                 endif
-380          continue
+380         continue
             do 382 i = 4, ncmp
                 epsp(i)=epsp(i)*rac2
                 do 381 j = 1, ndim
                     depsp(i,j)=depsp(i,j)*rac2
-381              continue
-382          continue
+381             continue
+382         continue
             if (ppg .lt. epsi) then
                 ppg = 0.d0
                 do 390 j = 1, ncmp
                     epsp(j) = 0.d0
-390              continue
+390             continue
             endif
         endif
 !
@@ -452,17 +453,17 @@ subroutine te0096(option, nomte)
                 ij = ncmp*i1
                 do 400 j = 1, ncmp
                     epsin(j) = epsin(j)+ epsino(ij+j)*der(4)
-400              continue
+400             continue
                 do 415 j = 1, ncmp
                     ij1 = ij+j
                     do 410 k = 1, ndim
                         depsin(j,k) = depsin(j,k)+epsino(ij1)*der(k)
-410                  continue
-415              continue
-420          continue
+410                 continue
+415             continue
+420         continue
             do 430 i = 1, ncmp
                 eps(i) = eps(i)-epsin(i)
-430          continue
+430         continue
         endif
 !
 ! =======================================================
@@ -477,7 +478,7 @@ subroutine te0096(option, nomte)
                         epsp, rp, energi)
             do 435 i = 1, 3
                 sigl(i)= zr(isigm+ncmp*(kp-1)+i-1)
-435          continue
+435         continue
             sigl(4)= zr(isigm+ncmp*(kp-1)+3)*rac2
 !
         else
@@ -487,16 +488,17 @@ subroutine te0096(option, nomte)
             crit(3) = 1.d-3
             crit(9) = 300
             crit(8) = 1.d-3
-            call nmelnl(fami, kp, 1, ibid, '+', ndim,&
-                        typmod, matcod, compor, crit, oprupt,&
-                        eps, sigl, rbid, dsidep, energi)
+            call nmelnl(fami, kp, 1, ibid, '+',&
+                        ndim, typmod, matcod, compor, crit,&
+                        oprupt, eps, sigl, rbid, dsidep,&
+                        energi)
 !
             call tecach('NNN', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret .eq. 0) then
                 call jevech('PCONTGR', 'L', isigm)
                 do 401 i = 1, 3
                     sigl(i)= zr(isigm+ncmp*(kp-1)+i-1)
-401              continue
+401             continue
                 sigl(4)= zr(isigm+ncmp*(kp-1)+3)*rac2
             endif
         endif
@@ -525,7 +527,7 @@ subroutine te0096(option, nomte)
         divt = 0.d0
         do 437 i = 1, 3
             divt = divt + dtdm(i,i)
-437      continue
+437     continue
 !
 !
 ! =======================================================
@@ -545,23 +547,23 @@ subroutine te0096(option, nomte)
                 ij = isigi+ncmp*i1-1
                 do 440 j = 1, ncmp
                     sigin(j) = sigin(j)+ zr(ij+j)*der(4)
-440              continue
+440             continue
 !
 ! CALCUL DU GRADIENT DE SIGMA INITIAL
                 do 455 j = 1, ncmp
                     do 450 k = 1, ndim
                         dsigin(j,k)=dsigin(j,k)+zr(ij+j)*der(k)
-450                  continue
-455              continue
-460          continue
+450                 continue
+455             continue
+460         continue
 !
 ! TRAITEMENTS PARTICULIERS DES TERMES CROISES
             do 463 i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do 462 j = 1, ndim
                     dsigin(i,j) = dsigin(4,1)*rac2
-462              continue
-463          continue
+462             continue
+463         continue
 !
 ! CALCUL DE LA DEFORMATION DE REFERENCE
             call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
@@ -585,7 +587,7 @@ subroutine te0096(option, nomte)
 !
             do 465 i = 1, ncmp
                 energi(1) = energi(1) + (eps(i)-0.5d0*epsref(i))* sigin(i)
-465          continue
+465         continue
         endif
 !
 !
@@ -617,13 +619,13 @@ subroutine te0096(option, nomte)
         if (ivites .ne. 0) then
             do 487 j1 = 1, ndim
                 ecin = ecin + dvdm(j1,4)*dvdm(j1,4)
-487          continue
+487         continue
             do 496 j1 = 1, ndim
                 do 497 j2 = 1, ndim
                     prod3 = prod3 + accele(j1)*dudm(j1,j2)*dtdm(j2,4)
                     prod4 = prod4 + dvdm(j1,4)*dvdm(j1,j2)*dtdm(j2,4)
-497              continue
-496          continue
+497             continue
+496         continue
             ecin = 0.5d0*rho(1)*ecin
             prod3 = rho(1)*prod3
             prod4 = rho(1)*prod4
@@ -636,10 +638,10 @@ subroutine te0096(option, nomte)
                 do 475 k = 1, 3
                     do 470 m = 1, 3
                         prod =prod+f(i,j)*sr(j,k)*dudm(i,m)*dtdm(m,k)
-470                  continue
-475              continue
-480          continue
-490      continue
+470                 continue
+475             continue
+480         continue
+490     continue
         prod = prod - ecin*divt + prod3 - prod4
         prod2 = poids*( prod - energi(1)*divt)
 !
@@ -653,7 +655,7 @@ subroutine te0096(option, nomte)
             prod2 = 0.d0
             do 500 i = 1, ndim
                 prod = prod + tgdm(i)*dtdm(i,4)
-500          continue
+500         continue
             prod2 = - poids*prod*energi(2)
 !
             tthe = tthe + prod2
@@ -671,9 +673,9 @@ subroutine te0096(option, nomte)
             prod=0.d0
             do 510 j = 1, ndim
                 prod = prod + dfdm(i,j)*dtdm(j,4)
-510          continue
+510         continue
             prod2 = prod2 + dudm(i,4)*(prod+dfdm(i,4)*divt)*poids
-520      continue
+520     continue
 !
         tfor = tfor + prod2
 !
@@ -687,11 +689,11 @@ subroutine te0096(option, nomte)
             do 620 i = 1, ncmp
                 do 610 j = 1, ndim
                     prod1 = prod1 + sigl(i)*depsp(i,j)*dtdm(j,4)
-610              continue
-620          continue
+610             continue
+620         continue
             do 650 i = 1, ndim
                 prod2 = prod2 + rp*dpdm(i)*dtdm(i,4)
-650          continue
+650         continue
             tplas = tplas + (prod1-prod2)*poids
         endif
 !
@@ -708,14 +710,14 @@ subroutine te0096(option, nomte)
                     do 660 j = 1, ndim
                         prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*&
                         dtdm(j,4)
-660                  continue
-670              continue
+660                 continue
+670             continue
             else if (epsini) then
                 do 671 i = 1, ncmp
                     do 661 j = 1, ndim
                         prod2=prod2+sigl(i)*depsin(i,j)*dtdm(j,4)
-661                  continue
-671              continue
+661                 continue
+671             continue
             endif
             tini = tini + (prod1+prod2)*poids
 !
@@ -724,10 +726,10 @@ subroutine te0096(option, nomte)
 ! ==================================================================
 ! FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! ==================================================================
-800  end do
+800 end do
 !
 ! EXIT EN CAS DE THETA FISSURE NUL PARTOUT
-9999  continue
+9999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
     zr(igthet) = tthe + tcla + tfor + tplas + tini

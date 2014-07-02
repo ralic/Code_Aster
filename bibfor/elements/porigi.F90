@@ -1,6 +1,7 @@
 subroutine porigi(nomte, e, xnu, xl, klv)
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
@@ -10,7 +11,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 #include "asterfort/ptka21.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
-
+!
     character(len=*) :: nomte
     real(kind=8) :: e, xnu, xl, klv(*)
 !     ------------------------------------------------------------------
@@ -41,7 +42,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
     real(kind=8) :: xfl, xfly, xflz, xiy, xiy2, xiz, xiz2
     real(kind=8) :: xjx, xjx2, xl_geom, zero, pgl_bid(3, 3), xl0
     real(kind=8) :: xig, ang_bid(3)
-    logical(kind=1) :: euler
+    aster_logical :: euler
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
@@ -60,12 +61,12 @@ subroutine porigi(nomte, e, xnu, xl, klv)
                 itype, a, xiy, xiz, xjx,&
                 alfay, alfaz, ey, ez, a2,&
                 xiy2, xiz2, xjx2, alfay2, alfaz2)
-    if (xl .le. zero .or.(nomte.eq.'MECA_POU_C_T')) then
+    if (xl .le. zero .or. (nomte.eq.'MECA_POU_C_T')) then
         xl0 = xl_geom
     else
         xl0 = xl
     endif
-
+!
 !
     if (euler) then
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
@@ -93,7 +94,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
         xiz = xiz/xflz
         xiy2 = xiy2/xfly
         xiz2 = xiz2/xflz
-    else if (nomte.eq.'MECA_POU_D_TG')then
+    else if (nomte.eq.'MECA_POU_D_TG') then
         itype = 30
         xig = zr(lsect-1+12)
     else

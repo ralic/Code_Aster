@@ -24,6 +24,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/comp1d.h"
 #include "asterfort/mazu1d.h"
 #include "asterfort/nm1dci.h"
@@ -46,7 +47,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !
     character(len=16) :: option
     character(len=24) :: compor(*)
-    logical(kind=1) :: ltemp
+    aster_logical :: ltemp
 ! --- ------------------------------------------------------------------
 !
 !        AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
@@ -117,7 +118,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         nu = valres(2)
         em=ep
         depsth=0.d0
-     endif
+    endif
 !   angle du MOT_CLEF massif (AFFE_CARA_ELEM)
 !   initialise à 0.D0 (on ne s'en sert pas)
     call r8inir(3, 0.d0, angmas, 1)
@@ -248,7 +249,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !
     else if ((compo.eq.'GRAN_IRRA_LOG').or.(compo.eq.'VISC_IRRA_LOG')) then
         if (algo(1:10) .eq. 'ANALYTIQUE') then
-            if ( .not. ltemp) then
+            if (.not. ltemp) then
                 call utmess('F', 'CALCULEL_31')
             endif
             do i = 1, nf
@@ -291,12 +292,12 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     else if (compo.eq.'GRANGER_FP_INDT') then
 !       Appel à comp1d pour bénéficier des comportements AXIS: méthode de DEBORST
 !           La LDC doit retourner le module tangent
-        if ((algo(1:7).ne.'DEBORST').and.(compo(1:4).ne.'SANS')) then
+        if ((algo(1:7).ne.'DEBORST') .and. (compo(1:4).ne.'SANS')) then
             valkm(1) = compo
             valkm(2) = 'DEFI_COMPOR/MULTIFIBRE'
             call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
         else
-            if ((option(1:9).eq.'FULL_MECA').or.(option(1:9) .eq.'RAPH_MECA')) then
+            if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9) .eq.'RAPH_MECA')) then
                 nbvari = nbvalc*nf
                 call dcopy(nbvari, varimp, 1, varip, 1)
             endif
@@ -317,7 +318,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             enddo
         endif
     else
-        call utmess('F', 'ELEMENTS2_39',sk=compo)
+        call utmess('F', 'ELEMENTS2_39', sk=compo)
     endif
 !
 999 continue

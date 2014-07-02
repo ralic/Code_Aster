@@ -31,7 +31,7 @@ subroutine appcrs(kptsc, lmd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     integer :: kptsc
-    logical(kind=1) :: lmd
+    aster_logical :: lmd
 !----------------------------------------------------------------
 !
 !  CREATION DU PRECONDITIONNEUR PETSC (INSTANCE NUMERO KPTSC)
@@ -175,13 +175,13 @@ subroutine appcrs(kptsc, lmd)
         endif
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !
 #else
     integer :: idummy
-    logical(kind=1) :: ldummy
+    aster_logical :: ldummy
     idummy = kptsc
     ldummy = lmd
 #endif

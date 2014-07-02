@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmgpin(ndim, nno, axi, vu)
         integer :: ndim
         integer :: nno
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: vu(3, 27)
     end subroutine nmgpin
 end interface

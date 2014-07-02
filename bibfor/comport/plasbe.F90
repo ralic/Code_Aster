@@ -147,6 +147,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
@@ -197,7 +198,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
     character(len=3) :: matcst, cnseui
     character(len=8) :: nomail
     character(len=*) :: fami
-    logical(kind=1) :: rigi, resi, istemp
+    aster_logical :: rigi, resi, istemp
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
     common /ecri/   nomail
@@ -482,7 +483,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
     irteti = 0
     goto 9999
- 1  continue
+  1 continue
     irteti = 1
     call betimp(nmat, materf, sigf, vind, vinf,&
                 elgeom, nseui1, nseui2, nseui3, nseui4,&
@@ -494,6 +495,6 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
     goto 9999
 !
-9999  continue
+9999 continue
 !
 end subroutine

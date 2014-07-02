@@ -25,6 +25,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exixfe.h"
@@ -109,14 +110,14 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 !
 !
-    integer :: ldccv(2), ierm, indic,   sel
+    integer :: ldccv(2), ierm, indic, sel
     real(kind=8) :: f(2), r8bid
     character(len=8) :: choix, txt
     character(len=19) :: depold, depdel, deppr1, deppr2
     character(len=24) :: typpil
     integer :: ifm, niv, ib, ibid
-    logical(kind=1) :: swloun, isxfe
-    logical(kind=1) :: switch, mixte
+    aster_logical :: swloun, isxfe
+    aster_logical :: switch, mixte
     real(kind=8) :: miincr, miresi, contra, precyc, fnid(2)
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()
@@ -257,7 +258,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
         goto 6000
     endif
 !
-5000  continue
+5000 continue
 !
 ! --- PERMUTATION PAR EVENT DRIVEN (HORS STRATEGIE 'MIXTE')
 !
@@ -273,7 +274,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
         endif
     endif
 !
-6000  continue
+6000 continue
 !
 ! --- RETOUR DE LA SELECTION AVEC EVENTUELLEMENT INTERVERSION
 !

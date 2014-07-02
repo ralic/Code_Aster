@@ -1,5 +1,6 @@
 subroutine defmcf(nbm, nbmp, locfl0, locflc)
     implicit none
+#include "asterf_types.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,7 @@ subroutine defmcf(nbm, nbmp, locfl0, locflc)
 ! ARGUMENTS
 ! ---------
     integer :: nbm, nbmp
-    logical(kind=1) :: locfl0(*), locflc(*)
+    aster_logical :: locfl0(*), locflc(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -50,7 +51,7 @@ subroutine defmcf(nbm, nbmp, locfl0, locflc)
             locflc(i) = .false.
         endif
 !
-10  end do
+ 10 end do
 !
 ! --- FIN DE DEFMCF.
 end subroutine

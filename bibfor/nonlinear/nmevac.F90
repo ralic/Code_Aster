@@ -20,6 +20,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -71,7 +72,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
     real(kind=8) :: r8bid
     character(len=16) :: action, nomevd
     integer :: retrpc, retsup, retswa, retpen, retdec
-    logical(kind=1) :: trydec, litmax
+    aster_logical :: trydec, litmax
 !
 ! ----------------------------------------------------------------------
 !

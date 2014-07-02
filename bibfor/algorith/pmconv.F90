@@ -34,6 +34,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
 !
 !-----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/pmimpr.h"
@@ -44,7 +45,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
     real(kind=8) :: inst, parcri(*)
     real(kind=8) :: r(12), rini(12), r1(12), sigp(6), coef, r8b(12)
     real(kind=8) :: ee, e1, e2, toler, e1ini, e2ini, er1, eini
-    logical(kind=1) :: itemax, conver
+    aster_logical :: itemax, conver
     character(len=8) :: fonimp(6)
 !-----------------------------------------------------------------------
 !
@@ -65,7 +66,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
         call dcopy(6, r(7), 1, r1(7), 1)
         do 11 i = 1, 12
             er1 = max(er1, abs(r1(i)))
-11      continue
+ 11     continue
         if (er1 .le. r8prem()) then
             ee=er1
             ind=4
@@ -78,12 +79,12 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
         e1 = max(e1, abs(r(i)))
         e1ini = max(e1ini, abs(rini(i)))
         e1ini = max(e1ini, abs(r1(i)))
-101  end do
+101 end do
     do 102 i = 7, 12
         e2 = max(e2, abs(r(i)))
         e2ini = max(e2ini, abs(rini(i)))
         e2ini = max(e2ini, abs(r1(i)))
-102  end do
+102 end do
     eini=max(e1ini,e2ini)
 !
 !     TEST RELATIF OU ABSOLU
@@ -121,7 +122,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
         itemax=.true.
         call utmess('I', 'COMPOR2_5')
     endif
-9999  continue
+9999 continue
 !
     call pmimpr(ind, inst, indimp, fonimp, r8b,&
                 iter, r8b, r8b, r8b, 1,&

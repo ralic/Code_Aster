@@ -3,6 +3,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                   noma, nmaabs)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -65,7 +66,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     real(kind=8) :: m(3)
     integer :: i, nbf, ibid, ifq, j, codret
     integer :: fa(6, 4), ibid3(12, 3), indptf(3)
-    logical(kind=1) :: ajout
+    aster_logical :: ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -83,7 +84,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
         maxlst=max(lst(i),maxlst)
         minlsn=min(lsn(i),minlsn)
         minlst=min(lst(i),minlst)
-100  end do
+100 end do
 !
 !     SI CE N'EST PAS UN ELEMENT EN FOND DE FISSURE, ON SORT
 !     EN FAIT, CE TEST NE PERMET PAS DE DETECTER TOUS LES CAS
@@ -109,14 +110,14 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
         do 250 j = 1, ipt
             dst=padist(ndim,m,ptint(ndim*(j-1)+1))
             if (dst .le. r8prem()) goto 200
-250      continue
+250     continue
 !
 !       LONGUEUR CARACTERISTIQUE
         do 260 i = 1, ndim
             a(i) = zr(igeom-1+ndim*(fa(ifq,1)-1)+i)
             b(i) = zr(igeom-1+ndim*(fa(ifq,2)-1)+i)
             c(i) = zr(igeom-1+ndim*(fa(ifq,3)-1)+i)
-260      continue
+260     continue
         loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
 !
 !       ON AJOUTE A LA LISTE LE POINT M
@@ -125,8 +126,8 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                     m, loncar, ainter, 0, 0,&
                     0.d0, ajout)
 !
-200  end do
+200 end do
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

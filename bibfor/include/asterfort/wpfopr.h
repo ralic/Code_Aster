@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
                       sigma, matopa, matpsc, raide, lqz,&
@@ -28,7 +30,7 @@ interface
         character(len=*) :: matopa
         character(len=*) :: matpsc
         character(len=*) :: raide
-        logical(kind=1) :: lqz
+        aster_logical :: lqz
         character(len=19) :: solveu
     end subroutine wpfopr
 end interface

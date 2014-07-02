@@ -1,6 +1,7 @@
 subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                   basemo, typref, typbas, tousno, multap)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
@@ -10,7 +11,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
     character(len=8) :: basemo
     character(len=16) :: typea(*), typbas(*)
     character(len=19) :: trange, typref(*)
-    logical(kind=1) :: tousno, multap
+    aster_logical :: tousno, multap
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -213,7 +214,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typbas(i) = typea(i)
 !
             endif
-10      continue
+ 10     continue
     endif
 !
 end subroutine

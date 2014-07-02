@@ -51,6 +51,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/cmatve.h"
 #include "asterfort/cschmi.h"
 #include "asterfort/ctescv.h"
@@ -64,7 +65,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     complex(kind=8) :: ck(*), cm(*), ceigen(nbmod)
     complex(kind=8) :: cmod(ndimax, nbmod), cprod, cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim), cvec(ndim), cvec0(ndim)
-    logical(kind=1) :: convok
+    aster_logical :: convok
     integer :: i, idiag, ific, ipivo, iv, ivdiag, j
     integer :: k, niter
     real(kind=8) :: valr(3), xcrit, xer
@@ -97,15 +98,15 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
                 idiag = i*(i-1)/2+1
                 cmat2(i,iv)=dconjg(cm(idiag+i-iv))
             endif
-20      continue
-40  end do
+ 20     continue
+ 40 end do
     call rrldc(cmat1, ndim, cmat2, ndim)
 !
     do 66 iv = 1, ndim
         cvec(iv)=dcmplx(0.d0,0.d0)
         cvec0(iv)=dcmplx(0.d0,0.d0)
         cmod0(iv)=dcmplx(0.d0,0.d0)
-66  end do
+ 66 end do
 !
 !
 !   INITIALISATION ALEATOIRE DES VECTEURS PROPRES DE DEPART
@@ -121,7 +122,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         convok=.true.
 !
 !   BOUCLE D'ITERATION SUR CHAQUE MODES
-100      continue
+100     continue
 !
         k=k+1
 !
@@ -163,7 +164,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
                     valr=valr)
 !
-50  end do
+ 50 end do
 !
     write(ific,*)'     '
     write(ific,*)'     '

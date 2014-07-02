@@ -18,11 +18,12 @@ subroutine iseven(sddisc, nomevz, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     character(len=*) :: nomevz
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,6 +58,6 @@ subroutine iseven(sddisc, nomevz, lacti)
         if (nomevd .eq. nomevt) then
             lacti = .true.
         endif
-10  end do
+ 10 end do
 !
 end subroutine

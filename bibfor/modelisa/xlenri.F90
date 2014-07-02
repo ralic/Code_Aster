@@ -18,6 +18,7 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
@@ -28,7 +29,7 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 #include "asterfort/wkvect.h"
     character(len=8) :: fiss, noma
     character(len=24) :: lismae, lisnoe
-    logical(kind=1) :: goinop
+    aster_logical :: goinop
 !
 ! ----------------------------------------------------------------------
 !

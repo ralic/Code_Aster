@@ -18,7 +18,8 @@ subroutine aprema(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apcopt.h"
 #include "asterfort/apinfi.h"
@@ -62,7 +63,7 @@ subroutine aprema(sdappa)
     real(kind=8) :: coorpt(3), tau1m(3), tau2m(3), distm, ksi1m, ksi2m
     real(kind=8) :: dir(3), toleou, epsmax, vecpmm(3)
     integer :: itemax
-    logical(kind=1) :: dirapp, lmaesc, lsauve
+    aster_logical :: dirapp, lmaesc, lsauve
     integer :: typapp, entapp
     integer :: vali(2)
     real(kind=8) :: valr(12)
@@ -176,8 +177,8 @@ subroutine aprema(sdappa)
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     call jedema()
 !

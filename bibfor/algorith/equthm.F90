@@ -28,7 +28,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !
 ! ======================================================================
 ! aslint: disable=W1504
-
+!
     implicit none
 ! ======================================================================
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -133,6 +133,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 ! OUT DRDE    : TABLEAU DE LA MATRICE TANGENTE AU POINT DE GAUSS
 ! OUT         : RETCOM RETOUR DES LOIS DE COMPORTEMENT
 ! ======================================================================
+#include "asterf_types.h"
 #include "asterfort/comthm.h"
 #include "asterfort/vecini.h"
     integer :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom, ibid
@@ -148,7 +149,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
     real(kind=8) :: rbid1(6, 14, 6), rbid2(14, 6)
     real(kind=8) :: angmas(3)
     parameter    (deux = 2.d0)
-    logical(kind=1) :: perman
+    aster_logical :: perman
     character(len=8) :: typmod(2)
     character(len=16) :: option, compor(*)
 ! ======================================================================
@@ -187,7 +188,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
         do 100 i = 4, 6
             congem(adcome+i-1)= congem(adcome+i-1)*rac2
             congem(adcome+6+i-1)= congem(adcome+6+i-1)*rac2
-100      continue
+100     continue
     endif
 !
 ! ============================================================
@@ -197,16 +198,16 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
     if ((option .eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
         do 1 i = 1, dimcon
             congep(i)=congem(i)
- 1      continue
+  1     continue
     endif
 !
     do 2 i = 1, dimdef
         do 3 j = 1, dimcon
             drds(i,j)=0.d0
             dsde(j,i)=0.d0
- 3      continue
+  3     continue
         r(i)=0.d0
- 2  end do
+  2 end do
 ! ======================================================================
 ! --- INITIALISATION DE LA COMPOSANTE ADDITIONNELLE DE R ET DF ---------
 ! --- DUE A LA DECOMPOSITION DU TERME EN TEMPERATURE (GAUSS & SOMMET): -
@@ -219,7 +220,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !
     do 800 j = 1, dimcon
         drds(dimdef+1,j)=0.d0
-800  end do
+800 end do
 !
     retcom = 0
 !
@@ -250,13 +251,13 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
             do 6 i = 1, 6
                 r(addeme+ndim+i-1)= r(addeme+ndim+i-1) +congep(&
                 adcome-1+i)
- 6          continue
+  6         continue
 !  TENSEUR SIGPPLUS A 6 COMPOSANTES INDEPENDANTES DANS LE REPERE GLOBAL
 !
             do 7 i = 1, 6
                 r(addeme+ndim-1+i)=r(addeme+ndim-1+i) +congep(&
                 adcome+6+i-1)
- 7          continue
+  7         continue
 !
 !  CONTRIBUTIONS A R1 DEPENDANTES DE YAP1
             if (yap1 .eq. 1) then
@@ -264,13 +265,13 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 8 i = 1, ndim
                     r(addeme+i-1)=r(addeme+i-1) - pesa(i)*congep(&
                     adcp11)
- 8              continue
+  8             continue
                 if (nbpha1 .gt. 1) then
 !  CONTRIBUTION A R1 DEPENDANTE DE YAP1 ET NBPHA1
                     do 9 i = 1, ndim
                         r(addeme+i-1)=r(addeme+i-1) - pesa(i)*congep(&
                         adcp12)
- 9                  continue
+  9                 continue
                 endif
             endif
 !
@@ -280,13 +281,13 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 10 i = 1, ndim
                     r(addeme+i-1)=r(addeme+i-1) - pesa(i)*congep(&
                     adcp21)
-10              continue
+ 10             continue
                 if (nbpha2 .gt. 1) then
 !   CONTRIBUTION A R1 DEPENDANTE DE YAP2 ET NBPHA2
                     do 11 i = 1, ndim
                         r(addeme+i-1)=r(addeme+i-1) - pesa(i)*congep(&
                         adcp22)
-11                  continue
+ 11                 continue
                 endif
             endif
         endif
@@ -305,12 +306,12 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
             do 12 i = 1, ndim
                 r(addep1+i)=r(addep1+i) +dt*(ta*congep(adcp11+i)+ta1*&
                 congem(adcp11+i))
-12          continue
+ 12         continue
             if (nbpha1 .gt. 1) then
                 do 13 i = 1, ndim
                     r(addep1+i)=r(addep1+i) +dt*(ta*congep(adcp12+i)+&
                     ta1*congem(adcp12+i))
-13              continue
+ 13             continue
             endif
 !
             if (yate .eq. 1) then
@@ -335,13 +336,13 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 14 i = 1, ndim
                     r(addete)=r(addete) +dt*(ta*congep(adcp11+i)+ta1*&
                     congem(adcp11+i))*pesa(i)
-14              continue
+ 14             continue
 !        PESA . MFL12
                 if (nbpha1 .gt. 1) then
                     do 15 i = 1, ndim
                         r(addete)=r(addete) +dt*(ta*congep(adcp12+i)+&
                         ta1*congem(adcp12+i))*pesa(i)
-15                  continue
+ 15                 continue
                 endif
 !
 !    CONTRIBUTIONS A R8 DEPENDANTES DE YAP1
@@ -350,7 +351,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                     r(addete+i)=r(addete+i) +dt*(ta*congep(adcp11+&
                     ndim+1)*congep(adcp11+i) +ta1*congem(adcp11+ndim+&
                     1)*congem(adcp11+i))
-16              continue
+ 16             continue
                 if (nbpha1 .gt. 1) then
 !        PRODUITS ENTHALPIE MASSIQUE - VECTEURS COURANT DE MASSE FLUID
 !        CONTRIBUTION SECONDE PHASE DU FLUIDE 1
@@ -358,7 +359,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                         r(addete+i)=r(addete+i) +dt*(ta*congep(adcp12+&
                         ndim+1)*congep(adcp12+i) +ta1*congem(adcp12+&
                         ndim+1)*congem(adcp12+i))
-17                  continue
+ 17                 continue
                 endif
             endif
         endif
@@ -377,12 +378,12 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
             do 18 i = 1, ndim
                 r(addep2+i)=r(addep2+i) +dt*(ta*congep(adcp21+i)+ta1*&
                 congem(adcp21+i))
-18          continue
+ 18         continue
             if (nbpha2 .gt. 1) then
                 do 19 i = 1, ndim
                     r(addep2+i)=r(addep2+i) +dt*(ta*congep(adcp22+i)+&
                     ta1*congem(adcp22+i))
-19              continue
+ 19             continue
             endif
 !
             if (yate .eq. 1) then
@@ -408,14 +409,14 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 20 i = 1, ndim
                     r(addete)=r(addete) +dt*(ta*congep(adcp21+i)+ta1*&
                     congem(adcp21+i))*pesa(i)
-20              continue
+ 20             continue
 !
 !         PESA . MFL22
                 if (nbpha2 .gt. 1) then
                     do 21 i = 1, ndim
                         r(addete)=r(addete) +dt*(ta*congep(adcp22+i)+&
                         ta1*congem(adcp22+i))*pesa(i)
-21                  continue
+ 21                 continue
                 endif
 !
 !    CONTRIBUTIONS A R8 DEPENDANTES DE YAP2
@@ -424,7 +425,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                     r(addete+i)=r(addete+i) +dt*(ta*congep(adcp21+&
                     ndim+1)*congep(adcp21+i) +ta1*congem(adcp21+ndim+&
                     1)*congem(adcp21+i))
-22              continue
+ 22             continue
 !
 !
 !          PRODUITS ENTHALPIE MASSIQUE - VECTEURS COURANTDE MASSE FLUID
@@ -434,7 +435,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                         r(addete+i)=r(addete+i) +dt*(ta*congep(adcp22+&
                         ndim+1)*congep(adcp22+i) +ta1*congem(adcp22+&
                         ndim+1)*congem(adcp22+i))
-23                  continue
+ 23                 continue
                 endif
             endif
         endif
@@ -452,7 +453,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
             do 24 i = 1, ndim
                 r(addete+i)=r(addete+i) +dt*(ta*congep(adcote+i)+ta1*&
                 congem(adcote+i))
-24          continue
+ 24         continue
         endif
     endif
 ! ======================================================================
@@ -473,7 +474,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
             do 25 i = 1, 6
                 drds(addeme+ndim-1+i,adcome+i-1)= drds(addeme+ndim-1+&
                 i,adcome+i-1)+1.d0
-25          continue
+ 25         continue
 !    DR2DS:DERIVEES PAR RAPPORT AUX COMPOSANTES DE SIGPPLUS
 !    TABLEAU 6 - 6 : ON N'ECRIT QUE LES TERMES NON NULS
 !    (1 SUR DIAGONALE)
@@ -483,7 +484,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
             do 26 i = 1, 6
                 drds(addeme+ndim-1+i,adcome+6+i-1)= drds(addeme+ndim-&
                 1+i,adcome+6+i-1)+1.d0
-26          continue
+ 26         continue
         endif
 ! ======================================================================
 ! --- SI PRESENCE DE PRESS1 --------------------------------------------
@@ -495,7 +496,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 27 i = 1, ndim
                     drds(addeme+i-1,adcp11)=drds(addeme+i-1,adcp11)-&
                     pesa(i)
-27              continue
+ 27             continue
             endif
 !
 !     DR3P11:DERIVEE / M11PLUS  (MASSE FLUIDE)
@@ -504,7 +505,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !     DR4P11:DERIVEE / COURANTM11PLUS  (VECTEUR COURANT MASSE FLUIDE)
             do 28 i = 1, ndim
                 drds(addep1+i,adcp11+i)=drds(addep1+i,adcp11+i)+ta*dt
-28          continue
+ 28         continue
 !
             if (nbpha1 .gt. 1) then
 !
@@ -513,7 +514,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                     do 29 i = 1, ndim
                         drds(addeme+i-1,adcp12)=drds(addeme+i-1,&
                         adcp12)-pesa(i)
-29                  continue
+ 29                 continue
                 endif
 !
 !     DR3P12:DERIVEE / M12PLUS  (MASSE FLUIDE)
@@ -523,7 +524,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 30 i = 1, ndim
                     drds(addep1+i,adcp12+i)=drds(addep1+i,adcp12+i)+&
                     ta*dt
-30              continue
+ 30             continue
             endif
         endif
 ! ======================================================================
@@ -536,7 +537,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 31 i = 1, ndim
                     drds(addeme+i-1,adcp21)=drds(addeme+i-1,adcp21)-&
                     pesa(i)
-31              continue
+ 31             continue
             endif
 !
 !     DR5P21:DERIVEE / M21PLUS  (MASSE FLUIDE)
@@ -545,7 +546,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !     DR6P21:DERIVEE / COURANTM21PLUS  (VECTEUR COURANT MASSE FLUIDE)
             do 32 i = 1, ndim
                 drds(addep2+i,adcp21+i)=drds(addep2+i,adcp21+i)+ta*dt
-32          continue
+ 32         continue
 !
             if (nbpha2 .gt. 1) then
 !
@@ -554,7 +555,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                     do 33 i = 1, ndim
                         drds(addeme+i-1,adcp22)=drds(addeme+i-1,&
                         adcp22)-pesa(i)
-33                  continue
+ 33                 continue
                 endif
 !
 !     DR5P22:DERIVEE / M22PLUS  (MASSE FLUIDE)
@@ -564,7 +565,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 34 i = 1, ndim
                     drds(addep2+i,adcp22+i)=drds(addep2+i,adcp22+i)+&
                     ta*dt
-34              continue
+ 34             continue
             endif
         endif
 ! ======================================================================
@@ -578,7 +579,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !     DR8DT:DERIVEE / QPLUS  (VECTEUR COURANT DE CHALEUR)
             do 35 i = 1, ndim
                 drds(addete+i,adcote+i)=drds(addete+i,adcote+i)+ta*dt
-35          continue
+ 35         continue
 !
             if (yap1 .eq. 1) then
 !
@@ -590,25 +591,25 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !     DR7SOMMET/P11:DERIVEE / HM11PLUS  (ENTHALPIE MASSIQUE DU FLUIDE 1)
                 drds(dimdef+1,adcp11+ndim+1)=drds(dimdef+1,adcp11+&
                 ndim+1) -ta*(congep(adcp11)-congem(adcp11))
-
+!
 !
 !     DR7GAUSS/P11:DERIVEE/COURANTM11PLUS : VECTEUR COURANT MASSE FLUIDE
                 do 351 i = 1, ndim
                     drds(addete,adcp11+i)=drds(addete,adcp11+i)&
                     +ta*dt*pesa(i)
-351              continue
+351             continue
 !
 !     DR8P11:DERIVEE/HM11PLUS  (ENTHALPIE MASSIQUE DU FLUIDE 1)
                 do 36 i = 1, ndim
                     drds(addete+i,adcp11+ndim+1)=drds(addete+i,adcp11+&
                     ndim+1) +ta*dt*congep(adcp11+i)
-36              continue
+ 36             continue
 !
 !     DR8P11:DERIVEE/COURANTM11PLUS : VECTEUR COURANT MASSE FLU1
                 do 37 i = 1, ndim
                     drds(addete+i,adcp11+i)=drds(addete+i,adcp11+i)&
                     +ta*dt*congep(adcp11+ndim+1)
-37              continue
+ 37             continue
 !
                 if (nbpha1 .gt. 1) then
 !
@@ -625,19 +626,19 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                     do 371 i = 1, ndim
                         drds(addete,adcp12+i)=drds(addete,adcp12+i)&
                         +ta*dt*pesa(i)
-371                  continue
+371                 continue
 !
 !     DR8P12:DERIVEE/HM12PLUS (ENTHALPIE MASSIQUE DU FLUIDE 1 PHASE 2)
                     do 38 i = 1, ndim
                         drds(addete+i,adcp12+ndim+1)= drds(addete+i,&
                         adcp12+ndim+1)+ta*dt*congep(adcp12+i)
-38                  continue
+ 38                 continue
 !
 !     DR8P12:DERIVEE/COURANTM12PLUS : VECTEUR COURANT MASSE FL 1 PHASE 2
                     do 39 i = 1, ndim
                         drds(addete+i,adcp12+i)=drds(addete+i,adcp12+&
                         i) +ta*dt*congep(adcp12+ndim+1)
-39                  continue
+ 39                 continue
                 endif
             endif
 !
@@ -655,19 +656,19 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 do 391 i = 1, ndim
                     drds(addete,adcp21+i)=drds(addete,adcp21+i)&
                     +ta*dt*pesa(i)
-391              continue
+391             continue
 !
 !     DR8P21:DERIVEE/HM21PLUS  (ENTHALPIE MASSIQUE DU FLUIDE 2)
                 do 40 i = 1, ndim
                     drds(addete+i,adcp21+ndim+1)=drds(addete+i,adcp21+&
                     ndim+1) +ta*dt*congep(adcp21+i)
-40              continue
+ 40             continue
 !
 !     DR8P21:DERIVEE/COURANTM21PLUS : VECTEUR COURANT MASSE FLUIDE 2
                 do 41 i = 1, ndim
                     drds(addete+i,adcp21+i)=drds(addete+i,adcp21+i)&
                     +ta*dt*congep(adcp21+ndim+1)
-41              continue
+ 41             continue
 !
                 if (nbpha2 .gt. 1) then
 !
@@ -684,18 +685,18 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                     do 411 i = 1, ndim
                         drds(addete,adcp22+i)=drds(addete,adcp22+i)&
                         +ta*dt*pesa(i)
-411                  continue
+411                 continue
 !     DR8P22:DERIVEE/HM22PLUS (ENTHALPIE MASSIQUE DU FLUIDE 2 PHASE 2)
                     do 42 i = 1, ndim
                         drds(addete+i,adcp22+ndim+1)= drds(addete+i,&
                         adcp22+ndim+1)+ta*dt*congep(adcp22+i)
-42                  continue
+ 42                 continue
 !
 !     DR8P22:DERIVEE/COURANTM22PLUS : VECTEUR COURANT MASSE FL 2 PHASE 2
                     do 43 i = 1, ndim
                         drds(addete+i,adcp22+i)=drds(addete+i,adcp22+&
                         i) +ta*dt*congep(adcp22+ndim+1)
-43                  continue
+ 43                 continue
                 endif
             endif
 !
@@ -713,9 +714,9 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
         do 110 i = 4, 6
             congep(adcome+i-1)= congep(adcome+i-1)/rac2
             congep(adcome+6+i-1)= congep(adcome+6+i-1)/rac2
-110      continue
+110     continue
     endif
 ! ======================================================================
-9000  continue
+9000 continue
 ! ======================================================================
 end subroutine

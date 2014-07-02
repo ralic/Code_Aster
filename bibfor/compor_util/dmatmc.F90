@@ -1,8 +1,9 @@
-subroutine dmatmc(fami, mater , time, poum ,ipg,&
-                  ispg, repere, xyzgau, nbsig,d,&
+subroutine dmatmc(fami, mater, time, poum, ipg,&
+                  ispg, repere, xyzgau, nbsig, d,&
                   l_modi_cp)
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmat3d.h"
 #include "asterfort/dmatcp.h"
@@ -36,8 +37,7 @@ implicit none
     real(kind=8), intent(in) :: xyzgau(3)
     integer, intent(in) :: nbsig
     real(kind=8), intent(out) :: d(nbsig, nbsig)
-    logical(kind=1), optional, intent(in) :: l_modi_cp
-    logical :: lcond
+    aster_logical, optional, intent(in) :: l_modi_cp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,26 +63,25 @@ implicit none
 !
     if (lteatt('DIM_TOPO_MAILLE','3')) then
         ASSERT(nbsig.eq.6)
-        call dmat3d(fami, mater , time, poum, ipg,&
+        call dmat3d(fami, mater, time, poum, ipg,&
                     ispg, repere, xyzgau, d)
-    elseif (lteatt('FOURIER','OUI')) then
+    else if (lteatt('FOURIER','OUI')) then
         ASSERT(nbsig.eq.6)
-        call dmat3d(fami, mater , time, poum, ipg,&
+        call dmat3d(fami, mater, time, poum, ipg,&
                     ispg, repere, xyzgau, d)
     else if (lteatt('C_PLAN','OUI')) then
         ASSERT(nbsig.eq.4)
         call dmatcp(fami, mater, time, poum, ipg,&
                     ispg, repere, d)
         if (present(l_modi_cp)) then
-            lcond=l_modi_cp
-            ASSERT(lcond)
+            ASSERT(l_modi_cp)
             call dmatdp(fami, mater, time, poum, ipg,&
                         ispg, repere, d)
         else
             call dmatcp(fami, mater, time, poum, ipg,&
-                        ispg, repere, d)            
+                        ispg, repere, d)
         endif
-    elseif (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')) then
+    else if (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')) then
         ASSERT(nbsig.eq.4)
         call dmatdp(fami, mater, time, poum, ipg,&
                     ispg, repere, d)

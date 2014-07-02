@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpvers(eigsol, modes, checksd)
         character(len=19) , intent(in) :: eigsol
         character(len=8)  , intent(in) :: modes
-        logical           , intent(in) :: checksd
+        aster_logical     , intent(in) :: checksd
     end subroutine vpvers
 end interface

@@ -2,6 +2,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meca_info.h"
@@ -40,7 +41,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: chmate
-    logical(kind=1), intent(in) :: l_etat_init
+    aster_logical, intent(in) :: l_etat_init
     character(len=19), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,24 +64,24 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
     character(len=19) :: comp_elas, full_elem_s
     character(len=19) :: list_vari_name
     character(len=16), pointer :: p_info_comp_valk(:) => null()
-    integer          , pointer :: p_info_comp_vali(:) => null()
-    integer          , pointer :: p_info_comp_nvar(:) => null()
+    integer, pointer :: p_info_comp_vali(:) => null()
+    integer, pointer :: p_info_comp_nvar(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor         = '&&NMDOCC.COMPOR'
-    comp_elas      = '&&NMDOCC.COMP_ELAS'
-    full_elem_s    = '&&NMDOCC.FULL_ELEM'
+    compor = '&&NMDOCC.COMPOR'
+    comp_elas = '&&NMDOCC.COMP_ELAS'
+    full_elem_s = '&&NMDOCC.FULL_ELEM'
     list_vari_name = '&&NMDOCC.LIST_VARI'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! - Create comportment informations objects
 !
     call comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
-    if (nbocc_compor.eq.0) then
+    if (nbocc_compor .eq. 0) then
         call utmess('I', 'COMPOR4_64')
     endif
-    if (nbocc_compor.ge.99999) then
+    if (nbocc_compor .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
     endif
 !
@@ -114,8 +115,8 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Save informations in COMPOR <CARTE>
 !
-    call comp_meca_save(mesh            , chmate          , compor          , nb_cmp,&
-                        p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
+    call comp_meca_save(mesh, chmate, compor, nb_cmp, p_info_comp_valk,&
+                        p_info_comp_vali, p_info_comp_nvar)
 !
 ! - Prepare informations about internal variables
 !

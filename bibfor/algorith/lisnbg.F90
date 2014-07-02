@@ -19,6 +19,7 @@ function lisnbg(lischa, genchz)
 !
     implicit none
     integer :: lisnbg
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -44,7 +45,7 @@ function lisnbg(lischa, genchz)
 !
     integer :: ichar, nbchar
     integer :: genrec
-    logical(kind=1) :: lok
+    aster_logical :: lok
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,7 +64,7 @@ function lisnbg(lischa, genchz)
         call lislco(lischa, ichar, genrec)
         lok = lisico(genchz,genrec)
         if (lok) lisnbg = lisnbg + 1
-10  continue
+ 10 continue
 !
 999 continue
 !

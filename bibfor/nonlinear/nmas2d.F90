@@ -24,6 +24,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calsta.h"
 #include "asterfort/codere.h"
@@ -82,7 +83,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
 !
 !
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, kpgs, proj
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
     real(kind=8) :: poids, tmp, sig(6), rbid(1)
@@ -114,8 +115,8 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
     do 20 i = 1, 3
         do 10 j = 1, 3
             f(i,j) = kron(i,j)
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
@@ -126,7 +127,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 ! - INITIALISATION CODES RETOURS
     do 30 kpg = 1, npg
         cod(kpg) = 0
-30  end do
+ 30 end do
 !
 ! - INITIALISATION QUAS4
     call iniqs4(nno, sdfde, sdfdk, poi2sg, coopg)
@@ -169,7 +170,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
     do 70 j = 1, 6
         eps(j) = 0.d0
         deps(j) = 0.d0
-70  end do
+ 70 end do
     call nmgeom(2, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplm,&
                 .true._1, poids, dfdi, f, eps,&
@@ -188,13 +189,13 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
             def(2,n,i) = f(i,2)*dfdi(n,2)
             def(3,n,i) = 0.d0
             def(4,n,i) = (f(i,1)*dfdi(n,2)+f(i,2)*dfdi(n,1))/rac2
-80      continue
-90  end do
+ 80     continue
+ 90 end do
 !
 !
     do 100 i = 1, 3
         sign(i) = sigm(i,kpg)
-100  end do
+100 end do
     sign(4) = sigm(4,kpg)*rac2
 !
 !
@@ -226,13 +227,13 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !     --------------------------------------------
         do 150 n = 1, nno
             do 140 i = 1, 2
-                do 110,kl = 1,4
-                sig(kl) = 0.d0
-                sig(kl) = sig(kl) + def(1,n,i)*dsidep(1,kl)
-                sig(kl) = sig(kl) + def(2,n,i)*dsidep(2,kl)
-                sig(kl) = sig(kl) + def(3,n,i)*dsidep(3,kl)
-                sig(kl) = sig(kl) + def(4,n,i)*dsidep(4,kl)
-110              continue
+                do 110 kl = 1, 4
+                    sig(kl) = 0.d0
+                    sig(kl) = sig(kl) + def(1,n,i)*dsidep(1,kl)
+                    sig(kl) = sig(kl) + def(2,n,i)*dsidep(2,kl)
+                    sig(kl) = sig(kl) + def(3,n,i)*dsidep(3,kl)
+                    sig(kl) = sig(kl) + def(4,n,i)*dsidep(4,kl)
+110             continue
                 do 130 j = 1, 2
                     do 120 m = 1, n
                         if (m .eq. n) then
@@ -252,10 +253,10 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                             kk = kkd + 2* (m-1) + j
                             matuu(kk) = matuu(kk) + tmp*poids
                         endif
-120                  continue
-130              continue
-140          continue
-150      continue
+120                 continue
+130             continue
+140         continue
+150     continue
 !
 !
 !
@@ -280,7 +281,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                         kpgs, sig, tmp, kk, kkd,&
                         matuu, dsidep, jac)
 !
-160      continue
+160     continue
     endif
 !
 !
@@ -301,7 +302,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
         do 170 kl = 1, nno
             pqx = pqx + gamma(kl)*deplp(1,kl)
             pqy = pqy + gamma(kl)*deplp(2,kl)
-170      continue
+170     continue
 !
 !
 !      INCREMENT DES CONTRAINTES GENERALISEES
@@ -331,7 +332,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
             endif
 !
             qplus(i) = qmoins(i) + dq(i)
-180      continue
+180     continue
 !
 !
 !      OPERATEUR DE GRADIENT AU CENTRE
@@ -341,8 +342,8 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                 defc(2,n,i) = def(2,n,i)
                 defc(3,n,i) = def(3,n,i)
                 defc(4,n,i) = def(4,n,i)
-190          continue
-200      continue
+190         continue
+200     continue
 !
 !
 !      OPERATEUR DE STABILISATION DU GRADIENT AU 4 POINTS DE GAUSS
@@ -388,8 +389,8 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
                     endif
 !
-210              continue
-220          continue
+210             continue
+220         continue
 !
 !
 !    CONTRAINTES DE HOURGLASS
@@ -429,40 +430,40 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                     do 230 kl = 1, 3
                         vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigas( kl,kpgs)* jac + defn(kl,n,i&
                                      &)*sigas(kl,kpgs)* jac
-230                  continue
+230                 continue
                     vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigas(4, kpgs)*jac* rac2 + defn(4,n,i)*&
                                  &sigas(4,kpgs)*jac
-240              continue
-250          continue
+240             continue
+250         continue
 !
             do 280 n = 1, nno
                 do 270 i = 1, 2
                     do 260 kl = 1, 3
                         vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigma( kl)*jac + defn(kl,n,i)*sigm&
                                      &a(kl)*jac
-260                  continue
+260                 continue
                     vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigma(4)* jac + defn(4,n,i)*sigma(4)*ja&
                                  &c/rac2
-270              continue
-280          continue
-290      continue
+270             continue
+280         continue
+290     continue
 !
 !
         do 300 kl = 1, 3
             sigp(kl,kpg) = sigma(kl)
-300      continue
+300     continue
         sigp(4,kpg) = sigma(4)/rac2
 !
 !
         do 310 i = 1, 6
             sigp(i+4,kpg) = qplus(i)
-310      continue
+310     continue
 !
 !
     endif
 !
 !
-320  continue
+320 continue
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 !

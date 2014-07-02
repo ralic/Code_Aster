@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                       nkcmp, toucmp, nbcmp, typac, ndim,&
@@ -26,7 +28,7 @@ interface
         integer :: nbval
         character(len=24) :: nkcha
         character(len=24) :: nkcmp
-        logical(kind=1) :: toucmp
+        aster_logical :: toucmp
         integer :: nbcmp
         character(len=8) :: typac
         integer :: ndim

@@ -2,6 +2,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/afddli.h"
@@ -80,7 +81,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
     integer :: iocc
     integer :: nbnoeu, jdirec
-    integer :: idim, nume_node,   nfaci
+    integer :: idim, nume_node, nfaci
     integer :: ibid, ndim
     integer :: ino, jprnm, nbec
     integer :: nbcmp, inom
@@ -101,8 +102,8 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
-    logical(kind=1) :: lxfem, l_ocmp
-    logical(kind=1) :: l_dtan, l_dnor
+    aster_logical :: lxfem, l_ocmp
+    aster_logical :: l_dtan, l_dnor
     integer :: val_nb_dnor, val_nb_dtan
     real(kind=8) :: val_r_dnor, val_r_dtan
     character(len=8) :: val_f_dnor, val_f_dtan
@@ -175,9 +176,9 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
         list_node = '&&CAFACI.LIST_NODE'
         list_elem = '&&CAFACI.LIST_ELEM'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+        call getnode(mesh, keywordfact, iocc, 'F', list_node,&
                      nb_node)
-        call getelem(mesh, keywordfact, iocc, 'F', list_elem, &
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem,&
                      nb_elem)
         call jeveuo(list_node, 'L', jlino)
         call jeveuo(list_elem, 'L', jlima)

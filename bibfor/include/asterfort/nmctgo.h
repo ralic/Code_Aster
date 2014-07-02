@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
                       valinc, mmcvgo)
@@ -24,6 +26,6 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: valinc(*)
-        logical(kind=1) :: mmcvgo
+        aster_logical :: mmcvgo
     end subroutine nmctgo
 end interface

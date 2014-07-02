@@ -20,6 +20,7 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
@@ -32,7 +33,7 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
     character(len=16) :: motfac
     character(len=19) :: provli
     real(kind=8) :: tole, instin
-    logical(kind=1) :: linsei, linsti
+    aster_logical :: linsei, linsti
     integer :: numini, nbinst, iocc
 !
 ! ----------------------------------------------------------------------
@@ -111,8 +112,8 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
                         dtmin = dt
                         ins = zr(jinst+i)
                     endif
-40              continue
-45              continue
+ 40             continue
+ 45             continue
                 inst = ins
             endif
         endif

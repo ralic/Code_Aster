@@ -2,6 +2,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
                   wr, wi, z, iz, mxiter,&
                   ier, nitqr)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
     integer :: neq, ih, k, l, iz, ier, nitqr
     real(kind=8) :: h(ih, neq), wr(neq), wi(neq), z(iz, neq)
@@ -34,7 +35,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     real(kind=8) :: epsmac, t, x, y, w, s, zz
     real(kind=8) :: r, p, q, rnorm, ra, sa, scale, vr, vi
     complex(kind=8) :: z3
-    logical(kind=1) :: notlas
+    aster_logical :: notlas
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ii, mxiter, nn
@@ -49,24 +50,24 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     do 10 i = 1, neq
         do 5 j = ka, neq
             rnorm = rnorm+abs(h(i,j))
- 5      continue
+  5     continue
         ka = i
         if (i .ge. k .and. i .le. l) goto 10
         wr(i) = h(i,i)
         wi(i) = 0.d0
-10  end do
+ 10 end do
     ien = l
     t = 0.d0
 !
 !     --- RECHERCHE DES VALEURS PROPRES SUIVANTES ---
-15  continue
+ 15 continue
     if (ien .lt. k) goto 145
     iter = 0
     na = ien-1
     ienm2 = na-1
 !
 !     --- RECHERCHE DU PLUS PETIT ELEMENT (SIMPLE) SUR LA SUR-DIAGONALE
-20  continue
+ 20 continue
     npl = ien+k
     do 25 ll = k, ien
         lb = npl-ll
@@ -74,9 +75,9 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         s = abs(h(lb-1,lb-1))+abs(h(lb,lb))
         if (s .eq. 0.0d0) s = rnorm
         if (abs(h(lb,lb-1)) .le. epsmac*s) goto 30
-25  end do
+ 25 end do
 !
-30  continue
+ 30 continue
     x = h(ien,ien)
     if (lb .eq. ien) goto 110
     y = h(na,na)
@@ -93,7 +94,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         t = t+x
         do 35 i = k, ien
             h(i,i) = h(i,i)-x
-35      continue
+ 35     continue
         s = abs(h(ien,na))+abs(h(na,ienm2))
         x = 0.75d0*s
         y = x
@@ -117,14 +118,14 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         if (m .eq. lb) goto 50
         if (abs(h(m,m-1))*(abs(q)+abs(r)) .le.&
             epsmac*abs(p)*(abs(h(m-1, m-1))+abs(zz)+abs(h(m+1,m+1)))) goto 50
-45  end do
-50  continue
+ 45 end do
+ 50 continue
     mp2 = m+2
     do 55 i = mp2, ien
         h(i,i-2) = 0.d0
         if (i .eq. mp2) goto 55
         h(i,i-3) = 0.d0
-55  end do
+ 55 end do
 !
 !     EN AVANT POUR LE "DOUBLE QR" SUR LA SOUS MATRICE
 !              LIGNES DE "L" A "EN" ET COLONNES DE "M" A "EN"
@@ -140,7 +141,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         p = p/x
         q = q/x
         r = r/x
-60      continue
+ 60     continue
         s = sign(sqrt(p*p+q*q+r*r),p)
         if (ka .eq. m) then
             if (lb .ne. m) h(ka,ka-1) = -h(ka,ka-1)
@@ -162,7 +163,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             endif
             h(ka+1,j) = h(ka+1,j)-p*y
             h(ka,j) = h(ka,j)-p*x
-80      continue
+ 80     continue
         j = min(ien,ka+3)
 !        --- ALTERATION DES COLONNES ---
         do 90 i = 1, j
@@ -170,10 +171,10 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             if (.not.notlas) goto 85
             p = p+zz*h(i,ka+2)
             h(i,ka+2) = h(i,ka+2)-p*r
-85          continue
+ 85         continue
             h(i,ka+1) = h(i,ka+1)-p*q
             h(i,ka) = h(i,ka)-p
-90      continue
+ 90     continue
         if (iz .ge. neq) then
 !           --- ON GARDE LES TRANSFORMATIONS POUR LES VECTEURS ----
             do 100 i = k, l
@@ -184,15 +185,15 @@ subroutine vpzqrh(h, neq, ih, k, l,&
                 endif
                 z(i,ka+1) = z(i,ka+1)-p*q
                 z(i,ka) = z(i,ka)-p
-100          continue
+100         continue
         endif
-105  end do
+105 end do
     goto 20
 !
 !     ---------------------------- AU CAS PAR CAS  ---------------------
 !
 !     --- UNE RACINE TROUVEE ---
-110  continue
+110 continue
     h(ien,ien) = x+t
     wr(ien) = h(ien,ien)
     wi(ien) = 0.d0
@@ -200,7 +201,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     goto 15
 !
 !     --- DEUX RACINES TROUVEES ---
-115  continue
+115 continue
     p = (y-x)*0.5d0
     q = p*p+w
     zz = sqrt(abs(q))
@@ -230,14 +231,14 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         zz = h(na,j)
         h(na,j) = q*zz+p*h(ien,j)
         h(ien,j) = q*h(ien,j)-p*zz
-120  end do
+120 end do
 !
 !     --- ALTERATION DES COLONNES ---
     do 125 i = 1, ien
         zz = h(i,na)
         h(i,na) = q*zz+p*h(i,ien)
         h(i,ien) = q*h(i,ien)-p*zz
-125  end do
+125 end do
 !
     if (iz .ge. neq) then
 !        --- STOCKER LES TRANSFORMATIONS POUR LES VECTEURS ---
@@ -245,23 +246,23 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             zz = z(i,na)
             z(i,na) = q*zz+p*z(i,ien)
             z(i,ien) = q*z(i,ien)-p*zz
-130      continue
+130     continue
     endif
     goto 140
 !
 !     --- VALEURS COMPLEXES CONJUGUEES ---
-135  continue
+135 continue
     wr(na) = x+p
     wr(ien) = x+p
     wi(na) = zz
     wi(ien) = -zz
-140  continue
+140 continue
     ien = ienm2
     goto 15
 !
 !
 !     --- TOUTES LES RACINES SONT TROUVEES, ON DEBUTE LA REMONTEE ---
-145  continue
+145 continue
     if (iz .lt. neq) goto 9999
 !
 !     ---- ON S'OCCUPE MAINTENANT DES VECTEURS ---
@@ -285,12 +286,12 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             r = h(i,ien)
             do 150 j = m, na
                 r = r+h(i,j)*h(j,ien)
-150          continue
+150         continue
             if (wi(i) .ge. 0.d0) goto 160
             zz = w
             s = r
             goto 175
-160          continue
+160         continue
             m = i
             if (wi(i) .ne. 0.d0) goto 165
             t = w
@@ -299,7 +300,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             goto 175
 !
 !           RESOLUTION DANS LE CAS REEL ---
-165          continue
+165         continue
             x = h(i,i+1)
             y = h(i+1,i)
             q = (wr(i)-p)*(wr(i)-p)+wi(i)*wi(i)
@@ -310,22 +311,22 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             else
                 h(i+1,ien) = (-r-w*t)/x
             endif
-175      continue
+175     continue
         goto 220
 !
 !        --- CAS OU LE DERNIER VECTEUR EST IMAGINAIRE ---
-180      continue
+180     continue
         m = na
 !        --- VECTEUR COMPLEXE ---
         if (abs(h(ien,na)) .le. abs(h(na,ien))) goto 185
         h(na,na) = q/h(ien,na)
         h(na,ien) = -(h(ien,ien)-p)/h(ien,na)
         goto 190
-185      continue
+185     continue
         z3 = dcmplx(0.d0,-h(na,ien))/dcmplx(h(na,na)-p,q)
         h(na,na) = dble (z3)
         h(na,ien) = dimag(z3)
-190      continue
+190     continue
         h(ien,na) = 0.d0
         h(ien,ien) = 1.d0
         ienm2 = na-1
@@ -338,7 +339,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             do 195 j = m, na
                 ra = ra+h(i,j)*h(j,na)
                 sa = sa+h(i,j)*h(j,ien)
-195          continue
+195         continue
             if (wi(i) .lt. 0.d0) then
                 zz = w
                 r = ra
@@ -371,8 +372,8 @@ subroutine vpzqrh(h, neq, ih, k, l,&
                     h(i+1,ien) = (-sa-w*h(i,ien)-q*h(i,na))/x
                 endif
             endif
-215      continue
-220  end do
+215     continue
+220 end do
 !     --- FIN DE LA REMONTEE ---
 !
 !     --- VECTEURS DES RACINES ISOLEES ---
@@ -380,8 +381,8 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         if (i .ge. k .and. i .le. l) goto 230
         do 225 j = i, neq
             z(i,j) = h(i,j)
-225      continue
-230  end do
+225     continue
+230 end do
     if (l .eq. 0) goto 9999
 !
 !     APPLICATION DES TRANSFORMATIONS ---
@@ -392,28 +393,28 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             zz = 0.d0
             do 235 ka = k, m
                 zz = zz+z(i,ka)*h(ka,j)
-235          continue
+235         continue
             z(i,j) = zz
-240      continue
-245  end do
+240     continue
+245 end do
     goto 9999
 !
 !     PAS DE CONVERGEBCE APRES "MXITER" INTERATION
 !         ==>  IER = L'INDICE DE LA VALEUR PROPRE COURANTE
 !
-250  continue
+250 continue
     ier = ien
     do 255 i = 1, ien
         wr(i) = 0.d0
         wi(i) = 0.d0
-255  end do
+255 end do
     if (iz .ge. neq) then
         do 265 i = 1, neq
             do 260 j = 1, neq
                 z(i,j) = 0.d0
-260          continue
-265      continue
+260         continue
+265     continue
     endif
 !     --- SORTIE ---
-9999  continue
+9999 continue
 end subroutine

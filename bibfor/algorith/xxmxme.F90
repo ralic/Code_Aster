@@ -19,6 +19,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -53,7 +54,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 !
 !
-    integer :: nfiss,  nfismx
+    integer :: nfiss, nfismx
     parameter    (nfismx=100)
     integer :: ifm, niv
     character(len=24) :: tabfin
@@ -62,8 +63,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     integer :: ztabf
     character(len=19) :: ligrel
     character(len=19) :: xindc0, xseuc0, xcohe0
-    logical(kind=1) :: lxffm, lxczm
-    logical :: lxfcm
+    aster_logical :: lxffm, lxczm, lxfcm
     integer, pointer :: nfis(:) => null()
 !
 ! ----------------------------------------------------------------------

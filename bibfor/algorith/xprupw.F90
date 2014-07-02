@@ -4,6 +4,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
                   eletor, liggrd)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -102,10 +103,10 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     character(len=19) :: cnsls, grls, lsv, grlsv
     character(len=2) :: levset
     integer :: jzero
-    logical(kind=1) :: reinit
+    aster_logical :: reinit
 !
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer :: nbno, nbnoma,  jcnsls, jgrls
+    integer :: nbno, nbnoma, jcnsls, jgrls
     integer :: jlsv, jgrlsv, node, nodeps, ndim
     integer :: ifm, niv, jnores, jnodto, jelcal, neleto
     integer :: i, j, k
@@ -140,7 +141,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     character(len=19) :: poifis, trifis, forced
     integer :: jforce
     real(kind=8) :: p(3), lvsp, lsnpc, lstpc
-    logical(kind=1) :: grad0
+    aster_logical :: grad0
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------

@@ -30,6 +30,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
 ! --- DECLARATIONS
 !
     implicit none
+#include "asterf_types.h"
 !
 ! ARGUMENTS
 ! ---------
@@ -41,7 +42,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
 !
     real(kind=8) :: b2, c, f, g, r, s, ff
     integer :: i, j, ij, jj, k, l
-    logical(kind=1) :: noconv
+    aster_logical :: noconv
 !
 !
 !***********************************************************************
@@ -59,7 +60,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
 !     ON RECHERCHE DES RANGEES ISOLANT UNE VALEUR PROPRE ET
 !     ON LES POUSSE VERS LE BAS
 !======================================================================
-20  continue
+ 20 continue
     if (k .ge. 1) then
 !
         j = k + 1
@@ -72,7 +73,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
                 if (i .ne. j) then
                     r = r + abs(a(j,i))
                 endif
-40          continue
+ 40         continue
 !
             if (r .eq. 0.0d0) then
 !
@@ -85,20 +86,20 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
                         ff = a(ij,j)
                         a(ij,j)=a(ij,k)
                         a(ij,k)= ff
-60                  end do
+ 60                 end do
                     if (l .le. n) then
                         do 80 ij = l, n
                             ff=a(j,ij)
                             a(j,ij)=a(k,ij)
                             a(k,ij)=ff
-80                      continue
+ 80                     continue
                     endif
                 endif
                 k = k - 1
                 goto 20
             endif
 !
-100      end do
+100     end do
 !
     endif
 !
@@ -108,7 +109,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
 !     ON LES POUSSE VERS LA GAUCHE
 !======================================================================
 !
-120  continue
+120 continue
     if (l .le. k) then
 !
         do 200 j = l, k
@@ -118,7 +119,7 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
                 if (i .ne. j) then
                     c = c + abs(a(i,j))
                 endif
-140          continue
+140         continue
 !
             if (c .eq. 0.0d0) then
 !
@@ -131,20 +132,20 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
                         ff = a(ij,j)
                         a(ij,j)=a(ij,l)
                         a(ij,l)= ff
-160                  end do
+160                 end do
                     if (l .le. n) then
                         do 180 ij = l, n
                             ff=a(j,ij)
                             a(j,ij)=a(l,ij)
                             a(l,ij)=ff
-180                      continue
+180                     continue
                     endif
                 endif
                 l = l + 1
                 goto 120
             endif
 !
-200      end do
+200     end do
 !
     endif
 !
@@ -159,10 +160,10 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
     if (l .le. k) then
         do 220 i = l, k
             d(i) = 1.0d0
-220      end do
+220     end do
     endif
 !
-240  continue
+240 continue
     noconv = .false.
 !
     if (l .le. k) then
@@ -177,26 +178,26 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
                     c = c + abs(a(j,i))
                     r = r + abs(a(i,j))
                 endif
-260          continue
+260         continue
 !
             g = r/dble(ib)
             f = 1.0d0
             s = c + r
 !
-280          continue
+280         continue
             if (c .ge. g) goto 300
             f = f*dble(ib)
             c = c*b2
             goto 280
-300          continue
+300         continue
             g = r*dble(ib)
-320          continue
+320         continue
             if (c .lt. g) goto 340
             f = f/dble(ib)
             c = c/b2
             goto 320
 !
-340          continue
+340         continue
             if (((c+r)/f) .lt. (0.95d0*s)) then
                 g = 1.0d0/f
                 d(i) = d(i)*f
@@ -205,16 +206,16 @@ subroutine vpzbaa(n, ib, a, ia, ibas,&
                 if (l .le. n) then
                     do 360 j = l, n
                         a(i,j) = a(i,j)*g
-360                  continue
+360                 continue
                 endif
 !
                 do 380 j = 1, k
                     a(j,i) = a(j,i)*f
-380              continue
+380             continue
 !
             endif
 !
-400      end do
+400     end do
 !
     endif
 !

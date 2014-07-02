@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
                       freq, tole, lselec)
@@ -25,6 +27,6 @@ interface
         real(kind=8) :: inst
         integer :: freq
         real(kind=8) :: tole
-        logical(kind=1) :: lselec
+        aster_logical :: lselec
     end subroutine nmcrit
 end interface

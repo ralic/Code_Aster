@@ -195,6 +195,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !     ARGUMENTS
 !     =========
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cpldb.h"
 #include "asterfort/errcou.h"
@@ -221,7 +222,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !     REPRISE NON PROGRAMMEE AU 16/02/09 MAIS PAR CONCORDANCE EDYOS
 !      (PAPANL, PACONL)
-    logical(kind=1) :: repris
+    aster_logical :: repris
     parameter(repris=.false._1)
 !
 !     A SUPPRIMER QUAND REPRIS = FALSE
@@ -249,7 +250,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
     character(len=8) :: cnpal(palmax)
     character(len=24) :: ayacs
 !
-    logical(kind=1) :: prdeff
+    aster_logical :: prdeff
 !
 !     DEBUT DU SSP
 !     ============
@@ -286,7 +287,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
         endif
         do 20 ipat = 1, 6
             paramr(ipat)=0.d0
-20      continue
+ 20     continue
         npas=numpas
         call cpldb(icompo, cpiter, tr8, tr8, npas,&
                    nomvar, idim, nlu, paramr, info)
@@ -368,7 +369,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
             endif
         endif
 !         FIN DE CONSTITUTION DU FICHIER EN CAS DE REPRISE
-10  end do
+ 10 end do
 !      FIN DE LA BOUCLE SUR LES PALIERS
     call jedema()
 !

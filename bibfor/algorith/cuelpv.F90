@@ -17,10 +17,11 @@ subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
-    logical(kind=1) :: lelpiv
+    aster_logical :: lelpiv
     integer :: numlia
     integer :: nbliai
     character(len=24) :: resocu
@@ -53,8 +54,8 @@ subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
             lelpiv = .true.
             goto 100
         endif
-10  end do
+ 10 end do
 !
-100  continue
+100 continue
 ! ======================================================================
 end subroutine

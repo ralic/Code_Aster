@@ -23,11 +23,13 @@
 
 #define AS_DEALLOCATE(arg) DEBUG_LOC("free ", __FILE__, __LINE__) ; call as_deallocate(arg, strdbg=TO_STRING(arg))
 !
+#include "asterf_types.h"
+!
 interface
     subroutine as_deallocate(vl, vi, vi4, vr, vc, &
                              vk8, vk16, vk24, vk32, vk80, &
                              strdbg)
-    logical(kind=1),           optional, pointer, intent(inout) :: vl(:)
+    aster_logical,           optional, pointer, intent(inout) :: vl(:)
     integer,           optional, pointer, intent(inout) :: vi(:)
     integer(kind=4),   optional, pointer, intent(inout) :: vi4(:)
     real(kind=8),      optional, pointer, intent(inout) :: vr(:)

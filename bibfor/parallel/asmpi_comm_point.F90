@@ -1,5 +1,5 @@
-subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
-                            vi, vi4, vr, sci, sci4, &
+subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
+                            vi, vi4, vr, sci, sci4,&
                             scr)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -80,7 +80,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
     integer :: nbv
     mpi_int :: lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
-    logical(kind=1) :: scal
+    aster_logical :: scal
     real(kind=8) :: wkr(1)
     integer :: wki(1)
     integer(kind=4) :: wki4(1)
@@ -179,7 +179,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
         ASSERT(.false.)
     endif
 !
-999  continue
+999 continue
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
@@ -189,7 +189,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
     integer(kind=4) :: i4dummy
     real(kind=8) :: rdummy
 !
-    if (present(nbval) .and. present(vi) .and. present(vi4) .and. present(vr) .and. &
+    if (present(nbval) .and. present(vi) .and. present(vi4) .and. present(vr) .and.&
         present(sci) .and. present(sci4) .and. present(scr)) then
         kdummy = optmpi(1:1)
         kdummy = typsca(1:1)

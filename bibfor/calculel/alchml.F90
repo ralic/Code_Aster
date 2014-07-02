@@ -19,6 +19,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -91,9 +92,9 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     integer :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
     integer :: ncdyn, lgchel
     integer :: ibid, modmx, iamolo, itych, itych1, neltot
-    integer ::  illiel, jdcesd,    jdcesl
+    integer :: illiel, jdcesd, jdcesl
     integer :: ima, ncmpv2, kk, ityplo, nbpoin
-    logical(kind=1) :: lmult
+    aster_logical :: lmult
     integer, pointer :: liel(:) => null()
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()

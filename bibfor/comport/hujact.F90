@@ -33,6 +33,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 !       CHGMEC   = .TRUE. SI MODIFICATION DU DOMAINE POTENTIEL
 !                            DES MECANISMES ACTIFS
 !   ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujcdc.h"
 #include "asterfort/hujcic.h"
@@ -49,7 +50,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
     real(kind=8) :: mater(22, 2), un, zero
     real(kind=8) :: psf
     real(kind=8) :: seuil, rd, rf, psm
-    logical(kind=1) :: debug, chgmec, negmul(8), miso
+    aster_logical :: debug, chgmec, negmul(8), miso
     real(kind=8) :: vinm(50), seuilm, c1td, c2td, cmod, deux
 ! --------------------------------------------------------------------
     common /tdim/   ndt, ndi
@@ -73,7 +74,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
             vinm(4*i+8) = vind(5*i+34)
             vinm(i+4) = vind(5*i+35)
         endif
-50  end do
+ 50 end do
 !
 ! ===================================================================
 ! -------------- DETERMINATION DES CRITERES ACTIFS A T+DT -----------
@@ -82,11 +83,11 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
     do 20 i = 1, 7
         if (indi(i) .eq. 4) miso = .true.
         if (indi(i) .eq. 8) miso = .true.
-20  continue
+ 20 continue
 !
     do 30 i = 1, 50
         vint(i) = vind(i)
-30  continue
+ 30 continue
 !
     do 40 i = 1, 4
 ! ====================================================================
@@ -448,6 +449,6 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
             endif
         endif
 !
-40  continue
+ 40 continue
 !
 end subroutine

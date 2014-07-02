@@ -17,9 +17,10 @@ subroutine dxqloe(flex, memb, mefl, ctor, coupmf,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utvtsv.h"
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
     real(kind=8) :: flex(*), memb(*), mefl(*), ctor
     real(kind=8) :: depl(*), ener(*)
 !----------------------------------------------------------
@@ -100,25 +101,25 @@ subroutine dxqloe(flex, memb, mefl, ctor, coupmf,&
 !                          ---- RAZ MATLOC
     do 10 i = 1, 300
         matloc(i) = 0.d0
-10  end do
+ 10 end do
 !                          ---- TERMES DE FLEXION
     do 20 k = 1, 78
         matloc(jf(k)) = cf(k)*flex(if(k))
         matf(k) = matloc(jf(k))
-20  end do
+ 20 end do
 !                          ---- TERMES DE MEMBRANE
     do 30 k = 1, 36
         matloc(jm(k)) = memb(im(k))
         matm(k) = matloc(jm(k))
-30  end do
+ 30 end do
 !                          ---- TERMES DE COUPLAGE FLEXION/MEMBRANE
     do 40 k = 1, 60
         matloc(jfm(k)) = cfm(k)*mefl(ifm(k))
-40  end do
+ 40 end do
 !                          ---- TERMES DE COUPLAGE MEMBRANE/FLEXION
     do 50 k = 1, 36
         matloc(jmf(k)) = cmf(k)*mefl(imf(k))
-50  end do
+ 50 end do
 !                          ---- TERMES DE ROTATION / Z
     coef = ctor*min(&
            flex(14), flex(27), flex(53), flex(66), flex(92), flex(105), flex(131), flex(144))
@@ -135,12 +136,12 @@ subroutine dxqloe(flex, memb, mefl, ctor, coupmf,&
 !        --------- ENER EN MEMBRANE ----------
         do 60 k = 1, 8
             deplm(k) = depl(km(k))
-60      continue
+ 60     continue
         call utvtsv('ZERO', 8, matm, deplm, ener(2))
 !        --------- ENER EN FLEXION ----------
         do 70 k = 1, 12
             deplf(k) = depl(kf(k))
-70      continue
+ 70     continue
         call utvtsv('ZERO', 12, matf, deplf, ener(3))
     endif
     ener(1) = 0.5d0*ener(1)

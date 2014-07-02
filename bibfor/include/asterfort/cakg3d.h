@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cakg3d(option, result, modele, depla, thetai,&
                       mate, compor, lischa, symech,&
@@ -38,21 +40,21 @@ interface
         character(len=24) :: courb
         integer :: iord
         integer :: ndeg
-        logical(kind=1) :: thlagr
-        logical(kind=1) :: glagr
-        logical(kind=1) :: thlag2
-        logical(kind=1) :: pair
+        aster_logical :: thlagr
+        aster_logical :: glagr
+        aster_logical :: thlag2
+        aster_logical :: pair
         integer :: ndimte
-        logical(kind=1) :: extim
+        aster_logical :: extim
         real(kind=8) :: time
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=8) :: fiss
-        logical(kind=1) :: lmelas
+        aster_logical :: lmelas
         character(len=16) :: nomcas
-        logical(kind=1) :: lmoda
+        aster_logical :: lmoda
         real(kind=8) :: puls
-        logical(kind=1) :: milieu
-        logical(kind=1) :: connex
+        aster_logical :: milieu
+        aster_logical :: connex
     end subroutine cakg3d
 end interface

@@ -17,6 +17,7 @@ subroutine elg_calcx0()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+# include "asterf_types.h"
 # include "jeveux.h"
 # include "asterfort/assert.h"
 # include "asterfort/jedema.h"
@@ -55,7 +56,7 @@ subroutine elg_calcx0()
     PetscInt :: its, ierr
     real(kind=8) :: norm
     PetscScalar ::  neg_one
-    logical :: info 
+    aster_logical :: info 
 !----------------------------------------------------------------
     neg_one = -1.d0
     info    = .true. 

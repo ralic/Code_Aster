@@ -18,6 +18,7 @@ subroutine te0030(option, nomte)
 ! ======================================================================
 ! =====================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cribif.h"
@@ -39,7 +40,7 @@ subroutine te0030(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! =====================================================================
 ! =====================================================================
-    logical(kind=1) :: logthm
+    aster_logical :: logthm
     integer :: imate, icompo, ivarip, icontp, ilocal, ibid
     integer :: nbvari, nbrac4, rindic, kpg, ii, nbsig
     integer :: icode, iret, tabthm(3), dimmax, npgu
@@ -91,8 +92,8 @@ subroutine te0030(option, nomte)
 ! =====================================================================
 ! --- RECUPERATION DU ELREFE ------------------------------------------
 ! =====================================================================
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! =====================================================================
 ! --- PARAMETRES EN ENTREE --------------------------------------------
 ! =====================================================================
@@ -176,8 +177,8 @@ subroutine te0030(option, nomte)
             zr(ilocal-1+1+(kpg-1)*rindic) = vbifur
             do 20 ii = 1, nbrac4
                 zr(ilocal-1+1+ii+(kpg-1)*rindic) = racine(ii)
-20          continue
-10      continue
+ 20         continue
+ 10     continue
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)

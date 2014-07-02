@@ -26,7 +26,8 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfmxpo.h"
 #include "asterfort/isfonc.h"
@@ -90,7 +91,7 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lmvib, lflam, lerrt, lcont, lener
+    aster_logical :: lmvib, lflam, lerrt, lcont, lener
     character(len=4) :: etfixe
 !
 ! ----------------------------------------------------------------------
@@ -158,7 +159,7 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 !
     call nmobsv(noma, sddisc, sdieto, sdobse, numins)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

@@ -29,6 +29,7 @@ subroutine te0315(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -44,7 +45,7 @@ subroutine te0315(option, nomte)
     integer :: ipoids, ivf, idfde, igeom
     integer :: nno, kp, npg, ivectt, imate
     integer :: ldec, kpg, spt
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
@@ -52,8 +53,8 @@ subroutine te0315(option, nomte)
     integer :: nnos
     real(kind=8) :: r, rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
@@ -83,7 +84,7 @@ subroutine te0315(option, nomte)
             do 10 idim = 1, 2
                 k = k + 1
                 acloc(idim,i) = zr(iacce+k-1)
-10          continue
+ 10         continue
         else if ((option(16:16).eq.'X')) then
             k = k + 1
             acloc(1,i) = zr(itemp+k-1)
@@ -93,11 +94,11 @@ subroutine te0315(option, nomte)
             acloc(1,i) = 0.d0
             acloc(2,i) = zr(itemp+k-1)
         endif
-20  end do
+ 20 end do
 !
     do 30 i = 1, nno
         zr(ivectt+i-1) = 0.d0
-30  end do
+ 30 end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -112,7 +113,7 @@ subroutine te0315(option, nomte)
         do 40 i = 1, nno
             acc(1,kp) = acc(1,kp) + acloc(1,i)*zr(ivf+ldec+i-1)
             acc(2,kp) = acc(2,kp) + acloc(2,i)*zr(ivf+ldec+i-1)
-40      continue
+ 40     continue
 !
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
@@ -130,13 +131,13 @@ subroutine te0315(option, nomte)
             r = 0.d0
             do 50 i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
-50          continue
+ 50         continue
             poids = poids*r
         endif
 !
         do 60 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*flufn(kp)*rho(1)*zr( ivf+ldec+i-1)
-60      continue
-70  end do
+ 60     continue
+ 70 end do
 !
 end subroutine

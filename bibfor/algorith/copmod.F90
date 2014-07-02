@@ -1,4 +1,4 @@
-subroutine copmod(base, bmodr, bmodz, champ, numer, &
+subroutine copmod(base, bmodr, bmodz, champ, numer,&
                   nbmodes, nequa)
     implicit none
 !***********************************************************************
@@ -55,6 +55,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !  |                      : (default = determine automatically from the nume_ddl)    |
 !  |_________________________________________________________________________________|
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -79,7 +80,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
 !
-    character(len=8), intent(in):: base
+    character(len=8), intent(in) :: base
     real(kind=8), optional, intent(out) :: bmodr(*)
     complex(kind=8), optional, intent(out) :: bmodz(*)
     character(len=*), optional, intent(in) :: champ
@@ -90,9 +91,9 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc
-    logical(kind=1) :: modnum, exnume, chnoeud
+    aster_logical :: modnum, exnume, chnoeud
     integer :: i, iret, neq, nbmode
-    integer ::  jdeeq, jval
+    integer :: jdeeq, jval
     character(len=16) :: champ2
     character(len=19) :: numer1, numer2
     character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha, nomcha, tmpcha
@@ -107,31 +108,32 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     typc = 'R'
     ASSERT(UN_PARMI2(bmodr, bmodz))
     if (present(bmodz)) typc = 'C'
-
-    champ2  = 'DEPL'
-    numer2  = ' '
+!
+    champ2 = 'DEPL'
+    numer2 = ' '
     if (present(champ)) champ2 = champ
     if (present(numer)) numer2 = numer
     if (present(nequa)) neq = nequa
-
+!
     chnoeud = .true.
-    if (champ2(6:7).eq.'EL') chnoeud = .false.
-
+    if (champ2(6:7) .eq. 'EL') chnoeud = .false.
+!
 !   --- RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS RENSEIGNE
 !   --- 1. CHAMP AUX NOEUDS : PAR RAPPORT A L'INFORMATION DANS LE NUME_DDL 
     if (chnoeud) then
         if (numer2 .ne. ' ') then
             call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
             if (iret .ne. 0) then
-                call dismoi('NB_EQUA' , numer2, 'NUME_DDL' , repi=neq)
+                call dismoi('NB_EQUA', numer2, 'NUME_DDL', repi=neq)
                 if (present(nequa)) ASSERT(nequa .eq. neq)
             endif
         else 
-            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C', ier=iret)
+            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C',&
+                        ier=iret)
             if (iret .eq. 0) then
                 call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
                 if (iret .ne. 0) then
-                    call dismoi('NB_EQUA' , numer1, 'NUME_DDL' , repi=neq)
+                    call dismoi('NB_EQUA', numer1, 'NUME_DDL', repi=neq)
                     if (present(nequa)) ASSERT(nequa .eq. neq)
                 endif
             endif
@@ -145,13 +147,13 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
         if (present(nequa)) ASSERT(nequa .eq. neq)
     endif
 !   --- FIN DE LA RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS
-
-    call dismoi('NB_MODES_TOT', base, 'RESULTAT' , repi=nbmode)
-    if (present(nbmodes)) then 
+!
+    call dismoi('NB_MODES_TOT', base, 'RESULTAT', repi=nbmode)
+    if (present(nbmodes)) then
         ASSERT(nbmodes .le. nbmode)
         nbmode = nbmodes
     endif
-
+!
 !  ____________________________________________________________________
 !
 !  - 1 - RECHERCHE DES INFORMATIONS SUR LES CHAMPS DANS LA BASE MODALE

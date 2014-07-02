@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
                       if1, iao1, iae1, im2, if2,&
@@ -30,6 +32,6 @@ interface
         integer :: im2
         integer :: if2
         integer :: iao2
-        logical(kind=1) :: legfa
+        aster_logical :: legfa
     end subroutine i3egf1
 end interface

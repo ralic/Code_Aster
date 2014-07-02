@@ -18,7 +18,8 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -51,11 +52,11 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: dvrela, dvmaxi, dvrefe, dvcomp
-    logical(kind=1) :: dvpfix, dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
-    logical(kind=1) :: dvdebo, cvpilo
-    logical(kind=1) :: cvnewt, lerrne
-    logical(kind=1) :: erctcg, erctcf, erctcc
+    aster_logical :: dvrela, dvmaxi, dvrefe, dvcomp
+    aster_logical :: dvpfix, dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
+    aster_logical :: dvdebo, cvpilo
+    aster_logical :: cvnewt, lerrne
+    aster_logical :: erctcg, erctcf, erctcc
     character(len=16) :: debors
     character(len=24) :: sdtabc, slcolo, lisnom
 !

@@ -62,6 +62,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
@@ -104,7 +105,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     real(kind=8) :: dep0(*), vit0(*), acc0(*), tinit
     real(kind=8) :: fexte(*), famor(*), fliai(*)
 !
-    logical(kind=1) :: lamort, lcrea
+    aster_logical :: lamort, lcrea
 !
 !
     integer :: nbtyar
@@ -142,7 +143,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     integer :: nbpasc, ifnobi, ifcibi
     integer :: adeeq
     integer :: ibid
-    logical(kind=1) :: ener
+    aster_logical :: ener
     real(kind=8), pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------

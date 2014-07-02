@@ -1,6 +1,7 @@
 subroutine ef0154(nomte)
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
@@ -39,7 +40,7 @@ subroutine ef0154(nomte)
     character(len=4) :: fami
     character(len=8) :: nomail
     character(len=16) :: ch16
-    logical(kind=1) :: lteimp
+    aster_logical :: lteimp
     real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig, val(1)
     integer :: i, j, jdepl, jeffo
     integer :: lmater, lorien, lsect, lx, nc, nno, iadzi, iazk24

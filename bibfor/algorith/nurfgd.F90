@@ -1,5 +1,6 @@
-subroutine nurfgd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
-                  vu, vp, typmod, geomi, sigref, epsref, vect)
+subroutine nurfgd(ndim, nno1, nno2, npg, iw,&
+                  vff1, vff2, idff1, vu, vp,&
+                  typmod, geomi, sigref, epsref, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +21,7 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmmalu.h"
 #include "asterfort/r8inir.h"
@@ -54,7 +56,7 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 ! OUT VECT    : REFE_FORC_NODA
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nddl, ndu, g
     integer :: kl, sa, na, ia, ja, kk
     integer :: ndimsi, vij(3, 3), lij(3, 3)
@@ -78,8 +80,11 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 !
     do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+                    lij)
 !
 ! - VECTEUR FINT:U
         do kl = 1, ndimsi

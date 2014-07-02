@@ -26,6 +26,7 @@ subroutine te0179(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -40,14 +41,14 @@ subroutine te0179(option, nomte)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: i, l, li
     integer :: imate, ivitn
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
     integer :: ivectt, jgano, mater, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     fami='FPG1'
     kpg=1
@@ -74,13 +75,13 @@ subroutine te0179(option, nomte)
             do 10 i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
-10          continue
+ 10         continue
             poids = poids*r
         endif
 !
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zc(ivectt+i-1) = zc(ivectt+i-1) + poids*zr(li)*zc(ivitn+ kp-1)*rho(1)
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 end subroutine

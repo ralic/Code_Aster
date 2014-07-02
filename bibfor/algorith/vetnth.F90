@@ -43,10 +43,11 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
 !       AUCUNE.
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -84,7 +85,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
     character(len=24) :: modele, carele, matcod, inst, chtn, vecel, vecei
     character(len=24) :: compor, tmpchi, tmpchf, chhy, ligrmo, lchin(nchinx)
     character(len=24) :: chgeom, lchout(nchoux), chcara(18)
-    logical(kind=1) :: lnlin
+    aster_logical :: lnlin
 !
     chvarc = '&&NXACMV.CHVARC'
 !
@@ -290,7 +291,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
         write (ifm,*) '-->  OPTION         :',option
         do 20 i = 1, nchin
             write (ifm,*) '     LPAIN/LCHIN    :',lpain(i),' ',lchin(i)
-20      continue
+ 20     continue
     endif
 !
 !C    PRINT * ,'DANS ',NOMPRO,' OPTION = ',OPTION,' ET STYPSE = ',STYPSE

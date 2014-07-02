@@ -1,6 +1,7 @@
 subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
                   rke, lhaigh, rcorr, dom)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -10,7 +11,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)
     integer :: nbcycl
-    logical(kind=1) :: lhaigh, lke
+    aster_logical :: lhaigh, lke
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +48,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
     character(len=8) :: nomres, nompar, kbid
     character(len=10) :: pheno
     real(kind=8) :: nrupt(1), delta
-    logical(kind=1) :: endur
+    aster_logical :: endur
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar
@@ -69,7 +70,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
                         1, nomres, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

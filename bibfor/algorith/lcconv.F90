@@ -5,7 +5,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
                   vinf, vind1, indi, bnews, mtrac,&
                   lreli, iret)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,6 +63,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
 !         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
 !         (VINF) UNIQUEMENT POUR LETK  - ETAT PLASTIQUE DESACTIVE?
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/burcvg.h"
 #include "asterfort/cvmcvg.h"
@@ -77,7 +78,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
     real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi), vind1(nvi)
     real(kind=8) :: ye(nr), vind(nvi)
     character(len=16) :: loi
-    logical(kind=1) :: bnews(3), mtrac, lreli
+    aster_logical :: bnews(3), mtrac, lreli
 !     ----------------------------------------------------------------
 !
     if (loi(1:9) .eq. 'VISCOCHAB') then

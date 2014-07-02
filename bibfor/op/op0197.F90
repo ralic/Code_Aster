@@ -23,6 +23,7 @@ subroutine op0197()
 !     RECA_WEIBULL        ---------
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -78,15 +79,15 @@ subroutine op0197()
     character(len=24) :: collec, mate, noobj
     integer :: nbresu, ifm, n1, niv, itemp, ichmat, iresu, imod, nbins, iinst
     integer :: itabw, nbite, nitmax, isig, i, ibid, nbmtcm, nbmtrc, nbcal, nbval
-    integer ::  it, iseg, nchar, jcha, itabr, vali(nbparr),  ix, iy
+    integer :: it, iseg, nchar, jcha, itabr, vali(nbparr), ix, iy
     integer :: nrupt, iweik, iweir, ipro, irent, isigk, isigkp, isigi, ntemp
     integer :: itpsi, itpre, ntpsi, ipth, inopa, itypa, ivapa, ikval, ikvak, imc
-    integer :: iainst, preor, deror, nbold,  anomm1, anomm2, tord(1)
+    integer :: iainst, preor, deror, nbold, anomm1, anomm2, tord(1)
     real(kind=8) :: mini, minip, vini, epsi, mk, mkp, sigint, r8bid
     real(kind=8) :: valr(nbparr), test, proint, maxcs, tpsmin, tpsmax
     real(kind=8) :: valrr(3)
     complex(kind=8) :: c16b
-    logical(kind=1) :: calm, cals, impr, dept, recm, recs
+    aster_logical :: calm, cals, impr, dept, recm, recs
     integer, pointer :: nom_nures(:) => null()
     real(kind=8), pointer :: nom_inssig(:) => null()
     character(len=8), pointer :: vale(:) => null()
@@ -141,7 +142,7 @@ subroutine op0197()
             cals = .false.
             recs = .true.
         endif
-10  end do
+ 10 end do
 !
 !     --- LECTURE DES BASES DE RESULTATS (MOT-CLE RESU) ---
 !
@@ -183,7 +184,7 @@ subroutine op0197()
                     ntpsi = ntpsi-1
                     zi(itpre-1+iresu) = i
                 endif
-120          continue
+120         continue
         else
             zi(itpre-1+iresu) = 1
         endif
@@ -238,7 +239,7 @@ subroutine op0197()
             call utmess('F', 'UTILITAI6_54', nr=2, valr=valrr)
         endif
 !
-100  end do
+100 end do
 !
 !     --- ON REGARDE SI LE RECALAGE DOIT S'EFFECTUER EN FONCTION
 !     --- DE LA TEMPERATURE : SIGU(T)
@@ -292,7 +293,7 @@ subroutine op0197()
             zk16(inopa+1+i) = nopark(3)(1:7)//'_T:'//chtemp
         endif
         zk8(itypa+1+i) = typark(3)
-110  end do
+110 end do
     tapait = '&&PAR_IT'
     call tbcrsd(tapait, 'V')
     call tbajpa(tapait, ntpsi+2, zk16(inopa), zk8(itypa))
@@ -325,7 +326,7 @@ subroutine op0197()
             if (zk8(iweik + i-1) .eq. 'SIGM_REF') then
                 zr(isigi-1+iresu)=zr(iweir + i-1)
             endif
-117      continue
+117     continue
 !
         if (iresu .gt. 1) then
             if (mini .ne. minip) then
@@ -337,7 +338,7 @@ subroutine op0197()
         endif
         minip = mini
 !
-115  end do
+115 end do
     valrr (1) = mini
     valrr (2) = vini
     valrr (3) = zr(isigi)
@@ -357,9 +358,9 @@ subroutine op0197()
     do 201 iresu = 1, ntpsi
         zr(isigk+iresu-1) = zr(isigi+iresu-1)
         zr(isigkp+iresu-1) = zr(isigi+iresu-1)
-201  end do
+201 end do
 !
-200  continue
+200 continue
 !
 !     --- NOUVELLE ITERATION DE RECALAGE
 !
@@ -374,7 +375,7 @@ subroutine op0197()
     mk = mkp
     do 203 iresu = 1, ntpsi
         zr(isigk+iresu-1) = zr(isigkp+iresu-1)
-203  continue
+203 continue
 !
     do 300 iresu = 1, nbresu
 !
@@ -397,7 +398,7 @@ subroutine op0197()
                 call copisd(' ', 'V', zk8(anomm2), chcop2)
                 vale(i) = chcop2
             endif
-301      continue
+301     continue
 !
         call jedetr('&&OP0197.L_NOM_MAT')
         call jeveuo(chcop2//'.WEIBULL   .VALR', 'E', iweir)
@@ -413,7 +414,7 @@ subroutine op0197()
             if (zk8(iweik + i-1) .eq. 'SIGM_REF') then
                 zr(iweir + i-1) = zr(isigk+zi(itpre-1+iresu)-1)
             endif
-302      continue
+302     continue
 !
         call jedetc('V', '.MATE_CODE', 9)
         call jedetc('V', '.CODI', 20)
@@ -467,11 +468,11 @@ subroutine op0197()
             write(ifm,*) 'TABLEAU DES SIGMA WEIBULL : '
             do 305 it = 1, nbval
                 write(ifm,*) 'SIGW(',it,') = ',zr(isig+it-1)
-305          continue
+305         continue
             write(ifm,*) 'TABLEAU DES PROBA WEIBULL : '
             do 306 it = 1, nbval
                 write(ifm,*) 'PRW(',it,') = ',zr(ipro+it-1)
-306          continue
+306         continue
         endif
 !
         call jeveuo('&&OP0197.NOM_INSSIG', 'L', vr=nom_inssig)
@@ -493,7 +494,7 @@ subroutine op0197()
             call tbajli(zk16(itabr-1+iresu), nbparr, noparr, vali, valr,&
                         [c16b], k8bid, 0)
             if (impr) write(ifm,*) 'SIGMA WEIBULL :',sigint
-310      continue
+310     continue
 !
         call jedetr('&&OP0197.NOM_VECPRO')
         call jedetr('&&OP0197.NOM_VECSIG')
@@ -502,7 +503,7 @@ subroutine op0197()
         call jedetc('V', chcop1, 1)
         call jedetc('V', chcop2, 1)
 !
-300  end do
+300 end do
 !
 !  ---   FUSION DES TABLES DE CONTRAINTES DE WEIBULL POUR
 !  ---   TOUTES LES BASES DE RESULATS
@@ -530,7 +531,7 @@ subroutine op0197()
         write(ifm,*) 'ETAPE 3 > FUSION ET TRI DES SIGMA WEIBULL'
         do 307 it = 1, nrupt
             write(ifm,*) 'SIGW(',it,') = ',zr(isig+it-1)
-307      continue
+307     continue
         write(ifm,*) 'ETAPE 4 > OPTIMISATION DES PARAMETRES'
     endif
 !
@@ -549,7 +550,7 @@ subroutine op0197()
     zr(ivapa) = mkp
     do 11 iresu = 1, ntpsi
         zr(ivapa+iresu) = zr(isigkp+iresu-1)
-11  end do
+ 11 end do
     call tbajli(tapait, ntpsi+2, zk16(inopa), vali, zr(ivapa),&
                 [c16b], k8bid, 0)
 !
@@ -561,7 +562,7 @@ subroutine op0197()
             maxcs) then
             maxcs = abs( (zr(isigkp+iresu-1) - zr(isigk+iresu-1)) / zr(isigk+iresu-1 ) )
         endif
-12  end do
+ 12 end do
 !
     if ((abs((mkp-mk)/mk)) .le. epsi) calm = .true.
     if (maxcs .le. epsi) cals = .true.
@@ -595,7 +596,7 @@ subroutine op0197()
                 call tbajli(nomres, 2, nopars, [ibid], valr,&
                             [c16b], k8bid, 0)
             endif
-308      continue
+308     continue
 !
     endif
 !
@@ -621,7 +622,7 @@ subroutine op0197()
                 call tbajli(nomres, 2, nopart(2), [ibid], valr(2),&
                             [c16b], k8bid, 0)
             endif
-311      continue
+311     continue
 !
     endif
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
                       rgrela, inikry, lctcd, defico)
@@ -25,7 +27,7 @@ interface
         real(kind=8) :: rgmaxi
         real(kind=8) :: rgrela
         real(kind=8) :: inikry
-        logical(kind=1) :: lctcd
+        aster_logical :: lctcd
         character(len=24) :: defico
     end subroutine nmcerr
 end interface

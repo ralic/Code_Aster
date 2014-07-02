@@ -1,6 +1,7 @@
 subroutine xoripe(modele)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -56,14 +57,14 @@ subroutine xoripe(modele)
 !
     real(kind=8) :: gbo(3), gpr(3), next(3), norme, lsn
     real(kind=8) :: co(3, 3), ab(3), ac(3), n2d(3), a(3), b(3), c(3)
-    integer :: ima, nbma, j, kk, i,  ifis,  nfis, iad2
-    integer :: jmail, nbmail, iret,  jm3d, ibid, jvecno
+    integer :: ima, nbma, j, kk, i, ifis, nfis, iad2
+    integer :: jmail, nbmail, iret, jm3d, ibid, jvecno
     integer :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
     integer :: nbnos, id4, id6
-    integer ::  jconx2, ino, nuno
+    integer :: jconx2, ino, nuno
     integer :: ich, jcesd(5), jcesv(5), jcesl(5), iad, nse, ise, in
     integer :: ndime, icmp, ndim, id(3), intemp, nseori, ifm, niv, nncp
-    integer :: s1, s2, jgrp, nmaenr,  jlsnd, jlsnl
+    integer :: s1, s2, jgrp, nmaenr, jlsnd, jlsnl
     integer :: nsignp, nsignm, nsignz, ihe, he, itypma
     integer :: ifiss, nfiss, mailvo(1)
     character(len=8) :: noma, typbo, fiss
@@ -71,7 +72,7 @@ subroutine xoripe(modele)
     character(len=19) :: ligrel, chs(5), chlsn
     character(len=24) :: grmape, nomob, vecnor, grp(3)
     character(len=19) :: pintto, cnseto, loncha, heav
-    logical(kind=1) :: quadratique
+    aster_logical :: quadratique
     integer :: itypbo
     integer, pointer :: vnfis(:) => null()
     integer, pointer :: typmail(:) => null()
@@ -269,12 +270,12 @@ subroutine xoripe(modele)
             itypbo=typmail(numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
             nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
-            if (nbnobo.gt.4) then 
-               nbnose=6
-               quadratique=.true.
+            if (nbnobo .gt. 4) then
+                nbnose=6
+                quadratique=.true.
             else
-               nbnose=3
-               quadratique=.false.
+                nbnose=3
+                quadratique=.false.
             endif
             nbnos=3
         endif
@@ -350,16 +351,16 @@ subroutine xoripe(modele)
                 if (quadratique) then
 !            ON INVERSE LES NOEUDS MILIEUX 4 ET 6 EN 3D)
 !               RECUPERATION DE LA CONNECTIVITE :
-                  icmp=nbnose*(ise-1)+4
-                  call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
-                            1, icmp, id4)
-                  icmp=nbnose*(ise-1)+6
-                  call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
-                            1, icmp, id6)
+                    icmp=nbnose*(ise-1)+4
+                    call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
+                                1, icmp, id4)
+                    icmp=nbnose*(ise-1)+6
+                    call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
+                                1, icmp, id6)
 !               INVERSION  DE LA CONNECTIVITE :
-                  intemp=zi(jcesv(2)-1+id4)
-                  zi(jcesv(2)-1+id4)=zi(jcesv(2)-1+id6)
-                  zi(jcesv(2)-1+id6)=intemp
+                    intemp=zi(jcesv(2)-1+id4)
+                    zi(jcesv(2)-1+id4)=zi(jcesv(2)-1+id6)
+                    zi(jcesv(2)-1+id6)=intemp
                 endif
             endif
 !
@@ -415,7 +416,7 @@ subroutine xoripe(modele)
     call jedetr('&&XORIPE.NU_MAILLE_3D')
     call jedetr('&&XORIPE.VECNOR')
 !
-999  continue
+999 continue
 !
     write(ifm,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES :',nseori
 !

@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_thmc)
         character(len=8), intent(in) :: model
-        logical(kind=1), intent(in) :: l_affe_all
+        aster_logical, intent(in) :: l_affe_all
         character(len=24), intent(in) :: list_elem_affe
         integer, intent(in) :: nb_elem_affe
         character(len=16), intent(in) :: rela_thmc

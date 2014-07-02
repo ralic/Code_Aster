@@ -53,6 +53,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/cpdepl.h"
@@ -77,7 +78,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 ! -----------------
     integer :: ibid
     real(kind=8) :: carac(2)
-    logical(kind=1) :: lnul, lneg, calcul(2)
+    aster_logical :: lnul, lneg, calcul(2)
     character(len=8) :: k8b
     character(len=24) :: fsic
 !

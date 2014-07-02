@@ -27,6 +27,7 @@ subroutine ritz99(nomres)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -51,7 +52,7 @@ subroutine ritz99(nomres)
     character(len=19) :: numref, nume1
     character(len=24) :: trang1, trang2, tempor, tempi, tempi2, rigi1, mass1, amor1
     character(len=24) :: valk(3), concep(3)
-    logical(kind=1) :: seul
+    aster_logical :: seul
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

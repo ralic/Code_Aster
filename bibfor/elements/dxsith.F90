@@ -1,5 +1,6 @@
 subroutine dxsith(nomte, mater, sigma)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dmatcp.h"
 #include "asterfort/elrefe_info.h"
@@ -50,14 +51,14 @@ subroutine dxsith(nomte, mater, sigma)
 !
     character(len=4) :: fami
 !
-    logical(kind=1) :: dkg
+    aster_logical :: dkg
 !
 ! ----------------------------------------------------------------------
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nnoel,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nnoel, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     call vecini(7, zero, repere)
@@ -107,7 +108,7 @@ subroutine dxsith(nomte, mater, sigma)
 !         ----------------------------------------------------
                 ipgh=npgh*(icou-1)+igauh
                 call verift('RIGI', ipg, ipgh, '+', mater,&
-                            epsth=epsth(1) )
+                            epsth=epsth(1))
 !
                 epsth(2) = epsth(1)
                 epsth(3) = zero

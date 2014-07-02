@@ -19,6 +19,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -69,7 +70,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
     character(len=24) :: chgeom, ligrmo
     integer :: nchond
     character(len=19) :: chondp
-    logical(kind=1) :: debug
+    aster_logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
     character(len=8), pointer :: lgrf(:) => null()
@@ -143,7 +144,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
 !
             call reajre(vecele, lchout(1), 'V')
         endif
-30  end do
+ 30 end do
 !
     call jedema()
 end subroutine

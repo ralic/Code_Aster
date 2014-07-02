@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine asefen(muapde, nomsy, id, stat, neq,&
                       nbsup, ndir, nsupp, masse, nomsup,&
                       depsup, recmod, nintra, nbdis)
         integer :: nbsup
         integer :: neq
-        logical(kind=1) :: muapde
+        aster_logical :: muapde
         character(len=16) :: nomsy
         integer :: id
         character(len=*) :: stat

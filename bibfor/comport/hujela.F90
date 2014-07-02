@@ -29,6 +29,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
 !                         IRET=0 => PAS DE PROBLEME
 !                         IRET=1 => ECHEC
 !       ---------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujci1.h"
 #include "asterfort/lcinma.h"
@@ -44,7 +45,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
     real(kind=8) :: delta
     real(kind=8) :: piso, tole, c11, c12, c13, c22, c23, c33
     character(len=8) :: mod
-    logical(kind=1) :: tract
+    aster_logical :: tract
 !
     common /tdim/     ndt, ndi
 !
@@ -149,17 +150,17 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
 !--->  EN CAS D'ENTREE EN TRACTION, LES CONTRAINTES SONT
 !      RAMENEES SUR L'AXE HYDROSTATIQUE A DES VALEURS FAIBLES
 !      ( JUSTE AU-DELA DE LA TOLERANCE )
- 5  continue
+  5 continue
     if (tract) then
         do 10 i = 1, ndi
             sigf(i) = pref*tole*1.01d0 +piso
-10      continue
+ 10     continue
         do 20 i = ndi+1, ndt
             sigf(i) = zero
-20      continue
+ 20     continue
         goto 9999
     endif
-30  continue
+ 30 continue
 !
 !
 !---> CALCUL DU COEF  (-----------)**N ET MODULE_YOUNG A T+DT
@@ -181,10 +182,10 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
                 do 32 j = 1, ndi
                     if (i .eq. j) hook(i,j) = al
                     if (i .ne. j) hook(i,j) = la
-32              continue
+ 32             continue
             do 35 i = ndi+1, ndt
                 hook(i,i) = demu
-35          continue
+ 35         continue
 !
         else if (mater(17,1).eq.deux) then
 !
@@ -230,5 +231,5 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
     call lcprmv(hook, deps, dsig)
     call lcsove(sigd, dsig, sigf)
 !
-9999  continue
+9999 continue
 end subroutine

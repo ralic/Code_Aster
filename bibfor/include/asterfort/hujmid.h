@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujmid(mod, crit, mater, nvi, deps,&
                       sigd, sigf, vind, vinf, noconv,&
@@ -29,15 +31,15 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        logical(kind=1) :: noconv
-        logical(kind=1) :: aredec
-        logical(kind=1) :: stopnc
-        logical(kind=1) :: negmul(8)
+        aster_logical :: noconv
+        aster_logical :: aredec
+        aster_logical :: stopnc
+        aster_logical :: negmul(8)
         integer :: iret
-        logical(kind=1) :: subd
-        logical(kind=1) :: loop
+        aster_logical :: subd
+        aster_logical :: loop
         integer :: ndec0
         integer :: indi(7)
-        logical(kind=1) :: mectra
+        aster_logical :: mectra
     end subroutine hujmid
 end interface

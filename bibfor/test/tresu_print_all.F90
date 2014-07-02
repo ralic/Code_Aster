@@ -1,6 +1,6 @@
-subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
-                           rela, tole, ssigne, refr, valr, &
-                           refi, vali, refc, valc, ignore, &
+subroutine tresu_print_all(refer, legend, llab, typres, nbref,&
+                           rela, tole, ssigne, refr, valr,&
+                           refi, vali, refc, valc, ignore,&
                            compare)
     implicit none
 !
@@ -22,9 +22,13 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
 !
 ! person_in_charge: mathieu.courtois at edf.fr
 !
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/tresu_print.h"
+!
     character(len=16), intent(in) :: refer
     character(len=16), intent(in) :: legend
-    logical(kind=1), intent(in) :: llab
+    aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: typres
     integer, intent(in) :: nbref
     character(len=*), intent(in) :: rela
@@ -36,17 +40,15 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
     integer, intent(in) :: vali
     complex(kind=8), intent(in) :: refc(nbref)
     complex(kind=8), intent(in) :: valc
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 !
 !   Pour faciliter la transition à tresu_print
 !   On prend tous les types et on trie.
 !
-#include "asterfort/assert.h"
-#include "asterfort/tresu_print.h"
 !
     real(kind=8) :: arg_cmp
-    logical(kind=1) :: skip
+    aster_logical :: skip
     character(len=1) :: typ
 !
     skip = .false.
@@ -61,19 +63,19 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
 !
     typ = typres(1:1)
 !
-    select case ( typ )
-    case ('I')
-        call tresu_print(refer, legend, llab, nbref, rela, &
-                         tole, ssigne, refi=refi, vali=vali, &
-                         ignore=skip, compare=arg_cmp)
-    case ('R')
-        call tresu_print(refer, legend, llab, nbref, rela, &
-                         tole, ssigne, refr=refr, valr=valr, &
-                         ignore=skip, compare=arg_cmp)
-    case ('C')
-        call tresu_print(refer, legend, llab, nbref, rela, &
-                         tole, ssigne, refc=refc, valc=valc, &
-                         ignore=skip, compare=arg_cmp)
+    select case (typ)
+        case ('I')
+        call tresu_print(refer, legend, llab, nbref, rela,&
+                         tole, ssigne, refi=refi, vali=vali, ignore=skip,&
+                         compare=arg_cmp)
+        case ('R')
+        call tresu_print(refer, legend, llab, nbref, rela,&
+                         tole, ssigne, refr=refr, valr=valr, ignore=skip,&
+                         compare=arg_cmp)
+        case ('C')
+        call tresu_print(refer, legend, llab, nbref, rela,&
+                         tole, ssigne, refc=refc, valc=valc, ignore=skip,&
+                         compare=arg_cmp)
     case default
         ASSERT(typ.eq.'I' .or. typ.eq.'R' .or. typ.eq.'C')
     end select

@@ -16,6 +16,7 @@ subroutine pronua(method, nuag1, nuag2)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
@@ -43,7 +44,7 @@ subroutine pronua(method, nuag1, nuag2)
 ! IN  NUAG2 (JXVAR)   : SD NUAGE A EVALUER
 !
 ! VARIABLES LOCALES :
-    integer :: inuai1,   inuax2
+    integer :: inuai1, inuax2
     integer :: iret, inual1, inual2, ip2, ic2, ip1, ic1
     integer :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2
     integer :: i1, i2, ii2, i
@@ -52,7 +53,7 @@ subroutine pronua(method, nuag1, nuag2)
     character(len=24) :: valk(2)
     character(len=8) :: nogd
     character(len=3) :: tysca
-    logical(kind=1) :: ldref
+    aster_logical :: ldref
     integer, pointer :: corresp(:) => null()
     real(kind=8), pointer :: dref(:) => null()
     real(kind=8), pointer :: nuax1(:) => null()
@@ -159,7 +160,7 @@ subroutine pronua(method, nuag1, nuag2)
 !
 !       CALCUL EVENTUEL DES DISTANCES DE REFERENCE :
 !       --------------------------------------------
-        if ((ic2.eq.1) .or. (.not.ldref)) call nuadrf(nua1, nua2, ic1, ic2,dref)
+        if ((ic2.eq.1) .or. (.not.ldref)) call nuadrf(nua1, nua2, ic1, ic2, dref)
 !
 !       BOUCLE SUR LES POINTS DU NUAGE NUAG2 :
 !       --------------------------------------

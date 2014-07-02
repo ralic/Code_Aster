@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
                       lctf3d, ndimg, izone, posnoe, numnoe,&
@@ -32,7 +34,7 @@ interface
         integer, intent(in) :: posnoe
         integer, intent(in) :: numnoe
         integer, intent(in) :: iliai
-        logical(kind=1), intent(in) :: lctfd
-        logical(kind=1), intent(in) :: lctf3d
+        aster_logical, intent(in) :: lctfd
+        aster_logical, intent(in) :: lctf3d
     end subroutine cfapno
 end interface

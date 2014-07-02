@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
                       hydr0)
         character(len=24) :: numedd
         character(len=24) :: compor
         character(len=24) :: sdieto
-        logical(kind=1) :: lnonl
+        aster_logical :: lnonl
         character(len=24) :: vhydr
         character(len=24) :: hydr0
     end subroutine ntetcr

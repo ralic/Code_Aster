@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rc3601(ig, iocs, seisme, npass, ima,&
                       ipt, nbm, adrm, c, k,&
@@ -22,7 +24,7 @@ interface
                       sm, factus)
         integer :: ig
         integer :: iocs
-        logical(kind=1) :: seisme
+        aster_logical :: seisme
         integer :: npass
         integer :: ima
         integer :: ipt

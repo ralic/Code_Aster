@@ -2,6 +2,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                            refi, refr, refc, epsi, crit,&
                            ific, llab, ssigne, ignore, compare)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -21,9 +22,9 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
-    logical(kind=1), intent(in) :: llab
+    aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -64,7 +65,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=4) :: type
     character(len=5) :: sufv
     character(len=19) :: cham19
-    logical(kind=1) :: skip
+    aster_logical :: skip
 !     ------------------------------------------------------------------
     if (present(ignore)) then
         skip = ignore
@@ -117,22 +118,22 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
             vali = 0
             do 100 i = 1, neq
                 vali = vali + abs( zi(jvale+i-1) )
-100          continue
+100         continue
         else if (typtes .eq. 'SOMM') then
             vali = 0
             do 102 i = 1, neq
                 vali = vali + zi(jvale+i-1)
-102          continue
+102         continue
         else if (typtes .eq. 'MAX') then
             vali = zi(jvale-1+1)
             do 104 i = 2, neq
                 vali = max( vali , zi(jvale+i-1) )
-104          continue
+104         continue
         else if (typtes .eq. 'MIN') then
             vali = zi(jvale-1+1)
             do 106 i = 2, neq
                 vali = min( vali , zi(jvale+i-1) )
-106          continue
+106         continue
         else
             write(ific,*) 'NOOK '
             call utmess('A', 'CALCULEL5_12')
@@ -145,22 +146,22 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
             valr = 0.d0
             do 200 i = 1, neq
                 valr = valr + abs( zr(jvale+i-1) )
-200          continue
+200         continue
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
             do 202 i = 1, neq
                 valr = valr + zr(jvale+i-1)
-202          continue
+202         continue
         else if (typtes .eq. 'MAX') then
             valr = zr(jvale)
             do 204 i = 2, neq
                 valr = max( valr , zr(jvale+i-1) )
-204          continue
+204         continue
         else if (typtes .eq. 'MIN') then
             valr = zr(jvale)
             do 206 i = 2, neq
                 valr = min( valr , zr(jvale+i-1) )
-206          continue
+206         continue
         else
             write(ific,*) 'NOOK '
             call utmess('A', 'CALCULEL5_12')
@@ -173,12 +174,12 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
             valc = dcmplx(0.d0,0.d0)
             do 300 i = 1, neq
                 valc = valc + abs( zc(jvale+i-1) )
-300          continue
+300         continue
         else if (typtes .eq. 'SOMM') then
             valc = dcmplx(0.d0,0.d0)
             do 302 i = 1, neq
                 valc = valc + zc(jvale+i-1)
-302          continue
+302         continue
         else
             write(ific,*) 'NOOK '
             call utmess('A', 'CALCULEL5_12')
@@ -186,12 +187,12 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
         endif
     endif
 !
-    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
-                crit, epsi, ssigne, refr, valr, &
-                refi, vali, refc, valc, &
-                ignore=skip, compare=ordgrd)
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
+                         crit, epsi, ssigne, refr, valr,&
+                         refi, vali, refc, valc, ignore=skip,&
+                         compare=ordgrd)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

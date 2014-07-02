@@ -1,8 +1,9 @@
-subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, &
-                  compor_prev, type_stop)
+subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
+                  type_stop)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -56,7 +57,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
 ! ------------------------------------------------------------------
 ! BUT: VERIFIER LA COHERENCE DU CHAMP DE VARIABLES INTERNES "-" AVEC
 !      LE COMPORTEMENT CHOISI.
@@ -114,8 +115,8 @@ implicit none
 ! !   , lig19p, lig19m
 !    character(len=19) :: compor_prev_r, compor_curr_r
 !    character(len=48) :: comp1, comp2
-!    
-!    logical(kind=1) :: modif, exip, exim
+!
+!    aster_logical :: modif, exip, exim
 !    integer, pointer :: repm(:) => null()
 !    integer, pointer :: repp(:) => null()
 !    real(kind=8), pointer :: ce2v(:) => null()
@@ -124,17 +125,17 @@ implicit none
 !    integer, pointer :: dcelv(:) => null()
 !    character(len=8), pointer :: copmk(:) => null()
 !    character(len=8), pointer :: coppk(:) => null()
-!   
-    logical(kind=1) :: l_modif_vari
-    character(len=1) :: stop_erre 
+!
+    aster_logical :: l_modif_vari
+    character(len=1) :: stop_erre
     character(len=19) :: vari_r
     character(len=19) :: compor_curr_r
     character(len=19) :: compor_prev_r
-    character(len=8)  :: mesh_1, mesh_2
+    character(len=8) :: mesh_1, mesh_2
     character(len=48) :: comp_comb_1
     character(len=48) :: comp_comb_2
-    logical(kind=1) :: no_same_pg, no_same_spg
-    logical(kind=1) :: no_same_rela, no_same_cmp
+    aster_logical :: no_same_pg, no_same_spg
+    aster_logical :: no_same_rela, no_same_cmp
     character(len=19) :: ligrel_curr, ligrel_prev
     character(len=19) :: dcel
     character(len=8), pointer :: dcelk(:) => null()
@@ -150,9 +151,9 @@ implicit none
 !        MAILLES ONT DISPARU OU SONT NOUVELLES OU ONT CHANGE DE
 !        COMPORTEMENT
     l_modif_vari = .false.
-    no_same_cmp  = .false.
-    no_same_spg  = .false.
-    no_same_pg   = .false.
+    no_same_cmp = .false.
+    no_same_spg = .false.
+    no_same_pg = .false.
     no_same_rela = .false.
 !
 ! - Error management
@@ -169,7 +170,7 @@ implicit none
     dcel = compor_curr
     call jeveuo(dcel//'.CESD', 'L', vi=cesd)
     call jeveuo(dcel//'.CESK', 'L', vk8=dcelk)
-    mesh    = dcelk(1)
+    mesh = dcelk(1)
     nb_elem = cesd(1)
 !
 ! - LIGREL
@@ -188,7 +189,7 @@ implicit none
 ! - Chesk meshes
 !
     call dismoi('NOM_MAILLA', compor_curr, 'CHAMP', repk=mesh_1)
-    call dismoi('NOM_MAILLA', vari       , 'CHAMP', repk=mesh_2)
+    call dismoi('NOM_MAILLA', vari, 'CHAMP', repk=mesh_2)
     if (mesh_1 .ne. mesh_2) then
         call utmess('F', 'COMPOR2_24')
     endif
@@ -196,23 +197,19 @@ implicit none
 ! - Prepare fields
 !
     if (present(compor_prev)) then
-        call vrcomp_prep(vari, vari_r,&
-                         compor_curr, compor_curr_r,&
-                         compor_prev, compor_prev_r)
+        call vrcomp_prep(vari, vari_r, compor_curr, compor_curr_r, compor_prev,&
+                         compor_prev_r)
     else
-        call vrcomp_prep(vari, vari_r,&
-                         compor_curr, compor_curr_r,&
-                         ' '        , compor_prev_r)
+        call vrcomp_prep(vari, vari_r, compor_curr, compor_curr_r, ' ',&
+                         compor_prev_r)
     endif
 !
 ! - Check if comportments are the same (or compatible)
 !
     if (present(compor_prev)) then
-        call vrcomp_chck_rela(mesh, nb_elem,&
-                              compor_curr_r, compor_prev_r,&
-                              ligrel_curr, ligrel_prev,&
-                              comp_comb_1, comp_comb_2,&
-                              no_same_pg, no_same_rela, l_modif_vari)
+        call vrcomp_chck_rela(mesh, nb_elem, compor_curr_r, compor_prev_r, ligrel_curr,&
+                              ligrel_prev, comp_comb_1, comp_comb_2, no_same_pg, no_same_rela,&
+                              l_modif_vari)
     endif
     if (no_same_pg) then
         iret = 1
@@ -225,11 +222,9 @@ implicit none
 !
 ! - Check if elements have the same number of internal variables and Gauss-subpoints
 !
-    call vrcomp_chck_cmp(mesh, nb_elem,&
-                         compor_curr, compor_curr_r, compor_prev_r,&
-                         vari_r, comp_comb_2,&
-                         ligrel_curr, ligrel_prev,&
-                         no_same_spg, no_same_cmp, l_modif_vari)
+    call vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_prev_r,&
+                         vari_r, comp_comb_2, ligrel_curr, ligrel_prev, no_same_spg,&
+                         no_same_cmp, l_modif_vari)
     if (no_same_spg) then
         iret = 1
         call utmess(stop_erre, 'COMPOR2_27')

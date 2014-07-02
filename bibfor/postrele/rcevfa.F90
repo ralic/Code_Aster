@@ -2,6 +2,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                   csne, cspo, cspe, kemixt, cspto,&
                   cspte, cspmo, cspme, cfao, cfae)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
@@ -17,7 +18,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
     character(len=8) :: nommat
     character(len=24) :: cnoc, csno, csne, cspo, cspe, cfao, cfae, cspto, cspte
     character(len=24) :: cspmo, cspme
-    logical(kind=1) :: kemixt
+    aster_logical :: kemixt
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +49,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
     real(kind=8) :: nbid, saltmo, saltme, saltho, salthe, valr(2)
     character(len=8) :: k8b
     integer :: icodre(1)
-    logical(kind=1) :: endur
+    aster_logical :: endur
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -178,9 +179,9 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 !
             endif
 !
-12      continue
+ 12     continue
 !
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

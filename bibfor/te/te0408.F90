@@ -1,5 +1,6 @@
 subroutine te0408(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dxtpif.h"
@@ -34,16 +35,14 @@ subroutine te0408(option, nomte)
     integer :: ier, igauh, icou, jnbspi, iret, itempf, jresu, icacoq
     real(kind=8) :: tpinf, tpmoy, tpsup, cp1, cp2, cp3, tpc, zic, zmin
     real(kind=8) :: inst, valpu(2), hic, h
-    logical(kind=1) :: tempno
-    logical :: grille
+    aster_logical :: tempno
     character(len=8) :: nompu(2), alias8
 !
     call teattr('S', 'ALIAS8', alias8, ibid)
-    grille=lteatt('GRILLE','OUI')
-    ASSERT(.not.grille)
+    ASSERT(.not.lteatt('GRILLE','OUI'))
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     call jevech('PTEMPCR', 'E', jresu)
     call jevech('PNBSP_I', 'L', jnbspi)
 !     NBCOU : NOMBRE DE COUCHES
@@ -66,12 +65,12 @@ subroutine te0408(option, nomte)
         tpinf=0.d0
         tpmoy=0.d0
         tpsup=0.d0
-        do 10,ino=1,nno
-        call dxtpif(zr(itempp+3*(ino-1)), zl(itabp(8)+3*(ino-1)))
-        tpmoy=tpmoy+zr(itempp-1+3*(ino-1)+1)/dble(nno)
-        tpinf=tpinf+zr(itempp-1+3*(ino-1)+2)/dble(nno)
-        tpsup=tpsup+zr(itempp-1+3*(ino-1)+3)/dble(nno)
-10      continue
+        do 10 ino = 1, nno
+            call dxtpif(zr(itempp+3*(ino-1)), zl(itabp(8)+3*(ino-1)))
+            tpmoy=tpmoy+zr(itempp-1+3*(ino-1)+1)/dble(nno)
+            tpinf=tpinf+zr(itempp-1+3*(ino-1)+2)/dble(nno)
+            tpsup=tpsup+zr(itempp-1+3*(ino-1)+3)/dble(nno)
+ 10     continue
 !
         cp1=tpmoy
         cp2=(tpsup-tpinf)/h
@@ -100,29 +99,29 @@ subroutine te0408(option, nomte)
     zmin=-h/2.d0
 !
 !
-    do 30,icou=1,nbcou
-    do 20,igauh=1,npgh
-    isp=(icou-1)*npgh+igauh
+    do 30 icou = 1, nbcou
+        do 20 igauh = 1, npgh
+            isp=(icou-1)*npgh+igauh
 !
-    if (igauh .eq. 1) then
-        zic=zmin+(icou-1)*hic
-    else if (igauh.eq.2) then
-        zic=zmin+hic/2.d0+(icou-1)*hic
-    else
-        zic=zmin+hic+(icou-1)*hic
-    endif
+            if (igauh .eq. 1) then
+                zic=zmin+(icou-1)*hic
+            else if (igauh.eq.2) then
+                zic=zmin+hic/2.d0+(icou-1)*hic
+            else
+                zic=zmin+hic+(icou-1)*hic
+            endif
 !
-    if (tempno) then
-        tpc=cp3*zic*zic+cp2*zic+cp1
-    else
-        valpu(2)=zic
-        valpu(1)=inst
-        call fointe('FM', zk8(itempf), 2, nompu, valpu,&
-                    tpc, ier)
-    endif
+            if (tempno) then
+                tpc=cp3*zic*zic+cp2*zic+cp1
+            else
+                valpu(2)=zic
+                valpu(1)=inst
+                call fointe('FM', zk8(itempf), 2, nompu, valpu,&
+                            tpc, ier)
+            endif
 !
-    zr(jresu-1+isp)=tpc
-20  continue
-    30 end do
+            zr(jresu-1+isp)=tpc
+ 20     continue
+ 30 end do
 !
 end subroutine

@@ -43,6 +43,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! aslint: disable=W1504
     implicit none
 ! aslint: disable=W1306
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
@@ -83,7 +84,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     real(kind=8) :: phi0, pvp0
     real(kind=8) :: ums, phids, rinstp, angmas(3)
     character(len=16) :: option, meca, ther, hydr, thmc, phenom
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -94,24 +95,24 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     real(kind=8) :: r, rho0, csigm, alp11, alp12, rho12, alpha0
     real(kind=8) :: eps, deps(6), mdal(6), dalal, alphfi, cbiot, unsks
     parameter  ( eps = 1.d-21 )
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
     real(kind=8) :: rbid1, rbid2, rbid3, rbid4, rbid5, rbid6, rbid7
-    real(kind=8) :: rbid8, rbid10, rbid14(3),rbid9
+    real(kind=8) :: rbid8, rbid10, rbid14(3), rbid9
     real(kind=8) :: rbid15(ndim, ndim), rbid16, rbid17, rbid18, rbid19
     real(kind=8) :: rbid21, rbid22, rbid23, rbid24, rbid25, rbid26
     real(kind=8) :: rbid27, rbid28, rbid29, rbid30, rbid31, rbid32(ndim, ndim)
     real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid38, rbid20
-    real(kind=8) :: rbid39, rbid40, rbid41, rbid42, rbid43,rbid37(6)
+    real(kind=8) :: rbid39, rbid40, rbid41, rbid42, rbid43, rbid37(6)
     real(kind=8) :: rbid51, rbid52, rbid53, rbid54
     real(kind=8) :: rbid45, rbid46, rbid47, rbid48, rbid49, rbid56
     real(kind=8) :: rbid57(ndim, ndim), rbid58, rbid55
     real(kind=8) :: m11m, m12m, coeps, pinf, dp2, cp21, cp22, rho21
     real(kind=8) :: rho22, dpad, signe, rac2
 !
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !
@@ -384,6 +385,6 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
                               &i,pvp)
     endif
 ! =====================================================================
-30  continue
+ 30 continue
 ! =====================================================================
 end subroutine

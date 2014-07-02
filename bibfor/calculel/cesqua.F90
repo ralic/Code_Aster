@@ -1,5 +1,6 @@
 subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -22,7 +23,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
-    logical(kind=1) :: lcumul(nbchs)
+    aster_logical :: lcumul(nbchs)
 ! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,15 +67,15 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jce1k, jce1d,  jce1l, jce1c, nbma, n1, k
-    integer :: jce3d,  jce3l
-    integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
+    integer :: jce1k, jce1d, jce1l, jce1c, nbma, n1, k
+    integer :: jce3d, jce3l
+    integer :: jcmpgd, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
     character(len=3) :: tsca
     character(len=19) :: ces1, ces3
-    logical(kind=1) :: cumul
+    aster_logical :: cumul
     integer, pointer :: corr_cmp(:) => null()
     character(len=8), pointer :: licmp(:) => null()
     integer, pointer :: nbcmp(:) => null()
@@ -241,7 +242,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     4- ALLOCATION DE CES3 :
 !     --------------------------
     call cescre(base, ces3, typces, ma, nomgd,&
-                ncmp3, licmp, vnbpt, vnbsp,nbcmp)
+                ncmp3, licmp, vnbpt, vnbsp, nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
     call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
     call jeveuo(ces3//'.CESV', 'E', vr=ce3v)

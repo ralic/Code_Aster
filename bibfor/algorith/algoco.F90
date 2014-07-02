@@ -19,7 +19,8 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfacat.h"
@@ -95,8 +96,8 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 !
 !
     integer :: ifm, niv
-    logical(kind=1) :: lechec
-    integer ::  ieq, iter
+    aster_logical :: lechec
+    integer :: ieq, iter
     integer :: llliai, llliac
     integer :: kkliai, kkliac
     integer :: llf, llf1, llf2
@@ -187,13 +188,13 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
-40  continue
+ 40 continue
 !
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
     do 50 ieq = 1, neq
         vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
-50  end do
+ 50 end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
 !
@@ -299,7 +300,7 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 !
 ! --- ON PASSE A L'ITERATION DE CONTRAINTES ACTIVES SUIVANTE
 !
-150  continue
+150 continue
 !
     iter = iter + 1
 !
@@ -316,7 +317,7 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 !                            ON A CONVERGE
 ! ======================================================================
 !
-160  continue
+160 continue
 !
 ! --- CALCUL DES FORCES DE CONTACT (AT.MU)
 !
@@ -335,7 +336,7 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
         write(ifm,1002) iter
     endif
 !
-999  continue
+999 continue
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !

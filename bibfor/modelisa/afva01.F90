@@ -1,5 +1,6 @@
 subroutine afva01(typsd, nomsd, nomsym, lautr)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/jedema.h"
@@ -10,7 +11,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: typsd, nomsd, nomsym
-    logical(kind=1) :: lautr
+    aster_logical :: lautr
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +54,9 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
         call cmpcha(ch19, nomcmp, corr1, corr2, ncmp,&
                     ncmpmx)
         call jeveuo(nomcmp, 'L', j1)
-        do 1, k=1,ncmp
-        if (zk8(j1-1+k) .ne. 'TEMP' .and. zk8(j1-1+k) .ne. 'LAGR') goto 7
- 1      continue
+        do 1 k = 1, ncmp
+            if (zk8(j1-1+k) .ne. 'TEMP' .and. zk8(j1-1+k) .ne. 'LAGR') goto 7
+  1     continue
         goto 8
 !
 !
@@ -78,13 +79,13 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
             call cmpcha(ch19, nomcmp, corr1, corr2, ncmp,&
                         ncmpmx)
             call jeveuo(nomcmp, 'L', j1)
-            do 2, k=1,ncmp
-            if (zk8(j1-1+k) .ne. 'TEMP' .and. zk8(j1-1+k) .ne. 'LAGR') goto 7
- 2          continue
+            do 2 k = 1, ncmp
+                if (zk8(j1-1+k) .ne. 'TEMP' .and. zk8(j1-1+k) .ne. 'LAGR') goto 7
+  2         continue
             call jedetr(nomcmp)
             call jedetr(corr1)
             call jedetr(corr2)
-20      continue
+ 20     continue
         call jedetr('&&AFVA01.NUME_ORDRE')
         lautr=.false.
         goto 8
@@ -95,12 +96,12 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
         ASSERT(.false.)
     endif
 !
- 7  continue
+  7 continue
     lautr=.true.
     goto 8
 !
 !
- 8  continue
+  8 continue
 !
     call jedetr(nomcmp)
     call jedetr(corr1)

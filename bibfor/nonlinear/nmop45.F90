@@ -19,6 +19,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
@@ -85,8 +86,8 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     parameter (nbpari=8,nbparr=16,nbpark=3,nbpara=27)
     parameter (mxddl=1)
     integer :: indf, imet, i, ieq, iret, ier1, ibid, ierd, ifreq
-    integer ::   lamor, lmasse, lresur, lworkd, laux, lraide
-    integer :: lworkl,   lworkv, lprod,  lddl, eddl, eddl2
+    integer :: lamor, lmasse, lresur, lworkd, laux, lraide
+    integer :: lworkl, lworkv, lprod, lddl, eddl, eddl2
     integer :: lmatra, lonwl, ityp, iordre, nbvec2, icoef, jexx, jest
     integer :: npivot, nbvect, priram(8), maxitr, neqact, mfreq, nparr, nbcine
     integer :: nbrss, mxresf, nblagr, nconv, npiv2(2)
@@ -98,14 +99,14 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     character(len=8) :: knega, method, chaine
     character(len=16) :: typcon, typres, typco2, k16bid
     character(len=19) :: matopa, numedd, solveu
-    integer :: ldsor,  neq, idet(2)
-    integer :: nbddl2,  redem
+    integer :: ldsor, neq, idet(2)
+    integer :: nbddl2, redem
     character(len=24) :: nopara(nbpara), metres
-    logical(kind=1) :: flage, lbid
+    aster_logical :: flage, lbid
     real(kind=8), pointer :: resid(:) => null()
     integer, pointer :: resu_i(:) => null()
     character(len=24), pointer :: resu_k(:) => null()
-    logical(kind=1), pointer :: select(:) => null()
+    aster_logical, pointer :: select(:) => null()
     real(kind=8), pointer :: vect_propre(:) => null()
     real(kind=8), pointer :: vect_stabil(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -206,7 +207,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !   pour gerer l'appel depuis modint :    
     call dismoi('SOLVEUR', matrig, 'MATR_ASSE', repk=solveu)
     if (solveu(1:8) .ne. '&&NUME91') then
-         solveu='&&OP0070.SOLVEUR'
+        solveu='&&OP0070.SOLVEUR'
     endif
 ! --- VERIF SOLVEUR LINEAIRE
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
@@ -435,7 +436,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                 omecor)
     if (mod45 .eq. 'VIBR') then
         call vpordi(1, 0, nconv, zr(lresur+mxresf), vect_propre,&
-                    neq,resu_i)
+                    neq, resu_i)
     endif
     do imet = 1, nconv
         resu_i(mxresf+imet) = 0
@@ -535,4 +536,3 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !     FIN DE NMOP45
 !
 end subroutine
-

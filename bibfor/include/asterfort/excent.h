@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
                       reffin, reffou, ceffin, ceffou)
@@ -22,7 +24,7 @@ interface
         real(kind=8) :: excen
         integer :: nbpoin
         integer :: nbcmp
-        logical(kind=1) :: lreel
+        aster_logical :: lreel
         real(kind=8) :: reffin(*)
         real(kind=8) :: reffou(*)
         complex(kind=8) :: ceffin(*)

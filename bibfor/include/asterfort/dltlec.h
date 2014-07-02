@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dltlec(result, modele, numedd, materi, mate,&
                       carael, carele, imat, masse, rigid,&
@@ -33,7 +35,7 @@ interface
         character(len=8) :: masse
         character(len=8) :: rigid
         character(len=8) :: amort
-        logical(kind=1) :: lamort
+        aster_logical :: lamort
         integer :: nchar
         integer :: nveca
         character(len=19) :: lischa

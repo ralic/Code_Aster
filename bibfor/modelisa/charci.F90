@@ -1,5 +1,6 @@
 subroutine charci(chcine, mfact, mo, type)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
@@ -76,13 +77,13 @@ subroutine charci(chcine, mfact, mo, type)
     parameter (mxcmp=100)
 !
     character(len=2) :: typ
-    character(len=8) :: k8b, ma, nomgd, nogdsi, gdcns,nono
+    character(len=8) :: k8b, ma, nomgd, nogdsi, gdcns, nono
     character(len=8) :: evoim, licmp(20), chcity(mxcmp)
     character(len=16) :: mfac, k16b, motcle(5), phenom, typco, chcino(mxcmp)
     character(len=19) :: chci, cns, cns2, depla, noxfem
-    character(len=24) :: cino, cnuddl, cvlddl, nprol,valk(2)
+    character(len=24) :: cino, cnuddl, cvlddl, nprol, valk(2)
     character(len=80) :: titre
-    logical(kind=1) :: lxfem
+    aster_logical :: lxfem
     character(len=8), pointer :: afck(:) => null()
     data nprol/'                   .PROL'/
 ! --- DEBUT -----------------------------------------------------------
@@ -239,23 +240,23 @@ subroutine charci(chcine, mfact, mo, type)
 ! -------   verification que la composante existe dans la grandeur
             icmp = indik8( zk8(jcmp), k16b(1:8), 1, nbcmp )
             ASSERT(icmp .ne. 0)
-
+!
 ! -------   Pour XFEM : DX=U0 se traduit par une relation lineaire entre plusieurs ddls
 !           => AFFE_CHAR_CINE est interdit :
             if (lxfem) then
-                if ((k16b.eq.'DX').or.(k16b.eq.'DY').or.(k16b.eq.'DZ')) then
+                if ((k16b.eq.'DX') .or. (k16b.eq.'DY') .or. (k16b.eq.'DZ')) then
                     do ino = 1, nbno
                         nuno = zi(idino-1+ino)
                         if (zl(jnoxfl-1+2*nuno)) then
-                           call jenuno(jexnum(ma//'.NOMNOE',nuno),nono)
-                           valk(1)=k16b
-                           valk(2)=nono
-                           call utmess('F','ALGELINE2_22',nk=2,valk=valk)
+                            call jenuno(jexnum(ma//'.NOMNOE', nuno), nono)
+                            valk(1)=k16b
+                            valk(2)=nono
+                            call utmess('F', 'ALGELINE2_22', nk=2, valk=valk)
                         endif
                     end do
                 endif
             endif
-
+!
             if (type .eq. 'R') then
                 call getvr8(mfac, k16b, iocc=ioc, scal=zr(idvddl+nbddl), nbret=ila)
             endif

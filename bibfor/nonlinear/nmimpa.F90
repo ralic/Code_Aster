@@ -18,7 +18,8 @@ subroutine nmimpa(numins, sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/obgeti.h"
 #include "asterfort/obsetb.h"
@@ -40,7 +41,7 @@ subroutine nmimpa(numins, sdimpr)
 ! ----------------------------------------------------------------------
 !
     integer :: pasaff
-    logical(kind=1) :: lprint
+    aster_logical :: lprint
 !
 ! ----------------------------------------------------------------------
 !

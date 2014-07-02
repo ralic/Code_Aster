@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujpxd(k, mater, sig, vin, prox,&
                       proxc)
@@ -22,7 +24,7 @@ interface
         real(kind=8) :: mater(22, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)
-        logical(kind=1) :: prox
-        logical(kind=1) :: proxc
+        aster_logical :: prox
+        aster_logical :: proxc
     end subroutine hujpxd
 end interface

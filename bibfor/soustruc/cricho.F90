@@ -34,6 +34,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -68,10 +69,10 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     integer :: i, j, jj, k, ia, ic, jm, iddlx, iddly, iddlz, nunoe
     real(kind=8) :: cc, cs, ct, scf, rscf, usr, normx
 !
-    logical(kind=1) :: matuv
+    aster_logical :: matuv
     integer :: nm, m, n, ierr, nblig, icolc
     integer :: nbch1, nbch2, neqch1, neqch2
-    integer ::  jrfimp
+    integer :: jrfimp
     real(kind=8) :: mmax, mmin, scond, eps
     real(kind=8), pointer :: a(:) => null()
     real(kind=8), pointer :: efloc(:) => null()
@@ -302,8 +303,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 do k = 1, neq
                     do ia = 1, icolc
                         if (normxx(ia) .gt. eps) then
-                            a(k+neq*(ia-1)) = zr(&
-                                                    jrfimp-1+k+neq* (ia-1))/sqrt(normxx(ia))
+                            a(k+neq*(ia-1)) = zr( jrfimp-1+k+neq* (ia-1))/sqrt(normxx(ia))
                         else
                             a(k+neq*(ia-1)) = 0.d0
                         endif

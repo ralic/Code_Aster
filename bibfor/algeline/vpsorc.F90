@@ -100,6 +100,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/mcmult.h"
@@ -114,7 +115,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     real(kind=8) :: tolsor, alpha, rwork(*)
     complex(kind=8) :: vect(nbeq, *), resid(*), workd(*), workl(*), dsor(*), vaux(*), workv(*)
     complex(kind=8) :: sigma
-    logical(kind=1) :: selec(nbvect), flage
+    aster_logical :: selec(nbvect), flage
     character(len=19) :: solveu
 !
 !
@@ -126,7 +127,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(6)
-    logical(kind=1) :: rvec
+    aster_logical :: rvec
     character(len=1) :: bmat, kbid
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
@@ -203,7 +204,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         vali (1) = info
         call utmess('F', 'ALGELINE4_82', si=vali(1))
     endif
-
+!
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
 !
@@ -263,7 +264,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         end do
 ! RETOUR VERS DNAUPD
         goto 20
-
+!
 ! GESTION DES MODES CONVERGES
     else if (ido .eq. 99) then
         if (nconv .lt. nfreq) then

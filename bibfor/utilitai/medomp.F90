@@ -2,6 +2,7 @@ subroutine medomp(result, modele, mate, carele, nh)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -65,7 +66,7 @@ subroutine medomp(result, modele, mate, carele, nh)
     character(len=16) :: repons
     character(len=19) :: knum, k19bid
     character(len=8) :: crit
-    logical(kind=1) :: lrdm, lmater
+    aster_logical :: lrdm, lmater
     integer :: lfour
 !
 ! ----------------------------------------------------------------------

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
                       sdstat, defico, resoco, valinc, solalg, &
@@ -30,6 +32,6 @@ interface
         character(len=19), intent(in) :: valinc(*)
         character(len=19), intent(in) :: solalg(*)
         real(kind=8), intent(in) :: instan
-        logical(kind=1), intent(out) :: mmcvca
+        aster_logical, intent(out) :: mmcvca
     end subroutine nmctcc
 end interface

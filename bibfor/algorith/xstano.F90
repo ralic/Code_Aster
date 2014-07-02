@@ -2,6 +2,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                   cnsln, cnslj, rayon, cnxinv, stano)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -70,8 +71,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     integer :: in, ar(12, 3), ia, i, j, k, nbnoe, nbnott(3)
     integer :: ino, ima, nuno, nrien, nbar, na
     integer :: nb, nunoa, nunob, enr, enr1, enr2, jdlino, jma, jstano
-    integer ::  jconx2,    itypma, ndim
-    integer ::   nfiss, ifiss
+    integer :: jconx2, itypma, ndim
+    integer :: nfiss, ifiss
     integer :: nbma, jlmaf, nmasup, jmasup, isup, iret
     real(kind=8) :: minlsn, minlst, maxlsn, maxlst, lsna, lsnb, lsta, lstb
     real(kind=8) :: minlsj(10, 2), maxlsj(10), lsja(10, 2), lsjb(10, 2)
@@ -80,7 +81,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     real(kind=8) :: ab(3), ac(3)
     character(len=8) :: typma
     character(len=19) :: mai, lmafis
-    logical(kind=1) :: ljonc
+    aster_logical :: ljonc
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: ljsv(:) => null()
     real(kind=8), pointer :: lnsv(:) => null()

@@ -1,6 +1,7 @@
 subroutine diecci(option, nomte, ndim, nbt, nno,&
                   nc, ulm, dul, pgl, iret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dinon3.h"
 #include "asterfort/dinona.h"
@@ -73,7 +74,7 @@ subroutine diecci(option, nomte, ndim, nbt, nno,&
     real(kind=8) :: valpar(nbpart), coeflo(6, nbparc), vardnl(nbvint)
     integer :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
-    logical(kind=1) :: okdire(6)
+    aster_logical :: okdire(6)
 !   nbparc paramètres par composante
     data nompar /'LIMU_DX','PUIS_DX','KCIN_DX','LIMY_DX',&
             'LIMU_DY','PUIS_DY','KCIN_DY','LIMY_DY',&

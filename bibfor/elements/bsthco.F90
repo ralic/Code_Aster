@@ -1,5 +1,6 @@
 subroutine bsthco(nomte, bsigth, indith)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/btdfn.h"
 #include "asterfort/btdmsn.h"
@@ -21,7 +22,7 @@ subroutine bsthco(nomte, bsigth, indith)
 #include "asterfort/verifm.h"
 #include "asterfort/vexpan.h"
     real(kind=8) :: bsigth(51)
-    logical(kind=1) :: indith
+    aster_logical :: indith
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -90,11 +91,11 @@ subroutine bsthco(nomte, bsigth, indith)
 !
     do 10 i = 1, 42
         bsigt1(i) = zero
-10  continue
+ 10 continue
 !
     do 20 i = 1, 51
         bsigth(i) = zero
-20  continue
+ 20 continue
 !
 ! --- RECUPERATION DE L'OBJET .DESI :
 !     -----------------------------
@@ -135,7 +136,7 @@ subroutine bsthco(nomte, bsigth, indith)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_12')
         endif
-
+!
     endif
 !
 !
@@ -247,7 +248,7 @@ subroutine bsthco(nomte, bsigth, indith)
                 call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                             epais, vectpt, hsj1m, hsj1s, btdm,&
                             btds)
-60          continue
+ 60         continue
 !
 ! ---      CALCUL POUR L'INTEGRATION NORMALE DE LA PARTIE FLEXION
 ! ---      BTDFN DE LA MATRICE B :
@@ -328,9 +329,9 @@ subroutine bsthco(nomte, bsigth, indith)
                 call btsig(5*nb1 + 2, 5, wgt, btild, sigmth,&
                            bsigt1)
 !
-70          continue
-50      continue
-40  continue
+ 70         continue
+ 50     continue
+ 40 continue
 !
 ! --- EXPANSION DE BSIGT1 DANS BSIGTH :
 !     -------------------------------

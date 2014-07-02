@@ -1,5 +1,7 @@
-subroutine nifnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
-                  vu, vg, vp, typmod, geomi, sig, ddl, vect)
+subroutine nifnpd(ndim, nno1, nno2, nno3, npg,&
+                  iw, vff1, vff2, vff3, idff1,&
+                  vu, vg, vp, typmod, geomi,&
+                  sig, ddl, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +22,7 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
@@ -57,7 +60,7 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: nddl, g
     integer :: sa, ra, na, ia, kk
     real(kind=8) :: deplm(3*27), gonfm(27), gm, r
@@ -100,8 +103,11 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
 !
         divum = epsm(1) + epsm(2) + epsm(3)
 !

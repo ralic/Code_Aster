@@ -1,6 +1,7 @@
 subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                   corfre, ndir, valspe, asyspe)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/fointe.h"
@@ -18,7 +19,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
     integer :: nbocc, nbmode, ndir(*)
     real(kind=8) :: parmod(nbmode, *), amort(*), valspe(3, *), asyspe(*)
     character(len=*) :: motfac
-    logical(kind=1) :: corfre
+    aster_logical :: corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,7 +80,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
     call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
     if (nimpr .eq. 0) niveau='TOUT     '
 !
-    call getvr8(' ','FREQ_COUP',iocc=1,scal=fcoup,nbret=n1)
+    call getvr8(' ', 'FREQ_COUP', iocc=1, scal=fcoup, nbret=n1)
     if (n1 .eq. 0) then
         fcoup = uns2pi * sqrt(parmod(nbmode,2))
     endif
@@ -102,7 +103,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
             xnorm = zero
             do 12 id = 1, 3
                 xnorm = xnorm + dirspe(id) * dirspe(id)
-12          continue
+ 12         continue
             if (xnorm .lt. epsi) then
                 ier = ier + 1
                 call utmess('E', 'SEISME_4')
@@ -162,9 +163,9 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                 endif
                 nature(id) = inat
             endif
-14      continue
+ 14     continue
 !
-10  end do
+ 10 end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
@@ -206,8 +207,8 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                     endif
                 endif
             endif
-22      continue
-20  end do
+ 22     continue
+ 20 end do
 !
 !     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
@@ -221,7 +222,8 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
             valpu(2) = fcoup
             omega = deuxpi * fcoup
             if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
-            call fointe('F ', nomspe(id), 2, nompu, valpu, resu, ier)
+            call fointe('F ', nomspe(id), 2, nompu, valpu,&
+                        resu, ier)
             coef = dirspe(id)*echspe(id)
             if (nature(id) .eq. 1) then
                 asyspe(id) = resu * coef
@@ -233,7 +235,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
             if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') write(ifm, 1410)dir(id),&
                                                                       asyspe(id)
         endif
-30  end do
+ 30 end do
 !
     1000 format(/,1x,'--- VALEURS DU SPECTRE ---')
     1010 format(1x,&

@@ -17,6 +17,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscre.h"
@@ -62,13 +63,13 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     character(len=8) :: ma1, ma2, nomgd, nomcmp, nomno2
     character(len=16) :: corres
     character(len=19) :: cns1, cns2
-    integer ::  jcns1l, jcns1v
+    integer :: jcns1l, jcns1v
     integer :: jcns2c, jcns2l, jcns2v, jcns2k
-    integer :: nbno1, ncmp,     gd, nbno2
+    integer :: nbno1, ncmp, gd, nbno2
     integer :: idecal, ino2, icmp, ico1, ico2, ino1, nuno1, kalarm
     real(kind=8) :: v1, v2, coef1, coetot, vrmoy
     complex(kind=8) :: v1c, v2c, vcmoy
-    logical(kind=1) :: lexact
+    aster_logical :: lexact
     integer, pointer :: pjef_nu(:) => null()
     character(len=8), pointer :: cns1k(:) => null()
     integer, pointer :: pjef_nb(:) => null()

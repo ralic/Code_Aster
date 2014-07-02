@@ -1,9 +1,10 @@
 subroutine pj3da1(ino2, geom2, i, geom1, tetr4,&
                   cobar2, ok)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: cobar2(4), geom1(*), geom2(*), epsi
     integer :: i, tetr4(*), ino2
-    logical(kind=1) :: ok
+    aster_logical :: ok
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,38 +52,38 @@ subroutine pj3da1(ino2, geom2, i, geom1, tetr4,&
     lino(3)=2
     lino(4)=3
 !
-    do 10, p=1,4
+    do 10 p = 1, 4
 !       -- ON PERMUTE LES 4 NOEUDS DU TETRAEDRE :
-    do 11, k=1,4
-    lino(k)=perm(lino(k))
-11  continue
+        do 11 k = 1, 4
+            lino(k)=perm(lino(k))
+ 11     continue
 !
-    do 1, k=1,3
-    p1(k)= geom1(3*(tetr4(1+6*(i-1)+lino(1))-1)+k)
-    p2(k)= geom1(3*(tetr4(1+6*(i-1)+lino(2))-1)+k)
-    p3(k)= geom1(3*(tetr4(1+6*(i-1)+lino(3))-1)+k)
-    p4(k)= geom1(3*(tetr4(1+6*(i-1)+lino(4))-1)+k)
- 1  continue
+        do 1 k = 1, 3
+            p1(k)= geom1(3*(tetr4(1+6*(i-1)+lino(1))-1)+k)
+            p2(k)= geom1(3*(tetr4(1+6*(i-1)+lino(2))-1)+k)
+            p3(k)= geom1(3*(tetr4(1+6*(i-1)+lino(3))-1)+k)
+            p4(k)= geom1(3*(tetr4(1+6*(i-1)+lino(4))-1)+k)
+  1     continue
 !
-    do 2, k=1,3
-    v12(k)= p2(k)-p1(k)
-    v13(k)= p3(k)-p1(k)
-    v14(k)= p4(k)-p1(k)
-    v1p(k)= pp(k)-p1(k)
- 2  continue
+        do 2 k = 1, 3
+            v12(k)= p2(k)-p1(k)
+            v13(k)= p3(k)-p1(k)
+            v14(k)= p4(k)-p1(k)
+            v1p(k)= pp(k)-p1(k)
+  2     continue
 !
-    n(1)= v12(2)*v13(3)-v12(3)*v13(2)
-    n(2)= v12(3)*v13(1)-v12(1)*v13(3)
-    n(3)= v12(1)*v13(2)-v12(2)*v13(1)
+        n(1)= v12(2)*v13(3)-v12(3)*v13(2)
+        n(2)= v12(3)*v13(1)-v12(1)*v13(3)
+        n(3)= v12(1)*v13(2)-v12(2)*v13(1)
 !
-    vol =n(1)*v14(1)+n(2)*v14(2)+n(3)*v14(3)
-    if (vol .eq. 0.d0) then
-        ok=.false.
-        goto 9999
-    endif
-    volp=n(1)*v1p(1)+n(2)*v1p(2)+n(3)*v1p(3)
-    cobar2(lino(4))=volp/vol
-    10 end do
+        vol =n(1)*v14(1)+n(2)*v14(2)+n(3)*v14(3)
+        if (vol .eq. 0.d0) then
+            ok=.false.
+            goto 9999
+        endif
+        volp=n(1)*v1p(1)+n(2)*v1p(2)+n(3)*v1p(3)
+        cobar2(lino(4))=volp/vol
+ 10 end do
 !
 !
     ok =.true.
@@ -90,9 +91,9 @@ subroutine pj3da1(ino2, geom2, i, geom1, tetr4,&
 !     -- TOLERANCE EPSI POUR EVITER DES DIFFERENCES ENTRE
 !        LES VERSIONS DEBUG ET NODEBUG
     epsi=1.d-10
-    do 30,k=1,4
-    if ((cobar2(k).lt.-epsi) .or. (cobar2(k).gt.1.d0+epsi)) ok= .false.
-    30 end do
+    do 30 k = 1, 4
+        if ((cobar2(k).lt.-epsi) .or. (cobar2(k).gt.1.d0+epsi)) ok= .false.
+ 30 end do
 !
-9999  continue
+9999 continue
 end subroutine

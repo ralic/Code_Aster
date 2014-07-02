@@ -18,7 +18,8 @@ subroutine oblsai(sdlist, istru, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -29,7 +30,7 @@ subroutine oblsai(sdlist, istru, lacti)
 #include "asterfort/obseti.h"
     character(len=24) :: sdlist
     integer :: istru
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,7 +74,7 @@ subroutine oblsai(sdlist, istru, lacti)
     call obgeti(sdlist, 'NBRE_STRUCTS', nbstru)
     do 10 i = 1, nbstru
         if (zi(jlisac-1+i) .eq. 1) nbacti = nbacti +1
-10  end do
+ 10 end do
     ASSERT(nbacti.le.nbstru)
     call obseti(sdlist, 'NBRE_ACTI', nbacti)
 !

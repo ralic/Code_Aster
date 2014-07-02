@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
                       numenm, lmait, lescl, lmfixe, lefixe,&
@@ -26,10 +28,10 @@ interface
         integer :: posnoe
         character(len=4) :: typenm
         integer :: numenm
-        logical(kind=1) :: lmait
-        logical(kind=1) :: lescl
-        logical(kind=1) :: lmfixe
-        logical(kind=1) :: lefixe
+        aster_logical :: lmait
+        aster_logical :: lescl
+        aster_logical :: lmfixe
+        aster_logical :: lefixe
         real(kind=8) :: tau1m(3)
         real(kind=8) :: tau2m(3)
         real(kind=8) :: tau1e(3)

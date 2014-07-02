@@ -17,12 +17,13 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: clain, schin, claout, schout
     integer :: ipos
-    logical(kind=1) :: dupcol
+    aster_logical :: dupcol
 ! ----------------------------------------------------------------------
 !     RECOPIE LES OBJETS DE LA CLASSE CLAIN POSSEDANT LA SOUS-CHAINE
 !     SCHIN EN POSITION IPOS DANS LA CLASSE CLAOUT AVEC LA SOUS-CHAINE
@@ -97,8 +98,8 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
                 nomout = nomout(1:ipos-1)//schou2(1:l2)//nomout(ipos+ l1:32)
                 call jedupo(nomin, claout, nomout, dupcol)
             endif
-150      continue
-100  end do
+150     continue
+100 end do
 ! FIN ------------------------------------------------------------------
 !
 !

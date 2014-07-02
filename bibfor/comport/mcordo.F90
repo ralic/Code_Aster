@@ -2,8 +2,9 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
                   apex, codret)
 !
     implicit none
+#include "asterf_types.h"
 ! Declaration of real type variables
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -21,10 +22,10 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    real(kind=8) :: dpstrs(3,3)
+    real(kind=8) :: dpstrs(3, 3)
     real(kind=8) :: pstrs(3)
     real(kind=8) :: pstra(3)
-    real(kind=8) :: dirprj(3,3)
+    real(kind=8) :: dirprj(3, 3)
     real(kind=8) :: edge
     real(kind=8) :: apex
     integer :: codret
@@ -33,14 +34,14 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
     integer :: i, j, mdim, ndim
 !
 ! Declaration of integer type variables
-    logical(kind=1) :: lorder, epflag
+    aster_logical :: lorder, epflag
 !
     parameter&
      &(   mdim=3     ,ndim=6     )
 !
 ! Declaration of vector and matrix type variables
     integer :: iorder(mdim)
-    real(kind=8) :: pst1, pst2, pst3, refe, tbidon(ndim,mdim), vbidon(mdim), r0, r1, r2
+    real(kind=8) :: pst1, pst2, pst3, refe, tbidon(ndim, mdim), vbidon(mdim), r0, r1, r2
     real(kind=8) :: r3, r4, small, tol, dmax1, pstmin, pstmax
 !
 !

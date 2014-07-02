@@ -16,6 +16,7 @@ subroutine te0217(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
@@ -44,14 +45,14 @@ subroutine te0217(option, nomte)
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, nno, ndim, kp, npg1, i, l, ivectt, igrai, imate
 !
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
 !
 !
 !-----------------------------------------------------------------------
     integer :: ier, itemps, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -96,7 +97,7 @@ subroutine te0217(option, nomte)
             x = x + zr(igeom-1+3* (i-1)+1)*zr(ivf+l+i-1)
             y = y + zr(igeom-1+3* (i-1)+2)*zr(ivf+l+i-1)
             z = z + zr(igeom-1+3* (i-1)+3)*zr(ivf+l+i-1)
-20      continue
+ 20     continue
 !
         poids = poids*valres(1)
 !
@@ -114,8 +115,8 @@ subroutine te0217(option, nomte)
 !
         do 30 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids* (+grx*dfdx(i)+ gry*dfdy(i)+grz*dfdz(i))
-30      continue
+ 30     continue
 !
-40  end do
+ 40 end do
 !
 end subroutine

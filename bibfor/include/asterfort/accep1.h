@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         character(len=8) :: modmec
         character(len=24) :: ligrmo
         integer :: nbm
         real(kind=8) :: dir(3, 3)
-        logical(kind=1) :: yang
+        aster_logical :: yang
     end subroutine accep1
 end interface

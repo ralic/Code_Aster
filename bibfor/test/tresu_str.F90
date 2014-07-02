@@ -1,10 +1,11 @@
 subroutine tresu_str(tbtxt, refk, valk, ific, llab)
     implicit none
+#include "asterf_types.h"
     character(len=16), intent(in) :: tbtxt(2)
     character(len=80), intent(in) :: refk
     character(len=80), intent(in) :: valk
     integer, intent(in) :: ific
-    logical(kind=1), intent(in) :: llab
+    aster_logical, intent(in) :: llab
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +47,7 @@ subroutine tresu_str(tbtxt, refk, valk, ific, llab)
     endif
     write(ific,101) testok, tbtxt(1), tbtxt(2), refk, valk
 !
-100 format(5x,2(1x,a16),2(1x,a24))
-101 format(a4,1x,2(1x,a16),2(1x,a24))
+    100 format(5x,2(1x,a16),2(1x,a24))
+    101 format(a4,1x,2(1x,a16),2(1x,a24))
 !
 end subroutine

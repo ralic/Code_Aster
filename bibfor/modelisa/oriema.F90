@@ -2,6 +2,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
                   lnm3d, ndim, coor, reorie, norien,&
                   ifm, niv)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
@@ -9,7 +10,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
 #include "blas/ddot.h"
     integer :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
     real(kind=8) :: coor(*)
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
     character(len=8) :: nomail, tpmail, typ3d
     character(len=24) :: valk(2)
 !.======================================================================
@@ -58,14 +59,14 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
 !
     do 10 i = 1, nbnmai
         lisnoe(i) = lnmail(i)
-10  end do
+ 10 end do
     do 12 i = 1, 3
         n(i) = zero
         n1n2(i) = zero
         n1n3(i) = zero
         xgm(i) = zero
         xg3d(i) = zero
-12  end do
+ 12 end do
 !
 ! --- NUMERO DES 2 (3 EN 3D) PREMIERS NOEUDS DE LA MAILLE :
 !     ---------------------------------------------------
@@ -76,7 +77,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
     do 20 ic = 1, 3
         coon1(ic) = coor(3*(n1-1)+ic)
         coon2(ic) = coor(3*(n2-1)+ic)
-20  end do
+ 20 end do
     call vdiff(3, coon2, coon1, n1n2)
 !
     if (ndim .eq. 2) then
@@ -85,7 +86,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
     else if (ndim.eq.3) then
         do 22 ic = 1, 3
             coon3(ic) = coor(3*(n3-1)+ic)
-22      continue
+ 22     continue
         call vdiff(3, coon3, coon1, n1n3)
         call provec(n1n2, n1n3, n)
     endif
@@ -111,7 +112,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
         xgm(1) = xgm(1) + coor(3*(ino-1)+1)
         xgm(2) = xgm(2) + coor(3*(ino-1)+2)
         xgm(3) = xgm(3) + coor(3*(ino-1)+3)
-30  end do
+ 30 end do
     xgm(1) = xgm(1) / nbnsm
     xgm(2) = xgm(2) / nbnsm
     xgm(3) = xgm(3) / nbnsm
@@ -137,7 +138,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
         xg3d(1) = xg3d(1) + coor(3*(ino-1)+1)
         xg3d(2) = xg3d(2) + coor(3*(ino-1)+2)
         xg3d(3) = xg3d(3) + coor(3*(ino-1)+3)
-40  end do
+ 40 end do
     xg3d(1) = xg3d(1) / nbns3d
     xg3d(2) = xg3d(2) / nbns3d
     xg3d(3) = xg3d(3) / nbns3d
@@ -162,13 +163,13 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
         do 50 i = nbnsm, 1, -1
             ino = ino+1
             lnmail(i) = lisnoe(ino)
-50      continue
+ 50     continue
         if (nbnsm .ne. nbnoe) then
             ino = 0
             do 52 i = nbnoe-1, nbnsm+1, -1
                 ino = ino+1
                 lnmail(i) = lisnoe(ino+nbnsm)
-52          continue
+ 52         continue
             lnmail(nbnoe) = lisnoe(nbnoe)
         endif
         if (niv .eq. 2) then
@@ -177,6 +178,6 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
         endif
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

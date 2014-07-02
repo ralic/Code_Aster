@@ -46,6 +46,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !  OUT: FACT   : PSEUDO FACTEUR DE PARTICIPATION
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/bijmoc.h"
@@ -72,7 +73,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
     character(len=8) :: typflu, base, noma
     character(len=19) :: melflu
 !
-    logical(kind=1) :: vneg, vpos, calcul(2)
+    aster_logical :: vneg, vpos, calcul(2)
     real(kind=8) :: mcf0, ksi, carac(2)
     character(len=8) :: caelem, mater1, mater2, k8b
     character(len=24) :: fsvi, fsvr, fsvk, fsgm

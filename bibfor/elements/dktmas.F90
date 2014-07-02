@@ -1,5 +1,6 @@
 subroutine dktmas(xyzl, option, pgl, mas, ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/diaexp.h"
@@ -56,11 +57,12 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: zero, un, six, huit, douze, wgtf, wgtmf
     real(kind=8) :: qsi, eta, carat3(21), coef1, coef2
     character(len=3) :: stopz
-    logical(kind=1) :: exce, iner
+    aster_logical :: exce, iner
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     un = 1.0d0
@@ -215,7 +217,8 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
         wgt = carat3(8)*roe
         wgtf= carat3(8)*rof
         call utpslg(3, 6, pgl, masloc, masglo)
-        call dialum(3, 6, 18, wgt, masglo, mas)
+        call dialum(3, 6, 18, wgt, masglo,&
+                    mas)
 !
     else if (option.eq.'MASS_MECA_EXPLI') then
         call dxtloc(flex, memb, mefl, ctor, masloc)
@@ -257,12 +260,14 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(3, 6, pgl, zr(jvitg), vite)
-            call dxtloe(flex, memb, mefl, ctor, .false._1, vite, ener)
+            call dxtloe(flex, memb, mefl, ctor, .false._1,&
+                        vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(3, 6, pgl, zr(jdepg), depl)
-                call dxtloe(flex, memb, mefl, ctor, .false._1, depl, ener)
+                call dxtloe(flex, memb, mefl, ctor, .false._1,&
+                            depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             endif

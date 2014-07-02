@@ -19,6 +19,7 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
     integer :: nno, kk, kkd, n, i, m, j, j1, kl, nmax, kpg
     character(len=16) :: option
@@ -26,7 +27,7 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
     real(kind=8) :: vectu(*)
     real(kind=8) :: sigma(6), sign(6), matuu(*), vff(*)
     real(kind=8) :: tmp1, tmp2, sigg(6), sig(6), r
-    logical(kind=1) :: matsym, axi, resi, rigi
+    aster_logical :: matsym, axi, resi, rigi
 !
 !.......................................................................
 !     BUT:  CALCUL DE LA MATRICE TANGENTE EN CONFIGURATION LAGRANGIENNE
@@ -72,15 +73,15 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
 !
             do 150 i = 1, 2
 !
-                do 151,kl=1,4
+                do 151 kl = 1, 4
 !
-                sig(kl)=0.d0
-                sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+                    sig(kl)=0.d0
+                    sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                    sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                    sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                    sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
 !
-151              continue
+151             continue
 !
                 if (matsym) then
                     nmax = n
@@ -143,13 +144,13 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
 !
                         endif
 !
-130                  continue
+130                 continue
 !
-140              continue
+140             continue
 !
-150          continue
+150         continue
 !
-160      continue
+160     continue
 !
     endif
 !
@@ -160,9 +161,9 @@ subroutine nmgrt2(nno, poids, kpg, vff, def,&
                 do 210 kl = 1, 4
                     vectu(2*(n-1)+i)=vectu(2*(n-1)+i)+ def(kl,n,i)*&
                     sigma(kl)*poids
-210              continue
-220          continue
-230      continue
+210             continue
+220         continue
+230     continue
 !
     endif
 !

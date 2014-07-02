@@ -18,6 +18,7 @@ subroutine te0541(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
@@ -47,14 +48,14 @@ subroutine te0541(option, nomte)
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu, itab(1)
     integer :: iret, k, itemps
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
     character(len=8) :: enr, elref
     character(len=16) :: compor(4)
 ! ----------------------------------------------------------------------
 !
 !     CARACTERISTIQUES DU TYPE D'ELEMENT : GEOMETRIE ET INTEGRATION
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elref)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
@@ -94,8 +95,7 @@ subroutine te0541(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-        .and..not.iselli(elref)) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -103,17 +103,17 @@ subroutine te0541(option, nomte)
     call xsigth(ndim, zi(jlonch), zr(itemps), nbsig, zr(icontt))
 !
 !     CALCUL DU VECTEUR \INT BT*SIGMA_THERMIQUE
-    call xbsig(ndim, nno, nfh, nfe,&
-               ddlc, ddlm, igeom, compor, jpintt,&
-               zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt),&
-               nbsig, ibid, zr(jlsn), zr(jlst), ivectu,&
-               jpmilt, nfiss, jfisno)
+    call xbsig(ndim, nno, nfh, nfe, ddlc,&
+               ddlm, igeom, compor, jpintt, zi(jcnset),&
+               zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt), nbsig,&
+               ibid, zr(jlsn), zr(jlst), ivectu, jpmilt,&
+               nfiss, jfisno)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nno, nnos, zi(jstno), .false._1, lbid,&
-                option, nomte, ddlm,&
-                nfiss, jfisno, vect=zr(ivectu))
+                option, nomte, ddlm, nfiss, jfisno,&
+                vect=zr(ivectu))
 !
 !
 end subroutine

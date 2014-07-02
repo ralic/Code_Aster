@@ -27,6 +27,7 @@ subroutine op0042()
 ! CORPS DU PROGRAMME
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -60,7 +61,7 @@ subroutine op0042()
     character(len=16) :: nomcmd, tysd, pheno, concep, k16bid, compex
     character(len=19) :: knum, kcha, solveu
     character(len=24) :: mate
-    logical(kind=1) :: newcal
+    aster_logical :: newcal
 !     ------------------------------------------------------------------
 !
     call jemarq()

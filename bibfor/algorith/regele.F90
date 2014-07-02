@@ -23,12 +23,13 @@ subroutine regele(option, typmod, npi, ndim, dimuel,&
 ! ======================================================================
 ! ======================================================================
 ! aslint: disable=W1306,W1504
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/cabr2g.h"
 #include "asterfort/dilopt.h"
 #include "asterfort/dilsga.h"
 #include "asterfort/equreg.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm
     integer :: imate, dimdef, ndim, nno, nnom, nnos, dimuel, dimcon
     integer :: regula(6)
@@ -50,18 +51,18 @@ subroutine regele(option, typmod, npi, ndim, dimuel,&
     if (option(1:9) .eq. 'RIGI_MECA') then
         do 30 i = 1, dimuel*dimuel
             matuu(i)=0.0d0
-30      continue
+ 30     continue
     else if (option(1:9).eq.'RAPH_MECA') then
         do 40 i = 1, dimuel
             vectu(i)=0.0d0
-40      continue
+ 40     continue
     else if (option(1:9).eq.'FULL_MECA') then
         do 50 i = 1, dimuel*dimuel
             matuu(i)=0.0d0
-50      continue
+ 50     continue
         do 60 i = 1, dimuel
             vectu(i)=0.0d0
-60      continue
+ 60     continue
     endif
 ! ======================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION ------------------------------
@@ -82,8 +83,8 @@ subroutine regele(option, typmod, npi, ndim, dimuel,&
             defgep(i)=0.0d0
             do 20 n = 1, dimuel
                 defgep(i)=defgep(i)+b(i,n)*deplp(n)
-20          continue
-10      continue
+ 20         continue
+ 10     continue
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES VIRTUELLES ET GENERALISEES ----------------
 ! --- ET DE LEURS DERIVEES ---------------------------------------------
@@ -108,6 +109,6 @@ subroutine regele(option, typmod, npi, ndim, dimuel,&
                         r, vectu)
         endif
 ! ======================================================================
-100  end do
+100 end do
 ! ======================================================================
 end subroutine

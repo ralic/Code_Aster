@@ -1,5 +1,6 @@
 subroutine calirc(chargz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -63,17 +64,16 @@ subroutine calirc(chargz)
 !-----------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
-    integer :: ibid,  nnomx, idmax,    igeom
-    integer ::    iagno2, nbma1, nbno2, nbno2t
-    integer :: nno1, i,  lno
-    integer :: jconb, jconu, jcocf,  idecal
+    integer :: ibid, nnomx, idmax, igeom
+    integer :: iagno2, nbma1, nbno2, nbno2t
+    integer :: nno1, i, lno
+    integer :: jconb, jconu, jcocf, idecal
     integer :: jconb1, jconu1, jcocf1, jcom11, ideca1
     integer :: jconb2, jconu2, jcocf2, jcom12, ideca2
-    integer :: nbtyp, nddl2, nbma2,  jlistk, jdim, ndim1
-    integer ::  jnorm, idim, ij, ima1, jlisv1
+    integer :: nbtyp, nddl2, nbma2, jlistk, jdim, ndim1
+    integer :: jnorm, idim, ij, ima1, jlisv1
     integer :: kno2, kkno2, jcoor, iarg
-    logical(kind=1) :: lrota, dnor
-    logical :: lcond
+    aster_logical :: lrota, dnor
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     complex(kind=8) :: betac, cbid
     character(len=2) :: typlag
@@ -87,11 +87,11 @@ subroutine calirc(chargz)
     character(len=24) :: geom2
     character(len=24) :: valk(2)
     character(len=1) :: kb
-    logical(kind=1) :: l_tran
+    aster_logical :: l_tran
     real(kind=8) :: tran(3)
-    logical(kind=1) :: l_cent
+    aster_logical :: l_cent
     real(kind=8) :: cent(3), dmax
-    logical(kind=1) :: l_angl_naut, l_dmax
+    aster_logical :: l_angl_naut, l_dmax
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
     integer, pointer :: limanu1(:) => null()
@@ -117,7 +117,7 @@ subroutine calirc(chargz)
     call getfac(motfac, nocc)
     call getvr8(motfac, 'DISTANCE_MAX', iocc=1, scal=dmax, isdefault=iarg)
 !
-    if (iarg .eq. 0.d0 ) then
+    if (iarg .eq. 0.d0) then
         l_dmax = .true.
     endif
 !
@@ -336,10 +336,9 @@ subroutine calirc(chargz)
                     l_angl_naut, angl_naut, geom2, lrota, mrota)
 !
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
-        lcond = .not.lrota
-        if (typrac .eq. 'COQUE_MASSIF') ASSERT(lcond)
-        if (typrac .eq. 'MASSIF_COQUE') ASSERT(lcond)
-        if (typrac .eq. 'COQUE') ASSERT(lcond)
+        if (typrac .eq. 'COQUE_MASSIF') ASSERT(.not.lrota)
+        if (typrac .eq. 'MASSIF_COQUE') ASSERT(.not.lrota)
+        if (typrac .eq. 'COQUE') ASSERT(.not.lrota)
 !
 !
 !
@@ -468,10 +467,9 @@ subroutine calirc(chargz)
                                 do ino1 = 1, nno1+1
                                     nomddl(ino1)=cmp
                                 end do
-                                call afrela(coef, [cbid], nomddl, nomnoe,&
-                                            dim, direct, nno1+1, beta, betac,&
-                                            kbeta, typcoe, fonree, typlag, 1.d-6,&
-                                            lisrel)
+                                call afrela(coef, [cbid], nomddl, nomnoe, dim,&
+                                            direct, nno1+1, beta, betac, kbeta,&
+                                            typcoe, fonree, typlag, 1.d-6, lisrel)
                                 call imprel(motfac, nno1+1, coef, nomddl, nomnoe,&
                                             beta)
                             end do
@@ -493,10 +491,9 @@ subroutine calirc(chargz)
                                 do ino1 = 1, nno1+1
                                     nomddl(ino1)=cmp
                                 end do
-                                call afrela(coef, [cbid], nomddl, nomnoe,&
-                                            dim, direct, nno1+1, beta, betac,&
-                                            kbeta, typcoe, fonree, typlag, 1.d-6,&
-                                            lisrel)
+                                call afrela(coef, [cbid], nomddl, nomnoe, dim,&
+                                            direct, nno1+1, beta, betac, kbeta,&
+                                            typcoe, fonree, typlag, 1.d-6, lisrel)
                                 call imprel(motfac, nno1+1, coef, nomddl, nomnoe,&
                                             beta)
                             end do

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mecagl(option, result, modele, depla, thetai,&
                       mate, compor, lischa, symech, chfond, &
@@ -35,20 +37,20 @@ interface
         integer :: nnoff
         integer :: iord
         integer :: ndeg
-        logical(kind=1) :: lincr
-        logical(kind=1) :: thlagr
-        logical(kind=1) :: glagr
-        logical(kind=1) :: thlag2
-        logical(kind=1) :: milieu
+        aster_logical :: lincr
+        aster_logical :: thlagr
+        aster_logical :: glagr
+        aster_logical :: thlag2
+        aster_logical :: milieu
         integer :: ndimte
-        logical(kind=1) :: pair
-        logical(kind=1) :: extim
+        aster_logical :: pair
+        aster_logical :: extim
         real(kind=8) :: time
         integer :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
-        logical(kind=1) :: lmelas
+        aster_logical :: lmelas
         character(len=16) :: nomcas
         character(len=8) :: kcalc
         character(len=24) :: fonoeu

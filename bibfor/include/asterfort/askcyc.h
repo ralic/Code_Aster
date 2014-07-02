@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine askcyc(craid, ndim, soumat, beta, ni,&
                       nj, na, axok, liax, nbliax,&
@@ -27,7 +29,7 @@ interface
         integer :: ni
         integer :: nj
         integer :: na
-        logical(kind=1) :: axok
+        aster_logical :: axok
         integer :: liax(nbliax)
         integer :: libid(*)
     end subroutine askcyc

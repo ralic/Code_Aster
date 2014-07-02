@@ -20,6 +20,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -61,7 +62,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
 !
 !
-    logical(kind=1) :: lpilo
+    aster_logical :: lpilo
     integer :: ifm, niv
     integer :: rescvg
     complex(kind=8) :: c16bid

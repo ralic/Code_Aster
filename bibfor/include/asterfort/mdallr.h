@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
                       vecpr8, vecpc8, zcmplx)
@@ -25,6 +27,6 @@ interface
         integer :: nbsauv
         real(kind=8) :: vecpr8(nbmode, *)
         complex(kind=8) :: vecpc8(nbmode, *)
-        logical(kind=1) :: zcmplx
+        aster_logical :: zcmplx
     end subroutine mdallr
 end interface

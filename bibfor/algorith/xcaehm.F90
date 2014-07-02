@@ -60,11 +60,12 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-#   include "asterfort/modthm.h"
-#   include "asterfort/typthm.h"
-#   include "asterfort/xgrdhm.h"
-#   include "asterfort/xitghm.h"
-    logical(kind=1) :: axi, perman, vf
+#include "asterf_types.h"
+# include "asterfort/modthm.h"
+# include "asterfort/typthm.h"
+# include "asterfort/xgrdhm.h"
+# include "asterfort/xitghm.h"
+    aster_logical :: axi, perman, vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: ndim, nno, nnos, nnom
@@ -85,8 +86,8 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 ! ======================================================================
 ! --- TYPE DE MODELISATION? AXI/DPLAN/3D ET HM TRANSI/PERM -------------
 ! ======================================================================
-    call typthm(axi, perman, vf, typvf,&
-                typmod, ndim)
+    call typthm(axi, perman, vf, typvf, typmod,&
+                ndim)
 ! ======================================================================
 ! --- SELECTION DU TYPE D'INTEGRATION ----------------------------------
 ! ======================================================================

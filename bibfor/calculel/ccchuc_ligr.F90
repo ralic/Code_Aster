@@ -1,8 +1,9 @@
-subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old, &
+subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old,&
                        ligrel_new)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exlim1.h"
@@ -53,8 +54,8 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jelem, jlist
-    integer :: iret,  ima
-    logical(kind=1) :: same
+    integer :: iret, ima
+    aster_logical :: same
     character(len=24) :: noojb
     character(len=8) :: model
 !
@@ -65,7 +66,7 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
     noojb = '12345678.LIGR000000.NBNO'
 !
 ! - Do we need a new <LIGREL> ?
-!        
+!
     call jeexin(list_elem_stor, iret)
     if (iret .eq. 0) then
         call wkvect(list_elem_stor, 'V V I', nb_elem_old+1, jlist)
@@ -81,12 +82,12 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
                 goto 51
             endif
         enddo
-51      continue
+ 51     continue
         zi(jlist-1+1) = nb_elem_new
         do ima = 1, nb_elem_new
             zi(jlist-1+ima+1) = zi(jelem-1+ima)
         enddo 
-    endif       
+    endif 
 !
 ! - Create new <LIGREL> ?
 !

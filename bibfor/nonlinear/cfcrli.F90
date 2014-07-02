@@ -19,6 +19,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -70,7 +71,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
     integer :: ino, iddl, posno
     character(len=8) :: nomnoe
     integer :: neq, nesmax, nddl
-    logical(kind=1) :: lctfd, llagrf
+    aster_logical :: lctfd, llagrf
     integer :: zcoco
 !
 ! ----------------------------------------------------------------------

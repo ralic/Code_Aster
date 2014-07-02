@@ -1,6 +1,7 @@
 subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                   llistt, ntypm)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -68,7 +69,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
 ! OUT  NTYPM  I   : NBRE DE TYPE_MAIL DIFFERENT
 !
 ! ROUTINES APPELEES:
-    logical(kind=1) :: fintyp
+    aster_logical :: fintyp
     integer :: nbnott(3)
     integer :: vali
     character(len=8) :: nomma1, nomma2, nomma3
@@ -181,15 +182,15 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                     j2 = j
                     do 3 ino = 1, nbntot
                         zi(idcopl-1+ino) = zi(idwcpl-1+ino)
- 3                  continue
+  3                 continue
                 endif
             endif
- 2      continue
+  2     continue
         if (idtyp .eq. nbma+1) then
             vali = ityp
             call utmess('F', 'MODELISA8_89', si=vali)
         endif
-21      continue
+ 21     continue
         ima = ima+1
         jdeb = idtyp
         jfin = iftyp
@@ -225,9 +226,9 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
         do 4 k = 1, nbntot
             zi(idlt+2*k+1) = zi(idno1-1+k)
             zi(idlt+2*k+2) = zi(idno2-1+zi(idcopl-1+k))
- 4      continue
+  4     continue
         idlt = idlt+2+2*nbntot
- 1  end do
+  1 end do
     call jelibe(jexnum(lt, ntypm))
     call jedetr(biject)
     call jedetr(coor1)

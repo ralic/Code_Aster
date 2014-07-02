@@ -19,6 +19,7 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -61,7 +62,7 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
     character(len=24) :: ligrch, chgeom, chtime
     integer :: ibid, iret, nchar, ilve, jinf, jchar, icha
     integer :: numdi
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
 !
 ! ----------------------------------------------------------------------
 !
@@ -155,9 +156,9 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
             call reajre(vecele, lchout, 'V')
 !
         endif
-30  end do
+ 30 end do
 !
-99  continue
+ 99 continue
     vecelz = vecele//'.RELR'
 !
     call jedema()

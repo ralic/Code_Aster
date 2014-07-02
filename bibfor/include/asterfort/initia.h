@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine initia(neq, lgrot, indro, chamro, chamin)
         integer :: neq
-        logical(kind=1) :: lgrot
+        aster_logical :: lgrot
         integer :: indro(*)
         real(kind=8) :: chamro(*)
         real(kind=8) :: chamin(*)

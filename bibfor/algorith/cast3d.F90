@@ -24,8 +24,9 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/caatdb.h"
-    logical(kind=1) :: calbn
+    aster_logical :: calbn
     integer :: kpg, i, j, k, nno, proj, ic, iadpg
     real(kind=8) :: dsidep(6, 6), bn(6, 3, 8)
     real(kind=8) :: gamma(4, 8), dh(4, 24)
@@ -49,21 +50,21 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
         xf(i) = 0.d0
         yf(i) = 0.d0
         zf(i) = 0.d0
- 1  end do
+  1 end do
 !
     do 2 ic = 1, 4
         do 3 i = 1, nno
             xf(i) = xf(i) + dh(ic,iadpg+1) * gamma(ic,i)
             yf(i) = yf(i) + dh(ic,iadpg+2) * gamma(ic,i)
             zf(i) = zf(i) + dh(ic,iadpg+3) * gamma(ic,i)
- 3      continue
- 2  end do
+  3     continue
+  2 end do
 !
     do 4 i = 1, 6
         do 4 j = 1, 3
             do 4 k = 1, nno
                 bn(i,j,k) =0.d0
- 4          continue
+  4         continue
 !
 !         HEXAS8 SANS PROJECTION
 !         ----------------------
@@ -79,7 +80,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
             bn(6,2,i) = zf(i)
             bn(5,3,i) = xf(i)
             bn(6,3,i) = yf(i)
- 5      continue
+  5     continue
 !
     else if (proj.eq.1.or.proj.eq.2) then
         do 100 i = 1, 8
@@ -89,7 +90,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
             z13(i) = 0.d0
             y23(i) = 0.d0
             z23(i) = 0.d0
-100      end do
+100     end do
 !
 !   CALCUL DE X12 Y12 Y13 Z13 Y23 Z23
 !
@@ -97,22 +98,22 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
             do 7 i = 1, nno
                 x12(i) = x12(i) + dh(ic,iadpg+1) * gamma(ic,i)
                 y12(i) = y12(i) + dh(ic,iadpg+2) * gamma(ic,i)
- 7          continue
- 6      end do
+  7         continue
+  6     end do
 !
         do 8 ic = 1, 3, 2
             do 9 i = 1, nno
                 x13(i) = x13(i) + dh(ic,iadpg+1) * gamma(ic,i)
                 z13(i) = z13(i) + dh(ic,iadpg+3) * gamma(ic,i)
- 9          continue
- 8      end do
+  9         continue
+  8     end do
 !
         do 10 ic = 2, 3
             do 11 i = 1, nno
                 y23(i) = y23(i) + dh(ic,iadpg+2) * gamma(ic,i)
                 z23(i) = z23(i) + dh(ic,iadpg+3) * gamma(ic,i)
-11          continue
-10      end do
+ 11         continue
+ 10     end do
 !
 !    ADS
 !
@@ -135,7 +136,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
                 bn(5,3,i) = x13(i)
                 bn(6,2,i) = z23(i)
                 bn(6,3,i) = y23(i)
-12          continue
+ 12         continue
 !
 !   ASQBI
 !
@@ -144,25 +145,25 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
                 x14(i)= 0.d0
                 y24(i)= 0.d0
                 z34(i)= 0.d0
-200          end do
+200         end do
 !
             do 13 ic = 1, 4, 3
                 do 14 i = 1, nno
                     x14(i) = x14(i) + dh(ic,iadpg+1) * gamma(ic,i)
-14              continue
-13          continue
+ 14             continue
+ 13         continue
 !
             do 15 ic = 2, 4, 2
                 do 16 i = 1, nno
                     y24(i) = y24(i) + dh(ic,iadpg+2) * gamma(ic,i)
-16              continue
-15          continue
+ 16             continue
+ 15         continue
 !
             do 17 ic = 3, 4
                 do 18 i = 1, nno
                     z34(i) = z34(i) + dh(ic,iadpg+3) * gamma(ic,i)
-18              continue
-17          end do
+ 18             continue
+ 17         end do
 !
             do 19 i = 1, nno
                 x2(i) = dh(2,iadpg+1) * gamma(2,i)
@@ -171,7 +172,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
                 y3(i) = dh(3,iadpg+2) * gamma(3,i)
                 z1(i) = dh(1,iadpg+3) * gamma(1,i)
                 z2(i) = dh(2,iadpg+3) * gamma(2,i)
-19          continue
+ 19         continue
 !
             do 30 i = 1, nno
                 bn(1,1,i) = xf(i)
@@ -192,7 +193,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
                 bn(4,3,i) = 0.0d0
                 bn(5,3,i) = x13(i)
                 bn(6,3,i) = y23(i)
-30          continue
+ 30         continue
         endif
     endif
     if (.not.calbn) then

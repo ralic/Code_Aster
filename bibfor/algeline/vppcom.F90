@@ -21,7 +21,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    logical(kind=1) :: lcomod
+    aster_logical :: lcomod
     integer :: icom1, icom2, nbpari, nbparr, nbpark, nconv, neq, mxresf
     integer :: resui(*)
     real(kind=8) :: vectr(*), resur(*)
@@ -63,7 +63,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
     integer :: nconvl, nconvg, nconvm
     integer :: ibid, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
     integer :: niv
-    real(kind=8) ::  rbid
+    real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=24) :: klcom, k24buf, k24bus, k24b
 !      LOGICAL      LCPU
@@ -145,13 +145,13 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                 idecal=0
                 do 114 j = 1, i-1
                     idecal=idecal+zi(jlcom+j-1)
-114              continue
+114             continue
                 if (idecal .lt. 0) ASSERT(.false.)
                 i8=neq*zi(jlcom+i-1)
                 if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
                 call asmpi_comm_vect('BCAST', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
                 call dcopy(i8, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
-115          continue
+115         continue
             call jedetr(k24bus)
             call jedetr(k24buf)
 !
@@ -192,7 +192,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- MEMOIRE ET LES LIMITES DES ENTIERS COURTS MPI.
         do 116 i = 1, nconvg
             call asmpi_comm_vect('BCAST', 'R', nbval=neq, bcrank=0, vr=vectr(1+(i-1)*neq))
-116      continue
+116     continue
 !       --- ON COMMUNIQUE LES PETITS OBJETS SUIVANTS
         call asmpi_comm_vect('BCAST', 'R', nbval=nbparr*mxresf, bcrank=0, vr=resur)
         call asmpi_comm_vect('BCAST', 'I', nbval=nbpari*mxresf, bcrank=0, vi=resui)
@@ -218,14 +218,14 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         if (typres(1:9) .ne. 'DYNAMIQUE') then
             do 121 i = 1, nconvg
                 resui(i)=i
-121          continue
+121         continue
         endif
         do 125 i = 1, nbpark
             j=1+(i-1)*mxresf
             k24b=resuk(j)
             if (k24b .ne. resuk(j+1)) ASSERT(.false.)
             call vecink(nconvg, k24b, resuk(j))
-125      continue
+125     continue
 !       ----------------------------------------------------------------
 !       --- STEP 6: MENAGE.
 !       ----------------------------------------------------------------

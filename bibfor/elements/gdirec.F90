@@ -62,6 +62,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 !                .FALSE. : ELEMENT LINEAIRE
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/gdire3.h"
 #include "asterfort/jedema.h"
@@ -89,7 +90,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
     real(kind=8) :: coord(3, 4), a1, a2, a3, b1, b2, b3, c1, c2, c3
     real(kind=8) :: s1, s2, s3, dir1, dir2, dir3, norme
 !
-    logical(kind=1) :: sommet, milieu
+    aster_logical :: sommet, milieu
 !
 !
 ! OBJETS DEFINISSANT LA CONNECTIVITE  ET LE TYPE DES MAILLES
@@ -143,9 +144,9 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                     compta = compta + 1
                     zi(inumno+compta-1) = i
                 endif
-100          continue
-150      continue
-200  end do
+100         continue
+150     continue
+200 end do
 !
     comptc = 0
     do 351 i = 1, compta-1
@@ -158,9 +159,9 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                         comptc = comptc + 1
                     endif
                 endif
-451          continue
+451         continue
         endif
-351  end do
+351 end do
 !
 !  CALCUL DE LA DIRECTION DE THETA POUR LES NOEUDS DE GAMMO
 !
@@ -205,7 +206,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                 if (noeug .eq. nomnoe(i)) then
                     k1 = k
                 endif
-600          continue
+600         continue
             k2 = k1+1
             k3 = k1+2
             if (k2 .ge. (nn+1)) then
@@ -225,7 +226,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                     if (nomno2 .eq. nomnoe(il)) then
                         ino2 = ino2 + 1
                     endif
-550              continue
+550             continue
                 if (ino2 .eq. 0) then
                     permu = noeud2
                     noeud2 = noeud3
@@ -267,7 +268,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                     if (nomno2 .eq. nomnoe(ir)) then
                         ino2 = ino2 + 1
                     endif
-650              continue
+650             continue
                 if (ino2 .eq. 0) then
                     permu = noeud2
                     noeud2 = noeud4
@@ -310,7 +311,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
             zr(in2+(i-1)*3+3-1) = s3
             sommet = .true.
         endif
-500  end do
+500 end do
 !
 !  CAS DU FOND DE FISSURE FERME, ON MOYENNE LES VECTEURS A CHAQUE
 !  EXTREMITE

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine defgen(testl1, testl2, nno, r, x3,&
                       sina, cosa, cour, vf, dfds,&
                       depl, eps, epsx3)
-        logical(kind=1) :: testl1
-        logical(kind=1) :: testl2
+        aster_logical :: testl1
+        aster_logical :: testl2
         integer :: nno
         real(kind=8) :: r
         real(kind=8) :: x3

@@ -38,6 +38,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !
 !     IN
 !
+#include "asterf_types.h"
 #include "asterc/utflsh.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mficom.h"
@@ -106,7 +107,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
     character(len=255) :: kfic
     character(len=200) :: descfi
 !
-    logical(kind=1) :: existm
+    aster_logical :: existm
 !
 !     ------------------------------------------------------------------
     call jemarq()

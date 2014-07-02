@@ -5,6 +5,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                   ifiss, rr, mmat)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
@@ -60,7 +61,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
     real(kind=8) :: au(3, 3), coefi, coefj, dside2(3, 3), ffc(8), pdotal(3, 3)
     real(kind=8) :: ffi, ffj, r, temp(3, 3), unity(3, 3), ptr(3, 3)
     real(kind=8) :: alocal(3, 3)
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 !
 ! ----------------------------------------------------------------------
@@ -79,14 +80,14 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 !
     do 3 i = 1, ndim
         unity(i,i) = 1.d0
- 3  end do
+  3 end do
 !
     do 1 i = 1, ndim
         do 2 j = 1, ndim
             dside2(i,j) = dsidep(i,j)
             alocal(i,j) = -unity(i,j) + r*dside2(i,j)
- 2      continue
- 1  end do
+  2     continue
+  1 end do
 !
 ! MATRICE [P]T[ALOCAL]
 !
@@ -140,9 +141,9 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                         mmat(jn+ndim*jfh+l,pli-1+k)=mmat(jn+ndim*jfh+&
                         l,pli-1+k) - coefj * ffi * ffp(j) * pdotal(l,&
                         k) * jac
-22                  continue
+ 22                 continue
 !
-21              continue
+ 21             continue
                 do 23 l = 1, singu*ndim
                     mmat(pli-1+k,jn+ndim*(1+nfh)+l) = mmat(&
                                                       pli-1+k,&
@@ -154,11 +155,11 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                     mmat(jn+ndim*(1+nfh)+l,pli-1+k)= mmat(jn+ndim*(1+&
                     nfh)+l,pli-1+k) - coefj * ffi * ffp(j) * rr *&
                     pdotal(l,k) * jac
-23              continue
+ 23             continue
 !
-20          continue
-11      continue
-10  continue
+ 20         continue
+ 11     continue
+ 10 continue
 !
 ! -- MATRICE VENANT S AJOUTER A LA RAIDEUR
 !
@@ -189,16 +190,16 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                             mmat(in+ndim*ifh+k,jn+ndim*jfh+l) =&
                             mmat(in+ndim*ifh+k,jn+ndim*jfh+l) -&
                             coefi*coefj*r*au(k,l)*ffp(i)*ffp(j)*jac
-143                      continue
+143                     continue
 !
                         do 144 l = 1, singu*ndim
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) =&
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) -&
                             4.d0*ffp(i)*ffp(j)*rr*r*au(k,l)*jac
-144                      continue
-142                  continue
-149              continue
-148          continue
+144                     continue
+142                 continue
+149             continue
+148         continue
 !
             do 145 k = 1, singu*ndim
                 do 146 l = 1, nfh*ndim
@@ -208,17 +209,17 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                                                         &k,&
                                                         l&
                                                         )*jac
-146              continue
+146             continue
 !
                 do 147 l = 1, singu*ndim
                     mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) =&
                     mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) -&
                     4.d0*ffp(i)*ffp(j)*rr*rr*r*au(k,l) *jac
-147              continue
-145          continue
+147             continue
+145         continue
 !
-141      continue
-140  continue
+141     continue
+140 continue
 !
 ! -- MATRICE D INTERFACE : EXPRESSION DIRECTE
 !
@@ -235,8 +236,8 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                 do 41 l = 1, ndim
 !
                     mmat(pli-1+k,plj-1+l) = mmat(pli-1+k,plj-1+l) - ffj * dside2(k,l)*ffi * jac
-41              continue
-40          continue
-31      continue
-30  continue
+ 41             continue
+ 40         continue
+ 31     continue
+ 30 continue
 end subroutine

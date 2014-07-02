@@ -1,6 +1,7 @@
 subroutine ulopen(unit, fichie, name, acces, autor)
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterfort/codent.h"
 #include "asterfort/ulposi.h"
 #include "asterfort/utmess.h"
@@ -54,7 +55,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
     character(len=4) :: k4b
     character(len=1) :: k1acce, k1aut
     integer :: i, ierr, ier1, ier2, ifile
-    logical(kind=1) :: v11
+    aster_logical :: v11
     character(len=80) :: valk(3)
 !     CONSERVER LA COHERENCE AVEC IBIMPR
     integer :: mximpr
@@ -79,8 +80,8 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     name16 = nompr(i)
                     goto 59
                 endif
-50          continue
-59          continue
+ 50         continue
+ 59         continue
         endif
 !
         write(k4b,'(I3)') unit
@@ -129,14 +130,14 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     call utmess('F', 'UTILITAI5_17', nk=3, valk=valk)
                 endif
             endif
-10      continue
+ 10     continue
 !
 !     --- VERIFICATION DE L'OUVERTURE DU FICHIER ---
 !
         if (name16 .ne. ' ') then
             do 11 i = 1, nbfile
                 if (ddname(i) .eq. name16) ddname(i) = ' '
-11          continue
+ 11         continue
         endif
         if (k1acce .eq. 'O') then
             inquire ( file=namell, exist=v11, iostat=ier1)
@@ -171,13 +172,13 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                 ifile=i
                 goto 16
             endif
-15      continue
+ 15     continue
         nbfile = nbfile + 1
         if (nbfile .gt. mxf) then
             call utmess('F', 'UTILITAI5_21', si=mxf)
         endif
         ifile=nbfile
-16      continue
+ 16     continue
         namefi(ifile) = namell
         ddname(ifile) = name16
         unitfi(ifile) = unit
@@ -220,8 +221,8 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     call utmess('F', 'UTILITAI5_23', sk=k4b)
                 endif
             endif
-20      continue
+ 20     continue
     endif
 !
-9999  continue
+9999 continue
 end subroutine

@@ -39,6 +39,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -59,7 +60,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: casint
+    aster_logical :: casint
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
     character(len=8) :: nomu
     character(len=19) :: spectr, base
@@ -69,7 +70,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     real(kind=8) :: r8b, module
     real(kind=8) :: coefac(8), coefae(8), coefdc(6), coefde(6)
     complex(kind=8) :: c16b
-    logical(kind=1) :: ltable
+    aster_logical :: ltable
     character(len=8) :: k8b, caelem, modele, table, noma, nomno0
     character(len=16) :: config, nopart(2)
     character(len=19) :: typflu, nomfon
@@ -247,9 +248,9 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                     idec = 2*nbpf*(iex-1)+2*(il-1)
                     zr(iinte+idec) = resure
                     zr(iinte+idec+1) = resuim
-22              continue
-21          continue
-20      continue
+ 22             continue
+ 21         continue
+ 20     continue
 !
     else if (config(1:7).eq.'ASC_CEN') then
 !
@@ -271,8 +272,8 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
-31          continue
-30      continue
+ 31         continue
+ 30     continue
 !
     else if (config(1:7).eq.'ASC_EXC') then
 !
@@ -294,8 +295,8 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
-41          continue
-40      continue
+ 41         continue
+ 40     continue
 !
     else if (config(1:7).eq.'DES_CEN') then
 !
@@ -315,8 +316,8 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
-51          continue
-50      continue
+ 51         continue
+ 50     continue
 !
     else if (config(1:7).eq.'DES_EXC') then
 !
@@ -336,8 +337,8 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
-61          continue
-60      continue
+ 61         continue
+ 60     continue
 !
     endif
 !
@@ -371,7 +372,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + scal12*scal22 * zr(iinte+idec)
                         endif
-81                  continue
+ 81                 continue
 !
                     if (nbexcp .gt. 1) then
                         do 82 iex2 = 2, nbexcp
@@ -395,11 +396,11 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                                                            & scal12*scal21 ) * zr(iinte+idec+ 1&
                                                            )
                                 endif
-83                          continue
-82                      continue
+ 83                         continue
+ 82                     continue
                     endif
 !
-80              continue
+ 80             continue
 !
             else
 !
@@ -419,12 +420,12 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                                                  ) + coedim * scal12*scal22 * zr(iinte+idec&
                                                  )
                         endif
-91                  continue
-90              continue
+ 91                 continue
+ 90             continue
 !
             endif
-71      continue
-70  continue
+ 71     continue
+ 70 continue
 !
     call jedetr('&&SPECEP.TEMP.MAIL')
     call jedetr('&&SPECEP.TEMP.SCAL')

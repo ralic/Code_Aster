@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
                       initpr, instin)
         character(len=24) :: modele
         character(len=24) :: numedd
-        logical(kind=1) :: lreuse
-        logical(kind=1) :: lostat
+        aster_logical :: lreuse
+        aster_logical :: lostat
         character(len=24) :: sdieto
         integer :: initpr
         real(kind=8) :: instin

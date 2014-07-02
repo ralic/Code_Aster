@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                       liordr, lresu, nbnoec, linoec, nbmaec,&
@@ -25,13 +27,13 @@ interface
         character(len=*) :: novcmp
         character(len=*) :: partie
         character(len=*) :: liordr
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
         integer :: nbnoec
         integer :: linoec(*)
         integer :: nbmaec
         integer :: limaec(*)
         character(len=*) :: nomcmp
-        logical(kind=1) :: lvarie
+        aster_logical :: lvarie
         character(len=8) :: carael
     end subroutine iremed
 end interface

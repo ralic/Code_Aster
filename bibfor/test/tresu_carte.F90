@@ -2,6 +2,7 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
                        refr, refc, typres, epsi, crit,&
                        ific, llab, ignore, compare)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utchca.h"
 #include "asterfort/tresu_print_all.h"
@@ -17,8 +18,8 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
-    logical(kind=1), intent(in) :: llab
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in) :: llab
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -57,7 +58,7 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     complex(kind=8) :: valc
     character(len=8) :: nomma
     character(len=4) :: tych
-    logical(kind=1) :: skip
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     skip = .false.
@@ -82,10 +83,10 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     if (ier .ne. 0) then
         write (ific,*) 'NOOK '
     else
-        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1, &
-                    crit, epsi, 'NON', [refr], valr, &
-                    [refi], vali, [refc], valc, ignore=skip, &
-                    compare=ordgrd)
+        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1,&
+                             crit, epsi, 'NON', [refr], valr,&
+                             [refi], vali, [refc], valc, ignore=skip,&
+                             compare=ordgrd)
     endif
 !
 end subroutine

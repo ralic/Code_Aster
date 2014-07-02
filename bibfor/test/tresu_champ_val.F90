@@ -1,8 +1,9 @@
 subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
-                  ivari, nocmp, nbref, tbtxt, refi,&
-                  refr, refc, typres, epsi, crit,&
-                  ific, llab, ssigne, ignore, compare)
+                           ivari, nocmp, nbref, tbtxt, refi,&
+                           refr, refc, typres, epsi, crit,&
+                           ific, llab, ssigne, ignore, compare)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utch19.h"
 #include "asterfort/tresu_print_all.h"
@@ -21,10 +22,10 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     character(len=*), intent(in) :: typres
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    integer , intent(in):: ific
-    logical(kind=1), intent(in) :: llab
+    integer, intent(in) :: ific
+    aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -67,7 +68,7 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
-    logical(kind=1) :: skip
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
@@ -89,10 +90,10 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     if (ier .ne. 0) then
         write (ific,*) 'NOOK '
     else
-        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
-                    crit, epsi, ssigne, refr, valr, &
-                    refi, vali, refc, valc, ignore=skip, &
-                    compare=ordgrd)
+        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
+                             crit, epsi, ssigne, refr, valr,&
+                             refi, vali, refc, valc, ignore=skip,&
+                             compare=ordgrd)
     endif
 !
 end subroutine

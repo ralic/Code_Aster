@@ -21,6 +21,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/r8maem.h"
@@ -79,7 +80,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: ar(12, 3), na, nb, nunoa, mxar
     integer :: nunob, nunom, nunoaa, nunobb
     integer :: ia, iia, ia1, ia2, i, k, iret, ima
-    integer ::  jconx2, jmail
+    integer :: jconx2, jmail
     integer :: npil
     real(kind=8) :: c(ndim), cc(ndim)
     character(len=8) :: typma
@@ -88,11 +89,11 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: jtabno, jtabin, jtabcr
     integer :: zxbas, zxain
     real(kind=8) :: lon, dist1, dist2
-    logical(kind=1) :: lmulti
+    aster_logical :: lmulti
     character(len=19) :: chsoe, chslo, chsba, chsai
     integer :: jcesl2, jcesl3, jcesl4, jcesl5
     integer :: jcesd2, jcesd3, jcesd4, jcesd5
-    integer ::    jcesv5
+    integer :: jcesv5
     integer :: iad2, iad3, iad4, ninter, pint, ifiss
     character(len=24) :: grp(3), gr
     integer :: nmaenr, ienr, jgrp, jxc, ier, jnbpt

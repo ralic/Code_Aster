@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
                       nbhar, imat, numedd, parcho, nbchoc, vk8, modrep)
         integer :: nbhar
         integer :: numrep
         integer :: neq
-        logical(kind=1) :: reprise
+        aster_logical :: reprise
         character(len=8) :: baseno
         integer :: nbordr0
         integer :: nbordr

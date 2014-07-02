@@ -86,10 +86,11 @@ subroutine zsortc(which, apply, n, x, y)
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "blas/dlapy2.h"
     character(len=2) :: which
-    logical(kind=1) :: apply
+    aster_logical :: apply
     integer :: n
 !
 !     %-----------------%
@@ -125,12 +126,12 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT X INTO INCREASING ORDER OF MAGNITUDE. |
 !        %--------------------------------------------%
 !
-10      continue
+ 10     continue
         if (igap .eq. 0) goto 9000
 !
         do 30 i = igap, n-1
             j = i-igap
-20          continue
+ 20         continue
 !
             if (j .lt. 0) goto 30
 !
@@ -152,7 +153,7 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 20
-30      continue
+ 30     continue
         igap = igap / 2
         goto 10
 !
@@ -162,12 +163,12 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT X INTO DECREASING ORDER OF MAGNITUDE. |
 !        %--------------------------------------------%
 !
-40      continue
+ 40     continue
         if (igap .eq. 0) goto 9000
 !
         do 60 i = igap, n-1
             j = i-igap
-50          continue
+ 50         continue
 !
             if (j .lt. 0) goto 60
 !
@@ -189,7 +190,7 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 50
-60      continue
+ 60     continue
         igap = igap / 2
         goto 40
 !
@@ -199,12 +200,12 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT XREAL INTO INCREASING ORDER OF ALGEBRAIC. |
 !        %------------------------------------------------%
 !
-70      continue
+ 70     continue
         if (igap .eq. 0) goto 9000
 !
         do 90 i = igap, n-1
             j = i-igap
-80          continue
+ 80         continue
 !
             if (j .lt. 0) goto 90
 !
@@ -223,7 +224,7 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 80
-90      continue
+ 90     continue
         igap = igap / 2
         goto 70
 !
@@ -233,11 +234,11 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT XREAL INTO DECREASING ORDER OF ALGEBRAIC. |
 !        %------------------------------------------------%
 !
-100      continue
+100     continue
         if (igap .eq. 0) goto 9000
         do 120 i = igap, n-1
             j = i-igap
-110          continue
+110         continue
 !
             if (j .lt. 0) goto 120
 !
@@ -256,7 +257,7 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 110
-120      continue
+120     continue
         igap = igap / 2
         goto 100
 !
@@ -266,11 +267,11 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT XIMAG INTO INCREASING ALGEBRAIC ORDER |
 !        %--------------------------------------------%
 !
-130      continue
+130     continue
         if (igap .eq. 0) goto 9000
         do 150 i = igap, n-1
             j = i-igap
-140          continue
+140         continue
 !
             if (j .lt. 0) goto 150
 !
@@ -289,7 +290,7 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 140
-150      continue
+150     continue
         igap = igap / 2
         goto 130
 !
@@ -299,11 +300,11 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT XIMAG INTO DECREASING ALGEBRAIC ORDER  |
 !        %---------------------------------------------%
 !
-160      continue
+160     continue
         if (igap .eq. 0) goto 9000
         do 180 i = igap, n-1
             j = i-igap
-170          continue
+170         continue
 !
             if (j .lt. 0) goto 180
 !
@@ -322,12 +323,12 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 170
-180      continue
+180     continue
         igap = igap / 2
         goto 160
     endif
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !     %---------------%

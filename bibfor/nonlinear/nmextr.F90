@@ -20,6 +20,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/impfoi.h"
@@ -68,7 +69,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
     character(len=2) :: chaine
     character(len=24) :: oldcha, nomcha, nomchs, nomchx
     character(len=4) :: typcha
-    logical(kind=1) :: lextr, trouve
+    aster_logical :: lextr, trouve
     character(len=24) :: listno, listma, listpi, listsp, listcp
     character(len=24) :: extinf, extcha, exttyp, extact
     integer :: jextin, jextch, jextty, jextac
@@ -124,14 +125,14 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
                 icham = ioc2
                 trouve = .true.
             endif
- 6      continue
+  6     continue
         if (.not.trouve) then
             nbcham = nbcham + 1
             icham = nbcham
             zk24(jlist-1+icham) = nomcha
         endif
         zi(jextin+4+7*(iocc-1)+7-1) = icham
- 5  end do
+  5 end do
 !
 ! --- SD LISTE DES CHAMPS: CHAMP DE REFERENCE ET CHAMP SIMPLE
 !
@@ -142,7 +143,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
         nomchs = nomcha(1:18)//'S'
         zk24(jextch+2*(icham-1)+1-1) = nomcha
         zk24(jextch+2*(icham-1)+2-1) = nomchs
-20  end do
+ 20 end do
 !
     do 10 iocc = 1, nbocc
 !
@@ -220,11 +221,11 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
         zi(jextin+4+7*(iocc-1)+5-1) = nbspi
         zi(jextin+4+7*(iocc-1)+6-1) = nbext
 !
-999      continue
+999     continue
 !
         ntextr = ntextr + nbext
 !
-10  end do
+ 10 end do
 !
 !
 ! --- DESTRUCTION DES CHAM_ELEM_S
@@ -232,8 +233,8 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
     do 45 icham = 1, nbcham
         nomchs = zk24(jextch+2*(icham-1)+2-1)
         call jedetr(nomchs)
-45  end do
-99  continue
+ 45 end do
+ 99 continue
 !
 ! --- INFOS PRINCIPALES
 !

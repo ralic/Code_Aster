@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
                       dimuel, ndim, kpi, ff, ff2,&
@@ -43,7 +45,7 @@ interface
         integer :: yap1
         integer :: addep1
         integer :: np1
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: ivf
         integer :: ipoids
         integer :: idfde

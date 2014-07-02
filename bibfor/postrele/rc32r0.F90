@@ -1,5 +1,6 @@
 subroutine rc32r0(nomres, pmpb, sn, snet)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/getvtx.h"
@@ -10,7 +11,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 #include "asterfort/tbajpa.h"
 !
     character(len=8) :: nomres
-    logical(kind=1) :: pmpb, sn, snet
+    aster_logical :: pmpb, sn, snet
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +113,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
         call tbajli(nomres, npar1, nopar1, [ibid], valer,&
                     [c16b], valek, 0)
-130  end do
+130 end do
 !
     if (typtab .eq. 'VALE_MAX') goto 9999
 !
@@ -141,7 +142,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
                 call tbajli(nomres, npar2, nopar2, valei, zr(jpmpba- 1+10*(is-1)+1),&
                             [c16b], valek, 0)
-204          continue
+204         continue
 !
             valek(2) = 'SANS'
             do 206 is = 1, nbsigr
@@ -150,10 +151,10 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
                 call tbajli(nomres, npar2, nopar2, valei, zr(jpmpbs- 1+10*(is-1)+1),&
                             [c16b], valek, 0)
-206          continue
-202      continue
-200  continue
+206         continue
+202     continue
+200 continue
 !
-9999  continue
+9999 continue
 !
 end subroutine

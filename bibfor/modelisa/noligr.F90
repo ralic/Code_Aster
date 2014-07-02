@@ -3,6 +3,7 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
                   typlaz,jlgns,&
                   rapide, jliel0, jlielc, jnema0, jnemac)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jelira.h"
@@ -124,7 +125,7 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
     integer :: ic, ilag1, ilag2,jnema, jnema02, jnemac2
     integer :: jliel, jliel02, jlielc2
     integer :: k, kligr, lonigr, nunoeu, lgnema
-    logical :: lrapid
+    aster_logical :: lrapid
     integer, save :: iprem=0 , numpoi, numse3
 !-----------------------------------------------------------------------
     iprem=iprem+1

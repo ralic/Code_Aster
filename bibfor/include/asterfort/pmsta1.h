@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pmsta1(sigm, sigp, deps, vim, vip,&
                       nbvari, nbvita, iforta, nbpar, nompar,&
@@ -36,8 +38,8 @@ interface
         character(len=8) :: nomvi(*)
         character(len=19) :: sddisc
         integer :: liccvg(5)
-        logical(kind=1) :: itemax
-        logical(kind=1) :: conver
+        aster_logical :: itemax
+        aster_logical :: conver
         integer :: actite
     end subroutine pmsta1
 end interface

@@ -20,6 +20,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -64,7 +65,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
     character(len=19) :: cndumm, cnunil, cnctdc
     character(len=19) :: cnffdo, cnfvdo
     character(len=19) :: fintpr, fintco
-    logical(kind=1) :: lctcd, lunil, lkrenk, lallv
+    aster_logical :: lctcd, lunil, lkrenk, lallv
     integer :: ifdo, n
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)
@@ -142,7 +143,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
     endif
     do 10 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfext)
-10  end do
+ 10 end do
 !
 ! --- INITIALISATIONS POUR FORCES INTERNES
 !
@@ -176,7 +177,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
     endif
     do 13 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfint)
-13  end do
+ 13 end do
 !
 ! --- AFFICHAGE
 !

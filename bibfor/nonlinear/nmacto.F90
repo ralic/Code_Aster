@@ -18,7 +18,8 @@ subroutine nmacto(sddisc, ievdac)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dieven.h"
 #include "asterfort/jedema.h"
@@ -46,7 +47,7 @@ subroutine nmacto(sddisc, ievdac)
     real(kind=8) :: r8bid
     integer :: ibid, nechec, iechec
     character(len=8) :: k8bid
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,9 +71,9 @@ subroutine nmacto(sddisc, ievdac)
             ievdac = iechec
             goto 888
         endif
-100  end do
+100 end do
 !
-888  continue
+888 continue
 !
     call jedema()
 end subroutine

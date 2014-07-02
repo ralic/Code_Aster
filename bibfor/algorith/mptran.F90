@@ -35,6 +35,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -76,7 +77,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
     character(len=24) :: vabs, vmes, typba, raide
 !
-    logical(kind=1) :: lfonct, zcmplx
+    aster_logical :: lfonct, zcmplx
 !
     integer :: i, j, jabs, tmod(1)
     integer :: jdep, jvit, jacc, jpass, jordr, lord, imes, iret, gd

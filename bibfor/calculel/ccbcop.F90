@@ -1,6 +1,7 @@
 subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
                   nbropt)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -71,7 +72,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=19) :: lischa
     character(len=24) :: nompar, chmate
 !
-    logical(kind=1) :: exipla, newcal
+    aster_logical :: exipla, newcal
 !
     call jemarq()
 !

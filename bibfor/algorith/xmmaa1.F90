@@ -7,6 +7,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                   mmat)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, jnne(3), jnnm(3)
@@ -17,7 +18,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
     real(kind=8) :: coefcr, coefcp, rre, rrm
     character(len=8) :: typmai
     integer :: ndeple, nnc, jddle(2), jddlm(2)
-    logical(kind=1) :: lpenac, lmulti
+    aster_logical :: lpenac, lmulti
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +88,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 !
     integer :: i, j, k, l, ii, jj, pl, jjn, iin, nddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer ::  pli, plj, ifh, iddl, jddl
+    integer :: pli, plj, ifh, iddl, jddl
     real(kind=8) :: mm, iescl(6), jescl(6), imait(6), jmait(6)
 !
 ! ----------------------------------------------------------------------
@@ -132,14 +133,14 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                     if (lmulti) then
                         do 35 ifh = 1, nfhe
                             jescl(1+ifh)=heavfa(nfhe*(j-1)+ifh)
-35                      continue
+ 35                     continue
                     endif
                     do 40 jddl = 1, 1+nfhe+nsinge
                         jj = jjn + (jddl-1)*ndim + k
                         mmat(pl,jj) = -jescl(jddl)*mm
                         mmat(jj,pl) = -jescl(jddl)*mm
-40                  continue
-30              continue
+ 40                 continue
+ 30             continue
                 do 50 j = 1, nnm
                     mm = hpg*ffc(i)*ffm(j)*jacobi*norm(k)
                     call indent(j, ddlms, ddlmm, nnms, jjn)
@@ -148,16 +149,16 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         do 55 ifh = 1, nfhm
                             jmait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(j-1)&
                             +ifh)
-55                      continue
+ 55                     continue
                     endif
                     do 60 jddl = 1, 1+nfhm+nsingm
                         jj = jjn + (jddl-1)*ndim + k
                         mmat(pl,jj) = jmait(jddl)*mm
                         mmat(jj,pl) = jmait(jddl)*mm
-60                  continue
-50              continue
-20          continue
-10      end do
+ 60                 continue
+ 50             continue
+ 20         continue
+ 10     end do
 !
 ! --------------------- CALCUL DE [AU]----------------------------------
 !
@@ -176,16 +177,16 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                             do 220 ifh = 1, nfhe
                                 iescl(1+ifh)=heavfa(nfhe*(i-1)+ifh)
                                 jescl(1+ifh)=heavfa(nfhe*(j-1)+ifh)
-220                          continue
+220                         continue
                         endif
                         do 230 iddl = 1, 1+nfhe+nsinge
                             ii = iin + (iddl-1)*ndim + l
                             do 240 jddl = 1, 1+nfhe+nsinge
                                 jj = jjn + (jddl-1)*ndim + k
                                 mmat(ii,jj) = iescl(iddl)*jescl(jddl)* mm
-240                          continue
-230                      continue
-210                  continue
+240                         continue
+230                     continue
+210                 continue
                     do 250 j = 1, nnm
                         call indent(j, ddlms, ddlmm, nnms, jjn)
                         jjn = jjn + nddle
@@ -197,11 +198,11 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         if (lmulti) then
                             do 260 ifh = 1, nfhe
                                 iescl(1+ifh)=heavfa(nfhe*(i-1)+ifh)
-260                          continue
+260                         continue
                             do 270 ifh = 1, nfhm
                                 jmait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(&
                                 j-1)+ifh)
-270                          continue
+270                         continue
                         endif
                         do 280 iddl = 1, 1+nfhe+nsinge
                             ii = iin + (iddl-1)*ndim + l
@@ -209,10 +210,10 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                 jj = jjn + (jddl-1)*ndim + k
                                 mmat(ii,jj) = -iescl(iddl)*jmait(jddl) *mm
                                 mmat(jj,ii) = -iescl(iddl)*jmait(jddl) *mm
-290                          continue
-280                      continue
-250                  continue
-200              continue
+290                         continue
+280                     continue
+250                 continue
+200             continue
                 do 300 i = 1, nnm
                     call indent(i, ddlms, ddlmm, nnms, iin)
                     iin = iin + nddle
@@ -230,20 +231,20 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                 i-1)+ifh)
                                 jmait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(&
                                 j-1)+ifh)
-330                          continue
+330                         continue
                         endif
                         do 340 iddl = 1, 1+nfhm+nsingm
                             ii = iin + (iddl-1)*ndim + l
                             do 350 jddl = 1, 1+nfhm+nsingm
                                 jj = jjn + (jddl-1)*ndim + k
                                 mmat(ii,jj) = imait(iddl)*jmait(jddl)* mm
-350                          continue
-340                      continue
-320                  continue
-300              continue
+350                         continue
+340                     continue
+320                 continue
+300             continue
 !
-110          continue
-100      end do
+110         continue
+100     end do
     else
 !
 ! --------------------- CALCUL DE [A] ----------------------------------
@@ -260,9 +261,9 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                     mm = hpg*ffc(i)*ffe(j)*jacobi*norm(k)
                     mmat(pl,jj) = rre * mm
                     mmat(jj,pl) = rre * mm
-530              continue
-520          continue
-510      end do
+530             continue
+520         continue
+510     end do
 !
 ! --------------------- CALCUL DE [AU]----------------------------------
 !
@@ -281,10 +282,10 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         ii = iin + l
                         jj = jjn + k
                         mmat(ii,jj) = rre * rre * mm
-630                  continue
-620              continue
-610          continue
-600      end do
+630                 continue
+620             continue
+610         continue
+600     end do
     endif
 ! --------------------- CALCUL DE [C] ----------------------------------
 !
@@ -298,8 +299,8 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                 call xplma2(ndim, nne, nnes, ddles, j,&
                             nfhe, plj)
                 mmat(pli,plj) = -hpg*ffc(j)*ffc(i)*jacobi/coefcp
-720          continue
-710      continue
+720         continue
+710     continue
     endif
 !
 end subroutine

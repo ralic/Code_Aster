@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmapma(noma, defico, resoco, ndimg, izone,&
                       lexfro, typint, aliase, posmae, nummae,&
@@ -26,7 +28,7 @@ interface
         character(len=24) :: resoco
         integer :: ndimg
         integer :: izone
-        logical(kind=1) :: lexfro
+        aster_logical :: lexfro
         integer :: typint
         character(len=8) :: aliase
         integer :: posmae

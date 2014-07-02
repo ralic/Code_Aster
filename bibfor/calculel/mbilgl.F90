@@ -7,6 +7,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -47,8 +48,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=16) :: option, noprup(*), nomcas
     character(len=24) :: depla1, depla2, chfond, mate, fonoeu
 !
-    logical(kind=1) :: extim, thlagr, glagr, milieu, pair
-    logical(kind=1) :: ufonc, vfonc, thlag2, lmelas
+    aster_logical :: extim, thlagr, glagr, milieu, pair
+    aster_logical :: ufonc, vfonc, thlag2, lmelas
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,7 +99,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, iadrg,  jresu, nchin
+    integer :: i, iadrg, jresu, nchin
     integer :: num
     integer :: ifon, init
     integer :: iadrno, iadgi, iadabs, ifm, niv

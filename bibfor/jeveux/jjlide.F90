@@ -17,6 +17,7 @@ subroutine jjlide(nomap, nomlu, itype)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
 #include "asterfort/jjalls.h"
@@ -85,11 +86,11 @@ subroutine jjlide(nomap, nomlu, itype)
     character(len=4) :: fonc
     character(len=32) :: noml32
     integer :: iadmi, iaddi(2), nld, it(nparm), kt(nparm)
-    logical(kind=1) :: lsauv, ldate, lmarq, llibp, ltout, lattr, lxu, lad
+    aster_logical :: lsauv, ldate, lmarq, llibp, ltout, lattr, lxu, lad
 ! DEB ------------------------------------------------------------------
     do 1 k = 1, nparm
         kt(k) = 0
- 1  end do
+  1 end do
     noml32 = nomlu
     iadit = 0
     iasig = 0
@@ -239,7 +240,7 @@ subroutine jjlide(nomap, nomlu, itype)
                         it(ijit + iltyp) = jltyp(ic) + ixdeso
                         it(ijit + isauv) = 1
                     endif
-10              continue
+ 10             continue
             endif
             nldo= nld
 !
@@ -274,7 +275,7 @@ subroutine jjlide(nomap, nomlu, itype)
                         endif
                     endif
                 endif
-20          continue
+ 20         continue
             ijit = jit + nld * nparm
             ikit = kit + nld * nparm
             nld = nld + 1
@@ -557,8 +558,8 @@ subroutine jjlide(nomap, nomlu, itype)
                 iszon ( it(jit+kk+ iiadm) + 1) = 0
             endif
         endif
-100  end do
-101  continue
+100 end do
+101 continue
     call jjlidy(iady1, iadit)
     call jjlidy(iady2, iasig)
 ! FIN ------------------------------------------------------------------

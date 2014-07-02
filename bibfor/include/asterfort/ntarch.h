@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ntarch(numins, modele, mate, carele, lnonl,&
                       para, sddisc, sdcrit, sdieto, lisch2,&
@@ -23,12 +25,12 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
-        logical(kind=1) :: lnonl
+        aster_logical :: lnonl
         real(kind=8) :: para(*)
         character(len=19) :: sddisc
         character(len=19) :: sdcrit
         character(len=24) :: sdieto
         character(len=19) :: lisch2
-        logical(kind=1) :: force
+        aster_logical :: force
     end subroutine ntarch
 end interface

@@ -46,6 +46,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
@@ -63,7 +64,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
     character(len=8) :: basmod, intf
-    logical(kind=1) :: okass
+    aster_logical :: okass
     integer :: idec(nbcpmx), lisnu(nblis)
 !
 !-----------------------------------------------------------------------

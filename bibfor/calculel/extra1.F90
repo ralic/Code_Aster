@@ -18,6 +18,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -57,7 +58,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute)
     character(len=8) :: nompar
     integer :: k, iparg, imodat
     integer :: ipar, npin, iparin
-    logical(kind=1) :: exich
+    aster_logical :: exich
 !
 !
 ! DEB-------------------------------------------------------------------
@@ -121,9 +122,9 @@ subroutine extra1(nin, lchin, lpain, opt, nute)
 !       -----------------------------------------------------
         lggrel=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+4)
         debugr=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+5)
-        do 30,k=1,lggrel
-        zl(ilchlo-1+debugr-1+k)=.false.
-30      continue
+        do 30 k = 1, lggrel
+            zl(ilchlo-1+debugr-1+k)=.false.
+ 30     continue
 !
 !
 !       2- ON LANCE L'EXTRACTION:
@@ -132,7 +133,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute)
         if (type .eq. 'CHML') call exchml(imodat, iparg)
         if (type .eq. 'CHNO') call exchno(imodat, iparg)
         if (type .eq. 'RESL') call exresl(imodat, iparg, chin)
-90  continue
+ 90     continue
     end do
 !
 !

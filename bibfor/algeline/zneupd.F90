@@ -301,6 +301,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -336,7 +337,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
     character(len=1) :: bmat, howmny
     character(len=2) :: which
-    logical(kind=1) :: rvec
+    aster_logical :: rvec
     integer :: info, ldz, ldv, lworkl, n, ncv, nev
     complex(kind=8) :: sigma
     real(kind=8) :: tol
@@ -346,7 +347,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !     %-----------------%
 !
     integer :: iparam(11), ipntr(14)
-    logical(kind=1) :: select(*)
+    aster_logical :: select(*)
     real(kind=8) :: rwork(*)
     complex(kind=8) :: d(*), resid(*), v(ldv, *), z(ldz, *), workd(3*n)
     complex(kind=8) :: workl(lworkl), workev(2*ncv)
@@ -369,7 +370,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
     integer :: ishift
     complex(kind=8) :: rnorm, temp, vl(1)
     real(kind=8) :: rtemp, eps23, eps
-    logical(kind=1) :: reord
+    aster_logical :: reord
 !
 !
 !     %--------------------%

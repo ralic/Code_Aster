@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function cfdisl(deficz, questz)
         character(len=*) :: deficz
         character(len=*) :: questz
-        logical(kind=1) :: cfdisl
+        aster_logical :: cfdisl
     end function cfdisl
 end interface

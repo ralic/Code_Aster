@@ -20,6 +20,7 @@ function mminfi(defico, questz, izone)
 !
     implicit none
     integer :: mminfi
+#include "asterf_types.h"
 #include "asterfort/mminfp.h"
     character(len=24) :: defico
     integer :: izone
@@ -44,7 +45,7 @@ function mminfi(defico, questz, izone)
 !
     integer :: irep(1)
     real(kind=8) :: r8bid(1)
-    logical(kind=1) :: lbid(1)
+    aster_logical :: lbid(1)
 !
 ! ----------------------------------------------------------------------
 !

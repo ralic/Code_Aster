@@ -18,6 +18,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 ! ======================================================================
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/readdr.h"
 #include "asterfort/codent.h"
@@ -65,7 +66,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     common /iextje/  idn(n) , iext(n) , nbenrg(n)
     common /jiacce/  jiacce(n),nbacce(2*n)
 !     ------------------------------------------------------------------
-    logical(kind=1) :: lrab
+    aster_logical :: lrab
     character(len=8) :: nom
     character(len=128) :: nom128
     integer :: lgbl, vali(3)
@@ -97,7 +98,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
                 call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
             endif
             nbacce(2*ic-1) = nbacce(2*ic-1) + 1
-10      continue
+ 10     continue
         iacce (jiacce(ic)+iaddi)=iacce(jiacce(ic)+iaddi) + 1
         if (lrab) then
             numext = (iaddi+nblent-1)/nbenrg(ic)

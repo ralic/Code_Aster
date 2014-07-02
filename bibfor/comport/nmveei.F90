@@ -21,6 +21,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdvmi.h"
 #include "asterfort/lceqmn.h"
@@ -119,7 +120,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
     parameter  ( zero = 0.d0   )
     parameter  (dammax = 0.99d0)
 !
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
 !
     integer :: itmax, i, ier, iter, iret2, iret3, iret4
     integer :: ndt, nvi, nrv, ndi, k, l, isimp
@@ -173,11 +174,11 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 !----------------------------
     do 111 i = 1, nb
         beta(i) = zero
-111  end do
+111 end do
 !
     do 112 i = 1, np
         p(i) = zero
-112  end do
+112 end do
 !
 !-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
@@ -230,7 +231,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
         epthm(i)=epthm(i)+epsthm
         ep(3+i)=0.d0
         epthm(3+i)=0.d0
-141  end do
+141 end do
 !
     if (compor(3) .eq. 'PETIT_REAC') then
         call lcopli('ISOTROPE', mod, matm, hookm)
@@ -244,20 +245,20 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
         do 142 i = 1, nb
             do 142 k = 1, nb
                 a(i,k) = a(i,k)+ (un-dm)*hookm(i,k)
-142          continue
+142         continue
         call mgauss('NFVP', a, b, nb, nb,&
                     1, det, iret1)
 !
         do 143 i = 1, nb
             ep(6+i)=0.d0
             ep(6+i) = ep(6+i)+ epsm(i)- b(i)- epthm(i)
-143      continue
+143     continue
     else
         call lceqvn(nb, vim(1), ep(7))
     endif
     do 144 i = 1, nb
         ep(12+i) = epsm(i)+deps(i)
-144  end do
+144 end do
 !
 ! CALCUL DIRECT DE LA SOLUTION DANS LE CAS OU LES EQUATIONS SE
 ! REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
@@ -333,7 +334,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                 endif
                 deltb=deltb+abs(dbeta(i))
                 sumb=sumb+abs(beta(i))
-210          continue
+210         continue
             if (sumb .gt. toler) deltb=deltb/sumb
 !
             deltx = zero
@@ -346,7 +347,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                 endif
                 deltx=deltx+abs(dp(i))
                 sumx=sumx+abs(p(i))
-220          continue
+220         continue
 !
             if (sumx .gt. toler) deltx=deltx/sumx
 !
@@ -354,12 +355,12 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 !
             if (deltx .lt. toler) goto 00230
 !
-200      continue
+200     continue
 !-- NOMBRE D'ITERATIONS MAXI ATTEINT: ARRET DU PROGRAMME
         vip(nb+4) = dble(iter)
         goto 801
 !
-230      continue
+230     continue
         if (etatf(2) .eq. 'TANGENT') then
             call utmess('A', 'ALGORITH8_66')
         endif
@@ -379,13 +380,13 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
             vip(nb+1) = vim(nb+1) + dt * p(1)/(un-dammax)
             do 240 i = 1, nb
                 vip(i) = vim(i) + dt * p(1)/(un-dammax) * dsedb(i)
-240          continue
+240         continue
         else
             vip(nb+3) = vim(nb+3) + dt * p(2)
             vip(nb+1) = vim(nb+1) + dt * p(1)/(un-vip(nb+3))
             do 241 i = 1, nb
                 vip(i) = vim(i) + dt * p(1)/(un-vip(nb+3)) * dsedb(i)
-241          continue
+241         continue
         endif
 !
     endif
@@ -438,8 +439,8 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                 if (l .eq. 3) goto 00320
                 dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)&
                 *dsidep(3,l)
-320          continue
-310      continue
+320         continue
+310     continue
     endif
 !
 !
@@ -447,7 +448,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 !
 !-- ERREURS
 !
-801  continue
+801 continue
     iret = 1
-900  continue
+900 continue
 end subroutine

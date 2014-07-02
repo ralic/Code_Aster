@@ -19,7 +19,8 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -48,7 +49,7 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lctcc, lctcd
+    aster_logical :: lctcc, lctcd
 !
 ! ----------------------------------------------------------------------
 !

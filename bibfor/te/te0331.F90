@@ -1,5 +1,6 @@
 subroutine te0331(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -61,15 +62,15 @@ subroutine te0331(option, nomte)
     integer :: ipoids, ivf, idfde, imate
     integer :: igeom, icong, ivarig
     integer :: isigie, isigis, icompo, nbvari
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: iret
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     poids=0.d0
     dsigwb=0.d0
@@ -108,7 +109,7 @@ subroutine te0331(option, nomte)
     do 150 ii = 1, 4
         cong(ii)=0.d0
         epsq(ii)=0.d0
-150  end do
+150 end do
 ! -FONCTION SEUIL
     ppt = 0.d0
     pp = 0.d0
@@ -151,7 +152,7 @@ subroutine te0331(option, nomte)
             if (laxi) then
                 do 160 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-160              continue
+160             continue
                 poids=poids*r
             endif
 ! VOLUME PLASTIFIE
@@ -161,7 +162,7 @@ subroutine te0331(option, nomte)
                 volume=volume+dvol
                 do 165 ii = 1, 4
                     cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
-165              continue
+165             continue
 !           --- TEMPERATURE MOYENNE
                 call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                             1, tg, iret)
@@ -178,7 +179,7 @@ subroutine te0331(option, nomte)
                 dvol=poids
                 volact=volact+dvol
             endif
-200      continue
+200     continue
 !
         sigi = 0.d0
         if ((volact.ne.0.d0) .and. (volume.ne.0.d0)) then
@@ -216,7 +217,7 @@ subroutine te0331(option, nomte)
             if (laxi) then
                 do 170 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-170              continue
+170             continue
                 poids=poids*r
             endif
             volume=poids
@@ -224,7 +225,7 @@ subroutine te0331(option, nomte)
             do 180 ii = 1, 4
                 cong(ii)=zr(icong+4*kp+ii-5)
                 epsq(ii)=zr(idefg+4*kp+ii-5)
-180          continue
+180         continue
             pp=zr(ivarig+nbvari*(kp-1)+ipopp-1)
             if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
                 ppt = 1.d0
@@ -267,7 +268,7 @@ subroutine te0331(option, nomte)
             signew=zr(isigis+kp-1)
             dsigwb=dsigwb+volume*(signew**m)/v0
 !
-300      continue
+300     continue
 !=================================================================
 !=================================================================
         elseif ((optcal(1).eq.'SIGM_ELMOY').and.(optcal(2).eq.'OUI'))&
@@ -281,7 +282,7 @@ subroutine te0331(option, nomte)
             if (laxi) then
                 do 210 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-210              continue
+210             continue
                 poids=poids*r
             endif
 ! VOL PLASTIFIE
@@ -293,7 +294,7 @@ subroutine te0331(option, nomte)
                 do 220 ii = 1, 4
                     cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
                     epsq(ii)=epsq(ii)+dvol*zr(idefg+4*kp+ii-5)
-220              continue
+220             continue
 !           --- TEMPERATURE MOYENNE
                 call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                             1, tg, iret)
@@ -311,7 +312,7 @@ subroutine te0331(option, nomte)
                 volact=volact+dvol
             endif
 !
-400      continue
+400     continue
 !
         signew = 0.d0
         if ((volact.ne.(0.d0)) .and. (volume.ne.0.d0)) then
@@ -353,13 +354,13 @@ subroutine te0331(option, nomte)
             r=0.d0
             do 175 ii = 1, 4
                 cong(ii)=zr(icong+(4*kp)-5+ii)
-175          continue
+175         continue
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
             if (laxi) then
                 do 240 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-240              continue
+240             continue
                 poids=poids*r
             endif
             volume=poids
@@ -389,7 +390,7 @@ subroutine te0331(option, nomte)
             sigi=zr(isigis+kp-1)
             dsigwb=dsigwb+volume*(sigi**m)/v0
 !
-100      continue
+100     continue
 !
     else
 !        OPTION DE CALCUL NON VALIDE

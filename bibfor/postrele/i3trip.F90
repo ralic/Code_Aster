@@ -1,6 +1,7 @@
 subroutine i3trip(lstpt, nbpt)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
     integer :: lstpt(*), nbpt
 !
@@ -44,7 +45,7 @@ subroutine i3trip(lstpt, nbpt)
 !
     integer :: i, j, k, aa, ao
     real(kind=8) :: aux
-    logical(kind=1) :: insert
+    aster_logical :: insert
 !
 !======================================================================
 !
@@ -52,27 +53,27 @@ subroutine i3trip(lstpt, nbpt)
 !-----------------------------------------------------------------------
     aa = lstpt(1)
     ao = lstpt(6)
-    do 10, i = 1, nbpt, 1
-    zi(ao + i-1) = i
-    10 end do
-    do 100, i = 1, nbpt, 1
-    insert = .false.
-    aux = zr(aa + i-1)
-    j = 1
-110  continue
-    if ((j .lt. i) .and. (.not. insert)) then
-        if (zr(aa + zi(ao + j-1)-1) .gt. aux) then
-            insert = .true.
-            do 120, k = i, j+1, -1
-            zi(ao + k-1) = zi(ao + k-2)
-120          continue
-            zi(ao + j-1) = i
-        endif
-        j = j + 1
-        goto 110
-    endif
-    if (.not. insert) then
+    do 10 i = 1, nbpt, 1
         zi(ao + i-1) = i
-    endif
-    100 end do
+ 10 end do
+    do 100 i = 1, nbpt, 1
+        insert = .false.
+        aux = zr(aa + i-1)
+        j = 1
+110     continue
+        if ((j .lt. i) .and. (.not. insert)) then
+            if (zr(aa + zi(ao + j-1)-1) .gt. aux) then
+                insert = .true.
+                do 120 k = i, j+1, -1
+                    zi(ao + k-1) = zi(ao + k-2)
+120             continue
+                zi(ao + j-1) = i
+            endif
+            j = j + 1
+            goto 110
+        endif
+        if (.not. insert) then
+            zi(ao + i-1) = i
+        endif
+100 end do
 end subroutine

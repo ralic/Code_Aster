@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine merime(modelz, nchar, lchar, mate, carelz,&
                       exitim, time, compoz, matelz, nh,&
@@ -24,7 +26,7 @@ interface
         character(len=*) :: lchar(*)
         character(len=*) :: mate
         character(len=*) :: carelz
-        logical(kind=1) :: exitim
+        aster_logical :: exitim
         real(kind=8) :: time
         character(len=*) :: compoz
         character(len=*) :: matelz

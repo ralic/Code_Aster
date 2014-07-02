@@ -17,6 +17,7 @@ subroutine te0139(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -51,7 +52,7 @@ subroutine te0139(option, nomte)
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, li, jcret, codret
     integer :: ivarix
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
     integer :: jtab(7), nnos, idim
     real(kind=8) :: bary(3)
     real(kind=8) :: pff(6*27*27), def(6*27*3), dfdi(3*27)
@@ -68,8 +69,8 @@ subroutine te0139(option, nomte)
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     MATNS MAL DIMENSIONNEE
     ASSERT(nno.le.27)
@@ -103,8 +104,8 @@ subroutine te0139(option, nomte)
     do 150 i = 1, nno
         do 140 idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+140     continue
+150 end do
     call rcangm(ndim, bary, angmas)
 !
 ! - VARIABLES DE COMMANDE
@@ -139,7 +140,7 @@ subroutine te0139(option, nomte)
         endif
         call jevech('PCONTXR', 'E', icontp)
 !       INITIALISATION DE LA CONTRAINTE EXTRAPOLEE CONTXR=CONTMR
-        call dcopy(npg*6, zr(icontm), 1, zr(icontp), 1)        
+        call dcopy(npg*6, zr(icontm), 1, zr(icontp), 1)
     endif
 !
     if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then
@@ -162,7 +163,7 @@ subroutine te0139(option, nomte)
 !
             do 10 li = 1, 3*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-10          continue
+ 10         continue
 !
             call nmel3d(fami, '+', nno, npg, ipoids,&
                         ivf, idfde, zr(igeom), typmod, option,&
@@ -177,14 +178,14 @@ subroutine te0139(option, nomte)
 !                          COMP_INCR
 !
 !       Pour le calcul de la matrice tangente par perrturbation
-1000      continue
+1000     continue
 !
 !      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
             if (zk16(icompo+2) (6:10) .eq. '_REAC') then
                 do 20 i = 1, 3*nno
                     zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
-20              continue
+ 20             continue
             endif
             call nmpl3d(fami, nno, npg, ipoids, ivf,&
                         idfde, zr(igeom), typmod, option, zi(imate),&
@@ -211,7 +212,7 @@ subroutine te0139(option, nomte)
 !
             do 51 li = 1, 3*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-51          continue
+ 51         continue
 !
             call nmgz3d(fami, nno, npg, ipoids, ivf,&
                         idfde, zr(igeom), typmod, option, zi(imate),&
@@ -225,7 +226,7 @@ subroutine te0139(option, nomte)
 !
             do 50 li = 1, 3*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-50          continue
+ 50         continue
 !
             call nmgr3d(nno, npg, ipoids, ivf, idfde,&
                         zr(igeom), typmod, option, zi(imate), zk16(icompo),&
@@ -272,7 +273,7 @@ subroutine te0139(option, nomte)
 !
     endif
 !
-2000  continue
+2000 continue
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret

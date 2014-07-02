@@ -1,6 +1,7 @@
 subroutine ccliop(type, option, nobase, noliop, nopout)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -72,7 +73,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     integer :: lopor1(100), lopor2(100), itmp, nopous, jlisop
     integer :: jliori, jlidep, jlnoin, jlisde
 !
-    logical(kind=1) :: opajou
+    aster_logical :: opajou
 !
     character(len=1) :: isodep(100)
     character(len=4) :: lopdep(100)
@@ -109,7 +110,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     loptio(nopout) = option
     lopdep(nopout) = 'NSP'
 !
-40  continue
+ 40 continue
 !
 !     BOUCLE SUR LE TABLEAU DES OPTIONS QUI SERA ENRICHI A CHAQUE
 !     PASSE
@@ -216,7 +217,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
                     opajou = .true.
                     isodep(nopout) = ' '
                 endif
-20          continue
+ 20         continue
         endif
 !
         if (.not.opajou) then
@@ -225,7 +226,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
         else
             lopor2(iop) = nopout
         endif
-10  end do
+ 10 end do
 !
 !     SI ON A AJOUTE UNE OPTION LORS DE LA DERNIERE PASSE, ON
 !     DOIT CHERCHER SES DEPENDANCES
@@ -262,9 +263,9 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
         endif
         zk8(jlidep+iop-1) = lopdep(itmp)
         zk8(jlisde+iop-1) = isodep(itmp)
-30  end do
+ 30 end do
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

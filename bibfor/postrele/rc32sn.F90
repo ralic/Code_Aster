@@ -1,7 +1,8 @@
 subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
                   snij)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/codent.h"
@@ -12,7 +13,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rc32st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
-    logical(kind=1) :: seisme
+    aster_logical :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -58,7 +59,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
     real(kind=8) :: pij, mij(12), sn, sij(6), sigu, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6)
     character(len=4) :: typ2
-    character(len=8) ::  type, knumes, knumet
+    character(len=8) :: type, knumes, knumet
 ! DEB ------------------------------------------------------------------
     type = typz
     sn = 0.d0
@@ -77,7 +78,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 !
     do 10 icmp = 1, 12
         mij(icmp) = mi(icmp) - mj(icmp)
-10  end do
+ 10 end do
 !
 ! --- CALCUL DES CONTRAINTES LINEAIRISEES PAR COMBINAISON LINEAIRE
 !     POUR LE CHARGEMENT PIJ, MIJ
@@ -87,11 +88,11 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
         do 20 icmp = 1, 12
             sigu = zr(jsigu-1+78+6*(icmp-1)+icmps)
             sij(icmps) = sij(icmps) + mij(icmp)*sigu
-20      continue
+ 20     continue
 ! ------ PRESSION
         sigu = zr(jsigu-1+78+72+icmps)
         sij(icmps) = sij(icmps) + pij*sigu
-30  end do
+ 30 end do
 !
 ! --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 !
@@ -139,7 +140,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 endif
                 do 14 i1 = 1, 6
                     snth(i1) = zr(indicp+6+i1-1) -zr(indicp+i1-1)
-14              continue
+ 14             continue
                 if (seisme) then
                     call rc32s0(typ2, mij, pij, mse, zr(jsigu+78),&
                                 nbinst, snth, sn)
@@ -151,7 +152,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                     endif
                 endif
                 snij = max( snij , sn )
-100          continue
+100         continue
         endif
     endif
 !
@@ -211,7 +212,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 endif
                 do 24 i1 = 1, 6
                     snth(i1) = zr(indicq+6+i1-1) -zr(indicq+i1-1)
-24              continue
+ 24             continue
                 if (typ2 .eq. 'SITU') then
                     if (seisme) then
                         call rc32s0(typ2, mij, pij, mse, zr(jsigu+ 78),&
@@ -224,7 +225,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                         do 114 i1 = 1, 6
                             sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
                             sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
-114                      continue
+114                     continue
                         if (seisme) then
                             call rc32s0(typ2, mij, pij, mse, zr( jsigu+78),&
                                         nbinst, sqmi, sn1)
@@ -239,7 +240,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                     endif
                 endif
                 snij = max( snij , sn )
-110          continue
+110         continue
         endif
     endif
 !

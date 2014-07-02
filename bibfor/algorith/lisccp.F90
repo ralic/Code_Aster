@@ -18,6 +18,7 @@ subroutine lisccp(phenom, lischa)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -48,8 +49,8 @@ subroutine lisccp(phenom, lischa)
     integer :: ichar, nbchar
     integer :: genrec
     character(len=8) :: phecha, charge
-    logical(kind=1) :: lok
-    logical(kind=1) :: lveac, lveag, lveas
+    aster_logical :: lok
+    aster_logical :: lveac, lveag, lveas
 !
 ! ----------------------------------------------------------------------
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                       dtmax, nbsauv, nbobjs, neqgen, pulsat,&
@@ -45,7 +47,7 @@ interface
         real(kind=8) :: riggen(*)
         integer :: descmr
         real(kind=8) :: rgygen(*)
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amogen(*)
         integer :: descma
         real(kind=8) :: gyogen(*)
@@ -82,7 +84,7 @@ interface
         integer :: nbpal
         real(kind=8) :: dtsto
         real(kind=8) :: vrotat
-        logical(kind=1) :: prdeff
+        aster_logical :: prdeff
         character(len=8) :: nomres
         integer :: nbexci
         character(len=8) :: nommas

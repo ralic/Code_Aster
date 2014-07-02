@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                       nomfor, grdvie, forvie, forcri, fordef, typcha,&
@@ -28,7 +30,7 @@ interface
         character(len=8) :: grdvie
         character(len=16) :: forvie
         character(len=16) :: forcri
-        logical(kind=1) :: fordef
+        aster_logical :: fordef
         character(len=16) :: typcha
         character(len=16) :: proaxe
         real(kind=8) :: instic

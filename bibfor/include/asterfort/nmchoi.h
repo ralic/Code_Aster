@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
                       metcor, reasma, lcamor, optrig, lcrigi,&
@@ -25,11 +27,11 @@ interface
         integer :: fonact(*)
         character(len=16) :: metpre
         character(len=16) :: metcor
-        logical(kind=1) :: reasma
-        logical(kind=1) :: lcamor
+        aster_logical :: reasma
+        aster_logical :: lcamor
         character(len=16) :: optrig
-        logical(kind=1) :: lcrigi
-        logical(kind=1) :: larigi
-        logical(kind=1) :: lcfint
+        aster_logical :: lcrigi
+        aster_logical :: larigi
+        aster_logical :: lcfint
     end subroutine nmchoi
 end interface

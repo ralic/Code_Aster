@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
         character(len=24) :: sdieto
         character(len=16) :: motfac
         integer :: iocc
         character(len=24) :: nomcha
-        logical(kind=1) :: lextr
+        aster_logical :: lextr
     end subroutine nmextc
 end interface

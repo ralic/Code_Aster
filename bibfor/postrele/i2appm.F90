@@ -1,8 +1,9 @@
 subroutine i2appm(xp, yp, xso, yso, xin,&
                   yin, cdroi, nbc, dedans)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
     real(kind=8) :: xp, yp, xso(*), yso(*), xin(*), yin(*)
-    logical(kind=1) :: dedans, cdroi(*)
+    aster_logical :: dedans, cdroi(*)
     integer :: nbc
 !
 ! ======================================================================
@@ -56,7 +57,7 @@ subroutine i2appm(xp, yp, xso, yso, xin,&
                     l = l + 1
                 endif
 !
-12          continue
+ 12         continue
 !
         else
 !
@@ -75,7 +76,7 @@ subroutine i2appm(xp, yp, xso, yso, xin,&
 !
         endif
 !
-10  end do
+ 10 end do
 !
     if (k .eq. nt .or. l .eq. nt) dedans = .true.
 !

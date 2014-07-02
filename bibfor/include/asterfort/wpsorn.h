@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
                       nbvect, nfreq, tolsor, vect, resid,&
@@ -36,7 +38,7 @@ interface
         real(kind=8) :: workd(*)
         real(kind=8) :: workl(*)
         integer :: lonwl
-        logical(kind=1) :: selec(*)
+        aster_logical :: selec(*)
         real(kind=8) :: dsor(nfreq+1, *)
         real(kind=8) :: vpr(*)
         real(kind=8) :: vpi(*)
@@ -52,7 +54,7 @@ interface
         integer :: priram(8)
         real(kind=8) :: alpha
         integer :: nconv
-        logical(kind=1) :: flage
+        aster_logical :: flage
         real(kind=8) :: vaur(2*nbeq, *)
         complex(kind=8) :: vauc(2*nbeq, *)
         complex(kind=8) :: vaul(2*nbeq, *)

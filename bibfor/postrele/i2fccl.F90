@@ -1,5 +1,6 @@
 subroutine i2fccl(tplace, n, existe, adrdbt)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +34,7 @@ subroutine i2fccl(tplace, n, existe, adrdbt)
 !
 !*****************************************************************
 !
-    logical(kind=1) :: existe, tplace(*)
+    aster_logical :: existe, tplace(*)
     integer :: n, adrdbt
 !
     integer :: i
@@ -44,7 +45,7 @@ subroutine i2fccl(tplace, n, existe, adrdbt)
 !
     i = adrdbt + 1
 !
-10  continue
+ 10 continue
     if ((.not. existe) .and. (i .le. n)) then
 !
         if (.not. tplace(i)) then

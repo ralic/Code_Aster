@@ -1,9 +1,10 @@
 function zerosd(typesd, sd)
     implicit none
-    logical(kind=1) :: zerosd
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zerobj.h"
+    aster_logical :: zerosd
     character(len=*) :: sd, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================

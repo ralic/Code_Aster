@@ -1,5 +1,6 @@
 subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: ext(*), sigmin(*), sigmax(*)
@@ -33,7 +34,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
 !     -----------------------------------------------------------------
 !
     real(kind=8) :: moyext, a
-    logical(kind=1) :: cyczer
+    aster_logical :: cyczer
 !
 ! ------------------------------------------------------------
 !
@@ -50,7 +51,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
         if ((ext(i) .gt. ext(1)) .or. (ext(i) .lt. ext(1))) then
             cyczer = .false.
         endif
-21  end do
+ 21 end do
 !
     if (cyczer) then
         sigmax(1) = ext(1)
@@ -64,7 +65,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
 !
     do 1 i = 1, nbextr
         moyext = moyext + ext(i)
- 1  end do
+  1 end do
     moyext = moyext/nbextr
 !
 ! --- DETECTION DES CYCLES
@@ -74,7 +75,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
     do 2 i = 1, ncyc
         sigmax(i) = ext(nbextr-i+1)
         sigmin(i) = ext(i)
- 2  end do
+  2 end do
     if (nbextr .ne. (2*ncyc)) then
         ncyc = ncyc + 1
         if (ext(ncyc) .ge. moyext) then
@@ -86,6 +87,6 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
         endif
     endif
 !
-999  continue
+999 continue
 !
 end subroutine

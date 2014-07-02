@@ -1,7 +1,8 @@
 subroutine assert(cond, str_cond, fname, line)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: cond
+    aster_logical :: cond
     character(len=*) :: str_cond
     character(len=*) :: fname
     integer :: line

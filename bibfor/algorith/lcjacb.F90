@@ -7,7 +7,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
                   crit, indi, vind1, bnews, mtrac,&
                   drdy, iret)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
 !           IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/burjac.h"
 #include "asterfort/cvmjac.h"
 #include "asterfort/hayjac.h"
@@ -91,7 +92,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
     character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
 !
-    logical(kind=1) ::  bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret=0

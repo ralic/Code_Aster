@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dinonc(nomte, icodre, valre, klv, raide,&
                       nbpar, param, okdire)
@@ -25,6 +27,6 @@ interface
         real(kind=8) :: klv(*)
         real(kind=8) :: raide(*)
         real(kind=8) :: param(6, nbpar)
-        logical(kind=1) :: okdire(6)
+        aster_logical :: okdire(6)
     end subroutine dinonc
 end interface 

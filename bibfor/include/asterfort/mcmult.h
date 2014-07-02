@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
                       prepos)
@@ -23,6 +25,6 @@ interface
         complex(kind=8) :: vect(*)
         complex(kind=8) :: xsol(*)
         integer :: nbvect
-        logical(kind=1) :: prepos
+        aster_logical :: prepos
     end subroutine mcmult
 end interface

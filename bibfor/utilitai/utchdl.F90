@@ -1,6 +1,7 @@
 subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
                   nusp, ivari, nocmp1, iddl)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/indik8.h"
@@ -64,16 +65,16 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !     ------------------------------------------------------------------
     integer :: ibid, gd, incmp
     integer :: vali(2)
-    integer ::   nec, icmp, ncmpmx, iancmp, ima
+    integer :: nec, icmp, ncmpmx, iancmp, ima
     integer :: ino, iaconx, nbno, ipo, nupo2, igr, iel
-    integer :: imolo, jmolo, ispt, jlpt,  nbpt, ipt, ico
+    integer :: imolo, jmolo, ispt, jlpt, nbpt, ipt, ico
     integer :: k, iadg, kcmp, cumu, nbspt, adiel, lgcata, ncdyn
     character(len=1) :: aof
     character(len=24) :: valk(2)
     character(len=8) :: k8b, nocmp, nomaiz, nonoez, nommaz, nomgd
     character(len=16) :: nomcmd
     character(len=19) :: noligr, chm19z, ncmp
-    logical(kind=1) :: diff, trouve, nogran
+    aster_logical :: diff, trouve, nogran
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: long_pt_cumu(:) => null()

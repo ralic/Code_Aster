@@ -8,6 +8,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -16,7 +17,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
-    logical(kind=1) :: fnoevo, perman, axi
+    aster_logical :: fnoevo, perman, axi
     integer :: nno, nnos, npi, ipoids, ipoid2, ivf, ivf2, nnom
     integer :: idfde, idfde2, imate, dimdef, dimcon, dimuel, npg
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -140,11 +141,11 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 !
             do 220 k = 1, dimuel
                 ftemp(k) = ftemp(k) + abs(bsigm(k))
-220          continue
+220         continue
             sigtm(j+dimcon*(i-1)) = 0.0d0
 !
-210      continue
-200  continue
+210     continue
+200 continue
 !
     call daxpy(dimuel, 1.d0/npi, ftemp(1), 1, vectu(1),&
                1)
@@ -153,6 +154,6 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
         if (abs(vectu(k)) .lt. r8miem()) then
             call utmess('F', 'ALGORITH10_40')
         endif
-230  continue
+230 continue
 !
 end subroutine

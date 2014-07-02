@@ -1,5 +1,5 @@
-subroutine nmvmpo(fami, npg, nno, option, nc, &
-                  xl, wgauss, icodma, sect, u, &
+subroutine nmvmpo(fami, npg, nno, option, nc,&
+                  xl, wgauss, icodma, sect, u,&
                   du, contm, contp, fl, klv)
 !
 ! ======================================================================
@@ -25,6 +25,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
     real(kind=8) :: xl, sect(*), u(nno*nc), du(nno*nc), fl(nno*nc), klv(*)
     real(kind=8) :: contm(npg*nc), contp(npg*nc), wgauss(npg)
 !
+#include "asterf_types.h"
 #include "asterfort/jsd1ff.h"
 #include "asterfort/mavec.h"
 #include "asterfort/moytem.h"
@@ -62,7 +63,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
 !
     integer :: codres(2), itemp, iret
     character(len=2) :: nomres(2)
-    logical(kind=1) :: vecteu, matric
+    aster_logical :: vecteu, matric
     integer :: dimklv, kp, kk, i, j, k
     real(kind=8) :: eps(nc), deps(nc), fg(nno*nc), sigp(nc), sigm(nc)
     real(kind=8) :: e, nu, g, phiy, phiz, xls2, epsthf(1), epsthd(1)
@@ -87,10 +88,10 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
 !
     hoel(:,:) = 0.0d0
     hota(:,:) = 0.0d0
-    d1b(:,:)  = 0.0d0
+    d1b(:,:) = 0.0d0
     work(:,:) = 0.0d0
-    rg0(:,:)  = 0.0d0
-    fg(:)     = 0.0d0
+    rg0(:,:) = 0.0d0
+    fg(:) = 0.0d0
 !
 !   Température
     call verifm(fami, npg, 1, '-', icodma,&

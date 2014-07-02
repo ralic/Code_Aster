@@ -3,6 +3,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
@@ -58,14 +59,14 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
     character(len=6) :: name
     character(len=3) :: edge
-    logical(kind=1) :: courbe
+    aster_logical :: courbe
     parameter   (tole=1.d-1)
 !
 ! --------------------------------------------------------------------
 !
     call jemarq()
 !
-    call elrefe_info(elrefe=elrefp,fami='RIGI',nno=nno)
+    call elrefe_info(elrefe=elrefp, fami='RIGI', nno=nno)
 !
     itemax=100
     epsmax=1.d-8
@@ -82,15 +83,15 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !
     ASSERT( ndime .eq. 3)
 !
-    do i = 1,ndime
-       pi1pi2(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
-       pi1pi3(i)=pinref(ndime*(pi3-1)+i)-pinref(ndime*(pi1-1)+i)
+    do i = 1, ndime
+        pi1pi2(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
+        pi1pi3(i)=pinref(ndime*(pi3-1)+i)-pinref(ndime*(pi1-1)+i)
     enddo
     call xnormv(ndime, pi1pi2, rbid)
     call xnormv(ndime, pi1pi3, rbid)
     call provec(pi1pi2, pi1pi3, v)
-    do i=1,ndime
-       ptxx(i)=v(i)
+    do i = 1, ndime
+        ptxx(i)=v(i)
     enddo
 !
 !   CALCUL D UN POINT DE DEPART POUR LE NEWTON
@@ -107,60 +108,63 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     maxi=0.d0
     edge=""
 !   ARETE I1-I2
-    call xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
+    call xcedge(ndime, pinref, pi1, pi2, pmiref,&
+                m12, crit)
     if (crit .gt. maxi) then
-      maxi=crit
-      edge="A12"
+        maxi=crit
+        edge="A12"
     endif
 !   ARETE I2-I4
-    call xcedge(ndime, pinref, pi2, pi4, pmiref, m24, crit)
+    call xcedge(ndime, pinref, pi2, pi4, pmiref,&
+                m24, crit)
     if (crit .gt. maxi) then
-      maxi=crit
-      edge="A24"
+        maxi=crit
+        edge="A24"
     endif
 !   ARETE I3-I4
-    call xcedge(ndime, pinref, pi3, pi4, pmiref, m34, crit)
+    call xcedge(ndime, pinref, pi3, pi4, pmiref,&
+                m34, crit)
     if (crit .gt. maxi) then
-      maxi=crit
-      edge="A34"
+        maxi=crit
+        edge="A34"
     endif
 !   ARETE I1-I3
-    call xcedge(ndime, pinref, pi1, pi3, pmiref, m13, crit)
+    call xcedge(ndime, pinref, pi1, pi3, pmiref,&
+                m13, crit)
     if (crit .gt. maxi) then
-      maxi=crit
-      edge="A13"
+        maxi=crit
+        edge="A13"
     endif
 !
     if (maxi .gt. tole) courbe=.true.
 !
-    if ( .not.courbe ) then
-        do i=1,ndime
-           ptxx(i+ndime)=(pinref(ndime*(pi1-1)+i)+&
+    if (.not.courbe) then
+        do i = 1, ndime
+            ptxx(i+ndime)=(pinref(ndime*(pi1-1)+i)+&
                     pinref(ndime*(pi4-1)+i))/2.d0
         enddo
     else
-        do i=1,ndime
-           if (edge .eq. "A12" .or.  edge .eq. "A34") then
-               ptxx(i+ndime)=(pmiref(ndime*(m12-1)+i)+&
+        do i = 1, ndime
+            if (edge .eq. "A12" .or. edge .eq. "A34") then
+                ptxx(i+ndime)=(pmiref(ndime*(m12-1)+i)+&
                             pmiref(ndime*(m34-1)+i))/2.d0
-           else if(edge .eq. "A13" .or.  edge .eq. "A24") then
-               ptxx(i+ndime)=(pmiref(ndime*(m13-1)+i)+&
+            else if (edge .eq. "A13" .or. edge .eq. "A24") then
+                ptxx(i+ndime)=(pmiref(ndime*(m13-1)+i)+&
                             pmiref(ndime*(m24-1)+i))/2.d0
-           else
-               ASSERT(.false.)
-           endif
+            else
+                ASSERT(.false.)
+            endif
         enddo
     endif
 !
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
-    call xnewto(elrefp, name, n,&
-                ndime, ptxx, ndim, geom, lsn,&
-                ibid, ibid, itemax,&
-                epsmax, ksi)
+    call xnewto(elrefp, name, n, ndime, ptxx,&
+                ndim, geom, lsn, ibid, ibid,&
+                itemax, epsmax, ksi)
 !
-    do i=1,ndime
-       cenref(i)=ksi(1)*ptxx(i)+ptxx(i+ndime)
+    do i = 1, ndime
+        cenref(i)=ksi(1)*ptxx(i)+ptxx(i+ndime)
     enddo
 !
     call xelrex(elrefp, nno, x)

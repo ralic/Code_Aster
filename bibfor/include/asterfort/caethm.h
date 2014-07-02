@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine caethm(nomte, axi, perman, vf, typvf,&
                       typmod, modint, mecani, press1, press2,&
@@ -25,9 +27,9 @@ interface
                       ivf, idfde, ipoid2, ivf2, idfde2,&
                       npi2, jgano)
         character(len=16) :: nomte
-        logical(kind=1) :: axi
-        logical(kind=1) :: perman
-        logical(kind=1) :: vf
+        aster_logical :: axi
+        aster_logical :: perman
+        aster_logical :: vf
         integer :: typvf
         character(len=8) :: typmod(2)
         character(len=3) :: modint

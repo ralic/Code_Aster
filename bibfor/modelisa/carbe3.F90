@@ -16,6 +16,7 @@ subroutine carbe3(charge)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -67,12 +68,12 @@ subroutine carbe3(charge)
     integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
     integer :: idxddl
     integer :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
-    integer ::  jlises, jcofes, jddles, jcescl, jcoore
+    integer :: jlises, jcofes, jddles, jcescl, jcoore
     integer :: jnorel, jddl, jcmur, jcmuc, jcmuf, jdirec, jdime
-    integer :: jnogro, jnoesc,  jnzddl, jnznor
+    integer :: jnogro, jnoesc, jnzddl, jnznor
     integer :: nbrbe3, nbdles, nbcfes, nbddl, nblign, nbcol, nbgrou, nbent
     integer :: nbnoeu, nbdlma, maxesc, maxles, maxddl, dime
-    logical(kind=1) :: fincod, ddlesc(6), ddlmai(6), frstco, dime2d
+    aster_logical :: fincod, ddlesc(6), ddlmai(6), frstco, dime2d
     real(kind=8) :: rbid, coomai(3), cooesc(3), lc, norme, lcsqua, stws(6, 6)
     real(kind=8) :: cofesc, beta, x(6, 6)
     real(kind=8), pointer :: b(:) => null()

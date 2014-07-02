@@ -3,8 +3,9 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
                   valinc, solalg, sdtime, sdstat, mmcvca,&
                   instan)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
@@ -43,7 +44,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     character(len=19), intent(in) :: sddisc, sddyna
     character(len=24), intent(in) :: defico, resoco, sdtime, sdstat, sdimpr, numedd
     character(len=19), intent(in) :: valinc(*), solalg(*)
-    logical(kind=1), intent(out) :: mmcvca
+    aster_logical, intent(out) :: mmcvca
     real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
@@ -74,8 +75,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lallv, lnewtc, lnewtg
-    logical(kind=1) :: loptin
+    aster_logical :: lallv, lnewtc, lnewtg
+    aster_logical :: loptin
     integer :: ctcsta
     character(len=19) :: depgeo, depplu
 !
@@ -129,7 +130,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call mmmbca(noma  , sddyna, iterat, defico, resoco, &
+        call mmmbca(noma, sddyna, iterat, defico, resoco,&
                     sdstat, valinc, solalg, ctcsta, mmcvca,&
                     instan)
         call nmtime(sdtime, 'END', 'CTCC_CONT')

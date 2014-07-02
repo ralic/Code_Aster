@@ -1,7 +1,8 @@
 subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -57,7 +58,7 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
     integer, pointer :: p_cycl_eta(:) => null()
     integer :: point_number, point_index
     integer :: cycl_index
-    logical(kind=1) :: lctcc
+    aster_logical :: lctcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +86,7 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
 !
 ! - Erasing cycling information
 !
-    if (cycl_type.eq.0) then
+    if (cycl_type .eq. 0) then
         ASSERT(point_curr.eq.0)
         do cycl_index = 1, 4
             do point_index = 1, point_number

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
                       errmax, y0, dy0, rkfct, resu,&
@@ -37,7 +39,7 @@ interface
                 real(kind=8) :: yy0(nbeq)
                 real(kind=8) :: dy0(nbeq)
                 real(kind=8) :: dyy(nbeq)
-                logical(kind=1) :: decoup
+                aster_logical :: decoup
             end subroutine rkfct
         end interface
     end subroutine rk5adp

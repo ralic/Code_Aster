@@ -24,10 +24,11 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
 ! IN  INST    : CARTE CONTENANT LA VALEUR DE L'INSTANT
 ! OUT/JXOUT VECELZ  : VECT_ELEM
 ! ----------------------------------------------------------------------
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -51,14 +52,14 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
     parameter (nompro='VEDITH')
 !
     character(len=8) :: nomch0, nomcha
-    character(len=8) ::  lpain(3), paout, newnom
+    character(len=8) :: lpain(3), paout, newnom
     character(len=16) :: option
     character(len=19) :: vecele
     character(len=24) :: ligrch, lchin(3), resuel, chgeom
     integer :: iaux, iret, nchar, jinf, jchar, icha
     integer :: numdi
     integer :: exicha
-    logical(kind=1) :: bidon
+    aster_logical :: bidon
 !
 ! ----------------------------------------------------------------------
 !
@@ -126,9 +127,9 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
                 call reajre(vecele, resuel, 'V')
             endif
         endif
-30  end do
+ 30 end do
 !
-40  continue
+ 40 continue
 !
     vecelz = vecele//'.RELR'
     call jedema()

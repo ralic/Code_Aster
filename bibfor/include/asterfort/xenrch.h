@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                       cnsen, cnsenr, ndim, fiss, goinop,&
@@ -28,7 +30,7 @@ interface
         character(len=19) :: cnsenr
         integer :: ndim
         character(len=8) :: fiss
-        logical(kind=1) :: goinop
+        aster_logical :: goinop
         character(len=24) :: lismae
         character(len=24) :: lisnoe
     end subroutine xenrch

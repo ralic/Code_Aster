@@ -1,5 +1,6 @@
 subroutine te0534(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/confac.h"
@@ -74,7 +75,7 @@ subroutine te0534(option, nomte)
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
     real(kind=8) :: rr, cohes(3), rela
-    logical(kind=1) :: lbid, lelim
+    aster_logical :: lbid, lelim
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg
     character(len=16) :: enr
@@ -95,8 +96,8 @@ subroutine te0534(option, nomte)
     nbspg = 0
     call vecini(3, 0.d0, tau2)
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -294,15 +295,15 @@ subroutine te0534(option, nomte)
         call jevech('PSTANO', 'L', jstno)
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, lbid,&
-                    option, nomte, ddlm,&
-                    nfiss, jfisno, vect=zr(ivect))
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    vect=zr(ivect))
     endif
 !     SUPPRESSION DES DDLS DE CONTACT
     if (lelim) then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, vstnc, .true._1, .true._1,&
-                    option, nomte, ddlm,&
-                    nfiss, jfisno, vect=zr(ivect))
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    vect=zr(ivect))
     endif
 !
     call jedema()

@@ -18,6 +18,7 @@ subroutine ssdmte(mag)
     implicit none
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -50,7 +51,7 @@ subroutine ssdmte(mag)
 !        MAG : NOM DU MAILLAGE RESULTAT.
 !
     character(len=8) :: nomacr, nomnoe
-    logical(kind=1) :: recom
+    aster_logical :: recom
     character(len=19) :: coordo
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
@@ -68,8 +69,8 @@ subroutine ssdmte(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2coex, iacoex,   iadesc
-    integer ::  iagno,  ianeno,   iarefe
+    integer :: i, i2coex, iacoex, iadesc
+    integer :: iagno, ianeno, iarefe
     integer :: iasupm, iatypl, iavale, ibid, ico, igeomr, igno
     integer :: ilcoex, ima, ino, iret, isma, jno, k
     integer :: kno, nbgno, nbma, nbno, nbnoco, nbnoe, nbnoet
@@ -100,9 +101,9 @@ subroutine ssdmte(mag)
 !     -- ON COMPTE LES NOEUDS PHYSIQUES REELLEMENT CONSERVES :
 !     -------------------------------------------------------
     ico=0
-    do 1, ino=1,nbnoph
-    if (noeud_conf(ino) .eq. ino) ico=ico+1
-    1 end do
+    do 1 ino = 1, nbnoph
+        if (noeud_conf(ino) .eq. ino) ico=ico+1
+  1 end do
     nbnop2=ico
     nbnot2= nbnop2+nbnola
     nbnoco= nbnoph-nbnop2
@@ -122,13 +123,13 @@ subroutine ssdmte(mag)
         nbnoe=dime_2(4*(isma-1)+1)
         nbnol=dime_2(4*(isma-1)+2)
         nbnoet= nbnoe+nbnol
-        do 21, i=1,nbnoet
-        ino=zi(iasupm-1+i)
-        if (ino .gt. nbnoph) then
-            zi(iatypl-1+ino-nbnoph)= conx(3*(i-1)+3)
-        endif
-21      continue
- 2      continue
+        do 21 i = 1, nbnoet
+            ino=zi(iasupm-1+i)
+            if (ino .gt. nbnoph) then
+                zi(iatypl-1+ino-nbnoph)= conx(3*(i-1)+3)
+            endif
+ 21     continue
+  2     continue
     endif
 !
 !
@@ -161,9 +162,9 @@ subroutine ssdmte(mag)
         call codent(ico, 'G', nomnoe(2:8))
     endif
     call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
-    do 31, k=1,3
-    zr(iavale-1+3*(ico-1)+k)=coordo_2(3*(ino-1)+k)
-31  continue
+    do 31 k = 1, 3
+        zr(iavale-1+3*(ico-1)+k)=coordo_2(3*(ino-1)+k)
+ 31 continue
     3 end do
 !     -- NOM DES NOEUDS DE LAGRANGE :
     nomnoe='&?'
@@ -175,7 +176,7 @@ subroutine ssdmte(mag)
 !
 !     -- ON OTE LA "RECURSIVITE" DE .NOEUD_CONF:
 !     ------------------------------------------
- 5  continue
+  5 continue
     recom=.false.
     do 6 ,ino=1,nbnoph
     jno=noeud_conf(ino)
@@ -213,37 +214,37 @@ subroutine ssdmte(mag)
         call jeveuo(mag//'.CONNEX', 'E', iacoex)
         call jeveuo(jexatr(mag//'.CONNEX', 'LONCUM'), 'L', ilcoex)
     endif
-    do 81,ima=1,nbma
-    nbno= zi(ilcoex-1+ima+1)-zi(ilcoex-1+ima)
-    i2coex=iacoex-1+zi(ilcoex-1+ima)
-    do 811, i=1,nbno
-    ino=zi(i2coex-1+i)
-    if (ino .le. nbnoph) then
-        jno=zi(ianeno-1+ noeud_conf(ino))
-        zi(i2coex-1+i)=jno
-    else
-        zi(i2coex-1+i)=ino-nbnoco
-    endif
-811  continue
-    81 end do
+    do 81 ima = 1, nbma
+        nbno= zi(ilcoex-1+ima+1)-zi(ilcoex-1+ima)
+        i2coex=iacoex-1+zi(ilcoex-1+ima)
+        do 811 i = 1, nbno
+            ino=zi(i2coex-1+i)
+            if (ino .le. nbnoph) then
+                jno=zi(ianeno-1+ noeud_conf(ino))
+                zi(i2coex-1+i)=jno
+            else
+                zi(i2coex-1+i)=ino-nbnoco
+            endif
+811     continue
+ 81 end do
 !
 !     -- MODIFICATION DE .SUPMAIL:
 !     ----------------------------
-    do 82,isma=1,nbsma
-    call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
-    nbnoe=dime_2(4*(isma-1)+1)
-    nbnol=dime_2(4*(isma-1)+2)
-    nbnoet= nbnoe+nbnol
-    do 821, i=1,nbnoet
-    ino=zi(iasupm-1+i)
-    if (ino .le. nbnoph) then
-        jno=zi(ianeno-1+ noeud_conf(ino))
-        zi(iasupm-1+i)=jno
-    else
-        zi(iasupm-1+i)=ino-nbnoco
-    endif
-821  continue
-    82 end do
+    do 82 isma = 1, nbsma
+        call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
+        nbnoe=dime_2(4*(isma-1)+1)
+        nbnol=dime_2(4*(isma-1)+2)
+        nbnoet= nbnoe+nbnol
+        do 821 i = 1, nbnoet
+            ino=zi(iasupm-1+i)
+            if (ino .le. nbnoph) then
+                jno=zi(ianeno-1+ noeud_conf(ino))
+                zi(iasupm-1+i)=jno
+            else
+                zi(iasupm-1+i)=ino-nbnoco
+            endif
+821     continue
+ 82 end do
 !
 !     -- MODIFICATION DE .GROUPENO:
 !     ----------------------------
@@ -253,12 +254,12 @@ subroutine ssdmte(mag)
         do 9 ,igno=1,nbgno
         call jeveuo(jexnum(mag//'.GROUPENO', igno), 'E', iagno)
         call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn)
-        do 91, i=1,nbnogn
-        ino=zi(iagno-1+i)
-        jno=zi(ianeno-1+ noeud_conf(ino))
-        zi(iagno-1+i)=jno
-91      continue
- 9      continue
+        do 91 i = 1, nbnogn
+            ino=zi(iagno-1+i)
+            jno=zi(ianeno-1+ noeud_conf(ino))
+            zi(iagno-1+i)=jno
+ 91     continue
+  9     continue
     endif
 !
 !

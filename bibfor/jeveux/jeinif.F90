@@ -19,6 +19,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 ! ======================================================================
 ! aslint: disable=C1002
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/gtopti.h"
 #include "asterc/gtoptk.h"
@@ -121,7 +122,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     integer :: vali(7), irt, ind
     parameter      ( ncar = 11 )
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: lenrg
+    aster_logical :: lenrg
     integer :: lidbas, lideff
     parameter      ( lidbas = 20 , lideff = 15 )
     character(len=8) :: cidbas(lidbas)
@@ -231,7 +232,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
                     imarq(jmarq(ic)+2*17-1))
         do 345 ind = 1, nremax(ic)
             indir(jindir(ic)+ind) = ind
-345      continue
+345     continue
 !
         lgbl = 1024*longbl(ic)*lois
         call jjalls(lgbl, ic, 'V', 'I', lois,&
@@ -313,7 +314,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
                     imarq(jmarq(ic)+2*7-1))
         do 30 ind = 1, nremax(ic)
             rnom(jrnom(ic) + ind ) = '?'
-30      continue
+ 30     continue
         lon = nremax(ic) * lois
         call jjalls(lon, ic, 'V', 'I', lois,&
                     z, ltyp, iadrs, kat(8), kdy(8))
@@ -353,7 +354,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             iusadi( iadrs + (3*l-2) - 1 ) = -1
             iusadi( iadrs + (3*l-1) - 1 ) = -1
             iusadi( iadrs + (3*l ) - 1 ) = 0
-123      continue
+123     continue
         jusadi(ic) = iadrs - 1
         call jjecrs(kat(14), ic, 14, 0, 'E',&
                     imarq(jmarq(ic)+2*14-1))
@@ -411,14 +412,14 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             endif
             iadm(jiadm(ic)+2*i-1) = kat(i)
             iadm(jiadm(ic)+2*i ) = kdy(i)
- 5      continue
+  5     continue
 !
         do 10 i = 2, lideff
             iadd (jiadd(ic)+2*i-1) = 0
             iadd (jiadd(ic)+2*i ) = 0
             call jxecro(ic, kat(i), iadd(jiadd(ic)+2*i-1), lso(i), 0,&
                         i)
-10      continue
+ 10     continue
         cara(jcara(ic)+6) = iadd(jiadd(ic) + 2*2-1 )
         cara(jcara(ic)+7) = iadd(jiadd(ic) + 2*2 )
     else
@@ -509,7 +510,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         nbext = (nbluti(ic)/nbenrg(ic))+1
         do 100 k = 0, nbext-1
             call jxouvr(ic, k+1)
-100      continue
+100     continue
         iext(ic) = nbext
 !
         lgbl = nremax(ic)*lois
@@ -520,7 +521,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
                     imarq(jmarq(ic)+2*17-1))
         do 567 ind = 1, nremax(ic)
             indir(jindir(ic)+ind) = ind
-567      continue
+567     continue
 !
         lgbl = 1024*longbl(ic)*lois
         call jjalls(lgbl, ic, 'V', 'I', lois,&
@@ -565,7 +566,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             iusadi( iadrs + (3*l-2) - 1 ) = -1
             iusadi( iadrs + (3*l-1) - 1 ) = -1
             iusadi( iadrs + (3*l ) - 1 ) = 0
-231      continue
+231     continue
         jusadi(ic) = iadrs - 1
         call jjecrs(kat(14), ic, 14, 0, 'E',&
                     imarq(jmarq(ic)+2*14-1))
@@ -666,7 +667,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         do 20 i = 1, lidbas
             iadm(jiadm(ic) + 2*i-1 ) = kat(i)
             iadm(jiadm(ic) + 2*i ) = kdy(i)
-20      continue
+ 20     continue
         if (lenrg) then
             long(jlong(ic)+15) = nblma2
             lono(jlono(ic)+15) = nblma2

@@ -69,6 +69,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! ----------------------------------------------------------------------
 ! DECLARATION PARAMETRES D'APPELS
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ddlphy.h"
 #include "asterfort/dismoi.h"
@@ -88,7 +89,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     character(len=19) :: valinc(*), masse, amort, rigid, sdener
     real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)
     real(kind=8) :: fexte(*), famor(*), fliai(*), fnoda(*), fcine(*)
-    logical(kind=1) :: lamort, ldyna, lexpl
+    aster_logical :: lamort, ldyna, lexpl
     character(len=8) :: schema
 !
 !
@@ -98,11 +99,11 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! DECLARATION VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     integer :: iaux, neq, nbcol, long
-    integer :: jdeeq,  icvmoz
+    integer :: jdeeq, icvmoz
     integer :: imasse, iamort, irigid
     integer :: iumoy, iupmum, iumoyz, iupmuz
     integer :: ivmoy, ivpmvm
-    integer :: ikumoy,  imumoy,   idesc
+    integer :: ikumoy, imumoy, idesc
     character(len=24) :: numedd
     character(len=19) :: depplu
     character(len=11) :: forma

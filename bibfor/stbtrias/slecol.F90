@@ -34,6 +34,7 @@ subroutine slecol(imod, nbmail)
 !     ================================================================
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
@@ -48,14 +49,14 @@ subroutine slecol(imod, nbmail)
     character(len=1) :: prfmai
     character(len=4) :: kbid
     character(len=8) :: chmail, chgrou
-    logical(kind=1) :: logiq(256)
+    aster_logical :: logiq(256)
     integer :: jpo(256), jnomb(256), jmax(256)
 !  ------------ FIN DECLARATION -------------
 !
 !  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
     integer :: i, ic, icmax, icol, imod, inum, ipos
-    integer :: j,  nbma, nbmail, nbmax, nbtot
+    integer :: j, nbma, nbmail, nbmax, nbtot
     integer, pointer :: maille(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -67,7 +68,7 @@ subroutine slecol(imod, nbmail)
         jpo(i) = 0
         jnomb(i) = 0
         jmax(i) = 1000
-10  end do
+ 10 end do
 !
     nbmax = 1000
     call jeveuo('&&PRESUP.INFO.MAILLE', 'L', vi=maille)
@@ -97,7 +98,7 @@ subroutine slecol(imod, nbmail)
         endif
         jnomb(ipos) = nbma + 1
         zk8(jpo(ipos)-1+nbma+1) = chmail
-100  end do
+100 end do
 !
 ! --> ECRITURE DES GROUPES DE MAILLES PAR COULEUR
 !
@@ -112,7 +113,7 @@ subroutine slecol(imod, nbmail)
             write (imod,'(A)') '%'
             call jedetr('&&PRESUP.COUL'//kbid)
         endif
-110  end do
+110 end do
 !
     call jedema()
 end subroutine

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
                       geoerr, geonoe, geoval)
@@ -22,8 +24,8 @@ interface
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: solalg(*)
-        logical(kind=1) :: dvgeom
-        logical(kind=1) :: geoerr
+        aster_logical :: dvgeom
+        aster_logical :: geoerr
         character(len=16) :: geonoe
         real(kind=8) :: geoval
     end subroutine cfcgeo

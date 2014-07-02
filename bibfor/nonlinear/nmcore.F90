@@ -22,6 +22,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfdisr.h"
@@ -82,11 +83,11 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
     real(kind=8) :: valr(2), detect
     real(kind=8) :: chmini
     integer :: iresi
-    logical(kind=1) :: convok(nresi), convno(nresi)
+    aster_logical :: convok(nresi), convno(nresi)
     real(kind=8) :: resi(nresi), resid(nresi)
-    logical(kind=1) :: lrela, lmaxi, lrefe, lcomp, lfrot, lgeom
-    logical(kind=1) :: cvresi, maxrel, maxnod
-    logical(kind=1) :: lcont
+    aster_logical :: lrela, lmaxi, lrefe, lcomp, lfrot, lgeom
+    aster_logical :: cvresi, maxrel, maxnod
+    aster_logical :: lcont
 !
 ! ----------------------------------------------------------------------
 !
@@ -194,7 +195,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
         else
             convok(iresi) = .true.
         endif
-10  end do
+ 10 end do
 !
 ! --- ENREGISTREMENT DES EVENEMENTS
 !

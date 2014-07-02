@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                       coorn, nbnoeu, dire3, milieu)
@@ -26,6 +28,6 @@ interface
         character(len=24) :: coorn
         integer :: nbnoeu
         character(len=24) :: dire3
-        logical(kind=1) :: milieu
+        aster_logical :: milieu
     end subroutine gdirec
 end interface

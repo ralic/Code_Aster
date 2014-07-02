@@ -21,6 +21,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 ! ----------------------------------------------------------------------
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
@@ -43,7 +44,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     integer :: nodegl, inol, ino2, mailrf, nbpgrf
     integer :: inog2, ii, ima1, ima, inom1, inom2, inom3
     integer :: nbmag1, nbnog2, nbnog
-    integer :: ialim1, ialin2, jcoor1,  icxma1
+    integer :: ialim1, ialin2, jcoor1, icxma1
     integer :: iacono, iaconb, iacom1, iaconu, iacocf
     integer :: listno(27)
     real(kind=8) :: normgl, rbid, normlo
@@ -51,7 +52,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     real(kind=8) :: cobary(3), ksi(2), ff(27), coefno(27), crrefe(81)
     character(len=8) :: ntypma, elref, cbt(15)
     character(len=24) :: grpma, grpno
-    logical(kind=1) :: inmail
+    aster_logical :: inmail
     real(kind=8), pointer :: coor2(:) => null()
     integer, pointer :: typmail(:) => null()
 ! ======================================================================
@@ -110,7 +111,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
         ino2 = zi(ialin2-1+inog2)
         do 20 ii = 1, 3
             con1m2(ii) = coor2(3*(ino2-1)+ii)
-20      continue
+ 20     continue
         mailrf = 0
 !
 !       RECHERCHE DES MAILLES1 ASSOCIEES AU NOEUD1
@@ -143,7 +144,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 do 40 ii = 1, 3
                     con1m1(ii) = zr(jcoor1-1+3*(inom1-1)+ii)
                     con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
-40              continue
+ 40             continue
 ! VERSION ORIGINALE
 !            CALL PJ3D4C(CON1M2,CON1M1,CON2M1,INMAIL,COBARY,NORMLO)
                 call pj3da4(con1m2, con1m1, con2m1, cobary(1), cobary(2),&
@@ -151,7 +152,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 ksi(1) = 0
                 do 50 ii = 1, 2
                     ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii-1)+1)
-50              continue
+ 50             continue
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (TRIA)
 !         --------------------------------------
@@ -163,7 +164,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     con1m1(ii) = zr(jcoor1-1+3*(inom1-1)+ii)
                     con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
                     con3m1(ii) = zr(jcoor1-1+3*(inom3-1)+ii)
-60              continue
+ 60             continue
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
                 call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
@@ -174,7 +175,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 do 70 ii = 1, 3
                     ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii-1)+1)
                     ksi(2) = ksi(2) + cobary(ii)*crrefe(ndim*(ii-1)+2)
-70              continue
+ 70             continue
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (QUAD)
 !         --------------------------------------
@@ -189,7 +190,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     con1m1(ii) = zr(jcoor1-1+3*(inom1-1)+ii)
                     con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
                     con3m1(ii) = zr(jcoor1-1+3*(inom3-1)+ii)
-80              continue
+ 80             continue
 !  VERSION ORIGINALE
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
@@ -205,7 +206,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     do 90 ii = 1, 3
                         con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
                         con3m1(ii) = zr(jcoor1-1+3*(inom3-1)+ii)
-90                  continue
+ 90                 continue
 !  VERSION ORIGINALE
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
@@ -216,14 +217,14 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     do 100 ii = 2, 3
                         ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii)+ 1)
                         ksi(2) = ksi(2) + cobary(ii)*crrefe(ndim*(ii)+ 2)
-100                  continue
+100                 continue
                 else
                     ksi(1) = 0.d0
                     ksi(2) = 0.d0
                     do 110 ii = 1, 3
                         ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii- 1)+1)
                         ksi(2) = ksi(2) + cobary(ii)*crrefe(ndim*(ii- 1)+2)
-110                  continue
+110                 continue
                 endif
             else
 !            WRITE (6,*) 'TYPE DE MAILLE NON RECONNUE : ',NTYPMA
@@ -241,9 +242,9 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 do 120 ii = 1, nbpgrf
                     listno(ii) = zi(icxma1-1+ii)
                     coefno(ii) = ff(ii)
-120              continue
+120             continue
             endif
-30      continue
+ 30     continue
 !
 !       AFFECTATION DU NOEUD LE PLUS PROCHE EN CAS DE PROBLEME
 !       ======================================================
@@ -259,13 +260,13 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     normlo = 0.d0
                     do 150 ii = 1, 3
                         normlo = normlo + (zr(inol+ii)-con1m2(ii))**2
-150                  continue
+150                 continue
                     if (normlo .lt. normgl) then
                         normgl = normlo
                         nodegl = zi(icxma1-1+inom1)
                     endif
-140              continue
-130          continue
+140             continue
+130         continue
             mailrf = 0
             nbpgrf = 1
             listno(1) = nodegl
@@ -279,9 +280,9 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
         do 160 ii = 1, nbpgrf
             zi(iaconu-1+flag+ii) = listno(ii)
             zr(iacocf-1+flag+ii) = coefno(ii)
-160      continue
+160     continue
         flag = flag + nbpgrf
-10  end do
+ 10 end do
 ! ======================================================================
 ! IMPRESSIONS POUR VERIFICATION
 !      FLAG = 0

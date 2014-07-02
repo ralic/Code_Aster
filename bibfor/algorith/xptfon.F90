@@ -21,6 +21,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cengra.h"
@@ -49,7 +50,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
-    logical(kind=1) :: orient, goinop
+    aster_logical :: orient, goinop
 !     ------------------------------------------------------------------
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -80,8 +81,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
     integer :: fa(6, 4), ibid3(12, 3), vecind(5)
     integer :: jconx1, jconx2, jcoor
-    integer ::   jglsn, jglst, igeom,   itypma
-    integer :: indipt,  jborl, jdirol, jnvdir, jlistp
+    integer :: jglsn, jglst, igeom, itypma
+    integer :: indipt, jborl, jdirol, jnvdir, jlistp
     integer :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
     integer :: nunopa, nunopb, nunopc, nunopd
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
@@ -89,10 +90,10 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     real(kind=8) :: normi
     character(len=8) :: typma, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn
-    logical(kind=1) :: fabord, indic
+    aster_logical :: fabord, indic
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
-    logical(kind=1), pointer :: ptbord(:) => null()
+    aster_logical, pointer :: ptbord(:) => null()
     integer, pointer :: typmail(:) => null()
     real(kind=8), pointer :: gn(:) => null()
     real(kind=8), pointer :: gt(:) => null()

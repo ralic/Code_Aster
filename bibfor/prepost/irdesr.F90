@@ -4,6 +4,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                   lmasu, nbcmp, ncmps, nocmpl)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/ecrtes.h"
@@ -23,7 +24,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
     real(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*), nocmpl(*)
     character(len=*) :: titr, nomnoe(*), nomsd, nomsym
-    logical(kind=1) :: lmasu
+    aster_logical :: lmasu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,19 +72,19 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
     character(len=80) :: entete(10), titre, texte
     integer :: nbchs, nbcmpt
     integer :: impre, iente, iutil
-    logical(kind=1) :: afaire, lcmp
+    aster_logical :: afaire, lcmp
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i,  ic, ichs, icmp,  icms
+    integer :: i, ic, ichs, icmp, icms
     integer :: icmsup, icompt, icp, ida, idebu, iec, ier
     integer :: ifin, ilig, indats, inno, ino
-    integer :: ires, irval,  ival, j, jadm
+    integer :: ires, irval, ival, j, jadm
     integer :: jj, jl, jmax, jpos, jtitr, k, l
     integer :: ll, nbdats, ncmp, ni
     integer, pointer :: ipcmps(:) => null()
-    logical(kind=1), pointer :: ltabl(:) => null()
+    aster_logical, pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()
@@ -101,7 +102,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
     titre = zk80(jtitr)
     do 1 i = 1, ncmpmx
         ltabl(i)=.false.
- 1  end do
+  1 end do
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL ---
 !
@@ -111,7 +112,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
 ! ---- RECHERCHE DES GRANDEURS SUPERTAB -----
 !
     call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
-                nbcmps, nomgds,ipcmps)
+                nbcmps, nomgds, ipcmps)
 !
 !      ==================
 ! ---- PARTIE 1 : NBCMP=0
@@ -125,7 +126,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 afaire=.false.
                 do 2 icp = 1, nbcmps(ichs)
                     afaire = ( afaire .or. ltabl(ipcmps((ichs- 1)*ncmpmx+icp)) )
- 2              continue
+  2             continue
                 if (.not. afaire) goto 10
             endif
             iente = 1
@@ -142,7 +143,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 ifin = idebu+iutil
                 texte(idebu:ifin) = nocmp(1:iutil)//' '
                 idebu = ifin+1
- 5          continue
+  5         continue
             iutil = lxlgut(texte)
             jmax = lxlgut(titre)
             jmax = min(jmax,(80-iutil-2))
@@ -152,7 +153,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 ino = numnoe(inno)
                 do 17 iec = 1, nec
                     dg(iec)=prno((ino-1)*(nec+2)+2+iec)
-17              continue
+ 17             continue
 !
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !         IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -162,7 +163,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
 !
                 do 25 ic = 1, nbcmps(ichs)
                     zr(irval-1+ic) = 0.0d0
-25              continue
+ 25             continue
 !
                 icompt = 0
                 do 12 icmp = 1, ncmpmx
@@ -176,9 +177,9 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                                 zr(irval-1+icms) = vale(nueq(ival-1+ icompt))
                                 goto 12
                             endif
-13                      continue
+ 13                     continue
                     endif
-12              continue
+ 12             continue
 !
                 if (impre .eq. 1) then
                     if (iente .eq. 1) then
@@ -194,9 +195,9 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                     i=1,nbcmps(ichs))
                     impre=0
                 endif
-11          end do
+ 11         end do
             if (iente .eq. 0) write (ifi,'(A)') '    -1'
-10      end do
+ 10     end do
 !
 !      =====================
 ! ---- PARTIE 2 : NBCMP.NE.0
@@ -208,9 +209,9 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
         do 897 i = 1, nbchs
             do 898 j = 1, nbcmps(i)
                 if (ncmps(1) .eq. ipcmps((i-1)*ncmpmx+j)) goto 899
-898          continue
-897      end do
-899      continue
+898         continue
+897     end do
+899     continue
         nomgs=nomgds(i)
 !
 ! --- NOMBRE DE DATASET
@@ -226,14 +227,14 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 nbcmps(i)=6
                 ni=ni+6
                 zi(indats+i)=ni
-901          continue
+901         continue
         else
             nbdats=ilig+1
             do 902 i = 1, nbdats-1
                 nbcmps(i)=6
                 ni=ni+6
                 zi(indats+i)=ni
-902          continue
+902         continue
             nbcmps(nbdats)=ires
             zi(indats+nbdats)=ni+ires
         endif
@@ -258,7 +259,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 ifin = idebu+iutil
                 texte(idebu:ifin)=nocmp(1:iutil)//' '
                 idebu = ifin + 1
-865          continue
+865         continue
 !
             iutil = lxlgut(texte)
             jmax = lxlgut(titre)
@@ -270,7 +271,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 ino = numnoe(inno)
                 do 817 iec = 1, nec
                     dg(iec)=prno((ino-1)*(nec+2)+2+iec)
-817              continue
+817             continue
 !
                 ncmp = prno((ino-1)*(nec+2)+2)
                 if (ncmp .eq. 0) goto 811
@@ -278,7 +279,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
 !
                 do 825 ic = 1, 6
                     zr(irval-1+ic) = 0.0d0
-825              continue
+825             continue
 !
 ! ---       COMPOSANTES ADMISES
                 call jedetr('&&IRDESR.CMP')
@@ -291,7 +292,7 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                         zi(jadm+k)=icmp
                         k=k+1
                     endif
-777              continue
+777             continue
 !
 ! ---       POSITIONS DES COMPOSANTES SELECTIONNEES PARMI LES
 !           COMPOSANTES ADMISES
@@ -301,17 +302,17 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                     do 779 jl = 1, k
                         ll=ll+1
                         if (zi(jadm+jl-1) .eq. ncmps(j+zi(indats+ida-1))) goto 780
-779                  continue
-780                  continue
+779                 continue
+780                 continue
                     zi(jpos+l)=ll
                     l=l+1
-778              continue
+778             continue
 !
                 ival = prno((ino-1)*(nec+2)+1)
                 do 812 icmp = 1, nbcmps(ida)
                     jj=zi(jpos+icmp-1)
                     zr(irval-1+icmp)=vale(nueq(ival-1+jj))
-812              continue
+812             continue
 !
                 if (iente .eq. 1) then
                     write(ifi,'(A80)') (entete(i),i=1,10)
@@ -325,9 +326,9 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec,&
                 write (ifi,'(I10,5X,A,A)') ino,'% NOEUD ',nomnoe(inno)
                 write (ifi,'(6(1PE13.5E3))') (zr(irval-1+i),i=1,6)
 !
-811          continue
+811         continue
             if (iente .eq. 0) write (ifi,'(A)') '    -1'
-810      continue
+810     continue
 !
     endif
 !

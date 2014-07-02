@@ -50,6 +50,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !        MODULE(THETA) ( OBJET TRAV3 )
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvid.h"
@@ -71,7 +72,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
     real(kind=8) :: maxtai, mintai, rinf, rsup, xl, valpar(1), valres
     real(kind=8) :: valr(2)
 !
-    logical(kind=1) :: thlagr, thlag2
+    aster_logical :: thlagr, thlag2
 !
 !
     call jemarq()
@@ -113,7 +114,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
         do 1 j = 1, lnoff
             maxtai = max(maxtai,zr(iatmno-1+j))
             mintai = min(mintai,zr(iatmno-1+j))
- 1      continue
+  1     continue
         rinf = 2*maxtai
         rsup = 4*maxtai
         valr(1) = rinf
@@ -131,7 +132,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
     call wkvect(absgam, 'V V R', lnoff, iadabs)
     do 10 i = 1, lnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
-10  end do
+ 10 end do
     xl=zr(iadabs-1+(lnoff-1)+1)
 !
     if (.not.thlagr .and. .not.thlag2) then
@@ -157,7 +158,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
                 zr(iadrt1 + j - 1) = rinf
                 zr(iadrt2 + j - 1) = rsup
             endif
-50      continue
+ 50     continue
 !
         call glegen(nbre, lnoff, xl, absgam, zr(iadrt3))
 !
@@ -184,7 +185,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
                 zr(iadrt1 + j - 1) = rinf
                 zr(iadrt2 + j - 1) = rsup
             endif
-60      continue
+ 60     continue
 !
     endif
 !

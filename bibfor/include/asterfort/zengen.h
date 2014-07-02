@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine zengen(pp, nbeq, yy0, dy0, dyy,&
                       decoup)
@@ -23,6 +25,6 @@ interface
         real(kind=8) :: yy0(nbeq)
         real(kind=8) :: dy0(nbeq)
         real(kind=8) :: dyy(nbeq)
-        logical(kind=1) :: decoup
+        aster_logical :: decoup
     end subroutine zengen
 end interface

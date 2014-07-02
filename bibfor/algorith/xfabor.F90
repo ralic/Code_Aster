@@ -1,6 +1,7 @@
 subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
                   fabord)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -13,7 +14,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     integer :: nunoa, nunob, nunoc
     character(len=8) :: noma
     character(len=19) :: cnxinv
-    logical(kind=1) :: fabord
+    aster_logical :: fabord
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +55,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     integer :: imaa, imab, imac, itypma, numaa, numab, numac, nbmaco
     integer :: ndime
     character(len=19) :: mai
-    character(len=8) ::  typma
+    character(len=8) :: typma
     integer, pointer :: tmdim(:) => null()
 ! ----------------------------------------------------------------------
 !
@@ -123,10 +124,10 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !             ONT EN COMMUN
                     if (numab .eq. numac) nbmaco=nbmaco+1
 !
-120              continue
+120             continue
             endif
-110      continue
-100  end do
+110     continue
+100 end do
 !
     ASSERT(nbmaco.gt.0)
 !

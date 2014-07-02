@@ -18,6 +18,7 @@ subroutine liscom(nomo, codarr, lischa)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -49,7 +50,7 @@ subroutine liscom(nomo, codarr, lischa)
     integer :: ichar, nbchar
     character(len=8) :: modch2, charge, modch1
     integer :: genrec
-    logical(kind=1) :: lveag, lveas
+    aster_logical :: lveag, lveas
 !
 ! ----------------------------------------------------------------------
 !

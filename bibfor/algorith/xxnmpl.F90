@@ -8,6 +8,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -96,7 +97,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop), dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r, ur
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3), deplb1(3, 27), deplb2(3, 27)
-    logical(kind=1) :: grdepl, axi, cplan
+    aster_logical :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
     real(kind=8) :: rind(6), rac2, angmas(3)
@@ -119,7 +120,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     ddls = ddld+ddlc
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
 ! - INITIALISATION
     grdepl = .false.
@@ -127,9 +128,9 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     cplan = typmod(1) .eq. 'C_PLAN'
 !
 !
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -154,7 +155,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         end do
 !
 !             JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
@@ -197,7 +199,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF ET DFDI
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
 !
 ! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T+
         if (axi) then
@@ -214,9 +217,11 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         endif
 !
 ! -     CALCUL DE DEPS
-        call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
-                    r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, deps, rbid33)
+        call xcinem(axi, nnop, nnops, ideplp, grdepl,&
+                    ndim, he, r, ur, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f,&
+                    deps, rbid33)
 !
 ! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T-
         if (axi) then
@@ -233,9 +238,11 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         endif
 !
 ! -     CALCUL DE EPS
-        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                    r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, eps, rbid33)
+        call xcinem(axi, nnop, nnops, idepl, grdepl,&
+                    ndim, he, r, ur, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f,&
+                    eps, rbid33)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i2appm(xp, yp, xso, yso, xin,&
                       yin, cdroi, nbc, dedans)
@@ -24,8 +26,8 @@ interface
         real(kind=8) :: yso(*)
         real(kind=8) :: xin(*)
         real(kind=8) :: yin(*)
-        logical(kind=1) :: cdroi(*)
+        aster_logical :: cdroi(*)
         integer :: nbc
-        logical(kind=1) :: dedans
+        aster_logical :: dedans
     end subroutine i2appm
 end interface

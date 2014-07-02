@@ -20,6 +20,7 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assvec.h"
 #include "asterfort/infdbg.h"
@@ -58,7 +59,7 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
     integer :: ifm, niv
     character(len=1) :: base
     character(len=19) :: cncont
-    logical(kind=1) :: lcont
+    aster_logical :: lcont
 !
 ! ----------------------------------------------------------------------
 !

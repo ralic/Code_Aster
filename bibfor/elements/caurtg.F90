@@ -41,6 +41,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
@@ -48,7 +49,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/vectan.h"
-    integer :: ncmp 
+    integer :: ncmp
     character(len=16) :: nomte
     real(kind=8) :: sigmau(ncmp, 1), sigrtg(ncmp, 1)
 ! -----  VARIABLES LOCALES
@@ -57,7 +58,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
     real(kind=8) :: xab(3, 3), sigmad(3, 3), sigmat(3, 3)
     real(kind=8) :: drot(3, 3), tetag(3)
 !
-    logical(kind=1) :: lgreen
+    aster_logical :: lgreen
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
@@ -105,12 +106,12 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
     do 10 in = 1, nb1
         do 20 ii = 1, 3
             vecthe(in,ii) = zr(idepl+6*(in-1)+ii+3-1)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     do 30 ii = 1, 3
         vecthe(nb2,ii) = zr(idepl+6*nb1+ii-1)
-30  end do
+ 30 end do
 !
 ! --- DETERMINATION DES REPERES LOCAUX AUX NOEUDS DANS LA
 ! --- CONFIGURATION INITIALE
@@ -163,8 +164,8 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
             sigrtg(6,i) = sigmad(2,3)
         endif
 !
-40  end do
+ 40 end do
 !
-9999  continue
+9999 continue
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

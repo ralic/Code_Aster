@@ -19,6 +19,7 @@ subroutine cfflm2(resoco, resigr, ndim, neq, nesmax,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/calapr.h"
@@ -76,7 +77,7 @@ subroutine cfflm2(resoco, resigr, ndim, neq, nesmax,&
     integer :: jfro2
     character(len=19) :: deplc
     integer :: jdepc
-    logical(kind=1) :: liaact
+    aster_logical :: liaact
 !
 ! ----------------------------------------------------------------------
 !
@@ -125,7 +126,7 @@ subroutine cfflm2(resoco, resigr, ndim, neq, nesmax,&
                 liaact = .true.
                 iliac2 = iliac
             endif
-200      continue
+200     continue
 !
 ! ----- CALCUL
 !
@@ -173,7 +174,7 @@ subroutine cfflm2(resoco, resigr, ndim, neq, nesmax,&
             call calapr(nbddl, beta, zr(jafmu), zi(japddl+jdecal), zr( jfro2))
         endif
         call jelibe(jexnum(fro2, iliai))
-100  end do
+100 end do
 !
     call jedema()
 !

@@ -46,6 +46,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 !           VINF   :  VARIABLES INTERNES A T+DT
 !           IRTET  :  CONTROLE DU REDECOUPAGE INTERNE DU PAS DE TEMPS
 !
+#include "asterf_types.h"
 #include "asterfort/lchydr.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcnrte.h"
@@ -83,7 +84,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     real(kind=8) :: dp1, dp2, beta
     real(kind=8) :: terme1, terme2, terme3, sigeq, ebloc
 !
-    logical(kind=1) :: overfl
+    aster_logical :: overfl
 !
     parameter       ( mun  =-1.d0 )
     parameter       ( zero = 0.d0 )
@@ -218,7 +219,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
         endif
         dp1 = 0.d0
 ! -- BOUCLE SUR DP
-11      continue
+ 11     continue
         ncompt = ncompt + 1
         p = pi + theta*dp
         call rsliso(fami, kpg, ksp, '+', imat,&
@@ -262,7 +263,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
             dp = dp + ddp
         endif
         goto 11
-21      continue
+ 21     continue
         p = pi + dp
         irtet = 0
         goto 20
@@ -305,7 +306,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     petit = 1.d-12
 !
 ! -- BOUCLE PRINCIPALE---------------
-10  continue
+ 10 continue
 !
 ! -- CALCUL DE L INCREMENT
     ncompt=ncompt+1
@@ -370,7 +371,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     goto 10
 !
 ! -- CONVERGENCE---------------
-20  continue
+ 20 continue
 ! -- CALCUL DE RIELEQ AVEC THETA =1----
     call lcprsv(deuxmu, depsdv, rigel)
     call lcsove(rigddv, rigel, rigel)
@@ -408,22 +409,22 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     goto 9999
 !
 ! -- ERREURS--------------------------------------------------------
-45  continue
+ 45 continue
     call utmess('Z', 'COMPOR1_16', num_except=23)
     goto 9999
 !
 ! -- PROBABLEMENT UN INCREMENT TROP GRAND DE DEFORMATION-----------
-50  continue
+ 50 continue
 !
     irtet=1
     goto 9999
 !
 ! -- NON CONVERGENCE------------------------------------------------
-60  continue
+ 60 continue
 !
     irtet=1
     goto 9999
 !
 ! ------------------------------------------------------------------
-9999  continue
+9999 continue
 end subroutine

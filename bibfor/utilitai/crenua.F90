@@ -1,6 +1,7 @@
 subroutine crenua(nuage, nomgd, np, nx, nc,&
                   lnual)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -9,7 +10,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 #include "asterfort/wkvect.h"
     integer :: np, nx, nc
     character(len=*) :: nuage, nomgd
-    logical(kind=1) :: lnual
+    aster_logical :: lnual
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

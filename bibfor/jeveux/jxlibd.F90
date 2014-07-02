@@ -17,6 +17,7 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jxecrb.h"
 #include "asterfort/jxlirb.h"
@@ -46,13 +47,13 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical(kind=1) :: litlec
+    aster_logical :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
     common /inbdet/  nblim(n),nbgros(n),nbpeti(n)
 !     ------------------------------------------------------------------
     integer :: kadd, ladd, lgbl
-    logical(kind=1) :: lpetit, lrab
+    aster_logical :: lpetit, lrab
 ! DEB ------------------------------------------------------------------
     kadd = iaddi(1)
     ladd = iaddi(2)
@@ -95,7 +96,7 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
         do 10 i = 1, nblent
             iusadi(jusadi(ic)+3*(kadd+i-1)-2) = -idco
             iusadi(jusadi(ic)+3*(kadd+i-1)-1) = -idos
-10      continue
+ 10     continue
         if (lrab) then
             iusadi(jusadi(ic)+3*(kadd+nblent)-2) = -idco
             iusadi(jusadi(ic)+3*(kadd+nblent)-1) = -idos

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
                       ndim, npi, dimcon, geom, ipoids,&
@@ -38,7 +40,7 @@ interface
         integer :: idfde2
         integer :: nddls
         integer :: nddlm
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: regula(6)
         real(kind=8) :: deplm(dimuel)
         real(kind=8) :: contm(dimcon*npi)

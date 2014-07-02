@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine comthm(option, perman, vf, ifa, valfac,&
                       valcen, imate, typmod, compor, crit,&
@@ -31,8 +33,8 @@ interface
         integer :: dimdef
         integer :: ndim
         character(len=16) :: option
-        logical(kind=1) :: perman
-        logical(kind=1) :: vf
+        aster_logical :: perman
+        aster_logical :: vf
         integer :: ifa
         real(kind=8) :: valfac(maxfa, 14, 6)
         real(kind=8) :: valcen(14, 6)

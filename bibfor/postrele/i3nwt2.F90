@@ -2,6 +2,7 @@ subroutine i3nwt2(epsi, seuil, maxitr, fk, x,&
                   iret)
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/i3efk2.h"
     integer :: maxitr, iret
     real(kind=8) :: epsi, seuil, fk(4, *), x(*)
@@ -38,7 +39,7 @@ subroutine i3nwt2(epsi, seuil, maxitr, fk, x,&
 !
     integer :: i
     real(kind=8) :: valfk(3, 1), d, d1, d2, j11, j12, j21, j22
-    logical(kind=1) :: fini
+    aster_logical :: fini
 !
 !======================================================================
 !
@@ -47,7 +48,7 @@ subroutine i3nwt2(epsi, seuil, maxitr, fk, x,&
     fini = .false.
     i = 1
     iret = 0
-10  continue
+ 10 continue
     if (.not. fini) then
         call i3efk2(fk, 1, x(1), x(2), valfk)
         j11 = fk(2,1) + fk(4,1)*x(2)

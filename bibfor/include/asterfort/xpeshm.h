@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                       nddlm, npg, igeom, jpintt, jpmilt,&
@@ -40,7 +42,7 @@ interface
         integer :: lonch(10)
         integer :: cnset(128)
         real(kind=8) :: rho
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: yaenrm
     end subroutine xpeshm
 end interface 

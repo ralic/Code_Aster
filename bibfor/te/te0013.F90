@@ -1,7 +1,8 @@
 subroutine te0013(option, nomte)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
@@ -49,18 +50,18 @@ implicit none
     integer :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
     integer :: ivf, nbsig, ndim, nno, npg
     real(kind=8) :: zero
-    logical(kind=1) :: l_meta
+    aster_logical :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero      = 0.d0
-    time      = zero
-    nharm     = zero
-    ndim      = 2
-    fami      = 'RIGI'
-    sigth(:)  = zero
+    zero = 0.d0
+    time = zero
+    nharm = zero
+    ndim = 2
+    fami = 'RIGI'
+    sigth(:) = zero
     bsigma(:) = zero
-    bary(:)   = 0.d0
+    bary(:) = 0.d0
 !
 ! - Compute CHAR_MECA_TEMP_R for metallurgy
 !
@@ -71,19 +72,19 @@ implicit none
 !
 ! - Finite element informations
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno, npg=npg,&
-                     jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids,&
+                     jvf=ivf, jdfde=idfde)
 !
 ! - Number of stress components
 !
-    nbsig     = nbsigm()
+    nbsig = nbsigm()
 !
 ! - Geometry
 !
     call jevech('PGEOMER', 'L', igeom)
 !
 ! - Material parameters
-! 
+!
     call jevech('PMATERC', 'L', imate)
 !
 ! - Orthotropic parameters
@@ -122,5 +123,5 @@ implicit none
         zr(ivectu+i-1) = bsigma(i)
     end do
 !
-40  continue
+ 40 continue
 end subroutine

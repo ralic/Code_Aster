@@ -2,6 +2,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                   lresu, nbordr, ordr, nbcmp, nomcmp,&
                   nbmat, nummai, versio, lgmsh, tycha)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -23,7 +24,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 #include "asterfort/wkvect.h"
 !
     integer :: ifi, nbcham, nbordr, nbcmp, ordr(*), nbmat, nummai(*), versio
-    logical(kind=1) :: lresu, lgmsh
+    aster_logical :: lresu, lgmsh
     character(len=*) :: nomcon
     character(len=*) :: cham(*), nomcmp(*), partie
     character(len=8) :: tycha
@@ -68,7 +69,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !     ------------------------------------------------------------------
     integer :: ior, ich, iret, nbma, i
     integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
-    integer ::   jpoin, jpara, iad
+    integer :: jpoin, jpara, iad
     character(len=8) :: tych, noma, k8b, nomaou, valk(2)
     character(len=16) :: valk2(2)
     character(len=19) :: noch19, noco19

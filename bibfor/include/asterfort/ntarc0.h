@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ntarc0(result, modele, mate, carele, sdcrit,&
                       lisch2, lnonl, para, numarc, instan)
@@ -24,7 +26,7 @@ interface
         character(len=24) :: carele
         character(len=19) :: sdcrit
         character(len=19) :: lisch2
-        logical(kind=1) :: lnonl
+        aster_logical :: lnonl
         real(kind=8) :: para(*)
         integer :: numarc
         real(kind=8) :: instan

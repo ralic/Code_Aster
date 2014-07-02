@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ornorm(noma, listma, nbmail, reorie, norien)
         character(len=8) :: noma
         integer :: listma(*)
         integer :: nbmail
-        logical(kind=1) :: reorie
+        aster_logical :: reorie
         integer :: norien
     end subroutine ornorm
 end interface

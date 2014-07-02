@@ -20,6 +20,7 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/diinst.h"
@@ -60,8 +61,8 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
 !
 !
 !
-    logical(kind=1) :: ldyna, lmpas
-    logical(kind=1) :: lpilo
+    aster_logical :: ldyna, lmpas
+    aster_logical :: lpilo
     integer :: jcfsc
     character(len=19) :: depmoi, varmoi, sigmoi, commoi, vitmoi, accmoi
     character(len=19) :: depplu, varplu, sigplu, complu, vitplu, accplu

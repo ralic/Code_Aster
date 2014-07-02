@@ -18,7 +18,8 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apnomp.h"
@@ -71,7 +72,7 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
     integer :: typapp, entapp
     integer :: ndimg, nbliai
     integer :: btotal, nbliac, llf, llf1, llf2
-    logical(kind=1) :: llagrf, llagrc
+    aster_logical :: llagrf, llagrc
 !
 ! ----------------------------------------------------------------------
 !
@@ -196,7 +197,7 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
                     typli = 'ADHE. 2   '
                 endif
             endif
-90      continue
+ 90     continue
 !
 ! --- IMPRESSION
 !
@@ -210,7 +211,7 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
             chaiac,jeu,')'
 !
         endif
-500  end do
+500 end do
 !
     10 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS ',&
      &        'POSSIBLES           :',&

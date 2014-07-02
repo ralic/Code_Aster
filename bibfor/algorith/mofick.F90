@@ -22,8 +22,9 @@ subroutine mofick(fa, fav, cont, tange, maxfa,&
 ! ======================================================================
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
-    logical(kind=1) :: cont, tange
+    aster_logical :: cont, tange
     integer :: maxfa
     integer :: nface, nfacev, nfacem
     integer :: jfa, jfav, fa, fav
@@ -47,11 +48,11 @@ subroutine mofick(fa, fav, cont, tange, maxfa,&
         do 1 jfa = 1, nface
             moyfl1(fa,1+jfa,0) = 0.5d0 * flux1k(1+jfa,fa)
             moyfl2(fa,1+jfa,0) = 0.5d0 * flux2k(1+jfa,fa)
- 1      continue
+  1     continue
 !
         do 2 jfav = 1, nfacev
             moyfl1(fa,1+jfav,1) = -0.5d0 * flux1l(1+jfav,fav)
             moyfl2(fa,1+jfav,1) = -0.5d0 * flux2l(1+jfav,fav)
- 2      continue
+  2     continue
     endif
 end subroutine

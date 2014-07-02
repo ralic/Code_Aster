@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
                       lnonl, levol, para, sddisc, sdcrit,&
@@ -22,10 +24,10 @@ interface
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
-        logical(kind=1) :: lostat
-        logical(kind=1) :: lreuse
-        logical(kind=1) :: lnonl
-        logical(kind=1) :: levol
+        aster_logical :: lostat
+        aster_logical :: lreuse
+        aster_logical :: lnonl
+        aster_logical :: levol
         real(kind=8) :: para(*)
         character(len=19) :: sddisc
         character(len=19) :: sdcrit

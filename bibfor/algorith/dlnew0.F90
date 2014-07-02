@@ -79,6 +79,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/copisd.h"
@@ -122,7 +123,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     real(kind=8) :: a4, a5, a6, a7, a8, c0, c1, c2, c3, c4, c5, tabwk1(neq)
     real(kind=8) :: tabwk2(neq), dt, theta, tempm, temps
 !
-    logical(kind=1) :: lamort, limped, lmodst, ener
+    aster_logical :: lamort, limped, lmodst, ener
 !
     character(len=8) :: nodepl(nbexci), novite(nbexci), noacce(nbexci)
     character(len=8) :: masse, rigid, amort
@@ -145,9 +146,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     character(len=6) :: nompro
     parameter ( nompro = 'DLNEW0' )
 !
-    integer ::  iforc1
-    integer ::   nbexre, item2(1), iret, lvale, ibid, i
-    integer ::   ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
+    integer :: iforc1
+    integer :: nbexre, item2(1), iret, lvale, ibid, i
+    integer :: ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
     integer :: iexci, ieq, iresu
 !
     real(kind=8) :: coefd, coefv, coefa, prec, eps0, alpha

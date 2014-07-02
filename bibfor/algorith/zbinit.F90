@@ -19,6 +19,7 @@ subroutine zbinit(f0, coef, dimmem, mem)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     integer :: dimmem
     real(kind=8) :: f0, coef, mem(2, dimmem)
@@ -42,7 +43,7 @@ subroutine zbinit(f0, coef, dimmem, mem)
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical(kind=1) :: bpos, lopti
+    aster_logical :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti

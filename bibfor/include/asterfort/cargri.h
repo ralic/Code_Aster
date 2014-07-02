@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cargri(lexc, densit, distn, dir11)
-        logical(kind=1) :: lexc
+        aster_logical :: lexc
         real(kind=8) :: densit
         real(kind=8) :: distn
         real(kind=8) :: dir11(3)

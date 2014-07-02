@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dinon3(neq, ul, dul, utl, nno,&
                       nbcomp, varimo, raide, nbpar, param,&
@@ -29,7 +31,7 @@ interface
         real(kind=8) :: varimo(nbcomp*3)
         real(kind=8) :: raide(nbcomp)
         real(kind=8) :: param(6, nbpar)
-        logical(kind=1) :: okdire(6)
+        aster_logical :: okdire(6)
         real(kind=8) :: varipl(nbcomp*3)
     end subroutine dinon3
 end interface

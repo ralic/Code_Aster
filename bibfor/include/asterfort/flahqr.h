@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine flahqr(wantt, wantz, n, ilo, ihi,&
                       h, ldh, wr, wi, iloz,&
                       ihiz, z, ldz, info)
         integer :: ldz
         integer :: ldh
-        logical(kind=1) :: wantt
-        logical(kind=1) :: wantz
+        aster_logical :: wantt
+        aster_logical :: wantz
         integer :: n
         integer :: ilo
         integer :: ihi

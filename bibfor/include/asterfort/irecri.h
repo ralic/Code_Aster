@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                       nbcham, cham, partie, nbpara, para,&
@@ -26,7 +28,7 @@ interface
         character(len=*) :: form
         integer :: ifi
         character(len=*) :: titre
-        logical(kind=1) :: lgmsh
+        aster_logical :: lgmsh
         integer :: nbcham
         character(len=*) :: cham(*)
         character(len=*) :: partie
@@ -34,24 +36,24 @@ interface
         character(len=*) :: para(*)
         integer :: nbordr
         integer :: ordr(*)
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
         character(len=*) :: motfac
         integer :: iocc
         character(len=*) :: cecr
         character(len=8) :: tycha
-        logical(kind=1) :: lcor
+        aster_logical :: lcor
         integer :: nbnot
         integer :: numnoe(*)
         integer :: nbmat
         integer :: nummai(*)
         integer :: nbcmp
         character(len=*) :: nomcmp(*)
-        logical(kind=1) :: lsup
+        aster_logical :: lsup
         real(kind=8) :: borsup
-        logical(kind=1) :: linf
+        aster_logical :: linf
         real(kind=8) :: borinf
-        logical(kind=1) :: lmax
-        logical(kind=1) :: lmin
+        aster_logical :: lmax
+        aster_logical :: lmin
         character(len=*) :: formr
         integer :: nive
         integer :: versio

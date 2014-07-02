@@ -18,6 +18,7 @@ subroutine celces(celz, basez, cesz)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterfort/assert.h"
@@ -40,7 +41,7 @@ subroutine celces(celz, basez, cesz)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-
+!
     character(len=*) :: celz, cesz, basez
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_ELEM (CELZ) EN CHAM_ELEM_S (CESZ)
@@ -59,15 +60,15 @@ subroutine celces(celz, basez, cesz)
     character(len=4) :: typces, kmpic
     character(len=8) :: ma, nomgd
     character(len=19) :: cel, ces, ligrel
-    integer :: nec, gd, ncmpmx, nbma,  jcelv
-    integer :: iadg, icmp, ncmp, jcesl, jcesv,  kcmp
+    integer :: nec, gd, ncmpmx, nbma, jcelv
+    integer :: iadg, icmp, ncmp, jcesl, jcesv, kcmp
     integer :: ieq, icmp1, igr, iel, ierr
-    integer ::  nbpt, nbgr, imolo, jmolo, nbgr2
-    integer :: ipt, numa, iad,    vali(2)
+    integer :: nbpt, nbgr, imolo, jmolo, nbgr2
+    integer :: ipt, numa, iad, vali(2)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
-    integer :: ico, adiel, ispt, jcesd, jlpt,  cumu
+    integer :: ico, adiel, ispt, jcesd, jlpt, cumu
     character(len=24) :: valk(2)
-    logical(kind=1) :: sdveri
+    aster_logical :: sdveri
     integer, pointer :: liel(:) => null()
     integer, pointer :: lliel(:) => null()
     integer, pointer :: celd(:) => null()
@@ -78,50 +79,50 @@ subroutine celces(celz, basez, cesz)
     integer, pointer :: nbcmp(:) => null()
     integer, pointer :: vnbpt(:) => null()
     integer, pointer :: vnbspt(:) => null()
-
+!
 #define numail(igr,iel) liel(lliel(igr)+iel-1)
 !     ------------------------------------------------------------------
-
+!
     call jemarq()
     cel = celz
     ces = cesz
     base = basez
-
+!
 !   -- verification de la SD cel ? (debug) :
     sdveri=.false.
     if (sdveri) then
-        call cheksd(cel,'sd_cham_elem',ierr)
+        call cheksd(cel, 'sd_cham_elem', ierr)
         ASSERT(ierr.eq.0)
     endif
-
-
-
+!
+!
+!
 !     -- SI CES EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_ELEM_S', ces)
-
-
+!
+!
 !     1- CREATION DU CHAM_ELEM_S VIERGE :
 !     -------------------------------------------
-
-
+!
+!
 !     1.1 CALCUL DE MA,NOMGD,LIGREL,GD,NEC,TSCA,NCMPMX,NBMA :
 !     --------------------------------------------------------
     call dismoi('NOM_MAILLA', cel, 'CHAM_ELEM', repk=ma)
     call dismoi('NOM_GD', cel, 'CHAM_ELEM', repk=nomgd)
     call dismoi('NOM_LIGREL', cel, 'CHAM_ELEM', repk=ligrel)
-
+!
 !     -- SI CEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
     call dismoi('MPI_COMPLET', cel, 'CHAM_ELEM', repk=kmpic)
     ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
     if (kmpic .eq. 'NON') call sdmpic('CHAM_ELEM', cel)
-
+!
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
-
+!
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-
-
+!
+!
 !     1.2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
 !     -------------------------------------------------------
     call jeveuo(cel//'.CELV', 'L', jcelv)
@@ -129,7 +130,7 @@ subroutine celces(celz, basez, cesz)
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', vi=lliel)
     nbgr = celd(2)
-
+!
     call jelira(ligrel//'.LIEL', 'NUTIOC', nbgr2)
     if (nbgr2 .ne. nbgr) then
         valk(1)=cel
@@ -139,8 +140,8 @@ subroutine celces(celz, basez, cesz)
         call utmess('F', 'CALCULEL_19', nk=2, valk=valk, ni=2,&
                     vali=vali)
     endif
-
-
+!
+!
 !     1.3 ON CHERCHE LES CMPS PRESENTES DANS LE CHAM_ELEM :
 !         NCMP : NOMBRE DE CMPS PRESENTES
 !         '&&CELCES.CORR1': CONTIENT LA CORRESPONDANCE ENTRE LE
@@ -153,8 +154,8 @@ subroutine celces(celz, basez, cesz)
     call jeveuo('&&CELCES.NOM_CMP', 'L', vk8=nom_cmp)
     call jeveuo('&&CELCES.CORR1', 'L', vi=corr1)
     call jeveuo('&&CELCES.CORR2', 'L', vi=corr2)
-
-
+!
+!
 !     1.4 CALCUL DE  NBPT(IMA), NBSPT(IMA), NBCMP(IMA)
 !         CALCUL DE  NPTMX : MAXIMUM DU NOMBRE DE POINTS
 !         CALCUL DE  NCDYMX : MAXIMUM DU NOMBRE DE VARI_*
@@ -167,19 +168,19 @@ subroutine celces(celz, basez, cesz)
     AS_ALLOCATE(vi=nbcmp, size=nbma)
     nptmx = 0
     ncdymx = 0
-
+!
     do igr = 1, nbgr
         nbel = nbelem(ligrel,igr)
         imolo = celd(celd(4+igr)+2)
         if (imolo .eq. 0) goto 90
-
+!
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         ASSERT(zi(jmolo-1+1).le.3)
         ASSERT(zi(jmolo-1+2).eq.gd)
         nbpt = mod(zi(jmolo-1+4),10000)
         nptmx = max(nptmx,nbpt)
-
-
+!
+!
 !       -- CALCUL DE NCMPM : NUMERO MAX DES CMPS PORTEES
 !          PAR LES ELEMENTS DU GREL
         ncmpm = 0
@@ -191,19 +192,19 @@ subroutine celces(celz, basez, cesz)
                 endif
             end do
         end do
-
-
+!
+!
         do iel = 1, nbel
             numa = numail(igr,iel)
             if (numa .lt. 0) goto 80
-
+!
 !         -- NOMBRE DE POINTS:
             vnbpt(numa) = nbpt
-
+!
 !         -- NOMBRE DE SOUS-POINTS:
             nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
             vnbspt(numa) = nbspt
-
+!
 !         -- NOMBRE DE CMPS:
             ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
             ncdyn = max(ncdyn,1)
@@ -213,31 +214,31 @@ subroutine celces(celz, basez, cesz)
             else
                 nbcmp(numa) = corr1(ncmpm)
             endif
-
+!
  80         continue
         end do
  90     continue
     end do
     ASSERT(nptmx.ne.0)
-
-
-
+!
+!
+!
 !     1.6 ALLOCATION DE CES :
 !     -------------------------------------------
     call dismoi('TYPE_CHAMP', cel, 'CHAM_ELEM', repk=typces)
     if (nomgd(1:5) .eq. 'VARI_') ncmp = -ncdymx
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, nom_cmp, vnbpt, vnbspt,nbcmp)
-
+                ncmp, nom_cmp, vnbpt, vnbspt, nbcmp)
+!
 !======================================================================
-
+!
 !     2- REMPLISSAGE DE CES.CESL ET CES.CESV :
 !     -------------------------------------------
     call jeveuo(ces//'.CESD', 'E', jcesd)
     call jeveuo(ces//'.CESL', 'E', jcesl)
     call jeveuo(ces//'.CESV', 'E', jcesv)
-
-
+!
+!
     if (nomgd(1:5) .ne. 'VARI_') then
 !     ----------------------------
         call wkvect('&&CELCES.LONG_PT', 'V V I', nptmx, jlpt)
@@ -245,12 +246,12 @@ subroutine celces(celz, basez, cesz)
         do igr = 1, nbgr
             imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 170
-
-
+!
+!
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
             nbpt = mod(zi(jmolo-1+4),10000)
             nbel = nbelem(ligrel,igr)
-
+!
 !         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
             do ipt = 1, nbpt
@@ -262,21 +263,21 @@ subroutine celces(celz, basez, cesz)
                 end do
                 zi(jlpt-1+ipt) = ico
             end do
-
+!
             cumu = 0
             do ipt = 1, nbpt
                 long_pt_cumu(ipt) = cumu
                 cumu = cumu + zi(jlpt-1+ipt)
             end do
-
-
+!
+!
             do iel = 1, nbel
                 numa = numail(igr,iel)
                 if (numa .lt. 0) goto 140
-
+!
                 nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
                 adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
-
+!
                 do ipt = 1, nbpt
                     iadg = jmolo - 1 + 5
                     ico = 0
@@ -286,16 +287,16 @@ subroutine celces(celz, basez, cesz)
                             ico = ico + 1
                             icmp1 = corr1(icmp)
                             ASSERT(icmp1.eq.kcmp)
-
+!
                             do ispt = 1, nbspt
                                 call cesexi('S', jcesd, jcesl, numa, ipt,&
                                             ispt, icmp1, iad)
                                 iad = abs(iad)
                                 zl(jcesl-1+iad) = .true.
-
-                                ieq = adiel - 1 + nbspt*long_pt_cumu(ipt) + &
-                                      (ispt-1)*zi(jlpt-1+ipt) + ico
-
+!
+                                ieq = adiel - 1 + nbspt*long_pt_cumu(ipt) + (ispt-1)*zi(jlpt-1+ip&
+                                      &t) + ico
+!
                                 if (tsca .eq. 'R') then
                                     zr(jcesv-1+iad) = zr(jcelv-1+ieq)
                                 else if (tsca.eq.'I') then
@@ -321,40 +322,40 @@ subroutine celces(celz, basez, cesz)
             end do
 170         continue
         end do
-
-
+!
+!
     else
 !       -- CAS DE VARI_* :
 !       -------------------
         do igr = 1, nbgr
             imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 220
-
-
+!
+!
             lgcata = celd(celd(4+igr)+3)
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
             nbpt = mod(zi(jmolo-1+4),10000)
             ASSERT(nbpt.eq.lgcata)
             nbel = nbelem(ligrel,igr)
-
+!
             do iel = 1, nbel
                 numa = numail(igr,iel)
                 if (numa .lt. 0) goto 210
-
+!
                 nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
                 ncdyn = max(celd(celd(4+igr)+4+4* (iel-1)+ 2),1)
                 adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
                 do ipt = 1, nbpt
                     do ispt = 1, nbspt
                         do icmp = 1, ncdyn
-
+!
                             call cesexi('S', jcesd, jcesl, numa, ipt,&
                                         ispt, icmp, iad)
                             iad = abs(iad)
                             zl(jcesl-1+iad) = .true.
-
+!
                             ieq = adiel - 1 + ((ipt-1)*nbspt+ispt-1)* ncdyn + icmp
-
+!
                             if (tsca .eq. 'R') then
                                 zr(jcesv-1+iad) = zr(jcelv-1+ieq)
                             else
@@ -368,13 +369,13 @@ subroutine celces(celz, basez, cesz)
 220         continue
         end do
     endif
-
+!
     if (sdveri) then
-        call cheksd(ces,'sd_cham_elem_s',ierr)
+        call cheksd(ces, 'sd_cham_elem_s', ierr)
         ASSERT(ierr.eq.0)
     endif
-
-
+!
+!
     call jedetr('&&CELCES.TMP_NUCMP')
     AS_DEALLOCATE(vi=vnbpt)
     AS_DEALLOCATE(vi=vnbspt)

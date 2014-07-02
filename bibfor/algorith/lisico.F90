@@ -18,12 +18,13 @@ function lisico(genchz, genrec)
 ! ======================================================================
 !
     implicit none
-    logical(kind=1) :: lisico
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lisdef.h"
+    aster_logical :: lisico
     character(len=*) :: genchz
     integer :: genrec
 !

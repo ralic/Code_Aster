@@ -1,5 +1,6 @@
 subroutine dstb(carat3, pgl, igau, jacgau, bmat)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/bcoqaf.h"
 #include "asterfort/dstbfa.h"
@@ -48,12 +49,12 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     real(kind=8) :: bca(2, 3), bcn(2, 9), bc(2, 9)
     real(kind=8) :: hft2(2, 6), an(3, 9)
     real(kind=8) :: qsi, eta, t2iu(4), t2ui(4), t1ve(9)
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
 !     ------------------------------------------
@@ -111,17 +112,17 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     do 20 i = 1, 3
         do 10 j = 1, 9
             bfn(i,j) = 0.d0
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
     do 50 i = 1, 3
         do 40 j = 1, 9
             do 30 k = 1, 3
                 bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
-30          continue
+ 30         continue
             bf(i,j) = bfb(i,j) + bfn(i,j)
-40      continue
-50  end do
+ 40     continue
+ 50 end do
 !
 ! --- CALCUL DE LA MATRICE B_CISAILLEMENT, NOTEE (BC) ET RELATIVE
 ! --- AUX  INCONNUES (UN) , AVEC LES NOTATIONS DE BATOZ
@@ -135,24 +136,24 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
         do 60 j = 1, 9
             bc(i,j) = 0.d0
             bcn(i,j) = 0.d0
-60      continue
-70  end do
+ 60     continue
+ 70 end do
 !
     do 100 i = 1, 2
         do 90 j = 1, 9
             do 80 k = 1, 3
                 bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
-80          continue
-90      continue
-100  end do
+ 80         continue
+ 90     continue
+100 end do
 !
     do 130 i = 1, 2
         do 120 j = 1, 9
             do 110 k = 1, 2
                 bc(i,j) = bc(i,j) + dci(i,k)*bcn(k,j)
-110          continue
-120      continue
-130  end do
+110         continue
+120     continue
+130 end do
 !
 ! --- AFFECTATION DE LA MATRICE B COMPLETE, NOTEE (BMAT)
 ! --- AVEC LES MATRICES (BM), (BF) ET (BC)

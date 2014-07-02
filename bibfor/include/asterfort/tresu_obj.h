@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
                          epsi, crit, llab, ssigne, ignore, &
@@ -26,9 +28,9 @@ interface
         real(kind=8), intent(in) :: refr
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        logical(kind=1), intent(in) :: llab
+        aster_logical, intent(in) :: llab
         character(len=*), intent(in) :: ssigne
-        logical(kind=1), intent(in), optional :: ignore
+        aster_logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_obj
 end interface

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                       nt, nbres, x1, x2, xacc,&
                       rtsafe, impr, ifm, indtp, nbtp)
         integer :: nrupt
-        logical(kind=1) :: cals
+        aster_logical :: cals
         real(kind=8) :: sk(*)
         real(kind=8) :: sigw(*)
         integer :: nur(*)
@@ -30,7 +32,7 @@ interface
         real(kind=8) :: x2
         real(kind=8) :: xacc
         real(kind=8) :: rtsafe
-        logical(kind=1) :: impr
+        aster_logical :: impr
         integer :: ifm
         integer :: indtp(*)
         integer :: nbtp

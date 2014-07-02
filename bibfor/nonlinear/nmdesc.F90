@@ -26,6 +26,7 @@ subroutine nmdesc(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/infdbg.h"
@@ -52,7 +53,7 @@ subroutine nmdesc(modele, numedd, numfix, mate, carele,&
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: measse(*), veasse(*)
-    logical(kind=1) :: lerrit
+    aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -160,7 +161,7 @@ subroutine nmdesc(modele, numedd, numfix, mate, carele,&
                 numedd, r8bid, maprec, matass, cndonn,&
                 cnpilo, cncind, solalg, rescvg)
 !
-9999  continue
+9999 continue
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

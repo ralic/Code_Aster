@@ -65,6 +65,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
@@ -72,7 +73,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
     character(len=16) :: nomsym
     character(len=8) :: noresu
 !
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
 !
     integer :: lnochm
     integer :: codret
@@ -119,7 +120,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
             do 23 , iaux = lnochm+1 , 8
             nochmd(iaux:iaux) = '_'
-23          continue
+ 23         continue
             lnochm = 8+jaux
             nochmd(9:8+jaux) = nomsym(1:jaux)
 !

@@ -25,6 +25,7 @@ subroutine te0239(option, nomte)
 ! ......................................................................
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/comcq1.h"
@@ -65,7 +66,7 @@ subroutine te0239(option, nomte)
     integer :: ivarix, mod
     integer :: ipoids, ivf, idfdk, igeom, imate
     integer :: nbpar, cod, iret, ksp
-    logical(kind=1) :: vecteu, matric, testl1, testl2
+    aster_logical :: vecteu, matric, testl1, testl2
 !
     parameter (npge=3)
 !
@@ -87,8 +88,8 @@ subroutine te0239(option, nomte)
     matric = ((option.eq.'FULL_MECA') .or. (option.eq.'RIGI_MECA_TANG'))
 !
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !       TYPMOD(1) = 'C_PLAN  '
 !       TYPMOD(2) = '        '
@@ -116,9 +117,9 @@ subroutine te0239(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
 !
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-       if (zk16(icompo) .ne. 'ELAS') then
-           call utmess('F', 'ELEMENTS2_90')
-       endif
+        if (zk16(icompo) .ne. 'ELAS') then
+            call utmess('F', 'ELEMENTS2_90')
+        endif
     endif
 !
     if (zk16(icompo+2) (6:10) .eq. '_REAC') then
@@ -178,7 +179,7 @@ subroutine te0239(option, nomte)
 !
         do 30 i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-30      continue
+ 30     continue
 !
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
@@ -276,7 +277,7 @@ subroutine te0239(option, nomte)
 !
                 do 55 i = 1, 4
                     sigm2d(i)=zr(icontm+k1+i-1)
-55              continue
+ 55             continue
 !
 !  APPEL AU COMPORTEMENT
                 call comcq1('RIGI', kp, ksp, mod, zi(imate),&
@@ -287,7 +288,7 @@ subroutine te0239(option, nomte)
                 if (vecteu) then
                     do 56 i = 1, 4
                         zr(icontp+k1+i-1)=sigp2d(i)
-56                  continue
+ 56                 continue
                 endif
 !
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
@@ -308,8 +309,8 @@ subroutine te0239(option, nomte)
                     do 80 i = 1, 5
                         do 70 j = 1, 5
                             dtild(i,j) = dtild(i,j) + dtildi(i,j)* 0.5d0*hic*coef
-70                      continue
-80                  continue
+ 70                     continue
+ 80                 continue
                 endif
 !
                 if (vecteu) then
@@ -330,11 +331,11 @@ subroutine te0239(option, nomte)
 !
                     do 90 i = 1, 5
                         sigmtd(i) = sigmtd(i) + sigtdi(i)*0.5d0*hic* coef
-90                  continue
+ 90                 continue
                 endif
 !-- FIN DE BOUCLE SUR LES POINTS D'INTEGRATION DANS L'EPAISSEUR
-100          continue
-110      continue
+100         continue
+110     continue
 !
         if (vecteu) then
 !-- CALCUL DES EFFORTS INTERIEURS
@@ -348,11 +349,11 @@ subroutine te0239(option, nomte)
             do 130 i = 1, 9
                 do 120 j = 1, 9
                     rtange(i,j) = rtange(i,j) + rtangi(i,j)
-120              continue
-130          continue
+120             continue
+130         continue
         endif
 !-- FIN DE BOUCLE SUR LES POINTS D'INTEGRATION DE LA SURFACE NEUTRE
-140  end do
+140 end do
     if (matric) then
 !-- STOCKAGE DE LA MATRICE TANGENTE
         kompt = 0
@@ -360,8 +361,8 @@ subroutine te0239(option, nomte)
             do 150 i = 1, j
                 kompt = kompt + 1
                 zr(imatuu-1+kompt) = rtange(i,j)
-150          continue
-160      continue
+150         continue
+160     continue
     endif
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         call jevech('PCODRET', 'E', jcret)

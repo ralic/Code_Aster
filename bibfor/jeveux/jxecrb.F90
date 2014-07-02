@@ -19,6 +19,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
 ! ======================================================================
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/writdr.h"
 #include "asterfort/codent.h"
@@ -72,7 +73,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
 !     ------------------------------------------------------------------
     character(len=8) :: nom
     character(len=128) :: nom128
-    logical(kind=1) :: lrab
+    aster_logical :: lrab
     integer :: lgbl, vali(3)
 ! DEB ------------------------------------------------------------------
     ib = 0
@@ -106,7 +107,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
             nbacce(2*ic) = nbacce(2*ic) + 1
             iusadi(jusadi(ic)+3*(iaddi+i-1)-2) = idco
             iusadi(jusadi(ic)+3*(iaddi+i-1)-1) = idos
-10      continue
+ 10     continue
         iacce (jiacce(ic)+iaddi) = iacce (jiacce(ic)+iaddi) + 1
         if (lrab) then
             numext = (iaddi+nblent-1)/nbenrg(ic)

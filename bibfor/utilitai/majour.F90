@@ -19,6 +19,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -26,7 +27,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmgrot.h"
     character(len=19) :: sdnume
-    logical(kind=1) :: lgrot, lendo
+    aster_logical :: lgrot, lendo
     integer :: neq, ordre
     real(kind=8) :: chaini(*), chadel(*), chamaj(*), coef
 !
@@ -60,7 +61,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !
 !
 !
-    integer :: iran(3), i, icomp,  endo
+    integer :: iran(3), i, icomp, endo
     real(kind=8) :: theta(3), deldet(3)
     integer :: ptdo, indic1, indic2
     real(kind=8) :: stok
@@ -116,7 +117,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !
             endif
 !
-10      continue
+ 10     continue
 !
 !        IF (ORDRE.EQ.0) THEN
 !          WRITE(6,*) 'NB_NO_ENDO=', PTDO
@@ -127,7 +128,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
     else if (.not.lgrot) then
         do 20 i = 1, neq
             chamaj(i) = chaini(i) + coef*chadel(i)
-20      continue
+ 20     continue
     else
         icomp = 0
         do 30 i = 1, neq
@@ -145,7 +146,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
             else
                 ASSERT(.false.)
             endif
-30      continue
+ 30     continue
     endif
 !
     call jedema()

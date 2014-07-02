@@ -140,6 +140,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/dvout.h"
 #include "asterfort/zvout.h"
@@ -163,7 +164,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     %------------------%
 !
     character(len=1) :: bmat
-    logical(kind=1) :: initv
+    aster_logical :: initv
     integer :: ido, ierr, j, ldv, n
     real(kind=8) :: rnorm, alpha
 !
@@ -187,7 +188,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical(kind=1) :: first, inits, orth
+    aster_logical :: first, inits, orth
     integer(kind=4) :: iseed4(4)
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0

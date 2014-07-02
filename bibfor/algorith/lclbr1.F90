@@ -1,6 +1,6 @@
 subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, epsm, deps, &
-                  option, sig, dsidep)
+                  imate, compor, epsm, deps, option,&
+                  sig, dsidep)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +18,13 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/diago2.h"
 #include "asterfort/lclbr2.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
+#include "asterc/r8prem.h"
     character(len=*) :: fami
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
@@ -49,7 +50,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical(kind=1) :: rigi, resi, coup, plan, seca
+    aster_logical :: rigi, resi, coup, plan, seca
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), kron(6)
     real(kind=8) :: rac2, e

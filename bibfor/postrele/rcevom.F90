@@ -5,7 +5,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                   lrocht, symax, cpres, kemixt, cspto,&
                   cspte, cspmo, cspme)
 ! aslint: disable=W1501,W1501,W1504
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/jedema.h"
@@ -20,7 +21,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 #include "asterfort/tbcrsd.h"
     integer :: it, jt
     real(kind=8) :: sm, symax
-    logical(kind=1) :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt
+    aster_logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, cnoc, csno, csne, csneo, csnee, cfao
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
@@ -59,7 +60,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
     real(kind=8) :: doo, doe, dco, dce, stlin, stpar, ketho, kethe, tresca
     real(kind=8) :: valo(39), vale(39), spmo, spme, spto, spte
     complex(kind=8) :: c16b
-    character(len=8) ::  nomres, typara(39), rpm, rpb, rpmpbo, rpmpbe, r1sno
+    character(len=8) :: nomres, typara(39), rpm, rpb, rpmpbo, rpmpbe, r1sno
     character(len=8) :: r1sne, r2sno, r2sne
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
@@ -114,33 +115,33 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         do 10 i = 1, nparen
             nopara(i) = nopaen(i)
             typara(i) = typaen(i)
-10      continue
+ 10     continue
         if (lrocht) then
             do 11 i = 1, nparrt
                 nopara(npara+i) = nopart(i)
                 typara(npara+i) = typart(i)
-11          continue
+ 11         continue
             npara = npara + nparrt
         endif
         if (lpmpb) then
             do 12 i = 1, nparpm
                 nopara(npara+i) = nopapm(i)
                 typara(npara+i) = typapm(i)
-12          continue
+ 12         continue
             npara = npara + nparpm
         endif
         if (lsn) then
             do 14 i = 1, nparsn
                 nopara(npara+i) = nopasn(i)
                 typara(npara+i) = typasn(i)
-14          continue
+ 14         continue
             npara = npara + nparsn
         endif
         if (flexio .and. lsn) then
             do 16 i = 1, nparse
                 nopara(npara+i) = nopase(i)
                 typara(npara+i) = typase(i)
-16          continue
+ 16         continue
             npara = npara + nparse
         endif
         if (lfatig) then
@@ -148,13 +149,13 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 do 18 i = 1, nparf1
                     nopara(npara+i) = nopaf1(i)
                     typara(npara+i) = typaf1(i)
-18              continue
+ 18             continue
                 npara = npara + nparf1
             else
                 do 19 i = 1, nparf2
                     nopara(npara+i) = nopaf2(i)
                     typara(npara+i) = typaf2(i)
-19              continue
+ 19             continue
                 npara = npara + nparf2
             endif
         endif
@@ -169,7 +170,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
     npara = nparen
     do 30 i = 1, nparen
         nopara(i) = nopaen(i)
-30  end do
+ 30 end do
     ik = ik + 1
     vako(ik) = kinti
     vake(ik) = kinti
@@ -194,10 +195,10 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
             do 402 icmp = 1, ncmp
                 l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
                 tpm(icmp) = zr(jsigm-1+l3)
-402          continue
+402         continue
             call rctres(tpm, tresca)
             if (tresca .gt. pm) pm = tresca
-400      continue
+400     continue
         call rcmcrt(symax, pm, stlin, stpar)
 !
         npar1 = npara + 1
@@ -265,7 +266,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                                &) )
                 tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - ( zr(jsigm-1+l3) + zr(jsigm-1+l4&
                                &) )
-102          continue
+102         continue
             call rctres(tpm, tresca)
             if (tresca .gt. pm) then
                 pm = tresca
@@ -290,7 +291,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 ipmpbe = zr(jinst+i-1)
                 rpmpbe = zk8(jresu+i-1)
             endif
-100      continue
+100     continue
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU'
@@ -398,8 +399,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     r1sne = zk8(jresu+i1-1)
                     r2sne = zk8(jresu+i2-1)
                 endif
-202          continue
-200      continue
+202         continue
+200     continue
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU_1'
@@ -480,8 +481,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     r1sne = zk8(jresu+i1-1)
                     r2sne = zk8(jresu+i2-1)
                 endif
-212          continue
-210      continue
+212         continue
+210     continue
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU_1'
@@ -570,7 +571,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 ketho = max ( ketho , zr(jfao-1+5*(i-1)+5) )
                 kethe = max ( kethe , zr(jfae-1+5*(i-1)+5) )
             endif
-300      continue
+300     continue
         ind = 0
         do 310 i1 = 1, nbinst
             ind = ind + 1
@@ -612,8 +613,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     i1sne = zr(jinst+i1-1)
                     i2sne = zr(jinst+i2-1)
                 endif
-312          continue
-310      continue
+312         continue
+310     continue
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU_1'

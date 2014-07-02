@@ -18,6 +18,7 @@ subroutine te0185(option, nomte)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 ! aslint: disable=W0104
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -46,7 +47,7 @@ subroutine te0185(option, nomte)
 !     EN FONCTION DE LA MODELISATION ET DE LA NATURE DU CALCUL :
 !     LINEAIRE OU NON-LINEAIRE
     integer :: j1, inlin, ibid
-    logical(kind=1) :: line
+    aster_logical :: line
     character(len=3) :: cmod
     character(len=8) :: alias8
 !-----------------------------------------------------------------------

@@ -1,7 +1,8 @@
-subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
-                      base, rsolu, csolu, criter, prepos,&
-                      istop, iret)
+subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
+                      chsolu, base, rsolu, csolu, criter,&
+                      prepos, istop, iret)
     implicit none
+#include "asterf_types.h"
 # include "jeveux.h"
 # include "asterfort/assert.h"
 # include "asterfort/copisd.h"
@@ -30,7 +31,7 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
     real(kind=8), intent(inout) :: rsolu(*)
     complex(kind=8), intent(inout) :: csolu(*)
     character(len=*), intent(in) :: criter
-    logical(kind=1), intent(in) :: prepos
+    aster_logical, intent(in) :: prepos
     integer, intent(in) :: istop
     integer, intent(out) :: iret
 ! ======================================================================
@@ -50,7 +51,7 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer ::  jsolu1, jsolu2,   nsecmb
+    integer :: jsolu1, jsolu2, nsecmb
     character(len=19) :: matas2, secm19, solve2, solu19
     character(len=24) :: solu2
     real(kind=8), pointer :: secm(:) => null()

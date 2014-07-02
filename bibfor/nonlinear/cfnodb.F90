@@ -18,6 +18,7 @@ subroutine cfnodb(char)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -49,7 +50,7 @@ subroutine cfnodb(char)
 !
 !
     character(len=24) :: defico
-    logical(kind=1) :: lcalc
+    aster_logical :: lcalc
     integer :: nzoco, nnoco, iform
     character(len=24) :: nodbl, nodbl2
     integer :: jnodbl, jnodb2
@@ -121,7 +122,7 @@ subroutine cfnodb(char)
                 ASSERT(.false.)
             endif
         endif
-100  end do
+100 end do
 !
 ! ----------------------------------------------------------------------
 !
@@ -180,8 +181,8 @@ subroutine cfnodb(char)
                     ASSERT(.false.)
                 endif
             endif
-201      continue
-200  end do
+201     continue
+200 end do
 !
 ! --- MENAGE
 !

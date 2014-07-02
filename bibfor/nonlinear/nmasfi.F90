@@ -19,6 +19,7 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -66,8 +67,8 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
     real(kind=8) :: coeext, coeex2
     character(len=19) :: cnfedo, cnlame, cnondp, cnfepi
     character(len=19) :: cnsstf, cnviss
-    logical(kind=1) :: llapl
-    logical(kind=1) :: londe, lpilo, lsstf, lmpas, ldyna, lviss
+    aster_logical :: llapl
+    aster_logical :: londe, lpilo, lsstf, lmpas, ldyna, lviss
 !
 ! ----------------------------------------------------------------------
 !
@@ -180,7 +181,7 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
      &                 codonn(n)
             call nmdebg('VECT', cndonn(n), ifm)
         endif
-10  end do
+ 10 end do
 !
 ! --- VECTEUR RESULTANT FORCES PILOTEES
 !

@@ -27,6 +27,7 @@ subroutine te0257(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -41,14 +42,14 @@ subroutine te0257(option, nomte)
     integer :: igeom, imate, i, j, k, l, ik, ijkl, ldec, kco, ino, jno
     integer :: nno, npg, kp, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, imatuu, kpg, spt
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
     real(kind=8) :: r
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -71,10 +72,10 @@ subroutine te0257(option, nomte)
             do 20 i = 1, nno
                 do 10 j = 1, i
                     a(k,l,i,j) = 0.d0
-10              continue
-20          continue
-30      continue
-40  end do
+ 10             continue
+ 20         continue
+ 30     continue
+ 40 end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -91,7 +92,7 @@ subroutine te0257(option, nomte)
             r = 0.d0
             do 50 i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
-50          continue
+ 50         continue
             poids = poids*r
         endif
 !
@@ -103,25 +104,25 @@ subroutine te0257(option, nomte)
             do 70 jno = 1, ino
                 do 60 kco = 1, 2
 !
-                    a(kco,3,ino,jno) = a(kco,3,ino,jno) + poids*norm( kco)*rho(1)*&
-                                       zr(ivf+ldec+ino-1)* zr(ivf+ldec+jno-1)
+                    a(kco,3,ino,jno) = a(kco,3,ino,jno) + poids*norm( kco)*rho(1)* zr(ivf+ldec+in&
+                                       &o-1)* zr(ivf+ldec+jno-1)
 !
 !
 !
 !
-60              continue
-70          continue
-80      continue
+ 60             continue
+ 70         continue
+ 80     continue
 !
-90  end do
+ 90 end do
 !
     do 120 ino = 1, nno
         do 110 jno = 1, ino
             do 100 kco = 1, 2
                 a(3,kco,ino,jno) = a(kco,3,ino,jno)
-100          continue
-110      continue
-120  end do
+100         continue
+110     continue
+120 end do
 !
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
@@ -139,9 +140,9 @@ subroutine te0257(option, nomte)
 !
 !
 !
-130              continue
-140          continue
-150      continue
-160  end do
+130             continue
+140         continue
+150     continue
+160 end do
 !
 end subroutine

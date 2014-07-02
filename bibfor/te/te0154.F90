@@ -16,6 +16,7 @@ subroutine te0154(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -57,7 +58,7 @@ subroutine te0154(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomail
     character(len=16) :: ch16
-    logical(kind=1) :: lteimp
+    aster_logical :: lteimp
     real(kind=8) :: a, epsth, e(1), r8bid=0.d0, rho(1), xfl1, xfl4, xl, xmas, xrig
     integer :: i, if, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
     integer :: lmater, lorien, lsect, iret, lx, nc, nno, iadzi, iazk24

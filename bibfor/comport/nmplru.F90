@@ -20,6 +20,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcfonc.h"
@@ -65,7 +66,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !
     integer :: i, jprol, jvale, nbval
 !
-    logical(kind=1) :: cp, trac, line, elas
+    aster_logical :: cp, trac, line, elas
 !
 !
 !-----------------------------------------------------------------------
@@ -164,16 +165,15 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
         call rctrac(imate, 1, 'SIGM', temp, jprol,&
                     jvale, nbval, e)
         call rcfonc('V', 1, jprol, jvale, nbval,&
-                    p = ppg, rp = rp,&
-                    rprim = rprim, airerp = airep)
+                    p = ppg, rp = rp, rprim = rprim, airerp = airep)
         dairep = 0.d0
-
+!
     else if (elas) then
         rp = 0.d0
-
+!
     else
         ASSERT(.false.)
-
+!
     endif
 !
 ! - CALCUL DE EPSMO ET EPSDV

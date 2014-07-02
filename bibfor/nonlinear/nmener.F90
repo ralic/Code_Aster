@@ -25,6 +25,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -96,10 +97,10 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     character(len=19) :: lisbid
     character(len=8) :: k8bid
     character(len=6) :: tychap_out
-    integer ::   ivitmo, ivitpl
-    integer :: neq, i, j,  long
+    integer :: ivitmo, ivitpl
+    integer :: neq, i, j, long
     integer :: ifexte, ifamor, ifliai, ifcine, ifnoda
-    logical(kind=1) :: ldyna, lamor, lexpl, reassm
+    aster_logical :: ldyna, lamor, lexpl, reassm
     real(kind=8), pointer :: epmo(:) => null()
     real(kind=8), pointer :: eppl(:) => null()
     real(kind=8), pointer :: fammo(:) => null()
@@ -182,7 +183,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     call nmchex(measse, 'MEASSE', 'MEMASS', masse)
     call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
 !
-
+!
     do i = 1, zveass
         iret(i)=0
         call jeexin(veasse(i)//'.VALE', iret(i))

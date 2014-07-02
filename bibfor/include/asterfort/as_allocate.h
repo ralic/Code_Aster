@@ -23,12 +23,14 @@
 
 #define AS_ALLOCATE(arg, size) DEBUG_LOC("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=TO_STRING((arg, size)))
 !
+#include "asterf_types.h"
+!
 interface
     subroutine as_allocate(size, vl, vi, vi4, vr, &
                            vc, vk8, vk16, vk24, vk32, &
                            vk80, strdbg)
         integer :: size
-    logical(kind=1),           pointer, optional, intent(out) :: vl(:)
+    aster_logical,           pointer, optional, intent(out) :: vl(:)
     integer,           pointer, optional, intent(out) :: vi(:)
     integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
     real(kind=8),      pointer, optional, intent(out) :: vr(:)

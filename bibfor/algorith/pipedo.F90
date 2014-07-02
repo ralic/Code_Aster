@@ -21,6 +21,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
 ! aslint: disable=W1501
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/criteo.h"
 #include "asterfort/diago3.h"
@@ -69,7 +70,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     real(kind=8) :: valres(nbres)
 !
 !
-    logical(kind=1) :: cplan, rechbg, rechbd
+    aster_logical :: cplan, rechbg, rechbd
     integer :: ndimsi, k, nsol, iter, nitmax
     integer :: i, j, l, t(3, 3), kpg, spt
     real(kind=8) :: coplan, un
@@ -174,10 +175,10 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !    ETAT MECANIQUE EN T-
     do 3 i = 1, 3
         b(i) = 1.d0-vim(i)
- 3  end do
+  3 end do
     do 300 i = 4, 6
         b(i) = -vim(i)
-300  end do
+300 end do
     d = vim(7)
 !
 !      SEUIL=SEUIL+K0*TAU
@@ -204,16 +205,16 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     do 44 k = 1, 3
         epsp(k) = epspc(k)
         epsd(k) = epsdc(k)
-44  end do
+ 44 end do
     do 45 k = 4, ndimsi
         epsp(k) = epspc(k)/rac2
         epsd(k) = epsdc(k)/rac2
-45  end do
+ 45 end do
     if (ndimsi .lt. 6) then
         do 46 k = ndimsi+1, 6
             epsp(k)=0.d0
             epsd(k)=0.d0
-46      continue
+ 46     continue
     endif
 !
 !
@@ -230,7 +231,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     call diago3(b, vecb, valb)
     do 701 i = 1, 3
         br(i)=valb(i)
-701  end do
+701 end do
 !
     if (abs(valb(1)) .lt. tole) then
         rec(1)=0.d0
@@ -256,10 +257,10 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                     *vecb(l,j)
                     epsdm(t(i,j))=epsdm(t(i,j))-vecb(k,i)*epsd(t(k,l))&
                     *vecb(l,j)
-205              continue
-204          continue
-203      continue
-202  continue
+205             continue
+204         continue
+203     continue
+202 continue
 !
     call r8inir(6, 0.d0, ccp, 1)
     call r8inir(6, 0.d0, ccm, 1)
@@ -271,9 +272,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                 br(t(j,k))*epsdp(t(k,i))
                 ccm(t(i,j))=ccm(t(i,j))+br(t(i,k))*epsdm(t(k,j))+&
                 br(t(j,k))*epsdm(t(k,i))
-11          continue
-10      continue
- 9  end do
+ 11         continue
+ 10     continue
+  9 end do
     call diago3(ccp, veccp, valccp)
     call diago3(ccm, veccm, valccm)
 !
@@ -291,7 +292,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         if (valccm(i) .lt. 0.d0) then
             valccm(i)=0.d0
         endif
-12  end do
+ 12 end do
 !
     do 13 i = 1, 3
         do 14 j = i, 3
@@ -300,9 +301,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                 j,k)
                 ccpm(t(i,j))=ccpm(t(i,j))+veccm(i,k)*valccm(k)*veccm(&
                 j,k)
-15          continue
-14      continue
-13  end do
+ 15         continue
+ 14     continue
+ 13 end do
 !
     do 16 i = 1, 3
         do 17 j = i, 3
@@ -311,9 +312,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                 ccpp(t(j,k))*epsdp(t(k,i))
                 cpem(t(i,j))=cpem(t(i,j))+ ccpm(t(i,k))*epsdm(t(k,j))+&
                 ccpm(t(j,k))*epsdm(t(k,i))
-18          continue
-17      continue
-16  end do
+ 18         continue
+ 17     continue
+ 16 end do
 !
     call r8inir(6, 0.d0, fbp, 1)
     call r8inir(6, 0.d0, fbm, 1)
@@ -324,23 +325,23 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     do 301 i = 1, 3
         trebp=trebp+ccp(i)/2
         trebm=trebm+ccm(i)/2
-301  end do
+301 end do
 !
     if (trebp .gt. 0.d0) then
         do 19 i = 1, 6
             fbp(i)=-lambda*trebp*epsdp(i)
-19      continue
+ 19     continue
     endif
     if (trebm .gt. 0.d0) then
         do 21 i = 1, 6
             fbm(i)=-lambda*trebm*epsdm(i)
-21      continue
+ 21     continue
     endif
 !
     do 20 i = 1, 6
         fbp(i)=(fbp(i)-mu/2.d0*cpep(i))
         fbm(i)=(fbm(i)-mu/2.d0*cpem(i))
-20  end do
+ 20 end do
 !
     call diago3(fbp, vecfbp, valfbp)
     call diago3(fbm, vecfbm, valfbm)
@@ -357,7 +358,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             valfbm(i)=0.d0
         endif
         rtempm=rtempm+valfbm(i)*valfbm(i)
-29  end do
+ 29 end do
 !
 !
     treps=epsdp(1)+epsdp(2)+epsdp(3)
@@ -366,7 +367,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         if (valcc(i) .gt. 0.d0) then
             valcc(i)=0.d0
         endif
-22  end do
+ 22 end do
     trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
         treps=0.d0
@@ -385,7 +386,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         if (valcc(i) .gt. 0.d0) then
             valcc(i)=0.d0
         endif
-32  end do
+ 32 end do
     trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
         treps=0.d0
@@ -439,7 +440,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         rpas=(etamax-etamin)
 !
         if (rechbg) then
-60          continue
+ 60         continue
             iter=iter+1
             rpas=rpas*2
             if ((crit1.lt.0.d0) .or. (critp1.ge.0.d0)) then
@@ -451,7 +452,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             endif
 !          write (6,*) 'ITER-1 = ',ITER
         else
-30          continue
+ 30         continue
             iter=iter+1
             rpas=rpas*2
             if (crit1 .ge. 0.d0) then
@@ -473,7 +474,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                     seuil, crit2, critp2)
         iter=0
         if (rechbd) then
-40          continue
+ 40         continue
             iter=iter+1
             rpas=rpas*2
             if ((crit2.lt.0.d0) .or. (critp2.le.0.d0)) then
@@ -485,7 +486,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             endif
 !          write (6,*) 'ITER-2 = ',ITER
         else
-50          continue
+ 50         continue
             iter=iter+1
             rpas=rpas*2
             if (crit2 .ge. 0.d0) then
@@ -532,9 +533,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             call criteo(epsp, epsd, x(3), b, d,&
                         lambda, mu, alpha, ecrob, ecrod,&
                         seuil, y(3), z(3))
-200      continue
+200     continue
         call utmess('F', 'UTILITAI2_53')
-201      continue
+201     continue
 !        write (6,*) 'ITER-3 = ',ITER
         eta=x(3)
         nsol=1
@@ -547,7 +548,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         iter = 0
 ! -- ON CHERCHE LE MINIMUM : ON SE DEPLACE SUR LE SEGMENT [ETA1,ETA2]
 !    ET ON RACCOURCIT L'INTERVALLE EN UTILISANT LA DERIVEE
-250      continue
+250     continue
 !     TEST D'ARRET POUR UN MINIMUM AU-DESSUS DE 0
         iter=iter+1
         if (iter .gt. nitmax) then
@@ -595,7 +596,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
 ! -- SI MINIMUM SOUS 0 : 2 SOLUTIONS, SINON : 0 SOLUTION
 !
-260      continue
+260     continue
 !       write (6,*) 'ITER-4 = ',ITER
         if (critc .lt. 0.d0) then
             nsol=2
@@ -623,9 +624,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                 call criteo(epsp, epsd, x(3), b, d,&
                             lambda, mu, alpha, ecrob, ecrod,&
                             seuil, y(3), z(3))
-400          continue
+400         continue
             call utmess('F', 'PILOTAGE_83')
-401          continue
+401         continue
 !          write (6,*) 'ITER-5 = ',ITER
             eta1=x(3)
 !
@@ -652,12 +653,12 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                             lambda, mu, alpha, ecrob, ecrod,&
                             seuil, y(3), z(3))
 !
-500          continue
+500         continue
 !          WRITE(6,*) 'ETA=',X(3)
 !          WRITE(6,*) 'CRITERE=',Y(3)
 !          WRITE(6,*) 'DCRIT=',Z(3)
             call utmess('F', 'PILOTAGE_83')
-501          continue
+501         continue
 !          write (6,*) 'ITER-5b = ',ITER
             eta2=x(3)
         else
@@ -717,5 +718,5 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !         WRITE(6,*) 'A2=',A2
 !         WRITE(6,*) 'A3=',A3
 !
-9999  continue
+9999 continue
 end subroutine

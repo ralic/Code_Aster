@@ -48,6 +48,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !                                /'C'  : MATRICE COMPLEXE
 !
 !.========================= DEBUT DES DECLARATIONS ====================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -73,7 +74,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     real(kind=8) :: tmax
 ! -----  ARGUMENTS
     integer :: nbmat
-    logical(kind=1) :: lsym
+    aster_logical :: lsym
     character(len=*) :: matrez, basez, numedd
     character(len=*) :: limat(nbmat)
     character(len=1) :: rouc
@@ -83,11 +84,11 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     character(len=19) :: matres, mat1, mati
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
     character(len=24) :: krefi, kliste
-    integer :: lgbl, jhtc, i, iadi, jeq, nbter,   ibl1, lcumu, kbl
+    integer :: lgbl, jhtc, i, iadi, jeq, nbter, ibl1, lcumu, kbl
     integer :: jbl1
     integer :: iblav, idhcoi, icum, ismdi, lsmhc, nterm, idsmhc, l, jsmde
     integer :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq
-    integer :: ier,  neq, k, htc
+    integer :: ier, neq, k, htc
     integer, pointer :: ibl(:) => null()
     integer, pointer :: pbl(:) => null()
     integer, pointer :: smde(:) => null()

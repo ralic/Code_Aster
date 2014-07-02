@@ -16,6 +16,7 @@ subroutine te0305(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -34,13 +35,13 @@ subroutine te0305(option, nomte)
     real(kind=8) :: poids, r, nx, ny, tpg, theta
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: iveres, i, l, li, icoefh
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !-----------------------------------------------------------------------
     integer :: itemp, itemps, jgano, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
@@ -61,12 +62,12 @@ subroutine te0305(option, nomte)
             l = (kp-1)*nno + i
             r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
             tpg = tpg + zr(itemp+i-1)*zr(ivf+l-1)
-10      continue
+ 10     continue
         if (laxi) poids = poids*r
 !CDIR$ IVDEP
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zr(iveres+i-1) = zr(iveres+i-1) - poids*theta*zr(li)*zr( icoefh)*tpg
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 end subroutine

@@ -98,7 +98,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
     character(len=24) :: knequa, kvale
     integer :: admodl, lcmodl, iexi
-    logical(kind=1) :: ldist, ldgrel
+    aster_logical :: ldist, ldgrel
 ! ----------------------------------------------------------------------
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 !     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -107,11 +107,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 ! --- DEBUT ------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iad1,  iadnem
-    integer :: ianulo,   iconx2,   idnequ
-    integer :: idprn1, idprn2, idveds, idverf,  iel
+    integer :: i, i1, iad, iad1, iadnem
+    integer :: ianulo, iconx2, idnequ
+    integer :: idprn1, idprn2, idveds, idverf, iel
     integer :: igr, il, ilim, ilimnu, ilinu, ilive
-    integer :: ilivec, imat, iresu,   jresl, jvale
+    integer :: ilivec, imat, iresu, jresl, jvale
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
     integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe
     integer :: nugd, numa
@@ -329,7 +329,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                 (n1-1)*(nec+2)+1-1)
                                 call corddl(admodl, lcmodl, idprn1, idprn2, ilimnu,&
                                             mode, nec, ncmp, n1, k1,&
-                                            nddl1,posddl)
+                                            nddl1, posddl)
                                 if (nddl1 .eq. 0) goto 50
                                 if (iad1 .eq. 0) then
                                     vali(1)=n1

@@ -19,8 +19,9 @@ function iscycl(ccycle, longcy)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: iscycl
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+    aster_logical :: iscycl
     integer :: ccycle, longcy
 !
 ! ----------------------------------------------------------------------

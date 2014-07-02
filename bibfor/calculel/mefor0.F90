@@ -17,13 +17,14 @@ subroutine mefor0(nomo, chfor0, fonc)
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fozerv.h"
 #include "asterfort/mecact.h"
     character(len=8) :: nomo
     character(len=*) :: chfor0
 !
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
 !
 ! - CETTE ROUTINE GENERE UN CHAMP DE FORCE NUL (CARTE CONSTANTE)
 !       FONC = .TRUE.  FORCE FONCTION

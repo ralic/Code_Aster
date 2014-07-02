@@ -18,7 +18,8 @@ subroutine nmadev(sddisc, sderro, iterat)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -51,7 +52,7 @@ subroutine nmadev(sddisc, sderro, iterat)
     character(len=8) :: k8bid, cricom, metlis
     character(len=16) :: nopara
     character(len=19) :: even
-    logical(kind=1) :: itemax, lerrit, divres, cvnewt
+    aster_logical :: itemax, lerrit, divres, cvnewt
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,9 +125,9 @@ subroutine nmadev(sddisc, sderro, iterat)
                         r8bid, nbok, k8bid)
 !
         endif
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

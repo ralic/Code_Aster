@@ -1,6 +1,7 @@
 subroutine peingl(resu, modele, mate, cara, nh,&
                   nbocc, motfaz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8prem.h"
@@ -151,7 +152,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! -----  VARIABLES LOCALES
     integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
     integer :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
-    integer ::  ngdmax, ncmpmx,   igd, idebgd, dg, ima, iconex, nbno, nec, ivari
+    integer :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
     integer :: i
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec, energi
     complex(kind=8) :: c16b
@@ -167,7 +168,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     character(len=24) :: chsig, lchin(10), lchout(2)
     character(len=24) :: mlggma, mlgnma
     character(len=24) :: chsigm, chdepm, chbid
-    logical(kind=1) :: evol
+    aster_logical :: evol
     integer :: iarg
     integer, pointer :: ptma(:) => null()
     integer, pointer :: desc(:) => null()

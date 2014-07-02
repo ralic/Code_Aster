@@ -18,6 +18,7 @@ subroutine numecn(modele, champ, nume)
 ! person_in_charge: jacques.pellet at edf.fr
 !----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
@@ -53,7 +54,7 @@ subroutine numecn(modele, champ, nume)
     integer :: ibid, nb1, jlligr, i1, i2, iret, nb2, iexi
     character(len=14) :: nu14
     character(len=19) :: nu19, k19bid
-    logical(kind=1) :: newnum
+    aster_logical :: newnum
     save numes
 ! DEB ------------------------------------------------------------------
 !

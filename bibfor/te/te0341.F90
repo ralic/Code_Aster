@@ -18,6 +18,7 @@ subroutine te0341(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cgfono.h"
 #include "asterfort/cgfore.h"
@@ -44,16 +45,16 @@ subroutine te0341(option, nomte)
     integer :: iu(3, 3), iuc(3), im(3), isect, iddlm, icompo
     real(kind=8) :: tang(3, 3), forref, sigref, depref, a
     real(kind=8) :: geom(3, 3)
-    logical(kind=1) :: reactu
+    aster_logical :: reactu
 !
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='NOEU',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npgn,jpoids=iwn,jvf=ivf1n,jdfde=idf1n,jgano=jgnn)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='NOEU', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npgn, jpoids=iwn, jvf=ivf1n, jdfde=idf1n, jgano=jgnn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
     ndim=3
     nddl1 = 5
 !
@@ -66,11 +67,11 @@ subroutine te0341(option, nomte)
 !     MISE A JOUR EVENTUELLE DE LA GEOMETRIE
 !
     reactu = .false.
-    if (option .eq. 'FORC_NODA')then
+    if (option .eq. 'FORC_NODA') then
         call jevech('PCOMPOR', 'L', icompo)
         if (zk16(icompo+2) .eq. 'PETIT_REAC') reactu = .true.
     endif
-    if (.not. reactu)then
+    if (.not. reactu) then
         do ino = 1, nno1
             do i = 1, ndim
                 geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)
@@ -80,8 +81,7 @@ subroutine te0341(option, nomte)
         call jevech('PDEPLMR', 'L', iddlm)
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)&
-                            + zr(iddlm-1+(ino-1)*nddl1+i)
+                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i) + zr(iddlm-1+(ino-1)*nddl1+i)
             enddo
         enddo
     endif

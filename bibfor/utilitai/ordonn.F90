@@ -1,5 +1,6 @@
 subroutine ordonn(nomfon, iret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/foverf.h"
 #include "asterfort/jedema.h"
@@ -46,9 +47,9 @@ subroutine ordonn(nomfon, iret)
 !                   SI 0, ON FORCE LE TRI
 ! ----------------------------------------------------------------------
     integer :: ival
-    integer ::  nbpara
+    integer :: nbpara
     integer :: nbval, nbpts, ier, i
-    logical(kind=1) :: isnap, inv
+    aster_logical :: isnap, inv
     character(len=1) :: codmes
     character(len=16) :: typfon
     character(len=24) :: chval
@@ -156,14 +157,14 @@ subroutine ordonn(nomfon, iret)
                 codmes = 'F'
                 goto 999
             endif
-99          continue
-100      continue
+ 99         continue
+100     continue
 !     --------------------------------------------
     else
         call utmess('F', 'UTILITAI3_38')
     endif
 !
-999  continue
+999 continue
 !
     if (codmes .ne. ' ') then
         if (.not. isnap) then

@@ -1,6 +1,7 @@
 subroutine orvlma(noma, listma, nbmail, norien, vect,&
                   noeud)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
@@ -52,14 +53,14 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !    NOEUD          IN    I       NOEUD D'ORIENTATION
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer ::  nutyma, lori, jori, nori, kori, iliste
+    integer :: nutyma, lori, jori, nori, kori, iliste
     integer :: ima, numail, numa, norieg, lliste, zero, ibid(1)
     integer :: im1, im2, ico
     integer :: p1, p2, ifm, niv, p3, p4
     integer :: nbnmai, jdesm1, jdesm2
     integer :: nbmavo, indi, im3, jcoor
     integer :: nbmaor, ii, kdeb
-    logical(kind=1) :: dime1, dime2, reorie
+    aster_logical :: dime1, dime2, reorie
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
@@ -130,7 +131,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
         endif
-10  end do
+ 10 end do
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
@@ -185,7 +186,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
             endif
         endif
 !
-20  end do
+ 20 end do
     if (nbmaor .eq. 0) then
         call utmess('F', 'MODELISA6_1')
     endif
@@ -197,7 +198,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !
 ! --- ON ORIENTE TOUTES LES MAILLES DU CONNEXE
 !
-200      continue
+200     continue
 !
         im1 = zi(jori+iliste)
         jdesm1 = zi(kori-1+im1)
@@ -235,10 +236,10 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
                 if (ico .lt. 0) norieg = norieg + 1
 !
             endif
-210      end do
+210     end do
         iliste = iliste + 1
         if (iliste .le. lliste) goto 200
-300  end do
+300 end do
 !
 ! --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
 !
@@ -246,7 +247,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
         if (pasori(ima)) then
             call utmess('F', 'MODELISA6_2')
         endif
-100  end do
+100 end do
 !
     norien = norien + norieg
 !

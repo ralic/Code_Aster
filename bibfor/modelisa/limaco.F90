@@ -20,6 +20,7 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cacoco.h"
@@ -77,7 +78,7 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
     character(len=24) :: defico
     integer :: iform
     integer :: indqua
-    logical(kind=1) :: lmail, ltfcm
+    aster_logical :: lmail, ltfcm
     integer :: nsuco, nmaco, nnoco
 !
 ! ----------------------------------------------------------------------

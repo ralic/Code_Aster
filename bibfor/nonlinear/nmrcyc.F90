@@ -18,13 +18,14 @@ function nmrcyc(sddisc, iterat, prec)
 ! ======================================================================
 !
     implicit none
-    logical(kind=1) :: nmrcyc
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmlere.h"
 #include "asterfort/wkvect.h"
+    aster_logical :: nmrcyc
     integer :: iterat
     real(kind=8) :: prec
     character(len=19) :: sddisc
@@ -64,15 +65,15 @@ function nmrcyc(sddisc, iterat, prec)
                 res1 = zr(jres+itemax-offset)
                 res2 = zr(jres+finseq-offset)
                 if (abs(res1-res2)/max(res1,res2) .gt. prec) goto 1000
-30          continue
+ 30         continue
             nmrcyc = .true.
             goto 2000
-1000          continue
-20      continue
-10  end do
-2000  continue
+1000         continue
+ 20     continue
+ 10 end do
+2000 continue
 !
     call jedetr(residu)
-9999  continue
+9999 continue
     call jedema()
 end function

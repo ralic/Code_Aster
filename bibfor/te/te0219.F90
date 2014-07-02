@@ -16,6 +16,7 @@ subroutine te0219(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
@@ -45,7 +46,7 @@ subroutine te0219(option, nomte)
     integer :: nnop2, c(6, 9), ise, nse, itemps, j, ier, ibid
 !
 !
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
 !
 !
     call elref1(elrefe)
@@ -56,8 +57,8 @@ subroutine te0219(option, nomte)
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -92,7 +93,7 @@ subroutine te0219(option, nomte)
 !
     do 10 i = 1, nnop2
         vectt(i)=0.d0
-10  end do
+ 10 end do
 !
 !     BOUCLE SUR LES SOUS-ELEMENTS
     do 100 ise = 1, nse
@@ -100,7 +101,7 @@ subroutine te0219(option, nomte)
         do 105 i = 1, nno
             do 105 j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-105          continue
+105         continue
 !
         do 101 kp = 1, npg
             k=(kp-1)*nno
@@ -111,7 +112,7 @@ subroutine te0219(option, nomte)
             do 102 i = 1, nno
                 x = x + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
                 y = y + coorse(2*(i-1)+2) * zr(ivf+k+i-1)
-102          continue
+102         continue
 !
             if (fonc) then
                 valpar(1) = x
@@ -127,12 +128,12 @@ subroutine te0219(option, nomte)
 !
             do 103 i = 1, nno
                 vectt(c(ise,i)) = vectt( c(ise,i)) + poids*( dfdx(i)* grx+dfdy(i)*gry)
-103          continue
-101      continue
-100  end do
+103         continue
+101     continue
+100 end do
 !
     do 200 i = 1, nnop2
         zr(ivectt-1+i)=vectt(i)
-200  end do
+200 end do
 !
 end subroutine

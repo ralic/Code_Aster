@@ -22,6 +22,7 @@ subroutine op0101()
 !                                        THER_IMPO
 !                                        ACOU_IMPO
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -35,7 +36,7 @@ subroutine op0101()
     character(len=8) :: chcine, mo, pheno, evoim
     character(len=16) :: type, oper
     character(len=19) :: chci19
-    logical :: cinef
+    aster_logical :: cinef
 !
 ! ======================================================================
 ! --- DEBUT

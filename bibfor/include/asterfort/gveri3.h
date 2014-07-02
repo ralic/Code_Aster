@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
                       thlag2, ndeg, trav1, trav2, trav3)
@@ -22,8 +24,8 @@ interface
         character(len=24) :: taillr
         character(len=8) :: config
         integer :: lnoff
-        logical(kind=1) :: thlagr
-        logical(kind=1) :: thlag2
+        aster_logical :: thlagr
+        aster_logical :: thlag2
         integer :: ndeg
         character(len=24) :: trav1
         character(len=24) :: trav2

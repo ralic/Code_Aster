@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
                       coefaf)
-        logical(kind=1) :: ldyna
-        logical(kind=1) :: lfovit
+        aster_logical :: ldyna
+        aster_logical :: lfovit
         real(kind=8) :: jeusup
         integer :: ndexfr
         real(kind=8) :: coefac

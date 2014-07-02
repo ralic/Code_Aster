@@ -3,6 +3,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gsyste.h"
@@ -15,7 +16,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
     integer :: nnoff, iadrgk, iadgks, iadgki, num
     character(len=8) :: modele
     character(len=24) :: chfond, abscur
-    logical(kind=1) :: milieu, connex
+    aster_logical :: milieu, connex
 !
 !
 ! ======================================================================
@@ -86,7 +87,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
         k2th(i)=zr(iadrgk-1+(i-1)*8+6)
         k3th(i)=zr(iadrgk-1+(i-1)*8+7)
         gith(i)=g1th(i)*g1th(i) +g2th(i)*g2th(i) +g3th(i)*g3th(i)
-10  end do
+ 10 end do
 !
     call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)
 !
@@ -107,7 +108,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
                 zr(ivect+i -1)= zr(ivect+i-1) + delta
                 zr(ivect+i+1-1)= 4.d0*delta
                 zr(ivect+i+2-1)= delta
-20          continue
+ 20         continue
         else
             do 30 i = 1, nnoff-1
                 s1 = zr(iadabs+i-1)
@@ -115,7 +116,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
                 delta = (s2-s1) / 3.d0
                 zr(ivect+i -1) = zr(ivect+i-1) + delta
                 zr(ivect+i+1-1) = 2.d0 * delta
-30          continue
+ 30         continue
         endif
 !
 !       CORRECTION DANS LE CAS D UN FOND FERME
@@ -131,7 +132,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
             k3s(i) = k3th(i)/zr(ivect+i-1 )
             gis(i) = gith(i)/(zr(ivect+i-1 ) * zr(ivect+i-1 ))
 !
-40      continue
+ 40     continue
 !
 !       CORRECTION DES VALEURS ASSOCIEES AU 1ER ET DERNIER CHAMPS THETA
         if (nnoff .gt. 2) then
@@ -192,7 +193,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
                 zr(imatr+(i-1 )*nnoff+i-1+2) = -1.d0 * delta
                 zr(imatr+(i-1+1)*nnoff+i-1+2) = 2.d0 * delta
                 zr(imatr+(i-1+2)*nnoff+i-1+2) = 4.d0 * delta
-50          continue
+ 50         continue
             if (connex) then
                 kk = imatr+(1-1 )*nnoff+1-1
                 zr(kk )= zr(kk) + 5.d0*delta
@@ -216,7 +217,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 !
                 zr(imatr+(i-1 )*nnoff+i-1+1) = 1.d0 * delta
                 zr(imatr+(i-1+1)*nnoff+i-1+1) = 2.d0 * delta
-60          continue
+ 60         continue
             if (connex) then
                 kk = imatr+(1-1 )*nnoff+1-1
                 zr(kk )= zr(kk) + 3.d0*delta
@@ -288,7 +289,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
         call gsyste(matr, nnoff, nnoff, g3th, g3s)
         do 70 i = 1, nnoff
             gis(i)=g1s(i)*g1s(i) + g2s(i)*g2s(i) +g3s(i)*g3s(i)
-70      continue
+ 70     continue
 !
     endif
 !
@@ -302,14 +303,14 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
         zr(iadgks-1+(i-1)*6+3)=k2s(i)
         zr(iadgks-1+(i-1)*6+4)=k3s(i)
         zr(iadgks-1+(i-1)*6+5)=gis(i)
-80  end do
+ 80 end do
 !
     do 90 i = 1, nnoff
         zr(iadgki-1+(i-1)*5+1) = zr(iadrgk-1+(i-1)*8+1)
         zr(iadgki-1+(i-1)*5+2) = zr(iadrgk-1+(i-1)*8+5)
         zr(iadgki-1+(i-1)*5+3) = zr(iadrgk-1+(i-1)*8+6)
         zr(iadgki-1+(i-1)*5+4) = zr(iadrgk-1+(i-1)*8+7)
-90  end do
+ 90 end do
 !
 !
 !     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
@@ -323,7 +324,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
                                          1.0d0&
                                          )
         zr(iadgks-1+(i-1)*6+6)=betas(i)
-100  end do
+100 end do
 !
     call jedetr('&&METHO3.MATRI')
     call jedetr('&&METHO3.VECT')

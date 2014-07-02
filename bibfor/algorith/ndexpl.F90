@@ -24,7 +24,8 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/ndxcvg.h"
 #include "asterfort/ndxdec.h"
 #include "asterfort/ndxdep.h"
@@ -86,7 +87,7 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: k24bla
-    logical(kind=1) :: lerrit
+    aster_logical :: lerrit
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,7 +125,7 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !
-315  continue
+315 continue
     call ndxcvg(sddisc, sderro, valinc)
 !
 ! --- EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS

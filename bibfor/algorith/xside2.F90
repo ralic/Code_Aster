@@ -6,6 +6,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
@@ -77,7 +78,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     integer :: kpg, n, i, j, ino, iret, ipg
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
-    logical(kind=1) :: grdepl, axi
+    aster_logical :: grdepl, axi
     real(kind=8) :: f(3, 3), eps(6), baslog(6)
     real(kind=8) :: fe(4), instan, rac2
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), lsng, lstg
@@ -110,7 +111,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !      -----------------------------------------
     nbsig = nbsigm()
 !
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
 ! - INITIALISATION
     grdepl = compor(3).eq. 'GROT_GDEP'
@@ -122,9 +123,9 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         call utmess('F', 'XFEM2_2')
     endif
 !
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
@@ -144,7 +145,8 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         end do
 !
 !       CALCUL DES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
@@ -182,10 +184,13 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                    r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, idepl, grdepl,&
+                    ndim, he, r, rbid, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f,&
+                    eps, grad)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)
@@ -194,9 +199,8 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                     epsth)
 !
 !       CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
-        call dmatmc('XFEM', imate, instan, '+',&
-                    ipg, 1, r8bi7, r8bi3, nbsig,&
-                    d)
+        call dmatmc('XFEM', imate, instan, '+', ipg,&
+                    1, r8bi7, r8bi3, nbsig, d)
 !
 !       VECTEUR DES CONTRAINTES
         do i = 1, nbsig

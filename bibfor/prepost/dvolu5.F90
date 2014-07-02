@@ -32,6 +32,7 @@ function dvolu5(numele, coord, norm, volt, coord1,&
 ! OUT  DVOLU5 : VOLUME DE L INTERSECTION
 !
     implicit none
+#include "asterf_types.h"
 !
 ! DECLARATION GLOBALE
 !
@@ -42,7 +43,7 @@ function dvolu5(numele, coord, norm, volt, coord1,&
 !
     integer :: a, b, c, d, e, f, g, h, i, j, k, ex
     real(kind=8) :: vol3, vol4, xo1a, yo1a, zo1a, xo2a, yo2a, zo2a, do1a, do2a
-    logical(kind=1) :: lnoeu
+    aster_logical :: lnoeu
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES
 !     RQ : 2 POINTS DEDANS
@@ -54,14 +55,14 @@ function dvolu5(numele, coord, norm, volt, coord1,&
     do 10 k = 1, 4
         if (norm(1,k) .eq. 1 .and. a .gt. 0) b = k
         if (norm(1,k) .eq. 1 .and. a .eq. 0) a = k
-10  end do
+ 10 end do
 !
 ! 2 - RECHERCHE DU PREMIER POINT HORS PLAN
 !
     ex = 0
     do 20 k = 1, 4
         if (norm(2,k) .ne. 0 .and. ex .eq. 0) ex = k
-20  end do
+ 20 end do
 !
 ! 3 - A EST-IL DU COTE DE 01 OU 02
 !

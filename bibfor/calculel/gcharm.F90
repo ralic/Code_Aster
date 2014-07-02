@@ -19,6 +19,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
@@ -29,7 +30,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: lfchar
+    aster_logical :: lfchar
     character(len=8) :: nomfct, newfct
     real(kind=8) :: time
     character(len=19) :: cartei, carteo
@@ -84,7 +85,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
     if (.not.lfchar) then
         do 10 in = 1, nbvale
             zr(jvalou+in-1) = const*zr(jvalin +in-1)
-10      continue
+ 10     continue
 !
 ! - 2. CHARGEMENT 'FONCTION'
 !
@@ -104,7 +105,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                     npt=nb/2
                     do 30 i = 1, npt
                         valf(1+npt+i-1)=const*valf(1+npt+i-1)
-30                  continue
+ 30                 continue
                     zk8(jvalou+in-1) = newfct
                 else
                     call utmess('A', 'RUPTURE2_4', sk=charge)
@@ -112,10 +113,10 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                     goto 999
                 endif
             endif
-20      continue
+ 20     continue
     endif
 !
-999  continue
+999 continue
     call jedema()
 !
 end subroutine

@@ -19,6 +19,7 @@ subroutine mpistp(imode)
 !
     implicit none
 !     ARGUMENT IN
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 #include "asterf.h"
 #include "asterfort/assert.h"
@@ -44,7 +45,7 @@ subroutine mpistp(imode)
 #include "asterf_constant.h"
     integer :: lout, imod2
     character(len=16) :: compex
-    logical(kind=1) :: labort
+    aster_logical :: labort
 !
     call ststat(ST_ER_OTH)
     labort = .not. gtstat(ST_EXCEPT)

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cast3d(proj, gamma, dh, def, nno,&
                       kpg, nub, nu, dsidep, calbn,&
@@ -28,7 +30,7 @@ interface
         real(kind=8) :: nub
         real(kind=8) :: nu
         real(kind=8) :: dsidep(6, 6)
-        logical(kind=1) :: calbn
+        aster_logical :: calbn
         real(kind=8) :: bn(6, 3, 8)
         real(kind=8) :: jac
         real(kind=8) :: matuu(*)

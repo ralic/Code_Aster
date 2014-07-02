@@ -1,5 +1,6 @@
 subroutine celfpg(celz, nomobj, iret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -64,7 +65,7 @@ subroutine celfpg(celz, nomobj, iret)
 ! IRET    CODE RETOUR
 !         0 : PAS D'ERREUR
 !         1 : CELZ NE CORRESPOND PAS A NOMOBJ (S'IL EXISTE)
-    logical(kind=1) :: lexi
+    aster_logical :: lexi
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
@@ -72,9 +73,9 @@ subroutine celfpg(celz, nomobj, iret)
     character(len=16) :: nofpg
     character(len=19) :: cel, ligrel, ligrsv
     character(len=24) :: nomosv
-    integer :: jobj, nbma, jcelv,  nec
-    integer :: igr, iel,  illiel
-    integer ::  nbgr, imolo, jmolo, numa, nbel, kfpg
+    integer :: jobj, nbma, jcelv, nec
+    integer :: igr, iel, illiel
+    integer :: nbgr, imolo, jmolo, numa, nbel, kfpg
     integer :: iexi
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: liel(:) => null()

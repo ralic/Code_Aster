@@ -28,6 +28,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -70,7 +71,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
     integer :: jnoeu, n11, n12, n13, n14, n15, n16, n17, n18
     integer :: jncas, jangl, jnocp, numcmp, jnucp, nbordr, jnume
     real(kind=8) :: r8b
-    logical(kind=1) :: lmima, lmoye, lextr, lmoygr
+    aster_logical :: lmima, lmoye, lextr, lmoygr
     complex(kind=8) :: c16b
     character(len=8) :: k8b, resu, typara(100), nomcmp
     character(len=16) :: k16b, nomsy, tysd
@@ -125,160 +126,175 @@ subroutine rvpara(nomtab, mcf, nbpost)
 ! 2. ON PARCOURT TOUTES LES ACTIONS DEMANDEES
 !====
 !
-    do 2, iocc = 1, nbpost
+    do 2 iocc = 1, nbpost
 !
 ! 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
 !
-    call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) jchem = jchem + 1
+        call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=n1)
+        if (n1 .ne. 0) jchem = jchem + 1
 !
-    call getvid(mcf, 'CHAM_GD', iocc=iocc, nbval=0, nbret=n2)
-    if (n2 .ne. 0) jcham = jcham + 1
+        call getvid(mcf, 'CHAM_GD', iocc=iocc, nbval=0, nbret=n2)
+        if (n2 .ne. 0) jcham = jcham + 1
 !
-    call getvid(mcf, 'RESULTAT', iocc=iocc, nbval=0, nbret=n3)
-    if (n3 .ne. 0) then
-        jresu = jresu + 1
-        call getvid(mcf, 'RESULTAT', iocc=iocc, scal=k8b, nbret=n3)
-        call gettco(k8b, tysd)
-        if (tysd .eq. 'EVOL_ELAS' .or. tysd .eq. 'EVOL_THER' .or. tysd .eq. 'EVOL_NOLI'&
-            .or. tysd .eq. 'EVOL_CHAR' .or. tysd .eq. 'DYNA_TRANS') then
-            jinst = jinst + 1
-            elseif ( tysd .eq. 'DYNA_HARMO' .or. tysd .eq.&
+        call getvid(mcf, 'RESULTAT', iocc=iocc, nbval=0, nbret=n3)
+        if (n3 .ne. 0) then
+            jresu = jresu + 1
+            call getvid(mcf, 'RESULTAT', iocc=iocc, scal=k8b, nbret=n3)
+            call gettco(k8b, tysd)
+            if (tysd .eq. 'EVOL_ELAS' .or. tysd .eq. 'EVOL_THER' .or. tysd .eq. 'EVOL_NOLI'&
+                .or. tysd .eq. 'EVOL_CHAR' .or. tysd .eq. 'DYNA_TRANS') then
+                jinst = jinst + 1
+                elseif ( tysd .eq. 'DYNA_HARMO' .or. tysd .eq.&
             'HARM_GENE' .or. tysd .eq. 'ACOU_HARMO' ) then
-            jfreq = jfreq + 1
-            elseif ( tysd .eq. 'MODE_MECA' .or. tysd .eq. 'MODE_GENE'&
+                jfreq = jfreq + 1
+                elseif ( tysd .eq. 'MODE_MECA' .or. tysd .eq. 'MODE_GENE'&
             .or. tysd .eq. 'MODE_ACOU' ) then
-            jfreq = jfreq + 1
-            jmode = jmode + 1
-            jnocp = jnocp + 1
-        else if (tysd .eq. 'MULT_ELAS') then
-            jncas = jncas + 1
-        else if (tysd(1:8) .eq. 'FOURIER_') then
-            jmode = jmode + 1
-        else if (tysd .eq. 'COMB_FOURIER') then
-            jangl = jangl + 1
-        endif
-    endif
-!
-    call getvid(mcf, 'LIST_ORDRE', iocc=iocc, nbval=0, nbret=n11)
-    if (n11 .ne. 0) jordr = jordr + 1
-!
-    call getvis(mcf, 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=n12)
-    if (n12 .ne. 0) jordr = jordr + 1
-!
-    call getvid(mcf, 'LIST_MODE', iocc=iocc, nbval=0, nbret=n13)
-    if (n13 .ne. 0) jmode = jmode + 1
-!
-    call getvis(mcf, 'NUME_MODE', iocc=iocc, nbval=0, nbret=n14)
-    if (n14 .ne. 0) jmode = jmode + 1
-!
-    call getvid(mcf, 'LIST_INST', iocc=iocc, nbval=0, nbret=n15)
-    if (n15 .ne. 0) jinst = jinst + 1
-!
-    call getvr8(mcf, 'INST', iocc=iocc, nbval=0, nbret=n16)
-    if (n16 .ne. 0) jinst = jinst + 1
-!
-    call getvid(mcf, 'LIST_FREQ', iocc=iocc, nbval=0, nbret=n17)
-    if (n17 .ne. 0) jfreq = jfreq + 1
-!
-    call getvr8(mcf, 'FREQ', iocc=iocc, nbval=0, nbret=n18)
-    if (n18 .ne. 0) jfreq = jfreq + 1
-!
-    if ((n2+n11+n12+n13+n14+n15+n16+n17+n18) .eq. 0) jordr = jordr+ 1
-!
-    call getvtx(mcf, 'TOUT_CMP', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
-        jncmp = jncmp + 1
-        nomobj = '&&'//nompro//'.NCMP'
-        if (n2 .ne. 0) then
-            call getvid(mcf, 'CHAM_GD', iocc=iocc, scal=nomsy, nbret=n2)
-            call utncmp(nomsy, nbc, nomobj)
-        else
-            call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resu, nbret=n3)
-            call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nomsy, nbret=n1)
-!
-            call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                        c16b, r8b, k8b, tord, 1,&
-                        ibid)
-            nbordr=tord(1)            
-            knume = '&&'//nompro//'.NUME_ORDRE'
-            call wkvect(knume, 'V V I', nbordr, jnume)
-            call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
-                        c16b, r8b, k8b, zi(jnume), nbordr,&
-                        ibid)
-            do 14 i = 1, nbordr
-                nume = zi(jnume+i-1)
-                call rsexch(' ', resu, nomsy, nume, chextr,&
-                            iret)
-                if (iret .eq. 0) goto 16
-14          continue
-            call utmess('F', 'POSTRELE_9', sk=nomsy)
-16          continue
-            call jedetr(knume)
-            call utncmp(chextr, nbc, nomobj)
-        endif
-        if (nbc .eq. 0) then
-            call utmess('F', 'POSTRELE_59')
-        endif
-        call jeveuo(nomobj, 'L', jcmp1)
-        do 10 i = 1, nbc
-            do 12 j = 1, ncmp
-                if (zk8(jnocmp-1+j) .eq. zk8(jcmp1+i-1)) goto 10
-12          continue
-            ncmp = ncmp + 1
-            if (ncmp .gt. ncmpmx) then
-                ncmpmx = 2*ncmpmx
-                call juveca(nocmp, ncmpmx)
-                call jeveuo(nocmp, 'E', jnocmp)
+                jfreq = jfreq + 1
+                jmode = jmode + 1
+                jnocp = jnocp + 1
+            else if (tysd .eq. 'MULT_ELAS') then
+                jncas = jncas + 1
+            else if (tysd(1:8) .eq. 'FOURIER_') then
+                jmode = jmode + 1
+            else if (tysd .eq. 'COMB_FOURIER') then
+                jangl = jangl + 1
             endif
-            zk8(jnocmp-1+ncmp) = zk8(jcmp1+i-1)
-10      continue
-        call jedetr(nomobj)
-    endif
+        endif
 !
-    call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
+        call getvid(mcf, 'LIST_ORDRE', iocc=iocc, nbval=0, nbret=n11)
+        if (n11 .ne. 0) jordr = jordr + 1
 !
-        call getvtx(mcf, 'TRAC_NOR', iocc=iocc, nbval=0, nbret=n12)
-        if (n12 .ne. 0) jtran = jtran + 1
+        call getvis(mcf, 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=n12)
+        if (n12 .ne. 0) jordr = jordr + 1
 !
-        call getvtx(mcf, 'TRAC_DIR', iocc=iocc, nbval=0, nbret=n14)
-        if (n14 .ne. 0) jtrad = jtrad + 1
+        call getvid(mcf, 'LIST_MODE', iocc=iocc, nbval=0, nbret=n13)
+        if (n13 .ne. 0) jmode = jmode + 1
 !
-        if ((n12+n14) .ne. 0) goto 24
-        jncmp = jncmp + 1
-        nbc = -n1
-        call wkvect('&&'//nompro//'.NCMP', 'V V K8', nbc, jcmp2)
-        call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=nbc, vect=zk8(jcmp2),&
-                    nbret=n1)
-!           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
-        n11=0
-        if (n11 .ne. 0) then
-            numcmp = -n11
-            call wkvect('&&'//nompro//'.NU_CMP', 'V V I', numcmp, jnucp)
-!           CALL GETVIS(MCF,'NUME_CMP',IOCC,IARG,NUMCMP,ZI(JNUCP),N11)
-            n11=0
-            if (zk8(jcmp2)(1:4) .eq. 'VARI') then
-                ASSERT(nbc.eq.1)
-                do 120 i = 1, numcmp
-                    call codent(zi(jnucp+i-1), 'G', k8b)
-                    nomcmp = 'VARI_'//k8b(1:3)
-                    do 122 j = 1, ncmp
-                        if (zk8(jnocmp-1+j) .eq. nomcmp) goto 120
-122                  continue
-                    ncmp = ncmp + 1
-                    if (ncmp .gt. ncmpmx) then
-                        ncmpmx = 2*ncmpmx
-                        call juveca(nocmp, ncmpmx)
-                        call jeveuo(nocmp, 'E', jnocmp)
-                    endif
-                    zk8(jnocmp-1+ncmp) = nomcmp
-120              continue
+        call getvis(mcf, 'NUME_MODE', iocc=iocc, nbval=0, nbret=n14)
+        if (n14 .ne. 0) jmode = jmode + 1
+!
+        call getvid(mcf, 'LIST_INST', iocc=iocc, nbval=0, nbret=n15)
+        if (n15 .ne. 0) jinst = jinst + 1
+!
+        call getvr8(mcf, 'INST', iocc=iocc, nbval=0, nbret=n16)
+        if (n16 .ne. 0) jinst = jinst + 1
+!
+        call getvid(mcf, 'LIST_FREQ', iocc=iocc, nbval=0, nbret=n17)
+        if (n17 .ne. 0) jfreq = jfreq + 1
+!
+        call getvr8(mcf, 'FREQ', iocc=iocc, nbval=0, nbret=n18)
+        if (n18 .ne. 0) jfreq = jfreq + 1
+!
+        if ((n2+n11+n12+n13+n14+n15+n16+n17+n18) .eq. 0) jordr = jordr+ 1
+!
+        call getvtx(mcf, 'TOUT_CMP', iocc=iocc, nbval=0, nbret=n1)
+        if (n1 .ne. 0) then
+            jncmp = jncmp + 1
+            nomobj = '&&'//nompro//'.NCMP'
+            if (n2 .ne. 0) then
+                call getvid(mcf, 'CHAM_GD', iocc=iocc, scal=nomsy, nbret=n2)
+                call utncmp(nomsy, nbc, nomobj)
             else
-                do 124 i = 1, nbc
-                    do 126 j = 1, ncmp
-                        if (zk8(jnocmp-1+j) .eq. zk8(jcmp2+i-1)) goto 124
-126                  continue
+                call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resu, nbret=n3)
+                call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nomsy, nbret=n1)
+!
+                call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                            c16b, r8b, k8b, tord, 1,&
+                            ibid)
+                nbordr=tord(1)            
+                knume = '&&'//nompro//'.NUME_ORDRE'
+                call wkvect(knume, 'V V I', nbordr, jnume)
+                call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
+                            c16b, r8b, k8b, zi(jnume), nbordr,&
+                            ibid)
+                do 14 i = 1, nbordr
+                    nume = zi(jnume+i-1)
+                    call rsexch(' ', resu, nomsy, nume, chextr,&
+                                iret)
+                    if (iret .eq. 0) goto 16
+ 14             continue
+                call utmess('F', 'POSTRELE_9', sk=nomsy)
+ 16             continue
+                call jedetr(knume)
+                call utncmp(chextr, nbc, nomobj)
+            endif
+            if (nbc .eq. 0) then
+                call utmess('F', 'POSTRELE_59')
+            endif
+            call jeveuo(nomobj, 'L', jcmp1)
+            do 10 i = 1, nbc
+                do 12 j = 1, ncmp
+                    if (zk8(jnocmp-1+j) .eq. zk8(jcmp1+i-1)) goto 10
+ 12             continue
+                ncmp = ncmp + 1
+                if (ncmp .gt. ncmpmx) then
+                    ncmpmx = 2*ncmpmx
+                    call juveca(nocmp, ncmpmx)
+                    call jeveuo(nocmp, 'E', jnocmp)
+                endif
+                zk8(jnocmp-1+ncmp) = zk8(jcmp1+i-1)
+ 10         continue
+            call jedetr(nomobj)
+        endif
+!
+        call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=n1)
+        if (n1 .ne. 0) then
+!
+            call getvtx(mcf, 'TRAC_NOR', iocc=iocc, nbval=0, nbret=n12)
+            if (n12 .ne. 0) jtran = jtran + 1
+!
+            call getvtx(mcf, 'TRAC_DIR', iocc=iocc, nbval=0, nbret=n14)
+            if (n14 .ne. 0) jtrad = jtrad + 1
+!
+            if ((n12+n14) .ne. 0) goto 24
+            jncmp = jncmp + 1
+            nbc = -n1
+            call wkvect('&&'//nompro//'.NCMP', 'V V K8', nbc, jcmp2)
+            call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=nbc, vect=zk8(jcmp2),&
+                        nbret=n1)
+!           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
+            n11=0
+            if (n11 .ne. 0) then
+                numcmp = -n11
+                call wkvect('&&'//nompro//'.NU_CMP', 'V V I', numcmp, jnucp)
+!           CALL GETVIS(MCF,'NUME_CMP',IOCC,IARG,NUMCMP,ZI(JNUCP),N11)
+                n11=0
+                if (zk8(jcmp2)(1:4) .eq. 'VARI') then
+                    ASSERT(nbc.eq.1)
+                    do 120 i = 1, numcmp
+                        call codent(zi(jnucp+i-1), 'G', k8b)
+                        nomcmp = 'VARI_'//k8b(1:3)
+                        do 122 j = 1, ncmp
+                            if (zk8(jnocmp-1+j) .eq. nomcmp) goto 120
+122                     continue
+                        ncmp = ncmp + 1
+                        if (ncmp .gt. ncmpmx) then
+                            ncmpmx = 2*ncmpmx
+                            call juveca(nocmp, ncmpmx)
+                            call jeveuo(nocmp, 'E', jnocmp)
+                        endif
+                        zk8(jnocmp-1+ncmp) = nomcmp
+120                 continue
+                else
+                    do 124 i = 1, nbc
+                        do 126 j = 1, ncmp
+                            if (zk8(jnocmp-1+j) .eq. zk8(jcmp2+i-1)) goto 124
+126                     continue
+                        ncmp = ncmp + 1
+                        if (ncmp .gt. ncmpmx) then
+                            ncmpmx = 2*ncmpmx
+                            call juveca(nocmp, ncmpmx)
+                            call jeveuo(nocmp, 'E', jnocmp)
+                        endif
+                        zk8(jnocmp-1+ncmp) = zk8(jcmp2+i-1)
+124                 continue
+                endif
+                call jedetr('&&'//nompro//'.NU_CMP')
+            else
+                do 20 i = 1, nbc
+                    do 22 j = 1, ncmp
+                        if (zk8(jnocmp-1+j) .eq. zk8(jcmp2+i-1)) goto 20
+ 22                 continue
                     ncmp = ncmp + 1
                     if (ncmp .gt. ncmpmx) then
                         ncmpmx = 2*ncmpmx
@@ -286,87 +302,72 @@ subroutine rvpara(nomtab, mcf, nbpost)
                         call jeveuo(nocmp, 'E', jnocmp)
                     endif
                     zk8(jnocmp-1+ncmp) = zk8(jcmp2+i-1)
-124              continue
+ 20             continue
             endif
-            call jedetr('&&'//nompro//'.NU_CMP')
-        else
-            do 20 i = 1, nbc
-                do 22 j = 1, ncmp
-                    if (zk8(jnocmp-1+j) .eq. zk8(jcmp2+i-1)) goto 20
-22              continue
+            call jedetr('&&'//nompro//'.NCMP')
+        endif
+ 24     continue
+!
+        call getvtx(mcf, 'ELEM_PRINCIPAUX', iocc=iocc, nbval=0, nbret=n1)
+        if (n1 .ne. 0) jprin = jprin + 1
+!
+        call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
+        call getvtx(mcf, 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
+        if ((n1 .ne. 0) .and. (n2 .ne. 0)) jmome = jmome + 1
+        if ((n1 .ne. 0) .and. (n2 .eq. 0)) then
+            jncmp = jncmp + 1
+            nbc = -n1
+            call wkvect('&&'//nompro//'.NCMP', 'V V K8', nbc, jcmp3)
+            call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=nbc, vect=zk8(jcmp3),&
+                        nbret=n1)
+            do 30 i = 1, nbc
+                do 32 j = 1, ncmp
+                    if (zk8(jnocmp-1+j) .eq. zk8(jcmp3+i-1)) goto 30
+ 32             continue
                 ncmp = ncmp + 1
                 if (ncmp .gt. ncmpmx) then
                     ncmpmx = 2*ncmpmx
                     call juveca(nocmp, ncmpmx)
                     call jeveuo(nocmp, 'E', jnocmp)
                 endif
-                zk8(jnocmp-1+ncmp) = zk8(jcmp2+i-1)
-20          continue
+                zk8(jnocmp-1+ncmp) = zk8(jcmp3+i-1)
+ 30         continue
+            call jedetr('&&'//nompro//'.NCMP')
         endif
-        call jedetr('&&'//nompro//'.NCMP')
-    endif
-24  continue
 !
-    call getvtx(mcf, 'ELEM_PRINCIPAUX', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) jprin = jprin + 1
+        lmima = .false.
+        lmoygr = .false.
+        lmoye = .false.
+        lextr = .false.
+        call getvtx(mcf, 'OPERATION', iocc=iocc, scal=k16b, nbret=n3)
+        if (k16b .eq. 'EXTREMA') lmima = .true.
+        if (k16b .eq. 'MOYENNE_ARITH') lmoygr = .true.
+        if (k16b .eq. 'MOYENNE') then
+            jmoye = jmoye + 1
+            lmoye = .true.
+        endif
+        if (k16b .eq. 'EXTRACTION') then
+            lextr = .true.
 !
-    call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
-    call getvtx(mcf, 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
-    if ((n1 .ne. 0) .and. (n2 .ne. 0)) jmome = jmome + 1
-    if ((n1 .ne. 0) .and. (n2 .eq. 0)) then
-        jncmp = jncmp + 1
-        nbc = -n1
-        call wkvect('&&'//nompro//'.NCMP', 'V V K8', nbc, jcmp3)
-        call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=nbc, vect=zk8(jcmp3),&
-                    nbret=n1)
-        do 30 i = 1, nbc
-            do 32 j = 1, ncmp
-                if (zk8(jnocmp-1+j) .eq. zk8(jcmp3+i-1)) goto 30
-32          continue
-            ncmp = ncmp + 1
-            if (ncmp .gt. ncmpmx) then
-                ncmpmx = 2*ncmpmx
-                call juveca(nocmp, ncmpmx)
-                call jeveuo(nocmp, 'E', jnocmp)
-            endif
-            zk8(jnocmp-1+ncmp) = zk8(jcmp3+i-1)
-30      continue
-        call jedetr('&&'//nompro//'.NCMP')
-    endif
+            call getvtx(mcf, 'INVARIANT', iocc=iocc, nbval=0, nbret=n2)
+            if (n2 .ne. 0) jinva = jinva + 1
 !
-    lmima = .false.
-    lmoygr = .false.
-    lmoye = .false.
-    lextr = .false.
-    call getvtx(mcf, 'OPERATION', iocc=iocc, scal=k16b, nbret=n3)
-    if (k16b .eq. 'EXTREMA') lmima = .true.
-    if (k16b .eq. 'MOYENNE_ARITH') lmoygr = .true.
-    if (k16b .eq. 'MOYENNE') then
-        jmoye = jmoye + 1
-        lmoye = .true.
-    endif
-    if (k16b .eq. 'EXTRACTION') then
-        lextr = .true.
+            if (n1 .eq. 0) jabsc = jabsc + 1
 !
-        call getvtx(mcf, 'INVARIANT', iocc=iocc, nbval=0, nbret=n2)
-        if (n2 .ne. 0) jinva = jinva + 1
+            call getvtx(mcf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
+            if ((n1 .eq. 0) .and. (n2 .ne. 0)) jnoeu = jnoeu + 1
 !
-        if (n1 .eq. 0) jabsc = jabsc + 1
+            call getvtx(mcf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n2)
+            if ((n1 .eq. 0) .and. (n2 .ne. 0)) jnoeu = jnoeu + 1
+        endif
 !
-        call getvtx(mcf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
-        if ((n1 .eq. 0) .and. (n2 .ne. 0)) jnoeu = jnoeu + 1
+        call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, nbval=0, nbret=n1)
+        if (n1 .ne. 0) then
+            call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, scal=k8b, nbret=n1)
+            if (k8b(1:3) .eq. 'NON') jmail = jmail + 1
+        endif
 !
-        call getvtx(mcf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n2)
-        if ((n1 .eq. 0) .and. (n2 .ne. 0)) jnoeu = jnoeu + 1
-    endif
-!
-    call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
-        call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, scal=k8b, nbret=n1)
-        if (k8b(1:3) .eq. 'NON') jmail = jmail + 1
-    endif
-!
-    2 end do
+  2 end do
 !
 !====
 ! 3. CONNAISSANT LES CARACTERISTIQUES DE LA TABLE, ON INITIALISE
@@ -466,7 +467,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
             nbp = nbp + 1
             nopara(nbp) = zk8(jnocmp-1+i)
             typara(nbp) = 'R'
-40      continue
+ 40     continue
     endif
     if ((lextr .or. lmoye) .and. jinva .ne. 0) then
         nbp = nbp + 1
@@ -605,7 +606,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
         valk(1) = nopara(n1)
         valk(2) = typara(n1)
         call utmess('I', 'POSTRELE_10', nk=2, valk=valk)
-1789      continue
+1789     continue
     endif
 !
 ! 3.2. ==> CREATION/INITIALISATION DE LA TABLE

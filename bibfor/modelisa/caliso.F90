@@ -2,6 +2,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
@@ -100,13 +101,12 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: n_keyexcl
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-    logical(kind=1) :: l_rota_2d, l_rota_3d
-    logical(kind=1) :: l_tran
+    aster_logical :: l_rota_2d, l_rota_3d
+    aster_logical :: l_tran
     real(kind=8) :: tran(3)
-    logical(kind=1) :: l_cent
+    aster_logical :: l_cent
     real(kind=8) :: cent(3)
-    logical(kind=1) :: l_angl_naut
-    logical :: lcond
+    aster_logical :: l_angl_naut
     real(kind=8) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -181,12 +181,14 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! - Creation des collections temporaires contenant la liste de noeuds de chaque relation
 !
-    call jecrec(coll_lisno, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nliai)
-    call jecrec(coll_no_maitr, 'G V K8', 'NU', 'CONTIG', 'CONSTANT', nliai)
+    call jecrec(coll_lisno, 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
+                nliai)
+    call jecrec(coll_no_maitr, 'G V K8', 'NU', 'CONTIG', 'CONSTANT',&
+                nliai)
     call jeecra(coll_no_maitr, 'LONMAX', ival = 4)
     call wkvect(list_type, 'G V K8', nliai, vk8 = typ_liais)
     call wkvect(num_mat_tar, 'G V I', 2*nliai, vi = lis_nb_ma_ta)
-
+!
     ligrch = load//'.CHME.LIGRE'
     call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi = inema)
 !
@@ -216,7 +218,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CALISO.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+        call getnode(mesh, keywordfact, iocc, 'F', list_node,&
                      nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
@@ -241,10 +243,8 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
         call char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
-        lcond = .not.l_cent
-        ASSERT(lcond)
-        lcond = .not.l_angl_naut
-        ASSERT(lcond)
+        ASSERT(.not.l_cent)
+        ASSERT(.not.l_angl_naut)
 !
 ! ----- Apply translation
 !
@@ -283,7 +283,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                             type_lagr, list_rela, nom_noeuds_tmp, type_transf)
                 type_rela = "2D"//type_transf
                 nom_noeuds(1) = nom_noeuds_tmp(1)
-                if ( type_transf.eq.'2' ) nom_noeuds(2) = nom_noeuds_tmp(2)
+                if (type_transf .eq. '2') nom_noeuds(2) = nom_noeuds_tmp(2)
             endif
 !
 ! ----- Model: 3D
@@ -318,7 +318,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                 type_rela = "3D"//type_transf
                 nom_noeuds(1) = nom_noeuds_tmp(1)
                 nom_noeuds(2) = nom_noeuds_tmp(2)
-                if ( type_transf.eq.'1' ) nom_noeuds(3) = nom_noeuds_tmp(3)
+                if (type_transf .eq. '1') nom_noeuds(3) = nom_noeuds_tmp(3)
             endif
         endif
         typ_liais(iocc) = type_rela

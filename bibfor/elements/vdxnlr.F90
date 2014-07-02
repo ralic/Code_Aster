@@ -17,6 +17,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/btdfn.h"
@@ -65,7 +66,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     real(kind=8) :: epsi(5), depsi(5), eps2d(4), deps2d(4)
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3), rbid(1)
-    logical(kind=1) :: vecteu, matric
+    aster_logical :: vecteu, matric
 !-----------------------------------------------------------------------
     integer :: i, ib, icarcr, icompo, icontm, icontp, icou
     integer :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
@@ -123,8 +124,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
     endif
-
-
+!
+!
     read (zk16(icompo-1+2),'(I16)') nbvari
     call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
                 itab=itab)
@@ -365,9 +366,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
                 endif
 !
-             end do
-         end do
-     end do
+            end do
+        end do
+    end do
 !
     if (matric) then
 !

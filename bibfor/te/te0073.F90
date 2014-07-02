@@ -25,6 +25,7 @@ subroutine te0073(option, nomte)
 ! CORPS DU PROGRAMME
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8t0.h"
@@ -47,7 +48,7 @@ subroutine te0073(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ivectt, i, l, li, itex, icoefh, iray, itemp, nnop2
     integer :: c(6, 9), ise, nse, j, ier, icode, ibid
-    logical(kind=1) :: laxi, ltext
+    aster_logical :: laxi, ltext
 !
 !
     call elref1(elrefe)
@@ -57,8 +58,8 @@ subroutine te0073(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
@@ -103,7 +104,7 @@ subroutine te0073(option, nomte)
     call connec(nomte, nse, nnop2, c)
     do 10 i = 1, nnop2
         vectt(i) = 0.d0
-10  end do
+ 10 end do
     nompar(1) = 'X'
     nompar(2) = 'Y'
     nompar(3) = 'INST'
@@ -119,8 +120,8 @@ subroutine te0073(option, nomte)
         do 30 i = 1, nno
             do 20 j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
-20          continue
-30      continue
+ 20         continue
+ 30     continue
 !
         do 150 kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -133,14 +134,14 @@ subroutine te0073(option, nomte)
 ! CALCUL DE T-
                     l = (kp-1)*nno + i
                     tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
-40              continue
+ 40             continue
             endif
 !
             do 50 i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
                 z = z + coorse(2* (i-1)+2)*zr(ivf+l-1)
-50          continue
+ 50         continue
             if (laxi) poids = poids*r
             valpar(1) = r
             valpar(2) = z
@@ -181,7 +182,7 @@ subroutine te0073(option, nomte)
                                       c(ise,i)) + poids*zr(li)* (theta*coenp1*texnp1+ (1.0d0-thet&
                                       &a)*coen* (texn- tpg)&
                                       )
-80              continue
+ 80             continue
 !====
 ! 2.2 OPTION CHAR_THER_RAYO_F/R
 !====
@@ -230,17 +231,17 @@ subroutine te0073(option, nomte)
                                       c(ise,i)) + poids*zr(li)* (theta*sigm1*eps1* (tpf1+tz0)**4+&
                                       & (1.0d0-theta)* sigmn* epsn* ((tpfn+tz0)**4- (tpg+tz0)**4)&
                                       )
-100              continue
+100             continue
 !
 ! FIN DU IF LTEXT
             endif
 !
 ! FIN DE BOUCLE SUR LES PTS DE GAUSS
-150      continue
+150     continue
 ! FIN DE BOUCLE SUR LES SOUS-ELEMENTS
-160  end do
+160 end do
 !
     do 170 i = 1, nnop2
         zr(ivectt-1+i) = vectt(i)
-170  end do
+170 end do
 end subroutine

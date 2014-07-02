@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
         integer :: numlia
         character(len=24) :: resocu
         integer :: nbliai
-        logical(kind=1) :: lelpiv
+        aster_logical :: lelpiv
     end subroutine cuelpv
 end interface

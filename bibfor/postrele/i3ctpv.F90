@@ -1,10 +1,11 @@
 subroutine i3ctpv(epsi, noeud, nbn, coordo, pave,&
                   coupe)
     implicit none
+#include "asterf_types.h"
 !
     integer :: noeud(*), nbn
     real(kind=8) :: epsi, coordo(*), pave(*)
-    logical(kind=1) :: coupe
+    aster_logical :: coupe
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -48,15 +49,15 @@ subroutine i3ctpv(epsi, noeud, nbn, coordo, pave,&
     ymax = -1.0d50
     zmin = 1.0d50
     zmax = -1.0d50
-    do 100, i = 1, nbn, 1
-    j = 3*(noeud(i)-1)
-    xmin = min(xmin,coordo(j+1))
-    xmax = max(xmax,coordo(j+1))
-    ymin = min(ymin,coordo(j+2))
-    ymax = max(ymax,coordo(j+2))
-    zmin = min(zmin,coordo(j+3))
-    zmax = max(zmax,coordo(j+3))
-    100 end do
+    do 100 i = 1, nbn, 1
+        j = 3*(noeud(i)-1)
+        xmin = min(xmin,coordo(j+1))
+        xmax = max(xmax,coordo(j+1))
+        ymin = min(ymin,coordo(j+2))
+        ymax = max(ymax,coordo(j+2))
+        zmin = min(zmin,coordo(j+3))
+        zmax = max(zmax,coordo(j+3))
+100 end do
     a1 = max(pave(1),xmin)
     a2 = min(pave(4),xmax)
     b1 = max(pave(2),ymin)

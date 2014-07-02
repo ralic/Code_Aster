@@ -2,7 +2,8 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
                   deps, devg, devgii, traceg, dy,&
                   codret)
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
@@ -58,7 +59,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! --- : DY     : INCREMENTS (DEVIATEUR, 1ER INVARIANT, GAMP, EVP, DELTA)
 ! ======================================================================
 ! ======================================================================
-    logical(kind=1) :: teste
+    aster_logical :: teste
     integer :: jpara, jderiv, ii, ndt, ndi
     real(kind=8) :: se(6), gamp, delta, siie, pref, epssig
     real(kind=8) :: gamcjs, rcos3t, re, ge
@@ -107,7 +108,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
     teste = .false.
     do 10 ii = 1, ndt
         if (abs(sigd(ii)) .gt. epssig) teste = .true.
-10  end do
+ 10 end do
     if (teste) then
         call lcdevi(sigd, si)
         invn = trace (ndi,sigd)
@@ -140,7 +141,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 ! ======================================================================
-100  continue
+100 continue
     call jedetr(parecr)
     call jedetr(derive)
 ! ======================================================================

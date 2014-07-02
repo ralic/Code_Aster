@@ -1,4 +1,5 @@
-subroutine lcqubo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
+subroutine lcqubo(ep0, ep1, l0, l1, etamin,&
+                  etamax, vide, etam, etap)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,9 +17,10 @@ subroutine lcqubo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    real(kind=8),intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
-    real(kind=8),intent(out):: etam, etap
-    logical(kind=1),intent(out)     :: vide
+#include "asterf_types.h"
+    real(kind=8), intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
+    real(kind=8), intent(out) :: etam, etap
+    aster_logical,intent(out) :: vide
 !
 ! ----------------------------------------------------------------------
 !  BORNES POUR LE PILOTAGE RELATIF AU CRITERE QUADRATIQUE

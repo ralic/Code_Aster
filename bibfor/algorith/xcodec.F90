@@ -18,6 +18,7 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -34,7 +35,7 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
     character(len=8) :: noma, modelx
     integer :: ndim
     real(kind=8) :: crimax
-    logical(kind=1) :: linter
+    aster_logical :: linter
 !
 ! ----------------------------------------------------------------------
 !

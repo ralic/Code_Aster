@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tgveri(option, carcri, compor, nno, geom,&
                       ndim, nddl, deplp, sdepl, vectu,&
@@ -40,7 +42,7 @@ interface
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
         real(kind=8) :: smatr(*)
-        logical(kind=1) :: matsym
+        aster_logical :: matsym
         real(kind=8) :: epsilo
         real(kind=8) :: varia(*)
         integer :: iret

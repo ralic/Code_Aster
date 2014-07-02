@@ -64,6 +64,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 ! IN  : IVITEF : INDICE VITESSE DE FLUIDE
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/jecrec.h"
@@ -77,7 +78,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: intphy, intmod, exiind
+    aster_logical :: intphy, intmod, exiind
     integer :: ioptch, nbmr, nbn, imod1, nbpf, nbm, ivitef
     integer :: nuor(nbmr), lnumi, lnumj, ij
     real(kind=8) :: cham(nbn, nbmr), specmr(nbpf, *), specmi(nbpf, *)
@@ -130,7 +131,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     do 200 i1 = 1, mxval
         if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+i1) .eq. ival(3))) exiind = &
                                                                                .true.
-200  continue
+200 continue
 !
     if (.not. exiind) goto 20
 !
@@ -154,7 +155,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                     exiind = .true.
                     call jeveuo(jexnum(chvale, i1), 'L', ifon)
                 endif
-210          continue
+210         continue
 !
             if (.not.exiind) then
                 valk(1)(1:10) = 'INTE_SPEC'
@@ -166,7 +167,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
             if (isj .eq. 1) then
                 do 51 if1 = 1, nbpf
                     disc(if1) = zr(lfreq+ (if1-1))
-51              continue
+ 51             continue
             endif
 !
             do 50 if1 = 1, nbpf
@@ -177,10 +178,10 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                     specmr(if1,isj) = zr(ifon+ (if1-1)*2)
                     specmi(if1,isj) = zr(ifon+ (if1-1)*2+1)
                 endif
-50          continue
-40      continue
+ 50         continue
+ 40     continue
 !
-30  continue
+ 30 continue
 !
 !    --- CREATION ET REMPLISSAGE DES FONCTIONS - SPECTRES REPONSES
 !
@@ -192,7 +193,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     call wkvect(nomu//'.DISC', 'G V R', nbpf, lfreqs)
     do 80 il = 1, nbpf
         zr(lfreqs+il-1) = disc(il)
-80  continue
+ 80 continue
 !
     if (intphy) then
         mxvals = nbn*(nbn+1)/2
@@ -301,8 +302,8 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                         endif
 !                 -----
 !
-110                  continue
-100              continue
+110                 continue
+100             continue
 !
                 if (ioptch .eq. 2) then
                     specr = specr * 4.d0 * pi * pi
@@ -317,12 +318,12 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                     zr(ispec+2*(il-1) ) = specr
                     zr(ispec+2*(il-1)+1) = speci
                 endif
-90          continue
+ 90         continue
 !
-70      continue
+ 70     continue
 !
-60  continue
-20  continue
+ 60 continue
+ 20 continue
 !
     call jedema()
 end subroutine

@@ -32,6 +32,7 @@ subroutine op0025()
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/assert.h"
@@ -67,9 +68,8 @@ subroutine op0025()
     real(kind=8) :: tpsthe(6), tps1(4), deltat, deltam
     real(kind=8) :: theta, instap
 !
-    logical(kind=1) :: matcst, coecst, lostat, levol, asme, asms, finpas, lnonl
-    logical(kind=1) :: reasvc, reasvt, reasmt, reasrg, reasms, force
-    logical :: lcond
+    aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas, lnonl
+    aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
 !
     character(len=1) :: creas
     character(len=8) :: evolsc, mailla
@@ -134,9 +134,8 @@ subroutine op0025()
     call ntinit(result, modele, mate, carele, lischa,&
                 lisch2, solveu, para, numedd, lostat,&
                 levol, lnonl, sddisc, sdieto, mailla,&
-                sdcrit, time)
-    lcond=  .not.lnonl          
-    ASSERT(lcond)
+                sdcrit, time)       
+    ASSERT(.not.lnonl)
 !
 ! 2.5. ==> CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
 !
@@ -175,7 +174,7 @@ subroutine op0025()
 !
     call uttcpu('CPU.OP0025', 'INIT', ' ')
 !
-200  continue
+200 continue
 !
 ! --- RECUPERATION DU PAS DE TEMPS ET DES PARAMETRES DE RESOLUTION
 !
@@ -274,7 +273,7 @@ subroutine op0025()
     goto 200
 !
 !
-41  continue
+ 41 continue
 !
 !
     call titre()

@@ -38,15 +38,11 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 ! CTRAV    /M/: VECTEUR DE TRAVAIL (NEQ)
 !
 !-----------------------------------------------------------------------
-!
 #include "asterfort/mcmult.h"
-    real(kind=8) :: para(2), zero
-    complex(kind=8) :: cmod1(neq), cmod2(neq), ctrav(neq), cfact1, cfact2
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     integer :: i, j, lmat, nbsec, neq
     real(kind=8) :: beta1, beta2, xima, xrea
+    real(kind=8) :: para(2), zero
+    complex(kind=8) :: cmod1(neq), cmod2(neq), ctrav(neq), cfact1, cfact2
 !-----------------------------------------------------------------------
     data zero /0.d+00/
 !-----------------------------------------------------------------------

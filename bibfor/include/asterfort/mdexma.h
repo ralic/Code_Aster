@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
                       ndim, codret)
@@ -22,7 +24,7 @@ interface
         integer :: idfimd
         character(len=*) :: nomamd
         integer :: option
-        logical(kind=1) :: existm
+        aster_logical :: existm
         integer :: ndim
         integer :: codret
     end subroutine mdexma

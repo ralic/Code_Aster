@@ -20,6 +20,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! ======================================================================
 ! =====================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/betaps.h"
 #include "asterfort/dpmat2.h"
@@ -62,7 +63,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! OUT DSIDEP  MATRICE TANGENTE
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
-    logical :: rigi, resi
+    aster_logical :: rigi, resi
     integer :: ndt, ndi, ii
     real(kind=8) :: dp, dpdeno, alpha, pmoins, phi, deux, trois, pplus, beta
     real(kind=8) :: pult

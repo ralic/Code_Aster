@@ -24,6 +24,7 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/diinst.h"
@@ -73,7 +74,7 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
 !
 !
-    logical(kind=1) :: londe, llapl, ldidi, lreuse
+    aster_logical :: londe, llapl, ldidi, lreuse
     character(len=8) :: result, k8bid
     character(len=16) :: k16bla, k16bid
     character(len=19) :: matass

@@ -1,6 +1,7 @@
 subroutine mesomm(champ, long, vi, vr, vc,&
                   nbma, linuma)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -77,8 +78,8 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     character(len=4) :: typch, kmpic
     character(len=8) :: scal
     character(len=19) :: champ2, ligrel
-    logical(kind=1) :: first
-    integer :: i,  iavale, ibid, icoef, idecgr, iel, ier1, ier2
+    aster_logical :: first
+    integer :: i, iavale, ibid, icoef, idecgr, iel, ier1, ier2
     integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
     character(len=24), pointer :: celk(:) => null()
 !

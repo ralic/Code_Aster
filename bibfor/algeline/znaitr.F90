@@ -232,6 +232,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !     | INCLUDE FILES FOR DEBUGGING AND TIMING INFORMATION |
 !     %----------------------------------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -293,7 +294,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    logical(kind=1) :: first, orth1, orth2, rstart, step3, step4
+    aster_logical :: first, orth1, orth2, rstart, step3, step4
     integer(kind=4) :: infol4
     integer :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
     real(kind=8) :: smlnum, tst1, ulp, unfl, betaj, temp1, rnorm1, wnorm, rbid(1)

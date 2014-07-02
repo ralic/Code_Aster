@@ -22,6 +22,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/calela.h"
 #include "asterfort/dilata.h"
 #include "asterfort/rccoma.h"
@@ -35,7 +36,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
     real(kind=8) :: elas(nelas)
     character(len=8) :: ncra1(nelas)
     integer :: icodre(nelas)
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
     integer :: imate, yamec, i, aniso
     real(kind=8) :: phi0, em, cs, tbiot(6), epsvm, epsv, depsv
     real(kind=8) :: angmas(3), t, eps, dalal, mdal(6), young, nu
@@ -130,7 +131,7 @@ else
         unsks = em
         do 20 i = 1, 6
             mdal(i) = 0.d0
-20      continue
+ 20     continue
         if (em .lt. eps) then
             cbiot =phi0
             biot(1)=phi0
@@ -150,7 +151,7 @@ else
         dalal = 0.d0
         do 30 i = 1, 6
             mdal(i) = 0.d0
-30      continue
+ 30     continue
         if (em .lt. eps) then
             biot(1)=phi0
             biot(2)=phi0
@@ -170,7 +171,7 @@ else
         dalal = 0.d0
         do 40 i = 1, 6
             mdal(i) = 0.d0
-40      continue
+ 40     continue
         if (em .lt. eps) then
             biot(1)=phi0
             biot(2)=phi0

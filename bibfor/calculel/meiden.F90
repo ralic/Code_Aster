@@ -17,12 +17,13 @@ function meiden(scal, ncmp, i1, i3, nec,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    logical(kind=1) :: meiden
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+    aster_logical :: meiden
     character(len=4) :: scal
     integer :: ncmp, i1, i3, nec, i2, i4
 ! ----------------------------------------------------------------------
@@ -53,38 +54,38 @@ function meiden(scal, ncmp, i1, i3, nec,&
     meiden = .false.
 !
 !     -- ON TESTE D'ABORD L'EGALITE DES DESCIPTEUR GRANDEUR:
-    do 1,iec = 1,nec
-    if (zi(i2+iec) .ne. zi(i4+iec)) goto 9999
-    1 end do
+    do 1 iec = 1, nec
+        if (zi(i2+iec) .ne. zi(i4+iec)) goto 9999
+  1 end do
 !
 !     -- ON TESTE ENSUITE LES VALEURS:
     if (scal(1:1) .eq. 'I') then
-        do 2,i = 1,ncmp
-        if (zi(i1+i) .ne. zi(i3+i)) goto 9999
- 2      continue
+        do 2 i = 1, ncmp
+            if (zi(i1+i) .ne. zi(i3+i)) goto 9999
+  2     continue
     else if (scal(1:1).eq.'R') then
-        do 3,i = 1,ncmp
-        if (zr(i1+i) .ne. zr(i3+i)) goto 9999
- 3      continue
+        do 3 i = 1, ncmp
+            if (zr(i1+i) .ne. zr(i3+i)) goto 9999
+  3     continue
     else if (scal(1:1).eq.'C') then
-        do 4,i = 1,ncmp
-        if (zc(i1+i) .ne. zc(i3+i)) goto 9999
- 4      continue
+        do 4 i = 1, ncmp
+            if (zc(i1+i) .ne. zc(i3+i)) goto 9999
+  4     continue
     else if (scal(1:3).eq.'K8 ') then
-        do 5,i = 1,ncmp
-        if (zk8(i1+i) .ne. zk8(i3+i)) goto 9999
- 5      continue
+        do 5 i = 1, ncmp
+            if (zk8(i1+i) .ne. zk8(i3+i)) goto 9999
+  5     continue
     else if (scal(1:3).eq.'K16') then
-        do 6,i = 1,ncmp
-        if (zk16(i1+i) .ne. zk16(i3+i)) goto 9999
- 6      continue
+        do 6 i = 1, ncmp
+            if (zk16(i1+i) .ne. zk16(i3+i)) goto 9999
+  6     continue
     else if (scal(1:3).eq.'K24') then
-        do 7,i = 1,ncmp
-        if (zk24(i1+i) .ne. zk24(i3+i)) goto 9999
- 7      continue
+        do 7 i = 1, ncmp
+            if (zk24(i1+i) .ne. zk24(i3+i)) goto 9999
+  7     continue
     else
         ASSERT(.false.)
     endif
     meiden = .true.
-9999  continue
+9999 continue
 end function

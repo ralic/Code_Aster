@@ -17,11 +17,12 @@ subroutine nmamab(modele, carele, lamor)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 !
     character(len=24) :: modele, carele
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
 !
     character(len=24) :: rep1, rep2
 ! ----------------------------------------------------------------------

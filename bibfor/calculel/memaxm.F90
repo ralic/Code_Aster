@@ -2,6 +2,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                   vr, nbmail, numail)
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8nnem.h"
@@ -76,13 +77,13 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     integer :: iret
     integer :: longt
     character(len=8) :: kmpic, typ1, nomgd, tsca, tych
-    integer :: jcesd, jcesl,  jcesv, nel, iel, nbpt, nbsspt, ncmp
+    integer :: jcesd, jcesl, jcesv, nel, iel, nbpt, nbsspt, ncmp
     integer :: ipt, isp, icmp, ncp, iicmp, iadr1
     integer :: iadr2, iel1
     real(kind=8) :: valr, vmima
     character(len=19) :: chams, cham19
     integer :: tncomp(nbcmp)
-    logical(kind=1) :: copi, lmax, labs, lreel
+    aster_logical :: copi, lmax, labs, lreel
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------

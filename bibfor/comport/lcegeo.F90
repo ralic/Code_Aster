@@ -20,6 +20,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -63,7 +64,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
     real(kind=8) :: l(3, 3), fmm(3, 3), df(3, 3), f(3, 3)
     real(kind=8) :: volume, surfac
     real(kind=8) :: deplp(3, 27), geomm(3, 27), epsbid(6), id(3, 3)
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     data    id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
 !
 ! ----------------------------------------------------------------------
@@ -87,7 +88,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
                 call dfdm3d(nno, kpg, ipoids, idfde, geom,&
                             poids, dfdx, dfdy, dfdz)
                 volume = volume + poids
-10          continue
+ 10         continue
             if (npg .ge. 9) then
                 lc = volume ** 0.33333333333333d0
             else
@@ -104,11 +105,11 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
                     r = 0.d0
                     do 30 i = 1, nno
                         r = r + geom(1,i)*zr(ivf+i+k-1)
-30                  continue
+ 30                 continue
                     poids = poids*r
                 endif
                 surfac = surfac + poids
-40          continue
+ 40         continue
 !
             if (npg .ge. 5) then
                 lc = surfac ** 0.5d0
@@ -122,7 +123,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 !
         do 50 kpg = 1, npg
             elgeom(1,kpg) = lc
-50      continue
+ 50     continue
     endif
 !
 ! --- ELEMENTS GEOMETRIQUES POUR META_LEMA_INI
@@ -133,7 +134,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
                 elgeom(1,kpg) = 0.d0
                 elgeom(2,kpg) = 0.d0
                 elgeom(3,kpg) = 0.d0
-130          continue
+130         continue
         else
             do 100 kpg = 1, npg
                 elgeom(1,kpg) = 0.d0
@@ -142,9 +143,9 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
                 do 110 i = 1, ndim
                     do 120 k = 1, nno
                         elgeom(i,kpg) = elgeom(i,kpg) + geom(i,k)*zr( ivf-1+nno*(kpg-1)+k)
-120                  continue
-110              continue
-100          continue
+120                 continue
+110             continue
+100         continue
         endif
     endif
 !
@@ -175,9 +176,9 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
             do 272 i = 1, 3
                 do 273 j = 1, 3
                     elgeom(3*(i-1)+j,kpg)=l(i,j)
-273              continue
-272          continue
-200      continue
+273             continue
+272         continue
+200     continue
     endif
 !
 end subroutine

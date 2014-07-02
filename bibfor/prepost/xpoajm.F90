@@ -31,6 +31,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -56,7 +57,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     character(len=8) :: maxfem, elrefp, typma
     integer :: jtypm2, itypse, nnm, inm, inmtot, nbmac, jdirgr
     integer :: jcnse, im, n, nnose, jdirno, he(nfiss), jnivgr, iagma, ngrm
-    logical(kind=1) :: opmail, lmeca, pre1
+    aster_logical :: opmail, lmeca, pre1
 !
 !   IN
 !
@@ -126,7 +127,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     character(len=6) :: chn
     character(len=8) :: valk(2)
     character(len=19) :: ma2con
-    logical(kind=1) :: lnoeud
+    aster_logical :: lnoeud
     data          valk /'MAILLES','XPOAJM'/
 !
 !     ------------------------------------------------------------------

@@ -19,6 +19,7 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dfda2d.h"
 #include "asterfort/iniqs4.h"
 #include "asterfort/nmgeom.h"
@@ -50,7 +51,7 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 !.......................................................................
 !
 !
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
     integer :: kpg, n, i, j, kl, kpgs, proj, npgs
     real(kind=8) :: f(3, 3), eps(6), r
     real(kind=8) :: poids
@@ -82,8 +83,8 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
     do 20 i = 1, 3
         do 10 j = 1, 3
             f(i,j) = kron(i,j)
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 !
 ! - INITIALISATION QUAS4
@@ -137,8 +138,8 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
             defc(2,n,i) = f(i,2)*dfdi(n,2)
             defc(3,n,i) = 0.d0
             defc(4,n,i) = (f(i,1)*dfdi(n,2)+f(i,2)*dfdi(n,1))/rac2
-80      continue
-90  end do
+ 80     continue
+ 90 end do
 !
 !
 !
@@ -150,7 +151,7 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 !    CONTRAINTES GENERALISEES
     do 180 i = 1, 6
         qplus(i) = sigm(i+4,kpg)
-180  end do
+180 end do
 !
 !
 !
@@ -196,8 +197,8 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
                     defn(4,n,i) = 0.d0
                 endif
 !
-210          continue
-220      continue
+210         continue
+220     continue
 !
 !
 !    CONTRAINTES DE HOURGLASS
@@ -236,23 +237,23 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
                 do 230 kl = 1, 3
                     vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigas(kl, kpgs)* jac + defn(kl,n,i)*si&
                                  &gas(kl,kpgs)*jac
-230              continue
+230             continue
                 vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigas(4,kpgs)* jac* rac2 + defn(4,n,i)*siga&
                              &s(4,kpgs)*jac
-240          continue
-250      continue
+240         continue
+250     continue
 !
         do 280 n = 1, nno
             do 270 i = 1, 2
                 do 260 kl = 1, 3
                     vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigm(kl, kpg)*jac + defn(kl,n,i)*sigm(&
                                  &kl,kpg)*jac
-260              continue
+260             continue
                 vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigm(4,kpg)* rac2*jac + defn(4,n,i)*sigm(4,&
                              &kpg)*jac
-270          continue
-280      continue
-290  end do
+270         continue
+280     continue
+290 end do
 !
 !
 end subroutine

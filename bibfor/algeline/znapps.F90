@@ -160,6 +160,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -209,7 +210,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     %------------------------%
 !
     integer :: i, iend, istart, j, jj, kplusp, msglvl
-    logical(kind=1) :: first
+    aster_logical :: first
     complex(kind=8) :: f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid(1)
     save       first, smlnum, ulp, unfl

@@ -21,6 +21,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/diago3.h"
 #include "asterfort/lceob1.h"
@@ -32,7 +33,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
     real(kind=8) :: lambda, mu, alpha, rk, rk1, rk2, ecrob, ecrod
     real(kind=8) :: toler
     integer :: intmax, iret
-    logical(kind=1) :: elas, dbloq
+    aster_logical :: elas, dbloq
 !
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
@@ -64,7 +65,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 ! OUT IRET     : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: reinit, tot1, tot2, tot3
+    aster_logical :: reinit, tot1, tot2, tot3
     integer :: i, j, k, l
     integer :: bdim, compte, t(3, 3)
 !
@@ -100,11 +101,11 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
         epsf(k) = epsm(k)+deps(k)
         epsi(k) = epsm(k)
         epst(k) = (epsf(k)+epsi(k))/deux
- 1  end do
+  1 end do
 !
     reinit=.false.
 !
-999  continue
+999 continue
     if ((&
         (&
         (epsi(1).ne.epsf(1)) .or. (epsi(2).ne.epsf(2)) .or. (epsi(3).ne.epsf(3)) .or.&
@@ -128,7 +129,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             if (valbm(i)-tolb .le. 0.d0) then
                 bdim=bdim-1
             endif
-201      continue
+201     continue
 !
         trepsm=epst(1)+epst(2)+epst(3)
         if (trepsm .gt. 0.d0) then
@@ -160,12 +161,12 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                             dbloq=.true.
                         endif
                     endif
-101              continue
+101             continue
 !
                 if (reinit) then
                     do 800 i = 1, 6
                         epst(i)=(epst(i)+epsi(i))/deux
-800                  continue
+800                 continue
                     goto 999
                 else
                     call r8inir(6, 0.d0, b, 1)
@@ -177,14 +178,14 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                                 vecb(j,k)
                                 bm(t(i,j))=bm(t(i,j))+vecb(i,k)*valb(&
                                 k)*vecb(j,k)
-214                          continue
-213                      continue
-212                  continue
+214                         continue
+213                     continue
+212                 continue
                     dm=d
                     do 801 i = 1, 6
                         epsi(i)=epst(i)
                         epst(i)=epsf(i)
-801                  continue
+801                 continue
                     goto 999
                 endif
             else
@@ -192,7 +193,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                     if ((valb(i).lt.0) .and. (abs(valb(i))-tolb.le. 0.d0)) then
                         valb(i)=tolb-r8prem()
                     endif
-701              continue
+701             continue
                 if (abs(un-d)-tolb .le. 0.d0) then
                     d=un-tolb+r8prem()
                     dbloq=.true.
@@ -206,14 +207,14 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                             vecb(j,k)
                             bm(t(i,j))=bm(t(i,j))+vecb(i,k)*valb(k)*&
                             vecb(j,k)
-714                      continue
-713                  continue
-712              continue
+714                     continue
+713                 continue
+712             continue
                 dm=d
                 do 901 i = 1, 6
                     epsi(i)=epst(i)
                     epst(i)=epsf(i)
-901              continue
+901             continue
 !
             endif
 !
@@ -228,12 +229,12 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                     do 204 k = 1, 3
                         interm(i,l)=interm(i,l)+vecbm(k,i)*epst(t(k,l)&
                         )
-204                  continue
+204                 continue
                     do 205 j = i, 3
                         epi(t(i,j))=epi(t(i,j))+interm(i,l)*vecbm(l,j)
-205                  continue
-203              continue
-202          continue
+205                 continue
+203             continue
+202         continue
             tot1=.false.
             tot2=.false.
             tot3=.false.
@@ -291,7 +292,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                     if (valbr(i)-tolb .le. 0.d0) then
                         valbr(i)=tolb-r8prem()
                     endif
-102              continue
+102             continue
                 if (d .gt. 1.d0) then
                     reinit=.true.
                 endif
@@ -306,7 +307,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                     if (valbr(i)-tolb .le. 0.d0) then
                         valbr(i)=tolb-r8prem()
                     endif
-902              continue
+902             continue
                 if (d-(un-tolb) .ge. 0.d0) then
                     d=un-tolb+r8prem()
                     dbloq=.true.
@@ -317,7 +318,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             if (reinit) then
                 do 802 i = 1, 6
                     epst(i)=(epst(i)+epsi(i))/2
-802              continue
+802             continue
                 goto 999
             else
 !
@@ -327,9 +328,9 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                         do 224 k = 1, 3
                             br(t(i,j))=br(t(i,j))+vecbr(i,k)*valbr(k)*&
                             vecbr(j,k)
-224                      continue
-223                  continue
-222              continue
+224                     continue
+223                 continue
+222             continue
 !
                 if (tot1) then
                     binter(1)=tolb-r8prem()
@@ -362,20 +363,20 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                         do 234 k = 1, 3
                             interm(i,l)=interm(i,l)+vecbm(i,k)*binter(&
                             t(k,l))
-234                      continue
+234                     continue
                         do 235 j = i, 3
                             b(t(i,j))=b(t(i,j))+interm(i,l)*vecbm(j,l)
                             bm(t(i,j))=bm(t(i,j))+interm(i,l)*vecbm(j,&
                             l)
-235                      continue
-233                  continue
-232              continue
+235                     continue
+233                 continue
+232             continue
                 dm=d
 !
                 do 803 i = 1, 6
                     epsi(i)=epst(i)
                     epst(i)=epsf(i)
-803              continue
+803             continue
                 goto 999
             endif
 !
@@ -390,12 +391,12 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                     do 244 k = 1, 3
                         interm(i,l)=interm(i,l)+vecbm(k,i)*epst(t(k,l)&
                         )
-244                  continue
+244                 continue
                     do 245 j = i, 3
                         epi(t(i,j))=epi(t(i,j))+interm(i,l)*vecbm(l,j)
-245                  continue
-243              continue
-242          continue
+245                 continue
+243             continue
+242         continue
 !
             tot1=.false.
             tot2=.false.
@@ -469,7 +470,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             if (reinit) then
                 do 804 i = 1, 6
                     epst(i)=(epst(i)+epsi(i))/2
-804              continue
+804             continue
                 goto 999
 !
             else
@@ -488,19 +489,19 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                             vecbm(j,k)
                             bm(t(i,j))=bm(t(i,j))+vecbm(i,k)*valbm(k)*&
                             vecbm(k,j)
-254                      continue
-253                  continue
-252              continue
+254                     continue
+253                 continue
+252             continue
                 dm=d
                 do 805 i = 1, 6
                     epsi(i)=epst(i)
                     epst(i)=epsf(i)
-805              continue
+805             continue
                 goto 999
             endif
         endif
 !
     endif
-9999  continue
+9999 continue
 !
 end subroutine

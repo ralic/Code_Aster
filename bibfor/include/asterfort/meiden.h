@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function meiden(scal, ncmp, i1, i3, nec,&
                     i2, i4)
@@ -25,6 +27,6 @@ interface
         integer :: nec
         integer :: i2
         integer :: i4
-        logical(kind=1) :: meiden
+        aster_logical :: meiden
     end function meiden
 end interface

@@ -1,7 +1,8 @@
 function iorim1(num1, num2, reorie)
     implicit none
+#include "asterf_types.h"
     integer :: iorim1, num1(2), num2(2)
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +30,7 @@ function iorim1(num1, num2, reorie)
 !                                      FALLU REORIENTER)
 !
     integer :: i1, j1, k, l
-#define egal(i1,j1)   num1(i1).eq.num2(j1)
+#define egal(i1,j1) num1(i1).eq.num2(j1)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -44,9 +45,9 @@ function iorim1(num1, num2, reorie)
             iorim1 = 1
             goto 100
         endif
-10  end do
+ 10 end do
     iorim1 = 0
-100  continue
+100 continue
 !
 ! --- ON PERMUTE LES SOMMETS
     if (reorie .and. iorim1 .lt. 0) then

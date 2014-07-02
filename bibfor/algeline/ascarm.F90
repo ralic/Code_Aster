@@ -2,13 +2,14 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
                   nbmode, vecmod, parmod, id, reasup,&
                   spectr, repmod, corfre, amort, muapde,&
                   tcosup, im, nbdis)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
     integer :: nbsup, nsupp(*), neq, nbmode, id, tcosup(nbsup, *), im, nbdis(*)
     real(kind=8) :: vecmod(neq, *), spectr(*), amort(*)
     real(kind=8) :: parmod(nbmode, *), repmod(nbsup, neq, *)
     real(kind=8) :: reasup(nbsup, nbmode, *)
     character(len=16) :: nomsy
-    logical(kind=1) :: monoap, corfre, muapde
+    aster_logical :: monoap, corfre, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +66,7 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
         if (nomsy(1:4) .eq. 'ACCE') xxx = xxx * omega2
         do 12 in = 1, neq
             repmod(nbsup,in,id) = xxx * vecmod(in,im)
-12      continue
+ 12     continue
 !
 !     --- CAS DU MULTI-APPUI ---
 !
@@ -73,8 +74,8 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
         do 13 is = 1, nbsup
             do 17 in = 1, neq
                 repmod(is,in,id) = 0.d0
-17          continue
-13      continue
+ 17         continue
+ 13     continue
         omega = sqrt(parmod(im,1))
         xamo = amort(im)
         if (corfre) omega = omega * sqrt( un - xamo*xamo )
@@ -88,8 +89,8 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
             do 24 in = 1, neq
                 ioc = nbdis(is)
                 repmod(ioc,in,id) = repmod(ioc,in,id)+ xxx * vecmod( in,im)
-24          continue
-22      continue
+ 24         continue
+ 22     continue
     endif
 !
 ! --- CAS CORRELE : ON RECOMBINE LES SUPPORTS
@@ -113,9 +114,9 @@ subroutine ascarm(nomsy, monoap, nbsup, nsupp, neq,&
                     xxx = abs( repmod(is,in,id) )
                     yyy=yyy+xxx
                 endif
-110          continue
+110         continue
             repmod(1,in,id) = yyy
-100      continue
+100     continue
     endif
 !
 end subroutine

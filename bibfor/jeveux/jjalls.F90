@@ -19,6 +19,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 ! ======================================================================
 ! aslint: disable=C1002
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/hpalloc.h"
 #include "asterfort/assert.h"
@@ -70,7 +71,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 ! ----------------------------------------------------------------------
     integer :: init, iblanc, valloc, lsic
     integer :: ic, ival(4), unmega
-    logical(kind=1) :: linit, ldeps
+    aster_logical :: linit, ldeps
     character(len=8) :: cblanc
     equivalence    ( cblanc,iblanc )
     parameter      ( nde = 6)
@@ -116,7 +117,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
     ildyna = 0
 !
     lsic = lsi + 8
-50  continue
+ 50 continue
     ildyna = ildyna+1
 !
 !     ON TESTE SI LE CUMUL DES ALLOCATIONS RESTE INFERIEUR A LA LIMITE
@@ -188,7 +189,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
         if (typei(1:1) .eq. 'K') init = iblanc
         do 20 i = 1, lsi
             iszon ( jiszon+iadmi+i-1 ) = init
-20      continue
+ 20     continue
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

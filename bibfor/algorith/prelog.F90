@@ -35,6 +35,7 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
 ! IN  RESI    : .TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/deflog.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
@@ -42,7 +43,7 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
     real(kind=8) :: vim(lgpg)
     real(kind=8) :: fm(3, 3), fp(3, 3), epsml(6), epspl(6)
     real(kind=8) :: tn(6), deps(6), gn(3, 3), lamb(3), logl(3)
-    logical(kind=1) :: resi
+    aster_logical :: resi
 ! ---------------------------------------------------------------------
 !
     call deflog(ndim, fm, epsml, gn, lamb,&
@@ -53,11 +54,11 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
                     logl, iret)
         do 35 i = 1, 6
             deps(i)=epspl(i)-epsml(i)
-35      continue
+ 35     continue
     else
         do 34 i = 1, 6
             deps(i)=0.d0
-34      continue
+ 34     continue
     endif
 !
 !     --------------------------------

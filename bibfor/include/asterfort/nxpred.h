@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nxpred(modele, mate, carele, charge, infoch,&
                       numedd, solveu, lostat, time, lonch,&
@@ -28,7 +30,7 @@ interface
         character(len=24) :: infoch
         character(len=24) :: numedd
         character(len=19) :: solveu
-        logical(kind=1) :: lostat
+        aster_logical :: lostat
         character(len=24) :: time
         integer :: lonch
         character(len=24) :: matass

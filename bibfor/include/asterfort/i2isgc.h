@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i2isgc(epsi, xa, ya, xb, yb,&
                       x1, y1, x2, y2, x3,&
@@ -36,6 +38,6 @@ interface
         real(kind=8) :: s2
         real(kind=8) :: r1
         real(kind=8) :: r2
-        logical(kind=1) :: eli
+        aster_logical :: eli
     end subroutine i2isgc
 end interface

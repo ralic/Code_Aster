@@ -58,16 +58,16 @@ subroutine promor(nuz, base)
     character(len=8) :: ma, mo, exiele, exivf
 !----------------------------------------------------------------------
     character(len=14) :: nu
-    logical(kind=1) :: ldist, ldgrel, lmadis
+    aster_logical :: ldist, ldgrel, lmadis
     character(len=19) :: nomlig
-    integer ::  iconx2, ili,  iel
+    integer :: iconx2, ili, iel
     integer :: idprn1
     integer :: idprn2, ifm, niv, iret, ibid, nnoe, jnueq
     integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
-    integer ::  iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
+    integer :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
     integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma, itypel
-    integer :: nnov, numav, kvois, rang,  imd, jsmh1
+    integer :: nnov, numav, kvois, rang, imd, jsmh1
 !
     character(len=8) :: partit
     real(kind=8) :: valr(2), rcoef, requ

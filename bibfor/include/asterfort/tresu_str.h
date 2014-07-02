@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tresu_str(tbtxt, refk, valk, ific, llab)
         character(len=16), intent(in) :: tbtxt(2)
         character(len=80), intent(in) :: refk
         character(len=80), intent(in) :: valk
         integer, intent(in) :: ific
-        logical(kind=1), intent(in) :: llab
+        aster_logical, intent(in) :: llab
     end subroutine tresu_str
 end interface

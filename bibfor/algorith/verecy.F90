@@ -36,6 +36,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 ! DISTRF   /R/: DISTANCE DE REFERENCE
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/bmnoin.h"
 #include "asterfort/dismoi.h"
@@ -56,11 +57,11 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     character(len=24) :: valk(3)
     character(len=8) :: intf, kbid, mailla, nomnod, nomnog, nomnj
     character(len=50) :: diag
-    logical(kind=1) :: ordre
+    aster_logical :: ordre
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, j, jnode,  llintg
+    integer :: i, ibid, j, jnode, llintg
     integer :: llista, llistb, ltnd, ltng, nbd, nbg, nbpbax
     integer :: nbpbr, nbpbse, nbpbto, nbpbvt, nbsec, numd, numg
     integer :: nunod, nunog

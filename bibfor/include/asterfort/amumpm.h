@@ -14,20 +14,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                       klag2, type, lmd, epsmat, ktypr,&
                       lpreco)
-        logical(kind=1) :: ldist
+        aster_logical :: ldist
         integer :: kxmps
         character(len=24) :: kmonit(12)
         character(len=14) :: impr
         integer :: ifmump
         character(len=5) :: klag2
         character(len=1) :: type
-        logical(kind=1) :: lmd
+        aster_logical :: lmd
         real(kind=8) :: epsmat
         character(len=8) :: ktypr
-        logical(kind=1) :: lpreco
+        aster_logical :: lpreco
     end subroutine amumpm
 end interface

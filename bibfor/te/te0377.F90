@@ -31,6 +31,7 @@ subroutine te0377(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
@@ -105,7 +106,7 @@ subroutine te0377(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical(kind=1) :: yapr, yaro
+    aster_logical :: yapr, yaro
 !
 ! ----------------------------------------------------------------------
 ! ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
@@ -145,8 +146,8 @@ subroutine te0377(option, nomte)
         write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! 1.3. --- CHAMP DE CONTRAINTES
 !

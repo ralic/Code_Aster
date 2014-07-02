@@ -3,6 +3,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                   smass, srigi, samor, cmass, crigi,&
                   camor)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/copmod.h"
@@ -60,16 +61,16 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     character(len=24) :: magrma, manoma, nprno
     character(len=24) :: nomch0
     character(len=80) :: titre
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
     integer :: iarg, ir
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i,   iamor, ibid, ic, idbase
-    integer :: iddl, iddl0,  idgm2, idgm3, idgm4, idgm5
-    integer ::  ifmis, ii, ij, imess, in
-    integer :: ino, inoe,  j, j2
-    integer ::  k, l, ldgm, ldnm, nb
+    integer :: i, iamor, ibid, ic, idbase
+    integer :: iddl, iddl0, idgm2, idgm3, idgm4, idgm5
+    integer :: ifmis, ii, ij, imess, in
+    integer :: ino, inoe, j, j2
+    integer :: k, l, ldgm, ldnm, nb
     integer :: nbgr, nbgr2, nbgr3, nbgr4, nbgr5, nbma, nbma2
     integer :: nbma3, nbma4, nbma5, nbmode, nbmods, nbmodt, nbno
     integer :: nbnoeu, nbv, ncmp, nec, neq, nf, ni

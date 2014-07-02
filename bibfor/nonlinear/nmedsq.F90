@@ -22,6 +22,7 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/nmedel.h"
 #include "asterfort/r8inir.h"
     integer :: nno, npg, kpg, imate, lgpg
@@ -50,7 +51,7 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     real(kind=8) :: long, da, dda, alphap(2), alpham(2)
     real(kind=8) :: mtemp(4, 8), dsidep(6, 6)
     real(kind=8) :: xa, xb, ya, yb
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
     axi = typmod(1) .eq. 'AXIS'
 !
@@ -90,10 +91,10 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         do 70 j = 1, 2
             da = da + d(i,j)*alpham(j)
             dda = dda + d(i,j)*(alphap(j)-alpham(j))
-70      continue
+ 70     continue
         epsm(i) = bum(i) + da
         deps(i) = bdu(i) + dda
-80  end do
+ 80 end do
 !
     call r8inir(6, 0.d0, sig, 1)
     call nmedel(2, typmod, imate, deps, sign,&
@@ -102,8 +103,8 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     do 40 i = 1, 2
         do 50 kl = 1, 4
             sg(i) = sg(i) - d(kl,i)*sig(kl)/long
-50      continue
-40  end do
+ 50     continue
+ 40 end do
 !
 !
 ! CALCUL DE DSDUG :
@@ -120,21 +121,21 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
                 kl=2*(n-1)+i
                 do 53 j = 1, 4
                     mtemp(k,kl) = mtemp(k,kl) + dsidep(k,j)*def(j,n,i)
-53              continue
+ 53             continue
 !
-52          continue
-51      continue
+ 52         continue
+ 51     continue
 !
-41  end do
+ 41 end do
 !
 !
     do 42 i = 1, 2
         do 43 j = 1, 8
             do 44 kl = 1, 4
                 dsdug(i,j) = dsdug(i,j) - d(kl,i)*mtemp(kl,j)/long
-44          continue
-43      continue
-42  end do
+ 44         continue
+ 43     continue
+ 42 end do
 !
 !
 ! CALCUL DE QG :
@@ -150,10 +151,10 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         do 71 j = 1, 2
             da = da + d(i,j)*alpham(j)
             dda = dda + d(i,j)*(alphap(j)-alpham(j))
-71      continue
+ 71     continue
         epsm(i) = bum(i) + da
         deps(i) = bdu(i) + dda
-81  end do
+ 81 end do
 !
     call r8inir(6, 0.d0, sig, 1)
     call nmedel(2, typmod, imate, deps, sign,&
@@ -162,9 +163,9 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     do 100 i = 1, 2
         do 110 kl = 1, 4
             qg(i,1) = qg(i,1) - d(kl,i)*sig(kl)/long
-110      continue
+110     continue
         qg(i,1) = qg(i,1) - sg(i)
-100  end do
+100 end do
 !
 !
 !     DEUXIEME COLONNE :
@@ -177,10 +178,10 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         do 72 j = 1, 2
             da = da + d(i,j)*alpham(j)
             dda = dda + d(i,j)*(alphap(j)-alpham(j))
-72      continue
+ 72     continue
         epsm(i) = bum(i) + da
         deps(i) = bdu(i) + dda
-82  end do
+ 82 end do
 !
     call r8inir(6, 0.d0, sig, 1)
     call nmedel(2, typmod, imate, deps, sign,&
@@ -189,9 +190,9 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     do 160 i = 1, 2
         do 170 kl = 1, 4
             qg(i,2) = qg(i,2) - d(kl,i)*sig(kl)/long
-170      continue
+170     continue
         qg(i,2) = qg(i,2) - sg(i)
-160  end do
+160 end do
 !
 !
 ! ON IMPOSE SG=0 SI RIGI_MECA_TANG, QG LUI N'EST PAS

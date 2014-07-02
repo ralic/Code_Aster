@@ -23,6 +23,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !-----------------------------------------------------------------------
 !           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
 !-----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/detrsd.h"
@@ -40,7 +41,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 #include "blas/dscal.h"
     integer :: nbpar, i, nbvari, igrad, ncmp, nbvita, iforta, liccvg(5)
     integer :: actite, jvari
-    logical(kind=1) :: itemax, conver
+    aster_logical :: itemax, conver
     character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
     character(len=8) :: k8b, typpar(*), nomvi(*), vk8(2)
     character(len=16) :: nompar(*)
@@ -123,7 +124,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
             call tbajli(tabinc, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-551      continue
+551     continue
         vk8(1)='SIGM'
         do 552 i = 1, 6
             vr(2)=dsig(i)
@@ -131,7 +132,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
             call tbajli(tabinc, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-552      continue
+552     continue
         vk8(1)='SIEQ'
         vr(2)=equi(1)
         vk8(2)='VMIS'
@@ -149,7 +150,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
             vk8(2)=nomvi(i)
             call tbajli(tabinc, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
-553      continue
+553     continue
 !
     endif
 !

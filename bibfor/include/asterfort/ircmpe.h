@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                       nbmaec, limaec, adsd, adsl, nbimpr,&
@@ -25,7 +27,7 @@ interface
         integer :: ncmpve
         character(len=*) :: nofimd
         integer :: numcmp(ncmpve)
-        logical(kind=1) :: exicmp(nbvato)
+        aster_logical :: exicmp(nbvato)
         integer :: nbmaec
         integer :: limaec(*)
         integer :: adsd

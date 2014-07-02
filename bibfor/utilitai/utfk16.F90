@@ -1,5 +1,6 @@
 subroutine utfk16(lk16, nbk16, k16, ipos)
     implicit none
+#include "asterf_types.h"
     character(len=16) :: lk16(*), k16
     integer :: nbk16, ipos
 ! ======================================================================
@@ -37,7 +38,7 @@ subroutine utfk16(lk16, nbk16, k16, ipos)
 !     ==================================================================
 !
 ! --- VARIABLES LOCALES ---
-    logical(kind=1) :: trouve, fini
+    aster_logical :: trouve, fini
     integer :: i
 !
 ! ====================== DEBUT DU PROGRAMME ============================
@@ -46,7 +47,7 @@ subroutine utfk16(lk16, nbk16, k16, ipos)
     trouve = .false.
     fini = .false.
     i = 1
-100  continue
+100 continue
     if (.not. fini) then
         if (lk16(i) .eq. k16) then
             trouve = .true.

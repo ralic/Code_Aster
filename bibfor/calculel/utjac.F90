@@ -40,13 +40,14 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/matini.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     integer :: ipg, idfde, niv, ifm, nno, ia1, ia2
     real(kind=8) :: jacob, geom(*)
-    logical(kind=1) :: l2d
+    aster_logical :: l2d
 !
     real(kind=8) :: valr
 !
@@ -81,7 +82,7 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
             dxdk = dxdk+xp*dfrdk
             dyde = dyde+yp*dfrde
             dydk = dydk+yp*dfrdk
-100      continue
+100     continue
         jacob=dxde*dydk-dxdk*dyde
 !
     else
@@ -99,8 +100,8 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
                 g(1,j) = g(1,j) + xp * dfrde
                 g(2,j) = g(2,j) + xp * dfrdn
                 g(3,j) = g(3,j) + xp * dfrdk
-130          continue
-140      continue
+130         continue
+140     continue
         j11 = g(2,2) * g(3,3) - g(2,3) * g(3,2)
         j21 = g(3,1) * g(2,3) - g(2,1) * g(3,3)
         j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)

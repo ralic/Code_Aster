@@ -21,6 +21,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -90,7 +91,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     character(len=24) :: ligrmo, ligrch, evolch
     integer :: iret, ier, i, k, icha, inum
     integer :: somme
-    logical(kind=1) :: prem
+    aster_logical :: prem
     integer :: jchar, jinf
     integer :: nchar, numchm, nbchme
     integer :: ifm, niv

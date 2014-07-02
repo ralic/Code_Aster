@@ -1,11 +1,10 @@
-subroutine vrcomp_chck_rela(mesh, nb_elem,&
-                            compor_curr_r, compor_prev_r,&
-                            ligrel_curr, ligrel_prev,&
-                            comp_comb_1, comp_comb_2,&
-                            no_same_pg, no_same_rela, l_modif_vari)
+subroutine vrcomp_chck_rela(mesh, nb_elem, compor_curr_r, compor_prev_r, ligrel_curr,&
+                            ligrel_prev, comp_comb_1, comp_comb_2, no_same_pg, no_same_rela,&
+                            l_modif_vari)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -39,9 +38,9 @@ implicit none
     character(len=19), intent(in) :: ligrel_prev
     character(len=48), intent(in) :: comp_comb_1
     character(len=48), intent(in) :: comp_comb_2
-    logical(kind=1), intent(out) :: no_same_pg
-    logical(kind=1), intent(out) :: no_same_rela
-    logical(kind=1), intent(out) :: l_modif_vari
+    aster_logical, intent(out) :: no_same_pg
+    aster_logical, intent(out) :: no_same_rela
+    aster_logical, intent(out) :: l_modif_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +65,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_elem, k_elem
-    logical(kind=1) :: elem_in_curr, elem_in_prev
+    aster_logical :: elem_in_curr, elem_in_prev
     integer :: iadp, iadm
     integer :: idx_comb_prev, idx_comb_curr
     character(len=16) :: rela_comp_prev, rela_comp_curr, valk(3)
@@ -82,8 +81,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     l_modif_vari = .false.
-    k_elem       = 0
-    no_same_pg   = .false.
+    k_elem = 0
+    no_same_pg = .false.
     no_same_rela = .false.
 !
 ! - Access to LIGREL
@@ -105,11 +104,11 @@ implicit none
     call jeveuo(compor_prev_r//'.CESL', 'L', jcopml)
 !
 ! - Check on mesh
-!  
+!
     do i_elem = 1, nb_elem
         elem_in_prev = repm(2*(i_elem-1)+1).gt.0
         elem_in_curr = repp(2*(i_elem-1)+1).gt.0
-        k_elem       = k_elem+1
+        k_elem = k_elem+1
         call cesexi('C', jcopmd, jcopml, i_elem, 1,&
                     1, 1, iadm)
         call cesexi('C', jcoppd, jcoppl, i_elem, 1,&

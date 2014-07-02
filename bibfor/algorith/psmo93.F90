@@ -24,6 +24,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -44,7 +45,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     character(len=19) :: raide, raidfa, masse, matpre
     character(len=19) :: solveu
     character(len=24) :: moauni, moaimp, ddlac
-    logical(kind=1) :: accuni
+    aster_logical :: accuni
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ia, id, ii, imod, ind

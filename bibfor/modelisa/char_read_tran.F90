@@ -3,6 +3,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/r8dgrd.h"
@@ -32,11 +33,11 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
     character(len=16), intent(in) :: keywordfact
     integer, intent(in) :: iocc
     integer, intent(in) :: ndim
-    logical(kind=1), intent(out) :: l_tran
+    aster_logical, intent(out) :: l_tran
     real(kind=8), intent(out) :: tran(3)
-    logical(kind=1), intent(out) :: l_cent
+    aster_logical, intent(out) :: l_cent
     real(kind=8), intent(out) :: cent(3)
-    logical(kind=1), intent(out) :: l_angl_naut
+    aster_logical, intent(out) :: l_angl_naut
     real(kind=8), intent(out) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------

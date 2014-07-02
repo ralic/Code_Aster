@@ -20,9 +20,10 @@ subroutine mmmpha(loptf, lcont, ladhe, ndexfr, lpenac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-    logical(kind=1) :: lpenaf, lpenac
-    logical(kind=1) :: loptf, lcont, ladhe
+    aster_logical :: lpenaf, lpenac
+    aster_logical :: loptf, lcont, ladhe
     integer :: ndexfr
     character(len=9) :: phasep
 !

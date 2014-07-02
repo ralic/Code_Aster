@@ -1,12 +1,13 @@
 subroutine dinonc(nomte, icodre, valre, klv, raide,&
                   nbpar, param, okdire)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     character(len=16) :: nomte
     integer :: icodre(*)
     integer :: nbpar
     real(kind=8) :: valre(*), klv(*), raide(*), param(6, nbpar)
-    logical(kind=1) :: okdire(6)
+    aster_logical :: okdire(6)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

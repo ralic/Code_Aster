@@ -1,5 +1,6 @@
 subroutine ctresu(nomtb)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/ctacce.h"
 #include "asterfort/ctcrtb.h"
 #include "asterfort/ctdata.h"
@@ -33,7 +34,7 @@ subroutine ctresu(nomtb)
 !
 ! ----------------------------------------------------------------------
     integer :: nbcmp, ndim, nbno, nbma, nbval
-    logical(kind=1) :: toucmp
+    aster_logical :: toucmp
     character(len=1) :: tygd
     character(len=4) :: tych
     character(len=8) :: typac, sdres, noma

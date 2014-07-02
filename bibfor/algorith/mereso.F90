@@ -48,6 +48,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -61,7 +62,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/uttcpu.h"
     integer :: itps
-    logical(kind=1) :: assmat
+    aster_logical :: assmat
     character(len=1) :: base
     character(len=19) :: lischa, solveu
     character(len=19) :: vecass
@@ -80,7 +81,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     character(len=6) :: nompro
     parameter ( nompro = 'MERESO' )
-    integer ::   jcrk
+    integer :: jcrk
     integer :: jpara, iainst
     integer :: iret
     integer :: ifm, niv

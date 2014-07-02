@@ -1,7 +1,8 @@
 function ismali(typma)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-    logical(kind=1) :: ismali
+    aster_logical :: ismali
     character(len=8) :: typma
 ! ----------------------------------------------------------------------
 ! ======================================================================

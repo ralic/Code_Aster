@@ -4,6 +4,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
                   nomcas, lmoda, puls, compor)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -44,7 +45,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=19) :: lischa
     real(kind=8) :: time, puls
     integer :: iord, nbprup
-    logical(kind=1) :: lmelas, lmoda
+    aster_logical :: lmelas, lmoda
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,14 +98,14 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (nbinmx=50,nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid,  inorma, init, ifm, niv,  jbasfo
+    integer :: i, ibid, inorma, init, ifm, niv, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno
-    integer :: lobj2, ndimte, nunoff, ndim, nchin, ixfem,  numfon
+    integer :: lobj2, ndimte, nunoff, ndim, nchin, ixfem, numfon
     integer :: iret, livi(nbmxpa), nbchar
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: livc(nbmxpa)
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     parameter   (mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain

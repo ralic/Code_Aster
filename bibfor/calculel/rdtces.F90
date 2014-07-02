@@ -18,6 +18,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -48,13 +49,13 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !
 !     ------------------------------------------------------------------
     integer :: jcorrm, nbma2, jnbpt, jnbsp, jnbcmp
-    integer ::  jce1d, jce1v, jce1l,  ima1, ima2, nbpt, nbsp, iad1
+    integer :: jce1d, jce1v, jce1l, ima1, ima2, nbpt, nbsp, iad1
     integer :: jce2d, jce2v, jce2l, jce2c
     integer :: ipt, isp, iad2
     integer :: ncmp, icmp
     character(len=8) :: nomgd, typces
     character(len=3) :: tsca
-    logical(kind=1) :: isvide
+    aster_logical :: isvide
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: ce1c(:) => null()
 !     ------------------------------------------------------------------

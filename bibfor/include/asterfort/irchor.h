@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                       nlicmp, novcmp, nnopar, nbnosy, nbordr,&
                       nbrcmp, nbcmdu, nbpara, codret)
         integer :: ioccur
         character(len=8) :: leresu
-        logical(kind=1) :: lresul
+        aster_logical :: lresul
         character(len=*) :: nchsym
         character(len=*) :: nnuord
         character(len=*) :: nlicmp

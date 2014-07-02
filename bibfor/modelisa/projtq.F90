@@ -67,6 +67,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, itria,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8prem.h"
 #include "asterfort/tstbar.h"
@@ -78,7 +79,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, itria,&
 ! -----------------
     integer :: ino, nbsom
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2
-    logical(kind=1) :: notlin
+    aster_logical :: notlin
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdocc(model, chmate, l_etat_init, compor)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: chmate
-        logical(kind=1), intent(in) :: l_etat_init
+        aster_logical, intent(in) :: l_etat_init
         character(len=19), intent(out) :: compor
     end subroutine nmdocc
 end interface

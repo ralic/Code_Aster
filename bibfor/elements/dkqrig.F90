@@ -1,6 +1,7 @@
 subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
                   ener)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/bsthpl.h"
@@ -56,11 +57,12 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: xab1(3, 12), depl(24), caraq4(25), jacob(5), qsi, eta
     real(kind=8) :: flex(144), memb(64), mefl(96), t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: bsigth(24), enerth, excent, un, ctor
-    logical(kind=1) :: coupmf, exce, indith
+    aster_logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     un = 1.0d0
     enerth = 0.0d0
@@ -79,7 +81,9 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate('RIGI', df, dm, dmf, dc,&
+                dci, dmc, dfc, nno, pgl,&
+                multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !
@@ -95,21 +99,24 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 !        ----- CALCUL DU PRODUIT BFT.DF.BF -----------------------------
         call dcopy(9, df, 1, df2, 1)
         call dscal(9, wgt, df2, 1)
-        call utbtab('CUMU', 3, 12, df2, bf, xab1, flex)
+        call utbtab('CUMU', 3, 12, df2, bf,&
+                    xab1, flex)
 !
 !        -- MEMBRANE :
         call dxqbm(qsi, eta, jacob(2), bm)
 !        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
         call dcopy(9, dm, 1, dm2, 1)
         call dscal(9, wgt, dm2, 1)
-        call utbtab('CUMU', 3, 8, dm2, bm, xab1, memb)
+        call utbtab('CUMU', 3, 8, dm2, bm,&
+                    xab1, memb)
 !
 !        -- COUPLAGE :
         if (coupmf .or. exce) then
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
             call dcopy(9, dmf, 1, dmf2, 1)
             call dscal(9, wgt, dmf2, 1)
-            call utctab('CUMU', 3, 12, 8, dmf2, bf, bm, xab1, mefl)
+            call utctab('CUMU', 3, 12, 8, dmf2,&
+                        bf, bm, xab1, mefl)
         endif
     end do
 !
@@ -119,7 +126,8 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
-        call dxqloe(flex, memb, mefl, ctor, coupmf, depl, ener)
+        call dxqloe(flex, memb, mefl, ctor, coupmf,&
+                    depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 24

@@ -1,6 +1,7 @@
 subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
                   ivec)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -52,13 +53,13 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 ! ----------------------------------------------------------------------
     integer :: ibid, i, j, tabec(10), ncmpmx
     integer :: nec, gd, iad, iec
-    integer ::  nlili, jprno, nbno, ival, ncmp, icompt
-    integer :: icmp, ieq, nucmp,  nleq, numno,  ino
+    integer :: nlili, jprno, nbno, ival, ncmp, icompt
+    integer :: icmp, ieq, nucmp, nleq, numno, ino
     integer :: ieql, jnugl, imatd, iexi
     character(len=8) :: nomma
     character(len=19) :: nomnu, prno
     character(len=24) :: nolili
-    logical(kind=1) :: matd, lnuge
+    aster_logical :: matd, lnuge
     integer, pointer :: nume_cmp(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: nueq(:) => null()

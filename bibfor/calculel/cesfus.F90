@@ -19,6 +19,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -42,7 +43,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
-    logical(kind=1) :: lcumul(nbchs), lcoc
+    aster_logical :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
     complex(kind=8) :: lcoefc(nbchs)
 ! ---------------------------------------------------------------------
@@ -74,8 +75,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
-    integer :: jce3d, jce3v, jce3l,  vali(3)
-    integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
+    integer :: jce3d, jce3v, jce3l, vali(3)
+    integer :: jcmpgd, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, coefi, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
@@ -83,7 +84,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     character(len=19) :: ces1, ces3
     real(kind=8) :: coefr
     complex(kind=8) :: coefc
-    logical(kind=1) :: cumul
+    aster_logical :: cumul
     character(len=8), pointer :: ce3c(:) => null()
     integer, pointer :: corr_cmp(:) => null()
     character(len=8), pointer :: licmp(:) => null()
@@ -278,7 +279,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     4- ALLOCATION DE CES3 :
 !     --------------------------
     call cescre(base, ces3, typces, ma, nomgd,&
-                ncmp3, licmp, vnbpt, vnbsp,nbcmp)
+                ncmp3, licmp, vnbpt, vnbsp, nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
     call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
     call jeveuo(ces3//'.CESV', 'E', jce3v)

@@ -2,6 +2,7 @@ subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
@@ -26,8 +27,8 @@ subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: info_comp_valk(:)
-    integer          , intent(in) :: info_comp_vali(:)
-    integer          , intent(out) :: info_comp_nvar(:)
+    integer, intent(in) :: info_comp_vali(:)
+    integer, intent(out) :: info_comp_nvar(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +47,7 @@ subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
     character(len=16) :: keywordfact
     character(len=16) :: type_matg, post_iter
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(9), type_cpla
-    logical(kind=1) :: l_matr_tgsc, l_crit_rupt
+    aster_logical :: l_matr_tgsc, l_crit_rupt
     integer :: nume_comp, nb_vari
     integer :: nb_vari_comp(9)
 !
@@ -61,30 +62,30 @@ subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
 !
 ! ----- Init
 !
-        nb_vari      = 0
-        nume_comp    = 0
-        do icomp = 1,9
+        nb_vari = 0
+        nume_comp = 0
+        do icomp = 1, 9
             nb_vari_comp(icomp) = 0
         enddo
 !
 ! ----- Options
 !
-        nb_vari_exte = info_comp_vali(2*(iocc-1)  + 1)
-        rela_comp    = info_comp_valk(16*(iocc-1) + 1)
-        defo_comp    = info_comp_valk(16*(iocc-1) + 2)
-        type_cpla    = info_comp_valk(16*(iocc-1) + 4)
-        kit_comp(1)  = info_comp_valk(16*(iocc-1) + 5)
-        kit_comp(2)  = info_comp_valk(16*(iocc-1) + 6)
-        kit_comp(3)  = info_comp_valk(16*(iocc-1) + 7)
-        kit_comp(4)  = info_comp_valk(16*(iocc-1) + 8)
-        kit_comp(5)  = info_comp_valk(16*(iocc-1) + 9)
-        kit_comp(6)  = info_comp_valk(16*(iocc-1) + 10)
-        kit_comp(7)  = info_comp_valk(16*(iocc-1) + 11)
-        kit_comp(8)  = info_comp_valk(16*(iocc-1) + 12)
-        kit_comp(9)  = info_comp_valk(16*(iocc-1) + 13)
-        mult_comp    = info_comp_valk(16*(iocc-1) + 14)
-        type_matg    = info_comp_valk(16*(iocc-1) + 15)
-        post_iter    = info_comp_valk(16*(iocc-1) + 16)
+        nb_vari_exte = info_comp_vali(2*(iocc-1) + 1)
+        rela_comp = info_comp_valk(16*(iocc-1) + 1)
+        defo_comp = info_comp_valk(16*(iocc-1) + 2)
+        type_cpla = info_comp_valk(16*(iocc-1) + 4)
+        kit_comp(1) = info_comp_valk(16*(iocc-1) + 5)
+        kit_comp(2) = info_comp_valk(16*(iocc-1) + 6)
+        kit_comp(3) = info_comp_valk(16*(iocc-1) + 7)
+        kit_comp(4) = info_comp_valk(16*(iocc-1) + 8)
+        kit_comp(5) = info_comp_valk(16*(iocc-1) + 9)
+        kit_comp(6) = info_comp_valk(16*(iocc-1) + 10)
+        kit_comp(7) = info_comp_valk(16*(iocc-1) + 11)
+        kit_comp(8) = info_comp_valk(16*(iocc-1) + 12)
+        kit_comp(9) = info_comp_valk(16*(iocc-1) + 13)
+        mult_comp = info_comp_valk(16*(iocc-1) + 14)
+        type_matg = info_comp_valk(16*(iocc-1) + 15)
+        post_iter = info_comp_valk(16*(iocc-1) + 16)
 !
 ! ----- Detection of specific cases
 !
@@ -95,8 +96,8 @@ subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
 !
 ! ----- Count internal variables
 !
-        call comp_meca_vari(rela_comp   , defo_comp   , type_cpla   , nb_vari     , kit_comp    , &
-                            mult_comp   , nb_vari_exte, nb_vari_comp, nume_comp   )
+        call comp_meca_vari(rela_comp, defo_comp, type_cpla, nb_vari, kit_comp,&
+                            mult_comp, nb_vari_exte, nb_vari_comp, nume_comp)
 !
 ! ----- Save informations
 !

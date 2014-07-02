@@ -26,6 +26,7 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -117,18 +118,18 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: reasma, lcamor
-    logical(kind=1) :: ldyna, lamor, lsuiv, lcrigi, lcfint, larigi
+    aster_logical :: reasma, lcamor
+    aster_logical :: ldyna, lamor, lsuiv, lcrigi, lcfint, larigi
     character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
     character(len=19) :: vefint, cnfint
     character(len=24) :: modele
-    logical(kind=1) :: renume
+    aster_logical :: renume
     integer :: ifm, niv
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -289,6 +290,6 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
         call nmrinc(sdstat, 'FACTOR')
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

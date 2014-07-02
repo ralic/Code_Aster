@@ -2,6 +2,7 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 !
 ! ======================================================================
@@ -24,7 +25,7 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
 !
     character(len=16), intent(in) :: rela_comp
     character(len=*), intent(in) :: whatz
-    logical(kind=1), intent(out) :: l_detec
+    aster_logical, intent(out) :: l_detec
     character(len=16), optional, intent(in) :: type_matg
     character(len=16), optional, intent(in) :: post_iter
 !
@@ -48,34 +49,34 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    what    = whatz
+    what = whatz
     l_detec = .false.
     if (what .eq. 'CRISTAL') then
-        l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq.'POLYCRISTAL')     
-    elseif (what .eq. 'KIT_META') then
+        l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq.'POLYCRISTAL')
+    else if (what .eq. 'KIT_META') then
         l_detec = (rela_comp(1:4).eq.'META').and.(rela_comp.ne.'META_LEMA_ANI')
-    elseif (what .eq. 'KIT_THM') then
+    else if (what .eq. 'KIT_THM') then
         l_detec = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
-    elseif (what .eq. 'KIT_DDI') then
+    else if (what .eq. 'KIT_DDI') then
         l_detec = (rela_comp.eq.'KIT_DDI')
-    elseif (what .eq. 'KIT_CG') then
+    else if (what .eq. 'KIT_CG') then
         l_detec = (rela_comp.eq.'KIT_CG')
-    elseif (what .eq. 'KIT') then
+    else if (what .eq. 'KIT') then
         l_detec = (rela_comp(1:4).eq.'KIT_').or.(rela_comp(1:4).eq.'META')
-    elseif (what .eq. 'ZMAT') then
+    else if (what .eq. 'ZMAT') then
         l_detec = (rela_comp .eq. 'ZMAT')
-    elseif (what .eq. 'UMAT') then
+    else if (what .eq. 'UMAT') then
         l_detec = (rela_comp .eq. 'UMAT')
-    elseif (what .eq. 'MFRONT') then
+    else if (what .eq. 'MFRONT') then
         l_detec = (rela_comp .eq. 'MFRONT')
-    elseif (what .eq. 'EXTE_COMP') then
+    else if (what .eq. 'EXTE_COMP') then
         l_detec = (rela_comp .eq. 'MFRONT').or.(rela_comp .eq. 'ZMAT').or.(rela_comp .eq. 'UMAT')
-    elseif (what .eq. 'PMF') then
+    else if (what .eq. 'PMF') then
         l_detec = (rela_comp .eq. 'MULTIFIBRE')
-    elseif (what .eq. 'MATR_TGSC') then
+    else if (what .eq. 'MATR_TGSC') then
         ASSERT(present(type_matg))
         l_detec = type_matg .eq. 'TANGENTE_SECANTE'
-    elseif (what .eq. 'CRIT_RUPT') then
+    else if (what .eq. 'CRIT_RUPT') then
         ASSERT(present(post_iter))
         l_detec = post_iter .eq. 'CRIT_RUPT'
     else 
@@ -83,5 +84,5 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
         ASSERT(.false.)
     endif
 !
-
+!
 end subroutine

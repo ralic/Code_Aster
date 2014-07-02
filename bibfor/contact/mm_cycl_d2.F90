@@ -1,8 +1,8 @@
-subroutine mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
-                      indi_cont_eval, indi_frot_eval)
+subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont_eval, indi_frot_eval)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/iscode.h"
 #include "asterfort/iscycl.h"
 #include "asterfort/isdeco.h"
@@ -61,7 +61,7 @@ subroutine mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
     integer :: statut(30)
     integer :: cycl_type, cycl_long_acti
     integer :: cycl_ecod(1), cycl_long, cycl_stat
-    logical(kind=1) :: detect
+    aster_logical :: detect
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,8 +85,8 @@ subroutine mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
 ! - Cycle state
 !
     cycl_ecod(1) = p_cycl_lis(4*(point_index-1)+cycl_type)
-    cycl_long    = p_cycl_nbr(4*(point_index-1)+cycl_type)
-    call isdeco(cycl_ecod(1),statut,30)
+    cycl_long = p_cycl_nbr(4*(point_index-1)+cycl_type)
+    call isdeco(cycl_ecod(1), statut, 30)
 !
 ! - No contact: cycling break
 !
@@ -99,7 +99,7 @@ subroutine mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
 !
     cycl_long = cycl_long + 1
     statut(cycl_long) = indi_frot_eval
-    call iscode(statut,cycl_ecod(1),30)
+    call iscode(statut, cycl_ecod(1), 30)
 !
 ! - Cycling detection
 !

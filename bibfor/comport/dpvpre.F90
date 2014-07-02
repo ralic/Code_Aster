@@ -3,7 +3,8 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
                   vim, vip, sig, nbre, dsidep,&
                   iret)
 ! =====================================================================
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dpvpcr.h"
 #include "asterfort/dpvpdb.h"
@@ -47,7 +48,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    logical(kind=1) :: resi
+    aster_logical :: resi
     integer :: ndt, ndi, ii, pos, nbre
     real(kind=8) :: deux, trois
     real(kind=8) :: ppic, pult
@@ -138,7 +139,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
         if (plas .eq. 0.0d0) then
             do 10 ii = 1, ndt
                 sig(ii) = sige(ii)
-10          continue
+ 10         continue
 !
             vip(1) = vim(1)
             vip(3) = vim(3)

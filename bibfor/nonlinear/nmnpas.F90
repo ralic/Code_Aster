@@ -24,6 +24,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
@@ -84,17 +85,17 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lgrot, ldyna, lnkry
-    logical(kind=1) :: lcont, leltc, lctcc
+    aster_logical :: lgrot, ldyna, lnkry
+    aster_logical :: lcont, leltc, lctcc
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu
     character(len=19) :: complu, depdel
     real(kind=8) :: instan
-    integer ::  jdepde
+    integer :: jdepde
     integer :: indro
     character(len=2) :: codret
-    logical(kind=1) :: scotch
+    aster_logical :: scotch
     character(len=24) :: mdecol
     integer :: jmdeco
     integer :: iterat

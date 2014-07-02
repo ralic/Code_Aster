@@ -19,6 +19,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -51,7 +52,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lacti, cvbouc, lerrei, llign, lldcbo
+    aster_logical :: lacti, cvbouc, lerrei, llign, lldcbo
     integer :: ievdac
     real(kind=8) :: r8bid
     integer :: ibid
@@ -134,7 +135,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
                 endif
             endif
         endif
-10  end do
+ 10 end do
 !
 ! --- EMISSION DES MESSAGES RELATIFS AUX EVENEMENTS UTILISATEURS
 !

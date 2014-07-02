@@ -121,6 +121,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/dlaqrb.h"
 #include "asterfort/dmout.h"
@@ -162,7 +163,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical(kind=1) :: select(1)
+    aster_logical :: select(1)
     integer :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
 !
@@ -260,7 +261,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
                 iconj = 0
             endif
         endif
-10  end do
+ 10 end do
 !
     call dgemv('T', n, n, one, q,&
                ldq, bounds, 1, zero, workl,&
@@ -301,7 +302,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
                 iconj = 0
             endif
         endif
-20  end do
+ 20 end do
 !
     if (msglvl .gt. 2) then
         call dvout(logfil, n, ritzr, ndigit, '_NEIGH: REAL PART OF THE EIGENVALUES OF H')
@@ -309,7 +310,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
         call dvout(logfil, n, bounds, ndigit, '_NEIGH: RITZ ESTIMATES FOR THE EIGENVALUES OF H')
     endif
 !
-9000  continue
+9000 continue
 !
     call matfpe(1)
 !

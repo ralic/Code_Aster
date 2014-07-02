@@ -20,6 +20,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -92,7 +93,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     character(len=19) :: lchout, resufv(3), vecele
     character(len=24) :: lchin(nchinx)
     character(len=24) :: charge, infcha
-    logical(kind=1) :: bidon, lxfem
+    aster_logical :: bidon, lxfem
     character(len=8), pointer :: vale(:) => null()
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
@@ -210,7 +211,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     lchin(18) = mate(1:8)//'.COMPOR'
     lpain(19) = 'PABSCUR'
     lchin(19) = ma//'.ABSC_CURV'
-
+!
     nchin = 19
     if (lxfem) then
         lpain(nchin + 1) = 'PPINTTO'
@@ -343,7 +344,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
                     call reajre(vecele, lchout, 'V')
 !
                 endif
-40              continue
+ 40             continue
             enddo
         endif
 !
@@ -361,7 +362,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
         enddo
     end do
 !
-99  continue
+ 99 continue
 !
     vecelz = vecele//'.RELR'
     call jedema()

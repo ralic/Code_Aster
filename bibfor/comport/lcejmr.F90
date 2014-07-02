@@ -22,6 +22,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
 #include "asterfort/matinv.h"
 #include "asterfort/pmavec.h"
@@ -68,7 +69,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: invrot(ndim, ndim), rigart
     character(len=8) :: nom(nbpa), nompar(ndim+1)
     character(len=1) :: poum
-    logical(kind=1) :: resi, rigi, elas, ifpahm, ifhyme
+    aster_logical :: resi, rigi, elas, ifpahm, ifhyme
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
     resi = option(1:9).eq.'FULL_MECA' .or. option.eq.'RAPH_MECA'
@@ -91,7 +92,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         do 10 n = 1, ndim-1
             gp(n) = epsm(ndim+n)
             if (resi) gp(n) = gp(n) + deps(ndim+n)
-10      continue
+ 10     continue
 !
         presg = epsm(2*ndim)
         if (resi) presg = presg + deps(2*ndim)
@@ -203,7 +204,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         sciage = 0.d0
     endif
 !
-
+!
 ! RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
 !--------------------------------------------------------------------
     call rcvalb(fami, kpg, ksp, poum, mate,&
@@ -259,13 +260,13 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! CLAVAGE
 ! EPAISSEUR DE JOINT NE PEUT QUE AUGMENTER; DOSET > 0
     doset = 0.d0
-    if (prescl.ge.0.d0) doset = max (0.d0, a(1) + prescl/(beta*r0) )
+    if (prescl .ge. 0.d0) doset = max (0.d0, a(1) + prescl/(beta*r0) )
 ! SCIAGE
 ! LE JOINT EST ENDOMMAGE PAR LE SCIAGE
-    if (sciage.gt.0.d0) ka = lc
+    if (sciage .gt. 0.d0) ka = lc
 ! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
     sciage = sciage - max(0.,epsm(1))
-    if (sciage.gt.0.d0) doset = doset - sciage
+    if (sciage .gt. 0.d0) doset = doset - sciage
     oset = vim(10) + doset
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
@@ -314,7 +315,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     if (ifhyme) then
         do 44 n = 1, ndim-1
             sigma(ndim+n) = -rhof*gp(n)*(max(amin,a(1)+amin))**3/(12* visf)
-44      continue
+ 44     continue
     endif
 !
 ! CALCUL DE LA CONTRAINTE MECANIQUE
@@ -336,7 +337,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         else
             sigma(i) = 0.d0
         endif
-20  end do
+ 20 end do
 !
 !    CONTRAINTE DE FISSURATION NORMALE
     if ((a(1).ge.lc) .or. (ka.ge.lc)) then
@@ -468,7 +469,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !
     endif
 !
-5000  continue
+5000 continue
 !
 ! INITIALISATION DE LA MATRICE TANGENTE
     call r8inir(6*6, 0.d0, dsidep, 1)
@@ -483,7 +484,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         do 42 n = 1, ndim-1
             dsidep(ndim+n,ndim+n)=-rhof*(max(amin,a(1)+amin))**3/(12*&
             visf)
-42      continue
+ 42     continue
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
         do 43 n = 1, ndim-1
@@ -492,7 +493,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
             else
                 dsidep(ndim+n,1) = -3*rhof*gp(n)*(a(1)+amin)**2/(12* visf)
             endif
-43      continue
+ 43     continue
 !
     endif
 !
@@ -503,8 +504,8 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !   MATRICE TANGENTE DE CONTACT FERME
     if (a(1) .le. 0.d0) then
         dsidep(1,1) = rc
-        ! POUR LE JOINT CLAVE LA MATRICE DE RIGIDITE NORMALE EST ZERO
-        if ((prescl.ge.0.d0).and.(doset.gt.0.d0)) dsidep(1,1) = rigart*r0
+! POUR LE JOINT CLAVE LA MATRICE DE RIGIDITE NORMALE EST ZERO
+        if ((prescl.ge.0.d0) .and. (doset.gt.0.d0)) dsidep(1,1) = rigart*r0
         do i = 2, ndim
             dsidep(i,i) = rt0
         end do
@@ -515,16 +516,16 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !
 !       MATRICE TANGENTE DE FISSURATION
         if ((diss.eq.0) .or. elas) then
-           dsidep(1,1) = rk
+            dsidep(1,1) = rk
         else
-           if (lc .ne. 0.d0) dsidep(1,1) = -sc/lc
+            if (lc .ne. 0.d0) dsidep(1,1) = -sc/lc
         endif
 !
         do i = 2, ndim
-           dsidep(i,i) = rt
-           if ((lct.ne.0.d0) .and. (a(1).lt.lct)) then
-              dsidep(i,1) = -da(i)*rt0/lct
-           endif
+            dsidep(i,i) = rt
+            if ((lct.ne.0.d0) .and. (a(1).lt.lct)) then
+                dsidep(i,1) = -da(i)*rt0/lct
+            endif
         end do
 !
 !       DANS LE CAS OU L'ELEMENT EST TOTALEMENT CASSE ON INTRODUIT UNE
@@ -533,11 +534,11 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         if (cass .eq. 2) dsidep(1,1) = rigart*r0
 !
         if (abs(rt) .lt. rigart) then
-           do i = 2, ndim
-              dsidep(i,i) = rigart*rt0
-           end do
+            do i = 2, ndim
+                dsidep(i,i) = rigart*rt0
+            end do
         endif
     endif
 !
-9999  continue
+9999 continue
 end subroutine

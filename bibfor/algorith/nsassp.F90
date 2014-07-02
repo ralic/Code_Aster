@@ -21,6 +21,7 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
@@ -76,7 +77,7 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     character(len=19) :: vect(nbcoef)
     character(len=19) :: cnfnod, cnbudi, cnvcpr, cnsstr, cneltc, cneltf
     character(len=19) :: depmoi, k19bla
-    logical(kind=1) :: lmacr, leltc, leltf, lallv
+    aster_logical :: lmacr, leltc, leltf, lallv
 !
 ! ----------------------------------------------------------------------
 !
@@ -194,7 +195,7 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
-10  end do
+ 10 end do
 !
 ! --- CHARGEMENT PILOTE
 !
@@ -208,7 +209,7 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
     endif
     do 18 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cnpilo)
-18  end do
+ 18 end do
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
 !

@@ -19,7 +19,8 @@ subroutine cfllaf(noma, defico, resoco, iliai, nbliai,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfelpv.h"
 #include "asterfort/cfimp2.h"
@@ -66,7 +67,7 @@ subroutine cfllaf(noma, defico, resoco, iliai, nbliai,&
 !
 !
     integer :: posit
-    logical(kind=1) :: lelpiv, lelpi1, lelpi2
+    aster_logical :: lelpiv, lelpi1, lelpi2
     character(len=1) :: typeaj
     character(len=2) :: typef0, typef1, typef2
 !

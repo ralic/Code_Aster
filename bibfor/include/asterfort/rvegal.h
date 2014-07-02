@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rvegal(epsi, criter, x, y, ok,&
                       eccart)
@@ -22,7 +24,7 @@ interface
         character(len=1) :: criter
         real(kind=8) :: x
         real(kind=8) :: y
-        logical(kind=1) :: ok
+        aster_logical :: ok
         real(kind=8) :: eccart
     end subroutine rvegal
 end interface

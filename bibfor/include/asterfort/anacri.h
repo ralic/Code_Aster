@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                       fordef, crsigm, crepst, crepse, crepsp)
@@ -23,10 +25,10 @@ interface
         character(len=16) :: typcha
         character(len=3) :: impgrd
         integer :: paract(35)
-        logical(kind=1) :: fordef
-        logical(kind=1) :: crsigm
-        logical(kind=1) :: crepst
-        logical(kind=1) :: crepse
-        logical(kind=1) :: crepsp
+        aster_logical :: fordef
+        aster_logical :: crsigm
+        aster_logical :: crepst
+        aster_logical :: crepse
+        aster_logical :: crepsp
     end subroutine anacri
 end interface

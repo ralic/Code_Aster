@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                       corfre, noma, ndir, nomsup, nomspe,&
@@ -25,7 +27,7 @@ interface
         integer :: nbocc
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
-        logical(kind=1) :: corfre
+        aster_logical :: corfre
         character(len=8) :: noma
         integer :: ndir(*)
         character(len=8) :: nomsup(3, *)

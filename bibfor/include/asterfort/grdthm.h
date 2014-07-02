@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine grdthm(nomte, perman, vf, ndim, mecani,&
                       press1, press2, tempe, dimdep, dimdef,&
                       dimcon, nmec, np1, np2)
         character(len=16) :: nomte
-        logical(kind=1) :: perman
-        logical(kind=1) :: vf
+        aster_logical :: perman
+        aster_logical :: vf
         integer :: ndim
         integer :: mecani(5)
         integer :: press1(7)

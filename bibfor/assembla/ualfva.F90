@@ -1,5 +1,6 @@
 subroutine ualfva(mataz, basz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -55,11 +56,11 @@ subroutine ualfva(mataz, basz)
     character(len=1) :: base, tyrc
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
-    logical(kind=1) :: ldiag, lplein
-    integer ::  neq, nbloc, nblocm, iret
+    aster_logical :: ldiag, lplein
+    integer :: neq, nbloc, nblocm, iret
     integer :: jsmhc
     integer :: itbloc, ieq, ibloc, jualf, jvale, kterm, nbterm, ilig
-    integer :: ismdi, ismdi0, ibloav, iscdi,   kblocm, nblocl
+    integer :: ismdi, ismdi0, ibloav, iscdi, kblocm, nblocl
     integer, pointer :: scdi(:) => null()
     integer, pointer :: smde(:) => null()
     integer, pointer :: scib(:) => null()
@@ -98,10 +99,10 @@ subroutine ualfva(mataz, basz)
 !        -- ON NE SAIT TRAITER QUE LES MATRICES DIAGONALES OU PLEINES :
         ldiag=.true.
         lplein=.true.
-        do 5,ieq=1,neq
-        if (schc(ieq) .ne. 1) ldiag=.false.
-        if (schc(ieq) .ne. ieq) lplein=.false.
- 5      continue
+        do 5 ieq = 1, neq
+            if (schc(ieq) .ne. 1) ldiag=.false.
+            if (schc(ieq) .ne. ieq) lplein=.false.
+  5     continue
         if (ldiag) then
             call crsmos(stomor, 'DIAG', neq)
         else
@@ -133,48 +134,48 @@ subroutine ualfva(mataz, basz)
     call jecrec(matas//'.VALM', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nblocm)
     call jeecra(matas//'.VALM', 'LONMAX', itbloc)
-    do 3,kblocm=1,nblocm
-    call jecroc(jexnum(matas//'.VALM', kblocm))
-    3 end do
+    do 3 kblocm = 1, nblocm
+        call jecroc(jexnum(matas//'.VALM', kblocm))
+  3 end do
 !
 !
 !     2. REMPLISSAGE DE .VALM :
 !     ----------------------------------------
-    do 10, kblocm=1,nblocm
-    call jeveuo(jexnum(matas//'.VALM', kblocm), 'E', jvale)
-    ibloav=0+nbloc*(kblocm-1)
-    ismdi0=0
-    do 1, ieq=1,neq
-    iscdi=scdi(ieq)
-    ibloc=scib(ieq)+nbloc*(kblocm-1)
+    do 10 kblocm = 1, nblocm
+        call jeveuo(jexnum(matas//'.VALM', kblocm), 'E', jvale)
+        ibloav=0+nbloc*(kblocm-1)
+        ismdi0=0
+        do 1 ieq = 1, neq
+            iscdi=scdi(ieq)
+            ibloc=scib(ieq)+nbloc*(kblocm-1)
 !
 !          -- ON RAMENE LE BLOC EN MEMOIRE SI NECESSAIRE:
-    if (ibloc .ne. ibloav) then
-        call jeveuo(jexnum(matas//'.UALF', ibloc), 'L', jualf)
-        if (ibloav .ne. 0) then
-            call jelibe(jexnum(matas//'.UALF', ibloav))
-        endif
-        ibloav=ibloc
-    endif
+            if (ibloc .ne. ibloav) then
+                call jeveuo(jexnum(matas//'.UALF', ibloc), 'L', jualf)
+                if (ibloav .ne. 0) then
+                    call jelibe(jexnum(matas//'.UALF', ibloav))
+                endif
+                ibloav=ibloc
+            endif
 !
-    ismdi=smdi(ieq)
-    nbterm=ismdi-ismdi0
+            ismdi=smdi(ieq)
+            nbterm=ismdi-ismdi0
 !
-    do 2, kterm=1,nbterm
-    ilig=zi4(jsmhc-1+ismdi0+kterm)
-    if (tyrc .eq. 'R') then
-        zr(jvale-1+ismdi0+kterm)=zr(jualf-1+ iscdi +ilig-&
+            do 2 kterm = 1, nbterm
+                ilig=zi4(jsmhc-1+ismdi0+kterm)
+                if (tyrc .eq. 'R') then
+                    zr(jvale-1+ismdi0+kterm)=zr(jualf-1+ iscdi +ilig-&
                     ieq)
-    else
-        zc(jvale-1+ismdi0+kterm)=zc(jualf-1+ iscdi +ilig-&
+                else
+                    zc(jvale-1+ismdi0+kterm)=zc(jualf-1+ iscdi +ilig-&
                     ieq)
-    endif
- 2  continue
-    ASSERT(ilig.eq.ieq)
+                endif
+  2         continue
+            ASSERT(ilig.eq.ieq)
 !
-    ismdi0=ismdi
- 1  continue
-    10 end do
+            ismdi0=ismdi
+  1     continue
+ 10 end do
 !
 !
 !

@@ -1,24 +1,27 @@
-subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref)
+subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
+                  cnset, typma, ndime, igeom, jlsn,&
+                  pmilie, ninter, ainter, ar, npts,&
+                  nptm, pmmax, nmilie, mfis, lonref,&
+                  pinref)
     implicit none
 !
-#    include "jeveux.h"
-#    include "asterfort/assert.h"
-#    include "asterfort/detefa.h"
-#    include "asterfort/jedema.h"
-#    include "asterfort/jemarq.h"
-#    include "asterfort/vecini.h"
-#    include "asterfort/xajpmi.h"
-#    include "asterfort/xcenfi.h"
-#    include "asterfort/xmilar.h"
-#    include "asterfort/xmilfa.h"
-#    include "asterfort/xmifis.h"
-#    include "asterfort/xstudo.h"
-#    include "asterfort/xxmmvd.h"
+#include "asterf_types.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/detefa.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/vecini.h"
+# include "asterfort/xajpmi.h"
+# include "asterfort/xcenfi.h"
+# include "asterfort/xmilar.h"
+# include "asterfort/xmilfa.h"
+# include "asterfort/xmifis.h"
+# include "asterfort/xstudo.h"
+# include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
-    integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
-    integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
+    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
+    integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: lonref, ainter(*), pmilie(*)
     real(kind=8) :: pinref(*)
 ! ======================================================================
@@ -67,7 +70,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     integer :: pm1a(4), pm1b(4), pm2(4)
     integer :: nm, ia, ib, inm, mfisloc
     integer :: zxain
-    logical(kind=1) :: ispm3, ispm2, ajout
+    aster_logical :: ispm3, ispm2, ajout
 !
 ! --------------------------------------------------------------------
 !
@@ -83,10 +86,10 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
     call vecini(51, 0.d0, pmilie)
 !
-    do ino=1,nnop
-      do i=1,ndim
-        geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
-      enddo
+    do ino = 1, nnop
+        do i = 1, ndim
+            geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
+        enddo
     enddo
 !
     do 204 i = 1, 4
@@ -97,7 +100,8 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
         pm2(i)=0
 204 continue
     call xstudo(ndime, ninter, npts, nptm, ainter,&
-                  nbpi, ip1, ip2, pm1a,pm1b, pm2)
+                nbpi, ip1, ip2, pm1a, pm1b,&
+                pm2)
 !
 !    RECHERCHE DES NOEUDS B ET C 
     a1=nint(ainter(zxain*(1-1)+1))
@@ -105,12 +109,12 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     noeub=0
     noeuc=0
     do 205 i = 1, 2
-       do 206 j = 1, 2
-          if (ar(a1,i) .eq. ar(a2,j)) then
-            noeub=ar(a1,3-i)
-            noeuc=ar(a2,3-j)
-          endif
-206    continue
+        do 206 j = 1, 2
+            if (ar(a1,i) .eq. ar(a2,j)) then
+                noeub=ar(a1,3-i)
+                noeuc=ar(a2,3-j)
+            endif
+206     continue
 205 continue
     ASSERT((noeub*noeuc).gt.0)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -125,33 +129,34 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
         ib=0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD B OU C
         do 320 i = 1, 2
-           if ((ar(a2,3-i) .eq. noeub).or.(ar(a2,3-i) .eq. noeuc)) then 
-             ia=cnset(nnose*(it-1)+ar(a2,3-i))
-             ib=cnset(nnose*(it-1)+ar(a2,i))
-           endif
+            if ((ar(a2,3-i) .eq. noeub) .or. (ar(a2,3-i) .eq. noeuc)) then
+                ia=cnset(nnose*(it-1)+ar(a2,3-i))
+                ib=cnset(nnose*(it-1)+ar(a2,i))
+            endif
 320     continue 
         call vecini(ndim, 0.d0, milara)
         call vecini(ndim, 0.d0, milarb)
 !           INTERPOLATION DES COORDONNEES DES POINTS MILIEUX MA ET MB
-        call xmilar(ndim, ndime, elrefp, geom, pinref, ia, ib, r,& 
-                    ksia, ksib, milara, milarb)
+        call xmilar(ndim, ndime, elrefp, geom, pinref,&
+                    ia, ib, r, ksia, ksib,&
+                    milara, milarb)
 !         STOCKAGE PMILIE
         call xajpmi(pmilie, pmmax, ipm, inm, milara,&
-                        lonref, ajout)
-        if (ajout) then 
-        do j=1,ndime
-           pmiref(ndime*(ipm-1)+j)=ksia(j)
-        enddo
+                    lonref, ajout)
+        if (ajout) then
+            do j = 1, ndime
+                pmiref(ndime*(ipm-1)+j)=ksia(j)
+            enddo
         endif
 !
         call xajpmi(pmilie, pmmax, ipm, inm, milarb,&
-                        lonref, ajout)
-        if (ajout) then 
-        do j=1,ndime
-           pmiref(ndime*(ipm-1)+j)=ksib(j)
-        enddo
+                    lonref, ajout)
+        if (ajout) then
+            do j = 1, ndime
+                pmiref(ndime*(ipm-1)+j)=ksib(j)
+            enddo
         endif
-300  continue
+300 continue
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU DEUXIEME TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -170,32 +175,33 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 !        CALCUL DU POINT MILIEU DE 101-102
 !
-            call xmifis(ndim, ndime, elrefp, geom, zr(jlsn), &
-                  n, ip1(k), ip2(k), pinref, ksia, milfi)
+            call xmifis(ndim, ndime, elrefp, geom, zr(jlsn),&
+                        n, ip1(k), ip2(k), pinref, ksia,&
+                        milfi)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
 !        STOCKAGE PMILIE
             call xajpmi(pmilie, pmmax, ipm, inm, milfi,&
                         lonref, ajout)
-            if (ajout) then 
-            do j=1,ndime
-               pmiref(ndime*(ipm-1)+j)=ksia(j)
-            enddo
+            if (ajout) then
+                do j = 1, ndime
+                    pmiref(ndime*(ipm-1)+j)=ksia(j)
+                enddo
             endif
         endif
-400  continue
+400 continue
 !    LE NOEUD MILIEU AU CENTRE DE LA FACE QUADRANGLE
-     call xcenfi(elrefp, ndim, ndime, geom, zr(jlsn),&
-                 pinref, pmiref, ksia, cenfi)
-     mfisloc=mfisloc+1
-     call xajpmi(pmilie, pmmax, ipm, inm, cenfi,&
-                   lonref, ajout)
-     if (ajout) then 
-     do j=1,ndime
-          pmiref(ndime*(ipm-1)+j)=ksia(j)
-     enddo
-     endif
+    call xcenfi(elrefp, ndim, ndime, geom, zr(jlsn),&
+                pinref, pmiref, ksia, cenfi)
+    mfisloc=mfisloc+1
+    call xajpmi(pmilie, pmmax, ipm, inm, cenfi,&
+                lonref, ajout)
+    if (ajout) then
+        do j = 1, ndime
+            pmiref(ndime*(ipm-1)+j)=ksia(j)
+        enddo
+    endif
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU TROISIEME TYPE DE POINT MILIEU   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -205,28 +211,29 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !      on calcule le troisieme type de point milieu seulement si
 !      aucun des deux points d'intersection n'est confondu avec
 !      un noeud sommet
-       ispm3=((nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0) .and. &
+        ispm3=((nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0) .and. &
            (nint(ainter(zxain*(ip2(k)-1)+1)) .ne. 0))
-
+!
 !
         if (ispm3) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS
             call detefa(nnose, ip1(k), ip2(k), it, typma,&
                         ainter, cnset, n)
 !
-            call xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
-                      ainter, ip1(k), ip2(k), pm2(k), typma, pinref, &
-                      pmiref, ksia, milfa)
+            call xmilfa(elrefp, ndim, ndime, geom, cnset,&
+                        nnose, it, ainter, ip1(k), ip2(k),&
+                        pm2(k), typma, pinref, pmiref, ksia,&
+                        milfa)
 !
             call xajpmi(pmilie, pmmax, ipm, inm, milfa,&
                         lonref, ajout)
-            if (ajout) then 
-            do j=1,ndime
-               pmiref(ndime*(ipm-1)+j)=ksia(j)
-            enddo
+            if (ajout) then
+                do j = 1, ndime
+                    pmiref(ndime*(ipm-1)+j)=ksia(j)
+                enddo
             endif
         endif
-500  continue
+500 continue
 !
 !
     ASSERT(ipm.eq.17.and.mfisloc.eq.5)

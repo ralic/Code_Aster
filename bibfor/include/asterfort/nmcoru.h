@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcoru(vresi, vresid, convok)
         real(kind=8) :: vresi
         real(kind=8) :: vresid
-        logical(kind=1) :: convok
+        aster_logical :: convok
     end subroutine nmcoru
 end interface

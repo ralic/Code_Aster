@@ -18,7 +18,8 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -55,7 +56,7 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: valk, valo
-    logical(kind=1) :: valb
+    aster_logical :: valb
     integer :: vali
     real(kind=8) :: valr
     character(len=1) :: typpa1, typpa2

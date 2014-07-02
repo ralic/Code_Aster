@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine coeihm(option, perman, resi, rigi, imate,&
                       compor, crit, instam, instap, nomail,&
@@ -30,9 +32,9 @@ interface
         integer :: dimdef
         integer :: ndim
         character(len=16) :: option
-        logical(kind=1) :: perman
-        logical(kind=1) :: resi
-        logical(kind=1) :: rigi
+        aster_logical :: perman
+        aster_logical :: resi
+        aster_logical :: rigi
         integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)

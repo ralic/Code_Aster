@@ -1,6 +1,7 @@
 subroutine peepot(resu, modele, mate, cara, nh,&
                   nbocc)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
@@ -76,7 +77,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
     character(len=24) :: chtime, chnumc, chamgd, typcha, chgeom, chcara(18), chtemp, chharm
     character(len=24) :: compor, mlggma, mlgnma, k24b, nomgrm, valk2(2)
 !
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
     complex(kind=8) :: c16b, calpha
     integer :: iarg
 !

@@ -202,6 +202,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dgetv0.h"
@@ -257,7 +258,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !     %---------------%
 !
     character(len=2) :: wprime
-    logical(kind=1) :: cnorm, getv0, initv, update, ushift
+    aster_logical :: cnorm, getv0, initv, update, ushift
     integer :: ierr, iter, j, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp
     integer :: numcnv
     real(kind=8) :: rnorm, temp, eps23

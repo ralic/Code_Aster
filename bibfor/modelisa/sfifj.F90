@@ -23,6 +23,7 @@ subroutine sfifj(nomres)
 !     AUTEUR : G. ROUSSEAU
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/accep1.h"
@@ -52,8 +53,8 @@ subroutine sfifj(nomres)
 #include "asterfort/as_allocate.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
-    integer :: npoin, iff,  lvale, ibid, in
-    integer :: im1, im2,     nvecx, nvecy
+    integer :: npoin, iff, lvale, ibid, in
+    integer :: im1, im2, nvecx, nvecy
     integer :: nveco, ier, ncham, jpara
     integer :: lnumi, lnumj, lfreq, mxval, nbabs, ij
     real(kind=8) :: fmin, fmax, finit, ffin, df, f, prs
@@ -66,7 +67,7 @@ subroutine sfifj(nomres)
     character(len=19) :: base, fonct, chamno, pg, phi, sphi
     character(len=24) :: ligrmo
     character(len=24) :: chnumi, chnumj, chfreq, chvale
-    logical(kind=1) :: yang
+    aster_logical :: yang
     real(kind=8), pointer :: vecx(:) => null()
     real(kind=8), pointer :: vecy(:) => null()
     real(kind=8), pointer :: vecz(:) => null()
@@ -226,7 +227,7 @@ subroutine sfifj(nomres)
             dir(1,in)=vecx(in)
             dir(2,in)=vecy(in)
             dir(3,in)=vecz(in)
- 2      continue
+  2     continue
     else if (method(1:7).eq.'AU_YANG') then
         yang = .true.
         call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
@@ -246,7 +247,7 @@ subroutine sfifj(nomres)
 !
 ! VALEURS NON DEPENDANTES DE LA FREQUENCE
 !
-10  continue
+ 10 continue
     if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
         call accep2(base(1:8), nbm, pg, phi, sphi)
     else
@@ -269,7 +270,7 @@ subroutine sfifj(nomres)
     do 310 iff = 0, nbpoin-1
         f=finit+iff*df
         zr(lfreq+iff) = f
-310  end do
+310 end do
 !
 !  POUR LE CAS SPEC_CORR_CONV_3
     if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
@@ -280,7 +281,7 @@ subroutine sfifj(nomres)
             zr(lfreq+iff) = f
             call evalis(is, pg, phi, sphi, f,&
                         iff, nomres)
-320      continue
+320     continue
     else
         ij = 0
         do 220 im2 = 1, nbm
@@ -329,18 +330,18 @@ subroutine sfifj(nomres)
                         zr(lvale+2*iff)=prs*jc
                         zr(lvale+2*iff+1)=0.d0
                     endif
-201              continue
+201             continue
 !
-210          continue
+210         continue
 !
-220      end do
+220     end do
 !
     endif
 !
     AS_DEALLOCATE(vr=vecx)
     AS_DEALLOCATE(vr=vecy)
     AS_DEALLOCATE(vr=vecz)
-
+!
     if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
     else
         call jedetc('V', '&&329', 1)

@@ -30,6 +30,7 @@ subroutine te0244(option, nomte)
     implicit none
 !
 ! PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
@@ -55,7 +56,7 @@ subroutine te0244(option, nomte)
     integer :: idfde, igeom, imate, icomp, ifon(3), itemp, ivectt, ivecti
     integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2, isechf
     integer :: isechi, ibid, ihydr
-    logical(kind=1) :: laxi, lhyd
+    aster_logical :: laxi, lhyd
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
@@ -66,15 +67,15 @@ subroutine te0244(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
-        call elrefe_info(elrefe=elrefe,fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     else
-        call elrefe_info(elrefe=elrefe,fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     if (lteatt('AXIS','OUI')) then
         laxi = .true.
@@ -128,8 +129,8 @@ subroutine te0244(option, nomte)
             hydrpg(kp)=0.d0
             do 160 i = 1, nno
                 hydrpg(kp)=hydrpg(kp)+zr(ihydr)*zr(ivf2+k+i-1)
-160          continue
-150      continue
+160         continue
+150     continue
     else
         lhyd = .false.
     endif
@@ -142,7 +143,7 @@ subroutine te0244(option, nomte)
     do 10 i = 1, nnop2
         vectt(i)=0.d0
         vecti(i)=0.d0
-10  end do
+ 10 end do
 !
 !====
 ! 2. CALCULS DU TERME DE RIGIDITE DE L'OPTION
@@ -156,7 +157,7 @@ subroutine te0244(option, nomte)
             do 305 i = 1, nno
                 do 305 j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-305              continue
+305             continue
 !
             do 301 kp = 1, npg
                 k=(kp-1)*nno
@@ -171,12 +172,12 @@ subroutine te0244(option, nomte)
                     tpg = tpg + zr(itemp-1+c(ise,i)) * zr(ivf+k+i-1)
                     dtpgdx = dtpgdx + zr(itemp-1+c(ise,i)) * dfdx(i)
                     dtpgdy = dtpgdy + zr(itemp-1+c(ise,i)) * dfdy(i)
-302              continue
+302             continue
                 if (laxi) then
                     do 303 i = 1, nno
 ! CALCUL DE R POUR JACOBIEN
                         r = r + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
-303                  continue
+303                 continue
                     poids = poids*r
                 endif
 !
@@ -196,9 +197,9 @@ subroutine te0244(option, nomte)
                                       c(ise,i))- poids * (1.0d0-theta)*lambda*(dfdx(i)*dtpgdx+dfd&
                                       &y(i)* dtpgdy&
                                       )
-320              continue
+320             continue
 ! FIN DE LA BOUCLE SUR LES PT DE GAUSS
-301          continue
+301         continue
 !
 !====
 ! 3. CALCULS DU TERME DE RIGIDITE DE L'OPTION
@@ -208,7 +209,7 @@ subroutine te0244(option, nomte)
             do 405 i = 1, nno
                 do 405 j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-405              continue
+405             continue
 !
             do 401 kp = 1, npg2
                 k=(kp-1)*nno
@@ -219,12 +220,12 @@ subroutine te0244(option, nomte)
                 do 402 i = 1, nno
 ! CALCUL DE T-
                     tpg = tpg + zr(itemp-1+c(ise,i)) * zr(ivf2+k+i-1)
-402              continue
+402             continue
                 if (laxi) then
                     do 403 i = 1, nno
 ! CALCUL DE R POUR JACOBIEN
                         r = r + coorse(2*(i-1)+1) * zr(ivf2+k+i-1)
-403                  continue
+403                 continue
                     poids = poids*r
                 endif
 !
@@ -243,7 +244,7 @@ subroutine te0244(option, nomte)
                                           c(ise,i)) + poids * ((dbeta*tpg-chal(1)*hydrpg(kp))* zr&
                                           &(ivf2+k+i-1)/ deltat&
                                           )
-420                  continue
+420                 continue
                 else
 ! THER_NL
 ! CALCUL A 2 OUTPUTS (LE DEUXIEME NE SERT QUE POUR LA PREDICTION)
@@ -252,11 +253,11 @@ subroutine te0244(option, nomte)
                         vectt(c(ise,i)) = vectt(c(ise, i) ) + poids * beta/deltat*zr(ivf2+k+i-1)
                         vecti(c(ise,i)) = vecti(&
                                           c(ise, i) ) + poids * dbeta*tpg/deltat*zr(ivf2+k+i-1)
-421                  continue
+421                 continue
 ! FIN BOUCLE LHYD
                 endif
 ! FIN DE BOUCLE SUR LES PT DE GAUSS
-401          continue
+401         continue
 !
         else if (zk16(icomp)(1:5).eq.'SECH_') then
 !
@@ -265,7 +266,7 @@ subroutine te0244(option, nomte)
             do 307 i = 1, nno
                 do 307 j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-307              continue
+307             continue
 !
             do 310 kp = 1, npg
                 k=(kp-1)*nno
@@ -282,7 +283,7 @@ subroutine te0244(option, nomte)
                     dtpgdx = dtpgdx + zr(itemp-1+c(ise,i)) *dfdx(i)
                     dtpgdy = dtpgdy + zr(itemp-1+c(ise,i)) *dfdy(i)
                     tpsec = tpsec + zr(isechi-1+c(ise,i)) *zr(ivf+k+i- 1)
-308              continue
+308             continue
                 call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
                 if (laxi) poids = poids*r
 !
@@ -292,15 +293,15 @@ subroutine te0244(option, nomte)
                                       &dy(i)* dtpgdy)&
                                       )
                     vecti(c(ise,i)) = vectt(c(ise,i))
-309              continue
-310          continue
+309             continue
+310         continue
 !
 !  CALCULS DU TERME DE MASSE DE L'OPTION
 !
             do 311 i = 1, nno
                 do 311 j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-311              continue
+311             continue
 !
             do 314 kp = 1, npg2
                 k=(kp-1)*nno
@@ -311,23 +312,23 @@ subroutine te0244(option, nomte)
                 do 312 i = 1, nno
                     r = r + coorse(2*(i-1)+1) *zr(ivf2+k+i-1)
                     tpg = tpg + zr(itemp-1+c(ise,i)) *zr(ivf2+k+i-1)
-312              continue
+312             continue
                 if (laxi) poids = poids*r
 !
                 do 313 i = 1, nno
                     vectt(c(ise,i)) = vectt( c(ise,i)) + poids * ( tpg/deltat*zr(ivf2+k+i-1) )
                     vecti(c(ise,i)) = vectt(c(ise,i))
-313              continue
-314          continue
+313             continue
+314         continue
 !
         endif
 ! FIN DE BOUCLE SUR LES SOUS-ELEMENTS
-200  end do
+200 end do
 !
 ! MISE SOUS FORME DE VECTEUR
     do 500 i = 1, nnop2
         zr(ivectt-1+i)=vectt(i)
         zr(ivecti-1+i)=vecti(i)
-500  end do
+500 end do
 ! FIN ------------------------------------------------------------------
 end subroutine

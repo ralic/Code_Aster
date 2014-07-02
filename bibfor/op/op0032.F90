@@ -23,6 +23,7 @@ subroutine op0032()
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
@@ -62,17 +63,17 @@ subroutine op0032()
 #include "asterfort/wkvect.h"
     mpi_int :: mpicow, mpicou, mrang, mnbproc
     integer :: rang, nbproc
-    integer ::  islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
+    integer :: islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
     integer :: pivot2, mxddl, nbrss, ierd, ii, ifapm, k, nbmod, nblagr, nbcine
     integer :: neqact, neq, niterc, npivot(2), l, lmasse, lraide, lddl
-    integer :: ldynam, nk, nbrow, lprod, iret, nbfreq,  idet(2), jstu
+    integer :: ldynam, nk, nbrow, lprod, iret, nbfreq, idet(2), jstu
     integer :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco
     integer :: nbtet2, nbev0, nbev1, nbev2, miterc, ibid, k1, k2
     integer :: jkpar, l1, l2, l3, l11, l21, frecou, izero
     real(kind=8) :: omgmin, omgmax, omin, omax, fcorig, omecor, precsh, rayonc
     real(kind=8) :: dimc1, rzero, calpar(2), calpac(3), calpaf(2), rbid, det(2)
     complex(kind=8) :: centrc, zimc1, cbid
-    logical(kind=1) :: ltest, lc, ldyna, lflamb, lfirst, lcomod, lcoinf
+    aster_logical :: ltest, lc, ldyna, lflamb, lfirst, lcomod, lcoinf
     character(len=1) :: typep, tpparn(1), tpparr(2), tpparc(3), tpparf(2)
     character(len=1) :: tpparm(2)
     character(len=3) :: impr
@@ -277,7 +278,7 @@ subroutine op0032()
             zi(jstu+k-1)=izero
             zr(jlmoe+k-1)=rzero
             if (zr(jlmod+k) .le. zr(jlmod+k-1)) ASSERT(.false.)
-10      continue
+ 10     continue
         zr(jlmoe+nbmod-1)=rzero
 !
     else if (typmod(1:13).eq.'MODE_COMPLEXE') then
@@ -306,7 +307,7 @@ subroutine op0032()
                 zi(jstu+k-1)=izero
                 zr(jlmoe+k-1)=rzero
                 if (zr(jlmod+k) .le. zr(jlmod+k-1)) ASSERT(.false.)
-12          continue
+ 12         continue
             zr(jlmoe+nbmod-1)=rzero
         else
 !       --- PARAMETRIZATION PB
@@ -356,7 +357,7 @@ subroutine op0032()
             call utmess('F', 'ALGELINE4_10')
         endif
     endif
-
+!
 !
 !      --- SCHEMAS PARALLELES
 !
@@ -471,10 +472,10 @@ subroutine op0032()
                 l3=l11*l2
                 do 40 k = 1, l2
                     call vecint(l11, k, zi(jkpar+(k-1)*l11))
-40              continue
+ 40             continue
                 do 41 k = l21, nbrow
                     call vecint(l1, k, zi(jkpar+l3+(k-l21)*l1))
-41              continue
+ 41             continue
             else if (typeco.eq.2) then
                 if (nbrow .ne. 1) ASSERT(.false.)
                 l1=nbproc/2
@@ -492,7 +493,7 @@ subroutine op0032()
             do 42 k = 1, nbproc
                 l1=zi(jkpar+k-1)
                 if ((l1.lt.0) .or. (l1.gt.nbrow)) ASSERT(.false.)
-42          continue
+ 42         continue
 !
 !         --- FREQUENCE COURANTE CAD FREQ A TRAITER PAR LE PROC COURANT
             frecou=zi(jkpar+rang)
@@ -597,7 +598,7 @@ subroutine op0032()
             else
                 zr(jlmoe+k)=omax
             endif
-20      continue
+ 20     continue
 !
 !     ------------------------------------------------------------------
 !     ------ INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART III)  -------
@@ -686,9 +687,9 @@ subroutine op0032()
                 write(ifm,4020)
                 ASSERT(.false.)
             endif
-30      continue
-31      continue
-
+ 30     continue
+ 31     continue
+!
         if (pivot2 .lt. 0) then
             call utmess('F', 'ALGELINE4_22')
         endif
@@ -781,7 +782,7 @@ subroutine op0032()
             calpar(2)=zr(jlmoe+k)
             call tbajli(table, 2, nmparm, [ibid], calpar,&
                         [cbid], kbid, k)
-50      continue
+ 50     continue
 !
     else if (typmod(1:13).eq.'MODE_COMPLEXE') then
         call tbajli(table, 1, nmparn, [nbfreq], [rbid],&
@@ -801,7 +802,7 @@ subroutine op0032()
             calpaf(2)=zr(jlmoe+k)
             call tbajli(table, 2, nmparm, [ibid], calpaf,&
                         [cbid], kbid, k)
-55      continue
+ 55     continue
 !
     else
         ASSERT(.false.)

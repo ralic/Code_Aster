@@ -44,6 +44,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !                              IRET=1 => ECHEC
 !       ----------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cjsmde.h"
 #include "asterfort/cjsmid.h"
@@ -63,7 +64,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     real(kind=8) :: i1f
     real(kind=8) :: seuili, seuild, pa, pref, qinit
     real(kind=8) :: zero
-    logical(kind=1) :: chgmec, noconv, aredec, stopnc, trac
+    aster_logical :: chgmec, noconv, aredec, stopnc, trac
     character(len=6) :: mecani
     character(len=4) :: nivcjs
 !
@@ -133,7 +134,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !  POINT DE RETOUR EN CAS DE DECOUPAGE
 !  APRES UNE NON CONVERGENCE, POUR  INT(CRIT(5)) < -1
 !
-500  continue
+500 continue
     if (noconv) then
         ndec = - int(crit(5))
         aredec=.true.
@@ -149,7 +150,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     do 10 i = 1, ndt
         deps(i) = deps0(i)/ndec
         sigf(i) = sigd0(i)+(predi0(i)-sigd(i))/ndec
-10  continue
+ 10 continue
 !
 !
 !  BOUCLE SUR LES DECOUPAGES
@@ -165,7 +166,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         i1f = zero
         do 20 i = 1, ndi
             i1f = i1f + sigf(i)
-20      continue
+ 20     continue
 !
         if ((i1f+qinit) .eq. 0.d0) then
             i1f = -qinit+1.d-12 * pa
@@ -192,10 +193,10 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !
         do 21 i = 1, nvi-1
             vinf(i) = vind(i)
-21      continue
+ 21     continue
 !
 !
-100      continue
+100     continue
 !
 !--->   RESOLUTION EN FONCTION DES MECANISMES ACTIVES
 !
@@ -258,7 +259,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         i1f = zero
         do 22 i = 1, ndi
             i1f = i1f + sigf(i)
-22      continue
+ 22     continue
         if ((i1f+qinit) .eq. 0.d0) then
             i1f = -qinit + 1.d-12 * pa
             pref = abs(pa)
@@ -290,13 +291,13 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
                 call lceqve(sigf, sigd)
                 do 32 i = 1, nvi-1
                     vind(i) = vinf(i)
-32              continue
+ 32             continue
                 do 33 i = 1, ndt
                     sigf(i) = sigd(i)+(predi0(i)-sigd(i))/ndec
-33              continue
+ 33             continue
             endif
         endif
-400  continue
+400 continue
 !
 !
 !--->   CALCUL DE LA VARIABLE INTERNE CORRESPONDANT AU MECANISME PLASTIC
@@ -306,5 +307,5 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     if (mecani .eq. 'DEVIAT') vinf(nvi) = 2.d0
     if (mecani .eq. 'ISODEV') vinf(nvi) = 3.d0
 !
-9999  continue
+9999 continue
 end subroutine

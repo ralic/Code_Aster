@@ -2,6 +2,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                   ligrma, nbno, tabnoe, rignoe, rigto,&
                   amoto, rirot, ndim)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/compma.h"
@@ -54,11 +55,11 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     character(len=24) :: nomgr, magrno, manono, magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    logical(kind=1) :: lfonc, trans
+    aster_logical :: lfonc, trans
     integer :: iarg, appui
 !
 !-----------------------------------------------------------------------
-    integer :: i,     ii
+    integer :: i, ii
     integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldgn, ldnm, ltyp, nb, nbma, ncg
     integer :: nfg, ngn, nm, nn, nno, noemax, ntopo

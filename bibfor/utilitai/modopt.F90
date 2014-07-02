@@ -1,5 +1,6 @@
 subroutine modopt(resuco, modele, lesopt, nbopt)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/exithm.h"
@@ -54,7 +55,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     integer :: ierme, iermo, iermno, iqirel, iqiren
     character(len=16) :: tysd
     character(len=24) :: lesop2
-    logical(kind=1) :: yathm, perman
+    aster_logical :: yathm, perman
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -230,12 +231,12 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
         enddo
         nbopt2 = nbopt2 + 1
         zk16(jopt+nbopt2-1) = zk16(jopt2+i-1)
-15      continue
+ 15     continue
     end do
 !
     nbopt = nbopt2
     call jedetr(lesop2)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

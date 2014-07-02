@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mgausw(a, b, dim, nordre, nb,&
                       det, iret)
@@ -24,6 +26,6 @@ interface
         real(kind=8) :: b(dim, nb)
         integer :: nordre
         real(kind=8) :: det
-        logical(kind=1) :: iret
+        aster_logical :: iret
     end subroutine mgausw
 end interface

@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine thmevc(option, nomte, axi, nno, npg,&
                       ipoids, ivf, idfde, nddls, nnos,&
                       nddlm, nnom)
         character(len=16) :: option
         character(len=16) :: nomte
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: nno
         integer :: npg
         integer :: ipoids

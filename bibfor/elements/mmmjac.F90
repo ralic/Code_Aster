@@ -20,6 +20,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/subaco.h"
@@ -28,7 +29,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
     character(len=8) :: alias
     integer :: jgeom
     real(kind=8) :: ff(9), dff(2, 9)
-    logical(kind=1) :: laxis
+    aster_logical :: laxis
     integer :: nne, ndim
     real(kind=8) :: jacobi
 !
@@ -70,8 +71,8 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
     do 100 inoe = 1, nne
         do 110 idim = 1, ndim
             geom(idim,inoe) = zr(jgeom-1+(inoe-1)*ndim+idim)
-110      continue
-100  end do
+110     continue
+100 end do
 !
 ! --- ELEMENTS DE TYPE SEGMENT
 ! --- DISTINCTION 2D/3D/AXIS
@@ -82,7 +83,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
             dxdk = dxdk + geom(1,inoe)*dff(1,inoe)
             dydk = dydk + geom(2,inoe)*dff(1,inoe)
             if (ndim .eq. 3) dzdk = dzdk + geom(3,inoe)*dff(1,inoe)
-90      continue
+ 90     continue
 !       JACOBIEN 1D == DERIVEE DE L'ABSCISSE CURVILIGNE
         jacobi = sqrt(dxdk**2+dydk**2+dzdk**2)
 !       TRAITEMENT AXISYMETRIE
@@ -90,7 +91,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
             r = 0.d0
             do 80 inoe = 1, nne
                 r = r + geom(1,inoe)*ff(inoe)
-80          continue
+ 80         continue
             if (r .eq. 0.d0) then
                 r=1.d-7
                 call utmess('A', 'CONTACT2_14')

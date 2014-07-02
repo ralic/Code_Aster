@@ -42,15 +42,15 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! SUCCESSIFS à UTTCPI(NOMMES,*,'INCR')
 ! ----------------------------------------------------------------------
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
-    logical(kind=1) :: ljev
-    integer :: indi, jvalms, k,  nbfois, jvalmi
+    aster_logical :: ljev
+    integer :: indi, jvalms, k, nbfois, jvalmi
     integer :: rang, nbproc, npromx, i1
     parameter (npromx=1000)
     character(len=8) :: numes
     character(len=50) :: nommel
     real(kind=8) :: xtota, xuser, xsyst, xelap, moyenn(3), ectype(3)
     real(kind=8) :: xtotap(npromx), xsystp(npromx), xelapp(npromx)
-    logical(kind=1) :: lmesur
+    aster_logical :: lmesur
 !
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
@@ -83,7 +83,7 @@ subroutine uttcpi(nommes, ifm, typimp)
     ASSERT(indi.le.indmax)
     ljev=.false.
 !
-9998  continue
+9998 continue
 !
     if (ljev) then
         call jeveuo('&&UTTCPU.VALMES', 'L', jvalms)
@@ -123,19 +123,19 @@ subroutine uttcpi(nommes, ifm, typimp)
                 xsyst = xsyst - zr(jvalmi-1+7*(indi-1)+6)
                 xelap = xelap - zr(jvalmi-1+7*(indi-1)+7)
 !
-                do 2,k=1,7
-                zr(jvalmi-1+7*(indi-1)+k)=zr(jvalms-1+7*(indi-1)+&
+                do 2 k = 1, 7
+                    zr(jvalmi-1+7*(indi-1)+k)=zr(jvalms-1+7*(indi-1)+&
                     k)
- 2              continue
+  2             continue
             else
                 call jeveuo('&&UTTCPU.VALMEI', 'E', jvalmi)
                 xuser = xuser - valmei(7*(indi-1)+5)
                 xsyst = xsyst - valmei(7*(indi-1)+6)
                 xelap = xelap - valmei(7*(indi-1)+7)
 !
-                do 3,k=1,7
-                valmei(7*(indi-1)+k)=valmes(7*(indi-1)+k)
- 3              continue
+                do 3 k = 1, 7
+                    valmei(7*(indi-1)+k)=valmes(7*(indi-1)+k)
+  3             continue
             endif
         else
             xuser=0.d0
@@ -177,11 +177,11 @@ subroutine uttcpi(nommes, ifm, typimp)
         nbproc = to_aster_int(msize)
         ASSERT(nbproc.le.npromx)
         if (nbproc .gt. 1) then
-            do 11,k=1,nbproc
-            xtotap(k)=0.d0
-            xsystp(k)=0.d0
-            xelapp(k)=0.d0
-11          continue
+            do 11 k = 1, nbproc
+                xtotap(k)=0.d0
+                xsystp(k)=0.d0
+                xelapp(k)=0.d0
+ 11         continue
             xtotap(rang+1)=xtota
             xsystp(rang+1)=xsyst
             xelapp(rang+1)=xelap
@@ -202,7 +202,7 @@ subroutine uttcpi(nommes, ifm, typimp)
         endif
     endif
 !
-9999  continue
+9999 continue
 !
     1003 format (a8,a50,'CPU (USER+SYST/SYST/ELAPS):',3(f10.2))
 end subroutine

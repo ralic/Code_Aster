@@ -32,6 +32,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/amgene.h"
@@ -59,7 +60,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
     character(len=8) :: fonrev(*), nofdep(*), nofvit(*), nofacc(*), monmot
     character(len=8) :: fk(2), dfk(2), foncp, fonca, foncv, vitvar
 !
-    logical(kind=1) :: lamor, prdeff
+    aster_logical :: lamor, prdeff
     real(kind=8) :: cdp(7), zero, teval, dt, coefm(*), dplmod(nbchoc, neqgen, *)
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
     real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd, dteval
@@ -68,7 +69,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
     real(kind=8) :: gyogen(*), rgygen(*), amogen(*), saucho(*), saured(*), saurev(*)
     real(kind=8) :: work1(*), amgy(*), rigy(*), depl(*), vite(*), acce(*)
     real(kind=8) :: fext(*), depli(*), vitei(*), kde(*)
-    real(kind=8) :: kvi(*),errde,errvi
+    real(kind=8) :: kvi(*), errde, errvi
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass,
 !   rigidity and damping matrices
@@ -104,7 +105,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
 !       Initialisation des forces exterieures
         fext(1:neqgen) = zero
 !       Calcul classique forces non-lineaires à "teval + dteval"
-        teval  = temps + dt*cdp(ee)
+        teval = temps + dt*cdp(ee)
         dteval = dt*( cdp(ee+1) - cdp(ee) )
         call mdfnli(neqgen, depl, vite, acce, fext,&
                     nbchoc, logcho, dplmod, parcho, noecho,&

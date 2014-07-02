@@ -4,6 +4,7 @@ subroutine vefnme(option, base, model, mate, carele,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -100,7 +101,7 @@ subroutine vefnme(option, base, model, mate, carele,&
     character(len=19) :: pmilto, fissno
     character(len=19) :: sigma, varicom, strx
     character(len=19) :: depl, depl_incr
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifmdbg, nivdbg
 !
 ! --------------------------------------------------------------------------------------------------

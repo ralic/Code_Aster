@@ -130,6 +130,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -139,7 +140,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 #include "blas/dcopy.h"
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
-    logical(kind=1) :: wantt
+    aster_logical :: wantt
     integer :: ihi, ilo, info, ldh, n
 !
 !     %-----------------%

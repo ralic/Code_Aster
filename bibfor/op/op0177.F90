@@ -28,6 +28,7 @@ subroutine op0177()
 ! 0.2. ==> COMMUNS
 ! 0.3. ==> VARIABLES LOCALES
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -77,8 +78,8 @@ subroutine op0177()
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, travk, travkr
     character(len=80) :: valk
     character(len=200) :: lign1, lign2
-    logical(kind=1) :: lref
-    logical(kind=1) :: skip
+    aster_logical :: lref
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
@@ -269,12 +270,12 @@ subroutine op0177()
         endif
 !
         call tresu_tabl(newtab, para, typtes, typr, tbtxt,&
-                    zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                    ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
+                        zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
+                        ific, .true._1, ssigne, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_tabl(newtab, para, typtes, typr, tbref,&
-                        zi( irefir), zr(irefrr), zc(irefcr), epsir, crit,&
-                        ific, .false._1, ssigne)
+                            zi( irefir), zr(irefrr), zc(irefcr), epsir, crit,&
+                            ific, .false._1, ssigne)
         endif
     else
 !
@@ -325,14 +326,14 @@ subroutine op0177()
             endif
         else
 !       cas des réels, entiers, complexes
-            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, typr, nref, &
-                        crit, epsi, ssigne, zr(irefr), valr, &
-                        zi(irefi), vali, zc(irefc), valc, ignore=skip, &
-                        compare=ordgrd)
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true._1, typr, nref,&
+                                 crit, epsi, ssigne, zr(irefr), valr,&
+                                 zi(irefi), vali, zc(irefc), valc, ignore=skip,&
+                                 compare=ordgrd)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .false._1, typr, nref, &
-                            crit, epsir, ssigne, zr(irefrr), valr, &
-                            zi(irefir), vali, zc(irefcr), valc)
+                call tresu_print_all(tbref(1), tbref(2), .false._1, typr, nref,&
+                                     crit, epsir, ssigne, zr(irefrr), valr,&
+                                     zi(irefir), vali, zc(irefcr), valc)
             endif
         endif
     endif
@@ -342,9 +343,9 @@ subroutine op0177()
     endif
     write (ific,*) ' '
 !
-100 format(/,80('-'))
-116 format(1x,a80,a)
-120 format(1x,2(a80),a)
+    100 format(/,80('-'))
+    116 format(1x,a80,a)
+    120 format(1x,2(a80),a)
 !
     call jedema()
 !

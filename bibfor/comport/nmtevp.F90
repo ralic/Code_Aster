@@ -22,6 +22,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterfort/eccook.h"
 #include "asterfort/nmcri9.h"
 #include "asterfort/rcvalb.h"
@@ -71,7 +72,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     common /rconm9/acook,bcook,ccook,npuis,mpuis,&
      &               epsp0,troom,tmelt,tp,dinst,sieleq,deuxmu,rprim,pm
 !
-    logical(kind=1) :: plasti, inco, dech
+    aster_logical :: plasti, inco, dech
 !
     integer :: ndimsi
     integer :: k, l, niter, i
@@ -446,10 +447,10 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         endif
 !
 !       -- 8.1 PARTIE PLASTIQUE:
-        do 100, k=1,ndimsi
-        do 101, l=1,ndimsi
-        dsidep(k,l) = 0.d0
-101     continue
+        do 100 k = 1, ndimsi
+            do 101 l = 1, ndimsi
+                dsidep(k,l) = 0.d0
+101         continue
 100     continue
 !
         a=1.d0

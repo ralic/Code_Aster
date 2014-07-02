@@ -19,6 +19,7 @@ subroutine nmsolu(sddyna, solalg)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -47,7 +48,7 @@ subroutine nmsolu(sddyna, solalg)
 !
 !
 !
-    logical(kind=1) :: lstat, ldyna
+    aster_logical :: lstat, ldyna
     real(kind=8) :: coedep, coevit, coeacc
     character(len=19) :: deppr1, deppr2
     character(len=19) :: vitpr1, vitpr2

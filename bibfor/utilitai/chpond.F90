@@ -3,6 +3,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -57,16 +58,16 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !                     + OBJET .PDSM (POIDS DES MAILLES)
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp,  joutl, joutd
-    integer :: iad1, iad2, iad3, isp, ima, icmp, ipt,  jchsl, jchsd, iexi
-    integer ::  jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
+    integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutl, joutd
+    integer :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsl, jchsd, iexi
+    integer :: jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
     real(kind=8) :: poids
     parameter(nbchin=2)
     character(len=8) :: lpain(nbchin), lpaout(1), noma, valk
     character(len=19) :: chins
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
-    logical(kind=1) :: peecal, ltest, cond
+    aster_logical :: peecal, ltest, cond
     integer, pointer :: maille(:) => null()
     real(kind=8), pointer :: chsv(:) => null()
     real(kind=8), pointer :: outv(:) => null()
@@ -199,7 +200,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         if (.not.peecal) then
             cond=.true.
         else
-            if (maille(ima).eq.1) then
+            if (maille(ima) .eq. 1) then
                 cond=.true.
             else
                 cond=.false.

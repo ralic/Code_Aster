@@ -1,5 +1,6 @@
 subroutine te0517(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -55,7 +56,7 @@ subroutine te0517(option, nomte)
     integer :: nbfib, kp, ncomp, i, jacf
     integer :: icompo, iorien, ivectu
     integer :: jtab(7), ino, istrxm, nbsp
-    integer ::  nbgfmx, isdcom
+    integer :: nbgfmx, isdcom
 !
     integer :: igeom, iret, isect, imate, k, npg, ifgm, iretc
     real(kind=8) :: xd(3), ey, ez, temp
@@ -63,7 +64,7 @@ subroutine te0517(option, nomte)
     real(kind=8) :: xls2, d1b(7, 14), co(3), aa, e, nu, g, alfay, alfaz, phiy
     real(kind=8) :: phiz
     real(kind=8) :: forref, momref, carsec(6)
-    logical(kind=1) :: reactu
+    aster_logical :: reactu
     integer, pointer :: cpri(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -88,11 +89,11 @@ subroutine te0517(option, nomte)
         do 501 ino = 1, nno
             do 503 i = 1, 3
                 zr(ivectu+(ino-1)*nc+i-1)=forref
-503          continue
+503         continue
             do 502 i = 4, nc
                 zr(ivectu+(ino-1)*nc+i-1)=momref
-502          continue
-501      continue
+502         continue
+501     continue
     else if (option .eq. 'FORC_NODA') then
 !
 !       --- RECUPERATION DES CARACTERISTIQUES DES FIBRES
@@ -183,12 +184,12 @@ subroutine te0517(option, nomte)
                     do 420 i = 1, nc
                         fl(k)=fl(k) + xls2*zr(istrxm+ifgm+i)*d1b(i,k)*&
                         co(kp)
-420                  continue
-410              continue
-400          continue
+420                 continue
+410             continue
+400         continue
             do 430 i = 1, 2
                 fl(7*(i-1)+4) = fl( 7*(i-1)+4) - ez*fl(7*(i-1)+2) + ey* fl(7*(i-1)+3 )
-430          continue
+430         continue
         else
             ASSERT(.false.)
         endif

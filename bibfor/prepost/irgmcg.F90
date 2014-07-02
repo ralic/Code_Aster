@@ -3,6 +3,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   nomaou, versio)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -25,7 +26,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou
     real(kind=8) :: coord(*), para(*)
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
     integer :: ifi, nbordr, nbcmpi
     integer :: versio
     integer :: ordr(*), connx(*), point(*)
@@ -84,10 +85,10 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
     integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
     integer :: iq
     integer :: nbcmp, ipoin, iret, jcesc, jcesl
-    integer ::      jcesd, jtype
-    integer :: icmp,  ipt, isp, nbpt, nbsp, jnumol
+    integer :: jcesd, jtype
+    integer :: icmp, ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
-    logical(kind=1) :: iwri
+    aster_logical :: iwri
     character(len=1) :: tsca
     character(len=8) :: k8b, nomgd, type, nocmp
     character(len=19) :: noch19, champs

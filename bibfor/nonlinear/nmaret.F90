@@ -3,6 +3,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
@@ -62,7 +63,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     real(kind=8) :: tabcoz(ndim, nbarvz), tabcrz(nbarvz)
     integer :: jgro1, jgro2, j, jgro, i, l, nreleq, repere, jlis1
     integer :: effac, nar, narm, iret, vali(2)
-    logical(kind=1) :: noeuad
+    aster_logical :: noeuad
     character(len=19) :: nlisco, nlisrl, nlise2
 !
 ! ----------------------------------------------------------------------
@@ -77,15 +78,15 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
         tabnoz(3,i)=i
         do 11 j = 1, ndim
             tabcoz(j,i)=0.d0
-11      continue
+ 11     continue
         tabcrz(i)=i
-10  end do
+ 10 end do
 !
 !
     if (nno .ge. 1 .and. iret .ne. 0) then
         do 20 i = 1, nno
             tabut(1,i)=zi(jgro-1+i)
-20      continue
+ 20     continue
         if (nno .gt. nbarvi) then
             call utmess('F', 'PILOTAGE_62')
         endif
@@ -100,7 +101,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                             vali(2)=tabut(1,l)
                             call utmess('F', 'PILOTAGE_63', ni=2, vali=vali)
                         endif
-42                  continue
+ 42                 continue
                     tabut(2,j)=tabnoz(2,i)
                     tabut(3,j)=tabnoz(3,i)
                     noeuad=.true.
@@ -111,21 +112,21 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                             vali(2)=tabut(1,l)
                             call utmess('F', 'PILOTAGE_63', ni=2, vali=vali)
                         endif
-43                  continue
+ 43                 continue
                     tabut(2,j)=tabnoz(1,i)
                     tabut(3,j)=tabnoz(3,i)
                     noeuad=.true.
                 endif
-41          continue
+ 41         continue
             if (.not.noeuad) then
                 call utmess('A', 'PILOTAGE_61', si=tabut(1, j))
             endif
-40      continue
+ 40     continue
         do 50 i = 1, nno
             do 51 j = 1, 3
                 tabnoz(j,i)=tabut(j,i)
-51          continue
-50      continue
+ 51         continue
+ 50     continue
         nbarvi=nno
     endif
 !
@@ -149,7 +150,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                     if (effac .eq. tabnoz(3,j)) then
                         repere=j
                     endif
-61              continue
+ 61             continue
                 if (repere .gt. 0) then
                     if (repere .lt. nar) then
                         narm = nar-1
@@ -157,14 +158,14 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                             tabnoz(1,l) = tabnoz(1,l+1)
                             tabnoz(2,l) = tabnoz(2,l+1)
                             tabnoz(3,l) = tabnoz(3,l+1)
-220                      continue
+220                     continue
                     endif
                     tabnoz(1,nar)=0
                     tabnoz(2,nar)=0
                     tabnoz(3,nar)=0
                     nar=nar-1
                 endif
-60          continue
+ 60         continue
         endif
     endif
     nbno = nar
@@ -174,7 +175,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     do 30 i = 1, nbno
         zi(jgro1-1+i)=tabnoz(1,i)
         zi(jgro2-1+i)=tabnoz(2,i)
-30  end do
+ 30 end do
     call jedetr(nlise2)
     call jedetr(nlisrl)
     call jedetr(nlisco)

@@ -19,6 +19,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
@@ -33,7 +34,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !    real(kind=8) :: gdeq(nbvec*nbordr)
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
     integer :: jgdeq, jnrupt, jdomel
-    logical(kind=1) :: post
+    aster_logical :: post
     character(len=8) :: nommat, grdvie
     character(len=16) :: nomcri, forvie
 ! ----------------------------------------------------------------------
@@ -63,7 +64,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
     integer :: icodre(1)
     character(len=16) :: phenom, kbid
     character(len=8) :: nomgrd
-    logical(kind=1) :: limit
+    aster_logical :: limit
 !     ------------------------------------------------------------------
 !
 !234567                                                              012
@@ -73,7 +74,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 ! INITITIALISATION
     do 100 i = 1, nbvec*nbordr
         zr(jdomel+i) = 0
-100  end do
+100 end do
 !
     if (.not. post) then
         call rccome(nommat, 'FATIGUE', phenom, icodre(1))
@@ -106,8 +107,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                 zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
-20          continue
-10      continue
+ 20         continue
+ 10     continue
 !
         elseif (( nomcri(1:14) .eq. 'MATAKE_MODI_AV' ) .or. ( nomcri(1:16)&
     .eq. 'DANG_VAN_MODI_AV' )) then
@@ -131,8 +132,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                 zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
     else if (nomcri(1:7) .eq. 'FORMULE') then
 !
@@ -171,8 +172,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 endif
 !
 !
-60          continue
-50      continue
+ 60         continue
+ 50     continue
 !
 !
 !

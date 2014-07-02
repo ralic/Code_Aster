@@ -2,6 +2,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
@@ -78,7 +79,7 @@ subroutine nmdoch(lischa, iexcit, excit)
     character(len=19) :: lisch2, lisdbl
     character(len=24) :: ligrch, lchin, k24bid
     integer :: ival, ival1
-    logical(kind=1) :: lfcplx, lacce
+    aster_logical :: lfcplx, lacce
     integer :: nbinfo
 ! --- NOMBRE MAXIMUM DE TYPE_INFO
     integer :: nbinmx

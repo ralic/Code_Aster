@@ -16,6 +16,7 @@ subroutine te0074(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/connec.h"
@@ -39,7 +40,7 @@ subroutine te0074(option, nomte)
     real(kind=8) :: coorse(18), vectt(9)
     integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
     integer :: ivectt, i, j, l, li, iflu, nnop2, c(6, 9), ise, nse, ibid
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
     call elref1(elrefe)
@@ -49,8 +50,8 @@ subroutine te0074(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -63,7 +64,7 @@ subroutine te0074(option, nomte)
 !
     do 10 i = 1, nnop2
         vectt(i) = 0.d0
-10  end do
+ 10 end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
@@ -72,8 +73,8 @@ subroutine te0074(option, nomte)
         do 30 i = 1, nno
             do 20 j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
-20          continue
-30      continue
+ 20         continue
+ 30     continue
 !
         do 60 kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -83,20 +84,20 @@ subroutine te0074(option, nomte)
                 do 40 i = 1, nno
                     l = (kp-1)*nno + i
                     r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-40              continue
+ 40             continue
                 poids = poids*r
             endif
 !CDIR$ IVDEP
             do 50 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)*zr( iflu)
-50          continue
-60      continue
+ 50         continue
+ 60     continue
 !
-70  end do
+ 70 end do
 !
     do 80 i = 1, nnop2
         zr(ivectt-1+i) = vectt(i)
-80  end do
+ 80 end do
 !
 end subroutine

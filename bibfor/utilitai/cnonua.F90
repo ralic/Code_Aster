@@ -1,5 +1,6 @@
 subroutine cnonua(nx, chno, lno, nuage)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/crenua.h"
 #include "asterfort/dismoi.h"
@@ -45,14 +46,14 @@ subroutine cnonua(nx, chno, lno, nuage)
 ! IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 ! OUT NUAGE  : SD NUAGE PRODUITE
 !     ------------------------------------------------------------------
-    integer :: gd,  num, ncmpmx, iad, nec
-    integer ::   np,  jlno, i, ibid, kvale, itype
+    integer :: gd, num, ncmpmx, iad, nec
+    integer :: np, jlno, i, ibid, kvale, itype
     integer :: nc, iec, icmp, ianueq, iaprno, j, ino, ncmp, icompt
-    integer ::   jnuav, jnual, ival, k, ieq
+    integer :: jnuav, jnual, ival, k, ieq
     character(len=4) :: type
     character(len=8) :: noma, nomgd
     character(len=19) :: kchno, klno, knuage, nonu
-    logical(kind=1) :: lnual, prem
+    aster_logical :: lnual, prem
     integer, pointer :: ent_cod(:) => null()
     integer, pointer :: nomcmp(:) => null()
     real(kind=8), pointer :: nuax(:) => null()

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat, &
                          ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
-        logical(kind=1), intent(out) :: l_xfem
+        aster_logical, intent(out) :: l_xfem
         character(len=19), intent(out) :: connex_inv
         character(len=19), intent(out) :: ch_xfem_node
         character(len=19), intent(out) :: ch_xfem_stat

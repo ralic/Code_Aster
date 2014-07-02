@@ -17,6 +17,7 @@ subroutine diagp3(tens, vecp, valp)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
@@ -32,7 +33,7 @@ subroutine diagp3(tens, vecp, valp)
 ! ----------------------------------------------------------------------
 !
     integer :: i, nrac, ind
-    logical(kind=1) :: invvp, tnull
+    aster_logical :: invvp, tnull
     real(kind=8) :: trace, x(6), y(6), det(4), rtemp
     real(kind=8) :: a, b, c, theta
     real(kind=8) :: f, g
@@ -81,7 +82,7 @@ subroutine diagp3(tens, vecp, valp)
                 if (abs(tens(i)) .gt. (r8prem()*100*abs(trace))) then
                     tnull = .false.
                 endif
-600          continue
+600         continue
             if (tnull) then
                 valp(1)=0.d0
                 valp(2)=0.d0
@@ -136,7 +137,7 @@ subroutine diagp3(tens, vecp, valp)
         vecp(2,ind)=tens(2)*x(1)+(tens(4)-valp(3))*x(2)+ tens(5)*x(3)
         vecp(3,ind)=tens(3)*x(1)+tens(5)*x(2)+ (tens(6)-valp(3))*x(3)
         y(ind)=(vecp(1,ind))**2+(vecp(2,ind))**2+ (vecp(3,ind))**2
-4000  end do
+4000 end do
     rtemp=y(1)
     ind=1
     if (y(2) .gt. y(1)) then
@@ -159,7 +160,7 @@ subroutine diagp3(tens, vecp, valp)
     endif
     do 4010 i = 1, 3
         vecp(i,1)=vecp(i,ind)/a
-4010  end do
+4010 end do
 !
 ! -- AUTRES VECTEURS PROPRES : ON PASSE DANS LE SOUS-ESPACE
 !    ORTHOGONAL AU PREMIER VECTEUR PROPRE
@@ -252,7 +253,7 @@ subroutine diagp3(tens, vecp, valp)
             rtemp=vecp(i,1)
             vecp(i,1)=vecp(i,3)
             vecp(i,3)=-rtemp
-5050      continue
+5050     continue
         rtemp=valp(1)
         valp(1)=valp(3)
         valp(3)=rtemp
@@ -275,11 +276,11 @@ subroutine diagp3(tens, vecp, valp)
 !        ENDIF
 !
 !
-9999  continue
+9999 continue
 !
     do 200 i = 1, 3
         valp(i)=valp(i)+trace
-200  end do
+200 end do
 !
 !      IF (MOD(INT(TPS(2)),100000).EQ.0) THEN
 !        write (6,*) 'NB APP = ',TPS(2),' ; TOT = ',TPS(3),

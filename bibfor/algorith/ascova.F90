@@ -19,6 +19,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8dgrd.h"
@@ -76,7 +77,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     integer :: kk, nbvec, nchar, iret, jvec, jfonct, jcoef, jtype, k
     integer :: icha, ier, n1, npuis, n2, ibid
     real(kind=8) :: valres, valre, valim, dgrd, omega, phase
-    logical(kind=1) :: fct
+    aster_logical :: fct
     character(len=19) :: chamno
     character(len=24) :: fomult
     complex(kind=8) :: calpha
@@ -138,7 +139,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !
             zr(jcoef+k-1) = valres
             zk8(jtype+k-1) = 'R'
-10      continue
+ 10     continue
 !
 !
 !     -- CAS DES CHAM_NO COMPLEXES :
@@ -181,7 +182,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
             zr(jcoef+kk-1) = valre*dble(calpha)-valim*dimag(calpha)
             kk = kk + 1
             zr(jcoef+kk-1) = valim*dble(calpha)+valre*dimag(calpha)
-20      continue
+ 20     continue
     endif
 !
 !
@@ -200,7 +201,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
         do 30 k = 1, nbvec
             call corich('S', zk24(jvec+k-1) (1:19), ibid, ibid)
             call detrsd('CHAMP_GD', zk24(jvec+k-1))
-30      continue
+ 30     continue
         call jedetr(vachar)
     else if (detr.eq.'G') then
 !       -- EN PRINCIPE UTILISE PAR DYNA_LINE_HARM

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
         character(len=*) :: genein
         integer :: ifi
         integer :: nbcmpg
         integer :: cmpg(*)
-        logical(kind=1) :: lhist
+        aster_logical :: lhist
     end subroutine irvgen
 end interface

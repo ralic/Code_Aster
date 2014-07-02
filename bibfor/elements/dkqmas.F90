@@ -1,5 +1,6 @@
 subroutine dkqmas(xyzl, option, pgl, mas, ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/dialum.h"
@@ -54,7 +55,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: unquar, undemi, un, neuf, excent, xinert
     real(kind=8) :: coefm, wgtf, wgtmf, caraq4(25), jacob(5)
     character(len=3) :: stopz
-    logical(kind=1) :: exce, iner
+    aster_logical :: exce, iner
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
     data (ii(k),k=1,8)&
@@ -65,8 +66,9 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
      &   / 3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62/
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     unquar = 0.25d0
@@ -223,11 +225,12 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     if (( option .eq. 'MASS_MECA' ) .or. (option.eq.'M_GAMMA')) then
         call dxqloc(flex, memb, mefl, ctor, mas)
 !
-        else if (option.eq.'MASS_MECA_DIAG' .or. option.eq.'MASS_MECA_EXPLI' ) then
+    else if (option.eq.'MASS_MECA_DIAG' .or. option.eq.'MASS_MECA_EXPLI') then
         call dxqloc(flex, memb, mefl, ctor, masloc)
         wgt = caraq4(21) * roe
         call utpslg(4, 6, pgl, masloc, masglo)
-        call dialum(4, 6, 24, wgt, masglo, mas)
+        call dialum(4, 6, 24, wgt, masglo,&
+                    mas)
 !
     else if (option .eq. 'ECIN_ELEM') then
         stopz='ONO'
@@ -235,12 +238,14 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(4, 6, pgl, zr(jvitg), vite)
-            call dxqloe(flex, memb, mefl, ctor, .false._1, vite, ener)
+            call dxqloe(flex, memb, mefl, ctor, .false._1,&
+                        vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(4, 6, pgl, zr(jdepg), depl)
-                call dxqloe(flex, memb, mefl, ctor, .false._1, depl, ener)
+                call dxqloe(flex, memb, mefl, ctor, .false._1,&
+                            depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             endif

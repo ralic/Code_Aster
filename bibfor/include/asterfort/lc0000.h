@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                       imate, compor, crit, instam, instap,&
@@ -46,7 +48,7 @@ interface
         character(len=16) :: option
         real(kind=8) :: angmas(3)
         real(kind=8) :: wkin(nwkin)
-        logical(kind=1) :: cp
+        aster_logical :: cp
         integer :: numlc
         real(kind=8) :: tempd
         real(kind=8) :: tempf

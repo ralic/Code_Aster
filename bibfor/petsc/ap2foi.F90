@@ -1,7 +1,8 @@
-subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
+subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
+                  its)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-
+!
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -32,7 +33,7 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
 #include "asterfort/jedema.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
-
+!
 !--------------------------------------------------------------
 ! But :
 !  * recalculer un nouveau pre-conditionneur pour LDLT_SP
@@ -40,27 +41,27 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-
+!
     integer :: kptsc
     mpi_int :: mpicou
     character(len=19) :: nosolv
-    logical(kind=1) :: lmd
+    aster_logical :: lmd
     KSPConvergedReason :: indic
     PetscInt :: its
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer ::jslvi
+    integer :: jslvi
     PetscInt :: ierr
     KSP :: ksp
 !----------------------------------------------------------------
-
+!
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
-
-
-
+!
+!
+!
 !   -- avant de refabriquer une matrice de preconditionnement,
 !      il faut reinitialiser quelques variables :
 !   -----------------------------------------------------------
@@ -74,13 +75,13 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
     ASSERT(ierr.eq.0)
     call jeveuo(nosolv//'.SLVI', 'E', jslvi)
     zi(jslvi-1+5) = 0
-
-
+!
+!
 !   -- calcul du nouveau preconditionneur :
 !   ---------------------------------------
     call appcpr(kptsc)
-
-
+!
+!
 !   -- 2eme resolution :
 !   ---------------------
     call VecDestroy(xlocal, ierr)
@@ -95,20 +96,20 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
     ASSERT(ierr.eq.0)
     call KSPGetConvergedReason(ksp, indic, ierr)
     call KSPGetIterationNumber(ksp, its, ierr)
-
-
+!
+!
 !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
     call uttcpu('CPU.RESO.4', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
-
+!
 #else
     integer :: kptsc
     integer :: mpicou
     character(len=19) :: nosolv
-    logical(kind=1) :: lmd
+    aster_logical :: lmd
     integer :: indic
     integer :: its
-
+!
     character(len=1) :: kdummy
     integer :: idummy
     kdummy = nosolv(1:1)
@@ -119,4 +120,3 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
 #endif
 !
 end subroutine
-

@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf ,l_excl, &
                               vari_excl)
         character(len=16), intent(in) :: defo_comp
-        logical(kind=1), intent(in) :: l_kit_meta
-        logical(kind=1), intent(in) :: l_mult_comp
-        logical(kind=1), intent(in) :: l_pmf
-        logical(kind=1), intent(out) :: l_excl
+        aster_logical, intent(in) :: l_kit_meta
+        aster_logical, intent(in) :: l_mult_comp
+        aster_logical, intent(in) :: l_pmf
+        aster_logical, intent(out) :: l_excl
         character(len=16), intent(out) :: vari_excl
     end subroutine comp_meca_exc2
 end interface

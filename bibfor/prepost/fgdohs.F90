@@ -1,13 +1,14 @@
 subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
                   rke, lhaigh, rcorr, dom)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/rcvale.h"
     character(len=8) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rke(*), rcorr(*), dom(*)
     integer :: nbcycl
-    logical(kind=1) :: lke, lhaigh
+    aster_logical :: lke, lhaigh
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,6 +82,6 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
         else
             dom(i) = 0.d0
         endif
-10  end do
+ 10 end do
 !
 end subroutine

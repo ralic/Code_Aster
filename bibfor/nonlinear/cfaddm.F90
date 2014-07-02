@@ -20,7 +20,8 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfcoef.h"
 #include "asterfort/cfcoem.h"
@@ -34,7 +35,7 @@ subroutine cfaddm(resoco, lctfd, lctf3d, posnoe, iliai,&
     real(kind=8) :: coefno(*)
     real(kind=8) :: jeu, coornp(3)
     real(kind=8) :: norm(3), tau1(3), tau2(3)
-    logical(kind=1) :: lctfd, lctf3d
+    aster_logical :: lctfd, lctf3d
 !
 ! ----------------------------------------------------------------------
 !

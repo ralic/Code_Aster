@@ -20,6 +20,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !     --
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/jedema.h"
@@ -35,7 +36,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 #include "asterfort/as_allocate.h"
     character(len=*) :: sch1, base
     integer :: ipos, niveau, unit
-    logical(kind=1) :: lattr, lcont
+    aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 ! BUT:
 !   IMPRIMER LE CONTENU DES OBJETS JEVEUX (K24) AYANT
@@ -64,8 +65,8 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     character(len=24) :: ob1, chain2
     character(len=40) :: lb
     character(len=1) :: xous, bas2
-    integer :: long, nbval, nbobj,  i
-    logical(kind=1) :: tout
+    integer :: long, nbval, nbobj, i
+    aster_logical :: tout
     character(len=8) :: kbid
     character(len=24), pointer :: liste(:) => null()
 !
@@ -124,14 +125,14 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
         do 1 i = 1, nbobj
             ob1 = liste(i)
             write(unit,*) '      >',ob1,'<'
- 1      continue
+  1     continue
 !
 !
     else if (niveau.eq.-1) then
         do 4 i = 1, nbobj
             ob1 = liste(i)
             call dbgobj(ob1, 'OUI', unit, '&&UTIMSD')
- 4      continue
+  4     continue
 !
 !
     else if (niveau.gt.0) then
@@ -147,7 +148,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
                 call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .true._1, .false._1,&
                             xous)
- 2          continue
+  2         continue
         endif
 !
 !       -- IMPRESSION DES VALEURS :
@@ -160,7 +161,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
                 call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .false._1, .true._1,&
                             xous)
- 3          continue
+  3         continue
         endif
 !
     endif
@@ -171,6 +172,6 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !
 !
     AS_DEALLOCATE(vk24=liste)
-9999  continue
+9999 continue
     call jedema()
 end subroutine

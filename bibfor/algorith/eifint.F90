@@ -26,6 +26,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/codere.h"
 #include "asterfort/eicine.h"
 #include "asterfort/nmcomp.h"
@@ -33,7 +34,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     integer :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
@@ -78,7 +79,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
     integer :: nddl, g, cod(27), n, i, m, j, k, l, os, kk
     real(kind=8) :: rbid(1), r(1), mu(3), su(3), wg, b(3, 3, 18), de(6)
     real(kind=8) :: ddedt(6, 6), t1
@@ -93,7 +94,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
 !
     do 5 g = 1, npg
         cod(g)=0
- 5  end do
+  5 end do
 !
     call r8inir(3, 0.d0, su, 1)
     call r8inir(3, 0.d0, mu, 1)
@@ -117,16 +118,16 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
             do 160 j = 1, ndim
                 do 161 n = 1, 2*nno1
                     su(i) = su(i) + b(i,j,n)*(ddlm(iu(j,n))+ddld(iu(j, n)))
-161              continue
-160          continue
-150      continue
+161             continue
+160         continue
+150     continue
 !
         do 170 i = 1, ndim
             mu(i) = 0.d0
             do 180 n = 1, nno2
                 mu(i) = mu(i) + vff2(n,g)*(ddlm(im(i,n))+ddld(im(i,n)) )
-180          continue
-170      continue
+180         continue
+170     continue
 !
 !
 !      LOI DE COMPORTEMENT
@@ -155,7 +156,7 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
             do 200 i = 1, ndim
                 sigp( i,g) = mu(i) + r(1)*(su(i)-de(i))
                 sigp(ndim+i,g) = su(i) - de(i)
-200          continue
+200         continue
 !
 !        VECTEUR FINT:U
             do 300 n = 1, 2*nno1
@@ -164,10 +165,10 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
                     t1 = 0
                     do 320 k = 1, ndim
                         t1 = t1 + b(k,i,n)*sigp(k,g)
-320                  continue
+320                 continue
                     vect(kk) = vect(kk) + wg*t1
-301              continue
-300          continue
+301             continue
+300         continue
 !
 !        VECTEUR FINT:M
             do 350 n = 1, nno2
@@ -175,8 +176,8 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
                     kk = im(i,n)
                     t1 = vff2(n,g)*sigp(ndim+i,g)
                     vect(kk) = vect(kk) + wg*t1
-351              continue
-350          continue
+351             continue
+350         continue
 !
         endif
 !
@@ -199,15 +200,15 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
                                 t1 = t1 + b(k,i,n)*b(k,j,m)
                                 do 550 l = 1, ndim
                                     t1 = t1 - b(k,i,n)*r(1)*ddedt(k,l) *b(l,j,m)
-550                              continue
-540                          continue
+550                             continue
+540                         continue
                             t1 = t1 * r(1)
                             matr(kk) = matr(kk) + wg*t1
-522                          continue
-521                      continue
-520                  continue
-501              continue
-500          continue
+522                         continue
+521                     continue
+520                 continue
+501             continue
+500         continue
 !
 !        MATRICES K:MU(I,N),U(J,M)
             do 600 n = 1, nno2
@@ -222,12 +223,12 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
                             t1 = vff2(n,g)*b(i,j,m)
                             do 650 l = 1, ndim
                                 t1 = t1 - vff2(n,g)*r(1)*ddedt(i,l)*b( l,j,m)
-650                          continue
+650                         continue
                             matr(kk) = matr(kk) + wg*t1
-621                      continue
-620                  continue
-601              continue
-600          continue
+621                     continue
+620                 continue
+601             continue
+600         continue
 !
 !        MATRICES K:MU(I,N),MU(J,M)
             do 700 n = 1, nno2
@@ -239,20 +240,20 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
                             kk = os + im(j,m)
                             t1 = - vff2(n,g)*ddedt(i,j)*vff2(m,g)
                             matr(kk) = matr(kk) + wg*t1
-712                          continue
-711                      continue
-710                  continue
-701              continue
-700          continue
+712                         continue
+711                     continue
+710                 continue
+701             continue
+700         continue
 !
         endif
 !
-1000  end do
+1000 end do
 !
 !
 ! - SYNTHESE DES CODES RETOUR
 !
-9000  continue
+9000 continue
     call codere(cod, npg, codret)
 !
 end subroutine

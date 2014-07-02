@@ -2,6 +2,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                   nbmato, nonuma, nbnoto, nonuno, codret)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -21,7 +22,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     integer :: ioccur, nbnoto, nbmato, ifichi, codret
     character(len=8) :: formaf, leresu
     character(len=24) :: nonuma, nonuno
-    logical(kind=1) :: lresul
+    aster_logical :: lresul
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +68,9 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !
 !
     integer :: nbno, nbgrn, nbma, nbgrm, nbnofa, nbgnfa, nbmafa
-    integer :: nbgmfa, jtopo, jlgrn,  ibid, jlno,  jlgrm, jngrm
-    integer :: jlma, jmma, nbnoe,  ino, jnunou, nbnou, nbele, jnuma
-    integer ::  nbnos,  ii, igrm, igrn, ima, nbnomx, nbgnmx
+    integer :: nbgmfa, jtopo, jlgrn, ibid, jlno, jlgrm, jngrm
+    integer :: jlma, jmma, nbnoe, ino, jnunou, nbnou, nbele, jnuma
+    integer :: nbnos, ii, igrm, igrn, ima, nbnomx, nbgnmx
     integer :: nbmamx, nbgmmx, imxno, imxgn, imxma, imxgm, idebu, jnunot
     integer :: iutil
 !
@@ -223,7 +224,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !         - ON RECUPERE A PARTIR DE ZI(JNUNOS) LA LISTE DES NUMEROS
 !           DES NOEUDS SOMMETS DE CES MAILLES
 !          (NBNOS = NOMBRE DE NOEUDS SOMMETS DE CETTE LISTE)
-            call irmano(nomma, nbmato, zi(jnuma), nbnos,numnos)
+            call irmano(nomma, nbmato, zi(jnuma), nbnos, numnos)
             if (nbnos .eq. 0) then
                 call utmess('F', 'PREPOST5_4')
             endif

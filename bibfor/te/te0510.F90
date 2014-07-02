@@ -1,5 +1,6 @@
 subroutine te0510(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -64,7 +65,7 @@ subroutine te0510(option, nomte)
     real(kind=8) :: norm2, ptree(3), ptref(3)
     real(kind=8) :: lsn
     integer :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
-    logical(kind=1) :: elim, elim2
+    aster_logical :: elim, elim2
     integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc
     integer :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
     integer :: nfisc, ifisc, nfisc2, nn, vali(2)
@@ -104,7 +105,7 @@ subroutine te0510(option, nomte)
     ASSERT(zxain.eq.zxainx)
 !
     call elref1(elp)
-    call elrefe_info(elrefe=elp,fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(elrefe=elp, fami='RIGI', ndim=ndim, nno=nnop)
     ASSERT(nnop .le. nnopma)
 !
 !     RECUPERATION DES ENTRÉES / SORTIE
@@ -220,10 +221,10 @@ subroutine te0510(option, nomte)
                         nmaabs, pinter, ninter, ainter, nface,&
                         nptf, cface, nbtot, nfiss, ifiss)
         else
-            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom,&
-                        enr, nfiss, ifiss, fisc, nfisc,&
-                        noma, nmaabs, pinter, ninter, ainter,&
-                        nface, nptf, cface)
+            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom, enr,&
+                        nfiss, ifiss, fisc, nfisc, noma,&
+                        nmaabs, pinter, ninter, ainter, nface,&
+                        nptf, cface)
             nbtot=ninter
         endif
         if (nfiss .gt. 1 .and. nbtot .gt. 0) then
@@ -239,7 +240,8 @@ subroutine te0510(option, nomte)
                 zr(jout6-1+ncompp*(ifiss-1)+ndim*(i-1)+j) = ptree(j)
             end do
 !    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
-            call reeref(elp, nnop, zr(igeom), ptree, ndim, ptref, ff)
+            call reeref(elp, nnop, zr(igeom), ptree, ndim,&
+                        ptref, ff)
 !
             do jj = 1, ndim
                 zr(jout1-1+ncompp*(ifiss-1)+ndim*(i-1)+jj) = ptref(jj)

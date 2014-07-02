@@ -2,6 +2,7 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
                   maxord, resuin, resuou, lacalc)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -62,7 +63,7 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
     character(len=19) :: nosyou
     character(len=24) :: noliop, nolori, noldep, noliin, nolisd
 !
-    logical(kind=1) :: exitor
+    aster_logical :: exitor
 !
     call jemarq()
 !
@@ -109,7 +110,7 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
 !         ELLE EST DONC CROISSANTE
             curmax = min(curmax,zi(jordo2+2)+decal)
             curmin = max(curmin,zi(jordo2+1)+decal)
-10      continue
+ 10     continue
 !
         exitor = .true.
         if (zi(jacalc+nuoplo-1) .eq. 1) then
@@ -135,15 +136,15 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
                         exitor = .false.
                     endif
                 endif
-30          continue
+ 30         continue
         endif
 !
-40      continue
+ 40     continue
 !
         if (exitor) then
             do 50 iter = inddeb, indfin
                 zi(jacalc+iter-1) = 0
-50          continue
+ 50         continue
         endif
     endif
 !

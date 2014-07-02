@@ -20,6 +20,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -64,10 +65,10 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
 !
 !
 !
-    logical(kind=1) :: lgrot, ldyna, lstat, lexpl
-    logical(kind=1) :: lendo
-    logical(kind=1) :: lexge, ltcha, lmuap
-    logical(kind=1) :: ldepl, lvite, lacce
+    aster_logical :: lgrot, ldyna, lstat, lexpl
+    aster_logical :: lendo
+    aster_logical :: lexge, ltcha, lmuap
+    aster_logical :: ldepl, lvite, lacce
     character(len=19) :: depplu, vitplu, accplu, depmoi, vitmoi
     character(len=19) :: depdel, vitdel, accdel
     character(len=19) :: ddepla, dvitla, daccla
@@ -207,7 +208,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
 !
 ! --- AFFICHAGE
 !
-999  continue
+999 continue
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... DEPPLU : '
         call nmdebg('VECT', depplu, 6)

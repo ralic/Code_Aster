@@ -19,6 +19,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/caladu.h"
 #include "asterfort/cfdisd.h"
@@ -63,9 +64,9 @@ subroutine cfjein(noma, defico, resoco, depdel)
     integer :: japcof
     character(len=24) :: clreac
     integer :: jclrea
-    logical(kind=1) :: reapre
+    aster_logical :: reapre
     integer :: nbliai, neq, ndimg, nesmax
-    logical(kind=1) :: lgliss, lctfd, llagrf
+    aster_logical :: lgliss, lctfd, llagrf
     real(kind=8) :: aljeu
     real(kind=8) :: jeuold, jeuini, jexini, jeyini
     real(kind=8) :: val1, val2, val
@@ -188,13 +189,13 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
 ! --------- INCR. DE JEU SANS CORRECTION
 !
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal),&
-                            ddep0, val1)
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal), ddep0,&
+                            val1)
 !
 ! --------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal),&
-                            depde, val2)
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal), depde,&
+                            val2)
 !
 ! --------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS SANS CORR.
 !
@@ -203,7 +204,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
             endif
         endif
 !
-10  end do
+ 10 end do
 !
 ! --- ALARME SI DECOLLEMENT ALORS QUE GLISSIERE
 !
@@ -219,7 +220,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
                             'ALJ')
             endif
         endif
-15  end do
+ 15 end do
 !
     call jedema()
 !

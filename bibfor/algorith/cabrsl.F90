@@ -23,12 +23,13 @@ subroutine cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/utmess.h"
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: kpi, ipoids, ipoid2, idfde, idfde2, ndim, regula(6), dimdef, ivf
     integer :: ivf2, nno, nnos, nnom, nddls, nddlm, dimuel
     real(kind=8) :: geom(ndim, *), poids, poids2, b(dimdef, dimuel)
@@ -64,8 +65,8 @@ subroutine cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
     do 100 i = 1, dimuel
         do 200 j = 1, dimdef
             b(j,i)=0.d0
-200      continue
-100  end do
+200     continue
+100 end do
     adder1 = regula(1)
     adder2 = regula(2)
 ! ======================================================================
@@ -104,9 +105,9 @@ subroutine cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
     do 10 n = 1, nnos
         do 20 i = 1, ndim
             b(adder1,(n-1)*nddls+i) = b(adder1,(n-1)*nddls+i)+dfdi(n, i)
-20      continue
+ 20     continue
         b(adder1,(n-1)*nddls+ndim+1) = b(adder1, (n-1)*nddls+ndim+1) - zr(ivf2+n+(kpi-1)*nnos-1)
-10  end do
+ 10 end do
 ! ======================================================================
 ! --- SUR LES NOEUDS MILIEUX -------------------------------------------
 ! ======================================================================
@@ -114,8 +115,8 @@ subroutine cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
         do 40 i = 1, ndim
             b(adder1,nnos*nddls+(n-1)*nddlm+i)= b(adder1,nnos*nddls+(&
             n-1)*nddlm+i)+dfdi(n+nnos,i)
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 ! ======================================================================
 ! --- POUR LES GRADIENTS DE VARIATIONS VOLUMIQUE ET LES VAR VOL --------
 ! --- ON UTILISE LES FONCTIONS DE FORME D'ORDRE 1 ----------------------
@@ -126,8 +127,8 @@ subroutine cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
         do 60 i = 1, ndim
             b(adder2-1+i,(n-1)*nddls+ndim+1)= b(adder2-1+i,(n-1)*&
             nddls+ndim+1)+dfdi2(n,i)
-60      continue
-50  end do
+ 60     continue
+ 50 end do
 ! ======================================================================
 ! --- POUR LE MULTIPLICATEUR DE LAGRANGE -------------------------------
 ! --- (PRES) -----------------------------------------------------------

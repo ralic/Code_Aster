@@ -1,7 +1,7 @@
-subroutine as_deallocate(vl, vi, vi4, vr, vc, &
-                         vk8, vk16, vk24, vk32, vk80, &
+subroutine as_deallocate(vl, vi, vi4, vr, vc,&
+                         vk8, vk16, vk24, vk32, vk80,&
                          strdbg)
-use module_allocate
+    use module_allocate
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ use module_allocate
 ! aslint: disable=W0104,W1304
 !
     implicit none
+#include "asterf_types.h"
 #include "asterf_debug.h"
 #include "jeveux_private.h"
 #include "asterc/hpalloc.h"
@@ -31,12 +32,12 @@ use module_allocate
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
 !
-    logical(kind=1),           optional, pointer, intent(inout) :: vl(:)
-    integer,           optional, pointer, intent(inout) :: vi(:)
-    integer(kind=4),   optional, pointer, intent(inout) :: vi4(:)
-    real(kind=8),      optional, pointer, intent(inout) :: vr(:)
-    complex(kind=8),   optional, pointer, intent(inout) :: vc(:)
-    character(len=8),  optional, pointer, intent(inout) :: vk8(:)
+    aster_logical, optional, pointer, intent(inout) :: vl(:)
+    integer, optional, pointer, intent(inout) :: vi(:)
+    integer(kind=4), optional, pointer, intent(inout) :: vi4(:)
+    real(kind=8), optional, pointer, intent(inout) :: vr(:)
+    complex(kind=8), optional, pointer, intent(inout) :: vc(:)
+    character(len=8), optional, pointer, intent(inout) :: vk8(:)
     character(len=16), optional, pointer, intent(inout) :: vk16(:)
     character(len=24), optional, pointer, intent(inout) :: vk24(:)
     character(len=32), optional, pointer, intent(inout) :: vk32(:)
@@ -126,25 +127,25 @@ use module_allocate
 !   ----------------------------
     ierr=1
     if (typv .eq. 'I') then
-        call deallocate_slvec(vi=vi,ierr=ierr)
+        call deallocate_slvec(vi=vi, ierr=ierr)
     else if (typv.eq.'S') then
-        call deallocate_slvec(vi4=vi4,ierr=ierr)
+        call deallocate_slvec(vi4=vi4, ierr=ierr)
     else if (typv.eq.'L') then
-        call deallocate_slvec(vl=vl,ierr=ierr)
+        call deallocate_slvec(vl=vl, ierr=ierr)
     else if (typv.eq.'R') then
-        call deallocate_slvec(vr=vr,ierr=ierr)
+        call deallocate_slvec(vr=vr, ierr=ierr)
     else if (typv.eq.'C') then
-        call deallocate_slvec(vc=vc,ierr=ierr)
+        call deallocate_slvec(vc=vc, ierr=ierr)
     else if (typv.eq.'K8') then
-        call deallocate_slvec(vk8=vk8,ierr=ierr)
+        call deallocate_slvec(vk8=vk8, ierr=ierr)
     else if (typv.eq.'K16') then
-        call deallocate_slvec(vk16=vk16,ierr=ierr)
+        call deallocate_slvec(vk16=vk16, ierr=ierr)
     else if (typv.eq.'K24') then
-        call deallocate_slvec(vk24=vk24,ierr=ierr)
+        call deallocate_slvec(vk24=vk24, ierr=ierr)
     else if (typv.eq.'K32') then
-        call deallocate_slvec(vk32=vk32,ierr=ierr)
+        call deallocate_slvec(vk32=vk32, ierr=ierr)
     else if (typv.eq.'K80') then
-        call deallocate_slvec(vk80=vk80,ierr=ierr)
+        call deallocate_slvec(vk80=vk80, ierr=ierr)
 !
     else
         ASSERT(.false.)

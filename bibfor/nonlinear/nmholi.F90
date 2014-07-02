@@ -18,12 +18,13 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "blas/dnrm2.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno, npg, imate, ipoids, ivf, idfde
     real(kind=8) :: geom(ndim, nno), depl(ndim, nno), inst, chlim(3)
 !
@@ -99,7 +100,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
         chlim(2) = chlim(2) + poids * am/m * epsno**m
         chlim(3) = max(chlim(3), (rac23*epsno)**(m-1))
 !
-10  end do
+ 10 end do
     call matfpe(1)
 !
 end subroutine

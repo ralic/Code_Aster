@@ -2,6 +2,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
                   coorsm, nbpt, lstpt, fink)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3crad.h"
 #include "asterfort/i3ptrv.h"
@@ -9,7 +10,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
 #include "asterfort/utmess.h"
     integer :: k, f, nbpt, lstpt(*), nba
     real(kind=8) :: epsi, sgt(*), coorsm(3, *)
-    logical(kind=1) :: fink
+    aster_logical :: fink
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -50,7 +51,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
     integer :: arete, nd, nf, i, ipos
     real(kind=8) :: a(3, 2), x(2), b(3), t, td, tf, r1, r2, r3, t1, t2, nrmab
     real(kind=8) :: zero, un
-    logical(kind=1) :: finf, dejala
+    aster_logical :: finf, dejala
 !
 !======================================================================
 !
@@ -61,32 +62,32 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
     un = 1.0d0
     finf = .false.
     nbpt = 0
-100  continue
+100 continue
     if (.not. finf) then
         arete = arete + 1
         nd = arete
         nf = max(1,mod(nd+1,nba+1))
         nrmab = zero
-        do 120, i = 1, 3, 1
-        r1 = coorsm(i,nd)
-        r2 = coorsm(i,nf)
-        a(i,1) = r2 - r1
-        b(i) = -r1
-        nrmab = nrmab + (sgt(i+3)-sgt(i))*(sgt(i+3)-sgt(i))
-120      continue
+        do 120 i = 1, 3, 1
+            r1 = coorsm(i,nd)
+            r2 = coorsm(i,nf)
+            a(i,1) = r2 - r1
+            b(i) = -r1
+            nrmab = nrmab + (sgt(i+3)-sgt(i))*(sgt(i+3)-sgt(i))
+120     continue
         nrmab = sqrt(nrmab)
         a(1,2) = zero
         a(2,2) = zero
         a(3,2) = -nrmab
-        do 130, i = 1, 3, 1
-        t = max(abs(a(i,1)),abs(a(i,2)))
-        if (abs(t) .gt. epsi) then
-            t = un/t
-            a(i,1) = a(i,1)*t
-            a(i,2) = a(i,2)*t
-            b(i) = b(i)*t
-        endif
-130      continue
+        do 130 i = 1, 3, 1
+            t = max(abs(a(i,1)),abs(a(i,2)))
+            if (abs(t) .gt. epsi) then
+                t = un/t
+                a(i,1) = a(i,1)*t
+                a(i,2) = a(i,2)*t
+                b(i) = b(i)*t
+            endif
+130     continue
         call i3sl32(epsi, a, b, x, typsl)
         if (typsl .eq. 'INCO') then
 !           ARETE ET SGT // DISTINCT  ==> INTER = VIDE

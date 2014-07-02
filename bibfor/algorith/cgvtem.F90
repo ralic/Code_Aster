@@ -2,6 +2,7 @@ function cgvtem(resu, iord0)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -30,7 +31,7 @@ function cgvtem(resu, iord0)
 !
     character(len=8), intent(in) :: resu
     integer, intent(in) :: iord0
-    logical(kind=1) :: cgvtem
+    aster_logical :: cgvtem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +51,7 @@ function cgvtem(resu, iord0)
 !
     integer :: iret, jadmat, nvacr, ivarc
     character(len=8) :: chmat, k8b, other_varc
-    logical(kind=1) :: exivrc, exitem
+    aster_logical :: exivrc, exitem
     character(len=8), pointer :: cvrcvarc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,7 +60,8 @@ function cgvtem(resu, iord0)
 !
 ! - y a t il des VARC dans la sd cham_mater du resultat ?
 !
-    call rsadpa(resu, 'L', 1, 'CHAMPMAT', iord0, 0, sjv=jadmat, styp=k8b)
+    call rsadpa(resu, 'L', 1, 'CHAMPMAT', iord0,&
+                0, sjv=jadmat, styp=k8b)
     chmat = zk8(jadmat)
     call jeexin(chmat//'.CVRCVARC', iret)
     exivrc = iret .ne. 0
@@ -73,19 +75,19 @@ function cgvtem(resu, iord0)
         call jelira(chmat// '.CVRCVARC', 'LONMAX', ival=nvacr)
         call jeveuo(chmat// '.CVRCVARC', 'L', vk8=cvrcvarc)
         do ivarc = 1, nvacr
-            if ( cvrcvarc(ivarc) .eq. 'TEMP    ' ) then
+            if (cvrcvarc(ivarc) .eq. 'TEMP    ') then
                 exitem = .true.
             else
                 other_varc = cvrcvarc(ivarc)
             endif
         enddo
 !
-        if (other_varc.ne.'') call utmess('F', 'RUPTURE1_72', nk=2, valk=[other_varc,chmat])
+        if (other_varc .ne. '') call utmess('F', 'RUPTURE1_72', nk=2, valk=[other_varc, chmat])
 !
     endif
 !
 ! - valeur retournee par la fonction
-!  
+!
     cgvtem = exitem
 !
     call jedema()

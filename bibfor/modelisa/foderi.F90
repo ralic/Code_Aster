@@ -1,5 +1,6 @@
 subroutine foderi(nomfon, temp, f, df)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -46,7 +47,7 @@ subroutine foderi(nomfon, temp, f, df)
     common /jfdsav/ iaprol(5),iavale(5),luvale(5)
     common /kfdsav/ svnomf(5), svprgd(5)
 !     ------------------------------------------------------------------
-    logical(kind=1) :: tesinf, tessup
+    aster_logical :: tesinf, tessup
     integer :: isave, kk, jpro, jvalf, jv, jp, nbvf
     character(len=19) :: ch19
     character(len=24) :: chpro, chval
@@ -62,7 +63,7 @@ subroutine foderi(nomfon, temp, f, df)
             nbvf = luvale(isave)
             goto 101
         endif
-100  end do
+100 end do
 !
     ch19 = nomfon(1:8)
     chpro = ch19//'.PROL'
@@ -92,7 +93,7 @@ subroutine foderi(nomfon, temp, f, df)
     svnomf(isave) = nomfon(1:8)
     svprgd(isave) = zk24(jpro+4)(1:2)
 !
-101  continue
+101 continue
 !
     tesinf = temp.lt.zr(jvalf)
     tessup = temp.gt.zr(jvalf+nbvf-1)
@@ -135,9 +136,9 @@ subroutine foderi(nomfon, temp, f, df)
                 f = df*(temp-zr(jp-1))+zr(jv-1)
                 goto 5
             endif
- 8      continue
+  8     continue
         call utmess('F', 'MODELISA4_67')
- 5      continue
+  5     continue
 !
     endif
 ! FIN ------------------------------------------------------------------

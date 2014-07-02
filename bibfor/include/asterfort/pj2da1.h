@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pj2da1(ino2, geom2, i, geom1, tria3,&
                       cobar2, ok)
@@ -24,6 +26,6 @@ interface
         real(kind=8) :: geom1(*)
         integer :: tria3(*)
         real(kind=8) :: cobar2(3)
-        logical(kind=1) :: ok
+        aster_logical :: ok
     end subroutine pj2da1
 end interface

@@ -1,12 +1,13 @@
 subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
                   reffin, reffou, ceffin, ceffou)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=*) :: sens
     integer :: nbpoin, nbcmp
     real(kind=8) :: excen, reffin(*), reffou(*)
     complex(kind=8) :: ceffin(*), ceffou(*)
-    logical(kind=1) :: lreel
+    aster_logical :: lreel
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,9 +59,9 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
 !
 !
     if (lreel) then
-        do 10,k=1,nbpoin*nbcmp
-        reffou(k)=reffin(k)
-10      continue
+        do 10 k = 1, nbpoin*nbcmp
+            reffou(k)=reffin(k)
+ 10     continue
 !
         do 20 i = 1, nbpoin
             reffou((i-1)*nbcmp+4)=reffou((i-1)*nbcmp+4)+ rsign*excen*&
@@ -69,13 +70,13 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
             reffou((i-1)*nbcmp+2)
             reffou((i-1)*nbcmp+6)=reffou((i-1)*nbcmp+6)+ rsign*excen*&
             reffou((i-1)*nbcmp+3)
-20      continue
+ 20     continue
 !
 !
     else
-        do 30,k=1,nbpoin*nbcmp
-        ceffou(k)=ceffin(k)
-30      continue
+        do 30 k = 1, nbpoin*nbcmp
+            ceffou(k)=ceffin(k)
+ 30     continue
 !
         do 40 i = 1, nbpoin
             ceffou((i-1)*nbcmp+4)=ceffou((i-1)*nbcmp+4)+ rsign*excen*&
@@ -84,7 +85,7 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
             ceffou((i-1)*nbcmp+2)
             ceffou((i-1)*nbcmp+6)=ceffou((i-1)*nbcmp+6)+ rsign*excen*&
             ceffou((i-1)*nbcmp+3)
-40      continue
+ 40     continue
 !
     endif
 end subroutine

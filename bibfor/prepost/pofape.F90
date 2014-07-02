@@ -1,5 +1,6 @@
 subroutine pofape()
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/anacri.h"
@@ -58,8 +59,8 @@ subroutine pofape()
     real(kind=8) :: rbid, phmax, cissio, sphere, pcorr, val(2), vmax, vmin
     real(kind=8) :: domage(1), rcrit, vresu(24), resu(7), valpar(35)
     complex(kind=8) :: cbid
-    logical(kind=1) :: lhaigh, lke, post, fordef, plcicr
-    logical(kind=1) :: crsigm, crepst, crepse, crepsp, plcr2
+    aster_logical :: lhaigh, lke, post, fordef, plcicr
+    aster_logical :: crsigm, crepst, crepse, crepsp, plcr2
     integer :: icodre(2), icodwo, icodba, icodhs
     character(len=8) :: k8b, nomten(6), nomres(2), kdomm, nompar, nommat, cara
     character(len=8) :: result, nomeps(6), nomepp(6)
@@ -433,14 +434,14 @@ subroutine pofape()
 !
 !
 ! POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
-           if (paract(2) .eq. 1) then
-               call tbajli(result, 1, nomppf(11), [ibid], valpar(2),&
-                                    [cbid], k8b, ilign)
-           endif
-           do i = 7, 23
+            if (paract(2) .eq. 1) then
+                call tbajli(result, 1, nomppf(11), [ibid], valpar(2),&
+                            [cbid], k8b, ilign)
+            endif
+            do i = 7, 23
                 if (paract(i) .eq. 1) then
-                   call tbajli(result, 1, nomppf(i+9), [ibid], valpar(i),&
-                                    [cbid], k8b, ilign)
+                    call tbajli(result, 1, nomppf(i+9), [ibid], valpar(i),&
+                                [cbid], k8b, ilign)
                 endif
             end do
 !

@@ -1,5 +1,6 @@
 subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
@@ -62,14 +63,14 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     integer :: ibid
     integer :: n1, ifiss, nfiss
     integer :: ino, valeno, nbnot
-    integer :: idlist,   jstno
+    integer :: idlist, jstno
     character(len=8) :: noma, nomnoe, fiss, nomofi, nomafi, nomogr
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno, cnslt, cnsln
     character(len=24) :: stnot
     character(len=24) :: lisnoe
-    logical(kind=1) :: grille
+    aster_logical :: grille
     real(kind=8) :: rayon, dist
     character(len=8), pointer :: vfiss(:) => null()
     integer, pointer :: noeu(:) => null()

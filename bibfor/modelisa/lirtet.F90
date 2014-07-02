@@ -32,6 +32,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
 !       D'INFORMATIONS
 !       ----------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/liritm.h"
 #include "asterfort/lirlig.h"
@@ -43,8 +44,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
     character(len=*) :: cv
     integer :: deblig
     real(kind=8) :: rv
-    logical(kind=1) :: lnom, lent
-    logical :: lcond
+    aster_logical :: lnom, lent
 !
 !-----------------------------------------------------------------------
     integer :: i, icl, ifl, ilec, inom, iv
@@ -55,11 +55,10 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
     nbigno=0
     nom='INDEFINI'
 !
-    lcond=inom.eq.0.or.inom.eq.1
-    ASSERT(lcond)
+    ASSERT(inom.eq.0.or.inom.eq.1)
 !
     if (inom .eq. 0) then
- 1      continue
+  1     continue
         cv=' '
         iv=0
         rv=0.d0
@@ -91,7 +90,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
         endif
 !
     else if (inom.eq.1) then
- 2      continue
+  2     continue
         cv=' '
         iv=0
         rv=0.d0
@@ -143,8 +142,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
             endif
         else
             if (lent) then
-                lcond=.not.lnom
-                ASSERT(lcond)
+                ASSERT(.not.lnom)
                 nbigno = nbigno - 1
                 goto 9
             else
@@ -154,11 +152,11 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
         endif
     endif
 !
- 9  continue
+  9 continue
     if (nbigno .gt. 0) then
         do 99 i = 1, nbigno-1
             call lirlig(ifl, cnl, lig, ilec)
-99      continue
+ 99     continue
         deblig=-1
         call liritm(ifl, icl, iv, rv, cv(1:8),&
                     cnl, deblig, ilec)

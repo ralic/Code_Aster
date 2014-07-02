@@ -18,7 +18,8 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -29,7 +30,7 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 #include "asterfort/ndynlo.h"
 #include "asterfort/wkvect.h"
     integer :: nbmax
-    logical(kind=1) :: chaact(nbmax)
+    aster_logical :: chaact(nbmax)
     integer :: fonact(*)
     character(len=19) :: sddyna
     character(len=24) :: defico
@@ -50,8 +51,8 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lxfcm, ldyna, lxffm, lxczm, lcont, lnoeu, lmuap, lstrx
-    logical(kind=1) :: lvibr, lflam, lstab, lener
+    aster_logical :: lxfcm, ldyna, lxffm, lxczm, lcont, lnoeu, lmuap, lstrx
+    aster_logical :: lvibr, lflam, lstab, lener
     character(len=24) :: trav
     integer :: jtrav
     integer :: icham, istop
@@ -186,7 +187,7 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
     do 10 icham = 1, nbmax
         istop = zi(jtrav-1+icham)
         ASSERT(istop.eq.1)
-10  end do
+ 10 end do
 !
     call jedetr(trav)
     call jedema()

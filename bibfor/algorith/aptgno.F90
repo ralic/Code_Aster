@@ -19,6 +19,7 @@ subroutine aptgno(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apnomk.h"
 #include "asterfort/appari.h"
@@ -52,7 +53,7 @@ subroutine aptgno(sdappa)
     integer :: izone, itype
     integer :: jdecnm, nbnom
     integer :: jdecne, nbnoe
-    logical(kind=1) :: apcald
+    aster_logical :: apcald
     real(kind=8) :: vector(3)
 !
 ! ----------------------------------------------------------------------
@@ -108,7 +109,7 @@ subroutine aptgno(sdappa)
             call aptgnn(sdappa, noma, defico, ndimg, jdecne,&
                         nbnoe, itype, vector)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

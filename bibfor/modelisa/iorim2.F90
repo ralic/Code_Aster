@@ -1,7 +1,8 @@
 function iorim2(num1, n1, num2, n2, reorie)
     implicit none
+#include "asterf_types.h"
     integer :: iorim2, n1, n2, num1(n1), num2(n2)
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +37,7 @@ function iorim2(num1, n1, num2, n2, reorie)
     data nso /0,0,3,4,0,3,3,4,4/
 !
 #define egal(i1,j1,i2,j2) (num1(i1).eq.num2(i2)).and. \
-        (num1(j1).eq.num2(j2))
+    (num1(j1).eq.num2(j2))
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -57,9 +58,9 @@ function iorim2(num1, n1, num2, n2, reorie)
                 iorim2 = 1
                 goto 100
             endif
-10      continue
+ 10     continue
     iorim2 = 0
-100  continue
+100 continue
 !
 ! --- ON PERMUTE LES SOMMETS
     if (reorie .and. iorim2 .lt. 0) then
@@ -74,7 +75,7 @@ function iorim2(num1, n1, num2, n2, reorie)
                 l = num2(2*nso2+1-i)
                 num2(nso2+i) = l
                 num2(2*nso2+1-i) = k
-200          continue
+200         continue
         endif
     endif
 !

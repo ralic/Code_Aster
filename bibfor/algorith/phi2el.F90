@@ -18,6 +18,7 @@ subroutine phi2el(modele, carele, mate, accel, phibar,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -56,7 +57,7 @@ subroutine phi2el(modele, carele, mate, accel, phibar,&
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(5), lchout(1), phib24, ve2
     integer :: iret
-    logical(kind=1) :: prem
+    aster_logical :: prem
 !
 !-----------------------------------------------------------------------
     integer :: jlve, nbchte
@@ -131,7 +132,7 @@ subroutine phi2el(modele, carele, mate, accel, phibar,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
     endif
-10  continue
+ 10 continue
 !
 ! FIN ---------------------------------------------------------------
     call jedema()

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine calgf(ndim, nno, axi, npg, geomi,&
                      g, iw, vff, idff, deplm,&
@@ -23,7 +25,7 @@ interface
         integer :: npg
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         real(kind=8) :: geomi(ndim, nno)
         integer :: g
         integer :: iw
@@ -31,7 +33,7 @@ interface
         integer :: idff
         real(kind=8) :: deplm(nno*ndim)
         real(kind=8) :: deplt(nno*ndim)
-        logical(kind=1) :: grand
+        aster_logical :: grand
         real(kind=8) :: alpha
         real(kind=8) :: r
         real(kind=8) :: w

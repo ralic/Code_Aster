@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dgetv0(ido, bmat, itry, initv, n,&
                       j, v, ldv, resid, rnorm,&
@@ -25,7 +27,7 @@ interface
         integer :: ido
         character(len=1) :: bmat
         integer :: itry
-        logical(kind=1) :: initv
+        aster_logical :: initv
         real(kind=8) :: v(ldv, j)
         real(kind=8) :: resid(n)
         real(kind=8) :: rnorm

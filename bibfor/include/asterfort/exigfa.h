@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function exigfa(dgf, ngf)
         integer :: dgf(*)
         integer :: ngf
-        logical(kind=1) :: exigfa
+        aster_logical :: exigfa
     end function exigfa
 end interface

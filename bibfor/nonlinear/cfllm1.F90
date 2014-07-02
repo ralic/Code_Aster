@@ -19,6 +19,7 @@ subroutine cfllm1(resoco, neq, nesmax, nbliai, nbliac,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8prem.h"
@@ -66,11 +67,11 @@ subroutine cfllm1(resoco, neq, nesmax, nbliai, nbliac,&
     integer :: ztacf
     character(len=19) :: fro1
     integer :: jfro11, jfro12
-    logical(kind=1) :: liaact
+    aster_logical :: liaact
     character(len=2) :: typec0, typef0, typef1, typef2
     real(kind=8) :: coefff
     character(len=2) :: typli2
-    logical(kind=1) :: lelpiv, lelpi1, lelpi2
+    aster_logical :: lelpiv, lelpi1, lelpi2
     real(kind=8) :: ajeufx, ajeufy, glis
     real(kind=8) :: lambdc, lambdf
     character(len=19) :: deplc
@@ -152,7 +153,7 @@ subroutine cfllm1(resoco, neq, nesmax, nbliai, nbliac,&
                 lambdc = zr(jmu+compt0-1)
                 lambdf = coefff*lambdc
             endif
-200      continue
+200     continue
 !
 ! ----- CALCUL DES COLONNES DE LA LIAISON ACTIVE
 !
@@ -206,7 +207,7 @@ subroutine cfllm1(resoco, neq, nesmax, nbliai, nbliac,&
 !
         call jelibe(jexnum(fro1, iliai1))
         call jelibe(jexnum(fro1, iliai1+nbliai))
-100  end do
+100 end do
 !
     call jedema()
 !

@@ -19,6 +19,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
@@ -30,7 +31,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
     character(len=19) :: compor
     character(len=*) :: nomcmz
     character(len=*) :: nompaz
-    logical(kind=1) :: exist
+    aster_logical :: exist
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,7 +82,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 !
 ! --- REDUCTION SUR COMPOSANTE
 !
-    call cesred(coto,0,[0],1,nomcmp,&
+    call cesred(coto, 0, [0], 1, nomcmp,&
                 'V', copm)
     call detrsd('CHAM_ELEM_S', coto)
 !
@@ -100,9 +101,9 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
             exist = .true.
             goto 99
         endif
-60  end do
+ 60 end do
 !
-99  continue
+ 99 continue
 !
     call detrsd('CHAM_ELEM_S', copm)
 !

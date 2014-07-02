@@ -1,5 +1,6 @@
 function xvfimo(modele, fiss)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -9,7 +10,7 @@ function xvfimo(modele, fiss)
 #include "asterfort/jeveuo.h"
 !
     character(len=8) :: modele, fiss
-    logical(kind=1) :: xvfimo
+    aster_logical :: xvfimo
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +39,7 @@ function xvfimo(modele, fiss)
 !     FISS   : NOM DE LA SD_FISS_XFEM
 ! ======================================================================
 !
-    integer :: ier, nfiss,  i
+    integer :: ier, nfiss, i
     character(len=8), pointer :: vfiss(:) => null()
 !
     call jemarq()

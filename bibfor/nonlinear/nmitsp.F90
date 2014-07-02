@@ -19,6 +19,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/affich.h"
 #include "asterfort/assert.h"
@@ -50,7 +51,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lextra
+    aster_logical :: lextra
     real(kind=8) :: valext(4), ciblen
     integer :: itesup, nbitaj, vali(2), nbiter, mniter
     real(kind=8) :: r8bid
@@ -120,7 +121,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
         call utmess('I', 'ITERSUPP_5', ni=2, vali=vali)
     endif
 !
-999  continue
+999 continue
 !
     if (retsup .eq. 1) then
         call utmess('I', 'ITERSUPP_7')

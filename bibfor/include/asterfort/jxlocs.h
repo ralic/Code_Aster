@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
                       ldeps, jitab)
@@ -23,7 +25,7 @@ interface
         integer :: lty1
         integer :: lon1
         integer :: jadm
-        logical(kind=1) :: ldeps
+        aster_logical :: ldeps
         integer :: jitab
     end subroutine jxlocs
 end interface

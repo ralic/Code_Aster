@@ -44,6 +44,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !                LES VARIABLES D'ECROUISSAGE : R, EPSI_VOLU_P
 !                LES MULTIPLICATEURS PLASTIQUES : DLAMBDA
 ! ====================================================================
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujddd.h"
@@ -81,7 +82,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     real(kind=8) :: delta
     real(kind=8) :: factor, maxi, cohes, vec(3), pt, qt
     character(len=8) :: mod, nomail
-    logical(kind=1) :: debug, loop, bnews(3), mtrac
+    aster_logical :: debug, loop, bnews(3), mtrac
 ! ====================================================================
     parameter   ( d13  = .3333333333334d0 )
     parameter   ( un   = 1.d0 )
@@ -99,7 +100,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
     do 7 i = 1, 18
         ye(i) = zero
- 7  continue
+  7 continue
 ! ====================================================================
 ! --- PROPRIETES HUJEUX MATERIAU -------------------------------------
 ! ====================================================================
@@ -132,7 +133,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
         if (indi(k) .gt. 0) nbmeca=nbmeca+1
         q(k) = zero
         qe(k) = zero
- 4  continue
+  4 continue
 !
 !
 ! ====================================================================
@@ -161,10 +162,10 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                 do 30 j = 1, ndi
                     if (i .eq. j) hooknl(i,j) = al
                     if (i .ne. j) hooknl(i,j) = la
-30              continue
+ 30             continue
             do 35 i = ndi+1, ndt
                 hooknl(i,i) = demu
-35          continue
+ 35         continue
 !
         else if (mater(17,1).eq.deux) then
 !
@@ -241,7 +242,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
             nbmect = nbmect + 1
             indi(nbmect) = 8 + i
         endif
-36  continue
+ 36 continue
 !
     maxi = un
     cohes = -rtrac+ptrac
@@ -259,13 +260,13 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                 maxi = factor
             endif
         endif
-50  continue
+ 50 continue
 !
 ! ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION
     if (maxi .lt. un) then
         do 60 i = 1, ndt
             dsig(i) = maxi * dsig(i)
-60      continue
+ 60     continue
         if (debug) then
             write (6,'(A,A,E12.5)')&
      &   'HUJIID DEBUT : APPLICATION DE FACTOR POUR MODIFIER ',&
@@ -274,16 +275,16 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
         endif
         call lcsovn(ndt, yd, dsig, ye)
     endif
-51  continue
+ 51 continue
 !
     if ((nbmeca .eq. 1) .and. ((indi(1).eq.4) .or. (indi(1).eq.8))) then
 !
         do 31 i = ndt+1, 18
             dy(i)=zero
-31      continue
+ 31     continue
         do 32 i = 1, ndt
             dy(i) = dsig(i)
-32      continue
+ 32     continue
 !
         goto 9999
 !
@@ -291,14 +292,14 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
     do 3 k = 1, 42
         psi(k) = zero
- 3  continue
+  3 continue
 !
     do 6 k = 1, 7
         pe(k) = zero
         q(k) = zero
         qe(k) = zero
         p(k) = zero
- 6  continue
+  6 continue
 !
     do 5 k = 1, nbmect
 !
@@ -359,7 +360,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
         endif
 !
- 5  end do
+  5 end do
 !
     epsvp = yd(ndt+1)
     ye(ndt+1) = yd(ndt+1)
@@ -387,7 +388,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     do 45 k = 1, nbmect
         do 45 l = 1, nbmect
             dfdl(k,l) = zero
-45      continue
+ 45     continue
 !
 !
 ! ---> I. CALCUL DE DF. / DDLAMB. POUR DDLAMB. = 0
@@ -402,7 +403,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
             do 40 i = 1, ndt
                 do 40 j = 1, ndt
                     dfdl(k,l) = dfdl(k,l) - hooknl(i,j)*dfds(i)*psi( ll+j)
-40              continue
+ 40             continue
 !
 ! ---- FIN I.1.
 ! ---> I.2. CALCUL DE DFDEVPE(K)*DEVPDDLAMB-(L)
@@ -459,7 +460,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
                 endif
 !
-12          continue
+ 12         continue
 !
 ! ---- I.2.2. MECANISME ISOTROPE MONOTONE
         else if (kk .eq. 4) then
@@ -501,7 +502,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                     endif
                     dfdl(k,l) = dfdl(k,l) + rc(k)*d*pc*beta * ksi(l)* coef*mdil
                 endif
-13          continue
+ 13         continue
 !
 ! --- I.2.3. MECANISME DEVIATOIRE CYCLIQUE
         else if ((kk .lt. 8) .and. (kk .gt. 4)) then
@@ -580,7 +581,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                     endif
                 endif
 !
-14          continue
+ 14         continue
 !
 ! --- I.2.4. MECANISME ISOTROPE CYCLIQUE
         else if (kk .eq. 8) then
@@ -633,14 +634,14 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                         dfdl(k,l) = dfdl(k,l) + d*pc*beta* (rc(k)+ vind(21)) *ksi(l)*coef*dpsi
                     endif
                 endif
-15          continue
+ 15         continue
 !
         else if (kk.gt.8) then
             call hujprj(kk-8, ye, vec, tp, tp1)
             f2(k) = -tp - deux*rtrac + ptrac
             if (f2(k) .gt. zero) f2(k) = zero
         endif
-11  continue
+ 11 continue
 !
 ! ---- FIN I.2.
 ! ---> I.3. CALCUL DE DFDRE(K)*DRDLAMB-(K)
@@ -680,9 +681,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
             dfdl(k,k) = dfdl(k,k) + d*pc*(un-rc(k))**deux /ccyc
 !
         endif
-16  continue
+ 16 continue
 !
-160  continue
+160 continue
 ! ---- RESOLUTION PAR PIVOT DE GAUSS
 !
     call mgauss('NCVP', dfdl, f2, 7, nbmect,&
@@ -692,7 +693,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! --- MULTIPLICATEUR PLASTIQUE NEGATIF NON AUTORISE
     do 17 k = 1, nbmect
         if (f2(k) .lt. zero) f2(k)=zero
-17  continue
+ 17 continue
 !
 !
 ! ====================================================================
@@ -700,13 +701,13 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ====================================================================
     do 240 i = 1, ndt
         depse(i) = deps(i)
-240  continue
+240 continue
 !
     do 242 k = 1, nbmect
         kk = (k-1)*ndt
         do 242 i = 1, ndt
             depse(i) = depse(i) - f2(k)*psi(kk+i)
-242      continue
+242     continue
 !
 ! ====================================================================
 ! --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL-.DEPSE ----------
@@ -728,7 +729,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                 maxi = factor
             endif
         endif
-280  continue
+280 continue
 !
 !KH ON IMPOSE UNE VARIATION DE DSIGMA < 50% DE SIGMA_INIT
 !AF A CONDITION QU'IL N'Y AIT PAS DE MECANISMES DE TRACTION ACTIVES
@@ -739,7 +740,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
         do 282 i = 1, ndt
             s = s+yd(i)**2.d0
             ds= ds+dsig(i)**2.d0
-282      continue
+282     continue
         s=sqrt(s)
         ds=sqrt(ds)
 !
@@ -756,7 +757,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     if (maxi .lt. un) then
         do 290 i = 1, ndt
             dsig(i) = maxi * dsig(i)
-290      continue
+290     continue
         if (debug) then
             write (6,'(A,A,E12.5)')&
      &     'HUJIID FIN:: APPLICATION DE FACTOR POUR MODIFIER ',&
@@ -792,9 +793,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
             dr(k) = f2(k) *(un-rc(k))**deux /ccyc
 !
         endif
-250  continue
+250 continue
 !
-281  continue
+281 continue
 ! ====================================================================
 ! --- CALCUL INCREMENT DE LA VARIABLE INTERNE DEPSVP -----------------
 ! ====================================================================
@@ -840,18 +841,18 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
         endif
 !
-251  continue
+251 continue
 !
 ! ====================================================================
 ! --- SOLUTION D ESSAI -----------------------------------------------
 ! ====================================================================
     do 259 i = 1, 18
         dy(i) = zero
-259  continue
+259 continue
 !
     do 260 i = 1, ndt
         dy(i) = dsig(i)
-260  continue
+260 continue
 !
     if (abs(depsvp) .lt. 1.d-1) then
         dy(ndt+1) = depsvp
@@ -863,19 +864,19 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     do 270 k = 1, nbmeca
         dy(ndt+1+k) = dr(k)
         dy(ndt+1+nbmeca+k) = f2(k)
-270  continue
+270 continue
 !
-271  continue
+271 continue
 !
     if (nbmeca .lt. nbmect) then
         do 272 i = 1, nbmect
             if (indi(i) .gt. 8) dy(ndt+1+nbmeca+i) = f2(i)
-272      continue
+272     continue
     endif
 !
     goto 9999
 !
-999  continue
+999 continue
 !
     if (debug) then
         call tecael(iadzi, iazk24)
@@ -887,8 +888,8 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
     do 300 i = 1, 18
         dy(i) = zero
-300  continue
+300 continue
 !
-9999  continue
+9999 continue
 !
 end subroutine

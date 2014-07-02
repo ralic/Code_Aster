@@ -21,6 +21,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -31,7 +32,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
     character(len=8) :: typmai
     real(kind=8) :: dlagrc
     integer :: cface(5, 3), nface, nconta
-    logical(kind=1) :: lmulti
+    aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +65,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
 !
 !
     integer :: ino
-    integer ::  pl, nn, nns, nddls
+    integer :: pl, nn, nns, nddls
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +85,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
                     nfhe, pl)
         if (lmulti) pl = pl + (heavno(ino)-1)*ndim
         dlagrc = dlagrc+ffc(ino)*zr(jdepde-1+pl+1-1)
-230  end do
+230 end do
 !
     call jedema()
 !

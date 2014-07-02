@@ -6,6 +6,7 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/avcdmx.h"
 #include "asterfort/avcrit.h"
@@ -24,7 +25,7 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
     real(kind=8) :: vala, coefpa
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     integer :: vnormx(2), ncycl(nbvec), nbplan
-    logical(kind=1) :: post
+    aster_logical :: post
     real(kind=8) :: cudomx
 !
 ! ======================================================================

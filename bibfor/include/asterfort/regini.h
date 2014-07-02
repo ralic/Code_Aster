@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine regini(option, nomte, ivf, ivf2, idfde,&
                       idfde2, jgano, ndim, ipoids, ipoid2,&
@@ -42,6 +44,6 @@ interface
         integer :: nnom
         integer :: nnos
         integer :: regula(6)
-        logical(kind=1) :: axi
+        aster_logical :: axi
     end subroutine regini
 end interface

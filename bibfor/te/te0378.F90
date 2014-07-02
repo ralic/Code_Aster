@@ -31,6 +31,7 @@ subroutine te0378(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
@@ -120,8 +121,8 @@ subroutine te0378(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical(kind=1) :: yaprp, yarop
-    logical(kind=1) :: yaprd, yarod
+    aster_logical :: yaprp, yarop
+    aster_logical :: yaprd, yarod
 !
 ! ----------------------------------------------------------------------
     1000 format(a,' :',(6(1x,1pe17.10)))
@@ -156,8 +157,8 @@ subroutine te0378(option, nomte)
         write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! 1.3. --- CHAMP DE CONTRAINTES
 !

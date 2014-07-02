@@ -17,6 +17,7 @@ subroutine jgetlmx(nomlu, ival)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/codent.h"
 #include "asterfort/jjallc.h"
@@ -59,7 +60,7 @@ subroutine jgetlmx(nomlu, ival)
     character(len=32) :: noml32
     character(len=1) :: genri
     integer :: icre, iret
-    logical(kind=1) :: lconst, lcol
+    aster_logical :: lconst, lcol
 ! DEB ------------------------------------------------------------------
 !
     ipgcex = ipgc
@@ -105,10 +106,10 @@ subroutine jgetlmx(nomlu, ival)
     genri = genr ( jgenr(ic) + id )
     ltypi = ltyp ( jltyp(ic) + id )
     if (lconst) then
-       ival = long ( jlong(ic) + id )
+        ival = long ( jlong(ic) + id )
     else if (iret .eq. 3) then
-       ib = jiszon + iadm ( jiadm(ic) + 2*ixlong-1 ) - 1 + idatoc
-       ival = iszon (ib)
+        ib = jiszon + iadm ( jiadm(ic) + 2*ixlong-1 ) - 1 + idatoc
+        ival = iszon (ib)
     endif
 !
     if (lcol) then

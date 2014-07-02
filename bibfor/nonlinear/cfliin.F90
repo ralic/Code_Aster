@@ -18,7 +18,8 @@ subroutine cfliin(noma, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfecrd.h"
 #include "asterfort/cfimp1.h"
@@ -50,7 +51,7 @@ subroutine cfliin(noma, defico, resoco)
     integer :: ifm, niv
     character(len=24) :: clreac
     integer :: jclrea
-    logical(kind=1) :: reageo, reapre
+    aster_logical :: reageo, reapre
     integer :: nbliac, llf, llf1, llf2
 !
 ! ----------------------------------------------------------------------

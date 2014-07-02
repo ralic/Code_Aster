@@ -27,6 +27,7 @@ subroutine op0186()
 ! 0.2  ==> ARGUMENTS
 !
 ! 0.3. ==> VARIABLES LOCALES
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getres.h"
@@ -60,12 +61,11 @@ subroutine op0186()
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
-    logical(kind=1) :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
-    logical(kind=1) :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
-    logical(kind=1) :: force, lnonl
-    logical :: lcond
+    aster_logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
+    aster_logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
+    aster_logical :: force, lnonl
     integer :: parmei(2), parcri(3), numins, k, icoret, nbcham, iterho
-    integer :: itmax, ifm, niv, neq, iterat, jtempp,  jtemp
+    integer :: itmax, ifm, niv, neq, iterat, jtempp, jtemp
     integer :: itab(2)
     real(kind=8) :: parmer(2), tpsthe(6), deltat, timet, timtdt, tps1(4)
     real(kind=8) :: tps2(4), tps3(4), tpex, parcrr(2), theta, khi, rho, testr
@@ -160,8 +160,7 @@ subroutine op0186()
                 lischa, lisch2, solveu, para, numedd,&
                 lostat, levol, lnonl, sddisc, sdieto,&
                 vhydr, sdobse, mailla, sdcrit, time)
-    lcond=lnonl
-    ASSERT(lcond)
+    ASSERT(lnonl)
 !
     if (lostat) then
         numins=0

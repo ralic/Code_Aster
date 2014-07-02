@@ -1,7 +1,8 @@
 subroutine metau1(l_meta)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -32,7 +33,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    logical(kind=1), intent(out) :: l_meta
+    aster_logical, intent(out) :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +51,7 @@ implicit none
     parameter (nbres=2)
     character(len=8) :: nomres(nbres)
     integer :: icodre(nbres)
-    real(kind=8) :: valres(nbres)  
+    real(kind=8) :: valres(nbres)
 !
     real(kind=8) :: zalpha, zalpha_comp
     real(kind=8) :: coef, coef1, coef2
@@ -58,7 +59,7 @@ implicit none
     real(kind=8) :: epsth, epsthe(2)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, r
-    real(kind=8) :: phasis(7) 
+    real(kind=8) :: phasis(7)
     integer :: nb_node, ispg, kp, npg, i_node, elas_type, k
     integer :: meta_type, nb_phasis
     integer :: ipoids, ivf, idfde
@@ -66,30 +67,30 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_meta    = .true.
-    ispg      = 1
+    l_meta = .true.
+    ispg = 1
     nomres(1) = 'PHASE_REFE'(1:8)
     nomres(2) = 'EPSF_EPSC_TREF'(1:8)
 !
 ! - Get metallurgy type
 !
     call get_meta_type(meta_type, nb_phasis)
-    if (meta_type.eq.0) then
+    if (meta_type .eq. 0) then
         l_meta = .false.
         goto 999
     endif
 !
 ! - Finite element informations
 !
-    call elrefe_info(fami='RIGI',nno=nb_node, npg=npg,&
-                     jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami='RIGI', nno=nb_node, npg=npg, jpoids=ipoids, jvf=ivf,&
+                     jdfde=idfde)
 !
 ! - Geometry
 !
     call jevech('PGEOMER', 'L', j_geom)
 !
 ! - Material parameters
-! 
+!
     call jevech('PMATERC', 'L', j_mate)
 !
 ! - Coded material address
@@ -111,7 +112,7 @@ implicit none
 !
 ! ----- Get phasis
 !
-        call get_meta_phasis('RIGI'   , '+'   , kp    , ispg       , meta_type,&
+        call get_meta_phasis('RIGI', '+', kp, ispg, meta_type,&
                              nb_phasis, phasis, zalpha, zalpha_comp)
 !
 ! ----- Axi-symmetric case
@@ -135,9 +136,8 @@ implicit none
 !
 ! ----- Get elastic parameters
 !
-        call get_elas_para('RIGI', j_mater , '+', kp,&
-                           ispg, elas_type,&
-                           e  = young , nu = nu)
+        call get_elas_para('RIGI', j_mater, '+', kp, ispg,&
+                           elas_type, e = young, nu = nu)
         ASSERT(elas_type.eq.1)
 !
 ! ----- Get thermal parameters
@@ -148,9 +148,9 @@ implicit none
 !
 ! ----- Compute
 !
-        coef  = young/(1.d0-2.d0*nu)
+        coef = young/(1.d0-2.d0*nu)
         coef1 = zalpha_comp* (epsthe(1)-(1-valres(1))*valres(2))
-        coef2 = zalpha*      (epsthe(2)+valres(1)*valres(2))
+        coef2 = zalpha* (epsthe(2)+valres(1)*valres(2))
         epsth = coef1 + coef2
         poids = poids*coef*epsth
 !

@@ -20,6 +20,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
@@ -66,7 +67,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     character(len=8) :: nomres(nbres), fami, poum
     real(kind=8) :: valres(nbres)
 !
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     integer :: ndimsi, k, nrac, jprol, jvale, nbvale, kpg, spt
     real(kind=8) :: sigmh, epsph, epsdh, s0h, s1h, s0(6), s1(6)
     real(kind=8) :: kron(6)
@@ -119,7 +120,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         call rctrac(mate, 1, 'SIGM', 0.d0, jprol,&
                     jvale, nbvale, young)
         call rcfonc('V', 1, jprol, jvale, nbvale,&
-                    p =  vim(1), rp = rp)
+                    p = vim(1), rp = rp)
     endif
 !
     deuxmu = young/(1.d0+nu)
@@ -139,7 +140,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     do 10 k = 1, ndimsi
         s0(k) = sigm(k) + deuxmu*epsp(k) - s0h*kron(k)
         s1(k) = deuxmu*epsd(k) - s1h*kron(k)
-10  end do
+ 10 end do
 !
 !
 !    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
@@ -182,5 +183,5 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         a2 = tau - a3*eta
     endif
 !
-9999  continue
+9999 continue
 end subroutine

@@ -26,6 +26,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 !       OUT NDEC   :  NOMBRE DE REDECOUPAGE DE DEPS
 !           IRET   :  CODE RETOUR
 !       ---------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/hujddd.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
@@ -49,7 +50,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     real(kind=8) :: yf(18), sigdc(3), prodd, prodf, mat(6, 6)
     real(kind=8) :: m, degr, b, phi, ptrac
     character(len=8) :: mod
-    logical(kind=1) :: debug
+    aster_logical :: debug
 !
     common /tdim/ ndt, ndi
     common /meshuj/ debug
@@ -157,10 +158,10 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
                 do 30 j = 1, ndi
                     if (i .eq. j) hooknl(i,j) = al
                     if (i .ne. j) hooknl(i,j) = la
-30              continue
+ 30             continue
             do 35 i = ndi+1, ndt
                 hooknl(i,i) = demu
-35          continue
+ 35         continue
 !
         else if (mater(17,1).eq.deux) then
 !
@@ -212,7 +213,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     fidsig = zero
     do 40 i = 1, ndi
         fidsig = fidsig - d13*dsig(i)
-40  continue
+ 40 continue
     fr = d*pco*exp(-beta*epsvp)
     ri = abs(fidsig/fr)
 !
@@ -227,15 +228,15 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 ! 2- MECANISME DEVIATOIRE
     do 41 i = 1, ndt
         dfds(i) = zero
-41  continue
+ 41 continue
 !
     do 42 i = 1, 18
         yf(i) = zero
-42  continue
+ 42 continue
 !
     do 43 i = 1, 7
         indi(i) = 0
-43  continue
+ 43 continue
 !
     yf(7) = epsvp
     call lceqvn(ndt, sigd, yf)
@@ -251,7 +252,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
             indi(nbmeca) = i
             yf(ndt+1+nbmeca) = vin(i)
         endif
-44  end do
+ 44 end do
 !
     do 47 i = 1, 3
 !
@@ -272,7 +273,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
         fidsig = 0
         do 46 j = 1, ndt
             fidsig = fidsig + dfds(j)*dsig(j)
-46      continue
+ 46     continue
 !
         ri = abs(fidsig/fr)
         if (ri .gt. un) then
@@ -283,7 +284,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
         ni = nint(ri/tole1)
         if (ndec .lt. ni) ndec = ni
 !
-47  continue
+ 47 continue
 !
 ! -------------------------------------------------------
 ! 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE1
@@ -349,7 +350,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
             if (ndec .lt. ni) ndec = ni
         endif
 !
-45  end do
+ 45 end do
 !
 !KH ----
 !KH ON CONTROLE L'INCREMENT DE CONTRAINTE: DS/S- <= 10%
@@ -360,7 +361,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     do 451 i = 1, ndt
         prodd = prodd + sigd(i)**deux
         prodf = prodf + (sigf(i)-sigd(i))**deux
-451  end do
+451 end do
     prodd = sqrt(prodd)
     prodf = sqrt(prodf)
 !
@@ -375,5 +376,5 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     endif
 !      IF (NDEC.GT.1) WRITE (6,'(A,I4)') ' NDEC =',NDEC
 !
-500  continue
+500 continue
 end subroutine

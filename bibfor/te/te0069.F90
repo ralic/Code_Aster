@@ -1,5 +1,6 @@
 subroutine te0069(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm2d.h"
@@ -51,7 +52,7 @@ subroutine te0069(option, nomte)
     character(len=8) :: nomres(2), elrefe, elref2, fami, poum
     character(len=16) :: phenom
 !
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +68,8 @@ subroutine te0069(option, nomte)
     nbcmp = 2
 !
 !
-    call elrefe_info(elrefe=elref2,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elref2, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -148,7 +149,7 @@ subroutine te0069(option, nomte)
             do 103 nuno = 1, nno
                 point(1) = point(1) + zr(ivf+k+nuno-1)*zr(igeom+2* nuno-2)
                 point(2) = point(2) + zr(ivf+k+nuno-1)*zr(igeom+2* nuno-1)
-103          continue
+103         continue
             xu = orig(1) - point(1)
             yu = orig(2) - point(2)
             xnorm = sqrt( xu**2 + yu**2 )
@@ -165,7 +166,7 @@ subroutine te0069(option, nomte)
             tpg = tpg + zr(itempe+j-1)*zr(ivf+k+j-1)
             fluxx = fluxx + zr(itempe+j-1)*dfdx(j)
             fluxy = fluxy + zr(itempe+j-1)*dfdy(j)
-110      continue
+110     continue
 !
         if (phenom .eq. 'THER_NL') then
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
@@ -187,11 +188,11 @@ subroutine te0069(option, nomte)
         fpg(ifpg+1) = -fluglo(1)
         fpg(ifpg+2) = -fluglo(2)
 !
-101  end do
+101 end do
 !
     do 90 kp = 1, npg
         zr(iflux+(kp-1)*nbcmp-1+1) = fpg(2*(kp-1)+1)
         zr(iflux+(kp-1)*nbcmp-1+2) = fpg(2*(kp-1)+2)
-90  end do
+ 90 end do
 !
 end subroutine

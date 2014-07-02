@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                       dimcon, yamec, yate, addep1, addep2,&
@@ -33,7 +35,7 @@ interface
         integer :: dimdef
         integer :: ndim
         character(len=16) :: option
-        logical(kind=1) :: perman
+        aster_logical :: perman
         character(len=16) :: thmc
         integer :: yamec
         integer :: yate
@@ -82,7 +84,7 @@ interface
         real(kind=8) :: dviscg
         real(kind=8) :: mamolv
         real(kind=8) :: dficks
-        logical(kind=1) :: vf
+        aster_logical :: vf
         integer :: ifa
         real(kind=8) :: valfac(maxfa, 14, 6)
         real(kind=8) :: valcen(14, 6)

@@ -59,6 +59,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -93,7 +94,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2
     real(kind=8) :: grtx0, grty0, grtz0, grtx1, grty1, grtz1
 !
-    logical(kind=1) :: thlagr, milieu, debug, thlag2, pair, connex
+    aster_logical :: thlagr, milieu, debug, thlag2, pair, connex
 !
 !-----------------------------------------------------------------------
     integer :: iadrtt, jbas, kno

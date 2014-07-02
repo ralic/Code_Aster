@@ -24,6 +24,7 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -84,7 +85,7 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !
 !
     integer :: ifm, niv
-    logical(kind=1) :: lstat, ldyna
+    aster_logical :: lstat, ldyna
 !
 ! ----------------------------------------------------------------------
 !

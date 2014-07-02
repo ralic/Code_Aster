@@ -28,6 +28,7 @@ subroutine te0258(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -42,7 +43,7 @@ subroutine te0258(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: ndi, nno, kp, npg, imatuu, iimpe
     integer :: ldec, kpg, spt
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
@@ -50,8 +51,8 @@ subroutine te0258(option, nomte)
     integer :: nnos
     real(kind=8) :: r
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     ndi = nno* (2*nno+1)
 !
     laxi = .false.
@@ -74,7 +75,7 @@ subroutine te0258(option, nomte)
 ! --- INITIALISATION DE LA MATRICE D'IMPEDANCE
     do 10 i = 1, ndi
         zr(imatuu+i-1) = 0.d0
-10  end do
+ 10 end do
 !
     if (zr(iimpe) .eq. 0.d0) then
         goto 60
@@ -97,7 +98,7 @@ subroutine te0258(option, nomte)
                 r = 0.d0
                 do 20 i = 1, nno
                     r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
-20              continue
+ 20             continue
                 poids = poids*r
             endif
 !%
@@ -111,10 +112,10 @@ subroutine te0258(option, nomte)
                     zr(imatuu+ij-1) = zr(imatuu+ij-1) + poids*rho2/zr( iimpe+kp-1)* zr(ivf+ldec+i&
                                       &-1)*zr(ivf+ldec+j-1)
 !
-30              continue
-40          continue
+ 30             continue
+ 40         continue
 !
-50      continue
+ 50     continue
     endif
-60  continue
+ 60 continue
 end subroutine

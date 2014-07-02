@@ -1,6 +1,7 @@
 subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                   listma, chresu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -87,16 +88,16 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !     ------------------------------------------------------------------
 !
     integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
-    integer ::     i1, nbth1, jth1, nbth2, nbcrs
-    integer :: nbcin, nbcca,      jcesl
-    integer ::    im, ima, nbpt, decrs, decin, decca, ipt, ino
-    integer :: adrm, nbm, icmp, jconx1, jconx2, jfact,  jpassa, npass
-    integer :: ifm, niv, iocs, iad,  ioc2, jcinl, jccal, nbp12, nbp23
+    integer :: i1, nbth1, jth1, nbth2, nbcrs
+    integer :: nbcin, nbcca, jcesl
+    integer :: im, ima, nbpt, decrs, decin, decca, ipt, ino
+    integer :: adrm, nbm, icmp, jconx1, jconx2, jfact, jpassa, npass
+    integer :: ifm, niv, iocs, iad, ioc2, jcinl, jccal, nbp12, nbp23
     integer :: nbp13
     real(kind=8) :: ppi, ppj, snmax, samax, utot, saltij, ug, nadm(1), mpi(3)
     real(kind=8) :: mpj(3), sm, sn, sp, c(3), k(3), cara(3), matpi(14)
     real(kind=8) :: matpj(14), mse(3), snb, sab, smm, vale(2)
-    logical(kind=1) :: seisme, endur
+    aster_logical :: seisme, endur
     integer :: icodre(1)
     character(len=8) :: k8b, nommat, noeud, valk(7), kbid
     character(len=24) :: momepi, momepj, nommai, nomnoe, connex, matepi, matepj
@@ -229,7 +230,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
                 endif
                 k(icmp) = cinv(iad)
-202          continue
+202         continue
 !
 ! ------- LES CARATERISTIQUES : INERTIE, DIAMETRE, EPAISSEUR
 !
@@ -241,7 +242,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     call utmess('F', 'POSTRCCM_8', nk=2, valk=valk)
                 endif
                 cara(icmp-1) = ccav(iad)
-204          continue
+204         continue
 !
             sm = 0.d0
             snmax = 0.d0
@@ -296,7 +297,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                             cara, nommat, snmax, samax, utot,&
                             sm, zr(jfact))
 !
-100          continue
+100         continue
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   2
@@ -397,9 +398,9 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     endif
                     utot = utot + ug
 !
-210              continue
+210             continue
 !
-200          continue
+200         continue
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   3
@@ -435,7 +436,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                             cara, nommat, snmax, samax, utot,&
                             sm, zr(jfact))
 !
-310          continue
+310         continue
 !
 ! ----------------------------------------------------------------------
 !
@@ -467,9 +468,9 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
             iad = decrs + (ipt-1)*nbcrs + icmp
             cesv(iad) = utot
 !
-20      continue
+ 20     continue
 !
-10  end do
+ 10 end do
 !
     1000 format(a,a8,a,a8)
     3002 format ('=> LISTE DES NUMEROS DE SITUATION: ',100 (i4,1x))

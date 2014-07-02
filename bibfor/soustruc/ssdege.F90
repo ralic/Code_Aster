@@ -18,6 +18,7 @@ subroutine ssdege(nomu)
     implicit none
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -45,13 +46,13 @@ subroutine ssdege(nomu)
 !        NOMU : NOM DU MACR_ELEM_STAT QUE L'ON DEFINIT.
 !
     character(len=8) :: kbi81, noma, nomo, nomgd, promes
-    logical(kind=1) :: lmess
+    aster_logical :: lmess
     real(kind=8) :: time
     character(len=16) :: pheno
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iaexte, ialino,  iarefm, ibid(1), iec
+    integer :: iaexte, ialino, iarefm, ibid(1), iec
     integer :: ier, ii, ino, jdesm, jvarm, n1, nbc
     integer :: nbec, nbnoto, nch, nchar, nvalap
     integer, pointer :: prnm(:) => null()

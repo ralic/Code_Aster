@@ -65,6 +65,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircmpf.h"
@@ -79,7 +80,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     character(len=*) :: nofimd
     character(len=80) :: caimpk(3)
 !
-    logical(kind=1) :: exicmp(nbvato)
+    aster_logical :: exicmp(nbvato)
 !
 ! 0.2. ==> COMMUNS
 !
@@ -142,7 +143,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
         exicmp(iaux+1) = .true.
         goto 21
     endif
-211  continue
+211 continue
 !
     21 end do
 !
@@ -164,7 +165,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
             nval = nval + 1
             profas(nval) = iaux
         endif
-31      continue
+ 31     continue
 !
 ! 3.2. ==> AVEC FILTRAGE
 !
@@ -176,7 +177,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
             nval = nval + 1
             profas(nval) = iaux
         endif
-32      continue
+ 32     continue
 !
     endif
 !

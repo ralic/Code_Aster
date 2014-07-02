@@ -20,6 +20,7 @@ subroutine exchno(imodat, iparg)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
@@ -60,9 +61,9 @@ subroutine exchno(imodat, iparg)
     integer :: desc, prno1, prno2, modloc, ityplo
     integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
     integer :: iaux1, k, iec, debugr
-    logical(kind=1) :: lparal
+    aster_logical :: lparal
 !
-    logical(kind=1) :: diff, moyenn
+    aster_logical :: diff, moyenn
 !
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
@@ -151,13 +152,13 @@ subroutine exchno(imodat, iparg)
                             iaux1=iachlo+debugr-1+(iel-1)*ncmp
                             do 10 k = 1, ncmp
                                 zr(iaux1-1+k)=0.d0
-10                          continue
+ 10                         continue
                         endif
-20                  continue
+ 20                 continue
                 else
-                    do 30,k=1,nbelgr*ncmp
-                    zr(iachlo+debugr-1-1+k)=0.d0
-30                  continue
+                    do 30 k = 1, nbelgr*ncmp
+                        zr(iachlo+debugr-1-1+k)=0.d0
+ 30                 continue
                 endif
             else if (typegd.eq.'C') then
                 if (lparal) then
@@ -166,13 +167,13 @@ subroutine exchno(imodat, iparg)
                             iaux1=iachlo+debugr-1+(iel-1)*ncmp
                             do 40 k = 1, ncmp
                                 zc(iaux1-1+k)=(0.d0,0.d0)
-40                          continue
+ 40                         continue
                         endif
-50                  continue
+ 50                 continue
                 else
-                    do 60,k=1,nbelgr*ncmp
-                    zc(iachlo+debugr-1-1+k)=(0.d0,0.d0)
-60                  continue
+                    do 60 k = 1, nbelgr*ncmp
+                        zc(iachlo+debugr-1-1+k)=(0.d0,0.d0)
+ 60                 continue
                 endif
             else
                 ASSERT(.false.)
@@ -186,37 +187,37 @@ subroutine exchno(imodat, iparg)
         if (num .lt. 0) then
             long=-num
             deb2=debugr
-            do 90,iel=1,nbelgr
-            if (lparal) then
-                if (.not.zl(jparal-1+iel)) then
-                    deb2=deb2+lgcata
-                    goto 90
-                endif
-            endif
-            ima=numail(igr,iel)
-            ASSERT(ima.ne.0)
-            do 80 ino = 1, nno
-                if (diff) idg2=5+nec*(ino-1)
-                if (ima .gt. 0) then
-                    nugl=numglm(ima,ino)
-                else
-                    nugl=numgls((-ima),ino)
-                endif
-                deb1=(nugl-1)*long+1
-!
-                if (nugl .gt. 0) then
-                    call trigd(zi(desc-1+3), deb1, zi(modloc-1+idg2), deb2, moyenn,&
-                               ino, nno)
-                else
-!                 ON VERIFIE QUE LE MODLOC AFFIRME NCMP=0:
-                    do 70,iec=1,nec
-                    if (zi(modloc-1+idg2-1+iec) .ne. 0) then
-                        call utmess('F', 'CALCULEL2_52')
+            do 90 iel = 1, nbelgr
+                if (lparal) then
+                    if (.not.zl(jparal-1+iel)) then
+                        deb2=deb2+lgcata
+                        goto 90
                     endif
-70                  continue
                 endif
-80          continue
-90          continue
+                ima=numail(igr,iel)
+                ASSERT(ima.ne.0)
+                do 80 ino = 1, nno
+                    if (diff) idg2=5+nec*(ino-1)
+                    if (ima .gt. 0) then
+                        nugl=numglm(ima,ino)
+                    else
+                        nugl=numgls((-ima),ino)
+                    endif
+                    deb1=(nugl-1)*long+1
+!
+                    if (nugl .gt. 0) then
+                        call trigd(zi(desc-1+3), deb1, zi(modloc-1+idg2), deb2, moyenn,&
+                                   ino, nno)
+                    else
+!                 ON VERIFIE QUE LE MODLOC AFFIRME NCMP=0:
+                        do 70 iec = 1, nec
+                            if (zi(modloc-1+idg2-1+iec) .ne. 0) then
+                                call utmess('F', 'CALCULEL2_52')
+                            endif
+ 70                     continue
+                    endif
+ 80             continue
+ 90         continue
         else
 !
 !        --- C'EST 1 CHAMP AVEC PROFIL_NOEUD:
@@ -224,35 +225,35 @@ subroutine exchno(imodat, iparg)
             prno1=zi(iachii-1+11*(iichin-1)+8)
             prno2=zi(iachii-1+11*(iichin-1)+9)
             deb2=debugr
-            do 110,iel=1,nbelgr
-            if (lparal) then
-                if (.not.zl(jparal-1+iel)) then
-                    deb2=deb2+lgcata
-                    goto 110
+            do 110 iel = 1, nbelgr
+                if (lparal) then
+                    if (.not.zl(jparal-1+iel)) then
+                        deb2=deb2+lgcata
+                        goto 110
+                    endif
                 endif
-            endif
-            ima=numail(igr,iel)
-            ASSERT(ima.ne.0)
-            do 100 ino = 1, nno
-                if (diff) idg2=5+nec*(ino-1)
-                if (ima .gt. 0) then
-                    nugl=numglm(ima,ino)
-                else
-                    nugl=numgls((-ima),ino)
-                endif
-                deb1=(abs(nugl)-1)*(nec+2)+1
-                idg1=(abs(nugl)-1)*(nec+2)+3
+                ima=numail(igr,iel)
+                ASSERT(ima.ne.0)
+                do 100 ino = 1, nno
+                    if (diff) idg2=5+nec*(ino-1)
+                    if (ima .gt. 0) then
+                        nugl=numglm(ima,ino)
+                    else
+                        nugl=numgls((-ima),ino)
+                    endif
+                    deb1=(abs(nugl)-1)*(nec+2)+1
+                    idg1=(abs(nugl)-1)*(nec+2)+3
 !
-                if (nugl .gt. 0) then
-                    call trigd(zi(prno1-1+idg1), zi(prno1-1+deb1), zi(modloc-1+idg2), deb2,&
-                               moyenn, ino, nno)
-                else
-                    call trigd(zi(prno2-1+idg1), zi(prno2-1+deb1), zi(modloc-1+idg2), deb2,&
-                               moyenn, ino, nno)
-                endif
-100          continue
+                    if (nugl .gt. 0) then
+                        call trigd(zi(prno1-1+idg1), zi(prno1-1+deb1), zi(modloc-1+idg2), deb2,&
+                                   moyenn, ino, nno)
+                    else
+                        call trigd(zi(prno2-1+idg1), zi(prno2-1+deb1), zi(modloc-1+idg2), deb2,&
+                                   moyenn, ino, nno)
+                    endif
+100             continue
 !
-110          continue
+110         continue
         endif
 !
 !
@@ -265,14 +266,14 @@ subroutine exchno(imodat, iparg)
                             iaux1=iachlo+debugr-1+(iel-1)*ncmp
                             do 120 k = 1, ncmp
                                 zr(iaux1-1+k)=zr(iaux1-1+k)/dble(nno)
-120                          continue
+120                         continue
                         endif
-130                  continue
+130                 continue
                 else
-                    do 140,k=1,nbelgr*ncmp
-                    zr(iachlo-1+k)=zr(iachlo+debugr-1-1+k)/dble(&
+                    do 140 k = 1, nbelgr*ncmp
+                        zr(iachlo-1+k)=zr(iachlo+debugr-1-1+k)/dble(&
                         nno)
-140                  continue
+140                 continue
                 endif
             else if (typegd.eq.'C') then
                 if (lparal) then
@@ -281,14 +282,14 @@ subroutine exchno(imodat, iparg)
                             iaux1=iachlo+debugr-1+(iel-1)*ncmp
                             do 150 k = 1, ncmp
                                 zc(iaux1-1+k)=zc(iaux1-1+k)/dble(nno)
-150                          continue
+150                         continue
                         endif
-160                  continue
+160                 continue
                 else
-                    do 170,k=1,nbelgr*ncmp
-                    zc(iachlo-1+k)=zc(iachlo+debugr-1-1+k)/dble(&
+                    do 170 k = 1, nbelgr*ncmp
+                        zc(iachlo-1+k)=zc(iachlo+debugr-1-1+k)/dble(&
                         nno)
-170                  continue
+170                 continue
                 endif
             else
                 ASSERT(.false.)

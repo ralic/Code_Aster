@@ -144,6 +144,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/dvout.h"
 #include "blas/dcopy.h"
@@ -165,7 +166,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     %------------------%
 !
     character(len=1) :: bmat
-    logical(kind=1) :: initv
+    aster_logical :: initv
     integer :: ido, ierr, itry, j, ldv, n
     real(kind=8) :: rnorm, alpha
 !
@@ -187,7 +188,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    logical(kind=1) :: first, inits, orth
+    aster_logical :: first, inits, orth
     integer(kind=4) :: iseed4(4)
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0

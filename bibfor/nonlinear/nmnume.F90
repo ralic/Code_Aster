@@ -20,6 +20,7 @@ subroutine nmnume(modele, result, lischa, lcont, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -31,7 +32,7 @@ subroutine nmnume(modele, result, lischa, lcont, defico,&
     character(len=8) :: result
     character(len=19) :: lischa, solveu
     character(len=19) :: sdnume
-    logical(kind=1) :: lcont
+    aster_logical :: lcont
 !
 ! ----------------------------------------------------------------------
 !

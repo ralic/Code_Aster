@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                       iret, impr, ifmump, prepos, pcentp)
@@ -26,7 +28,7 @@ interface
         integer :: iret
         character(len=14) :: impr
         integer :: ifmump
-        logical(kind=1) :: prepos
+        aster_logical :: prepos
         integer :: pcentp(2)
     end subroutine amumps
 end interface

@@ -22,6 +22,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterfort/copisd.h"
@@ -38,7 +39,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
 #include "asterfort/nxnoli.h"
 #include "asterfort/rsnume.h"
 #include "asterfort/tiinit.h"
-    logical(kind=1) :: lostat, levol, lnonl
+    aster_logical :: lostat, levol, lnonl
     character(len=19) :: lischa, lisch2, solveu
     character(len=19) :: sddisc, sdcrit, sdobse
     character(len=24) :: sdieto
@@ -66,7 +67,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
     character(len=24) :: noojb
     character(len=24) :: hydr0
     real(kind=8) :: instin
-    logical(kind=1) :: lreuse
+    aster_logical :: lreuse
 !
 ! ----------------------------------------------------------------------
 !

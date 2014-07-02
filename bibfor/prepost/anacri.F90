@@ -18,6 +18,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fonbpa.h"
 #include "asterfort/jedema.h"
@@ -27,7 +28,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     character(len=3) :: impgrd
     character(len=16) :: nomcri, nomfor, typcha
     integer :: paract(35)
-    logical(kind=1) :: fordef, crsigm, crepst, crepse, crepsp
+    aster_logical :: fordef, crsigm, crepst, crepse, crepsp
 !
 ! ---------------------------------------------------------------------
 ! BUT: ANALYSER LE CRITERE POUR DETERMINER LES GRANDEURS NECESSAIARES
@@ -55,7 +56,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     character(len=2) :: nomty1(35), nomty2(30)
     character(len=8) :: nompa1(35), nompa2(30), nompf(35)
     character(len=24) :: chnom, cbid
-    logical(kind=1) :: grdexi
+    aster_logical :: grdexi
 !
 !     ---------------------------------------------------------------
     data  nompa1/       'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
@@ -109,17 +110,17 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 !
 !
     nparm2 = 30
-
+!
 ! NOMBRE MAX DE PARAMETRES DISPONIBLES
     nparma = 35
 !
 !     INITIALISATION
     do 15 ip = 1, nparma
         paract(ip) = 0
-15  end do
+ 15 end do
 !
     fordef = .false.
-
+!
     if (nomcri(1:7) .eq. 'FORMULE') then
 !
 ! RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
@@ -139,7 +140,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                         grdexi = .true.
                         paract(ip) = 1
                     endif
-40              continue
+ 40             continue
                 if (.not. grdexi) then
                     call utmess('F', 'FATIGUE1_91', sk=nompf(id))
                 endif
@@ -150,20 +151,20 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                         if (nompf(ip)(1:3) .eq. 'TAU') then
                             call utmess('F', 'FATIGUE1_92')
                         endif
-20                  continue
+ 20                 continue
                 endif
                 if (nompf(id)(1:3) .eq. 'TAU') then
                     do 30 ip = 1, np
                         if (nompf(ip)(1:3) .eq. 'EPS') then
                             call utmess('F', 'FATIGUE1_92')
                         endif
-30                  continue
+ 30                 continue
                 endif
-10          continue
+ 10         continue
 !
-         endif
-!      
-         if (typcha(1:10) .eq. 'PERIODIQUE') then
+        endif
+!
+        if (typcha(1:10) .eq. 'PERIODIQUE') then
             do 60 id = 1, np
                 grdexi = .false.
                 do 50 ip = 1, nparma
@@ -171,13 +172,13 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                         grdexi = .true.
                         paract(ip) = 1
                     endif
-50              continue
+ 50             continue
 !
                 if (.not. grdexi) then
                     call utmess('F', 'FATIGUE1_91', sk=nompf(id))
                 endif
 !
-60          continue
+ 60         continue
         endif
 !
     endif
@@ -272,9 +273,9 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                         crepsp = .true.
                     endif
                 endif
-81          continue
+ 81         continue
         endif
-80  end do
+ 80 end do
 !
 ! IMPRIMER DES INFO
     if (impgrd .eq. 'OUI') then
@@ -293,7 +294,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                 endif
             endif
 !
-70      continue
+ 70     continue
 !
         write(6,*)'HISTOIRES DE CHARGEMENT DOIVENT CONSISTER :'
 !

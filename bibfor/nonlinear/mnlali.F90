@@ -1,6 +1,6 @@
-subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
-                  ninc, nd, nchoc, h, hf,&
-                  ampl, xvect,lnm,num_ordr)
+subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
+                  adime, ninc, nd, nchoc, h,&
+                  hf, ampl, xvect, lnm, num_ordr)
     implicit none
 !
 ! ======================================================================
@@ -47,6 +47,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
 ! ----------------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -69,7 +70,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: reprise
+    aster_logical :: reprise
     integer :: imat(2), ninc, nd, nchoc, h, hf, num_ordr
     character(len=8) :: modini
     character(len=14) :: parcho, adime, xcdl, xvect
@@ -85,8 +86,8 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
     real(kind=8) :: omega, lambda, ampref, alpha, eta, jeu
     integer :: ivect, neq, neqv, nbmode, nbpari, nbparr, nbpark, ilnm, ifreq
     integer :: iadim, i, j, k, icdl
-    integer :: neqs,   ijmax,  nddlx,  nddly
-    integer ::   nt, nddl, ht, idep1, idep2, itemp
+    integer :: neqs, ijmax, nddlx, nddly
+    integer :: nt, nddl, ht, idep1, idep2, itemp
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: reg(:) => null()
     character(len=8), pointer :: type(:) => null()
@@ -174,8 +175,8 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
                         zr(ivect-1+(j-1)*nd+i)=zr(ilnm-1+(j-1)*neq+k)
                     endif
                 endif
-11          continue
-10      continue
+ 11         continue
+ 10     continue
     else
         i=0
         do 31 k = 1, neq
@@ -183,7 +184,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
                 i=i+1
                 zr(ivect-1+nd+i)=zr(ilnm-1+k+(num_ordr-1)*neq)
             endif
-31      continue
+ 31     continue
     endif
 ! ----------------------------------------------------------------------
 ! --- ADIMENSIONNEMENT
@@ -243,7 +244,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
                         hf, nt, zr(ivect+ nd*(2*h+1)+neqs*(2*hf+1)))
         endif
         neqs=neqs+vneqs(i)
-20  continue
+ 20 continue
 !
 ! ----------------------------------------------------------------------
 ! --- REMPLISSAGE DES PARAMETRES
@@ -260,7 +261,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
 ! --- DESTRUCTION DE LA SD_RESULTAT CONTENANT LE(S) MODE(S) LINEAIRE(S)
 ! ----------------------------------------------------------------------
 !
-
+!
 !    call jedetr(clnm)
     call jedetr(xdep1)
     call jedetr(xdep2)

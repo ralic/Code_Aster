@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmctcl(numins, modele, noma, defico, resoco,&
                       sddyna, sddisc, loptin)
@@ -25,6 +27,6 @@ interface
         character(len=24) :: resoco
         character(len=19) :: sddyna
         character(len=19) :: sddisc
-        logical(kind=1) :: loptin
+        aster_logical :: loptin
     end subroutine nmctcl
 end interface

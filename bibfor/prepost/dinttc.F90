@@ -36,6 +36,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
 !
 ! - DECLARATION GLOBALE
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     real(kind=8) :: coord1(3), coord2(3), xo1o2, yo1o2, zo1o2, do1o2
     real(kind=8) :: r, coord(3, 12)
@@ -50,7 +51,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
     real(kind=8) :: a, b, c, delta, lamda1, lamda2, lambda
     real(kind=8) :: dao1, dao2, dxo1, dxo2, pao1o2, pao2o1, pbo1o2
     real(kind=8) :: cos1, cos2, n2, n3, n4
-    logical(kind=1) :: lnoeu(2, 4), lintcy
+    aster_logical :: lnoeu(2, 4), lintcy
 !
     l = 4
     nbi = 0
@@ -71,7 +72,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
         dao2 = sqrt( xo2a**2 + yo2a**2 + zo2a**2 )
         if (abs(dao1) .le. 1.0d-6) lnoeu(1,j) = .true.
         if (abs(dao2) .le. 1.0d-6) lnoeu(2,j) = .true.
-10  end do
+ 10 end do
 !
 ! RECHERCHE DES INTERSECTIONS DES ARETES DU TETRA AVEC LE CYLINDRE
     do 20 j = 1, 3
@@ -81,7 +82,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
             if ((norm(1,j)*norm(1,k)) .gt. 0) then
                 do 35 i = 1, 3
                     coord(i,l) = 1.0d30
-35              continue
+ 35             continue
             else
 ! UN POINT EST EXTERIEUR ET L AUTRE INTERIEUR
                 nbi = nbi + 1
@@ -255,8 +256,8 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                     coord(3,l) = lambda*zab + coord(3,ia)
                 endif
             endif
-30      continue
-20  end do
+ 30     continue
+ 20 end do
 !
 ! SUIVANT LES CAS IL RESTE DES CALCULS A FAIRE
     if (nint .eq. 1 .and. nbi .ge. 1) then
@@ -267,7 +268,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
 !
         do 40 i = 1, 4
             if (norm(1,i) .eq. 1) ib = i
-40      continue
+ 40     continue
         do 50 i = 1, 4
             if (norm(1,i) .eq. -1 .and. norm(2,i) .ne. 0) then
 !
@@ -300,7 +301,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                     coord(3,l) = -lambda*zo1o2/do1o2 + coord(3,i)
                 endif
             endif
-50      continue
+ 50     continue
     else if (nint.eq.2 .and. nhop.eq.2 .and. npir.ge.3) then
 !
 ! SI LES 2 POINTS EXTERNES SONT DU MEME COTE ON NE FAIT RIEN
@@ -314,7 +315,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
             else if (norm(1,i).eq.-1) then
                 ib = i
             endif
-60      continue
+ 60     continue
 ! SI LES 2 POINTS NE SONT PAS DU MEME COTE
         if (norm(2,ia) .ne. norm(2,ib)) then
             xab = coord(1,ib) - coord(1,ia)

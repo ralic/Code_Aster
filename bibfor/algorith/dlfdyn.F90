@@ -1,11 +1,12 @@
 subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
                   v0, f, f0)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/mrmult.h"
 #include "blas/daxpy.h"
     real(kind=8) :: d0(*), v0(*), f(*), f0(*)
     integer :: rigid, amort, neq
-    logical(kind=1) :: lamort
+    aster_logical :: lamort
 !
 !**********************************************************************
 ! ======================================================================

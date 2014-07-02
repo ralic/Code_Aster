@@ -5,6 +5,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
@@ -74,7 +75,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     integer :: mxstac
     character(len=8) :: typma
     integer :: zxain
-    logical(kind=1) :: axi, papillon, ajout
+    aster_logical :: axi, papillon, ajout
     parameter      (mxstac=1000)
 !
 ! ----------------------------------------------------------------------
@@ -88,7 +89,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     ASSERT(ndim.le.mxstac)
 !
     zxain = xxmmvd('ZXAIN')
-    call elrefe_info(fami='RIGI',ndim=ndime)
+    call elrefe_info(fami='RIGI', ndim=ndime)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -139,28 +140,29 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
         if (na .lt. 1000) then
             do 305 i = 1, nfisc
                 somlsn(i) = somlsn(i)+lsn((na-1)*nfiss+fisco(2*i-1))
-305          continue
+305         continue
         else
 !         RECUP COOR GLOBALES
             call vecini(3, 0.d0, a)
             do 310 i = 1, ndim
                 a(i)=pintt(ndim*(na-1001)+i)
-310          continue
+310         continue
 !           CALCUL DES FF
-            call reeref(elp, nnop, zr(igeom), a, ndim, rbid2, ff)
+            call reeref(elp, nnop, zr(igeom), a, ndim,&
+                        rbid2, ff)
 !           INTERPOLATION LSN
             do 320 j = 1, nnop
                 do 325 i = 1, nfisc
                     somlsn(i)=somlsn(i)+ff(j)*lsn((j-1)*nfiss+fisco(2*&
                     i-1))
-325              continue
-320          continue
+325             continue
+320         continue
         endif
-300  end do
+300 end do
 !  SI ON EST PAS DU COTÉ INTERSECTÉ, ON SORT
     do 330 i = 1, nfisc
         if (fisco(2*i)*somlsn(i) .gt. 0) goto 999
-330  end do
+330 end do
 !
     call conare(typma, ar, nbar)
 !
@@ -187,31 +189,33 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             else
                 b(i)=pintt(ndim*(nb-1001)+i)
             endif
-110      continue
+110     continue
 !        LONGAR=PADIST(NDIM,A,B)
 !
         if (na .lt. 1000) then
             lsna=lsn((na-1)*nfiss+ifiss)
         else
 !         CALCUL DES FF
-            call reeref(elp, nnop, zr(igeom), a, ndim, rbid2, ff)
+            call reeref(elp, nnop, zr(igeom), a, ndim,&
+                        rbid2, ff)
 !         INTERPOLATION LSN
             lsna=0
             do 10 i = 1, nnop
                 lsna = lsna + ff(i)*lsn((i-1)*nfiss+ifiss)
-10          continue
+ 10         continue
             if (abs(lsna) .lt. lonref*1.d-4) lsna = 0
         endif
         if (nb .lt. 1000) then
             lsnb=lsn((nb-1)*nfiss+ifiss)
         else
 !         CALCUL DES FF
-            call reeref(elp, nnop, zr(igeom), b, ndim, rbid2, ff)
+            call reeref(elp, nnop, zr(igeom), b, ndim,&
+                        rbid2, ff)
 !         INTERPOLATION LSN
             lsnb=0
             do 20 i = 1, nnop
                 lsnb = lsnb + ff(i)*lsn((i-1)*nfiss+ifiss)
-20          continue
+ 20         continue
             if (abs(lsnb) .lt. lonref*1.d-4) lsnb = 0
         endif
 !
@@ -230,26 +234,27 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             endif
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-888              continue
+888             continue
                 do 130 i = 1, ndim
                     c(i)=a(i)-lsna/(lsnb-lsna)*(b(i)-a(i))
-130              continue
+130             continue
                 if (nfiss .ge. 2) then
 !         CALCUL DES FF
-                    call reeref(elp, nnop, zr(igeom), c, ndim, rbid2, ff)
+                    call reeref(elp, nnop, zr(igeom), c, ndim,&
+                                rbid2, ff)
 !         INTERPOLATION LSN
                     lsnc=0
                     iter = 0
                     do 30 i = 1, nnop
                         lsnc = lsnc + ff(i)*lsn((i-1)*nfiss+ifiss)
-30                  continue
+ 30                 continue
                     if (abs(lsnc) .gt. lonref*1d-8) then
                         iter = iter+1
                         ASSERT(iter.lt.50)
                         lsnb = lsnc
                         do 140 i = 1, ndim
                             b(i) = c(i)
-140                      continue
+140                     continue
                         goto 888
                     endif
                 endif
@@ -261,9 +266,9 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
                             0.d0, ajout)
             endif
         endif
-100  end do
+100 end do
 !
-999  continue
+999 continue
     ninter=ipt
     npts  =ins
     ASSERT(ninter.ge.npts.and.ninter.le.ptmax)
@@ -273,45 +278,45 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
         pp=pd
         do 201 i = pp, ninter
             if (ainter(zxain*(i-1)+1) .lt. ainter(zxain*(pp-1)+1)) pp=i
-201      continue
+201     continue
         do 202 k = 1, 4
             tampor(k)=ainter(zxain*(pp-1)+k)
             ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
             ainter(zxain*(pd-1)+k)=tampor(k)
-202      continue
+202     continue
         do 203 k = 1, ndim
             tampor(k)=pinter(ndim*(pp-1)+k)
             pinter(ndim*(pp-1)+k)=pinter(ndim*(pd-1)+k)
             pinter(ndim*(pd-1)+k)=tampor(k)
-203      continue
-200  end do
+203     continue
+200 end do
 !
 !      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
 !      IP1 IP2 ET IP3 ONT UN SOMMET EN COMMUN
 !      IP1 ET IP4 N ONT PAS DE SOMMET COMMUN
-    if (ninter .eq. 4 .and. npts.eq.0) then
+    if (ninter .eq. 4 .and. npts .eq. 0) then
         a1=nint(ainter(1))
-        do 220 ia = 2,3
-          a2=nint(ainter(zxain*(ia-1)+1))
-          papillon=.true.
-          do 224 i = 1,2
-            do 225 j = 1,2
-              if(ar(a1,i).eq.ar(a2,j)) papillon=.false.
-225         continue
-224       continue
-          if(papillon) then
+        do 220 ia = 2, 3
+            a2=nint(ainter(zxain*(ia-1)+1))
+            papillon=.true.
+            do 224 i = 1, 2
+                do 225 j = 1, 2
+                    if (ar(a1,i) .eq. ar(a2,j)) papillon=.false.
+225             continue
+224         continue
+            if (papillon) then
 !        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C
-            do 226 k = 1,(zxain-1)
-              tampor(k)=ainter(zxain*(ia-1)+k)
-              ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
-              ainter(zxain*(4-1)+k)=tampor(k)
-226         continue
-            do 227 k = 1, ndim
-              tampor(k)=pinter(ndim*(ia-1)+k)
-              pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
-              pinter(ndim*(4-1)+k)=tampor(k)
-227         continue
-          endif
+                do 226 k = 1, (zxain-1)
+                    tampor(k)=ainter(zxain*(ia-1)+k)
+                    ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
+                    ainter(zxain*(4-1)+k)=tampor(k)
+226             continue
+                do 227 k = 1, ndim
+                    tampor(k)=pinter(ndim*(ia-1)+k)
+                    pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
+                    pinter(ndim*(4-1)+k)=tampor(k)
+227             continue
+            endif
 220     continue
     endif
     call jedema()

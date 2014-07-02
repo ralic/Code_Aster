@@ -38,10 +38,11 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
     implicit none
 !
 !
+#include "asterf_types.h"
 #include "asterfort/cjsc3q.h"
 #include "asterfort/cjst.h"
     real(kind=8) :: mater(14, 2), sig(6), x(6), nor(7)
-    logical(kind=1) :: devnul, trac
+    aster_logical :: devnul, trac
     real(kind=8) :: zero, deux, six
     parameter     ( zero   = 0.d0   )
     parameter     ( deux   = 2.d0   )
@@ -79,6 +80,6 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
         trav = (deux+g*cos3tq)*q(i)+coef*tq(i)
         trav2 = trav2+trav*trav
         nor(i) = trav
-10  continue
+ 10 continue
     nor(ndt+1) = sqrt(trav2)
 end subroutine

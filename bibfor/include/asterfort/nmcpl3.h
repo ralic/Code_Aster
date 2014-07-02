@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcpl3(compor, option, crit, deps, dsidep,&
                       ndim, sigp, vip, cpl, icp,&
@@ -29,6 +31,6 @@ interface
         real(kind=8) :: vip(*)
         integer :: cpl
         integer :: icp
-        logical(kind=1) :: conv
+        aster_logical :: conv
     end subroutine nmcpl3
 end interface

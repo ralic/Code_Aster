@@ -16,6 +16,7 @@ subroutine te0344(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carapo.h"
@@ -60,7 +61,7 @@ subroutine te0344(option, nomte)
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)
     real(kind=8) :: ulr(14), ugr(14), pgl(14, 14), klc(14, 14)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3)
-    logical :: okopt
+    aster_logical :: okopt
 !     ------------------------------------------------------------------
     data nomres/'E','NU'/
 !     ------------------------------------------------------------------

@@ -19,6 +19,7 @@ subroutine obtcla(sdtabl)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -46,7 +47,7 @@ subroutine obtcla(sdtabl)
     character(len=24) :: slcolo, sdcolo
     integer :: icolo, nbcolo
     integer :: nbacti, larcol, larlig
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,7 +82,7 @@ subroutine obtcla(sdtabl)
             call obgeti(sdcolo, 'LARGEUR', larcol)
             larlig = larlig + (larcol+1)
         endif
-10  end do
+ 10 end do
 !
 ! --- SAUVEGARDE LARGEUR LIGNE
 !

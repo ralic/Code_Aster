@@ -26,6 +26,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 ! ----------------------- DECLARATIONS --------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assvec.h"
 #include "asterfort/celfpg.h"
@@ -68,17 +69,17 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     real(kind=8) :: rcmp(4), eps, x(9), y(9), a(9, 9), b(9, 4), diag(9)
     real(kind=8) :: wk1(9, 9), wk2(9)
     integer :: nno, npg, ivf
-    logical(kind=1) :: app
+    aster_logical :: app
 !
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i,  iad,  iamav, ianew, ianob
-    integer :: ianov,  iatyma, ibid, ic, icmp
-    integer ::  ima, ino, inob, inoma, ipa
-    integer ::  jcon, jconin, jelfa,   jpa
-    integer ::  jprno,  jrefn,   k
+    integer :: i, iad, iamav, ianew, ianob
+    integer :: ianov, iatyma, ibid, ic, icmp
+    integer :: ima, ino, inob, inoma, ipa
+    integer :: jcon, jconin, jelfa, jpa
+    integer :: jprno, jrefn, k
     integer :: nb, nbcmp, nbec, nbma, nbmav, nbn, nbno
     integer :: nbnob, nbnobp, nbnoma, nqua, ntri, num, numav
     integer :: numc, numel, numeq, numgr, numloc
@@ -87,7 +88,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     integer, pointer :: indic(:) => null()
     integer, pointer :: longconinv(:) => null()
     integer, pointer :: nbpatchmil(:) => null()
-    logical(kind=1), pointer :: noeubord(:) => null()
+    aster_logical, pointer :: noeubord(:) => null()
     integer, pointer :: numnb(:) => null()
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: refe(:) => null()

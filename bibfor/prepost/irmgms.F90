@@ -2,6 +2,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                   nonoe, lgmsh, versio)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -26,7 +27,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 !
     character(len=8) :: noma, nonoe(*)
     integer :: ifc, versio
-    logical(kind=1) :: lgmsh
+    aster_logical :: lgmsh
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,8 +72,8 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     integer :: ntyele
 !-----------------------------------------------------------------------
     integer :: i, iatyma, ibid, idgm, idgrma, idlima, idm
-    integer :: idn,  ier, igm, ima, ino, ipoin
-    integer :: itype, itypgm, j,    jpoin
+    integer :: idn, ier, igm, ima, ino, ipoin
+    integer :: itype, itypgm, j, jpoin
     integer :: nbelgm, nbgrm, nbm, nbma2, nbmli, ndim, nno
     integer :: nnoe, numgrm, numgrx
 !-----------------------------------------------------------------------
@@ -115,7 +116,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     do 101 i = 1, ntyele
         nbel(i) = 0
         nobj(i) = ' '
-101  end do
+101 end do
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2' ), typseg)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
@@ -161,14 +162,14 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
             write(ifc,1001) k7no, (vale(1+3*(ino-1)+j-1),j=1,ndim),&
             zero
         endif
-10  end do
+ 10 end do
 !
     write(ifc,'(A7)') '$ENDNOD'
 !
     nbma2 = 0
     do 102 i = 1, ntyele
         nbma2 = nbma2 + nbel(i)
-102  end do
+102 end do
 !
 ! --- NUMERO DES GROUP_MA (POUR L'ECRITURE DES MAILLES) :
 !     =================================================
@@ -185,7 +186,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
         if (ier .eq. 0) then
             numgrx = max(numgrx,numgrm)
         endif
-20  end do
+ 20 end do
 !
     if (nbgrm .gt. 0) then
         call utmess('I', 'PREPOST6_31')
@@ -204,10 +205,10 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
             call jeveuo(jexnum( '&&IRMGMS.LISMA', zi(idgrma+i-1) ), 'L', idlima)
             do 50 j = 1, nbmli
                 numgrma(1+zi(idlima+j-1)-1) = numgrm
-50          continue
-40      continue
+ 50         continue
+ 40     continue
         write(6,1002) nomgrm,numgrm
-30  end do
+ 30 end do
 !
 ! --- ECRITURE DES MAILLES DU MAILLAGE SUR LE FICHIER GMSH :
 !     ====================================================
@@ -218,7 +219,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     do 70 i = 1, ntyele
         nmtyp(i) = blanc8
         nbtyp(i) = 0
-70  end do
+ 70 end do
     nbelgm =0
     do 60 ima = 1, nbma2
         ipoin = zi(jpoin+ima-1)
@@ -242,8 +243,8 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                     nmtyp(i)=nomtyp
                     goto 90
                 endif
-80          continue
-90          continue
+ 80         continue
+ 90         continue
         endif
         call jenuno(jexnum(nommai, ima), nomail)
         if (lgmsh) then
@@ -257,10 +258,10 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
             else
                 call codent(connex(1+ipoin-1+ino-1), 'D', tk7no(ino))
             endif
-61      continue
+ 61     continue
         write(ifc,1003) k7ma,itypgm,numgrma(ima),numgrma(ima),&
         nnoe, (tk7no(ino),ino=1,nnoe)
-60  end do
+ 60 end do
 !
     if (nbtyp(1) .ne. 0 .and. niv .ge. 1) then
         call utmess('I', 'PREPOST6_32', si=nbelgm)
@@ -270,7 +271,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                 vali = nbtyp(i)
                 call utmess('I', 'PREPOST6_33', sk=valk, si=vali)
             endif
-95      continue
+ 95     continue
     endif
 !
     write(ifc,'(A7)') '$ENDELM'

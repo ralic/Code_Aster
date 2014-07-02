@@ -20,7 +20,8 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/jedema.h"
@@ -34,7 +35,7 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
     integer :: posnsm(9)
     integer :: ddl(30)
     real(kind=8) :: coef(30), cofx(30), cofy(30)
-    logical(kind=1) :: lctfd, lctf3d
+    aster_logical :: lctfd, lctf3d
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,7 +110,7 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
     do 5 k = 1, nbddle
         zr(japcoe+jdecal+k-1) = coef(k)
         zi(japddl+jdecal+k-1) = ddl(k)
- 5  end do
+  5 end do
 !
 ! --- RELATION DE FROTTEMENT POUR LE NOEUD ESCLAVE
 !
@@ -119,7 +120,7 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
             if (lctf3d) then
                 zr(japcof+jdecal+30*nesmax+k-1) = cofy(k)
             endif
-10      continue
+ 10     continue
     endif
 !
 ! --- RELATION DE CONTACT POUR LE NOEUD MAITRE
@@ -132,7 +133,7 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
         do 40 k = 1, nbddlm
             zr(japcoe+jdecal+k-1) = coef(jdecdl+k)
             zi(japddl+jdecal+k-1) = ddl(jdecdl+k)
-40      continue
+ 40     continue
 !
 ! --- RELATION DE FROTTEMENT POUR LE NOEUD MAITRE
 !
@@ -142,11 +143,11 @@ subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
                 if (lctf3d) then
                     zr(japcof+jdecal+30*nesmax+k-1) = cofy(jdecdl+k)
                 endif
-41          continue
+ 41         continue
         endif
         jdecal = jdecal + nbddlm
         jdecdl = jdecdl + nbddlm
-50  end do
+ 50 end do
 !
     call jedema()
 end subroutine

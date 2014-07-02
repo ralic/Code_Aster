@@ -49,6 +49,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !                   = 3 REDECOUPAGE DU PAS DE TEMPS
 !          BNEWS  : INDICATEUR LIE A LA TRACTION MAJ
 !     ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
@@ -59,15 +60,15 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     real(kind=8) :: mater(nmat, 2), vind(nvi), vinf(nvi), vins(nvi)
     real(kind=8) :: yd(nr), dy(nr), r(nr), toler, ye(nr)
     integer :: indi(7), iter, iret, itmax, intg
-    logical(kind=1) :: bnews(3), mtrac, lreli
+    aster_logical :: bnews(3), mtrac, lreli
 !
     integer :: nbmeca, nbmect, ndt, k, i, j, msup(2), resi, imin, ndi
     integer :: kk, jj
     real(kind=8) :: err, yf(nr), ydt(nr), yft(nr), dev(3), pf, qf
     real(kind=8) :: e0, pref, rtrac, ptrac, zero, maxi, ratio
     real(kind=8) :: un, deux, yet(nr), lamin, cinq, prob(3), matert(22, 2)
-    logical(kind=1) :: tracti, noconv, negtra, prox(4), proxc(4), modif
-    logical(kind=1) :: neglam(3), cycl, euler, ltry, impose, probt
+    aster_logical :: tracti, noconv, negtra, prox(4), proxc(4), modif
+    aster_logical :: neglam(3), cycl, euler, ltry, impose, probt
 !
     parameter (ndi  = 3   )
     parameter (ndt  = 6   )

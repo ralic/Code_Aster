@@ -1,10 +1,11 @@
 subroutine decod1(rec, irec, ifield, valatt, trouve)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/trfmot.h"
     character(len=*) :: rec(20)
     integer :: irec, ifield, valatt
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

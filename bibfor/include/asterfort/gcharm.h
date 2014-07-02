@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                       carteo)
-        logical(kind=1) :: lfchar
+        aster_logical :: lfchar
         character(len=19) :: cartei
         character(len=8) :: nomfct
         character(len=8) :: newfct

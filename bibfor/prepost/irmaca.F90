@@ -2,6 +2,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                   connex, point, noma, typma, lmod,&
                   nbgrn, nogn, nbgrm, nogm, nive)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -26,13 +27,13 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 #include "asterfort/lxcaps.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-
+!
     character(len=8) :: noma
     character(len=24) :: nogn(*), nogm(*)
     real(kind=8) :: coordo(*)
     integer :: connex(*), typma(*), point(*), ifc, nive
-    logical(kind=1) :: lmod
-
+    aster_logical :: lmod
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,7 +154,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 zi(jgn-1+nbobjn) = zi(iagrno-1+1)
                 zk24(jnn-1+nbobjn) = nogn(ign)
             endif
-50      continue
+ 50     continue
     endif
 !
 ! ECRITURE DES NOEUDS
@@ -171,9 +172,9 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         do 1 ino = 1, nno
             do 2 idi = 1, ndim
                 zr(jcoo-1+(ino-1)*(ndim+1)+idi) = coordo(3*(ino-1)+ idi)
- 2          continue
+  2         continue
             zr(jcoo-1+(ino-1)*(ndim+1)+4) = rbid
- 1      continue
+  1     continue
         write(ifc,1001) (zr(jcoo-1+i),i=1,(ndim+1)*nno)
     endif
 !
@@ -191,13 +192,13 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 !
     if (nbgrn .ne. 0) then
         ijp = 0
-        call jecreo('&&IRMACA.NOGNOK8','V N K8')
-        call jeecra('&&IRMACA.NOGNOK8','NOMMAX',nbgrn)
+        call jecreo('&&IRMACA.NOGNOK8', 'V N K8')
+        call jeecra('&&IRMACA.NOGNOK8', 'NOMMAX', nbgrn)
         do 51 ign = 1, nbgrn
-            call jenuno(jexnum(noma//'.GROUPENO', ign),nogrno)
-            call jenonu(jexnom('&&IRMACA.NOGNOK8',nogrno(1:8)),iexi)
-            if (iexi.ne.0) call utmess('F','PREPOST5_47',sk=nogrno(1:8))
-            call jecroc(jexnom('&&IRMACA.NOGNOK8',nogrno(1:8)))
+            call jenuno(jexnum(noma//'.GROUPENO', ign), nogrno)
+            call jenonu(jexnom('&&IRMACA.NOGNOK8', nogrno(1:8)), iexi)
+            if (iexi .ne. 0) call utmess('F', 'PREPOST5_47', sk=nogrno(1:8))
+            call jecroc(jexnom('&&IRMACA.NOGNOK8', nogrno(1:8)))
             call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
             if (nbn .ne. 1) then
                 ijp =ijp+1
@@ -207,7 +208,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 zk24(jno2-1+ijp) = nogn(ign)
                 call lxcaps(zk24(jno2-1+ijp))
             endif
-51      continue
+ 51     continue
         call jedetr('&&IRMACA.NOGNOK8')
     endif
 !
@@ -217,7 +218,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         do 21 igm = 1, nbgrm
             do 15 i = 1, nbtyma
                 zl(jjl-1+i)= .false.
-15          continue
+ 15         continue
             call jeveuo(jexnum(noma//'.GROUPEMA', igm), 'L', iagrma)
             call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
             if (nbm .eq. 0) goto 21
@@ -233,8 +234,8 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 itype = typma(ima)
                 if (.not.zl(jjl-1+itype)) then
                     call jenuno(jexnum('&CATA.TM.NOMTM', itype), kbid)
-                    call jeexin('&&IRMA.G.'//nogm(igm)(1:8)//kbid(1:7),iret)
-                    if (iret.gt.0) call utmess('F','PREPOST5_47',sk=nogm(igm)(1:8))
+                    call jeexin('&&IRMA.G.'//nogm(igm)(1:8)//kbid(1:7), iret)
+                    if (iret .gt. 0) call utmess('F', 'PREPOST5_47', sk=nogm(igm)(1:8))
                     call wkvect('&&IRMA.G.'//nogm(igm)(1:8)//kbid(1:7), 'V V I', nbm,&
                                 zi(jjm-1+itype))
                     zl(jjl-1+itype) = .true.
@@ -242,10 +243,10 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 ibid = zi(jty-1+(nbgma-1)*nbtyma+itype) + 1
                 zi(jty-1+(nbgma-1)*nbtyma+itype) = ibid
                 zi(zi(jjm-1+itype)-1+ibid) = ima
-22          continue
+ 22         continue
             do 23 ity = 1, nbtyma
                 if (zi(jty-1+(nbgma-1)*nbtyma+ity) .ne. 0) nombre = nombre+1
-23          continue
+ 23         continue
             zi(jnum-1+igm) = nombre
             if (nombre .eq. 1) then
                 ipog = ipog + 1
@@ -256,14 +257,14 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 zi (jpos-1+nbgno+igm) = ipog
                 nbtot = nbtot + nombre + 1
             endif
-21      continue
+ 21     continue
     endif
 !
 ! TOUT LE MAILLAGE
 !
     do 16 i = 1, nbtyma
         zl(jjl-1+i) = .false.
-16  end do
+ 16 end do
     nombre= 0
     do 33 ima = 1, nbma
         itype = typma(ima)
@@ -275,10 +276,10 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         ibid = zi(jty-1+nbgma*nbtyma+itype) + 1
         zi(jty-1+nbgma*nbtyma+itype) = ibid
         zi(zi(jjm-1+itype)-1+ibid) = ima
-33  end do
+ 33 end do
     do 34 ity = 1, nbtyma
         if (zi(jty-1+nbgma*nbtyma+ity) .ne. 0) nombre = nombre+1
-34  end do
+ 34 end do
     if (nombre .eq. 1) then
         zi(jpos-1+nbgma+nbgno+1) = ipog + nombre
         nbtot = nbtot + nombre
@@ -336,7 +337,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                             igre
                             goto 202
                         endif
-210                  continue
+210                 continue
                     nbsmo = nbsmo+1
                     zi(jgrele-1+1) = nbsmo
                     zi(jgrele+(nbsmo-1)*(4+nbgrel)+1) = itype
@@ -344,7 +345,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                     zi(jgrele+(nbsmo-1)*(4+nbgrel)+4) = nbelgr
                     zi(jgrele+(nbsmo-1)*(4+nbgrel)+5) = igre
                 endif
-202          continue
+202         continue
             nbobj = zi(jgrele-1+1)
             zi(jnum-1+nbgrm+1+i) = nbobj
             if (i .eq. 1) then
@@ -359,7 +360,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 if (i .eq. 1) zi(jpos-1+nbgma+nbgno+2) = zi( jpos-1+ nbgma+nbgno+1 )+1
                 nbtot = nbtot + nbobj
             endif
-200      continue
+200     continue
     else
         nbobj=0
     endif
@@ -370,7 +371,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
     call wkvect('&&IRMACA.COUL', 'V V I', nbcoul, jcoul)
     do 12 i = 1, nbcoul
         zi(jcoul-1+i) = 0
-12  end do
+ 12 end do
     call wkvect('&&IRMACA.PLACE', 'V V I', nmamax, jpla)
     call wkvect('&&IRMACA.MPOI1', 'V V I', nno, jpoi)
     call wkvect('&&IRMACA.NOEU', 'V V I', nmamax*27, jnoe)
@@ -425,7 +426,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         if (nbn .ne. 1) then
             do 156 j = 1, nbn
                 zi(jpoi-1+j) = zi(iagrno-1+j)
-156          continue
+156         continue
             if (nive .eq. 3) then
                 write(ifc,'(5(I5))') ityca,izero,izero,ityca,nbn
                 write(ifc,'(16(I5))') (zi(jcoul-1+i),i=1,nbn)
@@ -436,14 +437,14 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 write(ifc,'(10(I8))') (zi(jpoi-1+i),i=1,nbn)
             endif
         endif
-155  end do
+155 end do
 !
     call gicoor()
 !
     nbpo = nbgno+1
     do 120 i = 1, nbcoul
         zi(jcoul-1+i) = 7
-120  end do
+120 end do
     ijk =0
     do 81 igm = 1, nbgrm+1
         nbsobj = zi(jnum-1+igm)
@@ -458,8 +459,8 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                     idep=itype+1
                     goto 87
                 endif
-85          continue
-87          continue
+ 85         continue
+ 87         continue
             nomob =zk24(jnom-1+nbgno+ijk)
             if (igm .le. nbgrm) then
                 toto = '&&IRMA.G.'
@@ -485,8 +486,8 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 do 56 j = 1, nnoe
                     ij = zi(iacorr-1+j)
                     zi(jnoe-1+(i-1)*nnoe+j) = connex(ipoin-1+ij)
-56              continue
-55          continue
+ 56             continue
+ 55         continue
             if (nive .eq. 3) then
                 write(ifc,'(16(I5))') (((zi(jnoe-1+(i-1)*nnoe+j))&
                 ,j=1,nnoe),i=1,nbm)
@@ -494,7 +495,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 write(ifc,'(10(I8))') (((zi(jnoe-1+(i-1)*nnoe+j))&
                 ,j=1,nnoe),i=1,nbm)
             endif
-82      end do
+ 82     end do
         if (nbsobj .gt. 1) then
             if (nive .eq. 3) then
                 write(ifc,'(5(I5))') izero,nbsobj,izero,izero,izero
@@ -503,7 +504,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
             endif
             do 99 i = 1, nbsobj
                 zi(jpla-1+i) = nbpo + i
-99          continue
+ 99         continue
             nbpo = nbpo+nbsobj+1
             if (nive .eq. 3) then
                 write(ifc,'(16(I5))') ((zi(jpla-1+i)), i=1,nbsobj)
@@ -513,7 +514,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         else
             nbpo = nbpo + 1
         endif
-81  end do
+ 81 end do
 !
 ! IMPRESSION DU MODELE
 !
@@ -553,9 +554,9 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                         do 308 j = 1, nnoe
                             ij = zi(iacorr-1+j)
                             zi(jnoe-1+(iel-1)*nnoe+j) = connex(ipoin- 1+ij)
-308                      continue
-306                  continue
-304              continue
+308                     continue
+306                 continue
+304             continue
                 if (nive .eq. 3) then
                     write(ifc,'(5(I5))') ityca,izero,izero,nnoe,nbelt
                     write(ifc,'(16(I5))') (zi(jcoul-1+i),i=1,nbelt)
@@ -567,7 +568,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                     write(ifc,'(10(I8))') (((zi(jnoe-1+(i-1)*nnoe+j)),&
                     j=1,nnoe),i=1,nbelt)
                 endif
-302          continue
+302         continue
             if (nbsmo .gt. 1) then
                 if (nive .eq. 3) then
                     write(ifc,'(5(I5))') izero,nbsmo,izero,izero,&
@@ -579,7 +580,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 do 310 iso = 1, nbsmo
                     zi(jpla-1+iso) = nbpo + iso
                     zi(jgrele+(iso-1)*(4+nbgrel)+2) = zi(jpla-1+iso)
-310              continue
+310             continue
                 nbpo = nbpo+nbsmo+1
                 if (nive .eq. 3) then
                     write(ifc,'(16(I5))') ((zi(jpla-1+i)), i=1,nbsmo)
@@ -590,7 +591,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 nbpo = nbpo + 1
                 zi(jgrele-1+3) = nbpo
             endif
-300      continue
+300     continue
     endif
 !
 ! ECRITURE DES NOEUDS
@@ -610,7 +611,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         call wkvect('&&IRMACA.NUNN', 'V V I', nno, inumm)
         do 442 i = 1, nno
             zi(inumm-1+i) = i
-442      continue
+442     continue
         write(ifc,'(10(I8))') (zi(inumm-1+i),i=1,nno)
 !
         write (ifc,'(A,I4)') ' ENREGISTREMENT DE TYPE',ibid
@@ -623,9 +624,9 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         do 111 ino = 1, nno
             do 222 idi = 1, ndim
                 zr(jcoo-1+(ino-1)*(ndim+1)+idi) = coordo(3*(ino-1)+ idi)
-222          continue
+222         continue
             zr(jcoo-1+(ino-1)*(ndim+1)+4) = rbid
-111      continue
+111     continue
         write(ifc,1001) (zr(jcoo-1+i),i=1,(ndim+1)*nno)
     endif
 !

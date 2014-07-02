@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine zneupd(rvec, howmny, select, d, z,&
                       ldz, sigma, workev, bmat, n,&
@@ -26,9 +28,9 @@ interface
         integer :: ncv
         integer :: n
         integer :: ldz
-        logical(kind=1) :: rvec
+        aster_logical :: rvec
         character(len=1) :: howmny
-        logical(kind=1) :: select(*)
+        aster_logical :: select(*)
         complex(kind=8) :: d(*)
         complex(kind=8) :: z(ldz, *)
         complex(kind=8) :: sigma

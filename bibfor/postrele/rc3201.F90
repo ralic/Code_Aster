@@ -6,6 +6,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   factus, pmmax, pbmax, pmbmax)
 ! aslint: disable=W1501,W1501,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
@@ -39,7 +40,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm
     real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), pmmax
     real(kind=8) :: pbmax, pmbmax
-    logical(kind=1) :: lpmpb, lsn, lsnet, lfatig, lrocht, seisme, lbid
+    aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht, seisme, lbid
     character(len=4) :: lieu
     character(len=8) :: mater
 !     ------------------------------------------------------------------
@@ -77,9 +78,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !     ------------------------------------------------------------------
 !
     integer :: nbsigr, nbsig2, jnsg, is1, ioc1, is2, ioc2, inds, jcombi
-    integer ::   ifm, niv, i1, i2, ndim,  nscy, ns, jmsn
-    integer ::  nsitup, nsituq, indi,  i, icas, icss, nbsitu, i4
-    integer :: jmfu,   nbthep, nbtheq
+    integer :: ifm, niv, i1, i2, ndim, nscy, ns, jmsn
+    integer :: nsitup, nsituq, indi, i, icas, icss, nbsitu, i4
+    integer :: jmfu, nbthep, nbtheq
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij(2), salijs(2), ug, sn, sp(2), smm
     real(kind=8) :: sns, sps(2), spp, sqq(2), sqqs(2), mpi(12), mpj(12), mqi(12)
     real(kind=8) :: mqj(12), mse(12), sij0(12), matpi(8), matpj(8), matqi(8)
@@ -92,7 +93,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     character(len=8) :: knumes, kbid
 !CC
     integer :: icodre(1)
-    logical(kind=1) :: endur, cmax, meca
+    aster_logical :: endur, cmax, meca
     integer :: nocc
     real(kind=8) :: nadm(1)
     integer, pointer :: situ_numero(:) => null()
@@ -120,12 +121,12 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         do 12 is2 = 1, 10
             resuas(10*(is1-1)+is2) = r8vide()
             resuss(10*(is1-1)+is2) = r8vide()
-12      continue
-11  end do
+ 12     continue
+ 11 end do
 !
     do 13 is1 = 1, 12
         sij0(is1) = 0.d0
-13  end do
+ 13 end do
 !
     if (iocs .eq. 0) then
         nbsig2 = nbsigr
@@ -150,9 +151,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         do 16 is1 = 1, nbsigr
             ioc1 = zi(jnsg+is1-1)-nbsitu
             if (ioc1 .eq. iocs) goto 18
-16      continue
+ 16     continue
         call utmess('F', 'POSTRCCM_30')
-18      continue
+ 18     continue
         ns = situ_nb_occur(1+2*(nbsitu+iocs)-2)
         nscy = situ_nb_occur(1+2*(nbsitu+iocs)-1)
         ppi = 0.d0
@@ -225,7 +226,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     else
         do 30 i = 1, 12
             mse(i) = 0.d0
-30      continue
+ 30     continue
     endif
 !
 ! --- SITUATION P :
@@ -514,7 +515,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             do 119 i4 = 1, 8
                 mat1(i4) = matpi(i4)
                 mat2(i4) = matqi(i4)
-119          continue
+119         continue
 !
             if (seisme) then
                 call rc32sp('SP_COMB', lieu, nsitup, ppi, mpi,&
@@ -548,7 +549,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 do 120 i4 = 1, 8
                     mat1(i4) = matpi(i4)
                     mat2(i4) = matqj(i4)
-120              continue
+120             continue
             endif
 !
 ! - TROISIEME COMBINAISON : PJ - QI
@@ -577,7 +578,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 do 121 i4 = 1, 8
                     mat1(i4) = matpj(i4)
                     mat2(i4) = matqi(i4)
-121              continue
+121             continue
             endif
 !
 ! - QUATRIEME COMBINAISON : PJ - QJ
@@ -606,7 +607,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 do 122 i4 = 1, 8
                     mat1(i4) = matpj(i4)
                     mat2(i4) = matqi(i4)
-122              continue
+122             continue
             endif
 !
 ! -  CINQUIEME COMBINAISON : QI - QJ
@@ -620,7 +621,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 do 124 i4 = 1, 8
                     mat1(1) = matqi(1)
                     mat2(1) = matqj(1)
-124              continue
+124             continue
             endif
 !
             if (typeke .gt. 0.d0) then
@@ -659,7 +660,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 do 123 i4 = 1, 8
                     mat1(1) = matpi(1)
                     mat2(1) = matpj(1)
-123              continue
+123             continue
             endif
 !
             if (typeke .gt. 0.d0) then
@@ -744,8 +745,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 if (seisme) write (ifm,1232) salijs(1), salijs(2)
                 write (ifm,1331) fuij(1), fuij(2)
             endif
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 ! --- CALCUL DU FACTEUR D'USAGE
 !

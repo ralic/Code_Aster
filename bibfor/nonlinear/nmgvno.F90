@@ -26,6 +26,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codere.h"
 #include "asterfort/coefdg.h"
@@ -87,7 +88,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
     integer :: k2(1)
     character(len=8) :: nom(1), famil, poum
 !
-    logical(kind=1) :: resi, rigi, grand, axi, elas, full
+    aster_logical :: resi, rigi, grand, axi, elas, full
     integer :: nddl, ndimsi, g, cod(27), n, i, m, j, kl, pq, os, osa, kk
     integer :: iu(3*27), ia(8), kpg, spt
     real(kind=8) :: rac2, c, val(1)
@@ -137,7 +138,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
 !
     do 5 g = 1, npg
         cod(g)=0
- 5  end do
+  5 end do
 !
     if (rigi) call r8inir((nddl*(nddl+1))/2, 0.d0, matr, 1)
     if (full) call r8inir((nddl*(nddl+1))/2, 0.d0, matr, 1)
@@ -156,8 +157,8 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
             else
                 depld(i+(n-1)*ndim) = ddld(iu(nno1*(i-1)+n))
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! - CREATION D'UN VECTEUR VALANT 0 POUR ABSENCE DE DEPLACEMENT
 !
@@ -165,8 +166,8 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
         critd(n) = 0.d0
         do 40 i = 1, ndim
             critd(n) = critd(n) + abs(ddld(iu(nno1*(i-1)+n)))
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -185,7 +186,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
             if (rigi) then
                 avd = 0.d0
             endif
-50      continue
+ 50     continue
         avp = avm + avd
 !
         if (avp .gt. 1.d0) then
@@ -201,9 +202,9 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                 if (rigi) then
                     agd(i) = 0.d0
                 endif
-70          continue
+ 70         continue
             agp(i) = agm(i) + agd(i)
-60      continue
+ 60     continue
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
@@ -222,15 +223,15 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
         if (axi) then
             do 80 n = 1, nno1
                 b(3,1,n) = vff1(n,g)/r
-80          continue
+ 80         continue
         endif
 !
         do 90 kl = 1, 3
             sigmam(kl) = sigm(kl,g)
-90      continue
+ 90     continue
         do 100 kl = 4, ndimsi
             sigmam(kl) = sigm(kl,g)*rac2
-100      continue
+100     continue
 !
         nonloc(1)= avp
         nonloc(2)= c
@@ -252,10 +253,10 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
 !
             do 110 kl = 1, 3
                 sigp(kl,g) = sigma(kl)
-110          continue
+110         continue
             do 120 kl = 4, ndimsi
                 sigp(kl,g) = sigma(kl)/rac2
-120          continue
+120         continue
 !
             sigp(ndimsi+1,g) = dsidep(1,1,4)
             bp = sigp(ndimsi+1,g)
@@ -268,10 +269,10 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                     t1 = 0
                     do 150 kl = 1, ndimsi
                         t1 = t1 + sigma(kl)*b(kl,i,n)
-150                  continue
+150                 continue
                     vect(kk) = vect(kk) + wg*t1
-140              continue
-130          continue
+140             continue
+130         continue
 !
 !        VECTEUR FINT:A
 !
@@ -280,10 +281,10 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                 t2 = 0
                 do 170 i = 1, ndim
                     t2 = t2 + c*dfdi2(nno2*(i-1)+n)*agp(i)
-170              continue
+170             continue
                 kk = ia(n)
                 vect(kk) = vect(kk) + wg*(t2+t1)
-160          continue
+160         continue
 !
         endif
 !
@@ -305,14 +306,14 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                             do 220 kl = 1, ndimsi
                                 do 230 pq = 1, ndimsi
                                     t1 = t1+dsidep(kl,pq,1)*b(pq,j,m)* b(kl,i,n)
-230                              continue
-220                          continue
+230                             continue
+220                         continue
                             matr(kk) = matr(kk) + wg*t1
-210                      continue
-200                  continue
-821                  continue
-190              continue
-180          continue
+210                     continue
+200                 continue
+821                 continue
+190             continue
+180         continue
 !
 !        MATRICES K:A(N),A(M) SI ENDO NON-NUL
 !
@@ -323,14 +324,14 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                     t2 = 0
                     do 260 i = 1, ndim
                         t2 = t2 + dfdi2(nno2*(i-1)+n)*dfdi2(nno2*(i-1) +m)
-260                  continue
+260                 continue
                     t2 = c*t2
                     if (ia(m) .le. ia(n)) then
                         kk = osa+ia(m)
                         matr(kk) = matr(kk) + wg*(t2+t1)
                     endif
-250              continue
-240          continue
+250             continue
+240         continue
 !
         endif
 !
@@ -344,7 +345,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                         t1 = 0
                         do 300 kl = 1, ndimsi
                             t1 = t1 + dsidep(kl,1,2)*b(kl,j,m)
-300                      continue
+300                     continue
                         t1 = vff2(n,g)*t1
                         if (ia(n) .ge. iu(nno1*(j-1)+m)) then
                             kk = ((ia(n)-1)*ia(n))/2 + iu(nno1*(j-1)+ m)
@@ -352,9 +353,9 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                             kk = ( (iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1)+ m) )/2 +ia(n )
                         endif
                         matr(kk) = matr(kk) + wg*t1
-290                  continue
-280              continue
-270          continue
+290                 continue
+280             continue
+270         continue
 !
         endif
 !
@@ -392,8 +393,8 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                             endif
                         endif
                     endif
-320              continue
-310          continue
+320             continue
+310         continue
 !
         endif
 !
@@ -414,17 +415,17 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
                                 +m))/2+ia(n)
                             endif
                             matr(kk) = 0.d0
-350                      continue
-340                  continue
+350                     continue
+340                 continue
                 endif
 !
-330          continue
+330         continue
 !
         endif
 !
-1000  end do
+1000 end do
 !
-9000  continue
+9000 continue
 !
     call codere(cod, npg, codret)
 !

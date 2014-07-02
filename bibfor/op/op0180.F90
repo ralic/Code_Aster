@@ -29,6 +29,7 @@ subroutine op0180()
 !
 ! VARIABLES LOCALES
 ! -----------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -70,12 +71,12 @@ subroutine op0180()
 #include "asterfort/voisca.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno,  jsief
-    integer ::  n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
+    integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno, jsief
+    integer :: n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
     integer :: ncaba, nsief, nbmabe, jlimab, nbnoca
     real(kind=8) :: delta, ea, f0, frco, frli, mu0, rh1000, sa, fprg, xflu, xret
-    real(kind=8) :: trelax, valr(2),rbid
-    logical(kind=1) :: mail2d, relax, quad
+    real(kind=8) :: trelax, valr(2), rbid
+    aster_logical :: mail2d, relax, quad
     character(len=3) :: k3b
     character(len=8) :: caelem, chmat, mailla, modele, noancr(2), nomu, adher
     character(len=8) :: typanc(2), typ_ma
@@ -415,7 +416,7 @@ subroutine op0180()
         call topoca(nomt19, mailla, icabl, nbf0, zi(jnbno),&
                     numaca, quad, sens)
 !       REMPLISSAGE DES COLONNES SENS ET TYPE_MAILLE
-        if (quad)then
+        if (quad) then
             typ_ma = 'SEG3'
         else
             typ_ma = 'SEG2'

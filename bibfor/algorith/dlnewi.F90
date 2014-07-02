@@ -69,6 +69,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
@@ -119,7 +120,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
 !
-    logical(kind=1) :: lcrea, lamort, limped, lmodst
+    aster_logical :: lcrea, lamort, limped, lmodst
 !
     character(len=6) :: nompro
     parameter (nompro = 'DLNEWI')
@@ -130,7 +131,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: ibmat, iddeeq, ierr
     integer :: igrel, iexci, iexcl
     integer :: ifimpe
-    integer ::  idepla
+    integer :: idepla
     integer :: ivite1, ivitea, ivita1
     integer :: iacce1, iaccea
     integer :: ialiel, iarchi
@@ -140,9 +141,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: ifm, niv
     integer :: ifonde, imtres
     integer :: ipas, istop, itypel, istoc, jstoc
-    integer :: jbint,  jlpas, jmltap, jnbpa
+    integer :: jbint, jlpas, jmltap, jnbpa
     integer :: jnoacc, jnodep, jnovit, jpsdel
-    integer ::   jrefs
+    integer :: jrefs
     integer :: n1, na, nbexci, nbexcl, nbgrel, nbgrpa, nbmat, nbordr
     integer :: nbptpa, nbv, nd, nel, nmodam, npatot, nv
     character(len=3) :: repk
@@ -172,7 +173,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     real(kind=8) :: tempm, temps
     integer :: vali(2)
     real(kind=8) :: valr(2)
-    logical(kind=1) :: gasymr, gsyrie, ener
+    aster_logical :: gasymr, gsyrie, ener
     real(kind=8), pointer :: epl1(:) => null()
     real(kind=8), pointer :: fammo(:) => null()
     real(kind=8), pointer :: vien(:) => null()

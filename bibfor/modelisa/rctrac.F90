@@ -19,6 +19,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
@@ -49,7 +50,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
 !
 !
-    logical(kind=1) :: procon, ltrac
+    aster_logical :: procon, ltrac
     integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, ipifc, jpro
     integer :: jvalf1, nbvf1, k, k1, k2, nar
     integer :: jvaln, nbvn, i, j, jvalf2, nbvf2
@@ -79,9 +80,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 ipi=zi(imate+2+icomp-1)
                 goto 20
             endif
-10      continue
+ 10     continue
         call utmess('F', 'MODELISA6_80')
-20      continue
+ 20     continue
         idf=zi(ipi)+zi(ipi+1)
         nbf=zi(ipi+2)
         ivalk=zi(ipi+3)
@@ -90,9 +91,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 ipif=ipi+lmat-1+lfct*(ik-1)
                 goto 40
             endif
-30      continue
+ 30     continue
         ASSERT(.false.)
-40      continue
+ 40     continue
     endif
 !
 ! - COURBE DE TRACTION AVEC METALLURGIE
@@ -103,9 +104,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 ipi=zi(imate+2+icomp-1)
                 goto 60
             endif
-50      continue
+ 50     continue
         call utmess('F', 'MODELISA6_82')
-60      continue
+ 60     continue
 !
         idf=zi(ipi)+zi(ipi+1)
         nbf=zi(ipi+2)
@@ -117,9 +118,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 80
                 endif
-70          continue
+ 70         continue
             call utmess('F', 'MODELISA6_83')
-80          continue
+ 80         continue
         endif
 !
         if (nomcl(1:7) .eq. 'SIGM_F2') then
@@ -128,9 +129,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 100
                 endif
-90          continue
+ 90         continue
             call utmess('F', 'MODELISA6_84')
-100          continue
+100         continue
         endif
 !
         if (nomcl(1:7) .eq. 'SIGM_F3') then
@@ -139,9 +140,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 120
                 endif
-110          continue
+110         continue
             call utmess('F', 'MODELISA6_85')
-120          continue
+120         continue
         endif
 !
         if (nomcl(1:7) .eq. 'SIGM_F4') then
@@ -150,9 +151,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 140
                 endif
-130          continue
+130         continue
             call utmess('F', 'MODELISA6_86')
-140          continue
+140         continue
         endif
 !
         if (nomcl(1:6) .eq. 'SIGM_C') then
@@ -161,9 +162,9 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 160
                 endif
-150          continue
+150         continue
             call utmess('F', 'MODELISA6_87')
-160          continue
+160         continue
         endif
     endif
 !
@@ -193,7 +194,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
         do 170 k = 1, nbvf1
             zr(jvale+k-1)=zr(jvalf1+k-1)
             zr(jvale+k-1+nbvf1)=zr(jvalf1+k-1+nbvf1)
-170      continue
+170     continue
         zk24(jprol+4)=zk24(jpro+4)
         zk24(jprol+5)=zk24(jpro+5)
 !
@@ -244,8 +245,8 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     i=j
                     goto 190
                 endif
-180          continue
-190          continue
+180         continue
+190         continue
         endif
 !
 ! ----- INTERPOLATION ENTRE I ET I+1
@@ -260,7 +261,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
             do 200 k = 1, nbvf1
                 zr(jvale+k-1)=zr(jvalf1+k-1)
                 zr(jvale+k-1+nbvf1)=zr(jvalf1+k-1+nbvf1)
-200          continue
+200         continue
             zk24(jprol+4)=zk24(jpro+6+2*i)
             nbvf2=nbvf1
             nbvale=nbvf1
@@ -429,12 +430,12 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     endif
                     zr(jvale+nbvale+k)=rp1+coef*(rp2-rp1)
                 endif
-210              continue
-220          continue
+210             continue
+220         continue
 !
 ! ------- FIN DE LA BOUCLE D'INTERPOLATION
 !
-230          continue
+230         continue
 !
 ! ------- CORRECTION DE NBVALE ET
 ! ------- DECALAGE DES ORDONNEES DE NAR VERS LA GAUCHE
@@ -443,7 +444,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 nbvale=nbvale-nar
                 do 240 k = 1, nbvale
                     zr(jvale+nbvale+k-1)=zr(jvale+nbvale+nar+k-1)
-240              continue
+240             continue
             endif
         endif
     else
@@ -467,8 +468,8 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
         zr(jvale)=0.d0
         do 250 k = 1, nbvale-1
             zr(jvale+k)=zr(jvale+k)-zr(jvale+nbvale+k)/e
-250      continue
-260      continue
+250     continue
+260     continue
     endif
 !
 end subroutine

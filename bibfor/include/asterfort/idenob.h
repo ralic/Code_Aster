@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function idenob(obj1, obj2)
         character(len=*) :: obj1
         character(len=*) :: obj2
-        logical(kind=1) :: idenob
+        aster_logical :: idenob
     end function idenob
 end interface

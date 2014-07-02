@@ -20,11 +20,12 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/utmess.h"
     integer :: prnm(1), nbcomp, desc, ino, nsurch, forimp(nbcomp)
     real(kind=8) :: valr(1), valfor(nbcomp)
-    logical(kind=1) :: verif
+    aster_logical :: verif
     character(len=4) :: fonree
     character(len=8) :: valk(1), nomn, valfof(nbcomp)
     character(len=16) :: motcle(nbcomp), valkk(2)
@@ -70,9 +71,9 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
             indigd = 1
             goto 20
         endif
-10  end do
+ 10 end do
     if (indigd .eq. 0) goto 9999
-20  continue
+ 20 continue
     nsurc0 = nsurch
     do 30 j = 1, nbcomp
         if (forimp(j) .ne. 0) then
@@ -101,7 +102,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
                 valk(nbcomp*(ino-1)+j) = valfof(j)
             endif
         endif
-30  end do
+ 30 end do
 !
-9999  continue
+9999 continue
 end subroutine

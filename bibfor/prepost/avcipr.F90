@@ -5,6 +5,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
                   jvmax, jomin, jomax)
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/avenca.h"
@@ -24,10 +25,10 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     character(len=16) :: nomcri, nomfor, proaxe
     character(len=8) :: method
     integer :: ncycl(nbvec)
-    integer ::jomin, jomax, jvmin, jvmax
+    integer :: jomin, jomax, jvmin, jvmax
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
-    logical(kind=1) :: fordef
+    aster_logical :: fordef
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -150,20 +151,20 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
 !    real(kind=8) :: vectra(2*nbvec*nbordr), rmima(4*nbvec)
 !    integer :: iflag(nbvec), itrv(2*(nbordr+2))
-!    logical(kind=1) :: lsig0
+!    aster_logical :: lsig0
 !    real(kind=8) :: raxe(nbvec*nbordr), valpoi(nbvec*nbordr)
 !    integer :: npoin(nbvec), valord(nbvec*nbordr)
 !    integer :: npic(nbvec), ordpic(nbvec*(nbordr+2))
 !    real(kind=8) :: pic(nbvec*(nbordr+2)), rtrv(nbordr+2)
-
+!
     real(kind=8) :: rmima(4*nbvec)
     integer :: iflag(nbvec)
-    logical(kind=1) :: lsig0
+    aster_logical :: lsig0
     integer :: npoin(nbvec)
     integer :: npic(nbvec)
-
-    integer :: jvectr, jitrv, jraxe,jvalpo, jvalor, jordpi, jpic, jrtrv
-
+!
+    integer :: jvectr, jitrv, jraxe, jvalpo, jvalor, jordpi, jpic, jrtrv
+!
 !      REAL*8        CUDOMX, NXM, NYM, NZM
 !     ------------------------------------------------------------------
 !
@@ -176,12 +177,12 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     call wkvect('&&AVCIPR_VALPOI', 'V V R', nbvec*nbordr, jvalpo)
     call wkvect('&&AVCIPR_PIC', 'V V R', nbvec*(nbordr+2), jpic)
     call wkvect('&&AVCIPR_RTRV', 'V V R', (nbordr+2), jrtrv)
-
+!
 ! Integer
     call wkvect('&&AVCIPR_ITVR', 'V V I', 2*(nbordr+2), jitrv)
     call wkvect('&&AVCIPR_VALORD', 'V V I', nbvec*nbordr, jvalor)
     call wkvect('&&AVCIPR_ORPIC', 'V V I', nbvec*(nbordr+2), jordpi)
-    
+!
     call propla(nbvec, vectn, vectu, vectv, nbordr,&
                 kwork, sommw, vwork, tdisp, tspaq,&
                 ipgn, nomcri, nomfor, fordef, fatsoc,&
@@ -225,7 +226,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
 !
     call avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
-                npoin, jvalpo, jvalor, npic,jpic,&
+                npoin, jvalpo, jvalor, npic, jpic,&
                 jordpi)
 !
 ! 4.3 COMPTAGE RAINFLOW
@@ -244,7 +245,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     call jedetr('&&AVCIPR_ORPIC')
     call jedetr('&&AVCIPR_PIC')
     call jedetr('&&AVCIPR_RTRV')
-
+!
     call jedema()
 !
 end subroutine

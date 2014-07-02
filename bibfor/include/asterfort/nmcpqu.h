@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcpqu(compor, nomcmz, nompaz, exist)
         character(len=19) :: compor
         character(len=*) :: nomcmz
         character(len=*) :: nompaz
-        logical(kind=1) :: exist
+        aster_logical :: exist
     end subroutine nmcpqu
 end interface

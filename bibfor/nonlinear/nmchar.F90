@@ -24,6 +24,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -85,14 +86,14 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 !
 !
-    logical(kind=1) :: ldyna, lexpl
-    logical(kind=1) :: londe, llapl, lammo, lsstf, lviss
-    logical(kind=1) :: limpe, lpilo, lmacr, limpex
+    aster_logical :: ldyna, lexpl
+    aster_logical :: londe, llapl, lammo, lsstf, lviss
+    aster_logical :: limpe, lpilo, lmacr, limpex
     character(len=10) :: phase
     integer :: nbvect
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
-    logical(kind=1) :: lassve(20), lcalve(20)
+    aster_logical :: lassve(20), lcalve(20)
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -181,7 +182,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 ! --- FORCES NODALES POUR PREDICTION (SKIP FOR IMPLEX/EXPLICITE)
 !
-        if ( .not.(lexpl.or.limpex) ) then
+        if (.not.(lexpl.or.limpex)) then
             call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif

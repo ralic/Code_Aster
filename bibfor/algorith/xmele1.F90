@@ -20,6 +20,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -75,10 +76,10 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
     integer :: ndim, nface, nfisc, nnint, npg, typint, nfisc2
     integer :: nbma, nmaenr, jcesd2, jcesl2
     character(len=8) :: nomfis, nomgd, elc, nomfi2, licmp3(3)
-    integer :: jcesl, jcesv, jcesd,  ncmp, icmp
+    integer :: jcesl, jcesv, jcesd, ncmp, icmp
     character(len=24) :: grp
     integer :: jgrp, iret, jnbsp, ifiss
-    logical(kind=1) :: vall, isint
+    aster_logical :: vall, isint
     character(len=19) :: chelsi, cmafis, faclon, chnbsp
     real(kind=8) :: valr
     character(len=8), pointer :: fiss(:) => null()

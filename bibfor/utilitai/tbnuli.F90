@@ -1,6 +1,7 @@
 subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                   vc, vk, lprec, lcrit, nume)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -50,14 +51,14 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 !                < 0 , PLUSIEURS LIGNES RECUPEREES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,  nbpu,   i, j, k, n
+    integer :: iret, nbpara, nblign, nbpu, i, j, k, n
     integer :: jvale, itrouv, ki, kr, kc, kk, jvall
     real(kind=8) :: prec, refr
     character(len=4) :: type, crit
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     character(len=24) :: valk
-    logical(kind=1) :: lok
+    aster_logical :: lok
     integer, pointer :: numero(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()
@@ -91,17 +92,17 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
         do 12 j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) goto 10
-12      continue
+ 12     continue
         valk = inpar
         call utmess('F', 'UTILITAI6_89', sk=valk)
-10  end do
+ 10 end do
 !
     nomjv = tblp(3)
     call jelira(nomjv, 'LONUTI', nbpu)
     AS_ALLOCATE(vi=numero, size=nbpu)
     do 18 i = 1, nbpu
         numero(i) = i
-18  end do
+ 18 end do
 !
     ki = 0
     kr = 0
@@ -128,7 +129,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-30                  continue
+ 30                 continue
                 else if (type(1:1) .eq. 'R') then
                     kr = kr + 1
                     prec = lprec(kr)
@@ -149,7 +150,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-31                  continue
+ 31                 continue
                 else if (type(1:1) .eq. 'C') then
                     kc = kc + 1
                     do 32 k = 1, nbpu
@@ -160,7 +161,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-32                  continue
+ 32                 continue
                 else if (type(1:3) .eq. 'K80') then
                     kk = kk + 1
                     do 33 k = 1, nbpu
@@ -171,7 +172,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-33                  continue
+ 33                 continue
                 else if (type(1:3) .eq. 'K32') then
                     kk = kk + 1
                     do 34 k = 1, nbpu
@@ -182,7 +183,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-34                  continue
+ 34                 continue
                 else if (type(1:3) .eq. 'K24') then
                     kk = kk + 1
                     do 35 k = 1, nbpu
@@ -193,7 +194,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-35                  continue
+ 35                 continue
                 else if (type(1:3) .eq. 'K16') then
                     kk = kk + 1
                     do 36 k = 1, nbpu
@@ -204,7 +205,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-36                  continue
+ 36                 continue
                 else if (type(1:2) .eq. 'K8') then
                     kk = kk + 1
                     do 37 k = 1, nbpu
@@ -215,12 +216,12 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
-37                  continue
+ 37                 continue
                 endif
             endif
-22      continue
+ 22     continue
         nbpu = itrouv
-20  end do
+ 20 end do
 !
     if (nbpu .eq. 1) then
         nume = numero(1)
@@ -230,6 +231,6 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 !
     AS_DEALLOCATE(vi=numero)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

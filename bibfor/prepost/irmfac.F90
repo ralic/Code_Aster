@@ -1,6 +1,7 @@
 subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                   modele, nomail, nomare, resure, lgmsh)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/dismoi.h"
@@ -20,7 +21,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 #include "asterfort/utmess.h"
     integer :: ioccur, ifichi, versio, niveau
     character(len=8) :: formaf, resure, modele, nomare, nomail
-    logical(kind=1) :: lgmsh
+    aster_logical :: lgmsh
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +82,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     parameter   (novcmp = '&&IRMFAC.NOM_CH_MED')
     parameter   (nnopar = '&&IRMFAC.NOM_PAR')
 !
-    logical(kind=1) :: lresu, lcor, lmax, lmin, linf, lsup, lvarie, lrestr, lmodel
+    aster_logical :: lresu, lcor, lmax, lmin, linf, lsup, lvarie, lrestr, lmodel
 !
     call jemarq()
 !

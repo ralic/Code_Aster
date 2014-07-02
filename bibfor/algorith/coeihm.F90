@@ -31,6 +31,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 !
 ! - VARIABLES ENTREE
 ! aslint: disable=W1306
+#include "asterf_types.h"
 #include "asterfort/calcco.h"
 #include "asterfort/calcfh.h"
 #include "asterfort/coeime.h"
@@ -48,7 +49,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     real(kind=8) :: sigm(dimcon)
     character(len=8) :: nomail
     character(len=16) :: option, compor(*)
-    logical(kind=1) :: perman, resi, rigi
+    aster_logical :: perman, resi, rigi
 !
 ! - VARIABLES SORTIE
     integer :: retcom
@@ -76,7 +77,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     parameter (maxfa=6)
     real(kind=8) :: valfac(maxfa, 14, 6)
     character(len=16) :: meca, thmc, ther, hydr, phenom
-    logical(kind=1) :: vf, yachai
+    aster_logical :: vf, yachai
 !
 ! =====================================================================
 !.......................................................................
@@ -154,24 +155,24 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     if (resi) then
         do 1 i = 1, nbvari
             varip(i)=0.d0
- 1      continue
+  1     continue
         do 2 i = 1, dimcon
             sigp(i)=0.d0
- 2      continue
+  2     continue
     endif
 !
     if (rigi) then
         do 811 i = 1, dimdef
             do 812 j = 1, dimcon
                 dsde(j,i)=0.d0
-812          continue
-811      continue
+812         continue
+811     continue
 !
         do 10 i = 1, dimdef
             do 11 j = 1, dimdef
                 drde(i,j)=0.d0
-11          continue
-10      continue
+ 11         continue
+ 10     continue
     endif
 ! ======================================================================
 ! --- MISE AU POINT POUR LES VARIABLES INTERNES ------------------------
@@ -224,7 +225,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 ! INITIALISATION DE ANGMAS(3) À ZERO
     do 611 i = 1, 3
         angbid(i)=0.d0
-611  end do
+611 end do
 !
     call calcco(option, yachai, perman, meca, thmc,&
                 ther, hydr, imate, ndim-1, dimdef,&
@@ -272,12 +273,12 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     do 612 i = 1, ndim-1
         do 613 j = 1, ndim-1
             klint(i,j)=0.d0
-613      continue
-612  end do
+613     continue
+612 end do
 !
     do 614 i = 1, ndim-1
         klint(i,i)=tlint
-614  end do
+614 end do
 !
     if (yap1 .eq. 1) then
         call calcfh(option, perman, thmc, ndim-1, dimdef,&
@@ -307,20 +308,20 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
             do 305 f = 1, 2
                 sigp(adcop1+f-1) = defgep(addlh1+1+f)
                 sigp(adcop1+f+1)= defgep(addlh1-1+f)-defgep(addep1)
-305          continue
+305         continue
         endif
 ! ======================================================================
 ! --- CALCUL DU VECTEUR FORCE INTERNE AUX POINTS DE GAUSS --------------
 ! ======================================================================
         do 410 i = 1, dimdef
             res(i)=0.d0
-410      continue
+410     continue
 !
         if (kpi .le. npg) then
 ! - COMPOSANTES MECANIQUES
             do 420 i = 1, ndim
                 res(i) = sigp(i)
-420          continue
+420         continue
             res(1) = res(1)+sigp(ndim+1)
 !
 ! - COMPOSANTES CONSTITUANT 1
@@ -328,11 +329,11 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                 res(addep1) = deltat*(sigp(adcop1)+sigp(adcop1+1))
                 do 421 j = 1, ndim-1
                     res(addep1+j) = deltat*sigp(adcp11+j)
-421              continue
+421             continue
                 do 422 f = 1, 2
                     res(addlh1+f-1) = -deltat*sigp(adcop1+f-1)
                     res(addlh1+f+1) = sigp(adcop1+f+1)
-422              continue
+422             continue
             endif
         endif
 ! ======================================================================
@@ -369,7 +370,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 !
                     drde(addlh1+f+1,addep1)=-1.d0
                     drde(addlh1+f+1,addlh1+f-1)=1.d0
-510              continue
+510             continue
                 do 511 i = 1, ndim-1
                     do 512 j = 1, ndim-1
                         if (thmc .eq. 'GAZ') then
@@ -384,8 +385,8 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                         +deltat*ouvh*dsde(adcp11+j,addep1)
                         drde(addep1+i,addep1+j) = drde(addep1+i, addep1+j) + deltat*ouvh*dsde(adc&
                                                   &p11+i,addep1+ j)
-512                  continue
-511              continue
+512                 continue
+511             continue
             endif
         endif
 ! ======================================================================
@@ -401,6 +402,6 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
         endif
     endif
 ! ======================================================================
-9000  continue
+9000 continue
 ! ======================================================================
 end subroutine

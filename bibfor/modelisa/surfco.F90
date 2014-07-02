@@ -19,6 +19,7 @@ subroutine surfco(char, noma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -48,7 +49,7 @@ subroutine surfco(char, noma)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: lmail
+    aster_logical :: lmail
     character(len=24) :: defico
     integer :: iform
 !
@@ -86,7 +87,7 @@ subroutine surfco(char, noma)
         ASSERT(.false.)
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

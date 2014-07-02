@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmnume(modele, result, lischa, lcont, defico,&
                       compor, solveu, numedd, sdnume)
         character(len=24) :: modele
         character(len=8) :: result
         character(len=19) :: lischa
-        logical(kind=1) :: lcont
+        aster_logical :: lcont
         character(len=24) :: defico
         character(len=24) :: compor
         character(len=19) :: solveu

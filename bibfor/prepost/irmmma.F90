@@ -53,6 +53,7 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_mmhcyw.h"
 #include "asterfort/as_mmheaw.h"
@@ -107,7 +108,7 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !
     character(len=8) :: saux08
 !
-    logical(kind=1) :: lnocen
+    aster_logical :: lnocen
 !====
 ! 1. PREALABLES
 !====
@@ -211,14 +212,14 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
         do 2421 , ino = 1, nnotyp(ityp)
         zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
                 connex(ipoin-1+ino)
-2421      continue
+2421     continue
 !       II) POUR LES TYPES DE MAILLE DONT LA NUMEROTATION DES NOEUDS
 !          ENTRE ASTER ET MED EST DIFFERENTE (CF LRMTYP):
     else
         do 2422 , ino = 1, nnotyp(ityp)
         zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
                 connex(ipoin-1+nuanom(ityp,ino))
-2422      continue
+2422     continue
     endif
 !
     242 end do

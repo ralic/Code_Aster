@@ -23,8 +23,9 @@ subroutine chloet(iparg, etendu, jceld)
 !     UN CHAMP LOCAL ETENDU N'A PAS LA MEME LONGUEUR POUR TOUS SES
 !     ELEMENTS
 ! -----------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
-    logical(kind=1) :: etendu
+    aster_logical :: etendu
     integer :: iparg, jceld
 ! -----------------------------------------------------------------
 !     ENTREES:
@@ -77,18 +78,18 @@ subroutine chloet(iparg, etendu, jceld)
 !
 !     LE CHAMP LOCAL EST ETENDU:
 !     --------------------------
-10  continue
+ 10 continue
     etendu = .true.
     goto 30
 !
 !
 !     LE CHAMP LOCAL N'EST PAS ETENDU:
 !     --------------------------------
-20  continue
+ 20 continue
     etendu = .false.
     goto 30
 !
 !
-30  continue
+ 30 continue
 !
 end subroutine

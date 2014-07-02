@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                       adime, ninc, nd, nchoc, h,&
@@ -34,6 +36,6 @@ interface
         integer :: info
         real(kind=8) :: epscor
         character(len=14) :: xvect
-        logical(kind=1) :: cor
+        aster_logical :: cor
     end subroutine mnlcor
 end interface 

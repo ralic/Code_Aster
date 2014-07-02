@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
                       kwork, sommw, tspaq, i, nommat,&
@@ -42,7 +44,7 @@ interface
         integer :: jvmax
         integer :: jomin
         integer :: jomax
-        logical(kind=1) :: post
+        aster_logical :: post
         real(kind=8) :: cudomx
         integer :: vnormx(2)
         integer :: nbplan

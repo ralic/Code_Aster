@@ -22,6 +22,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -59,19 +60,19 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !
 !
-    integer :: i, j, ndim, nbcmp,    jcnsv2, jcnsl2
-    integer ::  jcesd1, jcesl1,  jcesd2, jcesl2, iad1, iad2
-    integer ::  jcvid1, jcvil1,  jcvid2, jcvil2
+    integer :: i, j, ndim, nbcmp, jcnsv2, jcnsl2
+    integer :: jcesd1, jcesl1, jcesd2, jcesl2, iad1, iad2
+    integer :: jcvid1, jcvil1, jcvid2, jcvil2
     integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
     integer :: ncmv1, ncmv2, ndimc, idecv2, idecl2
-    logical(kind=1) :: lmeca, pre1
+    aster_logical :: lmeca, pre1
     character(len=16) :: tysd
     integer :: iviex, iret
 !
-    integer :: jresd1,  jresl1, iadr1
-    integer :: jresd2,  jresl2, iadr2
+    integer :: jresd1, jresl1, iadr1
+    integer :: jresd2, jresl2, iadr2
     integer :: jcnsl1
-    logical(kind=1) :: exist(nbno, 7)
+    aster_logical :: exist(nbno, 7)
     real(kind=8), pointer :: cnsv1(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: cesv1(:) => null()
@@ -102,7 +103,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 ou DEP4
 !     SONT DX DY OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
-      ASSERT((cnsc(1).eq.'DX'.and.cnsc(2).eq.'DY') .or. (cnsc(1).eq.'TEMP'))
+    ASSERT((cnsc(1).eq.'DX'.and.cnsc(2).eq.'DY') .or. (cnsc(1).eq.'TEMP'))
 !
     lmeca = xismec()
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
@@ -132,15 +133,15 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     zl(idecl2+j)=.true.
                 end do
                 if (ndim .eq. 2) then
-                  if (exist(i,3)) then
-                    zr(idecv2+3)= cnsv1(nbcmp*(i-1)+3)
-                    zl(idecl2+3)=.true.
-                  endif
+                    if (exist(i,3)) then
+                        zr(idecv2+3)= cnsv1(nbcmp*(i-1)+3)
+                        zl(idecl2+3)=.true.
+                    endif
                 else if (ndim .eq. 3) then
-                  if (exist(i,4)) then
-                    zr(idecv2+4)= cnsv1(nbcmp*(i-1)+4)
-                    zl(idecl2+4)=.true.
-                  endif
+                    if (exist(i,4)) then
+                        zr(idecv2+4)= cnsv1(nbcmp*(i-1)+4)
+                        zl(idecl2+4)=.true.
+                    endif
                 endif
             endif
         end do

@@ -71,15 +71,15 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
     character(len=19) :: vcine, nosolv
     integer :: iret, nbsol, kxmps, ifmump, pcentp(2)
     real(kind=8) :: rsolu(*)
-    logical(kind=1) :: prepos
+    aster_logical :: prepos
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (dmumps_struc) , pointer :: dmpsk => null()
-    integer ::   rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
-    integer :: ietrat,  nprec,  ifact, iaux, iaux1, vali(4), pcpi
+    type(dmumps_struc), pointer :: dmpsk => null()
+    integer :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
+    integer :: ietrat, nprec, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
     character(len=5) :: etam, klag2
     character(len=8) :: ktypr
@@ -89,8 +89,8 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
     character(len=24) :: kmonit(12), k24aux, kvers, k24bid
     real(kind=8) :: epsmax, valr(2), rctdeb, temps(6), epsmat
     complex(kind=8) :: cbid(1)
-    logical(kind=1) :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
-    logical(kind=1) :: lopfac
+    aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
+    aster_logical :: lopfac
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()

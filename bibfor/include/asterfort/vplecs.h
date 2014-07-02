@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vplecs(eigsol,&
                   itemax, maxitr, nbborn, nitv, nborto, nbvec2, nbvect, nbrss, nfreq, nperm,&
@@ -73,11 +75,11 @@ interface
     character(len=19) , intent(out)   :: raide
     character(len=19) , intent(out)   :: tabmod    
 !
-    logical(kind=1)   , intent(out)   :: lc
-    logical(kind=1)   , intent(out)   :: lkr
-    logical(kind=1)   , intent(out)   :: lns
-    logical(kind=1)   , intent(out)   :: lpg
-    logical(kind=1)   , intent(out)   :: lqz
+    aster_logical   , intent(out)   :: lc
+    aster_logical   , intent(out)   :: lkr
+    aster_logical   , intent(out)   :: lns
+    aster_logical   , intent(out)   :: lpg
+    aster_logical   , intent(out)   :: lqz
 !    
     end subroutine vplecs
 end interface

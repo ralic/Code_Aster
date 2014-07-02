@@ -20,6 +20,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
@@ -43,7 +44,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 #include "asterfort/mminfr.h"
 #include "asterfort/mmopti.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: loptin
+    aster_logical :: loptin
     character(len=8) :: noma
     character(len=24) :: numedd, defico, resoco
     character(len=19) :: sdappa
@@ -78,12 +79,12 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     real(kind=8) :: seuili, epsint
     real(kind=8) :: armini
     character(len=8) :: aliase, nommam
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     integer :: ibid
     integer :: jdecme
     integer :: ctcini, typint, typapp, entapp
     integer :: posmae, nummae, posmam, nummam
-    logical(kind=1) :: lappar, lgliss, lexfro
+    aster_logical :: lappar, lgliss, lexfro
     integer :: ndexfr
 !
 ! ----------------------------------------------------------------------

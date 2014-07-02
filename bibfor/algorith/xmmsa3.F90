@@ -6,6 +6,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
@@ -60,7 +61,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 !
     integer :: i, j, in, ifh, coefi
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,13 +84,13 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
                 saut(j) = saut(j) - coefi*ffp(i)*v1(in+ndim*ifh+j)
                 if (nvec .ge. 2) saut(j) = saut(j) - coefi*ffp(i)*v2(in+ ndim*ifh+j)
                 if (nvec .eq. 3) saut(j) = saut(j) - coefi*ffp(i)*v3(in+ ndim*ifh+j)
-162          continue
-164      continue
+162         continue
+164     continue
         do 163 j = 1, singu*ndim
             saut(j) = saut(j)-coefi*ffp(i)*rr*v1(in+ndim*(1+nfh)+j)
             if (nvec .ge. 2) saut(j) = saut(j)-coefi*ffp(i)*rr*v2(in+ ndim*(1+nfh)+j)
             if (nvec .eq. 3) saut(j) = saut(j)-coefi*ffp(i)*rr*v3(in+ ndim*(1+nfh)+j)
-163      continue
-161  end do
+163     continue
+161 end do
 !
 end subroutine

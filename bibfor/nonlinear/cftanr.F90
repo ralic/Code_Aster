@@ -21,6 +21,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apvect.h"
 #include "asterfort/assert.h"
@@ -84,8 +85,8 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
 !
 !
-    logical(kind=1) :: lliss, lmfixe, lefixe, lmait, lescl
-    logical(kind=1) :: lpoutr, lpoint
+    aster_logical :: lliss, lmfixe, lefixe, lmait, lescl
+    aster_logical :: lpoutr, lpoint
     integer :: ima, ibid
     integer :: posmam, posmae, nummae, nummam
     integer :: itypem, itypee

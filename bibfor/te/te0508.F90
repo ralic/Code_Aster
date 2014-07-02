@@ -18,6 +18,7 @@ subroutine te0508(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefv.h"
@@ -39,7 +40,7 @@ subroutine te0508(option, nomte)
     parameter (nnomax=27,npgmax=27,epsmax=20,ddlmax=15*nnomax)
 ! ......................................................................
     character(len=8) :: typmod(2)
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nno, nnob, npg, ndim, nddl, neps
     integer :: iret, nnos, jgano, ipoids, ivf, idfde, ivfb, idfdeb, jganob
     integer :: igeom, icontm, ivectu

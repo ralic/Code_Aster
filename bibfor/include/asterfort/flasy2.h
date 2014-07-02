@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
                       tl, ldtl, tr, ldtr, b,&
@@ -24,8 +26,8 @@ interface
         integer :: ldb
         integer :: ldtr
         integer :: ldtl
-        logical(kind=1) :: ltranl
-        logical(kind=1) :: ltranr
+        aster_logical :: ltranl
+        aster_logical :: ltranr
         integer :: isgn
         integer :: n1
         integer :: n2

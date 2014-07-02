@@ -1,4 +1,5 @@
-subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
+subroutine lcmfbo(ep0, ep1, l0, l1, etamin,&
+                  etamax, vide, etam, etap)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,13 +17,14 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lcrkbo.h"
 #include "asterfort/lcvalp.h"
 #include "asterfort/lcvpbo.h"
 #include "asterfort/utmess.h"
-    real(kind=8),intent(in) :: ep0(6),ep1(6),l0,l1,etamin,etamax   
-    logical(kind=1), intent(out)    :: vide     
-    real(kind=8),intent(out):: etam,etap     
+    real(kind=8), intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
+    aster_logical, intent(out) :: vide
+    real(kind=8), intent(out) :: etam, etap
 !
 ! --------------------------------------------------------------------------------------------------
 !  BORNES POUR LE PILOTAGE RELATIF AU CRITERE M. FRANCOIS
@@ -38,14 +40,14 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
 ! etam      nouvelle borne min
 ! etap      nouvelle borne max
 ! --------------------------------------------------------------------------------------------------
-
-    logical(kind=1) :: vide1, vide2
+!
+    aster_logical :: vide1, vide2
     integer :: i, nsol, nsol1, nsol2, sgn(2), sgn1(2), sgn2(2), ptr
     real(kind=8) :: trep0, trep1, ts0(6), ts1(6), s0(3), s1(3), cb
     real(kind=8) :: s0s0, s0s1, s1s1, trs0, trs1, q0, q1, q2, sol(2), sol1(2), sol2(2)
     real(kind=8) :: am, ap, b
-    real(kind=8),parameter:: zero=0.d0
-    real(kind=8),parameter,dimension(6):: kr=(/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: zero=0.d0
+    real(kind=8), parameter, dimension(6) :: kr=(/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
     common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
@@ -69,7 +71,7 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
     s0s0 = dot_product(ts0,ts0)
     s0s1 = dot_product(ts0,ts1)
     s1s1 = dot_product(ts1,ts1)
-
+!
     trs0 = ts0(1)+ts0(2)+ts0(3)
     trs1 = ts1(1)+ts1(2)+ts1(3)
     call lcvalp(ts0, s0)
@@ -84,7 +86,8 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
     q1 = 2*(s0s1 + cb*trs0*trs1)/tau**2 + l1
     q0 = (s0s0 + cb*trs0*trs0)/tau**2 + l0
 !
-    call lcvpbo(sqrt(q2), zero, q0, q1, etam, etap, vide, nsol, sol, sgn)
+    call lcvpbo(sqrt(q2), zero, q0, q1, etam,&
+                etap, vide, nsol, sol, sgn)
 !
     if (vide) goto 999
 !
@@ -108,16 +111,20 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
     b = s0(3)/abs(log(tau))
 !
     if (etam .ge. 0) then
-        call lcrkbo(ap, b, l0, l1, etam, etap, vide, nsol, sol, sgn)
+        call lcrkbo(ap, b, l0, l1, etam,&
+                    etap, vide, nsol, sol, sgn)
 !
 !    ALTERNATIVE FIXEE (NEGATIVE) DANS LE CHOIX DU MINORANT DE LA VP
     else if (etap.le.0) then
-        call lcrkbo(am, b, l0, l1, etam, etap, vide, nsol, sol, sgn)
+        call lcrkbo(am, b, l0, l1, etam,&
+                    etap, vide, nsol, sol, sgn)
 !
 !    ALTERNATIVE AVEC CHANGEMENT DE SIGNE
     else
-        call lcrkbo(am, b, l0, l1, etam, zero, vide1, nsol1, sol1, sgn1)
-        call lcrkbo(ap, b, l0, l1, zero, etap, vide2, nsol2, sol2, sgn2)
+        call lcrkbo(am, b, l0, l1, etam,&
+                    zero, vide1, nsol1, sol1, sgn1)
+        call lcrkbo(ap, b, l0, l1, zero,&
+                    etap, vide2, nsol2, sol2, sgn2)
 !
         vide = vide1 .and. vide2
         nsol = nsol1+nsol2

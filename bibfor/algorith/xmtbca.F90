@@ -19,6 +19,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 ! person_in_charge: ionel.nistor at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/calcul.h"
@@ -32,7 +33,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmchex.h"
-    logical(kind=1) :: mmcvca
+    aster_logical :: mmcvca
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)
@@ -74,7 +75,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     character(len=19) :: cpoint, cainte, heavno, heavfa
     character(len=19) :: oldgeo, depplu
     character(len=16) :: option
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifm, niv, ifmdbg, nivdbg
     integer :: igr, igr2, ngrel, iel, iel2, nel, nel2
     integer :: adiel, adiel2, jad, jad2, debgr, debgr2
@@ -215,13 +216,13 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
                                 zr(jtabf+ztabf*(ipc2-1)+27) = 1
                             endif
                         endif
-50                  continue
+ 50                 continue
                     goto 20
-40              continue
-30          continue
+ 40             continue
+ 30         continue
 !
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! --- MISE A JOUR DU STATUT DE CONTACT ET DE LA MEMOIRE DE CONTACT,
 ! --- SINCO = SOMME DES CICOCA SUR LES ÉLTS DU LIGREL
@@ -236,8 +237,8 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
             zr(jtabf+ztabf*(ipc-1)+13) = celv(adiel+1)
             zr(jtabf+ztabf*(ipc-1)+28) = celv(adiel+2)
             sinco = sinco + celv(adiel)
-70      continue
-60  end do
+ 70     continue
+ 60 end do
 !
 !
 ! --- SI SINCO EST STRICTEMENT POSITIF, ON A PAS CONVERGÉ

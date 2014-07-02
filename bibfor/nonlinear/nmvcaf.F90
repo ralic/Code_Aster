@@ -19,6 +19,7 @@ subroutine nmvcaf(index, chainz, exicha, comz)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -28,7 +29,7 @@ subroutine nmvcaf(index, chainz, exicha, comz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: exicha
+    aster_logical :: exicha
     character(len=4) :: index
     character(len=*) :: comz, chainz
     character(len=19) :: chain

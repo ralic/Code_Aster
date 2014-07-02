@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine aseihm(option, axi, ndim, nno1, nno2,&
                       npi, npg, dimuel, dimdef, dimcon,&
@@ -34,7 +36,7 @@ interface
         integer :: nno1
         integer :: ndim
         character(len=16) :: option
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: npg
         integer :: imate
         integer :: iu(3, 18)
@@ -61,7 +63,7 @@ interface
         real(kind=8) :: geom(ndim, nno2)
         real(kind=8) :: ang(24)
         character(len=16) :: compor(*)
-        logical(kind=1) :: perman
+        aster_logical :: perman
         real(kind=8) :: crit(*)
         real(kind=8) :: vectu(dimuel)
         real(kind=8) :: matuu(dimuel*dimuel)

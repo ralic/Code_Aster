@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
                       base, ldist)
@@ -23,6 +25,6 @@ interface
         character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
         character(len=*) :: base
-        logical(kind=1) :: ldist
+        aster_logical :: ldist
     end subroutine alrslt
 end interface

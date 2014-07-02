@@ -20,6 +20,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/codent.h"
@@ -35,7 +36,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
     integer :: nfic, nbele, nbno, icoma, ibid
     character(len=8) :: tymail, nomobj
-    logical(kind=1) :: trouve, ecrma(*)
+    aster_logical :: trouve, ecrma(*)
 ! ----------------------------------------------------------------------
 !     BUT: ECRIRE SUR LE FICHIER DE MAILLAGE ASTER
 !          LES MAILLES CORRESPONDANT A L'OBJET GIBI
@@ -56,7 +57,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !     VARIABLES LOCALES:
 !-----------------------------------------------------------------------
-    integer :: i,  iacorr,   ibvec, icoj
+    integer :: i, iacorr, ibvec, icoj
     integer :: icok, ii, itymai, ivect, j, k, l
     integer :: maili, maille, nbelem, nbfois, nbrest, nmtot, numno
 !
@@ -101,7 +102,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
         call wkvect('&&GILIRE.VECT', 'V V I', nmtot, ivect)
         do 111 i = 1, nmtot
             zi(ivect+i-1)=0
-111      continue
+111     continue
     else
         call jeveuo('&&GILIRE.VECT', 'L', ivect)
     endif
@@ -145,7 +146,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
                     numanew(ii)= zi(ivect+maille-1)
                     ecrma(numanew(ii))=.true.
                 endif
-11          continue
+ 11         continue
         endif
 !
 !
@@ -158,7 +159,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
         do 10 j = 1, nbno
             numno = connex(nbno* (i-1)+j)
             cogias(j) = indirect(numno)
-10      continue
+ 10     continue
 !
         nbfois = nbno/7
         nbrest = nbno - 7*nbfois
@@ -171,24 +172,24 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
                 numno = cogias(zi(iacorr-1+icok))
                 call codent(numno, 'G', k7nom(1+k))
                 k8nom(1+k) = 'N'//k7nom(1+k)
- 3          continue
+  3         continue
             write (nfic,1001) (k8nom(l),l=1,8)
             k8nom(1) = ' '
             icoj = icoj + 7
- 2      continue
+  2     continue
 !
         do 4 k = 1, nbrest
             icok = icok + 1
             numno = cogias(zi(iacorr-1+icok))
             call codent(numno, 'G', k7nom(1+k))
             k8nom(1+k) = 'N'//k7nom(1+k)
- 4      continue
+  4     continue
         write (nfic,1001) (k8nom(l),l=1,nbrest+1)
- 1  end do
+  1 end do
     write (nfic,*) 'FINSF'
     write (nfic,*) '%'
 !
-9999  continue
+9999 continue
     call jelibe('&&GILIRE.VECT')
 !
     1001 format (2x,a8,7(1x,a8),1x)

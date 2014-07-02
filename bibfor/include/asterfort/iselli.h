@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function iselli(elrefz)
         character(len=*) :: elrefz
-        logical(kind=1) :: iselli
+        aster_logical :: iselli
     end function iselli
 end interface

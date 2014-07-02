@@ -1,11 +1,12 @@
 subroutine dspdp1(net, bishop, signe, tbiot, sat,&
                   dsdp1)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 !
     integer :: i
     real(kind=8) :: signe, tbiot(6), sat, dsdp1(6)
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 ! ======================================================================
 !
 ! ======================================================================
@@ -36,6 +37,6 @@ subroutine dspdp1(net, bishop, signe, tbiot, sat,&
         else
             call utmess('F', 'ALGORITH17_4')
         endif
-10  end do
+ 10 end do
 ! ======================================================================
 end subroutine

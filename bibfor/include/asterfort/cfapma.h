@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
                       lctf3d, ndimg, izone, posnoe, numnoe,&
@@ -24,8 +26,8 @@ interface
         character(len=19) :: newgeo
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical(kind=1) :: lctfd
-        logical(kind=1) :: lctf3d
+        aster_logical :: lctfd
+        aster_logical :: lctf3d
         integer :: ndimg
         integer :: izone
         integer :: posnoe

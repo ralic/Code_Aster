@@ -18,7 +18,8 @@ subroutine lobs(sdobse, numins, inst, lobsv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,7 @@ subroutine lobs(sdobse, numins, inst, lobsv)
     integer :: numins
     real(kind=8) :: inst
     character(len=19) :: sdobse
-    logical(kind=1) :: lobsv
+    aster_logical :: lobsv
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,7 +53,7 @@ subroutine lobs(sdobse, numins, inst, lobsv)
     integer :: iobs, nbobsv
     character(len=2) :: chaine
     character(len=19) :: listli
-    logical(kind=1) :: lselec
+    aster_logical :: lselec
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,7 +79,7 @@ subroutine lobs(sdobse, numins, inst, lobsv)
         call jeveuo(obsact, 'E', jobsac)
         do 14 iobs = 1, nbobsv
             zl(jobsac+iobs-1) = .true.
-14      continue
+ 14     continue
         goto 99
     endif
 !
@@ -92,8 +93,8 @@ subroutine lobs(sdobse, numins, inst, lobsv)
         call nmcrpo(listli, numins, inst, lselec)
         zl(jobsac+iobs-1) = lselec
         lobsv = lselec.or.lobsv
-10  end do
-99  continue
+ 10 end do
+ 99 continue
 !
     call jedema()
 !

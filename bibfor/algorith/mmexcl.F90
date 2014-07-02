@@ -20,6 +20,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
@@ -32,7 +33,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
     integer :: ndexfr
     integer :: iptc, iptm
     integer :: typapp
-    logical(kind=1) :: lexfro
+    aster_logical :: lexfro
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +65,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: lnexfr(9)
-    logical(kind=1) :: prtole, projin
+    aster_logical :: prtole, projin
 !
 ! ----------------------------------------------------------------------
 !

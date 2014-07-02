@@ -20,6 +20,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnbsf.h"
@@ -66,7 +67,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 !
     character(len=24) :: contno, contma
     integer :: jnoco, jmaco
-    integer ::  jelino
+    integer :: jelino
     integer :: jdecno, jno
     integer :: jdecma
     integer :: isuco, i, ino, k, ima, nutyp, noeumi
@@ -74,7 +75,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
     integer :: iatyma, itypma
     integer :: nummai, numnoe
     character(len=8) :: nomtm, nommai, nomnoe
-    logical(kind=1) :: lcoque
+    aster_logical :: lcoque
     integer, pointer :: indino(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -148,13 +149,13 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
                         elimno = elimno + 1
                         goto 90
                     endif
-20              continue
+ 20             continue
             endif
 !
-90      continue
+ 90     continue
 !
 !
-110  end do
+110 end do
 !
 ! --- COQUE_3D NON UTILISABLE EN FORMULATION CONTINUE
 !
@@ -175,7 +176,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
             k = k + 1
             zi(jno+k-1) = zi(jnoco+i-1)
         endif
-120  end do
+120 end do
     ASSERT(k.eq.nnoco)
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES

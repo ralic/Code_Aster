@@ -18,7 +18,8 @@ subroutine oblgai(sdlist, istru, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,7 @@ subroutine oblgai(sdlist, istru, lacti)
 #include "asterfort/obgett.h"
     character(len=24) :: sdlist
     integer :: istru
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !

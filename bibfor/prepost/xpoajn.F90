@@ -22,6 +22,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -75,7 +76,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     character(len=6) :: chn
     character(len=8) :: valk(2)
     parameter     (crilsn = 1.d-4)
-    logical(kind=1) :: lpint
+    aster_logical :: lpint
     data          valk /'NOEUDS','XPOAJN'/
 !
 !     ------------------------------------------------------------------
@@ -88,14 +89,14 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
         lpint = .false.
         do 10 ifiss = 1, nfiss
             if (lsn(ifiss) .eq. 0.d0) lpint = .true.
-10      continue
+ 10     continue
     else if (ino.gt.1000.and.ino.lt.2000) then
         lpint = .true.
     else if (ino.gt.2000) then
         lpint = .false.
         do 20 ifiss = 1, nfiss
             if (abs(lsn(ifiss)) .lt. crilsn) lpint = .true.
-20      continue
+ 20     continue
     endif
 !
     if (lpint) then
@@ -107,7 +108,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
                 minlsn = abs(lsn(ifiss))
                 fiss = ifiss
             endif
-50      continue
+ 50     continue
         if (he(fiss) .eq. -1) then
             nm=prefno(2)
         else
@@ -129,13 +130,13 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot
     do 30 ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
-30  end do
+ 30 end do
     call codent(inntot, 'G', chn)
 !
     call jecroc(jexnom(maxfem//'.NOMNOE', nm//chn))
     do 40 j = 1, 3
         zr(iacoo2-1+3*(nbnoc+inntot-1)+j)=co(j)
-40  end do
+ 40 end do
 !       LISTE DES NOEUDS SUR LA FISSURE
     if (lpint) then
         nbnofi=nbnofi+1

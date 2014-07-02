@@ -18,6 +18,7 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -47,8 +48,8 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 !
 !
 !
-    integer ::  neq,   i
-    logical(kind=1) :: lcine
+    integer :: neq, i
+    aster_logical :: lcine
     integer, pointer :: ccid(:) => null()
     real(kind=8), pointer :: cind(:) => null()
     real(kind=8), pointer :: depla(:) => null()
@@ -75,7 +76,7 @@ subroutine nmacin(fonact, matass, deppla, cncind)
             if (ccid(i) .eq. 1) then
                 cind(i) = cind(i)-depla(i)
             endif
-10      continue
+ 10     continue
 !
     endif
 !

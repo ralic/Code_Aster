@@ -24,6 +24,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 !
 ! aslint: disable=,W1504
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
@@ -36,7 +37,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
     real(kind=8) :: fint(nddl), ktan(*), coopg(4, npg)
     real(kind=8) :: sigm(3, npg), sigp(3, npg), vim(lgpg, npg), vip(lgpg, npg)
     character(len=16) :: option, compor(*)
-    logical(kind=1) :: matsym
+    aster_logical :: matsym
 !
 !-----------------------------------------------------------------------
 !  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS 3D (TE0206)
@@ -65,7 +66,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 ! IN  COOPG  COORDONNEES GEOMETRIQUES DES PG + POIDS
 ! OUT CODRET CODE RETOUR DE L'INTEGRATION
 !-----------------------------------------------------------------------
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
     integer :: code(9), ni, mj, kk, p, q, kpg, ibid, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
@@ -125,7 +126,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
         call r8inir(6, 0.d0, sigmo, 1)
         do 12 n = 1, 3
             sigmo(n) = sigm(n,kpg)
-12      continue
+ 12     continue
 !
         call nmcomp('RIGI', kpg, 1, 3, typmod,&
                     mate, compor, crit, tm, tp,&
@@ -139,12 +140,12 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 !         CONTRAINTES +
             do 11 n = 1, 3
                 sigp(n,kpg) = sigma(n)
-11          continue
+ 11         continue
 !
 !         FORCES INTERIEURES
             do 20 ni = 1, nddl
                 fint(ni) = fint(ni) + poids*ddot(3,b(1,ni),1,sigma,1)
-20          continue
+ 20         continue
 !
         endif
 !
@@ -162,10 +163,10 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
                         do 60 p = 1, 3
                             do 62 q = 1, 3
                                 ktan(kk) = ktan(kk) + poids*b(p,ni)* dsidep(p,q)*b(q,mj)
-62                          continue
-60                      continue
-52                  continue
-50              continue
+ 62                         continue
+ 60                     continue
+ 52                 continue
+ 50             continue
 !
             else
 !
@@ -177,16 +178,16 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
                         do 61 p = 1, 3
                             do 63 q = 1, 3
                                 ktan(kk) = ktan(kk) + poids*b(p,ni)* dsidep(p,q)*b(q,mj)
-63                          continue
-61                      continue
-53                  continue
-51              continue
+ 63                         continue
+ 61                     continue
+ 53                 continue
+ 51             continue
 !
             endif
 !
         endif
 !
-10  end do
+ 10 end do
 !
     if (resi) call codere(code, npg, codret)
 end subroutine

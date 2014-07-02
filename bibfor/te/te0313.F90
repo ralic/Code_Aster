@@ -2,6 +2,7 @@ subroutine te0313(option, nomte)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterfort/aseihm.h"
@@ -64,7 +65,7 @@ subroutine te0313(option, nomte)
 !
 ! =====================================================================
     integer :: li
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
 !
 ! =====================================================================
 ! AXI       AXISYMETRIQUE?
@@ -88,7 +89,7 @@ subroutine te0313(option, nomte)
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! IVF2      FONCTIONS DE FORMES LINEAIRES
 ! =====================================================================
-    logical(kind=1) :: fnoevo
+    aster_logical :: fnoevo
     real(kind=8) :: dt
 !
 ! =====================================================================
@@ -184,7 +185,7 @@ subroutine te0313(option, nomte)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-30          continue
+ 30         continue
 !
             call aseihm(option, axi, ndim, nno1, nno2,&
                         npi, npg, dimuel, dimdef, dimcon,&

@@ -97,6 +97,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
 !
+    cbid=(0.d0,0.d0)
     call jemarq()
 !
     call matfpe(-1)

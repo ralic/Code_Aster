@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     function dmwdp2(rho11, sat, phi, cs, cliq,&
                     dp11p2, emmag, em)
@@ -24,7 +26,7 @@ interface
         real(kind=8) :: cs
         real(kind=8) :: cliq
         real(kind=8) :: dp11p2
-        logical(kind=1) :: emmag
+        aster_logical :: emmag
         real(kind=8) :: em
         real(kind=8) :: dmwdp2_0
     end function dmwdp2

@@ -59,6 +59,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
@@ -81,7 +82,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! ---------
     character(len=8) :: chmat, mailla
     integer :: nbnoma, nbnobe, nbmabe
-    logical(kind=1) :: mail2d
+    aster_logical :: mail2d
     character(len=19) :: nunobe
     real(kind=8) :: xflu, xret
     character(len=24) :: nmabet
@@ -90,12 +91,12 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! -----------------
     integer :: ias, icste, idecal, imail, ino, iret, jconx, jncoch, jnumab
     integer :: jnunob, jptma, jtyma, jvalk, jvalr, nbconx, nbcste, ntyma, numail
-    integer :: numnoe, jcesd, jcesl,  iad
+    integer :: numnoe, jcesd, jcesl, iad
 !
     integer :: ntri3, ntri6, nqua4, nqua8, nqua9, ntet4, ntet10, npyr5, npyr13
     integer :: npen6, npen15, nhex8, nhex20, nhex27
 !
-    logical(kind=1) :: mail3d, trouv1, trouv2
+    aster_logical :: mail3d, trouv1, trouv2
     character(len=3) :: k3mai
     character(len=8) :: beton
     character(len=19) :: carte, nomrc, chsmat, cartez, chtmp
@@ -141,8 +142,8 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
             mail2d = .false.
             goto 11
         endif
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 !
 ! 1.3 SAISIE DES TYPES DE MAILLES ACCEPTABLES POUR UNE REPRESENTATION 3D
 ! --- ET VERIFICATION
@@ -169,8 +170,8 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 mail3d = .false.
                 goto 21
             endif
-20      continue
-21      continue
+ 20     continue
+ 21     continue
     endif
 !
 ! 1.4 SORTIE EN ERREUR FATALE SI REPRESENTATION NON ACCEPTABLE
@@ -188,7 +189,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     call wkvect('&&TOMABE.NOE_COCHES', 'V V I', nbnoma, jncoch)
     do 30 ino = 1, nbnoma
         zi(jncoch+ino-1) = 0
-30  end do
+ 30 end do
 !
 ! 2.2 LECTURE DES CONNECTIVITES DES MAILLES
 ! ---
@@ -199,15 +200,15 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         do 41 ino = 1, nbconx
             numnoe = zi(jconx+ino-1)
             zi(jncoch+numnoe-1) = zi(jncoch+numnoe-1) + 1
-41      continue
-40  end do
+ 41     continue
+ 40 end do
 !
 ! 2.3 DECOMPTE DES NOEUDS ET RELEVE DE LEUR NUMERO
 ! ---
     nbnobe = 0
     do 50 ino = 1, nbnoma
         if (zi(jncoch+ino-1) .gt. 0) nbnobe = nbnobe + 1
-50  end do
+ 50 end do
 !
     call jeecra(nunobe, 'LONUTI', nbnobe)
     call jeveuo(nunobe, 'E', jnunob)
@@ -217,7 +218,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
             idecal = idecal + 1
             zi(jnunob+idecal-1) = ino
         endif
-60  end do
+ 60 end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   RECUPERATION DU MATERIAU CONSTITUTIF DE LA STRUCTURE BETON
@@ -302,11 +303,11 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 xret = zr(jvalr+icste-1)
             endif
             if (trouv1 .and. trouv2) goto 151
-150      continue
+150     continue
 !
 !
 !
-151      continue
+151     continue
 !
 ! CRITERE DE COMPARAISON DES VALEURS MATERIAUX INTRODUITES
 ! PAR L UTILISATEUR DANS LA RELATION BPEL_BETON
@@ -355,8 +356,8 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                             endif
                         endif
                     endif
-250              continue
-200          continue
+250             continue
+200         continue
         endif
 !
         if (.not. ( trouv1 .and. trouv2 )) then

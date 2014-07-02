@@ -1,5 +1,6 @@
 subroutine caflux(char, ligrmo, noma, ndim, fonree)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
@@ -52,12 +53,12 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, nflux, jvalv1, jvalv2,   iocc, n, n1, n2, n3
+    integer :: ibid, nflux, jvalv1, jvalv2, iocc, n, n1, n2, n3
     integer :: n4, n5, n6, n7, n8, n11, n12, ngr, ncmp, ncmp1, ncmps(2)
     integer :: ncmp2, iret
     real(kind=8) :: r8b, aire, xlong
     complex(kind=8) :: c16b
-    logical(kind=1) :: icre1, icre2
+    aster_logical :: icre1, icre2
     character(len=8) :: k8b, nomtab
     character(len=16) :: motclf
     character(len=19) :: cart1, cart2, cartes(2)

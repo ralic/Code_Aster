@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine flust1(melflu, typflu, base, nuor, amor,&
                       amoc, freq, masg, fact, vite,&
@@ -30,7 +32,7 @@ interface
         real(kind=8) :: fact(*)
         real(kind=8) :: vite(*)
         integer :: nbm
-        logical(kind=1) :: calcul(2)
+        aster_logical :: calcul(2)
         integer :: npv
         integer :: nivpar
         integer :: nivdef

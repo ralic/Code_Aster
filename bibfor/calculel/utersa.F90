@@ -61,6 +61,7 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/indiis.h"
@@ -70,7 +71,7 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
     integer :: iavalp, iavalm, nbsv, jad, jadv, noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     character(len=8) :: ma
-    logical(kind=1) :: ltheta
+    aster_logical :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -212,7 +213,7 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
             term22 = term22 + term23*term23*jac(in)
             aux1 = (aux1-aux2)*0.5d0
             aux = aux + aux1*aux1*jac(in)
-100      continue
+100     continue
 !
     endif
 !

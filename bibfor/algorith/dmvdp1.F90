@@ -1,9 +1,10 @@
 function dmvdp1(rho11, rho12, sat, dsatp1, phi,&
                 cs, pvp, emmag, em)
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: rho11, rho12, sat, dsatp1, phi, cs, pvp, dmvdp1
     real(kind=8) :: em, dphip1
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 !
 ! ======================================================================

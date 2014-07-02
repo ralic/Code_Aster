@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                       ddlh, ddlc, nfe, nnop, jlsn,&
@@ -34,7 +36,7 @@ interface
         integer :: iforc
         integer :: itemps
         integer :: ivectu
-        logical(kind=1) :: fonc
-        logical(kind=1) :: fono
+        aster_logical :: fonc
+        aster_logical :: fono
     end subroutine xfovol
 end interface

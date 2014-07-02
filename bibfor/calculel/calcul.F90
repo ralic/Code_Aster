@@ -125,7 +125,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !-----------------------------------------------------------------------
-    logical(kind=1) :: ldist, dbg, ldgrel
+    aster_logical :: ldist, dbg, ldgrel
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel
@@ -152,7 +152,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=8), pointer :: typma(:) => null()
     integer, pointer :: numsd(:) => null()
     character(len=24), pointer :: prtk(:) => null()
-    logical(kind=1), pointer :: paral(:) => null()
+    aster_logical, pointer :: paral(:) => null()
 !----------------------------------------------------------------------
 !
 !   -- FONCTIONS FORMULES :
@@ -349,7 +349,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     -------------------------------------------------
     call alrslt(opt, ligrel, nou2, lchou2, lpaou2,&
                 base2, ldist)
-    call alchlo(opt, ligrel, nin2, lpain2, nou2, lpaou2)
+    call alchlo(opt, ligrel, nin2, lpain2, nou2,&
+                lpaou2)
 !
 !     5- AVANT BOUCLE SUR LES GREL :
 !     QUELQUES ACTIONS HORS BOUCLE GREL DUES A CALVOI==1 :
@@ -494,6 +495,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
     call jedema()
 !
-101 format(1x,a10,a20,1x,a20,a20,a20)
+    101 format(1x,a10,a20,1x,a20,a20,a20)
 !
 end subroutine

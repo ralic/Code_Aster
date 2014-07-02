@@ -27,6 +27,7 @@ subroutine caver1()
 !
 !     VARIABLES LOCALES:
 !     ------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/jedema.h"
@@ -40,7 +41,7 @@ subroutine caver1()
 #include "asterfort/utmess.h"
 !
     integer :: opt, te
-    logical(kind=1) :: error
+    aster_logical :: error
     character(len=8) :: para, typmai
     character(len=16) :: nomopt, nomte
     character(len=24) :: valk(4)
@@ -49,9 +50,9 @@ subroutine caver1()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iamolo,  iaopmo, iaopno,  iapara
+    integer :: iadesc, iamolo, iaopmo, iaopno, iapara
     integer :: icode, ier, igd, igdop, imolo, ioptte, ipara
-    integer :: iret, itrou, jnbno, jnocm1, jnocm2,  k
+    integer :: iret, itrou, jnbno, jnocm1, jnocm2, k
     integer :: kk, lgco, n1, n2, nbgd, nbin, nbinte
     integer :: nbno, nbopt, nbout, nboute, nbpt1, nbpt2, nbte
     integer :: nbvol, nucalc
@@ -71,168 +72,168 @@ subroutine caver1()
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
 !
 !
-    do 40,opt = 1,nbopt
-    call jenuno(jexnum('&CATA.OP.NOMOPT', opt), nomopt)
-    call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iadesc)
-    call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iapara)
-    nbin = zi(iadesc-1+2)
-    nbout = zi(iadesc-1+3)
-    nbvol = zi(iadesc-1+4)
-    if (nbvol .ne. 0) then
-        call utmess('E', 'CATAELEM_1', sk=nomopt)
-        ier = ier + 1
-    endif
+    do 40 opt = 1, nbopt
+        call jenuno(jexnum('&CATA.OP.NOMOPT', opt), nomopt)
+        call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iadesc)
+        call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iapara)
+        nbin = zi(iadesc-1+2)
+        nbout = zi(iadesc-1+3)
+        nbvol = zi(iadesc-1+4)
+        if (nbvol .ne. 0) then
+            call utmess('E', 'CATAELEM_1', sk=nomopt)
+            ier = ier + 1
+        endif
 !
 !
 !       -- ON VERIFIE QU'UNE OPTION N'A JAMAIS 2 PARAMETRES
 !          DE MEME NOM
 !          -------------------------------------------------
-    call kndoub(8, zk8(iapara), nbin+nbout, iret)
-    if (iret .gt. 0) then
-        call utmess('E', 'CATAELEM_2', sk=nomopt)
-    endif
+        call kndoub(8, zk8(iapara), nbin+nbout, iret)
+        if (iret .gt. 0) then
+            call utmess('E', 'CATAELEM_2', sk=nomopt)
+        endif
 !
 !
-    do 30,te = 1,nbte
-    call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-    ioptte = optte((te-1)*lgco+opt)
-    if (ioptte .eq. 0) goto 30
-    call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
-    call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
-    nucalc = zi(iaopmo-1+1)
-    nbinte = zi(iaopmo-1+2)
+        do 30 te = 1, nbte
+            call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
+            ioptte = optte((te-1)*lgco+opt)
+            if (ioptte .eq. 0) goto 30
+            call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
+            call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
+            nucalc = zi(iaopmo-1+1)
+            nbinte = zi(iaopmo-1+2)
 !
-    typmai = typema(te)
-    call jeveuo(jexnom('&CATA.TM.NBNO', typmai), 'L', jnbno)
-    nbno = zi(jnbno)
+            typmai = typema(te)
+            call jeveuo(jexnom('&CATA.TM.NBNO', typmai), 'L', jnbno)
+            nbno = zi(jnbno)
 !
 !              ON NE TRAQUE PAS LES ERREURS SI NUCALC=0,-1 OU -2
-    if ((nucalc.le.0) .and. (nucalc.ge.-2)) goto 30
-    do 10,ipara = 1,nbinte
-    para = zk8(iaopno-1+ipara)
-    imolo = zi(iaopmo-1+3+ipara)
-    if (imolo .eq. 0) then
-        valk(1) = para
-        valk(2) = nomopt
-        valk(3) = nomte
-        call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
-        ier = ier + 1
-        goto 10
-    endif
+            if ((nucalc.le.0) .and. (nucalc.ge.-2)) goto 30
+            do 10 ipara = 1, nbinte
+                para = zk8(iaopno-1+ipara)
+                imolo = zi(iaopmo-1+3+ipara)
+                if (imolo .eq. 0) then
+                    valk(1) = para
+                    valk(2) = nomopt
+                    valk(3) = nomte
+                    call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
+                    ier = ier + 1
+                    goto 10
+                endif
 !
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
-    igd = zi(iamolo-1+2)
-    itrou = indik8(zk8(iapara-1+1),para,1,nbin)
-    igdop = zi(iadesc-1+4+itrou)
-    if ((itrou.eq.0) .or. (igdop.ne.igd)) then
-        if (itrou .eq. 0) then
-            valk(1) = para
-            valk(2) = nomopt
-            valk(3) = nomte
-            call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
-            ier = ier + 1
-        endif
-        if (igdop .ne. igd) then
-            valk(1) = para
-            valk(2) = nomopt
-            valk(3) = nomte
-            call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
-            ier = ier + 1
-        endif
-    endif
+                call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
+                igd = zi(iamolo-1+2)
+                itrou = indik8(zk8(iapara-1+1),para,1,nbin)
+                igdop = zi(iadesc-1+4+itrou)
+                if ((itrou.eq.0) .or. (igdop.ne.igd)) then
+                    if (itrou .eq. 0) then
+                        valk(1) = para
+                        valk(2) = nomopt
+                        valk(3) = nomte
+                        call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
+                        ier = ier + 1
+                    endif
+                    if (igdop .ne. igd) then
+                        valk(1) = para
+                        valk(2) = nomopt
+                        valk(3) = nomte
+                        call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
+                        ier = ier + 1
+                    endif
+                endif
 !
 !              -- ON VERIFIE QUE POUR LES MODE LOCAUX AUX NOEUDS
 !                 LE NOMBRE DE NOEUDS EST LE NOMBRE DE NOEUDS DE
 !                 LA MAILLE SUPPORT :
 !              ---------------------------------------------------
-    icode = zi(iamolo-1+1)
-    nbpt2 = -1
-    if (icode .eq. 2) then
-        nbpt2 = mod(zi(iamolo-1+4),10000)
-    else if (icode.eq.3) then
-        nbpt1 = zi(iamolo-1+4)
-        if (nbpt1 .lt. 0) then
-            nbpt2 = mod(abs(nbpt1),10000)
-        endif
-    endif
-    if (nbpt2 .ge. 0) then
-        if (nbpt2 .ne. nbno) then
-            valk(1) = para
-            valk(2) = nomopt
-            valk(3) = nomte
-            call utmess('E', 'CATAELEM_6', nk=3, valk=valk)
-            ier = ier + 1
-        endif
-    endif
+                icode = zi(iamolo-1+1)
+                nbpt2 = -1
+                if (icode .eq. 2) then
+                    nbpt2 = mod(zi(iamolo-1+4),10000)
+                else if (icode.eq.3) then
+                    nbpt1 = zi(iamolo-1+4)
+                    if (nbpt1 .lt. 0) then
+                        nbpt2 = mod(abs(nbpt1),10000)
+                    endif
+                endif
+                if (nbpt2 .ge. 0) then
+                    if (nbpt2 .ne. nbno) then
+                        valk(1) = para
+                        valk(2) = nomopt
+                        valk(3) = nomte
+                        call utmess('E', 'CATAELEM_6', nk=3, valk=valk)
+                        ier = ier + 1
+                    endif
+                endif
 !
 !
-10  continue
+ 10         continue
 !
 !
 !         -- VERIFICATION DES MODES LOCAUX "OUT" DES TE/OPTIONS:
 !         ------------------------------------------------------
-    nboute = zi(iaopmo-1+3)
-    do 20,ipara = 1,nboute
-    para = zk8(iaopno-1+nbinte+ipara)
-    imolo = zi(iaopmo-1+3+nbinte+ipara)
-    if (imolo .eq. 0) then
-        valk(1) = para
-        valk(2) = nomopt
-        valk(3) = nomte
-        call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
-        ier = ier + 1
-        goto 20
-    endif
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
-    igd = zi(iamolo-1+2)
-    itrou = indik8(zk8(iapara-1+nbin+1),para,1,nbout)
-    igdop = zi(iadesc-1+4+nbin+itrou)
-    if ((itrou.eq.0) .or. (igdop.ne.igd)) then
-        if (itrou .eq. 0) then
-            valk(1) = para
-            valk(2) = nomopt
-            valk(3) = nomte
-            call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
-            ier = ier + 1
-        endif
-        if (igdop .ne. igd) then
-            valk(1) = para
-            valk(2) = nomopt
-            valk(3) = nomte
-            call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
-            ier = ier + 1
-        endif
-    endif
+            nboute = zi(iaopmo-1+3)
+            do 20 ipara = 1, nboute
+                para = zk8(iaopno-1+nbinte+ipara)
+                imolo = zi(iaopmo-1+3+nbinte+ipara)
+                if (imolo .eq. 0) then
+                    valk(1) = para
+                    valk(2) = nomopt
+                    valk(3) = nomte
+                    call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
+                    ier = ier + 1
+                    goto 20
+                endif
+                call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
+                igd = zi(iamolo-1+2)
+                itrou = indik8(zk8(iapara-1+nbin+1),para,1,nbout)
+                igdop = zi(iadesc-1+4+nbin+itrou)
+                if ((itrou.eq.0) .or. (igdop.ne.igd)) then
+                    if (itrou .eq. 0) then
+                        valk(1) = para
+                        valk(2) = nomopt
+                        valk(3) = nomte
+                        call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
+                        ier = ier + 1
+                    endif
+                    if (igdop .ne. igd) then
+                        valk(1) = para
+                        valk(2) = nomopt
+                        valk(3) = nomte
+                        call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
+                        ier = ier + 1
+                    endif
+                endif
 !
 !           -- ON VERIFIE QUE  LE TYPE DU CHAMP LOCAL EST COHERENT
 !               AVEC CELUI DECLARE DANS L'OPTION :
 !           ---------------------------------------------------
-    icode = zi(iamolo-1+1)
-    typou2=zk8(iapara-1+nbin+nbout+itrou)
-    typout='????'
-    if (icode .ge. 4) then
-        typout='RESL__'
-    else if (icode.eq.3) then
-        typout='ELGA__'
-    else if (icode.eq.2) then
-        typout='ELNO__'
-    else if (icode.eq.1) then
-        typout='ELEM__'
-    endif
+                icode = zi(iamolo-1+1)
+                typou2=zk8(iapara-1+nbin+nbout+itrou)
+                typout='????'
+                if (icode .ge. 4) then
+                    typout='RESL__'
+                else if (icode.eq.3) then
+                    typout='ELGA__'
+                else if (icode.eq.2) then
+                    typout='ELNO__'
+                else if (icode.eq.1) then
+                    typout='ELEM__'
+                endif
 !
-    if (typout .ne. typou2) then
-        valk(1) = para
-        valk(2) = nomopt
-        valk(3) = nomte
-        valk(4) = typou2
-        call utmess('E', 'CATAELEM_7', nk=4, valk=valk)
+                if (typout .ne. typou2) then
+                    valk(1) = para
+                    valk(2) = nomopt
+                    valk(3) = nomte
+                    valk(4) = typou2
+                    call utmess('E', 'CATAELEM_7', nk=4, valk=valk)
 !             IER = IER + 1
-    endif
-20  continue
+                endif
+ 20         continue
 !
-30  continue
+ 30     continue
 !
-    40 end do
+ 40 end do
 !
 !    -- ON VERIFIE QUE CERTAINES GRANDEURS SONT "PARALLELES" :
 !       ELLES DOIVENT AVOIR EXACTEMENT LES MEMES CMPS :
@@ -243,27 +244,27 @@ subroutine caver1()
     tgd1(2) = 'DEPL_R'
     tgd2(2) = 'DEPL_F'
     error = .false.
-    do 90,k = 1,nbgd
-    gd1 = tgd1(k)
-    gd2 = tgd2(k)
-    call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', n1)
-    call jelira(jexnom('&CATA.GD.NOMCMP', gd2), 'LONMAX', n2)
-    if (n1 .ne. n2) then
-        error = .true.
-    else
-        call jeveuo(jexnom('&CATA.GD.NOMCMP', gd1), 'L', jnocm1)
-        call jeveuo(jexnom('&CATA.GD.NOMCMP', gd2), 'L', jnocm2)
-        do 80,kk = 1,n1
-        if (zk8(jnocm1-1+kk) .ne. zk8(jnocm1-1+kk)) error = .true.
-80      continue
-    endif
-    if (error) then
-        valk(1) = gd1
-        valk(2) = gd2
-        call utmess('E', 'CATAELEM_8', nk=2, valk=valk)
-        ier = ier + 1
-    endif
-    90 end do
+    do 90 k = 1, nbgd
+        gd1 = tgd1(k)
+        gd2 = tgd2(k)
+        call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', n1)
+        call jelira(jexnom('&CATA.GD.NOMCMP', gd2), 'LONMAX', n2)
+        if (n1 .ne. n2) then
+            error = .true.
+        else
+            call jeveuo(jexnom('&CATA.GD.NOMCMP', gd1), 'L', jnocm1)
+            call jeveuo(jexnom('&CATA.GD.NOMCMP', gd2), 'L', jnocm2)
+            do 80 kk = 1, n1
+                if (zk8(jnocm1-1+kk) .ne. zk8(jnocm1-1+kk)) error = .true.
+ 80         continue
+        endif
+        if (error) then
+            valk(1) = gd1
+            valk(2) = gd2
+            call utmess('E', 'CATAELEM_8', nk=2, valk=valk)
+            ier = ier + 1
+        endif
+ 90 end do
 !
 !
     if (ier .gt. 0) then

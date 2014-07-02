@@ -20,6 +20,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/digde2.h"
@@ -78,7 +79,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
     integer :: lon1, lontot, iparmx, ibid
     integer :: jrsvi, dim1
     character(len=8) :: scal, nomgd, tymat
-    logical(kind=1) :: lmatvf
+    aster_logical :: lmatvf
 !
 !
     call jemarq()

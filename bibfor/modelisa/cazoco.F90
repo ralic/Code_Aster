@@ -20,6 +20,7 @@ subroutine cazoco(char, nomo, motfac, iform, izone,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazocc.h"
 #include "asterfort/cazocd.h"
@@ -46,7 +47,7 @@ subroutine cazoco(char, nomo, motfac, iform, izone,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lmail
+    aster_logical :: lmail
 !
 ! ----------------------------------------------------------------------
 !

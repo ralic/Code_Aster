@@ -20,7 +20,8 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8miem.h"
@@ -38,7 +39,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     integer :: indic
     integer :: ajliai, spliai, nbliai, neq
     integer :: nbliac, llf
-    logical(kind=1) :: liasup
+    aster_logical :: liasup
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     character(len=1) :: typeaj
     character(len=2) :: typlia, typec0, typef0
     integer :: ztacf
-    logical(kind=1) :: lelpiv
+    aster_logical :: lelpiv
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
@@ -143,7 +144,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
         if (typlia .eq. typec0) then
             do 720 iliac2 = iliac+1, btotal
                 if (zi(jliac-1+iliac2) .eq. iliai) goto 710
-720          continue
+720         continue
 !
 ! ------- ON NE PREND PAS EN COMPTE UNE LIAISON A PIVOT NUL
 !
@@ -194,7 +195,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
                 endif
             endif
         endif
-710  end do
+710 end do
 !
     if (lfmin .gt. 0) ASSERT(indic.eq.1)
 !

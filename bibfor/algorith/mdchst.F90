@@ -3,6 +3,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                   nbrfis, logcho, parcho, intitu, ddlcho,&
                   ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8miem.h"
@@ -74,14 +75,14 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! OUT : IER    : NIVEAU D'ERREUR
 !     ------------------------------------------------------------------
 !
-    integer :: nbchoc, nbsism(2), nbflam, nbocc, i, j, ioc, ibid, il,  jmama
+    integer :: nbchoc, nbsism(2), nbflam, nbocc, i, j, ioc, ibid, il, jmama
     integer :: nbnma, kma, nn1, nn2, ino1, ino2, ig, n1, namtan, iret, nmliai
     integer :: jmail, im, iliai, nmgr, ngrm, numai, irett, compt1, compt2
     integer :: nbmail, nbno, j1, j2, bono1, bono2, vali
     real(kind=8) :: ktang, ctang, k, rap, xjeu, r8bid
     real(kind=8) :: alpha, beta, axe(3)
     complex(kind=8) :: cbid
-    logical(kind=1) :: lnoue2, memail
+    aster_logical :: lnoue2, memail
     character(len=8) :: kbid, repere, mailla, nomno1, nomno2, k8typ
     character(len=10) :: motfac
     character(len=24) :: mdgene, refo, nomgr1, nomgr2, mamai
@@ -110,7 +111,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     call jemarq()
     call getfac('CHOC', nbchoc)
     call getfac('ANTI_SISM', nbsism(1))
-    call getfac('DIS_VISC',  nbsism(2))
+    call getfac('DIS_VISC', nbsism(2))
     call getfac('FLAMBAGE', nbflam)
     nbocc = nbchoc + nbsism(1)+nbsism(2) + nbflam
     mdgene = ' '
@@ -125,10 +126,10 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
         noecho(il,8) = mailla
     enddo
 !
-
+!
     iliai = 0
     do i = 1, nbocc
-        if      (i .gt. nbchoc+nbsism(1)+nbsism(2)) then
+        if (i .gt. nbchoc+nbsism(1)+nbsism(2)) then
             motfac = 'FLAMBAGE'
             ioc = i - (nbchoc+nbsism(1)+nbsism(2))
         else if (i .gt. nbchoc+nbsism(1)) then
@@ -400,7 +401,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 !               Pour pas laisser vide
                 intitu(iliai) = 'DIS_VISC'
                 call getvr8(motfac, 'K1', iocc=ioc, scal=r8bid, nbret=n1)
-                if ( n1.eq.1 ) then
+                if (n1 .eq. 1) then
                     parcho(iliai,53) = 1.0d0/r8bid
                 else
                     call getvr8(motfac, 'UNSUR_K1', iocc=ioc, scal=r8bid, nbret=n1)
@@ -408,7 +409,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     parcho(iliai,53) = r8bid
                 endif
                 call getvr8(motfac, 'K2', iocc=ioc, scal=r8bid, nbret=n1)
-                if ( n1.eq.1 ) then
+                if (n1 .eq. 1) then
                     parcho(iliai,54) = r8bid
                 else
                     call getvr8(motfac, 'UNSUR_K2', iocc=ioc, scal=r8bid, nbret=n1)
@@ -416,27 +417,29 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     parcho(iliai,54) = 1.0d0/r8bid
                 endif
                 call getvr8(motfac, 'K3', iocc=ioc, scal=r8bid, nbret=n1)
-                if ( n1.eq.1 ) then
+                if (n1 .eq. 1) then
                     parcho(iliai,55) = 1.0d0/r8bid
                 else
                     call getvr8(motfac, 'UNSUR_K3', iocc=ioc, scal=r8bid, nbret=n1)
                     ASSERT( n1.eq.1 )
                     parcho(iliai,55) = r8bid
                 endif
-                call getvr8(motfac, 'C', iocc=ioc, scal=parcho(iliai,56), nbret=n1)
+                call getvr8(motfac, 'C', iocc=ioc, scal=parcho(iliai, 56), nbret=n1)
                 ASSERT( n1.eq.1 )
-                call getvr8(motfac, 'PUIS_ALPHA', iocc=ioc, scal=parcho(iliai,57), nbret=n1)
+                call getvr8(motfac, 'PUIS_ALPHA', iocc=ioc, scal=parcho(iliai, 57), nbret=n1)
                 ASSERT( n1.eq.1 )
 !               calcul : 1/K1 + K2/(K1*K3) + 1/K3
-                r8bid = ( parcho(iliai,53)+parcho(iliai,54)*parcho(iliai,53)*parcho(iliai,55) + &
-                          parcho(iliai,55) )
-                if ( r8bid .le. r8miem() ) then
+                r8bid = (&
+                        parcho(iliai,53)+parcho(iliai,54)*parcho(iliai,53)*parcho(iliai,55) +  pa&
+                        &rcho(iliai,55)&
+                        )
+                if (r8bid .le. r8miem()) then
                     call utmess('F', 'DISCRETS_41')
                 endif
                 call getvis(motfac, 'ITER_INTE_MAXI', iocc=ioc, scal=vali, nbret=n1)
                 parcho(iliai,58) = vali
                 ASSERT( n1.eq.1 )
-                call getvr8(motfac, 'RESI_INTE_RELA', iocc=ioc, scal=parcho(iliai,59), nbret=n1)
+                call getvr8(motfac, 'RESI_INTE_RELA', iocc=ioc, scal=parcho(iliai, 59), nbret=n1)
                 ASSERT( n1.eq.1 )
 !
 !               Orientation de l'élément : vecteur x1x2 qui doit être non nul
@@ -444,7 +447,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 axe(2) = (parcho(iliai,12) - parcho(iliai,9))
                 axe(3) = (parcho(iliai,13) - parcho(iliai,10))
                 r8bid = axe(1)**2+axe(2)**2+axe(3)**2
-                if ( r8bid .le. r8miem() ) then
+                if (r8bid .le. r8miem()) then
                     call utmess('F', 'DISCRETS_43')
                 endif
                 call angvx(axe, alpha, beta)
@@ -455,27 +458,28 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 parcho(iliai,21) = 0.0
                 parcho(iliai,22) = 0.0
             endif
-
-            if (motfac.ne.'DIS_VISC') then
+!
+            if (motfac .ne. 'DIS_VISC') then
 !               SI AMOR_TAN NON RENSEIGNE ON LUI AFFECTE UNE VAL OPTIMISEE
                 if (namtan .eq. 0 .and. ktang .ne. 0.d0) then
                     k = pulsat(imode)**2 * masgen(imode)
-                    ctang = 2.d0*sqrt( masgen(imode)*(k+ktang)) - &
-                            2.d0*amogen(iamor)*sqrt(k*masgen(imode))
+                    ctang = 2.d0*sqrt(&
+                            masgen(imode)*(k+ktang)) - 2.d0*amogen(iamor)*sqrt(k*masgen(imode))
                     call utmess('I', 'ALGORITH16_10', si=i, sr=ctang)
                 endif
                 parcho(iliai,4) = ktang
                 parcho(iliai,5) = ctang
-    !
+                !
                 if (noecho(iliai,9)(1:2) .eq. 'BI') then
-                    xjeu = ( parcho(iliai,11) - parcho(iliai,8) )**2 + &
-                        ( parcho(iliai,12) - parcho(iliai,9) )**2 + &
-                        ( parcho(iliai,13) - parcho(iliai,10) )**2
+                    xjeu = (&
+                           parcho(iliai,11) - parcho(iliai,8) )**2 + ( parcho(iliai,12) - parcho(&
+                           &iliai,9) )**2 + ( parcho(iliai,13) - parcho(iliai,10)&
+                           )**2
                 endif
-    !
+                !
                 call mdchre(motfac, ioc, iliai, mdgene, typnum,&
                             repere, nbnli, parcho, lnoue2)
-    !
+                !
                 call mdchan(motfac, ioc, iliai, mdgene, typnum,&
                             repere, xjeu, nbnli, noecho, parcho)
             endif

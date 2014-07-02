@@ -1,5 +1,6 @@
 subroutine rcjaco(ar, br, valpro)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: ar(*), br(*), valpro(3)
 ! ======================================================================
@@ -27,7 +28,7 @@ subroutine rcjaco(ar, br, valpro)
     real(kind=8) :: tol, toldyn, valaux(3), eps, akk, ajj, ab, verif
     real(kind=8) :: eptola, epcoma, eptolb, epcomb, raci, d1, d2, den, ca, cg
     real(kind=8) :: aj, bj, ak, bk, rtol, dif, epsa, compa, epsb, compb
-    logical(kind=1) :: iconv
+    aster_logical :: iconv
     data   nperm, tol, toldyn / 12, 1.d-10, 1.d-2 /
 ! ----------------------------------------------------------------------
 !
@@ -42,7 +43,7 @@ subroutine rcjaco(ar, br, valpro)
         valaux(i) = ar(ii) / br(ii)
         valpro(i) = valaux(i)
         ii = ii + 3 + 1 - i
-10  end do
+ 10 end do
 !
 !     ------------------------------------------------------------------
 !     ------------------- ALGORITHME DE JACOBI -------------------------
@@ -50,7 +51,7 @@ subroutine rcjaco(ar, br, valpro)
 !
     niter = 0
 !
-30  continue
+ 30 continue
 !
     niter = niter + 1
     eps = (toldyn**niter)**2
@@ -108,7 +109,7 @@ subroutine rcjaco(ar, br, valpro)
                     br(ij) = bj + cg * bk
                     ar(ik) = ak + ca * aj
                     br(ik) = bk + ca * bj
-51              continue
+ 51             continue
             endif
             if (kp1-3 .le. 0) then
                 lji = jm1 * 3 - jm1 * j / 2
@@ -124,7 +125,7 @@ subroutine rcjaco(ar, br, valpro)
                     br(ji) = bj + cg * bk
                     ar(ki) = ak + ca * aj
                     br(ki) = bk + ca * bj
-52              continue
+ 52             continue
             endif
             if (jp1-km1 .le. 0) then
                 lji = jm1 * 3 - jm1 * j /2
@@ -140,7 +141,7 @@ subroutine rcjaco(ar, br, valpro)
                     br(ji) = bj + cg * bk
                     ar(ik) = ak + ca * aj
                     br(ik) = bk + ca * bj
-53              continue
+ 53             continue
             endif
             ak = ar(kk)
             bk = br(kk)
@@ -151,8 +152,8 @@ subroutine rcjaco(ar, br, valpro)
             ar(jk) = 0.0d0
             br(jk) = 0.0d0
 !
-41      continue
-40  end do
+ 41     continue
+ 40 end do
 !
 !     --- CALCUL DES NOUVELLES VALEURS PROPRES ---
 !
@@ -163,7 +164,7 @@ subroutine rcjaco(ar, br, valpro)
         endif
         valpro(i) = ar(ii) / br(ii)
         ii = ii + 3 + 1 - i
-60  end do
+ 60 end do
 !
 !     --- TEST DE CONVERGENCE SUR LES VALEURS PROPRES ---
 !
@@ -175,7 +176,7 @@ subroutine rcjaco(ar, br, valpro)
             iconv = .false.
             goto 9998
         endif
-70  end do
+ 70 end do
 !
 !     ---    CALCUL DES FACTEURS DE COUPLAGE   ---
 !     --- TEST DE CONVERGENCE SUR CES FACTEURS ---
@@ -198,10 +199,10 @@ subroutine rcjaco(ar, br, valpro)
                 iconv = .false.
                 goto 9998
             endif
-81      continue
-80  end do
+ 81     continue
+ 80 end do
 !
-9998  continue
+9998 continue
 !
 !     ---  SI ON N'A PAS CONVERGE ---
 !
@@ -211,7 +212,7 @@ subroutine rcjaco(ar, br, valpro)
 !
         do 82 i = 1, 3
             valaux(i) = valpro(i)
-82      continue
+ 82     continue
 !
 !        --- TEST SUR LE NOMBRE D'ITERATIONS ---
 !

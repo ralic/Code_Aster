@@ -2,6 +2,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                   chsecm, chsolu, base, rsolu, csolu,&
                   criter, prepos, istop, iret)
     implicit none
+#include "asterf_types.h"
 # include "jeveux.h"
 # include "asterfort/assert.h"
 # include "asterfort/copisd.h"
@@ -24,7 +25,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     character(len=*) :: criter
-    logical(kind=1) :: prepos
+    aster_logical :: prepos
     integer :: istop, iret
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -114,9 +115,9 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                     chsecm, chsolu, base, rsolu, csolu,&
                     criter, prepos, istop, iret)
     else
-        call elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
-                        base, rsolu, csolu, criter, prepos,&
-                        istop, iret)
+        call elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
+                        chsolu, base, rsolu, csolu, criter,&
+                        prepos, istop, iret)
     endif
 !
 !

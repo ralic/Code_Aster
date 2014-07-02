@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
                       vect, xsol, nbvect, vectmp, prepos)
@@ -27,6 +29,6 @@ interface
         complex(kind=8) :: vect(neq, nbvect)
         complex(kind=8) :: xsol(neq, nbvect)
         complex(kind=8) :: vectmp(neq)
-        logical(kind=1) :: prepos
+        aster_logical :: prepos
     end subroutine mcmmvr
 end interface

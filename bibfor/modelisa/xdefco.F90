@@ -19,6 +19,7 @@ subroutine xdefco(noma, nomo, fiss, algola, ndim,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -31,7 +32,7 @@ subroutine xdefco(noma, nomo, fiss, algola, ndim,&
     integer :: algola
     character(len=19) :: nliseq
     character(len=24) :: grma(3)
-    logical :: lxfem
+    aster_logical :: lxfem
 !
 ! ----------------------------------------------------------------------
 !

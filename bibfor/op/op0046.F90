@@ -30,6 +30,7 @@ subroutine op0046()
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/allir8.h"
@@ -66,7 +67,7 @@ subroutine op0046()
 !
     integer :: ibid, nh, nbchre, n1, n4, n5, n7
     integer :: iordr, nbmax, nchar, jchar
-    integer :: iocc, nfon,  iret, i,  nbuti
+    integer :: iocc, nfon, iret, i, nbuti
     integer :: ifm, niv, ier
 !
     real(kind=8) :: temps, time, alpha
@@ -88,7 +89,7 @@ subroutine op0046()
     character(len=24) :: k24bla, noobj
     character(len=24) :: compor
 !
-    logical(kind=1) :: exipou
+    aster_logical :: exipou
 !
     complex(kind=8) :: calpha
     real(kind=8), pointer :: vale(:) => null()

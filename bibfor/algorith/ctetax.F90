@@ -43,6 +43,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/amppr.h"
@@ -70,7 +71,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, typddl(6), nomnoe, tyd, intf, kbid
     real(kind=8) :: xa(10), xta(10), tet0(10, 10), teta(nbtet, nbtet)
-    logical(kind=1) :: nook
+    aster_logical :: nook
     integer :: ideca(nbcpmx)
     integer :: vali(2)
 !

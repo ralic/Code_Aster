@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lceob3(intmax, tole, eps, bm, dm,&
                       lambda, mu, alpha, ecrob, ecrod,&
@@ -35,8 +37,8 @@ interface
         real(kind=8) :: b(6)
         real(kind=8) :: d
         real(kind=8) :: mult
-        logical(kind=1) :: elas
-        logical(kind=1) :: dbloq
+        aster_logical :: elas
+        aster_logical :: dbloq
         integer :: iret
     end subroutine lceob3
 end interface

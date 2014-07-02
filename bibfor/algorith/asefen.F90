@@ -2,6 +2,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                   nbsup, ndir, nsupp, masse, nomsup,&
                   depsup, recmod, nintra, nbdis)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
@@ -28,7 +29,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     real(kind=8) :: depsup(nbsup, *), recmod(nbsup, neq, *)
     character(len=*) :: stat, nomsup(nbsup, *), masse
     character(len=16) :: nomsy
-    logical(kind=1) :: muapde
+    aster_logical :: muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,9 +66,9 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 ! IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 !     ------------------------------------------------------------------
     integer :: ibid, idi, ier, igr, in, ino, inorf, ioc, iordr, ire1, ire2, iret
-    integer :: is, jdgn,   jvale, nbtrou, ncas, ng, ngr, nn, nno, nnr
+    integer :: is, jdgn, jvale, nbtrou, ncas, ng, ngr, nn, nno, nnr
     integer :: nx, ny, nz, ns
-    integer ::  tordr(1)
+    integer :: tordr(1)
     real(kind=8) :: dx, dy, dz, r8b, xx1, xxx
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3), noma

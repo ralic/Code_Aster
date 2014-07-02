@@ -19,7 +19,8 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfcgeo.h"
@@ -56,13 +57,13 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lallv, lreag
+    aster_logical :: lallv, lreag
     character(len=24) :: clreac
     integer :: jclrea
     character(len=16) :: geonoe, k16bla
     real(kind=8) :: geoval, r8bid
-    logical(kind=1) :: ctderg, cvresi
-    logical(kind=1) :: dvpfix, dvfixg
+    aster_logical :: ctderg, cvresi
+    aster_logical :: dvpfix, dvfixg
     integer :: ctcite
 !
 ! ----------------------------------------------------------------------

@@ -20,6 +20,7 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
@@ -64,7 +65,7 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
 !
 !
     real(kind=8) :: un
-    logical(kind=1) :: lextra
+    aster_logical :: lextra
     real(kind=8) :: valext(4)
     real(kind=8) :: xxbb, xa0, xa1, xdet, cresi, ciblen
     real(kind=8) :: r8bid

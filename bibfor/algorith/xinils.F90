@@ -22,6 +22,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -48,7 +49,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     character(len=16) :: geofis
     character(len=19) :: cnslt, cnsln
     real(kind=8) :: a, b, r, noeud(3), vect1(3), vect2(3)
-    logical(kind=1) :: grille
+    aster_logical :: grille
 !
 ! ----------------------------------------------------------------------
 !                      CALCUL INITIAL DES LEVEL-SETS
@@ -75,7 +76,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
     integer :: jconx1, jconx2, jdlima, jdlise
     integer :: nbma, nbsef
-    integer ::  jcnl,  jctl,   nbmagr, jcong1, jcong2, nbnoc
+    integer :: jcnl, jctl, nbmagr, jcong1, jcong2, nbnoc
     integer :: jcoorc
     real(kind=8) :: xln, xlt
     integer :: ndim, dimno
@@ -87,8 +88,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     character(len=16) :: k16bid, typdis
     character(len=19) :: chslsn, chslst
     character(len=24) :: lisma, lisse
-    logical(kind=1) :: callst
-    logical :: lcond
+    aster_logical :: callst
     integer :: ifm, niv
     integer, pointer :: cnd(:) => null()
     integer, pointer :: ctd(:) => null()
@@ -249,12 +249,10 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
         do ino = 1, nbno
 !           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
-            lcond=zl(jcnl+ino-1)
-            ASSERT(lcond)
+            ASSERT(zl(jcnl+ino-1))
             if (callst) then
-               lcond=zl(jctl+ino-1)
-               ASSERT(lcond)
-            endif   
+                ASSERT(zl(jctl+ino-1))
+            endif 
             zr(jlnsv-1+(ino-1)+1)=cnv(ino)
             zl(jlnsl-1+(ino-1)+1)=.true.
             if (callst) zr(jltsv-1+(ino-1)+1)=ctv(ino)

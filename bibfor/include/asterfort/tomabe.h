@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                       mail2d, nbnobe, nunobe, xflu, xret,&
@@ -24,7 +26,7 @@ interface
         integer :: nbmabe
         character(len=8) :: mailla
         integer :: nbnoma
-        logical(kind=1) :: mail2d
+        aster_logical :: mail2d
         integer :: nbnobe
         character(len=19) :: nunobe
         real(kind=8) :: xflu

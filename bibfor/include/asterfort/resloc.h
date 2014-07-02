@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
                       perman, chtime, mate, sigmam, sigmap,&
@@ -22,10 +24,10 @@ interface
                       nchar, tabido, chvois, cvoisx, chelem)
         character(len=8) :: modele
         character(len=*) :: ligrel
-        logical(kind=1) :: yaxfem
-        logical(kind=1) :: yathm
+        aster_logical :: yaxfem
+        aster_logical :: yathm
         real(kind=8) :: tbgrca(3)
-        logical(kind=1) :: perman
+        aster_logical :: perman
         character(len=24) :: chtime
         character(len=*) :: mate
         character(len=24) :: sigmam

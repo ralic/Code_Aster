@@ -24,6 +24,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -114,8 +115,8 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     real(kind=8) :: f0, fm, f, fopt, fcvg
     real(kind=8) :: parmul, relirl, sens
     real(kind=8) :: mem(2, 10)
-    logical(kind=1) :: stite, lnkry
-    logical(kind=1) :: lgrot, lendo
+    aster_logical :: stite, lnkry
+    aster_logical :: lgrot, lendo
     character(len=19) :: cnfins(2), cndirs(2), k19bla
     character(len=19) :: depplu, sigplu, varplu, complu
     character(len=19) :: sigplt, varplt, depplt
@@ -124,7 +125,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     character(len=19) :: cnfint, cndiri, cnfext
     character(len=19) :: depdet, ddepla, depdel
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
-    logical(kind=1) :: echec
+    aster_logical :: echec
     integer :: ifm, niv
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -147,6 +148,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
 ! --- INITIALISATIONS
 !
+    opt = 1
     parmul = 3.d0
     fopt = r8maem()
     k19bla = ' '

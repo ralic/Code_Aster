@@ -1,7 +1,8 @@
 subroutine te0392(option, nomte)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/caatdb.h"
@@ -56,7 +57,7 @@ implicit none
     real(kind=8) :: repere(7), xyzgau(3), instan
     integer :: igeom, ipoids, ivf, idfde
 !
-    logical(kind=1) :: calbn
+    aster_logical :: calbn
     integer :: i, ino, j, k, proj, nbpg2, ipg, ispg
     integer :: ndim, nnos, kp, idim
     real(kind=8) :: d(6, 6), s
@@ -77,25 +78,25 @@ implicit none
 !
 ! - Finite element informations
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! - Initializations
 !
-    instan   = 0.d0
-    b(:,:)   = 0.d0
-    bary(:)  = 0.d0
+    instan = 0.d0
+    b(:,:) = 0.d0
+    bary(:) = 0.d0
 !
 ! - Number of stress components
 !
-    nbsig     = nbsigm()
+    nbsig = nbsigm()
 !
 ! - Geometry
 !
     call jevech('PGEOMER', 'L', igeom)
 !
 ! - Material parameters
-! 
+!
     call jevech('PMATERC', 'L', imate)
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
@@ -171,9 +172,8 @@ implicit none
 !
 ! ----- Compute Hooke matrix [D]
 !
-        call dmatmc('RIGI', zi(imate), instan, '+',&
-                    igau, 1, repere, xyzgau, nbsig,&
-                    d)
+        call dmatmc('RIGI', zi(imate), instan, '+', igau,&
+                    1, repere, xyzgau, nbsig, d)
 !
 ! ----- Compute "center" rigidity matrix [KC]
 !
@@ -205,12 +205,11 @@ implicit none
 !
 ! - Poisson ration for ASQBI
 !
-    ipg  = 1
+    ipg = 1
     ispg = 1
-    call get_elas_para('RIGI', zi(imate), '+', ipg, ispg, &
-                       elas_type,&
-                       nu = nu , nu12 = nu12)
-    if (elas_type.eq.1) then
+    call get_elas_para('RIGI', zi(imate), '+', ipg, ispg,&
+                       elas_type, nu = nu, nu12 = nu12)
+    if (elas_type .eq. 1) then
         nub = nu/(1.d0-nu)
     else
         nub = nu12/(1.d0-nu12)
@@ -221,15 +220,15 @@ implicit none
 !           1 ADS
 !           2 ASBQI
 !
-    proj  = 2
+    proj = 2
     calbn = .false.
 !
 ! - Finite element informations for underintegrated element
 !
     call elraga('HE8', 'FPG8    ', ndim, nbpg2, coopg2,&
                 poipg2)
-    call elrefe_info(elrefe='HE8',fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=nbpg2,jpoids=ipoid2,jdfde=idfde2)
+    call elrefe_info(elrefe='HE8', fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=nbpg2, jpoids=ipoid2, jdfde=idfde2)
 !
 ! - Compute corrected stabilization matrix [K_STAB]
 !

@@ -1,7 +1,11 @@
 subroutine tresu_ordgrd(valr, ignore, compare, mcf, iocc)
     implicit none
+#include "asterf_types.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
     real(kind=8), intent(in) :: valr
-    logical(kind=1), intent(out) :: ignore
+    aster_logical, intent(out) :: ignore
     real(kind=8), intent(out) :: compare
     character(len=*), intent(in), optional :: mcf
     integer, intent(in), optional :: iocc
@@ -22,9 +26,6 @@ subroutine tresu_ordgrd(valr, ignore, compare, mcf, iocc)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mathieu.courtois@edf.fr
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvr8.h"
 !
 !   Read the ORDRE_GRANDEUR keyword in the value of VALE_CALC(=valr) is null
 !
@@ -45,7 +46,7 @@ subroutine tresu_ordgrd(valr, ignore, compare, mcf, iocc)
 !
     ignore = .false.
     compare = 1.d0
-    if ( abs(valr) .le. r8prem() ) then
+    if (abs(valr) .le. r8prem()) then
         call getvr8(umcf, 'ORDRE_GRANDEUR', iocc=iocc, nbval=0, nbret=nord)
         if (nord .eq. 0) then
             ignore = .true.

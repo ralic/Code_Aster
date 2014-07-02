@@ -51,6 +51,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/iunifi.h"
@@ -74,7 +75,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
     character(len=19) :: matdrv
     real(kind=8) :: epscor
-    logical(kind=1) :: cor
+    aster_logical :: cor
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------

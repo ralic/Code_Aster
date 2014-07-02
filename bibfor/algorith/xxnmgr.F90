@@ -8,6 +8,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -92,7 +93,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
     integer :: i, ig, iret, j, j1, k, kk, kkd, kpg, l, m, mn, n, nn
     integer :: ddls, ddld, ddldn, cpt, dec(nnop)
-    integer ::  idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     integer :: ndimb, nno, nnops, nnos, npgbis
     real(kind=8) :: f(3, 3), fm(3, 3), fr(3, 3), epsm(6), epsp(6), deps(6)
     real(kind=8) :: dsidep(6, 6), sigma(6), ftf, detf
@@ -103,7 +104,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe))
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3)
     real(kind=8) :: fmm(3, 3), deplb1(3, 27), deplb2(3, 27)
-    logical(kind=1) :: grdepl, axi, cplan, resi, rigi
+    aster_logical :: grdepl, axi, cplan, resi, rigi
 !
     integer :: indi(6), indj(6)
     real(kind=8) :: rind(6), rind1(6), rac2, angmas(3)
@@ -124,7 +125,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     ddls = ddld+ddlc
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
 ! - INITIALISATION
     grdepl = compor(3) .eq. 'GROT_GDEP'
@@ -137,9 +138,9 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
         call utmess('F', 'XFEM2_5')
     endif
 !
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -167,7 +168,8 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
         if (nfe .gt. 0) then
 !         JUSTE POUR CALCULER LES FF
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff)
 !
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
             call vecini(3*ndim, 0.d0, baslog)
@@ -197,15 +199,20 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, EPSM ET EPSP
 !       CALCUL EN T-
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, fm, epsm, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, idepl, grdepl,&
+                    ndim, he, rbid, rbid, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, fm,&
+                    epsm, rbid33)
 !
 !       CALCUL EN T+
-        call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, epsp, rbid33)
+        call xcinem(axi, nnop, nnops, ideplp, grdepl,&
+                    ndim, he, rbid, rbid, fisno,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f,&
+                    epsp, rbid33)
 !
 !       CALCUL DE DEPS POUR LDC
         do i = 1, 6

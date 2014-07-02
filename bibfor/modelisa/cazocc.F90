@@ -19,6 +19,7 @@ subroutine cazocc(char, motfac, izone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -63,8 +64,8 @@ subroutine cazocc(char, motfac, izone)
     real(kind=8) :: algocr, algofr
     real(kind=8) :: typint, ctrini
     integer :: parint
-    logical(kind=1) :: lintno, lfrot, lsscon, lssfro, lexdir
-    logical(kind=1) :: lgliss, lnewtg, lnewtc
+    aster_logical :: lintno, lfrot, lsscon, lssfro, lexdir
+    aster_logical :: lgliss, lnewtg, lnewtc
 !
 ! ----------------------------------------------------------------------
 !

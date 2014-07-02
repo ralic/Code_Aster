@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine spect1(casint, nomu, spectr, ispect, base,&
                       vite, nuor, imodi, imodf, nbm,&
                       nbpf, nomzon, vmoyzi, vmoyto)
         integer :: nbm
-        logical(kind=1) :: casint
+        aster_logical :: casint
         character(len=8) :: nomu
         character(len=19) :: spectr
         integer :: ispect

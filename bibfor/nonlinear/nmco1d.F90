@@ -18,6 +18,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/comp1d.h"
 #include "asterfort/nm1dci.h"
@@ -59,7 +60,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical(kind=1) :: cine, isot, pinto, com1d, elas, cinegc
+    aster_logical :: cine, isot, pinto, com1d, elas, cinegc
     real(kind=8) :: e, et, sigy
     integer :: nvarpi
     parameter    ( nvarpi=8)

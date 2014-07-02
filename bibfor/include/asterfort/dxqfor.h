@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dxqfor(global, xyzl, pgl, for, vecl)
-        logical(kind=1) :: global
+        aster_logical :: global
         real(kind=8) :: xyzl(3, *)
         real(kind=8) :: pgl(3, *)
         real(kind=8) :: for(6, *)

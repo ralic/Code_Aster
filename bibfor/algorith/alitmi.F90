@@ -54,6 +54,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/adimve.h"
 #include "asterfort/calcmd.h"
 #include "asterfort/calcmi.h"
@@ -94,7 +95,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
     real(kind=8) :: cmod0(np1, *), kmod0(np1, *), cmod(np1, *), kmod(np1, *)
     real(kind=8) :: cmodca(np1, *), kmodca(np1, *), amflu0(np1, *)
     real(kind=8) :: amfluc(np1, *), cmodfa(np1, *)
-    logical(kind=1) :: locflc(*)
+    aster_logical :: locflc(*)
     integer :: npfts
     real(kind=8) :: textts(*), fextts(np4, *)
     integer :: ndef, indt
@@ -104,7 +105,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
     integer :: intge1(*), intge2(*), indx(*), indxf(*)
     real(kind=8) :: ftmp(*), mtmp1(np1, *), mtmp2(np1, *), mtmp6(3, *)
     real(kind=8) :: ttr(n2, *), u(*), w(*), dd(*)
-    logical(kind=1) :: loc(*)
+    aster_logical :: loc(*)
     real(kind=8) :: vvg(np1, *), vg(np1, *), vg0(np1, *), vd(np1, *)
     real(kind=8) :: vd0(np1, *), rr(*), rr0(*), ri(*)
     real(kind=8) :: premac, prerel, trans(2, 2, *), pulsd(*)
@@ -157,7 +158,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 !     ESTIMATION DES DDLS GENERALISES A L'INSTANT N+1
 !     (REPETER JUSQU'A VALIDATION DE L'INSTANT N+1)
 !-----------------------------------------------------------------------
-10  continue
+ 10 continue
     call vecini(np1, 0.d0, depge)
     call vecini(np1, 0.d0, vitge)
     call vecini(np1, 0.d0, depg)
@@ -245,13 +246,13 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 !
     do 20 i = 1, nbm
         puls(i) = rr(i)
-20  end do
+ 20 end do
     do 30 i = 1, nbm
         if ((puls(i).eq.0.0d0) .and. (i.le.nbmcd)) then
             puls(i) = puls0(i)
             call utmess('I', 'ALGORITH_11')
         endif
-30  end do
+ 30 end do
 !
     if ((ichoc0.eq.1) .and. (ichoc.eq.0)) typj = 1
 !
@@ -420,7 +421,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
                 somvit = 0.0d0
                 do 50 i = 1, nbm
                     somvit = somvit + vitg(i)*vitg0(i)
-50              continue
+ 50             continue
 !
 ! ............ SI LE PRODUIT SCALAIRE EST NEGATIF => DT = DT/5
                 if (somvit .lt. 0.0d0) then
@@ -480,7 +481,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 ! ------------ ON RETOURNE A L'ESTIMATION D'EULER ESTIVD
                 goto 10
             endif
-55      continue
+ 55     continue
 ! DEBUG
         dt0 = dt
 !
@@ -523,7 +524,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
                 omega = 0.0d0
                 do 60 i = 1, nbmcd
                     if (puls(i) .gt. omega) omega = puls(i)
-60              continue
+ 60             continue
                 dt = 1.0d0/(div*omega*15.0d0)
                 itest = 1
             endif

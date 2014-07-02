@@ -51,6 +51,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !           C'EST LE CAS EN GENERAL POUR LA BOUCLE SUR LES NUME_ORDRE
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celcel.h"
@@ -100,14 +101,14 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     integer :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
 ! ---------------------------------------------------------------------
-    logical(kind=1) :: lvari
+    aster_logical :: lvari
     integer :: numa, jnofpg, kk
     integer :: k, te, npg1, npoini, ideca2
-    integer :: igr,  jcmaco,  jcliel, jcnsl2
+    integer :: igr, jcmaco, jcliel, jcnsl2
     integer :: ibid, nbpg, ino, nbgr, inogl, kse
-    integer :: iamol1,  jcnsv2, mxcmp
+    integer :: iamol1, jcnsv2, mxcmp
     integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
-    integer :: iipg, jceld1,  moloc1, ncmpmx
+    integer :: iipg, jceld1, moloc1, ncmpmx
     parameter(mxcmp=100)
     integer :: nuddl(mxcmp), mxvari, iel, ncmp, jnocmp, jcorr1
     character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg

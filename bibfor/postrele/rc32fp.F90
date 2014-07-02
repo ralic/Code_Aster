@@ -1,6 +1,7 @@
 subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
                   ug, factus)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
@@ -42,7 +43,7 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
     integer :: isk, isl, k, l, nk, nl, n0, i1, nsitup, ifm, niv, icompt
     integer :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
     real(kind=8) :: fumax, ukl
-    logical(kind=1) :: trouve, yapass
+    aster_logical :: trouve, yapass
     character(len=3) :: typass
     integer, pointer :: passage_sit(:) => null()
 !     ------------------------------------------------------------------
@@ -70,13 +71,13 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
         do 100 k = 1, nbsigr
             i1 = nbsigr*(k-1)
             write(ifm,1000) situ(k), nocc(k), (fuij(i1+l),l=1,nbsigr)
-100      continue
+100     continue
     endif
 !
     icompt = 0
     ug = 0.d0
 !
-10  continue
+ 10 continue
     fumax = 0.d0
     trouve = .false.
 !
@@ -150,13 +151,13 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
         do 110 k = 1, nbsigr
             i1 = nbsigr*(k-1)
             write(ifm,1000) situ(k), nocc(k), (fuij(i1+l),l=1,nbsigr)
-110      continue
+110     continue
     endif
 !
     ug = ug + ukl
     goto 10
 !
-9999  continue
+9999 continue
 !
     1000 format(1p,i7,i9,'|',40(e9.2,'|'))
     1010 format(1p,7x,'NB_OCCUR ','|',40(i9,'|'))

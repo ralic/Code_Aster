@@ -19,6 +19,7 @@ subroutine nmsolm(sddyna, solalg)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -50,8 +51,8 @@ subroutine nmsolm(sddyna, solalg)
 !
 !
 !
-    logical(kind=1) :: lstat, ldyna
-    logical(kind=1) :: ldepl, lvite, lacce
+    aster_logical :: lstat, ldyna
+    aster_logical :: ldepl, lvite, lacce
     real(kind=8) :: coevit, coeacc
     character(len=19) :: ddepla, dvitla, daccla
     integer :: ifm, niv
@@ -119,7 +120,7 @@ subroutine nmsolm(sddyna, solalg)
 !
 ! --- AFFICHAGE
 !
-999  continue
+999 continue
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... DEPL. SOLU.     : '

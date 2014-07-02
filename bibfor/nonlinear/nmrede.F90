@@ -21,6 +21,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -66,7 +67,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
     integer :: jccid
     integer :: ifm, niv
-    logical(kind=1) :: ldyna, lcine
+    aster_logical :: ldyna, lcine
     character(len=19) :: cndiri, cnvcfo
     integer :: ieq
     real(kind=8) :: val2, val3, appui, fext

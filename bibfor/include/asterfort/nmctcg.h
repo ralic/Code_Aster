@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmctcg(modele, noma, defico, resoco, loptin,&
                       sdstat, sdtime, numedd)
@@ -22,7 +24,7 @@ interface
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=24) :: resoco
-        logical(kind=1) :: loptin
+        aster_logical :: loptin
         character(len=24) :: sdstat
         character(len=24) :: sdtime
         character(len=24) :: numedd

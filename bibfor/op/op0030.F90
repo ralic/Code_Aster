@@ -1,7 +1,8 @@
 subroutine op0030()
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
@@ -43,7 +44,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,9 +59,9 @@ implicit none
     character(len=16) :: formul
     character(len=19) :: ligrmo, ligret, ligrel, ligrch
     integer :: iform
-    logical(kind=1) :: lallv
+    aster_logical :: lallv
     character(len=24) :: sdcont_defi
-    character(len=8), pointer :: p_load_type(:) => null() 
+    character(len=8), pointer :: p_load_type(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,10 +70,10 @@ implicit none
 !
 ! - Initializations
 !
-    formul    = ' '
-    iform     = 0
-    ligret    = '&&OP0030.LIGRET'
-    ligrel    = '&&OP0030.LIGREL'
+    formul = ' '
+    iform = 0
+    ligret = '&&OP0030.LIGRET'
+    ligrel = '&&OP0030.LIGREL'
     vale_type = 'REEL'
 !
 ! - Which command ?
@@ -86,7 +87,7 @@ implicit none
 ! - Mesh, Ligrel for model, dimension of model
 !
     call cagene(load, command, ligrmo, mesh, nb_dim)
-    model  = ligrmo(1:8)
+    model = ligrmo(1:8)
 !
 ! - Load type
 !

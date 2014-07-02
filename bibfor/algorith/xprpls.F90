@@ -3,6 +3,7 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
                   ndim, ndomp, edomg)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -98,14 +99,14 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !     CHARACTERISTICS OF THE MESHES
 !
 !     PROJECTION LEVEL SETS MESH
-    integer :: nbelpr, jefrom,   jcnlnl, jcnltl
+    integer :: nbelpr, jefrom, jcnlnl, jcnltl
 !
 !     PROJECTION PHYSICAL MESH
     character(len=19) :: tmplsn, tmplst
     integer :: jnto, nunopr
 !
 !     PROJECTION CODE
-    logical(kind=1) :: ldmax
+    aster_logical :: ldmax
     real(kind=8) :: distma
     character(len=8) :: lpain(4), lpaout(2)
     character(len=19) :: cnols, celgls, chams
@@ -206,7 +207,7 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
         cnltv(zi(jnto-1+i)) = tmplt(zi(jnto-1+i))
         zl(jcnltl-1+zi(jnto-1+i)) = .true.
 !
-3000  continue
+3000 continue
 !
 !        DESTROY THE TEMPORARY PROJECTED LEVEL SETS
     call detrsd('CHAM_NO_S', tmplsn)

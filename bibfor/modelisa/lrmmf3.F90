@@ -79,6 +79,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/as_mfafai.h"
@@ -131,8 +132,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     integer :: idatfa(200)
     integer :: adnomg, adnumg, adnume, nvnbgr
     integer :: ilmed, ilnew, nogrlo, jnogrl, jnogrc
-    logical(kind=1) :: renomm, errgm
-    logical :: ierr
+    aster_logical :: renomm, errgm, ierr
     character(len=80) :: kbid, newgrm
 !
     character(len=2) :: saux02
@@ -247,7 +247,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                         valk(2) = kbid(1:ilnew)
                         call utmess('E', 'MED_9', nk=2, valk=valk)
                     endif
-910              continue
+910             continue
             endif
             if (.not. renomm) then
                 if (infmed .ge. 2) then
@@ -289,7 +289,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                 valk(1) = nomfam(1:jau2)
                 call utmess('F', 'MED_11', sk=valk(1), si=mi(1))
             endif
-20          continue
+ 20         continue
 !
         endif
 !
@@ -335,7 +335,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                 nbenfa = nbenfa + 1
                 tabaux(nbenfa) = iaux
             endif
-231          continue
+231         continue
 !
 ! 2.3.2. ==> POUR UNE FAMILLE DE MAILLES : LE TABLEAU TABAUX CONTIENDRA
 !            LA LISTE DES MAILLES DE LA FAMILLE, TYPE PAR TYPE.
@@ -349,9 +349,9 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                     nbenfa = nbenfa + 1
                     tabaux(nbenfa) = zi(jnumty(ityp)+iaux-1)
                 endif
-2321              continue
+2321             continue
             endif
-232          continue
+232         continue
 !
         endif
 !
@@ -365,7 +365,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
             adnume = adnume - 1
             do 24 , iaux = 1 , nbenfa
             zi(adnume+iaux) = tabaux(iaux)
-24          continue
+ 24         continue
 !
         endif
 !
@@ -419,7 +419,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                 zi(adnumg-1+iaux) = jaux
                 zk80(jnogrl-1+iaux+nbgrlo) = saux24
                 zk24(jnogrc-1+iaux+nbgrlo) = saux24
-251              continue
+251             continue
                 nbgrlo = nbgrlo + nbattr
 !
             else
@@ -451,7 +451,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                 zi(adnumg-1+iaux) = jaux
                 zk80(jnogrl-1+iaux+nbgrlo) = nogrfa(iaux)
                 zk24(jnogrc-1+iaux+nbgrlo) = k24b
-252              continue
+252             continue
                 nbgrlo = nbgrlo + nbgrou
 !
             endif

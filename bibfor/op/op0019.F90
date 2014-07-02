@@ -33,6 +33,7 @@ subroutine op0019()
 !     NBEMB   4 : NOMBRE D'ELEMENTS DE TYPE "MEMBRANE"
 !     NBTHM1   47 : NOMBRE D'ELEMENTS DE TYPE "MASSIF" THM
 !     NBTHM2   28 : NOMBRE D'ELEMENTS DE TYPE "MASSIF" *HH2*
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -111,7 +112,7 @@ subroutine op0019()
     integer :: npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill
     integer :: ngribt, nmembr, iclf, ioc, icle, ng
     integer :: depart, jdnm, ixnw, jdln, jdlm, jdls
-    logical(kind=1) :: locaco, locagb, locamb
+    aster_logical :: locaco, locagb, locamb
     character(len=6) :: kioc
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclf(nbmcf), mcle(4), k16bid
@@ -244,11 +245,11 @@ subroutine op0019()
 !
     do 26 i = 1, nbel4
         nomele(i+nbel1+nbel2+nbel3) = nomel4(i)
-26  end do
+ 26 end do
 !
     do 27 i = 1, nbel5
         nomele(i+nbel1+nbel2+nbel3+nbel4) = nomel5(i)
-27  end do
+ 27 end do
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
     call getres(nomu, concep, cmd)
@@ -263,7 +264,7 @@ subroutine op0019()
         do 40 i = 1, nbver
             if (ver(i) .eq. 'MAILLE  ') ivr(1) = 1
             if (ver(i) .eq. 'NOEUD   ') ivr(2) = 1
-40      continue
+ 40     continue
     else if (nbver.lt.0) then
         call utmess('F', 'MODELISA5_55')
     endif
@@ -463,8 +464,8 @@ subroutine op0019()
                 call getvtx(mclf(iclf), mcle(icle), iocc=ioc, nbval=lmax, vect=zk24(jdls),&
                             nbret=ng)
                 call verima(noma, zk24(jdls), ng, mcle(icle))
-80          continue
-90      continue
+ 80         continue
+ 90     continue
     end do
 !
 ! --- ------------------------------------------------------------------
@@ -621,8 +622,8 @@ subroutine op0019()
     if ((nbocc(2).ne.0) .or. (nbocc(11).ne.0)) then
         call coqucf(nomu)
     endif
-
-
+!
+!
 ! --- TRAITEMENT DES MOTS CLES
 !           MULTIFIBRE  /  GEOM_FIBRE
 !           COQUE       /  COQUE_NCOU
@@ -632,8 +633,8 @@ subroutine op0019()
 !           POUTRE      /  TUYAU_NSEC
 !     ----------------------------------------------------------
     call pmfd00()
-
-
+!
+!
 !   -- APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
 !   -------------------------------------------------------
     lpain(1)='PCACOQU'
@@ -644,10 +645,10 @@ subroutine op0019()
     call calcul('C', 'VERI_CARA_ELEM', ligrmo, 1, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
-
+!
 !   -- Certaines cartes peuvent etre vides : il faut les detruire :
 !   ---------------------------------------------------------------
-    call detrsd_vide('CARTE',nomu//'.CARDISCA')
-
+    call detrsd_vide('CARTE', nomu//'.CARDISCA')
+!
     call jedema()
 end subroutine

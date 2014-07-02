@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine assesu(nno, nnos, nface, geom, crit,&
                       deplm, deplp, congem, congep, vintm,&
@@ -56,7 +58,7 @@ interface
         character(len=16) :: compor(*)
         character(len=8) :: typmod(2)
         integer :: typvf
-        logical(kind=1) :: axi
-        logical(kind=1) :: perman
+        aster_logical :: axi
+        aster_logical :: perman
     end subroutine assesu
 end interface 

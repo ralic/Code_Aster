@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cacina(ndim, nno, npg, lgpg, axi,&
                       grand, compor, geomm, g, iw,&
@@ -25,8 +27,8 @@ interface
         integer :: npg
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
-        logical(kind=1) :: grand
+        aster_logical :: axi
+        aster_logical :: grand
         character(len=16) :: compor(*)
         real(kind=8) :: geomm(3, nno)
         integer :: g

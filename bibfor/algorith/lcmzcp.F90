@@ -18,6 +18,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/mazacp.h"
@@ -79,7 +80,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: nomres(nbval), mazars(nbval)
     real(kind=8) :: valres(nbval+1)
 !
-    logical(kind=1) :: resi
+    aster_logical :: resi
     integer :: ndimsi, iret
     real(kind=8) :: epsthe, kdess, bendo, epsane
     real(kind=8) :: ee, nu

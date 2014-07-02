@@ -16,6 +16,7 @@ subroutine te0433(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cargri.h"
@@ -53,7 +54,7 @@ subroutine te0433(option, nomte)
     real(kind=8) :: epsm, epsg(9), epsthe, sig, sigg(9), rho(1), valres(2), epot
     real(kind=8) :: x(8), y(8), z(8), volume, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6), vro
-    logical(kind=1) :: lexc
+    aster_logical :: lexc
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
@@ -62,8 +63,8 @@ subroutine te0433(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
 !

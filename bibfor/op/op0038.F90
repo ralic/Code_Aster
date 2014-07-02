@@ -26,6 +26,7 @@ subroutine op0038()
 !
 ! ----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
@@ -64,7 +65,7 @@ subroutine op0038()
     character(len=24) :: chtemp, chtime, chflug, chpres
     character(len=24) :: lchin(8), lchout(1)
 !
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
 !
 ! ----------------------------------------------------------------------
 !

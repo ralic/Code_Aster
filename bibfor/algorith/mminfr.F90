@@ -20,6 +20,7 @@ function mminfr(defico, questz, izone)
 !
     implicit none
     real(kind=8) :: mminfr
+#include "asterf_types.h"
 #include "asterfort/mminfp.h"
     character(len=24) :: defico
     integer :: izone
@@ -44,7 +45,7 @@ function mminfr(defico, questz, izone)
 !
     integer :: ibid(1)
     real(kind=8) :: rrep(1)
-    logical(kind=1) :: lbid(1)
+    aster_logical :: lbid(1)
 !
 ! ----------------------------------------------------------------------
 !

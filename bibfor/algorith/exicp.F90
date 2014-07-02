@@ -2,6 +2,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -31,9 +32,9 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: list_elem_affe
-    logical(kind=1), intent(in) :: l_affe_all
+    aster_logical, intent(in) :: l_affe_all
     integer, intent(in) :: nb_elem_affe
-    logical(kind=1) :: exicp
+    aster_logical :: exicp
 !
 ! --------------------------------------------------------------------------------------------------
 !

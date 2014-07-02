@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine flaln2(ltrans, na, nw, smin, ca,&
                       a, lda, d1, d2, b,&
@@ -23,7 +25,7 @@ interface
         integer :: ldx
         integer :: ldb
         integer :: lda
-        logical(kind=1) :: ltrans
+        aster_logical :: ltrans
         integer :: na
         integer :: nw
         real(kind=8) :: smin

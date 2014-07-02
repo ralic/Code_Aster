@@ -157,6 +157,7 @@ subroutine gtrsen(select, n, t, ldt, q,&
 ! CORPS DU PROGRAMME
     implicit none
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/gtrexc.h"
 #include "asterfort/xerbla.h"
@@ -167,7 +168,7 @@ subroutine gtrsen(select, n, t, ldt, q,&
     integer :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical(kind=1) :: select( * )
+    aster_logical :: select( * )
     complex(kind=8) :: q( ldq, * ), t( ldt, * ), w( * )
 !     ..
 !     .. LOCAL SCALARS ..
@@ -191,7 +192,7 @@ subroutine gtrsen(select, n, t, ldt, q,&
     nn = n1*n2
 !
     info = 0
-    if (n.lt.0) then
+    if (n .lt. 0) then
         info = -4
     else if (ldt.lt.max( 1, n )) then
         info = -6
@@ -224,7 +225,7 @@ subroutine gtrsen(select, n, t, ldt, q,&
     end do
 !
 !
-40  continue
+ 40 continue
 !
 !     COPY REORDERED EIGENVALUES TO W.
 !

@@ -1,6 +1,7 @@
 subroutine prccm3(nommat, para, sm, sn, sp,&
                   ke, salt, nadm)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterfort/limend.h"
 #include "asterfort/rcvale.h"
@@ -32,7 +33,7 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
     character(len=8) :: kbid
     real(kind=8) :: valr(2)
     integer :: icodre(1)
-    logical(kind=1) :: endur
+    aster_logical :: endur
 !     ------------------------------------------------------------------
 !
     un = 1.0d0

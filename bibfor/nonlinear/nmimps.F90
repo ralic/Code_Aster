@@ -19,6 +19,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -49,7 +50,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
     integer :: iresi, iarg, nresi
     real(kind=8) :: valr(1)
     character(len=16) :: valk(2)
-    logical(kind=1) :: lprint, maxrel, maxnod
+    aster_logical :: lprint, maxrel, maxnod
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,9 +99,9 @@ subroutine nmimps(sdimpr, sdconv, sderro)
             valr(1) = zr(jcnvva-1+iresi)
             call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr(1))
         endif
-20  end do
+ 20 end do
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

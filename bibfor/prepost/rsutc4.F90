@@ -1,6 +1,7 @@
 subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
                   nbch, acceno)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indk16.h"
@@ -14,7 +15,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 #include "asterfort/as_allocate.h"
 !
     integer :: iocc, dimlis, nbch
-    logical(kind=1) :: acceno
+    aster_logical :: acceno
     character(len=*) :: resu, lisch(*), motfac
 !
 ! ======================================================================
@@ -57,7 +58,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 !
 !
     character(len=19) :: resu2
-    integer :: nbnosy,  isy, n2,  ibid, k, kk
+    integer :: nbnosy, isy, n2, ibid, k, kk
     character(len=16), pointer :: lich(:) => null()
     character(len=16), pointer :: litou(:) => null()
 !
@@ -68,7 +69,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
     AS_ALLOCATE(vk16=litou, size=nbnosy)
     do 10 isy = 1, nbnosy
         call jenuno(jexnum(resu2//'.DESC', isy), litou(isy))
-10  end do
+ 10 end do
 !
     acceno = .false.
 !
@@ -78,23 +79,23 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
         AS_ALLOCATE(vk16=lich, size=n2)
         call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=n2, vect=lich,&
                     nbret=ibid)
-        do 20,k = 1,n2
-        kk = indk16(litou,lich(k),1,nbnosy)
-        if (kk .eq. 0) then
-            call utmess('F', 'PREPOST4_77', sk=lich(k))
-        endif
-20      continue
+        do 20 k = 1, n2
+            kk = indk16(litou,lich(k),1,nbnosy)
+            if (kk .eq. 0) then
+                call utmess('F', 'PREPOST4_77', sk=lich(k))
+            endif
+ 20     continue
         nbch = n2
-        do 30,k = 1,min(nbch,dimlis)
-        lisch(k) = lich(k)
-30      continue
+        do 30 k = 1, min(nbch, dimlis)
+            lisch(k) = lich(k)
+ 30     continue
         acceno = .true.
 !
     else
         nbch = nbnosy
-        do 40,k = 1,min(nbch,dimlis)
-        lisch(k) = litou(k)
-40      continue
+        do 40 k = 1, min(nbch, dimlis)
+            lisch(k) = litou(k)
+ 40     continue
     endif
 !
     if (nbch .gt. dimlis) nbch = -nbch

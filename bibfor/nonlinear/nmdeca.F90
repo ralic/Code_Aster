@@ -20,7 +20,8 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
@@ -33,7 +34,7 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
     integer :: nbrpas
     integer :: ievdac, iterat, retdec
     real(kind=8) :: instam, deltat, dtmin, durdec
-    logical(kind=1) :: ldcext
+    aster_logical :: ldcext
 !
 ! ----------------------------------------------------------------------
 !
@@ -107,7 +108,7 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
 !
     if (nbrpas .eq. 1) retdec = 2
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

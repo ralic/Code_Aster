@@ -66,6 +66,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jecreo.h"
@@ -91,15 +92,15 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ideca, inobe, inoca, ipara, iproj, itria, jcoor,  jnoca
-    integer :: jnunob,   jxca,  jyca, jzca, nbcnx, nblign
+    integer :: ideca, inobe, inoca, ipara, iproj, itria, jcoor, jnoca
+    integer :: jnunob, jxca, jyca, jzca, nbcnx, nblign
     integer :: nbno, nbpara, nnomax, noe, noebe, numail
     real(kind=8) :: d2, d2min, dx, dy, dz, excent, normal(3), x3dca(3), xbar(3)
     complex(kind=8) :: cbid
     character(len=8) :: nnoeca, voisin(2)
     character(len=19) :: licnx, lnuma
     character(len=24) :: coorno, nomama, nonoca, nonoma
-    logical(kind=1) :: encore
+    aster_logical :: encore
 !
     character(len=24) :: param(4), parcr
     integer, pointer :: cnx_maille(:) => null()
@@ -147,8 +148,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
         endif
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 !
 !.... COORDONNEES DES NOEUDS
 !
@@ -210,7 +211,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
                 d2min = d2
                 noebe = noe
             endif
-110      continue
+110     continue
 !
 ! 2.2.2  TENTATIVE DE PROJECTION DU NOEUD CABLE SUR LES MAILLES
 ! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
@@ -262,7 +263,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
         call tbajli(tablca, 4, param, [iproj], [excent],&
                     [cbid], voisin(1), ideca+ inoca)
 !
-100  end do
+100 end do
 !
 ! --- MENAGE
     AS_DEALLOCATE(vr=xyz_noemai)

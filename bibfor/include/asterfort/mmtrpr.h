@@ -15,17 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
                       tau1, tau2, ladhe, rese, nrese)
         integer :: ndim
-        logical(kind=1) :: lpenaf
+        aster_logical :: lpenaf
         real(kind=8) :: djeut(3)
         real(kind=8) :: dlagrf(2)
         real(kind=8) :: coefaf
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        logical(kind=1) :: ladhe
+        aster_logical :: ladhe
         real(kind=8) :: rese(3)
         real(kind=8) :: nrese
     end subroutine mmtrpr

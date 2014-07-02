@@ -48,6 +48,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     implicit none
 !
 ! PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -69,7 +70,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     integer :: ifm, niv
     real(kind=8) :: rzero
     complex(kind=8) :: czero, dcmplx
-    logical(kind=1) :: ldebug
+    aster_logical :: ldebug
 !
 ! --- INIT.
     call jemarq()
@@ -113,7 +114,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if (vnconv(i) .lt. 0) ASSERT(.false.)
         if ((i-1) .lt. rang) idecal=idecal+vnconv(i)
         nconvg=nconvg+vnconv(i)
-10  end do
+ 10 end do
     if (option .eq. 'S') then
         if (idim2 .ne. nconvg) ASSERT(.false.)
     else if (option.eq.'T') then
@@ -126,12 +127,12 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if ((typev.eq.'R') .and. (option.eq.'S')) then
             do 18 j = 1, idim2
                 write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
-18          continue
+ 18         continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
 ! --- ON NE FAIT QU'IMPRIMER LES TERMES CAR CERTAINS SONT EN 1.E+308
             do 19 i = 1, idim1
                 write(ifm,*)i,(vectr(i,j),j=1,idim2)
-19          continue
+ 19         continue
         else
             write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
         endif
@@ -164,15 +165,15 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if (typev .eq. 'R') then
             do 20 j = 1, idim2
                 call vecini(iaux1, rzero, vectr(nconv+1, j))
-20          continue
+ 20         continue
         else if (typev.eq.'I') then
             do 21 j = 1, idim2
                 call vecint(iaux1, izero, vecti(nconv+1, j))
-21          continue
+ 21         continue
         else if (typev.eq.'C') then
             do 22 j = 1, idim2
                 call vecinc(iaux1, czero, vectc(nconv+1, j))
-22          continue
+ 22         continue
         endif
 !
     endif
@@ -183,11 +184,11 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if ((typev.eq.'R') .and. (option.eq.'S')) then
             do 28 j = 1, idim2
                 write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
-28          continue
+ 28         continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 29 i = 1, idim1
                 write(ifm,*)i,(vectr(i,j),j=1,idim2)
-29          continue
+ 29         continue
         else
             write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
         endif
@@ -204,20 +205,20 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
             do 30 j = nconv, 1, -1
                 do 301 i = 1, idim1
                     vectr(i,j+idecal)=vectr(i,j)
-301              continue
-30          continue
+301             continue
+ 30         continue
         else if (typev.eq.'I') then
             do 31 j = nconv, 1, -1
                 do 311 i = 1, idim1
                     vecti(i,j+idecal)=vecti(i,j)
-311              continue
-31          continue
+311             continue
+ 31         continue
         else if (typev.eq.'C') then
             do 32 j = nconv, 1, -1
                 do 321 i = 1, idim1
                     vectc(i,j+idecal)=vectc(i,j)
-321              continue
-32          continue
+321             continue
+ 32         continue
         endif
 !
     else if ((option.eq.'T').and.(idecal.gt.0)) then
@@ -226,20 +227,20 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
             do 34 j = 1, idim2
                 do 341 i = nconv, 1, -1
                     vectr(i+idecal,j)=vectr(i,j)
-341              continue
-34          continue
+341             continue
+ 34         continue
         else if (typev.eq.'I') then
             do 35 j = 1, idim2
                 do 351 i = nconv, 1, -1
                     vecti(i+idecal,j)=vecti(i,j)
-351              continue
-35          continue
+351             continue
+ 35         continue
         else if (typev.eq.'C') then
             do 36 j = 1, idim2
                 do 361 i = nconv, 1, -1
                     vectc(i+idecal,j)=vectc(i,j)
-361              continue
-36          continue
+361             continue
+ 36         continue
         endif
 !
     endif
@@ -250,11 +251,11 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if ((typev.eq.'R') .and. (option.eq.'S')) then
             do 38 j = 1, idim2
                 write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
-38          continue
+ 38         continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 39 i = 1, idim1
                 write(ifm,*)i,(vectr(i,j),j=1,idim2)
-39          continue
+ 39         continue
         else
             write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
         endif
@@ -278,15 +279,15 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if (typev .eq. 'R') then
             do 40 j = 1, idim2
                 call vecini(idecal, rzero, vectr(1, j))
-40          continue
+ 40         continue
         else if (typev.eq.'I') then
             do 41 j = 1, idim2
                 call vecint(idecal, izero, vecti(1, j))
-41          continue
+ 41         continue
         else if (typev.eq.'C') then
             do 42 j = 1, idim2
                 call vecinc(idecal, czero, vectc(1, j))
-42          continue
+ 42         continue
         endif
 !
     endif
@@ -297,11 +298,11 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if ((typev.eq.'R') .and. (option.eq.'S')) then
             do 48 j = 1, idim2
                 write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
-48          continue
+ 48         continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 49 i = 1, idim1
                 write(ifm,*)i,(vectr(i,j),j=1,idim2)
-49          continue
+ 49         continue
         else
             write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
         endif
@@ -324,11 +325,11 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         if ((typev.eq.'R') .and. (option.eq.'S')) then
             do 58 j = 1, idim2
                 write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
-58          continue
+ 58         continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 59 i = 1, idim1
                 write(ifm,*)i,(vectr(i,j),j=1,idim2)
-59          continue
+ 59         continue
         else
             write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
         endif

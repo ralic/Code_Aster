@@ -1,6 +1,7 @@
-subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
-                  matpsc, matopa, iretr, nblagr, neqact, npivot, nstoc, omemax, omemin, omeshi,&
-                  sigma)
+subroutine vpini1(eigsol, modes, solveu, typcon, vecblo,&
+                  veclag, vecrig, matpsc, matopa, iretr,&
+                  nblagr, neqact, npivot, nstoc, omemax,&
+                  omemin, omeshi, sigma)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +31,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
 ! -------------------------------------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8prem.h"
@@ -61,37 +63,37 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
 !
 ! --- INPUT
 !
-    character(len=8)  , intent(in) :: modes
-    character(len=16) , intent(in) :: typcon
-    character(len=19) , intent(in) :: eigsol, solveu
-    character(len=24) , intent(in) :: vecblo, veclag, vecrig
+    character(len=8), intent(in) :: modes
+    character(len=16), intent(in) :: typcon
+    character(len=19), intent(in) :: eigsol, solveu
+    character(len=24), intent(in) :: vecblo, veclag, vecrig
 !
 ! --- OUTPUT
 !
-    integer           , intent(out) :: iretr, nblagr, neqact, npivot
-    integer           , intent(out) :: nstoc
-    real(kind=8)      , intent(out) :: omemax, omemin, omeshi
-    complex(kind=8)   , intent(out) :: sigma
-
+    integer, intent(out) :: iretr, nblagr, neqact, npivot
+    integer, intent(out) :: nstoc
+    real(kind=8), intent(out) :: omemax, omemin, omeshi
+    complex(kind=8), intent(out) :: sigma
+!
 ! --- INPUT/OUTPUT
 !
-    character(len=19) , intent(inout) :: matpsc, matopa
+    character(len=19), intent(inout) :: matpsc, matopa
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: ibid, ibid2(2), icoef, ifm, iret, islvi, islvk, krefa, lamor, npiv2(2)
-    integer           :: lmasse, lmatra, lmtpsc, lraide, nbborn, nbrss, nbvec2, nbvect, nfreq, niv
-    integer           :: lddl, lprod, nprec, neq, indf
-    real(kind=8)      :: eps, fmax, fmin, effmax, effmin, freq1, freq2, omecor, precdc, precsh
-    real(kind=8)      :: rbid, rbid2(2), rtest, rzero
-    character(len=1)  :: appr
-    character(len=8)  :: arret, method
-    character(len=9)  :: typevp
+    integer :: ibid, ibid2(2), icoef, ifm, iret, islvi, islvk, krefa, lamor, npiv2(2)
+    integer :: lmasse, lmatra, lmtpsc, lraide, nbborn, nbrss, nbvec2, nbvect, nfreq, niv
+    integer :: lddl, lprod, nprec, neq, indf
+    real(kind=8) :: eps, fmax, fmin, effmax, effmin, freq1, freq2, omecor, precdc, precsh
+    real(kind=8) :: rbid, rbid2(2), rtest, rzero
+    character(len=1) :: appr
+    character(len=8) :: arret, method
+    character(len=9) :: typevp
     character(len=14) :: k14bid, matra, matrc
     character(len=16) :: k16bid, modrig, optiof, optiov, typeqz, typres
     character(len=19) :: amor, masse, raide, tabmod
     character(len=24) :: metres, valk(2), k24bid
-    logical(kind=1)   :: lbid, lc, lkr, lns, lqz, ltabmo
+    aster_logical :: lbid, lc, lkr, lns, lqz, ltabmo
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE
@@ -104,16 +106,18 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
     eps=1.d+4*r8prem()
     iretr=0
     indf=isnnem()
-
+!
 ! --  LECTURE DES PARAMETRES MODAUX
-    call vplecs(eigsol,&
-                ibid, ibid, nbborn, ibid, ibid, nbvec2, nbvect, nbrss, nfreq, ibid,&
-                rbid, omecor, freq1, freq2, precdc, precsh, rbid, rbid, rbid, rbid, rbid,&
-                rbid,&
-                appr, arret, method, typevp, matra, k14bid, matrc, modrig, optiof, k16bid, k16bid,&
-                typeqz, typres, amor, masse, raide, tabmod,&
+    call vplecs(eigsol, ibid, ibid, nbborn, ibid,&
+                ibid, nbvec2, nbvect, nbrss, nfreq,&
+                ibid, rbid, omecor, freq1, freq2,&
+                precdc, precsh, rbid, rbid, rbid,&
+                rbid, rbid, rbid, appr, arret,&
+                method, typevp, matra, k14bid, matrc,&
+                modrig, optiof, k16bid, k16bid, typeqz,&
+                typres, amor, masse, raide, tabmod,&
                 lc, lkr, lns, lbid, lqz)
-
+!
 ! --  DESCRIPTEURS MATRICES
     call mtdscr(raide)
     call jeveuo(raide//'.&INT', 'E', lraide)
@@ -122,34 +126,35 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
     call jeveuo(masse//'.&INT', 'E', lmasse)
     if (lc) then
         call mtdscr(amor)
-        call jeveuo(amor//'.&INT', 'E', lamor)          
-   else
+        call jeveuo(amor//'.&INT', 'E', lamor)
+    else
         lamor=0
     endif
     call wkvect(veclag, 'V V I', neq, lddl)
     call wkvect(vecblo, 'V V I', neq, lprod)
-
+!
 ! --  TRAITEMENTS LAGRANGES
     iretr=0
     nblagr=-999
     neqact=-999
-    call vecint(neq,indf,zi(lddl))
-    call vecint(neq,indf,zi(lprod))
-    call vpddl(raide, masse, neq, nblagr, ibid, neqact, zi(lddl), zi(lprod), iret)
-    if (iret.ne.0) then
+    call vecint(neq, indf, zi(lddl))
+    call vecint(neq, indf, zi(lprod))
+    call vpddl(raide, masse, neq, nblagr, ibid,&
+               neqact, zi(lddl), zi(lprod), iret)
+    if (iret .ne. 0) then
         iretr=-1
         goto 999
     endif
     if (lqz) then
-        if (optiof(1:4).eq.'TOUT') nfreq=neqact
-        if ((typeqz(1:5).eq.'QZ_QR').and.((nblagr.ne.0).or.lns)) then
+        if (optiof(1:4) .eq. 'TOUT') nfreq=neqact
+        if ((typeqz(1:5).eq.'QZ_QR') .and. ((nblagr.ne.0).or.lns)) then
             valk(1) = matra
             valk(2) = matrc
             call utmess('F', 'ALGELINE5_60', nk=2, valk=valk)
         endif
     endif
-
-
+!
+!
 ! -- TRAITEMENTS SOLVEUR LINEAIRE
 ! -- LECTURE DES PARAMETRES SOLVEURS LINEAIRES ET CREATION DE
 !    LA SD SOLVEUR ASSOCIEE. CETTE SD SOLVEUR EST LOCALE A L'OPERATEUR. POUR CE CALCUL, C'EST ELLE 
@@ -161,14 +166,14 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
     metres=zk24(islvk)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
         (metres(1:5).ne.'MUMPS')) call utmess('F', 'ALGELINE5_71')
-
+!
 ! --  SI ON A BESOIN DE FACTORISER SIMULTANEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
 !     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
 !     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
 ! --  CF COMMENTAIRES PLUS LOIN SUR MATOPA/MATPSC.
-    if (metres(1:5).eq.'MUMPS') then
-        if ((lc).and.(lkr).and. (appr.eq.'R')) then
-            if (zi(islvi-1+6).lt.0) then
+    if (metres(1:5) .eq. 'MUMPS') then
+        if ((lc) .and. (lkr) .and. (appr.eq.'R')) then
+            if (zi(islvi-1+6) .lt. 0) then
 ! --  PB INITIALISATION DE LA SD_SOLVEUR
                 ASSERT(.false.)
             else
@@ -176,7 +181,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
             endif
         endif
     endif
-
+!
 ! --  DETECTION DES MODES DE CORPS RIGIDE
     nstoc=0
     if (modrig(1:11) .eq. 'MODE_RIGIDE') then
@@ -186,7 +191,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
         call uttcpu('CPU.RESO.1', 'FIN', ' ')
         call uttcpu('CPU.RESO.4', 'FIN', ' ')
     endif 
-
+!
 ! --  CONSTRUCTION DES BORNES DE RECHERCHE (FMIN/FMAX, OMEMIN/OMEMAX)
 ! --  EVENTUELLEMENT VIA UNE TABLE PROVENANT D'INFO_MODE
     if (typres(1:9) .eq. 'DYNAMIQUE') then
@@ -208,7 +213,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
         fmin=omemin
         fmax=omemax
     endif
-
+!
 ! --  SI AVEC L'OPTION 'BANDE', ON FOURNIT UNE TABLE, CONTROLE ET
 ! --  LECTURE DES PARAMETRES DE LA TABLE (AU FORMAT INFO_MODE)
 ! --  GAIN DE TEMPS, ON NE RECALCULE PAS TOUT DS LE VPFOPR SUIVANT
@@ -216,9 +221,10 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
     effmin=-999.d0
     effmax=-999.d0
     if (optiof(1:5) .eq. 'BANDE') then
-        if (tabmod.ne.'') then
+        if (tabmod .ne. '') then
             ltabmo=.true.
-            call vptabl(tabmod, typevp, fmin, fmax, precdc, nfreq, effmin, effmax)
+            call vptabl(tabmod, typevp, fmin, fmax, precdc,&
+                        nfreq, effmin, effmax)
 ! --  RECUPERATION DES BORNES EFFECTIVES ET CHANGEMENT DES BORNES DE LA BANDE SI NECESSAIRE
             rtest=abs(fmax-effmax)+abs(fmin-effmin)
             if (rtest .gt. eps) then
@@ -235,8 +241,8 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
                 endif
             endif
         endif
-    endif       
-
+    endif 
+!
 ! --- DETERMINATION D'INFO POUR LE TEST DE STURM ET LES POSITIONS
 !     MODALES + CONSTRUCTION DE LA MATRICE DYNAMIQUE/ SA FACTORISEE
 !     (STOCKEE DS MATOPA). CAS PARTICULIER DU QEP APPROCHE REEL, POUR
@@ -262,8 +268,10 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
             else
                 optiov=optiof
             endif
-            call vpfopr(optiov, typres, lmasse, lraide, lmatra, omemin, omemax, omeshi, nfreq,&
-                        npiv2, omecor, precsh, nbrss, nblagr, solveu, rbid2, ibid2)
+            call vpfopr(optiov, typres, lmasse, lraide, lmatra,&
+                        omemin, omemax, omeshi, nfreq, npiv2,&
+                        omecor, precsh, nbrss, nblagr, solveu,&
+                        rbid2, ibid2)
             npivot=npiv2(1)
             if (nfreq .le. 0) then
                 if (arret(1:3) .eq. 'OUI') then
@@ -279,28 +287,31 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
             matpsc=matopa
         else
 ! --  PROBLEME GENERALISE COMPLEXE OU REEL NON SYM
-            call vpfopc(lmasse, lraide, fmin, sigma, matopa,raide, lqz, solveu)
+            call vpfopc(lmasse, lraide, fmin, sigma, matopa,&
+                        raide, lqz, solveu)
             if (.not.lqz) call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
         endif
-
+!
     else
-
+!
 ! --  PROBLEME QUADRATIQUE REEL SYM OU NON SYM
         if (lkr) then
-            call wpfopr(lmasse, lamor, lraide, appr, fmin, sigma, matopa, matpsc, raide, lqz,&
+            call wpfopr(lmasse, lamor, lraide, appr, fmin,&
+                        sigma, matopa, matpsc, raide, lqz,&
                         solveu)
             if (.not.lqz) then
                 call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
                 call jeexin(matpsc(1:19)//'.&INT', iret)
-                if (iret.ne.0) call jeveuo(matpsc(1:19)//'.&INT', 'E', lmtpsc)
+                if (iret .ne. 0) call jeveuo(matpsc(1:19)//'.&INT', 'E', lmtpsc)
             endif
         else
 ! --  PROBLEME QUADRATIQUE COMPLEXE SYM
-            call wpfopc(lmasse, lamor, lraide, fmin, sigma, matopa, raide, lqz, solveu)
+            call wpfopc(lmasse, lamor, lraide, fmin, sigma,&
+                        matopa, raide, lqz, solveu)
             if (.not.lqz) call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
         endif
     endif
-
+!
 ! --- ON BLINDE LES STRUCTURES DE DONNEES DE TYPE MATR_ASSE
 ! --- ON NE MANIPULE PAR LA SUITE QUE LEUR DESCRIPTEUR
 ! --- MATOPA --> LMATRA ET MATPSC --> LMTPSC
@@ -310,29 +321,29 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
     if (lmtpsc .eq. 0) matpsc=''
     if (lmatra .ne. 0) then
         call jeexin(matopa(1:19)//'.REFA', iret)
-        if (iret.ne.0) then
+        if (iret .ne. 0) then
             call jeveuo(matopa(1:19)//'.REFA', 'E', krefa)
             zk24(krefa-1+7)=solveu
         endif
     endif
     if ((lmtpsc.ne.0) .and. (lmtpsc.ne.lmatra)) then
         call jeexin(matpsc(1:19)//'.REFA', iret)
-        if (iret.ne.0) then
+        if (iret .ne. 0) then
             call jeveuo(matpsc(1:19)//'.REFA', 'E', krefa)
             zk24(krefa-1+7)=solveu
         endif
     endif
-
-
+!
+!
 ! --  DETERMINATION DE LA TAILLE DE L'ESPACE DE PROJECTION (NBVECT)
     if (niv .ge. 1) call utmess('I', 'ALGELINE6_11', si=nfreq)
-
+!
 ! --  CORRECTION DU NOMBRE DE FREQUENCES DEMANDEES
     if (nfreq .gt. neqact) then
         nfreq = neqact
         if (niv .ge. 1) call utmess('I', 'ALGELINE6_12', si=nfreq)
     endif
-
+!
 ! --  DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE)
     icoef=0
     if (.not.lqz) then
@@ -340,22 +351,22 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
         if (nbvec2 .ne. 0) then
             icoef = nbvec2
         else
-            select case(method)
-            case('JACOBI','SORENSEN')
+            select case (method)
+                case('JACOBI','SORENSEN')
                 icoef = 2
-            case('TRI_DIAG')
+                case('TRI_DIAG')
                 icoef = 4
             case default
                 ASSERT(.false.)
             end select
         endif
         if (nbvect .lt. nfreq) then
-            select case(method)
-            case('JACOBI')
+            select case (method)
+                case('JACOBI')
                 nbvect = min(min(7+nfreq,icoef*nfreq),neqact)
-            case('TRI_DIAG')
+                case('TRI_DIAG')
                 nbvect = min(max(7+nfreq,icoef*nfreq),neqact)
-            case('SORENSEN')
+                case('SORENSEN')
                 nbvect = min(max(3+nfreq,icoef*nfreq),neqact)
             case default
                 ASSERT(.false.)
@@ -368,7 +379,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
             endif
         endif
     endif
-
+!
 ! --  TRAITEMENT SPECIFIQUE A SORENSEN
     if ((method.eq.'SORENSEN') .and. (nbvect-nfreq.le.2)) then
         if (nfreq .gt. (neqact+2)) nfreq=neqact-2
@@ -378,21 +389,23 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, vecrig,&
 ! --  TRAITEMENT SPECIFIQUE A QZ
 !     AVEC QZ ON A PAS D'ESPACE DE PROJECTION, IL FAUT DONC AFFECTER NBVECT EN DUR
     if (lqz) nbvect=neq
-
+!
 ! -- CORRECTION DE NBVECT DANS LE CAS QUADRATIQUE
     if (lc) then
         nbvect = 2*nbvect
-        nfreq  = 2*nfreq
+        nfreq = 2*nfreq
         call utmess('I', 'ALGELINE2_75')
     endif
-
-
+!
+!
 ! --  ON MODIFIE LES VALEURS NFREQ ET DE NBVECT DE LA SD EIGENSOLVER
-    call vpecri(eigsol, 'I', 1, k24bid, rbid, nfreq)
-    call vpecri(eigsol, 'I', 2, k24bid, rbid, nbvect)
-
+    call vpecri(eigsol, 'I', 1, k24bid, rbid,&
+                nfreq)
+    call vpecri(eigsol, 'I', 2, k24bid, rbid,&
+                nbvect)
+!
 999 continue
-
+!
     call jedema()
 !
 !     FIN DE VPINI1

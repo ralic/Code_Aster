@@ -40,6 +40,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
 !                 0 - OK / 1 - ECHEC
 !                 2 - RE-INTEGRATION / 3 - REDECOUPAGE
 ! ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/hujact.h"
 #include "asterfort/lceqvn.h"
     integer :: nvi, nr, iret, indi(7), nmat
@@ -49,7 +50,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     integer :: k, nbmeca, kk, ndt, i
     real(kind=8) :: maxi, un, e0, pref, ydt(nr), yft(nr), ratio, cumuli
     real(kind=8) :: matert(22, 2)
-    logical(kind=1) :: negmul(8), chgmec
+    aster_logical :: negmul(8), chgmec
 !
     parameter  (un   = 1.d0)
     parameter  (ndt  = 6   )
@@ -63,7 +64,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     do 10 k = 1, 8
         if (vind(23+k) .eq. un) nbmeca = nbmeca + 1
         negmul(k) = .false.
-10  end do
+ 10 end do
 !
 ! ---------------------------------------------
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
@@ -75,11 +76,11 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     do 20 i = 1, ndt
         ydt(i) = yd(i)*e0
         yft(i) = yf(i)*e0
-20  end do
+ 20 end do
     do 30 i = 1, nbmeca
         ydt(ndt+1+i) = yd(ndt+1+i)*e0/abs(pref)
         yft(ndt+1+i) = yf(ndt+1+i)*e0/abs(pref)
-30  end do
+ 30 end do
 !
 ! ---------------------------------------
 ! --- REMPLISSAGE DE VINF A PARTIR DE YFT
@@ -107,7 +108,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
         else
             vinf(kk) = vind(kk)
         endif
-40  end do
+ 40 end do
 !
 ! ----------------------------------------------
 ! --- CONSTRUCTION DE NEGMUL POUR HUJACT
@@ -122,14 +123,14 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
         if (ratio .lt. -un) then
             negmul(indi(k)) = .true.
         endif
-60  end do
+ 60 end do
 !
 ! ----------------------------------------------
 ! --- CONSTRUCTION DE SIGF POUR HUJACT
 ! ----------------------------------------------
     do 70 i = 1, ndt
         sigf(i) = yft(i)
-70  end do
+ 70 end do
 !
 ! --- APPEL A LA ROUTINE HUJACT
     chgmec = .false.
@@ -137,7 +138,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     do 80 i = 1, 22
         matert(i,1) = mater(i,1)
         matert(i,2) = mater(i,2)
-80  end do
+ 80 end do
 !
     call hujact(matert, vind, vinf, vins, sigd,&
                 sigf, negmul, chgmec, indi)
@@ -151,6 +152,6 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
         goto 999
     endif
 !
-999  continue
+999 continue
 !
 end subroutine

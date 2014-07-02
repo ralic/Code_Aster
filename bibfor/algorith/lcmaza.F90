@@ -21,6 +21,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/bptobg.h"
@@ -76,7 +77,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !         BT = CONSTANTE DE TRACTION    (10 000 A 100 000)[REEL OU FCT]
 !         BC = CONSTANTE DE COMPRESSION (1000 A 2000)[REEL OU FCT]
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: rigi, resi, prog, elas, cplan, coup
+    aster_logical :: rigi, resi, prog, elas, cplan, coup
     character(len=1) :: poum
     integer :: icodre(7)
     character(len=8) :: nomres(7), nompar
@@ -235,11 +236,11 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     if (resi) then
         do 10 j = 1, ndimsi
             eps(j) = epsm(j) + deps(j)
-10      continue
+ 10     continue
     else
         do 20 j = 1, ndimsi
             eps(j)=epsm(j)
-20      continue
+ 20     continue
         d=vim(1)
     endif
 !    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
@@ -247,7 +248,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     call r8inir(6, 0.d0, epse, 1)
     do 35 j = 1, ndimsi
         epse(j) = eps(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
-35  end do
+ 35 end do
     if (cplan) then
         coplan = - nu/(1.d0-nu)
         epse(3) = coplan * (epse(1)+epse(2))
@@ -262,15 +263,15 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             epsi(j) = epse(j)
             epse(j) = epsi(j) - epsfp(j)
             epscou(j) = epsi(j) - (1-chi)*epsfp(j)
-1010      continue
+1010     continue
     endif
     do 30 j = 4, ndimsi
         epse(j) = epse(j)/rac2
-30  end do
+ 30 end do
     if (coup .and. resi) then
         do 31 j = 4, ndimsi
             epscou(j) = epscou(j)/rac2
-31      continue
+ 31     continue
     endif
 !    2 - CALCUL DE EPSEQ = SQRT(TR (<EPSE>+ * <EPSE>+)  )
 !        C EST EPSEQ ELASTIQUE DANS LE CAS DU COUPLAGE
@@ -304,7 +305,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         if (epsep(j) .gt. 0.d0) then
             epseq = epseq + (epsep(j)**2)
         endif
-40  end do
+ 40 end do
     epseq = sqrt(epseq)
 !    2BIS - CALCUL DE EPSEQC = SQRT(TR (<EPSCOU>+ * <EPSCOU>+))
 !        M.B.: C EST LA DEFORMATION EQUIVALENT DANS LE CAS DU COUPLAGE
@@ -335,7 +336,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             if (epsepc(j) .gt. 0.d0) then
                 epseqc = epseqc + (epsepc(j)**2)
             endif
-1040      continue
+1040     continue
         epseqc = sqrt(epseqc)
     endif
 ! -  3     CALCUL DE <EPS>+
@@ -346,26 +347,26 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         if (epsep(j) .gt. 0.d0) then
             tr(j) = epsep(j)
         endif
-42  end do
+ 42 end do
     call bptobg(tr, epsplu, vecpe)
     do 44 j = 4, ndimsi
         epsplu(j) = epsplu(j)*rac2
-44  end do
+ 44 end do
 !   4 -  CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
 !----------------------------------------------------------------
     do 50 j = 1, 3
         sigelp(j) = lambda*(epsep(1)+epsep(2)+epsep(3))
-50  end do
+ 50 end do
     do 60 j = 1, 3
         sigelp(j) = sigelp(j) + deuxmu*epsep(j)
-60  end do
+ 60 end do
 !
     tmp1 = 0.d0
     do 70 j = 1, 3
         if (sigelp(j) .lt. 0.d0) then
             tmp1 = tmp1 + sigelp(j)
         endif
-70  end do
+ 70 end do
 !   5 -     CALCUL DE R
 !----------------------------------------------------------------
     vala=abs(sigelp(1))+abs(sigelp(2))&
@@ -373,7 +374,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     r=0.d0
     do 80 i = 1, 3
         r = r + max(0.00000000d0,sigelp(i))
-80  end do
+ 80 end do
     if (vala .gt. 1.d-10) then
         r=r/(vala)
     else
@@ -386,7 +387,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     do 69 i = 1, 3
         rap = rap + min(0.d0,sigelp(i))
         gama = gama + (min(0.d0,sigelp(i)))**2
-69  end do
+ 69 end do
     if ((abs(rap).gt.1.d-10) .and. (r.eq.0.d0)) then
         gama = -(sqrt(gama)/ rap)
     else
@@ -446,7 +447,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         call bptobg(tr, sig, vecpe)
         do 90 j = 4, ndimsi
             sig(j)=rac2*sig(j)
-90      continue
+ 90     continue
     endif
 ! ======================================================================
 !     CALCUL  DE LA MATRICE TANGENTE DSIDEP
@@ -499,13 +500,13 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             call bptobg(tr, sigel, vecpe)
             do 120 j = 4, ndimsi
                 sigel(j)=rac2*sigel(j)
-120          continue
+120         continue
             do 220 i = 1, 6
                 do 221 j = 1, 6
                     dsidep (i,j) = dsidep (i,j) - coef * sigel(i)*&
                     epsplu(j)
-221              continue
-220          continue
+221             continue
+220         continue
 ! -- CORRECTION CONTRAINTES PLANES
             if (cplan) then
                 do 300 j = 1, ndimsi
@@ -516,8 +517,8 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                             dsidep(j,l)=dsidep(j,l) - 1.d0/dsidep(3,3)&
                             *dsidep(j,3)*dsidep(3,l)
                         endif
-310                  continue
-300              continue
+310                 continue
+300             continue
             endif
         endif
     endif

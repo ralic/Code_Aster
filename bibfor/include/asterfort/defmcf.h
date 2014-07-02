@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine defmcf(nbm, nbmp, locfl0, locflc)
         integer :: nbm
         integer :: nbmp
-        logical(kind=1) :: locfl0(*)
-        logical(kind=1) :: locflc(*)
+        aster_logical :: locfl0(*)
+        aster_logical :: locflc(*)
     end subroutine defmcf
 end interface

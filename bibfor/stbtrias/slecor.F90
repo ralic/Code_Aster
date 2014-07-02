@@ -24,6 +24,7 @@ subroutine slecor(iunv, datset)
 !     =================
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -33,7 +34,7 @@ subroutine slecor(iunv, datset)
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: first
+    aster_logical :: first
     character(len=6) :: moins1
     character(len=80) :: cbuf, kbid
     real(kind=8) :: rbid
@@ -58,7 +59,7 @@ subroutine slecor(iunv, datset)
     endif
     call wkvect('&&IDEAS.SYST', 'V V I', inus, jsys)
 !
- 1  continue
+  1 continue
 !
     read(iunv,'(A)') cbuf
     if (cbuf(1:6) .ne. moins1) then

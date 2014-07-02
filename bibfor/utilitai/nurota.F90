@@ -19,6 +19,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -77,7 +78,6 @@ subroutine nurota(numedd, compor, sdnuro)
     integer, pointer :: desc(:) => null()
     integer, pointer :: ptma(:) => null()
     character(len=16), pointer :: vale(:) => null()
-    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 !
@@ -162,8 +162,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---     QUI EST RELCOM A BIEN ETE AFFECTEE
 !
-                    lcond=exisdg([dg], 1)
-                    ASSERT(lcond)
+                    ASSERT(exisdg([dg], 1))
 ! ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
                     compt = vale(1+idebgd+3-1)
                     if (compt .ne. deform) goto 130

@@ -20,6 +20,7 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -31,7 +32,7 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 #include "asterfort/xmcart.h"
 #include "asterfort/xmelem.h"
 #include "asterfort/xmligr.h"
-    logical(kind=1) :: loptin
+    aster_logical :: loptin
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco
@@ -59,8 +60,8 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: lctcc, lxfcm
-    logical(kind=1) :: ltfcm
+    aster_logical :: lctcc, lxfcm
+    aster_logical :: ltfcm
     character(len=8) :: nomo
 !
 ! ----------------------------------------------------------------------

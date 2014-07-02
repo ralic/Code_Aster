@@ -1,8 +1,9 @@
 subroutine piqsym(x, y, quar1, quar2, quar3,&
                   quar4)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
     real(kind=8) :: x, y
-    logical(kind=1) :: quar1, quar2, quar3, quar4
+    aster_logical :: quar1, quar2, quar3, quar4
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

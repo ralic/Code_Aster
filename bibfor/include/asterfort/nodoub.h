@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nodoub(nbl, nbb, nol, nob, typl,&
                       typb, mailla, double)
@@ -25,6 +27,6 @@ interface
         character(len=8) :: typl
         character(len=8) :: typb
         character(len=8) :: mailla
-        logical(kind=1) :: double
+        aster_logical :: double
     end subroutine nodoub
 end interface

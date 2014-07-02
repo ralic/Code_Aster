@@ -1,9 +1,10 @@
-subroutine xcface(lsn, lst, jgrlsn, igeom,&
-                  enr, nfiss, ifiss, fisco, nfisc,&
-                  noma, nmaabs, pinter, ninter, ainter,&
-                  nface, nptf, cface)
+subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
+                  nfiss, ifiss, fisco, nfisc, noma,&
+                  nmaabs, pinter, ninter, ainter, nface,&
+                  nptf, cface)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8maem.h"
@@ -85,7 +86,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
     integer :: iadzi, iazk24, ndim, ptmax
     character(len=8) :: typma
     integer :: zxain
-    logical(kind=1) :: lcont, lajpa, lajpb, lajpc, ajout
+    aster_logical :: lcont, lajpa, lajpb, lajpc, ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -98,7 +99,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
     minlsn = 1*r8maem()
 !
     zxain = xxmmvd('ZXAIN')
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
     if (ndim .eq. 3) then
         ptmax=6
@@ -128,7 +129,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
     call conare(typma, ar, nbar)
 !
 !       BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
-    do  ia = 1, nbar
+    do ia = 1, nbar
 !
 !       NUM NO DE L'ELEMENT
         na=ar(ia,1)
@@ -170,7 +171,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                 beta = lsna/(lsnb-lsna)
                 do 120 i = 1, ndim
                     c(i)=a(i)-beta*(b(i)-a(i))
-120              continue
+120             continue
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
                 lstc=lsta-beta*(lstb-lsta)
@@ -186,7 +187,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                 do 130 j = 1, nfisc
                     lsja(j)=lsn((na-1)*nfiss+fisco(2*j-1))*fisco(2*j)
                     lsjb(j)=lsn((nb-1)*nfiss+fisco(2*j-1))*fisco(2*j)
-130              continue
+130             continue
                 do 140 j = 1, nfisc
                     if (lajpa) then
                         if (lsja(j) .gt. pre2) lajpa = .false.
@@ -201,7 +202,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                         if (lsjc .gt. prec) lajpc = .false.
                         if (lcont .and. lsjc .ge. 0) nc = 0
                     endif
-140              continue
+140             continue
             endif
             do 150 j = nfisc+1, nfiss
 !           POUR LES FISSURES QUI SE BRANCHENT SUR IFISS
@@ -222,7 +223,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                         if (abs(lsjc) .lt. 1d-12) nc = -abs(nc)
                     endif
                 endif
-150          continue
+150         continue
 !
             if (lajpa) call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                    a, longar, ainter, 0, na,&
@@ -235,7 +236,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                                    alpha, ajout)
         endif
 !
-     end do
+    end do
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÉES
     if (nfisc .gt. 0) then
@@ -265,8 +266,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
         do 200 i = 1, 5
             do 201 j = 1, 3
                 cface(i,j)=0
-201          continue
-200      continue
+201         continue
+200     continue
 !
 !       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
         call vecini(3, 0.d0, nd)
@@ -274,20 +275,20 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
             do 211 j = 1, 3
                 nd(j)=nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/&
                 nno
-211          continue
-210      continue
+211         continue
+210     continue
 !
 !       PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
         call vecini(3, 0.d0, bar)
         do 220 i = 1, ninter
             do 221 j = 1, 3
                 bar(j)=bar(j)+pinter((i-1)*3+j)/ninter
-221          continue
-220      continue
+221         continue
+220     continue
         do 230 j = 1, 3
             a(j)=pinter((1-1)*3+j)
             oa(j)=a(j)-bar(j)
-230      continue
+230     continue
         noa=sqrt(oa(1)*oa(1) + oa(2)*oa(2) + oa(3)*oa(3))
 !
 !       BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
@@ -295,7 +296,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
             do 241 j = 1, 3
                 m(j)=pinter((i-1)*3+j)
                 am(j)=m(j)-a(j)
-241          continue
+241         continue
             ps=ddot(3,am,1,nd,1)
 !
             ps1=ddot(3,nd,1,nd,1)
@@ -303,7 +304,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
             do 242 j = 1, 3
                 h(j)=m(j)+lambda*nd(j)
                 oh(j)=h(j)-bar(j)
-242          continue
+242         continue
             ps=ddot(3,oa,1,oh,1)
 !
             noh=sqrt(oh(1)*oh(1) + oh(2)*oh(2) + oh(3)*oh(3))
@@ -315,14 +316,14 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
             ps=ddot(3,r3,1,nd,1)
             if (ps .lt. eps) theta(i) = -1 * theta(i) + 2 * r8pi()
 !
-240      continue
+240     continue
 !
 !       TRI SUIVANT THETA CROISSANT
         do 250 pd = 1, ninter-1
             pp=pd
             do 251 i = pp, ninter
                 if (theta(i) .lt. theta(pp)) pp=i
-251          continue
+251         continue
             tampor(1)=theta(pp)
             theta(pp)=theta(pd)
             theta(pd)=tampor(1)
@@ -330,15 +331,15 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                 tampor(k)=pinter(3*(pp-1)+k)
                 pinter(3*(pp-1)+k)=pinter(3*(pd-1)+k)
                 pinter(3*(pd-1)+k)=tampor(k)
-252          continue
+252         continue
             do 253 k = 1, zxain
                 tampor(k)=ainter(zxain*(pp-1)+k)
                 ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
                 ainter(zxain*(pd-1)+k)=tampor(k)
-253          continue
-250      continue
+253         continue
+250     continue
 !
-500      continue
+500     continue
 !
 !       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
 !       NORMALEMENT, ON A DEJE FAIT LA VERIF DANS XAJPIN
@@ -416,8 +417,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
         do 800 i = 1, 5
             do 801 j = 1, 3
                 cface(i,j)=0
-801          continue
-800      continue
+801         continue
+800     continue
         if (ninter .eq. 2) then
 !         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
             call vecini(2, 0.d0, nd)
@@ -425,14 +426,14 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                 do 811 j = 1, 2
                     nd(j)=nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j)&
                     /nno
-811              continue
-810          continue
+811             continue
+810         continue
 !
             do 841 j = 1, 2
                 a(j)=pinter(j)
                 b(j)=pinter(2+j)
                 ab(j)=b(j)-a(j)
-841          continue
+841         continue
 !
             abprim(1)=-ab(2)
             abprim(2)=ab(1)
@@ -442,12 +443,12 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
                     tampor(k)=pinter(k)
                     pinter(k)=pinter(2+k)
                     pinter(2+k)=tampor(k)
-852              continue
+852             continue
                 do 853 k = 1, 4
                     tampor(k)=ainter(k)
                     ainter(k)=ainter(zxain+k)
                     ainter(zxain+k)=tampor(k)
-853              continue
+853             continue
             endif
             nface=1
             nptf=2

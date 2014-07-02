@@ -1,9 +1,10 @@
-subroutine greihm(perman, ndim, mecani, press1,&
-                  press2, tempe, dimdef, dimcon)
+subroutine greihm(perman, ndim, mecani, press1, press2,&
+                  tempe, dimdef, dimcon)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lteatt.h"
-
-    logical(kind=1) :: perman
+!
+    aster_logical :: perman
     integer :: mecani(8), press1(9), press2(9), tempe(5)
     integer :: dimdef, dimcon
     integer :: ndim

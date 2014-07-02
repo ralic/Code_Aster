@@ -1,5 +1,6 @@
 subroutine te0451(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -42,7 +43,7 @@ subroutine te0451(option, nomte)
     character(len=8) :: alias8, nomres
     character(len=3) :: cmod, num
     character(len=2) :: val
-    logical(kind=1) :: lcoqmu, lreel
+    aster_logical :: lcoqmu, lreel
 !     ------------------------------------------------------------------
     call teattr('S', 'ALIAS8', alias8, ibid)
     cmod=alias8(3:5)
@@ -81,16 +82,16 @@ subroutine te0451(option, nomte)
     if (icodre(1) .eq. 0) lcoqmu=.true.
     if (lcoqmu) then
         ASSERT(nbcou.le.100)
-        do 10,icou=1,nbcou
-        call codent(icou, 'G', num)
-        nomres='C'//num//'_V'//val
-        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 1, nomres, epi(1), icodre(1),&
-                    0)
-        ASSERT(icodre(1).eq.0)
-        ASSERT(epi(1).ge.0.d0)
-        epcou(icou)=epi(1)
-10      continue
+        do 10 icou = 1, nbcou
+            call codent(icou, 'G', num)
+            nomres='C'//num//'_V'//val
+            call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
+                        [r8bid], 1, nomres, epi(1), icodre(1),&
+                        0)
+            ASSERT(icodre(1).eq.0)
+            ASSERT(epi(1).ge.0.d0)
+            epcou(icou)=epi(1)
+ 10     continue
     endif
 !
 !
@@ -114,94 +115,94 @@ subroutine te0451(option, nomte)
     ASSERT(itab(2).eq.nbeff*npg)
 !
 !     -- BOUCLE SUR LES POINTS DE GAUSS :
-    do 30,kpg=1,npg
-    nxx=0.d0
-    nyy=0.d0
-    nxy=0.d0
-    mxx=0.d0
-    myy=0.d0
-    mxy=0.d0
-    qx=0.d0
-    qy=0.d0
+    do 30 kpg = 1, npg
+        nxx=0.d0
+        nyy=0.d0
+        nxy=0.d0
+        mxx=0.d0
+        myy=0.d0
+        mxy=0.d0
+        qx=0.d0
+        qy=0.d0
 !
 !       -- BOUCLE SUR LES COUCHES :
-    hb=-h/2
-    do 20,icou=1,nbcou
-    idec=((kpg-1)*nbcou+(icou-1))*npgh*nbsig
+        hb=-h/2
+        do 20 icou = 1, nbcou
+            idec=((kpg-1)*nbcou+(icou-1))*npgh*nbsig
 !
 !         -- HB, HM, HH : "HAUTEUR" DES SOUS-POINTS :
-    if (lcoqmu) then
-        epi(1)=epcou(icou)
-    else
-        epi(1)=h/nbcou
-    endif
-    hm=hb+epi(1)/2.d0
-    hh=hm+epi(1)/2.d0
+            if (lcoqmu) then
+                epi(1)=epcou(icou)
+            else
+                epi(1)=h/nbcou
+            endif
+            hm=hb+epi(1)/2.d0
+            hh=hm+epi(1)/2.d0
 !
 !         -- SIXXB, SIYYB, ... : CONTRAINTES AU BAS DE LA COUCHE
-    sixxb=zr(jsigm-1+idec+1)
-    siyyb=zr(jsigm-1+idec+2)
-    sixyb=zr(jsigm-1+idec+4)
-    if (nbsig .eq. 6) then
-        sixzb=zr(jsigm-1+idec+5)
-        siyzb=zr(jsigm-1+idec+6)
-    endif
+            sixxb=zr(jsigm-1+idec+1)
+            siyyb=zr(jsigm-1+idec+2)
+            sixyb=zr(jsigm-1+idec+4)
+            if (nbsig .eq. 6) then
+                sixzb=zr(jsigm-1+idec+5)
+                siyzb=zr(jsigm-1+idec+6)
+            endif
 !         -- SIXXM, SIYYM, ... : CONTRAINTES AU MILIEU DE LA COUCHE
-    sixxm=zr(jsigm-1+idec+1+nbsig)
-    siyym=zr(jsigm-1+idec+2+nbsig)
-    sixym=zr(jsigm-1+idec+4+nbsig)
-    if (nbsig .eq. 6) then
-        sixzm=zr(jsigm-1+idec+5+nbsig)
-        siyzm=zr(jsigm-1+idec+6+nbsig)
-    endif
+            sixxm=zr(jsigm-1+idec+1+nbsig)
+            siyym=zr(jsigm-1+idec+2+nbsig)
+            sixym=zr(jsigm-1+idec+4+nbsig)
+            if (nbsig .eq. 6) then
+                sixzm=zr(jsigm-1+idec+5+nbsig)
+                siyzm=zr(jsigm-1+idec+6+nbsig)
+            endif
 !
 !         -- SIXXH, SIYYH, ... : CONTRAINTES EN HAUT DE LA COUCHE
-    sixxh=zr(jsigm-1+idec+1+2*nbsig)
-    siyyh=zr(jsigm-1+idec+2+2*nbsig)
-    sixyh=zr(jsigm-1+idec+4+2*nbsig)
-    if (nbsig .eq. 6) then
-        sixzh=zr(jsigm-1+idec+5+2*nbsig)
-        siyzh=zr(jsigm-1+idec+6+2*nbsig)
-    endif
+            sixxh=zr(jsigm-1+idec+1+2*nbsig)
+            siyyh=zr(jsigm-1+idec+2+2*nbsig)
+            sixyh=zr(jsigm-1+idec+4+2*nbsig)
+            if (nbsig .eq. 6) then
+                sixzh=zr(jsigm-1+idec+5+2*nbsig)
+                siyzh=zr(jsigm-1+idec+6+2*nbsig)
+            endif
 !
 !         -- ON INTEGRE DANS L'EPAISSEUR DE CHAQUE COUCHE
 !            AVEC UNE FORRMULE DE NEWTON-COTES A 3 POINTS
 !            LES COEFFICIENTS SONT 1/6, 4/6 ET 1/6
-    cb=epi(1)/6
-    cm=4.d0*epi(1)/6
-    ch=epi(1)/6
+            cb=epi(1)/6
+            cm=4.d0*epi(1)/6
+            ch=epi(1)/6
 !
 !         -- NXX, NYY, NXY = SOMME DE SIXX, SIYY, SIXY :
-    nxx=nxx+cb*sixxb+cm*sixxm+ch*sixxh
-    nyy=nyy+cb*siyyb+cm*siyym+ch*siyyh
-    nxy=nxy+cb*sixyb+cm*sixym+ch*sixyh
+            nxx=nxx+cb*sixxb+cm*sixxm+ch*sixxh
+            nyy=nyy+cb*siyyb+cm*siyym+ch*siyyh
+            nxy=nxy+cb*sixyb+cm*sixym+ch*sixyh
 !
-    if (nbeff .eq. 8) then
+            if (nbeff .eq. 8) then
 !           -- QX, QY = SOMME DE SIXZ, SIYZ
-        qx=qx+cb*sixzb+cm*sixzm+ch*sixzh
-        qy=qy+cb*siyzb+cm*siyzm+ch*siyzh
-    endif
+                qx=qx+cb*sixzb+cm*sixzm+ch*sixzh
+                qy=qy+cb*siyzb+cm*siyzm+ch*siyzh
+            endif
 !
 !         -- MXX, MYY, MXY = MOMENTS DE SIXX, SIYY, SIXY :
-    mxx=mxx+cb*sixxb*hb+cm*sixxm*hm+ch*sixxh*hh
-    myy=myy+cb*siyyb*hb+cm*siyym*hm+ch*siyyh*hh
-    mxy=mxy+cb*sixyb*hb+cm*sixym*hm+ch*sixyh*hh
+            mxx=mxx+cb*sixxb*hb+cm*sixxm*hm+ch*sixxh*hh
+            myy=myy+cb*siyyb*hb+cm*siyym*hm+ch*siyyh*hh
+            mxy=mxy+cb*sixyb*hb+cm*sixym*hm+ch*sixyh*hh
 !
 !         -- MISE A JOUR DE HB POUR LA COUCHE SUIVANTE :
-    hb=hb+epi(1)
-20  continue
+            hb=hb+epi(1)
+ 20     continue
 !
-    zr(jeff-1+(kpg-1)*nbeff+1)=nxx
-    zr(jeff-1+(kpg-1)*nbeff+2)=nyy
-    zr(jeff-1+(kpg-1)*nbeff+4)=mxx
-    zr(jeff-1+(kpg-1)*nbeff+5)=myy
-    if (nbeff .eq. 8) then
-        zr(jeff-1+(kpg-1)*nbeff+3)=nxy
-        zr(jeff-1+(kpg-1)*nbeff+6)=mxy
-        zr(jeff-1+(kpg-1)*nbeff+7)=qx
-        zr(jeff-1+(kpg-1)*nbeff+8)=qy
-    endif
-    30 end do
+        zr(jeff-1+(kpg-1)*nbeff+1)=nxx
+        zr(jeff-1+(kpg-1)*nbeff+2)=nyy
+        zr(jeff-1+(kpg-1)*nbeff+4)=mxx
+        zr(jeff-1+(kpg-1)*nbeff+5)=myy
+        if (nbeff .eq. 8) then
+            zr(jeff-1+(kpg-1)*nbeff+3)=nxy
+            zr(jeff-1+(kpg-1)*nbeff+6)=mxy
+            zr(jeff-1+(kpg-1)*nbeff+7)=qx
+            zr(jeff-1+(kpg-1)*nbeff+8)=qy
+        endif
+ 30 end do
 !
 !
 !     -- POUR LES COQUES EXCENTREES, LES EFFORTS CALCULES SONT

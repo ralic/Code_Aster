@@ -86,6 +86,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
@@ -110,7 +111,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 !
     real(kind=8) :: x1, y1, x2, y2, x3, y3, norme
     real(kind=8) :: x(9), y(9), z(9), sx(9, 9), sy(9, 9), sz(9, 9)
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 ! ----------------------------------------------------------------------
 !
@@ -240,7 +241,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
         do 16 , i = 1 , nnoa
         tx(i) = ny(i)
         ty(i) = -nx(i)
-16      continue
+ 16     continue
 !
 !====
 ! 2. -- CAS DU 3D ------------------------------------------------------
@@ -255,7 +256,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
         x(numno)=geom(3*lenoeu-2)
         y(numno)=geom(3*lenoeu-1)
         z(numno)=geom(3*lenoeu)
-21      continue
+ 21     continue
 !
 ! 2.2. ==> TRAITEMENT ELEMENTS DE BARSOUM
 !
@@ -283,7 +284,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
                 z(mno)=(z(ino)+z(jno))*0.5d0
             endif
 !
-22          continue
+ 22         continue
         endif
 !
 ! 2.3. ==> CALCUL DU PRODUIT VECTORIEL OMI OMJ
@@ -296,9 +297,9 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
         sy(i,j)=z(i)*x(j)-x(i)*z(j)
         sz(i,j)=x(i)*y(j)-y(i)*x(j)
 !
-231      continue
+231     continue
 !
-23      continue
+ 23     continue
 !
 ! 2.4. ==> SOMMATION DES DERIVEES
 !
@@ -321,9 +322,9 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
                     kdec+jdec+1)*sy(i,j)
         nz(ipg)=nz(ipg)-zr(idfde+kdec+idec) *zr(idfde+&
                     kdec+jdec+1)*sz(i,j)
-242      continue
+242     continue
 !
-241      continue
+241     continue
 !
 !        CALCUL DU JACOBIEN
 !
@@ -332,7 +333,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
         ny(ipg)=ny(ipg)/jac(ipg)
         nz(ipg)=nz(ipg)/jac(ipg)
 !
-24      continue
+ 24     continue
 !
 ! ----- PROBLEME -------------------------------------------------------
 !

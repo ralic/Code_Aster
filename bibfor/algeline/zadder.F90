@@ -1,6 +1,7 @@
 subroutine zadder(uplo, n, alpha, x, incx,&
                   a, lda)
     implicit none
+#include "asterf_types.h"
 #include "blas/zaxpy.h"
     integer :: n, incx, lda
     real(kind=8) :: alpha
@@ -38,7 +39,7 @@ subroutine zadder(uplo, n, alpha, x, incx,&
 !-----------------------------------------------------------------------
     integer :: ix, j
     complex(kind=8) :: temp, temp1, temp2, temp3, temp4
-    logical(kind=1) :: upper
+    aster_logical :: upper
     real(kind=8) :: dble
 !
     if (n .eq. 0 .or. alpha .eq. 0.0d0) goto 9000
@@ -73,9 +74,9 @@ subroutine zadder(uplo, n, alpha, x, incx,&
         temp4 = dble(temp2)
         a(lda*(j-1)+j) = temp3 + temp4
         ix = ix + incx
-10  end do
+ 10 end do
 !
-9000  continue
+9000 continue
     goto 9999
-9999  continue
+9999 continue
 end subroutine

@@ -20,6 +20,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -55,11 +56,11 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 !
 !
 !
-    integer ::     jdipi
+    integer :: jdipi
     character(len=19) :: cnfext, cnfint, cndiri, cnbudi, cndipi, cndfdo
     integer :: ieq, neq
     integer :: ifm, niv
-    logical(kind=1) :: lcine
+    aster_logical :: lcine
     integer, pointer :: ccid(:) => null()
     real(kind=8), pointer :: budi(:) => null()
     real(kind=8), pointer :: dfdo(:) => null()
@@ -118,9 +119,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
         residu = max(&
                  residu,&
                  abs(&
-                 fint(ieq)+ diri(ieq)- fext(ieq)+ budi(ieq)- dfdo(1+ieq&
-                 &-1)- eta*zr( jdipi+ieq-1)&
-                 )&
+                 fint(ieq)+ diri(ieq)- fext(ieq)+ budi(ieq)- dfdo(1+ieq-1)- eta*zr( jdipi+ieq-1))&
                  )
  15     continue
     end do

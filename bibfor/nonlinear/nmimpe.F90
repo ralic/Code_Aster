@@ -18,6 +18,7 @@ subroutine nmimpe(modele, limped)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -28,7 +29,7 @@ subroutine nmimpe(modele, limped)
 #include "asterfort/utmess.h"
 !
     character(len=24) :: modele
-    logical(kind=1) :: limped
+    aster_logical :: limped
 !
 !
 !
@@ -64,7 +65,7 @@ subroutine nmimpe(modele, limped)
         limped = .false.
     endif
 !
-20  continue
+ 20 continue
     if (limped) then
         call utmess('I', 'ALGORITH3_23')
     endif

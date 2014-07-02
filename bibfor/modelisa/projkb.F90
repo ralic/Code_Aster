@@ -85,6 +85,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/matfpe.h"
@@ -108,10 +109,10 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: i1, i2, i3, icnx, ima, imail, inoma, jcoor, jcxma, jlnuma, jlicnx
-    integer ::  nbmaok, nbsom, noe, somn12, somn23
+    integer :: nbmaok, nbsom, noe, somn12, somn23
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2, x3dp(3), xbw(2)
     character(len=24) :: conxma, coorno
-    logical(kind=1) :: dejavu
+    aster_logical :: dejavu
     integer, pointer :: somno_bord(:) => null()
 !
 !
@@ -178,7 +179,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
             xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
             xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
             xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
-20      continue
+ 20     continue
 !
 ! 2.3    SI LE NOEUD BETON LE PLUS PROCHE EST UN NOEUD MILIEU D'UN BORD
 ! ---    DE LA MAILLE, LA PROJECTION NE PEUT ETRE TENTEE QUE SUR LE BORD
@@ -201,7 +202,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
                     if ((somno_bord(1+2*(ima-1) ).eq.somn12) .or.&
                         (somno_bord(1+2*(ima-1)+1).eq.somn12)) dejavu = .true.
                     if (dejavu) goto 10
-30              continue
+ 30             continue
             endif
 !
 ! 2.3.2     TENTATIVE DE PROJECTION SUR LE BORD
@@ -287,8 +288,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
                     if ((somno_bord(1+2*(ima-1) ).eq.somn12) .or.&
                         (somno_bord(1+2*(ima-1)+1).eq.somn12)) dejavu = .true.
                     if (dejavu) goto 41
-40              continue
-41              continue
+ 40             continue
+ 41             continue
             endif
 !
 ! 2.4.2     TENTATIVE DE PROJECTION SUR LE PREMIER BORD
@@ -356,7 +357,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
                     if ((somno_bord(1+2*(ima-1) ).eq.somn23) .or.&
                         (somno_bord(1+2*(ima-1)+1).eq.somn23)) dejavu = .true.
                     if (dejavu) goto 10
-50              continue
+ 50             continue
             endif
 !
 ! 2.4.4     TENTATIVE DE PROJECTION SUR LE DEUXIEME BORD
@@ -414,9 +415,9 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 !
         endif
 !
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
     AS_DEALLOCATE(vi=somno_bord)
     call jedema()
 !

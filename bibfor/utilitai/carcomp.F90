@@ -2,6 +2,7 @@ subroutine carcomp(carte_1, carte_2, iret)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -48,7 +49,7 @@ subroutine carcomp(carte_1, carte_2, iret)
 ! In  carte_2   : second CARTE
 ! Out iret      : 0 if same CARTE
 !                 1 if not
-!              
+!
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_elem, ielem, icmp, iret1, iret2
@@ -63,7 +64,7 @@ subroutine carcomp(carte_1, carte_2, iret)
     integer :: vali1, vali2
     integer :: ncmp1, ncmp2, nb_cmp
     character(len=80) :: valk1, valk2
-    logical(kind=1) :: vall1, vall2, lok
+    aster_logical :: vall1, vall2, lok
     real(kind=8) :: epsi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,11 +73,11 @@ subroutine carcomp(carte_1, carte_2, iret)
 !
 ! - Initializations
 !
-    iret     = 0
-    zero     = 0.d0
+    iret = 0
+    zero = 0.d0
     carte_1s = '&&CARCOMP.C1S'
     carte_2s = '&&CARCOMP.C2S'
-    epsi     = 1.d-15
+    epsi = 1.d-15
 !
 ! - <GRANDEUR>
 !
@@ -142,7 +143,7 @@ subroutine carcomp(carte_1, carte_2, iret)
                     iret = 1
                     goto 99
                 endif
-            elseif (iad2 .eq. 0) then
+            else if (iad2 .eq. 0) then
                 if (iad1 .ne. 0) then
                     call jenuno(jexnum(mesh//'.NOMMAI', ielem), elem_name)
                     call utmess('I', 'UTILITAI8_70', sk = elem_name)
@@ -155,10 +156,10 @@ subroutine carcomp(carte_1, carte_2, iret)
                     valr2 = zr(jcesv2-1-iad2)
                     if (valr2 .ne. zero) then
                         valr_error = (valr1-valr2)/valr2
-                        type_test  = 'RELATIF'
+                        type_test = 'RELATIF'
                     else
                         valr_error = valr1-valr2
-                        type_test  = 'ABSOLU'
+                        type_test = 'ABSOLU'
                     endif
                     if (type_test .eq. 'RELATIF') then
                         lok = ( abs( valr_error ) .le. epsi*abs(valr2))

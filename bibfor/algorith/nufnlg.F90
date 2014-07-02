@@ -22,6 +22,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
@@ -63,7 +64,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: vij(3, 3), lij(3, 3)
     integer :: nddl, ndu, g
     integer :: kl, sa, na, ia, ja, kk

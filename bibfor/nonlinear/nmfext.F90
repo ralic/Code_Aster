@@ -19,6 +19,7 @@ subroutine nmfext(eta, fonact, sddyna, veasse, cnfext)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -61,9 +62,9 @@ subroutine nmfext(eta, fonact, sddyna, veasse, cnfext)
     integer :: ifm, niv
     character(len=19) :: cnunil, cnctdc
     character(len=19) :: cnffdo, cnffpi, cnfvdo, cnvady
-    logical(kind=1) :: lctcd, lunil
+    aster_logical :: lctcd, lunil
     real(kind=8) :: coeequ
-    logical(kind=1) :: ldyna, lallv
+    aster_logical :: ldyna, lallv
     integer :: ifdo, n
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)
@@ -158,7 +159,7 @@ subroutine nmfext(eta, fonact, sddyna, veasse, cnfext)
     endif
     do 10 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfext)
-10  end do
+ 10 end do
 !
 ! --- AFFICHAGE
 !

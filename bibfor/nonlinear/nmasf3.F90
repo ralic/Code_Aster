@@ -20,6 +20,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cast3d.h"
@@ -60,7 +61,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !.......................................................................
 !
 !
-    logical(kind=1) :: grand, calbn, axi
+    aster_logical :: grand, calbn, axi
     integer :: codre(1)
     character(len=8) :: nomres(2)
     character(len=16) :: phenom
@@ -99,8 +100,8 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 ! - INITIALISATION HEXAS8
     call elraga('HE8', 'FPG8    ', ndim, nbpg2, coopg2,&
                 poipg2)
-    call elrefe_info(elrefe='HE8',fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=nbpg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+    call elrefe_info(elrefe='HE8', fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=nbpg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
 !
 ! - CALCUL DES COEFFICIENTS BI (MOYENNE DES DERIVEES DES FCTS DE FORME)
     call r8inir(3*nno, 0.d0, bi, 1)
@@ -113,13 +114,13 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
             bi(1,ino) = bi(1,ino) + jac * dfdx(ino)
             bi(2,ino) = bi(2,ino) + jac * dfdy(ino)
             bi(3,ino) = bi(3,ino) + jac * dfdz(ino)
- 3      continue
- 2  end do
+  3     continue
+  2 end do
     do 4 i = 1, 3
         do 5 ino = 1, nno
             bi(i,ino) = bi(i,ino)/ den
- 5      continue
- 4  end do
+  5     continue
+  4 end do
 !
 ! - CALCUL DES COEFFICIENTS GAMMA
 !
@@ -128,19 +129,19 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
             hx(k,i) = 0.d0
             do 8 j = 1, nno
                 hx(k,i) = hx(k,i) + h(j,i) * geom(k,j)
- 8          continue
- 7      continue
- 6  end do
+  8         continue
+  7     continue
+  6 end do
 !
     do 9 i = 1, 4
         do 10 j = 1, nno
             s = 0.d0
             do 11 k = 1, 3
                 s = s + hx(k,i) * bi(k,j)
-11          continue
+ 11         continue
             gam(i,j) = 0.125d0 * (h(j,i) - s)
-10      continue
- 9  end do
+ 10     continue
+  9 end do
 !
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
@@ -185,12 +186,12 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
             def(4,j,i) = (f(j,1)*dfdi(i,2) + f(j,2)*dfdi(i,1))/rac2
             def(5,j,i) = (f(j,1)*dfdi(i,3) + f(j,3)*dfdi(i,1))/rac2
             def(6,j,i) = (f(j,2)*dfdi(i,3) + f(j,3)*dfdi(i,2))/rac2
-31      continue
-41  continue
+ 31     continue
+ 41 continue
 !
     do 180 i = 1, 72
         qplus(i) = sigm(i+6,kpg)
-180  continue
+180 continue
 !
     call r8inir(3*nno, 0.d0, vectu, 1)
     call r8inir(6*nbpg2, 0.d0, sigas, 1)
@@ -206,21 +207,21 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
         do 165 i = 1, 3
             dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
-165      continue
+165     continue
 !
         do 166 i = 1, 3
             dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
-166      continue
+166     continue
 !
         do 167 i = 1, 3
             dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
-167      continue
+167     continue
 !
         do 168 i = 1, 3
             dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg-1) &
                                 &* coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(3*kpg) *&
                                 & invja(2,i)
-168      continue
+168     continue
 !
 !
 !  CALCUL DE BN AU POINT DE GAUSS KPG
@@ -237,9 +238,9 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
                 iaa = 3*(ia-1)
                 do 35 j = 1, 3
                     sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,kp+j)
-35              continue
-34          continue
-32      continue
+ 35             continue
+ 34         continue
+ 32     continue
 !
 !     CALCUL DES FORCES INTERNES
 !
@@ -249,10 +250,10 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
                     vectu(j,i) = vectu(j,i) + (def(kl,j,i)+ bn(kl,j,i) )* (sigas(kl,kpg)+sigm(kl,&
                                  &1))*jac + (rac2*def(kl+ 3,j,i)+ bn(kl+3,j,i))* (sigas(kl+3,kpg)&
                                  &+sigm(kl+3, 1))*jac
-230              continue
-240          continue
-250      continue
+230             continue
+240         continue
+250     continue
 !
-290  continue
+290 continue
 !
 end subroutine

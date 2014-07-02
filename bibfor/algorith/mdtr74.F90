@@ -30,6 +30,7 @@ subroutine mdtr74(nomres)
     implicit none
     character(len=8) :: nomres
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/gettco.h"
@@ -90,7 +91,7 @@ subroutine mdtr74(nomres)
     character(len=16) :: typbas, typba2, method
     character(len=19) :: lisarc, nomstm, nomstk, nomstg, masse, marig, fonct
     character(len=24) :: numk24, numm24, numc24, lisins, nomnoe, typeba, valk(3)
-    logical(kind=1) :: lamor, okmethod
+    aster_logical :: lamor, okmethod
     integer :: itypfl, nexcit, nexcir, ntotex
     integer :: vali(3), jvec, jvecr, j1
     real(kind=8) :: acrit, agene
@@ -109,25 +110,25 @@ subroutine mdtr74(nomres)
     integer :: nbpal, nbrfis
     integer :: iadri
     character(len=24) :: npal
-    logical(kind=1) :: prdeff
+    aster_logical :: prdeff
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: i, iam, iamog, ibid, icoupl, idiff
     integer :: ier, ifimp, ifm, ig, iindic, im
     integer :: indic, ioc, iparch, iptcho, iret, irfimp
-    integer :: ng1, ng2, nng1, nng0, nng2,  jscdeg, jgyog, jrgyg
+    integer :: ng1, ng2, nng1, nng0, nng2, jscdeg, jgyog, jrgyg
     integer :: isoupl, itrans, itrloc, ivchoc, iveci1, ivecr1
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
     integer :: jamo2, jamog, jarch, jbase, jbasf, jcodim, jcoefm
-    integer :: jdcho, jdep0, jdepl, jdeps,  jdfk
+    integer :: jdcho, jdep0, jdepl, jdeps, jdfk
     integer :: jfcho, jfk, jfond, jfonv, jiadve, jicho
     integer :: jidesc, jinst, jinti, jinumo, jlocf, jmasg, jnoacc
     integer :: jnodep, jnoec, jnomfo, jnovit, jordr, jparc, jpard
     integer :: jpass, jphie, jpoids, jpsdel, jpsid, jpuls
     integer :: jraig, jranc, jredc, jredd, jrede, jrefa
     integer :: jrevc, jrevv
-    integer ::   jrevi, jrhoe,   jvcho
-    integer :: jvit0, jvits, lamre, lires,  lmat, lnoe
+    integer :: jrevi, jrhoe, jvcho
+    integer :: jvit0, jvits, lamre, lires, lmat, lnoe
     integer :: lprofv, lprol, n, n1, n2, na, nbamor
     integer :: nbcho1, nbchoc, nbexit, nbf, nbflam, nbfv, nbm0
     integer :: nbmd, nbmg, nbmod2, nbmode, nbmp, nbnli, nbpas
@@ -528,9 +529,9 @@ subroutine mdtr74(nomres)
 !   Amortisseurs anti-sismique : ANTI_SISM, DIS_VISC
     nbsism(1:2)= 0
     call getfac('ANTI_SISM', nbsism(1))
-    if ( nbsism(1).ne.0 ) then
+    if (nbsism(1) .ne. 0) then
         okmethod = (method.eq.'EULER').or.(method(1:5).eq.'RUNGE').or.(method(1:5).eq.'ADAPT')
-        if ( .not. okmethod ) then
+        if (.not. okmethod) then
             valk(1) = 'DYNA_TRAN_MODAL'
             valk(2) = 'ANTI_SISM'
             valk(3) = method
@@ -538,10 +539,10 @@ subroutine mdtr74(nomres)
         endif
     endif
 !
-    call getfac('DIS_VISC',  nbsism(2))
-    if ( nbsism(2).ne.0 ) then
+    call getfac('DIS_VISC', nbsism(2))
+    if (nbsism(2) .ne. 0) then
         okmethod = (method.eq.'EULER').or.(method(1:5).eq.'RUNGE')
-        if ( .not. okmethod ) then
+        if (.not. okmethod) then
             valk(1) = 'DYNA_TRAN_MODAL'
             valk(2) = 'DIS_VISC'
             valk(3) = method
@@ -864,12 +865,12 @@ subroutine mdtr74(nomres)
 !       Les pointeurs sur la SD 'nomres' sont crée par 'mdallo' et sont en sortie de cette routine.
 !       Pour Runge c'est fait dans mdruku ==> IL NE SONT DONC PAS CONNUS ICI
 !                                         ==> ON VA CHERCHER CEUX DONT ON A BESOIN
-            if ( nbnli .ne. 0 ) then
-                call jeveuo(nomres//'           .DISC', 'L', jinst)
-                call jeveuo(nomres//'           .FCHO', 'L', jfcho)
-                call jeveuo(nomres//'           .DLOC', 'L', jdcho)
-                call jeveuo(nomres//'           .VCHO', 'L', jvcho)
-            endif
+        if (nbnli .ne. 0) then
+            call jeveuo(nomres//'           .DISC', 'L', jinst)
+            call jeveuo(nomres//'           .FCHO', 'L', jfcho)
+            call jeveuo(nomres//'           .DLOC', 'L', jdcho)
+            call jeveuo(nomres//'           .VCHO', 'L', jvcho)
+        endif
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, nbmode, zr(jpuls), pulsat2,&
@@ -883,7 +884,7 @@ subroutine mdtr74(nomres)
                     zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
                     zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevv), &
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv),&
                     zk8(jinti))
     else if (method.eq.'NEWMARK') then
         call mdnewm(nbpas, dt, nbmode, zr(jpuls), pulsat2,&
@@ -909,14 +910,14 @@ subroutine mdtr74(nomres)
 !   Impression des résultats de choc
 !       sauf pour ITMI
 !       sauf dans le cas DIS_VISC
-    if ( (method.ne.'ITMI').and.(nbnli.ne.0).and.(nbsism(2).eq.0) ) then
+    if ((method.ne.'ITMI') .and. (nbnli.ne.0) .and. (nbsism(2).eq.0)) then
         call mdicho(nomres, nbsauv, zr(jinst), zr(jfcho), zr(jdcho),&
                     zr(jvcho), nbnli, nbchoc, zr(jparc), zk8(jnoec))
     endif
 !   Impression des résultats des DIS_VISC
-    if ( nbsism(2).ne.0 ) then
-        call mdidisvisc(nomres, nbnli, zi(jranc), zk8(jnoec), nbsauv, &
-                        zr(jinst) )
+    if (nbsism(2) .ne. 0) then
+        call mdidisvisc(nomres, nbnli, zi(jranc), zk8(jnoec), nbsauv,&
+                        zr(jinst))
     endif
 !
     if (method .eq. 'ITMI') then
@@ -924,7 +925,7 @@ subroutine mdtr74(nomres)
         call wkvect('&&MDITMI.DEPL_0', 'V V R8', nbmode, jdep0)
         call wkvect('&&MDITMI.VITE_0', 'V V R8', nbmode, jvit0)
         call mdinit(nombm, nbmode, 0, zr(jdep0), zr(jvit0),&
-                    [0.d0], iret, tinit, intitu=zk8(jinti), noecho=zk8(jnoec) )
+                    [0.d0], iret, tinit, intitu=zk8(jinti), noecho=zk8(jnoec))
         if (iret .ne. 0) goto 120
 !       NOMBRE DE POINTS DE DISCRETISATION DU TUBE
         call dismoi('REF_MASS_PREM', basemo, 'RESU_DYNA', repk=masse)

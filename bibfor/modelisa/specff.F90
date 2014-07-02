@@ -38,6 +38,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/axdipo.h"
 #include "asterfort/deffen.h"
@@ -62,7 +63,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 #include "asterfort/veriff.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: casint, ltable, exiind
+    aster_logical :: casint, ltable, exiind
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
     character(len=8) :: nomu, caelem, modele, table, nomnoa, noma
     character(len=19) :: spectr, base, typflu
@@ -133,7 +134,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         call wkvect('&&SPECFF.TEMP.NOMF', 'V V K8', nbfonc, inomf)
         do 10 ifo = 1, nbfonc
             zk8(inomf+ifo-1) = zk16(ispte+3+ifo)(1:8)
-10      continue
+ 10     continue
     else
         nbfonc = 12
         dimint = 6
@@ -257,7 +258,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                         exiind = .true.
                         ind = i1
                     endif
-320              continue
+320             continue
                 if (.not. exiind) then
                     call utmess('F', 'MODELISA2_89')
                 endif
@@ -274,7 +275,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                 nbpf, zr(lwr), zr(isre), ier2)
                     do 210 i1 = 1, nbfreq
                         zr(isim-1+i1) = 0.d0
-210                  continue
+210                 continue
                 else
                     nbfreq = nbval/2
                     call jeexin('&&SPECFF.SRE', ibid)
@@ -285,7 +286,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     do 310 i1 = 1, nbfreq
                         zr(ire-1+i1) = zr(itab+2*(i1-1))
                         zr(iim-1+i1) = zr(itab+2*(i1-1)+1)
-310                  continue
+310                 continue
                     call fointr(' ', zk24(iprol), nbfreq, freq, zr( ire),&
                                 nbpf, zr(lwr), zr(isre), ier2)
                     call fointr(' ', zk24(iprol), nbfreq, freq, zr( iim),&
@@ -295,9 +296,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     idec = 2*nbpf*(ifo-1)+2*(il-1)
                     zr(iinte+idec ) = zr(isre-1+il)
                     zr(iinte+idec+1) = zr(isim-1+il)
-62              continue
-61          continue
-60      continue
+ 62             continue
+ 61         continue
+ 60     continue
 !
     else if (idebit.eq.180) then
 !
@@ -310,8 +311,8 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                 module = 1.d0 + (ptf/15.d0)**(4.6d0)
                 module = s0/module
                 zr(iinte+idec) = module
-71          continue
-70      continue
+ 71         continue
+ 70     continue
         do 72 ifo2 = 2, dimint
             do 73 ifo1 = 1, ifo2-1
                 ifo = ifo2*(ifo2-1)/2 + ifo1
@@ -325,9 +326,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     module = s0/module
                     zr(iinte+idec) = module * dble(cos(phase))
                     zr(iinte+idec+1) = module * dble(sin(phase))
-74              continue
-73          continue
-72      continue
+ 74             continue
+ 73         continue
+ 72     continue
 !
     else if (idebit.eq.300) then
 !
@@ -340,8 +341,8 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                 module = 1.d0 + (ptf/15.d0)**(4.6d0)
                 module = s0/module
                 zr(iinte+idec) = module
-81          continue
-80      continue
+ 81         continue
+ 80     continue
         do 82 ifo2 = 2, dimint
             do 83 ifo1 = 1, ifo2-1
                 ifo = ifo2*(ifo2-1)/2 + ifo1
@@ -355,9 +356,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     module = s0/module
                     zr(iinte+idec) = module * dble(cos(phase))
                     zr(iinte+idec+1) = module * dble(sin(phase))
-84              continue
-83          continue
-82      continue
+ 84             continue
+ 83         continue
+ 82     continue
 !
     endif
 !
@@ -388,7 +389,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + beta12*beta22 * zr(iinte+idec)
                         endif
-101                  continue
+101                 continue
                     if (nbfonc .gt. 1) then
                         do 102 ifo2 = 2, nbfonc
                             beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
@@ -411,10 +412,10 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                                            &ta12* beta21)*zr(iinte+idec+1&
                                                            )
                                 endif
-103                          continue
-102                      continue
+103                         continue
+102                     continue
                     endif
-100              continue
+100             continue
 !
             else
 !
@@ -430,7 +431,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + beta12*beta22 * zr(iinte+idec)
                         endif
-111                  continue
+111                 continue
                     do 112 ifo2 = dimint+1, nbfonc
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
@@ -442,7 +443,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + beta12*beta22 * zr(iinte+idec)
                         endif
-112                  continue
+112                 continue
                     do 113 ifo2 = 2, dimint
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
@@ -464,8 +465,8 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                                        &*beta21)* zr(iinte+idec+1&
                                                        )
                             endif
-114                      continue
-113                  continue
+114                     continue
+113                 continue
                     do 115 ifo2 = dimint+2, nbfonc
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
@@ -487,14 +488,14 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                                        &*beta21)* zr(iinte+idec+1&
                                                        )
                             endif
-116                      continue
-115                  continue
-110              continue
+116                     continue
+115                 continue
+110             continue
 !
             endif
 !
-91      continue
-90  continue
+ 91     continue
+ 90 continue
 !
     call jedetr('&&SPECFF.TEMP.NOMF')
     call jedetr('&&SPECFF.TEMP.DIFF')

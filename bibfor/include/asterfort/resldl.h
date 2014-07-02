@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
                       csolu, prepos)
@@ -24,6 +26,6 @@ interface
         integer :: nsecm
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
-        logical(kind=1) :: prepos
+        aster_logical :: prepos
     end subroutine resldl
 end interface

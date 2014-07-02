@@ -2,6 +2,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                   dim, bfix, borne, norme, seuil,&
                   lseuil, borpct, voltot)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8miem.h"
@@ -23,7 +24,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     character(len=8) :: modele, nomcmp, norme
     character(len=19) :: cham
     character(len=24) :: lma
-    logical(kind=1) :: lseuil
+    aster_logical :: lseuil
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +78,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !     ------------------------------------------------------------------
 !
     integer :: nbmat, i, nbintv
-    integer ::  jcesl, jcesd, jcesk,  jpoil, jpoid,  jval
+    integer :: jcesl, jcesd, jcesk, jpoil, jpoid, jval
     integer :: jvol
     integer :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
     real(kind=8) :: volpt, pas, p0, valmin, valmax, pdiv
@@ -86,7 +87,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     character(len=8) :: noma
     character(len=19) :: ligrel, cesout, cespoi, chams
     character(len=24) :: tabval, tabvol
-    logical(kind=1) :: first
+    aster_logical :: first
     character(len=8), pointer :: cesc(:) => null()
     real(kind=8), pointer :: pdsm(:) => null()
     real(kind=8), pointer :: cesv(:) => null()

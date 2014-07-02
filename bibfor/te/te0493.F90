@@ -17,6 +17,7 @@ subroutine te0493(option, nomte)
 ! ======================================================================
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -39,7 +40,7 @@ subroutine te0493(option, nomte)
     integer :: iflux, ivectu, k, i, iad
     integer :: idec, jdec, kdec
     character(len=24) :: valkm(3)
-    logical(kind=1) :: tria
+    aster_logical :: tria
 !
 !
 !-----------------------------------------------------------------------
@@ -81,11 +82,11 @@ subroutine te0493(option, nomte)
     endif
 !
     if (tria) then
-        call elrefe_info(elrefe='TR3',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+        call elrefe_info(elrefe='TR3', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     else
-        call elrefe_info(elrefe='QU4',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+        call elrefe_info(elrefe='QU4', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     endif
     idfdy=idfdx+1
     call jevech('PGEOMER', 'L', igeom)
@@ -101,8 +102,8 @@ subroutine te0493(option, nomte)
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
-22      continue
-20  end do
+ 22     continue
+ 20 end do
 !
 !    BOUCLE SUR LES CMP
     do 100 ifl = 1, nbflux
@@ -119,7 +120,7 @@ subroutine te0493(option, nomte)
                 s = s + zr(iad )*zr(ivf+k+i-1)
                 t = t + zr(iad+1)*zr(ivf+k+i-1)
                 u = u + zr(iad+2)*zr(ivf+k+i-1)
-10          continue
+ 10         continue
             flx = s
             fly = t
             flz = u
@@ -135,11 +136,11 @@ subroutine te0493(option, nomte)
                     nx = nx + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sx(i,j)
                     ny = ny + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sy(i,j)
                     nz = nz + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sz(i,j)
-102              continue
+102             continue
             jac = sqrt(nx*nx+ny*ny+nz*nz)
             flun = (nx*flx + ny*fly + nz*flz)/jac
             zr(ivectu+nbflux*(kp-1)+ifl-1) = flun
-40      continue
-100  end do
+ 40     continue
+100 end do
 !
 end subroutine

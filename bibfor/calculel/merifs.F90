@@ -1,6 +1,7 @@
 subroutine merifs(modele, nchar, lchar, mate, cara,&
                   exitim, time, matel, nh)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/calcul.h"
@@ -21,7 +22,7 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
     character(len=8) :: modele, cara
     character(len=19) :: matel
     character(len=*) :: lchar(*), mate
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +61,7 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
     character(len=24) :: ligrmo, ligrch, lchin(15), lchout(10)
     character(len=24) :: chgeom, chcara(18), chharm
 !-----------------------------------------------------------------------
-    integer ::  icha, icode, ilires, iret, iret1
+    integer :: icha, icode, ilires, iret, iret1
     character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     data chvarc /'&&MERIFS.CHVARC'/
@@ -141,7 +142,7 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
                     lpain, 1, lchout, lpaout, 'G',&
                     'OUI')
         call reajre(matel, lchout(1), 'G')
-10  end do
+ 10 end do
 ! --- MENAGE
     call detrsd('CHAM_ELEM', chvarc)
 !

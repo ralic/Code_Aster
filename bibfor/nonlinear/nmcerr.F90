@@ -19,7 +19,8 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/ceil.h"
@@ -31,7 +32,7 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=24) :: defico
-    logical(kind=1) :: lctcd
+    aster_logical :: lctcd
     integer :: iter1, iter2
     real(kind=8) :: elasdt, inikry
     real(kind=8) :: rgmaxi, rgrela
@@ -87,7 +88,7 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
                     pcplus, ibid, k8bid)
         nplus = nint(pcplus)
         nmax = max(nmax,nplus)
-10  end do
+ 10 end do
 !
 ! --- NOMBRE MAXIMUM D'ITERATIONS
 !

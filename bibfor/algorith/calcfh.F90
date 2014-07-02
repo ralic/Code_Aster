@@ -56,6 +56,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/hmderp.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: valcen(14, 6)
@@ -87,7 +88,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     real(kind=8) :: viscl, dviscl, viscg, dviscg
     real(kind=8) :: mamolg, mamolv
     character(len=16) :: option, thmc
-    logical(kind=1) :: perman, vf
+    aster_logical :: perman, vf
     integer :: ifa
     real(kind=8) :: zero
     parameter    (zero=0.d0)
@@ -98,7 +99,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     real(kind=8) :: lambd1(5), lambd2(5), fv(5), fa(5), visco, dvisco
     real(kind=8) :: krel1, dkrel1, rho12, rho21, masrt
     real(kind=8) :: rho22, kh
-    logical(kind=1) :: yavp
+    aster_logical :: yavp
 !
 ! VARIABLES LOCALES PERMETTANT D'EXPRIMER LES DERIVEES DES
 ! GRADIENTS DES PRESSIONS DE GAZ ET DE VAPEUR
@@ -272,7 +273,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
         gp(i)=0.d0
         gca(i)=0.d0
         gpa(i)=0.d0
- 1  end do
+  1 end do
     dp12p1=0.d0
     dp12p2=0.d0
     dp12t=0.d0
@@ -301,7 +302,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
         dp1pt(i)=0.d0
         dp2pt(i)=0.d0
         dtpt(i)=0.d0
- 2  end do
+  2 end do
     dcvp1=0.d0
     dcvp2=0.d0
     dcvt=0.d0
@@ -451,7 +452,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                     gp(i)=gp(i)+rho12*(h12-h11)/t*grat(i)
                 endif
                 gc(i)=gp(i)/p2-pvp/p2/p2*grap2(i)
-100          continue
+100         continue
         endif
     endif
     if (thmc .eq. 'LIQU_VAPE') then
@@ -460,7 +461,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
             if (yate .eq. 1) then
                 gp(i)=gp(i)+rho12*(h12-h11)/t*grat(i)
             endif
-110      end do
+110     end do
     endif
     if (thmc .eq. 'LIQU_GAZ') then
         rho21=mamolg*p2/r/t
@@ -508,7 +509,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                 if (yate .eq. 1) then
                     gca(i)=gca(i)-mamolg*pad/r/t/t*grat(i)
                 endif
-200          continue
+200         continue
         endif
     endif
 ! ***********************************************************
@@ -546,7 +547,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                 if (yate .eq. 1) then
                     gca(i)=gca(i)-mamolg*pad/r/t/t*grat(i)
                 endif
-202          continue
+202         continue
         endif
     endif
 !
@@ -686,7 +687,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                     if (yate .eq. 1) then
                         dgcgt(1)=dgpgt(1)/p2
                     endif
-101              continue
+101             continue
             endif
         endif
 !
@@ -725,7 +726,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                     if (yate .eq. 1) then
                         dgpgt(1)=rho12*(h12-h11)/t
                     endif
-111              continue
+111             continue
             endif
         endif
 !
@@ -806,7 +807,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         dgcgt(1)=dgpgt(1)/p2
                         dgcgt(2)=mamolg*(1/r/t*dgpgt(2)-1/r/t*pad/t)
                     endif
-201              continue
+201             continue
             endif
         endif
 !
@@ -882,7 +883,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         dgcgt(1)=dgpgt(1)/p2
                         dgcgt(2)=mamolg*(1/r/t*dgpgt(2)-1/r/t*pad/t)
                     endif
-204              continue
+204             continue
             endif
         endif
 !
@@ -1172,16 +1173,16 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             congep(bdcp11+i)=congep(bdcp11+i)+rho11*&
                             lambd1(1) *tperm(i,j)*(grap1(j)+rho11*&
                             pesa(j))
-1021                      continue
+1021                     continue
                     else
                         congep(bdcp11+i)=0.d0
                         do 1022 j = 1, ndim
                             congep(bdcp11+i)=congep(bdcp11+i)+rho11*&
                             lambd1(1) *tperm(i,j)*(-grap1(j)+rho11*&
                             pesa(j))
-1022                      continue
+1022                     continue
                     endif
-102              continue
+102             continue
             endif
             if (thmc .eq. 'LIQU_VAPE_GAZ') then
                 do 103 i = 1, ndim
@@ -1198,8 +1199,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         congep(adcp21+i)=congep(adcp21+i)+rho21*&
                         lambd2(1)*tperm(i,j) *(-grap2(j)+(rho12+rho21)&
                         *pesa(j)) +rho21*cvp*fv(1)*gc(i)
-1031                  continue
-103              continue
+1031                 continue
+103             continue
             endif
             if (thmc .eq. 'LIQU_AD_GAZ_VAPE') then
                 do 203 i = 1, ndim
@@ -1220,8 +1221,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         congep(adcp22+i)=congep(adcp22+i)+rho22*&
                         lambd1(1)*tperm(i,j) *(grap1(j)-grap2(j)+(&
                         rho22+rho11) *pesa(j))
-2031                  continue
-203              continue
+2031                 continue
+203             continue
             endif
             if (thmc .eq. 'LIQU_AD_GAZ') then
                 do 205 i = 1, ndim
@@ -1240,8 +1241,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         congep(adcp22+i)=congep(adcp22+i)+rho22*&
                         lambd1(1)*tperm(i,j) *(grap1(j)-grap2(j)+(&
                         rho22+rho11) *pesa(j))
-2051                  continue
-205              continue
+2051                 continue
+205             continue
             endif
             if (thmc .eq. 'LIQU_VAPE') then
                 do 113 i = 1, ndim
@@ -1253,8 +1254,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         )
                         congep(adcp12+i)=congep(adcp12+i)+rho12*&
                         lambd2(1)*tperm(i,j) *(-gp(j)+rho12*pesa(j))
-1131                  continue
-113              continue
+1131                 continue
+113             continue
             endif
             if (thmc .eq. 'LIQU_GAZ') then
                 do 104 i = 1, ndim
@@ -1267,8 +1268,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         congep(adcp21+i)=congep(adcp21+i)+rho21*&
                         lambd2(1)*tperm(i,j) *(-grap2(j)+rho21*pesa(j)&
                         )
-1041                  continue
-104              continue
+1041                 continue
+104             continue
             endif
         endif
 !
@@ -1292,7 +1293,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !
                             dsde(bdcp11+i,addep1+j)=dsde(bdcp11+i,&
                             addep1+j) +rho11*lambd1(1)*tperm(i,j)
-1081                      continue
+1081                     continue
                     else
                         do 1082 j = 1, ndim
                             dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
@@ -1309,7 +1310,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !
                             dsde(bdcp11+i,addep1+j)=dsde(bdcp11+i,&
                             addep1+j) -rho11*lambd1(1)*tperm(i,j)
-1082                      continue
+1082                     continue
                     endif
                     if (yamec .eq. 1) then
                         do 107 j = 1, 3
@@ -1319,16 +1320,16 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                     dsde(bdcp11+i,addeme+ndim-1+i)&
                                     +rho11*lambd1(2)*tperm(i,k)*&
                                     (grap1(k)+rho11*pesa(k))
-1071                              continue
+1071                             continue
                             else
                                 do 1072 k = 1, ndim
                                     dsde(bdcp11+i,addeme+ndim-1+i)=&
                                     dsde(bdcp11+i,addeme+ndim-1+i)&
                                     +rho11*lambd1(2)*tperm(i,k)&
                                     *(-grap1(k)+rho11*pesa(k))
-1072                              continue
+1072                             continue
                             endif
-107                      continue
+107                     continue
                     endif
                     if (yate .eq. 1) then
                         if (thmc .eq. 'LIQU_GAZ_ATM') then
@@ -1344,7 +1345,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                 dsde(adcp11+i,addete)=dsde(adcp11+i,&
                                 addete) +rho11*lambd1(1)*tperm(i,j)*(&
                                 dr11t*pesa(j))
-1073                          continue
+1073                         continue
                         else
                             do 1074 j = 1, ndim
                                 dsde(adcp11+i,addete)=dsde(adcp11+i,&
@@ -1358,10 +1359,10 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                 dsde(adcp11+i,addete)=dsde(adcp11+i,&
                                 addete) +rho11*lambd1(1)*tperm(i,j)*(&
                                 dr11t*pesa(j))
-1074                          continue
+1074                         continue
                         endif
                     endif
-108              continue
+108             continue
             endif
             if (thmc .eq. 'LIQU_VAPE_GAZ' .or. thmc .eq. 'LIQU_AD_GAZ_VAPE' .or. thmc .eq.&
                 'LIQU_GAZ' .or. thmc .eq. 'LIQU_AD_GAZ') then
@@ -1399,7 +1400,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !
                         dsde(adcp11+i,addep2+j)=dsde(adcp11+i,addep2+&
                         j) -rho11*lambd1(1)*tperm(i,j)
-1051                  continue
+1051                 continue
 !
 ! DERIVEE DU FLUX DE VAPEUR
 !
@@ -1417,7 +1418,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp12+i,addep1)=dsde(adcp12+i,&
                             addep1) +rho12*lambd2(1)*tperm(i,j)*&
                             ((dr12p1+dr21p1)*pesa(j))
-1052                      continue
+1052                     continue
 !
                         dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
                         -dr12p1*(1.d0-cvp)*fv(1)*gc(i)
@@ -1443,7 +1444,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp12+i,addep2)=dsde(adcp12+i,&
                             addep2) +rho12*lambd2(1)*tperm(i,j)*&
                             ((dr12p2+dr21p2)*pesa(j))
-1053                      continue
+1053                     continue
 !
                         dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
                         -dr12p2*(1.d0-cvp)*fv(1)*gc(i)
@@ -1463,7 +1464,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         do 1054 j = 1, ndim
                             dsde(adcp12+i,addep2+j)=dsde(adcp12+i,&
                             addep2+j) -rho12*lambd2(1)*tperm(i,j)
-1054                      continue
+1054                     continue
 !
                         dsde(adcp12+i,addep2+i)=dsde(adcp12+i,addep2+&
                         i) -rho12*(1.d0-cvp)*fv(1)*dgcgp2(1)
@@ -1483,7 +1484,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
                         +rho21*lambd2(1)*tperm(i,j)* ((dr12p1+dr21p1)*&
                         pesa(j))
-1055                  continue
+1055                 continue
 !
                     dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
                     +dr21p1*cvp*fv(1)*gc(i)
@@ -1509,7 +1510,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
                         +rho21*lambd2(1)*tperm(i,j)* ((dr12p2+dr21p2)*&
                         pesa(j))
-1056                  continue
+1056                 continue
 !
                     dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
                     +dr21p2*cvp*fv(1)*gc(i)
@@ -1529,7 +1530,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                     do 1057 j = 1, ndim
                         dsde(adcp21+i,addep2+j)=dsde(adcp21+i,addep2+&
                         j) -rho21*lambd2(1)*tperm(i,j)
-1057                  continue
+1057                 continue
 !
                     dsde(adcp21+i,addep2+i)=dsde(adcp21+i,addep2+i)&
                     +rho21*cvp*fv(1)*dgcgp2(1)
@@ -1549,7 +1550,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp22+i,addep1)=dsde(adcp22+i,&
                             addep1) +rho22*lambd1(1)*tperm(i,j)*&
                             ((dr22p1+dr11p1)*pesa(j))
-1058                      continue
+1058                     continue
 !
                         dsde(adcp22+i,addep1)=dsde(adcp22+i,addep1)&
                         -fa(3)*gca(i)
@@ -1569,7 +1570,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp22+i,addep2)=dsde(adcp22+i,&
                             addep2) +rho22*lambd1(1)*tperm(i,j)*&
                             ((dr22p2+dr11p2)*pesa(j))
-1059                      continue
+1059                     continue
 !
                         dsde(adcp22+i,addep2)=dsde(adcp22+i,addep2)&
                         -fa(4)*gca(i)
@@ -1580,7 +1581,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         do 1060 j = 1, ndim
                             dsde(adcp22+i,addep1+j)=dsde(adcp22+i,&
                             addep1+j) +rho22*lambd1(1)*tperm(i,j)
-1060                      continue
+1060                     continue
 !
                         dsde(adcp22+i,addep1+i)=dsde(adcp22+i,addep1+&
                         i) -fa(1)*dgcgp1(2)
@@ -1588,7 +1589,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                         do 1061 j = 1, ndim
                             dsde(adcp22+i,addep2+j)=dsde(adcp22+i,&
                             addep2+j) -rho22*lambd1(1)*tperm(i,j)
-1061                      continue
+1061                     continue
 !
                         dsde(adcp22+i,addep2+i)=dsde(adcp22+i,addep2+&
                         i) -fa(1)*dgcgp2(2)
@@ -1609,7 +1610,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                 dsde(adcp12+i,addeme+ndim-1+j)&
                                 +rho12*lambd2(2)*tperm(i,k)* (-grap2(&
                                 k)+(rho12+rho21)*pesa(k))
-1062                          continue
+1062                         continue
 !
                             dsde(adcp12+i,addeme+ndim-1+j)= dsde(&
                             adcp12+i,addeme+ndim-1+j) -rho12*(1.d0-&
@@ -1620,7 +1621,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                 dsde(adcp21+i,addeme+ndim-1+j)&
                                 +rho21*lambd2(2)*tperm(i,k)* (-grap2(&
                                 k)+(rho12+rho21)*pesa(k))
-1063                          continue
+1063                         continue
 !
                             dsde(adcp21+i,addeme+ndim-1+j)= dsde(&
                             adcp21+i,addeme+ndim-1+j) +rho21*cvp*fv(2)&
@@ -1633,13 +1634,13 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                     +rho22*lambd1(2)*tperm(i,k)*&
                                     (-grap2(i)+grap1(k) +(rho22+rho11)&
                                     *pesa(k))
-1064                              continue
+1064                             continue
 !
                                 dsde(adcp22+i,addeme+ndim-1+j)=&
                                 dsde(adcp22+i,addeme+ndim-1+j)&
                                 -fa(2)*gca(i)
                             endif
-106                      continue
+106                     continue
                     endif
                     if (yate .eq. 1) then
                         do 109 j = 1, ndim
@@ -1666,7 +1667,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp12+i,addete)=dsde(adcp12+i,&
                             addete) +rho12*lambd2(1)*tperm(i,j)*&
                             ((dr12t+dr21t)*pesa(j))
-109                      continue
+109                     continue
 !
                         dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
                         -dr12t*(1.d0-cvp)*fv(1)*gc(i)
@@ -1695,7 +1696,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp21+i,addete)=dsde(adcp21+i,&
                             addete) +rho21*lambd2(1)*tperm(i,j)*&
                             ((dr12t+dr21t)*pesa(j))
-1091                      continue
+1091                     continue
 !
                         dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
                         +dr21t*cvp*fv(1)*gc(i)
@@ -1727,7 +1728,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                 dsde(adcp22+i,addete)=dsde(adcp22+i,&
                                 addete) +rho22*lambd1(1)*tperm(i,j)*&
                                 ((dr22t+dr11t)*pesa(j))
-1092                          continue
+1092                         continue
 !
                             dsde(adcp22+i,addete)=dsde(adcp22+i,&
                             addete) -fa(5)*gca(i)
@@ -1739,7 +1740,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             addete+i) -fa(1)*dgcgt(2)
                         endif
                     endif
-105              continue
+105             continue
             endif
             if (thmc .eq. 'LIQU_VAPE') then
                 do 115 i = 1, ndim
@@ -1755,7 +1756,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !
                         dsde(adcp11+i,addep1+j)=dsde(adcp11+i,addep1+&
                         j) -rho11*lambd1(1)*tperm(i,j)
-1151                  continue
+1151                 continue
 !
 ! DERIVEE DU FLUX DE VAPEUR
 !
@@ -1776,7 +1777,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !
                         dsde(adcp12+i,addep1+j)=dsde(adcp12+i,addep1+&
                         j) -rho12*lambd2(1)*tperm(i,j)*dgpgp1(1)
-1152                  continue
+1152                 continue
 !
 ! TERMES COMPLEMENTAIRES DE MECANIQUE ET THERMIQUE
 !
@@ -1792,8 +1793,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                                 dsde(adcp12+i,addeme+ndim-1+j)&
                                 +rho12*lambd2(2)*tperm(i,k)* (-gp(k)+&
                                 rho12*pesa(k))
-1161                          continue
-116                      continue
+1161                         continue
+116                     continue
                     endif
                     if (yate .eq. 1) then
                         do 1162 j = 1, ndim
@@ -1822,9 +1823,9 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                             dsde(adcp12+i,addete+j)=dsde(adcp12+i,&
                             addete+j) -rho12*lambd2(1)*tperm(i,j)*&
                             dgpgt(1)
-1162                      continue
+1162                     continue
                     endif
-115              continue
+115             continue
             endif
         endif
 !

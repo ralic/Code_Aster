@@ -19,6 +19,7 @@ subroutine copich(base, ch1z, ch2z)
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/codent.h"
@@ -57,7 +58,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=24) :: noojb
     integer :: iret1, iret2
     integer :: nuprf
-    logical(kind=1) :: leco
+    aster_logical :: leco
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

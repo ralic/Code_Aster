@@ -2,6 +2,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                   nomtab, iocc, xnovar, ncheff, i1,&
                   ioc, isd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -54,9 +55,10 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
 ! IN  : NBSP   : NOMBRE DE SOUS-POINTS
 !     ------------------------------------------------------------------
     integer :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
-    integer :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nc, nbvari, jvari, nbcmp2, iord(1)
+    integer :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nc, nbvari, jvari, nbcmp2
+    integer :: iord(1)
     real(kind=8) :: prec, valer(12)
-    logical(kind=1) :: exist
+    aster_logical :: exist
     complex(kind=8) :: c16b
     character(len=3) :: typpar
     character(len=7) :: kii
@@ -179,7 +181,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                         ik = ik + 1
                         valek(ik) = zk8(iadr)
                     endif
-70              continue
+ 70             continue
                 call jedetr(nomjv)
             endif
         else if (acces(1:1) .eq. 'M') then
@@ -238,13 +240,13 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
         do 50 icp = 1, nbcmp2
             nbpar = nbpar + 1
             nopara(nbpar) = nomcmp(icp)
-50      continue
+ 50     continue
     else
         do 52 icp = 1, nbcmp2
             call codent(zi(jvari+icp-1), 'G', kii)
             nbpar = nbpar + 1
             nopara(nbpar) = 'V'//kii
-52      continue
+ 52     continue
     endif
 !
     ASSERT(nbpar .le. 15)
@@ -272,15 +274,15 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                     i30 = m * ( icp - 1 )
                     valer(ir+icp) = t(i30+i20+i10+i)
 !
-30              continue
+ 30             continue
 !
                 call tbajli(nomtab, nbpar, nopara, valei, valer,&
                             [c16b], valek, ilign)
-40          continue
+ 40         continue
 !
-10      continue
+ 10     continue
 !
-20  end do
+ 20 end do
 !
     call jedema()
 end subroutine

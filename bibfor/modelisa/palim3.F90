@@ -1,6 +1,7 @@
 subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                   nbmst)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -45,7 +46,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
     integer :: n1, ier, im, numa, nume, lgp, lgm, ilist, klist, nbv1, i
     integer :: nbmc, nbma, jnoma
     parameter     ( nbmc = 3 )
-    logical(kind=1) :: lnume, lgrpma
+    aster_logical :: lnume, lgrpma
     character(len=8) :: noma, prfm, nommai, knume
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
     character(len=24) :: nomama, nomjv, grpma
@@ -131,7 +132,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                         goto 34
                     endif
                 endif
-32          continue
+ 32         continue
             nbmst = nbmst + 1
             if (nbmst .gt. nbv1) then
                 call juveca(nomvek, 2*nbmst)
@@ -142,7 +143,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
             endif
             zk8(klist+nbmst-1) = nommai
             zi(ilist+nbmst-1) = numa
-34          continue
+ 34         continue
         endif
     end do
     call jedetr(nomjv)

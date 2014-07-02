@@ -18,7 +18,8 @@ subroutine cfmmci(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -44,7 +45,7 @@ subroutine cfmmci(defico, resoco)
 !
 !
     integer :: nzoco, izone
-    logical(kind=1) :: lctcd, lctcc, lxfcm
+    aster_logical :: lctcd, lctcc, lxfcm
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefpn, coefpt
     real(kind=8) :: coefcr, coeffr, coefcp, coeffp
@@ -97,7 +98,7 @@ subroutine cfmmci(defico, resoco)
         else
             ASSERT(.false.)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

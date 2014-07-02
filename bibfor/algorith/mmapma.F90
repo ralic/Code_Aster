@@ -24,6 +24,7 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
@@ -49,7 +50,7 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
     integer :: typint
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     character(len=8) :: nommam
-    logical(kind=1) :: lexfro
+    aster_logical :: lexfro
 !
 ! ----------------------------------------------------------------------
 !

@@ -25,6 +25,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -95,7 +96,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
     integer :: nbeffe, nbatte
     real(kind=8) :: proeta(2), residu
     integer :: ifm, niv
-    logical(kind=1) :: irecli
+    aster_logical :: irecli
 !
 ! ----------------------------------------------------------------------
 !
@@ -134,7 +135,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
                 nbeffe, irecli, proeta, offset, rho,&
                 eta, ldccvg, pilcvg, residu, matass)
 !
-9999  continue
+9999 continue
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !

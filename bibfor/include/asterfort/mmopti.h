@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
                       iptc, epsint, jeusgn)
-        logical(kind=1) :: loptin
+        aster_logical :: loptin
         character(len=24) :: resoco
         real(kind=8) :: seuili
         integer :: ctcini
-        logical(kind=1) :: lgliss
+        aster_logical :: lgliss
         integer :: iptc
         real(kind=8) :: epsint
         real(kind=8) :: jeusgn

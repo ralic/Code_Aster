@@ -2,6 +2,7 @@ subroutine i3dch2(epsi, seuil, maxitr, fk, m,&
                   r, s, iret)
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/i3efk2.h"
 #include "asterfort/rvegal.h"
     integer :: maxitr, iret
@@ -43,7 +44,7 @@ subroutine i3dch2(epsi, seuil, maxitr, fk, m,&
     integer :: i
     real(kind=8) :: valfk(3, 4), valr(4), vals(4), un, zero
     real(kind=8) :: x0, y0, a, b, c, d, rsup, rinf, ssup, sinf, t1, t2
-    logical(kind=1) :: fini, egalr, egals
+    aster_logical :: fini, egalr, egals
 !
 !======================================================================
 !
@@ -60,7 +61,7 @@ subroutine i3dch2(epsi, seuil, maxitr, fk, m,&
     rinf = -un
     ssup = un
     sinf = -un
-10  continue
+ 10 continue
     if (.not. fini) then
         valr(1) = rinf
         valr(2) = rsup

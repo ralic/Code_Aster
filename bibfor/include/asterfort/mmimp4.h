@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
                       indcon, indfri, indfrn, lfrot, lvites,&
@@ -27,9 +29,9 @@ interface
         integer :: indcon
         integer :: indfri
         integer :: indfrn
-        logical(kind=1) :: lfrot
-        logical(kind=1) :: lvites
-        logical(kind=1) :: lgliss
+        aster_logical :: lfrot
+        aster_logical :: lvites
+        aster_logical :: lgliss
         real(kind=8) :: jeu
         real(kind=8) :: jeuvit
         real(kind=8) :: lambdc

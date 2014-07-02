@@ -41,6 +41,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !  IN : CARAC   : DIAMETRE HYDRAULIQUE ET EPAISSEUR
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
@@ -65,7 +66,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     real(kind=8) :: vrmin, vrmax, vrmin1, vrmin2, vrmax1, vrmax2
     real(kind=8) :: vmoy, vmoyto, reduit, rappor, rappo2
 !
-    integer ::     jvit1, jvit2
+    integer :: jvit1, jvit2
     integer :: jtr1, jtr2
     integer :: lprofv, lnoe, iret, modul, modul2
     character(len=3) :: i3
@@ -82,11 +83,11 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     character(len=100) :: chazp4, chazv4, chazp5, chazv5, chazp6, chazv6
     character(len=100) :: chazp7, chazv7, chav40, chaz40
     character(len=255) :: ctrav1, ctrav2, ctrav3
-    logical(kind=1) :: lcor, lsup, linf, lmin, lmax, lresu, calcul(2)
+    aster_logical :: lcor, lsup, linf, lmin, lmax, lresu, calcul(2)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, ik, im, imod, ind
-    integer :: iv, j,   k, l1
+    integer :: iv, j, k, l1
     integer :: l2, l3, n1, n2, npasv, nzone
 !
     real(kind=8) :: amor1, bmax, bmin, dif1, freq1, rbid, vred
@@ -193,11 +194,11 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 do 50 i = 1, nzone
                     nbval=nbval*zi(lfsvi+1+nzone+i)
                     ctrav2((2+(30*(i-1))):(2+(30*i)))=cham30
-50              continue
+ 50             continue
 !
                 do 60 i = 1, 180
                     ctrav2((1+(30*nzone)+i):(1+(30*nzone)+i))='*'
-60              continue
+ 60             continue
                 ctrav2((1+(30*nzone)+181):(1+(30*nzone)+181))='*'
                 AS_ALLOCATE(vr=cste, size=nzone)
             endif
@@ -288,7 +289,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         trav2(j) = chazp3(1:15)//xvmoy//'*'
                         trav3(j) = chazp5(1:23)//nbpzon(1:4)// ' *'
                         trav4(j) = chazv6(1:2 )//xvmin//' | ' //xvmax//' *'
-15                  continue
+ 15                 continue
 !
                     write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
@@ -429,7 +430,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                                 trav5(ik) =' '//xl1(1:8)//' '//xl2(1:8)&
                                     &//' '//xl3(1:8)//' | '//xbmin//' | '&
                                     &//xbmax//' *'
-25                          continue
+ 25                         continue
                             write (ifr,3002) chav40,(trav5(j),&
                             j=1,nzone)
                             AS_DEALLOCATE(vk80=trav5)
@@ -437,7 +438,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                             write (ifr,2002) chav40
                         endif
                     endif
-20              continue
+ 20             continue
 !
                 if (itypfl .eq. 1) then
                     write(ifr,3001) '*',chav13,chav13,chav13,chav13,&
@@ -496,7 +497,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     call codent(i, 'D', i3)
                     ctrav1((3+30*(i-1)):(3+(30*i)))='           ZONE '//i3&
      &           //'          *'
-90              continue
+ 90             continue
 !             CTRAV1((3+(30*NZONE)+120):(3+(30*NZONE)+120))='*'
                 ctrav3(((15*nzone)-9):((15*nzone)+12))=&
      &             ' CONSTANTES DE CONNORS'
@@ -516,7 +517,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         modul=1
                         do 120 k = (j+1), nzone
                             modul=modul*zi(lfsvi+1+nzone+k)
-120                      continue
+120                     continue
                         if (j .eq. 1) then
                             pas=(i-1)/modul
                         else
@@ -529,7 +530,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         call codree(cste(j), 'E', ccste)
                         ctrav1((3+(30*(j-1))):(3+(30*j)))='  '//ccste//'  *'
 !
-110                  continue
+110                 continue
                     reduit=vcn((im-1)*nbval+i)/(freqi(imod)*&
                     carac(1))
                     rappor=rap((im-1)*nbval+i)
@@ -538,12 +539,12 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     write(ifr,5006) cste, vcn((im-1)*nbval+&
                     i), reduit,rappor,rappo2
 !
-100              continue
+100             continue
                 write(ifr,'(A)') ctrav2(1:(2+(30*nzone)+120))
                 write(ifr,*)
             endif
 !
-10      continue
+ 10     continue
 !
     endif
 !
@@ -581,8 +582,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                             linf, rbid, lmax, lmin, lresu,&
                             formar, nive)
                 write(ifr,*)
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
     endif
     AS_DEALLOCATE(vr=cste)

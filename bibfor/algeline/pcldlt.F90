@@ -16,6 +16,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -64,11 +65,11 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    logical(kind=1) :: complt
+    aster_logical :: complt
     character(len=1) :: base
-    integer :: iret,  jsmhc,  nequ, ncoef, nblc
-    integer :: jvalm,  i, nzmax,   niremp
-    integer ::   jsmhc1, ier, k, jsmdif, jsmhcf, jvalf
+    integer :: iret, jsmhc, nequ, ncoef, nblc
+    integer :: jvalm, i, nzmax, niremp
+    integer :: jsmhc1, ier, k, jsmdif, jsmhcf, jvalf
     integer :: jrefa, jrefaf
     real(kind=8) :: dnorm, epsi
     character(len=19) :: matfac, matas
@@ -223,7 +224,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', jvalm)
     call jeveuo(jexnum(matfac//'.VALM', 1), 'E', jvalf)
     call pccoef(nequ, smdi, zi4(jsmhc), zr(jvalm), zi(jsmdif),&
-                zi4(jsmhcf), zr(jvalf),vtravail)
+                zi4(jsmhcf), zr(jvalf), vtravail)
     call jelibe(jexnum(matas//'.VALM', 1))
 !
 !

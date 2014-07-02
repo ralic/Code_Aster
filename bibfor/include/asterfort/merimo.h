@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
                       compor   , carcri   , iterat   , acti_func, sddyna   ,&
@@ -36,6 +38,6 @@ interface
         character(len=24), intent(in) :: codere
         character(len=19), intent(in) :: merigi
         character(len=19), intent(in) :: vefint
-        logical(kind=1), intent(out) :: tabret(0:10)
+        aster_logical, intent(out) :: tabret(0:10)
     end subroutine merimo
 end interface

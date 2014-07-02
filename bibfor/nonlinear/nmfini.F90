@@ -22,6 +22,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! person_in_charge: ludovic.idoux at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -90,11 +91,11 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     character(len=19) :: fexmoi, fammoi, flimoi
     integer :: imasse, iamort
     integer :: neq, iaux
-    logical(kind=1) :: lamor, ldyna
+    aster_logical :: lamor, ldyna
     integer :: nbvect
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
-    logical(kind=1) :: lassve(20), lcalve(20)
+    aster_logical :: lassve(20), lcalve(20)
     character(len=19) :: cnfnod, fnomoi
     real(kind=8), pointer :: cv(:) => null()
     real(kind=8), pointer :: ma(:) => null()

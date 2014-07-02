@@ -4,13 +4,14 @@ subroutine piqpiq(xp, yp, zp, x, y,&
                   l5, zone1, zone2, zone3, zone4,&
                   zone5, zone6, zone7, zone8, typsou)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
 #include "asterfort/piqsou.h"
     real(kind=8) :: xp, yp, zp, x, y, z
     real(kind=8) :: rep, ret, rit, bet, hso, eso, h2, h3, l4, l5
     character(len=8) :: typsou
-    logical(kind=1) :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
+    aster_logical :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -198,6 +199,6 @@ subroutine piqpiq(xp, yp, zp, x, y,&
         goto 9999
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

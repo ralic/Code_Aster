@@ -20,6 +20,7 @@ subroutine nmgrtg(ndim, nno, poids, kpg, vff,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/nmfdff.h"
 #include "asterfort/nmgrt2.h"
 #include "asterfort/nmgrt3.h"
@@ -29,7 +30,7 @@ subroutine nmgrtg(ndim, nno, poids, kpg, vff,&
     real(kind=8) :: pff(*), def(*), r, dsidep(6, 6), poids, vectu(*)
     real(kind=8) :: sigma(6), sign(6), matuu(*), vff(*)
     real(kind=8) :: fm(3, 3), f(3, 3), fr(3, 3), dfdi(*)
-    logical(kind=1) :: matsym, axi, resi, rigi
+    aster_logical :: matsym, axi, resi, rigi
 !
 !.......................................................................
 !     BUT:  CALCUL DE LA MATRICE TANGENTE EN CONFIGURATION LAGRANGIENNE

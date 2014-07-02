@@ -1,12 +1,13 @@
 subroutine ibmain(lldbg)
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterc/faster.h"
 #include "asterc/gtopti.h"
 #include "asterc/inisig.h"
 #include "asterfort/ib0mai.h"
 #include "asterfort/lxinit.h"
-    logical(kind=1) :: lldbg
+    aster_logical :: lldbg
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,7 @@ subroutine ibmain(lldbg)
 !     ENSEMBLE DES INITIALISATIONS POUR L'EXECUTION D'UN JOB
 !     ------------------------------------------------------------------
 !     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-    logical(kind=1) :: ldbg
+    aster_logical :: ldbg
     integer :: ifv
     common /cxsu00/ ldbg , ifv
 !     ------------------------------------------------------------------

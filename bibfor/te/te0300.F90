@@ -1,5 +1,6 @@
 subroutine te0300(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
@@ -65,7 +66,7 @@ subroutine te0300(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(3), nompar(3), elrefe
 !
-    logical(kind=1) :: fonc, axi
+    aster_logical :: fonc, axi
 !.......................................................................
 !
     call elref1(elrefe)
@@ -76,8 +77,8 @@ subroutine te0300(option, nomte)
     if (lteatt('AXIS','OUI')) axi = .true.
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevech('PTHETAR', 'L', ithet)
     tcla = 0.d0
     tcla1 = 0.d0
@@ -93,7 +94,7 @@ subroutine te0300(option, nomte)
         if ((abs(thx).lt.eps) .and. (abs(thy).lt.eps)) then
             compt = compt + 1
         endif
-10  end do
+ 10 end do
     if (compt .eq. nno) goto 110
 !
 ! RECUPERATION CHARGE, MATER...
@@ -133,14 +134,14 @@ subroutine te0300(option, nomte)
         do 40 i = 1, nno
             do 20 j = 1, 2
                 valpar(j) = zr(igeom+2* (i-1)+j-1)
-20          continue
+ 20         continue
             do 30 j = 1, 2
                 call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
                             presn(2* (i-1)+j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcn(2* (i-1)+j), icode)
-30          continue
-40      continue
+ 30         continue
+ 40     continue
     endif
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
@@ -174,7 +175,7 @@ subroutine te0300(option, nomte)
             thy = thy + vf*zr(ithet+2* (i-1)+1)
             dthxde = dthxde + dfde*zr(ithet+2* (i-1))
             dthyde = dthyde + dfde*zr(ithet+2* (i-1)+1)
-50      continue
+ 50     continue
 !
         if (fonc) then
             valpar(1) = xg
@@ -184,7 +185,7 @@ subroutine te0300(option, nomte)
                             presg( j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcg( j), icode)
-60          continue
+ 60         continue
         else
             presg(1) = 0.d0
             presg(2) = 0.d0
@@ -194,8 +195,8 @@ subroutine te0300(option, nomte)
                 do 70 j = 1, 2
                     presg(j) = presg(j) + zr(ipres+2* (i-1)+j-1)*zr( ivf+k+i-1)
                     forcg(j) = forcg(j) + zr(iforc+2* (i-1)+j-1)*zr( ivf+k+i-1)
-70              continue
-80          continue
+ 70             continue
+ 80         continue
         endif
 !
         call rcvad2(fami, kp, 1, '+', zi(imate),&
@@ -294,7 +295,7 @@ subroutine te0300(option, nomte)
                 fyno = forcn(2* (i-1)+2) + (dxde*presno+dyde*cisano)/ dsde
                 dfxde = dfxde + dfde*fxno
                 dfyde = dfyde + dfde*fyno
-90          continue
+ 90         continue
         endif
 !
         poids = zr(ipoids+kp-1)
@@ -307,7 +308,7 @@ subroutine te0300(option, nomte)
         tcla2 = tcla2 + poids* ( (divthe*fx+dfxde*the)*u2s(1)+ (divthe* fy+dfyde*the)*u2s(2))
         tcla = tcla + poids* ( (divthe*fx+dfxde*the)*ux+ (divthe*fy+ dfyde*the)*uy)
 !
-100  end do
+100 end do
 !
     g = tcla
     k1 = tcla1*coefk/2.d0
@@ -319,6 +320,6 @@ subroutine te0300(option, nomte)
     zr(ific+3) = k1
     zr(ific+4) = k2
 !
-110  continue
+110 continue
     call jedema()
 end subroutine

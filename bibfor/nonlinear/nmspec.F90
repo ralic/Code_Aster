@@ -25,6 +25,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/affich.h"
 #include "asterfort/assert.h"
@@ -85,8 +86,8 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lmvib, lflam
-    logical(kind=1) :: calcul
+    aster_logical :: lmvib, lflam
+    aster_logical :: calcul
     integer :: ibid
     real(kind=8) :: r8bid, inst
     character(len=16) :: option
@@ -174,7 +175,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
         endif
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

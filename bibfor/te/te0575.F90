@@ -1,5 +1,6 @@
 subroutine te0575(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
@@ -71,15 +72,15 @@ subroutine te0575(option, nomte)
     real(kind=8) :: integ1, integ2, integ, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
     character(len=16) :: compor(3)
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
@@ -332,13 +333,13 @@ subroutine te0575(option, nomte)
             if (ideplm .ne. 0 .and. idsigm .ne. 0) then
                 integ1 = sigma(1)*delta(1) + sigma(2)*delta(2) + sigma(3)*delta(3) + deux*sigma(4&
                          &)*delta(4)
-                if (lteatt('FOURIER','OUI')) integ1 = integ1 + deux*sigma(5)*delta(5) + deux*&
-                                                          &sigma(6)*delta(6)
+                if (lteatt('FOURIER','OUI')) integ1 = integ1 + deux*sigma(5)*delta(5) + deux*sigm&
+                                                      &a(6)*delta(6)
 !
                 integ2 = sigmm(1)*delta(1) + sigmm(2)*delta(2) + sigmm(3)*delta(3) + deux*sigmm(4&
                          &)*delta(4)
-                if (lteatt('FOURIER','OUI')) integ2 = integ2 + deux*sigmm(5)*delta(5) + deux*&
-                                                          &sigmm(6)*delta(6)
+                if (lteatt('FOURIER','OUI')) integ2 = integ2 + deux*sigmm(5)*delta(5) + deux*sigm&
+                                                      &m(6)*delta(6)
 !
                 enerpg(igau) = undemi*(integ1+integ2)
             else
@@ -347,8 +348,8 @@ subroutine te0575(option, nomte)
 !            --------------------
                 integ = sigma(1)*epsi(1) + sigma(2)*epsi(2) + sigma(3) *epsi(3) + deux*sigma(4)*e&
                         &psi(4)
-                if (lteatt('FOURIER','OUI')) integ = integ + deux*sigma(5)*epsi(5) + deux*sig&
-                                                         &ma(6)*epsi(6)
+                if (lteatt('FOURIER','OUI')) integ = integ + deux*sigma(5)*epsi(5) + deux*sigma(6&
+                                                     &)*epsi(6)
 !
                 enerpg(igau) = undemi*integ
 !

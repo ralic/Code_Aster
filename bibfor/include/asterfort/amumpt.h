@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                       kxmps, lquali, type, ietdeb, ietrat,&
@@ -25,11 +27,11 @@ interface
         integer :: rang
         integer :: nbproc
         integer :: kxmps
-        logical(kind=1) :: lquali
+        aster_logical :: lquali
         character(len=1) :: type
         integer :: ietdeb
         integer :: ietrat
         real(kind=8) :: rctdeb
-        logical(kind=1) :: ldist
+        aster_logical :: ldist
     end subroutine amumpt
 end interface

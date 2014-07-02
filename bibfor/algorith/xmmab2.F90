@@ -26,6 +26,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/mkkvec.h"
 #include "asterfort/normev.h"
@@ -39,7 +40,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
     real(kind=8) :: mproj(3, 3)
     real(kind=8) :: jeu
     character(len=8) :: typmai
-    logical(kind=1) :: lpenaf
+    aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
 !
@@ -114,8 +115,8 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
             b(i,j) = 0.d0
             r(i,j) = 0.d0
             tt(i,j)=0.d0
- 2      continue
- 1  end do
+  2     continue
+  1 end do
     do 3 k = 1, 3
         c1(k) = mproj(k,1)
         c2(k) = mproj(k,2)
@@ -125,7 +126,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         d3(k) = 0.d0
         h1(k) = 0.d0
         h2(k) = 0.d0
- 3  end do
+  3 end do
 !
 ! --- G = [K][P_TAU]
 !
@@ -137,7 +138,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         g(k,1) = d1(k)
         g(k,2) = d2(k)
         g(k,3) = d3(k)
- 4  end do
+  4 end do
 !
 ! --- D = [P_TAU]*[K]*[P_TAU]
 !
@@ -145,9 +146,9 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         do 14 j = 1, ndim
             do 15 k = 1, ndim
                 d(i,j) = g(k,i)*mproj(k,j) + d(i,j)
-15          continue
-14      continue
-13  end do
+ 15         continue
+ 14     continue
+ 13 end do
 !
     call mkkvec(rese, nrese, ndim, tau1, h1)
     call mkkvec(rese, nrese, ndim, tau2, h2)
@@ -160,16 +161,16 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
             b(1,i) = rese(k)*mproj(k,i)+b(1,i)
             b(2,i) = h1(k)*mproj(k,i)+b(2,i)
             b(3,i) = h2(k)*mproj(k,i)+b(3,i)
-25      continue
-24  end do
+ 25     continue
+ 24 end do
 !
 ! --- C = (P_B)[P_TAU]*(N)
 !
     do 8 i = 1, ndim
         do 9 j = 1, ndim
             c(i,j) = b(1,i)*norm(j)
- 9      continue
- 8  end do
+  9     continue
+  8 end do
 !
 ! --- R = [TAU1,TAU2][ID-K][TAU1,TAU2]
 !
@@ -178,7 +179,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         r(1,2) = (tau1(k)-h1(k))*tau2(k) + r(1,2)
         r(2,1) = (tau2(k)-h2(k))*tau1(k) + r(2,1)
         r(2,2) = (tau2(k)-h2(k))*tau2(k) + r(2,2)
-857  end do
+857 end do
 !
 !---- TT = [TAU1,TAU2][ID][TAU1,TAU2]
 !
@@ -187,7 +188,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
         tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
         tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
-301  end do
+301 end do
 !
     if (nconta .eq. 3 .and. ndim .eq. 3) then
         mp = (lambda-coefcr*jeu)*coefff*hpg*jacobi
@@ -242,8 +243,8 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                             jj = jj + ndim
                             mmat(ii,jj) = rre * mm
                             mmat(jj,ii) = rre * mmt
-40                      continue
-30                  continue
+ 40                     continue
+ 30                 continue
                     do 50 j = 1, nnm
 ! --- BLOCS MA:CONT, CONT:MA
                         mm = mb*ffc(i)*ffm(j)
@@ -259,11 +260,11 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                             jj = jj + ndim
                             mmat(ii,jj) = rrm * mm
                             mmat(jj,ii) = rrm * mmt
-60                      continue
-50                  continue
-20              continue
-10          continue
-70      end do
+ 60                     continue
+ 50                 continue
+ 20             continue
+ 10         continue
+ 70     end do
 !
 ! --------------------- CALCUL DE [BU] ---------------------------------
 !
@@ -306,8 +307,8 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                             mmat(jj,ii) = rre * mmt
                             ii = ii + ndim
                             mmat(ii,jj) = rre * rre * mm
-215                      continue
-210                  continue
+215                     continue
+210                 continue
                     do 220 j = 1, nnm
 ! --- BLOCS ES:MA, MA:ES
                         mm = mb *ffe(i)*ffm(j)
@@ -337,7 +338,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                             mmat(ii,jj) = rrm * mm
                             mmat(jj,ii) = rrm * mmt
                             jj = jj - ndim
-230                      continue
+230                     continue
                         do 240 m = 1, nsinge
                             ii = ii + ndim
                             jj = jj - ndim
@@ -347,15 +348,15 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                             mmat(ii,jj) = rre * mm
                             mmat(jj,ii) = rre * mmt
                             ii = ii - ndim
-240                      continue
+240                     continue
                         do 250 m = 1, nsinge*nsingm
                             ii = ii + ndim
                             jj = jj + ndim
                             mmat(ii,jj) = rre * rrm * mm
                             mmat(jj,ii) = rre * rrm * mmt
-250                      continue
-220                  continue
-200              continue
+250                     continue
+220                 continue
+200             continue
                 do 300 i = 1, nnm
                     do 320 j = 1, nnm
 ! --- BLOCS MA:MA
@@ -381,11 +382,11 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                             mmat(jj,ii) = rrm * mmt
                             ii = ii + ndim
                             mmat(ii,jj) = rrm * rrm * mm
-330                      continue
-320                  continue
-300              continue
-110          continue
-100      end do
+330                     continue
+320                 continue
+300             continue
+110         continue
+100     end do
 !
     else
 ! --------------------- CALCUL DE [A] ET [B] -----------------------
@@ -423,10 +424,10 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                         jj = jjn + k
                         mmat(ii,jj) = rre * mm
                         mmat(jj,ii) = rre * mmt
-530                  continue
-520              continue
-510          continue
-550      end do
+530                 continue
+520             continue
+510         continue
+550     end do
 !
 ! --------------------- CALCUL DE [BU] ---------------------------------
 !
@@ -450,10 +451,10 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                         ii = iin + l
                         jj = jjn + k
                         mmat(ii,jj) = rre * rre * mm
-630                  continue
-620              continue
-610          continue
-600      end do
+630                 continue
+620             continue
+610         continue
+600     end do
     endif
 !
 ! --------------------- CALCUL DE [F] ----------------------------------
@@ -478,10 +479,10 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                                 mmat(ii,jj) = mp*ffc(i)*ffc(j)*r(k,l)/ coeffr
                             endif
                         endif
-430                  continue
-420              continue
-410          continue
-400      end do
+430                 continue
+420             continue
+410         continue
+400     end do
     endif
 ! ------------------- CALCUL DE [E] ------------------------------------
 !
@@ -501,9 +502,9 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                     else
                         mmat(ii,jj) = 0.d0
                     endif
-830              continue
+830             continue
 !
-810          continue
-800      continue
+810         continue
+800     continue
     endif
 end subroutine

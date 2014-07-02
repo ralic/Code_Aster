@@ -17,6 +17,7 @@ subroutine te0595(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
@@ -44,7 +45,7 @@ subroutine te0595(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: rigi, resi, mini, matsym
+    aster_logical :: rigi, resi, mini, matsym
     integer :: ndim, nno1, nno2, npg, nnos, jgn, ntrou
     integer :: icoret, codret, iret
     integer :: iw, ivf1, ivf2, idf1, idf2
@@ -64,10 +65,10 @@ subroutine te0595(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
     matsym = .true.
 !
 ! - TYPE DE MODELISATION
@@ -100,7 +101,8 @@ subroutine te0595(option, nomte)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 ! - ORIENTATION DU MASSIF
@@ -145,20 +147,27 @@ subroutine te0595(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
             nddl = nno1*ndim + nno2
 !
-            call nufipd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nufipd(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         zr(igeom), typmod, option, zi(imate), zk16(icompo),&
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
-                        zr(ivarip), resi, rigi, mini, zr(ivectu), zr(imatuu), codret)
-        elseif (lteatt('INCO','C2O')) then
+                        zr(ivarip), resi, rigi, mini, zr(ivectu),&
+                        zr(imatuu), codret)
+        else if (lteatt('INCO','C2O')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, nno2, vu, vg, vp,&
+                        vpi)
             nddl = nno1*ndim + nno2 + nno2*ndim
 !
-            call nofipd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+            call nofipd(ndim, nno1, nno2, nno2, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
                         vu, vp, vpi, zr(igeom), typmod,&
                         option, nomte, zi(imate), zk16(icompo), lgpg,&
                         zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
@@ -187,10 +196,13 @@ subroutine te0595(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
             nddl = nno1*ndim + nno2
 !
-            call nufilg(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nufilg(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         zr(igeom), typmod, option, zi(imate), zk16(icompo),&
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&

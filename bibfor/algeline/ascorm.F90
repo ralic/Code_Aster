@@ -5,7 +5,8 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                   muapde, tcosup, nintra, nbdis, f1gup,&
                   f2gup)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
 #include "asterfort/ascarm.h"
 #include "asterfort/jedema.h"
@@ -21,7 +22,7 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
     real(kind=8) :: temps, f1gup, f2gup
     character(len=*) :: typcmo
     character(len=16) :: nomsy
-    logical(kind=1) :: monoap, corfre, muapde
+    aster_logical :: monoap, corfre, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,8 +92,8 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
         do 3 in = 1, neq
             recmor(is,in,id) = zero
             recmop(is,in,id) = zero
- 3      continue
- 2  end do
+  3     continue
+  2 end do
 !
 !     --- COMBINAISON EN VALEURS ABSOLUES ---
     if (typcmo(1:3) .eq. 'ABS') then
@@ -107,20 +108,20 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                     xxx = repmo1(is,in,id)
                     ioc = nbdis(is)
                     recmop(ioc,in,id) = recmop(ioc,in,id) + abs(xxx)
- 6              continue
- 4          continue
- 5      continue
+  6             continue
+  4         continue
+  5     continue
         do 7 is = 1, nsup
             do 8 in = 1, neq
                 ioc = nbdis(is)
                 recmop(ioc,in,id) = recmop(ioc,in,id) * recmop(ioc,in, id)
- 8          continue
- 7      continue
+  8         continue
+  7     continue
 !
 !     --- AVEC REGLE DES "DIX POUR CENT" ---
     else if (typcmo(1:3).eq.'DPC') then
         im = 0
-40      continue
+ 40     continue
         im = im + 1
         if (im .le. nbmode) then
             im1 = im
@@ -131,9 +132,9 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
             do 41 is = 1, nsup
                 do 42 in = 1, neq
                     tabs(is,in) = abs(repmo1(is,in,id))
-42              continue
-41          continue
-52          continue
+ 42             continue
+ 41         continue
+ 52         continue
             if (im1 .le. nbmode) then
                 w1 = sqrt(modal(im1,1))
                 ii = 0
@@ -152,23 +153,23 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                             do 46 in = 1, neq
                                 xxx = abs(repmo2(is,in,id))
                                 tabs(is,in)= tabs(is,in) + xxx
-46                          continue
-45                      continue
+ 46                         continue
+ 45                     continue
                     else
                         if (ii .eq. 0) goto 48
                         im1 = im2 - 1
                         goto 52
                     endif
-44              continue
+ 44             continue
             endif
-48          continue
+ 48         continue
             do 49 is = 1, nsup
                 do 50 in = 1, neq
                     xxx = tabs(is,in)
                     ioc = nbdis(is)
                     recmop(ioc,in,id) = recmop(ioc,in,id) + xxx*xxx
-50              continue
-49          continue
+ 50             continue
+ 49         continue
             goto 40
         endif
 !
@@ -204,9 +205,9 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
 !           SOMME DES CARRES DES REPONSES MODALES DYNAMIQUES
 !           METHODE SIMPLE
                     recmop(ioc,in,id) = recmop(ioc,in,id) + repmop**2
-90              continue
-89          continue
-88      end do
+ 90             continue
+ 89         continue
+ 88     end do
 !
 !     SOMME DES CARRES DES REPONSES MODALES DYNAMIQUES
 !     METHODE CQC
@@ -256,10 +257,10 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                         xx2 = sqrt(un-alpha2*alpha2)*repmo2(is,in,id)
                         ioc = nbdis(is)
                         recmop(ioc,in,id) = recmop(ioc,in,id) + (deux* xx1*xx2*xxx)
-224                  continue
-221              continue
-222          continue
-220      end do
+224                 continue
+221             continue
+222         continue
+220     end do
     else
 !
 !     --- COMBINAISON QUADRATIQUE SIMPLE ---
@@ -273,9 +274,9 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                     xxx = repmo1(is,in,id)
                     ioc = nbdis(is)
                     recmop(ioc,in,id) = recmop(ioc,in,id) + ( xxx * xxx )
-12              continue
-10          continue
-11      end do
+ 12             continue
+ 10         continue
+ 11     end do
 !
 !     --- CQC AVEC FORMULE DE DER-KIUREGHIAN ---
         if (typcmo(1:3) .eq. 'CQC') then
@@ -309,10 +310,10 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                             xx2 = repmo2(is,in,id)
                             ioc = nbdis(is)
                             recmop(ioc,in,id) = recmop(ioc,in,id) + (deux*xx1*xx2*xxx)
-24                      continue
-21                  continue
-22              continue
-20          continue
+ 24                     continue
+ 21                 continue
+ 22             continue
+ 20         continue
 !
 !     --- DSC AVEC FORMULE DE ROSENBLUETH ---
         else if (typcmo(1:3).eq.'DSC') then
@@ -344,10 +345,10 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                             xx2 = repmo2(is,in,id)
                             ioc = nbdis(is)
                             recmop(ioc,in,id) = recmop(ioc,in,id) + (deux*xx1*xx2*xxx)
-34                      continue
-32                  continue
-31              continue
-30          continue
+ 34                     continue
+ 32                 continue
+ 31             continue
+ 30         continue
         endif
     endif
 !

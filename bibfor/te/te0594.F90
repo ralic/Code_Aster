@@ -46,7 +46,6 @@ subroutine te0594(option, nomte)
     integer :: imattt, nddlno
     character(len=8) :: elrefp
     character(len=4) :: fonree
-    logical :: lcond
 !
 ! ----------------------------------------------------------------------
 ! --- PREALABLES AU CALCUL
@@ -54,8 +53,7 @@ subroutine te0594(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    lcond=iselli(elrefp)
-    ASSERT(lcond)
+    ASSERT(iselli(elrefp))
 !
 !     CHAMPS IN CLASSIQUES
     call jevech('PGEOMER', 'L', igeom)

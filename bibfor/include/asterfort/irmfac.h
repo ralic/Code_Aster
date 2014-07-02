@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                       modele, nomail, nomare, resure, lgmsh)
@@ -27,6 +29,6 @@ interface
         character(len=8) :: nomail
         character(len=8) :: nomare
         character(len=8) :: resure
-        logical(kind=1) :: lgmsh
+        aster_logical :: lgmsh
     end subroutine irmfac
 end interface

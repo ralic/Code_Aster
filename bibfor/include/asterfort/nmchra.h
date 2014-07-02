@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmchra(sddyna, optamo, lcamor)
         character(len=19) :: sddyna
         character(len=16) :: optamo
-        logical(kind=1) :: lcamor
+        aster_logical :: lcamor
     end subroutine nmchra
 end interface

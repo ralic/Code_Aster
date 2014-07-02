@@ -1,5 +1,6 @@
 subroutine cmtref(chmat, nomail)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/alcart.h"
@@ -49,13 +50,13 @@ subroutine cmtref(chmat, nomail)
 !  IN/VAR : CHMAT   : CHAM_MATER
 !  IN     : NOMAIL  : MAILLAGE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: dbg
+    aster_logical :: dbg
 ! ----------------------------------------------------------------------
 !
-    integer :: iret,   jlcm1,   jltrf
+    integer :: iret, jlcm1, jltrf
     integer :: nbcm1, nbtrf, kcm1, ktrf, codcm1, codtrf, igd
-    integer :: nccm1, nctrf,   nucm1, nutrf, kk
-    integer :: ico, nm, nbma, ninter, codint,  ncm1, ntrf
+    integer :: nccm1, nctrf, nucm1, nutrf, kk
+    integer :: ico, nm, nbma, ninter, codint, ncm1, ntrf
     real(kind=8) :: tref, valr(2)
     character(len=8) :: mater, nocp
     character(len=8) :: ktref, nomgd

@@ -4,6 +4,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                   lmasu)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ecrtes.h"
 #include "asterfort/exisdg.h"
@@ -23,7 +24,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     complex(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*)
     character(len=*) :: titr, nomnoe(*), nomsd, nomsym
-    logical(kind=1) :: lmasu
+    aster_logical :: lmasu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,18 +69,18 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     character(len=80) :: entete(10), titre, texte
     integer :: nbchs
     integer :: impre, iente, iutil
-    logical(kind=1) :: afaire, lcmp
+    aster_logical :: afaire, lcmp
 !
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i,  ic, ichs, icmp,  icms
+    integer :: i, ic, ichs, icmp, icms
     integer :: icmsup, icompt, icp, icval, idebu, iec, ier
-    integer :: ifin, inno, ino,   iret, irval
-    integer ::  ival, jmax, jtitr, ncmp
+    integer :: ifin, inno, ino, iret, irval
+    integer :: ival, jmax, jtitr, ncmp
     integer, pointer :: ipcmps(:) => null()
-    logical(kind=1), pointer :: ltabl(:) => null()
+    aster_logical, pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()
@@ -97,7 +98,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     titre = zk80(jtitr)
     do 1 i = 1, ncmpmx
         ltabl(i)=.false.
- 1  end do
+  1 end do
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL ----
 !
@@ -110,7 +111,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
 ! ---- RECHERCHE DES GRANDEURS SUPERTAB -----
 !
     call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
-                nbcmps, nomgds,ipcmps)
+                nbcmps, nomgds, ipcmps)
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
     do 10 ichs = 1, nbchs
@@ -118,7 +119,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
             afaire=.false.
             do 2 icp = 1, nbcmps(ichs)
                 afaire = ( afaire .or. ltabl(ipcmps((ichs-1)* ncmpmx+icp)) )
- 2          continue
+  2         continue
             if (.not. afaire) goto 10
         endif
         iente = 1
@@ -135,7 +136,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
             ifin = idebu+iutil
             texte(idebu:ifin) = nocmp(1:iutil)//' '
             idebu = ifin+1
- 5      continue
+  5     continue
         iutil = lxlgut(texte)
         jmax = lxlgut(titre)
         jmax = min(jmax,(80-iutil-2))
@@ -144,7 +145,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
             ino = numnoe(inno)
             do 17 iec = 1, nec
                 dg(iec)=prno((ino-1)*(nec+2)+2+iec)
-17          continue
+ 17         continue
 !
 !              NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !              IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -155,7 +156,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
             do 25 ic = 1, nbcmps(ichs)
                 zr(irval-1+ic) = 0.0d0
                 zr(icval-1+ic) = 0.0d0
-25          continue
+ 25         continue
             icompt = 0
             do 12 icmp = 1, ncmpmx
                 if (exisdg(dg,icmp)) then
@@ -171,9 +172,9 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                             icompt)))
                             goto 12
                         endif
-13                  continue
+ 13                 continue
                 endif
-12          continue
+ 12         continue
 !
             if (impre .eq. 1) then
                 if (iente .eq. 1) then
@@ -188,9 +189,9 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                 i),i=1,nbcmps(ichs))
                 impre=0
             endif
-11      end do
+ 11     end do
         if (iente .eq. 0) write (ifi,'(A)') '    -1'
-10  end do
+ 10 end do
     call jedetr('&&IRDESC.VALR')
     call jedetr('&&IRDESC.VALC')
     AS_DEALLOCATE(vk8=nomgds)

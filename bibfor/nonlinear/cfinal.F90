@@ -19,7 +19,8 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -31,7 +32,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
     integer :: nbliac, llf, llf1, llf2
-    logical(kind=1) :: reapre, reageo
+    aster_logical :: reapre, reageo
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,12 +54,12 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 !
 !
 !
-    logical(kind=1) :: liaact, liaexi
+    aster_logical :: liaact, liaexi
     real(kind=8) :: jeuini, jeuold, jeumin
     integer :: posit, ajliai, spliai, indic, btotin
     integer :: nbliai
     integer :: iliai, iliac
-    logical(kind=1) :: lgcp, llagrc, llagrf, lgliss
+    aster_logical :: lgcp, llagrc, llagrf, lgliss
     character(len=1) :: typeaj
     character(len=2) :: typeli, typec0
     character(len=19) :: liac, typl
@@ -159,7 +160,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
                 typeli = zk8(jtypl-1+iliac)(1:2)
                 if (typeli .eq. typec0) liaexi = .true.
             endif
-20      continue
+ 20     continue
 !
 ! ----- SI LAGRANGIEN: ON ACTIVE UNE LIAISON QUE SI ON EST APRES
 ! ----- UN NOUVEL APPARIEMENT
@@ -191,7 +192,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
                         iliai, typec0)
         endif
 !
-10  end do
+ 10 end do
 !
 ! --- EN LAGRANGIEN
 ! --- L'ETAT DES LIAISONS DE FROTTEMENT EST CONSERVE
@@ -214,7 +215,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
                                 llf1, llf2, resoco, typeaj, posit,&
                                 iliai, typlia)
                 endif
-30          continue
+ 30         continue
         endif
     endif
 !

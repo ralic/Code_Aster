@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dxmate(fami, df, dm, dmf, dc,&
                       dci, dmc, dfc, nno, pgl,&
@@ -30,7 +32,7 @@ interface
         integer :: nno
         real(kind=8) :: pgl(3, 3)
         integer :: multic
-        logical(kind=1) :: coupmf
+        aster_logical :: coupmf
         real(kind=8) :: t2iu(4)
         real(kind=8) :: t2ui(4)
         real(kind=8) :: t1ve(9)

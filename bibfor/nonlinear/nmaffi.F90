@@ -19,7 +19,8 @@ subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -56,10 +57,10 @@ subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lerrei
-    logical(kind=1) :: cvnewt, cvinst
-    logical(kind=1) :: ltabl
-    logical(kind=1) :: lboucl, lexpl
+    aster_logical :: lerrei
+    aster_logical :: cvnewt, cvinst
+    aster_logical :: ltabl
+    aster_logical :: lboucl, lexpl
 !
 ! ----------------------------------------------------------------------
 !

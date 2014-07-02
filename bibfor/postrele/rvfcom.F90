@@ -18,6 +18,7 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/utmess.h"
@@ -67,7 +68,7 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !
     integer :: n1g, n1d, n2g, n2d
 !
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -83,7 +84,7 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !
     trouve = .false.
 !
-10  continue
+ 10 continue
     if (.not. trouve) then
 !
         f2 = f2 + 1

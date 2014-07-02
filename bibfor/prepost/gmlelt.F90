@@ -2,6 +2,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                   nuconn, versio)
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -57,11 +58,11 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 !
 !
     character(len=8) :: k8bid
-    logical(kind=1) :: exisgr
+    aster_logical :: exisgr
     integer :: imes, nbmxte, nbtag, i, ij, k, icurgr
     integer :: nbgrou, indgro, ima, ibid, ityp, ino, node, indmax
     integer :: jnuma, jtypma, jgroma, jnbnma, jnoma, jnbmag, jnbtym
-    integer :: jindma,  jtag, jgr
+    integer :: jindma, jtag, jgr
 !
     parameter   (nbmxte=19)
     integer :: nbno(nbmxte)
@@ -172,7 +173,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
         do 12 ino = 1, nbnoma(ityp)
             node = zi(jnoma+ij+nuconn(ityp,ino)-1)
             noeuds(node+1) = 1
-12      continue
+ 12     continue
 !
         if (icurgr .ne. zi(jgroma+ima-1)) then
             icurgr = zi(jgroma+ima-1)
@@ -183,8 +184,8 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                     indgro = i
                     goto 30
                 endif
-20          continue
-30          continue
+ 20         continue
+ 30         continue
             if (.not.exisgr) then
                 nbgrou = nbgrou + 1
                 indgro = nbgrou
@@ -195,7 +196,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 !
         ij = ij + zi(jnbnma+ima-1)
         zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+ 1
-10  end do
+ 10 end do
 !
     if (nbgrou .ne. 0) then
 !
@@ -211,7 +212,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
         do 40 i = 1, indmax
             call jeecra(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'LONMAX', zi(jnbmag+i-1))
             zi(jnbmag+i-1) = 0
-40      continue
+ 40     continue
 !
 ! --- AFFECTATION DES OBJETS RELATIFS AUX GROUPES DE MAILLES :
 !     ------------------------------------------------------
@@ -232,8 +233,8 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                         indgro = i
                         goto 70
                     endif
-60              continue
-70              continue
+ 60             continue
+ 70             continue
                 if (.not.exisgr) then
                     nbgrou = nbgrou + 1
                     indgro = nbgrou
@@ -244,7 +245,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
             zi(jindma+indgro-1) = zi(jgroma+ima-1)
             call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', indgro), 'E', jgr)
             zi(jgr+zi(jnbmag+indgro-1)-1) = zi(jnuma+ima-1)
-50      continue
+ 50     continue
 !
     endif
 !

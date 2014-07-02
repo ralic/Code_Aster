@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                       nbmail, noment, valpar)
         integer :: ndim
-        logical(kind=1) :: nsymx
-        logical(kind=1) :: nsymy
+        aster_logical :: nsymx
+        aster_logical :: nsymy
         character(len=*) :: noma
         character(len=*) :: motcle
         integer :: nbmail

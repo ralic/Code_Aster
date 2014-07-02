@@ -36,6 +36,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 ! 0.1. ==> ARGUMENT
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -69,19 +70,18 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
 !
 !      ==> VARIABLES LOCALES
-    integer ::   ncmp,  jcnsl,  i
+    integer :: ncmp, jcnsl, i
     integer :: vali(2), nblig, isp
     integer :: nbval
     integer :: nuno, numa, nbma, jcesd, nbssp
-    integer :: jcesl,  jcesc, iad
+    integer :: jcesl, jcesc, iad
     integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
     integer :: jcolma, jcolno, jcolpt, jcolsp, ipt
-    integer :: icmp, ili, iret,  jobj2, jobj3
+    integer :: icmp, ili, iret, jobj2, jobj3
     character(len=8) :: nono, tsca, noma
     character(len=24) :: objlg, objr, objtmp
     character(len=24) :: valk(3)
-    logical(kind=1) :: lmail, lnoeu, lpoin, lspoin
-    logical :: lcond
+    aster_logical :: lmail, lnoeu, lpoin, lspoin
     character(len=24), pointer :: ncmp1(:) => null()
     integer, pointer :: ncmp2(:) => null()
     integer, pointer :: pg_tot(:) => null()
@@ -258,8 +258,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !           - SI LNOEU, ON CALCULE '&&TABCHS.POINT'
 !           - ON VERIFIE QUE LE NUMERO DE POINT EST POSSIBLE
             if (lnoeu) then
-                lcond=.not.lpoin
-                ASSERT(lcond)
+                ASSERT(.not.lpoin)
                 call wkvect('&&TABCHS.POINT', 'V V I', nblig, jcolpt)
             endif
             do ili = 1, nblig
@@ -269,8 +268,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 if (lpoin) then
                     ipt=zi(jcolpt-1+ili)
                 else
-                    lcond=lnoeu
-                    ASSERT(lcond)
+                    ASSERT(lnoeu)
                     nono=zk8(jcolno-1+ili)
                     call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
                     ipt=indiis(zi(jcon1-1+zi(jcon2-1+numa)),nuno,1,&

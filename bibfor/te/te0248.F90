@@ -1,5 +1,6 @@
 subroutine te0248(optioz, nomtez)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/angvx.h"
@@ -81,7 +82,7 @@ subroutine te0248(optioz, nomtez)
 !
 !
 !
-    logical(kind=1) :: vecteu
+    aster_logical :: vecteu
 !
 ! *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 !
@@ -112,12 +113,12 @@ subroutine te0248(optioz, nomtez)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
 !
-    if ((option.eq. 'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS')&
-        .and. zk16(icompo).ne. 'ELAS')then
+    if ((option.eq. 'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS') .and. zk16(icompo)&
+        .ne. 'ELAS') then
         valkm(1) = option
         valkm(2) = zk16(icompo)
         valkm(3) = nomte
-        call utmess('F', 'ELEMENTS3_2',nk=3,valk=valkm)
+        call utmess('F', 'ELEMENTS3_2', nk=3, valk=valkm)
     endif
 !
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
@@ -161,7 +162,7 @@ subroutine te0248(optioz, nomtez)
                 w(i) = zr(igeom-1+i) + zr(ideplm-1+i) + zr(ideplp-1+i)
                 w(i+3) = zr(igeom+2+i) + zr(ideplm+2+i) + zr(ideplp+2+ i)
                 xd(i) = w(i+3) - w(i)
-10          continue
+ 10         continue
         else if (nomte.eq.'MECA_2D_BARRE') then
             w(1) = zr(igeom-1+1) + zr(ideplm-1+1) + zr(ideplp-1+1)
             w(2) = zr(igeom-1+2) + zr(ideplm-1+2) + zr(ideplp-1+2)
@@ -182,7 +183,7 @@ subroutine te0248(optioz, nomtez)
                 w(i) = zr(igeom-1+i)
                 w(i+3) = zr(igeom+2+i)
                 xd(i) = w(i+3) - w(i)
-20          continue
+ 20         continue
         else if (nomte.eq.'MECA_2D_BARRE') then
             w(1) = zr(igeom-1+1)
             w(2) = zr(igeom-1+2)
@@ -215,7 +216,7 @@ subroutine te0248(optioz, nomtez)
         do 30 i = 1, 6
             deplm(i) = zr(ideplm+i-1)
             deplp(i) = zr(ideplp+i-1)
-30      continue
+ 30     continue
     else if (nomte.eq.'MECA_2D_BARRE') then
         deplm(1) = zr(ideplm)
         deplm(2) = zr(ideplm+1)
@@ -412,12 +413,12 @@ subroutine te0248(optioz, nomtez)
         if ((option(1:10).eq.'RIGI_MECA_') .or. (option(1:9) .eq.'FULL_MECA')) then
             do 70 i = 1, 21
                 zr(imatuu+i-1) = matuu(i)
-70          continue
+ 70         continue
         endif
         if (option(1:10) .ne. 'RIGI_MECA_') then
             do 80 i = 1, 6
                 zr(ivectu+i-1) = vectu(i)
-80          continue
+ 80         continue
         endif
 !
     else if (nomte.eq.'MECA_2D_BARRE') then

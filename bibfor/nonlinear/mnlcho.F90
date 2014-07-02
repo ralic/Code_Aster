@@ -41,6 +41,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -70,7 +71,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: reprise, lcine
+    aster_logical :: reprise, lcine
     integer :: imat(2), nd, nchoc, h, hf, ninc
     character(len=14) :: numedd, xcdl, parcho, adime
     character(len=8) :: tabchoc
@@ -78,9 +79,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer ::       iind, k, ier, pddl, ind, ldgn
-    integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i,  iorig
-    integer ::    icmp, icmp1, icmp2, iorigx, iorigy, iorigz
+    integer :: iind, k, ier, pddl, ind, ldgn
+    integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, iorig
+    integer :: icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
     character(len=8) :: tchoc, kvide, typval, mailla
     character(len=8) :: noeud(2)

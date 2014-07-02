@@ -1,5 +1,6 @@
 subroutine te0247(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carapo.h"
@@ -81,7 +82,7 @@ subroutine te0247(option, nomte)
     real(kind=8) :: effnom, tempm, tempp
     real(kind=8) :: irram, irrap, epsthe(1)
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
-    logical(kind=1) :: reactu, matric, vecteu
+    aster_logical :: reactu, matric, vecteu
 !
     data nomlma / 'K','N','DE_0','P','P1','P2','M','RM',&
      &              'A_0','Y_0','Y_I','B'/
@@ -119,8 +120,7 @@ subroutine te0247(option, nomte)
 !
 ! --- POINT DE GAUSS DE L'ELEMENT
 !
-    call elrefe_info(fami='RIGI',ndim=ndimel,nno=nnoel,nnos=nnosel,&
-  npg=npg)
+    call elrefe_info(fami='RIGI', ndim=ndimel, nno=nnoel, nnos=nnosel, npg=npg)
     ASSERT((npg.eq.2).or.(npg.eq.3))
 !
 !     -- BOOLEENS PRATIQUES :
@@ -184,9 +184,9 @@ subroutine te0247(option, nomte)
 !
 !-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
     call moytem('RIGI', npg, 1, '+', tempp,&
-                    iretp)
+                iretp)
     call moytem('RIGI', npg, 1, '-', tempm,&
-                    iretm)
+                iretm)
     itemp = 0
     if ((iretp+iretm) .eq. 0) itemp=1
     call matela(zi(imate), ' ', itemp, tempp, e,&
@@ -195,7 +195,7 @@ subroutine te0247(option, nomte)
                 num)
     call verifm('RIGI', npg, 1, 'T', zi(imate),&
                 'ELAS', 1, epsthe, iret)
-
+!
     if (zk16(icompo) .eq. 'ELAS') then
 !
 !        --- CALCUL DES MATRICES ELEMENTAIRES ----
@@ -211,7 +211,7 @@ subroutine te0247(option, nomte)
                         zr( icontp), angs2, rad)
         endif
 !
-    elseif ((zk16(icompo).eq.'LMARC_IRRA').or. (zk16(icompo).eq.'LEMAITRE_IRRA')) then
+    else if ((zk16(icompo).eq.'LMARC_IRRA').or. (zk16(icompo).eq.'LEMAITRE_IRRA')) then
 !
         call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
                     itab=jtab)
@@ -255,7 +255,7 @@ subroutine te0247(option, nomte)
                 do 52 kk = 1, 4
                     zr(ivarip+lgpg+kk-1) = zr(ivarip+kk-1)
                     zr(ivarip+2*lgpg+kk-1) = zr(ivarip+kk-1)
-52              continue
+ 52             continue
                 call rcvarc(' ', 'IRRA', '+', 'RIGI', 1,&
                             1, irrap, iret2)
                 if (iret2 .gt. 0) irrap=0.d0
@@ -332,12 +332,12 @@ subroutine te0247(option, nomte)
                 do 15 i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+i-1)
-15              continue
+ 15             continue
             else
                 do 17 i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+nc+i-1)
-17              continue
+ 17             continue
             endif
             if (itype .ne. 10) then
                 call r8inir(nk, 0.0d0, rgeom, 1)

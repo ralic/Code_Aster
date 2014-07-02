@@ -58,6 +58,7 @@ subroutine brag00(fami, kpg, ksp, ndim, typmod,&
 !       TRIDIMENSIONNEL DU BETON (MODELE SIMPLIFIE TOTALEMENT EXPLICITE)
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/brag01.h"
 #include "asterfort/brdsde.h"
 #include "asterfort/rcvalb.h"
@@ -83,13 +84,15 @@ subroutine brag00(fami, kpg, ksp, ndim, typmod,&
 !      REAL*8          INSTA0
     real(kind=8) :: e0, nu0
 !      REAL*8          MU0,K0
-    logical(kind=1) :: fluage
+    aster_logical :: fluage
 ! MODIFI MARS 2006 "NOUVELLE" VARIABLE DE COMMANDE HYDR ET SECH
     character(len=*) :: fami
     integer :: iret, kpg, ksp
     real(kind=8) :: sechm, sechp, sref
 !
 !       RECUPERATION DE L HYDRATATION ET DU SECHAGE
+    rbid=0.d0
+!
     call rcvarc(' ', 'SECH', '+', fami, kpg,&
                 ksp, sechp, iret)
     if (iret .ne. 0) sechp=0.d0
@@ -156,7 +159,7 @@ subroutine brag00(fami, kpg, ksp, ndim, typmod,&
                     deps, sigm, vim, option, sigp,&
                     vip, dsidep, devpt, 3)
 !
-10      continue
+ 10     continue
         call brag01(fami, kpg, ksp, ndim, typmod,&
                     imate, compor, instam, instap, sechm,&
                     sechp, tm, tp, tref, epsm,&

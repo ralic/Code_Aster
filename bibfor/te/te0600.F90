@@ -1,5 +1,6 @@
 subroutine te0600(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8dgrd.h"
@@ -72,7 +73,7 @@ subroutine te0600(option, nomte)
     integer :: li, kp, j, l, k, ibid, typvf, idim
     real(kind=8) :: r8bid=0.d0, rho(1), coef, rx
     integer :: icodre(1)
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH
 !  21 = 9 DEF MECA + 4 POUR P1 + 4 POUR P2 + 4 POUR T
@@ -128,7 +129,7 @@ subroutine te0600(option, nomte)
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! IVF2      FONCTIONS DE FORMES LINEAIRES
 ! =====================================================================
-    logical(kind=1) :: fnoevo, vf
+    aster_logical :: fnoevo, vf
     real(kind=8) :: dt
 ! =====================================================================
 ! --- 1. INITIALISATIONS ----------------------------------------------
@@ -182,8 +183,8 @@ subroutine te0600(option, nomte)
         do 150 i = 1, nno
             do 140 idim = 1, ndim
                 coor(idim) = coor(idim)+zr(igeom+idim+ndim*(i-1)-1)/ nno
-140          continue
-150      continue
+140         continue
+150     continue
         call rcangm(ndim, coor, angmas)
 !# ANGMAS : donne par affe_cara_elem en degre et ici en fourni en radian
 !# CAS OU AFFE_CARA_ELEM EST EN ANGLE D EULER => On CONVERTIT EN NAUTIQUE
@@ -243,7 +244,7 @@ subroutine te0600(option, nomte)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-30          continue
+ 30         continue
             call assthm(nno, nnos, nnom, npg, npi,&
                         ipoids, ipoid2, ivf, ivf2, idfde,&
                         idfde2, zr(igeom), zr(icarcr), zr(ideplm), zr(ideplp),&
@@ -277,7 +278,7 @@ subroutine te0600(option, nomte)
 ! =====================================================================
             do 40 i = 1, dimuel
                 zr(ivectu+i-1) = 0.0d0
-40          continue
+ 40         continue
 ! =====================================================================
 ! --- BOUCLE SUR LES POINTS DE GAUSS ----------------------------------
 ! =====================================================================
@@ -290,16 +291,16 @@ subroutine te0600(option, nomte)
                     ii = nddls* (i-1)
                     do 50 j = 1, 3
                         zr(ivectu+ii+j-1) = zr(ivectu+ii+j-1) + coef*zr(ivf+l+i-1)*zr(ipesa+j)
-50                  continue
-60              continue
+ 50                 continue
+ 60             continue
                 do 65 i = 1, nnom
                     ii = nnos*nddls+nddlm*(i-1)
                     do 55 j = 1, 3
                         zr(ivectu+ii+j-1) = zr(ivectu+ii+j-1) + coef*zr(ivf+l+i+nnos-1)*zr(ipesa+&
                                             &j)
-55                  continue
-65              continue
-70          continue
+ 55                 continue
+ 65             continue
+ 70         continue
         else
 ! =====================================================================
 ! --- CAS 2D ----------------------------------------------------------
@@ -313,19 +314,19 @@ subroutine te0600(option, nomte)
                     rx = 0.d0
                     do 80 i = 1, nno
                         rx = rx + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-80                  continue
+ 80                 continue
                     poids = poids*rx
                     do 90 i = 1, nnos
                         zr(ivectu+nddls*(i-1)+1)=zr(ivectu+nddls*(i-1)&
                         +1) +poids*zr(ipesa+2)*zr(ivf+k+i-1)
-90                  continue
+ 90                 continue
                     do 95 i = 1, nnom
                         zr(ivectu+nddls*nnos+nddlm*(i-1)+1) = zr(&
                                                               ivectu+nddls*nnos+nddlm*(i-1)+1) + &
                                                               &poids*zr( ipesa+2)*zr(ivf+k+i+nnos&
                                                               &-1&
                                                               )
-95                  continue
+ 95                 continue
                 else
 !
                     do 100 i = 1, nnos
@@ -335,7 +336,7 @@ subroutine te0600(option, nomte)
                                                  )
                         zr(ivectu+nddls*(i-1)+1)=zr(ivectu+nddls*(i-1)&
                         +1) +poids*zr(ipesa+2)*zr(ivf+k+i-1)
-100                  continue
+100                 continue
                     do 400 i = 1, nnom
                         zr(ivectu+nddls*nnos+nddlm*(i-1))= zr(ivectu+&
                         nddls*nnos+nddlm*(i-1)) + poids*zr(ipesa+1)*&
@@ -343,9 +344,9 @@ subroutine te0600(option, nomte)
                         zr(ivectu+nddls*nnos+nddlm*(i-1)+1)= zr(&
                         ivectu+nddls*nnos+nddlm*(i-1)+1) + poids*zr(&
                         ipesa+2)*zr(ivf+k+i+nnos-1)
-400                  continue
+400                 continue
                 endif
-110          continue
+110         continue
         endif
     endif
 !
@@ -473,8 +474,8 @@ subroutine te0600(option, nomte)
         do 200 igau = 1, npi
             do 210 isig = 1, 6
                 zr(idefo+6*(igau-1)+isig-1) = epsm(6*(igau-1)+isig)
-210          continue
-200      continue
+210         continue
+200     continue
     endif
 ! ======================================================================
 end subroutine

@@ -22,6 +22,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 ! VARIABLES ENTREE SORTIE NECESSAIRES A LA ROUTINE
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
@@ -94,7 +95,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 !                       FIXEE EN DUR)
 !               SIGM    CONTRAINTE A T
 ! ======================================================================
-    logical(kind=1) :: cplan, tang, raph
+    aster_logical :: cplan, tang, raph
 !
     integer :: ndimsi, k, l
 !
@@ -126,7 +127,8 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomres, valres, idret, 1)
+                [0.d0], 2, nomres, valres, idret,&
+                1)
 !
     e = valres(1)
     nu = valres(2)
@@ -139,7 +141,8 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
     nomres(1) = 'SY'
     nomres(2) = 'D_SIGM_EPSI'
     call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                [0.d0], 2, nomres, valres, idret, 1)
+                [0.d0], 2, nomres, valres, idret,&
+                1)
     sy = valres(1)
     gamma = - valres(2)/e
     wy = sy**2 / (2*e)
@@ -200,11 +203,11 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
         treps = eps(1)+eps(2)+eps(3)
         do 60 k = 1, ndimsi
             sigel(k) = lambda*treps*kron(k) + deuxmu*eps(k)
-60      continue
+ 60     continue
 !
         do 320 k = 1, ndimsi
             sigp(k) = (1.d0-d) * sigel(k)
-320      continue
+320     continue
 !
 ! -- MATRICE TANGENTE
 !
@@ -216,12 +219,12 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
         do 100 k = 1, 3
             do 110 l = 1, 3
                 dsidep(k,l) = fd*lambda
-110          continue
-100      continue
+110         continue
+100     continue
 !
         do 120 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + fd*deuxmu
-120      continue
+120     continue
 !
 ! -- CORRECTION CONTRAINTES PLANES
 !
@@ -232,8 +235,8 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
                     if (l .eq. 3) goto 310
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
                     k,3)*dsidep(3,l)
-310              continue
-300          continue
+310             continue
+300         continue
         endif
 ! ======================================================================
 !     CAS RAPH_MECA : CALCUL VARIABLES INTERNES ET CONTRAINTES A T+
@@ -255,7 +258,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
         treps = eps(1)+eps(2)+eps(3)
         do 160 k = 1, ndimsi
             sigel(k) = lambda*treps*kron(k) + deuxmu*eps(k)
-160      continue
+160     continue
         ener = 0.5d0 * ddot(ndimsi,eps,1,sigel,1)
 !
 ! ======================================================================
@@ -287,7 +290,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 !
         do 30 k = 1, ndimsi
             sigp(k) = (1.d0-d) * sigel(k)
-30      continue
+ 30     continue
 !
 ! -- STOCKAGE DES VARIABLES INTERNES
 !

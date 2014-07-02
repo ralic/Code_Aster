@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine coupla(np1, nbm, indic, tpfl, veci1,&
                       vgap, vecr4, vecr1, vecr2, vecr5,&
@@ -33,7 +35,7 @@ interface
         real(kind=8) :: vecr3(*)
         real(kind=8) :: masg(*)
         real(kind=8) :: puls(*)
-        logical(kind=1) :: locflc(*)
+        aster_logical :: locflc(*)
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: amfluc(np1, *)
         real(kind=8) :: xsi0(*)

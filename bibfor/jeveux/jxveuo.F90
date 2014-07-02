@@ -17,6 +17,7 @@ subroutine jxveuo(cel, itab, inat, jitab)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjecrs.h"
@@ -66,7 +67,7 @@ subroutine jxveuo(cel, itab, inat, jitab)
 ! ----------------------------------------------------------------------
     character(len=1) :: typei, genri
     integer :: ltypi, iaddi(2), iadmi, lonoi, irt
-    logical(kind=1) :: ldeps, lconst
+    aster_logical :: ldeps, lconst
 ! ----------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlong, idlono, idluti
     parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2 , idiadm = 3 ,&

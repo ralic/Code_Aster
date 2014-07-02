@@ -19,6 +19,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -51,12 +52,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     character(len=24) :: valk
     character(len=19) :: celz, cesz
     character(len=8) :: nomma, k8bid, nogd, tsca
-    integer :: jcesd, jcesl,  jcesv, jcesk, ncmpmx, icmp, numcmp
+    integer :: jcesd, jcesl, jcesv, jcesk, ncmpmx, icmp, numcmp
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, jval, jma, jpo, jsp
-    integer :: ival, iret,   igr, nbtrou, itbma, lma, nbval
-    integer ::  jcnsl,  jcnsv, nbno, ino, jno, nbn, in
+    integer :: ival, iret, igr, nbtrou, itbma, lma, nbval
+    integer :: jcnsl, jcnsv, nbno, ino, jno, nbn, in
     integer :: jcmp, cmpmin, cmpmax
-    logical(kind=1) :: ltopo
+    aster_logical :: ltopo
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cesc(:) => null()

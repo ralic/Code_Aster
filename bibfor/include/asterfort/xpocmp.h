@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                       jconx2, ndim, nfh, nfe, ddlc,&
@@ -31,7 +33,7 @@ interface
         integer :: nfe
         integer :: ddlc
         integer :: cmp(nbcmp)
-        logical(kind=1) :: lmeca
-        logical(kind=1) :: pre1
+        aster_logical :: lmeca
+        aster_logical :: pre1
     end subroutine xpocmp
 end interface 

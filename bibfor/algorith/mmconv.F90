@@ -1,8 +1,9 @@
 subroutine mmconv(noma, defico, resoco, valinc, solalg,&
                   vfrot, nfrot, vgeom, ngeom)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfdisl.h"
@@ -67,7 +68,7 @@ subroutine mmconv(noma, defico, resoco, valinc, solalg,&
 !
     integer :: ifm, niv
     character(len=19) :: depplu, depmoi, ddepla
-    logical(kind=1) :: lnewtf, lnewtg
+    aster_logical :: lnewtf, lnewtg
 !
 ! ----------------------------------------------------------------------
 !

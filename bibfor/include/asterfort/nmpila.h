@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
                       ddepl0, ddepl1, nbeffe, eta, pilcvg)
         character(len=24) :: numedd
         character(len=19) :: sdpilo
-        logical(kind=1) :: isxfe
+        aster_logical :: isxfe
         real(kind=8) :: dtau
         character(len=19) :: depdel
         character(len=19) :: ddepl0

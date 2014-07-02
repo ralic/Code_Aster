@@ -21,6 +21,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
@@ -50,7 +51,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     character(len=19) :: sddyna, sdpilo
     character(len=19) :: solalg(*)
     integer :: fonact(*)
-    logical(kind=1) :: lacc0, lener
+    aster_logical :: lacc0, lener
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,9 +81,9 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     integer :: jioinf, jiolch
     integer :: nbcham, zioch
     character(len=24) :: nomchs
-    logical(kind=1) :: evonol, leinit
+    aster_logical :: evonol, leinit
     integer :: neq, nocc, numein, iret, i
-    integer ::  icham
+    integer :: icham
     character(len=8) :: k8bid
     character(len=8) :: calcri, result
     character(len=16) :: motfac
@@ -90,10 +91,10 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     character(len=24) :: typpil, typsel
     character(len=19) :: depold
     character(len=24) :: champ1, champ2, dep2, dep1, errthm
-    integer ::     jinst, jerrt
-    logical(kind=1) :: lpilo, lpiarc, lctcc
-    logical(kind=1) :: lexge, lreuse, lerrt
-    logical(kind=1) :: lzero
+    integer :: jinst, jerrt
+    aster_logical :: lpilo, lpiarc, lctcc
+    aster_logical :: lexge, lreuse, lerrt
+    aster_logical :: lzero
     real(kind=8) :: coefav
     integer :: ifm, niv
     real(kind=8), pointer :: plir(:) => null()

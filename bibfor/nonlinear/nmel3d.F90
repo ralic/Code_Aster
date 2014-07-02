@@ -22,6 +22,7 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/nmcpel.h"
 #include "asterfort/nmgeom.h"
@@ -67,7 +68,7 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
 !
 !
     integer :: kpg, kk, n, i, m, j, j1, kl, pq, kkd
-    logical(kind=1) :: grdepl
+    aster_logical :: grdepl
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), r, sigma(6), ftf, detf
     real(kind=8) :: poids, tmp1, tmp2
 !
@@ -103,8 +104,8 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
                 def(5,n,i) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1))/ rac2
                 def(6,n,i) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2))/ rac2
-121          continue
-120      continue
+121         continue
+120     continue
 !
 !      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
         if (( option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' ) .and.&
@@ -120,8 +121,8 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
                     1))/rac2
                     pff(6,n,m) =(dfdi(n,2)*dfdi(m,3)+dfdi(n,3)*dfdi(m,&
                     2))/rac2
-126              continue
-125          continue
+126             continue
+125         continue
         endif
 !
 !
@@ -140,15 +141,15 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
             do 130 n = 1, nno
                 do 131 i = 1, 3
                     kkd = (3*(n-1)+i-1) * (3*(n-1)+i) /2
-                    do 151,kl=1,6
-                    sigp(kl)=0.d0
-                    sigp(kl)=sigp(kl)+def(1,n,i)*dsidep(1,kl)
-                    sigp(kl)=sigp(kl)+def(2,n,i)*dsidep(2,kl)
-                    sigp(kl)=sigp(kl)+def(3,n,i)*dsidep(3,kl)
-                    sigp(kl)=sigp(kl)+def(4,n,i)*dsidep(4,kl)
-                    sigp(kl)=sigp(kl)+def(5,n,i)*dsidep(5,kl)
-                    sigp(kl)=sigp(kl)+def(6,n,i)*dsidep(6,kl)
-151                  continue
+                    do 151 kl = 1, 6
+                        sigp(kl)=0.d0
+                        sigp(kl)=sigp(kl)+def(1,n,i)*dsidep(1,kl)
+                        sigp(kl)=sigp(kl)+def(2,n,i)*dsidep(2,kl)
+                        sigp(kl)=sigp(kl)+def(3,n,i)*dsidep(3,kl)
+                        sigp(kl)=sigp(kl)+def(4,n,i)*dsidep(4,kl)
+                        sigp(kl)=sigp(kl)+def(5,n,i)*dsidep(5,kl)
+                        sigp(kl)=sigp(kl)+def(6,n,i)*dsidep(6,kl)
+151                 continue
                     do 140 j = 1, 3
                         do 141 m = 1, n
                             if (m .eq. n) then
@@ -183,10 +184,10 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
                                 matuu(kk) = matuu(kk) + (tmp1+tmp2)* poids
                             endif
 !
-141                      continue
-140                  continue
-131              continue
-130          continue
+141                     continue
+140                 continue
+131             continue
+130         continue
         endif
 !
 !
@@ -199,9 +200,9 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
                     do 182 kl = 1, 6
                         vectu(i,n)=vectu(i,n)+def(kl,n,i)*sigma(kl)*&
                         poids
-182                  continue
-181              continue
-180          continue
+182                 continue
+181             continue
+180         continue
 !
             if (grdepl) then
 !          CONVERSION LAGRANGE -> CAUCHY
@@ -217,18 +218,18 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
                               )*rind(kl&
                               )
                         sig(pq,kpg) = sig(pq,kpg)+ ftf*sigma(kl)
-200                  continue
+200                 continue
                     sig(pq,kpg) = sig(pq,kpg)/detf
-190              continue
+190             continue
             else
 !          SIMPLE CORRECTION DES CONTRAINTES
                 do 210 kl = 1, 3
                     sig(kl,kpg) = sigma(kl)
-210              continue
+210             continue
                 do 220 kl = 4, 6
                     sig(kl,kpg) = sigma(kl)/rac2
-220              continue
+220             continue
             endif
         endif
-10  end do
+ 10 end do
 end subroutine

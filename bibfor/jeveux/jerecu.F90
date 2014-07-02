@@ -17,6 +17,7 @@ subroutine jerecu(clas)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
@@ -60,7 +61,7 @@ subroutine jerecu(clas)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical(kind=1) :: litlec
+    aster_logical :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
     common /inbdet/  nblim(n),nbgros(n),nbpeti(n)
@@ -72,7 +73,7 @@ subroutine jerecu(clas)
     real(kind=8) :: svuse, smxuse
     common /statje/  svuse,smxuse
 !     ------------------------------------------------------------------
-    logical(kind=1) :: actu
+    aster_logical :: actu
     character(len=1) :: kclas
     integer :: itp(1), jitp, iaditp, iaddi(2), lgbl, iadyn
 ! DEB ------------------------------------------------------------------
@@ -115,7 +116,7 @@ subroutine jerecu(clas)
 ! ----- BOUCLE "TANT QUE" SUR LES ENREGISTREMENTS UTILISES
 !
         k = 1
-200      continue
+200     continue
 ! --------L'ENREGISTREMENT 1 N'EST JAMAIS RECUPERABLE
         k = k + 1
         if (k .le. nbluti(ic)) then
@@ -133,7 +134,7 @@ subroutine jerecu(clas)
                 call jxliro(ic, iaditp, iaddi, lgbl)
                 actu = .true.
                 idec = 0
-300              continue
+300             continue
                 idcol = iszon(jiszon+iaditp+idec )
                 idosl = iszon(jiszon+iaditp+idec+1)
                 lgl = iszon(jiszon+iaditp+idec+2)
@@ -144,10 +145,10 @@ subroutine jerecu(clas)
                 endif
                 actu = .false.
                 goto 350
-320              continue
+320             continue
                 idec = idec+lgl+3
                 goto 300
-350              continue
+350             continue
                 if (actu) then
                     iusadi(jusadi(ic)+3*k-2) = -1
                     iusadi(jusadi(ic)+3*k-1) = -1
@@ -158,6 +159,6 @@ subroutine jerecu(clas)
         endif
         call jjlidy(iadyn, iaditp)
         nbpeti(ic) = 0
-100  end do
+100 end do
 ! FIN ------------------------------------------------------------------
 end subroutine

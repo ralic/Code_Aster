@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                       neq, neql, vect, xsol, nbvect,&
@@ -25,11 +27,11 @@ interface
         integer :: lmat
         integer :: smdi(*)
         integer(kind=4) :: smhc(*)
-        logical(kind=1) :: lmatd
+        aster_logical :: lmatd
         integer :: neql
         real(kind=8) :: vect(neq, nbvect)
         real(kind=8) :: xsol(neq, nbvect)
         real(kind=8) :: vectmp(neq)
-        logical(kind=1) :: prepos
+        aster_logical :: prepos
     end subroutine mrmmvr
 end interface

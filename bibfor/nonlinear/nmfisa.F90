@@ -20,8 +20,9 @@ subroutine nmfisa(axi, geom, kpg, poids, b)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: kpg
     real(kind=8) :: geom(2, 4), poids, b(2, 8)
 !

@@ -1,6 +1,6 @@
-subroutine mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
-                  dlagrf,coefaf,tau1  ,tau2  , &
-                  lcont ,ladhe ,lambda,rese  ,nrese)
+subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
+                  dlagrf, coefaf, tau1, tau2, lcont,&
+                  ladhe, lambda, rese, nrese)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,17 +21,18 @@ subroutine mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmtrpr.h"
-
+!
     integer :: ndim
     real(kind=8) :: dlagrf(2), djeut(3)
-    logical(kind=1) :: loptf, lpenaf, leltf
+    aster_logical :: loptf, lpenaf, leltf
     real(kind=8) :: tau1(3), tau2(3)
-    logical(kind=1) :: lcont, ladhe
+    aster_logical :: lcont, ladhe
     real(kind=8) :: rese(3), nrese, lambda
     real(kind=8) :: coefaf
 !
@@ -96,7 +97,7 @@ subroutine mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
 !
 ! --- STATUT DU CONTACT - CAS DU FROTTEMENT
 !
-
+!
     if (loptf) then
         if (lambda .eq. 0.d0) lcont = .false.
     endif
@@ -104,8 +105,8 @@ subroutine mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
 ! --- ETAT D'ADHERENCE DU POINT DE CONTACT
 !
     if (loptf .and. lcont) then
-        call mmtrpr(ndim  ,lpenaf,djeut  ,dlagrf,coefaf, &
-                    tau1  ,tau2  ,ladhe  ,rese  ,nrese)
+        call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
+                    tau1, tau2, ladhe, rese, nrese)
     endif
 !
     call jedema()

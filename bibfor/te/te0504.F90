@@ -18,6 +18,7 @@ subroutine te0504(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -37,14 +38,14 @@ subroutine te0504(option, nomte)
     real(kind=8) :: poids, r, nx, ny, alpha, alpha0
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: imattt, i, j, ij, l, li, lj, iflux
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !-----------------------------------------------------------------------
     integer :: itemp, itemps, jgano, ndim, nnos
     real(kind=8) :: tpgi
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -66,7 +67,7 @@ subroutine te0504(option, nomte)
             l = (kp-1)*nno + i
             r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
             tpgi = tpgi + zr(itemp+i-1)*zr(ivf+l-1)
-10      continue
+ 10     continue
         if (laxi) poids = poids*r
         call foderi(zk8(iflux), tpgi, alpha, alpha0)
         ij = imattt - 1
@@ -77,8 +78,8 @@ subroutine te0504(option, nomte)
                 lj = ivf + (kp-1)*nno + j - 1
                 ij = ij + 1
                 zr(ij) = zr(ij) - poids*alpha0*zr(li)*zr(lj)
-20          continue
-30      continue
-40  end do
-50  continue
+ 20         continue
+ 30     continue
+ 40 end do
+ 50 continue
 end subroutine

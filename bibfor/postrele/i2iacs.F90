@@ -30,19 +30,20 @@ subroutine i2iacs(epsi, xc, yc, r, alfinf,&
 !
 !*********************************************************************
 !
+#include "asterf_types.h"
 #include "asterfort/i2req2.h"
 #include "asterfort/trigom.h"
     integer :: npi
     real(kind=8) :: epsi, xc, yc, x1, y1, x2, y2, r, alfinf, alfsup, a1, a2, r1
     real(kind=8) :: r2
-    logical(kind=1) :: eli
+    aster_logical :: eli
 !
     integer :: nbrac, ord1, ord2
     real(kind=8) :: coef2, coef1, coef0, rac1, rac2, deltax, deltay
     real(kind=8) :: invr, xs, ys, aux
 !
-    logical(kind=1) :: lsr10, ls1r1, lsr20, ls1r2, le0r11, le0r21
-    logical(kind=1) :: lsa1i, lssa1, lsa2i, lssa2, leia1s, leia2s
+    aster_logical :: lsr10, ls1r1, lsr20, ls1r2, le0r11, le0r21
+    aster_logical :: lsa1i, lssa1, lsa2i, lssa2, leia1s, leia2s
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                       masgen, descmm, riggen, descmr, rgygen,&
@@ -41,7 +43,7 @@ interface
         real(kind=8) :: riggen(*)
         integer :: descmr
         real(kind=8) :: rgygen(*)
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amogen(*)
         integer :: descma
         real(kind=8) :: gyogen(*)
@@ -93,7 +95,7 @@ interface
         integer :: nbpal
         real(kind=8) :: dtsto
         real(kind=8) :: vrotat
-        logical(kind=1) :: prdeff
+        aster_logical :: prdeff
         character(len=8) :: nomres
         integer :: nbexci
         real(kind=8) :: passto(*)

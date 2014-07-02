@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine approj(sdappa, noma, newgeo, defico, posnom,&
                       dirapp, dir, itemax, epsmax, toleou,&
@@ -25,7 +27,7 @@ interface
         character(len=19) :: newgeo
         character(len=24) :: defico
         integer :: posnom
-        logical(kind=1) :: dirapp
+        aster_logical :: dirapp
         real(kind=8) :: dir(3)
         integer :: itemax
         real(kind=8) :: epsmax

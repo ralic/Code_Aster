@@ -57,6 +57,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !     IN : I : NDBLE : INDICATEUR DE RECHERCHE DE NOEUD DOUBLE
 !
 !---------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/alimrs.h"
@@ -83,7 +84,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: test1, test2, test3
+    aster_logical :: test1, test2, test3
     integer :: nbvale, nbrefe, nbdesc, ibid, isst, iadrp
     integer :: i, iad(2), iad3d(3), icor(2), ndble
     real(kind=8) :: tgeom(6), tmin, epsi, const(2)
@@ -104,7 +105,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     complex(kind=8) :: cbid
     integer :: iadg, iadx, iady, iadz, iaut, ichad, ichar
     integer :: ichav, idsc, ilires, imodg, inoe
-    integer ::    iprn, iref, iret, ival
+    integer :: iprn, iref, iret, ival
     integer :: ivaleu, k, nbchad, nbchar, nbchav, nbnoe, ncmp
     integer :: nec
     character(len=24), pointer :: refe(:) => null()

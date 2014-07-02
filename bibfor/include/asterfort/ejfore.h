@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
                       npg, ipg, wref, vff1, vff2,&
@@ -25,7 +27,7 @@ interface
         integer :: nno1
         integer :: nddl
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: ipg
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)

@@ -18,7 +18,8 @@ subroutine nmimr0(sdimpr, nombcl)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -54,7 +55,7 @@ subroutine nmimr0(sdimpr, nombcl)
 !
     integer :: icol, ncol
     character(len=9) :: typcol
-    logical(kind=1) :: laffe, lacti
+    aster_logical :: laffe, lacti
     character(len=24) :: slcolo, sdtabc, sdcolo
     character(len=4) :: lieuin
 !
@@ -82,7 +83,7 @@ subroutine nmimr0(sdimpr, nombcl)
             call obgetk(sdcolo, 'TYPE_COLONNE', lieuin)
             if (nombcl .eq. lieuin) call nmimca(sdimpr, typcol, laffe)
         endif
-30  end do
+ 30 end do
 !
     call jedema()
 end subroutine

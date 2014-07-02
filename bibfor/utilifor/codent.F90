@@ -1,5 +1,6 @@
 subroutine codent(entier, cadre, chaine)
     implicit none
+#include "asterf_types.h"
     integer :: entier
     character(len=*) :: cadre, chaine
 !
@@ -44,7 +45,7 @@ subroutine codent(entier, cadre, chaine)
 !
 !
     integer :: lg, ent, ival
-    logical(kind=1) :: neg
+    aster_logical :: neg
     character(len=1) :: chiffr(0:9)
 !-----------------------------------------------------------------------
     integer :: i, ier, il, il1
@@ -62,7 +63,7 @@ subroutine codent(entier, cadre, chaine)
 !
 !     ON CADRE A DOITE A PRIORI   CADRAGE A DROITE
     il = lg + 1
-10  continue
+ 10 continue
     il = il - 1
     if (il .le. 0) then
         ier = 1
@@ -91,7 +92,7 @@ subroutine codent(entier, cadre, chaine)
                 if (neg) chaine(il:il) = '0'
                 do 20 i = il-1, 1, -1
                     chaine(i:i) = '0'
-20              continue
+ 20             continue
                 if (neg) chaine(1:1) = '-'
             endif
         endif
@@ -101,18 +102,18 @@ subroutine codent(entier, cadre, chaine)
         il1 = il-1
         do 30 i = 1, lg-il1
             chaine(i:i) = chaine(i+il1:i+il1)
-30      continue
+ 30     continue
         chaine(lg-il1+1:) = ' '
     else
         ier = 1
     endif
 !
 !     SORTIE -----------------------------------------------------------
-99000  continue
+99000 continue
     if (ier .ne. 0) then
         do 9001 i = 1, lg
             chaine(i:i) = '*'
-9001      continue
+9001     continue
     endif
 !
 end subroutine

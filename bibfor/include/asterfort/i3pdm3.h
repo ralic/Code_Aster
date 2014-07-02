@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3pdm3(epsi, k, desc, desctm, conexk,&
                       coordo, pt, dedans)
@@ -25,6 +27,6 @@ interface
         integer :: conexk(*)
         real(kind=8) :: coordo(*)
         real(kind=8) :: pt(*)
-        logical(kind=1) :: dedans
+        aster_logical :: dedans
     end subroutine i3pdm3
 end interface

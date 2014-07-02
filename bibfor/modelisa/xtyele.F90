@@ -19,6 +19,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -51,7 +52,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     integer :: nfiss
     character(len=8) :: fiss(nfiss), noma
     integer :: contac, ndim, iret
-    logical(kind=1) :: linter
+    aster_logical :: linter
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +68,8 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     real(kind=8) :: lsna, lsta, lsnb, lstb, lstc
     real(kind=8) :: a(ndim), b(ndim), ab(ndim), c(ndim), ac(ndim)
     real(kind=8) :: cmin(ndim), longar, m(ndim), rbid(ndim)
-    integer :: nmaenr, kk, jgrp(4*nfiss),  nbma, indptf(3)
-    integer ::   jmasup,   jconx1, jconx2
+    integer :: nmaenr, kk, jgrp(4*nfiss), nbma, indptf(3)
+    integer :: jmasup, jconx1, jconx2
     integer :: nbcoup, nbcou2, ibid, ifiss, itypma, jtab, jnbpt, jnbpt2
     integer :: nmasup, ndime, nbar, nbheav, jstnl(nfiss), jstnv(nfiss)
     integer :: ino, ino2, nngl, nnot(3), nno, nno2, ima, ima2, ifis
@@ -79,7 +80,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     character(len=8) :: typma, k8bid, nomail
     character(len=19) :: clsn, clst, cnxinv, cstn(nfiss), maicon(nfiss)
     character(len=24) :: grp(4*nfiss)
-    logical(kind=1) :: lcont
+    aster_logical :: lcont
     integer, pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: vlsn(:) => null()

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmvcd2(indez, chmat, exivc, exiref)
         character(len=*) :: indez
         character(len=*) :: chmat
-        logical(kind=1) :: exivc
-        logical(kind=1) :: exiref
+        aster_logical :: exivc
+        aster_logical :: exiref
     end subroutine nmvcd2
 end interface

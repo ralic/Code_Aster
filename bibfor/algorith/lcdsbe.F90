@@ -18,6 +18,7 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/bptobg.h"
 #include "asterfort/diagp3.h"
 #include "asterfort/lceib1.h"
@@ -52,7 +53,7 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
 ! OUT PROJ    : PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical(kind=1) :: rigi, resi, elas
+    aster_logical :: rigi, resi, elas
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), epsr(6), treps, sigel(6), sigelr(6)
     real(kind=8) :: rac2, coef
@@ -91,7 +92,7 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
         epsrm(i)=epstm(i+6)
         deps(i)=depst(i)
         depsr(i)=depst(i+6)
-312  end do
+312 end do
 !
 !    LECTURE DES CARACTERISTIQUES DU MATERIAU
 !
@@ -113,12 +114,12 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
         do 10 k = 1, ndimsi
             eps(k) = epsm(k) + deps(k)
             epsr(k) = epsrm(k) + depsr(k)
-10      continue
+ 10     continue
     else
         do 40 k = 1, ndimsi
             eps(k)=epsm(k)
             epsr(k) = epsrm(k)
-40      continue
+ 40     continue
         d=vim(1)
         fd = (1 - d) / (1 + gamma*d)
         elas=((nint(vim(2)).eq.0).or.(nint(vim(2)).eq.2))
@@ -127,12 +128,12 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
     do 45 k = 4, ndimsi
         eps(k) = eps(k)/rac2
         epsr(k) = epsr(k)/rac2
-45  end do
+ 45 end do
     if (ndimsi .lt. 6) then
         do 46 k = ndimsi+1, 6
             eps(k)=0.d0
             epsr(k)=0.d0
-46      continue
+ 46     continue
     endif
 !     MATRICE TR = (XX XY XZ YY YZ ZZ)
 !
@@ -148,17 +149,17 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
     if (treps .gt. 0.d0) then
         do 600 k = 1, 3
             sigel(k) = lambda*treps
-600      continue
+600     continue
     else
         do 610 k = 1, 3
             sigel(k) = 0.d0
-610      continue
+610     continue
     endif
     do 150 k = 1, 3
         if (epsp(k) .gt. 0.d0) then
             sigel(k) = sigel(k) + deuxmu*epsp(k)
         endif
-150  continue
+150 continue
     tr(1) = epsr(1)
     tr(2) = epsr(4)
     tr(3) = epsr(5)
@@ -171,17 +172,17 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
     if (treps .gt. 0.d0) then
         do 60 k = 1, 3
             sigelr(k) = lambda*treps
-60      continue
+ 60     continue
     else
         do 61 k = 1, 3
             sigelr(k) = 0.d0
-61      continue
+ 61     continue
     endif
     do 15 k = 1, 3
         if (epsp(k) .gt. 0.d0) then
             sigelr(k) = sigelr(k) + deuxmu*epsp(k)
         endif
-15  end do
+ 15 end do
     ener = 0.5d0 * ddot(3,epsp,1,sigelr,1)
 !    CALCUL DE L'ETAT D'ENDOMMAGEMENT
     if (resi) then
@@ -249,7 +250,7 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
         call bptobg(tr, sig, vecp)
         do 18 k = 4, ndimsi
             sig(k)=rac2*sig(k)
-18      continue
+ 18     continue
     endif
 !
 ! - CALCUL DE LA MATRICE TANGENTE
@@ -281,7 +282,7 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
         call bptobg(tr, sigel, vecp)
         do 28 k = 4, ndimsi
             sigel(k)=rac2*sigel(k)
-28      continue
+ 28     continue
         tr(1) = sigelr(1)
         tr(2) = sigelr(2)
         tr(3) = sigelr(3)
@@ -291,15 +292,15 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
         call bptobg(tr, sigelr, vecp)
         do 280 k = 4, ndimsi
             sigelr(k)=rac2*sigelr(k)
-280      continue
+280     continue
         do 100 k = 1, 3
             do 110 l = 1, 3
                 dspdep(k,l) = lambdd
-110          continue
-100      continue
+110         continue
+100     continue
         do 120 k = 1, 3
             dspdep(k,k) = dspdep(k,k) + deumud(k)
-120      continue
+120     continue
         if (epsp(1)*epsp(2) .ge. 0.d0) then
             dspdep(4,4)=deumud(1)
         else
@@ -338,8 +339,8 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
                                 do 25 n = 1, 3
                                     rtemp2=rtemp2+vecp(k,m)* vecp(i,n)&
                                     *vecp(j,n)*vecp(l,m)*dspdep(n,m)
-25                              continue
-24                          continue
+ 25                             continue
+ 24                         continue
                             rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,&
                             1)*vecp(l,2)*dspdep(4,4)
                             rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,&
@@ -355,23 +356,23 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
                             dsidpt(t(i,j),t(k,l),1)=dsidpt(t(i,j),t(k,&
                             l),1)+rtemp2*rtemp4
                         endif
-23                  continue
-22              continue
-21          continue
-20      continue
+ 23                 continue
+ 22             continue
+ 21         continue
+ 20     continue
         do 26 i = 1, 6
             do 27 j = i+1, 6
                 dsidpt(i,j,1)=dsidpt(j,i,1)
-27          continue
-26      continue
+ 27         continue
+ 26     continue
 ! -- CONTRIBUTION DISSIPATIVE
         if ((.not. elas) .and. (ener.gt.0.d0)) then
             coef = (1+gamma)/(2*gamma*(1+gamma*d)*ener)
             do 200 k = 1, ndimsi
                 do 210 l = 1, ndimsi
                     dsidpt(k,l,2) = dsidpt(k,l,2)-coef*sigel(k)* sigelr(l)
-210              continue
-200          continue
+210             continue
+200         continue
         endif
 !
     endif

@@ -40,6 +40,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !     ARGUMENTS
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
@@ -60,7 +61,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     real(kind=8) :: resi, ecum, ecumm, dcoef, plas
     real(kind=8) :: defe, defc, nuetoi, defpc(3), ecumc, ecumd
     real(kind=8) :: coef1, coef2, j2, rini, crit, crit0
-    logical(kind=1) :: dconv, pconv, premd, mtang, melas
+    aster_logical :: dconv, pconv, premd, mtang, melas
     real(kind=8) :: terme1, terme2(6), terme4(6), terme5, ter11
     real(kind=8) :: deltap, dp
     real(kind=8) :: criten, crit2, crit0d, treps
@@ -134,7 +135,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     do 50 i = 1, ndimsi
         sigp(i) = sigm(i)
         sigfi(i)= sigp(i)
-50  end do
+ 50 end do
 !
 !     DEFORMATION PLASTIQUE EQUIV A L'INSTANT M
     ecum = ecumm
@@ -143,10 +144,10 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     treps = deps(1)+deps(2)+deps(3)
     do 85 i = 1, ndimsi
         sigp(i) = sigp(i)+coef1*deps(i)
-85  end do
+ 85 end do
     do 90 i = 1, 3
         sigp(i) = sigp(i)+coef2*treps
-90  end do
+ 90 end do
 !
     dp = 0.d0
     dconv=.false.
@@ -156,7 +157,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !
 !
 !   999=RETOUR ENDO
-999  continue
+999 continue
 !
     if (.not. dconv) then
 !
@@ -164,7 +165,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
         j2 = 0.d0
         do 52 i = 1, ndimsi
             j2 = j2 + (sigp(i)** 2)
-52      continue
+ 52     continue
         j2 = j2 - ((1.d0 / 3.d0) * ((sigp(1) + sigp(2) + sigp(3)) ** 2))
         j2 = ( 3.d0 / 2.d0 * j2) ** 0.5d0
 !
@@ -177,7 +178,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
 !
-889          continue
+889         continue
 !
             if (crit0 .lt. 0.d0) then
                 plas=0.d0
@@ -192,7 +193,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                 pconv = .false.
 !
 !     PLASTICITE  (888 = RETOUR PLASTICITE)
-888              continue
+888             continue
                 if (.not. pconv) then
                     iter = iter + 1
                     if (iter .eq. itemax) then
@@ -200,7 +201,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                         codret=1
                         do 157 i = 1, ndimsi
                             sigp(i)=0.d0
-157                      continue
+157                     continue
                         vip(1)=vim(1)
                         vip(2)=vim(2)
                         vip(3)=vim(3)
@@ -219,7 +220,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                     2))
                     do 54 i = 4, ndimsi
                         terme2(i) = rbid * 1.5d0 * sigp(i)
-54                  continue
+ 54                 continue
 !
 !     TERME3(*) : DF(SIG,X,R) / DSIG = DF(SIG,X,R) / DSIG
 !
@@ -227,16 +228,16 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                     rbid=coef2*(terme2(1) + terme2(2) + terme2(3))
                     do 55 i = 1, ndimsi
                         terme4(i) = coef1 * terme2(i)
-55                  continue
+ 55                 continue
                     do 555 i = 1, 3
                         terme4(i) = terme4(i) + rbid
-555                  continue
+555                 continue
 !
 !     TERME5 = TERME2 : TERME4
                     terme5 = 0.d0
                     do 56 i = 1, ndimsi
                         terme5 = terme5 + terme2(i)*terme4(i)
-56                  continue
+ 56                 continue
 !
 !     TER11 : DF/DR*COEFFIC
                     ter11 = limit/kcoef
@@ -251,7 +252,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !      CALCUL  DE TOUTES LES VARIABLES INTERNES :
                     do 95 i = 1, ndimsi
                         sigp(i) = sigp(i) - (deltap * terme4(i))
-95                  continue
+ 95                 continue
 !
 !     DETERMINATION DE LA DEFORMATION PLASTIQUE ET P
                     dp=deltap/(1.d0-dcoef)
@@ -261,7 +262,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                     j2 = 0.d0
                     do 58 i = 1, ndimsi
                         j2 = j2 + (sigp(i)** 2)
-58                  continue
+ 58                 continue
                     j2 = j2 - ( (1.d0 / 3.d0) * ((sigp(1) + sigp(2) + sigp(3)) ** 2))
                     j2 = ( 3.d0 / 2.d0 * j2) ** 0.5d0
 !
@@ -288,7 +289,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                     dcoef = 0.99d0
                     do 105 i = 1, ndimsi
                         sigp(i) = 0.d0
-105                  continue
+105                 continue
                 endif
 !
                 crit2 = (j2/(1.d0-dcoef))- rini - limit
@@ -326,11 +327,11 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !
         do 160 k = 1, 6
             dsidep(k,k) = coef1
-160      continue
+160     continue
         do 170 k = 1, 3
             do 170 l = 1, 3
                 dsidep(k,l) = dsidep(k,l) + coef2
-170          continue
+170         continue
     endif
 !
 !     PLASTICITE
@@ -340,18 +341,18 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
             rbid = sigfi(1) + sigfi(2) + sigfi(3)
             do 175 k = 1, 3
                 sigd(k) = sigfi(k)- rbid * (1.d0/3.d0)
-175          continue
+175         continue
             do 176 k = 4, ndimsi
                 sigd(k)= sigfi(k)
-176          continue
+176         continue
         else
             rbid = sigp(1) + sigp(2) + sigp(3)
             do 177 k = 1, 3
                 sigd(k) = sigp(k)- rbid*(1.d0 / 3.d0)
-177          continue
+177         continue
             do 178 k = 4, ndimsi
                 sigd(k)= sigp(k)
-178          continue
+178         continue
         endif
         drdp = (ecum**((1.d0/mcoef)-1.d0))
         drdp = (kcoef/mcoef)*drdp
@@ -367,16 +368,16 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
             call matini(6, 6, 0.d0, dsidep)
             do 210 k = 1, ndimsi
                 dsidep(k,k) = deumu
-210          continue
+210         continue
             do 220 k = 1, 3
                 do 220 m = 1, 3
                     dsidep(k,m) = dsidep(k,m) + lamda
-220              continue
+220             continue
             do 230 k = 1, ndimsi
                 do 230 m = 1, ndimsi
                     dsidep(k,m) = dsidep(k,m) -((bcoef/ccoef)* ((sigd(k)/(rini+limit))*(sigd(m)/(&
                                   &rini+limit))))
-230              continue
+230             continue
 !
         else
 !          PLASTICITE ET ENDOMMAGEMENT
@@ -395,18 +396,18 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !
             do 250 k = 1, ndimsi
                 dsidep(k,k) = deumu
-250          continue
+250         continue
             do 260 k = 1, 3
                 do 260 m = 1, 3
                     dsidep(k,m) = dsidep(k,m) + lamda
-260              continue
+260             continue
             do 270 k = 1, ndimsi
                 do 270 m = 1, ndimsi
                     dsidep(k,m) = (&
                                   dsidep(k,m) -((bcoef/ccoef)* ((sigd(k)/((1.d0-dcoef)*(rini+limi&
                                   &t))) *(sigd(m)/( (1.d0-dcoef)*(rini+limit)))))&
                                   )
-270              continue
+270             continue
         endif
     endif
 !
@@ -415,8 +416,8 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
         do 327 k = 1, ndimsi
             do 327 m = 1, ndimsi
                 dsidep(k,m)=(1.d0-dcoef)*dsidep(k,m)
-327          continue
+327         continue
     endif
 !
-9999  continue
+9999 continue
 end subroutine

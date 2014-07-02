@@ -22,6 +22,7 @@ subroutine op0147()
 !      LE CONCEPT PRODUIT EST UN INTERSPECTRE
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/calcsp.h"
@@ -42,12 +43,12 @@ subroutine op0147()
     integer :: inuor, ivite, jnuor, nbm, nbmr
     integer :: nnn, npv, i1, i3, ivitef
 !-----------------------------------------------------------------------
-    logical(kind=1) :: casint
+    aster_logical :: casint
     character(len=8) :: table, nomu, option
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
-    integer :: lnumi,  lrefes
+    integer :: lnumi, lrefes
     real(kind=8) :: epsi, val, vitef
     character(len=16), pointer :: refe(:) => null()
 !
@@ -79,7 +80,7 @@ subroutine op0147()
         if (abs(val) .lt. epsi) then
             ivitef = i3
         endif
-300  end do
+300 end do
     if (ivitef .eq. 0) then
         call utmess('F', 'ALGELINE3_25', sr=vitef)
     endif
@@ -104,7 +105,7 @@ subroutine op0147()
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
     do 150 i1 = 1, nbmr
         zi(jnuor-1+i1) = zi(lnumi-1+i1)
-150  end do
+150 end do
     call ordis(zi(jnuor), nbmr)
     call wkvect('&&OP0147.MODE', 'V V I', nbmr, inuor)
     nnn = 1
@@ -113,16 +114,16 @@ subroutine op0147()
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 20
         nnn = nnn + 1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
-20  end do
+ 20 end do
     nbmr = nnn
     do 30 im = 1, nbm
         if (zi(inumo+im-1) .eq. zi(inuor)) then
             imod1 = im
             goto 31
         endif
-30  end do
+ 30 end do
     call utmess('F', 'MODELISA5_78')
-31  continue
+ 31 continue
 !
 ! --- 3.RECUPERATION DE L'OPTION DE CALCUL ---
 !

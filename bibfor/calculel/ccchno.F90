@@ -3,6 +3,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
                   ligrel, ligmod, codret)
     implicit none
 !     --- ARGUMENTS ---
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ccvrrl.h"
 #include "asterfort/celces.h"
@@ -27,7 +28,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     character(len=8) :: resuin, resuou, nomail, modele, carael
     character(len=16) :: option
     character(len=24) :: lichou(2), mesmai, ligrel
-    logical(kind=1) :: ligmod
+    aster_logical :: ligmod
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

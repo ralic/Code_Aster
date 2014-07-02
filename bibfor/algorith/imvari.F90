@@ -2,6 +2,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
@@ -53,7 +54,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
     integer :: j_vari_name
     character(len=19) :: compor_s
-    integer :: j_comp_d,  j_comp_l, iadc
+    integer :: j_comp_d, j_comp_l, iadc
     integer :: nbocc, nume_elem, iocc, ivari, idummy, iret
     integer :: nb_vari, jdecal
     integer :: nb_vari_thmc, nb_vari_hydr, nb_vari_meca, nb_vari_ther
@@ -61,7 +62,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
     integer :: nb_vari_comp(9), nb_vari_cg(2)
     character(len=16) :: vari_excl, vari_name
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, kit_comp(9)
-    logical(kind=1) :: l_excl, l_kit_thm, l_kit_ddi, l_kit_cg
+    aster_logical :: l_excl, l_kit_thm, l_kit_ddi, l_kit_cg
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     character(len=16) :: rela_cg(2)
@@ -81,7 +82,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
     if (present(compor_cart)) then
         ASSERT(.not.present(compor_list))
-        call carces(compor_cart, 'ELEM', ' ', 'V', compor_s, &
+        call carces(compor_cart, 'ELEM', ' ', 'V', compor_s,&
                     'A', idummy)
         call jeveuo(compor_s//'.CESD', 'L', j_comp_d)
         call jeveuo(compor_s//'.CESV', 'L', vk16=cesv)
@@ -90,8 +91,8 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
 ! - Access to link between COMPOR and internal variable names
 !
-    call jeexin(list_vari_name(1:19)//'.LINK',iret)
-    if (iret.eq.0) then
+    call jeexin(list_vari_name(1:19)//'.LINK', iret)
+    if (iret .eq. 0) then
         nbocc = 0
     else
         call jeveuo(list_vari_name(1:19)//'.LINK', 'L', vi=link)
@@ -127,12 +128,12 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
                 read (cesv(1+iadc-2+18),'(I16)') nb_vari_comp(2)
                 read (cesv(1+iadc-2+19),'(I16)') nb_vari_comp(3)
                 read (cesv(1+iadc-2+20),'(I16)') nb_vari_comp(4)
-                kit_comp(1)  = cesv(1+iadc-2+8)
-                kit_comp(2)  = cesv(1+iadc-2+9)
-                kit_comp(3)  = cesv(1+iadc-2+10)
-                kit_comp(4)  = cesv(1+iadc-2+11)
+                kit_comp(1) = cesv(1+iadc-2+8)
+                kit_comp(2) = cesv(1+iadc-2+9)
+                kit_comp(3) = cesv(1+iadc-2+10)
+                kit_comp(4) = cesv(1+iadc-2+11)
             endif
-        elseif (present(compor_list)) then
+        else if (present(compor_list)) then
             rela_comp = compor_list(1)
             defo_comp = compor_list(3)
             type_comp = compor_list(4)
@@ -141,17 +142,17 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
             nb_vari_comp(2) = 0
             nb_vari_comp(3) = 0
             nb_vari_comp(4) = 0
-            kit_comp(1)  = compor_list(8)
-            kit_comp(2)  = compor_list(9)
-            kit_comp(3)  = compor_list(10)
-            kit_comp(4)  = compor_list(11)
+            kit_comp(1) = compor_list(8)
+            kit_comp(2) = compor_list(9)
+            kit_comp(3) = compor_list(10)
+            kit_comp(4) = compor_list(11)
         endif
 !
 ! ----- Detection of specific cases
 !
-        call comp_meca_l(rela_comp, 'KIT_DDI'  , l_kit_ddi)
-        call comp_meca_l(rela_comp, 'KIT_CG'   , l_kit_cg)
-        call comp_meca_l(rela_comp, 'KIT_THM'  , l_kit_thm)
+        call comp_meca_l(rela_comp, 'KIT_DDI', l_kit_ddi)
+        call comp_meca_l(rela_comp, 'KIT_CG', l_kit_cg)
+        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
 !
 ! ----- Acces to list of name of internal variables
 !
@@ -162,18 +163,18 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
         l_excl = .false.
         vari_excl = zk16(j_vari_name-1+1)
-        if (vari_excl(1:2).eq.'&&') l_excl = .true.
+        if (vari_excl(1:2) .eq. '&&') l_excl = .true.
 !
 ! ----- Print
 !
-        if (type_comp.eq.'COMP_INCR') then
+        if (type_comp .eq. 'COMP_INCR') then
             call utmess('I', 'COMPOR4_4', sk = rela_comp)
         endif
-        if (type_comp.eq.'COMP_ELAS') then
+        if (type_comp .eq. 'COMP_ELAS') then
             call utmess('I', 'COMPOR4_5', sk = rela_comp)
         endif
         call utmess('I', 'COMPOR4_6', sk = defo_comp)
-        if (type_cpla.eq.'DEBORST') then
+        if (type_cpla .eq. 'DEBORST') then
             call utmess('I', 'COMPOR4_8')
         endif
         call utmess('I', 'COMPOR4_9', si = nb_vari)
@@ -227,7 +228,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
             enddo
             jdecal = jdecal + nb_vari_hydr
 !
-        elseif (l_kit_ddi) then
+        else if (l_kit_ddi) then
 !
             call utmess('I', 'COMPOR4_40')
             rela_flua = kit_comp(1)
@@ -274,8 +275,8 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
                 vari_name = zk16(j_vari_name-1+ivari+jdecal)
                 call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
             enddo
-
-        elseif (l_kit_cg) then
+!
+        else if (l_kit_cg) then
 !
             call utmess('I', 'COMPOR4_50')
             rela_cg(1) = kit_comp(1)
@@ -300,17 +301,17 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
                 vari_name = zk16(j_vari_name-1+ivari+jdecal)
                 call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
             enddo
-        else   
+        else 
 !
 ! --------- Name of internal variables
 !
             if (l_excl) then
-                if (vari_excl(1:6).eq.'&&POLY') then
+                if (vari_excl(1:6) .eq. '&&POLY') then
                     call utmess('I', 'COMPOR4_10')
-                    if (vari_excl.eq.'&&POLY_SIMO') then
+                    if (vari_excl .eq. '&&POLY_SIMO') then
                         call utmess('I', 'COMPOR4_11')
                     endif
-                elseif (vari_excl.eq.'&&KMET') then
+                else if (vari_excl.eq.'&&KMET') then
                     call utmess('I', 'COMPOR4_12')
                 else
                     ASSERT(.false.)
@@ -322,7 +323,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
             endif
         endif
 !
-10      continue
+ 10     continue
     enddo
 !
     if (present(compor_cart)) call detrsd('CHAMP', compor_s)

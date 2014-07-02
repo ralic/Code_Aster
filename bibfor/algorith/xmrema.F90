@@ -25,6 +25,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8gaem.h"
@@ -55,7 +56,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     real(kind=8) :: jeumin
     real(kind=8) :: t1min(3), t2min(3)
     real(kind=8) :: ximin, yimin
-    logical(kind=1) :: projin
+    aster_logical :: projin
 !
 ! ----------------------------------------------------------------------
 !
@@ -111,7 +112,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     character(len=24) :: maescx
     integer :: jmaesx
     integer :: statum
-    integer ::  jconx2
+    integer :: jconx2
     integer :: nummai, nunoin, nunog, nugla, nuglb, nbnott(3)
     integer :: n1, n2, nbnos, ntmae, nfacem
     integer :: ino, ifacem, ima
@@ -122,9 +123,9 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     real(kind=8) :: coorma(27), xi, yi
     real(kind=8) :: r3bid(3)
     character(len=8) :: typma
-    logical(kind=1) :: dirapp, noapar, lappar
+    aster_logical :: dirapp, noapar, lappar
     integer :: iproj, iprojm
-    integer :: iad,  itypma, nptm, ifiss
+    integer :: iad, itypma, nptm, ifiss
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
 !
@@ -140,7 +141,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     lappar = .false.
     do 10 i = 1, 27
         coorma(i)=0.d0
-10  end do
+ 10 end do
     dirapp = .false.
     ntmae = cfdisi(defico,'NTMAE')
 !
@@ -165,15 +166,15 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                         ifise, ( ifacee-1)*ndim+i, iad)
             ASSERT(iad.gt.0)
             numpi(i) = zi(jcesv(4)-1+iad)
-240      continue
+240     continue
         do 250 i = 1, ndim
             do 260 j = 1, ndim
                 call cesexi('S', jcesd(6), jcesl(6), nummae, 1,&
                             ifise, ndim*(numpi(i)-1)+j, iad)
                 ASSERT(iad.gt.0)
                 coorma(3*(i-1)+j)=zr(jcesv(6)-1+iad)
-260          continue
-250      continue
+260         continue
+250     continue
         call mmproj(alias, ndim, ndim, coorma, geom,&
                     itemax, epsmax, toleou, dirapp, r3bid,&
                     ximin, yimin, t1min, t2min, iprojm,&
@@ -221,7 +222,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
         ASSERT(.false.)
     endif
 !
-200  continue
+200 continue
 !
 ! --- BOUCLE SUR LES MAILLES FISSURÉES
 !
@@ -254,7 +255,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                     ((nugla.eq.nunob).and.(nuglb.eq.nunoa))) then
                     noapar=.false.
                 endif
-110          continue
+110         continue
         else
 !
 ! ----- SI LE POINT DE CONTACT EST UN NOEUD
@@ -266,7 +267,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                 if (nunoin .eq. nunog) then
                     noapar=.false.
                 endif
-120          continue
+120         continue
         endif
 !
         if (noapar) goto 100
@@ -294,7 +295,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                             ifiss, (ifacem-1)*nptm+i, iad)
                 ASSERT(iad.gt.0)
                 numpi(i) = zi(jcesv(4)-1+iad)
-140          continue
+140         continue
 !
 ! ----- RECUPERATION DES COORDONNES REELLES DES POINTS D'INTERSECTION
 ! ----- DE LA FACETTE MAITRE
@@ -305,8 +306,8 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                                 ifiss, ndim*(numpi(i)-1)+j, iad)
                     ASSERT(iad.gt.0)
                     coorma(3*(i-1)+j)=zr(jcesv(6)-1+iad)
-160              continue
-150          continue
+160             continue
+150         continue
 !
 ! --- PROJECTION SUR LA FACETTE MAITRE
 !
@@ -343,14 +344,14 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                     do 40 k = 1, 3
                         t1min(k) = tau1(k)
                         t2min(k) = tau2(k)
-40                  continue
+ 40                 continue
                     ximin = xi
                     yimin = yi
                 endif
             endif
 !
-130      continue
-100  end do
+130     continue
+100 end do
 !
     if (nummin .eq. 0 .and. (.not.lappar)) then
 !       DEUXIÈME CHANCE
@@ -360,7 +361,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     if (iprojm .le. 1) projin = .true.
     if (toleou .eq. -1.d0) projin = .true.
 !
-999  continue
+999 continue
 !
 ! --- NORMALISATION DES VECTEURS TANGENTS
 !

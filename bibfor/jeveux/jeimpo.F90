@@ -24,6 +24,7 @@ subroutine jeimpo(unit, nomlu, mess)
 ! IN  MESS  : MESSAGE D'INFORMATION IMPRIME
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjalty.h"
@@ -65,7 +66,7 @@ subroutine jeimpo(unit, nomlu, mess)
     character(len=1) :: genri, typei
     integer :: icre, iret, jctab, ltypi, lonoi, iaddi(2)
     integer :: ibacol, ixiadd, ixdeso
-    logical(kind=1) :: lconst, lcol
+    aster_logical :: lconst, lcol
 !     ------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm, idlong, idlono
     parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2 , idiadm = 3 ,&
@@ -184,7 +185,7 @@ subroutine jeimpo(unit, nomlu, mess)
                             typei, ltypi, lonoi, mess)
                 numec = k
                 call jjlide('JEIMPO', noml32//'$$XNUM  ', 2)
-10          continue
+ 10         continue
         endif
         call jjlide('JEIMPO', noml32, inat)
     else if (inat .eq. 3) then
@@ -261,7 +262,7 @@ subroutine jeimpo(unit, nomlu, mess)
             endif
         endif
     endif
-9999  continue
+9999 continue
     if (lcol) then
         call jjlide('JEIMPO', noml32(1:24), 2)
     endif

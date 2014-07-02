@@ -19,6 +19,7 @@ subroutine xmacon(char, noma, nomo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -69,15 +70,15 @@ subroutine xmacon(char, noma, nomo)
     integer :: ndim, jtypma, itypma
     integer :: nzoco
     integer :: ntmae, nbma, ntmano, nface, ninter
-    integer :: jcesd2,  jcesl2
+    integer :: jcesd2, jcesl2
     integer :: jconx1, jconx2
-    integer :: jcesd, jcesl,  jmail, ityele
+    integer :: jcesd, jcesl, jmail, ityele
     integer :: izone, ima, ntpc, iad, posmae
     integer :: iad1, iad2, statut, ibid, nfiss, ifiss
     character(len=8) :: nomfis, nomzon, typma, elrefe
     character(len=19) :: chs, faclon, chs2, typmai, maille
     character(len=16) :: typele, enr
-    logical(kind=1) :: lmalin
+    aster_logical :: lmalin
     integer :: typint, nnint
     integer, pointer :: cesv2(:) => null()
     character(len=8), pointer :: cesv(:) => null()

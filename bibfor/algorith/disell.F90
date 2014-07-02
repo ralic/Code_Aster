@@ -17,6 +17,7 @@ subroutine disell(pz, az, bz, h)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/assert.h"
@@ -45,7 +46,7 @@ subroutine disell(pz, az, bz, h)
     parameter    (eps  = 1.d-6)
     parameter    (epsc = 1.d-6)
     parameter    (nitmx=100)
-    logical(kind=1) :: linsid
+    aster_logical :: linsid
 !
 ! ----------------------------------------------------------------------
 !
@@ -188,13 +189,13 @@ subroutine disell(pz, az, bz, h)
         if (linsid) k = -k
         t = dz/(dr+k)
 !
-10  end do
+ 10 end do
 !
 !     NOMBRE D'ITERATIONS MAXI ATTEINT
     call utmess('F', 'XFEM_2')
 !
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

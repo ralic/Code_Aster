@@ -20,7 +20,8 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -31,7 +32,7 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
     character(len=19) :: sddisc
     integer :: ievdac, iterat, retdec
     integer :: nbrpas
-    logical(kind=1) :: ldcext
+    aster_logical :: ldcext
     real(kind=8) :: ratio, deltac, durdec
     character(len=4) :: typdec
     character(len=16) :: optdec

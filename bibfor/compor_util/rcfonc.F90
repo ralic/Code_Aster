@@ -1,9 +1,10 @@
-subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
-                  sigy , e     , nu    , p    , rp    ,&
+subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
+                  sigy, e, nu, p, rp,&
                   rprim, airerp, sieleq, dp)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
@@ -70,7 +71,7 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical(kind=1) :: tessup
+    aster_logical :: tessup
     character(len=1) :: type_prol
     character(len=24) :: func_name
     integer :: jp, jr, i, i0
@@ -105,7 +106,7 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
 !
     if (ktrac .eq. 1) then
         airerp_int = 0.d0
-        tessup     = .false.
+        tessup = .false.
         do i = 1, nbvale-1
             if (p .lt. zr(jp+i)) then
                 i0 = i-1
@@ -118,7 +119,7 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
             call utmess('F', 'COMPOR5_60', sk=func_name, sr=zr(jp-1+nbvale))
         endif
         i0=nbvale-1
-20      continue
+ 20     continue
 !
 ! - CALCUL DES VALEURS DE R(P), R'(P) ET AIRE(P)
 !
@@ -155,7 +156,7 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
             call utmess('F', 'COMPOR5_60', sk=func_name, sr=zr(jp-1+nbvale))
         endif
         i0=nbvale-1
-21      continue
+ 21     continue
 !
 ! - CALCUL DES VALEURS DE R(P) ET R'(P)
 !
@@ -199,7 +200,7 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
         call utmess('F', 'COMPOR5_60', sk=func_name, sr=zr(jp-1+nbvale))
     endif
     i0 = nbvale-1
-40  continue
+ 40 continue
 !
 ! - CALCUL DES VALEURS DE DP, R(P+DP), R'(P+DP) ET AIRE(P+DP)
 !
@@ -212,11 +213,11 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
     else
         rprim_int = (zr(jr+i0+1)-zr(jr+i0))/ (zr(jp+i0+1)-zr(jp+i0))
     endif
-    p0         = zr(jp+i0)
-    rp0        = zr(jr+i0)
-    dp         = (sieleq-rp0-rprim_int*(p-p0))/(troimu+rprim_int)
-    pp         = p+dp
-    rp_int     = rp0 + rprim_int*(pp-p0)
+    p0 = zr(jp+i0)
+    rp0 = zr(jr+i0)
+    dp = (sieleq-rp0-rprim_int*(p-p0))/(troimu+rprim_int)
+    pp = p+dp
+    rp_int = rp0 + rprim_int*(pp-p0)
     airerp_int = (airerp_int+(rp0+rp_int)*(pp-p0))*0.5d0
 !
 999 continue
@@ -224,9 +225,9 @@ subroutine rcfonc(quest, ktrac , jprol , jvale, nbvale,&
         airerp = airerp_int
     endif
     if (present(rprim)) then
-        rprim  = rprim_int
+        rprim = rprim_int
     endif
     if (present(rp)) then
-        rp     = rp_int
+        rp = rp_int
     endif
 end subroutine

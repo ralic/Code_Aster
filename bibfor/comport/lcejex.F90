@@ -20,6 +20,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "blas/daxpy.h"
@@ -40,7 +41,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: diss, i, j
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2
@@ -92,7 +93,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
     rtan = 0.d0
     do 10 i = 2, ndim
         rtan=rtan+a(i)**2
-10  end do
+ 10 end do
     na = sqrt( max(0.d0,a(1))**2 + rtan )
     rk = sc * exp(-ka/lc) / ka
     rc = rk + beta*(r0-rk)
@@ -123,14 +124,14 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
         sigma(1) = sigma(1) + rk*max(0.d0,a(1))
         do 20 i = 2, ndim
             sigma(i) = sigma(i) + rk*a(i)
-20      continue
+ 20     continue
     else
         diss = 1
         ra = sc * exp(-na/lc) / na
         sigma(1) = sigma(1) + ra*max(0.d0,a(1))
         do 30 i = 2, ndim
             sigma(i) = sigma(i) + ra*a(i)
-30      continue
+ 30     continue
     endif
 !
 !
@@ -164,7 +165,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 !
 ! -- MATRICE TANGENTE
 !
-5000  continue
+5000 continue
     if (.not. rigi) goto 9999
 !
     call r8inir(36, 0.d0, dsidep, 1)
@@ -178,7 +179,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
         if (a(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) + rk
         do 40 i = 2, ndim
             dsidep(i,i) = dsidep(i,i) + rk
-40      continue
+ 40     continue
 !
     else
 !
@@ -190,7 +191,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
             do 42 i = 2, ndim
                 dsidep(i,i)=dsidep(i,i) + sc*coef2/na - coef*coef2*a(&
                 i)*a(i)
-42          continue
+ 42         continue
 !
             if (ndim .eq. 3) then
                 dsidep(2,3) = dsidep(2,3) - coef*coef2*a(2)*a(3)
@@ -202,18 +203,18 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
             do 44 i = 1, ndim
                 dsidep(i,i)=dsidep(i,i) + sc*coef2/na - coef*coef2*a(&
                 i)*a(i)
-44          continue
+ 44         continue
 !
             do 46 j = 1, ndim-1
                 do 47 i = j+1, ndim
                     dsidep(j,i) = dsidep(j,i) - coef*coef2*a(j)*a(i)
                     dsidep(i,j) = dsidep(i,j) - coef*coef2*a(i)*a(j)
-47              continue
-46          continue
+ 47             continue
+ 46         continue
 !
         endif
 !
     endif
 !
-9999  continue
+9999 continue
 end subroutine

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine assthm(nno, nnos, nnom, npg, npi,&
                       ipoids, ipoid2, ivf, ivf2, idfde,&
@@ -82,8 +84,8 @@ interface
         integer :: np2
         character(len=16) :: compor(*)
         character(len=8) :: typmod(2)
-        logical(kind=1) :: axi
-        logical(kind=1) :: perman
+        aster_logical :: axi
+        aster_logical :: perman
         character(len=3) :: modint
         integer :: codret
         real(kind=8) :: angmas(3)

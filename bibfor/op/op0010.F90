@@ -32,6 +32,7 @@ subroutine op0010()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/cncinv.h"
@@ -85,14 +86,14 @@ subroutine op0010()
     character(len=24) :: lismae, lisnoe, vcn, grlr, vcnt, grlrt
     real(kind=8) :: meserr(3)
     character(len=8) :: test, msgout(2), typma
-    logical(kind=1) :: quad
+    aster_logical :: quad
 !     MESSAGES
 !
 !     CRACK ADVANCEMENT
     real(kind=8) :: damax, dttot, vmax, rayon, dafiss, bmax
     character(len=24) :: vvit, vbeta
     character(len=19) :: cnsbet, listp
-    integer :: crack, jbeta, jvit,  nbval, nfiss
+    integer :: crack, jbeta, jvit, nbval, nfiss
     integer :: numfis
 !
 !     LEVELSET AUXILIARY MESH
@@ -100,7 +101,7 @@ subroutine op0010()
     integer :: jlisno
     character(len=19) :: ucnslt, ucnsln, ugrlt, ugrln, ucnxin, disfr, nodtor
     character(len=19) :: eletor, liggrd
-    logical(kind=1) :: grille, locdom
+    aster_logical :: grille, locdom
 !
 !     DUMMY MODEL
     character(len=8) :: dnoma, dnomo
@@ -115,13 +116,13 @@ subroutine op0010()
     real(kind=8) :: dist, distol
 !
 !     DOMAINE LOCALISATION
-    integer :: nbno,     jgltl, jglnl
+    integer :: nbno, jgltl, jglnl
     character(len=19) :: grltc, grlnc
-    logical(kind=1) :: ldpre
+    aster_logical :: ldpre
     real(kind=8) :: radimp, radlim
 !
 !     FRONT SUR LA GRILLE
-    logical(kind=1) :: goinop
+    aster_logical :: goinop
     character(len=19) :: cnseg, cnseng, cnsljg
     character(len=24) :: lismag, lisnog
     real(kind=8), pointer :: gln(:) => null()
@@ -249,13 +250,13 @@ subroutine op0010()
     call jeveuo(mai, 'L', jma)
     quad=.false.
     do ima = 1, nbma
-       call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
-       if (.not.ismali(typma)) then
-          quad=.true.
-          exit
-       endif
+        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
+        if (.not.ismali(typma)) then
+            quad=.true.
+            exit
+        endif
     end do
-
+!
     if (quad) call utmess('F', 'XFEM_86')
 !
 ! --- CONNECTIVITE INVERSEE

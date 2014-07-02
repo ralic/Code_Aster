@@ -26,6 +26,7 @@ subroutine crtype()
 !           "MODE_MECA"
 !
 ! --- ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -70,14 +71,14 @@ subroutine crtype()
 !
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
-    integer ::   iad, jinst,     nbpf, nuprev
-    integer :: ino, nbv(1), jrefe,  nchar, jfcha,  icmpd, icmpi
+    integer :: iad, jinst, nbpf, nuprev
+    integer :: ino, nbv(1), jrefe, nchar, jfcha, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
 !
     parameter  (mxpara=10)
 !
-    logical(kind=1) :: lncas, lfonc, lcopy
+    aster_logical :: lncas, lfonc, lcopy
 !
     real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq
     complex(kind=8) :: cbid
@@ -206,19 +207,19 @@ subroutine crtype()
                 lcopy=.true.
 !               -- si le numero du prof_chno est > 0, on regarde si le numero precedent convient:
                 read (profch(15:19),'(I5)') nuprev
-                if (nuprev.gt.0) then
+                if (nuprev .gt. 0) then
                     nuprev=nuprev-1
                     profprev=profch
                     call codent(nuprev, 'D0', profprev(15:19))
-                    call exisd('PROF_CHNO',profprev,iexi)
-                    if (iexi.gt.0) then
+                    call exisd('PROF_CHNO', profprev, iexi)
+                    if (iexi .gt. 0) then
                         if (idensd('PROF_CHNO',profprev,pchn1)) then
                             profch=profprev
                             lcopy=.false.
                         endif
                     endif
                 endif
-
+!
                 if (lcopy) then
                     call copisd('PROF_CHNO', 'G', pchn1, profch)
                 endif

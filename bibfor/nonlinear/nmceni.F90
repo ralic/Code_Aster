@@ -20,6 +20,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
     character(len=24) :: numedd
     character(len=19) :: sdpilo, depdel, deppr1, deppr2
     real(kind=8) :: eta, rho, f
-    logical(kind=1) :: isxfe
+    aster_logical :: isxfe
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,8 +96,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
         do i = 1, neq
             if (deeq(2*i ) .gt. 0) then
                 if (coee(i) .eq. 0.d0) then
-                    f = f + coef(i)**2* (depde(i)+rho*du0(i)+ eta*du1(i)&
-                        &)**2
+                    f = f + coef(i)**2* (depde(i)+rho*du0(i)+ eta*du1(i))**2
                 else
                     dn = 0.d0
                     dc = 0.d0

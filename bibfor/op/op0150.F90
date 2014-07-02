@@ -27,6 +27,7 @@ subroutine op0150()
 ! ......................................................................
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -79,7 +80,7 @@ subroutine op0150()
     integer :: ibid, nbv, nbtrou
     integer :: nfic
     integer :: mfich, n1, precis, jinst
-    integer ::  ifm, nivinf
+    integer :: ifm, nivinf
     real(kind=8) :: epsi
     character(len=3) :: prolz
     character(len=4) :: acce
@@ -113,7 +114,7 @@ subroutine op0150()
     integer :: jcmpva, jcmpvm
 !
 !
-    logical(kind=1) :: lprem
+    aster_logical :: lprem
     character(len=8), pointer :: lgrf(:) => null()
 ! ----------------------------------------------------------------------
 !

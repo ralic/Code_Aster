@@ -66,7 +66,8 @@ subroutine cafvsu(cont, tange, maxfa, nface, fks,&
 !        L ELEMENT COURANT(0) CAR SI IL Y A DU DECENTRAGE ON VA STOCKER
 !        DANS DFLX1V ET DFLX2
     implicit none
-    logical(kind=1) :: cont, tange
+#include "asterf_types.h"
+    aster_logical :: cont, tange
     integer :: maxfa
     integer :: nface
     integer :: nbvois, nvoima
@@ -83,8 +84,8 @@ subroutine cafvsu(cont, tange, maxfa, nface, fks,&
         do 1 ivois = 0, nbvois
             do 2 ifa = 1, nface
                 flux = flux + mobfa(ivois,ifa) * fks(ifa)
- 2          continue
- 1      continue
+  2         continue
+  1     continue
     endif
     if (tange) then
         do 3 jfa = 1, nface
@@ -93,19 +94,19 @@ subroutine cafvsu(cont, tange, maxfa, nface, fks,&
             do 31 ivois = 0, nbvois
                 dflx1(1) = dflx1(1) + mobfa(ivois,jfa) * dfks1(1,jfa)
                 dflx2(1) = dflx2(1) + mobfa(ivois,jfa) * dfks2(1,jfa)
-31          continue
- 3      continue
+ 31         continue
+  3     continue
         do 4 ifa = 1, nface
             do 4 jfa = 1, nface
                 do 41 ivois = 0, nbvois
                     dflx1(1+ifa) = dflx1(1+ifa) + mobfa(ivois,jfa) * dfks1(ifa+1,jfa)
                     dflx2(1+ifa) = dflx2(1+ifa) + mobfa(ivois,jfa) * dfks2(ifa+1,jfa)
-41              continue
- 4          continue
+ 41             continue
+  4         continue
         do 5 ivois = 1, nbvois
             do 5 jfa = 1, nface
                 dflx1v(jfa) = dflx1v(jfa) + dmob1v(ivois,jfa) * fks( jfa)
                 dflx2v(jfa) = dflx2v(jfa) + dmob2v(ivois,jfa) * fks( jfa)
- 5          continue
+  5         continue
     endif
 end subroutine

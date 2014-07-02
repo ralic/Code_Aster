@@ -21,6 +21,7 @@ subroutine op0149()
 !     OPERATEUR:  MODI_BASE_MODALE
 !
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -42,13 +43,13 @@ subroutine op0149()
     character(len=16) :: typres, nomcmd
     character(len=19) :: basefl
     character(len=24) :: numo, vite, refefl, fsic, fsvi
-    logical(kind=1) :: newres, lnuor, lamor, lamoru, nocopl, numok
+    aster_logical :: newres, lnuor, lamor, lamoru, nocopl, numok
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, iamo1, iamo2, iamor, ibid, idec, ifm
     integer :: ifsic, ifsvi, imasse, imin, inumo, inuo1, inuo2
-    integer :: inuor, ireffl, itypfl, j,  jpara, k
+    integer :: inuor, ireffl, itypfl, j, jpara, k
     integer :: na1, nbamo1, nbamun, nbmfl, nbmod2, nbmode, nbnuo1
     integer :: nbnuo2, nbnuor, nbvite, niv, numode, numvit, nuomin
 !
@@ -187,8 +188,8 @@ subroutine op0149()
                         nocopl = .false.
                         goto 12
                     endif
-11              continue
-12              continue
+ 11             continue
+ 12             continue
                 do 13 k = 1, nbmode
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
                                 0, sjv=jpara, styp=kbid)
@@ -196,14 +197,14 @@ subroutine op0149()
                         numok = .true.
                         goto 14
                     endif
-13              continue
-14              continue
+ 13             continue
+ 14             continue
                 if (nocopl .and. numok) then
                     nbnuo2 = nbnuo2 + 1
                     zi(inuo2+nbnuo2-1) = numode
                     if (lamor) zr(iamo2+nbnuo2-1) = zr(iamo1+i-1)
                 endif
-10          continue
+ 10         continue
 !
 !---------CONSTITUTION DES LISTES
 !
@@ -220,10 +221,10 @@ subroutine op0149()
                     else if (lamoru) then
                         zr(iamor+i-1) = amorun
                     endif
-20              continue
+ 20             continue
                 do 21 i = nbnuo2+1, nbnuor
                     zi(inuor+i-1) = zi(inumo+i-nbnuo2-1)
-21              continue
+ 21             continue
                 do 22 i = 1, nbnuor-1
                     nuomin = zi(inuor+i-1)
                     imin = i
@@ -232,7 +233,7 @@ subroutine op0149()
                             nuomin = zi(inuor+j-1)
                             imin = j
                         endif
-23                  continue
+ 23                 continue
                     zi(inuor+imin-1) = zi(inuor+i-1)
                     zi(inuor+i-1) = nuomin
                     if (lamor .or. lamoru) then
@@ -240,7 +241,7 @@ subroutine op0149()
                         zr(iamor+imin-1) = zr(iamor+i-1)
                         zr(iamor+i-1) = rtamp
                     endif
-22              continue
+ 22             continue
             endif
 !
 !-------3.1.2.SINON
@@ -257,7 +258,7 @@ subroutine op0149()
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
                                 0, sjv=jpara, styp=kbid)
                     zi(inuor+i-1) = zi(jpara)
-30              continue
+ 30             continue
                 idec = 0
                 do 31 i = 1, nbnuor
                     nocopl = .true.
@@ -267,8 +268,8 @@ subroutine op0149()
                             nocopl = .false.
                             goto 33
                         endif
-32                  continue
-33                  continue
+ 32                 continue
+ 33                 continue
                     if (nocopl) then
                         if (lamor) then
                             idec = idec + 1
@@ -277,7 +278,7 @@ subroutine op0149()
                             zr(iamor+i-1) = amorun
                         endif
                     endif
-31              continue
+ 31             continue
 !
 !---------SINON, SEULS LES MODES COUPLES SONT RETENUS
 !
@@ -287,7 +288,7 @@ subroutine op0149()
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
                 do 40 i = 1, nbmfl
                     zi(inuor+i-1) = zi(inumo+i-1)
-40              continue
+ 40             continue
             endif
 !
         endif
@@ -304,7 +305,7 @@ subroutine op0149()
             call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
                         0, sjv=jpara, styp=kbid)
             zi(inuor+i-1) = zi(jpara)
-50      continue
+ 50     continue
         if ((lnuor.and.lamor) .or. (lnuor.and.lamoru)) then
             do 51 i = 1, nbnuo1
                 nocopl = .true.
@@ -315,8 +316,8 @@ subroutine op0149()
                         nocopl = .false.
                         goto 53
                     endif
-52              continue
-53              continue
+ 52             continue
+ 53             continue
                 do 54 k = 1, nbmode
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
                                 0, sjv=jpara, styp=kbid)
@@ -324,13 +325,13 @@ subroutine op0149()
                         numok = .true.
                         goto 55
                     endif
-54              continue
-55              continue
+ 54             continue
+ 55             continue
                 if (nocopl .and. numok) then
                     if (lamor) zr(iamor+numode-1) = zr(iamo1+i-1)
                     if (lamoru) zr(iamor+numode-1) = amorun
                 endif
-51          continue
+ 51         continue
         else if (lamor .or. lamoru) then
             idec = 0
             do 56 i = 1, nbnuor
@@ -341,8 +342,8 @@ subroutine op0149()
                         nocopl = .false.
                         goto 58
                     endif
-57              continue
-58              continue
+ 57             continue
+ 58             continue
                 if (nocopl) then
                     if (lamor) then
                         idec = idec + 1
@@ -351,7 +352,7 @@ subroutine op0149()
                         zr(iamor+i-1) = amorun
                     endif
                 endif
-56          continue
+ 56         continue
         endif
 !
     endif

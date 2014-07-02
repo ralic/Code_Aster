@@ -52,17 +52,16 @@ subroutine nupodd(nu, base, rang, nbproc)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer :: nbma, nbnoma,  jnumsd
-    integer :: nlili, ili, igr, nel, iel, numa,  jpddl, nbno, ino
-    integer :: nuno, iddl, nddl, ddl1g,  numpro, curpro, k1, n1
-    integer :: ddl1l, ilib, neql,  jconx2,  idprn2
-    integer ::   nec
+    integer :: nbma, nbnoma, jnumsd
+    integer :: nlili, ili, igr, nel, iel, numa, jpddl, nbno, ino
+    integer :: nuno, iddl, nddl, ddl1g, numpro, curpro, k1, n1
+    integer :: ddl1l, ilib, neql, jconx2, idprn2
+    integer :: nec
 !
     character(len=8) :: noma, mo, partit
     character(len=19) :: ligrmo, nomlig
 !
-    logical :: ldist
-    logical(kind=1) :: ldgrel
+    aster_logical :: ldist, ldgrel
     integer, pointer :: adne(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     integer, pointer :: connex(:) => null()

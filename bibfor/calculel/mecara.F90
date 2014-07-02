@@ -1,6 +1,7 @@
 subroutine mecara(cara_elem, chcara, exicar)
 !
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +22,7 @@ subroutine mecara(cara_elem, chcara, exicar)
 !
     character(len=*), intent(in) :: cara_elem
     character(len=*), intent(inout) :: chcara(18)
-    logical(kind=1), optional, intent(out) :: exicar
+    aster_logical, optional, intent(out) :: exicar
 !
 ! --------------------------------------------------------------------------------------------------
 !

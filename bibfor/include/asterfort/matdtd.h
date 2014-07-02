@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine matdtd(nomte, testl1, testl2, dsidep, cisail,&
                       x3, cour, r, cosa, kappa,&
                       dtildi)
         character(len=16) :: nomte
-        logical(kind=1) :: testl1
-        logical(kind=1) :: testl2
+        aster_logical :: testl1
+        aster_logical :: testl2
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: cisail
         real(kind=8) :: x3

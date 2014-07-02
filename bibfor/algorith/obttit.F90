@@ -18,7 +18,8 @@ subroutine obttit(sdtabl, sepcol, entet1, entet2, entet3)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -54,7 +55,7 @@ subroutine obttit(sdtabl, sepcol, entet1, entet2, entet3)
     character(len=24) :: slcolo, sdcolo
     integer :: icol, ncol, pos
     integer :: larcol, larlig, tithau
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
     character(len=16) :: titli1, titli2, titli3
 !
 ! ----------------------------------------------------------------------
@@ -108,7 +109,7 @@ subroutine obttit(sdtabl, sepcol, entet1, entet2, entet3)
             if (tithau .eq. 3) entet3(pos:pos+larcol-1) = titli3
             pos = pos+larcol+1
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 !

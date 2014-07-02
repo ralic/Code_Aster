@@ -20,6 +20,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 !     COMMANDE :  POST_CHAMP / COQU_EXCENT
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -49,7 +50,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(2), lchout(1)
     character(len=19) :: excit
     integer :: vali(2), iexi
-    logical(kind=1) :: lreel, lnoeu, ldetli, lvide
+    aster_logical :: lreel, lnoeu, ldetli, lvide
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -71,93 +72,93 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     modeav=' '
     ldetli=.false.
     lvide=.true.
-    do 20,iocc=1,nocc
+    do 20 iocc = 1, nocc
 !
 !     -- 2.  : NOMSYM, MPLAN :
 !     --------------------------------------------------
-    motfac='COQU_EXCENT'
-    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
-    ASSERT(nomsym.eq.'EFGE_ELNO'.or.nomsym.eq.'EFGE_ELGA')
-    call getvtx(motfac, 'MODI_PLAN', iocc=iocc, scal=mplan, nbret=ibid)
-    ASSERT(mplan.eq.'OUI')
-    lnoeu=nomsym.eq.'EFGE_ELNO'
+        motfac='COQU_EXCENT'
+        call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
+        ASSERT(nomsym.eq.'EFGE_ELNO'.or.nomsym.eq.'EFGE_ELGA')
+        call getvtx(motfac, 'MODI_PLAN', iocc=iocc, scal=mplan, nbret=ibid)
+        ASSERT(mplan.eq.'OUI')
+        lnoeu=nomsym.eq.'EFGE_ELNO'
 !
 !
 !     -- 3. : BOUCLE SUR LES CHAMPS
 !     --------------------------------------------------
-    do 10,i=1,nbordr
-    nuordr=liordr(i)
-    call rsexch(' ', resu19, nomsym, nuordr, chin,&
-                iret)
-    if (iret .eq. 0) then
+        do 10 i = 1, nbordr
+            nuordr=liordr(i)
+            call rsexch(' ', resu19, nomsym, nuordr, chin,&
+                        iret)
+            if (iret .eq. 0) then
 !
 !         -- 3.1 : MODELE, CARELE, LIGREL :
-        call rslesd(resu, nuordr, modele, mate, carele,&
-                    excit, ibid)
-        if (modele .ne. modeav) then
-            if (ldetli) call detrsd('LIGREL', ligrel)
-            call exlima(' ', 1, 'G', modele, ligrel)
-            modeav=modele
+                call rslesd(resu, nuordr, modele, mate, carele,&
+                            excit, ibid)
+                if (modele .ne. modeav) then
+                    if (ldetli) call detrsd('LIGREL', ligrel)
+                    call exlima(' ', 1, 'G', modele, ligrel)
+                    modeav=modele
 !             -- SI ON CREE UN LIGREL, IL FAUT VERIFIER QUE L'ON S'EN
 !                SERT VRAIMENT. SINON, IL FAUT LE DETRUIRE:
-            ldetli=.false.
-            if (ligrel(1:8) .ne. modele) ldetli=.true.
-        endif
+                    ldetli=.false.
+                    if (ligrel(1:8) .ne. modele) ldetli=.true.
+                endif
 !
-        call rsexch(' ', nomres, nomsym, nuordr, chextr,&
-                    iret)
-        ASSERT(iret.eq.100)
+                call rsexch(' ', nomres, nomsym, nuordr, chextr,&
+                            iret)
+                ASSERT(iret.eq.100)
 !
-        call jelira(chin//'.CELV', 'TYPE', cval=tsca)
-        if (tsca .eq. 'R') then
-            lreel=.true.
-        else if (tsca.eq.'C') then
-            lreel=.false.
-        else
-            ASSERT(.false.)
-        endif
+                call jelira(chin//'.CELV', 'TYPE', cval=tsca)
+                if (tsca .eq. 'R') then
+                    lreel=.true.
+                else if (tsca.eq.'C') then
+                    lreel=.false.
+                else
+                    ASSERT(.false.)
+                endif
 !
-        if (lnoeu) then
-            if (lreel) then
-                lpain(1)='PEFFONR'
-                lpaout(1)='PEFFOENR'
-            else
-                lpain(1)='PEFFONC'
-                lpaout(1)='PEFFOENC'
+                if (lnoeu) then
+                    if (lreel) then
+                        lpain(1)='PEFFONR'
+                        lpaout(1)='PEFFOENR'
+                    else
+                        lpain(1)='PEFFONC'
+                        lpaout(1)='PEFFOENC'
+                    endif
+                else
+                    if (lreel) then
+                        lpain(1)='PEFFOGR'
+                        lpaout(1)='PEFFOEGR'
+                    else
+                        lpain(1)='PEFFOGC'
+                        lpaout(1)='PEFFOEGC'
+                    endif
+                endif
+!
+                lchin(1)=chin
+                lchout(1)=chextr
+!
+                lpain(2)='PCACOQU'
+                lchin(2)=carele//'.CARCOQUE'
+!
+                call calcul('C', 'EFGE_EXCENT', ligrel, 2, lchin,&
+                            lpain, 1, lchout, lpaout, 'G',&
+                            'OUI')
+!
+                call jeexin(lchout(1)//'.CELV', iexi)
+                if (iexi .eq. 0) then
+                    vali(1)=iocc
+                    vali(2)=nuordr
+                    call utmess('A', 'CALCULEL2_19', ni=2, vali=vali)
+                else
+                    ldetli=.false.
+                    lvide=.false.
+                    call rsnoch(nomres, nomsym, nuordr)
+                endif
             endif
-        else
-            if (lreel) then
-                lpain(1)='PEFFOGR'
-                lpaout(1)='PEFFOEGR'
-            else
-                lpain(1)='PEFFOGC'
-                lpaout(1)='PEFFOEGC'
-            endif
-        endif
-!
-        lchin(1)=chin
-        lchout(1)=chextr
-!
-        lpain(2)='PCACOQU'
-        lchin(2)=carele//'.CARCOQUE'
-!
-        call calcul('C', 'EFGE_EXCENT', ligrel, 2, lchin,&
-                    lpain, 1, lchout, lpaout, 'G',&
-                    'OUI')
-!
-        call jeexin(lchout(1)//'.CELV', iexi)
-        if (iexi .eq. 0) then
-            vali(1)=iocc
-            vali(2)=nuordr
-            call utmess('A', 'CALCULEL2_19', ni=2, vali=vali)
-        else
-            ldetli=.false.
-            lvide=.false.
-            call rsnoch(nomres, nomsym, nuordr)
-        endif
-    endif
-10  continue
-    20 end do
+ 10     continue
+ 20 end do
 !
     if (ldetli) call detrsd('LIGREL', ligrel)
     if (lvide) then
@@ -165,6 +166,6 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     endif
 !
 !
-30  continue
+ 30 continue
     call jedema()
 end subroutine

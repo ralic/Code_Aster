@@ -28,12 +28,13 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     integer :: kpi, yamec, yate, yap1, yap2
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
     integer :: addeme, addep1, addep2, addete, ndim, retcom
     real(kind=8) :: defgem(*), defgep(*), t0, p10, p20
     real(kind=8) :: depsv, epsv, deps(6), t, p1, p2, dt, dp1, dp2
@@ -70,14 +71,14 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
     if (yamec .eq. 1) then
         do 100 i = 1, 6
             deps(i)=defgep(addeme+ndim-1+i)-defgem(addeme+ndim-1+i)
-100      continue
+100     continue
         do 101 i = 1, 3
             depsv=depsv+defgep(addeme+ndim-1+i)-defgem(addeme+ndim-1+&
             i)
-101      continue
+101     continue
         do 102 i = 1, 3
             epsv=epsv+defgep(addeme+ndim-1+i)
-102      continue
+102     continue
     endif
 !
     if (yachai) then
@@ -96,13 +97,13 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
         dp1=defgep(addep1)-defgem(addep1)
         do 103 i = 1, ndim
             grap1(i)=defgep(addep1+i)
-103      continue
+103     continue
         if (yap2 .eq. 1) then
             p2=defgep(addep2)+p20
             dp2=defgep(addep2)-defgem(addep2)
             do 104 i = 1, ndim
                 grap2(i)=defgep(addep2+i)
-104          continue
+104         continue
         endif
     endif
 ! ======================================================================
@@ -115,7 +116,7 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
         t=defgep(addete)+t0
         do 105 i = 1, ndim
             grat(i)=defgep(addete+i)
-105      continue
+105     continue
         if (t .le. 0.d0) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3) (1:8)

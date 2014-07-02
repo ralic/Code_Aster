@@ -24,6 +24,7 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dimp0.h"
@@ -34,7 +35,7 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
     integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
     integer :: regula(6), icompo, nddlc
@@ -99,13 +100,13 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf1,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npi,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrf1, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf2,fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos2,&
-  npg=npi2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2)
+    call elrefe_info(elrefe=elrf2, fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos2,&
+                     npg=npi2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
 ! ======================================================================
 ! --- RECUPERATION DU TYPE DE LA MODELISATION --------------------------
 ! ======================================================================

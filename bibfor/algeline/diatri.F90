@@ -1,6 +1,7 @@
 subroutine diatri(n, d, e, vector, evec,&
                   ldevec)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -13,7 +14,7 @@ subroutine diatri(n, d, e, vector, evec,&
 #include "blas/idamax.h"
     integer :: n, ldevec
     real(kind=8) :: d(*), e(*), evec(ldevec, *)
-    logical(kind=1) :: vector
+    aster_logical :: vector
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,13 +65,13 @@ subroutine diatri(n, d, e, vector, evec,&
     iter = 0
     do 60 l = 1, n
 !    --- RECHERCHE DE LA PLUS PETITE VALEUR DE LA DIAGONALE SUPERIEURE.
-10      continue
+ 10     continue
         do 20 m = l, n
             if (m .eq. n) goto 30
             if (abs(e(m)) .le. max(tol*(abs(d(m))+abs(d(m+1))), tiny)) goto 30
-20      continue
+ 20     continue
 !
-30      continue
+ 30     continue
         p = d(l)
         if (m .eq. l) goto 60
         if (iter .eq. 30*n) then
@@ -102,18 +103,18 @@ subroutine diatri(n, d, e, vector, evec,&
             if (vector) call drot(n, evec(1, i+1), 1, evec(1, i), 1,&
                                   c, s)
 !
-40      continue
+ 40     continue
 !
         d(l) = d(l) - p
         e(l) = g
         e(m) = 0.0d0
         goto 10
 !
-50      continue
+ 50     continue
         d(i+1) = d(i+1) - p
         e(m) = 0.0d0
         goto 10
-60  end do
+ 60 end do
 !    --- POSITION DES VALEURS ET VECTERUS PROPRES ---
     do 90 i = 1, n - 1
         k = i
@@ -124,7 +125,7 @@ subroutine diatri(n, d, e, vector, evec,&
                 k = j
                 p = d(j)
             endif
-70      continue
+ 70     continue
 !
         if (k .ne. i) then
             d(k) = d(i)
@@ -132,15 +133,15 @@ subroutine diatri(n, d, e, vector, evec,&
             if (vector) call dswap(n, evec(1, i), 1, evec(1, k), 1)
         endif
 !
-90  end do
+ 90 end do
 !          --- NORMALISATION DES VECTEURS PROPRES ---
     if (vector) then
         do 100 j = 1, n
             i = idamax(n,evec(1,j),1)
             scale = evec(i,j)
             call dscal(n, 1.0d0/scale, evec(1, j), 1)
-100      continue
+100     continue
     endif
 !
-9000  continue
+9000 continue
 end subroutine

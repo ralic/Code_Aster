@@ -23,6 +23,7 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmedco.h"
@@ -72,7 +73,7 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !-----------------------------------------------------------------------
 !
 !
-    logical(kind=1) :: grand, axi, resi, rigi, elas
+    aster_logical :: grand, axi, resi, rigi, elas
 !
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, k
 !
@@ -108,7 +109,7 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !     INITIALISATION CODES RETOURS
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 !
 ! MATRICE DE CHANGEMENT DE REPERE : DU GLOBAL AU LOCAL  :
@@ -173,16 +174,16 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                 drot = 0.d0
                 do 34 k = 1, 2
                     drot = drot + d(i,k)*rot(j,k)
-34              continue
+ 34             continue
                 rtemp(i,j) = drot
-33          continue
-32      continue
+ 33         continue
+ 32     continue
 !
         do 38 i = 1, 4
             do 39 j = 1, 2
                 d(i,j) = rtemp(i,j)
-39          continue
-38      continue
+ 39         continue
+ 38     continue
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
 !
@@ -193,20 +194,20 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
 !       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 !
         if (axi) then
             do 50 n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
-50          continue
+ 50         continue
         endif
 !
         do 60 i = 1, 3
             sign(i) = sigm(i,kpg)
-60      continue
+ 60     continue
         sign(4) = sigm(4,kpg)*rac2
 !
 !       CALCUL DE S ET Q AU POINT DE GAUSS COURANT I.E. SG ET QG :
@@ -222,13 +223,13 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
             s(i) = s(i) + poids*sg(i)
             do 65 j = 1, 2
                 q(i,j) = q(i,j) + poids*qg(i,j)
-65          continue
+ 65         continue
             do 66 j = 1, 8
                 dsdu(i,j) = dsdu(i,j) + poids*dsdug(i,j)
-66          continue
-64      continue
+ 66         continue
+ 64     continue
 !
-800  end do
+800 end do
 !
 !
 ! - APPEL DU COMPORTEMENT :
@@ -279,16 +280,16 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                 drot = 0.d0
                 do 37 k = 1, 2
                     drot = drot + d(i,k)*rot(j,k)
-37              continue
+ 37             continue
                 rtemp(i,j) = drot
-36          continue
-35      continue
+ 36         continue
+ 35     continue
 !
         do 52 i = 1, 4
             do 53 j = 1, 2
                 d(i,j) = rtemp(i,j)
-53          continue
-52      continue
+ 53         continue
+ 52     continue
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
 !
@@ -299,20 +300,20 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
-31          continue
-41      continue
+ 31         continue
+ 41     continue
 !
 !       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 !
         if (axi) then
             do 51 n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
-51          continue
+ 51         continue
         endif
 !
         do 61 i = 1, 3
             sign(i) = sigm(i,kpg)
-61      continue
+ 61     continue
         sign(4) = sigm(4,kpg)*rac2
 !
 !       LA VARIATION DE DEF DEPS : DEVIENT LA SOMME DES VARIATION
@@ -324,9 +325,9 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
             dda = 0.d0
             do 70 j = 1, 2
                 dda = dda + d(i,j)*(alphap(j)-alpham(j))
-70          continue
+ 70         continue
             deps(i) = bdu(i) + dda
-80      continue
+ 80     continue
 !
 ! CALCUL DE LA CONTRAINTE
 !------------------------
@@ -365,9 +366,9 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                     do 74 j = 1, 8
                         do 75 k = 1, 2
                             dalfu(i,j) = dalfu(i,j) + dalfs(i,k)*dsdu( k,j)
-75                      continue
-74                  continue
-73              continue
+ 75                     continue
+ 74                 continue
+ 73             continue
 !
 !
 ! ON MET LE PRODUIT D.DALFU DANS DH :
@@ -379,9 +380,9 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                     do 77 j = 1, 8
                         do 78 k = 1, 2
                             dh(i,j) = dh(i,j) + d(i,k)*dalfu(k,j)
-78                      continue
-77                  continue
-76              continue
+ 78                     continue
+ 77                 continue
+ 76             continue
 !
             endif
 !
@@ -389,13 +390,13 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !
             do 160 n = 1, nno
                 do 150 i = 1, 2
-                    do 151,kl=1,4
-                    sig(kl)=0.d0
-                    sig(kl)=sig(kl) + def(1,n,i)*dsidep(1,kl)
-                    sig(kl)=sig(kl) + def(2,n,i)*dsidep(2,kl)
-                    sig(kl)=sig(kl) + def(3,n,i)*dsidep(3,kl)
-                    sig(kl)=sig(kl) + def(4,n,i)*dsidep(4,kl)
-151                  continue
+                    do 151 kl = 1, 4
+                        sig(kl)=0.d0
+                        sig(kl)=sig(kl) + def(1,n,i)*dsidep(1,kl)
+                        sig(kl)=sig(kl) + def(2,n,i)*dsidep(2,kl)
+                        sig(kl)=sig(kl) + def(3,n,i)*dsidep(3,kl)
+                        sig(kl)=sig(kl) + def(4,n,i)*dsidep(4,kl)
+151                 continue
                     do 140 j = 1, 2
                         do 130 m = 1, n
                             if (m .eq. n) then
@@ -424,10 +425,10 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
                                 matuu(kk) = matuu(kk) + tmp*poids
                             endif
 !
-130                      continue
-140                  continue
-150              continue
-160          continue
+130                     continue
+140                 continue
+150             continue
+160         continue
 !
         endif
 !
@@ -441,18 +442,18 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 !                VECTU(I,N) = VECTU(I,N) + DEF(KL,N,I)*SIGMA(KL)*POIDS
                         zr(ivectu-1+2*(n-1)+i)= zr(ivectu-1+2*(n-1)+i)&
                         +def(kl,n,i)*sigma(kl)*poids
-210                  continue
-220              continue
-230          continue
+210                 continue
+220             continue
+230         continue
 !
             do 310 kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-310          continue
+310         continue
             sigp(4,kpg) = sigma(4)/rac2
 !
         endif
 !
-801  end do
+801 end do
 !
 !
 !

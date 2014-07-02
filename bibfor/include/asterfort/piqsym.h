@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine piqsym(x, y, quar1, quar2, quar3,&
                       quar4)
         real(kind=8) :: x
         real(kind=8) :: y
-        logical(kind=1) :: quar1
-        logical(kind=1) :: quar2
-        logical(kind=1) :: quar3
-        logical(kind=1) :: quar4
+        aster_logical :: quar1
+        aster_logical :: quar2
+        aster_logical :: quar3
+        aster_logical :: quar4
     end subroutine piqsym
 end interface

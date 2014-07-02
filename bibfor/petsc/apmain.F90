@@ -75,7 +75,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/uttcpu.h"
 !
 #ifdef _HAVE_PETSC
-
+!
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
@@ -92,7 +92,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     real(kind=8) :: divtol, resipc
     complex(kind=8) :: cbid
 !
-    logical(kind=1) :: lmd
+    aster_logical :: lmd
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -182,7 +182,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        -- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
         call mtdscr(nomat)
         call jeveuo(nomat//'.&INT', 'L', lmat)
-        call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
+        call mrconl('MULT', lmat, 0, 'R', rsolu,&
+                    1)
 !
 !        -- MISE A ZERO DES TERMES NON CINEMATIQUES DONT LE PROC 
 !           COURANT N'EST PAS SEUL PROPRIETAIRE 
@@ -224,31 +225,33 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        ----------------
 !
 !       ARRET ANORMAL DU KSP
-        if (ierr .gt. 0)  call utmess('F', 'PETSC_13')
+        if (ierr .gt. 0) call utmess('F', 'PETSC_13')
 !
 !       ANALYSE DE LA CONVERGENCE DU KSP
         call KSPGetConvergedReason(ksp, indic, ierr)
         ASSERT(ierr.eq.0)
         call KSPGetIterationNumber(ksp, its, ierr)
-
+!
 !       -- si LDLT_SP et its > maxits, on essaye une 2eme fois
 !       -- apres avoir actualise le preconditionneur :
-        if ((indic .eq. KSP_DIVERGED_ITS).and.(precon.eq.'LDLT_SP')) then
-            call ap2foi(kptsc,mpicou, nosolv,lmd,indic,its)
+        if ((indic .eq. KSP_DIVERGED_ITS) .and. (precon.eq.'LDLT_SP')) then
+            call ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
+                        its)
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)
         endif
-
-
+!
+!
 !       ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
 !       EN CAS DE DIVERGENCE
         if (indic .lt. 0) then
-            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
+            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,&
+                                  ierr)
             ASSERT(ierr.eq.0)
-
+!
             if (indic .eq. KSP_DIVERGED_ITS) then
 !               -- NOMBRE MAX D'ITERATIONS
-
+!
                 if ((istop.eq.0) .or. (precon.ne.'LDLT_SP')) then
                     nmaxit=maxits
                     call utmess('F', 'PETSC_5', si=nmaxit)
@@ -256,32 +259,32 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                     iret = 1
                     goto 999
                 endif
-
+!
             else if (indic.eq.KSP_DIVERGED_DTOL) then
 !               DIVERGENCE
                 divtol = dtol
                 call utmess('F', 'PETSC_6', sr=divtol)
-
+!
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN) then
 !               BREAKDOWN
                 call utmess('F', 'PETSC_7')
-
+!
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN_BICG) then
 !               BREAKDOWN BiCG
                 call utmess('F', 'PETSC_8')
-
+!
             else if (indic.eq.KSP_DIVERGED_NONSYMMETRIC) then
 !               MATRICE NON SYMETRIQUE
                 call utmess('F', 'PETSC_9')
-
+!
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
-
+!
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_MAT) then
 !               MATRICE NON DEFINIE
                 call utmess('F', 'PETSC_11')
-
+!
             else
 !              AUTRE ERREUR
                 ptserr = indic
@@ -315,7 +318,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             call VecDestroy(r, ierr)
             ASSERT(ierr.eq.0)
 !
-            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
+            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,&
+                                  ierr)
             ASSERT(ierr.eq.0)
 !
             if (fres .gt. sqrt(rtol)*ires) then
@@ -332,7 +336,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !         --------------------------------
 !
 !        -- EN CAS D'ERREUR DANS LES ITERATIONS DE KRYLOV ON SAUTE ICI
-999      continue
+999     continue
         call VecDestroy(b, ierr)
         ASSERT(ierr.eq.0)
         call VecDestroy(x, ierr)

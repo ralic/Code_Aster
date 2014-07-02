@@ -1,9 +1,10 @@
-subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
+subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
                   sdstat, valinc, solalg, ctcsta, mmcvca,&
                   instan)
 !
-    implicit      none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfdisi.h"
@@ -72,7 +73,7 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
     character(len=24), intent(in) :: sdstat
     character(len=19), intent(in) :: valinc(*)
     character(len=19), intent(in) :: solalg(*)
-    logical(kind=1), intent(out) :: mmcvca
+    aster_logical, intent(out) :: mmcvca
     integer, intent(out) :: ctcsta
     real(kind=8), intent(in) :: instan
 !
@@ -118,7 +119,7 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
     real(kind=8) :: lambdc(1)
     real(kind=8) :: noor
     real(kind=8) :: jeu, jeuvit, dist
-    real(kind=8) :: pres_frot(3),dist_frot(3)
+    real(kind=8) :: pres_frot(3), dist_frot(3)
     real(kind=8) :: coef_cont, coef_frot
     character(len=8) :: nommai, aliase
     character(len=19) :: cnsplu, cnsdel
@@ -128,9 +129,9 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
     character(len=19) :: oldgeo, newgeo
     character(len=19) :: chavit, chdepd
     character(len=19) :: depdel, depplu, vitplu
-    logical(kind=1) :: lgliss, lvites, scotch
-    logical(kind=1) :: lglini, lveri, lexig, lboucc, l_coef_adap
-    logical(kind=1) :: lfrotz, lpenaf, lfrot
+    aster_logical :: lgliss, lvites, scotch
+    aster_logical :: lglini, lveri, lexig, lboucc, l_coef_adap
+    aster_logical :: lfrotz, lpenaf, lfrot
     integer :: mmitgo, mmitfr, mmitca
     character(len=24) :: sd_cycl_his, sd_cycl_coe
     integer :: jcyhis, jcycoe
@@ -148,8 +149,8 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lexig       = cfdisl(defico,'EXIS_GLISSIERE')
-    lboucc      = cfdisl(defico,'CONT_BOUCLE')
+    lexig = cfdisl(defico,'EXIS_GLISSIERE')
+    lboucc = cfdisl(defico,'CONT_BOUCLE')
     l_coef_adap = cfdisl(defico,'COEF_ADAPT')
 !
 ! - Acces to contact objects
@@ -166,8 +167,8 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
 !
     sd_cycl_his = resoco(1:14)//'.CYCHIS'
     sd_cycl_coe = resoco(1:14)//'.CYCCOE'
-    call jeveuo(sd_cycl_his,'E',jcyhis)
-    call jeveuo(sd_cycl_coe,'E',jcycoe)
+    call jeveuo(sd_cycl_his, 'E', jcyhis)
+    call jeveuo(sd_cycl_coe, 'E', jcycoe)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -313,7 +314,7 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
 !
 ! ------------- Previous status
 !
-                indi_cont_init = nint(zr(jtabf+ztabf*(iptc-1)+22))  
+                indi_cont_init = nint(zr(jtabf+ztabf*(iptc-1)+22))
                 if (lfrotz) indi_frot_init = nint(zr(jtabf+ztabf*(iptc-1)+23))
                 coef_cont = zr(jcyhis-1+25*(iptc-1)+2)
                 coef_frot = zr(jcyhis-1+25*(iptc-1)+6)
@@ -380,22 +381,22 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
 ! ------------- Evaluate friction status
 !
                 if (lfrotz) then
-                    call mmstaf(noma          , ndimg , chdepd, coef_frot, lpenaf    , &
-                                nummae        , aliase, nne   , nummam   , ksipc1    , &
-                                ksipc2        , ksipr1, ksipr2, mlagf1   , mlagf2    , &
-                                tau1          , tau2  , norm  , pres_frot, dist_frot , &
+                    call mmstaf(noma, ndimg, chdepd, coef_frot, lpenaf,&
+                                nummae, aliase, nne, nummam, ksipc1,&
+                                ksipc2, ksipr1, ksipr2, mlagf1, mlagf2,&
+                                tau1, tau2, norm, pres_frot, dist_frot,&
                                 indi_frot_eval)
                 endif
 !
 ! ------------- Status treatment
 !
-                call mmalgo(defico, resoco, lboucc, lfrotz, lvites,  &
-                            lglini , l_coef_adap, izone ,iptc  , indi_cont_init, indi_cont_eval, &
-                            indi_frot_eval, jeu  , jeuvit     , lambdc(1)     , dist_frot     , &
-                            pres_frot   , zr(jcyhis), zr(jcycoe) , indi_cont_curr, indi_frot_curr,&
-                            ctcsta,mmcvca, scotch   )
+                call mmalgo(defico, resoco, lboucc, lfrotz, lvites,&
+                            lglini, l_coef_adap, izone, iptc, indi_cont_init,&
+                            indi_cont_eval, indi_frot_eval, jeu, jeuvit, lambdc(1),&
+                            dist_frot, pres_frot, zr(jcyhis), zr(jcycoe), indi_cont_curr,&
+                            indi_frot_curr, ctcsta, mmcvca, scotch)
 !
-19              continue
+ 19             continue
 !
 ! ------------- Save status
 !
@@ -415,7 +416,7 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
                 iptc = iptc + 1
             end do
         end do
-25      continue
+ 25     continue
     end do
 !
 ! --- GESTION DE LA GLISSIERE

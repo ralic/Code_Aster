@@ -20,6 +20,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
 !
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -78,12 +79,12 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 #ifdef _HAVE_PETSC
 #include "asterf_petsc.h"
-
+!
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: iprem, k, nglo, kdeb, jnequ
-    integer :: jrefa,  kptsc
+    integer :: jrefa, kptsc
     integer :: np
     real(kind=8) :: r8
     PetscInt :: m, n
@@ -93,7 +94,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     character(len=4) :: etamat
     character(len=1) :: rouc
     real(kind=8), pointer :: travail(:) => null()
-    logical(kind=1) :: lqr
+    aster_logical :: lqr
 !
 !----------------------------------------------------------------
 !
@@ -104,7 +105,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     PetscScalar :: sbid
     PetscOffset :: offbid
     PetscReal :: rbid
-    
+!
 !----------------------------------------------------------------
 !   INITIALISATION DE PETSC A FAIRE AU PREMIER APPEL
     save iprem
@@ -143,8 +144,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 ! Tous les codes de retour non-nuls de PETSc feront planter le code 
 !
-       call PetscPushErrorHandler(PetscAbortErrorHandler,                   &
-     &                           PETSC_NULL_INTEGER, ierr)
+        call PetscPushErrorHandler(PetscAbortErrorHandler, PETSC_NULL_INTEGER, ierr)
         call PetscInitialize(PETSC_NULL_CHARACTER, ierr)
         if (ierr .ne. 0) call utmess('F', 'PETSC_1')
         call PetscInitializeFortran(ierr)
@@ -215,7 +215,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !   3. quelques verifications et petites actions :
 !   ----------------------------------------------
- 1  continue
+  1 continue
 !
     if (action .eq. 'PRERES') then
 !        -- remplissage du commun
@@ -279,7 +279,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         end do
         AS_DEALLOCATE(vr=travail)
     else
-        call apmain(action, kptsc, rsolu, vcine, istop, iret)
+        call apmain(action, kptsc, rsolu, vcine, istop,&
+                    iret)
     endif
 !
 999 continue

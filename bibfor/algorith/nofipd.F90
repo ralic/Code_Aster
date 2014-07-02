@@ -25,6 +25,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
@@ -35,7 +36,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 #include "asterfort/uthk.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1, lgpg
     integer :: mate
     integer :: vu(3, 27), vp(27), vpi(3, 27)
@@ -92,7 +93,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 ! OUT CODRET  : CODE RETOUR
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: g, nddl
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: os, kk

@@ -1,5 +1,6 @@
 subroutine dxsit2(nomte, pgl, sigma)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dxmat2.h"
 #include "asterfort/elrefe_info.h"
@@ -68,16 +69,16 @@ subroutine dxsit2(nomte, pgl, sigma)
     character(len=4) :: fami
     character(len=10) :: phenom
 !
-    logical(kind=1) :: dkg
+    aster_logical :: dkg
 !
 ! ----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
 !     -----------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     iret1 = 0
     iret2 = 0
@@ -125,7 +126,7 @@ subroutine dxsit2(nomte, pgl, sigma)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', ipg,&
                     3*nbcou, tsup(ipg), iret4)
         iret5 = iret5+iret2+iret3+iret4
- 5  end do
+  5 end do
 !
     call jevech('PMATERC', 'L', jmate)
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
@@ -175,10 +176,10 @@ subroutine dxsit2(nomte, pgl, sigma)
                     endif
                 endif
 !
-120          continue
-110      continue
-100  end do
+120         continue
+110     continue
+100 end do
 !
-9999  continue
+9999 continue
 !
 end subroutine

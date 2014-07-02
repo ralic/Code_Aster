@@ -2,6 +2,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
                   vecp, mxresf, resufi, resufr, lagr,&
                   vauc, omecor)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
@@ -57,7 +58,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
     real(kind=8) :: auxik, seuilc
     integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
     integer :: vali(5), ifm, niv, nbfr, ibid
-    logical(kind=1) :: trouve, lconj
+    aster_logical :: trouve, lconj
     character(len=1) :: kmsg
     character(len=16) :: valk, typres
 !
@@ -95,7 +96,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
     call wkvect('&&WP4VEC.INDIC.PART.VP', 'V V I', nbvect, iadind)
     do 1 j = 1, nbvect
         zi(iadind + j-1) = -2
- 1  end do
+  1 end do
     do 2 j = 1, nbvect
         auxrj=dble(vp(j))
         auxij=dimag(vp(j))
@@ -107,7 +108,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
                 if (abs(auxrj) .lt. seuilr) auxrj=0.d0
                 k = j + 1
                 trouve = .false.
- 3              continue
+  3             continue
                 if ((.not. trouve ) .and. ( k .le. nbvect)) then
                     auxrk=dble(vp(k))
                     auxik=dimag(vp(k))
@@ -141,7 +142,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
                 endif
             endif
         endif
- 2  end do
+  2 end do
 !
     if (zi(iadind + nbvect-1) .eq. -2) then
         zi(iadind + nbvect-1) = 0
@@ -173,15 +174,15 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
             if (k .ne. j) then
                 vp(k) = vp(j)
                 zi(iadind + k-1) = zi(iadind + j-1)
-                do 55, i = 1, neq, 1
-                vecp(i,k) = vecp(i,j)
-                vauc(i,k) = vauc(i,j)
-                vauc(i+neq,k) = vauc(i+neq,j)
-55              continue
+                do 55 i = 1, neq, 1
+                    vecp(i,k) = vecp(i,j)
+                    vauc(i,k) = vauc(i,j)
+                    vauc(i+neq,k) = vauc(i+neq,j)
+ 55             continue
             endif
             k = k + 1
         endif
-44  continue
+ 44 continue
     nbfrga=k-1
 ! NBRE DE VP RECOMPACTEES
     nbfr=k-1
@@ -202,7 +203,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
                 nbfrga=nbfrga-1
             endif
         endif
-10  end do
+ 10 end do
 !
 !
 ! --- 1.3. ELIMINATION DES VALEURS FAUSSES -- RECOMPACTAGE --
@@ -213,28 +214,28 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
                 vp(k) = vp(j)
                 zi(iadind + k-1) = zi(iadind + j-1)
 !
-                do 5, i = 1, neq, 1
-                vecp(i,k) = vecp(i,j)
-                vauc(i,k) = vauc(i,j)
-                vauc(i+neq,k) = vauc(i+neq,j)
- 5              continue
+                do 5 i = 1, neq, 1
+                    vecp(i,k) = vecp(i,j)
+                    vauc(i,k) = vauc(i,j)
+                    vauc(i+neq,k) = vauc(i+neq,j)
+  5             continue
             endif
             k = k + 1
         endif
- 4  end do
+  4 end do
     nbfrga=k-1
 !
 ! --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
-    do 20, j = 1, nbfrga, 1
-    if ((zi(iadind + j-1).eq.1 ) .and. ( dimag(vp(j)).lt.0.d0)) then
-        vp(j) = dconjg(vp(j))
-        do 21 i = 1, neq
-            vecp(i,j) = dconjg(vecp(i,j))
-            vauc(i,j) = dconjg(vauc(i,j))
-            vauc(i+neq,j) = dconjg(vauc(i+neq,j))
-21      continue
-    endif
-    20 end do
+    do 20 j = 1, nbfrga, 1
+        if ((zi(iadind + j-1).eq.1 ) .and. ( dimag(vp(j)).lt.0.d0)) then
+            vp(j) = dconjg(vp(j))
+            do 21 i = 1, neq
+                vecp(i,j) = dconjg(vecp(i,j))
+                vauc(i,j) = dconjg(vauc(i,j))
+                vauc(i+neq,j) = dconjg(vauc(i+neq,j))
+ 21         continue
+        endif
+ 20 end do
 !
 ! --- 4. PREPARATION DE RESUFR
 !
@@ -272,7 +273,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
         resufi(j,1) = j
         resufr(j,2) = om
         resufr(j,3) = -dble(vp(j))/sqrt(om + am)
-30  end do
+ 30 end do
 !
 ! --- 6. DESTRUCTION DES OJB TEMPORAIRES
     call jedetr('&&WP4VEC.VEC.AUX.C1')

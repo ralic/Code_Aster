@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ndloam(sddyna, result, evonol, nume)
         character(len=19) :: sddyna
         character(len=8) :: result
-        logical(kind=1) :: evonol
+        aster_logical :: evonol
         integer :: nume
     end subroutine ndloam
 end interface

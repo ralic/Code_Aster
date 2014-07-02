@@ -18,8 +18,9 @@ subroutine subac1(laxi, nno, vff, dff, geom,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 !
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     integer :: nno
     real(kind=8) :: vff(nno), dff(nno), geom(2, nno), cova(3, 3)
 !.......................................................................
@@ -39,20 +40,20 @@ subroutine subac1(laxi, nno, vff, dff, geom,&
     do 10 i = 1, 3
         cova(i,1) = 0.d0
         cova(i,2) = 0.d0
-10  end do
+ 10 end do
 !
 !    CALCUL DU PREMIER VECTEUR TANGENT
     do 20 n = 1, nno
         do 25 i = 1, 2
             cova(i,1)=cova(i,1)+dff(n)*geom(i,n)
-25      continue
-20  end do
+ 25     continue
+ 20 end do
 !
 !    CALCUL DU SECOND VECTEUR TANGENT
     if (laxi) then
         do 30 n = 1, nno
             cova(3,2) = cova(3,2) + vff(n)*geom(1,n)
-30      continue
+ 30     continue
     else
         cova(3,2) = 1.d0
     endif

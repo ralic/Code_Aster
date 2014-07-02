@@ -36,6 +36,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getres.h"
@@ -76,7 +77,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     character(len=6) :: nompro
     parameter    (nompro = 'MESTAT')
-    integer :: nbval, ibid,  itps, itps0, iret, ninstc, neq
+    integer :: nbval, ibid, itps, itps0, iret, ninstc, neq
     integer :: vali
     real(kind=8) :: time, instf, tps1(4), tps2(4), tps3(4), tcpu, partps(3)
     real(kind=8) :: valr(3)
@@ -87,8 +88,8 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     character(len=19) :: maprec, vecass, chdepl, matass
     character(len=24) :: numedd, criter, modele, carele
     character(len=24) :: fomult, noojb
-    logical(kind=1) :: matcst, assmat
-    logical(kind=1) :: lbid, ltemp, lhydr, lsech, lptot
+    aster_logical :: matcst, assmat
+    aster_logical :: lbid, ltemp, lhydr, lsech, lptot
     real(kind=8), pointer :: vale(:) => null()
 !
 ! DEB------------------------------------------------------------------

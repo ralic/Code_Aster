@@ -18,7 +18,8 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8dgrd.h"
@@ -63,14 +64,14 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     integer :: ichar, nbchar
     integer :: nbveas, nbveag, nbtot, iret, ieq
     integer :: genrec
-    integer ::  jvale
+    integer :: jvale
     character(len=16) :: typfct
     character(len=8) :: nomfct, charge, typech
     real(kind=8) :: valre, valim
     complex(kind=8) :: calpha, calp
     real(kind=8) :: phase, omega
     integer :: npuis
-    logical(kind=1) :: lveas, lveag
+    aster_logical :: lveas, lveag
     character(len=24) :: chamno
     complex(kind=8), pointer :: resu(:) => null()
 !
@@ -85,7 +86,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     call jeveuo(cnvass(1:19)//'.VALE', 'E', vc=resu)
     do 5 ieq = 1, neq
         resu(ieq) = dcmplx(0.d0,0.d0)
- 5  continue
+  5 continue
 !
 ! --- NOMBRE DE CHARGEMENTS
 !
@@ -146,14 +147,14 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
             if (typech .eq. 'COMP') then
                 do 122 ieq = 1, neq
                     resu(ieq) = resu(ieq) + calpha*zc( jvale-1+ieq)
-122              continue
+122             continue
             else
                 do 123 ieq = 1, neq
                     resu(ieq) = resu(ieq) + calpha*zr( jvale-1+ieq)
-123              continue
+123             continue
             endif
         endif
-10  continue
+ 10 continue
 !
 999 continue
 !

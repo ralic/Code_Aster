@@ -2,7 +2,8 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
                   kwork, sommw, vwork, tdisp, tspaq,&
                   i, nomcri, nomfor, fordef, fatsoc,&
                   jvectr)
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/anacri.h"
 #include "asterfort/jedema.h"
@@ -11,7 +12,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
     integer :: sommw, tdisp, tspaq, i, jvectr
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc
-    logical(kind=1) :: fordef
+    aster_logical :: fordef
     character(len=16) :: nomcri, nomfor
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +76,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
     integer :: ivect, iordr, n, decal, adrs, decpro, paract(35)
-    logical(kind=1) :: lbid, crsigm, crepst, crepse, crepsp
+    aster_logical :: lbid, crsigm, crepst, crepse, crepsp
     character(len=16) :: typcha
     real(kind=8) :: nx, ny, nz, ux, uy, uz, vx, vy, vz
     real(kind=8) :: cmpxx, cmpyy, cmpzz, cmpxy, cmpxz, cmpyz
@@ -123,7 +124,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
         endif
     endif
 !
-50  continue
+ 50 continue
 !
     decal = 18
 !
@@ -183,8 +184,8 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
             zr(jvectr+n*2 - 1) = fatsoc*cucis
             zr(jvectr+n*2) = fatsoc*cvcis
 !
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     call jedema()
 !

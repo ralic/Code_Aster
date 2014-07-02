@@ -17,6 +17,7 @@ subroutine ulposi(unit, posi, ierr)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     character(len=*) :: posi
     integer :: unit, ierr
@@ -37,7 +38,7 @@ subroutine ulposi(unit, posi, ierr)
     character(len=1) :: k1
     character(len=24) :: valk(2)
     integer :: ios, iend
-    logical(kind=1) :: lop, lnom
+    aster_logical :: lop, lnom
 !     ------------------------------------------------------------------
 !
     ierr = 100
@@ -75,13 +76,13 @@ subroutine ulposi(unit, posi, ierr)
     else if (posi .eq. 'A') then
 !       POSITIONNEMENT EN FIN DE FICHIER
 !
-201      continue
+201     continue
         iend=0
         if (iend .le. 0) then
             read (unit,*,end=301)
             goto 201
         endif
-301      continue
+301     continue
         ierr = 0
         backspace unit
     else

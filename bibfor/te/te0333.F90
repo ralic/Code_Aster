@@ -1,5 +1,6 @@
 subroutine te0333(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcgr.h"
 #include "asterfort/elrefe_info.h"
@@ -58,7 +59,7 @@ subroutine te0333(option, nomte)
     character(len=8) :: nomres(nbres)
     character(len=8) :: nompar(2), mod3d
     character(len=16) :: optio2, phenom, cmp1, cmp2, cmp3
-    logical(kind=1) :: lflu, ltemp
+    aster_logical :: lflu, ltemp
 ! DEB ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
@@ -72,8 +73,8 @@ subroutine te0333(option, nomte)
 ! --- GEOMETRIE ET INTEGRATION
 !     ------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 !      -----------------------------------------
@@ -96,8 +97,8 @@ subroutine te0333(option, nomte)
     do 190 i = 1, nno
         do 200 idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-200      continue
-190  end do
+200     continue
+190 end do
     call ortrep(zi(imate), ndim, xyz, repere)
 !
 ! --- RECUPERATION DE L'INSTANT COURANT :
@@ -162,10 +163,10 @@ subroutine te0333(option, nomte)
         lflu = .false.
         do 60 i = 1, mxcmel
             epspla(i) = zero
-60      continue
+ 60     continue
         do 70 i = 1, nbsig
             epsflf(i) = zero
-70      continue
+ 70     continue
     else
         call granvi(mod3d, ibid, ibid, nvif)
         lflu = .true.
@@ -236,7 +237,7 @@ subroutine te0333(option, nomte)
 !           ------------------------------------------------------
         do 120 i = 1, nbsig
             sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-120      continue
+120     continue
 !
         trsig = sigma(1) + sigma(2) + sigma(3)
 !
@@ -255,7 +256,7 @@ subroutine te0333(option, nomte)
         epspla(nbsig* (igau-1)+5) = epsm( nbsig* (igau-1)+5) - c1* sigma(5) - epsflf(5 )
         epspla(nbsig* (igau-1)+6) = epsm( nbsig* (igau-1)+6) - c1* sigma(6) - epsflf(6 )
 !
-140  end do
+140 end do
 !
 ! --- RECUPERATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
 !     -------------------------------------------------------------
@@ -269,7 +270,7 @@ subroutine te0333(option, nomte)
     do 160 igau = 1, npg
         do 150 isig = 1, nbsig
             zr(idefp+nbsig* (igau-1)+isig-1) = epspla(nbsig* (igau-1)+ isig)
-150      continue
-160  end do
+150     continue
+160 end do
 !
 end subroutine

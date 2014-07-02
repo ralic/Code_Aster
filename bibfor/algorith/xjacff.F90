@@ -5,6 +5,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 ! aslint: disable=W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -74,15 +75,15 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     character(len=8) :: k8bid
     real(kind=8) :: xe(3), coor2d(6)
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
     parameter       (nbnomx = 27)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nnof,&
-  jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nnof, jpoids=ipoidf,&
+                     jvf=ivff, jdfde=idfdef)
 !
     axi = lteatt('AXIS','OUI')
     ASSERT(nnof.eq.3)
@@ -180,7 +181,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
         call provec(nd1, tau1, tau2)
     endif
     call elelin(3, elrefp, k8bid, ibid, nnos)
-    call reeref(elrefp, nno, zr(igeom), g, ndim, xe, ffp, dfdi=dfdi)
+    call reeref(elrefp, nno, zr(igeom), g, ndim,&
+                xe, ffp, dfdi=dfdi)
 !
 !
     if (elrefc .eq. elrefp) goto 999
@@ -189,7 +191,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), g, ndim, xe, ffpc)
+    call reeref(elrefc, nnoc, zr(igeom), g, ndim,&
+                xe, ffpc)
 !
 999 continue
 !

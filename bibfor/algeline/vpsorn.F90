@@ -98,6 +98,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dnaupd.h"
@@ -112,7 +113,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     integer :: maxitr, ifm, niv, priram(8), nconv
     real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq), workl(lonwl)
     real(kind=8) :: dsor(nfreq+1, 2), fshift, vaux(nbeq), workv(3*nbvect), alpha, omecor
-    logical(kind=1) :: selec(nbvect), flage
+    aster_logical :: selec(nbvect), flage
     character(len=19) :: solveu
 !
 !
@@ -127,7 +128,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(5)
     real(kind=8) :: sigmar, sigmai, valr(2)
-    logical(kind=1) :: rvec
+    aster_logical :: rvec
     character(len=1) :: bmat, kbid
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
@@ -206,7 +207,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         vali (1) = info
         call utmess('F', 'ALGELINE5_48', si=vali(1))
     endif
-
+!
 !
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
@@ -267,7 +268,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         end do
 ! RETOUR VERS DNAUPD
         goto 20
-
+!
 ! GESTION DES MODES CONVERGES
     else if (ido .eq. 99) then
         if (nconv .lt. nfreq) then
@@ -326,7 +327,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     do j = 1, nconv
         varaux=abs(dsor(j,2))
         varaux1=abs(dsor(j,1))
-        if ((varaux1.gt.1.0d+3*omecor).and.(varaux.gt.1.0d-2*varaux1)) then
+        if ((varaux1.gt.1.0d+3*omecor) .and. (varaux.gt.1.0d-2*varaux1)) then
             vali (1) = j
             valr (1) = dsor(j,1)
             valr (2) = dsor(j,2)
@@ -341,11 +342,13 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     end do
 !
 ! TRI DES MODES PROPRES PAR RAPPORT AU NCONV DSOR(I)
-    call vpordo(1, 0, nconv, dsor, vect, nbeq)
+    call vpordo(1, 0, nconv, dsor, vect,&
+                nbeq)
 !
 ! RE-ORTHONORMALISATION SUIVANT IGS PAR RAPPORT A B
     call vpgsmm(nbeq, nconv, vect, alpha, lmasse,&
-                1, vaux, ddlexc, workv, dsor, omecor)
+                1, vaux, ddlexc, workv, dsor,&
+                omecor)
 !
 ! FIN DE VPSORN
 !

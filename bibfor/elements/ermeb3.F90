@@ -70,6 +70,7 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fointe.h"
     integer :: noe(9, 6, 4), ifa, tymvol, iref1, iref2, ivois, igeom, isig
@@ -102,9 +103,9 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
     character(len=19) :: nomgd1
     character(len=19) :: nomgd2
 !
-    logical(kind=1) :: calre1, calfo1
-    logical(kind=1) :: calre2, calfo2
-    logical(kind=1) :: calcul
+    aster_logical :: calre1, calfo1
+    aster_logical :: calre2, calfo2
+    aster_logical :: calcul
 !
 !
 ! ----------------------------------------------------------------------

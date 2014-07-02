@@ -23,6 +23,7 @@ subroutine op0039()
 !       IMPRIMER DES RESULTATS ET DES MAILLAGE
 !       PROCEDURE IMPR_RESU
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -65,8 +66,8 @@ subroutine op0039()
     character(len=200) :: nofimd
     character(len=255) :: kfic
 !
-    logical(kind=1) :: lresu, lcasts, lmod, existm
-    logical(kind=1) :: lmail, lrest, lgmsh
+    aster_logical :: lresu, lcasts, lmod, existm
+    aster_logical :: lmail, lrest, lgmsh
 !
 ! ----------------------------------------------------------------------
 !
@@ -119,7 +120,7 @@ subroutine op0039()
                 call utmess('F', 'CALCULEL4_5')
             endif
             call getvtx('RESU', 'IMPR_NOM_VARI', iocc=iocc, scal=variel, nbret=nvari)
-            if ( variel.eq.'OUI' ) then
+            if (variel .eq. 'OUI') then
                 call utmess('F', 'MED2_10')
             endif
         end do

@@ -2,6 +2,7 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -52,30 +53,30 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
     integer :: nbocc, ibid, iexi
     character(len=16) :: keywordfact
     character(len=19) :: elas_elem_s, elas_elem, ligrel
-    logical(kind=1) :: l_comp
+    aster_logical :: l_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc       = 0
+    nbocc = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
-    l_comp      = nbocc .gt. 0
+    l_comp = nbocc .gt. 0
 !
     if (l_comp) then
-        ligrel      = model(1:8)//'.MODELE    .LIEL'
+        ligrel = model(1:8)//'.MODELE    .LIEL'
         elas_elem_s = '&&CRCMEL.CES1'
-        elas_elem   = '&&CRCMEL.CEL1'
+        elas_elem = '&&CRCMEL.CEL1'
         call carces(comp_elas, 'ELEM', ' ', 'V', elas_elem_s,&
                     'A', ibid)
         call cescel(elas_elem_s, ligrel, 'FULL_MECA', 'PCOMPOR', 'OUI',&
                     ibid, 'V', elas_elem, 'A', ibid)
-        call exisd('CHAMP',  elas_elem, iexi)
+        call exisd('CHAMP', elas_elem, iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'MECANONLINE_3')
         endif
-        call celces(elas_elem, 'V',  full_elem_s)
+        call celces(elas_elem, 'V', full_elem_s)
         call detrsd('CHAMP', elas_elem_s)
         call detrsd('CHAMP', elas_elem)
     endif
-
+!
 end subroutine

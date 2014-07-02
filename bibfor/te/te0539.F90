@@ -1,5 +1,6 @@
 subroutine te0539(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
@@ -57,14 +58,13 @@ subroutine te0539(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
-    logical(kind=1) :: matsym
-    logical :: lcond
+    aster_logical :: matsym
     real(kind=8) :: angmas(7), bary(3), crit(1), sig(1), vi(1)
 !
     ivectu=1
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elref)
 !      FAMI='RIGI'
 !     MATNS MAL DIMENSIONNEE
@@ -88,8 +88,7 @@ subroutine te0539(option, nomte)
             typmod(1) = 'D_PLAN'
         else
 !          NOM D'ELEMENT ILLICITE
-            lcond=lteatt('C_PLAN', 'OUI')
-            ASSERT(lcond)
+            ASSERT(lteatt('C_PLAN', 'OUI'))
         endif
         typmod(2) = ' '
         codret=0
@@ -126,8 +125,7 @@ subroutine te0539(option, nomte)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-         .and..not.iselli(elref)) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -326,19 +324,19 @@ subroutine te0539(option, nomte)
     endif
 !
 !   OPTIONS RELATIVES A UNE MATRICE UNIQUEMENT
-    if     (option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
+    if (option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&
                     mat=zr(imatuu))
 !   OPTIONS RELATIVES A UN VECTEUR UNIQUEMENT
-    elseif (option .eq. 'RAPH_MECA') then
+    else if (option .eq. 'RAPH_MECA') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&
                     vect=zr(ivectu))
 !   OPTIONS RELATIVES A UNE MATRICE ET UN VECTEUR
-    elseif (option .eq. 'FULL_MECA') then
+    else if (option .eq. 'FULL_MECA') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&

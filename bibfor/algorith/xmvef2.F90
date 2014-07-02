@@ -4,6 +4,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
                   ddls, ddlm, idepl, pb, vtmp)
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/vecini.h"
@@ -78,7 +79,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
     real(kind=8) :: ptpb(3), p(3, 3), vitang(3), saut(3), rbid(3, 3)
     real(kind=8) :: r2bid(3, 3)
     real(kind=8) :: r3bid(3, 3)
-    logical(kind=1) :: adher
+    aster_logical :: adher
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,12 +92,12 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
         call indent(ino, ddls, ddlm, nnos, in)
         do 176 j = 1, nfh*ndim
             saut(j) = saut(j) - 2.d0 * ffp(ino) * zr(idepl-1+in+ndim+ j)
-176      continue
+176     continue
         do 177 j = 1, singu*ndim
             saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepl-1+in+ ndim*(1+nfh)+j)
 !
-177      continue
-175  end do
+177     continue
+175 end do
 !
     call xadher(p, saut, reac12, coeffr, coeffp,&
                 algofr, vitang, pb, rbid, r2bid,&
@@ -109,22 +110,22 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
             if (algofr .eq. 2) then
                 do 190 k = 1, ndim
                     ptpb(i)=ptpb(i)+p(k,i)*coeffp*vitang(k)
-190              continue
+190             continue
             else
                 do 189 k = 1, ndim
                     ptpb(i)=ptpb(i)+p(k,i)*(reac12(k)+coeffr*vitang(k)&
                     )
-189              continue
+189             continue
             endif
-188      continue
+188     continue
     else
 !     CALCUL DE PT.PBOUL
         do 182 i = 1, ndim
             ptpb(i)=0.d0
             do 183 k = 1, ndim
                 ptpb(i)=ptpb(i) + p(k,i)*pb(k)
-183          continue
-182      continue
+183         continue
+182     continue
     endif
 !
     do 185 i = 1, nno
@@ -132,11 +133,11 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
 !
         do 186 j = 1, nfh*ndim
             vtmp(in+ndim+j) = vtmp(in+ndim+j) + 2.d0*mu*seuil* ptpb(j) *ffp(i)*jac
-186      continue
+186     continue
         do 187 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp(in+ndim*(1+nfh)+j) + 2.d0*rr*mu*seuil* ptpb(j)*ffp(i&
                                       )*jac
-187      continue
-185  end do
+187     continue
+185 end do
 !
 end subroutine

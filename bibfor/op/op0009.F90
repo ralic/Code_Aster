@@ -21,6 +21,7 @@ subroutine op0009()
 !
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -65,9 +66,9 @@ subroutine op0009()
     character(len=16) :: type, oper, suropt
     character(len=19) :: kcha, matel, rigiel, massel, resuel
     character(len=24) :: time2, mate, compor
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
     integer :: n1, n2, n3, n4, ier, n5, nh, n6, ncha, icha
-    integer :: nbresu,  iresu, iexi, n7
+    integer :: nbresu, iresu, iexi, n7
     character(len=24), pointer :: relr(:) => null()
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/

@@ -71,6 +71,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/afrela.h"
 #include "asterfort/ante2d.h"
@@ -97,12 +98,12 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: i1, i2, i3, ibloc, icnx, iterm
-    integer ::  nbbloc, nbsom, nbterm, nbtmax, nnomax, noeca
+    integer :: nbbloc, nbsom, nbterm, nbtmax, nnomax, noeca
     real(kind=8) :: ksi1, ksi2, zero
     complex(kind=8) :: cbid
     character(len=8) :: k8b
     character(len=24) :: nonoma
-    logical(kind=1) :: notlin
+    aster_logical :: notlin
 !
     real(kind=8) :: ffel2d, x(2), ff(9)
     real(kind=8), pointer :: coemur(:) => null()

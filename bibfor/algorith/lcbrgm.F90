@@ -50,6 +50,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
 ! OUT PROJ    : NE SERT PLUS A RIEN
 ! ----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "blas/daxpy.h"
@@ -64,7 +65,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
 !
 !
 !
-    logical(kind=1) :: cplan, resi, rigi
+    aster_logical :: cplan, resi, rigi
     integer :: ndimsi, k, l, etat
 !
     real(kind=8) :: eps(6), epsr(6), treps, sigel(6)
@@ -104,7 +105,8 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre, 1)
+                [0.d0], 2, nomres, valres, icodre,&
+                1)
 !
     e = valres(1)
     nu = valres(2)
@@ -123,7 +125,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
     endif
     do 50 k = 1, ndimsi
         dsidpt(k,k,1) = 0.d0
-50  continue
+ 50 continue
 !
 !
 !
@@ -136,7 +138,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
     treps = eps(1)+eps(2)+eps(3)
     do 60 k = 1, ndimsi
         sigel(k) = lambda*treps*kron(k) + deuxmu*eps(k)
-60  end do
+ 60 end do
 !
 ! ======================================================================
 !                 INTEGRATION DE LA LOI DE COMPORTEMENT
@@ -164,7 +166,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
 !
         do 30 k = 1, ndimsi
             sig(k) = (1-d) * sigel(k)
-30      continue
+ 30     continue
 !
         vip(1) = d
         vip(2) = etat
@@ -185,11 +187,11 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
         do 100 k = 1, 3
             do 110 l = 1, 3
                 dsidpt(k,l,1) = fd*lambda
-110          continue
-100      continue
+110         continue
+100     continue
         do 120 k = 1, ndimsi
             dsidpt(k,k,1) = dsidpt(k,k,1) + fd*deuxmu
-120      continue
+120     continue
 !
         if (cplan) then
             do 300 k = 1, ndimsi
@@ -198,8 +200,8 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
                     if (l .eq. 3) goto 310
                     dsidpt(k,l,1)=dsidpt(k,l,1) - 1.d0/dsidpt(3,3,1)*&
                     dsidpt(k,3,1)*dsidpt(3,l,1)
-310              continue
-300          continue
+310             continue
+300         continue
         endif
 !
 !

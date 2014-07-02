@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
                       v0, f, f0)
         integer :: rigid
         integer :: amort
-        logical(kind=1) :: lamort
+        aster_logical :: lamort
         integer :: neq
         real(kind=8) :: d0(*)
         real(kind=8) :: v0(*)

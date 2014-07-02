@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,23 +16,23 @@
 !
 #include "asterf_types.h"
 interface
-    subroutine vpmpi(option, eigsol,&
-                     icom1, icom2, lcomod, mpicou, mpicow, nbvecg, nfreqg, rangl, omemax, omemin,&
-                     vpinf, vpmax)
-        integer           , intent(in)    :: option
-        character(len=19) , intent(in)    :: eigsol
+    subroutine vpmpi(option, eigsol, icom1, icom2, lcomod,&
+                     mpicou, mpicow, nbvecg, nfreqg, rangl,&
+                     omemax, omemin, vpinf, vpmax)
+        integer, intent(in) :: option
+        character(len=19), intent(in) :: eigsol
 !!
-        integer           , intent(out)   :: icom1
-        integer           , intent(out)   :: icom2
-        logical(kind=1)   , intent(inout) :: lcomod
-        mpi_int           , intent(inout) :: mpicou
-        mpi_int           , intent(inout) :: mpicow
-        integer           , intent(out)   :: nbvecg
-        integer           , intent(out)   :: nfreqg
-        integer           , intent(inout) :: rangl
-        real(kind=8)      , intent(inout) :: omemax
-        real(kind=8)      , intent(inout) :: omemin
-        real(kind=8)      , intent(inout) :: vpinf
-        real(kind=8)      , intent(inout) :: vpmax
+        integer, intent(out) :: icom1
+        integer, intent(out) :: icom2
+        aster_logical , intent(inout) :: lcomod
+        mpi_int , intent(inout) :: mpicou
+        mpi_int , intent(inout) :: mpicow
+        integer, intent(out) :: nbvecg
+        integer, intent(out) :: nfreqg
+        integer, intent(inout) :: rangl
+        real(kind=8), intent(inout) :: omemax
+        real(kind=8), intent(inout) :: omemin
+        real(kind=8), intent(inout) :: vpinf
+        real(kind=8), intent(inout) :: vpmax
     end subroutine vpmpi
 end interface

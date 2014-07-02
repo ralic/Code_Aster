@@ -23,7 +23,8 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
 #include "asterfort/nmassv.h"
@@ -31,7 +32,7 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 #include "asterfort/nmchex.h"
     integer :: nbvect
     character(len=6) :: ltypve(20)
-    logical(kind=1) :: lcalve(20), lassve(20)
+    aster_logical :: lcalve(20), lassve(20)
     character(len=16) :: loptve(20)
     character(len=*) :: modelz
     character(len=24) :: mate, carele, sdtime
@@ -93,7 +94,7 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
     character(len=19) :: vecele, vecass
     real(kind=8) :: instam, instap
     character(len=24) :: modele
-    logical(kind=1) :: lcalc, lasse
+    aster_logical :: lcalc, lasse
     character(len=16) :: option
 !
 ! ----------------------------------------------------------------------
@@ -159,6 +160,6 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
                         resocu, sddyna, sdtime, valinc, comref,&
                         measse, vecele, vecass)
         endif
-10  end do
+ 10 end do
 !
 end subroutine

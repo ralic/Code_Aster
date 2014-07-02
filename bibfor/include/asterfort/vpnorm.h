@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                       ddlexc, vecpro, resufr, lmasin, xmastr,&
@@ -27,7 +29,7 @@ interface
         integer :: ddlexc(*)
         real(kind=8) :: vecpro(neq, *)
         real(kind=8) :: resufr(nbmode, *)
-        logical(kind=1) :: lmasin
+        aster_logical :: lmasin
         real(kind=8) :: xmastr
         integer :: isign
         integer :: numddl

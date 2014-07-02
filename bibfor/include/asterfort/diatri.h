@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine diatri(n, d, e, vector, evec,&
                       ldevec)
@@ -22,7 +24,7 @@ interface
         integer :: n
         real(kind=8) :: d(*)
         real(kind=8) :: e(*)
-        logical(kind=1) :: vector
+        aster_logical :: vector
         real(kind=8) :: evec(ldevec, *)
     end subroutine diatri
 end interface

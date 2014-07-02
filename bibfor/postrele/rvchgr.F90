@@ -1,6 +1,7 @@
 subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
                   iret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -74,8 +75,8 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: i, nd, nbnac, ind, alsnac,  ierd
-    logical(kind=1) :: egal
+    integer :: i, nd, nbnac, ind, alsnac, ierd
+    aster_logical :: egal
     real(kind=8) :: znd, zref, aux
     character(len=8) :: k8b
     character(len=24) :: valk(2)

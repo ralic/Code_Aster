@@ -1,6 +1,7 @@
 subroutine cgvemf(modele, typfis, nomfis)
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xvfimo.h"
@@ -37,7 +38,7 @@ subroutine cgvemf(modele, typfis, nomfis)
 ! ======================================================================
 !
     integer :: ixfem
-    logical(kind=1) :: fiinmo
+    aster_logical :: fiinmo
     character(len=8) :: valk(2)
 !
 !     LE MODELE EST-IL X-FEM : SI OUI IXFEM=1

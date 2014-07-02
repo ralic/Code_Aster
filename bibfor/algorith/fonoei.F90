@@ -57,8 +57,9 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
 ! OUT R : VECTEUR FORCES EXTERIEURES
 ! ======================================================================
 ! aslint: disable=W1504
-    implicit     none
-    logical(kind=1) :: fnoevo
+    implicit none
+#include "asterf_types.h"
+    aster_logical :: fnoevo
     integer :: dimdef, dimcon
     integer :: ndim
     real(kind=8) :: dt, congem(dimcon), r(dimdef)
@@ -75,7 +76,7 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
 ! ======================================================================
     do 6 i = 1, ndim
         r(addeme+i-1)= r(addeme+i-1)+congem(adcome-1+i)
- 6  continue
+  6 continue
     r(addeme) = r(addeme) + congem(adcome+ndim)
 !
 ! ======================================================================
@@ -84,7 +85,7 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
     if (yap1 .eq. 1) then
         do 8 f = 1, 2
             r(addlh1+1+f)=r(addlh1+1+f)+congem(adcop1+1+f)
- 8      continue
+  8     continue
     endif
 ! ======================================================================
 ! --- CONTRIBUTIONS A R DEPENDANTE DE YAP2 -----------------------------
@@ -92,7 +93,7 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
     if (yap2 .eq. 1) then
         do 11 f = 1, 2
             r(addep2+ndim+1+f)=r(addep1+ndim+1+f)+congem(adcop2+1+f)
-11      continue
+ 11     continue
     endif
 !
 ! ======================================================================
@@ -104,10 +105,10 @@ subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
             do 12 f = 1, 2
                 r(addep1) = r(addep1) + dt*congem(adcop1-1+f)
                 r(addlh1-1+f) = -dt*congem(adcop1-1+f)
-12          continue
+ 12         continue
             do 13 i = 1, ndim-1
                 r(addep1+i) = dt*congem(adcp11+i)
-13          continue
+ 13         continue
         endif
     endif
 !

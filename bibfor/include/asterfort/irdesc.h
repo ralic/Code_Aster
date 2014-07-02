@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                       dg, ncmpmx, vale, nomcmp, titr,&
@@ -35,6 +37,6 @@ interface
         character(len=*) :: nomsym
         integer :: ir
         integer :: numnoe(*)
-        logical(kind=1) :: lmasu
+        aster_logical :: lmasu
     end subroutine irdesc
 end interface

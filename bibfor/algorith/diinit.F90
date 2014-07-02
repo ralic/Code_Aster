@@ -21,6 +21,7 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/isfonc.h"
@@ -67,11 +68,11 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! ----------------------------------------------------------------------
 !
     integer :: n1, nm
-    logical(kind=1) :: lexpl, lprmo
-    logical(kind=1) :: limpex, lctcd
+    aster_logical :: lexpl, lprmo
+    aster_logical :: limpex, lctcd
     character(len=8) :: meca
     character(len=19) :: lisins
-    integer ::  numreo
+    integer :: numreo
 !
 ! ----------------------------------------------------------------------
 !

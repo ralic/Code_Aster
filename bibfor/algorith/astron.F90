@@ -3,6 +3,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                   parmod, gamma0, nomsup, reasup, recmor,&
                   recmop)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -20,7 +21,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
     real(kind=8) :: recmor(nbsup, neq, *)
     character(len=16) :: nomsy
     character(len=*) :: psmo, nomsup(nbsup, *)
-    logical(kind=1) :: monoap, muapde
+    aster_logical :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,8 +89,8 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                 xxx = parmod(im,2+id) / parmod(im,1)
                 do 32 in = 1, neq
                     zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
-32              continue
-30          continue
+ 32             continue
+ 30         continue
 !
 !           --- DEFORMEE STATIQUE ---
             call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id),&
@@ -108,7 +109,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
             do 34 in = 1, neq
                 xxx = gamma0(id) * ( zr(jvale+in-1) - zr(jmod+in-1) )
                 recmor(nbsup,in,id) = recmor(nbsup,in,id) + xxx
-34          continue
+ 34         continue
             call jedetr('&&ASTRON.VECTEUR_MODA')
 !
         else
@@ -137,24 +138,24 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                     xxx = rni/(parmod(im,2)*parmod(im,1)*parmod(im,1))
                     do 52 in = 1, neq
                         zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in, im)
-52                  continue
-50              continue
+ 52                 continue
+ 50             continue
                 if (muapde) then
                     do 42 in = 1, neq
                         xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
                         recmop(is,in,id) = recmop(is,in,id) + xxx*xxx
-42                  continue
+ 42                 continue
                 else
                     do 44 in = 1, neq
                         xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
                         recmop(1,in,id) = recmop(1,in,id) + xxx*xxx
-44                  continue
+ 44                 continue
                 endif
                 call jedetr('&&ASTRON.VECTEUR_MODA')
-40          continue
+ 40         continue
         endif
     endif
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

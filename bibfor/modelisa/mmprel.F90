@@ -19,6 +19,7 @@ subroutine mmprel(char, noma, nomo, ligret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ajellt.h"
 #include "asterfort/assert.h"
@@ -55,13 +56,13 @@ subroutine mmprel(char, noma, nomo, ligret)
 !
     character(len=24) :: paraci, contma
     integer :: jparci, jmaco
-    logical(kind=1) :: lfrot, laxis, lveri
+    aster_logical :: lfrot, laxis, lveri
     character(len=24) :: lismae, defico
     character(len=16) :: modeli, phenom
     integer :: jdecme, jlist, izone
     integer :: nzoco, ndimg, nmaco, ntmaec
     integer :: imae, posmae, nummae, nbmae
-    logical(kind=1) :: lallv
+    aster_logical :: lallv
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,6 +1,7 @@
 subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
                   nfreq, effmin, effmax)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/infniv.h"
@@ -58,7 +59,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
     character(len=16) :: lipacr(2), para
     character(len=19) :: tabmof
     character(len=24) :: valk(2), nomob1, nomob2, nomob3, nomob4, nomob5
-    logical(kind=1) :: lexist
+    aster_logical :: lexist
 !
 !
 ! --- INITS.
@@ -208,7 +209,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
             if (abs(zr(jobj3+i-1)-zr(jobj2+i))/rdenom .gt. precdc) then
                 call utmess('F', 'ALGELINE2_25', sk=valk(1))
             endif
-10      continue
+ 10     continue
         do 15 i = 1, nbval5-1
             if (abs(zr(jobj5+i-1)) .gt. eps) then
                 rdenom=abs(zr(jobj5+i-1))
@@ -218,14 +219,14 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
             if (abs(zr(jobj5+i-1)-zr(jobj4+i))/rdenom .gt. precdc) then
                 call utmess('F', 'ALGELINE2_25', sk=valk(1))
             endif
-15      continue
+ 15     continue
 !
 ! --- SOMME DES NB_MODES DES BANDES SELECTIONNEES
         call jeveuo(nomob1, 'L', jobj1)
         nfreq=0
         do 20 i = 1, nbval1
             nfreq=nfreq+zi(jobj1+i-1)
-20      continue
+ 20     continue
 !
 ! --- RECUPERATION DES BORNES EFFECTIVES
         effmin=zr(jobj4)

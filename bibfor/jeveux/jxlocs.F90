@@ -19,11 +19,12 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jxdeps.h"
 #include "asterfort/utmess.h"
     integer :: itab(*), lty1, lon1, jadm, jitab
-    logical(kind=1) :: ldeps
+    aster_logical :: ldeps
     character(len=*) :: gen1
 ! ----------------------------------------------------------------------
 ! RENVOIE L'ADRESSE DU SEGMENT DE VALEUR PAR RAPPORT A ITAB

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdlog(fami, option, typmod, ndim, nno,&
                       npg, iw, ivf, vff, idff,&
@@ -41,7 +43,7 @@ interface
         real(kind=8) :: angmas(3)
         real(kind=8) :: instm
         real(kind=8) :: instp
-        logical(kind=1) :: matsym
+        aster_logical :: matsym
         real(kind=8) :: deplm(*)
         real(kind=8) :: depld(*)
         real(kind=8) :: sigm(2*ndim, npg)

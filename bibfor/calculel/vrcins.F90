@@ -17,6 +17,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
@@ -53,14 +54,14 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, ichs, nbchs,   jcesd,  jcesl
-    integer ::   nbcmp, kcmp, kcvrc
+    integer :: iret, ichs, nbchs, jcesd, jcesl
+    integer :: nbcmp, kcmp, kcvrc
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, iad1
-    integer ::  jce1d, jce1l,   nncp, n1, k
+    integer :: jce1d, jce1l, nncp, n1, k
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
     character(len=8) :: valk(4)
-    logical(kind=1) :: avrc, dbg
+    aster_logical :: avrc, dbg
     integer :: ibid, nbcvrc
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2
     character(len=8), pointer :: cvrcvarc(:) => null()
@@ -125,84 +126,84 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     rundef=r8nnem()
     call jeveuo(chvars//'.CESV', 'E', vr=ce1v)
     call jelira(chvars//'.CESV', 'LONMAX', n1)
-    do 5, k=1,n1
-    ce1v(k)=rundef
-    5 end do
+    do 5 k = 1, n1
+        ce1v(k)=rundef
+  5 end do
 !
-    do 1, ichs=1,nbchs
-    chs=liste_ch(ichs)(1:19)
-    varc1=liste_sd(7*(ichs-1)+4)(1:8)
-    call jeveuo(chs//'.CESD', 'L', jcesd)
-    call jeveuo(chs//'.CESL', 'L', jcesl)
-    call jeveuo(chs//'.CESV', 'L', vr=cesv)
-    call jeveuo(chs//'.CESC', 'L', vk8=cesc)
-    call jelira(chs//'.CESC', 'LONMAX', nbcmp)
+    do 1 ichs = 1, nbchs
+        chs=liste_ch(ichs)(1:19)
+        varc1=liste_sd(7*(ichs-1)+4)(1:8)
+        call jeveuo(chs//'.CESD', 'L', jcesd)
+        call jeveuo(chs//'.CESL', 'L', jcesl)
+        call jeveuo(chs//'.CESV', 'L', vr=cesv)
+        call jeveuo(chs//'.CESC', 'L', vk8=cesc)
+        call jelira(chs//'.CESC', 'LONMAX', nbcmp)
 !
-    do 2,kcmp=1,nbcmp
-    nocmp1=cesc(kcmp)
+        do 2 kcmp = 1, nbcmp
+            nocmp1=cesc(kcmp)
 !
 !         -- CALCUL DE KCVRC :
-    do 3,kcvrc=1,nbcvrc
-    varc2=cvrcvarc(kcvrc)
-    nocmp2=cvrccmp(kcvrc)
-    if ((varc1.eq.varc2) .and. (nocmp1.eq.nocmp2)) goto 4
- 3  continue
-    goto 2
+            do 3 kcvrc = 1, nbcvrc
+                varc2=cvrcvarc(kcvrc)
+                nocmp2=cvrccmp(kcvrc)
+                if ((varc1.eq.varc2) .and. (nocmp1.eq.nocmp2)) goto 4
+  3         continue
+            goto 2
 !
- 4  continue
-    ASSERT(kcvrc.ge.1 .and. kcvrc.le.nbcvrc)
+  4         continue
+            ASSERT(kcvrc.ge.1 .and. kcvrc.le.nbcvrc)
 !
 !         -- BOUCLE SUR LES MAILLES :
-    nbma = zi(jcesd-1+1)
-    ASSERT(nbma.eq.zi(jce1d-1+1))
+            nbma = zi(jcesd-1+1)
+            ASSERT(nbma.eq.zi(jce1d-1+1))
 !
-    do 70,ima = 1,nbma
-    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-    if (nbpt .eq. 0) goto 70
-    ASSERT(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
-    nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
-    if (nbsp .ne. zi(jce1d-1+5+4* (ima-1)+2)) then
-        valk(1) = nocmp1
-        valk(2) = carele
-        valk(3) = chmat
-        call utmess('F', 'CALCULEL6_57', nk=3, valk=valk)
-    endif
+            do 70 ima = 1, nbma
+                nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+                if (nbpt .eq. 0) goto 70
+                ASSERT(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
+                nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
+                if (nbsp .ne. zi(jce1d-1+5+4* (ima-1)+2)) then
+                    valk(1) = nocmp1
+                    valk(2) = carele
+                    valk(3) = chmat
+                    call utmess('F', 'CALCULEL6_57', nk=3, valk=valk)
+                endif
 !
-    call cesexi('C', jce1d, jce1l, ima, 1,&
-                1, kcvrc, iad1)
-    if (iad1 .eq. 0) then
+                call cesexi('C', jce1d, jce1l, ima, 1,&
+                            1, kcvrc, iad1)
+                if (iad1 .eq. 0) then
 !           -- L'ELEMENT FINI NE CONNAIT PAS LES VARIABLES DE COMMANDE
-        goto 70
-    endif
+                    goto 70
+                endif
 !
-    if (iad1 .lt. 0) then
+                if (iad1 .lt. 0) then
 !           -- LA MAILLE PORTE UN ELEMENT FINI QUI SAURAIT UTILISER
 !              LES VARIABLES DE COMMANDE MAIS ELLE N'EST PAS AFFECTEE.
 !              ON ESPERE QUE LES ROUTINES TE00IJ ARRETERONT EN <F>
 !              SI NECESSAIRE.
-        goto 70
-    endif
+                    goto 70
+                endif
 !
-    do 60,ipt = 1,nbpt
-    do 50,isp = 1,nbsp
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, kcmp, iad)
-    if (iad .gt. 0) then
-        call cesexi('C', jce1d, jce1l, ima, ipt,&
-                    isp, kcvrc, iad1)
-        ASSERT(iad1.gt.0)
-        if (cesvi(iad1) .eq. ichs) then
-            valeur=cesv(iad)
-            zl(jce1l-1+iad1)=.true.
-            ce1v(iad1)=valeur
-        endif
-    endif
-50  continue
-60  continue
-70  continue
+                do 60 ipt = 1, nbpt
+                    do 50 isp = 1, nbsp
+                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                    isp, kcmp, iad)
+                        if (iad .gt. 0) then
+                            call cesexi('C', jce1d, jce1l, ima, ipt,&
+                                        isp, kcvrc, iad1)
+                            ASSERT(iad1.gt.0)
+                            if (cesvi(iad1) .eq. ichs) then
+                                valeur=cesv(iad)
+                                zl(jce1l-1+iad1)=.true.
+                                ce1v(iad1)=valeur
+                            endif
+                        endif
+ 50                 continue
+ 60             continue
+ 70         continue
 !
- 2  continue
-    1 end do
+  2     continue
+  1 end do
 !
 !
 !     4. RECOPIE DU CHAMP SIMPLE DANS LE CHAMP CHVARC
@@ -214,6 +215,6 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     dbg=.false.
     if (dbg) call imprsd('CHAMP', chvarc, 6, 'VRCINS/CHVARC')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
                       insold, k8cart, ltheta, niv, ifm,&
@@ -26,7 +28,7 @@ interface
         real(kind=8) :: inst
         real(kind=8) :: insold
         character(len=8) :: k8cart
-        logical(kind=1) :: ltheta
+        aster_logical :: ltheta
         integer :: niv
         integer :: ifm
         integer :: option

@@ -16,7 +16,8 @@ subroutine cfsvmu(defico, resoco, lconv)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisd.h"
@@ -28,7 +29,7 @@ subroutine cfsvmu(defico, resoco, lconv)
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
-    logical(kind=1) :: lconv
+    aster_logical :: lconv
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +55,7 @@ subroutine cfsvmu(defico, resoco, lconv)
     integer :: jsvmu, jmu
     character(len=24) :: numlia
     integer :: jnumli
-    logical(kind=1) :: lgcp
+    aster_logical :: lgcp
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,9 +99,9 @@ subroutine cfsvmu(defico, resoco, lconv)
         ASSERT(posnoe.le.nnoco)
         ASSERT(zr(jsvmu-1+posnoe).eq.0.d0)
         zr(jsvmu-1+posnoe) = zr(jmu-1+iliai)
-10  end do
+ 10 end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

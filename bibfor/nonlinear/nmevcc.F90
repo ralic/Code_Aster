@@ -19,7 +19,8 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -60,7 +61,7 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
     real(kind=8) :: fincol, subdur
     integer :: ntpc, iptc
     real(kind=8) :: instam, instap
-    logical(kind=1) :: levent
+    aster_logical :: levent
     integer :: ibid
     character(len=8) :: k8bid
     integer :: zeven
@@ -123,7 +124,7 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
         endif
         zr(jctevc+zeven*(iptc-1)+3-1) = etacol
         zr(jctevc+zeven*(iptc-1)+4-1) = fincol
-10  end do
+ 10 end do
 !
 ! --- ACTIVATION EVENEMENT
 !

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                       ndim, linter)
@@ -24,6 +26,6 @@ interface
         character(len=24) :: trav
         character(len=8) :: fiss(nfiss)
         integer :: contac
-        logical(kind=1) :: linter
+        aster_logical :: linter
     end subroutine xtyele
 end interface

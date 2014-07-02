@@ -62,6 +62,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
@@ -97,7 +98,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0
     real(kind=8) :: fexte(*), famor(*), fliai(*)
 !
-    logical(kind=1) :: lamort, lcrea
+    aster_logical :: lamort, lcrea
 !
 !
     integer :: nbtyar
@@ -105,7 +106,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     integer :: iwk0, iwk1, iwk2
     integer :: ifm, niv, ne
     integer :: ieq, iexcl
-    integer ::  ivite1, ivite2, iacce1, iarchi
+    integer :: ivite1, ivite2, iacce1, iarchi
     integer :: ibid
     integer :: alarm, archiv
     integer :: ipepa, igrpa
@@ -125,7 +126,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     real(kind=8) :: r8bid
     integer :: vali(2)
     real(kind=8) :: valr(2)
-    logical(kind=1) :: ener
+    aster_logical :: ener
     real(kind=8), pointer :: vale(:) => null()
 !
 !

@@ -20,6 +20,7 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
@@ -53,7 +54,7 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
     integer :: nbmat
     character(len=19) :: merigi, mediri, meeltc, meeltf
     character(len=19) :: tlimat(8)
-    logical(kind=1) :: leltc, leltf, lallv
+    aster_logical :: leltc, leltf, lallv
 !
 ! ----------------------------------------------------------------------
 !

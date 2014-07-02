@@ -19,6 +19,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -51,7 +52,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     character(len=16) :: forcri
-    logical(kind=1) :: fordef
+    aster_logical :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------
 ! BUT: CONSTRUIRE LES PAQUETS DE NOEUDS AFIN DE CALCULER LE VECTEUR
@@ -70,16 +71,16 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 ! NOMCRI   IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, lordr,  nbordr, ndim, iret, iret1
+    integer :: ibid, lordr, nbordr, ndim, iret, iret1
     integer :: nbno, ino, tdisp(1), jrwork, tpaq, iret2, iret3
     integer :: nbpaq, numpaq, nnopaq, bormax, nbpmax, nbp0, bor0
-    integer :: nbcmp,  k, ordini, iord, jinst
+    integer :: nbcmp, k, ordini, iord, jinst
     integer :: nnoini, nbnop, tspaq, iordr
     integer :: jsigv, jsigd, jsigl, jepsd, jepsl, jepsv, kwork
     integer :: jepspd, jepspl, jepspv, iret4, jepped, jeppel
     integer :: inop, somnow, icmp, jnoeu, nunoe, jeppev
     integer :: vali(2), paract(35), valep, ic, tord(1)
-    logical(kind=1) :: post, crsigm, crepst, crepse, crepsp, lbid, creppe
+    aster_logical :: post, crsigm, crepst, crepse, crepsp, lbid, creppe
 !
     real(kind=8) :: r8b, val1, val2, resu(7), vresu(24), valpar(35)
     complex(kind=8) :: c16b

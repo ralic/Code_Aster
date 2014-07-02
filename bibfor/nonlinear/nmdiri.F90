@@ -20,6 +20,7 @@ subroutine nmdiri(modele, mate, carele, lischa, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -51,7 +52,7 @@ subroutine nmdiri(modele, mate, carele, lischa, sddyna,&
 !
 !
 !
-    logical(kind=1) :: lstat, ldepl, lvite, lacce
+    aster_logical :: lstat, ldepl, lvite, lacce
     character(len=19) :: veclag
 !
 ! ----------------------------------------------------------------------

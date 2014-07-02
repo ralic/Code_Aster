@@ -3,6 +3,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lctest.h"
 #include "asterfort/cesexi.h"
@@ -35,7 +36,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: list_elem_affe
-    logical(kind=1), intent(in) :: l_affe_all
+    aster_logical, intent(in) :: l_affe_all
     integer, intent(in) :: nb_elem_affe
     character(len=19), intent(in) :: full_elem_s
     character(len=16), intent(in) :: rela_comp
@@ -65,9 +66,9 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
     character(len=8) :: mesh, name_elem
     integer :: nutyel
     integer :: j_cesd, j_cesl
-    integer ::  iret, irett, ielem
+    integer :: iret, irett, ielem
     integer :: iad
-    integer ::  j_elem_affe
+    integer :: j_elem_affe
     integer :: nb_elem_mesh, nb_elem
     integer :: nume_elem
     character(len=16), pointer :: cesv(:) => null()

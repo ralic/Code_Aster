@@ -6,11 +6,12 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
                   npi2, jgano)
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: vf
+    aster_logical :: vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: ndim, nno, nno2, nnos, nnom, nface
@@ -95,13 +96,13 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 POUR L'INTEGRATION MECANIQUE ---------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npi,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 POUR L'HYDRAULIQUE - THERMIQUE -------------
 ! ======================================================================
-    call elrefe_info(elrefe=elref2,fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos2,&
-  npg=npi2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2)
+    call elrefe_info(elrefe=elref2, fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos2,&
+                     npg=npi2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
     ASSERT(nnos.eq.nno2)
 ! ======================================================================
 ! --- NFACE EN VF -------------

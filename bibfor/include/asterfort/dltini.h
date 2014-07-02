@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dltini(lcrea, nume, result, depini, vitini,&
                       accini, fexini, famini, fliini, neq,&
                       numedd, inchac, baseno)
-        logical(kind=1) :: lcrea
+        aster_logical :: lcrea
         integer :: nume
         character(len=8) :: result
         real(kind=8) :: depini(*)

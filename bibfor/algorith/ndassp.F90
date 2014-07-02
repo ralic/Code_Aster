@@ -24,6 +24,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -97,7 +98,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     character(len=19) :: cnbudi, cnvcpr
     character(len=19) :: depmoi, vitmoi, accmoi
     character(len=19) :: veclag
-    logical(kind=1) :: ldepl, lvite, lacce
+    aster_logical :: ldepl, lvite, lacce
     real(kind=8) :: coeequ
 !
 ! ----------------------------------------------------------------------
@@ -234,9 +235,9 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

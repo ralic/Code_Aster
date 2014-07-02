@@ -17,6 +17,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjalty.h"
@@ -68,7 +69,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
     character(len=8) :: nom
     integer :: icre, iret, jctab, ltypi, lonoi
     integer :: ibacol
-    logical(kind=1) :: lcol
+    aster_logical :: lcol
 !     ------------------------------------------------------------------
     integer :: idnum
     parameter    (   idnum  = 10 )
@@ -112,9 +113,9 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                             typei, ltypi, lonoi, mess)
                 goto 10
             endif
- 1      continue
+  1     continue
         call utmess('F', 'JEVEUX1_16', sk=nom)
-10      continue
+ 10     continue
 !
     else
         lcol = .false.
@@ -127,9 +128,9 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                     idatr = k
                     goto 20
                 endif
- 2          continue
+  2         continue
             call utmess('F', 'JEVEUX1_17', sk=nom)
-20          continue
+ 20         continue
             call jjcren(noml32(1:24)//nom, 0, iret2)
             if (iret2 .eq. 0) then
                 call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
@@ -163,9 +164,9 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                     idatr = k
                     goto 30
                 endif
- 3          continue
+  3         continue
             call utmess('F', 'JEVEUX1_17', sk=nom)
-30          continue
+ 30         continue
             ixatr = iszon ( jiszon + ibacol + idatr )
             if (ixatr .gt. 0) then
                 ibatr = iadm( jiadm(iclaco) + 2*ixatr-1 )

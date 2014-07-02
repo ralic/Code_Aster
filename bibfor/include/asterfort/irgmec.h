@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                       tabl, tabv, partie, jtype, nbno,&
@@ -33,11 +35,11 @@ interface
         integer :: listno(*)
         integer :: icmp
         integer :: ifi
-        logical(kind=1) :: iwri
+        aster_logical :: iwri
         integer :: iadmax
         integer :: ordr(nbord2)
         character(len=*) :: chamsy
         character(len=*) :: nomcon
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
     end subroutine irgmec
 end interface

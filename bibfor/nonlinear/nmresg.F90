@@ -19,6 +19,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -61,7 +62,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
     integer :: ifonc, imode, imode2
     integer :: neq, nbgene, nbmodp
     integer :: j2memb, jaccp, jaccg
-    logical(kind=1) :: lexge, lacce
+    aster_logical :: lexge, lacce
     character(len=19) :: fmodal, valfon
     integer :: jfmoda, jvalfo
     character(len=19) :: depgep, vitgep, accgep

@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine tanbul(option, ndim, g, mate, compor,&
                       resi, mini, alpha, dsbdep, trepst)
@@ -22,8 +24,8 @@ interface
         integer :: g
         integer :: mate
         character(len=16) :: compor
-        logical(kind=1) :: resi
-        logical(kind=1) :: mini
+        aster_logical :: resi
+        aster_logical :: mini
         real(kind=8) :: alpha
         real(kind=8) :: dsbdep(2*ndim, 2*ndim)
         real(kind=8) :: trepst

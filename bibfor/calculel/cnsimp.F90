@@ -17,6 +17,7 @@ subroutine cnsimp(cnsz, unite)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -43,13 +44,13 @@ subroutine cnsimp(cnsz, unite)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::   jcnsv, jcnsl
+    integer :: jcnsv, jcnsl
     integer :: nbno, k, ino, ncmp, ncmpu, jlval, ik, licmpu(997)
     character(len=8) :: ma, nomgd, nomno
     character(len=3) :: tsca
     character(len=19) :: cns
     character(len=40) :: fmt1, fmt2
-    logical(kind=1) :: exicmp
+    aster_logical :: exicmp
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: cnsd(:) => null()

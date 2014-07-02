@@ -45,8 +45,8 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/ampcpr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -54,22 +54,16 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-!
-!
+!-----------------------------------------------------------------------
+    integer :: i, iad, ibid, ideb, iret, j, jdeb
+    integer :: llob, nbcol, nblig, ndim, nobc, nobl
+    real(kind=8) :: abet, bbet, beta
     character(len=8) :: nomob
     character(len=24) :: nomcol
     character(len=*) :: nmcolz, nomobz
     complex(kind=8) :: cmat(ndim, ndim)
     integer :: lilig(nblig), licol(nbcol)
-    logical(kind=1) :: okpart
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ideb, iret, j, jdeb
-    integer :: llob, nbcol, nblig, ndim, nobc, nobl
-    real(kind=8) :: abet, bbet, beta
+    aster_logical :: okpart
 !-----------------------------------------------------------------------
     call jemarq()
     nomcol = nmcolz
@@ -104,8 +98,8 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
                 call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
                             1, jdeb+j-1, ideb+ i-1, -bbet, 2,&
                             1)
-20          continue
-10      continue
+ 20         continue
+ 10     continue
 !
     else
 !
@@ -127,6 +121,6 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
     endif
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

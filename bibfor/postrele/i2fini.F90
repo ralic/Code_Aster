@@ -1,6 +1,7 @@
 subroutine i2fini(epsi, binf, bsup, tsor, tsex,&
                   tm2, adrgt, fini)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,10 +22,10 @@ subroutine i2fini(epsi, binf, bsup, tsor, tsex,&
 !
     integer :: adrgt, tm2(*)
     real(kind=8) :: tsor(*), tsex(*), epsi, binf, bsup
-    logical(kind=1) :: fini
+    aster_logical :: fini
 !
     integer :: i
-    logical(kind=1) :: stop
+    aster_logical :: stop
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -37,7 +38,7 @@ subroutine i2fini(epsi, binf, bsup, tsor, tsex,&
         if ((abs(tsor(1) - binf) .lt. epsi) .and. (abs(tsex(adrgt-1) - bsup) .lt. epsi)&
             .and. (tm2(1) .ne. -1)) then
 !
-10          continue
+ 10         continue
             if ((.not. stop) .and. (i .lt. adrgt)) then
 !
                 if ((tm2(i) .ne. -1) .and. (abs(tsor(i)-tsex(i-1)) .lt. epsi)) then

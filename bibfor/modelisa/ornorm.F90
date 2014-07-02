@@ -1,5 +1,6 @@
 subroutine ornorm(noma, listma, nbmail, reorie, norien)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
@@ -19,7 +20,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 #include "asterfort/as_allocate.h"
 !
     integer :: listma(*), nbmail, norien
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
     character(len=8) :: noma
 !.======================================================================
 ! ======================================================================
@@ -49,13 +50,13 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer ::  nutyma,     iliste
+    integer :: nutyma, iliste
     integer :: ima, numail, numa, norieg, lliste
     integer :: im1, im2, ico, ibid(1)
-    integer :: p1, p2, ifm, niv,  p3, p4
+    integer :: p1, p2, ifm, niv, p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, nconex, zero
-    logical(kind=1) :: dime1, dime2
+    aster_logical :: dime1, dime2
     character(len=1) :: lect
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
@@ -132,7 +133,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
         endif
-10  end do
+ 10 end do
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
@@ -170,7 +171,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !
 ! ------- ON ORIENTE TOUTES LES MAILLES DU CONNEXE
 !
-200          continue
+200         continue
 !
             im1 = ori2(iliste+1)
             jdesm1 = ori4(im1)
@@ -186,8 +187,8 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !             VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
                     if (dime1) ico = iorim1 ( zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
                     if (dime2) ico = iorim2 (&
-                                     zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1),&
-                                     ori3(im2), reorie&
+                                     zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1), ori3(im2),&
+                                     reorie&
                                      )
 !             SI MAILLES CONNEXES
                     if (ico .ne. 0) then
@@ -208,11 +209,11 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
                     if (ico .lt. 0) norieg = norieg + 1
 !
                 endif
-210          continue
+210         continue
             iliste = iliste + 1
             if (iliste .le. lliste) goto 200
         endif
-100  end do
+100 end do
 !
     norien = norien + norieg
 !
@@ -223,6 +224,6 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     AS_DEALLOCATE(vk8=ori5)
     call jedetr(nomavo)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

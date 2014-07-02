@@ -2,6 +2,7 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
                   res, nbpt)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3crad.h"
 #include "asterfort/i3crqp.h"
@@ -46,7 +47,7 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
     real(kind=8) :: t, ndf, zero, un, x(3), nab
     real(kind=8) :: a11, a12, a21, a22, b1, b2, r1, r2, r3, t1, t2
     real(kind=8) :: xa, ya, xb, yb, xd, yd, xf, yf, td, tf
-    logical(kind=1) :: finf, atrv, btrv, pb
+    aster_logical :: finf, atrv, btrv, pb
 !
 !======================================================================
 !
@@ -69,7 +70,7 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
     ya = sgt(2)
     yb = sgt(5)
     nab = un/((xa-xb)*(xa-xb)+(ya-yb)*(ya-yb))
-100  continue
+100 continue
     if (.not. finf) then
         arete = arete + 1
         nd = arete

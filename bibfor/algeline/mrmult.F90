@@ -1,6 +1,7 @@
 subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
                   prepos)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -20,7 +21,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     character(len=*) :: cumul
     integer :: lmat, nbvect
     real(kind=8) :: vect(*), xsol(*)
-    logical(kind=1) :: prepos, prepo2
+    aster_logical :: prepos, prepo2
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,8 +60,8 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic, kmatd
     character(len=19) :: matas
-    integer :: neq,  neql,  jsmhc, jsmdi
-    logical(kind=1) :: lmatd
+    integer :: neq, neql, jsmhc, jsmdi
+    aster_logical :: lmatd
     real(kind=8), pointer :: vectmp(:) => null()
     real(kind=8), pointer :: xtemp(:) => null()
     character(len=24), pointer :: refa(:) => null()

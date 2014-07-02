@@ -1,10 +1,11 @@
 subroutine cargri(lexc, densit, distn, dir11)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jevech.h"
-    logical(kind=1) :: lexc
+    aster_logical :: lexc
     real(kind=8) :: densit, distn, dir11(3)
 !
 ! ======================================================================

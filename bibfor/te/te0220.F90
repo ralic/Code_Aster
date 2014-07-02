@@ -16,6 +16,7 @@ subroutine te0220(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
@@ -48,11 +49,11 @@ subroutine te0220(option, nomte)
     real(kind=8) :: angmas(7), rbid(3), fluglo(2), fluloc(2), p(2, 2)
     integer :: ndim, nno, nnos, npg, kp, j, itempe, itemp, iener
     integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar
-    logical(kind=1) :: aniso
+    aster_logical :: aniso
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -74,7 +75,7 @@ subroutine te0220(option, nomte)
     kpg=1
     spt=1
     poum='+'
-    call rccoma(zi(imate),'THER', 1, phenom, iret)
+    call rccoma(zi(imate), 'THER', 1, phenom, iret)
     if (phenom .ne. 'THER_ORTH') then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
                     ' ', 'THER', nbpar, nompar, [valpar],&

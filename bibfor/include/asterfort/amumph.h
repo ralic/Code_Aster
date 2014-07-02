@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine amumph(action, solvez, matasz, rsolu, csolu, vcinez, nbsol, iret, prepos)
         character(len=*) :: action, matasz, vcinez, solvez
         integer :: iret, nbsol
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
-        logical(kind=1) :: prepos
+        aster_logical :: prepos
     end subroutine amumph
 end interface

@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcrel(sderro, nomevt, vall)
         character(len=24) :: sderro
         character(len=9) :: nomevt
-        logical(kind=1) :: vall
+        aster_logical :: vall
     end subroutine nmcrel
 end interface

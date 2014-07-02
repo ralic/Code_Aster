@@ -40,6 +40,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nbval.h"
 #include "asterfort/utmess.h"
@@ -50,7 +51,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
     real(kind=8) :: interv
     integer :: i, n1, n2, nb, ct
     real(kind=8) :: a, b, c
-    logical(kind=1) :: sortie
+    aster_logical :: sortie
 !
 !-----------------------------------------------------------------------
 !
@@ -59,7 +60,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
     do 10 i = 1, nbmod
         alpha(i)=-1
         beta(i) =-1
-10  end do
+ 10 end do
     alpha(1)=lambd1
     call nbval(ck, cm, cmat, ndim, lambd1,&
                n1)
@@ -76,7 +77,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
         else
             sortie=.false.
             ct=i
-70          continue
+ 70         continue
             ct=ct-1
             if (ct .le. 1) then
                 sortie=.true.
@@ -88,14 +89,14 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
             endif
             if (sortie) goto 80
             goto 70
-80          continue
+ 80         continue
         endif
         if (beta(i) .ge. 0.d0) then
             b=beta(i)
         else
             sortie=.false.
             ct=i
-50          continue
+ 50         continue
             ct=ct+1
             if (ct .ge. nbmod) then
                 sortie=.true.
@@ -107,9 +108,9 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
             endif
             if (sortie) goto 60
             goto 50
-60          continue
+ 60         continue
         endif
-30      continue
+ 30     continue
         if (beta(i) .ge. 0.d0) then
             if (alpha(i) .ge. 0.d0) then
                 if ((beta(i)-alpha(i)) .le. interv) goto 40
@@ -135,6 +136,6 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
         if (nb .lt. i) a=c
         if (nb .ge. i) b=c
         goto 30
-40      continue
-20  end do
+ 40     continue
+ 20 end do
 end subroutine

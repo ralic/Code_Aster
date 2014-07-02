@@ -28,6 +28,7 @@ function dvolu3(coord, norm, coord1)
 ! OUT  DVOLU3 : VOLUME DE L INTERSECTION
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 !
 ! DECLARATION GLOBALE
@@ -39,7 +40,7 @@ function dvolu3(coord, norm, coord1)
 !
     integer :: i, j, k, l, m, e
     real(kind=8) :: vol3, vol4, xio1, yio1, zio1, dio1
-    logical(kind=1) :: lnoeu
+    aster_logical :: lnoeu
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES
 !     RQ : 2 POINTS DEDANS
@@ -50,13 +51,13 @@ function dvolu3(coord, norm, coord1)
     do 10 k = 1, 4
         if (norm(1,k) .eq. 1 .and. i .gt. 0) j = k
         if (norm(1,k) .eq. 1 .and. i .eq. 0) i = k
-10  end do
+ 10 end do
 !
 ! 2 - RECHERCHE DU POINT HORS PLAN
 !
     do 20 k = 1, 4
         if (norm(2,k) .ne. 0) e = k
-20  end do
+ 20 end do
 !
 ! 3 - NOEU1 ET NOEU2 SONT CONFONDUS AVEC LES 2 SOMMETS I ET J
 ! RECHERCHE DE LA CORRESPONDANCE SI LNOEU ALORS I=NOEU1 SINON I=NOEU2

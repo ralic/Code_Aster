@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
                       trepos, nbclas, nomres, loptio)
@@ -26,6 +28,6 @@ interface
         real(kind=8) :: trepos
         integer :: nbclas
         character(len=*) :: nomres
-        logical(kind=1) :: loptio
+        aster_logical :: loptio
     end subroutine pochoc
 end interface

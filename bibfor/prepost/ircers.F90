@@ -7,6 +7,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -38,7 +39,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=*) :: nomgd, nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
     character(len=*) :: nocmpl(*)
     real(kind=8) :: vale(*)
-    logical(kind=1) :: lmasu
+    aster_logical :: lmasu
 !--------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,26 +91,26 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=80) :: entete(10), titre, texte
     integer :: nbchs, nbcmpt, entier, nbspt, nnoe, ilong, imodel
     integer :: impre, iente, impel
-    logical(kind=1) :: afaire, lcmp, lnocen
+    aster_logical :: afaire, lcmp, lnocen
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
     integer :: i, iachml, iad, iaec, iast, ibcmps, ic
-    integer :: ichs, icm, icmax0, icmp, icmpl,  icms
+    integer :: ichs, icm, icmax0, icmp, icmpl, icms
     integer :: icmsup, ico, icoef, icomax, icomm, icou, icp
     integer :: ida, idebu, idern, iel, ielg, ier, ies
     integer :: ifin, igre, igrel, ilig, imai
-    integer ::  inoa,   inos
-    integer :: ipg, ipoin1, ipoin2,  ir, ires, irvg
-    integer :: irvn, is0,  isp, ispt, isup
+    integer :: inoa, inos
+    integer :: ipg, ipoin1, ipoin2, ir, ires, irvg
+    integer :: irvn, is0, isp, ispt, isup
     integer :: itseg2, itype, iutil, j, jj, jmax, jmod
     integer :: jspt, jt, jtitr, k, l, ll
     integer :: mode, nbcou, nbdats, nbelgr, nbpg, ncmpg
     integer :: ncmpp, nec, ni, npcalc, nsca, nscal
     integer, pointer :: cmp_grel(:) => null()
     integer, pointer :: ipcmps(:) => null()
-    logical(kind=1), pointer :: ltabl(:) => null()
+    aster_logical, pointer :: ltabl(:) => null()
     integer, pointer :: nbcmps_grel(:) => null()
     integer, pointer :: nbcmpt_grel(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
@@ -134,14 +135,14 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     titre = zk80(jtitr)
     do 1 i = 1, ncmpmx
         ltabl(i)=.false.
- 1  end do
+  1 end do
     lnocen=.false.
     lcmp=.false.
 !
 !  --- RECHERCHE DES GRANDEURS SUPERTAB ----
 !
     call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
-                zi(ibcmps), nomgds,ipcmps)
+                zi(ibcmps), nomgds, ipcmps)
 !
 !
 !     NOM DE LA GRANDEUR SUPERTAB
@@ -151,9 +152,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
             do 897 i = 1, nbchs
                 do 898 j = 1, zi(ibcmps+i-1)
                     if (ncmps(1) .eq. ipcmps((i-1)*ncmpmx+j)) goto 899
-898              continue
-897          continue
-899          continue
+898             continue
+897         continue
+899         continue
             nomgs=nomgds(i)
         endif
     endif
@@ -162,7 +163,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     do 8 igre = 1, nbgrel
         icoef=max(1,celd(4))
         if (icoef .gt. icomax) icomax=icoef
- 8  end do
+  8 end do
     icomm = 6
     if (ncmpu .eq. 0) then
         icmax0 = icomax
@@ -188,7 +189,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
             do 2 icp = 1, zi(ibcmps-1+ichs)
                 afaire= (afaire.or.ltabl((ipcmps((ichs-1)*&
                 ncmpmx+icp))))
- 2          continue
+  2         continue
             if (.not. afaire) goto 10
         endif
 !
@@ -201,7 +202,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
         if (zi(ibcmps-1+ichs) .eq. 1 .and. icomax .gt. 1) then
             do 42 i = 1, icmax0
                 zi(jspt-1+i)=6
-42          continue
+ 42         continue
             ilig=icmax0/6
             ires=icmax0-ilig*6
             if (ires .eq. 0) then
@@ -224,14 +225,14 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     zi(ibcmps+i-1)=6
                     ni=ni+6
                     scmp_dats(1+i)=ni
-901              continue
+901             continue
             else
                 nbdats=ilig+1
                 do 902 i = 1, nbdats-1
                     zi(ibcmps+i-1)=6
                     ni=ni+6
                     scmp_dats(1+i)=ni
-902              continue
+902             continue
                 zi(ibcmps+nbdats-1)=ires
                 scmp_dats(nbdats+1)=ni+ires
             endif
@@ -240,7 +241,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
             nbdats=icomax
             do 3 i = 1, nbdats
                 zi(jspt-1+i)=1
- 3          continue
+  3         continue
             nbcmpt=zi(ibcmps-1+ichs)
             nomgs=nomgds(ichs)
         endif
@@ -286,7 +287,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         k=k+1
                         ncmpg=ncmpg+1
                     endif
-905              continue
+905             continue
 !             SOMME DES COMPOSANTES SELECTIONNEES PAR GREL
                 snbcps(igrel+1)=k
 !             NOMBRE DE COMPOSANTES SELECTIONNEES PRESENTES
@@ -306,7 +307,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                 pos(1+l)=ncmpp
                                 l=l+1
                             endif
-915                      continue
+915                     continue
 !                   POSITION DES COMPOSANTES SELECTIONNEES
 !                   DANS LES DATASETS
                         do 789 j = 1, nbcmp
@@ -314,12 +315,12 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                 perm(ll+1)=j
                                 ll=ll+1
                             endif
-789                      continue
+789                     continue
                     endif
-906              continue
+906             continue
 !             NOMBRE DE COMPOSANTES DANS LE GREL
                 nbcmpt_grel(igrel)=ncmpp
-904          continue
+904         continue
         endif
 !
 !
@@ -344,7 +345,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     ifin = idebu+iutil
                     texte(idebu:ifin)=nocmp(1:iutil)//' '
                     idebu = ifin + 1
-907              continue
+907             continue
                 texte(ifin+2:ifin+7)= '('//loc//')'
             else
                 nbspt=zi(jspt-1+ida)
@@ -363,7 +364,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             texte(idebu:ifin)= nocmp(1:iutil) //'_'//&
                             toto//' '
                             idebu = ifin + 1
- 6                      continue
+  6                     continue
                     else
                         nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp) )
                         iutil=lxlgut(nocmp)
@@ -371,7 +372,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         texte(idebu:ifin)=nocmp(1:iutil)//' '
                         idebu = ifin + 1
                     endif
- 5              continue
+  5             continue
                 texte(ifin+2:ifin+7)= '('//loc
                 idern = ifin+7
                 if (zi(ibcmps-1+ichs) .gt. 1 .and. icomax .gt. 1) then
@@ -428,12 +429,12 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         ncmpp=ncmpp+1
                         if (ichs .eq. 1) ltabl(i)=.true.
                     endif
-23              continue
+ 23             continue
                 do 61 i = 1, zi(ibcmps-1+ichs)
                     if (exisdg(zi(iaec),ipcmps((ichs-1) *ncmpmx+i) )) goto 62
-61              continue
+ 61             continue
                 goto 12
-62              continue
+ 62             continue
                 do 13 ielg = 1, nbelgr
                     iel=ligrel(ipoin1+ielg-1)
                     if (iel .le. 0) goto 13
@@ -443,10 +444,10 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     if (nbmat .ne. 0) then
                         do 14 imai = 1, nbmat
                             if (iel .eq. nummai(imai)) goto 15
-14                      continue
+ 14                     continue
                         goto 13
                     endif
-15                  continue
+ 15                 continue
                     impel = 1
 !
 !           RECHERCHE DE L'ADRESSE DANS VALE DU DEBUT DES VALEURS
@@ -503,9 +504,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                             inoa=iast
                                             goto 529
                                         endif
-528                                  continue
+528                                 continue
 !
-529                                  continue
+529                                 continue
                                     ASSERT(inoa.ne.0)
 !
                                     do 561 icou = 1, nbcou
@@ -515,7 +516,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
                                         do 521 i = 1, nbcmpt
                                             zr(irvn-1+i)=0.d0
-521                                      continue
+521                                     continue
 !
                                         do 509 icm = 1, nbcmps_grel(igrel)
                                             j=perm(1+snbcps(igrel)+&
@@ -526,7 +527,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                         icm-1)
                                                 zr(irvn-1+jt)= vale(jj+ic)
                                             endif
-509                                      continue
+509                                     continue
 !
                                         if (iente .eq. 1) then
                                             write(ifi,'(A80)') (entete(i),&
@@ -547,8 +548,8 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                         write (ifi,'(6(1PE13.5E3))') (&
                                         zr(irvn-1+i), i=1,nbcmpt)
 !
-561                                  continue
-516                              continue
+561                                 continue
+516                             continue
 !
                             else
 !
@@ -583,8 +584,8 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                             inoa=iast
                                             goto 29
                                         endif
-28                                  continue
-29                                  continue
+ 28                                 continue
+ 29                                 continue
                                     ASSERT(inoa.ne.0)
                                     do 161 icou = 1, nbcou
                                         j=iachml-1+ncmpp*icoef*(inoa-&
@@ -592,7 +593,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                         ncmpp*(ico-1)
                                         do 21 i = 1, nbcmpt
                                             zr(irvn-1+i)=0.d0
-21                                      continue
+ 21                                     continue
                                         ic=0
                                         do 22 icmp = 1, ncmpmx
                                             if (exisdg(zi(iaec),icmp)) then
@@ -604,12 +605,12 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                                         do 26 isp = 1, zi(jspt-1+ida)
                                                             zr(irvn-1+icms-1+isp)=&
                                         vale(j+ic+ncmpp*(isp-1))
-26                                                      continue
+ 26                                                     continue
                                                         goto 22
                                                     endif
-43                                              continue
+ 43                                             continue
                                             endif
-22                                      continue
+ 22                                     continue
                                         if (impre .eq. 1) then
                                             if (iente .eq. 1) then
                                                 write(ifi,'(A80)') (entete(i),&
@@ -630,8 +631,8 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                             write (ifi,'(6(1PE13.5E3))') (&
                                         zr(irvn-1+i), i=1,nbcmpt)
                                         endif
-161                                  continue
-16                              continue
+161                                 continue
+ 16                             continue
                             endif
 !
 !  --- CHAMELEM AUX POINTS DE GAUSS---
@@ -643,7 +644,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
                                 do 908 i = 1, nbcmpt
                                     zr(irvg-1+i)=0.d0
-908                              continue
+908                             continue
 !
                                 do 909 icm = 1, nbcmps_grel(igrel)
                                     j=perm(1+snbcps(igrel)+icm-&
@@ -658,12 +659,12 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                         icm-1)
                                             zr(irvg-1+jt)=zr(irvg-1+jt)+&
                                         vale(iachml-1+jj)
-910                                      continue
+910                                     continue
                                         zr(irvg-1+jt)=zr(irvg-1+jt)/&
                                         nbpg
 !
                                     endif
-909                              continue
+909                             continue
 !
                                 if (iente .eq. 1) then
                                     write(ifi,'(A80)') (entete(i),i=1,&
@@ -686,7 +687,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                 nbpg=npcalc
                                 do 18 i = 1, nbcmpt
                                     zr(irvg-1+i)=0.d0
-18                              continue
+ 18                             continue
                                 ic=0
                                 do 19 icmp = 1, ncmpmx
                                     if (exisdg(zi(iaec),icmp)) then
@@ -709,16 +710,16 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                         irvg-1+icms-1+isp)+ vale(j+ic+&
                                         ncmpp*(is0-1))
 !
-17                                                  continue
+ 17                                                 continue
                                                     zr(irvg-1+icms-1+isp)=zr(irvg-&
                                         1+icms-1+isp) / nbpg
 !
-36                                              continue
+ 36                                             continue
                                                 goto 19
                                             endif
-37                                      continue
+ 37                                     continue
                                     endif
-19                              end do
+ 19                             end do
                                 if (impre .eq. 1) then
                                     if (iente .eq. 1) then
                                         write(ifi,'(A80)') (entete(i),&
@@ -742,11 +743,11 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             endif
                         endif
                     endif
-13              end do
-12          end do
+ 13             end do
+ 12         end do
             if (iente .eq. 0) write (ifi,'(A)') '    -1'
-11      end do
-10  end do
+ 11     end do
+ 10 end do
 !
     if (lnocen) then
         call utmess('A', 'PREPOST_86')

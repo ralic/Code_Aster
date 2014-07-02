@@ -21,14 +21,15 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=4) :: oper
     character(len=*) :: optcaz, optasz, typmaz
-    logical(kind=1) :: lasse, lcalc
+    aster_logical :: lasse, lcalc
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)
-    logical(kind=1) :: lassme(20), lcalme(20)
+    aster_logical :: lassme(20), lcalme(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +90,7 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
     if (oper .eq. 'INIT') then
         do 10 i = 1, 20
             ltypma(i) = k6bla
-10      continue
+ 10     continue
         nbmatr = 0
     else if (oper.eq.'AJOU') then
         nbmatr = nbmatr + 1

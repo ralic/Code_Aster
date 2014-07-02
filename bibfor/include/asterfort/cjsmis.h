@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cjsmis(mod, crit, mater, nvi, epsd,&
                       deps, sigd, sigf, vind, vinf,&
@@ -29,9 +31,9 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        logical(kind=1) :: noconv
-        logical(kind=1) :: aredec
-        logical(kind=1) :: stopnc
+        aster_logical :: noconv
+        aster_logical :: aredec
+        aster_logical :: stopnc
         integer :: niter
         real(kind=8) :: epscon
     end subroutine cjsmis

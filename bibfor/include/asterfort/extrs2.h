@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                       modele, nbordr, nuordr, nbacc, nomacc,&
@@ -22,7 +24,7 @@ interface
         character(len=*) :: resu0
         character(len=*) :: resu1
         character(len=16) :: typcon
-        logical(kind=1) :: lrest
+        aster_logical :: lrest
         character(len=8) :: mailla
         character(len=8) :: modele
         integer :: nbordr

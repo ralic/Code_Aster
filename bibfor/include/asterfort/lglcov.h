@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function lglcov(seuil, toler)
         real(kind=8) :: seuil
         real(kind=8) :: toler
-        logical(kind=1) :: lglcov
+        aster_logical :: lglcov
     end function lglcov
 end interface

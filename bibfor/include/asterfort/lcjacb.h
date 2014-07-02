@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lcjacb(fami, kpg, ksp, loi, mod,&
                       nmat, materd, materf, timed, timef,&
@@ -57,8 +59,8 @@ interface
         real(kind=8) :: crit(*)
         integer :: indi(7)
         real(kind=8) :: vind1(nvi)
-        logical(kind=1) :: bnews(3)
-        logical(kind=1) :: mtrac
+        aster_logical :: bnews(3)
+        aster_logical :: mtrac
         real(kind=8) :: drdy(nr, nr)
         integer :: iret
     end subroutine lcjacb

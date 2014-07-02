@@ -20,6 +20,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/cfdisi.h"
@@ -69,7 +70,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
 !
     integer :: ztabf
     integer :: iptc, ntpc, ityp
-    integer ::  jtynma
+    integer :: jtynma
     integer :: nummam, nummae, izone
     integer :: ndimg
     integer :: nndel, numtyp
@@ -78,7 +79,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: ifm, niv
-    logical(kind=1) :: lfrott
+    aster_logical :: lfrott
     integer, pointer :: typmail(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -98,7 +99,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
     do 10 ityp = 1, nbtyp
         comptc(ityp) = 0
         comptf(ityp) = 0
-10  end do
+ 10 end do
     ntpc = cfdisi(defico,'NTPC')
     ndimg = cfdisi(defico,'NDIM')
     nndtot = 0
@@ -150,14 +151,14 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
             comptc(ityp) = comptc(ityp) + 1
         endif
 !
-20  end do
+ 20 end do
 !
 ! --- ON COMPTE LE NOMBRE DE NOEUDS A STOCKER AU TOTAL
 !
     do 170 ityp = 1, nbtyp
         nndel = mmeltn(ityp)
         nndtot = nndtot + (comptc(ityp)+comptf(ityp))*(nndel+1)
-170  end do
+170 end do
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ... NOMBRE TOTAL DE NOEUDS :',nndtot
     endif
@@ -171,7 +172,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
         if (comptf(ityp) .gt. 0) then
             nbgrel = nbgrel + 1
         endif
-60  end do
+ 60 end do
 !
     call jedema()
 end subroutine

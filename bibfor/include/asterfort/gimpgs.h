@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gimpgs(result, nnoff, absc, gs, numero,&
                       gi, ndeg, ndimte, gthi, extim,&
@@ -28,7 +30,7 @@ interface
         integer :: ndeg
         integer :: ndimte
         real(kind=8) :: gthi(1)
-        logical(kind=1) :: extim
+        aster_logical :: extim
         real(kind=8) :: time
         integer :: iordr
         integer :: unit

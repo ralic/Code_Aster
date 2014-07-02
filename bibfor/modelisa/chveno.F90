@@ -1,5 +1,6 @@
 subroutine chveno(fonree, noma, nomo)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
@@ -62,11 +63,11 @@ subroutine chveno(fonree, noma, nomo)
     integer :: imfac, nbmfac, n, ndim, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
     integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
-    integer :: jcoor, jtyma,  jgro,  jmab, jpri, jbor
+    integer :: jcoor, jtyma, jgro, jmab, jpri, jbor
     integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
     integer :: norien, norie1, norie2, jlima, nbmamo
     real(kind=8) :: dnor
-    logical(kind=1) :: reorie, mcfl(nbt)
+    aster_logical :: reorie, mcfl(nbt)
     character(len=8) :: mot, nomma, nommo, typel
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
     character(len=19) :: limamo

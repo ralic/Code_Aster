@@ -1,5 +1,6 @@
 subroutine te0288(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
@@ -62,7 +63,7 @@ subroutine te0288(option, nomte)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
     character(len=16) :: compor(4)
-    logical(kind=1) :: grand, incr
+    aster_logical :: grand, incr
 !
     integer :: isig
 !
@@ -73,7 +74,7 @@ subroutine te0288(option, nomte)
 !
     call elref1(elrefp)
     call jevech('PTHETAR', 'L', ithet)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
@@ -81,9 +82,9 @@ subroutine te0288(option, nomte)
         thet = 0.d0
         do 11 j = 1, ndim
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
-11      continue
+ 11     continue
         if (thet .lt. r8prem()) compt = compt + 1
-10  end do
+ 10 end do
     if (compt .eq. nnop) goto 9999
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
@@ -92,8 +93,7 @@ subroutine te0288(option, nomte)
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -109,7 +109,7 @@ subroutine te0288(option, nomte)
 !
     do 50 i = 1, 4
         compor(i) = zk16(icomp+i-1)
-50  end do
+ 50 end do
 !
     incr = compor(4).eq.'COMP_INCR'
     grand = compor(3).eq.'GROT_GDEP'
@@ -142,8 +142,7 @@ subroutine te0288(option, nomte)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
     if (ibid .eq. 0 .and. (.not.lteatt('AXIS','OUI')) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-        .and. .not.iselli(elrefp)) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -172,8 +171,8 @@ subroutine te0288(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+112         continue
+111     continue
 !
         call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
@@ -182,13 +181,13 @@ subroutine te0288(option, nomte)
                     incr)
 !
 !
-110  end do
+110 end do
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G SUR LES LEVRES
 !     ------------------------------------------------------------------
 !
-    if (option .eq. 'CALC_G'.or.option .eq. 'CALC_GTP') then
+    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_GTP') then
 !       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
         call jevecd('PPRESSR', ipres, 0.d0)
     else if (option.eq.'CALC_G_F'.or. option .eq. 'CALC_GTP_F') then
@@ -204,20 +203,20 @@ subroutine te0288(option, nomte)
         do 70 i = 1, nnop
             do 80 j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
-80          continue
+ 80         continue
             valpar(ndim+1)= zr(itemps)
             call fointe('FM', zk8(ipref), 4, nompar, valpar,&
                         presn(i), icode)
-70      continue
+ 70     continue
     endif
 !
 !     SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
     do 90 i = 1, nnop
-        if (option .eq. 'CALC_G'.or. option .eq. 'CALC_GTP') pres = abs(zr(ipres-1+i))
-        if (option .eq. 'CALC_G_F'.or. option .eq. 'CALC_GTP_F') pres = abs(presn(i))
+        if (option .eq. 'CALC_G' .or. option .eq. 'CALC_GTP') pres = abs(zr(ipres-1+i))
+        if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
-90  end do
+ 90 end do
     if (compt .eq. nnop) goto 9999
 !
 !     PARAMETRES PROPRES A X-FEM
@@ -236,8 +235,8 @@ subroutine te0288(option, nomte)
     do 20 i = 1, nface
         do 21 j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
-21      continue
-20  end do
+ 21     continue
+ 20 end do
 !
 !     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS DE
 !     DE L'ELEMENT PARENT !!
@@ -261,10 +260,10 @@ subroutine te0288(option, nomte)
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, presn, option, igthet, jbasec)
-200  end do
+200 end do
 !
 !
-9999  continue
+9999 continue
 !
 !
 end subroutine

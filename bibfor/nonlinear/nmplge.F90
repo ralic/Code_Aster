@@ -25,6 +25,7 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
@@ -83,7 +84,7 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
     integer :: k2(1), kpg, spt
     character(len=8) :: fami, poum
 !
-    logical(kind=1) :: resi, rigi, grand, axi
+    aster_logical :: resi, rigi, grand, axi
     integer :: ndimsi, nddl, g, cod(27), n, i, m, j, kl, pq, os, kk
     integer :: iu(3, 27), ie(6, 8)
     real(kind=8) :: rac2, lc(1), c, deplm(3*27), depld(3*27), dfdi1(27, 3)
@@ -116,7 +117,7 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
     c = lc(1)**2
     do 5 g = 1, npg
         cod(g)=0
- 5  end do
+  5 end do
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
     if (resi) call r8inir(nddl, 0.d0, vect, 1)
     call r8inir(6, 0.d0, sigmam, 1)
@@ -126,17 +127,17 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
     do 10 n = 1, nno2
         do 20 i = 1, ndim
             iu(i,n) = i + (n-1)*(ndim+ndimsi)
-20      continue
+ 20     continue
         do 30 kl = 1, ndimsi
             ie(kl,n) = kl + ndim + (n-1)*(ndim+ndimsi)
-30      continue
-10  end do
+ 30     continue
+ 10 end do
     os = (ndimsi+ndim)*nno2
     do 40 n = 1, nno1-nno2
         do 50 i = 1, ndim
             iu(i,n+nno2) = i + (n-1)*ndim + os
-50      continue
-40  end do
+ 50     continue
+ 40 end do
 !
 !
 !    EXTRACTION DES DEPLACEMENTS
@@ -145,8 +146,8 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
         do 110 i = 1, ndim
             deplm(i+(n-1)*ndim) = ddlm(iu(i,n))
             depld(i+(n-1)*ndim) = ddld(iu(i,n))
-110      continue
-100  end do
+110     continue
+100 end do
 !
 !
 !
@@ -185,7 +186,7 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
                    1)
         do 200 kl = 1, ndimsi
             de(kl) = epsgm(kl,2)+epsgd(kl,2) - epsgm(kl,1)-epsgd(kl,1)
-200      continue
+200     continue
 !
 !
 !      LOI DE COMPORTEMENT
@@ -212,10 +213,10 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
                     t1 = 0
                     do 320 kl = 1, ndimsi
                         t1 = t1 + sigma(kl)*b(kl,i,n)
-320                  continue
+320                 continue
                     vect(kk) = vect(kk) + wg*t1
-310              continue
-300          continue
+310             continue
+300         continue
 !
 !        VECTEUR FINT:E
             do 350 n = 1, nno2
@@ -224,16 +225,16 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
                     t1 = 0
                     do 365 pq = 1, ndimsi
                         t1 = t1 + p(kl,pq)*de(pq)*vff2(n,g)
-365                  continue
+365                 continue
                     t2 = 0
                     do 370 i = 1, ndim
                         do 375 pq = 1, ndimsi
                             t2 = t2 + c*dfdi2(n,i)*p(kl,pq)*geps(pq,i)
-375                      continue
-370                  continue
+375                     continue
+370                 continue
                     vect(kk) = vect(kk) + wg*(t1+t2)
-360              continue
-350          continue
+360             continue
+350         continue
 !
 !        CONTRAINTES
             call dcopy(ndimsi, sigma, 1, sigp(1, g), 1)
@@ -257,11 +258,11 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
                             do 540 kl = 1, ndimsi
                                 do 550 pq = 1, ndimsi
                                     t1 = t1+dsidep(kl,pq,1)*b(pq,j,m)* b(kl,i,n)
-550                              continue
-540                          continue
+550                             continue
+540                         continue
                             matr(kk) = matr(kk) + wg*t1
-530                      continue
-520                  continue
+530                     continue
+520                 continue
 !
 !        MATRICE K:U(I,N),E(PQ,M)
                     do 600 m = 1, nno2
@@ -272,12 +273,12 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
 !    ????, C EST LA LDC QUI DEVRAIT FAIRE CA  ???
                                 if (nint(vim(2,g)) .ne. 2) t1 = t1 + dsidep(kl,pq,2)*vff2(m,g)*b(&
                                                                 &kl,i,n)
-620                          continue
+620                         continue
                             matr(kk) = matr(kk) + wg*t1
-610                      continue
-600                  continue
-510              continue
-500          continue
+610                     continue
+600                 continue
+510             continue
+500         continue
 !
 !        MATRICE K:E(KL,N),U(J,M)
             do 700 n = 1, nno2
@@ -289,12 +290,12 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
                             t1 = 0
                             do 735 pq = 1, ndimsi
                                 t1 = t1 - p(kl,pq)*b(pq,j,m)*vff2(n,g)
-735                          continue
+735                         continue
                             matr(kk) = matr(kk) + wg*t1
-730                      continue
-720                  continue
-710              continue
-700          continue
+730                     continue
+720                 continue
+710             continue
+700         continue
 !
 !
 !        MATRICE K:E(KL,N),E(PQ,M)
@@ -305,36 +306,36 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
             call dscal(36, 1-pert, p, 1)
             do 780 kl = 1, 6
                 p(kl,kl) = p(kl,kl) + pert
-780          continue
+780         continue
 !
             call r8inir(36, 0.d0, q, 1)
             do 790 i = 1, 6
                 q(i,i)=1.d0
-790          continue
+790         continue
             do 800 n = 1, nno2
                 do 810 m = 1, nno2
                     t1 = vff2(n,g)*vff2(m,g)
                     t2 = 0.d0
                     do 820 i = 1, ndim
                         t2 = t2 + c*dfdi2(n,i)*dfdi2(m,i)
-820                  continue
+820                 continue
                     do 830 kl = 1, ndimsi
                         do 835 pq = 1, ndimsi
                             kk = (ie(kl,n)-1)*nddl + ie(pq,m)
                             matr(kk) = matr(kk) + wg*t1*p(kl,pq) + wg* t2*q(kl,pq)
-835                      continue
-830                  continue
-810              continue
-800          continue
+835                     continue
+830                 continue
+810             continue
+800         continue
 !
         endif
 !
-1000  end do
+1000 end do
 !
 !
 ! - SYNTHESE DES CODES RETOUR
 !
-9000  continue
+9000 continue
     call codere(cod, npg, codret)
 !
 end subroutine

@@ -1,5 +1,6 @@
 subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
@@ -66,15 +67,15 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     integer :: nmocl, nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
 !-----------------------------------------------------------------------
     integer :: i, idgex, ii, in, ino, iret
-    integer :: j,  jj, jl, jnbno,  jno
-    integer ::  jprnm, jval, jvalv, nangl, nbec, nbecf
+    integer :: j, jj, jl, jnbno, jno
+    integer :: jprnm, jval, jvalv, nangl, nbec, nbecf
     integer :: nbno, nbnoeu, nsurch, numel
     integer :: igrel, inema
 !-----------------------------------------------------------------------
     parameter     (nmocl=10)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
-    logical(kind=1) :: verif
+    aster_logical :: verif
     character(len=8) :: nomn, typmcl(2), typlag, valfof(nmocl)
     character(len=16) :: motcle(nmocl), keywordfact, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
@@ -103,7 +104,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
 !
 ! - Count number of late elements
 !
-    call char_nb_ligf(mesh  , keywordfact, 'Node', nb_elem_late, nb_noel_maxi)
+    call char_nb_ligf(mesh, keywordfact, 'Node', nb_elem_late, nb_noel_maxi)
 !
 ! - Create <LIGREL> on late elements
 !
@@ -256,10 +257,9 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
         do jj = 1, nbno
             call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
             noms_noeuds(ino) = zk8(jno-1+jj)
-            call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1),&
-                        nbcomp, vale_type, zk8(jno-1+jj), ino, nsurch,&
-                        forimp, valfor, valfof, motcle, verif,&
-                        nbec)
+            call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1), nbcomp,&
+                        vale_type, zk8(jno-1+jj), ino, nsurch, forimp,&
+                        valfor, valfof, motcle, verif, nbec)
         end do
 !
         call jedetr(mesnoe)
@@ -302,7 +302,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
 !
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
     call jeexin(ligrch//'.LGNS', iexi)
-    if (iexi.gt.0) then
+    if (iexi .gt. 0) then
         call jeveuo(ligrch//'.LGNS', 'E', jlgns)
     else
         jlgns=1
@@ -331,9 +331,9 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
 !
             igrel = igrel + 1
             call jenuno(jexnum('&CATA.TE.NOMTE', numel), nomele)
-            call noligr(mesh, ligrch, igrel, numel, 1, [in],&
-                        [' '], 1, 1, inema, zi(jnbno),&
-                        typlag,jlgns)
+            call noligr(mesh, ligrch, igrel, numel, 1,&
+                        [in], [' '], 1, 1, inema,&
+                        zi(jnbno), typlag, jlgns)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
             if (vale_type .eq. 'REEL') then

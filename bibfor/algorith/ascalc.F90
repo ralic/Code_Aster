@@ -6,6 +6,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                   depsup, tcosup, corfre, f1gup, f2gup)
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/asacce.h"
@@ -40,7 +41,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     real(kind=8) :: f1gup, f2gup
     character(len=*) :: resu, masse, mome, psmo, stat, typcmo, typcdi, knomsy(*)
     character(len=*) :: nomsup(*)
-    logical(kind=1) :: monoap, muapde, comdir, tronc, corfre
+    aster_logical :: monoap, muapde, comdir, tronc, corfre
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,11 +101,11 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !     ------------------------------------------------------------------
     integer :: id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
     integer :: jval, nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
-    integer :: neq, jrep2, nbdis(nbsup), noc, ioc,  n1, nno, is, ino, igr
-    integer :: ngr,  jdgn, ier, ncompt, nintra
+    integer :: neq, jrep2, nbdis(nbsup), noc, ioc, n1, nno, is, ino, igr
+    integer :: ngr, jdgn, ier, ncompt, nintra
     parameter     ( nbpara = 5 )
     real(kind=8) :: temps
-    logical(kind=1) :: prim, secon, glob
+    aster_logical :: prim, secon, glob
     character(len=4) :: ctyp
     character(len=8) :: k8b, noeu, noma
     character(len=15) :: motfa1

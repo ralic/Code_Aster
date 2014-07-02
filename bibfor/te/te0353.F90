@@ -16,6 +16,7 @@ subroutine te0353(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
@@ -57,14 +58,14 @@ subroutine te0353(option, nomte)
     integer :: nno, kp, npg1, i, ivectu, jtab(7), l, iret
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jprol, jvale, nbval, ndim, nnos, jgano
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data acier/'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
     data zirc/'ALPHPUR','ALPHBETA'/
 !
     fami='RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     nbcon=4
     laxi=.false.
     if (lteatt('AXIS','OUI')) laxi=.true.
@@ -134,7 +135,7 @@ subroutine te0353(option, nomte)
         nomres(16)='C_ETA'
     endif
     do 10 i = 1, nbres
-10  end do
+ 10 end do
     do kp = 1, npg1
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -151,7 +152,7 @@ subroutine te0353(option, nomte)
                 call rcvarc(' ', acier(l), '+', 'RIGI', kp,&
                             1, phasp(l), iret)
                 if (iret .eq. 1) phasp(l)=0.d0
-20          continue
+ 20         continue
         else if (compor(1:4).eq.'ZIRC') then
             do 30 l = 1, 2
                 call rcvarc(' ', zirc(l), '-', 'RIGI', kp,&
@@ -160,11 +161,11 @@ subroutine te0353(option, nomte)
                 call rcvarc(' ', zirc(l), '+', 'RIGI', kp,&
                             1, phasp(l), iret)
                 if (iret .eq. 1) phasp(l)=0.d0
-30          continue
+ 30         continue
         endif
         do 40 i = 1, nno
             r=r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-40      continue
+ 40     continue
         call rcvalb(fami, kp, 1, '+', mater,&
                     ' ', 'ELAS_META', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
@@ -182,11 +183,11 @@ subroutine te0353(option, nomte)
                 else
                     kpt(i-2)=valres(i)
                 endif
-50          continue
+ 50         continue
             zfbm=phasp(1)
             do 60 i = 1, 3
                 zfbm=zfbm+phasp(1+i)
-60          continue
+ 60         continue
             trans=0.d0
             do 70 i = 1, 4
                 zvarim=phasm(i)
@@ -200,14 +201,14 @@ subroutine te0353(option, nomte)
                     if (icodre(j) .ne. 0) valres(j)=0.d0
                     trans=trans+kpt(i)*valres(j)*deltaz
                 endif
-70          continue
+ 70         continue
             call rcvalb(fami, kp, 1, '+', mater,&
                         ' ', 'META_VISC', 0, ' ', [0.d0],&
                         5, nomres(17), valres(17), icodre(17), 0)
             test=1
             do 80 i = 17, 21
                 if (icodre(i) .eq. 0) test=0
-80          continue
+ 80         continue
 !
 !
             if (zk16(icompo)(1:8) .eq. 'META_P_I' .or. zk16(icompo)(1:8) .eq. 'META_V_I') then
@@ -265,7 +266,7 @@ subroutine te0353(option, nomte)
                                         jvale, nbval, r8bid)
                             call rcfonc('V', 2, jprol, jvale, nbval,&
                                         p = vi(i), rprim = r0(i))
-90                      continue
+ 90                     continue
                     endif
                     if (zfbm .gt. 0.d0) then
                         rprim=phas(1)*r0(1)+phas(2)*r0(2)+phas(3)*r0(&
@@ -328,7 +329,7 @@ subroutine te0353(option, nomte)
                 else
                     kpt(i-2)=valres(i)
                 endif
-100          continue
+100         continue
 !
             zalpha=phasp(1)+phasp(2)
             zvarim=phasm(1)
@@ -358,7 +359,7 @@ subroutine te0353(option, nomte)
             test=1
             do 110 i = 14, 16
                 if (icodre(14) .eq. 0) test=0
-110          continue
+110         continue
             if ((zr(ivari+(kp-1)*lgpg+3).gt.0.5d0) .and. (test.eq.1)) then
                 call rcvalb('RIGI', 1, 1, '+', mater,&
                             ' ', 'ELAS_META', 1, 'META', [zalpha],&
@@ -406,7 +407,7 @@ subroutine te0353(option, nomte)
                                     jvale, nbval, r8bid)
                         call rcfonc('V', 3, jprol, jvale, nbval,&
                                     p = vi(i), rprim = r0(i))
-120                  continue
+120                 continue
                 endif
                 if (zalpha .gt. 0.d0) then
                     rprim=phas(1)*r0(1)+phas(2)*r0(2)
@@ -429,18 +430,18 @@ subroutine te0353(option, nomte)
         sigmo=0.d0
         do 130 i = 1, 3
             sigmo=sigmo+zr(icontr+(kp-1)*nbcon+i-1)
-130      continue
+130     continue
         sigmo=sigmo/3.d0
         do 140 i = 1, nbcon
             sigdv(i)=zr(icontr+(kp-1)*nbcon+i-1)-sigmo*kron(i)
             sig(i)=coef*(1.5d0*trans*sigdv(i))
             sig(i)=deuxmu*sig(i)
-140      continue
+140     continue
         do 150 i = 1, nno
             zr(ivectu+2*i-2)=zr(ivectu+2*i-2)+ poids*(sig(1)*dfdx(i)+&
             sig(3)*zr(ivf+k+i-1)* co+sig(4)*dfdy(i))
             zr(ivectu+2*i-1)=zr(ivectu+2*i-1)+ poids*(sig(2)*dfdy(i)+&
             sig(4)*dfdx(i))
-150      continue
+150     continue
     end do
 end subroutine

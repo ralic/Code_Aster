@@ -17,6 +17,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnscre.h"
@@ -51,7 +52,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    logical(kind=1) :: newk, axe
+    aster_logical :: newk, axe
     character(len=1) :: base
     character(len=3) :: tsca, dir
     character(len=8) :: ma1, ma2, ma3, nomgd, promes, macrel
@@ -61,10 +62,10 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     character(len=19) :: cns1, cns2, trav
     character(len=24) :: vnoeud, vrange, vnoeum, vrangm, vmes, vsu, k24bid
     character(len=24) :: valk(2), vorien, vref, vrefpm
-    integer ::  jcns1l, jcns1v,   icmp1, icmp2
-    integer ::  jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
+    integer :: jcns1l, jcns1v, icmp1, icmp2
+    integer :: jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
     integer :: ncmp, ibid, gd, ncmp2, ino2, icmp, ino1, icmpd
-    integer ::  isma, lori, lref, lrefms
+    integer :: isma, lori, lref, lrefms
     integer :: iddl, jddl, imod, ipos, iposi, iposj, lnoeud, lrange
     integer :: lnoeum, lrangm, nbmesu, nbord, nddle, lmesu, ltrav
     real(kind=8) :: v1, v2, coef1, valx, valy, valz, eps

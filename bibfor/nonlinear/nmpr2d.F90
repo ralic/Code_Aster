@@ -20,13 +20,14 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subac1.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
     integer :: mode, nno, npg
     real(kind=8) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
     real(kind=8) :: geom(2, nno), p(2, npg)
@@ -72,7 +73,7 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
             r = 0.d0
             do 2 n = 1, nno
                 r = r + vff(n,kpg)*geom(1,n)
- 2          continue
+  2         continue
             if (r .eq. 0.d0) then
                 if (p(1,kpg) .ne. 0.d0) then
                     call utmess('F', 'ALGORITH8_25')
@@ -92,8 +93,8 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
             do 10 n = 1, nno
                 do 11 i = 1, 2
                     vect(i,n) = vect(i,n)- poidsg(kpg)*jac*p(1,kpg) * cova(i,3)*vff(n,kpg)
-11              continue
-10          continue
+ 11             continue
+ 10         continue
 !
 !
 !      CALCUL DE LA RIGIDITE
@@ -109,10 +110,10 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
                             t2 = dff(m,kpg)*cova(j,3) * vff(n,kpg)* cnva(i,1)
                             t = poidsg(kpg)*p(1,kpg) * jac * (t1 - t2)
                             matc(i,n,j,m) = matc(i,n,j,m) + t
-31                      continue
-30                  continue
-21              continue
-20          continue
+ 31                     continue
+ 30                 continue
+ 21             continue
+ 20         continue
 !
 !       TERME COMPLEMENTAIRE EN AXISYMETRIQUE
             if (laxi) then
@@ -122,15 +123,15 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
                             t1 = vff(n,kpg)*vff(m,kpg) * cnva(3,2)* cova(j,3)
                             t = poidsg(kpg)*p(1,kpg) * jac * t1
                             matc(1,n,j,m) = matc(1,n,j,m) + t
-51                      continue
-50                  continue
-40              continue
+ 51                     continue
+ 50                 continue
+ 40             continue
             endif
 !
         else
             ASSERT(.false.)
         endif
 !
-100  end do
+100 end do
 !
 end subroutine

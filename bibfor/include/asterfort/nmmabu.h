@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
                       b)
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
-        logical(kind=1) :: grand
+        aster_logical :: axi
+        aster_logical :: grand
         real(kind=8) :: dfdi(nno, ndim)
         real(kind=8) :: b(6, 3, nno)
     end subroutine nmmabu

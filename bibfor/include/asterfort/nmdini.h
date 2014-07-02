@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmdini(motfac, iocc, provli, instin, linsei,&
                       tole, nbinst, linsti, numini)
@@ -22,10 +24,10 @@ interface
         integer :: iocc
         character(len=19) :: provli
         real(kind=8) :: instin
-        logical(kind=1) :: linsei
+        aster_logical :: linsei
         real(kind=8) :: tole
         integer :: nbinst
-        logical(kind=1) :: linsti
+        aster_logical :: linsti
         integer :: numini
     end subroutine nmdini
 end interface

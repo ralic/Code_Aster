@@ -6,6 +6,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
     integer :: ndim, nno, nnos, nnol
@@ -75,7 +76,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !
     integer :: i, j, in, pli, ifh, coefi
     real(kind=8) :: ffi, dn
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +85,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
     dn = 0.d0
     do 143 j = 1, ndim
         dn = dn + saut(j)*nd(j)
-143  end do
+143 end do
 !
 ! --- TERME LN1
 !
@@ -102,14 +103,14 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
             do 151 j = 1, ndim
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + (reac- coeffr*dn)*coefi*ffp(i)*nd(j)*&
                                       &jac
-151          continue
-157      continue
+151         continue
+157     continue
         do 152 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp(&
                                       in+ndim*(1+nfh)+j) + (reac-coeffr*dn)*coefi*ffp(i)*rr*nd(j&
                                       )*jac
-152      continue
-150  continue
+152     continue
+150 continue
 !
 ! --- TERME LN2
 !
@@ -119,5 +120,5 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !
         vtmp(pli) = vtmp(pli) - dn * ffi * jac
 !
-160  continue
+160 continue
 end subroutine

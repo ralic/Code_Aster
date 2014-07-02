@@ -9,12 +9,13 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                   dredst, coefm, liad, inumor, idescf,&
                   nofdep, nofvit, nofacc, nomfon, psidel,&
                   monmot, nbpal, dtsto, vrotat, prdeff,&
-                  method, nomres, nbexci, irevst, drevst, &
+                  method, nomres, nbexci, irevst, drevst,&
                   intitu)
 !
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/r8prem.h"
@@ -58,7 +59,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*), vvar
     character(len=8) :: nomres, monmot, intitu(*)
     character(len=16) :: typbas, method
-    logical(kind=1) :: lamor, prdeff
+    aster_logical :: lamor, prdeff
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)
@@ -140,7 +141,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     integer :: isto3, istoav, iv, iveri
     integer :: jcho2, jchor
     integer :: jmass, jredi
-    integer :: jredr,  jvint
+    integer :: jredr, jvint
     integer :: nbacc, nbexci, nbmod1, nbpasc
     integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, npas, nbschor
     integer :: nper, nr, nrmax, nbvint
@@ -288,8 +289,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !     --- CONDITIONS INITIALES ---
 !
-    call mdinit(basemo, neqgen, nbchoc, depl, vite, &
-                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho )
+    call mdinit(basemo, neqgen, nbchoc, depl, vite,&
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho)
     if (iret .ne. 0) goto 999
     call dcopy(neqgen, vite, 1, vip1, 1)
     dt2 = dti
@@ -350,7 +351,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
     call mdacce(typbas, neqgen, pulsa2, masgen, descm,&
                 riggen, descr, fext, lamor, amogen,&
-                desca, tra1, depl, vite,acce)
+                desca, tra1, depl, vite, acce)
 !
 !
 !     --- ARCHIVAGE DONNEES INITIALES ---
@@ -453,7 +454,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
             nbacc = nbacc + 1
             call mdacce(typbas, neqgen, pulsa2, masgen, descm,&
                         riggen, descr, fext, lamor, amogen,&
-                        desca, tra1, dep2, vip2,acc2)
+                        desca, tra1, dep2, vip2, acc2)
 !
 !
 !           --- CALCUL DE L'ERREUR ---

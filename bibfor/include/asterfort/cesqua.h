@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         integer :: nbchs
         character(len=*) :: lichs(nbchs)
-        logical(kind=1) :: lcumul(nbchs)
+        aster_logical :: lcumul(nbchs)
         character(len=*) :: base
         character(len=*) :: ces3z
     end subroutine cesqua

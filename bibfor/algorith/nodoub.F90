@@ -35,16 +35,17 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
+    aster_logical :: double
+    integer :: i, jf, lcou, lp, nbb, nbl
     character(len=24) :: valk(3)
     character(len=8) :: nomnoe, mailla, typl, typb
     integer :: nol(nbl), nob(nbb)
-    logical(kind=1) :: double
-    integer :: i, jf, lcou, lp, nbb, nbl
 !-----------------------------------------------------------------------
 !
 !
@@ -56,7 +57,7 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
         jf = jf - 1
         lcou = nol(i)
         lp = 0
-20      continue
+ 20     continue
         if (lp .lt. lcou .and. jf .lt. nbb) then
             jf = jf + 1
             lp = nob(jf)
@@ -76,9 +77,9 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
 !
         endif
 !
-10  end do
+ 10 end do
 !
     goto 9999
 !
-9999  continue
+9999 continue
 end subroutine

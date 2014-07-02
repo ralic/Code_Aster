@@ -19,7 +19,7 @@ function mmmaxi(modelz, lisma, nbma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: mmmaxi
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infbav.h"
@@ -33,6 +33,7 @@ function mmmaxi(modelz, lisma, nbma)
 #include "asterfort/lteatt.h"
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
+    aster_logical :: mmmaxi
 !
     character(len=8) :: modelz
     character(len=24) :: lisma

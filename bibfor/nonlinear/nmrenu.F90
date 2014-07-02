@@ -20,6 +20,7 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -32,7 +33,7 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
     character(len=19) :: lischa, solveu
     character(len=24) :: resoco
     integer :: fonact(*)
-    logical(kind=1) :: renume
+    aster_logical :: renume
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +55,7 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
 !
 !
 !
-    logical(kind=1) :: leltc, lxfcm, lctcc
+    aster_logical :: leltc, lxfcm, lctcc
     character(len=24) :: crnudd
     integer :: jcrnud
     integer :: ifm, niv

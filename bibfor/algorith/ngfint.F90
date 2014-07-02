@@ -24,6 +24,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
@@ -72,15 +73,15 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
     integer :: nnomax, npgmax, epsmax, ddlmax
     parameter (nnomax=27,npgmax=27,epsmax=20,ddlmax=15*nnomax)
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
     integer :: nepg, g, ieg, cod(npgmax)
     real(kind=8) :: sigm(0:epsmax*npgmax-1), sigp(0:epsmax*npgmax-1)
     real(kind=8) :: epsm(0:epsmax*npgmax-1), epsd(0:epsmax*npgmax-1)
     real(kind=8) :: dsidep(0:epsmax*epsmax*npgmax-1), dum(1)
     real(kind=8) :: ktgb(0:epsmax*npgmax*ddlmax-1)
 ! ----------------------------------------------------------------------
-#define os(g)   (g-1)*neps
-#define dos(g)   (g-1)*neps*neps
+#define os(g) (g-1)*neps
+#define dos(g) (g-1)*neps*neps
 ! ----------------------------------------------------------------------
 !
 ! - INITIALISATION
@@ -98,7 +99,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 !
     do 5 g = 1, npg
         cod(g)=0
- 5  end do
+  5 end do
 !
 !
 !
@@ -118,7 +119,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 !    FORMAT LDC DES CONTRAINTES (AVEC RAC2)
     do 10 ieg = 0, nepg-1
         sigm(ieg) = sigmam(ieg)*ni2ldc(mod(ieg,neps))
-10  end do
+ 10 end do
 !
 !    LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
     do 20 g = 1, npg
@@ -129,13 +130,13 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
                     sigp(os(g)), vip(1, g), neps*neps, dsidep( dos(g)), 1,&
                     dum(1), cod(g))
         if (cod(g) .eq. 1) goto 9000
-20  end do
+ 20 end do
 !
 !    FORMAT RESULTAT DES CONTRAINTES (SANS RAC2)
     if (resi) then
         do 30 ieg = 0, nepg-1
             sigmap(ieg) = sigp(ieg)/ni2ldc(mod(ieg,neps))
-30      continue
+ 30     continue
     endif
 !
 !
@@ -147,7 +148,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 !      PRISE EN CHARGE DU POIDS DU POINT DE GAUSS
         do 40 ieg = 0, nepg-1
             sigp(ieg) = sigp(ieg)*w(ieg/neps)
-40      continue
+ 40     continue
 !
 !      FINT = SOMME(G) WG.BT.SIGMA
         call dgemv('T', nepg, nddl, 1.d0, b,&
@@ -165,14 +166,14 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 !      PRISE EN CHARGE DU POIDS DU POINT DE GAUSS  WG.DSIDEP
         do 50 ieg = 0, neps*nepg-1
             dsidep(ieg) = dsidep(ieg)*w(ieg/(neps*neps))
-50      continue
+ 50     continue
 !
 !      CALCUL DES PRODUITS INTERMEDIAIRES (WG.DSIDEP).B POUR CHAQUE G
         do 60 g = 1, npg
             call dgemm('N', 'N', neps, nddl, neps,&
                        1.d0, dsidep(dos(g)), neps, b(1, g, 1), nepg,&
                        0.d0, ktgb(os(g)), nepg)
-60      continue
+ 60     continue
 !
 !      CALCUL DU PRODUIT FINAL SOMME(G) BT. ((WG.DSIDEP).B)  TRANSPOSE
         call dgemm('T', 'N', nddl, nddl, nepg,&
@@ -184,7 +185,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 !
 !
 ! - SYNTHESE DU CODE RETOUR
-9000  continue
+9000 continue
     if (resi) call codere(cod, npg, codret)
 !
 end subroutine

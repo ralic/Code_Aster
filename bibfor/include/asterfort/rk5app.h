@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
                 rkfct, solu, decoup)
@@ -24,7 +26,7 @@ interface
         real(kind=8) :: yinit(nbeq)
         real(kind=8) :: dyinit(nbeq)
         real(kind=8) :: solu(3*nbeq)
-        logical(kind=1) :: decoup
+        aster_logical :: decoup
         interface
             subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
                              decoup)
@@ -33,9 +35,8 @@ interface
                 real(kind=8) :: yy0(nbeq)
                 real(kind=8) :: dy0(nbeq)
                 real(kind=8) :: dyy(nbeq)
-                logical(kind=1) :: decoup
+                aster_logical :: decoup
             end subroutine rkfct
         end interface
     end subroutine rk5app
 end interface
-

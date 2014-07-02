@@ -19,6 +19,7 @@ subroutine nmgrt3(nno, poids, kpg, vff, def,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
     integer :: nno, kk, kkd, n, i, m, j, j1, kl, nmax, kpg
     character(len=16) :: option
@@ -26,7 +27,7 @@ subroutine nmgrt3(nno, poids, kpg, vff, def,&
     real(kind=8) :: vectu(3, nno)
     real(kind=8) :: sigma(6), sign(6), matuu(*), vff(*)
     real(kind=8) :: tmp1, tmp2, sigg(6), sig(6), r
-    logical(kind=1) :: matsym, resi, rigi, axi
+    aster_logical :: matsym, resi, rigi, axi
 !
 !.......................................................................
 !     BUT:  CALCUL DE LA MATRICE TANGENTE EN CONFIGURATION LAGRANGIENNE
@@ -72,15 +73,15 @@ subroutine nmgrt3(nno, poids, kpg, vff, def,&
 !
             do 150 i = 1, 3
 !
-                do 151,kl=1,6
-                sig(kl)=0.d0
-                sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-151              continue
+                do 151 kl = 1, 6
+                    sig(kl)=0.d0
+                    sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                    sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                    sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                    sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+                    sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
+                    sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
+151             continue
 !
                 if (matsym) then
                     nmax = n
@@ -131,10 +132,10 @@ subroutine nmgrt3(nno, poids, kpg, vff, def,&
                             matuu(kk) = matuu(kk) + (tmp1+tmp2)*poids
                         endif
 !
-130                  continue
-140              continue
-150          continue
-160      continue
+130                 continue
+140             continue
+150         continue
+160     continue
 !
     endif
 !
@@ -145,9 +146,9 @@ subroutine nmgrt3(nno, poids, kpg, vff, def,&
             do 220 i = 1, 3
                 do 210 kl = 1, 6
                     vectu(i,n)=vectu(i,n)+def(kl,n,i)*sigma(kl)*poids
-210              continue
-220          continue
-230      continue
+210             continue
+220         continue
+230     continue
 !
     endif
 !

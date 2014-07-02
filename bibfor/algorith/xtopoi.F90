@@ -19,6 +19,7 @@ subroutine xtopoi(noma, modele)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
@@ -56,9 +57,9 @@ subroutine xtopoi(noma, modele)
 !
     character(len=19) :: ligrel, chgeom
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
-    logical(kind=1) :: debug
-    integer :: ifm, niv, ifmdbg, nivdbg,  ima, nbma
-    integer :: jcesd,  jcesl, iad
+    aster_logical :: debug
+    integer :: ifm, niv, ifmdbg, nivdbg, ima, nbma
+    integer :: jcesd, jcesl, iad
     character(len=16) :: option
     integer, pointer :: nbsp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()

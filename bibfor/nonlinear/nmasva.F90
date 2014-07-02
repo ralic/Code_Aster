@@ -19,6 +19,7 @@ subroutine nmasva(sddyna, veasse, cnvado)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -59,7 +60,7 @@ subroutine nmasva(sddyna, veasse, cnvado)
     real(kind=8) :: covari(20)
     real(kind=8) :: coeext, coeex2, coeint
     character(len=19) :: cnfsdo, cnfint
-    logical(kind=1) :: ldyna, lmpas
+    aster_logical :: ldyna, lmpas
 !
 ! ----------------------------------------------------------------------
 !
@@ -129,7 +130,7 @@ subroutine nmasva(sddyna, veasse, cnvado)
      &                   covari(n)
             call nmdebg('VECT', cnvari(n), ifm)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

@@ -21,6 +21,7 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterfort/copisd.h"
@@ -68,14 +69,14 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lgrot
-    logical(kind=1) :: scotch
+    aster_logical :: lgrot
+    aster_logical :: scotch
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu
     character(len=19) :: complu, depdel
     real(kind=8) :: instap
-    integer ::  jdepde
+    integer :: jdepde
     integer :: indro
     character(len=2) :: codret
     real(kind=8), pointer :: depp(:) => null()

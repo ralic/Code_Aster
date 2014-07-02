@@ -1,6 +1,7 @@
 subroutine i2rgel(epsi, s, r, f, sl,&
                   r1l, r2l, f1l, f2l, adr)
     implicit none
+#include "asterf_types.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +41,7 @@ subroutine i2rgel(epsi, s, r, f, sl,&
     real(kind=8) :: s, r, sl(*), r1l(*), r2l(*), epsi
     integer :: f, f1l(*), f2l(*)
 !
-    logical(kind=1) :: trouve, dejala
+    aster_logical :: trouve, dejala
     integer :: i, j
 !
 !-----------------------------------------------------------------------
@@ -50,7 +51,7 @@ subroutine i2rgel(epsi, s, r, f, sl,&
     i = 1
     j = 1
 !
-10  continue
+ 10 continue
     if ((.not. trouve) .and. (i .lt. adr)) then
 !
         if (abs(sl(i)-s) .lt. epsi) then
@@ -83,15 +84,15 @@ subroutine i2rgel(epsi, s, r, f, sl,&
 !
     else
 !
-        do 20, j = adr, i+1, -1
+        do 20 j = adr, i+1, -1
 !
-        sl (j) = sl(j-1)
-        r1l(j) = r1l(j-1)
-        r2l(j) = r2l(j-1)
-        f1l(j) = f1l(j-1)
-        f2l(j) = f2l(j-1)
+            sl (j) = sl(j-1)
+            r1l(j) = r1l(j-1)
+            r2l(j) = r2l(j-1)
+            f1l(j) = f1l(j-1)
+            f2l(j) = f2l(j-1)
 !
-20      continue
+ 20     continue
 !
         sl (i) = s
         r1l(i) = r

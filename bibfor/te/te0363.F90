@@ -17,7 +17,8 @@ subroutine te0363(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8prem.h"
@@ -66,7 +67,7 @@ subroutine te0363(option, nomte)
     real(kind=8) :: rre, rrm, ffec(8)
     parameter    (prec=1.d-16)
     integer :: cface(5, 3), contac, ddle(2), ddlm(2), ibid, ndeple
-    logical(kind=1) :: lmulti
+    aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -249,7 +250,7 @@ subroutine te0363(option, nomte)
         ASSERT(.false.)
     endif
 !
-999  continue
+999 continue
 !
 ! --- ENREGISTREMENT DU CHAMP DE SORTIE
 !

@@ -18,7 +18,8 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,7 +28,7 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
     character(len=19) :: nomsd
     real(kind=8) :: inst
     integer :: nume
-    logical(kind=1) :: lselec
+    aster_logical :: lselec
 !
 ! ----------------------------------------------------------------------
 !

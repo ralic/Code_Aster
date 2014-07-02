@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcharg(modele, lischa, chvolu, ch1d2d,ch2d3d,&
                       chpres, chepsi, chpesa, chrota,lfonc,&
@@ -28,7 +30,7 @@ interface
         character(len=19) :: chepsi
         character(len=19) :: chpesa
         character(len=19) :: chrota
-        logical(kind=1) :: lfonc
+        aster_logical :: lfonc
         real(kind=8) :: time
         integer :: iord
     end subroutine gcharg

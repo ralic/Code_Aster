@@ -24,6 +24,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -84,7 +85,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 ! OUT IRET    : CODE RETOUR DE L'INTEGRATION DE LA LDC
 !
 !
-    logical(kind=1) :: grand, axi, resi, rigi
+    aster_logical :: grand, axi, resi, rigi
     integer :: lij(3, 3), vij(3, 3), ia, ja, na, ib, jb, nb, g, kk, os, ija, i
     integer :: nddl, ndu, vu(3, 27)
     integer :: cod(27)
@@ -135,7 +136,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     call r8inir(10, 0.d0, tampon, 1)
     do 9 i = 1, 27
         cod(i)=0
- 9  end do
+  9 end do
 !
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
@@ -223,10 +224,10 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
                     do 320 ja = 1, ndu
                         t2 = taup(vij(ia,ja))
                         t1 = t1 + t2*dff(na,lij(ia,ja))
-320                  continue
+320                 continue
                     fint(kk) = fint(kk) + w*t1
-310              continue
-300          continue
+310             continue
+300         continue
         endif
 !
 !
@@ -256,21 +257,21 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
                                         ija = vij(ia,ja)
                                         t2 = dsidep(ija,ib,jb)
                                         t1 = t1 + dff( na, lij(ia, ja))* t2*dff(nb, lij(ib, jb) )
-560                                  continue
-550                              continue
+560                                 continue
+550                             continue
 !
 !               RIGIDITE GEOMETRIQUE
                                 do 570 jb = 1, 3
                                     t1 = t1 - dff(&
                                          na, lij(ia, ib))*dff( nb, lij(ib, jb)) *taup(vij(ia, jb)&
                                          )
-570                              continue
+570                             continue
                                 matr(kk) = matr(kk) + w*t1
-530                          continue
-520                      continue
+530                         continue
+520                     continue
 !
-510                  continue
-500              continue
+510                 continue
+500             continue
 !
             else if (ndu.eq.2) then
 !
@@ -287,27 +288,27 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
                                         ija = vij(ia,ja)
                                         t2 = dsidep(ija,ib,jb)
                                         t1 = t1 + dff( na, lij(ia, ja))* t2*dff(nb, lij(ib, jb) )
-660                                  continue
-650                              continue
+660                                 continue
+650                             continue
 !
 !               RIGIDITE GEOMETRIQUE
                                 do 670 jb = 1, 2
                                     t1 = t1 - dff(&
                                          na, lij(ia, ib))*dff( nb, lij(ib, jb)) *taup(vij(ia, jb)&
                                          )
-670                              continue
+670                             continue
                                 matr(kk) = matr(kk) + w*t1
-630                          continue
-620                      continue
+630                         continue
+620                     continue
 !
-610                  continue
-600              continue
+610                 continue
+600             continue
 !
             endif
 !
         endif
 !
-10  end do
+ 10 end do
 !
 !
 !     POST_ITER='CRIT_RUPT'
@@ -322,5 +323,5 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 !
-9999  continue
+9999 continue
 end subroutine

@@ -1,6 +1,7 @@
 subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   mater)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8vide.h"
@@ -23,7 +24,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmo02.h"
 #include "asterfort/wkvect.h"
-    logical(kind=1) :: lpmpb, lsn, lsnet, lfatig, lrocht
+    aster_logical :: lpmpb, lsn, lsnet, lfatig, lrocht
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -78,15 +79,15 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !     ------------------------------------------------------------------
 !
     integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
-    integer ::   im,  npass, ifm, niv, iocs,  jresu
-    integer ::  nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
+    integer :: im, npass, ifm, niv, iocs, jresu
+    integer :: nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
     integer :: jreca, jrecs, ndim, nbp12, nbp23, nbp13
     real(kind=8) :: ppi, ppj, snmax, spmax, samax, utot, saltij(2), typeke, ug
     real(kind=8) :: pmbmax, fuij(2), mpi(12), mpj(12), sm, sn, snet, sp(2), smm
     real(kind=8) :: matpi(8), matpj(8), mse(12), spmeca(2), spther(2), spthem
     real(kind=8) :: spmecm, kemeca, kether, pm, pb, pmpb, sipmax, simpij, snemax
     real(kind=8) :: kemax, pmmax, pbmax
-    logical(kind=1) :: seisme, cfait
+    aster_logical :: seisme, cfait
     character(len=4) :: lieu(2)
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
     integer, pointer :: situ_numero(:) => null()
@@ -251,7 +252,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                         sipmax, zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
                         zr(jfact), pmmax, pbmax, pmbmax)
 !
-100      continue
+100     continue
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   2
@@ -260,7 +261,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
         seisme = .false.
         do 220 i = 1, 12
             mse(i) = 0.d0
-220      continue
+220     continue
 !
 ! ------ ON TRAITE LES SITUATIONS NON COMBINABLES
 !        ----------------------------------------
@@ -288,7 +289,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 call jeveuo(jexnum(k24as, ig), 'E', jreas)
                 do 212 j = 1, 10
                     zr(jreas-1+10*(is1-1)+j) = r8vide()
-212              continue
+212             continue
 !
                 call jeexin(jexnum(k24ss, ig), iret)
                 if (iret .eq. 0) then
@@ -419,9 +420,9 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 endif
                 utot = utot + ug
 !
-210          continue
+210         continue
 !
-200      continue
+200     continue
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   3
@@ -481,7 +482,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                         zr(jfact), pmmax, pbmax, pmbmax)
 !
 !
-310      continue
+310     continue
 !
 ! ----------------------------------------------------------------------
 !
@@ -521,7 +522,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         if (lfatig) write (ifm,2070) utot
 !
-10  end do
+ 10 end do
 !
     3000 format (/,'=> GROUPE: ',i4,' , NOMBRE DE SITUATIONS: ',i4)
     3002 format ('=> LISTE DES NUMEROS DE SITUATION: ',100 (i4,1x))

@@ -20,6 +20,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dplitg.h"
 #include "asterfort/dpmata.h"
@@ -55,7 +56,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 ! OUT DSIDEP  MATRICE TANGENTE
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
-    logical :: rigi, resi
+    aster_logical :: rigi, resi
     integer :: ndt, ndi, ii
     real(kind=8) :: trois, deux, dp, dpdeno, alpha, pmoins, pplus
     real(kind=8) :: hookf(6, 6), dkooh(6, 6), plas

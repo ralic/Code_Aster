@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function xvfimo(modele, fiss)
         character(len=8) :: modele
         character(len=8) :: fiss
-        logical(kind=1) :: xvfimo
+        aster_logical :: xvfimo
     end function xvfimo
 end interface

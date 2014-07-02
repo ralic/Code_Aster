@@ -19,6 +19,7 @@ subroutine cazocm(char, motfac, izone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -68,7 +69,7 @@ subroutine cazocm(char, motfac, izone)
     real(kind=8) :: noor
     real(kind=8) :: dir(3), tolj, tola, tolint
     character(len=8) :: jeuf1, jeuf2
-    logical(kind=1) :: lliss, lcalc
+    aster_logical :: lliss, lcalc
 !
 ! ----------------------------------------------------------------------
 !

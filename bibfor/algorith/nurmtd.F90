@@ -1,5 +1,7 @@
-subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
-                  vu, vp, typmod, igeom, mate, mini, matr)
+subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
+                  vff1, vff2, ivf1, idff1, vu,&
+                  vp, typmod, igeom, mate, mini,&
+                  matr)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +21,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/calkbb.h"
@@ -29,7 +32,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tanbul.h"
-    logical(kind=1) :: mini
+    aster_logical :: mini
     integer :: ndim, nno1, nno2, npg, iw, idff1
     integer :: mate
     integer :: vu(3, 27), vp(27)
@@ -61,7 +64,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
 ! OUT MATR    : MATRICE DE RIGIDITE
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: g
     integer :: ia, na, sa, ib, nb, sb, ja, jb
     integer :: os, kk
@@ -139,7 +142,9 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 ! - CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
-        call dfdmip(ndim, nno1, axi, zr(igeom), g, iw, vff1(1, g), idff1, r, w, dff1)
+        call dfdmip(ndim, nno1, axi, zr(igeom), g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
         if (ndim .eq. 2) then
@@ -179,13 +184,16 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor, .false._1, .true._1, alpha, dsidep, trepst)
+        call tanbul(option, ndim, g, mate, compor,&
+                    .false._1, .true._1, alpha, dsidep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsidep, kbb)
+            call calkbb(nno1, ndim, w, def, dsidep,&
+                        kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm, presd, kce, rce)
+            call calkce(nno1, ndim, kbp, kbb, presm,&
+                        presd, kce, rce)
         else
             call r8inir(nno2*nno2, 0.d0, kce, 1)
         endif
@@ -220,8 +228,8 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, vff1, vff2, ivf1, idff1,&
                             end do
                             matr(kk) = matr(kk) + w*t1
                         endif
-                      end do
-                  end do
+                    end do
+                end do
 !
 ! - TERME K:UP      KUP(NDIM,NNO1,NNO2)
                 do sb = 1, nno2

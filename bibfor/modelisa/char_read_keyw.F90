@@ -1,10 +1,11 @@
-subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl,  &
-                          n_max_keyword, n_keyword , keywordlist, val_nb, val_r, &
+subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl,&
+                          n_max_keyword, n_keyword, keywordlist, val_nb, val_r,&
                           val_f, val_c)
 !
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getmjm.h"
 #include "asterfort/assert.h"
@@ -31,11 +32,11 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
 ! ======================================================================
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in)  :: iocc
+    integer, intent(in) :: iocc
     character(len=4), intent(in) :: val_type
     character(len=24), intent(in) :: keywordexcl
-    integer, intent(in)  :: n_keyexcl
-    integer, intent(in)  :: n_max_keyword
+    integer, intent(in) :: n_keyexcl
+    integer, intent(in) :: n_max_keyword
     integer, intent(out) :: n_keyword
     character(len=16), intent(out) :: keywordlist(n_max_keyword)
     integer, intent(out) :: val_nb(n_max_keyword)
@@ -69,7 +70,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
     character(len=16) :: keywordread(300)
     character(len=16) :: k16_dummy(300), keyword, val_t_dummy
     integer :: n, i_keyword, i_keyexcl
-    logical(kind=1) :: l_excl
+    aster_logical :: l_excl
     integer :: j_kexcl
 !
 ! --------------------------------------------------------------------------------------------------
@@ -80,30 +81,32 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
 !
 ! - Initial number of keywords
 !
-    call getmjm(keywordfact, iocc, 0, keywordread, k16_dummy, n)
+    call getmjm(keywordfact, iocc, 0, keywordread, k16_dummy,&
+                n)
     n_keyword = -n
     ASSERT(n_keyword .le. n_max_keyword)
 !
 ! - Read all keywords
 !
-    call getmjm(keywordfact, iocc, n_keyword, keywordread, k16_dummy, n)
+    call getmjm(keywordfact, iocc, n_keyword, keywordread, k16_dummy,&
+                n)
 !
 ! - Excluding some keywords
 !
-    if (n_keyexcl.ne.0) call jeveuo(keywordexcl,'L',j_kexcl)
+    if (n_keyexcl .ne. 0) call jeveuo(keywordexcl, 'L', j_kexcl)
     n = n_keyword
     n_keyword = 0
     do i_keyword = 1, n
         l_excl = .false.
         keyword = keywordread(i_keyword)
         do i_keyexcl = 1, n_keyexcl
-            if (keyword.eq.zk24(j_kexcl-1+i_keyexcl))  then
+            if (keyword .eq. zk24(j_kexcl-1+i_keyexcl)) then
                 l_excl = .true.
             endif
         enddo
         if (.not.l_excl) then
-           n_keyword = n_keyword + 1
-           keywordlist(n_keyword) = keyword
+            n_keyword = n_keyword + 1
+            keywordlist(n_keyword) = keyword
         endif
     end do
 !
@@ -111,7 +114,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
 !
     do i_keyword = 1, n_keyword
         keyword = keywordlist(i_keyword)
-        call char_read_val(keywordfact, iocc, keyword, val_type, val_nb(i_keyword), &
+        call char_read_val(keywordfact, iocc, keyword, val_type, val_nb(i_keyword),&
                            val_r(i_keyword), val_f(i_keyword), val_c(i_keyword), val_t_dummy)
         ASSERT(val_nb(i_keyword).eq.1)
     end do

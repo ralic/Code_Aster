@@ -37,6 +37,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 ! IN  CTYP   : TYPE DE CHARGE
 ! ----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/calcop.h"
@@ -77,7 +78,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
     character(len=16) :: tysd
     character(len=19) :: knum, kcha
     character(len=24) :: mate
-    logical(kind=1) :: newcal
+    aster_logical :: newcal
 !
 !     --- VARIABLES LOCALES ---
     integer :: iaux, jordr, iordr, jcha, iret1, iret, bufin1, iad
@@ -99,7 +100,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
     character(len=24) :: chgeom, chharm, nompar
     character(len=24) :: lesopt, blan24
     character(len=24) :: ligrel, ligrmo
-    logical(kind=1) :: evol
+    aster_logical :: evol
     real(kind=8) :: zero
     parameter(zero=0.d0)
 !

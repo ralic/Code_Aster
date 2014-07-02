@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine scalep(spectr, noma, base, nuor, nbm,&
                       imodi, nbmr, nbexcp, ltable, iaxe,&
@@ -27,7 +29,7 @@ interface
         character(len=19) :: base
         integer :: nuor(nbm)
         integer :: imodi
-        logical(kind=1) :: ltable
+        aster_logical :: ltable
         integer :: iaxe
         real(kind=8) :: scal(nbexcp, nbmr)
     end subroutine scalep

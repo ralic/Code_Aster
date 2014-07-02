@@ -16,6 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! aslint: disable=W1504
+#include "asterf_types.h"
+!
 interface
     subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   , l_vite    , &
                   l_glis_init   , l_coef_adap   , zone_index    , point_index   , indi_cont_init, &
@@ -24,11 +26,11 @@ interface
                   indi_frot_curr, ctcsta        , mmcvca        , scotch        )
         character(len=24), intent(in) :: sd_cont_defi
         character(len=24), intent(in) :: sd_cont_solv
-        logical(kind=1), intent(in) :: l_loop_cont
-        logical(kind=1), intent(in) :: l_frot_zone
-        logical(kind=1), intent(in) :: l_vite
-        logical(kind=1), intent(in) :: l_glis_init
-        logical(kind=1), intent(in) :: l_coef_adap
+        aster_logical, intent(in) :: l_loop_cont
+        aster_logical, intent(in) :: l_frot_zone
+        aster_logical, intent(in) :: l_vite
+        aster_logical, intent(in) :: l_glis_init
+        aster_logical, intent(in) :: l_coef_adap
         integer, intent(in) :: point_index
         integer, intent(in) :: zone_index
         integer, intent(in) :: indi_cont_init
@@ -44,7 +46,7 @@ interface
         integer, intent(out) :: indi_cont_curr
         integer, intent(out) :: indi_frot_curr
         integer, intent(out) :: ctcsta
-        logical(kind=1), intent(out) :: mmcvca
-        logical(kind=1), intent(out) :: scotch
+        aster_logical, intent(out) :: mmcvca
+        aster_logical, intent(out) :: scotch
     end subroutine mmalgo
 end interface

@@ -43,6 +43,7 @@ subroutine op0044()
     implicit none
 !
 ! VARIABLES LOCALES
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/isnnem.h"
@@ -94,8 +95,8 @@ subroutine op0044()
     integer :: lraide, ldynam, lfreq, lamort, lddl, lprod, nblagr, lresui
     integer :: lresur, lresuk, lvalp, lvec, lenout
     integer :: mxfreq, ncritr, nbrss, nitsep, nitaju, nitv, idet(2), nfreqr
-    integer :: nfreq, ncrit, nbmod, na1, namorr, niv, nbcine,  neqact
-    integer :: nfreqb, mxresf, ndim, nparr, neq,  islvi, jrefa
+    integer :: nfreq, ncrit, nbmod, na1, namorr, niv, nbcine, neqact
+    integer :: nfreqb, mxresf, ndim, nparr, neq, islvi, jrefa
 !
     real(kind=8) :: tolsep, tolaju, tolv, fcorig, omecor, precsh, omeg, det1
     real(kind=8) :: det2, fr, am, zam(3), zfr(3), seuil, fmin, fmax, omgmin
@@ -104,12 +105,12 @@ subroutine op0044()
     character(len=8) :: optiov, modes, knega
     character(len=9) :: typevp
     character(len=14) :: matra, matrb, matrc
-    character(len=16) :: nomcmd, typcon, optiom, optiof, optior, typres, k16bid,compex
+    character(len=16) :: nomcmd, typcon, optiom, optiof, optior, typres, k16bid, compex
     character(len=19) :: masse, raide, amor, dynam, numedd, solveu
     character(len=24) :: cborne, work(5), camor, cfreq, nopara(nbpara), metres
     character(len=24) :: valk(2)
     complex(kind=8) :: cbid, dcmplx
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
     character(len=1) :: ktyp
     character(len=24), pointer :: nkrefa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -150,7 +151,7 @@ subroutine op0044()
 ! --- ON STOCKE LE COMPORTEMENT EN CAS D'ERREUR : COMPEX
 !
     call onerrf(' ', compex, lenout)
-
+!
 !     --- RECUPERATION DU RESULTAT  ---
     call getres(modes, typcon, nomcmd)
 !     ------------------------------------------------------------------
@@ -757,7 +758,7 @@ subroutine op0044()
 !
 ! --- ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
-
+!
     call vpcntl(ctyp, modes, optiov, fmin, fmax,&
                 seuil, nbmod, zi(lresui), lmat, omecor,&
                 rbid, ierx, fmin, fmax, zr(lresur),&
@@ -767,13 +768,13 @@ subroutine op0044()
     call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=optiov, nbret=lmf)
 !
     if ((optiov.eq.'OUI') .and. (ierx.ne.0)) then
-        call utmess('Z', 'ALGELINE2_74',num_except=33)
+        call utmess('Z', 'ALGELINE2_74', num_except=33)
     endif
-
+!
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
 !
     call onerrf(compex, k16bid, ibid)
-
+!
 !     ------------------------------------------------------------------
 !
 !

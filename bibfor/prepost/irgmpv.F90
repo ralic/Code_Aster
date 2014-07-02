@@ -3,6 +3,7 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
                   tens, versio)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/jenonu.h"
@@ -10,7 +11,7 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
 #include "asterfort/lxlgut.h"
     integer :: ifi, nbordr, lch, ich, versio
     real(kind=8) :: para(*)
-    logical(kind=1) :: lresu, scal, vect, tens
+    aster_logical :: lresu, scal, vect, tens
     character(len=8) :: nocmp
     character(len=*) :: nomcon, chamsy
 !     NBRE POUR CHAQUE TYPE D'ELEMENT

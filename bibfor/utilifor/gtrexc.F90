@@ -81,6 +81,7 @@ subroutine gtrexc(compq, n, t, ldt, q,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/glartg.h"
 #include "asterfort/xerbla.h"
@@ -94,7 +95,7 @@ subroutine gtrexc(compq, n, t, ldt, q,&
 !     ..
 !
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: wantq
+    aster_logical :: wantq
     integer :: k, m1, m2, m3
     real(kind=8) :: cs
     complex(kind=8) :: sn, t11, t22, temp
@@ -176,9 +177,9 @@ subroutine gtrexc(compq, n, t, ldt, q,&
                       cs, dconjg( sn ))
         endif
 !
-10  end do
+ 10 end do
 !
-1000  continue
+1000 continue
     call matfpe(1)
 !
 !     END OF GTREXC

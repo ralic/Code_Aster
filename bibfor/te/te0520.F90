@@ -1,5 +1,6 @@
 subroutine te0520(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterfort/assert.h"
@@ -59,8 +60,7 @@ subroutine te0520(option, nomte)
     character(len=3) :: modint
     character(len=8) :: typmod(2)
 ! =====================================================================
-    logical(kind=1) :: axi, perman, vf
-    logical :: lcond
+    aster_logical :: axi, perman, vf
     integer :: typvf
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HH2SUDM , (HYDRO NON SATURE SUSHI
@@ -129,8 +129,8 @@ subroutine te0520(option, nomte)
     do 10 icon = 1, nconma
         do 11 idef = 1, ndefma
             dsde(icon,idef)=0.d0
-11      continue
-10  end do
+ 11     continue
+ 10 end do
     call caethm(nomte, axi, perman, vf, typvf,&
                 typmod, modint, mecani, press1, press2,&
                 tempe, dimdep, dimdef, dimcon, nmec,&
@@ -139,8 +139,7 @@ subroutine te0520(option, nomte)
                 nddlm, nddlfa, nddlk, dimuel, ipoids,&
                 ivf, idfde, ipoid2, ivf2, idfde2,&
                 npi2, jgano)
-    lcond=vf
-    ASSERT(lcond)
+    ASSERT(vf)
 !
 !     -- RECHERCHE DE VOISINAGES
     call tecael(iadzi, iazk24)

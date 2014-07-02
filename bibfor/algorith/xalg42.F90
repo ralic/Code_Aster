@@ -1,22 +1,25 @@
-subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref)
+subroutine xalg42(ndim, elrefp, nnop, it, nnose,&
+                  cnset, typma, ndime, igeom, jlsn,&
+                  pmilie, ninter, ainter, ar, npts,&
+                  nptm, pmmax, nmilie, mfis, lonref,&
+                  pinref)
     implicit none
 !
-#    include "jeveux.h"
-#    include "asterfort/jedema.h"
-#    include "asterfort/jemarq.h"
-#    include "asterfort/assert.h"
-#    include "asterfort/vecini.h"
-#    include "asterfort/xajpmi.h"
-#    include "asterfort/xmilar.h"
-#    include "asterfort/xmifis.h"
-#    include "asterfort/xxmmvd.h"
-#    include "asterfort/detefa.h"
-#    include "asterfort/xstudo.h"
+#include "asterf_types.h"
+# include "jeveux.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/assert.h"
+# include "asterfort/vecini.h"
+# include "asterfort/xajpmi.h"
+# include "asterfort/xmilar.h"
+# include "asterfort/xmifis.h"
+# include "asterfort/xxmmvd.h"
+# include "asterfort/detefa.h"
+# include "asterfort/xstudo.h"
     character(len=8) :: typma, elrefp
-    integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
-    integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
+    integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
+    integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: lonref, ainter(*), pmilie(*)
     real(kind=8) :: pinref(*)
 ! ======================================================================
@@ -63,7 +66,7 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     integer :: pm1a(4), pm1b(4), pm2(4)
     integer :: inm, ia, ib, mfisloc
     integer :: zxain
-    logical(kind=1) :: ispm2, ajout
+    aster_logical :: ispm2, ajout
 !
 ! --------------------------------------------------------------------
 !
@@ -78,10 +81,10 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
     call vecini(51, 0.d0, pmilie)
 !
-    do ino=1,nnop
-      do i=1,ndim
-        geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
-      enddo
+    do ino = 1, nnop
+        do i = 1, ndim
+            geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
+        enddo
     enddo
 !
     do 204 i = 1, 4
@@ -92,7 +95,8 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
         pm2(i)=0
 204 continue
     call xstudo(ndime, ninter, npts, nptm, ainter,&
-                  nbpi, ip1, ip2, pm1a,pm1b, pm2)
+                nbpi, ip1, ip2, pm1a, pm1b,&
+                pm2)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU PREMIER TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -120,23 +124,24 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
         call vecini(ndim, 0.d0, milarb)
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
-              ia, ib, r, ksia, ksib, milara, milarb)
+                    ia, ib, r, ksia, ksib,&
+                    milara, milarb)
 !         STOCKAGE PMILIE
         call xajpmi(pmilie, pmmax, ipm, inm, milara,&
-                        lonref, ajout)
-        if (ajout) then 
-        do j=1,ndime
-           pmiref(ndime*(ipm-1)+j)=ksia(j)
-        enddo
+                    lonref, ajout)
+        if (ajout) then
+            do j = 1, ndime
+                pmiref(ndime*(ipm-1)+j)=ksia(j)
+            enddo
         endif
         call xajpmi(pmilie, pmmax, ipm, inm, milarb,&
-                        lonref, ajout)
-        if (ajout) then 
-        do j=1,ndime
-           pmiref(ndime*(ipm-1)+j)=ksib(j)
-        enddo
+                    lonref, ajout)
+        if (ajout) then
+            do j = 1, ndime
+                pmiref(ndime*(ipm-1)+j)=ksib(j)
+            enddo
         endif
-300  continue
+300 continue
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU DEUXIEME TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -147,7 +152,7 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !      fissure coincide avec une arete
         ispm2=(nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0).or. &
            (nint(ainter(zxain*(ip2(k)-1)+1)) .ne. 0)
-
+!
 !
         if (ispm2) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS
@@ -157,20 +162,21 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !        CALCUL DU POINT MILIEU DE 101-102
 !
             call xmifis(ndim, ndime, elrefp, geom, zr(jlsn),&
-                  n, ip1(k), ip2(k), pinref, ksia, milfi)
+                        n, ip1(k), ip2(k), pinref, ksia,&
+                        milfi)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
 !        STOCKAGE PMILIE
             call xajpmi(pmilie, pmmax, ipm, inm, milfi,&
                         lonref, ajout)
-            if (ajout) then 
-            do j=1,ndime
-               pmiref(ndime*(ipm-1)+j)=ksia(j)
-            enddo
+            if (ajout) then
+                do j = 1, ndime
+                    pmiref(ndime*(ipm-1)+j)=ksia(j)
+                enddo
             endif
         endif
-400  continue
+400 continue
 !
     ASSERT(ipm.eq.4.and.mfisloc.eq.2)
 !

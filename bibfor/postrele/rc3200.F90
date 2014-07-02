@@ -1,6 +1,7 @@
 subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
                   mater, symax)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/rc32ac.h"
 #include "asterfort/rc32cm.h"
@@ -10,7 +11,7 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 #include "asterfort/rc32si.h"
 #include "asterfort/rc32th.h"
     real(kind=8) :: symax
-    logical(kind=1) :: pmpb, sn, snet, fatigu, lrocht
+    aster_logical :: pmpb, sn, snet, fatigu, lrocht
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================

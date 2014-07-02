@@ -1,8 +1,9 @@
-subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
-                   nb_node, model      , suffix, elem_excl)
+subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
+                   nb_node, model, suffix, elem_excl)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -39,7 +40,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     character(len=24), intent(in) :: list_node
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
-    logical(kind=1), intent(in), optional :: elem_excl
+    aster_logical, intent(in), optional :: elem_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,7 +91,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
     integer :: i_lect, i_excl, i_node
-    logical(kind=1) :: l_read_elem
+    aster_logical :: l_read_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,12 +99,12 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
 !
 ! - Initializations
 !
-    list_lect   = '&&LIST_LECT'
-    list_excl   = '&&LIST_EXCL'
-    nb_node     = 0
-    nb_lect     = 0
-    nb_excl     = 0
-    model_name  = ' '
+    list_lect = '&&LIST_LECT'
+    list_excl = '&&LIST_EXCL'
+    nb_node = 0
+    nb_lect = 0
+    nb_excl = 0
+    model_name = ' '
     suffix_name = ' '
     l_read_elem = .true.
     if (present(model)) then

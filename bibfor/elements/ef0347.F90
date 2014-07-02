@@ -18,6 +18,7 @@ subroutine ef0347(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -26,7 +27,7 @@ subroutine ef0347(nomte)
     character(len=16) :: nomte
     integer :: nc, i, npg
     integer :: icgp, icontn
-    logical :: okelem
+    aster_logical :: okelem
 !
 !
 ! --- ------------------------------------------------------------------

@@ -54,6 +54,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -92,10 +93,10 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
     integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
     integer :: itype, nb1, nbelr, jmolo, idime, ipg
-    integer :: ifm, nivinf,   igrel
+    integer :: ifm, nivinf, igrel
     integer :: ierd, jliel, nbgrel, iordr
     integer :: iaux, dimtopo
-    logical(kind=1) :: ljoint, lpenta
+    aster_logical :: ljoint, lpenta
 !
     integer :: lgmax
     parameter (lgmax=1000)
@@ -206,18 +207,18 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         call dismoi('NOM_TYPMAIL', nomte, 'TYPE_ELEM', repk=nomtypmail)
 !       Glute pour les joints
         elrefb = elrefe
-        if ( dimtopo.ne.ndim ) then
-            if ( nomtypmail.eq.'HEXA8' ) then
+        if (dimtopo .ne. ndim) then
+            if (nomtypmail .eq. 'HEXA8') then
                 elrefb = 'HE8'
-            else if ( nomtypmail.eq.'QUAD8' ) then
+            else if (nomtypmail.eq.'QUAD8') then
                 elrefb = 'QU8'
-            else if ( nomtypmail.eq.'PENTA6' ) then
+            else if (nomtypmail.eq.'PENTA6') then
                 lpenta = .true.
                 elrefb = 'PE6'
-            else if ( nomtypmail.eq.'PENTA15' ) then
+            else if (nomtypmail.eq.'PENTA15') then
                 lpenta = .true.
                 elrefb = 'P15'
-            else if ( nomtypmail.eq.'HEXA20' ) then
+            else if (nomtypmail.eq.'HEXA20') then
                 elrefb = 'H20'
             else
                 call utmess('F', 'MED2_11')
@@ -243,13 +244,13 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
             call utmess('F', 'MED2_5', nk=2, valk=valk)
         endif
 !
-        if ( ljoint ) then
+        if (ljoint) then
             call elraga(elrefe, famil, ndim, nbpg, gscoo2,&
                         wg)
-            if ( lpenta ) then
+            if (lpenta) then
                 do ipg = 1, nbpg
                     do idime = 1, dimtopo
-                        if ( idime.eq.1 ) then
+                        if (idime .eq. 1) then
                             gscoo((ipg-1)*dimtopo + idime) = 0
                         else
                             gscoo((ipg-1)*dimtopo + idime) = gscoo2((ipg-1)*ndim + idime-1)
@@ -259,7 +260,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
             else
                 do ipg = 1, nbpg
                     do idime = 1, dimtopo
-                        if ( idime.gt.ndim ) then
+                        if (idime .gt. ndim) then
                             gscoo((ipg-1)*dimtopo + idime) = 0
                         else
                             gscoo((ipg-1)*dimtopo + idime) = gscoo2((ipg-1)*ndim + idime)

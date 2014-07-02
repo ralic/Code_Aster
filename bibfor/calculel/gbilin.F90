@@ -45,6 +45,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 ! OUT G      :
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
@@ -52,7 +53,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     integer :: kp, imate
     real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4), dfdm(3, 4), tgdm(2)
     real(kind=8) :: c1, c2, c3, cs, th, poids, g, bil(3, 3, 3, 3), coef
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
 ! ----------------------------------------------------------------------
 !     CALCUL DU TAUX DE RESTITUTION D'ENERGIE G SOUS LA FORME

@@ -23,6 +23,7 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 ! aslint: disable=W1504
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/copisd.h"
@@ -35,7 +36,7 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
     character(len=19) :: lischa, solveu, maprec
     character(len=24) :: modele, mate, carele, fomult, charge, infoch, numedd
     character(len=24) :: time, vec2nd, matass, cndirp, cnchci, compor
-    logical(kind=1) :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
+    aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
 !
 ! ----------------------------------------------------------------------
 !     THERMIQUE LINEAIRE - RESOLUTION

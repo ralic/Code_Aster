@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
                       cmod00, amor00, puls00, pulsi, amori,&
@@ -40,7 +42,7 @@ interface
         real(kind=8) :: vecr3(*)
         real(kind=8) :: vgap
         real(kind=8) :: vecr4(*)
-        logical(kind=1) :: locfl0(*)
+        aster_logical :: locfl0(*)
         real(kind=8) :: amflu0(np1, *)
         real(kind=8) :: xsi0(*)
     end subroutine calvol

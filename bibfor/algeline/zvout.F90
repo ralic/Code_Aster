@@ -26,7 +26,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !  Usage:      CALL ZVOUT (LOUT, N, CX, IDIGIT, IFMT)
 !
 !  Arguments
-!     lout   - logical(kind=1) unit number. (Input)
+!     lout   - aster_logical unit number. (Input)
 !     n      - Length of array cx.  (Input)
 !     cx     - Complex*16 array to be printed.  (Input)
 !     ifmt   - Format to be used in printing array cx.  (Input)
@@ -41,6 +41,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !            IMPLICIT NONE.
 !-----------------------------------------------------------------------
     implicit none
+#include "asterf_types.h"
 !     ... SPECIFICATIONS FOR ARGUMENTS
     integer, intent(in) :: n, idigit, lout
     complex(kind=8), intent(in) :: cx(*)
@@ -56,11 +57,11 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
     lll = min( len( ifmt ), 80 )
     do 1 i = 1, lll
         line( i: i ) = '-'
- 1  end do
+  1 end do
 !
     do 2 i = lll + 1, 80
         line( i: i ) = ' '
- 2  end do
+  2 end do
 !
     write( lout, 2000 )ifmt, line( 1: lll )
     2000 format ( /1x, a  /1x, a )
@@ -83,7 +84,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else
                     write( lout, 9997 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-30          continue
+ 30         continue
         else if (ndigit.le.6) then
             do 40 k1 = 1, n, 2
                 k2 = min( n, k1+1 )
@@ -92,7 +93,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else
                     write( lout, 9987 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-40          continue
+ 40         continue
         else if (ndigit.le.8) then
             do 50 k1 = 1, n, 2
                 k2 = min( n, k1+1 )
@@ -101,11 +102,11 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else
                     write( lout, 9977 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-50          continue
+ 50         continue
         else
             do 60 k1 = 1, n
                 write( lout, 9968 )k1, k1, cx( i )
-60          continue
+ 60         continue
         endif
 !
 !=======================================================================
@@ -125,7 +126,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+3-n) .eq. 1) then
                     write( lout, 9955 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-70          continue
+ 70         continue
         else if (ndigit.le.6) then
             do 80 k1 = 1, n, 3
                 k2 = min( n, k1+2 )
@@ -136,7 +137,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+2-n) .eq. 2) then
                     write( lout, 9946 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-80          continue
+ 80         continue
         else if (ndigit.le.8) then
             do 90 k1 = 1, n, 3
                 k2 = min( n, k1+2 )
@@ -147,7 +148,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+2-n) .eq. 2) then
                     write( lout, 9936 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-90          continue
+ 90         continue
         else
             do 100 k1 = 1, n, 2
                 k2 = min( n, k1+1 )
@@ -156,7 +157,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+2-n) .eq. 1) then
                     write( lout, 9927 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-100          continue
+100         continue
         endif
     endif
     write( lout, 9994 )
@@ -234,5 +235,5 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !
 !
     9994 format( 1x, ' ' )
-1005  continue
+1005 continue
 end subroutine

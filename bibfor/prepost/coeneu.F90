@@ -27,6 +27,7 @@ subroutine coeneu(imod, nbnode)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
@@ -36,13 +37,13 @@ subroutine coeneu(imod, nbnode)
 #include "asterfort/jjmmaa.h"
     integer :: imod, nbnode
 ! -----  VARIABLES LOCALES
-    integer ::    inode, node
+    integer :: inode, node
     character(len=1) :: prfnoe
     character(len=4) :: ct(3)
     character(len=8) :: chnode
     character(len=12) :: chenti, aut
     character(len=80) :: chfone
-    logical(kind=1) :: dim3d
+    aster_logical :: dim3d
     real(kind=8) :: zcte, x, y, z
     real(kind=8), pointer :: coor(:) => null()
     integer, pointer :: detr(:) => null()
@@ -81,7 +82,7 @@ subroutine coeneu(imod, nbnode)
             dim3d=.true.
             goto 10
         endif
-10  end do
+ 10 end do
 !
     if (dim3d) then
         write(imod,'(A,4X,A)')'COOR_3D',chenti
@@ -112,7 +113,7 @@ subroutine coeneu(imod, nbnode)
             write(imod,'(2X,A,2X,2(1PE21.14),1X)') chnode,x,y
         endif
 !
-20  end do
+ 20 end do
 !
     write(imod,'(A)') 'FINSF'
     write(imod,'(A)') '%'

@@ -19,6 +19,7 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i2fccl.h"
 #include "asterfort/i2fspl.h"
@@ -33,7 +34,7 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
     integer :: nbm, voisn1(*), voisn2(*)
     integer :: nbchm, stchm(*), ptchm(*)
 !
-    logical(kind=1) :: simple, cycle
+    aster_logical :: simple, cycle
     integer :: i, apt, ast, mdpt, aplace
 !
 !
@@ -56,13 +57,13 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
     call jeecra('&INTPLACE', 'LONMAX', nbm)
     call jeveuo('&INTPLACE', 'E', aplace)
 !
-    do 10, i = 1, nbm, 1
+    do 10 i = 1, nbm, 1
 !
-    zl(aplace + i-1) = .false.
+        zl(aplace + i-1) = .false.
 !
-    10 end do
+ 10 end do
 !
-20  continue
+ 20 continue
     if (simple) then
 !
         call i2fspl(voisn2, zl(aplace), nbm, simple, mdpt)
@@ -80,7 +81,7 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 !
     mdpt = 0
 !
-30  continue
+ 30 continue
     if (cycle) then
 !
         call i2fccl(zl(aplace), nbm, cycle, mdpt)

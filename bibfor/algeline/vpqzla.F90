@@ -82,10 +82,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !-----------------------------------------------------------------------
 ! aslint: disable=W1304,W1504,C9991
 ! C9991 : a cause du compilo gfortran 4.4.5 qui se plante
-
+!
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8depi.h"
@@ -129,7 +130,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     character(len=19) :: numedd
     real(kind=8) :: omecor, omemin, omemax, omeshi
     complex(kind=8) :: sigma
-    logical(kind=1) :: flage
+    aster_logical :: flage
     logical(kind=4) :: bwork(*)
 !
 !-----------------------------------------------------------------------
@@ -137,7 +138,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !
     integer :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret
     integer :: ivalr
-    integer :: ivalm,  ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
+    integer :: ivalm, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
     integer :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
     integer :: j2m1, iaux21, ics1
     integer :: ldvl
@@ -150,7 +151,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     complex(kind=8) :: cauxr1
     character(len=1) :: kbal, ksens, valk
     character(len=24) :: nomrai, nommas, nomamo
-    logical(kind=1) :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
+    aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
     integer, pointer :: smdi(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -265,9 +266,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ------ MATRICE A ET B TRIANGULAIRE INF
                     zr(iqrn+qrn*iauxh1+jm1) = rauxr
                     zr(lqrn+qrn*iauxh1+jm1) = rauxm
-30              continue
+ 30             continue
                 ideb = ifin+1
-31          continue
+ 31         continue
         else
 ! ---- MATRICES K COMPLEXE ET M REELLE OU K/M NON SYMETRIQUES
             ideb = 1
@@ -304,9 +305,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     zc(lqrn+jm1*qrn+iauxh1) = cauxm
                     zc(iqrn+qrn*iauxh1+jm1) = cauxr1
                     zc(lqrn+qrn*iauxh1+jm1) = cauxm1
-32              continue
+ 32             continue
                 ideb = ifin+1
-33          continue
+ 33         continue
         endif
     else
 ! ---- PB MODAL QUADRATIQUE
@@ -363,9 +364,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     zr(lvecn+iauxh1+qrn) =zr(lvecn+iauxh1+qrn)&
                     +caux1
                 endif
-38          continue
+ 38         continue
             ideb = ifin+1
-39      continue
+ 39     continue
         anorm=0.d0
         bnorm=0.d0
         cnorm=0.d0
@@ -374,7 +375,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             anorm=max(anorm,zr(lvecn+jm1))
             bnorm=max(bnorm,zr(lvecn+jm1+qrns2))
             cnorm=max(cnorm,zr(lvecn+jm1+qrn))
-40      continue
+ 40     continue
         call jedetr('&&VPQZLA.NORME')
 ! ---- ERREUR DONNEES OU CALCUL
 !        IF (ANORM*BNORM*CNORM.EQ.0.D0) ASSERT(.FALSE.)
@@ -468,9 +469,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 else
                     ASSERT(.false.)
                 endif
-36          continue
+ 36         continue
             ideb = ifin+1
-37      continue
+ 37     continue
     endif
 !
 ! ---- TESTS UNITAIRES SI LTEST=.TRUE.
@@ -480,23 +481,23 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 do 60 j = 1, qrn
                     zr(iqrn-1+(j-1)*qrn+i)=rzero
                     zr(lqrn-1+(j-1)*qrn+i)=rzero
-60              continue
-61          continue
+ 60             continue
+ 61         continue
             do 62 i = 1, qrn
                 zr(iqrn-1+(i-1)*qrn+i)=i*run
                 zr(lqrn-1+(i-1)*qrn+i)=run
-62          continue
+ 62         continue
         else
             do 64 i = 1, qrn
                 do 63 j = 1, qrn
                     zc(iqrn-1+(j-1)*qrn+i)=czero
                     zc(lqrn-1+(j-1)*qrn+i)=czero
-63              continue
-64          continue
+ 63             continue
+ 64         continue
             do 65 i = 1, qrn
                 zc(iqrn-1+(i-1)*qrn+i)=i*cun
                 zc(lqrn-1+(i-1)*qrn+i)=cun
-65          continue
+ 65         continue
         endif
     endif
 !
@@ -546,17 +547,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 jm1=j-1
                 aaux=aaux+abs(zr(iqrn+jm1*qrn+im1))
                 baux=baux+abs(zr(lqrn+jm1*qrn+im1))
-41          continue
+ 41         continue
         else
             do 42 j = 1, qrn
                 jm1=j-1
                 aaux=aaux+abs(zc(iqrn+jm1*qrn+im1))
                 baux=baux+abs(zc(lqrn+jm1*qrn+im1))
-42          continue
+ 42         continue
         endif
         anorm=max(anorm,aaux)
         bnorm=max(bnorm,baux)
-44  end do
+ 44 end do
 ! ---- CALCUL DE LA NORME L1 DE A ET B
     anorm1=0.d0
     bnorm1=0.d0
@@ -569,17 +570,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 im1=i-1
                 aaux=aaux+abs(zr(iqrn+jm1*qrn+im1))
                 baux=baux+abs(zr(lqrn+jm1*qrn+im1))
-410          continue
+410         continue
         else
             do 420 i = 1, qrn
                 im1=i-1
                 aaux=aaux+abs(zc(iqrn+jm1*qrn+im1))
                 baux=baux+abs(zc(lqrn+jm1*qrn+im1))
-420          continue
+420         continue
         endif
         anorm1=max(anorm1,aaux)
         bnorm1=max(bnorm1,baux)
-440  end do
+440 end do
 ! ---- ERREUR DONNEES OU CALCUL
     if (anorm*bnorm*anorm1*bnorm1 .eq. 0.d0) ASSERT(.false.)
     if (niv .ge. 2) then
@@ -688,7 +689,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 raux=zr(icscal+im1)
                 if (abs(raux) .lt. prec1) ASSERT(.false.)
                 zr(icscal+im1)=prec*abnorm/raux
-70          continue
+ 70         continue
         endif
 !
 ! ----  QZ SIMPLE
@@ -813,7 +814,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     freqom(dble(freq)), dimag(freq)/(2.d0*dble(freq))
                 endif
             endif
-900      continue
+900     continue
         910   format(i4,1x,e12.5,e12.5,e12.5,1x,e12.5,e12.5)
         912   format(i4,1x,e12.5,e12.5,1x,e12.5,e12.5,1x,e12.5,e12.5)
     endif
@@ -846,7 +847,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 kmsg='I'
                 call utmess(kmsg, 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
             endif
-50      continue
+ 50     continue
     endif
 !
 !---------------------------------------------------------
@@ -887,7 +888,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     call utmess('I', 'ALGELINE7_14')
                 endif
             endif
-55      continue
+ 55     continue
         else if ((typeqz(1:5).ne.'QZ_QR').and.((.not.lkr).or.(lc).or.&
     (lnsm).or.(lnsr))) then
 ! ---- GENERALISE COMPLEXE SYM OU NON, REEL NON SYM
@@ -937,7 +938,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     call utmess('I', 'ALGELINE7_14')
                 endif
             endif
-155      continue
+155     continue
         if (lc) call jedetr('&&VPQZLA.VP2')
     else if (typeqz(1:5).eq.'QZ_QR') then
         if (lqze) ASSERT(.false.)
@@ -955,7 +956,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 zr(lvalpr+im1-decal) = zr(lvalpr+im1)
                 call dcopy(qrn, zr(iqrn+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)
             endif
-57      continue
+ 57     continue
     endif
 !
 ! ----  NBRE DE MODES RETENUS
@@ -971,7 +972,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             else
                 write(ifm,*)'I/LAMBDA(I) ',i,zc(lvalpr-1+i)
             endif
-66      continue
+ 66     continue
     endif
 !
 !-------------------------------------
@@ -1021,7 +1022,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     zr(lvalpr-1+j) = vpcour
                     call dcopy(qrn, zr(lvec+(i-1)*qrn), 1, zr(lvec+(j- 1)*qrn), 1)
                 endif
-80          continue
+ 80         continue
             nconv = j
             if (nconv .ne. nfreq) then
                 vali(1)=nconv
@@ -1032,13 +1033,13 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             endif
             do 81 i = 1, nconv
                 zr(lvalpr-1+i) = zr(lvalpr-1+i) - omeshi
-81          continue
+ 81         continue
             call vpordo(1, 0, nconv, zr(lvalpr), zr(lvec),&
                         qrn)
         else
             do 82 i = 1, nconv
                 zr(lvalpr-1+i) = zr(lvalpr-1+i) - omeshi
-82          continue
+ 82         continue
             call vpordo(1, 0, nconv, zr(lvalpr), zr(lvec),&
                         qrn)
             if (nconv .ge. nfreq) then
@@ -1051,8 +1052,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 call utmess(kmsg, 'ALGELINE5_66', ni=2, vali=vali)
             endif
         endif
-       call vpgsmm(qrn, nconv, zr(lvec), alpha, lmasse,&
-                    2, zr(ivp1), ddlexc, zr(ivp2),zr(lvalpr),omecor)
+        call vpgsmm(qrn, nconv, zr(lvec), alpha, lmasse,&
+                    2, zr(ivp1), ddlexc, zr(ivp2), zr(lvalpr),&
+                    omecor)
 !
     else if ((.not.lc).and.((lnsm).or.(lnsr).or.(.not.lkr))) then
 ! ---- GENERALISE COMPLEXE SYM OU NON, REEL NON SYM
@@ -1077,7 +1079,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !
         do 83 i = 1, nconv
             zc(lvalpr-1+i) = zc(lvalpr-1+i) + sigma
-83      continue
+ 83     continue
 !
     else if (lc) then
 ! ---- QUADRATIQUE SYM OU NON, REEL ET COMPLEXE
@@ -1087,8 +1089,8 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             do 88 j = 1, qrns2
 ! ---- REMPLISSAGE DU VECT PAR LA PARTIE BASSE DE VECTA
                 zc(lvec+(i-1)*qrns2+j-1)=zc(lvec4+(i-1)*qrn+qrns2+j-1)
-88          continue
-89      continue
+ 88         continue
+ 89     continue
 !
         call jedetr('&&VPQZLA.VP4')
     endif
@@ -1176,7 +1178,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 write(ifm,923)i,freqom(dble(freq)), dimag(freq)/(2.d0*&
                 dble(freq)), anorm3
             endif
-91      continue
+ 91     continue
         921   format('I/FREQ/ERREUR INVERSE ASTER',i4,1x,e12.5,1x,e12.5)
         922   format('I/LAMBDA/ERREUR INVERSE ASTER',i4,1x,e12.5,e12.5,1x,&
      &         e12.5)

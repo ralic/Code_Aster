@@ -19,6 +19,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -34,7 +35,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 #include "asterfort/as_allocate.h"
     character(len=19) :: sddisc
     integer :: iterat
-    logical(kind=1) :: lextra
+    aster_logical :: lextra
     real(kind=8) :: valext(4)
 !
 ! ----------------------------------------------------------------------
@@ -142,10 +143,10 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
     AS_ALLOCATE(vr=erreurs, size=iterat+1)
     if (regres .eq. 1) then
         cresi = crela
-        call nmlere(sddisc, 'L', 'VRELA_TOUS', iterat,erreurs)
+        call nmlere(sddisc, 'L', 'VRELA_TOUS', iterat, erreurs)
     else if (regres .eq. 2) then
         cresi = cmaxi
-        call nmlere(sddisc, 'L', 'VMAXI_TOUS', iterat,erreurs)
+        call nmlere(sddisc, 'L', 'VMAXI_TOUS', iterat, erreurs)
     else
         ASSERT(.false.)
     endif
@@ -169,7 +170,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         lextra = .true.
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

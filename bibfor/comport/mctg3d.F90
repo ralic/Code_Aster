@@ -3,7 +3,7 @@ subroutine mctg3d(stress, strain, rprops, dsidep, edge,&
 !
     implicit none
 ! Declaration of real type variables
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -24,12 +24,13 @@ subroutine mctg3d(stress, strain, rprops, dsidep, edge,&
     real(kind=8) :: stress(6)
     real(kind=8) :: strain(6)
     real(kind=8) :: rprops(6)
-    real(kind=8) :: dsidep(6,6)
+    real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: edge
     real(kind=8) :: right
     real(kind=8) :: apex
     integer :: codret
 !
+#include "asterf_types.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/mcordo.h"
@@ -41,13 +42,13 @@ subroutine mctg3d(stress, strain, rprops, dsidep, edge,&
     integer :: itri, iorder, mmax, nmax, mxiter, i, j, itjac1
 !
 ! Declaration of integer type variables
-    logical(kind=1) :: epflag
+    aster_logical :: epflag
 !
     parameter&
      &(   mmax=3     ,nmax=6     )
 !
-    real(kind=8) :: dpstrs(mmax,mmax), pstra(mmax), pstrs(mmax), r0, r1, r2, r3, r4
-    real(kind=8) :: eigprj(mmax,mmax), eigxpr(mmax,mmax)
+    real(kind=8) :: dpstrs(mmax, mmax), pstra(mmax), pstrs(mmax), r0, r1, r2, r3, r4
+    real(kind=8) :: eigprj(mmax, mmax), eigxpr(mmax, mmax)
     real(kind=8) :: small, vaux(mmax), sqr, tol, tu(nmax), tr(nmax), t1(nmax)
 !
 ! Declaration of constant variables

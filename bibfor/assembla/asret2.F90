@@ -1,10 +1,11 @@
 subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                   jsmdi, nbi1, ti1, ti2)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/juveca.h"
-    logical(kind=1) :: lmasym
+    aster_logical :: lmasym
     integer :: jtmp2, lgtmp2, nbterm, jsmhc, jsmdi
     integer :: ideb, ifin, imil
     integer :: nbi1, ti1(nbi1), ti2(nbi1)

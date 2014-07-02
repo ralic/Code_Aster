@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
                       iresof, iresog, lambds)
         real(kind=8) :: coefff
         real(kind=8) :: coefac
         real(kind=8) :: coefaf
-        logical(kind=1) :: lpenac
-        logical(kind=1) :: lpenaf
+        aster_logical :: lpenac
+        aster_logical :: lpenaf
         integer :: iresof
         integer :: iresog
         real(kind=8) :: lambds

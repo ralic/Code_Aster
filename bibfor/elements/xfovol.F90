@@ -22,6 +22,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -38,7 +39,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     integer :: igeom, ndim, ddlh, ddlc, nfe, nnop
     integer :: iforc, itemps, ivectu, jlsn, jlst
     real(kind=8) :: he
-    logical(kind=1) :: fonc, fono
+    aster_logical :: fonc, fono
 !-----------------------------------------------------------------------
 ! FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT
 !                     DANS LE CAS D'UNE FORCE VOLUMIQUE IMPOSEE SUR LES
@@ -75,7 +76,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: valpar(ndim+1), fe(4), poids
     character(len=8) :: elrese(6), fami(6), nompar(ndim+1)
-    logical(kind=1) :: grdepl, axi
+    aster_logical :: grdepl, axi
     parameter      (mxstac=1000)
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
@@ -90,7 +91,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
     grdepl=.false.
 !
-    call elrefe_info(fami='RIGI',nnos=nnops)
+    call elrefe_info(fami='RIGI', nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -100,9 +101,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), ndim=ndimb, nno=nno,&
+                     nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
+                     jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim.eq.ndimb)
 !
 !     ------------------------------------------------------------------
@@ -120,7 +121,8 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
         end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT

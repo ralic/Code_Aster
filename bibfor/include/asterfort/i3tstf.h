@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i3tstf(k, f, desc, desctm, conexk,&
                       coordo, gauche, epsi)
@@ -24,7 +26,7 @@ interface
         integer :: desctm(*)
         integer :: conexk(*)
         real(kind=8) :: coordo(*)
-        logical(kind=1) :: gauche
+        aster_logical :: gauche
         real(kind=8) :: epsi
     end subroutine i3tstf
 end interface

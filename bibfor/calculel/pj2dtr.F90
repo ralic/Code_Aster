@@ -1,6 +1,7 @@
 subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                   geom2, lraff)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -28,7 +29,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     character(len=8) :: elrf2d(nbtm)
     integer :: nutm2d(nbtm)
     real(kind=8) :: geom1(*), geom2(*)
-    logical(kind=1) :: lraff
+    aster_logical :: lraff
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +63,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !                            INUTILISABLE DANS LE CAS 2.5D
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lext
+    aster_logical :: lext
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     character(len=8) :: m1, m2, elrefa, fapg(nbfamx), alarme
@@ -70,9 +71,9 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     integer :: nbpg(nbfamx), cnquad(3, 2)
     real(kind=8) :: crrefe(3*nbnomx), ksi, eta, xr1(2), xr2(2), xr3(2)
     real(kind=8) :: ff(nbnomx), cooele(3*nbnomx), x1, x2, vol
-    integer ::  i1conb,  i1conu,  i2cocf, i2coco
-    integer :: i2com1, i2conb, j2xxk1, i2conu,  ialim1, ialin1, ialin2
-    integer ::   ideca1, ideca2, ilcnx1, ima1, ino, ino2
+    integer :: i1conb, i1conu, i2cocf, i2coco
+    integer :: i2com1, i2conb, j2xxk1, i2conu, ialim1, ialin1, ialin2
+    integer :: ideca1, ideca2, ilcnx1, ima1, ino, ino2
     integer :: iret, itr, itypm, kdim, kk, nbfpg, nbno, ndim, nma1, nma2, nno
     integer :: nno1, nno2, nnos, nuno, nuno2, nutm, ibid
 !
@@ -81,7 +82,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
     character(len=8) :: nono2
-    logical(kind=1) :: loin2
+    aster_logical :: loin2
     character(len=24), pointer :: pjxx_k1(:) => null()
     integer, pointer :: pjef_tr(:) => null()
     integer, pointer :: tria3(:) => null()
@@ -249,15 +250,16 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !         -- on choisit la meilleure approximation entre xr1 et xr2:
             call pjefmi(elrefa, nno, cooele, geom2(3*(ino2-1)+1), ndim,&
                         xr1, xr2, lext, xr3, distv)
-
-            if (nint(disprj).eq.999) then
+!
+            if (nint(disprj) .eq. 999) then
                 loin2=.true.
             else if (disprj .gt. 1.0d-01) then
                 loin2=.true.
                 nbnodm = nbnodm + 1
-                call inslri(nbmax, nbnod, tdmin2, tino2m, distv,ino2)
+                call inslri(nbmax, nbnod, tdmin2, tino2m, distv,&
+                            ino2)
             endif
-
+!
         else
             xr3(1)=xr1(1)
             xr3(2)=xr1(2)
@@ -300,7 +302,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                 umessr(4) = tdmin2(ii)
                 call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
             enddo
-            call utmess('A', 'CALCULEL5_48',si=nbnodm )
+            call utmess('A', 'CALCULEL5_48', si=nbnodm)
         endif
     endif
 !

@@ -20,13 +20,14 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 ! person_in_charge: jerome.laverne at edf.fr
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 #include "blas/ddot.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno1, nno2, kpg, ipg, idf2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2)
     real(kind=8) :: rot(ndim, ndim)
@@ -80,15 +81,15 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
             do 11 i = 1, ndim
                 do 12 j = 1, ndim
                     geoloc(i,n) = geoloc(i,n) + rot(i,j)*geom(j,n)
-12              continue
-11          continue
-10      continue
+ 12             continue
+ 11         continue
+ 10     continue
 !
         do 13 n = 1, nno2
             do 14 i = 2, ndim
                 geotan(i-1,n)=geoloc(i,n)
-14          continue
-13      continue
+ 14         continue
+ 13     continue
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
         call dfdm2d(nno2, kpg, ipg, idf2, geotan,&
@@ -123,15 +124,15 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
             do 40 n = 1, nno1
                 b(i,j,n) = - rot(i,j)*vff1(n)
                 b(i,j,n+nno1) = rot(i,j)*vff1(n)
-40          continue
+ 40         continue
 !
-30      continue
-20  end do
+ 30     continue
+ 20 end do
 !
     do 21 i = 1, ndim-1
         do 41 n = 1, nno2
             b(ndim+i,ndim+1,2*nno1+n) = dfdis(n,i)
-41      continue
-21  end do
+ 41     continue
+ 21 end do
 !
 end subroutine

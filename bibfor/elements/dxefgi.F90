@@ -16,6 +16,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/utmess.h"
@@ -43,7 +44,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: kxx, kyy, kxy, t2iu(4), t2ui(4), t1ve(9)
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
@@ -58,13 +59,12 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
         sigt(i) = zero
     end do
 !
-    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or.&
-        nomte .eq. 'MEDKTG3 ') then
+    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or. nomte .eq. 'MEDKTG3 ') then
 !
         npg = 3
         nno = 3
 !
-    else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDSQU4 ' .or.&
+        else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDSQU4 ' .or.&
              nomte.eq.'MEQ4QU4 ' .or. nomte.eq.'MEDKQG4 ') then
         npg = 4
         nno = 4

@@ -1,11 +1,12 @@
 subroutine ptfop1(itype, coef1, coef2, xl, rad,&
                   angs2, global, qq, fe)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: itype
     real(kind=8) :: coef1, coef2, xl, rad, angs2, fe(12), qq(12)
-    logical(kind=1) :: global
+    aster_logical :: global
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

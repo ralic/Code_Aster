@@ -150,6 +150,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/isbaem.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
@@ -166,7 +167,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical(kind=1) :: select( * )
+    aster_logical :: select( * )
     real(kind=8) :: rwork( * )
     complex(kind=8) :: t( ldt, * ), vl( ldvl, * ), vr( ldvr, * ), work( * )
 !     ..
@@ -178,7 +179,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
      &                   cmone = ( 1.0d+0, 0.0d+0 ) )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: allv, bothv, leftv, over, rightv, somev
+    aster_logical :: allv, bothv, leftv, over, rightv, somev
     integer :: i, ii, is, j, k, ki
     integer(kind=4) :: info4
     real(kind=8) :: remax, scale, smin, smlnum, ulp, unfl
@@ -188,7 +189,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !     .. STATEMENT FUNCTIONS ..
 !     ..
 !     .. STATEMENT FUNCTION DEFINITIONS ..
-#define cabs1( cdum )   abs( dble( cdum ) ) + abs( dimag( cdum ) )
+#define cabs1( cdum ) abs( dble( cdum ) ) + abs( dimag( cdum ) )
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
@@ -211,7 +212,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
         m = 0
         do 10 j = 1, n
             if (select( j )) m = m + 1
-10      continue
+ 10     continue
     else
         m = n
     endif
@@ -253,7 +254,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
     do 20 i = 1, n
         work( i+n ) = t( i, i )
-20  end do
+ 20 end do
 !
 !     COMPUTE 1-NORM OF EACH COLUMN OF STRICTLY UPPER TRIANGULAR
 !     PART OF T TO CONTROL OVERFLOW IN TRIANGULAR SOLVER.
@@ -261,7 +262,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
     rwork( 1 ) = zero
     do 30 j = 2, n
         rwork( j ) = dzasum( j-1, t( 1, j ), 1 )
-30  end do
+ 30 end do
 !
     if (rightv) then
 !
@@ -281,7 +282,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
             do 40 k = 1, ki - 1
                 work( k ) = -t( k, ki )
-40          continue
+ 40         continue
 !
 !           SOLVE THE TRIANGULAR SYSTEM:
 !              (T(1:KI-1,1:KI-1) - T(KI,KI))*X = SCALE*WORK.
@@ -289,7 +290,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
             do 50 k = 1, ki - 1
                 t( k, k ) = t( k, k ) - t( ki, ki )
                 if (cabs1( t( k, k ) ) .lt. smin) t( k, k ) = smin
-50          continue
+ 50         continue
 !
             if (ki .gt. 1) then
                 call zlatrs('U', 'N', 'N', 'Y', ki-1,&
@@ -309,7 +310,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
                 do 60 k = ki + 1, n
                     vr( k, is ) = cmzero
-60              continue
+ 60             continue
             else
                 if (ki .gt. 1) call zgemv('N', n, ki-1, cmone, vr,&
                                           ldvr, work( 1 ), 1, dcmplx( scale ), vr( 1, ki ),&
@@ -324,10 +325,10 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
             do 70 k = 1, ki - 1
                 t( k, k ) = work( k+n )
-70          continue
+ 70         continue
 !
             is = is - 1
-80      continue
+ 80     continue
     endif
 !
     if (leftv) then
@@ -348,7 +349,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
             do 90 k = ki + 1, n
                 work( k ) = -dconjg( t( ki, k ) )
-90          continue
+ 90         continue
 !
 !           SOLVE THE TRIANGULAR SYSTEM:
 !              (T(KI+1:N,KI+1:N) - T(KI,KI))'*X = SCALE*WORK.
@@ -356,7 +357,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
             do 100 k = ki + 1, n
                 t( k, k ) = t( k, k ) - t( ki, ki )
                 if (cabs1( t( k, k ) ) .lt. smin) t( k, k ) = smin
-100          continue
+100         continue
 !
             if (ki .lt. n) then
                 call zlatrs('U', 'C', 'N', 'Y', n-ki,&
@@ -376,7 +377,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
                 do 110 k = 1, ki - 1
                     vl( k, is ) = cmzero
-110              continue
+110             continue
             else
                 if (ki .lt. n) call zgemv('N', n, n-ki, cmone, vl( 1, ki+1 ),&
                                           ldvl, work( ki+1 ), 1, dcmplx( scale ), vl( 1, ki ),&
@@ -391,13 +392,13 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
             do 120 k = ki + 1, n
                 t( k, k ) = work( k+n )
-120          continue
+120         continue
 !
             is = is + 1
-130      continue
+130     continue
     endif
 !
-1000  continue
+1000 continue
     info=info4
     call matfpe(1)
 !

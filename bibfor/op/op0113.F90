@@ -30,6 +30,7 @@ subroutine op0113()
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/adalig.h"
@@ -64,7 +65,7 @@ subroutine op0113()
     real(kind=8) :: crimax
     integer :: ibid, iel, ima, nmoth
     integer :: i, j2
-    integer ::   jmofis
+    integer :: jmofis
     integer :: nbma, nelt
     integer :: nb1
     integer :: nfiss, jnfis
@@ -76,7 +77,7 @@ subroutine op0113()
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont
-    logical(kind=1) :: linter
+    aster_logical :: linter
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
 !
@@ -140,16 +141,16 @@ subroutine op0113()
 !
     call getvtx(motfac, 'CONTACT', iocc=1, scal=k8cont, nbret=ibid)
     call wkvect(modelx//'.XFEM_CONT', 'G V I', 1, jxc)
-    if(k8cont.eq.'NON') then
+    if (k8cont .eq. 'NON') then
         zi(jxc) = 0
-    else if(k8cont.eq.'OUI') then
+    else if (k8cont.eq.'OUI') then
         call dismoi('LINE_QUAD', ligr1, 'LIGREL', repk = line_quad)
-        if (line_quad.eq.'LINE') then
+        if (line_quad .eq. 'LINE') then
             zi(jxc) = 1
         else if (line_quad.eq.'QUAD') then
             zi(jxc) = 3
         else
-            call utmess('F','XFEM2_3')
+            call utmess('F', 'XFEM2_3')
         endif
     else
         ASSERT(.false.)

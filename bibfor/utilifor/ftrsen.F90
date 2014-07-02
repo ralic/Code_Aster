@@ -233,6 +233,7 @@ subroutine ftrsen(job, compq, select, n, t,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/flacon.h"
 #include "asterfort/flrsyl.h"
@@ -246,7 +247,7 @@ subroutine ftrsen(job, compq, select, n, t,&
     real(kind=8) :: s, sep
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    logical(kind=1) :: select( * )
+    aster_logical :: select( * )
     integer :: iwork( * )
     real(kind=8) :: q( ldq, * ), t( ldt, * ), wi( * ), work( * ), wr( * )
 !     .. PARAMETERS ..
@@ -254,7 +255,7 @@ subroutine ftrsen(job, compq, select, n, t,&
     parameter          ( zero = 0.0d+0, one = 1.0d+0 )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical(kind=1) :: pair, swap, wantbh, wantq, wants, wantsp
+    aster_logical :: pair, swap, wantbh, wantq, wants, wantsp
     integer :: ierr, k, kase, kk, ks, n1, n2, nn
     real(kind=8) :: est, rnorm, scale
 !     ..
@@ -304,7 +305,7 @@ subroutine ftrsen(job, compq, select, n, t,&
                     if (select( n )) m = m + 1
                 endif
             endif
-10      continue
+ 10     continue
 !
         n1 = m
         n2 = n - m
@@ -367,7 +368,7 @@ subroutine ftrsen(job, compq, select, n, t,&
                 if (pair) ks = ks + 1
             endif
         endif
-20  end do
+ 20 end do
 !
     if (wants) then
 !
@@ -398,7 +399,7 @@ subroutine ftrsen(job, compq, select, n, t,&
 !
         est = zero
         kase = 0
-30      continue
+ 30     continue
         call flacon(nn, work( nn+1 ), work, iwork, est,&
                     kase)
         if (kase .ne. 0) then
@@ -423,21 +424,21 @@ subroutine ftrsen(job, compq, select, n, t,&
         sep = scale / est
     endif
 !
-40  continue
+ 40 continue
 !
 !     STORE THE OUTPUT EIGENVALUES IN WR AND WI.
 !
     do 50 k = 1, n
         wr( k ) = t( k, k )
         wi( k ) = zero
-50  end do
+ 50 end do
     do 60 k = 1, n - 1
         if (t( k+1, k ) .ne. zero) then
             wi( k ) = sqrt( abs( t( k, k+1 ) ) )* sqrt( abs( t( k+1, k ) ) )
             wi( k+1 ) = -wi( k )
         endif
-60  end do
-1000  continue
+ 60 end do
+1000 continue
     call matfpe(1)
 !
 !     END OF FTRSEN

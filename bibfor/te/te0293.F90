@@ -1,5 +1,6 @@
 subroutine te0293(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -41,12 +42,12 @@ subroutine te0293(option, nomte)
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, r
 !
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATZZR', 'E', imattt)
@@ -68,7 +69,7 @@ subroutine te0293(option, nomte)
             r = 0.d0
             do 20 i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-20          continue
+ 20         continue
             poids = poids*r
         endif
 !
@@ -77,7 +78,7 @@ subroutine te0293(option, nomte)
             do 30 j = 1, i
                 ij = ij + 1
                 zr(ij) = zr(ij) + poids * zr(ivf+k+i-1) * zr(ivf+k+j- 1)
-30          continue
-10  end do
+ 30         continue
+ 10 end do
 !
 end subroutine

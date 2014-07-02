@@ -3,6 +3,7 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 !       ================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fgdoba.h"
 #include "asterfort/fgdohs.h"
@@ -56,10 +57,10 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
     character(len=8) :: cara
     character(len=10) :: pheno
     character(len=16) :: k16b
-    logical(kind=1) :: lke, lhaigh
+    aster_logical :: lke, lhaigh
 !
 !-----------------------------------------------------------------------
-    integer :: i, ivcorr,  ivke
+    integer :: i, ivcorr, ivke
     real(kind=8), pointer :: vdommag(:) => null()
 !-----------------------------------------------------------------------
     dommag = 0.d0
@@ -79,22 +80,22 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
         call rcpare(nommat, pheno, cara, icodhs)
         if (icodwo .eq. 0) then
             call fgdowh(nommat, ncyc, valmin, valmax, lke,&
-                        zr(ivke), lhaigh, zr(ivcorr),vdommag)
+                        zr(ivke), lhaigh, zr(ivcorr), vdommag)
         else if (icodba.eq.0) then
             call fgdoba(nommat, ncyc, valmin, valmax, lke,&
-                        zr(ivke), lhaigh, zr(ivcorr),vdommag)
+                        zr(ivke), lhaigh, zr(ivcorr), vdommag)
         else if (icodhs.eq.0) then
             call fgdohs(nommat, ncyc, valmin, valmax, lke,&
-                        zr(ivke), lhaigh, zr(ivcorr),vdommag)
+                        zr(ivke), lhaigh, zr(ivcorr), vdommag)
         endif
     else if (method.eq.'MANSON_COFFIN') then
-        call fgdoma(nommat, ncyc, valmin, valmax,vdommag)
+        call fgdoma(nommat, ncyc, valmin, valmax, vdommag)
     else if (method.eq.'TAHERI_MANSON') then
         call fgtaep(nommat, nomfon, nomnap, ncyc, valmin,&
-                    valmax,vdommag)
+                    valmax, vdommag)
     else if (method.eq.'TAHERI_MIXTE') then
         call fgtaes(nommat, nomnap, ncyc, valmin, valmax,&
-vdommag)
+                    vdommag)
     else
         k16b = method(1:16)
         call utmess('F', 'PREPOST_4', sk=k16b)
@@ -102,7 +103,7 @@ vdommag)
 !
     do 100 i = 1, ncyc
         dommag = dommag + vdommag(i)
-100  end do
+100 end do
 !
     AS_DEALLOCATE(vr=vdommag)
 end subroutine

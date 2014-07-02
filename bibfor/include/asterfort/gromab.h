@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
                       gromai)
         character(len=8) :: mailla
         character(len=24) :: nmabet
         integer :: nbmabe
-        logical(kind=1) :: mail2d
+        aster_logical :: mail2d
         character(len=8) :: caelem
         character(len=24) :: gromai
     end subroutine gromab

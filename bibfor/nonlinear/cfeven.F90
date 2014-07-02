@@ -18,7 +18,8 @@ subroutine cfeven(phase, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisd.h"
@@ -57,9 +58,9 @@ subroutine cfeven(phase, defico, resoco)
     character(len=19) :: liac
     integer :: jliac
     integer :: zeven
-    logical(kind=1) :: lactif
+    aster_logical :: lactif
     real(kind=8) :: etacin, etacfi
-    logical(kind=1) :: lexiv
+    aster_logical :: lexiv
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,7 +110,7 @@ subroutine cfeven(phase, defico, resoco)
 !
         do 30 iliac = 1, btotal
             if (zi(jliac-1+iliac) .eq. iliai) lactif = .true.
-30      continue
+ 30     continue
 !
 ! ----- CHANGEMENT STATUT
 !
@@ -132,9 +133,9 @@ subroutine cfeven(phase, defico, resoco)
         endif
         zr(jctevc+zeven*(ip-1)+1-1) = etacin
         zr(jctevc+zeven*(ip-1)+2-1) = etacfi
-20  end do
+ 20 end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

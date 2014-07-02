@@ -17,6 +17,7 @@ subroutine duplisp(celssp, celasp, carel, base)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/alchml.h"
@@ -65,7 +66,7 @@ subroutine duplisp(celssp, celasp, carel, base)
     integer, pointer :: liel(:) => null()
     integer, pointer :: celd1(:) => null()
     integer, pointer :: celd2(:) => null()
-    logical :: diff
+    aster_logical :: diff
 
 #   define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !------------------------------------------------------------------

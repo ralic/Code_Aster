@@ -16,6 +16,7 @@ subroutine te0435(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/codere.h"
@@ -52,7 +53,7 @@ subroutine te0435(option, nomte)
     integer :: ivectu, icontp, ivarip, jcret, imatuu
     real(kind=8) :: dff(2, 8), alpha, beta, b(3, 3, 8), jac
     real(kind=8) :: epsm(3), deps(3), epsth(3), epsthe, sigp(3), tmp, rig(3, 3)
-    logical(kind=1) :: vecteu, matric
+    aster_logical :: vecteu, matric
 !
 ! - BOOLEEN UTILES
 !
@@ -67,8 +68,8 @@ subroutine te0435(option, nomte)
 ! - FONCTIONS DE FORME ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
 !
@@ -190,7 +191,7 @@ subroutine te0435(option, nomte)
 !
         if (vecteu) then
             do n = 1, nno
-                do  i = 1, nddl
+                do i = 1, nddl
                     do c = 1, ncomp
                         zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
                         nddl+i-1) +b(c,i,n)*sigp(c)*zr(ipoids+kpg-1)*&

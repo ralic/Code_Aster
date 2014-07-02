@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine asexci(masse, parmod, amort, nbmode, corfre,&
                       impr, ndir, monoap, muapde, kspect,&
@@ -23,11 +25,11 @@ interface
         character(len=*) :: masse
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
-        logical(kind=1) :: corfre
+        aster_logical :: corfre
         integer :: impr
         integer :: ndir(*)
-        logical(kind=1) :: monoap
-        logical(kind=1) :: muapde
+        aster_logical :: monoap
+        aster_logical :: muapde
         character(len=*) :: kspect
         character(len=*) :: kasysp
         integer :: nbsup

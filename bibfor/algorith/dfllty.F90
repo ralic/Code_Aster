@@ -18,6 +18,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -85,7 +86,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
     integer :: numrep
     character(len=8) :: resu
     character(len=2) :: type
-    logical(kind=1) :: exist
+    aster_logical :: exist
 !
 ! ----------------------------------------------------------------------
 !
@@ -170,8 +171,8 @@ subroutine dfllty(sdlist, metlis, dtmin)
             do 11 j = 1, nbdec
                 dt = zr(jlisre-1+i+1)-zr(jlisre-1+i)
                 zr(jinst-1+nbdec*(i-1)+j) = zr(jlisre-1+i) + dt*(j-1)/ nbdec
-11          continue
-10      continue
+ 11         continue
+ 10     continue
         zr(jinst-1+nbdec*(nval-1)+1)=zr(jlisre-1+nval)
 !
     endif
@@ -189,7 +190,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
     call wkvect(sdlist//'.LIST.DITR', 'G V R', nbinst, jditr)
     do 20 i = 1, nbinst
         zr(jditr-1+i) = zr(jinst-1+i)
-20  end do
+ 20 end do
 !
 ! --- INTERVALLE MINIMUM + NOMBRE INSTANTS STOCKES
 !

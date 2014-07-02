@@ -8,6 +8,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -99,7 +100,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: dgdgl(4, 3), pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+nfe), nnop)
     real(kind=8) :: ur, r
-    logical(kind=1) :: grdepl, axi, cplan
+    aster_logical :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
     real(kind=8) :: rind(6), rac2, angmas(3)
@@ -131,9 +132,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     endif
 !
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
-    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -157,7 +158,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !       JUSTE POUR CALCULER LES FF
 !
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff)
 !
 !
         if (nfe .gt. 0) then
@@ -217,14 +219,18 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                     end do
                 end do
             endif
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-            call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                        r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                        fe, dgdgl, ff, dfdi, f, eps, rbid33)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff, dfdi=dfdi)
+            call xcinem(axi, nnop, nnops, idepl, grdepl,&
+                        ndim, he, r, ur, fisno,&
+                        nfiss, nfh, nfe, ddls, ddlm,&
+                        fe, dgdgl, ff, dfdi, f,&
+                        eps, rbid33)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff, dfdi=dfdi)
             call matini(3, 3, 0.d0, f)
             do i = 1, 3
                 f(i,i) = 1.d0

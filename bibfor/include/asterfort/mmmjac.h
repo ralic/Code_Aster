@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
                       nne, ndim, jacobi)
@@ -22,7 +24,7 @@ interface
         integer :: jgeom
         real(kind=8) :: ff(9)
         real(kind=8) :: dff(2, 9)
-        logical(kind=1) :: laxis
+        aster_logical :: laxis
         integer :: nne
         integer :: ndim
         real(kind=8) :: jacobi

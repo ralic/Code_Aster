@@ -30,6 +30,7 @@ subroutine te0095(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
@@ -72,14 +73,14 @@ subroutine te0095(option, nomte)
     integer :: ipesau, ipesav, irotau, irotav, itmpsu, itmpsv
 !
     integer :: kk, ier
-    logical(kind=1) :: fonc
+    aster_logical :: fonc
 !
 !
     call jemarq()
     epsi = r8prem()
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call jevech('PTHETAR', 'L', ithet)
 !
 !
@@ -90,9 +91,9 @@ subroutine te0095(option, nomte)
         thet = 0.d0
         do 20 j = 1, ndim
             thet = thet + abs(zr(ithet+ndim* (i-1)+j-1))
-20      continue
+ 20     continue
         if (thet .lt. epsi) compt = compt + 1
-30  end do
+ 30 end do
     if (compt .eq. nno) goto 100
 !
 ! RECUPERATION CHARGE, MATER...
@@ -146,22 +147,22 @@ subroutine te0095(option, nomte)
             do 130 j = 1, ndim
                 vaparu(j) = zr(igeom+ndim*(i-1)+j-1)
                 vaparv(j) = zr(igeom+ndim*(i-1)+j-1)
-130          continue
+130         continue
             do 140 j = 1, ndim
                 kk = ndim*(i-1) + j
                 call fointe('FM', zk8(iforfu+j-1), 3, nompar, vaparu,&
                             fnou(kk), ier)
                 call fointe('FM', zk8(iforfv+j-1), 3, nompar, vaparv,&
                             fnov(kk), ier)
-140          continue
-150      continue
+140         continue
+150     continue
     else
         do 8000 i = 1, nno
             do 6000 j = 1, ndim
                 fnou(ndim*(i-1)+j) = zr(iforcu+ndim*(i-1)+j-1)
                 fnov(ndim*(i-1)+j) = zr(iforcv+ndim*(i-1)+j-1)
-6000          continue
-8000      continue
+6000         continue
+8000     continue
     endif
 !
     if ((ipesau.ne.0) .or. (irotau.ne.0)) then
@@ -174,8 +175,8 @@ subroutine te0095(option, nomte)
                 do 161 j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnou(kk) = fnou(kk) + rho(1)*zr(ipesau)*zr(ipesau+j)
-161              continue
-160          continue
+161             continue
+160         continue
         endif
         if (irotau .ne. 0) then
             om = zr(irotau)
@@ -183,12 +184,12 @@ subroutine te0095(option, nomte)
                 omo = 0.d0
                 do 171 j = 1, ndim
                     omo = omo + zr(irotau+j)*zr(igeom+ndim*(i-1)+j-1)
-171              continue
+171             continue
                 do 172 j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnou(kk) = fnou(kk) + rho(1)*om*om*(zr(igeom+kk-1)- omo*zr(irotau+j))
-172              continue
-170          continue
+172             continue
+170         continue
         endif
     endif
 !
@@ -202,8 +203,8 @@ subroutine te0095(option, nomte)
                 do 261 j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnov(kk) = fnov(kk) + rho(1)*zr(ipesav)*zr(ipesav+j)
-261              continue
-260          continue
+261             continue
+260         continue
         endif
         if (irotav .ne. 0) then
             om = zr(irotav)
@@ -211,12 +212,12 @@ subroutine te0095(option, nomte)
                 omo = 0.d0
                 do 271 j = 1, ndim
                     omo = omo + zr(irotav+j)*zr(igeom+ndim*(i-1)+j-1)
-271              continue
+271             continue
                 do 272 j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnov(kk) = fnov(kk) + rho(1)*om*om*(zr(igeom+kk-1)- omo*zr(irotav+j))
-272              continue
-270          continue
+272             continue
+270         continue
         endif
     endif
 !
@@ -238,8 +239,8 @@ subroutine te0095(option, nomte)
                 dtdm(i,j) = 0.d0
                 dfudm(i,j) = 0.d0
                 dfvdm(i,j) = 0.d0
-40          continue
-50      continue
+ 40         continue
+ 50     continue
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
@@ -272,7 +273,7 @@ subroutine te0095(option, nomte)
                 do 75 j = 1, ndim
                     tgudm(j) = tgudm(j) + tgm*der(j)
                     tgvdm(j) = tgvdm(j) + tgp*der(j)
-75              continue
+ 75             continue
             else
                 iret3 = iret3+1
                 tgu=0.d0
@@ -288,14 +289,14 @@ subroutine te0095(option, nomte)
                     dtdm(j,k) = dtdm(j,k) + zr(ithet+ndim* (i-1)+j-1)* der(k)
                     dfudm(j,k) = dfudm(j,k) + fnou(ndim*(i-1)+j)*der( k)
                     dfvdm(j,k) = dfvdm(j,k) + fnov(ndim*(i-1)+j)*der( k)
-60              continue
+ 60             continue
                 dudm(j,4) = dudm(j,4) + zr(idepu+ndim*(i-1)+j-1)*der( 4)
                 dvdm(j,4) = dvdm(j,4) + zr(idepv+ndim*(i-1)+j-1)*der( 4)
                 dtdm(j,4) = dtdm(j,4) + zr(ithet+ndim*(i-1)+j-1)*der( 4)
                 dfudm(j,4) = dfudm(j,4) + fnou(ndim*(i-1)+j)*der(4)
                 dfvdm(j,4) = dfvdm(j,4) + fnov(ndim*(i-1)+j)*der(4)
-70          continue
-80      continue
+ 70         continue
+ 80     continue
 !
 ! - RECUPERATION DES DONNEES MATERIAUX
         if (iret3 .eq. 0) then
@@ -305,7 +306,7 @@ subroutine te0095(option, nomte)
             do 85 j = 1, ndim
                 tgudm(j) = 0.d0
                 tgvdm(j) = 0.d0
-85          continue
+ 85         continue
             ttrgu = 0.d0
             ttrgv = 0.d0
         endif
@@ -342,14 +343,14 @@ subroutine te0095(option, nomte)
         coef = 2.d0
         call gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
                     tgudm, tgvdm, ttrgu, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho(1),&
-                    puls, gelem)
+                    c1, c2, c3, k3a, alpha,&
+                    coef, rho(1), puls, gelem)
         guv3 = guv3 + gelem
-90  end do
+ 90 end do
 !
     g = guv3
 !
     zr(ific) = g
-100  continue
+100 continue
     call jedema()
 end subroutine

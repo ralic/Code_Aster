@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dxtloe(flex, memb, mefl, ctor, coupmf,&
                       depl, ener)
@@ -22,7 +24,7 @@ interface
         real(kind=8) :: memb(*)
         real(kind=8) :: mefl(*)
         real(kind=8) :: ctor
-        logical(kind=1) :: coupmf
+        aster_logical :: coupmf
         real(kind=8) :: depl(*)
         real(kind=8) :: ener(*)
     end subroutine dxtloe

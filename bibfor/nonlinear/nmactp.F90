@@ -20,6 +20,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/isacti.h"
@@ -61,7 +62,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
     integer :: retact, ievdac, actpas, iterat, ibid
     character(len=4) :: etinst
-    logical(kind=1) :: arret
+    aster_logical :: arret
     integer :: piless, ireapc
     character(len=16) :: pilcho
     real(kind=8) :: r8bid

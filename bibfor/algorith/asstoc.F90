@@ -1,6 +1,7 @@
 subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                   ndir, comdir, typcdi, glob, prim)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -19,7 +20,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 #include "asterfort/vtdefs.h"
     integer :: neq, ndir(*)
     real(kind=8) :: repdir(neq, *)
-    logical(kind=1) :: comdir, glob, prim
+    aster_logical :: comdir, glob, prim
     character(len=16) :: nomsy
     character(len=*) :: mome, resu, typcdi
 !     ------------------------------------------------------------------
@@ -75,7 +76,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !
     do 10 i = 1, 3
         if (ndir(i) .eq. 1) nbmode = nbmode + 1
-10  end do
+ 10 end do
     if (comdir) nbmode = nbmode + 1
 !
 !     --- CREATION DE LA STRUCTURE D'ACCUEIL ---
@@ -124,7 +125,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !
             do 30 in = 1, neq
                 zr(jval+in-1) = sqrt( abs ( repdir(in,id) ) )
-30          continue
+ 30         continue
             call jelibe(vale)
             call rsnoch(resu, nomsy, iordr)
 !
@@ -139,7 +140,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                         0, sjv=jdrr, styp=k8b)
             zr(jdrr) = id
         endif
-20  end do
+ 20 end do
 !
     if (comdir) then
         iordr = iordr + 1
@@ -168,7 +169,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
             do 40 ieq = 1, neq
                 xxx = abs ( repdir(ieq,1) ) + abs ( repdir(ieq,2) ) + abs ( repdir(ieq,3) )
                 zr(lvale+ieq-1) = sqrt( xxx )
-40          continue
+ 40         continue
         else if (typcdi(1:4).eq.'NEWM') then
             do 42 ieq = 1, neq
                 rx = sqrt( abs ( repdir(ieq,1) ) )
@@ -201,7 +202,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                 xxx = max(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13, r14)
                 xxx = max(xxx,r15,r16,r17,r18,r19,r20,r21,r22,r23,r24)
                 zr(lvale+ieq-1) = xxx
-42          continue
+ 42         continue
         endif
         call jelibe(vale)
         call rsnoch(resu, nomsy, iordr)

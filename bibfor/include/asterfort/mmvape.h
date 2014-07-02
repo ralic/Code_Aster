@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmvape(phasep, leltf, ndim, nnl, nbcps,&
                       coefac, coefaf, coefff, ffl, wpg,&
@@ -22,7 +24,7 @@ interface
                       mprojt, dlagrc, dlagrf, dvite, rese,&
                       vectcc, vectff)
         character(len=9) :: phasep
-        logical(kind=1) :: leltf
+        aster_logical :: leltf
         integer :: ndim
         integer :: nnl
         integer :: nbcps

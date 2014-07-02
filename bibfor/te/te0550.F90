@@ -28,6 +28,7 @@ subroutine te0550(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -44,7 +45,7 @@ subroutine te0550(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: ndi, nno, kp, npg
     integer :: ldec, kpg, spt
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
@@ -52,8 +53,8 @@ subroutine te0550(option, nomte)
     integer :: jj, ndim, nnos
     real(kind=8) :: celer(1), r
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     ndi = 2*nno
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -76,7 +77,7 @@ subroutine te0550(option, nomte)
 ! --- INITIALISATION DU VECTEUR DE CORRECTION
     do 10 i = 1, ndi
         zr(ivectu+i-1) = 0.d0
-10  end do
+ 10 end do
 !
 ! --- INITIALISATION DE LA MATRICE D'IMPEDANCE
     call matini(6, 6, 0.d0, a)
@@ -94,7 +95,7 @@ subroutine te0550(option, nomte)
             r = 0.d0
             do 40 i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
-40          continue
+ 40         continue
             poids = poids*r
         endif
 !%
@@ -106,21 +107,21 @@ subroutine te0550(option, nomte)
 !
                 a(ii,jj) = a(ii,jj) - poids/celer(1)*zr(ivf+ldec+i-1)* zr(ivf+ldec+j-1)
 !
-50          continue
-60      continue
+ 50         continue
+ 60     continue
 !
 !     CALCUL DE LA VITESSE ABSOLUE
         do 70 i = 1, ndi
             vites(i) = zr(ivite+i-1) + zr(ivien+i-1)
-70      continue
+ 70     continue
 !
         do 90 i = 1, ndi
             do 80 j = 1, ndi
                 zr(ivectu+i-1) = zr(ivectu+i-1) - a(i,j)*vites(j)
-80          continue
-90      continue
+ 80         continue
+ 90     continue
 !
-100  end do
-110  continue
+100 end do
+110 continue
 !
 end subroutine

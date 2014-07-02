@@ -1,9 +1,10 @@
 subroutine rc32f0(nbsigr, nocc, saltij, saltm, trouve,&
                   isk, isl, nk, nl)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
     integer :: nbsigr, nocc(*), isk, isl, nl, nk
     real(kind=8) :: saltij(*), saltm
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D               WWW.CODE-ASTER.ORG
@@ -56,8 +57,8 @@ subroutine rc32f0(nbsigr, nocc, saltij, saltm, trouve,&
                 nk = nocc(isk)
             endif
 !
-22      continue
+ 22     continue
 !
-20  end do
+ 20 end do
 !
 end subroutine

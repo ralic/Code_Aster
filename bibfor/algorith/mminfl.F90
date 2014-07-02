@@ -19,8 +19,9 @@ function mminfl(defico, questz, izone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    logical(kind=1) :: mminfl
+#include "asterf_types.h"
 #include "asterfort/mminfp.h"
+    aster_logical :: mminfl
     character(len=24) :: defico
     integer :: izone
     character(len=*) :: questz
@@ -44,7 +45,7 @@ function mminfl(defico, questz, izone)
 !
     integer :: ibid(1)
     real(kind=8) :: r8bid(1)
-    logical(kind=1) :: lrep(1)
+    aster_logical :: lrep(1)
 !
 ! ----------------------------------------------------------------------
 !

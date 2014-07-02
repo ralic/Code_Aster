@@ -22,9 +22,10 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/ejcine.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, idf2, ipg, nddl, nno1, nno2, npg, iu(3, 16), ip(4)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)
@@ -69,10 +70,10 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
                 temp = 0.d0
                 do 320 j = 1, ndim
                     temp = temp + abs(b(j,i,n))*sigref/ndim
-320              continue
+320             continue
                 vect(kk) = vect(kk) + wg*temp
-301          continue
-300      continue
+301         continue
+300     continue
 !
 !      VECTEUR FINT:M
         do 302 n = 1, nno2
@@ -80,9 +81,9 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
             temp = 0.d0
             do 321 i = ndim+1, 2*ndim-1
                 temp = temp + abs(b(i,ndim+1,2*nno1+n))*fhyref/(ndim- 1)
-321          continue
+321         continue
             vect(kk) = vect(kk) + wg*temp
-302      continue
+302     continue
 !
-1000  end do
+1000 end do
 end subroutine

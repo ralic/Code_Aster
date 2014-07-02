@@ -22,11 +22,12 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
 !     EST ADCO
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     integer :: m, adco, nbso, nusglo, nusloc
 !
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
     integer :: is
     integer :: vali(2)
 !
@@ -36,7 +37,7 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
             trouve=.true.
             nusloc=is
         endif
-10  end do
+ 10 end do
     if (.not.trouve) then
         vali(1)=nusglo
         vali(2)=m

@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine zbproj(rho, echec)
         real(kind=8) :: rho
-        logical(kind=1) :: echec
+        aster_logical :: echec
     end subroutine zbproj
 end interface

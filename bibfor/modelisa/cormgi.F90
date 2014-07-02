@@ -18,6 +18,7 @@ subroutine cormgi(basez, ligrez)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -50,9 +51,9 @@ subroutine cormgi(basez, ligrez)
 !**********************************************************************
 !
     character(len=8) :: nmaila
-    integer :: i, j, pt, nbmail, nbgrel,  iret
+    integer :: i, j, pt, nbmail, nbgrel, iret
     integer :: jrepe, jgrel, nbmgre
-    logical(kind=1) :: exima
+    aster_logical :: exima
 !
 !
 !
@@ -84,10 +85,10 @@ subroutine cormgi(basez, ligrez)
     call wkvect(ligtmp//'.REPE', 'V V I', 2*nbmail, jrepe)
 !
     exima=.false.
-    do i = 1,nbgrel,1
+    do i = 1, nbgrel, 1
         call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nbmgre)
         call jeveuo(jexnum(ligrel//'.LIEL', i), 'L', jgrel)
-        do j = 1,nbmgre - 1,1
+        do j = 1, nbmgre - 1, 1
             if (zi(jgrel+j-1) .gt. 0) then
                 exima=.true.
                 pt = 2* (zi(jgrel+j-1)-1) + 1

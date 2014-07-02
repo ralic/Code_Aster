@@ -19,7 +19,8 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,7 +28,7 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
     character(len=19) :: sddisc
     integer :: ievdac, nbrpas, retdec
     real(kind=8) :: ratio, deltac, subdur
-    logical(kind=1) :: ldcext
+    aster_logical :: ldcext
     character(len=4) :: typdec
     character(len=16) :: optdec
 !

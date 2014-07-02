@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine vfcfks(cont, tange, maxfa, nface, uk,&
                       dukp1, dukp2, ufa, dufa1, dufa2,&
@@ -25,8 +27,8 @@ interface
         integer :: maxdim
         integer :: nface
         integer :: maxfa
-        logical(kind=1) :: cont
-        logical(kind=1) :: tange
+        aster_logical :: cont
+        aster_logical :: tange
         real(kind=8) :: uk
         real(kind=8) :: dukp1
         real(kind=8) :: dukp2

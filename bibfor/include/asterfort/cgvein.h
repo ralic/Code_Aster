@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cgvein(resu, compor, iord0, l_temp)
         character(len=8), intent(in) :: resu
         character(len=19), intent(in) :: compor
         integer, intent(in) :: iord0
-        logical(kind=1), intent(in) :: l_temp
+        aster_logical, intent(in) :: l_temp
     end subroutine cgvein
 end interface

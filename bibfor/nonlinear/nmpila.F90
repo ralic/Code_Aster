@@ -20,6 +20,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -33,7 +34,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
     character(len=24) :: numedd
     character(len=19) :: ddepl0, ddepl1, depdel
     real(kind=8) :: dtau, eta(2)
-    logical(kind=1) :: isxfe
+    aster_logical :: isxfe
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +65,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
 !
     integer :: i, j, nrac
     real(kind=8) :: r0, d0, r1, d1, r2, dtau2, rac(2)
-    integer ::   jdepde
+    integer :: jdepde
     integer :: neq
     integer :: ifm, niv
     character(len=19) :: chapil, chapic
@@ -118,8 +119,8 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
                 d1 = 0.d0
                 do j = i+1, neq
                     if (coee(i) .eq. coee(j)) then
-                        d0 = d0 + coef(i)*(zr(jdepde+i-1)+dep0(i))+ coef(j)*(z&
-                             &r(jdepde+j-1)+dep0(j))
+                        d0 = d0 + coef(i)*(zr(jdepde+i-1)+dep0(i))+ coef(j)*(zr(jdepde+j-1)+dep0(&
+                             &j))
                         d1 = d1 + coef(i)*dep1(i)+ coef(j)*dep1(j)
                     endif
                 end do

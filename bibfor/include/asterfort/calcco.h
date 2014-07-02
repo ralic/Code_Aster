@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine calcco(option, yachai, perman, meca, thmc,&
                       ther, hydr, imate, ndim, dimdef,&
@@ -33,8 +35,8 @@ interface
         integer :: dimcon
         integer :: dimdef
         character(len=16) :: option
-        logical(kind=1) :: yachai
-        logical(kind=1) :: perman
+        aster_logical :: yachai
+        aster_logical :: perman
         character(len=16) :: meca
         character(len=16) :: thmc
         character(len=16) :: ther

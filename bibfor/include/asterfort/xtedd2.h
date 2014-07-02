@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
                       option, lesclx, lmaitx, lcontx, stano,&
@@ -25,16 +27,16 @@ interface
         integer, intent(in) :: jnnm(3)
         integer, intent(in) :: nddl
         character(len=16), intent(in) :: option
-        logical(kind=1), intent(in) :: lesclx
-        logical(kind=1), intent(in) :: lmaitx
-        logical(kind=1), intent(in) :: lcontx
+        aster_logical, intent(in) :: lesclx
+        aster_logical, intent(in) :: lmaitx
+        aster_logical, intent(in) :: lcontx
         integer, intent(in) :: stano(*)
         integer, intent(in) :: lact(8)
         integer, intent(in) :: jddle(2)
         integer, intent(in) :: jddlm(2)
         integer, intent(in) :: nfhe
         integer, intent(in) :: nfhm
-        logical(kind=1), intent(in) :: lmulti
+        aster_logical, intent(in) :: lmulti
         integer, intent(in) :: heavno(8)
         real(kind=8), optional, intent(out) :: mmat(336, 336)
         real(kind=8), optional, intent(out) :: vtmp(336)

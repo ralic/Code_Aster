@@ -3,6 +3,7 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
                   vlc, coordo, sdrp1d, sdrpom, nbsgte)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/i3crk3.h"
 #include "asterfort/i3fmvn.h"
@@ -79,7 +80,7 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
     integer :: arom1, arom2, arom3, arom4, arom5, arom6, arom7, arom8
     integer :: ar1d1, ar1d2, ar1d3, n1, nbma, arom9
     real(kind=8) :: zero, un, t1, t2
-    logical(kind=1) :: fini, find, atrv, btrv, adansm, bdansm
+    aster_logical :: fini, find, atrv, btrv, adansm, bdansm
 !
 !======================================================================
 !
@@ -170,7 +171,7 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
     call jecrec(rom1, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 mxsgel)
     fini = ( (tete .eq. nil) .or. fini .or. find )
-10  continue
+ 10 continue
     if (.not. fini) then
         maille = tete
         call i3idks(epsi, maille, desc, desctm, sgt,&
@@ -283,116 +284,116 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
             call jeveuo(rom8, 'E', arom8)
             call juveca(rom9, 2*mxsgel)
             call jeveuo(rom9, 'E', arom9)
-            do 20, i = 1, ptsgel, 1
-            call jelira(jexnum(rom1, i), 'LONMAX', n1)
-            call jeveuo(jexnum(rom1, i), 'L', i2)
-            call jecroc(jexnum('&&I3IMAS.XD.TMP', i))
-            call jeecra(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1)
-            call jeveuo(jexnum('&&I3IMAS.XD.TMP', i), 'E', i1)
-            do 21, j = 1, n1, 1
-            zi(i1 + j-1) = zi(i2 + j-1)
-21          continue
-20          continue
+            do 20 i = 1, ptsgel, 1
+                call jelira(jexnum(rom1, i), 'LONMAX', n1)
+                call jeveuo(jexnum(rom1, i), 'L', i2)
+                call jecroc(jexnum('&&I3IMAS.XD.TMP', i))
+                call jeecra(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1)
+                call jeveuo(jexnum('&&I3IMAS.XD.TMP', i), 'E', i1)
+                do 21 j = 1, n1, 1
+                    zi(i1 + j-1) = zi(i2 + j-1)
+ 21             continue
+ 20         continue
             call jedetr(rom1)
             call jecrec(rom1, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                         mxsgel)
-            do 30, i = 1, ptsgel, 1
-            call jelira(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1)
-            call jeveuo(jexnum('&&I3IMAS.XD.TMP', i), 'L', i2)
-            call jecroc(jexnum(rom1, i))
-            call jeecra(jexnum(rom1, i), 'LONMAX', n1)
-            call jeveuo(jexnum(rom1, i), 'E', i1)
-            do 31, j = 1, n1, 1
-            zi(i1 + j-1) = zi(i2 + j-1)
-31          continue
-30          continue
+            do 30 i = 1, ptsgel, 1
+                call jelira(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1)
+                call jeveuo(jexnum('&&I3IMAS.XD.TMP', i), 'L', i2)
+                call jecroc(jexnum(rom1, i))
+                call jeecra(jexnum(rom1, i), 'LONMAX', n1)
+                call jeveuo(jexnum(rom1, i), 'E', i1)
+                do 31 j = 1, n1, 1
+                    zi(i1 + j-1) = zi(i2 + j-1)
+ 31             continue
+ 30         continue
             call jedetr('&&I3IMAS.XD.TMP')
         endif
-        do 100, i = 1, nbsgel, 1
-        j1 = zi(zi(alstpt+6-1)+i-1)
-        j2 = zi(zi(alstpt+6-1)+i )
-        t1 = zr(zi(alstpt+1-1)+j1-1)
-        t2 = zr(zi(alstpt+1-1)+j2-1)
-        f1 = zi(zi(alstpt+2-1)+j1-1)
-        f2 = zi(zi(alstpt+2-1)+j2-1)
+        do 100 i = 1, nbsgel, 1
+            j1 = zi(zi(alstpt+6-1)+i-1)
+            j2 = zi(zi(alstpt+6-1)+i )
+            t1 = zr(zi(alstpt+1-1)+j1-1)
+            t2 = zr(zi(alstpt+1-1)+j2-1)
+            f1 = zi(zi(alstpt+2-1)+j1-1)
+            f2 = zi(zi(alstpt+2-1)+j2-1)
 !
 ! SI UN NUMERO DE FACE EST NUL ALORS ON NE TRAITE PAS
 ! LE SEGMENT ELEMENTAIRE (ON NE TRAITE QUE LES SEGMENTS
 ! REPERABLES PAR DES NUMEROS DE FACE NON NULS)
 ! ON EMET UNE ALARME DANS CE CAS
-        if (f1 .eq. 0) then
-            call utmess('A', 'PREPOST6_44')
-            goto 100
-        endif
-        if (f2 .eq. 0) then
-            call utmess('A', 'PREPOST6_45')
-            goto 100
-        endif
+            if (f1 .eq. 0) then
+                call utmess('A', 'PREPOST6_44')
+                goto 100
+            endif
+            if (f2 .eq. 0) then
+                call utmess('A', 'PREPOST6_45')
+                goto 100
+            endif
 !
-        a1 = zi(zi(alstpt+3-1)+j1-1)
-        a2 = zi(zi(alstpt+3-1)+j2-1)
-        tf1 = zi(zi(alstpt+4-1)+j1-1)
-        tf2 = zi(zi(alstpt+4-1)+j2-1)
-        if ((f1 .eq. f2) .and. (f1 .gt. 0)) then
-            n1 = desctm(desc(maille))
-            nbnd = zi(n1-1 + 2 + f1)
-            if ((a1 .eq. a2) .and. (a1 .gt. 0)) then
-                i1 = zi(n1-1 + 8+f1+(a1-1)*6)
-                i2 = max(1,mod(a1+1,nbnd+1))
-                lnd(1) = conex(vlc(maille)+i1-1)
-                i1 = zi(n1-1 + 8+f1+(i2-1)*6)
-                lnd(2) = conex(vlc(maille)+i1-1)
-                nbnd = 2
-                i1 =-1
-                i2 = 1
-            else
-                do 110, j = 1, nbnd, 1
-                i1 = zi(n1-1 + 8+f1+(j-1)*6)
-                lnd(j) = conex(vlc(maille)-1+i1)
-110              continue
-                i1 = 2
-                i2 = 2
-            endif
-            call i3fmvn(nil, desc, succ, prec, desctm,&
-                        maille, conex, vlc, lnd, nbnd,&
-                        i1, nbma, lma)
-            if ((tf1 .eq. -1) .and. ( tf2 .eq. -1)) then
-                if (nbma .le. 1) then
-                    i2 = 0
+            a1 = zi(zi(alstpt+3-1)+j1-1)
+            a2 = zi(zi(alstpt+3-1)+j2-1)
+            tf1 = zi(zi(alstpt+4-1)+j1-1)
+            tf2 = zi(zi(alstpt+4-1)+j2-1)
+            if ((f1 .eq. f2) .and. (f1 .gt. 0)) then
+                n1 = desctm(desc(maille))
+                nbnd = zi(n1-1 + 2 + f1)
+                if ((a1 .eq. a2) .and. (a1 .gt. 0)) then
+                    i1 = zi(n1-1 + 8+f1+(a1-1)*6)
+                    i2 = max(1,mod(a1+1,nbnd+1))
+                    lnd(1) = conex(vlc(maille)+i1-1)
+                    i1 = zi(n1-1 + 8+f1+(i2-1)*6)
+                    lnd(2) = conex(vlc(maille)+i1-1)
+                    nbnd = 2
+                    i1 =-1
+                    i2 = 1
                 else
-                    i2 = 3
-                    nbma = 1
-                    lma(1) = lma(2)
+                    do 110 j = 1, nbnd, 1
+                        i1 = zi(n1-1 + 8+f1+(j-1)*6)
+                        lnd(j) = conex(vlc(maille)-1+i1)
+110                 continue
+                    i1 = 2
+                    i2 = 2
                 endif
+                call i3fmvn(nil, desc, succ, prec, desctm,&
+                            maille, conex, vlc, lnd, nbnd,&
+                            i1, nbma, lma)
+                if ((tf1 .eq. -1) .and. ( tf2 .eq. -1)) then
+                    if (nbma .le. 1) then
+                        i2 = 0
+                    else
+                        i2 = 3
+                        nbma = 1
+                        lma(1) = lma(2)
+                    endif
+                endif
+            else
+                i2 = 3
+                lma(1) = maille
+                nbma = 1
             endif
-        else
-            i2 = 3
-            lma(1) = maille
-            nbma = 1
-        endif
-        zr(ar1d1 + ptsgel ) = t1
-        zr(ar1d2 + ptsgel ) = t2
-        zi(ar1d3 + ptsgel ) = i2
-        zi(arom2 + ptsgel ) = f1
-        zi(arom3 + ptsgel ) = f2
-        zi(arom6 + ptsgel ) = a1
-        zi(arom7 + ptsgel ) = a2
-        zr(arom8 + 2* ptsgel ) = zr(zi(alstpt+5-1)+2*(j1-1))
-        zr(arom8 + 2* ptsgel +1) = zr(zi(alstpt+5-1)+2*(j1-1)+1)
-        zr(arom9 + 2* ptsgel ) = zr(zi(alstpt+5-1)+2*(j2-1))
-        zr(arom9 + 2* ptsgel +1) = zr(zi(alstpt+5-1)+2*(j2-1)+1)
-        call i3crk3(desc(maille), f1, zr(zi(alstpt+5-1)+2*(j1-1)), zr(arom4 + 3*ptsgel))
-        call i3crk3(desc(maille), f2, zr(zi(alstpt+5-1)+2*(j2-1)), zr(arom5 + 3*ptsgel))
-        call jecroc(jexnum(rom1, ptsgel+1))
-        call jeecra(jexnum(rom1, ptsgel+1), 'LONMAX', nbma)
-        call jeveuo(jexnum(rom1, ptsgel+1), 'E', arom1)
-        do 120, j = 1, nbma, 1
-        zi(arom1 + j-1) = lma(j)
-120      continue
-        ptsgel = ptsgel + 1
-        call i3lchs(nil, tete, queue, succ, prec,&
-                    lma(2), nbma-1)
-100      continue
+            zr(ar1d1 + ptsgel ) = t1
+            zr(ar1d2 + ptsgel ) = t2
+            zi(ar1d3 + ptsgel ) = i2
+            zi(arom2 + ptsgel ) = f1
+            zi(arom3 + ptsgel ) = f2
+            zi(arom6 + ptsgel ) = a1
+            zi(arom7 + ptsgel ) = a2
+            zr(arom8 + 2* ptsgel ) = zr(zi(alstpt+5-1)+2*(j1-1))
+            zr(arom8 + 2* ptsgel +1) = zr(zi(alstpt+5-1)+2*(j1-1)+1)
+            zr(arom9 + 2* ptsgel ) = zr(zi(alstpt+5-1)+2*(j2-1))
+            zr(arom9 + 2* ptsgel +1) = zr(zi(alstpt+5-1)+2*(j2-1)+1)
+            call i3crk3(desc(maille), f1, zr(zi(alstpt+5-1)+2*(j1-1)), zr(arom4 + 3*ptsgel))
+            call i3crk3(desc(maille), f2, zr(zi(alstpt+5-1)+2*(j2-1)), zr(arom5 + 3*ptsgel))
+            call jecroc(jexnum(rom1, ptsgel+1))
+            call jeecra(jexnum(rom1, ptsgel+1), 'LONMAX', nbma)
+            call jeveuo(jexnum(rom1, ptsgel+1), 'E', arom1)
+            do 120 j = 1, nbma, 1
+                zi(arom1 + j-1) = lma(j)
+120         continue
+            ptsgel = ptsgel + 1
+            call i3lchs(nil, tete, queue, succ, prec,&
+                        lma(2), nbma-1)
+100     continue
         lma(1) = maille
         nbma = 1
         call i3lchs(nil, tete, queue, succ, prec,&

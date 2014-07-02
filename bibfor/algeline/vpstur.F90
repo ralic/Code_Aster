@@ -2,6 +2,7 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
                   expo, pivot, ier, solveu, caldet,&
                   calfac)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/freqom.h"
 #include "asterfort/jedema.h"
@@ -55,12 +56,12 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: iret, npvneg,   iold, iold2
+    integer :: iret, npvneg, iold, iold2
     real(kind=8) :: valr
     complex(kind=8) :: cbid
     character(len=19) :: matpre, matass
     character(len=24) :: metres
-    logical(kind=1) :: caldet, calfac
+    aster_logical :: caldet, calfac
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------

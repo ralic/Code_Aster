@@ -20,14 +20,15 @@ subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=4) :: oper
     character(len=*) :: typvez, optioz
-    logical(kind=1) :: lasse, lcalc
+    aster_logical :: lasse, lcalc
     integer :: nbvect
     character(len=6) :: ltypve(20)
     character(len=16) :: loptve(20)
-    logical(kind=1) :: lassve(20), lcalve(20)
+    aster_logical :: lassve(20), lcalve(20)
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,7 +73,7 @@ subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
     if (oper .eq. 'INIT') then
         do 10 i = 1, 20
             ltypve(i) = k6bla
-10      continue
+ 10     continue
         nbvect = 0
     else if (oper.eq.'AJOU') then
         nbvect = nbvect + 1

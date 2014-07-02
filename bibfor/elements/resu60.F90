@@ -24,6 +24,7 @@ subroutine resu60(resu1, resu2)
 !
 !     LA ROUTINE RESU74 FAIT LA MEME CHOSE MAIS POUR DES CALCULS TRANS.
 ! ----------------------------------------------------------------------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copvis.h"
 #include "asterfort/jedema.h"
@@ -48,14 +49,14 @@ subroutine resu60(resu1, resu2)
     character(len=8) :: resu
     integer :: i
     integer :: flagd1, flagv1, flaga1, flagd2, flagv2, flaga2
-    logical(kind=1) :: flagd, flagv, flaga
+    aster_logical :: flagd, flagv, flaga
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
 !
-    integer :: jacce,   jvite
-    integer :: jdepl,   jdesc
-    integer :: jfreq,   jordr
+    integer :: jacce, jvite
+    integer :: jdepl, jdesc
+    integer :: jfreq, jordr
     complex(kind=8), pointer :: acce1(:) => null()
     complex(kind=8), pointer :: acce2(:) => null()
     complex(kind=8), pointer :: depl1(:) => null()
@@ -142,7 +143,7 @@ subroutine resu60(resu1, resu2)
 !     --- CUMULER LES NUMEROS D'ORDRE POUR CONSERVER LA MONOTONIE
     do 20 i = 0, nbsau2-1
         ordr2(1+i) = ordr2(1+i) + ordr1(nbsau1) + 1
-20  continue
+ 20 continue
 !
     nbsauv = nbsau1 + nbsau2
 !

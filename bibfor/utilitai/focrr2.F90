@@ -2,6 +2,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                   noeud, cmp, npoint, nusp, ivari,&
                   ier)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -78,15 +79,15 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacces,  iatach, iatava
+    integer :: i, i1, i2, iacces, iatach, iatava
     integer :: ibid, iddl1, iddl2, ier, ierd, ierr1
     integer :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
     integer :: iret, ivari, jinst, jlir8, l1, l2, lfon
-    integer :: lg1, lg2, lpro, lval1,  lvar
+    integer :: lg1, lg2, lpro, lval1, lvar
     integer :: n1, n2, n3, n4, nbinst, nbordr, npoint
     integer :: nusp, vali1, vali2
     real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
-    logical(kind=1), pointer :: lexi(:) => null()
+    aster_logical, pointer :: lexi(:) => null()
     real(kind=8), pointer :: nlval2(:) => null()
 !
 !-----------------------------------------------------------------------

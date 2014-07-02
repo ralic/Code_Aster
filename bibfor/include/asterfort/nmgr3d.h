@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
                       geomi, typmod, option, imate, compor,&
@@ -41,7 +43,7 @@ interface
         real(kind=8) :: angmas(3)
         real(kind=8) :: sigm(6, npg)
         real(kind=8) :: vim(lgpg, npg)
-        logical(kind=1) :: matsym
+        aster_logical :: matsym
         real(kind=8) :: dfdi(nno, 3)
         real(kind=8) :: pff(6, nno, nno)
         real(kind=8) :: def(6, nno, 3)

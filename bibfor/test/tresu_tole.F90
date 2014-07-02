@@ -20,6 +20,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
@@ -38,7 +39,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
     real(kind=8) :: epsir(2)
     character(len=24) :: umcf
 !   to print the message only once
-    logical(kind=1), save :: ipass = .false.
+    aster_logical, save :: ipass = .false.
 !
     ASSERT(ENSEMBLE2(mcf, iocc))
     if (absent(mcf)) then
@@ -57,7 +58,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
     if (np .eq. 1) then
         call getvr8(umcf, 'TOLE_MACHINE', iocc=uioc, scal=epsir(1))
         epsir(2) = epsir(1)
-    elseif (np .eq. 2) then
+    else if (np .eq. 2) then
         call getvr8(umcf, 'TOLE_MACHINE', iocc=uioc, nbval=2, vect=epsir)
     else
         ASSERT(np .eq. 0)

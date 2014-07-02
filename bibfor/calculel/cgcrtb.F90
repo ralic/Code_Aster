@@ -3,10 +3,11 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
     integer :: nbprup
-    logical(kind=1) :: lmelas, lmoda
+    aster_logical :: lmelas, lmoda
     character(len=8) :: table, typrup(nbprup), typfis
     character(len=16) :: option, cas, noprup(nbprup)
 !
@@ -51,8 +52,11 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
 !     TYPRUP : TYPES DES PARAMETRES
 ! ----------------------------------------------
 !
-    if (((option.eq.'CALC_G'.or.option.eq.'CALC_GTP').and.cas.eq.'2D'.and.typfis.ne.'FISSURE') .or.&
-        (option.eq.'CALC_G_GLOB')) then
+    if ((&
+        (option.eq.'CALC_G'.or.option.eq.'CALC_GTP') .and. cas .eq. '2D' .and. typfis .ne.&
+        'FISSURE'&
+        )&
+        .or. (option.eq.'CALC_G_GLOB')) then
         nbprup = 3
         if (lmelas) then
             noprup(1) = 'NUME_CAS'

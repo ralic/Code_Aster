@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine hmgazp(yachai, option, meca, thmc, ther,&
                       hydr, imate, ndim, dimdef, dimcon,&
@@ -29,7 +31,7 @@ interface
         integer :: dimcon
         integer :: dimdef
         integer :: ndim
-        logical(kind=1) :: yachai
+        aster_logical :: yachai
         character(len=16) :: option
         character(len=16) :: meca
         character(len=16) :: thmc

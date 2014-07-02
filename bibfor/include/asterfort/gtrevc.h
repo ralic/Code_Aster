@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gtrevc(side, howmny, select, n, t,&
                       ldt, vl, ldvl, vr, ldvr,&
@@ -24,7 +26,7 @@ interface
         integer :: ldt
         character(len=1) :: side
         character(len=1) :: howmny
-        logical(kind=1) :: select(*)
+        aster_logical :: select(*)
         integer :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: vl(ldvl, *)

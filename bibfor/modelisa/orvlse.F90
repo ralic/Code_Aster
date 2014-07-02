@@ -1,6 +1,7 @@
 subroutine orvlse(noma, listma, nbmail, norien, vect,&
                   noeud)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
@@ -51,14 +52,14 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
 !    NOEUD          IN    I       NOEUD D'ORIENTATION
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer ::  nutyma, lori, jori, nori, kori, iliste
+    integer :: nutyma, lori, jori, nori, kori, iliste
     integer :: ima, numail, numa, norieg, lliste, zero, ibid(1)
     integer :: im1, im2, ico
     integer :: p1, p2, ifm, niv, p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, jcoor
     integer :: nbmaor, ii, kdeb
-    logical(kind=1) :: reorie
+    aster_logical :: reorie
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
@@ -117,7 +118,7 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
             valk(2) = typel
             call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
         endif
-10  end do
+ 10 end do
 !ok --- on teste le type de maille de la liste
 !       si ce n'est pas un seg => erreur
 !
@@ -143,13 +144,13 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
                         norieg = norieg +1
                         goto 12
                     endif
-13              continue
-12          continue
+ 13             continue
+ 12         continue
             if (norieg .ge. 3) then
                 call utmess('F', 'MODELISA4_84')
             endif
         endif
-11  continue
+ 11 continue
 !
 !
 ! --- PREMIER PASSAGE: METTRE LES MAILLES AYANT LE NOEUD DANS
@@ -192,7 +193,7 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
             endif
         endif
 !
-20  end do
+ 20 end do
     if (nbmaor .eq. 0) then
         call utmess('F', 'MODELISA6_1')
     endif
@@ -204,7 +205,7 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
 !
 ! --- ON ORIENTE TOUTES LES MAILLES DU CONNEXE
 !
-200      continue
+200     continue
 !
         im1 = zi(jori+iliste)
         jdesm1 = zi(kori-1+im1)
@@ -238,10 +239,10 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
                 if (ico .lt. 0) norieg = norieg + 1
 !
             endif
-210      end do
+210     end do
         iliste = iliste + 1
         if (iliste .le. lliste) goto 200
-300  end do
+300 end do
 !
 ! --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
 !
@@ -249,7 +250,7 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
         if (pasori(ima)) then
             call utmess('F', 'MODELISA6_2')
         endif
-100  end do
+100 end do
 !
     norien = norien + norieg
 !

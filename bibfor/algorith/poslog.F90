@@ -45,6 +45,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 !
 ! aslint: disable=,W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/d1macp.h"
 #include "asterfort/deflg2.h"
 #include "asterfort/deflg3.h"
@@ -66,7 +67,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
     real(kind=8) :: tl(3, 3, 3, 3), tls(6, 6), epse(4), d1(4, 4)
     real(kind=8) :: gn(3, 3), feta(4), xi(3, 3), me(3, 3, 3, 3), lamb(3)
     real(kind=8) :: logl(3)
-    logical(kind=1) :: resi, rigi, cplan
+    aster_logical :: resi, rigi, cplan
 ! ---------------------------------------------------------------------
 !********************CONTRAINTE ET FORCES INTERIEURES******************
 !
@@ -102,7 +103,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
             do 10 i = 1, 4
                 do 10 j = 1, 4
                     epse(i)=epse(i)+d1(i,j)*tp(j)
-10              continue
+ 10             continue
 !           EN ELASTICITE ISTROPE
             epse(3)=d1(1,2)*(tp(1)+tp(2))
         else
@@ -111,7 +112,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
             do 11 i = 1, 4
                 do 11 j = 1, 4
                     epse(i)=epse(i)+d1(i,j)*tn(j)
-11              continue
+ 11             continue
 !           EN ELASTICITE ISTROPE
             epse(3)=d1(1,2)*(tn(1)+tn(2))
         endif
@@ -134,7 +135,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
                         -1)
             do 54 kl = 4, 2*ndim
                 pk2m(kl)=pk2m(kl)*rac2
-54          continue
+ 54         continue
             call dcopy(6, tn, 1, tp2, 1)
         else
             call dcopy(6, tp, 1, tp2, 1)
@@ -163,8 +164,8 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
         do 51 i = 1, 6
             do 52 j = 1, 6
                 pk2(i)=pk2(i)+tp(j)*pes(j,i)
-52          continue
-51      continue
+ 52         continue
+ 51     continue
 !        CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
         call pk2sig(ndim, fp, detf, pk2, sigp,&
                     1)
@@ -177,6 +178,6 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

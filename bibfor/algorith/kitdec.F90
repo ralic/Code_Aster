@@ -28,11 +28,12 @@ subroutine kitdec(kpi, yachai, yamec, yate, yap1,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterfort/calcva.h"
 #include "asterfort/tecael.h"
 #include "asterfort/thmrcp.h"
     integer :: kpi, yamec, yate, yap1, yap2, imate
-    logical(kind=1) :: yachai
+    aster_logical :: yachai
     integer :: addeme, addep1, addep2, addete, ndim, retcom
     real(kind=8) :: t0, p10, p20, phi0, pvp0, depsv, epsv, deps(6), t
     real(kind=8) :: p1, p2, grat(3), grap1(3), grap2(3), dp1, dp2, dt

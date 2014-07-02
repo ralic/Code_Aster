@@ -1,6 +1,7 @@
 subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
                   longt, nbgr, resuc1)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -8,7 +9,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
 #include "asterfort/rsadpa.h"
     integer :: jceld, iavale, iord, longt, nbgr
     character(len=19) :: ligrel, resuc1
-    logical(kind=1) :: perman
+    aster_logical :: perman
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +85,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
         else
             taberm(iaux) = zr(ljeveu(iaux))
         endif
-40      continue
+ 40     continue
     endif
 !
 ! =======================================================
@@ -108,9 +109,9 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
     iad = iavale-1+idecgr+(k-1)*longt
     taber2(ii) = taber2(ii) + zr(iad+ii-1)
 !
-30  continue
+ 30 continue
 !
-20  continue
+ 20 continue
 !
     taber2(ii) = sqrt(taber2(ii))
 !
@@ -148,7 +149,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
 !
         do 50 , iaux = 1 , 3
         zr(ljeveu(iaux)) = taberr(iaux)
-50      continue
+ 50     continue
 !
     else
 !
@@ -157,7 +158,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
 !
         do 60 , iaux = 1 , 6
         zr(ljeveu(iaux)) = taberr(iaux)
-60      continue
+ 60     continue
 !
     endif
 !

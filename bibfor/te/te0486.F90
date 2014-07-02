@@ -1,5 +1,6 @@
 subroutine te0486(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/antisy.h"
 #include "asterfort/assert.h"
@@ -65,7 +66,7 @@ subroutine te0486(option, nomte)
     real(kind=8) :: rigns(2601), pr
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), valpar(7)
     real(kind=8) :: geom_reac(3*mxnoeu)
-    logical(kind=1) :: locapr
+    aster_logical :: locapr
     character(len=8) :: nomail, nompar(7)
 !     ------------------------------------------------------------------
 !
@@ -76,16 +77,16 @@ subroutine te0486(option, nomte)
 !
 !     --- AUTRES ELEMENTS QUE LA COQUE 3 D ---
 !
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
-        call tecach('NNN', 'PPRESSR', 'L', iret, iad=ipres)
+    call tecach('NNN', 'PPRESSR', 'L', iret, iad=ipres)
 !
 !
-    if (option.eq.'CHAR_MECA_PRSU_R' .or. option.eq.'RIGI_MECA_PRSU_R') then
-        call jevech('PPRESSR','L', jpres)
-    elseif (option.eq.'CHAR_MECA_PRSU_F' .or. option.eq.'RIGI_MECA_PRSU_F') then
-        call jevech('PPRESSF','L', jpres)
+    if (option .eq. 'CHAR_MECA_PRSU_R' .or. option .eq. 'RIGI_MECA_PRSU_R') then
+        call jevech('PPRESSR', 'L', jpres)
+    else if (option.eq.'CHAR_MECA_PRSU_F' .or. option.eq.'RIGI_MECA_PRSU_F') then
+        call jevech('PPRESSF', 'L', jpres)
     endif
 !
     if (nomte .ne. 'MEC3QU9H' .and. nomte .ne. 'MEC3TR7H') then
@@ -120,15 +121,15 @@ subroutine te0486(option, nomte)
 !
 !        ---- RECUPERATION DES POINTEURS ( E : ECRITURE ) SELON OPTION
         if (option ( 1 : 16 ) .eq. 'CHAR_MECA_SRCO3D' .or. option ( 1 : 16 ) .eq.&
-            'CHAR_MECA_SFCO3D'.or. option ( 1 : 16 ) .eq.'CHAR_MECA_PRSU_R' .or. option ( 1 : 16 )&
-            .eq.'CHAR_MECA_PRSU_F') then
+            'CHAR_MECA_SFCO3D' .or. option ( 1 : 16 ) .eq. 'CHAR_MECA_PRSU_R' .or.&
+            option ( 1 : 16 ) .eq. 'CHAR_MECA_PRSU_F') then
 !           --- VECTEUR DES FORCES INTERNES
             call jevech('PVECTUR', 'E', ivectu)
         endif
 !
         if (option ( 1 : 16 ) .eq. 'RIGI_MECA_SRCO3D' .or. option ( 1 : 16 ) .eq.&
-            'RIGI_MECA_SFCO3D'.or. option ( 1 : 16 ) .eq.'RIGI_MECA_PRSU_R' .or. option ( 1 : 16 )&
-             .eq.'RIGI_MECA_PRSU_F') then
+            'RIGI_MECA_SFCO3D' .or. option ( 1 : 16 ) .eq. 'RIGI_MECA_PRSU_R' .or.&
+            option ( 1 : 16 ) .eq. 'RIGI_MECA_PRSU_F') then
 !         --- MATRICE TANGENTE DE RIGIDITE ET INITIALISATION
 !
 !           CALL JEVECH ( 'PMATUUR' , 'E' , IMATUU )
@@ -144,10 +145,12 @@ subroutine te0486(option, nomte)
 !        ---  CALCUL DE LA GEOMETRIE REACTUALISEE
 !
         do in = 1, nb2-1
-            do  ii = 1, 3
-                geom_reac(3 * ( in - 1 ) + ii) = zr ( igeom -1&
-               + 3 * ( in - 1 ) + ii ) + zr ( ium - 1 + 6 * ( in -1&
-               ) + ii ) + zr ( iup - 1 + 6 * ( in - 1 ) + ii )
+            do ii = 1, 3
+                geom_reac(3 * ( in - 1 ) + ii) = zr (&
+                                                 igeom -1 + 3 * ( in - 1 ) + ii ) + zr ( ium - 1 &
+                                                 &+ 6 * ( in -1 ) + ii ) + zr ( iup - 1 + 6 * ( i&
+                                                 &n - 1 ) + ii&
+                                                 )
             enddo
         enddo
 !
@@ -204,31 +207,31 @@ subroutine te0486(option, nomte)
         else if (option(10:16).eq.'_PRSU_R') then
             do 56 kn = 1, nb2
                 presno ( kn ) =  zr ( jpres - 1 + ( kn - 1 )*1 + 1)
-56          continue
+ 56         continue
 !
-        elseif (option(10:16).eq.'_PRSU_F') then
-                call jevech('PTEMPSR', 'L', itemps)
-                valpar(4) = zr(itemps)
-                nompar(4) = 'INST'
-                nompar(1) = 'X'
-                nompar(2) = 'Y'
-                nompar(3) = 'Z'
-                do 57 j = 0, nb1-1
-                    valpar(1) = zr(igeom+3*j )
-                    valpar(2) = zr(igeom+3*j+1)
-                    valpar(3) = zr(igeom+3*j+2)
-                    call fointe('FM', zk8(jpres), 4, nompar, valpar,&
+        else if (option(10:16).eq.'_PRSU_F') then
+            call jevech('PTEMPSR', 'L', itemps)
+            valpar(4) = zr(itemps)
+            nompar(4) = 'INST'
+            nompar(1) = 'X'
+            nompar(2) = 'Y'
+            nompar(3) = 'Z'
+            do 57 j = 0, nb1-1
+                valpar(1) = zr(igeom+3*j )
+                valpar(2) = zr(igeom+3*j+1)
+                valpar(3) = zr(igeom+3*j+2)
+                call fointe('FM', zk8(jpres), 4, nompar, valpar,&
                             pr, ierz)
-                    if (ierz .ne. 0) then
-                        call utmess('F', 'ELEMENTS4_1')
-                    endif
-                    if (pr .ne. 0.d0) then
-                        call tecael(iadzi, iazk24)
-                        nomail = zk24(iazk24-1+3)(1:8)
-                        valk = nomail
-                        call utmess('F', 'ELEMENTS4_92', sk=valk)
-                    endif
-57              continue
+                if (ierz .ne. 0) then
+                    call utmess('F', 'ELEMENTS4_1')
+                endif
+                if (pr .ne. 0.d0) then
+                    call tecael(iadzi, iazk24)
+                    nomail = zk24(iazk24-1+3)(1:8)
+                    valk = nomail
+                    call utmess('F', 'ELEMENTS4_92', sk=valk)
+                endif
+ 57         continue
         endif
 !
 !        ---- VECTEURS TANGENTS A1 ET A2 AUX NOEUDS NON NORMALISES
@@ -271,7 +274,7 @@ subroutine te0486(option, nomte)
                        nks2)
 !
             if (option ( 1 : 16 ) .eq. 'CHAR_MECA_SRCO3D' .or. option ( 1 : 16 ) .eq.&
-                 'CHAR_MECA_SFCO3D'.or. option ( 1 : 16 ) .eq.'CHAR_MECA_PRSU_R') then
+                'CHAR_MECA_SFCO3D' .or. option ( 1 : 16 ) .eq. 'CHAR_MECA_PRSU_R') then
 !
 !             --- FORCE EXTERNE NODALE AU SIGNE DU TE0423 ET NMPR3D
                 call btsig(6 * nb1 + 3, 3, - pres * zr (lzr - 1 +127 + intsn - 1), madn, surf,&
@@ -279,7 +282,7 @@ subroutine te0486(option, nomte)
             endif
 !
             if (option ( 1 : 16 ) .eq. 'RIGI_MECA_SRCO3D' .or. option ( 1 : 16 ) .eq.&
-                 'RIGI_MECA_SFCO3D'.or. option ( 1 : 16 ) .eq.'RIGI_MECA_PRSU_R') then
+                'RIGI_MECA_SFCO3D' .or. option ( 1 : 16 ) .eq. 'RIGI_MECA_PRSU_R') then
 !
 !             --- MATRICE ANTISYM DE A1 ET DE A2
                 call antisy(a1, 1.d0, anta1)
@@ -298,7 +301,7 @@ subroutine te0486(option, nomte)
 !
 !
         if (option ( 1 : 16 ) .eq. 'RIGI_MECA_SRCO3D' .or. option ( 1 : 16 ) .eq.&
-            'RIGI_MECA_SFCO3D' .or. option ( 1 : 16 ) .eq.'RIGI_MECA_PRSU_R') then
+            'RIGI_MECA_SFCO3D' .or. option ( 1 : 16 ) .eq. 'RIGI_MECA_PRSU_R') then
 !
 !        --- PARTIE SYMETRIQUE DE LA MATRICE TANGENTE
 !

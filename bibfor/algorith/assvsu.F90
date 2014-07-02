@@ -10,6 +10,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -46,7 +47,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: rinstp, rinstm, vectu(dimuel)
     character(len=8) :: typmod(2), fami, poum
     character(len=16) :: option, compor(*)
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -507,8 +508,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! VARIABLES COMMUNES
 ! =====================================================================
 !
-    logical(kind=1) :: tange, cont, vf
-    logical :: bool
+    aster_logical :: tange, cont, vf, bool
     integer :: numav
     real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa), normfa(maxdim, maxfa), vol
     real(kind=8) :: volv
@@ -521,7 +521,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
     integer :: nfacem
     integer :: voifa(maxfa, 2)
-    logical(kind=1) :: finter(maxfa)
+    aster_logical :: finter(maxfa)
 ! =====================================================================
 ! VARIABLES VF SUSHI
 ! =====================================================================
@@ -571,9 +571,9 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! SI FICKFA =TRUE LES DIFFUSIVITES DE FICK SONT CALCULEES A PARTIR
 ! DES INCONNUES AUX FACES SINON ELLES SONT CALCULEES AU CENTRE
 !
-    logical(kind=1) :: fickfa
+    aster_logical :: fickfa
 ! SI DECEN=.FALSE. ALORS ON NE FAIT AUCUN DECENTRAGE
-    logical(kind=1) :: decen
+    aster_logical :: decen
 !=====================================================================
 ! NOUVELLE VARIABLES POUR SUSHI POUR TRAITER LA DIFFUSION PAR MOYENNE
     real(kind=8) :: fclls(maxfa), fclls1(maxfa+1, maxfa), fclls2(maxfa+1, maxfa), ftgls(maxfa)
@@ -652,7 +652,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! INITIALISATION DE ANGMAS(3) À ZERO
     do 511 i = 1, 3
         angbid(i)=0.d0
-511  end do
+511 end do
 !============================
 ! ACTUELLEMENT ON OBLIGE A PRENDRE LE CENTRE
 ! AU CENTRE DE GRAVITE - CERCLE CIRCONSCRIT DESACTIVE
@@ -672,11 +672,11 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
         finter(ifa)=.false.
         voifa(ifa,1)=0
         voifa(ifa,2)=0
- 1  end do
+  1 end do
 !
     do 100 idim = 1, ndim
         xg(idim)=geom(idim,nno)
-100  end do
+100 end do
 !
 !
 ! ====================================================================
@@ -754,14 +754,14 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! --- INITIALISATION A ZERO MATUU ET VECTU
 ! ====================================================================
     if (tange) then
-        do 2, i = 1 , (nbvois+1)*dimuel*dimuel
-        matuu(i)=0.d0
-        2     end do
+        do 2 i = 1, (nbvois+1)*dimuel*dimuel
+            matuu(i)=0.d0
+  2     end do
     endif
     if (cont) then
         do 3 i = 1, dimuel
             vectu(i)=0.d0
- 3      end do
+  3     end do
     endif
 ! ================================================================
 ! --- CALCUL DES QUANTITES GEOMETRIQUES
@@ -783,14 +783,14 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             do 4 i = 1, ndim
                 defgem(addep1+i)=0.d0
                 defgep(addep1+i)=0.d0
- 4          continue
+  4         continue
             if (yap2 .eq. 1) then
                 defgem(addep2)= deplm(iadp2k)
                 defgep(addep2)= ddepl(iadp2k)+deplm(iadp2k)
                 do 5 i = 1, ndim
                     defgem(addep2+i)=0.d0
                     defgep(addep2+i)=0.d0
- 5              continue
+  5             continue
             endif
         endif
     else
@@ -802,7 +802,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     do 6 i = 1, dimcon
         do 6 j = 1, dimdef
             dsde(i,j)=0.d0
- 6      continue
+  6     continue
 !
     call comthm(option, perman, vf, 0, valfac,&
                 valcen, imate, typmod, compor, crit,&
@@ -824,14 +824,14 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 do 701 i = 1, ndim
                     defgem(addep1+i)=0.d0
                     defgep(addep1+i)=0.d0
-701              continue
+701             continue
                 if (yap2 .eq. 1) then
                     defgem(addep2)= deplm(iadp2(fa))
                     defgep(addep2)= ddepl(iadp2(fa))+deplm(iadp2(fa))
                     do 702 i = 1, ndim
                         defgem(addep2+i)=0.d0
                         defgep(addep2+i)=0.d0
-702                  continue
+702                 continue
                 endif
             else
                 call utmess('F', 'VOLUFINI_9', si=typvf)
@@ -842,8 +842,8 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             do 703 i = 1, dimcon
                 do 61 j = 1, dimdef
                     dsde(i,j)=0.d0
-61              continue
-703          continue
+ 61             continue
+703         continue
             call comthm(option, perman, vf, fa, valfac,&
                         valcen, imate, typmod, compor, crit,&
                         rinstm, rinstp, ndim, dimdef, dimcon,&
@@ -856,7 +856,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             if (retcom .ne. 0) then
                 call utmess('F', 'COMPOR1_9')
             endif
- 7      continue
+  7     continue
     endif
     if (cont) then
         vectu(adcm1)=valcen(masse ,eau)*vol
@@ -916,7 +916,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             do 71 ipg = 1, nface+1
                 vintp(advico+vicpr1,ipg) = pcp
                 vintp(advico+vicpr2,ipg) = pgp
-71          continue
+ 71         continue
         endif
         dpgp1 = 0.d0
         dpgp2 = 1.d0
@@ -925,7 +925,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             pgpf(ifa) = ddepl(iadp2(ifa))+deplm(iadp2(ifa))+p20
             dpgp1f(ifa) = 0.d0
             dpgp2f(ifa) = 1.d0
- 8      continue
+  8     continue
         pwp = pgp-pcp
         dpwp1 = -1.d0
         dpwp2 = +1.d0
@@ -933,7 +933,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             pwpf(ifa) = pgpf(ifa)-pcpf(ifa)
             dpwp1f(ifa) = -1.d0
             dpwp2f(ifa) = 1.d0
- 9      continue
+  9     continue
         cvp = valcen(con,wvap)
         dcvp1 = valcen(dconp1,wvap)
         dcvp2 = valcen(dconp2,wvap)
@@ -941,7 +941,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             cvpf (ifa) = valfac(ifa,con,wvap)
             dcvp1f(ifa) = valfac(ifa,dconp1,wvap)
             dcvp2f(ifa) = valfac(ifa,dconp2,wvap)
-10      continue
+ 10     continue
         cad = valcen(con,airdis)
         dcad1 = valcen(dconp1,airdis)
         dcad2 = valcen(dconp2,airdis)
@@ -949,7 +949,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             cadf(ifa) = valfac(ifa,con,airdis)
             dcad1f(ifa) = valfac(ifa,dconp1,airdis)
             dcad2f(ifa) = valfac(ifa,dconp2,airdis)
-11      continue
+ 11     continue
 ! ===========================================================
 ! INITIALISATION
 ! ===========================================================
@@ -962,7 +962,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             fas2s(ifa)=0.d0
             fad1s(ifa)=0.d0
             fad2s(ifa)=0.d0
-12      continue
+ 12     continue
         do 121 ifa = 1, maxfa
             fw1sv(ifa)=0.d0
             fw2sv(ifa)=0.d0
@@ -972,7 +972,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             fas2sv(ifa)=0.d0
             fad1sv(ifa)=0.d0
             fad2sv(ifa)=0.d0
-121      continue
+121     continue
         fluws=0.d0
         fluvps=0.d0
         fluass=0.d0
@@ -995,7 +995,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             moyvp(ifa)=0.d0
             moyas(ifa)=0.d0
             moyad(ifa)=0.d0
-13      continue
+ 13     continue
         do 14 jfa = 1, maxfa
             do 14 ifa = 1, maxfa+1
                 dflks1(ifa,jfa)=0.d0
@@ -1022,7 +1022,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 fas2sk(ifa,jfa)=0.d0
                 fad1sk(ifa,jfa)=0.d0
                 fad2sk(ifa,jfa)=0.d0
-14          continue
+ 14         continue
         do 15 ivois = 0, nvoima
             do 16 jfa = 1, maxfa
                 mobwf(ivois,jfa)=0.d0
@@ -1049,8 +1049,8 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 dvp2f(ivois,jfa)=0.d0
                 dvp1fv(ivois,jfa)=0.d0
                 dvp2fv(ivois,jfa)=0.d0
-16          continue
-15      continue
+ 16         continue
+ 15     continue
         do 17 ifa = 1, maxfa
             do 18 jfa = 1, maxfa+1
                 do 19 ivois = 0, 1
@@ -1060,9 +1060,9 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                     moyas2(ifa,jfa,ivois)=0.d0
                     moyad1(ifa,jfa,ivois)=0.d0
                     moyad2(ifa,jfa,ivois)=0.d0
-19              continue
-18          continue
-17      continue
+ 19             continue
+ 18         continue
+ 17     continue
 ! ========================================
 ! FLUX VOLUMIQUES
 ! ========================================
@@ -1096,7 +1096,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
                 valfac(ifa,ddifp1,wliq) = valcen(ddifp1,wliq)
                 valfac(ifa,ddifp2,wliq) = valcen(ddifp2,wliq)
-20          continue
+ 20         continue
         endif
 ! ========================================
 ! FLUX MASSIQUES
@@ -1114,7 +1114,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         fclks(ifa), fclks1, fclks2, valfac(ifa, diffu, airdis),&
                         valfac(ifa, ddifp1, airdis), valfac(ifa, ddifp2, airdis), fladsk, fad1sk,&
                         fad2sk)
-21      continue
+ 21     continue
     else
         ASSERT(.false.)
     endif
@@ -1139,11 +1139,11 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
         nsc=nbsoco(kvois)
         do 220 isc = 1, nsc
             iscl(isc)=lisoco(kvois,isc,1)
-220      continue
+220     continue
         fa = nufloc(ndim,nsc,iscl)
         do 228 isc = 1, nsc
             iscl(isc)=lisoco(kvois,isc,2)
-228      continue
+228     continue
         fav = nufloc(ndim,nsc,iscl)
         nnov=nbnovo(kvois)
         if (nnov .eq. 7) then
@@ -1167,7 +1167,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
         endif
         do 229 idim = 1, ndim
             xl(idim)=geom(idim,nnov)
-229      continue
+229     continue
         finter(fa)=.true.
         voifa(fa,1)=kvois
         voifa(fa,2)=fav
@@ -1190,31 +1190,41 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 ftgls2(ifa,jfa)=0.d0
                 fclls1(ifa,jfa)=0.d0
                 fclls2(ifa,jfa)=0.d0
-144          continue
-133      continue
+144         continue
+133     continue
 ! ================================================================
 ! --- PARAMETRES EN ENTREE POUR LE VOISIN CONSIDERE
 ! ================================================================
-        call tecach('OOO', 'PGEOMER', 'L', iret, iad=igeomv, numa=numav)
+        call tecach('OOO', 'PGEOMER', 'L', iret, iad=igeomv,&
+                    numa=numav)
         ASSERT(iret.eq.0)
-        call tecach('OOO', 'PMATERC', 'L', iret, iad=imatev, numa=numav)
+        call tecach('OOO', 'PMATERC', 'L', iret, iad=imatev,&
+                    numa=numav)
         ASSERT(iret.eq.0)
-        call tecach('OOO', 'PDEPLMR', 'L', iret, iad=idepmv, numa=numav)
+        call tecach('OOO', 'PDEPLMR', 'L', iret, iad=idepmv,&
+                    numa=numav)
         ASSERT(iret.eq.0)
-        call tecach('OOO', 'PCOMPOR', 'L', iret, iad=icompv, numa=numav)
+        call tecach('OOO', 'PCOMPOR', 'L', iret, iad=icompv,&
+                    numa=numav)
         ASSERT(iret.eq.0)
-        call tecach('OOO', 'PCARCRI', 'L', iret, iad=icarcv, numa=numav)
+        call tecach('OOO', 'PCARCRI', 'L', iret, iad=icarcv,&
+                    numa=numav)
         ASSERT(iret.eq.0)
-        call tecach('OOO', 'PVARIMR', 'L', iret, iad=ivarmv, numa=numav)
+        call tecach('OOO', 'PVARIMR', 'L', iret, iad=ivarmv,&
+                    numa=numav)
         ASSERT(iret.eq.0)
-        call tecach('OOO', 'PCONTMR', 'L', iret, iad=iconmv, numa=numav)
+        call tecach('OOO', 'PCONTMR', 'L', iret, iad=iconmv,&
+                    numa=numav)
         ASSERT(iret.eq.0)
         if (cont) then
-            call tecach('OOO', 'PDEPLPR', 'L', iret, iad=iddepv, numa=numav)
+            call tecach('OOO', 'PDEPLPR', 'L', iret, iad=iddepv,&
+                        numa=numav)
             ASSERT(iret.eq.0)
-            call tecach('OOO', 'PCONTPR', 'E', iret, iad=iconpv, numa=numav)
+            call tecach('OOO', 'PCONTPR', 'E', iret, iad=iconpv,&
+                        numa=numav)
             ASSERT(iret.eq.0)
-            call tecach('OOO', 'PVARIPR', 'E', iret, iad=ivarpv, numa=numav)
+            call tecach('OOO', 'PVARIPR', 'E', iret, iad=ivarpv,&
+                        numa=numav)
             ASSERT(iret.eq.0)
         else
             ivarpv = ivarmv
@@ -1253,7 +1263,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
         do 221 i = 1, dimcon
             do 221 j = 1, dimdef
                 dsde(i,j)=0.d0
-221          continue
+221         continue
         call comthm(option, perman, vf, 0, valfav(1, 1, 1, fa),&
                     valcev(1, 1, fa), zi(imatev), typmod, zk16(icompv), zr(icarcv),&
                     rinstm, rinstp, ndim, dimdef, dimcon,&
@@ -1287,7 +1297,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             do 222 i = 1, dimcon
                 do 222 j = 1, dimdef
                     dsde(i,j)=0.d0
-222              continue
+222             continue
 !
             call comthm(option, perman, vf, ifav, valfav(1, 1, 1, fa),&
                         valcev(1, 1, fa), zi(imatev), typmod, zk16(icompv), zr(icarcv),&
@@ -1302,7 +1312,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             if (retcom .ne. 0) then
                 call utmess('F', 'COMPOR1_9')
             endif
-227      continue
+227     continue
 ! CALCUL DES VARIABLES POUR LA MAILLE VOISINE
 ! COMMUNES A VF 2PNTS ET SUSHI
         cvpv = valcev(con,wvap,fa)
@@ -1321,7 +1331,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 cadfv(ifav)=valfav(ifav,con,airdis,fa)
                 cadfv1(ifav)=valfav(ifav,dconp1,airdis,fa)
                 cadfv2(ifav)=valfav(ifav,dconp2,airdis,fa)
-223          continue
+223         continue
             call vfcfks(.true._1, tange, maxfa, nfacev, cvpv,&
                         dcvp1v, dcvp2v, cvpfv, cvpfv1, cvpfv2,&
                         dl, pesa, zero, zero, zero,&
@@ -1354,7 +1364,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
                     valfav(ifav,ddifp1,wliq,fa) = valcev(ddifp1,wliq, fa)
                     valfav(ifav,ddifp2,wliq,fa) = valcev(ddifp2,wliq, fa)
-224              continue
+224             continue
             endif
 ! ========================================
 ! FLUX MASSIQUES
@@ -1387,7 +1397,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !====================================================================
 !===================================================================
 ! FIN DE LA BOUCLE SUR LES VOISINS
-22  end do
+ 22 end do
 !====================================================================
 !====================================================================
 ! VF SUSHI
@@ -1496,7 +1506,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 dvp1fv(0,ifa) = 0.d0
                 dvp2fv(0,ifa) = 0.d0
             endif
-23      continue
+ 23     continue
 !=======================================================
 ! CALCUL DE :FLUW,FLUVP,FLUAS,FLUAD
 !=======================================================
@@ -1531,7 +1541,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                             flks(ifa), dflks1, dflks2, moadf(0, ifa), dad1f(0, ifa),&
                             dad2f(0, ifa), fmads, fm1ads, fm2ads)
             endif
-24      continue
+ 24     continue
         if (cont) then
 ! ********************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX
@@ -1554,7 +1564,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 endif
                 vectu(adcf1(ifa))=congep(adcp11+1,ifa+1)
                 vectu(adcf2(ifa))=congep(adcp12+1,ifa+1)
-25          continue
+ 25         continue
 ! ********************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE
 !                 SI ARETE DE BORD :
@@ -1578,7 +1588,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                     congep(adcp21+1,1)=congep(adcp21+1,1)+ flassk(ifa)
                     congep(adcp22+1,1)=congep(adcp22+1,1)+ fladsk(ifa)
                 endif
-26          continue
+ 26         continue
             vectu(adcm1)= vectu(adcm1)+congep(adcp11+1,1) +congep(&
             adcp12+1,1)
             vectu(adcm2)= vectu(adcm2)+congep(adcp21+1,1) +congep(&
@@ -1698,7 +1708,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         matuu(zzadma(0,adcm2,iadp2(jfa)))= matuu(&
                         zzadma(0,adcm2,iadp2(jfa))) +moyas2(ifa,jfa+1,&
                         0)+moyad2(ifa,jfa+1,0)
-996                  continue
+996                 continue
 ! *******************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX POUR K
 !                 (DERIVEES % VARIABLES DU CENTRE)
@@ -1742,7 +1752,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))=&
                         matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))&
                         +dfgks2(1+jfa,ifa)
-271                  continue
+271                 continue
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR L
 !                 (DERIVEES % VARIABLES DU CENTRE)
@@ -1789,7 +1799,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         matuu(zzadma(kvois,adcm2,iadp2(jfav)))=&
                         matuu(zzadma(kvois,adcm2,iadp2(jfav)))&
                         +moyas2(ifa,jfav+1,1)+moyad2(ifa,jfav+1,1)
-997                  continue
+997                 continue
 ! -------------------------
 ! -------------------------
                 else
@@ -1840,7 +1850,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         matuu(zzadma(0,adcm2,iadp2(jfa)))= matuu(&
                         zzadma(0,adcm2,iadp2(jfa))) +fas2sk(jfa+1,ifa)&
                         +fad2sk(jfa+1,ifa)
-998                  continue
+998                 continue
 ! *******************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX POUR K
 !                 (DERIVEES % VARIABLES DU CENTRE)
@@ -1893,9 +1903,9 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))&
                         +fm2ass(jfa+1,ifa)+fm2ads(jfa+1,ifa) +fas2sk(&
                         jfa+1,ifa)+fad2sk(jfa+1,ifa)
-272                  continue
+272                 continue
                 endif
-27          continue
+ 27         continue
         endif
     endif
 ! ======================================================================

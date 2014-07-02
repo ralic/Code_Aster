@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfnord(noma, typent, nument, itype, vector,&
                       tau1, tau2, lnfixe)
@@ -25,6 +27,6 @@ interface
         real(kind=8) :: vector(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        logical(kind=1) :: lnfixe
+        aster_logical :: lnfixe
     end subroutine cfnord
 end interface

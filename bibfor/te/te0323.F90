@@ -19,6 +19,7 @@ subroutine te0323(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/ejfono.h"
@@ -35,17 +36,17 @@ subroutine te0323(option, nomte)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: lielrf(10)
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn, nddl
     integer :: iw, ivf1, idf1, igeom, ivectu, icontm, ndim, ntrou
     integer :: iu(3, 16), ip(4)
     real(kind=8) :: sigref, fhyref
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
     ndim = ndim + 1
     nddl = 2*ndim*nno1 + nno2
     axi = lteatt('AXIS','OUI')
@@ -70,9 +71,9 @@ subroutine te0323(option, nomte)
     else if (option .eq. 'REFE_FORC_NODA') then
 !
         call terefe('SIGM_REFE', 'THM_JOINT', sigref)
-
+!
 !      EN MECA PURE ON IMPOSE LA VALEUR DE FLUX DE REFERENCE A 1
-        if (lteatt('TYPMOD2','EJ_HYME')) then      
+        if (lteatt('TYPMOD2','EJ_HYME')) then
             call terefe('FLUX_HYD1_REFE', 'THM_JOINT', fhyref)
         else if (lteatt('TYPMOD2','ELEMJOIN')) then
             fhyref = 1.D0

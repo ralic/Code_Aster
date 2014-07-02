@@ -1,5 +1,6 @@
 subroutine macr78(nomres, trange, typres)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/copmod.h"
@@ -65,13 +66,13 @@ subroutine macr78(nomres, trange, typres)
     character(len=19) :: kinst, knume, cham19
     character(len=24) :: chamno, nomcha, numedd, nprno
 !      CHARACTER*3  TREDU
-    logical(kind=1) :: lredu
+    aster_logical :: lredu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i,   iaprno, iarc0, iarch
-    integer :: ibid, icmp,  iddl, im
+    integer :: i, iaprno, iarc0, iarch
+    integer :: ibid, icmp, iddl, im
     integer :: inoe, inu0, inum, iret, iretou, ivale, j
-    integer :: jinst,  jnume,   k, ldnew
+    integer :: jinst, jnume, k, ldnew
     integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
     integer :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
     integer :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq

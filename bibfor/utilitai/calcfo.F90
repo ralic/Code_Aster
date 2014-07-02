@@ -1,6 +1,7 @@
 subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
                   nopara)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointc.h"
@@ -11,7 +12,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
 #include "asterfort/wkvect.h"
     integer :: nbval
     real(kind=8) :: vale(*)
-    logical(kind=1) :: compl
+    aster_logical :: compl
     character(len=24) :: nopara
     character(len=19) :: nomfin, nomfon
 ! ======================================================================
@@ -57,7 +58,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
             call fointe('F', nomfin, 1, nopara, zr(lvale+ival),&
                         zr( lfon+ival), ier)
         endif
-10  end do
+ 10 end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !

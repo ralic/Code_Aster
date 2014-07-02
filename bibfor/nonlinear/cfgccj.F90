@@ -17,7 +17,8 @@ subroutine cfgccj(resoco, nbliai, conjug)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,7 @@ subroutine cfgccj(resoco, nbliai, conjug)
 #include "blas/dscal.h"
     character(len=24) :: resoco
     integer :: nbliai
-    logical(kind=1) :: conjug
+    aster_logical :: conjug
 !
 ! ----------------------------------------------------------------------
 !

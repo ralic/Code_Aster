@@ -19,6 +19,7 @@ subroutine ndasva(phase, sddyna, veasse, cnvady)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -59,7 +60,7 @@ subroutine ndasva(phase, sddyna, veasse, cnvady)
     character(len=19) :: cnvari(20)
     real(kind=8) :: covari(20)
     character(len=19) :: cndyna, cnmoda, cnimpe
-    logical(kind=1) :: limpe, lammo
+    aster_logical :: limpe, lammo
 !
 ! ----------------------------------------------------------------------
 !
@@ -125,7 +126,7 @@ subroutine ndasva(phase, sddyna, veasse, cnvady)
      &                   covari(n)
             call nmdebg('VECT', cnvari(n), ifm)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

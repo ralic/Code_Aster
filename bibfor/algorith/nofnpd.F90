@@ -23,6 +23,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
@@ -65,7 +66,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
 ! OUT VECT    : FORCES INTERNES
 !-----------------------------------------------------------------------
 !
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: nddl, g
     integer :: ia, na, ra, sa, kk
     real(kind=8) :: deplm(3*27), r

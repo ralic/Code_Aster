@@ -1,4 +1,5 @@
-subroutine lcvpbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
+subroutine lcvpbo(a, b, l0, l1, etamin,&
+                  etamax, vide, nsol, sol, sgn)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,11 +17,12 @@ subroutine lcvpbo(a, b, l0, l1, etamin, etamax, vide, nsol, sol, sgn)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8gaem.h"
-    logical(kind=1),intent(out)     :: vide
-    integer,intent(out)     :: nsol, sgn(2)
-    real(kind=8),intent(in) :: a, b, l0, l1, etamin, etamax
-    real(kind=8),intent(out):: sol(2)
+    aster_logical,intent(out) :: vide
+    integer, intent(out) :: nsol, sgn(2)
+    real(kind=8), intent(in) :: a, b, l0, l1, etamin, etamax
+    real(kind=8), intent(out) :: sol(2)
 !
 ! ----------------------------------------------------------------------
 !  SOLUTION Q(ETA) := (A*ETA+B)**2 + L0 + ETA*L1 = 0

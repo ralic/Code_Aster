@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cal152(option, max, may, maz, model,&
                       phib24, iphi1, iphi2, imade, modmec,&
@@ -32,7 +34,7 @@ interface
         character(len=8) :: modmec
         character(len=19) :: chamno
         character(len=14) :: num
-        logical(kind=1) :: vrai
+        aster_logical :: vrai
         integer :: i
         integer :: j
         real(kind=8) :: mij

@@ -54,20 +54,19 @@ subroutine nugllo(nu, base, solveu)
 !----------------------------------------------------------------------
 !
 !
-    integer :: nbma,  jconx2
-    integer ::  rang, numa, nbnoma, nbno, ino, nuno
-    integer :: nec, nlili, neql,  idprn2, ili, ntot
+    integer :: nbma, jconx2
+    integer :: rang, numa, nbnoma, nbno, ino, nuno
+    integer :: nec, nlili, neql, idprn2, ili, ntot
     integer :: idpr21, idpr22, numinc, numec, nddl
-    integer ::  neqg,  iddl, jnulg
-    integer :: jnueql, ddl1g, ddl1l,  jdelgl, j1
-    integer ::   iel, igr, nel, k1, n1, j, ilib
-    integer ::   nbproc, vali(1), jnugl, ieqg
+    integer :: neqg, iddl, jnulg
+    integer :: jnueql, ddl1g, ddl1l, jdelgl, j1
+    integer :: iel, igr, nel, k1, n1, j, ilib
+    integer :: nbproc, vali(1), jnugl, ieqg
 !
     character(len=8) :: noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
-    logical(kind=1) :: ldgrel
-    logical :: ldist
+    aster_logical :: ldist, ldgrel
     integer, pointer :: ddl_pres(:) => null()
     integer, pointer :: delg_tmp(:) => null()
     integer, pointer :: tab_eq(:) => null()

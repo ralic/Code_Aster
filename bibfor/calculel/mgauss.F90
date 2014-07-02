@@ -21,6 +21,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
 ! aslint: disable=W1304,W1306
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
@@ -92,7 +93,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     character(len=1) :: fact, equed, trans2
     character(len=4) :: cara2
     character(len=24) :: valk(2)
-    logical(kind=1) :: ltrans, lstop, ldet, lret
+    aster_logical :: ltrans, lstop, ldet, lret
 !----------------------------------------------------------------------
     call matfpe(-1)
 !
@@ -143,8 +144,8 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         do 20 i = 1, n
             do 10 j = 1, nb
                 b(i,j) = x(i,j)
-10          continue
-20      continue
+ 10         continue
+ 20     continue
 !
         if (ldet) then
             det = 1.d0
@@ -155,7 +156,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
                 det = det * af(i,i)
                 detr = detr * r(i)
                 detc = detc * c(i)
-30          continue
+ 30         continue
             if (equed .eq. 'R') then
                 det = det / detr
             else if (equed.eq.'C') then
@@ -179,17 +180,17 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         ldb = dim
 !
         if (ltrans) then
-            do 50,i = 1,n
-            do 40,j = 1,n
-            af(j,i) = a(i,j)
-40          continue
-50          continue
+            do 50 i = 1, n
+                do 40 j = 1, n
+                    af(j,i) = a(i,j)
+ 40             continue
+ 50         continue
         else
-            do 70,i = 1,n
-            do 60,j = 1,n
-            af(i,j) = a(i,j)
-60          continue
-70          continue
+            do 70 i = 1, n
+                do 60 j = 1, n
+                    af(i,j) = a(i,j)
+ 60             continue
+ 70         continue
         endif
 !
 !       ---   RESOLUTION
@@ -201,7 +202,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
             do 80 i = 1, n
                 if (ipiv4(i) .ne. i) det = (-1.d0)*det
                 det = det*af(i,i)
-80          continue
+ 80         continue
         endif
 !
 !
@@ -210,11 +211,11 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     else if (cara2(3:3).eq.'W') then
         n = nordre
         if (ltrans) then
-            do 100,i = 1,n
-            do 90,j = 1,n
-            af(j,i) = a(i,j)
-90          continue
-100          continue
+            do 100 i = 1, n
+                do 90 j = 1, n
+                    af(j,i) = a(i,j)
+ 90             continue
+100         continue
         endif
         if (ldet) then
             det = 1.d0
@@ -290,7 +291,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     endif
 !
 !
-110  continue
+110 continue
 !
     1001 format (10 ('='),a,10 ('='))
 !

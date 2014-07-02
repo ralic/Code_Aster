@@ -2,6 +2,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                   chpres, chepsi, chpesa, chrota, lfonc,&
                   time, iord)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/gcchar.h"
@@ -28,7 +29,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     character(len=19) :: lischa
     character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
     character(len=19) :: chepsi, chpesa, chrota
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     real(kind=8) :: time
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -83,14 +84,14 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     character(len=16) :: typfct, motcle, nomcmd, phenom
     character(len=13) :: prefob
     integer :: motclc(2)
-    logical(kind=1) :: lfchar, lfmult, lformu, lccomb, lpchar
+    aster_logical :: lfchar, lfmult, lformu, lccomb, lpchar
     integer :: nbauth, nbnaut, mclaut(2), iposit
     integer :: iprec, ibid, itypob(2), ibid2(2)
     character(len=19) :: carteo, cartei
-    logical(kind=1) :: lvolu, l1d2d, l2d3d, lpres
-    logical(kind=1) :: lepsi, lpesa, lrota
-    logical(kind=1) :: lfvolu, lf1d2d, lf2d3d, lfpres
-    logical(kind=1) :: lfepsi, lfpesa, lfrota
+    aster_logical :: lvolu, l1d2d, l2d3d, lpres
+    aster_logical :: lepsi, lpesa, lrota
+    aster_logical :: lfvolu, lf1d2d, lf2d3d, lfpres
+    aster_logical :: lfepsi, lfpesa, lfrota
 !
 ! ----------------------------------------------------------------------
 !
@@ -208,11 +209,11 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                                 lpchar, lformu, lfmult, lccomb, cartei,&
                                 nomfct, newfct, oldfon)
 !
-12                  continue
+ 12                 continue
                 endif
-15          continue
+ 15         continue
         endif
-10  continue
+ 10 continue
 !
 ! - SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
 !

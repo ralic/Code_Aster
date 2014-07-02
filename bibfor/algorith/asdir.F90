@@ -1,6 +1,7 @@
 subroutine asdir(monoap, muapde, id, neq, nbsup,&
                  nsupp, tcosup, recmod, repdir)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -10,7 +11,7 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
 #include "asterfort/as_allocate.h"
     integer :: id, neq, nbsup, nsupp(*), tcosup(nbsup, *)
     real(kind=8) :: recmod(nbsup, neq, *), repdir(neq, *)
-    logical(kind=1) :: monoap, muapde
+    aster_logical :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +45,7 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
 ! IN  : RECMOD : VECTEUR DES RECOMBINAISONS MODALES PAR APPUIS
 ! OUT : REPDIR : VECTEUR DES RECOMBINAISONS PAR DIRECTIONS
 !     ------------------------------------------------------------------
-    integer :: in, is,   jabs
+    integer :: in, is, jabs
     real(kind=8) :: xxx, xx1, xx2
     real(kind=8), pointer :: line(:) => null()
     real(kind=8), pointer :: quad(:) => null()
@@ -55,7 +56,7 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
     if (monoap .or. .not.muapde) then
         do 10 in = 1, neq
             repdir(in,id)=recmod(1,in,id)
-10      continue
+ 10     continue
     else
         AS_ALLOCATE(vr=quad, size=neq)
         AS_ALLOCATE(vr=line, size=neq)
@@ -66,7 +67,7 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
                 do 12 in = 1, neq
                     xxx = recmod(is,in,id)
                     quad(in)= quad(in)+ xxx
-12              continue
+ 12             continue
             else if (tcosup(is,id).eq.2) then
 !              --- COMBINAISON LINEAIRE ---
                 do 14 in = 1, neq
@@ -74,20 +75,20 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
                         xxx = sqrt(recmod(is,in,id))
                         line(in)= line(in)+ xxx
                     endif
-14              continue
+ 14             continue
             else
 !              --- COMBINAISON VALEUR ABSOLUE ---
                 do 16 in = 1, neq
                     xxx = sqrt(abs(recmod(is,in,id)))
                     zr(jabs+in-1)= zr(jabs+in-1)+ xxx
-16              continue
+ 16             continue
             endif
-20      continue
+ 20     continue
         do 30 in = 1, neq
             xx1 = line(in) * line(in)
             xx2 = zr(jabs+in-1) * zr(jabs+in-1)
             repdir(in,id) = quad(in)+xx1+xx2
-30      continue
+ 30     continue
         AS_DEALLOCATE(vr=quad)
         AS_DEALLOCATE(vr=line)
         call jedetr('&&ASDIR.ABS ')

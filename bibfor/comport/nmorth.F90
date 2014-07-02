@@ -19,6 +19,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/d1ma3d.h"
 #include "asterfort/d1mamc.h"
@@ -58,7 +59,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     real(kind=8) :: depsme(6), rac2, vepst1(6), vepst2(6), epsm2(6)
     integer :: nbsigm, i, j
     character(len=2) :: k2bid
-    logical(kind=1) :: vrai
+    aster_logical :: vrai
 !
     k2bid = '  '
 !
@@ -127,15 +128,13 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
     else
         if (option .eq. 'RIGI_MECA_TANG') then
-            call dmatmc(fami, imate, rbid, '-',&
-                        kpg, ksp, repere, xyzgau, nbsigm,&
-                        hookf)
+            call dmatmc(fami, imate, rbid, '-', kpg,&
+                        ksp, repere, xyzgau, nbsigm, hookf)
         else
             call d1mamc(fami, imate, rbid, '-', kpg,&
                         ksp, repere, xyzgau, nbsigm, mkooh)
-            call dmatmc(fami, imate, rbid, '+',&
-                        kpg, ksp, repere, xyzgau, nbsigm,&
-                        hookf)
+            call dmatmc(fami, imate, rbid, '+', kpg,&
+                        ksp, repere, xyzgau, nbsigm, hookf)
         endif
     endif
 !

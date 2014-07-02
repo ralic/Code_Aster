@@ -4,6 +4,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                   ncmput, imodl, ncmpv, nucmpv, nive)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -33,7 +34,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: ncmpv, nucmpv(*), nive
     character(len=*) :: nomgd, ncmpgd(*), nomsym, ncmput(*)
     real(kind=8) :: vale(*)
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +79,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     character(len=24) :: valk(2)
     character(len=8) :: nomco, gtype, ktype, k8b
     character(len=16) :: ctype
-    logical(kind=1) :: lmode, first, lnocen
+    aster_logical :: lmode, first, lnocen
 !     ------------------------------------------------------------------
 !
 !  --- INITIALISATIONS ----
@@ -89,13 +90,13 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: ielg, ielt, igr, igre, igrel, ij, inos
     integer :: inum, iobj, ipoin1, ipoin2, iret, iso, isp
     integer :: ispv, ityca, iutil, ivari, j, jadr
-    integer ::   jli,  jmod
-    integer ::  jv,  jvale, lkname, mode
+    integer :: jli, jmod
+    integer :: jv, jvale, lkname, mode
     integer :: nbelgr, nbgr, nbsmo, nbsobj, nbva, ncmp, ncmpp
     integer :: nec, nnoe, npcalc, nsca, nscal
     integer, pointer :: bid(:) => null()
     integer, pointer :: entete(:) => null()
-    logical(kind=1), pointer :: jlogi(:) => null()
+    aster_logical, pointer :: jlogi(:) => null()
     integer, pointer :: jnbva(:) => null()
     integer, pointer :: nbrcmp(:) => null()
     character(len=8), pointer :: nomvar(:) => null()
@@ -135,7 +136,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             igre = zi(jli+(iso-1)*(4+nbgrel)+4+igr)
             icoef=max(1,celd(4))
             if (icoef .gt. icomax) icomax = icoef
-12      continue
+ 12     continue
         if (ncmpv .gt. 0) then
             ncmp = 0
             do 14 i = 1, ncmpv
@@ -148,7 +149,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     nomco = 'V'//k8b
                     call utmess('A', 'PREPOST_74', sk=nomco)
                 endif
-14          continue
+ 14         continue
             if (ncmp .eq. 0) then
                 call utmess('A', 'PREPOST_75')
                 goto 9999
@@ -192,25 +193,25 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                 nbvar = nbvar + 1
                                 goto 18
                             endif
-20                      continue
+ 20                     continue
                     endif
                     valk (1) = ncmput(icm)
                     valk (2) = nomgd
                     call utmess('A', 'PREPOST5_25', nk=2, valk=valk)
-18              continue
+ 18             continue
             else
                 do 22 i = 1, ncmpmx
                     if (exisdg(tabec,i)) then
                         jlogi((iso-1)*ncmpmx+i) = .true.
                         nbvar = nbvar + 1
                     endif
-22              continue
+ 22             continue
             endif
             if (nbvar .eq. 0) then
                 call utmess('A', 'PREPOST_75')
                 goto 9999
             endif
-16      continue
+ 16     continue
         if (lmode) then
             nbsobj = nbsobj + 1
             nbrcmp(nbsobj) = digdel(modsav)
@@ -218,7 +219,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
         else
             zi(jli+(iso-1)*(4+nbgrel)+3) = 0
         endif
-10  end do
+ 10 end do
     jnbva(1) = icomax
 !     ------------------------------------------------------------------
 !
@@ -233,7 +234,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             igre = zi(jli+(iso-1)*(4+nbgrel)+4+igr)
             icoef=max(1,celd(4))
             if (icoef .gt. icoma2) icoma2 = icoef
-58      continue
+ 58     continue
         do 52 i = 1, ncmpmx
             if (jlogi((iso-1)*ncmpmx+i)) then
                 nomco = ncmpgd(i)
@@ -260,7 +261,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             isp) = 'V'//toto
                             posvar((iso-1)*ncmpmx*icomax+nbva-1+&
                             isp) = i
-54                      continue
+ 54                     continue
                     else
                         do 56 isp = 1, icoma2
                             call codent(isp, 'G', toto)
@@ -268,7 +269,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             isp) = 'V'//toto
                             posvar((iso-1)*ncmpmx*icomax+nbva-1+&
                             isp) = i
-56                      continue
+ 56                     continue
                     endif
                 else
                     iutil= lxlgut(nomco)
@@ -282,8 +283,8 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     posvar((iso-1)*ncmpmx*icomax+nbva) = i
                 endif
             endif
-52      continue
-50  end do
+ 52     continue
+ 50 end do
 !     ------------------------------------------------------------------
 !
 !     --- ECRITURE DE L'EN-TETE ---
@@ -340,7 +341,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             entete((iobj-1)*7+6) = izero
             entete((iobj-1)*7+7) = izero
         endif
-100  end do
+100 end do
     if (nive .eq. 3) then
         write(ifi,'(16I5)') (entete(i),i=1,nbsobj*7)
     else if (nive.eq.10) then
@@ -350,14 +351,14 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !      ECRIRE (2*NBSOBJ-1)/8+1 LIGNES
         do 101 iobj = 1, (2*nbsobj-1)/8+1
             write(ifi,'(A)')
-101      continue
+101     continue
     endif
 ! 8001 FORMAT(8(1X,A8))
 !     ------------------------------------------------------------------
 !
 !     --- IMPRESSION ---
 !
-    if ( ncmpmx*icomax.gt.4 ) then
+    if (ncmpmx*icomax .gt. 4) then
         AS_ALLOCATE(vi=bid, size=ncmpmx*icomax)
     else
         AS_ALLOCATE(vi=bid, size=4)
@@ -379,7 +380,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 igre = zi(jli+(iso-1)*(4+nbgrel)+4+igr)
                 icoef=max(1,celd(4))
                 if (icoef .gt. icoma2) icoma2 = icoef
-201          continue
+201         continue
             do 202 igr = 1, nbgr
                 igrel = zi(jli+(iso-1)*(4+nbgrel)+4+igr)
                 mode=celd(celd(4+igrel)+2)
@@ -403,7 +404,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     if (exisdg(tabec,i)) then
                         ncmpp = ncmpp+1
                     endif
-204              continue
+204             continue
 !
                 iel = ligrel(ipoin1)
                 itype = typma(iel)
@@ -464,23 +465,23 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                                 if (nucmpv(ispv) .le. icoma2) zr(jadr+icmc-1+ispv&
                                                                               &)=vale(j+ ic-1+nuc&
                                                                               &mpv(ispv))
-211                                          continue
+211                                         continue
                                         else
                                             do 212 isp = 1, icoma2
                                                 zr(jadr+icmc-1+isp)=vale(j+ic-&
                                         1+isp)
-212                                          continue
+212                                         continue
                                         endif
                                     endif
-210                              continue
+210                             continue
                             endif
-208                      continue
-214                  continue
-206              continue
-202          continue
+208                     continue
+214                 continue
+206             continue
+202         continue
             do 220 i = 1, nbvar*icomax
                 bid(i) = izero
-220          continue
+220         continue
             if (nive .eq. 3) then
                 write(ifi,'(16I5)') (bid(i),i=1,nbvar*icomax)
             else if (nive.eq.10) then
@@ -502,16 +503,16 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     endif
                     write(ifi,'(1P,3E22.13E3)') (zr(jvale-1+i),&
                     i=jv*isp,nbelt*npcalc*nbvar*icomax,nbvar*icomax)
-224              continue
-222          continue
+224             continue
+222         continue
             call jedetr('&&IRCECA.VALE')
         endif
-200  end do
+200 end do
     if (lnocen) then
         call utmess('A', 'PREPOST_80')
     endif
 !     ------------------------------------------------------------------
-9999  continue
+9999 continue
     if (.not.lresu) last(5) = inum
     call jedetr('&&GILIRE.CORR_ASTER_GIBI')
     AS_DEALLOCATE(vi=bid)

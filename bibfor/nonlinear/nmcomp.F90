@@ -25,6 +25,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/lcvali.h"
 #include "asterfort/nmcoup.h"
@@ -114,7 +115,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
     common /tdim/ ndt,ndi
 !
     character(len=16) :: optio2
-    logical(kind=1) :: cp, convcp
+    aster_logical :: cp, convcp
     integer :: cpl, nvv, ncpmax
     real(kind=8) :: r8bid
 !
@@ -142,36 +143,36 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
     read (compor(6),'(I16)') numlc
 !
 !     BOUCLE POUR ETABLIR LES CONTRAINTES PLANES
-    do 1000, icp = 1,ncpmax
+    do 1000 icp = 1, ncpmax
 !
-    if (compor(1) .eq. 'KIT_DDI') then
+        if (compor(1) .eq. 'KIT_DDI') then
 !        POUR EVITER LA RECURSIVITE. PETITES DEFORMATIONS
-        call nmcoup(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, cp, crit, instam,&
-                    instap, neps, epsm, deps, nsig,&
-                    sigm, vim, option, nwkin, wkin,&
-                    sigp, vip, ndsde, dsidep, nwkout,&
-                    wkout, codret)
-    else
-        call redece(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, crit, instam, instap,&
-                    neps, epsm, deps, nsig, sigm,&
-                    vim, option, angmas, nwkin, wkin,&
-                    cp, numlc, r8bid, r8bid, r8bid,&
-                    sigp, vip, ndsde, dsidep, nwkout,&
-                    wkout, codret)
-    endif
+            call nmcoup(fami, kpg, ksp, ndim, typmod,&
+                        imate, compor, cp, crit, instam,&
+                        instap, neps, epsm, deps, nsig,&
+                        sigm, vim, option, nwkin, wkin,&
+                        sigp, vip, ndsde, dsidep, nwkout,&
+                        wkout, codret)
+        else
+            call redece(fami, kpg, ksp, ndim, typmod,&
+                        imate, compor, crit, instam, instap,&
+                        neps, epsm, deps, nsig, sigm,&
+                        vim, option, angmas, nwkin, wkin,&
+                        cp, numlc, r8bid, r8bid, r8bid,&
+                        sigp, vip, ndsde, dsidep, nwkout,&
+                        wkout, codret)
+        endif
 !
 !       VERIFIER LA CONVERGENCE DES CONTRAINTES PLANES ET
 !       SORTIR DE LA BOUCLE SI NECESSAIRE
-    if (cp) call nmcpl3(compor, option, crit, deps, dsidep,&
-                        ndim, sigp, vip, cpl, icp,&
-                        convcp)
+        if (cp) call nmcpl3(compor, option, crit, deps, dsidep,&
+                            ndim, sigp, vip, cpl, icp,&
+                            convcp)
 !
-    if (convcp) goto 1001
+        if (convcp) goto 1001
 !
-    1000 end do
-1001  continue
+1000 end do
+1001 continue
 !
 !     CONTRAINTES PLANES METHODE DE BORST
     if (cp) then
@@ -188,8 +189,9 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
         call lcvali(fami, kpg, ksp, imate, compor,&
                     ndim, epsm, deps, instam, instap,&
                     codret)
-    elseif (codret .eq. 1) then
-        call lcidbg(fami,kpg,ksp,typmod,compor,crit,instam,instap,&
-                    neps,epsm,deps,nsig,sigm,vim,option)
+    else if (codret .eq. 1) then
+        call lcidbg(fami, kpg, ksp, typmod, compor,&
+                    crit, instam, instap, neps, epsm,&
+                    deps, nsig, sigm, vim, option)
     endif
 end subroutine

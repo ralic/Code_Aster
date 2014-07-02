@@ -17,6 +17,7 @@ subroutine xaint2(noma, modele)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -79,16 +80,15 @@ subroutine xaint2(noma, modele)
     character(len=19) :: ces(5), cel(5), cnxinv, ligrel
     character(len=8) :: typma, nomfis
     character(len=2) :: ch2
-    integer ::  jcesd(5), jcesl(5), jcesv(5), iad, iret
-    integer ::  itypma, nncp, ibid, ier
-    integer ::  jnbsp2
-    integer ::  jconx2,  ndime, ndim
+    integer :: jcesd(5), jcesl(5), jcesv(5), iad, iret
+    integer :: itypma, nncp, ibid, ier
+    integer :: jnbsp2
+    integer :: jconx2, ndime, ndim
     integer :: nuno(2), nuno2(2), ino(2), ino2, ima, ima2
     integer :: nfis, ifis
     integer :: i, j, k, nfiss, ifiss, nfis2, ifis2, ifis3
-    logical(kind=1) :: elim(2), verif
-    logical :: lcond
-    integer :: igrp, nbma,   nmaenr, jg
+    aster_logical :: elim(2), verif
+    integer :: igrp, nbma, nmaenr, jg
     integer :: nface, ninter, inter, zxain, ia, ifh, nfh, nmasup, jmasup
     integer :: heav, he, ar(12, 3), nbar, nno2, nngl, inte2, ninte2
     integer, pointer :: nbsp(:) => null()
@@ -281,8 +281,7 @@ subroutine xaint2(noma, modele)
                         end do
 !     ELIM = TT <=> L'ARETE DOIT ÊTRE ENTIÈREMENT ÉLIMINÉE
 !     SINON IL FAUDRA RECONSIDÉRER PROPREMENT L'ELIM COMPLÈTE DE L'ARETE
-                        lcond=verif.eqv.(elim(1).and.elim(2))
-                        ASSERT(lcond)
+                        ASSERT(verif.eqv.(elim(1).and.elim(2)))
                         do j = 1, 2
                             if (.not.elim(j)) goto 300
 !

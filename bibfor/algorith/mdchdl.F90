@@ -1,10 +1,11 @@
 subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                   ier)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/posddl.h"
 #include "asterfort/utmess.h"
     integer :: nbnli, iliai, ddlcho(*), ier
-    logical(kind=1) :: lnoue2
+    aster_logical :: lnoue2
     character(len=8) :: noecho(nbnli, *)
 ! ----------------------------------------------------------------------
 ! ======================================================================

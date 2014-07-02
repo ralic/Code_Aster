@@ -27,6 +27,7 @@ subroutine te0317(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -38,7 +39,7 @@ subroutine te0317(option, nomte)
     integer :: ipoids, ivf, idfde, igeom
     integer :: ndi, nno, kp, npg
     integer :: ldec
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
@@ -46,8 +47,8 @@ subroutine te0317(option, nomte)
 !
     real(kind=8) :: r
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     ndi = nno* (nno+1)/2
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -55,7 +56,7 @@ subroutine te0317(option, nomte)
     call jevech('PMATTTR', 'E', imattt)
     do 10 i = 1, ndi
         zr(imattt+i-1) = 0.0d0
-10  end do
+ 10 end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -75,7 +76,7 @@ subroutine te0317(option, nomte)
             r = 0.d0
             do 20 i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
-20          continue
+ 20         continue
             poids = poids*r
         endif
 !
@@ -85,7 +86,7 @@ subroutine te0317(option, nomte)
                 ij = (i-1)*i/2 + j
                 zr(imattt+ij-1) = zr(imattt+ij-1) + poids*norm(2)*zr( ivf+ldec+i-1)* zr(ivf+ldec+&
                                   &j-1)
-30          continue
-40      continue
-50  end do
+ 30         continue
+ 40     continue
+ 50 end do
 end subroutine

@@ -1,5 +1,6 @@
 subroutine tbexip(nomta, para, exist, typpar)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -7,7 +8,7 @@ subroutine tbexip(nomta, para, exist, typpar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomta, para, typpar
-    logical(kind=1) :: exist
+    aster_logical :: exist
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +34,7 @@ subroutine tbexip(nomta, para, exist, typpar)
 ! OUT : TYPPAR : TYPE DU PARAMETRE (S'IL EXISTE) : I/R/C/K8/K16,...
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara,   ipar
+    integer :: iret, nbpara, ipar
     character(len=19) :: nomtab
     character(len=24) :: inpar, jnpar
     character(len=24), pointer :: tblp(:) => null()
@@ -70,8 +71,8 @@ subroutine tbexip(nomta, para, exist, typpar)
             typpar = tblp(4*(ipar-1)+2)
             goto 12
         endif
-10  end do
-12  continue
+ 10 end do
+ 12 continue
 !
     call jedema()
 end subroutine

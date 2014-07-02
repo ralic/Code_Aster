@@ -19,6 +19,7 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/conlag.h"
@@ -64,13 +65,13 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: iret, nchar, ndir, icha, ibid
-    integer ::   ifmdbg, nivdbg
+    integer :: ifmdbg, nivdbg
     real(kind=8) :: alpha
     character(len=8) :: nomcha, masque, modele
     character(len=16) :: option
     character(len=19) :: depla, vecele, matass
     character(len=24) :: ligrch, chalph
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !
@@ -156,10 +157,10 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 !
         ndir = ndir + 1
         call reajre(vecele, lchout(1), 'V')
-10  end do
+ 10 end do
 !
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

@@ -1,6 +1,7 @@
 subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                   bascor, nbmal, lima)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -70,13 +71,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !                  LESQUELLES IL FAUT REDUIRE LE MAILLAGE.
 ! ======================================================================
 !
-    integer :: nbmaou, nbnoin, iret, jnuma, jwk1,  jconx2, ima, numa
+    integer :: nbmaou, nbnoin, iret, jnuma, jwk1, jconx2, ima, numa
     integer :: nbno
-    integer :: ino, nuno, jdim, itypou,  jadin, jadou, ibid
+    integer :: ino, nuno, jdim, itypou, jadin, jadou, ibid
     integer :: jcorou
     integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
     integer :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
-    integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg,  numgno
+    integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg, numgno
     integer :: jcorrm, imain, imaou, n1
     character(len=4) :: docu
     character(len=8) :: typmcl(2), nomres
@@ -85,7 +86,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=24) :: nommai, nomnoe, grpnoe, cooval, cooref, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm, valk(2)
-    logical(kind=1) :: lvide
+    aster_logical :: lvide
     character(len=24), pointer :: grp_noeu_in(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: vconnex(:) => null()
@@ -172,11 +173,11 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             endif
         end do
     end do
-
+!
 !   -- il faut ajouter les noeuds demandes par l'utlisateur :
     call reliem(' ', noma, 'NU_NOEUD', 'RESTREINT', 1,&
                 1, ['GROUP_NO'], ['GROUP_NO'], '&&RDTMAI.NUM_NOEU_IN', n1)
-    if (n1.gt.0) then
+    if (n1 .gt. 0) then
         call jeveuo('&&RDTMAI.NUM_NOEU_IN', 'L', vi=num_noeu_in)
         do ino = 1, n1
             nuno=num_noeu_in(ino)
@@ -187,7 +188,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             endif
         end do
     endif
-
+!
 !
 !
 ! -2- CREATION DU NOUVEAU MAILLAGE

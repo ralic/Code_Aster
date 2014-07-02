@@ -3,6 +3,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                   iocc, xnovar, ncheff, i1, ioc,&
                   isd)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -63,11 +64,11 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 ! IN  : NBPOIN : NOMBRE DE POINT D'EVALUATION
 ! IN  : DOCU   : 'LSTN'/'CHMM'/'SGTD'/'ARCC'
 !     ------------------------------------------------------------------
-    integer :: nbvari, nbpar,   ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
+    integer :: nbvari, nbpar, ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
     integer :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari
-    integer ::  nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord(1)
+    integer :: nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord(1)
     real(kind=8) :: prec
-    logical(kind=1) :: exist
+    aster_logical :: exist
     character(len=3) :: typpar
     character(len=7) :: kii
     character(len=8) :: k8b, acces, nomres, ctype, courbe, crit
@@ -194,7 +195,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                         ik = ik + 1
                         valek(ik) = zk8(iadr)
                     endif
-10              continue
+ 10             continue
                 call jedetr(nomjv)
             endif
         else if (acces(1:1) .eq. 'M') then
@@ -245,38 +246,38 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     nbpar = nbpar + 1
     para(nbpar) = 'COOR_Z'
     ic = 0
-    do 20, ipt = 1, nbpoin, 1
-    nbco = itcopt(ipt)
-    if (nbco .gt. 1 .and. ic .eq. 0) then
-        call tbexip(nomtab, 'NUME_COUCHE', exist, typpar)
-        if (.not. exist) then
-            call tbajpa(nomtab, 1, 'NUME_COUCHE', 'I')
+    do 20 ipt = 1, nbpoin, 1
+        nbco = itcopt(ipt)
+        if (nbco .gt. 1 .and. ic .eq. 0) then
+            call tbexip(nomtab, 'NUME_COUCHE', exist, typpar)
+            if (.not. exist) then
+                call tbajpa(nomtab, 1, 'NUME_COUCHE', 'I')
+            endif
+            ic = 1
+            nbpar = nbpar + 1
+            para(nbpar) = 'NUME_COUCHE'
         endif
-        ic = 1
-        nbpar = nbpar + 1
-        para(nbpar) = 'NUME_COUCHE'
-    endif
-    20 end do
+ 20 end do
     if (nbvari .eq. 1 .and. zi(jvari) .eq. -1) then
-        do 12, i = 1, nbcmp2, 1
-        ivari(i) = i
-        call codent(i, 'G', kii)
-        nbpar = nbpar + 1
-        para(nbpar) = 'V'//kii
-        nom_para(i) = 'V'//kii
-        typ_para(i) = 'R'
-12      continue
+        do 12 i = 1, nbcmp2, 1
+            ivari(i) = i
+            call codent(i, 'G', kii)
+            nbpar = nbpar + 1
+            para(nbpar) = 'V'//kii
+            nom_para(i) = 'V'//kii
+            typ_para(i) = 'R'
+ 12     continue
     else
-        do 14, i = 1, nbcmp2, 1
-        ivari(i) = zi(jvari+i-1)
-        call codent(zi(jvari+i-1), 'G', kii)
-        nbpar = nbpar + 1
-        para(nbpar) = 'V'//kii
-        nom_para(i) = 'V'//kii
-        typ_para(i) = 'R'
-14      continue
+        do 14 i = 1, nbcmp2, 1
+            ivari(i) = zi(jvari+i-1)
+            call codent(zi(jvari+i-1), 'G', kii)
+            nbpar = nbpar + 1
+            para(nbpar) = 'V'//kii
+            nom_para(i) = 'V'//kii
+            typ_para(i) = 'R'
+ 14     continue
     endif
-    call tbajpa(nomtab, nbcmp2, nom_para,typ_para)
+    call tbajpa(nomtab, nbcmp2, nom_para, typ_para)
 !
     lc = ir+4+nbcmp2
     ASSERT(nbpar .le. lck)
@@ -287,37 +288,37 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     ilign = 0
 !
     ik = ik + 1
-    do 100, ipt = 1, nbpoin, 1
+    do 100 ipt = 1, nbpoin, 1
 !
-    nbsp = itsppt(ipt)
-    nbco = itcopt(ipt)
-    lc = nbcmp*nbsp
-    ln = lc*nbco
+        nbsp = itsppt(ipt)
+        nbco = itcopt(ipt)
+        lc = nbcmp*nbsp
+        ln = lc*nbco
 !
-    if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
-        valek(ik) = nomnoe(ipt)
-    endif
+        if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
+            valek(ik) = nomnoe(ipt)
+        endif
 !
-    vale_r(ir+1) = absc(ipt)
-    vale_r(1+ir+1) = coor(1+(ipt-1)*3)
-    vale_r(1+ir+2) = coor(2+(ipt-1)*3)
-    vale_r(1+ir+3) = coor(3+(ipt-1)*3)
+        vale_r(ir+1) = absc(ipt)
+        vale_r(1+ir+1) = coor(1+(ipt-1)*3)
+        vale_r(1+ir+2) = coor(2+(ipt-1)*3)
+        vale_r(1+ir+3) = coor(3+(ipt-1)*3)
 !
-    do 102, ic = 1, nbco, 1
+        do 102 ic = 1, nbco, 1
 !
-    valei(ii+1) = ic
+            valei(ii+1) = ic
 !
-    do 106, i2 = 1, nbcmp2, 1
-    ind = (ipt-1)*ln + lc*(ic-1) + ivari(i2)
-    vale_r(1+ir+3+i2) = releve(ind)
-106  continue
+            do 106 i2 = 1, nbcmp2, 1
+                ind = (ipt-1)*ln + lc*(ic-1) + ivari(i2)
+                vale_r(1+ir+3+i2) = releve(ind)
+106         continue
 !
-    call tbajli(nomtab, nbpar, para, valei, vale_r,&
-                [c16b], valek, ilign)
+            call tbajli(nomtab, nbpar, para, valei, vale_r,&
+                        [c16b], valek, ilign)
 !
-102  continue
+102     continue
 !
-    100 end do
+100 end do
 !
     AS_DEALLOCATE(vr=vale_r)
     AS_DEALLOCATE(vk24=para)

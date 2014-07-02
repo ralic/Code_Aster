@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
                       plas, xi, para, vara, dfdsdx,&
@@ -24,7 +26,7 @@ interface
         real(kind=8) :: i1
         real(kind=8) :: devsig(6)
         real(kind=8) :: dshds(6)
-        logical(kind=1) :: plas
+        aster_logical :: plas
         real(kind=8) :: xi
         real(kind=8) :: para(3)
         real(kind=8) :: vara(4)

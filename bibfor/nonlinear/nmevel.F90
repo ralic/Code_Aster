@@ -20,7 +20,8 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/eneven.h"
@@ -34,7 +35,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
     character(len=4) :: nombcl
     character(len=24) :: defico, resoco
     integer :: numins
-    logical(kind=1) :: lsvimx, ldvres, linsta, lerrcv, lerror, conver
+    aster_logical :: lsvimx, ldvres, linsta, lerrcv, lerror, conver
 !
 ! ----------------------------------------------------------------------
 !
@@ -134,9 +135,9 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
             write(6,*) 'NOMEVD: ',nomevd
             ASSERT(.false.)
         endif
-100  end do
+100 end do
 !
-8888  continue
+8888 continue
 !
 ! --- DECLENCHEMENT DE L'EVENEMENT
 !

@@ -19,6 +19,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infdbg.h"
@@ -35,7 +36,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
     character(len=19) :: sddyna
     character(len=8) :: result
     integer :: nume
-    logical(kind=1) :: evonol
+    aster_logical :: evonol
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,7 +58,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
     integer :: nbmodp
     character(len=24) :: trgene
     integer :: jtrgen
-    logical(kind=1) :: linit
+    aster_logical :: linit
     character(len=19) :: depgem, vitgem, accgem
     integer :: jdepgm, jvitgm, jaccgm
     character(len=19) :: depgep, vitgep, accgep

@@ -19,7 +19,8 @@ subroutine mmapin(modele, noma, defico, resoco, numedd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/jedema.h"
@@ -54,8 +55,8 @@ subroutine mmapin(modele, noma, defico, resoco, numedd,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lctcc, ltfcm, lallv
-    logical(kind=1) :: loptin
+    aster_logical :: lctcc, ltfcm, lallv
+    aster_logical :: loptin
     integer :: mmitgo
 !
 ! ----------------------------------------------------------------------

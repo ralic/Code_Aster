@@ -2,6 +2,7 @@ subroutine comp_meta_save(mesh, compor, nb_cmp, list_vale)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -32,7 +33,7 @@ subroutine comp_meta_save(mesh, compor, nb_cmp, list_vale)
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: compor
     integer, intent(in) :: nb_cmp
-    character(len=19), intent(in) :: list_vale 
+    character(len=19), intent(in) :: list_vale
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +51,7 @@ subroutine comp_meta_save(mesh, compor, nb_cmp, list_vale)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    logical(kind=1) :: l_affe_all
+    aster_logical :: l_affe_all
     integer :: nb_elem_affe
     integer :: j_elem_affe
     character(len=8) :: typmcl(2)
@@ -90,24 +91,24 @@ subroutine comp_meta_save(mesh, compor, nb_cmp, list_vale)
 !
 ! ----- Get options
 !
-        nb_vari   = vali(1)
+        nb_vari = vali(1)
         rela_comp = valk(1)(1:16)
 !
 ! ----- Set options in COMPOR <CARTE>
 !
-        valv(1)  = rela_comp
+        valv(1) = rela_comp
         write (valv(2),'(I16)') nb_vari
 !
 ! ----- Get mesh
 !
-        call getvtx(keywordfact, 'TOUT', iocc = iocc , nbret = nt)
+        call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
         if (nt .ne. 0) then
             l_affe_all = .true.
         else
             l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
+            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                         2, motcle(1), typmcl(1), list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe.eq.0) l_affe_all = .true.
+            if (nb_elem_affe .eq. 0) l_affe_all = .true.
         endif
 !
 ! ----- Affect in COMPOR <CARTE>
@@ -126,5 +127,3 @@ subroutine comp_meta_save(mesh, compor, nb_cmp, list_vale)
     call jedetr(compor//'.VALV')
 !
 end subroutine
-
-

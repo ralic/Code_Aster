@@ -2,6 +2,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
                   angs2, nno, nc, pgl, pgl1,&
                   pgl2, fer, fei)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/provec.h"
@@ -40,7 +41,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
     real(kind=8) :: u(3), v(3), w(6), w2(3)
     real(kind=8) :: qr(12), qqr(12), qi(12), qqi(12)
     character(len=16) :: ch16
-    logical(kind=1) :: global, normal
+    aster_logical :: global, normal
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !     --- INITIALISATION  ---
@@ -58,7 +59,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
         qi(i) = zero
         qqi(i) = zero
         fei(i) = zero
-10  end do
+ 10 end do
     nnoc = 1
     ncc = 6
     global = .false.
@@ -70,7 +71,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
             w(i) = zr(lx+i)
             w(i+3) = zr(lx+i+3)
             w2(i) = w(i+3) - w(i)
-20      continue
+ 20     continue
 !
 !         --- FORCE POUTRE A VALEURS COMPLEXES ---
         call jevech('PFC1D1D', 'L', lforc)
@@ -86,7 +87,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
             if (xxx .gt. 1.d-20) then
                 call utmess('F', 'ELEMENTS2_46')
             endif
-30      continue
+ 30     continue
 !
         if (normal) then
             s=ddot(3,w2,1,w2,1)
@@ -146,7 +147,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
             do 40 i = 1, 12
                 qqr(i) = qr(i)
                 qqi(i) = qi(i)
-40          continue
+ 40         continue
         endif
 !
 !        ---A CAUSE DES CHARGEMENTS VARIABLES ---
@@ -168,13 +169,13 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
         do 400 i = 1, 12
             qqr(i) = qqr(i) * zr(icoer)
             qqi(i) = qqi(i) * zr(icoer)
-400      continue
+400     continue
 !
     else if (icoec .ne. 0) then
         do 410 i = 1, 12
             qqr(i) = qqr(i) * dble( zc(icoec) )
             qqi(i) = qqi(i) * dimag( zc(icoec) )
-410      continue
+410     continue
 !
 !
     endif

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cgleco(resu, modele, mate, iord0, compor,incr)
         integer, intent(in) :: iord0
@@ -22,6 +24,6 @@ interface
         character(len=8), intent(in) :: modele
         character(len=8), intent(in) :: mate
         character(len=19), intent(out) :: compor
-        logical(kind=1), intent(out) :: incr
+        aster_logical, intent(out) :: incr
     end subroutine cgleco
 end interface

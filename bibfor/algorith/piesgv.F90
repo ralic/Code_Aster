@@ -1,4 +1,5 @@
-subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,&
+subroutine piesgv(neps, tau, mat, lccrma, vim,&
+                  epsm, epsp, epsd, typmod, lcesga,&
                   etamin, etamax, lcesbo, copilo)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,35 +18,38 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lcesma.h"
 #include "asterfort/lcesvf.h"
 #include "asterfort/piesfg.h"
 #include "asterfort/utmess.h"
     interface
-    subroutine lccrma(mat, fami, kpg, ksp, poum)
-        integer,intent(in) :: mat, kpg, ksp
-        character(len=1),intent(in):: poum
-        character(len=*),intent(in) :: fami
-    end subroutine lccrma
-
-    subroutine lcesga(mode, eps, gameps, dgamde, itemax, precvg, iret)
-        integer,intent(in) :: mode, itemax
-        real(kind=8),intent(in) :: eps(6), precvg
-        integer,intent(out):: iret
-        real(kind=8),intent(out):: gameps, dgamde(6)
-    end subroutine lcesga
-
-    subroutine lcesbo(ep0, ep1, l0, l1, etamin, etamax, vide, etam, etap)
-    real(kind=8),intent(in) :: ep0(6),ep1(6),l0,l1,etamin,etamax   
-    logical(kind=1), intent(out)    :: vide     
-    real(kind=8),intent(out):: etam,etap     
-    end subroutine lcesbo
+        subroutine lccrma(mat, fami, kpg, ksp, poum)
+            integer, intent(in) :: mat, kpg, ksp
+            character(len=1), intent(in) :: poum
+            character(len=*), intent(in) :: fami
+        end subroutine lccrma
+!
+        subroutine lcesga(mode, eps, gameps, dgamde, itemax,&
+                          precvg, iret)
+            integer, intent(in) :: mode, itemax
+            real(kind=8), intent(in) :: eps(6), precvg
+            integer, intent(out) :: iret
+            real(kind=8), intent(out) :: gameps, dgamde(6)
+        end subroutine lcesga
+!
+        subroutine lcesbo(ep0, ep1, l0, l1, etamin,&
+                          etamax, vide, etam, etap)
+            real(kind=8), intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
+            aster_logical, intent(out) :: vide
+            real(kind=8), intent(out) :: etam, etap
+        end subroutine lcesbo
     end interface
-
-    character(len=8),intent(in) :: typmod(*)
-    integer,intent(in)      :: neps, mat
-    real(kind=8),intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax,vim(3)
-    real(kind=8),intent(out):: copilo(2,*)
+!
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: neps, mat
+    real(kind=8), intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax, vim(3)
+    real(kind=8), intent(out) :: copilo(2, *)
 ! --------------------------------------------------------------------------------------------------
 !     PILOTAGE PRED_ELAS POUR ENDO_SCALAIRE (EN GRAD_VARI)
 ! --------------------------------------------------------------------------------------------------
@@ -66,10 +70,10 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
 !  ITEMAX: NOMBRE MAX D'ITERATIONS POUR LA METHODE DE NEWTON
 !  ERRA  : ERREUR TOLEREE SUR A DANS LA LDC (CRIT CVG)
 !  RED   : REDUCTION DE L'ERREUR POUR EN FAIRE UN CRITERE DE PRECISION
-    integer, parameter:: itemax=100
-    real(kind=8),parameter :: red=1.d-2, erra=1.d-6
+    integer, parameter :: itemax=100
+    real(kind=8), parameter :: red=1.d-2, erra=1.d-6
 ! ----------------------------------------------------------------------
-    logical(kind=1) :: cplan, croiss, gauche, droite, vide
+    aster_logical :: cplan, croiss, gauche, droite, vide
     integer :: ndim, ndimsi, i, n
     real(kind=8) :: coplan
     real(kind=8) :: etam, etap, etal, precvg, l0, l1, etm, etp
@@ -99,7 +103,8 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
 !
 ! -- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    call lcesma(mat, 'NONE', 1, 1, '+', lccrma)
+    call lcesma(mat, 'NONE', 1, 1, '+',&
+                lccrma)
 !
 !
 ! -- ENDOMMAGEMENT CIBLE
@@ -134,8 +139,9 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
 !
     l0 = pm/pk/drda * (pk+pr*a-phi0)
     l1 = - pm/pk/drda * phi1
-    call lcesbo(ep0, ep1, l0, l1, etamin, etamax, vide, etm, etp)
-
+    call lcesbo(ep0, ep1, l0, l1, etamin,&
+                etamax, vide, etm, etp)
+!
 !  PAS DE SOLUTION POUR LE PILOTAGE
     if (vide) then
         copilo(1,3) = 0
@@ -160,7 +166,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
 !
     if (gm .le. 0 .and. gp .le. 0) then
         goto 999
-    end if
+        end if
 !
 !
 ! 2. BORNES SUPERIEURES AU SEUIL : DOUBLE NEWTON
@@ -242,5 +248,5 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, epsm, epsp, epsd, typmod, lcesga,
             copilo(2,1) = -1
         endif
 !
-999 continue
+999     continue
     end subroutine

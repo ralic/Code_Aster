@@ -3,7 +3,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 !
     implicit none
 ! Declaration of real type variables
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -21,26 +21,28 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    real(kind=8) :: deigy(3,3)
-    real(kind=8) :: dydx(6,6)
+    real(kind=8) :: deigy(3, 3)
+    real(kind=8) :: dydx(6, 6)
     real(kind=8) :: eigx(3)
     real(kind=8) :: eigy(3)
     real(kind=8) :: vecx(6)
-    real(kind=8) :: direig(3,3)
+    real(kind=8) :: direig(3, 3)
     real(kind=8) :: edge
     real(kind=8) :: apex
 !
+#include "asterf_types.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
 !
 ! Declaration of integer type variables
     integer :: i, j, ia, ib, ic, mcomp, mdim
 !
-    logical(kind=1) ::  epflag
+    aster_logical :: epflag
 !
     parameter ( mcomp=6    ,mdim=3 )
 !
-    real(kind=8) :: dx2dx(mcomp,mcomp), eigprj(mcomp,mdim), foid(mcomp,mcomp), sopid(mcomp), s1, s2
+    real(kind=8) :: dx2dx(mcomp, mcomp), eigprj(mcomp, mdim), foid(mcomp, mcomp), sopid(mcomp), s1
+    real(kind=8) :: s2
     real(kind=8) :: s3, s4, s5, s6, xi, xj, a1
     real(kind=8) :: r0, r1, r2, r3, dr5, small, tol, sqr
     data&

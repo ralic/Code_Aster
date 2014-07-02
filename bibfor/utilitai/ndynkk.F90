@@ -19,6 +19,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -53,7 +54,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     integer :: jvecen, jvecab
     character(len=24) :: veol, vaol
     integer :: jveol, jvaol
-    logical(kind=1) :: ldyna
+    aster_logical :: ldyna
     character(len=24) :: cham24
     character(len=19) :: sdammo
     character(len=15) :: sdmuap, sdprmo, sdexso
@@ -222,7 +223,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
         ASSERT(.false.)
     endif
 !
-999  continue
+999 continue
 !
     nomsd = cham24(1:19)
 !

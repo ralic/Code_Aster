@@ -19,6 +19,7 @@ subroutine caralv(char, nzoco, iform)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/jedema.h"
@@ -46,10 +47,10 @@ subroutine caralv(char, nzoco, iform)
 ! ----------------------------------------------------------------------
 !
     integer :: izone
-    logical(kind=1) :: lmail, lglis
-    logical(kind=1) :: lveri, lall, lsans, lexis, lpena, lnoeu, lxczm
-    logical(kind=1) :: lnewtg
-    logical(kind=1) :: lcinit
+    aster_logical :: lmail, lglis
+    aster_logical :: lveri, lall, lsans, lexis, lpena, lnoeu, lxczm
+    aster_logical :: lnewtg
+    aster_logical :: lcinit
     integer :: ctcini
     character(len=24) :: defico
     character(len=24) :: paraci
@@ -77,7 +78,7 @@ subroutine caralv(char, nzoco, iform)
         do 10 izone = 2, nzoco
             lveri = mminfl(defico,'VERIF',izone )
             lall = lall.and.lveri
-10      continue
+ 10     continue
         if (lall) then
             zi(jparci+8-1) = 1
         endif
@@ -86,7 +87,7 @@ subroutine caralv(char, nzoco, iform)
         do 20 izone = 1, nzoco
             lveri = mminfl(defico,'VERIF',izone )
             lexis = lexis.or.lveri
-20      continue
+ 20     continue
         if (lexis) then
             zi(jparci+23-1) = 1
         endif
@@ -121,7 +122,7 @@ subroutine caralv(char, nzoco, iform)
                     mminfl(defico,'ALGO_FROT_PENA',izone )&
                     )
             lexis = lexis.or.lpena
-40      continue
+ 40     continue
         if (lexis) then
             zi(jparci+22-1) = 1
         endif
@@ -135,7 +136,7 @@ subroutine caralv(char, nzoco, iform)
         do 50 izone = 2, nzoco
             lnoeu = (mminfi(defico,'INTEGRATION' ,izone ).eq.1)
             lall = lall.and.lnoeu
-50      continue
+ 50     continue
         if (lall) then
             zi(jparci+24-1) = 1
         endif
@@ -152,7 +153,7 @@ subroutine caralv(char, nzoco, iform)
         do 60 izone = 1, nzoco
             lglis = mminfl(defico,'GLISSIERE_ZONE',izone )
             lexis = lexis.or.lglis
-60      continue
+ 60     continue
         if (lexis) then
             zi(jparci+26-1) = 1
         endif
@@ -165,7 +166,7 @@ subroutine caralv(char, nzoco, iform)
         do 70 izone = 1, nzoco
             lxczm = mminfl(defico,'CONT_XFEM_CZM',izone )
             lexis = lexis.or.lxczm
-70      continue
+ 70     continue
         if (lexis) then
             zi(jparci+21-1) = 1
         endif
@@ -178,7 +179,7 @@ subroutine caralv(char, nzoco, iform)
         do 80 izone = 1, nzoco
             ctcini = mminfi(defico,'CONTACT_INIT',izone )
             lcinit = lcinit.and.(ctcini.eq.2)
-80      continue
+ 80     continue
         if (lcinit) then
             zi(jparci-1+11) = 1
         endif

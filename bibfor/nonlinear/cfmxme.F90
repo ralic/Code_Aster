@@ -2,6 +2,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -57,8 +58,8 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer ::  neq, ntpc
-    logical(kind=1) :: ldyna, lnoeu
+    integer :: neq, ntpc
+    aster_logical :: ldyna, lnoeu
     character(len=24) :: mdecol, etatct
     integer :: jmdeco, jetat
     character(len=24) :: tabfin, apjeu

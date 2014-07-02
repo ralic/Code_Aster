@@ -1,6 +1,7 @@
 subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
                   iadr)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -46,7 +47,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
     integer :: n1, ier, kotyp, im, numa, ityp, nume, iatyma, lgp, lgm
     integer :: ilist, klist, nbmc, nbma, jnoma
     parameter     ( nbmc = 3 )
-    logical(kind=1) :: lnume, lmail
+    aster_logical :: lnume, lmail
     integer :: lopt, lnom
     character(len=8) :: noma, option, oldtyp, prfm, nommai, knume
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
@@ -145,7 +146,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
                 call i2rdl2(numa, zi(ilist), nommai, zk8(klist), iadr)
             endif
         endif
-30  end do
+ 30 end do
     call jedetr(nomjv)
 !
     if (ier .ne. 0) ASSERT(.false.)

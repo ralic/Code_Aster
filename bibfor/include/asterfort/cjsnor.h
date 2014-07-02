@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cjsnor(mater, sig, x, nor, devnul,&
                       trac)
@@ -22,7 +24,7 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: x(6)
         real(kind=8) :: nor(7)
-        logical(kind=1) :: devnul
-        logical(kind=1) :: trac
+        aster_logical :: devnul
+        aster_logical :: trac
     end subroutine cjsnor
 end interface

@@ -26,6 +26,7 @@ subroutine ssdt74(nomres, nomcmd)
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/gettco.h"
@@ -73,20 +74,20 @@ subroutine ssdt74(nomres, nomcmd)
     character(len=8) :: fbid(2)
     character(len=24) :: numg24, lisins
     character(len=24) :: valk(2)
-    logical(kind=1) :: lamor
+    aster_logical :: lamor
     integer :: nexcit, nexcir, ntotex, nbobjs
 !
 !  COUPLAGE EDYOS
 ! =>
     integer :: nbpal
     real(kind=8) :: vrotat, dtsto
-    logical(kind=1) :: prdeff
+    aster_logical :: prdeff
 ! =<
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifm, info, iparch, iret
     integer :: j1, jaccs, jadcho, jamog, jarch
-    integer :: jcoefm,  jdcho, jdepl, jdeps, jfcho, jfond
+    integer :: jcoefm, jdcho, jdepl, jdeps, jfcho, jfond
     integer :: jfonv, jiadve, jidesc, jinst, jinti, jinumo, jmasg
     integer :: jnoacc, jnodep, jnoec, jnomfo, jnovit, jordr, jparc
     integer :: jpard, jpass, jpsdel, jpsid, jpul2, jpuls, jraig
@@ -355,7 +356,7 @@ subroutine ssdt74(nomres, nomcmd)
                     intitu=zk8(jinti), jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jadcho,&
                     nbrede=nbrede, fonred=zk8(jfond), jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
                     fonrev=zk8(jfonv), jrevc=jrevc, jrevv=jrevv)
-
+!
 !     DANS LE CAS DE RUNGE KUTTA, L'ALLOCATION SE FAIT A L'INTERIEUR DE
 !     LA ROUTINE MDRUKU
     endif
@@ -413,7 +414,7 @@ subroutine ssdt74(nomres, nomcmd)
                     zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
                     0, fbid, fbid(1), 0.d0, fbid(1),&
                     nbpal, dtsto, vrotat, prdeff, nomres,&
-                    ntotex, zr(jpass), zk8(jinti) )
+                    ntotex, zr(jpass), zk8(jinti))
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, neqgen, zr(jpuls), zr(jpul2),&
@@ -427,8 +428,8 @@ subroutine ssdt74(nomres, nomcmd)
                     zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
                     zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevv), &
-                    zk8(jinti) )
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv),&
+                    zk8(jinti))
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&

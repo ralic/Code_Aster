@@ -21,6 +21,7 @@ subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/infdbg.h"
@@ -32,7 +33,7 @@ subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=8) :: modele
-    logical(kind=1) :: exitem, exihyd, exipto, exisec, exiepa, exipha
+    aster_logical :: exitem, exihyd, exipto, exisec, exiepa, exipha
     character(len=19) :: vecel
 !
 ! ----------------------------------------------------------------------

@@ -1,7 +1,8 @@
 subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -51,7 +52,7 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
     integer, pointer :: p_cycl_eta(:) => null()
     integer :: cycl_index, cycl_stat
     integer :: point_index, point_number
-    logical(kind=1) :: cont_disc, cont_xfem
+    aster_logical :: cont_disc, cont_xfem
     integer :: cycl_nb(4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -80,13 +81,13 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
     point_number = cfdisi(sd_cont_defi,'NTPC' )
     do point_index = 1, point_number
         do cycl_index = 1, 4
-          cycl_stat  = p_cycl_eta(4*(point_index-1)+cycl_index)
-          if (cycl_stat.ne.0) then
-              cycl_nb(cycl_index) = cycl_nb(cycl_index) + 1
-          endif
-          if (cycl_stat.lt.0) then
-              call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_index, point_index)
-          endif
+            cycl_stat = p_cycl_eta(4*(point_index-1)+cycl_index)
+            if (cycl_stat .ne. 0) then
+                cycl_nb(cycl_index) = cycl_nb(cycl_index) + 1
+            endif
+            if (cycl_stat .lt. 0) then
+                call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_index, point_index)
+            endif
         end do
     end do
 !
@@ -97,7 +98,7 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
     call nmrvai(sd_stat, 'CTCC_CYCL_3', 'E', cycl_nb(3))
     call nmrvai(sd_stat, 'CTCC_CYCL_4', 'E', cycl_nb(4))
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

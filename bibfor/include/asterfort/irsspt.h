@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
                       nomcmp, lsup, linf, lmax, lmin,&
@@ -25,10 +27,10 @@ interface
         integer :: nummai(*)
         integer :: nbcmp
         character(len=*) :: nomcmp(*)
-        logical(kind=1) :: lsup
-        logical(kind=1) :: linf
-        logical(kind=1) :: lmax
-        logical(kind=1) :: lmin
+        aster_logical :: lsup
+        aster_logical :: linf
+        aster_logical :: lmax
+        aster_logical :: lmin
         real(kind=8) :: borinf
         real(kind=8) :: borsup
     end subroutine irsspt

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cglemu(resu, vecord, lmelas, lncas, melord)
         character(len=8) :: resu
         character(len=19) :: vecord
-        logical(kind=1) :: lmelas
-        logical(kind=1) :: lncas
+        aster_logical :: lmelas
+        aster_logical :: lncas
         character(len=24) :: melord
     end subroutine cglemu
 end interface

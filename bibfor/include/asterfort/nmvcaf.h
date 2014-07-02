@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmvcaf(index, chainz, exicha, comz)
         character(len=4) :: index
         character(len=*) :: chainz
-        logical(kind=1) :: exicha
+        aster_logical :: exicha
         character(len=*) :: comz
     end subroutine nmvcaf
 end interface

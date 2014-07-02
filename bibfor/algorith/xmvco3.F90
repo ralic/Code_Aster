@@ -6,6 +6,7 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
     integer :: ndim, nno, nnol
@@ -53,7 +54,7 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
     integer :: i, j, k, pli, nli, ddlm, ifa, ifh, ifiss
     integer :: in, jfisno, jheafa, ncomph, nfiss, nnos
     real(kind=8) :: ffi, coefi
-    logical(kind=1) :: lmultc
+    aster_logical :: lmultc
 !
 ! ---------------------------------------------------------------------
 !
@@ -72,12 +73,12 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
             endif
             do 12 j = 1, ndim
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + abs(coefi* ffp(i)*sigref*jac)
-12          continue
-11      continue
+ 12         continue
+ 11     continue
         do 13 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) + abs(coefi*ffp(i)*rr*sigref*jac )
-13      continue
-10  continue
+ 13     continue
+ 10 continue
 !
 ! SECOND MEMBRE DE L EQUATION D INTERFACE: EXPRESSION DIRECTE
 ! ATTENTION INVERSION DE CONVENTIONS
@@ -94,7 +95,7 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
             else if (nli.eq.0) then
                 vtmp(pli-1+k) = vtmp(pli-1+k) + abs(sigref)
             endif
-21      continue
-20  continue
+ 21     continue
+ 20 continue
 !
 end subroutine

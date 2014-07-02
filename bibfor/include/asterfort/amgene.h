@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function amgene(i, j, amogen, nbmodes, typbas, method, lamor)
         integer :: i
@@ -23,7 +25,7 @@ interface
         integer :: nbmodes
         character(len=*) :: typbas
         character(len=*) :: method
-        logical(kind=1) :: lamor
+        aster_logical :: lamor
         real(kind=8) :: amgene
     end function amgene
 end interface

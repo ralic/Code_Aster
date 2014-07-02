@@ -19,6 +19,7 @@ subroutine te0206(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gedisc.h"
@@ -43,7 +44,7 @@ subroutine te0206(option, nomte)
     integer :: ivarim, ivarip, jtab(7), iret, lgpg, iinstm, iinstp
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,Z,W => 1ER INDICE
     real(kind=8) :: coopg(4, 4)
-    logical(kind=1) :: resi, rigi, matsym
+    aster_logical :: resi, rigi, matsym
 ! ----------------------------------------------------------------------
 !
     resi = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
@@ -53,8 +54,8 @@ subroutine te0206(option, nomte)
 !    ICI AUX FONCTIONS DE FORMES 2D DES FACES DES MAILLES JOINT 3D
 !    PAR EXEMPLE FONCTION DE FORME DU QUAD4 POUR LES HEXA8.
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     nddl = 6*nno
 !

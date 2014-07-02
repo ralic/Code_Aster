@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     function dmadp1(rho22, sat, dsatp1, phi, cs,&
                     mamolg, kh, dp21p1, emmag, em)
@@ -26,7 +28,7 @@ interface
         real(kind=8) :: mamolg
         real(kind=8) :: kh
         real(kind=8) :: dp21p1
-        logical(kind=1) :: emmag
+        aster_logical :: emmag
         real(kind=8) :: em
         real(kind=8) :: dmadp1_0
     end function dmadp1

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine hujiid(mod, mater, indi, deps, i1e,&
                       yd, vind, dy, loop, dsig,&
@@ -27,10 +29,10 @@ interface
         real(kind=8) :: yd(18)
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(18)
-        logical(kind=1) :: loop
+        aster_logical :: loop
         real(kind=8) :: dsig(6)
-        logical(kind=1) :: bnews(3)
-        logical(kind=1) :: mtrac
+        aster_logical :: bnews(3)
+        aster_logical :: mtrac
         integer :: iret
     end subroutine hujiid
 end interface

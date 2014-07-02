@@ -25,6 +25,7 @@ subroutine hujcrd(k, mater, sig, vin, seuild)
 !        VIN    :  VARIABLES INTERNES = ( Q, R, X )
 !    OUT SEUILD :  SEUIL DU MECANISME DEVIATOIRE K
 !    ---------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
     integer :: k, ndt, ndi
@@ -33,7 +34,7 @@ subroutine hujcrd(k, mater, sig, vin, seuild)
     real(kind=8) :: un, r, epsvp, pcr, pa, tole
     real(kind=8) :: degr, beta, b, m, phi, pcref, ptrac
     real(kind=8) :: sigd(3), p, q
-    logical(kind=1) :: debug
+    aster_logical :: debug
     parameter    (un = 1.d0)
     parameter    (tole = 1.d-7)
     parameter    (degr = 0.0174532925199d0)
@@ -84,5 +85,5 @@ subroutine hujcrd(k, mater, sig, vin, seuild)
 ! ==================================================================
     seuild = -q /m/p - r*(un-b*log(p/pcr))
 !
-999  continue
+999 continue
 end subroutine

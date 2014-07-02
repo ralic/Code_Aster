@@ -1,5 +1,6 @@
 subroutine te0375(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm3d.h"
@@ -103,7 +104,7 @@ subroutine te0375(option, nomte)
     character(len=16) :: phenom
     character(len=24) :: valk(2)
 !
-    logical(kind=1) :: yapr, yaro
+    aster_logical :: yapr, yaro
 !
 ! --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
 !
@@ -162,8 +163,8 @@ subroutine te0375(option, nomte)
         write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! 1.3. --- CHAMP DE CONTRAINTES
 !
@@ -370,8 +371,8 @@ subroutine te0375(option, nomte)
                 elrefb)
 !GN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 ! --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
-    call elrefe_info(elrefe=elreff,fami='NOEU',ndim=ndimf,nno=nnof,nnos=nnosf,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdxf,jgano=jganof)
+    call elrefe_info(elrefe=elreff, fami='NOEU', ndim=ndimf, nno=nnof, nnos=nnosf,&
+                     npg=npgf, jpoids=ipoidf, jvf=ivff, jdfde=idfdxf, jgano=jganof)
 !GN      WRITE(IFM,2000) 'NDIMF',NDIMF
 !GN      WRITE(IFM,2000) 'NNOSF,NNOF,NPGF',NNOSF,NNOF,NPGF
 !GN      WRITE(IFM,1000) 'IPOIDF', (ZR(IPOIDF+IFA),IFA=0,NPGF-1)
@@ -380,8 +381,8 @@ subroutine te0375(option, nomte)
 ! --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
 !
     if (elrefb(1:1) .ne. ' ') then
-        call elrefe_info(elrefe=elrefb,fami='NOEU',ndim=ndimf,nno=nno2,nnos=nnos2,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfdx2,jgano=jgano2)
+        call elrefe_info(elrefe=elrefb, fami='NOEU', ndim=ndimf, nno=nno2, nnos=nnos2,&
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfdx2, jgano=jgano2)
 !GN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
 !GN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2
 !GN       WRITE(IFM,1000) 'IPOID2', (ZR(IPOID2+IFA),IFA=0,NPG2-1)

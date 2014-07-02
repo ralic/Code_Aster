@@ -48,6 +48,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 !     --- ARGUMENTS ---
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
@@ -134,7 +135,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
     character(len=24) :: valk(2)
 !
     complex(kind=8) :: cbid, valc
-    logical(kind=1) :: yaxfem, yathm, perman
+    aster_logical :: yaxfem, yathm, perman
 !
 !=======================================================================
 ! 1. PREALABLES
@@ -157,7 +158,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         option(1:iaux) = optio0(1:iaux)
     endif
 !
-    do ii = 1 , nchar
+    do ii = 1, nchar
         ligrch = zk8(jcha+ii-1)//'.CHME.LIGRE'
     end do
 !
@@ -213,7 +214,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 2.2. ==> BOUCLE SUR LES NUMEROS D'ORDRE
 !
-        do iaux = 1 , nbordr
+        do iaux = 1, nbordr
 !
             call jemarq()
             call jerecu('V')
@@ -228,7 +229,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
             if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
 !--- RECUPERATION DES INSTANTS CORRESPONDANT A IORDR ET IORDR-1
-                do jaux = 1 , jfin
+                do jaux = 1, jfin
 !
                     ibid = iordr+1-jaux
 !
@@ -262,155 +263,155 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                         endif
 ! - --
                     endif
-            end do
-        else
-            time = 0.d0
-            deltat = rundf
-            theta = rundf
-        endif
+                end do
+            else
+                time = 0.d0
+                deltat = rundf
+                theta = rundf
+            endif
 !--- CREATION DE LA CARTE DES INSTANTS
-        call mechti(noma, time, deltat, theta, chtime)
+            call mechti(noma, time, deltat, theta, chtime)
 !
 ! 2.2.2 ==> RECUPERATION DES CHAMPS DE CONTRAINTES AUX NOEUDS
-        do jaux = 1 , jfin
+            do jaux = 1, jfin
 ! VERIFIE L'EXISTENCE DU CHAMP
 ! S'IL EXISTE ON RECUPERE SON NOM SYMBOLIQUE
-            ibid = iordr+1-jaux
-            call rsexc2(1, 2, resuco, 'SIGM_ELNO', ibid,&
-                        k24b, option, iret)
-            call rsexc2(2, 2, resuco, 'SIEF_ELNO', ibid,&
-                        k24b, option, iret)
+                ibid = iordr+1-jaux
+                call rsexc2(1, 2, resuco, 'SIGM_ELNO', ibid,&
+                            k24b, option, iret)
+                call rsexc2(2, 2, resuco, 'SIEF_ELNO', ibid,&
+                            k24b, option, iret)
 !
 !--- SI AUCUN CHAMP N'EXISTE, ON SORT
-            if (iret .gt. 0) goto 299
+                if (iret .gt. 0) goto 299
 !
 ! 2.2.3. ==> VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-            call dismoi('NOM_LIGREL', k24b, 'CHAM_ELEM', repk=ligrch)
-            if (ligrch .ne. ligrmo) then
-                call codent(ibid, 'G', k8b)
-                valk(1) = option
-                valk(2) = k8b
-                call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
-                goto 299
-            endif
+                call dismoi('NOM_LIGREL', k24b, 'CHAM_ELEM', repk=ligrch)
+                if (ligrch .ne. ligrmo) then
+                    call codent(ibid, 'G', k8b)
+                    valk(1) = option
+                    valk(2) = k8b
+                    call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
+                    goto 299
+                endif
 !--- ARCHIVAGE DU NOM DU CHAMP DE CONTRAINTES
-            if (jaux .eq. 1) then
-                chsigp = k24b
-            else
-                chsigm = k24b
-            endif
-        end do
+                if (jaux .eq. 1) then
+                    chsigp = k24b
+                else
+                    chsigm = k24b
+                endif
+            end do
 !
 !--- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS PAR SOUS
 !    ELEMENT (OPTION 'SIEF_SENO_SEGA'), CAS X-FEM UNIQUEMENT
-        if (yaxfem) then
-            call rsexc2(1, 1, resuco, 'SISE_ELNO', iordr,&
-                        chsigx, option, iret)
-            if (iret .gt. 0) goto 299
-        endif
+            if (yaxfem) then
+                call rsexc2(1, 1, resuco, 'SISE_ELNO', iordr,&
+                            chsigx, option, iret)
+                if (iret .gt. 0) goto 299
+            endif
 ! ---------------------------------------------------------------------
 ! 2.2.4 ==> POUR DE LA THM : ON RECUPERE ...
 ! ---------------------------------------------------------------------
-        if (yathm) then
+            if (yathm) then
 ! -----------------------------
 ! 2.2.4.1. LES CHAMPS DE DEPLACEMENTS
 ! -----------------------------
-            do  jaux = 1 , jfin
+                do jaux = 1, jfin
 !
-                ibid = iordr+1-jaux
-                call rsexc2(1, 1, resuco, 'DEPL', ibid,&
-                            k24b, option, iret1)
-                if (iret1 .gt. 0) then
-                    call codent(ibid, 'G', k8b)
-                    valk(1) = resuco
-                    valk(2) = k8b
-                    call utmess('A', 'CALCULEL3_11', nk=2, valk=valk)
-                    goto 299
-                endif
-                if (jaux .eq. 1) then
-                    chdepp = k24b
-                else
-                    chdepm = k24b
-                endif
-            end do
-! ---------------------------------------
-! 2.2.4.2. LES GRANDEURS CARACTERISTIQUES
-! ---------------------------------------
-!
-            longc = tbgrca(1)
-            presc = tbgrca(2)
-            if (longc .le. 0.d0 .or. presc .le. 0.d0) then
-                call utmess('F', 'INDICATEUR_28')
-            endif
-! -----------------------------
-! 2.2.4.1. LE CHAMP D'ESTIMATEURS A L'INSTANT PRECEDENT
-! -----------------------------
-!
-            if (.not. perman) then
-!
-                if (iordr .eq. 1) then
-!
-! INSTANT INITIAL : CREATION D'UN CHAM_ELEM NUL
-!                         12   345678   9012345678901234
-                    cherrm = '&&'//nompro//'_ERREUR_M       '
-                    call alchml(ligrmo, option, 'PERREM', 'V', cherrm,&
-                                iret, ' ')
-                    if (iret .ne. 0) then
-                        call utmess('A', 'CALCULEL5_4')
-                        goto 299
-                    endif
-!
-                else
-! SINON, ON RECUPERE LE CHAMP DE L'INSTANT PRECEDENT
-                    ibid = iordr - 1
-                    call rsexc2(1, 1, resuco, 'ERME_ELEM', ibid,&
+                    ibid = iordr+1-jaux
+                    call rsexc2(1, 1, resuco, 'DEPL', ibid,&
                                 k24b, option, iret1)
                     if (iret1 .gt. 0) then
                         call codent(ibid, 'G', k8b)
                         valk(1) = resuco
                         valk(2) = k8b
-                        call utmess('F', 'INDICATEUR_24', nk=2, valk=valk)
+                        call utmess('A', 'CALCULEL3_11', nk=2, valk=valk)
                         goto 299
                     endif
-                    cherrm = k24b
+                    if (jaux .eq. 1) then
+                        chdepp = k24b
+                    else
+                        chdepm = k24b
+                    endif
+                end do
+! ---------------------------------------
+! 2.2.4.2. LES GRANDEURS CARACTERISTIQUES
+! ---------------------------------------
+!
+                longc = tbgrca(1)
+                presc = tbgrca(2)
+                if (longc .le. 0.d0 .or. presc .le. 0.d0) then
+                    call utmess('F', 'INDICATEUR_28')
+                endif
+! -----------------------------
+! 2.2.4.1. LE CHAMP D'ESTIMATEURS A L'INSTANT PRECEDENT
+! -----------------------------
+!
+                if (.not. perman) then
+!
+                    if (iordr .eq. 1) then
+!
+! INSTANT INITIAL : CREATION D'UN CHAM_ELEM NUL
+!                         12   345678   9012345678901234
+                        cherrm = '&&'//nompro//'_ERREUR_M       '
+                        call alchml(ligrmo, option, 'PERREM', 'V', cherrm,&
+                                    iret, ' ')
+                        if (iret .ne. 0) then
+                            call utmess('A', 'CALCULEL5_4')
+                            goto 299
+                        endif
+!
+                    else
+! SINON, ON RECUPERE LE CHAMP DE L'INSTANT PRECEDENT
+                        ibid = iordr - 1
+                        call rsexc2(1, 1, resuco, 'ERME_ELEM', ibid,&
+                                    k24b, option, iret1)
+                        if (iret1 .gt. 0) then
+                            call codent(ibid, 'G', k8b)
+                            valk(1) = resuco
+                            valk(2) = k8b
+                            call utmess('F', 'INDICATEUR_24', nk=2, valk=valk)
+                            goto 299
+                        endif
+                        cherrm = k24b
+                    endif
+!
                 endif
 !
             endif
 !
-        endif
-!
 ! 2.2.7. ==> RECUPERE LE NOM SYMBOLIQUE DU CHAMP DE L'OPTION CALCULEE
 !            POUR LE NUMERO D'ORDRE IORDR
-        call rsexc1(leres1, option, iordr, chelem)
+            call rsexc1(leres1, option, iordr, chelem)
 !
 ! 2.2.8. ==> CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
 !
-        call resloc(modele, ligrmo, yaxfem, yathm, tbgrca,&
-                    perman, chtime, mate, chsigm, chsigp,&
-                    chsigx, chdepm, chdepp, cherrm, zk8(jcha),&
-                    nchar, tabido, chvois, cvoisx, chelem)
+            call resloc(modele, ligrmo, yaxfem, yathm, tbgrca,&
+                        perman, chtime, mate, chsigm, chsigp,&
+                        chsigx, chdepm, chdepp, cherrm, zk8(jcha),&
+                        nchar, tabido, chvois, cvoisx, chelem)
 !
 ! 2.2.9. ==> VERIFIE L'EXISTENCE DU CHAMP CHELEM
-        call exisd('CHAMP_GD', chelem, iret)
+            call exisd('CHAMP_GD', chelem, iret)
 !
 !--- SI LE CHAMP N'EXISTE PAS, ON SORT
-        if (iret .eq. 0) then
-            codret = 1
-            call jedema()
-            goto 999
-        endif
+            if (iret .eq. 0) then
+                codret = 1
+                call jedema()
+                goto 999
+            endif
 !
 ! 2.2.10. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 !             LOCAUX
-        call erglob(chelem, yathm, perman, option, iordr,&
-                    resuco, leres1)
+            call erglob(chelem, yathm, perman, option, iordr,&
+                        resuco, leres1)
 !
 ! 2.2.11. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
-        call rsnoch(leres1, option, iordr)
+            call rsnoch(leres1, option, iordr)
 !
-299     continue
+299         continue
 !
-        call jedema()
+            call jedema()
 !
         end do
 !

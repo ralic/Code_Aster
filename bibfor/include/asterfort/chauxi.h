@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine chauxi(ndim, mu, ka, r, t,&
                       invp, lcour, courb, du1dm, du2dm,&
@@ -25,7 +27,7 @@ interface
         real(kind=8) :: r
         real(kind=8) :: t
         real(kind=8) :: invp(3, 3)
-        logical(kind=1) :: lcour
+        aster_logical :: lcour
         real(kind=8) :: courb(3, 3, 3)
         real(kind=8) :: du1dm(3, 3)
         real(kind=8) :: du2dm(3, 3)

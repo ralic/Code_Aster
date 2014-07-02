@@ -2,6 +2,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
                   nbc, indic, nssche, mcf, iocc,&
                   nbnac, nnoeud)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -215,7 +216,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     integer :: nbval, nbn, nbco, nbsp, n1, kk
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
-    logical(kind=1) :: utili
+    aster_logical :: utili
     character(len=8) :: repere
     character(len=24) :: nomjv, nomaux
 !

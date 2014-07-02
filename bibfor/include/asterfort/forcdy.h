@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine forcdy(masse, amort, lamort, neq, c0,&
                       c1, c2, c3, c4, c5,&
@@ -22,7 +24,7 @@ interface
                       f)
         integer :: masse
         integer :: amort
-        logical(kind=1) :: lamort
+        aster_logical :: lamort
         integer :: neq
         real(kind=8) :: c0
         real(kind=8) :: c1

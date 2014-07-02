@@ -47,6 +47,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -64,7 +65,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     real(kind=8) :: epsilf, epsd, epsc, d, p, epsp, ecr, fplas, indi
     real(kind=8) :: dfds, dfpds, dfdecr, difecr, lambp, fd, var1
     real(kind=8) :: var2, var3, rv, fini, fplas2, b, val(1)
-    logical(kind=1) :: dconv, pconv, melas
+    aster_logical :: dconv, pconv, melas
     integer :: iter, itemax, i, j, ibid
     pm = vim(1)
     epspm = vim(1)
@@ -160,8 +161,8 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                         else
                             goto 141
                         endif
-40                  continue
-141                  continue
+ 40                 continue
+141                 continue
                     if (j .ge. itemax) then
                         call utmess('I', 'MODELISA5_40')
                         codret=1
@@ -192,8 +193,8 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                 sigp = 0.d0
                 goto 142
             endif
-30      continue
-142      continue
+ 30     continue
+142     continue
 !
         if (i .ge. itemax) then
             call utmess('I', 'MODELISA5_41')
@@ -245,5 +246,5 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     endif
     if (melas) dsde=(1.d0-d)*dsde
 !
-9999  continue
+9999 continue
 end subroutine

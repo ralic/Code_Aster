@@ -1,5 +1,7 @@
-subroutine dktedg(xyzl, option, pgl, depl, edgl, multic)
-    implicit   none
+subroutine dktedg(xyzl, option, pgl, depl, edgl,&
+                  multic)
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dktbf.h"
 #include "asterfort/dkttxy.h"
@@ -44,18 +46,20 @@ subroutine dktedg(xyzl, option, pgl, depl, edgl, multic)
     real(kind=8) :: bdm(3), bdf(3), dcis(2), vf(3), vm(3), vt(2)
     real(kind=8) :: vfm(3), vmf(3)
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                        jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                         jgano=jgano)
         ne = npg
         fami='RIGI'
     else if (option(6:9).eq.'ELNO') then
-        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                        jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                         jgano=jgano)
         ne = nno
         fami='NOEU'
     endif
@@ -66,7 +70,9 @@ subroutine dktedg(xyzl, option, pgl, depl, edgl, multic)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
     call gtria3(xyzl, carat3)
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-    call dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate(fami, df, dm, dmf, dc,&
+                dci, dmc, dfc, nno, pgl,&
+                multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
     do j = 1, 3
         do i = 1, 2

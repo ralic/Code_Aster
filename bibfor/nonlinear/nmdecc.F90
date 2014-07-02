@@ -21,6 +21,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
@@ -34,7 +35,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
     character(len=4) :: typdec
     integer :: nbrpas, retdec
     real(kind=8) :: instam, deltat, ratio, dtmin, deltac
-    logical(kind=1) :: linfo
+    aster_logical :: linfo
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
 !
     real(kind=8) :: inst, pasdt, premie, suivan, valr(3)
     integer :: ipas, jinst
-    character(len=16) ::  optdec
+    character(len=16) :: optdec
 !
 ! ----------------------------------------------------------------------
 !
@@ -163,7 +164,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             inst = inst + pasdt
             zr(jinst+ipas-1) = inst
             dtmin = min(dtmin ,pasdt)
-10      continue
+ 10     continue
     else if (optdec.eq.'PROGRESSIF') then
         do 15 ipas = 1, nbrpas
             if (ipas .eq. 1) then
@@ -174,7 +175,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             inst = inst + pasdt
             zr(jinst+ipas-1) = inst
             dtmin = min(dtmin ,pasdt)
-15      continue
+ 15     continue
     else if (optdec.eq.'DEGRESSIF') then
         do 20 ipas = 1, nbrpas
             if (ipas .eq. nbrpas) then
@@ -185,7 +186,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             inst = inst + pasdt
             zr(jinst+ipas-1) = inst
             dtmin = min(dtmin ,pasdt)
-20      continue
+ 20     continue
     else
         ASSERT(.false.)
     endif
@@ -213,9 +214,9 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
         endif
     endif
 !
-99  continue
+ 99 continue
 !
-    if (retdec.eq.0) then
+    if (retdec .eq. 0) then
         call utmess('I', 'SUBDIVISE_50')
         call utmess('I', 'SUBDIVISE_53', sr = premie)
     endif

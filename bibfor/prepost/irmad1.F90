@@ -3,6 +3,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                   chamno, nomcmp, nomsym, numnoe)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exisdg.h"
@@ -40,7 +41,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     character(len=19) :: chamn
     integer :: nbchs
     integer :: nbcmps(50), ipcmps(50, 50), impre
-    logical(kind=1) :: ltabl(50), afaire
+    aster_logical :: ltabl(50), afaire
 !
 !  --- INITIALISATIONS ----
 !
@@ -53,22 +54,22 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     call jemarq()
     do 10 i = 1, ncmpmx
         ltabl(i) = .false.
-10  end do
+ 10 end do
 !
     nbcmpt = 0
     do 100 inno = 1, nbno
         ino = numnoe(inno)
         do 110 iec = 1, nec
             dg(iec)=prno((ino-1)*(nec+2)+2+iec)
-110      continue
+110     continue
         ncmp = prno((ino-1)* (nec+2)+2)
         if (ncmp .eq. 0) goto 100
         icompt = 0
         do 112 icmp = 1, ncmpmx
             if (exisdg(dg,icmp)) icompt = icompt + 1
-112      continue
+112     continue
         nbcmpt = max( nbcmpt , icompt )
-100  end do
+100 end do
     nrow = nbcmpt
     ncol = nbno * nstat
     ndim = ncol * nrow
@@ -89,8 +90,8 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     do 777 ichs = 1, 50
         do 778 ist = 1, 50
             ipcmps(ichs,ist)=-1
-778      end do
-777  end do
+778     end do
+777 end do
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
     impre = 0
@@ -99,7 +100,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
             afaire = .false.
             do 22 icp = 1, nbcmps(ichs)
                 afaire = (afaire.or.ltabl(ipcmps(ichs,icp)))
-22          continue
+ 22         continue
             if (.not. afaire) goto 20
         endif
         impre = impre + 1
@@ -110,7 +111,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                 ino = numnoe(inno)
                 do 42 iec = 1, nec
                     dg(iec) = prno((ino-1)*(nec+2)+2+iec)
-42              continue
+ 42             continue
                 ival = prno((ino-1)* (nec+2)+1)
                 ncmp = prno((ino-1)* (nec+2)+2)
                 if (ncmp .eq. 0) goto 40
@@ -131,12 +132,12 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                                 endif
                                 goto 44
                             endif
-46                      continue
+ 46                     continue
                     endif
-44              continue
-40          continue
-30      continue
-20  end do
+ 44             continue
+ 40         continue
+ 30     continue
+ 20 end do
 !
     ASSERT(impre .le. 1)
 !

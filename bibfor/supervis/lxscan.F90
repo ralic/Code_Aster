@@ -1,6 +1,7 @@
 subroutine lxscan(chin, ideb, iclass, ival, rval,&
                   cval)
     implicit none
+#include "asterf_types.h"
 #include "asterc/ismaem.h"
     character(len=*) :: chin, cval
     integer :: ideb, iclass, ival
@@ -65,7 +66,7 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     parameter ( mxetat = 13 , mxcla1 = mxclas+1)
     integer :: neweta(mxcla1, mxetat)
 !
-    logical(kind=1) :: nbeneg, expneg
+    aster_logical :: nbeneg, expneg
     character(len=1) :: carext
     real(kind=8) :: xndec, xdec
     integer :: nival, inival

@@ -28,6 +28,7 @@ function dvolu4(coord, norm, coord1)
 ! OUT  DVOLU4 : VOLUME DE L INTERSECTION
 !
     implicit none
+#include "asterf_types.h"
 !
 ! DECLARATION GLOBALE
 !
@@ -38,7 +39,7 @@ function dvolu4(coord, norm, coord1)
 !
     integer :: i, j, k, l, e
     real(kind=8) :: xo1i, yo1i, zo1i, do1i
-    logical(kind=1) :: lnoeu
+    aster_logical :: lnoeu
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES
 !     RQ : 2 POINTS DEDANS
@@ -50,14 +51,14 @@ function dvolu4(coord, norm, coord1)
     do 10 k = 1, 4
         if (norm(1,k) .eq. 1 .and. i .gt. 0) j = k
         if (norm(1,k) .eq. 1 .and. i .eq. 0) i = k
-10  end do
+ 10 end do
 !
 ! 2 - RECHERCHE DU PREMIER POINT HORS PLAN
 !
     e = 0
     do 20 k = 1, 4
         if (norm(2,k) .ne. 0 .and. e .eq. 0) e = k
-20  end do
+ 20 end do
 !
 ! 3 - NOEU1 ET NOEU2 SONT CONFONDUS AVEC LES 2 SOMMETS I ET J
 ! RECHERCHE DE LA CORRESPONDANCE SI LNOEU ALORS I=NOEU1 SINON I=NOEU2

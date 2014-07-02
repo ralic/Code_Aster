@@ -19,6 +19,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -57,15 +58,15 @@ subroutine xconno(mox, chfis, base, opt, param,&
 !
 !
     integer :: nfis, ifis, jj, ino, ii, kk, iret
-    integer :: ima, icmp, nbnom,  jlcnx
+    integer :: ima, icmp, nbnom, jlcnx
     integer :: ibid, jg, nmaenr, i
-    integer ::    jcnsv,  jcnsl,  jcnsl2
-    integer :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad,  nncp
-    integer :: jcesd2,  jcesl2,   itypma, ndime, ndim
+    integer :: jcnsv, jcnsl, jcnsl2
+    integer :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad, nncp
+    integer :: jcesd2, jcesl2, itypma, ndime, ndim
     character(len=3) :: tsca
     character(len=19) :: ces, cns, ligrel, cns2, ces2
     character(len=24) :: grp(3)
-    logical(kind=1) :: lstno
+    aster_logical :: lstno
     character(len=8) :: ma, nomgd, nomfis, licmp(2)
     integer, pointer :: nbsp(:) => null()
     integer, pointer :: connex(:) => null()

@@ -19,7 +19,8 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -67,7 +68,7 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
     integer :: nbsurf, nbma, nbnoq, nbno
     integer :: iatyma, itypma
     character(len=8) :: nomtm
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
     integer :: jindno, jelino
     integer :: jdecno, jdecqu
     integer :: posno, numno1, numno2
@@ -153,13 +154,13 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
                                     elimno = elimno + 1
                                 endif
                             endif
-80                      continue
-70                  continue
+ 80                     continue
+ 70                 continue
                 endif
-30          continue
-20      continue
-21      continue
-10  end do
+ 30         continue
+ 20     continue
+ 21     continue
+ 10 end do
 !
     ASSERT((2*nzoco).eq.nsuco)
 !

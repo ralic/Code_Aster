@@ -1,6 +1,7 @@
 subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
                   factus)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/rc32f0.h"
 #include "asterfort/rc32f2.h"
@@ -32,7 +33,7 @@ subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, ifm, niv, icompt
     real(kind=8) :: fuijm, ukl
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -44,13 +45,13 @@ subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
         do 100 k = 1, nbsigr
             i1 = nbsigr*(k-1)
             write(ifm,1000) situ(k), nocc(k), (fuij(i1+l),l=1,nbsigr)
-100      continue
+100     continue
     endif
 !
     icompt = 0
     ug = 0.d0
 !
-10  continue
+ 10 continue
     fuijm = 0.d0
     trouve = .false.
 !
@@ -91,13 +92,13 @@ subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
         do 110 k = 1, nbsigr
             i1 = nbsigr*(k-1)
             write(ifm,1000) situ(k), nocc(k), (fuij(i1+l),l=1,nbsigr)
-110      continue
+110     continue
     endif
 !
     ug = ug + ukl
     goto 10
 !
-9999  continue
+9999 continue
 !
     1000 format(1p,i7,i9,'|',40(e9.2,'|'))
     1010 format(1p,7x,'NB_OCCUR ','|',40(i9,'|'))

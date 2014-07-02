@@ -3,6 +3,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
@@ -72,7 +73,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::   jlino
+    integer :: jlino
     integer :: nb_maxi, nb_term
     real(kind=8) :: un, zero
     character(len=8) :: nomnoe_a, nomnoe_b, nomnoe_c, nomnoe_m
@@ -87,8 +88,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
     complex(kind=8) :: vale_cplx
     character(len=8) :: vale_fonc
     character(len=4) :: type_coef
-    logical(kind=1) :: l_trian
-    logical :: l_same
+    aster_logical :: l_trian, l_same
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
     integer, pointer :: dime(:) => null()
@@ -201,7 +201,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
         enddo
     endif
 !
-80  continue
+ 80 continue
 !
     if (l_trian) then
 !
@@ -435,7 +435,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
                     if (lab .gt. dist_mini) goto 260
                 enddo
 !
-260              continue
+260             continue
 !
 ! ------------- Try to define normal to AB
 !
@@ -552,10 +552,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
                             do j = 1, 9
                                 coer(j) = matr_7(i,j)
                             enddo
-                            call afrela(coer, coec, lisddl, lisno,&
-                                        dime, direct, nb_term, vale_real, vale_cplx,&
-                                        vale_fonc, type_coef, type_vale, type_lagr, 0.d0,&
-                                        lisrel)
+                            call afrela(coer, coec, lisddl, lisno, dime,&
+                                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
                         enddo
                     endif
                 enddo

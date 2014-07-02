@@ -19,6 +19,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/critev.h"
 #include "asterfort/diagp3.h"
@@ -52,7 +53,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !                F := COPILO(1,2)+COPILO(2,2)*ETA = TAU
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: cplan
+    aster_logical :: cplan
     integer :: ndim, ndimsi, k, iter, nitmax
     integer :: ifm, niv
     real(kind=8) :: trepsd, coplan, sigeld(6)
@@ -156,7 +157,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                 trepsm=0.d0
                 do 1 k = 1, ndim
                     trepsm=trepsm+epsm(k)
- 1              continue
+  1             continue
                 if (trepsm .gt. 0.d0) then
                     trepsm=0.d0
                 endif
@@ -201,19 +202,19 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     do 44 k = 1, 3
         epsp(k) = epsm(k)+epspc(k)
         epsd(k) = epsdc(k)
-44  end do
+ 44 end do
 !
 !
     do 45 k = 4, ndimsi
         epsp(k) = epsm(k)+epspc(k)
         epsd(k) = epsdc(k)
-45  end do
+ 45 end do
 !
     if (ndimsi .lt. 6) then
         do 46 k = ndimsi+1, 6
             epsp(k)=0.d0
             epsd(k)=0.d0
-46      continue
+ 46     continue
     endif
 !
     phim = epsm(ndimsi+2) + r*epsm(ndimsi+1)
@@ -257,13 +258,13 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     trepsd = epsd(1)+epsd(2)+epsd(3)
     do 60 k = 1, ndimsi
         sigeld(k) = lambda*trepsd*kron(k) + deuxmu*epsd(k)
-60  end do
+ 60 end do
 !
     epsnor = 1.d0/sqrt(0.5d0 * ddot(ndimsi,epsd,1,sigeld,1))
 !
     do 678 k = 1, 7
         epsd(k)=epsd(k)*epsnor
-678  end do
+678 end do
 !
 !
 !
@@ -361,14 +362,14 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                 goto 555
             endif
             call zerod2(x, y, z)
-555          continue
+555         continue
 !
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 !
-200      continue
+200     continue
         call utmess('F', 'PILOTAGE_87')
-201      continue
+201     continue
 !
         copilo(2,1) =z(3)/epsnor
         copilo(1,1) = tau-x(3)*copilo(2,1)*epsnor
@@ -399,13 +400,13 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                 goto 556
             endif
             call zerod2(x, y, z)
-556          continue
+556         continue
 !
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
-202      continue
+202     continue
         call utmess('F', 'PILOTAGE_87')
-203      continue
+203     continue
 !
         copilo(2,1) =z(3)/epsnor
         copilo(1,1) = tau-x(3)*copilo(2,1)*epsnor
@@ -445,7 +446,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
         iter=0
 !
-750      continue
+750     continue
 !
         if (iter .lt. nitmax) then
             xs=(y2-y1+z1*x1-z2*x2)/(z1-z2)
@@ -476,7 +477,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             goto 666
         endif
 !
-751      continue
+751     continue
 !
 !
 ! il y a une solution sur [ETAINF,XS] et une sur [XS,ETASUP]
@@ -502,14 +503,14 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                 goto 557
             endif
             call zerod2(x, y, z)
-557          continue
+557         continue
 !
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 !
-204      continue
+204     continue
         call utmess('F', 'PILOTAGE_87')
-205      continue
+205     continue
 !
         copilo(2,1) =z(3)/epsnor
         copilo(1,1) = tau-x(3)*copilo(2,1)*epsnor
@@ -534,14 +535,14 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                 goto 558
             endif
             call zerod2(x, y, z)
-558          continue
+558         continue
 !
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 !
-206      continue
+206     continue
         call utmess('F', 'PILOTAGE_87')
-207      continue
+207     continue
 !
         copilo(2,2) =z(3)/epsnor
         copilo(1,2) = tau-x(3)*copilo(2,2)*epsnor
@@ -551,13 +552,13 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
     endif
 !
-666  continue
+666 continue
     copilo(1,1) = 0.d0
     copilo(2,1) = 0.d0
     copilo(1,2) = r8vide()
     copilo(2,2) = r8vide()
 !
 !
-9999  continue
+9999 continue
 !
 end subroutine

@@ -1,5 +1,6 @@
 subroutine afvarc(chmat, nomail, nomode)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8nnem.h"
@@ -49,7 +50,7 @@ subroutine afvarc(chmat, nomail, nomode)
 ! ----------------------------------------------------------------------
     integer :: n1, n2, nboccv, nbma, k, ncmp
     integer :: ifac, nbfac, nmxfac, nmxcmp, nbvarc, nbtou, jma
-    integer :: iocc,     kvarc, nbcvrc
+    integer :: iocc, kvarc, nbcvrc
     integer :: jcvnom, jcvvar, jcvcmp, jcvgd, itrou, nbm1, nbgm1
     integer :: nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
 !
@@ -63,7 +64,7 @@ subroutine afvarc(chmat, nomail, nomode)
     character(len=8) :: novarc, novar1, novar2, livarc(nmxfac), knumer
     character(len=8) :: nocvrc
     real(kind=8) :: vrcref(nmxcmp), rcmp(10), vref
-    logical(kind=1) :: errgd, ldetr, lautr
+    aster_logical :: errgd, ldetr, lautr
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: valv1(:) => null()
     character(len=16), pointer :: valv2(:) => null()

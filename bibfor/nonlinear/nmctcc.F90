@@ -1,9 +1,10 @@
-subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
-                  sdstat, defico, resoco, valinc, solalg, &
+subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
+                  sdstat, defico, resoco, valinc, solalg,&
                   mmcvca, instan)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -46,7 +47,7 @@ subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
     character(len=19), intent(in) :: valinc(*)
     character(len=19), intent(in) :: solalg(*)
     real(kind=8), intent(in) :: instan
-    logical(kind=1), intent(out) :: mmcvca
+    aster_logical, intent(out) :: mmcvca
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,12 +74,12 @@ subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    logical(kind=1) :: ltfcm, lctcc, lxfcm, lfrot, lerroc
+    aster_logical :: ltfcm, lctcc, lxfcm, lfrot, lerroc
     integer :: ntpc, itemul, maxcon, ctcsta
     integer :: mmitca
     character(len=8) :: nomo
     integer :: iterat
-    logical(kind=1) :: cycl_flip
+    aster_logical :: cycl_flip
 !
 ! ----------------------------------------------------------------------
 !
@@ -125,7 +126,7 @@ subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
                         mmcvca)
         endif
     else if (lctcc) then
-        call mmmbca(noma  , sddyna, iterat, defico, resoco, &
+        call mmmbca(noma, sddyna, iterat, defico, resoco,&
                     sdstat, valinc, solalg, ctcsta, mmcvca,&
                     instan)
         call mm_cycl_flip(defico, resoco, cycl_flip)

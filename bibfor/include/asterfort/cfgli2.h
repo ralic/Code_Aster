@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
                       nbliac, llf, ajliai, spliai, indic,&
@@ -29,6 +31,6 @@ interface
         integer :: ajliai
         integer :: spliai
         integer :: indic
-        logical(kind=1) :: liasup
+        aster_logical :: liasup
     end subroutine cfgli2
 end interface

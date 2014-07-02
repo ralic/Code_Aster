@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
                       vff1, vff2, idff1, vu, vp,&
@@ -36,7 +38,7 @@ interface
         real(kind=8) :: geomi(ndim, nno1)
         real(kind=8) :: sig(2*ndim+1, npg)
         real(kind=8) :: ddl(*)
-        logical(kind=1) :: mini
+        aster_logical :: mini
         real(kind=8) :: vect(*)
     end subroutine nufnpd
 end interface

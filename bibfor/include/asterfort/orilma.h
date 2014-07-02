@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine orilma(noma, ndim, listma, nbmail, norien,&
                       ntrait, reorie, nbmavo, mailvo)
@@ -23,7 +25,7 @@ interface
         integer :: nbmail
         integer :: norien
         integer :: ntrait
-        logical(kind=1) :: reorie
+        aster_logical :: reorie
         integer :: nbmavo
         integer :: mailvo(*)
     end subroutine orilma

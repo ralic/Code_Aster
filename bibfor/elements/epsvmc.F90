@@ -49,6 +49,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/eps1mc.h"
@@ -67,7 +68,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
     real(kind=8) :: epsth(162), eps2(162), xyzgau(3), d(4, 4)
     real(kind=8) :: zero, un, deux
     integer :: i, igau, icodre(1)
-    logical(kind=1) :: l_modi_cp
+    aster_logical :: l_modi_cp
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
@@ -76,10 +77,10 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
     un = 1.0d0
     deux = 2.0d0
 !
-    epsm(1:nbsig*npg)  = zero
-    eps2(1:nbsig*npg)  = zero
+    epsm(1:nbsig*npg) = zero
+    eps2(1:nbsig*npg) = zero
     epsth(1:nbsig*npg) = zero
-
+!
 !
 !
 ! --- CALCUL DES DEFORMATIONS DU PREMIER ORDRE
@@ -136,7 +137,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
             xyzgau(1) = zero
             xyzgau(2) = zero
             xyzgau(3) = zero
-
+!
 !  --     il s'agit de calculer EPS33 : pour cela il faut donner la 
 !  --     condition SIG33=0 dans l'expression complete de la loi de 
 !  --     Hooke c'est à dire avec la loi 3D : 
@@ -144,14 +145,14 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !  --     isotrope) l'expression classique : 
 !  --     Eps33 = -Nu / (1-Nu) * (Eps11 + Eps22).
 ! ---     voir issue12540
-
-
+!
+!
             l_modi_cp = .true.
 !
 !  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
-            call dmatmc(fami, mater, instan, '+', igau, &
+            call dmatmc(fami, mater, instan, '+', igau,&
                         1, repere, xyzgau, nbsig, d,&
                         l_modi_cp)
 !

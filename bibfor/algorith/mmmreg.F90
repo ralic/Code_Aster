@@ -19,7 +19,8 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -67,7 +68,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
     integer :: izone, imae, iptc, iptm, i
     integer :: nuno, ibid, jdecme
     integer :: posmae, nummae, nummam
-    integer ::  ilong
+    integer :: ilong
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2
     integer :: jglie, jglim
     integer :: ztabf
@@ -76,8 +77,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
     real(kind=8) :: deplpm(3), deplpe(3)
     real(kind=8) :: tau1(3), tau2(3), ff(9)
     character(len=8) :: aliase, aliasm
-    logical(kind=1) :: lveri
-    logical lcond
+    aster_logical :: lveri
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
 !
@@ -187,7 +187,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
                     deplpe(1) = deplpe(1)+cnsv(ndd1*(nuno-1)+1) *ff(i)
                     deplpe(2) = deplpe(2)+cnsv(ndd1*(nuno-1)+2) *ff(i)
                     deplpe(3) = deplpe(3)+cnsv(ndd1*(nuno-1)+3) *ff(i)
-33              continue
+ 33             continue
 !
 ! --------- DEPLACEMENT DU NOEUD MAITRE,
 ! --------- PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
@@ -204,18 +204,15 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 !
                 do 40 i = 1, nnm
                     nuno = connex(1+zi(ilong-1+nummam)+i-2)
-                    lcond=zl(jdepdl-1+ndd1*(nuno-1)+1)
-                    ASSERT(lcond)
-                    lcond=zl(jdepdl-1+ndd1*(nuno-1)+2)
-                    ASSERT(lcond)
+                    ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+1))
+                    ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+2))
                     deplpm(1) = deplpm(1)+cnsv(ndd1*(nuno-1)+1) *ff(i)
                     deplpm(2) = deplpm(2)+cnsv(ndd1*(nuno-1)+2) *ff(i)
                     if (ndimg .eq. 3) then
-                        lcond=zl(jdepdl-1+ndd1*(nuno-1)+3)
-                        ASSERT(lcond)
+                        ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+3))
                         deplpm(3) = deplpm(3)+cnsv(ndd1*(nuno- 1)+3)*ff(i)
                     endif
-40              continue
+ 40             continue
 !
 ! --------- ECRITURE DES GLISSEMENTS
 !
@@ -238,10 +235,10 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
-30          continue
-20      continue
-25      continue
-10  end do
+ 30         continue
+ 20     continue
+ 25     continue
+ 10 end do
 !
     call jedema()
 end subroutine

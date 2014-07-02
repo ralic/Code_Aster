@@ -68,6 +68,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     implicit none
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
@@ -94,8 +95,8 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     character(len=24) :: valk(2)
     character(len=8) :: ma
 !
-    logical(kind=1) :: inval
-    logical(kind=1) :: cas2d, cas3d
+    aster_logical :: inval
+    aster_logical :: cas2d, cas3d
 !
     integer :: nbnoe, noecon(nbnoe), maicon(nbmar), marcon(nbmar)
     integer :: mbcor(nbmar), jmicor(nbmar)
@@ -121,15 +122,15 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !
     do 10 inoe = 1, nbnoe
         noecon(inoe)=0
-10  end do
+ 10 end do
 !
     do 20 imai = 1, nbmar
         maicon(imai)=0
-20  end do
+ 20 end do
 !
     nbmarc=0
     ierr=0
-30  continue
+ 30 continue
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES GROUPE_MA_FISSURE
 !     ------------------------------------------------------------------
@@ -208,12 +209,12 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
                 do 40 icoc = 1, nbcoc
                     inoc=zi(imicoc+icoc-1)
                     noecon(inoc)=noecon(inoc)+1
-40              continue
-50          continue
+ 40             continue
+ 50         continue
 !     ------------------------------------------------------------------
         endif
 !     ------------------------------------------------------------------
-60  end do
+ 60 end do
     if (inval) then
         call utmess('F', 'ALGORITH2_28')
     endif
@@ -260,7 +261,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
             inor=zi(imicor+icor-1)
             if (noecon(inor) .ne. 0) nbcom=nbcom+1
 !
-70      continue
+ 70     continue
         if (nbcom .ge. itest) then
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
@@ -279,7 +280,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
                 marcon(nbmarc)=imar
             endif
         endif
-80  end do
+ 80 end do
 !     ==================================================================
 !CC      ON COMMENTE JEMARQ CAR ADRESSES PASSEES EN ARGUMENT
 !CC      CALL JEDEMA()

@@ -1,5 +1,6 @@
 subroutine tbexp2(nomta, para)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/tbexip.h"
@@ -29,7 +30,7 @@ subroutine tbexp2(nomta, para)
 ! ----------------------------------------------------------------------
     character(len=4) :: typpar
     character(len=24) :: valk(2)
-    logical(kind=1) :: exist
+    aster_logical :: exist
 ! DEB------------------------------------------------------------------
 !
     call jemarq()

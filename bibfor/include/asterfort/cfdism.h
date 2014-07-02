@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
         character(len=24) :: defico
-        logical(kind=1) :: ldpou
-        logical(kind=1) :: ldcoq
+        aster_logical :: ldpou
+        aster_logical :: ldcoq
         integer :: posnoe
         real(kind=8) :: distst
     end subroutine cfdism

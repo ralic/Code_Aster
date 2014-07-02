@@ -45,6 +45,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !                 DU FLUIDE
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/coesp1.h"
 #include "asterfort/coesp4.h"
@@ -62,7 +63,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    logical(kind=1) :: casint
+    aster_logical :: casint
     character(len=8) :: nomu, nomzon
     character(len=19) :: spectr, base
     real(kind=8) :: vite, vmoyzi, vmoyto
@@ -129,8 +130,8 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             profvn = nomzon
             goto 11
         endif
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 !
 !
 ! --- 2.ACCES AU PROFIL DE VITESSE
@@ -176,8 +177,8 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             n1 = ik
             goto 51
         endif
-50  end do
-51  continue
+ 50 end do
+ 51 continue
 !
     do 60 ik = nbp, 1, -1
         if (zr(ipvn+nbp+ik-1) .ne. 0.d0) then
@@ -185,8 +186,8 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             n2 = ik
             goto 61
         endif
-60  end do
-61  continue
+ 60 end do
+ 61 continue
 !
 ! --- 5.2.CREATION D UN PROFIL DE VITESSE NORMALISE POUR
 ! ---     LE CALCUL DES LONGUEURS DE CORRELATION GENERALISEES
@@ -194,10 +195,10 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     call wkvect('&&SPECT1.TEMP.VITN', 'V V R', nbp*2, ivitn)
     do 70 i = n1, n2
         zr(ivitn+i-1+nbp) = zr(ipvn+i-1+nbp) / vmoyzi
-70  end do
+ 70 end do
     do 71 i = 1, nbp
         zr(ivitn+i-1 ) = zr(ipvn+i-1 )
-71  end do
+ 71 end do
 !
 ! --- 5.3.CREATION D UN VECTEUR DE TRAVAIL POUR STOCKER
 ! ---     LES LONGUEURS DE CORRELATION GENERALISEES
@@ -220,7 +221,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             if (depla(ide) .eq. nomcmp) then
                 idep = ide
             endif
-20      continue
+ 20     continue
     else
         nbcmp=3
     endif
@@ -234,18 +235,18 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                 call jeveuo(nomcha, 'L', icha)
                 do 30 ip = 1, nbp
                     zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+idep- 1)
-30              continue
+ 30             continue
                 call jelibe(nomcha)
-40          continue
+ 40         continue
         else
             do 45 im = 1, nbm
                 write(nomcha(14:16),'(I3.3)') nuor(im)
                 call jeveuo(nomcha, 'L', icha)
                 do 35 ip = 1, nbp
                     zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+icmp- 1)
-35              continue
+ 35             continue
                 call jelibe(nomcha)
-45          continue
+ 45         continue
         endif
 !
         do 90 jm = imodi, imodf
@@ -267,9 +268,9 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                     call utmess('A', 'MODELISA7_7', ni=2, vali=vali, nr=3,&
                                 valr=valx)
                 endif
-80          continue
-90      continue
-105  end do
+ 80         continue
+ 90     continue
+105 end do
 !
 !
 ! --- 6.CALCUL DES INTERSPECTRES D'EXCITATIONS MODALES ---
@@ -303,7 +304,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             sx = (fr/frc)** (beta/2.d0)
             sx = (1.d0-sx)* (1.d0-sx) + 4.d0*eps*eps*sx
             zr(lwr+ifre-1) = phi0/sx
-100      continue
+100     continue
 !
     else if (ispect.eq.2) then
 !
@@ -317,7 +318,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             fr = dble(abs(fr))
             sx = phi0/ (1.d0+ (fr/frc)**beta)
             zr(lwr+ifre-1) = sx
-110      continue
+110     continue
 !
     else if (ispect.eq.3) then
 !
@@ -342,7 +343,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !
             sx = phi0/ (fr**beta)
             zr(lwr+ifre-1) = sx
-120      continue
+120     continue
 !
     else if (ispect.eq.4) then
 !
@@ -353,7 +354,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                 rom = rom + zr(irhoe+nbp+ii-1)
                 ic = ic + 1
             endif
-130      continue
+130     continue
 !
         rom = rom/dble(ic)
         rov = rom*vitezi
@@ -370,7 +371,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             fr = dble(abs(fr))
             sx = phi0/ ((fr**beta)* (rov**gamma))
             zr(lwr+ifre-1) = sx
-140      continue
+140     continue
 !
     endif
 !
@@ -402,9 +403,9 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                                           )
                     zr(ivale+2* (il-1)+1) = 0.d0
                 endif
-150          continue
-160      continue
-170  continue
+150         continue
+160     continue
+170 continue
 !
     call jedetr('&&SPECT1.TEMP.DEFM')
     call jedetr('&&SPECT1.TEMP.VITN')

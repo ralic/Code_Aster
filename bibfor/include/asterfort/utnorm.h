@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
                       poinc2, jno, mno, zrino2, zrino1,&
@@ -39,7 +41,7 @@ interface
         real(kind=8) :: xn(9)
         real(kind=8) :: yn(9)
         real(kind=8) :: jac(9)
-        logical(kind=1) :: laxi
+        aster_logical :: laxi
         real(kind=8) :: jacob
         integer :: ifm
         integer :: niv

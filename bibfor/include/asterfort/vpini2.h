@@ -19,8 +19,9 @@ interface
     subroutine vpini2(&
             eigsol, lcomod, nbvecg, nfreqg, nbpark, nbpari, nbparr, vecrer, vecrei, vecrek, vecvp,&
             mxresf)
+#include "asterf_types.h"
         character(len=19) , intent(in)    :: eigsol
-        logical (kind=1)  , intent(in)    :: lcomod
+        aster_logical , intent(in)    :: lcomod
         integer           , intent(in)    :: nbvecg
         integer           , intent(in)    :: nfreqg
         integer           , intent(in)    :: nbpark
@@ -30,7 +31,6 @@ interface
         character(len=24) , intent(in)    :: vecrei
         character(len=24) , intent(in)    :: vecrek
         character(len=24) , intent(in)    :: vecvp
-!!
         integer           , intent(out)   :: mxresf
     end subroutine vpini2
 end interface

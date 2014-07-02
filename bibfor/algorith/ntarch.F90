@@ -20,6 +20,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/didern.h"
@@ -37,7 +38,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
     character(len=24) :: sdieto
     integer :: numins
     real(kind=8) :: para(*)
-    logical(kind=1) :: lnonl, force
+    aster_logical :: lnonl, force
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
     character(len=19) :: lisch2
@@ -126,7 +127,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
                     numarc, force)
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

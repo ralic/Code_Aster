@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                       toucmp, nbcmp, nbval, nkcmp, ndim)
@@ -23,7 +25,7 @@ interface
         character(len=8) :: resu
         character(len=24) :: nkcha
         character(len=8) :: typac
-        logical(kind=1) :: toucmp
+        aster_logical :: toucmp
         integer :: nbcmp
         integer :: nbval
         character(len=24) :: nkcmp

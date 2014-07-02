@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
                       r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                       fe, dgdgl, ff, dfdi, f, eps, grad)
-        logical(kind=1), intent(in) :: axi
+        aster_logical, intent(in) :: axi
         integer, intent(in) :: nnop
         integer, intent(in) :: nnos
         integer, intent(in) :: idepl
-        logical(kind=1), intent(in) :: grand
+        aster_logical, intent(in) :: grand
         integer, intent(in) :: ndim
         real(kind=8), intent(in) :: he(nfiss)
         real(kind=8), intent(in) :: r

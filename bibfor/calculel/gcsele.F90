@@ -1,12 +1,13 @@
 subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
-                  chepsi, chpesa, chrota, lvolu , l1d2d ,&
-                  l2d3d , lpres , lepsi , lpesa , lrota ,&
+                  chepsi, chpesa, chrota, lvolu, l1d2d,&
+                  l2d3d, lpres, lepsi, lpesa, lrota,&
                   lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
                   lfpesa, lfrota, carte0, lformu, lpchar,&
                   lccomb)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 !
 ! ======================================================================
@@ -29,13 +30,13 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
 !
     character(len=16) :: motcle
     character(len=19) :: carte0
-    logical(kind=1) :: lformu, lpchar, lccomb
+    aster_logical :: lformu, lpchar, lccomb
     character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
     character(len=19) :: chepsi, chpesa, chrota
-    logical(kind=1) :: lvolu, l1d2d, l2d3d, lpres
-    logical(kind=1) :: lepsi, lpesa, lrota
-    logical(kind=1) :: lfvolu, lf1d2d, lf2d3d, lfpres
-    logical(kind=1) :: lfepsi, lfpesa, lfrota
+    aster_logical :: lvolu, l1d2d, l2d3d, lpres
+    aster_logical :: lepsi, lpesa, lrota
+    aster_logical :: lfvolu, lf1d2d, lf2d3d, lfpres
+    aster_logical :: lfepsi, lfpesa, lfrota
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,43 +80,43 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
     if (motcle .eq. 'FORCE_INTERNE#2D' .or. motcle .eq. 'FORCE_INTERNE#3D') then
         carte0 = chvolu
         if (.not.lvolu) lpchar = .true.
-        lvolu  = .true.
+        lvolu = .true.
         lformu = lfvolu
         lccomb = .true.
     else if (motcle.eq.'FORCE_CONTOUR') then
         carte0 = ch1d2d
         if (.not.l1d2d) lpchar = .true.
-        l1d2d  = .true.
+        l1d2d = .true.
         lformu = lf1d2d
         lccomb = .true.
     else if (motcle.eq.'FORCE_FACE') then
         carte0 = ch2d3d
         if (.not.l2d3d) lpchar = .true.
-        l2d3d  = .true.
+        l2d3d = .true.
         lformu = lf2d3d
         lccomb = .true.
     else if (motcle.eq.'PRES_REP') then
         carte0 = chpres
         if (.not.lpres) lpchar = .true.
-        lpres  = .true.
+        lpres = .true.
         lformu = lfpres
         lccomb = .true.
     else if (motcle.eq.'EPSI_INIT') then
         carte0 = chepsi
         if (.not.lepsi) lpchar = .true.
-        lepsi  = .true.
+        lepsi = .true.
         lformu = lfepsi
         lccomb = .false.
     else if (motcle.eq.'PESANTEUR') then
         carte0 = chpesa
         if (.not.lpesa) lpchar = .true.
-        lpesa  = .true.
+        lpesa = .true.
         lformu = lfpesa
         lccomb = .false.
     else if (motcle.eq.'ROTATION') then
         carte0 = chrota
         if (.not.lrota) lpchar = .true.
-        lrota  = .true.
+        lrota = .true.
         lformu = lfrota
         lccomb = .false.
     else

@@ -17,6 +17,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -53,7 +54,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !  IN        ELRF3D(10) K8 : NOMS DES 10 TYPES DE MAILLES 3D
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: lext
+    aster_logical :: lext
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     integer :: cntetr(4, 1), cnpent(4, 3), cnhexa(4, 6), cnpyra(4, 2)
@@ -63,8 +64,8 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     real(kind=8) :: ff(nbnomx), cooele(3*nbnomx)
     character(len=8) :: elrefa, m1, m2, fapg(nbfamx), alarme
     character(len=16) :: k16bid, nomcmd
-    integer ::  i1conb, i1conu,   nno1, nno2
-    integer :: nma1, nma2, ialim1, ialin1, ialin2,   ilcnx1
+    integer :: i1conb, i1conu, nno1, nno2
+    integer :: nma1, nma2, ialim1, ialin1, ialin2, ilcnx1
     integer :: j2xxk1, i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu
     integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno, kdim
     integer :: nnos, nbfpg, kk, ino, nuno, iret, ibid
@@ -74,7 +75,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
     character(len=8) :: nono2
-    logical(kind=1) :: loin2
+    aster_logical :: loin2
     integer, pointer :: typmail(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
@@ -314,13 +315,14 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !       -- on choisit la meilleure approximation entre xr1 et xr2:
         call pjefmi(elrefa, nno, cooele, geom2(3*(ino2-1)+1), ndim,&
                     xr1, xr2, lext, xr3, distv)
-
-        if (nint(disprj).eq.999) then
+!
+        if (nint(disprj) .eq. 999) then
             loin2=.true.
         else if (disprj .gt. 1.0d-01) then
             loin2=.true.
             nbnodm = nbnodm + 1
-            call inslri(nbmax, nbnod, tdmin2, tino2m, distv,ino2)
+            call inslri(nbmax, nbnod, tdmin2, tino2m, distv,&
+                        ino2)
         endif
 !
         zr(i2coco-1+3*(ino2-1)+1)=xr3(1)
@@ -342,8 +344,8 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         ideca2=ideca2+nbno
  20     continue
     enddo
-
-
+!
+!
 !   -- emission d'un eventuel message d'alarme:
 !   --------------------------------------------
     if (loin2) then

@@ -3,6 +3,7 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
                   btnb, btlc, btco, ifm, niv,&
                   ldmax, distma, loin, dmin)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8maem.h"
@@ -66,9 +67,9 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
 !
     real(kind=8) :: cobar2(3), dmin, d2, dx, dy, xmin, ymin, surf, rtr3
     integer :: p, q, p1, q1, p2, q2, ino2, i, k, iposi, nx, ntrbt
-    logical(kind=1) :: ok
+    aster_logical :: ok
 !
-    logical(kind=1) :: ldmax, loin
+    aster_logical :: ldmax, loin
     real(kind=8) :: distma
 ! DEB ------------------------------------------------------------------
     nbtrou=0
@@ -90,19 +91,19 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
     q=int((geom2(3*(ino2-1)+2)-ymin)/dy)+1
     ntrbt=btnb((q-1)*nx+p)
     iposi=btlc((q-1)*nx+p)
-    do 10,k=1,ntrbt
-    i=btco(iposi+k)
-    call pj2da1(ino2, geom2, i, geom1, tria3,&
-                cobar2, ok)
-    if (ok) then
-        itr3=i
-        nbtrou=2
-        cobary(1)=cobar2(1)
-        cobary(2)=cobar2(2)
-        cobary(3)=cobar2(3)
-        goto 9999
-    endif
-    10 end do
+    do 10 k = 1, ntrbt
+        i=btco(iposi+k)
+        call pj2da1(ino2, geom2, i, geom1, tria3,&
+                    cobar2, ok)
+        if (ok) then
+            itr3=i
+            nbtrou=2
+            cobary(1)=cobar2(1)
+            cobary(2)=cobar2(2)
+            cobary(3)=cobar2(3)
+            goto 9999
+        endif
+ 10 end do
 !
 !
 !
@@ -121,26 +122,26 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
     call pj2dgb(ino2, geom2, geom1, tria3, btdi,&
                 btvr, btnb, btlc, btco, p1,&
                 q1, p2, q2)
-    do 50,p=p1,p2
-    do 40,q=q1,q2
-    ntrbt=btnb((q-1)*nx+p)
-    iposi=btlc((q-1)*nx+p)
-    do 30,k=1,ntrbt
-    i=btco(iposi+k)
-    call pj2da2(ino2, geom2, i, geom1, tria3,&
-                cobar2, d2, surf)
-    if (sqrt(d2) .lt. dmin) then
-        rtr3=surf
-        itr3=i
-        dmin=sqrt(d2)
-        nbtrou=1
-        cobary(1)=cobar2(1)
-        cobary(2)=cobar2(2)
-        cobary(3)=cobar2(3)
-    endif
-30  continue
-40  continue
-    50 end do
+    do 50 p = p1, p2
+        do 40 q = q1, q2
+            ntrbt=btnb((q-1)*nx+p)
+            iposi=btlc((q-1)*nx+p)
+            do 30 k = 1, ntrbt
+                i=btco(iposi+k)
+                call pj2da2(ino2, geom2, i, geom1, tria3,&
+                            cobar2, d2, surf)
+                if (sqrt(d2) .lt. dmin) then
+                    rtr3=surf
+                    itr3=i
+                    dmin=sqrt(d2)
+                    nbtrou=1
+                    cobary(1)=cobar2(1)
+                    cobary(2)=cobar2(2)
+                    cobary(3)=cobar2(3)
+                endif
+ 30         continue
+ 40     continue
+ 50 end do
 !
 !
     if (nbtrou .eq. 1) then
@@ -154,6 +155,6 @@ subroutine pj2dap(ino2, geom2, ma2, geom1, tria3,&
         dmin=0.d0
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

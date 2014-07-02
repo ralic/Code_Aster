@@ -20,6 +20,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -43,7 +44,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     character(len=19) :: sddyna, sddisc
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
-    logical(kind=1) :: scotch
+    aster_logical :: scotch
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,9 +75,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     character(len=24) :: cfsc
     real(kind=8) :: alpha, beta, gamma, theta, phi, unthet, kappa
     real(kind=8) :: instam, instap, deltat
-    logical(kind=1) :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
-    logical(kind=1) :: ldepl, lvite, lacce
-    logical(kind=1) :: lnewma, ltheta, lkrenk
+    aster_logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
+    aster_logical :: ldepl, lvite, lacce
+    aster_logical :: lnewma, ltheta, lkrenk
     real(kind=8) :: coerig, coeamo, coemas
     real(kind=8) :: coeext, coeint, coeequ, coeex2
     integer :: imode

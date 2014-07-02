@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
                       chepsi, chpesa, chrota, lvolu , l1d2d ,&
@@ -24,12 +26,12 @@ interface
                       lccomb)
         character(len=16) :: motcle
         character(len=19) :: carte0
-        logical(kind=1) :: lformu, lpchar, lccomb
+        aster_logical :: lformu, lpchar, lccomb
         character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
         character(len=19) :: chepsi, chpesa, chrota
-        logical(kind=1) :: lvolu, l1d2d, l2d3d, lpres
-        logical(kind=1) :: lepsi, lpesa, lrota
-        logical(kind=1) :: lfvolu, lf1d2d, lf2d3d, lfpres
-        logical(kind=1) :: lfepsi, lfpesa, lfrota
+        aster_logical :: lvolu, l1d2d, l2d3d, lpres
+        aster_logical :: lepsi, lpesa, lrota
+        aster_logical :: lfvolu, lf1d2d, lf2d3d, lfpres
+        aster_logical :: lfepsi, lfpesa, lfrota
     end subroutine gcsele
 end interface

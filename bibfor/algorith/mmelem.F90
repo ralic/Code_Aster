@@ -1,5 +1,5 @@
-subroutine mmelem(nomte ,ndim  ,nddl  ,typmae,nne   , &
-                  typmam,nnm   ,nnl   ,nbcps ,nbdm  , &
+subroutine mmelem(nomte, ndim, nddl, typmae, nne,&
+                  typmam, nnm, nnl, nbcps, nbdm,&
                   laxis, leltf)
 !
 ! ======================================================================
@@ -21,13 +21,14 @@ subroutine mmelem(nomte ,ndim  ,nddl  ,typmae,nne   , &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lteatt.h"
     integer :: ndim, nddl, nne, nnm, nnl
     integer :: nbcps, nbdm
     character(len=8) :: typmae, typmam
     character(len=16) :: nomte
-    logical(kind=1) :: laxis, leltf
+    aster_logical :: laxis, leltf
 !
 ! ----------------------------------------------------------------------
 !

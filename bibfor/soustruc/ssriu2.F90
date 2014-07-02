@@ -19,6 +19,7 @@ subroutine ssriu2(nomu)
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/crmeri.h"
 #include "asterfort/dismoi.h"
@@ -59,7 +60,7 @@ subroutine ssriu2(nomu)
 !
     integer :: i, scdi, schc, iblo
     character(len=8) :: promes
-    logical(kind=1) :: modif
+    aster_logical :: modif
 !
     real(kind=8) :: rtbloc
     character(len=19) :: nu, matas, stock
@@ -68,7 +69,7 @@ subroutine ssriu2(nomu)
 !-----------------------------------------------------------------------
     integer :: iakpee, iaphi0, iaphie, iascbl, iascdi
     integer :: iblold, iblph, ier, ii, iiblph, isingu, j
-    integer ::   jualf,  k, kk, lgblph
+    integer :: jualf, k, kk, lgblph
     integer :: lmat, nbbloc, nblph, nddle, nddli, ndeci, nlblph
     integer :: npvneg
     integer, pointer :: scib(:) => null()

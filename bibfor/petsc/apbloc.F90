@@ -18,6 +18,7 @@ subroutine apbloc(matass, solveu, tbloc)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
@@ -41,7 +42,7 @@ subroutine apbloc(matass, solveu, tbloc)
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     character(len=24) :: precon
-    logical(kind=1) :: leliml
+    aster_logical :: leliml
     character(len=24), pointer :: slvk(:) => null()
 !
 !----------------------------------------------------------------
@@ -54,7 +55,7 @@ subroutine apbloc(matass, solveu, tbloc)
     precon = slvk(2)
     leliml = slvk(13)(1:3).eq.'OUI'
 !
-    if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG') ) then
+    if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG')) then
         tbloc = 1
     endif
 !

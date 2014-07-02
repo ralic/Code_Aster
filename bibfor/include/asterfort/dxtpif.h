@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine dxtpif(temp, ltemp)
         real(kind=8) :: temp(3)
-        logical(kind=1) :: ltemp(3)
+        aster_logical :: ltemp(3)
     end subroutine dxtpif
 end interface

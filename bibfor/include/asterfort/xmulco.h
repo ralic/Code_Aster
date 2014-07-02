@@ -14,6 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
                       jheano, vstnc, lact, lcalel, lelim,&
@@ -28,8 +30,8 @@ interface
         integer :: jheano
         integer :: vstnc(*)
         integer :: lact(8)
-        logical(kind=1) :: lcalel
-        logical(kind=1) :: lelim
+        aster_logical :: lcalel
+        aster_logical :: lelim
         integer :: ndim
         integer :: nfe
         integer :: nfh

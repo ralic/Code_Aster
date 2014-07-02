@@ -1,5 +1,6 @@
 subroutine te0046(option, nomte)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -64,7 +65,7 @@ subroutine te0046(option, nomte)
     integer :: nfh, nfe, singu, ddlc, jpmilt, irese
     integer :: jpintt, jcnset, jheavt, jlonch, igeom, jout
     integer :: i, j, nse, ise, in, ino, ipg, kpg
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -77,7 +78,7 @@ subroutine te0046(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM ET NNOP
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -87,8 +88,7 @@ subroutine te0046(option, nomte)
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg,jvf=ivf)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg, jvf=ivf)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -107,8 +107,7 @@ subroutine te0046(option, nomte)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (.not. axi) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-        .and..not.iselli(elrefp)) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PXFGEOM', 'E', jout)
@@ -135,8 +134,8 @@ subroutine te0046(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+112         continue
+111     continue
 !
 !
 !-----------------------------------------------------------------------
@@ -150,28 +149,29 @@ subroutine te0046(option, nomte)
             do 210 i = 1, ndim
                 do 211 in = 1, nno
                     xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+in) * coorse( ndim*(in-1)+i)
-211              continue
-210          continue
+211             continue
+210         continue
 !
 !         COORDONNEES DU PG DANS L'ELEMENT DE REF PARENT : XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff)
 !
 !         NUMERO DE CE POINT DE GAUSS DANS LA FAMILLE 'XFEM'
             ipg= (ise-1) * npg + kpg
 !
             do 220 j = 1, ndim
                 zr(jout-1+ndim*(ipg-1)+j) = xe(j)
-220          continue
+220         continue
 !
 !
-200      continue
+200     continue
 !
 !-----------------------------------------------------------------------
 !         FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
 !
 !
-110  end do
+110 end do
 !
 !
     call jedema()

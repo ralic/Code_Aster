@@ -30,6 +30,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
@@ -50,9 +51,9 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
     real(kind=8) :: jeu, eta, alpha
     integer :: il, itemp1, itemp2
     integer :: deb, ddl, j, i, nddl
-    integer ::  icdl, iadim, itemp, k
-    integer ::  ncmp, hind, hfind,   nddlx, nddly
-    logical(kind=1) :: stp
+    integer :: icdl, iadim, itemp, k
+    integer :: ncmp, hind, hfind, nddlx, nddly
+    aster_logical :: stp
     integer, pointer :: vnddl(:) => null()
     integer, pointer :: neqs(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
@@ -99,15 +100,16 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
                     zr(itemp1-1+k)=1.d0
                 endif
             endif
-10      continue
-        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,.false._1)
+ 10     continue
+        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,&
+                    .false._1)
         i=0
         do 20 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 zr(il-1+hind*nd+i)=zr(itemp2-1+k)/zr(iadim)
             endif
-20      continue
+ 20     continue
     else if (ind.le.(ninc-4)) then
         deb=nd*(2*h+1)
         do 30 i = 1, nchoc
@@ -119,13 +121,13 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
                     hfind=ind-deb-(j-1)*(2*hf+1)-1
                     if (hfind .le. h) then
                         zr(il-1+nd*hfind+nddl)=jeu
-                    else if(hfind.ge.(hf+1).and.hfind.le.(hf+h)) then
+                    else if (hfind.ge.(hf+1).and.hfind.le.(hf+h)) then
                         zr(il-1+nd*(hfind-hf+h)+nddl)=jeu
                     endif
                 endif
-31          continue
+ 31         continue
             deb=deb+neqs(i)*(2*hf+1)
-30      continue
+ 30     continue
     endif
 ! ----------------------------------------------------------------------
 ! --- EQUATIONS SUPPLEMENTAIRES POUR DEFINIR LA FORCE NON-LINEAIRE
@@ -182,7 +184,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
             endif
         endif
         deb=deb+neqs(i)*(2*hf+1)
-110  continue
+110 continue
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS
 ! ----------------------------------------------------------------------

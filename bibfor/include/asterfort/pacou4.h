@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pacou4(a, n, c, d, sing)
         integer :: n
         real(kind=8) :: a(n, *)
         real(kind=8) :: c(*)
         real(kind=8) :: d(*)
-        logical(kind=1) :: sing
+        aster_logical :: sing
     end subroutine pacou4
 end interface

@@ -39,6 +39,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/iscode.h"
@@ -55,7 +56,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     character(len=24) :: temddl, temidc
     character(len=24) :: valk
     integer :: nbec, icod(nbec)
-    logical(kind=1) :: ok, okg
+    aster_logical :: ok, okg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iec, ioc, iopt, j, llncmp
@@ -83,7 +84,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     if (nbval .eq. 0 .and. iopt .eq. 1) then
         do 30 i = 1, nbcmp
             zi(ltidec+i-1) = 1
-30      continue
+ 30     continue
         call iscode(zi(ltidec), icod, nbcmp)
         goto 9999
     endif
@@ -91,7 +92,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     if (nbval .eq. 0 .and. iopt .eq. 0) then
         do 40 iec = 1, nbec
             icod(iec) = 0
-40      continue
+ 40     continue
         goto 9999
     endif
 !
@@ -117,7 +118,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
                 zi(ltidec+j-1) = 1
                 ok = .false.
             endif
-20      continue
+ 20     continue
 !
         if (ok) then
             okg = .true.
@@ -126,7 +127,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
             call utmess('E', 'VIDE_1')
         endif
 !
-10  end do
+ 10 end do
 !
     if (okg) then
         call utmess('F', 'ALGORITH15_10')
@@ -136,7 +137,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 !
     call jedetr(temddl)
 !
-9999  continue
+9999 continue
     call jedetr(temidc)
 !
     call jedema()

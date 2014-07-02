@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                       table, specmr, specmi)
@@ -22,7 +24,7 @@ interface
         character(len=16) :: movrep
         integer :: napexc
         integer :: nbmode
-        logical(kind=1) :: intmod
+        aster_logical :: intmod
         character(len=8) :: table
         real(kind=8) :: specmr(nbpf, *)
         real(kind=8) :: specmi(nbpf, *)

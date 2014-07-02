@@ -6,6 +6,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/dismoi.h"
@@ -41,9 +42,9 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     character(len=*) :: nomcmp(*), formr, partie
     integer :: nbnot, ifi, numnoe(*), nbcmp, nive
     integer :: numord
-    logical(kind=1) :: lcor
-    logical(kind=1) :: lsup, linf, lmax, lmin
-    logical(kind=1) :: lresu
+    aster_logical :: lcor
+    aster_logical :: lsup, linf, lmax, lmin
+    aster_logical :: lresu
     real(kind=8) :: borsup, borinf
 !_____________________________________________________________________
 ! ======================================================================
@@ -91,8 +92,8 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !
     character(len=1) :: type
     integer :: gd, lgconc, lgch16
-    integer ::  nuti
-    logical(kind=1) :: lmasu
+    integer :: nuti
+    aster_logical :: lmasu
     character(len=8) :: nomsdr, nomma, nomgd, cbid, forma
     character(len=16) :: nomcmd, nosy16
     character(len=19) :: chamn
@@ -102,9 +103,9 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad,  iaec,  iaprno
+    integer :: i, iad, iaec, iaprno
     integer :: iavale, ibid, ino, iret, itype
-    integer :: jncmp,    nbcmpt
+    integer :: jncmp, nbcmpt
     integer :: nbno, nbnot2, nbtitr, ncmpmx, ndim, nec, num
     character(len=8), pointer :: nomnoe(:) => null()
     integer, pointer :: vnumnoe(:) => null()

@@ -2,6 +2,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
                   nbno2, lino2, geom1, geom2, corres,&
                   ldmax, distma)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -83,10 +84,10 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     integer :: ima, ino2, ico
     integer :: iatr3, iacoo1, iacoo2
     integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
-    integer :: ialim1, ialin1,  ilcnx1, ialin2
+    integer :: ialim1, ialin1, ilcnx1, ialin2
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 !
-    logical(kind=1) :: dbg, ldmax, loin, loin2
+    aster_logical :: dbg, ldmax, loin, loin2
     real(kind=8) :: distma, dmin
     real(kind=8) :: cobary(2)
 !

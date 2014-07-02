@@ -22,6 +22,7 @@ subroutine op0164()
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
@@ -57,7 +58,7 @@ subroutine op0164()
     character(len=72) :: texte
     real(kind=8) :: a(3), a2(3)
     integer(kind=8) :: long1, long2, long3
-    logical(kind=1) :: lissf, lsym
+    aster_logical :: lissf, lsym
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

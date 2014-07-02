@@ -1,11 +1,12 @@
 subroutine dimthm(ndlno, ndlnm, ndim)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
     integer :: ndlno, ndlnm, ndim
     character(len=16) :: nomte
-    logical(kind=1) :: elsufm
+    aster_logical :: elsufm
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

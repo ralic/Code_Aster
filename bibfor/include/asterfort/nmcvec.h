@@ -15,18 +15,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
                       nbvect, ltypve, loptve, lcalve, lassve)
         character(len=4) :: oper
         character(len=*) :: typvez
         character(len=*) :: optioz
-        logical(kind=1) :: lcalc
-        logical(kind=1) :: lasse
+        aster_logical :: lcalc
+        aster_logical :: lasse
         integer :: nbvect
         character(len=6) :: ltypve(20)
         character(len=16) :: loptve(20)
-        logical(kind=1) :: lcalve(20)
-        logical(kind=1) :: lassve(20)
+        aster_logical :: lcalve(20)
+        aster_logical :: lassve(20)
     end subroutine nmcvec
 end interface

@@ -22,6 +22,7 @@ subroutine op0017()
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getltx.h"
@@ -38,9 +39,9 @@ subroutine op0017()
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nivo, n3, n1, ifi, n2, nbocc,  ncon, ipos, long(1), n4
+    integer :: nivo, n3, n1, ifi, n2, nbocc, ncon, ipos, long(1), n4
     integer :: i, iocc
-    logical(kind=1) :: lattr, lcont
+    aster_logical :: lattr, lcont
     character(len=1) :: base
     character(len=8) :: leresu
     character(len=16) :: nomfi

@@ -1,12 +1,13 @@
 subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
                   vale, valpar)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/orien2.h"
     integer :: ndim, np
     real(kind=8) :: vale(*), valpar(*), xyp(2)
-    logical(kind=1) :: nsymx, nsymy
+    aster_logical :: nsymx, nsymy
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +65,7 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
     else if (ndim .eq. 3) then
         do 10 i = 1, 10
             valpar(i) = vale(i)
-10      continue
+ 10     continue
     endif
 !
     if (nsymx .and. .not. nsymy) then

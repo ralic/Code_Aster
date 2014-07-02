@@ -64,6 +64,7 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
     implicit none
 !
 ! - VARIABLES ENTREE
+#include "asterf_types.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/eicine.h"
     integer :: ndim, nno1, nno2, dimuel, dimdef, yap1, yap2, yate
@@ -71,7 +72,7 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
     integer :: addep1, addep2, addlh1
     real(kind=8) :: vff1(nno1), vff2(nno2), dffr2(ndim-1, nno2)
     real(kind=8) :: wref, geom(ndim, nno2), ang(24)
-    logical(kind=1) :: axi
+    aster_logical :: axi
 !
 ! - VARIABLES SORTIE
 !
@@ -87,8 +88,8 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
     do 108 i = 1, dimdef
         do 109 j = 1, dimuel
             q(i,j)=0.d0
-109      continue
-108  continue
+109     continue
+108 continue
 !
 ! ======================================================================
 ! --- CALCUL DE Q ET WI ----------------------------------------------
@@ -111,9 +112,9 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
             do 12 n = 1, 2*nno1
                 kj=iu(j,n)
                 q(i,kj) = b(i,j,n)
-12          continue
-11      continue
-10  end do
+ 12         continue
+ 11     continue
+ 10 end do
 !
 !
 !
@@ -124,12 +125,12 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
             q(addep1,ip(1,n)) = vff2(n)
             do 31 i = 1, ndim-1
                 q(addep1+i,ip(1,n)) = dfdx(n)
-31          continue
+ 31         continue
             do 32 f = 1, 2
                 q(addlh1+f-1,ipf(1,f,n)) = vff2(n)
                 q(addlh1+f+1,iq(1,f,1)) = 1
-32          continue
-30      continue
+ 32         continue
+ 30     continue
     endif
 !
 !

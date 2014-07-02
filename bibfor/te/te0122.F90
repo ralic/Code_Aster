@@ -1,5 +1,6 @@
 subroutine te0122(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
@@ -37,7 +38,7 @@ subroutine te0122(option, nomte)
 !
     integer :: jgano, npg, nnos, nno, ndim, ndime, ipoids, ivf, idfde
     integer :: ichg, ichn, jtab(7), ncmp, ibid, i, j, in, ig, ntrou
-    logical(kind=1) :: quadra, jhm, interf, jlin2d, jlin3d, jquad
+    aster_logical :: quadra, jhm, interf, jlin2d, jlin3d, jquad
     character(len=8) :: lielrf(10)
 !     ------------------------------------------------------------------
 !
@@ -50,7 +51,7 @@ subroutine te0122(option, nomte)
     jhm = lteatt('TYPMOD2','EJ_HYME')
 !
     interf = lteatt('TYPMOD2','INTERFAC')
-
+!
 !
     quadra = (jquad.or.jhm.or.interf)
 !
@@ -76,13 +77,13 @@ subroutine te0122(option, nomte)
 !     INFORMATIONS SUR L'ELEMENT DE REFERENCE
     if (quadra) then
         call elref2(nomte, 2, lielrf, ntrou)
-        call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !       DIMENSION ESPACE POUR LES JOINTS QUADRA, HYME OU INTERFACE
         ndime = ndim + 1
     else
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !       DIMENSION DE L'ESPACE POUR LES JOINTS LINEAIRES
         if (jlin2d) ndime = ndim
         if (jlin3d) ndime = ndim + 1
@@ -131,7 +132,7 @@ subroutine te0122(option, nomte)
 !           NOEUDS 5,7
                 zr(in+4*ncmp) = (zr(ig) + zr(ig+ncmp))/2.d0
                 zr(in+6*ncmp) = (zr(ig) + zr(ig+ncmp))/2.d0
-10          continue
+ 10         continue
 !
         else
 !
@@ -171,9 +172,9 @@ subroutine te0122(option, nomte)
 !             (POUR L'HEXA20 : 17 18 19 20, POUR LE PENTA15 : 13 14 15)
 !             A L'IDENTIQUE DES NOEUDS MILIEU DE LA PREMIERE FACE
                     zr(in+(j+4*nno-1)*ncmp) = zr(in+(j+2*nno-1)*ncmp)
-19              continue
+ 19             continue
 !
-18          continue
+ 18         continue
 !
         endif
 !
@@ -193,7 +194,7 @@ subroutine te0122(option, nomte)
                 zr(in+3*ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0- sqrt(3.d0))/2.d0
                 zr(in+ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0+sqrt( 3.d0))/2.d0
                 zr(in+2*ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0+ sqrt(3.d0))/2.d0
-11          continue
+ 11         continue
 !
         else
 !
@@ -205,8 +206,8 @@ subroutine te0122(option, nomte)
                 in = ichn-1+i
                 do 30 j = 1, nno
                     zr(in+(j+nno-1)*ncmp) = zr(in+(j-1)*ncmp)
-30              continue
-20          continue
+ 30             continue
+ 20         continue
 !
         endif
 !

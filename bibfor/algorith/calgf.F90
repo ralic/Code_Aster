@@ -20,10 +20,11 @@ subroutine calgf(ndim, nno, axi, npg, geomi,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: axi, grand
+    aster_logical :: axi, grand
     integer :: ndim, nno, g, iw, idff, i, j, npg
     real(kind=8) :: geomi(ndim, nno), vff(nno, npg)
     real(kind=8) :: deplm(nno*ndim), deplt(nno*ndim)
@@ -93,6 +94,6 @@ subroutine calgf(ndim, nno, axi, npg, geomi,&
     do 11 i = 1, 3
         do 20 j = 1, 3
             fma(i,j) = fm(i,j) + alpha*(fmp(i,j)-fm(i,j))
-20      continue
-11  end do
+ 20     continue
+ 11 end do
 end subroutine

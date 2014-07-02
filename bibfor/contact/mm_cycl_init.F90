@@ -1,7 +1,8 @@
 subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 !
-    implicit     none
+    implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
@@ -55,7 +56,7 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
     integer :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
     integer :: slave_pt_index, slave_pt_nb
     real(kind=8) :: coef_cont, coef_frot
-    logical(kind=1) :: lveri
+    aster_logical :: lveri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,11 +77,11 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 !
     point_index = 1
     do zone_index = 1, zone_number
-        lveri           = mminfl(sd_cont_defi,'VERIF' ,zone_index)
-        slave_elt_nb    = mminfi(sd_cont_defi,'NBMAE' ,zone_index)
+        lveri = mminfl(sd_cont_defi,'VERIF' ,zone_index)
+        slave_elt_nb = mminfi(sd_cont_defi,'NBMAE' ,zone_index)
         slave_elt_shift = mminfi(sd_cont_defi,'JDECME',zone_index)
-        coef_cont       = mminfr(sd_cont_defi,'COEF_AUGM_CONT',zone_index)
-        coef_frot       = mminfr(sd_cont_defi,'COEF_AUGM_FROT',zone_index)
+        coef_cont = mminfr(sd_cont_defi,'COEF_AUGM_CONT',zone_index)
+        coef_frot = mminfr(sd_cont_defi,'COEF_AUGM_FROT',zone_index)
         p_cycl_coe(6*(zone_index-1)+1) = coef_cont
         p_cycl_coe(6*(zone_index-1)+2) = coef_frot
         p_cycl_coe(6*(zone_index-1)+3) = +1.d99
@@ -104,13 +105,13 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 ! --------- Loop on points
 !
             do slave_pt_index = 1, slave_pt_nb
-                p_cycl_his(25*(point_index-1)+2)  = coef_cont
-                p_cycl_his(25*(point_index-1)+6)  = coef_frot
+                p_cycl_his(25*(point_index-1)+2) = coef_cont
+                p_cycl_his(25*(point_index-1)+6) = coef_frot
                 p_cycl_his(25*(point_index-1)+25) = zone_index
                 point_index = point_index + 1
             end do
         end do
-25      continue
+ 25     continue
     end do
 !
     call jedema()

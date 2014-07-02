@@ -1,10 +1,11 @@
-subroutine merimp(model    , cara_elem, mate  , varc_refe, compor,&
-                  carcri   , acti_func, iterat, sddyna   , hval_incr, &
-                  hval_algo, caco3d   , mxchin, nbin     , lpain    , &
+subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
+                  carcri, acti_func, iterat, sddyna, hval_incr,&
+                  hval_algo, caco3d, mxchin, nbin, lpain,&
                   lchin)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
@@ -71,7 +72,7 @@ subroutine merimp(model    , cara_elem, mate  , varc_refe, compor,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
-    logical(kind=1) :: lxfem
+    aster_logical :: lxfem
     character(len=24) :: chgeom, chcara(18), chiter
     character(len=19) :: stadyn, depent, vitent
     character(len=16) :: option
@@ -86,7 +87,7 @@ subroutine merimp(model    , cara_elem, mate  , varc_refe, compor,&
     character(len=19) :: romkm1, romk
     character(len=24) :: ligrmo
     character(len=19) :: disp_iter, disp_cumu_inst
-    logical(kind=1) :: ldyna
+    aster_logical :: ldyna
     integer :: ifm, niv
     real(kind=8) :: iter
 !

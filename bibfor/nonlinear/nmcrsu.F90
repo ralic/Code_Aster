@@ -20,6 +20,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
@@ -40,7 +41,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     character(len=19) :: sddisc, lisins, solveu
     character(len=24) :: defico
     real(kind=8) :: parcri(*)
-    logical(kind=1) :: limpex, lctcd
+    aster_logical :: limpex, lctcd
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +69,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     integer :: nadapt, iadapt
     integer :: iter1, iter2, ibid
     integer :: ifm, niv, itmx, vali
-    logical(kind=1) :: ldeco, lreapc
+    aster_logical :: ldeco, lreapc
     real(kind=8) :: rgmaxi, rgrela, inikry
     character(len=8) :: k8bid
     character(len=19) :: even
@@ -227,7 +228,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
                     endif
                 endif
             endif
-25      continue
+ 25     continue
     endif
 !
 ! --- VERIF COHERENCE AVEC IMPLEX
@@ -241,7 +242,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
                     call utmess('F', 'MECANONLINE6_4')
                 endif
             endif
-27      continue
+ 27     continue
     endif
 !
 ! --- CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL

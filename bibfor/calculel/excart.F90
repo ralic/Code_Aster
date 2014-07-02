@@ -20,6 +20,7 @@ subroutine excart(imodat, iparg)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/excar2.h"
@@ -54,7 +55,7 @@ subroutine excart(imodat, iparg)
     integer :: desc, modloc, dec1, dec2, lgcata, iret
     integer :: ipt, ityplo, jparal
     integer :: nbpoin, ncmp, ngrmx, debugr
-    logical(kind=1) :: lparal
+    aster_logical :: lparal
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -88,17 +89,17 @@ subroutine excart(imodat, iparg)
         call excar2(ngrmx, desc, zi(modloc-1+5), ncmp, debugr)
 !       ON DUPPLIQUE LES VALEURS PAR LA FIN POUR NE PAS
 !       LES ECRASER :
-        do 20,iel=nbelgr,1,-1
-        if (lparal) then
-            if (.not.zl(jparal-1+iel)) goto 20
-        endif
-        do 10,ipt=nbpoin,1,-1
-        dec1=debugr-1+(iel-1)*ncmp
-        dec2=debugr-1+(iel-1)*ncmp*nbpoin+ncmp*(ipt-1)
-        call jacopo(ncmp, typegd, iachlo+dec1, iachlo+dec2)
-        call jacopo(ncmp, 'L', ilchlo+dec1, ilchlo+dec2)
-10      continue
-20      continue
+        do 20 iel = nbelgr, 1, -1
+            if (lparal) then
+                if (.not.zl(jparal-1+iel)) goto 20
+            endif
+            do 10 ipt = nbpoin, 1, -1
+                dec1=debugr-1+(iel-1)*ncmp
+                dec2=debugr-1+(iel-1)*ncmp*nbpoin+ncmp*(ipt-1)
+                call jacopo(ncmp, typegd, iachlo+dec1, iachlo+dec2)
+                call jacopo(ncmp, 'L', ilchlo+dec1, ilchlo+dec2)
+ 10         continue
+ 20     continue
 !
 !     2-  CAS: CART -> ASSE :
 !     -----------------------

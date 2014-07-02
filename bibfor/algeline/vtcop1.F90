@@ -1,5 +1,6 @@
 subroutine vtcop1(chin, chout, kstop, codret)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -50,14 +51,14 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
     integer :: iret, ieq1, ieq2, neq1, jvale1, jvale2
     integer :: neq2
-    integer :: nnomx, ncpmx,  nuno2, nucp2, nuno1, nucp1
+    integer :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
     integer :: jcmpgd, ncmpmx, icmp
     character(len=1) :: typ1, typ2
     character(len=8) :: nomgd
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
     integer, pointer :: trav1(:) => null()
-    logical(kind=1), pointer :: trav2(:) => null()
+    aster_logical, pointer :: trav2(:) => null()
     character(len=24), pointer :: refe1(:) => null()
     character(len=24), pointer :: refe2(:) => null()
     integer, pointer :: deeq1(:) => null()

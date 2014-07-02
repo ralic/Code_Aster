@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                       basemo, typref, typbas, tousno, multap)
@@ -26,7 +28,7 @@ interface
         character(len=8) :: basemo
         character(len=19) :: typref(*)
         character(len=16) :: typbas(*)
-        logical(kind=1) :: tousno
-        logical(kind=1) :: multap
+        aster_logical :: tousno
+        aster_logical :: multap
     end subroutine rbph01
 end interface

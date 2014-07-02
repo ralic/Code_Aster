@@ -18,7 +18,8 @@ subroutine nmfinp(sddisc, numins, lstop)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/didern.h"
@@ -29,7 +30,7 @@ subroutine nmfinp(sddisc, numins, lstop)
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: numins
-    logical(kind=1) :: lstop
+    aster_logical :: lstop
 !
 ! ----------------------------------------------------------------------
 !

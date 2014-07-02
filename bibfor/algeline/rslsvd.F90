@@ -67,6 +67,7 @@ subroutine rslsvd(nm, m, n, a, w,&
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "asterfort/calsvd.h"
 #include "asterfort/possvd.h"
 #include "asterfort/r8inir.h"
@@ -80,7 +81,7 @@ subroutine rslsvd(nm, m, n, a, w,&
 ! -----------------
     integer :: ib, j, rg
     real(kind=8) :: alphaj
-    logical(kind=1) :: matuv
+    aster_logical :: matuv
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -121,11 +122,11 @@ subroutine rslsvd(nm, m, n, a, w,&
             alphaj = ddot(m,u(1,j),1,b(1,ib),1) / w(j)
             call daxpy(n, alphaj, v(1, j), 1, rvnm(1),&
                        1)
-20      continue
+ 20     continue
         call dcopy(n, rvnm(1), 1, b(1, ib), 1)
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
 !
 ! --- FIN DE RSLSVD.
 end subroutine

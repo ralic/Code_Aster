@@ -2,6 +2,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                   xy)
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/jedema.h"
@@ -79,7 +80,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 !
 !
 !
-    integer ::  jconn2, jcinv1, jcinv2
+    integer :: jconn2, jcinv1, jcinv2
     integer :: jdime, jmesu, jconn, jcinv, adress
     integer :: inno, inel, jel, nuef, nuno, i
     integer :: ifac, isur, ia
@@ -93,7 +94,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     character(len=24) :: cinv
     character(len=24) :: chdime, chmesu, chconn, chcinv
     real(kind=8) :: aire, volume
-    logical(kind=1) :: test, complet
+    aster_logical :: test, complet
     integer, pointer :: connex(:) => null()
 !
     call jemarq()
@@ -114,7 +115,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 !
     do 10 inno = 1, nnoem
         nomili(inno)=1
-10  end do
+ 10 end do
 !
 ! 3 - ON REMPLIT LES OBJETS '&&SINGUM.CONN' ET '&&SINGUM.MESU'
 !     '&&SINGUE.CONN' (DIM=NELEM*(NSOMMX+2)) CONTIENT
@@ -163,7 +164,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
         do 30 inno = 1, zi(adress+1-1)
             nuno=connex(zi(jconn2+inel-1)+inno-1)
             zi(adress+inno+2-1)=nuno
-30      continue
+ 30     continue
 !
 ! OBJET '&&SINGUM.MESU' + RECHERCHE NOEUD BORD
 !
@@ -376,17 +377,17 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                         endif
                     endif
                     if (test) goto 40
-60              continue
-50          continue
+ 60             continue
+ 50         continue
             nomili(n1)=2
             nomili(n2)=2
             if (ndim .eq. 3) then
                 nomili(n3)=2
                 if (typema(inel)(1:4) .eq. 'HEXA') nomili(n4)=2
             endif
-40      continue
+ 40     continue
 !
-70      continue
+ 70     continue
 !
 ! ORDRE
 !
@@ -400,47 +401,47 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 !
 ! NOEUD MILIEU
 !
-        if (typema(inel)(1:4) .eq. 'SEG3' .or.&
-            typema(inel)(1:5) .eq. 'TRIA6' .or. typema(inel)(1:5) .eq. 'QUAD8' .or.&
-            typema(inel)(1:5) .eq. 'QUAD9' .or. typema(inel)(1:7) .eq. 'TETRA10' .or.&
-            typema(inel)(1:6) .eq. 'HEXA20' .or. typema(inel)(1:6) .eq. 'HEXA27') then
+        if (typema(inel)(1:4) .eq. 'SEG3' .or. typema(inel)(1:5) .eq. 'TRIA6' .or.&
+            typema(inel)(1:5) .eq. 'QUAD8' .or. typema(inel)(1:5) .eq. 'QUAD9' .or.&
+            typema(inel)(1:7) .eq. 'TETRA10' .or. typema(inel)(1:6) .eq. 'HEXA20' .or.&
+            typema(inel)(1:6) .eq. 'HEXA27') then
 !          * preparation appel a nomil pour recuperer les noeuds milieux de chaque arete
-           typma2=typema(inel)
-           complet=.false.
+            typma2=typema(inel)
+            complet=.false.
 !          * passage elements complets vers elements incomplets pour appel a nomil
-           if (typema(inel)(1:5) .eq. 'QUAD9') then
-                 typma2='QUAD8'
-                 complet=.true.
-           endif
-           if (typema(inel)(1:6) .eq. 'HEXA27') then
-                 typma2='HEXA20'
-                 complet=.true.
-           endif
-
-           call nomil(typma2, nm, nbar)
-
+            if (typema(inel)(1:5) .eq. 'QUAD9') then
+                typma2='QUAD8'
+                complet=.true.
+            endif
+            if (typema(inel)(1:6) .eq. 'HEXA27') then
+                typma2='HEXA20'
+                complet=.true.
+            endif
+!
+            call nomil(typma2, nm, nbar)
+!
 !          * mise a 0 de nomili pour les noeuds milieux des aretes
-           do ia=1, nbar
-               nomili(connex(zi(jconn2+inel-1)+nm(ia)-1))=0
-           enddo
+            do ia = 1, nbar
+                nomili(connex(zi(jconn2+inel-1)+nm(ia)-1))=0
+            enddo
 !          * traitement des noeuds centraux pour les elements complets
-           if (complet) then
-              if (typema(inel)(1:5) .eq. 'QUAD9') then
-                  nomili(connex(zi(jconn2+inel-1)+9-1))=0
-              endif
-              if (typema(inel)(1:6) .eq. 'HEXA27') then
-                  nomili(connex(zi(jconn2+inel-1)+21-1))=0
-                  nomili(connex(zi(jconn2+inel-1)+22-1))=0
-                  nomili(connex(zi(jconn2+inel-1)+23-1))=0
-                  nomili(connex(zi(jconn2+inel-1)+24-1))=0
-                  nomili(connex(zi(jconn2+inel-1)+25-1))=0
-                  nomili(connex(zi(jconn2+inel-1)+26-1))=0
-                  nomili(connex(zi(jconn2+inel-1)+27-1))=0
-              endif
-           endif
+            if (complet) then
+                if (typema(inel)(1:5) .eq. 'QUAD9') then
+                    nomili(connex(zi(jconn2+inel-1)+9-1))=0
+                endif
+                if (typema(inel)(1:6) .eq. 'HEXA27') then
+                    nomili(connex(zi(jconn2+inel-1)+21-1))=0
+                    nomili(connex(zi(jconn2+inel-1)+22-1))=0
+                    nomili(connex(zi(jconn2+inel-1)+23-1))=0
+                    nomili(connex(zi(jconn2+inel-1)+24-1))=0
+                    nomili(connex(zi(jconn2+inel-1)+25-1))=0
+                    nomili(connex(zi(jconn2+inel-1)+26-1))=0
+                    nomili(connex(zi(jconn2+inel-1)+27-1))=0
+                endif
+            endif
         endif
 !
-20  end do
+ 20 end do
 !
 ! 5 - CALCUL DE NELCOM ET NBEF(INNO)
 ! NELCOM     : NBRE MAX D EFS UTILES CONNECTES AUX NOEUDS SOMMETS
@@ -463,10 +464,10 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                         nbef(inno)=nbef(inno)+1
                     endif
                 endif
-90          continue
+ 90         continue
             nelcom=max(nelcom,nbef(inno))
         endif
-80  end do
+ 80 end do
 !
 ! 5 - OBJET '&&SINGUM.DIME'
 !
@@ -507,12 +508,12 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                     i=i+1
                 endif
             endif
-110      continue
-100  end do
+110     continue
+100 end do
 !
     do 120 inno = 1, nnoem
         adress=jcinv+(nelcom+2)*(inno-1)
-120  end do
+120 end do
 !
     call jedetr(cinv)
     call jedema()

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                       lresu, nbordr, ordr, nbcmp, nomcmp,&
@@ -24,7 +26,7 @@ interface
         integer :: ifi
         integer :: nbcham
         character(len=*) :: cham(*)
-        logical(kind=1) :: lresu
+        aster_logical :: lresu
         integer :: nbordr
         integer :: ordr(*)
         integer :: nbcmp
@@ -32,7 +34,7 @@ interface
         integer :: nbmat
         integer :: nummai(*)
         integer :: versio
-        logical(kind=1) :: lgmsh
+        aster_logical :: lgmsh
         character(len=8) :: tycha
     end subroutine irgmsh
 end interface

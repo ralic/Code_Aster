@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
         character(len=24) :: intitu
         integer :: nbinti
-        logical(kind=1) :: lsn
-        logical(kind=1) :: lfatig
+        aster_logical :: lsn
+        aster_logical :: lfatig
         integer :: nbtran
     end subroutine rcevo0
 end interface

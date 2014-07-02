@@ -1,6 +1,8 @@
-subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
-                  r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                  fe, dgdgl, ff, dfdi, f, eps, grad)
+subroutine xcinem(axi, nnop, nnos, idepl, grand,&
+                  ndim, he, r, ur, fisno,&
+                  nfiss, nfh, nfe, ddls, ddlm,&
+                  fe, dgdgl, ff, dfdi, f,&
+                  eps, grad)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,18 +23,19 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
-
-    logical(kind=1), intent(in) :: axi
+!
+    aster_logical, intent(in) :: axi
     integer, intent(in) :: nnop
     integer, intent(in) :: nnos
     integer, intent(in) :: idepl
-    logical(kind=1), intent(in) :: grand
+    aster_logical, intent(in) :: grand
     integer, intent(in) :: ndim
     integer, intent(in) :: nfiss
     real(kind=8), intent(in) :: he(nfiss)
@@ -86,7 +89,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
     real(kind=8) :: zero, un, rac2
     integer :: i, j, k, n, p, ig, cpt, nn
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
-    logical(kind=1) :: ldec
+    aster_logical :: ldec
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,21 +106,21 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
     call matini(3, 3, zero, kron)
     do 10 p = 1, 3
         kron(p,p) = un
-10  end do
+ 10 end do
 !
 ! --- CALCUL DES GRADIENTS : GRAD(U) ET F
 !
     do 21 j = 1, 3
         do 20 i = 1, 3
             f(i,j) = kron(i,j)
-20      continue
-21  end do
+ 20     continue
+ 21 end do
 !
     do 31 j = 1, ndim
         do 30 i = 1, ndim
             grad(i,j) = zero
-30      continue
-31  end do
+ 30     continue
+ 31 end do
 !
     ldec=.false.
     if (ddlm .eq. 0 .or. ddlm .eq. -1 .or. ddlm .eq. ddls) ldec=.true.
@@ -139,8 +142,8 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
             cpt = cpt+1
             do 404 j = 1, ndim
                 grad(i,j) = grad(i,j) + dfdi(n,j) * zr(idepl-1+nn+cpt)
-404          continue
-403      continue
+404         continue
+403     continue
 !
 ! -- DDLS HEAVISIDE
         do 405 ig = 1, nfh
@@ -148,9 +151,9 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
                 cpt = cpt+1
                 do 407 j = 1, ndim
                     grad(i,j) = grad(i,j) + he(fisno(n,ig)) * dfdi(n, j) * zr(idepl-1+nn+cpt)
-407              continue
-406          continue
-405      continue
+407             continue
+406         continue
+405     continue
 !
 ! -- DDL ENRICHIS EN FOND DE FISSURE
         do 408 ig = 1, nfe
@@ -159,17 +162,17 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
                 do 410 j = 1, ndim
                     grad(i,j) = grad(i,j) + zr(idepl-1+nn+cpt) * (dfdi(n,j) * fe(ig) + ff(n) * dg&
                                 &dgl(ig,j))
-410              continue
-409          continue
-408      continue
-402  end do
+410             continue
+409         continue
+408     continue
+402 end do
 !
     if (grand) then
         do 421 j = 1, ndim
             do 420 i = 1, ndim
                 f(i,j) = f(i,j) + grad(i,j)
-420          continue
-421      end do
+420         continue
+421     end do
     endif
 !
 ! --- CALCUL DES DÉFORMATIONS : EPS
@@ -180,11 +183,11 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
             if (grand) then
                 do 432 k = 1, ndim
                     tmp = tmp + grad(k,i)*grad(k,j)
-432              continue
+432             continue
             endif
             epstab(i,j) = 0.5d0*tmp
-431      continue
-430  end do
+431     continue
+430 end do
     call vecini(6, zero, eps)
     eps(1) = epstab(1,1)
     eps(2) = epstab(2,2)

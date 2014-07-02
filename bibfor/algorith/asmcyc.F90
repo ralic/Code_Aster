@@ -52,21 +52,20 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
 !
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/acyel1.h"
 #include "asterfort/acyel2.h"
 #include "asterfort/acyel4.h"
 #include "asterfort/acyelt.h"
-    character(len=24) :: soumat
-    complex(kind=8) :: cmass(*)
-    integer :: libid(*), liax(nbliax)
-    logical(kind=1) :: axok, vrai, faux
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ia, id, na, nbliax, ndim, ni
     integer :: nj
     real(kind=8) :: beta
+    character(len=24) :: soumat
+    complex(kind=8) :: cmass(*)
+    integer :: libid(*), liax(nbliax)
+    aster_logical :: axok, vrai, faux
 !-----------------------------------------------------------------------
     data vrai,faux /.true._1,.false./
 !-----------------------------------------------------------------------
@@ -76,7 +75,7 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
 !
     do 10 i = 1, ndim*(ndim+1)/2
         cmass(i)=dcmplx(0.d0,0.d0)
-10  end do
+ 10 end do
 !
 !
 !--------------DETERMINATION DES DIMENSIONS DES SOUS-MATRICES-----------

@@ -19,6 +19,7 @@ subroutine zbarch(rho, f, mem)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: rho, f, mem(2, *)
 !
 ! ----------------------------------------------------------------------
@@ -38,7 +39,7 @@ subroutine zbarch(rho, f, mem)
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
-    logical(kind=1) :: bpos, lopti
+    aster_logical :: bpos, lopti
     common /zbpar/ rhoneg,rhopos,&
      &               parmul,fneg  ,fpos  ,&
      &               dimcpl,nbcpl ,bpos  ,lopti
@@ -52,7 +53,7 @@ subroutine zbarch(rho, f, mem)
     do 10 i = nbcpl, 2, -1
         mem(1,i) = mem(1,i-1)
         mem(2,i) = mem(2,i-1)
-10  end do
+ 10 end do
 !
     mem(1,1) = rho
     mem(2,1) = f

@@ -42,6 +42,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! aslint: disable=W1504
     implicit none
 ! aslint: disable=W1306
+#include "asterf_types.h"
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"
@@ -75,7 +76,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: phi, rho11, phi0, rac2
     real(kind=8) :: rinstp, angmas(3)
     character(len=16) :: option, meca, ther, thmc, hydr, phenom
-    logical(kind=1) :: perman, yachai
+    aster_logical :: perman, yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -87,7 +88,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: m11m, satm, mdal(6), dalal, alphfi, cbiot, unsks
     real(kind=8) :: eps, deps(6)
     parameter  ( eps = 1.d-21 )
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 ! ======================================================================
 ! --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 ! ======================================================================
@@ -103,7 +104,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
     real(kind=8) :: dqeps(6)
 !
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 !
     rac2 = sqrt(2.d0)
 !
@@ -264,11 +265,11 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                         dp2, dp1, sigmp)
             do 10 i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
-10          continue
+ 10         continue
             do 14 i = 4, 6
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
                 rac2
-14          continue
+ 14         continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
@@ -297,12 +298,12 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
             do 11 i = 1, 3
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
                 + dsdp1(i)
-11          continue
+ 11         continue
 !
             do 88 i = 4, 6
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
                 + dsdp1(i)*rac2
-88          continue
+ 88         continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
@@ -311,7 +312,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                 call dmdepv(rho11, sat, tbiot, dmdeps)
                 do 12 i = 1, 6
                     dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
-12              continue
+ 12             continue
             endif
         endif
         if (yate .eq. 1) then
@@ -345,7 +346,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                 do 20 i = 1, 6
                     dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
 !
-20              continue
+ 20             continue
             endif
 !
         endif
@@ -359,6 +360,6 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
         endif
     endif
 ! ======================================================================
-30  continue
+ 30 continue
 ! =====================================================================
 end subroutine

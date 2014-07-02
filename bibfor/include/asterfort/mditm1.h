@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
                       nbf, impr, itrans, epst, icoupl,&
@@ -36,7 +38,7 @@ interface
         integer :: icoupl
         character(len=8) :: tpfl
         integer :: veci1(*)
-        logical(kind=1) :: locfl0(*)
+        aster_logical :: locfl0(*)
         real(kind=8) :: dt0
         real(kind=8) :: tfexm
         real(kind=8) :: ts

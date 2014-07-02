@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine conors(i1, i2, i3, macoc, nbcoc,&
                       macor, nbcor, loreor, mailla)
@@ -25,7 +27,7 @@ interface
         integer :: i3
         character(len=8) :: macoc(2+nbcoc)
         character(len=8) :: macor(2+nbcor)
-        logical(kind=1) :: loreor
+        aster_logical :: loreor
         character(len=8) :: mailla
     end subroutine conors
 end interface

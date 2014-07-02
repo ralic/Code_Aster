@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cakg2d(optioz, result, modele, depla, theta,&
                       mate, lischa, symech, fondf, noeud, &
@@ -34,9 +36,9 @@ interface
         integer :: iord
         integer :: nbprup
         character(len=16) :: noprup(*)
-        logical(kind=1) :: lmelas
+        aster_logical :: lmelas
         character(len=16) :: nomcas
-        logical(kind=1) :: lmoda
+        aster_logical :: lmoda
         real(kind=8) :: puls
         character(len=24) :: compor
     end subroutine cakg2d

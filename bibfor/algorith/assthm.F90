@@ -32,6 +32,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     implicit none
 !
 !
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
@@ -63,7 +64,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     real(kind=8) :: r(dimdef+1), sigbar(dimdef), c(dimdef)
     real(kind=8) :: dt, ta, ta1, rthmc(1), ck(dimdef), cs(dimdef)
     real(kind=8) :: angmas(3)
-    logical(kind=1) :: axi, perman
+    aster_logical :: axi, perman
     integer :: codmes(1)
     character(len=3) :: modint
     character(len=8) :: typmod(2)
@@ -213,7 +214,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     do 201 i = 1, dimdef
         c(i) = 1.d0
         cs(i) = 1.d0
-201  end do
+201 end do
     a(1)= 1.d0
     a(2)= 1.d0
     as(1) = 1.d0
@@ -225,29 +226,29 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
         if (yamec .eq. 1) then
             do 203 i = 1, ndim
                 cs(addeme-1+i) = 0.d0
-203          continue
+203         continue
             do 213 i = 1, 6
                 cs(addeme-1+ndim+i) = 0.d0
-213          continue
+213         continue
         endif
         if (yap1 .eq. 1) then
             c(addep1) = 0.d0
             do 204 i = 1, ndim
                 cs(addep1-1+1+i) = 0.d0
-204          continue
+204         continue
         endif
         if (yap2 .eq. 1) then
             c(addep2) = 0.d0
             do 206 i = 1, ndim
                 cs(addep2-1+1+i) = 0.d0
-206          continue
+206         continue
         endif
         if (yate .eq. 1) then
             a(2) = 0.d0
             as(1) = 0.d0
             do 207 i = 1, ndim
                 cs(addete-1+1+i) = 0.d0
-207          continue
+207         continue
         endif
     endif
 ! ======================================================================
@@ -258,7 +259,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     if (option(1:9) .ne. 'RIGI_MECA') then
         do 1 i = 1, dimuel
             vectu(i)=0.d0
- 1      continue
+  1     continue
     endif
 ! ======================================================================
 ! --- INITIALISATION DF(MATUU) ET MATRI --------------------------------
@@ -266,7 +267,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
         do 3 i = 1, dimuel*dimuel
             matuu(i)=0.d0
- 3      continue
+  3     continue
 !
         call matini(dimmat, dimmat, 0.d0, matri)
 !
@@ -325,8 +326,8 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
             do 109 n = 1, dimuel
                 defgem(i)=defgem(i)+b(i,n)*deplm(n)
                 defgep(i)=defgep(i)+b(i,n)*deplp(n)
-109          continue
-108      continue
+109         continue
+108     continue
 !
 ! ======================================================================
 ! --- APPEL A LA ROUTINE EQUTHP OU EQUTHM ------------------------------
@@ -368,12 +369,12 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
                 if (kpi .gt. npg) then
                     do 110 i = 1, 6
                         contp((kpi-1)*dimcon+i) = contp((kpi-npg-1)* dimcon+i)
-110                  continue
+110                 continue
                     nbcomp = 9 + 7
                     read (compor(nbcomp+4),'(I16)') nvim
                     do 112 i = 1, nvim
                         varip((kpi-1)*nbvari+i) = varip((kpi-npg-1)* nbvari+i)
-112                  continue
+112                 continue
                 endif
             endif
         endif
@@ -406,13 +407,13 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
             do 199 i = 1, dimdef
                 do 198 j = 1, dimcon
                     drdsr(i,j)=drds(i,j)
-198              continue
-199          continue
+198             continue
+199         continue
 !
             if (yate .eq. 1) then
                 do 200 i = 1, dimcon
                     drdsr(addete,i) = ak(1)*drds(addete,i) + ak(2)* drds(dimdef+1,i)
-200              continue
+200             continue
             endif
 ! ======================================================================
 ! --- ON ASSEMBLE: DF=BT.CK.DRDSR.DK.DSDE.FK.B.POIDS -------------------
@@ -429,7 +430,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
         if ((option(1:9).eq.'FULL_MECA' .or. option(1:9) .eq.'RAPH_MECA')) then
             do 20 i = 1, dimdef
                 sigbar(i) = ck(i)*r(i)
-20          continue
+ 20         continue
 ! ======================================================================
 ! --- ON SELECTIONNE LA BONNE COMPOSANTE 7 POUR CE PI ------------------
 ! ======================================================================
@@ -442,10 +443,10 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
             do 117 i = 1, dimuel
                 do 118 k = 1, dimdef
                     vectu(i)=vectu(i)+b(k,i)*sigbar(k)*poids
-118              continue
-117          continue
+118             continue
+117         continue
         endif
-10  end do
+ 10 end do
 ! ======================================================================
 ! --- SORTIE DE BOUCLE SUR LES POINTS D'INTEGRATION --------------------
 ! ======================================================================
@@ -457,10 +458,10 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
             do 116 jj = 1, dimuel
                 matuu(kji) = matri(ii,jj)
                 kji= kji + 1
-116          continue
-115      continue
+116         continue
+115     continue
     endif
 ! ======================================================================
-9000  continue
+9000 continue
 ! ======================================================================
 end subroutine

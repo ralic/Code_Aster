@@ -1,6 +1,7 @@
 subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                   seul)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -17,7 +18,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
     integer :: nbmod, lrang(nbmod), iorne
     character(len=8) :: nomres, resul
-    logical(kind=1) :: seul
+    aster_logical :: seul
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

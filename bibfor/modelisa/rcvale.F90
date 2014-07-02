@@ -17,6 +17,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
@@ -70,11 +71,11 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
 !
     integer :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
-    integer ::   nbobj, nbf, ir, ik
+    integer :: nbobj, nbf, ir, ik
     parameter        ( nbmx=30 )
     integer :: nbfp
     real(kind=8) :: valrep(nbmx)
-    logical(kind=1) :: change
+    aster_logical :: change
     integer :: icodr2(nbmx)
     character(len=2) :: kstop
     character(len=10) :: phen, phepre
@@ -103,14 +104,14 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     if (nbres .ne. nbresp) change = .true.
     do 100 ires = 1, nbres
         if (nomres(ires) .ne. nomrep(ires)) change = .true.
-100  end do
+100 end do
 !
 !
     if (.not.change) then
         do 110 ires = 1, nbres
             valres(ires) = valrep(ires)
             icodre(ires) = icodr2(ires)
-110      continue
+110     continue
         if (nbfp .eq. 0) goto 9999
 !
         do 120 ires = 1, nbres
@@ -122,7 +123,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             else
                 icodre(ires) = 1
             endif
-120      continue
+120     continue
 !
 !
     else
@@ -131,7 +132,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         if (iret .eq. 0) then
             do 113 ires = 1, nbres
                 icodre(ires) = 1
-113          continue
+113         continue
             goto 999
         endif
 !
@@ -143,7 +144,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         do 130 ires = 1, nbres
             icodre(ires) = 1
             nomfop(ires) = ' '
-130      continue
+130     continue
         nbobj = 0
         do 150 ir = 1, nbr
             do 140 ires = 1, nbres
@@ -152,8 +153,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                     icodre(ires) = 0
                     nbobj = nbobj + 1
                 endif
-140          continue
-150      continue
+140         continue
+150     continue
         if (nbobj .ne. nbres) then
             nbf = (nbk-nbr-nbc)/2
             do 170 ires = 1, nbres
@@ -165,8 +166,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                         ASSERT(ier.eq.0)
                         icodre(ires) = 0
                     endif
-160              continue
-170          continue
+160             continue
+170         continue
         else
             nbf = 0
         endif
@@ -180,11 +181,11 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             nomrep(ires) = nomres(ires)
             valrep(ires) = valres(ires)
             icodr2(ires) = icodre(ires)
-180      continue
+180     continue
 !
     endif
-999  continue
-9999  continue
+999 continue
+9999 continue
 !
     call rcvals(iarret, icodre, nbres, nomres)
 !

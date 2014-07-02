@@ -16,6 +16,7 @@ subroutine caliag(fonrez, chargz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
@@ -63,17 +64,17 @@ subroutine caliag(fonrez, chargz)
     integer :: i, j, k, iret, iocc, ifm, niv, nmocl
     integer :: vali(2)
 !-----------------------------------------------------------------------
-    integer :: icmpz, idco1, idco2,  idconi, idconr, iddl1
-    integer :: iddl2, idg1, idg2, idim,   idmax
-    integer ::    iec, iexcm1, iexcm2, imult1
-    integer :: imult2, ino1, ino2, inom,   jprnm
+    integer :: icmpz, idco1, idco2, idconi, idconr, iddl1
+    integer :: iddl2, idg1, idg2, idim, idmax
+    integer :: iec, iexcm1, iexcm2, imult1
+    integer :: imult2, ino1, ino2, inom, jprnm
     integer :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
     integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
     parameter (nmocl=300)
     real(kind=8) :: beta
     complex(kind=8) :: betac
-    logical(kind=1) :: dnor
+    aster_logical :: dnor
     character(len=2) :: typlag
     character(len=4) :: fonree, typcoe
     character(len=7) :: typcha

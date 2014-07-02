@@ -20,10 +20,11 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/r8inir.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
     real(kind=8) :: geom(ndim, nno1), vff1(nno1, npg), vff2(nno2, npg)
     integer :: nddl, neps
@@ -52,13 +53,13 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
     integer :: g
     real(kind=8) :: rac2, r2, r, dfdi1(27*3), dfdi2(8*3), unsurr
 ! ----------------------------------------------------------------------
-    integer ::  n, i
-#define iu1(n,i)   (n-1)*(ndim+2) + i
-#define iu2(n,i)   nno2*2 + (n-1)*ndim + i
-#define ia(n)   (n-1)*(ndim+2) + ndim + 1
-#define il(n)   (n-1)*(ndim+2) + ndim + 2
-#define dff1(n,i)   dfdi1(nno1*(i-1) + n)
-#define dff2(n,i)   dfdi2(nno2*(i-1) + n)
+    integer :: n, i
+#define iu1(n,i) (n-1)*(ndim+2) + i
+#define iu2(n,i) nno2*2 + (n-1)*ndim + i
+#define ia(n) (n-1)*(ndim+2) + ndim + 1
+#define il(n) (n-1)*(ndim+2) + ndim + 2
+#define dff1(n,i) dfdi1(nno1*(i-1) + n)
+#define dff2(n,i) dfdi2(nno2*(i-1) + n)
 ! ----------------------------------------------------------------------
     ASSERT(nno1.le.27)
     ASSERT(nno2.le.8)
@@ -73,7 +74,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
     call r8inir(neps, 1.d0, ni2ldc, 1)
     do 5 i = 4, 2*ndim
         ni2ldc(i) = rac2
- 5  end do
+  5 end do
 !
 !
 ! - AFFECTATION DE LA MATRICE CINEMATIQUE B
@@ -102,7 +103,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
                 b(6,g,il(n)) = vff2(n,g)
                 b(7,g,ia(n)) = dff2(n,1)
                 b(8,g,ia(n)) = dff2(n,2)
-10          continue
+ 10         continue
 !
             do 20 n = nno2+1, nno1
                 b(1,g,iu2(n,1)) = dff1(n,1)
@@ -110,7 +111,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
                 b(3,g,iu2(n,1)) = vff1(n,g)*unsurr
                 b(4,g,iu2(n,1)) = r2*dff1(n,2)
                 b(4,g,iu2(n,2)) = r2*dff1(n,1)
-20          continue
+ 20         continue
 !
         else if (ndim.eq.3) then
             do 30 n = 1, nno2
@@ -128,7 +129,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
                 b(9,g,ia(n)) = dff2(n,1)
                 b(10,g,ia(n)) = dff2(n,2)
                 b(11,g,ia(n)) = dff2(n,3)
-30          continue
+ 30         continue
 !
             do 40 n = nno2+1, nno1
                 b(1,g,iu2(n,1)) = dff1(n,1)
@@ -140,7 +141,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
                 b(5,g,iu2(n,3)) = r2*dff1(n,1)
                 b(6,g,iu2(n,2)) = r2*dff1(n,3)
                 b(6,g,iu2(n,3)) = r2*dff1(n,2)
-40          continue
+ 40         continue
         endif
-1000  end do
+1000 end do
 end subroutine

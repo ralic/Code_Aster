@@ -1,5 +1,6 @@
 subroutine te0291(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -43,7 +44,7 @@ subroutine te0291(option, nomte)
 !
     integer :: nno, kp, npg1, i, k, nnos, jgano, ndim
     integer :: ipoids, ivf, idfde, igeom, niv, nbcmp
-    integer ::  ierr, imate, isigm, isigno, mater
+    integer :: ierr, imate, isigm, isigno, mater
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, valres(2)
     real(kind=8) :: sigl11, sigl22, sigl33, sigl12, sigl13, sigl23
@@ -55,13 +56,13 @@ subroutine te0291(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(2)
 !
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 ! ----------------------------------------------------------------------
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call jemarq()
 !
     call jevech('PGEOMER', 'L', igeom)

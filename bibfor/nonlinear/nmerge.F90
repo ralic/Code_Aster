@@ -18,14 +18,15 @@ subroutine nmerge(sderro, nomevt, lactiv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: sderro
     character(len=9) :: nomevt
-    logical(kind=1) :: lactiv
+    aster_logical :: lactiv
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +77,7 @@ subroutine nmerge(sderro, nomevt, lactiv)
             icode = zi(jeeact-1+ieven)
             if (icode .eq. 1) lactiv = .true.
         endif
-15  end do
+ 15 end do
 !
     call jedema()
 end subroutine

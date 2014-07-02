@@ -17,6 +17,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjalls.h"
@@ -46,7 +47,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
     common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadyn, iblong, iblono, ibluti, ic, id , ibnum
+    integer :: iadmi, iadyn, iblong, iblono, ibluti, ic, id, ibnum
     integer :: il0, il1, ixlono, ixluti, jcara, jdate, jdocu, ixnum
     integer :: jgenr, jhcod, jiadd, jiadm, jitab, jlong
     integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
@@ -65,7 +66,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
     character(len=32) :: noml32
     character(len=1) :: genri, typei
     character(len=8) :: catrlu
-    logical(kind=1) :: lconst, lconti, llong, lluti
+    aster_logical :: lconst, lconti, llong, lluti
     integer :: icre, iret, itab(1), jtab, irt
     integer :: ibacol, ixiadd, ixdeso, ixlong, ii
 !     ------------------------------------------------------------------
@@ -111,7 +112,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
         ixlong = iszon ( jiszon + ibacol + idlong )
         ixlono = iszon ( jiszon + ibacol + idlono )
         ixluti = iszon ( jiszon + ibacol + idluti )
-        ixnum  = iszon ( jiszon + ibacol + idnum  )
+        ixnum = iszon ( jiszon + ibacol + idnum )
         lconst = (ixlong .eq. 0 )
         nmaxi = iszon (jiszon + ibacol + ivnmax )
     endif
@@ -125,7 +126,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
             llong = .false.
             lluti = .false.
         endif
-    else if (catrlu .eq. 'LONMAX' .or. catrlu .eq. 'NOMMAX' .or. catrlu .eq. 'LONUTI' .or.&
+        else if (catrlu .eq. 'LONMAX' .or. catrlu .eq. 'NOMMAX' .or. catrlu .eq. 'LONUTI' .or.&
              catrlu .eq. 'DOCU'   .or. catrlu .eq. 'DATE'   .or. catrlu .eq. 'NUTIOC')   then
         llong = ( catrlu(4:6) .eq. 'MAX' )
         lluti = ( catrlu(4:6) .eq. 'UTI' )
@@ -135,7 +136,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
             call utmess('F', 'JEVEUX_99', sk=genri)
         endif
     else
-       call utmess('F', 'JEVEUX1_23', sk=catrlu)
+        call utmess('F', 'JEVEUX1_23', sk=catrlu)
     endif
 !
     if (catrlu .eq. 'LONT    ' .and. lconti) then
@@ -146,21 +147,23 @@ subroutine jeecra(nomlu, catr, ival, cval)
     else if (catrlu .eq. 'DOCU    ') then
         docu ( jdocu(ic) + id ) = cval
     else if (catrlu .eq. 'NUTIOC') then
-       if ( iret .eq. 2 .and. lconti ) then
-          ibnum = iadm ( jiadm(ic) + 2*ixnum-1 )
-          nbv = iszon ( jiszon + ibnum )
-          ASSERT( ival .le. nbv )
-          iszon ( jiszon + ibnum - 1 + 2 ) = ival
-          if (.not. lconst) then
-            iblong = iadm ( jiadm(ic) + 2*ixlong-1 )
-            iblono = iadm ( jiadm(ic) + 2*ixlono-1 )
-            do ii=1,ival
-               iszon(jiszon+iblong-1+ii) = (iszon(jiszon+iblono+ii)-iszon(jiszon+iblono-1+ii))
-            enddo
-          endif
-       else
-          ASSERT(.false.)
-       endif
+        if (iret .eq. 2 .and. lconti) then
+            ibnum = iadm ( jiadm(ic) + 2*ixnum-1 )
+            nbv = iszon ( jiszon + ibnum )
+            ASSERT( ival .le. nbv )
+            iszon ( jiszon + ibnum - 1 + 2 ) = ival
+            if (.not. lconst) then
+                iblong = iadm ( jiadm(ic) + 2*ixlong-1 )
+                iblono = iadm ( jiadm(ic) + 2*ixlono-1 )
+                do ii = 1, ival
+                    iszon(jiszon+iblong-1+ii) = (&
+                                                iszon(jiszon+iblono+ii)-iszon(jiszon+iblono-1+ii)&
+                                                )
+                enddo
+            endif
+        else
+            ASSERT(.false.)
+        endif
     else if (lconst) then
         if (llong) then
             lonoi = lono ( jlono(ic) + id )

@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
                       dep, vit, vrotat, finpal, prdeff)
@@ -27,6 +29,6 @@ interface
         real(kind=8) :: vit(nbpal, *)
         real(kind=8) :: vrotat
         character(len=3) :: finpal(20)
-        logical(kind=1) :: prdeff
+        aster_logical :: prdeff
     end subroutine envdep
 end interface

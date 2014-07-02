@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine i2fini(epsi, binf, bsup, tsor, tsex,&
                       tm2, adrgt, fini)
@@ -25,6 +27,6 @@ interface
         real(kind=8) :: tsex(*)
         integer :: tm2(*)
         integer :: adrgt
-        logical(kind=1) :: fini
+        aster_logical :: fini
     end subroutine i2fini
 end interface

@@ -19,6 +19,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gsyste.h"
@@ -28,7 +29,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
     integer :: nnoff, num
     real(kind=8) :: gthi(1), gs(1), gi(1)
     character(len=24) :: fond, objcur
-    logical(kind=1) :: milieu, gxfem
+    aster_logical :: milieu, gxfem
 !
 ! ......................................................................
 !      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
@@ -59,7 +60,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 !
     character(len=24) :: vect, matr, lissg
 !
-    logical(kind=1) :: connex
+    aster_logical :: connex
 !
 ! OBJET DECRIVANT LE MAILLAGE
 !
@@ -67,7 +68,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 ! CONNEX = TRUE
 !
     connex = .false.
-
+!
     if (.not. gxfem) then
         call jeveuo(fond, 'L', iadrno)
         if (zk8(iadrno+1-1) .eq. zk8(iadrno+nnoff-1)) connex = .true.
@@ -91,7 +92,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
                 zr(ivect+i -1)= zr(ivect+i-1) + delta
                 zr(ivect+i+1-1)= 4.d0*delta
                 zr(ivect+i+2-1)= delta
-10          continue
+ 10         continue
             if (connex) then
                 zr(ivect+nnoff-1)= zr(ivect+nnoff-1) + zr(ivect+1-1)
                 zr(ivect+1 -1)= zr(ivect+nnoff-1)
@@ -103,7 +104,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
                 delta = (s2-s1)/3.d0
                 zr(ivect+i -1)= zr(ivect+i-1) + delta
                 zr(ivect+i+1-1)= 2.d0*delta
-20          continue
+ 20         continue
             if (connex) then
                 zr(ivect+nnoff-1)= zr(ivect+nnoff-1) + zr(ivect+1-1)
                 zr(ivect+1 -1)= zr(ivect+nnoff-1)
@@ -111,7 +112,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
         endif
         do 30 i = 1, nnoff
             gi(i) = gthi(i)/zr(ivect+i-1 )
-30      continue
+ 30     continue
 !
     else if (lissg.eq.'LAGRANGE') then
         matr = '&&METHO3.MATRI'
@@ -136,7 +137,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
                 zr(imatr+(i-1 )*nnoff+i-1+2)= -1.d0*delta
                 zr(imatr+(i-1+1)*nnoff+i-1+2)= 2.d0*delta
                 zr(imatr+(i-1+2)*nnoff+i-1+2)= 4.d0*delta
-100          continue
+100         continue
             if (connex) then
                 kk = imatr+(1-1 )*nnoff+1-1
                 zr(kk )= zr(kk) + 5.d0*delta
@@ -158,7 +159,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 !
                 zr(imatr+(i-1 )*nnoff+i-1+1)= 1.d0*delta
                 zr(imatr+(i-1+1)*nnoff+i-1+1)= 2.d0*delta
-120          continue
+120         continue
             if (connex) then
                 kk = imatr+(1-1 )*nnoff+1-1
                 zr(kk )= zr(kk) + 3.d0*delta
@@ -170,16 +171,16 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
             endif
         endif
 !
-
+!
 !  SYSTEME LINEAIRE:  MATR*GI = GTHI
 !
         call gsyste(matr, nnoff, nnoff, gthi, gi)
-
+!
     endif
 !
     do 200 i = 1, nnoff
         gs(i) = gi(i)
-200  end do
+200 end do
 !
     call jedetr('&&METHO3.MATRI')
     call jedetr('&&METHO3.VECT')

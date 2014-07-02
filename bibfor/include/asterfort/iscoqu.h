@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine iscoqu(nomo, numail, lcoque)
         character(len=8) :: nomo
         integer :: numail
-        logical(kind=1) :: lcoque
+        aster_logical :: lcoque
     end subroutine iscoqu
 end interface

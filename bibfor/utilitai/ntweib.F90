@@ -2,11 +2,12 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                   nt, nbres, x1, x2, xacc,&
                   rtsafe, impr, ifm, indtp, nbtp)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/fcweib.h"
 #include "asterfort/utmess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp, ifm
     real(kind=8) :: sigw(*), x1, x2, xacc, rtsafe, sk(*)
-    logical(kind=1) :: cals, impr
+    aster_logical :: cals, impr
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,12 +66,12 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
     parameter (maxit=100)
 !     ----------------------------------------------------------------
 !
- 4  continue
+  4 continue
     call fcweib(nrupt, cals, sk, sigw, nur,&
                 nt, nbres, indtp, nbtp, x1,&
                 fl, dfl)
     if (impr) write(ifm,*) 'F,DF,X1 SUR BORNE GAUCHE : ',fl,dfl,x1
- 5  continue
+  5 continue
     call fcweib(nrupt, cals, sk, sigw, nur,&
                 nt, nbres, indtp, nbtp, x2,&
                 fh, dfh)
@@ -135,9 +136,9 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
         else
             xh = rtsafe
         endif
-10  end do
+ 10 end do
     call utmess('F', 'UTILITAI2_53')
-9999  continue
+9999 continue
     if (impr) then
         valr (1) = rtsafe
         valr (2) = f

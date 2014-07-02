@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmceta(modele, numedd, mate, carele, comref,&
                       compor, lischa, carcri, fonact, sdstat,&
@@ -43,7 +45,7 @@ interface
         character(len=24) :: sdtime
         character(len=19) :: sddisc
         integer :: nbeffe
-        logical(kind=1) :: irecli
+        aster_logical :: irecli
         real(kind=8) :: proeta(2)
         real(kind=8) :: offset
         real(kind=8) :: rho

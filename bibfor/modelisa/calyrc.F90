@@ -1,5 +1,6 @@
 subroutine calyrc(chargz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -61,14 +62,14 @@ subroutine calyrc(chargz)
 !-----------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
-    integer ::  nnomx, idmax
-    integer ::     nbma1, nbma2
+    integer :: nnomx, idmax
+    integer :: nbma1, nbma2
     integer :: nbno2, idcal1, idcal2, nul
     integer :: nno11, nno12, i, indire, lno
     integer :: nbtyp, nddl2, jlistk, jdim, ndim1
-    integer ::   idim, ij, norien, ntrait
+    integer :: idim, ij, norien, ntrait
     integer :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3
-    logical(kind=1) :: lrota, dnor, lreori
+    aster_logical :: lrota, dnor, lreori
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     real(kind=8) :: r8b
     real(kind=8) :: coef11, coef12, coef3
@@ -84,11 +85,11 @@ subroutine calyrc(chargz)
     character(len=19) :: lisrel
     character(len=24) :: geom3
     character(len=24) :: valk(2)
-    logical(kind=1) :: l_tran
+    aster_logical :: l_tran
     real(kind=8) :: tran(3)
-    logical(kind=1) :: l_cent
+    aster_logical :: l_cent
     real(kind=8) :: cent(3)
-    logical(kind=1) :: l_angl_naut
+    aster_logical :: l_angl_naut
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
     real(kind=8), pointer :: coef(:) => null()
@@ -422,12 +423,11 @@ subroutine calyrc(chargz)
                             do ino1 = 1, nno11 + nno12 + 1
                                 nomddl(ino1) = cmp
                             end do
-                            call afrela(coef, coemuc, nomddl, nomnoe,&
-                                        dim, direct, nno11+nno12+1, beta, betac,&
-                                        kbeta, typcoe, fonree, typlag, 1.d-6,&
-                                        lisrel)
-                            call imprel(motfac, nno11+nno12+1, coef, nomddl,&
-                                        nomnoe, beta)
+                            call afrela(coef, coemuc, nomddl, nomnoe, dim,&
+                                        direct, nno11+nno12+1, beta, betac, kbeta,&
+                                        typcoe, fonree, typlag, 1.d-6, lisrel)
+                            call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
+                                        beta)
                         end do
                     endif
                     idcal1 = idcal1 + nno11
@@ -496,8 +496,8 @@ subroutine calyrc(chargz)
                     if (dnor) then
                         do idim = 1, ndim
                             do jdim = 1, ndim
-                                normal(idim) = normal(idim) + mrota( jdim,idim)*normale(1+ (zi(ind&
-                                               &ire+ino2- 1)-1)*ndim+jdim-1)
+                                normal(idim) = normal(idim) + mrota( jdim,idim)*normale(1+ (zi(in&
+                                               &dire+ino2- 1)-1)*ndim+jdim-1)
                             end do
                         end do
                         coef(1) = 1.0d0*coef3
@@ -544,12 +544,11 @@ subroutine calyrc(chargz)
                                 nomddl(kk) = cmp
                                 coef(kk) = -mrota(kk,k)*coef3
                             end do
-                            call afrela(coef, coemuc, nomddl, nomnoe,&
-                                        dim, direct, nno11+nno12+ndim, beta, betac,&
-                                        kbeta, typcoe, fonree, typlag, 1.d-6,&
-                                        lisrel)
-                            call imprel(motfac, nno11+nno12+ndim, coef, nomddl,&
-                                        nomnoe, beta)
+                            call afrela(coef, coemuc, nomddl, nomnoe, dim,&
+                                        direct, nno11+nno12+ndim, beta, betac, kbeta,&
+                                        typcoe, fonree, typlag, 1.d-6, lisrel)
+                            call imprel(motfac, nno11+nno12+ndim, coef, nomddl, nomnoe,&
+                                        beta)
                         end do
                     endif
                     idcal1 = idcal1 + nno11

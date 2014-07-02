@@ -19,7 +19,8 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/cfdisd.h"
@@ -81,7 +82,7 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
     integer :: iblc
     integer :: niv, ifm
     integer :: bloc, dercol
-    logical(kind=1) :: pivnul
+    aster_logical :: pivnul
     integer, pointer :: scbl(:) => null()
     integer, pointer :: scde(:) => null()
     integer, pointer :: scib(:) => null()
@@ -158,7 +159,7 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
                 pivnul = .false.
                 goto 10
             endif
-20      continue
+ 20     continue
 !
 ! ----- ON SUPPRIME LA LIAISON
 !
@@ -174,9 +175,9 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
                         'PIV')
             goto 40
         endif
-10  end do
+ 10 end do
 !
-40  continue
+ 40 continue
     call jedetr(ouvert)
     call jedema()
 !

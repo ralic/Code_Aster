@@ -1,6 +1,7 @@
 subroutine decod2(rec, irec, ifield, itype, ilu,&
                   rlu, trouve)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/lxliis.h"
@@ -9,7 +10,7 @@ subroutine decod2(rec, irec, ifield, itype, ilu,&
     character(len=*) :: rec(20)
     integer :: irec, ifield, itype, ilu
     real(kind=8) :: rlu
-    logical(kind=1) :: trouve
+    aster_logical :: trouve
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,5 +78,5 @@ subroutine decod2(rec, irec, ifield, itype, ilu,&
         if (ier .eq. 1) trouve = .false.
 !
     endif
-9999  continue
+9999 continue
 end subroutine

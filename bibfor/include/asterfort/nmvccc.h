@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
                       lpaout, lchout, exitem, exihyd, exipto,&
@@ -26,12 +28,12 @@ interface
         character(len=19) :: lchin(nbin)
         character(len=8) :: lpaout(nbout)
         character(len=19) :: lchout(nbout)
-        logical(kind=1) :: exitem
-        logical(kind=1) :: exihyd
-        logical(kind=1) :: exipto
-        logical(kind=1) :: exisec
-        logical(kind=1) :: exiepa
-        logical(kind=1) :: exipha
+        aster_logical :: exitem
+        aster_logical :: exihyd
+        aster_logical :: exipto
+        aster_logical :: exisec
+        aster_logical :: exiepa
+        aster_logical :: exipha
         character(len=19) :: vecel
     end subroutine nmvccc
 end interface

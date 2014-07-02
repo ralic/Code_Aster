@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface 
     subroutine inithm(imate, yachai, yamec, phi0, em,&
                       cs, tbiot, t, epsv, depsv,&
@@ -22,7 +24,7 @@ interface
                       alphfi, cbiot, unsks, alpha0, ndim,&
                       phenom)
         integer :: imate
-        logical(kind=1) :: yachai
+        aster_logical :: yachai
         integer :: yamec
         real(kind=8) :: phi0
         real(kind=8) :: em

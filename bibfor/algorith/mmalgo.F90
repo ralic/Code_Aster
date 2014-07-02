@@ -1,11 +1,12 @@
-subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   , l_vite        , &
-                  l_glis_init   , l_coef_adap   , zone_index    , point_index   , indi_cont_init, &
-                  indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr, &
-                  dist_frot_curr, pres_frot_curr, cycl_hist     , cycl_coef     , indi_cont_curr, &
-                  indi_frot_curr, ctcsta        , mmcvca        , scotch        )
+subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
+                  l_glis_init, l_coef_adap, zone_index, point_index, indi_cont_init,&
+                  indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr,&
+                  dist_frot_curr, pres_frot_curr, cycl_hist, cycl_coef, indi_cont_curr,&
+                  indi_frot_curr, ctcsta, mmcvca, scotch)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mm_cycl_detect.h"
 #include "asterfort/mm_cycl_trait.h"
@@ -31,11 +32,11 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 !
     character(len=24), intent(in) :: sd_cont_defi
     character(len=24), intent(in) :: sd_cont_solv
-    logical(kind=1), intent(in) :: l_loop_cont
-    logical(kind=1), intent(in) :: l_frot_zone
-    logical(kind=1), intent(in) :: l_vite
-    logical(kind=1), intent(in) :: l_glis_init
-    logical(kind=1), intent(in) :: l_coef_adap
+    aster_logical, intent(in) :: l_loop_cont
+    aster_logical, intent(in) :: l_frot_zone
+    aster_logical, intent(in) :: l_vite
+    aster_logical, intent(in) :: l_glis_init
+    aster_logical, intent(in) :: l_coef_adap
     integer, intent(in) :: point_index
     integer, intent(in) :: zone_index
     integer, intent(in) :: indi_cont_init
@@ -46,13 +47,13 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
     real(kind=8), intent(in) :: pres_cont_curr
     real(kind=8), intent(in) :: dist_frot_curr(3)
     real(kind=8), intent(in) :: pres_frot_curr(3)
-    real(kind=8), intent(inout) :: cycl_hist(*) 
-    real(kind=8), intent(inout) :: cycl_coef(*) 
+    real(kind=8), intent(inout) :: cycl_hist(*)
+    real(kind=8), intent(inout) :: cycl_coef(*)
     integer, intent(out) :: indi_cont_curr
     integer, intent(out) :: indi_frot_curr
     integer, intent(out) :: ctcsta
-    logical(kind=1), intent(out) :: mmcvca
-    logical(kind=1), intent(out) :: scotch
+    aster_logical, intent(out) :: mmcvca
+    aster_logical, intent(out) :: scotch
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,22 +141,17 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 !
 ! - Cycling detection
 !
-    call mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
-                        l_loop_cont   , l_frot_zone   , point_index, &
-                        coef_cont_prev, pres_cont_prev, dist_cont_prev, &
-                        indi_frot_prev, dist_frot_prev, &
-                        indi_cont_eval, indi_frot_eval, &
-                        dist_cont_curr, pres_cont_curr, dist_frot_curr)
+    call mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, point_index,&
+                        coef_cont_prev, pres_cont_prev, dist_cont_prev, indi_frot_prev,&
+                        dist_frot_prev, indi_cont_eval, indi_frot_eval, dist_cont_curr,&
+                        pres_cont_curr, dist_frot_curr)
 !
 ! - Cycling treatment: automatic adaptation of augmented lagrangian ratio
 !
     if (l_coef_adap) then
-        call mm_cycl_trait(sd_cont_solv, point_index, &
-                           coef_cont_prev,&
-                           coef_frot_prev, pres_frot_prev, dist_frot_prev,&
-                           pres_frot_curr, dist_frot_curr, &
-                           indi_cont_eval, indi_frot_eval, &
-                           indi_cont_curr, coef_cont_curr, &
+        call mm_cycl_trait(sd_cont_solv, point_index, coef_cont_prev, coef_frot_prev,&
+                           pres_frot_prev, dist_frot_prev, pres_frot_curr, dist_frot_curr,&
+                           indi_cont_eval, indi_frot_eval, indi_cont_curr, coef_cont_curr,&
                            indi_frot_curr, coef_frot_curr)
     else
         coef_cont_curr = coef_cont_prev
@@ -166,8 +162,8 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 !
 ! - Saving max/min ratio
 !
-    if (coef_frot_curr.ge.coef_frot_maxi) coef_frot_maxi = coef_frot_curr
-    if (coef_frot_curr.le.coef_frot_mini) coef_frot_mini = coef_frot_curr
+    if (coef_frot_curr .ge. coef_frot_maxi) coef_frot_maxi = coef_frot_curr
+    if (coef_frot_curr .le. coef_frot_mini) coef_frot_mini = coef_frot_curr
     cycl_coef(6*(zone_index-1)+5) = coef_frot_mini
     cycl_coef(6*(zone_index-1)+6) = coef_frot_maxi
 !

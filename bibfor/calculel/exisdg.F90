@@ -1,7 +1,8 @@
 function exisdg(dg, cmp)
 ! aslint: disable=
     implicit none
-    logical(kind=1) :: exisdg
+#include "asterf_types.h"
+    aster_logical :: exisdg
     integer :: dg(*), cmp
 !     ------------------------------------------------------------------
 ! ======================================================================

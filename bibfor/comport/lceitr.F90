@@ -21,6 +21,7 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -45,7 +46,7 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
 !-----------------------------------------------------------------------
     integer :: nbpar
     parameter (nbpar=6)
-    logical(kind=1) :: resi, rigi, elas
+    aster_logical :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, c, h, ka, sk, st, val(nbpar), tmp, kap, skp, gap
     real(kind=8) :: dn, tn, t(3), ddndtn, dele, delp, delc, coee, coep
@@ -198,7 +199,7 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
 ! -- MATRICE TANGENTE
 !--------------------
 !
-5000  continue
+5000 continue
     if (.not. rigi) goto 9999
 !
 !    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
@@ -224,6 +225,6 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
     endif
     ddedt(1,1) = ddndtn
 !
-9999  continue
+9999 continue
 !
 end subroutine

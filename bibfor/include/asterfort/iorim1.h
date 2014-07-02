@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function iorim1(num1, num2, reorie)
         integer :: num1(2)
         integer :: num2(2)
-        logical(kind=1) :: reorie
+        aster_logical :: reorie
         integer :: iorim1
     end function iorim1
 end interface

@@ -19,6 +19,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
@@ -67,7 +68,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     real(kind=8) :: newins, newdt, deltac
     real(kind=8) :: inst, prec, valr(2)
     real(kind=8) :: insfin, insref
-    logical(kind=1) :: ladap, uncrok
+    aster_logical :: ladap, uncrok
     character(len=24) :: tpsite
     integer :: jiter
     integer :: nbini, nmax, inspas
@@ -168,7 +169,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
         else
             call utmess('I', 'ADAPTATION_3', sk=modetp)
         endif
-100  end do
+100 end do
 !
 ! --- ON CHOISIT LE PLUS PETIT DT PARMI LES NADAPT PAS DE TEMPS
 ! --- POSSIBLES
@@ -182,7 +183,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
             dt = min(dt,newdt)
             uncrok = .true.
         endif
-200  end do
+200 end do
 !
     if (uncrok) then
         call utmess('I', 'ADAPTATION_5', sr=dt)
@@ -265,7 +266,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     call nmdcei(sddisc, numins, [newins], nbini, inspas,&
                 'ADAP', r8bid)
 !
-9999  continue
+9999 continue
 !
     call jedetr(dtplus)
     call jedema()

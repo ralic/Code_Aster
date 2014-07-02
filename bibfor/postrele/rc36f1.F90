@@ -2,6 +2,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                   nk, nl, n0, nbp12, nbp23,&
                   nbp13, sigr, yapass, typass, nsitup)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -9,7 +10,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
     integer :: nbsigr, nocc(*), isk, isl, nk, nl, n0, nsitup, nbp12, nbp23
     integer :: nbp13, sigr(*)
     real(kind=8) :: saltij(*)
-    logical(kind=1) :: yapass
+    aster_logical :: yapass
     character(len=3) :: typass
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -41,10 +42,10 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer ::  ig1, ig2, nbsips, jnpass, i, k, i1, nsitu, numg1, numg2
+    integer :: ig1, ig2, nbsips, jnpass, i, k, i1, nsitu, numg1, numg2
     integer :: sipass, npass, ioc1, ioc2
     real(kind=8) :: salmia, salmib, salt1, salt2, salt3, salt4, saltam, saltbm
-    logical(kind=1) :: chemin
+    aster_logical :: chemin
     integer, pointer :: situ_group(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -139,9 +140,9 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                 ioc1 = k
                 goto 14
             endif
-12      continue
+ 12     continue
         call utmess('F', 'POSTRCCM_36')
-14      continue
+ 14     continue
         npass = max(nocc(2*(ioc1-1)+1),nocc(2*(ioc1-1)+2))
         if (npass .eq. 0) goto 10
         chemin = .true.
@@ -172,7 +173,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                 saltbm = salt4
                 nsitu = ioc1
             endif
-16      continue
+ 16     continue
 !
         if (saltam .lt. salmia) then
             salmia = saltam
@@ -183,7 +184,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
             nsitup = nsitu
         endif
 !
-10  end do
+ 10 end do
     if (chemin) then
         npass = max(nocc(2*(nsitup-1)+1),nocc(2*(nsitup-1)+2))
         n0 = min ( nk , nl, npass )
@@ -192,6 +193,6 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
         n0 = min ( nk , nl )
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

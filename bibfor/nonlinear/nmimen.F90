@@ -18,7 +18,8 @@ subroutine nmimen(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/impfok.h"
 #include "asterfort/implis.h"
@@ -46,7 +47,7 @@ subroutine nmimen(sdimpr)
 !
     character(len=255) :: ligsep, entet1, entet2, entet3
     character(len=24) :: sdtabc
-    logical(kind=1) :: lcsv, lprint
+    aster_logical :: lcsv, lprint
     integer :: larlig, unimes, unicsv
 !
 ! ----------------------------------------------------------------------
@@ -91,7 +92,7 @@ subroutine nmimen(sdimpr)
         call impfok(entet3, larlig, unicsv)
     endif
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

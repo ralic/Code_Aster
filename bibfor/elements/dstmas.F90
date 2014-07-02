@@ -1,5 +1,6 @@
 subroutine dstmas(xyzl, option, pgl, mas, ener)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/dialum.h"
@@ -62,12 +63,12 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: zero, un, six, douze, wgtf, wgtm, wgtmf
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
     character(len=3) :: stopz
-    logical(kind=1) :: coupmf, exce
+    aster_logical :: coupmf, exce
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
     zero = 0.0d0
     un = 1.0d0
@@ -79,13 +80,13 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !
     do 10 k = 1, 54
         mefl(k,1) = zero
-10  end do
+ 10 end do
     do 20 k = 1, 81
         flex(k,1) = zero
-20  end do
+ 20 end do
     do 30 k = 1, 36
         memb(k,1) = zero
-30  end do
+ 30 end do
 !
     call r8inir(18, zero, am, 1)
 !
@@ -185,8 +186,8 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
         do 50 i = 1, 9
             do 60 j = 1, 9
                 flex(i,j) = flex(i,j) + wst(i)*wst(j)*wgt
-60          continue
-50      continue
+ 60         continue
+ 50     continue
 !
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 ! ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
@@ -198,8 +199,8 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
         do 70 i = 1, 9
             do 80 j = 1, 9
                 flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
-80          continue
-70      continue
+ 80         continue
+ 70     continue
 !==============================================================
 ! ---   CAS D'UN ELEMENT EXCENTRE : IL APPARAIT DE TERMES DE  =
 ! ---   COUPLAGE MEMBRANE-FLEXION ET DE NOUVEAUX TERMES POUR  =
@@ -237,16 +238,16 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
                     i2 = i1 +1
                     mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
                     mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
-100              continue
-90          continue
+100             continue
+ 90         continue
 ! ---      2) TERMES DE COUPLAGE MEMBRANE-FLEXION W*W ET BETA*BETA :
 !             ----------------------------------------------------
             do 110 i = 1, 6
                 do 120 j = 1, 9
                     mefl(i,j) = mefl(i,j) + wmest(i)*wst(j)*wgtm + (nmx(i)*nfx(j) + nmy(i)*nfy(j)&
                                 &)*wgtf
-120              continue
-110          continue
+120             continue
+110         continue
 !
 !===========================================================
 ! ---  AJOUT DE NOUVEAUX TERMES A LA PARTIE MEMBRANE       =
@@ -272,21 +273,21 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
                     memb(i1,j2) = memb(i1,j2)+ (nmi(k)*nmx(j2)+nmi(p)* nmy(i1))*wgtmf
                     memb(i2,j1) = memb(i2,j1)+ (nmi(k)*nmy(j1)+nmi(p)* nmx(i2))*wgtmf
                     memb(i2,j2) = memb(i2,j2)+ (nmi(k)*nmy(j2)+nmi(p)* nmy(i2))*wgtmf
-140              continue
-130          continue
+140             continue
+130         continue
 ! ---      2) TERMES DE MEMBRANE WMEST*WMEST ET BETA*BETA :
 !             -------------------------------------------
             do 150 i = 1, 6
                 do 160 j = 1, 6
                     memb(i,j) = memb(i,j) + wmest(i)*wmest(j)*wgtm + (nmx(i)*nmx(j) + nmy(i)*nmy(&
                                 &j))*wgtf
-160              continue
-150          continue
+160             continue
+150         continue
 !
         endif
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
-40  end do
+ 40 end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !

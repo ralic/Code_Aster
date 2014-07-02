@@ -23,10 +23,11 @@ function dmwdp1(rho11, signe, sat, dsatp1, phi,&
 ! --- A LA PRESSION CAPILLAIRE -----------------------------------------
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
     real(kind=8) :: rho11, signe, sat, dsatp1, phi, cs, cliq, dp11p1
     real(kind=8) :: dmwdp1, em
     real(kind=8) :: dphip1
-    logical(kind=1) :: emmag
+    aster_logical :: emmag
 !
     if (emmag) then
         dphip1 = - sat*signe*em

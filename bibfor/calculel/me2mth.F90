@@ -21,6 +21,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
 !
 !     ARGUMENTS:
 !     ----------
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -74,7 +75,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
 !
 !
 !
-    logical(kind=1) :: lfonc
+    aster_logical :: lfonc
     character(len=8) :: lpain(5), lpaout(1), k8bid
     character(len=16) :: option
     character(len=24) :: lchin(5), lchout(1), ligrmo, ligrch

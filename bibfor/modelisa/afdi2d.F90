@@ -1,7 +1,8 @@
 subroutine afdi2d(irep, eta, car, val, jdc,&
                   jdv, ivr, iv, kma, ncmp,&
                   ntp, jdcinf, jdvinf, isym, ifm)
-    implicit       none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -40,7 +41,7 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
     integer :: j, l, dimmat, ibid
     real(kind=8) :: r8bid
     character(len=7) :: ki
-    logical(kind=1) :: nonsym
+    aster_logical :: nonsym
     character(len=8) :: k8bid
     character(len=13) :: carbid
 ! --- ---------------------------------------------------------------
@@ -75,7 +76,7 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
             call codent(l, 'G', ki)
             zk8(jdc(j)+l-1) = kma(j)//ki
             zr (jdv(j)+l-1) = 0.d0
-100      continue
+100     continue
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_N
         if (car(3:7) .eq. 'T_D_N') then
             carbid = '2D_DIS_'//car(3:7)
@@ -167,7 +168,7 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
                 zk8(jdc(j)+l-1) = kma(j)//ki
                 zr (jdv(j)+l-1) = val(iv)
                 iv = iv + 1
-30          continue
+ 30         continue
             ncmp = 4
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_L
         else if (car(3:5).eq.'T_L') then
@@ -182,7 +183,7 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
                 zk8(jdc(j)+l-1) = kma(j)//ki
                 zr (jdv(j)+l-1) = val(iv)
                 iv = iv + 1
-35          continue
+ 35         continue
             ncmp = 16
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_N
         else if (car(3:6).eq.'TR_N') then
@@ -197,7 +198,7 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
                 zk8(jdc(j)+l-1) = kma(j)//ki
                 zr (jdv(j)+l-1) = val(iv)
                 iv = iv + 1
-40          continue
+ 40         continue
             ncmp = 9
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_L
         else if (car(3:6).eq.'TR_L') then
@@ -212,7 +213,7 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
                 zk8(jdc(j)+l-1) = kma(j)//ki
                 zr (jdv(j)+l-1) = val(iv)
                 iv = iv + 1
-45          continue
+ 45         continue
             ncmp = 36
         else
             ASSERT(.false.)
@@ -220,6 +221,6 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
         call infdis('CODE', ibid, zr(jdvinf+10), carbid)
 !
         if (ivr(3) .eq. 1) call impmv(ifm, car(1:8), zr(jdv(j)), ncmp, isym)
-200  end do
+200 end do
 !
 end subroutine

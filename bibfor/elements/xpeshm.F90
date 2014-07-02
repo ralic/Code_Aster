@@ -31,15 +31,16 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 ! IN  IVECTU  : INDICE DU SECONDE MEMBRE
 !
     implicit none
-#   include "asterfort/dfdm2d.h"
-#   include "asterfort/dfdm3d.h"
-#   include "asterfort/elref1.h"
-#   include "asterfort/hmdeca.h"
-#   include "asterfort/indent.h"
-#   include "asterfort/reeref.h"
-#   include "asterfort/vecini.h"
-#   include "jeveux.h"
-    logical(kind=1) :: axi
+#include "asterf_types.h"
+# include "asterfort/dfdm2d.h"
+# include "asterfort/dfdm3d.h"
+# include "asterfort/elref1.h"
+# include "asterfort/hmdeca.h"
+# include "asterfort/indent.h"
+# include "asterfort/reeref.h"
+# include "asterfort/vecini.h"
+# include "jeveux.h"
+    aster_logical :: axi
     integer :: nse, ise, in, ino, nno, j, ndim
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg
     integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde
@@ -74,8 +75,8 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-             end do 
-         end do
+            end do 
+        end do
 !
 !     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT
         he=1.d0*heavt(ise)
@@ -95,8 +96,8 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                 do in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(ipi-1)+in)* coorse(ndim*&
                     (in-1)+j)
-                 end do
-             end do
+                end do
+            end do
 !
 !     XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
             call vecini(ndim, 0.d0, xe)
@@ -107,12 +108,12 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                         xe, ff, dbid)
 !
 !     CALCUL DU JACOBIEN DE LA TRANSFORMATION SS-ELT -> SS-ELT REF
-            if (ndim .eq.2) then
-            call dfdm2d(nno, ipi, ipoids, idfde, coorse,&
-                        poids, rbid1, rbid2)
+            if (ndim .eq. 2) then
+                call dfdm2d(nno, ipi, ipoids, idfde, coorse,&
+                            poids, rbid1, rbid2)
             else if (ndim .eq. 3) then
-            call dfdm3d(nno, ipi, ipoids, idfde, coorse,&
-                        poids, rbid1, rbid2,rbid3)
+                call dfdm3d(nno, ipi, ipoids, idfde, coorse,&
+                            poids, rbid1, rbid2, rbid3)
             endif
 !
             poids = poids*rho*zr(ipesa)
@@ -147,8 +148,8 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     zr(ivectu+icla+1)=zr(ivectu+icla+1) +poids*zr(&
                     ipesa+2)*ff(ino)
 !
-                    if (ndim.eq.3) then 
-                      zr(ivectu+icla+2)=zr(ivectu+icla+2) +poids*zr(&
+                    if (ndim .eq. 3) then
+                        zr(ivectu+icla+2)=zr(ivectu+icla+2) +poids*zr(&
                                     ipesa+3)*ff(ino)
                     endif
 !     TERMES HEAVISIDE
@@ -158,13 +159,13 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !
                         zr(ivectu+ienr+ndim+1)=zr(ivectu+ienr+ndim+1)&
                         +he*poids*zr(ipesa+2)*ff(ino)
-                        if (ndim.eq.3) then 
-                          zr(ivectu+ienr+ndim+2)=zr(ivectu+ienr+ndim+2)&
+                        if (ndim .eq. 3) then
+                            zr(ivectu+ienr+ndim+2)=zr(ivectu+ienr+ndim+2)&
                                       +he*poids*zr(ipesa+3)*ff(ino)  
                         endif
                     endif
 100             continue
             endif
  10     continue
-     end do
+    end do
 end subroutine

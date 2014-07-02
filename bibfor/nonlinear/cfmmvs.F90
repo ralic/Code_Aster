@@ -1,7 +1,9 @@
-subroutine cfmmvs(defico, resoco, npt, jeux, loca, zone)
+subroutine cfmmvs(defico, resoco, npt, jeux, loca,&
+                  zone)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -57,13 +59,13 @@ implicit none
     character(len=24) :: nochco
     integer :: jnochc
     character(len=19) :: cnsinr
-    integer ::  jcnslr
+    integer :: jcnslr
     integer :: jjeux, jloca, jzone
     integer :: ipt, izone
     real(kind=8) :: jeu, varc, jeuref
     integer :: numnoe
     integer :: zresu
-    logical(kind=1) :: lsauv
+    aster_logical :: lsauv
     real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -105,19 +107,19 @@ implicit none
 !
 ! ----- ETAT DU CONTACT
 !
-        varc = 0.d0 
-        if (jeu.ne.r8vide()) then
-            if (jeu.gt.r8prem()) then
-                varc = 0.d0 
+        varc = 0.d0
+        if (jeu .ne. r8vide()) then
+            if (jeu .gt. r8prem()) then
+                varc = 0.d0
             else
-                if (abs(jeu).le.jeuref) then
-                    varc = 0.d0           
+                if (abs(jeu) .le. jeuref) then
+                    varc = 0.d0
                 else
-                    varc = 3.d0   
+                    varc = 3.d0
                 endif
             endif
         endif
-
+!
         if (numnoe .eq. -1) lsauv = .false.
         if (jeu .eq. r8vide()) lsauv = .false.
 !

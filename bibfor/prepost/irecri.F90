@@ -8,6 +8,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -38,8 +39,8 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     integer :: nive, versio, nbcham, nbpara
     integer :: nbordr, ordr(*), nbcmp, iocc
     integer :: nbnot, numnoe(*), nbmat, nummai(*)
-    logical(kind=1) :: lresu, lcor
-    logical(kind=1) :: lsup, linf, lmax, lmin, lgmsh
+    aster_logical :: lresu, lcor
+    aster_logical :: lsup, linf, lmax, lmin, lgmsh
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,14 +106,14 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     character(len=8) :: nomco
     character(len=19) :: noch19, knacc
     character(len=24) :: nomst
-    logical(kind=1) :: lordr
+    aster_logical :: lordr
     integer :: nbchca, nbacc, nbcara
     integer :: nbrk16, nbk16, ierd, ibid
     integer :: i, icha, ifi, isy, itype
     integer :: iun, ideu
     integer :: iord, iordr, ivsi
     integer :: iret
-    integer :: jcham,  jpara,  jtitr, jtot
+    integer :: jcham, jpara, jtitr, jtot
     integer :: nbobj, nbtitr
     integer, pointer :: castem(:) => null()
     integer, pointer :: last(:) => null()

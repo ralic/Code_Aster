@@ -2,6 +2,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
@@ -73,7 +74,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     real(kind=8) :: tran(3), cent(3), angl_naut(3)
-    logical(kind=1) :: l_tran, l_cent, l_angl_naut
+    aster_logical :: l_tran, l_cent, l_angl_naut
     character(len=8) :: suffix
     character(len=24) :: list_node_o1, list_node_o2, list_node_i1, list_node_i2
     integer :: nb_node, nb_node_1, nb_node_2
@@ -163,14 +164,14 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 ! ----- Read nodes - First list
 !
         suffix = '_1'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node_i1, &
-                     nb_node_1, suffix =  suffix)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node_i1,&
+                     nb_node_1, suffix = suffix)
 !
 ! ----- Read nodes - Second list
 !
         suffix = '_2'
-        call getnode(mesh     , keywordfact, iocc, 'F', list_node_i2, &
-                     nb_node_2, suffix =  suffix)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node_i2,&
+                     nb_node_2, suffix = suffix)
 !
         if (nb_node_1 .ne. nb_node_2) then
             call utmess('F', 'CHARGES2_8')

@@ -1,6 +1,7 @@
 subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
                   axok, liax, nbliax, zvec)
     implicit none
+#include "asterf_types.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,15 +38,13 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
 ! ZVEC      /M/: VECTEUR DE TRAVAIL COMPLEXE DIMENSIONNE A NBDDG
 !
 !-----------------------------------------------------------------------
+    integer :: i, j, nbddg, nbddr, nbliax, nbmob, nbmod
     integer :: liax(nbliax)
     complex(kind=8) :: zmat(nbddg, nbmod), zvec(nbddg)
-    logical(kind=1) :: axok
+    aster_logical :: axok
 !-----------------------------------------------------------------------
 !
 !  CAS DE PRESENCE DDL AXE
-!
-!-----------------------------------------------------------------------
-    integer :: i, j, nbddg, nbddr, nbliax, nbmob, nbmod
 !
 !-----------------------------------------------------------------------
     if (axok) then
@@ -53,19 +52,19 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
 !
             do 20 i = 1, nbliax
                 zvec(i)=zmat(i+nbmob+nbddr,j)
-20          continue
+ 20         continue
 !
             if ((nbmob+nbddr) .lt. nbddg) then
                 do 30 i = nbmob+nbddr+1, nbddg
                     zmat(i,j)=dcmplx(0.d0,0.d0)
-30              continue
+ 30             continue
             endif
 !
             do 40 i = 1, nbliax
                 zmat(nbmob+nbddr+liax(i),j)=zvec(i)
-40          continue
+ 40         continue
 !
-10      continue
+ 10     continue
 !
 !  AUTRE CAS
 !
@@ -74,8 +73,8 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
             do 50 j = 1, nbmod
                 do 60 i = nbmob+nbddr+1, nbddg
                     zmat(i,j)=dcmplx(0.d0,0.d0)
-60              continue
-50          continue
+ 60             continue
+ 50         continue
         endif
 !
     endif

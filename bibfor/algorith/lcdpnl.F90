@@ -3,6 +3,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
                   vim, vip, sig, dsidep, proj,&
                   iret)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/lcdrpr.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprsm.h"
@@ -55,7 +56,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
 ! OUT PROJ    PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
-    logical(kind=1) :: rigi, resi, elas
+    aster_logical :: rigi, resi, elas
     integer :: ndimsi, i, j, ndt, ndi
     real(kind=8) :: kron(6), tre, trer, valres(2), dsdp2(6, 6), tp, tm, tref
     real(kind=8) :: deuxmu, lambda, dsdp1b(6, 6), young, nu
@@ -104,7 +105,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
     call r8inir(36, 0.d0, proj, 1)
     do 5 i = 1, 6
         proj(i,i) = 1.d0
- 5  end do
+  5 end do
 ! =====================================================================
 ! --- CORRECTION NON LOCALE -------------------------------------------
 ! =====================================================================
@@ -114,7 +115,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
 !
         do 100 i = 1, ndimsi
             sig(i) = sig(i) + lambda*(tre - trer)*kron(i) + deuxmu*( deps(i,1)-deps(i,2))
-100      continue
+100     continue
     endif
 !
     if (rigi) then
@@ -126,12 +127,12 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
         do 10 i = 1, 3
             do 20 j = 1, 3
                 dsidep(i,j,1) = lambda
-20          continue
-10      continue
+ 20         continue
+ 10     continue
 !
         do 30 i = 1, ndt
             dsidep(i,i,1) = dsidep(i,i,1) + deuxmu
-30      continue
+ 30     continue
 !
         if (.not. elas) then
             call lcprsm(-1.0d0, dsidep(1, 1, 1), dsdp1b)

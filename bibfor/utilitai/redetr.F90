@@ -1,5 +1,6 @@
 subroutine redetr(matelz)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -43,9 +44,9 @@ subroutine redetr(matelz)
 !     IN/OUT  : MATELZ = NOM DE LA SD MATR_ELEM A NETTOYER
 !
 !
-    integer ::  iret1, iexi, iexiav
+    integer :: iret1, iexi, iexiav
     integer :: izero, ico, k, nb1, nbdet, nb1av
-    logical(kind=1) :: ldetr
+    aster_logical :: ldetr
     character(len=19) :: matele, resuel
     character(len=24), pointer :: relr(:) => null()
     integer, pointer :: adetr(:) => null()
@@ -92,42 +93,42 @@ subroutine redetr(matelz)
 !        ADETR(K)=0 : LA SD EXISTE ET ELLE EST NON NULLE
 !     REMARQUE : LES CAS 1 ET 2 N'EXISTENT PAS ENCORE
 !                J'ESPERE QU'ILS N'ARRIVERONT JAMAIS
-    do 10,k=1,nb1
-    adetr(k)=0
-    resuel=relr(k)(1:19)
-    if (resuel .eq. ' ') then
-        ASSERT(.false.)
-        adetr(k)=1
-        goto 10
-    endif
+    do 10 k = 1, nb1
+        adetr(k)=0
+        resuel=relr(k)(1:19)
+        if (resuel .eq. ' ') then
+            ASSERT(.false.)
+            adetr(k)=1
+            goto 10
+        endif
 !
 !       -- EXISTENCE DU RESU_ELEM ?
-    call exisd('RESUELEM', resuel, iret1)
-    if (iret1 .eq. 0) then
-        adetr(k)=2
-        ASSERT(.false.)
-        goto 10
-    endif
+        call exisd('RESUELEM', resuel, iret1)
+        if (iret1 .eq. 0) then
+            adetr(k)=2
+            ASSERT(.false.)
+            goto 10
+        endif
 !
 !
 !       -- SI LE RESU_ELEM EST NUL SUR TOUS LES PROCS,
 !          ON PEUT LE DETRUIRE:
-    izero=1
-    if (zerosd('RESUELEM',resuel)) izero=0
-    call asmpi_comm_vect('MPI_MAX', 'I', sci=izero)
-    if (izero .eq. 0) then
-        adetr(k)=3
-    else
-        adetr(k)=0
-    endif
-    10 end do
+        izero=1
+        if (zerosd('RESUELEM',resuel)) izero=0
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=izero)
+        if (izero .eq. 0) then
+            adetr(k)=3
+        else
+            adetr(k)=0
+        endif
+ 10 end do
 !
 !
 !     -- ON COMPTE LES RESUELEM A DETRUIRE :
     nbdet=0
-    do 20,k=1,nb1
-    if (adetr(k) .eq. 3) nbdet=nbdet+1
-    20 end do
+    do 20 k = 1, nb1
+        if (adetr(k) .eq. 3) nbdet=nbdet+1
+ 20 end do
     if (nbdet .eq. 0) goto 60
 !
 !     -- ON DETRUIT LES RESULEM NULS (ON EN GARDE AU MOINS 1) :
@@ -135,35 +136,35 @@ subroutine redetr(matelz)
 !        EN GENERAL STOCKEE APRES LA SYMETRIQUE
     nbdet=min(nbdet,nb1-1)
     ico=0
-    do 30,k=nb1,1,-1
-    if (adetr(k) .eq. 3) then
-        ico=ico+1
-        if (ico .gt. nbdet) goto 31
-        resuel = relr(k)(1:19)
-        call detrsd('RESUELEM', resuel)
-        relr(k) = ' '
-    endif
-    30 end do
-31  continue
+    do 30 k = nb1, 1, -1
+        if (adetr(k) .eq. 3) then
+            ico=ico+1
+            if (ico .gt. nbdet) goto 31
+            resuel = relr(k)(1:19)
+            call detrsd('RESUELEM', resuel)
+            relr(k) = ' '
+        endif
+ 30 end do
+ 31 continue
 !
 !     -- ON COMPACTE LE MATR_ELEM POUR QUE TOUS SES RESUELEM
 !        SOIENT "VRAIS"
     ico=0
-    do 40,k=1,nb1
-    resuel=relr(k)(1:19)
-    if (resuel .ne. ' ') then
-        ico=ico+1
-        tempor(ico) = resuel
-    endif
-    40 end do
+    do 40 k = 1, nb1
+        resuel=relr(k)(1:19)
+        if (resuel .ne. ' ') then
+            ico=ico+1
+            tempor(ico) = resuel
+        endif
+ 40 end do
     ASSERT(ico.gt.0)
 !
     call jeecra(matele//'.RELR', 'LONUTI', ico)
-    do 50,k=1,ico
-    relr(k) = tempor(k)
-    50 end do
+    do 50 k = 1, ico
+        relr(k) = tempor(k)
+ 50 end do
 !
-60  continue
+ 60 continue
 !
 !     -- DESTRUCTION DES OBJETS TEMPORAIRES SI BESOIN
     if (ldetr) then

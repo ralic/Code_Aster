@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmgrt2(nno, poids, kpg, vff, def,&
                       pff, option, axi, r, resi,&
@@ -27,14 +29,14 @@ interface
         real(kind=8) :: def(4, nno, 2)
         real(kind=8) :: pff(4, nno, nno)
         character(len=16) :: option
-        logical(kind=1) :: axi
+        aster_logical :: axi
         real(kind=8) :: r
-        logical(kind=1) :: resi
-        logical(kind=1) :: rigi
+        aster_logical :: resi
+        aster_logical :: rigi
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: sign(6)
         real(kind=8) :: sigma(6)
-        logical(kind=1) :: matsym
+        aster_logical :: matsym
         real(kind=8) :: matuu(*)
         real(kind=8) :: vectu(*)
     end subroutine nmgrt2

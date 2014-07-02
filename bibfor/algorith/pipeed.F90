@@ -21,6 +21,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/nmedpi.h"
@@ -103,7 +104,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
     real(kind=8) :: sigd(2)
     real(kind=8) :: cotmp, sitmp, co, si, rot(2, 2), drot, xa, xb, ya, yb
     real(kind=8) :: def(4, 4, 2), bup(6), bud(6), d(4, 2), rtemp(4, 2)
-    logical(kind=1) :: grand, axi
+    aster_logical :: grand, axi
 !
 ! ----------------------------------------------------------------------
 !
@@ -206,16 +207,16 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
                 drot = 0.d0
                 do 34 k = 1, 2
                     drot = drot + d(i,k)*rot(j,k)
-34              continue
+ 34             continue
                 rtemp(i,j) = drot
-33          continue
-32      continue
+ 33         continue
+ 32     continue
 !
         do 35 i = 1, 4
             do 36 j = 1, 2
                 d(i,j) = rtemp(i,j)
-36          continue
-35      continue
+ 36         continue
+ 35     continue
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
         call r8inir(32, 0.d0, def, 1)
@@ -225,14 +226,14 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
-30          continue
-40      continue
+ 30         continue
+ 40     continue
 !
 !       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         if (axi) then
             do 50 n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
-50          continue
+ 50         continue
         endif
 !
 !       CALCUL DE SP,SD ET Q AU POINT DE GAUSS COURANT :
@@ -246,20 +247,20 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
             sd(i) = sd(i) + poids*sdg(i)
             do 65 j = 1, 2
                 q(i,j) = q(i,j) + poids*qg(i,j)
-65          continue
-64      continue
+ 65         continue
+ 64     continue
 !
 !
-800  end do
+800 end do
 !
 !
     do 66 i = 1, 2
         sigp(i) = sigp(i) + sp(i)
         do 67 j = 1, 2
             sigp(i) = sigp(i) + q(i,j)*vim(j,1)
-67      continue
+ 67     continue
         sigd(i) = sd(i)
-66  end do
+ 66 end do
 !
 !*****************************************************************
 ! CALCUL DES COPILO DANS LE CAS OU LE SEUIL EN SAUT EST NUL :
@@ -312,7 +313,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
             endif
         endif
 !
-888      continue
+888     continue
 !
 ! INTERSECTION DE LA DEUXIEME DEMI-DROITE AVEC LE CRITERE EN CONTRAINTE
 ! ---------------------------------------------------------------------
@@ -415,8 +416,8 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
             do 69 j = 1, 2
                 alfp(i) = alfp(i) + matinv(i,j)*sp(j)
                 alfd(i) = alfd(i) + matinv(i,j)*sd(j)
-69          continue
-68      continue
+ 69         continue
+ 68     continue
 !
 ! -------------------------------
 ! INTERSECTION DROITE / SEGMENT :
@@ -433,7 +434,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
             a1 = - alfd(1)
         endif
 !
-777      continue
+777     continue
 !
 ! -------------------------------------
 ! INTERSECTION DROITE / ARC DE CERCLE :
@@ -504,7 +505,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 !
     endif
 !
-999  continue
+999 continue
 !
     if (kappam .eq. 0.d0) then
         if (kont .ne. 0) then
@@ -542,6 +543,6 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
         copilo(3,i) = copilo(3,1)
         copilo(4,i) = copilo(4,1)
         copilo(5,i) = copilo(5,1)
-666  end do
+666 end do
 !
 end subroutine

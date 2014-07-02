@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                       nbnoeu, trav1, trav2, trav3, chfond,&
@@ -31,13 +33,13 @@ interface
         character(len=24) :: trav3
         character(len=24) :: chfond
         character(len=8) :: fond
-        logical(kind=1) :: connex
+        aster_logical :: connex
         character(len=24) :: stok4
-        logical(kind=1) :: thlagr
-        logical(kind=1) :: thlag2
+        aster_logical :: thlagr
+        aster_logical :: thlag2
         integer :: nbre
-        logical(kind=1) :: milieu
+        aster_logical :: milieu
         integer :: ndimte
-        logical(kind=1) :: pair
+        aster_logical :: pair
     end subroutine gcour2
 end interface

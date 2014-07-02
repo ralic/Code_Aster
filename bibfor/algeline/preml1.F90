@@ -26,6 +26,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/onmetl.h"
@@ -56,7 +57,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
     integer :: libre, iovflo, ncmpa, ifm, niv, p(neq), q(n2), nrl
     integer :: it
     integer :: nec, prno(*), deeq(*), ino, nbcmp
-    logical(kind=1) :: matgen, liaiso
+    aster_logical :: matgen, liaiso
 !--------------------------------------------------------------
 !
 !     VERSION RENUMEROTATION PAR NOEUD

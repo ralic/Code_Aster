@@ -21,6 +21,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -100,7 +101,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
     real(kind=8) :: jeu, dist
     character(len=8) :: nommae, nommam, aliase
     character(len=16) :: nompt, noment
-    logical(kind=1) :: lveri, lexfro
+    aster_logical :: lveri, lexfro
     integer :: jjeux, jloca, jenti, jzone
 !
 ! ----------------------------------------------------------------------
@@ -274,7 +275,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
             end do
         end do
-25      continue
+ 25     continue
     end do
 !
     ASSERT(npt0.eq.npt)

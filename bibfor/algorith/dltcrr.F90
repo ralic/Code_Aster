@@ -44,6 +44,7 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dlarch.h"
 #include "asterfort/jelibe.h"
@@ -65,12 +66,12 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
     character(len=24) :: numedd, matric(3)
     character(len=*) :: texte
 !
-    logical(kind=1) :: lcrea
+    aster_logical :: lcrea
 !
 !
 !
     integer :: istoc
-
+!
 !
 !
 !====
@@ -85,7 +86,8 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
         matric (1) = rigid
         matric (2) = masse
         matric (3) = amort
-        call refdaj ('F', result, nbordr, numedd, 'DYNAMIQUE', matric, ir)
+        call refdaj('F', result, nbordr, numedd, 'DYNAMIQUE',&
+                    matric, ir)
 !
 ! 2.2. ==> ARCHIVAGE INITIAL
 !

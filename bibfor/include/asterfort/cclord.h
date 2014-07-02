@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                       minord, maxord, resuin, resuou, lisout)
@@ -22,7 +24,7 @@ interface
         integer :: nbordr
         character(len=19) :: lisord
         character(len=8) :: nobase
-        logical(kind=1) :: optdem
+        aster_logical :: optdem
         integer :: minord
         integer :: maxord
         character(len=8) :: resuin

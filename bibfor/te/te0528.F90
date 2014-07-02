@@ -1,5 +1,6 @@
 subroutine te0528(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/burftm.h"
 #include "asterfort/calcgr.h"
@@ -55,7 +56,7 @@ subroutine te0528(option, nomte)
     integer :: icodre(1)
     character(len=8) :: nomres, nompar
     character(len=16) :: compo1, compo2, valk(2)
-    logical(kind=1) :: lflu
+    aster_logical :: lflu
 ! DEB ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
@@ -90,8 +91,8 @@ subroutine te0528(option, nomte)
     endif
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 !      -----------------------------------------
@@ -135,8 +136,8 @@ subroutine te0528(option, nomte)
 !
             do 182 i = 1, nbsig
                 epsfl(nbsig*(igau-1)+i)=epstmp(i)
-182          continue
-140      continue
+182         continue
+140     continue
 !
 !     --------------------------------------------------------
 !      CALCUL DE L'OPTION EPFP
@@ -166,7 +167,7 @@ subroutine te0528(option, nomte)
 !
                 do 185 i = 1, nbsig
                     epsfl(nbsig*(igau-1)+i)=epstmp(i)
-185              continue
+185             continue
 !
             else if (compo1(1:15).eq.'BETON_BURGER_FP') then
 !      POUR BETON_BURGER LE FLUAGE PROPRE VAUT
@@ -181,7 +182,7 @@ subroutine te0528(option, nomte)
 !
                 do 190 i = 1, nbsig
                     epsfl(nbsig*(igau-1)+i)=epstmp(i)
-190              continue
+190             continue
 !
 !-------------------------------------------------------------------*
                 else if ((compo1(1:10).eq.'GRANGER_FP') .or. (compo1(1:7)&
@@ -199,10 +200,10 @@ subroutine te0528(option, nomte)
                             epstmp)
                 do 187 i = 1, nbsig
                     epsfl(nbsig*(igau-1)+i)=epstmp(i)
-187              continue
+187             continue
 !
             endif
-180      continue
+180     continue
 !
     endif
 !
@@ -218,8 +219,8 @@ subroutine te0528(option, nomte)
     do 160 igau = 1, npg
         do 150 isig = 1, nbsig
             zr(idef+nbsig* (igau-1)+isig-1) = epsfl(nbsig* (igau-1)+ isig)
-150      continue
-160  end do
+150     continue
+160 end do
 !
-999  continue
+999 continue
 end subroutine

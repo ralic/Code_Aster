@@ -22,6 +22,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 !                          DE MERIME...  PROSPER YOUP-LA-BOUM!
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -45,7 +46,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     real(kind=8) :: time
     character(len=*) :: modelz, carelz, matelz
     character(len=*) :: lchar(*), mate, basz, compoz
-    logical(kind=1) :: exitim
+    aster_logical :: exitim
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,8 +84,8 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     character(len=8) :: modele, carele
     character(len=19) :: matele, ligrmo, ligrch
     character(len=1) :: base
-    integer ::  icha, icode, ilires, iret
-    logical(kind=1) :: lxfem
+    integer :: icha, icode, ilires, iret
+    aster_logical :: lxfem
     character(len=24), pointer :: rerr(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -271,7 +272,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matele, lchout(1), base)
-10  end do
+ 10 end do
 !
 ! --- DESTRUCTION DES RESUELEM NULS
 !

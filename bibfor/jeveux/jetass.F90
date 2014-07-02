@@ -17,6 +17,7 @@ subroutine jetass(clas)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjalls.h"
@@ -65,7 +66,7 @@ subroutine jetass(clas)
     common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
      &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
-    logical(kind=1) :: litlec
+    aster_logical :: litlec
     common /lficje/  litlec(n)
     common /jusadi/  jusadi(n)
     character(len=2) :: dn2
@@ -79,7 +80,7 @@ subroutine jetass(clas)
     integer :: idiadd
     parameter    ( idiadd = 2 )
 !     ------------------------------------------------------------------
-    logical(kind=1) :: libre, actu
+    aster_logical :: libre, actu
     character(len=1) :: kclas
     integer :: itp(1), jitp, iaditp, iaddi(2), iaddib(2), lgbl, iadyn
 ! DEB ------------------------------------------------------------------
@@ -108,7 +109,7 @@ subroutine jetass(clas)
         klib = 0
         idosp = 0
         idcop = 0
-200      continue
+200     continue
 !
 ! ----- DECHARGEMENT DES TAMPONS DE LECTURE ET D'ECRITURE
 ! ----- AFIN D'ACTUALISER LES ADRESSES DISQUES DES COLLECTIONS
@@ -199,7 +200,7 @@ subroutine jetass(clas)
                         call jxliro(ic, iaditp, iaddi, lgbl)
                         actu = .false.
                         idec = 0
-300                      continue
+300                     continue
                         idcol = iszon(jiszon+iaditp+idec )
                         idosl = iszon(jiszon+iaditp+idec+1)
                         lgl = iszon(jiszon+iaditp+idec+2)
@@ -236,10 +237,10 @@ subroutine jetass(clas)
                                 endif
                             endif
                         endif
-320                      continue
+320                     continue
                         idec = idec+lgl+3
                         goto 300
-350                      continue
+350                     continue
                         if (actu) then
                             call jxlibd(idcol, idosl, ic, iaddi, lois)
                             iaddib(1) = klib
@@ -260,10 +261,10 @@ subroutine jetass(clas)
                 iusadi(jusadi(ic)+3*k-2) = -1
                 iusadi(jusadi(ic)+3*k-1) = -1
                 iusadi(jusadi(ic)+3*k ) = 0
-400          continue
+400         continue
             nbluti(ic) = klib-1
         endif
         call jjlidy(iadyn, iaditp)
-100  end do
+100 end do
 ! FIN ------------------------------------------------------------------
 end subroutine

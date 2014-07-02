@@ -17,6 +17,7 @@ subroutine te0596(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
@@ -41,7 +42,7 @@ subroutine te0596(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    logical(kind=1) :: mini
+    aster_logical :: mini
     integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, idf1, idf2
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
@@ -54,10 +55,10 @@ subroutine te0596(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
@@ -90,16 +91,22 @@ subroutine te0596(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
 !
-            call nufnpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nufnpd(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
                         zr(iddlm), mini, zr(ivectu))
         else if (lteatt('INCO','C2O')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, nno2, vu, vg, vp,&
+                        vpi)
 !
-            call nofnpd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+            call nofnpd(ndim, nno1, nno2, nno2, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
                         vu, vp, vpi, typmod, zi(imate),&
                         zk16(icompo), zr(igeom), nomte, zr(icontm), zr(iddlm),&
                         zr(ivectu))
@@ -119,9 +126,12 @@ subroutine te0596(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
 !
-            call nufnlg(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nufnlg(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
                         zr(iddlm), zr(ivectu))
         else

@@ -22,12 +22,13 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/zbinte.h"
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
     real(kind=8) :: rhom, rho, rhoopt
     real(kind=8) :: fm, f, fopt, fcvg
-    logical(kind=1) :: stite
+    aster_logical :: stite
     integer :: ldcopt, ldccvg
     integer :: opt, act
 !
@@ -96,6 +97,6 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
     rhom = rhotmp
     fm = f
 !
-100  continue
+100 continue
 !
 end subroutine

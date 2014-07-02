@@ -2,6 +2,7 @@ subroutine model_check(model, l_veri_elem)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
@@ -27,7 +28,7 @@ subroutine model_check(model, l_veri_elem)
 ! ======================================================================
 !
     character(len=8), intent(in) :: model
-    logical(kind=1), optional, intent(in) :: l_veri_elem
+    aster_logical, optional, intent(in) :: l_veri_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,23 +45,23 @@ subroutine model_check(model, l_veri_elem)
     character(len=16) :: repk
     integer :: i_disc_2d, i_disc_3d
     character(len=8) :: mesh
-    logical(kind=1) :: l_axis
+    aster_logical :: l_axis
     integer :: nb_mesh_elem
     character(len=19) :: ligrel_model
     character(len=24) :: model_maille
-    integer, pointer  :: p_model_maille(:) => null()
+    integer, pointer :: p_model_maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call dismoi('NOM_MAILLA'  , model, 'MODELE'  , repk = mesh)
-    call dismoi('NB_MA_MAILLA', mesh , 'MAILLAGE', repi = nb_mesh_elem)
-    call dismoi('AXIS'        , model, 'MODELE'  , repk = repk)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nb_mesh_elem)
+    call dismoi('AXIS', model, 'MODELE', repk = repk)
     l_axis = repk.eq.'OUI'
-    call dismoi('DIM_GEOM'    , model, 'MODELE'  , repi = nb_dim_geom)
-    
+    call dismoi('DIM_GEOM', model, 'MODELE', repi = nb_dim_geom)
+!
     ligrel_model = model//'.MODELE'
 !
-! - Check topological(kind=1) dimensions
+! - Check topoaster_logical dimensions
 !
     if (nb_dim_geom .gt. 3) then
         nb_dim_geom2 = 0
@@ -86,7 +87,7 @@ subroutine model_check(model, l_veri_elem)
 ! --------- Warning: 2D model with 3D mesh
 !
             call utmess('A', 'MODELE1_53')
-        elseif ((nb_dim_geom.eq.2) .and. &
+            elseif ((nb_dim_geom.eq.2) .and. &
                 (nb_dim_geom2.eq.2).and. &
                 (nb_dim_geom3.eq.3)) then
 !

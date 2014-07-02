@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
                       prnm, repe_type, repe_defi, coef_type, cmp_nb, &
@@ -39,7 +41,7 @@ interface
         complex(kind=8), intent(in) ::  vale_cplx(cmp_nb)
         integer, intent(inout) :: cmp_count(cmp_nb)
         character(len=19), intent(in) :: list_rela
-        logical(kind=1), intent(in) :: lxfem
+        aster_logical, intent(in) :: lxfem
         integer, intent(in) :: jnoxfl
         integer, intent(in) :: jnoxfv
         character(len=19), intent(in) :: connex_inv

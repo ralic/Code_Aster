@@ -22,6 +22,7 @@ subroutine pacouf(x, fvect, vecr1, vecr2, typflu,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/coefmo.h"
@@ -34,7 +35,7 @@ subroutine pacouf(x, fvect, vecr1, vecr2, typflu,&
     integer :: veci1(*)
 !
     complex(kind=8) :: fonct, z, xkf
-    logical(kind=1) :: zrigi
+    aster_logical :: zrigi
     real(kind=8) :: depi
 !
 ! ----------------------------------------------------------------------

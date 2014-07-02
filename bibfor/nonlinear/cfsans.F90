@@ -1,7 +1,8 @@
 subroutine cfsans(defico, npt, jeux, enti, zone)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterc/r8prem.h"
@@ -56,7 +57,7 @@ implicit none
 !
     character(len=16) :: noment, nompt
     integer :: interp
-    logical(kind=1) :: lstop
+    aster_logical :: lstop
     real(kind=8) :: jeu, jeuref, varc
     integer :: ipt, izone
     integer :: jjeux, jenti, jzone
@@ -90,16 +91,16 @@ implicit none
 !
 ! ----- Test
 !
-        varc = 0.d0 
-        if (jeu.ne.r8vide()) then
-            if (jeu.gt.r8prem()) then
-                varc = 0.d0 
+        varc = 0.d0
+        if (jeu .ne. r8vide()) then
+            if (jeu .gt. r8prem()) then
+                varc = 0.d0
             else
-                if (abs(jeu).le.jeuref) then
-                    varc = 0.d0           
+                if (abs(jeu) .le. jeuref) then
+                    varc = 0.d0
                 else
-                    varc = 3.d0 
-                    interp = interp+1     
+                    varc = 3.d0
+                    interp = interp+1
                 endif
             endif
         endif

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function nmigno(jdiri, lndepl, ieq)
         integer :: jdiri
-        logical(kind=1) :: lndepl
+        aster_logical :: lndepl
         integer :: ieq
-        logical(kind=1) :: nmigno
+        aster_logical :: nmigno
     end function nmigno
 end interface

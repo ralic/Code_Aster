@@ -16,6 +16,7 @@ subroutine te0319(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm3d.h"
@@ -48,14 +49,14 @@ subroutine te0319(option, nomte)
     real(kind=8) :: dire(3), orig(3), point(3), a, b, c, angl(3)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, npg1, i, iflux, itemps, itempe
-    logical(kind=1) :: aniso, global
+    aster_logical :: aniso, global
 ! FIN ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: icamas, l, ndim, nnos, nuno
     real(kind=8) :: alpha, beta
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -132,7 +133,7 @@ subroutine te0319(option, nomte)
                 point(1) = point(1) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-3)
                 point(2) = point(2) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-2)
                 point(3) = point(3) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-1)
-10          continue
+ 10         continue
             call utrcyl(point, dire, orig, p)
         endif
 !
@@ -141,7 +142,7 @@ subroutine te0319(option, nomte)
             fluxx = fluxx + zr(itempe-1+i)*dfdx(i)
             fluxy = fluxy + zr(itempe-1+i)*dfdy(i)
             fluxz = fluxz + zr(itempe-1+i)*dfdz(i)
-20      continue
+ 20     continue
 !
         if (phenom .eq. 'THER_NL') then
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
@@ -168,9 +169,9 @@ subroutine te0319(option, nomte)
         a = a - fluglo(1)/npg1
         b = b - fluglo(2)/npg1
         c = c - fluglo(3)/npg1
-30  end do
+ 30 end do
     do 40 kp = 1, npg1
         zr(iflux+ (kp-1)) = (a**2+b**2+c**2)/lambda
-40  end do
+ 40 end do
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -70,6 +70,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/amumpc.h"
 #include "asterfort/amumpd.h"
@@ -89,7 +90,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     integer :: iret, nbsol
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
-    logical(kind=1) :: prepos
+    aster_logical :: prepos
 !
 #ifdef _HAVE_MUMPS
 #include "asterf_mumps.h"
@@ -97,13 +98,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 #include "jeveux.h"
 !
     integer :: iprem
-    type (smumps_struc) , pointer :: smpsk => null()
-    type (cmumps_struc) , pointer :: cmpsk => null()
-    type (dmumps_struc) , pointer :: dmpsk => null()
-    type (zmumps_struc) , pointer :: zmpsk => null()
+    type(smumps_struc), pointer :: smpsk => null()
+    type(cmumps_struc), pointer :: cmpsk => null()
+    type(dmumps_struc), pointer :: dmpsk => null()
+    type(zmumps_struc), pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
-    integer ::   nprec, iretz, pcentp(2)
-    logical(kind=1) :: lbid, lpreco
+    integer :: nprec, iretz, pcentp(2)
+    aster_logical :: lbid, lpreco
     character(len=1) :: rouc, prec
     character(len=4) :: etamat, etam
     character(len=12) :: k12bid

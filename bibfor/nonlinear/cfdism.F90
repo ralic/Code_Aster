@@ -18,7 +18,8 @@ subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cfinvm.h"
 #include "asterfort/cfnben.h"
@@ -28,7 +29,7 @@ subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
     character(len=24) :: defico
     integer :: posnoe
     real(kind=8) :: distst
-    logical(kind=1) :: ldpou, ldcoq
+    aster_logical :: ldpou, ldcoq
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +87,7 @@ subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
         if (ldcoq) then
             distma = distma+zr(jjcoq-1+posmae)
         endif
-50  end do
+ 50 end do
 !
 ! --- MOYENNE SIMPLE
 !

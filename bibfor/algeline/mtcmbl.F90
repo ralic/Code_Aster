@@ -1,6 +1,7 @@
 subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
                   ddlexc, numedd, elim)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cbval2.h"
@@ -95,13 +96,12 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
 !     -----------------------------------------------------------------
-    integer :: jrefar,  jrefai, ier,  ier1
-    integer :: i, lres, nbloc,  lgbloc
-    logical(kind=1) :: reutil, symr, symi, matd
+    integer :: jrefar, jrefai, ier, ier1
+    integer :: i, lres, nbloc, lgbloc
+    aster_logical :: reutil, symr, symi, matd, nosymr
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: lispoint(:) => null()
-    logical :: nosymr
 !     -----------------------------------------------------------------
 !
     call jemarq()

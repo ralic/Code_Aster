@@ -6,7 +6,7 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
                   toutms, vind, sigd, sigf, epstr,&
                   bnews, mtrac, indi, iret)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,6 +55,7 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 !           INDI   :  INDICATEURS DES MECANISMES POT. ACTIFS (HUJEUX)
 !       ----------------------------------------------------------------
+#include "asterf_types.h"
 #include "asterfort/burini.h"
 #include "asterfort/cvmini.h"
 #include "asterfort/hujini.h"
@@ -76,7 +77,7 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
     character(len=16) :: loi
     character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
-    logical(kind=1) :: bnews(3), mtrac
+    aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret=0

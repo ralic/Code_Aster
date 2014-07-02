@@ -17,6 +17,7 @@ subroutine cesver(cesz)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
@@ -49,14 +50,14 @@ subroutine cesver(cesz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  jcesd, jcesv, jcesl,  iad
+    integer :: jcesd, jcesv, jcesl, iad
     integer :: nbma, ima, ncmp, ipt, isp, nbpt, icmp, ima1
     character(len=24) :: valk(3)
     character(len=8) :: ma, nomgd, nomma, typces
     character(len=3) :: tsca
     character(len=19) :: ces
     real(kind=8) :: rmi1, rma1, rmi2, rma2, rdisp, rdispx, r1, rmax, valr(3)
-    logical(kind=1) :: lexima
+    aster_logical :: lexima
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------

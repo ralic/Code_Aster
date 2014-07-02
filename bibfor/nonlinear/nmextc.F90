@@ -19,6 +19,7 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
@@ -28,7 +29,7 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
     character(len=16) :: motfac
     integer :: iocc
     character(len=24) :: nomcha, sdieto
-    logical(kind=1) :: lextr
+    aster_logical :: lextr
 !
 ! ----------------------------------------------------------------------
 !

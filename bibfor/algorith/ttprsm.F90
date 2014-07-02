@@ -21,6 +21,7 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrf(2)
@@ -28,7 +29,7 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
     real(kind=8) :: tau1(3), tau2(3), mprojt(3, 3)
     integer :: inadh
     real(kind=8) :: rese(3), nrese
-    logical(kind=1) :: lpenaf
+    aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,37 +71,37 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
     do 10 i = 1, 3
         rese(i) = 0.d0
         dvitet(i) = 0.d0
-10  end do
+ 10 end do
 !
 ! --- CALCUL DU SAUT DE "VITESSE" [[DELTA X]]
 !
     do 12 i = 1, ndim
         dvite(i) = ddeple(i) - ddeplm(i)
-12  end do
+ 12 end do
 !
 ! --- PROJECTION DU SAUT SUR LE PLAN TANGENT
 !
     do 21 i = 1, ndim
         do 22 k = 1, ndim
             dvitet(i) = mprojt(i,k)*dvite(k)+dvitet(i)
-22      continue
-21  end do
+ 22     continue
+ 21 end do
 !
 ! --- SEMI-MULTIPLICATEUR DE FROTTEMENT RESE
 !
     if (lpenaf) then
         do 32 i = 1, 3
             rese(i) = coeffp*dvitet(i)
-32      continue
+ 32     continue
     else
         if (ndim .eq. 2) then
             do 30 i = 1, 2
                 rese(i) = dlagrf(1)*tau1(i)+coeffr*dvitet(i)
-30          continue
+ 30         continue
         else if (ndim.eq.3) then
             do 31 i = 1, 3
                 rese(i) = dlagrf(1)*tau1(i)+ dlagrf(2)*tau2(i)+ coeffr*dvitet(i)
-31          continue
+ 31         continue
         else
             ASSERT(.false.)
         endif
@@ -110,7 +111,7 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
 !
     do 40 i = 1, 3
         nrese = rese(i)*rese(i) + nrese
-40  end do
+ 40 end do
     nrese = sqrt(nrese)
 !
 ! --- ON TESTE SI    NRESE < 1 OU NON

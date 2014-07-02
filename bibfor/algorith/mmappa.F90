@@ -18,7 +18,8 @@ subroutine mmappa(loptin, noma, numedd, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/apcalc.h"
 #include "asterfort/infdbg.h"
@@ -26,7 +27,7 @@ subroutine mmappa(loptin, noma, numedd, defico, resoco)
 #include "asterfort/jemarq.h"
 #include "asterfort/mmapre.h"
 #include "asterfort/mmpoin.h"
-    logical(kind=1) :: loptin
+    aster_logical :: loptin
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico, resoco

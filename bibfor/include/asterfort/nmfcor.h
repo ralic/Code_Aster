@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmfcor(modele, numedd, mate, carele, comref,&
                       compor, lischa, fonact, parmet, carcri,&
@@ -53,6 +55,6 @@ interface
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: matass
-        logical(kind=1) :: lerrit
+        aster_logical :: lerrit
     end subroutine nmfcor
 end interface

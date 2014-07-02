@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
                       connex, point, typma, typel, codgra,&
@@ -35,13 +37,13 @@ interface
         integer :: codphy(*)
         integer :: codphd(*)
         integer :: permut(maxnod, *)
-        logical(kind=1) :: lmod
+        aster_logical :: lmod
         character(len=8) :: noma
         integer :: nbgrn
         character(len=24) :: nogn(*)
         integer :: nbgrm
         character(len=24) :: nogm(*)
-        logical(kind=1) :: lmasu
+        aster_logical :: lmasu
         character(len=8) :: nomai(*)
         character(len=8) :: nonoe(*)
         integer :: versio

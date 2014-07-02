@@ -1,9 +1,10 @@
-subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
-                  e    , nu    , p    , rp    , rprim,&
-                  c    , sieleq, dp)
+subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
+                  e, nu, p, rp, rprim,&
+                  c, sieleq, dp)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
@@ -66,7 +67,7 @@ subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    logical(kind=1) :: tessup
+    aster_logical :: tessup
     character(len=1) :: type_prol
     character(len=24) :: func_name
     integer :: jp, jr, i, i0
@@ -94,7 +95,7 @@ subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
     tessup = .false.
 !
 ! - PARCOURS JUSQU'A P
-    do  i = 1, nbvale-1
+    do i = 1, nbvale-1
         if (p .lt. zr(jp+i)) then
             i0 = i-1
             goto 20
@@ -105,7 +106,7 @@ subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
         call utmess('F', 'COMPOR5_60', sk=func_name, sr=p)
     endif
     i0=nbvale-1
-20  continue
+ 20 continue
 !
 ! - CALCUL DES VALEURS DE R(P), R'(P) ET AIRE(P)
 !
@@ -142,7 +143,7 @@ subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
         call utmess('F', 'COMPOR5_60', sk=func_name, sr=p)
     endif
     i0 = nbvale-1
-40  continue
+ 40 continue
 !
 ! - CALCUL DES VALEURS DE DP, R(P+DP), R'(P+DP)
 !

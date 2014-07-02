@@ -18,6 +18,7 @@ subroutine te0506(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/elrefe_info.h"
@@ -42,13 +43,13 @@ subroutine te0506(option, nomte)
     integer :: iflux
     integer :: ipoids, ivf, idfde, igeom
     integer :: iveres
-    logical(kind=1) :: laxi
+    aster_logical :: laxi
 !
 !
     call jemarq()
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
     call jevech('PGEOMER', 'L', igeom)
@@ -71,16 +72,16 @@ subroutine te0506(option, nomte)
         do 10 i = 1, nno
             r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
             tpg = tpg + zr(itempi+i-1)*zr(ivf+k+i-1)
-10      continue
+ 10     continue
         call foderi(coef, tpg, alpha, alphap)
         if (laxi) poids = poids*r
 !
 !
         do 20 i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) + poids*zr(ivf+k+i-1)* ( alpha-alphap*tpg)
-20      continue
-30  end do
-40  continue
+ 20     continue
+ 30 end do
+ 40 continue
 ! FIN ------------------------------------------------------------------
     call jedema()
 end subroutine

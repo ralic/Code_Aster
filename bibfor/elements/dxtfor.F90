@@ -1,11 +1,12 @@
 subroutine dxtfor(global, xyzl, pgl, for, vecl)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), for(6, *), vecl(*)
-    logical(kind=1) :: global
+    aster_logical :: global
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,19 +58,19 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
             fy = for(5,i)
             for(4,i) = t2iu(1)*fx + t2iu(3)*fy
             for(5,i) = t2iu(2)*fx + t2iu(4)*fy
-10      continue
+ 10     continue
     endif
 !
     aire = carat3(8)
 !
     do 20 i = 1, 6*nno
         vecl(i) = 0.d0
-20  end do
+ 20 end do
 !
     do 30 i = 1, 6
         vecl(i ) = for(i,1)*aire/3.d0
         vecl(i+6 ) = for(i,2)*aire/3.d0
         vecl(i+12) = for(i,3)*aire/3.d0
-30  end do
+ 30 end do
 !
 end subroutine

@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcsol(lischa, sddyna, lviss)
         character(len=19) :: lischa
         character(len=19) :: sddyna
-        logical(kind=1) :: lviss
+        aster_logical :: lviss
     end subroutine nmcsol
 end interface

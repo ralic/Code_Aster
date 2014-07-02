@@ -21,6 +21,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/nzcalc.h"
@@ -99,7 +100,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     integer :: icodre(12), test
     character(len=8) :: nomres(12), nomcle(3), zirc(2)
 !
-    logical(kind=1) :: resi, rigi
+    aster_logical :: resi, rigi
 !
     data        kr/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data        pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/

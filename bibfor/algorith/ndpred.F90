@@ -18,7 +18,8 @@ subroutine ndpred(sddyna, valinc, solalg)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -53,7 +54,7 @@ subroutine ndpred(sddyna, valinc, solalg)
 !
     integer :: jcfsc
     character(len=24) :: cfsc
-    logical(kind=1) :: ldepl, lvite, lacce
+    aster_logical :: ldepl, lvite, lacce
     integer :: n
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
     character(len=24) :: vect(3)
@@ -133,7 +134,7 @@ subroutine ndpred(sddyna, valinc, solalg)
         do 10 n = 1, 3
             call vtaxpy(coefv(n), vect(n), vitplu)
             call vtaxpy(coefa(n), vect(n), accplu)
-10      continue
+ 10     continue
     else if (lvite) then
         call vtzero(depplu)
         call vtzero(accplu)
@@ -141,14 +142,14 @@ subroutine ndpred(sddyna, valinc, solalg)
         do 11 n = 1, 3
             call vtaxpy(coefd(n), vect(n), depplu)
             call vtaxpy(coefa(n), vect(n), accplu)
-11      continue
+ 11     continue
     else if (lacce) then
         call vtzero(vitplu)
         call vtzero(depplu)
         do 12 n = 1, 3
             call vtaxpy(coefv(n), vect(n), vitplu)
             call vtaxpy(coefd(n), vect(n), depplu)
-12      continue
+ 12     continue
         call copisd('CHAMP_GD', 'V', acckm1, accplu)
     else
         ASSERT(.false.)
@@ -168,7 +169,7 @@ subroutine ndpred(sddyna, valinc, solalg)
     if (lacce) then
         do 14 n = 1, 3
             call vtaxpy(coefd(n), vect(n), depdel)
-14      continue
+ 14     continue
         call vtaxpy(-1.d0, depkm1, depdel)
     endif
 !

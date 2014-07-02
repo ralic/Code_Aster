@@ -37,6 +37,7 @@ subroutine gefact(duree, nominf)
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -90,7 +91,7 @@ subroutine gefact(duree, nominf)
     character(len=19) :: k19bid, nominf, nomint
     character(len=24) :: chvale, chdesc, chnuor, nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chval, chrefe
-    logical(kind=1) :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
+    aster_logical :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
     integer :: i1, lnumi, lnumj, lfreq, nbfreq, lrefe
 !
 !     ----------------------------------------------------------------
@@ -123,7 +124,7 @@ subroutine gefact(duree, nominf)
     if (abscisse .ne. 'FREQ') then
         call utmess('F', 'UTILITAI8_72')
     endif
-
+!
     chnumi = intesp//'.NUMI'
     chnumj = intesp//'.NUMJ'
     chfreq = intesp//'.DISC'
@@ -138,7 +139,7 @@ subroutine gefact(duree, nominf)
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
     do 150 i1 = 1, nbmr
         zi(jnuor-1+i1) = zi(lnumi-1+i1)
-150  end do
+150 end do
     call ordis(zi(jnuor), nbmr)
     call wkvect('&&GEFACT.MODE', 'V V I', nbmr, inuor)
     nnn = 1
@@ -147,7 +148,7 @@ subroutine gefact(duree, nominf)
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 10
         nnn = nnn + 1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
-10  end do
+ 10 end do
 !
 !=====
 ! 1.2 DONNEES ECHANTILLONNAGE FREQUENTIEL, DEDUCTION DES DONNEES
@@ -170,7 +171,7 @@ subroutine gefact(duree, nominf)
             if (difpas .gt. prec) then
                 call utmess('F', 'ALGORITH3_78')
             endif
-100      continue
+100     continue
 !
         if (( lnbpn ) .and. (nbpini.lt.nbval)) then
             freqf = zr(lfreq+nbpini-1)
@@ -220,7 +221,7 @@ subroutine gefact(duree, nominf)
         do 35 j = 1, nbval-1
             pas= abs(zr(lfreq+j) - zr(lfreq+j-1))
             if (pas .lt. pmin) pmin = pas
-35      continue
+ 35     continue
         freq = zr(lfreq+nbval-1)
         if (freq .gt. fmax) fmax = freq
         freq = zr(lfreq)
@@ -316,7 +317,7 @@ subroutine gefact(duree, nominf)
             isup = k
             lprem = .false.
         endif
-70  end do
+ 70 end do
 !     ------------------------------------------------------------------
 !     --- CHANGER LA FREQ INIT. A 0 HZ POUR LE CAS SANS INTERPOL
     if (linter) zr(lval)=0.d0
@@ -384,8 +385,8 @@ subroutine gefact(duree, nominf)
                 zr(ix) = resure
                 zr(iy) = resuim
             endif
-120      continue
-80  end do
+120     continue
+ 80 end do
     nbval1 = nbpt1
 !
 !===============
@@ -412,7 +413,7 @@ subroutine gefact(duree, nominf)
     call jeveuo('&&GEFACT.MODE', 'L', inuor)
     do 125 i = 1, dim
         zi(lnuor-1+i) = zi(inuor-1+i)
-125  end do
+125 end do
 !
     dim2 = dim*dim
     dim3 = dim2 + dim
@@ -431,7 +432,7 @@ subroutine gefact(duree, nominf)
     nbpt1 = nbval1
     do 130 jj = 1, nbpt1
         zr(lvalc+jj-1) = zr(lval+jj-1)
-130  end do
+130 end do
 !
     call titre()
 !

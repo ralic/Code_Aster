@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function arlelt(nomte,mod,cin)
-        logical(kind=1)           :: arlelt
+        aster_logical           :: arlelt
         character(len=16) :: nomte
         character(len=16) :: mod
         character(len=16) :: cin

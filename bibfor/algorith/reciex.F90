@@ -35,6 +35,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -51,7 +52,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, ibid1, iderex, ij2, ilcmpi
-    integer ::  ilcpex, ilfex, ilindi, ilindj, illex, ilnoex
+    integer :: ilcpex, ilfex, ilindi, ilindj, illex, ilnoex
     integer :: ilvaex, ivite, napexc, ncmpex
     integer :: ndim, nindex, nnoeex, nvasex
 !-----------------------------------------------------------------------
@@ -62,7 +63,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     character(len=24) :: chnumi, chnumj, chnoei, chnoej, chcmpi, chcmpj, chvale
     character(len=24) :: chfreq
 !
-    logical(kind=1) :: lindi, exiind
+    aster_logical :: lindi, exiind
     integer :: lnumi, lnumj, mxval, num, lcmpi, lcmpj
     integer :: nbfreq, ifreq
     character(len=8), pointer :: cmp_j(:) => null()
@@ -129,9 +130,9 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
                         call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
                     endif
-111              continue
-108          continue
-103      continue
+111             continue
+108         continue
+103     continue
     else
         chnoei = intexc//'.NOEI'
         chnoej = intexc//'.NOEJ'
@@ -154,9 +155,9 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
                         call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
                     endif
-121              continue
-122          continue
-120      continue
+121             continue
+122         continue
+120     continue
     endif
 !
     if (.not. exiind) then

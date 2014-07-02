@@ -19,6 +19,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 ! ======================================================================
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/diago2.h"
 #include "asterfort/r8inir.h"
@@ -36,7 +37,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
 !-----------------------------------------------------------------
 !
-    logical(kind=1) :: critg, critd
+    aster_logical :: critg, critd
     integer :: i, j, k
     real(kind=8) :: x, xp, fx, dfx, gx, dgx, norms, norma, eta, det
     real(kind=8) :: p(2, 2), valp(2), sp(2), pa(2), qvect(3)
@@ -129,7 +130,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
         k=0
         xp=0.d0
-2000      continue
+2000     continue
 !
         x = xp
         fx = s(2) + q(2,2)*x - sigmc*exp(-sigmc*abs(x)/gc)
@@ -142,13 +143,13 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
         endif
         if (abs(xp-x) .le. eta) goto 1000
         goto 2000
-1000      continue
+1000     continue
 !
     else if (s(2).lt.-sigmc) then
 !
         k=0
         xp=0.d0
-3000      continue
+3000     continue
 !
         x = xp
         fx = s(2) + q(2,2)*x + sigmc*exp(-sigmc*abs(x)/gc)
@@ -162,7 +163,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
         if (abs(xp-x) .le. eta) goto 4000
         goto 3000
-4000      continue
+4000     continue
 !
     endif
 !
@@ -199,14 +200,14 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
     do 10 i = 1, 2
         do 20 j = 1, 2
             sp(i) = sp(i) + p(j,i)*s(j)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 !     CALCUL DE ALPHAP(1) ET ALPHAP(2) PAR NEWTON :
 !
     k=0
     xp=0.d0
-5000  continue
+5000 continue
 !
     x = xp
 !
@@ -229,7 +230,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
     if (abs(xp-x) .le. eta) goto 6000
     goto 5000
-6000  continue
+6000 continue
 !
     pa(1) = sp(1)/( (sigmc/xp)*exp(-sigmc*xp/gc) - valp(1) )
     pa(2) = sp(2)/( (sigmc/xp)*exp(-sigmc*xp/gc) - valp(2) )
@@ -240,8 +241,8 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
     do 30 i = 1, 2
         do 40 j = 1, 2
             tempal(i) = tempal(i) + p(i,j)*pa(j)
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 !
     norma = sqrt( tempal(1)**2 + tempal(2)**2 )
 !
@@ -257,7 +258,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !     ON EST PASSE DANS AUCUN TEST :
     call utmess('F', 'ALGORITH7_68')
 !
-999  continue
+999 continue
 !
 !
 end subroutine

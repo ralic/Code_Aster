@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
      subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
                   kwork, sompgw, jrwork, tspaq, ipg, dectau,nommet, &
@@ -34,7 +36,7 @@ interface
         character(len=16) :: nommet
         integer :: jvecpg
         integer :: jnorma
-        logical(kind=1) :: rayon
+        aster_logical :: rayon
         integer :: jresun
         integer :: jdtaum
         integer :: jtauma

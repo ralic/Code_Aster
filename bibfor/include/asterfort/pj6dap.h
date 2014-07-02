@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine pj6dap(ino2, geom2, ma2, geom1, seg2,&
                       cobary, itr3, nbtrou, btdi, btvr,&
@@ -35,9 +37,9 @@ interface
         integer :: btco(*)
         integer :: ifm
         integer :: niv
-        logical(kind=1) :: ldmax
+        aster_logical :: ldmax
         real(kind=8) :: distma
-        logical(kind=1) :: loin
+        aster_logical :: loin
         real(kind=8) :: dmin
     end subroutine pj6dap
 end interface

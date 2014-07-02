@@ -54,6 +54,7 @@ subroutine te0003(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -141,7 +142,7 @@ subroutine te0003(option, nomte)
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt
     character(len=19) :: nomgds, ligrel, chflum, chflup
     character(len=24) :: valk(2)
-    logical(kind=1) :: levol, ltheta, laxi, lmaj, lnonli, l2d, llumpe
+    aster_logical :: levol, ltheta, laxi, lmaj, lnonli, l2d, llumpe
 !
 ! --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
 !     REMARQUE : NE PAS SUPPRIMER CE COMMENTAIRE DETAILLE CAR IL EST
@@ -368,8 +369,8 @@ subroutine te0003(option, nomte)
         write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -738,8 +739,8 @@ subroutine te0003(option, nomte)
 !GN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 ! --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
 !GN      WRITE(IFM,*) 'ELREFF : ',ELREFF
-        call elrefe_info(elrefe=elreff,fami='MASS',ndim=ndimf,nno=nnof,nnos=nnosf,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdxf,jgano=jganof)
+        call elrefe_info(elrefe=elreff, fami='MASS', ndim=ndimf, nno=nnof, nnos=nnosf,&
+                         npg=npgf, jpoids=ipoidf, jvf=ivff, jdfde=idfdxf, jgano=jganof)
         idfdyf = idfdxf + 1
 !GN      WRITE(IFM,2000) 'NDIMF,NNOF',NDIMF,NNOF
 !GN      WRITE(IFM,2000) 'NNOSF,NPGF',NNOSF,NPGF
@@ -749,8 +750,8 @@ subroutine te0003(option, nomte)
 ! --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
 !
         if (elrefb(1:1) .ne. ' ') then
-            call elrefe_info(elrefe=elrefb,fami='NOEU',ndim=ndimf,nno=nno2,nnos=nnos2,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfdx2,jgano=jgano2)
+            call elrefe_info(elrefe=elrefb, fami='NOEU', ndim=ndimf, nno=nno2, nnos=nnos2,&
+                             npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfdx2, jgano=jgano2)
             idfdy2 = idfdx2 + 1
 !GN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
 !GN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2

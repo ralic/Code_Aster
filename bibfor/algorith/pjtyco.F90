@@ -27,6 +27,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 ! 0.1. ==> ARGUMENTS
 !
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -40,8 +41,8 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 #include "asterfort/utmess.h"
     character(len=8) :: resuin
     character(len=19) :: cham1
-    logical(kind=1) :: isole
-    logical(kind=1) :: lnoeu, lelno, lelem, lelga
+    aster_logical :: isole
+    aster_logical :: lnoeu, lelno, lelem, lelga
 !
 !
 !  LNOEU  : .TRUE.  : IL Y A UN CHAM_NO A PROJETER
@@ -61,9 +62,9 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !
 !
     integer :: i, ie, iret
-    integer ::  nbordr
+    integer :: nbordr
     integer :: iordr, isym, nbsym
-    logical(kind=1) :: acceno
+    aster_logical :: acceno
     real(kind=8) :: prec
     character(len=4) :: tych
     character(len=8) :: crit

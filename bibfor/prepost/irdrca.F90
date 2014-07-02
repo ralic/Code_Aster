@@ -3,6 +3,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
                   numnoe, lresu, nbcput, ncmput, nive)
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -18,7 +19,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
     real(kind=8) :: vale(*)
     character(len=*) :: nomgd, ncmpgd(*), ncmput(*)
     character(len=*) :: nomsym
-    logical(kind=1) :: lresu
+    aster_logical :: lresu
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,8 +66,8 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadr,  ibid, ic, icm
-    integer :: icmp, iec, inno, ino,  inum
+    integer :: i, iad, iadr, ibid, ic, icm
+    integer :: icmp, iec, inno, ino, inum
     integer :: irval, iun, iva, ival, izero
     integer :: ncmp
     integer, pointer :: bid(:) => null()
@@ -80,7 +81,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
     if (nec .gt. 0) then
         do 16 iec = 1, nec
             dg(iec)=desc(3+iec-1)
-16      continue
+ 16     continue
     endif
 !
     if (.not.lresu) then
@@ -98,15 +99,15 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
                     pos(icmp) = icmp
                     goto 30
                 endif
-32          continue
+ 32         continue
             valk (1) = ncmput(icm)
             valk (2) = nomgd
             call utmess('A', 'PREPOST5_25', nk=2, valk=valk)
-30      continue
+ 30     continue
     else
         do 2 icmp = 1, ncmpmx
             if (exisdg(dg,icmp)) pos(icmp) = icmp
- 2      continue
+  2     continue
     endif
 !
     iad = 1
@@ -149,7 +150,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
                 iad = iad+1
             endif
         endif
- 5  end do
+  5 end do
 !
 ! ---- ECRITURE DE L'EN-TETE -----
 !
@@ -196,7 +197,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
     do 10 i = 1, nbcmp
         bid(i) = izero
         nom(i) = nomvar(i)
-10  end do
+ 10 end do
     write(ifi,'(16(1X,A4))') (nom(i)(1:4),i=1,nbcmp)
     if (nive .eq. 3) write(ifi,'(16(I5))') (bid(i),i=1,nbcmp)
     if (nive .eq. 10) write(ifi,'(10(I8))') (bid(i),i=1,nbcmp)
@@ -220,8 +221,8 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
             ino = numnoe(inno)
             ival = (ino-1)*ncmp
             zr(iadr+inno) = vale(ival+ic)
-12      continue
-22  end do
+ 12     continue
+ 22 end do
     write(ifi,'(3(1X,E21.13E3))') (zr(irval-1+i),i=1,nbcmp*nbno)
     if (.not.lresu) last(4)=inum
     call jedetr('&&IRDRCA.VALE')

@@ -16,6 +16,7 @@ subroutine jeimpa(unit, nomlu, com)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jjallc.h"
@@ -66,8 +67,8 @@ subroutine jeimpa(unit, nomlu, com)
     character(len=8) :: nac(nnac), nao(nnao)
     character(len=1) :: tac(nnac), tao(nnao), genri
     integer :: lac(nnac), lao(nnao)
-    logical(kind=1) :: tab1(5, 4), tab2(5, 4), tab3(2, 3)
-    logical(kind=1) :: lconst, lconti, lcol
+    aster_logical :: tab1(5, 4), tab2(5, 4), tab3(2, 3)
+    aster_logical :: lconst, lconti, lcol
 !
     data             nume       , nome&
      &               / '$$XNUM  ' , '$$XNOM  '  /
@@ -170,7 +171,7 @@ subroutine jeimpa(unit, nomlu, com)
             else
                 write(unit,'(A8,A)') nac(k),cval(1:lac(k))
             endif
-10      continue
+ 10     continue
     endif
     do 20 k = 1, nnao
         icol = k - 10
@@ -188,7 +189,7 @@ subroutine jeimpa(unit, nomlu, com)
                 write(unit,'(A8,A)') nao(k),cval(1:lao(k))
             endif
         endif
-20  end do
+ 20 end do
     if (lcol) then
         call jjlide('JEIMPA', noml32(1:24), 2)
     endif

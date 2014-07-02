@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     function cfcald(defico, izone, typnoe)
         character(len=24) :: defico
         integer :: izone
         character(len=4) :: typnoe
-        logical(kind=1) :: cfcald
+        aster_logical :: cfcald
     end function cfcald
 end interface

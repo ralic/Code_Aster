@@ -1,5 +1,6 @@
 subroutine te0547(option, nomte)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/elelin.h"
@@ -84,7 +85,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: sup2d(2), supp(3), tau1(3), tau2(3), vim(9)
     integer :: ifa, ipgf, isspg, mate, nnol, nvec, pla(27)
     character(len=8) :: job
-    logical(kind=1) :: lbid
+    aster_logical :: lbid
 !......................................................................
     call jemarq()
 !
@@ -93,8 +94,8 @@ subroutine te0547(option, nomte)
 !-----------------------------------------------------------------------
 !
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 !
@@ -172,8 +173,8 @@ subroutine te0547(option, nomte)
     endif
 !
 ! RECUPERATION DU NOMBRE DE POINTS DE GAUSS NPGF
-    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                     jvf=ivff, jdfde=idfdef)
 !
 !
 ! LISTE DES LAMBDAS ACTIFS

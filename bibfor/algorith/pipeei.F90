@@ -24,6 +24,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/eicine.h"
 #include "asterfort/pipeou.h"
@@ -31,7 +32,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 #include "asterfort/pipetc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)
@@ -73,9 +74,9 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
                     kk = iu(j,n)
                     sup(i) = sup(i) + b(i,j,n) * (ddlm(kk)+ddld(kk)+ ddl0(kk))
                     sud(i) = sud(i) + b(i,j,n) * ddl1(kk)
-161              continue
-160          continue
-150      continue
+161             continue
+160         continue
+150     continue
 !
         do 170 i = 1, ndim
             mup(i) = 0.d0
@@ -84,8 +85,8 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
                 kk = im(i,n)
                 mup(i) = mup(i) + vff2(n,g) * (ddlm(kk)+ddld(kk)+ddl0( kk))
                 mud(i) = mud(i) + vff2(n,g) * ddl1(kk)
-180          continue
-170      continue
+180         continue
+170     continue
 !
 !
 ! -- APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE A LA LOI DE COMPORTEMENT
@@ -104,6 +105,6 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
             call utmess('F', 'MECANONLINE_59')
         endif
 !
-10  end do
+ 10 end do
 !
 end subroutine

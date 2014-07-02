@@ -16,6 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! aslint: disable=W1504
+#include "asterf_types.h"
+!
 interface
     subroutine mmstaf(mesh          , ndim  , chdepd, coef_frot   , lpenaf      , &
                       nummae        , aliase, nne   , nummam      , ksipc1      , &
@@ -26,7 +28,7 @@ interface
         integer, intent(in) :: ndim
         character(len=19), intent(in) :: chdepd
         real(kind=8), intent(in) :: coef_frot
-        logical(kind=1), intent(in) :: lpenaf
+        aster_logical, intent(in) :: lpenaf
         integer, intent(in) :: nummae
         character(len=8), intent(in) :: aliase
         integer, intent(in) :: nne

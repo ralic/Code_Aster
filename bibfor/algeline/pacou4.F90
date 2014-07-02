@@ -20,10 +20,11 @@ subroutine pacou4(a, n, c, d, sing)
 !
 ! ARGUMENTS
 ! ---------
+#include "asterf_types.h"
 #include "jeveux.h"
     integer :: n
     real(kind=8) :: a(n, *), c(*), d(*)
-    logical(kind=1) :: sing
+    aster_logical :: sing
 !
 ! --------------------------------------------------------------------
 !
@@ -38,7 +39,7 @@ subroutine pacou4(a, n, c, d, sing)
 !
         do 11 i = k, n
             scale = max(scale,abs(a(i,k)))
-11      continue
+ 11     continue
 !
         if (abs(scale) .le. 1.0d-30) then
             sing = .true.
@@ -48,12 +49,12 @@ subroutine pacou4(a, n, c, d, sing)
         else
             do 12 i = k, n
                 a(i,k) = a(i,k)/scale
-12          continue
+ 12         continue
 !
             sum = 0.0d0
             do 13 i = k, n
                 sum = sum + a(i,k)**2
-13          continue
+ 13         continue
 !
             sigma = sign ( sqrt(sum), a(k,k) )
             a(k,k) = a(k,k) + sigma
@@ -65,16 +66,16 @@ subroutine pacou4(a, n, c, d, sing)
                 sum = 0.0d0
                 do 14 i = k, n
                     sum = sum + a(i,k)*a(i,j)
-14              continue
+ 14             continue
 !
                 tau = sum/c(k)
                 do 15 i = k, n
                     a(i,j) = a(i,j) - tau*a(i,k)
-15              continue
-16          continue
+ 15             continue
+ 16         continue
 !
         endif
-17  end do
+ 17 end do
 !
     d(n) = a(n,n)
     if (abs(d(n)) .le. 1.0d-30) sing = .true.

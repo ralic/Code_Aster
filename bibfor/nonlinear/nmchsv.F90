@@ -19,6 +19,7 @@ subroutine nmchsv(fonact, veasse, sddyna)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/isfonc.h"
@@ -50,7 +51,7 @@ subroutine nmchsv(fonact, veasse, sddyna)
     character(len=19) :: olondp, ollapl, olcine
     character(len=19) :: cnfedo, cnfsdo, cndido, cndidi, cnfint
     character(len=19) :: cnondp, cnlapl, cncine
-    logical(kind=1) :: londe, llapl, ldidi
+    aster_logical :: londe, llapl, ldidi
 !
 ! ----------------------------------------------------------------------
 !

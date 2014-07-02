@@ -1,7 +1,8 @@
 subroutine te0404(option, nomte)
 !
-implicit none
+    implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqpgl.h"
@@ -40,7 +41,7 @@ implicit none
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
 !
-
+!
 !
     character(len=16) :: option, nomte
 !
@@ -57,7 +58,7 @@ implicit none
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
     integer :: elas_type
     character(len=16) :: elas_keyword
 ! DEB ------------------------------------------------------------------
@@ -69,8 +70,8 @@ implicit none
     read(cnd,'(I8)')  nd
     call jevech('PGEOMER', 'L', igeom)
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
     dmin = sqrt(&
@@ -107,10 +108,10 @@ implicit none
 !
 !     RECUPERATION DU MODULE D'YOUNG ET DE LA MASSE VOLUMIQUE
     call jevech('PMATERC', 'L', imate)
-
+!
     call get_elas_type(zi(imate), elas_type, elas_keyword)
-
-    if (elas_type.eq.1) then
+!
+    if (elas_type .eq. 1) then
         if (elas_keyword .eq. 'ELAS') then
             nomres(1) = 'E'
             nomres(2) = 'NU'
@@ -128,9 +129,9 @@ implicit none
             e = valres(1)
             nu = valres(2)
         else if (elas_keyword.eq.'ELAS_COQUE' .or. elas_keyword.eq.'ELAS_DHRC') then
-            call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-                    npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfde,&
-                   jdfd2=idfd2,jgano=jgano)
+            call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                             jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfde, jdfd2=idfd2,&
+                             jgano=jgano)
             call jevech('PCACOQU', 'L', jcoqu)
             epais = zr(jcoqu)
             if (nno .eq. 3) then
@@ -146,7 +147,7 @@ implicit none
             e = (1.d0-nu**2)*dm(1,1)/epais
         endif
     else
-        call utmess('F','DYNAMIQUE_32')
+        call utmess('F', 'DYNAMIQUE_32')
     endif
 !
     call rcvalb(fami, 1, 1, '+', zi(imate),&

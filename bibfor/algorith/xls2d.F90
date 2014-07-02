@@ -4,6 +4,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -15,7 +16,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "blas/ddot.h"
     integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
     integer :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
-    logical(kind=1) :: callst, grille
+    aster_logical :: callst, grille
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,9 +39,9 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
     real(kind=8) :: p(2), dmin, a(2), b(2), m(2), ap(2), ab(2), norcab, ps, eps
     real(kind=8) :: d, oriabp, xln, ps1, xlt
     integer :: isefis, nseabs, inose, nunose, n1, nbnoma, num, nunoc, i
-    logical(kind=1) :: ma2ff
+    aster_logical :: ma2ff
     integer :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
-    logical(kind=1) :: finfis
+    aster_logical :: finfis
 !
     call jemarq()
 !
@@ -74,18 +75,18 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 finfis=.false.
                 goto 1135
             endif
-113      continue
-1135      continue
+113     continue
+1135     continue
         if (finfis) goto 1145
-114  end do
-1145  continue
+114 end do
+1145 continue
 !
 !     VECTEUR FINAL REORGANISE
     call wkvect('&&XINILS.LIMFISOF', 'V V I', nbmaf, jmafif)
 !     DECALAGE DES MAILLES TROUVEES
     do 115 ir3 = 1, ir-1
         zi(jmafif+nbmaf-ir+ir3)=zi(jmafit-1+ir3)
-115  end do
+115 end do
 !     PARCOURS DANS L'AUTRE SENS A PARTIR DE LA PREMIERE MAILLE
     ori=0
     do 117 ir2 = ir, nbmaf+1
@@ -103,11 +104,11 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 finfis=.false.
                 goto 1165
             endif
-116      continue
-1165      continue
+116     continue
+1165     continue
         if (finfis) goto 1175
-117  end do
-1175  continue
+117 end do
+1175 continue
 !
 !      DO 118 IR3=1,NBMAF
 !      WRITE (6,*) IR3, ZI(JCONX1-1+ZI(JCONX2+ZI(JDLIMA+IR3-1)-1)+1-1)
@@ -150,7 +151,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
             do 211 i = 1, 2
                 ab(i)=b(i)-a(i)
                 ap(i)=p(i)-a(i)
-211          continue
+211         continue
 !
 !           CALCUL DE EPS TEL QUE AM=EPS*AB
             norcab=ab(1)*ab(1)+ab(2)*ab(2)
@@ -163,7 +164,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
             do 212 i = 1, 2
                 m(i)=a(i)+eps*ab(i)
-212          continue
+212         continue
 !
 !           CALCUL DE LA DISTANCE PM
             d=padist(2,p,m)
@@ -175,7 +176,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 oriabp=ab(1)*ap(2)-ab(2)*ap(1)
                 do 213 i = 1, 2
                     m(i)=a(i)+ps/norcab*ab(i)
-213              continue
+213             continue
                 d=padist(2,p,m)
                 if (oriabp .gt. 0.d0) then
                     xln=d
@@ -187,7 +188,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 endif
             endif
 !
- 2      continue
+  2     continue
 !
         zr(jlnsv-1+(ino-1)+1)=xln
         zl(jlnsl-1+(ino-1)+1)=.true.
@@ -224,7 +225,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !               POUR RECUPERER UN 2EME POINT DE LA MAILLE QUI NE SOIT
 !               PAS SUR LE FOND
                     if ((nunose.ne.num)) nunoc=num
-32              continue
+ 32             continue
 !
                 if (n1 .eq. 1) then
 !
@@ -234,7 +235,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                         b(i)=zr(jcoor-1+3*(nunoc-1)+i)
                         ab(i)=b(i)-a(i)
                         ap(i)=p(i)-a(i)
-33                  continue
+ 33                 continue
 !
 !               PROJECTION SUR LE SEGMENT
                     ps=ddot(2,ap,1,ab,1)
@@ -251,18 +252,18 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
                 endif
 !
-31          continue
+ 31         continue
 !
             if (.not.ma2ff) then
                 call utmess('F', 'XFEM2_15')
             endif
- 3      continue
+  3     continue
 !
-888      continue
+888     continue
         zr(jltsv-1+(ino-1)+1)=xlt
         zl(jltsl-1+(ino-1)+1)=.true.
 !
-11  continue
+ 11 continue
 !
     call jedema()
 !

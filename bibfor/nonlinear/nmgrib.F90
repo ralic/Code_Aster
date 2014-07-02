@@ -21,13 +21,14 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subaco.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: lexc
+    aster_logical :: lexc
     integer :: nno
     real(kind=8) :: geom(3, nno), dff(2, nno), dir11(3)
     real(kind=8) :: b(6, nno), vecn(3), p(3, 6)
@@ -48,9 +49,9 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
     do 5 j = 1, 3
         do 6 i = 1, 2
             r1(i) = r1(i)+cova(j,i)*dir11(j)
- 6      continue
+  6     continue
         projn = projn + cova(j,3) * dir11(j)
- 5  end do
+  5 end do
 !
     denomi = (1.d0 - projn*projn)
     if (abs( denomi ) .le. r8prem()) then
@@ -64,20 +65,20 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
                     do 10 gamma = 1, 2
                         b(i,n) = b(i,n)+r1(alpha)*r1(gamma)*a(beta, gamma)* dff(beta,n)*cnva(i,al&
                                  &pha)/denomi
-10                  continue
+ 10                 continue
 !
     if (lexc) then
         do 20 n = 1, nno
             do 20 i = 1, 3
                 mtemp(i,n)=b(i,n)
-20          continue
+ 20         continue
 !
         call r8inir(18, 0.d0, p, 1)
         call r8inir(6*nno, 0.d0, b, 1)
 !
         do 40 i = 1, 3
             p(i,i)=1.d0
-40      continue
+ 40     continue
         p(1,5)=vecn(3)
         p(1,6)=-vecn(2)
         p(2,4)=-vecn(3)
@@ -89,7 +90,7 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
             do 50 i = 1, 6
                 do 50 j = 1, 3
                     b(i,n)=b(i,n)+mtemp(j,n)*p(j,i)
-50              continue
+ 50             continue
 !
     endif
 end subroutine

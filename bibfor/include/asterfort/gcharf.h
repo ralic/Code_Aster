@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                       charg)
         integer :: ichar
-        logical(kind=1) :: fonc1
+        aster_logical :: fonc1
         character(len=19) :: char1
-        logical(kind=1) :: fonc2
+        aster_logical :: fonc2
         character(len=19) :: char2
         character(len=19) :: charg
     end subroutine gcharf

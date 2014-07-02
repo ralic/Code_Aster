@@ -2,6 +2,7 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
                   spij, typeke, spmeca, spther, kemeca,&
                   kether, saltij, sm, fuij)
     implicit none
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/limend.h"
@@ -51,7 +52,7 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
     real(kind=8) :: kethe1, valr(2)
     character(len=8) :: kbid
     integer :: icodre(1)
-    logical(kind=1) :: endur
+    aster_logical :: endur
 ! DEB ------------------------------------------------------------------
 !
 ! --- LE MATERIAU

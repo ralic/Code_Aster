@@ -6,6 +6,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
 ! aslint: disable=W1504
     implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/exisdg.h"
@@ -19,7 +20,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
     character(len=*) :: nomcmp(*), nomnoe(*), formr
     real(kind=8) :: borsup, borinf, coor(*)
     complex(kind=8) :: vale(*)
-    logical(kind=1) :: lsup, linf, lcor, lmax, lmin
+    aster_logical :: lsup, linf, lcor, lmax, lmin
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +101,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
             if = i-1
             goto 2
         endif
- 2  end do
+  2 end do
     if (id .ne. 0 .and. if .ge. id) then
         forcmp = 'A'//format(id:if)
     else
@@ -120,7 +121,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
         call wkvect('&&IRCNC8.ENT', 'V V I', nec, inec)
         do 16 iec = 1, nec
             zi(inec-1+iec) =0
-16      continue
+ 16     continue
     endif
     if (lmax) then
         call jedetr('&&IRCNC8.MAXR')
@@ -133,7 +134,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
         call wkvect('&&IRCNC8.NBVMAX', 'V V I', ncmpmx, ivmax)
         do 70 i = 1, ncmpmx
             zr(irmax-1+i)=rundf
-70      continue
+ 70     continue
     endif
     if (lmin) then
         call jedetr('&&IRCNC8.MINR')
@@ -146,7 +147,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
         call wkvect('&&IRCNC8.NBVMIN', 'V V I', ncmpmx, ivmin)
         do 71 i = 1, ncmpmx
             zr(irmin-1+i)=rundf
-71      continue
+ 71     continue
     endif
 !
     do 11 inno = 1, nbno
@@ -157,7 +158,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
 !
         do 17 iec = 1, nec
             dg(iec) = prno((ino-1)*(nec+2)+2+iec)
-17      continue
+ 17     continue
 !
         ival = prno((ino-1)* (nec+2)+1)
         ncmp = prno((ino-1)* (nec+2)+2)
@@ -165,7 +166,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
 !
         do 21 i = 1, ncmpmx
             zi(ipos-1+i) = 0
-21      continue
+ 21     continue
         icompt = 0
         impre = 0
         ipres = 0
@@ -182,7 +183,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                             zi(ipos-1+icm) = icmp
                             goto 12
                         endif
-13                  continue
+ 13                 continue
                 else
                     icompt=ipres
                     zr(irval-1+icompt) = dble(vale(ieq))
@@ -190,7 +191,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                     zi(ipos-1+icompt) = icmp
                 endif
             endif
-12      continue
+ 12     continue
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES ORDRE UTILISATEUR ----
 !
@@ -203,14 +204,14 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                     zr(irval-1+icompt) = zr(irval-1+i)
                     zr(iival-1+icompt) = zr(iival-1+i)
                 endif
-14          continue
+ 14         continue
         endif
         do 15 iec = 1, nec
             if (dg(iec) .ne. zi(inec-1+iec)) then
                 impre=1
                 zi(inec-1+iec) = dg(iec)
             endif
-15      continue
+ 15     continue
 !
 ! --  TRI DES COMPOSANTES DANS L'INTERVALLE BORINF,BORSUP
 !
@@ -223,7 +224,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                 if (linf) then
                     if ((value-borinf) .lt. 0.d0) zi(ipos-1+iva)=0
                 endif
-35          continue
+ 35         continue
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
@@ -235,7 +236,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                     zr(irval-1+icomp2)=zr(irval-1+i)
                     zr(iival-1+icomp2)=zr(iival-1+i)
                 endif
-36          continue
+ 36         continue
             icompt=icomp2
         endif
         if (icompt .eq. 0) then
@@ -264,7 +265,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                         i))+1
                     endif
                 endif
-90          continue
+ 90         continue
         endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
@@ -289,7 +290,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                         i))+1
                     endif
                 endif
-91          continue
+ 91         continue
         endif
 !
 ! - IMPRESSION DES VALEURS ---
@@ -352,7 +353,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
             write (ifi,fmt) '        ',&
      &                     (zr(iival-1+i),i=1,icompt)
         endif
-11  end do
+ 11 end do
     write (ifi,'(A)') ' '
 !
 ! --- IMPRESSION DE LA VALEUR MAXIMALE ---
@@ -365,7 +366,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                 ' EST',zr(irmax-1+i),zr(icmax-1+i), ' EN ',zi(ivmax-1+&
                 i),' NOEUD(S) : ',zk8(inmax-1+i)
             endif
-95      continue
+ 95     continue
     endif
 !
 ! --- IMPRESSION DE LA VALEUR MINIMALE ---
@@ -378,7 +379,7 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
                 ' EST',zr(irmin-1+i),zr(icmin-1+i), ' EN ',zi(ivmin-1+&
                 i),' NOEUD(S) : ',zk8(inmin-1+i)
             endif
-96      continue
+ 96     continue
     endif
 !
     call jedetr('&&IRCNC8.VALR')

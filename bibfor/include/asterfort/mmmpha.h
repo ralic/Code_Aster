@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine mmmpha(loptf, lcont, ladhe, ndexfr, lpenac,&
                       lpenaf, phasep)
-        logical(kind=1) :: loptf
-        logical(kind=1) :: lcont
-        logical(kind=1) :: ladhe
+        aster_logical :: loptf
+        aster_logical :: lcont
+        aster_logical :: ladhe
         integer :: ndexfr
-        logical(kind=1) :: lpenac
-        logical(kind=1) :: lpenaf
+        aster_logical :: lpenac
+        aster_logical :: lpenaf
         character(len=9) :: phasep
     end subroutine mmmpha
 end interface

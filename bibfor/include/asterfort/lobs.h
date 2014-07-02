@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine lobs(sdobse, numins, inst, lobsv)
         character(len=19) :: sdobse
         integer :: numins
         real(kind=8) :: inst
-        logical(kind=1) :: lobsv
+        aster_logical :: lobsv
     end subroutine lobs
 end interface

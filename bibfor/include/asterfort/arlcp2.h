@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine arlcp2(iocc,mail,nomo,typmai, &
                       nom1,nom2,marlel,modarl, &
                       jma1,jma2,tabcor,mailar,proj)
-        logical(kind=1) :: proj
+        aster_logical :: proj
         integer :: jma1
         integer :: jma2
         integer :: iocc

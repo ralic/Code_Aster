@@ -1,7 +1,11 @@
-subroutine tresu_print(refer, legend, llab, nbref, rela, &
-                       tole, ssigne, refr, valr, refi, &
+subroutine tresu_print(refer, legend, llab, nbref, rela,&
+                       tole, ssigne, refr, valr, refi,&
                        vali, refc, valc, ignore, compare)
     implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterc/testresu_print.h"
 !
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 !
@@ -23,7 +27,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
 !
     character(len=16), intent(in) :: refer
     character(len=16), intent(in) :: legend
-    logical(kind=1), intent(in) :: llab
+    aster_logical, intent(in) :: llab
     integer, intent(in) :: nbref
     character(len=*), intent(in) :: rela
     real(kind=8), intent(in) :: tole
@@ -34,15 +38,12 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
     integer, intent(in), optional :: vali
     complex(kind=8), intent(in), optional :: refc(nbref)
     complex(kind=8), intent(in), optional :: valc
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 !
 !   Interface d'appel à la fonction d'impression en C/Python pour les TEST_RESU
 !   Quand plusieurs valeurs de référence sont fournis, on conserve la plus proche
 !   de la valeur calculée.
-!
-#include "asterfort/assert.h"
-#include "asterc/testresu_print.h"
 !
     real(kind=8) :: arefr
     real(kind=8) :: avalr, minvr, tmpr, minvc, tmpc
@@ -52,7 +53,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
     complex(kind=8) :: arefc
     complex(kind=8) :: avalc
     real(kind=8) :: arg_cmp
-    logical(kind=1) :: skip, isrela, valabs
+    aster_logical :: skip, isrela, valabs
     integer :: typ
 !
     valabs = .false.
@@ -79,7 +80,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
         endif
         minvr = abs(avalr - arefr)
         imin = 1
-        do i=1, nbref - 1
+        do i = 1, nbref - 1
             arefr = refr(i+1)
             if (valabs) then
                 arefr = abs(arefr)
@@ -108,7 +109,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
         endif
         minvi = abs(avali - arefi)
         imin = 1
-        do i=1, nbref - 1
+        do i = 1, nbref - 1
             arefi = refi(i+1)
             if (valabs) then
                 arefi = abs(arefi)
@@ -137,7 +138,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
         endif
         minvc = abs(avalc - arefc)
         imin = 1
-        do i=1, nbref - 1
+        do i = 1, nbref - 1
             arefc = refc(i+1)
             if (valabs) then
                 arefc = abs(arefc)
@@ -167,8 +168,8 @@ subroutine tresu_print(refer, legend, llab, nbref, rela, &
         arg_cmp = compare
     endif
 !
-    call testresu_print(refer, legend, llab, skip, isrela, &
-                        tole, typ, arefr, avalr, arefi, &
+    call testresu_print(refer, legend, llab, skip, isrela,&
+                        tole, typ, arefr, avalr, arefi,&
                         avali, arefc, avalc, arg_cmp)
 !
 end subroutine tresu_print

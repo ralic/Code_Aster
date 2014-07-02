@@ -37,6 +37,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -51,8 +52,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 #include "asterfort/pjspco.h"
 #include "asterfort/pjtyco.h"
 #include "asterfort/utmess.h"
-    logical(kind=1) :: isole
-    logical :: lcond
+    aster_logical :: isole
     character(len=4) :: typcal
     character(len=8) :: resuin
     character(len=8) :: moa1, moa2, corru
@@ -68,7 +68,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    logical(kind=1) :: lnoeu, lelno, lelem, lelga
+    aster_logical :: lnoeu, lelno, lelem, lelga
 !
 !
 ! DEB ------------------------------------------------------------------
@@ -129,16 +129,14 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
             if ((method.eq.'COLLOCATION') .and. (.not.lnoeu) .and. ( .not.lelno) .and.&
                 (.not.lelem)) then
-                lcond=lelga
-                ASSERT(lcond)
+                ASSERT(lelga)
                 valk(1) = method
                 valk(2) = 'ELGA'
                 call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
             endif
 !
             if ((method.eq.'SOUS_POINT') .and. (.not.lnoeu) .and. ( .not.lelno)) then
-                lcond=lelga .or. lelem
-                ASSERT(lcond)
+                ASSERT(lelga .or. lelem)
                 valk(1) = method
                 valk(2) = 'ELGA ET ELEM'
                 call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)

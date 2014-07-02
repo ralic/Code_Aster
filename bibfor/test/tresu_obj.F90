@@ -1,7 +1,8 @@
 subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
-                     epsi, crit, llab, ssigne, ignore, &
+                     epsi, crit, llab, ssigne, ignore,&
                      compare)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/tstobj.h"
 #include "asterfort/tresu_print.h"
@@ -13,9 +14,9 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
     real(kind=8), intent(in) :: refr
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
-    logical(kind=1), intent(in) :: llab
+    aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
-    logical(kind=1), intent(in), optional :: ignore
+    aster_logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +55,7 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
     character(len=3) :: tysc
     real(kind=8) :: sommr
     integer :: resume, sommi, lonuti, lonmax, ni, iret, iret2
-    logical(kind=1) :: skip
+    aster_logical :: skip
     real(kind=8) :: ordgrd
 !
     skip = .false.
@@ -72,15 +73,15 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
 !
     if (iret .eq. 0) then
         if (type .eq. 'RESUME') then
-            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
-                        epsi, ssigne, refi=[refi], vali=resume)
+            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit,&
+                             epsi, ssigne, refi=[refi], vali=resume)
         else if (type.eq.'I') then
-            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
-                        epsi, ssigne, refi=[refi], vali=sommi)
+            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit,&
+                             epsi, ssigne, refi=[refi], vali=sommi)
         else if (type.eq.'R') then
-            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
-                        epsi, ssigne, refr=[refr], valr=sommr, ignore=skip, &
-                        compare=ordgrd)
+            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit,&
+                             epsi, ssigne, refr=[refr], valr=sommr, ignore=skip,&
+                             compare=ordgrd)
         endif
     else
         call jeexin(nomobj, iret2)

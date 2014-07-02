@@ -17,6 +17,7 @@ subroutine te0100(option, nomte)
 ! ======================================================================
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -58,8 +59,7 @@ subroutine te0100(option, nomte)
     integer :: ndim, nnos, jgano, idim
     real(kind=8) :: vect1(54), vect2(4*27*27), vect3(4*27*2), dfdi(4*9)
     real(kind=8) :: angmas(7), bary(3)
-    logical(kind=1) :: matsym
-    logical :: lcond
+    aster_logical :: matsym
 !     POUR TGVERI
     real(kind=8) :: sdepl(3*9), svect(3*9), scont(6*9), smatr(3*9*3*9), epsilo
     real(kind=8) :: varia(2*3*9*3*9)
@@ -70,8 +70,8 @@ subroutine te0100(option, nomte)
     ivectu=1
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
 !
@@ -85,8 +85,7 @@ subroutine te0100(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        lcond=lteatt('C_PLAN', 'OUI')
-        ASSERT(lcond)
+        ASSERT(lteatt('C_PLAN', 'OUI'))
     endif
 !
     if (lteatt('TYPMOD2','ELEMDISC')) then
@@ -121,8 +120,8 @@ subroutine te0100(option, nomte)
     do 150 i = 1, nno
         do 140 idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+140     continue
+150 end do
     call rcangm(ndim, bary, angmas)
 !
 ! - VARIABLES DE COMMANDE
@@ -155,7 +154,7 @@ subroutine te0100(option, nomte)
         endif
         call jevech('PCONTXR', 'E', icontp)
 !       INITIALISATION DE LA CONTRAINTE EXTRAPOLEE CONTXR=CONTMR
-        call dcopy(npg1*4, zr(icontm), 1, zr(icontp), 1)          
+        call dcopy(npg1*4, zr(icontm), 1, zr(icontp), 1)
     endif
 !
 !
@@ -177,7 +176,7 @@ subroutine te0100(option, nomte)
 !        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
             do 10 li = 1, 2*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-10          continue
+ 10         continue
 !
             call nmel2d(fami, '+', nno, npg1, ipoids,&
                         ivf, idfde, zr(igeom), typmod, option,&
@@ -191,13 +190,13 @@ subroutine te0100(option, nomte)
 ! - HYPO-ELASTICITE
 !
 !      Pour le calcul de la matrice tangente par perturbation
-1000      continue
+1000     continue
 !
         if (zk16(icompo+2) (6:10) .eq. '_REAC') then
 !CDIR$ IVDEP
             do 20 i = 1, 2*nno
                 zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
-20          continue
+ 20         continue
         endif
 !
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
@@ -239,7 +238,7 @@ subroutine te0100(option, nomte)
 !
             do 46 li = 1, 2*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-46          continue
+ 46         continue
 !
             call nmgz2d(fami, nno, npg1, ipoids, ivf,&
                         idfde, zr(igeom), typmod, option, zi(imate),&
@@ -255,7 +254,7 @@ subroutine te0100(option, nomte)
 !
             do 45 li = 1, 2*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-45          continue
+ 45         continue
 !
             call nmgr2d(fami, nno, npg1, ipoids, ivf,&
                         zr(ivf), idfde, zr(igeom), typmod, option,&
@@ -297,7 +296,7 @@ subroutine te0100(option, nomte)
 !
     endif
 !
-2000  continue
+2000 continue
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         call jevech('PCODRET', 'E', jcret)

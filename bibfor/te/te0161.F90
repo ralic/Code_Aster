@@ -16,6 +16,7 @@ subroutine te0161(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/biline.h"
@@ -46,14 +47,14 @@ subroutine te0161(option, nomte)
     integer :: nno, kp, i, ivectu, ipesa, nddl, npg, iyty, nordre, lsect
     integer :: ipoids, ivf, igeom, imate, iforc
     integer :: itemps, nbpar, idepla, ideplp, k, l, ic, neu, iret, neum1
-    logical(kind=1) :: normal
+    aster_logical :: normal
     real(kind=8) :: r8min, r8bid=0.d0, rho(1), a, coef
     real(kind=8) :: s, s2, s3, s4, s5, x(4), c1, c2(3), w(6), u(3), v(3), w2(3)
 !
     integer :: ifcx, idfdk, jgano, ndim, nnos
     character(len=8) :: nompar(4), nompav(1)
     real(kind=8) :: valpav(1), fcx, vite2, vp(3)
-    logical(kind=1) :: okvent, fozero
+    aster_logical :: okvent, fozero
 ! --- ------------------------------------------------------------------
     data nompar/'X','Y','Z','INST'/
     data nompav/'VITE'/
@@ -65,8 +66,8 @@ subroutine te0161(option, nomte)
     else
         nddl = 3
     endif
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
 !
     nordre = 3*nno
@@ -130,13 +131,13 @@ subroutine te0161(option, nomte)
             w(i) = zr(igeom+i-1) + zr(idepla-1+i) + zr(ideplp-1+i)
             w(i+3) = zr(igeom+i+2) + zr(idepla-1+i+nddl) + zr(ideplp- 1+i+nddl)
             w2(i) = w(i+3) - w(i)
-10      continue
+ 10     continue
     else
         do 20 i = 1, 3
             w(i) = zr(igeom+i-1)
             w(i+3) = zr(igeom+i+2)
             w2(i) = w(i+3) - w(i)
-20      continue
+ 20     continue
     endif
 !
 ! --- ------------------------------------------------------------------
@@ -184,12 +185,12 @@ subroutine te0161(option, nomte)
                 x(ic) = 0.d0
                 do 30 neu = 1, nno
                     x(ic) = x(ic) + w(3*neu+ic-3)*zr(ivf+l+neu-1)
-30              continue
-40          continue
+ 30             continue
+ 40         continue
             do 50 ic = 1, 3
                 call fointe('FM', zk8(iforc+ic-1), nbpar, nompar, x,&
                             c2( ic), iret)
-50          continue
+ 50         continue
             if (normal) then
                 s=ddot(3,c2,1,c2,1)
                 s4 = sqrt(s)
@@ -247,7 +248,7 @@ subroutine te0161(option, nomte)
             do 60 ic = 1, 3
                 jj = ivectu+nddl*neum1+(ic-1)
                 zr(jj) = zr(jj) + coef*c2(ic)*zr(ivf+l+neum1)
-60          continue
-70      continue
-80  end do
+ 60         continue
+ 70     continue
+ 80 end do
 end subroutine

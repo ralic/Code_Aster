@@ -19,6 +19,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -69,7 +70,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: numref, n1, nevo, iret
-    integer :: nchar, nbres,   icha
+    integer :: nchar, nbres, icha
     real(kind=8) :: alpha
     character(len=8) :: nomcha
     character(len=19) :: vecele
@@ -77,7 +78,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=1) :: base
     character(len=24) :: evol, masque
     character(len=24) :: ligrch, chalph
-    logical(kind=1) :: debug
+    aster_logical :: debug
     integer :: ifmdbg, nivdbg
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
@@ -186,9 +187,9 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 !
         nbres = nbres + 1
         call reajre(vecele, lchout(1), 'V')
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

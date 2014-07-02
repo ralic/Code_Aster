@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                       ncmpmx, vale, nomcmp, nomel, loc,&
@@ -43,13 +45,13 @@ interface
         integer :: numnoe(*)
         integer :: nbmat
         integer :: nummai(*)
-        logical(kind=1) :: lsup
+        aster_logical :: lsup
         real(kind=8) :: borsup
-        logical(kind=1) :: linf
+        aster_logical :: linf
         real(kind=8) :: borinf
-        logical(kind=1) :: lmax
-        logical(kind=1) :: lmin
-        logical(kind=1) :: lcor
+        aster_logical :: lmax
+        aster_logical :: lmin
+        aster_logical :: lcor
         integer :: ndim
         real(kind=8) :: coor(*)
         character(len=19) :: nolili

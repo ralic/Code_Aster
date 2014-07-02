@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
                       nnoini, nbnop, tspaq, nomcri, nomfor,&
@@ -32,12 +34,12 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
-        logical(kind=1) :: fordef
+        aster_logical :: fordef
         character(len=8) :: nommai
         character(len=16) :: proaxe
         character(len=8) :: nommap
         character(len=19) :: cnsr
-        logical(kind=1) :: post
+        aster_logical :: post
         real(kind=8) :: resu(7)
     end subroutine avgrno
 end interface

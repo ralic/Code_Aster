@@ -1,6 +1,7 @@
 subroutine filter_smd(nommat, vsmb)
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -33,12 +34,12 @@ subroutine filter_smd(nommat, vsmb)
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: ieql, ieqg,     jpddl, neqg, neql
-    integer :: iccid,  rang  
+    integer :: ieql, ieqg, jpddl, neqg, neql
+    integer :: iccid, rang
     character(len=14) :: nu
     character(len=19) :: mat
     mpi_int :: mrank, msize
-    logical(kind=1) :: is_ddl_cine, iam_sole_owner
+    aster_logical :: is_ddl_cine, iam_sole_owner
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: ccid(:) => null()
     integer, pointer :: nulg(:) => null()
@@ -52,14 +53,14 @@ subroutine filter_smd(nommat, vsmb)
 !
     call jeveuo(mat//'.REFA', 'L', vk24=refa)
     if (refa(11) .eq. 'MATR_DISTR') then
-        ! Infos du processeur courant
+! Infos du processeur courant
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
-        ! Infos du NUME_DDL
+! Infos du NUME_DDL
         nu = refa(2)(1:14)
         call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
-        call jeveuo(nu//'.NUML.PDDL','L',jpddl)
-        call jeveuo(nu//'.NUML.NEQU','L', vi=nequl)
+        call jeveuo(nu//'.NUML.PDDL', 'L', jpddl)
+        call jeveuo(nu//'.NUML.NEQU', 'L', vi=nequl)
         call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
         neqg=nequ(1)
         neql=nequl(1)
@@ -68,26 +69,25 @@ subroutine filter_smd(nommat, vsmb)
         if (iccid .ne. 0) then
             call jeveuo(mat//'.CCID', 'L', vi=ccid)
         endif
-!        
-        do ieql=1, neql
-           ieqg=nulg(ieql)
-        ! Le dl courant est-il fixé par une charge cinématique ? 
-          if ( iccid == 0 ) then 
-          ! Il n'y a pas de charge cinématique sur le modèle  
-          is_ddl_cine=.false.
-          else 
-          ! Il existe au moins une charge cinématique. On vérifie si
-          ! le numéro global de dl est concerné 
-          is_ddl_cine=ccid(ieqg).eq.1
-          endif
-          ! Suis-je le proriétaire exclusif (PETSc) de ce ddl ? 
-          iam_sole_owner= zi(jpddl-1+ieql) .eq. rang
-          if ((.not.is_ddl_cine).and.(.not.iam_sole_owner)) then 
-             vsmb(ieqg) = 0.d0
-          endif
-       enddo
+!
+        do ieql = 1, neql
+            ieqg=nulg(ieql)
+! Le dl courant est-il fixé par une charge cinématique ? 
+            if (iccid == 0) then
+! Il n'y a pas de charge cinématique sur le modèle  
+                is_ddl_cine=.false.
+            else 
+! Il existe au moins une charge cinématique. On vérifie si
+! le numéro global de dl est concerné 
+                is_ddl_cine=ccid(ieqg).eq.1
+            endif
+! Suis-je le proriétaire exclusif (PETSc) de ce ddl ? 
+            iam_sole_owner= zi(jpddl-1+ieql) .eq. rang
+            if ((.not.is_ddl_cine) .and. (.not.iam_sole_owner)) then
+                vsmb(ieqg) = 0.d0
+            endif
+        enddo
     endif
 !
     call jedema()
 end subroutine
-

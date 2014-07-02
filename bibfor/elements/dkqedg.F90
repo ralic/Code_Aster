@@ -1,5 +1,6 @@
 subroutine dkqedg(xyzl, option, pgl, depl, edgl)
-    implicit  none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dkqbf.h"
 #include "asterfort/dkqtxy.h"
@@ -46,18 +47,20 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: bdf(3), bdm(3), dcis(2)
     real(kind=8) :: vf(3), vm(3), vt(2), qsi, eta, caraq4(25), jacob(5)
     real(kind=8) :: vfm(3), vmf(3), t2iu(4), t2ui(4), t1ve(9)
-    logical(kind=1) :: coupmf
+    aster_logical :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                         jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                         jgano=jgano)
         ne = npg
         fami='RIGI'
     else if (option(6:9).eq.'ELNO') then
-        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                        jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                         jgano=jgano)
         ne = nno
         fami='NOEU'
     endif
@@ -68,7 +71,9 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-    call dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate(fami, df, dm, dmf, dc,&
+                dci, dmc, dfc, nno, pgl,&
+                multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
     do j = 1, 4
         do i = 1, 2
@@ -103,7 +108,8 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
                 end do
             end do
 !           ------ VT = HFT2.TKQ.DEPF ---------------------------------
-            call dkqtxy(qsi, eta, hft2, depf, caraq4(13), caraq4(9), vt)
+            call dkqtxy(qsi, eta, hft2, depf, caraq4(13),&
+                        caraq4(9), vt)
 !           ------ DCIS = DCI.VT --------------------------------------
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
             dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
@@ -150,12 +156,13 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
                 do j = 1, 3
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
-                    vm(i)  = vm(i)  + dm(i,j)*bdm(j)
+                    vm(i) = vm(i) + dm(i,j)*bdm(j)
                     vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
                 end do
             end do
 !           ------ VT = HFT2.TKQ.DEPF ---------------------------------
-            call dkqtxy(qsi, eta, hft2, depf, caraq4(13), caraq4(9), vt)
+            call dkqtxy(qsi, eta, hft2, depf, caraq4(13),&
+                        caraq4(9), vt)
             do i = 1, 3
                 edgl(i+ 8*(ie-1)) = vm(i) + vmf(i)
                 edgl(i+3+8*(ie-1)) = vf(i) + vfm(i)

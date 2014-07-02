@@ -19,6 +19,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/echmat.h"
@@ -29,7 +30,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 #include "asterfort/utmess.h"
     character(len=19) :: sdpost
     character(len=19) :: matass
-    logical(kind=1) :: linsta
+    aster_logical :: linsta
     real(kind=8) :: freqr
 !
 ! ----------------------------------------------------------------------
@@ -49,11 +50,11 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 !
 !
 !
-    logical(kind=1) :: valtst, ldist
+    aster_logical :: valtst, ldist
     character(len=24) :: k24bid
     real(kind=8) :: freqr0, prec, r8bid, minmat, maxmat
     character(len=16) :: optrig, sign
-    integer ::  ibid
+    integer :: ibid
     character(len=24), pointer :: refa(:) => null()
 !
 ! ----------------------------------------------------------------------

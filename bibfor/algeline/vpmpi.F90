@@ -49,7 +49,7 @@ subroutine vpmpi(option, eigsol,&
 !
     mpi_int           , intent(inout) :: mpicou, mpicow
     integer           , intent(inout) :: rangl
-    logical           , intent(inout) :: lcomod
+    aster_logical     , intent(inout) :: lcomod
     real(kind=8)      , intent(inout) :: omemax, omemin, vpinf, vpmax
 !
 ! --- VARIABLES LOCALES

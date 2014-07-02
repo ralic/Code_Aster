@@ -36,6 +36,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
 !
 !     ------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "asterfort/cjsqij.h"
 #include "asterfort/lcdete.h"
 #include "asterfort/lcdevi.h"
@@ -46,7 +47,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
     common /tdim/   ndt, ndi
 !
     real(kind=8) :: sig(6), x(6), pa, qinit, q(6), qii, cos3tq
-    logical(kind=1) :: devnul, trac
+    aster_logical :: devnul, trac
     real(kind=8) :: i1, s(6), qiirel
     real(kind=8) :: detq, pref
     integer :: i
@@ -64,7 +65,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
     i1 = zero
     do 10 i = 1, ndi
         i1 = i1 + sig(i)
-10  continue
+ 10 continue
 !
 !
     if ((i1+qinit) .eq. 0.d0) then

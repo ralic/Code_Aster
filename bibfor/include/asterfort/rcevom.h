@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                       lpmpb, lsn, csno, csne, flexio,&
@@ -26,12 +28,12 @@ interface
         character(len=24) :: cinst
         character(len=24) :: cnoc
         real(kind=8) :: sm
-        logical(kind=1) :: lfatig
-        logical(kind=1) :: lpmpb
-        logical(kind=1) :: lsn
+        aster_logical :: lfatig
+        aster_logical :: lpmpb
+        aster_logical :: lsn
         character(len=24) :: csno
         character(len=24) :: csne
-        logical(kind=1) :: flexio
+        aster_logical :: flexio
         character(len=24) :: csneo
         character(len=24) :: csnee
         character(len=24) :: cfao
@@ -42,10 +44,10 @@ interface
         character(len=16) :: kinti
         integer :: it
         integer :: jt
-        logical(kind=1) :: lrocht
+        aster_logical :: lrocht
         real(kind=8) :: symax
         character(len=24) :: cpres
-        logical(kind=1) :: kemixt
+        aster_logical :: kemixt
         character(len=24) :: cspto
         character(len=24) :: cspte
         character(len=24) :: cspmo

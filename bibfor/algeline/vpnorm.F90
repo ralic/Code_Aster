@@ -2,6 +2,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                   ddlexc, vecpro, resufr, lmasin, xmastr,&
                   isign, numddl, coef)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -15,7 +16,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr, ddlexc(*)
     real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr, coef(*)
-    logical(kind=1) :: lmasin
+    aster_logical :: lmasin
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +68,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ie, im, indg, isign,   numddl
+    integer :: ie, im, indg, isign, numddl
     real(kind=8), pointer :: poi1(:) => null()
     real(kind=8), pointer :: poi2(:) => null()
 !
@@ -83,7 +84,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 do 4 ie = 1, neq
                     xx1 = vecpro(ie,im) * ddlexc(ie)
                     xnorm = xnorm + xx1*xx1
- 4              continue
+  4             continue
                 xnorm = sqrt(xnorm)
             else
                 do 6 ie = 1, neq
@@ -91,13 +92,13 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                     if (abs(xnorm) .lt. abs(xx1)) then
                         xnorm = xx1
                     endif
- 6              continue
+  6             continue
             endif
             xx1 = 1.0d0 / xnorm
             coef(im) = xx1
             do 8 ie = 1, neq
                 vecpro(ie,im) = vecpro(ie,im) * xx1
- 8          continue
+  8         continue
             if (para .eq. 'OUI') then
                 xx2 = xx1 * xx1
                 resufr(im,4) = resufr(im,4) * xx2
@@ -112,7 +113,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 resufr(im,5) = resufr(im,5) * xx2
 !-PROV        RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
             endif
- 2      continue
+  2     continue
 !
     else if (norm.eq.'MASS_GENE' .or. norm.eq.'RIGI_GENE') then
 !
@@ -134,27 +135,27 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 coef(im) = xx3
                 do 12 ie = 1, neq
                     vecpro(ie,im) = vecpro(ie,im) * xx3
-12              continue
-10          continue
+ 12             continue
+ 10         continue
         else
             AS_ALLOCATE(vr=poi1, size=neq)
             AS_ALLOCATE(vr=poi2, size=neq)
             do 20 im = 1, nbmode
                 do 22 ie = 1, neq
                     poi1(ie) = vecpro(ie,im)
-22              continue
+ 22             continue
                 call mrmult('ZERO', lmatr, poi1, poi2, 1,&
                             .true._1)
                 xmn = 0.0d0
                 do 24 ie = 1, neq
                     xmn = xmn + ( poi1(ie) * poi2(ie) )
-24              continue
+ 24             continue
                 xx1 = 1.0d0 / sqrt(xmn)
                 coef(im) = xx1
                 do 26 ie = 1, neq
                     vecpro(ie,im) = vecpro(ie,im) * xx1
-26              continue
-20          continue
+ 26             continue
+ 20         continue
             AS_DEALLOCATE(vr=poi2)
             AS_DEALLOCATE(vr=poi1)
         endif
@@ -170,7 +171,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
             resufr(im,13) = resufr(im,7) / xmastr
             resufr(im,14) = resufr(im,8) / xmastr
             resufr(im,15) = resufr(im,9) / xmastr
-30      continue
+ 30     continue
     endif
 !
     if (isign .eq. 0) then
@@ -181,14 +182,14 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 coef(im) = -coef(im)
                 do 102 ie = 1, neq
                     vecpro(ie,im) = -vecpro(ie,im)
-102              continue
+102             continue
                 if (para .eq. 'OUI') then
                     resufr(im,10) = -resufr(im,10)
                     resufr(im,11) = -resufr(im,11)
                     resufr(im,12) = -resufr(im,12)
                 endif
             endif
-100      continue
+100     continue
     else if (isign .eq. -1) then
         do 110 im = 1, nbmode
             xx1 = vecpro(numddl,im)
@@ -196,14 +197,14 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 coef(im) = -coef(im)
                 do 112 ie = 1, neq
                     vecpro(ie,im) = -vecpro(ie,im)
-112              continue
+112             continue
                 if (para .eq. 'OUI') then
                     resufr(im,10) = -resufr(im,10)
                     resufr(im,11) = -resufr(im,11)
                     resufr(im,12) = -resufr(im,12)
                 endif
             endif
-110      continue
+110     continue
     endif
 !
     call jedema()

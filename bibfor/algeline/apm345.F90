@@ -3,6 +3,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
                   lmasse, ldynam, solveu, lamor, lc,&
                   impr, ifapm)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterc/r8pi.h"
@@ -16,7 +17,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
     integer :: nbtetc, nk, pivot2, lraide, lmasse, ldynam, lamor, ifapm
     real(kind=8) :: rayonc
     complex(kind=8) :: centrc
-    logical(kind=1) :: ltest, lc
+    aster_logical :: ltest, lc
     character(len=3) :: impr
     character(len=8) :: typcon, typcha
     character(len=19) :: solveu
@@ -90,7 +91,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
             rauxx=rayonc*cos(raux2)
             rauxy=rayonc*sin(raux2)
             zc(jcont+i-1)=centrc+dcmplx(rauxx,rauxy)
-210      continue
+210     continue
     endif
 !
 !   --- STEP 4: EVALUATING THE ARGUMENT VALUE OF P(CONTOUR) ---
@@ -100,7 +101,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
                     lraide, lmasse, ldynam, solveu, lamor,&
                     lc, impr, ifapm, i)
         zr(jtheta+i-1)=theta
-251  end do
+251 end do
     call jedetr('&&APM345.CONTOUR.DIS')
 !
 !   --- STEP 5: COUNTING THE DIFFERENCE BETWEEN ANGLE         ---
@@ -130,7 +131,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
         thetao=theta
 !
         if (ltest .or. (niv.ge.2)) write(ifm, *)'STEP 5: ', i, theta* raddeg, pivot2
-260  end do
+260 end do
     call jedetr('&&APM345.CONTOUR.THETA')
 !
     call jedema()

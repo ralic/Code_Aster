@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: valinc(*)
-        logical(kind=1) :: mmcvca
+        aster_logical :: mmcvca
     end subroutine xmtbca
 end interface

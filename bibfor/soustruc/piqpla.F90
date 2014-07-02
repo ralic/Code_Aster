@@ -1,10 +1,11 @@
 subroutine piqpla(x1, y1, z1, xp, yp,&
                   zp, zone7, zone8, l4, l6,&
                   epsi)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
     real(kind=8) :: x1, y1, z1, xp, yp, zp, l4, l6, epsi
-    logical(kind=1) :: zone7, zone8
+    aster_logical :: zone7, zone8
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

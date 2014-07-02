@@ -21,6 +21,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
@@ -47,7 +48,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     character(len=19) :: cnslt, cnsln, cnslj
     character(len=19) :: cnsen, cnsenr
     character(len=24) :: lismae, lisnoe
-    logical(kind=1) :: goinop
+    aster_logical :: goinop
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,7 +79,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     integer :: jfono, jbaso, jtailo
     integer :: jcoor, jstano, jfonmu
     integer :: jensv, jensl, nbma
-    integer ::  jenslr, jcaraf
+    integer :: jenslr, jcaraf
     integer :: i, nmafis
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
     integer :: nbfond, numfon
@@ -89,7 +90,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     character(len=24) :: mafis, stano, xcarfo, fonmul
     real(kind=8) :: q(4)
     real(kind=8) :: rayon
-    logical(kind=1) :: orient
+    aster_logical :: orient
     real(kind=8), pointer :: ensvr(:) => null()
 !
 ! ----------------------------------------------------------------------

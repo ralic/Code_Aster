@@ -1,5 +1,6 @@
 subroutine xelrex(elrefp, nno, xref)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/elraca.h"
     character(len=8) :: elrefp
     integer :: nno
@@ -27,34 +28,34 @@ subroutine xelrex(elrefp, nno, xref)
     integer :: ndim, nnos, nbfpg, nbpg(nbfamx)
     real(kind=8) :: vol
     character(len=8) :: fapg(nbfamx), elp
-    logical(kind=1) :: transfert
+    aster_logical :: transfert
 !=======================================================================
 !
     transfert=.false.
-    if ( (elrefp .eq. 'H20')) then
-       elp='H27'
-       transfert=.true.
-    else if ( (elrefp .eq. 'P15')) then
-       elp='P18'
-       transfert=.true.
-    else if ( (elrefp .eq. 'QU8')) then
-       elp='QU9'
-       transfert=.true.       
+    if ((elrefp .eq. 'H20')) then
+        elp='H27'
+        transfert=.true.
+    else if ((elrefp .eq. 'P15')) then
+        elp='P18'
+        transfert=.true.
+    else if ((elrefp .eq. 'QU8')) then
+        elp='QU9'
+        transfert=.true.       
     else
-       elp=elrefp
+        elp=elrefp
     endif
     call elraca(elp, ndim, nno, nnos, nbfpg,&
-                  fapg, nbpg, xref, vol)
+                fapg, nbpg, xref, vol)
 !   LE TRANSFERT VERS L ELMENT COMPLET EST AMBIGU
 !     ON STOCKE LES COORDONNES DE REFERENCE DE L ELEMENT COMPLET
 !     ON INTERPOLE SUR LE L ELEMENT PARENT => NNO (L ELMENT INCOMPLET)
-    if(transfert) then
-       if ( (elrefp .eq. 'H20')) then
-         nno=20
-       else if ( (elrefp .eq. 'P15')) then
-         nno=15
-       else if ( (elrefp .eq. 'QU8')) then
-         nno=8   
-       endif
+    if (transfert) then
+        if ((elrefp .eq. 'H20')) then
+            nno=20
+        else if ((elrefp .eq. 'P15')) then
+            nno=15
+        else if ((elrefp .eq. 'QU8')) then
+            nno=8   
+        endif
     endif
 end

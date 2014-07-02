@@ -15,17 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmfdff(ndim, nno, axi, g, r,&
                       rigi, matsym, fr, vff, dff,&
                       def, pff)
         integer :: nno
         integer :: ndim
-        logical(kind=1) :: axi
+        aster_logical :: axi
         integer :: g
         real(kind=8) :: r
-        logical(kind=1) :: rigi
-        logical(kind=1) :: matsym
+        aster_logical :: rigi
+        aster_logical :: matsym
         real(kind=8) :: fr(3, 3)
         real(kind=8) :: vff(nno, *)
         real(kind=8) :: dff(nno, *)

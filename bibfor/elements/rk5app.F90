@@ -1,9 +1,10 @@
 subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
                   rkfct, solu, decoup)
     implicit none
+#include "asterf_types.h"
     integer :: nbeq
     real(kind=8) :: vparam(*), dtemps, yinit(nbeq), dyinit(nbeq), solu(3*nbeq)
-    logical(kind=1) :: decoup
+    aster_logical :: decoup
     interface
         subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
                          decoup)
@@ -12,7 +13,7 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
             real(kind=8) :: yy0(nbeq)
             real(kind=8) :: dy0(nbeq)
             real(kind=8) :: dyy(nbeq)
-            logical(kind=1) :: decoup
+            aster_logical :: decoup
         end subroutine rkfct
     end interface
 !
@@ -79,8 +80,8 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
     tabb(3, 1:2) = (/ 3.0d0/40.0d0, 9.0d0/40.0d0 /)
     tabb(4, 1:3) = (/ 3.0d0/10.0d0, -9.0d0/10.0d0, 6.0d0/5.0d0 /)
     tabb(5, 1:4) = (/ -11.0d0/54.0d0, 2.50d0, -70.0d0/27.0d0, 35.0d0/27.0d0 /)
-    tabb(6, 1:5) = (/ 1631.0d0/55296.0d0, 175.0d0/512.0d0, 575.0d0/13824.0d0, &
-                      44275.0d0/110592.0d0, 253.0d0/4096.0d0 /)
+    tabb(6, 1:5) = (/ 1631.0d0/55296.0d0, 175.0d0/512.0d0, 575.0d0/13824.0d0,44275.0d0&
+                    /110592.0d0, 253.0d0/4096.0d0 /)
 !
 !   niveaux de RK
     do niv = 1, nivrk

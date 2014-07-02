@@ -18,7 +18,8 @@ subroutine obtlig(sdtabl, sepcol, ligne)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -49,7 +50,7 @@ subroutine obtlig(sdtabl, sepcol, ligne)
     character(len=24) :: slcolo, sdcolo
     integer :: icolo, nbcolo
     integer :: larcol, larlig, larcum
-    logical(kind=1) :: lacti
+    aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine obtlig(sdtabl, sepcol, ligne)
             larcum = larcum + larcol + 1
             ligne(larcum:larcum) = sepcol
         endif
-10  end do
+ 10 end do
 !
 ! --- VERIF
 !

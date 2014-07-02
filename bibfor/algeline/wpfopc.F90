@@ -1,6 +1,7 @@
 subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
                   matopa, raide, lqz, solveu)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/getvr8.h"
@@ -18,7 +19,7 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
     integer :: lmasse, lamor, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
-    logical(kind=1) :: lqz
+    aster_logical :: lqz
 !
 !     -----------------------------------
 ! ======================================================================
@@ -114,6 +115,6 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
     call preres(solveu, base, ibid, matpre, matass,&
                 ibid, 1)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

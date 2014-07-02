@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine fonoei(ndim, dt, fnoevo, dimdef, dimcon,&
                       yamec, yap1, yap2, yate, addeme,&
@@ -26,7 +28,7 @@ interface
         integer :: dimdef
         integer :: ndim
         real(kind=8) :: dt
-        logical(kind=1) :: fnoevo
+        aster_logical :: fnoevo
         integer :: yamec
         integer :: yap1
         integer :: yap2

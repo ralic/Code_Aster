@@ -2,6 +2,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                   fiss, cnsln, cnslt, cnsgls, noesom,&
                   noresi, vcn, grlr, lcmin)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -27,7 +28,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     character(len=8) :: model, noma, fispre, fiss
     character(len=19) :: cnsln, cnslt, cnsgls, noesom, noresi, cnxinv
     character(len=24) :: vcn, grlr
-    logical(kind=1) :: grille
+    aster_logical :: grille
     real(kind=8) :: lcmin
 !
 ! ======================================================================
@@ -84,13 +85,13 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !
 !
     integer :: i, ino, ima, ifm, niv, jglsno, iret, iret2, nbno, jnosom, jnresi
-    integer :: nbma,   jconx2,   nbmaff, nnores, jmaiff
+    integer :: nbma, jconx2, nbmaff, nnores, jmaiff
     integer :: nbnoma, inoa, inob, nunoa, nunob, ibid
     character(len=8) :: lpain(4), lpaout(2), method, nomno
     character(len=19) :: celmt, maiff
     character(len=24) :: ligrel, lchin(1), lchout(2)
     real(kind=8) :: p(3), ff(3), dist, lsna, lsnb, lsta, lstb, rayon
-    logical(kind=1) :: coupln, couplt
+    aster_logical :: coupln, couplt
     real(kind=8) :: damax
     integer, pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -237,8 +238,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                 nunoa = connex(zi(jconx2+ima-1)+inoa-1)
                 do i = 1, 3
                     zr(jmaiff-1+3*(nbmaff-1)+i) = zr(&
-                                                  jmaiff-1+3*( nbmaff-1)+i) + vale(3*(nunoa&
-                                                  &-1)+i&
+                                                  jmaiff-1+3*( nbmaff-1)+i) + vale(3*(nunoa-1)+i&
                                                   ) / nbnoma
                 end do
             end do

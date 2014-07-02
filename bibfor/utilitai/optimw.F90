@@ -3,12 +3,13 @@ subroutine optimw(method, nrupt, x, y, prob,&
                   cals, mk, sk, mkp, skp,&
                   impr, ifm, dept, indtp, nbtp)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/ntweib.h"
 #include "asterfort/utmess.h"
     integer :: nrupt, nt(*), nbres, nur(*), ir, indtp(*), nbtp, ifm
     real(kind=8) :: x(*), y(*), sigw(*), mk, sk(*), mkp, skp(*), prob(*)
     character(len=16) :: method
-    logical(kind=1) :: calm, cals, impr, dept
+    aster_logical :: calm, cals, impr, dept
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +91,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 sxixi = sxixi + x(i)*x(i)
                 sxiyi = sxiyi + x(i)*y(i)
 !
-10          continue
+ 10         continue
 !
             sxiyj = 0.d0
             sxixj = 0.d0
@@ -102,9 +103,9 @@ subroutine optimw(method, nrupt, x, y, prob,&
                     sxiyj = sxiyj + x(i)*y(j)
                     sxixj = sxixj + x(i)*x(j)
 !
-30              continue
+ 30             continue
 !
-20          continue
+ 20         continue
 !
             unsurn = nrupt
             unsurn = 1.d0/unsurn
@@ -128,7 +129,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 if (prov .ne. 1.d0) prov = log ( log (1.d0/(1.d0-prov) ) )
                 sxi = sxi + (y(j)- prov)**2
 !
-40          continue
+ 40         continue
             if (impr) write(ifm, * ) 'ECART THEORIE-EXPERIENCE AU DEBUT DE L''ITERATION : ', sxi
 !
         else
@@ -146,7 +147,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-120              continue
+120             continue
 !
                 do 130 i = 1, nrupt
 !
@@ -155,7 +156,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                         if (indtp(nur(k)) .eq. itp) then
                             irg = irg+1
                         endif
-140                  continue
+140                 continue
 !
                     if (indtp(nur(i)) .eq. itp) then
 !
@@ -168,9 +169,9 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                     endif
 !
-130              continue
+130             continue
 !
-110          continue
+110         continue
 !
             s1 = 0.d0
             s2 = 0.d0
@@ -185,7 +186,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-200              continue
+200             continue
 !
                 do 300 i = 1, nrupt
 !
@@ -196,13 +197,13 @@ subroutine optimw(method, nrupt, x, y, prob,&
                             sxixj = sxixj + x(i)*x(j)
                         endif
 !
-400                  continue
+400                 continue
 !
-300              continue
+300             continue
                 s1 = s1 + sxiyj/snt
                 s2 = s2 + sxixj/snt
 !
-210          continue
+210         continue
 !
             if ((.not.calm)) then
                 mkp = (s1-sxiyi) / ( s2-sxixi )
@@ -224,7 +225,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                         if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-101                  continue
+101                 continue
 !
                     sxi = 0.d0
                     syi = 0.d0
@@ -236,12 +237,12 @@ subroutine optimw(method, nrupt, x, y, prob,&
                             sxi = sxi + x(i)
                         endif
 !
-201                  continue
+201                 continue
 !
                     skp(itp) = exp ( (sxi-(1.d0/mkp)*syi)/snt )
                     if (impr) write(ifm,*) 'S(K) (',itp,')=',skp(itp)
 !
-211              continue
+211             continue
 !
             else if (cals) then
 !
@@ -250,7 +251,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                     skp(ir) = sk(ir)
                     if (impr) write(ifm,*) 'S(K) (',ir,')=',skp(ir)
 !
-301              continue
+301             continue
 !
             endif
 !
@@ -289,7 +290,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-11              continue
+ 11             continue
 !
                 swm = 0.d0
                 do 31 i = 1, nrupt
@@ -298,11 +299,11 @@ subroutine optimw(method, nrupt, x, y, prob,&
                         swm = swm + sigw(i) ** mkp
                     endif
 !
-31              continue
+ 31             continue
 !
                 skp(itp) = ( swm / snt ) ** ( unsurm )
 !
-12          continue
+ 12         continue
 !
         else if (calm) then
 !
@@ -316,7 +317,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 snt = 0.d0
                 do 51 ir = 1, nbres
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
-51              continue
+ 51             continue
 !
                 swm = 0.d0
                 do 41 i = 1, nrupt
@@ -325,11 +326,11 @@ subroutine optimw(method, nrupt, x, y, prob,&
                         swm = swm + sigw(i) ** mkp
                     endif
 !
-41              continue
+ 41             continue
 !
                 skp(itp) = ( swm / snt ) ** ( unsurm )
 !
-52          continue
+ 52         continue
 !
         else if (cals) then
 !
@@ -337,7 +338,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
             do 71 ir = 1, nbtp
                 skp(ir) = sk(ir)
-71          continue
+ 71         continue
             prec = 1.d-8
             mg = 1.d0
             md = mk
@@ -355,7 +356,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
             write(ifm,*) 'M(K) =',mkp
             do 61 ir = 1, nbtp
                 write(ifm,*) 'S(K) (',ir,')=',skp(ir)
-61          continue
+ 61         continue
         endif
 !
     endif

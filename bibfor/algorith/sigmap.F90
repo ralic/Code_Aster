@@ -2,10 +2,11 @@ subroutine sigmap(net, bishop, sat, signe, tbiot,&
                   dp2, dp1, sigmp)
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
     integer :: i
     real(kind=8) :: signe, sat, tbiot(6), dp2, dp1, sigmp(6)
-    logical(kind=1) :: net, bishop
+    aster_logical :: net, bishop
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +36,6 @@ subroutine sigmap(net, bishop, sat, signe, tbiot,&
         else
             call utmess('F', 'ALGORITH17_4')
         endif
-10  end do
+ 10 end do
 ! ======================================================================
 end subroutine

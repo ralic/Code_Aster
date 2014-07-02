@@ -23,6 +23,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -90,7 +91,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 ! OUT IRET    : CODE RETOUR DE L'INTEGRATION DE LA LDC
 !
 !
-    logical(kind=1) :: grand, axi, resi, rigi, lintbo
+    aster_logical :: grand, axi, resi, rigi, lintbo
     integer :: lij(3, 3), vij(3, 3), ia, ja, na, g, kk, i, j
     integer :: nddl, ndu, vu(3, 27), ivf, n, kl, m, j1, kkd, ivash2
     integer :: cod(27), n6, nd, nbcin, numcin(2)
@@ -154,7 +155,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !
     do 9 i = 1, 27
         cod(i)=0
- 9  end do
+  9 end do
 !
 !    INITIALISATION TABLEAU VU CONTENANT LES INDICES POUR LE COUPLE(I,N)
 !     si AXI='OUI' VU(1,N)=VU(3,N)
@@ -182,12 +183,12 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !        DEPLT : DEPLACEMENT TOTAL ENTRE CONF DE REF ET INSTANT T_N+1
         do 20 i = 1, nno*ndim
             deplt(i) = deplm(i) + depld(i)
-20      continue
+ 20     continue
     else
         do 21 i = 1, nno*ndim
             deplt(i) = deplm(i)
             depld(i) = 0.d0
-21      continue
+ 21     continue
     endif
 !
 !
@@ -294,10 +295,10 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
                     do 320 ja = 1, ndu
                         t2 = taup(vij(ia,ja))
                         t1 = t1 + t2*dff(na,lij(ia,ja))
-320                  continue
+320                 continue
                     fint(kk) = fint(kk) + poids*t1
-310              continue
-300          continue
+310             continue
+300         continue
         endif
 !
 !
@@ -326,8 +327,8 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
                         pff(5,n,m) = (dff(n,1)*dff(m,3)+dff(n,2)*dff( m,1) )/rac2
                         pff(6,n,m) = (dff(n,2)*dff(m,3)+dff(n,3)*dff( m,2) )/rac2
                     endif
-126              continue
-125          continue
+126             continue
+125         continue
 !
             do 40 n = 1, nno
                 do 30 i = 1, ndim
@@ -345,27 +346,27 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
                     endif
 ! 5.2.5 - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 !
-30              continue
-40          continue
+ 30             continue
+ 40         continue
             if (axi) then
                 do 50 n = 1, nno
                     def(3,n,1) = id(3,3)*zr(ivf+n+(g-1)*nno-1)/r
-50              continue
+ 50             continue
             endif
 !
             do 160 n = 1, nno
                 do 150 i = 1, ndim
-                    do 151,kl=1,2*ndim
-                    sig(kl)=0.d0
-                    sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
-                    sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
-                    sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
-                    sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-                    if (ndim .eq. 3) then
-                        sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
-                        sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
-                    endif
-151                  continue
+                    do 151 kl = 1, 2*ndim
+                        sig(kl)=0.d0
+                        sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
+                        sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
+                        sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
+                        sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
+                        if (ndim .eq. 3) then
+                            sig(kl)=sig(kl)+def(5,n,i)*dsidep(5,kl)
+                            sig(kl)=sig(kl)+def(6,n,i)*dsidep(6,kl)
+                        endif
+151                 continue
                     do 140 j = 1, ndim
                         do 130 m = 1, n
                             if (m .eq. n) then
@@ -430,16 +431,16 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
                                 matuu(kk) = matuu(kk) + (tmp1+tmp2)* poids
                             endif
 !
-130                      continue
-140                  continue
-150              continue
-160          continue
+130                     continue
+140                 continue
+150             continue
+160         continue
 !
         endif
 !
-10  end do
+ 10 end do
     if (lintbo) cod(1) = 4
-9999  continue
+9999 continue
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 !

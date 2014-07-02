@@ -17,8 +17,9 @@ subroutine nmgpin(ndim, nno, axi, vu)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 !
-    logical(kind=1) :: axi
+    aster_logical :: axi
     integer :: ndim, nno, vu(3, 27)
 ! ----------------------------------------------------------------------
 !        INITIALISATION POUR LES ELEMENTS EN GRANDES DEFORMATIONS
@@ -34,13 +35,13 @@ subroutine nmgpin(ndim, nno, axi, vu)
     do 10 n = 1, nno
         do 20 i = 1, ndim
             vu(i,n) = i + ndim*(n-1)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     if (axi) then
         do 30 n = 1, nno
             vu(3,n) = vu(1,n)
-30      continue
+ 30     continue
     endif
 !
 end subroutine

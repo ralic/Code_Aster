@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                       imat, comp, lcpdb, crit, timed,&
@@ -29,7 +31,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: imat
         character(len=16) :: comp(*)
-        logical(kind=1) :: lcpdb
+        aster_logical :: lcpdb
         real(kind=8) :: crit(*)
         real(kind=8) :: timed
         real(kind=8) :: timef

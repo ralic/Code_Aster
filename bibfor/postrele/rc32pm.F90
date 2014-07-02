@@ -1,6 +1,7 @@
 subroutine rc32pm(lieu, seisme, pi, mi, mse,&
                   pm, pb, pmpb)
-    implicit   none
+    implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -8,7 +9,7 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
 #include "asterfort/rc32s0.h"
 #include "asterfort/rc32st.h"
     real(kind=8) :: pi, mi(*), mse(*), pm, pb, pmpb
-    logical(kind=1) :: seisme
+    aster_logical :: seisme
     character(len=4) :: lieu
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +55,7 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
     nbinst = 0
     do 2 icmp = 1, 6
         sth(icmp) = 0.d0
- 2  end do
+  2 end do
 !-----------------------------------------------------------------------
 !
 !                            CALCUL DU PM
@@ -68,11 +69,11 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
         do 102 icmp = 1, 12
             sigu = zr(jsigu-1+156+6*(icmp-1)+icmps)
             sij(icmps) = sij(icmps) + mi(icmp)*sigu
-102      continue
+102     continue
 ! ------ PRESSION
         sigu = zr(jsigu-1+156+72+icmps)
         sij(icmps) = sij(icmps) + pi*sigu
-100  end do
+100 end do
 !
     if (seisme) then
         call rc32s0('PMPB', mi, pi, mse, zr(jsigu+156),&
@@ -95,11 +96,11 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
         do 112 icmp = 1, 12
             sigu = zr(jsigu-1+234+6*(icmp-1)+icmps)
             sij(icmps) = sij(icmps) + mi(icmp)*sigu
-112      continue
+112     continue
 ! ------ PRESSION
         sigu = zr(jsigu-1+234+72+icmps)
         sij(icmps) = sij(icmps) + pi*sigu
-110  end do
+110 end do
 !
     if (seisme) then
         call rc32s0('PMPB', mi, pi, mse, zr(jsigu+234),&
@@ -122,11 +123,11 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
         do 122 icmp = 1, 12
             sigu = zr(jsigu-1+78+6*(icmp-1)+icmps)
             sij(icmps) = sij(icmps) + mi(icmp)*sigu
-122      continue
+122     continue
 ! ------ PRESSION
         sigu = zr(jsigu-1+78+72+icmps)
         sij(icmps) = sij(icmps) + pi*sigu
-120  end do
+120 end do
 !
     if (seisme) then
         call rc32s0('PMPB', mi, pi, mse, zr(jsigu+78),&

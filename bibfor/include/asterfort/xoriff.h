@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                       nmafon, listpt, goinop, jfon, jbas,&
@@ -26,7 +28,7 @@ interface
         integer :: jtailo
         integer :: nmafon
         character(len=19) :: listpt
-        logical(kind=1) :: goinop
+        aster_logical :: goinop
         integer :: jfon
         integer :: jbas
         integer :: jtail

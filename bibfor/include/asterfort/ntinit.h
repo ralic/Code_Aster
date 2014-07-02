@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine ntinit(result, modele, mate, carele, lischa,&
                       lisch2, solveu, para, numedd, lostat,&
@@ -29,9 +31,9 @@ interface
         character(len=19) :: solveu
         real(kind=8) :: para(*)
         character(len=24) :: numedd
-        logical(kind=1) :: lostat
-        logical(kind=1) :: levol
-        logical(kind=1) :: lnonl
+        aster_logical :: lostat
+        aster_logical :: levol
+        aster_logical :: lnonl
         character(len=19) :: sddisc
         character(len=24) :: sdieto
         character(len=8) :: mailla

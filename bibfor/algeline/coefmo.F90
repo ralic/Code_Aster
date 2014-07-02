@@ -22,6 +22,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/bijmoc.h"
@@ -43,13 +44,13 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
     real(kind=8) :: xsi0, vgap, x(2), pulsc, xmf, xcf, rkf
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
     integer :: nbm, nmode, indic, veci1(*)
-    logical(kind=1) :: zrigi
+    aster_logical :: zrigi
     complex(kind=8) :: xkf
 !
 ! ----------------------------------------------------------------------
     real(kind=8) :: depi, vrmin, vrmax, vred
     real(kind=8) :: mcf0, kaj1, kaj2
-    integer :: jvired, jcompt, jextr, jvrzo,  jalarm, iret
+    integer :: jvired, jcompt, jextr, jvrzo, jalarm, iret
     integer :: izone, nzone, n1, n2
     complex(kind=8) :: bii, biie, poids, z
     character(len=24) :: fsic, fsvi, fsvr, nom1, nom2, nom3, nom4, nom5
@@ -122,7 +123,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
         call wkvect(nom4, 'V V R', 2*nzone, jvrzo)
         do 5 i = 1, 3*nzone
             zi(jcompt+i-1)=0
- 5      continue
+  5     continue
 !
         aire = 0.d0
         do 10 i = 1, nbp
@@ -153,8 +154,8 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                     izone = j
                     goto 12
                 endif
-11          continue
-12          continue
+ 11         continue
+ 12         continue
 !
             if (izone .ne. 0) then
 !
@@ -197,7 +198,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 !
                 endif
             endif
-10      continue
+ 10     continue
 !
         call jelibe(nom1)
 !
@@ -227,7 +228,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                 val2 = ck*vecr2(i)*vecr1(i)*vecr1(i)*vecr3(imode+i)* vecr3(imode+i)
                 aire = aire + (vecr5(i)-vecr5(i-1))* (val2+val1)/2.d0
                 val1 = val2
-20          continue
+ 20         continue
             rkf = vgap*vgap*aire/(2.d0*vecr1(2*nbp+1)*vecr1(2*nbp+1))
             xkf = dcmplx(rkf,0.d0)
         else
@@ -315,13 +316,13 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                 do 31 jmod = 1, nbm
                     zc(ivecc+imod-1) = zc(ivecc+imod-1) + zc(imatb+ nbm*(jmod-1)+imod-1) * poids &
                                        &* vecr5(nbm*(nmode-1) +jmod)
-31              continue
-30          continue
+ 31             continue
+ 30         continue
 !
             biie = dcmplx(0.d0,0.d0)
             do 40 imod = 1, nbm
                 biie = biie + vecr5(nbm*(nmode-1)+imod)*zc(ivecc+ imod-1)
-40          continue
+ 40         continue
 !
         endif
 !

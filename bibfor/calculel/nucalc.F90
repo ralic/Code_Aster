@@ -22,7 +22,6 @@ function nucalc(opt, te, memoir)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
