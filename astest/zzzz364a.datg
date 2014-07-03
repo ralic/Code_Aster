@@ -1,0 +1,29 @@
+opti dime 3 elem cub8 ;
+
+*
+* pour  mailler un cube :
+* --------------------------------------------------
+
+
+a1  = 0.   0.  0.;
+b1  = 1.   0.  0.;
+n1=3;
+
+
+ab1 = droi n1 a1 b1 ;
+
+bas1= ab1 tran n1 (0. 1. 0.);
+
+cub1= bas1 VOLU n1 TRAN (0. 0. 1.);
+c1 = cub1 poin PROC (1. 0. 0.);
+c2 = cub1 poin PROC (0. 1. 0.);
+c3 = cub1 poin PROC (0. 0. 1.);
+c4 = cub1 poin PROC (1. 1. 1.);
+
+trac cub1;
+
+opti sauv form 'zzzz364a.mgib' ;
+sauv form cub1 ;
+list (nbno cub1) ;
+list (nbel cub1) ;
+fin;

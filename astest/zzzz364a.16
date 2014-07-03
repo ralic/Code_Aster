@@ -1,0 +1,23 @@
+opti dime 2 elem qua4 ;
+
+*
+* pour  mailler un carre:
+* --------------------------------------------------
+
+
+a1  = -0.5   -0.5  ;
+b1  = +0.5   -0.5 ;
+n1=5;
+
+
+ab1 = droi n1 a1 b1 ;
+
+surf1= ab1 tran n1 (0. 1.);
+
+trac surf1;
+
+opti sauv form 'zzzz364a.17' ;
+sauv form surf1 ;
+list (nbno surf1) ;
+list (nbel surf1) ;
+fin;

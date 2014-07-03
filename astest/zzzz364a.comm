@@ -1,0 +1,424 @@
+# TITRE Validation des grandes rotations
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: jacques.pellet at edf.fr
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',)
+
+#=======================================================================================
+# Interet du test :
+# -----------------
+# * On veut verifier que certains elements sont capables de subir de grandes rotations
+#   sans se deformer ni subir de contraintes.
+# * On veut aussi verifier que les elements ayant des ddls de rotation : DRX, DRY et DRZ
+#   accumulent correctement les increments de rotation.
+#
+# Probleme :
+# -----------------
+# * Un solide (3D, coque ou poutre) est soumis a des deplacements imposes sur son bord
+#   qui l'entrainent dans un mouvement de rotation sans deformation.
+# * La loi de comportement est sans importance (elastique)
+# * Le mouvement impose est :
+#    * entre t=0. et t=1. : une rotation autour de Z d'angle phi0
+#    * entre t=1. et t=2. : une rotation autour de Y d'angle phi0
+#    * entre t=2. et t=3. : une rotation autour de X d'angle phi0
+#    * entre t=3. et t=4. : la rotation qui permet de revenir a la position de depart
+#
+#=======================================================================================
+
+
+#========================================================================================
+# Fonctions DXIMP, DYIMP, ... donnant le deplacement d'un noeud de coordonnees X,Y,Z :
+#-------------------------------------------------------------------------------------
+import math
+from numpy import *
+
+def matrot(phid) :
+#   retourne la matrice de rotation correspondant au vecteur phid=[drx,dry,drz]
+#------------------------------------------------------------------------------------
+    assert len(phid)==3,phid
+    phi=mat(list(phid), dtype=double )
+    x=phi*phi.T
+    phis=sqrt(x[0,0])
+    c1=math.cos(phis)
+    s1=math.sin(phis)
+
+    phiChap=mat   ([[   0   ,   -phi[0,2],   phi[0,1]],
+                    [ phi[0,2],    0     ,  -phi[0,0]],
+                    [-phi[0,1],  phi[0,0],     0     ]], dtype=double)
+    phiphi=phi.T*phi
+    return c1*mat(eye(3)) + (s1/phis)*phiChap + ((1-c1)/(phis*phis)) *phiphi
+
+
+def quaternion(phid) :
+#   retourne le quaternion correspondant au vecteur phid=[drx,dry,drz]
+#---------------------------------------------------------------------
+    assert len(phid)==3,phid
+    phi=mat(list(phid), dtype=double )
+    x=phi*phi.T
+    phis=sqrt(x[0,0])
+    c1=math.cos(phis/2)
+    c2=math.sin(phis/2)/phis
+    return (c1,map(lambda x: c2*x, phid))
+
+
+def vecteur_phi(quater) :
+#   retourne le vecteur phi=[drx,dry,drz] correspondant  au quaternion quater
+#----------------------------------------------------------------------------
+    assert quater[0] > 0, quater
+    r=mat(list(quater[1]), dtype=double )
+    x=r*r.T
+    ra=sqrt(x[0,0])
+    r0=quater[0]
+    phis=2*math.atan2(ra,r0)
+    return map(lambda x: (phis/ra)*x,quater[1])
+
+
+def pvec(v1,v2) :
+#   retourne le produit vectoriel v3= v1 X v2
+#---------------------------------------------
+    assert len(v1)==3, v1
+    assert len(v2)==3, v2
+    v31=v1[1]*v2[2]-v2[1]*v1[2]
+    v32=v1[2]*v2[0]-v2[2]*v1[0]
+    v33=v1[0]*v2[1]-v2[0]*v1[1]
+    return [v31, v32, v33]
+
+
+def quater_mult(q1,q2) :
+#   retourne le  quaternion q3 = q1 o q2
+#----------------------------------------
+    assert q1[0] > 0, q1
+    assert q2[0] > 0, q2
+    q1v=array(list(q1[1]), dtype=double )
+    q2v=array(list(q2[1]), dtype=double )
+    q30=q1[0]*q2[0] -  dot(q1v,q2v)
+
+    q3v1=map(lambda x: q1[0]*x,q2[1])
+    q3v2=map(lambda x: q2[0]*x,q1[1])
+    q3v3=pvec(q1[1],q2[1])
+    q3v=array(q3v1)+array(q3v2)+array(q3v3)
+    return (q30, q3v)
+
+
+
+#---------------------------------------------------------------------------------------------------------
+# Solution de reference pour le test (solide tournant autour de O)
+#---------------------------------------------------------------------------------------------------------
+
+# rotation entre t=0 et t=1 : phi=(0,0,phi0)
+# rotation entre t=1 et t=2 : phi=(0,phi0,0)
+# rotation entre t=2 et t=3 : phi=(phi0,0,0)
+# rotation entre t=3 et t=4 : on retourne a la position initiale
+
+def u_imp(icmp,x,y,z,t) :
+# retourne la composante icmp du deplacement du point de coordonnees (x,y,z) a l'instant t
+    if t <= 1. :
+        phi=(0,0,t*phi0)
+    elif t <= 2. :
+        phi1=(0,0,phi0)
+        phi2=(0,(t-1.)*phi0,0)
+        q1=quaternion(phi1)
+        q2=quaternion(phi2)
+        q3=quater_mult(q2,q1)
+        phi=vecteur_phi(q3)
+    elif t <= 3. :
+        phi1=(0,0,phi0)
+        phi2=(0,phi0,0)
+        phi3=((t-2.)*phi0,0,0)
+        q1=quaternion(phi1)
+        q2=quaternion(phi2)
+        q3=quaternion(phi3)
+        q4=quater_mult(q2,q1)
+        q5=quater_mult(q3,q4)
+        phi=vecteur_phi(q5)
+    elif t <= 4. :
+        phi1=(0,0,phi0)
+        phi2=(0,phi0,0)
+        phi3=(phi0,0,0)
+        q1=quaternion(phi1)
+        q2=quaternion(phi2)
+        q3=quaternion(phi3)
+        q4=quater_mult(q2,q1)
+        q5=quater_mult(q3,q4)
+        phid=vecteur_phi(q5)
+        phif=(0,0,0) # provoque une erreur numerique dans le calcul des quaternions
+        phif=(1.e-10,1.e-10,1.e-10)
+        # on "revient" vers 0 :
+        phi=[phid[k] + (t-3.)*(phif[k]-phid[k]) for k in range(3)]
+
+    else :
+        assert False
+
+    mrot=matrot(phi)
+    X0=mat([x,y,z],dtype=double)
+    X0=X0.T
+    X1= mrot*X0
+    U1=X1-X0
+    if icmp in (1,2,3) :
+        return U1[icmp-1,0]
+    else :
+        return phi[icmp-4]
+
+DXIMP = FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE='u_imp(1,X,Y,Z,INST)')
+DYIMP = FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE='u_imp(2,X,Y,Z,INST)')
+DZIMP = FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE='u_imp(3,X,Y,Z,INST)')
+
+DRXIMP = FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE='u_imp(4,X,Y,Z,INST)')
+DRYIMP = FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE='u_imp(5,X,Y,Z,INST)')
+DRZIMP = FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE='u_imp(6,X,Y,Z,INST)')
+
+#--------------------------------------------------------------------------------------
+PRE_GIBI()
+
+
+lmodeli= ['3D',]
+lmodeli= ['COQUE_3D',]
+lmodeli= ['POU_D_T_GD',]
+lmodeli= ['POU_D_TGM',]
+lmodeli= ['POU_D_EM',]
+lmodeli= ['3D','COQUE_3D','POU_D_T_GD','POU_D_EM','POU_D_TGM']
+for modeli in lmodeli :
+    inst_fin=4.
+    resi_rela=1.e-6
+    resi_glob_maxi=1.e-8
+
+    if modeli=='3D' :
+        phi0=math.pi/2.
+        solide='CUB1'
+        bord='BAS1'
+        rota=False
+        relation='ELAS'
+        nbdecoup=3
+        maxiter=10
+        preci=3.e-10
+    elif modeli=='COQUE_3D' :
+        phi0=math.pi/10.
+        solide='BAS1'
+        bord='AB1'
+        rota=True
+        relation='ELAS'
+        nbdecoup=8
+        maxiter=30
+        preci=7.e-9
+        epais=0.1
+    elif modeli=='POU_D_T_GD' :
+        phi0=math.pi/4.
+        solide='AB1'
+        bord=('A1','B1')
+        rota=True
+        relation='ELAS_POUTRE_GR'
+        nbdecoup=10
+        maxiter=80
+        preci=5.e-6
+    elif modeli in ('POU_D_EM', 'POU_D_TGM') :
+        phi0=math.pi/4.
+        solide='AB1'
+        bord=('A1','B1')
+        rota=True
+        relation='MULTIFIBRE'
+        nbdecoup=100
+        maxiter=30
+        if modeli=='POU_D_EM' :
+            preci=1.8 # Anomalie !
+        elif modeli=='POU_D_TGM' :
+            preci=0.6 # Anomalie !
+    else :
+        assert 0, modeli
+
+
+    # Pour COQUE_3D, il faut un maillage de QUAD9 :
+    #-----------------------------------------------------
+    if modeli=='COQUE_3D' :
+        MA0=LIRE_MAILLAGE()
+        MA1=CREA_MAILLAGE(MAILLAGE=MA0,LINE_QUAD=_F(GROUP_MA=(solide,bord)))
+        # le group_no solide ne contient que les noeuds des QUAD8
+        DEFI_GROUP(reuse=MA1, MAILLAGE=MA1, CREA_GROUP_NO=_F(NOM=solide, GROUP_MA=solide))
+        MA=CREA_MAILLAGE(MAILLAGE=MA1,
+                       MODI_MAILLE= _F(OPTION='QUAD8_9',GROUP_MA=(solide,),PREF_NOEUD='NQ'))
+        DETRUIRE(CONCEPT=_F(NOM=(MA0,MA1,)),INFO=1,)
+    else :
+        MA=LIRE_MAILLAGE()
+        DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM=solide, GROUP_MA=solide))
+
+
+    CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MA, NOM_CHAM='GEOMETRIE',);
+
+    MO=AFFE_MODELE(   MAILLAGE=MA,
+               AFFE=_F( GROUP_MA = solide,  PHENOMENE = 'MECANIQUE', MODELISATION = modeli))
+
+
+    # Pour POU_D_EM et POU_D_TGM, il faut un champ de materiau multi-fibre :
+    #-----------------------------------------------------------------------
+    MAT=DEFI_MATERIAU(   ELAS=_F( E = 2.,  NU = 0.3, )  )
+    if not modeli in ('POU_D_EM', 'POU_D_TGM') :
+        CM=AFFE_MATERIAU(   MAILLAGE=MA,  AFFE=_F( GROUP_MA = solide, MATER = MAT) )
+    else :
+        PRE_GIBI(UNITE_GIBI=17, UNITE_MAILLAGE=18)
+        MASEC=LIRE_MAILLAGE(UNITE=18,);
+        GF=DEFI_GEOM_FIBRE(
+           SECTION = _F ( GROUP_FIBRE='SEC1',
+                            MAILLAGE_SECT = MASEC , GROUP_MA_SECT = 'SURF1',
+                            COOR_AXE_POUTRE = (0., 0.,)))
+        COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='SEC1',MATER=MAT),))
+
+        CM=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',MATER=MAT,),
+                    AFFE_COMPOR=_F(GROUP_MA = solide,COMPOR=COMPF));
+
+
+    # AFFE_CARA_ELEM :
+    #-----------------
+    if modeli=='COQUE_3D' :
+        CAREL=AFFE_CARA_ELEM( MODELE=MO,
+                       COQUE=_F(  GROUP_MA=solide, EPAIS = epais, ))
+    elif modeli in ('POU_D_EM','POU_D_TGM') :
+        CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     POUTRE=_F(GROUP_MA=solide, SECTION='RECTANGLE', CARA=('H',), VALE=(1.,)),
+                     ORIENTATION=_F(GROUP_MA=solide, CARA='ANGL_VRIL', VALE=0.0,),
+                     GEOM_FIBRE=GF,  MULTIFIBRE=_F(GROUP_MA=solide, GROUP_FIBRE='SEC1'))
+    elif modeli=='POU_D_T_GD' :
+        CAREL=AFFE_CARA_ELEM(   MODELE=MO,
+                           POUTRE=_F( GROUP_MA = solide, SECTION = 'GENERALE',
+                                      CARA = ( 'A',   'IY',    'IZ',    'AY',    'AZ',    'JX', ),
+                                      VALE = ( 1.,   8.e-2,   8.e-2,     1.,      1.,       1., )))
+    else :
+        CAREL=AFFE_CARA_ELEM( MODELE=MO,
+                       MASSIF=_F(GROUP_MA=solide, ANGL_REP=(45.0,45.0,90.0))) # ne sert a rien (sucre syntaxique)
+
+
+    # Conditions aux limites :
+    #-------------------------
+    if modeli in ('POU_D_T_GD', 'POU_D_EM','POU_D_TGM') :
+        UIMP=AFFE_CHAR_MECA_F( MODELE=MO,
+                               DDL_IMPO=  _F( GROUP_NO = bord,  DX  = DXIMP,  DY  = DYIMP,   DZ = DZIMP,
+                                                                DRX = DRXIMP, DRY = DRYIMP, DRZ = DRZIMP))
+    elif modeli=='3D' :
+        UIMP=AFFE_CHAR_MECA_F( MODELE=MO,
+                               DDL_IMPO=  _F( GROUP_MA = bord,  DX = DXIMP, DY = DYIMP, DZ = DZIMP))
+    elif modeli=='COQUE_3D' :
+        UIMP=AFFE_CHAR_MECA_F( MODELE=MO,
+                               DDL_IMPO=  _F( GROUP_MA = bord,  DX  = DXIMP, DY   = DYIMP,  DZ  = DZIMP,
+                                                                DRX = DRXIMP, DRY = DRYIMP, DRZ = DRZIMP))
+    else :
+        assert False
+
+    L_INST1=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
+               _F( JUSQU_A = 1.,   NOMBRE = nbdecoup),
+               _F( JUSQU_A = 2.,   NOMBRE = nbdecoup),
+               _F( JUSQU_A = 3.,   NOMBRE = nbdecoup),
+               _F( JUSQU_A = 4.,   NOMBRE = nbdecoup),
+             ))
+
+
+    # Calcul :
+    #-------------------------
+    U1=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CM, CARA_ELEM=CAREL, INFO=1,
+                       EXCIT= _F(CHARGE=UIMP),
+                       COMPORTEMENT=_F(RELATION=relation, DEFORMATION='GROT_GDEP'),
+                       INCREMENT=_F(LIST_INST=L_INST1, INST_FIN=inst_fin,),
+                       NEWTON=_F(REAC_ITER=1),
+                       CONVERGENCE=_F(ARRET='OUI', RESI_GLOB_MAXI=resi_glob_maxi,
+                                      ITER_GLOB_MAXI=maxiter,),
+                       SOLVEUR=_F(METHODE='MUMPS', RESI_RELA=resi_rela, NPREC=-1, POSTTRAITEMENTS='FORCE', ),
+
+                       );
+    #IMPR_RESU(RESU=_F(RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=(2.,), GROUP_MA=solide),UNITE=6)
+
+
+    # On verifie que le champ de deplacement est bien celui que l'on attend.
+    # On verifie que le champ de contraintes est nul.
+
+
+    if not rota :
+        UF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F', OPERATION='AFFE', MAILLAGE=MA, INFO=1,
+                       AFFE=_F(GROUP_NO=solide, NOM_CMP=('X1','X2','X3'), VALE_F=(DXIMP,DYIMP,DZIMP,)))
+    else :
+        UF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F', OPERATION='AFFE', MAILLAGE=MA, INFO=1,
+                       AFFE=_F(GROUP_NO=solide, NOM_CMP=('X1','X2','X3','X4','X5','X6'),
+                                                VALE_F=(DXIMP,DYIMP,DZIMP,DRXIMP,DRYIMP,DRZIMP)))
+
+
+    linst=[1., 2., 3., 4.]
+    for inst in linst :
+           if inst > inst_fin : continue
+           UR2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR',INFO=1,
+                          NOM_CHAM='DEPL', RESULTAT=U1, INST=inst );
+
+           CHTIME=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA, INFO=1, OPERATION='AFFE',
+                             AFFE=_F(TOUT='OUI', NOM_CMP='INST',VALE=inst),);
+
+           UR1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', OPERATION='EVAL', CHAM_F=UF, CHAM_PARA=(CHXN,CHTIME), INFO=1,);
+
+
+           # Deplacements :
+           if not rota or modeli == 'COQUE_3D' :  # Pour les COQUE_3D, DRZ_local est indefini => on ne peut pas tester simplement DRX, DRY et DRZ
+               lcmpDEPL  = ['DX','DY','DZ']
+               lcmpNEUT  = ['X1','X2','X3']
+           else :
+               lcmpDEPL  = ['DX','DY','DZ','DRX','DRY','DRZ']
+               lcmpNEUT  = ['X1','X2','X3','X4','X5','X6']
+
+           for kcmp in range(len(lcmpDEPL)) :
+               cmp=lcmpDEPL[kcmp]
+               cmpNEUT=lcmpNEUT[kcmp]
+               CHDIFF=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='ASSE', MAILLAGE=MA,  INFO=1,
+                               ASSE=(
+                                 _F(GROUP_NO=solide, CHAM_GD=UR1, NOM_CMP=(cmpNEUT,), NOM_CMP_RESU=(cmp,), CUMUL='OUI', COEF_R=1.,),
+                                 _F(GROUP_NO=solide, CHAM_GD=UR2, NOM_CMP=(cmp,),     NOM_CMP_RESU=(cmp,), CUMUL='OUI', COEF_R=-1.,),
+                                 ))
+               TEST_RESU(CHAM_NO=(
+                          _F(TYPE_TEST='MIN', CHAM_GD=CHDIFF,  NOM_CMP=cmp,
+                             REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE='ABSOLU',
+                             PRECISION=preci, TOLE_MACHINE=preci,)))
+               TEST_RESU(CHAM_NO=(
+                          _F(TYPE_TEST='MAX', CHAM_GD=CHDIFF,  NOM_CMP=cmp,
+                             REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE='ABSOLU',
+                             PRECISION=preci, TOLE_MACHINE=preci,)))
+               DETRUIRE(CONCEPT=_F(NOM=(CHDIFF)),INFO=1,)
+
+
+           # Contraintes :
+           if modeli == '3D' :
+               lcmpSIEF      = ['SIXX','SIYY','SIZZ','SIXY']
+           elif modeli == 'COQUE_3D' :
+               lcmpSIEF      = ['SIXX','SIYY','SIZZ','SIXY']
+           elif modeli == 'POU_D_T_GD' :
+               lcmpSIEF      = ['N','VY','VZ','MT','MFY','MFZ']
+           elif modeli in ('POU_D_EM', 'POU_D_TGM') :
+               lcmpSIEF      = ['SIXX',]
+
+           for kcmp in range(len(lcmpSIEF)) :
+               cmp=lcmpSIEF[kcmp]
+               TEST_RESU(RESU=(
+                          _F(TYPE_TEST='MIN', RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=inst,  NOM_CMP=cmp,
+                             REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE=('ABSOLU','RELATIF'),
+                             PRECISION=preci, TOLE_MACHINE=(preci,1.e-6),)))
+               TEST_RESU(RESU=(
+                          _F(TYPE_TEST='MAX', RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=inst,  NOM_CMP=cmp,
+                             REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE=('ABSOLU','RELATIF'),
+                             PRECISION=preci, TOLE_MACHINE=(preci,1.e-6),)))
+
+
+           DETRUIRE(CONCEPT=_F(NOM=(UR2,CHTIME,UR1)),INFO=1,)
+
+    DETRUIRE(CONCEPT=_F(NOM=(MA,CHXN,MO,MAT,CM,CAREL,UIMP,L_INST1,U1,UF)),INFO=1,)
+    if modeli in ('POU_D_EM', 'POU_D_TGM') : DETRUIRE(CONCEPT=_F(NOM=(MASEC,GF,COMPF)),INFO=1,)
+
+
+
+FIN();

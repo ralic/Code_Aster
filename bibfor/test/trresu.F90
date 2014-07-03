@@ -189,6 +189,7 @@ subroutine trresu(ific, nocc)
         endif
 !
         call jeveuo(knum, 'L', jordr)
+        ASSERT(nbordr.eq.1)
         numord = zi(jordr)
 !
         lign1(1:21)='---- '//motcle(1:8)

@@ -31,7 +31,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 PRECISION=0.001),),)
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
-                 
+
                  AFFE=_F(GROUP_MA=('VOL','VOL_RIG'),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),);
@@ -186,7 +186,8 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CMP='DY',
                    VALE_CALC=-2.2684010913946E-14,
                    VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
+                   CRITERE=('ABSOLU','RELATIF'),
+                   TOLE_MACHINE=(1.e-6,1.e-6),
                    PRECISION=1.E-12,),
                 _F(GROUP_NO='B1',
                    INST=2.5E-07,
@@ -196,7 +197,8 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CMP='DY',
                    VALE_CALC=-4.0224070803635E-09,
                    VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
+                   CRITERE=('ABSOLU','RELATIF'),
+                   TOLE_MACHINE=(1.e-6,1.e-6),
                    PRECISION=1.E-08,),
                 ),
           )

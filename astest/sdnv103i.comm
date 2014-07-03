@@ -32,7 +32,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='SYY1',),),);
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
-                 
+
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION=('3D',),),);
@@ -226,7 +226,8 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
+                   CRITERE=('ABSOLU','RELATIF'),
+                   TOLE_MACHINE=(1.e-6,1.e-6),
                    ),
                 _F(GROUP_NO='B1',
                    INST=2.0E-05,
@@ -242,7 +243,8 @@ TEST_RESU(RESU=(_F(GROUP_NO='B1',
                    NOM_CHAM='VITE',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
+                   CRITERE=('ABSOLU','RELATIF'),
+                   TOLE_MACHINE=(1.e-6,1.e-6),
                    ),
                 ),
           )
