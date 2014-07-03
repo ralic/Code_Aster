@@ -17,6 +17,7 @@
 /* person_in_charge: mathieu.courtois at edf.fr */
 
 #include "aster.h"
+#include "aster_fort.h"
 #include "aster_mpi.h"
 #include "aster_utils.h"
 #include "aster_fort.h"
@@ -38,22 +39,22 @@ static MPI_Errhandler errhdlr;
 /*! This module defines functions:
  * - to manage the MPI communicators
  * - to properly interrupt a MPI execution.
- * 
+ *
  * The communicators are managed in C. Fortran subroutines call these functions.
  * But all the communications are initiated from the Fortran subroutines.
- * 
+ *
  * Communicators are store in fortran as Code_Aster mpi_int (== MPI_Fint).
  * They are converted to MPI_Comm with MPI_Comm_f2c((MPI_Fint)fortran_comm)
- * 
+ *
  * Naming convention:
  *      aster_mpi_xxx : C functions and global variable
  *      asmpi_xxx : Fortran functions
- * 
+ *
  * @todo this text should comment the module file, not the first next subroutine.
  */
 /*
  *   PUBLIC FUNCTIONS
- * 
+ *
  */
 void aster_mpi_init(int argc, char **argv)
 {
@@ -145,7 +146,7 @@ void aster_free_comm(aster_comm_t *node) {
     aster_comm_t *parent;
     int i=0;
     int nb, j, ierr;
-    
+
     AS_ASSERT(node->nbchild == 0);
     /* remove node from its parent childs list*/
     parent = node->parent;
@@ -212,7 +213,7 @@ aster_comm_t* _search_id(aster_comm_t *node, MPI_Comm *id) {
 aster_comm_t* get_node_by_id(MPI_Comm *id) {
     /*! Return the node that has the given 'id' */
     aster_comm_t *node;
-    
+
     node = _search_id(&aster_mpi_world, id);
     AS_ASSERT( node );
     return node;
@@ -233,7 +234,7 @@ void DEFSP(ASMPI_COMM, asmpi_comm,_IN char *action, STRING_SIZE lact,
     MPI_Comm mpicom;
     aster_comm_t *node;
     char *act;
-    
+
     act = MakeCStrFromFStr(action, lact);
     if (strcmp(act, "GET_WORLD") == 0) {
         *comm = MPI_Comm_c2f(aster_get_comm_world()->id);
@@ -256,14 +257,14 @@ void DEFSP(ASMPI_COMM, asmpi_comm,_IN char *action, STRING_SIZE lact,
 
 void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,
                     _IN MPI_Fint *parent,
-                    _IN MPI_Fint *color, MPI_Fint *key, 
+                    _IN MPI_Fint *color, MPI_Fint *key,
                     _IN char *name, STRING_SIZE lname,
                    _OUT MPI_Fint *newcomm) {
     /*! Wrapper around aster_split_comm */
     MPI_Comm mpicom;
     aster_comm_t *new;
     char *newname;
-    
+
     newname = MakeCStrFromFStr(name, lname);
     mpicom = MPI_Comm_f2c( *parent );
     new = aster_split_comm(get_node_by_id(&mpicom), (int)*color, (int)*key, newname);
@@ -279,9 +280,9 @@ void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MP
     MPI_Comm mpicom;
     aster_comm_t *node;
     int irank=0, isize=1;
-    
+
     AS_ASSERT(sizeof(MPI_Fint) == 4);
-    
+
     mpicom = MPI_Comm_f2c(*comm);
     node = get_node_by_id(&mpicom);
     COMM_DEBUG(*node);
@@ -597,11 +598,11 @@ int gErrFlg = 0;
 void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
 {
     /*! \brief Define a dedicated function to abort a Code_Aster execution.
-     * 
+     *
      * Function to interrupt the execution.
      * - In a sequential version, it just calls abort().
      * - In a MPI execution, it set a global flag and calls `MPI_Abort`.
-     * 
+     *
      * The usage of atexit seems required in a Python interpreter
      * certainly because `sys.exit()` probably calls the `exit` system
      * function (so we can't add a `MPI_Finalize` call before exiting).
@@ -609,7 +610,7 @@ void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
      * the processes are not interrupted.
      * That's why a global flag is used to by-pass `MPI_Finalize` in
      * case of error.
-     * 
+     *
      * to test MPI_Abort : http://www.netlib.org/blacs/blacs_errata.html
      */
     gErrFlg = 1;
@@ -641,7 +642,7 @@ void terminate( void )
 
 /*
  *   PRIVATE FUNCTIONS
- * 
+ *
  */
 #ifdef _USE_MPI
 void errhdlr_func(MPI_Comm *comm, int *err, ... ) {
@@ -680,12 +681,12 @@ void _unittest_aster_mpi() {
         return;
     }
     color = rank < npband;
-    
+
     fprintf(stderr, "band color : %d\n", color);
     scband = aster_split_comm(world, color, rank, "band");
     aster_set_current_comm(scband);
     COMM_DEBUG(*aster_mpi_current);
-    
+
     color = rank % npband == 0;
     fprintf(stderr, "cross color : %d\n", color);
     sccross = aster_split_comm(world, color, rank, "cross");
@@ -698,16 +699,16 @@ void _unittest_aster_mpi() {
 
     aster_get_mpi_info(world, &rank, &size);
     fprintf(stderr, "%-8s: rank=%d  size=%d\n", world->name, rank, size);
-    
+
     aster_get_mpi_info(scband, &rank, &size);
     fprintf(stderr, "%-8s: rank=%d  size=%d\n", scband->name, rank, size);
-    
+
     aster_get_mpi_info(sccross, &rank, &size);
     fprintf(stderr, "%-8s: rank=%d  size=%d\n", sccross->name, rank, size);
-    
+
     aster_get_mpi_info(scsolv, &rank, &size);
     fprintf(stderr, "%-8s: rank=%d  size=%d\n", scsolv->name, rank, size);
-    
+
     aster_set_current_comm(world);
     return;
 }

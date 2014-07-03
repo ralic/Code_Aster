@@ -56,7 +56,7 @@ struct aster_comm_t {
     int level;
     aster_comm_t *childs[MAX_CHILDS];
     int nbchild;
-    char name[NAME_LENGTH]; 
+    char name[NAME_LENGTH];
 };
 
 //#define UNITTEST
@@ -81,9 +81,6 @@ extern void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,
                      MPI_Fint *, MPI_Fint *, MPI_Fint *, char *, STRING_SIZE, MPI_Fint *);
 extern void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *, MPI_Fint *, MPI_Fint *);
 
-
-#define CALL_ASABRT(a) CALLP(ASABRT,asabrt,a)
-extern void DEFP( ASABRT, asabrt, _IN INTEGER * );
 extern void terminate( void );
 
 /*

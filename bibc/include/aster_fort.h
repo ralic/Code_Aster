@@ -55,6 +55,9 @@ extern void DEFP(MATFPE, matfpe, INTEGER *);
 #define CALL_OPTDEP(a,b,c) CALLSSP(OPTDEP, optdep, a, b, c)
 extern void DEFSSP(OPTDEP, optdep, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *);
 
+#define CALL_UTTCSM(a) CALLP(UTTCSM,uttcsm,a)
+extern void DEFP(UTTCSM, uttcsm, DOUBLE *);
+
 
 /* routines SUPERVISEUR */
 #define CALL_EXPASS(a)  CALLP(EXPASS,expass,a)
@@ -83,6 +86,9 @@ extern void DEF0(IBMAIN,ibmain);
 
 #define CALL_POURSU() CALL0(POURSU,poursu)
 extern void DEF0(POURSU,poursu);
+
+#define CALL_ASABRT(a) CALLP(ASABRT,asabrt,a)
+extern void DEFP(ASABRT, asabrt, _IN INTEGER *);
 
 
 /* routines JEVEUX */

@@ -17,10 +17,8 @@
 /* ================================================================== */
 /* -------------------------------------------------------------------- */
 #include "aster.h"
+#include "aster_fort.h"
 #include "aster_core_module.h"
-
-extern void DEFP(UTTCSM, uttcsm, DOUBLE *);
-#define CALL_UTTCSM(a) CALLP(UTTCSM,uttcsm,a)
 
 /*! Temps(sec) total restant pour ce processus */
 void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
