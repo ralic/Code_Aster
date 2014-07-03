@@ -78,8 +78,8 @@ extern void DEFSS(GCNCON,gcncon,char *,STRING_SIZE,char *,STRING_SIZE);
 #define CALL_DEBUT() CALL0(DEBUT,debut)
 extern void DEF0(DEBUT,debut);
 
-#define CALL_IBMAIN(a) CALLP(IBMAIN,ibmain,a)
-extern void DEFP(IBMAIN,ibmain, INTEGER*);
+#define CALL_IBMAIN() CALL0(IBMAIN,ibmain)
+extern void DEF0(IBMAIN,ibmain);
 
 #define CALL_POURSU() CALL0(POURSU,poursu)
 extern void DEF0(POURSU,poursu);

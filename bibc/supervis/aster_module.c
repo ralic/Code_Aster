@@ -140,7 +140,7 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
                                                      DEBUG_ASSERT(mcs!=(char*)0);
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-        res=PyObject_CallMethod(get_sh_etape(), "getltx", "ssiii", 
+        res=PyObject_CallMethod(get_sh_etape(), "getltx", "ssiii",
                                 mfc, mcs, ioc, (int)*mxval, (int)*taille);
 
         /*  si le retour est NULL : exception Python a transferer
@@ -359,7 +359,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         for( k=0 ; k<nval*ltyp ; k+=ltyp ){
                 char     *mot = (char*)0 ;
                 mot           = type+k ;
-                if ( strncmp( mot , "R8" , 2 )!=0 && strncmp( mot , "IS" , 2 )!=0 && 
+                if ( strncmp( mot , "R8" , 2 )!=0 && strncmp( mot , "IS" , 2 )!=0 &&
                      strncmp( mot , "TX" , 2 )!=0 && strncmp( mot , "C8" , 2 )!=0 ){
                         int j=0 ;
 
@@ -1982,7 +1982,7 @@ PyObject *args;
             CALL_ONERRF(" ", tmp, &lng);
             res = PyString_FromStringAndSize(tmp, (Py_ssize_t)lng);
 
-      } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0 || 
+      } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0 ||
                  strcmp(comport, "EXCEPTION+VALID")==0 || strcmp(comport, "INIT")==0) {
             CALL_ONERRF(comport, tmp, &lng);
             Py_INCREF( Py_None ) ;
@@ -2356,7 +2356,7 @@ PyObject *args;
    fflush(stderr) ;
    fflush(stdout) ;
 
-   CALL_IBMAIN(&dbg);
+   CALL_IBMAIN();
 
    /* jeveux est parti ! */
    register_sh_jeveux_status(1);

@@ -1,5 +1,4 @@
-subroutine ibmain(lldbg)
-! aslint: disable=
+subroutine ibmain()
     implicit none
 #include "asterf_types.h"
 #include "asterc/faster.h"
@@ -7,8 +6,6 @@ subroutine ibmain(lldbg)
 #include "asterc/inisig.h"
 #include "asterfort/ib0mai.h"
 #include "asterfort/lxinit.h"
-    aster_logical :: lldbg
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,16 +23,11 @@ subroutine ibmain(lldbg)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ENSEMBLE DES INITIALISATIONS POUR L'EXECUTION D'UN JOB
-!     ------------------------------------------------------------------
+!
 !     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
-    aster_logical :: ldbg
-    integer :: ifv
-    common /cxsu00/ ldbg , ifv
-!     ------------------------------------------------------------------
-!     ------------------------------------------------------------------
+!
     integer :: issuiv, iret
 !
-    ldbg=lldbg
 !     --- BUFFERISATION EN CAS DE SUIVI INTERACTIF
     call gtopti('suivi_batch', issuiv, iret)
     if (issuiv .gt. 0 .and. iret .eq. 0) then
