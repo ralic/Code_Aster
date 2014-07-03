@@ -338,6 +338,14 @@ Risques & conseils :
  valeur(s) propre(s) réelle(s)                  :  %(i1)d
  valeur(s) propre(s) complexe(s) avec conjuguée :  %(i2)d
  valeur(s) propre(s) complexe(s) sans conjuguée :  %(i3)d
+
+ Indications et Conseils
+ -----------------------
+ * Une valeur propre est considérée comme réelle dès que le module de sa partie imaginaire (en pulsation) est < 1.d-7.
+ * Deux valeurs propres sont considérées comme conjuguées dès que le module de leur écart (en pulsation)
+ est inférieur à (2.pi.SEUIL_FREQ)**2.
+ Vous pouvez donc augmenter un peu la valeur par défaut de SEUIL_FREQ si vous pensez que la calcul a filtré, à tort,
+ des couples de valeurs propres normalement conjuguées.
 """),
 
 88 : _(u"""
@@ -345,6 +353,14 @@ Risques & conseils :
  valeur(s) propre(s) réelle(s)                  :  %(i1)d
  valeur(s) propre(s) complexe(s) avec conjuguée :  %(i2)d
  valeur(s) propre(s) complexe(s) sans conjuguée :  %(i3)d
+
+ Indications et Conseils
+ -----------------------
+ * Une valeur propre est considérée comme réelle dès que le module de sa partie imaginaire (en pulsation) est < 1.d-7.
+ * Deux valeurs propres sont considérées comme conjuguées dès que le module de leur écart (en pulsation)
+ est inférieur à (2.pi.SEUIL_FREQ)**2.
+ Vous pouvez donc augmenter un peu la valeur par défaut de SEUIL_FREQ si vous pensez que la calcul a filtré, à tort,
+ des couples de valeurs propres normalement conjuguées.
 """),
 
 93 : _(u"""

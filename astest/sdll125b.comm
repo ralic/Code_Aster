@@ -173,7 +173,7 @@ l_mod=CALC_MODE_ROTATION(MATR_RIGI =RIGIDITE,
                  MATR_GYRO =GYASS, 
                  VITE_ROTA =L_VITROT,
                  METHODE  =Methode,
-                 CALC_FREQ=_F(OPTION='PLUS_PETITE',NMAX_FREQ=nbF),
+                 CALC_FREQ=_F(OPTION='PLUS_PETITE',NMAX_FREQ=nbF,SEUIL_FREQ=2.E-02),
                  VERI_MODE=_F(STOP_ERREUR='NON',
                               SEUIL=5.9999999999999995E-02));
 

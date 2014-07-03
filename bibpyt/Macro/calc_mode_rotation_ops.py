@@ -47,10 +47,12 @@ def calc_mode_rotation_ops(self,MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
     motscit={}
     if METHODE=='QZ':
         motscit['CALC_FREQ']=_F(OPTION  ='PLUS_PETITE',
+                             SEUIL_FREQ =CALC_FREQ['SEUIL_FREQ'],
                              NMAX_FREQ  =CALC_FREQ['NMAX_FREQ'])                         
         
     if METHODE=='SORENSEN':        
         motscit['CALC_FREQ']=_F(OPTION  ='CENTRE',
+                             SEUIL_FREQ =CALC_FREQ['SEUIL_FREQ'],
                              NMAX_FREQ  =CALC_FREQ['NMAX_FREQ'],
                              FREQ       =CALC_FREQ['FREQ'])
     
