@@ -54,7 +54,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
     complex(kind=8) :: avalc
     real(kind=8) :: arg_cmp
     aster_logical :: skip, isrela, valabs
-    integer :: typ
+    integer :: typ, iskip, iisrela, illab
 !
     valabs = .false.
     if (present(ssigne)) then
@@ -168,7 +168,13 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
         arg_cmp = compare
     endif
 !
-    call testresu_print(refer, legend, llab, skip, isrela,&
+    illab = 0
+    iskip = 0
+    iisrela = 0
+    if (llab) illab = 1
+    if (skip) iskip = 1
+    if (isrela) iisrela = 1
+    call testresu_print(refer, legend, illab, iskip, iisrela, &
                         tole, typ, arefr, avalr, arefi,&
                         avali, arefc, avalc, arg_cmp)
 !

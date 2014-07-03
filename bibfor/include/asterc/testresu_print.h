@@ -17,8 +17,6 @@
 !
 ! person_in_charge: mathieu.courtois at edf.fr
 !
-#include "asterf_types.h"
-!
 interface
     subroutine testresu_print(refer, legend, llab, skip, rela, &
                               tole, typ, refr, valr, refi, &
@@ -26,9 +24,9 @@ interface
         implicit none
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
-        aster_logical, intent(in) :: llab
-        aster_logical, intent(in) :: skip
-        aster_logical, intent(in) :: rela
+        integer, intent(in) :: llab
+        integer, intent(in) :: skip
+        integer, intent(in) :: rela
         real(kind=8), intent(in) :: tole
         integer, intent(in) :: typ
         real(kind=8), intent(in) :: refr
