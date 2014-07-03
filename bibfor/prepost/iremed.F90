@@ -18,6 +18,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/bool_to_int.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/mdnoch.h"
 #include "asterfort/rsexch.h"
@@ -242,7 +243,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             saux08 = noresu
 !
             if (nbcmdu .eq. 0) then
-                call mdnoch(nochmd, lnochm, lresu, saux08, nosy16,&
+                call mdnoch(nochmd, lnochm, bool_to_int(lresu), saux08, nosy16,&
                             codret)
             else
                 do i = 1, 64

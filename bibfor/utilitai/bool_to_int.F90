@@ -1,6 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
-!
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -13,10 +12,19 @@
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine expass(jxvrf)
-        integer :: jxvrf
-    end subroutine expass
-end interface
+function bool_to_int(bool)
+    implicit none
+#include "asterf_types.h"
+    integer :: bool_to_int
+    aster_logical, intent(in) :: bool
+!
+    integer :: i
+!
+    i = 0
+    if (bool) then
+        i = 1
+    endif
+    bool_to_int = i
+end function bool_to_int

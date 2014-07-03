@@ -54,8 +54,8 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !                1 --> LA DECLARATION DU NOM DE L'OBJET NE CONVIENT PAS
 !               10 --> AUTRE PROBLEME
 !    ENTREES :
-!       LRESU  : .TRUE. : INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
-!                .FALSE. : IMPRESSION D'UN CHAMP GRANDEUR
+!       LRESU  : 1 (.true.) : INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
+!                0 (.false.) : IMPRESSION D'UN CHAMP GRANDEUR
 !       NORESU : NOM DU RESULTAT D'OU PROVIENT LE CHAMP A IMPRIMER
 !       NOMSYM : NOM SYMBOLIQUE DU CHAMP, SI RESULTAT
 !                CHAINE BLANCHE SI GRANDEUR
@@ -65,7 +65,6 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
@@ -73,7 +72,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
     character(len=16) :: nomsym
     character(len=8) :: noresu
 !
-    aster_logical :: lresu
+    integer :: lresu
 !
     integer :: lnochm
     integer :: codret
@@ -113,7 +112,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
 ! 2.3. ==> NOM SYMBOLIQUE DU CHAMP
 !
-        if (lresu) then
+        if (lresu .eq. 1) then
 !
             jaux = lxlgut(nomsym)
             ASSERT(jaux.ge.1 .and. jaux.le.16)

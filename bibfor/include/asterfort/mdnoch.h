@@ -15,14 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
     subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
                       codret)
         character(len=64) :: nochmd
         integer :: lnochm
-        aster_logical :: lresu
+        integer :: lresu
         character(len=8) :: noresu
         character(len=16) :: nomsym
         integer :: codret

@@ -7,8 +7,8 @@ subroutine expass(jxvrf)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jxveri.h"
-    aster_logical :: jxvrf
-!     ------------------------------------------------------------------
+    integer :: jxvrf
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,34 +25,19 @@ subroutine expass(jxvrf)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     EXECUTION D'UNE PASSE SPECIFIQUE D'OPERATEURS
-!     ------------------------------------------------------------------
-! IN  JXVRF  : LOGICAL : DOIT ON FAIRE JXVERI (INFO DEPUIS MCSIMP JXVERI
-!                        SOUS DEBUT, TRANSMIS PAR LE JDC).
-!     ------------------------------------------------------------------
-!     ROUTINE(S) UTILISEE(S) :
-!         -
-!     ROUTINE(S) FORTRAN     :
-!         -
-!     ------------------------------------------------------------------
-! FIN EXPASS
-!     ------------------------------------------------------------------
+!     Execution d'une passe specifique d'operateurs
 !
+! IN  jxvrf  : 1 = On doit faire jxveri (info depuis mcsimp jxveri
+!                  sous debut, transmis par le jdc).
 !
 !     --- VARIABLES LOCALES --------------------------------------------
     character(len=8) :: nomres
     character(len=16) :: concep, nomcmd
-    aster_logical :: ldbg
-!     ------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     call jemarq()
-    ldbg = .false.
-    ldbg = jxvrf
 !
     call execop()
-    if (ldbg) then
+    if (jxvrf .eq. 1) then
         call getres(nomres, concep, nomcmd)
         call jxveri()
     endif

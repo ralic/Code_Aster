@@ -5,6 +5,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/bool_to_int.h"
 #include "asterc/testresu_print.h"
 !
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +55,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
     complex(kind=8) :: avalc
     real(kind=8) :: arg_cmp
     aster_logical :: skip, isrela, valabs
-    integer :: typ, iskip, iisrela, illab
+    integer :: typ
 !
     valabs = .false.
     if (present(ssigne)) then
@@ -168,13 +169,8 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
         arg_cmp = compare
     endif
 !
-    illab = 0
-    iskip = 0
-    iisrela = 0
-    if (llab) illab = 1
-    if (skip) iskip = 1
-    if (isrela) iisrela = 1
-    call testresu_print(refer, legend, illab, iskip, iisrela, &
+    call testresu_print(refer, legend, bool_to_int(llab), bool_to_int(skip), &
+                        bool_to_int(isrela), &
                         tole, typ, arefr, avalr, arefi,&
                         avali, arefc, avalc, arg_cmp)
 !
