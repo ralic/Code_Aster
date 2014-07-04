@@ -99,18 +99,6 @@ INTEGER DEFP(ISPBEM, ispbem, INTEGER *jb) { return (INTEGER)pow(2.,(*jb-1)); }
 /* ----------------------------------------  Base de numeration B */
 INTEGER DEF0(ISBAEM,isbaem) { return 2; }
 
-/* ---------------  nombre de bits de la mantisse des flottants T */
-/* reste du Cray : 47 */
-INTEGER DEF0(ISLBEM,islbem) { return 53; }
-
-/* ---------------  exposant maximum des flottants en base 2 EMAX */
-/* reste du Cray : 8190 */
-INTEGER DEF0(IEMAEM,iemaem) { return 1024; }
-
-/* ---------------  exposant minimum des flottants en base 2 EMIN */
-/* reste du Cray : -8189 */
-INTEGER DEF0(IEMIEM,iemiem) { return -1021; }
-
 /* ---------------------- fonctions renvoyant un REAL*8 (DOUBLE) */
 /* --------------------- Plus petit increment relatif B**-T */
 DOUBLE DEF0(RMIREM,rmirem) { return pow(2,-53); }
@@ -182,6 +170,3 @@ DOUBLE DEF0(R4MAEM,r4maem) { return R4MAX; }
 
 /* -------------------------------------- VALEUR MINIMALE REELLE R4*/
 DOUBLE DEF0(R4MIEM,r4miem) { return R4MIN; }
-
-/* -----------------------------------------  PRECISION RELATIVE  R4*/
-DOUBLE DEF0(R4PREM,r4prem) { return R4PREC; }
