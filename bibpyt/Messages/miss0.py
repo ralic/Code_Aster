@@ -95,8 +95,8 @@ Il faut donc corriger ces valeurs pour respecter cette condition.
 """),
 
 19 : _(u"""
-Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'), 
-les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE) 
+Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'),
+les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE)
 ne sont pas utilisées.
 De plus, le fichier UNITE_RESU_MASS ne sera pas crée.
 """),
@@ -117,6 +117,11 @@ Il faut au moins une couche avec EPAIS.
 22 : _(u"""
 En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés
 GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois obligatoires.
+"""),
+
+23 : _(u"""
+En interaction sol, structure, fluide (ISSF='OUI'), les propriétés du fluide
+doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
 """),
 
 }

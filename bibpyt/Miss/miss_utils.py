@@ -167,6 +167,8 @@ class MISS_PARAMETER(object):
         if self['ISSF'] != 'NON':
             if self['GROUP_MA_FLU_STR'] is None:
                 UTMESS('F', 'MISS0_22')
+            if self['MATER_FLUIDE'] is None:
+                UTMESS('F', 'MISS0_23')
         if self.get('GROUP_MA_CONTROL') is not None:
             assert self['INST_FIN'] is not None, "INST_FIN obligatoire"
 

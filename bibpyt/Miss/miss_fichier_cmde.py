@@ -279,7 +279,7 @@ class MissCmdeGenerator(object):
                      '* ------------------------------',
                 'SDOMAINE %4d GROUPE ' % self.domain['fluide'][0] + \
                 ''.join(['%4d' % i for i in self.domain['fluide'][1]]),
-                'DFLUI RO 1000 CELER 1500 SURF 0.',     # en dur ?!
+                self._materiau_fluide(),
                 'FINS'])
         return lines
 
@@ -376,13 +376,13 @@ class MissCmdeGenerator(object):
         """Définition du matériau sol : stratifié ou homogène"""
         if self.param.get('MATER_SOL'):
             val = self.param['MATER_SOL']
-            E = val['E']
-            NU = val['NU']
-            RHO = val['RHO']
+            young = val['E']
+            vnu = val['NU']
+            rho = val['RHO']
             mat = 'MATE RO %%%(R)s VP %%%(R)s VS %%%(R)s BETA 0.' % dict_format
-            vp = sqrt(E * (1. - NU) / (RHO * (1. + NU) * (1. - 2. * NU)))
-            vs = sqrt(E / (2. * RHO * (1. + NU)))
-            line = mat % (RHO, vp, vs)
+            vp = sqrt(young * (1. - vnu) / (rho * (1. + vnu) * (1. - 2. * vnu)))
+            vs = sqrt(young / (2. * rho * (1. + vnu)))
+            line = mat % (rho, vp, vs)
         else:
             line = 'STRAtifie'
         return line
@@ -398,6 +398,22 @@ class MissCmdeGenerator(object):
             ('DOS2M Z0 %%%(R)s  %%s' % dict_format) % (z0, self.dinf['surf']),
             'LIRE %s' % self.dinf['fich_sol'],]
         return lines
+
+    def _materiau_fluide(self):
+        """Définition des propriétés du fluide acoustique homogène"""
+        assert self.param.get('MATER_FLUIDE'), "'MATER_FLUIDE' must be defined"
+        # si SURF='OUI': demi-espace fluide, sinon FLUIDE
+        mat = '%%s RO %%%(R)s CELER %%%(R)s BETA %%%(R)s' % dict_format
+        typ = 'FLUIDE'
+        if self.dinf['surf']:
+            typ = 'DFLUIDE'
+            mat += ' SURF 0.'
+        val = self.param['MATER_FLUIDE']
+        rho = val['RHO']
+        celr = val['CELE']
+        beta = val['AMOR_BETA']
+        line = mat % (typ, rho, celr, beta)
+        return line
 
     def _chargement_domaine(self, dom):
         """Chargement d'un domaine"""
@@ -621,6 +637,7 @@ MNS9jh3mui5Z20z0bWXjHSWe6rVZ8c0KJ0l8EtA2HxrZFPo+efU14jQ2rZFs+kgXmeP4Gzi63ezB
             'OFFSET_MAX' : 1000,
             'OFFSET_NB' : 5000,
             'ISSF' : 'OUI',
+            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0. },
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -783,6 +800,7 @@ OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
             'OFFSET_MAX' : 1000,
             'OFFSET_NB' : 5000,
             'ISSF' : 'OUI',
+            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0. },
             '_hasPC' : True,
             '_nbPC' : 3,
         })
@@ -796,24 +814,24 @@ OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
     def test08_fdlv112eh(self):
         """idem fdlv112e + matériau homogène"""
         refe = """
-eJy1V1mTozYQftev6OdJ2TH2eCcv+8CAYKhwRQjXVl5SDJZtqjB4OVKTf5+WbO/gEzKZdfnAQur+
-+uuTBzDFa9vAUkAOomnx18vqmjzA6NqLPOAdv9zCWhSiyr63Ak/WsMrSTSaqGjwnim6d7YqxqU8Z
-WKa70LQp3SixByAtbEXRgqlz/aoksr+D93jWVKKDnDxcbuYOZ5SELDBjh0OoMzB01/hrjxNluCJt
-WikF1SZZnifra2KkJG8RuDD+9Qfm8fbvMj8AX2VF1mRlochYV2W7EzcpRONZEIcEAOaAMmOPEsvx
-5f8v3f/4sa+J35bLm8KJ8aJ7IXEdRk+gppudEhUmVbIVyFoNS8iKRqyrRAq+4zLi+JzaTOdO4AOj
-BkeUvwFnju7bLgVtiu9LmJAnsJNkyutVJTBQivQOJ2c6LUb/iKlvUDAp8gKP44l60V8mE9Dlyry7
-EuqRXNM6a9eYq8u2Hi1L9HPRC+XifHtyHOqmalXkDDUpMgNPd3xljgYqBA7XAFPpe/K74UmnR72q
-Zdj1KD1RN31XN5LqZpJRySHxdE6BBWrTeH4kbwaLcM/x/OnpafaIS1NYKIpn40dt/mU+UUvPlOsw
-Gf8c0LMOaORnNCOm5caORKshTDCoixVEQ9AQxcw6wWFlRV8dkZvNbtlRVeRNpO2dfFD7jU1SrQXK
-VrXqA/FAupFA6DdOmUNjdpm14q2RMOk9tQNoPVF4JVdrSDfJdldjQUizJSoYkKZYFQwH0Cehq6Pg
-aIHJB39OzjOTTMboGLz3Y+PLwI1h3z7FSZKnbf4BE5B1aoC0oU8OJO0b7MpMXmKMpGXRVGU+NOuv
-aTUCn7MAS2e8V/5ctmmOnmwryGUrHVQs0aUWE9+BBzGnEUT6goK3sExc4CgYOH4cLzTBCpjxEwKo
-w9iqLFIZSYofuxLiXjfp8BCFFruUVaHh2M0h2+7EMhnWM/byYpvbEJtYGWQPlNZTJUBRIO5QsMrb
-bPkf83b26civ4WUC3dMe6+muKl9zRH9o3VWS9rTuS022Gzzr7ueHQ/RP0WxELbopdAxohXWVDO/+
-R7CmY1nSSAGxjGqOX73KPiFT37NUHn/XDX5g0+C9v6gZ5/UjydvV5ZsWnjmR2tOGTmflXVk3o6ZK
-skb58t4gd6VDZ+siueVwEjm2r7tw0ZYm2lge/PwoCk9t+b+ll4RBxEkUojd96yvshwrL0799PW8q
-lmO8nJuYohHjhBgRTv0uxecVnER1Q00dahaO1JB6KMD7ufswrGr7CRWnLDmXaggDR+joxk3TdKWM
-6Di84E/YnWGG+vcsgnoe5NQDxr9ymnFX
+eJy1V1tzokgUfu9fcZ6zpYMaJ/syDwQaQi23hcaampcpgq1SheBw2cr8+z3daoKKwmQyVIzYdH/n
+O/fDHej8ualhySEDXjf47aRVRe5g1HWRO3ziFltY85yX6Y+G48kKVmmySXlZgWOF4bWzbRiTujQA
+Q7cXk8mUbiTsgUgDW543oKtM7UQi+yf4jKV1yVvMyd3lZmaxgBI/8PTIYuCrAWiqrX3f80QMmyd1
+I1BQbJxmWbzughFIzsKzYfzplfN4+1+RHYiv0jyt0yKXxliXRbPjV02Iygde5BMAmANiRg4lhuWK
+35/bv/FjdsFvi+VVcKI9qY5PbCugJ1STzU5C+XEZbzlarYIlpHnN12UsgG+4jFguo2agMstzIaAa
+Q5Z/Awss1TVtCpMp/l3ShCyGnTCmuF+VHAMlT27Y5EymEdB/I+pqFHSKdoH7sSIv+peigCpW5u0V
+Xw3F2qS11mW5qmiq0bJAP+e9VC7ONyfHoarLRkbOUJVC3XNUy5XqTECGwOEeYCp8T/7RHOH0sFe0
+CLseoSfipm/iRkLcTFhU2JA4KqMQeHLTeH403gwW/t7G84eHh9k9Lk1hIU08G99P5p/nilx6pEwF
+ZfxnSM9apNE+oxkx7MjSj3Rbvp6BRm2sJnL1VYkDPbyUdli8cjXSvK/WiM16uzTJSvPCk+ZGzsj9
+2iYu1xyxZT17R8yQdrQQ+pXRwKJRcJnZ/KUWNOktsQNMfyKwI58rSDbxdldh0UjSJQoYkMpYOTQL
+ZkT3bRWBwwW6B74p59lLlDG6CJ+9bnwauNHv2ydtEmdJk71DBbQ61UDo0IcDcfMCuyIVtxgjSZHX
+ZZENrQxdUjXPZYGH5TXaC38smiRDTzYlZKLdDiqo6FIj4D+AeRGjIYTqgoKzMHRcYAgMDD+W4+tg
+eIH2BwKoZbFVkScikqR9zJLzWx2nZYfQN4JLrBIVx44P6XbHl/GwvrLHi0xmQqQrIPuk0J5KAGkC
+fsMEq6xJl7+Yt7MPZ97FN+DonuZYc3dl8Zwh+0N7L+Okp71fSjJt71G1Pz4cwp95veEVb6fQMaAl
+11U8fEI4ktUtwxBKcohEVDP81yvsAzL1LUvF8TfZ4Hom9d76i5yDnt+TvG1Zrm7gmRPUnjZ0Ok/v
+iqoe1WWc1tKXt4a9ji6ervP4msNJaJmuasNFW1ImY3Hw46PIP9Xld0sv8b2QkdBHb7rGF9gPHoaj
+fv1y3lQMS3s6VzFBJcYx0UJ8M7ApvtPgeKJqchqR83IoB9lDAd7P5oeBdrKfYnESE7PrBGngmB1e
+eajrtsAIj8MLfvntGWaof88iqOdlT76E/A+RZ3ep
 """
         self.par.update({
             'PROJET' : "FDLV112Eh",
@@ -829,6 +847,7 @@ lmO8nJuYohHjhBgRTv0uxecVnER1Q00dahaO1JB6KMD7ufswrGr7CRWnLDmXaggDR+joxk3TdKWM
             '_hasPC' : True,
             '_nbPC' : 3,
             'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2 },
+            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 150, 'AMOR_BETA' : 0. },
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
