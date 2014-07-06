@@ -71,6 +71,7 @@ tab1 = CREA_TABLE(LISTE=(_F(PARA='TEST',
                          _F(PARA='RESULT',
                             LISTE_I=values,),),)
 
+# all tests ended with success
 TEST_TABLE(TABLE=tab1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='GLOBAL',),
@@ -79,14 +80,16 @@ TEST_TABLE(TABLE=tab1,
            VALE_CALC_I=1,
            VALE_REFE_I=1,)
 
+# number of unittests expected to run
 TEST_TABLE(TABLE=tab1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='NBRUN',),
            NOM_PARA='RESULT',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=20,
-           VALE_REFE_I=20,)
+           VALE_CALC_I=21,
+           VALE_REFE_I=21,)
 
+# number of errors
 TEST_TABLE(TABLE=tab1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='ERROR',),
@@ -95,6 +98,7 @@ TEST_TABLE(TABLE=tab1,
            VALE_CALC_I=0,
            VALE_REFE_I=0,)
 
+# number of failures
 TEST_TABLE(TABLE=tab1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='FAILURE',),

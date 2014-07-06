@@ -15,6 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: mathieu.courtois at edf.fr
 
 """Construction d'un fichier de commandes Miss"""
 
@@ -22,6 +23,7 @@ import os
 import os.path as osp
 import re
 from pprint import pformat
+from math import sqrt
 import tempfile
 import unittest
 
@@ -269,7 +271,7 @@ class MissCmdeGenerator(object):
                  '* ------------------------------',
             'SDOMAINE %4d GROUPE ' % self.domain['sol'][0] + \
             ''.join(['%4d' % i for i in self.domain['sol'][1]]),
-            'STRAtifie',
+            self._materiau_sol(),
             'FINS'])
         if self.domain.get('fluide'):
             lines.extend([
@@ -370,8 +372,25 @@ class MissCmdeGenerator(object):
                 'EXEC CONTrole UTOT TTOT NOGEO'])
         return lines
 
+    def _materiau_sol(self):
+        """Définition du matériau sol : stratifié ou homogène"""
+        if self.param.get('MATER_SOL'):
+            val = self.param['MATER_SOL']
+            E = val['E']
+            NU = val['NU']
+            RHO = val['RHO']
+            mat = 'MATE RO %%%(R)s VP %%%(R)s VS %%%(R)s BETA 0.' % dict_format
+            vp = sqrt(E * (1. - NU) / (RHO * (1. + NU) * (1. - 2. * NU)))
+            vs = sqrt(E / (2. * RHO * (1. + NU)))
+            line = mat % (RHO, vp, vs)
+        else:
+            line = 'STRAtifie'
+        return line
+
     def _stratification_sol(self):
         """Définition de la stratification du sol"""
+        if self.param.get('MATER_SOL'):
+            return []
         z0 = self.param['Z0']
         lines = ['*',
             '* Definition de la stratification du sol',
@@ -771,6 +790,50 @@ OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
         txt = gen.build()
         if self._write:
             open('/tmp/test07_fdlv112e.in', 'wb').write(txt)
+        diff = self._diffcompress(refe, txt)
+        assert diff.strip() == "", diff
+
+    def test08_fdlv112eh(self):
+        """idem fdlv112e + matériau homogène"""
+        refe = """
+eJy1V1mTozYQftev6OdJ2TH2eCcv+8CAYKhwRQjXVl5SDJZtqjB4OVKTf5+WbO/gEzKZdfnAQur+
++uuTBzDFa9vAUkAOomnx18vqmjzA6NqLPOAdv9zCWhSiyr63Ak/WsMrSTSaqGjwnim6d7YqxqU8Z
+WKa70LQp3SixByAtbEXRgqlz/aoksr+D93jWVKKDnDxcbuYOZ5SELDBjh0OoMzB01/hrjxNluCJt
+WikF1SZZnifra2KkJG8RuDD+9Qfm8fbvMj8AX2VF1mRlochYV2W7EzcpRONZEIcEAOaAMmOPEsvx
+5f8v3f/4sa+J35bLm8KJ8aJ7IXEdRk+gppudEhUmVbIVyFoNS8iKRqyrRAq+4zLi+JzaTOdO4AOj
+BkeUvwFnju7bLgVtiu9LmJAnsJNkyutVJTBQivQOJ2c6LUb/iKlvUDAp8gKP44l60V8mE9Dlyry7
+EuqRXNM6a9eYq8u2Hi1L9HPRC+XifHtyHOqmalXkDDUpMgNPd3xljgYqBA7XAFPpe/K74UmnR72q
+Zdj1KD1RN31XN5LqZpJRySHxdE6BBWrTeH4kbwaLcM/x/OnpafaIS1NYKIpn40dt/mU+UUvPlOsw
+Gf8c0LMOaORnNCOm5caORKshTDCoixVEQ9AQxcw6wWFlRV8dkZvNbtlRVeRNpO2dfFD7jU1SrQXK
+VrXqA/FAupFA6DdOmUNjdpm14q2RMOk9tQNoPVF4JVdrSDfJdldjQUizJSoYkKZYFQwH0Cehq6Pg
+aIHJB39OzjOTTMboGLz3Y+PLwI1h3z7FSZKnbf4BE5B1aoC0oU8OJO0b7MpMXmKMpGXRVGU+NOuv
+aTUCn7MAS2e8V/5ctmmOnmwryGUrHVQs0aUWE9+BBzGnEUT6goK3sExc4CgYOH4cLzTBCpjxEwKo
+w9iqLFIZSYofuxLiXjfp8BCFFruUVaHh2M0h2+7EMhnWM/byYpvbEJtYGWQPlNZTJUBRIO5QsMrb
+bPkf83b26civ4WUC3dMe6+muKl9zRH9o3VWS9rTuS022Gzzr7ueHQ/RP0WxELbopdAxohXWVDO/+
+R7CmY1nSSAGxjGqOX73KPiFT37NUHn/XDX5g0+C9v6gZ5/UjydvV5ZsWnjmR2tOGTmflXVk3o6ZK
+skb58t4gd6VDZ+siueVwEjm2r7tw0ZYm2lge/PwoCk9t+b+ll4RBxEkUojd96yvshwrL0799PW8q
+lmO8nJuYohHjhBgRTv0uxecVnER1Q00dahaO1JB6KMD7ufswrGr7CRWnLDmXaggDR+joxk3TdKWM
+6Di84E/YnWGG+vcsgnoe5NQDxr9ymnFX
+"""
+        self.par.update({
+            'PROJET' : "FDLV112Eh",
+            'FREQ_MIN' : 4.0,
+            'FREQ_MAX' : 5.0,
+            'FREQ_PAS' : 1.0,
+            'Z0' : 5.,
+            'SURF' : 'NON',
+            'ALGO' : 'REGU',
+            'OFFSET_MAX' : 1000,
+            'OFFSET_NB' : 5000,
+            'ISSF' : 'OUI',
+            '_hasPC' : True,
+            '_nbPC' : 3,
+            'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2 },
+        })
+        gen = MissCmdeGen(self.par, self.struct, self.fname)
+        txt = gen.build()
+        if self._write:
+            open('/tmp/test08_fdlv112eh.in', 'wb').write(txt)
         diff = self._diffcompress(refe, txt)
         assert diff.strip() == "", diff
 
