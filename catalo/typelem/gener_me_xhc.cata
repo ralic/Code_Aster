@@ -127,6 +127,7 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTSE  = N1920R   ELEM__         (X[144]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
@@ -210,7 +211,7 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 CPESANR  PPESANR  E21NEUTR PPINTER  E33NEUTR PPINTTO  EPRESNO  PPRESSR  
                                 CFREQR   PPULPRO  CROTATR  PROTATR  DDL_MECC PTHETAR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR
+                                ZVARCPG  PVARCRR  ECONTSE  PSIGISE
                                 E195NEUT PPMILTO
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F       297  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
