@@ -224,6 +224,19 @@ Conseil :
   MODI_MAILLAGE / ORIE_PEAU_3D.
 """),
 
+48 : _(u"""
+Erreur utilisateur (EXTR_RESU / RESTREINT) :
+ Le concept fourni après le mot clé CARA_ELEM : (%(k1)s) est associé
+ au maillage : %(k3)s.
+ Mais le maillage associé à la SD RESULTAT est différent : %(k2)s.
+"""),
+
+49 : _(u"""
+Erreur utilisateur (EXTR_RESU / RESTREINT) :
+ Le concept fourni après le mot clé CHAM_MATER : (%(k1)s) est associé
+ au maillage : %(k3)s.
+ Mais le maillage associé à la SD RESULTAT est différent : %(k2)s.
+"""),
 
 50 : _(u"""
  La commande a besoin d'un nom de modèle.

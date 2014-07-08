@@ -19,14 +19,16 @@
 !
 interface
     subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
-                      modele, nbordr, nuordr, nbacc, nomacc,&
+                      modele, cara, chmat, nbordr, nuordr, nbacc, nomacc,&
                       nbarch, nuarch, nbexcl, chexcl, nbnosy)
         character(len=*) :: resu0
         character(len=*) :: resu1
         character(len=16) :: typcon
         aster_logical :: lrest
-        character(len=8) :: mailla
-        character(len=8) :: modele
+        character(len=8), intent(in) :: mailla
+        character(len=8), intent(in) :: modele
+        character(len=8), intent(in) :: cara
+        character(len=8), intent(in) :: chmat
         integer :: nbordr
         integer :: nuordr(*)
         integer :: nbacc

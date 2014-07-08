@@ -16,9 +16,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # lecture maillage lineique
 MAPOU=LIRE_MAILLAGE(UNITE=20,)
+
+# définition d'un groupe de 3 mailles pour valider EXTR_RESU / RESTREINT :
+DEFI_GROUP(reuse=MAPOU, MAILLAGE=MAPOU,
+    CREA_GROUP_MA=_F(NOM='GM1',MAILLE=('SEG2004','SEG2005','SEG2001',)))
 
 # lecture maillage section grossiere
 MASEC=LIRE_MAILLAGE(UNITE=19,)
@@ -208,5 +212,40 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    ),
                 ),
           )
+
+
+# Validation de EXTR_RESU / RESTREINT pour des cham_elem avec sous-points :
+#---------------------------------------------------------------------------
+
+MA1B=CREA_MAILLAGE(MAILLAGE=MAPOU,  RESTREINT=_F(GROUP_MA='GM1',),);
+
+MO1B=AFFE_MODELE(MAILLAGE=MA1B,
+                 AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE',  MODELISATION='POU_D_EM',),);
+
+POUCAB=AFFE_CARA_ELEM(MODELE=MO1B,    INFO=1,
+           POUTRE=_F(GROUP_MA=('GM1'), SECTION='RECTANGLE',
+                     CARA = ('HY','HZ'), VALE = (0.1,0.2)),
+           ORIENTATION=_F(GROUP_MA=('GM1'), CARA='ANGL_VRIL', VALE=90.0,),
+           MULTIFIBRE = _F( GROUP_MA = 'GM1', GROUP_FIBRE= ('BETON'),
+                            PREC_INERTIE=1.1E-02, PREC_AIRE=1.0E-06 ,),
+           GEOM_FIBRE = GFF )
+
+U1B=EXTR_RESU(RESULTAT=U1, RESTREINT=_F(MODELE=MO1B, CARA_ELEM=POUCAB, ),);
+
+TAB1B=CREA_TABLE(
+           RESU=_F(RESULTAT=U1B, NOM_CHAM='SIEF_ELNO', INST=1.0, TOUT_CMP='OUI',TOUT='OUI',))
+
+TEST_TABLE(REFERENCE = 'AUTRE_ASTER',
+               VALE_CALC = -7.80155774644956E+06,
+               VALE_REFE = -7.80155774644956E+06,
+               NOM_PARA  = 'SIXX',
+               TABLE     = TAB1B,
+               FILTRE    = (_F(NOM_PARA = 'NOM_CHAM',    VALE_K    = 'SIEF_ELNO',),
+                            _F(NOM_PARA = 'INST',        VALE      = 1.0,),
+                            _F(NOM_PARA = 'MAILLE',      VALE_K    = 'SEG2001',),
+                            _F(NOM_PARA = 'NOEUD',       VALE_K    = 'N002',),
+                            _F(NOM_PARA = 'SOUS_POINT',  VALE_I    = 200,),
+                            ),)
+
 
 FIN()

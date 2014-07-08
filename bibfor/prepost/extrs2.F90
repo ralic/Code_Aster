@@ -1,5 +1,5 @@
 subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
-                  modele, nbordr, nuordr, nbacc, nomacc,&
+                  modele, cara, chmat, nbordr, nuordr, nbacc, nomacc,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit none
 #include "asterf_types.h"
@@ -25,7 +25,10 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     character(len=16) :: nomacc(*), chexcl(*)
     character(len=*) :: resu0, resu1
     character(len=16) :: typcon
-    character(len=8) :: mailla, modele
+    character(len=8), intent(in) :: mailla
+    character(len=8), intent(in) :: modele
+    character(len=8), intent(in) :: cara
+    character(len=8), intent(in) :: chmat
     aster_logical :: lrest
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -57,21 +60,20 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     integer :: cret
     character(len=3) :: type, kchml
     character(len=4) :: tych
-    character(len=8) :: noma1, noma2, nomavr
+    character(len=8) :: noma1, noma2, noma3, nomavr
     character(len=16) :: nomsym
     character(len=16) :: nopara
     character(len=19) :: resuin, resuou, ligrel
     character(len=24) :: chamin, chamou, corrn, corrm
-    character(len=24) :: valk
+    character(len=24) :: valk(3)
     character(len=8), pointer :: lgrf(:) => null()
     character(len=8), pointer :: maor(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
-!               1234567890123456789
-    resuin = '                   '
-    resuou = '                   '
+    resuin = ' '
+    resuou = '  '
     i = lxlgut(resu0)
     resuin(1:i) = resu0(1:i)
     i = lxlgut(resu1)
@@ -99,6 +101,27 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
         noma1=maor(1)
         corrn=noma2//'.CRNO'
         corrm=noma2//'.CRMA'
+
+!       -- si cara et chmat sont fournis, on verifie qu'ils s'appuient sur le
+!          "bon" maillage :
+        if (cara.ne.' ') then
+            call dismoi('NOM_MAILLA', cara, 'CARA_ELEM', repk=noma3)
+            if (noma3.ne.noma2) then
+                valk(1)=cara
+                valk(2)=noma2
+                valk(3)=noma3
+                call utmess('F','CALCULEL3_48',nk = 3, valk=valk)
+            endif
+        endif
+        if (chmat.ne.' ') then
+            call dismoi('NOM_MAILLA', chmat, 'CHAM_MATER', repk=noma3)
+            if (noma3.ne.noma2) then
+                valk(1)=chmat
+                valk(2)=noma2
+                valk(3)=noma3
+                call utmess('F','CALCULEL3_49',nk = 3, valk=valk)
+            endif
+        endif
     endif
 !
     do i = 1, nbnosy
@@ -121,8 +144,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             else
                 vali (1) = nuordr(j)
                 vali (2) = ire2
-                valk = chamou
-                call utmess('F', 'PREPOST5_16', sk=valk, ni=2, vali=vali)
+                valk(1) = chamou
+                call utmess('F', 'PREPOST5_16', sk=valk(1), ni=2, vali=vali)
             endif
             if (lrest) then
                 call dismoi('NOM_MAILLA', chamin, 'CHAMP', repk=nomavr)
@@ -164,8 +187,10 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             else if (type(1:3).eq.'K24') then
                 zk24(iadou) = zk24(iadin)
                 if (nopara(1:5) .eq. 'EXCIT' .and. zk24(iadin)(1:2) .ne. '  ') then
-                    zk24(iadou) = resuou(1:8)//zk24(iadin)(9:)
-                    call copisd(' ', 'G', zk24(iadin)(1:19), zk24(iadou)( 1:19))
+                    if (.not. lrest) then
+                        zk24(iadou) = resuou(1:8)//zk24(iadin)(9:)
+                        call copisd(' ', 'G', zk24(iadin)(1:19), zk24(iadou)( 1:19))
+                    endif
                 endif
             else if (type(1:3).eq.'K16') then
                 zk16(iadou) = zk16(iadin)
@@ -173,9 +198,22 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                 zk8(iadou) = zk8(iadin)
             endif
         end do
+
+!       -- pour RESTREINT, on surcharge les parametres : MODELE, CARA_ELEM, CHAM_MATER et EXCIT:
+        if (lrest) then
+            call rsadpa(resuou, 'E', 1, 'MODELE', nuordr(i),1, sjv=iadou, styp=type)
+            zk8(iadou) = modele
+            call rsadpa(resuou, 'E', 1, 'CHAMPMAT', nuordr(i),1, sjv=iadou, styp=type)
+            zk8(iadou) = chmat
+            call rsadpa(resuou, 'E', 1, 'CARAELEM', nuordr(i),1, sjv=iadou, styp=type)
+            zk8(iadou) = cara
+            call rsadpa(resuou, 'E', 1, 'EXCIT', nuordr(i),1, sjv=iadou, styp=type)
+            zk24(iadou) = ' '
+        endif
+
  50     continue
     end do
-!
+
     call jedema()
-!
+
 end subroutine

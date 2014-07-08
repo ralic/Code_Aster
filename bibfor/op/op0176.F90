@@ -71,7 +71,7 @@ subroutine op0176()
 !
     character(len=1) :: cecr
     character(len=8) :: k8b, form, formar, tabid(1)
-    character(len=8) :: noma, nomo
+    character(len=8) :: noma, nomo, nocara, nochmat
     character(len=16) :: typcon, nomcmd
     character(len=19) :: resuou, resuin
     character(len=24) :: lisarc, lichex, nompar
@@ -79,7 +79,7 @@ subroutine op0176()
     aster_logical :: fals, true, lbid, lrest
 !
     complex(kind=8) :: c16b
-    integer :: nmail, nmode
+    integer :: nmail, nmode, ncara, nchmat
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,6 +87,10 @@ subroutine op0176()
     call infmaj()
     true = .true.
     fals = .false.
+    noma=' '
+    nomo=' '
+    nocara=' '
+    nochmat=' '
 !
     lisarc = '&&'//nompro//'.LISTE.ARCH'
     lichex = '&&'//nompro//'.LISTE.CHAM'
@@ -133,6 +137,8 @@ subroutine op0176()
         lrest = .true.
         call getvid('RESTREINT', 'MAILLAGE', iocc=1, scal=noma, nbret=nmail)
         call getvid('RESTREINT', 'MODELE', iocc=1, scal=nomo, nbret=nmode)
+        call getvid('RESTREINT', 'CARA_ELEM', iocc=1, scal=nocara, nbret=ncara)
+        call getvid('RESTREINT', 'CHAM_MATER', iocc=1, scal=nochmat, nbret=nchmat)
     endif
     if ((nbarch.eq.0) .and. (nbrest.eq.0)) then
         goto 9997
@@ -153,14 +159,12 @@ subroutine op0176()
 !
 !
     if (resuin .eq. resuou) then
-        if (lrest) then
-            call utmess('F', 'PREPOST2_5')
-        endif
+        if (lrest)  call utmess('F', 'PREPOST2_5')
         call extrs1(resuin, nbordr, zi(jordr), nbpara, zk16(jpa),&
                     nbarch, zi(jarch), nbexcl, zk16(jexcl), nbnosy)
     else
         call extrs2(resuin, resuou, typcon, lrest, noma,&
-                    nomo, nbordr, zi(jordr), nbpara, zk16(jpa),&
+                    nomo, nocara, nochmat, nbordr, zi(jordr), nbpara, zk16(jpa),&
                     nbarch, zi(jarch), nbexcl, zk16(jexcl), nbnosy)
     endif
 !
