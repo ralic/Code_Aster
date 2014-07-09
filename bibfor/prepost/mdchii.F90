@@ -151,7 +151,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
 !         TYPE INCORRECT
-            if (jaux .ne. mfloat) then
+            if (saux64 .eq. nochmd .and. jaux .ne. mfloat) then
                 vali (1) = jaux
                 call utmess('A+', 'MED_84', si=vali(1))
                 call utmess('F', 'MED_75')

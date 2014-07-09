@@ -197,7 +197,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
                     saux08='mfdfdi'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
-                if (jaux .ne. mfloat) then
+                if (saux64 .eq. nochmd .and. jaux .ne. mfloat) then
                     vali (1) = jaux
                     call utmess('A+', 'MED_84', si=vali(1))
                     call utmess('F', 'MED_75')
