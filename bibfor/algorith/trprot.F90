@@ -83,9 +83,10 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nueq_chck.h"
 !
     aster_logical :: test1, test2, test3
-    integer :: nbvale, nbrefe, nbdesc, ibid, isst, iadrp
+    integer :: nbvale, nbrefe, nbdesc, isst, iadrp, i_ligr_mesh
     integer :: i, iad(2), iad3d(3), icor(2), ndble
     real(kind=8) :: tgeom(6), tmin, epsi, const(2)
     real(kind=8) :: tailmi, norm1, norm2, ca(3), sa(3)
@@ -161,8 +162,11 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbnoe)
 !
 !
-    call jenonu(jexnom(pchno//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno//'.PRNO', ibid), 'L', iprn)
+! - Protection: no matrix shrinking
+!
+    call nueq_chck(pchno)
+    call jenonu(jexnom(pchno//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno//'.PRNO', i_ligr_mesh), 'L', iprn)
     call jeveuo(pchno//'.NUEQ', 'L', vi=nueq)
 !
     newcha='&&TRPROT.NCHNO'

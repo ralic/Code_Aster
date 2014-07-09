@@ -31,6 +31,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/nueq_chck.h"
 !
     character(len=*) :: chno1, base, chno2
     real(kind=8) :: tgeom(6), tmin, epsi, tailmi, val
@@ -76,8 +77,8 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !
 !-----------------------------------------------------------------------
-    integer ::   ibid, ieq1, ieq2, ino2
-    integer ::   iprn1, iprn2, ival1, ival2, nbcn1
+    integer :: ieq1, ieq2, ino2, i_ligr_mesh
+    integer :: iprn1, iprn2, ival1, ival2, nbcn1
     integer :: nbnaff, nbno, nbnrcp, ncmp1, ncmp2, nec
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
@@ -95,21 +96,23 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
     call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
     call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
     call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
-!
-!
-!
-!
     call jeveuo(cn1//'.VALE', 'L', vr=val1)
     call jelira(cn1//'.VALE', 'LONMAX', nbcn1)
 !
 !
     call jeveuo(cn2//'.VALE', 'E', vr=val2)
 !
+
 !
-    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno1//'.PRNO', ibid), 'L', iprn1)
-    call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
+! - Protection: no matrix shrinking
+!
+    call nueq_chck(pchno1)
+    call nueq_chck(pchno2)
+!
+    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno1//'.PRNO', i_ligr_mesh), 'L', iprn1)
+    call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno2//'.PRNO', i_ligr_mesh), 'L', iprn2)
     call jeveuo(pchno1//'.NUEQ', 'L', vi=nueq1)
     call jeveuo(pchno2//'.NUEQ', 'L', vi=nueq2)
 !

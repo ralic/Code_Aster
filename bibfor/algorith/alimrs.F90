@@ -15,6 +15,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nueq_chck.h"
 !
     character(len=*) :: moint, cmp, chno, mate
 !---------------------------------------------------------------------
@@ -58,8 +59,8 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
 !---------------------------------------------------------------------
     aster_logical :: test
-    integer :: nbvale, nbrefe, nbdesc, ibid
-    integer :: ino1, nocmp, icor(2), ichnul, ndble
+    integer :: nbvale, nbrefe, nbdesc
+    integer :: ino1, nocmp, icor(2), ichnul, ndble, i_ligr_mesh
     real(kind=8) :: tailmi
     character(len=8) :: gd1, gd2, ma1, ma2
     character(len=14) :: num
@@ -107,23 +108,21 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
 ! PARCOURS DU MAILLAGE STRUCTURE
 !
-!
     call dismoi('NOM_GD', cn2, 'CHAM_NO', repk=gd2)
     call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
-!
     call dismoi('NB_NO_MAILLA', ma1, 'MAILLAGE', repi=nbno1)
     call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
-!
-!
-!
-!
-!
     call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
 !
-    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno1//'.PRNO', ibid), 'L', iprn1)
-    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
+! - Protection: no matrix shrinking
+!
+    call nueq_chck(pchno1)
+    call nueq_chck(pchno2)
+!
+    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno1//'.PRNO', i_ligr_mesh), 'L', iprn1)
+    call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno2//'.PRNO', i_ligr_mesh), 'L', iprn2)
 !
     call dismoi('NB_EC', gd1, 'GRANDEUR', repi=nec1)
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)

@@ -37,6 +37,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/nueq_chck.h"
 !
     character(len=*) :: chno1, numdd2, base, chno2, tcorr(*)
     integer :: ncorr
@@ -141,9 +142,9 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     character(len=14) :: nu2
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2
-    integer ::  iaval2, ibid, ico1, ico2,  ieq1
-    integer :: ieq2, ino,   iprn1, iprn2
+    integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2, i_ligr_mesh
+    integer :: iaval2, ico1, ico2,  ieq1
+    integer :: ieq2, ino, iprn1, iprn2
     integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
     integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nugd2, nval1
     integer :: nval2
@@ -202,10 +203,15 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     call wkvect(cn2//'.VALE', base2//' V R', nval2, iaval2)
     call jeveuo(cn1//'.VALE', 'L', vr=vale)
 !
-    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno1//'.PRNO', ibid), 'L', iprn1)
-    call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
+! - Protection: no matrix shrinking
+!
+    call nueq_chck(pchno1)
+    call nueq_chck(pchno2)
+!
+    call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno1//'.PRNO', i_ligr_mesh), 'L', iprn1)
+    call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(pchno2//'.PRNO', i_ligr_mesh), 'L', iprn2)
     call jeveuo(pchno1//'.NUEQ', 'L', vi=nueq1)
     call jeveuo(pchno2//'.NUEQ', 'L', vi=nueq2)
 !
