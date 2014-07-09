@@ -62,6 +62,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
@@ -194,7 +195,9 @@ subroutine harm75(nomres, typres, nomin, basemo)
         mailla = zk24(llcha)(1:8)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
-        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq)
+        if (tousno) then
+            call nueq_chck(prchno, nb_equaz = neq)
+        endif
         basem2 = ' '
     endif
 !

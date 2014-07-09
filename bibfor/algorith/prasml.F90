@@ -80,12 +80,13 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/maxblo.h"
+#include "asterfort/nueq_chck.h"
 !
 !
     character(len=8) :: modgen, sst(2), nomprn
     character(len=14) :: nugene
     character(len=19) :: prgene, stolci
-    character(len=9) :: rigopt, ksst
+    character(len=9) :: rigopt
     character(len=11) :: option, ricopt
     character(len=24) :: tmadbl, tmnobl, tminbl
     character(len=24) :: nomlia, knombl(*)
@@ -95,7 +96,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iad, ibid, iblc, ieqc, ieql, inuc, inul
-    integer :: ivc, ivl, j, k, l, lc, ll
+    integer :: ivc, ivl, j, k, l, lc, ll, i_ligr_ss, i_ligr
     integer ::  lldefl,   llorl, llors, llprl
     integer ::  llprs, ltadbl, ltinbl, ltnobl, nbcol, nblig
     integer :: nbsst, ntail, ntprno, nuant, nublo, nulia, nusst
@@ -108,21 +109,24 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !-----------------------------------------------------------------------
     data rigopt,ricopt/'RIGI_GENE','RIGI_GENE_C'/
     data zero / 0.0d+00 /
-    data ksst /'&SOUSSTR'/
 !-----------------------------------------------------------------------
 !
 !    TEST SI ON EST SUR LES LAGRANGES ET SI OPTION=RIGI_GENE(_C)
 !
     call jemarq()
 !
-    if (nomprn .eq. ksst .or. (option.ne.rigopt.and. option.ne.ricopt)) goto 9999
+    if (nomprn .eq. '&SOUSSTR' .or. (option.ne.rigopt.and. option.ne.ricopt)) then
+        goto 999
+    endif
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
     prgene=nugene//'.NUME'
     stolci=nugene//'.SLCS'
+
+    call nueq_chck(prgene)
 !
-    call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst)
+    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+    call jelira(jexnum(prgene//'.PRNO', i_ligr_ss), 'LONMAX', nbsst)
     nbsst=nbsst/2
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
@@ -139,21 +143,21 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
     call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno)
     ntprno=ntprno/3
 !
-    call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'L', llorl)
-    call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'L', llors)
-    call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', llprl)
-    call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', llprs)
+    call jenonu(jexnom(prgene//'.LILI', nomprn), i_ligr)
+    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+
+
+    call jeveuo(jexnum(prgene//'.ORIG', i_ligr), 'L', llorl)
+    call jeveuo(jexnum(prgene//'.ORIG', i_ligr_ss), 'L', llors)
+    call jeveuo(jexnum(prgene//'.PRNO', i_ligr), 'L', llprl)
+    call jeveuo(jexnum(prgene//'.PRNO', i_ligr_ss), 'L', llprs)
     call jeveuo(modgen//'      .MODG.LIPR', 'L', vi=lipr)
 !
     nomlia=modgen//'      .MODG.LIMA'
 !
 !     BOUCLE SUR LES ELEMENTS DU LIGREL
 !
-    do 10 j = 1, ntprno
+    do j = 1, ntprno
 !       NUMERO DE LA LIAISON
         nulia=zi(llorl+j-1)
 !       RECUPERATION DU PROFIL BLOC ELEMENTAIRE
@@ -176,7 +180,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !  SI LA MATRICE CONTIENT PLUSIEURS BLOCS FAIRE UNE BOUCLE SUR LES BLOCS
 !
 !   BOUCLE SUR LES DEUX MATRICE DE LIAISON DE LA LIAISON
-        do 20 k = 1, 2
+        do k = 1, 2
 !  NUMERO BLOC ELEMENTAIRE COURANT
             iblc=ibl(k)
             call jenonu(jexnom(modgen//'      .MODG.SSNO', sst(k)), nusst)
@@ -185,9 +189,9 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
             nublo=lipr(1+(nulia-1)*9+(k-1)*3+2)
             inumbl(iblc)=nublo
 !   RECUPERATION DU NUMERO TARDIF DE LA SOUS-STRUCTURE
-            do 30 l = 1, nbsst
+            do l = 1, nbsst
                 if (zi(llors+l-1) .eq. nusst) nutars=l
-30          continue
+            end do
             nbcol=zi(llprs+(nutars-1)*2+1)
             inuc=zi(llprs+(nutars-1)*2)
             ntail=nblig*nbcol
@@ -202,12 +206,12 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
             sconl=zero
             call maxblo(jexnum(nomlia, nublo), sconl)
 !     BOUCLE SUR LES TERMES DU BLOC ELEMENTAIRE
-            do 40 ll = 1, nblig
+            do ll = 1, nblig
 !  NUMERO D'EQUATION LIGNE
                 ieql=nueq(1+(inul-1)+(ll-1))
                 conleq(ieql)=max(conleq(ieql),sconl)
                 conlbl(iblc)=max(conlbl(iblc),sconl)
-                do 50 lc = 1, nbcol
+                do lc = 1, nbcol
 !  ADRESSE DU TERME DANS LE BLOC ELEMENTAIRE
                     iad=nblig*(lc-1)+ll
 !  NUMERO D'EQUATION COLONNE
@@ -219,19 +223,19 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !
                     zi(ltnobl+iad-1)=scib(ivc)
                     zi(ltadbl+iad-1)=scdi(ivc)-(ivc-ivl)
-50              continue
-40          continue
+                end do
+            end do
             call jelibe(jexnum(tmadbl, iblc))
             call jelibe(jexnum(tmnobl, iblc))
-20      continue
+        end do
 !
 !   TRAITEMENT DES BLOCS LAGRANGES LAGRANGES
 !
 ! RECUPERATION NOEUD TARDIF ANTAGONISTE
 !
-        do 60 l = 1, ntprno
+        do l = 1, ntprno
             if (zi(llorl+l-1) .eq. nulia .and. l .ne. j) nuant=l
-60      continue
+        end do
         iblc=ibl(3)
         knombl(iblc)=nomlia
         nublo=lipr(1+(nulia-1)*9+6+2)
@@ -246,7 +250,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
         call jecroc(jexnum(tmadbl, iblc))
         call jeecra(jexnum(tmadbl, iblc), 'LONMAX', nblig*2)
         call jeveuo(jexnum(tmadbl, iblc), 'E', ltadbl)
-        do 70 k = 1, nblig
+        do k = 1, nblig
             ieql=nueq(1+(inul-1)+(k-1))
             inuc=zi(llprl+(nuant-1)*2)
             ieqc=nueq(1+(inuc-1)+(k-1))
@@ -261,16 +265,16 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
             iad=nblig+k
             zi(ltnobl+iad-1)=scib(ivc)
             zi(ltadbl+iad-1)=scdi(ivc)-(ivc-ivl)
-70      continue
+        end do
         call jelibe(jexnum(tmadbl, iblc))
         call jelibe(jexnum(tmnobl, iblc))
-10  end do
+    end do
 !
     call jelibe(prgene//'.NUEQ')
     call jelibe(stolci//'.SCDI')
     call jelibe(stolci//'.SCIB')
     call jelibe(modgen//'      .MODG.LIPR')
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

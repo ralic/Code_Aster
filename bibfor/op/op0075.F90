@@ -162,7 +162,7 @@ subroutine op0075()
                 call utmess('F', 'ALGORITH9_48')
             endif
 !
-            call harm75(nomres, typres, resin, mode)
+            call harm75(nomres, typres, resin,  mode)
 !
         else
 !         --- BLINDAGE : VOIR REMARQUE 1

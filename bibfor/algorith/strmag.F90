@@ -43,6 +43,7 @@ subroutine strmag(nugene, typrof)
 #include "asterfort/smosli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nueq_chck.h"
 !
     real(kind=8) :: valr(2)
 !
@@ -82,7 +83,7 @@ subroutine strmag(nugene, typrof)
         call crsmos(stomor, typrof, neq)
         rtbloc=jevtbl('TAILLE_BLOC')
         call smosli(stomor, stolci, 'G', rtbloc)
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -101,12 +102,13 @@ subroutine strmag(nugene, typrof)
 !---------------DETERMINATION DU PROFIL(LIGNE DE CIEL)------------------
     call wkvect(stolci//'.SCHC', 'G V I', neq, jschc)
 !
+    call nueq_chck(prgene)
     call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
     call jelira(prgene//'.PRNO', 'NMAXOC', nbprno)
     if (typrof .eq. 'LIGN_CIEL') then
 !
 !  BOUCLE SUR LIGRELS DU PRNO
-        do 10 i = 1, nbprno
+        do i = 1, nbprno
             call jelira(jexnum(prgene//'.PRNO', i), 'LONMAX', ntprno)
             ntprno=ntprno/2
             call jenuno(jexnum(prgene//'.LILI', i), nomprn)
@@ -114,17 +116,17 @@ subroutine strmag(nugene, typrof)
 !   CAS DU PRNO &SOUSSTR (MATRICES PROJETEES)
             if (nomprn .eq. '&SOUSSTR') then
                 call jeveuo(jexnum(prgene//'.PRNO', i), 'L', llprs)
-                do 20 j = 1, ntprno
+                do j = 1, ntprno
                     iad1=zi(llprs+(j-1)*2)
                     nblig=zi(llprs+(j-1)*2+1)
 !
 !   BOUCLE SUR LES COLONNES DE LA MATRICE PROJETEE
-                    do 30 k = 1, nblig
+                    do k = 1, nblig
                         iadcou=nueq(1+iad1-1+k-1)
                         lh=jschc+iadcou-1
                         zi(lh)=max(zi(lh),k)
-30                  continue
-20              continue
+                    end do
+                end do
 !
 !
 !    CAS  DU PRNO LAGRANGE D'INTERFACE
@@ -136,7 +138,7 @@ subroutine strmag(nugene, typrof)
                 call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
                 call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', llprs)
 !
-                do 40 j = 1, ntprno
+                do j = 1, ntprno
                     nulia=zi(llorl+j-1)
                     call jeveuo(jexnum(modgen//'      .MODG.LIDF', nulia), 'L', lldefl)
 ! RECUPERATION DES 2 SOU-STRUCTURES ASSOCIEES
@@ -144,32 +146,32 @@ subroutine strmag(nugene, typrof)
                     sst(2)=zk8(lldefl+2)
                     iad1l=zi(llprl+(j-1)*2)
                     nblig=zi(llprl+(j-1)*2+1)
-                    do 50 k = 1, 2
+                    do k = 1, 2
                         call jenonu(jexnom(modgen//'      .MODG.SSNO', sst(k)), nusst)
 !  RECUPERATION NUMERO TARDIF
-                        do 60 l = 1, nbsst
+                        do  l = 1, nbsst
                             if (zi(llors+l-1) .eq. nusst) nsstar=l
-60                      continue
+                        end do
                         iad1c=zi(llprs+(nsstar-1)*2)
                         nbcol=zi(llprs+(nsstar-1)*2+1)
-                        do 70 ll = 1, nblig
+                        do ll = 1, nblig
                             iadl=nueq(1+(iad1l-1)+(ll-1))
-                            do 80 lc = 1, nbcol
+                            do lc = 1, nbcol
                                 iadc=nueq(1+(iad1c-1)+(lc-1))
                                 lh=jschc+max(iadc,iadl)-1
                                 zi(lh)=max(zi(lh),abs(iadc-iadl)+1)
-80                          continue
-70                      continue
-50                  continue
+                            end do
+                        end do
+                    end do
 !
 ! TRAITEMENT DES MATRICES LAGRANGE-LAGRANGE
 !
 ! RECUPERATION DU NUMERO NOEUD TARDIF ANTAGONISTE
-                    do 90 l = 1, ntprno
+                    do l = 1, ntprno
                         if (zi(llorl+l-1) .eq. nulia .and. l .ne. j) nuant=l
-90                  continue
+                    end do
                     iad2l=zi(llprl+(nuant-1)*2)
-                    do 95 ll = 1, nblig
+                    do ll = 1, nblig
                         iadl=nueq(1+(iad1l-1)+(ll-1))
                         iadc=nueq(1+(iad2l-1)+(ll-1))
 ! TERME CROISE LAGRANGE LAGRANGE
@@ -178,27 +180,24 @@ subroutine strmag(nugene, typrof)
 ! TERME DIAGONAL LAGRANGE LAGRANGE
                         lh=jschc+iadl-1
                         zi(lh)=max(zi(lh),1)
-95                  continue
-!
-!
-40              continue
+                    end do
+                end do
             endif
-10      end do
+        end do
     else if (typrof.eq.'PLEIN') then
-        write(6,*) 'PROFIL PLEIN!!!!'
-        do 15 i = 1, neq
+        do i = 1, neq
             zi(jschc+i-1)=i
-15      continue
+        end do
     endif
 !
 !
 !---------------DETERMINATION DE LA TAILLE MAX D'UNE COLONNE------------
     lcomoy=0
     lcolmx=0
-    do 100 i = 1, neq
+    do i = 1, neq
         lcolmx=max(lcolmx,zi(jschc+i-1))
         lcomoy=lcomoy+zi(jschc+i-1)
-100  end do
+    end do
 !
     lcomoy=lcomoy/neq
 !
@@ -218,7 +217,7 @@ subroutine strmag(nugene, typrof)
     nterbl=0
     ntermx=0
     call wkvect(stolci//'.SCIB', 'G V I', neq, jscib)
-    do 110 i = 1, neq
+    do i = 1, neq
         nterm=nterbl+zi(jschc+i-1)
         if (nterm .gt. ntbloc) then
             nbloc=nbloc+1
@@ -229,7 +228,7 @@ subroutine strmag(nugene, typrof)
             ntermx=max(ntermx,nterbl)
         endif
         zi(jscib+i-1)=nbloc
-110  end do
+    end do
 !
     write(ifimes,*)'+++ NOMBRE DE BLOCS DU STOCKAGE: ',nbloc
 !
@@ -245,7 +244,7 @@ subroutine strmag(nugene, typrof)
     nbloc=1
     zi(jscbl)=0
 !
-    do 120 i = 1, neq
+    do i = 1, neq
         nterm=nterbl+zi(jschc+i-1)
         if (nterm .gt. ntbloc) then
             nterbl=zi(jschc+i-1)
@@ -255,7 +254,7 @@ subroutine strmag(nugene, typrof)
         endif
         zi(jscbl+nbloc)=i
         zi(jscdi+i-1)=nterbl
-120  end do
+    end do
 !
 !
 !     -- .SCDE
@@ -270,6 +269,6 @@ subroutine strmag(nugene, typrof)
     call slismo(stolci, stomor, 'G')
 !
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

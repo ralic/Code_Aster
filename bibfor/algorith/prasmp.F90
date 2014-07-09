@@ -74,13 +74,14 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 #include "asterfort/maxblo.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/utmess.h"
+#include "asterfort/nueq_chck.h"
 !
 !
 !
     character(len=8) :: modgen, nomprn, nommcl, kbid
     character(len=14) :: nugene
     character(len=19) :: prgene, stolci
-    character(len=9) :: rigopt, masopt, amoopt, ksst
+    character(len=9) :: rigopt, masopt, amoopt
     character(len=11) :: option, ricopt
     character(len=24) :: tmadbl, tmnobl, tminbl, knombl(*)
     character(len=24) :: valk
@@ -89,9 +90,9 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, ibid, ibl1, ieqc, inuc, inul, iret
-    integer :: j, lc, ll,  llors, llprs
-    integer ::  ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
+    integer :: iad, ibid, ibl1, ieqc, inuc, inul, iret, i_ligr_ss
+    integer :: j, lc, ll, llors, llprs, i_ligr
+    integer :: ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
     integer :: ntail, ntprno, nusst
     real(kind=8) :: ssmax
     integer, pointer :: nueq(:) => null()
@@ -100,17 +101,19 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !-----------------------------------------------------------------------
     data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
      &                                 'MASS_GENE','AMOR_GENE'/
-    data ksst /'&SOUSSTR'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    if (nomprn .ne. ksst) goto 9999
+    if (nomprn .ne. '&SOUSSTR') then
+        goto 999
+    endif
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
     prgene=nugene//'.NUME'
+    call nueq_chck(prgene)
     stolci=nugene//'.SLCS'
-    call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst)
+    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+    call jelira(jexnum(prgene//'.PRNO', i_ligr_ss), 'LONMAX', nbsst)
     nbsst=nbsst/2
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
@@ -139,14 +142,13 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno)
     ntprno=ntprno/2
 !
-    call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'L', llors)
-    call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', llprs)
+    call jenonu(jexnom(prgene//'.LILI', nomprn), i_ligr)
+    call jeveuo(jexnum(prgene//'.ORIG', i_ligr), 'L', llors)
+    call jeveuo(jexnum(prgene//'.PRNO', i_ligr), 'L', llprs)
 !
 !   BOUCLE SUR LES ELEMENTS DU LIGREL
 !
-    do 10 j = 1, ntprno
+    do j = 1, ntprno
 !
 !  RECUPERATION NUMERO SOUS-STRUCTURE
         nusst=zi(llors+j-1)
@@ -160,7 +162,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
         kbid='   '
         call mgutdm(modgen, kbid, nusst, 'NOM_MACR_ELEM', ibid,&
                     nommcl)
-        knombl(ibl1)=nommcl//adnom//'_VALE         '
+        knombl(ibl1)=nommcl//adnom//'_VALE'
 !
 ! VERIFICATION DE L'EXISTENCE DE LA MATRICE D'AMORTISSEMENT ASSOCIEE
 ! AU MACRO-ELEMENT
@@ -199,8 +201,8 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
 !     BOUCLES SUR LES TERMES DU BLOC ELEMENTAIRE
 !    (TRIANGLE SUPERIEUR SEULEMENT)
-        do 20 ll = 1, nblig
-            do 30 lc = ll, nbcol
+        do ll = 1, nblig
+            do lc = ll, nbcol
 !    ADRESSE DANS BLOC ELEMENTAIRE
                 iad=(lc-1)*lc/2+ll
 !    NUMERO D'EQUATION DU TERME COURANT
@@ -208,12 +210,12 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
                 zi(ltnobl+iad-1)=scib(ieqc)
                 zi(ltadbl+iad-1)=scdi(ieqc)-(lc-ll)
-30          continue
-20      continue
+            end do
+        end do
         call jelibe(jexnum(tmnobl, ibl1))
         call jelibe(jexnum(tmadbl, ibl1))
-10  end do
+    end do
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine
