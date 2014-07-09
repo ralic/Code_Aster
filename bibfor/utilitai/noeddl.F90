@@ -54,7 +54,7 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
 !     - NON NECESSAIRE, L'OBJET EST CREE/DETRUIT A CHAQUE FOIS
 !     - DANS MSTGET
 !-----------------------------------------------------------------------
-    integer :: i, ianueq, iaprno, ibid, ieq, in
+    integer :: i, iaprno, ibid, ieq, in
     integer :: nbcmp, nec, nunoe
 !-----------------------------------------------------------------------
     call jemarq()
@@ -65,7 +65,6 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
 !
     nomnu(1:14) = nume
     nomnu(15:19) = '.NUME'
-    call jeveuo(nomnu(1:19)//'.NUEQ', 'L', ianueq)
     call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=nomma)
     call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
     nec = nbec(gd)

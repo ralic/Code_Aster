@@ -52,7 +52,7 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !---------------------------------------------------------------------
     integer :: nbvale, nbrefe, nbdesc, ibid, neq, nbno1
     integer :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
-    integer :: nec2,   iprn2, inueq2, nbid
+    integer :: nec2, iprn2, nbid
     integer :: ndble, nbptr
     real(kind=8) :: epsi, x1, y1, z1, x2, y2, z2
     real(kind=8) :: tailmi, dista2, tailm2
@@ -128,7 +128,6 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
     call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)
-    call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
 !
 ! RECUPERATION DES COORDONNEES DU MAILLAGE
 !
@@ -191,17 +190,6 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
  10     continue
     end do
-!
-!
-!      IF (NDBLE.EQ.1) THEN
-!        DO 30 I=1,NBNO1
-!
-!30      CONTINUE
-!      ELSE
-!        DO 40 I=1,NBNO1
-!
-!40      CONTINUE
-!      ENDIF
 !
 ! --- MENAGE
     call detrsd('CHAM_NO', chnul)

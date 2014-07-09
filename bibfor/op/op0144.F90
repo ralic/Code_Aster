@@ -94,33 +94,6 @@ subroutine op0144()
      &                     'DRX     ','DRY     ','DRZ     '/
 !
 !-----------------------------------------------------------------------
-!     OBJETS CREES SUR LA BASE GLOBALE
-!
-!     NOMU//'.DESC'
-!     NOMU//'.REMF'
-!     NOMU//'.NUMO'
-!     NOMU//'.VITE'
-!     NOMU//'.FREQ'
-!     NOMU//'.MASG'
-!     NOMU//'.FACT'
-!
-!     TABLE DES NOMS DES CHAMPS DE DEPLACEMENTS AUX NOEUDS
-!
-!     OBJETS ASSOCIES AU PROF_CHNO COMMUN A TOUS LES CHAMPS DE
-!     DEPLACEMENTS AUX NOEUDS
-!     NOMU(1:8)//'.C01.YY1XX1.LILI'
-!     NOMU(1:8)//'.C01.YY1XX1.LPRN'
-!     NOMU(1:8)//'.C01.YY1XX1.PRNO'
-!     NOMU(1:8)//'.C01.YY1XX1.NUEQ'
-!     NOMU(1:8)//'.C01.YY1XX1.DEEQ'
-!     CES OBJETS SONT CREES PAR LA ROUTINE CRPRNO
-!
-!     OBJETS ASSOCIES AUX CHAMPS DE DEPLACEMENTS AUX NOEUDS
-!     NOMU(1:8)//'.C01.YYYXXX.DESC'
-!     NOMU(1:8)//'.C01.YYYXXX.REFE'
-!     NOMU(1:8)//'.C01.YYYXXX.VALE'
-!
-!-----------------------------------------------------------------------
 !
     call jemarq()
     c16b=(0.d0,0.d0)
@@ -133,7 +106,6 @@ subroutine op0144()
     call getvr8('BASE_MODALE', 'AMOR_REDUIT_CONN', iocc=1, nbval=0, nbret=nbconn)
     ifr = iunifi('RESULTAT')
     ifm = iunifi('MESSAGE')
-    write(ifr,1000)
 !
 !
 ! --- 0.VERIFICATIONS AVANT EXECUTION ---
@@ -425,5 +397,5 @@ subroutine op0144()
 !
     call jedema()
     call jedetc('G', '&&MEFCEN', 1)
-    1000 format(/,80('-'))
+
 end subroutine

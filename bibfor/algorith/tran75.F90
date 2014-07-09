@@ -218,7 +218,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
         mailla = zk24(llcha)(1:8)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
-        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq)
+        if (tousno) then
+            call dismoi('NB_EQUA', prchno, 'PROF_CHNO', repi=neq)
+        endif
         basem2 = ' '
     endif
 !

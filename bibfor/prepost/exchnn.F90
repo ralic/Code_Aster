@@ -57,7 +57,7 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 !
 !       TVALE : TABLE DES VALEURS DES CMP DE TOUT LE CHAMP_NO
 !
-!       TNUEQ : TABLE D'INDIRECTION (JACOT) '.NUEQ'
+!       TNUEQ : TABLE D'INDIRECTION (JACOT) 
 !
 !       B     : .TRUE. LE CHAMP EST PROF_CHNO (FALSE SINON).
 !
@@ -70,47 +70,29 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 !
 !
     integer :: adr, i, poscmp, nbcn
-!
-!-----------------------------------------------------------------------
     integer :: iiad
 !-----------------------------------------------------------------------
     adr = descn(1)
     nbcn = -descn(2)
 !
     if (numn .gt. 0) then
-!
         adr = 1 + nbcn* (numn-1)
-!
     endif
 !
-    do 10 i = 1, nbc, 1
-!
+    do i = 1,nbc,1
         poscmp = iposdg(descn(3),tcmp(i))
-!
         if (poscmp .gt. 0) then
-!
             if (b) then
-!
                 iiad = tnueq(adr+poscmp-1)
-!
             else
-!
                 iiad = adr + poscmp - 1
-!
             endif
-!
             valcmp(i) = tvale(iiad)
-!
             taber(i) = 1
-!
         else
-!
             valcmp(i) = r8vide()
-!
             taber(i) = 0
-!
         endif
-!
- 10 end do
+    end do
 !
 end subroutine
