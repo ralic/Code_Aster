@@ -439,24 +439,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.RERR', bas2, k192//'.RERR')
         call jedup1(k191//'.RELC', bas2, k192//'.RELC')
         call jedup1(k191//'.TITR', bas2, k192//'.TITR')
-!       JE (JP) NE SAIS PAS FAIRE UNE COPIE "PROFONDE" :
-!       QUEL NOM DONNER AUX CH2 ?
-!       A PART _00000I, JE NE VOIS PAS ...
-!
-!       CALL JEEXIN(K192//'.RELR',IEXI)
-!       IF (IEXI.GT.0) THEN
-!         CALL JEVEUO(K191//'.RELR','E',JRELR1)
-!         CALL JEVEUO(K192//'.RELR','E',JRELR2)
-!         CALL JELIRA(K191//'.RELR','LONUTI',N1,KBID)
-!         CALL JELIRA(K192//'.RELR','LONUTI',N2,KBID)
-!         ASSERT(N1.EQ.N2)
-!         DO 20,K=1,N1
-!           CH1=ZK24(JRELR1-1+K)
-!           CH2=??
-!           CALL COPICH(BAS2,CH1,CH2)
-!           ZK24(JRELR2-1+K)=CH2
-! 20      CONTINUE
-!       ENDIF
+
 !     ------------------------------------------------------------------
     else if (typesd.eq.'LISTE_CHARGES') then
 !     -----------------------------------

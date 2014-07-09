@@ -1,6 +1,7 @@
 subroutine exisd(typesd, nomsd, iret)
     implicit none
 #include "jeveux.h"
+#include "asterfort/exisd2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -191,6 +192,7 @@ subroutine exisd(typesd, nomsd, iret)
     else if (typ2sd.eq.'NUME_DDL') then
 !     -----------------------------------
         ch = nomsd
+        
         call jeexin(ch(1:14)//'.NUME.DEEQ', i1)
         call jeexin(ch(1:14)//'.NUME.DELG', i2)
         call jeexin(ch(1:14)//'.NUME.LILI', i3)
@@ -203,7 +205,8 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch(1:19)//'.PRNO', i1)
         call jeexin(ch(1:19)//'.DEEQ', i2)
         call jeexin(ch(1:19)//'.LILI', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        call jeexin(ch(1:19)//'.NUEQ', i4)
+        if (i1*i2*i3*i4 .ne. 0) goto 20
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)

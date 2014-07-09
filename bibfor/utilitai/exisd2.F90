@@ -1,7 +1,8 @@
-subroutine copis2(typesd, base, sd1, sd2)
+subroutine exisd2(typesd, nomsd, iret)
 implicit none
-#include "asterfort/copisd.h"
-    character(len=*) :: typesd, base, sd1, sd2
+#include "asterfort/exisd.h"
+    integer :: iret
+    character(len=*) :: typesd, nomsd
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,5 +21,5 @@ implicit none
 ! ======================================================================
 !     ROUTINE SERVANT A MASQUER LA RECURSIVITE
 !-----------------------------------------------
-    call copisd(typesd, base, sd1, sd2)
+    call exisd(typesd, nomsd, iret)
 end subroutine

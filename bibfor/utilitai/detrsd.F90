@@ -430,6 +430,19 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.NUEQ')
         call jedetr(k19//'.PRNO')
 !
+    else if (typ2sd.eq.'PROF_GENE') then
+!     ------------------------------------
+        k19 = nomsd
+        call jedetr(k19//'.DEEQ')
+        call jedetr(k19//'.LILI')
+        call jedetr(k19//'.NUEQ')
+        call jedetr(k19//'.PRNO')
+        call jedetr(k19//'.ORIG')
+        call jedetr(k19//'.NEQU')
+        call jedetr(k19//'.DESC')
+        call jedetr(k19//'.REFN')
+        call jedetr(k19//'.DELG')
+!
     else if (typ2sd.eq.'NUME_EQUA') then
 !     ------------------------------------
         k19 = nomsd
@@ -437,6 +450,16 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.NEQU')
         call jedetr(k19//'.REFN')
         call jedetr(k19//'.DELG')
+
+    else if (typ2sd.eq.'NUML_EQUA') then
+!     ------------------------------------
+        k19 = nomsd
+        call jedetr(k19//'.PRNO')
+        call jedetr(k19//'.NEQU')
+        call jedetr(k19//'.DELG')
+        call jedetr(k19//'.NUEQ')
+        call jedetr(k19//'.NULG')
+        call jedetr(k19//'.NUGL')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CHAM_ELEM') then
@@ -545,6 +568,8 @@ subroutine detrsd(typesd, nomsd)
 !     -----------------------------------
 !
         nu = nomsd
+        call detrs2('NUML_EQUA', nu//'.NUML')
+
         call jedetr(nu//'.NUML.PRNO')
         call jedetr(nu//'.NUML.NOPR')
         call jedetr(nu//'.NUML.DELG')

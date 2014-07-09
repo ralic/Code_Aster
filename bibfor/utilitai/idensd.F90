@@ -48,7 +48,7 @@ function idensd(typesd, sd1, sd2)
     typ2sd = typesd
     idensd=.true.
 !
-    if (sd1 .eq. sd2) goto 9999
+    if (sd1 .eq. sd2) goto 999
 !
 !
     if (typ2sd .eq. 'PROF_CHNO') then
@@ -56,24 +56,23 @@ function idensd(typesd, sd1, sd2)
         pchn1=sd1
         pchn2=sd2
         iden=idenob(pchn1//'.LILI',pchn2//'.LILI')
-        if (.not.iden) goto 9998
+        if (.not.iden) goto 998
         iden=idenob(pchn1//'.PRNO',pchn2//'.PRNO')
-        if (.not.iden) goto 9998
+        if (.not.iden) goto 998
         iden=idenob(pchn1//'.DEEQ',pchn2//'.DEEQ')
-        if (.not.iden) goto 9998
+        if (.not.iden) goto 998
         iden=idenob(pchn1//'.NUEQ',pchn2//'.NUEQ')
-        if (.not.iden) goto 9998
+        if (.not.iden) goto 998
 !
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
-    goto 9999
-9998 continue
+    goto 999
+998 continue
     idensd=.false.
 !
-!
-9999 continue
+999 continue
     call jedema()
 end function

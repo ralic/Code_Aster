@@ -1,10 +1,10 @@
 subroutine numer2(nb_ligr      , list_ligr    , solverz, base, nume_ddlz,&
-                  old_nume_ddlz, modelocz)
+                  nume_ddl_oldz, modelocz)
 !
 implicit none
 !
 #include "asterfort/detrsd.h"
-#include "asterfort/idenob.h"
+#include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
@@ -38,7 +38,7 @@ implicit none
     character(len=*), intent(in) :: solverz
     character(len=2), intent(in) :: base
     character(len=*), intent(inout) :: nume_ddlz
-    character(len=*), intent(in) :: old_nume_ddlz
+    character(len=*), intent(in) :: nume_ddl_oldz
     character(len=*), intent(in) :: modelocz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,17 +57,17 @@ implicit none
 ! In  solver         : name of solver datastructure
 ! IO  nume_ddl       : name of nume_ddl object
 ! In  modelocz       : local mode for GRANDEUR numbering
-! In  old_nume_ddl   : name of previous nume_ddl object
+! In  nume_ddl_old   : name of previous nume_ddl object
 !
-! If old_nume_ddl is present
-!   -> try to know if PROF_CHNO in old_nume_ddl can be reuse
-!      In this case nume_ddl = old_nume_ddl
+! If nume_ddl_old is present
+!   -> try to know if PROF_CHNO in nume_ddl_old can be reuse
+!      In this case nume_ddl = nume_ddl_old
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l1, l2, l3, l4
+    character(len=19) :: prof_chno, prof_chno_old
     character(len=19) :: solver
-    character(len=14) :: nume_ddl , old_nume_ddl, moloc
+    character(len=14) :: nume_ddl , nume_ddl_old, moloc
     character(len=24) :: renum
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: nslv(:) => null()
@@ -76,10 +76,12 @@ implicit none
 !
     call jemarq()
 !
-    solver       = solverz
-    nume_ddl     = nume_ddlz
-    moloc        = modelocz
-    old_nume_ddl = old_nume_ddlz
+    solver        = solverz
+    nume_ddl      = nume_ddlz
+    moloc         = modelocz
+    nume_ddl_old  = nume_ddl_oldz
+    prof_chno     = nume_ddl//'.NUME'
+    prof_chno_old = nume_ddl_old//'.NUME'
 !
     call detrsd('NUME_DDL', nume_ddl)
 !
@@ -101,24 +103,14 @@ implicit none
 !
 ! - Trying to reuse old nume_ddl
 !
-    if (old_nume_ddl.ne.' ') then
-!
-! ----- Is same PROF_CHNO ?
-!
-        l1=idenob(nume_ddl//'.NUME.DEEQ',old_nume_ddl//'.NUME.DEEQ')
-        l2=idenob(nume_ddl//'.NUME.LILI',old_nume_ddl//'.NUME.LILI')
-        l3=idenob(nume_ddl//'.NUME.NUEQ',old_nume_ddl//'.NUME.NUEQ')
-        l4=idenob(nume_ddl//'.NUME.PRNO',old_nume_ddl//'.NUME.PRNO')
-!
-! ----- Yes -> using old one
-!
-        if (l1 .and. l2 .and. l3 .and. l4) then
+    if (nume_ddl_old.ne.' ') then
+        if (idensd('PROF_CHNO', prof_chno, prof_chno_old)) then
             call detrsd('NUME_DDL', nume_ddl)
-            call jedupo(nume_ddlz//'     .ADNE', 'V', old_nume_ddl//'     .ADNE', .false._1)
-            call jedupo(nume_ddlz//'     .ADLI', 'V', old_nume_ddl//'     .ADLI', .false._1)
-            call jedetr(nume_ddlz//'     .ADLI')
-            call jedetr(nume_ddlz//'     .ADNE')
-            nume_ddl = old_nume_ddl
+            call jedupo(nume_ddl//'     .ADNE', 'V', nume_ddl_old//'     .ADNE', .false._1)
+            call jedupo(nume_ddl//'     .ADLI', 'V', nume_ddl_old//'     .ADLI', .false._1)
+            call jedetr(nume_ddl//'     .ADLI')
+            call jedetr(nume_ddl//'     .ADNE')
+            nume_ddl = nume_ddl_old
         endif
     endif
 !

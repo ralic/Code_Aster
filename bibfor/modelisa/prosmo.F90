@@ -51,6 +51,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/jecrec.h"
@@ -81,7 +82,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 ! -----  VARIABLES LOCALES
     character(len=1) :: base
     character(len=14) :: numddl, numdd1, numddi
-    character(len=19) :: matres, mat1, mati
+    character(len=19) :: matres, mat1, mati, nume_equa1, nume_equal
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
     character(len=24) :: krefi, kliste
     integer :: lgbl, jhtc, i, iadi, jeq, nbter, ibl1, lcumu, kbl
@@ -125,13 +126,9 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 ! --- RECOPIE DU PROF_CHNO DE LA PREMIERE MATRICE SUR LA MATRICE
 ! --- RESULTANTE :
 !     ---------
-    call jedupo(numdd1//'.NUME.DEEQ', base, numddl//'.NUME.DEEQ', .false._1)
-    call jedupo(numdd1//'.NUME.DELG', base, numddl//'.NUME.DELG', .false._1)
-    call jedupo(numdd1//'.NUME.LILI', base, numddl//'.NUME.LILI', .false._1)
-    call jedupo(numdd1//'.NUME.NUEQ', base, numddl//'.NUME.NUEQ', .false._1)
-    call jedupo(numdd1//'.NUME.PRNO', base, numddl//'.NUME.PRNO', .false._1)
-    call jedupo(numdd1//'.NUME.REFN', base, numddl//'.NUME.REFN', .false._1)
-    call jedupo(numdd1//'.NUME.NEQU', base, numddl//'.NUME.NEQU', .false._1)
+    nume_equa1 = numdd1//'.NUME'
+    nume_equal = numddl//'.NUME'
+    call copisd('NUME_EQUA', base, nume_equa1, nume_equal)
 !
 ! --- RECOPIE DU .NSLV DE LA PREMIERE MATRICE SUR LA MATRICE
     call jedup1(numdd1//'.NSLV', base, numddl//'.NSLV')
