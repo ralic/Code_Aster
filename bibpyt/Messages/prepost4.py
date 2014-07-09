@@ -84,7 +84,11 @@ cata_msg = {
 """),
 
 22 : _(u"""
- nombres de composantes raideurs et mode différents
+Le nombre de composantes des "raideurs" et le nombre de composantes du MODE_MECA porté par les noeuds du
+GROUP_MA_RADIER sont différents :
+ - Vous avez donné pour les raideurs KX, KY, KZ, KRX, KRY, KRZ.
+ - Sur un des noeuds du GROUP_MA_RADIER, le MODE_MECA n'a pas les composantes DRX, DRY, DRZ.
+On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés sont incompatibles.
 """),
 
 23 : _(u"""
