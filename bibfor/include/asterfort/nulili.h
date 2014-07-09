@@ -16,17 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nulili(lligr, lili, base, molocz, nomgds,&
-                      igds, mailla, nec, ncmp, nlili)
-        character(len=*) :: lligr
-        character(len=24) :: lili
-        character(len=1) :: base
-        character(len=*) :: molocz
-        character(len=8) :: nomgds
-        integer :: igds
-        character(len=8) :: mailla
-        integer :: nec
-        integer :: ncmp
-        integer :: nlili
+    subroutine nulili(nb_ligr, list_ligr, lili, base , gran_name,&
+                      igds   , mesh     , nec , nlili, modelocz)
+        integer, intent(in) :: nb_ligr
+        character(len=24), pointer, intent(in) :: list_ligr(:)
+        character(len=24), intent(in):: lili
+        character(len=1), intent(in):: base
+        character(len=8), intent(out) :: gran_name
+        integer, intent(out) :: igds
+        character(len=8), intent(out) :: mesh
+        integer, intent(out) :: nec
+        integer, intent(out) :: nlili
+        character(len=*), optional, intent(in) :: modelocz
     end subroutine nulili
 end interface

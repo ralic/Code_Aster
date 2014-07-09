@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine numoch(tlimat, nbmat, base, lmoch)
-        character(len=24) :: tlimat(*)
-        integer :: nbmat
-        character(len=1) :: base
-        character(len=*) :: lmoch
+    subroutine numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
+        character(len=24), intent(in) :: list_matr_elem(*)
+        integer, intent(in) :: nb_matr_elem
+        character(len=24), pointer, intent(out) :: list_ligr(:)
+        integer, intent(out) :: nb_ligr
     end subroutine numoch
 end interface

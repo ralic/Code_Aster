@@ -97,8 +97,9 @@ implicit none
     call gnomsd(' ', noojb, 10, 14)
     numedd = noojb(1:14)
     call rsnume(result, 'TEMP', nuposs)
-    call numero(nuposs, modele, lischa, solveu, 'VG',&
-                numedd)
+    call numero(numedd, solveu, 'VG',&
+                old_nume_ddlz = nuposs,&
+                modelz = modele , list_loadz = lischa)
 !
 ! --- CREATION DES CHAMPS
 !

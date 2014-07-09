@@ -85,7 +85,7 @@ previous_errors = [
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL',
     'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
     'PARAMETER', 'PATH', 'PFACY', 'PHYSICAL', 'PMAX',
-    'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
+    'PREML', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
     'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
     'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'UMC', 'UMOY',

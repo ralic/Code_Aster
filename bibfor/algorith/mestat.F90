@@ -149,8 +149,9 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     call rsnume(result, 'DEPL', nuposs)
 !
-    call numero(nuposs, modele, lischa, solveu, 'VG',&
-                numedd)
+    call numero(numedd, solveu, 'VG',&
+                old_nume_ddlz = nuposs,&
+                modelz = modele , list_loadz = lischa)
 !
     call vtcreb(vecass, numedd, 'V', 'R', neq)
 !

@@ -61,19 +61,18 @@ subroutine caliel(fonrez, chargz)
 !
 ! --------- VARIABLES LOCALES ---------------------------
 !
-    character(len=8) :: mod, charge, mo8bla
+    character(len=8) :: mod, charge
     character(len=14) :: numddl
     character(len=16) :: motfac, option
-    character(len=19) :: ligrmo, lisrel, k19b
-    integer :: iocc, nliai, ilmoch, iop, ibid
+    character(len=19) :: ligrmo, lisrel
+    integer :: iocc, nliai, iop, nb_ligr
+    character(len=24), pointer :: list_ligr(:) => null()
 !
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
     charge = chargz
     motfac = 'LIAISON_ELEM'
-    mo8bla = '        '
-    k19b = ' '
 !
     call getfac(motfac, nliai)
     if (nliai .eq. 0) goto 999
@@ -93,11 +92,12 @@ subroutine caliel(fonrez, chargz)
 ! --- CREATION SUR LA VOLATILE DU NUMEDDL ASSOCIE AU LIGREL
 ! --- DU MODELE
 !     -----------------------------------------------------
-    call wkvect('&&CALIEL.LIGRMO', 'V V K24', 1, ilmoch)
-    zk24(ilmoch) = ligrmo
+    nb_ligr = 1
+    call wkvect('&&CALIEL.LIGRMO', 'V V K24', 1, vk24 = list_ligr)
+    list_ligr(1) = ligrmo
+
     numddl = '&&CALIEL.NUMED'
-    call nueffe('&&CALIEL.LIGRMO', 'VV', numddl, 'SANS', mo8bla,&
-                k19b, ibid)
+    call nueffe(nb_ligr, list_ligr, 'VV', numddl, 'SANS')
 !
     do iocc = 1, nliai
         call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)

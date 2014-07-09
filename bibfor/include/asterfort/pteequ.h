@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pteequ(prchno, basz, neq, gds, ncmp,&
+    subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field,&
                       corr2)
-        integer :: ncmp
-        character(len=19) :: prchno
-        character(len=*) :: basz
-        integer :: neq
-        integer :: gds
-        integer :: corr2(ncmp)
+        character(len=19), intent(in) :: prof_chno
+        integer, intent(in) :: neq
+        integer, intent(in) :: igds
+        integer, intent(in) :: nb_cmp_field
+        integer, intent(in) :: corr2(nb_cmp_field)
+        character(len=1), intent(in) :: base
     end subroutine pteequ
 end interface

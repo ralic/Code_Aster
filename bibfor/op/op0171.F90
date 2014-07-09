@@ -80,7 +80,7 @@ subroutine op0171()
     character(len=1) :: ci1, ci2, creas, ce1, ce2
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd, nomcvg
-    character(len=19) :: infcha, solveu, maprec, lischa
+    character(len=19) :: list_load, solveu, maprec, lischa
     character(len=24) :: modele, mate, carele, fomult, charge, infoch
     character(len=24) :: nomch, vtemp, vtempm, vtempp, vec2nd
     character(len=24) :: result, ligrmo, tempev, tempin
@@ -97,7 +97,7 @@ subroutine op0171()
 !
 ! ----------------------------------------------------------------------
 !
-    data infcha                 /'&&OP0171.INFCHA'/
+    data list_load                 /'&&OP0171.INFCHA'/
     data solveu                 /'&&OP0171.SOLVEUR'/
     data maprec                 /'&&OP0171.MAPREC'/
     data result  /' '/
@@ -140,9 +140,9 @@ subroutine op0171()
 ! --- DONNEES
 !
     call ntdoth(modele, mate, carele, fomult, matcst,&
-                coecst, infcha, k8bid, ibid)
-    charge = infcha//'.LCHA'
-    infoch = infcha//'.INFC'
+                coecst, list_load, k8bid, ibid)
+    charge = list_load//'.LCHA'
+    infoch = list_load//'.INFC'
 !
 ! --- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
 !
@@ -178,8 +178,8 @@ subroutine op0171()
     noojb='12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
     numedd=noojb(1:14)
-    call numero(' ', modele, infcha, solveu, 'VG',&
-                numedd)
+    call numero(numedd, solveu, 'VG',&
+                modelz = modele , list_loadz = list_load)
 !
     call vtcreb(vtemp, numedd, 'V', 'R', neq)
 !
@@ -244,11 +244,11 @@ subroutine op0171()
     reasvt = .true.
     reasmt = .true.
     write (ifm,fmt)
-    write (ifm,10002)
-    10002 format ('*',1x,'ITERATION',1x,'*',1x,'CRIT_TEMPER',1x,'*',1x,&
-     &     'VALE_TEST_TEMPER',1x,'*',1x,'CRIT_ENTHAL',1x,'*',1x,&
-     &     'VALE_TEST_ENTHAL',1x,'*')
-    10001 format ('*',3x,i4,a1,7x,4(1pd11.3,a1,3x),3x,'*')
+    write (ifm,102)
+102 format ('*',1x,'ITERATION',1x,'*',1x,'CRIT_TEMPER',1x,'*',1x,&
+           'VALE_TEST_TEMPER',1x,'*',1x,'CRIT_ENTHAL',1x,'*',1x,&
+          'VALE_TEST_ENTHAL',1x,'*')
+101 format ('*',3x,i4,a1,7x,4(1pd11.3,a1,3x),3x,'*')
 !
     write (ifm,fmt)
 !
@@ -256,13 +256,13 @@ subroutine op0171()
 !        ITERATIONS DU PROBLEME DE TRANSPORT EN THERMIQUE N_LINEAIRE
 ! ======================================================================
 !
-2000 continue
+200 continue
     call uttcpu('CPU.OP0171.2', 'DEBUT', ' ')
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 !
     call nttcmv(modele, mate, carele, fomult, charge,&
-                infcha, infoch, numedd, solveu, time,&
+                list_load, infoch, numedd, solveu, time,&
                 chlapm, tpsthe, tpsnp1, reasvt, reasmt,&
                 creas, vtemp, vtempm, vec2nd, matass,&
                 maprec, cndirp, cnchci, cnchtp)
@@ -300,11 +300,11 @@ subroutine op0171()
             call jeveuo(chlapp(1:19)//'.CELV', 'L', vr=lagpp)
             testr = 0.d0
             testn = 0.d0
-            do 200 k = 1, lglap
+            do k = 1, lglap
                 testr = testr + (lagpp(k)-lagpm(k))**2
                 testn = testn + lagpp(k)**2
                 lagpm(k) = lagpp(k)
-200         continue
+            end do
             testr = sqrt(testr/testn)
 !
         endif
@@ -312,7 +312,7 @@ subroutine op0171()
 ! - EVALUATION DE LA CONVERGENCE ET AFFICHAGE
 !
         iifm = iunifi ('MESSAGE')
-        write(iifm,10001) iterl,ce1,epsr,ce2,testi,ce1,epsl,ce2,testr
+        write(iifm,101) iterl,ce1,epsr,ce2,testi,ce1,epsl,ce2,testr
         call uttcpu('CPU.OP0171.2', 'FIN', ' ')
         call uttcpr('CPU.OP0171.2', 4, tps2)
 !
@@ -334,7 +334,7 @@ subroutine op0171()
 !
 ! - ON VA REFAIRE UNE ITERATION
 !
-        goto 2000
+        goto 200
 !
 ! *** ON S'ARRETE... (CONVERGENCE OU NOMBRE MAX D'ITERATIONS ATTEINT)
 !
@@ -354,20 +354,20 @@ subroutine op0171()
     call getfac('EXCIT', nchar)
     call jedetr(lischa//'.LCHA')
     call wkvect(lischa//'.LCHA', 'G V K24', nchar, jlcha)
-    call jeveuo(infcha//'.LCHA', 'L', vk24=lcha)
+    call jeveuo(list_load//'.LCHA', 'L', vk24=lcha)
     call jedetr(lischa//'.FCHA')
     call wkvect(lischa//'.FCHA', 'G V K24', nchar, jfcha)
     call jeveuo(fomult, 'L', ialifc)
-    do 51 i = 1, nchar
+    do i = 1, nchar
         zk24(jlcha+i-1)=lcha(i)
         zk24(jfcha+i-1)=zk24(ialifc+i-1)
- 51 continue
+    end do
     call jedetr(lischa//'.INFC')
     call wkvect(lischa//'.INFC', 'G V IS', 2*nchar+1, jinfc)
-    call jeveuo(infcha//'.INFC', 'L', vi=infc)
-    do 52 i = 1, 2*nchar+1
+    call jeveuo(list_load//'.INFC', 'L', vi=infc)
+    do i = 1, 2*nchar+1
         zi(jinfc+i-1)=infc(i)
- 52 continue
+    end do
 !
     call uttcpu('CPU.OP0171.1', 'FIN', ' ')
     call uttcpr('CPU.OP0171.1', 4, tps1)

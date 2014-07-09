@@ -1,5 +1,27 @@
-subroutine nulili(lligr, lili, base, molocz, nomgds,&
-                  igds, mailla, nec, ncmp, nlili)
+subroutine nulili(nb_ligr, list_ligr, lili, base , gran_name,&
+                  igds   , mesh     , nec , nlili, modelocz)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/typele.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,55 +39,37 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jecreo.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jeveut.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbcmp.h"
-#include "asterfort/nbec.h"
-#include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
-    integer :: igds, nec, nlili, nbelm,   jligr2, k
-    character(len=*) :: lligr
-    character(len=24) :: lili
-    character(len=*) :: molocz
-    character(len=8) :: mailla, moloc
-    character(len=1) :: base
-!----------------------------------------------------------------------
-! ---- OBJET : CREATION DU CHAMP .LILI D'UNE S.D. NUME_DDL
-!              ET DES OJBETS TEMPORAIRES : .ADNE ET .ADLI
-!----------------------------------------------------------------------
-! IN  K24 LLIGR  : LISTE DES NOMS DES LIGRELS
-!                  SUPPORTANT LA NUMEROTATION (VECTEUR DE K24)
-! IN/JXOUT  K24 LILI   : NOM DE L OBJET LILI QUI SERA CREE
-! IN  K1   BASE   : ' G ' POUR CREER LILI SUR BASE GLOBALE
-!                   ' V ' POUR CREER LILI SUR BASE VOLATILE
-! IN  K19 PREF   : PREFIXE DES OBJETS TEMPORAIRES CREES
-! IN  K8  MOLOCZ : NOM DU MODE_LOCAL PRECISANT LES DDLS A NUMEROTER
-!                   SI ' ' MOLOCZ EST DETERMINE GRACE AU PHENOMENE
-! OUT K8  NOMGDS    : NOM DE LA GRANDEUR (SIMPLE) A NUMEROTER
-! OUT I    IGDS     : NUMERO DE LA GRANDEUR  NOMGDS
-! OUT K8   MAILLA : NOM DU MAILLAGE
-! OUT I    NEC    : NBRE D ENTIERS CODES POUR IGDS
-! OUT I    NCMP   : NBRE DE CMP POUR IGDS
-! OUT I    NLILI  : DIMENSION DE L OBJET CREE LILI
+    integer, intent(in) :: nb_ligr
+    character(len=24), pointer, intent(in) :: list_ligr(:)
+    character(len=24), intent(in):: lili
+    character(len=1), intent(in):: base
+    character(len=8), intent(out) :: gran_name
+    integer, intent(out) :: igds
+    character(len=8), intent(out) :: mesh
+    integer, intent(out) :: nec
+    integer, intent(out) :: nlili
+    character(len=*), optional, intent(in) :: modelocz
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Factor
+!
+! Numbering - Create LILI objects
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  list_ligr      : pointer to list of LIGREL
+! In  nb_ligr        : number of LIGREL in list
+! In  lili           : name of LILI object to create
+! In  base           : JEVEUX base to create LILI object
+! Out gran_name      : name of GRANDEUR to number
+! Out igds           : index of GRANDEUR to number
+! Out mesh           : name of mesh
+! Out nec            : number of coding integers for GRANDEUR
+! Out nlili          : size of LILI object
+! In  modelocz       : local mode
+!
 !----------------------------------------------------------------------
 ! ATTENTION : NE PAS FAIRE JEMARQ/JEDEMA CAR CETTE ROUTINE
 !             RECOPIE DES ADRESSES JEVEUX DANS .ADNE ET .ADLI
@@ -90,159 +94,137 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !     ADLI (3*(ILI-1)+2) = ADRESSE DE L'OBJET LILI(ILI).LIEL
 !     ADLI (3*(ILI-1)+3) = ADRESSE DU VECTEUR DES LONG. CUMULEES DE
 !                            LILI(ILI).LIEL
-!-----------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    character(len=8) :: nomgds
+! --------------------------------------------------------------------------------------------------
 !
-!     VARIABLES LOCALES
-!-----------------------
-    character(len=8) :: k8, exiele
-    character(len=16) :: pheno, phe, nomte
-    character(len=19) :: prefix, ligrel, nomlig, k19, valk(6)
-    character(len=24) :: nomli, lligr2
-    integer :: iad, ifm, igr
-    integer :: illigr, iligr, iret
-    integer :: nbgr, nbsup, ncmp, niv, nligr, jmoloc, imode, ite
+    character(len=8) :: new_mesh, exiele
+    character(len=16) :: phenom, new_phenom, nomte
+    character(len=19) :: prefix
+    character(len=24) :: ligr_name
+    integer :: iad, i_grel, nb_elem
+    integer :: i_list_ligr, iret
+    integer :: nbgr, nbsup, jmoloc, imode, i_type_elem
+    character(len=8) :: modeloc
     integer, pointer :: adli(:) => null()
     integer, pointer :: adne(:) => null()
 !
-!----------------------------------------------------------------------
-    call infniv(ifm, niv)
-    moloc=molocz
+! --------------------------------------------------------------------------------------------------
 !
-!     IFM = IUNIFI('MESSAGE')
+!    call jemarq() FORBIDDEN !
+!
     prefix = lili(1:14)
+    nlili  = nb_ligr+1
+    ASSERT(nlili.gt.1)
 !
-!---- NBRE DE LIGRELS REFERENCES = DIM(LLIGR)
+! - Local mode
 !
-    call jeveuo(lligr, 'L', illigr)
-    call jelira(lligr, 'LONUTI', nligr)
-!
-!
-    lligr2='&&NULILI.LLIGR2'
-    call wkvect(lligr2, 'V V K24', nligr, jligr2)
-    do k = 1, nligr
-        zk24(jligr2-1+k) =zk24(illigr-1+k)
-    end do
-    call jeecra(lligr2, 'LONUTI', nligr)
-    nlili = nligr+1
-    if (nlili .eq. 1) then
-        call utmess('F', 'ASSEMBLA_29')
+    modeloc = ' '
+    if (present(modelocz)) then
+        modeloc = modelocz
     endif
 !
-!---- CREATION DU REPERTOIRE .LILI DE TOUS LES NOMS DE LIGRELS /=
+! - Create main LILI repertory object
 !
-    call jecreo(lili, base//' N  K24 ')
+    call jecreo(lili, base//' N  K24')
     call jeecra(lili, 'NOMMAX', nlili)
-!---- LILI(1)= '&MAILLA'
     call jecroc(jexnom(lili, '&MAILLA'))
 !
+! - Creation of temporary objects ADNE et ADLI
 !
-!---- CREATION DES OBJETS .ADNE ET .ADLI SUR 'V'
-    call jecreo(prefix//'.ADNE', ' V V I')
+    call jecreo(prefix//'.ADNE', 'V V I')
     call jeecra(prefix//'.ADNE', 'LONMAX', 3*nlili)
     call jeveuo(prefix//'.ADNE', 'E', vi=adne)
-    call jecreo(prefix//'.ADLI', ' V V I')
+    call jecreo(prefix//'.ADLI', 'V V I')
     call jeecra(prefix//'.ADLI', 'LONMAX', 3*nlili)
     call jeveuo(prefix//'.ADLI', 'E', vi=adli)
 !
-!---- CHARGEMENT DE LILI, ADNE, ADLI
+! - Save temporary objects ADNE et ADLI
 !
-    do iligr = 1, nligr
-        nomli = zk24(jligr2+iligr-1)
+    do i_list_ligr = 1, nb_ligr
+        
+        ligr_name = list_ligr(i_list_ligr)
 !
-!---- VERIFICATION DE L'UNICITE DU PHENOMENE
-        call dismoi('PHENOMENE', nomli, 'LIGREL', repk=phe)
-        if (iligr .eq. 1) then
-            pheno = phe
-        else if (pheno.ne.phe) then
-            call utmess('F', 'ASSEMBLA_30')
-        endif
-        call jecroc(jexnom(lili, nomli))
+! ----- Only one phenomenon
 !
-!---- RECUPERATION DU NOM DU MAILLAGE ET VERIFICATION DE SON UNICITE
-        call jeveut(nomli(1:19)//'.LGRF', 'L', iad)
-        k8 = zk8(iad)
-        k19 = nomli
-        if (iligr .eq. 1) then
-            mailla(1:8) = k8
-            nomlig = k19
-        else if (mailla(1:8).ne.k8) then
-            valk(1)=mailla
-            valk(2)=k8
-            valk(3)=nomlig
-            valk(4)=k19
-            valk(5)=nomlig(1:8)
-            valk(6)=k19(1:8)
-            call utmess('F', 'ASSEMBLA_66', nk=6, valk=valk)
-        endif
-!
-!
-!        -- SI LE LIGREL NE CONTIENT PAS D'ELEMENTS ON VA A FIN BCLE:
-        call dismoi('EXI_ELEM', nomli, 'LIGREL', repk=exiele)
-        if (exiele(1:3) .eq. 'NON') goto 10
-!
-        call jeexin(nomli(1:19)//'.NEMA', iret)
-        if (iret .ne. 0) then
-!
-!---- ADNE(3*(ILIGR)+1)=NBRE DE MAILLES SUP DU LIGREL NOMLI
-!
-            call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup)
-            adne(1+3* (iligr)) = nbsup
-            call jeveut(nomli(1:19)//'.NEMA', 'L', iad)
-            adne(1+3* (iligr)+1) = iad
-            call jeveut(jexatr(nomli(1:19)//'.NEMA', 'LONCUM'), 'L', iad)
-            adne(1+3* (iligr)+2) = iad
+        call dismoi('PHENOMENE', ligr_name, 'LIGREL', repk=new_phenom)
+        if (i_list_ligr .eq. 1) then
+            phenom = new_phenom
         else
-            adne(1+3* (iligr)) = 0
-            adne(1+3* (iligr)+1) = 2**30
-            adne(1+3* (iligr)+2) = 2**30
+            ASSERT(phenom.eq.new_phenom)
         endif
 !
-!---- ADLI(3*(ILIGR)+1)=NBRE DE MAILLES DU LIGREL NOMLI
+! ----- Only one mesh
 !
-        call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr)
-        adli(1+3* (iligr)) = nbgr
-        call jeveut(nomli(1:19)//'.LIEL', 'L', iad)
-        adli(1+3* (iligr)+1) = iad
-        call jeveut(jexatr(nomli(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
-        adli(1+3* (iligr)+2) = iad
- 10     continue
+        call jeveut(ligr_name(1:19)//'.LGRF', 'L', iad)
+        new_mesh = zk8(iad)
+        if (i_list_ligr .eq. 1) then
+            mesh = new_mesh 
+        else
+            ASSERT(mesh.eq.new_mesh)
+        endif
+!
+! ----- Create object in collection
+!
+        call jecroc(jexnom(lili, ligr_name))
+!
+! ----- Set ADNE/ADLI objects
+!
+        call dismoi('EXI_ELEM', ligr_name, 'LIGREL', repk=exiele)
+        if (exiele(1:3) .ne. 'NON') then
+            call jeexin(ligr_name(1:19)//'.NEMA', iret)
+            if (iret .ne. 0) then
+!
+!---- ADNE(3*(i_list_ligr)+1)=NBRE DE MAILLES SUP DU LIGREL NOMLI
+!
+                call jelira(ligr_name(1:19)//'.NEMA', 'NUTIOC', nbsup)
+                adne(1+3*(i_list_ligr)) = nbsup
+                call jeveut(ligr_name(1:19)//'.NEMA', 'L', iad)
+                adne(1+3*(i_list_ligr)+1) = iad
+                call jeveut(jexatr(ligr_name(1:19)//'.NEMA', 'LONCUM'), 'L', iad)
+                adne(1+3*(i_list_ligr)+2) = iad
+            else
+                adne(1+3* (i_list_ligr)) = 0
+                adne(1+3* (i_list_ligr)+1) = 2**30
+                adne(1+3* (i_list_ligr)+2) = 2**30
+            endif
+!
+!---- ADLI(3*(i_list_ligr)+1)=NBRE DE MAILLES DU LIGREL NOMLI
+!
+            call jelira(ligr_name(1:19)//'.LIEL', 'NUTIOC', nbgr)
+            adli(1+3* (i_list_ligr)) = nbgr
+            call jeveut(ligr_name(1:19)//'.LIEL', 'L', iad)
+            adli(1+3* (i_list_ligr)+1) = iad
+            call jeveut(jexatr(ligr_name(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
+            adli(1+3* (i_list_ligr)+2) = iad
+        endif
     end do
+    call dismoi('NB_MA_MAILLA', mesh(1:8), 'MAILLAGE', repi=nb_elem)
+    adne(1) = nb_elem
 !
+! - Information about GRANDEUR
 !
-    call dismoi('NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', repi=nbelm)
-    adne(1) = nbelm
-!
-!
-!---- CALCUL DE : NOMGDS, IGDS, NEC , NCMP
-!------------------------------------------
-    if (moloc .eq. ' ') then
-        call dismoi('NOM_GD', pheno, 'PHENOMENE', repk=nomgds)
+    if (modeloc .eq. ' ') then
+        call dismoi('NOM_GD', phenom, 'PHENOMENE', repk=gran_name)
     else
-        ligrel = zk24(jligr2-1+1)
-        do igr = 1, nbgrel(ligrel)
-            ite = typele(ligrel,igr)
-            call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
-            call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//moloc), imode)
+        ligr_name = list_ligr(1)(1:19)
+        do i_grel = 1, nbgrel(ligr_name)
+            i_type_elem = typele(ligr_name,i_grel)
+            call jenuno(jexnum('&CATA.TE.NOMTE', i_type_elem), nomte)
+            call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//modeloc), imode)
             if (imode .gt. 0) then
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imode), 'L', jmoloc)
-                call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), nomgds)
+                call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), gran_name)
                 goto 30
             endif
         end do
         ASSERT(.false.)
  30     continue
     endif
-    call jenonu(jexnom('&CATA.GD.NOMGD', nomgds), igds)
+    call jenonu(jexnom('&CATA.GD.NOMGD', gran_name), igds)
     ASSERT(igds.ne.0)
 !
-    nec = nbec(igds)
-    ncmp = nbcmp(igds)
+    nec  = nbec(igds)
 !
-!
-!
-    call jedetr(lligr2)
+!    call jedema() FORBIDDEN !
 !
 end subroutine

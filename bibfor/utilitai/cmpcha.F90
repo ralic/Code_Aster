@@ -66,8 +66,8 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: ifm, niv, nbgr, jceld, nec, jcmpgd, jnocmp
     integer :: jcorr1, igr, imolo, jmolo, gd, nbpt, ipt, k, iadg, icmp
-    integer :: jdesc, long, jprno, jnueq, nbno, ino, ncmpp, jcorr2
-    integer :: ngrmx, nbedit, igd, ient, debgd, dg(100), ior, kpt, kcmp
+    integer :: jdesc, long, jprno, nbno, ino, ncmpp, jcorr2
+    integer :: ngrmx, nbedit, igd, ient, debgd, dg(50), ior, kpt, kcmp
     aster_logical :: diff
     character(len=8) :: nomgd, ma
     character(len=16) :: typsd
@@ -100,8 +100,8 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !           UN DESCRIPTEUR_GRANDEUR (DG) "ENVELOPPE" DE TOUS LES
 !           POINTS DU CHAMP.
 !     ----------------------------------------------------------------
-    ASSERT(nec.le.100)
-    do k = 1, 100
+    ASSERT(nec.le.50)
+    do k = 1, 50
         dg(k)=0
     end do
 !
@@ -127,7 +127,6 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
         else
             call dismoi('PROF_CHNO', ch19, 'CHAM_NO', repk=profcn)
             call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
-            call jeveuo(profcn//'.NUEQ', 'L', jnueq)
             do ino = 1, nbno
                 ncmpp=zi(jprno-1+(ino-1)*(nec+2)+2)
                 if (ncmpp .ne. 0) then

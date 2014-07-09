@@ -63,8 +63,9 @@ subroutine numer3(modele, lischa, solveu, nu)
     call copisd('NUME_DDL', 'V', nu, nuav)
     call detrsd('NUME_DDL', nu)
 !
-    call numero(' ', modele, lischa, solveu, base,&
-                nu)
+    call numero(nu, solveu, base,&
+                modelz = modele , list_loadz = lischa)
+
 !
     ob1=nu2//'.NUME.DEEQ'
     ob2=nuav//'.NUME.DEEQ'

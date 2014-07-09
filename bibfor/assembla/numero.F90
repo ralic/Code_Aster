@@ -1,5 +1,18 @@
-subroutine numero(nuposs, modelz, infchz, solveu, base,&
-                  nu)
+subroutine numero(nume_ddlz    , solverz     , base,&
+                  old_nume_ddlz, modelocz    ,&
+                  modelz       , list_loadz  ,&
+                  nb_matr_elem , list_matr_elem)
+!
+implicit none
+!
+#include "asterfort/as_deallocate.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/numer2.h"
+#include "asterfort/numcch.h"
+#include "asterfort/numoch.h"
+#include "asterfort/uttcpu.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,119 +29,79 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ----------------------------------------------------------------------
-! IN  K14  NUPOSS  : NOM D'UN NUME_DDL CANDIDAT (OU ' ')
-!                    SI NUPOSS != ' ', ON  REGARDE SI LE PROF_CHNO
-!                    DE NUPOSS EST CONVENABLE.
-!                    (POUR EVITER DE CREER SYTEMATIQUEMENT 1 PROF_CHNO)
-! IN  K8   MODELE  : NOM DU MODELE
-! IN  K19  INFCHA  : NOM DE L'OBJET DE TYPE INFCHA
-! IN  K19  SOLVEU  : NOM DE L'OBJET DE TYPE SOLVEUR
-! IN  K2   BASE    : BASE(1:1) : BASE POUR CREER LE NUME_DDL
-!                    (SAUF LE PROF_CHNO)
-!                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
-! VAR/JXOUT K14 NU : NOM DU NUME_DDL.
-!                    SI NUPOSS !=' ', NU PEUT ETRE MODIFIE (NU=NUPOSS)
-!----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
-! CORPS DU PROGRAMME
-    implicit none
 !
-! DECLARATION PARAMETRES D'APPELS
-#include "jeveux.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exlim1.h"
-#include "asterfort/gcncon.h"
-#include "asterfort/gnomsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/numer2.h"
-#include "asterfort/utimsd.h"
-#include "asterfort/utmess.h"
-#include "asterfort/uttcpr.h"
-#include "asterfort/uttcpu.h"
-#include "asterfort/wkvect.h"
+    character(len=*), intent(in) :: solverz
+    character(len=*), intent(inout) :: nume_ddlz
+    character(len=2), intent(in) :: base
+    character(len=*), optional, intent(in) :: modelz
+    character(len=*), optional, intent(in) :: list_loadz
+    character(len=24), optional, intent(in) :: list_matr_elem(*)
+    integer, optional, intent(in) :: nb_matr_elem
+    character(len=*), optional, intent(in) :: old_nume_ddlz
+    character(len=*), optional, intent(in) :: modelocz
 !
-    character(len=*) :: modelz, solveu, infchz
-    character(len=*) :: nu, nuposs
-    character(len=2) :: base
+! --------------------------------------------------------------------------------------------------
 !
+! Factor
 !
-! DECLARATION VARIABLES LOCALES
-    integer :: nchar, nblig, iret, jchar, jlligr, k
-    integer :: ifm, niv
-    integer :: ier
-    integer :: nequag
-    character(len=8) :: nomcha, modele
-    character(len=19) :: infcha
-    character(len=24) :: lcharg, lligr, nomlig
-    character(len=8), pointer :: type(:) => null()
+! Numbering
 !
-! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
-    call infniv(ifm, niv)
-!-----------------------------------------------------------------------
-! CONSTRUCTION D'UN OBJET JEVEUX CONTENANT LA LISTE DES CHARGES ET
-! LE NOM DU MODELE DE CALCUL
-!-----------------------------------------------------------------------
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
+!
+! IO  nume_ddl       : name of nume_ddl object
+! In  solver         : name of solver datastructure
+! In  base           : JEVEUX base to create objects
+!                      base(1:1) => PROF_CHNO objects
+!                      base(2:2) => NUME_DDL objects
+! In  old_nume_ddl   : name of previous nume_ddl object
+! In  modelocz       : local mode for GRANDEUR numbering
+! In  model          : name of model
+! In  list_load      : list of loads
+! In  list_matr_elem : list of elementary matrixes
+! In  nb_matr_elem   : number of elementary matrixes
+!
+! If old_nume_ddl is present
+!   -> try to know if PROF_CHNO in old_nume_ddl can be reuse
+!      In this case nume_ddl = old_nume_ddl
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_ligr
+    character(len=24) :: modeloc, old_nume_ddl
+    character(len=24), pointer :: list_ligr(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.2', 'DEBUT', ' ')
 !
+! - Local mode
 !
-    infcha = infchz
-    modele = modelz
-    lcharg = infcha//'.LCHA'
-    nchar = 0
-    call jeexin(lcharg, iret)
-    if (iret .ne. 0) then
-        call jelira(lcharg, 'LONMAX', nchar)
-        call jeveuo(lcharg, 'L', jchar)
+    modeloc = ' '
+    if (present(modelocz)) then
+        modeloc = modelocz
     endif
-    lligr = '&&NUMERO.LISTE_LIGREL'
-!
-!     LISTE
-    call wkvect(lligr, 'V V K24', nchar+1, jlligr)
-    nblig = 0
-!     ON INSERE LE LIGREL DE MODELE
-    call jeexin(modele//'.MODELE    .NBNO', iret)
-    if (iret .gt. 0) then
-        zk24(jlligr) = modele(1:8)//'.MODELE'
-        nblig = nblig + 1
+    old_nume_ddl = ' '
+    if (present(old_nume_ddlz)) then
+        old_nume_ddl = old_nume_ddlz
     endif
-!     PUIS LES CHARGES A MAILLES ET/OU A NOEUDS TARDIFS
-    do k = 1, nchar
-        nomcha = zk24(jchar+k-1)(1:8)
-        call jeexin(nomcha(1:8)//'.TYPE', ier)
-        if (ier .gt. 0) then
-            call jeveuo(nomcha(1:8)//'.TYPE', 'L', vk8=type)
-            nomlig = nomcha(1:8)//'.CH'//type(1) (1:2)// '.LIGRE.LIEL'
-            call jeexin(nomlig, iret)
-        else
-            iret=0
-        endif
-        if (iret .gt. 0) then
-            zk24(jlligr+nblig) = nomlig(1:19)
-            nblig = nblig + 1
-        endif
-    end do
 !
-    call jeecra(lligr, 'LONUTI', nblig)
+! - Create list of LIGREL for numbering
 !
-    call numer2(nuposs, nblig, zk24(jlligr), ' ', solveu,&
-                base, nu, nequag)
+    if (present(list_matr_elem)) then
+        call numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
+    else
+        call numcch(modelz, list_loadz, list_ligr, nb_ligr)
+    endif
 !
-    call jedetr(lligr)
+! - Create numbering
 !
+    call numer2(nb_ligr     , list_ligr, solverz, base, nume_ddlz,&
+                old_nume_ddl, modeloc)
 !
+    AS_DEALLOCATE(vk24 = list_ligr)
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.2', 'FIN', ' ')
-    call jedema()
+!
 end subroutine

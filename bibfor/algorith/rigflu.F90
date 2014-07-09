@@ -47,10 +47,10 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
     real(kind=8) :: tps(6)
     character(len=14) :: nu
     character(len=8) :: modele, nomcmp(6), char, ma, mel
-    character(len=24) :: time, modl24, nu24, fomult
-    character(len=19) :: solveu, infcha, maprec
+    character(len=24) :: time, fomult
+    character(len=19) :: solveu, list_load, maprec
     data maprec   /'&&OP0152.MAPREC'/
-    data infcha   /'&&OP0152.INFCHA'/
+    data list_load   /'&&OP0152.INFCHA'/
     data fomult   /'&&OP0152.LIFCTS'/
 !   ------------------------------------------------------------------
 !
@@ -68,23 +68,22 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
                 time, mel, nh, 'V')
 !
     call getvid(' ', 'CHARGE', scal=char, nbret=nchar)
-    call wkvect(infcha//'.LCHA', 'V V K24', nchar, ialich)
-    call wkvect(infcha//'.INFC', 'V V IS', 4*nchar+5, jinf)
+    call wkvect(list_load//'.LCHA', 'V V K24', nchar, ialich)
+    call wkvect(list_load//'.INFC', 'V V IS', 4*nchar+5, jinf)
     zi(jinf) = nchar
     zk24(ialich) = char
     call wkvect(fomult, 'V V K24', nchar, ialifc)
 !
 !----------------  NUMEROTATION
 !
-    modl24 = modele
-    nu24 = nu
-    call numero(' ', modl24, infcha, solveu, 'VV',&
-                nu24)
+    call numero(nu, solveu, 'VV',&
+                modelz = modele , list_loadz = list_load)
+
 !
 !---------------- ASSEMBLAGE
 !
     call asmatr(1, mel, ' ', nu, solveu,&
-                infcha, 'ZERO', 'V', 1, ma)
+                list_load, 'ZERO', 'V', 1, ma)
 !
 !------- FACTORISATION LDLT DE LA MATRICE DE RAIDEUR
 !

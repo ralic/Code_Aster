@@ -1,19 +1,12 @@
-subroutine numoch(tlimat, nbmat, base, lmoch)
-    implicit none
-#include "jeveux.h"
+subroutine numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
+!
+implicit none
+!
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
-!
-    character(len=24) :: tlimat(*)
-    integer :: nbmat
-    character(len=1) :: base
-    character(len=*) :: lmoch
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,92 +25,99 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! ----------------------------------------------------------------------
-! --- DESCRIPTION DES PARAMETRES
-! IN  K24  TLIMAT : LISTE DES MATELE DEFINISSANT LA NUMEROTATION
-! IN  I    NBMAT  : NOMBRE DE MATELE PASSES DANS TLIMAT
-! IN  K1   BASE   : BASE SUR LAQUELLE ON CREE LMOCH
-! OUT K*24 LMOCH  : L'OBJET DE NOM LMOCH EST CREE ET REMPLI, IL CONTIENT
-!                  CREATION : BASE//' V K24'
-!                  CONTENU  : LA LISTE DES NOMS DES LIGRELS DE MODELE OU
-!                  CHARGE SUPPORTANT LA LISTE DE MATR_ELEM TLIMAT, SON
-!                  ARGUMENT 'LONUTI' EST DIMENSIONNE EXACTEMENT A SON
-!                  NOMBRE D'ELEMENTS
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!----------------------------------------------------------------------
-!     VARIABLES LOCALES
-!----------------------------------------------------------------------
-    character(len=19) :: matel, nomli, resu
-!----------------------------------------------------------------------
-!                DEBUT DES INSTRUCTIONS
-!----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer ::  ideja, idiml, idlres, ili
-    integer :: ilmoch, imat, iresu, iret, n1, nbresu, nlmoch
-    character(len=24), pointer :: noli(:) => null()
+    character(len=24), intent(in) :: list_matr_elem(*)
+    integer, intent(in) :: nb_matr_elem
+    character(len=24), pointer, intent(out) :: list_ligr(:)
+    integer, intent(out) :: nb_ligr
 !
-!-----------------------------------------------------------------------
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
 !
-!---- CALCUL DU NBRE MAX DE MODELES ET DE CHARGES
+! Factor
 !
-    idiml = 2
-    do imat = 1, nbmat
-        matel = tlimat(imat)
-        call jeexin(matel//'.RELR', iret)
-        if (iret .eq. 0) goto 100
+! Create list of LIGREL for numbering - For matr_elem
 !
-        call jeveuo(matel//'.RELR', 'L', idlres)
-        call jelira(matel//'.RELR', 'LONUTI', nbresu)
-        idiml = idiml + nbresu
-100     continue
+! --------------------------------------------------------------------------------------------------
+!
+! In  list_matr_elem : list of elementary matrixes
+! In  nb_matr_elem   : number of elementary matrixes
+! In  list_ligr      : pointer to list of LIGREL
+! In  nb_ligr        : number of LIGREL in list
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=19) :: matr_elem, ligr_name, resu_elem
+    integer :: nb_list_ligr, i_list_ligr
+    integer :: i_matr_elem, i_resu_elem, iret, nb_subs, nb_resu_elem
+    aster_logical :: l_found
+    character(len=24), pointer :: resu_elem_noli(:) => null()
+    character(len=24), pointer :: list_resu_elem(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
+    nb_ligr      = 0
+    nb_list_ligr = 2
+    do i_matr_elem = 1, nb_matr_elem
+        matr_elem = list_matr_elem(i_matr_elem)(1:19)
+        call jeexin(matr_elem//'.RELR', iret)
+        if (iret .ne. 0) then
+            call jelira(matr_elem//'.RELR', 'LONUTI', nb_resu_elem)
+            nb_list_ligr = nb_list_ligr + nb_resu_elem
+        endif
     end do
 !
-!---- CREATION DU VECTEUR LMOCH
+! - Create object
 !
-    call wkvect(lmoch, base//' V K24', idiml, ilmoch)
-    nlmoch = 0
-    do imat = 1, nbmat
-        matel = tlimat(imat)
-        call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=n1)
+    AS_ALLOCATE(vk24 = list_ligr, size = nb_list_ligr)
 !
-        if (n1 .gt. 0) then
-            call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=nomli)
-            nomli=nomli(1:8)//'.MODELE'
-            ideja =0
-            do ili = 1, nlmoch
-                if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1
+! - Set ligrel in object
+!
+    nb_ligr = 0
+    do i_matr_elem = 1, nb_matr_elem
+        matr_elem = list_matr_elem(i_matr_elem)(1:19)
+!
+! ----- Substructuration matrix
+!
+        call dismoi('NB_SS_ACTI', matr_elem, 'MATR_ELEM', repi=nb_subs)
+        if (nb_subs .gt. 0) then
+            call dismoi('NOM_MODELE', matr_elem, 'MATR_ELEM', repk=ligr_name)
+            ligr_name = ligr_name(1:8)//'.MODELE'
+            l_found   = .false.
+            do i_list_ligr = 1, nb_ligr
+                if (ligr_name .eq. list_ligr(i_list_ligr)) then
+                    l_found   = .true.
+                endif
             end do
-            if (ideja .eq. 0) then
-                nlmoch = nlmoch + 1
-                zk24(ilmoch-1+nlmoch) = nomli
+            if (.not.l_found) then
+                nb_ligr = nb_ligr + 1
+                list_ligr(nb_ligr) = ligr_name
             endif
         endif
 !
-        call jeexin(matel//'.RELR', iret)
-        if (iret .eq. 0) goto 110
+! ----- Standard matrix
 !
-        call jeveuo(matel//'.RELR', 'L', idlres)
-        call jelira(matel//'.RELR', 'LONUTI', nbresu)
-        do iresu = 1, nbresu
-            resu = zk24(idlres+iresu-1)
-            call jeexin(resu//'.NOLI', iret)
-            if (iret .eq. 0) goto 120
-            call jeveuo(resu//'.NOLI', 'L', vk24=noli)
-            nomli = noli(1)
-            ideja =0
-            do ili = 1, nlmoch
-                if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1
+        call jeexin(matr_elem//'.RELR', iret)
+        if (iret .ne. 0) then
+            call jeveuo(matr_elem//'.RELR', 'L', vk24 = list_resu_elem)
+            call jelira(matr_elem//'.RELR', 'LONUTI', nb_resu_elem)
+            do i_resu_elem = 1, nb_resu_elem
+                resu_elem = list_resu_elem(i_resu_elem)(1:19)
+                call jeexin(resu_elem//'.NOLI', iret)
+                if (iret .ne. 0) then
+                    call jeveuo(resu_elem//'.NOLI', 'L', vk24 = resu_elem_noli)
+                    ligr_name = resu_elem_noli(1)(1:19)
+                    l_found   = .false.
+                    do i_list_ligr = 1, nb_ligr
+                        if (ligr_name .eq. list_ligr(i_list_ligr)) then
+                            l_found   = .true.
+                        endif
+                    end do
+                    if (.not.l_found) then
+                        nb_ligr = nb_ligr + 1
+                        list_ligr(nb_ligr) = ligr_name
+                     endif
+                endif
             end do
-            if (ideja .eq. 0) then
-                nlmoch = nlmoch + 1
-                zk24(ilmoch-1+nlmoch) = nomli
-            endif
-120         continue
-        end do
-110     continue
+        endif
     end do
-    call jeecra(lmoch, 'LONUTI', nlmoch)
-    call jedema()
+!
 end subroutine

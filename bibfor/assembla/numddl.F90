@@ -1,6 +1,12 @@
-subroutine numddl(nu, base, nbmat, tlimat, method)
-! aslint: disable=W1306
-    implicit none
+subroutine numddl(nume_ddlz, base, nb_matr, list_matr, renumz)
+!
+implicit none
+!
+#include "asterfort/as_deallocate.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/nueffe.h"
+#include "asterfort/numoch.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,53 +24,52 @@ subroutine numddl(nu, base, nbmat, tlimat, method)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1306
 !
-#include "asterfort/infniv.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/nueffe.h"
-#include "asterfort/numoch.h"
-    character(len=2) :: base
-    character(len=*) :: nu, tlimat(*), method
-    integer :: nbmat
-! ----------------------------------------------------------------------
-! --- DESCRIPTION DES PARAMETRES
-! OUT K*14 NU     : LE CHAMP .NUME DE S.D. NUME_DDL_EQUA DE L'OBJET NU
-!                   DE S.D. NUME_DDL EST CREE ET REMPLI.
-! IN  K*14 NU     : NOM D'UN NUMERO_DDL(SI UN OBJET DE NOM NU ET
-!                   DE S.D. NUME_DDL EXISTE ON L'ECRASE)
-! IN  K2   BASE    : BASE(1:1) : BASE POUR CREER LE NUME_DDL
-!                    (SAUF LE PROF_CHNO)
-!                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
-! IN  I    NBMAT  : NOMBRE DE MATELE PASSES DANS TLIMAT
-! IN  K19  TLIMAT : LISTE DES MATELE DEFINISSANT LA NUMEROTATION
-! IN  K*4  METHOD : METHODE DE RENUMEROTATION DES NOEUDS:
-!                   'SANS' --> ON NE RENUMEROTE PAS
-!                   'RCMK' --> 'REVERSE CUTHIL MAC-KEE'
-!                   SINON LA NUMEROTATION EST BASEE SUR CETTE GRANDEUR
-!----------------------------------------------------------------------
+    character(len=2), intent(in) :: base
+    character(len=*), intent(in) :: nume_ddlz
+    character(len=*), intent(in) :: renumz
+    character(len=*), intent(in) :: list_matr(*)
+    integer, intent(in) :: nb_matr
 !
-    character(len=14) :: nupgm
-    integer :: ibid
-    character(len=19) :: k19bid
-    character(len=24) :: tlima2(nbmat)
+! --------------------------------------------------------------------------------------------------
 !
-!------RECUPERATION DU NIVEAU D'IMPRESSION
-!-----------------------------------------------------------------------
-    integer :: i, ifm, niv
-!-----------------------------------------------------------------------
-    call infniv(ifm, niv)
+! Factor
 !
-    nupgm = nu
-    k19bid = ' '
+! Numbering - Create NUME_EQUA objects
 !
-    do 10 i = 1, nbmat
-        tlima2(i)=tlimat(i)
-10  end do
-!---- CREATION D'UNE LISTE DE LIGRELS A PARTIR DE LA LISTE DE MATR_ELEM
+! --------------------------------------------------------------------------------------------------
 !
-    call numoch(tlima2, nbmat, 'V', nupgm//'.&LMODCHAR')
-    call nueffe(nupgm//'.&LMODCHAR', base, nupgm, method, ' ',&
-                k19bid, ibid)
-    call jedetr(nupgm//'.&LMODCHAR')
+! In  nume_ddl       : name of nume_ddl object
+! In  base           : JEVEUX base to create objects
+!                      base(1:1) => PROF_CHNO objects
+!                      base(2:2) => NUME_DDL objects
+! In  list_matr      : list of elementary matrixes
+! In  nb_matr        : number of elementary matrixes
+! In  renum          : method for renumbering equation
+!                       SANS/RCMKs
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24) :: list_matr_elem(nb_matr)
+    integer :: nb_ligr
+    character(len=24), pointer :: list_ligr(:) => null()
+    integer :: i_matr
+!
+! --------------------------------------------------------------------------------------------------
+!
+    do i_matr = 1, nb_matr
+        list_matr_elem(i_matr) = list_matr(i_matr)
+    end do
+!
+! - Create list of LIGREL for numbering
+!
+    call numoch(list_matr_elem, nb_matr, list_ligr, nb_ligr)
+!
+! - Numbering - Create NUME_EQUA objects
+!
+    call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renumz)
+!
+    AS_DEALLOCATE(vk24 = list_ligr)
 !
 end subroutine

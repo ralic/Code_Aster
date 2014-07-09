@@ -50,8 +50,9 @@ subroutine numecn(modele, champ, nume)
 !
     character(len=8) :: mo
     character(len=24) :: lligr, lligrs, noojb
+    character(len=24), pointer :: list_ligr(:) => null()
     character(len=19) :: prfchn, nomlig, numes
-    integer :: ibid, nb1, jlligr, i1, i2, iret, nb2, iexi
+    integer :: nb1, i1, i2, iret, nb2, iexi, nb_ligr
     character(len=14) :: nu14
     character(len=19) :: nu19, k19bid
     aster_logical :: newnum
@@ -69,8 +70,9 @@ subroutine numecn(modele, champ, nume)
 !     ----------------------------------------
     lligr = '&&NUMECN.LISTE_LIGREL'
     if (nb1 .eq. 1) then
-        call wkvect(lligr, 'V V K24', 1, jlligr)
-        zk24(jlligr-1+1) = mo//'.MODELE'
+        call wkvect(lligr, 'V V K24', 1, vk24 = list_ligr)
+        list_ligr(1) = mo//'.MODELE'
+        nb_ligr = 1
     else
 !       ON N'AJOUTE QUE LES LIGRELS QUI EXISTENT ENCORE :
         nb2=0
@@ -81,16 +83,17 @@ subroutine numecn(modele, champ, nume)
                 if (nomlig .ne. mo//'.MODELE') nb2=nb2+1
             endif
         end do
-        call wkvect(lligr, 'V V K24', nb2+1, jlligr)
+        call wkvect(lligr, 'V V K24', nb2+1,  vk24 = list_ligr)
+        nb_ligr = nb2+1
         i2=1
-        zk24(jlligr-1+i2) = mo//'.MODELE'
+        list_ligr(i2) = mo//'.MODELE'
         do i1 = 2, nb1
             call jenuno(jexnum(prfchn//'.LILI', i1), nomlig)
             call jeexin(nomlig//'.LIEL', iret)
             if (iret .ne. 0) then
                 if (nomlig .ne. mo//'.MODELE') then
                     i2=i2+1
-                    zk24(jlligr-1+i2) = nomlig
+                    list_ligr(i2) = nomlig
                 endif
             endif
         end do
@@ -121,8 +124,7 @@ subroutine numecn(modele, champ, nume)
         nu14=noojb(1:14)
 !
         k19bid=' '
-        call nueffe(lligr, 'VG', nu14, 'SANS', ' ',&
-                    k19bid, ibid)
+        call nueffe(nb_ligr, list_ligr, 'VG', nu14, 'SANS')
         nu19=nu14
         call jedetr(nu19//'.ADLI')
         call jedetr(nu19//'.ADNE')

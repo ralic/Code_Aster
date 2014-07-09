@@ -1,5 +1,21 @@
-subroutine pteequ(prchno, basz, neq, gds, ncmp,&
+subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field,&
                   corr2)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,111 +32,99 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-!     ARGUMENTS:
-!     ----------
-#include "jeveux.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+    character(len=19), intent(in) :: prof_chno
+    integer, intent(in) :: neq
+    integer, intent(in) :: igds
+    integer, intent(in) :: nb_cmp_field
+    integer, intent(in) :: corr2(nb_cmp_field)
+    character(len=1), intent(in) :: base
 !
-    character(len=19) :: prchno
-    integer :: neq, gds, ncmp, corr2(ncmp)
-    character(len=*) :: basz
-! ----------------------------------------------------------------------
-!     BUT : CREER L'OBJET .DEEQ D'UN PROF_CHNO DANS LE CAS OU IL N'Y A
-!           QUE DES NOEUDS PHYSIQUES (MAILLAGE)
-!     IN:
-!     PRCHNO : NOM D'UN PROF_CHNO
-!     NEQ    : NOMBRE D'EQUATIONS (OU DE DDL) DU PROF_CHNO
-!     GDS    : NUMERO DE LA GRANDEUR SIMPLE ASSOCIEE AU CHAMP.
-!     NCMP   : NOMBRE DE CMPS DE PRCHNO (LONGUEUR DE CORR2)
-!     CORR2  : CORRESPONDANCE KCMP_CH -> KCMP_GD
+! --------------------------------------------------------------------------------------------------
 !
-!     OUT:
-!     PRCHNO EST COMPLETE DE L'OBJET ".DEEQ" V(I) DIM=2*NEQ
-!         (CET OBJET EST DETRUIT S'IL EXISTE DEJA).
-!     V((IDDL-1)*2+1)--> SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST PHYS.:
-!                           +NUMERO DU NOEUD
-!                        SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN
-!                        LAGRANGE DE BLOCAGE :
-!                           +NUMERO DU NOEUD PHYS. BLOQUE
-!                        SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN
-!                        LAGRANGE DE LIAISON :
-!                            0
-!     V((IDDL-1)*2+2)--> SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST PHYS.:
-!                           + NUM. DANS L'ORDRE DU CATAL. DES GRAND.
-!                           DE LA CMP CORRESPONDANT A L'EQUATION IDDL.
-!                        SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN
-!                        LAGRANGE DE BLOCAGE :
-!                           - NUM. DANS L'ORDRE DU CATAL. DES GRAND.
-!                           DE LA CMP CORRESPONDANT AU BLOCAGE.
-!                        SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN
-!                        LAGRANGE DE LIAISON :
-!                            0
-! ----------------------------------------------------------------------
+! Create DEEQ object for field
 !
-!     FONCTIONS EXTERNES:
-!     -------------------
+! --------------------------------------------------------------------------------------------------
 !
-!     VARIABLES LOCALES:
-!     ------------------
-    integer :: jdeeq, ncmpmx, nec,  nbligr, n1, jprno, i2
-    integer :: nbno, j, iddl, iadg, k, ieq
+! In  base           : JEVEUX base to create PROF_CHNO object
+! In  prof_chno      : name of PROF_CHNO object
+! In  neq            : number of equations
+! In  igds           : index of GRANDEUR used to numbering
+! In  nb_cmp_field   : number of components in field
+! In  coor2          : link between global component in GRANDEUR to local component in field
 !
-    character(len=1) :: base
-    integer, pointer :: nueq(:) => null()
+! Object   : PROF_CHNO.DEEQ 
+! Dimension: vector of size (2*neq)
+! Contains : for ieq = 1,neq
 !
+!   DEEQ((ieq-1)*2+1)
+!       SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST PHYS.:
+!           +NUMERO DU NOEUD
+!       SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN LAGRANGE DE BLOCAGE :
+!           +NUMERO DU NOEUD PHYS. BLOQUE
+!       SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN LAGRANGE DE LIAISON :
+!           0
+!   DEEQ((ieq-1)*2+2)
+!       SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST PHYS.:
+!           + NUM. DANS L'ORDRE DU CATAL. DES GRAND. DE LA CMP CORRESPONDANT A L'EQUATION IDDL.
+!       SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN LAGRANGE DE BLOCAGE :
+!           - NUM. DANS L'ORDRE DU CATAL. DES GRAND. DE LA CMP CORRESPONDANT AU BLOCAGE.
+!       SI LE NOEUD SUPPORT DE L'EQUA. IDDL EST UN LAGRANGE DE LIAISON :
+!           0
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: jdeeq, nb_cmp_fieldmx, nec, jnueq, nb_ligr, l, jprno, i_cmp_field
+    integer :: nb_node, i_node, iddl, iadg, i_cmp, ieq
+    character(len=24) :: prno, nueq, deeq
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    base=basz(1:1)
 !
-    call jedetr(prchno(1:19)//'.DEEQ')
-    call wkvect(prchno(1:19)//'.DEEQ', base//' V I', 2*neq, jdeeq)
+    prno      = prof_chno(1:19)//'.PRNO'
+    nueq      = prof_chno(1:19)//'.NUEQ'
+    deeq      = prof_chno(1:19)//'.DEEQ'
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx)
-    nec = nbec(gds)
-    if (ncmpmx .eq. 0) then
-        call utmess('F', 'ASSEMBLA_24')
-    endif
-    if (nec .eq. 0) then
-        call utmess('F', 'ASSEMBLA_25')
-    endif
+! - Information about GRANDEUR
 !
-    call jeveuo(prchno(1:19)//'.NUEQ', 'L', vi=nueq)
-    call jelira(prchno(1:19)//'.PRNO', 'NMAXOC', nbligr)
-    if (nbligr .ne. 1) then
-        call utmess('F', 'ASSEMBLA_33')
-    endif
+    call jelira(jexnum('&CATA.GD.NOMCMP', igds), 'LONMAX', nb_cmp_fieldmx)
+    nec     = nbec(igds)
+    ASSERT(nb_cmp_fieldmx .ne. 0)
+    ASSERT(nec .ne. 0)
 !
-    call jelira(jexnum(prchno(1:19)//'.PRNO', 1), 'LONMAX', n1)
-    if (n1 .le. 0) then
-        call utmess('F', 'ASSEMBLA_34')
-    endif
-    call jeveuo(jexnum(prchno(1:19)//'.PRNO', 1), 'L', jprno)
+! - Create .DEEQ object
 !
-    nbno = n1/ (nec+2)
-    do 1 j = 1, nbno
-        iddl = zi(jprno-1+ (j-1)* (nec+2)+1) - 1
-        iadg = jprno - 1 + (j-1)* (nec+2) + 3
-        do 2 i2 = 1, ncmp
-            k = corr2(i2)
-            if (exisdg(zi(iadg),k)) then
+    call jedetr(deeq)
+    call wkvect(deeq, base//' V I', 2*neq, jdeeq)
+!
+! - Access to PRNO object
+!
+    call jelira(prno, 'NMAXOC', nb_ligr)
+! - It's field: no "tardif" element/node, only mesh
+    ASSERT(nb_ligr.eq.1)
+    call jelira(jexnum(prno, 1), 'LONMAX', l)
+    ASSERT(l.gt.0)
+    call jeveuo(jexnum(prno, 1), 'L', jprno)
+!
+! - Access to NUEQ object
+!
+    call jeveuo(nueq, 'L', jnueq)
+!
+    nb_node = l/(nec+2)
+    do i_node = 1, nb_node
+        iddl = zi(jprno-1+ (i_node-1)* (nec+2)+1) - 1
+        iadg = jprno - 1 + (i_node-1)* (nec+2) + 3
+        do i_cmp_field = 1, nb_cmp_field
+            i_cmp = corr2(i_cmp_field)
+            if (exisdg(zi(iadg),i_cmp)) then
                 iddl = iddl + 1
-                ieq = nueq(iddl)
-                zi(jdeeq-1+2* (ieq-1)+1) = j
-                zi(jdeeq-1+2* (ieq-1)+2) = k
+                ieq  = zi(jnueq-1+iddl)
+                zi(jdeeq-1+2* (ieq-1)+1) = i_node
+                zi(jdeeq-1+2* (ieq-1)+2) = i_cmp
             endif
- 2      continue
- 1  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

@@ -98,13 +98,6 @@ cata_msg = {
  modèles différents
 """),
 
-24 : _(u"""
- le nombre maximum de composante de la grandeur est nul
-"""),
-
-25 : _(u"""
- le nombre d'entiers codes est nul
-"""),
 
 26 : _(u"""
  le noeud:  %(k1)s composante:  %(k2)s  est bloqué plusieurs fois.
@@ -119,29 +112,11 @@ cata_msg = {
  de noeuds à numéroter
 """),
 
-29 : _(u"""
-  -  aucun LIGREL
-"""),
-
-30 : _(u"""
-  plusieurs phénomènes
-"""),
 
 31 : _(u"""
  les DDL du NUME_DDL ont bougé
 """),
 
-
-
-
-
-33 : _(u"""
- le .PRNO est construit sur plus que le maillage
-"""),
-
-34 : _(u"""
- le .PRNO est de dimension nulle
-"""),
 
 35 : _(u"""
  il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI
@@ -243,20 +218,5 @@ Risques & conseils :
  nombre de ddl a priori    : %(i1)d
  nombre de ddl a posteriori: %(i2)d
 """),
-
-66 : _(u"""
- Il faut vérifier la cohérence des maillages dans les structures de données
- %(k5)s et %(k6)s. Les maillages devraient être les mêmes.
-
- On trouve au moins deux maillages différents :
-  - maillage 1 : %(k1)s
-  - maillage 2 : %(k2)s
-
- Détails :
-   Le maillage 1 : %(k1)s est lié au ligrel 1 : %(k3)s
-   Le maillage 2 : %(k2)s est lié au ligrel 2 : %(k4)s
-"""),
-
-
 
 }

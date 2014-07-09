@@ -46,7 +46,7 @@ subroutine sinoz1(modele, sigma, signo)
 #include "asterfort/jexnum.h"
 #include "asterfort/me2zme.h"
 #include "asterfort/memzme.h"
-#include "asterfort/numer2.h"
+#include "asterfort/numero.h"
 #include "asterfort/numoch.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
@@ -58,7 +58,7 @@ subroutine sinoz1(modele, sigma, signo)
     character(len=8) :: licmp(6), ma
     character(len=19) :: infcha
     character(len=19) :: solveu, vecele, matpre, k19bid, criter
-    character(len=24) :: kmoch, signo, sigma, massel
+    character(len=24) :: signo, sigma, massel
     character(len=24) :: nume, vecass, vect(6)
     real(kind=8) :: rcmp(6)
     integer :: ibid, jvect, nbcmp, repdim
@@ -67,8 +67,8 @@ subroutine sinoz1(modele, sigma, signo)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ieq, ier, indeq, jkmoch,  jprno
-    integer ::  jvecas, nbligr, nbno
+    integer :: i, ieq, ier, indeq, jprno
+    integer :: jvecas, nbno
     real(kind=8), pointer :: sig(:) => null()
     real(kind=8), pointer :: sixx(:) => null()
     real(kind=8), pointer :: sixy(:) => null()
@@ -112,18 +112,14 @@ subroutine sinoz1(modele, sigma, signo)
 !     --  APPEL A NUMER2 POUR CONSTRUIRE UN NUME_DDL
 !         SUR LA GRANDEUR SIZZ_R (1 CMP)
     nupgm = '&&NUME'
-    kmoch = nupgm//'.&LMODCHAR'
     infcha = '&&SINOZ1.INFCHA'
 !
 !     -- CREATION DU SOLVEUR :
     solveu = '&&OP0042.SOLVEUR'
-!
-    call numoch(massel, 1, 'V', kmoch)
-    call jeveuo(kmoch, 'L', jkmoch)
-    call jelira(kmoch, 'LONUTI', nbligr)
-    call numer2(' ', nbligr, zk24(jkmoch), 'DDL_NOZ1', solveu,&
-                'VV', nupgm, ibid)
-    call jedetr(kmoch)
+
+    call numero(nupgm                , solveu, 'VV',&
+                modelocz = 'DDL_NOZ1',&
+                nb_matr_elem = 1     , list_matr_elem = massel)
 !
     call asmatr(1, massel, ' ', nupgm, solveu,&
                 infcha, 'ZERO', 'V', 1, '&&MASSAS')
