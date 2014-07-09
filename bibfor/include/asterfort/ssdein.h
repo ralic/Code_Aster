@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ssdein(ul, ug, mail, nocas)
-        character(len=8) :: ul
-        character(len=8) :: ug
+    subroutine ssdein(chno_lz, chno_gz, mail, nocas)
+        character(len=8) :: chno_lz
+        character(len=8) :: chno_gz
         character(len=8) :: mail
         character(len=8) :: nocas
     end subroutine ssdein

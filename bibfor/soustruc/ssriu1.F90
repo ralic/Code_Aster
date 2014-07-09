@@ -31,6 +31,7 @@ subroutine ssriu1(nomu)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
@@ -101,7 +102,8 @@ subroutine ssriu1(nomu)
 !
     integer :: i
     character(len=8) :: nogdsi
-    character(len=19) :: nu
+    character(len=14) :: nume_ddl
+    character(len=19) :: prof_chno
     integer :: iaconx
     integer :: iaprno,   ico, icoe, icoi
     integer :: ieqn, ili, inl, ino, iret
@@ -118,20 +120,21 @@ subroutine ssriu1(nomu)
     integer, pointer :: desm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    nu = nomu
-    nu = nu(1:14)//'.NUME'
+    nume_ddl = nomu
+    prof_chno = nume_ddl(1:14)//'.NUME'
 !
-    call dismoi('NOM_GD', nu(1:14), 'NUME_DDL', repk=nogdsi)
+    call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=nogdsi)
     if (nogdsi .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_70')
     endif
     call dismoi('NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', repi=nulag)
     call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nec)
-    call jeveuo(nu//'.DEEQ', 'E', vi=deeq)
-    call jeveuo(nu//'.DELG', 'E', vi=delg)
-    call jeveuo(nu//'.NUEQ', 'E', vi=vnueq)
-    call jelira(nu//'.NUEQ', 'LONMAX', nddlt)
-    call jelira(nu//'.PRNO', 'NMAXOC', nlili)
+
+    call nueq_chck(prof_chno, nddlt)
+    call jeveuo(prof_chno//'.DEEQ', 'E', vi=deeq)
+    call jeveuo(prof_chno//'.DELG', 'E', vi=delg)
+    call jeveuo(prof_chno//'.NUEQ', 'E', vi=vnueq)
+    call jelira(prof_chno//'.PRNO', 'NMAXOC', nlili)
 !
     call jeveuo(nomu//'.DESM', 'E', vi=desm)
     call jeveuo(nomu//'.LINO', 'E', vi=lino)
@@ -303,11 +306,11 @@ subroutine ssriu1(nomu)
 !     -- MISE A JOUR DE .CONX : NOEUDS DE LAGRANGE :
 !     ----------------------------------------------
     do ili = 2, nlili
-        call jeexin(jexnum(nu//'.PRNO', ili), iret)
+        call jeexin(jexnum(prof_chno//'.PRNO', ili), iret)
         if (iret .eq. 0) goto 60
-        call jelira(jexnum(nu//'.PRNO', ili), 'LONMAX', n1)
+        call jelira(jexnum(prof_chno//'.PRNO', ili), 'LONMAX', n1)
         if (n1 .eq. 0) goto 60
-        call jeveuo(jexnum(nu//'.PRNO', ili), 'L', iaprno)
+        call jeveuo(jexnum(prof_chno//'.PRNO', ili), 'L', iaprno)
         nbno = n1/ (nec+2)
         do ino = 1, nbno
             nueq = zi(iaprno-1+ (ino-1)* (nec+2)+1)

@@ -1,4 +1,4 @@
-subroutine ssdein(ul, ug, mail, nocas)
+subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,10 +23,10 @@ subroutine ssdein(ul, ug, mail, nocas)
 !      - CALCULER LE CHAMP DE DEPLACEMENT INTERNE A UNE SOUS-STRUCTURE
 !        A PARTIR DU CHAMP DE DEPLACEMENT CONNU SUR SES NOEUDS EXTERNES
 !
-! IN_F,OU_J: UL : NOM DU CHAMP LOCAL A LA SOUS-STRUCTURE
-! IN_F,IN_J: UG : NOM DU CHAMP GLOBAL (MODELE DE NIVEAU SUPERIEUR)
-! IN_F     : MAIL : NOM DE LA (SUPER)MAILLE SUR LAQUELLE ON VEUT UL
-! IN_F     : NOCAS: NOM DU CHARGEMENT CORRESPONDANT (EN PRINCIPE) A UG.
+! IN_F,OU_J: CHNO_L : NOM DU CHAMP LOCAL A LA SOUS-STRUCTURE
+! IN_F,IN_J: CHNO_G : NOM DU CHAMP GLOBAL (MODELE DE NIVEAU SUPERIEUR)
+! IN_F     : MAIL : NOM DE LA (SUPER)MAILLE SUR LAQUELLE ON VEUT CHNO_L
+! IN_F     : NOCAS: NOM DU CHARGEMENT CORRESPONDANT (EN PRINCIPE) A CHNO_G.
 !                   (EVENTUELLEMENT : ' ')
 !
 #include "asterf_types.h"
@@ -49,15 +49,16 @@ subroutine ssdein(ul, ug, mail, nocas)
 #include "asterfort/ssvaro.h"
 #include "asterfort/ssvau1.h"
 #include "asterfort/utmess.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: ul, ug, mail, nocas, mag, mal, nomgd, nomacr
+    character(len=8) :: chno_lz, chno_gz, mail, nocas, mag, mal, nomgd, nomacr
     character(len=14) :: nul
-    character(len=19) :: nug2, nul2
+    character(len=19) :: prof_chno_g, prof_chno_l
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
     aster_logical :: exil, exig
     character(len=8) :: rota, ch8(2)
-    character(len=19) :: ug2, ul2
+    character(len=19) :: chno_g, chno_l
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
 !
@@ -81,13 +82,14 @@ subroutine ssdein(ul, ug, mail, nocas)
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    ug2= ug
-    ul2= ul
+    chno_g= chno_gz
+    chno_l= chno_lz
 !
-    call dismoi('NOM_MAILLA', ug, 'CHAM_NO', repk=mag)
-    call jeveuo(ug2//'.REFE', 'L', vk24=refe)
-    nug2=refe(2)(1:19)
-    call dismoi('NOM_GD', ug, 'CHAM_NO', repk=nomgd)
+    call dismoi('NOM_MAILLA', chno_gz, 'CHAM_NO', repk=mag)
+    call jeveuo(chno_g//'.REFE', 'L', vk24=refe)
+    prof_chno_g=refe(2)(1:19)
+    call nueq_chck(prof_chno_g)
+    call dismoi('NOM_GD', chno_gz, 'CHAM_NO', repk=nomgd)
     if (nomgd(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_43', sk=nomgd)
     endif
@@ -105,7 +107,8 @@ subroutine ssdein(ul, ug, mail, nocas)
     call jeveuo(jexnom(mag//'.SUPMAIL', mail), 'L', iasupm)
     nomacr= vnomacr(isma)
     nul= nomacr
-    nul2=nul//'.NUME'
+    prof_chno_l = nul//'.NUME'
+    call nueq_chck(prof_chno_l)
 !
     call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
     call jeveuo(nomacr//'.CONX', 'L', vi=conx)
@@ -117,41 +120,41 @@ subroutine ssdein(ul, ug, mail, nocas)
 !                 '&&SSDEIN.VALP' EST UN VECTEUR DE TRAVAIL :
     call wkvect('&&SSDEIN.VALP', 'V V R', nddlt, iavalp)
 !
-    call jeveuo(ug2//'.VALE', 'L', vr=vale)
-    call jeveuo(jexnum(nug2//'.PRNO', 1), 'L', iaprng)
-    call jeveuo(nug2//'.NUEQ', 'L', vi=nueg)
-    call jeveuo(nul2//'.NUEQ', 'L', vi=nuel)
+    call jeveuo(chno_g//'.VALE', 'L', vr=vale)
+    call jeveuo(jexnum(prof_chno_g//'.PRNO', 1), 'L', iaprng)
+    call jeveuo(prof_chno_g//'.NUEQ', 'L', vi=nueg)
+    call jeveuo(prof_chno_l//'.NUEQ', 'L', vi=nuel)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
 !
-!     2- ALLOCATION DU CHAM_NO RESULTAT : UL
+!     2- ALLOCATION DU CHAM_NO RESULTAT : CHNO_L
 !     --------------------------------------
 !     .DESC:
-    call wkvect(ul2//'.DESC', 'G V I', 2, iadesc)
-    call jeveuo(ug2//'.DESC', 'L', vi=desc)
+    call wkvect(chno_l//'.DESC', 'G V I', 2, iadesc)
+    call jeveuo(chno_g//'.DESC', 'L', vi=desc)
     zi(iadesc-1+1)=desc(1)
     zi(iadesc-1+2)=1
-    call jeecra(ul2//'.DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(chno_l//'.DESC', 'DOCU', ibid, 'CHNO')
 !     .REFE:
-    call wkvect(ul2//'.REFE', 'G V K24', 4, iarefe)
+    call wkvect(chno_l//'.REFE', 'G V K24', 4, iarefe)
     zk24(iarefe-1+1)=mal
     zk24(iarefe-1+2)=nul//'.NUME'
 !     .VALE:
-    call wkvect(ul2//'.VALE', 'G V R', nddlt, iavall)
+    call wkvect(chno_l//'.VALE', 'G V R', nddlt, iavall)
 !
 !
-!     4- CALCUL DES VALEURS DE UL.VALE:
+!     4- CALCUL DES VALEURS DE CHNO_L.VALE:
 !     ---------------------------------
 !
-!     4-1- ON RECOPIE UG.VALE DANS Q_E:
+!     4-1- ON RECOPIE CHNO_G.VALE DANS Q_E:
 !     ---------------------------------
     do inoe = 1, nbnoet
         inog=zi(iasupm-1+inoe)
         inol= conx(3*(inoe-1)+2)
         ili= conx(3*(inoe-1)+1)
 !
-        call jeveuo(jexnum(nul2//'.PRNO', ili), 'L', iaprnl)
+        call jeveuo(jexnum(prof_chno_l//'.PRNO', ili), 'L', iaprnl)
 !
         nueql = zi(iaprnl-1+ (inol-1)* (nec+2)+1)
         iadgl = iaprnl - 1 + (inol-1)* (nec+2)+3
