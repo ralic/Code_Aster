@@ -121,11 +121,6 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
 !
     nb_mocl = 0
     if (l_read_elem) then
-        if (getexm(keywordfact,'TOUT') .eq. 1) then
-            nb_mocl = nb_mocl + 1
-            moclm(nb_mocl) = 'TOUT'
-            typmcl(nb_mocl) = 'TOUT'
-        endif
         keyword = 'GROUP_MA'//suffix_name
         if (getexm(keywordfact,keyword) .eq. 1) then
             nb_mocl = nb_mocl + 1
@@ -138,6 +133,11 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
             moclm(nb_mocl) = keyword
             typmcl(nb_mocl) = 'MAILLE'
         endif
+    endif
+    if (getexm(keywordfact,'TOUT') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl) = 'TOUT'
+        typmcl(nb_mocl) = 'TOUT'
     endif
     keyword = 'GROUP_NO'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then

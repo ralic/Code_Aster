@@ -219,6 +219,8 @@ subroutine op0018()
 !
         do iaffe = 1, nb_affe
 !
+            nb_node = 0
+            nb_elem = 0
             dim_topo_init=-99
             p_wk_mail2(1:nb_mesh_elem) = 0
             p_wk_mail3(1:nb_mesh_elem) = 0
@@ -239,9 +241,11 @@ subroutine op0018()
 !
 ! --------- Get nodes
 !
-            call jedetr(list_node)
-            call getnode(mesh, keywordfact, iaffe, ' ', list_node,&
-                         nb_node, elem_excl = .true._1)
+            if (nb_elem.eq.0) then
+                call jedetr(list_node)
+                call getnode(mesh   , keywordfact, iaffe , ' ', list_node,&
+                             nb_node, elem_excl = .true._1)
+            endif
 !
 ! --------- Loop on modelisations
 !
