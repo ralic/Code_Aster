@@ -89,6 +89,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     ASSERT(nfonc.ge.0)
 !   Transformation de la géométrie ou pas
     geomi = ' '
+    maili = ' '
     if (nfonc .gt. 0) then
         ASSERT(nfonc.eq.2 .or. nfonc.eq.3)
         if (nfonc .eq. 2) lfonc(3)='&FOZERO'
@@ -110,11 +111,11 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         do inoi=1,nbnoi
             do ifonc=1,3
                 call fointe('F', lfonc(ifonc), 3, lparx, zr(jgeomi+3*(inoi-1)), vx(ifonc), ier)
-        ASSERT(ier.eq.0)
+                ASSERT(ier.eq.0)
             enddo
-        zr(jgeomi-1+3*(inoi-1)+1)=vx(1)
-        zr(jgeomi-1+3*(inoi-1)+2)=vx(2)
-        zr(jgeomi-1+3*(inoi-1)+3)=vx(3)
+            zr(jgeomi-1+3*(inoi-1)+1)=vx(1)
+            zr(jgeomi-1+3*(inoi-1)+2)=vx(2)
+            zr(jgeomi-1+3*(inoi-1)+3)=vx(3)
         enddo
 !       Copiage de la géométrie modifiée dans geomi
         call jedupo(maili//'.COORDO    .VALE', 'V', geomi, ASTER_FALSE )
@@ -144,14 +145,14 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         call ulopen(unite, fichier, ' ', 'N', 'O')
         if ( geomi .ne. ' ') then
             call irmail('MED', unite, ibid, maili, ASTER_FALSE , k8bid, ibid, 1, formar)
-    else
+        else
             call irmail('MED', unite, ibid, nomai, ASTER_FALSE , k8bid, ibid, 1, formar)
-    endif
+        endif
 !       On ferme
         call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)
     endif
 !
 999 continue
-    call jedetr(maili)
+    if ( maili .ne. ' ') call jedetr(maili)
     call jedema()
 end subroutine
