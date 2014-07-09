@@ -226,16 +226,22 @@ FRES = POST_RELEVE_T(
    RESULTAT     =  U,
    TOUT_ORDRE   = 'OUI',
     ))
+
 # IMPRESSION DES RESULTATS POUR TRACE COURBES f/deP
+#--------------------------------------------------
 IMPR_TABLE(TABLE = DEP_IMP)
 IMPR_TABLE(TABLE = FRES)
 
-# IMPRESSION DU RESULTAT POUR VISUALISATION MED
-IMPR_RESU(  FORMAT  = 'MED',
-  RESU=_F(RESULTAT=U),
-  RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)),
-  UNITE=80
-         )
+# impression du resultat (reduit sur la modelisation '3D') pour visualisation :
+#------------------------------------------------------------------------------
+MAred=CREA_MAILLAGE(MAILLAGE=MA,  RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)))
+
+MOred=AFFE_MODELE(MAILLAGE=MAred,
+                 AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE',  MODELISATION='3D',))
+
+Ured=EXTR_RESU(RESULTAT=U, RESTREINT=_F(MODELE=MOred,  ))
+IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=Ured), UNITE=81 ,)
+
 ##########################################################################
 # TEST
 ##########################################################################

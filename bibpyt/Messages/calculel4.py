@@ -28,17 +28,7 @@ cata_msg = {
      2) Vous devriez peut-être utiliser le mot clé PROL_ZERO='OUI' .
 """),
 
-2 : _(u"""
-Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
-  Les SD_RESULTAT que l'on veut imprimer : %(k1)s, %(k2)s
-  sont associées à des maillages différents : %(k3)s, %(k4)s
-  C'est interdit.
-"""),
 
-3 : _(u"""
-Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
-  Seul FORMAT='MED' est autorisé.
-"""),
 
 4 : _(u"""
 Erreur :
@@ -51,16 +41,6 @@ Conseils :
 
 """),
 
-5 : _(u"""
-Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
-  Quand on utilise le mot clé RESTREINT, le mot clé RESULTAT est obligatoire
-  pour chaque occurrence du mot clé facteur RESU
-
-Conseil :
-  On ne peut pas restreindre un champ "isolé".
-  On ne traite que les SD_RESULTAT.
-  Il faut donc au préalable créer une SD_RESULTAT avec CREA_RESU
-"""),
 
 6 : _(u"""
 Erreur utilisateur (ou programmeur) :
@@ -72,13 +52,6 @@ Erreur utilisateur (ou programmeur) :
     - ce n'est pas la même grandeur sous-jacente.
 """),
 
-7 : _(u"""
- La restriction du champ %(k1)s n'a pas été possible à tous les numéros
- d'ordre. Il ne sera donc pas imprimé dans le fichier MED.
- Cela peut se produire lorsque le mot-clé RESTREINT est utilisé
- et que le champ n'existe pas sur les entités géométriques sur
- lesquelles on tente de le restreindre.
-"""),
 
 8 : _(u"""
  Le résultat %(k1)s n'existe pas.

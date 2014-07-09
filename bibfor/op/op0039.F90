@@ -42,8 +42,6 @@ subroutine op0039()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdexma.h"
-#include "asterfort/rdtmai.h"
-#include "asterfort/rdtres.h"
 #include "asterfort/rscrmo.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulisog.h"
@@ -51,23 +49,19 @@ subroutine op0039()
 #include "asterfort/utmess.h"
 #include "asterfort/w039ca.h"
 #include "asterfort/wkvect.h"
-    integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive, nvari
-    integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret, ndim
-    integer :: jlast, jmodl, nmo, nn, nmod, nforma, ngibi, ifimed, codret
+    integer :: nocc, iocc, ioc2, ifc, ifi, versio, infmai, nive
+    integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret
+    integer :: jlast, jmodl, nmo, nn, nmod, nforma, ngibi
 !
     real(kind=8) :: versi2, eps
 !
-    character(len=1) :: k1occ, saux01
-    character(len=3) :: variel
-    character(len=8) :: modele, noma, noma2, form, nomare, nomsq
-    character(len=8) :: resu, nomab, resure(9), resur(9), saux08
+    character(len=8) :: modele, noma, form, nomare, nomsq
+    character(len=8) :: resu, nomab, resure(9)
     character(len=16) :: fich, formr
-    character(len=24) :: nomjv, valk(6), corrn, corrm
-    character(len=200) :: nofimd
-    character(len=255) :: kfic
+    character(len=24) :: nomjv, valk(6)
 !
-    aster_logical :: lresu, lcasts, lmod, existm
-    aster_logical :: lmail, lrest, lgmsh
+    aster_logical :: lresu, lcasts, lmod
+    aster_logical :: lmail, lgmsh
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,67 +88,7 @@ subroutine op0039()
     modele = ' '
     call getvid(' ', 'MODELE', scal=modele, nbret=nmod)
     if (nmod .ne. 0) lmod= .true.
-!
-!     ----------------------------------------------------------------
-!     TRAITEMENT DU MOT CLE "RESTREINT"
-!     ----------------------------------------------------------------
-!     -- REMARQUE : LE MOT CLE RESTREINT CREE DES SD_RESULTAT
-!        TEMPORAIRES + 1 MAILLAGE TEMPORAIRE ET CE SONT CES
-!        SD QUI DOIVENT ETRE IMPRIMEES.
-!        C'EST POURQUOI, DANS LE RESTE DE L'OPERATEUR (QUI IMPRIME),
-!        ON DOIT REMPLACER :
-!          - GETVID/RESULTAT PAR RESURE(IOCC)
-!          - GETVID/MAILLAGE PAR NOMARE
-    lrest=.false.
-    call getfac('RESTREINT', nbrest)
-    ASSERT(nbrest.eq.0.or.nbrest.eq.1)
     nomare=' '
-    if (nbrest .eq. 1) then
-        lrest=.true.
-!       -- SI RESTREINT, IL FAUT VERIFIER QUE RESU/RESULTAT EST
-!          TOUJOURS FOURNI :
-        ASSERT(nocc.le.9)
-        do iocc = 1, nocc
-            call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
-            if (nresu .eq. 0) then
-                call utmess('F', 'CALCULEL4_5')
-            endif
-            call getvtx('RESU', 'IMPR_NOM_VARI', iocc=iocc, scal=variel, nbret=nvari)
-            if (variel .eq. 'OUI') then
-                call utmess('F', 'MED2_10')
-            endif
-        end do
-!
-!       -- ON VERIFIE QUE TOUS LES RESUR ONT LE MEME MAILLAGE
-        call dismoi('NOM_MAILLA', resur(1), 'RESULTAT', repk=noma)
-        do iocc = 2, nocc
-            call dismoi('NOM_MAILLA', resur(iocc), 'RESULTAT', repk=noma2)
-            ASSERT(noma2.ne.' ')
-            if (noma2 .ne. noma) then
-                valk(1)=resur(1)
-                valk(2)=resur(iocc)
-                valk(3)=noma
-                valk(4)=noma2
-                call utmess('F', 'CALCULEL4_2', nk=4, valk=valk)
-            endif
-        end do
-!
-!       -- ON VA FABRIQUER :
-!          NOMARE : 1 SD_MAILLAGE "RESTREINT"
-!          RESURE : NOCC SD_RESULTAT "RESTREINT"
-        nomare='&&OP0039'
-        corrn='&&OP0039.CORRN'
-        corrm='&&OP0039.CORRM'
-        call rdtmai(noma, nomare, 'V', corrn, corrm,&
-                    'V', 0, [0])
-!
-        do iocc = 1, nocc
-            call codent(iocc, 'D', k1occ)
-            resure(iocc)='&RESUR'//k1occ//'_'
-            call rdtres(resur(iocc), resure(iocc), noma, nomare, corrn,&
-                        corrm, iocc)
-        end do
-    endif
 !
 !     ---------------------------------------------
 !     --- FORMAT, FICHIER ET UNITE D'IMPRESSION ---
@@ -162,9 +96,6 @@ subroutine op0039()
 !
 !     --- FORMAT ---
     call getvtx(' ', 'FORMAT', scal=form, nbret=nforma)
-    if (lrest .and. form .ne. 'MED') then
-        call utmess('F', 'CALCULEL4_3')
-    endif
 !
 !     --- VERIFICATION DE LA COHERENCE ENTRE LE MAILLAGE ---
 !     --- PORTANT LE RESULTAT ET LE MAILLAGE DONNE PAR   ---
@@ -214,23 +145,6 @@ subroutine op0039()
     ifc = ifi
     if (.not. ulexis( ifi )) then
         call ulopen(ifi, ' ', fich, 'NEW', 'O')
-    endif
-!
-!     -- VERIFICATION POUR IMPR_RESU RESTREINT
-    if (lrest .and. form .eq. 'MED') then
-        call ulisog(ifi, kfic, saux01)
-        if (kfic(1:1) .eq. ' ') then
-            call codent(ifi, 'G', saux08)
-            nofimd = 'fort.'//saux08
-        else
-            nofimd = kfic(1:200)
-        endif
-        ifimed = 0
-        call mdexma(nofimd, ifimed, nomare, 0, existm,&
-                    ndim, codret)
-        if (existm) then
-            call utmess('F', 'MED2_8')
-        endif
     endif
 !
 !     -- FORMAT CASTEM : IMPRESSION DU MAILLAGE :

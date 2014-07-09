@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
@@ -73,34 +73,14 @@ format MED.
        compatibles avec IMPR_NOM_VARI='OUI'.
 """),
 
-8 : _(u"""
-  Vous utilisez IMPR_RESU avec le mot-clé RESTREINT. Or vous avez
-  déjà utilisé cette commande avec ce même mot-clé sur ce même
-  fichier précédemment.
-  
-  Cet usage est interdit en raison des risques de résultats
-  inattendus que cela peut provoquer.
-
-  -> Conseils :
-     - Utilisez EXTR_RESU pour restreindre vos résultats,
-     - Faites votre deuxième IMPR_RESU RESTREINT sur un nouveau
-       fichier.
-"""),
 
 9 : _(u"""
   Vous demandez l'impression du champ %(k1)s issu de la commande
   PROJ_CHAMP utilisant la méthode 'SOUS_POINT'.
-  
+
   Cette impression n'est pas possible au format MED.
 """),
 
-10 : _(u"""
-  L'utilisation des mots-clés RESTREINT et IMPR_NOM_VARI en même
-  temps est interdite.
-
-  Conseil : Utilisez CREA_MAILLAGE et EXTR_RESU afin de pouvoir
-            contourner cette limitation.
-"""),
 
 11 : _(u"""
   Votre champ repose sur un modèle comportant des éléments joints

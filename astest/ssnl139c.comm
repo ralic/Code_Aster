@@ -20,7 +20,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # lecture maillage lineique
 MAPOU=LIRE_MAILLAGE(UNITE=20,)
 
-# définition d'un groupe de 3 mailles pour valider EXTR_RESU / RESTREINT :
+# definition d'un groupe de 3 mailles pour valider EXTR_RESU / RESTREINT :
 DEFI_GROUP(reuse=MAPOU, MAILLAGE=MAPOU,
     CREA_GROUP_MA=_F(NOM='GM1',MAILLE=('SEG2004','SEG2005','SEG2001',)))
 
