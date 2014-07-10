@@ -1,9 +1,10 @@
-subroutine nueq_chck(prof_chnoz, nb_equaz, l_error)
+subroutine nueq_chck(prof_chnoz, nb_equaz, l_error, l_subs)
 !
 implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -26,6 +27,7 @@ implicit none
     character(len=*), intent(in) :: prof_chnoz
     integer, optional, intent(out) :: nb_equaz
     logical, optional, intent(in) :: l_error
+    logical, optional, intent(in) :: l_subs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,13 +37,15 @@ implicit none
 !
 ! In  prof_chno   : name of PROF_CHNO
 ! Out nb_equa     : number of equations
-! In  l_error     : ASSERT 
+! In  l_error     : emits explicit message if present
+! In  l_subs      : exclude non-unit numbering (excluding substructing) if present
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: prof_chno
     character(len=24) :: nueq, deeq
-    integer :: len_v, nb_equa
+    integer :: len_v, nb_equa, i_equa
+    integer, pointer :: p_nueq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,5 +63,11 @@ implicit none
     endif
     if (present(nb_equaz)) then
         nb_equaz = nb_equa
+    endif
+    if (present(l_subs)) then
+        call jeveuo(nueq,'L',vi = p_nueq)
+        do i_equa = 1, nb_equa
+            ASSERT(p_nueq(i_equa).eq.i_equa)
+        end do
     endif
 end subroutine

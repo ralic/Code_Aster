@@ -41,6 +41,7 @@ subroutine mltpre(mat19, renumz)
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nueq_chck.h"
 !
     character(len=*) :: renumz
     character(len=1) :: base
@@ -129,7 +130,7 @@ subroutine mltpre(mat19, renumz)
         call dismoi('SOLVEUR', mat19, 'MATR_ASSE', repk=solv19)
         call jeveuo(solv19//'.SLVK', 'L', vk24=slvk)
         ASSERT(slvk(1).eq.'MULT_FRONT')
-        renum=slvk(4)
+        renum=slvk(4)(1:8)
     else
         renum=renumz
     endif
@@ -182,11 +183,13 @@ subroutine mltpre(mat19, renumz)
     call jeveuo(nu//'.SMOS.SMHC', 'L', icol)
     call jeveuo(nu//'.SMOS.SMDI', 'L', vi=smdi)
     call jeveuo(nu//'.SMOS.SMDE', 'L', vi=smde)
-!
+    call nueq_chck(nu//'.NUME')
     neq = smde(1)
-    do i = 1, neq
-        ASSERT(nueq(i).eq.i)
-    end do
+!
+! - Check NUEQ
+!
+    call nueq_chck(nu//'.NUME',l_error=.true.,l_subs=.true.)
+!
     call jelibe(nu//'.NUME.NUEQ')
     lmat = smdi(neq)
 !     LA STRUCTURE NOMADI A LA LONGUEUR EXACTE: LMAT
