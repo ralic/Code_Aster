@@ -1,6 +1,6 @@
-subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
-                  sdimpr, sddisc, sddyna, sdnume, numedd,&
-                  numins, valinc, solalg)
+subroutine ndxnpa(modele, mate, carele, fonact, sdimpr,&
+                  sddisc, sddyna, sdnume, numedd, numins,&
+                  valinc, solalg)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 #include "asterfort/nmimpa.h"
 #include "asterfort/nmvcle.h"
     integer :: fonact(*)
-    character(len=19) :: sddyna, sdnume, sddisc, lischa
+    character(len=19) :: sddyna, sdnume, sddisc
     character(len=24) :: modele, mate, carele
     character(len=24) :: sdimpr
     integer :: numins
@@ -56,7 +56,6 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT COURANT
@@ -78,7 +77,6 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
     real(kind=8) :: instap
     integer :: jdepde
     integer :: indro
-    character(len=2) :: codret
     real(kind=8), pointer :: depp(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -116,8 +114,7 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 !
 ! --- TRAITEMENT DES VARIABLES DE COMMANDE
 !
-    call nmvcle(modele, mate, carele, lischa, instap,&
-                complu, codret)
+    call nmvcle(modele, mate, carele, instap, complu)
 !
 ! --- ESTIMATIONS INITIALES DES VARIABLES INTERNES
 !

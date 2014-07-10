@@ -176,11 +176,10 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! --- INITIALISATIONS POUR LE NOUVEAU PAS DE TEMPS
 !
-    call nmnpas(modele, noma, mate, carele, lischa,&
-                fonact, sdimpr, sddisc, sdsuiv, sddyna,&
-                sdnume, sdstat, sdtime, numedd, numins,&
-                conv, defico, resoco, valinc, solalg,&
-                solveu)
+    call nmnpas(modele, noma  , mate  , carele, fonact,&
+                sdimpr, sddisc, sdsuiv, sddyna, sdnume,&
+                sdstat, sdtime, numedd, numins, conv,&
+                defico, resoco, valinc, solalg, solveu)
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !

@@ -131,7 +131,6 @@ implicit none
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
-    character(len=2) :: codret
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
@@ -269,8 +268,7 @@ implicit none
 ! --- EXTRACTION VARIABLES DE COMMANDES AU TEMPS T-
 !
     call nmchex(valinc, 'VALINC', 'COMMOI', varc_prev)
-    call nmvcle(model    , mate, carele, lischa, instin,&
-                varc_prev, codret)
+    call nmvcle(model , mate, carele, instin, varc_prev)
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM CONSTANTS AU COURS DU CALCUL
 !

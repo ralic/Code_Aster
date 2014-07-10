@@ -87,7 +87,6 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     integer :: nchar, typcum
     real(kind=8) :: time
     character(len=1) :: typres
-    character(len=2) :: codret
     character(len=8) :: matele
     character(len=14) :: com
     character(len=19) :: chvref, chvarc
@@ -132,8 +131,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 !
     charge = lischa//'.LCHA'
 !
-    call nmvcle(modele, mate, carele, lischa, time,&
-                com, codret)
+    call nmvcle(modele, mate, carele, time, com)
     call vrcref(modele(1:8), mate(1:8), carele(1:8), chvref)
     call nmvcex('TOUT', com, chvarc)
     call nmvcd2('HYDR', mate, lhydr)

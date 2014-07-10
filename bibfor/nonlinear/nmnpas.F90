@@ -1,8 +1,7 @@
-subroutine nmnpas(modele, noma, mate, carele, lischa,&
-                  fonact, sdimpr, sddisc, sdsuiv, sddyna,&
-                  sdnume, sdstat, sdtime, numedd, numins,&
-                  conv, defico, resoco, valinc, solalg,&
-                  solveu)
+subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
+                  sdimpr, sddisc, sdsuiv, sddyna, sdnume,&
+                  sdstat, sdtime, numedd, numins, conv,&
+                  defico, resoco, valinc, solalg, solveu)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +45,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 #include "asterfort/nmvcle.h"
     integer :: fonact(*)
     character(len=8) :: noma
-    character(len=19) :: sddyna, sdnume, sddisc, lischa, solveu
+    character(len=19) :: sddyna, sdnume, sddisc, solveu
     character(len=24) :: modele, mate, carele
     integer :: numins
     real(kind=8) :: conv(*)
@@ -67,7 +66,6 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MATE   : CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT COURANT
@@ -94,7 +92,6 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
     real(kind=8) :: instan
     integer :: jdepde
     integer :: indro
-    character(len=2) :: codret
     aster_logical :: scotch
     character(len=24) :: mdecol
     integer :: jmdeco
@@ -153,8 +150,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
 ! --- TRAITEMENT DES VARIABLES DE COMMANDE
 !
-    call nmvcle(modele, mate, carele, lischa, instan,&
-                complu, codret)
+    call nmvcle(modele, mate, carele, instan, complu)
 !
 ! --- ESTIMATIONS INITIALES DES VARIABLES INTERNES
 !

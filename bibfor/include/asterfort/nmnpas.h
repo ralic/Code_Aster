@@ -16,16 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmnpas(modele, noma, mate, carele, lischa,&
-                      fonact, sdimpr, sddisc, sdsuiv, sddyna,&
-                      sdnume, sdstat, sdtime, numedd, numins,&
-                      conv, defico, resoco, valinc, solalg,&
-                      solveu)
+    subroutine nmnpas(modele, noma  , mate  , carele, fonact,&
+                      sdimpr, sddisc, sdsuiv, sddyna, sdnume,&
+                      sdstat, sdtime, numedd, numins, conv,&
+                      defico, resoco, valinc, solalg, solveu)
         character(len=24) :: modele
         character(len=8) :: noma
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=19) :: lischa
         integer :: fonact(*)
         character(len=24) :: sdimpr
         character(len=19) :: sddisc

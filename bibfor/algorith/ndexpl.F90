@@ -95,9 +95,9 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 !
 ! --- INITIALISATION DES CHAMPS D'INCONNUES POUR LE NOUVEAU PAS DE TEMPS
 !
-    call ndxnpa(modele, mate, carele, lischa, fonact,&
-                sdimpr, sddisc, sddyna, sdnume, numedd,&
-                numins, valinc, solalg)
+    call ndxnpa(modele, mate  , carele, fonact, sdimpr,&
+                sddisc, sddyna, sdnume, numedd, numins,&
+                valinc, solalg)
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !

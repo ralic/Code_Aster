@@ -83,7 +83,6 @@ subroutine op0026()
     integer :: iret, nuord, long
     integer :: nbnobj
     real(kind=8) :: instam, instap, partps(3)
-    character(len=2) :: codret
     character(len=8) :: result, newtab, oldtab
     character(len=16) :: lopt(4), option
     character(len=19) :: lischa, k19bla
@@ -192,10 +191,8 @@ subroutine op0026()
 !
     call nmchex(valinc, 'VALINC', 'COMMOI', commoi)
     call nmchex(valinc, 'VALINC', 'COMPLU', complu)
-    call nmvcle(modele, mate, carele, lischa, instap,&
-                complu, codret)
-    call nmvcle(modele, mate, carele, lischa, instam,&
-                commoi, codret)
+    call nmvcle(modele, mate, carele, instap, complu)
+    call nmvcle(modele, mate, carele, instam, commoi)
 !
 ! - Command variable reference creation
 !
