@@ -87,7 +87,7 @@ cata_msg={
 
 
 20: _(u"""
-  est en dehors de l'intervalle de recherche : [ %(r2)f,  %(r3)f ].
+  est en dehors de l'intervalle de recherche : [ %(r1)f,  %(r2)f ].
 """),
 
 
