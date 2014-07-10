@@ -95,7 +95,7 @@ subroutine te0321(option, nomte)
 !     ON RECALCULE DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
         nomres = 'MS0'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'META_ACIER', 1, 'INST', [0.d0],&
+                    ' ', 'META_ACIER', 0, ' ', [0.d0],&
                     1, nomres, ms0, icodre, 1)
 !
         do 50 kn = 1, nno

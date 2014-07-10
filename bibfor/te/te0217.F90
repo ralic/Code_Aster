@@ -62,7 +62,7 @@ subroutine te0217(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', [0.d0],&
+                ' ', 'THER', 0, ' ', [0.d0],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
     if (option .eq. 'CHAR_THER_GRAI_R') then
