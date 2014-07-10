@@ -89,9 +89,12 @@ Conseil :
 
 """),
 
-
-
-
+18 : _(u"""
+ Erreur utilisateur :
+   Pour les modélisations DKTG et Q4GG, la température doit être 
+   fournie sous le forme 'TEMP_SUP', 'TEMP_INF', ['TEMP_MIL'] et
+   non pas sous la forme 'TEMP'.
+"""),
 
 19 : _(u"""
  problème à l'appel de ALCHML pour  %(k1)s

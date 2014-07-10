@@ -8,6 +8,7 @@ subroutine dxefg2(pgl, sigt)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
+#include "asterfort/assert.h"
     real(kind=8) :: pgl(3, 3), sigt(1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +39,6 @@ subroutine dxefg2(pgl, sigt)
 !     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX POINTS D'INTEGRATION
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: somire
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
     real(kind=8) :: tmoypg, tsuppg, tinfpg
     integer :: icodre
@@ -47,9 +47,9 @@ subroutine dxefg2(pgl, sigt)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: igau, indith, iret1, iret, iretm, jcara
+    integer :: igau, indith, iret, iret1, ireti, irets, iretm, jcara
     integer :: jmate
-    real(kind=8) :: coe1, coe2, epais, tref
+    real(kind=8) :: coe1, coe2, epais, tref, rbid
 !-----------------------------------------------------------------------
     fami = 'RIGI'
     call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
@@ -84,34 +84,48 @@ subroutine dxefg2(pgl, sigt)
 !  --      TEMPERATURES SUR LES FEUILLETS MOYEN, SUPERIEUR ET INFERIEUR
 !  --      AU POINT D'INTEGRATION COURANT
 !          ------------------------------
-            call rcvarc(' ', 'TEMP_INF', '+', fami, igau, 1, tinfpg, iret)
-            call rcvarc(' ', 'TEMP_SUP', '+', fami, igau, 1, tsuppg, iret)
+            call rcvarc(' ', 'TEMP_INF', '+', fami, igau, 1, tinfpg, ireti)
+            call rcvarc(' ', 'TEMP_SUP', '+', fami, igau, 1, tsuppg, irets)
             call rcvarc(' ', 'TEMP_MIL', '+', fami, igau, 1, tmoypg, iretm)
-            if (iret .eq. 0 .and. iretm .ne. 0) tmoypg=(tinfpg+tsuppg)/2.d0
-!
-            somire = iret
-            if (somire .eq. 0) then
-                if (iret1 .eq. 1) then
-                    call utmess('F', 'CALCULEL_31')
-                else
-!
-!  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
-!  --      LAQUELLE LA TEMPERATURE EST PARABOLIQUE DANS L'EPAISSEUR.
-!  --      ON NE PREJUGE EN RIEN DE LA NATURE DU MATERIAU.
-!  --      CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
-!  --      SONT LES RESULTATS DE LA ROUTINE DXMATH.
-!          ----------------------------------------
-                    coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0 - tref
-                    coe2 = (tsuppg-tinfpg)/epais
-!
-                    sigt(1+8* (igau-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
-                    sigt(2+8* (igau-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
-                    sigt(3+8* (igau-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
-                    sigt(4+8* (igau-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
-                    sigt(5+8* (igau-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
-                    sigt(6+8* (igau-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
-                endif
+            ASSERT(ireti.eq.irets)
+
+!           -- si il n'existe ni TEMP_INF, ni TEMP_SUP :
+            if (ireti.ne.0) then
+!               -- si on trouve 'TEMP' : c'est probablement une erreur d'utilisation :
+                call rcvarc(' ', 'TEMP', '+', fami, igau, 1, rbid, iret)
+                if (iret.eq.0) call utmess('F','CALCULEL3_18')
+!               -- sinon, il n'y a rien a calculer
+                ASSERT(igau.eq.1)
+                goto 9999
             endif
+
+
+!           -- si on ne trouve pas TEMP_MIL, on prend la moyenne de TEM_INF te TEMP_SUP :
+            if (iretm .ne. 0) tmoypg=(tinfpg+tsuppg)/2.d0
+!
+            if (iret1 .eq. 1) then
+                call utmess('F', 'CALCULEL_31')
+            else
+!
+!  --          LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
+!  --          LAQUELLE LA TEMPERATURE EST PARABOLIQUE DANS L'EPAISSEUR.
+!  --          ON NE PREJUGE EN RIEN DE LA NATURE DU MATERIAU.
+!  --          CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
+!  --          SONT LES RESULTATS DE LA ROUTINE DXMATH.
+!              ----------------------------------------
+               coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0 - tref
+               coe2 = (tsuppg-tinfpg)/epais
+!
+               sigt(1+8* (igau-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
+               sigt(2+8* (igau-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
+               sigt(3+8* (igau-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
+               sigt(4+8* (igau-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
+               sigt(5+8* (igau-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
+               sigt(6+8* (igau-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
+           endif
         end do
     end if
+
+9999 continue
+
 end subroutine
