@@ -53,8 +53,8 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     integer :: ibid, npres, ncmp, jvalv,  iocc, np, nc, nbtou, nbma
     integer :: jma, nfiss, nfismx
     parameter    (nfismx=100)
-    character(len=8) :: k8b, typmcl(2), fiss(nfismx)
-    character(len=16) :: motclf, motcle(2)
+    character(len=8) :: k8b, fiss(nfismx)
+    character(len=16) :: motclf
     character(len=19) :: carte
     character(len=24) :: mesmai, lismai
     character(len=19) :: cartes(1)
@@ -96,10 +96,6 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
     mesmai = '&&CAPRES.MES_MAILLES'
     lismai = '&&CAPRES.NUM_MAILLES'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
 !
 ! --- STOCKAGE DANS LA CARTE
 !

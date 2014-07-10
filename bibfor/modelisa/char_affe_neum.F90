@@ -8,6 +8,7 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/vetyma.h"
+#include "asterfort/getvid.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,19 +56,27 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
     character(len=16) :: load_type
     character(len=24) :: list_elem
+    character(len=8) :: model
     integer, pointer :: p_list_elem(:) => null()
-    integer :: nb_elem
+    integer :: nb_elem, nbmodel
     integer :: codret, i_carte
 !
 ! --------------------------------------------------------------------------------------------------
 !
     list_elem = '&&LIST_ELEM'
     load_type = keywordfact
+
+    call getvid(' ', 'MODELE', scal=model, nbret=nbmodel)
+
 !
 ! - Elements to apply
 !
-    call getelem(mesh, keywordfact, iocc, 'A', list_elem, &
-                 nb_elem)
+    if (nbmodel.eq.0) then
+        call getelem(mesh, keywordfact, iocc, 'A', list_elem,nb_elem)
+    else
+        call getelem(mesh, keywordfact, iocc, 'A', list_elem,nb_elem,model=model)
+    endif
+
     if (nb_elem .ne. 0) then
 !
 ! ----- Check elements

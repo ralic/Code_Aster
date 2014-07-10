@@ -324,7 +324,8 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 96 : _(u"""
- les %(i1)d mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s
+ les %(i1)d mailles imprimées ci-dessus n'appartiennent pas au modèle 
+ et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s
 """),
 
 97 : _(u"""
