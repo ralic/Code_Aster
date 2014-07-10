@@ -50,6 +50,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -66,26 +67,21 @@ subroutine rehaec(nomres, resgen, nomsst)
     real(kind=8) :: epsi
     character(len=4) :: champ(8)
     character(len=8) :: chmp(3), crit, interp, k8b, nomres, basmod, mailla
-    character(len=8) :: lint, nomsst, modgen, resgen, soutr, k8rep
-    character(len=19) :: numddl, numgen, knume, kfreq, harmge
+    character(len=8) :: lint, nomsst, model_gene, resgen, k8rep
+    character(len=14) :: nume_gene
+    character(len=19) :: numddl, prof_gene, knume, kfreq, harmge
     character(len=24) :: crefe(2), chamba, chamno, seliai, sizlia, sst
     character(len=24) :: valk(2)
     integer :: itresu(3), elim, iret
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: i, i1, iad, iarchi, ibid, ich
+    integer :: i, i1, iad, iarchi, ibid, ich, i_ligr_ss
     integer :: idresu, ieq, ire1, ire2, ire3
     integer :: iretou, j, jfreq, jnume, k, k1, ldnew
-    integer :: lfreq, llchab,   llors, llprs
-    integer ::  lmapro, lmoet, lsilia, lsst
+    integer :: lfreq, llchab, llors, llprs
+    integer :: lmapro, lmoet, lsilia, lsst
     integer :: n1, nbcham, nbddg, nbfreq, nbsst, neq
     integer :: neqet, neqgen, neqred, nusst, nutars
     character(len=24), pointer :: refn(:) => null()
     integer, pointer :: nueq(:) => null()
-    integer, pointer :: nllnequ(:) => null()
-!-----------------------------------------------------------------------
-    data soutr  /'&SOUSSTR'/
 !-----------------------------------------------------------------------
 !
 ! --- ECRITURE DU TITRE
@@ -179,48 +175,44 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
 !
-    call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=numgen(1:14))
-    numgen(15:19) = '.NUME'
-    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
-    modgen = refn(1)(1:8)
-    call jelibe(numgen//'.REFN')
-    call jeveuo(numgen//'.NEQU', 'L', vi=nllnequ)
-    neqgen = nllnequ(1)
-    call jelibe(numgen//'.NEQU')
+    call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=nume_gene)
+    prof_gene = nume_gene//'.NUME'
+    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    model_gene = refn(1)(1:8)
+    call jelibe(prof_gene//'.REFN')
+    call nueq_chck(prof_gene, neqgen)
 !
 ! --- RECUPERATION NUMERO DE LA SOUS-STRUCTURE
 !
-    call jenonu(jexnom(modgen//'      .MODG.SSNO', nomsst), nusst)
+    call jenonu(jexnom(model_gene//'      .MODG.SSNO', nomsst), nusst)
     if (nusst .eq. 0) then
-        valk (1) = modgen
+        valk (1) = model_gene
         valk (2) = nomsst
         call utmess('F', 'ALGORITH14_25', nk=2, valk=valk)
     endif
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-    seliai=numgen(1:14)//'.ELIM.BASE'
-    sizlia=numgen(1:14)//'.ELIM.TAIL'
-    sst=   numgen(1:14)//'.ELIM.NOMS'
+    seliai=nume_gene(1:14)//'.ELIM.BASE'
+    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
+    sst=   nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
 !
     if (elim .eq. 0) then
 !
-        call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
-        call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
+        call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+        call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
+        call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
+        call jelira(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'LONMAX', nbsst)
 !
         nutars=0
         do i = 1, nbsst
             if (zi(llors+i-1) .eq. nusst) nutars=i
         end do
 !
-!
 ! --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
-        call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jeveuo(jexnum(numgen//'.PRNO', ibid), 'L', llprs)
+!
         nbddg=zi(llprs+(nutars-1)*2+1)
         ieq=zi(llprs+(nutars-1)*2)
 !
@@ -228,9 +220,8 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
         neqet=0
         ieq=0
-        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
-        call jeveuo(numgen//'.NEQU', 'L', ibid)
-        neqred=zi(ibid)
+        call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
+        neqred=neqgen
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
@@ -249,7 +240,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION D'INFORMATIONS SUR LA SOUS-STRUCTURE
 !
-    call mgutdm(modgen, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
+    call mgutdm(model_gene, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
     if (elim .ne. 0) then
         call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbddg)
@@ -291,7 +282,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
 !
     iarchi = 0
     if (interp(1:3) .ne. 'NON') then
@@ -346,8 +337,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
                     do k = 1, neq
-                        zc(ldnew+k-1)=zc(ldnew+k-1)+zr(llchab+k-1)*zc(&
-                        iad)
+                        zc(ldnew+k-1)=zc(ldnew+k-1)+zr(llchab+k-1)*zc(iad)
                     end do
                     call jelibe(chamba)
                 end do
@@ -363,7 +353,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --> AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
     call refdcp(basmod, nomres)
-    call jelibe(numgen//'.NUEQ')
+    call jelibe(prof_gene//'.NUEQ')
     call jedetr('&&RETREC.NUM_RANG')
     call jedetr('&&RETREC.FREQ')
 !

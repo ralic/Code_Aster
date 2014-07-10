@@ -16,6 +16,7 @@ subroutine regeec(nomres, resgen, nomsst)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -61,14 +62,15 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !
 !
-    integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k,  llchab
-    integer :: llchol,  llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
+    integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k, llchab, i_ligr_ss
+    integer :: llchol, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
     integer :: neq, nno, numo, nusst, nutars, iadpar(6)
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid
-    character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr
+    character(len=8) :: kbid, basmod, mailla, lint, model_gene
     character(len=16) :: depl, nompar(6), typres, quamod
-    character(len=19) :: raid, numddl, numgen, chamne
+    character(len=19) :: raid, numddl, chamne, prof_gene
+    character(len=14) :: nume_gene
     character(len=24) :: crefe(2), chamol, chamba
     character(len=24) :: valk(2), seliai, sizlia, sst
     complex(kind=8) :: cbid
@@ -79,7 +81,6 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
-    data soutr  /'&SOUSSTR'/
     data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
      &              'TYPE_MODE'/
 !-----------------------------------------------------------------------
@@ -92,20 +93,21 @@ subroutine regeec(nomres, resgen, nomsst)
     call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
     call jeveuo(raid//'.REFA', 'L', vk24=refa)
-    numgen(1:14) = refa(2)
-    numgen(15:19) = '.NUME'
+    nume_gene = refa(2)(1:14)
+    prof_gene = nume_gene(1:14)//'.NUME'
+    call nueq_chck(prof_gene, neqred)
     call jelibe(raid//'.REFA')
 !
-    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
-    modgen = refn(1)
-    call jelibe(numgen//'.REFN')
+    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    model_gene = refn(1)(1:8)
+    call jelibe(prof_gene//'.REFN')
 !
 ! --- RECUPERATION NUMERO DE SOUS-STRUCTURE
 !     ET DU NOEUD TARDIF CORRESPONDANT
 !
-    call jenonu(jexnom(modgen//'      .MODG.SSNO', nomsst), nusst)
+    call jenonu(jexnom(model_gene//'      .MODG.SSNO', nomsst), nusst)
     if (nusst .eq. 0) then
-        valk (1) = modgen
+        valk (1) = model_gene
         valk (2) = nomsst
         call utmess('F', 'ALGORITH14_25', nk=2, valk=valk)
     endif
@@ -114,18 +116,17 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-    seliai=numgen(1:14)//'.ELIM.BASE'
-    sizlia=numgen(1:14)//'.ELIM.TAIL'
-    sst=   numgen(1:14)//'.ELIM.NOMS'
+    seliai=nume_gene(1:14)//'.ELIM.BASE'
+    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
+    sst=   nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
 !
     if (elim .eq. 0) then
 !
-        call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
-        call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
+        call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+        call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
+        call jelira(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'LONMAX', nbsst)
 !
         nutars=0
         do i = 1, nbsst
@@ -133,14 +134,13 @@ subroutine regeec(nomres, resgen, nomsst)
         end do
 !
 !
-        call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jeveuo(jexnum(numgen//'.PRNO', ibid), 'L', llprs)
+        call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
         nbddg=zi(llprs+(nutars-1)*2+1)
         ieq=zi(llprs+(nutars-1)*2)
 !
     else
 !
-        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
+        call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
         call jeveuo(sst, 'L', ibid)
         do i1 = 1, nbsst
             if (nomsst .eq. zk8(ibid+i1-1)) then
@@ -150,8 +150,6 @@ subroutine regeec(nomres, resgen, nomsst)
         neqet=0
         ieq=0
 !
-        call jeveuo(numgen//'.NEQU', 'L', ibid)
-        neqred=zi(ibid)
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
@@ -170,7 +168,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DE LA BASE MODALE
 !
-    call mgutdm(modgen, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
+    call mgutdm(model_gene, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
 !
     call refdcp(basmod, nomres)
@@ -229,7 +227,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RESTITUTION PROPREMENT DITE
 !
-    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
 !
 ! --- BOUCLE SUR LES MODES A RESTITUER
     do i = 1, nbmod(1)
@@ -298,7 +296,7 @@ subroutine regeec(nomres, resgen, nomsst)
         call jelibe(chamol)
     end do
 !
-    call jelibe(numgen//'.NUEQ')
+    call jelibe(prof_gene//'.NUEQ')
     call jedetr('&&REGEEC.NUME')
 !
     call jedema()

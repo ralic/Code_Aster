@@ -17,6 +17,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/rotchm.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -74,13 +75,14 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     integer :: neq, neqs, nno, numo, nutars,   elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
     integer :: iadpar(12)
-    integer :: vali(2)
+    integer :: vali(2), i_ligr_ss
     real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek, fpartx, fparty
     real(kind=8) :: fpartz
     real(kind=8) :: genem, mat(3, 3), omeg2, rbid
-    character(len=8) :: basmod, macrel, modgen, soutr, kbid
+    character(len=8) :: basmod, macrel, model_gene, kbid
     character(len=16) :: depl, nompar(12)
-    character(len=19) :: raid, numddl, numgen, chamne
+    character(len=14) :: nume_gene
+    character(len=19) :: raid, numddl, chamne, prof_gene
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
     character(len=24) :: valk, nomsst, intf
     complex(kind=8) :: cbid
@@ -98,7 +100,6 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
-    data soutr  /'&SOUSSTR'/
     data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
      &            'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
      &            'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
@@ -127,17 +128,18 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
     call jeveuo(raid//'.REFA', 'L', vk24=refa)
-    numgen(1:14)=refa(2)
-    numgen(15:19)='.NUME'
+    nume_gene = refa(2)(1:14)
+    prof_gene = nume_gene//'.NUME'
+    call nueq_chck(prof_gene, neqred)
     call jelibe(raid//'.REFA')
 !
-    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
-    modgen=refn(1)
-    call jelibe(numgen//'.REFN')
+    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    model_gene=refn(1)(1:8)
+    call jelibe(prof_gene//'.REFN')
 !
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
+    call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
     kbid='  '
-    call mgutdm(modgen, kbid, 1, 'NB_CMP_MAX', nbcmp,&
+    call mgutdm(model_gene, kbid, 1, 'NB_CMP_MAX', nbcmp,&
                 kbid)
 !
 !-----RECUPERATION DES ROTATIONS----------------------------------------
@@ -146,7 +148,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     AS_ALLOCATE(vr=roty, size=nbsst)
     AS_ALLOCATE(vr=rotz, size=nbsst)
     do i = 1, nbsst
-        call jeveuo(jexnum(modgen//'      .MODG.SSOR', i), 'L', llrot)
+        call jeveuo(jexnum(model_gene//'      .MODG.SSOR', i), 'L', llrot)
         rotz(i)=zr(llrot)
         roty(i)=zr(llrot+1)
         rotx(i)=zr(llrot+2)
@@ -154,8 +156,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----CREATION DU PROF-CHAMNO-------------------------------------------
 !
-    call genugl(profno, indirf, modgen, mailsk)
-    call jelira(profno//'.NUEQ', 'LONMAX', neq)
+    call genugl(profno, indirf, model_gene, mailsk)
+    call nueq_chck(profno, neq)
 !
 !-----RECUPERATION DU NOMBRE DE NOEUDS----------------------------------
 !
@@ -193,21 +195,15 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-!
-!      SELIAI= '&&'//NUMGEN(1:8)//'PROJ_EQ_LIAI'
-!      SIZLIA='&&'//NUMGEN(1:8)//'VECT_SIZE_SS'
-!      SST=    '&&'//NUMGEN(1:8)//'VECT_NOM_SS'
-    seliai=numgen(1:14)//'.ELIM.BASE'
-    sizlia=numgen(1:14)//'.ELIM.TAIL'
-    sst=   numgen(1:14)//'.ELIM.NOMS'
+    seliai=nume_gene(1:14)//'.ELIM.BASE'
+    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
+    sst=   nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
 !
     if (elim .ne. 0) then
         neqet=0
-        call jeveuo(numgen//'.NEQU', 'L', ibid)
-        neqred=zi(ibid)
-        nomsst=modgen//'      .MODG.SSNO'
+        nomsst=model_gene//'      .MODG.SSNO'
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
@@ -221,11 +217,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !CC---RESTITUTION PROPREMENT DITE---------------------------------------
 !C
 !
-    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
-    call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-    call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
-    call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-    call jeveuo(jexnum(numgen//'.PRNO', ibid), 'L', llprs)
+    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
+    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
 !
 !  BOUCLE SUR LES MODES A RESTITUER
 !
@@ -292,7 +287,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     ieq=zi(llprs+(nutars-1)*2)
                 endif
 !
-                call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
+                call mgutdm(model_gene, kbid, k, 'NOM_BASE_MODALE', ibid,&
                             basmod)
 !
                 call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
@@ -302,7 +297,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     vali (2) = k
                     call utmess('A', 'ALGORITH14_28', ni=2, vali=vali)
                 endif
-                call mgutdm(modgen, kbid, k, 'NOM_MACR_ELEM', ibid,&
+                call mgutdm(model_gene, kbid, k, 'NOM_MACR_ELEM', ibid,&
                             macrel)
                 call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', llmass)
                 call jelira(macrel//'.MAEL_MASS_VALE', 'LONMAX', nbmax)
@@ -310,12 +305,12 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call jeveuo(macrel//'.MAEL_INER_VALE', 'L', vr=mael_iner_vale)
 !
 !           --- CALCUL DE LA MATRICE DE ROTAION ---
-                call jeveuo(jexnum(modgen//'      .MODG.SSOR', k), 'L', llrot)
+                call jeveuo(jexnum(model_gene//'      .MODG.SSOR', k), 'L', llrot)
                 call matrot(zr(llrot), mat)
 !
                 call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
                 kbid='  '
-                call mgutdm(modgen, kbid, k, 'NOM_NUME_DDL', ibid,&
+                call mgutdm(model_gene, kbid, k, 'NOM_NUME_DDL', ibid,&
                             numddl)
                 call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                 AS_ALLOCATE(vr=trav, size=neqs)
@@ -408,7 +403,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
     call jedetr('&&MODE_ETENDU_REST_ELIM')
     call jedetr(indirf)
-    call jelibe(numgen//'.NUEQ')
+    call jelibe(prof_gene//'.NUEQ')
     call jedetr('&&REGEGL.NUME')
 !
     call jedema()

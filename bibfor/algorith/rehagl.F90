@@ -51,6 +51,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rotchc.h"
 #include "asterfort/rsadpa.h"
@@ -69,28 +70,27 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     character(len=4) :: champ(8)
     character(len=6) :: pgc
     character(len=8) :: chmp(3), crit, interp, k8b, nomres, basmod, mailsk
-    character(len=8) :: modgen, resgen, soutr, k8bid, k8rep
-    character(len=19) :: numddl, numgen, knume, kfreq, harmge, profno
+    character(len=8) :: model_gene, resgen, k8bid, k8rep
+    character(len=14) :: nume_gene
+    character(len=19) :: numddl, prof_gene, knume, kfreq, harmge, profno
     character(len=24) :: crefe(2), chamba, indirf, chamno, seliai, sizlia, sst
-    character(len=24) :: valk, nomsst, k24bid
+    character(len=24) :: valk, nomsst
     integer :: itresu(3), elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iar, iarchi, ibid, ich
+    integer :: i, i1, iad, iar, iarchi, ibid, ich, i_ligr_ss
     integer :: idep, idresu, ieq, ire1
     integer :: ire2, ire3, iret, iretou, j, jfreq, jnume
     integer :: k, k1, l, ldnew, lfreq, llchab, llind
-    integer :: llinsk,   llors, llprs
+    integer :: llinsk, llors, llprs
     integer :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
     integer :: nbbas, nbcham, nbcmp, nbcou, nbfreq, nbnot
     integer :: nbsst, neq, neqgen, neqs, numsst, nutars
     integer, pointer :: nueq(:) => null()
-    integer, pointer :: nllnequ(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data pgc   /'REHAGL'/
-    data soutr /'&SOUSSTR'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -193,33 +193,30 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     endif
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
-    call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=k24bid)
-    numgen(1:14)=k24bid(1:14)
-    numgen(15:19) = '.NUME'
-    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
-    k24bid=refn(1)
-    modgen = k24bid(1:8)
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
+    call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=nume_gene)
+    prof_gene = nume_gene//'.NUME'
+    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    model_gene=refn(1)(1:8)
+    call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
     k8bid = '  '
-    call mgutdm(modgen, k8bid, 1, 'NB_CMP_MAX', nbcmp,&
+    call mgutdm(model_gene, k8bid, 1, 'NB_CMP_MAX', nbcmp,&
                 k8bid)
-    call jeveuo(numgen//'.NEQU', 'L', vi=nllnequ)
-    neqgen = nllnequ(1)
+    call nueq_chck(prof_gene, neqgen)
 !
 ! --- RECUPERATION DES ROTATIONS
     call wkvect('&&'//pgc//'ROTX', 'V V R', nbsst, ltrotx)
     call wkvect('&&'//pgc//'ROTY', 'V V R', nbsst, ltroty)
     call wkvect('&&'//pgc//'ROTZ', 'V V R', nbsst, ltrotz)
     do i = 1, nbsst
-        call jeveuo(jexnum(modgen//'      .MODG.SSOR', i), 'L', llrot)
+        call jeveuo(jexnum(model_gene//'      .MODG.SSOR', i), 'L', llrot)
         zr(ltrotz+i-1) = zr(llrot)
         zr(ltroty+i-1) = zr(llrot+1)
         zr(ltrotx+i-1) = zr(llrot+2)
     end do
 !
 ! --- CREATION DU PROF-CHAMNO
-    call genugl(profno, indirf, modgen, mailsk)
-    call jelira(profno//'.NUEQ', 'LONMAX', neq)
+    call genugl(profno, indirf, model_gene, mailsk)
+    call nueq_chck(profno, neq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS
     call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
@@ -252,16 +249,15 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-    seliai=numgen(1:14)//'.ELIM.BASE'
-    sizlia=numgen(1:14)//'.ELIM.TAIL'
-    sst=   numgen(1:14)//'.ELIM.NOMS'
+    seliai=nume_gene(1:14)//'.ELIM.BASE'
+    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
+    sst=   nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
     if (elim .ne. 0) then
         neqet=0
-        call jeveuo(numgen//'.NEQU', 'L', ibid)
-        neqred=zi(ibid)
-        nomsst=modgen//'      .MODG.SSNO'
+        neqred=neqgen
+        nomsst=model_gene//'      .MODG.SSNO'
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
@@ -275,11 +271,10 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
-    call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-    call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
-    call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-    call jeveuo(jexnum(numgen//'.PRNO', ibid), 'L', llprs)
+    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
+    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
 !
     iarchi = 0
 !
@@ -345,11 +340,11 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                             ieq=zi(llprs+(nutars-1)*2)
                         endif
                         k8bid = '  '
-                        call mgutdm(modgen, k8bid, numsst, 'NOM_BASE_MODALE', ibid,&
+                        call mgutdm(model_gene, k8bid, numsst, 'NOM_BASE_MODALE', ibid,&
                                     basmod)
                         call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
                         k8bid = '  '
-                        call mgutdm(modgen, k8bid, numsst, 'NOM_NUME_DDL', ibid,&
+                        call mgutdm(model_gene, k8bid, numsst, 'NOM_NUME_DDL', ibid,&
                                     numddl)
                         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                         call wkvect('&&'//pgc//'.TRAV', 'V V C', neqs, ltvec)
@@ -412,10 +407,6 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call jedetr('&&'//pgc//'ROTY')
     call jedetr('&&'//pgc//'ROTZ')
     call jedetr('&&'//pgc//'.INDIR.SST')
-!
-    goto 999
-!
-999 continue
 !
     call jedema()
 end subroutine

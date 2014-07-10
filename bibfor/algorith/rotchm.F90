@@ -51,6 +51,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nueq_chck.h"
 !
 !
 !
@@ -86,6 +87,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
 !
     nueq=profno//'.NUEQ'
     prno=profno//'.PRNO'
+    call nueq_chck(profno)
 !
     call jenonu(jexnom(prno(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(prno, ibid), 'L', llprno)

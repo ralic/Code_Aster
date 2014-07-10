@@ -112,11 +112,6 @@ cata_msg = {
   le calcul de masses effectives risque d'être imprécis %(i2)d
 """),
 
-30 : _(u"""
- incohérence détectée dans le squelette
- objet non trouvé :  %(k1)s
-"""),
-
 31 : _(u"""
  problème de cohérence entre le nombre de concepts MODE_MECA et
  la liste des NMAX_MODE:

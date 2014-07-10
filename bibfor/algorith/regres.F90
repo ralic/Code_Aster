@@ -14,6 +14,8 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/profchno_crsd.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -48,22 +50,18 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !-----------------------------------------------------------------------
 !
 !
-!
-    character(len=24) :: valk(2)
     character(len=19) :: pfchn1, pfchn2
-    character(len=24) :: objet
     character(len=19) :: chexin, chexou, chamno
-!-----------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
     integer :: i, iadnew, iadold, ieq, igd
-    integer :: iold, iord, iret, j, k,  ldeeq
-    integer :: lnequ, lnunew,   lprnew, lprold
-    integer :: lvnew,  nbord, nbval, ncmp, nddl, ndeeq
+    integer :: iold, iord, iret, j, k, ldeeq
+    integer :: lnunew,  lprnew, lprold
+    integer :: lvnew, nbord, ncmp, nddl, ndeeq
     integer :: ndi, nec, nnodes
+    character(len=24) :: nequ
     character(len=24), pointer :: refe(:) => null()
     integer, pointer :: corres(:) => null()
     integer, pointer :: nueq(:) => null()
+    integer, pointer :: p_nequ(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
@@ -72,6 +70,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call rsexch('F', result, 'DEPL', 1, chamno,&
                 iret)
     call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn1)
+    call nueq_chck(pfchn1)
 !
 !
     call copisd('PROF_CHNO', 'G', pfchn1, pfchn2)
@@ -97,38 +96,20 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         nddl = nddl + zi(lprold+(iold-1)*ndi+1)
     end do
 !
+! - Create prof_chno
 !
+    call profchno_crsd(pfchn2 , 'G', nddl, prno_lengthz = nnodes*ndi)
+    call jeveuo(pfchn2//'.DEEQ', 'E', ldeeq)
+    call jeveuo(pfchn2//'.NUEQ', 'E', lnunew)
+    call jeveuo(jexnum(pfchn2//'.PRNO', 1), 'E', lprnew)
+
 !
-! --- MISE A JOUR DES OBJETS .NUEQ ET .PRNO
-    objet = pfchn2//'.NUEQ'
-    call jeexin(objet, iret)
-    if (iret .ne. 0) then
-        call jedetr(objet)
-        call wkvect(objet, 'G V I', nddl, lnunew)
-    else
-        valk(1) = objet
-        call utmess('F', 'ALGORITH14_30', sk=valk(1))
-    endif
+! - THis is a NUME_EQUA object, not PROF_CHNO one
 !
-    objet = pfchn2//'.NEQU'
-    call wkvect(objet, 'V V I', 2, lnequ)
-    zi(lnequ) = nddl
-!
-    objet = pfchn2//'.PRNO'
-    call jeexin(jexnum(objet, 1), iret)
-    if (iret .ne. 0) then
-        call jeveuo(jexnum(objet, 1), 'E', lprnew)
-        call jelira(jexnum(objet, 1), 'LONMAX', nbval)
-        do i = 1, nbval
-            zi(lprnew-1+i) = 0
-        end do
-        call jeecra(jexnum(objet, 1), 'LONUTI', nnodes*ndi)
-    else
-        valk(1) = objet
-        call utmess('F', 'ALGORITH14_30', sk=valk(1))
-    endif
-!
-!
+    nequ      = pfchn2(1:19)//'.NEQU'
+    call wkvect(nequ, 'V V I', 2, vi = p_nequ)
+    p_nequ(1) = nddl
+
 !
     do iord = 1, nbord
         call rsexch('F', result, 'DEPL', ordr(iord), chexin,&
@@ -173,16 +154,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         endif
     end do
 !
-!  --- MISE A JOUR DU .PROFC.NUME.DEEQ ---
-    objet = pfchn2//'.DEEQ'
-    call jeexin(objet, iret)
-    if (iret .ne. 0) then
-        call jedetr(objet)
-        call wkvect(objet, 'G V I', nddl*2, ldeeq)
-    else
-        valk(1) = objet
-        call utmess('F', 'ALGORITH14_30', sk=valk(1))
-    endif
+    
     ndeeq = 0
     do i = 1, nnodes
         ncmp = zi(lprnew-1+(i-1)*ndi+2)
