@@ -71,7 +71,6 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 #include "asterfort/assert.h"
 #include "asterfort/diagav.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/imppiv.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -90,18 +89,17 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 #include "asterfort/ualfcr.h"
 #include "asterfort/utmess.h"
     character(len=1) :: codmes
-    character(len=19) :: noma19, ligrel, stolci, solvop
+    character(len=19) :: noma19, stolci, solvop
     character(len=14) :: nu
     character(len=*) :: metrez, renum
-    character(len=8) :: nomno, nomcmp, tyddl
     character(len=16) :: metres
     character(len=24) :: kpiv
-    character(len=40) :: infobl, valk(7)
+    character(len=40) ::  valk(2)
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
-    integer :: ifm, niv, nom, neq, lliai, iretp, npvnez
+    integer :: ifm, niv,  nom, neq,  iretp, npvnez
     integer :: typvar, typsym, nbbloc, ilfin1
     integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
-    integer :: ndeci1, ndeci2, ieq4, nzero, vali(2), ipiv
+    integer :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
     complex(kind=8) :: cbid
     integer, pointer :: schc(:) => null()
@@ -139,12 +137,19 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
     call infdbg('FACTOR', ifm, niv)
     if (niv .eq. 2) then
-        write (ifm,*)'<FACTOR> FACTORISATION DE LA MATRICE :',noma19
-        if (typsym .eq. 1) write (ifm,*)'<FACTOR> MATRICE SYMETRIQUE'
-        if (typsym .eq. 0) write (ifm,*)'<FACTOR> MATRICE NON-SYMETRIQUE'
-        if (typvar .eq. 1) write (ifm,*)'<FACTOR> MATRICE REELLE'
-        if (typvar .eq. 2) write (ifm,*)'<FACTOR> MATRICE COMPLEXE'
-        write (ifm,*)'<FACTOR> METHODE '//metres
+        valk(1) = noma19
+        valk(2) = metres
+        call utmess('I', 'FACTOR3_9', nk = 2, valk = valk)
+        if (typsym .eq. 1) then
+            call utmess('I', 'FACTOR3_2')
+        else
+            call utmess('I', 'FACTOR3_10')
+        endif
+        if (typvar .eq. 1) then
+            call utmess('I', 'FACTOR3_4')
+        else
+            call utmess('I', 'FACTOR3_11')
+        endif
     endif
 !
 !
@@ -376,75 +381,43 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     endif
     vali(2)=ndeci
 !
-    valk(1)='XXXX'
-    valk(2)='XXXX'
-    valk(3)='XXXX'
-    valk(4)='XXXX'
-    valk(5)='XXXX'
-    valk(6)='XXXX'
-    valk(7)='XXXX'
+! - Error 
 !
-!
+    if (isingu.eq.-999) then
+        call utmess(codmes, 'FACTOR_12')
+    endif
     if (isingu .gt. 0) then
-        call rgndas(nu, isingu, nomno, nomcmp, tyddl,&
-                    ligrel, infobl)
-        valk(4)=tyddl
-        if (tyddl .eq. 'A') then
-            ASSERT(nomcmp.ne.'LAGR')
-            valk(1)=nomno
-            valk(2)=nomcmp
-        else if (tyddl.eq.'B') then
-!         -- SI C'EST UN SIMPLE BLOCAGE DE DDL PHYSIQUE :
-            valk(3)=infobl
-!
-        else if (tyddl.eq.'C') then
-!         -- SI C'EST UN NOEUD DE LAGRANGE D'UNE LIAISON_DDL
-!            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
-            lliai=index(infobl,'LIAISON_DDL')
-            ASSERT(lliai.gt.0)
-            call imppiv(nu, isingu)
-!
-        else if (tyddl.eq.'D') then
-!           -- CAS NUME_DDL_GENE :
-            valk(5)=nomno
-            valk(6)=nomcmp
-            valk(7)=infobl
+        call rgndas(nu, isingu, l_print = .true.)    
+        if (ndeci.eq.-999) then
+            call utmess(codmes, 'FACTOR_11', si=isingu)
         else
-            ASSERT(.false.)
+            call utmess(codmes, 'FACTOR_10', ni=2, vali=vali)
         endif
     endif
-    call utmess(codmes, 'FACTOR_10', nk=7, valk=valk, ni=2,&
-                vali=vali)
-!
 !
  20 continue
 !     -- IMPRESSIONS INFO=2 :
 !     ------------------------
     if (niv .eq. 2) then
-        write (ifm,*)'<FACTOR> APRES FACTORISATION :'
+        call utmess('I', 'FACTOR3_12', sk = noma19)
         if (nzero .gt. 0) then
-            write (6,*)'<FACTOR> MATRICE NON DEFINIE POSITIVE.'
-            write (6,*)'<FACTOR> IL EXISTE ',nzero,&
-     &      ' ZEROS SUR LA DIAGONALE.'
+            call utmess('I', 'FACTOR3_13', si = nzero)
         endif
-        write (ifm,*)'<FACTOR>  NB MAX. DECIMALES A PERDRE :',ndigi2
-        write (ifm,*)'<FACTOR>  NB DECIMALES PERDUES       :',ndeci
-        write (ifm,*)'<FACTOR>  NUM. EQUATION LA PIRE      :',isingu
-        write (ifm,*)'<FACTOR>  NOMBRE PIVOTS NEGATIFS     :',-npvnez
-        write (ifm,*)'<FACTOR>  CODE ARRET (ISTOP)         :',istop
-        write (ifm,*)'<FACTOR>  CODE RETOUR (IRET)         :',iretz
+        vali(1) = ndigi2
+        vali(2) = ndeci
+        vali(3) = isingu
+        vali(4) = -npvnez
+        vali(5) = istop
+        vali(6) = iretz
+        call utmess('I', 'FACTOR3_14', ni = 6, vali = vali)
 !
 !       -- ALARME EVENTUELLE SI LE PIVOT DEVIENT TROP GRAND :
         if ((metres.ne.'MUMPS') .and. (ndeci2.ge.ndigi2)) then
             ASSERT(ieq4.gt.0 .and. ieq4.le.neq)
-            write (ifm,*)'<FACTOR> PROBLEME FACTORISATION.'
-            write (ifm,*)'<FACTOR> LE PIVOT DEVIENT TRES GRAND',&
-            ' A LA LIGNE:',ieq4
-            write (ifm,*)'<FACTOR> NOMBRE DE DECIMALES PERDUES:',&
-            ndeci2
-            call rgndas(nu, ieq4, nomno, nomcmp, tyddl,&
-                        ligrel, infobl)
-            write (ifm,*)'<FACTOR> NOEUD:',nomno,' CMP:',nomcmp
+            call rgndas(nu, ieq4, l_print = .true.)
+            vali(1) = ieq4
+            vali(2) = ndeci2
+            call utmess('I', 'FACTOR3_15', ni = 2, vali = vali)
         endif
     endif
 !

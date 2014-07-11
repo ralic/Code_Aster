@@ -16,8 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine imppiv(nu, ieq)
-        character(len=*) :: nu
-        integer :: ieq
-    end subroutine imppiv
+    subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lagr,&
+                             nume_cmpz , ligrelz)
+        character(len=*), intent(in) :: prof_chnoz
+        integer, intent(in) :: i_equa
+        integer, intent(in) :: idx_gd
+        integer, intent(out) :: nb_node_lagr
+        integer, pointer, intent(out) :: list_node_lagr(:)
+        integer, optional, intent(out) :: nume_cmpz
+        character(len=*), optional, intent(out) :: ligrelz
+    end subroutine get_lagr_info
 end interface

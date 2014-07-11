@@ -170,7 +170,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 
 
 
-CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,INFO=2,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 5,
@@ -257,6 +257,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 
                                RESI_RELA=-1.),
                     NEWTON=_F(REAC_ITER=1),
+                    AFFICHAGE=_F(INFO_RESIDU='OUI'),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                     );
 

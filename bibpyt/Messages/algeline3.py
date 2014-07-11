@@ -215,17 +215,6 @@ La méthode de résolution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRO
  méthode de BATHE et WILSON : convergence non atteinte
 """),
 
-46: _(u"""
-La matrice %(k1)s est non symétrique.
-Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
-pour une matrice non symétrique.
-"""),
-
-47: _(u"""
-La matrice %(k1)s est complexe.
-Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
-pour une matrice complexe.
-"""),
 
 48: _(u"""
 Cet opérateur a besoin du "procédé de STURM" pour tester la validité de modes propres ou
@@ -233,16 +222,6 @@ pour nourrir un algorithme de recherche de modes propres (dichotomie...). Or cel
 ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
   --> La matrice utilisée ici, %(k1)s ne répond pas a ces critères !
 """),
-
-49: _(u"""
-Attention : plus de six modes de corps rigide ont été détectés.
-
---> Conseil :
-Si vous pensez avoir une seule structure dans le modèle, cela peut provenir de noeud(s) orphelin(s). Dans ce cas, vérifiez le maillage.
-"""),
-
-
-
 
 
 51: _(u"""

@@ -41,32 +41,24 @@ subroutine impcmp(icmp, numedd, chaine)
 !
 !
 !
-    character(len=8) :: nomno, nomcmp, tyddl
-    character(len=16) :: infobl
-    character(len=24) :: ligrel
+    character(len=8) :: nomno, nomcmp, load
+    character(len=1) :: tyddl
 !
 ! ----------------------------------------------------------------------
 !
-    chaine = '                '
+    chaine = ' '
 !
-    if (icmp .eq. 0) then
-        goto 999
-    endif
-!
-    call rgndas(numedd, icmp, nomno, nomcmp, tyddl,&
-                ligrel, infobl)
-!
-    if (tyddl .ne. 'A') then
-        if (infobl(6:6) .eq. ':') then
-            chaine(1:16) = infobl(8:15)//ligrel(1:8)
-        else
-            chaine(1:16) = 'LIAISON'//ligrel(1:8)
+    if (icmp .ne. 0) then
+        call rgndas(numedd, icmp, l_print = .false., type_equaz = tyddl, name_nodez = nomno,&
+                    name_cmpz = nomcmp, ligrelz = load)
+        if (tyddl .eq. 'A') then
+            chaine(1:8)  = nomno
+            chaine(9:16) = nomcmp
+        elseif (tyddl .eq. 'B') then
+            chaine(1:16) = 'Link : '//nomno
+        elseif (tyddl .eq. 'C') then
+            chaine(1:16) = 'Link : '//load
         endif
-    else
-        chaine(1:8) = nomno
-        chaine(9:16) = nomcmp
     endif
-!
-999  continue
 !
 end subroutine

@@ -1,24 +1,19 @@
-subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
-                  ligrel, infobl)
-    implicit none
+subroutine rgndas(nume_ddlz, i_equa , l_print, type_equaz, name_nodez,&
+                  name_cmpz, ligrelz)
+!
+implicit none
+!
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/get_equa_info.h"
+#include "asterfort/equa_print.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
 !
-    integer :: ieq
-    character(len=*) :: nu, nomno, nomcmp, tyddl, ligrel, infobl
-! person_in_charge: jacques.pellet at edf.fr
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,178 +30,141 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     RETROUVER LE NOM DU NOEUD ET LE CMP CORRESPONDANT A UN NUMERO
-!     D'EQUATION DANS UN SYSTEME ASSEMBLE.
-! ----------------------------------------------------------------------
-! IN  : NU     : NOM D'UN NUME_DDL OU D'UN NUME_DDL_GENE
-! IN  : IEQ    : NUMERO D'UNE EQUATION DANS UN SYSTEME ASSEMBLE
-! OUT : NOMNO  : NOM DU NOEUD ASSOCIE A IEQ
-! OUT : NOMCMP : NOM DE LA CMP ASSOCIE A IEQ
-! OUT : TYDDL :   / 'A' : DDL PHYSIQUE (NOEUD, CMP)
-!                 / 'B' : LAGRANGE ASOCIE A UN DDL IMPOSE
-!                 / 'C' : LAGRANGE ASSOCIE A UNE RELATION LINEAIRE
-!                 / 'D' : DDL GENERALISE
-! OUT : LIGREL : NOM DU LIGREL SI LE NOEUD EST 'B' OU 'C' (BLANC SINON)
-! OUT : INFOBL : INFORMATIONS COMPLEMENTAIRES
-! ----------------------------------------------------------------------
-    integer :: gd, nec, jprno, ico
-    integer :: nlili, i, ilo, nbno, ino, ideb, ncmp
-    integer :: icmp, iieq, nuno, nucmp, ncmpmx, iadg1, jrefe
-    integer :: inocmp, nuddl, neq, nusst, nulia, jdeeq, jorig, iexi
-    character(len=8) :: noma, nomno2, nomcm2, modgen, kn1, kn2
-    character(len=19) :: nume
-    aster_logical :: trouve, lnuge
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: nueq(:) => null()
+! person_in_charge: jacques.pellet at edf.fr
 !
-! DEB-------------------------------------------------------------------
+    character(len=*), intent(in) :: nume_ddlz
+    integer, intent(in) :: i_equa
+    logical, intent(in) :: l_print
+    character(len=1), optional, intent(out) :: type_equaz
+    character(len=*), optional, intent(out) :: name_nodez
+    character(len=*), optional, intent(out) :: name_cmpz
+    character(len=*), optional, intent(out) :: ligrelz
 !
-    call jemarq()
-    nume(1:14)=nu
-    nume(15:19)='.NUME'
-    ligrel=' '
-    infobl=' '
-    nomno=' '
-    nomcmp=' '
-    tyddl='?'
+! --------------------------------------------------------------------------------------------------
 !
+! Get and/or print information about dof (node, component, etc.)
 !
-!     -- LNUGE : .TRUE.  : NUME EST UN NUME_DDL_GENE
-!                .FALSE. : NUME EST UN NUME_DDL
-    call jeexin(nume//'.DESC', iexi)
-    lnuge=(iexi.gt.0)
+! --------------------------------------------------------------------------------------------------
 !
+! In  nume_ddl      : name of numbering (NUME_DDL)
+! In  i_equa        : index of equation
+! In  l_print       : .true. to print equation information
+! Out type_equa      : type of dof 
+!                 / 'A' : physical dof (node+component)
+!                 / 'B' : Lagrange dof (boundary condition) simple given boundary condition
+!                 / 'C' : Lagrange dof (boundary condition) linear relation
+!                 / 'D' : generalized dof - Substructuring
+!                 / 'E' : generalized dof - Links
+! Out name_node      : name of the node
+! Out name_cmp       : name of the component
+! Out ligrel         : name of LIGREL for non-physical node (Lagrange)
 !
-!     -- 1. CAS NUME_DDL :
-!     ---------------------
-    if (.not.lnuge) then
-        call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=noma)
-        call dismoi('NUM_GD_SI', nu, 'NUME_DDL', repi=gd)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
-        call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', inocmp)
-        call jeveuo(nume//'.DEEQ', 'L', jdeeq)
-        call jeveuo(nume//'.NUEQ', 'L', vi=nueq)
+! --------------------------------------------------------------------------------------------------
 !
-!       -- 1.1 CAS FACILE : DDL PHYSIQUE :
-        nuno=zi(jdeeq-1+2*(ieq-1)+1)
-        nuddl=zi(jdeeq-1+2*(ieq-1)+2)
-        if (nuno .gt. 0 .and. nuddl .gt. 0) then
-            tyddl='A'
-            call jenuno(jexnum(noma//'.NOMNOE', nuno), nomno)
-            nomcmp=zk8(inocmp-1+nuddl)
-            goto 70
+    integer :: idx_gd, iexi
+    character(len=1) :: type_equa
+    character(len=8) :: mesh, modl_gene, ligrel
+    integer :: nume_node, nume_cmp, nume_cmp_lagr, nume_subs, nume_link
+    character(len=19) :: prof_gene
+    character(len=14) :: nume_ddl
+    character(len=8) :: name_node, name_cmp, name_cmp_lagr, name_subs
+    character(len=8), pointer :: p_cata_nomcmp(:) => null()
+    character(len=24), pointer :: p_refe(:) => null()
+    integer :: nb_node_lagr
+    integer, pointer:: list_node_lagr(:) => null()
 !
-        endif
+! --------------------------------------------------------------------------------------------------
 !
-!       -- 1.2 CAS MOINS FACILE : DDL PORTE PAR NOEUD TARDIF :
-!          CALCUL DE TROUVE, NUNO, NUCMP :
-        call jelira(nume//'.PRNO', 'NMAXOC', nlili)
-        ASSERT(nlili.gt.1)
-        nec=nbec(gd)
-        trouve=.false.
-        do i = 2, nlili
-            call jenuno(jexnum(nume//'.LILI', i), ligrel)
-            call jelira(jexnum(nume//'.PRNO', i), 'LONMAX', ilo)
-            if (ilo .le. 0) goto 30
-            call jeveuo(jexnum(nume//'.PRNO', i), 'L', jprno)
-            nbno=ilo/(nec+2)
-            do ino = 1, nbno
-                ideb=zi(jprno-1+(ino-1)*(nec+2)+1)
-                ncmp=zi(jprno-1+(ino-1)*(nec+2)+2)
-                do icmp = 1, ncmp
-                    iieq=nueq(ideb-1+icmp)
-                    if (ieq .eq. iieq) then
-                        trouve=.true.
-                        nuno=ino
-                        nucmp=icmp
-                        goto 40
+    nume_ddl  = nume_ddlz
+    prof_gene = nume_ddl(1:14)//'.NUME'
+    ligrel    = ' '
+    name_node = ' '
+    name_cmp  = ' '
+    name_cmp_lagr = ' '
+    name_subs = ' '
+
+    call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
+    call dismoi('NUM_GD_SI', nume_ddlz, 'NUME_DDL', repi=idx_gd)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8 = p_cata_nomcmp)
 !
-                    endif
-                end do
-            end do
- 30         continue
-        end do
- 40     continue
-        ASSERT(trouve)
-        ASSERT(nuno.gt.0)
+! - Get information about dof
 !
+    call get_equa_info(nume_ddlz    , i_equa   , type_equa, nume_node   , nume_cmp,&
+                       nume_cmp_lagr, nume_subs, nume_link, nb_node_lagr, list_node_lagr,&
+                       ligrel)
 !
-!       -- CALCUL DE NOMCMP :
-        iadg1=jprno-1+(nuno-1)*(nec+2)+3
-        ico=0
-        do icmp = 1, ncmpmx
-            if (exisdg(zi(iadg1),icmp)) then
-                ico=ico+1
-                if (ico .eq. nucmp) goto 60
-            endif
-        end do
- 60     continue
-        ASSERT(icmp.le.ncmpmx)
-        nomcmp=zk8(inocmp-1+icmp)
-        ASSERT(nomcmp.eq.'LAGR')
+! - Physical dof
 !
-!
-!       -- ON REMPLIT INFOBL:
-        nuno=zi(jdeeq-1+2*(ieq-1)+1)
-        nuddl=zi(jdeeq-1+2*(ieq-1)+2)
-!         -- SI NUNO = 0  C'EST UNE LIAISON_DDL :
-        if (nuno .eq. 0) then
-            tyddl='C'
-            infobl='NOEUD DE LIAISON_DDL'
-        else
-            tyddl='B'
-            call jenuno(jexnum(noma//'.NOMNOE', nuno), nomno2)
-            nomcm2=zk8(inocmp-1+(-nuddl))
-            infobl='NOEUD: '//nomno2//' CMP: '//nomcm2
-        endif
-!
-!
-!     -- 2. CAS NUME_DDL_GENE :
-!     --------------------------
-    else
-        tyddl='D'
-        ligrel=' '
-        infobl=' '
-        call jeveuo(nume//'.DESC', 'L', vi=desc)
-        ASSERT(desc(1).eq.2)
-        call jeveuo(nume//'.DEEQ', 'L', jdeeq)
-        call jelira(nume//'.DEEQ', 'LONMAX', neq)
-        neq=neq/2
-        nuno=zi(jdeeq+2*ieq-1)
-        nucmp=zi(jdeeq+2*ieq-2)
-        if (nuno .gt. 0) then
-            call jeveuo(jexnum(nume//'.ORIG', 1), 'L', jorig)
-            nusst=zi(jorig+nuno-1)
-            call jeexin(nume//'.REFE', iexi)
-            if (iexi .gt. 0) then
-                call jeveuo(nume//'.REFE', 'L', jrefe)
-            else
-                call jeveuo(nume//'.REFN', 'L', jrefe)
-            endif
-            modgen=zk24(jrefe)
-            call jeexin(modgen//'      .MODG.SSNO', iexi)
-            if (iexi .gt. 0) then
-                call jenuno(jexnum(modgen//'      .MODG.SSNO', nusst), nomno)
-            else
-                nomno='UNFOUND'
-            endif
-            nomcmp(1:3)='GEN'
-            write (nomcmp(4:8),'(I5)')nucmp
-        else
-            nuno=-nuno
-            call jeveuo(jexnum(nume//'.ORIG', 2), 'L', jorig)
-            nulia=zi(jorig+nuno+1)
-            nomno(1:3)='TAR'
-            write (nomno(4:8),'(I5)')nuno
-            nomcmp(1:3)='LAG'
-            write (nomcmp(4:8),'(I5)')nucmp
-            write (nomcmp(4:8),'(I5)')nucmp
-            write (kn1(1:7),'(I7)')ieq
-            write (kn2(1:4),'(I4)')nulia
-            infobl='EQUATION:'//kn1//'   LIAISON:'//kn2
-        endif
+    if (type_equa.eq.'A') then
+        call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+        name_cmp = p_cata_nomcmp(nume_cmp)
     endif
 !
- 70 continue
-    call jedema()
+! - Non-Physical dof (Lagrange)
+!
+    if (type_equa.eq.'B') then
+        call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+        name_cmp = p_cata_nomcmp(nume_cmp)
+        ASSERT(name_cmp.eq.'LAGR')
+        name_cmp_lagr = p_cata_nomcmp(nume_cmp_lagr)
+    endif
+!
+! - Non-Physical dof (Lagrange) - LIAISON_DDL
+!
+    if (type_equa.eq.'C') then
+!
+    endif
+!
+! - Generalized dof - Substructuring
+!
+    if (type_equa.eq.'D') then
+        name_cmp = 'GEN'
+        call jeexin(prof_gene//'.REFE', iexi)
+        if (iexi .gt. 0) then
+            call jeveuo(prof_gene//'.REFE', 'L', vk24 = p_refe)
+        else
+            call jeveuo(prof_gene//'.REFN', 'L', vk24 = p_refe)
+        endif
+        modl_gene = p_refe(1)(1:8)
+        call jeexin(modl_gene//'      .MODG.SSNO', iexi)
+        if (iexi .gt. 0) then
+            call jenuno(jexnum(modl_gene//'      .MODG.SSNO', nume_subs), name_subs)
+        else
+            name_subs = 'UNFOUND'
+        endif
+        name_node = name_subs
+    endif
+!
+! - Generalized dof - Kinematic link
+!
+    if (type_equa.eq.'E') then
+        name_node = 'TAR'
+        name_cmp  = 'LAG'
+    endif
+!
+! - Print equation
+!
+    if (l_print) then
+        call equa_print(mesh         , i_equa   , type_equa, name_node   , name_cmp,&
+                        name_cmp_lagr, name_subs, nume_link, nb_node_lagr, list_node_lagr,&
+                        ligrel)
+    endif
+!
+    if (present(name_nodez)) then
+        name_nodez = name_node
+    endif
+    if (present(name_cmpz)) then
+        name_cmpz  = name_cmp
+    endif
+    if (present(type_equaz)) then
+        type_equaz = type_equa
+    endif
+    if (present(ligrelz)) then
+        ligrelz = ligrel
+    endif
+!
+    if (nb_node_lagr.gt.0) then
+        AS_DEALLOCATE(vi=list_node_lagr)
+    endif
+!
 end subroutine

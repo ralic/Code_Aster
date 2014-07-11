@@ -81,11 +81,11 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 ! IN/JXOUT : VEINPN : VECTEUR DES INDICES DE PIVOTS NULS
 !
 !
-    character(len=8) :: nomno, nomcmp, tyddl, renum
+    character(len=1) :: tyddl
+    character(len=8) :: renum
     character(len=16) :: metres
     character(len=14) :: nu
-    character(len=19) :: noma19, nomb19, ligrel
-    character(len=40) :: infobl
+    character(len=19) :: noma19, nomb19
     complex(kind=8) :: cbid
     integer :: ndeci, isingu, nom, neq, typvar, typsym
     integer :: lmatb, ndigi2, npivot,  ksing, nmrav
@@ -118,28 +118,20 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !     -- MONITORING ET VERIFICATIONS :
     if (niv .ge. 2) then
-        write (ifm,*)&
-     &    '<TLDLG2> RECHERCHE DE MODES RIGIDES DE LA MATRICE :',noma19
-        write (ifm,*)'<TLDLG2> DESCRIPTION DE LA MATRICE ',noma19,':'
-    endif
-!
-    if (typsym .eq. 1) then
-        if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE SYMETRIQUE'
-    else
-        if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE NON-SYMETRIQUE'
-        call utmess('F', 'ALGELINE3_46', sk=noma19)
+        call utmess('I', 'FACTOR3_1', sk = noma19) 
+        if (typsym .eq. 1) then
+            call utmess('I', 'FACTOR3_2')
+        else
+            call utmess('F', 'FACTOR3_3', sk = noma19)
+        endif
+        if (typvar .eq. 1) then
+            call utmess('I', 'FACTOR3_4')
+        else
+            call utmess('F', 'FACTOR3_5', sk = noma19)
+        endif
     endif
     ASSERT(typsym.eq.1)
-!
-    if (typvar .eq. 1) then
-        if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE REELLE'
-    else
-        if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE COMPLEXE'
-        call utmess('F', 'ALGELINE3_47', sk=noma19)
-    endif
     ASSERT(typvar.eq.1)
-!
-    if (niv .ge. 2) write (ifm,*)'<TLDLG2> METHODE MULT_FRONT'
 !
 !
 !
@@ -225,11 +217,9 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
         ASSERT(delg(isingu).eq.0)
         posmodri(isingu)=ksing
         if (niv .ge. 2) then
-            write (ifm,*)'<TLDLG2> PIVOT NUL A LA LIGNE ',isingu
-            call rgndas(nu, isingu, nomno, nomcmp, tyddl,&
-                        ligrel, infobl)
-            ASSERT(tyddl.eq.'A'.or.tyddl.eq.'D')
-            write (ifm,*)'<TLDLG2> NOEUD ',nomno,' CMP ',nomcmp
+            call utmess('I', 'FACTOR3_6', si=isingu)
+            call rgndas(nu, isingu, l_print = .true., type_equaz = tyddl)
+            ASSERT(tyddl.eq.'A'.or.tyddl.eq.'D'.or.tyddl.eq.'E')
         endif
     end do
 !
@@ -272,12 +262,10 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !     -- 1.4 : FIN DE BOUCLE RECHERCHE NMRIG :
     AS_DEALLOCATE(vi=ksingu)
     if (niv .ge. 1) then
-        write (ifm,9000)
-        write (ifm,*)'<TLDLG2> NB DE MODES DE CORPS RIGIDES'//&
-        ' DETECTES: ',nmrig
+        call utmess('I', 'FACTOR3_7', si=nmrig)
     endif
     if (nmrig .ge. 7) then
-        call utmess('A', 'ALGELINE3_49')
+        call utmess('A', 'FACTOR3_8')
     endif
 !
 !
@@ -337,11 +325,8 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !     -- NETTOYAGE ET SORTIE :
 !     -------------------------
-    if (niv .ge. 1) write (ifm,9010)
     AS_DEALLOCATE(vi=posmodri)
     call jedetr('&&TLDLG2.TLSECCIN')
     call jedema()
 !
-    9000 format (72x,/)
-    9010 format (72('-'),/)
 end subroutine

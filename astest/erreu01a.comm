@@ -105,7 +105,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "FACTOR_10":
+   if err.id_message == "FACTOR_11":
       is_ok = 1
 
 # TEST_RESU

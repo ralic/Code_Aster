@@ -164,8 +164,6 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
  Ce n'est peut-être pas ce qui est voulu.
 
  Exemple d'un ddl imposé plusieurs fois :
-   Noeud : %(k1)s  Composante : %(k2)s
-
 """),
 
 38 : _(u"""

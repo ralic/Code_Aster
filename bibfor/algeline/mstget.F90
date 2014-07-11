@@ -61,10 +61,10 @@ implicit none
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: neq
-    character(len=8) :: mesh, nomnoe, kbid
+    character(len=8) :: mesh
     character(len=14) :: nume_ddl
-    character(len=16) :: nomcmp, keywordfact
-    character(len=24) :: valk(4), list_node
+    character(len=16) :: keywordfact
+    character(len=24) :: list_node
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -130,7 +130,7 @@ implicit none
         endif
         call jeveuo(list_node, 'L', vi = p_list_node)
 !
-! ----- Set identified dof in the list 
+! ----- Select dof
 !
         call select_dof(list_equa = list_equa, &
                         nume_ddlz = nume_ddl  ,&
@@ -209,18 +209,15 @@ implicit none
             imode = list_equa(ieq) * zi(lcmp+ieq-1)
             iii = zi(jind2+ieq-1) * imode
             if (iii .ne. 0) then
-                call rgndas(nume_ddl, ieq, nomnoe, nomcmp, kbid,&
-                            kbid, kbid)
-                valk (1) = nomnoe
-                valk (2) = nomcmp
+                call rgndas(nume_ddl, ieq, l_print = .true.)
                 if (keywordfact .eq. 'MODE_STAT') then
-                    call utmess('E', 'MODESTAT1_2', nk=4, valk=valk)
+                    call utmess('E', 'MODESTAT1_2')
                 else if (keywordfact.eq.'FORCE_NODALE') then
-                    call utmess('E', 'MODESTAT1_3', nk=4, valk=valk)
+                    call utmess('E', 'MODESTAT1_3')
                 else if (keywordfact.eq.'PSEUDO_MODE') then
-                    call utmess('E', 'MODESTAT1_4', nk=4, valk=valk)
+                    call utmess('E', 'MODESTAT1_4')
                 else if (keywordfact.eq.'MODE_INTERF') then
-                    call utmess('E', 'MODESTAT1_5', nk=4, valk=valk)
+                    call utmess('E', 'MODESTAT1_5')
                 else
                     ASSERT(.false.)
                 endif

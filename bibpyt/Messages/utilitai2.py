@@ -67,11 +67,6 @@ cata_msg = {
  on ne connaît pas ce type d'interpolation:  %(k1)s
 """),
 
-31 : _(u"""
- on ne trouve pas l'équation  %(k1)s  dans le "prof_chno"
-"""),
-
-
 
 
 

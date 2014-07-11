@@ -40,6 +40,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -73,6 +74,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
     real(kind=8) :: r8b, zero, un, coef(3), xnorm
 !
+    character(len=1) :: tyddl
     character(len=8) :: k8b, resu, monaxe, formar, chmat, carael
     character(len=8) :: nomnoe, nomcmp, knum, nomdir
     character(len=14) :: nume
@@ -151,8 +153,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call jelibe(vale)
                 call rsnoch(resu, 'DEPL', imode)
 !              --- LES PARAMETRES ---
-                call rgndas(nume, ieq, nomnoe, nomcmp, k8b,&
-                            k8b, k8b)
+                call rgndas(nume, ieq, l_print = .false., type_equaz = tyddl, &
+                            name_nodez  = nomnoe, name_cmpz = nomcmp)
+                ASSERT(tyddl.eq.'A')
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
                             0, sjv=lnom, styp=k8b)
                 zk16(lnom) = nomnoe//nomcmp
@@ -216,8 +219,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call rsnoch(resu, 'DEPL', imode)
 !
 !              --- LES PARAMETRES ---
-                call rgndas(nume, ieq, nomnoe, nomcmp, k8b,&
-                            k8b, k8b)
+!
+                call rgndas(nume, ieq, l_print = .false.,&
+                            name_nodez  = nomnoe, name_cmpz = nomcmp)
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
                             0, sjv=lnom, styp=k8b)
                 zk16(lnom) = nomnoe//nomcmp
@@ -281,8 +285,8 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call rsnoch(resu, 'DEPL', imode)
 !
 !              --- LES PARAMETRES ---
-                call rgndas(nume, ieq, nomnoe, nomcmp, k8b,&
-                            k8b, k8b)
+                call rgndas(nume, ieq, l_print = .false.,&
+                            name_nodez  = nomnoe, name_cmpz = nomcmp)
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
                             0, sjv=lnom, styp=k8b)
                 zk16(lnom) = nomnoe//nomcmp

@@ -37,42 +37,21 @@ Soit un taux de remplissage de  %(r1)6.3f %%.
 10: _(u"""
 Problème : la matrice est singulière ou presque singulière :
   Lors de la factorisation de la matrice, on a rencontré un problème
-  (pivot nul ou presque nul) à la ligne %(i1)d
-  Le degré de liberté associé à cette ligne est de type : (%(k4)s)
+  (pivot nul ou presque nul) à la ligne %(i1)d qui correspond au degré de liberté donné ci-dessus.
   Le nombre de décimales "perdues" pour cette ligne est : %(i2)d.
   Ce nombre de décimales perdues est lié au degré de singularité de la matrice. 
   Plus il est grand, plus le système est singulier. 
   Quand on a perdu plus de 8 décimales, on estime que l'on a perdu 50%% de la précision
   des nombres réels (qui ont 15 décimales environ).
 
-  Les différents types du degré de liberté sont :
-    * (A) : Degré liberté physique associé au noeud : %(k1)s et à la composante : %(k2)s.
-    * (B) : Degré de liberté de Lagrange associé au blocage : (%(k3)s).
-    * (C) : Degré de liberté de Lagrange associé à une relation linéaire entre plusieurs degrés de liberté.
-            La liste des noeuds impliqués dans cette relation linéaire est imprimée ci-dessus.
-    * (D) : Degré de liberté d'un système "généralisé".
-            Nom du noeud : %(k5)s
-            Composante   : %(k6)s
-            Information complémentaire (éventuellement)   : %(k7)s
-
-Conventions :
-  Ce message peut être émis dans des situations différentes pour lesquelles on ne connaît
-  pas toutes les informations imprimées ci-dessus.
-  On adopte alors les conventions suivantes :
-    * Si le numéro de la ligne est -999 :
-        Soit la matrice est vraiment singulière et la factorisation n'a pu aller jusqu'au bout.
-        Soit on ne sait pas attribuer la singularité de la matrice à une ligne de la matrice.
-    * Si le nombre de décimales perdues est -999 :
-        On ne sait pas déterminer la perte de décimales sur la ligne incriminée,
-
 Risques et conseils :
-   * Si la ligne correspond a un degré de liberté physique (A), il s'agit probablement d'un mouvement
+   * Si la ligne correspond a un degré de liberté physique, il s'agit probablement d'un mouvement
      de corps rigide mal bloqué.
      Vérifiez les conditions aux limites.
      Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
      Vérifiez également les caractéristiques matériaux (module d'Young, ...).
 
-   * Si la ligne correspond a un degré de liberté de Lagrange (B) ou (C), il s'agit sans doute d'une condition
+   * Si la ligne correspond a un degré de liberté de Lagrange, il s'agit sans doute d'une condition
      limite redondante.
      En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
      Peut-être devriez vous exclure certains noeuds des conditions de contact
@@ -90,9 +69,41 @@ Risques et conseils :
 
 """),
 
+11: _(u"""
+Problème : la matrice est singulière ou presque singulière :
+  Lors de la factorisation de la matrice, on a rencontré un problème
+  (pivot nul ou presque nul) à la ligne %(i1)d qui correspond au degré de liberté donné ci-dessus.
 
+Risques et conseils :
+   * Si la ligne correspond a un degré de liberté physique, il s'agit probablement d'un mouvement
+     de corps rigide mal bloqué.
+     Vérifiez les conditions aux limites.
+     Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
+     Vérifiez également les caractéristiques matériaux (module d'Young, ...).
 
+   * Si la ligne correspond a un degré de liberté de Lagrange, il s'agit sans doute d'une condition
+     limite redondante.
+     En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
+     Peut-être devriez vous exclure certains noeuds des conditions de contact
+     (mots clés SANS_NOEUD et SANS_GROUP_NO).
 
+   * Si le solveur utilisé est LDLT ou MULT_FRONT, vous pouvez utiliser le solveur MUMPS
+     car celui-ci est le seul à pouvoir factoriser les matrices qui ne sont pas définies positives.
+
+   * Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
+     très près d'un noeud.
+     Si le nombre de décimales perdues n'est pas trop grand (max 10 décimales),
+     vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
+     mot-clé NPREC du mot clé facteur SOLVEUR.
+     Sinon, contactez l'équipe de développement.
+
+"""),
+
+12: _(u"""
+Problème lors de la factorisation de la matrice: 
+    La matrice est singulière et la factorisation n'a pu aller jusqu'au bout.
+    On ne sait pas attribuer la singularité de la matrice à une ligne de la matrice.
+"""),
 
 
 42: _(u"""

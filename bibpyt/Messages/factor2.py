@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,26 +17,30 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg = {
+cata_msg={
 
-1 : _(u"""
-Aucun noeud n'a été sélectionné pour la commande MODE_STATIQUE.
+
+1: _(u"""
+  Degré de liberté physique associé au noeud %(k1)s et à la composante %(k2)s.
 """),
 
-2 : _(u"""
-Pour le mot clé MODE_STAT, le degré de liberté défini ci-dessus n'est pas bloqué.
+2: _(u"""
+  Degré de liberté de Lagrange associé au blocage du noeud %(k1)s et de la composante %(k2)s.
 """),
 
-3 : _(u"""
-Pour le mot clé FORCE_NODALE, le degré de liberté défini ci-dessus n'est pas libre.
+3: _(u"""
+  Degré de liberté de Lagrange associé à une relation linéaire entre plusieurs degrés de liberté.
+  La relation linéaire a été définie par la commande ayant produit le concept de nom %(k1)s.
+  La liste des noeuds impliqués dans cette relation linéaire est la suivante:
 """),
 
-4 : _(u"""
-Pour le mot clé PSEUDO_MODE, le degré de liberté défini ci-dessus est de type Lagrange.
+4: _(u"""    Noeud %(k1)s"""),
+
+5: _(u"""
+  Degré de liberté d'un système généralisé pour le macro-élément %(k1)s et l'équation %(i1)d.
 """),
 
-5 : _(u"""
-Pour le mot clé MODE_INTERF, le degré de liberté défini ci-dessus n'est pas bloqué.
+6: _(u"""
+  Degré de liberté d'un système généralisé pour la liaison %(i1)d et l'équation %(i2)d.
 """),
-
 }

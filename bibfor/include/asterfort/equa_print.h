@@ -16,14 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez,&
-                      name_cmpz, ligrelz)
-        character(len=*), intent(in) :: nume_ddlz
+    subroutine equa_print(mesh         , i_equa   , type_equa, name_node   , name_cmp,&
+                          name_cmp_lagr, name_subs, nume_link, nb_node_lagr, list_node_lagr,&
+                          ligrel)
+        character(len=8), intent(in) :: mesh
+        character(len=1), intent(in) :: type_equa
         integer, intent(in) :: i_equa
-        logical, intent(in) :: l_print
-        character(len=1), optional, intent(out) :: type_equaz
-        character(len=*), optional, intent(out) :: name_nodez
-        character(len=*), optional, intent(out) :: name_cmpz
-        character(len=*), optional, intent(out) :: ligrelz
-    end subroutine rgndas
+        character(len=8), intent(in) :: name_node
+        character(len=8), intent(in) :: name_cmp
+        character(len=8), intent(in) :: name_cmp_lagr
+        character(len=8), intent(in) :: name_subs
+        integer, intent(in) :: nume_link
+        integer, intent(in) :: nb_node_lagr
+        integer, pointer, intent(in) :: list_node_lagr(:)
+        character(len=8), intent(in) :: ligrel
+    end subroutine equa_print
 end interface
