@@ -105,6 +105,10 @@ subroutine carcha(noch, nomgd, typcha, option, param)
         nomgd = 'SIEF_R'
         typcha = 'NOEU'
         option = 'SIEQ_NOEU'
+    else if (noch.eq.'EFGE_ELNO') then
+        nomgd = 'SIEF_R'
+        typcha = 'ELNO'
+        option = 'EFGE_ELNO'
 !
 !
 !     CHAMP DE GRANDEUR "EPSI_R"
