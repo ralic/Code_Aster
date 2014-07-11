@@ -1,17 +1,6 @@
-subroutine affori(typ, nomt, cara, val, jad,&
-                  jdno, jdco, nutyma, ntseg,&
-                  carori, nco)
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8dgrd.h"
-#include "asterc/r8miem.h"
-#include "asterc/r8prem.h"
-#include "asterfort/angvxy.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vdiff.h"
-    integer :: nco, nutyma, ntseg, jad, jdno, jdco
-    character(len=*) :: typ, nomt, cara, carori(nco)
-    real(kind=8) :: val(6)
+subroutine affori(typ, nomt, cara, val, jad, jin, &
+                  jdno, jdco, nutyma, ntseg, &
+                  lseuil, nbseuil)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,308 +19,231 @@ subroutine affori(typ, nomt, cara, val, jad,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    implicit none
+    integer :: nutyma, ntseg, jad, jin, jdno, jdco
+    character(len=*) :: typ, nomt, cara
+    real(kind=8) :: val(6)
+    real(kind=8), intent(in), optional :: lseuil
+    integer, intent(inout), optional :: nbseuil
+!
 ! --------------------------------------------------------------------------------------------------
 !
 !   AFFECTATION DES ORIENTATIONS AUX POI1 ET SEG2 POSSIBLES DANS LE VECTEUR TAMPON TMPORI
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: car, nom
-    character(len=24) :: valk(2)
-    integer ::  no1, no2, lg, i, locvr(2)
-    real(kind=8) :: x1(3), x2(3), x3(3), angl(3), valr(2)
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer ::  no1, no2, ii
+    character(len=16) :: affcar, nom
+    character(len=24) :: vmessk(2)
+    real(kind=8) :: x1(3), x2(3), x3(3), angl(3), seglong, segseuil
     real(kind=8) :: alpha, beta, gamma
-    real(kind=8) :: dgrd
-    real(kind=8) :: tst
+    aster_logical :: sousseuil,longnulle
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dgrd = r8dgrd()
-    tst = r8miem()
-    car = cara
+    affcar = cara
     nom = nomt
+!   Seuil pour les longueurs
+!       si seglong .LT. segseuil ==> maille est considérée de taille nulle
+    segseuil = -1.0d0
+    if ( present(lseuil) ) then
+        segseuil = lseuil
+    endif
 !
 ! --------------------------------------------------------------------------------------------------
-! Vérifications preliminaires
-!
-! Vérification systématique :
-    locvr(1) = 1
-    locvr(2) = 1
-! --------------------------------------------------------------------------------------------------
-! calcul de la longueur du segment
+!   calcul de la longueur du segment
+    seglong = 0.0d0
+    longnulle = ASTER_TRUE
+    sousseuil = ASTER_TRUE
     if (typ(1:6) .eq. 'MAILLE') then
         if (nutyma .eq. ntseg) then
             no1 = zi(jdno)
             no2 = zi(jdno+1)
-            do i = 1, 3
-                x1(i) = zr(jdco+(no1-1)*3+i-1)
-                x2(i) = zr(jdco+(no2-1)*3+i-1)
+            do ii = 1, 3
+                x1(ii) = zr(jdco+(no1-1)*3+ii-1)
+                x2(ii) = zr(jdco+(no2-1)*3+ii-1)
             enddo
             call vdiff(3, x2, x1, x3)
-            if (abs(x3(1)) .gt. tst .or. abs(x3(2)) .gt. tst .or. abs(x3(3)) .gt. tst) then
-                lg = 1
+            seglong = sqrt( ddot(3,x3,1,x3,1) )
+            if ( seglong .gt. 0.0d0 ) then
+                longnulle = ASTER_FALSE
             else
-                lg = 0
+                longnulle = ASTER_TRUE
             endif
-        else
-            lg = 0
+            if ( seglong .gt. segseuil ) then
+                sousseuil = ASTER_FALSE
+            else
+                sousseuil = ASTER_TRUE
+            endif
         endif
     endif
 !
-! ---------------------------------------------------------------------- cara = "ANGL_VRIL"
-    if (car .eq. carori(4)) then
-        gamma = dgrd * val(1)
-!   maille
+! --------------------------------------------------------------------------------------------------
+    vmessk(1) = affcar
+    vmessk(2) = nom
+! --------------------------------------------------------------------------------------------------
+    if (affcar .eq. 'ANGL_VRIL') then
+        gamma = r8dgrd() * val(1)
         if (typ(1:6) .eq. 'MAILLE') then
-!       si la maille n'est pas un seg2 > return
+!           Si MAILLE : si ce n'est pas un SEG2 <F>
             if (nutyma .ne. ntseg) then
-                if (locvr(1) .eq. 1) then
-                    valk(1) = car
-                    valk(2) = nom
-                    call utmess('F', 'MODELISA_87', nk=2, valk=valk)
-                endif
-                goto 999
+                call utmess('F', 'MODELISA_87', nk=2, valk=vmessk)
             endif
-!       si la maille (seg2) est de longueur nulle > return
-            if (lg .eq. 0) then
-                if (locvr(1) .eq. 1) then
-                    valk(1) = car
-                    valk(2) = nom
-                    call utmess('F', 'MODELISA_88', nk=2, valk=valk)
-                endif
-                goto 999
+!           si longueur(SEG2)=0 ou sous le seuil <F>
+            if (longnulle.or.sousseuil) then
+                call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
             endif
-!       règles de surcharge
-            if (abs(zr(jad+2)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad+2)
-                valr(2) = gamma
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-!       si maille=seg2, longueur<>0 : affectation de gamma seul
+!           Impression message si surcharge
+            call messsurcharge(affcar,nom,'gamma',zi(jin+2),zr(jad+2),gamma)
+!           Affectation de gamma
             zr(jad+2) = gamma
-            goto 999
+            zi(jin+2) = zi(jin+2) + 1
         else
-!       noeud : pas d affectation sur un noeud poi1 > return
-            if (locvr(2) .eq. 1) then
-                valk(1) = car
-                valk(2) = nom
-                call utmess('F', 'MODELISA_89', nk=2, valk=valk)
-            endif
-            goto 999
+!           Noeud : pas d'affectation possible sur un noeud <F>
+            call utmess('F', 'MODELISA_89', nk=2, valk=vmessk)
         endif
-! ---------------------------------------------------------------------- cara = "ANGL_NAUT"
-    else if (car .eq. carori(3)) then
-        alpha = dgrd * val(1)
-        beta = dgrd * val(2)
-        gamma = dgrd * val(3)
-!   maille
+! --------------------------------------------------------------------------------------------------
+    else if (affcar .eq. 'ANGL_NAUT') then
+        alpha = r8dgrd() * val(1)
+        beta  = r8dgrd() * val(2)
+        gamma = r8dgrd() * val(3)
         if (typ(1:6) .eq. 'MAILLE') then
-!       si la maille (seg2) est de longueur non nulle > return
-            if (lg .eq. 1) then
-                if (locvr(1) .eq. 1) then
-                    valk(1) = car
-                    valk(2) = nom
-                    call utmess('F', 'MODELISA_90', nk=2, valk=valk)
-                endif
-            else
-!           règles de surcharge
-                if (abs(zr(jad)) .gt. r8prem()) then
-                    valk(1) = car
-                    valk(2) = nom
-                    valr(1) = zr(jad)
-                    valr(2) = alpha
-                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                                valr=valr)
-                endif
-                if (abs(zr(jad+1)) .gt. r8prem()) then
-                    valk(1) = car
-                    valk(2) = nom
-                    valr(1) = zr(jad+1)
-                    valr(2) = beta
-                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                                valr=valr)
-                endif
-                if (abs(zr(jad+2)) .gt. r8prem()) then
-                    valk(1) = car
-                    valk(2) = nom
-                    valr(1) = zr(jad+2)
-                    valr(2) = gamma
-                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                                valr=valr)
-                endif
-!           si maille seg2 (longueur=0) ou poi1 : 3 angles
-                zr(jad) = alpha
-                zr(jad+1) = beta
-                zr(jad+2) = gamma
-                goto 999
+!           Si MAILLE : si longueur(SEG2)<>0 et au-dessus du seuil <F>
+            if ((.not. longnulle).and.(.not. sousseuil)) then
+                call utmess('F', 'MODELISA_90', nk=2, valk=vmessk, sr=seglong)
             endif
-        else
-!       noeud : règles de surcharge
-            if (abs(zr(jad)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad)
-                valr(2) = alpha
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
+!           si longueur(SEG2)=0 ou sous le seuil
+            if ( present(nbseuil).and.sousseuil ) then
+                nbseuil = nbseuil+1
             endif
-            if (abs(zr(jad+1)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad+1)
-                valr(2) = beta
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-            if (abs(zr(jad+2)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad+2)
-                valr(2) = gamma
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-            zr(jad) = alpha
+!           Impression message si surcharge
+            call messsurcharge(affcar,nom,'alpha',zi(jin),  zr(jad),  alpha)
+            call messsurcharge(affcar,nom,'beta', zi(jin+1),zr(jad+1),beta )
+            call messsurcharge(affcar,nom,'gamma',zi(jin+2),zr(jad+2),gamma)
+!           Affectation des angles
+            zr(jad)   = alpha
             zr(jad+1) = beta
             zr(jad+2) = gamma
-            goto 999
+            zi(jin  ) = zi(jin  ) + 1
+            zi(jin+1) = zi(jin+1) + 1
+            zi(jin+2) = zi(jin+2) + 1
+        else
+!           Impression message si surcharge
+            call messsurcharge(affcar,nom,'alpha',zi(jin),  zr(jad),  alpha)
+            call messsurcharge(affcar,nom,'beta', zi(jin+1),zr(jad+1),beta )
+            call messsurcharge(affcar,nom,'gamma',zi(jin+2),zr(jad+2),gamma)
+!           Affectation des angles
+            zr(jad)   = alpha
+            zr(jad+1) = beta
+            zr(jad+2) = gamma
+            zi(jin  ) = zi(jin  ) + 1
+            zi(jin+1) = zi(jin+1) + 1
+            zi(jin+2) = zi(jin+2) + 1
         endif
 !
-! ---------------------------------------------------------------------- cara = "VECT_X_Y"
-    else if (car .eq. carori(2)) then
-!   maille
+! --------------------------------------------------------------------------------------------------
+    else if (affcar .eq. 'VECT_X_Y') then
         if (typ(1:6) .eq. 'MAILLE') then
-!       si la maille (seg2) est de longueur non nulle > return
-            if (lg .eq. 1) then
-                if (locvr(1) .eq. 1) then
-                    valk(1) = car
-                    valk(2) = nom
-                    call utmess('F', 'MODELISA_90', nk=2, valk=valk)
-                endif
-                goto 999
-            else
-!           si maille seg2 (longueur=0) ou poi1 : 3 angles
-                call angvxy(val(1), val(4), angl)
-                alpha = angl(1)
-                beta = angl(2)
-                gamma = angl(3)
-!           regles de surcharge
-                if (abs(zr(jad)) .gt. r8prem()) then
-                    valk(1) = car
-                    valk(2) = nom
-                    valr(1) = zr(jad)
-                    valr(2) = alpha
-                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                                valr=valr)
-                endif
-                if (abs(zr(jad+1)) .gt. r8prem()) then
-                    valk(1) = car
-                    valk(2) = nom
-                    valr(1) = zr(jad+1)
-                    valr(2) = beta
-                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                                valr=valr)
-                endif
-                if (abs(zr(jad+2)) .gt. r8prem()) then
-                    valk(1) = car
-                    valk(2) = nom
-                    valr(1) = zr(jad+2)
-                    valr(2) = gamma
-                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                                valr=valr)
-                endif
-                zr(jad) = alpha
-                zr(jad+1) = beta
-                zr(jad+2) = gamma
-                goto 999
+!           Si MAILLE : si longueur(SEG2)<>0 et au-dessus du seuil <F>
+            if ((.not. longnulle).and.(.not. sousseuil)) then
+                call utmess('F', 'MODELISA_90', nk=2, valk=vmessk, sr=seglong)
             endif
-        else
-!       noeud : si noeud (POI1) > affectation des 3 angles
+!           si longueur(SEG2)=0 ou sous le seuil
+            if ( present(nbseuil).and.sousseuil ) then
+                nbseuil = nbseuil+1
+            endif
             call angvxy(val(1), val(4), angl)
             alpha = angl(1)
-            beta = angl(2)
+            beta  = angl(2)
             gamma = angl(3)
-!       regles de surcharge
-            if (abs(zr(jad)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad)
-                valr(2) = alpha
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-            if (abs(zr(jad+1)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad+1)
-                valr(2) = beta
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-            if (abs(zr(jad+2)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad+2)
-                valr(2) = gamma
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-            zr(jad) = alpha
+!           Impression message si surcharge
+            call messsurcharge(affcar,nom,'alpha',zi(jin),  zr(jad),  alpha)
+            call messsurcharge(affcar,nom,'beta', zi(jin+1),zr(jad+1),beta )
+            call messsurcharge(affcar,nom,'gamma',zi(jin+2),zr(jad+2),gamma)
+!           Affectation des 3 angles
+            zr(jad)   = alpha
             zr(jad+1) = beta
             zr(jad+2) = gamma
-            goto 999
-        endif
-! ---------------------------------------------------------------------- cara = "VECT_Y"
-    else if (car .eq. carori(1)) then
-!   maille
-        if (typ(1:6) .eq. 'MAILLE') then
-!       si la maille n est pas un seg2 > return
-            if (nutyma .ne. ntseg) then
-                if (locvr(1) .eq. 1) then
-                    valk(1) = car
-                    valk(2) = nom
-                    call utmess('F', 'MODELISA_91', nk=2, valk=valk)
-                endif
-                goto 999
-            endif
-!       si la maille (seg2) est de longueur nulle > goto 999
-            if (lg .eq. 0) then
-                if (locvr(1) .eq. 1) then
-                    valk(1) = car
-                    valk(2) = nom
-                    call utmess('F', 'MODELISA_88', nk=2, valk=valk)
-                endif
-                goto 999
-            endif
-!       si maille = seg2 longueur<>0 : affectation de gamma seul
-            call angvxy(x3, val(1), angl)
-            alpha = angl(1)
-            beta = angl(2)
-            gamma = angl(3)
-!       regles de surcharge
-            if (abs(zr(jad+2)) .gt. r8prem()) then
-                valk(1) = car
-                valk(2) = nom
-                valr(1) = zr(jad+2)
-                valr(2) = gamma
-                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
-                            valr=valr)
-            endif
-            zr(jad+2) = gamma
-            goto 999
+            zi(jin  ) = zi(jin  ) + 1
+            zi(jin+1) = zi(jin+1) + 1
+            zi(jin+2) = zi(jin+2) + 1
         else
-!       noeud : pas d'affectation sur un noeud poi1 > return
-            if (locvr(2) .eq. 1) then
-                valk(1) = car
-                valk(2) = nom
-                call utmess('F', 'MODELISA_89', nk=2, valk=valk)
-            endif
-            goto 999
+!           Si (POI1) : affectation des 3 angles
+            call angvxy(val(1), val(4), angl)
+            alpha = angl(1)
+            beta  = angl(2)
+            gamma = angl(3)
+!           Impression message si surcharge
+            call messsurcharge(affcar,nom,'alpha',zi(jin),  zr(jad),  alpha)
+            call messsurcharge(affcar,nom,'beta', zi(jin+1),zr(jad+1),beta )
+            call messsurcharge(affcar,nom,'gamma',zi(jin+2),zr(jad+2),gamma)
+            zr(jad)   = alpha
+            zr(jad+1) = beta
+            zr(jad+2) = gamma
+            zi(jin  ) = zi(jin  ) + 1
+            zi(jin+1) = zi(jin+1) + 1
+            zi(jin+2) = zi(jin+2) + 1
         endif
+! --------------------------------------------------------------------------------------------------
+    else if (affcar .eq. 'VECT_Y') then
+        if (typ(1:6) .eq. 'MAILLE') then
+!           Si Maille : si ce n'est pas un SEG2 <F>
+            if (nutyma .ne. ntseg) then
+                call utmess('F', 'MODELISA_91', nk=2, valk=vmessk)
+            endif
+!           si longueur(SEG2)=0
+            if (longnulle.or.sousseuil) then
+                call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
+            endif
+!           si longueur(SEG2)<>0
+            call angvxy(x3, val(1), angl)
+            gamma = angl(3)
+!           Impression message si surcharge
+            call messsurcharge(affcar,nom,'gamma',zi(jin+2),zr(jad+2),gamma)
+!           Affectation de gamma
+            zr(jad+2) = gamma
+            zi(jin+2) = zi(jin+2) + 1
+        else
+!           Noeud : pas d'affectation sur un POI1 <F>
+            call utmess('F', 'MODELISA_89', nk=2, valk=vmessk)
+        endif
+    else
+        ASSERT( ASTER_FALSE )
     endif
 !
-999  continue
-end subroutine
+! ==================================================================================================
+contains
+subroutine messsurcharge(kk1,kk2,kk3,ii1,rr1,rr2)
+    character(len=*) :: kk1,kk2,kk3
+    integer :: ii1
+    real(kind=8) :: rr1,rr2
+!
+#include "asterfort/utmess.h"
+#include "asterc/r8rddg.h"
+!
+    character(len=24) :: vmessk(3)
+    real(kind=8) :: vmessr(2)
+!
+    if ((abs(rr1-rr2).gt.r8prem()).and.(ii1.ne.0)) then
+        vmessk(1) = kk1
+        vmessk(2) = kk2
+        vmessk(3) = kk3
+        vmessr(1) = rr1*r8rddg()
+        vmessr(2) = rr2*r8rddg()
+        call utmess('A', 'MODELISA2_7', nk=3, valk=vmessk, nr=2, valr=vmessr)
+    endif
+end subroutine messsurcharge
+!
+end subroutine affori

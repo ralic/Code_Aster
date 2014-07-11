@@ -16,19 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine affori(typ, nomt, cara, val, jad,&
+    subroutine affori(typ, nomt, cara, val, jad, jin,&
                       jdno, jdco, nutyma, ntseg,&
-                      carori, nco)
-        integer :: nco
+                      lseuil, nbseuil)
         character(len=*) :: typ
         character(len=*) :: nomt
         character(len=*) :: cara
         real(kind=8) :: val(6)
         integer :: jad
+        integer :: jin
         integer :: jdno
         integer :: jdco
         integer :: nutyma
         integer :: ntseg
-        character(len=*) :: carori(nco)
+        real(kind=8), intent(in), optional :: lseuil
+        integer, intent(inout), optional :: nbseuil
     end subroutine affori
 end interface

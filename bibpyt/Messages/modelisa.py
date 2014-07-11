@@ -46,7 +46,7 @@ Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
 Risques et conseils :
  On ne peut pas utiliser la fonctionnalité ABSC_CURV sur de tels
  segments.
-  
+
 """),
 
 
@@ -125,9 +125,8 @@ Risques et conseils :
 """),
 
 23 : _(u"""
- AFFE_CARA_ELEM :
- La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit toujours
-être >=1.0
+AFFE_CARA_ELEM :
+La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit toujours être >=1.0
    Valeur donnée : %(r1)f
 """),
 
@@ -481,49 +480,50 @@ Risques et conseils :
 """),
 
 87 : _(u"""
- orientation :
- pas d'affectation d'orientation du type  %(k1)s  sur la maille  %(k2)s
- qui n est pas un SEG2
+AFFE_CARA_ELEM / ORIENTATION :
+  Pas d'affectation d'orientation du type %(k1)s sur la maille %(k2)s qui n'est pas un SEG2.
 """),
 
 88 : _(u"""
- orientation :
- pas d'affectation d'orientation du type  %(k1)s sur la maille  %(k2)s
- de longueur nulle
+AFFE_CARA_ELEM / ORIENTATION :
+  Pas d'affectation d'orientation du type %(k1)s sur la maille %(k2)s de longueur nulle.
 """),
 
 89 : _(u"""
- orientation :
- pas d affectation d orientation du type  %(k1)s  sur le noeud  %(k2)s
+AFFE_CARA_ELEM / ORIENTATION :
+  Pas d affectation d'orientation du type %(k1)s sur le noeud %(k2)s.
 """),
 
 90 : _(u"""
 Erreur d'utilisation pour le mot clé AFFE_CARA_ELEM / ORIENTATION
   Il ne faut pas utiliser le type %(k1)s  sur la maille  %(k2)s
-  qui est de longueur non nulle.
+  qui est de longueur non nulle : %(r1)f.
 """),
 
 91 : _(u"""
  orientation :
- pas d affectation d orientation du type  %(k1)s  sur la maille  %(k2)s
- qui n est pas SEG2
+ pas d'affectation d'orientation du type %(k1)s sur la maille %(k2)s qui n'est pas SEG2.
 """),
 
 92 : _(u"""
- occurrence  %(k1)s de "poutre" (maille  %(k2)s )
+ occurrence  %(k1)s de "poutre" (maille  %(k2)s)
  écrasement d'un type de variation de section par un autre
 """),
 
 93 : _(u"""
- occurrence  %(k1)s de "poutre" (maille  %(k2)s )
- écrasement d'un type de géométrie de section par un autre
+ occurrence  %(k1)s de "poutre" (maille  %(k2)s)
+ écrasement d'un type de géométrie de section par un autre.
 """),
 
 94 : _(u"""
  le DESCRIPTEUR_GRANDEUR des déplacements ne tient pas sur dix entiers codés
 """),
 
-
+95 : _(u"""
+AFFE_CARA_ELEM / ORIENTATION
+  Il y a %(i1)d maille(s) de type SEG2 dont la longueur est considérée comme nulle car
+  inférieure à %(r1)f donnée par le mot clef PRECISION.
+"""),
 
 
 }

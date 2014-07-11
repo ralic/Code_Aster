@@ -53,11 +53,11 @@ Risques et conseils :
 """),
 
 7: _(u"""
-Occurrence de %(k2)s.
-La maille %(k1)s a déjà été affectée par une orientation.
-   Orientation précédente : %(r1)f
-   Orientation nouvelle   : %(r2)f
-La règle de surcharge est appliquée
+Occurrence de %(k1)s.
+La maille %(k2)s a déjà été affectée par l'angle %(k3)s.
+   Orientation précédente : %(r1)f [°]
+   Orientation nouvelle   : %(r2)f [°]
+La règle de surcharge est appliquée.
 """),
 
 8: _(u"""
