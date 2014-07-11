@@ -1,4 +1,5 @@
 subroutine te0478(option, nomte)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,7 +16,20 @@ subroutine te0478(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
     implicit none
+    character(len=16) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     CALCUL DES COORDONNEES DES POINTS DE GAUSS + POIDS
+!     POUR LES ELEMENTS 0D ET 1D (POI ET SEG)
+!
+!     TRAITEMENT SPECIFIQUE POUR LES ELEMENTS A SOUS POINTS
+!     (PMF, TUYAU, COQUE(2D))
+!
+! --------------------------------------------------------------------------------------------------
+!
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
@@ -27,41 +41,32 @@ subroutine te0478(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utpvlg.h"
 !
-    character(len=16) :: option, nomte
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!     CALCUL DES COORDONNEES DES POINTS DE GAUSS + POIDS
-!     POUR LES ELEMENTS 0D ET 1D (POI ET SEG)
-!
-!     TRAITEMENT SPECIFIQUE POUR LES ELEMENTS A SOUS POINTS
-!     (PMF, TUYAU, COQUE(2D))
-!
-! ----------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, jgano, icopg, idfde, ipoids, ivf, igeom
     integer :: tab(2), iret, ndim1, igepo
-    integer :: inbf, nbfib, jacf, iorien, nbsp, nbcou, nbsec
+    integer :: inbf, nbfib, jacf, iorien, nbsp, nbcou, nbsec, nbptcou, nbptsec
     integer :: ncarfi, isec, icou, isp, icoq
-    integer :: ig, ifi, k, i
-    real(kind=8) :: copg(4, 4), copg2(3, 4), pgl(3, 3), gm1(3), gm2(3), airefb
-    real(kind=8) :: epcou, alpha, rayon, ep, y, z, hh, r
+    integer :: ig, ifi, kk, ii, jadr
+    real(kind=8) :: copg(4, 4), copg2(3, 4), pgl(3, 3), gm1(3), gm2(3), airesp
+    real(kind=8) :: epcou, alpha, rayon, ep, yy, zz, hh, rr, rayonsp, wspicou,wspisec
     real(kind=8) :: dfdx(3), cour, jacp, cosa, sina, spoid
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call elrefe_info(fami='RIGI',ndim=ndim1,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ASSERT(npg.le.4)
 !
-!     NDIM1 EST LA DIMENSION TOPOLOGIQUE. IL FAUT CALCULER LA
-!     DIMENSION DE L'ESPACE NDIM (2 OU 3) :
-    call tecach('OOO', 'PGEOMER', 'L', iret, nval=2,&
-                itab=tab)
+!   ndim1 est la dimension topologique. il faut calculer la dimension de l'espace ndim (2 ou 3)
+    call tecach('OOO', 'PGEOMER', 'L', iret, nval=2, itab=tab)
     ndim = tab(2)/nno
     igeom = tab(1)
-!
-!     ZR(ICOPG) : COORDONNEES POINTS DE GAUSS + POIDS
+!   zr(icopg) : coordonnees points de gauss + poids
     call jevech('PCOORPG', 'E', icopg)
 !
-! == POUTRES MULTIFIBRES ==
-!
+! --------------------------------------------------------------------------------------------------
+!   POUTRES MULTIFIBRES
     if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
         call jevech('PNBSP_I', 'L', inbf)
         nbfib = zi(inbf)
@@ -69,135 +74,148 @@ subroutine te0478(option, nomte)
         ncarfi = 3
         call jevech('PCAORIE', 'L', iorien)
         call matrot(zr(iorien), pgl)
-!
-!       POSITION ET POIDS DES POINTS DE GAUSS
+!       position et poids des points de gauss
         call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr( igeom), copg)
-!
+                    zr(idfde), zr(igeom), copg)
         gm1(1)=0.d0
-!       BOUCLE SUR LES FIBRES (4 VALEURS PAR FIBRE, X,Y,Z,W)
-        do 100 ifi = 1, nbfib
+!       boucle sur les fibres/sous-points (4 valeurs par fibre, x,y,z,w)
+        do ifi = 1, nbfib
             gm1(2)=zr(jacf+(ifi-1)*ncarfi)
             gm1(3)=zr(jacf+(ifi-1)*ncarfi+1)
             call utpvlg(1, 3, pgl, gm1, gm2)
-            airefb=zr(jacf+(ifi-1)*ncarfi+2)
+            airesp=zr(jacf+(ifi-1)*ncarfi+2)
+            do ig = 1, npg
+                jadr = icopg+(nbfib*(ig-1)+(ifi-1))*4
+                zr(jadr+0)=copg(1,ig)+gm2(1)
+                zr(jadr+1)=copg(2,ig)+gm2(2)
+                zr(jadr+2)=copg(3,ig)+gm2(3)
+!               pour le poids, on multiplie par l'aire des fibres
+                zr(jadr+3) = copg(4,ig)*airesp
+            enddo
+        enddo
 !
-            do 110 ig = 1, npg
-                zr(icopg-1+4*nbfib*(ig-1)+4*(ifi-1)+1)=copg(1,ig)+gm2(&
-                1)
-                zr(icopg-1+4*nbfib*(ig-1)+4*(ifi-1)+2)=copg(2,ig)+gm2(&
-                2)
-                zr(icopg-1+4*nbfib*(ig-1)+4*(ifi-1)+3)=copg(3,ig)+gm2(&
-                3)
-!           POUR LE POIDS, ON MULTIPLIE PAR L'AIRE DES FIBRES
-                zr(icopg-1+4*nbfib*(ig-1)+4*(ifi-1)+4)=copg(4,ig)*&
-                airefb
-110          continue
-100      continue
-!
-! == TUYAUX ==
-!
-        elseif((nomte.eq.'MET3SEG3').or. (nomte.eq.'MET3SEG4')&
-    .or.(nomte.eq.'MET6SEG3')) then
-!       NOMBRE DE COUCHES ET NOMBRE DE SECTIONS
+! --------------------------------------------------------------------------------------------------
+!   TUYAUX
+    else if((nomte.eq.'MET3SEG3').or.(nomte.eq.'MET3SEG4').or.(nomte.eq.'MET6SEG3')) then
+!       nombre de couches et nombre de sections
         call jevech('PNBSP_I', 'L', inbf)
-        nbcou = zi(inbf )
-        nbsec = 2*zi(inbf+1)+1
-!       NOMBRE DE SOUS POINTS PAR POINT DE GAUSS
-        nbsp= nbsec*(2*nbcou+1)
-!       RAYON ET EPAISSEUR DU TUYAUX
+        nbcou = zi(inbf)
+        nbsec = zi(inbf+1)
+!       Nombre de points sur toutes les couches, tous les secteurs
+        nbptcou = 2*nbcou+1
+        nbptsec = 2*nbsec+1
+!       nombre de sous points par point de gauss
+        nbsp= nbptsec*nbptcou
+!       rayon et epaisseur du tuyau
         call jevech('PCAGEPO', 'L', igepo)
         rayon = zr(igepo)
-        ep = zr(igepo+1)
-        epcou = ep/nbcou
-        call jevech('PCAORIE', 'L', iorien)
+        ep    = zr(igepo+1)
 !
-!       POSITION ET POIDS DES POINTS DE GAUSS
+        call jevech('PCAORIE', 'L', iorien)
+!       position et poids des points de gauss
         call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr( igeom), copg)
+                    zr(idfde), zr(igeom), copg)
 !
         gm1(1)=0.d0
-        do 20 ig = 1, npg
+        alpha = r8pi()/(nbsec)
+        epcou = ep/(2.0d0*nbcou)
+        do ig = 1, npg
+!           L'orientation change en fct du point de Gauss dans le cas courbe
             call matrot(zr(iorien+3*(ig-1)), pgl)
-!         CALCUL DES COORDONNEES ET STOCKAGE
-!         LES SOUS POINTS SONT STOCKES NIVEAU PAR NIVEAU
-!         (IL Y A PLUSIEURS NIVEAUX PAR COUCHE)
-!         EN COMMENCANT PAR LA SECTION Z LOCAL = 0 ET Y >0
-            do 30 isec = 0, nbsec-1
-                alpha=2.d0*r8pi()/(nbsec-1)
-                y=cos(-isec*alpha)
-                z=sin(-isec*alpha)
-                do 40 icou = 1, 2*nbcou+1
-                    gm1(2)=(rayon-ep+(icou-1)*epcou/2)*y
-                    gm1(3)=(rayon-ep+(icou-1)*epcou/2)*z
+!           Calcul des coordonnees et stockage. Les sous points sont stockes niveau par niveau.
+!           Il y a plusieurs niveaux par couche, en commencant par la section z local = 0 et y >0
+            do icou = 1, nbptcou
+!               Poids du sous-point en fonction de la couche
+                if ( (icou.eq.1).or.(icou.eq.nbptcou)) then
+                    wspicou = 1.0d0/3.0d0
+                else
+                    if (mod(icou,2).eq.0) then
+                        wspicou = 4.0d0/3.0d0
+                    else
+                        wspicou = 2.0d0/3.0d0
+                    endif
+                endif
+!               Section concernant le sous-point
+                rayonsp = rayon-ep+(icou-1)*epcou
+                airesp  = rayonsp * epcou * alpha
+                do isec = 1, nbptsec
+                    yy=cos(-(isec-1)*alpha)
+                    zz=sin(-(isec-1)*alpha)
+!                   Poids du sous-point en fonction du secteur
+                    if ( (isec.eq.1).or.(isec.eq.nbptsec)) then
+                        wspisec = 1.0d0/3.0d0
+                    else
+                        if (mod(isec,2).eq.0) then
+                            wspisec = 4.0d0/3.0d0
+                        else
+                            wspisec = 2.0d0/3.0d0
+                        endif
+                    endif
+!                   Position de SP dans la section
+                    gm1(2)=rayonsp*yy
+                    gm1(3)=rayonsp*zz
                     call utpvlg(1, 3, pgl, gm1, gm2)
+                    jadr = icopg+((ig-1)*nbsp+(icou-1)*nbptsec+(isec-1))*4
+                    zr(jadr+0)= copg(1,ig)+gm2(1)
+                    zr(jadr+1)= copg(2,ig)+gm2(2)
+                    zr(jadr+2)= copg(3,ig)+gm2(3)
+!                   Pour le poids
+                    zr(jadr+3)= copg(4,ig)*wspisec*wspicou*airesp
+                enddo
+            enddo
+        enddo
 !
-                    zr(icopg+4*(ig-1)*nbsp+4*(icou-1)*nbsec+isec*4+0)=&
-                    copg(1,ig)+gm2(1)
-                    zr(icopg+4*(ig-1)*nbsp+4*(icou-1)*nbsec+isec*4+1)=&
-                    copg(2,ig)+gm2(2)
-                    zr(icopg+4*(ig-1)*nbsp+4*(icou-1)*nbsec+isec*4+2)=&
-                    copg(3,ig)+gm2(3)
-!              ON LAISSE LE POIDS A 0
-                    zr(icopg+4*(ig-1)*nbsp+4*(icou-1)*nbsec+isec*4+3)=&
-                    0.d0
-!
-40              continue
-30          continue
-20      continue
-!
-! == COQUE(2D) ==
-!
-        elseif((nomte.eq.'METCSE3').or. (nomte.eq.'MECXSE3')&
-    .or.(nomte.eq.'METDSE3')) then
-!
+! --------------------------------------------------------------------------------------------------
+!   COQUE(2D)
+    else if((nomte.eq.'METCSE3').or.(nomte.eq.'MECXSE3').or.(nomte.eq.'METDSE3')) then
         ASSERT(ndim.eq.2)
-!
         call jevech('PNBSP_I', 'L', inbf)
         nbcou=zi(inbf)
         call jevech('PCACOQU', 'L', icoq)
         ep=zr(icoq)
         epcou=ep/nbcou
-!
         call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr( igeom), copg2)
+                    zr(idfde), zr(igeom), copg2)
 !
-        do 50 ig = 1, npg
-!       CALCUL DU VECTEUR NORMAL UNITAIRE AU POINT DE GAUSS
-            k = (ig-1)*nno
-            call dfdm1d(nno, zr(ipoids+ig-1), zr(idfde+k), zr(igeom), dfdx,&
+!       Nombre de point par couche
+        nbptcou = 3
+!       Nombre de sous-points par point de gauss
+        nbsp= nbptcou*nbcou
+!
+        do ig = 1, npg
+!           CALCUL DU VECTEUR NORMAL UNITAIRE AU POINT DE GAUSS
+            kk = (ig-1)*nno
+            call dfdm1d(nno, zr(ipoids+ig-1), zr(idfde+kk), zr(igeom), dfdx,&
                         cour, jacp, cosa, sina)
             if (nomte .eq. 'MECXSE3') then
-                r = 0.d0
-                do 10 i = 1, nno
-                    r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-10              continue
-                jacp = jacp*r
+                rr = 0.d0
+                do ii = 1, nno
+                    rr = rr + zr(igeom+2*(ii-1))*zr(ivf+kk+ii-1)
+                enddo
+                jacp = jacp*rr
             endif
             gm2(1)=cosa
             gm2(2)=sina
 !
-            do 60 icou = 1, nbcou
-                do 70 isp = 1, 3
+            do icou = 1, nbcou
+                do isp = 1, nbptcou
                     hh=-ep/2+(icou-1+0.5d0*(isp-1))*epcou
-                    zr(icopg+(ig-1)*9*nbcou+(icou-1)*9+(isp-1)*3+0)=&
-                    copg2(1,ig)+hh*gm2(1)
-                    zr(icopg+(ig-1)*9*nbcou+(icou-1)*9+(isp-1)*3+1)=&
-                    copg2(2,ig)+hh*gm2(2)
+                    jadr = icopg+((ig-1)*nbsp+(icou-1)*nbptcou+(isp-1))*3
+                    zr(jadr+0) = copg2(1,ig)+hh*gm2(1)
+                    zr(jadr+1) = copg2(2,ig)+hh*gm2(2)
                     if (isp .eq. 2) then
-                        spoid=2.0d0/3
+                        spoid=2.0d0/3.0d0
                     else
-                        spoid=1.0d0/6
+                        spoid=1.0d0/6.0d0
                     endif
-!             POUR LE POIDS, ON MULTIPLIE PAR L'EPAISSEUR PAR COUCHE
-                    zr(icopg+(ig-1)*9*nbcou+(icou-1)*9+(isp-1)*3+2)=&
-                    jacp*spoid*epcou
-70              continue
-60          continue
-50      end do
+!                   pour le poids, on multiplie par l'epaisseur par couche
+                    zr(jadr+2)= jacp*spoid*epcou
+                enddo
+            enddo
+        enddo
 !
-! ==  AUTRES ELEMENTS
-!
+! --------------------------------------------------------------------------------------------------
+!   autres elements
     else
         call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
                     zr(idfde), zr( igeom), zr(icopg))
