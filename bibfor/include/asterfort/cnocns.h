@@ -17,8 +17,8 @@
 !
 interface
     subroutine cnocns(cnoz, basez, cnsz)
-        character(len=*) :: cnoz
-        character(len=*) :: basez
-        character(len=*) :: cnsz
+        character(len=*), intent(in) :: cnoz
+        character(len=*), intent(in) :: cnsz
+        character(len=*), intent(in) :: basez
     end subroutine cnocns
 end interface

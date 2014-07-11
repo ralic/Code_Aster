@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
-                      ncmpmx)
-        character(len=*) :: nomcha
-        character(len=*) :: nomcmp
-        character(len=*) :: corr1
-        character(len=*) :: corr2
-        integer :: ncmp
-        integer :: ncmpmx
+    subroutine cmpcha(fieldz    , cmp_name, cata_to_field, field_to_cata, nb_cmpz,&
+                      nb_cmp_mxz)
+        character(len=*), intent(in) :: fieldz
+        character(len=8), pointer, intent(out) :: cmp_name(:)
+        integer, pointer, intent(out) :: cata_to_field(:)
+        integer, pointer, intent(out) :: field_to_cata(:)
+        integer, optional, intent(out) :: nb_cmpz
+        integer, optional, intent(out) :: nb_cmp_mxz
     end subroutine cmpcha
 end interface

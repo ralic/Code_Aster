@@ -79,10 +79,6 @@ Risques et conseils :
  l'orientation des armatures.
 """),
 
-12 : _(u"""
- Erreur de programmation : le champ %(k1)s est vide.
-"""),
-
 13 : _(u"""
  erreur(s) dans les données.
 """),

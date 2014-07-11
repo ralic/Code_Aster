@@ -1,6 +1,8 @@
 subroutine afva01(typsd, nomsd, nomsym, lautr)
     implicit none
 #include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/jedema.h"
@@ -34,29 +36,30 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 ! BUT : DIRE SI DANS LA SD NOMSD DE TYPE TYPSD=CHAMP/EVOL+NOMSYM
 !       ON TROUVE DES COMPOSANTES AUTRES QUE 'TEMP' ET 'LAGR'
 ! ----------------------------------------------------------------------
-#include "jeveux.h"
-    integer :: ncmp, ncmpmx, k, j1, jordr, j, iret, nbordr(1), ibid
+
+    integer :: nb_cmp, k, jordr, j, iret, nbordr(1), ibid
     character(len=19) :: ch19, kbid, res19
-    character(len=24) :: corr1, corr2, nomcmp
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
+    integer, pointer :: cata_to_field(:) => null()
+    integer, pointer :: field_to_cata(:) => null()
+    character(len=8), pointer :: cmp_name(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    nomcmp='&&AFVAUT.NOMCMP'
-    corr1='&&AFVAUT.CORR1'
-    corr2='&&AFVAUT.CORR2'
-!
 !
     if (typsd .eq. 'CHAMP') then
 !     -----------------------------
         ch19=nomsd
-        call cmpcha(ch19, nomcmp, corr1, corr2, ncmp,&
-                    ncmpmx)
-        call jeveuo(nomcmp, 'L', j1)
-        do 1 k = 1, ncmp
-            if (zk8(j1-1+k) .ne. 'TEMP' .and. zk8(j1-1+k) .ne. 'LAGR') goto 7
-  1     continue
+!
+! ----- Create objects for global components (catalog) <=> local components (field)
+!
+        call cmpcha(ch19, cmp_name, cata_to_field, field_to_cata, nb_cmp)
+        do k=1,nb_cmp
+            if (cmp_name(k) .ne. 'TEMP' .and. cmp_name(k) .ne. 'LAGR') then
+                goto 7
+            endif
+        end do
         goto 8
 !
 !
@@ -74,18 +77,21 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
         do 20 j = 1, nbordr(1)
             call rsexch('F', res19, nomsym, zi(jordr-1+j), ch19,&
                         iret)
-            if (iret .ne. 0) goto 20
+            if (iret .eq. 0) then
 !
-            call cmpcha(ch19, nomcmp, corr1, corr2, ncmp,&
-                        ncmpmx)
-            call jeveuo(nomcmp, 'L', j1)
-            do 2 k = 1, ncmp
-                if (zk8(j1-1+k) .ne. 'TEMP' .and. zk8(j1-1+k) .ne. 'LAGR') goto 7
-  2         continue
-            call jedetr(nomcmp)
-            call jedetr(corr1)
-            call jedetr(corr2)
- 20     continue
+! ------------- Create objects for global components (catalog) <=> local components (field)
+!
+                call cmpcha(ch19, cmp_name, cata_to_field, field_to_cata, nb_cmp)
+                do k=1,nb_cmp
+                    if (cmp_name(k) .ne. 'TEMP' .and. cmp_name(k) .ne. 'LAGR') then
+                        goto 7
+                    endif
+                end do
+                AS_DEALLOCATE(vi = cata_to_field)
+                AS_DEALLOCATE(vi = field_to_cata)
+                AS_DEALLOCATE(vk8 = cmp_name)
+            endif
+20      continue
         call jedetr('&&AFVA01.NUME_ORDRE')
         lautr=.false.
         goto 8
@@ -103,9 +109,9 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 !
   8 continue
 !
-    call jedetr(nomcmp)
-    call jedetr(corr1)
-    call jedetr(corr2)
+    AS_DEALLOCATE(vi = cata_to_field)
+    AS_DEALLOCATE(vi = field_to_cata)
+    AS_DEALLOCATE(vk8 = cmp_name)
 !
     call jedema()
 end subroutine

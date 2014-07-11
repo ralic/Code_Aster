@@ -53,6 +53,8 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/celcel.h"
 #include "asterfort/celver.h"
@@ -108,9 +110,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     integer :: ibid, nbpg, ino, nbgr, inogl, kse
     integer :: iamol1, jcnsv2, mxcmp
     integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
-    integer :: iipg, jceld1, moloc1, ncmpmx
+    integer :: iipg, jceld1,  moloc1, nb_cmp_mx, jcmpgd
     parameter(mxcmp=100)
-    integer :: nuddl(mxcmp), mxvari, iel, ncmp, jnocmp, jcorr1
+    integer :: nuddl(mxcmp), mxvari, iel, nb_cmp
     character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
     character(len=16) :: nomte
     character(len=16) :: optio, param
@@ -120,6 +122,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     real(kind=8), pointer :: celv(:) => null()
     integer, pointer :: liel(:) => null()
     integer, pointer :: connex(:) => null()
+    integer, pointer :: cata_to_field(:) => null()
+    integer, pointer :: field_to_cata(:) => null()
+    character(len=8), pointer :: cmp_name(:) => null()
 !     FONCTIONS FORMULES :
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
 #define nbnoma(ima) zi(jcmaco-1+ima+1)-zi(jcmaco-1+ima)
@@ -156,8 +161,8 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
         call utmess('F', 'CALCULEL2_41')
     endif
     if (celk(1)(1:19) .ne. ligrel) then
-        optio=celk(2)
-        param=celk(6)
+        optio=celk(2)(1:16)
+        param=celk(6)(1:16)
         call chligr(ch1b, ligrel, optio, param, 'V',&
                     '&&ECLPGC.CH1B2')
         ch1b='&&ECLPGC.CH1B2'
@@ -182,24 +187,25 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !     -----------------------------------------------------------------
     if (.not.lvari) then
 !
+! ----- Create objects for global components (catalog) <=> local components (field)
 !
-        call cmpcha(ch1b, '&&ECLPGC.NOM_CMP', '&&ECLPGC.CORR1', '&&ECLPGC.CORR2', ncmp,&
-                    ncmpmx)
-        call jeveuo('&&ECLPGC.NOM_CMP', 'L', jnocmp)
-        call jeveuo('&&ECLPGC.CORR1', 'L', jcorr1)
+        call cmpcha(ch1b     , cmp_name, cata_to_field, field_to_cata, nb_cmp,&
+                    nb_cmp_mx)
     else
 !       -- POUR VARI_R :
         ASSERT(nomg2.eq.'VAR2_R')
-        call dismoi('NB_CMP_MAX', nomg2, 'GRANDEUR', repi=ncmpmx)
-        ASSERT(mxvari.le.ncmpmx)
-        ncmp=mxvari
-        call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg2), 'L', jnocmp)
-        call wkvect('&&ECLPGC.CORR1', 'V V I', ncmp, jcorr1)
-        do k = 1, ncmp
-            zi(jcorr1-1+k)=k
+        call dismoi('NB_CMP_MAX', nomg2, 'GRANDEUR', repi=nb_cmp_mx)
+        ASSERT(mxvari.le.nb_cmp_mx)
+        nb_cmp=mxvari
+        call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg2), 'L', jcmpgd)
+        AS_ALLOCATE(vk8 = cmp_name, size = nb_cmp)
+        AS_ALLOCATE(vi = cata_to_field, size = nb_cmp)
+        do k = 1, nb_cmp
+            cata_to_field(k)=k
+            cmp_name(k) = zk8(jcmpgd-1+k)
         end do
     endif
-    ASSERT(ncmp.le.mxcmp)
+    ASSERT(nb_cmp.le.mxcmp)
 !
 !
 !
@@ -207,7 +213,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !       -- CREATION D'UN CHAM_NO_S : CH2S
 !       -----------------------------------------------------
     ch2s='&&ECLPGC.CH2S'
-    call cnscre(ma2, nomg2, ncmp, zk8(jnocmp), 'V',&
+    call cnscre(ma2, nomg2, nb_cmp, cmp_name, 'V',&
                 ch2s)
     call jeveuo(ch2s//'.CNSV', 'E', jcnsv2)
     call jeveuo(ch2s//'.CNSL', 'E', jcnsl2)
@@ -274,10 +280,10 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
             end do
         else
             nddl=0
-            do k = 1, ncmpmx
+            do k = 1, nb_cmp_mx
                 if (exisdg(zi(iamol1-1+4+1),k)) then
                     nddl=nddl+1
-                    nuddl(nddl)=zi(jcorr1-1+k)
+                    nuddl(nddl)=cata_to_field(k)
                 endif
             end do
         endif
@@ -301,7 +307,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                 do ino = 1, nbno
                     inogl=numglm(ima,ino)
                     do iddl = 1, nddl
-                        ideca2=ncmp*(inogl-1)+nuddl(iddl)
+                        ideca2=nb_cmp*(inogl-1)+nuddl(iddl)
                         jval2=jcnsv2-1+ideca2
                         zl(jcnsl2-1+ideca2)=.true.
                         adiel=zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-&
@@ -332,9 +338,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                 'F', ibid)
     call detrsd('CHAM_NO_S', ch2s)
 !
-    call jedetr('&&ECLPGC.NOM_CMP')
-    call jedetr('&&ECLPGC.CORR1')
-    call jedetr('&&ECLPGC.CORR2')
+    AS_DEALLOCATE(vi = cata_to_field)
+    AS_DEALLOCATE(vi = field_to_cata)
+    AS_DEALLOCATE(vk8 = cmp_name)
 !
 !
  90 continue

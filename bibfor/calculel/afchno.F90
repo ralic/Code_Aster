@@ -3,6 +3,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
                   cval, kval)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/crprno.h"
@@ -43,12 +44,15 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
 !
 !
     character(len=19) :: chamno, prof_chno
-    integer :: ncmp, ncmpmx, jcorr2
+    integer :: ncmp, ncmpmx
 !
 !-----------------------------------------------------------------------
     integer :: i1, ic, idec, iec, ii, inec
     integer :: ino, jj, lnueq, nb_equa, lvale, nb_node
     integer :: nec, nn, idx_gd
+    integer, pointer :: cata_to_field(:) => null()
+    integer, pointer :: field_to_cata(:) => null()
+    character(len=8), pointer :: cmp_name(:) => null()
     integer, pointer :: prno(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -107,16 +111,17 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
         end do
     end do
 !
+! - Create object local components (field) => global components (catalog)
 !
-!     -- CALCUL DE L'OBJET .DEEQ :
-    call cmpcha(chamno, '&&AFCHNO.NOMCMP', '&&AFCHNO.CORR1', '&&AFCHNO.CORR2', ncmp,&
-                ncmpmx)
-    call jeveuo('&&AFCHNO.CORR2', 'L', jcorr2)
-    call pteequ(chamno, base, nb_equa, idx_gd, ncmp,&
-                zi(jcorr2))
-    call jedetr('&&AFCHNO.NOMCMP')
-    call jedetr('&&AFCHNO.CORR1')
-    call jedetr('&&AFCHNO.CORR2')
+    call cmpcha(chamno, cmp_name, cata_to_field, field_to_cata, nb_cmpz = ncmp)
+!
+! - Compute .DEEQ object
+!
+    call pteequ(chamno       , base, nb_equa, idx_gd, ncmp,&
+                field_to_cata)
+    AS_DEALLOCATE(vi = cata_to_field)
+    AS_DEALLOCATE(vi = field_to_cata)
+    AS_DEALLOCATE(vk8 = cmp_name)
 !
     call jedema()
 end subroutine

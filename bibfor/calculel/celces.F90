@@ -60,8 +60,8 @@ subroutine celces(celz, basez, cesz)
     character(len=4) :: typces, kmpic
     character(len=8) :: ma, nomgd
     character(len=19) :: cel, ces, ligrel
-    integer :: nec, gd, ncmpmx, nbma, jcelv
-    integer :: iadg, icmp, ncmp, jcesl, jcesv, kcmp
+    integer :: nec, gd, nb_cmp_mx, nbma,  jcelv
+    integer :: iadg, icmp, nb_cmp, jcesl, jcesv,  kcmp
     integer :: ieq, icmp1, igr, iel, ierr
     integer :: nbpt, nbgr, imolo, jmolo, nbgr2
     integer :: ipt, numa, iad, vali(2)
@@ -72,13 +72,13 @@ subroutine celces(celz, basez, cesz)
     integer, pointer :: liel(:) => null()
     integer, pointer :: lliel(:) => null()
     integer, pointer :: celd(:) => null()
-    integer, pointer :: corr1(:) => null()
-    character(len=8), pointer :: nom_cmp(:) => null()
-    integer, pointer :: corr2(:) => null()
     integer, pointer :: long_pt_cumu(:) => null()
     integer, pointer :: nbcmp(:) => null()
     integer, pointer :: vnbpt(:) => null()
     integer, pointer :: vnbspt(:) => null()
+    integer, pointer :: cata_to_field(:) => null()
+    integer, pointer :: field_to_cata(:) => null()
+    character(len=8), pointer :: cmp_name(:) => null()
 !
 #define numail(igr,iel) liel(lliel(igr)+iel-1)
 !     ------------------------------------------------------------------
@@ -140,22 +140,14 @@ subroutine celces(celz, basez, cesz)
         call utmess('F', 'CALCULEL_19', nk=2, valk=valk, ni=2,&
                     vali=vali)
     endif
+
 !
+! - Create objects for global components (catalog) <=> local components (field)
 !
-!     1.3 ON CHERCHE LES CMPS PRESENTES DANS LE CHAM_ELEM :
-!         NCMP : NOMBRE DE CMPS PRESENTES
-!         '&&CELCES.CORR1': CONTIENT LA CORRESPONDANCE ENTRE LE
-!                           NUMERO D'1 CMP DU CHAM_ELEM ET LE
-!                           NUMERO D'1 CMP DU CHAM_ELEM_S
-!         '&&CELCES.NOM_CMP': CONTIENT LES NOMS DES CMPS DU CHAM_ELEM_S
-!     -----------------------------------------------------------------
-    call cmpcha(cel, '&&CELCES.NOM_CMP', '&&CELCES.CORR1', '&&CELCES.CORR2', ncmp,&
-                ncmpmx)
-    call jeveuo('&&CELCES.NOM_CMP', 'L', vk8=nom_cmp)
-    call jeveuo('&&CELCES.CORR1', 'L', vi=corr1)
-    call jeveuo('&&CELCES.CORR2', 'L', vi=corr2)
-!
-!
+    call cmpcha(cel      , cmp_name, cata_to_field, field_to_cata, nb_cmp,&
+                nb_cmp_mx)
+
+
 !     1.4 CALCUL DE  NBPT(IMA), NBSPT(IMA), NBCMP(IMA)
 !         CALCUL DE  NPTMX : MAXIMUM DU NOMBRE DE POINTS
 !         CALCUL DE  NCDYMX : MAXIMUM DU NOMBRE DE VARI_*
@@ -186,7 +178,7 @@ subroutine celces(celz, basez, cesz)
         ncmpm = 0
         do ipt = 1, nbpt
             iadg = jmolo - 1 + 5
-            do icmp = 1, ncmpmx
+            do icmp = 1, nb_cmp_mx
                 if (exisdg(zi(iadg),icmp)) then
                     ncmpm = max(ncmpm,icmp)
                 endif
@@ -212,7 +204,7 @@ subroutine celces(celz, basez, cesz)
             if (nomgd(1:5) .eq. 'VARI_') then
                 nbcmp(numa) = ncdyn
             else
-                nbcmp(numa) = corr1(ncmpm)
+                nbcmp(numa) = cata_to_field(ncmpm)
             endif
 !
  80         continue
@@ -226,10 +218,10 @@ subroutine celces(celz, basez, cesz)
 !     1.6 ALLOCATION DE CES :
 !     -------------------------------------------
     call dismoi('TYPE_CHAMP', cel, 'CHAM_ELEM', repk=typces)
-    if (nomgd(1:5) .eq. 'VARI_') ncmp = -ncdymx
+    if (nomgd(1:5) .eq. 'VARI_') nb_cmp = -ncdymx
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, nom_cmp, vnbpt, vnbspt, nbcmp)
-!
+                nb_cmp, cmp_name, vnbpt, vnbspt,nbcmp)
+
 !======================================================================
 !
 !     2- REMPLISSAGE DE CES.CESL ET CES.CESV :
@@ -257,8 +249,8 @@ subroutine celces(celz, basez, cesz)
             do ipt = 1, nbpt
                 ico = 0
                 iadg = jmolo - 1 + 5
-                do kcmp = 1, ncmp
-                    icmp = corr2(kcmp)
+                do kcmp = 1, nb_cmp
+                    icmp = field_to_cata(kcmp)
                     if (exisdg(zi(iadg),icmp)) ico = ico + 1
                 end do
                 zi(jlpt-1+ipt) = ico
@@ -281,11 +273,11 @@ subroutine celces(celz, basez, cesz)
                 do ipt = 1, nbpt
                     iadg = jmolo - 1 + 5
                     ico = 0
-                    do kcmp = 1, ncmp
-                        icmp = corr2(kcmp)
+                    do kcmp = 1, nb_cmp
+                        icmp = field_to_cata(kcmp)
                         if (exisdg(zi(iadg),icmp)) then
                             ico = ico + 1
-                            icmp1 = corr1(icmp)
+                            icmp1 = cata_to_field(icmp)
                             ASSERT(icmp1.eq.kcmp)
 !
                             do ispt = 1, nbspt
@@ -382,8 +374,8 @@ subroutine celces(celz, basez, cesz)
     AS_DEALLOCATE(vi=nbcmp)
     call jedetr('&&CELCES.LONG_PT')
     AS_DEALLOCATE(vi=long_pt_cumu)
-    call jedetr('&&CELCES.NOM_CMP')
-    call jedetr('&&CELCES.CORR1')
-    call jedetr('&&CELCES.CORR2')
+    AS_DEALLOCATE(vi = cata_to_field)
+    AS_DEALLOCATE(vi = field_to_cata)
+    AS_DEALLOCATE(vk8 = cmp_name)
     call jedema()
 end subroutine

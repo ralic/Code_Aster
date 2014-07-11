@@ -91,7 +91,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     character(len=24) :: noojb
     character(len=24) :: valk(3)
 !     -----------------------------------------------------------------
-    integer :: icmp, nec, jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
+    integer :: icmp, nec,   jcnsv, jcnsl, gd, iexi, ncmp
     integer :: reste, iec, code, nbno
     integer :: ncmpmx, jrefe, ncmp1, neq2, jcmpgd, icmp1, k, ieq2, iexi2, nbec
     integer :: jprn2, ino, idg2, ico, jvale, iret, n1
@@ -108,6 +108,9 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     character(len=8), pointer :: cnsk(:) => null()
     integer, pointer :: tmp_nucm1(:) => null()
     integer, pointer :: tmp_nucmp(:) => null()
+    integer, pointer :: cata_to_field(:) => null()
+    integer, pointer :: field_to_cata(:) => null()
+    character(len=8), pointer :: cmp_name(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
 !
@@ -257,19 +260,20 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !     5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU PROF_CHNO
 !     ----------------------------------------------------
     if (lpchno) then
-        call cmpcha(cno, '&&CNSCNO.NOMCMP', '&&CNSCNO.CORR1', '&&CNSCNO.CORR2', ncmp,&
-                    ncmpmx)
-        call jeveuo('&&CNSCNO.CORR2', 'L', jcorr2)
+!
+! ----- Create object local components (field) => global components (catalog)
+!
+        call cmpcha(cno, cmp_name, cata_to_field, field_to_cata, nb_cmpz = ncmp)
 !       -- POUR ECONOMISER LA MEMOIRE (PENDANT PTEEQU)
 !          ON LIBERE TEMPORAIREMENT .CNSV ET .CNSL :
         call jelibe(cns//'.CNSV')
         call jelibe(cns//'.CNSL')
         call pteequ(prchno, base, neq2, gd, ncmp,&
-                    zi(jcorr2))
+                    field_to_cata)
 !
-        call jedetr('&&CNSCNO.NOMCMP')
-        call jedetr('&&CNSCNO.CORR1')
-        call jedetr('&&CNSCNO.CORR2')
+        AS_DEALLOCATE(vi = cata_to_field)
+        AS_DEALLOCATE(vi = field_to_cata)
+        AS_DEALLOCATE(vk8 = cmp_name)
         call jeveuo(cns//'.CNSV', 'L', jcnsv)
         call jeveuo(cns//'.CNSL', 'L', jcnsl)
     endif

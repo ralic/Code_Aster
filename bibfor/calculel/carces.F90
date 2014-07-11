@@ -68,7 +68,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, iret, nec, ncmpmx, jdesc, jvale, ngrmx, ncmp
+    integer :: ima, iret, nec, nb_cmp_mx, jdesc, jvale, ngrmx, nb_cmp
     integer ::  jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
     integer :: cmp, ieq, iad, cmp2,    nbpt, ipt
     integer ::   jconx2, isp, nbsp,  kcmp, iret2
@@ -76,12 +76,13 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     character(len=3) :: tsca
     character(len=19) :: cart, ces, cesmod
     integer, pointer :: cemd(:) => null()
-    integer, pointer :: corr1(:) => null()
     integer, pointer :: ptma(:) => null()
-    character(len=8), pointer :: nom_cmp(:) => null()
-    integer, pointer :: corr2(:) => null()
     integer, pointer :: vnbpt(:) => null()
     integer, pointer :: vnbsp(:) => null()
+    integer, pointer :: cata_to_field(:) => null()
+    integer, pointer :: field_to_cata(:) => null()
+    character(len=8), pointer :: cmp_name(:) => null()
+
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -147,26 +148,16 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     endif
     call jeveuo(cart//'.PTMA', 'L', vi=ptma)
 !
+! - Create objects for global components (catalog) <=> local components (field)
 !
-!
-!     4- ON CHERCHE LES CMPS PRESENTES DANS LA CARTE :
-!         NCMP : NOMBRE DE CMPS PRESENTES DANS LA CARTE
-!         '&&CARCES.CORR_CMP': CONTIENT LA CORRESPONDANCE ENTRE LE
-!                           NUMERO D'1 CMP DE LA CARTE ET LE
-!                           NUMERO D'1 CMP DU CHAM_ELEM_S
-!         '&&CARCES.NOM_CMP': CONTIENT LES NOMS DES CMPS DU CHAM_ELEM_S
-!     -----------------------------------------------------------------
-    call cmpcha(cart, '&&CARCES.NOM_CMP', '&&CARCES.CORR1', '&&CARCES.CORR2', ncmp,&
-                ncmpmx)
-    call jeveuo('&&CARCES.NOM_CMP', 'L', vk8=nom_cmp)
-    call jeveuo('&&CARCES.CORR1', 'L', vi=corr1)
-    call jeveuo('&&CARCES.CORR2', 'L', vi=corr2)
+    call cmpcha(cart     , cmp_name, cata_to_field, field_to_cata, nb_cmp,&
+                nb_cmp_mx)
 !
 !
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, nom_cmp, vnbpt, vnbsp, [-ncmp])
+                nb_cmp, cmp_name, vnbpt, vnbsp, [-nb_cmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESC', 'L', jcesc)
@@ -181,21 +172,21 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
         ient = ptma(ima)
         if (ient .eq. 0) goto 120
 !
-        deb1 = (ient-1)*ncmpmx + 1
+        deb1 = (ient-1)*nb_cmp_mx + 1
         debgd = 3 + 2*ngrmx + (ient-1)*nec + 1
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
 !
         ico = 0
-        do kcmp = 1, ncmp
-            cmp = corr2(kcmp)
+        do kcmp = 1, nb_cmp
+            cmp = field_to_cata(kcmp)
             if (.not. (exisdg(zi(jdesc-1+debgd),cmp))) goto 110
             ico = ico + 1
             ieq = deb1 - 1 + ico
 !
-            cmp2 = corr1(cmp)
+            cmp2 = cata_to_field(cmp)
             ASSERT(cmp2.gt.0)
-            ASSERT(cmp2.le.ncmp)
+            ASSERT(cmp2.le.nb_cmp)
 !
             do ipt = 1, nbpt
                 do isp = 1, nbsp
@@ -247,9 +238,9 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     call jedetr(cart//'.PTMA')
     AS_DEALLOCATE(vi=vnbpt)
     AS_DEALLOCATE(vi=vnbsp)
-    call jedetr('&&CARCES.NOM_CMP')
-    call jedetr('&&CARCES.CORR1')
-    call jedetr('&&CARCES.CORR2')
+    AS_DEALLOCATE(vi = cata_to_field)
+    AS_DEALLOCATE(vi = field_to_cata)
+    AS_DEALLOCATE(vk8 = cmp_name)
 !
     call jedema()
 end subroutine
