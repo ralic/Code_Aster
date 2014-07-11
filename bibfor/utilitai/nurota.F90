@@ -1,4 +1,25 @@
-subroutine nurota(numedd, compor, sdnuro)
+subroutine nurota(modelz, nume_ddl, compor, sdnuro)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/typele.h"
+#include "asterfort/sele_elem_comp.h"
+#include "asterfort/sele_node_elem.h"
+#include "asterfort/select_dof.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,265 +39,84 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/etenca.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbelem.h"
-#include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
-#include "asterfort/wkvect.h"
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(in) :: nume_ddl
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: sdnuro
 !
-    character(len=24) :: numedd, compor
-    character(len=24) :: sdnuro
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (INITIALISATION)
 !
-! CREATION DE LA SD POUR REPERAGE DDL GRANDES ROTATIONS
+! Get position of large rotation dof 
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! In  modelz   : name of model
+! In  nume_ddl : name of numbering (NUME_DDL)
+! In  compor   : name of comportment CARTE
+! In  sdnuro   : name of datastructure to save position of large rotation dof 
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_elem_type, nb_cmp, nb_node_found, nb_equa
+    character(len=16) :: defo_comp
+    character(len=8), pointer :: list_cmp(:) => null()
+    integer, pointer :: list_equa(:) => null()
+    integer, pointer :: list_node(:) => null()
+    character(len=16), pointer :: list_elem_type(:) => null()
+    integer, pointer :: list_elem_comp(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! CREATION DE LA S.D. DE NOM SDNURO QUI INDIQUE QUELLES SONT LES
-! ADRESSES DANS L'OBJET .VALE D'UN CHAM_NO S'APPUYANT SUR NUMEDD
-! DES ROTATIONS DRX, DRY, DRZ DES NOEUDS DES MAILLES
+! - Create list of elements type
 !
-! IN  NUMEDD : NOM DE LA NUMEROTATION
-! IN  COMPOR : NOM DE LA CARTE COMPOR
-! IN  SDNURO : NOM DE LA S.D. NUME_DDL_ROTA
+    nb_elem_type = 3
+    AS_ALLOCATE(vk16=list_elem_type, size = nb_elem_type)
+    list_elem_type(1) = 'MECA_POU_D_T_GD'
+    list_elem_type(2) = 'MEC3TR7H'
+    list_elem_type(3) = 'MEC3QU9H'
 !
+! - Create list of components
 !
+    nb_cmp = 3
+    AS_ALLOCATE(vk8=list_cmp, size = nb_cmp)
+    list_cmp(1) = 'DRX'
+    list_cmp(2) = 'DRY'
+    list_cmp(3) = 'DRZ'
 !
+! - Pre-selection of elements which have GROT_GDEP
 !
-    integer :: dg
-    character(len=8) :: nocmp, nomgd, modele, noma
-    character(len=16) :: compt, nomte, deform
-    character(len=19) :: ligrmo
-    character(len=24) :: nolili, noliel
-    integer :: nec, nbma, nbnoeu, ngdmax, ncmpmx
-    integer :: nlili, nbno, nequa, nbnoc
-    integer :: iret, ico
-    integer :: ima, igd, ino, idebgd, idrz, i, k, inoc, ival, iadg
-    integer :: itrav,    iconex
-    integer :: indro, iancmp, ianueq, iaprno
-    integer :: ifm, niv, nbgr, igr, te, nbelgr, liel, iel
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: ptma(:) => null()
-    character(len=16), pointer :: vale(:) => null()
+    defo_comp     = 'GROT_GDEP'
+    call sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 !
-! ----------------------------------------------------------------------
+! - Select nodes by element type
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
+    call sele_node_elem(modelz        , nb_elem_type, list_elem_type, list_node, nb_node_found,&
+                        list_elem_comp)
 !
-! --- INITIALISATIONS
+! - Create list of equations
 !
-    deform = 'GROT_GDEP'
-    nomgd = 'COMPOR  '
-!
-    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
-!
-    ASSERT(nec.le.1)
-!
-! --- MODELE ASSOCIE AU NUME_DDL
-!
-    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-!
-! --- NOM DU MAILLAGE
-!
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-!
-! --- NOMBRE DE MAILLES DU MAILLAGE
-!
-    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-!
-! --- NOMBRE DE NOEUDS DU MAILLAGE
-!
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
-!
-    ligrmo = modele//'.MODELE'
-!
-! --- CREATION DU TABLEAU DESCRIPTEUR DE LA CARTE COMPOR
-!
-    call etenca(compor, ligrmo, iret)
-    ASSERT(iret.eq.0)
-!
-! --- CREATION D'UN VECTEUR DESTINE A CONTENIR LES NUMEROS
-! --- DES NOEUDS EN GRANDES ROTATIONS
-!
-    call wkvect('&&NUROTA.NOEUDS.GR', 'V V I', nbnoeu, itrav)
-!
-! --- RECUPERATION DE LA GRANDEUR (ICI COMPOR)
-! --- REFERENCEE PAR LA CARTE COMPOR
-!
-    call jeveuo(compor(1:19)//'.DESC', 'L', vi=desc)
-    ngdmax = desc(2)
-!
-! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR
-!
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
-!
-! --- TABLEAU DE VALEURS DE LA CARTE COMPOR
-! --- (CONTENANT LES VALEURS DU COMPORTEMENT)
-!
-    call jeveuo(compor(1:19)//'.VALE', 'L', vk16=vale)
-!
-! --- RECUPERATION DU VECTEUR D'ADRESSAGE DANS LA CARTE
-! --- CREE PAR ETENCA
-!
-    call jeveuo(compor(1:19)//'.PTMA', 'L', vi=ptma)
-!
-! --- AFFECTATION DU TABLEAU DES NOEUDS EN GRANDES ROTATIONS
-!
-    nbgr = nbgrel(ligrmo)
-    noliel = ligrmo//'.LIEL'
-    do igr = 1, nbgr
-        te = typele(ligrmo,igr)
-        call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-        if (nomte .eq. 'MECA_POU_D_T_GD' .or. nomte .eq. 'MEC3TR7H' .or. nomte .eq.&
-            'MEC3QU9H') then
-            nbelgr = nbelem(ligrmo,igr)
-            call jeveuo(jexnum(noliel, igr), 'L', liel)
-            do iel = 1, nbelgr
-                ima = zi(liel-1+iel)
-                if (ptma(ima) .ne. 0) then
-                    igd = ptma(ima)
-                    idebgd = (igd-1)*ncmpmx
-                    dg = desc(1+3+2*ngdmax+ptma(ima)-1)
-!
-! ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
-! ---     QUI EST RELCOM A BIEN ETE AFFECTEE
-!
-                    ASSERT(exisdg([dg], 1))
-! ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
-                    compt = vale(1+idebgd+3-1)
-                    if (compt .ne. deform) goto 130
-! ---     RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
-                    call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
-                    call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
-                    do ino = 1, nbno
-                        zi(itrav+zi(iconex+ino-1)-1) = 1
-                    end do
-                endif
-130             continue
-            end do
-        endif
-    end do
-!
-! --- NOMBRE DE NOEUDS EN GRANDES ROTATIONS
-!
-    nbnoc = 0
-    do ino = 1, nbnoeu
-        if (zi(itrav+ino-1) .eq. 1) then
-            nbnoc = nbnoc + 1
-        endif
-    end do
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CREATION SD DDLS EN'//&
-        ' GRANDES ROTATIONS: ',nbnoc
-    endif
-!
-! --- CREATION DU TABLEAU DES NUMEROS D'EQUATIONS CORRESPONDANT   ---
-! --- AUX DDLS DE ROTATION POUR LES NOEUDS EN GRANDES ROTATIONS   ---
-!
-! --- RECUPERATION DU NOMBRE D'INCONNUES DU MODELE  ---
-    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', nequa)
-    if (nbnoc .gt. 0) then
-        call wkvect(sdnuro, 'V V I', nequa, indro)
+    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=nb_equa)
+    if (nb_node_found .gt. 0) then
+        call wkvect(sdnuro, 'V V I', nb_equa, vi = list_equa)
     else
         goto 999
     endif
 !
-    nomgd = 'DEPL_R'
-    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+! - Find components in list of equations
 !
-! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R ---
-!
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iancmp)
-!
-    nocmp = 'DRZ'
-!
-! --- LOCALISATION DE DRZ DANS LA LISTE DES DDLS ASSOCIES  ---
-! ---  A LA GRANDEUR DEPL_R                                ---
-!
-    idrz = indik8(zk8(iancmp),nocmp,1,ncmpmx)
-    if (idrz .eq. 0) then
-        ASSERT(.false.)
-    endif
-!
-! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE  ---
-!
-    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
-    k = 0
-    do i = 1, nlili
-        call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
-        if (nolili(1:8) .ne. '&MAILLA ') goto 40
-        k = i
- 40     continue
-    end do
-    ASSERT(k.ne.0)
-!
-    call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
-!
-! --- TABLEAU DES NUMEROS D'EQUATIONS  ---
-!
-    call jeveuo(numedd(1:14)//'.NUME.NUEQ', 'L', ianueq)
-!
-! --- AFFECTATION DU TABLEAU DES NUMEROS DES INCONNUES ROTATIONS  ---
-! --- DES NOEUDS EN GRANDES ROTATIONS                             ---
-!
-    inoc = 0
-    do ino = 1, nbnoeu
-        if (zi(itrav+ino-1) .eq. 0) goto 50
-        inoc = inoc + 1
-! ---  IVAL  : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
-        ival = zi(iaprno+(ino-1)*(nec+2)+1-1)
-! ---  NCMP  : NOMBRE DE COMPOSANTES SUR LE NOEUD INO
-! ---  IADG  : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
-        iadg = iaprno+(ino-1)*(nec+2)+3-1
-!
-        do i = idrz-2, idrz
-            if (.not.exisdg(zi(iadg),i)) then
-                ASSERT(.false.)
-            endif
-        end do
-        ico = 0
-        do i = 1, idrz-3
-            if (exisdg(zi(iadg),i)) then
-                ico = ico + 1
-            endif
-        end do
-!
-        zi(indro-1+ival-1+ico+1) = 1
-        zi(indro-1+ival-1+ico+2) = 1
-        zi(indro-1+ival-1+ico+3) = 1
-!
- 50     continue
-    end do
-!
-! --- MENAGE
-    call jedetr('&&NUROTA.NOEUDS.GR')
+    call select_dof(list_equa, &
+                       nume_ddlz = nume_ddl,&
+                       only_mesh = .true.  ,&
+                       nb_nodez  = nb_node_found , list_node = list_node,&
+                       nb_cmpz   = nb_cmp        , list_cmp  = list_cmp)
 !
 999 continue
 !
-    call jedema()
+    AS_DEALLOCATE(vi=list_node)
+    AS_DEALLOCATE(vi=list_elem_comp)
+    AS_DEALLOCATE(vk8=list_cmp)
+    AS_DEALLOCATE(vk16=list_elem_type)
 end subroutine

@@ -104,7 +104,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     nomddl = 'LAGR    '
     call wkvect('&&MTCMBI', 'V V I', neq, lddl)
     call pteddl('NUME_DDL', nume, 1, nomddl, neq,&
-                zi(lddl))
+                list_equa = zi(lddl))
     do i = 0, neq - 1
         zi(lddl+i) = 1 - zi(lddl+i)
     end do

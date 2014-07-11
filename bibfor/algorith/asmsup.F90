@@ -100,7 +100,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     do id = 1, 3
         if (ndir(id) .eq. 1) then
             call pteddl('NUME_DDL', nume, 1, nomcmp(id), neq,&
-                        zi(jddl2))
+                        list_equa = zi(jddl2))
             nbbd = 0
             do in = 1, neq
                 nbbd = nbbd + ( zi(jddl1+in-1) * zi(jddl2+in-1) )

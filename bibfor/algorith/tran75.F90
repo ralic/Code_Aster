@@ -465,7 +465,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
                 AS_ALLOCATE(vi=ddl, size=neq*nbdir)
                 call pteddl('NUME_DDL', numddl, nbdir, nomcmp, neq,&
-                            ddl)
+                            tabl_equa = ddl)
                 do id = 1, nbdir
                     do ie = 0, neq-1
                         zr(jvec+ie) = zr(jvec+ie) + ddl(1+neq*(id-1) +ie)*alpha*depl(id)

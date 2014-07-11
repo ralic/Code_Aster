@@ -177,7 +177,7 @@ subroutine ajlagr(rigid, masse, masinv)
     mxddl = 1
     AS_ALLOCATE(vi=lagr, size=neq*mxddl)
     call pteddl('NUME_DDL', numddl, mxddl, nomddl, neq,&
-lagr)
+                 tabl_equa = lagr)
     call jeveuo(masi//'           .CONL', 'E', jconl)
     if (typmat .eq. 'R') then
         do 30 i = 0, neq-1

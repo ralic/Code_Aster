@@ -1,5 +1,13 @@
 subroutine nmnume(modele, result, lischa, lcont, defico,&
                   compor, solveu, numedd, sdnume)
+implicit none
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/nmprof.h"
+#include "asterfort/nuendo.h"
+#include "asterfort/nunuco.h"
+#include "asterfort/nurota.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,15 +27,6 @@ subroutine nmnume(modele, result, lischa, lcont, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmprof.h"
-#include "asterfort/nuendo.h"
-#include "asterfort/nunuco.h"
-#include "asterfort/nurota.h"
     character(len=24) :: modele, numedd, compor, defico
     character(len=8) :: result
     character(len=19) :: lischa, solveu
@@ -56,31 +55,34 @@ subroutine nmnume(modele, result, lischa, lcont, defico,&
 !
 !
 !
-    character(len=24) :: sdnuro, sdnumo, sdnuco
+    character(len=24) :: sdnuro, sdnuen, sdnuco
+    aster_logical :: lctcc
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- CREATION PROFIL NUME_DDL
 !
     call nmprof(modele, result, lischa, solveu, numedd)
 !
-! --- REPERAGE DDL GRANDES ROTATIONS
+! - Get position of large rotation dof
 !
     sdnuro = sdnume(1:19)//'.NDRO'
-    call nurota(numedd, compor, sdnuro)
+    call nurota(modele, numedd, compor, sdnuro)
 !
-! --- REPERAGE DDL ENDOMMAGEMENT AUX NOEUDS
+! - Get position of damaged dof 
 !
-    sdnumo = sdnume(1:19)//'.ENDO'
-    call nuendo(numedd, sdnumo)
+    sdnuen = sdnume(1:19)//'.ENDO'
+    call nuendo(modele, numedd, sdnuen)
 !
-! --- REPERAGE DDL LAGRANGE DE CONTACT
+! - Get position of contact dof 
 !
     sdnuco = sdnume(1:19)//'.NUCO'
-    call nunuco(numedd, defico, lcont, sdnuco)
-!
-    call jedema()
+    if (lcont) then
+        lctcc = cfdisl(defico,'FORMUL_CONTINUE')
+        if (lctcc) then
+            call nunuco(numedd, sdnuco)
+        endif
+    endif  
 !
 end subroutine

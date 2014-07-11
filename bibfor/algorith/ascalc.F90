@@ -102,7 +102,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     integer :: id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
     integer :: jval, nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
     integer :: neq, jrep2, nbdis(nbsup), noc, ioc, n1, nno, is, ino, igr
-    integer :: ngr, jdgn, ier, ncompt, nintra
+    integer :: ngr, jdgn, ier, ncompt, nintra, nbvect
     parameter     ( nbpara = 5 )
     real(kind=8) :: temps
     aster_logical :: prim, secon, glob
@@ -255,7 +255,8 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
         nomsy2 = nomsy
         if (nomsy(1:4) .eq. 'VITE') nomsy2 = 'DEPL'
         if (nomsy(1:4) .eq. 'ACCE') nomsy2 = 'DEPL'
-        call vprecu(mome, nomsy2, nbmode, nordr, kvec,&
+        nbvect = nbmode
+        call vprecu(mome, nomsy2, nbvect, nordr, kvec,&
                     nbpara, nopara(1), k8b, kval, k8b,&
                     neq, nbmode, ctyp, nbpari, nbparr,&
                     nbpark)
@@ -308,7 +309,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !
 !              ----CALCUL DE L ACCELERATION ABSOLUE
 !
-                call asacce(nomsy, monoap, muapde, nbsup, neq,&
+                call asacce(nomsy, monoap, nbsup, neq,&
                             nbmode, id, moncha, zr(jmod), zr(jval),&
                             gamma0, zr( jcrer), zr(jcrep), nbdis)
 !

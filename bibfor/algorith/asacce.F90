@@ -1,4 +1,4 @@
-subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
+subroutine asacce(nomsy, monoap, nbsup, neq,&
                   nbmode, id, moncha, vecmod, parmod,&
                   gamma0, recmor, recmod, nbdis)
     implicit none
@@ -14,7 +14,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
     real(kind=8) :: recmod(nbsup, neq, *), recmor(nbsup, neq, *)
     character(len=16) :: nomsy
     character(len=*) :: moncha
-    aster_logical :: monoap, muapde
+    aster_logical :: monoap
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,8 +39,6 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 ! IN  : NOMSY  : OPTION DE CALCUL
 ! IN  : MONOAP : =.TRUE.  , CAS DU MONO-SUPPORT
 !                =.FALSE. , CAS DU MULTI-SUPPORT
-! IN  : MUAPDE : =.TRUE.  , CAS DU MULTI-SUPPORTS DECORRELES
-!                =.FALSE. , CAS DU MULTI-SUPPORTS CORRELES
 ! IN  : NBSUP  : NOMBRE DE SUPPORTS
 ! IN  : NEQ    : NOMBRE D'EQUATIONS
 ! IN  : NBMODE : NOMBRE DE MODES
@@ -88,7 +86,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
             call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
-                        zi(juni))
+                        list_equa = zi(juni))
 !
             do 24 in = 1, neq
                 xxx = gamma0(id) * ( zi(juni+in-1) - zr(jmod+in-1) )
@@ -111,7 +109,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
             call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
-                        zi(juni))
+                        list_equa = zi(juni))
 !
             do 44 in = 1, neq
                 xxx = gamma0(is+nbsup*(id-1)) * ( zi(juni+in-1) - zr(jmod+in-1) )

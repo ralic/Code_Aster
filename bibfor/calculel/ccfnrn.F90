@@ -426,7 +426,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 coef(3)=zr(iad)
                 call wkvect('&&'//nompro//'.POSI_DDL', 'V V I', 3*lonc2, jddl)
                 call pteddl('NUME_DDL', nume, 3, nomcmp, lonc2,&
-                            zi(jddl))
+                            tabl_equa = zi(jddl))
                 call wkvect('&&'//nompro//'.POSI_DDR', 'V V R', lonc2, jddr)
                 do ic = 1, 3
                     ind=lonc2*(ic-1)

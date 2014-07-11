@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
+    subroutine nmrede(sdnume, fonact, sddyna, matass,&
                       veasse, neq, foiner, cnfext, cnfint,&
                       vchar, ichar)
-        character(len=24) :: numedd
         character(len=19) :: sdnume
         integer :: fonact(*)
         character(len=19) :: sddyna

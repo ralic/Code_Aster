@@ -49,14 +49,10 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !
 !
-    integer ::  iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
+    integer :: iercon, nbprno, ieq, nba, nbb, nbl, nbliai, ifm, niv
     integer :: vali(4)
     character(len=14) :: nume
-    parameter (mxddl=1)
-    character(len=8) :: nomddl(mxddl)
     integer, pointer :: ccid(:) => null()
-!
-    data nomddl/'LAGR'/
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -74,8 +70,8 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
 !
 !       --- RECUPERATION DES POSITIONS DES DDL LAGRANGE : DLAGR
-    call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
-                dlagr)
+    call pteddl('NUME_DDL', nume, 1, 'LAGR    ', neq,&
+                list_equa = dlagr)
 !
 !       --- CALCUL DU NOMBRE DE 'LAGRANGE': NBLAGR
     nblagr = 0
@@ -127,7 +123,6 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !    -----IMPRESSION DES DDL -----
 !
     if (niv .ge. 1) then
-        write (ifm,9000)
         vali(1) = neq
         vali(2) = nblagr
         if (nbcine .eq. 0) then
@@ -138,15 +133,11 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
             vali(4) = neqact
             call utmess('I', 'ALGELINE7_18', ni=4, vali=vali)
         endif
-        write (ifm,9010)
     endif
 !     -----------------------------------------------------------------
 !     -----------------------------------------------------------------
 !
     ier = 0
     call jedema()
-!
-    9000 format (//,72 ('-'))
-    9010 format (72 ('-'))
 !
 end subroutine

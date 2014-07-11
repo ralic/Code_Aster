@@ -72,7 +72,7 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 ! ------- RECUPERATION DES POSITIONS DES DDL
 !
             call pteddl('NUME_DDL', nume, 1, ddl(i), neq,&
-                        inter)
+                        list_equa = inter)
 !
 ! ------- CALCUL DU NOMBRE DE 'DDL': NBDDL
 !
@@ -105,12 +105,12 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
         if (nbddl .gt. 0) then
             write (ifm,*) option
             do i = 1, nddle
-                write (ifm,9010) ddl(i)
+                write (ifm,910) ddl(i)
             end do
-            write (ifm,9050) nbddl
-            write (ifm,9060)
+            write (ifm,950) nbddl
+            write (ifm,960)
         else
-            write (ifm,9001)
+            write (ifm,901)
         endif
     endif
 !
@@ -118,9 +118,9 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
     call jedema()
 !
-    9001 format (1x,'PAS DE DDL_TROUVE')
-    9010 format (13x,a8,/)
-    9050 format (1x,'NOMBRE DE DDL',10x,i7,/)
-    9060 format (72('-'))
+    901 format (1x,'PAS DE DDL_TROUVE')
+    910 format (13x,a8,/)
+    950 format (1x,'NOMBRE DE DDL',10x,i7,/)
+    960 format (72('-'))
 !
 end subroutine

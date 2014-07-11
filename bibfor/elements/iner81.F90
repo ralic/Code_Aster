@@ -110,7 +110,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     call wkvect('&&'//pgc//'.VECT2', 'V V R', neq, ltvec2)
     call wkvect('&&'//pgc//'.VECT3', 'V V I', mxddl*neq, ltvec3)
     call pteddl('NUME_DDL', num, mxddl, nomddl, neq,&
-                zi(ltvec3))
+                tabl_equa = zi(ltvec3))
 !
     call jeveuo(num//'.NUME.DEEQ', 'L', vi=deeq)
     call wkvect('&&'//pgc//'.BASEMO', 'V V R', nbdef*neq, idbase)

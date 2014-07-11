@@ -1,4 +1,13 @@
-subroutine nuendo(numedd, sdnuen)
+subroutine nuendo(modelz, nume_ddl, sdnuen)
+!
+implicit none
+!
+#include "asterfort/dismoi.h"
+#include "asterfort/sele_node_elem.h"
+#include "asterfort/select_dof.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,190 +27,76 @@ subroutine nuendo(numedd, sdnuen)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbelem.h"
-#include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(in) :: nume_ddl
+    character(len=24), intent(in) :: sdnuen
 !
-    character(len=24) :: numedd
-    character(len=24) :: sdnuen
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (INITIALISATION)
 !
-! CREATION DE LA SD POUR REPERAGE DDL ENDOMMAGEMENT AUX NOEUDS
+! Get position of damaged dof 
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! In  modelz   : name of model
+! In  nume_ddl : name of numbering (NUME_DDL)
+! In  sdnuen   : name of datastructure to save position of damaged dof
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_elem_type, nb_node_found, nb_equa, nb_cmp
+    integer, pointer :: list_node(:) => null()
+    character(len=8), pointer :: list_cmp(:) => null()
+    integer, pointer :: list_equa(:) => null()
+    character(len=16), pointer :: list_elem_type(:)  => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  NUMEDD : NOM DE LA NUMEROTATION
-! IN  SDNUEN : NOM DE LA S.D. DDL ENDOMMAGEMENT AUX NOEUDS
+! - Create list of elements type
 !
+    nb_elem_type = 7
+    AS_ALLOCATE(vk16=list_elem_type, size = nb_elem_type)
+    list_elem_type(1) = 'MNDPTR6'
+    list_elem_type(2) = 'MNDPQS8'
+    list_elem_type(3) = 'MNAXTR6'
+    list_elem_type(4) = 'MNAXQS8'
+    list_elem_type(5) = 'MNVG_HEXA20'
+    list_elem_type(6) = 'MNVG_TETRA10'
+    list_elem_type(7) = 'MNVG_PENTA15'
 !
+! - Create list of components
 !
+    nb_cmp = 1
+    AS_ALLOCATE(vk8=list_cmp, size = nb_cmp)
+    list_cmp(1) = 'DAMG'
 !
-    character(len=8) :: nocmp, nomgd, modele, noma
-    character(len=16) :: nomte
-    character(len=19) :: ligrmo
-    character(len=24) :: nolili, noliel
-    integer :: nec, nbnoeu, ncmpmx
-    integer :: nlili, nbno, neq, nbnoc
-    integer :: ico
-    integer :: ima, ino, idamg, i, k, inoc, ival, iadg
-    integer ::  iconex
-    integer :: iancmp, ianueq, iaprno
-    integer :: ifm, niv
-    integer :: nbgr, igr, te, nbelgr, liel, iel
-    integer :: jnuen
-    integer, pointer :: noeuds(:) => null()
+! - Select nodes by element type
 !
-! ----------------------------------------------------------------------
+    call sele_node_elem(modelz, nb_elem_type, list_elem_type, list_node, nb_node_found)
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
+! - Create list of equations
 !
-! --- MODELE ASSOCIE AU NUME_DDL
-!
-    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-!
-! --- NOM DU MAILLAGE
-!
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-!
-! --- NOMBRE DE NOEUDS DU MAILLAGE
-!
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
-!
-! --- LIGREL DU MODELE
-!
-    ligrmo = modele//'.MODELE'
-!
-! --- CREATION D'UN VECTEUR DESTINE A CONTENIR LES NUMEROS DES NOEUDS
-!
-    AS_ALLOCATE(vi=noeuds, size=nbnoeu)
-!
-! --- REPERAGE DES NOEUDS SUR ELEMENTS AVEC ENDOMMAGEMENT AUX NOEUDS
-!
-    nbgr = nbgrel(ligrmo)
-    noliel = ligrmo//'.LIEL'
-    do igr = 1, nbgr
-        te = typele(ligrmo,igr)
-        call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-        nbelgr = nbelem(ligrmo,igr)
-        call jeveuo(jexnum(noliel, igr), 'L', liel)
-        if (nomte .eq. 'MNDPTR6' .or. nomte .eq. 'MNDPQS8' .or. nomte .eq. 'MNAXTR6' .or.&
-            nomte .eq. 'MNAXQS8' .or. nomte .eq. 'MNVG_HEXA20' .or. nomte .eq.&
-            'MNVG_TETRA10' .or. nomte .eq. 'MNVG_PENTA15') then
-            do iel = 1, nbelgr
-                ima = zi(liel-1+iel)
-                call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
-                call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
-                do ino = 1, nbno
-                    noeuds(1+zi(iconex+ino-1)-1) = 1
-                end do
-            end do
-        endif
-    end do
-!
-! --- NOMBRE DE NOEUDS
-!
-    nbnoc = 0
-    do ino = 1, nbnoeu
-        if (noeuds(ino) .eq. 1) then
-            nbnoc = nbnoc + 1
-        endif
-    end do
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CREATION SD DDLS EN'//&
-        ' ENDOMMAGEMENT AUX NOEUDS: ',nbnoc
-    endif
-!
-! --- RECUPERATION DU NOMBRE D'INCONNUES DU MODELE
-!
-    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', neq)
-    if (nbnoc .gt. 0) then
-        call wkvect(sdnuen, 'V V I', neq, jnuen)
+    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=nb_equa)
+    if (nb_node_found .gt. 0) then
+        call wkvect(sdnuen, 'V V I', nb_equa, vi = list_equa)
     else
         goto 999
     endif
 !
-! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R
+! - Find components in list of equations
 !
-    nomgd = 'DEPL_R'
-    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iancmp)
-    nocmp = 'DAMG'
+    call select_dof(list_equa,&
+                       nume_ddlz = nume_ddl,&
+                       only_mesh = .true.  ,&
+                       nb_nodez  = nb_node_found, list_node = list_node,&
+                       nb_cmpz   = nb_cmp       , list_cmp  = list_cmp)
 !
-! --- LOCALISATION DE DAMG DANS LA LISTE DES DDLS ASSOCIES
-! --- A LA GRANDEUR DEPL_R
-!
-    idamg = indik8(zk8(iancmp),nocmp,1,ncmpmx)
-    ASSERT(idamg.ne.0)
-!
-! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE
-!
-    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
-    k = 0
-    do i = 1, nlili
-        call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
-        if (nolili(1:8) .ne. '&MAILLA ') goto 40
-        k = i
- 40     continue
-    end do
-    ASSERT(k.ne.0)
-!
-    call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
-!
-! --- TABLEAU DES NUMEROS D'EQUATIONS
-!
-    call jeveuo(numedd(1:14)//'.NUME.NUEQ', 'L', ianueq)
-!
-! --- AFFECTATION DU TABLEAU DES NUMEROS DES INCONNUES
-!
-    inoc = 0
-    do ino = 1, nbnoeu
-        if (noeuds(ino) .eq. 0) goto 50
-        inoc = inoc + 1
-        ival = zi(iaprno+(ino-1)*(nec+2)+1-1)
-        iadg = iaprno+(ino-1)*(nec+2)+3-1
-!
-        if (exisdg(zi(iadg),idamg)) then
-!
-            ico = 0
-            do i = 1, idamg-1
-                if (exisdg(zi(iadg),i)) ico = ico + 1
-            end do
-            zi(jnuen+ival+ico-1) = 1
-        endif
- 50     continue
-    end do
-
 999 continue
-
-! --- MENAGE
-    AS_DEALLOCATE(vi=noeuds)
 !
-    call jedema()
+    AS_DEALLOCATE(vi=list_node)
+    AS_DEALLOCATE(vk8=list_cmp)
+    AS_DEALLOCATE(vk16=list_elem_type)
+!
 end subroutine

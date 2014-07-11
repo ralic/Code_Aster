@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nuendo(numedd, sdnuen)
-        character(len=24) :: numedd
-        character(len=24) :: sdnuen
+    subroutine nuendo(modelz, nume_ddl, sdnuen)
+        character(len=*), intent(in) :: modelz
+        character(len=24), intent(in) :: nume_ddl
+        character(len=24), intent(in) :: sdnuen
     end subroutine nuendo
 end interface

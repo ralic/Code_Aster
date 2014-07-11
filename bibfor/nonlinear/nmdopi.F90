@@ -90,17 +90,18 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
 !
 !
-    integer :: nbno, numequ, nddl, nbnoma
+    integer :: nbno, numequ, nddl, nb_node_mesh
+    integer :: nume_node, nume_node_1, nume_node_2, numequ_1, numequ_2
     integer :: ino, iddl
     integer :: jvale
     integer :: jplir, jpltk
     integer :: ibid, n1, n2, neq, ndim
     real(kind=8) :: coef, lm(2)
-    character(len=8) :: noma, lborn(2), nomcmp
+    character(len=8) :: mesh, lborn(2), nomcmp
     character(len=8) :: modele, fiss
     character(len=16) :: relmet
-    character(len=24) :: lisnoe, liscmp, lisddl, lisequ
-    integer :: jlinoe, jlicmp, jddl, jequ
+    character(len=24) :: lisnoe, liscmp
+    integer :: jlinoe, jlicmp
     character(len=24) :: typpil, projbo, typsel, evolpa, txt(2)
     character(len=19) :: chapil, selpil, ligrmo, ligrpi
     character(len=19) :: careta, cartyp, chapic
@@ -108,7 +109,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     integer :: nbmocl
     character(len=16) :: limocl(2), tymocl(2)
     integer :: ifm, niv
-    integer :: jlino1, jlino2, nbnom, noeu1, noeu2
+    integer :: jlino1, jlino2, nbnom
     integer :: jeq2, ierm
     character(len=8) :: compo
     character(len=19) :: grln, cnsln, grlt
@@ -128,11 +129,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     modele = modelz
     call exixfe(modele, ierm)
     isxfe=(ierm.eq.1)
-    call dismoi('NOM_MAILLA', numedd, 'NUME_DDL', repk=noma)
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
-    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    lisddl = '&&NMDOPI.LISDDL'
-    lisequ = '&&NMDOPI.LISEQU'
+    call dismoi('NOM_MAILLA', numedd, 'NUME_DDL', repk=mesh)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
+    call dismoi('DIM_GEOM', mesh, 'MAILLAGE', repi=ndim)
     lisnoe = '&&NMDOPI.LISNOE'
     liscmp = '&&NMDOPI.LISCMP'
     nbmocl = 2
@@ -250,7 +249,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
     else if (typpil .eq. 'DDL_IMPO'.or.typpil .eq. 'SAUT_IMPO') then
 !
-        call reliem(modele, noma, 'NU_NOEUD', 'PILOTAGE', 1,&
+        call reliem(modele, mesh, 'NU_NOEUD', 'PILOTAGE', 1,&
                     nbmocl, limocl, tymocl, lisnoe, nbno)
         if (typpil .eq. 'DDL_IMPO') then
             if (nbno .ne. 1) then
@@ -266,7 +265,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
     else if (typpil.eq.'LONG_ARC'.or.typpil.eq.'SAUT_LONG_ARC') then
 !
-        call reliem(modele, noma, 'NU_NOEUD', 'PILOTAGE', 1,&
+        call reliem(modele, mesh, 'NU_NOEUD', 'PILOTAGE', 1,&
                     nbmocl, limocl, tymocl, lisnoe, nbno)
         if (typpil .eq. 'LONG_ARC') then
             if (nbno .eq. 0) then
@@ -338,7 +337,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call cnocns(fiss//'.GRLNNO', 'V', grln)
         call cnocns(fiss//'.GRLTNO', 'V', grlt)
 !
-        call nmmein(fiss, noma, nbno, lisnoe, liscmp,&
+        call nmmein(fiss, mesh, nbno, lisnoe, liscmp,&
                     nbnom, lisno1, lisno2, ndim, compo)
         call jeveuo(lisno1, 'L', jlino1)
         call jeveuo(lisno2, 'L', jlino2)
@@ -354,58 +353,46 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         chapil = sdpilo(1:14)//'.PLCR'
         call vtcreb(chapil, numedd, 'V', 'R', neq)
         call jeveuo(chapil(1:19)//'.VALE', 'E', jvale)
-        call wkvect(lisddl, 'V V K8', nbno, jddl)
-        call wkvect(lisequ, 'V V I', nbno, jequ)
         call jeveuo(liscmp, 'L', jlicmp)
         call jelira(liscmp, 'LONMAX', ival=nddl)
 !
         do iddl = 1, nddl
-            nomcmp = zk8(jlicmp-1+iddl)
-            do ino = 1, nbno
-                zk8(jddl-1+ino) = nomcmp
-            end do
-            if (selxfe) then
-                call nueqch('F', chapil, noma, nbno, zi(jlino1),&
-                            zk8(jddl), zi(jequ))
-                call nueqch('F', chapil, noma, nbno, zi(jlino2),&
-                            zk8(jddl), zi(jeq2))
-            else if (selfem) then
-                call nueqch('F', chapil, noma, nbno, zi(jlinoe),&
-                            zk8(jddl), zi(jequ))
-            endif
+            nomcmp = zk8(jlicmp-1+iddl) 
             do ino = 1, nbno
                 if (selxfe) then
-                    noeu1=zi(jlino1-1+ino)
-                    noeu2=zi(jlino2-1+ino)
+                    nume_node_1 = zi(jlino1-1+ino)
+                    nume_node_2 = zi(jlino2-1+ino)
+                    call nueqch('F', chapil, nume_node_1, nomcmp, numequ_1)
+                    call nueqch('F', chapil, nume_node_2, nomcmp, numequ_2)
+                else if (selfem) then
+                    nume_node = zi(jlinoe-1+ino)
+                    call nueqch('F', chapil, nume_node, nomcmp, numequ)
+                endif
+
+                if (selxfe) then
                     if (compo(1:4) .eq. 'DTAN' .or. compo .eq. 'DNOR') then
-                        call nmdire(noeu1, noeu2, ndim, cnsln, grln,&
+                        call nmdire(nume_node_1, nume_node_2, ndim, cnsln, grln,&
                                     grlt, compo, vect)
                     endif
-                    call nmcoef(noeu1, noeu2, typpil, nbno, cnsln,&
+                    call nmcoef(nume_node_1, nume_node_2, typpil, nbno, cnsln,&
                                 compo, vect, iddl, ino, coef1,&
                                 coef2, coefi)
-                    numequ = zi(jequ-1+ino)
-                    zr(jvale-1+numequ) = coef1
-                    vale(numequ) = coefi
-                    numequ = zi(jeq2-1+ino)
-                    zr(jvale-1+numequ) = coef2
-                    vale(numequ) = coefi
+                    zr(jvale-1+numequ_1) = coef1
+                    vale(numequ_1) = coefi
+                    zr(jvale-1+numequ_2) = coef2
+                    vale(numequ_2) = coefi
                 else if (selfem) then
-                    numequ = zi(jequ-1+ino)
                     zr(jvale-1+numequ) = coef
                 endif
             end do
         end do
     endif
 !
-    call jedetr(lisddl)
-    call jedetr(lisequ)
     call jedetr(lisnoe)
     call jedetr(liscmp)
     if (selxfe) then
         call jedetr(lisno1)
         call jedetr(lisno2)
-        call jedetr(liseq2)
         call jedetr(cnsln)
         call jedetr(grln)
     endif
@@ -416,30 +403,16 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         selpil = sdpilo(1:14)//'.PLSL'
         call vtcreb(selpil, numedd, 'V', 'R', neq)
         call jeveuo(selpil(1:19)//'.VALE', 'E', vr=plsl)
-!
         nddl = 3
         call wkvect(liscmp, 'V V K8', nddl, jlicmp)
-        zk8(jlicmp+1-1) = 'DX'
-        zk8(jlicmp+2-1) = 'DY'
-        zk8(jlicmp+3-1) = 'DZ'
-!
-        call wkvect(lisddl, 'V V K8', nbnoma, jddl)
-        call wkvect(lisnoe, 'V V I', nbnoma, jlinoe)
-        call wkvect(lisequ, 'V V I', nbnoma, jequ)
-        do ino = 1, nbnoma
-            zi(jlinoe-1+ino) = ino
-        end do
+        zk8(jlicmp-1+1) = 'DX'
+        zk8(jlicmp-1+2) = 'DY'
+        zk8(jlicmp-1+3) = 'DZ'
         do iddl = 1, nddl
-            do ino = 1, nbnoma
-                zk8(jddl-1+ino) = zk8(jlicmp-1+iddl)
-            end do
-!
-            call nueqch(' ', selpil, noma, nbnoma, zi(jlinoe),&
-                        zk8(jddl), zi(jequ))
-!
-            do ino = 1, nbnoma
-                numequ = zi(jequ-1+ino)
-                ASSERT(numequ.le.neq)
+            nomcmp = zk8(jlicmp-1+iddl) 
+            do ino = 1, nb_node_mesh
+                nume_node = ino
+                call nueqch('I', selpil, nume_node, nomcmp, numequ)
                 if (numequ .ne. 0) then
                     plsl(numequ) = 1.d0
                 endif
@@ -458,8 +431,6 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         endif
     endif
 !
-    call jedetr(lisddl)
-    call jedetr(lisequ)
     call jedetr(lisnoe)
     call jedetr(liscmp)
     call jedema()

@@ -1,22 +1,16 @@
-subroutine posddl(type, resu, noeud, cmp, nunoe,&
-                  nuddl)
-    implicit none
-#include "jeveux.h"
+subroutine posddl(typesd  , resu, node_name, cmp_name, node_nume,&
+                  dof_nume)
+!
+implicit none
+!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/select_dof.h"
 !
-    character(len=*) :: type, resu, noeud, cmp
-    integer :: nunoe, nuddl
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,73 +27,91 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ------------------------------------------------------------------
-!     DONNE LE NUMERO DU NOEUD
-!           NUNOE = 0 SI LE NOEUD N'EXISTE PAS
-!     DONNE LE NUMERO DU DDL ASSOCIE AU NOEUD ET A SA COMPOSANTE
-!           NUDDL = 0 SI LE COUPLE (NOEUD,COMPOSANTE) N'EXISTE PAS
-!     ------------------------------------------------------------------
-! IN  TYPE   : TYPE DU RESU
-! IN  RESU   : NOM D'UN NUME_DDL OU D'UN CHAM_NO
-! IN  NOEUD  : NOM DU NOEUD
-! IN  CMP    : NOM DE LA COMPOSANTE
-! OUT NUNOE  : NUMERO LOCAL DU NOEUD
-! OUT NUDDL  : NUMERO DU DDL ASSOCIE AU NOEUD DE COMPOSANTE CMP
-!     ------------------------------------------------------------------
-    integer :: ibid, gd, iec, nec, ncmpmx, icmpre, icmp, jprno,  iad
-    integer :: tabec(10)
-    character(len=8) :: nomma, nomcmp, ncmp
-    character(len=19) :: prno
-    integer, pointer :: nueq(:) => null()
-!     ------------------------------------------------------------------
-    call jemarq()
 !
-    if (type(1:8) .eq. 'NUME_DDL') then
-        call dismoi('NOM_MAILLA', resu, 'NUME_DDL', repk=nomma)
-        call dismoi('NUM_GD_SI', resu, 'NUME_DDL', repi=gd)
-        prno( 1:14) = resu
-        prno(15:19) = '.NUME'
+    character(len=*), intent(in) :: typesd
+    character(len=*), intent(in) :: resu
+    character(len=*), intent(in) :: node_name
+    character(len=*), intent(in) :: cmp_name
+    integer, intent(out) :: node_nume
+    integer, intent(out) :: dof_nume
 !
-    else if (type(1:7) .eq. 'CHAM_NO') then
-        call dismoi('NOM_MAILLA', resu, 'CHAM_NO', repk=nomma)
-        call dismoi('PROF_CHNO', resu, 'CHAM_NO', repk=prno)
-        call dismoi('NUM_GD', resu, 'CHAM_NO', repi=gd)
+! --------------------------------------------------------------------------------------------------
 !
+! Get dof and node index
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  typesd    : type of datastructure (chamno/nume_ddl)
+! In  resu      : name of datastructure (chamno/nume_ddl)
+! In  node_name : name of (physical) node to find 
+! In  cmp_name  : name of component to find
+! Out node_nume : index of node (in mesh)
+!                 0 if node doesn't exist
+! Out dof_nume  : index of dof
+!                 0 if (node,cmp) doesn't exist
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_cmp, nb_node
+    character(len=8) :: mesh
+    integer, pointer :: list_idx_dof(:) => null()
+    integer, pointer :: list_node(:) => null()
+    character(len=8), pointer :: list_cmp(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+! 
+    dof_nume = 0
+    if (typesd .eq. 'NUME_DDL') then
+        call dismoi('NOM_MAILLA', resu, 'NUME_DDL', repk=mesh)
+    else if (typesd .eq. 'CHAM_NO') then
+        call dismoi('NOM_MAILLA', resu, 'CHAM_NO', repk=mesh)
     else
         ASSERT(.false.)
     endif
+    call jenonu(jexnom(mesh//'.NOMNOE', node_name), node_nume)
 !
-    call jenonu(jexnom(nomma//'.NOMNOE', noeud), nunoe)
-    if (nunoe .eq. 0) goto 999
+    if (node_nume .ne. 0) then
 !
-    ncmp = cmp
-    nuddl = 0
+        nb_cmp = 1
 !
-    call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(prno//'.PRNO', ibid), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
+! ----- Create list of components to ssek
 !
-    nec = nbec( gd )
-    ASSERT(nec .le. 10)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
-    do iec = 1, nec
-        tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
-    end do
+        AS_ALLOCATE(vk8=list_cmp, size = nb_cmp)
+        list_cmp(1) = cmp_name
 !
-    icmpre = 0
-    do icmp = 1, ncmpmx
-        if (exisdg(tabec,icmp)) then
-            icmpre = icmpre + 1
-            nomcmp = zk8(iad-1+icmp)
-            if (nomcmp .eq. ncmp) then
-                nuddl = nueq(1+zi(jprno+(nec+2)*(nunoe-1))-1)+ icmpre-1
-                goto 22
-            endif
+! ----- Create list of results
+!
+        AS_ALLOCATE(vi=list_idx_dof, size = nb_cmp)
+!
+! ----- Create list of nodes
+!
+        nb_node = 1
+        AS_ALLOCATE(vi=list_node, size = nb_node)
+        list_node(1) = node_nume
+!
+! ----- Find specific dof
+!
+        if (typesd .eq. 'NUME_DDL') then
+            call select_dof(list_idx_dof = list_idx_dof, &
+                               nume_ddlz = resu, &
+                               only_mesh = .true.  ,&
+                               nb_nodez  = nb_node, list_node = list_node,&
+                               nb_cmpz   = nb_cmp , list_cmp  = list_cmp)
+        else if (typesd .eq. 'CHAM_NO') then
+            call select_dof(list_idx_dof = list_idx_dof,&
+                               chamnoz   = resu,&
+                               only_mesh = .true.  ,&
+                               nb_nodez  = nb_node, list_node = list_node,&
+                               nb_cmpz   = nb_cmp , list_cmp  = list_cmp)
+        else
+            ASSERT(.false.)
         endif
-    end do
- 22 continue
+        dof_nume = list_idx_dof(1)
 !
-999 continue
-    call jedema()
+        AS_DEALLOCATE(vi=list_idx_dof)
+        AS_DEALLOCATE(vi=list_node)
+        AS_DEALLOCATE(vk8=list_cmp)
+!
+    endif
+
 end subroutine

@@ -15,24 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine asacce(nomsy, monoap, nbsup, neq,&
-                      nbmode, id, moncha, vecmod, parmod,&
-                      gamma0, recmor, recmod, nbdis)
-        integer :: nbmode
-        integer :: neq
-        integer :: nbsup
-        character(len=16) :: nomsy
-        aster_logical :: monoap
-        integer :: id
-        character(len=*) :: moncha
-        real(kind=8) :: vecmod(neq, *)
-        real(kind=8) :: parmod(nbmode, *)
-        real(kind=8) :: gamma0(*)
-        real(kind=8) :: recmor(nbsup, neq, *)
-        real(kind=8) :: recmod(nbsup, neq, *)
-        integer :: nbdis(nbsup)
-    end subroutine asacce
+    subroutine sele_node_elem(modelz       , nb_elem_type, list_elem_type, list_node,nb_node_found,&
+                              pre_select_elem)
+        character(len=*), intent(in) :: modelz
+        integer, intent(in) :: nb_elem_type
+        character(len=16), pointer, intent(in) :: list_elem_type(:)
+        integer, pointer, intent(out) :: list_node(:)
+        integer, intent(out) :: nb_node_found
+        integer, pointer, optional, intent(in) :: pre_select_elem(:)
+    end subroutine sele_node_elem
 end interface

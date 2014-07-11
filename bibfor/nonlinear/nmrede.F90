@@ -1,4 +1,4 @@
-subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
+subroutine nmrede(sdnume, fonact, sddyna, matass,&
                   veasse, neq, foiner, cnfext, cnfint,&
                   vchar, ichar)
 !
@@ -30,7 +30,6 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-    character(len=24) :: numedd
     character(len=19) :: sddyna, sdnume
     character(len=19) :: veasse(*)
     character(len=19) :: matass
@@ -67,7 +66,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
     integer :: jccid
     integer :: ifm, niv
-    aster_logical :: ldyna, lcine
+    aster_logical :: ldyna, lcine, lctcc
     character(len=19) :: cndiri, cnvcfo
     integer :: ieq
     real(kind=8) :: val2, val3, appui, fext
@@ -94,6 +93,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     lcine = isfonc(fonact,'DIRI_CINE')
+    lctcc = isfonc(fonact,'CONT_CONTINU')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -108,9 +108,10 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
 ! --- REPERAGE DDL LAGRANGE DE CONTACT
 !
-    sdnuco = sdnume(1:19)//'.NUCO'
-    call jeveuo(sdnuco, 'L', jnuco)
-!
+    if (lctcc) then
+        sdnuco = sdnume(1:19)//'.NUCO'
+        call jeveuo(sdnuco, 'L', jnuco)
+    endif
 !
 ! --- ACCES AUX CHAM_NO
 !
@@ -148,8 +149,10 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
 ! ----- SI LAGRANGIEN DE CONTACT/FROT: ON IGNORE LA VALEUR DU RESIDU
 !
-        if (zi(jnuco+ieq-1) .eq. 1) then
-            goto 20
+        if (lctcc) then
+            if (zi(jnuco+ieq-1) .eq. 1) then
+                goto 20
+            endif
         endif
 !
 ! ----- VCHAR: MAX CHARGEMENT EXTERIEUR EN STATIQUE

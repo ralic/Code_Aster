@@ -551,10 +551,10 @@ subroutine op0037()
         call wkvect('&&OP0037.POSITION.DDL', 'V V I', neq*ncmp, lddl)
         if (lrefe) then
             call pteddl('NUME_DDL', nume, ncmp, zk8(lcmp), neq,&
-                        zi(lddl))
+                        tabl_equa = zi(lddl))
         else
             call pteddl('CHAM_NO', chamno, ncmp, zk8(lcmp), neq,&
-                        zi(lddl))
+                        tabl_equa = zi(lddl))
         endif
         do ic = 2, ncmp
             ind = (ic-1)*neq

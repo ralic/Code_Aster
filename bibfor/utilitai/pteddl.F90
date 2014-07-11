@@ -1,29 +1,13 @@
-subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
-                  ivec)
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+subroutine pteddl(typesd   , resuz    , nb_cmp, list_cmp, nb_equa,&
+                  tabl_equa, list_equa)
+!
+implicit none
+!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "asterfort/select_dof.h"
 !
-    integer :: nbcmp, neq, ivec(neq, *)
-    character(len=*) :: typesd, num
-    character(len=8) :: lnocmp(*)
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,153 +25,84 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! IN : TYPESD : /'NUME_DDL' /'CHAM_NO'
-! IN : NUM    : NOM D'UN NUME_DDL[_GENE] OU D'UN PROF_CHNO
-! IN : NBCMP  : NOMBRE DE CMP DE LA LISTE LNOCMP
-! IN : LNOCMP : LISTE DE NOMS DE CMP
-! IN : NEQ    : NOMBRE D'EQUATIONS DE NUM
-! OUT: IVEC   : TABLEAU DE POINTEURS DE DDLS DEJA ALLOUE.
-!      IVEC(IEQ,ICMP) =
-!                   1 SI LE IEQ-EME CMP DE NUM A POUR NOM: LNOCMP(ICMP)
+    integer, intent(in) :: nb_cmp
+    integer, intent(in) :: nb_equa
+    character(len=*), intent(in) :: typesd
+    character(len=*), intent(in) :: resuz
+    character(len=8), target, intent(in) :: list_cmp(nb_cmp)
+    integer, target, optional, intent(inout) :: tabl_equa(nb_equa, nb_cmp)
+    integer, target, optional, intent(inout) :: list_equa(nb_equa)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  typesd     : type of datastructure (chamno/nume_ddl)
+! In  resu       : name of datastructure (chamno/nume_ddl)
+! In  nb_cmp     : number of components
+! In  list_cmp   : list of components
+! In  nb_equa    : number of equations
+! IO  tabl_equa  : table of equations
+!      tabl_equa(IEQ,ICMP) =
+!                   1 SI LE IEQ-EME CMP DE NUM A POUR NOM: list_cmp(ICMP)
 !                   0 SINON
-! ----------------------------------------------------------------------
-    integer :: ibid, i, j, tabec(10), ncmpmx
-    integer :: nec, gd, iad, iec
-    integer :: nlili, jprno, nbno, ival, ncmp, icompt
-    integer :: icmp, ieq, nucmp, nleq, numno, ino
-    integer :: ieql, jnugl, imatd, iexi
-    character(len=8) :: nomma
-    character(len=19) :: nomnu, prno
-    character(len=24) :: nolili
-    aster_logical :: matd, lnuge
-    integer, pointer :: nume_cmp(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: vnbno(:) => null()
-!     ------------------------------------------------------------------
+! IO  list_equa  : list of equations
+!      list_equa(IEQ) =
+!                   1 SI LE IEQ-EME CMP DE NUM A POUR NOM: list_cmp(ICMP)
+!                   0 SINON
 !
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
 !
-    do i = 1, neq
-        do j = 1, nbcmp
-            ivec(i,j)=0
-        end do
-    end do
+    character(len=19) :: resu
+    character(len=8), pointer :: list_cmp_p(:) => null()
+    integer, pointer :: tabl_equa_p(:,:) => null()
+    integer, pointer :: list_equa_p(:) => null()
 !
-    nomnu(1:14)=num
-    nomnu(15:19)='.NUME'
-    call jeexin(nomnu(1:14)//'.NUML.NUGL', imatd)
-    if (imatd .ne. 0) then
-        call jeveuo(nomnu(1:14)//'.NUML.NUGL', 'L', jnugl)
-        matd=.true.
-    else
-        jnugl=0
-        matd=.false.
+! --------------------------------------------------------------------------------------------------
+!
+    resu = resuz
+!
+! - Table of equations
+!
+    if (present(tabl_equa)) then
+        tabl_equa(1:nb_equa,1:nb_cmp) = 0
+        tabl_equa_p => tabl_equa
     endif
 !
+! - List of equations
 !
-!     -- LNUGE : .TRUE.  : NUME EST UN NUME_DDL_GENE
-!                .FALSE. : NUME EST UN NUME_DDL
-    call jeexin(nomnu//'.DESC', iexi)
-    lnuge=(iexi.gt.0)
+    if (present(list_equa)) then
+        list_equa(1:nb_equa) = 0
+        list_equa_p => list_equa
+        ASSERT(nb_cmp.eq.1)
+    endif
 !
+! - Get list of components
 !
-!     -- CAS NUME_DDL :
-!     ------------------
-    if (.not.lnuge) then
-        if (typesd(1:8) .eq. 'NUME_DDL') then
-            call dismoi('NOM_MAILLA', num, 'NUME_DDL', repk=nomma)
-            call dismoi('NUM_GD_SI', num, 'NUME_DDL', repi=gd)
-            prno(1:14)=num
-            prno(15:19)='.NUME'
-        else if (typesd(1:7).eq.'CHAM_NO') then
-            call dismoi('NOM_MAILLA', num, 'CHAM_NO', repk=nomma)
-            call dismoi('PROF_CHNO', num, 'CHAM_NO', repk=prno)
-            call dismoi('NUM_GD', num, 'CHAM_NO', repi=gd)
+    list_cmp_p => list_cmp
+!
+! - Set dof in table
+!
+    if (typesd .eq. 'NUME_DDL') then
+        if (present(tabl_equa)) then
+            call select_dof(tabl_equa = tabl_equa_p, &
+                               nume_ddlz = resu, &
+                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
         else
-            ASSERT(.false.)
+            call select_dof(list_equa = list_equa_p, &
+                               nume_ddlz = resu, &
+                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
         endif
-        nec=nbec(gd)
-        ASSERT(nec.le.10)
-!
-        call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
-        AS_ALLOCATE(vi=nume_cmp, size=ncmpmx)
-        do i = 0, ncmpmx-1
-            nume_cmp(1+i)=indik8(lnocmp,zk8(iad+i),1,nbcmp)
-        end do
-!
-        call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
-!
-        call jelira(prno//'.PRNO', 'NMAXOC', nlili)
-        do i = 1, nlili
-            call jenuno(jexnum(prno//'.LILI', i), nolili)
-            call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ibid)
-            if (ibid .eq. 0) goto 70
-            call jeveuo(jexnum(prno//'.PRNO', i), 'L', jprno)
-            if (ibid .eq. 1 .and. zi(jprno) .eq. 0) goto 70
-!
-!          --RECHERCHE DU NOMBRE DE NOEUDS : NBNO
-            if (nolili(1:8) .eq. '&MAILLA ') then
-                call jelira(nomma//'.NOMNOE', 'NOMMAX', nbno)
-            else
-                call jeveuo(nolili(1:19)//'.NBNO', 'L', vi=vnbno)
-                nbno=vnbno(1)
-            endif
-            do ino = 1, nbno
-!           NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
-!           IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
-                ival=zi(jprno-1+(ino-1)*(nec+2)+1)
-                ncmp=zi(jprno-1+(ino-1)*(nec+2)+2)
-                if (ncmp .eq. 0) goto 60
-                do iec = 1, nec
-                    tabec(iec)=zi(jprno-1+(ino-1)*(nec+2)+2+iec)
-                end do
-                if (ncmp .eq. 0) goto 60
-!
-                icompt=0
-                do icmp = 1, ncmpmx
-                    if (exisdg(tabec,icmp)) then
-                        icompt=icompt+1
-                        ieq=nueq(ival-1+icompt)
-                        nucmp=nume_cmp(icmp)
-                        if (.not.matd) then
-                            ieql=ieq
-                        else
-                            ieql=zi(jnugl+ieq-1)
-                        endif
-                        if (nucmp .gt. 0) ivec(ieql,nucmp)=1
-                    endif
-                end do
- 60             continue
-            end do
- 70         continue
-        end do
-        AS_DEALLOCATE(vi=nume_cmp)
-!
-!
-!     -- CAS NUME_DDL_GENE :
-!     ----------------------
+    else if (typesd .eq. 'CHAM_NO') then
+        if (present(tabl_equa)) then
+            call select_dof(tabl_equa = tabl_equa_p, &
+                               chamnoz   = resu,&
+                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
+        else
+            call select_dof(list_equa = list_equa_p, &
+                               chamnoz   = resu,&
+                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
+        endif
     else
-        call jeveuo(nomnu//'.DESC', 'L', vi=desc)
-        ASSERT(desc(1).eq.2)
-        if (matd) then
-            ASSERT(.false.)
-        endif
-        call jeveuo(nomnu//'.DEEQ', 'L', vi=deeq)
-        call jelira(nomnu//'.DEEQ', 'LONMAX', nleq)
-        nleq=nleq/2
-!       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
-        ASSERT(nleq.eq.neq)
-        do ieq = 1, neq
-            numno=deeq(1+2*ieq-1)
-            do j = 1, nbcmp
-                if (lnocmp(j) .eq. 'LAGR' .and. numno .lt. 0) ivec(ieq,j)= 1
-                if (lnocmp(j) .eq. 'GENE' .and. numno .gt. 0) ivec(ieq,j)= 1
-            end do
-        end do
+        ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

@@ -86,6 +86,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/ltnotb.h"
 #include "asterfort/mesomm.h"
 #include "asterfort/nbec.h"
+#include "asterfort/posddl.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbliva.h"
@@ -95,15 +96,14 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     integer :: ngi
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
 ! -----  VARIABLES LOCALES
-    integer :: gd
     character(len=8) :: lpain(2), lpaout(1)
-    character(len=8) :: temper, nomail
+    character(len=8) :: temper, nomail, nomnoe
     character(len=8) :: crit, modele, k8bid, noma
     character(len=19) :: prchno
     character(len=14) :: typres
     character(len=19) :: knum, ligrth, nomt19
     character(len=24) :: lchin(2), lchout(1), chgeom
-    character(len=24) :: chtemp, nolili
+    character(len=24) :: chtemp
     real(kind=8) :: work(9)
     complex(kind=8) :: cbid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -111,17 +111,17 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i,  iaprno, ibid
-    integer ::  igr, iret, iret1, iret2, ival
-    integer :: jdes, jgro, m, nbmail, nbno, nbordr, nec
-    integer :: numa, numail
+    integer :: i, ibid
+    integer :: igr, iret, iret1, iret2
+    integer :: jdes, jgro, m, nbmail, nbno, nbordr
+    integer :: numail, dof_nume, nunoeu
     real(kind=8) :: ct, deux, prec, r8b, strap, temp, undemi
     real(kind=8) :: x1, x2, xmin, y1, y2, ymin, zero
     real(kind=8), pointer :: coor(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: nueq(:) => null()
     integer, pointer :: desc(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
     r8b=0.d0
@@ -239,24 +239,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !       ----------------------------------------------------
         call jeveuo(chtemp(1:19)//'.DESC', 'L', vi=desc)
 !
-! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMP (C'EST TEMP_R) :
-!       ------------------------------------------------------------
-        gd = desc(1)
-!
-! ---   NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR :
-!       --------------------------------------------
-        nec = nbec(gd)
-        call jenuno(jexnum(prchno//'.LILI', 1), nolili)
-        call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid)
-!
-! ---   RECUPERATION DU PRNO DU CHAMP DE TEMPERATURES :
-!       ---------------------------------------------
-        call jeveuo(jexnum(prchno//'.PRNO', 1), 'L', iaprno)
-!
-! ---   RECUPERATION DU TABLEAU DES NUMEROS D'EQUATION :
-!       ----------------------------------------------
-        call jeveuo(prchno//'.NUEQ', 'L', vi=nueq)
-!
 ! ---   CALCUL POUR CHAQUE TROU DE SA SURFACE S
 ! ---   LA CONSTANTE DE TORSION CALCULEE PRECEDEMENT VA ETRE
 ! ---   AUGMENTEE DE 2*TEMP(1)*S POUR CHAQUE TROU
@@ -282,21 +264,23 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---   NOM DE LA PREMIERE MAILLE  DU BORD :
 !       ----------------------------------
             call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
-            call jenonu(jexnom(noma//'.NOMMAI', nomail), numa)
 !
-! ---   RECUPERATION DES CONNECTIVITES DE LA MAILLE :
-!       -------------------------------------------
-            call jeveuo(jexnum(noma//'.CONNEX', numa), 'L', jdes)
+! ---   NOM DU PREMIER NOEUD
+!       ----------------------------------
+            call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', vi=connex)
+            nunoeu = connex(1)
+            call jenuno(jexnum(noma//'.NOMNOE', nunoeu), nomnoe)
 !
 ! ---   POINTEUR DANS LE TABLEAU DES NUMEROS D'EQUATIONS ASSOCIE
 ! ---   AU PREMIER NOEUD :
 !       ----------------
-            ival = zi(iaprno-1+ (zi(jdes)-1)* (nec+2)+1)
+        call posddl('CHAM_NO', chtemp, nomnoe, 'TEMP', nunoeu,&
+                    dof_nume)
 !
 ! ---   TEMPERATURE AU PREMIER NOEUD DE LA PREMIERE MAILLE DU CONTOUR
 ! ---   INTERIEUR COURANT :
 !       -----------------
-            temp = vale(nueq(ival))
+            temp = vale(dof_nume)
 !
 ! ---   BOUCLE SUR LES MAILLES (SEG2 OU SEG3) CONSTITUANT LE CONTOUR
 ! ---   INTERIEUR COURANT :
@@ -310,15 +294,14 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---     NOM DE LA MAILLE :
 !         ----------------
                 call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
-                call jenonu(jexnom(noma//'.NOMMAI', nomail), numa)
 !
 ! ---     NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ------------------------------------
-                call jelira(jexnum(noma//'.CONNEX', numa), 'LONMAX', nbno)
+                call jelira(jexnum(noma//'.CONNEX', numail), 'LONMAX', nbno)
 !
 ! ---     RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 !         -------------------------------------------
-                call jeveuo(jexnum(noma//'.CONNEX', numa), 'L', jdes)
+                call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', jdes)
 !
 ! ---     COORDONNEEES DES NOEUDS SOMMETS DE LA MAILLE DANS
 ! ---     UN REPERE OU LES AXES SONT TOUJOURS X ET Y MAIS DONT
@@ -350,3 +333,4 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     call detrsd('CHAMP_GD', '&&PECAP1.INTEG')
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine
+

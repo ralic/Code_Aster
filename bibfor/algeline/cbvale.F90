@@ -84,7 +84,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
 !
     nomddl = ddlexc
-    matres = zk24(zi(lres+1))
+    matres = zk24(zi(lres+1))(1:19)
     if (matd) then
         neq = zi(lres+5)
     else
@@ -96,7 +96,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
 !
     mat1 = zk24(zi(lmat(1)+1))
-    noma = mat1
+    noma = mat1(1:19)
     mxddl = 1
 !
 !     I) RECUPERATION DU NOM DE LA NUMEROTATION ASSOCIEE AUX MATRICES
@@ -105,7 +105,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !     II) RECUPERATION DES POSITIONS DES DDL
     call wkvect('&&CBVALE', 'V V I', neq*mxddl, lddl)
     call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
-                zi(lddl))
+                tabl_equa = zi(lddl))
 !
     symr = zi(lres+4) .eq. 1
     ASSERT(typres.eq.'R' .or. typres.eq.'C')
@@ -145,7 +145,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
             c8cst = dcmplx(const(iconst),const(iconst+1))
             iconst=iconst+2
         endif
-        mati = zk24(zi(lmat(imat)+1))
+        mati = zk24(zi(lmat(imat)+1))(1:19)
         valmi = mati//'.VALM'
         call jelira(valmi, 'TYPE', cval=typmat)
         ASSERT(typmat.eq.'R' .or. typmat.eq.'C')

@@ -174,7 +174,7 @@ subroutine phi199(model, mate, ma, nu, num,&
         call jeveuo(nomcha(1:19)//'.VALE', 'E', jvec)
         AS_ALLOCATE(vi=ddl, size=neq*nbdir)
         call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
-ddl)
+                    tabl_equa = ddl)
 !
         do in = 0, neq-1
             zr(jvec+in) = 0.d0

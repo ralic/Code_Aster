@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine posddl(type, resu, noeud, cmp, nunoe,&
-                      nuddl)
-        character(len=*) :: type
-        character(len=*) :: resu
-        character(len=*) :: noeud
-        character(len=*) :: cmp
-        integer :: nunoe
-        integer :: nuddl
+    subroutine posddl(typesd  , resu, node_name, cmp_name, node_nume,&
+                      dof_nume)
+        character(len=*), intent(in) :: typesd
+        character(len=*), intent(in) :: resu
+        character(len=*), intent(in) :: node_name
+        character(len=*), intent(in) :: cmp_name
+        integer, intent(out) :: node_nume
+        integer, intent(out) :: dof_nume
     end subroutine posddl
 end interface

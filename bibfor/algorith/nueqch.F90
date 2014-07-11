@@ -1,5 +1,12 @@
-subroutine nueqch(erreur, chamno, noma, nbno, numno,&
-                  nomcmp, nueq)
+subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
+!
+implicit none
+!
+#include "asterc/ismaem.h"
+#include "asterfort/select_dof.h"
+#include "asterfort/utmess.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,30 +26,17 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/utmess.h"
-!
-    character(len=19) :: chamno
-    character(len=8) :: nomcmp(*), noma
-    character(len=1) :: erreur
-    integer :: nbno, numno(*), nueq(*)
+    character(len=19), intent(in) :: chamno
+    character(len=1), intent(in) :: error
+    integer, intent(in) :: nume_node
+    character(len=8), intent(in) :: cmp_name
+    integer, intent(inout) :: nueq
 !
 ! ----------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
-! PERMET DE RECUPERER LES NUMEROS DES EQUATIONS DANS LE .VALE A
-! PARTIR DES NOMS DE NOEUD ET DES NOMS DE COMPOSANTE
+! PERMET DE RECUPERER LES NUMEROS DES EQUATIONS
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,69 +45,42 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 ! IN  ERREUR  : 'F' SI UNE COMPOSANTE ABSENTE -> ERREUR
 !               'A' SI UNE COMPOSANTE ABSENTE -> ALARME
 !               ' ' SI UNE COMPOSANTE ABSENTE -> RIEN
-! IN  NBNO    : NOMBRE DE NOEUDS
-! IN  NUMNO   : LISTE DES NUMEROS DE NOEUD
-! IN  NOMCMP  : LISTE DES NOMS DE COMPOSANTE
-! OUT NUEQ    : LISTE DES POSITIONS DANS LE .VALE
 !
+! --------------------------------------------------------------------------------------------------
 !
+    integer, pointer :: list_idx_dof(:) => null()
+    integer, pointer :: list_node_p(:) => null()
+    character(len=8), pointer :: list_cmp_p(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: pfchno
-    character(len=8) :: nomgd
-    integer :: nbcmpx, ncmp, ico, itrou
-    integer :: icmp, ino, idc, nec
-    integer :: jcmp, jnueq, jprno
-    aster_logical :: exis
-    character(len=8) :: nom
+    AS_ALLOCATE(vi = list_idx_dof, size = 1)
+    AS_ALLOCATE(vi = list_node_p, size = 1)
+    AS_ALLOCATE(vk8 = list_cmp_p, size = 1)
 !
-! ----------------------------------------------------------------------
+    list_node_p(1) = nume_node
+    list_cmp_p(1)  = cmp_name
 !
-    call jemarq()
+! - Find component in list of equations
 !
-    call dismoi('NOM_GD', chamno, 'CHAM_NO', repk=nomgd)
-    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
-    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmpx)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmp)
+    call select_dof(list_idx_dof = list_idx_dof, &
+                       chamnoz      = chamno,&
+                       only_mesh    = .true.  ,&
+                       nb_nodez     = 1  , list_node = list_node_p,&
+                       nb_cmpz      = 1  , list_cmp  = list_cmp_p)
 !
-    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchno)
-    call jeveuo(pfchno//'.PRNO', 'L', jprno)
-    call jeveuo(pfchno//'.NUEQ', 'L', jnueq)
+! - Check
 !
-    do ino = 1, nbno
-        nom = nomcmp(ino)
-        idc = indik8(zk8(jcmp),nom ,1,ncmp)
-        ico = 0
-        do icmp = 1, nbcmpx
-            if (exisdg(zi(jprno-1+(nec+2)*(numno(ino)-1)+2+1),icmp)) then
-                ico = ico + 1
-                exis = .true.
-            else
-                exis = .false.
-            endif
-            if (icmp .eq. idc) then
-                if (exis) then
-                    itrou = ico
-                    goto 101
-                else
-                    itrou = 0
-                    if (erreur .ne. ' ') then
-                        call utmess(erreur, 'MECANONLINE5_50', sk=nom)
-                    endif
-                endif
-            endif
-        end do
-        if (erreur .ne. ' ') then
-            call utmess(erreur, 'MECANONLINE5_50', sk=nom)
-        endif
-101     continue
-        if (itrou .eq. 0) then
-            nueq(ino) = 0
-        else
-            nueq(ino) = zi( jnueq-1+zi(jprno-1+ (nec+2)*(numno(ino)-1)+ 1)+itrou-1)
-        endif
-    end do
+    if (list_idx_dof(1).eq.0) then
+        call utmess(error, 'MECANONLINE5_50', sk = cmp_name)
+    endif
 !
-    call jedema()
+! - Copy
+!
+    nueq = list_idx_dof(1)
+!
+    AS_DEALLOCATE(vi = list_idx_dof)
+    AS_DEALLOCATE(vi = list_node_p)
+    AS_DEALLOCATE(vk8 = list_cmp_p)
+!
 end subroutine

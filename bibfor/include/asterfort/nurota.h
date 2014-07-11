@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nurota(numedd, compor, sdnuro)
-        character(len=24) :: numedd
-        character(len=24) :: compor
-        character(len=24) :: sdnuro
+    subroutine nurota(modelz, nume_ddl, compor, sdnuro)
+        character(len=*), intent(in) :: modelz
+        character(len=24), intent(in) :: nume_ddl
+        character(len=24), intent(in) :: compor
+        character(len=24), intent(in) :: sdnuro
     end subroutine nurota
 end interface

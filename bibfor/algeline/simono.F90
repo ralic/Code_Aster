@@ -95,7 +95,7 @@ subroutine simono()
     call wkvect('&&SIMONO.VECTEUR', 'V V R', neq, jvec)
     AS_ALLOCATE(vi=ddl, size=neq*nbdir)
     call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
-ddl)
+                tabl_equa = ddl)
     do i = 1, nbdir
         do in = 0, neq-1
             zr(jvec+in) = zr(jvec+in) - ddl(1+(i-1)*neq+in)*depl(i)

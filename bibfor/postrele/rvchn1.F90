@@ -11,9 +11,11 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
+#include "asterfort/select_dof.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
     integer :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
@@ -38,96 +40,103 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno
-    integer :: iad, tabec(10), iavald, nunoe, numdx, numdy, numdz, numdrx
-    integer :: numdry, numdrz, nuddl
+    integer :: ino
+    integer :: iavald, numdx, numdy, numdz, numdrx
+    integer :: numdry, numdrz, nb_node, nb_cmp
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3)
-    character(len=8) :: k8b, nomcmp
-    character(len=19) :: prno, depla
-    integer, pointer :: nueq(:) => null()
+    character(len=8) :: gran_name
+    character(len=19) :: depla
+    integer, pointer :: list_idx_dof(:) => null()
+    integer, pointer :: list_node(:) => null()
+    character(len=8), pointer :: list_cmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     depla = deplaz
-!
-    call dismoi('PROF_CHNO', deplaz, 'CHAM_NO', repk=prno)
-    call dismoi('NUM_GD', deplaz, 'CHAM_NO', repi=gd)
-    call dismoi('NOM_GD', deplaz, 'CHAM_NO', repk=k8b)
-    if (k8b(1:6) .ne. 'DEPL_R') then
+    call dismoi('NOM_GD', deplaz, 'CHAM_NO', repk=gran_name)
+    if (gran_name .ne. 'DEPL_R') then
         call utmess('F', 'POSTRELE_17')
     endif
 !
-    call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(prno//'.PRNO', ibid), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
+! - Create list of components
 !
-    nec = nbec( gd )
-    if (nec .gt. 10) then
-        call utmess('F', 'POSTRELE_53')
-    endif
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
+    nb_cmp = 6
+    AS_ALLOCATE(vk8=list_cmp, size = nb_cmp)
+    list_cmp(1) = 'DX'
+    list_cmp(2) = 'DY'
+    list_cmp(3) = 'DZ'
+    list_cmp(4) = 'DRX'
+    list_cmp(5) = 'DRY'
+    list_cmp(6) = 'DRZ'
+!
+! - Create list of equations
+!
+    AS_ALLOCATE(vi=list_idx_dof, size = nb_cmp)
+!
+! - Create list of equations
+!
+    nb_node = 1
+    AS_ALLOCATE(vi=list_node, size = nb_node)
 !
     call jedupo(depla//'.VALE', 'V', nomjv, .false._1)
     call jeveuo(nomjv, 'E', iavald)
 !
     do ino = 1, nbno
-        nunoe = numnd(ino)
-        do iec = 1, nec
-            tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
-        end do
-        numdx = 0
-        numdy = 0
-        numdz = 0
-        numdrx = 0
-        numdry = 0
-        numdrz = 0
+        list_node(1) = numnd(ino)
+        list_idx_dof(1:nb_cmp) = 0
+        call select_dof(list_idx_dof = list_idx_dof,&
+                           chamnoz  = depla,&
+                           only_mesh = .true.,&
+                           nb_nodez = nb_node, list_node = list_node,&
+                           nb_cmpz  = nb_cmp , list_cmp  = list_cmp)
+
+        numdx  = list_idx_dof(1)
+        numdy  = list_idx_dof(2)
+        numdz  = list_idx_dof(3)
+        numdrx = list_idx_dof(4)
+        numdry = list_idx_dof(5)
+        numdrz = list_idx_dof(6)
         valed(1) = 0.0d0
         valed(2) = 0.0d0
         valed(3) = 0.0d0
         valer(1) = 0.0d0
         valer(2) = 0.0d0
         valer(3) = 0.0d0
-        icompt = 0
-        do icmp = 1, ncmpmx
-            if (exisdg(tabec,icmp)) then
-                icompt = icompt + 1
-                nomcmp = zk8(iad-1+icmp)
-                nuddl = nueq(1+zi(jprno+(nec+2)*(nunoe-1))-1)+ icompt-1
-                if (nomcmp .eq. 'DX') then
-                    numdx = nuddl
-                    valed(1) = zr(iavald-1+numdx)
-                else if (nomcmp .eq. 'DY') then
-                    numdy = nuddl
-                    valed(2) = zr(iavald-1+numdy)
-                else if (nomcmp .eq. 'DZ') then
-                    numdz = nuddl
-                    valed(3) = zr(iavald-1+numdz)
-                else if (nomcmp .eq. 'DRX') then
-                    numdrx = nuddl
-                    valer(1) = zr(iavald-1+numdrx)
-                else if (nomcmp .eq. 'DRY') then
-                    numdry = nuddl
-                    valer(2) = zr(iavald-1+numdry)
-                else if (nomcmp .eq. 'DRZ') then
-                    numdrz = nuddl
-                    valer(3) = zr(iavald-1+numdrz)
-                endif
-            endif
-        end do
-        if ((numdx+numdy+numdz) .eq. 0) goto 22
-        call utpvgl(1, 3, pgl, valed, vald)
-        if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
-        if (numdy .ne. 0) zr(iavald-1+numdy) = vald(2)
-        if (numdz .ne. 0) zr(iavald-1+numdz) = vald(3)
- 22     continue
-        if ((numdrx+numdry+numdrz) .eq. 0) goto 30
-        call utpvgl(1, 3, pgl, valer, valr)
-        if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
-        if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
-        if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
- 30     continue
+        if (numdx.ne.0) then
+            valed(1) = zr(iavald-1+numdx)
+        endif
+        if (numdy.ne.0) then
+            valed(2) = zr(iavald-1+numdy)
+        endif
+        if (numdz.ne.0) then
+            valed(3) = zr(iavald-1+numdz)
+        endif
+        if (numdrx.ne.0) then
+            valer(1) = zr(iavald-1+numdrx)
+        endif
+        if (numdry.ne.0) then
+            valer(2) = zr(iavald-1+numdry)
+        endif
+        if (numdrz.ne.0) then
+            valer(3) = zr(iavald-1+numdrz)
+        endif
+        if ((numdx+numdy+numdz) .ne. 0) then
+            call utpvgl(1, 3, pgl, valed, vald)
+            if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
+            if (numdy .ne. 0) zr(iavald-1+numdy) = vald(2)
+            if (numdz .ne. 0) zr(iavald-1+numdz) = vald(3)
+        endif
+        if ((numdrx+numdry+numdrz) .ne. 0) then
+            call utpvgl(1, 3, pgl, valer, valr)
+            if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
+            if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
+            if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
+        endif
     end do
+!
+    AS_DEALLOCATE(vi=list_idx_dof)
+    AS_DEALLOCATE(vi=list_node)
+    AS_DEALLOCATE(vk8=list_cmp)
 !
     call jedema()
 end subroutine

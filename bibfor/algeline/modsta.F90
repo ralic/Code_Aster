@@ -84,7 +84,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
     if (motcle(1:4) .eq. 'ACCE') then
         AS_ALLOCATE(vi=position_ddl, size=3*neq)
         call pteddl('NUME_DDL', nume, 3, nomcmp, neq,&
-position_ddl)
+                    tabl_equa = position_ddl)
         do im = 1, nbmode
             imod = imod + 1
             in2 = 3 * ( im - 1 )

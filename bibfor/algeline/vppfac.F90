@@ -84,7 +84,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    masse = zk24(zi(lmasse+1))
+    masse = zk24(zi(lmasse+1))(1:19)
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
     call gettco(masse, typmas)
 !
@@ -119,12 +119,12 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES
             end do
         else
-            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
-                        zi(lddl))
-            ia = (iddl-1)*neq
-            do ieq = 1, neq
-                zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
-            end do
+           call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
+                       tabl_equa = zi(lddl))
+           ia = (iddl-1)*neq
+           do ieq = 1, neq
+               zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
+           end do
         endif
 !
 !     ------------------------------------------------------------------

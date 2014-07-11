@@ -75,7 +75,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     zero = 0.d0
 !
     nomddl = ddlexc
-    matres = zk24(zi(lres+1))
+    matres = zk24(zi(lres+1))(1:19)
     ASSERT(typres.eq.'R' .or. typres.eq.'C')
     neq = zi(lres+2)
     valmr = matres//'.VALM'
@@ -89,7 +89,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     call dismoi('NOM_NUME_DDL', matres, 'MATR_ASSE', repk=numr)
     call wkvect('&&CBVAL2', 'V V I', neq*mxddl, lddl)
     call pteddl('NUME_DDL', numr, mxddl, nomddl, neq,&
-                zi(lddl))
+                tabl_equa = zi(lddl))
 !
 !
     call jeveuo(numr//'.SMOS.SMHC', 'L', jsmhcr)
@@ -116,7 +116,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     iconst = 1
     do imat = 1, nbcomb
         ASSERT(typcst(imat).eq.'R')
-        mati = zk24(zi(lmat(imat)+1))
+        mati = zk24(zi(lmat(imat)+1))(1:19)
         call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numi)
         call jeveuo(numi//'.SMOS.SMHC', 'L', jsmhci)
         call jeveuo(numi//'.SMOS.SMDI', 'L', vi=smdii)

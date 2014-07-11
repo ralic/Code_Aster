@@ -222,7 +222,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
         norm = 'AVEC_CMP'
         call wkvect('&&MODIBA.POSITION.DDL', 'V V I', neq, lddl)
         call pteddl('CHAM_NO', nomcha, 1, 'LAGR    ', neq,&
-                    zi(lddl))
+                    list_equa = zi(lddl))
         do ieq = 0, neq-1
             zi(lddl+ieq)= 1 - zi(lddl+ieq)
         end do

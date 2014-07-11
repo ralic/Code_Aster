@@ -212,8 +212,10 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! --- REPERAGE DDL LAGRANGE DE CONTACT
 !
-    sdnuco = sdnume(1:19)//'.NUCO'
-    call jeveuo(sdnuco, 'L', jnuco)
+    if (lctcc) then
+        sdnuco = sdnume(1:19)//'.NUCO'
+        call jeveuo(sdnuco, 'L', jnuco)
+    endif
 !
 ! --- ACCES NUMEROTATION DUALISATION DES EQUATIONS
 !
@@ -254,7 +256,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! --- CALCUL DES FORCES POUR MISE A L'ECHELLE (DENOMINATEUR)
 !
-    call nmrede(numedd, sdnume, fonact, sddyna, matass,&
+    call nmrede(sdnume, fonact, sddyna, matass,&
                 veasse, neq, foiner, cnfext, cnfint,&
                 vchar, ichar)
 !
@@ -278,8 +280,10 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! ----- SI LAGRANGIEN DE CONTACT/FROT: ON IGNORE LA VALEUR DU RESIDU
 !
-        if (zi(jnuco+ieq-1) .eq. 1) then
-            goto 20
+        if (lctcc) then
+            if (zi(jnuco+ieq-1) .eq. 1) then
+                goto 20
+            endif
         endif
 !
 ! --- CALCUL DU RESIDU A PROPREMENT PARLER

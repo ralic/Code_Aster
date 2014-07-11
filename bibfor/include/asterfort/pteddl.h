@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
-                      ivec)
-        integer :: neq
-        character(len=*) :: typesd
-        character(len=*) :: num
-        integer :: nbcmp
-        character(len=8) :: lnocmp(*)
-        integer :: ivec(neq, *)
+    subroutine pteddl(typesd   , resuz    , nb_cmp, list_cmp, nb_equa,&
+                      tabl_equa, list_equa)
+        integer, intent(in) :: nb_cmp
+        integer, intent(in) :: nb_equa
+        character(len=*), intent(in) :: typesd
+        character(len=*), intent(in) :: resuz
+        character(len=8), target, intent(in) :: list_cmp(nb_cmp)
+        integer, target, optional, intent(inout) :: tabl_equa(nb_equa, nb_cmp)
+        integer, target, optional, intent(inout) :: list_equa(nb_equa)
     end subroutine pteddl
 end interface

@@ -181,7 +181,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                         nbret=ni)
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq*ncmp, lcmp)
             call pteddl('NUME_DDL', nume, ncmp, zk8(jcmp), neq,&
-                        zi(lcmp))
+                        tabl_equa = zi(lcmp))
             do ic = 2, ncmp
                 ind = (ic-1)*neq
                 do ieq = 0, neq-1
@@ -200,7 +200,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
             zk8(jcmp+ncmp-1) = 'LAGR'
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq*ncmp, lcmp)
             call pteddl('NUME_DDL', nume, ncmp, zk8(jcmp), neq,&
-                        zi(lcmp))
+                        tabl_equa = zi(lcmp))
             do ic = 2, ncmp
                 ind = (ic-1)*neq
                 do ieq = 0, neq-1

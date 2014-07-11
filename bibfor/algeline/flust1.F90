@@ -180,7 +180,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST1.TEMP.MASG', 'V V R', nbm, kmasg)
     call wkvect('&&FLUST1.POSITION.DDL', 'V V I', neq, lddl)
     call pteddl('NUME_DDL', numddl, 1, depl, neq,&
-                zi(lddl))
+                list_equa = zi(lddl))
     do ieq = 0, neq-1
         zr(laux1+ieq) = zi(lddl+ieq)
     end do

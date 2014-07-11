@@ -81,14 +81,6 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'PROF_CHNO') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
-    else if (questi.eq.'NOM_NUME_DDL') then
-        ASSERT(.false.)
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        repk = zk24(iarefe+1)
-!        ATTENTION : ZK24(IAREFE+1) EST UN PROF_CHNO (K19)
-!        EN TRONQUANT A K14, ON NE TROUVE PAS TOUJOURS DE NUME_DDL
-!        CE DISMOI EST DANGEREUX ET NE DEVRAIT PAS ETRE UTILISE
-!
     else
         ierd=1
     endif
