@@ -20,7 +20,7 @@ import math
 MPa = 1e6
 #-----------------------------------------------
 # PARAMETRES DU CALCUL
-#-----------------------------------------------  
+#-----------------------------------------------
 ## BETON
 # epaisseur et hauteur de la plaque
 ht = 0.15
@@ -55,18 +55,18 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
-#-----------------------------------------------    
+#-----------------------------------------------
 
 MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
 
 #-----------------------------------------------
 # CREATION DU MODELE
-#-----------------------------------------------   
+#-----------------------------------------------
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                  INFO=1,
                   AFFE=_F(GROUP_MA = 'POUTRE', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
                          );
-                         
+
 #-----------------------------------------------
 # DEFINTION DES MATERIAUX ET CARACTERSISTIQUES
 #-----------------------------------------------
@@ -84,14 +84,14 @@ GF=DEFI_GEOM_FIBRE( INFO=1,
 
 BETON = DEFI_MATER_GC(
            MAZARS=_F(
-              UNITE_LONGUEUR = 'M',
-              FCJ      = -fc, 
+              CODIFICATION='ESSAI',
+              FCJ      = -fc,
               EIJ      = E_beton,
-              EPSI_C   = eps_c, 
+              EPSI_C   = eps_c,
               FTJ  = ft,
               AT=AT,
            ),
-           RHO=Rho_beton,  
+           RHO=Rho_beton,
            INFO=2,
 )
 ACIER=DEFI_MATER_GC(
@@ -101,22 +101,22 @@ ACIER=DEFI_MATER_GC(
            ),
            RHO=Rho_acier,
 )
- 
+
 COMPF=DEFI_COMPOR(
    GEOM_FIBRE=GF,
    MATER_SECT=BETON,
-   MULTIFIBRE= (_F(GROUP_FIBRE='SACI', 
-                    MATER=ACIER, 
+   MULTIFIBRE= (_F(GROUP_FIBRE='SACI',
+                    MATER=ACIER,
                     RELATION='VMIS_CINE_GC'),
-               _F(GROUP_FIBRE='SBET', 
-                    MATER=BETON, 
+               _F(GROUP_FIBRE='SBET',
+                    MATER=BETON,
                     RELATION='MAZARS_GC'),),
-               
+
 )
 
 MATER=AFFE_MATERIAU(
    MAILLAGE=MAIL,
-   AFFE=_F(GROUP_MA='POUTRE', 
+   AFFE=_F(GROUP_MA='POUTRE',
            MATER=(BETON,ACIER)),
    AFFE_COMPOR=_F(TOUT='OUI',
             COMPOR=COMPF),
@@ -125,20 +125,20 @@ MATER=AFFE_MATERIAU(
 
 
 CAEL=AFFE_CARA_ELEM(
-            MODELE=MO, 
+            MODELE=MO,
             INFO=1,
             POUTRE=_F(GROUP_MA=('POUTRE'), SECTION='RECTANGLE',CARA=('HY','HZ'), VALE=(ht,ht),),
             ORIENTATION=_F(GROUP_MA=('POUTRE'), CARA='ANGL_VRIL', VALE=-90.0,),
             GEOM_FIBRE=GF,
-            MULTIFIBRE=_F(GROUP_MA=('POUTRE'), 
-                        GROUP_FIBRE=('SBET','SACI'), 
-                        PREC_AIRE=2.0E-02, 
+            MULTIFIBRE=_F(GROUP_MA=('POUTRE'),
+                        GROUP_FIBRE=('SBET','SACI'),
+                        PREC_AIRE=2.0E-02,
                         PREC_INERTIE=10,),
 )
 
 #-----------------------------------------------
-# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS 
-#-----------------------------------------------                                 
+# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+#-----------------------------------------------
 CL=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='A',
                                     DX=0.0,
@@ -158,7 +158,7 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                            FORCE_NODALE=_F(GROUP_NO = 'B',
                                           FX=1000.0,),);
-                                          
+
 t1 = 1.0
 t2 = 3.0
 t3 = 5.0
@@ -184,14 +184,14 @@ FOFO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                          t9,-790.0,
                          t10,376.0,
                              ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
-                             
+
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=t10,
-                                   PAS=dt,),);                       
+                                   PAS=dt,),);
 
 #-----------------------------------------------
-# CALCUL DES RESULTATS POUR LE CHARGEMENT 
-#-----------------------------------------------                               
+# CALCUL DES RESULTATS POUR LE CHARGEMENT
+#-----------------------------------------------
 
 RESU=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=MATER,
@@ -216,8 +216,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #-----------------------------------------------
 
 # les resultats experimentaux sont donnees dans le fichier joint
-# il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)                   
-INCLUDE(UNITE = 12)                      
+# il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)
+INCLUDE(UNITE = 12)
 
 # on a identifie les points numerises les plus proches des pic de chaque cycle pour la comparaison avec la solution numerique
 # les deformations sont converties en deplacement par la multiplication par la longueur du speciment l= 0.7m

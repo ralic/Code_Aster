@@ -35,9 +35,9 @@ EB = 3.7272E10
 Nu = 0.20
 BETON = DEFI_MATER_GC(
    MAZARS=_F(
-      UNITE_LONGUEUR = 'M',
+      CODIFICATION='ESSAI',
       FCJ      = 40.963E+06, EIJ=EB,
-      EPSI_C   = 1.75754E-03, NU=Nu,
+      EPSI_C   = 1.75754E-03, NU=Nu, FTJ=3.05778E+06,
       SIGM_LIM = 35.0E+06,
       EPSI_LIM = 3.5E-03, AT=0.70,
    ),

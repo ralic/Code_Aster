@@ -19,7 +19,7 @@
 
 from Accas import _F
 import aster
-import numpy
+import numpy as NP
 from Utilitai.Utmess import UTMESS
 
 def FaitMessage(Dico):
@@ -30,6 +30,59 @@ def FaitMessage(Dico):
             message +="\n  "
             cpt+=1
     return message
+
+
+def BetonEC2(Classe):
+    Dico = {}
+    # Décodage de la classe
+    sfck,sfckc = Classe[1:].split('/')
+    #
+    Dico['fck']  = float(sfck)
+    Dico['fckc'] = float(sfckc)
+    # Contrainte en MPa et déformation en ‰
+    Dico['fcm']  = Dico['fck'] + 8.0
+    Dico['nu']   = 0.20
+    #
+    if ( Dico['fck'] <= 50.0 ):
+        Dico['fctm'] = 0.30*NP.power(Dico['fck'],2.0/3.0)
+    else:
+        Dico['fctm'] = 2.12*NP.log(1.0+Dico['fcm']/10.0)
+    #
+    Dico['ecm'] = 22.0E+03*NP.power(Dico['fcm']/10.0,0.3)
+    #
+    Dico['epsi_c1'] = 0.7*NP.power(Dico['fcm'],0.31)
+    if ( Dico['epsi_c1'] >= 2.8): Dico['epsi_c1'] = 2.8
+    #
+    if ( Dico['fck'] > 50.0 ):
+        Dico['epsi_cu1'] = 2.80 + 27.000*NP.pow( (98.0-Dico['fcm'])/100.0 , 4.0)
+        Dico['epsi_c2']  = 2.00 +  0.085*NP.pow( Dico['fck'] - 50.0, 0.53)
+        Dico['epsi_cu2'] = 2.60 + 35.000*NP.pow( (90.0-Dico['fck'])/100.0 , 4.0)
+        Dico['n']        = 1.40 + 23.400*NP.pow( (90.0-Dico['fck'])/100.0 , 4.0)
+        Dico['epsi_c3']  = 1.75 +  0.550*(Dico['fck'] - 50.0)/40.0
+        Dico['epsi_cu3'] = 2.60 + 35.000*NP.pow( (90.0-Dico['fck'])/100.0 , 4.0)
+    else:
+        Dico['epsi_cu1'] = 3.50
+        Dico['epsi_c2']  = 2.00
+        Dico['epsi_cu2'] = 3.50
+        Dico['n']        = 2.00
+        Dico['epsi_c3']  = 1.75
+        Dico['epsi_cu3'] = 3.50
+    #
+    return Dico
+
+
+def BetonBAEL91(fcj):
+    Dico = {}
+    # Contrainte en MPa
+    Dico['fcj'] = fcj
+    #
+    Dico['eij']    = 11000.0*NP.power(Dico['fcj'],0.333333)
+    Dico['ftj']    = 0.60 + 0.06*Dico['fcj']
+    Dico['epsi_c'] = 0.620E-3*NP.power(Dico['fcj'],0.333333)
+    Dico['nu']     = 0.20
+    #
+    return Dico
+
 
 
 def Mazars_Unil(DMATER,args):
@@ -59,29 +112,63 @@ def Mazars_Unil(DMATER,args):
     """
     #
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
-    # Obligatoire FCJ
-    FCJ = MATER['FCJ']
-    # Obligatoire Unité du problème. Choix possibles M, MM
-    #     si MM  ==> c'est des MPa ==> Coeff=1
-    #     si M   ==> c'est des Pa  ==> Coeff=1.0E+06
-    if   ( MATER['UNITE_LONGUEUR'] == "MM" ):
-        coeff = 1.0
-        MATER['UNITE'] = 'MPa'
-    elif ( MATER['UNITE_LONGUEUR'] == "M" ):
-        coeff = 1.0E+06
-        MATER['UNITE'] = 'Pa'
     #
-    listepara = ['EIJ','FTJ','EPSI_C','NU','EPSD0','K','BT','AT','BC','AC','SIGM_LIM','EPSI_LIM']
+    # Obligatoire : Règlement de codification
+    Regle = MATER['CODIFICATION']
+    # Liste des paramètes matériaux facultatifs mais nécessaires pour calculer
+    # les valeurs des paramètres de MAZARS
+    listepara = ['NU','EPSD0','K','BT','AT','BC','AC','SIGM_LIM','EPSI_LIM']
+    #
+    if   ( Regle == 'BAEL91' ):
+        # Obligatoire : FCJ UNITE_CONTRAINTE
+        if   ( MATER['UNITE_CONTRAINTE'] == "MPa" ):
+            coeff = 1.0
+        elif ( MATER['UNITE_CONTRAINTE'] == "Pa" ):
+            coeff = 1.0E+06
+        beton = BetonBAEL91( MATER['FCJ']/coeff )
+        #
+        FCJ       = beton['fcj']*coeff
+        EIJ       = beton['eij']*coeff
+        FTJ       = beton['ftj']*coeff
+        EPSI_C    = beton['epsi_c']
+        NU        = beton['nu']
+        SIGM_LIM  = 0.6*FCJ
+        EPSI_LIM  = 3.5/1000.0
+        #
+        for xx in listepara: MATER[xx] = None
+        #
+    elif ( Regle == 'EC2' ):
+        # Obligatoire CLASSE UNITE_CONTRAINTE
+        if   ( MATER['UNITE_CONTRAINTE'] == "MPa" ):
+            coeff = 1.0
+        elif ( MATER['UNITE_CONTRAINTE'] == "Pa" ):
+            coeff = 1.0E+06
+        beton = BetonEC2( MATER['CLASSE'] )
+        #
+        FCJ       = beton['fcm']*coeff
+        EIJ       = beton['ecm']*coeff
+        FTJ       = beton['fctm']*coeff
+        EPSI_C    = beton['epsi_c1']/1000.0
+        NU        = beton['nu']
+        SIGM_LIM  = 0.6*FCJ
+        EPSI_LIM  = beton['epsi_cu1']
+        #
+        for xx in listepara: MATER[xx] = None
+        #
+    elif ( Regle == 'ESSAI' ):
+        # Obligatoire FCJ , EIJ, FTJ, EPSI_C
+        FCJ     = MATER['FCJ']
+        EIJ     = MATER['EIJ']
+        FTJ     = MATER['FTJ']
+        EPSI_C  = MATER['EPSI_C']
+        MATER['UNITE_CONTRAINTE'] = ''
+    # L'ordre dans la liste est important à cause des dépendances des relations
+    # Les coefficients FCJ , EIJ, FTJ, EPSI_C doivent déjà être définis
+    listepara = ['NU','EPSD0','K','BT','AT','BC','AC','SIGM_LIM','EPSI_LIM']
     for xx in listepara:
         if ( MATER.has_key(xx) ):
             if ( MATER[xx] != None ):
                 exec('%s = %s' % (xx , MATER[xx]) )
-            elif ( xx == 'EIJ'):
-                EIJ = 11000.0*((FCJ/coeff)**0.333333)*coeff
-            elif ( xx == 'FTJ'):
-                FTJ = (0.6*coeff + 0.06*FCJ)
-            elif ( xx == 'EPSI_C' ):
-                EPSI_C = 0.620E-3*((FCJ/coeff)**0.333333)
             elif ( xx == 'NU' ):
                 NU = 0.200
             elif ( xx == 'EPSD0' ):
@@ -97,7 +184,7 @@ def Mazars_Unil(DMATER,args):
             elif ( xx == 'AC'):
                 NUB = NU*(2.0**0.5)
                 ECNUB = EPSI_C*NUB
-                AC = (FCJ*NUB/EIJ - EPSD0)/(ECNUB*numpy.exp(BC*EPSD0-BC*ECNUB) - EPSD0)
+                AC = (FCJ*NUB/EIJ - EPSD0)/(ECNUB*NP.exp(BC*EPSD0-BC*ECNUB) - EPSD0)
             elif ( xx == 'SIGM_LIM'):
                 SIGM_LIM = 0.6*FCJ
             elif ( xx == 'EPSI_LIM'):
@@ -119,12 +206,17 @@ def Mazars_Unil(DMATER,args):
                         'SIGM_LIM':SIGM_LIM, 'EPSI_LIM':EPSI_LIM}
     #
     # On affiche dans tous les cas
+    if ( len( MATER['UNITE_CONTRAINTE'] )>0 ):
+        message0 = "MAZARS [%s]" % MATER['UNITE_CONTRAINTE']
+    else:
+        message0 = "MAZARS"
+    #
     message1 = FaitMessage( mclef['ELAS'] )
     message2 = FaitMessage( mclef['MAZARS'] )
     Dico = {'FCJ':FCJ,'FTJ':FTJ,'EPSI_C':EPSI_C}
     message3 =  FaitMessage( Dico )
     #
-    UTMESS('I', 'COMPOR1_75', valk=("MAZARS [%s]" % MATER['UNITE'] ,message1,message2,message3) )
+    UTMESS('I', 'COMPOR1_75', valk=(message0,message1,message2,message3) )
     #
     return mclef
 
@@ -203,14 +295,14 @@ def Ident_Endo_Fiss_Exp(ft,fc,beta=0.1,prec=1E-10,itemax=100):
     x = -pp+delta**0.5
     # Resolution de l'equation par methode de Newton
     for i in range(itemax):
-        f  = L*x + (2+numpy.exp(-2*r*x))**0.5 - (2+numpy.exp(2*x))**0.5
+        f  = L*x + (2+NP.exp(-2*r*x))**0.5 - (2+NP.exp(2*x))**0.5
         if abs(f) < prec: break
-        df = L - r*numpy.exp(-2*r*x)/(2+numpy.exp(-2*r*x))**0.5 - numpy.exp(2*x)/(2+numpy.exp(2*x))**0.5
+        df = L - r*NP.exp(-2*r*x)/(2+NP.exp(-2*r*x))**0.5 - NP.exp(2*x)/(2+NP.exp(2*x))**0.5
         x  = x - f/df
     else:
         UTMESS('F', 'COMPOR1_87' )
     #
-    tau  = A*x + (2+numpy.exp(2*x))**0.5
+    tau  = A*x + (2+NP.exp(2*x))**0.5
     sig0 = ft/x
     return (sig0,tau)
 
@@ -253,12 +345,12 @@ def Endo_Fiss_Exp(DMATER,args):
         sref = FT
         uref = GF/SY
         dsdubar = uref/sref * dsdu
-        P = (1.5*numpy.pi)**(2.0/3.0)-2
+        P = (1.5*NP.pi)**(2.0/3.0)-2
     #
     if MATER['Q'] <> None:
         Q = MATER['Q']
     elif MATER['Q_REL'] <> None:
-        qmax = (1.11375+0.565239*P-0.003322*P**2)*(1-numpy.exp(-1.98935*P)) - 0.01
+        qmax = (1.11375+0.565239*P-0.003322*P**2)*(1-NP.exp(-1.98935*P)) - 0.01
         Q = qmax * MATER['Q_REL']
     else:
         Q = 0.0
@@ -285,7 +377,7 @@ def Endo_Fiss_Exp(DMATER,args):
     return mclef
 
 
-def defi_mater_gc_ops(self,MAZARS,ACIER,ENDO_FISS_EXP,REGLE,**args):
+def defi_mater_gc_ops(self,MAZARS,ACIER,ENDO_FISS_EXP,**args):
     """
     C'est : un parmi : ACIER  MAZARS  ENDO_FISS_EXP
     """
@@ -297,10 +389,8 @@ def defi_mater_gc_ops(self,MAZARS,ACIER,ENDO_FISS_EXP,REGLE,**args):
     # Le concept sortant (de type mater_sdaster) est nommé 'Materiau' dans le contexte de la macro
     self.DeclareOut('Materiau',self.sd)
     #
-    if ( REGLE == 'BAEL91'):
-        if ( MAZARS != None ): mclef = Mazars_Unil(MAZARS[0],args)
-        if ( ACIER  != None ): mclef = Acier_Cine_Line(ACIER[0],args)
-    #
-    if (ENDO_FISS_EXP != None): mclef = Endo_Fiss_Exp(ENDO_FISS_EXP[0],args)
+    if ( MAZARS        != None ): mclef = Mazars_Unil(MAZARS[0],args)
+    if ( ACIER         != None ): mclef = Acier_Cine_Line(ACIER[0],args)
+    if ( ENDO_FISS_EXP != None ): mclef = Endo_Fiss_Exp(ENDO_FISS_EXP[0],args)
     # Définition du matériau
     Materiau = DEFI_MATERIAU(**mclef)

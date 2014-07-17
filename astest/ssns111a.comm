@@ -54,7 +54,9 @@ ACIER=DEFI_MATER_GC(
 )
 
 BETON=DEFI_MATER_GC(
-   MAZARS=_F(UNITE_LONGUEUR="M",FCJ=51.0E+06, EIJ=43000.0E+06, FTJ=4.2E+06, AT=0.90,),
+   MAZARS=_F(CODIFICATION='ESSAI',
+            FCJ=51.0E+06, EIJ=43000.0E+06, FTJ=4.2E+06, EPSI_C=2.29922344E-03,
+            AT=0.90,),
 )
 
 # -------------------------------------------------
@@ -73,7 +75,7 @@ MATAF=AFFE_MATERIAU(
 # -------------------------------------------------
 LEMOD=AFFE_MODELE(
    MAILLAGE=MAILTOT,
-   
+
    AFFE=(
       _F(GROUP_MA=('ACPLUS','ACMOINS',), PHENOMENE='MECANIQUE', MODELISATION='GRILLE_EXCENTRE',),
       _F(GROUP_MA=('DALLE','B0X','B1X'), PHENOMENE='MECANIQUE', MODELISATION='DKT',),),
