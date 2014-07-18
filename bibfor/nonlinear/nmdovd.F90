@@ -61,7 +61,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: notype, texte(3), type_elem, type_elem2
-    character(len=8) :: mesh, name_elem
+    character(len=8) :: mesh, name_elem, grille
     character(len=19) :: ligrmo
     integer :: nutyel
     integer :: j_cesd, j_cesl, j_cesv
@@ -148,7 +148,12 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                             call utmess('F', 'COMPOR5_23', nk=3, valk=texte)
                         endif
                     else
-                        call lctest(defo_comp_py, 'MODELISATION', '1D', irett)
+                        call teattr('C', 'GRILLE', grille, iret, typel=notype)
+                        if (grille(1:3).eq.'OUI') then
+                            call lctest(defo_comp_py, 'MODELISATION', 'GRILLE', irett)
+                        else
+                            call lctest(defo_comp_py, 'MODELISATION', '1D', irett)
+                        endif
                         if (irett .eq. 0) then
                             texte(1) = notype
                             texte(2) = name_elem
