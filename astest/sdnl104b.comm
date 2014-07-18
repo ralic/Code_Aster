@@ -89,9 +89,11 @@ M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1,
                            NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
-                                 MATR_MASS=M_ASSE1,
-                             CALC_FREQ=_F( NMAX_FREQ = 04) )
+MODES1=CALC_MODES(MATR_RIGI=K_ASSE1,
+                  MATR_MASS=M_ASSE1,
+                  CALC_FREQ=_F(NMAX_FREQ=04,
+                               ),
+                  )
 
 
 #
@@ -162,9 +164,11 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
-                                 MATR_MASS=M_ASSE2,
-                             CALC_FREQ=_F( NMAX_FREQ = 05) )
+MODES2=CALC_MODES(MATR_RIGI=K_ASSE2,
+                  MATR_MASS=M_ASSE2,
+                  CALC_FREQ=_F(NMAX_FREQ=05,
+                               ),
+                  )
 
 
 #
@@ -223,9 +227,11 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCUL MODAL :
 ###
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
-                                 MATR_MASS=M_GENE,
-                             CALC_FREQ=_F( NMAX_FREQ = 5))
+RESGEN=CALC_MODES(MATR_RIGI=K_GENE,
+                  MATR_MASS=M_GENE,
+                  CALC_FREQ=_F(NMAX_FREQ=5,
+                               ),
+                  )
 
 
 #
@@ -257,15 +263,16 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
 ###### CALCULS TRANSITOIRES SUR BASE MODALE
 ###
 #
+t_fin = 0.16
 TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=M_PROJ,
-                             MATR_RIGI=K_PROJ,
-                                EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
-                                       COEF_MULT = 1.),
-                            INCREMENT=_F(  INST_INIT = 0.,
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    MATR_MASS=M_PROJ,
+                    MATR_RIGI=K_PROJ,
+                    EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
+                             COEF_MULT = 1.),
+                    INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,
-                                        PAS = 1.E-4),
+                                        PAS = 1.E-5),
                             ARCHIVAGE=_F( PAS_ARCH = 10),
                                  CHOC=_F( NOEUD_1 = 'N5',
                                        SOUS_STRUC_1 = 'COTE2',
@@ -286,8 +293,7 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,
-                                        PAS = 1.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 10),
+                                        PAS = 1.E-5),
                                  CHOC=_F( NOEUD_1 = 'N5',
                                        SOUS_STRUC_1 = 'COTE2',
                                        OBSTACLE = OBSTACLE,
@@ -308,8 +314,8 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                         INST_FIN = 1.,
 # ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
 # POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                        PAS_MAXI = 1.E-4,
-                                        PAS = 1.E-4),
+                                        PAS_MAXI = 1.E-5,
+                                        PAS = 1.E-5),
                             ARCHIVAGE=_F( PAS_ARCH = 10),
                                  CHOC=_F( NOEUD_1 = 'N5',
                                        SOUS_STRUC_1 = 'COTE2',
@@ -321,9 +327,12 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              )
 
 #
-LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
-                           INTERVALLE=_F( JUSQU_A = 1.,
-                                       NOMBRE = 10))
+t_depl = 0.1315  # max depl
+t_vite = 0.1566  # max vite
+LIST_R=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A = 0.16,
+                                     NOMBRE = 1600),
+                       )
 
 LIST_R2=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 9))
 
@@ -352,124 +361,92 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
 
 DEBUG(SDVERI='OUI')
 
+# valeurs de référence issues du calcul avec dyna_non_line (MOD A)
+valref=-1.85356696663E-06   # a t_depl
+valrefv=-0.00463289359505   # a t_vite
 #
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=_F(INST=t_depl,
                   RESULTAT=TRAN1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.2553693643296E-04,
-                  VALE_REFE=-1.2548329076485E-4,
+                  VALE_CALC=-1.71889759158E-06,
+                  VALE_REFE=valref,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION=5.0E-4,
+                  PRECISION=9.0E-2,
                   ),
           )
 
 #
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=_F(INST=t_vite,
                   RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=8.2890821061293E-04,
-                  VALE_REFE=8.3521301648811E-4,
+                  VALE_CALC=-0.00448674528161,
+                  VALE_REFE=valrefv,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION=1.E-2,),
+                  PRECISION=9.E-2,),
           )
 
 #
-TEST_RESU(RESU=_F(INST=1.0,
-                  RESULTAT=TRAN1,
-                  NOM_CHAM='ACCE',
-                  NOEUD='NO12',
-                  NOM_CMP='DY',
-                  VALE_CALC=0.38695886817319,
-                  VALE_REFE=0.36395279092512,
-                  REFERENCE='AUTRE_ASTER',
-                  PRECISION=0.07,),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=_F(INST=t_depl,
                   RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.2548907196512E-04,
-                  VALE_REFE=-1.254370289034E-4,
+                  VALE_CALC=-1.71881962586E-06,
+                  VALE_REFE=valref,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION=5.0E-4,
+                  PRECISION=9.0E-2,
                   ),
           )
 
 #
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=_F(INST=t_vite,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=8.3193226314727E-04,
-                  VALE_REFE=8.4098546805027E-4,
+                  VALE_CALC=-0.00448667267816,
+                  VALE_REFE=valrefv,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION=0.015,),
+                  PRECISION=9.E-02,),
           )
 
 #
-TEST_RESU(RESU=_F(INST=1.0,
-                  RESULTAT=TRAN2,
-                  NOM_CHAM='ACCE',
-                  NOEUD='NO12',
-                  NOM_CMP='DY',
-                  VALE_CALC=0.30785508831044,
-                  VALE_REFE=0.28545359738930,
-                  REFERENCE='AUTRE_ASTER',
-                  PRECISION=0.08,),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=_F(INST=t_depl,
                   RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.2558053169641E-04,
-                  VALE_REFE=-1.2552515413372E-4,
+                  VALE_CALC=-1.71880087698E-06,
+                  VALE_REFE=valref,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION=5.0E-4,
+                  PRECISION=9.E-2,
                   ),
           )
 
 #
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=_F(INST=t_vite,
                   RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
                   NOEUD='NO12',
                   NOM_CMP='DY',
-                  VALE_CALC=8.2584982761918E-04,
-                  VALE_REFE=8.3285564859441E-4,
+                  VALE_CALC=-0.00448674877558,
+                  VALE_REFE=valrefv,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION=9.E-3,),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
-                  RESULTAT=TRAN3,
-                  NOM_CHAM='ACCE',
-                  NOEUD='NO12',
-                  NOM_CMP='DY',
-                  VALE_CALC=0.36828167874815,
-                  VALE_REFE=0.34578137533016,
-                  REFERENCE='AUTRE_ASTER',
-                  PRECISION=0.07,),
+                  PRECISION=9.E-2,),
           )
 
 mod1=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE1',
                     TOUT_ORDRE='OUI');
 
+LIST_R3=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 10))
 resu_dy1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
+                             LIST_INST=LIST_R3,
                              INTERPOL='LIN',
                              MODE_MECA=mod1 )
 
@@ -498,7 +475,7 @@ t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 );
 
 
-TEST_TABLE(VALE_CALC=0.019380018833871,
+TEST_TABLE(VALE_CALC=0.0193738393747,
            NOM_PARA='TOTALE',
            TABLE=t_cin1,
            FILTRE=(_F(NOM_PARA='LIEU',
@@ -514,7 +491,7 @@ mod2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
 
 resu_dy2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
+                             LIST_INST=LIST_R3,
                              INTERPOL='LIN',
                              MODE_MECA=mod2 )
 
@@ -529,7 +506,7 @@ t_cin2=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 );
 
 
-TEST_TABLE(VALE_CALC=0.049381439040435,
+TEST_TABLE(VALE_CALC=0.0493802986224,
            NOM_PARA='TOTALE',
            TABLE=t_cin2,
            FILTRE=(_F(NOM_PARA='LIEU',

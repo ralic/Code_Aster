@@ -10,6 +10,7 @@ COOR_3D
     N9     0.8  0.   0.
     N10    0.9  0.   0.
     N11    1.0  0.   0.
+    N12    1.0 -1.   0.
 FINSF
 %
 SEG2
@@ -24,6 +25,17 @@ SEG2
      S8     N8      N9
      S9     N9      N10
      S10    N10     N11
+     S11    N11     N12
+FINSF
+%
+GROUP_MA
+TOUT
+S1 S2 S3 S4 S5 S6 S7 S8 S9 S10
+FINSF
+%
+GROUP_MA
+C1
+S11
 FINSF
 %
 FIN

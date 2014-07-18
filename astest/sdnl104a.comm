@@ -26,247 +26,194 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 MAYA=LIRE_MAILLAGE( )
 
-MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
-
 #
 MATERIO1=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E06,  NU = 0.3,  E = 1.E10))
 
-#
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
-                              AFFE=_F( TOUT = 'OUI',  MATER = MATERIO1))
+jeu = 1.e-4
+MATERIO2=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E+8,
+                                      DIST_1 = 1.-jeu,
+                                      JEU = 1.,),
+                      )
 
 #
-BARRE=AFFE_MODELE(  MAILLAGE=MAYA,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MODELISATION = 'POU_D_E',
-                                  PHENOMENE = 'MECANIQUE'))
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=(_F(GROUP_MA='TOUT', MATER = MATERIO1),
+                          _F(GROUP_MA='C1',   MATER = MATERIO2),
+                         ),
+                    )
 
 #
-CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
-                           POUTRE=_F(
-       GROUP_MA = 'TOUT',
-    SECTION = 'CERCLE',
-                                   CARA = 'R',      VALE = 0.1))
+BARRE=AFFE_MODELE(MAILLAGE=MAYA,
+                  AFFE=(_F(GROUP_MA='TOUT',
+                           MODELISATION='POU_D_E',
+                           PHENOMENE='MECANIQUE'),
+                        _F(GROUP_MA='C1',
+                           MODELISATION='DIS_T',
+                           PHENOMENE='MECANIQUE'),
+                       ),
+                  )
 
 #
-GUIDAGE=AFFE_CHAR_MECA(    MODELE=BARRE,DDL_IMPO=(
-                           _F( TOUT = 'OUI',
-                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.),
-                           _F( NOEUD = 'N1',    DY = 0.,  DRZ = 0.)))
+CARA=AFFE_CARA_ELEM(MODELE=BARRE,
+                    POUTRE=_F(GROUP_MA = 'TOUT',
+                              SECTION = 'CERCLE',
+                              CARA = 'R',VALE = 0.1),
+                    DISCRET=(_F(CARA = 'K_T_D_L',  GROUP_MA = 'C1',
+                                VALE = ( 0.,0.,0.,),),
+                             _F(CARA = 'M_T_D_L',  GROUP_MA = 'C1',
+                                VALE = ( 0.,),),
+                            ),
+                    ORIENTATION=_F(GROUP_MA='C1',
+                                   CARA='VECT_Y',
+                                   VALE=(-1.,0.,0.,),
+                                  ),
+                    )
 
 #
-CHARTRAN=AFFE_CHAR_MECA(        MODELE=BARRE,
-                           FORCE_NODALE=_F( NOEUD = 'N11',  FY = -1000.))
+GUIDAGE=AFFE_CHAR_MECA(MODELE=BARRE,
+                       DDL_IMPO=(_F(TOUT  = 'OUI', DX = 0., DZ = 0., DRX = 0., DRY = 0.),
+                                 _F(NOEUD = 'N1',  DY = 0.,  DRZ = 0.),
+                                 _F(NOEUD = 'N12', DY = 0.,  DZ = 0., DX=0.,),
+                                ),
+                      )
 
 #
-K_ELEM=CALC_MATR_ELEM(      MODELE=BARRE,
-                             CARA_ELEM=CARA,
-                            CHAM_MATER=CHMAT,
-                               OPTION='RIGI_MECA',
-                                CHARGE=GUIDAGE )
+CHARTRAN=AFFE_CHAR_MECA(MODELE=BARRE, FORCE_NODALE=_F(NOEUD='N11',FY=-1000.),)
 
 #
-M_ELEM=CALC_MATR_ELEM(      MODELE=BARRE,
-                             CARA_ELEM=CARA,
-                            CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA',
-                                CHARGE=GUIDAGE )
+K_ELEM=CALC_MATR_ELEM(MODELE=BARRE,
+                      CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                      OPTION='RIGI_MECA',
+                      CHARGE=GUIDAGE,
+                     )
 
 #
-V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA',
-                            CHARGE=CHARTRAN)
+M_ELEM=CALC_MATR_ELEM(MODELE=BARRE,
+                      CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                      OPTION='MASS_MECA',
+                      CHARGE=GUIDAGE
+                     )
 
 #
-NUM=NUME_DDL(  MATR_RIGI=K_ELEM)
+V_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                      CHARGE=CHARTRAN
+                     )
+#
+NUM=NUME_DDL(MATR_RIGI=K_ELEM)
 
 #
-K_ASSE=ASSE_MATRICE( MATR_ELEM=K_ELEM,   NUME_DDL=NUM)
+K_ASSE=ASSE_MATRICE(MATR_ELEM=K_ELEM,NUME_DDL=NUM)
 
-M_ASSE=ASSE_MATRICE( MATR_ELEM=M_ELEM,   NUME_DDL=NUM)
+M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,NUME_DDL=NUM)
 
-V_ASSE=ASSE_VECTEUR( VECT_ELEM=V_ELEM,   NUME_DDL=NUM)
+V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,NUME_DDL=NUM)
 
 #
-MODES=CALC_MODES( MATR_RIGI=K_ASSE,
-                  MATR_MASS=M_ASSE,
-                  CALC_FREQ=_F( NMAX_FREQ = 5) )
-
-
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 MATR_MASS=M_ASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=5),
+                )
 #
 ###
 ###### PROJECTIONS SUR BASE MODALE :
 ###
 #
-NUMEMODE=NUME_DDL_GENE(       BASE=MODES,
-                           STOCKAGE='DIAG')
+NUMEMODE=NUME_DDL_GENE(BASE=MODES,
+                       STOCKAGE='DIAG'
+                      )
 
 #
-K_PROJ=PROJ_MATR_BASE(            BASE=MODES,
-                             NUME_DDL_GENE=NUMEMODE,
-                                 MATR_ASSE=K_ASSE)
+K_PROJ=PROJ_MATR_BASE(BASE=MODES,
+                      NUME_DDL_GENE=NUMEMODE,
+                      MATR_ASSE=K_ASSE
+                      )
 
 #
-M_PROJ=PROJ_MATR_BASE(            BASE=MODES,
-                             NUME_DDL_GENE=NUMEMODE,
-                                 MATR_ASSE=M_ASSE)
+M_PROJ=PROJ_MATR_BASE(BASE=MODES,
+                      NUME_DDL_GENE=NUMEMODE,
+                      MATR_ASSE=M_ASSE
+                      )
 
 #
-F_PROJ=PROJ_VECT_BASE(            BASE=MODES,
-                             NUME_DDL_GENE=NUMEMODE,
-                                 VECT_ASSE=V_ASSE)
+F_PROJ=PROJ_VECT_BASE(BASE=MODES,
+                      NUME_DDL_GENE=NUMEMODE,
+                      VECT_ASSE=V_ASSE
+                      )
 
 #
 # DEFINITION DE L'OBSTACLE
 #
-OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
+OBSTACLE=DEFI_OBSTACLE(TYPE='CERCLE')
 
 #
 ###
-###### CALCULS TRANSITOIRES SUR BASE MODALE
+###### CALCULS DYNAMIQUE NON-LINEAIRE
 ###
 #
-TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
-                   BASE_CALCUL='GENE',
-                   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=M_PROJ,
-                             MATR_RIGI=K_PROJ,
-                                EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
-                                       COEF_MULT = 1.),
-                             INCREMENT=_F(  INST_INIT = 0.,
-                                         INST_FIN = 1.,
-                                         PAS = 1.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 10),
-                                 CHOC=_F( NOEUD_1 = 'N11',
-                                       OBSTACLE = OBSTACLE,
-                                       ORIG_OBST = (1., 0., 0.,),
-                                       NORM_OBST = (1., 0., 0.,),
-                                       JEU = 1.E-4,
-                                       RIGI_NOR = 1.E+8)
-                           )
+t_fin = 0.16
+NPAS=1600
+LIST_R=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=_F( JUSQU_A = t_fin,
+                      NOMBRE = NPAS))
+DNL=DYNA_NON_LINE(MODELE=BARRE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CARA,
+                 EXCIT=(_F(CHARGE=GUIDAGE,),
+                        _F(CHARGE=CHARTRAN,),
+                     ),
+                 COMPORTEMENT=(_F(RELATION='DIS_CHOC',
+                                  GROUP_MA='C1',),
+                               _F(RELATION='ELAS',
+                                  GROUP_MA='TOUT',),
+                              ),
+                 INCREMENT=_F(LIST_INST=LIST_R,),
+                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='ACCELERATION',
+                               ),
+                NEWTON=_F(REAC_ITER=1,),
+              )
 
-#
-TRAN_GE2=DYNA_VIBRA(  TYPE_CALCUL='TRAN',
-                   BASE_CALCUL='GENE',
-                   SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
-                             MATR_MASS=M_PROJ,
-                             MATR_RIGI=K_PROJ,
-                                EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
-                                       COEF_MULT = 1.),
-                             INCREMENT=_F(  INST_INIT = 0.,
-                                         INST_FIN = 1.,
-                                         PAS = 1.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 10),
-                                 CHOC=_F( NOEUD_1 = 'N11',
-                                       OBSTACLE = OBSTACLE,
-                                       ORIG_OBST = (1., 0., 0.,),
-                                       NORM_OBST = (1., 0., 0.,),
-                                       JEU = 1.E-4,
-                                       RIGI_NOR = 1.E+8)
-                           )
-
-#
-TRAN_GE3=DYNA_VIBRA(  TYPE_CALCUL='TRAN',
-                   BASE_CALCUL='GENE',
-                   SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
-                             MATR_MASS=M_PROJ,
-                             MATR_RIGI=K_PROJ,
-                                EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
-                                       COEF_MULT = 1.),
-                             INCREMENT=_F(  INST_INIT = 0.,
-                                         INST_FIN = 1.,
-                                         PAS_MAXI = 1.E-4,
-                                         PAS = 1.E-5),
-                            ARCHIVAGE=_F( PAS_ARCH = 10),
-                                 CHOC=_F( NOEUD_1 = 'N11',
-                                       OBSTACLE = OBSTACLE,
-                                       ORIG_OBST = (1., 0., 0.,),
-                                       NORM_OBST = (1., 0., 0.,),
-                                       JEU = 1.E-4,
-                                       RIGI_NOR = 1.E+8)
-                            )
-
-#
-LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
-                           INTERVALLE=_F( JUSQU_A = 1.,
-                                       NOMBRE = 10))
-
-#
-TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
-                            TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
-                             INTERPOL='LIN')
-
-#
-TRAN2=REST_GENE_PHYS(   RESU_GENE=TRAN_GE2,
-                            TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
-                             INTERPOL='LIN')
-
-#
-TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
-                            TOUT_CHAM='OUI',
-                             LIST_INST=LIST_R,
-                             INTERPOL='LIN')
-
+t_depl = 0.1315  # max depl
+t_vite = 0.1566  # max vite
 #
 TEST_RESU(RESU=(
-               _F(INST=1.0,
-                  RESULTAT=TRAN1,
+               _F(INST=t_depl,
+                  RESULTAT=DNL,
                   NOM_CHAM='DEPL',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.2548329076485E-04,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN1,
+                  VALE_CALC=-1.85356696663E-06,),
+               _F(INST=t_vite,
+                  RESULTAT=DNL,
                   NOM_CHAM='VITE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=8.3521301648811E-04,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN1,
-                  NOM_CHAM='ACCE',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=0.36395279092512,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN2,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=-1.254370289034E-04,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN2,
-                  NOM_CHAM='VITE',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=8.4098546805027E-04,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN2,
-                  NOM_CHAM='ACCE',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=0.28545359738930,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN3,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=-1.2552515413372E-04,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN3,
-                  NOM_CHAM='VITE',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=8.3285564859441E-04,),
-               _F(INST=1.0,
-                  RESULTAT=TRAN3,
-                  NOM_CHAM='ACCE',
-                  NOEUD='N11',
-                  NOM_CMP='DY',
-                  VALE_CALC=0.34578137533016,),
+                  VALE_CALC=-0.00463289359505,),
                ))
 
+
+t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
+                            ),
+                MODELE=BARRE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARA,
+                RESULTAT=DNL,
+                );
+
+
+TEST_TABLE(VALE_CALC=0.0514081404196,
+           NOM_PARA='TOTALE',
+           TABLE=t_cin1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='TOUT',),
+                   _F(NOM_PARA='INST',
+                      VALE=t_fin,
+                      PRECISION=1e-4,
+                     ),
+                   ),
+           )
 #
 FIN()
 #

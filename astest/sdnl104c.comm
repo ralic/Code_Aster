@@ -1,0 +1,444 @@
+# TITRE CHOC D'UNE POUTRE SUR UN APPUI : AJOUT DE MODE STATIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# CAS_TEST__: SDNL104C
+#
+# CALCUL DE LA REPONSE TRANSITOIRE NON-LINEAIRE D'UNE POUTRE EN FLEXION
+# CHOQUANT SUR UN APPUI ELASTIQUE.
+# CE CALCUL SERT A MONTRER L'INTERET DE L'AJOUT DES MODES STATIQUES
+# DANS LA BASE MODALE
+#
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#
+MAYA=LIRE_MAILLAGE( )
+
+#
+MATERIO1=DEFI_MATERIAU(ELAS=_F(RHO=1.E06,
+                               NU = 0.3,
+                               E = 1.E10),
+                      )
+
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=(_F(GROUP_MA = 'TOUT',
+                             MATER = MATERIO1),
+                         ),
+                   )
+
+#
+BARRE=AFFE_MODELE(MAILLAGE=MAYA,
+                  AFFE=_F(GROUP_MA = 'TOUT',
+                           MODELISATION = 'POU_D_E',
+                           PHENOMENE = 'MECANIQUE'),
+                  )
+
+#
+CARA=AFFE_CARA_ELEM(MODELE=BARRE,
+                    POUTRE=_F(GROUP_MA = 'TOUT', SECTION = 'CERCLE',
+                              CARA = 'R', VALE = 0.1),
+                    )
+
+#
+GUIDAGE=AFFE_CHAR_MECA(MODELE=BARRE,
+                       DDL_IMPO=(
+                          _F( GROUP_MA = 'TOUT',DX = 0., DZ = 0., DRX = 0., DRY = 0.),
+                          _F( NOEUD = 'N1',    DY = 0.,  DRZ = 0.),
+                       )
+                      )
+
+#
+CHARTRAN=AFFE_CHAR_MECA(MODELE=BARRE,
+                        FORCE_NODALE=_F( NOEUD = 'N11',  FY = -1000.))
+
+#
+################################################################
+# CALCUL AVEC PROJECTION SUR BASE MODALE + 1 MODE STATIQUE     #
+################################################################
+#
+
+K_ELEM=CALC_MATR_ELEM(MODELE=BARRE,
+                      CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                      OPTION='RIGI_MECA',
+                      CHARGE=GUIDAGE,
+                      )
+
+#
+M_ELEM=CALC_MATR_ELEM(MODELE=BARRE,
+                      CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                      OPTION='MASS_MECA',
+                      CHARGE=GUIDAGE,
+                     )
+
+#
+V_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                      CHARGE=CHARTRAN)
+
+#
+NUM=NUME_DDL(MATR_RIGI=K_ELEM,)
+
+#
+K_ASSE=ASSE_MATRICE(MATR_ELEM=K_ELEM,
+                    NUME_DDL=NUM)
+
+M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
+                    NUME_DDL=NUM)
+
+V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
+                    NUME_DDL=NUM)
+
+nb_freq = 5
+#
+MODES0=CALC_MODES(MATR_RIGI=K_ASSE,
+                  MATR_MASS=M_ASSE,
+                  CALC_FREQ=_F(NMAX_FREQ = nb_freq),
+                        )
+
+MS=MODE_STATIQUE(MATR_RIGI=K_ASSE,
+                 MATR_MASS=M_ASSE,
+                 FORCE_NODALE=_F(NOEUD='N11',
+                                 AVEC_CMP='DY',
+                                ),
+                 )
+#
+## ORTHOGONALISATION AVEC 'ORTHO'
+MODES1 = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODES0,
+                                    NMAX_MODE=30),
+                                   _F(MODE_INTF=MS),
+                                ),
+                          NUME_REF=NUM,
+                          ORTHO='OUI',
+                          MATRICE=K_ASSE,
+                        #  MATRICE=M_ASSE,
+                          INFO=1
+                          );
+
+#
+## ORTHOGONALISATION AVEC 'ORTHO_BASE'
+MODES20 = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODES0,
+                                     NMAX_MODE=30),
+                                  _F(MODE_INTF=MS)),
+                           NUME_REF=NUM,
+                           INFO=1);
+
+MODES2 = DEFI_BASE_MODALE(ORTHO_BASE=_F(BASE=MODES20,
+                                        MATRICE=K_ASSE),
+                                      #  MATRICE=M_ASSE),
+                          INFO=1);
+
+## SANS ORTHO
+MODES3 = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODES0,
+                                    NMAX_MODE=30),
+                                   _F(MODE_INTF=MS),
+                                ),
+                          NUME_REF=NUM,
+                          INFO=1
+                          );
+
+#
+# PROJECTIONS SUR BASE MODALE :
+#
+NUMEMOD1=NUME_DDL_GENE(BASE=MODES1,
+                       STOCKAGE='DIAG',
+                       )
+
+NUMEMOD2=NUME_DDL_GENE(BASE=MODES2,
+                       STOCKAGE='DIAG')
+
+NUMEMOD3=NUME_DDL_GENE(BASE=MODES3,
+                       STOCKAGE='PLEIN',)
+
+# SANS MODE STATIQUE
+####################
+NUMEMOD4=NUME_DDL_GENE(BASE=MODES0,
+                       STOCKAGE='DIAG',)
+
+#
+K_PROJ1=PROJ_MATR_BASE(BASE=MODES1,
+                       NUME_DDL_GENE=NUMEMOD1,
+                       MATR_ASSE=K_ASSE)
+
+K_PROJ2=PROJ_MATR_BASE(BASE=MODES2,
+                       NUME_DDL_GENE=NUMEMOD2,
+                       MATR_ASSE=K_ASSE)
+
+K_PROJ3=PROJ_MATR_BASE(BASE=MODES3,
+                       NUME_DDL_GENE=NUMEMOD3,
+                       MATR_ASSE=K_ASSE)
+
+K_PROJ4=PROJ_MATR_BASE(BASE=MODES0,
+                       NUME_DDL_GENE=NUMEMOD4,
+                       MATR_ASSE=K_ASSE)
+
+#
+M_PROJ1=PROJ_MATR_BASE(BASE=MODES1,
+                       NUME_DDL_GENE=NUMEMOD1,
+                       MATR_ASSE=M_ASSE)
+
+M_PROJ2=PROJ_MATR_BASE(BASE=MODES2,
+                       NUME_DDL_GENE=NUMEMOD2,
+                       MATR_ASSE=M_ASSE)
+
+M_PROJ3=PROJ_MATR_BASE(BASE=MODES3,
+                       NUME_DDL_GENE=NUMEMOD3,
+                       MATR_ASSE=M_ASSE)
+
+M_PROJ4=PROJ_MATR_BASE(BASE=MODES0,
+                       NUME_DDL_GENE=NUMEMOD4,
+                       MATR_ASSE=M_ASSE)
+
+#
+F_PROJ1=PROJ_VECT_BASE(BASE=MODES1,
+                       NUME_DDL_GENE=NUMEMOD1,
+                       VECT_ASSE=V_ASSE)
+
+F_PROJ2=PROJ_VECT_BASE(BASE=MODES2,
+                       NUME_DDL_GENE=NUMEMOD2,
+                       VECT_ASSE=V_ASSE)
+
+F_PROJ3=PROJ_VECT_BASE(BASE=MODES3,
+                       NUME_DDL_GENE=NUMEMOD3,
+                       VECT_ASSE=V_ASSE)
+
+F_PROJ4=PROJ_VECT_BASE(BASE=MODES0,
+                       NUME_DDL_GENE=NUMEMOD4,
+                       VECT_ASSE=V_ASSE)
+
+#
+# DEFINITION DE L'OBSTACLE
+#
+OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
+
+#
+# CALCULS TRANSITOIRES SUR BASE MODALE
+#
+t_fin=0.16
+TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='GENE',
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    MATR_MASS=M_PROJ1,
+                    MATR_RIGI=K_PROJ1,
+                    EXCIT=_F(VECT_ASSE_GENE = F_PROJ1,
+                             COEF_MULT = 1.),
+                    INCREMENT=_F(INST_INIT = 0.,
+                                 INST_FIN = t_fin,
+                                 PAS = 1.E-5),
+                 #   ARCHIVAGE=_F( PAS_ARCH = 10),
+                    CHOC=_F(NOEUD_1 = 'N11',
+                            OBSTACLE = OBSTACLE,
+                            ORIG_OBST = (1., 0., 0.,),
+                            NORM_OBST = (1., 0., 0.,),
+                            JEU = 1.E-4,
+                            RIGI_NOR = 1.E+8)
+                           )
+
+TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='GENE',
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    MATR_MASS=M_PROJ2,
+                    MATR_RIGI=K_PROJ2,
+                    EXCIT=_F(VECT_ASSE_GENE = F_PROJ2,
+                             COEF_MULT = 1.),
+                    INCREMENT=_F(INST_INIT = 0.,
+                                 INST_FIN = t_fin,
+                                 PAS = 1.E-5),
+                 #   ARCHIVAGE=_F( PAS_ARCH = 10),
+                    CHOC=_F(NOEUD_1 = 'N11',
+                            OBSTACLE = OBSTACLE,
+                            ORIG_OBST = (1., 0., 0.,),
+                            NORM_OBST = (1., 0., 0.,),
+                            JEU = 1.E-4,
+                            RIGI_NOR = 1.E+8)
+                           )
+
+TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='GENE',
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    MATR_MASS=M_PROJ3,
+                    MATR_RIGI=K_PROJ3,
+                    EXCIT=_F(VECT_ASSE_GENE = F_PROJ3,
+                             COEF_MULT = 1.),
+                    INCREMENT=_F(INST_INIT = 0.,
+                                 INST_FIN = t_fin,
+                                 PAS = 1.E-5),
+              #      ARCHIVAGE=_F( PAS_ARCH = 10),
+                    CHOC=_F(NOEUD_1 = 'N11',
+                            OBSTACLE = OBSTACLE,
+                            ORIG_OBST = (1., 0., 0.,),
+                            NORM_OBST = (1., 0., 0.,),
+                            JEU = 1.E-4,
+                            RIGI_NOR = 1.E+8)
+                           )
+
+TRAN_GE4=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='GENE',
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    MATR_MASS=M_PROJ4,
+                    MATR_RIGI=K_PROJ4,
+                    EXCIT=_F(VECT_ASSE_GENE = F_PROJ4,
+                             COEF_MULT = 1.),
+                    INCREMENT=_F(INST_INIT = 0.,
+                                 INST_FIN = t_fin,
+                                 PAS = 1.E-5),
+              #      ARCHIVAGE=_F( PAS_ARCH = 10),
+                    CHOC=_F(NOEUD_1 = 'N11',
+                            OBSTACLE = OBSTACLE,
+                            ORIG_OBST = (1., 0., 0.,),
+                            NORM_OBST = (1., 0., 0.,),
+                            JEU = 1.E-4,
+                            RIGI_NOR = 1.E+8)
+                           )
+
+#
+t_depl = 0.1315  # max depl
+t_vite = 0.1566  # max vite
+#t_fin = 0.16
+LIST_R2=DEFI_LIST_REEL(DEBUT=0.1310,
+                       INTERVALLE=_F(JUSQU_A = 0.16,
+                                     NOMBRE = 290),
+                       )
+
+#
+TRAN1=REST_GENE_PHYS(RESU_GENE=TRAN_GE1,
+                     TOUT_CHAM='OUI',
+                     LIST_INST=LIST_R2,
+                     INTERPOL='LIN')
+
+TRAN2=REST_GENE_PHYS(RESU_GENE=TRAN_GE2,
+                     TOUT_CHAM='OUI',
+                     LIST_INST=LIST_R2,
+                     INTERPOL='LIN')
+
+TRAN3=REST_GENE_PHYS(RESU_GENE=TRAN_GE3,
+                     TOUT_CHAM='OUI',
+                     LIST_INST=LIST_R2,
+                     INTERPOL='LIN')
+#
+TRAN4=REST_GENE_PHYS(RESU_GENE=TRAN_GE4,
+                     TOUT_CHAM='OUI',
+                     LIST_INST=LIST_R2,
+                     INTERPOL='LIN')
+#
+# valeurs issues du calcul ci-dessus avec dyna_non_line
+valref=-1.85356696663E-06   # a t_depl
+valrefv=-0.00463289359505   # a t_vite
+
+TEST_RESU(RESU=(
+## Cas Projete avec mode statique + 'ortho'
+               _F(INST=t_depl,
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valref,
+                  VALE_CALC=-1.88612773364E-06,
+                  PRECISION=2e-2,
+                  LEGENDE='ortho (depl)',
+               ),
+## Cas Projete avec mode statique + 'ortho_base'
+               _F(INST=t_depl,
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valref,
+                  VALE_CALC=-1.88612773364E-06,  #valeur calculee par aster
+                  PRECISION=2e-2, #precision par rapport a la reference : VALE_REFE
+                  LEGENDE='ortho_base - d',
+               ),
+## Cas Projete avec mode statique (sans orthogonalisation)
+               _F(INST=t_depl,
+                  RESULTAT=TRAN3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valref,
+                  VALE_CALC=-1.88612760632E-06,
+                  PRECISION=2e-2,
+                  LEGENDE='sans ortho - d',
+               ),
+## Cas sans mode statique
+               _F(INST=t_depl,
+                  RESULTAT=TRAN4,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valref,
+                  VALE_CALC=-1.72233853215E-06,
+                  PRECISION=8e-2,
+                  LEGENDE='sans modstat - d',
+               ),
+
+# vitesse
+               _F(INST=t_vite,
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='VITE',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valrefv,
+                  VALE_CALC=-0.00465969171796,
+                  PRECISION=1e-2,
+                  LEGENDE='ortho (vit)',
+               ),
+               _F(INST=t_vite,
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='VITE',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valrefv,
+                  VALE_CALC=-0.00465969171796,
+                  PRECISION=2e-2,
+                  LEGENDE='ortho_base - v',
+               ),
+               _F(INST=t_vite,
+                  RESULTAT=TRAN3,
+                  NOM_CHAM='VITE',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valrefv,
+                  VALE_CALC=-0.00465969129421,
+                  PRECISION=2e-2,
+                  LEGENDE='sans ortho - v',
+               ),
+               _F(INST=t_vite,
+                  RESULTAT=TRAN4,
+                  NOM_CHAM='VITE',
+                  NOEUD='N11',
+                  NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=valrefv,
+                  VALE_CALC=-0.0044840631965,
+                  PRECISION=4e-2,
+                  LEGENDE='sans modstat - v',
+               ),
+
+              )
+        )
+
+
+#
+FIN()
+#
