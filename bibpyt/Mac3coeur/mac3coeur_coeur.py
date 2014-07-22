@@ -210,7 +210,10 @@ class Coeur(object):
         defi_fonc.append(string.atof(cote[len(cote)-1])+0.5*string.atof(epaisseur[len(cote)-1])+eps)
         defi_fonc.append(som_feq)
 
-        _resu = DEFI_FONCTION(NOM_PARA='X',VALE=defi_fonc)
+        _resu = DEFI_FONCTION(NOM_PARA='X',
+                              VALE=defi_fonc,
+                              PROL_DROITE = 'CONSTANT',
+                              PROL_GAUCHE = 'CONSTANT',)
         return _resu
 
     def lire_resu_thyc(self,MODELE,nom_fic):
@@ -320,13 +323,15 @@ class Coeur(object):
             
             # Force axiale pour les crayons (appel a DEFI_FONCTION)
             vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBCR/(ac.NBCR+ac.NBTG)/ac.LONCR
-            _FXC = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFC,vale,ac.XSUPC,vale))            
+            _FXC = DEFI_FONCTION(NOM_PARA='X',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                                 VALE=(ac.XINFC,vale,ac.XSUPC,vale))            
             mtmp = (_F(GROUP_MA = 'CR_'+posi_aster, FX = _FXC),)
             mcpf.extend(mtmp)
             
             # Force axiale pour les tubes-guides (appel a DEFI_FONCTION)
             vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBTG/(ac.NBCR+ac.NBTG)/ac.LONTU
-            _FXT = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFT,vale,ac.XSUPT,vale))            
+            _FXT = DEFI_FONCTION(NOM_PARA='X',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                                 VALE=(ac.XINFT,vale,ac.XSUPT,vale))            
             mtmp = (_F(GROUP_MA = 'TG_'+posi_aster, FX = _FXT),)
             mcpf.extend(mtmp)
 

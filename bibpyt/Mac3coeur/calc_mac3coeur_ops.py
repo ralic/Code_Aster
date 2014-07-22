@@ -356,6 +356,18 @@ def calc_mac3coeur_ops(self, **args):
        _FOARCH1  = _coeurp1.definition_archimede2(_MO_NP1)
        _ARCHF11  = _coeurp1.definition_temp_archimede(_is_archimede)
 
+       # on rajoute les efforts thyc
+       UL = UniteAster()
+       _unit_eftx = _LAME['UNITE_THYC']
+       
+       # si le MC est facultatif, il faudra verifier s'il est renseigner ou pas
+       # _unit_eftx vaut alors None
+       
+       nomfich=UL.Nom(_unit_eftx)
+       _CH_TRNO,_CH_TRFX,_HYDR_1,_FOHYDR_1=_coeurp1.lire_resu_thyc(_MO_NP1,nomfich)
+       _HYDR_F1 = _coeurp1.definition_temp_hydro_axiale()
+       _F_TRAN1 = _coeurp1.definition_effort_transverse()
+
        _MA_NP1 = MODI_MAILLAGE( reuse = _MA_NP1, MAILLAGE = _MA_NP1, DEFORME = _F( OPTION = 'TRAN', DEPL = _MVDEPL))
 
        cl_liaison_solide = _coeurp1.cl_rigidite_grille()
@@ -392,7 +404,12 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _F_EMBO1,  ),
                                     _F(CHARGE = _PESANT1,  ),
                                     _F(CHARGE = _DILATP1,  ),
-                    _F(CHARGE = _BLOC2,),),
+                                    _F(CHARGE = _BLOC2,),
+                                    _F(CHARGE = _CH_TRNO,  FONC_MULT = _F_TRAN1,),
+                                    _F(CHARGE = _CH_TRFX,  FONC_MULT = _F_TRAN1,),
+                                    _F(CHARGE = _HYDR_1,   FONC_MULT = _HYDR_F1,),
+                                    _F(CHARGE = _FOHYDR_1, FONC_MULT = _HYDR_F1,),
+                                       ),
                               COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
