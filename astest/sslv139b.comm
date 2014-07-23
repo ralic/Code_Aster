@@ -157,7 +157,9 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   NUME_MODE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RES_NORM,
-                  VALE_CALC=8.48470464E+05,
+# Le TOLE_MACHINE est justifié par le tres grand conditionnement de la matrice
+# de rigidité du problème elastique : la plaque est tres mince.
+                  VALE_CALC=8.48470464E+05,  TOLE_MACHINE=1.5e-6,
                   VALE_REFE=8.493509396E5,
                   PRECISION=2.E-3,),)
 
