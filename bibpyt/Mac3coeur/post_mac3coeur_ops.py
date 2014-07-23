@@ -608,6 +608,8 @@ def post_mac3coeur_ops(self, **args):
 
           elif (_typ_post=='TABLE'):
 
+             _nom_site  = attr['NOM_SITE']
+
              l_nom_AC=[]
              l_cycle = []
              l_repere = []
@@ -717,7 +719,8 @@ def post_mac3coeur_ops(self, **args):
                 l_forme.append(Forme)
 
              # creation de la table de sortie
-             _TABOUT = CREA_TABLE(LISTE=(_F(LISTE_K=l_nom_AC ,PARA='NOM_AC'),
+             _TABOUT = CREA_TABLE(TITRE=_nom_site,
+                                  LISTE=(_F(LISTE_K=l_nom_AC ,PARA='NOM_AC'),
                                          _F(LISTE_I=l_cycle,PARA='Cycle'),
                                          _F(LISTE_K=l_repere,PARA='Repere',TYPE_K='K16'),
                                          _F(LISTE_R=l_def_max,PARA='Ro'),
@@ -742,21 +745,24 @@ def post_mac3coeur_ops(self, **args):
                                          _F(LISTE_R=l_YG9,PARA='YG9'),
                                          _F(LISTE_R=l_YG10,PARA='YG10'),
                                          _F(LISTE_K=l_milieu,PARA='Milieu',TYPE_K='K16'),
-                                         _F(LISTE_R=l_MinX,PARA='Min_X'),
-                                         _F(LISTE_R=l_MaxX,PARA='Max_X'),
-                                         _F(LISTE_R=l_CCX,PARA='CC_X'),
-                                         _F(LISTE_R=l_MinY,PARA='Min_Y'),
-                                         _F(LISTE_R=l_MaxY,PARA='Max_Y'),
-                                         _F(LISTE_R=l_CCY,PARA='CC_Y'),
-                                         _F(LISTE_K=l_formeX ,PARA='Forme_X'),
-                                         _F(LISTE_K=l_formeY ,PARA='Forme_Y'),
+                                         _F(LISTE_R=l_MinX,PARA='Min X'),
+                                         _F(LISTE_R=l_MaxX,PARA='Max X'),
+                                         _F(LISTE_R=l_CCX,PARA='CC X'),
+                                         _F(LISTE_R=l_MinY,PARA='Min Y'),
+                                         _F(LISTE_R=l_MaxY,PARA='Max Y'),
+                                         _F(LISTE_R=l_CCY,PARA='CC Y'),
+                                         _F(LISTE_K=l_formeX ,PARA='Forme X'),
+                                         _F(LISTE_K=l_formeY ,PARA='Forme Y'),
                                          _F(LISTE_K=l_forme  ,PARA='Forme'),
                                           )
                                   )
 
              # impression de la table de sortie
              IMPR_TABLE(TABLE=_TABOUT,
+                        TITRE=_typ_coeur,
                         FORMAT_R='F5.1',
                         UNITE=_unit,
-#                        SEPARATEUR='\t',
+                        COMMENTAIRE='',
+                        SEPARATEUR='\t',
+                        FIN_LIGNE='\r\n',
                         )
