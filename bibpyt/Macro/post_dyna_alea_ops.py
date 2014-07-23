@@ -87,18 +87,22 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
          res=res*f0
       return -res
 
+   def fonc_def(vale,seuil):
+      if vale>=seuil: resu=1
+      else:  resu=0
+      return resu
+
 #  ------------------------------------------------------------------
 #  OPTION FRAGILITE
 # ------------------------------------------------------------------
    if FRAGILITE !=None :
       from Utilitai.optimize   import fmin
-      from Utilitai.stats   import normcdf
+      from Utilitai.stats   import normcdf, linregress
 
       if FRAGILITE['LIST_PARA'] != None :
          liste_a = FRAGILITE['LIST_PARA'].sdj.VALE.get()
       elif FRAGILITE['VALE'] != None :
          liste_a =FRAGILITE['VALE']
-
 
       Nba=len(liste_a)
       lpfa=[]
@@ -107,23 +111,40 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
 
       if dicta.has_key('DEFA') :
          liste_def = dicta['DEFA']
+         test2 = NP.equal(None,liste_def)
+      elif dicta.has_key('DEMANDE') :
+         liste_dem = dicta['DEMANDE']
+         test2 = NP.equal(None,liste_dem)
       else:
-         UTMESS('F','TABLE0_1',valk=('DEFA'))
+         UTMESS('F','TABLE0_1',valk=('DEFA,DEMANDE'))
+
+
       if dicta.has_key('PARA_NOCI') :
         liste_indic = dicta['PARA_NOCI']
       else:
         UTMESS('F','TABLE0_1',valk=('PARA_NOCI'))
 
       Nbval=len(liste_indic)
-
       test1 = NP.equal(None,liste_indic)
-      test2 = NP.equal(None,liste_def)
       if test1.any() or test2.any():
          UTMESS('F', 'TABLE0_14', valk=('DEFA', 'PARA_NOCI'))
+      
+      if FRAGILITE['METHODE']=="EMV":
+      # 1) estimation paramètres maximum de vraisemblance
+         if not dicta.has_key('DEFA'):
+            if FRAGILITE['SEUIL']!= None : 
+               liste_def=[fonc_def(vale, FRAGILITE['SEUIL']) for vale in liste_dem]
+            else: UTMESS('F','FONCT0_16',valk=('SEUIL'))
 
-      # estimation paramètres
-      x0 = [FRAGILITE['AM_INI'],FRAGILITE['BETA_INI']]
-      xopt = fmin(vrais,x0)
+         x0 = [FRAGILITE['AM_INI'],FRAGILITE['BETA_INI']]
+         xopt = fmin(vrais,x0)
+
+      elif FRAGILITE['METHODE']=="REGRESSION":
+      # 2) estimation paramètres REGRESSION
+         para_b, para_a,sigma, = linregress(NP.log(NP.array(liste_indic)),NP.log(NP.array(liste_dem)))
+         Am=exp((log(FRAGILITE['SEUIL'])-para_a)/para_b)
+         beta=sigma/para_b
+         xopt=[Am , beta]
 
       texte='PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
       aster.affiche('MESSAGE',texte)      #print 'parametres Am, beta estimes: ', xopt
@@ -133,6 +154,7 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
       vecval=(NP.log(vec_a/xopt[0]))/xopt[1]
       for m in range(Nba):
          lpfa.append(normcdf(vecval[m]))
+
 
       # table sortie
 
@@ -149,7 +171,8 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
       # si calcul de fractiles (intervalles de confiance) par bootstrap
 
       x0 = xopt
-      if FRAGILITE['FRACTILE']!= None :
+      if FRAGILITE['METHODE']=="EMV":
+       if FRAGILITE['FRACTILE']!= None :
          if INFO==2 :
             texte='FRACTILES A CALCULER PAR BOOTSTRAP '+ str(FRAGILITE['FRACTILE']) +'\n'
             aster.affiche('MESSAGE',texte)

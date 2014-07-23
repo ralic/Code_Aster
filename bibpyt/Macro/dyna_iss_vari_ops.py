@@ -121,9 +121,9 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
             FREQ_INIT =0.0
 
 #          NB_FREQ=NB_FREQ2
-         print '', NB_FREQ, PAS, FREQ_INIT,  (NB_FREQ-1)*PAS
- #        if INFO==2:
- #            aster.affiche('MESSAGE','DISCRETISATION UTILISATEUR :  NB_FREQ, PAS, FREQ_FIN'+str(NB_FREQ)+' ,'+str(PAS)+' ,'+ str(NB_FREQ-1)*PAS))
+#          print '', NB_FREQ, PAS, FREQ_INIT,  (NB_FREQ-1)*PAS
+         if INFO==2:
+            aster.affiche('MESSAGE','DISCRETISATION UTILISATEUR :  NB_FREQ, PAS, FREQ_COUP' +str(NB_FREQ2)+' ,'+str(PAS)+' ,'+ str(FREQ_COUP))
 #---------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------
    dgene = MATR_GENE[0].cree_dict_valeurs(MATR_GENE[0].mc_liste)
@@ -333,7 +333,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       XOe=NP.zeros(nbme)
       for k1 in range(0,nbme):
         XOe[k1]=abs(NP.sum(PVEC[k1]))/nbno
-      print 'XOE ',XOe
 
       # CALCUL DE FS variable-------------------------------
       XO=NP.zeros((nbme,nbmods))
@@ -618,7 +617,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    elif TYPE_RESU=='TRANS':
 
       __lfre = DEFI_LIST_REEL(  VALE = list(l_freq_sig), ) ;
-#      print ' creation SD DYNA_LINE_HARM'
         # on cree la SD resultat - factice (le champ ACCE sera remplace dans la suit par celui calcule)
       __dyge0 = DYNA_LINE_HARM(
                           MATR_MASS = MATR_GENE['MATR_MASS'],
@@ -650,12 +648,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
             coef_a=(vale_re[k]+vale_im[k]*1.j)
   #  ------------ interpolation du vecteur POD  VEC (NB_FREQ, nbmodt)
             if  freqk >= FREQ_FIN:
-  #              print  k, freqk, vale_i,  'FREQ_FIN: ', FREQ_FIN
                VEC_real=VEC[-1]*0.0
                VEC_imag=VEC[-1]*0.0
             else:
                vale_i=NP.searchsorted(abscisse, freqk)
-#         print  freqk, vale_i,  abscisse[vale_i-1], abscisse[vale_i]
                if vale_i ==0:
                   VEC_comp=VEC[0]*coef_a
                   VEC_real=VEC_comp.real

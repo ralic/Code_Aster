@@ -25,47 +25,71 @@ import random
 ai =[ 0.5, 0.45, 0.3, 0.3, 0.15,  0.25, 0.9, 0.4]
 #observations (defaillance ou non)
 xi= [1,    0,    0,   1,   0,   0,   1, 1]
+di= [0.035, 0.03, 0.028, 0.0355, 0.01, 0.02, 0.05, 0.04]
+
+seuil=0.035
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
                        _F(PARA='DEFA',LISTE_I =xi ,),),);
+
+
+TAB2=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
+                       _F(PARA='DEMANDE',LISTE_R =di ,),),);
+
+TAB3=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
+                           _F(PARA='DEFA',LISTE_I =xi ,),
+                       _F(PARA='DEMANDE',LISTE_R =di ,),),);
+
 
 # liste indicateurs pour tracer les courbes
 LISTEA=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F(JUSQU_A = 1.0, PAS=0.1) )
 # initialiser le generateur de variables aleatoires
 random.seed(1234567890)
 
-TAB_POST=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB1,
-                                   LIST_PARA=LISTEA,
-                                   AM_INI  =0.3 ,
-                                   BETA_INI=0.1 ,
+TAB_MLE=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB1,
+                                   LIST_PARA=LISTEA,METHODE='EMV',
+                                   AM_INI  =0.3 ,BETA_INI=0.1 ,
                                    FRACTILE = (0.0,0.05,0.5,0.95,1.0),
                                    NB_TIRAGE =8,
                                  ),),
-                         TITRE = 'courbe 1',
-                         INFO=2, );
+                         TITRE = 'courbe 1', INFO=2, );
 
+TAB_MLE2=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB2,
+                                   LIST_PARA=LISTEA,METHODE='EMV',
+                                   AM_INI  =0.35 ,BETA_INI=0.2 ,SEUIL=seuil,
+                                 ),),
+                         TITRE = 'courbe 2', INFO=2, );
 
 # tests
 TEST_TABLE(VALE_CALC=0.357545130,
            NOM_PARA='AM',
-           TABLE=TAB_POST,)
+           TABLE=TAB_MLE,)
+
+TEST_TABLE(VALE_CALC=0.357530986467,
+           NOM_PARA='AM',
+           TABLE=TAB_MLE2,)
 
 TEST_TABLE(VALE_CALC=0.404039514,
            NOM_PARA='BETA',
-           TABLE=TAB_POST,)
+           TABLE=TAB_MLE,)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
-           NOM_PARA='0.0',
-           TABLE=TAB_POST,
-           FILTRE=_F(NOM_PARA='PARA_NOCI',
-                     VALE=0.20000000000000001,),
-           )
+TEST_TABLE(VALE_CALC=0.403975691542,
+           NOM_PARA='BETA',
+           TABLE=TAB_MLE2,)
+
+
+#TEST_TABLE(CRITERE='ABSOLU',
+#           VALE_CALC=0.0,
+#           NOM_PARA='0.0',
+#           TABLE=TAB_MLE,
+#           FILTRE=_F(NOM_PARA='PARA_NOCI',
+#                     VALE=0.20000000000000001,),
+#           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= 3.31235876E-04,
            NOM_PARA='0.5',
-           TABLE=TAB_POST,
+           TABLE=TAB_MLE,
            FILTRE=_F(CRITERE='RELATIF',
                      NOM_PARA='PARA_NOCI',
                      VALE=0.20000000000000001,),
@@ -73,12 +97,62 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(VALE_CALC=0.090855784221153,
            NOM_PARA='1.0',
-           TABLE=TAB_POST,
+           TABLE=TAB_MLE,
            FILTRE=_F(CRITERE='RELATIF',
                      NOM_PARA='PARA_NOCI',
                      VALE=0.20000000000000001,),
            )
 
-IMPR_TABLE(TABLE = TAB_POST);
+IMPR_TABLE(TABLE = TAB_MLE);
+
+
+
+#-------------------------------------------
+
+
+TAB_REG=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB2,
+                                   LIST_PARA=LISTEA,
+                                   METHODE='REGRESSION',
+                                   SEUIL=0.035 ,
+                                 ),),
+                         TITRE = 'courbe 3',
+                         INFO=2, );
+
+
+# tests
+TEST_TABLE(VALE_CALC=0.462176065466,
+           NOM_PARA='AM',
+           TABLE=TAB_REG,)
+
+TEST_TABLE(VALE_CALC=0.282885699122,
+           NOM_PARA='BETA',
+           TABLE=TAB_REG,)
+
+#TEST_TABLE(CRITERE='ABSOLU',
+#           VALE_CALC=0.0,
+#           NOM_PARA='0.0',
+#           TABLE=TAB_REG,
+#           FILTRE=_F(NOM_PARA='PARA_NOCI',
+#                     VALE=0.20000000000000001,),
+#           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= 0.00153320819951,
+           NOM_PARA='PFA',
+           TABLE=TAB_REG,
+           FILTRE=_F(CRITERE='RELATIF',
+                     NOM_PARA='PARA_NOCI',
+                     VALE=0.2,),
+           )
+
+TEST_TABLE(VALE_CALC=6.09521E-01,
+           NOM_PARA='PFA',
+           TABLE=TAB_REG,
+           FILTRE=_F(CRITERE='RELATIF',
+                     NOM_PARA='PARA_NOCI',
+                     VALE=0.5,),
+           )
+
+IMPR_TABLE(TABLE = TAB_REG);
 
 FIN();
