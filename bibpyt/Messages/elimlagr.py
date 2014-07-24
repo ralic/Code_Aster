@@ -91,15 +91,6 @@ cata_msg = {
    Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """),
 
-8 : _(u"""
- Erreur de programmation :
-   On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
-   (ou la commande ELIM_LAGR).
-   Un incohérence interne est détectée.
- Risques & conseils :
-   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
-   Il faut émettre une fiche d'anomalie.
-"""),
 
 9 : _(u"""
  Erreur d'utilisation :

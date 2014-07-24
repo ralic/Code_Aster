@@ -44,7 +44,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
     integer :: nbproc, lmat
     integer :: iloc, iglo
-    integer, dimension(:), pointer :: nlgp=> null(), nulg=>null(), prddl=> null() 
+    integer, dimension(:), pointer :: nlgp => null(), nulg=> null(), prddl =>null()
 !
     character(len=14) :: nonu
     character(len=19) :: nomat

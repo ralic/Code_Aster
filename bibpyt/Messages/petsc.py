@@ -158,7 +158,7 @@ Solveur PETSc :
   L'installation de PETSc dont vous disposez n'a vraisemblablement pas été compilée avec le support de ce préconditionneur.
 
   Conseils :
-  - reconstruisez une version de PETSc avec le support des préconditionneurs BOOMER et ML
+  - reconstruisez une version de PETSc avec le support des préconditionneurs BOOMER, ML et GAMG
   - utilisez un autre préconditionneur (comme 'LDLT_SP' par exemple)
 """),
 }

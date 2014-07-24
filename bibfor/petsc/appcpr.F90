@@ -48,27 +48,48 @@ subroutine appcpr(kptsc)
 !     VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: jslvk, jslvr, jslvi
-    integer :: tbloc, niremp
+    integer :: dimgeo, dimgeo_b, tbloc, niremp, istat 
+    integer :: jnequ, jnequl
+    integer :: nloc, neqg, ndprop, ieq, numno, icmp
     integer :: iret
+    integer :: il, ix, iga_f, igp_f
+    integer :: fill
+    integer, dimension(:), pointer :: prddl => null()
+    integer, dimension(:), pointer :: deeq => null()
+    integer, dimension(:), pointer :: delg => null()
+    integer, dimension(:), pointer :: nulg => null()
+    integer, dimension(:), pointer :: nlgp => null()
+    mpi_int :: mpicomm
 !
     character(len=24) :: precon
     character(len=19) :: nomat, nosolv
     character(len=14) :: nonu
+    character(len=8) :: nomail
     character(len=4) :: exilag
 !
-    real(kind=8) :: fillin
+    real(kind=8) :: fillin, val
+    real(kind=8), dimension(:), pointer :: coordo => null() 
+!
+    logical :: lmd
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: ierr, nsmooth
-    integer :: fill
+    PetscInt :: low, high, ierr, bs, nterm, nsmooth
     PetscReal :: fillp
+    PetscScalar :: xx_v(1)
+    PetscOffset :: xx_i  
+    
     Mat :: a
+    Vec :: coords
     KSP :: ksp
-    PC :: pc
+    PC  :: pc
     mpi_int :: mrank, msize
+    MatNullSpace :: sp
 !----------------------------------------------------------------
     call jemarq()
+!
+!   -- COMMUNICATEUR MPI DE TRAVAIL
+    call asmpi_comm('GET', mpicomm)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)
@@ -81,11 +102,21 @@ subroutine appcpr(kptsc)
     call jeveuo(nosolv//'.SLVR', 'L', jslvr)
     call jeveuo(nosolv//'.SLVI', 'L', jslvi)
     precon = zk24(jslvk-1+2)
+    
     fillin = zr(jslvr-1+3)
     niremp = zi(jslvi-1+4)
+    lmd = zk24(jslvk-1+10)(1:3).eq.'OUI'
 !
     fill = niremp
     fillp = fillin
+    bs = 1
+    
+!
+!   -- RECUPERE DES INFORMATIONS SUR LE MAILLAGE POUR 
+!      LE CALCUL DES MODES RIGIDES
+    call dismoi('NOM_MAILLA', nomat, 'MATR_ASSE', repk=nomail)
+    call dismoi('DIM_GEOM_B', nomail, 'MAILLAGE', repi=dimgeo_b)
+    call dismoi('DIM_GEOM', nomail, 'MAILLAGE', repi=dimgeo)
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
     call asmpi_info(rank=mrank, size=msize)
@@ -106,7 +137,123 @@ subroutine appcpr(kptsc)
         endif
     endif
 !
+!   -- VERIFICATIONS COMPLEMENTAIRES POUR LES PRE-CONDITIONNEURS MULTIGRILLES
+!   -- DEFINITION DU NOYAU UNIQUEMENT EN MODELISATION SOLIDE (2D OU 3D)
+!   -------------------------------------------------------------------------
+    if ((precon .eq. 'ML') .or. (precon .eq. 'BOOMER') .or. (precon.eq.'GAMG')) then
+!       -- PAS DE LAGRANGE
+        call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',ier=iret)
+        if (iret .eq. 0) then
+            if (exilag .eq. 'OUI') then
+                call utmess('F', 'PETSC_17')
+            endif
+        endif
+!       -- NOMBRE CONSTANT DE DDLS PAR NOEUD
+        call apbloc(nomat, nosolv, tbloc)
+        if (tbloc .le. 0) then
+            call utmess('A', 'PETSC_18')
+        else
+        bs = abs(tbloc)
+        endif
+    endif
+    
+#ifdef ASTER_PETSC_VERSION_LEQ_34
+#else
+    if (precon.eq.'GAMG') then 
+!       -- CREATION DES MOUVEMENTS DE CORPS RIGIDE --
+!           * VECTEUR RECEPTABLE DES COORDONNEES AVEC TAILLE DE BLOC
+!           
+!       dimgeo = 3 signifie que le maillage est 3D et que les noeuds ne sont pas
+!       tous dans le plan z=0
+        ASSERT(dimgeo == 3)
+        call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
+        neqg=zi(jnequ)
+        call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
+        call jeveuo(nomail//'.COORDO    .VALE','L',vr=coordo)
+        !
+        call VecCreate(mpicomm, coords, ierr)
+        call VecSetBlockSize(coords, bs, ierr)
+        if (lmd) then
+            call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
+            call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
+            nloc=zi(jnequl)
+            ! Nb de ddls dont le proc courant est propriétaire (pour PETSc)
+            ndprop = 0
+            do il = 1, nloc
+               if (prddl(il) == rang ) then 
+                   ndprop = ndprop + 1
+               endif  
+            end do
+!
+            call VecSetSizes(coords, to_petsc_int(ndprop), to_petsc_int(neqg), ierr)
+        else
+            call VecSetSizes(coords, PETSC_DECIDE, to_petsc_int(neqg), ierr)
+        endif
+!
+        call VecSetType(coords, VECMPI, ierr)
+!           * REMPLISSAGE DU VECTEUR
+!             coords: vecteur PETSc des coordonnées des noeuds du maillage, 
+!             dans l'ordre de la numérotation PETSc des équations
+        if (lmd) then
+          call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
+          call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
+          do il = 1, nloc
+            ! Indice global PETSc (F) correspondant à l'indice local il
+            igp_f = nlgp( il )
+            ! Indice global Aster (F) correspondant à l'indice local il
+            iga_f = nulg( il )
+            ! Noeud auquel est associé le ddl global Aster iga_f 
+            numno = deeq( (iga_f -1)* 2 +1 )
+            ! Composante (X, Y ou Z) à laquelle est associé 
+            ! le ddl global Aster iga_f
+            icmp  = deeq( (iga_f -1)* 2 +2 )
+            ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
+            ! Valeur de la coordonnée (X,Y ou Z) icmp du noeud numno
+            val = coordo( dimgeo_b*(numno-1)+icmp )
+            ! On met à jour le vecteur PETSc des coordonnées
+            nterm=1
+            call VecSetValues( coords, nterm, to_petsc_int(igp_f - 1), val,  INSERT_VALUES, ierr ) 
+            ASSERT( ierr == 0 )
+          enddo 
+            call VecAssemblyBegin( coords, ierr ) 
+            call VecAssemblyEnd( coords, ierr )
+            ASSERT( ierr == 0 )
+        ! la matrice est centralisée 
+        else
+          call VecGetOwnershipRange(coords, low, high, ierr)
+          call VecGetArray(coords,xx_v, xx_i, ierr)
+          ix=0
+          do ieq = low+1, high
+            ! Noeud auquel est associé le ddl Aster ieq 
+            numno = deeq( (ieq -1)* 2 +1 )
+            ! Composante (X, Y ou Z) à laquelle est associé 
+            ! le ddl Aster ieq
+            icmp  = deeq( (ieq -1)* 2 +2 )
+            ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
+            ix=ix+1 
+            xx_v(xx_i+ ix) = coordo( dimgeo*(numno-1)+icmp )
+          end do
+         !
+          call VecRestoreArray(coords,xx_v, xx_i, ierr)
+          ASSERT(ierr==0)
+        endif
+        !
+        ! 
+!           * CALCUL DES MODES A PARTIR DES COORDONNEES
+        if (bs.le.3) then
+            call MatNullSpaceCreateRigidBody(coords, sp, ierr)
+            ASSERT(ierr.eq.0)
+            call MatSetNearNullSpace(a, sp, ierr)
+            ASSERT(ierr.eq.0)
+            call MatNullSpaceDestroy(sp, ierr)
+            ASSERT(ierr.eq.0)
+        endif
+        call VecDestroy(coords, ierr)
+        ASSERT(ierr.eq.0)
+        endif
+#endif    
 
+!
 !     -- CHOIX DU PRECONDITIONNEUR :
 !     ------------------------------
     call KSPGetPC(ksp, pc, ierr)
@@ -186,7 +333,7 @@ subroutine appcpr(kptsc)
      else if (precon.eq.'GAMG') then
         call PCSetType(pc, PCGAMG, ierr)
         if (ierr .ne. 0) then
-            call utmess('F', 'PETSC_20', 1, precon)
+            call utmess('F', 'PETSC_19', 1, precon)
         endif
 !       CHOIX DE LA VARIANTE AGGREGATED
 !        call PCGAMGSetType(pc, "agg", ierr)
@@ -212,17 +359,6 @@ subroutine appcpr(kptsc)
         ASSERT(.false.)
     endif
 !-----------------------------------------------------------------------
-!
-!     VERIFICATION DU DOMAINE D'APPLICATION
-    if (precon .eq. 'ML' .or. precon .eq. 'BOOMER' .or. precon .eq. 'GAMG') then
-        call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',&
-                    ier=iret)
-        call apbloc(nomat, nosolv, tbloc)
-        if (tbloc .le. 0) then
-            call utmess('A', 'PETSC_18')
-            tbloc=1
-        endif
-    endif
 !
 !     CREATION EFFECTIVE DU PRECONDITIONNEUR
     call PCSetUp(pc, ierr)
