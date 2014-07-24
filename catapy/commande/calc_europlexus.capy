@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,8 +32,8 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
                                 PRESENT_ABSENT('ETAT_INIT','CHAM_MATER'),
                                 EXCLUS('ETAT_INIT','FONC_PARASOL'),
                                 AU_MOINS_UN('COMPORTEMENT'),),
-        LOGICIEL = SIMP(statut='f', typ='TXM', defaut='/home/europlex/EPXD/bin/europlexus'),
-        LANCEMENT = SIMP(statut='f', typ='TXM', defaut='OUI',into=('OUI','NON')),
+        LOGICIEL = SIMP(statut='o', typ='TXM', defaut='/home/europlex/EPXD/bin/europlexus'),
+        LANCEMENT = SIMP(statut='o', typ='TXM', defaut='OUI',into=('OUI','NON')),
 
         ETAT_INIT = FACT(statut='f',
            RESULTAT    = SIMP(statut='o',typ=evol_noli),
@@ -46,7 +46,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
         MODELE     = SIMP(statut='f',typ=modele_sdaster),
         CARA_ELEM  = SIMP(statut='f',typ=cara_elem),
 
-        FONC_PARASOL = FACT(statut='f',
+        FONC_PARASOL = FACT(statut='f',max=1,
            regles=(PRESENT_PRESENT('NFKT','NFKR'),),
            NFKT       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFKR       = SIMP(statut='f',typ=(fonction_sdaster,)),
@@ -64,7 +64,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
            FONC_MULT      = SIMP(statut='f',typ=(fonction_sdaster,)),
           ),
 
-        DIME = FACT(statut='f', regles=(AU_MOINS_UN('UNITE_DIME','Q4GS','FORCE',
+        DIME = FACT(statut='f',max=1, regles=(AU_MOINS_UN('UNITE_DIME','Q4GS','FORCE',
                                                     'PT6L','ZONE','POUT','ECRO',
                                                     'APPU','BLOQ','PRESS','PMAT',
                                                     'DKT3','DEPL','FNOM','TABLE','FTAB',

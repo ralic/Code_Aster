@@ -349,6 +349,11 @@ Risques et conseils :
 
 
 
+92 : _(u"""
+Erreur Europlexus
+   Le mot-clé GROUP_MA_SEG2 est incompatible avec EUROPLEXUS = 'OUI'.
+"""),
+
 93 : _(u"""
 Erreur Europlexus
    Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour le 

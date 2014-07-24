@@ -215,6 +215,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
         call getvtx('RIGI_PARASOL', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
         if (ngp .eq. 0) then
             call getvtx('RIGI_PARASOL', 'GROUP_MA_SEG2', iocc=ioc, scal=nogp, nbret=ngp)
+            if (eurplx) call utmess('F', 'MODELISA9_92')
         endif
         if (nrep .ne. 0) then
             do i = 1, nrd
@@ -433,7 +434,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                         i-6+jj)
                                     end do
                                 endif
-                                zk8(irepn+ir) = zk8(jn)
+                                zk8(irepn+ir) = zk8(jd)
                                 ir = ir + 1
                             else if (car(nc)(1:3) .eq. 'A_T') then
                                 if (transl) then
@@ -448,7 +449,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                         i-6+jj)
                                     end do
                                 endif
-                                zk8(iaepn+ia) = zk8(jn)
+                                zk8(iaepn+ia) = zk8(jd)
                                 ia = ia + 1
                             endif
 !
