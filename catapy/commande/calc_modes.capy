@@ -55,8 +55,9 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                  OPTION       =SIMP(statut='d',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","PLUS_GRANDE","BANDE","CENTRE","TOUT","SEPARE","AJUSTE","PROCHE"),
                                     fr=tr("Choix de la zone de recherche et par conséquent du shift du problème modal"), position='global'),
 
-         b_bande = BLOC( condition = "OPTION in ('PLUS_PETITE','PLUS_GRANDE','BANDE','CENTRE','TOUT')",
-                 STOP_BANDE_VIDE =SIMP(statut='f',typ='TXM',defaut="NON" ,into=("OUI","NON") ),
+         # b_bande = BLOC( condition = "(TYPE_RESU != 'DYNAMIQUE') or (TYPE_RESU == 'DYNAMIQUE' and OPTION != 'BANDE')",
+         b_bande = BLOC( condition = "not(TYPE_RESU == 'DYNAMIQUE' and OPTION == 'BANDE')",
+                 STOP_BANDE_VIDE =SIMP(statut='f',typ='TXM',defaut="OUI" ,into=("OUI","NON") ),
                         ),
 
                  SOLVEUR_MODAL =FACT(statut='d',
@@ -149,6 +150,10 @@ CALC_MODES=MACRO(nom="CALC_MODES",
 
              b_multi_bande =BLOC( condition= "OPTION == 'BANDE' and len(FREQ)>2",
                  NIVEAU_PARALLELISME  =SIMP(statut='f',typ='TXM',defaut="COMPLET",into=("PARTIEL","COMPLET") ),
+                 STOP_BANDE_VIDE      =SIMP(statut='f',typ='TXM',defaut="NON" ,into=("OUI","NON") ),
+                                 ),
+             b_mono_bande  =BLOC( condition= "OPTION == 'BANDE' and len(FREQ)<=2",
+                 STOP_BANDE_VIDE      =SIMP(statut='f',typ='TXM',defaut="OUI" ,into=("OUI","NON") ),
                                  ),
 
              # opérandes de post-traitement

@@ -69,20 +69,18 @@ M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
 # DES BANDES DE FREQUENCE VIDES
 
 try:
-   MODE1=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                  SOLVEUR=_F(METHODE='MUMPS'),
-                        
-                               CALC_FREQ=_F(  OPTION = 'BANDE',
-                                           FREQ = ( 100., 200.)))
+   MODE1=CALC_MODES( MATR_RIGI=K_ASSE, 
+                     MATR_MASS=M_ASSE,
+                     OPTION = 'BANDE',
+                     SOLVEUR=_F(METHODE='MUMPS'),
+                     CALC_FREQ=_F( FREQ = (100., 200.) ) )
 
 except aster.BandeFrequenceVideError:
-   MODE1=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                  SOLVEUR=_F(METHODE='MUMPS'),
-                               CALC_FREQ=_F(  OPTION = 'BANDE',
-                                           FREQ = ( 200., 3500.)))
-
+   MODE1=CALC_MODES( MATR_RIGI=K_ASSE, 
+                     MATR_MASS=M_ASSE,
+                     OPTION = 'BANDE',
+                     SOLVEUR=_F(METHODE='MUMPS'),
+                     CALC_FREQ=_F( FREQ = (200., 3500.) ) )
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=7,

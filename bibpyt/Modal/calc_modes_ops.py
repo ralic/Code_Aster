@@ -52,7 +52,6 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
                 del args['MATR_MASS']
                 CALC_FREQ = args['CALC_FREQ']
                 del args['CALC_FREQ']
-                print 'matr_rigi : ', MATR_RIGI
                 # call the old MACRO_MODE_MECA macro-command
                 # (modes computation over several frequency bands,
                 # with optionnal parallelization of the bands)
