@@ -7,6 +7,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
+#include "asterfort/cesred.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -80,7 +81,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=24) :: valk(3)
     character(len=4) :: type
     character(len=8) :: tych, noddl
-    character(len=19) :: cham19, cnsinr
+    character(len=19) :: cham19, cnsinr, cnsin1
     aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
@@ -106,11 +107,12 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 !     =========================
     call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych, arret='C',&
                 ier=iret1)
-!
+
     ASSERT(nbcmp.eq.1)
-!
+
+
     if (tych(1:4) .eq. 'NOEU') then
-!         -------------------
+!   --------------------------------
         cnsinr = '&&TRESU_CH.CNSINR'
         call cnocns(cham19, 'V', cnsinr)
         call jeveuo(cnsinr//'.CNSV', 'L', jcsv)
@@ -140,16 +142,24 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
             goto 999
         endif
+
 !
     else if (tych(1:2).eq.'EL') then
-!              -----------------
+!   -----------------------------------
+        cnsin1 = '&&TRESU_CH.CNSIN1'
         cnsinr = '&&TRESU_CH.CNSINR'
-        call celces(cham19, 'V', cnsinr)
+        call celces(cham19, 'V', cnsin1)
+!       -- tres important : cesred avec nbcmp permet la division neq=neq/ncmp
+        call cesred(cnsin1, 0, [0], 1, nocmp(1),&
+                  'V', cnsinr)
+        call detrsd('CHAM_ELEM_S', cnsin1)
+
         call jeveuo(cnsinr//'.CESV', 'L', jcsv)
         call jeveuo(cnsinr//'.CESC', 'L', jcsc)
         call jeveuo(cnsinr//'.CESL', 'L', jcsl)
         call jeveuo(cnsinr//'.CESD', 'L', jcsd)
         ncmp = zi(jcsd-1+2)
+        ASSERT(ncmp.eq.1)
         do i = 1, nbcmp
             noddl = nocmp(i)
             do j = 1, ncmp
@@ -176,11 +186,15 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         write(ific,*) 'NOOK '
         call utmess('A', 'CALCULEL5_14', sk=cham19)
     endif
-!
+
+
+
     nl1 = lxlgut(lign1)
     lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CMP'
     lign1(nl1+17:nl1+17)='.'
-!
+
+
+!    ================================================================================
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
@@ -282,6 +296,8 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             goto 999
         endif
 !
+
+!    ================================================================================
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
@@ -311,18 +327,12 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
+
         else if (typtes .eq. 'MAX') then
+            valrr=-1.d+300
             do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do j = 1, neq
-                    ind = ncmp*(j-1)+(vnocmp-1)+1
-                    if (zl(jcsl-1+ind)) then
-                        valrr = zr(jcsv-1+ind)
-                        goto 224
-                    endif
-                end do
-224             continue
-                do k = j+1, neq
+                do k = 1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = max( valrr , zr(jcsv-1+ind) )
@@ -339,22 +349,14 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 endif
             end do
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
-            1+icmp))
+            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-1+icmp))
             lign2(nl2+17:nl2+17)='.'
-!
+
         else if (typtes .eq. 'MIN') then
+            valrr=1.d+300
             do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do j = 1, neq
-                    ind = ncmp*(j-1)+(vnocmp-1)+1
-                    if (zl(jcsl-1+ind)) then
-                        valrr = zr(jcsv-1+ind)
-                        goto 234
-                    endif
-                end do
-234             continue
-                do k = j+1, neq
+                do k = 1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = min( valrr , zr(jcsv-1+ind) )
@@ -380,6 +382,8 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             goto 999
         endif
 !
+
+!    ================================================================================
     else if (type .eq. 'C') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
@@ -415,12 +419,14 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             goto 999
         endif
     endif
-!
+
+
+
     nl1 = lxlgut(lign1)
     nl11 = lxlgut(lign1(1:nl1-1))
     nl2 = lxlgut(lign2)
     nl22 = lxlgut(lign2(1:nl2-1))
-!
+
     if (llab) then
         if (nl11 .lt. 80) then
             write (ific,*) lign1(1:nl11)
@@ -446,7 +452,12 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                          refi, vali, refc, valc, ignore=skip,&
                          compare=ordgrd)
 !
-    call detrsd('CHAM_NO_S', cnsinr)
+    if (tych(1:4).eq.'NOEU') then
+        call detrsd('CHAM_NO_S', cnsinr)
+    else if (tych(1:2).eq.'EL') then
+        call detrsd('CHAM_ELEM_S', cnsinr)
+    endif
+
 999 continue
     call jedetr('&&TRESU_CH.CMP')
 !
