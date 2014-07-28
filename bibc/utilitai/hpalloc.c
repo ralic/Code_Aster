@@ -35,6 +35,10 @@ void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, IN
         {
             *errcode = -2;
         }
+        else if ( *addr == NULL )
+        {
+            *errcode = -3;
+        }
         else
         {
             *errcode = 0;
