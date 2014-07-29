@@ -44,7 +44,9 @@ def blkdiag(varargin):
 
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      PAR_LOT='NON',   # PAR_LOT = 'NON' a cause de EXTR_MATR...
+      DEBUG=_F(SDVERI='OUI'))
 #******************************
 # DEBUT CLASSIQUE D'UNE ETUDE *
 #******************************
@@ -115,7 +117,7 @@ NUME=NUME_DDL(MATR_RIGI=KELEM,
               METHODE='MULT_FRONT',
               RENUM='METIS',);
 
-IMPR_CO(CHAINE='.SMOS',POSITION=15,ATTRIBUT='OUI',)
+#IMPR_CO(CHAINE='.SMOS',POSITION=15,ATTRIBUT='OUI',)
 
 KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
                   NUME_DDL=NUME,);
@@ -125,16 +127,6 @@ KASC=ASSE_MATRICE(MATR_ELEM=KELEMC,
 
 MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
                   NUME_DDL=NUME,);
-
-FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
-                  NUME_DDL=NUME,);
-
-FASC2=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',
-                    CHAM_GD=FASS)
-
-FASC =CREA_CHAMP(OPERATION='ASSE',MODELE=MODEL,TYPE_CHAM='NOEU_DEPL_C',
-                  ASSE=_F(CHAM_GD=FASC2,TOUT='OUI',CUMUL='NON',
-                          COEF_C=('RI',1.0,0.5,),),);
 
 # Calcul des modes dynamiques interfaces encastrees
 MODES=MODE_ITER_SIMULT(MATR_RIGI=KASS,
@@ -305,36 +297,31 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    REFERENCE='NON_DEFINI',
                    RESULTAT=MODGENR,
                    VALE_CALC=660.430033152,
-                   VALE_REFE=660.42999999999995,
-                   PRECISION=1.E-2,),
+                   VALE_REFE=660.430033152,),
                 _F(PARA='FREQ',
                    NUME_MODE=2,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=MODGENR,
-                   VALE_CALC= 1.03071541E+03,
-                   VALE_REFE=1030.71,
-                   PRECISION=1.E-2,),
+                   VALE_CALC= 1.03071541399E+03,
+                   VALE_REFE=1030.71541399,),
                 _F(PARA='FREQ',
                    NUME_MODE=3,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=MODGENR,
                    VALE_CALC= 1.77249983E+03,
-                   VALE_REFE=1772.49,
-                   PRECISION=1.E-2,),
+                   VALE_REFE=1772.49983,),
                 _F(PARA='FREQ',
                    NUME_MODE=4,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=MODGENR,
-                   VALE_CALC= 2.65254752E+03,
-                   VALE_REFE=2652.54,
-                   PRECISION=1.E-2,),
+                   VALE_CALC= 2.65254751842E+03,
+                   VALE_REFE=2652.54751842,),
                 _F(PARA='FREQ',
                    NUME_MODE=5,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=MODGENR,
-                   VALE_CALC= 2.74667606E+03,
-                   VALE_REFE=2746.6700000000001,
-                   PRECISION=1.E-2,),
+                   VALE_CALC= 2.74667605831E+03,
+                   VALE_REFE=2746.67605831,),
                 ),
           )
 
@@ -347,7 +334,7 @@ LSTSSTRUC=MODLGENR.LIST_SOUS_STRUCT()
 LSTSSTRUC=MODLGENR.LIST_LIAIS_STRUCT()
 
 # recuperation du nombre de modes total, dynamique et d'interface
-# pour chauqye macro-element
+# pour chaque macro-element
 
 MDYNM1=aster.getvectjev('MODES              .ORDR        ' )
 MSTAM1=aster.getvectjev('MODPHY1            .ORDR        ' )
@@ -441,36 +428,36 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODPYR,
                    VALE_CALC=660.430033152,
-                   VALE_REFE=660.43003315215924,
-                   PRECISION=1.E-2,),
+                   VALE_REFE=frequence[0],
+                  ),
                 _F(PARA='FREQ',
                    NUME_MODE=2,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODPYR,
-                   VALE_CALC= 1.03071541E+03,
-                   VALE_REFE=1030.715413986022,
-                   PRECISION=1.E-2,),
+                   VALE_CALC= 1.03071541399E+03,
+                   VALE_REFE=frequence[1],
+                  ),
                 _F(PARA='FREQ',
                    NUME_MODE=3,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODPYR,
                    VALE_CALC= 1.77249983E+03,
-                   VALE_REFE=1772.4998300022326,
-                   PRECISION=1.E-2,),
+                   VALE_REFE=frequence[2],
+                  ),
                 _F(PARA='FREQ',
                    NUME_MODE=4,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODPYR,
-                   VALE_CALC= 2.65254752E+03,
-                   VALE_REFE=2652.5475184203165,
-                   PRECISION=1.E-2,),
+                   VALE_CALC= 2.65254752842E+03,
+                   VALE_REFE=frequence[3],
+                  ),
                 _F(PARA='FREQ',
                    NUME_MODE=5,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODPYR,
-                   VALE_CALC= 2.74667606E+03,
-                   VALE_REFE=2746.6760583093578,
-                   PRECISION=1.E-2,),
+                   VALE_CALC= 2.74667605831E+03,
+                   VALE_REFE=frequence[4],
+                  ),
                 ),
           )
 
