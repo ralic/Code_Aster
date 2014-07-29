@@ -130,6 +130,7 @@ The ASTERDATADIR environment variable changes the data directory.
 
     def init_info(self):
         """Stocke les informations générales (machine, os...)."""
+        import re
         # hostname
         self.info['hostname'] = platform.node()
         # ex. i686/x86_64
@@ -140,6 +141,7 @@ The ASTERDATADIR environment variable changes the data directory.
         self.info['architecture'] = platform.architecture()[0]
         # ex. 2.6.32...
         self.info['osrelease'] = platform.release()
+        self.info['osname'] = ' '.join(platform.linux_distribution())
         version = aster_pkginfo.version_info.version
         self.info['versionSTA'] = None
         self.info['versLabel'] = None

@@ -48,11 +48,16 @@ except:
    aster_exists = False
 
 
-
+ipass = 0
 def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO):
    """Fonction sdprod partie commune à DEBUT et POURSUITE.
    (on stocke un entier au lieu du logique)
    """
+   global ipass
+   ipass += 1
+   # deux passages: build et exec
+   if ipass > 2:
+      UTMESS('F', 'SUPERVIS_2')
    jdc.set_par_lot(PAR_LOT, user_value=True)
    jdc.impr_macro = int(IMPR_MACRO == 'OUI')
    jdc.jxveri     = int(CODE != None or (DEBUG != None and DEBUG['JXVERI'] == 'OUI'))

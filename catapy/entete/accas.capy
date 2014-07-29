@@ -76,7 +76,7 @@ except ImportError:
 
 JdC = JDC_CATA(code='ASTER',
                execmodul=None,
-               regles=(AU_MOINS_UN('DEBUT', 'POURSUITE'),
+               regles=(UN_PARMI('DEBUT', 'POURSUITE'),
                        AU_MOINS_UN('FIN'),
                        A_CLASSER(('DEBUT', 'POURSUITE'), 'FIN')))
 

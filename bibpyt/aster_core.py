@@ -38,13 +38,13 @@ import aster_pkginfo
 import _aster_core
 # methods and attributes of C implementation of the module
 from _aster_core import (
-    register,     
-    matfpe,       
-    get_mem_stat, 
-    set_mem_stat, 
-    mpi_info,     
-    mpi_warn,     
-    mpi_barrier,  
+    register,
+    matfpe,
+    get_mem_stat,
+    set_mem_stat,
+    mpi_info,
+    mpi_warn,
+    mpi_barrier,
     _USE_MPI,
     _USE_OPENMP,
     _USE_64_BITS,
@@ -135,7 +135,8 @@ def _print_header():
               get_option('hostname'),
               get_option('architecture'),
               get_option('processor'),
-              get_option('system') + ' ' + get_option('osrelease'),
+              get_option('system') + ' ' + get_option('osname') \
+                  + ' '  + get_option('osrelease'),
               lang_settings,),)
     pyvers = '%s.%s.%s' % tuple(sys.version_info[:3])
     UTMESS('I', 'SUPERVIS2_9', valk=(pyvers, numpy.__version__))
@@ -311,5 +312,3 @@ if __name__ == '__main__':
     testresu_print('ANALYTIQUE', 'DEPL_C', True, False, True,
                    1.e-4, 1.+1.j, -0.5+0.99j)
     print
-
-

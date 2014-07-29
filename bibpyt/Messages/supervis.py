@@ -32,6 +32,10 @@ cata_msg={
      être réalisés en POURSUITE.
 """),
 
+2 : _(u"""
+Les commandes DEBUT et POURSUITE doivent être appelées une fois et une seule.
+"""),
+
 3: _(u"""
   Erreur programmeur : %(k1)s non appariés.
 """),
