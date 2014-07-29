@@ -55,7 +55,6 @@ subroutine elg_apelim(kptsc, lqr)
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
 #include "asterf_petsc.h"
-#include "asterfort/elg_matrqr.h"
 #include "asterfort/elg_comptt.h"
 #include "asterfort/elg_remplt.h"
 !
@@ -63,27 +62,28 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !     VARIABLES LOCALES
     integer :: ifm, niv
-    character(len=19) :: nomat, nosolv, rigi1
-    character(len=14) :: nonu
-    character(len=16) :: concep, nomcmd
-    aster_logical :: lmd, info2
-    PetscInt :: ierr
-    PetscInt :: one = 1
-    Mat :: c, ct, c2, t, t2, mtemp
-    IS :: isfull, islag1, isphys, isred
-    IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
-    PetscInt :: nterm
     integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr, pos, istat
     integer :: nzrow, valrow, indnz, indcon, indlib, nworkt
     integer :: ctemp, redem, nvcont, nbnvco, ifull, nbred
     integer :: ilig, jcol, ico, kterm, ieq, k, kptscr, ktrou
+    character(len=8)  :: k8b
+    character(len=19) :: nomat, nosolv, rigi1
+    character(len=14) :: nonu
+    character(len=16) :: concep, nomcmd
+    aster_logical :: lmd, info2
     real(kind=8) :: temp, eps
-    character(len=8) :: k8b
     integer, pointer :: delg(:) => null()
     real(kind=8), dimension(:), pointer :: norm_t => null()
     character(len=24), pointer :: slvk(:) => null()
     mpi_int :: mpicomm
+!    
+    PetscInt :: ierr
+    PetscInt :: nterm
+    PetscInt :: one = 1
+    Mat :: c, ct, c2, t, t2, mtemp
+    IS :: isfull, islag1, isphys, isred
+    IS :: isnvco, istout
     PetscReal :: aster_petsc_default_real
 !----------------------------------------------------------------
     call jemarq()
@@ -480,16 +480,12 @@ subroutine elg_apelim(kptsc, lqr)
 !--
 !-- On profite de l'extraction de Ctrans pour en faire une
 !-- factorisation QR, sans assembler Q  => RCt
-!--
+!-- NB : on remplace l'utilisation de la factorisation QR par un appel au solveur 
+!   "moindres carrés" de PETSc. Il n'est plus nécessaire de calculer la 
+!   factorisation QR.
 !
-    lqr = .false.
-    if (lqr) then
-        call elg_matrqr(melim(ke)%ctrans, melim(ke)%rct, nbphys, nblag)
-        melim(ke)%lqr=.true.
-    else
-        melim(ke)%rct=0
-        melim(ke)%lqr=.false.
-    endif
+   melim(ke)%rct=0
+   melim(ke)%lqr=.false.
 !
 !
     call jedetr('&&APELIM.ILAG1')

@@ -43,7 +43,6 @@ subroutine elg_calcxl(x1, vlag)
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
 #include "asterfort/elg_allocvr.h"
-#include "asterfort/elg_resodr.h"
 !
     Vec :: x1, vlag
     mpi_int :: mpicomm 
