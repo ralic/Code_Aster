@@ -21,7 +21,7 @@ subroutine elg_calcxl(x1, vlag)
 # include "jeveux.h"
 # include "asterc/asmpi_comm.h"
 # include "asterfort/assert.h"
-# include "asterfort/infniv.h" 
+# include "asterfort/infniv.h"
 # include "asterfort/jedema.h"
 # include "asterfort/jemarq.h"
 !----------------------------------------------------------------
@@ -31,10 +31,10 @@ subroutine elg_calcxl(x1, vlag)
 !     OUT : Vec VLAG  (solution sur les dds Lagrange "1")
 !
 !     On utilise la méthode des moindres carrés (LSQR dans PETSc)
-!     Rq: La méthode originale utilise une factorisation QR 
+!     Rq: La méthode originale utilise une factorisation QR
 !     préalable de A. Le calcul des multiplicateurs s'effectue alors
 !     par des descentes remontées:
-!    
+!
 !     Les coefficients de Lagrange (1 et 2) sont
 !     calculés par :
 !       L = (R'*R) \ A*(b - B*x)
@@ -45,19 +45,19 @@ subroutine elg_calcxl(x1, vlag)
 #include "asterfort/elg_allocvr.h"
 !
     Vec :: x1, vlag
-    mpi_int :: mpicomm 
+    mpi_int :: mpicomm
     KSP :: ksp
     PC :: pc
 !
 !================================================================
-    integer :: ifm, niv 
+    integer :: ifm, niv
     real(kind=8) :: norm
-    aster_logical :: info 
+    aster_logical :: info
     PetscInt :: n1, n2, n3
     PetscInt :: ierr
     PetscScalar :: neg_one
     PetscOffset :: xidxay, xidxl
-    Mat :: cct 
+    Mat :: cct
     Vec :: bx, y, ay, xtmp, xlag
     PetscInt :: its
     PetscReal :: aster_petsc_default_real
@@ -71,7 +71,7 @@ subroutine elg_calcxl(x1, vlag)
     aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
     aster_petsc_default_real = PETSC_DEFAULT_REAL
-#endif 
+#endif
 !
 !     -- dimensions :
 !       n1 : # ddls physiques
@@ -107,10 +107,10 @@ subroutine elg_calcxl(x1, vlag)
 !   Initialisation du solveur PETSc : on utilise LSQR
 !   qui calcule la solution aux moindres carrés d'un système linéaire sur-déterminé
 !   C^T Vlag = AY
-!   ksp = solver context 
+!   ksp = solver context
     call KSPCreate(mpicomm, ksp, ierr)
-!    
-!   Calcul de C C^T (utilisée pour construire le préconditionneur) 
+!
+!   Calcul de C C^T (utilisée pour construire le préconditionneur)
 
 #ifdef ASTER_PETSC_VERSION_LEQ_32
     call MatMatMultTranspose(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
@@ -122,13 +122,13 @@ subroutine elg_calcxl(x1, vlag)
     ASSERT( ierr==0 )
 !   Set linear solver : LSQR
     call KSPSetType(ksp, KSPLSQR, ierr)
-!   Set linear system 
+!   Set linear system
 #ifdef ASTER_PETSC_VERSION_LEQ_34
     call KSPSetOperators(ksp, melim(ke)%ctrans, cct, SAME_PRECONDITIONER, ierr)
 #else
     call KSPSetOperators(ksp, melim(ke)%ctrans, cct, ierr)
 #endif
-!   Solve linear system  C^T * Vlag = AY 
+!   Solve linear system  C^T * Vlag = AY
     call KSPSolve( ksp, y, vlag, ierr)
     if (info) then
       call VecDuplicate(y, xtmp , ierr)
@@ -139,7 +139,7 @@ subroutine elg_calcxl(x1, vlag)
       call VecDuplicate(vlag, xlag , ierr)
       call MatMultTranspose(melim(ke)%ctrans, xtmp, xlag, ierr)
       call VecNorm(xlag,norm_2,norm,ierr)
-       
+
       write(6,100) norm,its
   100 format('CALCXL: Norm of error = ',e11.4,',  Number of iterations = ',i5)
       call VecDestroy(xtmp, ierr)

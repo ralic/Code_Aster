@@ -60,7 +60,7 @@ subroutine appcpr(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: ierr
+    PetscInt :: ierr, nsmooth
     integer :: fill
     PetscReal :: fillp
     Mat :: a
@@ -181,6 +181,29 @@ subroutine appcpr(kptsc)
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
+#ifdef ASTER_PETSC_VERSION_LEQ_32
+#else 
+     else if (precon.eq.'GAMG') then
+        call PCSetType(pc, PCGAMG, ierr)
+        if (ierr .ne. 0) then
+            call utmess('F', 'PETSC_20', 1, precon)
+        endif
+!       CHOIX DE LA VARIANTE AGGREGATED
+!        call PCGAMGSetType(pc, "agg", ierr)
+!        ASSERT(ierr.eq.0)
+!       CHOIX DU NOMBRE DE LISSAGES
+        nsmooth=1
+        call PCGAMGSetNSmooths(pc, nsmooth, ierr)
+        ASSERT(ierr.eq.0)
+!
+        call PetscOptionsSetValue('-pc_gamg_verbose', '2', ierr)
+        ASSERT(ierr.eq.0)
+!       APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
+        call PCSetFromOptions(pc, ierr)
+        ASSERT(ierr.eq.0)
+     
+#endif
+!-----------------------------------------------------------------------
     else if (precon.eq.'SANS') then
         call PCSetType(pc, PCNONE, ierr)
         ASSERT(ierr.eq.0)
@@ -191,7 +214,7 @@ subroutine appcpr(kptsc)
 !-----------------------------------------------------------------------
 !
 !     VERIFICATION DU DOMAINE D'APPLICATION
-    if (precon .eq. 'ML' .or. precon .eq. 'BOOMER') then
+    if (precon .eq. 'ML' .or. precon .eq. 'BOOMER' .or. precon .eq. 'GAMG') then
         call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',&
                     ier=iret)
         call apbloc(nomat, nosolv, tbloc)

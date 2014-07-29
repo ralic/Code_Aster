@@ -189,6 +189,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocXX_SP={}
    _BlocPE_ML={}
    _BlocPE_BOOMER={}
+   _BlocPE_GAMG={}
    _BlocXX_Autres={}
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -332,7 +333,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _BlocGC['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_INC", into=("LDLT_INC", "LDLT_SP", ), )
    _BlocPE['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_SP" ,
-                              into=("LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "SANS", ), )
+                              into=("LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "GAMG", "SANS", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -379,6 +380,9 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 # ----------------------------------------------------------------------------------------------------------------------------------
 
    _BlocPE_BOOMER['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocPE_GAMG['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -430,9 +434,13 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                                                          fr=tr("Paramètres du multigrille algébrique ML"),
                                                          **_BlocPE_ML
                                                          ),
-                                     b_boomer        = BLOC(condition = "PRE_COND == 'BOOMER' ",
+                                     b_boomer      = BLOC(condition = "PRE_COND == 'BOOMER' ",
                                                          fr=tr("Paramètres du multigrille algébrique HYPRE"),
                                                          **_BlocPE_BOOMER
+                                                         ),
+                                     b_gamg        = BLOC(condition = "PRE_COND == 'GAMG' ",
+                                                         fr=tr("Paramètres du multigrille algébrique GAMG"),
+                                                         **_BlocPE_GAMG
                                                          ),
                                      b_autres     = BLOC(condition = "PRE_COND == 'JACOBI' or \
                                                                       PRE_COND == 'SOR'    or \

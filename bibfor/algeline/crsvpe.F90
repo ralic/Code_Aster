@@ -104,6 +104,9 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
 
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
     else if (kprec.eq.'BOOMER') then
+!
+!   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
+    else if (kprec.eq.'GAMG') then
 
 !   PAS DE PARAMETRES POUR LES AUTRES PRECONDITIONNEURS
     else if (kprec.eq.'JACOBI' .or.&
