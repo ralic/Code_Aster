@@ -2,6 +2,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
                   its)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
+
 !
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -33,6 +34,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 #include "asterfort/jedema.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
+
 !
 !--------------------------------------------------------------
 ! But :
@@ -41,6 +43,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
+
 !
     integer :: kptsc
     mpi_int :: mpicou
@@ -55,10 +58,14 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
     PetscInt :: ierr
     KSP :: ksp
 !----------------------------------------------------------------
+
 !
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
+
+
+
 !
 !
 !
@@ -71,15 +78,23 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
     call KSPCreate(mpicou, kp(kptsc), ierr)
     ksp=kp(kptsc)
     ASSERT(ierr.eq.0)
+#ifdef ASTER_PETSC_VERSION_LEQ_34
     call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
+#else
+    call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), ierr)
+#endif
     ASSERT(ierr.eq.0)
     call jeveuo(nosolv//'.SLVI', 'E', jslvi)
     zi(jslvi-1+5) = 0
+
+
 !
 !
 !   -- calcul du nouveau preconditionneur :
 !   ---------------------------------------
     call appcpr(kptsc)
+
+
 !
 !
 !   -- 2eme resolution :
@@ -96,11 +111,14 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
     ASSERT(ierr.eq.0)
     call KSPGetConvergedReason(ksp, indic, ierr)
     call KSPGetIterationNumber(ksp, its, ierr)
+
+
 !
 !
 !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
     call uttcpu('CPU.RESO.4', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
+
 !
 #else
     integer :: kptsc
@@ -109,6 +127,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
     aster_logical :: lmd
     integer :: indic
     integer :: its
+
 !
     character(len=1) :: kdummy
     integer :: idummy
@@ -120,3 +139,4 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 #endif
 !
 end subroutine
+

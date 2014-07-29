@@ -17,7 +17,7 @@ subroutine apksp(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -53,7 +53,7 @@ subroutine apksp(kptsc)
 !     Variables PETSc
     PetscInt :: ierr
     PetscInt :: maxits
-    PetscReal :: rtol, atol, dtol
+    PetscReal :: rtol, atol, dtol, aster_petsc_default_real
     Mat :: a
     KSP :: ksp
 !=================================================================
@@ -61,6 +61,11 @@ subroutine apksp(kptsc)
 !
     call infniv(ifm, niv)
 !
+#ifdef ASTER_PETSC_VERSION_LEQ_34
+    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+#else
+    aster_petsc_default_real = PETSC_DEFAULT_REAL
+#endif 
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)
     nosolv = nosols(kptsc)
@@ -108,8 +113,8 @@ subroutine apksp(kptsc)
     endif
 !
     rtol = resire
-    atol = PETSC_DEFAULT_DOUBLE_PRECISION
-    dtol = PETSC_DEFAULT_DOUBLE_PRECISION
+    atol = aster_petsc_default_real
+    dtol = aster_petsc_default_real
 !
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)

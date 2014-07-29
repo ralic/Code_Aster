@@ -84,11 +84,18 @@ subroutine elg_apelim(kptsc, lqr)
     real(kind=8), dimension(:), pointer :: norm_t => null()
     character(len=24), pointer :: slvk(:) => null()
     mpi_int :: mpicomm
+    PetscReal :: aster_petsc_default_real
 !----------------------------------------------------------------
     call jemarq()
     call asmpi_comm('GET_WORLD', mpicomm)
     call infniv(ifm, niv)
     info2=niv.eq.2
+!
+#ifdef ASTER_PETSC_VERSION_LEQ_34
+    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+#else
+    aster_petsc_default_real = PETSC_DEFAULT_REAL
+#endif 
 !
 !
 !     -- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LES MKL
@@ -218,7 +225,6 @@ subroutine elg_apelim(kptsc, lqr)
 !   -- On extrait la matrice C transposée
     call MatGetSubMatrix(ap(kptscr), isfull, islag1, MAT_INITIAL_MATRIX, melim(ke)%ctrans,&
                          ierr)
-    call ISDestroy(islag1, ierr)
 !
 !
 !   --On annule les lignes associées a ILAG1 et ILAG2
@@ -306,8 +312,9 @@ subroutine elg_apelim(kptsc, lqr)
             if (info2) write(ifm,*) j1,' - ',zi4(nvcont+j1-1)+1
         end do
 ! CT <- C*T
-        call MatMatMult(c, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION, ct,&
+        call MatMatMult(c, t, MAT_INITIAL_MATRIX, aster_petsc_default_real, ct,&
                         ierr)
+        ASSERT(ierr.eq.0)
         call MatDestroy(c, ierr)
 ! On extrait de CT la sous-matrice des contraintes qui n'ont pas été éliminées
 ! On nomme C cette nouvelle matrice des contraintes 
@@ -316,15 +323,14 @@ subroutine elg_apelim(kptsc, lqr)
         call MatGetSubMatrix(ct, isnvco, isfull, MAT_INITIAL_MATRIX, c,&
                              ierr)
         call MatDestroy(ct, ierr)
-        call ISDestroy(isfull, ierr)
-        call ISDestroy(isnvco, ierr)
 ! T2 = TFinal 
         call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, t2, ierr)
         call MatDestroy(melim(ke)%tfinal, ierr)
 ! TFinal = T2 * T 
-        call MatMatMult(t2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION,&
+        call MatMatMult(t2, t, MAT_INITIAL_MATRIX, aster_petsc_default_real,&
                         melim(ke)%tfinal, ierr)
-!
+        ASSERT(ierr==0)
+! 
         call MatDestroy(t, ierr)
 !
         do i1 = 1, nbnvco
@@ -347,9 +353,8 @@ subroutine elg_apelim(kptsc, lqr)
 !
     call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, t2, ierr)
     call MatDestroy(melim(ke)%tfinal, ierr)
-    call MatMatMult(t2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION, melim(ke)%tfinal,&
+    call MatMatMult(t2, t, MAT_INITIAL_MATRIX, aster_petsc_default_real, melim(ke)%tfinal,&
                     ierr)
-    call MatDestroy(t2, ierr)
 !
 !
 !   -- Verif de la qualite de la base
@@ -361,14 +366,15 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !-- Changement de version PETSc 3.2 -> 3.3 
 !   Renamed MatMatMultTranspose() for C=A^T*B to MatTransposeMatMult()
-#ifdef ASTER_PETSC_VERSION_32
-    call MatMatMultTranspose(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX,&
-                             PETSC_DEFAULT_DOUBLE_PRECISION, c2, ierr)
-#else
-    call MatTransposeMatMult(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX,&
-                             PETSC_DEFAULT_DOUBLE_PRECISION, C2, ierr)
-#endif
+#ifdef ASTER_PETSC_VERSION_LEQ_32
+    call MatMatMultTranspose(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
+                                     PETSC_DEFAULT_DOUBLE_PRECISION, c2, ierr)
+#else 
+    call MatTransposeMatMult(melim(ke)%tfinal,melim(ke)%ctrans,MAT_INITIAL_MATRIX, &
+                           aster_petsc_default_real,C2,ierr)
+#endif  
 !
+    ASSERT(ierr.eq.0)
     call MatGetColumnNorms(c2, norm_2, zr(ctemp), ierr)
     if (info2) write(ifm,*) ' '
     if (info2) write(ifm,*) ' '
@@ -377,8 +383,6 @@ subroutine elg_apelim(kptsc, lqr)
         if (info2) write(ifm, '(A11,I3,A3,E11.4)') 'CONTRAINTE ', i1, ' : ',&
                    zr(ctemp+i1-1)/zr(valrow+i1-1)
     end do
-!
-    call MatDestroy(c2, ierr)
 !
 !
 !   -- on "retasse" les matrices Ctrans, Tfinal :
@@ -431,7 +435,6 @@ subroutine elg_apelim(kptsc, lqr)
 !     -- on revient aux indices FORTRAN :
     melim(ke)%indred(:)=melim(ke)%indred(:)+1
     call MatDestroy(mtemp, ierr)
-    call ISDestroy(isred, ierr)
 !
 !
 !
@@ -439,7 +442,6 @@ subroutine elg_apelim(kptsc, lqr)
 !   -----------------------------------------
     call MatGetSubMatrix(ap(kptsc), isphys, isphys, MAT_INITIAL_MATRIX, melim(ke)%matb,&
                          ierr)
-    call ISDestroy(isphys, ierr)
 !
 !
 !   -- Projection T'*(MatB*T) :
@@ -504,6 +506,13 @@ subroutine elg_apelim(kptsc, lqr)
     call jedetr('&&APELIM.CONTR_NON_VERIF')
     call jedetr('&&APELIM.LIGNE_C_TEMP')
     AS_DEALLOCATE(vr=norm_t)
+! Nécessaire pour le passage à PETSc V3.4 et plus
+!    call ISDestroy(isphys,ierr)
+!    call ISDestroy(isred,ierr)
+!    call ISDestroy(isfull, ierr)
+!    call ISDestroy(isnvco, ierr)
+!    call MatDestroy(c2,ierr)
+!    call MatDestroy(t2,ierr)
 !
 !
     call matfpe(1)

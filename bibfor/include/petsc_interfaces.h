@@ -127,11 +127,17 @@ interface
     end subroutine
 ! -------------
 !
+#ifdef ASTER_PETSC_VERSION_LEQ_34
     subroutine KSPSetOperators(ksp, Amat, Pmat, flag, ierr)
+#else
+    subroutine KSPSetOperators(ksp, Amat, Pmat, ierr)
+#endif 
         KSP ksp ! KSP
         Mat Amat 
         Mat Pmat 
+#ifdef ASTER_PETSC_VERSION_LEQ_34
         MatStructure flag 
+#endif
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------

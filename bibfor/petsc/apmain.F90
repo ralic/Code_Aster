@@ -1,7 +1,7 @@
 subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                   iret)
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -75,6 +75,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/uttcpu.h"
 !
 #ifdef _HAVE_PETSC
+
 !
 !----------------------------------------------------------------
 !
@@ -82,7 +83,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     integer :: ifm, niv, ierd, nmaxit, ptserr
     integer :: lmat, idvalc, jslvi, jslvk, jslvr
     mpi_int :: rang, nbproc
-    mpi_int :: mpicou
+    mpi_int :: mpicomm
 !
     character(len=24) :: precon
     character(len=19) :: nomat, nosolv
@@ -109,7 +110,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     call jemarq()
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
-    call asmpi_comm('GET', mpicou)
+    call asmpi_comm('GET', mpicomm)
 !
 !   -- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LES BIBLIOTHEQUES MATHEMATIQUES
     call matfpe(-1)
@@ -159,12 +160,19 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
 !
-        call KSPCreate(mpicou, kp(kptsc), ierr)
+        call KSPCreate(mpicomm, kp(kptsc), ierr)
         ASSERT(ierr.eq.0)
-!
-        call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
-        ASSERT(ierr.eq.0)
-!
+        !
+#ifdef ASTER_PETSC_VERSION_LEQ_34
+        call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
+#else
+        call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), ierr )
+#endif        
+
+        ASSERT(ierr == 0)
+        ! 
+        !  Initialisation du préconditionneur 
+        !       
         call appcpr(kptsc)
 !
     else if (action.eq.'RESOUD') then
@@ -231,15 +239,18 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         call KSPGetConvergedReason(ksp, indic, ierr)
         ASSERT(ierr.eq.0)
         call KSPGetIterationNumber(ksp, its, ierr)
+
 !
 !       -- si LDLT_SP et its > maxits, on essaye une 2eme fois
 !       -- apres avoir actualise le preconditionneur :
         if ((indic .eq. KSP_DIVERGED_ITS) .and. (precon.eq.'LDLT_SP')) then
-            call ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
+            call ap2foi(kptsc, mpicomm, nosolv, lmd, indic,&
                         its)
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)
         endif
+
+
 !
 !
 !       ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
@@ -249,8 +260,10 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                                   ierr)
             ASSERT(ierr.eq.0)
 !
+
             if (indic .eq. KSP_DIVERGED_ITS) then
 !               -- NOMBRE MAX D'ITERATIONS
+
 !
                 if ((istop.eq.0) .or. (precon.ne.'LDLT_SP')) then
                     nmaxit=maxits
@@ -259,31 +272,38 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                     iret = 1
                     goto 999
                 endif
+
 !
             else if (indic.eq.KSP_DIVERGED_DTOL) then
 !               DIVERGENCE
                 divtol = dtol
                 call utmess('F', 'PETSC_6', sr=divtol)
+
 !
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN) then
 !               BREAKDOWN
                 call utmess('F', 'PETSC_7')
+
 !
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN_BICG) then
 !               BREAKDOWN BiCG
                 call utmess('F', 'PETSC_8')
+
 !
             else if (indic.eq.KSP_DIVERGED_NONSYMMETRIC) then
 !               MATRICE NON SYMETRIQUE
                 call utmess('F', 'PETSC_9')
+
 !
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
+
 !
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_MAT) then
 !               MATRICE NON DEFINIE
                 call utmess('F', 'PETSC_11')
+
 !
             else
 !              AUTRE ERREUR

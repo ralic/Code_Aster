@@ -17,7 +17,7 @@ subroutine ldsp2(pc, x1, y, ierr)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 !
 #include "asterf.h"
 #include "asterfort/amumph.h"
@@ -26,6 +26,7 @@ subroutine ldsp2(pc, x1, y, ierr)
 #include "asterf_petsc.h"
     complex(kind=8) :: cbid
     integer :: iret
+    aster_logical :: prepos
 !----------------------------------------------------------------
 !     Variables PETSc
     PC :: pc
@@ -51,8 +52,9 @@ subroutine ldsp2(pc, x1, y, ierr)
 !
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
     cbid = dcmplx(0.d0, 0.d0)
+    prepos = .true.
     call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid],&
-                ' ', 1, iret, .true._1)
+                ' ', 1, iret, prepos)
 !
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecRestoreArray(xglobal, xx, xidx, ierr)

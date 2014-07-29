@@ -23,12 +23,16 @@
 # include "finclude/petsc.h"
 !
 ! Gestion des versions de PETSc
-#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR == 2
-#   define ASTER_PETSC_VERSION_32
-#endif
+#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2
+#   define ASTER_PETSC_VERSION_LEQ_32
+#endif 
+#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 4
+#   define ASTER_PETSC_VERSION_LEQ_34
+#endif   
 !
 # include "petsc_interfaces.h"
-!
+
+
 !----------------------------------------------------------------
 !   spetsc : common pour les instances PETSC
 integer, parameter :: nmxins=5

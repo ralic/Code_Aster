@@ -17,7 +17,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -42,7 +42,9 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
-    integer :: nbproc, iaux, numglo, lmat
+    integer :: nbproc, lmat
+    integer :: iloc, iglo
+    integer, dimension(:), pointer :: nlgp=> null(), nulg=>null(), prddl=> null() 
 !
     character(len=14) :: nonu
     character(len=19) :: nomat
@@ -62,25 +64,28 @@ subroutine apsolu(kptsc, lmd, rsolu)
     nomat = nomats(kptsc)
     nonu = nonus(kptsc)
 !
+    call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
+    neqg = zi(jnequ)
+    !
     if (lmd) then
 !
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
 !
-        call jeveuo(nonu//'.NUML.NLGP', 'L', jnuglp)
-        call jeveuo(nonu//'.NUML.NULG', 'L', jnugl)
-        call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
+        call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
+        call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
         call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
-        call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
+        call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
+
+ 
 !
         nloc = zi(jnequl)
-        nglo = zi(jnequ)
-        neqg = nglo
+        nglo = neqg
         neql = nloc
 !
-        do iaux = 1, nglo
-            rsolu(iaux)=0.d0
+        do iloc = 1, nglo
+            rsolu(iloc)=0.d0
         enddo
 !
         call VecGetOwnershipRange(x, low, high, ierr)
@@ -90,11 +95,11 @@ subroutine apsolu(kptsc, lmd, rsolu)
         call VecGetArray(x, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
 !
-        do iaux = 1, nloc
-            if (zi(jprddl-1+iaux) .eq. rang) then
-                nuglpe=zi(jnuglp-1+iaux)
-                numglo=zi(jnugl-1+iaux)
-                rsolu(numglo)=xx(xidx+nuglpe-low)
+        do iloc = 1, nloc
+            if ( prddl(iloc) .eq. rang ) then
+                nuglpe= nlgp(iloc)
+                iglo= nulg(iloc)
+                rsolu(iglo)=xx(xidx+nuglpe-low)
             endif
         enddo
 !
@@ -120,8 +125,6 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !       -- RECOPIE DE XX DANS RSOLU
         call VecGetArray(xgth, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
-        call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-        neqg = zi(jnequ)
         do i = 1, neqg
             rsolu(i)=xx(xidx+i)
         end do

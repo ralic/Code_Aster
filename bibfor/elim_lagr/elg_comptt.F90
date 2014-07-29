@@ -81,6 +81,7 @@ subroutine elg_comptt(c, t, nworkt)
     call jeveuo('&&APELIM.IND_LIBRES     ', 'E', indlib)
     call jeveuo('&&APELIM.LIGNE_C_TEMP   ', 'E', ctemp)
 !
+
 !
 !
 !   Initialisation
@@ -192,6 +193,7 @@ subroutine elg_comptt(c, t, nworkt)
 ! Si oui, on compte 
                         nbcont=nbcont+1    
                     endif
+
                 end do
 !
 ! Pistes pour ameliorer les perfs, si besoin :

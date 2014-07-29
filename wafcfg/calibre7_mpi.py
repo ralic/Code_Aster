@@ -25,8 +25,8 @@ def configure(self):
 
     self.env.prepend_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Mumps_mpi_20141/lib',
-        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/lib'])
+        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster_34/lib'])
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/include'])
+        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster_34/include'])
 
     opts.enable_petsc = True

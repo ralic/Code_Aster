@@ -178,7 +178,7 @@ subroutine apalmc(kptsc)
                      ierr)
     ASSERT(ierr.eq.0)
 !
-#ifndef ASTER_PETSC_VERSION_32 
+#ifndef ASTER_PETSC_VERSION_LEQ_32 
 !   AVEC PETSc >= 3.3
 !   IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
     call MatSetBlockSize(a, to_petsc_int(bs), ierr)
@@ -198,7 +198,7 @@ subroutine apalmc(kptsc)
         ASSERT(ierr.eq.0)
     endif
 !
-#ifdef ASTER_PETSC_VERSION_32 
+#ifdef ASTER_PETSC_VERSION_LEQ_32 
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
       call MatSetBlockSize(a, to_petsc_int(bs), ierr)
       ASSERT(ierr.eq.0)

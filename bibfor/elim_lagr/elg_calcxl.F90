@@ -21,6 +21,7 @@ subroutine elg_calcxl(x1, vlag)
 # include "jeveux.h"
 # include "asterc/asmpi_comm.h"
 # include "asterfort/assert.h"
+# include "asterfort/infniv.h" 
 # include "asterfort/jedema.h"
 # include "asterfort/jemarq.h"
 !----------------------------------------------------------------
@@ -50,6 +51,9 @@ subroutine elg_calcxl(x1, vlag)
     PC :: pc
 !
 !================================================================
+    integer :: ifm, niv 
+    real(kind=8) :: norm
+    aster_logical :: info 
     PetscInt :: n1, n2, n3
     PetscInt :: ierr
     PetscScalar :: neg_one
@@ -57,11 +61,18 @@ subroutine elg_calcxl(x1, vlag)
     Mat :: cct 
     Vec :: bx, y, ay, xtmp, xlag
     PetscInt :: its
-    real(kind=8) :: norm
-    aster_logical :: info 
+    PetscReal :: aster_petsc_default_real
+
 !----------------------------------------------------------------
     call jemarq()
-    info =.true. 
+    call infniv(ifm, niv)
+    info=niv.eq.2
+!
+#ifdef ASTER_PETSC_VERSION_LEQ_34
+    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+#else
+    aster_petsc_default_real = PETSC_DEFAULT_REAL
+#endif 
 !
 !     -- dimensions :
 !       n1 : # ddls physiques
@@ -101,19 +112,23 @@ subroutine elg_calcxl(x1, vlag)
     call KSPCreate(mpicomm, ksp, ierr)
 !    
 !   Calcul de C C^T (utilisée pour construire le préconditionneur) 
-#ifdef ASTER_PETSC_VERSION_32
+
+#ifdef ASTER_PETSC_VERSION_LEQ_32
     call MatMatMultTranspose(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
          PETSC_DEFAULT_DOUBLE_PRECISION, cct, ierr)
-    ASSERT( ierr==0 )
 #else
     call MatTransposeMatMult(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
-         PETSC_DEFAULT_DOUBLE_PRECISION, cct, ierr)
-     ASSERT( ierr==0 )
+         aster_petsc_default_real, cct, ierr)
 #endif
+    ASSERT( ierr==0 )
 !   Set linear solver : LSQR
     call KSPSetType(ksp, KSPLSQR, ierr)
 !   Set linear system 
+#ifdef ASTER_PETSC_VERSION_LEQ_34
     call KSPSetOperators(ksp, melim(ke)%ctrans, cct, SAME_PRECONDITIONER, ierr)
+#else
+    call KSPSetOperators(ksp, melim(ke)%ctrans, cct, ierr)
+#endif
 !   Solve linear system  C^T * Vlag = AY 
     call KSPSolve( ksp, y, vlag, ierr)
     if (info) then

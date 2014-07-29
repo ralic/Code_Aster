@@ -18,7 +18,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 !
 #include "asterf_types.h"
 #include "asterf.h"
@@ -79,6 +79,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 #ifdef _HAVE_PETSC
 #include "asterf_petsc.h"
+
 !
 !----------------------------------------------------------------
 !
@@ -105,7 +106,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     PetscScalar :: sbid
     PetscOffset :: offbid
     PetscReal :: rbid
-!
+    
 !----------------------------------------------------------------
 !   INITIALISATION DE PETSC A FAIRE AU PREMIER APPEL
     save iprem
@@ -215,7 +216,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !   3. quelques verifications et petites actions :
 !   ----------------------------------------------
-  1 continue
+ 1  continue
 !
     if (action .eq. 'PRERES') then
 !        -- remplissage du commun
@@ -279,8 +280,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         end do
         AS_DEALLOCATE(vr=travail)
     else
-        call apmain(action, kptsc, rsolu, vcine, istop,&
-                    iret)
+        call apmain(action, kptsc, rsolu, vcine, istop, iret)
     endif
 !
 999 continue

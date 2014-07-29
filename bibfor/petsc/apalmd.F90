@@ -249,7 +249,7 @@ subroutine apalmd(kptsc)
     call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
     ASSERT(ierr.eq.0)
 ! 
-#ifndef ASTER_PETSC_VERSION_32 
+#ifndef ASTER_PETSC_VERSION_LEQ_32 
 !     AVEC PETSc >= 3.3
 !     IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION 
     call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)
@@ -260,7 +260,7 @@ subroutine apalmd(kptsc)
                                        PETSC_NULL_INTEGER, zi4(jidxo), ierr)
     ASSERT(ierr.eq.0)
     !
-#ifdef ASTER_PETSC_VERSION_32
+#ifdef ASTER_PETSC_VERSION_LEQ_32
 !     AVEC PETSc <= 3.2
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
       call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)

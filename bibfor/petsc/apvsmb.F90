@@ -17,12 +17,14 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.de-soza at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -30,7 +32,6 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
     integer :: kptsc
     aster_logical :: lmd
     real(kind=8) :: rsolu(*)
@@ -44,25 +45,32 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterf_petsc.h"
 !
 !     VARIABLES LOCALES
-    integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl, jnugl, jnuglp
-    integer :: jprddl, nloc, nglo, ndprop, jcoll, jindic, jvaleu, numglo
-    mpi_int :: mpicou
+    integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl
+    integer :: iloc, iglo, nloc, nglo, ndprop
+    integer :: bs, i, neq
+    integer, dimension(:), pointer         :: nulg => null()
+    integer, dimension(:), pointer         :: nlgp => null(), pddl => null()
+    integer(kind=4), dimension(:), pointer :: ig_petsc_c => null()
+    
+    mpi_int :: mpicomm
 !
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
+    
+    real(kind=8), dimension(:), pointer :: val => null()
 !
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: low, high, ierr
-    integer :: bs, i, neq
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
+
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
-    call asmpi_comm('GET', mpicou)
+    call asmpi_comm('GET', mpicomm)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)
@@ -79,18 +87,15 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         nbproc = to_aster_int(msize)
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
         call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
-        call jeveuo(nonu//'.NUML.NULG', 'L', jnugl)
-        call jeveuo(nonu//'.NUML.NLGP', 'L', jnuglp)
-        call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
+        call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
+        call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
+        call jeveuo(nonu//'.NUML.PDDL', 'L', vi=pddl)
         nloc = zi(jnequl)
         nglo = zi(jnequ)
+!       Nombre de ddls m'appartenant (pour PETSc)
+        ndprop = count( pddl(1:nloc) == rang ) 
 !
-        ndprop = 0
-        do jcoll = 0, nloc-1
-            if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+1
-        end do
-!
-        call VecCreate(mpicou, b, ierr)
+        call VecCreate(mpicomm, b, ierr)
         ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, to_petsc_int(bs), ierr)
         ASSERT(ierr.eq.0)
@@ -98,29 +103,31 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         ASSERT(ierr.eq.0)
         call VecSetType(b, VECMPI, ierr)
         ASSERT(ierr.eq.0)
-!
-        call wkvect('&&APVSMB.INDICES', 'V V S', nloc, jindic)
-        call wkvect('&&APVSMB.VALEURS', 'V V R', nloc, jvaleu)
-        do jcoll = 0, nloc-1
-            zi4(jindic+jcoll) = zi(jnuglp+jcoll)-1
-            numglo = zi(jnugl+jcoll)
-            zr(jvaleu+jcoll) = rsolu(numglo)
+!       
+        AS_ALLOCATE( vi4=ig_petsc_c, size=nloc )
+        AS_ALLOCATE( vr=val, size=nloc )
+        do iloc = 1, nloc
+            ! Indice global PETSc (convention C) 
+            ig_petsc_c( iloc ) = nlgp( iloc ) - 1
+            ! Indice global Aster (convention F)
+            iglo               = nulg( iloc )
+            val( iloc )        = rsolu( iglo )
         end do
-        call VecSetValues(b, to_petsc_int(nloc), zi4(jindic), zr(jvaleu), ADD_VALUES,&
-                          ierr)
-        call jedetr('&&APVSMB.INDICES')
-        call jedetr('&&APVSMB.VALEURS')
+        call VecSetValues(b, to_petsc_int(nloc), ig_petsc_c, val, ADD_VALUES, ierr)
         call VecAssemblyBegin(b, ierr)
         ASSERT(ierr.eq.0)
         call VecAssemblyEnd(b, ierr)
         ASSERT(ierr.eq.0)
+        !
+        AS_DEALLOCATE( vi4=ig_petsc_c )
+        AS_DEALLOCATE( vr=val )
 !
     else
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
         neq=nsmdi
 !
 !       -- allocation de b :
-        call VecCreate(mpicou, b, ierr)
+        call VecCreate(mpicomm, b, ierr)
         ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, to_petsc_int(bs), ierr)
         ASSERT(ierr.eq.0)

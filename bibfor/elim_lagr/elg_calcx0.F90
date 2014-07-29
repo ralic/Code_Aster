@@ -73,7 +73,12 @@ subroutine elg_calcx0()
 !   Choose LSQR solver
     call KSPSetType(ksp, KSPLSQR, ierr)
 !   Set the linear system matrix 
+#ifdef ASTER_PETSC_VERSION_LEQ_34
     call KSPSetOperators(ksp, c, c, SAME_PRECONDITIONER, ierr)
+#else
+    call KSPSetOperators(ksp, c, c, ierr)
+#endif
+    ASSERT(ierr==0)
 !   No precond : c is rectangular, Petsc default preconditioner ILU won't work
     call KSPGetPC(ksp,pc,ierr)
     call PCSetType(pc,PCNONE, ierr)
