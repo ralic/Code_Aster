@@ -181,7 +181,7 @@ cata_msg = {
      Les grandes rotations ne sont pas modélisées correctement.
   -> Risque & Conseil :
      En présence de grands déplacements et grandes rotations, il est préférable
-     d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GROT_GDEP'
+     d'utiliser pour les modélisations type COQUE_3D ou  DKTG  DEFORMATION='GROT_GDEP'
 """),
 
 73 : _(u"""

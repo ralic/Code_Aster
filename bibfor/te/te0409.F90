@@ -241,7 +241,7 @@ subroutine te0409(option, nomte)
             call jevech('PDEPLPR', 'L', ideplp)
 !
             if (zk16(icompo+2)(6:10) .eq. '_REAC' .or. zk16(icompo+2) .eq. 'GROT_GDEP') then
-                if (zk16(icompo+2)(6:10) .eq. '_REAC') call utmess('A', 'ELEMENTS2_72')
+                if (zk16(icompo+2)(6:10) .eq. '_REAC') call utmess('F', 'ELEMENTS2_72')
 !
                 do i = 1, nno
                     i1 = 3* (i-1)
