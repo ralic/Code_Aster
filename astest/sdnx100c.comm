@@ -213,13 +213,12 @@ ASSEMBLAGE(MODELE=STICKMOD,
 #   CALCUL DES MODES PROPRES
 #
 #
-MODE=MACRO_MODE_MECA(MATR_RIGI=MATRRIGI,
-                     MATR_MASS=MATRMASS,
-#  Pour retrouver les valeurs de reference (temps CPU de plus d'1h30) :
-#                     CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,20.0,30.0,40.0,50.0),),
-#  Pour alleger les calculs :
-                     CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,),),
-                     IMPRESSION=_F(),);
+MODE=CALC_MODES(MATR_RIGI=MATRRIGI,
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,),
+                             ),
+                MATR_MASS=MATRMASS,
+                )
 
 #
 # CALCUL DE LA REPARTITION DE L ENERGIE POTENTIELLE DANS LA STRUCTURE
@@ -315,7 +314,7 @@ dt_lap = pas_arch * dt
 #  dt_lap = pas_arch * dt
 #
 #  Ne pas oublier d'avoir mis cette liste de  frequence
-#  pour MACRO_MODE_MECA :
+#  pour CALC_MODES :
 #  CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,20.0,30.0,40.0,50.0),),
 
 linst = DEFI_LIST_REEL ( DEBUT = 0.,

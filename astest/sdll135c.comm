@@ -198,11 +198,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   PRECISION=1.E-3,),
           )
 
-MODE_TRA=MODE_ITER_INV(MATR_RIGI=RIGID,
-                 MATR_MASS=MASSE,
-                 CALC_FREQ=_F(
-                 OPTION='PROCHE',
-                 FREQ=(1263.497,3790.49,6317.484,8844.4477),),);
+MODE_TRA=CALC_MODES(MATR_RIGI=RIGID,
+                    OPTION='PROCHE',
+                    CALC_FREQ=_F(FREQ=(1263.497,3790.49,6317.484,8844.4477),
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -247,11 +248,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
 
 # FREQUENCES DES MODES DE FLEXIONS ( COMPARAISON AVEC POU_D_T )
 
-MODE_FLE=MODE_ITER_INV(MATR_RIGI=RIGID,
-                 MATR_MASS=MASSE,
-                 CALC_FREQ=_F(
-                 OPTION='PROCHE',
-                 FREQ=(269.932,1077.199,2270.705,3249.207,4649.212),),);
+MODE_FLE=CALC_MODES(MATR_RIGI=RIGID,
+                    OPTION='PROCHE',
+                    CALC_FREQ=_F(FREQ=(269.932,1077.199,2270.705,3249.207,4649.212),
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -303,11 +305,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   PRECISION=5.0000000000000001E-3,),
           )
 
-MODE_TOR=MODE_ITER_INV(MATR_RIGI=RIGID,
-                 MATR_MASS=MASSE,
-                 CALC_FREQ=_F(
-                 OPTION='PROCHE',
-                 FREQ=(786.619,2359.856,3933.094,5506.331),),);
+MODE_TOR=CALC_MODES(MATR_RIGI=RIGID,
+                    OPTION='PROCHE',
+                    CALC_FREQ=_F(FREQ=(786.619,2359.856,3933.094,5506.331),
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 # FREQUENCES DES MODES DE TORSION ( COMPARAISON AVEC DES POUTRES )
 

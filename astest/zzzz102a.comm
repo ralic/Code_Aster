@@ -1147,91 +1147,100 @@ MATASM35=ASSE_MATRICE(    MATR_ELEM=MELM35,
 #
 # 0.2HZ
 #
-MODE02=MODE_ITER_SIMULT(       MATR_RIGI=MATASR02,
-                                   MATR_MASS=MATASM02,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE02=CALC_MODES(MATR_RIGI=MATASR02,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM02,
+                  )
 
 
 #
 # 1HZ
 #
-MODE1=MODE_ITER_SIMULT(       MATR_RIGI=MATASSR1,
-                                   MATR_MASS=MATASSM1,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE1=CALC_MODES(MATR_RIGI=MATASSR1,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=1,
+                              ),
+                 MATR_MASS=MATASSM1,
+                 )
 
 
 #
 # 5HZ
 #
-MODE5=MODE_ITER_SIMULT(       MATR_RIGI=MATASSR5,
-                                   MATR_MASS=MATASSM5,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE5=CALC_MODES(MATR_RIGI=MATASSR5,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=1,
+                              ),
+                 MATR_MASS=MATASSM5,
+                 )
 
 
 #
 # 10HZ
 #
-MODE10=MODE_ITER_SIMULT(       MATR_RIGI=MATASR10,
-                                   MATR_MASS=MATASM10,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE10=CALC_MODES(MATR_RIGI=MATASR10,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM10,
+                  )
 
 
 #
 # 15HZ
 #
-MODE15=MODE_ITER_SIMULT(       MATR_RIGI=MATASR15,
-                                   MATR_MASS=MATASM15,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE15=CALC_MODES(MATR_RIGI=MATASR15,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM15,
+                  )
 
 
 #
 # 20HZ
 #
-MODE20=MODE_ITER_SIMULT(       MATR_RIGI=MATASR20,
-                                   MATR_MASS=MATASM20,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE20=CALC_MODES(MATR_RIGI=MATASR20,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM20,
+                  )
 
 
 #
 # 25HZ
 #
-MODE25=MODE_ITER_SIMULT(       MATR_RIGI=MATASR25,
-                                   MATR_MASS=MATASM25,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE25=CALC_MODES(MATR_RIGI=MATASR25,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM25,
+                  )
 
 
 #
 # 29.5HZ
 #
-MODE29=MODE_ITER_SIMULT(       MATR_RIGI=MATASR29,
-                                   MATR_MASS=MATASM29,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE29=CALC_MODES(MATR_RIGI=MATASR29,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM29,
+                  )
 
 
 #
 # 35.5HZ
 #
-MODE35=MODE_ITER_SIMULT(       MATR_RIGI=MATASR35,
-                                   MATR_MASS=MATASM35,
-                                CALC_FREQ=_F( NMAX_FREQ = 1,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE35=CALC_MODES(MATR_RIGI=MATASR35,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=1,
+                               ),
+                  MATR_MASS=MATASM35,
+                  )
 
 
 #

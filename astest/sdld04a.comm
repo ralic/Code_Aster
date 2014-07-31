@@ -71,9 +71,12 @@ MASS_IN=POST_ELEM(  MODELE=MODELE,
                      MASS_INER=_F(  TOUT = 'OUI')
                    )
 
-MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,  MATR_MASS=MASSE,
-                CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 3)
-                           )
+MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=3,
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 
 #
@@ -376,9 +379,12 @@ VECT_ELE=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
 
 VECTEUR=ASSE_VECTEUR(  VECT_ELEM=VECT_ELE,   NUME_DDL=NUME_DD2 )
 
-MODE_ICS=MODE_ITER_SIMULT(  MATR_RIGI=RIGI_CS,   MATR_MASS=MASS_CS,
-                CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 3)
-                           )
+MODE_ICS=CALC_MODES(MATR_RIGI=RIGI_CS,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=3,
+                                 ),
+                    MATR_MASS=MASS_CS,
+                    )
 
 
 MODE_ICS=NORM_MODE(reuse=MODE_ICS,  MODE=MODE_ICS,   NORME='MASS_GENE',

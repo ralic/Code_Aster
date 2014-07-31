@@ -206,26 +206,32 @@ M_ASSE3=ASSE_MATRICE(  MATR_ELEM=M_ELEM3,
                            NUME_DDL=NUM3)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
-                                 MATR_MASS=M_ASSE1,
-                             CALC_FREQ=_F( NMAX_FREQ = 6),
-                             VERI_MODE=_F(STURM='OUI',
-                                  SEUIL=1.0e-3,),
-                              )
+MODES1=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  VERI_MODE=_F(STURM='OUI',
+                               SEUIL=1.0e-3,
+                               ),
+                  MATR_RIGI=K_ASSE1,
+                  MATR_MASS=M_ASSE1,
+                  )
 
-MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
-                                 MATR_MASS=M_ASSE2,
-                             CALC_FREQ=_F( NMAX_FREQ = 6),
-                             VERI_MODE=_F(STURM='OUI',
-                                  SEUIL=1.0e-3,),
-                             )
+MODES2=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  VERI_MODE=_F(STURM='OUI',
+                               SEUIL=1.0e-3,
+                               ),
+                  MATR_RIGI=K_ASSE2,
+                  MATR_MASS=M_ASSE2,
+                  )
 
-MODES3=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE3,
-                                 MATR_MASS=M_ASSE3,
-                             CALC_FREQ=_F( NMAX_FREQ = 6),
-                             VERI_MODE=_F(STURM='OUI',
-                                  SEUIL=1.0e-3,),
-                             )
+MODES3=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  VERI_MODE=_F(STURM='OUI',
+                               SEUIL=1.0e-3,
+                               ),
+                  MATR_RIGI=K_ASSE3,
+                  MATR_MASS=M_ASSE3,
+                  )
 
 
 
@@ -396,16 +402,16 @@ F_GENE=PROJ_VECT_BASE(    BASE=BAMODA,
                           VECT_ASSE = V_ASSE)
 
 
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=MATRRIGI,
-                                 MATR_MASS=MATRMASS,
-                             CALC_FREQ=_F(
-                             #OPTION='BANDE',
+RESGEN=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=30,
                                #FREQ=(1.0,35.0,),
-                             NMAX_FREQ=30
                                ),
-                             VERI_MODE=_F(STURM='OUI',
-                                  SEUIL=1.0e-2),
-                                  )
+                  #OPTION='BANDE',
+                  VERI_MODE=_F(STURM='OUI',
+                               SEUIL=1.0e-2,
+                               ),
+                  MATR_RIGI=MATRRIGI,
+                  MATR_MASS=MATRMASS,
+                  )
 
 
 

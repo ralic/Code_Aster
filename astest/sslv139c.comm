@@ -93,14 +93,18 @@ MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MAT_RI_M,
 MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
                       NUME_DDL=NUM,);
 
-RESULT=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
-                        MATR_RIGI_GEOM=MAS_RI_G,
-                        METHODE='SORENSEN',
-                        NMAX_ITER_SOREN=20,
-                        TYPE_RESU='MODE_FLAMB',
-                        CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
-                                     NMAX_CHAR_CRIT=10,),
-                        VERI_MODE=_F(SEUIL=1e-04,),);
+RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                  VERI_MODE=_F(SEUIL=1e-04,
+                               ),
+                  TYPE_RESU='MODE_FLAMB',
+                  MATR_RIGI_GEOM=MAS_RI_G,
+                  CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=10,
+                                    ),
+                  SOLVEUR_MODAL=_F(NMAX_ITER_SOREN=20,
+                                   METHODE='SORENSEN',
+                                   ),
+                  OPTION='PLUS_PETITE',
+                  )
 
 
 

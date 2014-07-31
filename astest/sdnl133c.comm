@@ -106,11 +106,14 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSAS'),
                               OPTION='MASS_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIAS,
-                       MATR_MASS=MASSAS,
-                       VERI_MODE=_F(STURM='NON',),
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(-1,fmax,),),);
+MODES=CALC_MODES(MATR_RIGI=RIGIAS,
+                 VERI_MODE=_F(STURM='NON',
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(-1,fmax,),
+                              ),
+                 MATR_MASS=MASSAS,
+                 )
 
 CHA_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(
@@ -152,11 +155,15 @@ RIGYEL=CALC_MATR_ELEM(OPTION='RIGI_GYRO',
 RIGYAF=ASSE_MATRICE(MATR_ELEM=RIGYEL,
                    NUME_DDL=NUD,);
 
-MODFF=MODE_ITER_SIMULT(MATR_RIGI=RIGIAF,
-                       MATR_MASS=MASSAF,
-                       VERI_MODE=_F(STURM='NON',SEUIL=1.E-4),
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(-1,fmax,),),);
+MODFF=CALC_MODES(MATR_RIGI=RIGIAF,
+                 VERI_MODE=_F(STURM='NON',
+                              SEUIL=1.E-4,
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(-1,fmax,),
+                              ),
+                 MATR_MASS=MASSAF,
+                 )
 
 
 MODEF=EXTR_MODE(FILTRE_MODE=_F(MODE=MODFF, NUME_MODE=(1,2,), ),);

@@ -99,13 +99,16 @@ MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=INCONNUS )
 #-------------------------------------------------
 #
 # AVEC SORENSEN
-MODE_SO=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
-                       MATR_MASS=MATRMASS,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=10.,
-                                    NMAX_FREQ=2,),
-                       INFO=1,);
+MODE_SO=CALC_MODES(INFO=1,
+                   MATR_RIGI=MATRRIGI,
+                   OPTION='CENTRE',
+                   CALC_FREQ=_F(NMAX_FREQ=2,
+                                FREQ=10.,
+                                ),
+                   MATR_MASS=MATRMASS,
+                   SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                    ),
+                   )
 
 
 
@@ -148,14 +151,17 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 # AVEC QZ
-MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
-                       MATR_MASS=MATRMASS,
-                       METHODE='QZ',
-                       TYPE_QZ='QZ_EQUI',
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=10.,
-                                    NMAX_FREQ=2,),
-                       INFO=1,);
+MODE_QZ=CALC_MODES(INFO=1,
+                   MATR_RIGI=MATRRIGI,
+                   OPTION='CENTRE',
+                   CALC_FREQ=_F(NMAX_FREQ=2,
+                                FREQ=10.,
+                                ),
+                   MATR_MASS=MATRMASS,
+                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
+                                    METHODE='QZ',
+                                    ),
+                   )
 
 
 

@@ -88,10 +88,12 @@ MASSASSE=ASSE_MATRICE(    MATR_ELEM=MASSELEM,
                              NUME_DDL=NU                           )
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_RIGI=RIGIASSE,
-                               MATR_MASS=MASSASSE,
-                            CALC_FREQ=_F( OPTION = 'BANDE',
-                                       FREQ = (1., 3.,))            )
+MODES=CALC_MODES(MATR_RIGI=RIGIASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(1.,3.,),
+                              ),
+                 MATR_MASS=MASSASSE,
+                 )
 
 
 #

@@ -61,9 +61,13 @@ MATRRIGI=ASSE_MATRICE(  MATR_ELEM=RIGIELEM,  NUME_DDL=NUMEROTA )
 
 MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=NUMEROTA )
 
-MODES=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGI,  MATR_MASS=MATRMASS,
-                           CALC_FREQ=_F(  OPTION = 'CENTRE', NMAX_FREQ = 10,
-                                       FREQ = (10.,  ))      )
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=(10.,),
+                              ),
+                 MATR_MASS=MATRMASS,
+                 )
 
 
 VITIPHYS=CREA_CHAMP( OPERATION='AFFE', PROL_ZERO='OUI', TYPE_CHAM='NOEU_DEPL_R',

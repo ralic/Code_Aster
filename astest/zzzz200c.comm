@@ -439,10 +439,16 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL )
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                   SOLVEUR=_F(METHODE='MUMPS', RENUM='PORD', NPREC=9, PCENT_PIVOT=120),
-                   CALC_FREQ=_F( NMAX_FREQ = 6 ),
-                         )
+MODE=CALC_MODES(MATR_RIGI=RIGIDITE,
+                CALC_FREQ=_F(NMAX_FREQ=6,
+                             ),
+                SOLVEUR=_F(RENUM='PORD',
+                           PCENT_PIVOT=120,
+                           METHODE='MUMPS',
+                           NPREC=9,
+                           ),
+                MATR_MASS=MASSE,
+                )
 
 
 

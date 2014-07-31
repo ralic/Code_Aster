@@ -310,10 +310,12 @@ MASSE2=POST_ELEM(  MODELE=STRUCT2,
                     MASS_INER=_F( GROUP_MA = 'FACEXT'),
                      TITRE='MASSE DU CYLINDRE EXTERNE')
 
-MODES_1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
-                                 MATR_MASS=MASS_1,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-               NMAX_FREQ = 1))
+MODES_1=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=1,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   MATR_RIGI=RAID_1,
+                   MATR_MASS=MASS_1,
+                   )
 
 
 NUMGEN1=NUME_DDL_GENE(  BASE=MODES_1,
@@ -358,10 +360,12 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2)
 
 #
-MODES_2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
-                                 MATR_MASS=MASS_2,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-               NMAX_FREQ = 1))
+MODES_2=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=1,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   MATR_RIGI=RAID_2,
+                   MATR_MASS=MASS_2,
+                   )
 
 
 NUMGEN2=NUME_DDL_GENE(  BASE=MODES_2,
@@ -456,23 +460,27 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MASGEN,
 #
 
 
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASGEN,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (0.2, 50.,)))
+RESGEN=CALC_MODES(CALC_FREQ=_F(FREQ=(0.2,50.,),
+                               ),
+                  OPTION='BANDE',
+                  MATR_RIGI=RIGGEN,
+                  MATR_MASS=MASGEN,
+                  )
 
 
 #
 #   CALCUL DES MODES EN EAU DE LA STRUCTURE GLOBALE
 #
 
-RESTOT=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASTOT,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (0.1, 10.,)),
-                       #      CALC_FREQ:(OPTION :'PLUS_PETITE'
-               #NMAX_FREQ: 3 )
-                             )
+RESTOT=CALC_MODES(CALC_FREQ=_F(FREQ=(0.1,10.,),
+                                                          #NMAX_FREQ: 3
+                               ),
+                  OPTION='BANDE',
+                                  #OPTION :'PLUS_PETITE'
+                  MATR_RIGI=RIGGEN,
+                  #NMAX_FREQ: 3 )
+                  MATR_MASS=MASTOT,
+                  )
 
 
 #

@@ -155,7 +155,9 @@ ASSEMBLAGE(MODELE=MODLSUP,
                            _F(MATRICE=CO('MASSUP'),
                               OPTION='MASS_MECA',),),);
 
-mod=MODE_ITER_SIMULT(MATR_RIGI=KASSUP,MATR_MASS=MASSUP)
+mod=CALC_MODES(MATR_RIGI=KASSUP,
+               MATR_MASS=MASSUP,
+               )
 
 # Fabrication "classique" de la base d'expansion, faisable
 # si les capteurs sont places sur de noeuds du maillage numerique
@@ -205,11 +207,14 @@ PROJ_BASE( BASE=BAMO,
 # On remarque que si on prend plus de 5 modes, les modes etendus
 # deviennent fortement irreguliers.
 nbmod_expans = 5
-MODGENE=MODE_ITER_SIMULT(MATR_RIGI=KPROJ,
-                         MATR_MASS=MPROJ,
-                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                      NMAX_FREQ=nbmod_expans,),
-                         VERI_MODE=_F(STOP_ERREUR='NON'));
+MODGENE=CALC_MODES(MATR_RIGI=KPROJ,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=nbmod_expans,
+                                ),
+                   MATR_MASS=MPROJ,
+                   )
 
 
 MODREPHY=REST_GENE_PHYS(RESU_GENE=MODGENE,NOM_CHAM='DEPL')
@@ -341,15 +346,19 @@ ASSE_ELEM_SSD(RESU_ASSE_SSD = _F(
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #***************************************************
 
-RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
-                         MATR_MASS=MASGEN,
-                         CALC_FREQ=_F( OPTION = 'BANDE',
-                                       FREQ = (1.0,1000.0),
-                                       DIM_SOUS_ESPACE=10,),
-                         VERI_MODE=_F(STOP_ERREUR='NON',
-                                      STURM='NON',),
-                         SOLVEUR=_F(METHODE='MUMPS'),
-                        );
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  VERI_MODE=_F(STOP_ERREUR='NON',
+                               STURM='NON',
+                               ),
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(1.0,1000.0),
+                               ),
+                  SOLVEUR=_F(METHODE='MUMPS',
+                             ),
+                  MATR_MASS=MASGEN,
+                  SOLVEUR_MODAL=_F(DIM_SOUS_ESPACE=10,
+                                   ),
+                  )
 
 FREQ=RECU_TABLE(CO=RESGEN,NOM_PARA='FREQ')
 

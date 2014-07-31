@@ -162,12 +162,18 @@ mass_bar=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
 #
 #
 
-mode_rig=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,
-                         MATR_MASS=MATMASS,
-                         CALC_FREQ=_F(FREQ=(0.1,10.,20.,30.,40.,),),
-                         VERI_MODE=_F(STOP_ERREUR='NON',),
-                         FILTRE_MODE=_F(SEUIL=0.0003,),
-                         IMPRESSION=_F(),);
+mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    NORM_MODE=_F(INFO=1,
+                                 NORME='TRAN_ROTA',),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(0.1,10.,20.,30.,40.,),
+                                 ),
+                    FILTRE_MODE=_F(SEUIL=0.0003,
+                                   ),
+                    MATR_MASS=MATMASS,
+                    )
 
 #
 #Calcul  du macro-element Dynamique
@@ -363,11 +369,14 @@ amto=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='IMAG',
                                COEF_R=-5.30e-2,),),
                     SANS_CMP='LAGR',);
 
-modgen=MODE_ITER_SIMULT(MATR_RIGI=rito,
-                        MATR_MASS=mato,
-                        CALC_FREQ=_F(OPTION='BANDE',
-                                     FREQ=(1.,20.,),),
-                        VERI_MODE=_F(STOP_ERREUR='NON',),);
+modgen=CALC_MODES(MATR_RIGI=rito,
+                  VERI_MODE=_F(STOP_ERREUR='NON',
+                               ),
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(1.,20.,),
+                               ),
+                  MATR_MASS=mato,
+                  )
 ##
 
 

@@ -168,13 +168,12 @@ MATM=ASSE_MATRICE(
 #-----------------------------
 #
 
-MODES=MODE_ITER_SIMULT(
-                   MATR_RIGI=MATR,
-                   MATR_MASS=MATM,
-                CALC_FREQ=_F(
-                OPTION = 'PLUS_PETITE',
-                NMAX_FREQ = 2)
-                             )
+MODES=CALC_MODES(MATR_RIGI=MATR,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 MATR_MASS=MATM,
+                 )
 
 
 #

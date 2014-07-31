@@ -176,11 +176,13 @@ FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
-                        MATR_MASS=MASGEN,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=3,),
-                        TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',);
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=3,
+                               ),
+                  TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',
+                  MATR_MASS=MASGEN,
+                  )
 
 
 #IMPR_CO(CONCEPT=_F(NOM='RESGEN',),);

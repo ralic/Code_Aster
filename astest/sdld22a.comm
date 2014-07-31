@@ -106,9 +106,12 @@ MATRAMOR=ASSE_MATRICE(  MATR_ELEM=AMORELEM,  NUME_DDL=NUMEROTA )
 
 VECTASS=ASSE_VECTEUR(  VECT_ELEM=EFFOELEM,  NUME_DDL=NUMEROTA )
 
-MODES=MODE_ITER_INV(   MATR_RIGI=MATRRIGI,  MATR_MASS=MATRMASS,
-                         CALC_FREQ=_F( OPTION = 'AJUSTE',
-                        FREQ = (5.,10.,15.,20.,24.,27.,30.,32.,),   )  )
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(FREQ=(5.,10.,15.,20.,24.,27.,30.,32.,),
+                              ),
+                 MATR_MASS=MATRMASS,
+                 )
 
 
 FONCTIO1=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ALPHA',

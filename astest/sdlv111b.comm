@@ -173,14 +173,16 @@ MASRB=ASSE_MATRICE(  MATR_ELEM=MRB,    NUME_DDL=NUMB  )
 
 MASMB=ASSE_MATRICE(  MATR_ELEM=MMB,    NUME_DDL=NUMB  )
 
-RESB=MODE_ITER_SIMULT(
-                MATR_RIGI=MASRB,
+RESB=CALC_MODES(MATR_RIGI=MASRB,
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=( 0.40,3.8,),
+                             SEUIL_FREQ=0.,
+                             ),
                 MATR_MASS=MASMB,
-             OPTION='SANS',
-             CALC_FREQ=_F(  OPTION = 'BANDE',
-                         FREQ = ( 0.40,  3.8, ),
-                         SEUIL_FREQ = 0.)
-                         )
+                SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                 METHODE='TRI_DIAG',
+                                 ),
+                )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',

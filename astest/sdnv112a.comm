@@ -105,10 +105,12 @@ ASSEMBLAGE(MODELE=MO,
 #
 # CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
 #---------------------------------------------
-MODE_MEC=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,   
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',  
-                                    NMAX_FREQ=10.))
+MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=10.,
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,  MODE=MODE_MEC,   NORME='MASS_GENE' )
 

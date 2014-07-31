@@ -127,10 +127,12 @@ MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
 # MODE EN AIR DE LA PLAQUE
 
 
-MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (0.1,1.,))
-                            )
+MODES=CALC_MODES(MATR_RIGI=MATASKS,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0.1,1.,),
+                              ),
+                 MATR_MASS=MATASMS,
+                 )
 
 
 #CALCUL DES CARACTERISTIQUES MODALES EN EAU
@@ -166,10 +168,12 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                      _F( MATR_ASSE = MATRAJ,
                                       COEF_R = 1.)))
 
-MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (0.01,1.,))
-                            )
+MODHUMI=CALC_MODES(MATR_RIGI=RIGGEN,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.01,1.,),
+                                ),
+                   MATR_MASS=MASTOT,
+                   )
 
 
 #RESTIT DES MODES EN EAU = F(MODE_EN_AIR) SUR BASE PHYSIQUE

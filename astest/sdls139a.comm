@@ -135,19 +135,21 @@ MASNUM=ASSE_MATRICE(MATR_ELEM=MELNUM,
 #ANALYSE MODALE EN AIR, NORMALISATION EN MASSE
 #=============================================
 
-MODEAIR1=MODE_ITER_SIMULT(MATR_RIGI=KASNUM,
-                          MATR_MASS=MASNUM,
-                          METHODE='SORENSEN',
-                          TYPE_RESU='DYNAMIQUE',
-                          OPTION='SANS',
-                          CALC_FREQ=_F(
-                                       OPTION='PLUS_PETITE',
-                                       APPROCHE='REEL',
-                                       NMAX_FREQ=10,
-                                       SEUIL_FREQ=10.0,
-                                       ),
-                          VERI_MODE=_F(STOP_ERREUR='NON',
-                                       SEUIL=1e-03,),);
+MODEAIR1=CALC_MODES(MATR_RIGI=KASNUM,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 SEUIL=1e-03,
+                                 ),
+                    TYPE_RESU='DYNAMIQUE',
+                    CALC_FREQ=_F(NMAX_FREQ=10,
+                                 SEUIL_FREQ=10.0,
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    MATR_MASS=MASNUM,
+                    SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                     APPROCHE='REEL',
+                                     METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 
 

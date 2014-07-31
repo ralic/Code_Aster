@@ -224,13 +224,15 @@ C_ASSE=ASSE_MATRICE(    MATR_ELEM=C_ELEM,
 
 # CALCUL DES MODES
 
-MODES=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                                   MATR_AMOR=C_ASSE, 
-                                  METHODE='TRI_DIAG',
-                               CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                          NMAX_FREQ = 10)
-                             )
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 MATR_AMOR=C_ASSE,
+                 MATR_MASS=M_ASSE,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

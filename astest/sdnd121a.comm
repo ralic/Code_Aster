@@ -71,11 +71,13 @@ ASSEMBLAGE(MODELE=MODEL,
 
 
 # Calcul du mode associe au ressort de rappel :
-modes=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=50.,
-                                    NMAX_FREQ=1,),);
+modes=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=1,
+                              FREQ=50.,
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 # Definition du chargement exterieur (force sinusoidale)
 f = 5 ;   # freq de l'excitation (Hz)

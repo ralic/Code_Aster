@@ -96,10 +96,13 @@ MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
               MODELE=MODELE,
               CARA_ELEM=CARA,);
 
-MODES=MODE_ITER_SIMULT(METHODE='SORENSEN',
-                       MATR_RIGI=MATRRIGI,
-                       MATR_MASS=MATRMASS,
-                       CALC_FREQ=_F(NMAX_FREQ=2,),);
+MODES=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 MATR_RIGI=MATRRIGI,
+                 MATR_MASS=MATRMASS,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,

@@ -1155,11 +1155,15 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 
 # -------------------------------------------------------------------
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR,       MATR_MASS=MATASSM,
-   TITRE=' CAS TEST &CODE   COMMANDE &COMMANDE SANS L-TX !!',
-              METHODE='TRI_DIAG',
-             CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                         NMAX_FREQ = 4) )
+MODE=CALC_MODES(MATR_RIGI=MATASSR,
+                OPTION='PLUS_PETITE',
+                CALC_FREQ=_F(NMAX_FREQ=4,
+                             ),
+                TITRE=' CAS TEST &CODE   COMMANDE &COMMANDE SANS L-TX !!',
+                MATR_MASS=MATASSM,
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                 ),
+                )
 
 
 MODE=NORM_MODE(reuse=MODE,    MODE=MODE,

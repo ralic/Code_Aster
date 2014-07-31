@@ -103,24 +103,31 @@ MATASSA1=ASSE_MATRICE(MATR_ELEM=MELA1,NUME_DDL=NUM1)
 # *****CALCUL DE MODES PROPRES ET IMPRESSION FORMAT IDEAS*************#
 #*********************************************************************#
 
-FREQ3=MODE_ITER_SIMULT(    MATR_RIGI=MATASSR1,
-                              MATR_MASS=MATASSM1,
-                              MATR_AMOR=MATASSA1,
-                             METHODE='TRI_DIAG',
-                           CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ = 8),
-                           VERI_MODE=_F( SEUIL = 1.E-5)
-              )
+FREQ3=CALC_MODES(MATR_RIGI=MATASSR1,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=8,
+                              ),
+                 MATR_AMOR=MATASSA1,
+                 MATR_MASS=MATASSM1,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
-FREQZ=MODE_ITER_SIMULT(    MATR_RIGI=MATASSR1,
-                              MATR_MASS=MATASSM1,
-                              MATR_AMOR=MATASSA1,
-                             METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
-                           CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ = 8),
-                           VERI_MODE=_F( SEUIL = 1.E-5)
-              )
+FREQZ=CALC_MODES(MATR_RIGI=MATASSR1,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=8,
+                              ),
+                 MATR_AMOR=MATASSA1,
+                 MATR_MASS=MATASSM1,
+                 SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
+                                  METHODE='QZ',
+                                  ),
+                 )
 
 #*********************************************************************#
 # *****LECTURE DE L INTERSPECTRE EXCITATION***************************#

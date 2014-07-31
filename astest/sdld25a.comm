@@ -81,8 +81,12 @@ TABL_MAS=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CHMAT,   CARA_ELEM=CARA_ELE,
                         MASS_INER=_F(  TOUT = 'OUI')                   )
 
-MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR,   MATR_MASS=MATASSM,
-                   CALC_FREQ=_F(  OPTION = 'PLUS_PETITE', NMAX_FREQ = 8)  )
+MODE_MEC=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=8,
+                                 ),
+                    MATR_MASS=MATASSM,
+                    )
 
 
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)

@@ -86,12 +86,14 @@ ASSEMBLAGE( MODELE     = MODELNUM,
 # 2) Calcul d'une base de modes
 #------------------------------
 
-MODE_tmp = MODE_ITER_SIMULT( MATR_RIGI = KASS,
-                             MATR_MASS = MASS,
-                             CALC_FREQ=_F( NMAX_FREQ = 10,),
-                             VERI_MODE = _F( STOP_ERREUR = 'NON',
-                                             STURM = 'NON',),
-                            );
+MODE_tmp=CALC_MODES(MATR_RIGI=KASS,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 STURM='NON',
+                                 ),
+                    CALC_FREQ=_F(NMAX_FREQ=10,
+                                 ),
+                    MATR_MASS=MASS,
+                    )
 
 # AMORTISSEMENT MODAL A LA MAIN DE 1%
 list_amor = [0.01]*10

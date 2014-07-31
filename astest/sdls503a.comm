@@ -136,12 +136,13 @@ MA_AS_R1=ASSE_MATRICE(   MATR_ELEM=MA_EL_R1,   NUME_DDL=NUM1)
 MA_AS_M1=ASSE_MATRICE(   MATR_ELEM=MA_EL_M1,   NUME_DDL=NUM1)
 
 #
-MODE1=MODE_ITER_INV(      MATR_RIGI=MA_AS_R1,
-                            MATR_MASS=MA_AS_M1,
-                         CALC_FREQ=_F( OPTION = 'AJUSTE',
-                       FREQ = (5.,8500.,),
-                                   NMAX_FREQ = 10) 
-                       )
+MODE1=CALC_MODES(MATR_RIGI=MA_AS_R1,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=(5.,8500.,),
+                              ),
+                 MATR_MASS=MA_AS_M1,
+                 )
 
 
 #

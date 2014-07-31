@@ -100,30 +100,38 @@ MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
 MASSE=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
                    NUME_DDL=NUM,);
 
-RESULT=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
-                        MATR_RIGI_GEOM=MAS_RI_G,
-                        METHODE='SORENSEN',
-                        NMAX_ITER_SOREN=20,
-                        TYPE_RESU='MODE_FLAMB',
-                        CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
-                                     PREC_SHIFT=0.03,
-                                     NMAX_ITER_SHIFT=6,
-                                     NMAX_CHAR_CRIT=10,),
-                        VERI_MODE=_F(SEUIL=1e-04,),);
+RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                  VERI_MODE=_F(SEUIL=1e-04,
+                               ),
+                  TYPE_RESU='MODE_FLAMB',
+                  MATR_RIGI_GEOM=MAS_RI_G,
+                  CALC_CHAR_CRIT=_F(PREC_SHIFT=0.03,
+                                    NMAX_CHAR_CRIT=10,
+                                    NMAX_ITER_SHIFT=6,
+                                    ),
+                  SOLVEUR_MODAL=_F(NMAX_ITER_SOREN=20,
+                                   METHODE='SORENSEN',
+                                   ),
+                  OPTION='PLUS_PETITE',
+                  )
 
 
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
-                      MATR_MASS=MASSE,
-                      METHODE='SORENSEN',
-                      NMAX_ITER_SOREN=20,
-                      CALC_FREQ=_F(NMAX_FREQ=10,
-                                   PREC_SHIFT=0.03,
-                                   APPROCHE='REEL',
-                                   OPTION='PLUS_PETITE',
-                                   SEUIL_FREQ=1.E-2,
-                                   NMAX_ITER_SHIFT=6,),
-                      VERI_MODE=_F(SEUIL=1e-04,),);
+MODE=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                VERI_MODE=_F(SEUIL=1e-04,
+                             ),
+                OPTION='PLUS_PETITE',
+                CALC_FREQ=_F(NMAX_FREQ=10,
+                             PREC_SHIFT=0.03,
+                             SEUIL_FREQ=1.E-2,
+                             NMAX_ITER_SHIFT=6,
+                             ),
+                MATR_MASS=MASSE,
+                SOLVEUR_MODAL=_F(APPROCHE='REEL',
+                                 METHODE='SORENSEN',
+                                 NMAX_ITER_SOREN=20,
+                                 ),
+                )
 
 
 MODE=CALC_CHAMP(reuse=MODE,RESULTAT=MODE,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'))

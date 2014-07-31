@@ -29,7 +29,7 @@
 #    - PAS D'AMORTISSEMENT
 #    - FX = 1.E+6 AU NOEUD2 (EXTENSION)
 #
-# PROJECTION SUR UN CONCEPT MODE_MECA CREE PAR MODE_ITER_SIMULT
+# PROJECTION SUR UN CONCEPT MODE_MECA CREE PAR CALC_MODES
 
 #
 ######################################################################
@@ -117,10 +117,11 @@ MASSASSE=ASSE_MATRICE(   MATR_ELEM=MASSELEM,
                             NUME_DDL=NU                              )
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_RIGI=RIGIASSE,
-                               MATR_MASS=MASSASSE,
-                            CALC_FREQ=_F( NMAX_FREQ = 3),
-                            )
+MODES=CALC_MODES(MATR_RIGI=RIGIASSE,
+                 MATR_MASS=MASSASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=3,
+                              ),
+                 )
 
 
 #

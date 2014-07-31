@@ -152,12 +152,16 @@ KASSUP=ASSE_MATRICE(MATR_ELEM=KELSUP,
 MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
                       NUME_DDL=NUMSUP,);
 
-MODESUP=MODE_ITER_SIMULT(MATR_RIGI=KASSUP,
-                         MATR_MASS=MASSUP,
-                         VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
-                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                      NMAX_FREQ=20,
-                                      SEUIL_FREQ=1.E-4,),);
+MODESUP=CALC_MODES(MATR_RIGI=KASSUP,
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=1.E-05,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=20,
+                                SEUIL_FREQ=1.E-4,
+                                ),
+                   MATR_MASS=MASSUP,
+                   )
 
 
 
@@ -385,12 +389,16 @@ TEST_TABLE(CRITERE='ABSOLU',
 nmodes=2
 
 # controle recuperation matrices rigidite - masse
-MODECPL3=MODE_ITER_SIMULT(MATR_RIGI=KASCPL2,
-                       MATR_MASS=MASCPL2,
-                       VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=nmodes,
-                                    SEUIL_FREQ=1.E-4,),);
+MODECPL3=CALC_MODES(MATR_RIGI=KASCPL2,
+                    VERI_MODE=_F(STOP_ERREUR='OUI',
+                                 SEUIL=1.E-05,
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=nmodes,
+                                 SEUIL_FREQ=1.E-4,
+                                 ),
+                    MATR_MASS=MASCPL2,
+                    )
 
 
 
@@ -476,12 +484,16 @@ KASDIR=ASSE_MATRICE(MATR_ELEM=KELDIR,
 MASDIR=ASSE_MATRICE(MATR_ELEM=MELDIR,
                       NUME_DDL=NUMDIR,);
 
-MODEDIR=MODE_ITER_SIMULT(MATR_RIGI=KASDIR,
-                       MATR_MASS=MASDIR,
-                       VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=nmodes,
-                                    SEUIL_FREQ=1.E-4,),);
+MODEDIR=CALC_MODES(MATR_RIGI=KASDIR,
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=1.E-05,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=nmodes,
+                                SEUIL_FREQ=1.E-4,
+                                ),
+                   MATR_MASS=MASDIR,
+                   )
 
 
 #tmodes = aster.getvectjev("MODEDIR            .FREQ        ")

@@ -113,10 +113,12 @@ MATASKS=ASSE_MATRICE( MATR_ELEM=MEL_KSTR,  NUME_DDL=NUSTR)
 
 MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
 
-MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                        NMAX_FREQ = 2)
-                            )
+MODES=CALC_MODES(MATR_RIGI=MATASKS,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 MATR_MASS=MATASMS,
+                 )
 
 NUMGEN=NUME_DDL_GENE(       BASE=MODES,
                              STOCKAGE='PLEIN'    )
@@ -154,10 +156,12 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                      _F( MATR_ASSE = MATRAJ,
                                       COEF_R = 1.)))
 
-MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                        NMAX_FREQ = 2)
-                            )
+MODHUMI=CALC_MODES(MATR_RIGI=RIGGEN,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=2,
+                                ),
+                   MATR_MASS=MASTOT,
+                   )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

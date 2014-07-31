@@ -21,7 +21,7 @@
 #    DE FLEXION A UNE EXTREMITE. CALCUL DES CHARGES CRITIQUES
 #    CONDUISANT AU FLAMBEMENT ELASTIQUE PAR DEVERSEMENT D'UNE POUTRE
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_3D'(TRIA7)
-#  + EN ANNEXE, TEST DU COUPLAGE INFO_MODE+MODE_ITER_SIMULT SUR UN CAS
+#  + EN ANNEXE, TEST DU COUPLAGE INFO_MODE+CALC_MODES SUR UN CAS
 #    DE FLAMBEMENT
 #---------------------------------------------------------------------
 #
@@ -161,32 +161,35 @@ TEST_TABLE(TABLE=NBMOD1,REFERENCE='ANALYTIQUE',
 #
 # REUTILISATION DU CALCUL DU NBRE DE CHARGES CRITIQUES D'INFO_MODE
 # COMPARAISON AVEC LE CALCUL COMPLET STANDARD (OPTION='BANDE')
-RESULT0=MODE_ITER_SIMULT(     MATR_RIGI=MAS_RI_M,
-                             MATR_RIGI_GEOM=MAS_RI_G,
-             CALC_CHAR_CRIT=_F(OPTION='BANDE',TABLE_CHAR_CRIT=NBMOD1,
-                CHAR_CRIT=(-1.E+06,1.E+05)),
-                             TYPE_RESU='MODE_FLAMB'
-                           )
+RESULT0=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                   OPTION='BANDE',
+                   MATR_RIGI_GEOM=MAS_RI_G,
+                   CALC_CHAR_CRIT=_F(CHAR_CRIT=(-1.E+06,1.E+05),
+                                     TABLE_CHAR_CRIT=NBMOD1,
+                                     ),
+                   TYPE_RESU='MODE_FLAMB',
+                   )
 
-RESULT1=MODE_ITER_SIMULT(     MATR_RIGI=MAS_RI_M,
-                             MATR_RIGI_GEOM=MAS_RI_G,
-             CALC_CHAR_CRIT=_F(OPTION='BANDE',
-                CHAR_CRIT=(-1.E+06,1.+05)),
-                             TYPE_RESU='MODE_FLAMB'
-                           )
+RESULT1=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                   OPTION='BANDE',
+                   MATR_RIGI_GEOM=MAS_RI_G,
+                   CALC_CHAR_CRIT=_F(CHAR_CRIT=(-1.E+06,1.+05),
+                                     ),
+                   TYPE_RESU='MODE_FLAMB',
+                   )
 #
 # CALCUL OPTION 'PLUS_PETITE'
-RESULT=MODE_ITER_SIMULT(     MATR_RIGI=MAS_RI_M,
-                             MATR_RIGI_GEOM=MAS_RI_G,
-                             CALC_CHAR_CRIT=_F( OPTION = 'PLUS_PETITE',     ),
-                             TYPE_RESU='MODE_FLAMB'
-                           )
+RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                  OPTION='PLUS_PETITE',
+                  MATR_RIGI_GEOM=MAS_RI_G,
+                  TYPE_RESU='MODE_FLAMB',
+                  )
 
-RESULT_G=MODE_ITER_SIMULT(   MATR_A=MAS_RI_M,
-                             MATR_B=MAS_RI_G,
-                             CALC_CHAR_CRIT=_F( OPTION = 'PLUS_PETITE',     ),
-                             TYPE_RESU='GENERAL'
-                           )
+RESULT_G=CALC_MODES(TYPE_RESU='GENERAL',
+                    MATR_B=MAS_RI_G,
+                    MATR_A=MAS_RI_M,
+                    OPTION='PLUS_PETITE',
+                    )
 
 #
 #---------------------------------------------------------------------

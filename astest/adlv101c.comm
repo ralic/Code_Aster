@@ -70,10 +70,12 @@ MATMAS=ASSE_MATRICE(MATR_ELEM=MASSELEM,NUME_DDL=NU)
 
 #
 
-MODE=MODE_ITER_INV(   MATR_RIGI=MATRAS,   MATR_MASS=MATMAS,
-                 CALC_FREQ=_F( OPTION = 'PROCHE',
-               FREQ = ( 0.89,  1.39,  1.72,  2.,))
-                        )
+MODE=CALC_MODES(MATR_RIGI=MATRAS,
+                OPTION='PROCHE',
+                CALC_FREQ=_F(FREQ=( 0.89,1.39,1.72,2.,),
+                             ),
+                MATR_MASS=MATMAS,
+                )
 
 #
 

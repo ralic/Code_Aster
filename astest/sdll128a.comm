@@ -576,16 +576,21 @@ for kk in range(0,nbV):
    GYOM[kk]=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS[kk], COEF_R=OM,),
                                    _F(MATR_ASSE=AMOR[kk], COEF_R=1.,),))
 
-   _mod[kk]=MODE_ITER_SIMULT(MATR_RIGI=RIGI[kk],
-                             MATR_MASS=MASS[kk],
-                             MATR_AMOR=GYOM[kk],
-                             METHODE='QZ',
-                             CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
-                             VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
-                                          STOP_ERREUR='NON',
-                                          STURM='NON',
-                                          SEUIL=9.9999999999999995E-07),
-                             )
+   _mod[kk]=CALC_MODES(MATR_RIGI=RIGI[kk],
+                          VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                                       STOP_ERREUR='NON',
+                                       STURM='NON',
+                                       SEUIL=9.9999999999999995E-07,
+                                       ),
+                          OPTION='CENTRE',
+                          CALC_FREQ=_F(NMAX_FREQ=nbF,
+                                       FREQ=10.,
+                                       ),
+                          MATR_AMOR=GYOM[kk],
+                          MATR_MASS=MASS[kk],
+                          SOLVEUR_MODAL=_F(METHODE='QZ',
+                                           ),
+                          )
    
    tab.append({'NUME_VITE' : kk, 'VITE_ROTA' : OM, 'NOM_OBJET': 'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD' : _mod[kk].nom})
 
@@ -825,16 +830,21 @@ OM=(L_VITROT[0]+L_VITROT[6])/2
 GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                 MATR_MASS=MASSE,
-                 MATR_AMOR=GYOM,
-                 METHODE='QZ',
-                 CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
                               STOP_ERREUR='NON',
                               STURM='NON',
-                              SEUIL=9.9999999999999995E-07),
-                             )
+                              SEUIL=9.9999999999999995E-07,
+                              ),
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=nbF,
+                              FREQ=10.,
+                              ),
+                 MATR_AMOR=GYOM,
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  ),
+                 )
 
 #VITESSE DE ROTATION OMEGA=602.139 RAD/S
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

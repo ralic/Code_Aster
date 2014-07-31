@@ -18,10 +18,11 @@
 
 POURSUITE(CODE='OUI')
 
-AMODE2=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGI,   MATR_MASS=MATRMASS,
-                           CALC_FREQ=_F(  NMAX_FREQ = 10),
-                           #VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+AMODE2=CALC_MODES(MATR_RIGI=MATRRIGI,
+                  MATR_MASS=MATRMASS,
+                  CALC_FREQ=_F(  NMAX_FREQ = 10),
+                  #VERI_MODE=_F(  STOP_ERREUR='NON')
+                 );
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -56,10 +57,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-AMODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGB,   MATR_MASS=MATRMASB,
-                           CALC_FREQ=_F(  NMAX_FREQ = 10),
-                           #VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+AMODE3=CALC_MODES(MATR_RIGI=MATRRIGB,
+                  MATR_MASS=MATRMASB,
+                  CALC_FREQ=_F(  NMAX_FREQ = 10),
+                  #VERI_MODE=_F(  STOP_ERREUR='NON')
+                 );
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

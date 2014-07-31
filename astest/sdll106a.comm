@@ -100,10 +100,12 @@ VECTASS1=ASSE_VECTEUR(    VECT_ELEM=VECT1,
 #**  CALCUL MODAL        **********************************************
 #**********************************************************************
 
-MODES=MODE_ITER_INV( MATR_RIGI=MATASK,  MATR_MASS=MATASM,
-                             CALC_FREQ=_F( OPTION = 'AJUSTE',
-                                        FREQ = (0.1, 300.,))
-                            )
+MODES=CALC_MODES(MATR_RIGI=MATASK,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(FREQ=(0.1,300.,),
+                              ),
+                 MATR_MASS=MATASM,
+                 )
 
 
 #**********************************************************************

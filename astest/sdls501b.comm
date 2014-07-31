@@ -90,12 +90,14 @@ MAT_AS_K=ASSE_MATRICE(   MATR_ELEM=K,    NUME_DDL=NUM)
 MAT_AS_M=ASSE_MATRICE(   MATR_ELEM=M,    NUME_DDL=NUM)
 
 #
-MOD=MODE_ITER_SIMULT(      MATR_RIGI=MAT_AS_K,
-                             MATR_MASS=MAT_AS_M,
-                            METHODE='TRI_DIAG',
-                          CALC_FREQ=_F( OPTION = 'BANDE',
-                                     FREQ = (500., 5000.,),)
-                        )
+MOD=CALC_MODES(MATR_RIGI=MAT_AS_K,
+               OPTION='BANDE',
+               CALC_FREQ=_F(FREQ=(500.,5000.,),
+                            ),
+               MATR_MASS=MAT_AS_M,
+               SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                ),
+               )
 
 
 #

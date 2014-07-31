@@ -349,16 +349,20 @@ C_ASSE=ASSE_MATRICE(MATR_ELEM=C_ELEM,
 #
 
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       MATR_AMOR=C_ASSE,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=100.,
-                                    NMAX_FREQ=10,
-                                    APPROCHE='IMAG',),
-                       VERI_MODE=_F(STOP_ERREUR='NON',),
-                       INFO=1,);
+MODES=CALC_MODES(INFO=1,
+                 MATR_RIGI=K_ASSE,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              ),
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=100.,
+                              ),
+                 MATR_AMOR=C_ASSE,
+                 MATR_MASS=M_ASSE,
+                 SOLVEUR_MODAL=_F(APPROCHE='IMAG',
+                                  METHODE='SORENSEN',
+                                  ),
+                 )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

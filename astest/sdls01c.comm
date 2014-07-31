@@ -110,10 +110,12 @@ MASS_L=ASSE_MATRICE(  MATR_ELEM=MEMAME_L,
                            NUME_DDL=NUMDDL_L)
 
 #
-MODES_L1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_L,
-                                 MATR_MASS=MASS_L,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (10.,1000.,)))
+MODES_L1=CALC_MODES(MATR_RIGI=RAID_L,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(10.,1000.,),
+                                 ),
+                    MATR_MASS=MASS_L,
+                    )
 
 
 MODES_L1=CALC_CHAMP(reuse=MODES_L1,CONTRAINTE=('SIEF_ELGA'),RESULTAT=MODES_L1)
@@ -123,17 +125,21 @@ MODES_L1=CALC_CHAMP(reuse =MODES_L1,
               FORCE='FORC_NODA');
 
 #
-MODES_L2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_L,
-                                 MATR_MASS=MASS_L,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (1000.,2000.,)))
+MODES_L2=CALC_MODES(MATR_RIGI=RAID_L,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(1000.,2000.,),
+                                 ),
+                    MATR_MASS=MASS_L,
+                    )
 
 
 #
-MODES_L3=MODE_ITER_SIMULT(     MATR_RIGI=RAID_L,
-                                 MATR_MASS=MASS_L,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (2000.,3000.,)))
+MODES_L3=CALC_MODES(MATR_RIGI=RAID_L,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(2000.,3000.,),
+                                 ),
+                    MATR_MASS=MASS_L,
+                    )
 
 
 #
@@ -174,9 +180,11 @@ MASS_E=ASSE_MATRICE(  MATR_ELEM=MEMAME_E,
                            NUME_DDL=NUMDDL_E)
 
 #
-MODES_E=MODE_ITER_SIMULT(     MATR_RIGI=RAID_E,
-                                 MATR_MASS=MASS_E,
-                             CALC_FREQ=_F( NMAX_FREQ = 25))
+MODES_E=CALC_MODES(MATR_RIGI=RAID_E,
+                   MATR_MASS=MASS_E,
+                   CALC_FREQ=_F(NMAX_FREQ=25,
+                                ),
+                   )
 
 
 #
@@ -275,12 +283,16 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASGEN,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (8., 150.,)),
-                             SOLVEUR=_F(NPREC=10,),
-                             VERI_MODE=_F( SEUIL = 1.E-3))
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  VERI_MODE=_F(SEUIL=1.E-3,
+                               ),
+                  CALC_FREQ=_F(FREQ=(8.,150.,),
+                               ),
+                  OPTION='BANDE',
+                  SOLVEUR=_F(NPREC=10,
+                             ),
+                  MATR_MASS=MASGEN,
+                  )
 
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
@@ -407,9 +419,11 @@ MASS_A=ASSE_MATRICE(  MATR_ELEM=MEMAME_A,
                            NUME_DDL=NUMDDL_A)
 
 #
-MODES_A=MODE_ITER_SIMULT(     MATR_RIGI=RAID_A,
-                                 MATR_MASS=MASS_A,
-                             CALC_FREQ=_F( NMAX_FREQ = 25))
+MODES_A=CALC_MODES(MATR_RIGI=RAID_A,
+                   MATR_MASS=MASS_A,
+                   CALC_FREQ=_F(NMAX_FREQ=25,
+                                ),
+                   )
 
 
 #

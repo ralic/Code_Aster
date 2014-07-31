@@ -103,17 +103,20 @@ MAT_AS_M=ASSE_MATRICE(MATR_ELEM=MAT_EL_M,
 #
 
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=MAT_AS_R,
-                      MATR_MASS=MAT_AS_M,
-                      METHODE='TRI_DIAG',
-                      PREC_ORTHO=1e-12,
-                      NMAX_ITER_ORTHO=50,
-                      PREC_LANCZOS=1e-15,
-                      NMAX_ITER_QR=30,
-                      OPTION='MODE_RIGIDE',
-                      CALC_FREQ=_F(OPTION='BANDE',
-                                   FREQ=(500.0,5000.0,),),
-                      INFO=2,);
+MODE=CALC_MODES(INFO=2,
+                MATR_RIGI=MAT_AS_R,
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=(500.0,5000.0,),
+                             ),
+                MATR_MASS=MAT_AS_M,
+                SOLVEUR_MODAL=_F(PREC_LANCZOS=1e-15,
+                                 NMAX_ITER_QR=30,
+                                 MODE_RIGIDE='OUI',
+                                 METHODE='TRI_DIAG',
+                                 NMAX_ITER_ORTHO=50,
+                                 PREC_ORTHO=1e-12,
+                                 ),
+                )
 
 
 MODE=CALC_CHAMP(reuse=MODE,RESULTAT=MODE,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELEM','ETOT_ELGA','ETOT_ELNO'))

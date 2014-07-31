@@ -311,9 +311,11 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                      MATR_MASS=MASSE,
-                      CALC_FREQ=_F(NMAX_FREQ=10,),);
+MODE=CALC_MODES(MATR_RIGI=RIGIDITE,
+                MATR_MASS=MASSE,
+                CALC_FREQ=_F(NMAX_FREQ=10,
+                             ),
+                )
 
 
 MODE=NORM_MODE(reuse =MODE,

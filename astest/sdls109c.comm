@@ -54,11 +54,14 @@ MASK_DKT=ASSE_MATRICE(MATR_ELEM=MK_DKT,
                       NUME_DDL=NUM_DKT,);
 MASM_DKT=ASSE_MATRICE(MATR_ELEM=MM_DKT,
                       NUME_DDL=NUM_DKT,);
-MODE_DKT=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_RIGI=MASK_DKT,
-                       MATR_MASS=MASM_DKT,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.,800.0),),);
+MODE_DKT=CALC_MODES(MATR_RIGI=MASK_DKT,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,800.0),
+                                 ),
+                    MATR_MASS=MASM_DKT,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    )
 
 MK_DST=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MOD_DST,
@@ -73,11 +76,14 @@ MASK_DST=ASSE_MATRICE(MATR_ELEM=MK_DST,
                       NUME_DDL=NUM_DST,);
 MASM_DST=ASSE_MATRICE(MATR_ELEM=MM_DST,
                       NUME_DDL=NUM_DST,);
-MODE_DST=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_RIGI=MASK_DST,
-                       MATR_MASS=MASM_DST,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.,800.0),),);
+MODE_DST=CALC_MODES(MATR_RIGI=MASK_DST,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,800.0),
+                                 ),
+                    MATR_MASS=MASM_DST,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

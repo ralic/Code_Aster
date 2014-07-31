@@ -141,11 +141,11 @@ MAS_RI_M=ASSE_MATRICE(   MATR_ELEM=MEL_RI_M,   NUME_DDL=NUM)
 MAS_RI_G=ASSE_MATRICE(   MATR_ELEM=MEL_RI_G,   NUME_DDL=NUM)
 
 #
-RESULT=MODE_ITER_SIMULT(      MATR_RIGI=MAS_RI_M,
-                                MATR_RIGI_GEOM=MAS_RI_G,
-                             CALC_CHAR_CRIT=_F( OPTION = 'PLUS_PETITE',     ),
-                             TYPE_RESU='MODE_FLAMB'
-                           )
+RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                  OPTION='PLUS_PETITE',
+                  MATR_RIGI_GEOM=MAS_RI_G,
+                  TYPE_RESU='MODE_FLAMB',
+                  )
 
 
 #

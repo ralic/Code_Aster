@@ -130,12 +130,15 @@ ASSEMBLAGE ( MODELE=MOEL,
 
 #
 
-RESULT=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
-                        MATR_RIGI_GEOM=MAS_RI_G,
-                        METHODE='SORENSEN',
-                        TYPE_RESU='MODE_FLAMB',
-                        CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',),
-                        VERI_MODE=_F(SEUIL=1.E-5,),);
+RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
+                  VERI_MODE=_F(SEUIL=1.E-5,
+                               ),
+                  OPTION='PLUS_PETITE',
+                  MATR_RIGI_GEOM=MAS_RI_G,
+                  SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                   ),
+                  TYPE_RESU='MODE_FLAMB',
+                  )
 
 TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   NUME_MODE=10,

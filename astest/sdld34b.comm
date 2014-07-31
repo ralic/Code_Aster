@@ -89,10 +89,12 @@ DEPLINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                            NOM_CMP='DX',
                            VALE=dinit,),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       METHODE='QZ',
-                       CALC_FREQ=_F(OPTION='TOUT',),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='TOUT',
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  ),
+                 )
 
 PROJ_BASE(BASE=MODES,
                 STOCKAGE='DIAG',

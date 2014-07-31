@@ -98,8 +98,13 @@ MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,  NUME_DDL=NUM  )
 MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,  NUME_DDL=NUM  )
 
 # --------------------------------------------------------------------
-MODE_QUA=MODE_ITER_INV(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,MATR_AMOR=MATASSC,
-                       CALC_FREQ=_F( OPTION = 'AJUSTE',FREQ = (5.,45.,)))
+MODE_QUA=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='AJUSTE',
+                    CALC_FREQ=_F(FREQ=(5.,45.,),
+                                 ),
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    )
 
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )

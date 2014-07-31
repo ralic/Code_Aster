@@ -128,13 +128,15 @@ MARG=ASSE_MATRICE(   MATR_ELEM=MERG,
                     )
 
 #
-MD_0=MODE_ITER_SIMULT(      MATR_RIGI=MATASSR,
-                              MATR_RIGI_GEOM=MARG,
-                             METHODE='JACOBI',
-                           TYPE_RESU='MODE_FLAMB',
-                           OPTION='SANS',
-                           CALC_CHAR_CRIT=_F( NMAX_CHAR_CRIT = 5, )
-                        )
+MD_0=CALC_MODES(MATR_RIGI=MATASSR,
+                TYPE_RESU='MODE_FLAMB',
+                MATR_RIGI_GEOM=MARG,
+                CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=5,
+                                  ),
+                SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                 METHODE='TRI_DIAG',
+                                 ),
+                )
 
 
 #

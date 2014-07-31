@@ -77,14 +77,18 @@ ASSEMBLAGE(MODELE=POMPE,
                          OPTION='RIGI_MECA',),),);
 
 
-MOD_POMP=MODE_ITER_SIMULT(METHODE='SORENSEN',
-                          TYPE_RESU='DYNAMIQUE',
-                          MATR_RIGI=RIGI,
-                          MATR_MASS=MASS,
-                          CALC_FREQ=_F(OPTION='CENTRE',
-                                       FREQ=60.,
-                                       NMAX_FREQ=10,),
-                          VERI_MODE=_F(SEUIL=1e-05,),);
+MOD_POMP=CALC_MODES(MATR_RIGI=RIGI,
+                    VERI_MODE=_F(SEUIL=1e-05,
+                                 ),
+                    OPTION='CENTRE',
+                    CALC_FREQ=_F(NMAX_FREQ=10,
+                                 FREQ=60.,
+                                 ),
+                    MATR_MASS=MASS,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    TYPE_RESU='DYNAMIQUE',
+                    )
 
 
 
@@ -241,10 +245,12 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=POMPE_GE,
                                     GROUP_MA=('Tuy_3D','Tuy_2D',),),),);
 
 
-MODES_GE=MODE_ITER_SIMULT(MATR_RIGI=RIGI_GE,
-                          MATR_MASS=MASS_GE,
-                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                       NMAX_FREQ=10,),);
+MODES_GE=CALC_MODES(MATR_RIGI=RIGI_GE,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=10,
+                                 ),
+                    MATR_MASS=MASS_GE,
+                    )
 
 
 MODES=REST_SOUS_STRUC(RESU_GENE=MODES_GE,

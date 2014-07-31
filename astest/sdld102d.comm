@@ -143,9 +143,11 @@ V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
 #
 # ----- CALCUL DES MODES PROPRES DES SS
 
-MODES_L=MODE_ITER_SIMULT(MATR_RIGI=RAID_L,
-                         MATR_MASS=MASS_L,
-                         CALC_FREQ=_F(NMAX_FREQ=1,),);
+MODES_L=CALC_MODES(MATR_RIGI=RAID_L,
+                   MATR_MASS=MASS_L,
+                   CALC_FREQ=_F(NMAX_FREQ=1,
+                                ),
+                   )
 
 
 MODES_L=NORM_MODE(reuse=MODES_L,
@@ -239,11 +241,13 @@ FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
-                        MATR_MASS=MASGEN,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=3,),
-                        TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',);
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=3,
+                               ),
+                  TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',
+                  MATR_MASS=MASGEN,
+                  )
 
 
 #---------------------------------------------------------------------

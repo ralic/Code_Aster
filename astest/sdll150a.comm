@@ -119,9 +119,9 @@ KASSREF=ASSE_MATRICE(NUME_DDL=NUMREF,
                           );
 
 
-MODE_REF = MODE_ITER_SIMULT(MATR_RIGI=KASSREF,
-                         MATR_MASS=MASSREF,
-                         CALC_FREQ=_F(NMAX_FREQ=10,),
+MODE_REF = CALC_MODES(MATR_RIGI=KASSREF,
+                      MATR_MASS=MASSREF,
+                      CALC_FREQ=_F(NMAX_FREQ=10,),
                               );
 MODE_REF=NORM_MODE(reuse =MODE_REF,
                MODE=MODE_REF,
@@ -223,10 +223,11 @@ KASS=ASSE_MATRICE(NUME_DDL=NUM,
                           );
 
 
-MODES = MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                         MATR_MASS=MASS,
-                         CALC_FREQ=_F(NMAX_FREQ=10,),
-                              );
+MODES=CALC_MODES(MATR_RIGI=KASS,
+                 MATR_MASS=MASS,
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 )
 MODES=NORM_MODE(reuse =MODES,
                MODE=MODES,
                NORME='MASS_GENE',)

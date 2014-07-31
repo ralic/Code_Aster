@@ -112,11 +112,13 @@ KS_ASSE=ASSE_MATRICE(    MATR_ELEM=KS_ELEM,
 
 # CALCUL DES MODES PAR SORENSEN
 
-MODE1=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE,
-                                   MATR_RIGI_GEOM=KS_ASSE,
-                                TYPE_RESU='MODE_FLAMB',
-                               CALC_CHAR_CRIT=_F(  OPTION = 'PLUS_PETITE',
-                                           NMAX_CHAR_CRIT = 5,   ))
+MODE1=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='PLUS_PETITE',
+                 MATR_RIGI_GEOM=KS_ASSE,
+                 CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=5,
+                                   ),
+                 TYPE_RESU='MODE_FLAMB',
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',

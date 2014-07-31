@@ -487,18 +487,26 @@ MASRI = ASSE_MATRICE( MATR_ELEM= MELRI, NUME_DDL= NUMDDL )
 MASMA = ASSE_MATRICE( MATR_ELEM= MELMA, NUME_DDL= NUMDDL )
 
 
-MODAL01 = MODE_ITER_SIMULT(
-  MATR_RIGI= MASRI, MATR_MASS= MASMA,
-  TYPE_RESU= 'DYNAMIQUE',
-  CALC_FREQ=_F( OPTION = 'BANDE', FREQ = ( 0.0 , 20.0 ) ),
-  VERI_MODE=_F( STOP_ERREUR= 'NON' ) )
+MODAL01=CALC_MODES(MATR_RIGI=MASRI,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=( 0.0,20.0),
+                                ),
+                   MATR_MASS=MASMA,
+                   TYPE_RESU='DYNAMIQUE',
+                   )
 
 
-MODAL02 = MODE_ITER_SIMULT(
-  MATR_RIGI= MASRI, MATR_MASS= MASMA,
-  TYPE_RESU= 'DYNAMIQUE',
-  CALC_FREQ=_F( OPTION = 'BANDE', FREQ = (20.0 , 40.0 ) ),
-  VERI_MODE=_F( STOP_ERREUR= 'NON' ) )
+MODAL02=CALC_MODES(MATR_RIGI=MASRI,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(20.0,40.0),
+                                ),
+                   MATR_MASS=MASMA,
+                   TYPE_RESU='DYNAMIQUE',
+                   )
 
 
 

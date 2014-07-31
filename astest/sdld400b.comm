@@ -73,11 +73,12 @@ M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
 
 # CALCUL DES MODES PAR SORENSEN + BANDE
 
-MODE3=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                               CALC_FREQ=_F(  OPTION = 'BANDE',
-                                           FREQ = ( 0.5, 3., ),)
-                              )
+MODE3=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 0.5,3.,),
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
@@ -133,12 +134,13 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 # CALCUL DES MODES PAR SORENSEN + CENTRE
 
-MODE4=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                               CALC_FREQ=_F(  OPTION = 'CENTRE',
-                                           FREQ = 1.5,
-                                           NMAX_FREQ = 6)
-                              )
+MODE4=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=6,
+                              FREQ=1.5,
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
@@ -194,11 +196,12 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 # CALCUL DES MODES PAR SORENSEN + PLUS_PETITE
 
-MODE5=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                               CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                           NMAX_FREQ = 6)
-                             )
+MODE5=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=6,
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
@@ -254,12 +257,14 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 # CALCUL DES MODES PAR JACOBI 
 
-MODE6=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                                  METHODE='JACOBI',
-                               CALC_FREQ=_F(  OPTION = 'BANDE',
-                                           FREQ = ( 0.5, 3., ),)
-                            )
+MODE6=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 0.5,3.,),
+                              ),
+                 MATR_MASS=M_ASSE,
+                 SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                  ),
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',

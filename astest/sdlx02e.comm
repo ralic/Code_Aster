@@ -102,12 +102,14 @@ ASSEMBLAGE(      MODELE=MO,
                  )
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_RIGI=K,
-                               MATR_MASS=M,
-                              METHODE='TRI_DIAG',
-                            CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ = 9)
-                          )
+MODES=CALC_MODES(MATR_RIGI=K,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=9,
+                              ),
+                 MATR_MASS=M,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 #
 #---------------------------------------------------------------------

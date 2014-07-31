@@ -101,12 +101,14 @@ MATMA_AS=ASSE_MATRICE(   MATR_ELEM=MATMASS,   NUME_DDL=NU)
 
 #
 
-MODES=MODE_ITER_SIMULT(      MATR_RIGI=MATRI_AS,
-                               MATR_MASS=MATMA_AS,
-                              METHODE='SORENSEN',
-                            CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ = 8)
-                          )
+MODES=CALC_MODES(MATR_RIGI=MATRI_AS,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=8,
+                              ),
+                 MATR_MASS=MATMA_AS,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 
 #

@@ -224,11 +224,12 @@ MASSES=POST_ELEM(MODELE=MODELE,
    #------------------------------------------------
    #
 
-MOD_DYN=MACRO_MODE_MECA(MATR_RIGI=MATR,
-                        MATR_MASS=MATM,
-                        CALC_FREQ=_F(FREQ=(0.1, 10.0,),
-                                    ),
-                        );
+MOD_DYN=CALC_MODES(MATR_RIGI=MATR,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.1,10.0,),
+                                ),
+                   MATR_MASS=MATM,
+                   )
 #
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE :
 #---------------------------------------------
@@ -341,17 +342,18 @@ ASSEMBLAGE(MODELE=MODELE1,
 
 
 
-# MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
+# MODE1=CALC_MODES(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
 #                            CALC_FREQ=_F(
 #                                         NMAX_FREQ=120,
 #                                        ),
 #                            VERI_MODE=_F(  STOP_ERREUR='NON')
 #                          );
-MODE1=MACRO_MODE_MECA(MATR_RIGI=MATR1,
-                        MATR_MASS=MATM1,
-                        CALC_FREQ=_F(FREQ=(3.,20.,31.,41.,),
-                                    ),
-                        )
+MODE1=CALC_MODES(MATR_RIGI=MATR1,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(3.,20.,31.,41.,),
+                              ),
+                 MATR_MASS=MATM1,
+                 )
 
 MODSTA1=MODE_STATIQUE(MATR_RIGI=MATR1,
                       MATR_MASS=MATM1,
@@ -502,13 +504,12 @@ MASSTOT=POST_ELEM(MODELE=MODELB,
 IMPR_TABLE(TABLE=MASSTOT,);
 
 
-MODEB =MACRO_MODE_MECA(MATR_RIGI=MATRRIGB,
-                       MATR_MASS=MATRMASB,
-                       CALC_FREQ=_F(FREQ=(0.1,20.,30.,
-                                           60.,
-                                          ),
-                                  ),
-                       IMPRESSION=_F(),);
+MODEB=CALC_MODES(MATR_RIGI=MATRRIGB,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0.1,20.,30.,60.,),
+                              ),
+                 MATR_MASS=MATRMASB,
+                 )
 
 
 CHAPP=AFFE_CHAR_MECA(MODELE=MODELB,

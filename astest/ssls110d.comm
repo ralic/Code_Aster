@@ -90,12 +90,14 @@ ASSEMBLAGE ( MODELE=MODELE,
               _F( MATRICE= CO('RIGASG'), OPTION= 'RIGI_GEOM',SIEF_ELGA=SIGMA),),);
 
 
-MOD=MODE_ITER_SIMULT(MATR_RIGI=MATASS,
-                     MATR_RIGI_GEOM=RIGASG,
-                     TYPE_RESU='MODE_FLAMB',
-                     CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT = 9,
-                                       DIM_SOUS_ESPACE = 30),
-                            )
+MOD=CALC_MODES(MATR_RIGI=MATASS,
+               TYPE_RESU='MODE_FLAMB',
+               MATR_RIGI_GEOM=RIGASG,
+               CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=9,
+                                 ),
+               SOLVEUR_MODAL=_F(DIM_SOUS_ESPACE=30,
+                                ),
+               )
 
 #
 ##### CHARGE CRITIQUE 1 ( MODE 1 ) = MODE 1 TOUTE LA PLAQUE

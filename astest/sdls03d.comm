@@ -53,10 +53,14 @@ ASSEMBLAGE( MODELE=MO, CARA_ELEM=CA,
                          _F(  MATRICE = CO("MATM"),   OPTION = 'MASS_MECA'),
                  ))
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
-             CALC_FREQ=_F(  FREQ = (5., 250., ),
-                         OPTION = 'BANDE'),
-                           VERI_MODE=_F(  SEUIL = 1.E-5)  )
+MODE=CALC_MODES(MATR_RIGI=MATR,
+                VERI_MODE=_F(SEUIL=1.E-5,
+                             ),
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=(5.,250.,),
+                             ),
+                MATR_MASS=MATM,
+                )
 
 # --------------------------------------------------------------------
 

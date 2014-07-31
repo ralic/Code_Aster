@@ -168,13 +168,14 @@ MATRM=ASSE_MATRICE(   MATR_ELEM=MELM,
                        NUME_DDL=NUM
 )
 
-MODES=MODE_ITER_SIMULT(   MATR_RIGI=MATRR,
-                          MATR_MASS=MATRM,
-                         METHODE='TRI_DIAG',
-                       CALC_FREQ=_F(
-                           OPTION = 'PLUS_PETITE',
-                           NMAX_FREQ = 2)
-)
+MODES=CALC_MODES(MATR_RIGI=MATRR,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 MATR_MASS=MATRM,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 
 MODES=NORM_MODE( reuse=MODES,  MODE=MODES,

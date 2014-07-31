@@ -213,9 +213,11 @@ M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM,
                            NUME_DDL=NUMERO)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE, 
-                                 MATR_MASS=M_ASSE, 
-                             CALC_FREQ=_F( NMAX_FREQ = 10))
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 MATR_MASS=M_ASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 )
 
 
 #

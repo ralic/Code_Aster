@@ -76,10 +76,12 @@ ASSEMBLAGE(MODELE=MODELE,
                       _F(MATRICE=CO('MASSE'),
                          OPTION='MASS_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(0,50.0,),),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0,50.0,),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,

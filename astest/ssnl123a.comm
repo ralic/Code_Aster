@@ -324,13 +324,15 @@ for i in range(1,3):
 
 # Calcul modal avec precontrainte
 # Creation du nom du concept de flambement
-  FL[ i ]=MODE_ITER_SIMULT(
-    MATR_RIGI=MASRI,
-    MATR_RIGI_GEOM=MASGEO,
-    TYPE_RESU='MODE_FLAMB',
-    CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
-                 NMAX_CHAR_CRIT= 6),
-    VERI_MODE=_F(STOP_ERREUR='NON',),)
+  FL[ i ]=CALC_MODES(MATR_RIGI=MASRI,
+                       VERI_MODE=_F(STOP_ERREUR='NON',
+                                    ),
+                       TYPE_RESU='MODE_FLAMB',
+                       MATR_RIGI_GEOM=MASGEO,
+                       CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=6,
+                                         ),
+                       OPTION='PLUS_PETITE',
+                       )
 
 
   FL[ i ]=NORM_MODE(

@@ -149,10 +149,12 @@ ASSEMBLAGE(MODELE=MO2,
                            _F(MATRICE=CO('MATASM2'),
                               OPTION='MASS_MECA',),),);
 
-MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASS2,
-                       MATR_MASS=MATASM2,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=4,),);
+MODE2=CALC_MODES(MATR_RIGI=MATASS2,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              ),
+                 MATR_MASS=MATASM2,
+                 )
 
 RESU2A=MECA_STATIQUE(MODELE=MO2,
                 CHAM_MATER=CHMAT2,

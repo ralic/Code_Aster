@@ -91,10 +91,12 @@ mas=MASSE.EXTR_MATR()
 rig=RIGIDITE.EXTR_MATR()
 
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                       FREQ=(3.,3000.)));
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(3.,3000.),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 
 # COMPARAISON STURM ET APM SUR GEP SYM REEL
@@ -177,13 +179,16 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
 
-MODEQ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       MATR_AMOR=GYOM,
-                       METHODE='QZ',TYPE_QZ='QZ_EQUI',
-                       CALC_FREQ=_F(OPTION='TOUT'),
-                       VERI_MODE=_F(SEUIL=0.5),
-                      )
+MODEQ=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 VERI_MODE=_F(SEUIL=0.5,
+                              ),
+                 OPTION='TOUT',
+                 MATR_AMOR=GYOM,
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
+                                  METHODE='QZ',
+                                  ),
+                 )
 
 
 # METHODE APM VARIANTE LDLT  (RESULTATS ATTENDUS 4, 2, 22, 84 ET 0)

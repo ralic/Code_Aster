@@ -64,9 +64,13 @@ ASSEMBLAGE(MODELE=MODELE,  CHARGE=COND_LIM,
                 _F( MATRICE = CO("RIGIDITE"), OPTION = 'RIGI_MECA'),
                           _F( MATRICE = CO("MASSE"),    OPTION = 'MASS_MECA')))
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                    METHODE='TRI_DIAG',
-                  CALC_FREQ=_F(  NMAX_FREQ = 8) )
+MODE=CALC_MODES(MATR_RIGI=RIGIDITE,
+                CALC_FREQ=_F(NMAX_FREQ=8,
+                             ),
+                MATR_MASS=MASSE,
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                 ),
+                )
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
@@ -133,9 +137,13 @@ ASSEMBLAGE(MODELE=MODELE,  CHARGE=COND_LIM,
                 _F( MATRICE = CO("RIGIDITD"), OPTION = 'RIGI_MECA'),
                          _F( MATRICE = CO("MASSED"),    OPTION = 'MASS_MECA_DIAG')))
 
-MODE_DIA=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITD,   MATR_MASS=MASSED,
-                    METHODE='TRI_DIAG',
-                  CALC_FREQ=_F(  NMAX_FREQ = 8) )
+MODE_DIA=CALC_MODES(MATR_RIGI=RIGIDITD,
+                    CALC_FREQ=_F(NMAX_FREQ=8,
+                                 ),
+                    MATR_MASS=MASSED,
+                    SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,

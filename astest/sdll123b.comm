@@ -132,19 +132,27 @@ else:
 
 
 # CALCUL VIA SORENSEN
-MG_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_RIGI=MATK,
-                       MATR_MASS=MATM,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10),
-                        )
+MG_SO=CALC_MODES(INFO=1,
+                 MATR_RIGI=MATK,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=1000.,
+                              ),
+                 MATR_MASS=MATM,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 # CALCUL VIA QZ
-MG_QZ=MODE_ITER_SIMULT( INFO=1,
-                       MATR_RIGI=MATK,
-                       MATR_MASS=MATM,
-                       METHODE='QZ',
-                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10),
-                        )
+MG_QZ=CALC_MODES(INFO=1,
+                 MATR_RIGI=MATK,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=1000.,
+                              ),
+                 MATR_MASS=MATM,
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  ),
+                 )
 
 # CALCUL VIA PYTHON
 rigF=MATK.EXTR_MATR()
@@ -338,41 +346,59 @@ else:
   MATC1=GYASS
 
 # CALCUL VIA SORENSEN (APPROCHE COMPLEXE, REELLE ET IMAGINAIRE)
-MQ_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_RIGI=MATK1,
-                       MATR_MASS=MATM1,
-                       MATR_AMOR=MATC1,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
-                       APPROCHE='COMPLEXE',),
-                        )
-MQ_SOR=MODE_ITER_SIMULT( INFO=1,
-                       MATR_RIGI=MATK1,
-                       MATR_MASS=MATM1,
-                       MATR_AMOR=MATC1,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
-                       APPROCHE='REEL',),
-                       VERI_MODE=_F(SEUIL=1.E-04),
-                        )
-MQ_SOI=MODE_ITER_SIMULT( INFO=1,
-                       MATR_RIGI=MATK1,
-                       MATR_MASS=MATM1,
-                       MATR_AMOR=MATC1,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
-                       APPROCHE='IMAG',),
-                        )
+MQ_SO=CALC_MODES(INFO=1,
+                 MATR_RIGI=MATK1,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=1000.,
+                              ),
+                 MATR_AMOR=MATC1,
+                 MATR_MASS=MATM1,
+                 SOLVEUR_MODAL=_F(APPROCHE='COMPLEXE',
+                                  METHODE='SORENSEN',
+                                  ),
+                 )
+MQ_SOR=CALC_MODES(INFO=1,
+                  MATR_RIGI=MATK1,
+                  VERI_MODE=_F(SEUIL=1.E-04,
+                               ),
+                  OPTION='CENTRE',
+                  CALC_FREQ=_F(NMAX_FREQ=10,
+                               FREQ=1000.,
+                               ),
+                  MATR_AMOR=MATC1,
+                  MATR_MASS=MATM1,
+                  SOLVEUR_MODAL=_F(APPROCHE='REEL',
+                                   METHODE='SORENSEN',
+                                   ),
+                  )
+MQ_SOI=CALC_MODES(INFO=1,
+                  MATR_RIGI=MATK1,
+                  OPTION='CENTRE',
+                  CALC_FREQ=_F(NMAX_FREQ=10,
+                               FREQ=1000.,
+                               ),
+                  MATR_AMOR=MATC1,
+                  MATR_MASS=MATM1,
+                  SOLVEUR_MODAL=_F(APPROCHE='IMAG',
+                                   METHODE='SORENSEN',
+                                   ),
+                  )
 
 # CALCUL VIA QZ
-MQ_QZ=MODE_ITER_SIMULT( INFO=1,
-                       MATR_RIGI=MATK1,
-                       MATR_MASS=MATM1,
-                       MATR_AMOR=MATC1,
-                       METHODE='QZ',
-                       CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,),
-                       VERI_MODE=_F(SEUIL=1.E-04),
-                        )
+MQ_QZ=CALC_MODES(INFO=1,
+                 MATR_RIGI=MATK1,
+                 VERI_MODE=_F(SEUIL=1.E-04,
+                              ),
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=1000.,
+                              ),
+                 MATR_AMOR=MATC1,
+                 MATR_MASS=MATM1,
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  ),
+                 )
 
 # CALCUL VIA PYTHON
 rigF=MATK1.EXTR_MATR()

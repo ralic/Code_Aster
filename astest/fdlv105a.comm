@@ -129,11 +129,15 @@ CHAMNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 #
 
 
-MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
-                               OPTION='SANS',
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (1.,500.,))
-                            )
+MODES=CALC_MODES(MATR_RIGI=MATASKS,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(1.,500.,),
+                              ),
+                 MATR_MASS=MATASMS,
+                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                  METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 NUMGEN=NUME_DDL_GENE(  BASE=MODES,
                             STOCKAGE='PLEIN'
@@ -160,11 +164,14 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                      _F( MATR_ASSE = MATRAJ,
                                       COEF_R = 1.)))
 
-MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
-                         SOLVEUR=_F(METHODE='LDLT'),
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (1.,100.,))
-                            )
+MODHUMI=CALC_MODES(MATR_RIGI=RIGGEN,
+                   CALC_FREQ=_F(FREQ=(1.,100.,),
+                                ),
+                   OPTION='BANDE',
+                   SOLVEUR=_F(METHODE='LDLT',
+                              ),
+                   MATR_MASS=MASTOT,
+                   )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',

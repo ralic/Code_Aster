@@ -95,10 +95,12 @@ ASSEMBLAGE(MODELE=MODELE,
 
 #
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=5,),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=5,
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 #
 # ECRITURE DES MODES AU FORMAT MED

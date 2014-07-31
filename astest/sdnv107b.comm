@@ -185,12 +185,13 @@ ASSEMBLAGE(MODELE=MODELE1,
                            ),
                 );
 
-MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
-                           CALC_FREQ=_F(
-                                        NMAX_FREQ=30,
-                                       ),
-                           VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+MODE1=CALC_MODES(MATR_RIGI=MATR1,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=30,
+                              ),
+                 MATR_MASS=MATM1,
+                 )
 
 ASSEMBLAGE(MODELE=MODELE1,
                 CHAM_MATER=CHAMATN,
@@ -204,12 +205,13 @@ ASSEMBLAGE(MODELE=MODELE1,
                            ),
                 );
 
-MODSTA1=MODE_ITER_SIMULT(  MATR_RIGI=MATRN,   MATR_MASS=MATMN,
-                           CALC_FREQ=_F(
-                                        NMAX_FREQ=12,
-                                       ),
-                           VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+MODSTA1=CALC_MODES(MATR_RIGI=MATRN,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   CALC_FREQ=_F(NMAX_FREQ=12,
+                                ),
+                   MATR_MASS=MATMN,
+                   )
 
 INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
             INTERFACE=_F( NOM = 'DROITE',

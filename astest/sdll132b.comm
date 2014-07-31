@@ -487,18 +487,26 @@ MASRI = ASSE_MATRICE( MATR_ELEM= MELRI, NUME_DDL= NUMDDL )
 MASMA = ASSE_MATRICE( MATR_ELEM= MELMA, NUME_DDL= NUMDDL )
 
 
-MODAL01 = MODE_ITER_SIMULT(
-  MATR_RIGI= MASRI, MATR_MASS= MASMA,
-  TYPE_RESU= 'DYNAMIQUE',
-  CALC_FREQ=_F( OPTION = 'BANDE', FREQ = ( 0.0 , 20.0 ) ),
-  VERI_MODE=_F( STOP_ERREUR= 'NON' ) )
+MODAL01=CALC_MODES(MATR_RIGI=MASRI,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=( 0.0,20.0),
+                                ),
+                   MATR_MASS=MASMA,
+                   TYPE_RESU='DYNAMIQUE',
+                   )
 
 
-MODAL02 = MODE_ITER_SIMULT(
-  MATR_RIGI= MASRI, MATR_MASS= MASMA,
-  TYPE_RESU= 'DYNAMIQUE',
-  CALC_FREQ=_F( OPTION = 'BANDE', FREQ = (20.0 , 40.0 ) ),
-  VERI_MODE=_F( STOP_ERREUR= 'NON' ) )
+MODAL02=CALC_MODES(MATR_RIGI=MASRI,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(20.0,40.0),
+                                ),
+                   MATR_MASS=MASMA,
+                   TYPE_RESU='DYNAMIQUE',
+                   )
 
 
 
@@ -694,15 +702,22 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 
 
-# TESTE LA MACRO_COMMANDE : MACRO_MODE_MECA
+# TESTE LA MACRO_COMMANDE : CALC_MODES
 
-MODMECA = MACRO_MODE_MECA(
-  MATR_RIGI      = MASRI, MATR_MASS= MASMA,
-  CALC_FREQ   =_F( FREQ = ( 0.0, 20.0, 40.0 )),
-  NORM_MODE   =_F( NORME = 'MASS_GENE'),
-  FILTRE_MODE =_F( CRIT_EXTR='MASS_EFFE_UN', SEUIL=5.0E-4 ),
-  IMPRESSION  =_F( CUMUL='OUI', CRIT_EXTR='MASS_EFFE_UN')
-)
+MODMECA=CALC_MODES(MATR_RIGI=MASRI,
+                   OPTION='BANDE',
+                   IMPRESSION=_F(CRIT_EXTR='MASS_EFFE_UN',
+                                 CUMUL='OUI',
+                                 ),
+                   CALC_FREQ=_F(FREQ=( 0.0,20.0,40.0),
+                                ),
+                   FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',
+                                  SEUIL=5.0E-4,
+                                  ),
+                   MATR_MASS=MASMA,
+                   NORM_MODE=_F(NORME='MASS_GENE',
+                                ),
+                   )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

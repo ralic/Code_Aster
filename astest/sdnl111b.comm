@@ -75,13 +75,15 @@ MATRRIGI=ASSE_MATRICE(   MATR_ELEM=RIGIELEM,  NUME_DDL=NUMEROTA )
 MATRMASS=ASSE_MATRICE(   MATR_ELEM=MASSELEM,  NUME_DDL=NUMEROTA )
 
 #
-MODES=MODE_ITER_SIMULT(   MATR_RIGI=MATRRIGI,  MATR_MASS=MATRMASS,
-
-                         CALC_FREQ=_F( OPTION = 'CENTRE',
-                        NMAX_FREQ = 40,
-                        FREQ = 20000.),
-                         VERI_MODE=_F(  STOP_ERREUR = 'OUI')
-                         )
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 VERI_MODE=_F(STOP_ERREUR='OUI',
+                              ),
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=40,
+                              FREQ=20000.,
+                              ),
+                 MATR_MASS=MATRMASS,
+                 )
 
 
 #

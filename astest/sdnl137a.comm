@@ -79,12 +79,16 @@ M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
                     NUME_DDL=NUM,
                     CHAR_CINE=carm,);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION = 'BANDE',FREQ = (3., 7.,),),
-                       SOLVEUR=_F(METHODE='MUMPS',),
-                      );
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 CALC_FREQ=_F(FREQ=(3.,7.,),
+                              ),
+                 OPTION='BANDE',
+                 SOLVEUR=_F(METHODE='MUMPS',
+                            ),
+                 MATR_MASS=M_ASSE,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 ndiscr=10
 decal=0.1*jeu

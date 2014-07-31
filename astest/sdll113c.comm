@@ -125,9 +125,11 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMERO);
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
-                                 MATR_MASS=M_ASSE,
-                             CALC_FREQ=_F( NMAX_FREQ = 10));
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 MATR_MASS=M_ASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 )
 
                                        
                   
@@ -225,12 +227,13 @@ ASSEMBLAGE(MODELE=MODELE1,
                            ),
                 );
                 
-MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
-                           CALC_FREQ=_F(
-                                        NMAX_FREQ=6,  
-                                       ),
-                           VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+MODE1=CALC_MODES(MATR_RIGI=MATR1,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=6,
+                              ),
+                 MATR_MASS=MATM1,
+                 )
 
                                                  
                          
@@ -347,12 +350,13 @@ ASSEMBLAGE(MODELE=MODELB,
                            ),
                );
                
-MODEB=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGB,   MATR_MASS=MATRMASB,
-                           CALC_FREQ=_F(
-                                        NMAX_FREQ=20,  
-                                       ),
-                           VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+MODEB=CALC_MODES(MATR_RIGI=MATRRIGB,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=20,
+                              ),
+                 MATR_MASS=MATRMASB,
+                 )
 
                          
 CHFONO=AFFE_CHAR_MECA(MODELE=MODELB,

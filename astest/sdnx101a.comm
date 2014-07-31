@@ -204,11 +204,12 @@ MASSES=POST_ELEM(MODELE=MODELE,
    #
    #
    #
-MOD_DYN=MACRO_MODE_MECA(MATR_RIGI=MATR,
-                        MATR_MASS=MATM,
-                        CALC_FREQ=_F(FREQ=(0.1, 10.0,),
-                                    ),
-                       )
+MOD_DYN=CALC_MODES(MATR_RIGI=MATR,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.1,10.0,),
+                                ),
+                   MATR_MASS=MATM,
+                   )
 #
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE :
 #---------------------------------------------
@@ -333,14 +334,14 @@ ASSEMBLAGE(MODELE=MODELE,
 # IMPR_TABLE(TABLE=MASSTOT,);
 
 
-MODEB =MACRO_MODE_MECA(MATR_RIGI=MATRRIGB,
-                       MATR_MASS=MATRMASB,
-                       CALC_FREQ=_F(FREQ=(0.1,10.,20.,25.,30.,35.,
-                                           40.,45.,50.,),),
-               VERI_MODE=_F(STURM='LOCAL',),
-#                       VERI_MODE=_F(STOP_ERREUR='NON',),
-                      # FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+MODEB=CALC_MODES(MATR_RIGI=MATRRIGB,
+                 VERI_MODE=_F(STURM='LOCAL',
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0.1,10.,20.,25.,30.,35.,40.,45.,50.,),
+                              ),
+                 MATR_MASS=MATRMASB,
+                 )
 
 EPOT=POST_ELEM(MODELE=MODELE,
                CHAM_MATER=CHMAT,

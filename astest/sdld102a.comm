@@ -145,9 +145,11 @@ V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
 #
 # ----- CALCUL DES MODES PROPRES DES SS
 
-MODES_L=MODE_ITER_SIMULT(MATR_RIGI=RAID_L,
-                         MATR_MASS=MASS_L,
-                         CALC_FREQ=_F(NMAX_FREQ=1,),);
+MODES_L=CALC_MODES(MATR_RIGI=RAID_L,
+                   MATR_MASS=MASS_L,
+                   CALC_FREQ=_F(NMAX_FREQ=1,
+                                ),
+                   )
 
 
 #
@@ -266,11 +268,13 @@ TEST_FICHIER(FICHIER='./REPE_OUT/FGEN.gene',
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
-                        MATR_MASS=MASGEN,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=3,),
-                        TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',);
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=3,
+                               ),
+                  TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',
+                  MATR_MASS=MASGEN,
+                  )
 
 
 #IMPR_CO(CONCEPT=_F(NOM='RESGEN',),);
@@ -897,30 +901,39 @@ F_ASSE=ASSE_VECTEUR(VECT_ELEM=F_ELEM,
 
 #
 
-MODYNA=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                        MATR_MASS=M_ASSE,
-                        CALC_FREQ=_F(NMAX_FREQ=3,),);
+MODYNA=CALC_MODES(MATR_RIGI=K_ASSE,
+                  MATR_MASS=M_ASSE,
+                  CALC_FREQ=_F(NMAX_FREQ=3,
+                               ),
+                  )
 
 
 # TEST DE L'OPTION 'PLUS_GRANDE'
-MO_PG_SO=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+MO_PG_SO=CALC_MODES(MATR_RIGI=K_ASSE,
+                    MATR_MASS=M_ASSE,
+                    OPTION='PLUS_GRANDE',
+                    )
 
-MO_PG_TD=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          METHODE='TRI_DIAG',
-                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+MO_PG_TD=CALC_MODES(MATR_RIGI=K_ASSE,
+                    OPTION='PLUS_GRANDE',
+                    MATR_MASS=M_ASSE,
+                    SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                     ),
+                    )
 
-MO_PG_JA=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          METHODE='JACOBI',
-                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+MO_PG_JA=CALC_MODES(MATR_RIGI=K_ASSE,
+                    OPTION='PLUS_GRANDE',
+                    MATR_MASS=M_ASSE,
+                    SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                     ),
+                    )
 
-MO_PG_QZ=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          METHODE='QZ',
-                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+MO_PG_QZ=CALC_MODES(MATR_RIGI=K_ASSE,
+                    OPTION='PLUS_GRANDE',
+                    MATR_MASS=M_ASSE,
+                    SOLVEUR_MODAL=_F(METHODE='QZ',
+                                     ),
+                    )
 
 freq_propres = [1.21812E-01, 2.25079E-01, 2.94080E-01]
 

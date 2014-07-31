@@ -82,10 +82,12 @@ GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
                    NUME_DDL=NUMEDDL,);
 
                     
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                       FREQ=(3.,3000.)));
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(3.,3000.),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
                                   
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -121,14 +123,18 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
 
-MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       MATR_AMOR=GYOM,
-                       VERI_MODE=_F(SEUIL=2.E-3),
-       METHODE='QZ',
-       CALC_FREQ=_F(OPTION='CENTRE',
-                                     FREQ=1.,
-                                     NMAX_FREQ=30),)
+MODEG=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 VERI_MODE=_F(SEUIL=2.E-3,
+                              ),
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=30,
+                              FREQ=1.,
+                              ),
+                 MATR_AMOR=GYOM,
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  ),
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

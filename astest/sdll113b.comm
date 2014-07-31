@@ -127,9 +127,11 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMERO)
 
 #
-MOD_CAL=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
-                                 MATR_MASS=M_ASSE,
-                             CALC_FREQ=_F( NMAX_FREQ = 10))
+MOD_CAL=CALC_MODES(MATR_RIGI=K_ASSE,
+                   MATR_MASS=M_ASSE,
+                   CALC_FREQ=_F(NMAX_FREQ=10,
+                                ),
+                   )
 
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED',
@@ -318,9 +320,11 @@ A_ASSE1=ASSE_MATRICE(  MATR_ELEM=A_ELEM1,
                            NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
-                                 MATR_MASS=M_ASSE1,
-                             CALC_FREQ=_F( NMAX_FREQ = 04))
+MODES1=CALC_MODES(MATR_RIGI=K_ASSE1,
+                  MATR_MASS=M_ASSE1,
+                  CALC_FREQ=_F(NMAX_FREQ=04,
+                               ),
+                  )
 
 #
 INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUM1,
@@ -402,9 +406,11 @@ V_ASSE2=ASSE_VECTEUR(  VECT_ELEM=V_ELEM2,
                            NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
-                                 MATR_MASS=M_ASSE2,
-                             CALC_FREQ=_F( NMAX_FREQ = 05))
+MODES2=CALC_MODES(MATR_RIGI=K_ASSE2,
+                  MATR_MASS=M_ASSE2,
+                  CALC_FREQ=_F(NMAX_FREQ=05,
+                               ),
+                  )
 
 #
 INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM2,

@@ -81,10 +81,13 @@ MAS=POST_ELEM(   MODELE=MODELE,
 #         ET AJOUT DES REACTIONS D'APPUI MODALE
 #---------------------------------------------
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,    MATR_MASS=MASSE,
-                               METHODE='TRI_DIAG',
-                           CALC_FREQ=_F(  NMAX_FREQ = 10)
-                  )
+MODE=CALC_MODES(MATR_RIGI=RIGIDITE,
+                CALC_FREQ=_F(NMAX_FREQ=10,
+                             ),
+                MATR_MASS=MASSE,
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                 ),
+                )
 
 MODE=NORM_MODE(reuse=MODE,   MODE=MODE,    NORME='TRAN_ROTA',
                   )

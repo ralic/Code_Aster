@@ -406,10 +406,12 @@ ASSEMBLAGE(MODELE=MODELE,
                       _F(MATRICE=CO('MASSE'),
                          OPTION='MASS_MECA',),),);
 
-MODECA=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                        MATR_MASS=MASSE,
-                        CALC_FREQ=_F(OPTION='BANDE',
-                                     FREQ=(0.,16.,),),);
+MODECA=CALC_MODES(MATR_RIGI=RIGIDITE,
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(0.,16.,),
+                               ),
+                  MATR_MASS=MASSE,
+                  )
 
 SUPPOR1=AFFE_CHAR_MECA(MODELE=MODEL1,
                        DDL_IMPO=(_F(GROUP_NO=('N1B','N4B','N7B','N11B','N15B','N17B',),
@@ -478,10 +480,12 @@ ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('MODEGE'),
                          SOUS_STRUC_2='S23',
                          INTERFACE_2='N21_23',),);
 
-MODEGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
-                         MATR_MASS=MASGEN,
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=(0.,16.,),),);
+MODEGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.,16.,),
+                                ),
+                   MATR_MASS=MASGEN,
+                   )
 
 SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
                      SOUS_STRUC=(_F(NOM='S11',

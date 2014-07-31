@@ -80,10 +80,12 @@ M_AS_1=ASSE_MATRICE(MATR_ELEM=M_EL_1,
 
 # CALCUL DES MODES PAR SORENSEN + BANDE
 
-MODE_A_1=MODE_ITER_SIMULT(MATR_RIGI=K_AS_1,
-                          MATR_MASS=M_AS_1,
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(10.,2000.,),),);
+MODE_A_1=CALC_MODES(MATR_RIGI=K_AS_1,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(10.,2000.,),
+                                 ),
+                    MATR_MASS=M_AS_1,
+                    )
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_A_1,
                    NUME_MODE=2,
@@ -128,11 +130,14 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_A_1,
 
 # CALCUL DES MODES PAR JACOBI + BANDE
 
-MODE_B_1=MODE_ITER_SIMULT(METHODE='JACOBI',
-                          MATR_RIGI=K_AS_1,
-                          MATR_MASS=M_AS_1,
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(10.,2000.,),),);
+MODE_B_1=CALC_MODES(CALC_FREQ=_F(FREQ=(10.,2000.,),
+                                 ),
+                    OPTION='BANDE',
+                    MATR_RIGI=K_AS_1,
+                    MATR_MASS=M_AS_1,
+                    SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_B_1,
                    NUME_MODE=2,
@@ -238,10 +243,12 @@ M_AS_2=ASSE_MATRICE(MATR_ELEM=M_EL_2,
 
 # A - CALCUL DES MODES PAR SORENSEN + BANDE
 
-MODE_A_2=MODE_ITER_SIMULT(MATR_RIGI=K_AS_2,
-                          MATR_MASS=M_AS_2,
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(10.,2000.,),),);
+MODE_A_2=CALC_MODES(MATR_RIGI=K_AS_2,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(10.,2000.,),
+                                 ),
+                    MATR_MASS=M_AS_2,
+                    )
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_A_2,
                    NUME_MODE=1,
@@ -294,11 +301,14 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_A_2,
 
 # B - CALCUL DES MODES PAR JACOBI + BANDE
 
-MODE_B_2=MODE_ITER_SIMULT(METHODE='JACOBI',
-                          MATR_RIGI=K_AS_2,
-                          MATR_MASS=M_AS_2,
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(10.,2000.,),),);
+MODE_B_2=CALC_MODES(CALC_FREQ=_F(FREQ=(10.,2000.,),
+                                 ),
+                    OPTION='BANDE',
+                    MATR_RIGI=K_AS_2,
+                    MATR_MASS=M_AS_2,
+                    SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_B_2,
                    NUME_MODE=1,

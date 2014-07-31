@@ -107,10 +107,12 @@ MODESSTA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MODE_STAT=_F(NOEUD='NO130',
                                    AVEC_CMP=('DX','DY','DZ'),),);
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                      MATR_MASS=MASSE,
-                      CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                   NMAX_FREQ=20,),);
+MODE=CALC_MODES(MATR_RIGI=RIGIDITE,
+                OPTION='PLUS_PETITE',
+                CALC_FREQ=_F(NMAX_FREQ=20,
+                             ),
+                MATR_MASS=MASSE,
+                )
 
 
 NUMGEN=NUME_DDL_GENE(BASE=MODE,
@@ -148,10 +150,12 @@ MASTOT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MGENE,
                               _F(MATR_ASSE=MASSAJ,
                                  COEF_R=1.0,),),);
 
-MODHUMI=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
-                         MATR_MASS=MASTOT,
-                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                      NMAX_FREQ=20,),);
+MODHUMI=CALC_MODES(MATR_RIGI=RIGGEN,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=20,
+                                ),
+                   MATR_MASS=MASTOT,
+                   )
 
 
 MODMECA=REST_GENE_PHYS(RESU_GENE=MODHUMI,);
@@ -233,10 +237,12 @@ MASTOT2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MGENE2,
                                _F(MATR_ASSE=MASSAJ2,
                                   COEF_R=1.0,),),);
 
-MODHUMI2=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN2,
-                          MATR_MASS=MASTOT2,
-                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                       NMAX_FREQ=20,),);
+MODHUMI2=CALC_MODES(MATR_RIGI=RIGGEN2,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=20,
+                                 ),
+                    MATR_MASS=MASTOT2,
+                    )
 
 
 DYNGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',

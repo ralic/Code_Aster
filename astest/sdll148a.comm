@@ -77,12 +77,15 @@ MATRR=ASSE_MATRICE( MATR_ELEM=MELR,
 MATRM=ASSE_MATRICE( MATR_ELEM=MELM,
                      NUME_DDL=NUM )
 
-MODES=MODE_ITER_SIMULT( MATR_RIGI=MATRR,
-                        MATR_MASS=MATRM,
-                        CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                      NMAX_FREQ=2),
-                        VERI_MODE=_F(STOP_ERREUR='NON',
-                                     STURM='NON'),)
+MODES=CALC_MODES(MATR_RIGI=MATRR,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              STURM='NON',
+                              ),
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 MATR_MASS=MATRM,
+                 )
 
 
 MODES=NORM_MODE(reuse=MODES,MODE=MODES,AVEC_CMP='DX')

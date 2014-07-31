@@ -118,13 +118,14 @@ MATR=ASSE_MATRICE(MATR_ELEM=RIGIEL,
 MATM=ASSE_MATRICE(MATR_ELEM=MASSEL,
                   NUME_DDL=NUMDDL,
                   CHAR_CINE=CH)
-MODE200=MODE_ITER_SIMULT( MATR_RIGI=MATR,
-                       MATR_MASS=MATM,
-                       CALC_FREQ=_F( NMAX_FREQ= 5,
-                                     OPTION ='PLUS_PETITE'
-                                    ),
-                       VERI_MODE=_F( SEUIL = 1.E-5 )
-                      )
+MODE200=CALC_MODES(MATR_RIGI=MATR,
+                   VERI_MODE=_F(SEUIL=1.E-5,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=5,
+                                ),
+                   MATR_MASS=MATM,
+                   )
 
 # CONTRUCTION DU CHARGEMENT (IMPULSION)
 OMEGA=2*pi*20

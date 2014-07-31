@@ -104,12 +104,14 @@ ASSEMBLAGE(MODELE=MODELE,
                          OPTION='MASS_MECA',),),
            );
 
-MODE_PG=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
-                         MATR_MASS=MATASSM,
-                         METHODE='TRI_DIAG',
-                         CALC_FREQ=_F(OPTION='PLUS_GRANDE',),
-                         VERI_MODE=_F(STURM='NON'),
-                        );
+MODE_PG=CALC_MODES(MATR_RIGI=MATASSR,
+                   VERI_MODE=_F(STURM='NON',
+                                ),
+                   OPTION='PLUS_GRANDE',
+                   MATR_MASS=MATASSM,
+                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 
 #---------------------------------------------------------------------

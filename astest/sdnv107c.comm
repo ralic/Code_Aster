@@ -171,11 +171,14 @@ MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
                            NUME_DDL=NUMDDL_1);
 
 #
-MODES_1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
-                              MATR_MASS=MASS_1,
-                             VERI_MODE=_F(STOP_ERREUR='NON',),
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6));
+MODES_1=CALC_MODES(MATR_RIGI=RAID_1,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MASS_1,
+                   )
 
 
 #
@@ -225,11 +228,14 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2);
 
 #
-MODES_2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
-                              MATR_MASS=MASS_2,
-                             VERI_MODE=_F(STOP_ERREUR='NON',),
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6));
+MODES_2=CALC_MODES(MATR_RIGI=RAID_2,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MASS_2,
+                   )
 
 
 
@@ -278,11 +284,14 @@ MASS_3=ASSE_MATRICE(  MATR_ELEM=MEMAME_3,
                            NUME_DDL=NUMDDL_3);
 
 #
-MODES_3=MODE_ITER_SIMULT(     MATR_RIGI=RAID_3,
-                              MATR_MASS=MASS_3,
-                             VERI_MODE=_F(STOP_ERREUR='NON',),
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6));
+MODES_3=CALC_MODES(MATR_RIGI=RAID_3,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MASS_3,
+                   )
 
 
 
@@ -474,13 +483,12 @@ MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                  ),);
 
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGIGENE,
-                             MATR_MASS=MASSGENE,
-                             CALC_FREQ=_F(
-                             OPTION = 'PLUS_PETITE',
-                             NMAX_FREQ = 20
-                                        )
-                       );
+RESGEN=CALC_MODES(MATR_RIGI=RIGIGENE,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=20,
+                               ),
+                  MATR_MASS=MASSGENE,
+                  )
 
 MODGLO=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NOM_CHAM='DEPL',
@@ -794,13 +802,14 @@ MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NUMDDL,);
 
 MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NUMDDL, SYME='OUI',);
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=MATASR, MATR_MASS=MATASM,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(0.1,1000.,
-                                          ),
-                                    ),
-                       VERI_MODE=_F(STOP_ERREUR='NON'),
-                       );
+MODE=CALC_MODES(MATR_RIGI=MATASR,
+                VERI_MODE=_F(STOP_ERREUR='NON',
+                             ),
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=(0.1,1000.,),
+                             ),
+                MATR_MASS=MATASM,
+                )
 
 
 # CHAMPS SUR LE MODELE REDUIT NECESSAIRES A LA REPRISE

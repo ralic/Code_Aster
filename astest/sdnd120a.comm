@@ -68,12 +68,12 @@ ASSEMBLAGE(  MODELE=MODELE,  CHARGE=(CON_LIM, ),
                )
 
 #
-MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-
-                 CALC_FREQ=_F(  OPTION = 'BANDE',
-
-                      FREQ = (3000., 3500.,))
-                           )
+MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(3000.,3500.,),
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 #
 # CALCUL DES MODES STATIQUES AUX POINTS D'ANCRAGE:

@@ -76,11 +76,15 @@ MASK_SHB=ASSE_MATRICE(MATR_ELEM=MK_SHB,
 MASM_SHB=ASSE_MATRICE(MATR_ELEM=MM_SHB,
                       NUME_DDL=NUM_SHB,);
 
-MODE_SHB=MODE_ITER_SIMULT(MATR_RIGI=MASK_SHB,
-                          MATR_MASS=MASM_SHB,
-                          OPTION='SANS',
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(200.0,800.0,),),);
+MODE_SHB=CALC_MODES(MATR_RIGI=MASK_SHB,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.0,800.0,),
+                                 ),
+                    MATR_MASS=MASM_SHB,
+                    SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                     METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 # modes hors plan
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

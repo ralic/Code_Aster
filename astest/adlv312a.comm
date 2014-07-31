@@ -129,11 +129,12 @@ TABL_MAS=POST_ELEM(        MODELE=MODELE,
 # CALCUL DES MODES
 #
 
-MODES=MODE_ITER_SIMULT(        MATR_RIGI=K_ASSE,
-                                    MATR_MASS=M_ASSE,
-                                 CALC_FREQ=_F(  OPTION = 'BANDE',
-                                             FREQ = (70.,  300., ))
-                            )
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(70.,300.,),
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=158,

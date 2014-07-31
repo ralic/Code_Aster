@@ -104,11 +104,15 @@ MATASSC=ASSE_MATRICE(MATR_ELEM=MELC,NUME_DDL=NUM)
 
 # --------------------------------------------------------------------
 
-MODE_QUA=MODE_ITER_INV(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,MATR_AMOR=MATASSC,
-                        CALC_MODE=_F( NMAX_ITER = 75),
-                        CALC_FREQ=_F( OPTION = 'PROCHE',
-                                   FREQ = ( 6., 10., 15., 19., 24., 28.,
-                                                  30., 31., )))
+MODE_QUA=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='PROCHE',
+                    CALC_FREQ=_F(FREQ=( 6.,10.,15.,19.,24.,28.,30.,31.,),
+                                 ),
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    SOLVEUR_MODAL=_F(NMAX_ITER_INV=75,
+                                     ),
+                    )
 
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )

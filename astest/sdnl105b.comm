@@ -103,10 +103,11 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
-                                 MATR_MASS=M_ASSE,
-                             CALC_FREQ=_F( NMAX_FREQ = 5)
-                             )
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 MATR_MASS=M_ASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=5,
+                              ),
+                 )
 
 
 #
@@ -195,9 +196,11 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCUL MODAL :
 ###
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
-                                 MATR_MASS=M_GENE,
-                             CALC_FREQ=_F( NMAX_FREQ = 15))
+RESGEN=CALC_MODES(MATR_RIGI=K_GENE,
+                  MATR_MASS=M_GENE,
+                  CALC_FREQ=_F(NMAX_FREQ=15,
+                               ),
+                  )
 
 
 #

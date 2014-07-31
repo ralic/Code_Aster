@@ -99,12 +99,15 @@ FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
 
 #CALCUL DE LA BASE DE MODES DYNAMIQUES
 #
-MODET=MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                       MATR_MASS=MASS,
-                       CALC_FREQ=_F(
-                       NMAX_FREQ=6,),
-                       VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',SEUIL=3.E-5,),);
+MODET=CALC_MODES(MATR_RIGI=KASS,
+                 VERI_MODE=_F(STOP_ERREUR='OUI',
+                              STURM='OUI',
+                              SEUIL=3.E-5,
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=6,
+                              ),
+                 MATR_MASS=MASS,
+                 )
 
 
 # TEST DE CREATION D'UNE BASE MODALE AVEC UNE OCCURENCE
@@ -118,21 +121,29 @@ MODES=DEFI_BASE_MODALE(RITZ=(
 # TEST DE CREATION D'UNE BASE MODALE PAR ASSEMBLAGE DE DEUX
 #CONCEPTS "MODE_MECA" DONNES DANS UNE LISTE SOUS LE MOT-CLE "RITZ"
 
-MODE_A=MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                       MATR_MASS=MASS,
-                       CALC_FREQ=_F(
-                       NMAX_FREQ=4,),
-                       VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',SEUIL=3.E-5,),);
+MODE_A=CALC_MODES(MATR_RIGI=KASS,
+                  VERI_MODE=_F(STOP_ERREUR='OUI',
+                               STURM='OUI',
+                               SEUIL=3.E-5,
+                               ),
+                  CALC_FREQ=_F(NMAX_FREQ=4,
+                               ),
+                  MATR_MASS=MASS,
+                  )
 
 
-MODE_B=MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                       MATR_MASS=MASS,
-                       METHODE='JACOBI',
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(1000.,5100.),),
-                       VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',SEUIL=3.E-5,),);
+MODE_B=CALC_MODES(MATR_RIGI=KASS,
+                  VERI_MODE=_F(STOP_ERREUR='OUI',
+                               STURM='OUI',
+                               SEUIL=3.E-5,
+                               ),
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(1000.,5100.),
+                               ),
+                  MATR_MASS=MASS,
+                  SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                   ),
+                  )
 
 
 MODE_T=DEFI_BASE_MODALE(RITZ=(
@@ -228,11 +239,14 @@ FGEN=PROJ_VECT_BASE(BASE=MODSTA,
                     VECT_ASSE=FASS,);
 #CALCUL DES MODES SUR BASE REDUITE
 
-MODGEN=MODE_ITER_SIMULT(MATR_RIGI=KGEN,
-                        MATR_MASS=MGEN,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=5,),
-                        VERI_MODE=_F(STOP_ERREUR='NON',),);
+MODGEN=CALC_MODES(MATR_RIGI=KGEN,
+                  VERI_MODE=_F(STOP_ERREUR='NON',
+                               ),
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=5,
+                               ),
+                  MATR_MASS=MGEN,
+                  )
 
 #RESTITUTION SUR BASE PHYSIQUE DES MODES PROPRES GENERALISES
 

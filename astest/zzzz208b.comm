@@ -129,12 +129,14 @@ MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
                   NUME_DDL=NUME,);
 
 # Calcul des modes dynamiques interfaces encastrees
-MODES=MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                       MATR_MASS=MASS,
-                       CALC_FREQ=_F(
-                       NMAX_FREQ=20,),
-                       VERI_MODE=_F(STOP_ERREUR='NON',
-                                    STURM='NON',),);
+MODES=CALC_MODES(MATR_RIGI=KASS,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              STURM='NON',
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=20,
+                              ),
+                 MATR_MASS=MASS,
+                 )
 
 
 # calcul des modes statiques dis contraints
@@ -211,13 +213,15 @@ MGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGEN,
 
 # calcul des modes generalises du complement de Schur
 # a l'interface
-MODGEN=MODE_ITER_SIMULT(MATR_RIGI=KGEN,
-                        MATR_MASS=MGEN,
-                        CALC_FREQ=_F(
-                        NMAX_FREQ=5,),
-                        VERI_MODE=_F(STOP_ERREUR='OUI',
-                                     STURM='NON',),
-                        STOP_BANDE_VIDE='NON',);
+MODGEN=CALC_MODES(MATR_RIGI=KGEN,
+                  VERI_MODE=_F(STOP_ERREUR='OUI',
+                               STURM='NON',
+                               ),
+                  CALC_FREQ=_F(NMAX_FREQ=5,
+                               ),
+                  MATR_MASS=MGEN,
+                  STOP_BANDE_VIDE='NON',
+                  )
 
 
 # expansion des modes generalises d'interface sur chaque sous-structure
@@ -282,13 +286,15 @@ MGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGENR,
                     OPTION='MASS_GENE',);
 
 # calcul des modes generalises
-MODGENR=MODE_ITER_SIMULT(MATR_RIGI=KGENR,
-                        MATR_MASS=MGENR,
-                        CALC_FREQ=_F(
-                        NMAX_FREQ=5,),
-                        VERI_MODE=_F(STOP_ERREUR='OUI',
-                                     STURM='NON',),
-                        STOP_BANDE_VIDE='NON',);
+MODGENR=CALC_MODES(MATR_RIGI=KGENR,
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                STURM='NON',
+                                ),
+                   CALC_FREQ=_F(NMAX_FREQ=5,
+                                ),
+                   MATR_MASS=MGENR,
+                   STOP_BANDE_VIDE='NON',
+                   )
 
 
 
@@ -413,13 +419,15 @@ frequence=LA.eigvals(NP.dot(MACK,MPYPI))
 frequence=NP.sort(NP.sqrt(frequence)/2/NP.pi)
 
 # calcul des modes generalises avec Aster a partir des matrices assemblees dans Python
-MODPYR=MODE_ITER_SIMULT(MATR_RIGI=KPYR,
-                        MATR_MASS=MPYR,
-                        CALC_FREQ=_F(
-                        NMAX_FREQ=5,),
-                        VERI_MODE=_F(STOP_ERREUR='OUI',
-                                     STURM='NON',),
-                        STOP_BANDE_VIDE='NON',);
+MODPYR=CALC_MODES(MATR_RIGI=KPYR,
+                  VERI_MODE=_F(STOP_ERREUR='OUI',
+                               STURM='NON',
+                               ),
+                  CALC_FREQ=_F(NMAX_FREQ=5,
+                               ),
+                  MATR_MASS=MPYR,
+                  STOP_BANDE_VIDE='NON',
+                  )
 
 
 

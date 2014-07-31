@@ -106,12 +106,12 @@ KASTOT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=KASGEO,
                               _F(MATR_ASSE=KASS,
                                  COEF_R=1.0,),),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=KASTOT,
-                       MATR_MASS=MASS,
-                       CALC_FREQ=_F(
-                       OPTION='PLUS_PETITE',
-                       NMAX_FREQ=5,),
-                       );
+MODES=CALC_MODES(MATR_RIGI=KASTOT,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=5,
+                              ),
+                 MATR_MASS=MASS,
+                 )
 
 
 MODES=CALC_CHAMP(reuse=MODES,MODELE=MODELE,CHAM_MATER=CHMAT,RESULTAT=MODES,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'),EXCIT=(_F(CHARGE=IMPO),_F(CHARGE=ROTATION)))

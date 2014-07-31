@@ -117,14 +117,16 @@ MATASSM=ASSE_MATRICE(    MATR_ELEM=MELM,
 #
 #--- CALCUL DES MODES PROPRES, IL Y A UN MODE RIGIDE ------------------
 #
-MODES=MODE_ITER_SIMULT(       MATR_RIGI=MATASSK,
-                                MATR_MASS=MATASSM,
-                               METHODE='JACOBI',
-                             OPTION='SANS',
-                             CALC_FREQ=_F( OPTION = 'CENTRE',
-                                        FREQ = 10.,
-                                        NMAX_FREQ = 10)
-                          )
+MODES=CALC_MODES(MATR_RIGI=MATASSK,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              FREQ=10.,
+                              ),
+                 MATR_MASS=MATASSM,
+                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                  METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 
 #

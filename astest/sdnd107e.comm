@@ -100,10 +100,12 @@ ASSEMBLAGE(
 )
 #
 # Mode de la structure
-ModeStr=MODE_ITER_SIMULT(
-    MATR_RIGI=Rigidite,   MATR_MASS=Masse,
-    CALC_FREQ=_F(OPTION='BANDE', FREQ=(0.0, 3.0,),)
-)
+ModeStr=CALC_MODES(MATR_RIGI=Rigidite,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.0,3.0,),
+                                ),
+                   MATR_MASS=Masse,
+                   )
 #
 # calcul des modes statiques aux points d'ancrage et des chargements sismiques
 ModeSta=MODE_STATIQUE(

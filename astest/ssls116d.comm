@@ -121,11 +121,12 @@ MATASS=ASSE_MATRICE(  MATR_ELEM=MEL, NUME_DDL=NU )
 MATASM=ASSE_MATRICE(  MATR_ELEM=MASEL, NUME_DDL=NU )
 
 
-MODES=MODE_ITER_SIMULT(    MATR_RIGI=MATASS,
-                             MATR_MASS=MATASM,
-                             CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                         NMAX_FREQ = 4)
-                        )
+MODES=CALC_MODES(MATR_RIGI=MATASS,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              ),
+                 MATR_MASS=MATASM,
+                 )
 
 
 DEP=MECA_STATIQUE(MODELE=MO,
@@ -151,11 +152,12 @@ MATASS2=ASSE_MATRICE(  MATR_ELEM=MEL2, NUME_DDL=NU2 )
 
 MATASM2=ASSE_MATRICE(  MATR_ELEM=MASEL2, NUME_DDL=NU2 )
 
-MODES2=MODE_ITER_SIMULT(    MATR_RIGI=MATASS2,
-                              MATR_MASS=MATASM2,
-                             CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                                         NMAX_FREQ = 4)
-                        )
+MODES2=CALC_MODES(MATR_RIGI=MATASS2,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=4,
+                               ),
+                  MATR_MASS=MATASM2,
+                  )
 
 
 DEP2=MECA_STATIQUE(MODELE=MO,

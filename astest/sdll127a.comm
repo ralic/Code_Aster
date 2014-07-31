@@ -284,10 +284,12 @@ GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
                    NUME_DDL=NUMEDDL,);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(3.,4750.)));
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(3.,4750.),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
                                                
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -390,12 +392,15 @@ PROJ_BASE(BASE=MODES,
                           _F(MATRICE=CO('OMGE'),
                              MATR_ASSE=GYOM,),),);
 
-MOD2ETAG=MODE_ITER_SIMULT(MATR_RIGI=RIGE,
-                          MATR_MASS=MAGE,
-                          MATR_AMOR=OMGE,
-                          METHODE='QZ',
-                          VERI_MODE=_F(SEUIL=2.E-6),
-                          CALC_FREQ=_F(OPTION='TOUT'),)
+MOD2ETAG=CALC_MODES(MATR_RIGI=RIGE,
+                    VERI_MODE=_F(SEUIL=2.E-6,
+                                 ),
+                    OPTION='TOUT',
+                    MATR_AMOR=OMGE,
+                    MATR_MASS=MAGE,
+                    SOLVEUR_MODAL=_F(METHODE='QZ',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

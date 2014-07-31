@@ -158,9 +158,11 @@ M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1,
                            NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
-                                 MATR_MASS=M_ASSE1,
-                             CALC_FREQ=_F( NMAX_FREQ = 22))
+MODES1=CALC_MODES(MATR_RIGI=K_ASSE1,
+                  MATR_MASS=M_ASSE1,
+                  CALC_FREQ=_F(NMAX_FREQ=22,
+                               ),
+                  )
 
 
 #
@@ -286,9 +288,11 @@ M_ASSE2=ASSE_MATRICE(  MATR_ELEM=M_ELEM2,
                            NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
-                                 MATR_MASS=M_ASSE2,
-                             CALC_FREQ=_F( NMAX_FREQ = 22))
+MODES2=CALC_MODES(MATR_RIGI=K_ASSE2,
+                  MATR_MASS=M_ASSE2,
+                  CALC_FREQ=_F(NMAX_FREQ=22,
+                               ),
+                  )
 
 
 #
@@ -341,10 +345,12 @@ MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #
 #  RECHERCHE DES MODES PROPRES DE LA STRUCTURE COMPLETE
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASGEN,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (100., 2000.,)))
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(100.,2000.,),
+                               ),
+                  MATR_MASS=MASGEN,
+                  )
 
 
 #

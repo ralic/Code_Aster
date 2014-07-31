@@ -54,10 +54,12 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=10,),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,

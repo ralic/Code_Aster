@@ -111,10 +111,14 @@ MATASSR=ASSE_MATRICE(MATR_ELEM=MELR,NUME_DDL=NUM)
 MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 
 # --------------------------------------------------------------------
-FREQ=MODE_ITER_INV(   MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
-          CALC_FREQ=_F(  OPTION = 'AJUSTE',
-                      FREQ = (5., 10., 15., 20., 24., 27., 30., 32.,)),
-           CALC_MODE=_F(  OPTION = 'DIRECT') )
+FREQ=CALC_MODES(MATR_RIGI=MATASSR,
+                OPTION='AJUSTE',
+                CALC_FREQ=_F(FREQ=(5.,10.,15.,20.,24.,27.,30.,32.,),
+                             ),
+                MATR_MASS=MATASSM,
+                SOLVEUR_MODAL=_F(OPTION_INV='DIRECT',
+                                 ),
+                )
 
 
 FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,

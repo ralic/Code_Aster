@@ -101,7 +101,7 @@ cond_li2 = AFFE_CHAR_MECA( MODELE=STICKMOD,
                                     );
                        
 
-# mode =MODE_ITER_SIMULT            
+# mode =CALC_MODES
 
 # CALCUL DE LA MASSE ET INERTIES DE LA STRUCTURE -----------------------
 
@@ -167,12 +167,11 @@ MODESTA1=MODE_STATIQUE(  MATR_RIGI=rigid0,
                                ),
                     );
 
-MODE =MODE_ITER_SIMULT(MATR_RIGI=rigid2,
-                     MATR_MASS=masse2,
-                     CALC_FREQ=_F(
-                                  NMAX_FREQ = 1
-                                ),
-                   );
+MODE=CALC_MODES(MATR_RIGI=rigid2,
+                MATR_MASS=masse2,
+                CALC_FREQ=_F(NMAX_FREQ=1,
+                             ),
+                )
 
                        
                             

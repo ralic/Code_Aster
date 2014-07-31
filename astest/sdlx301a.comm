@@ -158,21 +158,26 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM,
 #
 # CALCUL MODAL POUR LES RECOMBINAISOMS
 
-MODE2=MODE_ITER_INV(MATR_RIGI=RIGIDITE,
-                    MATR_MASS=MASSE,
-                    CALC_FREQ=_F(OPTION='PROCHE',
-                                 PREC_SHIFT=0.02,
-                                 NMAX_ITER_SHIFT=8,
-                                 FREQ=(1.52,2.06,2.37,4.87,7.55,8.44,8.6,15.43,),
-                                ),
-                    VERI_MODE=_F(SEUIL=0.0001,),);
+MODE2=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 VERI_MODE=_F(SEUIL=0.0001,
+                              ),
+                 OPTION='PROCHE',
+                 CALC_FREQ=_F(PREC_SHIFT=0.02,
+                              FREQ=(1.52,2.06,2.37,4.87,7.55,8.44,8.6,15.43,),
+                              NMAX_ITER_SHIFT=8,
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 #
-MODE1=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=8,),
-                       VERI_MODE=_F(SEUIL=0.000001,),);
+MODE1=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 VERI_MODE=_F(SEUIL=0.000001,
+                              ),
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=8,
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 # NOUVEAU FV :
 IMPR_RESU(MODELE=MO,

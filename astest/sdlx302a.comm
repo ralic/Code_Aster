@@ -171,11 +171,12 @@ MASSE=ASSE_MATRICE(    MATR_ELEM=MASSELEM,
 #
 # CALCUL MODAL
 #
-MODE1=MODE_ITER_SIMULT(       MATR_RIGI=RIGIDITE,
-                                   MATR_MASS=MASSE,
-                                CALC_FREQ=_F( NMAX_FREQ = 10,
-                                           OPTION = 'PLUS_PETITE')
-                            )
+MODE1=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 
 MODE1=CALC_CHAMP(reuse=MODE1,RESULTAT=MODE1,CONTRAINTE=('EFGE_ELNO','SIPO_ELNO','SIEF_ELGA'))

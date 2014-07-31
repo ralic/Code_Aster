@@ -71,9 +71,12 @@ ASSEMBLAGE(  MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,
 #
 # CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
 #---------------------------------------------
-MODE_MEC=MODE_ITER_INV(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                 CALC_FREQ=_F(  OPTION = 'AJUSTE',  FREQ = (3.8,  7.,  9.3, ))
-                         )
+MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    OPTION='AJUSTE',
+                    CALC_FREQ=_F(FREQ=(3.8,7.,9.3,),
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,  MODE=MODE_MEC,   NORME='MASS_GENE' )
 

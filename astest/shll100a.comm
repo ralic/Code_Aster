@@ -103,9 +103,11 @@ MATASAD=ASSE_MATRICE(  MATR_ELEM=MATELD_A,
                           NUME_DDL=NUMD)
 
 #
-MODESD=MODE_ITER_SIMULT(  MATR_RIGI=MATASKD,
-                              MATR_MASS=MATASMD,
-                              CALC_FREQ=_F( NMAX_FREQ = 10) )
+MODESD=CALC_MODES(MATR_RIGI=MATASKD,
+                  MATR_MASS=MATASMD,
+                  CALC_FREQ=_F(NMAX_FREQ=10,
+                               ),
+                  )
 
 
 #CALCUL HARMO SUR BASE MODALE CALCULEE DIRECTEMENT
@@ -325,9 +327,11 @@ MATASA1=ASSE_MATRICE(  MATR_ELEM=MATEL1_A,
                           NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(  MATR_RIGI=MATASK1,
-                              MATR_MASS=MATASM1,
-                              CALC_FREQ=_F( NMAX_FREQ = 05) )
+MODES1=CALC_MODES(MATR_RIGI=MATASK1,
+                  MATR_MASS=MATASM1,
+                  CALC_FREQ=_F(NMAX_FREQ=05,
+                               ),
+                  )
 
 
 #
@@ -415,9 +419,11 @@ VECTAS=ASSE_VECTEUR(  VECT_ELEM=VECTEL,
                           NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(  MATR_RIGI=MATASK2,
-                              MATR_MASS=MATASM2,
-                              CALC_FREQ=_F( NMAX_FREQ = 05) )
+MODES2=CALC_MODES(MATR_RIGI=MATASK2,
+                  MATR_MASS=MATASM2,
+                  CALC_FREQ=_F(NMAX_FREQ=05,
+                               ),
+                  )
 
 
 #
@@ -477,11 +483,12 @@ AMOGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 ############################################################
 # concept mode_gene
 #
-RESGAIR=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASGEN,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                        NMAX_FREQ = 10)
-                            )
+RESGAIR=CALC_MODES(MATR_RIGI=RIGGEN,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=10,
+                                ),
+                   MATR_MASS=MASGEN,
+                   )
 
 
 FOGEN1 = RECU_FONCTION ( RESU_GENE = RESGAIR,

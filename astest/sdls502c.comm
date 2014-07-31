@@ -100,12 +100,14 @@ M_AS_RIG=ASSE_MATRICE(   MATR_ELEM=M_EL_RIG,   NUME_DDL=NU)
 M_AS_MAS=ASSE_MATRICE(   MATR_ELEM=M_EL_MAS,   NUME_DDL=NU)
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_RIGI=M_AS_RIG,
-                               MATR_MASS=M_AS_MAS,
-                              METHODE='SORENSEN',
-                            CALC_FREQ=_F( OPTION = 'BANDE',
-                                       FREQ = (10., 350.,))   
-                          );
+MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(10.,350.,),
+                              ),
+                 MATR_MASS=M_AS_MAS,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 
 #               

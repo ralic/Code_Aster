@@ -118,13 +118,12 @@ masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
 # CALCUL DES MODES =
 #---------------------------------------------
 
-mode =MODE_ITER_SIMULT(MATR_RIGI=rigidite,
-                       MATR_MASS=masse,
-                       CALC_FREQ=_F(
-                                    NMAX_FREQ = 1,
-                                  ),
-                       # VERI_MODE=_F(STOP_ERREUR='NON',),
-                     );
+mode=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=1,
+                             ),
+                MATR_RIGI=rigidite,
+                #VERI_MODE=_F(STOP_ERREUR='NON',),
+                MATR_MASS=masse,
+                )
 
 
 

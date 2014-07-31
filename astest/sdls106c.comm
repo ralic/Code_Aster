@@ -126,10 +126,12 @@ MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
                            NUME_DDL=NUMDDL_1)
 
 #
-MODES_1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
-                                 MATR_MASS=MASS_1,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MODES_1=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   MATR_RIGI=RAID_1,
+                   MATR_MASS=MASS_1,
+                   )
 
 
 #
@@ -170,10 +172,12 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2)
 
 #
-MODES_2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
-                                 MATR_MASS=MASS_2,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MODES_2=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   MATR_RIGI=RAID_2,
+                   MATR_MASS=MASS_2,
+                   )
 
 #
 #  DEFINITION DES INTERFACES
@@ -267,23 +271,26 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
-                         MATR_MASS=MASGEN,
-                         #METHODE='SORENSEN',
-                         METHODE='TRI_DIAG',
-                         OPTION='MODE_RIGIDE',
-                         CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ=10),
-                         SOLVEUR=_F(METHODE='MUMPS',
-   
-                                    NPREC=9),
-                         VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
-                                      STOP_ERREUR='NON',
-                                      STURM='NON',
-                                      SEUIL=9.9999999999999995E-01),
-                         STOP_BANDE_VIDE='NON',
-                         INFO=2,
-                        )
+RESGEN=CALC_MODES(INFO=2,
+                  MATR_RIGI=RIGGEN,
+                  VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                               STOP_ERREUR='NON',
+                               STURM='NON',
+                               SEUIL=9.9999999999999995E-01,
+                               ),
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=10,
+                               ),
+                  SOLVEUR=_F(METHODE='MUMPS',
+                             NPREC=9,
+                             ),
+                  #SOLVEUR_MODAL(METHODE='SORENSEN',),
+                  MATR_MASS=MASGEN,
+                  STOP_BANDE_VIDE='NON',
+                  SOLVEUR_MODAL=_F(MODE_RIGIDE='OUI',
+                                   METHODE='TRI_DIAG',
+                                   ),
+                  )
 
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE

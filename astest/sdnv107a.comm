@@ -171,11 +171,14 @@ MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
                            NUME_DDL=NUMDDL_1)
 
 #
-MOD_CAL1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
-                              MATR_MASS=MASS_1,
-                             VERI_MODE=_F(STOP_ERREUR='NON',),
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MOD_CAL1=CALC_MODES(MATR_RIGI=RAID_1,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=6,
+                                 ),
+                    MATR_MASS=MASS_1,
+                    )
 
 
 #
@@ -241,11 +244,14 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2)
 
 #
-MOD_CAL2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
-                              MATR_MASS=MASS_2,
-                             VERI_MODE=_F(STOP_ERREUR='NON',),
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MOD_CAL2=CALC_MODES(MATR_RIGI=RAID_2,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=6,
+                                 ),
+                    MATR_MASS=MASS_2,
+                    )
 
 
 
@@ -311,11 +317,14 @@ MASS_3=ASSE_MATRICE(  MATR_ELEM=MEMAME_3,
                            NUME_DDL=NUMDDL_3)
 
 #
-MODES_3=MODE_ITER_SIMULT(     MATR_RIGI=RAID_3,
-                              MATR_MASS=MASS_3,
-                             VERI_MODE=_F(STOP_ERREUR='NON',),
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MODES_3=CALC_MODES(MATR_RIGI=RAID_3,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MASS_3,
+                   )
 
 
 
@@ -492,13 +501,12 @@ MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                  ),);
 
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGIGENE,
-                             MATR_MASS=MASSGENE,
-                             CALC_FREQ=_F(
-                             OPTION = 'PLUS_PETITE',
-                             NMAX_FREQ = 20
-                                        )
-                       )
+RESGEN=CALC_MODES(MATR_RIGI=RIGIGENE,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=20,
+                               ),
+                  MATR_MASS=MASSGENE,
+                  )
 
 RESMOD=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NOM_CHAM='DEPL',

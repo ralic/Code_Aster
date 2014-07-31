@@ -129,14 +129,18 @@ M_SL=COMB_MATR_ASSE(COMB_R=(
                                 ),
                         );
 
-MODE_PG=MODE_ITER_SIMULT(TYPE_RESU='GENERAL',
-                       MATR_A=M_SL,
-                       MATR_B=K_SL,
-                       METHODE='TRI_DIAG',
-                       CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
-                                         NMAX_CHAR_CRIT=1,),
-                       VERI_MODE=_F(STURM='NON',
-                                    STOP_ERREUR='NON'),);
+MODE_PG=CALC_MODES(VERI_MODE=_F(STOP_ERREUR='NON',
+                                STURM='NON',
+                                ),
+                   TYPE_RESU='GENERAL',
+                   CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=1,
+                                     ),
+                   OPTION='PLUS_PETITE',
+                   MATR_B=K_SL,
+                   MATR_A=M_SL,
+                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 TA_FREQ = RECU_TABLE( CO=MODE_PG,
                       NOM_PARA='CHAR_CRIT')
@@ -149,14 +153,17 @@ f_max_systeme = 1. / (2*pi*sqrt(f) ) # conversion en valeur physique.
 # Cette valeur est la reference pour la modelisation SDLL14d.
 
 
-MODE_PG2=MODE_ITER_SIMULT(
-                       MATR_RIGI=M_SL,
-                       MATR_MASS=K_SL,
-                       METHODE='TRI_DIAG',
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                         NMAX_FREQ=1,),
-                       VERI_MODE=_F(STURM='NON',
-                                    STOP_ERREUR='NON'),);
+MODE_PG2=CALC_MODES(MATR_RIGI=M_SL,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 STURM='NON',
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=1,
+                                 ),
+                    MATR_MASS=K_SL,
+                    SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 TA_FREQ2 = RECU_TABLE( CO=MODE_PG2,
                       NOM_PARA='FREQ')

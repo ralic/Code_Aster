@@ -103,12 +103,14 @@ ASSEMBLAGE(        MODELE=MODELE,
                   )
 
 #
-MOD_CAL=MODE_ITER_SIMULT(      MATR_RIGI=K,
-                               MATR_MASS=M,
-                              METHODE='TRI_DIAG',
-                            CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ = 4)
-                         )
+MOD_CAL=CALC_MODES(MATR_RIGI=K,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=4,
+                                ),
+                   MATR_MASS=M,
+                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED', UNITE=81,

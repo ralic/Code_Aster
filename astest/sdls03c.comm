@@ -56,11 +56,14 @@ ASSEMBLAGE(   MODELE=MO,            CARA_ELEM=CA,
                      )
 
 # --------------------------------------------------------------------
-MODE_5=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
-                              METHODE='TRI_DIAG',
-                            CALC_FREQ=_F(   OPTION = 'PLUS_PETITE',
-                                         NMAX_FREQ = 6)
-                          )
+MODE_5=CALC_MODES(MATR_RIGI=MATR,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  MATR_MASS=MATM,
+                  SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                   ),
+                  )
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
@@ -115,14 +118,15 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 # --------------------------------------------------------------------
 
-MODE_6=MODE_ITER_SIMULT(  MATR_RIGI=MATR,
-                          MATR_MASS=MATM,
-                          METHODE='JACOBI',
-                          NMAX_ITER_BATHE = 30,
-                          OPTION='SANS',
-                          CALC_FREQ=_F(   OPTION = 'PLUS_PETITE',
-                                          NMAX_FREQ = 6,)
-                          )
+MODE_6=CALC_MODES(MATR_RIGI=MATR,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  MATR_MASS=MATM,
+                  SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                   NMAX_ITER_BATHE=30,
+                                   ),
+                  )
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,

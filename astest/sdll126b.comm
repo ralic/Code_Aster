@@ -122,10 +122,12 @@ ASSEMBLAGE(MODELE=MODELE,
                            ),
             );
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(0.,3500.,),),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0.,3500.,),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 MODEXTR=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
                                  NUME_MODE=(1,2,3,4,5,6,),),);

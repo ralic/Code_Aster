@@ -119,10 +119,11 @@ MASSASSE=ASSE_MATRICE(   MATR_ELEM=MASSELEM,
                             NUME_DDL=NU                              )
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_RIGI=RIGIASSE,
-                               MATR_MASS=MASSASSE,
-                            CALC_FREQ=_F( NMAX_FREQ = 2),
-                                      )
+MODES=CALC_MODES(MATR_RIGI=RIGIASSE,
+                 MATR_MASS=MASSASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 )
 
 
 #

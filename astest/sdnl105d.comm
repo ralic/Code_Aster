@@ -318,9 +318,11 @@ for k in range(1,ns+1):
 ###### CALCUL MODAL :
 ###
 #
-   RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
-                                 MATR_MASS=M_GENE,
-                             CALC_FREQ=_F( NMAX_FREQ = 15))
+   RESGEN=CALC_MODES(MATR_RIGI=K_GENE,
+                        MATR_MASS=M_GENE,
+                        CALC_FREQ=_F(NMAX_FREQ=15,
+                                     ),
+                        )
 
 
 

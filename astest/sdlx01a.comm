@@ -81,10 +81,13 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 #
 #-------------- CALCUL MODAL
 
-MODES=MODE_ITER_INV(   MATR_RIGI=MATASSR,     MATR_MASS=MATASSM,
-                          CALC_FREQ=_F(  OPTION = 'AJUSTE',
-                                      FREQ = (5.,    350.,),
-                                      NMAX_FREQ = 13)  )
+MODES=CALC_MODES(MATR_RIGI=MATASSR,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(NMAX_FREQ=13,
+                              FREQ=(5.,350.,),
+                              ),
+                 MATR_MASS=MATASSM,
+                 )
 
 
 # --------------------------------------------------------------------

@@ -132,22 +132,26 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
 
 #           CALCUL MODAL
 
-MD1=MODE_ITER_SIMULT(
-             MATR_RIGI=MATASSR1,
-             MATR_MASS=MATASSM1,
-             METHODE='TRI_DIAG',
-            CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                        NMAX_FREQ = 10)    )
+MD1=CALC_MODES(MATR_RIGI=MATASSR1,
+               OPTION='PLUS_PETITE',
+               CALC_FREQ=_F(NMAX_FREQ=10,
+                            ),
+               MATR_MASS=MATASSM1,
+               SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                ),
+               )
 
 
 # ------------------------------------------------------------------
 
-MD2=MODE_ITER_SIMULT(
-             MATR_RIGI=MATASSR2,
-             MATR_MASS=MATASSM2,
-              METHODE='TRI_DIAG',
-            CALC_FREQ=_F(   OPTION = 'PLUS_PETITE',
-                         NMAX_FREQ = 8)    )
+MD2=CALC_MODES(MATR_RIGI=MATASSR2,
+               OPTION='PLUS_PETITE',
+               CALC_FREQ=_F(NMAX_FREQ=8,
+                            ),
+               MATR_MASS=MATASSM2,
+               SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                ),
+               )
 
 
 # --------------------------------------------------------------------

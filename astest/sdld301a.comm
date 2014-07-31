@@ -114,12 +114,13 @@ MAS=POST_ELEM(         MODELE=MODELE,
 
 #
 
-MODES=MODE_ITER_SIMULT(
-                                MATR_RIGI=MATRRIGI,
-                                MATR_MASS=MATRMASS,
-                               METHODE='SORENSEN',
-                             CALC_FREQ=_F(  NMAX_FREQ = 2)
-                          )
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 CALC_FREQ=_F(NMAX_FREQ=2,
+                              ),
+                 MATR_MASS=MATRMASS,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 
 #

@@ -143,10 +143,12 @@ VECT=ASSE_VECTEUR(VECT_ELEM=VELEM, NUME_DDL=NDDL);
 # CALCUL MODAL :30 MODES
 # (jusqu'a 4800 Hz)
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI   =MATR,
-                      MATR_MASS   =MATM,
-                      CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
-                                   NMAX_FREQ= 30));
+MODE=CALC_MODES(MATR_RIGI=MATR,
+                OPTION='PLUS_PETITE',
+                CALC_FREQ=_F(NMAX_FREQ=30,
+                             ),
+                MATR_MASS=MATM,
+                )
 
 
 NDDLGEN=NUME_DDL_GENE(BASE=MODE);

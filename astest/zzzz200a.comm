@@ -404,11 +404,12 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL )
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                         #  MATR_AMOR: AMORT
-                   CALC_FREQ=_F(
-                                NMAX_FREQ = 10)
-                         )
+MODE=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=10,
+                             ),
+                MATR_RIGI=RIGIDITE,
+                #MATR_AMOR: AMORT
+                MATR_MASS=MASSE,
+                )
 
 
 MODE=NORM_MODE(reuse=MODE,  MODE=MODE,    NORME='TRAN_ROTA',)

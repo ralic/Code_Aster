@@ -135,7 +135,7 @@ cond_li2 = AFFE_CHAR_MECA( MODELE=STICKMOD,
                                     );
                        
 
-# mode =MODE_ITER_SIMULT            
+# mode =CALC_MODES          
 # CALCUL DE LA MASSE ET INERTIES DE LA STRUCTURE -----------------------
 
 MASSESTR=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
@@ -214,17 +214,17 @@ masse2 = ASSE_MATRICE( MATR_ELEM=  MASS_EL2, NUME_DDL= NUME_DD2 ) ;
 
 
 
-MODE =MODE_ITER_SIMULT(MATR_RIGI=rigid2,
-                     MATR_MASS=masse2,
-                     CALC_FREQ=_F(
-                                  NMAX_FREQ = 1
-                                ),
-                   );
+MODE=CALC_MODES(MATR_RIGI=rigid2,
+                MATR_MASS=masse2,
+                CALC_FREQ=_F(NMAX_FREQ=1,
+                             ),
+                )
                    
-MODESTA1=MODE_ITER_SIMULT(MATR_RIGI=rigid0,
-                         MATR_MASS=masse0,
-                         CALC_FREQ=_F(NMAX_FREQ=31),
-                        );
+MODESTA1=CALC_MODES(MATR_RIGI=rigid0,
+                    MATR_MASS=masse0,
+                    CALC_FREQ=_F(NMAX_FREQ=31,
+                                 ),
+                    )
                        
                             
 BAMO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODE, NMAX_MODE = 0),

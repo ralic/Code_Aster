@@ -19,7 +19,7 @@
 #---------------------------------------------------------------------
 #  - CALCUL DE MOYENNE DE LA DEFORMATION
 #    JAUGE VIRTUELLE
-#  - RESULTATS ISSUS DE MODE_ITER_SIMULT
+#  - RESULTATS ISSUS DE CALC_MODES
 
 #---------------------------------------------------------------------
 #
@@ -115,12 +115,14 @@ CHF=AFFE_CHAR_MECA(MODELE=MODEL,
 
 modes = 1
 if modes:
-  MODES=MODE_ITER_SIMULT( MATR_RIGI=M_AS_RIG,
-                          MATR_MASS=M_AS_MAS,
-                          METHODE='SORENSEN',
-                          CALC_FREQ=_F(OPTION = 'BANDE',
-                                       FREQ = (1000., 1500.,))
-                          );
+  MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
+                     OPTION='BANDE',
+                     CALC_FREQ=_F(FREQ=(1000.,1500.,),
+                                  ),
+                     MATR_MASS=M_AS_MAS,
+                     SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                      ),
+                     )
 
 
   MODES=CALC_CHAMP(reuse=MODES,RESULTAT=MODES,DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))

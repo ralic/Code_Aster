@@ -71,15 +71,18 @@ MATRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
 #
 #
 #
-MOD_DYN = MACRO_MODE_MECA( MATR_RIGI= MATRIGI, MATR_MASS= MATMASS,
-                        CALC_FREQ =_F(
-                        FREQ =(0.1, 4., 7., 8.,     
+MOD_DYN=CALC_MODES(MATR_RIGI=MATRIGI,
+                   VERI_MODE=_F(STURM='LOCAL',
                                 ),
-                                   ),
-                        VERI_MODE=_F(STURM='LOCAL'),
-                        FILTRE_MODE=_F( ),
-                        IMPRESSION=_F( ),
-                         );
+                   FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',
+                                  SEUIL=1.E-3,),
+                   NORM_MODE=_F(INFO=1,
+                                         NORME='TRAN_ROTA',),
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.1,4.,7.,8.,),
+                                ),
+                   MATR_MASS=MATMASS,
+                   )
 
 
 
@@ -104,10 +107,11 @@ RIGISTAT=ASSE_MATRICE(MATR_ELEM=STARIELE,
 # calcul des modes de fondation sur tapis de ressorts
 # ----------------------------------------------------------
 #
-MOD_STA=MODE_ITER_SIMULT(MATR_RIGI=RIGISTAT,
-                         MATR_MASS=MASSETAT,
-                         CALC_FREQ=_F(NMAX_FREQ=40),
-                        );
+MOD_STA=CALC_MODES(MATR_RIGI=RIGISTAT,
+                   MATR_MASS=MASSETAT,
+                   CALC_FREQ=_F(NMAX_FREQ=40,
+                                ),
+                   )
 
 
 BASMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MOD_DYN,),
@@ -470,8 +474,8 @@ RESUGENE = REST_SPEC_TEMP(RESU_GENE = dyge ,
 
 
 
-L_FREQ = (3.525, 4.10, 
-          4.70, 5.75, 7.625,  
+L_FREQ = (3.525, 4.10,
+          4.70, 5.75, 7.625,
           );
 
 L_AMOR_S = (0.040,);

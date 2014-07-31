@@ -145,16 +145,20 @@ DXXDIS2=RECU_FONCTION(RESULTAT=TRANSX,
                       NOM_CMP='DX',
                       GROUP_NO='GROUP_NO_N',);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       METHODE='QZ',
-                       CALC_FREQ=_F(OPTION='TOUT',),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='TOUT',
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  ),
+                 )
 
-MODES_G=MODE_ITER_SIMULT(TYPE_RESU='GENERAL',
-                         MATR_A=RIGIDITE,
-                         MATR_B=MASSE,
-                         METHODE='QZ',
-                         CALC_CHAR_CRIT=_F(OPTION='TOUT',),);
+MODES_G=CALC_MODES(TYPE_RESU='GENERAL',
+                   OPTION='TOUT',
+                   MATR_B=MASSE,
+                   MATR_A=RIGIDITE,
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    ),
+                   )
 
 # FREQUENCE PROPRE
 f0 = sqrt( k/m ) / (2*pi)

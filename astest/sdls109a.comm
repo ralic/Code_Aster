@@ -54,11 +54,14 @@ MASK_DKQ=ASSE_MATRICE(MATR_ELEM=MK_DKQ,
                       NUME_DDL=NUM_DKQ,);
 MASM_DKQ=ASSE_MATRICE(MATR_ELEM=MM_DKQ,
                       NUME_DDL=NUM_DKQ,);
-MODE_DKQ=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_RIGI=MASK_DKQ,
-                       MATR_MASS=MASM_DKQ,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.,800.0),),);
+MODE_DKQ=CALC_MODES(MATR_RIGI=MASK_DKQ,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,800.0),
+                                 ),
+                    MATR_MASS=MASM_DKQ,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    )
 
 MK_DSQ=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MOD_DSQ,
@@ -73,11 +76,14 @@ MASK_DSQ=ASSE_MATRICE(MATR_ELEM=MK_DSQ,
                       NUME_DDL=NUM_DSQ,);
 MASM_DSQ=ASSE_MATRICE(MATR_ELEM=MM_DSQ,
                       NUME_DDL=NUM_DSQ,);
-MODE_DSQ=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_RIGI=MASK_DSQ,
-                       MATR_MASS=MASM_DSQ,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.,800.0),),);
+MODE_DSQ=CALC_MODES(MATR_RIGI=MASK_DSQ,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,800.0),
+                                 ),
+                    MATR_MASS=MASM_DSQ,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

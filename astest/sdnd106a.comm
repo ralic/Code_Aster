@@ -85,11 +85,14 @@ F_FUNCT=DEFI_FONCTION(NOM_PARA='INST',
                             0.200001,0.0),
                       PROL_DROITE='CONSTANT',);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSEMB,
-                       MATR_MASS=M_ASSEMB,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(-0.1,40.),),);
+MODES=CALC_MODES(MATR_RIGI=K_ASSEMB,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(-0.1,40.),
+                              ),
+                 MATR_MASS=M_ASSEMB,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 IMPR_RESU(UNITE=80,
           FORMAT='MED',

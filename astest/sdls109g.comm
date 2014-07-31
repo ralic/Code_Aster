@@ -60,11 +60,14 @@ MASK_3M=ASSE_MATRICE(MATR_ELEM=MK_3M,
                       NUME_DDL=NUM_3M,);
 MASM_3M=ASSE_MATRICE(MATR_ELEM=MM_3M,
                       NUME_DDL=NUM_3M,);
-MODE_3M=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_RIGI=MASK_3M,
-                       MATR_MASS=MASM_3M,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.0,800.0),),);
+MODE_3M=CALC_MODES(MATR_RIGI=MASK_3M,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(200.0,800.0),
+                                ),
+                   MATR_MASS=MASM_3M,
+                   SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                    ),
+                   )
 
 MK_6M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MOD_6M,
@@ -79,11 +82,14 @@ MASK_6M=ASSE_MATRICE(MATR_ELEM=MK_6M,
                       NUME_DDL=NUM_6M,);
 MASM_6M=ASSE_MATRICE(MATR_ELEM=MM_6M,
                       NUME_DDL=NUM_6M,);
-MODE_6M=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_RIGI=MASK_6M,
-                       MATR_MASS=MASM_6M,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.0,800.0),),);
+MODE_6M=CALC_MODES(MATR_RIGI=MASK_6M,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(200.0,800.0),
+                                ),
+                   MATR_MASS=MASM_6M,
+                   SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                    ),
+                   )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

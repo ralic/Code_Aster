@@ -178,10 +178,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-MODE2=MODE_ITER_INV(  MATR_RIGI=MATASSR2,
-                        MATR_MASS=MATASSM2,
-              CALC_FREQ=_F(  OPTION = 'AJUSTE',
-                          FREQ = ( 380.,     3300.,  ))   )
+MODE2=CALC_MODES(MATR_RIGI=MATASSR2,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(FREQ=( 380.,3300.,),
+                              ),
+                 MATR_MASS=MATASSM2,
+                 )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

@@ -136,27 +136,44 @@ MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,   NUME_DDL=NUM  )
 
 # --------------------------------------------------------------------
 
-MODE_QUA=MODE_ITER_SIMULT( MATR_RIGI=MATASSR, MATR_MASS=MATASSM,
-                             MATR_AMOR=MATASSC,
-                              METHODE='TRI_DIAG',
-             CALC_FREQ=_F( OPTION = 'CENTRE', FREQ = 20.0, NMAX_FREQ = 8))
+MODE_QUA=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='CENTRE',
+                    CALC_FREQ=_F(NMAX_FREQ=8,
+                                 FREQ=20.0,
+                                 ),
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )
 
 # AVEC QZ
 # POUR TESTER LE TRI DE L'OPTION 'CENTRE' + 'QZ_SIMPLE'
-MODE_QZ1=MODE_ITER_SIMULT( MATR_RIGI=MATASSR, MATR_MASS=MATASSM,
-                             MATR_AMOR=MATASSC,
-                              METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
-             CALC_FREQ=_F( OPTION = 'CENTRE', FREQ = 20.0, NMAX_FREQ = 3))
+MODE_QZ1=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='CENTRE',
+                    CALC_FREQ=_F(NMAX_FREQ=3,
+                                 FREQ=20.0,
+                                 ),
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
+                                     METHODE='QZ',
+                                     ),
+                    )
 
 MODE_QZ1=NORM_MODE(reuse=MODE_QZ1,   MODE=MODE_QZ1,   NORME='MASS_GENE' )
 # POUR TESTER L'OPTION 'TOUT'  + 'QZ_EQUI'
-MODE_QZ2=MODE_ITER_SIMULT( MATR_RIGI=MATASSR, MATR_MASS=MATASSM,
-                             MATR_AMOR=MATASSC,
-                              METHODE='QZ',TYPE_QZ='QZ_EQUI',
-             CALC_FREQ=_F( OPTION = 'TOUT', ))
+MODE_QZ2=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='TOUT',
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
+                                     METHODE='QZ',
+                                     ),
+                    )
 
 MODE_QZ2=NORM_MODE(reuse=MODE_QZ2,   MODE=MODE_QZ2,   NORME='MASS_GENE' )
 

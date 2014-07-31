@@ -156,13 +156,16 @@ AMO2=COMB_MATR_ASSE(COMB_R=_F(MATR_ASSE=AMOR,
 
 # CALCUL DES MODES AVEC AMORTISSEMENT HYSTERETIQUE + VISQUEUX
 
-MOSOREN=MODE_ITER_SIMULT(MATR_RIGI=RIGHYST,
-                         MATR_MASS=MASS,
-                         MATR_AMOR=AMOR,
-                         CALC_FREQ=_F(OPTION='CENTRE',
-                                      FREQ=10.,
-                                      NMAX_FREQ=1,
-                                      APPROCHE='REEL',),);
+MOSOREN=CALC_MODES(MATR_RIGI=RIGHYST,
+                   OPTION='CENTRE',
+                   CALC_FREQ=_F(NMAX_FREQ=1,
+                                FREQ=10.,
+                                ),
+                   MATR_AMOR=AMOR,
+                   MATR_MASS=MASS,
+                   SOLVEUR_MODAL=_F(APPROCHE='REEL',
+                                    ),
+                   )
 
 FRESOR=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
@@ -183,14 +186,17 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # CALCUL DES MODES AVEC AMORTISSEMENT VISQUEUX (LANCZOS, APPROCHE COMPLEXE)
 
-MOLANCZ=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
-                         MATR_MASS=MASS,
-                         MATR_AMOR=AMO2,
-                         METHODE='TRI_DIAG',
-                         CALC_FREQ=_F(OPTION='CENTRE',
-                                      FREQ=3.,
-                                      NMAX_FREQ=1,
-                                      APPROCHE='COMPLEXE',),);
+MOLANCZ=CALC_MODES(MATR_RIGI=RIGI,
+                   OPTION='CENTRE',
+                   CALC_FREQ=_F(NMAX_FREQ=1,
+                                FREQ=3.,
+                                ),
+                   MATR_AMOR=AMO2,
+                   MATR_MASS=MASS,
+                   SOLVEUR_MODAL=_F(APPROCHE='COMPLEXE',
+                                    METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 FRELAN=RECU_TABLE(CO=MOLANCZ,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
@@ -211,12 +217,15 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # CALCUL DES MODES NORMAUX (NON AMORTIS)
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
-                       MATR_MASS=MASS,
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=3.,
-                                    NMAX_FREQ=1,
-                                    APPROCHE='COMPLEXE',),);
+MODES=CALC_MODES(MATR_RIGI=RIGI,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=1,
+                              FREQ=3.,
+                              ),
+                 MATR_MASS=MASS,
+                 SOLVEUR_MODAL=_F(APPROCHE='COMPLEXE',
+                                  ),
+                 )
 
 PROJ_BASE(BASE=MODES,
                 STOCKAGE='DIAG',

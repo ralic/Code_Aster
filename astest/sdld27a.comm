@@ -75,21 +75,36 @@ MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,   NUME_DDL=NUM  )
 MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,   NUME_DDL=NUM  )
 
 # ----------------------------------------------------------------------
-MODE_QUA=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,
-                          MATR_AMOR=MATASSC,
-                         METHODE='TRI_DIAG',
-                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
-                          VERI_MODE=_F( SEUIL = 1.E-5))
+MODE_QUA=CALC_MODES(MATR_RIGI=MATASSR,
+                    VERI_MODE=_F(SEUIL=1.E-5,
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=8,
+                                 ),
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 IMPR_CO(CONCEPT=_F(NOM=MODE_QUA))
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )
 
 # AVEC QZ + OPTION 'PLUS_PETITE' + 'QZ_SIMPLE'
-MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,MATR_AMOR=MATASSC,
-                         METHODE='QZ',INFO=1,TYPE_QZ='QZ_EQUI',
-                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
-                          VERI_MODE=_F( SEUIL = 1.E-5))
+MODE_QZ=CALC_MODES(INFO=1,
+                   MATR_RIGI=MATASSR,
+                   VERI_MODE=_F(SEUIL=1.E-5,
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=8,
+                                ),
+                   MATR_AMOR=MATASSC,
+                   MATR_MASS=MATASSM,
+                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
+                                    METHODE='QZ',
+                                    ),
+                   )
 
 MODE_QZ=NORM_MODE(reuse=MODE_QZ,   MODE=MODE_QZ,   NORME='MASS_GENE' )
 

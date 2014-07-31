@@ -77,10 +77,15 @@ ASSEMBLAGE(   MODELE=MO2,            CARA_ELEM=CA2,
                          _F(  MATRICE = CO("MATM2"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE2=MODE_ITER_SIMULT(  MATR_RIGI=MATR2,       MATR_MASS=MATM2,
-              CALC_FREQ=_F(  NMAX_FREQ = 4,   FREQ = (  100., ),
-                          OPTION = 'CENTRE'),
-               VERI_MODE=_F(  SEUIL = 1.E-5)               )
+MODE2=CALC_MODES(MATR_RIGI=MATR2,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              FREQ=(  100.,),
+                              ),
+                 MATR_MASS=MATM2,
+                 )
 
 # --------------------------------------------------------------------
 
@@ -147,9 +152,13 @@ ASSEMBLAGE(   MODELE=MO4,            CARA_ELEM=CA4,
                          _F(  MATRICE = CO("MATM4"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE4=MODE_ITER_SIMULT(  MATR_RIGI=MATR4,  MATR_MASS=MATM4,
-              CALC_FREQ=_F(  NMAX_FREQ = 4),
-               VERI_MODE=_F(  SEUIL = 1.E-5)  )
+MODE4=CALC_MODES(MATR_RIGI=MATR4,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              ),
+                 MATR_MASS=MATM4,
+                 )
 
 # --------------------------------------------------------------------
 
@@ -211,9 +220,13 @@ ASSEMBLAGE(   MODELE=MO6,            CARA_ELEM=CA6,
                          _F(  MATRICE = CO("MATM6"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE6=MODE_ITER_SIMULT(  MATR_RIGI=MATR6,  MATR_MASS=MATM6,
-              CALC_FREQ=_F(  NMAX_FREQ = 4),
-               VERI_MODE=_F(  SEUIL = 1.E-5)  )
+MODE6=CALC_MODES(MATR_RIGI=MATR6,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              ),
+                 MATR_MASS=MATM6,
+                 )
 
 # --------------------------------------------------------------------
 
@@ -249,12 +262,17 @@ ASSEMBLAGE(   MODELE=MO,            CARA_ELEM=CA,
                          _F(  MATRICE = CO("MATM"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,        MATR_MASS=MATM,
-                            METHODE='JACOBI',
-                             OPTION='SANS',
-            CALC_FREQ=_F(   FREQ = ( 25.,  200., ),
-                        OPTION = 'BANDE'),
-              VERI_MODE=_F(  SEUIL = 1.E-5)   )
+MODE=CALC_MODES(MATR_RIGI=MATR,
+                VERI_MODE=_F(SEUIL=1.E-5,
+                             ),
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=( 25.,200.,),
+                             ),
+                MATR_MASS=MATM,
+                SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                 METHODE='TRI_DIAG',
+                                 ),
+                )
 
 # --------------------------------------------------------------------
 
@@ -331,12 +349,17 @@ ASSEMBLAGE(   MODELE=MO3,           CARA_ELEM=CA3,
                          _F(  MATRICE = CO("MATM3"), OPTION = 'MASS_MECA'))
                    )
 
-MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATR3,   MATR_MASS=MATM3,
-                            METHODE='JACOBI',
-                             OPTION='SANS',
-            CALC_FREQ=_F(   FREQ = ( 5.,  200., ),
-                        OPTION = 'BANDE'),
-              VERI_MODE=_F(  SEUIL = 1.E-5) )
+MODE3=CALC_MODES(MATR_RIGI=MATR3,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 5.,200.,),
+                              ),
+                 MATR_MASS=MATM3,
+                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                  METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 # --------------------------------------------------------------------
 
@@ -418,12 +441,17 @@ ASSEMBLAGE(   MODELE=MO5,           CARA_ELEM=CA5,
                 MATR_ASSE=_F(  MATRICE = CO("MATM5"), OPTION = 'MASS_MECA')
                    )
 
-MODE5=MODE_ITER_SIMULT(  MATR_RIGI=MATR5,   MATR_MASS=MATM5,
-                            METHODE='JACOBI',
-                             OPTION='SANS',
-            CALC_FREQ=_F(   FREQ = ( 5.,  220., ),
-                        OPTION = 'BANDE'),
-              VERI_MODE=_F(  SEUIL = 1.E-5) )
+MODE5=CALC_MODES(MATR_RIGI=MATR5,
+                 VERI_MODE=_F(SEUIL=1.E-5,
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 5.,220.,),
+                              ),
+                 MATR_MASS=MATM5,
+                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                  METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 # --------------------------------------------------------------------
 

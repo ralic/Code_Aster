@@ -111,13 +111,15 @@ ASSEMBLAGE(MODELE=MODELE,
                               OPTION='AMOR_MECA',),),
                 );
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                       FREQ=(100.,400.),),
-                                 VERI_MODE=_F(STOP_ERREUR='NON',
-                                    SEUIL=9.9999999999999995E-07),
-                       );
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              SEUIL=9.9999999999999995E-07,
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(100.,400.),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -285,21 +287,25 @@ ASSM1_MN=ASSE_MATRICE(MATR_ELEM=MELM1_MN,
 #                      CALCUL MODAL
 #--------------------------------------------------------------------
 
-MODE1_CB=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_CB,
-                       MATR_MASS=ASSM1_CB,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.,800.),),
-                                 VERI_MODE=_F(STOP_ERREUR='NON',
-                                    SEUIL=9.9999999999999995E-07),
-                       );
+MODE1_CB=CALC_MODES(MATR_RIGI=ASSR1_CB,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 SEUIL=9.9999999999999995E-07,
+                                 ),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,800.),
+                                 ),
+                    MATR_MASS=ASSM1_CB,
+                    )
 
-MODE1_MN=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_MN,
-                       MATR_MASS=ASSM1_MN,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(200.,800.),),
-                                 VERI_MODE=_F(STOP_ERREUR='NON',
-                                    SEUIL=9.9999999999999995E-07),
-                       );
+MODE1_MN=CALC_MODES(MATR_RIGI=ASSR1_MN,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 SEUIL=9.9999999999999995E-07,
+                                 ),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,800.),
+                                 ),
+                    MATR_MASS=ASSM1_MN,
+                    )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -538,14 +544,15 @@ ASSEMBLAGE(MODELE=MO2,
 #                      CALCUL MODAL
 #--------------------------------------------------------------------
 
-MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR2,
-                       MATR_MASS=MATASSM2,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(1.,900.),
-                                                        ),
-                       VERI_MODE=_F(STOP_ERREUR='NON',
-                                    SEUIL=9.9999999999999995E-07),
-                            );
+MODE2=CALC_MODES(MATR_RIGI=MATASSR2,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              SEUIL=9.9999999999999995E-07,
+                              ),
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(1.,900.),
+                              ),
+                 MATR_MASS=MATASSM2,
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -697,13 +704,15 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #  CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #------------------------------------------------------------------
 
-RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
-                        MATR_MASS=MASGEN,
-                                  CALC_FREQ=_F(OPTION='BANDE',
-                                     FREQ=(0.,400.),),
-                                  VERI_MODE=_F(STOP_ERREUR='NON',
-                                     SEUIL=9.9999999999999995E-07),
-                            );
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  VERI_MODE=_F(STOP_ERREUR='NON',
+                               SEUIL=9.9999999999999995E-07,
+                               ),
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(0.,400.),
+                               ),
+                  MATR_MASS=MASGEN,
+                  )
 
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE

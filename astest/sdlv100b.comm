@@ -120,16 +120,22 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM1)
 
 # ---  CAS1 -------
 
-MODE1=MODE_ITER_INV(  MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM1,
-                       CALC_FREQ=_F(  FREQ = ( 53.,    1500., )) )
+MODE1=CALC_MODES(MATR_RIGI=MATASSR1,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(FREQ=( 53.,1500.,),
+                              ),
+                 MATR_MASS=MATASSM1,
+                 )
 
 
 # ---  CAS2 -------
 
-MODE2=MODE_ITER_INV(  MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM2,
-                       CALC_FREQ=_F(  FREQ = ( 53.,    1500., )) )
+MODE2=CALC_MODES(MATR_RIGI=MATASSR1,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(FREQ=( 53.,1500.,),
+                              ),
+                 MATR_MASS=MATASSM2,
+                 )
 
 
 # --------------------------------------------------------------------

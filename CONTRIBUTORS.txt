@@ -172,6 +172,7 @@
     Alexei Mikchevitch
     Patrick Morilhat
     Stéphane Moulin
+    El-Hadi Moussi
     Fabrice Nagot
     Marcel Ndeffo
     Boumedienne Nedjar

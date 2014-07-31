@@ -62,12 +62,16 @@ M=ASSE_MATRICE(MATR_ELEM=Me,
                NUME_DDL=NUM,
                CHAR_CINE=CDL,);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=K,
-                       MATR_MASS=M,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION = 'BANDE',FREQ = (0.01, 10.,),),
-                       SOLVEUR=_F(METHODE='MUMPS',),
-                      );
+MODES=CALC_MODES(MATR_RIGI=K,
+                 CALC_FREQ=_F(FREQ=(0.01,10.,),
+                              ),
+                 OPTION='BANDE',
+                 SOLVEUR=_F(METHODE='MUMPS',
+                            ),
+                 MATR_MASS=M,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 # les parametres pour MODE_NON_LINE
 hu=5;

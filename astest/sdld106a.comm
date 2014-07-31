@@ -87,11 +87,13 @@ df1m1 = -f1/(2.*m1)
 
 f1e = f1*(1.+1.e-4)
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
-                       MATR_MASS=MATRMASS,
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    NMAX_FREQ=1,
-                                    FREQ=(f1e,),),);
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=1,
+                              FREQ=(f1e,),
+                              ),
+                 MATR_MASS=MATRMASS,
+                 )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

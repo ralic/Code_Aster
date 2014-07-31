@@ -125,9 +125,11 @@ VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
 #  CALCUL DES MODES PROPRES ET DES K_MODAUX
 ##################################
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=RIG_ASS,
-                      MATR_MASS=MA_ASS,
-                      CALC_FREQ=_F(NMAX_FREQ=n_mode,),);
+MODE=CALC_MODES(MATR_RIGI=RIG_ASS,
+                MATR_MASS=MA_ASS,
+                CALC_FREQ=_F(NMAX_FREQ=n_mode,
+                             ),
+                )
 
 
 MODE=NORM_MODE(reuse=MODE,

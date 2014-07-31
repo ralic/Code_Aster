@@ -80,9 +80,11 @@ KASS1=ASSE_MATRICE(MATR_ELEM=KELEM1,
 MASS1=ASSE_MATRICE(MATR_ELEM=MELEM1,
                    NUME_DDL=NUME1,);
 
-MODES1=MODE_ITER_SIMULT(MATR_RIGI=KASS1,
-                        MATR_MASS=MASS1,
-                        CALC_FREQ=_F(NMAX_FREQ=10,),);
+MODES1=CALC_MODES(MATR_RIGI=KASS1,
+                  MATR_MASS=MASS1,
+                  CALC_FREQ=_F(NMAX_FREQ=10,
+                               ),
+                  )
 
 
 LINT1=DEFI_INTERF_DYNA(NUME_DDL=NUME1,
@@ -159,9 +161,11 @@ KASS2=ASSE_MATRICE(MATR_ELEM=KELEM2,
 MASS2=ASSE_MATRICE(MATR_ELEM=MELEM2,
                    NUME_DDL=NUME2,);
 
-MODES2=MODE_ITER_SIMULT(MATR_RIGI=KASS2,
-                        MATR_MASS=MASS2,
-                        CALC_FREQ=_F(NMAX_FREQ=11,),);
+MODES2=CALC_MODES(MATR_RIGI=KASS2,
+                  MATR_MASS=MASS2,
+                  CALC_FREQ=_F(NMAX_FREQ=11,
+                               ),
+                  )
 
 
 LINT2=DEFI_INTERF_DYNA(NUME_DDL=NUME2,
@@ -221,10 +225,12 @@ KGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUGE,
 
 #
 #   CALCUL DES MODES D'INTERFACE GENERALISES DE LA STRUCTURE GLOBALE
-MODG=MODE_ITER_SIMULT(MATR_RIGI=KGEN,
-                      MATR_MASS=MGEN,
-                      CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                   NMAX_FREQ=6,),);
+MODG=CALC_MODES(MATR_RIGI=KGEN,
+                OPTION='PLUS_PETITE',
+                CALC_FREQ=_F(NMAX_FREQ=6,
+                             ),
+                MATR_MASS=MGEN,
+                )
 
 #
 # RESTITUTION SUR CHAQUE MACRO-ELEMENT DES LES MODES D'INTERFACE
@@ -294,11 +300,14 @@ KGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
 #
 #   CALCUL DES MODES GENERALISES DE LA STRUCTURE GLOBALE
 
-RESGENR=MODE_ITER_SIMULT(MATR_RIGI=KGENR,
-                        MATR_MASS=MGENR,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=6,),
-                        VERI_MODE=_F(STOP_ERREUR='NON',),);
+RESGENR=CALC_MODES(MATR_RIGI=KGENR,
+                   VERI_MODE=_F(STOP_ERREUR='NON',
+                                ),
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MGENR,
+                   )
 
 
 GLOBAL=DEFI_SQUELETTE(MODELE_GENE=MODELRG,

@@ -163,11 +163,14 @@ ASSEMBLAGE( MODELE = mode ,
                                 CHARGE=chpesa) , ) , );
 #
 #
-MODES=MODE_ITER_SIMULT(MATR_RIGI=rigidite,
-                       MATR_MASS=masse,
-                       CALC_FREQ=_F(NMAX_FREQ=20,),
-                       VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',),);
+MODES=CALC_MODES(MATR_RIGI=rigidite,
+                 VERI_MODE=_F(STOP_ERREUR='OUI',
+                              STURM='OUI',
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=20,
+                              ),
+                 MATR_MASS=masse,
+                 )
 
 #
 mono_x = CALC_CHAR_SEISME( MATR_MASS = masse ,

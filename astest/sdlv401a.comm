@@ -61,10 +61,12 @@ M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
 
 # CALCUL DES MODES
 
-MODES=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
-                                   MATR_MASS=M_ASSE, 
-                               CALC_FREQ=_F(  OPTION = 'BANDE', 
-                                           FREQ = ( 1., 3000., )))
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 1.,3000.,),
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',

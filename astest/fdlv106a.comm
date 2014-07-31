@@ -446,19 +446,25 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM,
 AMORT=ASSE_MATRICE(MATR_ELEM=AMORELEM,
                    NUME_DDL=NUMERO,);
 
-MODBIS=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
-                        MATR_MASS=MASSE,
-                        MATR_AMOR=AMORT,
-                        METHODE='TRI_DIAG',
-                        VERI_MODE=_F(SEUIL=1.E-2,),);
+MODBIS=CALC_MODES(MATR_RIGI=RAIDEUR,
+                  VERI_MODE=_F(SEUIL=1.E-2,
+                               ),
+                  MATR_AMOR=AMORT,
+                  MATR_MASS=MASSE,
+                  SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                   ),
+                  )
 
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
-MODBISZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
-                         MATR_MASS=MASSE,
-                         MATR_AMOR=AMORT,
-                         METHODE='QZ',
-                         VERI_MODE=_F(SEUIL=1.E-2,),);
+MODBISZ=CALC_MODES(MATR_RIGI=RAIDEUR,
+                   VERI_MODE=_F(SEUIL=1.E-2,
+                                ),
+                   MATR_AMOR=AMORT,
+                   MATR_MASS=MASSE,
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    ),
+                   )
 
 # MODE COMPLEXE A VITESSE CRITIQUE
 
@@ -505,19 +511,25 @@ MASSCR=ASSE_MATRICE(MATR_ELEM=MASELCR,
 AMORCR=ASSE_MATRICE(MATR_ELEM=AMELCR,
                     NUME_DDL=NUMCR,);
 
-MODCRIT=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
-                         MATR_MASS=MASSCR,
-                         MATR_AMOR=AMORCR,
-                         METHODE='TRI_DIAG',
-                         VERI_MODE=_F(SEUIL=1.E-2,),);
+MODCRIT=CALC_MODES(MATR_RIGI=RAIDCR,
+                   VERI_MODE=_F(SEUIL=1.E-2,
+                                ),
+                   MATR_AMOR=AMORCR,
+                   MATR_MASS=MASSCR,
+                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
-MODCRITZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
-                          MATR_MASS=MASSCR,
-                          MATR_AMOR=AMORCR,
-                          METHODE='QZ',
-                          VERI_MODE=_F(SEUIL=1.E-2,),);
+MODCRITZ=CALC_MODES(MATR_RIGI=RAIDCR,
+                    VERI_MODE=_F(SEUIL=1.E-2,
+                                 ),
+                    MATR_AMOR=AMORCR,
+                    MATR_MASS=MASSCR,
+                    SOLVEUR_MODAL=_F(METHODE='QZ',
+                                     ),
+                    )
 
 # MODE COMPLEXE AU FLOTTEMENT
 
@@ -564,19 +576,25 @@ MASSFL=ASSE_MATRICE(MATR_ELEM=MASELFL,
 AMORFL=ASSE_MATRICE(MATR_ELEM=AMELFL,
                     NUME_DDL=NUMFL,);
 
-MODFLOT=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
-                         MATR_MASS=MASSFL,
-                         MATR_AMOR=AMORFL,
-                         METHODE='TRI_DIAG',
-                         VERI_MODE=_F(SEUIL=1.E-2,),);
+MODFLOT=CALC_MODES(MATR_RIGI=RAIDFL,
+                   VERI_MODE=_F(SEUIL=1.E-2,
+                                ),
+                   MATR_AMOR=AMORFL,
+                   MATR_MASS=MASSFL,
+                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
-MODFLOTZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
-                          MATR_MASS=MASSFL,
-                          MATR_AMOR=AMORFL,
-                          METHODE='QZ',
-                          VERI_MODE=_F(SEUIL=1.E-2,),);
+MODFLOTZ=CALC_MODES(MATR_RIGI=RAIDFL,
+                    VERI_MODE=_F(SEUIL=1.E-2,
+                                 ),
+                    MATR_AMOR=AMORFL,
+                    MATR_MASS=MASSFL,
+                    SOLVEUR_MODAL=_F(METHODE='QZ',
+                                     ),
+                    )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

@@ -71,17 +71,25 @@ IMPR_TABLE(TABLE=MASSINER,
            UNITE=8,
            NOM_PARA=('LIEU','ENTITE','MASSE',),);
 
-modes=MACRO_MODE_MECA(MATR_RIGI=matrigi,
-                      MATR_MASS=matmass,
-                      METHODE='SORENSEN',
-                      CALC_FREQ=_F(FREQ=(0.0,FMAX,),),
-                      VERI_MODE=_F(STOP_ERREUR='OUI',
-                                   STURM='NON',),
-                      NORM_MODE=_F(),
-                      FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',
-                                     SEUIL=0.000001,),
-                      IMPRESSION=_F(TOUT_PARA='NON',
-                                    CRIT_EXTR='MASS_EFFE_UN',),);
+modes=CALC_MODES(MATR_RIGI=matrigi,
+                 VERI_MODE=_F(STOP_ERREUR='OUI',
+                              STURM='NON',
+                              ),
+                 OPTION='BANDE',
+                 IMPRESSION=_F(TOUT_PARA='NON',
+                               CRIT_EXTR='MASS_EFFE_UN',
+                               ),
+                 CALC_FREQ=_F(FREQ=(0.0,FMAX,),
+                              ),
+                 FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',
+                                SEUIL=0.000001,
+                                ),
+                 MATR_MASS=matmass,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 NORM_MODE=_F(INFO=1,
+                              NORME='TRAN_ROTA',),
+                 )
 
 # Calcul des matrices de masse et de raideur generalisees 
 
@@ -120,10 +128,12 @@ mastot=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=massaj,
 
 # Calcul des modes de la structure immergee
 
-modhumi=MODE_ITER_SIMULT(MATR_RIGI=riggen,
-                         MATR_MASS=mastot,
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=(0.0,100.0,),),);
+modhumi=CALC_MODES(MATR_RIGI=riggen,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.0,100.0,),
+                                ),
+                   MATR_MASS=mastot,
+                   )
 
 mode_mou=REST_GENE_PHYS(RESU_GENE=modhumi,
                         MODE_MECA=modes,

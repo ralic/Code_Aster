@@ -61,17 +61,24 @@ RIGASS=ASSE_MATRICE(   MATR_ELEM=RIGELEM,   NUME_DDL=NUM   )
 
 MASASS=ASSE_MATRICE(   MATR_ELEM=MASELEM,   NUME_DDL=NUM   )
 
-MODVIB=MODE_ITER_SIMULT(  MATR_RIGI=RIGASS,
-                          MATR_MASS=MASASS,
-                          CALC_FREQ=_F( OPTION = 'BANDE',  FREQ = (220., 540.,),)
-                       )
+MODVIB=CALC_MODES(MATR_RIGI=RIGASS,
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(220.,540.,),
+                               ),
+                  MATR_MASS=MASASS,
+                  )
 
 
-MODITI=MODE_ITER_INV(     MATR_RIGI=RIGASS,  MATR_MASS=MASASS,
-          CALC_FREQ=_F( NMAX_FREQ = 12, OPTION = 'AJUSTE', FREQ = (220., 540.,),
-                     NMAX_ITER_AJUSTE = 20),
-          CALC_MODE=_F( NMAX_ITER = 50)
-            )
+MODITI=CALC_MODES(MATR_RIGI=RIGASS,
+                  OPTION='AJUSTE',
+                  CALC_FREQ=_F(NMAX_FREQ=12,
+                               FREQ=(220.,540.,),
+                               ),
+                  MATR_MASS=MASASS,
+                  SOLVEUR_MODAL=_F(NMAX_ITER_INV=50,
+                               NMAX_ITER_AJUSTE=20,
+                                   ),
+                  )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

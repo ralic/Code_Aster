@@ -94,9 +94,13 @@ A=ASSE_MATRICE(MATR_ELEM=MER,NUME_DDL=NU)
 
 B=ASSE_MATRICE(MATR_ELEM=MEM,NUME_DDL=NU)
 
-MODE=MODE_ITER_SIMULT(    MATR_RIGI=A,     MATR_MASS=B,
-             CALC_FREQ=_F( NMAX_FREQ = 5) ,
-             VERI_MODE=_F( SEUIL=1E-05),)
+MODE=CALC_MODES(MATR_RIGI=A,
+                VERI_MODE=_F(SEUIL=1E-05,
+                             ),
+                CALC_FREQ=_F(NMAX_FREQ=5,
+                             ),
+                MATR_MASS=B,
+                )
 
 
 MODE=CALC_CHAMP(reuse=MODE,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),RESULTAT=MODE)

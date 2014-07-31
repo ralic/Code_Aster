@@ -188,21 +188,24 @@ ASSE_ELEM_SSD(
 
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
-                         MATR_MASS=MASGEN,
-                         METHODE='SORENSEN',
-                         CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ=10),
-                         SOLVEUR=_F(METHODE='MUMPS',
-   
-                                    NPREC=9),
-                         VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
-                                      STOP_ERREUR='NON',
-                                      STURM='NON',
-                                      SEUIL=9.9999999999999995E-01),
-                         STOP_BANDE_VIDE='NON',
-                         INFO=1,
-                        )
+RESGEN=CALC_MODES(INFO=1,
+                  MATR_RIGI=RIGGEN,
+                  VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
+                               STOP_ERREUR='NON',
+                               STURM='NON',
+                               SEUIL=9.9999999999999995E-01,
+                               ),
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=10,
+                               ),
+                  SOLVEUR=_F(METHODE='MUMPS',
+                             NPREC=9,
+                             ),
+                  MATR_MASS=MASGEN,
+                  STOP_BANDE_VIDE='NON',
+                  SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                   ),
+                  )
 
                         
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE

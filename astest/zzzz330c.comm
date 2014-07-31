@@ -157,10 +157,11 @@ KASS=ASSE_MATRICE(NUME_DDL=NUM,
                           );
 
 
-MODES = MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                         MATR_MASS=MASS,
-                         CALC_FREQ=_F(NMAX_FREQ=10,),
-                              );
+MODES=CALC_MODES(MATR_RIGI=KASS,
+                 MATR_MASS=MASS,
+                 CALC_FREQ=_F(NMAX_FREQ=10,
+                              ),
+                 )
 MODES=NORM_MODE(reuse =MODES,
                MODE=MODES,
                NORME='MASS_GENE',)

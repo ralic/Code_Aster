@@ -111,16 +111,20 @@ ASSEMBLAGE ( MODELE=MODELE,
               _F( MATRICE= CO('RIGGEO2'), OPTION= 'RIGI_GEOM',SIEF_ELGA=SIGMA_2),),);
 
 
-MOD_1=MODE_ITER_SIMULT(MATR_RIGI=RIGSTA,
-                     MATR_RIGI_GEOM=RIGGEO1,
-                     TYPE_RESU='MODE_FLAMB',
-                      CALC_CHAR_CRIT=_F(   OPTION = 'BANDE',  CHAR_CRIT = (-2,0.,) ),
-                            )
-MOD_2=MODE_ITER_SIMULT(MATR_RIGI=RIGSTA,
-                     MATR_RIGI_GEOM=RIGGEO2,
-                     TYPE_RESU='MODE_FLAMB',
-                      CALC_CHAR_CRIT=_F(   OPTION = 'BANDE',  CHAR_CRIT = (-2.,0.,) ),
-                            )
+MOD_1=CALC_MODES(MATR_RIGI=RIGSTA,
+                 OPTION='BANDE',
+                 MATR_RIGI_GEOM=RIGGEO1,
+                 CALC_CHAR_CRIT=_F(CHAR_CRIT=(-2,0.,),
+                                   ),
+                 TYPE_RESU='MODE_FLAMB',
+                 )
+MOD_2=CALC_MODES(MATR_RIGI=RIGSTA,
+                 OPTION='BANDE',
+                 MATR_RIGI_GEOM=RIGGEO2,
+                 CALC_CHAR_CRIT=_F(CHAR_CRIT=(-2.,0.,),
+                                   ),
+                 TYPE_RESU='MODE_FLAMB',
+                 )
 
 #
 # - Cas de charge 1 : FX= -1

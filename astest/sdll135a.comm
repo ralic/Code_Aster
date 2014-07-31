@@ -208,11 +208,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
 
 # RECHERCHE DES MODES PROPRES DE TRACTIONS/COMPRESSIONS
 
-MODE_DX=MODE_ITER_INV(MATR_RIGI=RIGID,
-                      MATR_MASS=MASSE,
-                      CALC_FREQ=_F(
-                      OPTION='PROCHE',
-                      FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),),);
+MODE_DX=CALC_MODES(MATR_RIGI=RIGID,
+                   OPTION='PROCHE',
+                   CALC_FREQ=_F(FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),
+                                ),
+                   MATR_MASS=MASSE,
+                   )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -261,11 +262,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
 
 # RECHERCHE DES MODES PROPRES DE FLEXION
 
-MODE_FZ=MODE_ITER_INV(MATR_RIGI=RIGID,
-                      MATR_MASS=MASSE,
-                      CALC_FREQ=_F(
-                      OPTION='PROCHE',
-                      FREQ=(310.133,1943.568,5442.048,10664.242,17628.755,),),);
+MODE_FZ=CALC_MODES(MATR_RIGI=RIGID,
+                   OPTION='PROCHE',
+                   CALC_FREQ=_F(FREQ=(310.133,1943.568,5442.048,10664.242,17628.755,),
+                                ),
+                   MATR_MASS=MASSE,
+                   )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -315,11 +317,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
 
 # RECHERCHE DES MODES PROPRES DE TORSION
 
-MODE_DRX=MODE_ITER_INV(MATR_RIGI=RIGID,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(
-                       OPTION='PROCHE',
-                       FREQ=(786.619,2359.856,3933.094,5506.33,),),);
+MODE_DRX=CALC_MODES(MATR_RIGI=RIGID,
+                    OPTION='PROCHE',
+                    CALC_FREQ=_F(FREQ=(786.619,2359.856,3933.094,5506.33,),
+                                 ),
+                    MATR_MASS=MASSE,
+                    )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',

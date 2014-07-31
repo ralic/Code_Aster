@@ -79,9 +79,11 @@ MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,
                            NUME_DDL=NUMEROTA)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_RIGI=MATRRIGI,
-                                 MATR_MASS=MATRMASS,
-                             CALC_FREQ=_F( NMAX_FREQ = 20))
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 MATR_MASS=MATRMASS,
+                 CALC_FREQ=_F(NMAX_FREQ=20,
+                              ),
+                 )
 
 
 #

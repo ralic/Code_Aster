@@ -316,11 +316,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
 
 # RECHERCHE DES MODES PROPRES DE TRACTIONS/COMPRESSIONS
 
-MODE_DX=MODE_ITER_INV(MATR_RIGI=RIGID,
-                      MATR_MASS=MASSE,
-                      CALC_FREQ=_F(
-                      OPTION='PROCHE',
-                      FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),),);
+MODE_DX=CALC_MODES(MATR_RIGI=RIGID,
+                   OPTION='PROCHE',
+                   CALC_FREQ=_F(FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),
+                                ),
+                   MATR_MASS=MASSE,
+                   )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',

@@ -92,16 +92,22 @@ ASSEMBLAGE(  MODELE=BICHOC,   CHARGE=CL_BICHO,   CARA_ELEM=CARA_BIC,
 #
 # CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
 #---------------------------------------------
-MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE )
+MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    MATR_MASS=MASSE,
+                    )
 
 
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,  MODE=MODE_MEC,   NORME='MASS_GENE' )
 
-MODE_BIC=MODE_ITER_SIMULT(  MATR_RIGI=RIGI_BIC,   MATR_MASS=MASS_BIC,
-                  METHODE='JACOBI',
-                   OPTION='SANS',
-                 CALC_FREQ=_F(  OPTION = 'BANDE',  FREQ = (1., 10., ))
-                            )
+MODE_BIC=CALC_MODES(MATR_RIGI=RIGI_BIC,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(1.,10.,),
+                                 ),
+                    MATR_MASS=MASS_BIC,
+                    SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                     METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 MODE_BIC=NORM_MODE(reuse=MODE_BIC,  MODE=MODE_BIC,   NORME='MASS_GENE' )
 

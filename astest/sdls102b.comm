@@ -60,9 +60,12 @@ ASSEMBLAGE(   MODELE=MO,           CARA_ELEM=CARELEM,
 #====================================================================
 #                CALCUL MODAL
 
-MODE=MODE_ITER_INV(  MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
-                     CALC_FREQ=_F(  FREQ = (80., 570.,))
-                        )
+MODE=CALC_MODES(MATR_RIGI=MATASSR1,
+                OPTION='AJUSTE',
+                CALC_FREQ=_F(FREQ=(80.,570.,),
+                             ),
+                MATR_MASS=MATASSM1,
+                )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

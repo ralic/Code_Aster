@@ -109,13 +109,16 @@ ASSEMBLAGE(MODELE=MODELE,
 # CALCUL DES MODES
 #-----------------
 
-mode=MODE_ITER_SIMULT(PREC_SOREN=1.0,
-                      NMAX_ITER_SOREN=100,
-                      MATR_RIGI=rigid2,
-                      MATR_MASS=masse2,
-#                      CALC_FREQ=_F(NMAX_FREQ=1,),
-                      CALC_FREQ=_F(OPTION='BANDE',FREQ=(-0.1,0.1,),),
-                      )
+mode=CALC_MODES(MATR_RIGI=rigid2,
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=(-0.1,0.1,),
+                             ),
+                #CALC_FREQ=_F(NMAX_FREQ=1,),
+                MATR_MASS=masse2,
+                SOLVEUR_MODAL=_F(NMAX_ITER_SOREN=100,
+                                 PREC_SOREN=1.0,
+                                 ),
+                )
 
 fo1=DEFI_FONCTION(
                   NOM_PARA='FREQ',

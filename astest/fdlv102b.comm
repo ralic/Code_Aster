@@ -155,11 +155,12 @@ MASS_E=ASSE_MATRICE(  MATR_ELEM=MEMAME_E,
                            NUME_DDL=NUMDDL_E)
 
 #
-MODES_E=MODE_ITER_SIMULT(     MATR_RIGI=RAID_E,
-                                 MATR_MASS=MASS_E,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (1.,80.,))
-                            )
+MODES_E=CALC_MODES(MATR_RIGI=RAID_E,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(1.,80.,),
+                                ),
+                   MATR_MASS=MASS_E,
+                   )
 
 
 #
@@ -260,11 +261,12 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MASGEN,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE EN EAU
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASTOT,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (2.,70.,))
-                            )
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  OPTION='BANDE',
+                  CALC_FREQ=_F(FREQ=(2.,70.,),
+                               ),
+                  MATR_MASS=MASTOT,
+                  )
 
 
 #

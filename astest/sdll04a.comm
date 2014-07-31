@@ -76,12 +76,14 @@ MATASSMP=ASSE_MATRICE(MATR_ELEM=MELMP,NUME_DDL=NUMP)
 
 #--------- CALCUL MODAL
 
-MDP=MODE_ITER_SIMULT(
-         MATR_RIGI=MATASSRP,
-         MATR_MASS=MATASSMP,
-         METHODE='TRI_DIAG',
-        CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                    NMAX_FREQ = 2)  )
+MDP=CALC_MODES(MATR_RIGI=MATASSRP,
+               OPTION='PLUS_PETITE',
+               CALC_FREQ=_F(NMAX_FREQ=2,
+                            ),
+               MATR_MASS=MATASSMP,
+               SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                ),
+               )
 
 
 #*********************************************************************
@@ -151,11 +153,12 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
 
 #--------- CALCUL MODAL
 
-MD2=MODE_ITER_INV(
-         MATR_RIGI=MATASSR2,
-         MATR_MASS=MATASSM2,
-        CALC_FREQ=_F(  OPTION = 'PROCHE',
-                    FREQ = (  1.5,  1.6,  6.5,  )) )
+MD2=CALC_MODES(MATR_RIGI=MATASSR2,
+               OPTION='PROCHE',
+               CALC_FREQ=_F(FREQ=(  1.5,1.6,6.5,),
+                            ),
+               MATR_MASS=MATASSM2,
+               )
 
 
 #---------------------------------------------------------------------
@@ -201,10 +204,12 @@ MATASSM3=ASSE_MATRICE(MATR_ELEM=MELM3,NUME_DDL=NUM2)
 
 #--------- CALCUL MODAL
 
-MD3=MODE_ITER_INV(
-         MATR_RIGI=MATASSR3,
-         MATR_MASS=MATASSM3,
-        CALC_FREQ=_F(   FREQ = (  1.,   7.,  )) )
+MD3=CALC_MODES(MATR_RIGI=MATASSR3,
+               OPTION='AJUSTE',
+               CALC_FREQ=_F(FREQ=(  1.,7.,),
+                            ),
+               MATR_MASS=MATASSM3,
+               )
 
 
 #----------------------------------------------------------------------

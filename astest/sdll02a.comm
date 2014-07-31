@@ -76,12 +76,15 @@ MATASSM1=ASSE_MATRICE(  MATR_ELEM=MELM1,   NUME_DDL=NUM1 )
 #--------------------------------------------------------------------
 
 
-FREQ1=MODE_ITER_SIMULT(
-              METHODE='TRI_DIAG',
-               MATR_RIGI=MATASSR1,        MATR_MASS=MATASSM1,
-               CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                           NMAX_FREQ = 8),
-                TITRE='METHODE DE LANCZOS' )
+FREQ1=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=8,
+                              ),
+                 OPTION='PLUS_PETITE',
+                 MATR_RIGI=MATASSR1,
+                 TITRE='METHODE DE LANCZOS',
+                 MATR_MASS=MATASSM1,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 
 FREQ1=NORM_MODE(reuse=FREQ1,   MODE=FREQ1,   NORME='TRAN' )

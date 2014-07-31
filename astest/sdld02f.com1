@@ -21,10 +21,12 @@
 POURSUITE(CODE='OUI')
 
 
-AFREQ=MODE_ITER_INV(   MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
-          CALC_FREQ=_F(  OPTION = 'AJUSTE',
-                      FREQ = (5., 10., 15., 20., 24., 27., 30., 32.,)),
-           CALC_MODE=_F(  OPTION = 'DIRECT') )
+AFREQ=CALC_MODES(MATR_RIGI=MATASSR,
+                 MATR_MASS=MATASSM,
+                 OPTION = 'AJUSTE',
+                 CALC_FREQ=_F(FREQ = (5., 10., 15., 20., 24., 27., 30., 32.,)),
+                 SOLVEUR_MODAL=_F(OPTION_INV = 'DIRECT'),
+                 )
 
 
 AFREQ=NORM_MODE( reuse=AFREQ,    MODE=AFREQ,

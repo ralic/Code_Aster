@@ -256,27 +256,30 @@ MASRB=ASSE_MATRICE(  MATR_ELEM=MRB,    NUME_DDL=NUMB  )
 
 MASMB=ASSE_MATRICE(  MATR_ELEM=MMB,    NUME_DDL=NUMB  )
 
-RESA=MODE_ITER_SIMULT(
-                MATR_RIGI=MASRA,
+RESA=CALC_MODES(MATR_RIGI=MASRA,
+                VERI_MODE=_F(SEUIL=4.E-6,
+                             ),
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=( 3.0,9.3,),
+                             SEUIL_FREQ=0.,
+                             ),
                 MATR_MASS=MASMA,
-                METHODE='JACOBI',
-                NMAX_ITER_BATHE = 35,
-                OPTION='SANS',
-                CALC_FREQ=_F(  OPTION = 'BANDE',
-                               FREQ = ( 3.0,  9.3, ),
-                               SEUIL_FREQ = 0.,),
-                VERI_MODE=_F(SEUIL=4.E-6),
-                     )
+                SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                 NMAX_ITER_BATHE=35,
+                                 ),
+                )
 
 
-RESB=MODE_ITER_SIMULT(
-                MATR_RIGI=MASRB,
+RESB=CALC_MODES(MATR_RIGI=MASRB,
+                OPTION='BANDE',
+                CALC_FREQ=_F(FREQ=( 0.5,3.8,),
+                             SEUIL_FREQ=0.,
+                             ),
                 MATR_MASS=MASMB,
-                OPTION='SANS',
-                CALC_FREQ=_F(  OPTION = 'BANDE',
-                               FREQ = ( 0.5,  3.8, ),
-                               SEUIL_FREQ = 0.)
-                      )
+                SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
+                                 METHODE='TRI_DIAG',
+                                 ),
+                )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',

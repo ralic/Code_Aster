@@ -102,10 +102,12 @@ MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
                            NUME_DDL=NUMDDL_1)
 
 #
-MODES_1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
-                                 MATR_MASS=MASS_1,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MODES_1=CALC_MODES(MATR_RIGI=RAID_1,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MASS_1,
+                   )
 
 
 #
@@ -147,10 +149,12 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2)
 
 #
-MODES_2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
-                                 MATR_MASS=MASS_2,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                              NMAX_FREQ = 6))
+MODES_2=CALC_MODES(MATR_RIGI=RAID_2,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=6,
+                                ),
+                   MATR_MASS=MASS_2,
+                   )
 
 
 #
@@ -262,10 +266,12 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
-                                 MATR_MASS=MASGEN,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                        NMAX_FREQ = 6))
+RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  MATR_MASS=MASGEN,
+                  )
 
 
 #
@@ -289,10 +295,12 @@ RIGEEL=ASSE_MATR_GENE(  NUME_DDL_GENE=NUGEEL,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEL=MODE_ITER_SIMULT(     MATR_RIGI=RIGEEL,
-                                 MATR_MASS=MAGEEL,
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                        NMAX_FREQ = 6))
+RESGEL=CALC_MODES(MATR_RIGI=RIGEEL,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=6,
+                               ),
+                  MATR_MASS=MAGEEL,
+                  )
 
 
 #

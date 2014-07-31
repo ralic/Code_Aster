@@ -124,10 +124,12 @@ for ddd in d:
    i=i+1
 print "\n"
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                       FREQ=(3.,3000.)));
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(3.,3000.),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 OM=10000.*pi/30.
 
@@ -135,14 +137,17 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
 
-MODEQ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       MATR_AMOR=GYOM,
-                       METHODE='QZ',
-                       TYPE_QZ='QZ_SIMPLE',
-                       CALC_FREQ=_F(NMAX_FREQ=106),
-                       VERI_MODE=_F(SEUIL=0.5),
-                        )
+MODEQ=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 VERI_MODE=_F(SEUIL=0.5,
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=106,
+                              ),
+                 MATR_AMOR=GYOM,
+                 MATR_MASS=MASSE,
+                 SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
+                                  METHODE='QZ',
+                                  ),
+                 )
 
 [d,gyro]=EXTR_MATR(GYOM,1)
 

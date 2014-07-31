@@ -58,10 +58,12 @@ KA=ASSE_MATRICE(MATR_ELEM=KE,NUME_DDL=NUM)
 
 MA=ASSE_MATRICE(MATR_ELEM=ME,NUME_DDL=NUM)
 
-MD=MODE_ITER_SIMULT( MATR_RIGI=KA,
-                     MATR_MASS=MA,
-                     CALC_FREQ=_F(  OPTION = 'BANDE', FREQ = (230., 530.,))
-                    )
+MD=CALC_MODES(MATR_RIGI=KA,
+              OPTION='BANDE',
+              CALC_FREQ=_F(FREQ=(230.,530.,),
+                           ),
+              MATR_MASS=MA,
+              )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

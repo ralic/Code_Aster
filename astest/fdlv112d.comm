@@ -164,16 +164,18 @@ mass_bar=POST_ELEM( MODELE= modele ,
 #
 #
 #
-mode_rig =MACRO_MODE_MECA(MATR_RIGI= MATRIGI,
-                       MATR_MASS= MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 10.,
-                                          20.,30.,
-                                          40.,
-                                          ),
-                                  ),
-                       VERI_MODE=_F(STOP_ERREUR='NON',),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(0.1,10.,20.,30.,40.,),
+                                 ),
+                    FILTRE_MODE=_F(SEUIL=0.0003,
+                                   ),
+                    MATR_MASS=MATMASS,
+                    NORM_MODE=_F(INFO=1,
+                              NORME='TRAN_ROTA',),
+                    )
 
 
 

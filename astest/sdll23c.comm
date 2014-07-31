@@ -79,9 +79,14 @@ TABL_MAS=POST_ELEM(  MODELE=MODELE,
 
 IMPR_TABLE(   TABLE=TABL_MAS )
 
-MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                  CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 6,
-                              DIM_SOUS_ESPACE = 6) )
+MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=6,
+                                 ),
+                    MATR_MASS=MASSE,
+                    SOLVEUR_MODAL=_F(DIM_SOUS_ESPACE=6,
+                                     ),
+                    )
 
 
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)

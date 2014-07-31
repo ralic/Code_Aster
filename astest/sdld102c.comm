@@ -30,9 +30,9 @@
 # ET 'ADAPT') SONT TESTES (LE SCHEME 'DEVOGE' NE SUPPORTANT PAS LA
 # PRISE EN COMPTE DE L'AMORTISSEMENT).
 #
-# A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL (L'UN BASE SUR LES
-# MODES CALCULES PAR MODE_ITER_SIMULT ET L'AUTRE BASE SUR MODE_ITER_INV)
-# POUR TESTER L'ISOFONCTIONNALITE DES 2 OPERATEURS EN CAS DE
+# A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL CALC_MODES(L'UN BASE SUR LES
+# MODES CALCULES PAR METHODE DE SOUS-ESPACE ET L'AUTRE BASE SUR LA METHODE DES 
+# PUISSANCES INVERSES) POUR TESTER L'ISOFONCTIONNALITE DES 2 OPERATEURS EN CAS DE
 # NUME_DDL_GENE. D'AUTRE PART ON CHOISIT (A TORT) L'USAGE DU SOLVEUR
 # LINEAIRE MULT_FRONT POUR FORCER LE CHANGEMENT EN INTERNE OPERATEUR
 # POUR MUMPS.
@@ -119,10 +119,14 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
 #  CALCUL DES MODES PROPRES DES SOUS-STRUCTURES
 #------------------------------------------------------------------
 
-MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
-                                 MATR_MASS=M_ASSE, INFO=2,
-                          SOLVEUR=_F(METHODE='MUMPS',),
-                             CALC_FREQ=_F( NMAX_FREQ = 1))
+MODES=CALC_MODES(INFO=2,
+                 MATR_RIGI=K_ASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=1,
+                              ),
+                 SOLVEUR=_F(METHODE='MUMPS',
+                            ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 #  DEFINITION DES INTERFACES
 #------------------------------------------------------------------
@@ -220,20 +224,29 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=NB_MODES,)
 
 # CAS 1
-RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN, MATR_MASS=MASGEN,INFO=2,
-                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
-                                     NMAX_FREQ = 3),
-                        SOLVEUR=_F(METHODE='MULT_FRONT',),)
+RESGEN=CALC_MODES(INFO=2,
+                  MATR_RIGI=RIGGEN,
+                  CALC_FREQ=_F(NMAX_FREQ=3,
+                               ),
+                  OPTION='PLUS_PETITE',
+                  SOLVEUR=_F(METHODE='MULT_FRONT',
+                             ),
+                  MATR_MASS=MASGEN,
+                  )
 
 
 MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SOUS_STRUC='COTE1',
                            TOUT_ORDRE='OUI')
 # CAS 2
-RESGEN2=MODE_ITER_INV(MATR_RIGI=RIGGEN,MATR_MASS=MASGEN,
-                        SOLVEUR=_F(METHODE='MULT_FRONT',),
-                 CALC_FREQ=_F( OPTION = 'PROCHE',
-               FREQ = ( 1.21E-1,  2.25E-1, 2.94E-1,)) )
+RESGEN2=CALC_MODES(MATR_RIGI=RIGGEN,
+                   CALC_FREQ=_F(FREQ=( 1.21E-1,2.25E-1,2.94E-1,),
+                                ),
+                   OPTION='PROCHE',
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              ),
+                   MATR_MASS=MASGEN,
+                   )
 
 MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN2,
                            SOUS_STRUC='COTE1',

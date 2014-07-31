@@ -1170,11 +1170,13 @@ ASSEMBLAGE(MODELE=MO,
                            _F(MATRICE=CO('MATASSM1'),
                               OPTION='MASS_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                       MATR_MASS=MATASSM1,
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=1.0,
-                                    NMAX_FREQ=25,),);
+MODES=CALC_MODES(MATR_RIGI=MATASSR1,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=25,
+                              FREQ=1.0,
+                              ),
+                 MATR_MASS=MATASSM1,
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

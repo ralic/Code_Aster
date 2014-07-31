@@ -61,15 +61,17 @@ M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
 # ANALYSE MODALE
 # QUESTION 1: CALCUL BANDE AVEC SORENSEN
 
-MODE_SOB=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          METHODE='SORENSEN',
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(-.3,2700.0,),
-#                                       SEUIL_FREQ=.1,
-#                                       NMAX_ITER_SHIFT=6,
-                                       ),
-                          TITRE='1/ METHODE DE SORENSEN',);
+MODE_SOB=CALC_MODES(MATR_RIGI=K_ASSE,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(#SEUIL_FREQ=.1,
+                                 #NMAX_ITER_SHIFT=6,
+                                 FREQ=(-.3,2700.0,),
+                                 ),
+                    TITRE='1/ METHODE DE SORENSEN',
+                    MATR_MASS=M_ASSE,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -78,7 +80,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=0.,
                   TOLE_MACHINE=2.E-03,
 # TOLE_MACHINE JUSTIFIEE CAR ON TESTE UN ZERO NUMERIQUE (FREQUENCE DE MODE DE CORPS RIGIDE)
-# ISSUE DE MODE_ITER_SIMULT - ON NE PEUT PAS CONTROLER CE ZERO A MIEUX QUE 1.E-3
+# ISSUE DE CALC_MODES - ON NE PEUT PAS CONTROLER CE ZERO A MIEUX QUE 1.E-3
 # A COMPARER A LA PREMIERE FREQUENCE NON NULLE QUI VAUT 2613 HZ
                   PRECISION=1.E-03,
                   REFERENCE='NON_DEFINI',
@@ -94,13 +96,16 @@ TEST_RESU(RESU=_F(NUME_ORDRE=7,
                   ),
           )
 
-MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          METHODE='QZ',
-                          TYPE_QZ='QZ_QR',
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(0.0,2700.0,),),
-                          TITRE='1/ METHODE QZ',);
+MODE_QZ=CALC_MODES(MATR_RIGI=K_ASSE,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.0,2700.0,),
+                                ),
+                   TITRE='1/ METHODE QZ',
+                   MATR_MASS=M_ASSE,
+                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_QR',
+                                    METHODE='QZ',
+                                    ),
+                   )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -110,7 +115,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=0.0,
                   TOLE_MACHINE=2.E-03,
 # TOLE_MACHINE JUSTIFIEE CAR ON TESTE UN ZERO NUMERIQUE (FREQUENCE DE MODE DE CORPS RIGIDE)
-# ISSUE DE MODE_ITER_SIMULT - ON NE PEUT PAS CONTROLER CE ZERO A MIEUX QUE 1.E-3
+# ISSUE DE CALC_MODES - ON NE PEUT PAS CONTROLER CE ZERO A MIEUX QUE 1.E-3
 # A COMPARER A LA PREMIERE FREQUENCE NON NULLE QUI VAUT 2613 HZ
                   CRITERE='ABSOLU',
                   PRECISION=3.E-3,
@@ -146,24 +151,28 @@ IMPR_RESU(FORMAT='CASTEM',UNITE=55,
 
 # QUESTION 2: CALCUL BANDE AVEC LANCZOS SANS OU AVEC OPTION MODE RIGIDE
 
-#MODE_LAS=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-#                          MATR_MASS=M_ASSE,
-#                          METHODE='TRI_DIAG',
-#                          OPTION='SANS',
-#                          CALC_FREQ=_F(OPTION='BANDE',
-#                                       FREQ=(0.0,2800.0,),),
-#                          VERI_MODE=_F(STOP_ERREUR='NON',),
-#                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION MODE RIGIDE',);
+#MODE_LAS=CALC_MODES(MATR_RIGI=K_ASSE,
+#                    MATR_MASS=M_ASSE,
+#                    SOLVEUR_MODAL(METHODE='TRI_DIAG',),
+#                    MODE_RIGIDE='NON',
+#                    OPTION='BANDE',
+#                    CALC_FREQ=_F(FREQ=(0.0,2800.0,),),
+#                    VERI_MODE=_F(STOP_ERREUR='NON',),
+#                    TITRE='2/ METHODE DE LANCZOS AVEC OPTION MODE RIGIDE',
+#                    );
 #IMPR_RESU(RESU=_F(RESULTAT=MODE_LAS,
 #                  TOUT_CHAM='NON',
 #                  TOUT_PARA='OUI',),);
-MODE_LAA=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          METHODE='TRI_DIAG',
-                          OPTION='MODE_RIGIDE',
-                          CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(0.0,2800.0,),),
-                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION',);
+MODE_LAA=CALC_MODES(MATR_RIGI=K_ASSE,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(0.0,2800.0,),
+                                 ),
+                    TITRE='2/ METHODE DE LANCZOS AVEC OPTION',
+                    MATR_MASS=M_ASSE,
+                    SOLVEUR_MODAL=_F(MODE_RIGIDE='OUI',
+                                     METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 IMPR_RESU(RESU=_F(RESULTAT=MODE_LAA,
                   TOUT_CHAM='NON',
@@ -182,13 +191,15 @@ TEST_RESU(RESU=_F(NUME_ORDRE=11,
 # QUESTION 3: CALCUL DES 16 PLUS PETITES AVEC SORENSEN
 # ON UTILISE "SEUIL_FREQ" POUR EVITER LE SOUCI AVEC LES CORPS RIGIDES
 
-MODE_SOP=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                           MATR_MASS=M_ASSE,
-                           METHODE='SORENSEN',
-                           CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                       SEUIL_FREQ=1.,
-                                        NMAX_FREQ=16,),
-                          )
+MODE_SOP=CALC_MODES(MATR_RIGI=K_ASSE,
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=16,
+                                 SEUIL_FREQ=1.,
+                                 ),
+                    MATR_MASS=M_ASSE,
+                    SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                     ),
+                    )
 
 IMPR_RESU(RESU=_F(RESULTAT=MODE_SOP,
                   TOUT_CHAM='NON',

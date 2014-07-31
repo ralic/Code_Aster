@@ -150,10 +150,12 @@ for ddd in d:
 print "\n"
 
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(0.,1000.,),),);
+MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0.,1000.,),
+                              ),
+                 MATR_MASS=MASSE,
+                 )
 
 
 balou = 0.0002;

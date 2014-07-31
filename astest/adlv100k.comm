@@ -116,11 +116,12 @@ MATM=ASSE_MATRICE(
 #
 # CALCUL DES MODES
 #
-MODES=MODE_ITER_INV(  MATR_RIGI=MATK,
-                        MATR_MASS=MATM,
-                        CALC_FREQ=_F( OPTION = 'AJUSTE',
-                                   FREQ = (10., 20.,))
-                         )
+MODES=CALC_MODES(MATR_RIGI=MATK,
+                 OPTION='AJUSTE',
+                 CALC_FREQ=_F(FREQ=(10.,20.,),
+                              ),
+                 MATR_MASS=MATM,
+                 )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',

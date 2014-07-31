@@ -103,14 +103,13 @@ RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
 ##### RESOLUTION DU PROBLEME DE VALEURS PROPRES
 #
 
-MOD_1=MODE_ITER_SIMULT( MATR_RIGI=MATASS_1,
-                        MATR_RIGI_GEOM=RIGASG_1,
-                        TYPE_RESU='MODE_FLAMB',
-                        CALC_CHAR_CRIT =_F (OPTION ='PLUS_PETITE',
-                                       NMAX_CHAR_CRIT = 3,
-                                   #    CHAR_CRIT=(-1000000., 0.),
-                                       ),
-                        )
+MOD_1=CALC_MODES(MATR_RIGI_GEOM=RIGASG_1,
+                 TYPE_RESU='MODE_FLAMB',
+                 MATR_RIGI=MATASS_1,
+                 CALC_CHAR_CRIT=_F(#CHAR_CRIT=(-1000000., 0.),
+                                   NMAX_CHAR_CRIT=3,
+                                   ),
+                 )
 
 
 

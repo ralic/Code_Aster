@@ -67,17 +67,19 @@ ASSEMBLAGE(MODELE=MODELE,
 
 
 # CALCL DES MODES EN DEUX BANDES
-MODES_1=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
-                         MATR_MASS=MATASSM,
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=( 0., 40. ),),
-                        );
+MODES_1=CALC_MODES(MATR_RIGI=MATASSR,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=( 0.,40.),
+                                ),
+                   MATR_MASS=MATASSM,
+                   )
 
-MODES_2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
-                         MATR_MASS=MATASSM,
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=( 40., 100. ),),
-                        );
+MODES_2=CALC_MODES(MATR_RIGI=MATASSR,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=( 40.,100.),
+                                ),
+                   MATR_MASS=MATASSM,
+                   )
 
 #
 MODES_1=NORM_MODE( reuse=MODES_1, MODE=MODES_1,

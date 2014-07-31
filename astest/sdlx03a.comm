@@ -68,10 +68,12 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 #
 #               CALCUL MODAL
 
-MODES=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR,    MATR_MASS=MATASSM,
-                           CALC_FREQ=_F(  OPTION = 'BANDE',
-                                       FREQ = ( 1.,   1200., ),
-                                       )  )
+MODES=CALC_MODES(MATR_RIGI=MATASSR,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 1.,1200.,),
+                              ),
+                 MATR_MASS=MATASSM,
+                 )
 
 
 # --------------------------------------------------------------------

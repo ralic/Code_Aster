@@ -242,13 +242,16 @@ M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
 #nombre de frequences
 nb_modes = 8
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=M_AS_RIG,
-                       MATR_MASS=M_AS_MAS,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=nb_modes),
-                       VERI_MODE=_F(STOP_ERREUR='NON'),             
-                                    );
+MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              ),
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=nb_modes,
+                              ),
+                 MATR_MASS=M_AS_MAS,
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  ),
+                 )
 
 #on effectue une expansion des modes identifies
 

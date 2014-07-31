@@ -158,13 +158,16 @@ K_MODAL=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=K2_ASSE,
 M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
                     NUME_DDL=NUMERO_2,);
 
-MODE_1=MODE_ITER_SIMULT(MATR_RIGI=K_MODAL,
-                        MATR_MASS=M_ASSE,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=20,),
-                        VERI_MODE=_F(SEUIL=0.0001,),
-                         SOLVEUR=_F( METHODE='MUMPS',),
-                        );
+MODE_1=CALC_MODES(MATR_RIGI=K_MODAL,
+                  VERI_MODE=_F(SEUIL=0.0001,
+                               ),
+                  CALC_FREQ=_F(NMAX_FREQ=20,
+                               ),
+                  OPTION='PLUS_PETITE',
+                  SOLVEUR=_F(METHODE='MUMPS',
+                             ),
+                  MATR_MASS=M_ASSE,
+                  )
 
 #----------------------------------------------------------------------
 # pour tester la possibilite d'imprimer un MODE_MECA au format 'IDEAS'

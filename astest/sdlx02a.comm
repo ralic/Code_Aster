@@ -86,14 +86,22 @@ TABL_MAS=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
                         MASS_INER=_F(  TOUT = 'OUI')                   )
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                    METHODE='TRI_DIAG',
-                  CALC_FREQ=_F(  NMAX_FREQ = 9) )
+MODE=CALC_MODES(MATR_RIGI=RIGIDITE,
+                CALC_FREQ=_F(NMAX_FREQ=9,
+                             ),
+                MATR_MASS=MASSE,
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                 ),
+                )
 
 
-MODE_DIA=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE_DI,
-                    METHODE='TRI_DIAG',
-                  CALC_FREQ=_F(  NMAX_FREQ = 9) )
+MODE_DIA=CALC_MODES(MATR_RIGI=RIGIDITE,
+                    CALC_FREQ=_F(NMAX_FREQ=9,
+                                 ),
+                    MATR_MASS=MASSE_DI,
+                    SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                     ),
+                    )
 
 
 MODE_DIA=NORM_MODE(reuse=MODE_DIA,   MODE=MODE_DIA,   NORME='TRAN_ROTA',)

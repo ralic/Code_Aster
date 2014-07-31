@@ -100,11 +100,13 @@ VECTASS=ASSE_VECTEUR(  VECT_ELEM=EFFOELEM,  NUME_DDL=NUMEROTA  )
 #
 #
 
-MODES=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGI,  MATR_MASS=MATRMASS,
-                         CALC_FREQ=_F(  OPTION = 'CENTRE',
-                                     FREQ = (10.,),
-                                     NMAX_FREQ = 3)
-                      )
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=3,
+                              FREQ=(10.,),
+                              ),
+                 MATR_MASS=MATRMASS,
+                 )
 
 
 #

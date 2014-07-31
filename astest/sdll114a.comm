@@ -376,23 +376,19 @@ MASSEXY=ASSE_MATRICE(
                       )
 
 #52.01 MODE_MECA
-MODPOUX=MODE_ITER_INV(
-                          MATR_RIGI=RIGIDXX,
-                          MATR_MASS=MASSEXX,
-                          CALC_FREQ=_F( FREQ = (0., 300.,))
-#                ' (AFFINITE // X) &RL'
-#               ' 0.06X0.05 A 0.03X0.05 POSEE POSEE  SDLL114 ')
+MODPOUX=CALC_MODES(MATR_RIGI=RIGIDXX,
+                   OPTION='AJUSTE',
+                   CALC_FREQ=_F(FREQ=(0.,300.,),
+                                ),
+                   MATR_MASS=MASSEXX,
+                   )
 
-                        )
-
-MODPOUY=MODE_ITER_INV(
-                          MATR_RIGI=RIGIDXY,
-                          MATR_MASS=MASSEXY,
-                          CALC_FREQ=_F( FREQ = (0., 300.,))
-#                'TOURNEE DE 90 DEGRES AUTOUR DE Z (AFFINITE //Y) &RL'
-#               ' 0.06X0.05 A 0.03X0.05 POSEE POSEE  SDLL114 ')
-
-                        )
+MODPOUY=CALC_MODES(MATR_RIGI=RIGIDXY,
+                   OPTION='AJUSTE',
+                   CALC_FREQ=_F(FREQ=(0.,300.,),
+                                ),
+                   MATR_MASS=MASSEXY,
+                   )
 
 #72.01
 

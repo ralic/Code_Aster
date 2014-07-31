@@ -117,15 +117,16 @@ VECTASS=ASSE_VECTEUR(  VECT_ELEM=EFFOELEM,  NUME_DDL=NUMEROTA  )
 #
 #
 
-MODES=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGI,
-                         MATR_MASS=MATRMASS,
-                         METHODE='JACOBI',
-                         NMAX_ITER_BATHE = 30,
-                         OPTION='SANS',
-                         CALC_FREQ=_F(  OPTION = 'CENTRE',
-                                     FREQ = (10.,),
-                                     NMAX_FREQ = 6,)
-                      )
+MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=6,
+                              FREQ=(10.,),
+                              ),
+                 MATR_MASS=MATRMASS,
+                 SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                  NMAX_ITER_BATHE=30,
+                                  ),
+                 )
 
 
 #

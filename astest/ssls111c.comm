@@ -229,10 +229,12 @@ MATASM=ASSE_MATRICE(MATR_ELEM=MASEL,
 VECASS=ASSE_VECTEUR(VECT_ELEM=VEL,
                     NUME_DDL=NU,);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=MATASS,
-                       MATR_MASS=MATASM,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=4,),);
+MODES=CALC_MODES(MATR_RIGI=MATASS,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              ),
+                 MATR_MASS=MATASM,
+                 )
 
 
 MESTAT=MECA_STATIQUE(MODELE=MO,
@@ -322,10 +324,12 @@ MATASM1=ASSE_MATRICE(MATR_ELEM=MASEL1,
 VECASS1=ASSE_VECTEUR(VECT_ELEM=VEL1,
                      NUME_DDL=NU1,);
 
-MODE1=MODE_ITER_SIMULT(MATR_RIGI=MATASS1,
-                       MATR_MASS=MATASM1,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=4,),);
+MODE1=CALC_MODES(MATR_RIGI=MATASS1,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=4,
+                              ),
+                 MATR_MASS=MATASM1,
+                 )
 
 
 

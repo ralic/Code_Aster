@@ -183,11 +183,14 @@ MATASSR1=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATASSR,
                                 _F(MATR_ASSE=MAR_0,
                                    COEF_R=1.0,),),);
 
-MD_0=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                      MATR_MASS=MATASSM,
-                      METHODE='TRI_DIAG',
-                      CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                   NMAX_FREQ=5,),);
+MD_0=CALC_MODES(MATR_RIGI=MATASSR1,
+                OPTION='PLUS_PETITE',
+                CALC_FREQ=_F(NMAX_FREQ=5,
+                             ),
+                MATR_MASS=MATASSM,
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                 ),
+                )
 
 #
 # CALCUL MODAL AVEC PRECONTRAINTE F = 10 N.
@@ -198,11 +201,14 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                                 _F(MATR_ASSE=MAR_10,
                                    COEF_R=1.0,),),);
 
-MD_10=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                       MATR_MASS=MATASSM,
-                       METHODE='TRI_DIAG',
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=5,),);
+MD_10=CALC_MODES(MATR_RIGI=MATASSR1,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=5,
+                              ),
+                 MATR_MASS=MATASSM,
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  ),
+                 )
 
 #
 # CALCUL MODAL AVEC PRECONTRAINTE F = 100 N.
@@ -213,11 +219,14 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                                 _F(MATR_ASSE=MAR_100,
                                    COEF_R=1.0,),),);
 
-MD_100=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM,
-                        METHODE='TRI_DIAG',
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=5,),);
+MD_100=CALC_MODES(MATR_RIGI=MATASSR1,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F(NMAX_FREQ=5,
+                               ),
+                  MATR_MASS=MATASSM,
+                  SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                   ),
+                  )
 
 #
 # CALCUL MODAL AVEC PRECONTRAINTE F = 1000 N.
@@ -228,11 +237,14 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                                 _F(MATR_ASSE=MAR_1000,
                                    COEF_R=1.0,),),);
 
-MD_1000=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                         MATR_MASS=MATASSM,
-                         METHODE='TRI_DIAG',
-                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                      NMAX_FREQ=5,),);
+MD_1000=CALC_MODES(MATR_RIGI=MATASSR1,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ=_F(NMAX_FREQ=5,
+                                ),
+                   MATR_MASS=MATASSM,
+                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                    ),
+                   )
 
 #
 # VERIFICATION DES RESULTATS

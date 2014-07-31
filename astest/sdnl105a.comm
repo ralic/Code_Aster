@@ -118,9 +118,11 @@ V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
 
 #
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       CALC_FREQ=_F(NMAX_FREQ=15,),);
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 MATR_MASS=M_ASSE,
+                 CALC_FREQ=_F(NMAX_FREQ=15,
+                              ),
+                 )
 
 
 #

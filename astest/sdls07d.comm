@@ -67,10 +67,12 @@ ASSEMBLAGE(   MODELE=MODELE_1,     CARA_ELEM=CARAC__1,
 #====================================================================
 #                CALCUL MODAL
 
-MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR1,
-                         MATR_MASS=MATASSM1,
-                         CALC_FREQ=_F( OPTION = 'BANDE', FREQ = (230., 535.,))
-                        )
+MODE1=CALC_MODES(MATR_RIGI=MATASSR1,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(230.,535.,),
+                              ),
+                 MATR_MASS=MATASSM1,
+                 )
 
 #
 #

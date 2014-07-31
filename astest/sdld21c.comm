@@ -93,26 +93,32 @@ ASSEMBLAGE(MODELE=MO,
 #
 
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
-                       MATR_MASS=MATASSM,
-                       MATR_AMOR=MATASSC,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='CENTRE',
-                                    FREQ=5.0,
-                                    NMAX_FREQ=5,
-                                    APPROCHE='REEL',),);
+MODES=CALC_MODES(MATR_RIGI=MATASSR,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=5,
+                              FREQ=5.0,
+                              ),
+                 MATR_AMOR=MATASSC,
+                 MATR_MASS=MATASSM,
+                 SOLVEUR_MODAL=_F(APPROCHE='REEL',
+                                  METHODE='SORENSEN',
+                                  ),
+                 )
 MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 
 # AVEC QZ + OPTION='CENTRE' + 'QZ_SIMPLE'
 
-MODE_QZ1=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
-                          MATR_MASS=MATASSM,
-                          MATR_AMOR=MATASSC,
-                          METHODE='QZ', TYPE_QZ='QZ_SIMPLE',
-                          CALC_FREQ=_F(OPTION='CENTRE',
-                                       FREQ=5.0,
-                                       NMAX_FREQ=5),
-                          );
+MODE_QZ1=CALC_MODES(MATR_RIGI=MATASSR,
+                    OPTION='CENTRE',
+                    CALC_FREQ=_F(NMAX_FREQ=5,
+                                 FREQ=5.0,
+                                 ),
+                    MATR_AMOR=MATASSC,
+                    MATR_MASS=MATASSM,
+                    SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
+                                     METHODE='QZ',
+                                     ),
+                    )
 MODE_QZ1=NORM_MODE(MODE=MODE_QZ1,reuse=MODE_QZ1,NORME='MASS_GENE')
 
 # --------------------------------------------------------------------

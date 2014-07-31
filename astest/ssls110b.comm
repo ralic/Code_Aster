@@ -122,12 +122,15 @@ RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
 #
 #
 
-MOD_1=MODE_ITER_SIMULT(                   MATR_RIGI=MATASS_1,
-                                              MATR_RIGI_GEOM=RIGASG_1,
-######                             NUME_MODE_NEGA        : 'NON'
-                TYPE_RESU='MODE_FLAMB',
-                CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 9,    DIM_SOUS_ESPACE = 30,         ),
-                            )
+MOD_1=CALC_MODES(MATR_RIGI_GEOM=RIGASG_1,
+                 TYPE_RESU='MODE_FLAMB',
+                 MATR_RIGI=MATASS_1,
+                 CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=9,
+                                   ),
+                 ######                             NUME_MODE_NEGA        : 'NON'
+                 SOLVEUR_MODAL=_F(DIM_SOUS_ESPACE=30,
+                                  ),
+                 )
 
 
 #

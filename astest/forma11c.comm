@@ -98,10 +98,12 @@ TEST_TABLE(
 
 # QUESTION 1: CALCUL BANDE DES MODES PAR SORENSEN
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-                      MATR_MASS=M_ASSE,
-                      CALC_FREQ=_F(OPTION='BANDE',
-                                   FREQ=(0.0,4.0,),),);
+MODES=CALC_MODES(MATR_RIGI=K_ASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=(0.0,4.0,),
+                              ),
+                 MATR_MASS=M_ASSE,
+                 )
 
 
 # TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST

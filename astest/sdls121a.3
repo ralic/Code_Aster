@@ -110,13 +110,13 @@ M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
 #nombre de frequences
 NF=8
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=M_AS_RIG,
-                       MATR_MASS=M_AS_MAS,
-                       METHODE='SORENSEN',
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=NF),
-                       VERI_MODE=_F(STOP_ERREUR='NON'),             
-                                    );
+MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
+                 MATR_MASS=M_AS_MAS,
+                 OPTION='PLUS_PETITE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                 CALC_FREQ=_F(NMAX_FREQ=NF),
+                 VERI_MODE=_F(STOP_ERREUR='NON'),             
+                );
 #on projete le concept mode_meca calcule sur le maillage experimental
 
 MODNUM = PROJ_CHAMP(RESULTAT=MODES,

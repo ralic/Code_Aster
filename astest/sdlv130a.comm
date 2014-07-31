@@ -170,10 +170,12 @@ MATRC=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR,
                              _F(MATR_ASSE=MATRG,
                                 COEF_R=1.0,),),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=MATRC,
-                       MATR_MASS=MATM,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=8,),);
+MODES=CALC_MODES(MATR_RIGI=MATRC,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=8,
+                              ),
+                 MATR_MASS=MATM,
+                 )
 
 
 IMPR_RESU(FORMAT='GMSH',
