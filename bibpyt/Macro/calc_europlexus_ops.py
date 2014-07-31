@@ -36,6 +36,7 @@ debug = False
 
 import types, string
 import os
+import os.path as osp
 import copy
 import tempfile
 
@@ -76,7 +77,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, MODELE=None, CARA_ELEM=None,
 
     global _F, INFO_EXEC_ASTER, DETRUIRE, IMPR_RESU, DEFI_FICHIER
     global DEFI_GROUP, LIRE_MAILLAGE, CREA_TABLE, IMPR_TABLE, AFFE_MODELE
-    global MODI_REPERE, LIRE_EUROPLEXUS, CREA_MAILLAGE, EXEC_LOGICIEL
+    global MODI_REPERE, LIRE_EUROPLEXUS, CREA_MAILLAGE
 
     INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
     DETRUIRE = self.get_cmd('DETRUIRE')
@@ -88,7 +89,6 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, MODELE=None, CARA_ELEM=None,
     CREA_TABLE = self.get_cmd('CREA_TABLE')
     IMPR_TABLE = self.get_cmd('IMPR_TABLE')
     AFFE_MODELE = self.get_cmd('AFFE_MODELE')
-    EXEC_LOGICIEL = self.get_cmd('EXEC_LOGICIEL')
     MODI_REPERE = self.get_cmd('MODI_REPERE')
     LIRE_EUROPLEXUS = self.get_cmd('LIRE_EUROPLEXUS')
 
@@ -200,6 +200,7 @@ class EUROPLEXUS:
             Crée les directives EPX.
             Définie les fichiers de sortie.
         """
+        import aster_core
         from Calc_epx.calc_epx_cata import cata_directives
         from Calc_epx.calc_epx_struc import DIRECTIVE
 
@@ -269,10 +270,10 @@ class EUROPLEXUS:
         self.COMPORTEMENT = COMPORTEMENT
 
         self.REPE_epx = REPE_epx
-        self.pwd = os.getcwd()
 
         # Commande d'execution de Europlexus
-        self.EXEC = EXEC
+        tooldir = aster_core.get_option('repout')
+        self.EXEC = EXEC or osp.join(tooldir, 'europlexus')
 
         # COURBE
         if args.has_key('UNITE_COURBE'):
@@ -666,23 +667,6 @@ class EUROPLEXUS:
         bloc = BLOC_DONNEES(mot_cle, cara=data)
         epx[directive].add_bloc(bloc)
 
-      # EC on verra ca plus tard : surement à supprimer.
-      ## ecriture CAST2000
-      ## __temp
-      #fichier_cast2000 = 'fort.%i' %unite_cast2000
-      #if unite_cast2000 and os.path.isfile(fichier_cast2000) :
-        ## titre
-        #epx[MODULE].append('\n*-- CAST2000')
-        #fd = open(fichier_cast2000,'reel')
-        #lst = fd.readlines()
-        #fd.close()
-        #for st in lst :
-          #st = string.replace(st,'\n','')
-          #epx[MODULE].append(st)
-
-
-
-  #-----------------------------------------------------------------------
 
     def export_POST_COURBE(self):
 
@@ -1020,29 +1004,12 @@ class EUROPLEXUS:
                             EXCIT=self.EXCIT,
                             INFO=self.INFO,
                             )
-  #-----------------------------------------------------------------------
+
     def lancer_calcul(self):
-        """
-            Lancement du calcul EPX.
-        """
-
-        fichier_epx = self.nom_fichiers['COMMANDE'].split(os.sep)[-1]
-
-        #commande = ["cd %s"%self.REPE_epx]
-        #commande.append("unset TMPDIR")
-        #commande.append("unset PMI_RANK")
-        #commande.append("%s %s"%(self.EXEC, fichier_epx))
-        #commande.append("iret=$?")
-        #commande.append("cd %s"%self.pwd)
-        #commande.append('echo "Code_Retour Europlexus : $iret')
-        #commande.append('exit 0')
-        #commande = ' ; '.join(commande)
-        #co ='cd %s ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.REPE_epx, self.EXEC, fichier_epx, self.pwd)
-        #print co
-        #print commande
-        EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.REPE_epx, self.EXEC, fichier_epx, self.pwd),
-                     CODE_RETOUR_MAXI=-1,
-                     INFO=2)
-#------------------------------------------------------------------------
-#----------------------------- FIN class EUROPLEXUS ---------------------
-#------------------------------------------------------------------------
+        """Lancement du calcul EPX"""
+        from Cata.cata import EXEC_LOGICIEL
+        fichier_epx = osp.abspath(self.nom_fichiers['COMMANDE'])
+        EXEC_LOGICIEL(LOGICIEL=self.EXEC,
+                      ARGUMENT=(fichier_epx, self.REPE_epx),
+                      CODE_RETOUR_MAXI=-1,
+                      INFO=2)
