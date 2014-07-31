@@ -29,7 +29,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !  HESSENBERG SUBMATRIX IN ROWS AND COLUMNS ILO TO IHI.  ONLY THE
 !  LAST COMPONENT OF THE SCHUR VECTORS ARE COMPUTED.
 !
-!  THIS IS MOSTLY A MODIFICATION OF THE LAPACK ROUTINE FLAHQR.
+!  THIS IS MOSTLY A MODIFICATION OF THE LAPACK ROUTINE DLAHQR.
 !
 ! ARGUMENTS
 !  WANTT   LOGICAL VARIABLE.  (INPUT)
@@ -86,9 +86,9 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !
 ! ROUTINES CALLED:
 !     DLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
-!     FLANV2  LAPACK ROUTINE THAT COMPUTES THE SCHUR FACTORIZATION OF
+!     DLANV2  LAPACK ROUTINE THAT COMPUTES THE SCHUR FACTORIZATION OF
 !             2 BY 2 NONSYMMETRIC MATRIX IN STANDARD FORM.
-!     FLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
+!     DLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
 !     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
 !     DROT    LEVEL 1 BLAS THAT APPLIES A ROTATION TO A 2 BY 2 MATRIX.
 !
@@ -109,7 +109,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !
 ! REVISION HISTORY:
 !     XX/XX/92: VERSION ' 2.4'
-!               MODIFIED FROM THE LAPACK ROUTINE FLAHQR SO THAT ONLY THE
+!               MODIFIED FROM THE LAPACK ROUTINE DLAHQR SO THAT ONLY THE
 !               LAST COMPONENT OF THE SCHUR VECTORS ARE COMPUTED.
 !
 ! FILE: LAQRB.F   SID: 2.2   DATE OF SID: 8/27/96   RELEASE: 2
@@ -135,8 +135,8 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/flanv2.h"
-#include "asterfort/flarfg.h"
+#include "asterfort/ar_dlanv2.h"
+#include "asterfort/ar_dlarfg.h"
 #include "blas/dcopy.h"
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
@@ -378,7 +378,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !
             nr = min( 3, i-k+1 )
             if (k .gt. m) call dcopy(nr, h( k, k-1 ), 1, v, 1)
-            call flarfg(nr, v( 1 ), v( 2 ), 1, t1)
+            call ar_dlarfg(nr, v( 1 ), v( 2 ), 1, t1)
             if (k .gt. m) then
                 h( k, k-1 ) = v( 1 )
                 h( k+1, k-1 ) = zero
@@ -489,7 +489,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !        | AND COMPUTE AND STORE THE EIGENVALUES.                 |
 !        %--------------------------------------------------------%
 !
-        call flanv2(h( i-1, i-1 ), h( i-1, i ), h( i, i-1 ), h( i, i ), wr( i-1 ),&
+        call ar_dlanv2(h( i-1, i-1 ), h( i-1, i ), h( i, i-1 ), h( i, i ), wr( i-1 ),&
                     wi( i-1 ), wr( i ), wi( i ), cs, sn)
 !
         if (wantt) then

@@ -198,8 +198,8 @@
 !
 !        =  0: NORMAL EXIT.
 !
-!        =  1: THE SCHUR FORM COMPUTED BY LAPACK ROUTINE FLAHQR
-!          COULD NOT BE REORDERED BY LAPACK ROUTINE FTRSEN.
+!        =  1: THE SCHUR FORM COMPUTED BY LAPACK ROUTINE DLAHQR
+!          COULD NOT BE REORDERED BY LAPACK ROUTINE DTRSEN.
 !          RE-ENTER SUBROUTINE DNEUPD WITH IPARAM(5)=NCV AND
 !          INCREASE THE SIZE OF THE ARRAYS DR AND DI TO HAVE
 !          DIMENSION AT LEAST DIMENSION NCV AND ALLOCATE AT LEAST NCV
@@ -219,9 +219,9 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !        = -6: BMAT MUST BE ONE OF 'I' OR 'G'.
 !        = -7: LENGTH OF PRIVATE WORK WORKL ARRAY IS NOT SUFFICIENT.
 !        = -8: ERROR RETURN FROM CALCULATION OF A REAL SCHUR FORM.
-!              INFORMATIONAL ERROR FROM LAPACK ROUTINE FLAHQR.
+!              INFORMATIONAL ERROR FROM LAPACK ROUTINE DLAHQR.
 !        = -9: ERROR RETURN FROM CALCULATION OF EIGENVECTORS.
-!              INFORMATIONAL ERROR FROM LAPACK ROUTINE FTREVC.
+!              INFORMATIONAL ERROR FROM LAPACK ROUTINE DTREVC.
 !        = -10: IPARAM(7) MUST BE 1,2,3,4.
 !        = -11: IPARAM(7) = 1 AND BMAT = 'G' ARE INCOMPATIBLE.
 !        = -12: HOWMNY = 'S' NOT YET IMPLEMENTED
@@ -246,18 +246,18 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 !     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 !     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
-!     FGEQR2  LAPACK ROUTINE THAT COMPUTES THE QR FACTORIZATION OF
+!     DGEQR2  LAPACK ROUTINE THAT COMPUTES THE QR FACTORIZATION OF
 !             A MATRIX.
 !     DLACPY  LAPACK MATRIX COPY ROUTINE.
-!     FLAHQR  LAPACK ROUTINE TO COMPUTE THE REAL SCHUR FORM OF AN
+!     DLAHQR  LAPACK ROUTINE TO COMPUTE THE REAL SCHUR FORM OF AN
 !             UPPER HESSENBERG MATRIX.
 !     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 !     DLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
 !     DORM2R  LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN
 !             FACTORED FORM.
-!     FTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
+!     DTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 !             IN UPPER QUASI-TRIANGULAR FORM.
-!     FTRSEN  LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
+!     DTRSEN  LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
 !     DTRMM   LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
 !     DGER    LEVEL 2 BLAS RANK ONE UPDATE TO A MATRIX.
 !     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
@@ -342,10 +342,10 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 #include "asterc/r8prem.h"
 #include "asterfort/dmout.h"
 #include "asterfort/dvout.h"
-#include "asterfort/fgeqr2.h"
-#include "asterfort/flahqr.h"
-#include "asterfort/ftrevc.h"
-#include "asterfort/ftrsen.h"
+#include "asterfort/ar_dgeqr2.h"
+#include "asterfort/ar_dlahqr.h"
+#include "asterfort/ar_dtrevc.h"
+#include "asterfort/ar_dtrsen.h"
 #include "asterfort/ivout.h"
 #include "blas/dcopy.h"
 #include "blas/dgemv.h"
@@ -647,7 +647,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         endif
 !
 !        %-----------------------------------------------------------%
-!        | CALL LAPACK ROUTINE FLAHQR TO COMPUTE THE REAL SCHUR FORM |
+!        | CALL LAPACK ROUTINE DLAHQR TO COMPUTE THE REAL SCHUR FORM |
 !        | OF THE UPPER HESSENBERG MATRIX RETURNED BY DNAUPD.        |
 !        | MAKE A COPY OF THE UPPER HESSENBERG MATRIX.               |
 !        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY.     |
@@ -658,7 +658,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 ! WORKL(INVSUB), LDQ)
         call dlaset('A', ncv, ncv, zero, one,&
                     workl(invsub), ldq)
-        call flahqr(.true._1, .true._1, ncv, 1, ncv,&
+        call ar_dlahqr(.true._1, .true._1, ncv, 1, ncv,&
                     workl(iuptri), ldh, workl(iheigr), workl(iheigi), 1,&
                     ncv, workl(invsub), ldq, ierr)
         call dcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
@@ -687,7 +687,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           | REORDER THE COMPUTED UPPER QUASI-TRIANGULAR MATRIX. |
 !           %-----------------------------------------------------%
 !
-            call ftrsen('N', 'V', select, ncv, workl(iuptri),&
+            call ar_dtrsen('N', 'V', select, ncv, workl(iuptri),&
                         ldh, workl(invsub), ldq, workl(iheigr), workl(iheigi),&
                         nconv, conds, sep, workl(ihbds), ncv,&
                         iwork, 1, ierr)
@@ -733,7 +733,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !        | COLUMNS OF WORKL(INVSUB,LDQ).                            |
 !        %----------------------------------------------------------%
 !
-        call fgeqr2(ncv, nconv, workl(invsub), ldq, workev,&
+        call ar_dgeqr2(ncv, nconv, workl(invsub), ldq, workev,&
                     workev( ncv+1), ierr)
 !
 !        %---------------------------------------------------------%
@@ -789,7 +789,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 endif
             end do
 !
-            call ftrevc('R', 'S', select, ncv, workl(iuptri),&
+            call ar_dtrevc('R', 'S', select, ncv, workl(iuptri),&
                         ldq, vl, 1, workl(invsub), ldq,&
                         ncv, outncv, workev, ierr)
 !
@@ -801,7 +801,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           %------------------------------------------------%
 !           | SCALE THE RETURNING EIGENVECTORS SO THAT THEIR |
 !           | EUCLIDEAN NORMS ARE ALL ONE. LAPACK SUBROUTINE |
-!           | FTREVC RETURNS EACH EIGENVECTOR NORMALIZED SO  |
+!           | DTREVC RETURNS EACH EIGENVECTOR NORMALIZED SO  |
 !           | THAT THE ELEMENT OF LARGEST MAGNITUDE HAS      |
 !           | MAGNITUDE 1,                                   |
 !           %------------------------------------------------%
@@ -890,7 +890,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           | COLUMNS OF WORKL(INVSUB,LDQ).                           |
 !           %---------------------------------------------------------%
 !
-            call fgeqr2(ncv, nconv, workl(invsub), ldq, workev,&
+            call ar_dgeqr2(ncv, nconv, workl(invsub), ldq, workev,&
                         workev(ncv+1), ierr)
 !
 !           %----------------------------------------------%

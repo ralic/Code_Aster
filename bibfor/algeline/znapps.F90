@@ -121,7 +121,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     ZVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 !     ZLACPY  LAPACK MATRIX COPY ROUTINE.
 !     ZLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
-!     GLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
+!     ZLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
 !     ZLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
 !     DLABAD  LAPACK ROUTINE FOR DEFINING THE UNDERFLOW AND OVERFLOW
 !             LIMITS.
@@ -165,7 +165,7 @@ subroutine znapps(n, kev, np, shift, v,&
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/glartg.h"
+#include "asterfort/ar_zlartg.h"
 #include "asterfort/ivout.h"
 #include "asterfort/zlscal.h"
 #include "asterfort/zmout.h"
@@ -348,7 +348,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !           | CONSTRUCT THE PLANE ROTATION G TO ZERO OUT THE BULGE |
 !           %------------------------------------------------------%
 !
-            call glartg(f, g, c, s, r)
+            call ar_zlartg(f, g, c, s, r)
             if (i .gt. istart) then
                 h(i,i-1) = r
                 h(i+1,i-1) = zero

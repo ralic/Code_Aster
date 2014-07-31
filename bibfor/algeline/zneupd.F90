@@ -192,7 +192,7 @@
 !          =  0: NORMAL EXIT.
 !
 !          =  1: THE SCHUR FORM COMPUTED BY LAPACK ROUTINE CSHEQR
-!                COULD NOT BE REORDERED BY LAPACK ROUTINE GTRSEN .
+!                COULD NOT BE REORDERED BY LAPACK ROUTINE ZTRSEN .
 !                RE-ENTER SUBROUTINE ZNEUPD  WITH IPARAM(5)=NCV AND
 !                INCREASE THE SIZE OF THE ARRAY D TO HAVE
 !                DIMENSION AT LEAST DIMENSION NCV AND ALLOCATE AT LEAST
@@ -215,7 +215,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !          = -8: ERROR RETURN FROM LAPACK EIGENVALUE CALCULATION.
 !                THIS SHOULD NEVER HAPPENED.
 !          = -9: ERROR RETURN FROM CALCULATION OF EIGENVECTORS.
-!                INFORMATIONAL ERROR FROM LAPACK ROUTINE GTREVC .
+!                INFORMATIONAL ERROR FROM LAPACK ROUTINE ZTREVC .
 !          = -10: IPARAM(7) MUST BE 1,2,3
 !          = -11: IPARAM(7) = 1 AND BMAT = 'G' ARE INCOMPATIBLE.
 !          = -12: HOWMNY = 'S' NOT YET IMPLEMENTED
@@ -252,9 +252,9 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !     ZLAHQR   LAPACK ROUTINE THAT COMPUTES THE SCHUR FORM OF A
 !             UPPER HESSENBERG MATRIX.
 !     ZLASET   LAPACK MATRIX INITIALIZATION ROUTINE.
-!     GTREVC   LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
+!     ZTREVC   LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 !             IN UPPER TRIANGULAR FORM.
-!     GTRSEN   LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
+!     ZTRSEN   LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
 !     ZUNM2R   LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN
 !             FACTORED FORM.
 !     ZTRMM    LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
@@ -305,8 +305,8 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/gtrevc.h"
-#include "asterfort/gtrsen.h"
+#include "asterfort/ar_ztrevc.h"
+#include "asterfort/ar_ztrsen.h"
 #include "asterfort/ivout.h"
 #include "asterfort/zmout.h"
 #include "asterfort/zngets.h"
@@ -634,7 +634,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !           | REORDER THE COMPUTED UPPER TRIANGULAR MATRIX. |
 !           %-----------------------------------------------%
 !
-            call gtrsen(select, ncv, workl(iuptri), ldh, workl(invsub),&
+            call ar_ztrsen(select, ncv, workl(iuptri), ldh, workl(invsub),&
                         ldq, workl(iheig), nconv, ierr)
 !
             if (ierr .eq. 1) then
@@ -733,7 +733,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
                 endif
             end do
 !
-            call gtrevc('R', 'S', select, ncv, workl(iuptri),&
+            call ar_ztrevc('R', 'S', select, ncv, workl(iuptri),&
                         ldq, vl, 1, workl(invsub), ldq,&
                         ncv, outncv, workev, rwork, ierr)
 !
@@ -745,7 +745,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !           %------------------------------------------------%
 !           | SCALE THE RETURNING EIGENVECTORS SO THAT THEIR |
 !           | EUCLIDEAN NORMS ARE ALL ONE. LAPACK SUBROUTINE |
-!           | GTREVC  RETURNS EACH EIGENVECTOR NORMALIZED SO  |
+!           | ZTREVC  RETURNS EACH EIGENVECTOR NORMALIZED SO  |
 !           | THAT THE ELEMENT OF LARGEST MAGNITUDE HAS      |
 !           | MAGNITUDE 1.                                   |
 !           %------------------------------------------------%

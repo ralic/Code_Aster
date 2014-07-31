@@ -326,7 +326,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        | THE SPLITTING AND DEFLATION CRITERION.  |
 !        | IF NORM(H) <= SQRT(OVFL),               |
 !        | OVERFLOW SHOULD NOT OCCUR.              |
-!        | REFERENCE: LAPACK SUBROUTINE FLAHQR     |
+!        | REFERENCE: LAPACK SUBROUTINE DLAHQR     |
 !        %-----------------------------------------%
 !
         unfl = r8miem()
@@ -791,7 +791,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !              %--------------------------------------------%
 !              | CHECK FOR SPLITTING AND DEFLATION.         |
 !              | USE A STANDARD TEST AS IN THE QR ALGORITHM |
-!              | REFERENCE: LAPACK SUBROUTINE FLAHQR        |
+!              | REFERENCE: LAPACK SUBROUTINE DLAHQR        |
 !              %--------------------------------------------%
 !
             tst1 = abs( h( i, i ) ) + abs( h( i+1, i+1 ) )

@@ -116,8 +116,8 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 !     DLARF   LAPACK ROUTINE THAT APPLIES HOUSEHOLDER REFLECTION TO
 !             A MATRIX.
-!     FLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
-!     FLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
+!     DLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
+!     DLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
 !     DLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
 !     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 !     DAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
@@ -147,7 +147,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 ! REMARKS
 !  1. IN THIS VERSION, EACH SHIFT IS APPLIED TO ALL THE SUBLOCKS OF
 !     THE HESSENBERG MATRIX H AND NOT JUST TO THE SUBMATRIX THAT IT
-!     COMES FROM. DEFLATION AS IN LAPACK ROUTINE FLAHQR (QR ALGORITHM
+!     COMES FROM. DEFLATION AS IN LAPACK ROUTINE DLAHQR (QR ALGORITHM
 !     FOR UPPER HESSENBERG MATRICES ) IS USED.
 !     THE SUBDIAGONALS OF H ARE ENFORCED TO BE NON-NEGATIVE.
 !
@@ -174,8 +174,8 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 #include "asterc/r8prem.h"
 #include "asterfort/dmout.h"
 #include "asterfort/dvout.h"
-#include "asterfort/flarfg.h"
-#include "asterfort/flartg.h"
+#include "asterfort/ar_dlarfg.h"
+#include "asterfort/ar_dlartg.h"
 #include "asterfort/ivout.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -247,7 +247,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        | SET MACHINE-DEPENDENT CONSTANTS FOR THE       |
 !        | STOPPING CRITERION. IF NORM(H) <= SQRT(OVFL), |
 !        | OVERFLOW SHOULD NOT OCCUR.                    |
-!        | REFERENCE: LAPACK SUBROUTINE FLAHQR           |
+!        | REFERENCE: LAPACK SUBROUTINE DLAHQR           |
 !        %-----------------------------------------------%
 !
         unfl = r8miem()
@@ -351,7 +351,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           %----------------------------------------%
 !           | CHECK FOR SPLITTING AND DEFLATION. USE |
 !           | A STANDARD TEST AS IN THE QR ALGORITHM |
-!           | REFERENCE: LAPACK SUBROUTINE FLAHQR    |
+!           | REFERENCE: LAPACK SUBROUTINE DLAHQR    |
 !           %----------------------------------------%
 !
             tst1 = abs( h( i, i ) ) + abs( h( i+1, i+1 ) )
@@ -407,7 +407,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              | CONTRUCT THE PLANE ROTATION G TO ZERO OUT THE BULGE |
 !              %-----------------------------------------------------%
 !
-                call flartg(f, g, c, s, r)
+                call ar_dlartg(f, g, c, s, r)
                 if (i .gt. istart) then
 !
 !                 %-------------------------------------------%
@@ -498,7 +498,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              | G IS OF THE FORM I - TAU*( 1 U )' * ( 1 U' ).       |
 !              %-----------------------------------------------------%
 !
-                call flarfg(nr, u(1), u(2), 1, tau)
+                call ar_dlarfg(nr, u(1), u(2), 1, tau)
 !
                 if (i .gt. istart) then
                     h(i,i-1) = u(1)
@@ -584,7 +584,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        %--------------------------------------------%
 !        | FINAL CHECK FOR SPLITTING AND DEFLATION.   |
 !        | USE A STANDARD TEST AS IN THE QR ALGORITHM |
-!        | REFERENCE: LAPACK SUBROUTINE FLAHQR        |
+!        | REFERENCE: LAPACK SUBROUTINE DLAHQR        |
 !        %--------------------------------------------%
 !
         tst1 = abs( h( i, i ) ) + abs( h( i+1, i+1 ) )

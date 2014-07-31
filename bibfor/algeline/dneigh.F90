@@ -67,7 +67,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !          OF H AND ALSO IN THE CALCULATION OF THE EIGENVECTORS OF H.
 !
 !  IERR    INTEGER.  (OUTPUT)
-!          ERROR EXIT FLAG FROM DLAQRB OR FTREVC.
+!          ERROR EXIT FLAG FROM DLAQRB OR DTREVC.
 !
 ! ENDDOC
 !-----------------------------------------------------------------------
@@ -81,7 +81,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 !     DLACPY  LAPACK MATRIX COPY ROUTINE.
 !     DLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-!     FTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
+!     DTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 !             IN UPPER QUASI-TRIANGULAR FORM
 !     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
 !     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
@@ -126,7 +126,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 #include "asterfort/dlaqrb.h"
 #include "asterfort/dmout.h"
 #include "asterfort/dvout.h"
-#include "asterfort/ftrevc.h"
+#include "asterfort/ar_dtrevc.h"
 #include "blas/dgemv.h"
 #include "blas/dlacpy.h"
 #include "blas/dlapy2.h"
@@ -218,7 +218,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | COLUMNS OF Q.                                             |
 !     %-----------------------------------------------------------%
 !
-    call ftrevc('R', 'A', select, n, workl,&
+    call ar_dtrevc('R', 'A', select, n, workl,&
                 n, vl, n, q, ldq,&
                 n, n, workl(n*n+1), ierr)
 !
@@ -227,7 +227,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     %------------------------------------------------%
 !     | SCALE THE RETURNING EIGENVECTORS SO THAT THEIR |
 !     | EUCLIDEAN NORMS ARE ALL ONE. LAPACK SUBROUTINE |
-!     | FTREVC RETURNS EACH EIGENVECTOR NORMALIZED SO  |
+!     | DTREVC RETURNS EACH EIGENVECTOR NORMALIZED SO  |
 !     | THAT THE ELEMENT OF LARGEST MAGNITUDE HAS      |
 !     | MAGNITUDE 1, HERE THE MAGNITUDE OF A COMPLEX   |
 !     | NUMBER (X,Y) IS TAKEN TO BE |X| + |Y|.         |

@@ -76,7 +76,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !          THE FRONT END.
 !
 !  IERR    INTEGER.  (OUTPUT)
-!          ERROR EXIT FLAG FROM ZLAHQR OR GTREVC.
+!          ERROR EXIT FLAG FROM ZLAHQR OR ZTREVC.
 !
 !\ENDDOC
 !
@@ -96,7 +96,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     ZLAHQR  LAPACK ROUTINE TO COMPUTE THE SCHUR FORM OF AN
 !             UPPER HESSENBERG MATRIX.
 !     ZLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
-!     GTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
+!     ZTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 !             IN UPPER TRIANGULAR FORM
 !     ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
 !     ZDSCAL  LEVEL 1 BLAS THAT SCALES A COMPLEX VECTOR BY A REAL
@@ -131,7 +131,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !
 #include "asterf_types.h"
 #include "asterc/matfpe.h"
-#include "asterfort/gtrevc.h"
+#include "asterfort/ar_ztrevc.h"
 #include "asterfort/zmout.h"
 #include "asterfort/zvout.h"
 #include "blas/dznrm2.h"
@@ -231,7 +231,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     |    EIGENVECTORS.                                         |
 !     %----------------------------------------------------------%
 !
-    call gtrevc('R', 'B', select, n, workl,&
+    call ar_ztrevc('R', 'B', select, n, workl,&
                 n, vl, n, q, ldq,&
                 n, n, workl(n*n+1), rwork, ierr)
 !
@@ -240,7 +240,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     %------------------------------------------------%
 !     | SCALE THE RETURNING EIGENVECTORS SO THAT THEIR |
 !     | EUCLIDEAN NORMS ARE ALL ONE. LAPACK SUBROUTINE |
-!     | GTREVC RETURNS EACH EIGENVECTOR NORMALIZED SO  |
+!     | ZTREVC RETURNS EACH EIGENVECTOR NORMALIZED SO  |
 !     | THAT THE ELEMENT OF LARGEST MAGNITUDE HAS      |
 !     | MAGNITUDE 1; HERE THE MAGNITUDE OF A COMPLEX   |
 !     | NUMBER (X,Y) IS TAKEN TO BE |X| + |Y|.         |
