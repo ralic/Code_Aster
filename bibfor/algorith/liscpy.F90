@@ -78,14 +78,22 @@ subroutine liscpy(lischa, lisch2, base)
         nchar2 = nchar
     endif
 !
-    do 24 ich = 1, nchar
+    do ich = 1, nchar
         ityp = zi(jinfch+nchar+ich)
         if (ityp .eq. 10) then
             nchar2 = nchar2-1
         endif
-24  end do
+    end do
 !
-    ASSERT(nchar2.gt.0)
+! - No loads but contact method
+!
+    if (nchar2.le.0) then
+        call lisccr(lisch2, 1, base)
+        call jeveuo(lisch2(1:19)//'.INFC', 'E', jinfch)
+        zi(jinfch) = 0
+        goto 999
+    endif
+!
     ASSERT(nchar2.le.nchar)
 !
     call lisccr(lisch2, nchar2, base)
