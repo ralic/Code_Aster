@@ -60,9 +60,9 @@ subroutine op5903(nbocci, sdcomp)
     character(len=16) :: rela_comp, defo_comp, algo1d
     character(len=16) :: rela_comp_py
     character(len=16) :: kit_comp(9)
-    character(len=16) :: texte(2), moclef
+    character(len=16) :: moclef
     character(len=24) :: vnbfig, rnomgf, kgroup
-    aster_logical :: l_kit
+    aster_logical :: l_kit, l_auto_deborst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,6 +74,7 @@ subroutine op5903(nbocci, sdcomp)
 !        NB DE FIBRES PAR GROUPE
     nbvf=0
     moclef='MULTIFIBRE'
+    l_auto_deborst = .false.
 !
     call getvid(' ', 'GEOM_FIBRE', scal=sdgf, nbret=ibid)
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
@@ -105,9 +106,7 @@ subroutine op5903(nbocci, sdcomp)
 !
         call lctest(rela_comp_py, 'MODELISATION', '1D', irett)
         if (irett .eq. 0) then
-            texte(1) = '1D'
-            texte(2) = rela_comp
-            call utmess('I', 'COMPOR1_48', nk = 2, valk=texte)
+            l_auto_deborst = .true.
             algo1d = 'DEBORST'
             idbor = idbor+1
         endif
@@ -143,7 +142,7 @@ subroutine op5903(nbocci, sdcomp)
 !     VERIFICATION DE L'UTILISATION DE COMP_1D
     if (nbocci .gt. 1) then
         if (idbor .ge. 1) then
-            call utmess('F', 'COMPOR1_15')
+            call utmess('F', 'COMPOR5_30')
         endif
     endif
 !     VERIF TOUT AFFECTE AU MOINS UNE FOIS
@@ -156,6 +155,9 @@ subroutine op5903(nbocci, sdcomp)
             zk24(icp+2) = 'VIDE'
         endif
     end do
+    if (l_auto_deborst) then
+        call utmess('I', 'COMPOR5_20')
+    endif
 !
 !     ON RECUPERE LE NOM DU MATERIAU POUR LA TORSION, MIS A LA FIN
     call getvid(' ', 'MATER_SECT', scal=mator, nbret=ibid)

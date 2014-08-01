@@ -1,5 +1,5 @@
-subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
-                  rela_comp, rela_comp_py, type_cpla)
+subroutine nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full_elem_s,&
+                  rela_comp_py, type_cpla , l_auto_elas   , l_auto_deborst, l_comp_erre)
 !
     implicit none
 !
@@ -39,9 +39,11 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
     aster_logical, intent(in) :: l_affe_all
     integer, intent(in) :: nb_elem_affe
     character(len=19), intent(in) :: full_elem_s
-    character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: rela_comp_py
     character(len=16), intent(out) :: type_cpla
+    aster_logical, intent(out) :: l_auto_elas
+    aster_logical, intent(out) :: l_auto_deborst
+    aster_logical, intent(out) :: l_comp_erre
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,14 +58,16 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 ! In  l_affe_all     : .true. if affect on all elements of model
 ! In  nb_elem_affe   : number of elements where comportment affected
 ! In  list_elem_affe : list of elements where comportment affected
-! In  rela_comp      : comportement RELATION
 ! In  rela_comp_py   : comportement RELATION - Python coding
 ! Out type_cpla      : stress plane hypothesis (for Deborst)
+! Out l_auto_elas    : .true. if at least one element use ELAS by default
+! Out l_auto_deborst : .true. if at least one element swap to Deborst algorithm
+! Out l_comp_erre    : .true. if at least one element use comportment on element doesn't support it
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: notype, texte(2), type_elem, comp_rela_elem
-    character(len=8) :: mesh, name_elem
+    character(len=16) :: notype, type_elem, comp_rela_elem
+    character(len=8) :: mesh
     integer :: nutyel
     integer :: j_cesd, j_cesl
     integer :: iret, irett, ielem
@@ -81,6 +85,9 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 ! - Initializations
 !
     type_cpla = 'ANALYTIQUE'
+    l_auto_elas    = .false.
+    l_auto_deborst = .false.
+    l_comp_erre    = .false.
 !
 ! - Access to model and mesh
 !
@@ -125,8 +132,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
             comp_rela_elem = cesv(iad)
             if (comp_rela_elem .eq. ' ') then
-                call jenuno(jexnum(mesh(1:8)//'.NOMMAI', nume_elem), name_elem)
-                call utmess('I', 'COMPOR1_50', nk=1, valk=name_elem)
+                l_auto_elas = .true.
             endif
 !
 ! --------- Access to element type
@@ -141,32 +147,24 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                 if (type_elem(1:6) .eq. 'C_PLAN') then
                     call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', irett)
                     if (irett .eq. 0) then
-                        texte(1) = 'C_PLAN'
-                        texte(2) = rela_comp
-                        call utmess('I', 'COMPOR1_47', nk=2, valk=texte)
+                        l_auto_deborst = .true.
                         type_cpla = 'DEBORST'
                     endif
                 else if (type_elem(1:6).eq.'COMP1D') then
                     call lctest(rela_comp_py, 'MODELISATION', '1D', irett)
                     if (irett .eq. 0) then
-                        texte(1) = '1D'
-                        texte(2) = rela_comp
-                        call utmess('I', 'COMPOR1_48', nk=2, valk=texte)
+                        l_auto_deborst = .true.
                         type_cpla = 'DEBORST'
                     endif
                 else if (type_elem(1:6).eq.'COMP3D') then
                     call lctest(rela_comp_py, 'MODELISATION', '3D', irett)
                     if (irett .eq. 0) then
-                        texte(1) = '3D'
-                        texte(2) = rela_comp
-                        call utmess('I', 'COMPOR1_49', nk=2, valk=texte)
+                        l_comp_erre = .true.
                     endif
                 else
                     call lctest(rela_comp_py, 'MODELISATION', type_elem, irett)
                     if (irett .eq. 0) then
-                        texte(1) = type_elem
-                        texte(2) = rela_comp
-                        call utmess('A', 'COMPOR1_49', nk=2, valk=texte)
+                        l_comp_erre = .true.
                     endif
                 endif
             endif

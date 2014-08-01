@@ -147,7 +147,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
             else if (typmod(2) .eq. 'GRADVARI') then
                 texte(1)=cmp4
                 texte(2)=cmp2
-                call utmess('F', 'COMPOR1_49', nk=2, valk=texte)
+                call utmess('F', 'COMPOR3_49', nk=2, valk=texte)
             else
                 call lcumfp(fami, kpg, ksp, ndim, typmod,&
                             imat, comp, timed, timef, epsdt,&

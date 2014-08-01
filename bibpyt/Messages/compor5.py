@@ -66,6 +66,31 @@ Erreur utilisateur :
  La nature du matériau élastique %(k1)s n'est pas traitée.
 """),
 
+20: _(u"""
+ Sur certaines mailles, la modélisation est incompatible avec le comportement. Pour modéliser
+ des contraintes planes (ou des coques) ou des contraintes 1D (barres, poutres) avec ce comportement, on a utilisé  DEBORST.
+ """),
+
+21: _(u"""
+ Sur certaines mailles, aucun comportement n'est défini. Code_Aster a défini par défaut
+  COMPORTEMENT='ELAS', DEFORMATION='PETIT'.
+"""),
+
+22: _(u"""
+ Sur certaines mailles, la modélisation est incompatible avec le comportement.
+ Une erreur fatale pourrait suivre se message.
+"""),
+
+23: _(u"""
+ La modélisation choisie <%(k1)s> sur la maille <%(k2)s> est incompatible avec les déformations <%(k3)s>.
+ Utilisez un autre type de déformations (cf. U4.51.11 et les documents R).
+"""),
+
+30: _(u"""
+  Pour les poutres multifibres, l'utilisation de lois de comportement via
+  DEBORST nécessite d'avoir un seul matériau par poutre!
+ """),
+
 56 : _(u"""
 Plusieurs matériaux de type %(k1)s ont été trouvés.
   -> Conseil:

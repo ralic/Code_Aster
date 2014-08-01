@@ -36,6 +36,10 @@ cata_msg={
  La loi de fluage %(k1)s n'est pas autorisée dans le couplage fluage/fissuration (KIT_DDI).
 """),
 
+49: _(u"""
+ Pour un modèle de type GRAD_VARI, le KIT_DDI ne peut pas coupler le comportement <%(k1)s> avec <%(k2)s>.
+"""),
+
 83 : _(u"""
  Vous utilisez le modèle BETON_UMLV_FP avec un modèle d'endommagement.
  Attention, la mise à jour des contraintes sera faite suivant les déformations totales et non pas suivant un schéma incrémental.

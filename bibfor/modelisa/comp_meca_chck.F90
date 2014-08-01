@@ -1,4 +1,5 @@
-subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
+subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_valk, l_auto_elas,&
+                          l_auto_deborst, l_comp_erre)
 !
     implicit none
 !
@@ -40,6 +41,9 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: full_elem_s
     character(len=16), intent(inout) :: info_comp_valk(:)
+    aster_logical, intent(out) :: l_auto_elas
+    aster_logical, intent(out) :: l_auto_deborst
+    aster_logical, intent(out) :: l_comp_erre
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,6 +57,9 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 ! In  model            : name of model
 ! In  full_elem_s      : <CHELEM_S> of FULL_MECA option
 ! In  info_comp_valk : comportment informations (character)
+! Out l_auto_elas    : .true. if at least one element use ELAS by default
+! Out l_auto_deborst : .true. if at least one element swap to Deborst algorithm
+! Out l_comp_erre    : .true. if at least one element use comportment on element doesn't support it
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,8 +125,8 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 ! ----- Check comportment/model with Comportement.py
 !
         type_cpla = 'VIDE'
-        call nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
-                    rela_comp, rela_comp_py, type_cpla)
+        call nmdovm(model       , l_affe_all, list_elem_affe, nb_elem_affe  , full_elem_s,&
+                    rela_comp_py, type_cpla , l_auto_elas   , l_auto_deborst, l_comp_erre)
         info_comp_valk(16*(iocc-1) + 4) = type_cpla
 !
 ! ----- Check comportment/deformation with Comportement.py

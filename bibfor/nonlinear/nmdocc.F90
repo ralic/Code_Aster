@@ -59,6 +59,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_auto_elas, l_auto_deborst, l_comp_erre
     integer :: nb_cmp, nbocc_compor
     character(len=8) :: mesh
     character(len=19) :: comp_elas, full_elem_s
@@ -107,7 +108,17 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Check informations in COMPOR <CARTE>
 !
-    call comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
+    call comp_meca_chck(model         , mesh       , full_elem_s, p_info_comp_valk, l_auto_elas,&
+                        l_auto_deborst, l_comp_erre)
+    if (l_auto_deborst) then
+        call utmess('I', 'COMPOR5_20')
+    endif
+    if (l_auto_elas) then
+        call utmess('I', 'COMPOR5_21')
+    endif
+    if (l_comp_erre) then
+        call utmess('I', 'COMPOR5_22')
+    endif
 !
 ! - Count internal variables
 !

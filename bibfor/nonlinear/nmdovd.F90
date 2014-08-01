@@ -136,7 +136,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                         texte(1) = notype
                         texte(2) = name_elem
                         texte(3) = defo_comp
-                        call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                        call utmess('F', 'COMPOR5_23', nk=3, valk=texte)
                     endif
                 else if (type_elem(1:6).eq.'COMP1D') then
                     if (type_elem2 .eq. 'PMF') then
@@ -145,7 +145,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                             texte(1) = notype
                             texte(2) = name_elem
                             texte(3) = defo_comp
-                            call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                            call utmess('F', 'COMPOR5_23', nk=3, valk=texte)
                         endif
                     else
                         call lctest(defo_comp_py, 'MODELISATION', '1D', irett)
@@ -153,7 +153,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                             texte(1) = notype
                             texte(2) = name_elem
                             texte(3) = defo_comp
-                            call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                            call utmess('F', 'COMPOR5_23', nk=3, valk=texte)
                         endif
                     endif
                 else
@@ -162,7 +162,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                         texte(1) = notype
                         texte(2) = name_elem
                         texte(3) = defo_comp
-                        call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                        call utmess('F', 'COMPOR5_23', nk=3, valk=texte)
                     endif
                 endif
             endif

@@ -94,11 +94,6 @@ localement via ITER_INTE_PAS.
  HUJEUX : erreur dans le calcul de la matrice tangente
 """),
 
-15: _(u"""
-  Pour les poutres multifibres, l'utilisation de lois de comportement via
-  ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
- """),
-
 16 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
 
@@ -246,29 +241,7 @@ Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algor
  Le type de matrice tangente choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
-47: _(u"""
- La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
- des contraintes planes (ou des coques) avec ce comportement, on utilise ALGO_C_PLAN='DEBORST'
-"""),
 
-48: _(u"""
- La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>. Pour modéliser
- des contraintes 1D (barres, poutres) avec ce comportement, on utilise ALGO_1D='DEBORST'
-"""),
-
-49: _(u"""
- La modélisation choisie <%(k1)s> est incompatible avec le comportement <%(k2)s>
-"""),
-
-50: _(u"""
- Aucun comportement n'est défini sur la maille <%(k1)s>. Code_Aster a défini par défaut
-  COMPORTEMENT='ELAS', DEFORMATION='PETIT'.
-"""),
-
-52: _(u"""
- La modélisation choisie <%(k1)s> sur la maille <%(k2)s> est incompatible avec les déformations <%(k3)s>.
- Utilisez un autre type de déformations (cf. U4.51.11 et les documents R).
-"""),
 
 54: _(u"""
  ECRO_LINE : la pente d'écrouissage H et/ou le module de YOUNG E ne sont pas compatibles :
