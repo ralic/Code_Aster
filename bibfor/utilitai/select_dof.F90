@@ -25,6 +25,7 @@ implicit none
 #include "asterfort/exisdg.h"
 #include "asterfort/nueq_chck.h"
 #include "asterfort/nbec.h"
+#include "asterfort/select_dof_gene.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,12 +106,10 @@ implicit none
     logical :: l_matr_dist, l_prof_gene
     integer :: node_nume, idx_gd
     integer :: i_equa, i_node, i_cmp, i_decal_cmp, i_ligr, i_equa_l, i_node_eq, i_cmp_gd, i_ec
-    integer :: nb_node, nb_ec, nb_cmp, nb_cmp_gd, nb_ligr, nb_equa, nb_cmp_node
+    integer :: nb_node, nb_ec, nb_cmp, nb_cmp_gd, nb_ligr, nb_cmp_node
     integer, pointer :: cata_to_cmp(:) => null()
     integer, pointer :: v_nueq(:) => null()
     integer, pointer :: v_nugl(:) => null()
-    integer, pointer :: v_desc(:) => null()
-    integer, pointer :: v_deeq(:) => null()
     integer, pointer :: v_prno(:) => null()
     character(len=8), pointer :: p_cata_cmp(:) => null()
 !
@@ -216,41 +215,9 @@ implicit none
     call jeexin(prof_chno//'.DESC', iexi)
     l_prof_gene = (iexi.gt.0)
     if (l_prof_gene) then
-        ASSERT(present(nume_ddlz).or.present(chamnoz))
         prof_gene = prof_chno
-        call jeveuo(prof_gene//'.DESC', 'L', vi = v_desc)
-        ASSERT(v_desc(1).eq.2)
-        ASSERT(.not.l_matr_dist)
-        call nueq_chck(prof_gene, nb_equa)
-        call jeveuo(prof_gene//'.DEEQ', 'L', vi = v_deeq)
-        do i_equa = 1, nb_equa
-            node_nume = v_deeq(2*i_equa)
-            do i_cmp = 1, nb_cmp
-                if (present(all_cmp)) then
-                    name_cmp = p_cata_cmp(i_cmp)
-                else
-                    name_cmp = list_cmp(i_cmp)
-                endif
-                if (name_cmp .eq. 'LAGR' .and. node_nume .lt. 0) then
-                    if (present(tabl_equa)) then
-                        tabl_equa(i_equa,i_cmp) = 1
-                    elseif (present(list_equa)) then
-                        list_equa(i_equa) = 1
-                    else
-                        ASSERT(.false.)
-                    endif
-                endif
-                if (name_cmp .eq. 'GENE' .and. node_nume .gt. 0) then
-                    if (present(tabl_equa)) then
-                        tabl_equa(i_equa,i_cmp) = 1
-                    elseif (present(list_equa)) then
-                        list_equa(i_equa) = 1
-                    else
-                        ASSERT(.false.)
-                    endif
-                endif
-            end do
-        end do
+        call select_dof_gene(prof_gene, nb_cmp, p_cata_cmp, list_cmp, list_equa,&
+                             tabl_equa)
         goto 99
     endif
 !
