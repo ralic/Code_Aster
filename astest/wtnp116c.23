@@ -256,5 +256,3 @@ RESUM1A=CALC_CHAMP(reuse=RESUM1A,
                    RESULTAT=RESUM1A,
                    DEFORMATION=('EPVC_ELGA','EPVC_ELNO','EPVC_NOEU',),
                    VARI_INTERNE=('VARC_ELGA',),);
-
-FIN();
