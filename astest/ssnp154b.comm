@@ -123,7 +123,7 @@ IMPR_RESU(FORMAT='MED',
                   NOM_CHAM='DEPL',
                   NOM_CMP=('DX','DY',),),);
 
-MOINS_UN=FORMULE(NOM_PARA='LAGS_C',VALE='-1.0*LAGS_C',);
+MOINS_UN=FORMULE(NOM_PARA='LAGS_C',VALE='1.0*LAGS_C',);
 
 RELE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='Pression',
@@ -146,13 +146,11 @@ PRES=RECU_FONCTION(TABLE=RELE,
 # ===========================================
 
 # champ de contraintes de Cauchy aux noeuds
-sigm=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-                OPERATION='EXTR',
-                RESULTAT=RESU,
-                NOM_CHAM='SIEF_NOEU',
-                INST=1.0,
-                );
-
+p_appr_F=CALC_PRESSION(MAILLAGE=MESH,
+                             RESULTAT=RESU,
+                                GROUP_MA=('Bottom_C','Top_B',),
+                            INST=1.0,
+                    );
 depl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=RESU,
@@ -169,44 +167,6 @@ MESH=MODI_MAILLAGE(reuse=MESH,
                    MAILLAGE=MESH,
                    DEFORME=_F(OPTION='TRAN',
                               DEPL=depl,),);
-
-
-# normale sur la configuration finale
-NormaleF=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
-                   OPERATION='NORMALE',
-                   MODELE=MO,
-                   GROUP_MA=('Top_B','Bottom_C',),
-                   );
-
-MESH=MODI_MAILLAGE(reuse=MESH,
-                   MAILLAGE=MESH,
-                   DEFORME=_F(OPTION='TRAN',
-                              DEPL=mdepl,),);
-
-# pression de contact
-Pression = FORMULE(VALE='-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y)',
-                   NOM_PARA=('SIXX','SIYY','SIXY','X','Y',),);
-
-Pres=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
-                OPERATION='AFFE',
-                MAILLAGE=MESH,
-                AFFE=_F(GROUP_MA=('Top_B','Bottom_C',),
-                        NOM_CMP='X1',
-                        VALE_F=Pression,),);
-
-pF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-             OPERATION='EVAL',
-             CHAM_F=Pres,
-             CHAM_PARA=(NormaleF,sigm,),);
-
-# champ de pression de contact
-p_appr_F=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    OPERATION='ASSE',
-                    MODELE=MO,
-                    ASSE=_F(GROUP_MA=('Top_B','Bottom_C',),
-                            CHAM_GD=pF,
-                            NOM_CMP='X1',
-                            NOM_CMP_RESU='LAGS_C',),);
 
 MESH=MODI_MAILLAGE(reuse=MESH,
                    MAILLAGE=MESH,
@@ -245,7 +205,7 @@ PM_FONCF=RECU_FONCTION(TABLE=CALC_PMF,
 # Construction de la solution analytique
 a=6.21
 p0=3585.37
-p=FORMULE(NOM_PARA='X',VALE='p0*sqrt(1-(X/a)*(X/a))',)
+p=FORMULE(NOM_PARA='X',VALE='-1.0*p0*sqrt(1-(X/a)*(X/a))',)
 absc=DEFI_LIST_REEL(DEBUT=0,
                     INTERVALLE=(_F(JUSQU_A=5,
                                   NOMBRE=100,),
@@ -265,7 +225,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       ),
               TITRE='Lineaire sans frottement',
               BORNE_X=(0.0,8.0,),
-              BORNE_Y=(0.0,5000.0,),
+              BORNE_Y=(-5000.0,10.0,),
               ECHELLE_X='LIN',
               ECHELLE_Y='LIN',
               GRILLE_X=1,

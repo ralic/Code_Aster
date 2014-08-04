@@ -228,4 +228,5 @@ Erreur d'utilisation dans MACR_LIGN_COUPE :
   Il faut renseigner le mot clé VECT_Y
 """),
 
+
 }

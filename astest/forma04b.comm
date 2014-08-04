@@ -1,6 +1,6 @@
 # TITRE FORMATION AVANCEE CONTACT DE HERTZ
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -13,7 +13,7 @@
 #
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',DEBUG=_F(SDVERI='OUI'))
@@ -31,61 +31,61 @@ R  =  50.
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU_2D=_F(GROUP_MA=('CONT1','CONT2',),),);
+ MAILLAGE=MA,
+ ORIE_PEAU_2D=_F(GROUP_MA=('CONT1','CONT2',),),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=E,
-                          NU=nu,),);
+  NU=nu,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
-                            MATER=MAT,),);
+AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
+MATER=MAT,),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+   AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
+   PHENOMENE='MECANIQUE',
+   MODELISATION='AXIS',),);
 
 CL=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(_F(GROUP_MA='A1A2',
-                               DX=0,),
-                            _F(GROUP_MA='A2B2',
-                               DY=-h,),
-                            _F(GROUP_MA='A1B1',
-                               DY=h,),),);
+  DDL_IMPO=(_F(GROUP_MA='A1A2',
+   DX=0,),
+_F(GROUP_MA='A2B2',
+   DY=-h,),
+_F(GROUP_MA='A1B1',
+   DY=h,),),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
-                          1,1,
-                          ),);
+  1,1,
+  ),);
 
 # -- Definition du contact
 
-CONT=DEFI_CONTACT(MODELE         = MO,
-                  FORMULATION    = 'CONTINUE',
-                  ALGO_RESO_CONT = 'NEWTON',
-                  ALGO_RESO_GEOM = 'NEWTON',
-                  ZONE=_F(GROUP_MA_MAIT='CONT2',
-                          GROUP_MA_ESCL='CONT1',
-                          INTEGRATION='GAUSS',
-                          CONTACT_INIT='OUI',
-                          ),);
+CONT=DEFI_CONTACT(MODELE = MO,
+  FORMULATION= 'CONTINUE',
+  ALGO_RESO_CONT = 'NEWTON',
+  ALGO_RESO_GEOM = 'NEWTON',
+  ZONE=_F(GROUP_MA_MAIT='CONT2',
+  GROUP_MA_ESCL='CONT1',
+  INTEGRATION='GAUSS',
+  CONTACT_INIT='OUI',
+  ),);
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
-                   INTERVALLE=(_F(JUSQU_A=0.1,
-                                 NOMBRE=2,),
-                               _F(JUSQU_A=1,
-                                 NOMBRE=1,),),);
+   INTERVALLE=(_F(JUSQU_A=0.1,
+ NOMBRE=2,),
+   _F(JUSQU_A=1,
+ NOMBRE=1,),),);
 
 STNL=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CL,
-                            FONC_MULT=RAMPE,),
-                   CONTACT=CONT,
-                   COMPORTEMENT=_F(RELATION='ELAS',),
-                   NEWTON=_F(REAC_ITER=1,MATRICE='ELASTIQUE'),
-                   INCREMENT=_F(LIST_INST=TPS,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=50),
-                   );
+   CHAM_MATER=CHMAT,
+   EXCIT=_F(CHARGE=CL,
+FONC_MULT=RAMPE,),
+   CONTACT=CONT,
+   COMPORTEMENT=_F(RELATION='ELAS',),
+   NEWTON=_F(REAC_ITER=1,MATRICE='ELASTIQUE'),
+   INCREMENT=_F(LIST_INST=TPS,),
+   CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+   );
 
 # -- Post-traitement
 
@@ -93,39 +93,39 @@ STNL=CALC_CHAMP(reuse=STNL,RESULTAT=STNL,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONT
 
 
 STNL=CALC_CHAMP(reuse =STNL,
-             RESULTAT=STNL,
-             CONTRAINTE='SIEF_NOEU',CRITERES='SIEQ_NOEU');
+ RESULTAT=STNL,
+ CONTRAINTE='SIEF_NOEU',CRITERES='SIEQ_NOEU');
 
 # -- Groupe de noeuds oriente depuis le centre de la zone de contact esclave
 
 MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
-                               NOM='CONT_ord',
-                               GROUP_MA='CONT1',
-                               GROUP_NO_ORIG='C1',),);
+  MAILLAGE=MA,
+  CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+   NOM='CONT_ord',
+   GROUP_MA='CONT1',
+   GROUP_NO_ORIG='C1',),);
 
 # -- Pression de contact extraite sur le bord oriente
 
 LAGS_abs=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='LAGS_C en fonction de ABSC_CURV',
-                                 RESULTAT=STNL,
-                                 NOM_CHAM='DEPL',
-                                 INST=1.0,
-                                 GROUP_NO='CONT_ord',
-                                 NOM_CMP='LAGS_C',),);
+ INTITULE='LAGS_C en fonction de ABSC_CURV',
+ RESULTAT=STNL,
+ NOM_CHAM='DEPL',
+ INST=1.0,
+ GROUP_NO='CONT_ord',
+ NOM_CMP='LAGS_C',),);
 
 IMPR_TABLE(TABLE=LAGS_abs,);
 
 # -- Trace de la pression et de la solution analytique
 
 LAGS_f=RECU_FONCTION(TABLE=LAGS_abs,
-                     PARA_X='ABSC_CURV',
-                     PARA_Y='LAGS_C',);
+ PARA_X='ABSC_CURV',
+ PARA_Y='LAGS_C',);
 
 V_ABSC=DEFI_LIST_REEL(DEBUT=0,
-                      INTERVALLE=_F(JUSQU_A=10,
-                                    NOMBRE=100,),);
+  INTERVALLE=_F(JUSQU_A=10,
+NOMBRE=100,),);
 
 
 # -- Pression de hertz et demi-largeur de contact
@@ -134,42 +134,62 @@ p0 = -E/(pi*(1.0-nu*nu))*sqrt(2.0*2.0*h/R)
 a  = sqrt(R*h)
 
 PRES = FORMULE(VALE='p0*sqrt(1.0-(x/a)*(x/a))',
-               NOM_PARA='x',);
+   NOM_PARA='x',);
 
 PRES_sol=CALC_FONC_INTERP(FONCTION=PRES,
-                          LIST_PARA=V_ABSC,
-                          NOM_PARA='x',);
+  LIST_PARA=V_ABSC,
+  NOM_PARA='x',);
 
 # -- Validation des resultats
 
 TEST_RESU(RESU=_F(GROUP_NO='C1',
-                  INST=1.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=STNL,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC=-2876.28674013,
-                  VALE_REFE=-2798.3286697476105,
-                  CRITERE='RELATIF',
-                  PRECISION=0.03,),
-          )
+  INST=1.0,
+  REFERENCE='ANALYTIQUE',
+  RESULTAT=STNL,
+  NOM_CHAM='DEPL',
+  NOM_CMP='LAGS_C',
+  VALE_CALC=-2876.28674013,
+  VALE_REFE=-2798.3286697476105,
+  CRITERE='RELATIF',
+  PRECISION=0.03,),
+  )
 
 # -- Impressions des resultats
 
 IMPR_FONCTION(FORMAT='XMGRACE',
-              PILOTE='',
-              UNITE=29,
-              COURBE=(_F(FONCTION=LAGS_f,),
-                      _F(FONCTION=PRES_sol,),),
-              TITRE='Pression de Hertz',
-              BORNE_X=(0,20,),
-              BORNE_Y=(-3000,0,),
-              GRILLE_X=1,
-              GRILLE_Y=500,
-              LEGENDE_X='Abscisse curviligne (mm)',
-              LEGENDE_Y='Pression (Mpa)',);
+  PILOTE='',
+  UNITE=29,
+  COURBE=(_F(FONCTION=LAGS_f,),
+  _F(FONCTION=PRES_sol,),),
+  TITRE='Pression de Hertz',
+  BORNE_X=(0,20,),
+  BORNE_Y=(-3000,0,),
+  GRILLE_X=1,
+  GRILLE_Y=500,
+  LEGENDE_X='Abscisse curviligne (mm)',
+  LEGENDE_Y='Pression (Mpa)',);
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=STNL,),);
+  RESU=_F(RESULTAT=STNL,),);
+
+# Vérification de calc_pression
+
+# via la macro-commandes
+press=CALC_PRESSION(MAILLAGE=MA,
+   RESULTAT=STNL,
+GROUP_MA=('CONT1','CONT2',),
+INST=1.0,
+);  
+
+IMPR_RESU(UNITE=17,RESU=_F(CHAM_GD=press,GROUP_NO='C1',)) ;
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD   = press,
+   GROUP_NO  = 'C1',
+   NOM_CMP   = 'LAGS_C' ,
+   REFERENCE = 'ANALYTIQUE' ,
+   VALE_CALC = -2.92258312299337E+03 ,
+   VALE_REFE = -2798.3286697476105 ,
+   PRECISION = 0.05 ,), )
+
 
 FIN();
