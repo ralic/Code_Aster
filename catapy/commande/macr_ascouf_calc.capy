@@ -39,11 +39,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",
                                      "SOUS_EPAIS_COUDE"
                                      ) ),
 
-         CL_BOL_P2_GV    =FACT(statut='f',
-           ANGLE           =SIMP(statut='o',typ='R' ),
-           AZIMUT          =SIMP(statut='f',typ='R',defaut= 90. ),
-         ),
-
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
          MODELE          =SIMP(statut='o',typ=CO,),
          CHAM_MATER      =SIMP(statut='f',typ=CO,),

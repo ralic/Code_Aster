@@ -1413,7 +1413,6 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
 
   if TYPBOL!= None:
      if TYPBOL=='CUVE'     : TYPEMB = 'typcuv'
-     if TYPBOL=='GV'       : TYPEMB = 'typegv'
      if TYPBOL=='ASP_MPP'  : TYPEMB = 'typapp'
   else:
      TYPEMB ='      '
@@ -1955,7 +1954,6 @@ def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SU
 
   if TYPBOL!=None:
      if TYPBOL=='CUVE'     : TYPEMB = 'typcuv'
-     if TYPBOL=='GV'       : TYPEMB = 'typegv'
      if TYPBOL=='ASP_MPP'  : TYPEMB = 'typapp'
   else:
      TYPEMB ='      '
@@ -2104,9 +2102,6 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   if LTCLIM<LAMOR :
      UTMESS('A','ASCOUF0_16',valr=LAMOR)
 #
-  if TYPBOL!=None:
-   if TYPBOL[:1]=='GV' :
-     UTMESS('A','ASCOUF0_17')
 #
 ################################################################################
 #     --- caracteristiques de la fissure ---
@@ -2602,8 +2597,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   motscles['CREA_POI1']=[]
   motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P1',
                                   GROUP_NO='P1'),)
-  if TYPBOL == None :
-    motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P2',
+#  if TYPBOL == None :
+  motscles['CREA_POI1'].append(_F(NOM_GROUP_MA='P2',
                                   GROUP_NO='P2'),)
   nomre2=CREA_MAILLAGE( MAILLAGE=__nomres,
                           **motscles)

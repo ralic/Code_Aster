@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
+def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
                               FOND_FISS,RESU_THER,AFFE_MATERIAU,
                               PRES_REP,ECHANGE,TORS_P1,COMPORTEMENT,
                               SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,ENERGIE,
@@ -60,14 +60,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   GRMAIL = ('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV','FACE1','FACE2')
 #------------------------------------------------------------------
 #
-  if CL_BOL_P2_GV!=None :
-    if TYPE_MAILLAGE=='SOUS_EPAIS_COUDE' :
-       message=        ' la condition aux limites sur bol a section conique \n'
-       message=message+' est ignoree pour un coude avec sous-epaisseurs \n'
-       UTMESS('A','ASCOUF0_1')
-    elif (TYPE_MAILLAGE[:4]!='FISS') and (CL_BOL_P2_GV['AZIMUT']!=None) :
-       UTMESS('E','ASCOUF0_2')
- #
   if mc_IMPR_TABLE!=None :
     FLAG = 0
     if (mc_IMPR_TABLE['NOM_PARA']==None) and (mc_IMPR_TABLE['POSI_ANGUL']==None) and (mc_IMPR_TABLE['POSI_CURV_LONGI']==None) :
@@ -96,7 +88,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
      mcfact.append(_F(GROUP_MA=GRMAIL[:5] ,PHENOMENE='MECANIQUE',MODELISATION='3D'    ))
   if TORS_P1!=None :
      mcfact.append(_F(GROUP_MA='P1' ,PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'))
-  if CL_BOL_P2_GV==None :
      mcfact.append(_F(GROUP_MA='P2' ,PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'))
   modele = AFFE_MODELE( MAILLAGE = MAILLAGE ,
                         AFFE     = mcfact    )
@@ -121,9 +112,9 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
          if TORS_P1!=None :
            mcfact.append(_F(GROUP_MA='P1',MATER=mater['MATER']))
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER']))
-         elif (len(mc_AFFE_MATERIAU)==1) and (CL_BOL_P2_GV==None) :
+         elif (len(mc_AFFE_MATERIAU)==1) :
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER']))
-       elif (mater['BOL'     ][:3]=='BOL'  ) and (CL_BOL_P2_GV==None) :
+       elif (mater['BOL'     ][:3]=='BOL'  ):
          mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER']))
 
   __affmat = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
@@ -134,15 +125,15 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #     --- commande AFFE_CARA_ELEM ---
 #
-  if (TORS_P1!=None) or (CL_BOL_P2_GV==None) :
+  if (TORS_P1!=None) :
     motscles={}
     motscles['DISCRET']=[]
     if (TORS_P1!=None)      : motscles['DISCRET'].append(_F( GROUP_MA='P1' ,
                                                              CARA    ='K_TR_D_N',
                                                              VALE    = ( 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ),)
-    if (CL_BOL_P2_GV==None) : motscles['DISCRET'].append(_F( GROUP_MA='P2' ,
-                                                             CARA    ='K_TR_D_N',
-                                                             VALE    = ( 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ),)
+    motscles['DISCRET'].append(_F( GROUP_MA='P2' ,
+                                   CARA    ='K_TR_D_N',
+                                   VALE    = ( 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ),)
     if CARA_ELEM != None:
         self.DeclareOut('_carael', CARA_ELEM)
     _carael = AFFE_CARA_ELEM( MODELE   = modele ,**motscles)
@@ -203,12 +194,12 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                             EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
                             EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
-         elif (len(mc_AFFE_MATERIAU)==1) and (CL_BOL_P2_GV==None) :
+         elif (len(mc_AFFE_MATERIAU)==1) :
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
            if indther:
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
                             EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
-       elif (mater['BOL'     ][:3]=='BOL'  ) and (CL_BOL_P2_GV==None) :
+       elif (mater['BOL'     ][:3]=='BOL'  ) :
          mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
          if indther:
            mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
@@ -236,10 +227,11 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     motscles['LIAISON_ELEM'].append(_F( OPTION    ='3D_POU'  ,
                                          GROUP_MA_1='EXTUBE',
                                          GROUP_NO_2='P1') )
-  if CL_BOL_P2_GV==None :
+#
     motscles['LIAISON_ELEM'].append(_F( OPTION    ='3D_POU'  ,
                                          GROUP_MA_1='CLGV',
                                          GROUP_NO_2='P2') )
+
     motscles['DDL_IMPO'    ]=_F( GROUP_NO  ='P2' ,
                                  DX        = 0.0 ,
                                  DY        = 0.0 ,
@@ -247,30 +239,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                  DRX       = 0.0 ,
                                  DRY       = 0.0 ,
                                  DRZ       = 0.0 , )
-  else :
-    motscles['FACE_IMPO'   ]=_F( GROUP_MA  ='CLGV' ,
-                                 DNOR      = 0.0 , )
-    ALPHA  = CL_BOL_P2_GV['ANGLE' ]
-    AZIM   = CL_BOL_P2_GV['AZIMUT']
-    ALPHAR = ALPHA*pi/180.0
-    AZIMR  = AZIM *pi/180.0
-    DDLB1  = []
-    COEFB1 = []
-    if (AZIM!=0.0) and (AZIM!=180.0) and (ALPHA!=90.0) :
-      DDLB1.append('DX')
-      COEFB1.append(SIN(AZIMR)*COS(ALPHAR))
-    if (AZIM!=90.0) :
-      DDLB1.append('DY')
-      COEFB1.append(COS(AZIMR))
-    if (AZIM!=0.) and (AZIM!=180.) and (ALPHA!=0.):
-      DDLB1.append('DZ')
-      COEFB1.append(-SIN(AZIMR)*SIN(ALPHAR))
-    POINT=['BOUT1',]*len(DDLB1)
-    motscles['LIAISON_DDL']=_F( GROUP_NO  = POINT  ,
-                                DDL       = DDLB1  ,
-                                COEF_MULT = COEFB1 ,
-                                COEF_IMPO = 0.0    , )
-
+#
   _conlim = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
@@ -348,10 +317,10 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   motscles['EXCIT'] =mcfex
 #
   if COMPORTEMENT!=None :
-    mcfci=[]  
+    mcfci=[]
     mcfci.append( _F(GROUP_MA='COUDE',RELATION=COMPORTEMENT['RELATION']) )
     if TORS_P1!=None     : mcfci.append(  _F(GROUP_MA='P1',RELATION='ELAS'))
-    if CL_BOL_P2_GV==None: mcfci.append(  _F(GROUP_MA='P2',RELATION='ELAS'))
+    mcfci.append(  _F(GROUP_MA='P2',RELATION='ELAS'))
     motscles['COMPORTEMENT'] =mcfci
 #
   dSolveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)

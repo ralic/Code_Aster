@@ -18,14 +18,6 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg={
-1: _(u"""
-La condition aux limites sur bol à section conique
-est ignorée pour un coude avec sous-épaisseurs.
-"""),
-
-2: _(u"""
-Mot-clé AZIMUT non autorisé dans le cas d'un coude sain"
-"""),
 
 3: _(u"""
 POSI_ANGUL POSI_CURV_LONGI est obligatoire.
@@ -89,11 +81,6 @@ ANGL_COUDE et ANGL_SOUS_EPAI sont inutiles dans ce cas.
 
 16: _(u"""
  Longueur d'embout P2 inférieure à la longueur d'amortissement = %(r1)f
-"""),
-
-17: _(u"""
- La condition aux limites raccord 3D-POUTRE appliquée avec la macro-commande de calcul
- ASCOUF n'est pas licite avec un embout de type conique.
 """),
 
 18: _(u"""
