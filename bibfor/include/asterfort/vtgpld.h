@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
+    subroutine vtgpld(cumul , geomiz, alpha, deplaz, base,&
                       geomfz)
-        character(len=4) :: cumul
-        character(len=*) :: geomiz
-        real(kind=8) :: alpha
-        character(len=*) :: deplaz
-        character(len=1) :: base
-        character(len=*) :: geomfz
+        character(len=4), intent(in) :: cumul
+        character(len=*), intent(in) :: geomiz
+        real(kind=8), intent(in) :: alpha
+        character(len=*), intent(in) :: deplaz
+        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: geomfz
     end subroutine vtgpld
 end interface
