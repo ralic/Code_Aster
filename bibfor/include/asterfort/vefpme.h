@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vefpme(modele, carele, mate, chargz, infchz,&
-                      partps, templu, lvechz, ligrez)
-        character(len=*) :: modele
-        character(len=*) :: carele
-        character(len=*) :: mate
-        character(len=*) :: chargz
-        character(len=*) :: infchz
-        real(kind=8) :: partps(*)
-        character(len=*) :: templu
-        character(len=*) :: lvechz
-        character(len=*) :: ligrez
+    subroutine vefpme(modelz, cara_elem, mate      , lload_namez , lload_infoz,&
+                      inst  , varc_curr, vect_elemz, ligrel_calcz)
+        character(len=*), intent(in) :: modelz
+        character(len=*), intent(in) :: lload_namez
+        character(len=*), intent(in) :: lload_infoz
+        real(kind=8), intent(in) :: inst(3)
+        character(len=*), intent(in) :: cara_elem
+        character(len=*), intent(in) :: mate
+        character(len=*), intent(in) :: varc_curr
+        character(len=*), intent(in) :: ligrel_calcz
+        character(len=*), intent(inout) :: vect_elemz
     end subroutine vefpme
 end interface

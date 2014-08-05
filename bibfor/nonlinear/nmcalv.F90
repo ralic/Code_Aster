@@ -225,7 +225,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     else if (typvec.eq.'CNFEPI') then
         call nmvcex('TOUT', complu, vrcplu)
         call vefpme(modele, carele, mate, charge, infoch,&
-                    partps, vrcplu, vecele, ' ')
+                    inst  , vrcplu, vecele, ' ')
 !
 ! --- FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 !
