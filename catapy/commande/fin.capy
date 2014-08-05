@@ -23,9 +23,7 @@ class FIN_ETAPE(PROC_ETAPE):
         """Fonction Build_sd pour FIN"""
         from Noyau.N_Exception import InterruptParsingError
         PROC_ETAPE.Build_sd(self)
-        print "#PASS Build_sd de PROC", self.nom
         if self.nom == 'FIN':
-            print "#PASS raise RuntimeError"
             raise InterruptParsingError
         return None
 
