@@ -2,12 +2,17 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
+
 #FONCTIONS
 def addToStudyList(ObjectList, NameList) :
     class LengthError(Exception):
@@ -30,13 +35,13 @@ def addToStudyInFatherList(MainObject, ObjectList, NameList) :
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
 Rm=22.5
-geompy.init_geom(theStudy)
-chain = "/home/I87854/Documents/GC/hsna100/A_RESTITUER/hsna100axis2.med" 
+
 O = geompy.MakeVertex(0, 0, 0)
 VX = geompy.MakeVectorDXDYDZ(1, 0, 0)
 VY = geompy.MakeVectorDXDYDZ(0, 1, 0)
@@ -49,23 +54,23 @@ geompy.TranslateDXDYDZ(AXIS, Rm+0.5, 0.5, 0)
 
 
 # Creation des groupes
-# lint 
+# lint
 L_INT = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
-A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm, 0, 0), geompy.GEOM.ST_ON)
+A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm, 0, 0), GEOM.ST_ON)
 geompy.UnionList(L_INT ,A1)
-# lext 
+# lext
 L_EXT = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
-A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+1.0, 0, 0), geompy.GEOM.ST_ON)
+A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+1.0, 0, 0), GEOM.ST_ON)
 geompy.UnionList(L_EXT ,A1)
-# rgenef 
+# rgenef
 RGENEF = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
-A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VY,geompy.MakeVertex(0, 0, 0), geompy.GEOM.ST_ON)
+A1=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VY,geompy.MakeVertex(0, 0, 0), GEOM.ST_ON)
 geompy.UnionList(RGENEF ,A1)
 # inf
 COTE1 = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
 COTE2 = geompy.CreateGroup(AXIS, geompy.ShapeType["EDGE"])
-A2=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+0.5, 0, 0), geompy.GEOM.ST_IN)
-A3=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+0.5, 0, 0), geompy.GEOM.ST_OUT)
+A2=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+0.5, 0, 0), GEOM.ST_IN)
+A3=geompy.GetShapesOnPlaneWithLocation(AXIS,geompy.ShapeType["EDGE"],VX,geompy.MakeVertex(Rm+0.5, 0, 0), GEOM.ST_OUT)
 geompy.UnionList(COTE1,A1)
 geompy.DifferenceList(COTE1 ,A2)
 geompy.UnionList(COTE2,A1)
@@ -81,12 +86,13 @@ addToStudyInFatherList(AXIS,ObjectList, NameList )
 #---------------------------------------
 #  MAILLAGE
 #---------------------------------------
-import SMESH, smesh
-import StdMeshers
-aFilterManager = smesh.smesh.CreateFilterManager()
-smesh.smesh.SetCurrentStudy(salome.myStudy)
-import numpy as NP
-import GHS3DPlugin
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+aFilterManager = smesh.CreateFilterManager()
+smesh.SetCurrentStudy(salome.myStudy)
+from salome.GHS3DPlugin import GHS3DPluginBuilder
 
 Nb_Segments_1 = smesh.CreateHypothesis('NumberOfSegments')
 Nb_Segments_1.SetNumberOfSegments( 2)
@@ -124,11 +130,13 @@ for i in range(len(listPoiObs)) :
     poi = listPoiObs[i]
     coordsPoint = geompy.PointCoordinates(poi)
     poiId       = MAXIS.FindNodeClosestTo(coordsPoint[0],coordsPoint[1],coordsPoint[2])
-    nGroup      = MAXIS.CreateEmptyGroup( smesh.NODE, nomsPoiObs[i] )
+    nGroup      = MAXIS.CreateEmptyGroup( SMESH.NODE, nomsPoiObs[i] )
     nGroup.Add([poiId])
 
-#EXPORT du maillage en .med
-MAXIS.ExportMED(chain)
+
+########Export du maillage au format MMED########
+MAXIS.ExportMED( r''+ExportPATH+'hsna100a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

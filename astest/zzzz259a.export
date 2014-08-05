@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zzzz259a.comm D 1
-F datg zzzz259a.datg D 16
 F mmed zzzz259a.mmed D 20
 F libr zzzz259a.19 D 19

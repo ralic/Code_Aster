@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv228a.comm D 1
-F datg ssnv228a.datg D 16
 F mmed ssnv228a.mmed D 20

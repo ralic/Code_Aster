@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sslp321a.comm D 1
-F datg sslp321a.datg D 16
 F mmed sslp321a.mmed D 20

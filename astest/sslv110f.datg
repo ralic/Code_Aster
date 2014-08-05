@@ -1,4 +1,13 @@
-import geompy
+# -*- coding: utf-8 -*-
+
+import salome
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+import SALOMEDS
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 # objets utiles
 O = geompy.MakeVertex(0,0,0)
@@ -56,7 +65,9 @@ M_BAS = geompy.GetFaceNearPoint(V,P_BAS)
 geompy.addToStudyInFather(V,M_BAS,'M_BAS')
 
 
-import smesh
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
 MA = smesh.Mesh(V,"MA")
 
@@ -87,3 +98,16 @@ MA.Group(SYM_Y,'SYM_Y')
 MA.Group(M_HAUT,'M_HAUT')
 MA.Group(M_BAS,'M_BAS')
 MA.Group(VOL,'VOL')
+
+isDone = MA.Compute()
+
+########Export du maillage au format MMED########
+MA.ExportMED( r''+ExportPATH+'sslv110f.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+###
+### PARAVIS component
+###
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+

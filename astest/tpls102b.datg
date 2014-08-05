@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.4.0 with dump python functionality
@@ -6,66 +6,14 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/home/aster/DKT_TEMP/Pour_restit')
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
-
-#Set up visual properties:
-ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
-ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000586000000040000000100000001000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
-ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
-ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 2")
-#Set up lists:
-# fill list AP_VIEWERS_LIST
-ipar.append("AP_VIEWERS_LIST", "VTKViewer_1")
-# fill list VTKViewer_1
-ipar.append("VTKViewer_1", "VTK scene:2 - viewer:1")
-ipar.append("VTKViewer_1", """<?xml version="1.0"?>
-<ViewState>
-    <Position X="738.946" Y="-738.946" Z="738.946"/>
-    <FocalPoint X="0" Y="0" Z="0"/>
-    <ViewUp X="0" Y="0" Z="1"/>
-    <ViewScale Parallel="346.291" X="1" Y="1" Z="1"/>
-    <DisplayCubeAxis Show="0"/>
-    <GraduatedAxis Axis="X">
-        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Y">
-        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Z">
-        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <Trihedron isShown="1" Size="5"/>
-</ViewState>
-""")
-# fill list AP_MODULES_LIST
-ipar.append("AP_MODULES_LIST", "Mesh")
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 
 ###
@@ -73,12 +21,10 @@ ipar.append("AP_MODULES_LIST", "Mesh")
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
-
-
-geompy.init_geom(theStudy)
 
 A = geompy.MakeVertex(0, 0, 0)
 B = geompy.MakeVertex(0, 2, 0)
@@ -111,19 +57,16 @@ geompy.addToStudyInFather( POUTRE, B_1, 'B' )
 geompy.addToStudyInFather( POUTRE, D_1, 'D' )
 geompy.addToStudyInFather( POUTRE, C_1, 'C' )
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
-
 
 ###
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
 smeshObj_1 = smesh.Mesh(POUTRE)
 Regular_1D = smeshObj_1.Segment()
 Local_Length_1 = Regular_1D.LocalLength(1)
@@ -154,9 +97,7 @@ smeshObj_10 = smeshObj_2.GroupOnGeom(DA_1,'DA',SMESH.EDGE)
 smeshObj_11 = smeshObj_2.GroupOnGeom(BC_1,'BC',SMESH.EDGE)
 smeshObj_12 = smeshObj_2.GroupOnGeom(CD_1,'CD',SMESH.EDGE)
 smesh.SetName(smeshObj_1, 'POUTRE_T3')
-smeshObj_1.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_2, 'POUTRE_Q4')
-smeshObj_2.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4.med', 0, SMESH.MED_V2_2, 1 )
 smeshObj_13 = smeshObj_1.GroupOnGeom(A_1,'A',SMESH.NODE)
 smeshObj_14 = smeshObj_1.GroupOnGeom(B_1,'B',SMESH.NODE)
 smeshObj_15 = smeshObj_1.GroupOnGeom(D_1,'D',SMESH.NODE)
@@ -174,9 +115,7 @@ smeshObj_22 = smeshObj_2.GroupOnGeom(B_1,'B',SMESH.NODE)
 smeshObj_23 = smeshObj_2.GroupOnGeom(D_1,'D',SMESH.NODE)
 smeshObj_24 = smeshObj_2.GroupOnGeom(C_1,'C',SMESH.NODE)
 smesh.SetName(smeshObj_1, 'POUTRE_T3')
-smeshObj_1.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_2, 'POUTRE_Q4')
-smeshObj_2.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4.med', 0, SMESH.MED_V2_2, 1 )
 smeshObj_25 = smeshObj_1.GroupOnGeom(AB_1,'AB',SMESH.NODE)
 smeshObj_26 = smeshObj_1.GroupOnGeom(DA_1,'DA',SMESH.NODE)
 smeshObj_27 = smeshObj_1.GroupOnGeom(BC_1,'BC',SMESH.NODE)
@@ -224,13 +163,9 @@ smeshObj_58 = smeshObj_34.GroupOnGeom(B_1,'B',SMESH.NODE)
 smeshObj_59 = smeshObj_34.GroupOnGeom(D_1,'D',SMESH.NODE)
 smeshObj_60 = smeshObj_34.GroupOnGeom(C_1,'C',SMESH.NODE)
 smesh.SetName(smeshObj_1, 'POUTRE_T3_L=0.5')
-smeshObj_1.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_2, 'POUTRE_Q4_L=0.5')
-smeshObj_2.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_33, 'POUTRE_T3_L=0.125')
-smeshObj_33.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3_Fine.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_34, 'POUTRE_Q4_L=0.125')
-smeshObj_34.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4_Fine.med', 0, SMESH.MED_V2_2, 1 )
 smeshObj_13.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 smeshObj_14.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 smeshObj_15.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
@@ -240,13 +175,9 @@ smeshObj_26.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 smeshObj_27.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 smeshObj_28.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 smesh.SetName(smeshObj_1, 'POUTRE_T3_L=0.5')
-smeshObj_1.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_2, 'POUTRE_Q4_L=0.5')
-smeshObj_2.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_33, 'POUTRE_T3_L=0.125')
-smeshObj_33.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3_Fine.med', 0, SMESH.MED_V2_2, 1 )
 smesh.SetName(smeshObj_34, 'POUTRE_Q4_L=0.125')
-smeshObj_34.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4_Fine.med', 0, SMESH.MED_V2_2, 1 )
 smeshObj_2.SetAutoColor( 1 )
 [ smeshObj_21, smeshObj_22, smeshObj_23, smeshObj_24, smeshObj_29, smeshObj_30, smeshObj_31, smeshObj_32, smeshObj_9, smeshObj_10, smeshObj_11, smeshObj_12, smeshObj_8 ] = smeshObj_2.GetGroups()
 smeshObj_2.SetAutoColor( 0 )
@@ -274,12 +205,10 @@ smeshObj_72 = smeshObj_61.GroupOnGeom(B_1,'B',SMESH.NODE)
 smeshObj_73 = smeshObj_61.GroupOnGeom(D_1,'D',SMESH.NODE)
 smeshObj_74 = smeshObj_61.GroupOnGeom(C_1,'C',SMESH.NODE)
 smesh.SetName(smeshObj_61, 'POUTRE_Q4_L=0.25')
-smeshObj_61.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_Q4_Moy.med', 0, SMESH.MED_V2_2, 1 )
 POUTRE_Q4_32x32 = smesh.CopyMesh( smeshObj_61, 'POUTRE_T3_L=0.25', 1, 0)
 [ POUTRE_1, AB_2, DA_2, BC_2, CD_2, AB_3, DA_3, BC_3, CD_3, A_2, B_2, D_2, C_2 ] = POUTRE_Q4_32x32.GetGroups()
 isDone = POUTRE_Q4_32x32.SplitQuad( [ 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336 ], 0 )
 smesh.SetName(POUTRE_Q4_32x32, 'POUTRE_T3_L=0.25')
-POUTRE_Q4_32x32.ExportMED( r'/home/aster/DKT_TEMP/POUTRE_T3_Moy.med', 0, SMESH.MED_V2_2, 1 )
 smeshObj_1.RemoveGroup( smeshObj_3 )
 smeshObj_1.RemoveGroup( smeshObj_7 )
 smeshObj_1.RemoveGroup( smeshObj_6 )
@@ -393,7 +322,7 @@ B_2 = POUTRE_Q4_32x32.GroupOnGeom(B_1,'B',SMESH.NODE)
 D_2 = POUTRE_Q4_32x32.GroupOnGeom(D_1,'D',SMESH.NODE)
 C_2 = POUTRE_Q4_32x32.GroupOnGeom(C_1,'C',SMESH.NODE)
 smesh.SetName(POUTRE_Q4_32x32, 'POUTRE_Q4_32x32')
-POUTRE_Q4_32x32.ExportMED( r'/home/aster/DKT_TEMP/Pour_restit/POUTRE_Q4_32x32.med', 0, SMESH.MED_V2_2, 1 )
+
 
 ## some objects were removed
 aStudyBuilder = theStudy.NewBuilder()
@@ -568,12 +497,10 @@ smesh.SetName(D_2, 'D')
 smesh.SetName(C_2, 'C')
 smesh.SetName(Nb_Seg_32, 'Nb. Seg=32')
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
 
+########Export du maillage au format MMED########
+POUTRE_Q4_32x32.ExportMED( r''+ExportPATH+'tpls102b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
-  iparameters.getSession().restoreVisualState(1)

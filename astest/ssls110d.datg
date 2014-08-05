@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.4.0 with dump python functionality
@@ -6,80 +6,24 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/home/aster/Flamb')
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
-
-#Set up visual properties:
-ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
-ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000100000001000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
-ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
-ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
-#Set up lists:
-# fill list AP_VIEWERS_LIST
-ipar.append("AP_VIEWERS_LIST", "VTKViewer_1")
-# fill list VTKViewer_1
-ipar.append("VTKViewer_1", "VTK scene:2 - viewer:1")
-ipar.append("VTKViewer_1", """<?xml version="1.0"?>
-<ViewState>
-    <Position X="1648.6" Y="-1398.6" Z="1523.6"/>
-    <FocalPoint X="125" Y="125" Z="0"/>
-    <ViewUp X="0" Y="0" Z="1"/>
-    <ViewScale Parallel="176.777" X="1" Y="1" Z="1"/>
-    <DisplayCubeAxis Show="0"/>
-    <GraduatedAxis Axis="X">
-        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Y">
-        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Z">
-        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <Trihedron isShown="1" Size="1"/>
-</ViewState>
-""")
-# fill list AP_MODULES_LIST
-ipar.append("AP_MODULES_LIST", "Geometry")
-ipar.append("AP_MODULES_LIST", "Mesh")
-
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
-
-
-geompy.init_geom(theStudy)
 
 P1 = geompy.MakeVertex(0, 0, 0)
 P2 = geompy.MakeVertex(250, 0, 0)
@@ -107,19 +51,15 @@ geompy.addToStudyInFather( Plaque, G_12_1, 'G_12' )
 geompy.addToStudyInFather( Plaque, G_34_1, 'G_34' )
 geompy.addToStudyInFather( Plaque, G_23_1, 'G_23' )
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
-
-
 ###
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
 Plaque_T3 = smesh.Mesh(Plaque)
 Regular_1D = Plaque_T3.Segment()
 Nb_Seg_10 = Regular_1D.NumberOfSegments(10)
@@ -133,10 +73,8 @@ G_23_2 = Plaque_T3.GroupOnGeom(G_23_1,'G_23',SMESH.NODE)
 G_2233 = Plaque_T3.GroupOnGeom(G_23_1,'G_23',SMESH.EDGE)
 G_2233.SetName( 'G_2233' )
 smesh.SetName(Plaque_T3, 'Plaque_Q4')
-Plaque_T3.ExportMED( r'/home/aster/Flamb/Plaque_Q4.med', 0, SMESH.MED_V2_2, 1 )
 isDone = Plaque_T3.SplitQuadObject( Plaque_T3, 0 )
 smesh.SetName(Plaque_T3, 'Plaque_T3')
-Plaque_T3.ExportMED( r'/home/aster/Flamb/Plaque_T3.med', 0, SMESH.MED_V2_2, 1 )
 
 ## set object names
 smesh.SetName(Plaque_T3.GetMesh(), 'Plaque_T3')
@@ -149,23 +87,10 @@ smesh.SetName(G_34_2, 'G_34')
 smesh.SetName(G_23_2, 'G_23')
 smesh.SetName(G_2233, 'G_2233')
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
 
-#Set up entries:
-# set up entry SMESH_3 (Plaque_T3) parameters
-ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
-ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:-100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
-ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
-ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+########Export du maillage au format MMED########
+Plaque_T3.ExportMED( r''+ExportPATH+'ssls110d.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
-  iparameters.getSession().restoreVisualState(1)

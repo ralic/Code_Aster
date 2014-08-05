@@ -29,7 +29,7 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
@@ -140,14 +140,14 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    RESULTAT=RESUNL,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   VALE_CALC=250.41027791082999,
+                   VALE_CALC=250.17129066,
                    ),
                 _F(GROUP_NO='A',
                    INST=10.0,
                    RESULTAT=RESUNL,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=-214.58706080190001,
+                   VALE_CALC=-218.937290032,
                    ),
                 ),
           )

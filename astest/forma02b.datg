@@ -1,12 +1,20 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # SALOME 4.1.4
 
-from geompy import *
-from smesh import *
-
 import math
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+import GEOM
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
-gg = salome.ImportComponentGUI("GEOM")
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 #===================================================
 #                  PARAMETRES
@@ -26,18 +34,18 @@ LG      = 3.0  ;
 
 #  Vecteurs utiles
 #------------------
-vx = MakeVectorDXDYDZ(100., 0., 0.)
-vy = MakeVectorDXDYDZ(0., 100., 0.)
-vz = MakeVectorDXDYDZ(0., 0., 100.)
+vx = geompy.MakeVectorDXDYDZ(100., 0., 0.)
+vy = geompy.MakeVectorDXDYDZ(0., 100., 0.)
+vz = geompy.MakeVectorDXDYDZ(0., 0., 100.)
 
 # axe de rotation pour generer le coude
-p1_tmp = MakeVertex(RC,LG,0.)
-p2_tmp = MakeVertex(RC,LG,10.)
-v_rot = MakeVector(p1_tmp, p2_tmp)
+p1_tmp = geompy.MakeVertex(RC,LG,0.)
+p2_tmp = geompy.MakeVertex(RC,LG,10.)
+v_rot = geompy.MakeVector(p1_tmp, p2_tmp)
 # axe du cylindre haut
-m4 = MakeVertex(0,LG+RC,0);
-m5 = MakeVertex(LG,LG+RC,0);
-axe = MakeLineTwoPnt(m4, m5)
+m4 = geompy.MakeVertex(0,LG+RC,0);
+m5 = geompy.MakeVertex(LG,LG+RC,0);
+axe = geompy.MakeLineTwoPnt(m4, m5)
 
 #===================================================
 #                  GEOMETRIE
@@ -46,103 +54,103 @@ axe = MakeLineTwoPnt(m4, m5)
 
 #  Face de base du 3D
 #---------------------------
-P1 = MakeVertex(   Rext,   0,    0);
-P2 = MakeVertex(      0,   0, Rext);
-P3 = MakeVertex(-1*Rext,   0,    0);
-P4 = MakeVertex(      0,   0,    0);
+P1 = geompy.MakeVertex(   Rext,   0,    0);
+P2 = geompy.MakeVertex(      0,   0, Rext);
+P3 = geompy.MakeVertex(-1*Rext,   0,    0);
+P4 = geompy.MakeVertex(      0,   0,    0);
 
-P5 = MakeVertex(   Rint,   0,    0);
-P6 = MakeVertex(      0,   0, Rint);
-P7 = MakeVertex(-1*Rint,   0,    0);
+P5 = geompy.MakeVertex(   Rint,   0,    0);
+P6 = geompy.MakeVertex(      0,   0, Rint);
+P7 = geompy.MakeVertex(-1*Rint,   0,    0);
 
-m1 = MakeVertex(   0,  LG,   Rm);
+m1 = geompy.MakeVertex(   0,  LG,   Rm);
 
-arc1 = MakeArc(P1, P2, P3)
-arc2 = MakeArc(P5, P6, P7)
+arc1 = geompy.MakeArc(P1, P2, P3)
+arc2 = geompy.MakeArc(P5, P6, P7)
 
-edge1 = MakeLineTwoPnt(P1, P5)
-edge2 = MakeLineTwoPnt(P7, P3)
+edge1 = geompy.MakeLineTwoPnt(P1, P5)
+edge2 = geompy.MakeLineTwoPnt(P7, P3)
 
 
-wirebase = MakeWire([arc1, edge1, arc2, edge2])
-facebase = MakeFace(wirebase, 1)
+wirebase = geompy.MakeWire([arc1, edge1, arc2, edge2])
+facebase = geompy.MakeFace(wirebase, 1)
 
 #  Extrusion du 3D
 #---------------------------
-V1 = MakePrismVecH(facebase, vy, LG)
+V1 = geompy.MakePrismVecH(facebase, vy, LG)
 
 #  Revolution du 3D
 #---------------------------
-face_tmp = GetFaceNearPoint(V1, m1)
-revolution = MakeRevolution(face_tmp, v_rot, -math.pi/2)
+face_tmp = geompy.GetFaceNearPoint(V1, m1)
+revolution = geompy.MakeRevolution(face_tmp, v_rot, -math.pi/2)
 
 
 
 #  Extrusion du 3D
 #---------------------------
-m2 = MakeRotation(m1, v_rot, -math.pi/2)
-face_tmp = GetFaceNearPoint(revolution, m2)
-V2 = MakePrismVecH(face_tmp, vx, LG)
+m2 = geompy.MakeRotation(m1, v_rot, -math.pi/2)
+face_tmp = geompy.GetFaceNearPoint(revolution, m2)
+V2 = geompy.MakePrismVecH(face_tmp, vx, LG)
 
 
 #  Collage des faces du 3D
 #---------------------------
-compbloc1 = MakeCompound([V1,revolution,V2])
-OXY = MakePlaneLCS(None, 2000, 1)
-compbloc2 = MakeMirrorByPlane(compbloc1,OXY)
-compbloc = MakeCompound([compbloc1,compbloc2])
+compbloc1 = geompy.MakeCompound([V1,revolution,V2])
+OXY = geompy.MakePlaneLCS(None, 2000, 1)
+compbloc2 = geompy.MakeMirrorByPlane(compbloc1,OXY)
+compbloc = geompy.MakeCompound([compbloc1,compbloc2])
 
-GeoCoude = MakeGlueFaces(compbloc,tol3d)
+GeoCoude = geompy.MakeGlueFaces(compbloc,tol3d)
 
 
 # Affichage dans l'arbre
 #---------------------------
-id_GeoCoude = addToStudy(GeoCoude,"GeoCoude")
+id_GeoCoude = geompy.addToStudy(GeoCoude,"GeoCoude")
 
 
 #---------------------------
 # Création des groupes
 #---------------------------
 
-EFOND = CreateGroup(GeoCoude, ShapeType["FACE"])
-m3 = MakeVertex(   LG+RC,  LG+RC ,   Rm);
-f1_efond = GetFaceNearPoint(GeoCoude, m3)
-m3b = MakeMirrorByPlane(m3,OXY)
-f2_efond = GetFaceNearPoint(GeoCoude, m3b)
-UnionList(EFOND,[f1_efond,f2_efond])
-addToStudyInFather(GeoCoude,EFOND,"EFOND")
+EFOND = geompy.CreateGroup(GeoCoude, geompy.ShapeType["FACE"])
+m3 = geompy.MakeVertex(   LG+RC,  LG+RC ,   Rm);
+f1_efond = geompy.GetFaceNearPoint(GeoCoude, m3)
+m3b = geompy.MakeMirrorByPlane(m3,OXY)
+f2_efond = geompy.GetFaceNearPoint(GeoCoude, m3b)
+geompy.UnionList(EFOND,[f1_efond,f2_efond])
+geompy.addToStudyInFather(GeoCoude,EFOND,"EFOND")
 
-m3c = MakeVertex (LG+RC,  LG+RC , 0);
-P_EFOND = GetVertexNearPoint(GeoCoude, m3c)
-addToStudyInFather(GeoCoude,P_EFOND,"P_EFOND")
+m3c = geompy.MakeVertex (LG+RC,  LG+RC , 0);
+P_EFOND = geompy.GetVertexNearPoint(GeoCoude, m3c)
+geompy.addToStudyInFather(GeoCoude,P_EFOND,"P_EFOND")
 
 #-----------------------------------------------------------------
-BASE = CreateGroup(GeoCoude, ShapeType["FACE"])
-f1_base = GetSame(GeoCoude,facebase)  
-facebaseb= MakeMirrorByPlane(facebase,OXY)
-f2_base = GetSame(GeoCoude,facebaseb)
-UnionList(BASE,[f1_base,f2_base])
-addToStudyInFather(GeoCoude,BASE,"BASE")
+BASE = geompy.CreateGroup(GeoCoude, geompy.ShapeType["FACE"])
+f1_base = geompy.GetSame(GeoCoude,facebase)
+facebaseb= geompy.MakeMirrorByPlane(facebase,OXY)
+f2_base = geompy.GetSame(GeoCoude,facebaseb)
+geompy.UnionList(BASE,[f1_base,f2_base])
+geompy.addToStudyInFather(GeoCoude,BASE,"BASE")
 
-TUYAU = CreateGroup(GeoCoude, ShapeType["SOLID"])
-vol = SubShapeAll(GeoCoude, ShapeType["SOLID"])
-UnionList(TUYAU,vol)
-addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
+TUYAU = geompy.CreateGroup(GeoCoude, geompy.ShapeType["SOLID"])
+vol = geompy.SubShapeAll(GeoCoude, geompy.ShapeType["SOLID"])
+geompy.UnionList(TUYAU,vol)
+geompy.addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
 
-HypEpaisseur = GetSame(GeoCoude,edge1)  
-addToStudyInFather(GeoCoude,HypEpaisseur,"HypEpaisseur")
+HypEpaisseur = geompy.GetSame(GeoCoude,edge1)
+geompy.addToStudyInFather(GeoCoude,HypEpaisseur,"HypEpaisseur")
 
-HypCirconference = GetSame(GeoCoude,arc1)  
-addToStudyInFather(GeoCoude,HypCirconference,"HypCirconference")
+HypCirconference = geompy.GetSame(GeoCoude,arc1)
+geompy.addToStudyInFather(GeoCoude,HypCirconference,"HypCirconference")
 
 
 #===================================================
 #                  MAILLAGE
 #                  --------
 #===================================================
-# 
+#
 
-maillageCoude = Mesh(GeoCoude, "MeshCoude")
+maillageCoude = smesh.Mesh(GeoCoude, "MeshCoude")
 
 # Algorithmes et hypotheses globales
 # ----------------------------------
@@ -189,14 +197,9 @@ maillageCoude.Group(TUYAU, "TUYAU" )
 maillageCoude.Group(P_EFOND, "P_EFOND")
 
 
-# Export dans un fichier au format MED
-#--------------------------------------
-## On peut sauver dans le dossier courant :
-#import os
-#Repertoire=os.getcwd()
-##ou bien en spécifier un
-#Repertoire='MonRepertoire'
-#maillageCoude.ExportToMED(Repertoire+"forma01c.mail.med",SMESH.MED_V2_2)
+########Export du maillage au format MMED########
+maillageCoude.ExportMED( r''+ExportPATH+'forma02b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 # Mise à jour de l'arbre
 #---------------------------

@@ -171,11 +171,11 @@ TAB_DY = POST_RELEVE_T(ACTION=_F(INTITULE = 'DEPLACEMENT',
 
 IMPR_TABLE(TABLE = TAB_DY);
 
-# Comparaison a une resolution 3D du meme probleme
+# Comparaison a une resolution 3D du meme probleme + tests de non regression
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           VALE_CALC=-1.37996535E-04,
+           VALE_CALC=-0.000137994511708,
            VALE_REFE=-1.4036714E-4,
            NOM_PARA='MOYENNE',
            TABLE=TAB_DY,
@@ -185,28 +185,8 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           VALE_CALC=-3.14931052E-04,
+           VALE_CALC=-0.000314928295184,
            VALE_REFE=-3.1845791999999997E-4,
-           NOM_PARA='MOYENNE',
-           TABLE=TAB_DY,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=2,),
-           )
-
-# Tests de non-regression
-
-TEST_TABLE(
-           VALE_CALC=-1.3799653000000001E-4,
-
-           NOM_PARA='MOYENNE',
-           TABLE=TAB_DY,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=-3.1493104999999997E-4,
-
            NOM_PARA='MOYENNE',
            TABLE=TAB_DY,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

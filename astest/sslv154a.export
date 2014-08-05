@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sslv154a.comm D 1
-F datg sslv154a.datg D 16
 F mmed sslv154a.mmed D 20

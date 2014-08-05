@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zzzz314c.comm D 1
-F datg zzzz314c.datg D 16
 F mmed zzzz314c.mmed D 20

@@ -298,7 +298,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-0.060386667168703001,
+                  VALE_CALC=-0.0623819060503,
 
                   CRITERE='RELATIF',
                   ),

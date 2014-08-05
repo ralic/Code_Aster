@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.6.0 with dump python functionality
@@ -6,24 +6,25 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-
-geompy.init_geom(theStudy)
 
 O = geompy.MakeVertex(0, 0, 0)
 OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
@@ -47,12 +48,13 @@ geompy.addToStudy( Extrusion_2, 'Extrusion_2' )
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.BLSURFPlugin import BLSURFPluginBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import BLSURFPlugin
 Mesh_1 = smesh.Mesh(Compound_1)
-BLSURF = Mesh_1.Triangle(algo=smesh.BLSURF)
+BLSURF = Mesh_1.Triangle(algo=smeshBuilder.BLSURF)
 BLSURF_Parameters_1 = BLSURF.Parameters()
 isDone = Mesh_1.Compute()
 smesh.SetName(Mesh_1, 'Maillage')
@@ -65,6 +67,10 @@ surfco.SetColor( SALOMEDS.Color( 0.66, 0.33, 0.0 ) )
 smesh.SetName(Maillage.GetMesh(), 'Maillage')
 smesh.SetName(BLSURF_1.GetAlgorithm(), 'BLSURF_1')
 smesh.SetName(BLSURF_Parameters, 'BLSURF_Parameters')
+
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'zzzz331a.17'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 if salome.sg.hasDesktop():

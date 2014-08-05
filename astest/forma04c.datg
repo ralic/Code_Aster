@@ -1,7 +1,7 @@
-# coding=utf-8
+# -*- coding: iso-8859-1 -*-
 
 ###
-### This file is generated automatically by SALOME v6.3.0 with dump python functionality
+### This file is generated automatically by SALOME v7.3.0 with dump python functionality
 ###
 
 import sys
@@ -10,22 +10,35 @@ import salome
 salome.salome_init()
 theStudy = salome.myStudy
 
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
+import salome_notebook
+notebook = salome_notebook.NoteBook(theStudy)
+
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
 import math
 import SALOMEDS
 
-geompy.init_geom(theStudy)
+
+geompy = geomBuilder.New(theStudy)
 
 O = geompy.MakeVertex(0, 0, 0)
 OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
 OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
 OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
-Contour_1 = geompy.MakeSketcher("Sketcher:F 0.000000 0.000000:TT 0.000000 50.000000:TT 50.000000 50.000000:R 90:C 50.000000 -90.000000", [0, 0, 0, 0, 0, 1, 1, 0, 0])
+sk = geompy.Sketcher2D()
+sk.addPoint(0.0000000, 0.0000000)
+sk.addSegmentAbsolute(0.0000000, 50.0000000)
+sk.addSegmentAbsolute(50.0000000, 50.0000000)
+sk.addArcPerpRadiusLength(50.0000000, -90.0000000)
+Contour_1 = sk.wire([0, 0, 0, 0, 0, 1, 1, 0, 0])
 Face_1 = geompy.MakeFaceWires([Contour_1], 1)
 Sommet_1 = geompy.MakeVertex(0, 25, 0)
 Sommet_2 = geompy.MakeVertex(25, 50, 0)
@@ -38,35 +51,29 @@ Partition_1 = geompy.MakePartition([Face_1], [Ligne_1, Ligne_2, Ligne_3], [], []
 Miroir_1 = geompy.MakeMirrorByAxis(Partition_1, OX)
 Assemblage_1 = geompy.MakeCompound([Partition_1, Miroir_1])
 SPH_HAU = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["FACE"])
-geompy.UnionIDs(SPH_HAU, [20, 3, 13])
+geompy.UnionIDs(SPH_HAU, [13, 3, 20])
 SPH_BAS = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["FACE"])
-geompy.UnionIDs(SPH_BAS, [36, 26, 43])
+geompy.UnionIDs(SPH_BAS, [43, 36, 26])
 A1A2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(A1A2, [24, 40, 17, 47])
+geompy.UnionIDs(A1A2, [42, 35, 19, 12])
 A1B1 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(A1B1, [28, 45])
+geompy.UnionIDs(A1B1, [40, 47])
 A2B2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(A2B2, [22, 5])
+geompy.UnionIDs(A2B2, [17, 24])
 CONT2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(CONT2, [19])
+geompy.UnionIDs(CONT2, [28])
 CONT1 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(CONT1, [42])
-geomObj_1 = geompy.GetInPlace(Assemblage_1, SPH_HAU)
-[geomObj_2,geomObj_3,geomObj_4,geomObj_5,geomObj_6,geomObj_7,geomObj_8] = geompy.SubShapeAll(geomObj_1, geompy.ShapeType["VERTEX"])
-[geomObj_9,geomObj_10,geomObj_11,geomObj_12,geomObj_13,geomObj_14,geomObj_15] = geompy.SubShapeAll(geomObj_1, geompy.ShapeType["VERTEX"])
-C2 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["VERTEX"])
-geompy.UnionIDs(C2, [18])
-geomObj_16 = geompy.GetInPlace(Assemblage_1, SPH_BAS)
-[geomObj_17,geomObj_18,geomObj_19,geomObj_20,geomObj_21,geomObj_22,geomObj_23] = geompy.SubShapeAll(geomObj_16, geompy.ShapeType["VERTEX"])
-[geomObj_24,geomObj_25,geomObj_26,geomObj_27,geomObj_28,geomObj_29,geomObj_30] = geompy.SubShapeAll(geomObj_16, geompy.ShapeType["VERTEX"])
-C1 = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["VERTEX"])
-geompy.UnionIDs(C1, [41])
+geompy.UnionIDs(CONT1, [5])
+C1 = geompy.CreateGroup(SPH_BAS, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C1, [22])
+C2 = geompy.CreateGroup(SPH_HAU, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C2, [16])
 lcirc = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(lcirc, [22, 15, 38, 19, 42, 45])
+geompy.UnionIDs(lcirc, [15, 45, 19, 38, 22, 42])
 lepai = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(lepai, [40, 17])
-linv = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
-geompy.UnionIDs(linv, [22, 45])
+geompy.UnionIDs(lepai, [31, 8, 35, 12, 47, 24])
+lcont = geompy.CreateGroup(Assemblage_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(lcont, [40, 10, 5, 33, 28, 17])
 geompy.addToStudy( O, 'O' )
 geompy.addToStudy( OX, 'OX' )
 geompy.addToStudy( OY, 'OY' )
@@ -90,67 +97,84 @@ geompy.addToStudyInFather( Assemblage_1, A1B1, 'A1B1' )
 geompy.addToStudyInFather( Assemblage_1, A2B2, 'A2B2' )
 geompy.addToStudyInFather( Assemblage_1, CONT2, 'CONT2' )
 geompy.addToStudyInFather( Assemblage_1, CONT1, 'CONT1' )
-geompy.addToStudyInFather( Assemblage_1, C2, 'C2' )
-geompy.addToStudyInFather( Assemblage_1, C1, 'C1' )
+geompy.addToStudyInFather( SPH_BAS, C1, 'C1' )
+geompy.addToStudyInFather( SPH_HAU, C2, 'C2' )
 geompy.addToStudyInFather( Assemblage_1, lcirc, 'lcirc' )
 geompy.addToStudyInFather( Assemblage_1, lepai, 'lepai' )
-geompy.addToStudyInFather( Assemblage_1, linv, 'linv' )
+geompy.addToStudyInFather( Assemblage_1, lcont, 'lcont' )
 
 ###
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import  SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
 
-aMeasurements = smesh.CreateMeasurements()
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
-Maillage_1 = smesh.Mesh(Assemblage_1)
-Regular_1D_global = Maillage_1.Segment()
-Global = Regular_1D_global.NumberOfSegments( 5 )
-Quadrangle_2D = Maillage_1.Quadrangle()
-Regular_1D_lcirc = Maillage_1.Segment(geom=lcirc)
-circ = Regular_1D_lcirc.NumberOfSegments(40,0.1,[ 22, 45 ])
-Regular_1D_lepai = Maillage_1.Segment(geom=lepai)
-epai = Regular_1D_lepai.NumberOfSegments(20,0.1,[ 40, 17 ])
-Propagation = Regular_1D_lepai.Propagation()
-isDone = Maillage_1.Compute()
-SPH_HAU_1 = Maillage_1.GroupOnGeom(SPH_HAU,'SPH_HAU',SMESH.FACE)
-SPH_BAS_1 = Maillage_1.GroupOnGeom(SPH_BAS,'SPH_BAS',SMESH.FACE)
-A1A2_1 = Maillage_1.GroupOnGeom(A1A2,'A1A2',SMESH.EDGE)
-A1B1_1 = Maillage_1.GroupOnGeom(A1B1,'A1B1',SMESH.EDGE)
-A2B2_1 = Maillage_1.GroupOnGeom(A2B2,'A2B2',SMESH.EDGE)
-CONT2_1 = Maillage_1.GroupOnGeom(CONT2,'CONT2',SMESH.EDGE)
-CONT1_1 = Maillage_1.GroupOnGeom(CONT1,'CONT1',SMESH.EDGE)
-C2_1 = Maillage_1.GroupOnGeom(C2,'C2',SMESH.NODE)
-C1_1 = Maillage_1.GroupOnGeom(C1,'C1',SMESH.NODE)
-[ SPH_HAU_1, SPH_BAS_1, A1A2_1, A1B1_1, A2B2_1, CONT2_1, CONT1_1, C2_1, C1_1 ] = Maillage_1.GetGroups()
-smesh.SetName(Maillage_1, 'Assemblage_1')
-Maillage_1.ExportMED( r'/tmp/forma04c.mmed', 0, SMESH.MED_V2_2, 1 )
-Sous_maillage_1 = Regular_1D_lcirc.GetSubMesh()
-Sous_maillage_2 = Regular_1D_lepai.GetSubMesh()
+from salome.StdMeshers import StdMeshersBuilder
 
-## set object names
-smesh.SetName(Maillage_1.GetMesh(), 'Maillage_1')
+smesh = smeshBuilder.New(theStudy)
+Mesh_1 = smesh.Mesh(Assemblage_1)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
+Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshersBuilder.QUAD_STANDARD)
+Regular_1D = Mesh_1.Segment(geom=lcirc)
+Nb_Segments_1 = Regular_1D.NumberOfSegments(5)
+Nb_Segments_1.SetDistrType( 0 )
+Nb_Segments_2 = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_2.SetNumberOfSegments( 20 )
+Nb_Segments_2.SetScaleFactor( 0.1 )
+Nb_Segments_2.SetReversedEdges( [ 31, 8, 35, 12 ] )
+Nb_Segments_2.SetObjectEntry( "0:1:1:16" )
+status = Mesh_1.AddHypothesis(Regular_1D,lepai)
+status = Mesh_1.AddHypothesis(Nb_Segments_2,lepai)
+Nb_Segments_3 = smesh.CreateHypothesis('NumberOfSegments')
+status = Mesh_1.AddHypothesis(Regular_1D,lcont)
+status = Mesh_1.AddHypothesis(Nb_Segments_3,lcont)
+Nb_Segments_3.SetNumberOfSegments( 40 )
+Nb_Segments_3.SetDistrType( 1 )
+Nb_Segments_3.SetScaleFactor( 0.1 )
+Nb_Segments_3.SetReversedEdges( [ 40, 17 ] )
+Nb_Segments_3.SetObjectEntry( "0:1:1:16" )
+isDone = Mesh_1.Compute()
+[ SubMesh_1, SubMesh_2, SubMesh_3 ] = Mesh_1.GetMesh().GetSubMeshes()
+C2_1 = Mesh_1.GroupOnGeom(C2,'C2',SMESH.NODE)
+C1_1 = Mesh_1.GroupOnGeom(C1,'C1',SMESH.NODE)
+SPH_HAU_1 = Mesh_1.GroupOnGeom(SPH_HAU,'SPH_HAU',SMESH.FACE)
+SPH_BAS_1 = Mesh_1.GroupOnGeom(SPH_BAS,'SPH_BAS',SMESH.FACE)
+A1A2_1 = Mesh_1.GroupOnGeom(A1A2,'A1A2',SMESH.EDGE)
+A1B1_1 = Mesh_1.GroupOnGeom(A1B1,'A1B1',SMESH.EDGE)
+A2B2_1 = Mesh_1.GroupOnGeom(A2B2,'A2B2',SMESH.EDGE)
+CONT2_1 = Mesh_1.GroupOnGeom(CONT2,'CONT2',SMESH.EDGE)
+CONT1_1 = Mesh_1.GroupOnGeom(CONT1,'CONT1',SMESH.EDGE)
+SubMesh_1 = Regular_1D.GetSubMesh()
+SubMesh_2 = Mesh_1.GetSubMesh( lepai, 'SubMesh_2' )
+SubMesh_3 = Mesh_1.GetSubMesh( lcont, 'SubMesh_3' )
+
+
+## Set names of Mesh objects
 smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
-smesh.SetName(Regular_1D_global.GetAlgorithm(), 'Regular_1D_global')
-smesh.SetName(Global, 'Global')
-smesh.SetName(Regular_1D_lcirc.GetAlgorithm(), 'Regular_1D_lcirc')
-smesh.SetName(circ, 'circ')
-smesh.SetName(Regular_1D_lepai.GetAlgorithm(), 'Regular_1D_lepai')
-smesh.SetName(epai, 'epai')
-smesh.SetName(Propagation, 'Propagation')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Quadrangle_Parameters_1, 'Quadrangle Parameters_1')
 smesh.SetName(SPH_HAU_1, 'SPH_HAU')
+smesh.SetName(Nb_Segments_3, 'Nb. Segments_3')
 smesh.SetName(SPH_BAS_1, 'SPH_BAS')
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(SubMesh_3, 'SubMesh_3')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
 smesh.SetName(A1A2_1, 'A1A2')
-smesh.SetName(A1B1_1, 'A1B1')
 smesh.SetName(A2B2_1, 'A2B2')
-smesh.SetName(CONT2_1, 'CONT2')
+smesh.SetName(A1B1_1, 'A1B1')
 smesh.SetName(CONT1_1, 'CONT1')
-smesh.SetName(C2_1, 'C2')
 smesh.SetName(C1_1, 'C1')
-smesh.SetName(Sous_maillage_1, 'Sous-maillage_1')
-smesh.SetName(Sous_maillage_2, 'Sous-maillage_2')
+smesh.SetName(CONT2_1, 'CONT2')
+smesh.SetName(C2_1, 'C2')
+
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'forma04c.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

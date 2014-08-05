@@ -1,19 +1,19 @@
 # TITRE VALIDATION DE L'ASSISTANT CRACK ANALYSIS DU MODULE ASTER SALOME-MECA : FISSURE CIRCULAIRE EN MILIEU INFINI
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MODALISATION B : METHODE X-FEM (FISSURE NON MAILLEE) EN AXI-SYMETRIQUE
 
@@ -27,10 +27,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 # <SUPERVIS_1> : PAR_LOT='NON' sert uniquement a recuperer de maniere dynamique le nombre de fonds de fissure (EXTR_TABLE)
 
 #---------------------------------------------------------------------------
-# parameters from the Wizard 
+# parameters from the Wizard
 #------------------------------
 
-# h0 : initial elements size 
+# h0 : initial elements size
 h0 = 1.25
 
 # hc : target elements size (taille cible)
@@ -48,7 +48,7 @@ ray = 2.
 n = (log(h0)-log(hc))/log(2)
 nb_raff = int(n)+1
 
-# h : final elements size 
+# h : final elements size
 h = h0/(2.**nb_raff)
 
 # rayon du disque de raffinement
@@ -59,7 +59,7 @@ MA    = [None]*(nb_raff+1)
 MO    = [None]*nb_raff
 CHERR = [None]*nb_raff
 
-i_raff=0   
+i_raff=0
 MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
 
 # boucle de raffinements
@@ -75,27 +75,27 @@ for i_raff in range(nb_raff) :
                                       PFON=(ray,0.,0.),
                                       DTAN=(1.,0.,0.),),
                          )
-                    
+
    l_fiss = (fiss_1,)
-      
-   # evaluation de l'erreur       
+
+   # evaluation de l'erreur
    CHERR[i_raff]=RAFF_XFEM(FISSURE=l_fiss)
-   
+
    # definition du type du maillage n+1
    MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
-   
+
    # valeur du critere de raffinement
    crit = -max(r_raff , h0/(2.**i_raff) )
-   
+
    MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
                   CHAM_GD            = CHERR[i_raff],
                   CRIT_RAFF_ABS      = crit,
-                  USAGE_CMP          = 'RELATIF', 
+                  USAGE_CMP          = 'RELATIF',
                   MAILLAGE_N         = MA[i_raff],
                   MAILLAGE_NP1       = MA[i_raff+1])
-                  
+
    DETRUIRE(CONCEPT=_F(NOM=l_fiss),INFO=1)
-   
+
 assert(nb_raff == i_raff+1)
 
 MA[nb_raff]=MODI_MAILLAGE(reuse =MA[nb_raff],
@@ -126,7 +126,7 @@ ACIER=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,  NU = 0.3))
 MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
                    AFFE=_F(TOUT='OUI',
                            MATER=ACIER))
-                             
+
 CHAR=AFFE_CHAR_MECA(MODELE=MODX,
                     DDL_IMPO=_F(GROUP_NO='C' ,DY=0.),
                     PRES_REP=_F(GROUP_MA=('haut','bas'),PRES=-1.E6,),
@@ -166,7 +166,7 @@ G1 = [None]*nb_fond
 G2 = [None]*nb_fond
 
 for i in range(nb_fond) :
-   
+
    G1[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
                          NUME_FOND=i+1,
                          R_INF=2*h,
@@ -183,7 +183,7 @@ for i in range(nb_fond) :
                 OPTION='CALC_K_G')
 
 #----------------------------------------------------------------------
-#              TEST 
+#              TEST
 #----------------------------------------------------------------------
 
 # VALEUR DE REFERENCE MILIEU INFINI :
@@ -192,14 +192,14 @@ K1_REF=1.595769E6
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.246952124893,
+           VALE_CALC=11.2441792596,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=G1_0,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=1.637343866876E+06,
+           VALE_CALC=1637150.2458,
            VALE_REFE=1.595769E6,
            NOM_PARA='K1',
            TABLE=G1_0,)
@@ -207,14 +207,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #  sans R_INF et R_SUP
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.253590078761,
+           VALE_CALC=11.2508553729,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=G2_0,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=1.6164043187414E+06,
+           VALE_CALC=1616198.58136,
            VALE_REFE=1.595769E6,
            NOM_PARA='K1',
            TABLE=G2_0,)

@@ -126,11 +126,11 @@ TEST_RESU(RESU=_F(GROUP_NO='P_EFOND',
                   RESULTAT=TRAN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.13295597170533,
+                  VALE_CALC=-0.12834619214,
                   ),
           )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.93374209,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.9390585084505,
                         VALE_PARA=10.0,
                         FONCTION=MDHY_B,
                         ),

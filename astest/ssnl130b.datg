@@ -1,8 +1,16 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
-from geompy import *
+import GEOM
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 
-import smesh, salome
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 # PARAMETRES
 # ==========
@@ -17,28 +25,31 @@ nb_seg_largeur = 1
 # GEOMETRIE
 # =========
 
-Vx = MakeVectorDXDYDZ(1, 0, 0)
-Vy = MakeVectorDXDYDZ(0, 1, 0)
-Vz = MakeVectorDXDYDZ(0, 0, 1)
+Vx = geompy.MakeVectorDXDYDZ(1, 0, 0)
+Vy = geompy.MakeVectorDXDYDZ(0, 1, 0)
+Vz = geompy.MakeVectorDXDYDZ(0, 0, 1)
 
-P1 = MakeVertex(0, 0, 0)
-edge_longueur = MakePrismVecH(P1, Vx, longueur_plaque)
-plaque = MakePrismVecH(edge_longueur, Vy, largeur_plaque)
-addToStudy(plaque, "plaque")
+P1 = geompy.MakeVertex(0, 0, 0)
+edge_longueur = geompy.MakePrismVecH(P1, Vx, longueur_plaque)
+plaque = geompy.MakePrismVecH(edge_longueur, Vy, largeur_plaque)
+geompy.addToStudy(plaque, "plaque")
 
 # pour sous-maillage
-sub_edge_longueur = GetInPlace(plaque, edge_longueur)
-addToStudyInFather(plaque, sub_edge_longueur, "edge_longueur")
+sub_edge_longueur = geompy.GetInPlace(plaque, edge_longueur)
+geompy.addToStudyInFather(plaque, sub_edge_longueur, "edge_longueur")
 
 # pour groupes
-edge_longueur_opp = MakeTranslation(edge_longueur, 0, largeur_plaque, 0)
-sub_edge_longueur_opp = GetInPlace(plaque, edge_longueur_opp)
-addToStudyInFather(plaque, sub_edge_longueur_opp, "D0403")
+edge_longueur_opp = geompy.MakeTranslation(edge_longueur, 0, largeur_plaque, 0)
+sub_edge_longueur_opp = geompy.GetInPlace(plaque, edge_longueur_opp)
+geompy.addToStudyInFather(plaque, sub_edge_longueur_opp, "D0403")
 
 
 
 # MAILLAGE
 # ========
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
 Maillage = smesh.Mesh(plaque, "Maillage")
 
@@ -59,7 +70,7 @@ if not ok:
 gr_edge_longueur = Maillage.Group(sub_edge_longueur, "DALLE_2D")
 
 # Crée les ressorts sur tous les noeuds de gr_edge_longueur
-gno_edge_longueur = Maillage.CreateDimGroup([gr_edge_longueur], smesh.NODE, "PTDALLE")
+gno_edge_longueur = Maillage.CreateDimGroup([gr_edge_longueur], SMESH.NODE, "PTDALLE")
 l_no_edge_longueur = gno_edge_longueur.GetIDs()
 l_edges_ressorts = []
 l_no_bas_ressorts = []
@@ -70,19 +81,19 @@ for node in l_no_edge_longueur:
     edge = Maillage.AddEdge([node_opp, node])
     l_edges_ressorts.append(edge)
 
-gr_ressorts = Maillage.MakeGroupByIds("RESSORTS", smesh.EDGE, l_edges_ressorts)
-gr_no_bas_ressorts = Maillage.MakeGroupByIds("PTRESS", smesh.NODE, l_no_bas_ressorts)
+gr_ressorts = Maillage.MakeGroupByIds("RESSORTS", SMESH.EDGE, l_edges_ressorts)
+gr_no_bas_ressorts = Maillage.MakeGroupByIds("PTRESS", SMESH.NODE, l_no_bas_ressorts)
 
 
 # Groupes de noeuds
 node_PT01 = Maillage.FindNodeClosestTo(0, 0, 0)
-gr_ressorts = Maillage.MakeGroupByIds("PT01", smesh.NODE, [node_PT01])
+gr_ressorts = Maillage.MakeGroupByIds("PT01", SMESH.NODE, [node_PT01])
 
 node_PT02 = Maillage.FindNodeClosestTo(longueur_plaque, 0, 0)
-gr_ressorts = Maillage.MakeGroupByIds("PT02", smesh.NODE, [node_PT02])
+gr_ressorts = Maillage.MakeGroupByIds("PT02", SMESH.NODE, [node_PT02])
 
 node_PCDG = Maillage.FindNodeClosestTo(longueur_plaque/2., -longueur_ressorts, 0)
-gr_ressorts = Maillage.MakeGroupByIds("PCDG", smesh.NODE, [node_PCDG])
+gr_ressorts = Maillage.MakeGroupByIds("PCDG", SMESH.NODE, [node_PCDG])
 
 # Groupes d'edges
 Maillage.Group(sub_edge_longueur_opp)
@@ -90,6 +101,11 @@ Maillage.Group(sub_edge_longueur_opp)
 # Groupes de faces
 Maillage.Group(plaque, "DALLE")
 
+########Export du maillage au format MMED########
+Maillage.ExportMED( r''+ExportPATH+'ssnl130b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 # Mise a jour de l'arbre d'etude
+
+from salome import sg
 
 salome.sg.updateObjBrowser(0)

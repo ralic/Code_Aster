@@ -1,11 +1,21 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # SALOME V6.3.0
 
-import geompy
-import smesh,SMESH
-import StdMeshers
-import NETGENPlugin
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+
+import SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+from salome.NETGENPlugin import NETGENPluginBuilder
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 #
 #===================================================
@@ -58,7 +68,7 @@ geompy.addToStudyInFather(plaque,GG    ,"G"     )
 
 
 Plaque_1 = smesh.Mesh(plaque)
-NETGEN_2D = Plaque_1.Triangle(algo=smesh.NETGEN)
+NETGEN_2D = Plaque_1.Triangle(algo=smeshBuilder.NETGEN)
 NETGEN_2D_Parameters = NETGEN_2D.Parameters()
 NETGEN_2D_Parameters.SetMaxSize( 4 )
 NETGEN_2D_Parameters.SetSecondOrder( 1 )
@@ -93,6 +103,10 @@ smesh.SetName(B_1               ,'B')
 smesh.SetName(D_1               ,'D')
 smesh.SetName(F_1               ,'F')
 smesh.SetName(G_1               ,'G')
+
+
+########Export du maillage au format MMED########
+Plaque_1.ExportMED( r''+ExportPATH+'ssnp158b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 # Mise à jour de l'arbre

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist R 
 
 F comm sslp116a.comm D 1
-F datg sslp116a.datg D 16
 F mmed sslp116a.mmed D 20

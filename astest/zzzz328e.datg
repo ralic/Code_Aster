@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.5.0 with dump python functionality
@@ -6,72 +6,15 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/local00/home/E28157/19624')
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1), True)
 
-#Set up visual properties:
-ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
-ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000200000002000000080000001a004f00430043005600690065007700650072005f0030005f00300000000102000000080000001a00560054004b005600690065007700650072005f0030005f00300000000202")
-ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
-ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
-#Set up lists:
-# fill list AP_VIEWERS_LIST
-ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
-ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
-# fill list OCCViewer_1
-ipar.append("OCCViewer_1", "OCC scene:1 - viewer:1")
-ipar.append("OCCViewer_1", "999|scale=4.255380945614e+02*centerX=1.499999876456e+00*centerY=5.000000240124e-01*projX=0.000000000000e+00*projY=0.000000000000e+00*projZ=1.000000000000e+00*twist=0.000000000000e+00*atX=0.000000000000e+00*atY=0.000000000000e+00*atZ=0.000000000000e+00*eyeX=0.000000000000e+00*eyeY=0.000000000000e+00*eyeZ=5.000000000000e+02*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=1.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Y*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5*background=bt$1;fn$;tm$0;ts$false;c1$#238891;c2$#238891;gt$-1;gr$")
-# fill list VTKViewer_2
-ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
-ipar.append("VTKViewer_2", """<?xml version="1.0"?>
-<ViewState>
-    <Position X="1.5" Y="0.5" Z="10.5558"/>
-    <FocalPoint X="1.5" Y="0.5" Z="0"/>
-    <ViewUp X="0" Y="1" Z="0"/>
-    <ViewScale Parallel="0.918758" X="1" Y="1" Z="1"/>
-    <DisplayCubeAxis Show="0"/>
-    <GraduatedAxis Axis="X">
-        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Y">
-        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Z">
-        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <Trihedron isShown="1" Size="105"/>
-    <Background Value="bt=1;fn=;tm=0;ts=false;c1=#000000;c2=#000000;gt=-1;gr="/>
-</ViewState>
-""")
-# fill list AP_MODULES_LIST
-ipar.append("AP_MODULES_LIST", "Geometry")
-ipar.append("AP_MODULES_LIST", "Mesh")
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 
 ###
@@ -79,12 +22,11 @@ ipar.append("AP_MODULES_LIST", "Mesh")
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-
-geompy.init_geom(theStudy)
 
 geomObj_1 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
 Sketch_1 = geompy.MakeSketcherOnPlane("Sketcher:F 1.000000 0.000000:TT 2.000000 0.000000:TT 2.000000 1.000000:TT 1.000000 1.000000:WW", geomObj_1 )
@@ -97,66 +39,21 @@ geompy.addToStudyInFather( FACE, Edge_2, 'Edge_2' )
 geompy.addToStudyInFather( FACE, Edge_3, 'Edge_3' )
 geompy.addToStudyInFather( FACE, Edge_4, 'Edge_4' )
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
-
-#Set up entries:
-# set up entry GEOM_1 (Sketch_1) parameters
-objId = geompy.getObjectID(Sketch_1)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
-ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
-# set up entry GEOM_2 (FACE) parameters
-objId = geompy.getObjectID(FACE)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
-ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
-ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
-# set up entry GEOM_2:2 (Edge_1) parameters
-objId = geompy.getObjectID(Edge_1)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
-ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
-ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
-# set up entry GEOM_2:3 (Edge_2) parameters
-objId = geompy.getObjectID(Edge_2)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
-ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
-ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
-# set up entry GEOM_2:4 (Edge_3) parameters
-objId = geompy.getObjectID(Edge_3)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
-ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
-ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
-# set up entry GEOM_2:5 (Edge_4) parameters
-objId = geompy.getObjectID(Edge_4)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
-ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
-ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
 
 ###
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
 Mesh_1 = smesh.Mesh(FACE)
 Regular_1D = Mesh_1.Segment()
 Nb_Segments_1 = Regular_1D.NumberOfSegments(1)
 Nb_Segments_1.SetDistrType( 0 )
-Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
 isDone = Mesh_1.Compute()
 A = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'A' )
 nbAdd = A.Add( [ 1 ] )
@@ -183,23 +80,10 @@ smesh.SetName(C, 'C')
 smesh.SetName(D, 'D')
 smesh.SetName(FACE_1, 'FACE')
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
 
-#Set up entries:
-# set up entry SMESH_3 (Mesh_1) parameters
-ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
-ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:-100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
-ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
-ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'zzzz328e.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
-  iparameters.getSession().restoreVisualState(1)

@@ -34,7 +34,7 @@ MA[0]=LIRE_MAILLAGE(FORMAT='MED',);
 FRONT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
 
 MO[0]=AFFE_MODELE(MAILLAGE=MA[0],
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
@@ -292,17 +292,18 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    RESULTAT=EQUILIB,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   VALE_CALC=250.19820755878,
-                   VALE_REFE=250.41027791082999,),
+                   VALE_CALC=243.232096676,
+                   VALE_REFE=250.41027791082999,
+                   PRECISION=0.03,),
                 _F(GROUP_NO='A',
                    INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=EQUILIB,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=-200.76608759105,
+                   VALE_CALC=-214.078258482 ,
                    VALE_REFE=-214.58706080190001,
-                   PRECISION=0.065,),
+                   PRECISION=0.003,),
                 ),)
 
 SIGBAS2=MACR_LIGN_COUPE(RESULTAT=EQUILIB,

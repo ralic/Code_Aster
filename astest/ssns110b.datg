@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.4.0 with dump python functionality
@@ -6,18 +6,17 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/home/C29256/DATA/source/restitution/cas-tests/rep_test')
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
-from smesh import *
+
+import SMESH
 import time
 
 
@@ -25,26 +24,26 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
    """Cette fonction modifie un maillage 3D en y ajoutant des éléments
    d'interface PENTA6 et HEXA8 d'épaisseur nulle entre les deux groupes de mailles
    spécifiés. Ces éléments sont rassemblés dans le groupe de mailles nom_interface.
-   
+
    En l'état, cette fonction est prévue pour fonctionner sur des maillages
    linéaires. D'autre part, l'interface traitée doit être régulière, c'est à dire
    sans angles (le cas où plusieurs faces d'un élément sont sur l'interface n'est
    pas traité).
-   
+
    Le premier groupe de maille doit être un groupe de mailles volumiques. Le second
    peut être un groupe de mailles volumiques, ou surfaciques. Dans ce dernier cas,
    les éléments cohésifs sont créés au bord du maillage volumique.
-   
+
    L'ordre des groupes de mailles est important : il détermine
    l'orientation des éléments d'interface. On prendra donc garde à choisir
    une normale orientée de groupMa_1 vers groupMa_2."""
-   
-   
+
+
    # -- informations préliminaires
    print "Nombre de noeuds du maillage initial :",maillage.NbNodes()
    print "Traitement du maillage ..."
-   
-   
+
+
    # -- récupération des groupes de mailles
    t1 = time.time()
    print "Étape de recensement des groupes de mailles"
@@ -95,7 +94,7 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
    print "Étape de calcul des intersections"
    gr_noeuds_volume_1 = maillage.GetMesh().CreateDimGroup([volume_1], SMESH.NODE, "GN_1")
    id_noeuds_volume_1 = gr_noeuds_volume_1.GetListOfID()
-   
+
    gr_noeuds_volume_2 = maillage.GetMesh().CreateDimGroup([volume_2], SMESH.NODE, "GN_2")
    id_noeuds_volume_2 = gr_noeuds_volume_2.GetListOfID()
 
@@ -107,7 +106,7 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
    t3 = time.time()
    print "Durée écoulée :", t3-t2, "s"
    print "Étape de traitement des mailles de dimension inférieure"
-   list_edge = maillage.GetMesh().GetElementsByType(EDGE)
+   list_edge = maillage.GetMesh().GetElementsByType(SMESH.EDGE)
    edge_2 = []
    seg_to_remove = []
    #  on vérifie que le maillage est linéaire
@@ -127,9 +126,9 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
          if len(noeuds_communs_2) == 2 :
             edge_2.append(seg2)
    maillage.RemoveElements(seg_to_remove)
-   edge_2 = maillage.MakeGroupByIds("edge_2", EDGE, edge_2)
-   
-   list_face = maillage.GetMesh().GetElementsByType(FACE)
+   edge_2 = maillage.MakeGroupByIds("edge_2", SMESH.EDGE, edge_2)
+
+   list_face = maillage.GetMesh().GetElementsByType(SMESH.FACE)
    face_2 = []
    face_to_remove = []
    for face in list_face:
@@ -146,7 +145,7 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
          if len(noeuds_communs_2) == nbNoeuds :
             face_2.append(face)
    maillage.RemoveElements(face_to_remove)
-   face_2 = maillage.MakeGroupByIds("face_2", FACE, face_2)
+   face_2 = maillage.MakeGroupByIds("face_2", SMESH.FACE, face_2)
 
 
    # -- doublage des noeuds appartenant à l'interface
@@ -160,7 +159,7 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
    nouveauxNoeuds = noeuds_apres - noeuds_avant
    listNouveauxNoeuds = list(nouveauxNoeuds)
    listNouveauxNoeuds.sort()
-   
+
    tableauCorrespondance = {}
    for k in xrange(len(id_noeuds_inter)):
       tab1 = maillage.GetNodeXYZ(listNouveauxNoeuds[k])
@@ -305,7 +304,7 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
          #nbBad = bad_elements.Add([element_volume])
          nBad += 1
 
-   
+
    # -- dernières opérations
    t6 = time.time()
    print "Durée écoulée :", t6-t5, "s"
@@ -316,8 +315,8 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
    maillage.RemoveGroup(edge_2)
    maillage.RemoveGroup(face_2)
    salome.sg.updateObjBrowser(0)
-   
-   
+
+
    # -- retour
    print "##################################"
    print "Opération terminée"
@@ -330,63 +329,8 @@ def creation_elements_interface_3D(maillage, groupMa_1, groupMa_2, nom_interface
       print "Nombre de noeuds au final :",maillage.NbNodes()
    else :
       print "Attention : Aucune maille d'interface n'a été créée"
-   
-   return
 
-#Set up visual properties:
-ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
-ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000588000000040000000200000002000000080000001a004f00430043005600690065007700650072005f0030005f00300000000102000000080000001a00560054004b005600690065007700650072005f0030005f00300000000202")
-ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
-ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
-#Set up lists:
-# fill list AP_VIEWERS_LIST
-ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
-ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
-# fill list OCCViewer_1
-ipar.append("OCCViewer_1", "OCC scene:1 - viewer:1")
-ipar.append("OCCViewer_1", "scale=6.819561059823e+02*centerX=2.977608140815e-01*centerY=2.182219664844e-01*projX=2.181876897812e-01*projY=-9.185544848442e-01*projZ=3.296222090721e-01*twist=6.228792602997e+00*atX=-2.254771143198e-01*atY=2.505377531052e-01*atZ=-9.662878513336e-02*eyeX=-2.238538430536e-01*eyeY=2.437038977983e-01*eyeZ=-9.417646410081e-02*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=1.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Y*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5")
-# fill list VTKViewer_2
-ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
-ipar.append("VTKViewer_2", """<?xml version="1.0"?>
-<ViewState>
-    <Position X="4.20626" Y="-5.64396" Z="2.45792"/>
-    <FocalPoint X="0.0999887" Y="0.500022" Z="0.0999987"/>
-    <ViewUp X="-0.175189" Y="0.248521" Z="0.952652"/>
-    <ViewScale Parallel="0.519615" X="1" Y="1" Z="1"/>
-    <DisplayCubeAxis Show="0"/>
-    <GraduatedAxis Axis="X">
-        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Y">
-        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Z">
-        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <Trihedron isShown="1" Size="105"/>
-</ViewState>
-""")
-# fill list AP_MODULES_LIST
-ipar.append("AP_MODULES_LIST", "Geometry")
-ipar.append("AP_MODULES_LIST", "Mesh")
+   return
 
 
 ###
@@ -394,12 +338,11 @@ ipar.append("AP_MODULES_LIST", "Mesh")
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-
-geompy.init_geom(theStudy)
 
 BETON = geompy.MakeBoxDXDYDZ(0.2, 1, 0.2)
 O = geompy.MakeVertex(0, 0, 0)
@@ -467,85 +410,17 @@ geompy.addToStudyInFather( SYSTEME, LIGN_L, 'LIGN_L' )
 geompy.addToStudyInFather( SYSTEME, LIGN_V, 'LIGN_V' )
 geompy.addToStudyInFather( SYSTEME, B_BOUT, 'B_BOUT' )
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
-
-#Set up entries:
-# set up entry GEOM_1 (BETON) parameters
-objId = geompy.getObjectID(BETON)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_6 (Plan_armatures) parameters
-objId = geompy.getObjectID(Plan_armatures)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7 (SYSTEME) parameters
-objId = geompy.getObjectID(SYSTEME)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:10 (A_DROI) parameters
-objId = geompy.getObjectID(A_DROI)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:11 (A_GAUC) parameters
-objId = geompy.getObjectID(A_GAUC)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:12 (A_FOND) parameters
-objId = geompy.getObjectID(A_FOND)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:13 (LIGN_L) parameters
-objId = geompy.getObjectID(LIGN_L)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
-# set up entry GEOM_7:14 (LIGN_V) parameters
-objId = geompy.getObjectID(LIGN_V)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:15 (B_BOUT) parameters
-objId = geompy.getObjectID(B_BOUT)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:3 (BETON) parameters
-objId = geompy.getObjectID(BETON_1)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:4 (B_BAS) parameters
-objId = geompy.getObjectID(B_BAS)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:5 (B_DROI) parameters
-objId = geompy.getObjectID(B_DROI)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:6 (B_GAUC) parameters
-objId = geompy.getObjectID(B_GAUC)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:7 (B_FOND) parameters
-objId = geompy.getObjectID(B_FOND)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:8 (ARMATU) parameters
-objId = geompy.getObjectID(ARMATU)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
-# set up entry GEOM_7:9 (BOUT) parameters
-objId = geompy.getObjectID(BOUT)
-ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
-ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
 
 ###
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SALOMEDS
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+
 Maillage_regle = smesh.Mesh(SYSTEME)
 Regular_1D = Maillage_regle.Segment()
 Local_Length_1 = Regular_1D.LocalLength(0.1)
@@ -611,29 +486,14 @@ smesh.SetName(B_BOUT_1, 'B_BOUT')
 smesh.SetName(SubMesh_1, 'SubMesh_1')
 smesh.SetName(SubMesh_2, 'SubMesh_2')
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
-
-#Set up entries:
-# set up entry SMESH_3 (Maillage_regle) parameters
-ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
-ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:1")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:-100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:shrink:0.75")
-ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
-ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
-ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
-
 # Création des éléments d'interface
 
 creation_elements_interface_3D(Maillage_regle, "B_BAS", "ARMATU", "CZM_BA")
 
 Maillage_regle.ConvertToQuadratic( 1 )
 
+########Export du maillage au format MMED########
+Maillage_regle.ExportMED( r''+ExportPATH+'ssns110b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
-  iparameters.getSession().restoreVisualState(1)

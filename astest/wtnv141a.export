@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm wtnv141a.comm D 1
-F datg wtnv141a.datg D 16
 F mmed wtnv141a.mmed D 20

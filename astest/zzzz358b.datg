@@ -6,25 +6,27 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/local00/home/F97355/dev/fiches/21764_xfem-contact/maillage_quad')
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 import math
 
-geompy.init_geom(theStudy)
 
 O = geompy.MakeVertex(0, 0, 0)
 OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
@@ -97,8 +99,6 @@ L_tmp.append(geompy.GetEdgeNearPoint(Partition_1,pt_aux))
 Edges2Remove = geompy.CreateGroup(Partition_1, geompy.ShapeType["EDGE"])
 geompy.UnionList(Edges2Remove ,L_tmp)
 
-
-
 geompy.addToStudy( Partition_1, 'Partition_1' )
 
 geompy.addToStudyInFather( Partition_1, Gr_geo_SudOuest, 'Gr_geo_SudOuest' )
@@ -111,11 +111,11 @@ geompy.addToStudyInFather( Partition_1, Edges2Remove, 'Edges2Remove' )
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
-
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
-import NETGENPlugin
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+from salome.NETGENPlugin import NETGENPluginBuilder
 
 
 Mesh_1 = smesh.Mesh(Partition_1)
@@ -125,7 +125,7 @@ nseg = 9
 Regular_1D = Mesh_1.Segment()
 Nb_Segments_1 = Regular_1D.NumberOfSegments(nseg)
 Nb_Segments_1.SetDistrType( 0 )
-Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
 
 isDone = Mesh_1.Compute()
 
@@ -166,6 +166,10 @@ smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
 smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
 smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
 smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'zzzz358b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 if salome.sg.hasDesktop():

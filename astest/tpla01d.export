@@ -7,4 +7,4 @@ P testlist C
 
 F comm tpla01d.comm D 1
 F mmed tpla01d.datg D 16
-F mmed tpla01d.mail D 20
+F mmed tpla01d.mmed D 20

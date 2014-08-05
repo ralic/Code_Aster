@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.5.0 with dump python functionality
@@ -6,67 +6,14 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/home/B76772/Sauvegarde_Post_doc/Aster/Dev/Aster/menl/src/test/Cas_test_3D/kupffer')
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1), True)
-
-#Set up visual properties:
-ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
-ipar.setProperty("AP_WORKSTACK_INFO", "000000010000000000000002010000000100000586000000040000000100000001000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
-ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
-ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 1")
-#Set up lists:
-# fill list AP_VIEWERS_LIST
-ipar.append("AP_VIEWERS_LIST", "VTKViewer_1")
-# fill list VTKViewer_1
-ipar.append("VTKViewer_1", "VTK scene:3 - viewer:1")
-ipar.append("VTKViewer_1", """<?xml version="1.0"?>
-<ViewState>
-    <Position X="738.946" Y="-738.946" Z="738.946"/>
-    <FocalPoint X="0" Y="0" Z="0"/>
-    <ViewUp X="0" Y="0" Z="1"/>
-    <ViewScale Parallel="351.232" X="1" Y="1" Z="1"/>
-    <DisplayCubeAxis Show="0"/>
-    <GraduatedAxis Axis="X">
-        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="1" G="0" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Y">
-        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="1" B="0"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <GraduatedAxis Axis="Z">
-        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Title>
-        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
-            <Color R="0" G="0" B="1"/>
-        </Labels>
-        <TickMarks isVisible="1" Length="5"/>
-    </GraduatedAxis>
-    <Trihedron isShown="1" Size="105"/>
-    <Background Value="bt=1;fn=;tm=0;ts=false;c1=#000000;c2=#000000;gt=-1;gr="/>
-</ViewState>
-""")
-# fill list AP_MODULES_LIST
-ipar.append("AP_MODULES_LIST", "Mesh")
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 
 ###
@@ -74,57 +21,47 @@ ipar.append("AP_MODULES_LIST", "Mesh")
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-
-geompy.init_geom(theStudy)
 
 Wire_1 = geompy.MakeSketcher("Sketcher:F 0.000000 0.000000:TT 0.100000 0.000000:TT 0.100000 0.100000:TT 0.000000 0.100000:WW", [0, 0, 0, 0, 0, 1, 1, 0, -0])
 cube = geompy.MakeFaceWires([Wire_1], 1)
 geompy.addToStudy( Wire_1, 'Wire_1' )
 geompy.addToStudy( cube, 'cube' )
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
-
 
 ###
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+from salome.NETGENPlugin import NETGENPluginBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
-import NETGENPlugin
 smeshObj_1 = smesh.CreateHypothesis('MaxLength')
 cube_1 = smesh.Mesh(cube)
 Regular_1D = cube_1.Segment()
 Nb_Segments_1 = Regular_1D.NumberOfSegments(1)
 Nb_Segments_1.SetDistrType( 0 )
-Quadrangle_2D = cube_1.Quadrangle(algo=smesh.QUADRANGLE)
-Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshers.QUAD_STANDARD)
+Quadrangle_2D = cube_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
+Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshersBuilder.QUAD_STANDARD)
 isDone = cube_1.Compute()
 droi = cube_1.CreateEmptyGroup( SMESH.EDGE, 'droi' )
 nbAdd = droi.Add( [ 4 ] )
-droi.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 haut = cube_1.CreateEmptyGroup( SMESH.EDGE, 'haut' )
 nbAdd = haut.Add( [ 1 ] )
-haut.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 bas = cube_1.CreateEmptyGroup( SMESH.EDGE, 'bas' )
 nbAdd = bas.Add( [ 3 ] )
-bas.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 gau = cube_1.CreateEmptyGroup( SMESH.EDGE, 'gau' )
 nbAdd = gau.Add( [ 2 ] )
-gau.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 total = cube_1.CreateEmptyGroup( SMESH.FACE, 'total' )
 nbAdd = total.Add( [ 5 ] )
-total.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 smesh.SetName(cube_1, 'cube')
-cube_1.ExportMED( r'/home/3S-LAB/fhamon/Bureau/cubeK.med', 0, SMESH.MED_V2_2, 1 )
 
 ## some objects were removed
 aStudyBuilder = theStudy.NewBuilder()
@@ -142,12 +79,10 @@ smesh.SetName(bas, 'bas')
 smesh.SetName(gau, 'gau')
 smesh.SetName(total, 'total')
 
-### Store presentation parameters of displayed objects
-import iparameters
-ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
 
+########Export du maillage au format MMED########
+cube_1.ExportMED( r''+ExportPATH+'ssnp161a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
-  iparameters.getSession().restoreVisualState(1)

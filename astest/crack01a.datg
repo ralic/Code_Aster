@@ -1,6 +1,15 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
-import geompy
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 #-----------------------------------------------------
 # geometrie
@@ -41,19 +50,20 @@ geompy.addToStudyInFather(V,VOL,'VOL')
 # maillage
 #-----------------------------------------------------
 
-import smesh
-
-import BLSURFPlugin
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.BLSURFPlugin import BLSURFPluginBuilder
 
 Mesh_1 = smesh.Mesh(V)
-BLSURF = Mesh_1.Triangle(algo=smesh.BLSURF)
-GHS3D_3D = Mesh_1.Tetrahedron(algo=smesh.GHS3D)
+BLSURF = Mesh_1.Triangle(algo=smeshBuilder.BLSURF)
+GHS3D_3D = Mesh_1.Tetrahedron(algo=smeshBuilder.GHS3D)
 BLSURF_Parameters_1 = BLSURF.Parameters()
 BLSURF_Parameters_1.SetPhySize( 1 )
 Mesh_1.Compute()
 
 # purge des elements 1d indesirables (apres le compute !)
-filter_seg = smesh.GetFilter(smesh.EDGE, smesh.FT_ElemGeomType, smesh.Geom_EDGE)
+filter_seg = smesh.GetFilter(SMESH.EDGE, SMESH.FT_ElemGeomType, SMESH.Geom_EDGE)
 ids_seg = Mesh_1.GetIdsFromFilter(filter_seg)
 Mesh_1.RemoveElements(ids_seg)
 
@@ -63,6 +73,10 @@ EXTUBE_I = Mesh_1.GroupOnGeom(EXTUBE_I,'EXTUBE_I',SMESH.FACE)
 PEAUEXT  = Mesh_1.GroupOnGeom(PEAUEXT,'PEAUEXT',SMESH.FACE)
 BORD1    = Mesh_1.GroupOnGeom(BORD1,'BORD1',SMESH.FACE)
 VOL      = Mesh_1.GroupOnGeom(VOL,'VOL',SMESH.VOLUME)
+
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'crack01a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 #Mise à jour de l'arbre d'étude
 #==============================

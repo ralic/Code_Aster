@@ -67,62 +67,8 @@ Physical Surface(25) = {20, 14};
 Physical Surface(26) = {20, 18, 16, 14};
 
 
-//// --------------------------------------------------------------------------------------
-//// En commentaire : script pyhton a lancer sous salome apres avoir genere le maillage
-//// sain ci-dessus au format MED pour doubler les noeuds au niveau de la fissure et ecrire 
-//// au format med le fichier contenant le maillage fissure
-//// --------------------------------------------------------------------------------------
-//
-//import smesh, SMESH, SALOMEDS
-//import salome
-//import math as M
-//
-//gg = salome.ImportComponentGUI("GEOM")
-//gm = salome.ImportComponentGUI("SMESH")
-//
-//NomGroupSurfSUP = "G_2D_23"
-//NomGroupSurfINF = "G_2D_24"
-//NomGroupSurfINT = "G_2D_25"
-//
-//#theFileName = "/tmp/ttla203a-sain_OVERKILL.med"
-//theFileName = "/tmp/ttla203a-sain.med"
-//LeMaillage=smesh.CreateMeshesFromMED(theFileName)	
-//LeMaillage = LeMaillage[0][0]
-//
-//GroupSup = None
-//GroupInf = None
-//GroupInt = None
-//GroupList = LeMaillage.GetGroups()
-//for group in GroupList:
-//  if group.GetName()[:len(NomGroupSurfSUP)] == NomGroupSurfSUP : GroupSup = group
-//  if group.GetName()[:len(NomGroupSurfINF)] == NomGroupSurfINF : GroupInf = group
-//  if group.GetName()[:len(NomGroupSurfINT)] == NomGroupSurfINT : GroupInt = group
-//assert GroupSup is not None
-//assert GroupInf is not None
-//assert GroupInt is not None
-//
-//gr_noeuds_Sup = LeMaillage.GetMesh().CreateDimGroup([GroupSup], SMESH.NODE, "GN_SUP")
-//gr_noeuds_Inf = LeMaillage.GetMesh().CreateDimGroup([GroupInf], SMESH.NODE, "GN_INF")
-//interGroups   = LeMaillage.GetMesh().IntersectListOfGroups([gr_noeuds_Sup,gr_noeuds_Inf], "GN_inter")
-//idInterGroups = interGroups.GetListOfID()
-//idInterGroups = list( set( interGroups.GetListOfID() ) )
-//
-//gr_noeuds_Int = LeMaillage.GetMesh().CreateDimGroup([GroupInt], SMESH.NODE, "GN_INT")
-//idNoeFondFiss = list( set(idInterGroups) & set(gr_noeuds_Int.GetIDs()) )
-//assert len(idNoeFondFiss) == 1
-//
-//GNFondFiss = LeMaillage.CreateEmptyGroup( SMESH.NODE, 'FondFiss' )
-//GNFondFiss.Add(idNoeFondFiss)
-//
-//idNoe2Dble = list( set(idInterGroups) - set(idNoeFondFiss) )
-//
-//GNLevrSUP = LeMaillage.CreateEmptyGroup( SMESH.NODE, 'LevrSUP' )
-//GNLevrSUP.Add(idNoe2Dble)
-//
-//GNLevrINF = LeMaillage.DoubleNodeGroups([GNLevrSUP],[GroupInf],True)
-//GNLevrINF.SetName('LevrINF')
-//print "code_retour", GNLevrINF
-//
-//#theFileName = "/tmp/ttla203a_OVERKILL.med"
-//theFileName = "/tmp/ttla203a.mmed"
-//LeMaillage.ExportMED(theFileName)
+/ --------------------------------------------------------------------------------------
+/ genere le maillage sain ci-dessus au format MED puis l'ouvrir sous SALOME
+/ pour doubler les noeuds au niveau de la fissure et ecrire
+/ au format med le fichier contenant le maillage fissure
+/ --------------------------------------------------------------------------------------

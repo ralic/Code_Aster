@@ -1,27 +1,18 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 import os
 import sys
 import salome
-Rep_mail = os.environ['HOME']
-
-verbose = 0
-
-###
-### This file is generated automatically by SALOME v6.3.0 with dump python functionality
-###
-
-import sys
-import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+verbose = 0
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 
 ###
@@ -29,11 +20,12 @@ ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface App
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-geompy.init_geom(theStudy)
+
 #
 # 1. Le repere
 #
@@ -87,7 +79,7 @@ geompy.UnionIDs(BLOC_G, [1])
 # 7.2.1. La face superieure : Z maxi, Axe_y en Y
 #
 point_a = geompy.MakeVertex ( 0., 0., hauteur )
-l_id_Z_MAX = geompy.GetShapesOnPlaneWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, point_a, geompy.GEOM.ST_ON )
+l_id_Z_MAX = geompy.GetShapesOnPlaneWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, point_a, GEOM.ST_ON )
 if ( verbose ) :
   print "3.2.2. l_id_Z_MAX =", l_id_Z_MAX
 Z_MAX_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
@@ -95,7 +87,7 @@ geompy.UnionIDs ( Z_MAX_G, l_id_Z_MAX )
 #
 # 7.2.2. La face inferieure : Z mini, Axe_y en Y
 #
-l_id_Z_MIN = geompy.GetShapesOnPlaneWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, O, geompy.GEOM.ST_ON )
+l_id_Z_MIN = geompy.GetShapesOnPlaneWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, O, GEOM.ST_ON )
 if ( verbose ) :
   print "3.2.2. l_id_Z_MIN =", l_id_Z_MIN
 Z_MIN_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
@@ -103,25 +95,25 @@ geompy.UnionIDs ( Z_MIN_G, l_id_Z_MIN )
 #
 # 7.2.3. Le bord lateral
 #
-l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, O, ro, geompy.GEOM.ST_ON )
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, O, ro, GEOM.ST_ON )
 if ( verbose ) :
   print "==> l_aux =", l_aux
 COTE_0_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
 geompy.UnionIDs ( COTE_0_G, l_aux )
 #
-l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_1, ra, geompy.GEOM.ST_ON )
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_1, ra, GEOM.ST_ON )
 if ( verbose ) :
   print "==> l_aux =", l_aux
 COTE_1_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
 geompy.UnionIDs ( COTE_1_G, l_aux )
 #
-l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_2, ra, geompy.GEOM.ST_ON )
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_2, ra, GEOM.ST_ON )
 if ( verbose ) :
   print "==> l_aux =", l_aux
 COTE_2_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
 geompy.UnionIDs ( COTE_2_G, l_aux )
 #
-l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_3, rb, geompy.GEOM.ST_ON )
+l_aux = geompy.GetShapesOnCylinderWithLocationIDs ( BLOC_GEO, geompy.ShapeType["FACE"], OZ, Sommet_3, rb, GEOM.ST_ON )
 if ( verbose ) :
   print "==> l_aux =", l_aux
 COTE_3_G = geompy.CreateGroup ( BLOC_GEO, geompy.ShapeType["FACE"] )
@@ -172,25 +164,26 @@ geompy.addToStudyInFather( BLOC_GEO, A_G, 'A' )
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
-
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.BLSURFPlugin import BLSURFPluginBuilder
+from salome.GHS3DPlugin import GHS3DPluginBuilder
 aMeasurements = smesh.CreateMeasurements()
-smesh.SetCurrentStudy(theStudy)
-import BLSURFPlugin
-import GHS3DPlugin
+
 #
 BLOC = smesh.Mesh(BLOC_GEO)
 #
 # 1. Parametrage du maillage des surfaces
 #
-BLSURF = BLOC.Triangle(algo=smesh.BLSURF)
+BLSURF = BLOC.Triangle(algo=smeshBuilder.BLSURF)
 BLSURF_Parameters_1 = BLSURF.Parameters()
 BLSURF_Parameters_1.SetDecimesh( 1 )
 BLSURF_Parameters_1.SetPhySize( (ro+ra)/2. )
 #
 # 2. Parametrage du maillage du volume
 #
-GHS3D_3D = BLOC.Tetrahedron(algo=smesh.GHS3D)
+GHS3D_3D = BLOC.Tetrahedron(algo=smeshBuilder.GHS3D)
 GHS3D_Parameters_1 = GHS3D_3D.Parameters()
 GHS3D_Parameters_1.SetOptimizationLevel( 3 )
 #
@@ -214,8 +207,6 @@ A_1 = BLOC.GroupOnGeom(A_G,'A',SMESH.NODE)
 # 5. Ecriture
 #
 smesh.SetName(BLOC, 'BLOC')
-BLOC.ExportMED( os.path.join(Rep_mail,'maill.00.med'), 0, SMESH.MED_V2_2, 1 )
-
 
 # set object names
 smesh.SetName(BLOC.GetMesh(), 'BLOC')
@@ -231,3 +222,7 @@ smesh.SetName(COTE_1_1, 'COTE_1')
 smesh.SetName(COTE_2_1, 'COTE_2')
 smesh.SetName(COTE_3_1, 'COTE_3')
 smesh.SetName(A_1, 'A')
+
+########Export du maillage au format MMED########
+BLOC.ExportMED( r''+ExportPATH+'zzzz175b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+

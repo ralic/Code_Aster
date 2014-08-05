@@ -1,10 +1,13 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 ###
 ### GEOM component
@@ -118,19 +121,19 @@ nb_haut=6
 #nb_haut=2
 nb_ring=1
 
-import SMESH, SALOMEDS
+import SMESH
 from salome.smesh import smeshBuilder
 smesh = smeshBuilder.New(salome.myStudy)
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
-import NETGENPlugin
+
+from salome.StdMeshers import StdMeshersBuilder
+from salome.NETGENPlugin import NETGENPluginBuilder
 
 RING_BLOC_1 = smesh.Mesh(RING_BLOC)
 Regular_1D = RING_BLOC_1.Segment()
 Nb_Segments_1 = Regular_1D.NumberOfSegments(nb_long)
 Nb_Segments_1.SetDistrType( 0 )
 Quadrangle_2D = RING_BLOC_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
-Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshers.QUAD_STANDARD)
+Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshersBuilder.QUAD_STANDARD)
 isDone = RING_BLOC_1.Compute()
 Regular_1D_1 = RING_BLOC_1.Segment(geom=LAT)
 Nb_Segments_2 = Regular_1D_1.NumberOfSegments(nb_haut)
@@ -142,22 +145,14 @@ Nb_Segments_3.SetDistrType( 0 )
 isDone = RING_BLOC_1.Compute()
 
 DEPL_1 = RING_BLOC_1.GroupOnGeom(DEPL,'CL_DEPL',SMESH.EDGE)
-DEPL_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 SCO1_1 = RING_BLOC_1.GroupOnGeom(SCO1,'SCO1',SMESH.EDGE)
-SCO1_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 SCO2_1 = RING_BLOC_1.GroupOnGeom(SCO2,'SCO2',SMESH.EDGE)
-SCO2_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 SU1_1 = RING_BLOC_1.GroupOnGeom(SU1,'SU1',SMESH.EDGE)
-SU1_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 BLOC_3 = RING_BLOC_1.GroupOnGeom(BLOC_2,'BLOC',SMESH.FACE)
-BLOC_3.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 BAINF_1 = RING_BLOC_1.GroupOnGeom(BAINF,'BAINF',SMESH.FACE)
-BAINF_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 BASUP_1 = RING_BLOC_1.GroupOnGeom(BASUP,'BASUP',SMESH.FACE)
-BASUP_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 DEPL_1.SetName( 'DEPL' )
 SANS_1 = RING_BLOC_1.GroupOnGeom(SANS,'SANS',SMESH.NODE)
-SANS_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
 PA = RING_BLOC_1.CreateEmptyGroup( SMESH.NODE, 'PA' )
 nbAdd = PA.Add( [ 170 ] )
 PB = RING_BLOC_1.CreateEmptyGroup( SMESH.NODE, 'PB' )
@@ -185,4 +180,8 @@ smesh.SetName(PA, 'PA')
 smesh.SetName(PB, 'PB')
 smesh.SetName(SubMesh_1, 'SubMesh_1')
 smesh.SetName(SubMesh_2, 'SubMesh_2')
+
+
+########Export du maillage au format MMED########
+RING_BLOC_1.ExportMED( r''+ExportPATH+'ssnp165a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 

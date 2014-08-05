@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 ###
 ### This file is generated automatically by SALOME v6.6.0 with dump python functionality
@@ -6,25 +6,27 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/home/I31771/21629')
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-
-geompy.init_geom(theStudy)
 
 O = geompy.MakeVertex(0, 0, 0)
 OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
@@ -46,15 +48,16 @@ geompy.addToStudy( ttlp100c, 'ttlp100c' )
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
 ttlp100c_1 = smesh.Mesh(ttlp100c)
 Regular_1D = ttlp100c_1.Segment()
 Nb_Segments_1 = Regular_1D.NumberOfSegments(12)
 Nb_Segments_1.SetDistrType( 0 )
-Quadrangle_2D = ttlp100c_1.Quadrangle(algo=smesh.QUADRANGLE)
+Quadrangle_2D = ttlp100c_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
 isDone = ttlp100c_1.Compute()
 GM38_0 = ttlp100c_1.CreateEmptyGroup( SMESH.EDGE, 'GM38' )
 nbAdd = GM38_0.Add( [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ] )
@@ -76,7 +79,7 @@ nbAdd = GM35_0.Add( [ 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252
 GM35_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
 [ GM38_0, GM37_0, GM34_0, GM33_0, GM36_0, GM35_0 ] = ttlp100c_1.GetGroups()
 isDone = ttlp100c_1.SplitQuad( [ 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384 ], 0 )
-[ GM38, GM37, GM34, GM33, GM36, GM35 ] = ttlp100c_1.ExtrusionSweepObject2D( ttlp100c_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, 0.04 )), 5 ,True)
+[ GM38, GM37, GM34, GM33, GM36, GM35, GMtest1, GMtest2, GMtest3, GMtest4, GMtest5, GMtest6 ] = ttlp100c_1.ExtrusionSweepObject2D( ttlp100c_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, 0.04 )), 5 ,True)
 GM38_0.SetName( 'GM38_0' )
 GM37_0.SetName( 'GM37_0' )
 GM34_0.SetName( 'GM34_0' )
@@ -92,7 +95,7 @@ GM35.SetName( 'GM35' )
 GM35.SetColor( SALOMEDS.Color( 1, 0, 0.666667 ))
 GM33.SetColor( SALOMEDS.Color( 1, 0, 0.666667 ))
 smesh.SetName(ttlp100c_1, 'ttlp100c')
-ttlp100c_1.ExportMED( r'/home/I31771/21629/ttlp100c.med', 0, SMESH.MED_V2_2, 1 )
+
 
 ## set object names
 smesh.SetName(ttlp100c_1.GetMesh(), 'ttlp100c')
@@ -111,6 +114,11 @@ smesh.SetName(GM34, 'GM34')
 smesh.SetName(GM33, 'GM33')
 smesh.SetName(GM36, 'GM36')
 smesh.SetName(GM35, 'GM35')
+
+
+########Export du maillage au format MMED########
+ttlp100c_1.ExportMED( r''+ExportPATH+'ttlp100c.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

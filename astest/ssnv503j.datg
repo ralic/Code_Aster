@@ -1,21 +1,23 @@
-
+# -*- coding: utf-8 -*-
 
 ### script python pour le salome
 ### developpeur EDF Kyrylo Kazymyrenko
 
 import sys
 import salome
-
 salome.salome_init()
 
-#sys.path.insert( 0, r'/home/kazymyrenko/droit')
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 
 ##############################################################
 ################# GEOMETRY ###################################
 ##############################################################
 
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 
 geompy.init_geom(salome.myStudy)
@@ -25,8 +27,8 @@ SD={} # Creation d'un dico aka Structure Donnees pour stocker tous les objets : 
 Nseg=4
 
 
-alpha = math.pi/6. 
-#alpha = 0. 
+alpha = math.pi/6.
+#alpha = 0.
 
 patin_l = 40.
 patin_h = 20.
@@ -116,7 +118,7 @@ geompy.addToStudy( MainObject, "PATIN_BATI" )
 
 keys=SD.keys()
 for name in sorted(keys):
-	geompy.addToStudyInFather(MainObject,SD[name],name)
+        geompy.addToStudyInFather(MainObject,SD[name],name)
 
 
 ### CREATION DE RESSORTS ####
@@ -135,14 +137,15 @@ geompy.addToStudy( HelpObject, "RESSORTS" )
 
 keys1=SD1.keys()
 for name in sorted(keys1):
-	geompy.addToStudyInFather(HelpObject,SD1[name],name)
+        geompy.addToStudyInFather(HelpObject,SD1[name],name)
 
 
 ##############################################################
 #################### SMESH ###################################
 ##############################################################
-import smesh, SMESH
-
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
 # mesh patin + bati sans ressorts
 mPATIN_BATI = smesh.Mesh(MainObject)
@@ -159,7 +162,7 @@ for name,ref in SD.items():
     #SMESH.NODE  SMESH.EDGE  SMESH.FACE
     print "adding "+ name + " of type ",ref.GetMinShapeType()
     mPATIN_BATI.GroupOnGeom(ref,name)
-    
+
 isDone = mPATIN_BATI.Compute()
 
 # mesh ressorts
@@ -174,13 +177,17 @@ for name,ref in SD1.items():
     mRESSORTS.GroupOnGeom(ref,name)
 
 isDone = mRESSORTS.Compute()
-    
+
 Final_MESH = smesh.Concatenate([mPATIN_BATI.GetMesh(), mRESSORTS.GetMesh()], True, True, 1e-05)
 Final_MESH.RotateObject( Final_MESH, SMESH.AxisStruct( 0, 0, 0, 0, 0, 1 ), alpha, 0 )
 #smesh.SetName(Final_MESH.GetMesh(), 'Final_MESH')
 Final_MESH.SetName("Final_MESH")
 
-Final_MESH.ExportMED("/home/kazymyrenko/RabotaSave/Barrage/CAS_TEST/patin/maillage_py/PATIN_BATI_" + str(Final_MESH.NbNodes()) + ".mmed")
+
+
+########Export du maillage au format MMED########
+Final_MESH.ExportMED( r''+ExportPATH+'ssnv503j.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

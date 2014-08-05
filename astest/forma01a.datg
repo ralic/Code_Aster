@@ -1,11 +1,15 @@
-# coding=utf-8
-
-import geompy
-import smesh
-from geompy import *
-from smesh import *
-
+# -*- coding: utf-8 -*-
+import salome
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 import math
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 #===================================================
 #                  GEOMETRIE
@@ -55,19 +59,21 @@ geompy.addToStudyInFather(Plaque,GG,"G")
 #                  --------
 #===================================================
 #
-M_Plaque = Mesh(Plaque,"Plaque")
+M_Plaque = smesh.Mesh(Plaque,"Plaque")
 
-import NETGENPlugin
-NETGEN_2D = M_Plaque.Triangle(algo=NETGEN)
+from salome.NETGENPlugin import NETGENPluginBuilder
+NETGEN_2D = M_Plaque.Triangle(algo=smeshBuilder.NETGEN)
 NETGEN_2D_Parameters=NETGEN_2D.Parameters()
-NETGEN_2D_Parameters.SetMaxSize( 1000 )
+#
+NETGEN_2D_Parameters.SetFineness( 5 )
+NETGEN_2D_Parameters.SetGrowthRate( 0.2 )
+NETGEN_2D_Parameters.SetNbSegPerEdge( 1.4 )
+NETGEN_2D_Parameters.SetNbSegPerRadius( 3.5 )
+NETGEN_2D_Parameters.SetMinSize( 2 )
+NETGEN_2D_Parameters.SetQuadAllowed( 0 )
 NETGEN_2D_Parameters.SetSecondOrder( 1 )
 NETGEN_2D_Parameters.SetOptimize( 1 )
-NETGEN_2D_Parameters.SetFineness( 3 )
-#NETGEN_2D_Parameters.SetGrowthRate( 0.1 )
-#NETGEN_2D_Parameters.SetNbSegPerEdge( 3 )
-#NETGEN_2D_Parameters.SetNbSegPerRadius( 5 )
-NETGEN_2D_Parameters.SetQuadAllowed( 0 )
+#
 
 isDone = M_Plaque.Compute()
 if not isDone: print 'Mesh', M_Plaque.GetMesh(), ': computation failed'
@@ -82,6 +88,11 @@ M_Plaque.Group(GB,'B')
 M_Plaque.Group(GD,'D')
 M_Plaque.Group(GF,'F')
 M_Plaque.Group(GG,'G')
+
+
+########Export du maillage au format MMED########
+M_Plaque.ExportMED( r''+ExportPATH+'forma01a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 # Mise à jour de l'arbre
 #---------------------------

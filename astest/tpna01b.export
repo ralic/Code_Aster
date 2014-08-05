@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm tpna01b.comm D 1
-F datg tpna01b.datg D 16
 F mmed tpna01b.mmed D 20

@@ -6,25 +6,28 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
-sys.path.insert( 0, r'/local00/home/F97355/dev/fiches/21764_xfem-contact/maillage_hexa')
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 import math
 
-geompy.init_geom(theStudy)
 
 O = geompy.MakeVertex(0, 0, 0)
 OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
@@ -128,16 +131,17 @@ geompy.addToStudyInFather( Partition_1, Gr_geo_SurfExt, 'Gr_geo_SurfExt' )
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+from salome.NETGENPlugin import NETGENPluginBuilder
 
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
-import NETGENPlugin
 
 Mesh_1 = smesh.Mesh(Partition_1)
 Import_1D = Mesh_1.UseExisting1DElements()
 
-Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
 
 nseg1 = 5
 nseg2 = 5
@@ -156,7 +160,7 @@ Nb_Segments_3 = Regular_1D_3.NumberOfSegments(nseg1)
 Nb_Segments_3.SetDistrType( 0 )
 
 Import_1D_1 = Mesh_1.UseExisting1DElements(geom=Gr_geo_SurfCentr)
-NETGEN_2D_ONLY = Mesh_1.Triangle(algo=smesh.NETGEN_2D,geom=Gr_geo_SurfCentr)
+NETGEN_2D_ONLY = Mesh_1.Triangle(algo=smeshBuilder.NETGEN_2D,geom=Gr_geo_SurfCentr)
 
 isDone = Mesh_1.Compute()
 Mesh_1.ExtrusionSweepObject2D( Mesh_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, L_z/float(nseg3) )), nseg3 )
@@ -193,9 +197,10 @@ smesh.SetName(NETGEN_2D_ONLY.GetAlgorithm(), 'NETGEN_2D_ONLY')
 smesh.SetName(SubMesh_1, 'SubMesh_1')
 smesh.SetName(SubMesh_2, 'SubMesh_2')
 
-#smesh.SetName(Maillage, 'Maillage')
-#nomfich = 'CYL_HEXA_IMPAIR_nz-'+str(nz)+'.med'
-#Maillage.ExportMED( r'/local00/home/F97355/dev/fiches/21764_xfem-contact/maillage_hexa/'+nomfich, 0, SMESH.MED_V2_2, 1 )
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'zzzz358a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

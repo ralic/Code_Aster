@@ -6,27 +6,26 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
-
 import salome_notebook
 notebook = salome_notebook.notebook
 
-import iparameters
-ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1), True)
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
 
-
-geompy.init_geom(theStudy)
 
 O = geompy.MakeVertex(0, 0, 0)
 OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
@@ -109,16 +108,16 @@ geompy.addToStudyInFather( Partition_1, face_mil, 'face_mil' )
 ### SMESH component
 ###
 
-import smesh, SMESH, SALOMEDS
-
-smesh.SetCurrentStudy(theStudy)
-import StdMeshers
-import NETGENPlugin
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+from salome.StdMeshers import StdMeshersBuilder
+from salome.NETGENPlugin import NETGENPluginBuilder
 
 Mesh_1 = smesh.Mesh(Partition_1)
 
 Import_1D = Mesh_1.UseExisting1DElements()
-Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
 
 Regular_1D = Mesh_1.Segment(geom=Compound_1)
 Nb_Segments_1 = Regular_1D.NumberOfSegments(1)
@@ -160,6 +159,11 @@ smesh.SetName(Nb_Segments_3, 'Nb. Segments_3')
 smesh.SetName(SubMesh_1, 'SubMesh_1')
 smesh.SetName(SubMesh_2, 'SubMesh_2')
 smesh.SetName(SubMesh_3, 'SubMesh_3')
+
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'zzzz359b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

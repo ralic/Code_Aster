@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm forma40b.comm D 1
-F datg forma40b.datg D 16
 F mmed forma40b.mmed D 20

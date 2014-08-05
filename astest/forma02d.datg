@@ -1,10 +1,18 @@
-# coding=utf-8
-
-from geompy import *
-from smesh import *
+# -*- coding: utf-8 -*-
 
 import math
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+import GEOM
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 #===================================================
 #                  PARAMETRES
@@ -23,24 +31,24 @@ Rac2sur2 = math.sqrt(2)/2
 #                  ---------
 #===================================================
 
-P1 = MakeVertex(0,0,0);
-P2 = MakeVertex(0,L,0);
-P3 = MakeVertex(Rc,L+Rc,0);
-P4 = MakeVertex(Rc+L,L+Rc,0);
-P5 = MakeVertex(Rc*(1-Rac2sur2),L+Rc*Rac2sur2,0);
+P1 = geompy.MakeVertex(0,0,0);
+P2 = geompy.MakeVertex(0,L,0);
+P3 = geompy.MakeVertex(Rc,L+Rc,0);
+P4 = geompy.MakeVertex(Rc+L,L+Rc,0);
+P5 = geompy.MakeVertex(Rc*(1-Rac2sur2),L+Rc*Rac2sur2,0);
 
-edge1 = MakeLineTwoPnt(P1,P2);
-edge2 = MakeLineTwoPnt(P3,P4);
-arc1 = MakeArc(P2, P5, P3);
+edge1 = geompy.MakeLineTwoPnt(P1,P2);
+edge2 = geompy.MakeLineTwoPnt(P3,P4);
+arc1 = geompy.MakeArc(P2, P5, P3);
 
 
 # Création de la géométrie générale
 #------------------------------------
-GeoCoude = MakeWire([edge1,arc1,edge2])
+GeoCoude = geompy.MakeWire([edge1,arc1,edge2])
 
 # Publication dans l'étude
 #---------------------------
-id_GeoCoude=addToStudy( GeoCoude, "GeoCoude" )
+id_GeoCoude=geompy.addToStudy( GeoCoude, "GeoCoude" )
 
 
 # Création des groupes
@@ -48,26 +56,26 @@ id_GeoCoude=addToStudy( GeoCoude, "GeoCoude" )
 # On crée des groupes à partir des entitées de construction
 
 
-BASE = GetSame(GeoCoude,P1)  
-addToStudyInFather(GeoCoude,BASE,"BASE")
+BASE = geompy.GetSame(GeoCoude,P1)
+geompy.addToStudyInFather(GeoCoude,BASE,"BASE")
 
-EFOND = GetSame(GeoCoude,P4)  
-addToStudyInFather(GeoCoude,EFOND,"EFOND")
+EFOND = geompy.GetSame(GeoCoude,P4)
+geompy.addToStudyInFather(GeoCoude,EFOND,"EFOND")
 
-TUY1 = GetSame(GeoCoude,edge1)  
-addToStudyInFather(GeoCoude,TUY1,"TUY1")
+TUY1 = geompy.GetSame(GeoCoude,edge1)
+geompy.addToStudyInFather(GeoCoude,TUY1,"TUY1")
 
-TUY2 = GetSame(GeoCoude,edge2)  
-addToStudyInFather(GeoCoude,TUY2,"TUY2")
+TUY2 = geompy.GetSame(GeoCoude,edge2)
+geompy.addToStudyInFather(GeoCoude,TUY2,"TUY2")
 
-COUDE = GetSame(GeoCoude,arc1)  
-addToStudyInFather(GeoCoude,COUDE,"COUDE")
+COUDE = geompy.GetSame(GeoCoude,arc1)
+geompy.addToStudyInFather(GeoCoude,COUDE,"COUDE")
 
-TUYAU = CreateGroup(GeoCoude, ShapeType["EDGE"])
-AddObject(TUYAU, GetSubShapeID(GeoCoude,TUY1))
-AddObject(TUYAU, GetSubShapeID(GeoCoude,TUY2))
-AddObject(TUYAU, GetSubShapeID(GeoCoude,COUDE))
-addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
+TUYAU = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+geompy.AddObject(TUYAU, geompy.GetSubShapeID(GeoCoude,TUY1))
+geompy.AddObject(TUYAU, geompy.GetSubShapeID(GeoCoude,TUY2))
+geompy.AddObject(TUYAU, geompy.GetSubShapeID(GeoCoude,COUDE))
+geompy.addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
 
 
 #===================================================
@@ -75,7 +83,7 @@ addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
 #                  --------
 #===================================================
 
-maillageCoude = Mesh(GeoCoude, "MeshCoude")
+maillageCoude = smesh.Mesh(GeoCoude, "MeshCoude")
 
 # Algorithmes et hypotheses globales
 # ----------------------------------
@@ -100,14 +108,8 @@ maillageCoude.Group(COUDE, "COUDE" )
 maillageCoude.Group(TUYAU, "TUYAU" )
 
 
-# Export dans un fichier au format MED
-#--------------------------------------
-## On peut sauver dans le dossier courant :
-#import os
-#Repertoire=os.getcwd()
-##ou bien en spécifier un
-#Repertoire='MonRepertoire'
-#maillageCoude.ExportToMED(Repertoire+"forma01d.mmed",SMESH.MED_V2_2)
+########Export du maillage au format MMED########
+maillageCoude.ExportMED( r''+ExportPATH+'forma02d.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 # Mise à jour de l'arbre

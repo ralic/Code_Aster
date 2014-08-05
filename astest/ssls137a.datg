@@ -1,11 +1,18 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 
 import salome
-from geompy import *
-import smesh
-import SMESH
+import GEOM
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 import math
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 #--------------------------------------------------------------------------------
 #                              --CABLE--
@@ -23,31 +30,31 @@ Finesse = 0.04
 #                              GEOMETRIE
 #--------------------------------------------------------------------------------
 
-Vector_DX = MakeVectorDXDYDZ(1, 0, 0)
-Vector_DY = MakeVectorDXDYDZ(0, 1, 0)
-Vector_DZ = MakeVectorDXDYDZ(0, 0, 1)
-Vertex_1 = MakeVertex(0, 0, 0)
+Vector_DX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Vertex_1 = geompy.MakeVertex(0, 0, 0)
 
-Vertex_2 = MakeVertex(0, l/2, excen)
-Vertex_3 = MakeVertex(Finesse/2, l/2, excen)
-Vertex_4 = MakeVertex(L-Finesse/2, l/2, excen)
-Vertex_5 = MakeVertex(L, l/2, excen)
-Vertex_6 = MakeVertex(L/2, l/2, excen)
+Vertex_2 = geompy.MakeVertex(0, l/2, excen)
+Vertex_3 = geompy.MakeVertex(Finesse/2, l/2, excen)
+Vertex_4 = geompy.MakeVertex(L-Finesse/2, l/2, excen)
+Vertex_5 = geompy.MakeVertex(L, l/2, excen)
+Vertex_6 = geompy.MakeVertex(L/2, l/2, excen)
 
-Line_1 = MakeLineTwoPnt(Vertex_2, Vertex_3)
-Line_2 = MakeLineTwoPnt(Vertex_3, Vertex_4)
-Line_3 = MakeLineTwoPnt(Vertex_4, Vertex_5)
+Line_1 = geompy.MakeLineTwoPnt(Vertex_2, Vertex_3)
+Line_2 = geompy.MakeLineTwoPnt(Vertex_3, Vertex_4)
+Line_3 = geompy.MakeLineTwoPnt(Vertex_4, Vertex_5)
 
-Partition_1 = MakePartition([Line_1, Line_2, Line_3], [], [], [], ShapeType["EDGE"], 0, [], 0)
-Cable_1 = GetEdgeNearPoint(Partition_1,Vertex_2)
-Cable_2 = GetEdgeNearPoint(Partition_1,Vertex_6)
-Cable_3 = GetEdgeNearPoint(Partition_1,Vertex_5)
+Partition_1 = geompy.MakePartition([Line_1, Line_2, Line_3], [], [], [], geompy.ShapeType["EDGE"], 0, [], 0)
+Cable_1 = geompy.GetEdgeNearPoint(Partition_1,Vertex_2)
+Cable_2 = geompy.GetEdgeNearPoint(Partition_1,Vertex_6)
+Cable_3 = geompy.GetEdgeNearPoint(Partition_1,Vertex_5)
 
-CABLE1 = CreateGroup(Partition_1, ShapeType["EDGE"])
-UnionList(CABLE1, [Cable_1, Cable_2, Cable_3])
+CABLE1 = geompy.CreateGroup(Partition_1, geompy.ShapeType["EDGE"])
+geompy.UnionList(CABLE1, [Cable_1, Cable_2, Cable_3])
 
-addToStudy( Partition_1, "Partition_1" )
-addToStudyInFather( Partition_1, CABLE1, "CABLE1" )
+geompy.addToStudy( Partition_1, "Partition_1" )
+geompy.addToStudyInFather( Partition_1, CABLE1, "CABLE1" )
 
 #--------------------------------------------------------------------------------
 #                              MAILLAGE
@@ -60,7 +67,7 @@ isDone = Mesh_Cable.Compute()
 
 Tout_Group = [CABLE1]
 for group in Tout_Group :
-	Mesh_Cable.Group(group)
+        Mesh_Cable.Group(group)
 
 NOEUD1_A = Mesh_Cable.FindNodeClosestTo(0, l/2, excen)
 NOEUD1_B = Mesh_Cable.FindNodeClosestTo(L, l/2, excen)
@@ -75,7 +82,6 @@ smesh.SetName(Max_Size_1, 'Max Size_1')
 smesh.SetName(CABLE1, 'CABLE1')
 smesh.SetName(CABLE1_A, 'CABLE1_A')
 smesh.SetName(CABLE1_B, 'CABLE1_B')
-
 
 #--------------------------------------------------------------------------------
 #                              --PLAQUE--
@@ -93,39 +99,39 @@ Finesse_2 = 0.05
 #                              GEOMETRIE
 #--------------------------------------------------------------------------------
 
-Vector_DX = MakeVectorDXDYDZ(1, 0, 0)
-Vector_DY = MakeVectorDXDYDZ(0, 1, 0)
-Vector_DZ = MakeVectorDXDYDZ(0, 0, 1)
-Vertex_1 = MakeVertex(0, 0, 0)
+Vector_DX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Vertex_1 = geompy.MakeVertex(0, 0, 0)
 
-Box_1 = MakeBoxDXDYDZ(L, l, e)
-VOILE = CreateGroup(Box_1, ShapeType["SOLID"])
-UnionList(VOILE, [Box_1])
+Box_1 = geompy.MakeBoxDXDYDZ(L, l, e)
+VOILE = geompy.CreateGroup(Box_1, geompy.ShapeType["SOLID"])
+geompy.UnionList(VOILE, [Box_1])
 
-Vertex_2 = MakeVertex(0, l/2, e/2)
-ENCAST = GetFaceNearPoint(Box_1, Vertex_2)
+Vertex_2 = geompy.MakeVertex(0, l/2, e/2)
+ENCAST = geompy.GetFaceNearPoint(Box_1, Vertex_2)
 
-Vertex_3 = MakeVertex(0, 0, e/2)
-Edge_1 = GetEdgeNearPoint(Box_1, Vertex_3)
-Vertex_4 = MakeVertex(L, 0, e/2)
-Edge_2 = GetEdgeNearPoint(Box_1, Vertex_4)
-Vertex_5 = MakeVertex(L, l, e/2)
-Edge_3 = GetEdgeNearPoint(Box_1, Vertex_5)
-Vertex_6 = MakeVertex(0, l, e/2)
-Edge_4 = GetEdgeNearPoint(Box_1, Vertex_6)
+Vertex_3 = geompy.MakeVertex(0, 0, e/2)
+Edge_1 = geompy.GetEdgeNearPoint(Box_1, Vertex_3)
+Vertex_4 = geompy.MakeVertex(L, 0, e/2)
+Edge_2 = geompy.GetEdgeNearPoint(Box_1, Vertex_4)
+Vertex_5 = geompy.MakeVertex(L, l, e/2)
+Edge_3 = geompy.GetEdgeNearPoint(Box_1, Vertex_5)
+Vertex_6 = geompy.MakeVertex(0, l, e/2)
+Edge_4 = geompy.GetEdgeNearPoint(Box_1, Vertex_6)
 
-Sub_Mesh = CreateGroup(Box_1, ShapeType["EDGE"])
-UnionList(Sub_Mesh, [Edge_1, Edge_2, Edge_3, Edge_4])
+Sub_Mesh = geompy.CreateGroup(Box_1, geompy.ShapeType["EDGE"])
+geompy.UnionList(Sub_Mesh, [Edge_1, Edge_2, Edge_3, Edge_4])
 
 # sous-forme pour definition de groupes de mailles
-Vertex_7 = MakeVertex(L/2, l/2, e)
-Face_1 = GetFaceNearPoint(Box_1, Vertex_7)
-Sub_Face_Sup = GetInPlace( Box_1, Face_1)
+Vertex_7 = geompy.MakeVertex(L/2, l/2, e)
+Face_1 = geompy.GetFaceNearPoint(Box_1, Vertex_7)
+Sub_Face_Sup = geompy.GetInPlace( Box_1, Face_1)
 
-addToStudy( Box_1, "Box_1" )
-addToStudyInFather( Box_1, VOILE, "VOILE" )
-addToStudyInFather( Box_1, ENCAST, "ENCAST" )
-addToStudyInFather( Box_1, Sub_Mesh, "Sub_Mesh" )
+geompy.addToStudy( Box_1, "Box_1" )
+geompy.addToStudyInFather( Box_1, VOILE, "VOILE" )
+geompy.addToStudyInFather( Box_1, ENCAST, "ENCAST" )
+geompy.addToStudyInFather( Box_1, Sub_Mesh, "Sub_Mesh" )
 
 #--------------------------------------------------------------------------------
 #                              MAILLAGE
@@ -141,13 +147,12 @@ Regular_1D_1 = Mesh_Voile.Segment(geom=Sub_Mesh)
 Max_Size_2 = Regular_1D_1.MaxSize(Finesse_2)
 isDone = Mesh_Voile.Compute()
 SubMesh_1 = Regular_1D_1.GetSubMesh()
-#isDone = Mesh_Voile.SplitQuadObject( Mesh_Voile, 1 )
 
 Tout_Group = [VOILE]
 for group in Tout_Group :
-	Mesh_Voile.Group(group)
+        Mesh_Voile.Group(group)
 
-FACE_SUP = Mesh_Voile.GroupOnGeom(Sub_Face_Sup, "FACE_SUP", smesh.FACE)
+FACE_SUP = Mesh_Voile.GroupOnGeom(Sub_Face_Sup, "FACE_SUP", SMESH.FACE)
 ENCAST_1 = Mesh_Voile.GroupOnGeom(ENCAST,'ENCAST',SMESH.NODE)
 NOEUD = Mesh_Voile.FindNodeClosestTo(L, l, e/2)
 NODE_REF = Mesh_Voile.CreateEmptyGroup( SMESH.NODE, 'NODE_REF' )
@@ -171,10 +176,14 @@ smesh.SetName(SubMesh_1, 'SubMesh_1')
 Mesh_tous = [Mesh_Voile, Mesh_Cable]
 Mesh_tot = smesh.Concatenate(Mesh_tous, uniteIdenticalGroups=True, mergeNodesAndElements = False, mergeTolerance = 1e-5, allGroups = False )
 Mesh_tot.SetName("Mesh_tot")
-
+#
 #--------------------------------------------------------------------------------
 #                              MISE A JOUR DE L'AFFICHAGE
 #--------------------------------------------------------------------------------
+
+########Export du maillage au format MMED########
+Mesh_tot.ExportMED( r''+ExportPATH+'ssls137a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)

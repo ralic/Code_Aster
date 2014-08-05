@@ -92,10 +92,11 @@ STNL=CALC_CHAMP(reuse =STNL,
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+              CREA_GROUP_NO=_F(
+                      OPTION='NOEUD_ORDO',
                                NOM='CONT_ord',
                                GROUP_MA='CONT1',
-                               GROUP_NO_ORIG='C1',),);
+               ),);
 
 # -- Pression de contact extraite sur le bord oriente
 
@@ -142,7 +143,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=STNL,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
-                  VALE_CALC=-2928.8309164566,
+                  VALE_CALC=-2928.74092725,
                   VALE_REFE=-2798.3286697476105,
                   CRITERE='RELATIF',
                   PRECISION=0.05,),

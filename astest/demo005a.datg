@@ -1,14 +1,20 @@
-# coding=utf-8
-import salome
+# -*- coding: utf-8 -*-
 
+import salome
 salome.salome_init()
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 ###
 ### GEOM component
 ###
 
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 
 # create vertices
 A = geompy.MakeVertex(1.0 , 0.0, 0.0)
@@ -44,7 +50,9 @@ geompy.addToStudyInFather( Face, NOEUDD, 'NOEUDD' )
 ### SMESH component
 ###
 
-import smesh, SMESH
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
 Mesh_1 = smesh.Mesh(Face)
 Regular_1D = Mesh_1.Segment()
@@ -59,3 +67,9 @@ Mesh_1.GroupOnGeom(NOEUDA,'NOEUDA',SMESH.NODE)
 Mesh_1.GroupOnGeom(NOEUDB,'NOEUDB',SMESH.NODE)
 Mesh_1.GroupOnGeom(NOEUDC,'NOEUDC',SMESH.NODE)
 Mesh_1.GroupOnGeom(NOEUDD,'NOEUDD',SMESH.NODE)
+
+
+########Export du maillage au format MMED########
+Mesh_1.ExportMED( r''+ExportPATH+'demo005a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
+

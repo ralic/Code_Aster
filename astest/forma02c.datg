@@ -1,11 +1,19 @@
-# coding=utf-8
-
-from geompy import *
-from smesh import *
+# -*- coding: utf-8 -*-
 
 import math
+import salome
+salome.salome_init()
+from salome.geom import geomBuilder
+import GEOM
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
-gg = salome.ImportComponentGUI("GEOM")
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
 
 #===================================================
 #                  PARAMETRES
@@ -24,19 +32,18 @@ LG      = 3.0  ;
 
 #  Vecteurs utiles
 #------------------
-vx = MakeVectorDXDYDZ(100., 0., 0.)
-vy = MakeVectorDXDYDZ(0., 100., 0.)
-vz = MakeVectorDXDYDZ(0., 0., 100.)
+vx = geompy.MakeVectorDXDYDZ(100., 0., 0.)
+vy = geompy.MakeVectorDXDYDZ(0., 100., 0.)
+vz = geompy.MakeVectorDXDYDZ(0., 0., 100.)
 
 # axe de rotation pour generer le coude
-p1_tmp = MakeVertex(RC,LG,0.)
-p2_tmp = MakeVertex(RC,LG,10.)
-v_rot = MakeVector(p1_tmp, p2_tmp)
+p1_tmp = geompy.MakeVertex(RC,LG,0.)
+p2_tmp = geompy.MakeVertex(RC,LG,10.)
+v_rot = geompy.MakeVector(p1_tmp, p2_tmp)
 # axe du cylindre haut
-m4 = MakeVertex(0,LG+RC,0);
-m5 = MakeVertex(LG,LG+RC,0);
-axe = MakeLineTwoPnt(m4, m5)
-
+m4 = geompy.MakeVertex(0,LG+RC,0);
+m5 = geompy.MakeVertex(LG,LG+RC,0);
+axe = geompy.MakeLineTwoPnt(m4, m5)
 
 #===================================================
 #                  GEOMETRIE
@@ -45,73 +52,73 @@ axe = MakeLineTwoPnt(m4, m5)
 
 #  Arc de base de la coque
 #---------------------------
-P1 = MakeVertex(   Rm, 0,  0);
-P2 = MakeVertex(    0, 0, Rm);
-P3 = MakeVertex(-1*Rm, 0,  0);
-arc1 = MakeArc(P1, P2, P3)
+P1 = geompy.MakeVertex(   Rm, 0,  0);
+P2 = geompy.MakeVertex(    0, 0, Rm);
+P3 = geompy.MakeVertex(-1*Rm, 0,  0);
+arc1 = geompy.MakeArc(P1, P2, P3)
 
-m1 = MakeVertex(   0,  LG,   Rm);
+m1 = geompy.MakeVertex(   0,  LG,   Rm);
 
 #  Extrusion selon l'axe Y
 #---------------------------
-S1 = MakePrismVecH(arc1, vy, LG)
+S1 = geompy.MakePrismVecH(arc1, vy, LG)
 
 #  Revolution
 #---------------------------
-edge_tmp=GetEdgeNearPoint(S1,m1)
-coude = MakeRevolution(edge_tmp, v_rot, -math.pi/2)
+edge_tmp=geompy.GetEdgeNearPoint(S1,m1)
+coude = geompy.MakeRevolution(edge_tmp, v_rot, -math.pi/2)
 
 #  Extrusion selon l'axe X
 #---------------------------
-m2 = MakeRotation(m1, v_rot, -math.pi/2)
-edge_tmp=GetEdgeNearPoint(coude,m2)
-S2 = MakePrismVecH(edge_tmp, vx, LG)
+m2 = geompy.MakeRotation(m1, v_rot, -math.pi/2)
+edge_tmp=geompy.GetEdgeNearPoint(coude,m2)
+S2 = geompy.MakePrismVecH(edge_tmp, vx, LG)
 
 
 # Création de la géométrie générale
 #------------------------------------
-GeoCoude = MakeCompound([S1,coude,S2])
+GeoCoude = geompy.MakeCompound([S1,coude,S2])
 
 # Affichage dans l'arbre
 #---------------------------
-id_GeoCoude = addToStudy(GeoCoude,"GeoCoude")
+id_GeoCoude = geompy.addToStudy(GeoCoude,"GeoCoude")
 
 # Création des groupes
 #---------------------------
 
-AI1= GetSame(GeoCoude,P1)  
-addToStudyInFather( GeoCoude, AI1,  "AI1" )
+AI1= geompy.GetSame(GeoCoude,P1)
+geompy.addToStudyInFather( GeoCoude, AI1,  "AI1" )
 
-BASE = GetSame(GeoCoude,arc1)  
-addToStudyInFather( GeoCoude, BASE, "BASE" )
+BASE = geompy.GetSame(GeoCoude,arc1)
+geompy.addToStudyInFather( GeoCoude, BASE, "BASE" )
 
 # on recupere le bord EFOND par ses deux points extremites
-PEF1=MakeVertex(RC+LG,RC+LG+Rm,0.)
-PEF2=MakeVertex(RC+LG,RC+LG-Rm,0.)
-EFOND=GetEdge(GeoCoude,PEF1,PEF2)
-addToStudyInFather( GeoCoude, EFOND, "EFOND" )
+PEF1=geompy.MakeVertex(RC+LG,RC+LG+Rm,0.)
+PEF2=geompy.MakeVertex(RC+LG,RC+LG-Rm,0.)
+EFOND=geompy.GetEdge(GeoCoude,PEF1,PEF2)
+geompy.addToStudyInFather( GeoCoude, EFOND, "EFOND" )
 
-SYMETRIE = CreateGroup(GeoCoude, ShapeType["EDGE"])
-edges_on_pln = GetShapesOnPlaneWithLocation(GeoCoude, ShapeType["EDGE"],vz, P1, GEOM.ST_ON)
-UnionList(SYMETRIE,edges_on_pln)
-addToStudyInFather( GeoCoude, SYMETRIE, "SYMETRIE" )
+SYMETRIE = geompy.CreateGroup(GeoCoude, geompy.ShapeType["EDGE"])
+edges_on_pln = geompy.GetShapesOnPlaneWithLocation(GeoCoude, geompy.ShapeType["EDGE"],vz, P1, GEOM.ST_ON)
+geompy.UnionList(SYMETRIE,edges_on_pln)
+geompy.addToStudyInFather( GeoCoude, SYMETRIE, "SYMETRIE" )
 
-TUYAU = CreateGroup(GeoCoude, ShapeType["FACE"])
-face = SubShapeAll(GeoCoude, ShapeType["FACE"])
-UnionList(TUYAU,face)
-addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
+TUYAU = geompy.CreateGroup(GeoCoude, geompy.ShapeType["FACE"])
+face = geompy.SubShapeAll(GeoCoude, geompy.ShapeType["FACE"])
+geompy.UnionList(TUYAU,face)
+geompy.addToStudyInFather( GeoCoude, TUYAU, "TUYAU" )
 
 
-HypCirconference = GetSame(GeoCoude,arc1)
-addToStudyInFather(GeoCoude,HypCirconference,"HypCirconference")
+HypCirconference = geompy.GetSame(GeoCoude,arc1)
+geompy.addToStudyInFather(GeoCoude,HypCirconference,"HypCirconference")
 
 #===================================================
 #                  MAILLAGE
 #                  --------
 #===================================================
-# 
+#
 
-maillageCoude = Mesh(GeoCoude, "MeshCoude")
+maillageCoude = smesh.Mesh(GeoCoude, "MeshCoude")
 
 # Algorithmes et hypotheses globales
 # ----------------------------------
@@ -146,20 +153,13 @@ maillageCoude.Group(EFOND, "EFOND" )
 maillageCoude.Group(SYMETRIE, "SYMETRIE" )
 maillageCoude.Group(TUYAU, "TUYAU" )
 
-addToStudy(m1,"m1")
-filter = GetCriterion(NODE, FT_BelongToGeom, FT_EqualTo, m1)
+geompy.addToStudy(m1,"m1")
+filter = smesh.GetCriterion(SMESH.NODE, SMESH.FT_BelongToGeom, SMESH.FT_EqualTo, m1)
 N_TEST = maillageCoude.MakeGroupByCriterion("N_TEST",filter)
 
 
-# Export dans un fichier au format MED
-#--------------------------------------
-## On peut sauver dans le dossier courant :
-#import os
-#Repertoire=os.getcwd()
-##ou bien en spécifier un
-#Repertoire='MonRepertoire'
-#maillageCoude.ExportToMED(Repertoire+"forma01f.mail.med",SMESH.MED_V2_2)
-
+########Export du maillage au format MMED########
+maillageCoude.ExportMED( r''+ExportPATH+'forma02c.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
 
 
 # Mise à jour de l'arbre

@@ -1,7 +1,17 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
-import geompy
-import smesh
+import salome
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 #-----------------------------------------------------
 # geometrie
@@ -32,9 +42,9 @@ geompy.addToStudyInFather(Face_1,FACE,'FACE')
 
 Face_1 = smesh.Mesh(Face_1,'CrackAnalysis2d')
 
-import BLSURFPlugin
+from salome.BLSURFPlugin import BLSURFPluginBuilder
 
-BLSURF = Face_1.Triangle(algo=smesh.BLSURF)
+BLSURF = Face_1.Triangle(algo=smeshBuilder.BLSURF)
 BLSURF_Parameters_1 = BLSURF.Parameters()
 BLSURF_Parameters_1.SetPhySize( 1 )
 
@@ -43,6 +53,13 @@ haut = Face_1.GroupOnGeom(haut,'haut',SMESH.EDGE)
 bas  = Face_1.GroupOnGeom(bas,'bas',SMESH.EDGE)
 FACE = Face_1.GroupOnGeom(FACE,'FACE',SMESH.FACE)
 C    = Face_1.GroupOnGeom(C,'C',SMESH.NODE)
+
+
+Face_1.Compute()
+
+########Export du maillage au format MMED########
+Face_1.ExportMED( r''+ExportPATH+'crack01b.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
 
 #Mise à jour de l'arbre d'étude
 #==============================

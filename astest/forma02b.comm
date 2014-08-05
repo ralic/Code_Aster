@@ -67,7 +67,7 @@ IMPR_RESU(FORMAT='MED',
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODES,
-                  VALE_CALC=8.9150524279246,
+                  VALE_CALC=8.92046162697,
                   ),
           )
 

@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Script de génération d'un maillage béton armé
 # avec des mailles béton en HEXA20
@@ -6,16 +6,22 @@
 
 import sys
 import salome
-
 salome.salome_init()
 theStudy = salome.myStudy
 import GEOM
-import geompy
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 import math
 import SALOMEDS
-import smesh, SMESH
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
 
-geompy.init_geom(theStudy)
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
 
 #FONCTIONS
 def addToStudyList(ObjectList, NameList) :
@@ -70,11 +76,11 @@ P12=geompy.MakeVertex(0,w/2,0)
 BETON=geompy.MakeBoxDXDYDZ(l, w, h);
 #groupes
 SLEFT = geompy.CreateGroup(BETON, geompy.ShapeType["FACE"])
-CLSD=geompy.GetShapesOnPlaneWithLocation(BETON,geompy.ShapeType["FACE"],VX,P1 , geompy.GEOM.ST_ON)
+CLSD=geompy.GetShapesOnPlaneWithLocation(BETON,geompy.ShapeType["FACE"],VX,P1 , GEOM.ST_ON)
 geompy.UnionList(SLEFT,CLSD)
 #
 SRIGHT = geompy.CreateGroup(BETON, geompy.ShapeType["FACE"])
-CLSD=geompy.GetShapesOnPlaneWithLocation(BETON,geompy.ShapeType["FACE"],VX,P2 , geompy.GEOM.ST_ON)
+CLSD=geompy.GetShapesOnPlaneWithLocation(BETON,geompy.ShapeType["FACE"],VX,P2 , GEOM.ST_ON)
 geompy.UnionList(SRIGHT,CLSD)
 #
 #------------------------------
@@ -138,7 +144,7 @@ for i in range(len(listPoiObs)) :
     poi = listPoiObs[i]
     coordsPoint = geompy.PointCoordinates(poi)
     poiId       = POUTRE.FindNodeClosestTo(coordsPoint[0],coordsPoint[1],coordsPoint[2])
-    nGroup      = POUTRE.CreateEmptyGroup( smesh.NODE, nomsPoiObs[i] )
+    nGroup      = POUTRE.CreateEmptyGroup( SMESH.NODE, nomsPoiObs[i] )
     nGroup.Add([poiId])
 
 #------------------------------
@@ -147,3 +153,8 @@ for i in range(len(listPoiObs)) :
 ObjectList = [ACIER,BETON,SLEFT,SRIGHT,POUTRE]
 NameList   = ["ACIER","BETON","SLEFT","SRIGHT","POUTRE"]
 SetNameList(ObjectList, NameList )
+
+
+########Export du maillage au format MMED########
+POUTRE.ExportMED( r''+ExportPATH+'sslx103b.20'+'', 0, SMESH.MED_V2_2 , 1 )
+

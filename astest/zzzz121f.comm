@@ -263,7 +263,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.063361664246960,
+                  VALE_CALC=0.0633925584439,
                   CRITERE='RELATIF',
                   ),
           )

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssls138a.comm D 1
-F datg ssls138a.datg D 16
 F mmed ssls138a.mmed D 20

@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssns110a.comm D 1
-F datg ssns110a.datg D 16
 F mmed ssns110a.mmed D 20
+F datg ssns110a.datg D 16
