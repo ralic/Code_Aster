@@ -192,7 +192,7 @@ MOLANCZ=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
                                       NMAX_FREQ=1,
                                       APPROCHE='COMPLEXE',),);
 
-FRELAN=RECU_TABLE(CO=MOSOREN,
+FRELAN=RECU_TABLE(CO=MOLANCZ,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
