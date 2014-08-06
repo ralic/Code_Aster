@@ -1,19 +1,19 @@
 # TITRE REPONSE SISMIQUE D UN BARRAGE AVEC VARIABILITE SPATIALE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI') );
@@ -227,33 +227,6 @@ TABSOL = DEFI_SOL_MISS(
    INFO=2,
 );
 
-# CALC_MISS(
-#     TYPE_RESU='FICHIER',
-#     TABLE_SOL=TABSOL,
-#     MACR_ELEM_DYNA=mael,
-#     GROUP_MA_INTERF = 'SURFBAS2',
-#     GROUP_MA_FLU_SOL='IFLUSOL2',
-#     GROUP_MA_SOL_SOL='SLIBREM2',
-#     GROUP_MA_FLU_STR='IFLUSTR2',
-#     PROJET= 'FDLV112D',
-#     UNITE_IMPR_ASTER=26,
-#     UNITE_RESU_IMPE=25,
-#     UNITE_RESU_FORC=28,
-#     VERSION='V6.6',
-#     PARAMETRE=_F(
-#         FREQ_MIN=0.7,
-#         FREQ_MAX=19.7,
-#         FREQ_PAS=1.0,
-#         Z0= 5.,
-#         SURF='NON',
-#         ALGO = 'REGU',
-#         OFFSET_MAX=1000,
-#         OFFSET_NB=5000,
-#         ISSF='OUI',
-#         TYPE='BINAIRE',
-#     ),
-# );
-
 nddlgen = NUME_DDL_GENE( BASE= bamo,
                           STOCKAGE= 'PLEIN',);
 
@@ -267,95 +240,95 @@ INCLUDE(UNITE=31,);
 
 linst= DEFI_LIST_REEL ( DEBUT = 0.,
                           INTERVALLE = (
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 10.23,
                                          PAS=0.01,
                                          ),
                                        ),
                       );
-                  
+
 accex= CALC_FONCTION( COMB=_F( FONCTION = acc_x, COEF = 1.),
                       LIST_PARA=linst);
-                                                  
+
 fmax=25.
 pas_f=1./10.24
-        
-             
+
+
 Trg1i = DYNA_ISS_VARI(
-                      FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,     
+                      FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
                       FONC_SIGNAL   = accex ,
-                      ISSF='OUI',         
+                      ISSF='OUI',
                        INTERF =_F(
                                 GROUP_NO_INTERF='ISOLSTR',
                                 MODE_INTERF ='QUELCONQUE',),
                        MATR_COHE = _F(
-                                  TYPE='MITA_LUCO',     
+                                  TYPE='MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.,
                                   ),
                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
-                       UNITE_RESU_FORC = 28,    
+                       UNITE_RESU_FORC = 28,
                        MATR_GENE = _F(
                                  MATR_MASS = massgen,
                                  MATR_RIGI = rigigen,
                            ),
                        INFO   =1 ,);
-                       
-                       
-                       
-ax253i = RECU_FONCTION ( RESU_GENE = Trg1i, NOM_CHAM = 'ACCE', 
+
+
+
+ax253i = RECU_FONCTION ( RESU_GENE = Trg1i, NOM_CHAM = 'ACCE',
                         NOEUD = 'N253', NOM_CMP = 'DX', );
-                        
-                        
+
+
 Trg1 = DYNA_ISS_VARI(
-                      FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,     
+                      FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
                       FONC_SIGNAL   = accex ,
-                      ISSF='OUI',         
+                      ISSF='OUI',
                        INTERF =_F(
                                 GROUP_NO_INTERF='ISOLSTR',
                                 MODE_INTERF ='QUELCONQUE',),
                        MATR_COHE = _F(
-                                  TYPE='MITA_LUCO',     
+                                  TYPE='MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.5,
                                   ),
                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
-                       UNITE_RESU_FORC = 28,    
+                       UNITE_RESU_FORC = 28,
                        MATR_GENE = _F(
                                  MATR_MASS = massgen,
                                  MATR_RIGI = rigigen,
                                  #MATR_AMOR = amorge2,
                            ),
                        INFO   =1 ,);
-                       
-ax253 = RECU_FONCTION ( RESU_GENE = Trg1, NOM_CHAM = 'ACCE', 
+
+ax253 = RECU_FONCTION ( RESU_GENE = Trg1, NOM_CHAM = 'ACCE',
                         NOEUD = 'N253', NOM_CMP = 'DX', );
-                                                
+
 freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                           INTERVALLE = (
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 15.,
                                          NOMBRE = 149,
                                        ),
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 35.,
                                          NOMBRE = 80,
                                        ),
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 100.,
                                          NOMBRE = 65,
                                        ),
                                        ),
                            );
-                            
-                                  
+
+
 sro_axi=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ax253i, AMOR_REDUIT=0.05,
                                   NORME=1.,
                                   LIST_FREQ = freqspec,
                                  ),);
-                                 
+
 sro_ax=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ax253, AMOR_REDUIT=0.05,
                                   NORME=1.,
                                   LIST_FREQ = freqspec,
@@ -366,7 +339,7 @@ sro_ax=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ax253, AMOR_REDUIT=0.05,
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.884638426062,
                          VALE_REFE=5.560,
                          PRECISION=0.13,
-                         REFERENCE = 'AUTRE_ASTER', 
+                         REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA=1.00,
                          FONCTION=ax253i,
                          ),
@@ -395,22 +368,22 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.884638426062,
                          ),
                       ),
               );
-     
+
 Spg1i = DYNA_ISS_VARI(
                       NB_FREQ = 2,  FREQ_PAS = 1.,
-                      FREQ_INIT  = 9.7,     
+                      FREQ_INIT  = 9.7,
                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      ISSF='OUI',         
+                      ISSF='OUI',
                        INTERF =_F(
                                 GROUP_NO_INTERF='ISOLSTR',
                                 MODE_INTERF ='QUELCONQUE',),
                        MATR_COHE = _F(
-                                  TYPE='MITA_LUCO',     
+                                  TYPE='MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.0,
                                   ),
                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
-                       UNITE_RESU_FORC = 28,    
+                       UNITE_RESU_FORC = 28,
                        MATR_GENE = _F(
                                  MATR_MASS = massgen,
                                  MATR_RIGI = rigigen,
@@ -420,19 +393,19 @@ Spg1i = DYNA_ISS_VARI(
 
 Spg1 = DYNA_ISS_VARI(
                       NB_FREQ = 2,  FREQ_PAS = 1.,
-                      FREQ_INIT  = 9.7,     
+                      FREQ_INIT  = 9.7,
                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      ISSF='OUI',         
+                      ISSF='OUI',
                        INTERF =_F(
                                 GROUP_NO_INTERF='ISOLSTR',
                                 MODE_INTERF ='QUELCONQUE',),
                        MATR_COHE = _F(
-                                  TYPE='MITA_LUCO',     
+                                  TYPE='MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.5,
                                   ),
                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
-                       UNITE_RESU_FORC = 28,    
+                       UNITE_RESU_FORC = 28,
                        MATR_GENE = _F(
                                  MATR_MASS = massgen,
                                  MATR_RIGI = rigigen,
@@ -449,12 +422,12 @@ RN253Xi=REST_SPEC_PHYS( MODE_MECA=bamo,
                      NOEUD=( 'N253'  ),
                      NOM_CMP=('DX', ),
                      OPTION='TOUT_TOUT'   );
-    
+
 REP1i=RECU_FONCTION(    INTE_SPEC=RN253Xi,
                     NOEUD_I = 'N253',
                     NOM_CMP_I = 'DX',
                       );
-  
+
 RN253X=REST_SPEC_PHYS( MODE_MECA=bamo,
                      TOUT_ORDRE = 'OUI',
                      INTE_SPEC_GENE = Spg1,
@@ -462,21 +435,21 @@ RN253X=REST_SPEC_PHYS( MODE_MECA=bamo,
                      NOEUD=( 'N253'  ),
                      NOM_CMP=('DX', ),
                      OPTION='TOUT_TOUT'   );
-    
+
 REP1=RECU_FONCTION(    INTE_SPEC=RN253X,
                     NOEUD_I = 'N253',
                     NOM_CMP_I = 'DX',
-                      );   
+                      );
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1i,
-                            VALE_PARA = 10.7, 
+                            VALE_PARA = 10.7,
                             VALE_CALC =43.29902243898,
-                            CRITERE = 'RELATIF', 
+                            CRITERE = 'RELATIF',
                             ),
                        _F(  FONCTION = REP1,
-                            VALE_PARA = 10.7, 
+                            VALE_PARA = 10.7,
                             VALE_CALC =25.78636237418,
-                            CRITERE = 'RELATIF', 
+                            CRITERE = 'RELATIF',
                             ),
                      ),
       );

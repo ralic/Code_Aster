@@ -64,7 +64,7 @@ mail=MODI_MAILLAGE(reuse =mail,
                                     _F(GROUP_MA='SLIBREM2',
                                        VECT_NORM=(0.,0.,1.,),
                                        NOEUD='N1043',),),);
-                                       
+
 IMPR_RESU(RESU=_F(MAILLAGE=mail,));
 
 modele=AFFE_MODELE(MAILLAGE=mail,
@@ -302,11 +302,14 @@ accsin=CALC_FONC_INTERP(FONCTION=fonsin,
                         NOM_PARA='INST',
                         NOM_RESU='EVOL',
                         LIST_PARA=ltps);
-                        
+
 tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
                  PROJET='FDLV112E',
                  VERSION='V6.6',
                  TABLE_SOL=TABSOL,
+                 MATER_FLUIDE=_F(RHO=1000.,
+                                 CELE=1500.,
+                                 AMOR_BETA=0.),
                  MACR_ELEM_DYNA=mael,
                  #UNITE_RESU_IMPE=25,
                  #UNITE_RESU_FORC=28,
@@ -315,8 +318,7 @@ tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
                  GROUP_MA_FLU_SOL='IFLUSOL2',
                  GROUP_MA_SOL_SOL='SLIBREM2',
                  GROUP_MA_CONTROL='PC',
-                 PARAMETRE=_F(
-                              FREQ_MIN=df, #0.1,
+                 PARAMETRE=_F(FREQ_MIN=df, #0.1,
                               FREQ_MAX=fmax, #3.0,
                               FREQ_PAS=df, #2.9,
                               Z0=5.0,
@@ -325,12 +327,12 @@ tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
                               ALGO='REGU',
                               OFFSET_MAX=1000,
                               OFFSET_NB=5000,),
-                   ACCE_Z=accsin,
-                   INST_FIN=tfin,
-                   PAS_INST=pas1,
-                   NORME=9.81,
-                   AMOR_SPEC_OSCI=(0.02, 0.05, 0.07),
-                   INFO=2)
+                 ACCE_Z=accsin,
+                 INST_FIN=tfin,
+                 PAS_INST=pas1,
+                 NORME=9.81,
+                 AMOR_SPEC_OSCI=(0.02, 0.05, 0.07),
+                 INFO=2)
 
 ftx1 = EXTR_TABLE(TABLE     = tabctr,
                   TYPE_RESU = 'FONCTION_C',
@@ -439,7 +441,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.98413987550154,
 #                       _F(FONCTION=ftz2),
 #                       _F(FONCTION=ftz3),),
 #               UNITE=8)
-# 
+#
 # IMPR_FONCTION(COURBE=(_F(FONCTION=acce_z1,),
 #                       _F(FONCTION=acce_z2,),
 #                       _F(FONCTION=acce_z3,),),
