@@ -107,7 +107,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
 !   -- verification rendez-vous
     iret=1
-    call asmpi_check(nbpro4, iret)
+    call asmpi_check(iret)
     if (iret .ne. 0) then
         call utmess('I', 'APPELMPI_83', sk=optmpi)
         goto 999

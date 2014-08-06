@@ -79,7 +79,7 @@ subroutine asmpi_warn(iexc)
         if (iexc .eq. 1) then
             call ststat(ST_EXCEPT)
         endif
-        call asmpi_check(nbpro4, iret)
+        call asmpi_check(iret)
     endif
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR
 !

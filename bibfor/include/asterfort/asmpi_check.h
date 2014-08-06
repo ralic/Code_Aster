@@ -16,8 +16,7 @@
 !
 #include "asterf_types.h"
 interface
-    subroutine asmpi_check(nbpro4, iret)
-        mpi_int :: nbpro4
-        integer :: iret
+    subroutine asmpi_check(iret)
+        integer, intent(out) :: iret
     end subroutine asmpi_check
 end interface

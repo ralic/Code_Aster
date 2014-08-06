@@ -1,4 +1,4 @@
-subroutine asmpi_check(nbpro4, iret)
+subroutine asmpi_check(iret)
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,22 +19,21 @@ subroutine asmpi_check(nbpro4, iret)
 !
     implicit none
 ! aslint: disable=W1306
-!     ARGUMENT IN
 #include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_wtime.h"
 #include "asterc/uttrst.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/asmpi_status.h"
 #include "asterfort/gtstat.h"
 #include "asterfort/mpistp.h"
 #include "asterfort/ststat.h"
 #include "asterfort/utmess.h"
-    mpi_int :: nbpro4
-!     ARGUMENT OUT
-    integer :: iret
+    integer, intent(out) :: iret
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI CHECK ERROR
 !       AVANT D'EFFECTUER UNE COMMUNICATION BLOQUANTE
@@ -56,19 +55,26 @@ subroutine asmpi_check(nbpro4, iret)
 #include "asterc/asmpi_send_i4.h"
 #include "asterc/asmpi_test.h"
 !
-    aster_logical :: isterm(nbpro4), lcont
+    aster_logical :: lcont
     mpi_int :: term
-    integer :: i, nbterm, np1, resp0
-    mpi_int :: rank, istat, mpicou, wki(1), nbv, ip4
-    mpi_int :: diag(nbpro4), request(nbpro4)
+    integer :: i, nbterm, nbproc, np1, resp0
+    mpi_int :: nbpro4, rank, istat, mpicou, wki(1), nbv, ip4
     real(kind=8) :: valr(1), tres, timout, t0, tf
+    aster_logical, pointer :: isterm(:) => null()
+    mpi_int, pointer :: diag(:) => null()
+    mpi_int, pointer :: request(:) => null()
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
     iret = 0
-    call asmpi_info(mpicou, rank=rank)
+    call asmpi_info(mpicou, rank=rank, size=nbpro4)
+    nbproc = to_aster_int(nbpro4)
     np1 = nbpro4 - 1
     nbv = 1
+!
+    AS_ALLOCATE(vl=isterm, size=nbproc)
+    AS_ALLOCATE(vi4=diag, size=nbproc)
+    AS_ALLOCATE(vi4=request, size=nbproc)
 !
     DEBUG_MPI('mpi_check', rank, nbpro4)
 !
@@ -99,7 +105,7 @@ subroutine asmpi_check(nbpro4, iret)
             isterm(i) = .false.
             ip4 = i
             DEBUG_MPI('mpi_check', 'irecv from ', ip4)
-            call asmpi_irecv_i4(diag(i), nbv, ip4, ST_TAG_CHK, mpicou,&
+            call asmpi_irecv_i4(diag(i:i), nbv, ip4, ST_TAG_CHK, mpicou,&
                                 request(i))
  10     continue
 !
@@ -169,11 +175,13 @@ subroutine asmpi_check(nbpro4, iret)
             endif
         endif
     endif
+    AS_DEALLOCATE(vl=isterm)
+    AS_DEALLOCATE(vi4=diag)
+    AS_DEALLOCATE(vi4=request)
 999 continue
 # endif
 !
 #else
-    iret = to_aster_int(nbpro4)
     iret = 0
 #endif
 end subroutine
