@@ -126,6 +126,7 @@ class MissCmdeGenerator(object):
                 '* Boucle sur les frequences',
                 '* -------------------------',
                 'DOFReq TOUTES SAVE MVFD TOT UI TUI IMPD FORCE',])
+        lines.extend(self._chargement_domaine('sol'))
         lines.extend(self.calcul_fonction_green())
         lines.extend(self.calcul_champs())
         lines.extend(self.calcul_global())
@@ -273,14 +274,6 @@ class MissCmdeGenerator(object):
             ''.join(['%4d' % i for i in self.domain['sol'][1]]),
             self._materiau_sol(),
             'FINS'])
-        if self.domain.get('fluide'):
-            lines.extend([
-                '*', '* Definition du sous-domaine sol',
-                     '* ------------------------------',
-                'SDOMAINE %4d GROUPE ' % self.domain['fluide'][0] + \
-                ''.join(['%4d' % i for i in self.domain['fluide'][1]]),
-                self._materiau_fluide(),
-                'FINS'])
         return lines
 
     def calcul_champ_incident(self):
@@ -294,25 +287,9 @@ class MissCmdeGenerator(object):
                 'EXTERIEUR',
                 'LIRE %s' % self.dinf['fich_ext'],
                 'FINE'])
-        # sol
-        z0 = self.param['Z0']
         lines.extend(self._chargement_domaine('sol'))
         lines.extend(self._stratification_sol())
-        lines.extend(['*',
-            '* Definition des champs incidents',
-            '* -------------------------------',
-            'INCI 3',
-            ('DPLANE SV 1. Z0 %%%(R)s' % dict_format ) % z0,
-            '0. 0. 1.',
-            ('DPLANE SH 1. Z0 %%%(R)s' % dict_format ) % z0,
-            '0. 0. 1.',
-            ('DPLANE P 1. Z0 %%%(R)s' % dict_format ) % z0,
-            '0. 0. 1.',
-            '*',
-            '* Calcul des champs incidents',
-            '* ---------------------------',
-            'EXEC INCI',
-            ])
+        lines.extend(self._source_sol())
         if self.param['_hasPC']:
             lines.extend(['*',
                 '* Calcul des champs incidents aux points de controle',
@@ -323,13 +300,14 @@ class MissCmdeGenerator(object):
     def calcul_fonction_green(self):
         """Calcul des fonctions de Green"""
         lines = []
-        lines.extend(self._chargement_domaine('sol'))
-        lines.extend(self._stratification_sol())
-        lines.extend(['*',
-            '* Calcul des fonctions de Green',
-            '* -----------------------------',
-            'EXEC SPFR',
-        ])
+        strat = self._stratification_sol()
+        if strat:
+            lines.extend(strat)
+            lines.extend(['*',
+                '* Calcul des fonctions de Green',
+                '* -----------------------------',
+                'EXEC SPFR',
+            ])
         return lines
 
     def calcul_champs(self):
@@ -399,21 +377,37 @@ class MissCmdeGenerator(object):
             'LIRE %s' % self.dinf['fich_sol'],]
         return lines
 
-    def _materiau_fluide(self):
-        """Définition des propriétés du fluide acoustique homogène"""
-        assert self.param.get('MATER_FLUIDE'), "'MATER_FLUIDE' must be defined"
-        # si SURF='OUI': demi-espace fluide, sinon FLUIDE
-        mat = '%%s RO %%%(R)s CELER %%%(R)s BETA %%%(R)s' % dict_format
-        typ = 'FLUIDE'
-        if self.dinf['surf']:
-            typ = 'DFLUIDE'
-            mat += ' SURF 0.'
-        val = self.param['MATER_FLUIDE']
-        rho = val['RHO']
-        celr = val['CELE']
-        beta = val['AMOR_BETA']
-        line = mat % (typ, rho, celr, beta)
-        return line
+    def _source_sol(self):
+        """Définition des sources dans le sol"""
+        lines = []
+        src = self.param.get('SOURCE_SOL')
+        if not src:
+            z0 = self.param['Z0']
+            lines.extend(['*',
+                '* Definition des champs incidents',
+                '* -------------------------------',
+                'INCI 3',
+                ('DPLANE SV 1. Z0 %%%(R)s' % dict_format ) % z0,
+                '0. 0. 1.',
+                ('DPLANE SH 1. Z0 %%%(R)s' % dict_format ) % z0,
+                '0. 0. 1.',
+                ('DPLANE P 1. Z0 %%%(R)s' % dict_format ) % z0,
+                '0. 0. 1.',
+                ])
+        else:
+            lines.extend(['*',
+                '* Definition de source dans le sol',
+                '* --------------------------------',
+                'INCI 1',
+                ('SOURCE %%%(R)s %%%(R)s %%%(R)s' % dict_format ) % src['POINT'],
+                ('       %%%(R)s %%%(R)s %%%(R)s' % dict_format ) % src['DIRECTION'],
+            ])
+        lines.extend(['*',
+            '* Calcul des champs incidents',
+            '* ---------------------------',
+            'EXEC INCI',
+            ])
+        return lines
 
     def _chargement_domaine(self, dom):
         """Chargement d'un domaine"""
@@ -459,6 +453,25 @@ class MissCmdeGeneratorInci(MissCmdeGenerator):
 class MissCmdeGeneratorISSF(MissCmdeGenerator):
     """Construit un fichier de commandes Miss dans le cas ISSF"""
 
+    def bloc_domain(self):
+        """Définition des sous-domaines"""
+        lines = super(MissCmdeGeneratorISSF, self).bloc_domain()
+        lines.extend([
+            '*', '* Definition du sous-domaine sol',
+                 '* ------------------------------',
+            'SDOMAINE %4d GROUPE ' % self.domain['fluide'][0] + \
+            ''.join(['%4d' % i for i in self.domain['fluide'][1]]),
+            self._materiau_fluide(),
+            'FINS'])
+        return lines
+
+    def calcul_champ_incident(self):
+        """Calcul des champs incidents"""
+        lines = super(MissCmdeGeneratorISSF, self).calcul_champ_incident()
+        lines.extend(self._chargement_domaine('fluide'))
+        lines.extend(self._source_fluide())
+        return lines
+
     def calcul_champs(self):
         """Calcul des champs rayonnés aux interfaces, et/ou assemblage des
         impédances et forces sismiques induites"""
@@ -467,8 +480,49 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         lines.extend(['*',
             '* Calcul des forces et impedances',
             '* -------------------------------',
-            'EXEC UGTG IMPEdance FORCe',
+            'EXEC UGTG IMPEdance FORCe' + self._rfic(),
         ])
+        return lines
+
+    def _source_sol(self):
+        """Définition des sources dans le sol"""
+        if not self.param.get('SOURCE_FLUIDE'):
+            return super(MissCmdeGeneratorISSF, self)._source_sol()
+        else:
+            return []
+
+    def _materiau_fluide(self):
+        """Définition des propriétés du fluide acoustique homogène"""
+        assert self.param.get('MATER_FLUIDE'), "'MATER_FLUIDE' must be defined"
+        # si SURF='OUI': demi-espace fluide, sinon FLUIDE
+        mat = '%%s RO %%%(R)s CELER %%%(R)s BETA %%%(R)s' % dict_format
+        typ = 'FLUIDE'
+        if self.dinf['surf']:
+            typ = 'DFLUIDE'
+            mat += ' SURF 0.'
+        val = self.param['MATER_FLUIDE']
+        rho = val['RHO']
+        celr = val['CELE']
+        beta = val['AMOR_BETA']
+        line = mat % (typ, rho, celr, beta)
+        return line
+
+    def _source_fluide(self):
+        """Définition des sources dans le fluide"""
+        lines = []
+        src = self.param.get('SOURCE_FLUIDE')
+        if src:
+            lines.extend(['*',
+                '* Definition de source dans le fluide',
+                '* -----------------------------------',
+                'INCI 1',
+                ('SOURCE %%%(R)s %%%(R)s %%%(R)s' % dict_format ) % src['POINT'],
+                '       1.',
+                '*',
+                '* Calcul des champs incidents',
+                '* ---------------------------',
+                'EXEC INCI',
+                ])
         return lines
 
 
@@ -811,48 +865,45 @@ OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
         diff = self._diffcompress(refe, txt)
         assert diff.strip() == "", diff
 
-    def test08_fdlv112eh(self):
+    def test08_fdlv113a(self):
         """idem fdlv112e + matériau homogène"""
         refe = """
-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
+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
+v4F3T3EM+QPd26Bk
 """
         self.par.update({
-            'PROJET' : "FDLV112Eh",
-            'FREQ_MIN' : 4.0,
-            'FREQ_MAX' : 5.0,
-            'FREQ_PAS' : 1.0,
+            'PROJET' : "FDLV113A",
+            'FREQ_MIN' : 1.0,
+            'FREQ_MAX' : 21.0,
+            'FREQ_PAS' : 20.0,
             'Z0' : 5.,
             'SURF' : 'NON',
+            'RFIC' : 0.5,
             'ALGO' : 'REGU',
             'OFFSET_MAX' : 1000,
             'OFFSET_NB' : 5000,
             'ISSF' : 'OUI',
-            '_hasPC' : True,
-            '_nbPC' : 3,
             'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2 },
             'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 150, 'AMOR_BETA' : 0. },
+            'SOURCE_FLUIDE' : { 'POINT' : (0., 0., 0.) },
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
         if self._write:
-            open('/tmp/test08_fdlv112eh.in', 'wb').write(txt)
+            open('/tmp/test08_fdlv113a.in', 'wb').write(txt)
         diff = self._diffcompress(refe, txt)
         assert diff.strip() == "", diff
 
@@ -863,6 +914,5 @@ eajrtsAIj8MLfvntGWaof88iqOdlT76E/A+RZ3ep
         return test_utils.difftxt(sref, snew)
 
 if __name__ == '__main__':
-    # cd $HOME/dev/codeaster/src/bibpyt
-    # PYTHONPATH=.:$PYTHONPATH python Miss/miss_fichier_cmde.py
+    # ( cd $HOME/dev/codeaster/src/bibpyt ; PYTHONPATH=.:$PYTHONPATH python Miss/miss_fichier_cmde.py )
     unittest.main()
