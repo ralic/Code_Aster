@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine memare(base, matel, modele, mate, cara,&
+    subroutine memare(base  , matr_vect_elemz, modelz, mate, cara_elem,&
                       suropt)
-        character(len=*) :: base
-        character(len=*) :: matel
-        character(len=*) :: modele
-        character(len=*) :: mate
-        character(len=*) :: cara
-        character(len=*) :: suropt
+        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: matr_vect_elemz
+        character(len=*), intent(in) :: modelz
+        character(len=*), intent(in) :: mate
+        character(len=*), intent(in) :: cara_elem
+        character(len=*), intent(in) :: suropt
     end subroutine memare
 end interface

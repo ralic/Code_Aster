@@ -1,16 +1,14 @@
-subroutine reajre(matelz, resuez, basez)
-    implicit none
-#include "jeveux.h"
+subroutine reajre(matr_vect_elemz, resu_elemz, base)
+!
+implicit none
+!
 #include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
-    character(len=*), intent(in) :: matelz, resuez, basez
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,58 +27,65 @@ subroutine reajre(matelz, resuez, basez)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!      BUT: AJOUTER DANS LE MATR_ELEM (OU VECT_ELEM) MATELZ LE
-!           RESUELEM RESUEZ
-!           SI RESUEZ=' ', ON CREE UN MATR_ELEM (OU VECT_ELEM) VIERGE
+    character(len=*), intent(in) :: matr_vect_elemz
+    character(len=*), intent(in) :: resu_elemz
+    character(len=1), intent(in) :: base
 !
-!     IN  : MATELZ = NOM DE LA SD MATR_ELEM OU VECT_ELEM
-!           RESUEZ = NOM DE LE SD RESU_ELEM
-!           BASEZ  = BASE DE CREATION ('V' OU 'G')
+! --------------------------------------------------------------------------------------------------
 !
+! RESU_ELEM Management
 !
+! Add a new elementary result (resu_elem) in matr_elem or vect_elem (elementary matrix or vector)
 !
-    integer :: iret, nlmax, nluti, ndim, jrelr, iret1, iret2
-    parameter(ndim=10)
-    character(len=1) :: base
-    character(len=19) :: matele, resuel
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+! In  matr_vect_elem : name of matr_elem or vect_elem
+! In  resu_elem      : name of resu_elem (if ' ', just init matr_vect_elem)
+! In  base           : JEVEUX basis
 !
-    resuel=resuez
-    matele=matelz
-    base=basez
+! --------------------------------------------------------------------------------------------------
 !
-    call jeexin(matele//'.RELR', iret)
+    integer :: ndim
+    parameter (ndim=10)
 !
-!     ALLOCATION
+    integer :: iret, nlmax, nluti, iret1, iret2
+    character(len=19) :: matr_vect_elem, resu_elem
+    character(len=24), pointer :: p_relr(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
+    resu_elem      = resu_elemz
+    matr_vect_elem = matr_vect_elemz
+!
+! - Create RELR object
+!
+    call jeexin(matr_vect_elem//'.RELR', iret)
     if (iret .eq. 0) then
-        call wkvect(matele//'.RELR', base//' V K24', ndim, jrelr)
-        call jeecra(matele//'.RELR', 'LONUTI', 0)
+        call wkvect(matr_vect_elem//'.RELR', base//' V K24', ndim, vk24 = p_relr)
+        call jeecra(matr_vect_elem//'.RELR', 'LONUTI', 0)
     endif
 !
-!     EXISTENCE DU RESU_ELEM ?
-    if (resuel .eq. ' ') goto 9999
+! - Add resu_elem
 !
-!     ATTENTION : PARFOIS, RESUEL N'EST PAS UN RESUELEM MAIS UN CHAM_NO
-    call exisd('RESUELEM', resuel, iret1)
-    call exisd('CHAM_NO', resuel, iret2)
-    if ((iret1.eq.0) .and. (iret2.eq.0)) goto 9999
+    if (resu_elem .ne. ' ') then
+        call exisd('RESUELEM', resu_elem, iret1)
+        call exisd('CHAM_NO' , resu_elem, iret2)
+        if ((iret1.ne.0) .or. (iret2.ne.0)) then
 !
+! --------- Increase size if necessary
 !
-!     REDIMENSIONNEMENT DE .RELR SI NECESSAIRE :
-!     -------------------------------------------
-    call jelira(matele//'.RELR', 'LONMAX', nlmax)
-    call jelira(matele//'.RELR', 'LONUTI', nluti)
-    if (nlmax .eq. nluti) call juveca(matele//'.RELR', nlmax+ndim)
+            call jelira(matr_vect_elem//'.RELR', 'LONMAX', nlmax)
+            call jelira(matr_vect_elem//'.RELR', 'LONUTI', nluti)
+            if (nlmax .eq. nluti) then
+                call juveca(matr_vect_elem//'.RELR', nlmax+ndim)
+            endif
 !
-!     STOCKAGE :
-!     -----------
-    call jeveuo(matele//'.RELR', 'E', jrelr)
-    zk24(jrelr+nluti) = resuel
-    call jeecra(matele//'.RELR', 'LONUTI', nluti+1)
+! --------- Add resu_elem
 !
-9999  continue
-!
-    call jedema()
+            call jeveuo(matr_vect_elem//'.RELR', 'E', vk24 = p_relr)
+            p_relr(nluti+1) = resu_elem
+            call jeecra(matr_vect_elem//'.RELR', 'LONUTI', nluti+1)
+        endif
+    endif
 !
 end subroutine

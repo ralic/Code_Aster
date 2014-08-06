@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine reajre(matelz, resuez, basez)
-        character(len=*), intent(in) :: matelz
-        character(len=*), intent(in) :: resuez
-        character(len=*), intent(in) :: basez
+    subroutine reajre(matr_vect_elemz, resu_elemz, base)
+        character(len=*), intent(in) :: matr_vect_elemz
+        character(len=*), intent(in) :: resu_elemz
+        character(len=1), intent(in) :: base
     end subroutine reajre
 end interface

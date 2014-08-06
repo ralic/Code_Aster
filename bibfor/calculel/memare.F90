@@ -1,14 +1,12 @@
-subroutine memare(base, matel, modele, mate, cara,&
+subroutine memare(base  , matr_vect_elemz, modelz, mate, cara_elem,&
                   suropt)
-    implicit none
-#include "jeveux.h"
+!
+implicit none
+!
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: base, matel, modele, mate, cara, suropt
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,38 +23,47 @@ subroutine memare(base, matel, modele, mate, cara,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
-!     BUT: CREER ET INITIER L'OBJET .RERR DES MATR_ELEM(VECT_ELEM)
 !
-!      BASE  (K1)  : NOM DE LA BASE DE CREATION : 'G', 'V', ...
-!      MATEL (K19) : NOM DU MATR_ELEM (OU VECT_ELEM)
-!      MODELE(K8)  : NOM DU MODELE SUPPORTANT LE MATR_ELEM
-!      MATE  (K8)  : NOM DU CHAM_MATER ASSOCIE
-!      CARA  (K8)  : NOM DU CARA_ELEM ASSOCIE
-!      SUROPT(K16) : NOM DE LA SUR_OPTION ('RIGI_MECA', ..., 'CHAR_MECA'
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: matr_vect_elemz
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: mate
+    character(len=*), intent(in) :: cara_elem
+    character(len=*), intent(in) :: suropt
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=1) :: bas2
-    character(len=8) :: mode2
-    character(len=19) :: mate2
+! RESU_ELEM Management
 !
-!-----------------------------------------------------------------------
-    integer :: iarefe
-!-----------------------------------------------------------------------
-    call jemarq()
-    bas2 = base
-    mate2 = matel
-    mode2 = modele
-    ASSERT(mode2.ne.' ')
+! Create RERR object for matr_elem or vect_elem
 !
-    call jedetr(mate2//'.RERR')
-    call wkvect(mate2//'.RERR', bas2//' V K24', 5, iarefe)
-    zk24(iarefe-1+1) = modele
-    zk24(iarefe-1+2) = suropt
-    zk24(iarefe-1+3) = 'NON_SOUS_STRUC'
-    zk24(iarefe-1+4) = mate
-    zk24(iarefe-1+5) = cara
+! --------------------------------------------------------------------------------------------------
 !
-    call jedema()
+! In  base           : JEVEUX basis
+! In  matr_vect_elem : name of matr_elem or vect_elem
+! In  modelz         : name of model
+! In  mate           : name of material characteristics (field)         
+! In  cara_elem      : name of elementary characteristics (field)
+! In  suropt         : name of "SUR_OPTION"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8) :: model
+    character(len=19) :: matr_vect_elem
+    character(len=24), pointer :: p_rerr(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
+    matr_vect_elem = matr_vect_elemz
+    model          = modelz
+    ASSERT(model.ne.' ')
+!
+    call jedetr(matr_vect_elem//'.RERR')
+    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 5, vk24 = p_rerr)
+    p_rerr(1) = model
+    p_rerr(2) = suropt
+    p_rerr(3) = 'NON_SOUS_STRUC'
+    p_rerr(4) = mate
+    p_rerr(5) = cara_elem
+!
 end subroutine
