@@ -495,12 +495,11 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         """Définition des propriétés du fluide acoustique homogène"""
         assert self.param.get('MATER_FLUIDE'), "'MATER_FLUIDE' must be defined"
         # si SURF='OUI': demi-espace fluide, sinon FLUIDE
-        mat = '%%s RO %%%(R)s CELER %%%(R)s BETA %%%(R)s' % dict_format
+        mat = '%%s RO %%%(R)s CELER %%%(R)s BETA %%%(R)s SURF 0.' % dict_format
         typ = 'FLUIDE'
-        if self.dinf['surf']:
-            typ = 'DFLUIDE'
-            mat += ' SURF 0.'
         val = self.param['MATER_FLUIDE']
+        if val['DEMI_ESPACE'] == 'OUI':
+            typ = 'DFLUIDE'
         rho = val['RHO']
         celr = val['CELE']
         beta = val['AMOR_BETA']
@@ -664,21 +663,21 @@ DJ2q7FXuRr6t9JfAH4AuXdY=
     def test03_fdlv112b(self):
         """use ISSF"""
         refe = """
-eJzdVslu2zAQvfMr5uzCru20RXtUJMoRoK0UbRS9BIpM2wS0OJJY9Jf6Hf2xDmknluM1QdFDhQhm
-KM7Mmzcbe+CIB9XCXEAOolX4G8imIT3oH3tID7+EVQFLUYpaPiqBkg0sZLaSom4g8JLklGxXzYSG
-lIHr+LPRaHxrtG5xKChEqcCxuHVUEdl8wW9ctrXoACe9w8Pc44ySmEXO1OMQWwxsy7fvNzBRhy+y
-VmktaDaVeZ4uj6nRmoJZ5MPg/RPkQfGjyre4F7KUraxKQ8WyrtRanCQQXWfRNCauF06OiRfV/KQw
-se+sICa+x2gXSbZaG01xWqeFQE4amIMsW7GsU633TDyIF3I6YRb3ohAYtTl8gs/AmWeFE5/CaIx/
-hyghT2GtqdLrRS0wC8rsjMsvbLqMfp3S0KbgUMBnNBiah/aHI7D0zs3TzrvhEIOW6L3x4Mvz3jHi
-mko1/XmFUSwvQjmQV3vi+E9+0RmSOFFgeeHGBTBR1ev+SDuA7weScGa1ciGFjnby142OO0bH+N4Q
-x/WnHrAIRkgU2NTHGht9xGUyZS4MBzscriwvlZo+7HQr0xTaT5GpM0llzturtF4K1G3K+TX+YXV3
-SD2eeU2r0xo7Trqj8QrNOwPJOIDvQ23hYzfP4KCwmuMVnq3SYt1ghWVyjj5ekfdYZrYHGJ/Yt9C3
-ZIY5fwQCGQ4wSPjt+eDdlQfjS+dMWNI8U/kbXCD0G7VB+2D03FYqyzGeqoZc9/6rGgDy7jLxCDya
-cppAYs0oBDPXwQ0OmLQcXy+IHXAjZtP/Mo06/C+qMtNmGw1mUgtxrkl3YpDELjvUVSP3OAJBFmsx
-T69rxRt90wmfaNqpETPcizPcL3Il9Zx9Df3jf4KXCWRZPUVyXVcPOaLfzsE6zS7MwUNLEz+6tfxd
-rzQ58/CWzO9qDh0XZfa0Xmip+1ejddW0fUxc2ZrYnJvs5kawf9zQj6T//nUl6ySOEo5zwL7r5jNe
-MNS9jh3mui5Z20z0bWXjHSWe6rVZ8c0KJ0l8EtA2HxrZFPo+efU14jQ2rZFs+kgXmeP4Gzi63ezB
-2k7Da9l9Eb8Ll2ZthvwB+KvUFQ==
+eJzdVt1umzAUvvdTnOtUyUi6TdslAZMiEWDGRNNuKkqcxBKBlJ9pr7Tn2Ivt2KQNaX5brTdDRXGN
+fc53vvPbA1s8NDXMBWQg6gZ/p7KqSA/6xx7Swy9+sYalyEUpHxuBNytYyHQlRVnB1I2iU3e7YibU
+pwwc25sNh6OxlrrF0cBa5A3YJjePCiLtF/zGZV2KDnDSOzzMXc4oCVlgxy6H0GRgmZ5138JEGZ5I
+60ZJQbWJzLJkeUyMkjSdBR4MPjxBHqx/FtkW90LmspZFrqlYlkWzEScJRNNZEIfEcf3JsevrYn7y
+MrHuzGlIPJfRLpJ0tdGSwqRM1gI5qWAOMq/FskyU3DP+IK7P6YSZ3A18YNTi8Bm+AGeu6U88CsMR
+/h2ihCyBjaJKrRelwCjI0zMmv9DpMPotpr5FwaaAz3Bg6If2jSGYauf2aefGMNBpkdobDb4+7x0j
+riqaqj8v0Iv5RSgH95u96/hPdtEYEtnB1HT91gTQXlXr/lAZgO9HEnFm1nIhhfJ29M+VjjpKR/je
+EtvxYhdJZcEerzfGLVjUw4TTu592u2PKNeFGl/AoZg7u7EA7Mr+Ul+qw3U1jnZW/RNqciUB93lol
+5VKgbJ37ryEDS0HHA8fDtKpVDmB5SnacXyF5pyAaTeGHoTR86nIEB1lYHS8H6SpZbypMx1TO0cYr
+kgRz0nIBnRl6JtoWzdBlRyAQY4BOwm/PB++uPBheOqfdkmRpk73BBEK/UwuUDWfcu8gaqQr2azzc
+FqJx0aQZxkdTQqYaz1XVB8U4TDwCD2JOI4jMGYXpzLFxg0PsAsfXnYY2OAGz6H8Zlh1/Loo8VWor
+BWZSCnGuQ7QKtU+j0GGHskrkHvsvyPVGzJPr+kArL57wiaKd6muae/EuMfPeeJlAlpsnT27K4iFD
+9NsmXCbphSZ8qGniBWPT29VeHTMPb4n8rmTfdvDOntQLJXp/LtsUVd3HwJW19s25sUKPI/vHNf1I
++p/fV7JOwiDi2Fesu24843TT3CvfYayrlLX0OLHNbByQwlit9Yq3K+xM4UlA23ioZLVWw+zVM8xp
+bEoiaetIF5ltey0cVW72YG2767XsvvDfhYldqSF/Ac9u8B8=
 """
         self.par.update({
             'PROJET' : "FDLV112B",
@@ -691,7 +690,8 @@ MNS9jh3mui5Z20z0bWXjHSWe6rVZ8c0KJ0l8EtA2HxrZFPo+efU14jQ2rZFs+kgXmeP4Gzi63ezB
             'OFFSET_MAX' : 1000,
             'OFFSET_NB' : 5000,
             'ISSF' : 'OUI',
-            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0. },
+            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0.,
+                               'DEMI_ESPACE' : 'OUI' },
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -824,24 +824,24 @@ JzC/fjkrKbGQsJ7OPMzQh2lKLI5fAT7FzxesTU3Loj7dVcdcl637xX1XiO/L133N+hF0pTpDK7Co
     def test07_fdlv112e(self):
         """use ISSF + control points"""
         refe = """
-eJzdV1uP6jYQfvevmOetlhK2W/XlPOQkTjZqbrUTdNSXo2wwYCkknFyq7b/v2EAJECBnu5WqIi4h
-sb/5Zr7xePwAtnjtWlgIKEC0Hf4GsmnIAzwOvcgDPgmrDaxEKWr5rRM4s4GlzNdS1A0EHufX5vZh
-XBpSBo7tzw1jRjXqnkcHG1F2YJuJOQhEdk/wWSLbWvSIk4fLwYmXMEpiFtmpl0BsMrBM3/q6o4kY
-vsjbTqGg2UwWRbYaglFIwTzyYfLjgfJk80dV7HkvZSlbWZU6FKu66rbiagDRdRalMQGAZ0DINKDE
-8UL1/+f+f/y4Q/CbanEVnFgvZhAT32O0zzRfbzVSnNXZRmDMGliALFuxqjOFe0Mv4oUJdZmZeFEI
-jFoJkvwFEuaZoetTMGb4vmQJRQZbFUp1vawFZkmZ3wjJmU2H0d9SGloUbIphgZ8mU/2iP0ynYKo7
-z/07scnVPaN3byhwTdU1j4sKVS7vUrmY351Mh6atO503Y13idhSYXqjdMUBnwP4aYKakJ79agdKc
-3zWtsu6O0RNzs6O5R2XuSUVUxZDwhJmtXErx7xh+6hlGHx+fiO34qQcsAgN1Aov6WAKMZ7zkKXNg
-OjnycGR5rxKowXa/cOg68Cby7kZO6/HWOqtXArF1tXmHpqSvJqFfEso8mrKLhSfeWsWS3rI6Iqon
-9q4sN2SfKS3z7CjeCOSjAT4L4PfpxeKCC6ea4bKXr7PNtsGykssF+jhisWNtsTzArIh9E33jc1zC
-AxTIdIKpgc/+HvgycmB8b5yWJSvyrniHC6g7tUD5cA8Hsu4NtpVUl6hWXpVtXRVja8eQVSsKExZh
-AU53xj9XXV5gMnU1FGo3HlVyUXSHiW+QRGlCOXBzTiGYOzbeSBAYEvx4QWyDEzHr/5nDPdGWVZkr
-s1oitxbi1rbYk4LHDrvEqjH22JSA3GzFIhu3+e3wUjdxIbWxPKq9XAlANYBWQdxQYVl0cvGdxevp
-w5kP8WUC490dNN3W1WuB7Pc9SJ3ld3qQS0uuH302/Y/PSP5n2a5FI/qr+LCmNNdlNr6NOZC1PcdR
-TgpI1cJK8Ou/kv63/P2AenWsVWr60X0II5dGx31ee//6nhLWtxXaDs45Qb3TDpyeOrZV0z6iBLLV
-6XSrKR7olOSqzK6JRbjnhqYP5zJMjYma9/F5HJ+68k/3HxJHPCE8RjFD5xPsejsnML98Ot9ZHc96
-OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
-4k/c7yTHqnuWP3fOw/qk9hdKKMTn
+eJzdV1mP4kYQfu9fUc+zGsKRifKyDx677bHia7vbaJWXyGMasGRs1kc0+fepbiAYMOCdzEpREIfp
+46vjq66uegBLvrYNLCTkIJsWf/2srskDPPa9yAPOBOUGVrKQVfatlbizhmWWrjNZ1eC7nF/b24Vx
+aEAZ2JY3n0ymVKPu9WhhI4sWLEMYvUBkN4NzImsq2VGcPFwuFq5glEQstGJXQGQwMA3P/GOnJmJ4
+Mm1ahYJikyzPk1UfjELy56EHo58OKo82f5b5Xu9lVmRNVhbaFauqbLfyqgPRdBbGEQGAJ0DI2KfE
+dgP1/5fuf/w4ffCbcnEVnJgvhh8Rz2W0q2m63mqkKKmSjUSf1bCArGjkqkoU7g2+iBsI6jBDuGEA
+jJoClfwVBHONwPEoTKb4vtQS8gS2ypXqeVlJjJIiveGSM5k2o19iGpgULIpugZ9HY/2in8ZjMNTI
+U3ckMrgam3TG+hxXl239uCiR5eKuKhf725PtUDdVq+NmqEncCn3DDbQ5E9ARsH8GmCrqyW+mrzjn
+d0WrqLsj9ETc9CjuUYmbKY8qHxIumNFky0z+GMGzjmC08XFGLNuLXeSUhWeEzcCkHuYDPfp0HH2m
+QvM97vLNY2bjyFFpOyvupQ212OpmGZ003mTa3jgAer25TqqVRGydmt4RAKRLPaFfBWUujdnFKZVv
+jdKS3pI6gIITeVfOJmqfKOLT5Mj0AOSjAD714ffxxUmEC6Pq/hyZrpPNtsYclGYLtHFAZsBEZLqA
+IRR5BtrG5xgoPSqQ8QhDA+f+WfgycGF0b52mJcnTNn+HCcg7NUHZcA8HkvYNtmWmHpGttCyaqsyH
+Jpo+qWYYCBZito7dG7G1zNts8Z3hPNN4z2Wb5hicbQW5KgUG5XuEsZn8BiKMBeXAjTkFf25bOCBQ
+URD4cf3IAjtk5v/zTHSCYFkWqRKrKXcqKW/dyTuBmloe2ewSq0LfY0UE2WYrF8mwm3eHFzvCgdga
+gy4kFAFUA2gW5A+Jno/UvE9fJtHf7YHTbVW+5qj9vgCqkvROAXQpyfHCZ8P7+IjkfxXNWtaymxUO
+Z0rrukyG11AHZS3XtpWREmJ1sAR+/VfC/5a9H5D/jrlPbT+aD0Ho0PBYN2jrX9+TwrqyAsvGPSeo
+d8qL05ZnW9bNI1KQNTqcblXkPWVatiqSa2QR7jqB4cE5DePJSO37+DiOTk35t/cZiUIuCI+QzMD+
+DLvC0vaNr5/Pb2rbNV/OLEzRhlFCTI6tm0ex58Ti0zB1ralbGq57jf0ltOue9j3HZNdoYLGs2osJ
+aoGdEL8yaVmewuCHkhR/om5lOpTds/i504zrNvFvcCbg8g==
 """
         self.par.update({
             'PROJET' : "FDLV112E",
@@ -854,7 +854,8 @@ OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
             'OFFSET_MAX' : 1000,
             'OFFSET_NB' : 5000,
             'ISSF' : 'OUI',
-            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0. },
+            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0.,
+                               'DEMI_ESPACE' : 'OUI'  },
             '_hasPC' : True,
             '_nbPC' : 3,
         })
@@ -875,29 +876,26 @@ tAIFj43TLIvXp2AEkrPwbFA+7ykr+Y8y2/FepUXapGUhXbGuynbLzzoQTQ+8yCem5c5Pbc/L5dnN
 RH/QHJ/YVkD7TJLNViL5cRXnHH1SwxLSouHrKha4F/QglsvoPNCY5bkQUJ3BF/gKLLA0d25TUCf4
 OWYJWQxb4SoxXlUcb0GRXDD5zZlmQL9F1NUpGBSwqcpYNvppPAZNzEwUdT+jomhhN/eySj3luLps
 69GyRBWLQSpH+9uD7fgnGzSGhIbnaJbbmQBSVTEeqfg1xX5LHI1RCLyO/WzPfgoLX0zNlNnd3d30
-FqcmsJA2TpVbdfZlNpZT95RpMFbETQn/OeFJj/AE+5SYdmQZe7o9SaagUxtjVc6+GLGjh23cU++V
-q5kWQ6EsFhv9yJeB/JMn7YVLK9frm7hac8SW6eI9PsDs0RPtAtgqa1ORUd6DdypSUKUqwTiJixqy
-62EltOXqFpIMvSjQ6VtXD/0n0DVV6ayMs6TNZKAkmzjf1pggEqRSNAOxQuh3qoOgInHuyzZBO+q2
-QnPqK4MfnWQG/BmYFzEaQqgtKDgL08AJBpEFDLvl+AaYHlr6ARK/Gr8qUY4a6wWk+ZajLFflrc4J
-0ZzNBU8qt0myHALT0tHxM9E/5D79V/IBRxe3+xSzrcqnDE3ZlZMqTgbKyfGxc9u71+zXlCBrx9Pf
-XKI+smuYuOcAdSBzHL5hbMu6GTVVnDZSqEsFUhbWw+VSC1Tg968rJSC+FzJMd/pDv2xjnW4fhZAA
-RNx+XRbGXZBgqfcjMZYj1o0wYfpnCe0uR53WuXgtu7oan+cmEEkXkn1mhmF3dETkHtDaJf1rvftG
-v4F3T3EM+QPd26Bk
+FqcmsJA2TpVbdfZlNpZT95RpMFbETQn/OeFJj/AE+5SYdmQZe7o9SaagUxtjVc6+GLGjh23cVy+M
+AvOAs5kWQyEtFhv9DCAD+idP2guXV67XN3G15ogt08Z7fIFZpCfeBbBV1qYis7wH71TEoFpVgvES
+FzVk18NKaMvVLSQZelGg0yOXD/wn0DVV6ayMs6TNZMAkmzjf1pgoEqRSNAMxQ+h3qoOgInHuyzZB
+O+q2QnPqK5MAOskM+DMwL2I0hFBbUHAWpoETDCILGHbL8Q0wPbT0AyR+NX5Vohw11g1I8y1HWa7K
+X50TojmbC55UbpNkOQSmpaPjZ6J/yH36r+QDji5u96lmW5VPGZqyKytVnAyUleNj57Z3r9mvKUHW
+kKe/uUR9ZNcwcc8B6kDmOHzT2JZ1M2qqOG2kUJcKpSywh8ulFqjA719XSkB8L2SY7vSHfvnGet0+
+CiEBiLj9uiyQuyDBku9HYixHrBthwvTPEtpdjjqtc/F6dnVVPs9NIJIuJPvMDMPu6IjIPaC1S/rX
+eveNfgPvoOIY8gcMh6JC
 """
         self.par.update({
             'PROJET' : "FDLV113A",
             'FREQ_MIN' : 1.0,
             'FREQ_MAX' : 21.0,
             'FREQ_PAS' : 20.0,
-            'Z0' : 5.,
             'SURF' : 'NON',
             'RFIC' : 0.5,
-            'ALGO' : 'REGU',
-            'OFFSET_MAX' : 1000,
-            'OFFSET_NB' : 5000,
             'ISSF' : 'OUI',
             'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2 },
-            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 150, 'AMOR_BETA' : 0. },
+            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 150, 'AMOR_BETA' : 0.,
+                               'DEMI_ESPACE' : 'NON'  },
             'SOURCE_FLUIDE' : { 'POINT' : (0., 0., 0.) },
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
