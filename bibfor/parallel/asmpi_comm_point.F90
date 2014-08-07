@@ -46,6 +46,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
 ! aslint: disable=W1304
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -104,6 +105,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
     call asmpi_info(mpicou, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
+    DEBUG_MPI('mpi_comm_point', nbpro4, ' ')
 !
 !     -- SCALAIRE :
 !     -------------

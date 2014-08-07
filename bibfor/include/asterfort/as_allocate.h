@@ -17,11 +17,17 @@
 ! because macros must be on a single line
 ! aslint: disable=C1509
 !
-! To have a syntax similar to the standard ALLOCATE
 #include "asterf.h"
 #include "asterf_debug.h"
 
-#define AS_ALLOCATE(arg, size) DEBUG_LOC("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=TO_STRING((arg, size)))
+#ifdef __DEBUG_ALLOCATE__
+#   define DEBUG_LOC_ALLOCATE(a, b, c) DEBUG_LOC(a, b, c)
+#else
+#   define DEBUG_LOC_ALLOCATE(a, b, c) continue
+#endif
+
+! To have a syntax similar to the standard ALLOCATE
+#define AS_ALLOCATE(arg, size) DEBUG_LOC_ALLOCATE("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=TO_STRING((arg, size)))
 !
 #include "asterf_types.h"
 !

@@ -19,6 +19,7 @@ subroutine mpistp(imode)
 !
     implicit none
 !     ARGUMENT IN
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
 #include "asterf.h"
@@ -58,6 +59,7 @@ subroutine mpistp(imode)
             imod2 = 1
         endif
     endif
+    DEBUG_MPI('mpi_stop', imod2, ' (1:abort, 2:except)')
 !
     if (imod2 .eq. 1) then
 #ifdef _USE_MPI

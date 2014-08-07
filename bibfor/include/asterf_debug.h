@@ -27,26 +27,32 @@
 ! with the MARKER (to make grep easy).
 ! If the flag is not defined, the function must be empty macro.
 !
-! to print localization
-!#define __DEBUG_LOC__
-! to trace AS_ALLOCATE / AS_DEALLOCATE
-!#define __DEBUG_ALLOCATE__
-!
-! to add all traces
-!#define __DEBUG_ALL__
-
+! to add all traces, define __DEBUG_ALL__
+#ifdef __DEBUG_ALL__
+#   define __DEBUG_ALLOCATE__
+#   define __DEBUG_MPI__
+#   define __DEBUG_LOC__
+#endif
 
 ! all prints should start with the same marker
 #define MARKER "DEBUG: "
 
-#if defined(__DEBUG_ALLOCATE__) || defined(__DEBUG_ALL__)
+! trace AS_ALLOCATE / AS_DEALLOCATE
+#ifdef __DEBUG_ALLOCATE__
 #   define DEBUG_ALLOCATE(a, b, c) print *, MARKER, a, ':', b, c
-#   define __DEBUG_LOC__
 #else
 #   define DEBUG_ALLOCATE(a, b, c) continue
 #endif
 
-#if defined(__DEBUG_LOC__) || defined(__DEBUG_ALL__)
+! trace MPI communications
+#ifdef __DEBUG_MPI__
+#   define DEBUG_MPI(a, b, c) print *, MARKER, a, ':', b, c
+#else
+#   define DEBUG_MPI(a, b, c) continue
+#endif
+
+! print localization
+#ifdef __DEBUG_LOC__
 #   define DEBUG_LOC(label, a, b) write(6,"(1X,A,A,'@',A,':',I4)") MARKER, label, a, b
 #else
 #   define DEBUG_LOC(label, a, b) continue

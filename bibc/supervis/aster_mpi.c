@@ -184,6 +184,7 @@ void DEFP(ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm) {
 void aster_set_mpi_barrier(aster_comm_t *node) {
     /*! Set a MPI barrier */
 #ifdef _USE_MPI
+    DEBUG_MPI("mpi_barrier %s : %d\n", "communicator", (int)MPI_Comm_c2f(node->id))
     AS_ASSERT(MPI_Barrier(node->id) == MPI_SUCCESS);
 #endif
     return;

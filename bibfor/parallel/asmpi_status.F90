@@ -20,6 +20,7 @@ subroutine asmpi_status(istat, resp0)
     implicit none
 !     ARGUMENTS          IN     OUT
 #include "asterf_constant.h"
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
@@ -59,6 +60,7 @@ subroutine asmpi_status(istat, resp0)
 !     ENVOI ST_OK OU ST_ERR AU PROC #0
     ist4(1) = istat
     nbv = 1
+    DEBUG_MPI('mpi_status', 'isend to proc #0:', istat)
     call asmpi_isend_i4(ist4, nbv, pr0, ST_TAG_CHK, mpicou,&
                         req)
     t0 = asmpi_wtime()
@@ -75,6 +77,7 @@ subroutine asmpi_status(istat, resp0)
     endif
     if (term .ne. 1) goto 300
 !     END WHILE
+    DEBUG_MPI('mpi_status', 'isend ', 'done')
 !
 !     REPONSE DE PROC #0
     irp0(1) = ST_ER
@@ -96,6 +99,7 @@ subroutine asmpi_status(istat, resp0)
 !     END WHILE
 !
     resp0 = irp0(1)
+    DEBUG_MPI('mpi_status', 'proc #0 returns ', resp0)
 !
 999  continue
 #else

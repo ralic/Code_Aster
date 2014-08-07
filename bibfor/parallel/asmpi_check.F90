@@ -20,6 +20,7 @@ subroutine asmpi_check(nbpro4, iret)
     implicit none
 ! aslint: disable=W1306
 !     ARGUMENT IN
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
@@ -69,6 +70,8 @@ subroutine asmpi_check(nbpro4, iret)
     np1 = nbpro4 - 1
     nbv = 1
 !
+    DEBUG_MPI('mpi_check', rank, nbpro4)
+!
 !     SUR LES PROCESSEURS AUTRES QUE #0
 !
     if (rank .ne. 0) then
@@ -95,6 +98,7 @@ subroutine asmpi_check(nbpro4, iret)
         do 10 i = 1, np1
             isterm(i) = .false.
             ip4 = i
+            DEBUG_MPI('mpi_check', 'irecv from ', ip4)
             call asmpi_irecv_i4(diag(i), nbv, ip4, ST_TAG_CHK, mpicou,&
                                 request(i))
  10     continue
@@ -151,6 +155,7 @@ subroutine asmpi_check(nbpro4, iret)
                 endif
                 wki(1) = istat
                 ip4 = i
+                DEBUG_MPI('mpi_check:send status / to', wki, ip4)
                 call asmpi_send_i4(wki, nbv, ip4, ST_TAG_CNT, mpicou)
             endif
 103     continue

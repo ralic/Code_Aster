@@ -18,6 +18,7 @@ subroutine asmpi_warn(iexc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
@@ -59,6 +60,7 @@ subroutine asmpi_warn(iexc)
     if (nbpro4 .le. 1 .or. .not. gtstat(ST_OK)) then
         goto 999
     endif
+    DEBUG_MPI('mpi_warn', rank, nbpro4)
 !
 !     SUR LES PROCESSEURS AUTRES QUE #0
     if (rank .ne. 0) then

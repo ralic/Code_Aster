@@ -47,8 +47,7 @@ subroutine asmpi_checkalarm()
     call asmpi_comm('GET_WORLD', mpicow)
     call asmpi_comm('GET', mpicou)
     ASSERT(mpicow == mpicou)
-    call asmpi_info(mpicou, rank=rank)
-    call asmpi_info(mpicou, size=nbpro4)
+    call asmpi_info(mpicou, rank=rank, size=nbpro4)
     np1 = nbpro4 - 1
     nbv = 1
 !

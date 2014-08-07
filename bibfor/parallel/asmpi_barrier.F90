@@ -18,6 +18,7 @@ subroutine asmpi_barrier(comm)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
     implicit none
 #include "asterc/asmpi_comm.h"
+#include "asterf_debug.h"
 !
     mpi_int, intent(in), optional :: comm
 !
@@ -31,6 +32,7 @@ subroutine asmpi_barrier(comm)
     else
         comm2 = comm
     endif
+    DEBUG_MPI('mpi_barrier', 'communicator', comm2)
     call asmpi_barrier_wrap(comm2, idummy)
 #else
     if (.not. present(comm)) then

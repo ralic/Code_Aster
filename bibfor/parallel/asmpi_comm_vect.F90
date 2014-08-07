@@ -48,6 +48,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !----------------------------------------------------------------------
     implicit none
 !
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -101,6 +102,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !   -- s'il n'y a qu'un seul proc, il n'y a rien a faire :
     call asmpi_info(mpicou, rank=proc, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
+    DEBUG_MPI('mpi_comm_vect', proc, nbpro4)
 !
 !
 !   -- verification rendez-vous
