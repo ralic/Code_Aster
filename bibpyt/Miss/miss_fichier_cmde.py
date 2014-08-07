@@ -357,10 +357,11 @@ class MissCmdeGenerator(object):
             young = val['E']
             vnu = val['NU']
             rho = val['RHO']
-            mat = 'MATE RO %%%(R)s VP %%%(R)s VS %%%(R)s BETA 0.' % dict_format
+            beta = val['AMOR_HYST'] or 0.
+            mat = 'MATE RO %%%(R)s VP %%%(R)s VS %%%(R)s BETA %%%(R)s' % dict_format
             vp = sqrt(young * (1. - vnu) / (rho * (1. + vnu) * (1. - 2. * vnu)))
             vs = sqrt(young / (2. * rho * (1. + vnu)))
-            line = mat % (rho, vp, vs)
+            line = mat % (rho, vp, vs, beta)
         else:
             line = 'STRAtifie'
         return line
@@ -502,7 +503,7 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
             typ = 'DFLUIDE'
         rho = val['RHO']
         celr = val['CELE']
-        beta = val['AMOR_BETA']
+        beta = val['AMOR_BETA'] or 0.
         line = mat % (typ, rho, celr, beta)
         return line
 
@@ -869,21 +870,21 @@ aoGdEL8yaVmewuCHkhR/om5lOpTds/i504zrNvFvcCbg8g==
     def test08_fdlv113a(self):
         """idem fdlv112e + matériau homogène"""
         refe = """
-eJy9VttymzAQfddX7HM6psaOm74SEA4z3ArC07cMwbLNDBeHS6e/1O/oj3Ul7ATHF5xOU41ly0I6
-OrtHu8sNGPypbWDJIQPetPjrpHVNbmB0qpEbfOKWOax5wav0ueW4s4ZVmmxSXtXgWGF4bm8fZk5d
-GoBp2AtVnWoSdcejhZwXLRga004Cke4JPmNpU/EecXJzvJhZLKDEDzwjshj4WgC6ZuuPHU3EsHnS
-tAIFj43TLIvXp2AEkrPwbFA+7ykr+Y8y2/FepUXapGUhXbGuynbLzzoQTQ+8yCem5c5Pbc/L5dnN
-RH/QHJ/YVkD7TJLNViL5cRXnHH1SwxLSouHrKha4F/QglsvoPNCY5bkQUJ3BF/gKLLA0d25TUCf4
-OWYJWQxb4SoxXlUcb0GRXDD5zZlmQL9F1NUpGBSwqcpYNvppPAZNzEwUdT+jomhhN/eySj3luLps
-69GyRBWLQSpH+9uD7fgnGzSGhIbnaJbbmQBSVTEeqfg1xX5LHI1RCLyO/WzPfgoLX0zNlNnd3d30
-FqcmsJA2TpVbdfZlNpZT95RpMFbETQn/OeFJj/AE+5SYdmQZe7o9SaagUxtjVc6+GLGjh23cVy+M
-AvOAs5kWQyEtFhv9DCAD+idP2guXV67XN3G15ogt08Z7fIFZpCfeBbBV1qYis7wH71TEoFpVgvES
-FzVk18NKaMvVLSQZelGg0yOXD/wn0DVV6ayMs6TNZMAkmzjf1pgoEqRSNAMxQ+h3qoOgInHuyzZB
-O+q2QnPqK5MAOskM+DMwL2I0hFBbUHAWpoETDCILGHbL8Q0wPbT0AyR+NX5Vohw11g1I8y1HWa7K
-X50TojmbC55UbpNkOQSmpaPjZ6J/yH36r+QDji5u96lmW5VPGZqyKytVnAyUleNj57Z3r9mvKUHW
-kKe/uUR9ZNcwcc8B6kDmOHzT2JZ1M2qqOG2kUJcKpSywh8ulFqjA719XSkB8L2SY7vSHfvnGet0+
-CiEBiLj9uiyQuyDBku9HYixHrBthwvTPEtpdjjqtc/F6dnVVPs9NIJIuJPvMDMPu6IjIPaC1S/rX
-eveNfgPvoOIY8gcMh6JC
+eJy9Vtty2jAQfddX7HM6UAyh6atjy8QzxnZlmelbxjECPOML8aXTX+p39Me6kiEx4WLSaapBINba
+o7O72l3fgCmemhqWAlIQdYO/86SqyA0MTg1yg0/cIoO1yEWZPDcCNStYJfEmEWUFczsIzul2YWbU
+pQws01lo2kRXqDseDWQib8DUuX4SiLRP8BlP6lJ0iJOb483c5owSn3lmaHPwdQaG7hiPLU3EcERc
+NxIFj42SNI3Wp2Ak0nzhOTD8vKc8zH4U6Y73KsmTOily5Yp1WTRbcdaBaDrzQp9Ytjs7pZ4Vy7PK
+xHjQ5z5xbEa7TOLNViH5URllAn1SwRKSvBbrMpK4F+JBbJfTGdO57bnAqMHhC3wFzmzdnTkUtDF+
+jllCGsFWukquV6XAW5DHF0x+c6bF6LeQugYFkwIObThSg34ajUCXkvFQ20s0DFrQyl52aaccVxVN
+NVgWGMW8l8qRfnOgjn/SXmNIYHpz3XZbE0BFVa4HGn5NcN6Suc4pMK9lP92zn8DCl6LpcHp3dze5
+RdEYFsrGyfBWm36ZjpTonnLljFHHPfLaBP+c/bjDfoxzQiwntM099058JmBQBxNXSV8sOs0VgpBZ
+KHnlbCV5X37LzWa3HKjs/ini5sJNVvuNTVSuBWKrGvIeX2BJ6UTyAtgqbRJZZt6Ddyp9MFpljMkT
+5RWk18MqaNs1bCQZeCEz6JHLe/4TaIc2bK2M0rhJVfbEmyjbVlg1YqSS1z0JROh3aoCkonDuiyZG
+O6qmRHOqKysCOsli4hm4F3IaQKAvKMwXlokCDqENHKc9902wPLT0A0L8avyqwHBU2EQgybYCw3JV
+MWudEM74TPKkSk2RFcAs20DHT+X8kPv0X8kzgS5u9qVmWxZPKZqy6zFlFPf0mONjZ453rzuvJUE1
+lKe/uURdZNe0UOcAtadyHL52bIuqHtRllNQqUJe6puq2h9tVLDACv39dGQLiewHHcmc8dHs5Nu/m
+UQYSgMjbb6huuUsS7P9+KNdqxdsVFkz/LKHd5aiSKpPvale36PPcJCJpU7LLzDSdlo7M3ANau6J/
+rXffxK/nhVQeQ/4A5Lekkg==
 """
         self.par.update({
             'PROJET' : "FDLV113A",
@@ -893,14 +894,14 @@ eveNfgPvoOIY8gcMh6JC
             'SURF' : 'NON',
             'RFIC' : 0.5,
             'ISSF' : 'OUI',
-            'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2 },
+            'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2, 'AMOR_HYST' : 0. },
             'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 150, 'AMOR_BETA' : 0.,
                                'DEMI_ESPACE' : 'NON'  },
             'SOURCE_FLUIDE' : { 'POINT' : (0., 0., 0.) },
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
-        if self._write:
+        if self._write or True:
             open('/tmp/test08_fdlv113a.in', 'wb').write(txt)
         diff = self._diffcompress(refe, txt)
         assert diff.strip() == "", diff
