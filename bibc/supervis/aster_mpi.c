@@ -175,19 +175,34 @@ void aster_free_comm(aster_comm_t *node) {
 void DEFP(ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
+    aster_comm_t *node;
     mpicom = MPI_Comm_f2c(*comm);
-    AS_ASSERT(MPI_Barrier(mpicom) == MPI_SUCCESS);
+    node = get_node_by_id(&mpicom);
+    aster_set_mpi_barrier(node);
 #endif
     return;
 }
 
-void aster_set_mpi_barrier(aster_comm_t *node) {
+int aster_set_mpi_barrier(aster_comm_t *node) {
     /*! Set a MPI barrier */
 #ifdef _USE_MPI
-    DEBUG_MPI("mpi_barrier %s : %d\n", "communicator", (int)MPI_Comm_c2f(node->id))
+    INTEGER iret, n0=0, n1=1, ibid=0;
+    DOUBLE rbid=0.;
+    char *valk;
+
+    DEBUG_MPI("mpi_barrier: %s is %d\n", "communicator", (int)MPI_Comm_c2f(node->id))
+    CALL_ASMPI_CHECK(&iret);
+    if ( iret != 0 ) {
+        // valk = MakeCStrFromFStr("MPI_Barrier", VALK_SIZE);
+        valk = MakeTabFStr(1, VALK_SIZE);
+        SetTabFStr(valk, 0, "MPI_Barrier", VALK_SIZE);
+        CALL_UTMESS_CORE("I", "APPELMPI_83", &n1, valk, &n0, &ibid, &n0, &rbid, " ");
+        return 1;
+    }
+
     AS_ASSERT(MPI_Barrier(node->id) == MPI_SUCCESS);
 #endif
-    return;
+    return 0;
 }
 
 /* Access functions */

@@ -32,6 +32,8 @@ subroutine asmpi_barrier(comm)
     else
         comm2 = comm
     endif
+!
+!   `asmpi_check()` is called from C
     DEBUG_MPI('mpi_barrier', 'communicator', comm2)
     call asmpi_barrier_wrap(comm2, idummy)
 #else

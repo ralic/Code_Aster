@@ -74,7 +74,7 @@ extern void aster_set_current_comm(aster_comm_t *);
 extern void aster_get_mpi_info(aster_comm_t *, int *, int *);
 extern aster_comm_t* aster_split_comm(aster_comm_t *, int, int, char *);
 extern void aster_free_comm(aster_comm_t *);
-extern void aster_set_mpi_barrier(aster_comm_t *);
+extern int aster_set_mpi_barrier(aster_comm_t *);
 
 extern void DEFSP(ASMPI_COMM, asmpi_comm,  char *, STRING_SIZE, MPI_Fint *);
 extern void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,

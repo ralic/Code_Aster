@@ -334,7 +334,7 @@ PyObject *args;
     /* allocation des variables de sortie */
     valres = (DOUBLE *)malloc(nbpar*sizeof(DOUBLE));
 
-    CALL_UTGTME(&nbpar, nompar, valres, &codret); 
+    CALL_UTGTME(&nbpar, nompar, valres, &codret);
 
     t_valres = MakeTupleFloat((long)inbpar, valres);
 
@@ -389,7 +389,7 @@ PyObject *args;
     values = (DOUBLE *)malloc(inbval*sizeof(DOUBLE));
     convr8(inbval, tup_val, values);
 
-    CALL_UTPTME(&nbpar, nompar, values, &codret); 
+    CALL_UTPTME(&nbpar, nompar, values, &codret);
 
     /* retour de la fonction */
     res = PyInt_FromLong((long)codret);
@@ -413,7 +413,7 @@ void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
 {
     /*
      * Fortran/Python interface to print the messages.
-     * 
+     *
      * WARNING: In the case that the error indicator has already been set, we must
      * restore it after PyObject_CallMethod.
      */
@@ -422,12 +422,12 @@ void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
     PyObject *tup_valk, *tup_vali, *tup_valr, *res;
     PyObject *method, *args, *kwargs, *pyfname;
     PyObject *etype, *eval, *etb;
-    
+
     if ( PyErr_Occurred() ) {
         iexc = 1;
         PyErr_Fetch(&etype, &eval, &etb);
     }
-    
+
     tup_valk = PyTuple_New( (Py_ssize_t)*nbk ) ;
     for(i=0;i<*nbk;i++){
        kvar = valk + i*lvk;
@@ -453,7 +453,7 @@ void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
     if (iret != 0) {
        MYABORT("error the given filename in utprin");
     }
-    
+
     res = PyObject_Call(method, args, kwargs);
     if (!res) {
        MYABORT("erreur lors de l'appel a MessageLog");
@@ -613,7 +613,7 @@ void DEFSSPPPPPPPPPPPP(TESTRESU_PRINT,testresu_print,
         comp = PyFloat_FromDouble((double)(*compare));
         PyDict_SetItemString(kwargs, "compare", comp);
     }
-    
+
     res = PyObject_Call(func, args, kwargs);
     if (!res) {
        MYABORT("erreur lors de l'appel a testresu_print");
@@ -694,8 +694,11 @@ static PyObject* aster_mpi_barrier(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
+    int iret;
     /* Set a MPI barrier */
-    aster_set_mpi_barrier(aster_get_current_comm());
+    if ( aster_set_mpi_barrier(aster_get_current_comm()) ) {
+        return NULL;
+    }
     Py_INCREF( Py_None );
     return Py_None;
 }
