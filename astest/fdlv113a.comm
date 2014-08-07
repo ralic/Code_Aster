@@ -1,0 +1,351 @@
+# TITRE SOURCE DE PRESSION DANS UNE BOULE PLEINE DE FLUIDE EN ISFS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  INTERACTION SOL-FLUIDE-STRUCTURE
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),)
+
+#
+# CAS TEST POUR L INTERACTION SOL-FLUIDE-STRUCTURE = SPHERE DOUBLE
+# - DDL SELON Z DE L INTERFACE MASQUES ;
+# - PLANS DE SYMETRIE BLOQUES SELON LA DIRECTION ORTHOGONALE ;
+# - MODES STATIQUES CALCULES SUR L INTERFACE SOL-STRUCTURE ET SUR
+#   LA DEMI SPHERE INFERIEURE EXTERNE ;
+# - PAS DE MODES DYNAMIQUES
+#
+# MAILLAGE
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',
+                   VERI_MAIL=_F(VERIF='OUI',),)
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA=('ISOLSTR','SURFXBL','SURFYBL','IFLUSTR','INTERTOT','IDYNLIB',),),
+                               _F(INTERSEC=('IFLUSTR','ISOLSTR',),
+                                  NOM='LIGFLU',),
+                               _F(INTERSEC=('SURFXBL','ISOLSTR',),
+                                  NOM='LIGNEBLX',),
+                               _F(INTERSEC=('SURFYBL','ISOLSTR',),
+                                  NOM='LIGNEBLY',),
+                               _F(DIFFE=('ISOLSTR','SURFXBL','SURFYBL',),
+                                  NOM='ISSRESID',),
+                               _F(INTERSEC=('SURFXBL','IFLUSTR',),
+                                  NOM='LGNBLX',),
+                               _F(INTERSEC=('SURFYBL','IFLUSTR',),
+                                  NOM='LGNBLY',),
+                               _F(INTERSEC=('LGNBLX','LGNBLY',),
+                                  NOM='LGNBLXY',),
+                               _F(INTERSEC=('LIGFLU','LIGNEBLX',),
+                                  NOM='LGNBLXZ',),
+                               _F(INTERSEC=('LIGFLU','LIGNEBLY',),
+                                  NOM='LGNBLYZ',),
+                               _F(DIFFE=('LIGFLU','LGNBLXZ','LGNBLYZ',),
+                                  NOM='LIGFLUR',),
+                               _F(DIFFE=('LGNBLX','LIGNEBLX','LGNBLXY',),
+                                  NOM='LGNBLXEX',),
+                               _F(DIFFE=('LGNBLY','LIGNEBLY','LGNBLXY',),
+                                  NOM='LGNBLXEY',),
+                               _F(DIFFE=('IDYNLIB','SURFXBL','SURFYBL','ISOLSTR',),
+                                  NOM='IDYNLIBR',),
+                               _F(DIFFE=('IFLUSTR','SURFXBL','SURFYBL','ISOLSTR',),
+                                  NOM='IFLUSTRR',),),)
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=(_F(GROUP_MA='ISOLSTR',
+                                       VECT_NORM=(0.0,0.0,1.0,),
+                                       NOEUD='N18',),
+                                    _F(GROUP_MA='IFLUSTR',
+                                       VECT_NORM=(0.0,0.0,1.0,),
+                                       NOEUD='N921',),
+                                    _F(GROUP_MA='IFLUSOL',
+                                       VECT_NORM=(0.0,0.0,-1.0,),
+                                       NOEUD='N795',),
+                                    _F(GROUP_MA='SLIBRE',
+                                       VECT_NORM=(0.0,0.0,1.0,),
+                                       NOEUD='N371',),),)
+
+#
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(GROUP_MA='GEO',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),)
+
+#
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=700000000.0,
+                          NU=0.2,
+                          RHO=2500.0,),)
+
+#
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(GROUP_MA='GEO',
+                               MATER=MAT,),)
+
+#
+# LA SPHERE EST ENCASTREE SUR LA SURFACE
+# ET SUPERIEURE C EST A DIRE A L INTERFACE AVEC LE SOL
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='ISOLSTR',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='SURFXBL',
+                                     DX=0.0,),
+                                  _F(GROUP_NO='SURFYBL',
+                                     DY=0.0,),),)
+
+#
+
+COND_LIS=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='IFLUSTR',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='ISOLSTR',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='SURFXBL',
+                                     DX=0.0,),
+                                  _F(GROUP_NO='SURFYBL',
+                                     DY=0.0,),),)
+
+#
+##################### BLOCAGE DES PLANS DE SYMETRIE X = 0 ET Y = 0
+##################### POUR NE PAS AVOIR DES MOUVEMENT DE CORPS RIGIDE
+
+
+#
+# CALCUL DES MATRICES ET VECTEURS ELEMENTAIRES=
+#----------------------------------------------
+
+RIGI_ELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CHARGE=COND_LIM,)
+
+MASS_ELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CHARGE=COND_LIM,)
+
+NUM_DDL=NUME_DDL(MATR_RIGI=RIGI_ELE,)
+
+RIG_ELES=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CHARGE=COND_LIS,)
+
+MAS_ELES=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CHARGE=COND_LIS,)
+
+NUM_DDLS=NUME_DDL(MATR_RIGI=RIG_ELES,)
+
+# ASSEMBLAGE DES MATRICES ET VECTEURS=
+#-------------------------------------
+
+RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGI_ELE,
+                      NUME_DDL=NUM_DDL,)
+
+MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
+                   NUME_DDL=NUM_DDL,)
+
+RIGIDITS=ASSE_MATRICE(MATR_ELEM=RIG_ELES,
+                      NUME_DDL=NUM_DDLS,)
+
+MASSES=ASSE_MATRICE(MATR_ELEM=MAS_ELES,
+                    NUME_DDL=NUM_DDLS,)
+
+# CALCUL DES MODES AVEC BLOCAGE DES NOEUDS EN COMMUN AVEC LE SOL
+# ET DES NOEUDS DANS LES PLANS DE SYMETRIE DANS LA DIRECTION
+# ORTHOGONALE=
+#---------------------------------------------
+
+MODE=MACRO_MODE_MECA(MATR_RIGI=RIGIDITE,
+                     MATR_MASS=MASSE,
+                     CALC_FREQ=_F(FREQ=(1.0,30.0,),),
+                     VERI_MODE=_F(STOP_ERREUR='NON',),
+                     NORM_MODE=_F(),
+                     IMPRESSION=_F(),)
+
+# CALCUL DES MODES STATIQUES SUR UN AUTRE GROUPE DE NOEUDS QUI NE
+# FAIT PAS PARTIE DE L INTERFACE.
+# ON RAJOUTE LES MODES CONTRAINTS SUR LES NOEUDS DE LA DEMI SPHERE
+# EXTERNE INFERIEURE
+# CELLE QUI EST BLOQUEE DANS LE CAS DE MILIEU ELASTIQUE INFINI
+#---------------------------------------------
+
+MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITS,
+                       MATR_MASS=MASSES,
+                       MODE_STAT=(_F(GROUP_NO='IFLUSTRR',
+                                     AVEC_CMP=('DX','DY','DZ',),),
+                                  _F(GROUP_NO='LGNBLXEX',
+                                     AVEC_CMP=('DY','DZ',),),
+                                  _F(GROUP_NO='LGNBLXEY',
+                                     AVEC_CMP=('DX','DZ',),),
+                                  _F(GROUP_NO='LGNBLXY',
+                                     AVEC_CMP='DZ',),
+                                  _F(GROUP_NO='LIGFLUR',
+                                     AVEC_CMP=('DX','DY',),),
+                                  _F(GROUP_NO='LGNBLXZ',
+                                     AVEC_CMP='DY',),
+                                  _F(GROUP_NO='LGNBLYZ',
+                                     AVEC_CMP='DX',),),)
+
+BAMO_STA=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE,
+                                   NMAX_MODE=0,),
+                                _F(NMAX_MODE=1500,
+                                   MODE_INTF=MODE_STA,),),
+                          NUME_REF=NUM_DDL,)
+
+CALC_MISS(TYPE_RESU='FICHIER',
+          PROJET='FDLV113A',
+          MATER_SOL=_F(E=700.e6,
+                       NU=0.2,
+                       RHO=2500.),
+          MATER_FLUIDE=_F(RHO=1000.,
+                          CELE=150.,
+                          AMOR_BETA=0.,
+                          DEMI_ESPACE='NON'),
+          BASE_MODALE=BAMO_STA,
+          MATR_RIGI=RIGIDITE,
+          MATR_MASS=MASSE,
+          GROUP_MA_INTERF='ISOLSTR',
+          GROUP_MA_FLU_STR='IFLUSTR',
+          GROUP_MA_FLU_SOL='IFLUSOL',
+          GROUP_MA_SOL_SOL='SLIBRE',
+          UNITE_IMPR_ASTER=26,
+          UNITE_RESU_IMPE=25,
+          UNITE_RESU_FORC=28,
+          SOURCE_FLUIDE=_F(POINT=(0.0,0.0,0.0,),),
+          PARAMETRE=_F(FREQ_MIN=1.,
+                       FREQ_MAX=21.,
+                       FREQ_PAS=20.,
+                       ISSF='OUI',
+                       RFIC=0.5,),
+           INFO=2)
+
+nddlgen=NUME_DDL_GENE(BASE=BAMO_STA,
+                      STOCKAGE='PLEIN',)
+
+rigigen=PROJ_MATR_BASE(BASE=BAMO_STA,
+                       NUME_DDL_GENE=nddlgen,
+                       MATR_ASSE=RIGIDITE,)
+
+massgen=PROJ_MATR_BASE(BASE=BAMO_STA,
+                       NUME_DDL_GENE=nddlgen,
+                       MATR_ASSE=MASSE,)
+
+imp=LIRE_IMPE_MISS(BASE=BAMO_STA,
+                   NUME_DDL_GENE=nddlgen,
+                   FREQ_EXTR=21.0,
+                   UNITE_RESU_IMPE=25,
+                   ISSF='OUI',)
+
+imp0=LIRE_IMPE_MISS(BASE=BAMO_STA,
+                    NUME_DDL_GENE=nddlgen,
+                    FREQ_EXTR=1.0,
+                    UNITE_RESU_IMPE=25,
+                    ISSF='OUI',)
+
+forc=LIRE_FORC_MISS(BASE=BAMO_STA,
+                    NUME_DDL_GENE=nddlgen,
+                    FREQ_EXTR=21.0,
+                    NOM_CHAM='DEPL',
+                    NUME_CHAR=1,
+                    ISSF='OUI',
+                    UNITE_RESU_FORC=28,)
+
+forc0=LIRE_FORC_MISS(BASE=BAMO_STA,
+                     NUME_DDL_GENE=nddlgen,
+                     FREQ_EXTR=1.0,
+                     NOM_CHAM='DEPL',
+                     NUME_CHAR=1,
+                     ISSF='OUI',
+                     UNITE_RESU_FORC=28,)
+
+imto=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp,
+                               COEF_C=(1+0j),),
+                            _F(MATR_ASSE=rigigen,
+                               COEF_C=(1+0j),),),
+                    SANS_CMP='LAGR',)
+
+imto0=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp0,
+                                COEF_C=(1+0j),),
+                             _F(MATR_ASSE=rigigen,
+                                COEF_C=(1+0j),),),
+                     SANS_CMP='LAGR',)
+
+dyge=DYNA_VIBRA(BASE_CALCUL='GENE',
+                TYPE_CALCUL='HARM',
+                MATR_MASS=massgen,
+                MATR_RIGI=imto0,
+                FREQ=1.0,
+                EXCIT=_F(VECT_ASSE_GENE=forc0,
+                         COEF_MULT=1.0,),
+                SOLVEUR=_F(METHODE='LDLT',),)
+
+dyge=DYNA_VIBRA(reuse =dyge,
+                BASE_CALCUL='GENE',
+                TYPE_CALCUL='HARM',
+                RESULTAT=dyge,
+                MATR_MASS=massgen,
+                MATR_RIGI=imto,
+                FREQ=21.0,
+                EXCIT=_F(VECT_ASSE_GENE=forc,
+                         COEF_MULT=1.0,),
+                SOLVEUR=_F(METHODE='LDLT',),)
+
+dyna=REST_GENE_PHYS(RESU_GENE=dyge,
+                    NOM_CHAM=('DEPL','VITE','ACCE',),)
+
+dxa1r7=RECU_FONCTION(RESULTAT=dyna,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DX',
+                     NOEUD='N1626',
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',)
+
+dzc1r7=RECU_FONCTION(RESULTAT=dyna,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',
+                     NOEUD='N917',
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',)
+
+mdxa1r7=CALC_FONCTION(EXTRACTION=_F(FONCTION=dxa1r7,
+                                    PARTIE='MODULE',),)
+
+mdzc1r7=CALC_FONCTION(EXTRACTION=_F(FONCTION=dzc1r7,
+                                    PARTIE='MODULE',),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=mdzc1r7,
+                         VALE_PARA=21.0,
+                         TOLE_MACHINE=0.001,
+                         VALE_CALC=0.016791,),
+                      _F(FONCTION=mdxa1r7,
+                         VALE_PARA=1.0,
+                         TOLE_MACHINE=0.001,
+                         VALE_REFE=0.00026476,
+                         PRECISION=0.09,
+                         REFERENCE='SOURCE_EXTERNE',
+                         VALE_CALC=0.000243309673227,),),)
+
+FIN()
