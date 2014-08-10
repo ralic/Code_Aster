@@ -22,7 +22,7 @@ class matr_asse(ASSD):
     def EXTR_MATR(self,sparse=False) :
         """ retourne les valeurs de la matrice  dans un format numpy
             Si sparse=True, la valeur de retour est un triplet de 
-            numpy.array prÃªt pour scipy formats rares.
+            numpy.array prÃªts pour scipy formats rares.
             Attributs retourne
               - self.valeurs : numpy.array contenant les valeurs (sparse=False)
               ou
@@ -31,19 +31,13 @@ class matr_asse(ASSD):
               - self.colonnes : numpy.array contenant les indices des colonnes (sparse=True)
               - self.dim : int qui donne la dimension de la matrice
         """
-        from numpy import array
-        from numpy import zeros
-        from numpy import fromiter
-        from numpy import where
-        from numpy import copy
-        from numpy import delete
-        from numpy import concatenate
+        import numpy as NP
         from SD.sd_stoc_morse import sd_stoc_morse
 
         if not self.accessible():
             raise Accas.AsException("Erreur dans matr_asse.EXTR_MATR en PAR_LOT='OUI'")
 
-        refa = array(self.sdj.REFA.get())
+        refa = NP.array(self.sdj.REFA.get())
         ma=refa[0]
         nu=refa[1]
         smos = sd_stoc_morse(nu[:14]+'.SMOS')
@@ -56,11 +50,11 @@ class matr_asse(ASSD):
         dim=len(smdi)
         nnz=smdi[dim-1]
 
-        triang_sup = array(valm[1])
+        triang_sup = NP.array(valm[1])
         if sym:
             triang_inf = triang_sup
         else:
-            triang_inf = array(valm[2])
+            triang_inf = NP.array(valm[2])
 
         if type(valm[1][0]) == type(1.j) :
             dtype=complex
@@ -68,10 +62,10 @@ class matr_asse(ASSD):
             dtype=float
         
         if sparse :
-            smhc=array(smhc)-1
-            smdi=array(smdi)-1
-            # classe d'itération pour la liste de la colonne
-            class iterateur :
+            smhc=NP.array(smhc)-1
+            smdi=NP.array(smdi)-1
+            # classe d'itÃ©ration pour la liste de la colonne
+            class SparseMatrixIterator :
                 def __init__(self) :
                     self.jcol=0
                     self.kterm=0
@@ -88,27 +82,27 @@ class matr_asse(ASSD):
                     self.kterm+=1
                     return self.jcol
 
-            col_iter=iterateur()
-            # générer la liste de colonnes
-            cols=fromiter(col_iter,count=nnz,dtype=int)
+            col_iter=SparseMatrixIterator()
+            # gÃ©nÃ©rer la liste de colonnes
+            cols=NP.fromiter(col_iter,count=nnz,dtype=int)
 
-            # entrées filtre de pivot de triang_inf
+            # entrÃ©es filtre de pivot de triang_inf
             helper=smhc-cols
-            indices_to_filter=where(helper==0)[0]
-            smdi_inf=copy(smhc)
-            smdi_inf=delete(smdi_inf,indices_to_filter)
-            smhc_inf=copy(cols)
-            smhc_inf=delete(smhc_inf,indices_to_filter)
-            triang_inf=delete(triang_inf,indices_to_filter)
+            indices_to_filter=NP.where(helper==0)[0]
+            smdi_inf=NP.copy(smhc)
+            smdi_inf=NP.delete(smdi_inf,indices_to_filter)
+            smhc_inf=NP.copy(cols)
+            smhc_inf=NP.delete(smhc_inf,indices_to_filter)
+            triang_inf=NP.delete(triang_inf,indices_to_filter)
 
             # joindre les listes
-            lignes=concatenate((cols,smdi_inf))
-            colonnes=concatenate((smhc,smhc_inf))
-            valeurs=concatenate((triang_sup,triang_inf))
+            lignes=NP.concatenate((cols,smdi_inf))
+            colonnes=NP.concatenate((smhc,smhc_inf))
+            valeurs=NP.concatenate((triang_sup,triang_inf))
             return valeurs, lignes, colonnes, dim
             
         else :
-            valeur=zeros([dim, dim], dtype=dtype)
+            valeur=NP.zeros([dim, dim], dtype=dtype)
 
             jcol=1
             for kterm in xrange(1,nnz+1):
