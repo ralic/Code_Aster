@@ -88,8 +88,14 @@ ASSEMBLAGE(MODELE=MODELE,
                               OPTION='AMOR_MECA',),),);
 
 mas=MASSE.EXTR_MATR()
-rig=RIGIDITE.EXTR_MATR()
-
+# ESSAI D'EXTRACTION DE MATRICE CREUSE
+data_rig,lignes,colonnes,dim=RIGIDITE.EXTR_MATR(sparse=True)
+rig=NP.zeros((dim,dim))
+nnz=len(data_rig)
+for kterm in xrange(nnz):
+    ind_lig=lignes[kterm]
+    ind_col=colonnes[kterm]
+    rig[ind_lig,ind_col]=data_rig[kterm]
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
