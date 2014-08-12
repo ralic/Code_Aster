@@ -48,10 +48,11 @@ subroutine lc0034(fami, kpg, ksp, ndim, imate,&
     call utlcal('VALE_NOM', algo, crit(6))
 !
     if ((algo(1:10).eq.'SPECIFIQUE') .or. (option(1:9).eq.'RIGI_MECA')) then
-        call nmhuj(typmod, imate, compor, crit, instam,&
-                   instap, tm, tp, tref, angmas,&
-                   epsm, deps, sigm, vim, option,&
-                   sigp, vip, dsidep, codret)
+        call nmhuj(fami, kpg, ksp, typmod, imate,&
+                   compor, crit, instam, instap,&
+                   tm, tp, tref, angmas, epsm,&
+                   deps, sigm, vim, option, sigp,&
+                   vip, dsidep, codret)
 !
     else
         call plasti(fami, kpg, ksp, typmod, imate,&

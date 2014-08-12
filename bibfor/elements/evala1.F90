@@ -1,5 +1,5 @@
-subroutine evala1(mod, relcom, sig, vin, imat,&
-                  module, icode)
+subroutine evala1(fami, kpg, ksp, mod, relcom,&
+                  sig, vin, imat, module, icode)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,9 @@ subroutine evala1(mod, relcom, sig, vin, imat,&
     real(kind=8) :: angle, rot(2, 2), degr, sigr1(2, 2), sigr2(2, 2), temp
     real(kind=8) :: sigf(6), ratio1, pi, value1, ratio2, value2, valeur
     real(kind=8) :: incang(3), angref, valmax
-    integer :: i, j, k, iang, nbind(3), disc
+    integer :: i, j, k, iang, nbind(3), disc, kpg, ksp
     integer :: imat, icode, iangmx(3)
+    character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: relcom
     parameter   ( degr = 0.0174532925199d0 )
@@ -159,8 +160,8 @@ subroutine evala1(mod, relcom, sig, vin, imat,&
 ! =====================================================================
             else if (relcom.eq.'HUJEUX') then
 !
-                call hujtid(mod, imat, sigf, vin, dsde,&
-                            icode)
+                call hujtid(fami, kpg, ksp, mod, imat,&
+                            sigf, vin, dsde, icode)
 !
             else
 ! =====================================================================

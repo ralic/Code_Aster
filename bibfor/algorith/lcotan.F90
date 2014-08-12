@@ -121,7 +121,8 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                         cpmono, pgl, nfs, nsg, toutms,&
                         hsr, nr, nvi, epsd, deps,&
                         itmax, toler, sigd, vind, sigd,&
-                        vind, dsde, drdy, opt, codret)
+                        vind, dsde, drdy, opt, codret,&
+                        fami, kpg, ksp)
             if (codret .ne. 0) goto 9999
 !
         else if ((etatd.eq.'PLASTIC').and.(typma.eq.'VITESSE ')) then
@@ -165,7 +166,8 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                             cpmono, pgl, nfs, nsg, toutms,&
                             hsr, nr, nvi, epsd, deps,&
                             itmax, toler, sigf, vinf, sigd,&
-                            vind, dsde, drdy, opt, codret)
+                            vind, dsde, drdy, opt, codret,&
+                            fami, kpg, ksp)
                 if (codret .ne. 0) goto 9999
             else if (typma .eq. 'VITESSE ') then
                 call lcjpla(fami, kpg, ksp, loi, mod,&

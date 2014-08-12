@@ -151,8 +151,8 @@ subroutine te0511(option, nomte)
                 vin(iv) = zr(ivarip-1+(kpg-1)*nbvari+iv )
  30         continue
             imat = zi(imate)
-            call evala1(mod, relcom, sig, vin, imat,&
-                        module, icode)
+            call evala1('RIGI', kpg, 1, mod, relcom,&
+                        sig, vin, imat, module, icode)
 ! =====================================================================
 ! --- SURCHARGE DE L'INDICATEUR DE LOCALISATION -----------------------
 ! =====================================================================

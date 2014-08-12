@@ -171,9 +171,10 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
         call matect(materd, materf, nmat, matcst)
         typma='COHERENT'
     else if (loi(1:6) .eq. 'HUJEUX') then
-        call hujma2(mod, imat, nmat, tempf, angmas,&
-                    sigd, vind, materd, materf, ndt,&
-                    ndi, nvi, nr, matcst)
+        call hujma2(fami, kpg, ksp, mod, imat,&
+                    nmat, tempf, angmas, sigd, vind,&
+                    materd, materf, ndt, ndi, nvi,&
+                    nr, matcst)
         typma='COHERENT'
     else
 !

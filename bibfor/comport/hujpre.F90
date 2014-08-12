@@ -1,5 +1,6 @@
-subroutine hujpre(etat, mod, crit, imat, mater,&
-                  deps, sigd, sigf, vind, iret)
+subroutine hujpre(fami, kpg, ksp, etat, mod,&
+                  crit, imat, mater, deps, sigd,&
+                  sigf, vind, iret)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +60,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
 #include "asterfort/lcsovn.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
-    integer :: ndt, ndi, imat, iret, iadzi, iazk24, i
+    integer :: ndt, ndi, imat, iret, iadzi, iazk24, i, kpg, ksp
     real(kind=8) :: crit(*), vind(*)
     real(kind=8) :: deps(6), dev(3), pf(3), q, pd(3), dp(3)
     real(kind=8) :: sigd(6), sigf(6), dsig(6), dsde(6, 6), rtrac
@@ -67,7 +68,8 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
     real(kind=8) :: ptrac, pref, maxi, cohes, factor
     character(len=7) :: etat
     character(len=8) :: mod, nomail
-    aster_logical :: debug
+    character(len=*) :: fami
+    logical :: debug
 !
     common /tdim/   ndt, ndi
     common /meshuj/ debug
@@ -87,8 +89,8 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
 !
     else if (etat .eq. 'PLASTIC') then
 !
-        call hujtid(mod, imat, sigd, vind, dsde,&
-                    iret)
+        call hujtid(fami, kpg, ksp, mod, imat,&
+                    sigd, vind, dsde, iret)
         if (iret .eq. 0) then
             call lcprmv(dsde, deps, dsig)
             call lcsovn(ndt, sigd, dsig, sigf)
@@ -123,7 +125,7 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
 ! ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
     do 10 i = 1, ndt
         dsig(i)= sigf(i) - sigd(i)
- 10 continue
+10  continue
 !
     maxi = un
     cohes = -rtrac+ptrac
@@ -139,14 +141,14 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
                 maxi = factor
             endif
         endif
- 20 continue
+20  continue
 !
 !
 ! ---> SI IL EXISTE PF(I)>0, ALORS MODIFICATION DE LA PREDICTION
     if (maxi .lt. un) then
         do 30 i = 1, ndt
             dsig(i) = maxi * dsig(i)
- 30     continue
+30      continue
         call lcsovn(ndt, sigd, dsig, sigf)
         if (debug) then
             write (6,'(A,A,E12.5)')&

@@ -1,6 +1,6 @@
-subroutine hujres(mod, crit, mater, imat, nvi,&
-                  deps, sigd, vind, sigf, vinf,&
-                  iret, etatf)
+subroutine hujres(fami, kpg, ksp, mod, crit,&
+                  mater, imat, nvi, deps, sigd,&
+                  vind, sigf, vinf, iret, etatf)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
 #include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, ndec, iret
+    integer :: ndt, ndi, nvi, ndec, iret, kpg, ksp
     integer :: i, k, ifm, niv, nsubd, maj
     integer :: nvimax, idec, imat, indi(7)
     parameter     (nvimax=50)
@@ -62,6 +62,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
     aster_logical :: subd, rdctps, loop, impose
     character(len=8) :: mod
     character(len=7) :: etatf
+    character(len=*) :: fami
     aster_logical :: debug, plas, try, nodec, tract
 !
     common /tdim/   ndt, ndi
@@ -80,7 +81,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
 !
     do 70 i = 1, 7
         indi(i) = 0
- 70 continue
+70  continue
 !
     ptrac = mater(21,2)
     pref = mater(8,2)
@@ -135,7 +136,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
     subd = .false.
     rdctps = .false.
 !
-500 continue
+500  continue
     if (noconv) then
         ndec = 3
         iret = 0
@@ -163,10 +164,11 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
 !
     do 10 i = 1, ndt
         deps(i) = deps0(i)/ndec
- 10 continue
+10  continue
 !
-    call hujpre('ELASTIC', mod, crit, imat, mater,&
-                deps, sigd, sigf, vind, iret)
+    call hujpre(fami, kpg, ksp,'ELASTIC', mod,&
+                crit, imat, mater, deps, sigd,&
+                sigf, vind, iret)
 !
 !KH ON IMPOSE UNE CONDITION SUR LA VARIATION DE DSIGMA
 !   < 50% de SIGMA_INIT
@@ -176,7 +178,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
     do 12 i = 1, ndt
         asig = asig + sigd(i)**2.d0
         adsig= adsig+ (sigf(i)-sigd(i))**2.d0
- 12 end do
+12  end do
     asig = sqrt(asig)
     adsig= sqrt(adsig)
 !
@@ -186,7 +188,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
             ndec = min(ndec*nsubd,100)
             do 11 i = 1, ndt
                 deps(i) = deps0(i)/ndec
- 11         continue
+11          continue
         endif
     endif
 !
@@ -220,7 +222,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
 !
         do 20 k = 1, 8
             negmul(k)=.false.
- 20     continue
+20      continue
 !
 ! ---> SAUVEGARDE DES SURFACES DE CHARGE AVANT MODIFICATION
         call lceqvn(nvi, vind, vins)
@@ -247,12 +249,12 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
                     plas = .true.
                     etatf = 'PLASTIC'
                 endif
- 29         continue
+29          continue
 !
             if (.not.plas) then
                 do 30 i = 1, nvi
                     vinf(i)=vind(i)
- 30             continue
+30              continue
                 chgmec = .false.
                 goto 40
             endif
@@ -265,7 +267,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
         call lceqvn(nvi, vind, vinf)
         if (debug) write(6,*)'HUJRES - VINF =',(vinf(i),i=24,31)
 !
-100     continue
+100      continue
 !--->   RESOLUTION EN FONCTION DES MECANISMES ACTIVES
 !       MECANISMES ISOTROPE ET DEVIATOIRE
 !-----------------------------------------------------
@@ -283,7 +285,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
                 noconv=.true.
                 if (debug) write(6,'(A)')'HUJRES :: SOL EN TRACTION'
             endif
- 48     continue
+48      continue
 ! --- SI TRACTION DETECTEE ET NON CONVERGENCE, ON IMPOSE
 ! --- ETAT DE CONTRAINTES ISOTROPE
         if ((noconv) .and. (tract)) then
@@ -297,7 +299,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
                 vind(6+4*i) = zero
                 vind(7+4*i) = zero
                 vind(8+4*i) = zero
- 51         continue
+51          continue
             call lceqvn(nvi, vind, vinf)
             iret = 0
             if (debug) write(6,'(A)')'HUJRES :: CORRECTION SIGMA'
@@ -312,7 +314,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
                     impose = .true.
                     if (debug) write(6,'(A)')'HUJRES :: SOL LIQUEFIE'
                 endif
- 49         continue
+49          continue
             if (impose) then
                 noconv = .false.
                 do 47 i = 1, 3
@@ -324,7 +326,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
                     vind(6+4*i) = zero
                     vind(7+4*i) = zero
                     vind(8+4*i) = zero
- 47             continue
+47              continue
                 call lceqvn(nvi, vind, vinf)
                 iret = 0
             endif
@@ -348,7 +350,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
         endif
 !
 ! --- REPRISE A CE NIVEAU SI MECANISME SUPPOSE ELASTIQUE
- 40     continue
+40      continue
 !
 ! --- VERIFICATION DES MECANISMES SUPPOSES ACTIFS
 !                 DES MULTIPLICATEURS PLASTIQUES
@@ -392,20 +394,21 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
             call lceqve(sigf, sigd)
             do 50 i = 1, nvi
                 vind(i) = vinf(i)
- 50         continue
+50          continue
             do 60 i = 1, ndt
                 deps(i) = deps0(i)/ndec
- 60         continue
+60          continue
 ! --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE
-            call hujpre('ELASTIC', mod, crit, imat, mater,&
-                        deps, sigd, sigf, vind, iret)
+            call hujpre(fami, kpg, ksp, 'ELASTIC', mod,&
+                        crit, imat, mater, deps, sigd,&
+                        sigf, vind, iret)
         endif
 !
-400 continue
+400  continue
 ! End - Boucle sur les redecoupages
 !
 !
-9999 continue
+9999  continue
 !
     1001 format(a,i3)
     if (debug) write(6,*)'IRET - HUJRES =',iret

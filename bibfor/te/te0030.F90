@@ -161,7 +161,8 @@ subroutine te0030(option, nomte)
 ! ----------- LOI DE TYPE HUJEUX --------------------------------------
 ! =====================================================================
             else if (relcom.eq.'HUJEUX') then
-                call hujtid(mod, zi(imate), zr(icontp-1+(kpg-1)*nbsig+1 ),&
+                call hujtid('RIGI', kpg, 1, mod, zi(imate),&
+                            zr(icontp-1+(kpg-1)*nbsig+1 ),&
                             zr(ivarip-1+(kpg-1)*nbvari+1), dsde, icode)
             else
 !C RELATION DE COMPORTEMENT INVALIDE

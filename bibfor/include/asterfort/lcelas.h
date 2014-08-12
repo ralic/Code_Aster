@@ -16,10 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcelas(loi, mod, imat, nmat, materd,&
-                      materf, matcst, nvi, angmas, deps,&
-                      sigd, vind, sigf, vinf, theta,&
-                      etatd, crit, iret)
+    subroutine lcelas(fami, kpg, ksp, loi, mod,&
+                      imat, nmat, materd, materf, matcst,&
+                      nvi, angmas, deps, sigd, vind,&
+                      sigf, vinf, theta, etatd, crit,&
+                      iret)
+        character(len=*) :: fami
+        integer :: kpg
+        integer :: ksp
         integer :: nmat
         character(len=16) :: loi
         character(len=8) :: mod

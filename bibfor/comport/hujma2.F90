@@ -1,6 +1,7 @@
-subroutine hujma2(mod, imat, nmat, tempf, angmas,&
-                  sigd, vind, materd, materf, ndt,&
-                  ndi, nvi, nr, matcst)
+subroutine hujma2(fami, kpg, ksp, mod, imat,&
+                  nmat, tempf, angmas, sigd, vind,&
+                  materd, materf, ndt, ndi, nvi,&
+                  nr, matcst)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +52,8 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 #include "asterfort/utmess.h"
     character(len=8) :: mod
     character(len=3) :: matcst
-    integer :: imat, nmat, ndt, ndi, nvi, nr
+    character(len=*) :: fami
+    integer :: imat, nmat, ndt, ndi, nvi, nr, kpg, ksp
     real(kind=8) :: tempf, materd(nmat, 2), materf(nmat, 2), vind(50)
     real(kind=8) :: sigd(6), angmas(3)
 !
@@ -74,8 +76,8 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 ! ---  RECUPERATION DE MATERF, NDT, NDI, NVI ET MATERD
 ! ----------------------------------------------------------------------
     matcst = 'OUI'
-    call hujmat(mod, imat, tempf, matert, ndt,&
-                ndi, nvi)
+    call hujmat(fami, kpg, ksp, mod, imat,&
+                tempf, matert, ndt, ndi, nvi)
 !
     do 10 i = 1, 22
         do 20 j = 1, 2

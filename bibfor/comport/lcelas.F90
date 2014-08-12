@@ -1,7 +1,8 @@
-subroutine lcelas(loi, mod, imat, nmat, materd,&
-                  materf, matcst, nvi, angmas, deps,&
-                  sigd, vind, sigf, vinf, theta,&
-                  etatd, crit, iret)
+subroutine lcelas(fami, kpg, ksp, loi, mod,&
+                  imat, nmat, materd, materf, matcst,&
+                  nvi, angmas, deps, sigd, vind,&
+                  sigf, vinf, theta, etatd, crit,&
+                  iret)
     implicit   none
 !       ================================================================
 ! ======================================================================
@@ -39,7 +40,7 @@ subroutine lcelas(loi, mod, imat, nmat, materd,&
 #include "asterfort/lcelin.h"
 #include "asterfort/lksige.h"
 #include "asterfort/rsllin.h"
-    integer :: nmat, nvi, imat, iret
+    integer :: nmat, nvi, imat, iret, kpg, ksp
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: theta
@@ -48,6 +49,7 @@ subroutine lcelas(loi, mod, imat, nmat, materd,&
     real(kind=8) :: deps(6), crit(*)
     real(kind=8) :: angmas(3)
 !
+    character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: loi
     character(len=3) :: matcst
@@ -65,9 +67,10 @@ subroutine lcelas(loi, mod, imat, nmat, materd,&
                     sigf)
     else if (loi(1:6).eq.'HUJEUX') then
 !        ELASTICITE NON LINEAIRE ISOTROPE POUR HUJEUX
-        call hujpel(etatd, mod, crit, imat, nmat,&
-                    materf, angmas, deps, sigd, nvi,&
-                    vind, sigf, vinf, iret)
+        call hujpel(fami, kpg, ksp, etatd, mod,&
+                    crit, imat, nmat, materf, angmas,&
+                    deps, sigd, nvi, vind, sigf,&
+                    vinf, iret)
     else
 !        ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
         call lcelin(mod, nmat, materd, materf, deps,&

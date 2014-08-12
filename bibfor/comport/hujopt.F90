@@ -1,6 +1,6 @@
-subroutine hujopt(mod, angmas, imat, nmat, mater,&
-                  nvi, vinf, nr, drdy, sigf,&
-                  dsde, iret)
+subroutine hujopt(fami, kpg, ksp, mod, angmas,&
+                  imat, nmat, mater, nvi, vinf,&
+                  nr, drdy, sigf, dsde, iret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,10 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, nr, nvi, iret, imat
+    integer :: nmat, nr, nvi, iret, imat, kpg, ksp
     real(kind=8) :: drdy(nr, nr), dsde(6, 6), mater(nmat, 2), vinf(nvi)
     real(kind=8) :: angmas(3), sigf(6)
+    character(len=*) :: fami
     character(len=8) :: mod
 !
     integer :: nbmeca, norm, i, j, ndt, ndi, nz
@@ -323,8 +324,8 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
         iret = 0
         call hujori('LOCAL', 1, reorie, angmas, sigf,&
                     bid66)
-        call hujtid(mod, imat, sigf, vinf, dsde,&
-                    iret)
+        call hujtid(fami, kpg, ksp, mod, imat,&
+                    sigf, vinf, dsde, iret)
         call hujori('GLOBA', 1, reorie, angmas, sigf,&
                     bid66)
         if (iret .ne. 0) then

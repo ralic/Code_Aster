@@ -1,5 +1,5 @@
-subroutine hujtid(mod, imat, sigr, vin, dsde,&
-                  iret)
+subroutine hujtid(fami, kpg, ksp, mod, imat,&
+                  sigr, vin, dsde, iret)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, k, kk, l, ll, nvi
-    integer :: nbmeca, ind(7), iret, imat, nbmect
+    integer :: nbmeca, ind(7), iret, imat, nbmect, kpg, ksp
     real(kind=8) :: n, beta, dhuj, m, pco, pref, pc
     real(kind=8) :: phi, angdil, mdil, degr, bhuj
     real(kind=8) :: rc(7), yd(18), dpsids(6, 6), p(7), q(7)
@@ -55,6 +55,7 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
     real(kind=8) :: e1, e2, e3, nu12, nu13, nu23, g1, g2, g3, nu21, nu31, nu32
     real(kind=8) :: delta
     character(len=8) :: mod
+    character(len=*) :: fami
 !
     common /tdim/ ndt, ndi
 ! ======================================================================
@@ -66,8 +67,8 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
     parameter   ( degr = 0.0174532925199d0 )
 ! ======================================================================
     tempf = 0.d0
-    call hujmat(mod, imat, tempf, mater, ndt,&
-                ndi, nvi)
+    call hujmat(fami, kpg, ksp, mod, imat,&
+                tempf, mater, ndt, ndi, nvi)
     do 5 i = 1, ndt
         sig(i) = sigr(i)
  5  continue

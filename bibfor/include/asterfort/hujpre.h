@@ -16,8 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine hujpre(etat, mod, crit, imat, mater,&
-                      deps, sigd, sigf, vind, iret)
+    subroutine hujpre(fami, kpg, ksp, etat, mod,&
+                      crit, imat, mater, deps, sigd,&
+                      sigf, vind, iret)
+        character(len=*) :: fami
+        integer :: kpg
+        integer :: ksp
         character(len=7) :: etat
         character(len=8) :: mod
         real(kind=8) :: crit(*)

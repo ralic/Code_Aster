@@ -3,7 +3,8 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
                   cpmono, pgl, nfs, nsg, toutms,&
                   hsr, nr, nvi, epsd, deps,&
                   itmax, toler, sigf, vinf, sigd,&
-                  vind, dsde, drdy, option, iret)
+                  vind, dsde, drdy, option, iret,&
+                  fami, kpg, ksp)
 ! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
@@ -43,9 +44,11 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
 #include "asterfort/lcoptg.h"
 #include "asterfort/lkijpl.h"
     integer :: imat, nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
+    integer :: kpg, ksp
     real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler, angmas(3)
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
+    character(len=*) :: fami    
     character(len=8) :: mod
     character(len=16) :: loi, option
     common /tdim/   ndt  , ndi
@@ -77,9 +80,9 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
         call lcoptg(nmat, mater, nr, n2, drdy,&
                     0, dsde, iret)
     else if (loi(1:6) .eq. 'HUJEUX') then
-        call hujopt(mod, angmas, imat, nmat, mater,&
-                    nvi, vinf, nr, drdy, sigf,&
-                    dsde, iret)
+        call hujopt(fami, kpg, ksp, mod, angmas,&
+                    imat, nmat, mater, nvi, vinf,&
+                    nr, drdy, sigf, dsde, iret)
     else
         n2=nr-ndt
         call lcoptg(nmat, mater, nr, n2, drdy,&

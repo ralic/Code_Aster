@@ -211,10 +211,11 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
             seuil=1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(loi, mod, imat, nmat, materd,&
-                        materf, matcst, nvi, angmas, deps,&
-                        sigd, vind, sigf, vinf, theta,&
-                        etatd, crit, iret)
+            call lcelas(fami, kpg, ksp, loi, mod,&
+                        imat, nmat, materd, materf, matcst,&
+                        nvi, angmas, deps, sigd, vind,&
+                        sigf, vinf, theta, etatd, crit,&
+                        iret)
             if (iret .ne. 0) goto 1
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?

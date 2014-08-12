@@ -16,8 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine evala1(mod, relcom, sig, vin, imat,&
-                      module, icode)
+    subroutine evala1(fami, kpg, ksp, mod, relcom,&
+                      sig, vin, imat, module, icode)
+        character(len=*) :: fami
+        integer :: kpg
+        integer :: ksp
         character(len=8) :: mod
         character(len=16) :: relcom
         real(kind=8) :: sig(6)

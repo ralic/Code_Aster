@@ -16,9 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine hujma2(mod, imat, nmat, tempf, angmas,&
-                      sigd, vind, materd, materf, ndt,&
-                      ndi, nvi, nr, matcst)
+    subroutine hujma2(fami, kpg, ksp, mod, imat,&
+                      nmat, tempf, angmas, sigd, vind,&
+                      materd, materf, ndt, ndi, nvi,&
+                      nr, matcst)
+        character(len=*) :: fami
+        integer :: kpg
+        integer :: ksp
         integer :: nmat
         character(len=8) :: mod
         integer :: imat

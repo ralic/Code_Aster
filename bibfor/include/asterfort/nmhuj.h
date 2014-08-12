@@ -16,10 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmhuj(typmod, imat, comp, crit, instam,&
-                     instap, tempm, tempf, tref, angmas,&
-                     epsd, deps, sigd, vind, opt,&
-                     sigf, vinf, dsde, iret)
+    subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
+                     comp, crit, instam, instap,&
+                     tempm, tempf, tref, angmas, epsd,&
+                     deps, sigd, vind, opt, sigf,&
+                     vinf, dsde, iret)
+        character(len=*) :: fami
+        integer :: kpg
+        integer :: ksp
         character(len=8) :: typmod(*)
         integer :: imat
         character(len=16) :: comp(*)

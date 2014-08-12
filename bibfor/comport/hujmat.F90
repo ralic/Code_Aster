@@ -1,5 +1,5 @@
-subroutine hujmat(mod, imat, tempf, materf, ndt,&
-                  ndi, nvi)
+subroutine hujmat(fami, kpg, ksp, mod, imat,&
+                  tempf, materf, ndt, ndi, nvi)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,25 +30,29 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
 !           ( SIGNE = SIGNE(S:DEPSDP) )
 !           ( IND = 0: MECANISME INACTIF, = 1: MECANISME ACTIF )
 !    ------------------------------------------------------------
-!    IN  IMAT   :  ADRESSE DU MATERIAU CODE
-!        MOD    :  TYPE DE MODELISATION
-!        TEMPF  :  TEMPERATURE  A T+DT
-!    OUT MATERF :  COEFFICIENTS MATERIAU A T+DT
-!                  MATER(*,1) = CARACTERISTIQUES   ELASTIQUES
-!                  MATER(*,2) = CARACTERISTIQUES   PLASTIQUES
-!        NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
-!        NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
-!        NVI    :  NB DE VARIABLES INTERNES
+!    IN  FAMI     :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+!        KPG,KSP  :  NUMERO DU (SOUS)POINT DE GAUSS
+!        IMAT     :  ADRESSE DU MATERIAU CODE
+!        MOD      :  TYPE DE MODELISATION
+!        TEMPF    :  TEMPERATURE  A T+DT
+!    OUT MATERF   :  COEFFICIENTS MATERIAU A T+DT
+!                    MATER(*,1) = CARACTERISTIQUES   ELASTIQUES
+!                    MATER(*,2) = CARACTERISTIQUES   PLASTIQUES
+!        NDT      :  NB TOTAL DE COMPOSANTES TENSEURS
+!        NDI      :  NB DE COMPOSANTES DIRECTES  TENSEURS
+!        NVI      :  NB DE VARIABLES INTERNES
 !    ------------------------------------------------------------
 #include "asterfort/hujnvi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
-    integer :: ndt, ndi, nvi, imat, i
+#include "asterfort/rcvalb.h"
+    integer :: ndt, ndi, nvi, imat, i, kpg, ksp
     real(kind=8) :: materf(22, 2), tempf, nu21, nu31, nu32
     character(len=16) :: phenom
     character(len=8) :: mod, nomc(24)
+    character(len=*) :: fami
     integer :: icodre(1)
     integer :: cerr(24)
 !
@@ -97,15 +101,17 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
 !
 !
 ! --- RECUPERATION DES PROPRIETES DE LA LOI DE HUJEUX
-    call rcvala(imat, ' ', 'HUJEUX', 0, '   ',&
-                [tempf], 21, nomc(4), materf(1, 2), cerr(4), 2)
+    call rcvalb(fami, kpg, ksp, '+', imat,&
+                ' ', 'HUJEUX', 0, '   ', [tempf],&
+                21, nomc(4), materf(1, 2), cerr(4), 2)
 !
 !
     if (phenom .eq. 'ELAS') then
 !
 ! --- RECUPERATION DES PROPRIETES ELASTIQUES
-        call rcvala(imat, ' ', phenom, 0, '   ',&
-                    [tempf] , 3, nomc(1), materf(1, 1), cerr(1), 0)
+        call rcvalb(fami, kpg, ksp, '+', imat,&
+                    ' ', phenom, 0, '   ', [tempf],&
+                    3, nomc(1), materf(1, 1), cerr(1), 0)
 !
         materf(17,1) =1.d0
 !
@@ -138,8 +144,9 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
 !        ALPHA1= MATERF(7,1)
 !        ALPHA2= MATERF(8,1)
 !        ALPHA3= MATERF(9,1)
-        call rcvala(imat, ' ', phenom, 0, '   ',&
-                    [tempf], 12, nomc(1), materf(1, 1), cerr(1), 0)
+        call rcvalb(fami, kpg, ksp, '+', imat,&
+                    ' ', phenom, 0, '   ', [tempf],&
+                    12, nomc(1), materf(1, 1), cerr(1), 0)
 !
         nu21 = materf(2,1)*materf(4,1)/materf(1,1)
         nu31 = materf(3,1)*materf(5,1)/materf(1,1)

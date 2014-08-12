@@ -1,6 +1,7 @@
-subroutine hujpel(etatd, mod, crit, imat, nmat,&
-                  materf, angmas, deps, sigd, nvi,&
-                  vind, sigf, vinf, iret)
+subroutine hujpel(fami, kpg, ksp, etatd, mod,&
+                  crit, imat, nmat, materf, angmas,&
+                  deps, sigd, nvi, vind, sigf,&
+                  vinf, iret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +42,12 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 #include "asterfort/hujpre.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
-    integer :: nvi, imat, iret, nmat
+    integer :: nvi, imat, iret, nmat, kpg, ksp
     real(kind=8) :: materf(nmat, 2), sigd(6), sigf(6), angmas(3)
     real(kind=8) :: vind(*), vinf(*), deps(6), crit(*)
     character(len=8) :: mod
     character(len=7) :: etatd
+    character(len=*) :: fami
 !
     integer :: i
     real(kind=8) :: zero, un, bid66(6, 6), matert(22, 2)
@@ -85,8 +87,9 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
         matert(i,2) = materf(i,2)
  20 continue
 !
-    call hujpre(etatd, mod, crit, imat, matert,&
-                deps, sigd, sigf, vind, iret)
+    call hujpre(fami, kpg, ksp, etatd, mod,&
+                crit, imat, matert, deps, sigd,&
+                sigf, vind, iret)
     call lceqvn(nvi, vind, vinf)
 !
 end subroutine

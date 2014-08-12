@@ -21,7 +21,11 @@ interface
                       cpmono, pgl, nfs, nsg, toutms,&
                       hsr, nr, nvi, epsd, deps,&
                       itmax, toler, sigf, vinf, sigd,&
-                      vind, dsde, drdy, option, iret)
+                      vind, dsde, drdy, option, iret,&
+                      fami, kpg, ksp)
+        character(len=*) :: fami
+        integer :: kpg
+        integer :: ksp
         integer :: nr
         integer :: nsg
         integer :: nfs
