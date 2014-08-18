@@ -260,6 +260,12 @@ subroutine orth99(nomres, ritz)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
+!
+        call rsadpa(base, 'L', 1, 'TYPE_DEFO', iorol,&
+                    0, sjv=iad, styp=k8b)
+        call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne,&
+                    0, sjv=jiad, styp=k8b)
+        zk16(jiad) = zk16(iad)
     end do
 !
 !
