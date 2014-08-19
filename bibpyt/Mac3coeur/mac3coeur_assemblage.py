@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
@@ -231,8 +231,8 @@ class Assemblage(object):
 
     def mcf_cara_barre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
-        from Cata.cata import _F        
-        #On donne une section unitaire       
+        from Cata.cata import _F
+        #On donne une section unitaire
         mcf = (
             _F(GROUP_MA='MNT_' + self.idAST,
                SECTION = 'GENERALE',
@@ -369,20 +369,17 @@ class Assemblage(object):
         )
         return mcf
 
-    def chargement_defor(self):
-        """Retourne les deformations de la TABLE."""
+    def mcf_deform_impo(self):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_CINE/MECA_IMPO."""
         from Cata.cata import _F
-        def maj_deform(nom,val_dy,val_dz):
-            maj = _F(GROUP_NO = nom, DY = val_dy, DZ = val_dz)
-            return maj
-
         mcf = []
-        for igr in range(0,self.NBGR):
-            mcf.append(maj_deform('G_' + self.idAST + '_' + str(igr+1), self.deforme['DY'+str(igr+1)],self.deforme['DZ'+str(igr+1)] ))
+        for igr in range(1, self.NBGR + 1):
+            mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(igr),
+                          DY=self.deforme['DY' + str(igr)],
+                          DZ=self.deforme['DZ' + str(igr)]))
         return mcf
 
-
-    def chargement_archimede1(self):
+    def mcf_archimede_nodal(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE
             dans la prise en compte de la poussée d Archimede."""
         from Cata.cata import _F
@@ -393,15 +390,14 @@ class Assemblage(object):
         mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(1), FX=self.AFGRE_1/4.,),)
         for igr in range(1,self.NBGR-1):
             mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(igr+1), FX=self.AFGRM_1/4.,),)
-        
+
         mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(self.NBGR), FX=self.AFGRE_1/4.,),)
         return mcf
 
-    def chargement_archimede2(self,FXTG,FXCR):
+    def mcf_archimede_poutre(self,FXTG,FXCR):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
             dans la prise en compte de la poussée d Archimede."""
         from Cata.cata import _F
-        
         mcf = (
             _F(GROUP_MA='TG_' + self.idAST, FX=FXTG,),
             _F(GROUP_MA='CR_' + self.idAST, FX=FXCR,),
@@ -412,19 +408,15 @@ class Assemblage(object):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
            dans la prise en compte des efforts transverses."""
         from Cata.cata import _F
-        
         mcf = (_F(GROUP_MA='CR_' + self.idAST, FY=FYCR,FZ=FZCR,),)
-
         return mcf
 
     def chargement_fct_hydro_axiale(self,FXCR,FXTG):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
            dans la prise en compte des efforts hydrodynamiques axiaux."""
         from Cata.cata import _F
-        
         mcf = (_F(GROUP_MA='CR_' + self.idAST, FX=FXCR,),
                _F(GROUP_MA='TG_' + self.idAST, FX=FXTG,),)
-
         return mcf
 
 

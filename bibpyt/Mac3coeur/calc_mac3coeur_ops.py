@@ -112,8 +112,8 @@ def calc_mac3coeur_ops(self, **args):
        else :
          _F_EMBO  = _coeur.definition_effor_maintien_force(_MO_N,_DEFORMATION['FORCE_MAINTIEN'])
 
-       _ARCH_1  = _coeur.definition_archimede1(_MO_N)
-       _FOARCH_1= _coeur.definition_archimede2(_MO_N)
+       _ARCH_1  = _coeur.definition_archimede_nodal(_MO_N)
+       _FOARCH_1= _coeur.definition_archimede_poutre(_MO_N)
        _ARCH_F1 = _coeur.definition_temp_archimede(_is_archimede)
        _HYDR_F1 = _coeur.definition_temp_hydro_axiale()
        _F_TRAN1 = _coeur.definition_effort_transverse()
@@ -264,8 +264,8 @@ def calc_mac3coeur_ops(self, **args):
        _AF_MSC  = _coeur.definition_materiau(_MA_N,_GFF,_SANS_CONTACT,_FLUENC,_CHTH)
        _PESANT  = _coeur.definition_pesanteur(_MO_N)
        _F_EMBO  = _coeur.definition_effor_maintien(_MO_N)
-       _ARCH_1  = _coeur.definition_archimede1(_MO_N)
-       _FOARCH_1= _coeur.definition_archimede2(_MO_N)
+       _ARCH_1  = _coeur.definition_archimede_nodal(_MO_N)
+       _FOARCH_1= _coeur.definition_archimede_poutre(_MO_N)
        _ARCH_F1 = _coeur.definition_temp_archimede(_is_archimede)
 
        _CL_LAME = _coeur.affe_char_lame(_MO_N)
@@ -353,8 +353,8 @@ def calc_mac3coeur_ops(self, **args):
 
        _PESANT1  = _coeurp1.definition_pesanteur(_MO_NP1)
        _F_EMBO1  = _coeurp1.definition_effor_maintien(_MO_NP1)
-       _ARCH_11  = _coeurp1.definition_archimede1(_MO_NP1)
-       _FOARCH1  = _coeurp1.definition_archimede2(_MO_NP1)
+       _ARCH_11  = _coeurp1.definition_archimede_nodal(_MO_NP1)
+       _FOARCH1  = _coeurp1.definition_archimede_poutre(_MO_NP1)
        _ARCHF11  = _coeurp1.definition_temp_archimede(_is_archimede)
 
        # on rajoute les efforts thyc

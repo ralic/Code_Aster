@@ -116,16 +116,6 @@ class Coeur(object):
 
         return posi_damac
 
-    def position_fromthyc(self, posX, posY):
-        """Retourne la position Aster correspondant à la position Thyc."""
-        lig, col = position[0], position[1:]
-        ind = int(col) - 1
-        try:
-          posi_aster = self.ALPHAMAC[ind] + "_" + self.dcorr1[lig]
-        except (IndexError, KeyError):
-            raise KeyError("invalid damac position : %s" % position)
-        return posi_aster
-
     def init_from_table(self, tab):
         """Initialise le coeur à partir d'une table."""
         self.nbac = len(tab)
@@ -148,18 +138,17 @@ class Coeur(object):
             self.collAC[idAC]   = ac
             self.nameAC[nameAC] = ac.idAST
 
-    def chargement_defor(self):
-        """Retourne les deformations de la TABLE."""
+    def mcf_deform_impo(self):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_CINE/MECA_IMPO."""
         from Accas import _F
         mcf = []
         for ac in self.collAC.values():
-            mcf.extend(ac.chargement_defor())
+            mcf.extend(ac.mcf_deform_impo())
 
         mtmp = (_F(GROUP_MA = 'CRAYON',           DRX=0.,               ),
                 _F(GROUP_NO = 'LISPG',            DRX=0., DRY=0., DRZ=0.),
                 _F(GROUP_MA =('EBOSUP','EBOINF'), DRX=0., DRY=0., DRZ=0.),)
         mcf.extend(mtmp)
-
         return mcf
 
     def repr(self):
@@ -218,26 +207,26 @@ class Coeur(object):
 
     def affe_char_lame(self,MODELE):
         AFFE_CHAR_CINE = self.macro.get_cmd('AFFE_CHAR_CINE')
-        mcf = self.chargement_defor()
+        mcf = self.mcf_deform_impo()
 
         _AF_CIN = AFFE_CHAR_CINE(MODELE=MODELE,MECA_IMPO = mcf)
         return _AF_CIN
 
-    def chargement_archimede1(self):
+    def mcf_archimede_nodal(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE."""
         mcf = []
         for ac in self.collAC.values():
-            mcf.extend(ac.chargement_archimede1())
+            mcf.extend(ac.mcf_archimede_nodal())
         return mcf
 
-    def definition_archimede1(self,MODELE):
+    def definition_archimede_nodal(self,MODELE):
         AFFE_CHAR_MECA = self.macro.get_cmd('AFFE_CHAR_MECA')
-        mcf = self.chargement_archimede1()
+        mcf = self.mcf_archimede_nodal()
 
         _ARCH_1 = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
         return _ARCH_1
 
-    def chargement_archimede2(self):
+    def mcf_archimede_poutre(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE."""
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         mcf = []
@@ -248,12 +237,12 @@ class Coeur(object):
             _FCT_CR = DEFI_FONCTION(NOM_PARA = 'X',PROL_DROITE = 'CONSTANT',PROL_GAUCHE = 'CONSTANT',
                                     VALE     = (ac.XINFC,(ac.AFCRA_1 / ac.LONCR ),
                                                      ac.XSUPC,(ac.AFCRA_1 / ac.LONCR )))
-            mcf.extend(ac.chargement_archimede2(_FCT_TG,_FCT_CR))
+            mcf.extend(ac.mcf_archimede_poutre(_FCT_TG,_FCT_CR))
         return mcf
 
-    def definition_archimede2(self,MODELE):
+    def definition_archimede_poutre(self,MODELE):
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
-        mcf = self.chargement_archimede2()
+        mcf = self.mcf_archimede_poutre()
 
         _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcf)
         return _FOARCH_1
@@ -816,31 +805,27 @@ class Coeur(object):
 
         return _CHTH_1
 
-    def definition_materiau(self,MAILLAGE,GFF,CONTACT,FLUENCE,CHTH):
+    def definition_materiau(self, MAILLAGE, GFF, CONTACT, FLUENCE, CHTH):
         from Accas import _F
-        DEFI_COMPOR  = self.macro.get_cmd('DEFI_COMPOR')
-        DEFI_MATERIAU         = self.macro.get_cmd('DEFI_MATERIAU')
-        AFFE_MATERIAU         = self.macro.get_cmd('AFFE_MATERIAU')
+        DEFI_COMPOR = self.macro.get_cmd('DEFI_COMPOR')
+        DEFI_MATERIAU = self.macro.get_cmd('DEFI_MATERIAU')
+        AFFE_MATERIAU = self.macro.get_cmd('AFFE_MATERIAU')
 
-        #TP_REF = 20. ;
+        # TP_REF = 20. ;
 
-
-        if (CONTACT == 'OUI'):
-           _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E9, ),);
-        elif (CONTACT == 'NON'):
-           _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E1, ),);
-
-        mcf_affe_mater = self.mcf_coeur_mater(_M_RES)
-        mcf_compor     = self.mcf_compor_fibre(GFF)
+        if CONTACT == 'OUI':
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E9))
+        else:
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E1))
 
         # Affectation des materiau dans le coeur
-
-        _A_MAT = AFFE_MATERIAU( MAILLAGE    = MAILLAGE,
-                        AFFE_VARC   = ( _F( NOM_VARC='IRRA', TOUT='OUI', EVOL=FLUENCE, PROL_DROITE='CONSTANT'),
-                                        _F( NOM_VARC='TEMP', TOUT='OUI', EVOL=CHTH,    PROL_DROITE='CONSTANT', VALE_REF=self.TP_REF,),),
-                        AFFE            = mcf_affe_mater,
-                        AFFE_COMPOR = mcf_compor,);
-
+        _A_MAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE_VARC=(_F(NOM_VARC='IRRA'
+                               , TOUT='OUI', EVOL=FLUENCE,
+                               PROL_DROITE='CONSTANT'), _F(NOM_VARC='TEMP',
+                               TOUT='OUI', EVOL=CHTH, PROL_DROITE='CONSTANT',
+                               VALE_REF=self.TP_REF)),
+                               AFFE=self.mcf_coeur_mater(_M_RES),
+                               AFFE_COMPOR=self.mcf_compor_fibre(GFF))
         return _A_MAT
 
     def mcf_compor_fibre(self,GFF):
@@ -894,6 +879,7 @@ class Coeur(object):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
         et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
+        # XXX trop long pour être lisible, création des formules fragile
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         FORMULE = self.macro.get_cmd('FORMULE')
@@ -991,20 +977,20 @@ class Coeur(object):
         Dcth=L+' * '+ALPHENV+' * (' + _TEMPENV.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthY=Dcth+'*'+COSTE
         f_DthZ=Dcth+'*'+SINTE
-        _DthY=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthY%locals())
-        _DthZ=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZ%locals())
+        _DthY=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthY % locals())
+        _DthZ=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZ % locals())
 
         Dthpic=L+' * '+ALPHPIC+' * (' + _TEMPPIC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpic=Dthpic+'*'+COSTE
         f_DthZpic=Dthpic+'*'+SINTE
-        _DthYpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpic%locals())
-        _DthZpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpic%locals())
+        _DthYpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpic % locals())
+        _DthZpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpic % locals())
 
         Dthpsc=L+' * '+ALPHPSC+' * (' + _TEMPPSC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpsc=Dthpsc+'*'+COSTE
         f_DthZpsc=Dthpsc+'*'+SINTE
-        _DthYpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpsc%locals())
-        _DthZpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpsc%locals())
+        _DthYpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpsc % locals())
+        _DthZpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpsc % locals())
 
         #---------------------------------------------------------------
         #--                  Deplacements verticaux                   --
@@ -1049,7 +1035,7 @@ class Coeur(object):
                               PROL_GAUCHE='CONSTANT',);
 
         f_DthXpic='( (' + _DthXpicPeriph.nom + '(INST) -'  +_DthXpicCentre.nom + '(INST) ) /(%(Rpsc)f)**2   )*(' +  L + ')**2   +'  +_DthXpicCentre.nom +'(INST)'
-        _DthXpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthXpic%locals())
+        _DthXpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthXpic % locals())
 
 
         #---------------------------------------------------------------
@@ -1059,17 +1045,23 @@ class Coeur(object):
         XINFCUVElocal=self.XINFCUVE
         XSUPCUVElocal=self.XSUPCUVE
         f_DthX='(-1.*'  +_DthXpicPeriph.nom + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +'  +_DthXpicPeriph.nom + '(INST))'
-        _DthX=FORMULE(NOM_PARA=('X','INST'),VALE=f_DthX%locals())
+        _DthX=FORMULE(NOM_PARA=('X','INST'),VALE=f_DthX % locals())
 
         #---------------------------------------------------------------
         #--                  chargement resultant                     --
         #---------------------------------------------------------------
-        _dilatation = AFFE_CHAR_MECA_F( MODELE   = MODEL,
-                                   DDL_IMPO = (
-                                                _F(GROUP_NO = 'FIX',              DX=_DthXpic,  DY=_DthYpic,  DZ=_DthZpic ),
-                                                _F(GROUP_NO = 'PMNT_S',                      DY=_DthYpsc,  DZ=_DthZpsc,),
-                                                _F(GROUP_NO = 'P_CUV',            DX=_DthX,   DY=_DthY,     DZ=_DthZ ),),);
-
+        _dilatation = AFFE_CHAR_MECA_F(MODELE = MODEL,
+                                       DDL_IMPO = (_F(GROUP_NO='FIX',
+                                                      DX=_DthXpic,
+                                                      DY=_DthYpic,
+                                                      DZ=_DthZpic ),
+                                                   _F(GROUP_NO='PMNT_S',
+                                                      DY=_DthYpsc,
+                                                      DZ=_DthZpsc,),
+                                                   _F(GROUP_NO='P_CUV',
+                                                      DX=_DthX,
+                                                      DY=_DthY,
+                                                      DZ=_DthZ ),),)
         return _dilatation
 
 
