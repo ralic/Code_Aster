@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
@@ -24,11 +24,9 @@ Définition d'une conception de coeur (ensemble d'assemblages).
 """
 
 import os
-import string
 
 from mac3coeur_factory import Mac3Factory
 from mac3coeur_assemblage import ACFactory
-
 
 class Coeur(object):
     """Classe définissant un coeur de reacteur."""
@@ -40,8 +38,8 @@ class Coeur(object):
         'altitude',
         # Position des crayons et tubes-guides pour definition du champ de fluence
         'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR','LONTU',
-        # Caractéristique de la cuve 
-        'pas_assemblage',       
+        # Caractéristique de la cuve
+        'pas_assemblage',
         'XINFCUVE','XSUPCUVE',
         #---fleche des ressorts de maintien à la fermeture de la cuve
         'flechResMaint',
@@ -150,196 +148,6 @@ class Coeur(object):
             self.collAC[idAC]   = ac
             self.nameAC[nameAC] = ac.idAST
 
-    def cherche_rubrique_nom(self,f, nom):
-        "Chercher une rubrique definie par son nom"
-        while 1:
-            line = f.readline()
-            if (not line):
-                break
-            strtmp = line[0:len(line)-1]
-            if (len(line) >= len(nom)):
-                if (line[0:len(nom)] == nom):
-                    return 1
-        return None
-
-    def definir_chargement_transverse(self,cote,epaisseur,pos_thyc,force,prod):
-        DEFI_FONCTION    = self.macro.get_cmd('DEFI_FONCTION')
-        "Determination du chargement transverse sur les crayons pour un assemblage donne."
-        kk=2
-        eps = 1.0e-6
-
-        defi_fonc = []
-        "Pour aller de l embout inferieur jusqu'a la premiere grille."
-        som_l = 0.0
-        som_f = 0.0
-        for k in range(kk,pos_thyc[0]):
-            som_l = som_l + string.atof(epaisseur[k])
-            som_f = som_f + prod*string.atof(force[k])/string.atof(epaisseur[k])
-        som_feq = som_l/(som_l + 0.5*string.atof(epaisseur[pos_thyc[0]]))*som_f
-        defi_fonc.append(string.atof(cote[kk])-0.5*string.atof(epaisseur[kk])-eps)
-        defi_fonc.append(som_feq)
-        defi_fonc.append(string.atof(cote[pos_thyc[0]])-0.5*string.atof(epaisseur[pos_thyc[0]])+eps)
-        defi_fonc.append(som_feq)
-        defi_fonc.append(string.atof(cote[pos_thyc[0]]))
-        defi_fonc.append(0.0)
-        
-        "Pour aller de la premiere a la derniere grille."
-        for j in range(0,len(pos_thyc)-1):
-            som_l = 0.0
-            som_f = 0.0
-            for k in range(pos_thyc[j]+1,pos_thyc[j+1]):
-                som_l = som_l + string.atof(epaisseur[k])
-                som_f = som_f + prod*string.atof(force[k])/string.atof(epaisseur[k])
-            som_feq = som_l/(som_l + 0.5*(string.atof(epaisseur[pos_thyc[j]])+string.atof(epaisseur[pos_thyc[j+1]])))*som_f
-            defi_fonc.append(string.atof(cote[pos_thyc[j]])+0.5*string.atof(epaisseur[pos_thyc[j]])-eps)
-            defi_fonc.append(som_feq)
-            defi_fonc.append(string.atof(cote[pos_thyc[j+1]])-0.5*string.atof(epaisseur[pos_thyc[j+1]])+eps)
-            defi_fonc.append(som_feq)
-            defi_fonc.append(string.atof(cote[pos_thyc[j+1]]))
-            defi_fonc.append(0.0)
-
-        "Pour aller de la derniere grille jusqu'a l embout superieur."
-        som_l = 0.0
-        som_f = 0.0
-        for k in range(pos_thyc[len(pos_thyc)-1]+1,len(cote)):
-            som_l = som_l + string.atof(epaisseur[k])
-            som_f = som_f + prod*string.atof(force[k])/string.atof(epaisseur[k])
-        som_feq = som_l/(som_l + 0.5*string.atof(epaisseur[len(cote)-1]))*som_f
-        defi_fonc.append(string.atof(cote[pos_thyc[len(pos_thyc)-1]])+0.5*string.atof(epaisseur[pos_thyc[len(pos_thyc)-1]])-eps)
-        defi_fonc.append(som_feq)
-        defi_fonc.append(string.atof(cote[len(cote)-1])+0.5*string.atof(epaisseur[len(cote)-1])+eps)
-        defi_fonc.append(som_feq)
-
-        _resu = DEFI_FONCTION(NOM_PARA='X',
-                              VALE=defi_fonc,
-                              PROL_DROITE = 'CONSTANT',
-                              PROL_GAUCHE = 'CONSTANT',)
-        return _resu
-
-    def lire_resu_thyc(self,MODELE,nom_fic):
-        DEFI_FONCTION    = self.macro.get_cmd('DEFI_FONCTION')
-        AFFE_CHAR_MECA   = self.macro.get_cmd('AFFE_CHAR_MECA')
-        AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
-        """ Fonction multiplicative de la force hydrodynamique axiale.
-            On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
-        FOHYFR_1 = 1.0    # Valeur a froid
-        FOHYCH_1 = 0.722  # Valeur a chaud
-
-        from Accas import _F
-        f  = open(nom_fic, 'r')
-        f2 = open(nom_fic, 'r')
-        self.cherche_rubrique_nom(f, ' EFFORTS TRANSVERSES selon X en N')
-        self.cherche_rubrique_nom(f2, ' EFFORTS TRANSVERSES selon Y en N')
-        line = f.readline().split()
-        line2 = f2.readline().split()
-        line2 = f2.readline().split()
-
-        # Recuperation de l'epaisseur des mailles dans Thyc
-        epaisseur = f.readline().split()
-        if (epaisseur[0]!="ep(m)"):
-            raise KeyError("invalid epaisseur")
-
-        cote = f.readline().split()
-        if (cote[0]!="Z(m)"):
-            raise KeyError("invalid cote axial")
-
-        j = 0
-        pos_thyc=[]
-        for i in range(2,len(cote)):
-            #Positionnement des grilles
-            if ((self.altitude[j]>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.altitude[j]<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
-                pos_thyc.append(i)
-                j=j+1
-                if (j==len(self.altitude)):
-                    break
-
-        for i in range(2,len(cote)):
-            #Positionnement des crayons pour application des efforts transverses
-            if ((self.XINFC>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.XINFC<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
-                pos_gril_inf = i
-            if ((self.XSUPC>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.XSUPC<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
-                pos_gril_sup = i
-    
-        # Recuperation des efforts transverses sur les grilles
-        mcf = []
-        mcft= []
-        for i in range(0,self.NBAC):
-            line  = f.readline().split()
-            line2 = f2.readline().split()
-            posi_aster1 = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[1])-1]  + "_" + self.ALPHAMAC[string.atoi(line[0])-2]
-            posi_aster2 = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line2[1])-1] + "_" + self.ALPHAMAC[string.atoi(line2[0])-2]
-            
-            if (posi_aster1!=posi_aster2):
-                raise KeyError("position d assemblage avec ordre different")
-    
-            for j in range(0,len(pos_thyc)):
-               mtmp = (_F(GROUP_NO = 'G_'+posi_aster1+'_'+str(j+1), FY = string.atof(line[pos_thyc[j]])/4.0, FZ = - string.atof(line2[pos_thyc[j]])/4.0),)
-               mcf.extend(mtmp)
-        
-            _resu_fy = self.definir_chargement_transverse(cote,epaisseur,pos_thyc,line,1)
-            _resu_fz = self.definir_chargement_transverse(cote,epaisseur,pos_thyc,line2,-1)
-            mtmp = (_F(GROUP_MA = 'CR_'+posi_aster1, FY = _resu_fy, FZ = _resu_fz),)
-            mcft.extend(mtmp)
-        
-        _AF_CHTRNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
-        _AF_CHTRFX = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcft)
-
-        # Recuperation des efforts axiaux
-        self.cherche_rubrique_nom(f, ' *    FORCE HYDRODYNAMIQUE AXIALE en (N)           *')
-        line = f.readline().split()
-        line = f.readline().split()
-        line = f.readline().split()
-        
-        mcp  = []
-        mcpf = []
-        for i in range(0,self.NBAC):
-            line = f.readline().split()
-            posi_aster = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[1])-1]+ "_" +self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[0])-1]
-            idAC=self.position_todamac(posi_aster)
-
-            ac=self.collAC[idAC]
-            KTOT = ac.K_GRM*(ac.NBGR-2)+ac.K_GRE*2+ac.K_EBSU+ac.K_TUB+ac.K_EBIN
-
-            # Force axiale pour une grille extremite (inf)
-            mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(1), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRE/KTOT/4.0),)
-            mcp.extend(mtmp)
-
-            # Force axiale pour chacune des grilles de mélange
-            for j in range(1,ac.NBGR-1):
-                mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(j+1), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRM/KTOT/4.0),)
-                mcp.extend(mtmp)
-
-            # Force axiale pour une grille extremite (sup)
-            mtmp = (_F(GROUP_NO = 'G_'+posi_aster+'_'+str(ac.NBGR), FX = string.atof(line[2])/FOHYCH_1*ac.K_GRE/KTOT/4.0),)
-            mcp.extend(mtmp)
-
-            # Force axiale pour l'embout inferieur
-            mtmp = (_F(GROUP_NO = 'PI_'+posi_aster, FX = string.atof(line[2])/FOHYCH_1*ac.K_EBIN/KTOT),)
-            mcp.extend(mtmp)
-            
-            # Force axiale pour l'embout superieur
-            mtmp = (_F(GROUP_NO = 'PS_'+posi_aster, FX = string.atof(line[2])/FOHYCH_1*ac.K_EBSU/KTOT),)
-            mcp.extend(mtmp)
-            
-            # Force axiale pour les crayons (appel a DEFI_FONCTION)
-            vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBCR/(ac.NBCR+ac.NBTG)/ac.LONCR
-            _FXC = DEFI_FONCTION(NOM_PARA='X',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
-                                 VALE=(ac.XINFC,vale,ac.XSUPC,vale))            
-            mtmp = (_F(GROUP_MA = 'CR_'+posi_aster, FX = _FXC),)
-            mcpf.extend(mtmp)
-            
-            # Force axiale pour les tubes-guides (appel a DEFI_FONCTION)
-            vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBTG/(ac.NBCR+ac.NBTG)/ac.LONTU
-            _FXT = DEFI_FONCTION(NOM_PARA='X',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
-                                 VALE=(ac.XINFT,vale,ac.XSUPT,vale))            
-            mtmp = (_F(GROUP_MA = 'TG_'+posi_aster, FX = _FXT),)
-            mcpf.extend(mtmp)
-
-        _AF_CHAXNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcp)
-        _AF_CHAXPO = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcpf)
-
-        return _AF_CHTRNO,_AF_CHTRFX,_AF_CHAXNO,_AF_CHAXPO
-
     def chargement_defor(self):
         """Retourne les deformations de la TABLE."""
         from Accas import _F
@@ -442,7 +250,7 @@ class Coeur(object):
                                                      ac.XSUPC,(ac.AFCRA_1 / ac.LONCR )))
             mcf.extend(ac.chargement_archimede2(_FCT_TG,_FCT_CR))
         return mcf
-                
+
     def definition_archimede2(self,MODELE):
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
         mcf = self.chargement_archimede2()
@@ -462,14 +270,14 @@ class Coeur(object):
 
           ARCHFR1 = 873.  # Valeur en arret a froid (20 degres)
           ARCHFR2 = 860.  # Valeur en arret a froid (60 degres)
-          ARCHCH  = 620.  # Valeur a chaud (307 degres)   
+          ARCHCH  = 620.  # Valeur a chaud (307 degres)
 
         # cas ou la force d'archimede n'est pas activee
         elif _is_archimede == 'NON' :
 
-          ARCHFR1 = 0.  
-          ARCHFR2 = 0.  
-          ARCHCH  = 0.  
+          ARCHFR1 = 0.
+          ARCHFR2 = 0.
+          ARCHCH  = 0.
 
         _ARCH_F1 = DEFI_FONCTION( NOM_PARA = 'INST',
                                   PROL_DROITE='CONSTANT',
@@ -477,12 +285,12 @@ class Coeur(object):
                                   VALE     = ( self.temps_simu['T0'],ARCHFR1,
                                                self.temps_simu['T1'],ARCHFR1,
                                                self.temps_simu['T2'],ARCHFR2,
-                                               self.temps_simu['T4'],ARCHCH, 
-                                               self.temps_simu['T5'],ARCHCH, 
+                                               self.temps_simu['T4'],ARCHCH,
+                                               self.temps_simu['T5'],ARCHCH,
                                                self.temps_simu['T7'],ARCHFR2,
                                                self.temps_simu['T8'],ARCHFR1,
                                                self.temps_simu['T9'],ARCHFR1,),);
-                                               
+
         return _ARCH_F1
 
     def definition_temp_hydro_axiale(self):
@@ -497,9 +305,9 @@ class Coeur(object):
                                                self.temps_simu['T1'],0.0,
                                                self.temps_simu['T2'],FOHYFR_1,
                                                self.temps_simu['T3'],FOHYCH_1,
-                                               self.temps_simu['T4'],FOHYCH_1, 
-                                               self.temps_simu['T5'],FOHYCH_1, 
-                                               self.temps_simu['T6'],FOHYCH_1, 
+                                               self.temps_simu['T4'],FOHYCH_1,
+                                               self.temps_simu['T5'],FOHYCH_1,
+                                               self.temps_simu['T6'],FOHYCH_1,
                                                self.temps_simu['T7'],FOHYFR_1,
                                                self.temps_simu['T8'],0.0,
                                                self.temps_simu['T9'],0.0,),);
@@ -515,8 +323,8 @@ class Coeur(object):
                                   VALE     = ( self.temps_simu['T0'],SANS,
                                                self.temps_simu['T1'],SANS,
                                                self.temps_simu['T2'],SANS,
-                                               self.temps_simu['T4'],AVEC, 
-                                               self.temps_simu['T5'],AVEC, 
+                                               self.temps_simu['T4'],AVEC,
+                                               self.temps_simu['T5'],AVEC,
                                                self.temps_simu['T7'],SANS,
                                                self.temps_simu['T8'],SANS,
                                                self.temps_simu['T9'],SANS,),);
@@ -560,7 +368,7 @@ class Coeur(object):
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
-        
+
         _DXpsc=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,
@@ -578,9 +386,9 @@ class Coeur(object):
                                  self.temps_simu['T9'],   0.,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-                              
+
         _F_EMBO = AFFE_CHAR_MECA_F( MODELE   = MODELE,
-                                   DDL_IMPO = _F(GROUP_NO = 'PMNT_S',           DX=_DXpsc,  ),); 
+                                   DDL_IMPO = _F(GROUP_NO = 'PMNT_S',           DX=_DXpsc,  ),);
         return _F_EMBO
 
     def definition_effor_maintien_force(self,MODELE,ForceMaintien):
@@ -588,7 +396,7 @@ class Coeur(object):
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
-                              
+
         _FXpsc=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,
@@ -606,9 +414,9 @@ class Coeur(object):
                                  self.temps_simu['T9'],   0.,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-                              
+
         _F_EMBO = AFFE_CHAR_MECA_F( MODELE   = MODELE,
-                                   FORCE_NODALE = _F(GROUP_NO = 'PMNT_S',           FX=_FXpsc,  ),); 
+                                   FORCE_NODALE = _F(GROUP_NO = 'PMNT_S',           FX=_FXpsc,  ),);
         return _F_EMBO
 
     def affectation_maillage(self,MA0):
@@ -658,31 +466,31 @@ class Coeur(object):
                                _F(NOM='LISPG',UNION =tuple(LIS_PG),),),);
 
         return _MA
-        
+
     def recuperation_donnees_geom(self,MAILL):
         """recuperation de donnees géometrique a partir du maillage"""
         from Accas import _F
         CREA_MAILLAGE = self.macro.get_cmd('CREA_MAILLAGE')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
-        DETRUIRE = self.macro.get_cmd('DETRUIRE')                
-                
+        DETRUIRE = self.macro.get_cmd('DETRUIRE')
+
         #--- recuperation de donnees géometriques ---
         # nombre d'assemblages dans le coeur
         self.NBAC = len(self.collAC.values())
-        
+
         # altitudes mini et maxi de la cavité de coeur
         _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'EBOINF',),)
         _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
         self.XINFCUVE = _TAB_tmp['X_MIN',1]
         DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
         DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
-        
+
         _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'MAINTIEN',),)
         _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
         self.XSUPCUVE = _TAB_tmp['X_MAX',1]
         DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
         DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
-        
+
         # altitudes mini et maxi, et longueur de l'ensemble des crayons
         _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'CRAYON',),)
         _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
@@ -691,7 +499,7 @@ class Coeur(object):
         self.LONCR = _TAB_tmp['X_MAX',1] - _TAB_tmp['X_MIN',1]
         DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
         DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
-        
+
         # altitudes mini et maxi, et longueur de l'ensemble des tubes
         _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'T_GUIDE',),)
         _TAB_tmp= RECU_TABLE(CO = _ma_tmp, NOM_TABLE = 'CARA_GEOM',)
@@ -700,7 +508,7 @@ class Coeur(object):
         self.LONTU = _TAB_tmp['X_MAX',1] - _TAB_tmp['X_MIN',1]
         DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
         DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
-        
+
         # altitudes moyennes des grilles
         self.altitude = []
         _ma_tmp = CREA_MAILLAGE(MAILLAGE = MAILL,RESTREINT = _F(GROUP_MA = 'ELA',),)
@@ -717,7 +525,7 @@ class Coeur(object):
           self.altitude.append((altimintmp + altimaxtmp )/2.)
           DETRUIRE(CONCEPT=_F(NOM=_ma_tmp),INFO=1,);
           DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp),INFO=1,);
-        
+
         return
 
     def cl_rigidite_grille(self):
@@ -913,7 +721,7 @@ class Coeur(object):
         ##############################################################
         # Temperature de reference #
         ############################
-        #TP_REF   = 
+        #TP_REF   =
         #ARRET_FR =  arret a froid (temp moyenne cuve)
         #ARRET_CH =  arret a chaud (297.2 dans doc TF JD DC 1494)
                     ## c est une temperature moyenne en cuve
@@ -1021,7 +829,7 @@ class Coeur(object):
            _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E9, ),);
         elif (CONTACT == 'NON'):
            _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E1, ),);
-        
+
         mcf_affe_mater = self.mcf_coeur_mater(_M_RES)
         mcf_compor     = self.mcf_compor_fibre(GFF)
 
@@ -1062,11 +870,11 @@ class Coeur(object):
         # Definition d'un materiau bidon pour les elements de poutres
         _MAT_BID = DEFI_MATERIAU(ELAS = _F( E = 1.0,   NU = 0.0, RHO = 0.0, ALPHA = 0.0,),);
         _MAT_GR  = DEFI_MATERIAU(ELAS = _F( E = 1.E14, NU = 0.3, RHO = 0.0, ALPHA = 0.0,),);
-        
+
         mcf  = []
         mtmp = (_F(GROUP_MA = 'RES_TOT', MATER = _M_RES,),)
         mcf.extend(mtmp)
-        
+
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_AC_mater())
             mtmp = (_F(GROUP_MA = ('GT_' + ac.idAST + '_M','GT_' + ac.idAST + '_E',), MATER = _MAT_BID,),
@@ -1080,7 +888,7 @@ class Coeur(object):
         mtmp = (_F(GROUP_MA = 'DIL', MATER = ac.mate.mate['DIL'],),)
         mcf.extend(mtmp)
         return mcf
-        
+
 
     def dilatation_cuve(self,MODEL,MAILL):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
@@ -1091,7 +899,7 @@ class Coeur(object):
         FORMULE = self.macro.get_cmd('FORMULE')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
-        
+
         # definition des evolutions de températures
         # sur la PIC/FSC, la PSC et l'enveloppe
         _TEMPPIC=DEFI_FONCTION(NOM_PARA='INST',
@@ -1110,7 +918,7 @@ class Coeur(object):
                                  self.temps_simu['T9'],   self.TP_REF,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-        
+
         _TEMPPSC=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
                               VALE=( -2.0,   self.TP_REF,
@@ -1127,7 +935,7 @@ class Coeur(object):
                                  self.temps_simu['T9'],   self.TP_REF,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-        
+
         _TEMPENV=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
                               VALE=( -2.0,   self.TP_REF,
@@ -1146,7 +954,7 @@ class Coeur(object):
                               PROL_GAUCHE='CONSTANT',);
 
         TP_REFlocal = self.TP_REF
-        
+
         # interpolation linéaire du coefficient de dilatation
         #des internes de cuve en fonction de la température
         ALPH1local=self.ALPH1
@@ -1164,12 +972,12 @@ class Coeur(object):
         ymin = _TABG['Y_MIN',1]
         ymax = _TABG['Y_MAX',1]
         zmin = _TABG['Z_MIN',1]
-        zmax = _TABG['Z_MAX',1]        
+        zmax = _TABG['Z_MAX',1]
         Y0 = (ymin + ymax) / 2.
         Z0 = (zmin + zmax) / 2.
         # rayon de la PSC
-        Rpsc = (ymax - ymin) / 2.        
-        
+        Rpsc = (ymax - ymin) / 2.
+
         #---------------------------------------------------------------
         #--                  Dilatations radiales                     --
         #--      du cloisonnement, de la PIC/FSC, et de la PSC        --
@@ -1185,31 +993,31 @@ class Coeur(object):
         f_DthZ=Dcth+'*'+SINTE
         _DthY=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthY%locals())
         _DthZ=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZ%locals())
-                
+
         Dthpic=L+' * '+ALPHPIC+' * (' + _TEMPPIC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpic=Dthpic+'*'+COSTE
         f_DthZpic=Dthpic+'*'+SINTE
         _DthYpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpic%locals())
         _DthZpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpic%locals())
-        
+
         Dthpsc=L+' * '+ALPHPSC+' * (' + _TEMPPSC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpsc=Dthpsc+'*'+COSTE
         f_DthZpsc=Dthpsc+'*'+SINTE
         _DthYpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpsc%locals())
         _DthZpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpsc%locals())
-        
+
         #---------------------------------------------------------------
         #--                  Deplacements verticaux                   --
         #--                      de la PIC/FSC                        --
         #---------------------------------------------------------------
         # le déplacement de la PIC est égal à la différence de hauteur de cavité
         # (entre l'instant "cuve fermée à 20C"et l'instant considéré)
-        # 
+        #
         # centre du coeur
         _DthXpicCentre=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
-                                 -1.0,   0.,                                 
-                                 self.temps_simu['T0'],   0.,              
+                                 -1.0,   0.,
+                                 self.temps_simu['T0'],   0.,
                                  self.temps_simu['T0b'],   0.,
                                  self.temps_simu['T1'],   self.Hcav1centre - self.Hcav1centre ,
                                  self.temps_simu['T2'],   self.Hcav1centre - self.Hcav2centre ,
@@ -1225,8 +1033,8 @@ class Coeur(object):
         # peripherie du coeur
         _DthXpicPeriph=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
-                                 -1.0,   0.,                                 
-                                 self.temps_simu['T0'],   0.,              
+                                 -1.0,   0.,
+                                 self.temps_simu['T0'],   0.,
                                  self.temps_simu['T0b'],   0.,
                                  self.temps_simu['T1'],   self.Hcav1periph - self.Hcav1periph ,
                                  self.temps_simu['T2'],   self.Hcav1periph - self.Hcav2periph ,
@@ -1252,7 +1060,7 @@ class Coeur(object):
         XSUPCUVElocal=self.XSUPCUVE
         f_DthX='(-1.*'  +_DthXpicPeriph.nom + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +'  +_DthXpicPeriph.nom + '(INST))'
         _DthX=FORMULE(NOM_PARA=('X','INST'),VALE=f_DthX%locals())
-        
+
         #---------------------------------------------------------------
         #--                  chargement resultant                     --
         #---------------------------------------------------------------
@@ -1260,10 +1068,10 @@ class Coeur(object):
                                    DDL_IMPO = (
                                                 _F(GROUP_NO = 'FIX',              DX=_DthXpic,  DY=_DthYpic,  DZ=_DthZpic ),
                                                 _F(GROUP_NO = 'PMNT_S',                      DY=_DthYpsc,  DZ=_DthZpsc,),
-                                                _F(GROUP_NO = 'P_CUV',            DX=_DthX,   DY=_DthY,     DZ=_DthZ ),),); 
-        
+                                                _F(GROUP_NO = 'P_CUV',            DX=_DthX,   DY=_DthY,     DZ=_DthZ ),),);
+
         return _dilatation
-        
+
 
 class CoeurFactory(Mac3Factory):
     """Classe pour construire les objets Coeur."""

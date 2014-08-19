@@ -25,6 +25,7 @@ import aster_core
 from Cata.cata import MACRO, SIMP, table_sdaster
 from Cata.cata import modele_sdaster, maillage_sdaster
 from mac3coeur_coeur import CoeurFactory
+from thyc_result import lire_resu_thyc
 
 def calc_mac3coeur_ops(self, **args):
     """Corps principal de la macro MAC3COEUR"""
@@ -86,7 +87,7 @@ def calc_mac3coeur_ops(self, **args):
        _unit_eftx = _DEFORMATION['UNITE_THYC']
        nomfich=UL.Nom(_unit_eftx)
 
-       _CH_TRNO,_CH_TRFX,_HYDR_1,_FOHYDR_1=_coeur.lire_resu_thyc(_MO_N,nomfich)
+       _CH_TRNO, _CH_TRFX, _HYDR_1, _FOHYDR_1 = lire_resu_thyc(_coeur, _MO_N, nomfich)
 
        _fluence   = _DEFORMATION['NIVE_FLUENCE']
        _is_archimede   = _DEFORMATION['ARCHIMEDE']
@@ -359,12 +360,12 @@ def calc_mac3coeur_ops(self, **args):
        # on rajoute les efforts thyc
        UL = UniteAster()
        _unit_eftx = _LAME['UNITE_THYC']
-       
+
        # si le MC est facultatif, il faudra verifier s'il est renseigner ou pas
        # _unit_eftx vaut alors None
-       
+
        nomfich=UL.Nom(_unit_eftx)
-       _CH_TRNO,_CH_TRFX,_HYDR_1,_FOHYDR_1=_coeurp1.lire_resu_thyc(_MO_NP1,nomfich)
+       _CH_TRNO, _CH_TRFX, _HYDR_1, _FOHYDR_1 = lire_resu_thyc(_coeurp1, _MO_NP1, nomfich)
        _HYDR_F1 = _coeurp1.definition_temp_hydro_axiale()
        _F_TRAN1 = _coeurp1.definition_effort_transverse()
 
