@@ -8,6 +8,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/elrfdf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
@@ -53,20 +54,21 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: epsmax, rbid, crit, maxi, x(81)
-    real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime)
-    real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole
-    integer :: ibid, itemax, i, n(3), nno, iret
-    integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
+    real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime), dff(3,27)
+    real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
+    integer :: ibid, itemax, i, n(3), nno, iret, j
+    integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34, nbnomx
     character(len=6) :: name
     character(len=3) :: edge
     aster_logical :: courbe
     parameter   (tole=1.d-1)
+    parameter (nbnomx = 27)
 !
 ! --------------------------------------------------------------------
 !
     call jemarq()
 !
-    call elrefe_info(elrefe=elrefp, fami='RIGI', nno=nno)
+    call elrefe_info(elrefe=elrefp,fami='RIGI',nno=nno)
 !
     itemax=100
     epsmax=1.d-8
@@ -83,15 +85,15 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !
     ASSERT( ndime .eq. 3)
 !
-    do i = 1, ndime
-        pi1pi2(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
-        pi1pi3(i)=pinref(ndime*(pi3-1)+i)-pinref(ndime*(pi1-1)+i)
+    do i = 1,ndime
+       pi1pi2(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
+       pi1pi3(i)=pinref(ndime*(pi3-1)+i)-pinref(ndime*(pi1-1)+i)
     enddo
     call xnormv(ndime, pi1pi2, rbid)
     call xnormv(ndime, pi1pi3, rbid)
     call provec(pi1pi2, pi1pi3, v)
-    do i = 1, ndime
-        ptxx(i)=v(i)
+    do i=1,ndime
+       ptxx(i)=v(i)
     enddo
 !
 !   CALCUL D UN POINT DE DEPART POUR LE NEWTON
@@ -157,11 +159,28 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
         enddo
     endif
 !
+!    CALCUL DE LA DIRECTION DE RECHERCHE
+!    ON CHOISIT LE GRADIENT DE LA LSN AU POINT DE DEPART
+!
+    do j = 1, ndime
+       xmi(j) = ptxx(ndime+j)
+       ptxx(j) = 0.d0
+    end do
+    call elrfdf(elrefp, xmi, ndim*nbnomx, dff, nno,&
+                ndim)
+!
+    do i = 1, nno
+       do j = 1, ndime
+          ptxx(j) = ptxx(j)+dff(j,i)*lsn(i)
+       end do
+    end do
+!
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
-    call xnewto(elrefp, name, n, ndime, ptxx,&
-                ndim, geom, lsn, ibid, ibid,&
-                itemax, epsmax, ksi)
+    call xnewto(elrefp, name, n,&
+                ndime, ptxx, ndim, geom, lsn,&
+                ibid, ibid, itemax,&
+                epsmax, ksi)
 !
     do i = 1, ndime
         cenref(i)=ksi(1)*ptxx(i)+ptxx(i+ndime)
