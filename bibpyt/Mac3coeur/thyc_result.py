@@ -23,6 +23,12 @@ Ce module définit des fonctions permettant de manipuler un résultat issu de TH
 
 import string
 
+class ThycResult(object):
+    """Object to represent a result read from THYC"""
+    # TODO: encapsulate the following functions as methods of ThycResult
+    __slots__ = ('chtr_nodal', 'chtr_poutre', 'chax_nodal', 'chax_poutre')
+
+
 def cherche_rubrique_nom(fobj, nom):
     """Chercher une rubrique definie par son nom"""
     while 1:
@@ -104,6 +110,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     # On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir celles a chaud.
     FOHYFR_1 = 1.0    # Valeur a froid
     FOHYCH_1 = 0.722  # Valeur a chaud
+    res = ThycResult()
 
     f  = open(nom_fic, 'r')
     f2 = open(nom_fic, 'r')
@@ -160,8 +167,10 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         mtmp = (_F(GROUP_MA = 'CR_'+posi_aster1, FY = _resu_fy, FZ = _resu_fz),)
         mcft.extend(mtmp)
 
-    _AF_CHTRNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
-    _AF_CHTRFX = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcft)
+    _co = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
+    res.chtr_nodal = _co
+    _co = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcft)
+    res.chtr_poutre = _co
 
     # Recuperation des efforts axiaux
     cherche_rubrique_nom(f, ' *    FORCE HYDRODYNAMIQUE AXIALE en (N)           *')
@@ -214,7 +223,9 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         mtmp = (_F(GROUP_MA = 'TG_'+posi_aster, FX = _FXT),)
         mcpf.extend(mtmp)
 
-    _AF_CHAXNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcp)
-    _AF_CHAXPO = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcpf)
+    _co = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcp)
+    res.chax_nodal = _co
+    _co = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcpf)
+    res.chax_poutre = _co
 
-    return _AF_CHTRNO,_AF_CHTRFX,_AF_CHAXNO,_AF_CHAXPO
+    return res

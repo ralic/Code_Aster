@@ -247,22 +247,22 @@ class Coeur(object):
         _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcf)
         return _FOARCH_1
 
-    def definition_temp_archimede(self,_is_archimede):
-        """ Valeur  a froid (20 degres) de la force d'Archimede = 860/985.46*1000.52 """
+    def definition_temp_archimede(self, use_archimede):
+        """ Valeur à froid (20 degrés) de la force d'Archimède = 860/985.46*1000.52 """
 
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
 
-        assert (_is_archimede in ('OUI','NON'))
+        assert use_archimede in ('OUI','NON')
 
         # cas ou la force d'archimede est activee
-        if _is_archimede == 'OUI' :
+        if use_archimede == 'OUI' :
 
           ARCHFR1 = 873.  # Valeur en arret a froid (20 degres)
           ARCHFR2 = 860.  # Valeur en arret a froid (60 degres)
           ARCHCH  = 620.  # Valeur a chaud (307 degres)
 
         # cas ou la force d'archimede n'est pas activee
-        elif _is_archimede == 'NON' :
+        elif use_archimede == 'NON' :
 
           ARCHFR1 = 0.
           ARCHFR2 = 0.
