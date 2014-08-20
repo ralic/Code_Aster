@@ -61,6 +61,7 @@ def cached_property(attr):
 class Mac3CoeurCalcul(object):
     """Base class of an analysis
     Must be derivated."""
+    mcfact = None
 
     @staticmethod
     def factory(macro, args):
@@ -78,6 +79,7 @@ class Mac3CoeurCalcul(object):
         """Initialization"""
         self.macro = macro
         self.keyw = args
+        self.mcf = args[self.mcfact]
         # cached properties
         self._coeur = NULL
         self._mesh = NULL
@@ -167,6 +169,7 @@ class Mac3CoeurCalcul(object):
 
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
     """Compute the strain of the assemblies"""
+    mcfact = 'DEFORMATION'
 
     def __init__(self, macro, args):
         """Initialization"""
@@ -187,7 +190,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def mesh(self):
         """Compute and return the `maillage_sdaster` object"""
         mesh = super(Mac3CoeurDeformation, self).mesh
-        resu_init = self.keyw['DEFORMATION']['RESU_INIT']
+        resu_init = self.mcf['RESU_INIT']
         if not (mesh or resu_init):
             UTMESS('F', 'COEUR0_7')
         elif resu_init:
@@ -204,7 +207,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def model(self):
         """Compute and return the `modele_sdaster` object"""
         model = super(Mac3CoeurDeformation, self).model
-        resu_init = self.keyw['DEFORMATION']['RESU_INIT']
+        resu_init = self.mcf['RESU_INIT']
         if resu_init:
             nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
                                   'RESULTAT', 'F')[2]
@@ -215,11 +218,9 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
         coeur = self.coeur
-        mcfact = self.keyw['DEFORMATION']
         coeur.recuperation_donnees_geom(self.mesh)
 
-        #TODO self.define_cara_mat()
-        niv_fluence = mcfact['NIVE_FLUENCE']
+        niv_fluence = self.mcf['NIVE_FLUENCE']
         contact = 'OUI'
         subdivis = 1
         if self.keyw['TYPE_COEUR'] == "MONO":
@@ -264,10 +265,9 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         """Compute and return the "constant" loadings (always applied)"""
         from Cata.cata import AFFE_CHAR_MECA
         coeur = self.coeur
-        mcfact = self.keyw['DEFORMATION']
         _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
                                       LIAISON_SOLIDE=coeur.cl_rigidite_grille())
-        fmult_arch = coeur.definition_temp_archimede(mcfact['ARCHIMEDE'])
+        fmult_arch = coeur.definition_temp_archimede(self.mcf['ARCHIMEDE'])
         load = [
             _F(CHARGE    = coeur.definition_archimede_nodal(self.model),
                FONC_MULT = fmult_arch,),
@@ -285,12 +285,11 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         """Compute and return the loadings due to the pression of
         the vessel head"""
         coeur = self.coeur
-        mcfact = self.keyw['DEFORMATION']
         force = None
-        if mcfact['TYPE_MAINTIEN'] == 'FORCE':
-            force = mcfact['FORCE_MAINTIEN']
+        if self.mcf['TYPE_MAINTIEN'] == 'FORCE':
+            force = self.mcf['FORCE_MAINTIEN']
         char = coeur.definition_maintien_type(self.model,
-                                              mcfact['TYPE_MAINTIEN'], force)
+                                              self.mcf['TYPE_MAINTIEN'], force)
         return [_F(CHARGE=char), ]
 
     @property
@@ -305,8 +304,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def thyc_load(self):
         """Compute and return the loading due to the fluid flow"""
         coeur = self.coeur
-        mcfact = self.keyw['DEFORMATION']
-        thyc = read_thyc(coeur, self.model, mcfact['UNITE_THYC'])
+        thyc = read_thyc(coeur, self.model, self.mcf['UNITE_THYC'])
         fmult_ax = coeur.definition_temp_hydro_axiale()
         fmult_tr = coeur.definition_effort_transverse()
         load = [
@@ -356,6 +354,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
     """Compute the thinkness of water from deformed assemblies"""
+    mcfact = 'LAME'
 
     def _run(self):
         """Run the main part of the calculation"""
@@ -430,7 +429,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR='NON',PCENT_PIVOT=80,),
                                )
 
-        _TAB_NP1   = mcfact['TABLE_NP1']
+        _TAB_NP1   = self.mcf['TABLE_NP1']
         _tabp1     = _TAB_NP1.EXTR_TABLE()
 
         # on recupere le nom du coeur
@@ -441,7 +440,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         _coeurp1 = coeur_factory.get(_typ_coeur)(namep1, _typ_coeur, self, datg)
         _coeurp1.init_from_table(_tabp1)
 
-        _MA1     = mcfact['MAILLAGE_NP1']
+        _MA1     = self.mcf['MAILLAGE_NP1']
 
         __resuf   = PERM_MAC3COEUR( TYPE_COEUR   = _typ_coeur,
                                    RESU_N       = _SNL_LAME,
@@ -478,7 +477,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         # on rajoute les efforts thyc
         UL = UniteAster()
-        _unit_eftx = mcfact['UNITE_THYC']
+        _unit_eftx = self.mcf['UNITE_THYC']
 
         # si le MC est facultatif, il faudra verifier s'il est renseigner ou pas
         # _unit_eftx vaut alors None
