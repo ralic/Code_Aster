@@ -283,9 +283,9 @@ class Coeur(object):
         return _ARCH_F1
 
     def definition_temp_hydro_axiale(self):
-        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         """ Fonction multiplicative de la force hydrodynamique axiale.
             On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         FOHYFR_1 = 1.0    # Valeur a froid
         FOHYCH_1 = 0.722  # Valeur a chaud
 
@@ -303,8 +303,8 @@ class Coeur(object):
         return _HYDR_F1
 
     def definition_effort_transverse(self):
-        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         """ Fonction multiplicative pour la prise en compte des efforts transverses."""
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AVEC = 1.0
         SANS = 0.0
 
@@ -805,7 +805,7 @@ class Coeur(object):
 
         return _CHTH_1
 
-    def definition_materiau(self, MAILLAGE, GFF, CONTACT, FLUENCE, CHTH):
+    def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT='NON'):
         from Accas import _F
         DEFI_COMPOR = self.macro.get_cmd('DEFI_COMPOR')
         DEFI_MATERIAU = self.macro.get_cmd('DEFI_MATERIAU')
@@ -819,11 +819,16 @@ class Coeur(object):
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E1))
 
         # Affectation des materiau dans le coeur
-        _A_MAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE_VARC=(_F(NOM_VARC='IRRA'
-                               , TOUT='OUI', EVOL=FLUENCE,
-                               PROL_DROITE='CONSTANT'), _F(NOM_VARC='TEMP',
-                               TOUT='OUI', EVOL=CHTH, PROL_DROITE='CONSTANT',
-                               VALE_REF=self.TP_REF)),
+        _A_MAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                               AFFE_VARC=(_F(NOM_VARC='IRRA',
+                                             TOUT='OUI',
+                                             EVOL=FLUENCE,
+                                             PROL_DROITE='CONSTANT'),
+                                          _F(NOM_VARC='TEMP',
+                                             TOUT='OUI',
+                                             EVOL=CHTH,
+                                             PROL_DROITE='CONSTANT',
+                                             VALE_REF=self.TP_REF)),
                                AFFE=self.mcf_coeur_mater(_M_RES),
                                AFFE_COMPOR=self.mcf_compor_fibre(GFF))
         return _A_MAT

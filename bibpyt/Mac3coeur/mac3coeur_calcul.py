@@ -65,7 +65,7 @@ class Mac3CoeurCalcul(object):
         self.macro.DeclareOut('RESULT', self.macro.sd)
 
     def _run(self):
-        """Run the calculation"""
+        """Run the calculation itself"""
         raise NotImplementedError('must be defined in a subclass')
 
     def _build_result(self):
@@ -77,30 +77,6 @@ class Mac3CoeurCalcul(object):
         self._run()
         self._build_result()
 
-# helper functions
-def _build_coeur(typ_coeur, macro, sdtab):
-    """Return a `Coeur` object of the given type"""
-    datg = aster_core.get_option("repdex")
-    factory = CoeurFactory(datg)
-    # prepare the Table object
-    tab = sdtab.EXTR_TABLE()
-    name = tab.para[0]
-    tab.Renomme(name, 'idAC')
-    coeur = factory.get(typ_coeur)(name, typ_coeur, macro, datg)
-    coeur.init_from_table(tab)
-    return coeur
-
-def read_thyc(coeur, model, unit):
-    """Read a file containing THYC results"""
-    res = None
-    try:
-        UL = UniteAster()
-        fname = UL.Nom(unit)
-        res = lire_resu_thyc(coeur, model, fname)
-    finally:
-        UL.EtatInit()
-    return res
-
 
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
     """Compute the strain of the assemblies"""
@@ -108,21 +84,22 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def __init__(self, macro, args):
         """Initialization"""
         super(Mac3CoeurDeformation, self).__init__(macro, args)
-        self.resu_init = None
+        self.etat_init = None
 
     def _prepare_data(self):
         """Prepare the data for the calculation"""
         super(Mac3CoeurDeformation, self)._prepare_data()
-        self.resu_init = self.keyw['DEFORMATION']['RESU_INIT']
+        resu_init = self.keyw['DEFORMATION']['RESU_INIT']
         self.mesh = self.keyw['MAILLAGE_N']
-        if not (self.mesh or self.resu_init):
+        if not (self.mesh or resu_init):
             UTMESS('F', 'COEUR0_7')
-        elif self.resu_init:
+        elif resu_init:
             if self.mesh:
                 UTMESS('A', 'COEUR0_1')
-            nom_ma = aster.dismoi('NOM_MAILLA', self.resu_init.nom,
+            self.etat_init = _F(EVOL_NOLI=resu_init)
+            nom_ma = aster.dismoi('NOM_MAILLA', resu_init.nom,
                                   'RESULTAT', 'F')[2]
-            nom_mo = aster.dismoi('NOM_MODELE', self.resu_init.nom,
+            nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
                                   'RESULTAT', 'F')[2]
             self.mesh = self.macro.get_concept_by_type(nom_ma, maillage_sdaster)
             self.model = self.macro.get_concept_by_type(nom_mo, modele_sdaster)
@@ -130,8 +107,44 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             self.mesh = self.coeur.affectation_maillage(self.mesh)
             self.model = self.coeur.affectation_modele(self.mesh)
 
+    def periodic_cond(self):
+        """Define the boundary conditions of periodicity"""
+        from Cata.cata import AFFE_CHAR_MECA
+        # convenient functions to avoid repetitions
+        def block(grma=None, grno=None, ddl=None):
+            """Block 'ddl' of 'grma/grno' to zero"""
+            kddl = {}.fromkeys(ddl, 0.)
+            kddl['GROUP_MA' if grma else 'GROUP_NO'] = grma or grno
+            return kddl
+        def equal(ddl, grno1, grno2):
+            """Return keyword to set ddl(grno1) = ddl(grno2)"""
+            return _F(GROUP_NO_1=grno1,
+                      GROUP_NO_2=grno2,
+                      SOMMET='OUI',
+                      DDL_1=ddl,
+                      DDL_2=ddl,
+                      COEF_MULT_1=1.,
+                      COEF_MULT_2=-1.,
+                      COEF_IMPO=0.)
+        # definitions
+        ddl_impo = [
+            block(grma='CRAYON', ddl=['DRX']),
+            block(grno='LISPG', ddl=['DRX', 'DRY', 'DRZ']),
+            block(grma=('EBOSUP', 'EBOINF'), ddl=['DRX', 'DRY', 'DRZ']),
+        ]
+        liaison_group = [equal('DY', 'PMNT_S', 'PEBO_S'),
+                         equal('DZ', 'PMNT_S', 'PEBO_S'),
+                         equal('DY', 'PSUP', 'PEBO_S'),
+                         equal('DZ', 'PSUP', 'PEBO_S'),
+                         equal('DY', 'PINF', 'FIX'),
+                         equal('DZ', 'PINF', 'FIX'),]
+        _excit = AFFE_CHAR_MECA(MODELE=self.model,
+                                DDL_IMPO=ddl_impo,
+                                LIAISON_GROUP=liaison_group)
+        return _excit
+
     def _run(self):
-        """Run the calculation"""
+        """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
         coeur = self.coeur
         mcfact = self.keyw['DEFORMATION']
@@ -141,115 +154,55 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
         thyc = read_thyc(coeur, self.model, mcfact['UNITE_THYC'])
 
-        fluence = mcfact['NIVE_FLUENCE']
+        niv_fluence = mcfact['NIVE_FLUENCE']
         use_archimede = mcfact['ARCHIMEDE']
 
-        _AVEC_CONTACT = 'OUI'
-        _SANS_CONTACT = 'NON'
+        contact = 'OUI'
         subdivis = 1
         if self.keyw['TYPE_COEUR'] == "MONO":
-            _AVEC_CONTACT = 'NON'
+            contact = 'NON'
             subdivis = 5
 
-        _time    = coeur.definition_time(fluence, subdivis)
-        _FLUENC  = coeur.definition_fluence(fluence, self.mesh)
-        _CHTH    = coeur.definition_champ_temperature(self.mesh)
-        _DILAT   = coeur.dilatation_cuve(self.model, self.mesh)
-        _AF_MAC  = coeur.definition_materiau(self.mesh, geof, _AVEC_CONTACT, _FLUENC, _CHTH)
-        _AF_MSC  = coeur.definition_materiau(self.mesh, geof, _SANS_CONTACT, _FLUENC, _CHTH)
-        _PESANT  = coeur.definition_pesanteur(self.model)
+        times = coeur.definition_time(niv_fluence, subdivis)
+        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
+        chtemp = coeur.definition_champ_temperature(self.mesh)
+        char_dilat = coeur.dilatation_cuve(self.model, self.mesh)
+        chmat_contact = coeur.definition_materiau(self.mesh, geof, evol_fluence, chtemp, CONTACT=contact)
+        chmat_libre = coeur.definition_materiau(self.mesh, geof, evol_fluence, chtemp, CONTACT='NON')
+        char_pesant = coeur.definition_pesanteur(self.model)
 
         if mcfact['TYPE_MAINTIEN'] == 'DEPL_PSC' :
-          _F_EMBO  = coeur.definition_effor_maintien(self.model)
+            eff_maintien = coeur.definition_effor_maintien(self.model)
         else :
-          _F_EMBO  = coeur.definition_effor_maintien_force(self.model, mcfact['FORCE_MAINTIEN'])
+            eff_maintien = coeur.definition_effor_maintien_force(self.model, mcfact['FORCE_MAINTIEN'])
 
-        _ARCH_1  = coeur.definition_archimede_nodal(self.model)
-        _FOARCH_1 = coeur.definition_archimede_poutre(self.model)
-        _ARCH_F1 = coeur.definition_temp_archimede(use_archimede)
-        _HYDR_F1 = coeur.definition_temp_hydro_axiale()
-        _F_TRAN1 = coeur.definition_effort_transverse()
+        char_arch_nod = coeur.definition_archimede_nodal(self.model)
+        char_arch_pout = coeur.definition_archimede_poutre(self.model)
+        fmult_arch = coeur.definition_temp_archimede(use_archimede)
+        fmult_ax = coeur.definition_temp_hydro_axiale()
+        fmult_tr = coeur.definition_effort_transverse()
 
-        cl_liaison_solide = coeur.cl_rigidite_grille()
-
-        _CL_PER_1 = AFFE_CHAR_MECA(MODELE=self.model,
-                                   DDL_IMPO=(_F(GROUP_MA='CRAYON',
-                                                DRX=0.,),
-                                             _F(GROUP_NO='LISPG',
-                                                DRX=0.,
-                                                DRY=0.,
-                                                DRZ=0.),
-                                             _F(GROUP_MA=('EBOSUP', 'EBOINF'),
-                                                DRX=0.,
-                                                DRY=0.,
-                                                DRZ=0.),),
-                                   LIAISON_GROUP=(_F(GROUP_NO_1='PMNT_S',
-                                                     GROUP_NO_2='PEBO_S',
-                                                     SOMMET='OUI',
-                                                     DDL_1='DY',
-                                                     DDL_2='DY',
-                                                     COEF_MULT_1=1.,
-                                                     COEF_MULT_2=-1.,
-                                                     COEF_IMPO=0.,),
-                                                  _F(GROUP_NO_1='PMNT_S',
-                                                     GROUP_NO_2='PEBO_S',
-                                                     SOMMET='OUI',
-                                                     DDL_1='DZ',
-                                                     DDL_2='DZ',
-                                                     COEF_MULT_1=1.,
-                                                     COEF_MULT_2=-1.,
-                                                     COEF_IMPO=0.,),
-                                                  _F(GROUP_NO_1='PSUP',
-                                                     GROUP_NO_2='PEBO_S',
-                                                     SOMMET='OUI',
-                                                     DDL_1='DY',
-                                                     DDL_2='DY',
-                                                     COEF_MULT_1=1.,
-                                                     COEF_MULT_2=-1.,
-                                                     COEF_IMPO=0.,),
-                                                  _F(GROUP_NO_1='PSUP',
-                                                     GROUP_NO_2='PEBO_S',
-                                                     SOMMET='OUI',
-                                                     DDL_1='DZ',
-                                                     DDL_2='DZ',
-                                                     COEF_MULT_1=1.,
-                                                     COEF_MULT_2=-1.,
-                                                     COEF_IMPO=0.,),
-                                                  _F(GROUP_NO_1='PINF',
-                                                     GROUP_NO_2='FIX',
-                                                     SOMMET='OUI',
-                                                     DDL_1='DY',
-                                                     DDL_2='DY',
-                                                     COEF_MULT_1=1.,
-                                                     COEF_MULT_2=-1.,
-                                                     COEF_IMPO=0.,),
-                                                  _F(GROUP_NO_1='PINF',
-                                                     GROUP_NO_2='FIX',
-                                                     SOMMET='OUI',
-                                                     DDL_1='DZ',
-                                                     DDL_2='DZ',
-                                                     COEF_MULT_1=1.,
-                                                     COEF_MULT_2=-1.,
-                                                     COEF_IMPO=0.,),),
-                                  LIAISON_SOLIDE=cl_liaison_solide)
+        _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
+                                      LIAISON_SOLIDE=coeur.cl_rigidite_grille())
 
         excit_base = [
-            _F(CHARGE=_ARCH_1, FONC_MULT=_ARCH_F1,),
-            _F(CHARGE=_FOARCH_1, FONC_MULT=_ARCH_F1,),
-            _F(CHARGE=_CL_PER_1,),
-            _F(CHARGE=_PESANT,)
+            _F(CHARGE=char_arch_nod, FONC_MULT=fmult_arch,),
+            _F(CHARGE=char_arch_pout, FONC_MULT=fmult_arch,),
+            _F(CHARGE=_excit_rigid,),
+            _F(CHARGE=self.periodic_cond(),),
+            _F(CHARGE=char_pesant,)
         ]
-        excit_embo = [
-            _F(CHARGE=_F_EMBO,),
+        excit_maintien = [
+            _F(CHARGE=eff_maintien,),
         ]
         excit_dilat = [
-            _F(CHARGE=_DILAT,),
+            _F(CHARGE=char_dilat,),
         ]
         excit_thyc = [
-            _F(CHARGE=thyc.chax_nodal, FONC_MULT=_HYDR_F1,),
-            _F(CHARGE=thyc.chax_poutre, FONC_MULT=_HYDR_F1,),
-            _F(CHARGE=thyc.chtr_nodal, FONC_MULT=_F_TRAN1,),
-            _F(CHARGE=thyc.chtr_poutre, FONC_MULT=_F_TRAN1,),
+            _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax,),
+            _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax,),
+            _F(CHARGE=thyc.chtr_nodal, FONC_MULT=fmult_tr,),
+            _F(CHARGE=thyc.chtr_poutre, FONC_MULT=fmult_tr,),
         ]
         comport = (
             _F(RELATION='MULTIFIBRE',
@@ -268,7 +221,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         )
         snl_keywords = {
             'MODELE' : self.model,
-            'CHAM_MATER' : _AF_MAC,
             'CARA_ELEM' : carael,
             'COMPORTEMENT' : comport,
             'NEWTON' : _F(MATRICE='TANGENTE',
@@ -280,27 +232,27 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                            PCENT_PIVOT=200,),
             'AFFICHAGE' : _F(INFO_RESIDU='OUI'),
         }
-        etat_init = None
-        if self.resu_init:
-            etat_init = _F(EVOL_NOLI=self.resu_init)
         # T0 - T8
-        RESULT = STAT_NON_LINE(INCREMENT=_F(LIST_INST=_time,
+        RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
+                               INCREMENT=_F(LIST_INST=times,
                                             INST_FIN=coeur.temps_simu['T8']),
-                               EXCIT=excit_base + excit_embo + excit_thyc + excit_dilat,
-                               ETAT_INIT=etat_init,
+                               EXCIT=excit_base + excit_maintien + excit_thyc + excit_dilat,
+                               ETAT_INIT=self.etat_init,
                                **snl_keywords)
         # T8 - T8b
         RESULT = STAT_NON_LINE(reuse=RESULT,
+                               CHAM_MATER=chmat_contact,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=excit_base + excit_embo + excit_dilat,
-                               INCREMENT=_F(LIST_INST=_time,
+                               EXCIT=excit_base + excit_maintien + excit_dilat,
+                               INCREMENT=_F(LIST_INST=times,
                                             INST_FIN=coeur.temps_simu['T8b']),
                                **snl_keywords)
         # T8b - Tf
         RESULT = STAT_NON_LINE(reuse=RESULT,
+                               CHAM_MATER=chmat_libre,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
                                EXCIT=excit_base + excit_dilat,
-                               INCREMENT=_F(LIST_INST=_time),
+                               INCREMENT=_F(LIST_INST=times),
                                **snl_keywords)
 
 
@@ -308,7 +260,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     """Compute the thinkness of water from deformed assemblies"""
 
     def _run(self):
-        """Run the calculation"""
+        """Run the main part of the calculation"""
         STAT_NON_LINE    = self.get_cmd('STAT_NON_LINE')
         MODI_MAILLAGE    = self.get_cmd('MODI_MAILLAGE')
         AFFE_CHAR_MECA   = self.get_cmd('AFFE_CHAR_MECA')
@@ -317,9 +269,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         coeur = self.coeur
 
-        fluence = 0.0
-        _AVEC_CONTACT = 'OUI'
-        _SANS_CONTACT = 'NON'
+        niv_fluence = 0.0
 
         use_archimede='OUI'
 
@@ -328,16 +278,16 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         coeur.recuperation_donnees_geom(_MA_N)
         _GFF  = coeur.definition_geom_fibre()
         _CARA = coeur.definition_cara_coeur(_MO_N,_GFF)
-        _time    = coeur.definition_time(fluence,1.)
-        _FLUENC  = coeur.definition_fluence(fluence,_MA_N)
+        times    = coeur.definition_time(niv_fluence,1.)
+        evol_fluence  = coeur.definition_fluence(niv_fluence,_MA_N)
         _CHTH    = coeur.definition_champ_temperature(_MA_N)
         _DILAT   = coeur.dilatation_cuve(_MO_N,_MA_N)
-        _AF_MSC  = coeur.definition_materiau(_MA_N,_GFF,_SANS_CONTACT,_FLUENC,_CHTH)
-        _PESANT  = coeur.definition_pesanteur(_MO_N)
-        _F_EMBO  = coeur.definition_effor_maintien(_MO_N)
-        _ARCH_1  = coeur.definition_archimede_nodal(_MO_N)
-        _FOARCH_1= coeur.definition_archimede_poutre(_MO_N)
-        _ARCH_F1 = coeur.definition_temp_archimede(use_archimede)
+        chmat_libre  = coeur.definition_materiau(_MA_N,_GFF,evol_fluence,_CHTH, CONTACT='NON')
+        char_pesant  = coeur.definition_pesanteur(_MO_N)
+        eff_maintien  = coeur.definition_effor_maintien(_MO_N)
+        char_arch_nod  = coeur.definition_archimede_nodal(_MO_N)
+        char_arch_pout= coeur.definition_archimede_poutre(_MO_N)
+        fmult_arch = coeur.definition_temp_archimede(use_archimede)
 
         _CL_LAME = coeur.affe_char_lame(_MO_N)
 
@@ -361,14 +311,14 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         # calcul de deformation d'apres DAMAC
         _SNL_LAME = STAT_NON_LINE( MODELE  = _MO_N,
-                               CHAM_MATER  = _AF_MSC,
+                               CHAM_MATER  = chmat_libre,
                                CARA_ELEM   = _CARA,
                                EXCIT       = (
-                                     _F(CHARGE = _ARCH_1,   FONC_MULT = _ARCH_F1,),
-                                     _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
-                                     _F(CHARGE = _F_EMBO,  ),
+                                     _F(CHARGE = char_arch_nod,   FONC_MULT = fmult_arch,),
+                                     _F(CHARGE = char_arch_pout, FONC_MULT = fmult_arch,),
+                                     _F(CHARGE = eff_maintien,  ),
                                      _F(CHARGE = _DILAT,   ),
-                                     _F(CHARGE = _PESANT,  ),
+                                     _F(CHARGE = char_pesant,  ),
                      _F(CHARGE = _CL_LAME, ),
                      _F(CHARGE = _CL_PER_2,),),
                                COMPORTEMENT   =(
@@ -377,7 +327,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                      _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
                                      _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
                                      _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA ='MAINTIEN',DEFORMATION='PETIT',),),
-                               INCREMENT   = _F(LIST_INST = _time, INST_FIN = coeur.temps_simu['T1'],),
+                               INCREMENT   = _F(LIST_INST = times, INST_FIN = coeur.temps_simu['T1'],),
                                NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR='NON',PCENT_PIVOT=80,),
                                )
@@ -415,16 +365,16 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         _GFF_NP1  = _coeurp1.definition_geom_fibre()
         _CARANP1  = _coeurp1.definition_cara_coeur(_MO_NP1,_GFF_NP1)
 
-        _timep1   = _coeurp1.definition_time(fluence,1.)
-        _FLU_NP1  = _coeurp1.definition_fluence(fluence,_MA_NP1)
+        _timep1   = _coeurp1.definition_time(niv_fluence,1.)
+        _FLU_NP1  = _coeurp1.definition_fluence(niv_fluence,_MA_NP1)
         _CHTHNP1  = _coeurp1.definition_champ_temperature(_MA_NP1)
-        _DILATP1  = _coeurp1.dilatation_cuve(_MO_NP1,_MA_NP1)
-        _AFACNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_AVEC_CONTACT,_FLU_NP1,_CHTHNP1)
-        _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_SANS_CONTACT,_FLU_NP1,_CHTHNP1)
+        char_dilat1  = _coeurp1.dilatation_cuve(_MO_NP1,_MA_NP1)
+        _AFACNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_FLU_NP1,_CHTHNP1, CONTACT='OUI')
+        _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_FLU_NP1,_CHTHNP1, CONTACT='NON')
 
-        _PESANT1  = _coeurp1.definition_pesanteur(_MO_NP1)
-        _F_EMBO1  = _coeurp1.definition_effor_maintien(_MO_NP1)
-        _ARCH_11  = _coeurp1.definition_archimede_nodal(_MO_NP1)
+        char_pesant1  = _coeurp1.definition_pesanteur(_MO_NP1)
+        eff_maintien1  = _coeurp1.definition_effor_maintien(_MO_NP1)
+        char_arch_nod1  = _coeurp1.definition_archimede_nodal(_MO_NP1)
         _FOARCH1  = _coeurp1.definition_archimede_poutre(_MO_NP1)
         _ARCHF11  = _coeurp1.definition_temp_archimede(use_archimede)
 
@@ -437,8 +387,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         nomfich=UL.Nom(_unit_eftx)
         thyc = lire_resu_thyc(_coeurp1, _MO_NP1, nomfich)
-        _HYDR_F1 = _coeurp1.definition_temp_hydro_axiale()
-        _F_TRAN1 = _coeurp1.definition_effort_transverse()
+        fmult_ax = _coeurp1.definition_temp_hydro_axiale()
+        fmult_tr = _coeurp1.definition_effort_transverse()
 
         _MA_NP1 = MODI_MAILLAGE( reuse = _MA_NP1, MAILLAGE = _MA_NP1, DEFORME = _F( OPTION = 'TRAN', DEPL = _MVDEPL))
 
@@ -470,16 +420,16 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                CHAM_MATER  = _AFACNP1,
                                CARA_ELEM   = _CARANP1,
                                EXCIT   =(
-                                     _F(CHARGE = _ARCH_11,  FONC_MULT = _ARCHF11,),
+                                     _F(CHARGE = char_arch_nod1,  FONC_MULT = _ARCHF11,),
                                      _F(CHARGE = _FOARCH1,  FONC_MULT = _ARCHF11,),
-                                     _F(CHARGE = _F_EMBO1,  ),
-                                     _F(CHARGE = _PESANT1,  ),
-                                     _F(CHARGE = _DILATP1,  ),
+                                     _F(CHARGE = eff_maintien1,  ),
+                                     _F(CHARGE = char_pesant1,  ),
+                                     _F(CHARGE = char_dilat1,  ),
                                      _F(CHARGE = _BLOC2,),
-                                     _F(CHARGE = thyc.chtr_nodal,  FONC_MULT = _F_TRAN1,),
-                                     _F(CHARGE = thyc.chtr_poutre,  FONC_MULT = _F_TRAN1,),
-                                     _F(CHARGE = thyc.chax_nodal,   FONC_MULT = _HYDR_F1,),
-                                     _F(CHARGE = thyc.chax_poutre, FONC_MULT = _HYDR_F1,),
+                                     _F(CHARGE = thyc.chtr_nodal,  FONC_MULT = fmult_tr,),
+                                     _F(CHARGE = thyc.chtr_poutre,  FONC_MULT = fmult_tr,),
+                                     _F(CHARGE = thyc.chax_nodal,   FONC_MULT = fmult_ax,),
+                                     _F(CHARGE = thyc.chax_poutre, FONC_MULT = fmult_ax,),
                                         ),
                                COMPORTEMENT   =(
                                      _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
@@ -491,3 +441,27 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                NEWTON      = _F(MATRICE='TANGENTE',REAC_ITER=1,),
                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR='NON',PCENT_PIVOT=200,),
                                );
+
+# helper functions
+def _build_coeur(typ_coeur, macro, sdtab):
+    """Return a `Coeur` object of the given type"""
+    datg = aster_core.get_option("repdex")
+    factory = CoeurFactory(datg)
+    # prepare the Table object
+    tab = sdtab.EXTR_TABLE()
+    name = tab.para[0]
+    tab.Renomme(name, 'idAC')
+    coeur = factory.get(typ_coeur)(name, typ_coeur, macro, datg)
+    coeur.init_from_table(tab)
+    return coeur
+
+def read_thyc(coeur, model, unit):
+    """Read a file containing THYC results"""
+    res = None
+    try:
+        UL = UniteAster()
+        fname = UL.Nom(unit)
+        res = lire_resu_thyc(coeur, model, fname)
+    finally:
+        UL.EtatInit()
+    return res

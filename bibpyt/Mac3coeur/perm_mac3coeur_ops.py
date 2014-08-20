@@ -58,8 +58,6 @@ def perm_mac3coeur_ops(self, **args):
     _coeur = coeur_factory.get(_typ_coeur)(name, _typ_coeur, self, datg)
     _coeur.init_from_table(_tabn1)
 
-    _SANS_CONTACT = 'NON'
-
     ### on recupere le concept maillage
     iret,ibid,nom_mo = aster.dismoi('MODELE',RESUI.nom,'RESULTAT','F')
     iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',nom_mo.strip(),'MODELE','F')
@@ -88,7 +86,7 @@ def perm_mac3coeur_ops(self, **args):
     _timep1   = _coeurp1.definition_time(_fluence,1.)
     _FLU_NP1  = _coeurp1.definition_fluence(_fluence,_MA_NP1)
     _CHTHNP1  = _coeurp1.definition_champ_temperature(_MA_NP1)
-    _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_SANS_CONTACT,_FLU_NP1,_CHTHNP1)
+    _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1, _FLU_NP1, _CHTHNP1, CONTACT='NON')
 
     _CL_BID = AFFE_CHAR_CINE(MODELE=_MO_NP1,MECA_IMPO = (_F(TOUT = 'OUI', DX = 0.0, DY = 0.0, DZ = 0.0, DRX = 0.0, DRY = 0.0, DRZ = 0.0,),))
 
@@ -103,14 +101,14 @@ def perm_mac3coeur_ops(self, **args):
     indice = 0
 
     # calcul bidon aster pour initialisation de donnees
-    
+
     compor =  [_F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION='GROT_GDEP',),
                _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
                _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
                _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA ='MAINTIEN',DEFORMATION='PETIT',),]
 
-    
+
     _BIDON = STAT_NON_LINE( MODELE     = _MO_NP1,
                               CHAM_MATER  = _AFSCNP1,
                               CARA_ELEM   = _CARANP1,
