@@ -249,7 +249,7 @@ class Coeur(object):
 
     def definition_temp_archimede(self, use_archimede):
         """ Valeur à froid (20 degrés) de la force d'Archimède = 860/985.46*1000.52 """
-
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
 
         assert use_archimede in ('OUI','NON')
@@ -285,6 +285,7 @@ class Coeur(object):
     def definition_temp_hydro_axiale(self):
         """ Fonction multiplicative de la force hydrodynamique axiale.
             On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         FOHYFR_1 = 1.0    # Valeur a froid
         FOHYCH_1 = 0.722  # Valeur a chaud
@@ -304,6 +305,7 @@ class Coeur(object):
 
     def definition_effort_transverse(self):
         """ Fonction multiplicative pour la prise en compte des efforts transverses."""
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AVEC = 1.0
         SANS = 0.0
@@ -354,6 +356,7 @@ class Coeur(object):
     def definition_effor_maintien(self,MODELE):
         """Retourne les déplacements imposés aux noeuds modélisant la PSC
         et traduisant la fermeture de la cuve"""
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
@@ -382,6 +385,7 @@ class Coeur(object):
 
     def definition_effor_maintien_force(self,MODELE,ForceMaintien):
         """Retourne le chargement d'effort de maintien considéré constant"""
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
@@ -559,6 +563,7 @@ class Coeur(object):
         return _MODELE
 
     def definition_time(self,fluence,subdivis):
+        """Return the list of timesteps"""
         from Accas import _F
         DEFI_LIST_REEL = self.macro.get_cmd('DEFI_LIST_REEL')
         DEFI_LIST_INST = self.macro.get_cmd('DEFI_LIST_INST')
@@ -610,6 +615,8 @@ class Coeur(object):
         self.sub_temps_simu['N9'] =  1 ;
 
     def definition_fluence(self,fluence,MAILLAGE):
+        """Return the time evolution of the field of fluence"""
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         from Accas import _F
         CREA_CHAMP    = self.macro.get_cmd('CREA_CHAMP')
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
@@ -700,6 +707,8 @@ class Coeur(object):
         return _FLUENC
 
     def definition_champ_temperature(self,MAILLAGE):
+        """Return the time evolution of the field of temperature"""
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         from Accas import _F
         CREA_CHAMP    = self.macro.get_cmd('CREA_CHAMP')
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
@@ -885,6 +894,7 @@ class Coeur(object):
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
         et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
         # XXX trop long pour être lisible, création des formules fragile
+        assert self.temps_simu['T0'] is not None, '`definition_time` must be called first!'
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         FORMULE = self.macro.get_cmd('FORMULE')
