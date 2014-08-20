@@ -353,6 +353,14 @@ class Coeur(object):
                                 PESANTEUR   = _F(GRAVITE=9.81,DIRECTION=(-1.,0.,0.),),)
         return _PESA
 
+    def definition_maintien_type(self, model, typ, force=None):
+        """Retourne le chargement dû au couvercle de la cuve selon le type"""
+        assert typ in ('FORCE', 'DEPL_PSC')
+        if typ == 'DEPL_PSC':
+            return self.definition_effor_maintien(model)
+        else:
+            return self.definition_effor_maintien_force(model, force)
+
     def definition_effor_maintien(self,MODELE):
         """Retourne les déplacements imposés aux noeuds modélisant la PSC
         et traduisant la fermeture de la cuve"""

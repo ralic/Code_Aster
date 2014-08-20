@@ -33,6 +33,24 @@ from Utilitai.Utmess import UTMESS
 from mac3coeur_coeur import CoeurFactory
 from thyc_result import lire_resu_thyc
 
+# decorator to use cached values
+def cached(cache_key, cache_attr):
+    """Decorator that returns directly the value without calling the method if
+    it is already present in the cache.
+    The cache is stored in the `cache_attr` attribute of the instance"""
+    def wrap(method):
+        """Wrapping method"""
+        def wrapper(inst, *args, **kwds):
+            """Real wrapper function"""
+            cached = getattr(inst, cache_attr).get(cache_key)
+            if cached:
+                return cached
+            computed = method(inst, *args, **kwds)
+            getattr(inst, cache_attr)[cache_key] = computed
+            return computed
+        return wrapper
+    return wrap
+
 
 class Mac3CoeurCalcul(object):
     """Base class of an analysis
@@ -85,6 +103,8 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         """Initialization"""
         super(Mac3CoeurDeformation, self).__init__(macro, args)
         self.etat_init = None
+        # used by the `cached` decorator
+        self._cache_excit = {}
 
     def _prepare_data(self):
         """Prepare the data for the calculation"""
@@ -106,6 +126,141 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         else:
             self.mesh = self.coeur.affectation_maillage(self.mesh)
             self.model = self.coeur.affectation_modele(self.mesh)
+
+    def _run(self):
+        """Run the main part of the calculation"""
+        from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
+        coeur = self.coeur
+        mcfact = self.keyw['DEFORMATION']
+        coeur.recuperation_donnees_geom(self.mesh)
+
+        # self.define_cara_mat()
+        niv_fluence = mcfact['NIVE_FLUENCE']
+        contact = 'OUI'
+        subdivis = 1
+        if self.keyw['TYPE_COEUR'] == "MONO":
+            contact = 'NON'
+            subdivis = 5
+        times = coeur.definition_time(niv_fluence, subdivis)
+        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
+        chtemp = coeur.definition_champ_temperature(self.mesh)
+
+        geof = coeur.definition_geom_fibre()
+        carael = coeur.definition_cara_coeur(self.model, geof)
+        chmat_contact = coeur.definition_materiau(self.mesh, geof, evol_fluence,
+                                                  chtemp, CONTACT=contact)
+        chmat_libre = coeur.definition_materiau(self.mesh, geof, evol_fluence,
+                                                chtemp, CONTACT='NON')
+        self.compute_loadings()
+        snl_keywords = {
+            'MODELE' : self.model,
+            'CARA_ELEM' : carael,
+            'COMPORTEMENT' : (_F(RELATION='MULTIFIBRE',
+                                 GROUP_MA=('CRAYON', 'T_GUIDE'),
+                                 PARM_THETA=0.5,
+                                 DEFORMATION='GROT_GDEP',),
+                              _F(RELATION='DIS_GRICRA',
+                                 GROUP_MA='ELA',),
+                              _F(RELATION='DIS_CHOC',
+                                 GROUP_MA='RES_TOT',),
+                              _F(RELATION='ELAS',
+                                 GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
+                              _F(RELATION='VMIS_ISOT_TRAC',
+                                 GROUP_MA='MAINTIEN',
+                                 DEFORMATION='PETIT'),),
+            'NEWTON' : _F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+            'SOLVEUR' : _F(METHODE='MUMPS',
+                           RENUM='AMF',
+                           GESTION_MEMOIRE='OUT_OF_CORE',
+                           ELIM_LAGR='NON',
+                           PCENT_PIVOT=200,),
+            'AFFICHAGE' : _F(INFO_RESIDU='OUI'),
+        }
+        # T0 - T8
+        RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
+                               INCREMENT=_F(LIST_INST=times,
+                                            INST_FIN=coeur.temps_simu['T8']),
+                               EXCIT=self.constant_load() + self.vessel_head_load() + self.thyc_load() + self.vessel_dilatation_load(),
+                               ETAT_INIT=self.etat_init,
+                               **snl_keywords)
+        # T8 - T8b
+        RESULT = STAT_NON_LINE(reuse=RESULT,
+                               CHAM_MATER=chmat_contact,
+                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
+                               EXCIT=self.constant_load() + self.vessel_head_load() + self.vessel_dilatation_load(),
+                               INCREMENT=_F(LIST_INST=times,
+                                            INST_FIN=coeur.temps_simu['T8b']),
+                               **snl_keywords)
+        # T8b - Tf
+        RESULT = STAT_NON_LINE(reuse=RESULT,
+                               CHAM_MATER=chmat_libre,
+                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
+                               EXCIT=self.constant_load() + self.vessel_dilatation_load(),
+                               INCREMENT=_F(LIST_INST=times),
+                               **snl_keywords)
+
+    def compute_loadings(self):
+        """Compute all the loadings"""
+        self.constant_load()
+        self.vessel_head_load()
+        self.vessel_dilatation_load()
+        self.thyc_load()
+
+    @cached('const', '_cache_excit')
+    def constant_load(self):
+        """Compute and return the "constant" loadings (always applied)"""
+        from Cata.cata import AFFE_CHAR_MECA
+        coeur = self.coeur
+        mcfact = self.keyw['DEFORMATION']
+        _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
+                                      LIAISON_SOLIDE=coeur.cl_rigidite_grille())
+        fmult_arch = coeur.definition_temp_archimede(mcfact['ARCHIMEDE'])
+        load = [
+            _F(CHARGE    = coeur.definition_archimede_nodal(self.model),
+               FONC_MULT = fmult_arch,),
+            _F(CHARGE    = coeur.definition_archimede_poutre(self.model),
+               FONC_MULT = fmult_arch,),
+            _F(CHARGE    = _excit_rigid,),
+            _F(CHARGE    = self.periodic_cond(),),
+            _F(CHARGE    = coeur.definition_pesanteur(self.model),)
+        ]
+        return load
+
+    @cached('vessel_head', '_cache_excit')
+    def vessel_head_load(self):
+        """Compute and return the loadings due to the pression of
+        the vessel head"""
+        coeur = self.coeur
+        mcfact = self.keyw['DEFORMATION']
+        force = None
+        if mcfact['TYPE_MAINTIEN'] == 'FORCE':
+            force = mcfact['FORCE_MAINTIEN']
+        char = coeur.definition_maintien_type(self.model,
+                                              mcfact['TYPE_MAINTIEN'], force)
+        return [_F(CHARGE=char), ]
+
+    @cached('vessel_dilat', '_cache_excit')
+    def vessel_dilatation_load(self):
+        """Compute and return the loading due to the vessel dilatation"""
+        char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh)
+        return [_F(CHARGE=char_dilat,), ]
+
+    @cached('thyc', '_cache_excit')
+    def thyc_load(self):
+        """Compute and return the loading due to the fluid flow"""
+        coeur = self.coeur
+        mcfact = self.keyw['DEFORMATION']
+        thyc = read_thyc(coeur, self.model, mcfact['UNITE_THYC'])
+        fmult_ax = coeur.definition_temp_hydro_axiale()
+        fmult_tr = coeur.definition_effort_transverse()
+        load = [
+            _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax,),
+            _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax,),
+            _F(CHARGE=thyc.chtr_nodal, FONC_MULT=fmult_tr,),
+            _F(CHARGE=thyc.chtr_poutre, FONC_MULT=fmult_tr,),
+        ]
+        return load
 
     def periodic_cond(self):
         """Define the boundary conditions of periodicity"""
@@ -142,118 +297,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                 DDL_IMPO=ddl_impo,
                                 LIAISON_GROUP=liaison_group)
         return _excit
-
-    def _run(self):
-        """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
-        coeur = self.coeur
-        mcfact = self.keyw['DEFORMATION']
-        coeur.recuperation_donnees_geom(self.mesh)
-        geof = coeur.definition_geom_fibre()
-        carael = coeur.definition_cara_coeur(self.model, geof)
-
-        thyc = read_thyc(coeur, self.model, mcfact['UNITE_THYC'])
-
-        niv_fluence = mcfact['NIVE_FLUENCE']
-        use_archimede = mcfact['ARCHIMEDE']
-
-        contact = 'OUI'
-        subdivis = 1
-        if self.keyw['TYPE_COEUR'] == "MONO":
-            contact = 'NON'
-            subdivis = 5
-
-        times = coeur.definition_time(niv_fluence, subdivis)
-        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
-        chtemp = coeur.definition_champ_temperature(self.mesh)
-        char_dilat = coeur.dilatation_cuve(self.model, self.mesh)
-        chmat_contact = coeur.definition_materiau(self.mesh, geof, evol_fluence, chtemp, CONTACT=contact)
-        chmat_libre = coeur.definition_materiau(self.mesh, geof, evol_fluence, chtemp, CONTACT='NON')
-        char_pesant = coeur.definition_pesanteur(self.model)
-
-        if mcfact['TYPE_MAINTIEN'] == 'DEPL_PSC' :
-            eff_maintien = coeur.definition_effor_maintien(self.model)
-        else :
-            eff_maintien = coeur.definition_effor_maintien_force(self.model, mcfact['FORCE_MAINTIEN'])
-
-        char_arch_nod = coeur.definition_archimede_nodal(self.model)
-        char_arch_pout = coeur.definition_archimede_poutre(self.model)
-        fmult_arch = coeur.definition_temp_archimede(use_archimede)
-        fmult_ax = coeur.definition_temp_hydro_axiale()
-        fmult_tr = coeur.definition_effort_transverse()
-
-        _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
-                                      LIAISON_SOLIDE=coeur.cl_rigidite_grille())
-
-        excit_base = [
-            _F(CHARGE=char_arch_nod, FONC_MULT=fmult_arch,),
-            _F(CHARGE=char_arch_pout, FONC_MULT=fmult_arch,),
-            _F(CHARGE=_excit_rigid,),
-            _F(CHARGE=self.periodic_cond(),),
-            _F(CHARGE=char_pesant,)
-        ]
-        excit_maintien = [
-            _F(CHARGE=eff_maintien,),
-        ]
-        excit_dilat = [
-            _F(CHARGE=char_dilat,),
-        ]
-        excit_thyc = [
-            _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax,),
-            _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax,),
-            _F(CHARGE=thyc.chtr_nodal, FONC_MULT=fmult_tr,),
-            _F(CHARGE=thyc.chtr_poutre, FONC_MULT=fmult_tr,),
-        ]
-        comport = (
-            _F(RELATION='MULTIFIBRE',
-               GROUP_MA=('CRAYON', 'T_GUIDE'),
-               PARM_THETA=0.5,
-               DEFORMATION='GROT_GDEP',),
-            _F(RELATION='DIS_GRICRA',
-               GROUP_MA='ELA',),
-            _F(RELATION='DIS_CHOC',
-               GROUP_MA='RES_TOT',),
-            _F(RELATION='ELAS',
-               GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
-            _F(RELATION='VMIS_ISOT_TRAC',
-               GROUP_MA='MAINTIEN',
-               DEFORMATION='PETIT'),
-        )
-        snl_keywords = {
-            'MODELE' : self.model,
-            'CARA_ELEM' : carael,
-            'COMPORTEMENT' : comport,
-            'NEWTON' : _F(MATRICE='TANGENTE',
-                          REAC_ITER=1,),
-            'SOLVEUR' : _F(METHODE='MUMPS',
-                           RENUM='AMF',
-                           GESTION_MEMOIRE='OUT_OF_CORE',
-                           ELIM_LAGR='NON',
-                           PCENT_PIVOT=200,),
-            'AFFICHAGE' : _F(INFO_RESIDU='OUI'),
-        }
-        # T0 - T8
-        RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
-                               INCREMENT=_F(LIST_INST=times,
-                                            INST_FIN=coeur.temps_simu['T8']),
-                               EXCIT=excit_base + excit_maintien + excit_thyc + excit_dilat,
-                               ETAT_INIT=self.etat_init,
-                               **snl_keywords)
-        # T8 - T8b
-        RESULT = STAT_NON_LINE(reuse=RESULT,
-                               CHAM_MATER=chmat_contact,
-                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=excit_base + excit_maintien + excit_dilat,
-                               INCREMENT=_F(LIST_INST=times,
-                                            INST_FIN=coeur.temps_simu['T8b']),
-                               **snl_keywords)
-        # T8b - Tf
-        RESULT = STAT_NON_LINE(reuse=RESULT,
-                               CHAM_MATER=chmat_libre,
-                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=excit_base + excit_dilat,
-                               INCREMENT=_F(LIST_INST=times),
-                               **snl_keywords)
 
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
