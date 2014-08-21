@@ -93,6 +93,13 @@ class Mac3CoeurCalcul(object):
         self._model = NULL
         self._carael = NULL
         self._geofib = NULL
+        self._rigid_load = NULL
+        self._archimede_load = NULL
+        self._gravity_load = NULL
+        self._periodic_load = NULL
+        self._vessel_head_load = NULL
+        self._vessel_dilatation_load = NULL
+        self._thyc_load = NULL
 
     def _prepare_data(self):
         """Prepare the data for the calculation"""
@@ -172,104 +179,6 @@ class Mac3CoeurCalcul(object):
         }
         keywords.update(kwds)
         return keywords
-
-
-class Mac3CoeurDeformation(Mac3CoeurCalcul):
-    """Compute the strain of the assemblies"""
-    mcfact = 'DEFORMATION'
-
-    def __init__(self, macro, args):
-        """Initialization"""
-        super(Mac3CoeurDeformation, self).__init__(macro, args)
-        self.etat_init = None
-        # cached properties
-        self._rigid_load = NULL
-        self._archimede_load = NULL
-        self._gravity_load = NULL
-        self._periodic_load = NULL
-        self._vessel_head_load = NULL
-        self._vessel_dilatation_load = NULL
-        self._thyc_load = NULL
-
-    def _prepare_data(self):
-        """Prepare the data for the calculation"""
-        super(Mac3CoeurDeformation, self)._prepare_data()
-
-    @property
-    @cached_property('_mesh')
-    def mesh(self):
-        """Compute and return the `maillage_sdaster` object"""
-        mesh = super(Mac3CoeurDeformation, self).mesh
-        resu_init = self.mcf['RESU_INIT']
-        if not (mesh or resu_init):
-            UTMESS('F', 'COEUR0_7')
-        elif resu_init:
-            if mesh:
-                UTMESS('A', 'COEUR0_1')
-            self.etat_init = _F(EVOL_NOLI=resu_init)
-            nom_ma = aster.dismoi('NOM_MAILLA', resu_init.nom,
-                                  'RESULTAT', 'F')[2]
-            mesh = self.macro.get_concept_by_type(nom_ma, maillage_sdaster)
-        return mesh
-
-    @property
-    @cached_property('_model')
-    def model(self):
-        """Compute and return the `modele_sdaster` object"""
-        model = super(Mac3CoeurDeformation, self).model
-        resu_init = self.mcf['RESU_INIT']
-        if resu_init:
-            nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
-                                  'RESULTAT', 'F')[2]
-            model = self.macro.get_concept_by_type(nom_mo, modele_sdaster)
-        return model
-
-    def _run(self):
-        """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE
-        coeur = self.coeur
-        coeur.recuperation_donnees_geom(self.mesh)
-
-        niv_fluence = self.mcf['NIVE_FLUENCE']
-        contact = 'OUI'
-        subdivis = 1
-        if self.keyw['TYPE_COEUR'] == "MONO":
-            contact = 'NON'
-            subdivis = 5
-        times = coeur.definition_time(niv_fluence, subdivis)
-        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
-        chtemp = coeur.definition_champ_temperature(self.mesh)
-        chmat_contact = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
-                                                  chtemp, CONTACT=contact)
-        chmat_libre = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
-                                                chtemp, CONTACT='NON')
-        # T0 - T8
-        snl_keywords = self.snl_keywords()
-        constant_load = self.rigid_load + self.archimede_load + \
-                        self.periodic_load + self.gravity_load
-        RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
-                               INCREMENT=_F(LIST_INST=times,
-                                            INST_FIN=coeur.temps_simu['T8']),
-                               EXCIT=constant_load + self.vessel_head_load + \
-                                     self.thyc_load + self.vessel_dilatation_load,
-                               ETAT_INIT=self.etat_init,
-                               **snl_keywords)
-        # T8 - T8b
-        RESULT = STAT_NON_LINE(reuse=RESULT,
-                               CHAM_MATER=chmat_contact,
-                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=constant_load + self.vessel_head_load + \
-                                     self.vessel_dilatation_load,
-                               INCREMENT=_F(LIST_INST=times,
-                                            INST_FIN=coeur.temps_simu['T8b']),
-                               **snl_keywords)
-        # T8b - Tf
-        RESULT = STAT_NON_LINE(reuse=RESULT,
-                               CHAM_MATER=chmat_libre,
-                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=constant_load + self.vessel_dilatation_load,
-                               INCREMENT=_F(LIST_INST=times),
-                               **snl_keywords)
 
     @property
     @cached_property('_rigid_load')
@@ -376,6 +285,96 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                 DDL_IMPO=ddl_impo,
                                 LIAISON_GROUP=liaison_group)
         return _excit
+
+
+class Mac3CoeurDeformation(Mac3CoeurCalcul):
+    """Compute the strain of the assemblies"""
+    mcfact = 'DEFORMATION'
+
+    def __init__(self, macro, args):
+        """Initialization"""
+        super(Mac3CoeurDeformation, self).__init__(macro, args)
+        self.etat_init = None
+
+    def _prepare_data(self):
+        """Prepare the data for the calculation"""
+        super(Mac3CoeurDeformation, self)._prepare_data()
+
+    @property
+    @cached_property('_mesh')
+    def mesh(self):
+        """Compute and return the `maillage_sdaster` object"""
+        mesh = super(Mac3CoeurDeformation, self).mesh
+        resu_init = self.mcf['RESU_INIT']
+        if not (mesh or resu_init):
+            UTMESS('F', 'COEUR0_7')
+        elif resu_init:
+            if mesh:
+                UTMESS('A', 'COEUR0_1')
+            self.etat_init = _F(EVOL_NOLI=resu_init)
+            nom_ma = aster.dismoi('NOM_MAILLA', resu_init.nom,
+                                  'RESULTAT', 'F')[2]
+            mesh = self.macro.get_concept_by_type(nom_ma, maillage_sdaster)
+        return mesh
+
+    @property
+    @cached_property('_model')
+    def model(self):
+        """Compute and return the `modele_sdaster` object"""
+        model = super(Mac3CoeurDeformation, self).model
+        resu_init = self.mcf['RESU_INIT']
+        if resu_init:
+            nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
+                                  'RESULTAT', 'F')[2]
+            model = self.macro.get_concept_by_type(nom_mo, modele_sdaster)
+        return model
+
+    def _run(self):
+        """Run the main part of the calculation"""
+        from Cata.cata import STAT_NON_LINE
+        coeur = self.coeur
+        coeur.recuperation_donnees_geom(self.mesh)
+
+        niv_fluence = self.mcf['NIVE_FLUENCE']
+        contact = 'OUI'
+        subdivis = 1
+        if self.keyw['TYPE_COEUR'] == "MONO":
+            contact = 'NON'
+            subdivis = 5
+        times = coeur.definition_time(niv_fluence, subdivis)
+        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
+        chtemp = coeur.definition_champ_temperature(self.mesh)
+        chmat_contact = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
+                                                  chtemp, CONTACT=contact)
+        chmat_libre = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
+                                                chtemp, CONTACT='NON')
+        # T0 - T8
+        snl_keywords = self.snl_keywords()
+        constant_load = self.rigid_load + self.archimede_load + \
+                        self.periodic_load + self.gravity_load
+        RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
+                               INCREMENT=_F(LIST_INST=times,
+                                            INST_FIN=coeur.temps_simu['T8']),
+                               EXCIT=constant_load + self.vessel_head_load + \
+                                     self.thyc_load + self.vessel_dilatation_load,
+                               ETAT_INIT=self.etat_init,
+                               **snl_keywords)
+        # T8 - T8b
+        RESULT = STAT_NON_LINE(reuse=RESULT,
+                               CHAM_MATER=chmat_contact,
+                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
+                               EXCIT=constant_load + self.vessel_head_load + \
+                                     self.vessel_dilatation_load,
+                               INCREMENT=_F(LIST_INST=times,
+                                            INST_FIN=coeur.temps_simu['T8b']),
+                               **snl_keywords)
+        # T8b - Tf
+        RESULT = STAT_NON_LINE(reuse=RESULT,
+                               CHAM_MATER=chmat_libre,
+                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
+                               EXCIT=constant_load + self.vessel_dilatation_load,
+                               INCREMENT=_F(LIST_INST=times),
+                               **snl_keywords)
 
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
