@@ -397,7 +397,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     @cached_property
     def mesh(self):
         """Return the `maillage_sdaster` object"""
-        mesh = super(Mac3CoeurDeformation, self).mesh
+        mesh = self.keyw['MAILLAGE_N']
         resu_init = self.mcf['RESU_INIT']
         if not (mesh or resu_init):
             UTMESS('F', 'COEUR0_7')
@@ -408,18 +408,21 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             nom_ma = aster.dismoi('NOM_MAILLA', resu_init.nom,
                                   'RESULTAT', 'F')[2]
             mesh = self.macro.get_concept_by_type(nom_ma, maillage_sdaster)
+        else:
+            mesh = super(Mac3CoeurDeformation, self).mesh
         return mesh
 
     @property
     @cached_property
     def model(self):
         """Return the `modele_sdaster` object"""
-        model = super(Mac3CoeurDeformation, self).model
         resu_init = self.mcf['RESU_INIT']
         if resu_init:
             nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
                                   'RESULTAT', 'F')[2]
             model = self.macro.get_concept_by_type(nom_mo, modele_sdaster)
+        else:
+            model = super(Mac3CoeurDeformation, self).model
         return model
 
     def _run(self):
@@ -470,7 +473,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     def _prepare_data(self):
         """Prepare the data for the calculation"""
         self.use_archimede = 'OUI'
-        super(Mac3CoeurDeformation, self)._prepare_data()
+        super(Mac3CoeurLame, self)._prepare_data()
 
     def _run(self):
         """Run the main part of the calculation"""
