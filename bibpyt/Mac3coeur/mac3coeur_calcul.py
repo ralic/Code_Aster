@@ -21,6 +21,8 @@
 This module defines the different types of calculations
 """
 
+from functools import wraps
+
 import aster_core
 import aster
 
@@ -43,31 +45,43 @@ def calc_mac3coeur_ops(self, **args):
 # decorator to cache values of properties
 NULL = object()
 
-def cached_property(attr):
+def cached_property(method):
     """Decorator for the 'getter' method of a property
     It returns directly the value without calling the 'getter' method itself if
     it has already been computed (== not NULL).
-    :param attr: attribute name containing the property value
-    :type attr: string
+    The value is cached in the attribute "_ + `method name`" of the instance.
     """
-    def wrap(method):
-        """Wrapping method"""
-        def wrapper(inst):
-            """Real wrapper function"""
-            cached = getattr(inst, attr)
-            if cached is not NULL:
-                return cached
-            computed = method(inst)
-            setattr(inst, attr, computed)
-            return computed
-        wrapper.__doc__ = method.__doc__ + " (cached property)"
-        return wrapper
-    return wrap
+    @wraps(method)
+    def wrapper(inst):
+        """Real wrapper function"""
+        attr = '_' +  method.__name__
+        cached = getattr(inst, attr)
+        if cached is not NULL:
+            return cached
+        computed = method(inst)
+        setattr(inst, attr, computed)
+        return computed
+    return wrapper
 
 
 class Mac3CoeurCalcul(object):
-    """Base class of an analysis
-    Must be derivated."""
+    """Base class of an analysis, intended to be inherited
+
+    Its factory builds the proper object according to the passed keywords.
+    Then, a calculation is just completed using::
+
+        calc = Mac3CoeurCalcul.factory(...)
+        calc.run()
+
+    Inherited classes may have to adjust `_prepare_data()` and `_run()` methods.
+    There are a lot of cached properties:
+        - They should store only some data required by the calculation.
+        - They are computed only at the first access (or after a reset,
+          see `_reset()` method).
+        - The cache mecanism allows to build Code_Aster objects or to run long
+          operations only if necessary.
+        - Prefer use standard properties for scalar values.
+    """
     mcfact = None
 
     @staticmethod
@@ -87,12 +101,19 @@ class Mac3CoeurCalcul(object):
         self.macro = macro
         self.keyw = args
         self.mcf = args[self.mcfact]
+        # parameters
+        self._niv_fluence = 0.
+        self._subdivis = 1
         # cached properties
         self._coeur = NULL
         self._mesh = NULL
         self._model = NULL
-        self._carael = NULL
         self._geofib = NULL
+        self._carael = NULL
+        self._cham_mater = NULL
+        self._times = NULL
+        self._evol_temp = NULL
+        self._evol_fluence = NULL
         self._rigid_load = NULL
         self._archimede_load = NULL
         self._gravity_load = NULL
@@ -104,6 +125,11 @@ class Mac3CoeurCalcul(object):
     def _prepare_data(self):
         """Prepare the data for the calculation"""
         self.macro.DeclareOut('RESULT', self.macro.sd)
+        coeur = self.coeur
+        coeur.recuperation_donnees_geom(self.mesh)
+        # force the computation of the times to ensure it is done first
+        # Note that times depends on niv_fluence and subdivis.
+        self.times
 
     def _run(self):
         """Run the calculation itself"""
@@ -118,43 +144,95 @@ class Mac3CoeurCalcul(object):
         self._run()
         self._build_result()
 
+    def _reset(self, propname):
+        """Reset a property to force recomputing at the next use"""
+        setattr(self, '_' + propname, NULL)
+
     @property
-    @cached_property('_coeur')
+    def niv_fluence(self):
+        """Return the fluence level"""
+        return self._niv_fluence
+
+    @niv_fluence.setter
+    def niv_fluence(self, value):
+        """Set the value of the fluence level"""
+        self._niv_fluence = value
+
+    @property
+    def subdivis(self):
+        """Return the factor of time splitting"""
+        return self._subdivis
+
+    @subdivis.setter
+    def subdivis(self, value):
+        """Set the value of the time splitting"""
+        self._subdivis = value
+
+    # cached properties
+    @property
+    @cached_property
     def coeur(self):
-        """Compute and return the `Coeur` object"""
+        """Return the `Coeur` object"""
         return _build_coeur(self.keyw['TYPE_COEUR'], self.macro,
                             self.keyw['TABLE_N'])
 
     @property
-    @cached_property('_mesh')
+    @cached_property
     def mesh(self):
-        """Compute and return the `maillage_sdaster` object"""
+        """Return the `maillage_sdaster` object"""
         return self.coeur.affectation_maillage(self.keyw['MAILLAGE_N'])
 
     @property
-    @cached_property('_model')
+    @cached_property
     def model(self):
-        """Compute and return the `modele_sdaster` object"""
+        """Return the `modele_sdaster` object"""
         return self.coeur.affectation_modele(self.mesh)
 
     @property
-    @cached_property('_geofib')
+    @cached_property
     def geofib(self):
-        """Compute and return the `geom_fibre` object"""
+        """Return the `geom_fibre` object"""
         return self.coeur.definition_geom_fibre()
 
     @property
-    @cached_property('_carael')
+    @cached_property
     def carael(self):
-        """Compute and return the `cara_elem` object"""
+        """Return the `cara_elem` object"""
         return self.coeur.definition_cara_coeur(self.model, self.geofib)
 
-    def snl_keywords(self, **kwds):
+    @property
+    @cached_property
+    def times(self):
+        """Return the list of the time steps"""
+        return self.coeur.definition_time(self.niv_fluence, self.subdivis)
+
+    @property
+    @cached_property
+    def evol_temp(self):
+        """Return the evolution of temperature"""
+        return self.coeur.definition_champ_temperature(self.mesh)
+
+    @property
+    @cached_property
+    def evol_fluence(self):
+        """Return the evolution of the fluence fields"""
+        return self.coeur.definition_fluence(self.niv_fluence, self.mesh)
+
+    @property
+    @cached_property
+    def cham_mater(self):
+        """Return the field of material (without contact)"""
+        return self.coeur.definition_materiau(
+                            self.mesh, self.geofib, self.evol_fluence,
+                            self.evol_temp, CONTACT='NON')
+
+    def snl(self, **kwds):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
         keywords = {
             'MODELE' : self.model,
             'CARA_ELEM' : self.carael,
+            'CHAM_MATER' : self.cham_mater,
             'COMPORTEMENT' : (_F(RELATION='MULTIFIBRE',
                                  GROUP_MA=('CRAYON', 'T_GUIDE'),
                                  PARM_THETA=0.5,
@@ -181,7 +259,7 @@ class Mac3CoeurCalcul(object):
         return keywords
 
     @property
-    @cached_property('_rigid_load')
+    @cached_property
     def rigid_load(self):
         """Compute the rigid body loading"""
         from Cata.cata import AFFE_CHAR_MECA
@@ -191,7 +269,7 @@ class Mac3CoeurCalcul(object):
         return [_F(CHARGE=_excit_rigid), ]
 
     @property
-    @cached_property('_archimede_load')
+    @cached_property
     def archimede_load(self):
         """Compute the Archimede loadings"""
         fmult_arch = self.coeur.definition_temp_archimede(self.mcf['ARCHIMEDE'])
@@ -203,21 +281,21 @@ class Mac3CoeurCalcul(object):
         return load
 
     @property
-    @cached_property('_periodic_load')
+    @cached_property
     def periodic_load(self):
         """Compute the periodic boundary conditions"""
         return [_F(CHARGE=self.periodic_cond()), ]
 
     @property
-    @cached_property('_gravity_load')
+    @cached_property
     def gravity_load(self):
-        """Compute and return the gravity loading"""
+        """Return the gravity loading"""
         return [_F(CHARGE=self.coeur.definition_pesanteur(self.model)), ]
 
     @property
-    @cached_property('_vessel_head_load')
+    @cached_property
     def vessel_head_load(self):
-        """Compute and return the loadings due to the pression of
+        """Return the loadings due to the pression of
         the vessel head"""
         coeur = self.coeur
         force = None
@@ -228,16 +306,16 @@ class Mac3CoeurCalcul(object):
         return [_F(CHARGE=char), ]
 
     @property
-    @cached_property('_vessel_dilatation_load')
+    @cached_property
     def vessel_dilatation_load(self):
-        """Compute and return the loading due to the vessel dilatation"""
+        """Return the loading due to the vessel dilatation"""
         char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh)
         return [_F(CHARGE=char_dilat,), ]
 
     @property
-    @cached_property('_thyc_load')
+    @cached_property
     def thyc_load(self):
-        """Compute and return the loading due to the fluid flow"""
+        """Return the loading due to the fluid flow"""
         coeur = self.coeur
         thyc = read_thyc(coeur, self.model, self.mcf['UNITE_THYC'])
         fmult_ax = coeur.definition_temp_hydro_axiale()
@@ -298,12 +376,15 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     def _prepare_data(self):
         """Prepare the data for the calculation"""
+        self.niv_fluence = self.mcf['NIVE_FLUENCE']
+        if self.keyw['TYPE_COEUR'] == "MONO":
+            self.subdivis = 5
         super(Mac3CoeurDeformation, self)._prepare_data()
 
     @property
-    @cached_property('_mesh')
+    @cached_property
     def mesh(self):
-        """Compute and return the `maillage_sdaster` object"""
+        """Return the `maillage_sdaster` object"""
         mesh = super(Mac3CoeurDeformation, self).mesh
         resu_init = self.mcf['RESU_INIT']
         if not (mesh or resu_init):
@@ -318,9 +399,9 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         return mesh
 
     @property
-    @cached_property('_model')
+    @cached_property
     def model(self):
-        """Compute and return the `modele_sdaster` object"""
+        """Return the `modele_sdaster` object"""
         model = super(Mac3CoeurDeformation, self).model
         resu_init = self.mcf['RESU_INIT']
         if resu_init:
@@ -333,48 +414,41 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE
         coeur = self.coeur
-        coeur.recuperation_donnees_geom(self.mesh)
-
-        niv_fluence = self.mcf['NIVE_FLUENCE']
-        contact = 'OUI'
-        subdivis = 1
         if self.keyw['TYPE_COEUR'] == "MONO":
-            contact = 'NON'
-            subdivis = 5
-        times = coeur.definition_time(niv_fluence, subdivis)
-        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
-        chtemp = coeur.definition_champ_temperature(self.mesh)
-        chmat_contact = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
-                                                  chtemp, CONTACT=contact)
-        chmat_libre = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
-                                                chtemp, CONTACT='NON')
-        # T0 - T8
-        snl_keywords = self.snl_keywords()
+            chmat_contact = self.cham_mater
+        else:
+            chmat_contact = coeur.definition_materiau(
+                            self.mesh, self.geofib, self.evol_fluence,
+                            self.evol_temp, CONTACT='OUI')
         constant_load = self.rigid_load + self.archimede_load + \
-                        self.periodic_load + self.gravity_load
-        RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
-                               INCREMENT=_F(LIST_INST=times,
+                        self.periodic_load + self.gravity_load + \
+                        self.vessel_dilatation_load
+        # T0 - T8
+        RESULT = STAT_NON_LINE(**self.snl(
+                               CHAM_MATER=chmat_contact,
+                               INCREMENT=_F(LIST_INST=self.times,
                                             INST_FIN=coeur.temps_simu['T8']),
                                EXCIT=constant_load + self.vessel_head_load + \
-                                     self.thyc_load + self.vessel_dilatation_load,
+                                     self.thyc_load,
                                ETAT_INIT=self.etat_init,
-                               **snl_keywords)
+                               ))
         # T8 - T8b
-        RESULT = STAT_NON_LINE(reuse=RESULT,
+        RESULT = STAT_NON_LINE(**self.snl(
+                               reuse=RESULT,
                                CHAM_MATER=chmat_contact,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=constant_load + self.vessel_head_load + \
-                                     self.vessel_dilatation_load,
-                               INCREMENT=_F(LIST_INST=times,
+                               EXCIT=constant_load + self.vessel_head_load,
+                               INCREMENT=_F(LIST_INST=self.times,
                                             INST_FIN=coeur.temps_simu['T8b']),
-                               **snl_keywords)
+                               ))
         # T8b - Tf
-        RESULT = STAT_NON_LINE(reuse=RESULT,
-                               CHAM_MATER=chmat_libre,
+        RESULT = STAT_NON_LINE(**self.snl(
+                               reuse=RESULT,
+                               CHAM_MATER=self.cham_mater,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=constant_load + self.vessel_dilatation_load,
-                               INCREMENT=_F(LIST_INST=times),
-                               **snl_keywords)
+                               EXCIT=constant_load,
+                               INCREMENT=_F(LIST_INST=self.times),
+                               ))
 
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
@@ -385,15 +459,6 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR
         coeur = self.coeur
-        coeur.recuperation_donnees_geom(self.mesh)
-
-        niv_fluence = 0.
-        subdivis = 1
-        times = coeur.definition_time(niv_fluence, subdivis)
-        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
-        chtemp = coeur.definition_champ_temperature(self.mesh)
-        chmat_libre = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
-                                                chtemp, CONTACT='NON')
 
         _DILAT   = coeur.dilatation_cuve(_MO_N,_MA_N)
         fmult_arch = coeur.definition_temp_archimede(use_archimede)
@@ -424,7 +489,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         # calcul de deformation d'apres DAMAC
         _SNL_LAME = STAT_NON_LINE( MODELE  = _MO_N,
-                               CHAM_MATER  = chmat_libre,
+                               CHAM_MATER  = self.cham_mater,
                                CARA_ELEM   = _CARA,
                                EXCIT       = (
                                      _F(CHARGE = char_arch_nod,   FONC_MULT = fmult_arch,),
@@ -440,7 +505,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                      _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
                                      _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
                                      _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA ='MAINTIEN',DEFORMATION='PETIT',),),
-                               INCREMENT   = _F(LIST_INST = times, INST_FIN = coeur.temps_simu['T1'],),
+                               INCREMENT   = _F(LIST_INST = self.times, INST_FIN = coeur.temps_simu['T1'],),
                                NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR='NON',PCENT_PIVOT=80,),
                                )
@@ -478,8 +543,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         _GFF_NP1  = _coeurp1.definition_geom_fibre()
         _CARANP1  = _coeurp1.definition_cara_coeur(_MO_NP1,_GFF_NP1)
 
-        _timep1   = _coeurp1.definition_time(niv_fluence,1.)
-        _FLU_NP1  = _coeurp1.definition_fluence(niv_fluence,_MA_NP1)
+        _timep1   = _coeurp1.definition_time(self.niv_fluence,1.)
+        _FLU_NP1  = _coeurp1.definition_fluence(self.niv_fluence,_MA_NP1)
         _CHTHNP1  = _coeurp1.definition_champ_temperature(_MA_NP1)
         char_dilat1  = _coeurp1.dilatation_cuve(_MO_NP1,_MA_NP1)
         _AFACNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_FLU_NP1,_CHTHNP1, CONTACT='OUI')
