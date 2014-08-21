@@ -20,48 +20,40 @@
 
 """Commande GENE_ACCE_SEISME"""
 
-import os, sys
+import sys
 import traceback
-from types import ListType, TupleType
-from math import pi,ceil, exp, sqrt, log
-import aster_core
+from math import pi, ceil, exp, sqrt, log
 import numpy as NP
-import aster
 from Accas                 import _F
 from Utilitai.Utmess       import UTMESS
 from Cata_Utils.t_fonction import t_fonction
 from Utilitai.Table        import Table
-from Macro.defi_inte_spec_ops import tocomplex
-from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
-import aster_fonctions
 from Utilitai.optimize   import fmin
-from Utilitai.random_signal_utils  import  (
-              DSP2ACCE1D, itersim_SRO, gene_traj_gauss_evol1D , Rice2,
-              peak,SRO2DSP,DSP2FR,corrcoefmodel,RAND_DSP,RAND_VEC,
-              calc_dsp_KT, f_ARIAS, f_ARIAS_TSM,fonctm_gam,dsp_filtre_CP,
-              fonctm_JetH, acce_filtre_CP, f_opta, f_opt1, f_opt2)
+
+from Utilitai.random_signal_utils  import (
+    DSP2ACCE1D, itersim_SRO, gene_traj_gauss_evol1D , Rice2,
+    peak, SRO2DSP, DSP2FR,corrcoefmodel, RAND_DSP, RAND_VEC,
+    calc_dsp_KT, f_ARIAS, f_ARIAS_TSM, fonctm_gam, dsp_filtre_CP,
+    fonctm_JetH, acce_filtre_CP, f_opta, f_opt1, f_opt2
+)
+
 
 def gene_acce_seisme_ops(self, **kwargs):
     """Corps de la macro GENE_ACCE_SEIMSE"""
     self.set_icmd(1)
     ier = 0
-
     # conteneur des paramètres du calcul
     params = GENE_ACCE_PARAMETERS(**kwargs)
     if params.seed :
            NP.random.seed(params.seed)
-
     # création de l'objet generator
     generator = Generator.factory(self, params)
-
     try:
          generator.run()
     except Exception, err:
          trace = ''.join(traceback.format_tb(sys.exc_traceback))
          UTMESS('F', 'SUPERVIS2_5', valk=('GENE_ACCE_SEISME', trace, str(err)))
 
-
-#--------------------------------------------------------------
 
 class GENE_ACCE_PARAMETERS(object):
 
@@ -70,38 +62,35 @@ class GENE_ACCE_PARAMETERS(object):
         - On peut ajouter des vérifications infaisables dans le capy.
         - On ajoute des paramètres internes.
         """
-       # GeneralKeys
+        # GeneralKeys
         self.args = kwargs
         self.seed = kwargs.get('INIT_ALEA')
         self.norme = kwargs.get('PESANTEUR')
 
-       # ModulationKeys
-        ModulationKeys = kwargs.get('MODULATION')[0]
-        self.modulation_keys = ModulationKeys.cree_dict_valeurs(ModulationKeys.mc_liste)
-        self.modulation_keys.update( {'DUREE_PHASE_FORTE': kwargs.get('DUREE_PHASE_FORTE'),} )
-        self.modulation_keys.update( {'NORME': kwargs.get('PESANTEUR'),} )
-        self.modulation_keys.update( {'INFO': kwargs.get('INFO'),} )
-        if self.modulation_keys.has_key('ECART_TYPE'):
-            if self.modulation_keys['ECART_TYPE']:
-                self.modulation_keys['ECART_TYPE']=self.modulation_keys['ECART_TYPE']*self.norme
-                del self.modulation_keys['ACCE_MAX'],
-                del self.modulation_keys['INTE_ARIAS']
-                print 'modulation_keys, ecart',  self.modulation_keys, self.norme, self.modulation_keys['ECART_TYPE']
-            elif self.modulation_keys['ACCE_MAX']:
-                self.modulation_keys['ACCE_MAX']=self.modulation_keys['ACCE_MAX']*self.norme
-                del self.modulation_keys['ECART_TYPE'],
-                del self.modulation_keys['INTE_ARIAS']
-                print 'modulation_keys, pga',  self.modulation_keys, self.norme, self.modulation_keys['ACCE_MAX']
-            elif self.modulation_keys['INTE_ARIAS']:
-                del self.modulation_keys['ECART_TYPE'],
-                del self.modulation_keys['ACCE_MAX']
+        # ModulationKeys
+        modkeys = kwargs.get('MODULATION')[0]
+        keys = self.modulation_keys = modkeys.cree_dict_valeurs(modkeys.mc_liste)
+        keys.update( {'DUREE_PHASE_FORTE': kwargs.get('DUREE_PHASE_FORTE'),} )
+        keys.update( {'NORME': kwargs.get('PESANTEUR'),} )
+        keys.update( {'INFO': kwargs.get('INFO'),} )
+        if keys.has_key('ECART_TYPE'):
+            if keys['ECART_TYPE']:
+                keys['ECART_TYPE']=keys['ECART_TYPE']*self.norme
+                del keys['ACCE_MAX'],
+                del keys['INTE_ARIAS']
+            elif keys['ACCE_MAX']:
+                keys['ACCE_MAX']=keys['ACCE_MAX'] * self.norme
+                del keys['ECART_TYPE'],
+                del keys['INTE_ARIAS']
+            elif keys['INTE_ARIAS']:
+                del keys['ECART_TYPE'],
+                del keys['ACCE_MAX']
 
-
-       # OtherKeys
+        # OtherKeys
         others = kwargs.keys()
         others.remove('MODULATION')
 
-       # GeneratorMethodKeys
+        # GeneratorMethodKeys
         if kwargs.get('DSP') :
             self.cas = 'DSP'
             self.specmethode = None
@@ -129,11 +118,9 @@ class GENE_ACCE_PARAMETERS(object):
             if method_keys[key] != None:
                 self.method_keys[key]=method_keys[key]
 
-
-      # OtherKeys remplissage
+        # OtherKeys remplissage
         self.other_keys={}
         for key in others :
-#            if kwargs.get(key)!=None:
             self.other_keys[key] = kwargs.get(key)
 
 #% a modifier plus tard pour permettre des valeurs diff FREQ_CORNER et FREQ_FILTRE:
@@ -143,10 +130,6 @@ class GENE_ACCE_PARAMETERS(object):
         self.method_keys.update(self.other_keys )
         print 'GeneratorMethodKeys',  self.method_keys, 'OtherKeys', self.other_keys
 
-
-
-
-#--------------------------------------------------------------
 
 class Generator(object):
     """Base class"""
@@ -166,11 +149,8 @@ class Generator(object):
         else:
             raise ValueError('unknown configuration')
 
-
-
     def __init__(self, macro, params):
         """Constructor"""
-#
         self.name = macro.sd.nom
         self.macro = macro
         self.norme = params.norme
@@ -183,19 +163,21 @@ class Generator(object):
         self.FREQ_CORNER = params.method_keys['FREQ_CORNER']
 
         self.DSP_args = {}
-        self.SRO_args = {'NORME': self.norme}
-        self.ntir=0
+        self.SRO_args = { 'NORME': self.norme }
+        self.ntir = 0
 
         self.sampler=Sampler(params.modulation_keys, params.method_keys)  # Sampling indépendant de DSP/SPECTRE
         self.modulator=Modulator.factory(params.modulation_keys)  # modulation indépendant de DSP/SPECTRE mais dépend de sampler
-#
-#      # parametres des t_fonctions  a creer
-        self.para_fonc_traj = {  'NOM_PARA' : 'INST', 'NOM_RESU'   : 'ACCE','PROL_DROITE'   : 'EXCLU',
-                       'PROL_GAUCHE'   : 'EXCLU', 'TITRE'   : params.other_keys['TITRE'],   }
-        self.para_dsp = { 'INTERPOL' : ['LIN','LIN'],'NOM_PARA'    : 'FREQ',
-                   'PROL_DROITE' : 'CONSTANT', 'PROL_GAUCHE' : 'EXCLU', 'NOM_RESU'   : 'ACCE'}
-        self.para_sro = self.para_dsp
 
+        # parametres des t_fonctions  a creer
+        self.para_fonc_traj = {
+            'NOM_PARA' : 'INST', 'NOM_RESU' : 'ACCE', 'PROL_DROITE' : 'EXCLU',
+            'PROL_GAUCHE' : 'EXCLU', 'TITRE' : params.other_keys['TITRE'], }
+        self.para_dsp = {
+            'INTERPOL' : ['LIN','LIN'], 'NOM_PARA' : 'FREQ',
+            'PROL_DROITE' : 'CONSTANT', 'PROL_GAUCHE' : 'EXCLU',
+            'NOM_RESU' : 'ACCE' }
+        self.para_sro = self.para_dsp
 
     def sampling(self):
         """modulation"""
@@ -205,11 +187,9 @@ class Generator(object):
         """modulation"""
         self.modulator.run( self.sampler.liste_temps,   self.sampler.DUREE_SIGNAL)
 
-
     def prepare_data(self):
         """specific to each method"""
         raise NotImplementedError('must be implemented in a subclass')
-
 
     def build_DSP(self):
         """specific to each method"""
@@ -219,59 +199,47 @@ class Generator(object):
         """specific to each method"""
         raise NotImplementedError('must be implemented in a subclass')
 
-#    def compute(self):
-#        """boucles"""
-
     def build_result(self):
         """specific to each method"""
         raise NotImplementedError('must be implemented in a subclass')
 
-
-
     def run(self):
         """Generate the signal"""
-
         self.sampling()
         self.modulation()
         self.prepare_data()
         self.build_DSP()
         self.build_result()
-#        self.compute()
-
-
 
 
 class GeneratorDSP(Generator):
-#
-#    """DSP class"""
-    print 'GeneratorDSP case'
-
+    """DSP class"""
 
     def prepare_data(self):
-        self.DSP_args.update({ 'FREQ_FOND': self.method_params['FREQ_FOND'], 'AMORT': self.method_params['AMOR_REDUIT']   })
+        self.DSP_args.update({
+            'FREQ_FOND': self.method_params['FREQ_FOND'],
+            'AMORT': self.method_params['AMOR_REDUIT'] })
         if self.FREQ_CORNER == None :
-           self.FREQ_CORNER =0.05*self.DSP_args['FREQ_FOND']
+           self.FREQ_CORNER = 0.05 * self.DSP_args['FREQ_FOND']
 
-#    Il faut calculer le facteur de pic si la donnee = PGA
-#    pour obtenir sigma et multiplier la focnt_modulation avec cette valeur
-
+        # Il faut calculer le facteur de pic si la donnee = PGA
+        # pour obtenir sigma et multiplier la focnt_modulation avec cette valeur
         if  self.modul_params.has_key('ACCE_MAX'):
             PeakFactor = self.calc_PeakFactor()
-            sigma = self.modul_params['ACCE_MAX']/PeakFactor
+            sigma = self.modul_params['ACCE_MAX'] / PeakFactor
             self.modulator.sigma = sigma
-            f_mod = t_fonction( self.sampler.liste_temps, self.modulator.fonc_modul.vale_y*sigma, para=self.modulator.para_fonc_modul )
+            f_mod = t_fonction(self.sampler.liste_temps,
+                               self.modulator.fonc_modul.vale_y * sigma,
+                               para=self.modulator.para_fonc_modul)
             self.modulator.fonc_modul = f_mod
             if self.INFO == 2:
                  print "FACTEUR DE PIC = ", PeakFactor
 
-
-    def calc_PeakFactor( self):
-        spec=calc_dsp_KT( self, self.DSP_args['FREQ_FOND'], self.DSP_args['AMORT'] )
-        m0,m1,m2,vop,delta = Rice2( self.sampler.liste_w2, spec )
-        nup=peak( 0.5, self.sampler.DUREE_PHASE_FORTE, vop, delta )
+    def calc_PeakFactor(self):
+        spec = calc_dsp_KT(self, self.DSP_args['FREQ_FOND'], self.DSP_args['AMORT'])
+        m0, m1, m2, vop, delta = Rice2(self.sampler.liste_w2, spec)
+        nup=peak(0.5, self.sampler.DUREE_PHASE_FORTE, vop, delta)
         return nup
-
-
 
     def build_DSP(self):
 
@@ -285,10 +253,6 @@ class GeneratorDSP(Generator):
             vale_dsp_KT=calc_dsp_KT( self, self.DSP_args['FREQ_FOND'], self.DSP_args['AMORT'], S_cst )
             fonc_dsp = t_fonction(self.sampler.liste_w2, vale_dsp_KT, para=self.para_dsp, )
             self.DSP_args.update({'FONC_DSP': fonc_dsp,  'TYPE_DSP': 'KT'})
-
-
-
-
 
     def build_TimeHistory(self):
 
@@ -663,9 +627,9 @@ class Modulator(object):
     def factory(modul_params):
         """create an instance of the Modulator"""
         print 'modulation', modul_params['TYPE'], modul_params
-        if modul_params['TYPE']=='GAMMA':
+        if modul_params['TYPE'] == 'GAMMA':
             return ModulatorGamma( modul_params )
-        elif modul_params['TYPE']=='JENNINGS_HOUSNER':
+        elif modul_params['TYPE'] == 'JENNINGS_HOUSNER':
             return ModulatorJH( modul_params )
         elif modul_params['TYPE'] == 'CONSTANT':
             return ModulatorConstant( modul_params )
