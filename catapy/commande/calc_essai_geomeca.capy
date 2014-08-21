@@ -21,6 +21,10 @@ def calc_essai_geomeca_prod(self,
                             ESSAI_TND,
                             ESSAI_CISA_C,
                             ESSAI_TND_C,
+                            ESSAI_TD_A,
+                            ESSAI_TD_NA,
+                            ESSAI_OEDO_C,
+                            ESSAI_ISOT_C,
                             #ESSAI_XXX,
                             **args):
   List_essais = []
@@ -28,6 +32,10 @@ def calc_essai_geomeca_prod(self,
   if ESSAI_TND    != None : List_essais += ESSAI_TND.List_F()
   if ESSAI_CISA_C != None : List_essais += ESSAI_CISA_C.List_F()
   if ESSAI_TND_C  != None : List_essais += ESSAI_TND_C.List_F()
+  if ESSAI_TD_A   != None : List_essais += ESSAI_TD_A.List_F()
+  if ESSAI_TD_NA   != None : List_essais += ESSAI_TD_NA.List_F()
+  if ESSAI_OEDO_C  != None : List_essais += ESSAI_OEDO_C.List_F()
+  if ESSAI_ISOT_C  != None : List_essais += ESSAI_ISOT_C.List_F()
   #if ESSAI_XXX    != None : List_essais += ESSAI_XXX.List_F()
   for DicoEssai in List_essais :
     if DicoEssai.has_key('TABLE_RESU'): 
@@ -50,6 +58,10 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                                          'ESSAI_TND'   ,
                                          'ESSAI_CISA_C',
                                          'ESSAI_TND_C' ,
+                                         'ESSAI_TD_A' ,
+                                         'ESSAI_TD_NA' ,
+                                         'ESSAI_OEDO_C' ,
+                                         'ESSAI_ISOT_C' ,
                                          #'ESSAI_XXX'   ,
                                          ),),
                      # ---
@@ -60,11 +72,12 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                           PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
                           EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
                           NB_INST     = SIMP(statut='f',typ='I',val_min=100,defaut=100),
+                          KZERO      = SIMP(statut='f',typ='R',defaut=1.,),
 
                           TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
                           GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
-                                             into=  ('P-Q','EPS_AXI-Q','EPS_AXI-EPS_VOL',),
-                                             defaut=('P-Q','EPS_AXI-Q','EPS_AXI-EPS_VOL',),),
+                                             into=  ('P-Q','EPS_AXI-Q','EPS_AXI-EPS_VOL','P-EPS_VOL',),
+                                             defaut=('P-Q','EPS_AXI-Q','EPS_AXI-EPS_VOL','P-EPS_VOL',),),
                           TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
 
                                       ),
@@ -77,6 +90,7 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                           PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
                           EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
                           BIOT_COEF   = SIMP(statut='f',typ='R',defaut=1.,),
+                          KZERO      = SIMP(statut='f',typ='R',defaut=1.,),
                           NB_INST     = SIMP(statut='f',typ='I',val_min=100,defaut=100),
 
                           TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
@@ -92,17 +106,18 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                      # ---
                      ESSAI_CISA_C = FACT(statut='f',max='**',
  
-                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
-                          EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
-                          EPSI_ELAS   = SIMP(statut='f',typ='R',defaut=1.E-7,val_max=1.E-7),
-                          NB_CYCLE    = SIMP(statut='o',typ='I',val_min=1),
-                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),
+                          PRES_CONF    = SIMP(statut='o',typ='R',max='**',),
+                          GAMMA_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          GAMMA_ELAS   = SIMP(statut='f',typ='R',defaut=1.E-7,val_max=1.E-7),
+                          NB_CYCLE     = SIMP(statut='o',typ='I',val_min=1),
+                          KZERO        = SIMP(statut='f',typ='R',defaut=1.,),
+                          NB_INST      = SIMP(statut='f',typ='I',val_min=25,defaut=25),
 
-                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
-                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
-                                             into=  ('EPSXY-SIGXY','EPSXY-G','EPSXY-D',),
-                                             defaut=('EPSXY-SIGXY','EPSXY-G','EPSXY-D',),),
-                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+                          TABLE_RESU   = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE    = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('GAMMA-SIGXY','GAMMA-G','GAMMA-D','G-D',),
+                                             defaut=('GAMMA-SIGXY','GAMMA-G','GAMMA-D','G-D',),),
+                          TABLE_REF    = SIMP(statut='f',typ=table_sdaster,max='**',),
 
                                       ),
 
@@ -114,17 +129,99 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                           PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
                           SIGM_IMPOSE = SIMP(statut='o',typ='R',max='**',),
                           BIOT_COEF   = SIMP(statut='f',typ='R',defaut=1.,),
+                          KZERO      = SIMP(statut='f',typ='R',defaut=1.,),
                           UN_SUR_K    = SIMP(statut='o',typ='R',),
+                          RU_MAX      = SIMP(statut='f',typ='R',defaut=0.8,),
                           NB_CYCLE    = SIMP(statut='o',typ='I',val_min=1),
                           NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),
 
                           TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
                           GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
-                                             into=  ('NCYCL-DSIGM','P-Q','SIG_AXI-PRE_EAU',),
-                                             defaut=('NCYCL-DSIGM','P-Q','SIG_AXI-PRE_EAU',),),
+                                             into=  ('NCYCL-DSIGM','P-Q','SIG_AXI-PRE_EAU','EPS_AXI-PRE_EAU','EPS_AXI-Q',),
+                                             defaut=('NCYCL-DSIGM','P-Q','SIG_AXI-PRE_EAU','EPS_AXI-PRE_EAU','EPS_AXI-Q',),),
                           TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
 
                                       ),
+                                      
+                     # ---
+                     # Essai Triaxial Draine Cylique Alterné ('TD_A')
+                     # ---
+                     ESSAI_TD_A = FACT(statut='f',max='**',
+ 
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_ELAS   = SIMP(statut='f',typ='R',defaut=1.E-7,val_max=1.E-7),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),
+                          NB_CYCLE    = SIMP(statut='o',typ='I',val_min=1),
+                          KZERO       = SIMP(statut='f',typ='R',defaut=1.,),
+
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('P-Q','EPS_AXI-Q','EPS_VOL-Q','EPS_AXI-EPS_VOL','P-EPS_VOL','EPSI-E'),
+                                             defaut=('P-Q','EPS_AXI-Q','EPS_VOL-Q','EPS_AXI-EPS_VOL','P-EPS_VOL','EPSI-E'),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+
+                                      ),
+
+                     # ---
+                     # Essai Triaxial Draine Cylique non Alterné ('TD_NA')
+                     # ---
+                     ESSAI_TD_NA = FACT(statut='f',max='**',
+ 
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_ELAS   = SIMP(statut='f',typ='R',defaut=1.E-7,val_max=1.E-7),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),
+                          NB_CYCLE    = SIMP(statut='o',typ='I',val_min=1),
+                          KZERO       = SIMP(statut='f',typ='R',defaut=1.,),
+
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('P-Q','EPS_AXI-Q','EPS_VOL-Q','EPS_AXI-EPS_VOL','P-EPS_VOL','EPSI-E'),
+                                             defaut=('P-Q','EPS_AXI-Q','EPS_VOL-Q','EPS_AXI-EPS_VOL','P-EPS_VOL','EPSI-E'),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+
+                                      ),
+
+                     # ---
+                     #  Essai Oedometrique Draine Cyclique  ('OEDO_C')
+                     # ---
+                     ESSAI_OEDO_C = FACT(statut='f',max='**',
+                    
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          SIGM_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          SIGM_DECH   = SIMP(statut='o',typ='R',max='**',),
+                          KZERO       = SIMP(statut='f',typ='R',defaut=1.,),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),                          
+                     
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('P-EPS_VOL','SIG_AXI-EPS_VOL'),
+                                             defaut=('P-EPS_VOL','SIG_AXI-EPS_VOL'),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+                     
+                                      ),
+                                      
+                     # ---
+                     #  Essai De Comsolidation Isotrope Drainee Cyclique  ('ISOT_C')
+                     # ---
+                     ESSAI_ISOT_C = FACT(statut='f',max='**',
+                    
+                          PRES_CONF    = SIMP(statut='o',typ='R',max='**',),
+                          SIGM_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          SIGM_DECH   = SIMP(statut='o',typ='R',max='**',),
+                          KZERO      = SIMP(statut='f',typ='R',defaut=1.,),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),                          
+                     
+                          TABLE_RESU = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE  = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('P-EPS_VOL'),
+                                             defaut=('P-EPS_VOL'),),
+                          TABLE_REF  = SIMP(statut='f',typ=table_sdaster,max='**',),
+                     
+                                      ),
+                     
+
 
                      # ---
                      #  Essai ... ('XXX')

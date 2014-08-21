@@ -203,9 +203,9 @@ Risques & conseils :
 
 36: _(u"""
   CALC_ESSAI_GEOMECA : Pour l'essai <%(k1)s>.
-  Erreur lors du calcul du module de cisaillement sécant maximal : pour les valeurs de paramètres matériau que vous 
-  avez choisies, la valeur par défaut du mot clef simple <%(k2)s> conduit à sortir du domaine d'élasticité du matériau.
-  Il faut donc renseigner une valeur strictement inférieure à  <%(r1)E> pour <%(k2)s>
+  Erreur lors du calcul du module de %(k2)s sécant maximal : pour les valeurs de paramètres matériau que vous 
+  avez choisies, la valeur par défaut du mot clef simple <%(k3)s> conduit à sortir du domaine d'élasticité du matériau.
+  Il faut donc renseigner une valeur strictement inférieure à  <%(r1)E> pour <%(k3)s>
 """),
 
 37: _(u"""
@@ -217,7 +217,7 @@ Risques & conseils :
 
 38: _(u"""
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 
-  La liste de valeurs renseignées pour le mot clef simple <%(k2)s> doit être croissante. 
+  La liste de valeurs renseignées pour le mot clef simple <%(k2)s> doit être %(k4)s . 
   Or vous avez renseigné la liste suivante :
   %(k3)s
 """),
@@ -296,6 +296,20 @@ Risques & conseils :
 46: _(u"""
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef simple <TABLE_REF> pour la table <%(k1)s>.
   Les colonnes ABSCISSE et ORDONNEE d'une TABLE_REF doivent avoir même cardinal et contenir des réels.
+"""),
+
+47: _(u"""
+  CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 
+  Incohérence entre les valeurs saisies pour les mot clef simples <PRES_CONF>, <SIGM_IMPO> et <SIGM_DECH>. 
+  On doit toujours avoir PRES_CONF + SIGM_IMPO <= SIGM_DECH .
+  Or vous avez renseigné < PRES_CONF = %(r1)E> et <SIGM_IMPO = %(r2)E>, soit PRES_CONF + SIGM_IMPO = %(r3)E supérieur à %(r4)E
+"""),
+
+48: _(u"""
+  CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 
+  Incohérence entre les valeurs saisies pour les mot clef simples <PRES_CONF> et <SIGM_DECH>. 
+  On doit toujours avoir SIGM_DECH <= PRES_CONF.
+  Or vous avez renseigné < SIGM_DECH = %(r1)E> et <PRES_CONF = %(r2)E> 
 """),
 
 50 : _(u"""Maille: %(k1)-8s - Pas de points d'intégration"""),

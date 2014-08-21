@@ -53,13 +53,20 @@ TABCISA1 = CO('TCISA1')
 TABCISA2 = CO('TCISA2')
 TABTNDC1 = CO('TTNDC1')
 TABTNDC2 = CO('TTNDC2')
+TDA1     = CO('TTDA1')
+TDA2     = CO('TTDA2')
+TDNA1    = CO('TTDNA1')
+TDNA2    = CO('TTDNA2')
+TABOED1  = CO('TOEDC1')
+TABISO1  = CO('TISO1')
+
 
 # creation de courbes de reference (TABLE_REF) bidon pour couverture de code
 tabbid1 = CREA_TABLE(LISTE=(_F(PARA='TYPE'    , LISTE_K=['P-Q',]),
                             _F(PARA='LEGENDE' , LISTE_K=['ma_legende',]),
                             _F(PARA='ABSCISSE', LISTE_R=[0.,1.]),
                             _F(PARA='ORDONNEE', LISTE_R=[0.,1.]),),);
-tabbid2 = CREA_TABLE(LISTE=(_F(PARA='TYPE'    , LISTE_K=['EPSXY-G',]),
+tabbid2 = CREA_TABLE(LISTE=(_F(PARA='TYPE'    , LISTE_K=['GAMMA-G',]),
                             _F(PARA='LEGENDE' , LISTE_K=['ma_legende',]),
                             _F(PARA='ABSCISSE', LISTE_R=[0.,1.]),
                             _F(PARA='ORDONNEE', LISTE_R=[0.,1.]),),);
@@ -92,20 +99,55 @@ CALC_ESSAI_GEOMECA(INFO=1,
                                     TABLE_REF   = tabbid1,
                                     TABLE_RESU  = (TABTNDC1,TABTNDC2),),
 
+                    ESSAI_TD_A = _F(PRES_CONF   = -5.E4,
+                                  EPSI_IMPOSE =  0.02, 
+                                  NB_CYCLE    =  2,
+                                  NB_INST     = 25,
+                                  TABLE_RESU= (TDA1,TDA2),
+                                  GRAPHIQUE =   ('P-Q','EPS_AXI-Q','EPS_VOL-Q','EPS_AXI-EPS_VOL','P-EPS_VOL','EPSI-E'), ),
+
+                   ESSAI_TD_NA = _F(PRES_CONF   = -5.E4, 
+                                  EPSI_IMPOSE =   -0.02,
+                                  NB_CYCLE    =  2,
+                                  NB_INST     = 25,
+                                  TABLE_RESU= (TDNA1,TDNA2),
+                                  GRAPHIQUE =   ('P-Q','EPS_AXI-Q','EPS_VOL-Q','EPS_AXI-EPS_VOL','P-EPS_VOL','EPSI-E'),),
+
+
                    ESSAI_CISA_C = _F(PRES_CONF   = -5.E+4,
-                                     EPSI_IMPOSE =  1.95E-4 ,
+                                     GAMMA_IMPOSE = 3.9E-4 ,
                                      NB_CYCLE    = 1,
                                      TABLE_REF   = tabbid2,
-                                     TABLE_RESU  = (TABCISA1,TABCISA2),),
+                                     TABLE_RESU  = (TABCISA1,TABCISA2),
+                                     GRAPHIQUE = ('GAMMA-SIGXY','G-D','GAMMA-G','GAMMA-D'),),
+
+                  ESSAI_OEDO_C = _F( PRES_CONF   = -5.E4,
+                                      SIGM_IMPOSE = (-3.E4,-4.E4,-5.E4,),
+                                      SIGM_DECH   = -6.E4,
+                                      TABLE_RESU  = TABOED1,
+                                             GRAPHIQUE = ('P-EPS_VOL','SIG_AXI-EPS_VOL'),),
+ 
+                   ESSAI_ISOT_C = _F( PRES_CONF   = -1.E5,
+                                      SIGM_IMPOSE = (-2.E5,-2.4E5),
+                                      SIGM_DECH   = -1.E5,
+                                      TABLE_RESU  = TABISO1,
+                                         GRAPHIQUE = ('P-EPS_VOL'),),
+           
 
                    )
 
-#IMPR_TABLE(TABLE=TABTD)
-#IMPR_TABLE(TABLE=TABTND)
-#IMPR_TABLE(TABLE=TABTNDC1)
-#IMPR_TABLE(TABLE=TABTNDC2)
-#IMPR_TABLE(TABLE=TABCISA1)
-#IMPR_TABLE(TABLE=TABCISA2)
+#IMPR_TABLE(TABLE=TABTD,)
+#IMPR_TABLE(TABLE=TABTND,)
+#IMPR_TABLE(TABLE=TABTNDC1,)
+#IMPR_TABLE(TABLE=TABTNDC2,)
+#IMPR_TABLE(TABLE=TDA1,)
+#IMPR_TABLE(TABLE=TDA2,)
+#IMPR_TABLE(TABLE=TDNA1,)
+#IMPR_TABLE(TABLE=TDNA2,)
+#IMPR_TABLE(TABLE=TABCISA1,)
+#IMPR_TABLE(TABLE=TABCISA2,)
+#IMPR_TABLE(TABLE=TABOED1,)
+#IMPR_TABLE(TABLE=TABISO1,)
 
 # trace de sigma : p = trace(sig)/3.
 FORMU1   = FORMULE(NOM_PARA='P',  VALE='3.*P'  )
@@ -434,7 +476,74 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=90.0,),
            )
 
+
+# pour l'essai 'TD_A' -> non regression
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -155765.435121,
+           NOM_PARA='Q_1',
+           TABLE=TTDA1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=10.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= 42472.9730103,
+           NOM_PARA='Q_1',
+           TABLE=TTDA1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=30.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -153999.603848,
+           NOM_PARA='Q_1',
+           TABLE=TTDA1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=50.0,),
+           )
+
+
+# pour l'essai 'TD_NA' -> non regression
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -155849.539961,
+           NOM_PARA='Q_1',
+           TABLE=TTDNA1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=20.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= 36604.5460338,
+           NOM_PARA='Q_1',
+           TABLE=TTDNA1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=40.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -142969.700395,
+           NOM_PARA='Q_1',
+           TABLE=TTDNA1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=60.0,),
+           )
+
 # pour l'essai 'CISA_C' -> non regression
+
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=-10024.272811318,
@@ -468,5 +577,109 @@ TEST_TABLE(CRITERE='RELATIF',
                      NOM_PARA='INST_1',
                      VALE=50.0,),
            )
+
+# pour l'essai 'OEDO_C' -> non regression
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -0.000848266637218,
+           NOM_PARA='EPS_VOL_1',
+           TABLE=TOEDC1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=10.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -49721.6863437,
+           NOM_PARA='SIG_LAT_1',
+           TABLE=TOEDC1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=10.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -0.00168714233218,
+           NOM_PARA='EPS_VOL_1',
+           TABLE=TOEDC1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=30.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -53981.1605469,
+           NOM_PARA='SIG_LAT_1',
+           TABLE=TOEDC1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=30.0,),
+            )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -0.00214894009601,
+           NOM_PARA='EPS_VOL_1',
+           TABLE=TOEDC1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=50.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC= -56319.3772981,
+           NOM_PARA='SIG_LAT_1',
+           TABLE=TOEDC1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=50.0,),
+          )
+
+# pour l'essai 'ISOT_C' -> comparaison avec le cas test ssnv204a
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC= -0.0135667051679,
+           VALE_REFE= -0.01356660,
+           NOM_PARA='EPS_VOL_1',
+           TABLE=TISO1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=10.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC= -0.000912238032468,
+           VALE_REFE= -0.00091215,
+           NOM_PARA='EPS_VOL_1',
+           TABLE=TISO1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=20.0,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC= -0.0159170218049,
+           VALE_REFE= -0.01591635,
+           NOM_PARA='EPS_VOL_1',
+           TABLE=TISO1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0E-05,
+                     NOM_PARA='INST_1',
+                     VALE=30.0,),
+           )
+
+
 
 FIN()

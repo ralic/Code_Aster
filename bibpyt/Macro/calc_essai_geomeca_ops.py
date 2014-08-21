@@ -25,6 +25,10 @@ def calc_essai_geomeca_ops(self,MATER,COMPORTEMENT,CONVERGENCE,INFO,
                            ESSAI_TND,
                            ESSAI_CISA_C,
                            ESSAI_TND_C,
+                           ESSAI_TD_A,
+                           ESSAI_TD_NA,
+                           ESSAI_OEDO_C,
+                           ESSAI_ISOT_C,
                            #ESSAI_XXX,
                            **args):
   """Corps de CALC_ESSAI_GEOMECA"""
@@ -38,7 +42,11 @@ def calc_essai_geomeca_ops(self,MATER,COMPORTEMENT,CONVERGENCE,INFO,
   verif_essais(COMPORTEMENT,ESSAI_TD ,
                          ESSAI_TND,
                          ESSAI_CISA_C,
-                         ESSAI_TND_C,)
+                         ESSAI_TND_C,
+                         ESSAI_TD_A,
+                         ESSAI_TD_NA,
+                         ESSAI_OEDO_C,
+                         ESSAI_ISOT_C,)
                          #ESSAI_XXX,)
 
   # ---
@@ -76,6 +84,43 @@ def calc_essai_geomeca_ops(self,MATER,COMPORTEMENT,CONVERGENCE,INFO,
     for iocc,DicoEssai in  enumerate(ESSAI_TND_C.List_F()):      
       str_num = int_2_str(iocc+1,len(ESSAI_TND_C.List_F()))
       essai_TND_C(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
+      
+  # ---
+  # Essai 'TD_A'
+  # ---
+  if ESSAI_TD_A != None :
+
+    for iocc,DicoEssai in  enumerate(ESSAI_TD_A.List_F()):      
+      str_num = int_2_str(iocc+1,len(ESSAI_TD_A.List_F()))
+      essai_TD_A(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
+
+  # ---
+  # Essai 'TD_NA'
+  # ---
+  if ESSAI_TD_NA != None :
+
+    for iocc,DicoEssai in  enumerate(ESSAI_TD_NA.List_F()):      
+      str_num = int_2_str(iocc+1,len(ESSAI_TD_NA.List_F()))
+      essai_TD_NA(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
+
+  # ---
+  # Essai 'OEDO_C'
+  # ---
+  if ESSAI_OEDO_C != None :
+  
+     for iocc,DicoEssai in enumerate(ESSAI_OEDO_C.List_F()):
+       str_num = int_2_str(iocc+1,len(ESSAI_OEDO_C.List_F()))
+       essai_OEDO_C(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)    
+       
+  # ---
+  # Essai 'ISOT_C'
+  # ---
+  if ESSAI_ISOT_C != None :
+  
+     for iocc,DicoEssai in enumerate(ESSAI_ISOT_C.List_F()):
+       str_num = int_2_str(iocc+1,len(ESSAI_ISOT_C.List_F()))
+       essai_ISOT_C(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)    
+
 
   # ---
   # Essai 'XXX'
