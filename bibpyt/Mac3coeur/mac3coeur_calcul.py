@@ -33,21 +33,27 @@ from Utilitai.Utmess import UTMESS
 from mac3coeur_coeur import CoeurFactory
 from thyc_result import lire_resu_thyc
 
-# decorator to use cached values
-def cached(cache_key, cache_attr):
-    """Decorator that returns directly the value without calling the method if
-    it is already present in the cache.
-    The cache is stored in the `cache_attr` attribute of the instance"""
+# decorator to cache values of properties
+NULL = object()
+
+def cached_property(attr):
+    """Decorator for the 'getter' method of a property
+    It returns directly the value without calling the 'getter' method itself if
+    it has already been computed (== not NULL).
+    :param attr: attribute name containing the property value
+    :type attr: string
+    """
     def wrap(method):
         """Wrapping method"""
-        def wrapper(inst, *args, **kwds):
+        def wrapper(inst):
             """Real wrapper function"""
-            cached = getattr(inst, cache_attr).get(cache_key)
-            if cached:
+            cached = getattr(inst, attr)
+            if cached is not NULL:
                 return cached
-            computed = method(inst, *args, **kwds)
-            getattr(inst, cache_attr)[cache_key] = computed
+            computed = method(inst)
+            setattr(inst, attr, computed)
             return computed
+        wrapper.__doc__ = method.__doc__ + " (cached property)"
         return wrapper
     return wrap
 
@@ -72,14 +78,15 @@ class Mac3CoeurCalcul(object):
         """Initialization"""
         self.macro = macro
         self.keyw = args
-        self.coeur = None
-        self.mesh = None
-        self.model = None
+        # cached properties
+        self._coeur = NULL
+        self._mesh = NULL
+        self._model = NULL
+        self._carael = NULL
+        self._geofib = NULL
 
     def _prepare_data(self):
         """Prepare the data for the calculation"""
-        self.coeur = _build_coeur(self.keyw['TYPE_COEUR'], self.macro,
-                                  self.keyw['TABLE_N'])
         self.macro.DeclareOut('RESULT', self.macro.sd)
 
     def _run(self):
@@ -95,66 +102,43 @@ class Mac3CoeurCalcul(object):
         self._run()
         self._build_result()
 
+    @property
+    @cached_property('_coeur')
+    def coeur(self):
+        """Compute and return the `Coeur` object"""
+        return _build_coeur(self.keyw['TYPE_COEUR'], self.macro,
+                            self.keyw['TABLE_N'])
 
-class Mac3CoeurDeformation(Mac3CoeurCalcul):
-    """Compute the strain of the assemblies"""
+    @property
+    @cached_property('_mesh')
+    def mesh(self):
+        """Compute and return the `maillage_sdaster` object"""
+        return self.coeur.affectation_maillage(self.keyw['MAILLAGE_N'])
 
-    def __init__(self, macro, args):
-        """Initialization"""
-        super(Mac3CoeurDeformation, self).__init__(macro, args)
-        self.etat_init = None
-        # used by the `cached` decorator
-        self._cache_excit = {}
+    @property
+    @cached_property('_model')
+    def model(self):
+        """Compute and return the `modele_sdaster` object"""
+        return self.coeur.affectation_modele(self.mesh)
 
-    def _prepare_data(self):
-        """Prepare the data for the calculation"""
-        super(Mac3CoeurDeformation, self)._prepare_data()
-        resu_init = self.keyw['DEFORMATION']['RESU_INIT']
-        self.mesh = self.keyw['MAILLAGE_N']
-        if not (self.mesh or resu_init):
-            UTMESS('F', 'COEUR0_7')
-        elif resu_init:
-            if self.mesh:
-                UTMESS('A', 'COEUR0_1')
-            self.etat_init = _F(EVOL_NOLI=resu_init)
-            nom_ma = aster.dismoi('NOM_MAILLA', resu_init.nom,
-                                  'RESULTAT', 'F')[2]
-            nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
-                                  'RESULTAT', 'F')[2]
-            self.mesh = self.macro.get_concept_by_type(nom_ma, maillage_sdaster)
-            self.model = self.macro.get_concept_by_type(nom_mo, modele_sdaster)
-        else:
-            self.mesh = self.coeur.affectation_maillage(self.mesh)
-            self.model = self.coeur.affectation_modele(self.mesh)
+    @property
+    @cached_property('_geofib')
+    def geofib(self):
+        """Compute and return the `geom_fibre` object"""
+        return self.coeur.definition_geom_fibre()
 
-    def _run(self):
-        """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
-        coeur = self.coeur
-        mcfact = self.keyw['DEFORMATION']
-        coeur.recuperation_donnees_geom(self.mesh)
+    @property
+    @cached_property('_carael')
+    def carael(self):
+        """Compute and return the `cara_elem` object"""
+        return self.coeur.definition_cara_coeur(self.model, self.geofib)
 
-        # self.define_cara_mat()
-        niv_fluence = mcfact['NIVE_FLUENCE']
-        contact = 'OUI'
-        subdivis = 1
-        if self.keyw['TYPE_COEUR'] == "MONO":
-            contact = 'NON'
-            subdivis = 5
-        times = coeur.definition_time(niv_fluence, subdivis)
-        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
-        chtemp = coeur.definition_champ_temperature(self.mesh)
-
-        geof = coeur.definition_geom_fibre()
-        carael = coeur.definition_cara_coeur(self.model, geof)
-        chmat_contact = coeur.definition_materiau(self.mesh, geof, evol_fluence,
-                                                  chtemp, CONTACT=contact)
-        chmat_libre = coeur.definition_materiau(self.mesh, geof, evol_fluence,
-                                                chtemp, CONTACT='NON')
-        self.compute_loadings()
-        snl_keywords = {
+    def snl_keywords(self, **kwds):
+        """Return the common keywords for STAT_NON_LINE
+        All keywords can be overridden using `kwds`."""
+        keywords = {
             'MODELE' : self.model,
-            'CARA_ELEM' : carael,
+            'CARA_ELEM' : self.carael,
             'COMPORTEMENT' : (_F(RELATION='MULTIFIBRE',
                                  GROUP_MA=('CRAYON', 'T_GUIDE'),
                                  PARM_THETA=0.5,
@@ -177,18 +161,92 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                            PCENT_PIVOT=200,),
             'AFFICHAGE' : _F(INFO_RESIDU='OUI'),
         }
+        keywords.update(kwds)
+        return keywords
+
+
+class Mac3CoeurDeformation(Mac3CoeurCalcul):
+    """Compute the strain of the assemblies"""
+
+    def __init__(self, macro, args):
+        """Initialization"""
+        super(Mac3CoeurDeformation, self).__init__(macro, args)
+        self.etat_init = None
+        # cached properties
+        self._constant_load = NULL
+        self._vessel_head_load = NULL
+        self._vessel_dilatation_load = NULL
+        self._thyc_load = NULL
+
+    def _prepare_data(self):
+        """Prepare the data for the calculation"""
+        super(Mac3CoeurDeformation, self)._prepare_data()
+
+    @property
+    @cached_property('_mesh')
+    def mesh(self):
+        """Compute and return the `maillage_sdaster` object"""
+        mesh = super(Mac3CoeurDeformation, self).mesh
+        resu_init = self.keyw['DEFORMATION']['RESU_INIT']
+        if not (mesh or resu_init):
+            UTMESS('F', 'COEUR0_7')
+        elif resu_init:
+            if mesh:
+                UTMESS('A', 'COEUR0_1')
+            self.etat_init = _F(EVOL_NOLI=resu_init)
+            nom_ma = aster.dismoi('NOM_MAILLA', resu_init.nom,
+                                  'RESULTAT', 'F')[2]
+            mesh = self.macro.get_concept_by_type(nom_ma, maillage_sdaster)
+        return mesh
+
+    @property
+    @cached_property('_model')
+    def model(self):
+        """Compute and return the `modele_sdaster` object"""
+        model = super(Mac3CoeurDeformation, self).model
+        resu_init = self.keyw['DEFORMATION']['RESU_INIT']
+        if resu_init:
+            nom_mo = aster.dismoi('NOM_MODELE', resu_init.nom,
+                                  'RESULTAT', 'F')[2]
+            model = self.macro.get_concept_by_type(nom_mo, modele_sdaster)
+        return model
+
+    def _run(self):
+        """Run the main part of the calculation"""
+        from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
+        coeur = self.coeur
+        mcfact = self.keyw['DEFORMATION']
+        coeur.recuperation_donnees_geom(self.mesh)
+
+        #TODO self.define_cara_mat()
+        niv_fluence = mcfact['NIVE_FLUENCE']
+        contact = 'OUI'
+        subdivis = 1
+        if self.keyw['TYPE_COEUR'] == "MONO":
+            contact = 'NON'
+            subdivis = 5
+        times = coeur.definition_time(niv_fluence, subdivis)
+        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
+        chtemp = coeur.definition_champ_temperature(self.mesh)
+        chmat_contact = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
+                                                  chtemp, CONTACT=contact)
+        chmat_libre = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
+                                                chtemp, CONTACT='NON')
         # T0 - T8
+        snl_keywords = self.snl_keywords()
         RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
                                INCREMENT=_F(LIST_INST=times,
                                             INST_FIN=coeur.temps_simu['T8']),
-                               EXCIT=self.constant_load() + self.vessel_head_load() + self.thyc_load() + self.vessel_dilatation_load(),
+                               EXCIT=self.constant_load + self.vessel_head_load + \
+                                     self.thyc_load + self.vessel_dilatation_load,
                                ETAT_INIT=self.etat_init,
                                **snl_keywords)
         # T8 - T8b
         RESULT = STAT_NON_LINE(reuse=RESULT,
                                CHAM_MATER=chmat_contact,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=self.constant_load() + self.vessel_head_load() + self.vessel_dilatation_load(),
+                               EXCIT=self.constant_load + self.vessel_head_load + \
+                                     self.vessel_dilatation_load,
                                INCREMENT=_F(LIST_INST=times,
                                             INST_FIN=coeur.temps_simu['T8b']),
                                **snl_keywords)
@@ -196,18 +254,12 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         RESULT = STAT_NON_LINE(reuse=RESULT,
                                CHAM_MATER=chmat_libre,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=self.constant_load() + self.vessel_dilatation_load(),
+                               EXCIT=self.constant_load + self.vessel_dilatation_load,
                                INCREMENT=_F(LIST_INST=times),
                                **snl_keywords)
 
-    def compute_loadings(self):
-        """Compute all the loadings"""
-        self.constant_load()
-        self.vessel_head_load()
-        self.vessel_dilatation_load()
-        self.thyc_load()
-
-    @cached('const', '_cache_excit')
+    @property
+    @cached_property('_constant_load')
     def constant_load(self):
         """Compute and return the "constant" loadings (always applied)"""
         from Cata.cata import AFFE_CHAR_MECA
@@ -227,7 +279,8 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         ]
         return load
 
-    @cached('vessel_head', '_cache_excit')
+    @property
+    @cached_property('_vessel_head_load')
     def vessel_head_load(self):
         """Compute and return the loadings due to the pression of
         the vessel head"""
@@ -240,13 +293,15 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                               mcfact['TYPE_MAINTIEN'], force)
         return [_F(CHARGE=char), ]
 
-    @cached('vessel_dilat', '_cache_excit')
+    @property
+    @cached_property('_vessel_dilatation_load')
     def vessel_dilatation_load(self):
         """Compute and return the loading due to the vessel dilatation"""
         char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh)
         return [_F(CHARGE=char_dilat,), ]
 
-    @cached('thyc', '_cache_excit')
+    @property
+    @cached_property('_thyc_load')
     def thyc_load(self):
         """Compute and return the loading due to the fluid flow"""
         coeur = self.coeur
