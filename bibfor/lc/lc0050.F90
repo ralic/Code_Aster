@@ -77,7 +77,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm
+    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
     integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, ndsde
     parameter     ( npropmax = 197)
@@ -89,7 +89,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: sigm(6), stress(6), sse, spd, scd, time(2)
     real(kind=8) :: vim(*), statev(nvi)
     real(kind=8) :: predef(npred), dpred(npred)
-    real(kind=8) :: ddsdde(54), dfgrd0(3, 3), dfgrd1(3, 3)
+    real(kind=8) :: ddsdde(36), dfgrd0(3, 3), dfgrd1(3, 3)
     real(kind=8) :: ddsddt(6), drplde(6), celent, stran(9), dsidep(6, 6)
     real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
     real(kind=8) :: depsth(6), epsth(6), rac2, usrac2, drott(3, 3),detf
@@ -144,18 +144,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
 !
-    czm=0
-    if (neps .eq. 9) then
-        call dcopy(neps, epsm, 1, dfgrd0, 1)
-        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            call pmat(3, deps, dfgrd0, dfgrd1)
-        else
-            call dcopy(neps, dfgrd0, 1, dfgrd1, 1)
-        endif
-        call dcopy(neps, dfgrd0, 1, stran, 1)
-        call dcopy(neps, dfgrd1, 1, dstran, 1)
-!
-    else if (neps.eq.6) then
+    if (neps.eq.6) then
 !
 ! PETITES DEFORMATIONS : DEFORMATION - DEFORMATION THERMIQUE
         if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -172,27 +161,11 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
         call dscal(3, rac2, stran(4), 1)
         call r8inir(9, 0.d0, dfgrd0, 1)
         call r8inir(9, 0.d0, dfgrd1, 1)
-
-    else if ((neps.eq.3).and.(typmod(2).eq.'ELEMJOIN')) then
-! PETITES DEFORMATIONS : CZM
-        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            call dcopy(neps, deps, 1, dstran, 1)
-        else
-            call r8inir(neps, 0.d0, dstran, 1)
-        endif
-        call dcopy(neps, epsm, 1, stran, 1)
-        call r8inir(9, 0.d0, dfgrd0, 1)
-        call r8inir(9, 0.d0, dfgrd1, 1)
-        ntens=6
-        nshr=3
-        czm=1
     else
         ASSERT(.false.)
     endif
 !
     if (compor(3) .eq. 'GDEF_LOG') then
-        nstatv=nvi-6
-    elseif (compor(3) .eq. 'SIMO_MIEHE') then
         nstatv=nvi-6
     else
         nstatv=nvi
@@ -246,32 +219,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     pnewdt=1.d0
-!
-!   pour MFRONT ddsdde(1)= type de matrice tangente
-!   ddsdde(1) <0 : matrice de prédiction
-!   -1, matrice elastique initiale (sans endommagement)
-!   -2, matrice secante (avec endommagement)
-!   -3, matrice tangente.
-!   ddsdde(1) >0 : matrice tangente (FULL_MECA, FULL_MECA_ELAS)
-!    1 matrice elastique initiale (sans endommagement)
-!    2 matrice secante (avec endommagement)
-!    3 matrice tangente
-!    4 matrice tangente cohérente
-!
-    ddsdde=1.d0
-    if (option .eq. 'RIGI_MECA_TANG') then
-!        ddsdde(1)=-3.d0 disponible a partir de la version 2.584 de mfront        
-        ddsdde(1)=4.d0
-    else if (option .eq. 'RIGI_MECA_ELAS') then
-        ddsdde(1)=-2.d0
-    else if (option .eq. 'FULL_MECA_ELAS') then
-        ddsdde(1)= 2.d0
-    else if (option .eq. 'FULL_MECA') then
-        ddsdde(1)= 4.d0
-    else if (option .eq. 'RAPH_MECA') then
-        ddsdde(1)= 0.d0
-    endif
-!
+!!
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         call dcopy(nsig, sigm, 1, stress, 1)
@@ -312,45 +260,27 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dscal(3, rac2, stress(4), 1)
-        if (compor(3) .eq. 'SIMO_MIEHE') then
-! transformation cauchy kirchhoff
-           call lcdetf(3, dfgrd1, detf)  
-           call dscal(3, detf, stress, 1)
-        endif
     endif
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
     
-       if (compor(3) .eq. 'SIMO_MIEHE') then
-           call dcopy(54, ddsdde, 1, dsidep, 1)
-       else 
            call r8inir(36, 0.d0, dsidep, 1)
-!          cas des CZM
-           if (czm.eq.1) then
-               do i=1,3
-                  do j=1,3
-                     dsidep(i,j)=ddsdde(3*(i-1)+j)
-                  enddo
-               enddo
-           else
-               call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
-               do 40 i = 1, 6
-                   do 40 j = 4, 6
+           call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
+           do 40 i = 1, 6
+                 do 40 j = 4, 6
                        dsidep(i,j) = dsidep(i,j)*rac2
-    40         continue
-               do 50 i = 4, 6
-                   do 50 j = 1, 6
+    40     continue
+           do 50 i = 4, 6
+                 do 50 j = 1, 6
                        dsidep(i,j) = dsidep(i,j)*rac2
-    50         continue
-           endif 
+    50     continue
            if ((niv.ge.2) .and. (idbg.eq.1)) then
                write(ifm,*)'APRES APPEL UMAT,OPERATEUR TANGENT DSIDEP='
                do 60 i = 1, 6
                    write(ifm,'(6(1X,E11.4))') (dsidep(i,j),j=1,6)
  60            continue
            endif           
-        endif
-    endif
+     endif
 !
     if (pnewdt .lt. 0.99d0) codret=1
     idbg=0
