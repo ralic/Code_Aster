@@ -46,8 +46,12 @@ NU=0.3
 E=MU*2*(1.+NU)
 k=E/(3.*(1.-2.*NU))
 TAU_F  = 20.
-RHO_0  = 1.E5    # en mm**-2
-RHOREF = 1.E6    # en mm**-2
+#RHO_TOT : densité globale sur tous les systemes de glissement (parametre utilisateur)
+RHO_TOT=1.2E6    # en mm**-2
+#RHO_0 : densité par systeme de glissement
+RHO_0  = RHO_TOT/12    # en mm**-2
+#RHOREF : densité totale de dislocation utilisée pour le calcul des a_eff
+RHOREF = RHO_TOT    # en mm**-2
 N      = 5.
 GAMMA0 = 1.E-3
 ALPHA=0.35

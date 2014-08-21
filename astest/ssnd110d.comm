@@ -53,14 +53,15 @@ a_ncol=0.1
 a_self=0.1024
 alpha_self=sqrt(a_self)
 
-RHO_0  = rho_ini    # en m**-2
+#RHO_TOT : densité globale sur tous les systemes de glissement (parametre utilisateur)
+RHO_TOT=1.2E12    # en m**-2 pour comparaison avec ssnd110b
+#RHO_0 : densité par systeme de glissement
+RHO_0  = RHO_TOT/12    # en m**-2
+#RHOREF : densité mobile par systeme de glissement, egale a RHO_0 en general
+RHOREF = RHO_0    # en m**-2
 
 ACIERDD=DEFI_MATERIAU(
-                      #ELAS=_F(E=E,
-                            #NU=Nu,
-                            #ALPHA=0.),
-
-                 ELAS_ORTH=_F(  E_L = E,
+                  ELAS_ORTH=_F(  E_L = E,
                                 E_T = E,
                                 E_N = E,
                                 NU_LT = Nu,
@@ -78,7 +79,7 @@ ACIERDD=DEFI_MATERIAU(
                                     TAU_F   =tau_f,
                                     GAMMA0  =gamma0,
                                     N       =N,
-                                    RHO_MOB =rho_ini,
+                                    RHO_MOB =RHOREF,
                                     D       =D,
                                     D_LAT   =d_lat,
                                     Y_AT    =y_at,
@@ -517,6 +518,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000380734308E+11,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000384753312E+11,
                         VALE_PARA=1.0,
+                        VALE_REFE=1.000380734308E+11,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=5.0000000000000001E-3,
                         NOM_PARA='INST',
                         FONCTION=rhoi_8,),
               )
@@ -530,6 +534,8 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000177309670E+11,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000179188542E+11,
                         VALE_PARA=1.0,
+                        VALE_REFE=1.000177309670E+11,
+                        REFERENCE='AUTRE_ASTER',
                         NOM_PARA='INST',
                         FONCTION=rhoi_5,),
               )
@@ -545,6 +551,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.470697430610E-07,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.497105854366E-07,
                         VALE_PARA=1.0,
+                        VALE_REFE=2.497105854366E-07,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
                         NOM_PARA='INST',
                         FONCTION=gammi_8,),
               )
@@ -558,6 +567,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.139016265372E-07,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.151223563581E-07,
                         VALE_PARA=1.0,
+                        VALE_REFE=-1.151223563581E-07,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
                         NOM_PARA='INST',
                         FONCTION=gammi_5,),
               )
@@ -573,6 +585,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.479102030578E-07,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.494936709304E-07,
                         VALE_PARA=1.0,
+                        VALE_REFE=-1.494936709304E-07,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.050000000000000003,
                         NOM_PARA='INST',
                         FONCTION=EVIiXX,),
               )
@@ -586,6 +601,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.475432149480E-07,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.491218564622E-07,
                         VALE_PARA=1.0,
+                        VALE_REFE=1.491218564622E-07,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
                         NOM_PARA='INST',
                         FONCTION=EVIiZZ,),
               )
@@ -599,6 +617,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=3.852669669294E-08,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.893790038109E-08,
                         VALE_PARA=1.0,
+                        VALE_REFE=3.893790038109E-08,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
                         NOM_PARA='INST',
                         FONCTION=EVIiXY,),
               )
@@ -612,6 +633,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.045760539705E-07,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.056957015784E-07,
                         VALE_PARA=1.0,
+                        VALE_REFE=1.056957015784E-07,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
                         NOM_PARA='INST',
                         FONCTION=EVIiYZ,),
               )
