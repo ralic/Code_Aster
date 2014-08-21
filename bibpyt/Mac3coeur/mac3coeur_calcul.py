@@ -104,6 +104,7 @@ class Mac3CoeurCalcul(object):
         # parameters
         self._niv_fluence = 0.
         self._subdivis = 1
+        self._use_archimede = None
         # cached properties
         self._coeur = NULL
         self._mesh = NULL
@@ -167,6 +168,16 @@ class Mac3CoeurCalcul(object):
     def subdivis(self, value):
         """Set the value of the time splitting"""
         self._subdivis = value
+
+    @property
+    def use_archimede(self):
+        """Tell if Archimede loadings are enabled or not ('OUI'/'NON')"""
+        return self._use_archimede
+
+    @use_archimede.setter
+    def use_archimede(self, value):
+        """Set the value of the time splitting"""
+        self._use_archimede = value
 
     # cached properties
     @property
@@ -272,7 +283,7 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def archimede_load(self):
         """Compute the Archimede loadings"""
-        fmult_arch = self.coeur.definition_temp_archimede(self.mcf['ARCHIMEDE'])
+        fmult_arch = self.coeur.definition_temp_archimede(self.use_archimede)
         load = [
             _F(CHARGE    = self.coeur.definition_archimede_nodal(self.model),
                FONC_MULT = fmult_arch,),
@@ -379,6 +390,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         self.niv_fluence = self.mcf['NIVE_FLUENCE']
         if self.keyw['TYPE_COEUR'] == "MONO":
             self.subdivis = 5
+        self.use_archimede = self.mcf['ARCHIMEDE']
         super(Mac3CoeurDeformation, self)._prepare_data()
 
     @property
@@ -454,6 +466,11 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 class Mac3CoeurLame(Mac3CoeurCalcul):
     """Compute the thinkness of water from deformed assemblies"""
     mcfact = 'LAME'
+
+    def _prepare_data(self):
+        """Prepare the data for the calculation"""
+        self.use_archimede = 'OUI'
+        super(Mac3CoeurDeformation, self)._prepare_data()
 
     def _run(self):
         """Run the main part of the calculation"""
