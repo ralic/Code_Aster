@@ -18,7 +18,7 @@
 # person_in_charge: irmela.zentner at edf.fr
  
 # Routines for random signal generation 
-"""gauss_process.py
+"""random_signal_utils.py
 
 A collection of general-purpose routines using Numeric
 
@@ -39,7 +39,7 @@ from Cata_Utils.t_fonction import ( t_fonction, )
 ## ----------------------------------------------------------------- 
 ##     ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS POUR LE CAS SCALAIRE 
 ##-----------------------------------------------------------------   
-def DSP2ACCE1D(f_dsp,rv=None):
+def DSP2ACCE1D(f_dsp,rv = None):
    # ----------------------------------
    # IN  : f_dsp   :  dsp function for of list frequencies lw2 on (0, OM)
    #       rv : realisation du vecteur de variables aleatoires gaussiennes complexe
@@ -54,6 +54,7 @@ def DSP2ACCE1D(f_dsp,rv=None):
    DW=lw2[1]-lw2[0]
    nbfreq2=len(lw2)
    nbfreq=nbfreq2*2
+
    if rv==None: 
       rv=NP.random.normal(0.0,1.,nbfreq)+1j*NP.random.normal(0.0,1.,nbfreq)
    rv1=rv[0:nbfreq2]
@@ -79,7 +80,7 @@ def DSP2ACCE1D(f_dsp,rv=None):
 #  ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS DSP evolutive non separable-----
 #------------------------------------------------------------------------ 
 
-def gene_traj_gauss_evol1D(calc_dsp_KT, l_w2,l_temps,t_ini, t_fin, rv=None, **kwargs):
+def gene_traj_gauss_evol1D(self, rv = None, **kwargs):
    #---------------------------------------------
    # IN : 
    #      calc_dsp_KT :  function for the definition of the PSD matrix (KT ou rational type)
@@ -89,30 +90,31 @@ def gene_traj_gauss_evol1D(calc_dsp_KT, l_w2,l_temps,t_ini, t_fin, rv=None, **kw
    #       Xt trajectoire du processus gaussien stationnaire normalise (m=0, ect=1)
    #---------------------------------------------
    import aster_core
-   nbfreq2=len(l_w2)
+   nbfreq2 = len(self.sampler.liste_w2)
    nbfreq=2*nbfreq2
    Xt=[]
-   wg=kwargs['W0']
-   amo=kwargs['Xi0']
-   fcp=kwargs['FCORNER']
-   wp=kwargs['WPENTE']
-   TYPE=kwargs['TYPE_DSP']
+
+   fg = kwargs['FREQ_FOND']
+   amo = kwargs['AMORT']
+   fp = kwargs['FREQ_PENTE']
+   TYPE = kwargs['TYPE_DSP']
+
    if TYPE == 'FR':
       R0=kwargs['para_R0']
       R2=kwargs['para_R2']
       l_FIT=kwargs['fonc_FIT'].vale_y
-      assert len(l_FIT)==len(l_w2), "ERREUR listes frequences: emettre une fiche anomalie!"
-      dsp_fr_refe = calc_dsp_FR(l_w2,wg, amo,R0,R2,fcp)
+      assert len(l_FIT)==nbfreq2, "ERREUR listes frequences: emettre une fiche anomalie!"
+      dsp_fr_refe = calc_dsp_FR( self.sampler.liste_w2, fg, amo, R0, R2, self.FREQ_CORNER )
       #   calcul de la variance (sigma^2) de normalisation mof  
+
       if 'ALEA_DSP' in kwargs:   
          l_ALPHA = kwargs['ALEA_DSP']
-         mof=NP.trapz(dsp_fr_refe*l_FIT*l_ALPHA,l_w2)*2.  
+         mof=NP.trapz(dsp_fr_refe*l_FIT*l_ALPHA, self.sampler.liste_w2)*2.  
          l_FIT=l_FIT*l_ALPHA 
-      else :      mof=NP.trapz(dsp_fr_refe*l_FIT,l_w2)*2.    
+      else :      mof=NP.trapz(dsp_fr_refe*l_FIT, self.sampler.liste_w2)*2.    
 
 
-
-   DW=l_w2[1]-l_w2[0]
+   DW=self.sampler.DW
    if rv==None:
       rv=NP.random.normal(0.0,1.,nbfreq)+1j*NP.random.normal(0.0,1.,nbfreq)
 #      vecc1=(NP.random.normal(0.0,1.,nbfreq2)+1j*NP.random.normal(0.0,1.,nbfreq2))
@@ -120,34 +122,34 @@ def gene_traj_gauss_evol1D(calc_dsp_KT, l_w2,l_temps,t_ini, t_fin, rv=None, **kw
 #   else :
    vecc1=rv[0:nbfreq2]
    vecc2=rv[nbfreq2:]
+   t_mid=0.5*(self.modulator.T1+ self.modulator.T2)
+   fg_fin= fg + fp*(self.modulator.T2-t_mid)
+   fg_ini= fg + fp*(self.modulator.T1-t_mid)
 
-   t_mid=0.5*(t_ini+ t_fin)
-   wg_fin= wg+wp*(t_fin-t_mid)
-   wg_ini= wg+wp*(t_ini-t_mid)
+   for tii in self.sampler.liste_temps:   
 
-   for tii in l_temps:   
-
-      if tii<t_ini:
-         wgt=wg_ini
-      elif  tii>t_fin:
-         wgt= wg_fin
+      if tii < self.modulator.T1 :
+         fgt = fg_ini
+      elif  tii > self.modulator.T2 :
+         fgt = fg_fin
       else:
-         wgt=wg+wp*(tii-t_mid)
-      if wgt<=0.0: 
+         fgt = fg + fp*(tii-t_mid)
+      if fgt<=0.0: 
          UTMESS('F', 'SEISME_35',valk=(str(tii)))
    
     #calcul du facteur de normalisation
-      if TYPE=='KT':
-         dsp=calc_dsp_KT(l_w2,wgt, amo,fcp)
-         S_cst=1./NP.trapz(dsp,l_w2)*0.5 # constante de normalisation pour que ecart_type=1 a pour tout t
-         MAT=calc_dsp_KT(l_w2,wgt, amo, fcp, S_cst)
-      elif TYPE=='FR':
-         dsp=calc_dsp_FR(l_w2,wgt, amo,R0,R2,fcp)
-         S_cst=mof/(NP.trapz(dsp*l_FIT,l_w2)*2.) # constante de normalisation pour que ecart_type=1 a pour tout t
-         MAT=calc_dsp_FR(l_w2,wgt, amo,R0,R2,fcp, So=S_cst)*l_FIT
+      if TYPE =='KT':
+         dsp=calc_dsp_KT(self,fgt, amo)
+         S_cst=1./NP.trapz(dsp,self.sampler.liste_w2)*0.5 # constante de normalisation pour que ecart_type=1 a pour tout t
+         MAT=calc_dsp_KT(self, fgt, amo, S_cst)
 
-      vale_xp=NP.sqrt(MAT)*vecc1*NP.exp(1.j*l_w2*tii)
-      vale_xn=NP.sqrt(MAT)*vecc2*NP.exp(-1.j*l_w2*tii)
+      elif TYPE == 'FR':
+         dsp=calc_dsp_FR(self.sampler.liste_w2, fgt, amo,R0,R2, self.FREQ_CORNER)
+         S_cst=mof/(NP.trapz(dsp*l_FIT,self.sampler.liste_w2)*2.) # constante de normalisation pour que ecart_type=1 a pour tout t
+         MAT=calc_dsp_FR(self.sampler.liste_w2, fgt, amo,R0,R2, self.FREQ_CORNER, So=S_cst)*l_FIT
+
+      vale_xp=NP.sqrt(MAT)*vecc1*NP.exp(1.j*self.sampler.liste_w2*tii)
+      vale_xn=NP.sqrt(MAT)*vecc2*NP.exp(-1.j*self.sampler.liste_w2*tii)
 
       vale_Xt= sum(vale_xp)+ sum(vale_xn)
 
@@ -230,18 +232,18 @@ def dsp_filtre_CP(f_in,fcorner,amoc=1.0):
 #     KANAI TAJIMI PSD 
 #-----------------------------------------------------------------
 
-def calc_dsp_KT(lfreq, w0,amor,fcp, So=1.0):
+def calc_dsp_KT(self, freq_fond, amo, So=1.0):
+
+      w0 = freq_fond*2.*pi
 # KT model  
-      x11  =NP.array([4.*(amor**2)*(w0**2)*FREQ**2  for FREQ in lfreq ])
+      x11  =NP.array([4.*(amo**2)*(w0**2)*FREQ**2  for FREQ in self.sampler.liste_w2 ])
       xnum =x11+w0**4
-      denom=NP.array([ (w0**2-FREQ**2)**2 for FREQ in lfreq ])
+      denom=NP.array([ (w0**2-FREQ**2)**2 for FREQ in self.sampler.liste_w2 ])
       denom=denom+x11
       valkt=xnum/denom
 # CP filter
-      wcp=2.*pi*fcp
-#      wcp=0.5*pi
       amocp=1.0
-      valcp  =NP.array([  FREQ**4 / ( 4.*(amocp**2)*(wcp**2)*FREQ**2+(wcp**2-FREQ**2)**2 )  for FREQ in lfreq ]  )
+      valcp  =NP.array([  FREQ**4 / ( 4.*(amocp**2)*(2.*pi*self.FREQ_CORNER**2)*FREQ**2+(2.*pi*self.FREQ_CORNER**2-FREQ**2)**2 )  for FREQ in self.sampler.liste_w2 ]  )
       dsp=valcp*valkt
       return dsp*So  
    
@@ -249,15 +251,16 @@ def calc_dsp_KT(lfreq, w0,amor,fcp, So=1.0):
 #     FRACTION RATIONELLE 
 #-----------------------------------------------------------------
 
-def calc_dsp_FR(lfreq, w0,amor,R0,R1, fcp, So=1.0):
-# KT model  
+def calc_dsp_FR( lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0 ):
+# KT model
+      w0=freq_fond*2.*pi
       q0=w0**2
       q1=2.*amor*w0
       valkt =NP.array([(R0**2+R1**2*FREQ**2)/ ( (w0**2-FREQ**2)**2+ q1**2*FREQ**2 ) for FREQ in lfreq ])
 
 # CP filter
-      if fcp>0.0:
-         wcp=2.*pi*fcp
+      if FREQ_CORNER > 0.0:
+         wcp=2.*pi*FREQ_CORNER
 #      wcp=0.5*pi
          amocp=1.0
          valcp  =NP.array([  FREQ**4 / ( 4.*(amocp**2)*(wcp**2)*FREQ**2+(wcp**2-FREQ**2)**2 )  for FREQ in lfreq ]  )
@@ -390,7 +393,7 @@ def Rice2(w2,DSP) :
 # -----------------------------------------------------------------
 
  # calcul du facteur de peak par formule approche (Vanmarcke)
-def peak(p,TSM, vop,amort) : 
+def peak(p, TSM, vop, amort) : 
    # ---------------------------------------------
    # IN  : oscillator eigenfrequency  vop (Hz), reduced damping amort , 
    #          fractile p, duration TSM  
@@ -504,11 +507,15 @@ def iter_SRO(f_dsp, f_sro, amort, TS) :
 
 
 # iteration par simulation temporelle pour fitter le spectre cible sur une realisation (accelerogramme)
-#def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,FCORNER, NB_TIRAGE=1 ) :
-def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
+#def itersim_SRO(f_dsp, f_sro, amort, nb_iter, f_modul, INFO, dico_err, FMIN,FCORNER, NB_TIRAGE=1 ) :
+
+def itersim_SRO(self, FONC_DSP, NB_TIRAGE=1, **SRO_args) :
+
+#(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 )
+#FONC_SPEC, AMORT, FMIN,  PAS=None, LIST_FREQ=None
     # ---------------------------------------------
-    # IN  : f_dsp: DSP [rad/s], f_sro: spectre cible [Hz], 
-    #    amort: amortissement sro, TS: duree phase forte, meme disretisation
+    # IN  : FONC_DSP: DSP [rad/s], FONC_SPEC: spectre cible [Hz], 
+    #    amort: amortissement sro,  meme disretisation
     #    type_mod: type de fonction de modulation     niter: nombre d'iterations, 
     #    FMIN: fequence min pour fit et filtrage ("corner frequency" Hz)
     # OUT : f_out: accelerogramme apres iterations pour fitter au mieux le spectre cible
@@ -516,30 +523,29 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
    #  dsp in  
 
    FMIN=SRO_args['FMIN']
-   FCORNER=SRO_args['FCORNER']
    amort=SRO_args['AMORT']
-   TS=SRO_args['TSM']
    METHODE_SRO=SRO_args['METHODE_SRO']
-   INFO=SRO_args['INFO']
+   dico_err = SRO_args['DICO_ERR']
+   NB_ITER=SRO_args['NB_ITER']
 
 #  #  dsp initiale
-   para_dsp=f_dsp.para
-   freq_dsp=f_dsp.vale_x
-   vale_dsp=f_dsp.vale_y
+   para_dsp= FONC_DSP.para
+   freq_dsp= FONC_DSP.vale_x
+   vale_dsp= FONC_DSP.vale_y
    nbfreq2=len(freq_dsp)
    nbfreq=2*nbfreq2
 #  #  sro cible
-   freq_sro=freq_dsp/2./pi
-   vale_sro_ref=f_sro.evalfonc(freq_sro).vale_y
+   freq_sro = freq_dsp/2./pi
+   vale_sro_ref = SRO_args['FONC_SPEC'].evalfonc(freq_sro).vale_y
    #  fonction de modulation 
-   hmod=f_modul.vale_y
-   ltemps=f_modul.vale_x
-   dt=ltemps[2]-ltemps[1]
-   para_modul=f_modul.para
+   hmod = self.modulator.fonc_modul.vale_y
+
+   dt=self.sampler.DT
+
 
 #  FMIN pour le calcul de l'erreur relative 
    FMINM=max(FMIN, 0.1)
-   FC=max(FCORNER,FMINM)
+   FC=max(self.FREQ_CORNER,FMINM)
    N1=NP.searchsorted(freq_sro,FMINM)+1
    FRED=freq_sro[N1:]
    ZPA=vale_sro_ref[-1]
@@ -563,34 +569,34 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
 
 #  INITIALISATION
    errmult=[]
-   l_dsp=[f_dsp]
+   l_dsp=[ FONC_DSP]
 
-   if NB_TIRAGE==1:
-     acce =DSP2ACCE1D(f_dsp ,rv)*hmod  #modulation   
-     if FCORNER> 0.0:  
-        acce=acce_filtre_CP(acce,dt,FCORNER)
-     f_acce=t_fonction(ltemps,acce, para=para_modul)
+   if NB_TIRAGE == 1:
+     acce = DSP2ACCE1D( FONC_DSP ,rv)*hmod  #modulation   
+     if self.FREQ_CORNER > 0.0:  
+        acce=acce_filtre_CP(acce,dt,self.FREQ_CORNER)
+     f_acce=t_fonction( self.sampler.liste_temps, acce, para=self.modulator.para_fonc_modul )
 
      l_acce=[f_acce]
-     f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2 , METHODE_SRO) 
+     f_sroi = ACCE2SROM(self, f_acce, amort,freq_sro,2 , METHODE_SRO) 
      valesro=f_sroi.vale_y
 
    elif NB_TIRAGE>1 :
      liste_valesro=[]
      for ntir in range(NB_TIRAGE):
-         Xt=DSP2ACCE1D(f_dsp ,list_rv[ntir])
+         Xt=DSP2ACCE1D( FONC_DSP ,list_rv[ntir])
          acce =Xt*hmod  #   modulation 
-         if FCORNER> 0.0:  
-             acce=acce_filtre_CP(acce,dt,FCORNER)
-         f_acce=t_fonction(ltemps,acce, para=para_modul)
-         f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2, METHODE_SRO) 
+         if self.FREQ_CORNER > 0.0:  
+             acce=acce_filtre_CP(acce, dt, self.FREQ_CORNER)
+         f_acce=t_fonction( self.sampler.liste_temps, acce, para = self.modulator.para_fonc_modul )
+         f_sroi = ACCE2SROM(self, f_acce, amort,freq_sro,2, METHODE_SRO) 
          liste_valesro.append(f_sroi.vale_y)
      valesro=NP.median(NP.array(liste_valesro),axis=0)
 
 
    l_sro=[valesro]
    err_zpa,err_max,err_min,err_rms, freq_err  = erre_spectre(FRED, valesro[N1:],vale_sro_ref[N1:] )
-   if INFO==2:  print 'ERREUR INITIAL: ZPA ERROR, MAX ERROR, RMS ERROR:', err_zpa, err_max, err_rms
+   if self.INFO==2:  print 'ERREUR INITIAL: ZPA ERROR, MAX ERROR, RMS ERROR:', err_zpa, err_max, err_rms
    #  erreur multiobjectif
    err_ZPA = coef_ZPA*err_zpa
    err_MAX=  coef_MAX*err_max
@@ -601,8 +607,8 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
 
 # ITERATIONS
 
-   for kk in range(nb_iter):
-         if INFO==2: print 'ITERATION  ',   kk+1 , 'sur',  nb_iter
+   for kk in range(NB_ITER):
+         if self.INFO==2: print 'ITERATION  ',   kk+1 , 'sur',  NB_ITER
 
        #  CALCUL CORRECTION des DSP et mise a jour f_dsp
          nz=NP.nonzero(valesro)  
@@ -622,11 +628,11 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
          #  calcul accelerogramme et SRO
             Xt =DSP2ACCE1D(f_dsp ,rv)       
             acce =Xt*hmod  #   modulation  
-            if FCORNER> 0.0:  
-                acce=acce_filtre_CP(acce,dt,FCORNER)
-            f_acce=t_fonction(ltemps,acce, para=para_modul)
+            if self.FREQ_CORNER > 0.0:  
+                acce=acce_filtre_CP(acce,dt,self.FREQ_CORNER)
+            f_acce=t_fonction(self.sampler.liste_temps,acce, para = self.modulator.para_fonc_modul)
             l_acce.append(f_acce)
-            f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2, METHODE_SRO ) 
+            f_sroi = ACCE2SROM(self, f_acce, amort,freq_sro,2, METHODE_SRO ) 
             valesro=f_sroi.vale_y
 
          elif NB_TIRAGE>1 :
@@ -635,10 +641,10 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
             for ntir in range(NB_TIRAGE):
                Xt=DSP2ACCE1D(f_dsp ,list_rv[ntir])
                acce =Xt*hmod  #   modulation 
-               if FCORNER> 0.0:  
-                   acce=acce_filtre_CP(acce,dt,FCORNER)
-               f_acce=t_fonction(ltemps,acce, para=para_modul)
-               f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2, METHODE_SRO ) 
+               if self.FREQ_CORNER > 0.0:  
+                   acce=acce_filtre_CP(acce, dt, self.FREQ_CORNER)
+               f_acce=t_fonction(self.sampler.liste_temps, acce, para = self.modulator.para_fonc_modul)
+               f_sroi = ACCE2SROM(self, f_acce, amort,freq_sro,2, METHODE_SRO ) 
                liste_valesro.append(f_sroi.vale_y)
             valesro=NP.median(NP.array(liste_valesro),axis=0)
 #            valesro=median_values(liste_valesro)
@@ -659,17 +665,14 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
 
    ind_opt=NP.argmin(NP.array(errmult)  )
    f_dsp_opt=l_dsp[ind_opt]
-#   if FCORNER>0.0 and ind_opt>0:
-#      f_dsp_opt=dsp_filtre_CP(f_dsp_opt,FCORNER)
    valesro_opt=l_sro[ind_opt]
-
 
    err_zpa,err_max,err_min,err_rms, freq_err  = erre_spectre(FRED, valesro_opt[N1:],vale_sro_ref[N1:] )
    dico_err['ERRE_ZPA'].append(err_zpa)
    dico_err['ERRE_MAX'].append(err_max)
    dico_err['ERRE_RMS'].append(err_rms)
 
-   if INFO==2:
+   if self.INFO==2:
       print  'MIN MULTERROR', errmult[ind_opt], '%   iteration ',  ind_opt
       print  'MAX ABS ERROR', err_max, '%  ',  'pour la frequence ', freq_err[0]
       print  'MAX MIN ERROR', err_min, '%  ',  'pour la frequence ', freq_err[1]
@@ -720,22 +723,21 @@ def median_values(listes):
       return NP.array(median_val)
 
 
+
+
 # conversion SRO en DSP equivalente par formule de Vanmarcke
-def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN, LIST_FREQ=None) :
+
+def SRO2DSP(FREQ_COUP, DUREE_PHASE_FORTE, FONC_SPEC, AMORT, FMIN, NORME, PAS=None ,LIST_FREQ=None, **args) :
    # ---------------------------------------------
    #  f_in : SRO cible, frequency given in (Hz)
    #  f_out: DSP compatible avec SRO, frequency list lw in (rad/s)
    # ---------------------------------------------
-      wmax=FCOUP*2.*pi
 
-      fmin=max(FMIN,0.05)
-      wmin=fmin*2.*pi
+      wmax = FREQ_COUP*2.*pi
+      f_in = FONC_SPEC
+      fmin = max(FMIN,0.05)
+      wmin = fmin*2.*pi
 #      wmin=1.001 
-      para_dsp = {
-         'INTERPOL' : ['LIN','LIN'],
-         'NOM_PARA'    : 'FREQ',
-         'PROL_DROITE' : 'CONSTANT',
-         'PROL_GAUCHE' : 'EXCLU', 'NOM_RESU'   : 'ACCE'}
 
       freq0=0.0
       freqi=freq0
@@ -743,8 +745,7 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN, LIST_FREQ=None) 
       lw =[freq0]
       lf =[freq0]
       lsro=[0.0]
-
-      
+    
 
 #      Sa_min=float(f_in.evalfonc([fmin]).vale_y*NORME)
 #      nupi=peak(0.5,  TSM, fmin ,  AMORT)
@@ -776,7 +777,7 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN, LIST_FREQ=None) 
             fi=freqi/2./pi
             valsro = float(f_in.evalfonc([fi]).vale_y*NORME) 
             lsro.append(valsro)
-            nupi=peak(0.5,  TSM, fi,  AMORT)
+            nupi=peak(0.5,  DUREE_PHASE_FORTE, fi,  AMORT)
             nup2=nupi**2
             v1 = 1. / (freqi * (pi / (2. * AMORT) - 2.))
             v2 = (valsro**2) / nup2
@@ -789,16 +790,12 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN, LIST_FREQ=None) 
          lf.append(freqi/2./pi)
 
 
-      f_out = t_fonction(lw, DSP, para=para_dsp)
+      f_out = t_fonction(lw, DSP, para = f_in.para)
 #     iteration sans simulation: formule de rice
-      f_iter_sro_ref = t_fonction(lf, lsro, para=para_dsp)  # sro for   frequency list lw (rad/s), physical units (not g)
-      f_dsp=iter_SRO(f_out,f_iter_sro_ref, AMORT, TSM )
+      f_iter_sro_ref = t_fonction(lf, lsro, para = f_in.para)  # sro for   frequency list lw (rad/s), physical units (not g)
+      f_dsp=iter_SRO(f_out,f_iter_sro_ref, AMORT, DUREE_PHASE_FORTE)
 
-      if FCORNER> 0.0:  
-         f_out=dsp_filtre_CP(f_dsp,FCORNER) 
-      else:
-         f_out=f_dsp
-      return f_out, f_iter_sro_ref
+      return f_dsp, f_iter_sro_ref
 
 
 # ----------------------------------------------------------------- 
@@ -806,18 +803,11 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN, LIST_FREQ=None) 
 # -----------------------------------------------------------------
  
 # conversion ACCE en SRO par methode HARMO ou NIGAM
-def ACCE2SROM(f_in, xig, l_freq, ideb, METHODE_SRO) :
+def ACCE2SROM(self,f_in, xig, l_freq, ideb, METHODE_SRO) :
    if METHODE_SRO=="NIGAM" : 
-      para_dsp = {
-         'INTERPOL' : ['LIN','LIN'],
-         'NOM_PARA'    : 'FREQ',
-         'PROL_DROITE' : 'CONSTANT',
-         'PROL_GAUCHE' : 'EXCLU',
-         'NOM_RESU'   : 'ACCE',
-          }
       spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,l_freq, [xig])
       vale_sro = spectr[0, ideb, :]
-      f_out = t_fonction(l_freq, vale_sro, para=para_dsp)
+      f_out = t_fonction(l_freq, vale_sro, para=self.para_sro)
    elif METHODE_SRO=="HARMO":
       f_out=ACCE2SRO(f_in, xig, l_freq, ideb=2)
    else: print "ERROR METHODE SRO"
@@ -825,14 +815,14 @@ def ACCE2SROM(f_in, xig, l_freq, ideb, METHODE_SRO) :
 
 
  # conversion ACCE en SRO par fft et filtrage: METHODE_SRO=HARMO
-def ACCE2SRO(f_in, xig, l_freq, ideb=2) :
+def ACCE2SRO( f_in, xig, l_freq, ideb=2) :
     # ---------------------------------------------------------
     # IN : f_in: ACCELEROGRAMME (signal temporel) 
     #         xig: amortissement, l_freq: list of frequencies in Hz
     # OUT: f_out: SRO for l_freq (Hz)
     #### attention: il faut de preference en 2**N
     # ---------------------------------------------------------
-      para_dsp = {
+      para_sro = {
          'INTERPOL' : ['LIN','LIN'],
          'NOM_PARA'    : 'FREQ',
          'PROL_DROITE' : 'CONSTANT',
@@ -872,7 +862,7 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2) :
          acce_out=NP.fft.ifft(Yw).real 
 
          vale_sro.append(w_0**ideb*max(abs(acce_out)) )
-      f_out = t_fonction(l_freq, vale_sro, para=para_dsp)
+      f_out = t_fonction(l_freq, vale_sro, para=para_sro)
       return f_out
 #
 def is_even(num):
@@ -898,60 +888,58 @@ def DSP2FR(f_dsp_refe, FC) :
 #  CALCUL DE LA DSP SPECTRUM-COMPATIBLE
 
 #      f_dsp_refe =SRO2DSP(f_spec, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN)  #  CALCUL DE LA DSP SPECTRUM-COMPATIBLE
-
 #  FIT DSP FR
       para_dsp = f_dsp_refe.para
       lfreq=f_dsp_refe.vale_x
       vale_dsp=f_dsp_refe.vale_y
       m0,m1,m2, vop, deltau=Rice2(lfreq , vale_dsp)
 ##   parametres initiales
-      w0= vop*2.*pi
+#      w0= vop*2.*pi
       xi0=deltau**(2./1.2)*pi/4.
-      dsp_FR_ini=calc_dsp_FR(lfreq,w0,xi0,w0**2 ,2.*w0*xi0 , FC)
-      const_ini=2.*NP.trapz(dsp_FR_ini,lfreq)
-      R0=w0**2*sqrt(m0)/sqrt(const_ini)
-      R2=2.*w0*xi0*sqrt(m0)/sqrt(const_ini)
-##    optimisation
-#      dsp_FR_ini=calc_dsp_FR(lfreq,w0,xi0, R0 , R2, fcorner, So=1.0)
+      dsp_FR_ini=calc_dsp_FR( lfreq, vop , xi0, (vop*2.*pi)**2 , 4.*vop*pi*xi0 , FC )
+      const_ini=2.*NP.trapz( dsp_FR_ini, lfreq )
+      R0=(vop*2.*pi)**2*sqrt(m0)/sqrt(const_ini)
+      R2=4.*vop*pi*xi0*sqrt(m0)/sqrt(const_ini)
+
 
       x0=[R0,R2]
-      para_opt=fmin(f_opt_FR1,x0,args=(f_dsp_refe,w0,xi0,FC)) 
+      para_opt=fmin( f_opt_FR1, x0, args=(f_dsp_refe, vop, xi0, FC) ) 
       R0=abs(para_opt[0])
       R2=abs(para_opt[1])
 
-      x0=[w0,xi0]
-      para_opt=fmin(f_opt_FR2,x0,args=(f_dsp_refe,R0,R2,FC)) 
-      w0=para_opt[0]
+      x0=[vop,xi0]
+      para_opt=fmin(f_opt_FR2, x0, args=(f_dsp_refe, R0, R2, FC)) 
+      vop=para_opt[0]
       xi0=para_opt[1]
 
       x0=[R0,R2]
-      para_opt=fmin(f_opt_FR1,x0,args=(f_dsp_refe,w0,xi0,FC)) 
+      para_opt=fmin(f_opt_FR1, x0, args=( f_dsp_refe, vop, xi0, FC ) ) 
       R0=abs(para_opt[0])
       R2=abs(para_opt[1])
       
 
-      dsp_FR_fin=calc_dsp_FR(lfreq, w0, xi0, R0 , R2, FC)
+      dsp_FR_fin=calc_dsp_FR(lfreq, vop, xi0, R0 , R2, FC)
       FIT=NP.ones(len(lfreq))
       nz=NP.nonzero(dsp_FR_fin)
       FIT[nz]=vale_dsp[nz]/dsp_FR_fin[nz]
       f_fit = t_fonction(lfreq,FIT , para=para_dsp)
-      return w0, xi0, R0, R2, f_fit
+      return vop, xi0, R0, R2, f_fit
  
 ##---------------------------------------------------------
-def f_opt_FR1(para_ini,f_dsp_refe,w0,xi0,fcorner) :
+def f_opt_FR1(para_ini,f_dsp_refe,vop,xi0,fcorner) :
    R0=para_ini[0]
    R2=para_ini[1]
    lfreq=f_dsp_refe.vale_x
-   sFR=calc_dsp_FR(lfreq,w0,xi0, R0, R2, fcorner, So=1.0)
+   sFR=calc_dsp_FR(lfreq, vop, xi0, R0, R2, fcorner, So=1.0)
    residu2=NP.sum((sFR-f_dsp_refe.vale_y)**2)
    return sqrt(residu2)
 
 ## ---------------------------------------------------------
-def f_opt_FR2(para_ini,f_dsp_refe,R0,R2,fcorner) :
-   w0=para_ini[0]
+def f_opt_FR2( para_ini, f_dsp_refe, R0, R2, fcorner ) :
+   vop=para_ini[0]
    xi0=para_ini[1]
    lfreq=f_dsp_refe.vale_x
-   sFR=calc_dsp_FR(lfreq,w0,xi0, R0  , R2 , fcorner, So=1.0)
+   sFR=calc_dsp_FR(lfreq, vop, xi0, R0  , R2 , fcorner, So=1.0)
    residu2=NP.sum((sFR-f_dsp_refe.vale_y)**2)
    return sqrt(residu2)
 ## ---------------------------------------------------------
@@ -966,32 +954,32 @@ def f_opt_FR2(para_ini,f_dsp_refe,R0,R2,fcorner) :
 
 ## Realisation de la DSP aleatoire de mediane f_dsp
 
-def RAND_DSP(Periods, MAT_CHOL, f_dsp) :
+def RAND_DSP(MAT_CHOL, Nbf, f_dsp) :
 #    # ---------------------------------------------------------
 #    # IN : f_dsp: DSP mediane
 #    #      MAT_CHOL  : chol(COV) pour la liste Periods
 #    # OUT: f_rand_dsp = f_dsp*rand_vec: realisation DSP aleatoire 
 #    # ---------------------------------------------------------
 #
-   vale_dsp=f_dsp.vale_y   
-   freq_dsp=f_dsp.vale_x   
+   vale_dsp = f_dsp.vale_y   
+   freq_dsp = f_dsp.vale_x   
+   alpha2 = RAND_VEC(MAT_CHOL, Nbf, para=2.0)
 
-   alpha2=RAND_VEC(Periods, MAT_CHOL, len(freq_dsp), para=2.0)
-
-   rand_dsp=vale_dsp*alpha2
+   rand_dsp = vale_dsp*alpha2
    f_rand_dsp = t_fonction(freq_dsp,rand_dsp, para=f_dsp.para)
    return f_rand_dsp
 
 
 
-def RAND_VEC(Periods, MAT_CHOL, Nbf, para=1.) :
+def RAND_VEC(MAT_CHOL, Nbf, para=1.) :
 #    # ---------------------------------------------------------
 #    # IN : MAT_CHOL  : chol(COV) pour la liste Periods
 #    # OUT: alpha = vecteur aleatoire lognormal
 #    # ---------------------------------------------------------
 #
-   nbp=len(Periods)
    #on genere le vecteur Gaussien independ de moyenne 0 et COV=MAT_CHOL**2
+   nbp=len(MAT_CHOL)
+
    rv=NP.random.normal(0.0,1.,nbp)
    rvec=NP.inner(MAT_CHOL,rv)  
 

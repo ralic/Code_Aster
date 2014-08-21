@@ -511,9 +511,8 @@ class CalcFonction_DSP(CalcFonctionOper):
         deuxpi = 2. * math.pi
         freq_coup = deuxpi * kw['FREQ_COUP']
         SRO_args = {
-            'TSM' : kw['DUREE'], 'FCOUP' : freq_coup, 'NORME' : kw['NORME'],
-            'AMORT' : kw['AMOR_REDUIT'], 'FCORNER' : 0.0, 'FMIN' : f_min
-        }
+            'DUREE_PHASE_FORTE' : kw['DUREE'], 'FREQ_COUP' : freq_coup, 'NORME' : kw['NORME'],
+            'AMORT' : kw['AMOR_REDUIT'], 'FMIN' : f_min, 'FONC_SPEC':  f_in}
         if kw['FREQ_PAS'] != None:
             SRO_args['PAS'] = kw['FREQ_PAS']
         elif kw['LIST_FREQ'] != None:
@@ -522,7 +521,7 @@ class CalcFonction_DSP(CalcFonctionOper):
                UTMESS('F', 'FONCT0_43')
             SRO_args['LIST_FREQ'] = l_freq
             SRO_args['PAS'] = None
-        f_dsp, f_sro_ref = SRO2DSP(f_in, **SRO_args)
+        f_dsp, f_sro_ref = SRO2DSP(**SRO_args)
         self.resu = t_fonction(f_dsp.vale_x / deuxpi, f_dsp.vale_y * deuxpi, para=f_in.para)
 
 
