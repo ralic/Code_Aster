@@ -33,6 +33,13 @@ from Utilitai.Utmess import UTMESS
 from mac3coeur_coeur import CoeurFactory
 from thyc_result import lire_resu_thyc
 
+
+def calc_mac3coeur_ops(self, **args):
+    """Fonction d'appel de la macro CALC_MAC3COEUR"""
+    self.set_icmd(1)
+    analysis = Mac3CoeurCalcul.factory(self, args)
+    analysis.run()
+
 # decorator to cache values of properties
 NULL = object()
 

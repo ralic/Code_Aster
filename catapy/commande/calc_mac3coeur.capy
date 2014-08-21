@@ -18,7 +18,7 @@
 
 
 CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
-                       op=OPS("Mac3coeur.calc_mac3coeur_ops.calc_mac3coeur_ops"),
+                       op=OPS("Mac3coeur.mac3coeur_calcul.calc_mac3coeur_ops"),
                        sd_prod=evol_noli,
 
          TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4","EPR"),position='global' ),
