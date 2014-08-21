@@ -183,7 +183,10 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         super(Mac3CoeurDeformation, self).__init__(macro, args)
         self.etat_init = None
         # cached properties
-        self._constant_load = NULL
+        self._rigid_load = NULL
+        self._archimede_load = NULL
+        self._gravity_load = NULL
+        self._periodic_load = NULL
         self._vessel_head_load = NULL
         self._vessel_dilatation_load = NULL
         self._thyc_load = NULL
@@ -223,7 +226,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     def _run(self):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE, AFFE_CHAR_MECA
+        from Cata.cata import STAT_NON_LINE
         coeur = self.coeur
         coeur.recuperation_donnees_geom(self.mesh)
 
@@ -242,10 +245,12 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                                 chtemp, CONTACT='NON')
         # T0 - T8
         snl_keywords = self.snl_keywords()
+        constant_load = self.rigid_load + self.archimede_load + \
+                        self.periodic_load + self.gravity_load
         RESULT = STAT_NON_LINE(CHAM_MATER=chmat_contact,
                                INCREMENT=_F(LIST_INST=times,
                                             INST_FIN=coeur.temps_simu['T8']),
-                               EXCIT=self.constant_load + self.vessel_head_load + \
+                               EXCIT=constant_load + self.vessel_head_load + \
                                      self.thyc_load + self.vessel_dilatation_load,
                                ETAT_INIT=self.etat_init,
                                **snl_keywords)
@@ -253,7 +258,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         RESULT = STAT_NON_LINE(reuse=RESULT,
                                CHAM_MATER=chmat_contact,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=self.constant_load + self.vessel_head_load + \
+                               EXCIT=constant_load + self.vessel_head_load + \
                                      self.vessel_dilatation_load,
                                INCREMENT=_F(LIST_INST=times,
                                             INST_FIN=coeur.temps_simu['T8b']),
@@ -262,29 +267,43 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         RESULT = STAT_NON_LINE(reuse=RESULT,
                                CHAM_MATER=chmat_libre,
                                ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=self.constant_load + self.vessel_dilatation_load,
+                               EXCIT=constant_load + self.vessel_dilatation_load,
                                INCREMENT=_F(LIST_INST=times),
                                **snl_keywords)
 
     @property
-    @cached_property('_constant_load')
-    def constant_load(self):
-        """Compute and return the "constant" loadings (always applied)"""
+    @cached_property('_rigid_load')
+    def rigid_load(self):
+        """Compute the rigid body loading"""
         from Cata.cata import AFFE_CHAR_MECA
         coeur = self.coeur
         _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
                                       LIAISON_SOLIDE=coeur.cl_rigidite_grille())
-        fmult_arch = coeur.definition_temp_archimede(self.mcf['ARCHIMEDE'])
+        return [_F(CHARGE=_excit_rigid), ]
+
+    @property
+    @cached_property('_archimede_load')
+    def archimede_load(self):
+        """Compute the Archimede loadings"""
+        fmult_arch = self.coeur.definition_temp_archimede(self.mcf['ARCHIMEDE'])
         load = [
-            _F(CHARGE    = coeur.definition_archimede_nodal(self.model),
+            _F(CHARGE    = self.coeur.definition_archimede_nodal(self.model),
                FONC_MULT = fmult_arch,),
-            _F(CHARGE    = coeur.definition_archimede_poutre(self.model),
-               FONC_MULT = fmult_arch,),
-            _F(CHARGE    = _excit_rigid,),
-            _F(CHARGE    = self.periodic_cond(),),
-            _F(CHARGE    = coeur.definition_pesanteur(self.model),)
-        ]
+            _F(CHARGE    = self.coeur.definition_archimede_poutre(self.model),
+               FONC_MULT = fmult_arch,), ]
         return load
+
+    @property
+    @cached_property('_periodic_load')
+    def periodic_load(self):
+        """Compute the periodic boundary conditions"""
+        return [_F(CHARGE=self.periodic_cond()), ]
+
+    @property
+    @cached_property('_gravity_load')
+    def gravity_load(self):
+        """Compute and return the gravity loading"""
+        return [_F(CHARGE=self.coeur.definition_pesanteur(self.model)), ]
 
     @property
     @cached_property('_vessel_head_load')
@@ -365,33 +384,24 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def _run(self):
         """Run the main part of the calculation"""
-        STAT_NON_LINE    = self.get_cmd('STAT_NON_LINE')
-        MODI_MAILLAGE    = self.get_cmd('MODI_MAILLAGE')
-        AFFE_CHAR_MECA   = self.get_cmd('AFFE_CHAR_MECA')
-        CREA_CHAMP       = self.get_cmd('CREA_CHAMP')
-        PERM_MAC3COEUR   = self.get_cmd('PERM_MAC3COEUR')
-
+        from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR
         coeur = self.coeur
+        coeur.recuperation_donnees_geom(self.mesh)
 
-        niv_fluence = 0.0
+        niv_fluence = 0.
+        subdivis = 1
+        times = coeur.definition_time(niv_fluence, subdivis)
+        evol_fluence = coeur.definition_fluence(niv_fluence, self.mesh)
+        chtemp = coeur.definition_champ_temperature(self.mesh)
+        chmat_libre = coeur.definition_materiau(self.mesh, self.geofib, evol_fluence,
+                                                chtemp, CONTACT='NON')
 
-        use_archimede='OUI'
-
-        _MA_N = coeur.affectation_maillage(_MA0)
-        _MO_N = coeur.affectation_modele(_MA_N)
-        coeur.recuperation_donnees_geom(_MA_N)
-        _GFF  = coeur.definition_geom_fibre()
-        _CARA = coeur.definition_cara_coeur(_MO_N,_GFF)
-        times    = coeur.definition_time(niv_fluence,1.)
-        evol_fluence  = coeur.definition_fluence(niv_fluence,_MA_N)
-        _CHTH    = coeur.definition_champ_temperature(_MA_N)
         _DILAT   = coeur.dilatation_cuve(_MO_N,_MA_N)
-        chmat_libre  = coeur.definition_materiau(_MA_N,_GFF,evol_fluence,_CHTH, CONTACT='NON')
-        char_pesant  = coeur.definition_pesanteur(_MO_N)
-        eff_maintien  = coeur.definition_effor_maintien(_MO_N)
+        fmult_arch = coeur.definition_temp_archimede(use_archimede)
         char_arch_nod  = coeur.definition_archimede_nodal(_MO_N)
         char_arch_pout= coeur.definition_archimede_poutre(_MO_N)
-        fmult_arch = coeur.definition_temp_archimede(use_archimede)
+        char_pesant  = coeur.definition_pesanteur(_MO_N)
+        eff_maintien  = coeur.definition_effor_maintien(_MO_N)
 
         _CL_LAME = coeur.affe_char_lame(_MO_N)
 
