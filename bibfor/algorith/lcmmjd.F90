@@ -135,7 +135,12 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
         endif
 56  end do
 !   rr ne doit pas etre nul car ce sont des densites de dislocations
+    if (abs(rr).gt.1.e-20) then
         dtrdas=mu*mu*ceff/2.0d0/rr*(2.0*dcdals*somaal+ceff*hsr(ir,is))
+    else
+        iret=1
+        goto 9999
+    endif
 
 !
 !     2. d(Dp_r)/d(Omega_s)
