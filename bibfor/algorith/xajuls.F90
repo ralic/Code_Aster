@@ -59,14 +59,14 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     integer :: jma, ima, itypma, ar(12, 3), nbar, ia
     integer :: na, nb, nm, nunoa, nunob, nunom
     integer ::   nmaabs, ndime, ndim
-    real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2
-    real(kind=8) :: lsnm, lstm, lsnmax, lstmax
+    real(kind=8) :: d1, lsna, lsnb, lsta, lstb, crilsn, crilst, d2
+    real(kind=8) :: lsnm, lstm, lsnmax, lstmax, fit_to_vertex(2)
     character(len=19) :: mai
     character(len=8) :: typma
     real(kind=8), pointer :: lnsv(:) => null()
     real(kind=8), pointer :: ltsv(:) => null()
 !
-    parameter     (crilsn=1.d-2, crilst=1.d-3)
+    parameter     (fit_to_vertex=(/1.d-2,1d-6/), crilst=1.d-3)
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -93,6 +93,12 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
         itypma=zi(jma-1+ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
+!       UTILISATION DE FIT-TO-VERTX POUR LE MOMENT:
+        if (ismali(typma)) then
+           crilsn=fit_to_vertex(1)
+        else
+           crilsn=fit_to_vertex(2)
+        endif
 !       RECUPERATION DE LA DIMENSION TOPOLOGIQUE DE L'ELEMENT
         call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndim)
 !
@@ -133,7 +139,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                     lnsv((nunoa-1)+1)=0.d0
                     clsm=clsm+1
                 endif
-                if (abs(d1-1.d0) .le. (crilsn)) then
+                if (abs(d1-1.d0) .le. crilsn) then
 !              REAJUSTEMENT DE LSNB
                     lnsv((nunob-1)+1)=0.d0
                     clsm=clsm+1
@@ -161,13 +167,14 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
         end do
 !
-        do ia = 1, nbar
+        if (.not. ismali(typma)) then
+!
+           do ia = 1, nbar
             na=ar(ia,1)
             nb=ar(ia,2)
             nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
             nunob=zi(jconx1-1+zi(jconx2+nmaabs-1)+nb-1)
 !
-            if (.not. ismali(typma)) then
                 nm=ar(ia,3)
                 nunom=zi(jconx1-1+zi(jconx2+nmaabs-1)+nm-1)
 !
@@ -212,9 +219,10 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         call utmess('A', 'XFEM_63')
                     endif
                 endif
-            endif
 !
-        end do
+           end do
+!
+        endif
 !
 200     continue
     end do

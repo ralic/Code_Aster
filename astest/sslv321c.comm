@@ -1,0 +1,347 @@
+# TITRE CONDITIONNEMENT EN 3D XFEM
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# sslv321b.para=tps_job 30 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI');
+
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
+MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU_3D=(_F(GROUP_MA=('SURF','SUR','ENV',),),),);
+MAILLAG=CREA_MAILLAGE(MAILLAGE=MA,LINE_QUAD=_F(TOUT='OUI'),);
+
+##################################
+# parametre maillage             #
+#                                #
+raff = 1                         #
+#                                #
+##################################
+
+h = 0.5/raff
+prec = h*1.2
+
+k=+4.E-3
+E=1E9
+nu=0.3
+
+#Si HPP
+press=-E/(1-2*nu)*k
+
+MAILLAG=DEFI_GROUP(reuse =MAILLAG,INFO=2,
+                   MAILLAGE=MAILLAG,
+                   CREA_GROUP_MA=(_F(NOM='TEST_MA',OPTION='SPHERE',POINT=(0,0,0),RAYON=0.1),),  
+                   CREA_GROUP_NO=(_F(NOM='BLOC_1',
+                                      OPTION='ENV_SPHERE',
+                                      POINT=(-2,-2,-2),
+                                      RAYON=h,
+                                      PRECISION=prec,),
+                                  _F(NOM='BLOC_2',
+                                      OPTION='ENV_SPHERE',
+                                      POINT=(2,2,2),
+                                      RAYON=h,
+                                      PRECISION=prec,),
+                                  _F(NOM='NS1',OPTION='ENV_SPHERE',POINT=(2,2,2.),RAYON=1.E-5,PRECISION=1.E-5,),
+                                  _F(NOM='NS2',OPTION='ENV_SPHERE',POINT=(-2,2,2.),RAYON=1.E-5,PRECISION=1.E-5,),
+                                  _F(NOM='NS3',OPTION='ENV_SPHERE',POINT=(2,-2,2.),RAYON=1.E-5,PRECISION=1.E-5,),
+                                  _F(NOM='NS4',OPTION='ENV_SPHERE',POINT=(-2,-2,2.),RAYON=1.E-5,PRECISION=1.E-5,),
+                                  _F(NOM='NI1',OPTION='ENV_SPHERE',POINT=(-2,-2,-2.),RAYON=1.E-5,PRECISION=1.E-5,), 
+                                  _F(NOM='NI2',OPTION='ENV_SPHERE',POINT=(2.,-2.,-2.),RAYON=1.E-5,PRECISION=1.E-5,),  
+                                  _F(NOM='NI3',OPTION='ENV_SPHERE',POINT=(-2.,2,-2.),RAYON=1.E-5,PRECISION=1.E-5,), 
+                                  _F(NOM='NI4',OPTION='ENV_SPHERE',POINT=(2.,2,-2.),RAYON=1.E-5,PRECISION=1.E-5,),
+                                   ),);
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
+                     AFFE=(_F(GROUP_MA=('VOLU','ENV','SURF','SUR'),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
+                       MODELE=MODELEIN,
+                       AFFE=_F(TOUT='OUI',MATER=ACIER,),);
+
+# on se place de manière à éliminer le max de ddl
+# et les ddl éliminés créent l'erreur max en déplacement
+fit2vertex = 0.01
+fonc = 'X+Y+Z+'+str(fit2vertex/raff)
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE=fonc);
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    INFO=1,);
+
+MODELX=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,                        
+                        FISSURE=(FISS,),
+                        INFO=1,);
+
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELX);
+
+#IMPR_RESU(FORMAT='MED',RESU=(_F(MAILLAGE=MA_XFEM)))
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                     PHENOMENE='MECANIQUE',
+                     MODELISATION='3D',),);
+
+# pour imposer une pression uniforme
+CH1=AFFE_CHAR_MECA(MODELE=MODELX,
+                   #MODELE=MODELEIN,
+                   PRES_REP=(_F(FISSURE=FISS,PRES=press),
+                             _F(GROUP_MA=('ENV','SURF','SUR'),PRES=press),
+                             ),INFO=1,);
+
+# pour bloquer les modes rigides
+
+def level_set(X,Y,Z):
+    global raff
+    return X+Y+Z+fit2vertex/raff
+
+def depl(X,Y,Z,i) :
+   if level_set(X,Y,Z)> 0 : return up(X,Y,Z,i)
+   if level_set(X,Y,Z)<=0 : return um(X,Y,Z,i)
+
+def up(X,Y,Z,i) :
+   global k
+   if i==1: var=X
+   if i==2: var=Y
+   if i==3: var=Z
+   return k*var+2.
+
+def um(X,Y,Z,i) :
+   global k
+   if i==1: var=X
+   if i==2: var=Y
+   if i==3: var=Z
+   return k*var-2.  
+
+depl_x = FORMULE(VALE='depl(X,Y,Z,1)',
+                  NOM_PARA=('X','Y','Z'),);
+depl_y = FORMULE(VALE='depl(X,Y,Z,2)',
+                  NOM_PARA=('X','Y','Z'),);
+depl_z = FORMULE(VALE='depl(X,Y,Z,3)',
+                  NOM_PARA=('X','Y','Z'),);
+  
+CH10=AFFE_CHAR_MECA_F(#MODELE=MODELX,
+                   MODELE=MODELEIN,
+                   DDL_IMPO=(_F(GROUP_MA=('ENV','SURF','SUR'),
+                                  DX = depl_x,
+                                  DY = depl_y,
+                                  DZ = depl_z,),),
+                   INFO=1,);
+  
+CH20=AFFE_CHAR_MECA_F(MODELE=MODELX,
+                      #MODELE=MODELEIN,
+                     DDL_IMPO=(_F(GROUP_NO=('NS1','NS2','NS4','NI1','NI2','NI4'),
+                                  DX = depl_x,
+                                  DY = depl_y,
+                                  DZ = depl_z,),))
+  
+UTOT=MECA_STATIQUE(MODELE=MODELX,
+                      CHAM_MATER=CHAMPMAT,
+                      EXCIT=(_F(CHARGE=CH1),
+                             _F(CHARGE=CH20),),     
+                      SOLVEUR=_F(METHODE='MUMPS',),
+                      INFO=2,);
+ 
+#-----------------------------------------------------------
+#             POST-TRAITEMENT POUR LA VISUALISATION
+#-----------------------------------------------------------
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                            RESULTAT      = UTOT,)
+
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM),),);
+
+# -------------------------------------------------------------   
+# --- CALCUL DE L'ERREUR EN DEPLACEMENT
+# -------------------------------------------------------------
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                             GROUP_NO=('NFISSU'),
+                             RESULTAT=RES_XFEM,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=1,
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION'));
+
+#IMPR_TABLE(TABLE=DEP1);
+
+DEP1M = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]')));   
+
+DEP1P = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]'))); 
+
+deplm_x = FORMULE(VALE='um(X,Y,Z,1)',
+                  NOM_PARA=('X','Y','Z'),);
+deplm_y = FORMULE(VALE='um(X,Y,Z,2)',
+                  NOM_PARA=('X','Y','Z'),);
+deplm_z = FORMULE(VALE='um(X,Y,Z,3)',
+                  NOM_PARA=('X','Y','Z'),);
+deplp_x = FORMULE(VALE='up(X,Y,Z,1)',
+                  NOM_PARA=('X','Y','Z'),);
+deplp_y = FORMULE(VALE='up(X,Y,Z,2)',
+                  NOM_PARA=('X','Y','Z'),);
+deplp_z = FORMULE(VALE='up(X,Y,Z,3)',
+                  NOM_PARA=('X','Y','Z'),);
+  
+DEPM_INI=CALC_TABLE(TABLE = DEP1M,
+                    ACTION = (_F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ['COOR_X','X'],),
+                              _F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ['COOR_Y','Y'],),
+                              _F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ['COOR_Z','Z'],), 
+                                  ));
+DEPP_INI=CALC_TABLE(TABLE = DEP1P,
+                    ACTION = (_F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ['COOR_X','X'],),
+                              _F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ['COOR_Y','Y'],),
+                              _F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ['COOR_Z','Z'],), 
+                                  ));
+  
+DEPM_FIN=CALC_TABLE(TABLE = DEPM_INI,
+                    ACTION = (_F(OPERATION = 'OPER',
+                                 FORMULE=deplm_x,
+                                 NOM_PARA  = 'DX_ANA',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=deplm_y,
+                                 NOM_PARA  = 'DY_ANA',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=deplm_z,
+                                 NOM_PARA  = 'DZ_ANA',), 
+                                  ));
+
+DEPP_FIN=CALC_TABLE(TABLE = DEPP_INI,
+                    ACTION = (_F(OPERATION = 'OPER',
+                                 FORMULE=deplp_x,
+                                 NOM_PARA  = 'DX_ANA',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=deplp_y,
+                                 NOM_PARA  = 'DY_ANA',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=deplp_z,
+                                 NOM_PARA  = 'DZ_ANA',), 
+                                  ));
+  
+DEPM=CALC_TABLE(TABLE = DEPM_FIN,
+                    ACTION = (_F(OPERATION = 'SUPPRIME',
+                                 NOM_PARA  = ('NUME_ORDRE','INST','ABSC_CURV','X','Y','Z',),),
+                                  ));
+DEPP=CALC_TABLE(TABLE = DEPP_FIN,
+                    ACTION = (_F(OPERATION = 'SUPPRIME',
+                                 NOM_PARA  = ('NUME_ORDRE','INST','ABSC_CURV','X','Y','Z',),),
+                                  ));
+  
+diff_x = FORMULE(VALE='abs(DX-DX_ANA)', NOM_PARA=('DX','DX_ANA'),);
+diff_y = FORMULE(VALE='abs(DY-DY_ANA)', NOM_PARA=('DY','DY_ANA'),);
+diff_z = FORMULE(VALE='abs(DZ-DZ_ANA)', NOM_PARA=('DZ','DZ_ANA'),);
+
+DIFFM=CALC_TABLE(TABLE = DEPM,
+                    ACTION = (_F(OPERATION = 'OPER',
+                                 FORMULE=diff_x,
+                                 NOM_PARA  = 'DIFF_X',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=diff_y,
+                                 NOM_PARA  = 'DIFF_Y',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=diff_z,
+                                 NOM_PARA  = 'DIFF_Z',), 
+                                  ));
+DIFFP=CALC_TABLE(TABLE = DEPP,
+                    ACTION = (_F(OPERATION = 'OPER',
+                                 FORMULE=diff_x,
+                                 NOM_PARA  = 'DIFF_X',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=diff_y,
+                                 NOM_PARA  = 'DIFF_Y',),
+                              _F(OPERATION = 'OPER',
+                                 FORMULE=diff_z,
+                                 NOM_PARA  = 'DIFF_Z',), 
+                                  ));
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=5.96633853434E-13,
+           VALE_REFE=0.,
+           NOM_PARA='DIFF_X',
+           TYPE_TEST='MAX',
+           TABLE=DIFFM,
+           );  
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=5.72653036102E-13,
+           VALE_REFE=0.,
+           NOM_PARA='DIFF_Y',
+           TYPE_TEST='MAX',
+           TABLE=DIFFM,
+           );      
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=1.22923893286E-12,
+           VALE_REFE=0.,
+           NOM_PARA='DIFF_Z',
+           TYPE_TEST='MAX',
+           TABLE=DIFFM,
+           );
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-6,
+           VALE_CALC=1.83669312159E-06,
+           VALE_REFE=0.,
+           NOM_PARA='DIFF_X',
+           TYPE_TEST='MAX',
+           TABLE=DIFFP,
+           );  
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-6,
+           VALE_CALC=5.93108090197E-07,
+           VALE_REFE=0.,
+           NOM_PARA='DIFF_Y',
+           TYPE_TEST='MAX',
+           TABLE=DIFFP,
+           );      
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-6,
+           VALE_CALC=3.1407564054E-06,
+           VALE_REFE=0.,
+           NOM_PARA='DIFF_Z',
+           TYPE_TEST='MAX',
+           TABLE=DIFFP,
+           );
+  
+FIN();

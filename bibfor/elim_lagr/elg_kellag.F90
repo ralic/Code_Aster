@@ -50,7 +50,7 @@ subroutine elg_kellag(matass, solveu, kellag)
     if (solve1 .eq. ' ') call dismoi('SOLVEUR', matas1, 'MATR_ASSE', repk=solve1)
     call jeveuo(solve1//'.SLVK', 'L', vk24=slvk)
     call jelira(solve1//'.SLVK', 'LONMAX', n1, kbid)
-    ASSERT(n1.eq.13)
+    ASSERT(n1.eq.14)
     kellag=slvk(13)(1:3)
     ASSERT(kellag.eq.' '.or.kellag.eq.'OUI'.or.kellag.eq.'NON')
 !

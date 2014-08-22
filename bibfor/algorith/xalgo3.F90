@@ -55,7 +55,6 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     call jemarq()
 !
     if (ndime .eq. 2) then
-        ASSERT((ninter.eq.2.and.npts.eq.0).or.(ninter.eq.3.and.npts.eq.1))
         call xalg20(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
                       pmmax, nmilie, mfis, lonref, pinref)

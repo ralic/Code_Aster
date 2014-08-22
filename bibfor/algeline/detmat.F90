@@ -30,9 +30,10 @@ subroutine detmat()
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelstc.h"
+#include "asterfort/xfem_precond.h"
     integer :: nbmat, i, ier
     character(len=19) :: matass, solveu
-    character(len=24) :: lirefa(100)
+    character(len=24) :: lirefa(100), kxfem
 !-----------------------------------------------------------------------
 !
     call jelstc('V', '.REFA', 20, 100, lirefa,&
@@ -50,6 +51,10 @@ subroutine detmat()
         if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX' .and. solveu(1:4) .ne. ' ') then
             call detlsp(matass, solveu)
         endif
+!
+!       -- on detruit les eventuels pré-conditinneurs xfem stockés sous forme de matr_asse
+        call dismoi('XFEM', matass, 'MATR_ASSE', repk=kxfem)
+        if ( kxfem .eq. 'XFEM_PRECOND') call xfem_precond('FIN', matass)
 !
 !       --  on detruit les matr_asse ainsi que les
 !           eventuelles instances mumps et petsc

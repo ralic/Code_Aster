@@ -52,7 +52,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     character(len=16) :: nomte, nomodl, nomod2
     character(len=19) :: nolig
     character(len=32) :: repk
-    character(len=8), pointer :: lgrf(:) => null()
+    character(len=8), pointer :: lgrf(:) => null(), k8cond(:) => null()
     integer, pointer :: nfis(:) => null()
 ! DEB ------------------------------------------------------------------
 !
@@ -159,6 +159,17 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             repi=nfis(1)
         else
             repi=0
+        endif
+!
+!     ------------------------------------
+    else if (questi.eq.'PRE_COND_XFEM') then
+!     ------------------------------------
+        call jeexin(nomob//'.PRE_COND', iret)
+        if (iret .gt. 0) then
+            call jeveuo(nomob//'.PRE_COND', 'L', vk8=k8cond)
+            repk=k8cond(1)
+        else
+            repk='NON'
         endif
 !
 !     ------------------------------------

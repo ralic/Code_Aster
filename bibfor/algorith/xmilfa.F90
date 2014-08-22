@@ -61,7 +61,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     integer :: i, j, zxain, nno
     real(kind=8) :: xref(81), tole, crit
     aster_logical :: courbe
-    parameter   (tole=1.d-1)
+    parameter   (tole=1.d-2)
 !
 ! --------------------------------------------------------------------
     call jemarq()

@@ -76,7 +76,7 @@ subroutine op0113()
     character(len=24) :: mail2
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
-    character(len=8) :: modelx, mod1, modthx, noma, k8cont
+    character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi
     aster_logical :: linter
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
@@ -131,7 +131,6 @@ subroutine op0113()
 !
     call getvid(motfac, 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jmofis),&
                 nbret=ibid)
-    call getvr8(motfac, 'CRITERE', iocc=1, scal=crimax, nbret=ibid)
 !
 !     VERIFICATION DE LA COHERENCE DES MOT-CLES FISSURE ET MODELE_IN
     call xvermo(nfiss, zk8(jmofis), mod1)
@@ -247,7 +246,10 @@ subroutine op0113()
 !         ET VERIFICATION DES CRITERES DE CONDITIONNEMENT
 !-----------------------------------------------------------------------
 !
-    call xcodec(noma, modelx, ndim, crimax, linter)
+    call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=k8condi, nbret=ibid)
+    call getvr8(motfac, 'CRITERE', iocc=1, scal=crimax, nbret=ibid)
+!
+    call xcodec(noma, modelx, k8condi, crimax, linter)
 !
 ! --- MENAGE
 !

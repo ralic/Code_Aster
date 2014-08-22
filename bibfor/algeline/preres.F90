@@ -3,12 +3,12 @@ subroutine preres(solveu, base, iret, matpre, matass,&
     implicit none
 # include "jeveux.h"
 # include "asterfort/assert.h"
-# include "asterfort/elg_kellag.h"
-# include "asterfort/elg_preres.h"
+# include "asterfort/dismoi.h"
 # include "asterfort/jedema.h"
-# include "asterfort/jelira.h"
 # include "asterfort/jemarq.h"
-# include "asterfort/prere1.h"
+# include "asterfort/prere3.h"
+# include "asterfort/prere2.h"
+# include "asterfort/xfem_ksolv.h"
 # include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
     integer :: npvneg, istop, iret
@@ -66,30 +66,28 @@ subroutine preres(solveu, base, iret, matpre, matass,&
 ! cette routine est une surcouche de la routine prere1.
 ! elle est necessaire pour traiter le cas elim_lagr='oui'
 !----------------------------------------------------------------------
-    character(len=3) :: kellag
-    character(len=19) :: solve1, matas1
+    character(len=3) :: kxfem
+    character(len=19) :: matas1
 !----------------------------------------------------------------------
     call jemarq()
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
 !
     matas1=matass
-    solve1=solveu
 !
-!
-!   1. CALCUL DE KELLAG :
+!    VERIFICATION SI XFEM : 
 !   -------------------------------------
-    call elg_kellag(matas1, solve1, kellag)
+    call xfem_ksolv(solveu, kxfem)
 !
+    if ( kxfem .eq. 'OUI') then
 !
-!   2. SI ELIM_LAGR /= 'OUI', ON APPELLE SIMPLEMENT PRERE1 :
-!   --------------------------------------------------------
-    if (.not.(kellag.eq.'OUI')) then
-        call prere1(solve1, base, iret, matpre, matas1,&
-                    npvneg, istop)
+       call prere3(solveu, base, iret, matpre, matass,&
+                  npvneg, istop)
+!
     else
-        call elg_preres(solve1, base, iret, matpre, matas1,&
-                        npvneg, istop)
+!
+       call prere2(solveu, base, iret, matpre, matass,&
+                  npvneg, istop)
 !
     endif
 !

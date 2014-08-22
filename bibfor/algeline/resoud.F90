@@ -4,18 +4,11 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     implicit none
 #include "asterf_types.h"
 # include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/copisd.h"
 # include "asterfort/dismoi.h"
-# include "asterfort/elg_calc_solu.h"
-# include "asterfort/elg_kellag.h"
-# include "asterfort/elg_resoud.h"
 # include "asterfort/jedema.h"
-# include "asterfort/jedetr.h"
-# include "asterfort/jelira.h"
 # include "asterfort/jemarq.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/resou1.h"
+# include "asterfort/resou2.h"
+# include "asterfort/resou3.h"
 # include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
 !
@@ -92,8 +85,8 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 ! cette routine est une surcouche de la routine resou1.
 ! elle est necessaire pour traiter le cas elim_lagr='oui'
 ! ----------------------------------------------------------------------
+    character(len=24) :: kxfem
     character(len=19) :: matas1, solve1
-    character(len=3) :: kellag
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -102,26 +95,23 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     matas1=matass
     solve1=solveu
 !
+    call dismoi('XFEM',matass,'MATR_ASSE',repk=kxfem)
 !
-!   1. CALCUL DE KELLAG :
-!   -------------------------------------
-    call elg_kellag(matas1, solve1, kellag)
+    if (kxfem .eq. 'XFEM_PRECOND') then
 !
+        call resou3(matas1, matpre, solve1, chcine, nsecm,&
+                    chsecm, chsolu, base, rsolu, csolu,&
+                    criter, prepos, istop, iret)    
+! 
+    else
 !
-!   2. SI ELIM_LAGR /= 'OUI', ON APPELLE SIMPLEMENT RESOU1 :
-!   --------------------------------------------------------
-    if (.not.(kellag.eq.'OUI')) then
-        call resou1(matas1, matpre, solve1, chcine, nsecm,&
+        call resou2(matas1, matpre, solve1, chcine, nsecm,&
                     chsecm, chsolu, base, rsolu, csolu,&
                     criter, prepos, istop, iret)
-    else
-        call elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
-                        chsolu, base, rsolu, csolu, criter,&
-                        prepos, istop, iret)
     endif
-!
 !
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
+!
     call jedema()
 end subroutine

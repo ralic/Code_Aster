@@ -20,7 +20,7 @@ from SD import *
 
 class sd_solveur(AsBase):
     nomj = SDNom(fin=19)
-    SLVK = AsVK24(SDNom(debut=19), lonmax=13, )
+    SLVK = AsVK24(SDNom(debut=19), lonmax=14, )
     SLVR = AsVR  (SDNom(debut=19), lonmax=4 , )
     SLVI = AsVI  (SDNom(debut=19), lonmax=8 , )
 

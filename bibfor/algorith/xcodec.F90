@@ -1,4 +1,4 @@
-subroutine xcodec(noma, modelx, ndim, crimax, linter)
+subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,10 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
 #include "asterf_types.h"
 #include "jeveux.h"
 !
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/xaint2.h"
 #include "asterfort/xconno.h"
 #include "asterfort/xfisco.h"
@@ -32,8 +34,9 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
 #include "asterfort/xstan2.h"
 #include "asterfort/xtopoc.h"
 #include "asterfort/xtopoi.h"
-    character(len=8) :: noma, modelx
-    integer :: ndim
+    character(len=8) :: noma, modelx, k8condi
+    character(len=19) :: ligre1, maxfem
+    integer :: jcond
     real(kind=8) :: crimax
     aster_logical :: linter
 !
@@ -49,7 +52,6 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
 !
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MODELX : NOM DU MODELE XFEM MODIFIE
-! IN  NDIM   : DIMENSION DU PROBLEME
 ! IN  CRIMAX : CRITERE MAXIMUM
 !
 !
@@ -105,7 +107,23 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
         call xaint2(noma, modelx)
     endif
 !
+! --- ON MODIFIE MODELX(1:8)//'.PRE_COND' POUR L ACTIVATION DU PRE CONDITIONNEUR XFEM
 ! --- ON MODIFIE MODELX(1:8)//'.STNO' POUR LE CONDITIONNEMENT HEAVISIDE
+!
+    if ( k8condi .eq. 'AUTO' ) then
+       call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
+       call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
+       if (maxfem .ne. 'LINE') then   
+          call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
+          crimax=0.d0
+          zk8(jcond)='OUI'
+       endif
+    elseif ( k8condi .eq. 'FORCE' ) then
+       call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
+       call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
+       crimax=0.d0
+       zk8(jcond)='OUI'
+    endif
 !
     call xstan2(crimax, noma, modelx)
 !

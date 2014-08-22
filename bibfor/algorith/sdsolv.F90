@@ -40,7 +40,7 @@ function sdsolv(vect)
 ! ----------------------------------------------------------------------
 !
     integer :: zslvk, zslvr, zslvi
-    parameter (zslvk=13,zslvr=4 ,zslvi=8)
+    parameter (zslvk=14,zslvr=4 ,zslvi=8)
 !
 ! ----------------------------------------------------------------------
 !

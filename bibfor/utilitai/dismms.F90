@@ -133,6 +133,15 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         repi = nbddl
 200     continue
 !
+    else if (questi.eq.'XFEM') then
+        repk=refa(17)
+!
+    else if (questi.eq.'XFEM_PC') then
+        repk=refa(18)(1:19)
+!
+    else if (questi.eq.'XFEM_PC_INV') then
+        repk=refa(16)(1:19)
+!      
     else if (questi.eq.'SOLVEUR') then
         if (refa(7) .ne. ' ') then
             repk=refa(7)

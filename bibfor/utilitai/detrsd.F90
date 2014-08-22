@@ -6,6 +6,7 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/apetsc.h"
 #include "asterfort/assde1.h"
 #include "asterfort/assert.h"
+!#include "asterfort/xfem_pc_detr.h"
 #include "asterfort/detrs2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elg_gest_common.h"
@@ -363,6 +364,10 @@ subroutine detrsd(typesd, nomsd)
             if (refa(19) .ne. ' ') then
                 call detrs2('MATR_ASSE', refa(19)(1:19))
             endif
+!       -- DESTRUCTION DE L'EVENTUELLE MATRICE PRE CONDITIONNEUR XFEM :
+!            if (refa(18) .ne. ' ' .or. refa(16) .ne. ' ') then
+!                call xfem_pc_detr(matas)
+!            endif
         endif
 !
 !       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :

@@ -1,12 +1,13 @@
 subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                   neq, neql, vect, xsol, nbvect,&
                   vectmp, prepos)
-! aslint: disable=W1304
+!
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -14,6 +15,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
+#include "asterfort/utmess.h"
     character(len=*) :: cumul
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, neql, lmat
@@ -50,7 +52,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     real(kind=8) :: zero
     character(len=14) :: numddl
     character(len=19) :: nom19
-    character(len=24) :: valm, refa
+    character(len=24) :: valm, refa, kxfem
     integer :: kfin, jvalms, jvalmi, jvec, ki, kdeb, nbloc
     integer :: ilig, jcol, jrefa, iligg, jcolg, numglo, k
     integer :: keta, iexi, ieq
@@ -63,6 +65,9 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
 !
     call jemarq()
     nom19=zk24(zi(lmat+1))(1:19)
+!
+    call dismoi('XFEM', nom19, 'MATR_ASSE', repk=kxfem)
+    if (kxfem .eq. 'XFEM_PRECOND') call utmess('A', 'XFEMPRECOND_4', nk=1, valk=nom19)
 !
     valm=nom19//'.VALM'
     call jelira(valm, 'NMAXOC', nbloc)

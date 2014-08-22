@@ -300,16 +300,16 @@ Risques & conseils :
 
 47: _(u"""
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 
-  Incohérence entre les valeurs saisies pour les mot clef simples <PRES_CONF>, <SIGM_IMPO> et <SIGM_DECH>. 
-  On doit toujours avoir PRES_CONF + SIGM_IMPO <= SIGM_DECH .
+  Incohérence entre les valeurs saisies pour les mot clef simples <PRES_CONF>, <SIGM_IMPO> et <SIGM_décharge>. 
+  On doit toujours avoir PRES_CONF + SIGM_IMPO <= SIGM_décharge .
   Or vous avez renseigné < PRES_CONF = %(r1)E> et <SIGM_IMPO = %(r2)E>, soit PRES_CONF + SIGM_IMPO = %(r3)E supérieur à %(r4)E
 """),
 
 48: _(u"""
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 
-  Incohérence entre les valeurs saisies pour les mot clef simples <PRES_CONF> et <SIGM_DECH>. 
-  On doit toujours avoir SIGM_DECH <= PRES_CONF.
-  Or vous avez renseigné < SIGM_DECH = %(r1)E> et <PRES_CONF = %(r2)E> 
+  Incohérence entre les valeurs saisies pour les mot clef simples <PRES_CONF> et <SIGM_décharge>. 
+  On doit toujours avoir SIGM_décharge <= PRES_CONF.
+  Or vous avez renseigné < SIGM_décharge = %(r1)E> et <PRES_CONF = %(r2)E> 
 """),
 
 50 : _(u"""Maille: %(k1)-8s - Pas de points d'intégration"""),

@@ -99,6 +99,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     integer :: jrefar, jrefai, ier, ier1
     integer :: i, lres, nbloc, lgbloc
     aster_logical :: reutil, symr, symi, matd, nosymr
+    character(len=24) :: kxfem
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: lispoint(:) => null()
@@ -146,6 +147,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
             nosymr=.not.symr
             ASSERT(nosymr)
         endif
+        call dismoi('XFEM', mati, 'MATR_ASSE', repk=kxfem)
+        if ( kxfem .eq. 'XFEM_PRECOND') call utmess('F', 'XFEMPRECOND_3', nk=1, valk=mati)
 !        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.
     end do
