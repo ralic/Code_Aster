@@ -1,10 +1,10 @@
 ! ===============================================================
-! THIS LAPACK 2.0 ROUTINE IS DEPRECATED  
+! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
 !
 ! BUT DO NOT REMOVE IT :
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
-! WHICH STICKS TO LAPACK 2.0 VERSION 
+! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
 !----------------------------------------------------------------------
 ! ======================================================================
@@ -252,7 +252,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 #include "blas/lsame.h"
     character(len=1) :: compq, job
     integer :: info, ldq, ldt, liwork, lwork, m, n
-    real(kind=8) :: s, sep
+    real(kind=8) :: s, sep, rbid(1)
 !     ..
 !     .. ARRAY ARGUMENTS ..
     aster_logical :: select( * )
@@ -393,7 +393,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !        ESTIMATE THE RECIPROCAL OF THE CONDITION NUMBER OF THE CLUSTER
 !        OF EIGENVALUES.
 !
-        rnorm = dlange( 'F', n1, n2, work, n1, work )
+        rnorm = dlange( 'F', n1, n2, work, n1, rbid )
         if (rnorm .eq. zero) then
             s = one
         else
