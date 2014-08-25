@@ -28,7 +28,7 @@ nu.setGlossaryName("PoissonRatio");
 @MaterialProperty real NRD;
 @MaterialProperty real NID;
 @MaterialProperty real NFD;
-@MaterialProperty real SECHini;
+@MaterialProperty real Cini;
 
 
 @StateVariable real       ESPHR;
@@ -39,7 +39,7 @@ nu.setGlossaryName("PoissonRatio");
 @StateVariable Stensor    Edess;
 
 
-@ExternalStateVariable real SECH;
+@ExternalStateVariable real SECH ,HYDR ;
 
 @LocalVariable real    lambda;
 @LocalVariable real    mu;
@@ -73,17 +73,16 @@ nu.setGlossaryName("PoissonRatio");
 } 
 
 @Integrator{
-    cout << "SECHini : " << SECHini << " " << SECH << endl;
     real stresP=trace(sig)/3.;
     Stensor stresD=sig-stresP*Stensor::Id();
     real emax=sqrt(((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI))|((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI)));
     fELIM=ELIM+dELIM-max(ELIM,emax);
     real eexp=exp((ELIM+dELIM)/KAPPA);
-    fESPHR=dESPHR-((SECH/SECHini*stresP-KRS*(ESPHR+dESPHR))/NRS)*dt;
-    fEDEVR=dEDEVR-(SECH/SECHini*stresD-KRD*(EDEVR+dEDEVR))/NRD*dt;
-    fESPHI=dESPHI-(SECH/SECHini*stresP/(NIS*eexp))*dt;
-    fEDEVI=dEDEVI-(SECH/SECHini*stresD/(NID*eexp))*dt;
-    fEdess=dEdess-NFD*dSECH/SECHini*Stensor::Id();
+    fESPHR=dESPHR-((SECH/Cini*stresP-KRS*(ESPHR+dESPHR))/NRS)*dt;
+    fEDEVR=dEDEVR-(SECH/Cini*stresD-KRD*(EDEVR+dEDEVR))/NRD*dt;
+    fESPHI=dESPHI-(SECH/Cini*stresP/(NIS*eexp))*dt;
+    fEDEVI=dEDEVI-(SECH/Cini*stresD/(NID*eexp))*dt;
+    fEdess=dEdess-NFD*dSECH/Cini*Stensor::Id();
     feel=deel-(deto-dEDEVR-dEDEVI-dEdess-(dESPHR+dESPHI)*Stensor::Id());
 }
 

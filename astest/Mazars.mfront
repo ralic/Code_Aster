@@ -30,6 +30,9 @@ nu.setGlossaryName("PoissonRatio");
 @StateVariable real Y;
 @StateVariable real eeqcor;
 
+@ExternalStateVariable real C ,HYDR ;
+C.setGlossaryName("SECH");
+
 @LocalVariable real    lambda;
 @LocalVariable real    mu;
 

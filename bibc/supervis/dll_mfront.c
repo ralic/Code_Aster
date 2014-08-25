@@ -387,9 +387,13 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
                 AS_ASSERT( *ndim == 2 || *ndim == 3 );
             }
         }
+       else if ( int_var[i] == 3 )
+        {
+                 (*nbvari) += 9;
+        }
         else
         {
-            AS_ASSERT( int_var[i] == 0 || int_var[i] == 1 );
+            AS_ASSERT( int_var[i] == 0 || int_var[i] == 1 || int_var[i] == 3);
         }
     }
 

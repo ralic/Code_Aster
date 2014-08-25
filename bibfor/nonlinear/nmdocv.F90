@@ -52,11 +52,14 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(keyword.eq.'RESI_INTE_RELA'.or. keyword.eq.'ITER_INTE_MAXI')
+    ASSERT(keyword(1:9).eq.'RESI_INTE'.or.keyword.eq.'ITER_INTE_MAXI')
 !
 ! - Get Values
 !
     if (keyword .eq. 'RESI_INTE_RELA') then
+        call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret,&
+                    isdefault=iarg)
+    else if (keyword .eq. 'RESI_INTE_MAXI') then
         call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret,&
                     isdefault=iarg)
     else if (keyword.eq.'ITER_INTE_MAXI') then

@@ -1,4 +1,4 @@
-P time_limit 60
+P time_limit 300
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron02f.comm D 1
-F mmed mfron02f.mmed D 20
-F nom  BurgerAgeing.mfront   D 0
-
+F nom  Mazars.mfront   D 0
+F mail mfron02f.mail D 20

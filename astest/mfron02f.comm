@@ -1,454 +1,350 @@
 # -*- coding: utf-8 -*-
-# person_in_charge: alexandre.foucault at edf.fr
-# TITRE ESSAI DE FLUAGE PROPRE avec prise en compte de l'age du béton
+# person_in_charge: jean-michel.proix at edf.fr
+# TITRE TEST MFRONT LOI DE MAZARS CF.TEST SSNP113A
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# -----------------------------------------------------
-# MODELISATION 3D : FLUAGE PROPRE avec effet de l'age et de la température BETON_BURGER_FP
-# -----------------------------------------------------
 
+import os
 
-os.rename("BurgerAgeing.mfront", "burger.mfront")
-os.system("mfront --obuild burger.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so burger.so")
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#    mfront --obuild mazars.mfront --interface=aster     
+# avant de lancer l'etude.
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+os.system("mfront --obuild Mazars.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so mazars.so")
+    
 
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
-M=LIRE_MAILLAGE(FORMAT='MED', )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_INF')
-           )
-
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_GCH')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_DRT')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_AVT')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_ARR')
-            )
-
-MO=AFFE_MODELE( MAILLAGE=M,
-                AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D')
-              )
-
-FONC1=DEFI_FONCTION( NOM_PARA='SECH',
-                     PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',
-                     VALE=(0.0, 0.0, 1.0, 1.0,)
-                   )
-
-E=DEFI_FONCTION( NOM_PARA='TEMP',
-                 PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',
-                 VALE=(0.0, 31000., 1.0, 31000.,)
-               )
-
-NU=DEFI_FONCTION( NOM_PARA='TEMP',
-                  PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE',
-                  VALE=(0.0,0.2,1.0,0.2,)
-                ),
-
-ALPHA=DEFI_CONSTANTE(VALE=0.);
-NID__ = 1.0e+5;#Pa.s
-
-KRS__ = 1.956e+5;#Pa
-
-NIS__ = 1.570e+5;
-
-KRD__ = 5.0E+4;
-
-NRD__ = 1.0E+10;
-
-NRS__ = 4.797e+10;
-
-KAPPA = 5.9e-4;
-
-NFD__ = 5.8e9;
-
-ALPHA__=(1-2.000e-06)
-
-
-BETON28=DEFI_MATERIAU(UMAT=_F(     C1=31000,
+MAIL=LIRE_MAILLAGE();
+MODELE=AFFE_MODELE(AFFE    =_F(TOUT = 'OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='3D'),
+                   MAILLAGE=MAIL);
+MATERIAU=DEFI_MATERIAU(MAZARS=_F(K =0.7,
+                                 EPSD0=9.375e-5,
+                                 AC   =1.15,
+                                 AT   =0.8,
+                                 BC   =1391.3,
+                                 BT   =10000.),
+                       ELAS     =_F(NU=0.2,
+                                    E=3.20000000000E10),);
+MATFRONT=DEFI_MATERIAU(UMAT=_F(  
+                                 NB_VALE=8,
+                                 C1=3.2E10,
                                  C2=0.2,
-                                 C3   = KRS__,
-                                 C4 = NRS__,
-                                 C5 = NIS__,
-                                 C6 = KRD__,
-                                 C7 = NRD__,
-                                 C8 = NID__,
-                                 C9=ALPHA__,
-                                 C10 = 0.,
-                                 C11 = 20.,
-                                 C12=NFD__,
-                                 C13=1.,
+                                 C3=1.15,
+                                 C4=0.8,
+                                 C5=1391.3,
+                                 C6=10000.,
+                                 C7=0.7,
+                                 C8=9.375e-5,
                                  ),
-                              ELAS_FO =_F( E = E,
-                                  NU = NU ,TEMP_DEF_ALPHA=0.,
-                                  ALPHA = ALPHA ,
-                                  FONC_DESORP = FONC1),);
+                       ELAS     =_F(NU=0.2,
+                                    E=3.20000000000E10),);
 
-
-
-TEMP28=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
-                         AFFE=_F(
-                               TOUT = 'OUI',
-                               NOM_CMP = 'TEMP',
-                               VALE = 20.)
-                       )
-
-BETON90=DEFI_MATERIAU(UMAT=_F(     C1=31000,
-                                 C2=0.2,
-                                 C3   = KRS__,
-                                 C4 = NRS__,
-                                 C5 = NIS__,
-                                 C6 = KRD__,
-                                 C7 = NRD__,
-                                 C8 = NID__,
-                                 C9=ALPHA__,
-                                 C10 = 2100.,
-                                 C11 = 20.,
-                                 C12=NFD__,
-                                 C13=1.,
-                                 ),
-                              ELAS_FO =_F( E = E,
-                                  NU = NU ,TEMP_DEF_ALPHA=0.,
-                                  ALPHA = ALPHA ,
-                                  FONC_DESORP = FONC1),);
-
-
-
-TEMP90=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
-                         AFFE=_F(
-                               TOUT = 'OUI',
-                               NOM_CMP = 'TEMP',
-                               VALE = 30.)
-                       )
-
-
-SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
-                        AFFE=_F( TOUT = 'OUI',
-                              NOM_CMP = 'TEMP',
-                              VALE = 1.))
-
-CM28=AFFE_MATERIAU(  MAILLAGE=M,
-                   AFFE=_F( TOUT = 'OUI',
-                            MATER = BETON28,),
-                   AFFE_VARC=(_F(TOUT='OUI',
-                                CHAM_GD=SECH,
-                                NOM_VARC='SECH',
-                                VALE_REF=1),
-                             _F(TOUT='OUI',
-                                CHAM_GD=TEMP28,
-                                NOM_VARC='TEMP',
-                                VALE_REF=20),),);
-
-CM90=AFFE_MATERIAU(  MAILLAGE=M,
-                   AFFE=_F( TOUT = 'OUI',
-                            MATER = BETON90,),
-                   AFFE_VARC=(_F(TOUT='OUI',
-                                CHAM_GD=SECH,
-                                NOM_VARC='SECH',
-                                VALE_REF=1),
-                             _F(TOUT='OUI',
-                                CHAM_GD=TEMP90,
-                                NOM_VARC='TEMP',
-                                VALE_REF=20),),);
-
-
-CH10=AFFE_CHAR_MECA( MODELE=MO,
-                     DDL_IMPO=_F( GROUP_NO = 'S_INF',
-                                  DZ       = 0.
-                               )
-                    )
-CH11=AFFE_CHAR_MECA( MODELE=MO,
-                     DDL_IMPO=_F( GROUP_NO = 'S_GCH',
-                                  DX       = 0.
-                                )
-                   )
-
-CH12=AFFE_CHAR_MECA( MODELE=MO,
-                     DDL_IMPO=_F( GROUP_NO = 'S_AVT',
-                                 DY       = 0.
-                               ),
-                  )
-
-CH20=AFFE_CHAR_MECA_F( MODELE=MO,
-                      LIAISON_UNIF=_F( GROUP_NO = 'S_DRT',
-                                       DDL      = 'DX'
-                                     ),
-                     )
-CH21=AFFE_CHAR_MECA_F( MODELE=MO,
-                      LIAISON_UNIF=_F( GROUP_NO = 'S_ARR',
-                                       DDL      = 'DY'
-                                     )
-                     )
-
-sigm=1;
-
-
-
-#Parametres du cas de référence 28 jours
-t0=28.*3600.*24.;
-t0_1h=t0+3600.;
-tfin= 3600*24*800;
-
-
-
-FORCE28=DEFI_FONCTION( NOM_PARA='INST',
-                     PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',
-                     VALE=(0.0, 0.0, t0,0.0,t0_1h, sigm, tfin, sigm,)
-                   )
-
-CHARG28=AFFE_CHAR_MECA_F( MODELE=MO,
-                      PRES_REP=_F( GROUP_MA= 'S_SUP',
-                                   PRES = FORCE28)
-                    )
-
-
-LINST28=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
-             _F( JUSQU_A = t0,       NOMBRE = 10),
-        _F( JUSQU_A = t0_1h, NOMBRE = 10),
-             _F( JUSQU_A = tfin,  NOMBRE = 40))
-           )
-
-UREF28=STAT_NON_LINE( MODELE=MO,
-                 CHAM_MATER=CM28,EXCIT=( _F(CHARGE = CH10),
-                             _F(CHARGE = CH11),
-                   _F(CHARGE = CH12),
-                   _F(CHARGE = CH20),
-                   _F(CHARGE = CH21),
-                   _F(CHARGE = CHARG28),
-                 ),
+CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
+                              TOUT='OUI'),
+                      MAILLAGE=MAIL);
+CHMATF=AFFE_MATERIAU(AFFE=_F(MATER=MATFRONT,
+                              TOUT='OUI'),
+                      MAILLAGE=MAIL);
+CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
+                                 GROUP_NO='COTEG'),
+                              _F(DZ=0.0,
+                                 NOEUD='N1',
+                                 DY=0.0),
+                              _F(NOEUD='N5',
+                                 DY=0.0),),
+                    MODELE=MODELE);
+CHAR1=AFFE_CHAR_MECA(DDL_IMPO=(_F(NOEUD=('N2','N6'),
+                                  DY=0.0),
+                               _F(DX=1.0,
+                                  GROUP_NO='COTED'),
+                               _F(DY=-0.2,
+                                  GROUP_NO='HAUT'),),
+                     MODELE=MODELE);
+CHAR2=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=1.0,
+                                 GROUP_NO='COTED'),
+                              _F(NOEUD='N4',
+                                 DY=1.5),
+                              _F(NOEUD='N8',
+                                 DY=1.5),
+                              _F(NOEUD='N3',
+                                 DY=3.5),
+                              _F(NOEUD='N7',
+                                 DY=3.5),
+                              _F(NOEUD='N2',
+                                 DY=2.0),
+                              _F(NOEUD='N6',
+                                 DY=2.0),),
+                     MODELE=MODELE);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=1.0,
+                                     NOMBRE=10),
+                                  _F(JUSQU_A=5.0,
+                                     NOMBRE=300) ,), );
+FCT_MUL1=DEFI_FONCTION(INTERPOL=('LIN','LIN'),
+                       NOM_PARA='INST',
+                       VALE=(0.0,0.0,1.0,5.25E-05),);
+FCT_MUL2=DEFI_FONCTION(INTERPOL=('LIN','LIN'),
+                       NOM_PARA='INST',
+                       VALE=(1.0,0.0,5.0,7.88E-4),);
+RES1=STAT_NON_LINE(CHAM_MATER=CHMATF,
+                   MODELE=MODELE,
+                   TITRE='BENCH-B LOI MAZARS',
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,
+                                  RESI_GLOB_RELA=1.E-06),
                    COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='asterburger',
-                                LIBRAIRIE='burger.so',
-                                RESI_INTE_RELA=1e-11,
+                                NOM_ROUTINE='astermazars',
+                                LIBRAIRIE='mazars.so',
+                                RESI_INTE_RELA=1e-8,
                                   ),
-                 INCREMENT=_F(LIST_INST = LINST28,
-                              ),
-                 NEWTON=_F(PREDICTION = 'ELASTIQUE',
-                 MATRICE = 'TANGENTE',
-                           REAC_ITER = 1),
-                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-8,
-                                ITER_GLOB_MAXI = 25)
-              )
-
-UREF28=CALC_CHAMP(reuse =UREF28,
-             RESULTAT=UREF28,
-             CONTRAINTE='SIGM_ELNO',
-             DEFORMATION=('EPSI_ELNO'),
-             VARI_INTERNE='VARI_ELNO',);
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF28,
-                   NOM_CHAM='EPSI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='EPZZ',
-                   VALE_CALC=-3.24100E-05,
-                   VALE_REFE=-3.300E-05,
-                   PRECISION=0.05,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=20,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF28,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-1.51920629446E-07,
-                   VALE_REFE=-1.563E-07,
-                   PRECISION=0.05,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=27,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF28,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-3.036647477765E-05,
-                   VALE_REFE=-2.87E-05,
-                   PRECISION=0.1,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=32.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF28,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-3.44479718176E-05,
-                   VALE_REFE=-3.29E-05,
-                   PRECISION=0.05,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=45.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF28,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-4.03900565356E-05,
-                   VALE_REFE=-3.93E-05,
-                   PRECISION=0.05,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=60.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF28,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-4.43381856778E-05,
-                   VALE_REFE=-4.36E-05,
-                   PRECISION=0.05,
-                   MAILLE='M1',),
-                ),
-          )
-
-
-#Parametres du cas de référence 90 jours
-t0=90.*3600.*24.;
-t0_1h=t0+3600.;
-tfin= 3600*24*859;
-
-FORCE90=DEFI_FONCTION( NOM_PARA='INST',
-                     PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',
-                     VALE=(0.0, 0.0, t0,0.0,t0_1h, sigm, tfin, sigm,)
-                   )
-
-CHARG90=AFFE_CHAR_MECA_F( MODELE=MO,
-                      PRES_REP=_F( GROUP_MA= 'S_SUP',
-                                   PRES = FORCE90)
-                    )
-
-
-LINST90=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
-             _F( JUSQU_A = t0,       NOMBRE = 10),
-        _F( JUSQU_A = t0_1h, NOMBRE = 10),
-             _F( JUSQU_A = tfin,  NOMBRE = 40))
-           )
-
-UREF90=STAT_NON_LINE( MODELE=MO,
-                 CHAM_MATER=CM90,EXCIT=( _F(CHARGE = CH10),
-                             _F(CHARGE = CH11),
-                   _F(CHARGE = CH12),
-                   _F(CHARGE = CH20),
-                   _F(CHARGE = CH21),
-                   _F(CHARGE = CHARG90),
-                 ),
+                   INCREMENT  =_F(LIST_INST=L_INS1,
+                                  INST_FIN = 1.0 ),
+                   NEWTON     =_F(REAC_ITER  = 0,PREDICTION='ELASTIQUE',),
+                   EXCIT      =(_F(CHARGE=CLIM),
+                                _F(CHARGE=CHAR1,
+                                   FONC_MULT=FCT_MUL1),), );
+                                   
+RES1=STAT_NON_LINE(reuse     = RES1,
+                   CHAM_MATER=CHMATF,
+                   MODELE    =MODELE,
+                   TITRE     ='BENCH-A LOI MAZARS',
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                  RESI_GLOB_RELA=1.E-4),
                    COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='asterburger',
-                                LIBRAIRIE='burger.so',
-                                RESI_INTE_RELA=1e-11,
+                                NOM_ROUTINE='astermazars',
+                                LIBRAIRIE='mazars.so',
+                                RESI_INTE_RELA=1e-8,
                                   ),
-                 INCREMENT=_F(LIST_INST = LINST90,
-                              ),
-                 NEWTON=_F(PREDICTION = 'ELASTIQUE',
-                 MATRICE = 'TANGENTE',
-                           REAC_ITER = 1),
-                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-8,
-                                ITER_GLOB_MAXI = 25)
-              )
+                   INCREMENT  =_F(
+                                  LIST_INST=L_INS1,),
+                   NEWTON     =_F(
+                                  PREDICTION='ELASTIQUE',
+                                  REAC_ITER  = 1,
+                                  REAC_INCR  = 1,),
+                   EXCIT    =(_F(CHARGE=CLIM),
+                              _F(CHARGE=CHAR2,
+                                 TYPE_CHARGE='DIDI',
+                                 FONC_MULT=FCT_MUL2),),
+                  ETAT_INIT= _F( EVOL_NOLI=RES1 ),
+                  ARCHIVAGE= _F(LIST_INST = L_INS1), );
 
-UREF90=CALC_CHAMP(reuse =UREF90,
-             RESULTAT=UREF90,
-             CONTRAINTE='SIGM_ELNO',
-             DEFORMATION=('EPSI_ELNO'),
-             VARI_INTERNE='VARI_ELNO',);
+                  
+RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,NUME_ORDRE=(10,25,310),CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+RES1=CALC_CHAMP  ( reuse  = RES1,
+                RESULTAT=RES1,
+                NUME_ORDRE = (10,25,310),
+                DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',
+                );
 
 
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF90,
-                   NOM_CHAM='EPSI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='EPZZ',
-                   VALE_CALC=-3.24442562209E-05,
-                   VALE_REFE=-3.300E-05,
-                   PRECISION=0.05,
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 9.37500000E-05,
+                   VALE_REFE=9.3750000000000002E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
-                _F(NUME_ORDRE=20,
+                _F(NUME_ORDRE=10,
                    REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF90,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-1.86191710772E-07,
-                   VALE_REFE=-1.57E-07,
-                   PRECISION=0.3,
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.87500000E-05,
+                   VALE_REFE=-1.8749999999999998E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=10,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 3.00000000E+06,
+                   VALE_REFE=3.E6,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=25,
                    REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF90,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-2.71253082562E-05,
-                   VALE_REFE=-2.65E-05,
-                   PRECISION=0.05,
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 1.64107143E-04,
+                   VALE_REFE=1.64E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
-                _F(NUME_ORDRE=35,
+                _F(NUME_ORDRE=25,
                    REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF90,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-3.50209856876E-05,
-                   VALE_REFE=-3.42E-05,
-                   PRECISION=0.05,
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 8.67857143E-05,
+                   VALE_REFE=8.6700000000000007E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
-                _F(NUME_ORDRE=45.0,
+                _F(NUME_ORDRE=25,
                    REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF90,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-3.95949820792E-05,
-                   VALE_REFE=-3.94E-05,
-                   PRECISION=0.05,
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC= 7.03571429E-05,
+                   VALE_REFE=7.0300000000000001E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
-                _F(NUME_ORDRE=60.0,
+                _F(NUME_ORDRE=25,
                    REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=UREF90,
-                   NOM_CHAM='VARI_ELNO',
-                   NOEUD='N19',
-                   NOM_CMP='V30',
-                   VALE_CALC=-4.414936134E-05,
-                   VALE_REFE=-4.36E-05,
-                   PRECISION=0.05,
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 2.04221697E+06,
+                   VALE_REFE=2.043190E6,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=25,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 1.34607058E+06,
+                   VALE_REFE=1.346290E6,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=25,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIXY',
+                   VALE_CALC= 6.33444980E+05,
+                   VALE_REFE=6.33546E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=25,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='VARI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.662377041,
+                   VALE_REFE=0.66210999999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 1.50089286E-03,
+                   VALE_REFE=1.5E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 2.09196429E-03,
+                   VALE_REFE=2.09063E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC= 1.40714286E-03,
+                   VALE_REFE=1.4062499999999999E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 3.68629601E+05,
+                   VALE_REFE=3.68638E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 4.59449398E+05,
+                   VALE_REFE=4.59447E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIXY',
+                   VALE_CALC= 2.16211481E+05,
+                   VALE_REFE=2.16210E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=310,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES1,
+                   NOM_CHAM='VARI_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.994238019,
+                   VALE_REFE=0.99422999999999995,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
                 ),
           )
 
-FIN();
+FIN() ;
