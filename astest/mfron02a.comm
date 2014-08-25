@@ -80,7 +80,6 @@ TABRES=SIMU_POINT_MAT(  MATER=BETON,
                    COMPORTEMENT=_F(RELATION='MFRONT',
                                 LIBRAIRIE='burger.so',
                                 NOM_ROUTINE='asterburger',
-                                RESI_INTE_RELA=1e-8,
                                   ),
                    AFFE_VARC=(
                    _F(  NOM_VARC='TEMP',

@@ -127,7 +127,6 @@ MFRONT=STAT_NON_LINE(INFO=1,
                     COMPORTEMENT=_F(RELATION='MFRONT',
                         LIBRAIRIE='elasorth.so',
                         NOM_ROUTINE='asterelasorth',
-                        RESI_INTE_RELA=1e-8,
                         ),
                     INCREMENT=_F(LIST_INST=LISTE),);
 

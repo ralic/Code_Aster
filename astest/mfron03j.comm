@@ -397,7 +397,7 @@ SOLMF=STAT_NON_LINE(
                                 LIBRAIRIE='monocristal.so',
                                 NOM_ROUTINE='astergdefmonojp',
                                 DEFORMATION='SIMO_MIEHE',
-                                RESI_INTE_RELA=1.E-10,
+                                RESI_INTE_MAXI=1.E-10,
                                 ITER_INTE_MAXI=100,
                                 ),
                         
@@ -528,8 +528,6 @@ SOLMFn=STAT_NON_LINE(
                                 LIBRAIRIE='monocristal.so',
                                 NOM_ROUTINE='astergdefmonojn',
                                 DEFORMATION='SIMO_MIEHE',
-                                RESI_INTE_RELA=1.E-8,
-                                ITER_INTE_MAXI=100,
                                 ),
                         
                                _F(RELATION='ELAS',

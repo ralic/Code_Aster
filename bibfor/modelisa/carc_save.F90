@@ -135,7 +135,11 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
 !
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !
-        call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+        if (rela_comp.eq.'MFRONT') then
+            call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
+        else 
+            call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+        endif
         call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
 !
 ! ----- Set in <CARTE>

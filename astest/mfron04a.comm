@@ -105,24 +105,6 @@ TEMPE=CALC_META(reuse =TEMPE,
 # EST IDENTIQUE A UNE LOI CONTENUE DANS ZMAT
 
 # reference HSNV134A
-#ACIER=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
-                               #NU = 0.35,
-                               #F_ALPHA = 8.E-6,
-                               #C_ALPHA = 8.E-6,
-                               #PHASE_REFE = 'FROID',
-                               #EPSF_EPSC_TREF = 0.,),
-                    #META_LEMA_ANI=_F(
-                             #F1_A=2.39,    F2_A=0.22,     C_A=9.36,
-                             #F1_M=0.0,    F2_M=0.77E-04,  C_M=0.99E-04,
-                             #F1_N=4.39,    F2_N=2.96,     C_N=6.11,
-                             #F1_Q=19922.8, F2_Q=21023.7,  C_Q=6219.,
-                             #F_MRR_RR=0.4414,             C_MRR_RR=1.,
-                             #F_MTT_TT=0.714,              C_MTT_TT=1.,
-                             #F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
-                             #F_MRT_RT=0.75,               C_MRT_RT=0.75,
-                             #F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
-                             #F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),),
-
 
 MATF=DEFI_MATERIAU( 
                   ELAS_META=_F(E = 80000.,
@@ -206,7 +188,7 @@ VF=STAT_NON_LINE(MODELE=MO,
                 COMPORTEMENT=_F(RELATION='MFRONT',
                         LIBRAIRIE='meta_lema_ani.so',
                         NOM_ROUTINE='astermetalemani',
-                        RESI_INTE_RELA=1e-10,
+                        RESI_INTE_MAXI=1e-10,
                         ),
                INCREMENT=_F(LIST_INST = L_INST),
                NEWTON=_F(MATRICE = 'TANGENTE',

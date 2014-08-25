@@ -131,7 +131,6 @@ SOLNL=STAT_NON_LINE(
                 COMPORTEMENT=_F(RELATION='MFRONT',
                         LIBRAIRIE='chaboche.so',
                         NOM_ROUTINE='asterchaboche',
-                        RESI_INTE_RELA=1e-12,
                         ),
                          INCREMENT=_F(
                 LIST_INST = LINST),

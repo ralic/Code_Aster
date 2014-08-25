@@ -92,24 +92,6 @@ IMPR_RESU(RESU=_F(RESULTAT=TEMPE))
 # ON DEGENERE LA LOI POUR AVOIR UNE LOI DE VISCOSITE
 # DE TYPE NORTON D OU F1_M=0.D0
 
-
-#ACIER=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
-                               #NU = 0.35,
-                               #F_ALPHA = 0.,
-                               #C_ALPHA = 0.,
-                               #PHASE_REFE = 'FROID',
-                               #EPSF_EPSC_TREF = 0.,),
-                   #META_LEMA_ANI=_F(
-                            #F1_A=2.40,    F2_A=0.20,     C_A=9.40,
-                            #F1_M=0.0,    F2_M=0.80E-04, C_M=0.99E-04,
-                            #F1_N=4.40,    F2_N=3.0,     C_N=6.1,
-                            #F1_Q=19900., F2_Q=21000.,  C_Q=6200.,
-                            #F_MRR_RR=1.,                 C_MRR_RR=1.,
-                            #F_MTT_TT=1.,                 C_MTT_TT=1.,
-                            #F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
-                            #F_MRT_RT=0.75,               C_MRT_RT=0.75,
-                            #F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
-                            #F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),),
                             
 MATF=DEFI_MATERIAU( 
                   ELAS_META=_F(E = 80000.,
@@ -194,7 +176,7 @@ VF=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CMF,
                         LIBRAIRIE='meta_lema_ani.so',
                         NOM_ROUTINE='astermetalemani',
                         DEFORMATION = 'GDEF_LOG',
-                        RESI_INTE_RELA=1e-10,
+                        RESI_INTE_MAXI=1e-10,
                         ),
                 INCREMENT=_F( LIST_INST = L_INST, NUME_INST_FIN = 1),
                 NEWTON=_F( REAC_ITER = 1),
@@ -210,7 +192,7 @@ VF=STAT_NON_LINE( reuse=VF,MODELE=MO,CHAM_MATER=CMF, ETAT_INIT=_F( EVOL_NOLI = V
                         LIBRAIRIE='meta_lema_ani.so',
                         NOM_ROUTINE='astermetalemani',
                         DEFORMATION = 'GDEF_LOG',
-                        RESI_INTE_RELA=1e-10,
+                        RESI_INTE_MAXI=1e-10,
                         ),
 
                 INCREMENT=_F(LIST_INST = L_INST),

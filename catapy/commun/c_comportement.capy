@@ -150,8 +150,15 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
               ITER_CPLAN_MAXI =SIMP(statut='f',typ='I',defaut= 1,
                                     fr=tr("Nombre d'itérations maxi pour assurer la condition de contraintes planes")),
            #
-           RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
+           b_mfront_resi      = BLOC(condition = "RELATION =='MFRONT'",
+               RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
+               ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
+               ),
+               
+           b_no_mfront      = BLOC(condition = "RELATION !='MFRONT'",
+               RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+               ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
+               ),
 
            b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GROT_GDEP')",
                                      fr=tr("Nombre de redécoupages internes du pas de temps"),

@@ -197,7 +197,11 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     iocc = 1
 !
     algo_inte = p_info_carc_valk(2*(iocc-1) + 2)
-    call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+    if (rela_comp.eq.'MFRONT') then
+        call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
+    else 
+        call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+    endif
     call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
     call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !

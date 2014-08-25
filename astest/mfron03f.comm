@@ -265,7 +265,7 @@ SOLMF=SIMU_POINT_MAT(INFO=1,
                      COMPORTEMENT=_F(RELATION='MFRONT',
                         LIBRAIRIE='polycristal.so',
                         NOM_ROUTINE='asterpolycristal',
-                        RESI_INTE_RELA=1e-9,                   
+                        RESI_INTE_MAXI=1e-9,                   
                         ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
