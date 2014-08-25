@@ -356,7 +356,7 @@ class Coeur(object):
     def definition_maintien_type(self, model, typ, force=None):
         """Retourne le chargement dû au couvercle de la cuve selon le type"""
         assert typ in ('FORCE', 'DEPL_PSC')
-        if typ == 'DEPL_PSC':
+        if typ != 'FORCE':
             return self.definition_effor_maintien(model)
         else:
             return self.definition_effor_maintien_force(model, force)
