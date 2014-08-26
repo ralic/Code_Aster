@@ -24,6 +24,7 @@ Module fournissant quelques fonctions utilitaires.
 import os
 import re
 import time
+from functools import partial
 
 from Utilitai.string_utils import maximize_lines
 from Execution.strfunc import convert
@@ -59,6 +60,38 @@ def _printDBG(*args):
     if not DEBUG:
         return
     _print(*args)
+
+def _debug(arg, label, dest='RESULTAT'):
+    """Generic function for debugging
+    :param arg: object to print
+    :type arg: ASSD, string or iterable
+    :param dest: output 'MESSAGE' or 'RESULTAT'
+    :type dest: string
+    """
+    if not DEBUG:
+        return
+    from Cata.cata import IMPR_CO, _F, ASSD, MCFACT
+    show = partial(aster.affiche, dest)
+    if isinstance(arg, ASSD):
+        show("#DEBUG: {} >>> {} <{}>".format(label, arg.nom, arg.__class__))
+        IMPR_CO(UNITE=8 if dest == 'RESULTAT' else 6,
+                CONCEPT=_F(NOM=arg),
+                NIVEAU=-1)
+    else:
+        if type(arg) in (str, unicode):
+            arg = convert(arg)
+        else:
+            try:
+                if isinstance(arg, _F):
+                    arg = [arg[i] for i in arg]
+                for obj in arg:
+                    _debug(obj, label, dest)
+            except TypeError:
+                arg = repr(arg)
+            else:
+                return
+        show("#DEBUG: {} >>> {}".format(label, arg))
+
 
 # les commandes fortran pourraient appeler cette fonction
 def get_titre_concept(co=None):
