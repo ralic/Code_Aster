@@ -60,7 +60,7 @@ def _printDBG(*args):
         return
     _print(*args)
 
-# les commandes fortran pourraient appeller cette fonction
+# les commandes fortran pourraient appeler cette fonction
 def get_titre_concept(co=None):
     """Retourne un titre automatique."""
     # ASTER 10.01.25 CONCEPT tab0 CALCULE LE 21/05/2010 A 17:58:50 DE TYPE TABLE_SDASTER

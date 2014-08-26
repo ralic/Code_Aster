@@ -577,19 +577,20 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                  TABLE_NP1=self.mcf['TABLE_NP1'],
                                  MAILLAGE_NP1=self.mcf['MAILLAGE_NP1'])
         self.update_coeur(__resuf, self.mcf['TABLE_NP1'])
+        # WARNING: element characteristics and the most of the loadings must be
+        # computed on the initial (not deformed) mesh
+        keywords = self.snl(CHAM_MATER=self.cham_mater_contact,
+                            INCREMENT=_F(LIST_INST=self.times,
+                                         INST_FIN=coeur.temps_simu['T4']),
+                            EXCIT=self.rigid_load + self.archimede_load + \
+                                  self.vessel_head_load + \
+                                  self.vessel_dilatation_load + \
+                                  self.gravity_load + \
+                                  self.symetric_cond + self.periodic_cond + \
+                                  self.thyc_load,
+                            )
         self.deform_mesh(__resuf)
-
-        RESULT = STAT_NON_LINE(**self.snl(
-                               CHAM_MATER=self.cham_mater_contact,
-                               INCREMENT=_F(LIST_INST=self.times,
-                                            INST_FIN=coeur.temps_simu['T4']),
-                               EXCIT=self.rigid_load + self.archimede_load + \
-                                     self.vessel_head_load + \
-                                     self.vessel_dilatation_load + \
-                                     self.gravity_load + \
-                                     self.symetric_cond + self.periodic_cond + \
-                                     self.thyc_load,
-                               ))
+        RESULT = STAT_NON_LINE(**keywords)
 
 
 # helper functions
