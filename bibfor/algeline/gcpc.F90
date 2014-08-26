@@ -249,16 +249,22 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     vali = iter
     valr (1) = anorm/anorxx
     valr (2) = epsi
-    if (precon .eq. 'LDLT_INC') then
-        call utmess('F', 'ALGELINE4_3', si=vali, nr=2, valr=valr)
-    else if (precon.eq.'LDLT_SP') then
-        if (istop .eq. 0) then
+    if ( istop == 0 ) then 
+!            ERREUR <F>    
+        select case (precon)
+        case('LDLT_INC')
+            call utmess('F', 'ALGELINE4_3', si=vali, nr=2, valr=valr)
+        case('LDLT_SP')
             call utmess('F', 'ALGELINE4_6', si=vali, nr=2, valr=valr)
-        else if (istop.eq.2) then
-            iret = 1
-        else
+        case default
             ASSERT(.false.)
-        endif
+        end select
+    elseif ( istop == 2 ) then
+!            ON CONTINUE EN RETOURNANT UN CODE D'ERREUR IRET=1
+        iret = 1
+        goto 80
+    else
+        ASSERT(.false.)
     endif
 !    -----------
     1010 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&

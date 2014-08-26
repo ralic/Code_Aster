@@ -249,8 +249,6 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)
         endif
-
-
 !
 !
 !       ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
@@ -263,16 +261,17 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 
             if (indic .eq. KSP_DIVERGED_ITS) then
 !               -- NOMBRE MAX D'ITERATIONS
-
-!
-                if ((istop.eq.0) .or. (precon.ne.'LDLT_SP')) then
-                    nmaxit=maxits
-                    call utmess('F', 'PETSC_5', si=nmaxit)
+                if ( istop == 0 ) then 
+!                  ERREUR <F>
+                   nmaxit=maxits
+                   call utmess('F', 'PETSC_5', si=nmaxit )
+                else if ( istop == 2 ) then
+!                  ON CONTINUE ET ON REMONTE UN CODE D'ERREUR 
+                   iret = 1
+                   goto 999
                 else
-                    iret = 1
-                    goto 999
-                endif
-
+                   ASSERT (.false.)
+                endif 
 !
             else if (indic.eq.KSP_DIVERGED_DTOL) then
 !               DIVERGENCE

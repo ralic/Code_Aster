@@ -59,8 +59,6 @@ subroutine crsvsi(solveu)
             call utmess('I', 'DISCRETISATION_43')
         endif
     elseif ( (nomslv.eq.'GCPC') .or. (nomslv.eq.'PETSC') ) then 
-    ! Lorsque le solveur est itératif, on active la remontée du code de retour du solveur,
-    ! afin de déclencher le découpage 
         slvi(8) = 2
     endif
     
