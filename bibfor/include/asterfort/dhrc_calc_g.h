@@ -19,7 +19,7 @@ interface
     subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1,&
                       ap2, bp2, cp2, g1, g2)
         real(kind=8) :: eps(6)
-        real(kind=8) :: vint(7)
+        real(kind=8) :: vint(*)
         real(kind=8) :: ap1(6, 6)
         real(kind=8) :: bp1(6, 2)
         real(kind=8) :: cp1(2, 2)

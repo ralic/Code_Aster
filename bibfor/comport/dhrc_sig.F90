@@ -22,7 +22,7 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 !
 #include "asterfort/r8inir.h"
     real(kind=8) :: a(6, 6), b(6, 2, 2)
-    real(kind=8) :: vint(7), eps(8)
+    real(kind=8) :: vint(*), eps(8)
     real(kind=8) :: sig(8)
 !
 ! ----------------------------------------------------------------------

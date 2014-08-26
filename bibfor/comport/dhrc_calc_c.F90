@@ -21,7 +21,7 @@ subroutine dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
     implicit none
 !
 #include "asterfort/matini.h"
-    real(kind=8) :: vint(7)
+    real(kind=8) :: vint(*)
     real(kind=8) :: c0(2, 2, 2)
     real(kind=8) :: ac(2, 2, 2), gc(2, 2, 2)
 !

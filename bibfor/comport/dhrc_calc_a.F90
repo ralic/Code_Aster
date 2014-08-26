@@ -17,13 +17,12 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
-! aslint: disable=W1502
 !
     implicit none
 !
 #include "asterfort/matini.h"
 #include "asterc/r8prem.h"
-    real(kind=8) :: vint(7), eps(8)
+    real(kind=8) :: vint(*), eps(8)
     real(kind=8) :: a0(6, 6)
     real(kind=8) :: aa_t(6, 6, 2), ga_t(6, 6, 2), aa_c(6, 6, 2), ga_c(6, 6, 2)
     real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6)

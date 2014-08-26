@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dhrc_jacob(eps, vint, b, c, bp1,&
+    subroutine dhrc_jacob(eps, vint, c, bp1,&
                       cp1, bp2, cp2, as1, bs1,&
                       cs1, as2, bs2, cs2, indi,&
                       neta1, neta2, cstseu, jacob)
         real(kind=8) :: eps(8)
-        real(kind=8) :: vint(7)
-        real(kind=8) :: b(6, 2, 2)
+        real(kind=8) :: vint(*)
         real(kind=8) :: c(2, 2, 2)
         real(kind=8) :: bp1(6, 2)
         real(kind=8) :: cp1(2, 2)

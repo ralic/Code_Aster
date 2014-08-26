@@ -19,7 +19,7 @@ interface
     subroutine dhrc_calc_n(eps, vint, b, c, neta1,&
                       neta2)
         real(kind=8) :: eps(6)
-        real(kind=8) :: vint(7)
+        real(kind=8) :: vint(*)
         real(kind=8) :: b(6, 2, 2)
         real(kind=8) :: c(2, 2, 2)
         real(kind=8) :: neta1(2)

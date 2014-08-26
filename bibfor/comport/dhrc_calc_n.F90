@@ -1,5 +1,4 @@
-subroutine dhrc_calc_n(eps, vint, b, c, neta1,&
-                  neta2)
+subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +22,7 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1,&
 !
 #include "asterfort/r8inir.h"
     real(kind=8) :: b(6, 2, 2), c(2, 2, 2)
-    real(kind=8) :: vint(7), eps(6)
+    real(kind=8) :: vint(*), eps(6)
 !
     real(kind=8) :: neta1(2), neta2(2)
 !

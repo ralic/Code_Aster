@@ -22,7 +22,7 @@ interface
         real(kind=8) :: c0(2, 2, 2)
         real(kind=8) :: ac(2, 2, 2)
         real(kind=8) :: gc(2, 2, 2)
-        real(kind=8) :: vint(7)
+        real(kind=8) :: vint(*)
         real(kind=8) :: c(2, 2, 2)
         real(kind=8) :: cp1(2, 2)
         real(kind=8) :: cp2(2, 2)

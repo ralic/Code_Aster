@@ -25,7 +25,7 @@ interface
         real(kind=8) :: aa_c(6, 6, 2)
         real(kind=8) :: ga_c(6, 6, 2)
         real(kind=8) :: eps(8)
-        real(kind=8) :: vint(7)
+        real(kind=8) :: vint(*)
         real(kind=8) :: a(6, 6)
         real(kind=8) :: ap1(6, 6)
         real(kind=8) :: ap2(6, 6)

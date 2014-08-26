@@ -23,7 +23,7 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
     implicit none
 #include "asterfort/matini.h"
     integer :: indip(6)
-    real(kind=8) :: eps(8), vint(7)
+    real(kind=8) :: eps(8), vint(*)
     real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6)
     real(kind=8) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2)
     real(kind=8) :: neta1(2), neta2(2), cstseu(2)
