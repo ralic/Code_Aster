@@ -42,7 +42,7 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
 ! In  keywordfact     : factor keyword to read (COMPORTEMENT)
 ! In  iocc            : factor keyword index in COMPORTEMENT
 ! In  algo_inte       : integration algorithm
-! In  keyword         : keyword 
+! In  keyword         : keyword
 ! Out value           : real value of keyword
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
         call getvis(keywordfact, keyword, iocc=iocc, scal=vali, nbret=iret,&
                     isdefault=iarg)
         value      = vali
-        iter_cplan = value
+        iter_cplan = vali
     endif
 !
     ASSERT(iret.ne.0)

@@ -139,7 +139,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
  10 continue
     nomsub = compor(7+dimaki)
 
-!   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)   
+!   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
     call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE ET DEFORMATIONS ASSOCIEES
@@ -330,16 +330,16 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
         call dscal(3, rac2, stress(4), 1)
         if (compor(3) .eq. 'SIMO_MIEHE') then
 ! transformation cauchy kirchhoff
-           call lcdetf(3, dfgrd1, detf)  
+           call lcdetf(3, dfgrd1, detf)
            call dscal(3, detf, stress, 1)
         endif
     endif
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-    
+
        if (compor(3) .eq. 'SIMO_MIEHE') then
            call dcopy(54, ddsdde, 1, dsidep, 1)
-       else 
+       else
            call r8inir(36, 0.d0, dsidep, 1)
 !          cas des CZM
            if (czm.eq.1) then
@@ -350,20 +350,22 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
                enddo
            else
                call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
-               do 40 i = 1, 6
-                   do 40 j = 4, 6
+               do i = 1, 6
+                   do j = 4, 6
                        dsidep(i,j) = dsidep(i,j)*rac2
-    40         continue
-               do 50 i = 4, 6
-                   do 50 j = 1, 6
+                   end do
+               end do
+               do i = 4, 6
+                   do j = 1, 6
                        dsidep(i,j) = dsidep(i,j)*rac2
-    50         continue
+                   end do
+               end do
            endif
            if ((niv.ge.2) .and. (idbg.eq.1)) then
                write(ifm,*)'APRES APPEL MFRONT,OPERATEUR TANGENT DSIDEP='
-               do 60 i = 1, 6
+               do i = 1, 6
                    write(ifm,'(6(1X,E11.4))') (dsidep(i,j),j=1,6)
- 60            continue
+               end do
            endif
         endif
     endif
