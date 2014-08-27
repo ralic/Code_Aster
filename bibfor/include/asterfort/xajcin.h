@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xajcin(modele, option, mxchin, lchin, lpain,&
+    subroutine xajcin(model, option, mxchin, lchin, lpain,&
                       nchin)
-        integer :: mxchin
-        character(len=*) :: modele
-        character(len=*) :: option
-        character(len=*) :: lchin(mxchin)
-        character(len=*) :: lpain(mxchin)
-        integer :: nchin
+        integer, intent(in) :: mxchin
+        character(len=*), intent(in) :: model
+        character(len=*), intent(in) :: option
+        character(len=*), intent(inout) :: lpain(mxchin)
+        character(len=*), intent(inout) :: lchin(mxchin)
+        integer, intent(inout) :: nchin
     end subroutine xajcin
 end interface

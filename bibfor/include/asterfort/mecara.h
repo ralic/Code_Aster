@@ -15,12 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine mecara(cara_elem, chcara, exicar)
+    subroutine mecara(cara_elem, chcara)
         character(len=*), intent(in) :: cara_elem
         character(len=*), intent(inout) :: chcara(18)
-        aster_logical, optional, intent(out) :: exicar
     end subroutine mecara
 end interface

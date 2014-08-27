@@ -1,4 +1,4 @@
-subroutine mecara(cara_elem, chcara, exicar)
+subroutine mecara(cara_elem, chcara)
 !
     implicit none
 #include "asterf_types.h"
@@ -22,19 +22,15 @@ subroutine mecara(cara_elem, chcara, exicar)
 !
     character(len=*), intent(in) :: cara_elem
     character(len=*), intent(inout) :: chcara(18)
-    aster_logical, optional, intent(out) :: exicar
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     ON CHERCHE LES NOMS DES CHAMPS DE CARAC_ELEM DANS 1 CARTE CARA
+! Preparing <CARTE> field for elementary characteristics
 !
+! --------------------------------------------------------------------------------------------------
 !
-!     ENTREES:
-!        CARA : NOM DE LA CARTE
-!
-!     SORTIES:
-!        EXICAR : VRAI SI ON TROUVE 1 CHAMP DE CARAC_ELEM
-!        CHCARA : NOMS DES CHAMPS DE CARAC_ELEM TROUVES.
+! In  cara_elem   : name of elementary characteristics (field)
+! IO  chcara      : name of <CARTE> field for elementary characteristics
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,9 +38,6 @@ subroutine mecara(cara_elem, chcara, exicar)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (present(exicar)) then
-        exicar = .false.
-    endif
     do ii = 1, 18
         chcara(ii) = ' '
     end do
@@ -67,9 +60,7 @@ subroutine mecara(cara_elem, chcara, exicar)
         chcara(15)= cara_elem(1:8)//'.CARDINFO'
         chcara(16)= cara_elem(1:8)//'.CANBSP'
         chcara(17)= cara_elem(1:8)//'.CAFIBR'
-        if (present(exicar)) then
-            exicar = .true.
-        endif
     endif
 !
 end subroutine
+

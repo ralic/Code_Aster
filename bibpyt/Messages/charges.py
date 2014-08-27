@@ -37,8 +37,9 @@ La charge <%(k1)s> n'est pas mécanique.
 """),
 
 23 : _(u"""
-La charge <%(k1)s> est de type Dirichlet :
- elle ne peut pas être suiveuse.
+La charge <%(k1)s> a été déclarée comme étant suiveuse alors que ce n'est pas possible.
+Si votre chargement contient plusieurs types dont certains ne peuvent être suiveurs, il faut les séparer.
+Certains chargements ne peuvent être suiveurs s'ils sont dépendant du temps.
 """),
 
 24 : _(u"""
@@ -48,7 +49,8 @@ La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
 
 
 26 : _(u"""
-La charge <%(k1)s> ne peut pas être pilotée.
+La charge <%(k1)s> a été déclarée comme étant pilotable alors que ce n'est pas possible.
+Si votre chargement contient plusieurs types dont certains ne peuvent être pilotables, il faut les séparer.
 """),
 
 
@@ -58,7 +60,7 @@ La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
 """),
 
 28 : _(u"""
-On ne peut piloter la charge <%(k1)s> car c'est une charge fonction du temps
+On ne peut pas piloter la charge <%(k1)s> car c'est une charge fonction du temps.
 """),
 
 34 : _(u"""

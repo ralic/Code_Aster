@@ -1,5 +1,9 @@
-subroutine xajcin(modele, option, mxchin, lchin, lpain,&
+subroutine xajcin(model, option, mxchin, lchin, lpain,&
                   nchin)
+!
+implicit none
+!
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,18 +22,16 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-    integer :: mxchin, nchin
-    character(len=*) :: modele, option, lpain(mxchin), lchin(mxchin)
+    integer, intent(in) :: mxchin
+    character(len=*), intent(in) :: model
+    character(len=*), intent(in) :: option
+    character(len=*), intent(inout) :: lpain(mxchin)
+    character(len=*), intent(inout) :: lchin(mxchin)
+    integer, intent(inout) :: nchin
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE UTILITAIRE XFEM
-!
-!   COMPLETER, EN FONCTION DU NOM DE L'OPTION, LES LISTES DE CHAMPS ET
-!   PARAMETRES IN AVEC LES CHAMPS SUPPLEMENTAIRES SPECIFIQUES X-FEM
+! Add XFEM fields for input fields
 !
 !  -> OPTIONS : - CHAR_MECA_TEMP_R
 !               - CHAR_THER_PARO_F
@@ -37,23 +39,24 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
 !               - FULL_MECA
 !               - RIGI_MECA_*
 !               - RAPH_MECA
+!               - CHAR_MECA_NEUM
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN     MODELE : NOM DU MODELE
-! IN     MXCHIN : TAILLE MAX DE LCHIN ET LPAIN
-! IN     OPTION : OPTION DE CALCUL
-! IN/OUT LCHIN  : LISTE DES PARAMETRES IN A COMPLETER
-! IN/OUT LPAIN  : LISTE DES CHAMPS IN A COMPLETER
-! IN/OUT NCHIN  : TAILLE UTILE DE LCHIN ET LPAIN APRES COMPLETION
+! In  model  : name of model
+! In  option : option to select input fields
+! In  mxchin : maximum number of input fields
+! IO  lpain  : list of parameters
+! IO  lchin  : list of fields
+! IO  nbin   : number of input fields
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbadd
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    if ((option(1:16) .eq. 'CHAR_MECA_TEMP_R').or. &
+    if ((option .eq. 'CHAR_MECA_TEMP_R').or. &
         (option(1:9) .eq. 'FULL_MECA') .or. &
         (option(1:9) .eq. 'RAPH_MECA') .or. &
         (option(1:9) .eq. 'RIGI_MECA')) then
@@ -61,49 +64,81 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
         nbadd = 10
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
-        lchin(nchin + 1 ) = modele(1:8)//'.TOPOSE.PIN'
+        lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
         lpain(nchin + 2 ) = 'PCNSETO'
-        lchin(nchin + 2 ) = modele(1:8)//'.TOPOSE.CNS'
+        lchin(nchin + 2 ) = model(1:8)//'.TOPOSE.CNS'
         lpain(nchin + 3 ) = 'PHEAVTO'
-        lchin(nchin + 3 ) = modele(1:8)//'.TOPOSE.HEA'
+        lchin(nchin + 3 ) = model(1:8)//'.TOPOSE.HEA'
         lpain(nchin + 4 ) = 'PLONCHA'
-        lchin(nchin + 4 ) = modele(1:8)//'.TOPOSE.LON'
+        lchin(nchin + 4 ) = model(1:8)//'.TOPOSE.LON'
         lpain(nchin + 5 ) = 'PBASLOR'
-        lchin(nchin + 5 ) = modele(1:8)//'.BASLOC'
+        lchin(nchin + 5 ) = model(1:8)//'.BASLOC'
         lpain(nchin + 6 ) = 'PLSN'
-        lchin(nchin + 6 ) = modele(1:8)//'.LNNO'
+        lchin(nchin + 6 ) = model(1:8)//'.LNNO'
         lpain(nchin + 7 ) = 'PLST'
-        lchin(nchin + 7 ) = modele(1:8)//'.LTNO'
+        lchin(nchin + 7 ) = model(1:8)//'.LTNO'
         lpain(nchin + 8 ) = 'PSTANO'
-        lchin(nchin + 8 ) = modele(1:8)//'.STNO'
+        lchin(nchin + 8 ) = model(1:8)//'.STNO'
         lpain(nchin + 9 ) = 'PPMILTO'
-        lchin(nchin + 9 ) = modele(1:8)//'.TOPOSE.PMI'
+        lchin(nchin + 9 ) = model(1:8)//'.TOPOSE.PMI'
         lpain(nchin + 10) = 'PFISNO'
-        lchin(nchin + 10) = modele(1:8)//'.FISSNO'
+        lchin(nchin + 10) = model(1:8)//'.FISSNO'
         nchin = nchin+nbadd
 !
+    elseif (option.eq.'CHAR_MECA_NEUM') then
 !
-        elseif( option(1:16).eq.'CHAR_THER_PARO_F' .or.option(1:16)&
-    .eq.'CHAR_THER_PARO_R') then
+        nbadd = 14
+        ASSERT(nchin+nbadd .le. mxchin)
+        lpain(nchin + 1 ) = 'PPINTTO'
+        lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
+        lpain(nchin + 2 ) = 'PCNSETO'
+        lchin(nchin + 2 ) = model(1:8)//'.TOPOSE.CNS'
+        lpain(nchin + 3 ) = 'PHEAVTO'
+        lchin(nchin + 3 ) = model(1:8)//'.TOPOSE.HEA'
+        lpain(nchin + 4 ) = 'PLONCHA'
+        lchin(nchin + 4 ) = model(1:8)//'.TOPOSE.LON'
+        lpain(nchin + 5 ) = 'PLSN'
+        lchin(nchin + 5 ) = model(1:8)//'.LNNO'
+        lpain(nchin + 6 ) = 'PLST'
+        lchin(nchin + 6 ) = model(1:8)//'.LTNO'
+        lpain(nchin + 7 ) = 'PSTANO'
+        lchin(nchin + 7 ) = model(1:8)//'.STNO'
+        lpain(nchin + 8 ) = 'PPMILTO'
+        lchin(nchin + 8 ) = model(1:8)//'.TOPOSE.PMI'
+        lpain(nchin + 9 ) = 'PFISNO'
+        lchin(nchin + 9 ) = model(1:8)//'.FISSNO'
+        lpain(nchin + 10) = 'PPINTER'
+        lchin(nchin + 10) = model(1:8)// '.TOPOFAC.OE'
+        lpain(nchin + 11) = 'PAINTER'
+        lchin(nchin + 11) = model(1:8)// '.TOPOFAC.AI'
+        lpain(nchin + 12) = 'PCFACE'
+        lchin(nchin + 12) = model(1:8)// '.TOPOFAC.CF'
+        lpain(nchin + 13) = 'PLONGCO'
+        lchin(nchin + 13) = model(1:8)// '.TOPOFAC.LO'
+        lpain(nchin + 14) = 'PBASECO'
+        lchin(nchin + 14) = model(1:8)// '.TOPOFAC.BA'
+        nchin = nchin+nbadd
+!
+    elseif ((option.eq.'CHAR_THER_PARO_F').or.&
+            (option.eq.'CHAR_THER_PARO_R')) then
 !
         nbadd = 7
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTER'
-        lchin(nchin + 1 ) = modele(1:8)//'.TOPOFAC.OE'
+        lchin(nchin + 1 ) = model(1:8)//'.TOPOFAC.OE'
         lpain(nchin + 2 ) = 'PAINTER'
-        lchin(nchin + 2 ) = modele(1:8)//'.TOPOFAC.AI'
+        lchin(nchin + 2 ) = model(1:8)//'.TOPOFAC.AI'
         lpain(nchin + 3 ) = 'PCFACE'
-        lchin(nchin + 3 ) = modele(1:8)//'.TOPOFAC.CF'
+        lchin(nchin + 3 ) = model(1:8)//'.TOPOFAC.CF'
         lpain(nchin + 4 ) = 'PLONGCO'
-        lchin(nchin + 4 ) = modele(1:8)//'.TOPOFAC.LO'
+        lchin(nchin + 4 ) = model(1:8)//'.TOPOFAC.LO'
         lpain(nchin + 5 ) = 'PLST'
-        lchin(nchin + 5 ) = modele(1:8)//'.LTNO'
+        lchin(nchin + 5 ) = model(1:8)//'.LTNO'
         lpain(nchin + 6 ) = 'PSTANO'
-        lchin(nchin + 6 ) = modele(1:8)//'.STNO'
+        lchin(nchin + 6 ) = model(1:8)//'.STNO'
         lpain(nchin + 7 ) = 'PBASECO'
-        lchin(nchin + 7 ) = modele(1:8)//'.TOPOFAC.BA'
+        lchin(nchin + 7 ) = model(1:8)//'.TOPOFAC.BA'
         nchin = nchin+nbadd
-!
 !
     else
         ASSERT(.false.)

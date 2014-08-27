@@ -63,7 +63,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     integer :: ibid, jcesd, jcesl, n1, i
     integer :: nbma, ima, iad, nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, r8b
-    aster_logical :: booneg, boopos, exicar
+    aster_logical :: booneg, boopos
     character(len=6) :: nompro
     character(len=8) :: k8bid, mo, lpain(3), lpaout(1), stocfl, maicfl, mail
     character(len=19) :: chams
@@ -93,9 +93,9 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     lchin(2)=chgeom
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-    call mecara(carele(1:8), chcara, exicar)
+    call mecara(carele(1:8), chcara)
 !
-    if (exicar) then
+    if (carele(1:8) .ne. ' ') then
         lpain(3)='PCACOQU'
         lchin(3)=chcara(7)
     endif

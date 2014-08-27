@@ -16,9 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine megeom(modelz, chgeoz)
-        character(len=*), intent(in) :: modelz
-        character(len=*), intent(inout) :: chgeoz
-    end subroutine megeom
+    subroutine load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+                              load_namez, load_infoz, list_load  )
+        character(len=19), optional, intent(in) :: list_load
+        character(len=*), optional, intent(in) :: load_namez
+        character(len=*), optional, intent(in) :: load_infoz
+        integer, intent(out) :: nb_load
+        aster_logical, intent(out) :: load_empty
+        character(len=24), pointer, intent(out) :: v_load_name(:)
+        integer, pointer, intent(out) :: v_load_info(:)
+    end subroutine load_list_info
 end interface
-

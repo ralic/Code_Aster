@@ -69,7 +69,6 @@ subroutine ccaccl(option, modele, mateco, carael, ligrel,&
 !   LICHIN  K24* LISTE MODIFIEE DES CHAMPS IN
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    aster_logical :: exicar
 !
     integer :: iret1, iret2, kparin
     integer :: ipara, inume, nbsp
@@ -87,8 +86,8 @@ subroutine ccaccl(option, modele, mateco, carael, ligrel,&
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 !
-    call mecara(carael, chcara, exicar)
-    if (exicar) then
+    call mecara(carael, chcara)
+    if (carael(1:8) .ne. ' ') then
         do ipara = 1, nbpain
             curpar=lipain(ipara)
             if (curpar .eq. 'PCACOQU') lichin(ipara)=chcara(7)

@@ -1,4 +1,10 @@
 subroutine megeom(modelz, chgeoz)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,40 +21,32 @@ subroutine megeom(modelz, chgeoz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-!     ARGUMENTS:
-!     ----------
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=*) :: modelz, chgeoz
-    character(len=8) :: modele
-! ----------------------------------------------------------------------
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(inout) :: chgeoz
 !
-!     ON CHERCHE LE NOM DU CHAMP DE GEOMETRIE DANS 1 MODELE
+! --------------------------------------------------------------------------------------------------
 !
-!     ENTREES:
-!        MODELZ : NOM DU MODELE
+! Prepare geometry field
 !
-!     SORTIES:
-!        CHGEOZ : NOM DU CHAMP DE GEOMETRIE TROUVE.
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model  : name of model
+! IO  chgeom : name geometry field
 !
-!     VARIABLES LOCALES:
-!     ------------------
+! --------------------------------------------------------------------------------------------------
+!
     character(len=24) :: chgeom
-    character(len=8), pointer :: lgrf(:) => null()
-!-----------------------------------------------------------------------
-    call jemarq()
-    modele = modelz
+    character(len=8) :: model
+    character(len=8), pointer :: p_model_lgrf(:) => null()
 !
-    ASSERT(modele.ne.' ')
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+! --------------------------------------------------------------------------------------------------
+!
+    model = modelz
+!
+    ASSERT(model.ne.' ')
+    call jeveuo(model//'.MODELE    .LGRF', 'L', vk8 = p_model_lgrf)
+    chgeom = p_model_lgrf(1)//'.COORDO'
+!
     chgeoz = chgeom
-    call jedema()
 end subroutine
