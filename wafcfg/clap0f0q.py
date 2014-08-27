@@ -15,13 +15,14 @@ YAMMROOT = ASTER_ROOT + '/yamm/V7_3_0_201402'
 
 def configure(self):
     opts = self.options
-    
+
     self.env.append_value('CFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env.append_value('FCFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env['ADDMEM'] = 300
     self.env.append_value('OPT_ENV', [
         '. ' + ASTER_ROOT + '/etc/codeaster/profile.sh',
-        '. ' + ASTER_ROOT + '/etc/codeaster/profile_gcc47.sh'])
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_gcc47.sh',
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront.sh'])
 
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Python_273/lib',
@@ -49,5 +50,5 @@ def configure(self):
     opts.enable_metis = True
     opts.enable_mumps = True
     opts.enable_scotch = True
-    
+
     opts.enable_petsc = False
