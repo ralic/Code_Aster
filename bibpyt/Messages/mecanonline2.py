@@ -27,13 +27,6 @@ cata_msg = {
 
 """),
 
-4 : _(u"""
- La charge définie dans STAT_NON_LINE en tant que une charge de type suiveuse, 
- sous le mot-clé TYPE_CHARGE = 'SUIV' n'est pas une Charge SUIVEUSE.
-"""),
-
-
-
 27 : _(u"""
  La prédiction par DEPL_CALCULE à l'instant de calcul %(r1)f à partir du concept %(k1)s n'a pas pu être construite.
  Explications possibles :

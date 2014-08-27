@@ -1,6 +1,23 @@
-subroutine mecgme(modelz, carelz, mate, lischa, instap,&
-                  depmoi, depdel, instam, compor, carcri,&
-                  mesuiv)
+subroutine mecgme(modelz   , cara_elemz    , matez    , list_load, inst_curr,&
+                  disp_prev, disp_cumu_inst, inst_prev, compor   , carcri,&
+                  matr_elem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/load_list_info.h"
+#include "asterfort/load_neum_prep.h"
+#include "asterfort/load_neum_matr.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,319 +37,136 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lxliis.h"
-#include "asterfort/mecact.h"
-#include "asterfort/mecara.h"
-#include "asterfort/megeom.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-#include "asterfort/utmess.h"
-    character(len=*) :: modelz, carelz
-    character(len=*) :: mate
-    real(kind=8) :: instap, instam
-    character(len=24) :: compor, carcri
-    character(len=19) :: lischa
-    character(len=19) :: mesuiv, depdel, depmoi
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: cara_elemz
+    character(len=*), intent(in) :: matez
+    character(len=19), intent(in) :: list_load
+    real(kind=8), intent(in) :: inst_prev
+    real(kind=8), intent(in) :: inst_curr
+    character(len=19), intent(in) :: disp_prev
+    character(len=19), intent(in) :: disp_cumu_inst
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: carcri
+    character(len=19), intent(in) :: matr_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Compute Neumann loads
+! 
+! Undead loads - Depending on geometry or speed - Matrix
 !
-! CALCUL DES MATRICES ELEMENTAIRES DES CHARGEMENTS MECANIQUES
-! DEPENDANT DE LA GEOMETRIE (SUIVEURS)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model          : name of model
+! In  mate           : name of material characteristics (field)
+! In  cara_elem      : name of elementary characteristics (field)
+! In  inst_prev      : previous time
+! In  inst_curr      : current time
+! In  list_load      : list of loads
+! In  disp_prev      : displacement at beginning of current time
+! In  disp_cumu_inst : displacement increment from beginning of current time
+! In  compor         : name of comportment definition (field)
+! In  carcri         : name of comportment parameters (field)
+! In  matr_elem      : name of matr_elem result
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MODELE  : NOM DU MODELE
-! IN  LISCHA  : SD L_CHARGES
-! IN  CARELE  : CARACTERISTIQUES DES POUTRES ET COQUES
-! IN  MATE    : CHAMP DE MATERIAU
-! IN  INSTAP  : INSTANT DU CALCUL
-! IN  DEPMOI  : DEPLACEMENT A L'INSTANT MOINS
-! IN  DEPDEL  : INCREMENT DE DEPLACEMENT AU COURS DES ITERATIONS
-! IN  INSTAM  : INSTANT MOINS
-! IN  COMPOR  : COMPORTEMENT
-! IN  CARCRI  : CRITERES DE CONVERGENCE (THETA)
-! OUT MESUIV  : MATRICES ELEMENTAIRES
-!               POSITION 7-8  : NUMERO DE LA CHARGE
-!                               VAUT 00 SI PAS DE CHARGE
-!               POSITION 12-14: NUMERO DU VECTEUR ELEMENTAIRE / CHARGE
+    integer :: nb_in_maxi, nbout
+    parameter (nb_in_maxi = 42, nbout = 1)
+    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
+    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
+    character(len=24) :: model, cara_elem, mate
+    character(len=24), pointer :: p_matr_elem_relr(:) => null()
+    character(len=24), pointer :: v_load_name(:) => null()
+    integer, pointer :: v_load_info(:) => null()
+    character(len=8) :: load_name
+    integer :: load_nume
+    real(kind=8) :: inst_theta
+    character(len=19) :: ligrel_model
+    integer :: iret, ier, ichme, i_load, idx_matr
+    aster_logical :: l_first_matr, load_empty
+    integer :: nb_load, nbchme, nb_in_prep
 !
-!
-!
-    integer :: nbout, nbin
-    parameter    (nbout=1, nbin=16)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
-!
-    character(len=24) :: modele, carele
-    character(len=24) :: charge, infcha
-    character(len=8) :: nomcha
-    character(len=8) :: affcha
-    character(len=16) :: option
-    character(len=24) :: chtim2
-    character(len=24) :: chgeom, chcara(18), chtime, ligrel
-    character(len=24) :: ligrmo, ligrch, evolch
-    integer :: iret, ier, i, k, icha, inum
-    integer :: somme
-    aster_logical :: prem
-    integer :: jchar, jinf
-    integer :: nchar, numchm, nbchme
-    integer :: ifm, niv
-!
-    integer :: nbchmx
-    parameter (nbchmx=5)
-    integer :: nbopt(nbchmx), tab(nbchmx)
-    character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nomopf(nbchmx)
-    character(len=6) :: nompar(nbchmx), nomopr(nbchmx)
-    character(len=24), pointer :: relr(:) => null()
-    data nomlig/'.ROTAT','.PESAN','.PRESS','.FCO3D','.EFOND'/
-    data nomopf/'??????','??????','PRSU_F','SFCO3D','EFON_F'/
-    data nompaf/'??????','??????','PRESSF','FFCO3D','PEFOND'/
-    data nomopr/'RO    ','??????','PRSU_R','SRCO3D','EFON_R'/
-    data nompar/'ROTATR','PESANR','PRESSR','FRCO3D','PEFOND'/
-    data nbopt/10,15,9,15,16/
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    modele = modelz
-    carele = carelz
-    ligrmo = modele(1:8)//'.MODELE'
-    charge = lischa(1:19)//'.LCHA'
-    infcha = lischa(1:19)//'.INFC'
-    chtime = '&&MECHME.CH_INST_R'
-    chtim2 = '&&MECHME.CH_INST_M'
+    model        = modelz
+    cara_elem    = cara_elemz
+    mate         = matez
+    ligrel_model = model(1:8)//'.MODELE'
+    nb_load      = 0
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
                 lchout)
 !
-! --- ACCES AUX CHARGEMENTS
+! - Loads
 !
-    call jeexin(charge, iret)
-    if (iret .eq. 0) then
-        nchar = 0
+    call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
+                        list_load = list_load)
+    if (load_empty) then
         goto 99
-    else
-        call jelira(charge, 'LONMAX', nchar)
-        call jeveuo(charge, 'L', jchar)
-        call jeveuo(infcha, 'L', jinf)
     endif
 !
-! --- PREPARATION DES MATR_ELEM
+! - Allocate result
 !
-    call jeexin(mesuiv//'.RELR', iret)
+    call jeexin(matr_elem//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', mesuiv, modele(1:8), mate, carele,&
+        l_first_matr = .true.
+        call memare('V', matr_elem, model(1:8), mate, cara_elem,&
                     'CHAR_MECA')
-        call reajre(mesuiv, ' ', 'V')
-        prem = .true.
+        call reajre(matr_elem, ' ', 'V')
     else
-        prem = .false.
-        call jelira(mesuiv//'.RELR', 'LONUTI', nbchme)
-        if (nbchme .gt. 0) call jeveuo(mesuiv//'.RELR', 'L', vk24=relr)
+        l_first_matr = .false.
+        call jelira(matr_elem//'.RELR', 'LONUTI', nbchme)
+        if (nbchme .gt. 0) then
+            call jeveuo(matr_elem//'.RELR', 'L', vk24 = p_matr_elem_relr)
+        endif
     endif
 !
-! --- CHAMP DE GEOMETRIE
+! - Preparing input fields
 !
-    call megeom(modele(1:8), chgeom)
+    call load_neum_prep(model    , cara_elem , mate      , 'Suiv'    , inst_prev,&
+                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin    ,&
+                        lpain    , disp_prev = disp_prev , disp_cumu_inst = disp_cumu_inst,&
+                        compor = compor, carcri = carcri)
 !
-! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
+! - Computation
 !
-    call mecara(carele(1:8), chcara)
-!
-! --- CHAMP POUR LES INSTANTS
-!
-    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                ncmp=1, nomcmp='INST   ', sr=instap)
-    call mecact('V', chtim2, 'MODELE', ligrmo, 'INST_R  ',&
-                ncmp=1, nomcmp='INST   ', sr=instam)
-!
-! --- REMPLISSAGE DES CHAMPS
-!
-    lpain(2) = 'PGEOMER'
-    lchin(2) = chgeom(1:19)
-    lpain(3) = 'PTEMPSR'
-    lchin(3) = chtime(1:19)
-    lpain(4) = 'PMATERC'
-    lchin(4) = mate(1:19)
-    lpain(5) = 'PCACOQU'
-    lchin(5) = chcara(7)(1:19)
-    lpain(6) = 'PCAGNPO'
-    lchin(6) = chcara(6)(1:19)
-    lpain(7) = 'PCADISM'
-    lchin(7) = chcara(3)(1:19)
-    lpain(8) = 'PDEPLMR'
-    lchin(8) = depmoi
-    lpain(9) = 'PDEPLPR'
-    lchin(9) = depdel
-    lpain(10) = 'PCAORIE'
-    lchin(10) = chcara(1)(1:19)
-    lpain(11) = 'PCACABL'
-    lchin(11) = chcara(10)(1:19)
-    lpain(12) = 'PCARCRI'
-    lchin(12) = carcri(1:19)
-    lpain(13) = 'PINSTMR'
-    lchin(13) = chtim2(1:19)
-    lpain(14) = 'PCOMPOR'
-    lchin(14) = compor(1:19)
-    lpain(15) = 'PINSTPR'
-    lchin(15) = chtime(1:19)
-!
-! --- CHAMP DE SORTIE
-!
-    lpaout(1) = 'PMATUUR'
-!
-    if (prem) then
-        do icha = 1, nchar
-            inum = 0
-            lchout(1) = mesuiv(1:8)//'. '
-            nomcha = zk24(jchar+icha-1) (1:8)
-            ligrch = nomcha//'.CHME.LIGRE'
-            numchm = zi(jinf+nchar+icha)
-            call dismoi('TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', repk=affcha)
-!
-            if (numchm .eq. 4) then
-!
-! ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
-                somme = 0
-                ligrel = ligrmo
-                do k = 1, nbchmx
-                    lchin(1) = ligrch(1:13)//nomlig(k)//'.DESC'
-                    call exisd('CHAMP_GD', lchin(1), iret)
-                    tab(k) = iret
-!
-                    if (iret .ne. 0) then
-!
-                        if ((k.ne.2)) then
-                            if (affcha(5:7) .eq. '_FO') then
-                                option = 'RIGI_MECA_'//nomopf(k)
-                                lpain(1) = 'P'//nompaf(k)
-                            else
-                                option = 'RIGI_MECA_'//nomopr(k)
-                                lpain(1) = 'P'//nompar(k)
-                            endif
-!
-! ------------------------- For EFFE_FOND: you need two <CARTE>
-!
-                            if (option .eq. 'CHAR_MECA_EFON_R') then
-                                lpain(16) = 'PPREFFR'
-                                lchin(16) = nomcha//'.CHME.PREFF'
-                                lpain(1) = 'PEFOND'
-                                lchin(1) = nomcha//'.CHME.EFOND'
-                            endif
-                            if (option .eq. 'CHAR_MECA_EFON_F') then
-                                lpain(16) = 'PPREFFF'
-                                lchin(16) = nomcha//'.CHME.PREFF'
-                                lpain(1) = 'PEFOND'
-                                lchin(1) = nomcha//'.CHME.EFOND'
-                            endif
-                            lchout(1) (10:10) = 'G'
-                            inum = inum + 1
-                            call codent(icha, 'D0', lchout(1) (7:8))
-                            call codent(inum, 'D0', lchout(1) (12:14))
-!
-!               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
-                            if (k .eq. 4) lpaout(1) = 'PMATUNS'
-                            if (k .eq. 3) lpaout(1) = 'PMATUNS'
-!
-                            call calcul('S', option, ligrel, nbopt(k), lchin,&
-                                        lpain, 1, lchout, lpaout, 'V',&
-                                        'OUI')
-                            call reajre(mesuiv, lchout(1), 'V')
-                        endif
-                    endif
-                    evolch= nomcha//'.CHME.EVOL.CHAR'
-                    call jeexin(evolch, ier)
-                    if ((tab(k).eq.1) .or. (ier.gt.0)) then
-                        somme = somme + 1
-                    endif
-                enddo
-                if (somme .eq. 0) then
-                    call utmess('F', 'MECANONLINE2_4')
+    if (l_first_matr) then
+        do i_load = 1, nb_load
+            idx_matr  = 0
+            load_name = v_load_name(i_load)(1:8)
+            load_nume = v_load_info(nb_load+i_load+1)  
+            if (load_nume .eq. 4) then
+                call load_neum_matr(i_load      , idx_matr  , load_name , load_nume, 'Suiv',&
+                                    ligrel_model, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
+                                    matr_elem  )
+            endif
+        end do
+    else
+        do ichme = 1, nbchme
+            if (p_matr_elem_relr(ichme)(10:10) .eq. 'G') then
+                call lxliis(p_matr_elem_relr(ichme)(7:8), i_load, ier)
+                idx_matr  = -ichme
+                load_name = v_load_name(i_load)(1:8)
+                load_nume = v_load_info(nb_load+i_load+1)
+                if (load_nume .eq. 4) then
+                    call load_neum_matr(i_load      , idx_matr  , load_name , load_nume, 'Suiv',&
+                                        ligrel_model, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
+                                        matr_elem   )
                 endif
             endif
-        enddo
-    else
-!
-! ----- LES MATR_ELEM EXISTENT DEJA, ON REGARDE S'ILS DEPENDENT DE
-! ----- LA GEOMETRIE
-!
-        ligrel = ligrmo
-!
-        do i = 1, nbchme
-            if (relr(i) (10:10) .eq. 'G') then
-                call lxliis(relr(i) (7:8), icha, ier)
-                nomcha = zk24(jchar+icha-1) (1:8)
-                ligrch = nomcha//'.CHME.LIGRE'
-!
-! ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE
-!
-                call dismoi('TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', repk=affcha)
-                do k = 1, nbchmx
-                    lchin(1) = ligrch(1:13)//nomlig(k)//'.DESC'
-                    call exisd('CHAMP_GD', lchin(1), iret)
-                    if (iret .ne. 0) then
-                        if (k .ne. 2) then
-                            lchout(1) = relr(i)(1:19)
-                            if (affcha(5:7) .eq. '_FO') then
-                                option = 'RIGI_MECA_'//nomopf(k)
-                                lpain(1) = 'P'//nompaf(k)
-                            else
-                                option = 'RIGI_MECA_'//nomopr(k)
-                                lpain(1) = 'P'//nompar(k)
-                            endif
-!
-! ------------------------- For EFFE_FOND: you need two <CARTE>
-!
-                            if (option .eq. 'CHAR_MECA_EFON_R') then
-                                lpain(16) = 'PPRESSR'
-                                lchin(16) = nomcha//'.CHME.PRESS'
-                            endif
-                            if (option .eq. 'CHAR_MECA_EFON_F') then
-                                lpain(16) = 'PPRESSF'
-                                lchin(16) = nomcha//'.CHME.PRESS'
-                            endif
-!               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
-                            if (k .eq. 4) lpaout(1) = 'PMATUNS'
-                            if (k .eq. 3) lpaout(1) = 'PMATUNS'
-!
-                            call calcul('S', option, ligrel, nbopt(k), lchin,&
-                                        lpain, 1, lchout, lpaout, 'V',&
-                                        'OUI')
-                        endif
-                    endif
-                enddo
-            endif
-        enddo
+        end do
     endif
-!
-    call jelira(mesuiv//'.RELR', 'LONUTI', nbchme)
-!
 !
  99 continue
 !
     call jedema()
 end subroutine
+

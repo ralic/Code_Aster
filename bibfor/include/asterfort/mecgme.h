@@ -16,19 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mecgme(modelz, carelz, mate, lischa, instap,&
-                      depmoi, depdel, instam, compor, carcri,&
-                      mesuiv)
-        character(len=*) :: modelz
-        character(len=*) :: carelz
-        character(len=*) :: mate
-        character(len=19) :: lischa
-        real(kind=8) :: instap
-        character(len=19) :: depmoi
-        character(len=19) :: depdel
-        real(kind=8) :: instam
-        character(len=24) :: compor
-        character(len=24) :: carcri
-        character(len=19) :: mesuiv
+    subroutine mecgme(modelz   , cara_elemz    , matez    , list_load, inst_curr,&
+                      disp_prev, disp_cumu_inst, inst_prev, compor   , carcri,&
+                      matr_elem)
+        character(len=*), intent(in) :: modelz
+        character(len=*), intent(in) :: cara_elemz
+        character(len=*), intent(in) :: matez
+        character(len=19), intent(in) :: list_load
+        real(kind=8), intent(in) :: inst_prev
+        real(kind=8), intent(in) :: inst_curr
+        character(len=19), intent(in) :: disp_prev
+        character(len=19), intent(in) :: disp_cumu_inst
+        character(len=24), intent(in) :: compor
+        character(len=24), intent(in) :: carcri
+        character(len=19), intent(in) :: matr_elem
     end subroutine mecgme
 end interface

@@ -16,23 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vecgme(modele, carele, mate, charge, infcha,&
-                      instap, depmoz, depdez, vecelz, instam,&
-                      compor, carcri, ligrez, vitez, strmoz)
-        character(len=24) :: modele
-        character(len=24) :: carele
-        character(len=*) :: mate
-        character(len=24) :: charge
-        character(len=24) :: infcha
-        real(kind=8) :: instap
-        character(len=*) :: depmoz
-        character(len=*) :: depdez
-        character(len=*) :: vecelz
-        real(kind=8) :: instam
-        character(len=24) :: compor
-        character(len=24) :: carcri
-        character(len=*) :: ligrez
-        character(len=*) :: vitez
-        character(len=*) :: strmoz
+    subroutine vecgme(model    , cara_elem , matez          , lload_namez, lload_infoz,&
+                      inst_curr, disp_prevz, disp_cumu_instz, vect_elemz , inst_prev  ,&
+                      compor   , carcri    , ligrel_calcz   , vite_currz , strx_prevz )
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: cara_elem
+        character(len=*), intent(in) :: matez
+        real(kind=8), intent(in) :: inst_curr
+        character(len=*), intent(in) :: disp_prevz
+        character(len=*), intent(in) :: disp_cumu_instz
+        character(len=*), intent(in) :: lload_namez
+        character(len=*), intent(in) :: lload_infoz
+        character(len=*), intent(inout) :: vect_elemz
+        real(kind=8), intent(in) :: inst_prev
+        character(len=24), intent(in) :: compor
+        character(len=24), intent(in) :: carcri
+        character(len=*), intent(in) :: ligrel_calcz
+        character(len=*), intent(in) :: vite_currz
+        character(len=*), intent(in) :: strx_prevz
     end subroutine vecgme
 end interface
