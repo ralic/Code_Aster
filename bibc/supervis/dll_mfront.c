@@ -30,9 +30,9 @@ PyObject* get_dll_register_dict();
 
 
 /* *********************************************************************
- * 
+ *
  *                          MFRONT interface
- * 
+ *
  * *********************************************************************/
 
 /* declarations of pointers on MFRONT functions */
@@ -58,7 +58,7 @@ int load_mfront_lib(const char* libname, const char* symbol)
 
     strcpy(symbol_, symbol);
 
-    printf("Loading '%s'... ", libname);
+    DEBUG_DLL_VV("Loading '%s'%s ", libname, "...");
     mfront_handle = dlopen(libname, RTLD_NOW);
     if ( ! mfront_handle ) {
         printf("\n%s\n", dlerror());
@@ -69,21 +69,21 @@ int load_mfront_lib(const char* libname, const char* symbol)
         CALL_UTMESS_CORE("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
         FreeStr(valk);  // uncallable
     }
-    printf("searching symbol '%s'... ", symbol);
+    DEBUG_DLL_VV("searching symbol '%s'%s ", symbol, "...");
     dlerror();    /* Clear any existing error */
 
     *(void **) (&f_mfront) = dlsym(mfront_handle, symbol);
     if ((error = dlerror()) != NULL)  {
         dlerror();
         strcat(symbol_, "_");
-        printf("trying symbol '%s'... ", symbol_);
+        DEBUG_DLL_VV("trying symbol '%s'%s ", symbol_, "...");
         *(void **) (&f_mfront) = dlsym(mfront_handle, symbol_);
     }
 
     if ((error = dlerror()) != NULL)  {
         return 1;
     }
-    printf("found\n");
+    DEBUG_DLL_VV("found%s%s", "", "");
 
     /* register these MFRONT lib */
     if ( libsymb_register(DLL_DICT, libname, symbol,
