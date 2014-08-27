@@ -1,0 +1,23 @@
+@Parser IsotropicPlasticMisesFlow;
+@Behaviour Plasticity;
+@Author Helfer Thomas;
+@Date 23/11/06;
+
+@MaterialProperty thermalexpansion alpha;    /* mandatory for castem */
+alpha.setGlossaryName("ThermalExpansion");
+//@MaterialProperty stress s0;
+@MaterialProperty stress ET;
+@MaterialLaw{"Plasticity_Sy.mfront"};
+
+@LocalVariable stress s0; 
+@InitLocalVars{
+  T_ = T + theta * dT ;
+s0 = Acier_ElasticYield(T_);
+}
+
+@FlowRule{
+  real   H  = young*ET/(young-ET);
+  f       = seq-H*p-s0;
+  df_dseq = 1;
+  df_dp   = -H;
+}

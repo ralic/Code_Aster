@@ -27,7 +27,7 @@ def configure(self):
         '. ' + ASTER_ROOT + '/etc/codeaster/profile.sh',
         '. ' + ASTER_ROOT + '/etc/codeaster/profile_intel-12.sh',
         '. ' + ASTER_ROOT + '/etc/codeaster/profile_zmat.sh',
-        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront.sh'])
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront2.sh'])
 
     self.env.append_value('LIBPATH', [
         '/usr/lib/atlas-base/atlas',                # for NumPy, see issue18751

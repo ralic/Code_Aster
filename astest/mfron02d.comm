@@ -1,0 +1,277 @@
+# -*- coding: utf-8 -*-
+# person_in_charge: jean-michel.proix at edf.fr
+# TITRE TEST MFRONT LOI DE MAZARS CF.TEST SSLA103C
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+import os
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#    mfront --obuild mazars.mfront --interface=aster     
+# avant de lancer l'etude.
+
+os.system("mfront --obuild Mazars.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so mazars.so")
+    
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+M=LIRE_MAILLAGE(FORMAT='MED',);
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
+
+E=DEFI_FONCTION(NOM_PARA='SECH',
+                VALE=( 80.,  3.E10,
+                      100. , 1.E10),)
+
+NU=DEFI_FONCTION(NOM_PARA='HYDR',
+                VALE=(  0.,  0.15,
+                        1,   0.25),)
+
+ALPHA=DEFI_CONSTANTE(VALE= 1.E-5)
+
+EPSD0=DEFI_CONSTANTE(VALE=1.E-4,);
+
+AT=DEFI_FONCTION(NOM_PARA='SECH',
+                VALE=( 80., 1.,
+                      100., 0.8),)
+
+BT=DEFI_FONCTION(NOM_PARA='HYDR',
+                VALE=(  0., 10000.,
+                        1., 11000.),)
+
+AC   =DEFI_CONSTANTE(VALE = 1.4)
+
+BC   =DEFI_CONSTANTE(VALE = 2000.)
+
+K   =DEFI_CONSTANTE(VALE = 0.7)
+Z   =DEFI_CONSTANTE(VALE = 0.)
+
+KAPA=DEFI_CONSTANTE(VALE=1.66E-5)
+BETA=DEFI_CONSTANTE(VALE=1.50E-5)
+
+BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                               NU=NU,
+                               K_DESSIC =1.66E-5,
+                               B_ENDOGE = 1.5E-5,
+                               TEMP_DEF_ALPHA = 20.,
+                               ALPHA=ALPHA ),
+                    MAZARS_FO  =_F(K = K,
+                                   EPSD0= EPSD0,
+                                   AC   = AC,
+                                   AT   = AT,
+                                   BC   = BC,
+                                   BT   = BT),)
+
+MATFRONT=DEFI_MATERIAU(
+                    ELAS_FO=_F(E=E,
+                               NU=NU,
+                               K_DESSIC =1.66E-5,
+                               B_ENDOGE = 1.5E-5,
+                               TEMP_DEF_ALPHA = 20.,
+                               ALPHA=ALPHA ),
+                    UMAT_FO=_F(  NB_VALE=8,
+                                 C1=E,
+                                 C2=NU,
+                                 C3  =AC, #AC
+                                 C4  =AT,
+                                 C5  =BC,
+                                 C6  =BT,
+                                 C7  =K,
+                                 C8  =EPSD0,
+                                 ),
+                       );
+                       
+                       
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=100.),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=80.),);
+
+SECH1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+               _F(CHAM_GD=SECHI,
+                   INST=0.0,),
+                _F(CHAM_GD=SECHF,
+                   INST=3600.0,),   ),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=20.0,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=120.0,),);
+
+TEMP1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+                _F(CHAM_GD=TEMPI,
+                   INST=0.0,),
+                _F(CHAM_GD=TEMPF,
+                   INST=3600.0,  ),),);
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                OPERATION='AFFE',
+                MODELE = MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=0.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                OPERATION='AFFE',
+                MODELE = MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=1.0,),);
+
+HYDR1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='HYDR_NOEU',
+                AFFE=(
+                _F(CHAM_GD=HYDRI,
+                   INST=0.0,),
+                _F(CHAM_GD=HYDRF,
+                   INST=3600.0,  ),),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),);
+
+
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   FACE_IMPO=_F(GROUP_MA='D1',
+                                DY=0.0,),);
+
+#  ATTENTION :METTRE  SUFFISAMMENT DE PAS DE TEMPS QUAND E VARIE AVEC LE
+#  SECHAGE SINON RESULTATS APPROXIMATIFS OU PROBLEME DE CONVERGENCE
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=3600.0,
+                                     NOMBRE=20,),)
+
+U=STAT_NON_LINE( MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=_F(CHARGE=CH1,),
+                COMPORTEMENT=_F(RELATION='MAZARS'),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
+                               ITER_GLOB_MAXI=25,),);
+U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO','EPSP_ELNO'))
+
+
+U=CALC_CHAMP(reuse =U,
+             RESULTAT = U,
+
+             DEFORMATION=('EPSI_NOEU','EPSP_NOEU',),CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
+
+TEST_RESU(RESU=(_F(INST=3600.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.000653,
+                   VALE_REFE=6.5300000000000004E-4,
+                   PRECISION=5.0000000000000001E-3,),
+                _F(INST=3600.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=0.000653,
+                   VALE_REFE=6.5300000000000004E-4,
+                   PRECISION=5.0000000000000001E-3,),
+          ))
+
+CMF=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MATFRONT,),
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),);
+
+MF=STAT_NON_LINE( MODELE=MO,
+                CHAM_MATER=CMF,
+                EXCIT=_F(CHARGE=CH1,),
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                LIBRAIRIE='mazars.so',
+                                NOM_ROUTINE='astermazars',
+                                RESI_INTE_RELA=1e-8,
+                                  ),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='ELASTIQUE',),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
+                               ITER_GLOB_MAXI=25,),);
+MF=CALC_CHAMP(reuse=MF,RESULTAT=MF,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO','EPSP_ELNO'))
+
+
+MF=CALC_CHAMP(reuse =MF,
+             RESULTAT = MF,
+
+             DEFORMATION=('EPSI_NOEU','EPSP_NOEU',),CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
+
+#TEST_RESU(RESU=(_F(INST=3600.0,
+#                   REFERENCE='ANALYTIQUE',
+#                   RESULTAT=MF,
+#                   NOM_CHAM='EPSI_NOEU',
+#                   NOEUD='N5',
+#                   NOM_CMP='EPXX',
+#                   VALE_CALC=0.000653000003038,
+#                   VALE_REFE=6.5300000000000004E-4,
+#                   PRECISION=5.0000000000000001E-3,),
+#                _F(INST=3600.0,
+#                   REFERENCE='ANALYTIQUE',
+#                   RESULTAT=MF,
+#                   NOM_CHAM='EPSI_NOEU',
+#                   NOEUD='N5',
+#                   NOM_CMP='EPYY',
+#                   VALE_CALC=0.000653000003038,
+#                   VALE_REFE=6.5300000000000004E-4,
+#                   PRECISION=5.0000000000000001E-3,),
+#                ),
+#          )
+          
+
+FIN();

@@ -1,0 +1,346 @@
+# -*- coding: utf-8 -*-
+# TITRE TEST MFRONT Plasticite Simo-Miehe cf. SSNP159A
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+os.system("mfront --obuild ImplicitSimoMieheElastoPlasticity.mfront Plasticity.mfront --interface=aster")
+os.system("mv src/libAsterBehaviour.so vmis.so")
+
+
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+               MAILLAGE=MA,
+               
+               AFFE=_F(
+               TOUT = 'OUI',
+               PHENOMENE = 'MECANIQUE',
+               MODELISATION = '3D')
+             )
+
+
+ACIER=DEFI_MATERIAU(
+                   ELAS=_F(
+                   E = 200000.,
+                   NU = 0.3,),
+                   ECRO_LINE=_F(D_SIGM_EPSI=2000,
+                                SY=1000.0,),
+                      UMAT=_F( C1 = 200000 ,
+                               C2 = 0.3 ,
+                               C3=0,
+                               C4=1000.,
+                               C5=2000.,
+                               NB_VALE=5,
+                               ),
+             )
+
+L_INST=DEFI_LIST_REEL(
+              DEBUT=0.0,INTERVALLE=(
+                                   _F(  JUSQU_A = 2.00, NOMBRE = 20),)
+             )
+
+F_CHAR=DEFI_FONCTION(
+                NOM_PARA='INST',
+                PROL_DROITE='CONSTANT',
+                    VALE=(
+                          0.,   0.,
+                          2.,  290,
+                          )
+                  )
+
+
+CHP_MATT=AFFE_MATERIAU(
+               MAILLAGE=MA,
+               AFFE=_F(
+                       TOUT = 'OUI',
+                       MATER = ACIER,),
+)
+
+
+CHR_LIAI=AFFE_CHAR_MECA(
+              MODELE=MO,DDL_IMPO=(
+               _F( NOEUD = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.),
+               _F( NOEUD = 'NO6',  DX = 0.,  DY = 0.),
+               _F( NOEUD = 'NO1',  DX = 0.,          DZ = 0.),
+               _F( NOEUD = ('NO9', 'NO13', 'NO14', 'NO5', 'NO17',),  DX = 0.))
+             )
+
+CHR_TRAC=AFFE_CHAR_MECA(
+                     MODELE=MO,
+                     FACE_IMPO=_F( MAILLE = 'MA2',  DX = 1.)
+             )
+
+###################################################
+#CALCUL ET TEST AVEC LES DEFORMATIONS LOGARITHMIQUE
+LOG=STAT_NON_LINE( MODELE=MO,
+                  CHAM_MATER=CHP_MATT,
+                  EXCIT=(_F(CHARGE = CHR_LIAI),
+                         _F(CHARGE = CHR_TRAC,
+                            FONC_MULT = F_CHAR,
+                            TYPE_CHARGE = 'DIDI')),
+                  COMPORTEMENT=_F(RELATION = 'VMIS_ISOT_LINE',
+                               DEFORMATION = 'GDEF_LOG'),
+                  INCREMENT=_F(LIST_INST = L_INST),
+                  NEWTON=_F(MATRICE = 'TANGENTE',
+                            PREDICTION = 'EXTRAPOLE',
+                            REAC_ITER = 1),
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                 ITER_GLOB_MAXI = 50),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3)
+              )
+
+LOGMF=STAT_NON_LINE( MODELE=MO,
+                  CHAM_MATER=CHP_MATT,
+                  EXCIT=(_F(CHARGE = CHR_LIAI),
+                         _F(CHARGE = CHR_TRAC,
+                            FONC_MULT = F_CHAR,
+                            TYPE_CHARGE = 'DIDI')),
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='vmis.so',
+                        NOM_ROUTINE='asterplasticity',
+                        RESI_INTE_RELA=1e-8,
+                        DEFORMATION='GDEF_LOG',                        
+                        ),
+                  INCREMENT=_F(LIST_INST = L_INST),
+                  NEWTON=_F(MATRICE = 'TANGENTE',
+                            PREDICTION = 'EXTRAPOLE',
+                            REAC_ITER = 1),
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                 ITER_GLOB_MAXI = 50),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3)
+              )
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=LOG,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=LOG,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.49479541E+03,
+                   VALE_REFE=1495.0,
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=LOG,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.247145796,
+                   VALE_REFE=0.2475,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.002,
+                   MAILLE='MA1',),
+                ),
+          )
+
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=LOGMF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=LOGMF,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1494.79551526 ,
+                   VALE_REFE=1.49479541E+03,
+                   REFERENCE='AUTRE_ASTER',
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=LOGMF,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V7',
+                   VALE_CALC=0.247145796467,
+                   VALE_REFE=0.247145796,
+                   REFERENCE='AUTRE_ASTER',
+                   MAILLE='MA1',),
+                ),
+          )
+
+###################################################
+#CALCUL ET TEST AVEC LES DEFORMATIONS DE SIMO_MIEHE
+SM=STAT_NON_LINE( MODELE=MO,
+                  CHAM_MATER=CHP_MATT,
+                  EXCIT=(_F(CHARGE = CHR_LIAI),
+                         _F(CHARGE = CHR_TRAC,
+                            FONC_MULT = F_CHAR,
+                            TYPE_CHARGE = 'DIDI')),
+                  COMPORTEMENT=_F(RELATION = 'VMIS_ISOT_LINE',
+                               DEFORMATION = 'SIMO_MIEHE'),
+                  INCREMENT=_F(LIST_INST = L_INST),
+                  NEWTON=_F(MATRICE = 'TANGENTE',
+                            PREDICTION = 'EXTRAPOLE',
+                            REAC_ITER = 1),
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                 ITER_GLOB_MAXI = 50),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3)
+              )
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=SM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=SM,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.50055349E+03,
+                   VALE_REFE=1495.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.004,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=SM,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.250006467,
+                   VALE_REFE=0.2475,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.015,
+                   MAILLE='MA1',),
+                ),
+          )
+
+#IMPR_RESU(RESU=_F(RESULTAT=SM))
+
+
+DLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST))
+
+
+
+###################################################
+#CALCUL ET TEST AVEC LES DEFORMATIONS DE SIMO_MIEHE
+
+
+
+
+##############################################################
+# il faut initialiser be
+
+
+liste_var = tuple(['V' + str(i) for i in range(1, 13+1)])
+liste_vale = [0.0, 1., 1., 1.] + 9*[0.0] 
+
+VAIN11= CREA_CHAMP(OPERATION = 'AFFE', TYPE_CHAM = 'ELGA_VARI_R', MODELE = MO,
+                   AFFE=(_F(TOUT='OUI', NOM_CMP = liste_var, VALE = liste_vale, ),
+                        ),
+                   );
+
+SMF=STAT_NON_LINE( MODELE=MO,
+                    ETAT_INIT = _F(VARI=VAIN11,),
+                  CHAM_MATER=CHP_MATT,
+                  EXCIT=(_F(CHARGE = CHR_LIAI),
+                         _F(CHARGE = CHR_TRAC,
+                            FONC_MULT = F_CHAR,
+                            TYPE_CHARGE = 'DIDI')),
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='vmis.so',
+                        NOM_ROUTINE='asterplasimo',
+                        RESI_INTE_RELA=1e-11,
+                        DEFORMATION='SIMO_MIEHE',                        
+                        ),
+                  INCREMENT=_F(LIST_INST = DLIST),
+                  NEWTON=_F(MATRICE = 'ELASTIQUE',
+                            PREDICTION = 'EXTRAPOLE',
+                            ),
+                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-4,
+                                 ITER_GLOB_MAXI = 150),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI = 5)
+              )
+
+#IMPR_RESU(RESU=_F(RESULTAT=SMF))
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=SMF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=SMF,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1500.5535132,
+                   VALE_REFE=1.50055349E+03,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=SMF,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.250006478172,
+                   VALE_REFE=0.250006467,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
+
+
+
+
+FIN()
+#

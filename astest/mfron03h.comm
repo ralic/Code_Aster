@@ -1,0 +1,397 @@
+# -*- coding: utf-8 -*-
+# TITRE VALIDATION MONOCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
+
+
+from numpy.linalg import norm
+from numpy import *
+
+os.system("mfront --obuild --interface=aster MonoCristal_DD_CC.mfront ")
+#os.system("CXXFLAGS='-g' mfront --obuild mono_dd_cc.mfront --interface=aster --@AsterErrorReport=false --@AsterGenerateMTestFileOnFailure=true --debug ")
+os.system("mv src/libAsterBehaviour.so mono_dd_cc.so")
+
+TEMP=50
+#TEMP=300.
+
+
+#coef=1.e3 # Pa, m
+coef=1.   # MPa, mm
+E=(236-0.0459*TEMP)*1000.*coef*coef  # Pa
+Nu=0.35
+Mu=E/2./(1.+Nu)
+tau_f  = 0.                # Pa
+tau_0  = 363.0*coef*coef   # Pa
+y_at   = 2.e-6/coef        # m
+N      = 50.
+gamma0 = 1.E-6             # s**-1
+GH     = 1.e11             # s**-1
+b      = 2.48e-7/coef      # m
+DeltaG0= 0.84              # eV
+epsi_1 = 3.e-4             # s**-1
+D      = 10.e-6/coef       # m
+beta   = 0.2
+d_lat  = 1000./coef
+K_self = 100.
+k_b      = 8.62E-5  # "Constante de Boltzmann, en eV/K"
+K_self_sur_K_f=3.
+denom= min( K_self_sur_K_f, 1.+ (K_self_sur_K_f -1.)*TEMP/300.)
+K_f= K_self/denom
+l_c = 500.*b*(TEMP/300.)**2
+a_coli=0.7
+a_ncol=0.1
+a_self=0.1024
+rho_ini= 1.E5*coef*coef    # en m**-2
+rho_ini5= 1.E6*coef*coef    # en m**-2
+
+# adimensionn�
+rho_ini = rho_ini*b*b
+rho_ini5 = rho_ini5 *b*b
+E_L=E
+G=Mu
+
+ACIERDDI=DEFI_MATERIAU( 
+                  ELAS=_F( E=E, NU=Nu, ALPHA=0.),
+                  UMAT=_F( NB_VALE=31,
+                           C1 = E_L ,
+                           C2 = E_L ,
+                           C3 = E_L,
+                           C4 = Nu,
+                           C5 = Nu,   
+                           C6 = Nu,    
+                           C7 = G,  
+                           C8 = G,  
+                           C9 = G,  
+                           C10 = b,   
+                           C11 = GH,    
+                           C12 = DeltaG0,  
+                           C13 = tau_0,  
+                           C14 = tau_f,  
+                           C15 = gamma0,   
+                           C16 = N,  
+                           C17 = rho_ini,
+                           C18 = D,
+                           C19 = d_lat,
+                           C20 = y_at,
+                           C21 = K_f,
+                           C22 = K_self ,
+                           C23 = k_b,
+                           C24 = epsi_1,
+                           C25 = G,
+                           C26 = a_self,
+                           C27 = a_coli, 
+                           C28 = a_ncol,
+                           C29 = a_ncol,
+                           C30 = a_ncol,
+                           C31 = a_ncol,
+                           ),
+                           )
+                           
+
+# vecteurs direction de chargement
+l_orient=[[0.,0.,1.],[0.,1.,1.],[1.,1.,1.],[-1.,4.,9.],[0.,1.,2.],[-1.,2.,5.]]
+l_norm=[l_orient[i]/norm(l_orient[i],2) for i in range(0,len(l_orient))]
+
+ori = 0
+
+# parametres de chargement
+# numero du vecteur de chargement
+
+##chargement
+EpsMax=0.27
+viteps=3.e-4
+tmax=EpsMax/viteps
+
+   # def. imposee
+SI1=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][0]*l_norm[ori][0]),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+SI2=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][1]*l_norm[ori][1]),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+SI3=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][2]*l_norm[ori][2]),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+SI4=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][0]*l_norm[ori][1]),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+SI5=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][0]*l_norm[ori][2]),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+SI6=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][1]*l_norm[ori][2]),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+# densites de dislocation initiales : variables internes de 0 a 44
+avari = zeros(18)
+for i in range(12):
+  avari[6+i]=rho_ini
+avari[6+4]=rho_ini5
+
+lvari=list(avari)
+
+system=['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+
+
+LISTARCI=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=tmax,
+                                      NOMBRE=50,),
+                                  ),
+                      );
+
+LINSTDDI=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=tmax,
+                                      NOMBRE=100,),
+                                  ),
+                      );
+
+LIS2DDI=DEFI_LIST_INST(INFO=1,
+                        DEFI_LIST=_F(LIST_INST=LINSTDDI),
+                        ECHEC=_F(SUBD_NIVEAU=20,
+                                 SUBD_PAS=10),
+                        );
+
+TIMPI=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='TEMP',
+                       VALE=(  0. , TEMP, tmax , TEMP), PROL_DROITE='CONSTANT',
+                        )
+
+# Calcul des angles d'Euler correspondant a une orientation cristallographique donnee
+
+h=-1
+k=4
+l=9
+
+phi1=0
+phi =arccos(l / sqrt( h*h + k*k + l*l) ) * 180. / pi
+phi2=arctan2( h / sqrt( h*h + k*k ) , k / sqrt( h*h + k*k ) )* 180. / pi
+angles=(phi1,phi,phi2)
+
+IMPLDD=SIMU_POINT_MAT(MATER=ACIERDDI,
+                      MASSIF=_F(ANGL_EULER=angles),
+                      COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='mono_dd_cc.so',
+                        NOM_ROUTINE='asterdd_cc',
+                        RESI_INTE_RELA=1e-10,
+                        ),
+                      INCREMENT=(_F(LIST_INST=LIS2DDI,),),
+                      NEWTON=(_F(PREDICTION='EXTRAPOLE',
+                                 REAC_ITER=1,
+                                 ),),
+                      VARI_INIT=_F(VALE=lvari,),
+                      EPSI_IMPOSE=_F(EPZZ=SI3,),
+                      ARCHIVAGE=_F(LIST_INST=LISTARCI),
+                      SUPPORT='POINT',
+                      AFFE_VARC=_F(  NOM_VARC='TEMP',
+                                     VALE_FONC=TIMPI,
+                                     VALE_REF=TEMP),
+                       );
+
+IMPR_TABLE(TABLE=IMPLDD)
+
+
+epsXX=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='EPXX',
+                   INTERPOL='LIN');
+
+epsYY=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='EPYY',
+                   INTERPOL='LIN');
+
+epsZZ=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='EPZZ',
+                   INTERPOL='LIN');
+
+epsXY=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='EPXY',
+                   INTERPOL='LIN');
+
+epsXZ=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='EPXZ',
+                   INTERPOL='LIN');
+
+epsYZ=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='EPYZ',
+                   INTERPOL='LIN');
+
+
+sigXX=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='SIXX',
+                   INTERPOL='LIN');
+
+sigYY=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='SIYY',
+                   INTERPOL='LIN');
+
+sigZZ=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+
+sigXY=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='SIXY',
+                   INTERPOL='LIN');
+
+sigXZ=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='SIXZ',
+                   INTERPOL='LIN');
+
+sigYZ=RECU_FONCTION(TABLE=IMPLDD,
+                   PARA_X='INST',
+                   PARA_Y='SIYZ',
+                   INTERPOL='LIN');
+
+
+epsDIR=CALC_FONCTION(COMB=(_F(FONCTION = epsXX,
+                              COEF= l_norm[ori][0]*l_norm[ori][0],),
+                           _F(FONCTION = epsYY,
+                              COEF= l_norm[ori][1]*l_norm[ori][1],),
+                           _F(FONCTION = epsZZ,
+                              COEF= l_norm[ori][2]*l_norm[ori][2],),
+                           _F(FONCTION = epsXY,
+                              COEF= 2*l_norm[ori][0]*l_norm[ori][1],),
+                           _F(FONCTION = epsXZ,
+                              COEF= 2*l_norm[ori][0]*l_norm[ori][2],),
+                           _F(FONCTION = epsYZ,
+                              COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
+                           ),
+                    );
+
+
+sigDIR=CALC_FONCTION(COMB=(_F(FONCTION = sigXX,
+                              COEF= l_norm[ori][0]*l_norm[ori][0],),
+                           _F(FONCTION = sigYY,
+                              COEF= l_norm[ori][1]*l_norm[ori][1],),
+                           _F(FONCTION = sigZZ,
+                              COEF= l_norm[ori][2]*l_norm[ori][2],),
+                           _F(FONCTION = sigXY,
+                              COEF= 2*l_norm[ori][0]*l_norm[ori][1],),
+                           _F(FONCTION = sigXZ,
+                              COEF= 2*l_norm[ori][0]*l_norm[ori][2],),
+                           _F(FONCTION = sigYZ,
+                              COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
+                           ),
+                    );
+
+nom_cas='traction_cube-1_4_9_temp' + str(TEMP)
+
+DEFI_FICHIER(UNITE = 28,
+          FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat');
+IMPR_FONCTION(
+         FORMAT='XMGRACE',
+         PILOTE='',
+         COURBE=(_F(FONC_X=epsDIR,
+                     FONC_Y=sigDIR,
+                     COULEUR= 0,
+                     LEGENDE= 'SIGdir',),),
+         UNITE=28,
+         TITRE='SIGdir = f(Edir)');
+
+DEFI_FICHIER(UNITE = 28,ACTION = 'LIBERER');
+
+
+rhoi=[None]*13
+
+
+DEFI_FICHIER(UNITE = 30,
+             FICHIER = 'REPE_OUT/rho_eps_'+  nom_cas + '.dat');
+
+for i in range(1,13):
+
+
+
+    rhoi[i]=RECU_FONCTION(TABLE=IMPLDD,
+                         PARA_X='INST',
+                        PARA_Y='V'+str(6+i),
+                        INTERPOL='LIN');
+
+
+    IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE='',
+                LEGENDE_X='\\f{Symbol}e\\f{}\sll',
+                LEGENDE_Y='\\f{Symbol}r',
+                COURBE=(
+                        _F(FONC_X=epsDIR,
+                           FONC_Y=rhoi[i],
+                           COULEUR = i,
+                           MARQUEUR = 0,
+                           LEGENDE= unicode(system[i],'iso-8859-1').encode('utf-8'),),),
+                UNITE=30,);
+
+
+DEFI_FICHIER(UNITE = 30,
+             ACTION = 'LIBERER');
+
+DEFI_FICHIER(UNITE = 31,
+             ACTION = 'LIBERER');
+
+
+
+
+# tests des densites de dislocation (seules vraies varaibles internes)
+
+# reference : ssnd110b
+
+sys1=5
+
+
+
+
+
+
+TEST_FONCTION(VALEUR=_F(VALE_REFE=3.944964E+06*b*b,
+                        PRECISION=0.01,
+                        VALE_CALC=2.402979212775E-07,
+                        VALE_PARA=100.0,
+                        NOM_PARA='INST',
+                        REFERENCE='AUTRE_ASTER',
+                        FONCTION=rhoi_5,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_REFE=9.086727E+06*b*b,
+                        VALE_CALC=5.563152920230E-07,
+                        VALE_PARA=500.,
+                        PRECISION=0.01,
+                        REFERENCE='AUTRE_ASTER',
+                        NOM_PARA='INST',
+                        FONCTION=rhoi_5,
+                        ),
+              )
+
+FIN()

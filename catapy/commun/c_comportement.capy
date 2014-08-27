@@ -44,7 +44,6 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                         fr=tr("Nom de la routine UMAT dans la bibliothèque")),),
            b_mfront      = BLOC(condition = "RELATION == 'MFRONT' ",
                                  fr=tr("Comportement utilisateur de type MFRONT"),
-                   NB_VARI =SIMP(statut='o',typ='I',max=1,fr=tr("Nombre de variables internes")),
                    LIBRAIRIE = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
                         fr=tr("Chemin vers la bibliothèque dynamique définissant le comportement MFRONT")),
                    NOM_ROUTINE = SIMP(statut='o', typ='TXM',

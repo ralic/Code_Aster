@@ -1,0 +1,76 @@
+#######################################################################
+
+# definition du trajet de chargement en traction torsion
+        
+#######################################################################
+
+# increment d'angle de gamma 
+deltagamma=15.
+
+# deformations maximum
+eps0=0.0034
+gamma0=0.0058
+
+
+# nombre de cycles elementaires sur un tour de gamma-epsilon
+nbcycle1=360./deltagamma
+
+# nombre de repetitions des nbcycle1
+nbcycle2=4
+
+# periode2 = temps pour faire un cycle triangulaire en gamma ou en epsilon
+freq=0.1
+periode2=1.0/freq
+
+# npas0 : nombre de pas de discretisation du cycle triangulaire
+npas0=4
+pas=periode2/npas0
+
+# temps total
+tmax=periode2*nbcycle1*nbcycle2
+
+# nombre de pas total
+npas=npas0*nbcycle1*nbcycle2
+
+def epsgamma(deltagamma,nbcycle1,nbcycle2,npas0,pas,eps0,gamma0):
+   import numpy as NP
+   lepsxx=[0.]
+   lgamma=[0.]
+   ltime=[0.]
+   lt=pas*NP.arange(1,npas0+1)
+   for j in range(nbcycle2):
+       for i in range(int(nbcycle1)):
+           angle=i*deltagamma*pi/180.
+           epsmax=eps0*cos(angle)
+           gammax=gamma0*sin(angle)
+           leps=[epsmax,0.,-epsmax,0.]
+           lgam=[gammax,0.,-gammax,0.]
+           lepsxx=lepsxx+leps
+           lgamma=lgamma+lgam
+           t0=ltime[-1]
+           lt1=[t0+t for t in lt]
+           ltime=ltime+lt1
+   return lepsxx,lgamma,ltime
+      
+
+lepsxx,lgamma,ltime=  epsgamma(deltagamma,nbcycle1,nbcycle2,npas0,pas,eps0,gamma0)
+
+eps_xx=DEFI_FONCTION(NOM_PARA='INST',ABSCISSE=ltime,ORDONNEE=lepsxx,PROL_DROITE='CONSTANT')
+
+gamma=DEFI_FONCTION(NOM_PARA='INST',ABSCISSE=ltime,ORDONNEE=lgamma,PROL_DROITE='CONSTANT')
+
+eps_xy=CALC_FONCTION(COMB=_F(FONCTION=gamma,COEF=0.5,) )
+
+gamma3=CALC_FONCTION(COMB=_F(FONCTION=eps_xy,COEF=2.0/sqrt(3.),) )
+
+#trace chargement
+
+IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
+              COURBE=(_F(FONCTION=eps_xx,MARQUEUR=0),
+                      _F(FONCTION=gamma3,MARQUEUR=0),
+                      ),);
+              
+# trace de gamma en fonction de epsxx              
+IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
+              COURBE=(_F(FONC_X=eps_xx,FONC_Y=gamma3,MARQUEUR=0),
+                      ),);

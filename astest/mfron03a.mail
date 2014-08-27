@@ -1,0 +1,14 @@
+COOR_3D
+A    0.  0.  0.
+B    3.  1.  0.
+C    2.  3.  0.
+D    3.  1. -1.
+FINSF
+TETRA4
+TET1   A B C D
+FINSF
+TRIA3
+TRI1   A B C
+FINSF
+FIN
+

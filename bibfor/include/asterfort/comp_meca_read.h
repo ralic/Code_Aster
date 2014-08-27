@@ -18,9 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
+    subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
+                              model)
         aster_logical, intent(in) :: l_etat_init
         character(len=16), intent(out) :: info_comp_valk(:)
         integer          , intent(out) :: info_comp_vali(:)
+        character(len=8), intent(in), optional :: model
     end subroutine comp_meca_read
 end interface

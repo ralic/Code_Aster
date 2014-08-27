@@ -1,0 +1,12 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm mfron01c.comm D 1
+F libr mfron01c.93 D 93
+F nom ViscoMemoNrad.mfront D 0
+F nom ViscoChaboche.mfront D 0
+

@@ -1,0 +1,336 @@
+# -*- coding: utf-8 -*-
+# person_in_charge: jean-michel.proix at edf.fr
+# TITRE MFRONT MONOCRISTAL + MATRCE D'INTERACTION SUR 10 GRAINS 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+import os
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#    mfront --obuild MonoCristal.mfront --interface=aster     
+# avant de lancer l'etude.
+
+os.system("mfront --obuild ImplicitMonoCristal.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so monocristal.so")
+    
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+
+PRECIS=1.E-6
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+              MAILLAGE=MAIL,
+
+DETR_GROUP_NO=_F(NOM=('GAUCHE','ARRIERE','HAUT','BAS','DROITE','DEVANT'),),
+              CREA_GROUP_NO=(_F(OPTION='PLAN',
+                                NOM='BAS',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(0.0,0.0,1.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='HAUT',
+                                POINT=(0.0,0.0,1.0,),
+                                VECT_NORMALE=(0.0,0.0,1.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='GAUCHE',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(0.0,1.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='ARRIERE',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(1.0,0.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='DROITE',
+                                POINT=(0.0,1.0,0.0,),
+                                VECT_NORMALE=(0.0,1.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='DEVANT',
+                                POINT=(1.0,0.0,0.0,),
+                                VECT_NORMALE=(1.0,0.0,0.0,),
+                                PRECISION=PRECIS,),
+                                ),);
+
+#=====  2 - CREATION DU MATERIAU  =======================================
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=12.,
+                                  K=5.,
+                                  C=0.,),
+                    MONO_ISOT1=_F(R_0=250.,
+                                  Q=55.,
+                                  B=12.,
+                                  H=0.),
+                    MONO_CINE1=_F(D=0.,),);
+
+Nu=0.3
+E_L=210000.
+G=E_L/2./(1.+Nu)
+# test  orthotropie
+MATFRONT=DEFI_MATERIAU( 
+                      ELAS=_F(E=210000.0, NU=0.3,),
+                      UMAT=_F( C1 = E_L ,
+                               C2 = E_L ,
+                               C3 = E_L,
+                               C4 = Nu,
+                               C5 = Nu,   
+                               C6 = Nu,    
+                               C7 = G,  
+                               C8 = G,  
+                               C9 = G,  
+                               C10 = 12.,   
+                               C11 = 5.,    
+                               C12 = 0.,  
+                               C13 = 250.,  
+                               C14 = 55.,  
+                               C15= 12.,   
+                               C16= 0.,   
+                               NB_VALE=16,
+                               ),
+                               )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+CHMATF=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATFRONT,),);
+                            
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
+                                   ECOULEMENT='MONO_VISC1',
+                                   ECRO_ISOT='MONO_ISOT1',
+                                   ECRO_CINE='MONO_CINE1',
+                                   ELAS='ELAS',
+                                   FAMI_SYST_GLIS='OCTAEDRIQUE',),);
+
+
+#=====  3 - AFFECTATION AUX ELEMENTS ET CHARGEMENT======================
+
+# 3.1 DEFINITION DU MODELE MECANIQUE
+
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+
+# 3.2 CHARGEMENT
+
+#  DIMENSION MOYENNE DU VER
+DIME=1
+
+# VITESSE DE DEFORMATION IMPOSEE (EN S-1)
+VITEPS=1.E-3
+
+EPSMAX=0.1
+
+TMAX=EPSMAX/VITEPS
+
+COEFU=EPSMAX*DIME
+
+# COEFU2=COEFU*-0.4
+
+U3=DEFI_FONCTION(NOM_PARA='Z',
+                 VALE=(0.0,0.0,1.0,COEFU),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',
+                 VALE=(0.0,0.0,TMAX,1.0,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+CHME1=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='ARRIERE',
+                                 DX=0.0,),);
+
+CHME2=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='BAS',
+                                 DZ=0.0,),);
+
+CHME3=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='GAUCHE',
+                                 DY=0.0,),);
+
+CHME4=AFFE_CHAR_MECA_F(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO='HAUT',
+                                   DZ=U3,),);
+
+
+
+
+# 3.2 ORIENTATION DES GROUPES D'ELEMENTS
+
+
+ORIELEM=AFFE_CARA_ELEM(MODELE=MO,
+                     MASSIF=(
+
+    _F(GROUP_MA='GM1',ANGL_EULER=(0.00,137.47,272.02),),
+    _F(GROUP_MA='GM2',ANGL_EULER=(165.11,86.24,78.83),),
+    _F(GROUP_MA='GM3',ANGL_EULER=(16.94,69.04,244.55),),
+    _F(GROUP_MA='GM4',ANGL_EULER=(336.49,103.47,186.99),),
+    _F(GROUP_MA='GM5',ANGL_EULER=(299.15,158.57,19.25),),
+    _F(GROUP_MA='GM6',ANGL_EULER=(190.69,69.98,2.77),),
+    _F(GROUP_MA='GM7',ANGL_EULER=(138.03,150.03,150.29),),
+    _F(GROUP_MA='GM8',ANGL_EULER=(247.24,79.75,334.96),),
+    _F(GROUP_MA='GM9',ANGL_EULER=(304.62,86.91,33.11),),
+    _F(GROUP_MA='GM10',ANGL_EULER=(235.41,99.67,252.43),),
+
+                               ),);
+
+
+#=====  4 - RESOLUTION ============================================
+
+
+
+LINSTOP=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(#_F(JUSQU_A=1.E-4,
+                                #    NOMBRE=1,),
+                               # _F(JUSQU_A=1.,
+                               #     NOMBRE=25,),
+                               # _F(JUSQU_A=2.,
+                               #     NOMBRE=20,),
+                                _F(JUSQU_A=2.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=3.,
+                                    NOMBRE=40,),
+                                _F(JUSQU_A=4.,
+                                    NOMBRE=20,),
+                                _F(JUSQU_A=6.,
+                                    NOMBRE=20,),
+                                _F(JUSQU_A=8.,
+                                    NOMBRE=10,),
+                                _F(JUSQU_A=12.,
+                                    NOMBRE=10,),
+                                _F(JUSQU_A=20.,
+                                    NOMBRE=10,),
+                                _F(JUSQU_A=50.,
+                                    NOMBRE=10,),
+                                _F(JUSQU_A=100.,
+                                    NOMBRE=10,),
+                                    ),);
+LINSTAOP=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=(#_F(JUSQU_A=1.E-4,
+                                 #   NOMBRE=1,),
+                                #_F(JUSQU_A=1.,
+                               #     NOMBRE=5,),
+                               # _F(JUSQU_A=2.,
+                               #     NOMBRE=4,),
+                                _F(JUSQU_A=2.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=3.,
+                                    NOMBRE=3,),
+                                _F(JUSQU_A=4.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=6.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=8.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=12.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=20.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=50.,
+                                    NOMBRE=1,),
+                                _F(JUSQU_A=100.,
+                                    NOMBRE=1,),
+                                    ),);
+
+TFIN=3.;
+
+
+MFRONT=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CHMATF,
+                  CARA_ELEM=ORIELEM,
+                   EXCIT=(_F(CHARGE=CHME1,),
+                          _F(CHARGE=CHME2,),
+                          _F(CHARGE=CHME3,),
+                          _F(CHARGE=CHME4,
+                             FONC_MULT=COEF),
+                          ),
+                    COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='monocristal.so',
+                        NOM_ROUTINE='astermonocristal',
+                        RESI_INTE_RELA=1e-11,
+                        ITER_INTE_MAXI=100,
+                        ),
+                  INCREMENT=_F(LIST_INST=LINSTOP,
+                               INST_FIN=TFIN),
+                  ARCHIVAGE=_F(LIST_INST=LINSTAOP),
+                  NEWTON=_F(REAC_ITER=1,
+             #     PREDICTION='ELASTIQUE',
+                  PREDICTION='EXTRAPOLE',
+                  ),
+                  CONVERGENCE = _F(ITER_GLOB_MAXI=20));
+
+MFRONT=CALC_CHAMP(reuse=MFRONT,RESULTAT=MFRONT,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
+# cf zmat007a
+
+TEST_RESU(RESU=(_F(INST=3.0,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=MFRONT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-16.1122077334,
+                   VALE_REFE=-16.112,
+                   PRECISION=2.E-5, 
+                   MAILLE='M1',),
+                _F(INST=3.0,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=MFRONT,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.02500755E-03,
+                   VALE_REFE=-1.025E-3,
+                   PRECISION=1.E-4, 
+                   MAILLE='M1',),
+                _F(INST=3.0,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=MFRONT,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.000937146720034,
+                   VALE_REFE=-9.37146E-4,
+                   PRECISION=1.E-5, 
+                   MAILLE='M1',),
+                _F(INST=3.0,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=MFRONT,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.000277459076377,
+                   VALE_REFE=-2.77459E-4,
+                   PRECISION=1.E-4,
+                   MAILLE='M1',),
+                ),
+          )
+
+FIN();

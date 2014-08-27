@@ -1,0 +1,294 @@
+# -*- coding: utf-8 -*-
+# person_in_charge: jean-michel.proix at edf.fr
+# TITRE COMPARAISON ASTER-MFRONT MONOCRISTAL SUR POINT MATERIAL
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+import os
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#    mfront --obuild MonoCristal_CFC.mfront --interface=aster     
+# avant de lancer l'etude.
+
+os.system("mfront --obuild ImplicitMonoCristal.mfront --interface=aster")
+os.system("mv src/libAsterBehaviour.so monocristal.so")
+    
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+import numpy as NP
+
+MU       = 80000. ;
+NU       = 0.3    ;
+E        =  MU*2*(1.+NU)   ;
+
+R_0__ = 66.62;
+N__=    10.  ;
+C__=     14363.   ;
+#C__=     0.   ;
+B__=     2.1 ;
+D__=     494. ;
+K__=    25.0   ;
+Q__=     11.43 ;
+H1__=    1;
+
+H2__=    0.;
+H3__=    0;
+H4__=    0;
+H5__=    0;
+H6__=    0;
+
+DL__=    37.6;
+DA__=    0.0 ;
+RHO_0  = 0.
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=NU,),
+                    MONO_VISC1=_F(N=N__,
+                                  K=K__,
+                                  C=C__,),
+                    MONO_ISOT1=_F(R_0=R_0__,
+                                  Q=Q__,
+                                  B=B__,
+                                  H1=H1__,
+                                  H2=H2__,
+                                  H3=H3__,
+                                  H4=H4__,
+                                  H5=H5__,
+                                  H6=H6__,),
+
+                    MONO_CINE1=_F(D=D__,),
+                    );
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATER,
+                                   ECOULEMENT='MONO_VISC1',
+                                   ECRO_ISOT='MONO_ISOT1',
+                                   ECRO_CINE='MONO_CINE1',
+                                   ELAS='ELAS',
+                                   FAMI_SYST_GLIS='OCTAEDRIQUE',),);
+
+Nu=NU
+E_L=E
+G=MU
+MATF2=DEFI_MATERIAU( 
+                  ELAS=_F( E=E, NU=NU,),
+                  UMAT=_F( NB_VALE=16,
+                           C1 = E_L ,
+                           C2 = E_L ,
+                           C3 = E_L,
+                           C4 = Nu,
+                           C5 = Nu,   
+                           C6 = Nu,    
+                           C7 = G,  
+                           C8 = G,  
+                           C9 = G,  
+                           C10 = N__,   
+                           C11 = K__,    
+                           C12 = C__,  
+                           C13 = R_0__,  
+                           C14 = Q__,  
+                           C15 = B__,   
+                           C16 = D__,  
+                           ),
+                           )
+
+tmax=2.e5
+
+LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=tmax,
+                                      NOMBRE=90,),
+                                  ),
+                      );
+
+LIS2DD=DEFI_LIST_INST(INFO=1,
+                        DEFI_LIST=_F(LIST_INST=LINSTDD,
+                                     METHODE='MANUEL',
+                                    # METHODE='AUTO',
+                                    # PAS_MINI=10.**-6,
+                                     ),
+                        ECHEC=_F(SUBD_NIVEAU=10,
+                                 SUBD_PAS=10,
+                                 ),
+                        );
+
+                        
+# densites de dislocation initiales : variables internes de 0 a 44
+avari = NP.zeros(6+3*12+12+3)
+for i in range(12):
+  avari[6+i*3]=RHO_0
+
+lvari=list(avari)
+
+# Calcul des angles d'Euler correspondant a
+# une orientation cristallographique (h,k,l) donnee       
+h=-1.;
+k=5.;
+l=9.;
+h=1.;
+k=0.;
+l=0.;
+phi1=0
+phi =NP.arccos(l / NP.sqrt( h*h + k*k + l*l) ) * 180. / NP.pi
+phi2=NP.arctan2( h / NP.sqrt( h*h + k*k ) , k / NP.sqrt( h*h + k*k ) )* 180. / NP.pi
+
+
+#-------------------------------------------
+#------  DEFINITION DU CHARGEMENT  ---------
+#-------------------------------------------
+
+EPSI0=0.02
+
+S3=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,tmax,EPSI0),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+
+RES1=SIMU_POINT_MAT(
+                      MATER=MATER,
+                      COMPORTEMENT=(_F(RELATION='MONOCRISTAL',
+                                    COMPOR=COMPORT,
+                                    ITER_INTE_MAXI=100,),),
+                      MASSIF=_F(ANGL_EULER=(phi1,phi,phi2)),
+                      INCREMENT=_F(LIST_INST=LIS2DD, INST_FIN=tmax),
+                      NEWTON=_F(REAC_ITER=1,
+                      ),
+                      VARI_INIT=_F(VALE=lvari,),
+                      EPSI_IMPOSE=_F(EPZZ=S3,),
+                       );
+
+
+#IMPR_TABLE(TABLE=RES1)
+
+                   
+EZZAS=RECU_FONCTION( TABLE=RES1,
+                   PARA_X='INST',
+                   PARA_Y='EPZZ',
+                   INTERPOL='LIN');
+                   
+                   
+SZZAS=RECU_FONCTION( TABLE=RES1,
+                   PARA_X='INST',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+                   
+GAM1AS=RECU_FONCTION( TABLE=RES1,
+                   PARA_X='INST',
+                   PARA_Y='V8',
+                   INTERPOL='LIN');
+                   
+                   
+
+RES3=SIMU_POINT_MAT( 
+                     MATER=MATF2,
+                     COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='monocristal.so',
+                        NOM_ROUTINE='astermonocristal',
+                        RESI_INTE_RELA=1e-11,
+                        ),
+                      MASSIF=_F(ANGL_EULER=(phi1,phi,phi2)),
+                      INCREMENT=_F(LIST_INST=LIS2DD, INST_FIN=tmax),
+                      NEWTON=_F(REAC_ITER=1,
+                      ),
+                      EPSI_IMPOSE=_F(EPZZ=S3,),
+                       );
+
+
+IMPR_TABLE(TABLE=RES3,UNITE=38)
+
+                   
+EZZMF3=RECU_FONCTION( TABLE=RES3,
+                   PARA_X='INST',
+                   PARA_Y='EPZZ',
+                   INTERPOL='LIN');
+                   
+                   
+SZZMF3=RECU_FONCTION( TABLE=RES3,
+                   PARA_X='INST',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+                   
+GAM1MF=RECU_FONCTION( TABLE=RES3,
+                   PARA_X='INST',
+                   PARA_Y='V7',
+                   INTERPOL='LIN');
+                   
+# DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
+DIF1=CALC_FONCTION(COMB=(
+                          _F( FONCTION = SZZAS, COEF =  1.),
+                          _F( FONCTION = SZZMF3, COEF = -1.),
+                          ) );
+                   
+DIF2=CALC_FONCTION(COMB=(
+                          _F( FONCTION = GAM1AS, COEF =  1.),
+                          _F( FONCTION = GAM1MF, COEF = -1.),
+                          ) );
+                          
+TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+
+TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
+                   
+TREF1=CREA_TABLE(FONCTION= _F(FONCTION = SZZAS,PARA = ('INST','SIZZ')),);
+
+TREF2=CREA_TABLE(FONCTION= _F(FONCTION = GAM1AS,PARA = ('INST','V7')),);
+                   
+
+def ecart_relatif(diff, ref):
+    if abs(ref) == 0 :
+       err=diff
+    else :
+       err=diff/ref
+    return err
+    
+TEST1=CALC_TABLE(TABLE=TDIF1,ACTION= _F(OPERATION='COMB',TABLE= TREF1, NOM_PARA ='INST'))
+
+TEST2=CALC_TABLE(TABLE=TDIF2,ACTION= _F(OPERATION='COMB',TABLE= TREF2, NOM_PARA ='INST'))
+
+ecarela1=FORMULE(NOM_PARA=('NEUT1','SIZZ'),VALE=("""ecart_relatif(NEUT1,SIZZ)"""))
+
+ecarela2=FORMULE(NOM_PARA=('NEUT1','V7'),VALE=("""ecart_relatif(NEUT1,V7)"""))
+
+TEST1=CALC_TABLE(TABLE=TEST1,reuse=TEST1,
+ACTION= _F(OPERATION='OPER',FORMULE=ecarela1, NOM_PARA ='ECART')
+)
+
+TEST2=CALC_TABLE(TABLE=TEST2,reuse=TEST2,
+ACTION= _F(OPERATION='OPER',FORMULE=ecarela2, NOM_PARA ='ECART')
+)
+
+               
+TEST_TABLE(TABLE=TEST1,NOM_PARA='ECART',
+FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
+CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',
+VALE_REFE=0.,PRECISION=1.E-6,VALE_CALC=-4.90934272352E-07)
+
+TEST_TABLE(TABLE=TEST2,NOM_PARA='ECART',
+FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
+CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',
+VALE_REFE=0.,PRECISION=1.E-5,VALE_CALC=5.83941411936E-07)
+
+
+#pilote='INTERACTIF'
+pilote=''
+                   
+IMPR_FONCTION(FORMAT='XMGRACE',UNITE=39,PILOTE=pilote,
+                  COURBE=(
+                   _F(FONC_X=EZZAS, FONC_Y=SZZAS),
+                   _F(FONC_X=EZZMF3, FONC_Y=SZZMF3),
+                  ),);
+
+FIN()

@@ -100,7 +100,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Read informations from command file
 !
-    call comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
+    call comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali, model)
 !
 ! - Create <CARTE> of FULL_MECA option for checking
 !

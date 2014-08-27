@@ -1,0 +1,198 @@
+# -*- coding: utf-8 -*-
+# person_in_charge: jean-michel.proix at edf.fr
+# TITRE TEST MFRONT LOI DE CHABOCHE CF. VMIS_CIN2_CHAB TEST SSNV101A
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+import os
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#    mfront --obuild Chaboche.mfront --interface=aster     
+# avant de lancer l'etude.
+
+os.system("mfront --obuild Chaboche.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so chaboche.so")
+
+# print "Version  de mfront"
+os.system("tfel-config --version ")
+
+# avec SIMU_POINT_MAT
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+
+C1_I=187.*341.
+C2_I=29.*17184.
+young=145200.
+k=0.43
+w=6.09
+g1=341.
+g2=17184.
+
+# LE C_I DU MODELE VISC_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
+MAT=DEFI_MATERIAU(
+                                    ELAS=_F(   E = young,
+                                            NU = .3,
+                                            ALPHA = 0.,          ),
+                           CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
+                                            K = k,
+                                            W = w,
+                                            C1_I = C1_I,
+                                            C2_I = C2_I,
+                                            G1_0 = g1,
+                                            G2_0 = g2,
+                                             ))
+
+MATF=DEFI_MATERIAU( 
+                      ELAS=_F(E=young, NU=0.3),                      
+                      UMAT=_F( C1 = young ,
+                               C2 = 0.3 ,
+                               NB_VALE=12,
+                               C3  = 151.,   #R_I 
+                               C4  = 87.,    #R_0 
+                               C5  = 2.3,    #B   
+                               C6  = k,      #K   
+                               C7  = w,     #W   
+                               C8 = C1_I,   #C1_I
+                               C9 = C2_I,   #C2_I
+                               C10 = g1,    #G1_0
+                               C11 = g2,    #G2_0
+                               C12 = 1.,    #a_inf
+                               ),
+                               )
+
+
+
+LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
+                              _F( JUSQU_A = 0.4, NOMBRE = 1),
+                              _F( JUSQU_A = 1.435, NOMBRE = 12)))
+                              
+LSUB=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST),
+                        ECHEC=_F(SUBD_NIVEAU=2,
+                                 SUBD_PAS=2,),
+                                 )
+
+S1=DEFI_FONCTION( NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                          VALE=( 0.0,  0.0,
+                                 1.435,  143.5,    
+                                 ))
+                                 
+S3=DEFI_FONCTION( NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                          VALE=( 0.0,  0.0,
+                                 1.435,  143.5,    
+                                 ))
+                                 
+
+# aster
+SOLNL=SIMU_POINT_MAT(MATER=MAT,
+                COMPORTEMENT=_F( RELATION = 'VMIS_CIN2_CHAB',RESI_INTE_RELA=1.E-9,),
+                INCREMENT=_F(  LIST_INST = LSUB),
+                NEWTON=_F(REAC_ITER = 1),
+                SIGM_IMPOSE=_F(SIXX=S1,SIXY=S3,),
+                     )
+
+
+# IMPR_TABLE(TABLE=SOLNL,UNITE=37)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLNL,
+                   NOM_PARA='SIXX',
+                   VALE_CALC=143.499998902,
+                   VALE_REFE=143.5,
+                   REFERENCE='SOURCE_EXTERNE',
+)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLNL,
+                   NOM_PARA='EPXX',
+                   VALE_CALC=0.0960649289424,
+                   VALE_REFE=0.097089999999999996,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=0.011,
+)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLNL,
+                   NOM_PARA='EPXY',
+                   VALE_CALC=0.143899735011,
+                   VALE_REFE=0.1454,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=0.011,
+)
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLNL,
+                   NOM_PARA='V1',
+                   VALE_CALC=0.190153273882,
+                   VALE_REFE=0.19220000000000001,
+                   REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=0.011,
+          )
+
+
+
+# MFRONT
+
+SOLMF=SIMU_POINT_MAT( MATER=MATF,
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='chaboche.so',
+                        NOM_ROUTINE='asterchaboche',
+                        RESI_INTE_RELA=1e-12,
+                        ),
+                INCREMENT=_F(  LIST_INST = LSUB),
+                NEWTON=_F(REAC_ITER = 1, ),
+                SIGM_IMPOSE=_F(SIXX=S1,SIXY=S3,),
+                     )
+
+# IMPR_TABLE(TABLE=SOLMF,UNITE=38)
+
+
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='SIXX',
+                   VALE_CALC=143.499976126,
+                   VALE_REFE=143.5,
+                   REFERENCE='AUTRE_ASTER',
+) 
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='EPXX',
+                   VALE_CALC=0.0960649380127,
+                   VALE_REFE=0.0960649289423,
+                   REFERENCE='AUTRE_ASTER',
+)  
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='EPXY',
+                   VALE_CALC=0.143899753911,
+                   VALE_REFE=0.143899735011,
+                   REFERENCE='AUTRE_ASTER',
+)    
+TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
+                   TABLE=SOLMF,
+                   NOM_PARA='V7',
+                   VALE_CALC=0.190153297295,
+                   VALE_REFE=0.190153273882,
+                   REFERENCE='AUTRE_ASTER',
+)
+
+
+
+FIN()

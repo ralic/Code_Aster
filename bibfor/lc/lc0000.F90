@@ -591,7 +591,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
     case (50)
-!     UMAT et MFRONT
+!     UMAT
         call lc0050(fami, kpg, ksp, ndim, typmod,&
                     imate, compor, crit, instam, instap,&
                     neps, epsm, deps, nsig, sigm,&
@@ -643,11 +643,13 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                     wkin, typmod, icomp, nvi, ndsde,&
                     dsidep, nwkout, wkout, codret)
     case (58)
-        call lc0058(fami, kpg, ksp, ndim, imate,&
-                    compor, crit, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
+!     MFRONT
+        call lc0058(fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, crit, instam, instap,&
+                    neps, epsm, deps, nsig, sigm,&
+                    nvi, vim, option, angmas, nwkin,&
+                    wkin, icomp, sigp, vip, dsidep,&
+                    codret)
     case (59)
         call lc0059(fami, kpg, ksp, ndim, imate,&
                     compor, crit, instam, instap, epsm,&

@@ -36,6 +36,14 @@
 #define DEFUMAT(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,ls,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)               (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,ls)
 #define CALLUMAT(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)                 (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,strlen(s))
 
+#define DEFMFRONTBEHAVIOUR(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)               (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)
+#define CALLMFRONTBEHAVIOUR(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)                 (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)
+
+#define DEFMFRONTSETDOUBLE(NAME,a,b,la)               (NAME)(a,b,la)
+#define CALLMFRONTSETDOUBLE(NAME,a,b)                 (NAME)(a,b,strlen(a))
+#define DEFMFRONTSETINTEGER(NAME,a,b,la)               (NAME)(a,b,la)
+#define CALLMFRONTSETINTEGER(NAME,a,b)                 (NAME)(a,b,strlen(a))
+
 /* Appels et signatures avec strlen juste après le pointeur de chaine */
 #else
 #define DEF_P_PPPPSPSP(NAME,a,b,c,d,e,le,f,g,lg,h)               (NAME)(a,b,c,d,e,le,f,g,lg,h)
@@ -49,6 +57,14 @@
 
 #define DEFUMAT(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,ls,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)               (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,ls,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)
 #define CALLUMAT(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)                 (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,strlen(s),t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)
+
+#define DEFMFRONTBEHAVIOUR(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)               (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)
+#define CALLMFRONTBEHAVIOUR(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)                 (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)
+
+#define DEFMFRONTSETDOUBLE(NAME,a,b,la)               (NAME)(a,la,b)
+#define CALLMFRONTSETDOUBLE(NAME,a,b)                 (NAME)(a,strlen(a),b)
+#define DEFMFRONTSETINTEGER(NAME,a,b,la)               (NAME)(a,la,b)
+#define CALLMFRONTSETINTEGER(NAME,a,b)                 (NAME)(a,strlen(a),b)
 
 #endif
 

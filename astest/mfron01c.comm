@@ -1,0 +1,436 @@
+# -*- coding: utf-8 -*-
+# TITRE test MFRONT VISC_MEMO_NRAD sur essai de traction-torsion non proportionnelles
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+import os
+
+os.system("mfront --obuild --interface=aster ViscoChaboche.mfront ViscoMemoNrad.mfront")
+os.system("cp src/libAsterBehaviour.so mfront.so")
+    
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI');
+
+pilote=''
+#pilote='INTERACTIF'
+
+ncal=3
+
+ACIER=[None]*ncal
+
+YOUNG=205000.
+POISSON=0.3
+UN_SUR_K=1/156.9
+N=6.84
+K=1
+W=0
+C1_I=182392
+C2_I=16678
+G1_0=3079
+G2_0=178.7
+R_0=97.83
+A_I=0.5818
+B=51.3
+MU = 10.
+Q_M = 270.5
+Q_0 = -86.2
+ETA = 0.135
+delta1=0.00306184445749
+delta2=0.0154637840366
+R_I=R_0+7.1
+delta= [None]*ncal
+delta[0]=[delta1,delta2]
+delta[1]=[1,1]
+delta[2]=[delta1,delta2]
+
+
+ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
+                  CIN2_CHAB=_F(R_0=R_0,
+                               R_I=R_I,
+                               B=B,
+                               C1_I=C1_I,
+                               C2_I=C2_I,
+                               G1_0=G1_0,
+                               G2_0=G2_0,
+                               A_I=A_I,
+                               ),
+
+                   CIN2_NRAD=_F(
+                               DELTA1=delta[0][0],
+                               DELTA2=delta[0][1],
+                               ),
+                   MEMO_ECRO=_F(
+                                  MU = MU,
+                                  Q_M = Q_M,
+                                  Q_0 = Q_0,
+                                  ETA = ETA,
+                                ),
+                   LEMAITRE=_F(N=N,
+                               UN_SUR_K=UN_SUR_K,
+                               UN_SUR_M = 0.),
+
+                               );
+#Viscochab
+ACIER[1] =DEFI_MATERIAU( 
+                     ELAS=_F(E=YOUNG,
+                             NU=POISSON,),
+                      UMAT=_F( NB_VALE=12,
+                               C1 = YOUNG ,
+                               C2 = POISSON ,
+                               C3 = 0., #coef dila ther
+                               C4  = R_I,  #R_I 
+                               C5  = R_0,  #R_0 
+                               C6  = B,     #B   
+                               C7  = C1_I,   #C1_I
+                               C8  = C2_I,   #C1_I
+                               C9  = G1_0,   #G1_0
+                               C10 = G2_0,  #C2_I
+                               C11 = N ,  #n
+                               C12 = UN_SUR_K ,  #1/K
+                               ),
+                               )
+
+# ViscMemoNrad
+ACIER[2] =DEFI_MATERIAU( 
+                     ELAS=_F(E=YOUNG,
+                             NU=POISSON,),
+                      UMAT=_F( C1 = YOUNG ,
+                               C2 = POISSON,
+                               C3 = delta[2][0], #delta1
+                               C4 = delta[2][1], #delta2
+                               C5  = R_I,     #R_0+Q_0
+                               C6  = R_0,     #R_0 
+                               C7  = B,        #b   
+                               C8  = K,        #k   
+                               C9  = W,        #w   
+                               C10 = C1_I,     #C1inf
+                               C11 = G1_0,     #g1
+                               C12 = C2_I,     #C2inf
+                               C13 = G2_0 ,    #g2
+                               C14 = N ,       #m
+                               C15 = UN_SUR_K ,#1/K
+                               C16 = A_I ,     #ainf
+                               C17 = ETA,
+                               C18 = Q_M ,
+                               C19 = Q_0 ,
+                               C20 = MU , 
+                               NB_VALE=20,
+                               ),
+                               )
+
+typcal= [None]*ncal
+typcal[0]=['VISC_MEMO_NRAD','BRENT',0]
+typcal[1]=['MFRONT','asterviscochab',1]
+typcal[2]=['MFRONT','asterviscmemonr',2]
+
+compor=[None]*ncal
+compor[0]=[{'RELATION':typcal[0][0],'ALGO_INTE':typcal[0][1],'RESI_INTE_RELA':1.E-8,'ITER_INTE_MAXI':50,'ITER_INTE_PAS':10}]
+compor[1]=[{'RELATION':typcal[1][0],'NOM_ROUTINE':typcal[1][1],'ITER_INTE_PAS':10,'LIBRAIRIE':'mfront.so','RESI_INTE_RELA':1e-12}]
+compor[2]=[{'RELATION':typcal[2][0],'NOM_ROUTINE':typcal[2][1],'ITER_INTE_PAS':10,'LIBRAIRIE':'mfront.so','RESI_INTE_RELA':1e-8}]
+
+
+legende= [None]*ncal
+for index,ical in enumerate(typcal) :
+   legende[index]=ical[0]+'_'+ical[1]+'_delta1='+str( int(delta[ical[2]][0]*10000.)/10000.)+'_delta2='+str( int(delta[ical[2]][0]*10000.)/10000.)
+print 'legende=',legende
+
+
+# definition du chargement 3D
+INCLUDE(UNITE=93)
+
+#Discretisation du calcul
+Ncal = ncal
+
+RESU=[None]*Ncal
+
+# liste de calcul, doit etre divisible par 4 (demi-cycles)
+#npas_par_cycle1=360
+npas_par_cycle1=48
+
+temps_ca=DEFI_LIST_REEL(DEBUT=0,INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=npas_par_cycle1*nbcycle1*nbcycle2),);
+
+deflist=DEFI_LIST_INST(INFO=1,
+                         DEFI_LIST=_F(LIST_INST=temps_ca,
+                                      METHODE='MANUEL'),
+                         ECHEC=_F(SUBD_NIVEAU=3,
+                                  SUBD_PAS=6,
+                                  SUBD_PAS_MINI=1.E-08,),
+                         );
+
+
+# pour les courbes
+courbes=[]
+courbe1=[]
+courbe2=[]
+courbe3=[]
+courbeder1=[]
+courbeder2=[]
+courbeder3=[]
+
+sigxx=[None]*Ncal
+sigxy=[None]*Ncal
+sixy3=[None]*Ncal
+epsxx=[None]*Ncal
+epsxy=[None]*Ncal
+gamm3=[None]*Ncal
+sixxd=[None]*Ncal
+sixyd=[None]*Ncal
+s3xyd=[None]*Ncal
+sixxm=[None]*Ncal
+sixym=[None]*Ncal
+tdebder=tmax-pas*npas0*nbcycle1
+tfinder=tmax
+tdern=[None]*Ncal
+tmaxx=[None]*Ncal
+tmixx=[None]*Ncal
+tmaxy=[None]*Ncal
+tmixy=[None]*Ncal
+
+for i in range(Ncal):
+   RESU[i]=SIMU_POINT_MAT(INFO=1,
+                   COMPORTEMENT=compor[i],
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
+                   MATER      = ACIER[typcal[i][2]],
+                   INCREMENT=_F(LIST_INST=deflist,),
+                   EPSI_IMPOSE=_F(EPXX=eps_xx,
+                                  EPXY=eps_xy,
+                                   ),
+                   NB_VARI_TABLE=2,
+                        );
+   
+   DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/resu_'+str(i));
+   IMPR_TABLE(UNITE=39,TABLE=RESU[i],NOM_PARA=('INST','EPXX','EPXY','SIXX','SIXY'))                     
+   DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+     
+   sigxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN');
+   sigxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN');
+   sixy3[i]=CALC_FONCTION(COMB=_F(FONCTION=sigxy[i],COEF=sqrt(3.0),) )
+   epsxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN');
+   epsxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN');
+   gamm3[i]=CALC_FONCTION(COMB=_F(FONCTION=epsxy[i],COEF=2./sqrt(3.0),) )
+   sixxd[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN',
+                             FILTRE=(
+                             _F(NOM_PARA='INST',CRIT_COMP='GE',VALE=tdebder),
+                             _F(NOM_PARA='INST',CRIT_COMP='LE',VALE=tfinder),
+                             ));
+
+   sixyd[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN',
+                             FILTRE=(
+                             _F(NOM_PARA='INST',CRIT_COMP='GE',VALE=tdebder),
+                             _F(NOM_PARA='INST',CRIT_COMP='LE',VALE=tfinder),
+                             ));
+   s3xyd[i]=CALC_FONCTION(COMB=_F(FONCTION=sixyd[i],COEF=sqrt(3.0),) )
+   tdern[i] = CALC_TABLE(TABLE=RESU[i],
+                  ACTION=(
+                          _F(OPERATION='FILTRE',
+                             CRIT_COMP='GE',VALE=tdebder,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='FILTRE',
+                             CRIT_COMP='LE',VALE=tfinder,
+                             NOM_PARA='INST',),
+                             ),)
+
+   tmaxx[i] = CALC_TABLE(TABLE=tdern[i],
+                  ACTION=(
+                          _F(OPERATION='FILTRE',
+                             CRIT_COMP='MAXI',
+                             NOM_PARA='SIXX',),
+                             ),)
+   tmixx[i] = CALC_TABLE(TABLE=tdern[i],
+                  ACTION=(
+                          _F(OPERATION='FILTRE',
+                             CRIT_COMP='MINI',
+                             NOM_PARA='SIXX',),
+                             ),)
+   tmaxy[i] = CALC_TABLE(TABLE=tdern[i],
+                  ACTION=(
+                          _F(OPERATION='FILTRE',
+                             CRIT_COMP='MAXI',
+                             NOM_PARA='SIXY',),
+                             ),)
+   tmixy[i] = CALC_TABLE(TABLE=tdern[i],
+                  ACTION=(
+                          _F(OPERATION='FILTRE',
+                             CRIT_COMP='MINI',
+                             NOM_PARA='SIXY',),
+                             ),)
+
+   dico={}
+   dico['FONC_X']=sixxd[i]
+   dico['FONC_Y']=s3xyd[i]
+   dico['LEGENDE']=legende[i]
+   dico['MARQUEUR']=0
+   courbeder1.append(dico)
+
+   dico={}
+   dico['FONCTION']=sixxd[i]
+   dico['LEGENDE']=legende[i]
+   dico['MARQUEUR']=0
+   courbeder2.append(dico)
+
+   dico={}
+   dico['FONCTION']=sixyd[i]
+   dico['LEGENDE']=legende[i]
+   dico['MARQUEUR']=0
+   courbeder3.append(dico)
+
+   dico={}
+   dico['FONC_X']=sigxx[i]
+   dico['FONC_Y']=sixy3[i]
+   dico['LEGENDE']=legende[i]
+   dico['MARQUEUR']=0
+   courbes.append(dico)
+
+   dico={}
+   dico['FONCTION']=sigxx[i]
+   dico['LEGENDE']=legende[i]
+   dico['MARQUEUR']=0
+   courbe1.append(dico)
+
+   dico={}
+   dico['FONCTION']=sigxy[i]
+   dico['LEGENDE']=legende[i]
+   dico['MARQUEUR']=0
+   courbe2.append(dico)
+
+   dic3={}
+   dic3['FONCTION']=epsxx[i]
+   dic3['LEGENDE']=legende[i]
+   courbe3.append(dic3)
+   dic3={}
+   dic3['FONCTION']=gamm3[i]
+   dic3['LEGENDE']=legende[i]
+   courbe3.append(dic3)
+
+
+# tau-sigma
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-tout.agr');
+IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE=pilote,UNITE=39,
+                LEGENDE_X='SigmaXX',
+                LEGENDE_Y='SigmaXY*sqrt(3)',
+                COURBE=courbes,
+                );
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+
+# sigma
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXX-tout.agr');
+IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE=pilote,UNITE=39,
+                LEGENDE_X='INST',
+                LEGENDE_Y='SigmaXX',
+                COURBE=courbe1,
+                );
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+# tau
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-tout.agr');
+IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE=pilote,UNITE=39,
+                LEGENDE_X='INST',
+                LEGENDE_Y='SigmaXY',
+                COURBE=courbe2,
+                );
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+
+#################dernier cycle
+# tau-sigma
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-dernier_cycle.agr');
+IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE=pilote,UNITE=39,
+                LEGENDE_X='SigmaXX',
+                LEGENDE_Y='SigmaXY*sqrt(3)',
+                COURBE=courbeder1,
+                );
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+# sigma
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXX-dernier_cycle.agr');
+IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE=pilote,UNITE=39,
+                LEGENDE_X='INST',
+                LEGENDE_Y='SigmaXX',
+                COURBE=courbeder2,
+                );
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+# tau
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-dernier_cycle.agr');
+IMPR_FONCTION(
+                FORMAT='XMGRACE',
+                PILOTE=pilote,UNITE=39,
+                LEGENDE_X='INST',
+                LEGENDE_Y='SigmaXY',
+                COURBE=courbeder3,
+                );
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+
+
+# valeurs de refence
+sxxaref=(398.+413.)/2.
+sxxmref=-5.
+sxxmaxref=sxxmref+sxxaref
+sxxminref=sxxmref-sxxaref
+
+sxyaref=(237.+231.)/2.
+sxymref=0.5
+sxymaxref=sxymref+sxyaref
+sxyminref=sxymref-sxyaref
+
+
+# test des valeurs extremes
+
+# reference aster
+
+TEST_TABLE(TABLE=RESU[2], NOM_PARA='SIXX',VALE_CALC=413.145156496, VALE_REFE=413.858729473,PRECISION=0.003,
+           FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MAXI'), REFERENCE='AUTRE_ASTER',
+              );
+
+TEST_TABLE(TABLE=RESU[2],NOM_PARA='SIXX',VALE_CALC=-414.311455928,VALE_REFE=-415.033918274,PRECISION=0.003,
+           FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MINI'),REFERENCE='AUTRE_ASTER',
+              );
+              
+TEST_TABLE(TABLE=RESU[2],NOM_PARA='SIXY', VALE_CALC=243.461561148,VALE_REFE=244.147963974,PRECISION=0.003,
+           FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MAXI'), REFERENCE='AUTRE_ASTER',
+              );
+
+TEST_TABLE(TABLE=RESU[2],NOM_PARA='SIXY',VALE_CALC=-242.706803171,VALE_REFE=-243.382146598,PRECISION=0.003,
+           FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MINI'),REFERENCE='AUTRE_ASTER',
+              );
+
+# pas de reference car modèle sans effet de memeoire inadapté
+TEST_TABLE(TABLE=RESU[1], NOM_PARA='SIXX',VALE_CALC=257.746001518 , 
+           FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MAXI'), 
+              );
+
+TEST_TABLE(TABLE=RESU[1],NOM_PARA='SIXX',VALE_CALC=-257.746001516,
+           FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MINI'),
+              );
+              
+TEST_TABLE(TABLE=RESU[1],NOM_PARA='SIXY', VALE_CALC=149.688724685,
+           FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MAXI'), 
+              );
+
+TEST_TABLE(TABLE=RESU[1],NOM_PARA='SIXY',VALE_CALC=-149.688724686,
+           FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MINI'),
+              );
+
+FIN();

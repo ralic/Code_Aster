@@ -1,0 +1,99 @@
+/*!
+ * \file   burger.mfront
+ * \brief  
+ *   resolution implicite
+ * \author FH
+ * \date   13 05 2013
+ */
+
+@Parser Implicit;
+@Behaviour burger;
+@Algorithm NewtonRaphson_NumericalJacobian;
+@Theta 1.;
+@Epsilon 1.E-11 ;
+
+@Includes{
+#include"TFEL/Material/Lame.hxx"
+}
+@MaterialProperty stress young; 
+@MaterialProperty real nu;    
+@MaterialProperty real KRS;
+@MaterialProperty real NRS;
+@MaterialProperty real NIS;
+@MaterialProperty real KRD;
+@MaterialProperty real NRD;
+@MaterialProperty real NID;
+@MaterialProperty real Alpha;
+@MaterialProperty real Ea_R;
+@MaterialProperty real Tref;
+@MaterialProperty real NFD;
+@MaterialProperty real SECHini;
+
+
+
+@StateVariable real       ESPHR;
+@StateVariable real       ESPHI;
+@StateVariable Stensor    EDEVR;
+@StateVariable Stensor    EDEVI;
+@StateVariable Stensor    Edess;
+// le temps
+@AuxiliaryStateVariable real t0;
+@AuxiliaryStateVariable Stensor EF;
+
+@ExternalStateVariable real SECH;
+
+
+@LocalVariable real    lambda;
+@LocalVariable real    mu;
+
+
+
+/* Initialize Lame coefficients */
+@InitLocalVars{
+  using namespace tfel::material::lame;
+  lambda = computeLambda(young,nu);
+  mu = computeMu(young,nu);
+} 
+@TangentOperator{
+  using namespace tfel::material::lame;
+  StiffnessTensor Hooke;
+  Stensor4 Je;
+  computeElasticStiffness<N,Type>::exe(Hooke,lambda,mu);
+  getPartialJacobianInvert(Je);
+  Dt = Hooke*Je;
+}
+
+@ComputeStress{
+    sig = lambda*trace(eel)*Stensor::Id()+2*mu*eel;
+} 
+
+@Integrator{
+    real stresP=trace(sig)/3.;
+    Stensor stresD=sig-stresP*Stensor::Id();
+    real Tmoy=(2.*T+dT)/2.;
+    real KRS_T=KRS*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
+    real KRD_T=KRD*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
+    real NRS_T=NRS*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
+    real NRD_T=NRD*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
+    real NIS_T=NIS*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
+    real NID_T=NID*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
+    // real emax=sqrt(((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI))|((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI)));
+    // real eexp=exp((emax)/KAPPA);
+    fESPHR=dESPHR-((SECH/SECHini*stresP-KRS_T*(ESPHR+dESPHR))/NRS_T)*dt;
+    fEDEVR=dEDEVR-((SECH/SECHini*stresD-KRD_T*(EDEVR+dEDEVR))/NRD_T)*dt;
+
+    fESPHI=dESPHI-(SECH/SECHini*stresP/(NIS_T*pow(t0+0.5*dt,Alpha)))*dt;
+    fEDEVI=dEDEVI-(SECH/SECHini*stresD/(NID_T*pow(t0+0.5*dt,Alpha)))*dt;
+
+    fEdess=dEdess-NFD*dSECH/SECHini*Stensor::Id();
+    feel=deel-(deto-dEDEVR-dEDEVI-dEdess-(dESPHR+dESPHI)*Stensor::Id());
+}
+
+@UpdateAuxiliaryStateVariables{
+  t0 = t0+dt;
+  EF=EF+dEDEVR+dEDEVI+(dESPHR+dESPHI)*Stensor::Id();
+ // cout << "temps = " << t0 << endl;
+} 
+  
+  
+

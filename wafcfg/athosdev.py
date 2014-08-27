@@ -29,7 +29,7 @@ def configure(self):
     self.env.append_value('OPT_ENV', [
         '. /etc/profile.d/003_modules.sh',
         'module load intel_compilers/14.0.0.144',
-        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront.sh'])
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront2.sh'])
 
     self.env.append_value('LIBPATH', [
         '/usr/lib/atlas-base/atlas',                       # for NumPy, see issue18751

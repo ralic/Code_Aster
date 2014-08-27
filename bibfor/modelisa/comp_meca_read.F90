@@ -1,15 +1,19 @@
-subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
+subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
+                          model)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
+#include "asterc/mfront_get_nbvari.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_incr.h"
+#include "asterfort/comp_meca_mod.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/utmess.h"
@@ -35,7 +39,8 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
     aster_logical, intent(in) :: l_etat_init
     character(len=16), intent(out) :: info_comp_valk(:)
-    integer, intent(out) :: info_comp_vali(:)
+    integer          , intent(out) :: info_comp_vali(:)
+    character(len=8), intent(in), optional :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,15 +52,17 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
 ! IO  info_comp_valk : comportment informations (character)
 ! IO  info_comp_vali : comportment informations (integer)
-! In  l_etat_init      : .true. if initial state is defined
+! In  l_etat_init    : .true. if initial state is defined
+! In  mesh           : name of mesh
+! In  model          : name of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc, ikit, nbocc
+    integer :: iocc, ikit, nbocc, ndim
     integer :: nb_vari_all
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, subr_name, type_comp
-    character(len=16) :: type_matg, post_iter
+    character(len=16) :: type_matg, post_iter, nom_mod_mfront
     character(len=16) :: kit_comp(9)
     character(len=128) :: libr_name
     integer :: unit_comp, nb_vari_exte
@@ -65,7 +72,7 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc = 0
+    nbocc       = 0
     nb_vari_all = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
@@ -74,14 +81,14 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
     do iocc = 1, nbocc
         nb_vari_exte = 0
-        unit_comp = 0
-        rela_comp = 'VIDE'
-        defo_comp = 'VIDE'
-        mult_comp = ' '
-        type_cpla = 'VIDE'
-        libr_name = ' '
-        type_matg = ' '
-        post_iter = ' '
+        unit_comp    = 0
+        rela_comp    = 'VIDE'
+        defo_comp    = 'VIDE'
+        mult_comp    = ' '
+        type_cpla    = 'VIDE'
+        libr_name    = ' '
+        type_matg    = ' '
+        post_iter    = ' '
         do ikit = 1, 9
             kit_comp(ikit) = 'VIDE'
         enddo
@@ -110,11 +117,11 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
         call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
         call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-        call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
-        call comp_meca_l(rela_comp, 'KIT', l_kit)
-        call comp_meca_l(rela_comp, 'ZMAT', l_zmat)
-        call comp_meca_l(rela_comp, 'UMAT', l_umat)
-        call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
+        call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
+        call comp_meca_l(rela_comp, 'KIT'      , l_kit)
+        call comp_meca_l(rela_comp, 'ZMAT'     , l_zmat)
+        call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
+        call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
         call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
 !
 ! ----- Get multi-comportment *CRISTAL
@@ -141,14 +148,24 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
             call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
         endif
         if (l_mfront) then
-            call getvis(keywordfact, 'NB_VARI', iocc = iocc, scal = nb_vari_exte)
             call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
             call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+            if ( .not. present(model) ) then
+! ------------- CALC_POINT_MAT case
+                ndim = 3
+                nom_mod_mfront = '_Tridimensional'
+            else
+! ------------- STAT_NON_LINE case
+                call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
+                call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
+            endif
+            call mfront_get_nbvari(libr_name, subr_name, nom_mod_mfront, ndim, nb_vari_exte)
+            if ( nb_vari_exte.eq.0 ) nb_vari_exte = 1
         endif
         if (l_umat .or. l_mfront) then
             ASSERT(.not.l_kit)
             if (l_kit) then
-                call utmess('F', 'COMPOR4_61')
+                call utmess('F','COMPOR4_61')
             endif
             do ikit = 1, 8
                 kit_comp(ikit) = libr_name(16*(ikit-1)+1:16*ikit)
@@ -162,15 +179,15 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
 ! ----- Save options in list
 !
-        info_comp_valk(16*(iocc-1) + 1) = rela_comp
-        info_comp_valk(16*(iocc-1) + 2) = defo_comp
-        info_comp_valk(16*(iocc-1) + 3) = type_comp
-        info_comp_valk(16*(iocc-1) + 4) = type_cpla
-        info_comp_valk(16*(iocc-1) + 5) = kit_comp(1)
-        info_comp_valk(16*(iocc-1) + 6) = kit_comp(2)
-        info_comp_valk(16*(iocc-1) + 7) = kit_comp(3)
-        info_comp_valk(16*(iocc-1) + 8) = kit_comp(4)
-        info_comp_valk(16*(iocc-1) + 9) = kit_comp(5)
+        info_comp_valk(16*(iocc-1) + 1)  = rela_comp
+        info_comp_valk(16*(iocc-1) + 2)  = defo_comp
+        info_comp_valk(16*(iocc-1) + 3)  = type_comp
+        info_comp_valk(16*(iocc-1) + 4)  = type_cpla
+        info_comp_valk(16*(iocc-1) + 5)  = kit_comp(1)
+        info_comp_valk(16*(iocc-1) + 6)  = kit_comp(2)
+        info_comp_valk(16*(iocc-1) + 7)  = kit_comp(3)
+        info_comp_valk(16*(iocc-1) + 8)  = kit_comp(4)
+        info_comp_valk(16*(iocc-1) + 9)  = kit_comp(5)
         info_comp_valk(16*(iocc-1) + 10) = kit_comp(6)
         info_comp_valk(16*(iocc-1) + 11) = kit_comp(7)
         info_comp_valk(16*(iocc-1) + 12) = kit_comp(8)
@@ -178,8 +195,8 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
         info_comp_valk(16*(iocc-1) + 14) = mult_comp
         info_comp_valk(16*(iocc-1) + 15) = type_matg
         info_comp_valk(16*(iocc-1) + 16) = post_iter
-        info_comp_vali(2*(iocc-1) + 1) = nb_vari_exte
-        info_comp_vali(2*(iocc-1) + 2) = unit_comp
+        info_comp_vali(2*(iocc-1)  + 1)  = nb_vari_exte
+        info_comp_vali(2*(iocc-1)  + 2)  = unit_comp
     end do
 !
 end subroutine

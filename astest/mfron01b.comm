@@ -1,0 +1,369 @@
+# -*- coding: utf-8 -*-
+# person_in_charge: jean-michel.proix at edf.fr
+# TITRE TEST MFRONT LOI DE CHABOCHE CF. VISCOCHAB TEST HSNV125D
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+import os
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#    mfront --obuild chaboche.mfront --interface=aster     
+# avant de lancer l'etude.
+
+os.system("mfront --obuild ViscoChaboche.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so viscochab.so")
+    
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+
+#################################
+##CARACTERISTIQUES MECANIQUES ##
+#################################
+
+
+Y_F = FORMULE(VALE='2.E5 - (1.E5*((TEMP - 100.)/960.)**2)',
+              NOM_PARA='TEMP',);
+
+AL_F = FORMULE(VALE='1.E-5 + (1.E-5  * ((TEMP - 100.)/960.) ** 4)',
+               NOM_PARA='TEMP',);
+
+POISS=DEFI_CONSTANTE(VALE=0.3,);
+
+SIGY=DEFI_CONSTANTE(VALE=200.0,);
+
+K_F = FORMULE(VALE='(4900./(4200.*(TEMP+20.)-3.*(TEMP+20.)**2))',
+              NOM_PARA='TEMP',);
+
+N_F = FORMULE(VALE='(7. - (TEMP - 100.) / 160.)',
+              NOM_PARA='TEMP',);
+
+Q=DEFI_CONSTANTE(VALE=-100.,);
+
+B=DEFI_CONSTANTE(VALE=20.,);
+
+C_F = FORMULE(VALE='(1.E6 - (98500. * (TEMP - 100.) / 96.))',
+              NOM_PARA='TEMP',);
+
+D_F = FORMULE(VALE='(5000. - 5. * (TEMP - 100.) )',
+              NOM_PARA='TEMP',);
+
+TEMPE1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=_F(JUSQU_A=1060.,
+                                    NOMBRE=1060,),);
+
+YOUN=CALC_FONC_INTERP(FONCTION=Y_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+#YOUN=DEFI_CONSTANTE(VALE=2.E5);
+
+ALPH=CALC_FONC_INTERP(FONCTION=AL_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+#ALPH=DEFI_CONSTANTE(VALE=1.e-5)
+
+K_T=CALC_FONC_INTERP(FONCTION=K_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+N_T=CALC_FONC_INTERP(FONCTION=N_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+C_T=CALC_FONC_INTERP(FONCTION=C_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+D_T=CALC_FONC_INTERP(FONCTION=D_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+
+DEUX=DEFI_CONSTANTE(VALE=2.0,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+Rinf=DEFI_CONSTANTE(VALE=100.0,)
+
+MATA=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                             NU=POISS,
+                             TEMP_DEF_ALPHA=0.0,
+                             ALPHA=ALPH,),
+                  CIN1_CHAB_FO=_F(R_0=SIGY,
+                                  R_I=Rinf,
+                                  B=B,
+                                  C_I=C_T,
+                                  K=UN,
+                                  W=ZERO,
+                                  G_0=D_T,
+                                  A_I=UN,),
+                  LEMAITRE_FO=_F(N=N_T,
+                                 UN_SUR_K=K_T,
+                                 UN_SUR_M=ZERO,),
+                                  );
+                                  
+                                  
+MATF =DEFI_MATERIAU( 
+                     ELAS_FO=_F(E=YOUN,
+                             NU=POISS,
+                             TEMP_DEF_ALPHA=0.0,
+                             ALPHA=ALPH,),
+                    UMAT_FO=_F( NB_VALE=12,
+                                C1  = YOUN ,
+                                C2  = POISS ,
+                                C3  = ALPH,
+                                C4  = Rinf,  #R_I 
+                                C5  = SIGY,  #R_0 
+                                C6  = B,     #B   
+                                C7  = C_T,   #C1_I
+                                C8  = ZERO,  #C2_I
+                                C9  = D_T,   #G1_0
+                                C10 = ZERO , #G2_0
+                                C11 = N_T ,  #n
+                                C12 = K_T ,  #1/K
+                               ),
+                               )
+NPAS = 60;
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(
+                                  _F(JUSQU_A=0.1,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=1.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=61.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=121.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=181.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=241.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=301.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=361.,NOMBRE=NPAS,),
+                                  _F(JUSQU_A=421.,NOMBRE=NPAS,), # 481
+                                  _F(JUSQU_A=449.8,NOMBRE=29,),   # 510
+                                  _F(JUSQU_A=465.4,NOMBRE=15,),   #  525
+                                  _F(JUSQU_A=473.8,NOMBRE=9,),    #  534
+                                  _F(JUSQU_A=481.,NOMBRE=45,),),); # 579
+
+LSUB=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST),
+                        ECHEC=_F(SUBD_NIVEAU=10,
+                                 SUBD_PAS=4,),
+                                 )
+
+P_PLUS=DEFI_FONCTION(NOM_PARA='INST',VALE=(
+                           0.,0.,
+                           0.1,0.,
+                           1.,100.,
+                           61.,100.,
+                           121.,100.,
+                           181.,100.,
+                           241.,100.,
+                           301.,100.,
+                           361.,100.,
+                           421.,100.,
+                           481.,100.,
+                           ),);
+
+
+DY1 = -0.0208;
+
+DY2 = -0.0008;
+
+
+DEP_Y=DEFI_FONCTION(NOM_PARA='INST',VALE=(
+                          0.,0.,
+                          0.1,DY1,
+                          1.,DY1,
+                          61.,DY2,
+                          121.,DY1,
+                          181.,DY2,
+                          241.,DY1,
+                          301.,DY2,
+                          361.,DY1,
+                          421.,DY2,
+                          481.,DY1,
+                          ),);
+
+TEMP_CY=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(-1.,0.,
+                            0., 0.,
+                            1.,1060.,
+                            61.,100.,
+                            121.,1060.,
+                            181.,100.,
+                            241.,1060.,
+                            301.,100.,
+                            361.,1060.,
+                            421.,100.,
+                            481.,1060.,
+                            ),);
+
+SOLAS=SIMU_POINT_MAT( MATER=MATA,INFO=1,
+                COMPORTEMENT=_F(RELATION='VISC_CIN1_CHAB',
+                             ITER_INTE_MAXI=100,
+                             RESI_INTE_RELA=1.E-9,
+                        ),
+                AFFE_VARC=_F( NOM_VARC='TEMP',
+                        VALE_FONC=TEMP_CY,
+                        VALE_REF=0.),
+                INCREMENT=_F(  LIST_INST = LSUB),
+                NEWTON=_F(REAC_ITER = 1, ),
+                EPSI_IMPOSE=_F(EPXX=DEP_Y,),
+                SIGM_IMPOSE=_F(SIXY=P_PLUS,),
+               ARCHIVAGE=_F(LIST_INST=L_INST),
+                     )
+
+#IMPR_TABLE(TABLE=SOLAS)
+
+
+                   
+SOLMF=SIMU_POINT_MAT( MATER=MATF,INFO=1,
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='viscochab.so',
+                        NOM_ROUTINE='asterviscochab',
+                        RESI_INTE_RELA=1e-12,
+                        ),
+                AFFE_VARC=_F( NOM_VARC='TEMP',
+                        VALE_FONC=TEMP_CY,
+                        VALE_REF=0.),
+                INCREMENT=_F(  LIST_INST = LSUB),
+                NEWTON=_F(REAC_ITER = 1, PREDICTION='ELASTIQUE'),
+                EPSI_IMPOSE=_F(EPXX=DEP_Y,),
+                SIGM_IMPOSE=_F(SIXY=P_PLUS,),
+                ARCHIVAGE=_F(LIST_INST=L_INST),
+                     )
+
+RAC2 = FORMULE(VALE='SIXY*sqrt(2.)',
+                 NOM_PARA=('SIXY',),);
+
+
+SOLMF=CALC_TABLE(TABLE=SOLMF,reuse=SOLMF,
+                  ACTION= _F(OPERATION='OPER',
+                             FORMULE=RAC2,
+                             NOM_PARA='SIXY2',),
+                          );
+
+
+
+IMPR_TABLE(TABLE=SOLMF,UNITE=38)
+
+epsAsXX=RECU_FONCTION(TABLE=SOLAS,
+                   PARA_X='INST',
+                   PARA_Y='EPXX',
+                   INTERPOL='LIN');
+
+
+epsAsXY=RECU_FONCTION(TABLE=SOLAS,
+                   PARA_X='INST',
+                   PARA_Y='EPXY',
+                   INTERPOL='LIN');
+
+sigAsXX=RECU_FONCTION(TABLE=SOLAS,
+                   PARA_X='INST',
+                   PARA_Y='SIXX',
+                   INTERPOL='LIN');
+
+sigAsXY=RECU_FONCTION(TABLE=SOLAS,
+                   PARA_X='INST',
+                   PARA_Y='SIXY',
+                   INTERPOL='LIN');
+
+
+
+epsMfXX=RECU_FONCTION(TABLE=SOLMF,
+                   PARA_X='INST',
+                   PARA_Y='EPXX',
+                   INTERPOL='LIN');
+
+epsMfXY=RECU_FONCTION(TABLE=SOLMF,
+                   PARA_X='INST',
+                   PARA_Y='EPXY',
+                   INTERPOL='LIN');
+
+sigMfXX=RECU_FONCTION(TABLE=SOLMF,
+                   PARA_X='INST',
+                   PARA_Y='SIXX',
+                   INTERPOL='LIN');
+
+sigMfXY=RECU_FONCTION(TABLE=SOLMF,
+                   PARA_X='INST',
+                   PARA_Y='SIXY',
+                   INTERPOL='LIN');
+
+#pilot='INTERACTIF'
+pilot=''
+
+IMPR_FONCTION(
+            FORMAT='XMGRACE',
+            PILOTE=pilot,
+            COURBE=(
+                   _F(FONCTION=sigAsXX,),
+                   _F(FONCTION=sigMfXX,),
+                      ),
+            UNITE=40,);
+
+IMPR_FONCTION(
+            FORMAT='XMGRACE',
+            PILOTE=pilot,
+            COURBE=(
+                   _F(FONC_X=epsAsXX, FONC_Y=sigAsXX,),
+                   _F(FONC_X=epsMfXX, FONC_Y=sigMfXX,),
+                      ),
+            UNITE=39,);
+
+            
+# DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
+DIF1=CALC_FONCTION(COMB=(
+                          _F( FONCTION = sigAsXX, COEF =  1.),
+                          _F( FONCTION = sigMfXX, COEF = -1.),
+                          ) );
+                   
+DIF2=CALC_FONCTION(COMB=(
+                          _F( FONCTION = sigAsXY, COEF =  1.),
+                          _F( FONCTION = sigMfXY, COEF = -1.),
+                          ) );
+                   
+
+TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
+
+TREF1=CREA_TABLE(FONCTION= _F(FONCTION = sigAsXX,PARA = ('INST','SIXX')),);
+TREF2=CREA_TABLE(FONCTION= _F(FONCTION = sigAsXY,PARA = ('INST','SIXY')),);
+
+def ecart_relatif(diff, ref):
+    if abs(ref) == 0 :
+       err=diff
+    else :
+       err=diff/ref
+    return err
+    
+TEST1=CALC_TABLE(TABLE=TDIF1,ACTION= _F(OPERATION='COMB',TABLE= TREF1, NOM_PARA ='INST'))
+TEST2=CALC_TABLE(TABLE=TDIF2,ACTION= _F(OPERATION='COMB',TABLE= TREF2, NOM_PARA ='INST'))
+
+ecarela1=FORMULE(NOM_PARA=('NEUT1','SIXX'),VALE=("""ecart_relatif(NEUT1,SIXX)"""))
+ecarela2=FORMULE(NOM_PARA=('NEUT1','SIXY'),VALE=("""ecart_relatif(NEUT1,SIXY)"""))
+
+TEST1=CALC_TABLE(TABLE=TEST1,reuse=TEST1,ACTION= _F(OPERATION='OPER',FORMULE=ecarela1, NOM_PARA ='ECART'))
+TEST2=CALC_TABLE(TABLE=TEST2,reuse=TEST2,ACTION= _F(OPERATION='OPER',FORMULE=ecarela2, NOM_PARA ='ECART'))
+
+               
+TEST_TABLE(TABLE=TEST1,NOM_PARA='ECART',FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
+CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',VALE_REFE=-0.0281347459367,PRECISION=4.E-5,VALE_CALC=-0.0281347459367)
+TEST_TABLE(TABLE=TEST2,NOM_PARA='ECART',FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
+CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',VALE_REFE=0.,PRECISION=2.E-4,VALE_CALC=1.1974899321968E-04)
+
+
+
+
+FIN();

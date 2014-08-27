@@ -1,0 +1,356 @@
+# -*- coding: utf-8 -*-
+
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# TITRE polycristal homogeneise BZ 30 grains
+
+
+import numpy as NP
+from numpy.linalg import norm
+
+os.system("mfront --obuild PolyCristals.mfront --interface=aster")
+os.system("mv src/libAsterBehaviour.so polycristal.so")
+
+# os.system("export TFELHOME=/home/H37018/data/MFRONT/tfel-1.1/install")
+# os.system("export LD_LIBRARY_PATH=$TFELHOME/lib:$LD_LIBRARY_PATH")
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+tfin = 5.
+
+NPAS=100
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=tfin,
+                                    NOMBRE=NPAS,),
+                                    ),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=0.0,),
+                    MONO_ISOT1=_F(R_0=75.5,
+                                  Q=9.77,
+                                  B=19.34,
+                                  H=1.0,
+                                  ),
+                    MONO_CINE1=_F(D=36.68,),
+                    );
+                    
+Nu=0.3
+E_L=145200.
+G=E_L/2./(1.+Nu)
+# test  orthotropie
+MATFROLD=DEFI_MATERIAU( 
+                      ELAS=_F(E=145200.0, NU=0.3,),
+                      UMAT=_F( C1 = E_L ,
+                               C2 = E_L ,
+                               C3 = E_L,
+                               C4 = Nu,
+                               C5 = Nu,   
+                               C6 = Nu,    
+                               C7 = G,  
+                               C8 = G,  
+                               C9 = G,  
+                               C10= 0.,   
+                               C11= 0.,   
+                               C12= 0.,  
+                               C13= 0.,
+                               NB_VALE=22,
+                               C14 = 10.,   # N
+                               C15 = 40.,   # K
+                               C16 = 0.,    # C  
+                               C17 = 75.5,  # R0
+                               C18 = 9.77,  # Q
+                               C19 = 19.34, # b  
+                               C20 = 1.,    # H   
+                               C21 = 36.68, # D  
+                               C22 = G, # Mu  
+                               ),
+                               )
+
+MATFRONT=DEFI_MATERIAU( 
+                      ELAS=_F(E=145200.0, NU=0.3,),
+                      UMAT=_F( C1 = E_L ,
+                               C2 = E_L ,
+                               C3 = E_L,
+                               C4 = Nu,
+                               C5 = Nu,   
+                               C6 = Nu,    
+                               C7 = G,  
+                               C8 = G,  
+                               C9 = G,  
+                               NB_VALE=18,
+                               C10 = 10.,   # N
+                               C11 = 40.,   # K
+                               C12 = 0.,    # C  
+                               C13 = 75.5,  # R0
+                               C14 = 9.77,  # Q
+                               C15 = 19.34, # b  
+                               C16 = 1.,    # H   
+                               C17 = 36.68, # D  
+                               C18 = G, # Mu  
+                               ),
+                               )
+
+
+EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,tfin,0.005,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
+
+
+def DEFI_ANGLES(Ng,COMPMONO,**args):
+###################################################################
+#affectation aleatoire des orientations de chaque grain
+###################################################################
+#en entree :
+#Ng : NOMBRE DE GRINS
+#en sortie :
+#LISTE_GROUP : MOT-CLE FACTEUR MASSIF de DEFI_COMPOR / POLYCRISTAL
+###################################################################
+   import copy, math
+   from random import *   
+   coef=360.
+   LISTE_ANGLES=[]
+   for ig in range(Ng):
+      mon_dico={}
+      mon_dico["MONOCRISTAL"]=COMPMONO
+      mon_dico["FRAC_VOL"]=1.0/Ng
+      angles=[coef*random(), coef/(2.*math.pi)*math.acos(2.*(random()-1./2.)), coef*random()]
+      mon_dico["ANGL_EULER"]=angles
+      LISTE_ANGLES.append(mon_dico)
+   return LISTE_ANGLES
+###################################################################
+
+NGR=30
+
+LISTE_ANGL=DEFI_ANGLES(NGR, COMPORT)
+
+COMPORPA=DEFI_COMPOR(POLYCRISTAL=LISTE_ANGL,LOCALISATION='BZ',MU_LOCA=G,)
+
+COMPORP2 = DEFI_COMPOR(POLYCRISTAL=(_F(ANGL_EULER=(54.496216597785327, 102.39158569208182, 145.05727726605258),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(28.728075415256072, 173.49323803388179, 205.25413288407836),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(132.47776342119229, 73.346860065380994, 115.35507445335752),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(102.17182129337115, 55.99934079305563, 273.43498043397307),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(237.46776938938251, 65.366602864903868, 80.95895809141544),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(332.84337864559222, 129.62859596670418, 132.04061200630119),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(181.30385324662058, 57.201162244297699, 235.00173029679169),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(125.72043537040577, 161.30445181472737, 286.84587592853376),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(22.984216023319366, 135.58994033657211, 139.09798112819774),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(182.87445754668443, 101.61893480424727, 340.73016659808957),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(230.60572212101061, 130.90907448133726, 39.53244270016144),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(64.392342350093656, 27.265765103170242, 84.16703465534539),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(149.65546726660838, 35.308341205708508, 211.12598531135737),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(120.74369302723557, 104.61020261092922, 133.07803929070892),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(172.17577446382592, 122.44039468272814, 16.04212539143985),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(180.8174835047289, 48.916883118576763, 90.877759452688721),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(92.474225879553359, 116.49116827348314, 203.67275449777873),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(11.701356491255513, 70.254712386488123, 212.74438612591916),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(258.42981220279154, 43.290606766134339, 192.81888498228062),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(156.9382980134757, 15.552665758543494, 199.2725422324859),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(319.36898267453341, 111.35791813267377, 309.09461193240332),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(196.88000384126531, 107.57600235151948, 221.55533265995592),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(36.907359724826904, 150.95350766621388, 143.07934122689079),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(57.390661757716138, 97.456572474482343, 258.34608625053352),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(120.66561371910606, 120.58432636293431, 323.46197884331445),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(214.01070149391072, 80.793660775314805, 120.22275800437269),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(320.89531812460223, 77.860475591886456, 311.75208076972757),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(279.31040310400061, 153.09176200829552, 193.65353432189141),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(11.914165547409334, 104.24404174681651, 111.83502350613108),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      _F(ANGL_EULER=(242.04125810372992, 105.15755105057565, 195.3619088658574),
+                                         MONOCRISTAL=COMPORT,
+                                         FRAC_VOL=0.033333333333333333,),
+                                      ),
+                         LOCALISATION='BZ',
+                         MU_LOCA=G,
+                         )
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
+                        ECHEC=(
+                              _F(EVENEMENT     = 'ERREUR',
+                                 ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 10,
+                                 SUBD_NIVEAU   = 10),
+#                               _F(EVENEMENT='DELTA_GRANDEUR',
+#                                  VALE_REF=2.e-5,
+#                                  NOM_CHAM='VARI_ELGA',
+#                                  NOM_CMP ='V3',
+#                                  SUBD_NIVEAU=10),
+                         ))
+                        
+
+SOLNL=SIMU_POINT_MAT(INFO=1,
+                   COMPORTEMENT=_F(
+                                RELATION='POLYCRISTAL',
+                                #COMPOR=COMPORP0,
+                                COMPOR=COMPORP2,
+                                ALGO_INTE='RUNGE_KUTTA',
+                                RESI_INTE_RELA=1.E-6,
+                                ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOLE',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                   MATER      = ACIER,
+                   NB_VARI_TABLE=6,
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ)
+                        );
+
+
+IMPR_TABLE(TABLE=SOLNL,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
+
+
+FSIZZ=RECU_FONCTION(TABLE=SOLNL,
+                   PARA_X='INST',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+
+
+FEPZZ=RECU_FONCTION(TABLE=SOLNL,
+                   PARA_X='INST',
+                   PARA_Y='EPZZ',
+                   INTERPOL='LIN');
+
+SOLMF=SIMU_POINT_MAT(INFO=1,
+                     COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='polycristal.so',
+                        NOM_ROUTINE='asterpolycristal',
+                        RESI_INTE_RELA=1e-6,
+                        ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOLE',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                   MATER      = MATFRONT,
+                   NB_VARI_TABLE=6,
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ)
+                        );
+
+
+IMPR_TABLE(TABLE=SOLMF,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
+
+
+MFSIZZ=RECU_FONCTION(TABLE=SOLMF,
+                   PARA_X='INST',
+                   PARA_Y='SIZZ',
+                   INTERPOL='LIN');
+
+
+MFEPZZ=RECU_FONCTION(TABLE=SOLMF,
+                   PARA_X='INST',
+                   PARA_Y='EPZZ',
+                   INTERPOL='LIN');
+
+#pilote='INTERACTIF'
+pilote=''
+                   
+IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
+            COURBE=(
+                    _F( FONC_X=FEPZZ,    FONC_Y=FSIZZ,  LEGENDE='polycristal aster'),
+                    _F( FONC_X=MFEPZZ,   FONC_Y=MFSIZZ, LEGENDE='polycristal mfront'),
+                    ),
+            );
+            
+
+DIF1=CALC_FONCTION(COMB=(
+                          _F( FONCTION = FSIZZ, COEF =  1.),
+                          _F( FONCTION = MFSIZZ, COEF = -1.),
+                          ) );
+                   
+TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+
+TEST_TABLE(NOM_PARA='NEUT1',TYPE_TEST='SOMM_ABS',TABLE=TINT1,VALE_CALC=8.77130389904)
+
+IMPR_TABLE(TABLE=SOLMF,UNITE=38)
+
+FIN()
