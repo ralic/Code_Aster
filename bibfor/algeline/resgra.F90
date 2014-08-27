@@ -19,6 +19,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/gcpc.h"
 #include "asterfort/infniv.h"
@@ -31,7 +32,9 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
+#include "asterfort/pcmump.h"
 #include "asterfort/utmess.h"
+#include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -65,12 +68,13 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     character(len=19) :: kstoc, kstocf
-    character(len=19) :: vcin19, matas, matfac, smbr
+    character(len=19) :: vcin19, matas, matfac
     character(len=4) :: type
     character(len=24) :: precon
     integer :: ifm, niv, ier,   idip,  neq, nblc
     integer :: idac, idinpc, idippc, idacpc
-    integer ::   k, lmat, kdeb, ieq,  ismbr
+    integer ::   k, lmat, kdeb, ieq, istop_solv
+    integer, dimension(:), pointer :: slvi => null()
     real(kind=8), pointer :: w1(:) => null()
     real(kind=8), pointer :: w2(:) => null()
     real(kind=8), pointer :: w3(:) => null()
@@ -129,7 +133,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
 !     5- RECUPERATION DE LA MATRICE ASSEMBLEE :
 !     ------------------------------------------------
-    call jeveuo(matas//'.REFA', 'L', vk24=refa)
+    call jeveuo(matas//'.REFA', 'E', vk24=refa)
     kstoc=refa(2)(1:14)//'.SMOS'
     call jeexin(kstoc//'.SMDI', ier)
     if (ier .eq. 0) then
@@ -185,21 +189,60 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     do 30,k=1,nsecm
     AS_ALLOCATE(vr=w4, size=neq)
 !
-!        ---- SOLUTION POUR MUMPS
-    smbr='&&RESGRA.SMBR      '
-    call wkvect(smbr//'.VALE', 'V V R', neq, ismbr)
-!
     kdeb=(k-1)*neq+1
+    istop_solv = istop
+!   
+    if ( precon(1:7) == 'LDLT_SP' ) then  
+!   ACTIVATION DE LA SECONDE CHANCE : stop_singulier = non
+        istop_solv = 2
+    endif 
+ !
     call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
               zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
               w2, w3, 0, niter, epsi,&
-              criter, solveu, matas, smbr, istop,&
+              criter, solveu, matas, istop_solv,&
               iret)
+!
+!     9-1 SECONDE CHANCE AVEC LE PRECONDITIONNEUR LDLT_SP
+!     (cf ap2foi)    
+    if (( iret == 1 ).and.(precon(1:7) == 'LDLT_SP' )) then 
+!       ON ACTUALISE LE PRECONDITIONNEUR 
+        call utmess('I', 'ALGELINE4_63')
+!   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
+        call uttcpu('CPU.RESO.5', 'FIN', ' ')
+        call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
+!       slvi(5) = nombre d'itérations pour atteindre la convergence du solveur linéaire.
+!       si :
+!       - slvi(5) = 0 (on résout pour la première fois),
+!       - slvi(5) > reac_precond (la résolution linéaire précédente a demandé "trop" d'itérations),
+!       alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+        slvi(5) = 0
+!       reset matrix state 
+        refa(8) = ' '
+        call pcmump(matas, solveu, iret)
+        if (iret .ne. 0) then
+             call utmess('F', 'ALGELINE5_76')
+        endif
+    !
+    !
+    !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
+    call uttcpu('CPU.RESO.4', 'FIN', ' ')
+    call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
+!
+!       PUIS ON RESOUT A NOUVEAU 
+        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
+              zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
+              w2, w3, 0, niter, epsi,&
+              criter, solveu, matas, istop, &
+              iret)
+
+    endif 
+!
     do 20,ieq=1,neq
     rsolu(kdeb-1+ieq)=w4(ieq)
 20  continue
     AS_DEALLOCATE(vr=w4)
-    call jedetr(smbr//'.VALE')
     30 end do
 !
 !

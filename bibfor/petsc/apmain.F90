@@ -81,16 +81,19 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
 !     VARIABLES LOCALES
     integer :: ifm, niv, ierd, nmaxit, ptserr
-    integer :: lmat, idvalc, jslvi, jslvk, jslvr
+    integer :: lmat, idvalc
+    integer, dimension(:), pointer :: slvi => null()
     mpi_int :: rang, nbproc
     mpi_int :: mpicomm
 !
     character(len=24) :: precon
+    character(len=24), dimension(:), pointer :: slvk  => null()
     character(len=19) :: nomat, nosolv
     character(len=14) :: nonu
     character(len=1) :: rouc
 !
     real(kind=8) :: divtol, resipc
+    real(kind=8), dimension(:), pointer :: slvr => null()
     complex(kind=8) :: cbid
 !
     aster_logical :: lmd
@@ -123,9 +126,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     nosolv = nosols(kptsc)
     nonu = nonus(kptsc)
 !
-    call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-    precon = zk24(jslvk-1+2)
-    lmd = zk24(jslvk-1+10)(1:3).eq.'OUI'
+    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+    precon = slvk(2)
+    lmd = slvk(10)(1:3).eq.'OUI'
 !
 !
     if (action .eq. 'PRERES') then
@@ -315,8 +318,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        ----------------------------------
 !
 !        -- DOIT-ON VERIFIER LE CRITERE EN NORME NON PRECONDITIONNEE ?
-        call jeveuo(nosolv//'.SLVR', 'L', jslvr)
-        resipc = zr(jslvr-1+4)
+        call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
+        resipc = slvr(4)
 !
         if (resipc .ge. 0.d0) then
             call VecDuplicate(x, r, ierr)
@@ -366,7 +369,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
         if (precon .eq. 'LDLT_SP') then
 !           MENAGE
-            spsomu = zk24(jslvk-1+3)(1:19)
+            spsomu = slvk(3)(1:19)
             call detrsd('SOLVEUR', spsomu)
             spsomu = ' '
 !
@@ -383,8 +386,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             call KSPGetIterationNumber(ksp, maxits, ierr)
             ASSERT(ierr.eq.0)
             nmaxit = maxits
-            call jeveuo(nosolv//'.SLVI', 'E', jslvi)
-            zi(jslvi-1+5) = nmaxit
+            call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
+            slvi(5) = nmaxit
         endif
 !
     else if (action.eq.'DETR_MAT') then

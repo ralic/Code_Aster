@@ -259,12 +259,10 @@ Risques & conseils :
  composante   :  %(k3)s
 """),
 
-
-
-
-
-
-
+63 : _(u"""
+ Solveur GCPC :
+ Le préconditionneur LDLT a été mis à jour.
+ """), 
 
 64 : _(u"""
  détection d'un terme nul sur la sur diagonale

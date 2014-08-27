@@ -54,7 +54,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: jslvi
+    integer, dimension(:), pointer :: slvi => null()
     PetscInt :: ierr
     KSP :: ksp
 !----------------------------------------------------------------
@@ -63,10 +63,6 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
-
-
-
-!
 !
 !
 !   -- avant de refabriquer une matrice de preconditionnement,
@@ -84,18 +80,19 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
     call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), ierr)
 #endif
     ASSERT(ierr.eq.0)
-    call jeveuo(nosolv//'.SLVI', 'E', jslvi)
-    zi(jslvi-1+5) = 0
-
-
 !
+!   slvi(5) = nombre d'itérations pour atteindre la convergence du solveur linéaire.
+!   si :
+!   - slvi(5) = 0 (on résout pour la première fois),
+!   - slvi(5) > reac_precond (la résolution linéaire précédente a demandé "trop" d'itérations),
+!   alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
+!
+    call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
+    slvi(5) = 0 
 !
 !   -- calcul du nouveau preconditionneur :
 !   ---------------------------------------
     call appcpr(kptsc)
-
-
-!
 !
 !   -- 2eme resolution :
 !   ---------------------

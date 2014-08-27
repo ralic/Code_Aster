@@ -61,8 +61,6 @@ subroutine crsvsi(solveu)
     elseif ( (nomslv.eq.'GCPC') .or. (nomslv.eq.'PETSC') ) then 
         slvi(8) = 2
     endif
-    
-    
 !
     call jedema()
 end subroutine

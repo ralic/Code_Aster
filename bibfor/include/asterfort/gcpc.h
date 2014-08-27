@@ -19,7 +19,7 @@ interface
     subroutine gcpc(m, in, ip, ac, inpc,&
                     ippc, acpc, bf, xp, r,&
                     rr, p, irep, niter, epsi,&
-                    criter, solveu, matas, smbr, istop,&
+                    criter, solveu, matas, istop,&
                     iret)
         integer :: m
         integer :: in(m)
@@ -39,7 +39,6 @@ interface
         character(len=19) :: criter
         character(len=19) :: solveu
         character(len=19) :: matas
-        character(len=19) :: smbr
         integer :: istop
         integer :: iret
     end subroutine gcpc

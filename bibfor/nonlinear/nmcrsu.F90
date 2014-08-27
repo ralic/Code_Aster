@@ -182,6 +182,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     endif
 !
 ! --- SI ON DOIT DECOUPER - CAPTURE MATRICE SINGULIERE DANS SOLVEUR
+!     ET ECHEC DU SOLVEUR ITERATIF 
 !
     if (ldeco) then
         if (solveu(1:8) .ne. '&&OP0033') then

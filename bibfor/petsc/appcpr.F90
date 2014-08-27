@@ -47,13 +47,13 @@ subroutine appcpr(kptsc)
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc
-    integer :: jslvk, jslvr, jslvi
     integer :: dimgeo, dimgeo_b, tbloc, niremp, istat 
     integer :: jnequ, jnequl
     integer :: nloc, neqg, ndprop, ieq, numno, icmp
     integer :: iret
     integer :: il, ix, iga_f, igp_f
     integer :: fill
+    integer, dimension(:), pointer :: slvi => null()
     integer, dimension(:), pointer :: prddl => null()
     integer, dimension(:), pointer :: deeq => null()
     integer, dimension(:), pointer :: delg => null()
@@ -66,9 +66,11 @@ subroutine appcpr(kptsc)
     character(len=14) :: nonu
     character(len=8) :: nomail
     character(len=4) :: exilag
+    character(len=24), dimension(:), pointer :: slvk => null()
 !
     real(kind=8) :: fillin, val
     real(kind=8), dimension(:), pointer :: coordo => null() 
+    real(kind=8), dimension(:), pointer :: slvr => null()
 !
     logical :: lmd
 !
@@ -98,14 +100,14 @@ subroutine appcpr(kptsc)
     a = ap(kptsc)
     ksp = kp(kptsc)
 !
-    call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-    call jeveuo(nosolv//'.SLVR', 'L', jslvr)
-    call jeveuo(nosolv//'.SLVI', 'L', jslvi)
-    precon = zk24(jslvk-1+2)
+    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
+    call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
+    precon = slvk(2)
     
-    fillin = zr(jslvr-1+3)
-    niremp = zi(jslvi-1+4)
-    lmd = zk24(jslvk-1+10)(1:3).eq.'OUI'
+    fillin = slvr(3)
+    niremp = slvi(4)
+    lmd = slvk(10)(1:3).eq.'OUI'
 !
     fill = niremp
     fillp = fillin

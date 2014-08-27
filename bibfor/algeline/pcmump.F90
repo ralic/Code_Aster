@@ -68,7 +68,7 @@ subroutine pcmump(matasz, solvez, iretz)
 ! --  CAR DEJA FAIT DANS APETSC
     if (slvk(1) .ne. 'PETSC') then
         call jeveuo(matass//'.REFA', 'L', vk24=refa)
-        ASSERT(refa(3).ne.'ELIMF')
+ !       ASSERT(refa(3).ne.'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
         ASSERT(refa(3).ne.'ELIML')
     endif

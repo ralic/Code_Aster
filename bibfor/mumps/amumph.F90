@@ -141,7 +141,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !              COMPLETEMENT LE PB COMME EN STD
 !            = 'OUI_NOSOLVE' IDEM CI-DESSUS SANS RESOUDRE AFIN
 !               DE GAGNER DU TEMPS. LE CALCUL S'ARRETE EN UTMESS_F EN
-!              FIN D'ECRITURE DU RHS. ON ECRIT PAS DE SOLUTION
+!              FIN D'ECRITURE DU RHS. ON N'ECRIT PAS DE SOLUTION
     impr='OUI_SOLVE'
     impr='OUI_NOSOLVE'
     impr='NON'
@@ -189,7 +189,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
 !        Y-A-T-IL DEJA UNE INSTANCE EN MEMOIRE POUR MATAS ?
 !
-!     ON TEST LE NOM DE LA MATRICE, CELUI DU NUME_DDL, LE TYPE ET
+!     ON TESTE LE NOM DE LA MATRICE, CELUI DU NUME_DDL, LE TYPE ET
 !     LA TAILLE DU PB ASTER ET DU PB MUMPS ASSOCIE
 !
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)

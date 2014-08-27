@@ -1,7 +1,7 @@
 subroutine gcpc(m, in, ip, ac, inpc,&
                 ippc, acpc, bf, xp, r,&
                 rr, p, irep, niter, epsi,&
-                criter, solveu, matas, smbr, istop,&
+                criter, solveu, matas, istop,&
                 iret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,6 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !    -------------------------------------------------------------------
 !    . SOLVEU        -->   SD_SOLVEUR (POUR LDLT_SP)
 !    . MATASS        -->   MATRICE ASSEMBLEE DU SYSTEME (POUR LDLT_SP)
-!    . SMBR          -->   VECTEUR SECOND MEMBRE (POUR LDLT_SP)
 !     ------------------------------------------------------------------
 !     - PRECAUTIONS D'EMPLOI:  XP PEUT ETRE EVENTUELLEMENT CONFONDU
 !                              AVEC BF SI MEME ARGUMENT
@@ -81,7 +80,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     integer(kind=4) :: ip(*), ippc(*)
     integer :: m, in(m), inpc(m), irep, niter
     real(kind=8) :: ac(m), acpc(m), bf(m), xp(m), r(m), rr(m), p(m), epsi
-    character(len=19) :: criter, matas, solveu, smbr
+    character(len=19) :: criter, matas, solveu
     integer :: istop, iret
 !
 !
@@ -90,7 +89,6 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2)
     integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali
-    integer ::   jsmbr
     character(len=24) :: precon, solvbd
     complex(kind=8) :: cbid
     integer, pointer :: slvi(:) => null()
@@ -183,13 +181,10 @@ subroutine gcpc(m, in, ip, ac, inpc,&
             call gcldm1(m, inpc, ippc, acpc, r,&
                         rr)
         else if (precon.eq.'LDLT_SP') then
-            call jeveuo(smbr//'.VALE', 'E', jsmbr)
-            call dcopy(m, r, 1, zr(jsmbr), 1)
+          call dcopy(m, r, 1, rr, 1)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
-            call amumph('RESOUD', solvbd, matas, zr(jsmbr), [cbid],&
+            call amumph('RESOUD', solvbd, matas, rr, [cbid],&
                         ' ', 1, ier, .true._1)
-            call jeveuo(smbr//'.VALE', 'L', jsmbr)
-            call dcopy(m, zr(jsmbr), 1, rr, 1)
         else
             ASSERT(.false.)
         endif
@@ -245,6 +240,8 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         endif
 70  end do
 !
+!  
+    
 !        ---  NON CONVERGENCE
     vali = iter
     valr (1) = anorm/anorxx
