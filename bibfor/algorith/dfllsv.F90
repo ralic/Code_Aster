@@ -108,12 +108,6 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
         zr(jlinr-1+7) = 1.d0
     endif
 !
-! --- ACTION DE REACTUALISATION DU PRECONDITIONNEUR LDLT_SP ACTIVEE
-!
-    if (action .eq. 'REAC_PRECOND') then
-        zr(jlinr-1+11) = 1.d0
-    endif
-!
 ! --- TYPE D'EVENEMENT
 !
     if (even .eq. 'ERRE') then
@@ -136,8 +130,6 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
 !
     if (action .eq. 'ARRET') then
         zr(jeevr-1+leevr*(isauve-1)+2) = 0.d0
-    else if (action.eq.'REAC_PRECOND') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 1.d0
     else if (action.eq.'DECOUPE') then
         zr(jeevr-1+leevr*(isauve-1)+2) = 2.d0
     else if (action.eq.'ITER_SUPPL') then

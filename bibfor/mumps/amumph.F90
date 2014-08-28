@@ -106,11 +106,11 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     integer :: nprec, iretz, pcentp(2)
     aster_logical :: lbid, lpreco
     character(len=1) :: rouc, prec
-    character(len=4) :: etamat, etam
+    character(len=4) :: etam
     character(len=12) :: k12bid
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
-    character(len=24) :: kvers
+    character(len=24) :: kvers, etamat
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
 !----------------------------------------------------------------
@@ -342,7 +342,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !           POUR LDLT ET MF C'EST FAIT DS TLDLR8/MULFR8...
         call jeveuo(nomat//'.REFA', 'E', jrefa)
         etamat=zk24(jrefa-1+8)
-        if (etamat .eq. 'DECT') then
+        if (etamat(1:4) .eq. 'DECT') then
             if (.not.lpreco) then
                 call utmess('A', 'FACTOR_59')
             endif

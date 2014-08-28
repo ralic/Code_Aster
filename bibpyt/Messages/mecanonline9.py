@@ -104,7 +104,6 @@ cata_msg = {
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 
    Conseils :
-   - Si vous utilisez le préconditionneur LDLT_SP, activez la réactualisation en cas d'échec (ACTION='REAC_PRECOND' dans DEFI_LIST_INST).
    - Augmentez le nombre maximum d'itérations (NMAX_ITER).
    - Utilisez un préconditionneur plus précis ou changez d'algorithme.
 """),

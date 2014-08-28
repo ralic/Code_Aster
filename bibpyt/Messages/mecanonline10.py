@@ -95,10 +95,6 @@ cata_msg = {
  <Action> On arrête le calcul.
  """),
 
-31 : _(u"""
- <Action> On essaie de réactualiser le préconditionneur.
- """),
-
 32: _(u"""
  <Action> On essaie d'autoriser des itérations de Newton supplémentaires.
 """),
@@ -114,10 +110,6 @@ cata_msg = {
 35 : _(u"""
  <Action> On essaie d'adapter le coefficient de pénalisation.
  """),
-
-40 : _(u""" <Action><Échec> On a déjà réactualisé le préconditionneur LDLT_SP."""),
-
-41 : _(u""" <Action> On réactualise le préconditionneur LDLT_SP."""),
 
 42 : _(u""" <Action><Échec> On a déjà choisi l'autre solution de pilotage."""),
 

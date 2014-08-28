@@ -186,7 +186,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
 !     9- RESOLUTION EFFECTIVE ---
 !     ---------------------------------
-    do 30,k=1,nsecm
+    do k=1,nsecm
     AS_ALLOCATE(vr=w4, size=neq)
 !
     kdeb=(k-1)*neq+1
@@ -214,7 +214,8 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !       slvi(5) = nombre d'itérations pour atteindre la convergence du solveur linéaire.
 !       si :
 !       - slvi(5) = 0 (on résout pour la première fois),
-!       - slvi(5) > reac_precond (la résolution linéaire précédente a demandé "trop" d'itérations),
+!       - slvi(5) > reac_precond (la résolution linéaire précédente a demandé
+!                                 "trop" d'itérations),
 !       alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
         call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
         slvi(5) = 0
@@ -239,11 +240,11 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 
     endif 
 !
-    do 20,ieq=1,neq
+    do ieq=1,neq
     rsolu(kdeb-1+ieq)=w4(ieq)
-20  continue
+    enddo
     AS_DEALLOCATE(vr=w4)
-    30 end do
+    end do
 !
 !
 !     10- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :

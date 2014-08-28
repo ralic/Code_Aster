@@ -52,7 +52,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !                              AVEC BF SI MEME ARGUMENT
 !     ------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1504
+! aslint: disable=W1304 
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -140,7 +140,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         call dscal(m, -1.d0, r, 1)
         anorm = bnorm
         epsix = epsi*anorm
-        if (niv .eq. 2) write (ifm,1010) anorm,epsix,epsi
+        if (niv .eq. 2) write (ifm,101) anorm,epsix,epsi
     else
 !       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         call gcax(m, in, ip, ac, xp,&
@@ -149,7 +149,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
                    1)
         anorm = dnrm2(m,r,1)
         epsix = epsi*anorm
-        if (niv .eq. 2) write (ifm,1020) anorm,epsix,epsi
+        if (niv .eq. 2) write (ifm,102) anorm,epsix,epsi
     endif
 !
     call jeexin(criter//'.CRTI', ier)
@@ -172,7 +172,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     anormx = anorm
     anorxx = anorm
 !
-    do 70 iter = 1, niter
+    do iter = 1, niter
 !       ---- PRECONDITIONNEMENT DU RESIDU:
 !                                             ZK = (LDLT)-1. RK
 !                                                   RK <--- R()
@@ -223,22 +223,22 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !       ---- CALCUL TEST D'ARRET ET AFFICHAGE
         anorm = dnrm2(m,r,1)
         if (anorm .le. anormx*paraaf) then
-            if (niv .eq. 2) write (*,1041) iter,anorm,anorm/anorxx
+            if (niv .eq. 2) write (*,104) iter,anorm,anorm/anorxx
             anormx = anorm
         endif
-        if (niv .eq. 3) write (ifm,1041) iter,anorm,anorm/anorxx
+        if (niv .eq. 3) write (ifm,104) iter,anorm,anorm/anorxx
 !
 !       --- TEST DE CONVERGENCE
         if (anorm .lt. epsix) then
-            if (niv .eq. 2) write (ifm,1040) anorxx,anorm,anorm/anorxx
-            if (niv .eq. 2) write (ifm,1050) iter
+            if (niv .eq. 2) write (ifm,103) anorxx,anorm,anorm/anorxx
+            if (niv .eq. 2) write (ifm,105) iter
             if (jcri .ne. 0) then
                 zi(jcri) = iter
                 zr(jcrr) = anorm
             endif
             goto 80
         endif
-70  end do
+    end do
 !
 !  
     
@@ -264,19 +264,19 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         ASSERT(.false.)
     endif
 !    -----------
-    1010 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&
+    101 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&
      &       '  (INITIALISATION PAR X = ZERO)',/,&
      &'   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',&
      &d11.4,d11.4,/)
-    1020 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&
+    102 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&
      &       '  (INITIALISATION PAR X PRECEDENT)',/,&
      & '   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',&
      & d11.4,d11.4)
-    1040 format ('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',&
+    103 format ('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',&
      &         d11.4,d11.4,d11.4)
-    1041 format ('   * ITERATION',i5,' NORME DU RESIDU EN ABS/RELA =',&
+    104 format ('   * ITERATION',i5,' NORME DU RESIDU EN ABS/RELA =',&
      &         d11.4,d11.4)
-    1050 format (1x,/,2x,32 ('*')/'  * CONVERGENCE EN ',i4,&
+    105 format (1x,/,2x,32 ('*')/'  * CONVERGENCE EN ',i4,&
      &       ' ITERATIONS'/2x,32 ('*'),/)
 !    -----------
 80  continue

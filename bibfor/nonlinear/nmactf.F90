@@ -1,5 +1,5 @@
 subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
-                  solveu, parcri, iterat, numins)
+                  parcri, iterat, numins)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
     character(len=24) :: defico, resoco
-    character(len=19) :: sddisc, solveu
+    character(len=19) :: sddisc
     real(kind=8) :: parcri(*)
     integer :: iterat, numins
 !
@@ -51,7 +51,6 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  SOLVEU : SD SOLVEUR
 ! IN  PARCRI : CRITERES DE CONVERGENCE
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -85,7 +84,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
     else if (etfixe.eq.'EVEN') then
         call nmacto(sddisc, ievdac)
         call nmevac(sdimpr, sddisc, sderro, defico, resoco,&
-                    solveu, ievdac, numins, iterat, retact)
+                    ievdac, numins, iterat, retact)
 ! ----- ON NE PEUT PAS CONTINUER LES ITERATIONS DE NEWTON ICI
         ASSERT(retact.ne.2)
     else if (etfixe.eq.'CONT') then

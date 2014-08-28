@@ -16,12 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ldsp1(pc, ierr)
+    subroutine ldsp1(ierr)
 #ifdef _HAVE_PETSC
-        PC       ::  pc
         PetscInt ::  ierr
 #else
-        integer  :: pc
         integer(kind=4) :: ierr
 #endif
     end subroutine ldsp1

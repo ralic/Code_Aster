@@ -1,5 +1,5 @@
 subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
-                  solveu, parcri, nbiter, numins)
+                  parcri, nbiter, numins)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
     character(len=24) :: defico, resoco
-    character(len=19) :: sddisc, solveu
+    character(len=19) :: sddisc
     real(kind=8) :: parcri(*)
     integer :: nbiter, numins
 !
@@ -52,7 +52,6 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  SOLVEU : SD SOLVEUR
 ! IN  PARCRI : CRITERES DE CONVERGENCE
 ! IN  NBITER : NOMBRE D'ITERATIONS DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -63,7 +62,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
     integer :: retact, ievdac, actpas, iterat, ibid
     character(len=4) :: etinst
     aster_logical :: arret
-    integer :: piless, ireapc
+    integer :: piless
     character(len=16) :: pilcho
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
@@ -90,7 +89,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
     else if (etinst.eq.'EVEN') then
         call nmacto(sddisc, ievdac)
         call nmevac(sdimpr, sddisc, sderro, defico, resoco,&
-                    solveu, ievdac, numins, iterat, retact)
+                    ievdac, numins, iterat, retact)
     else if (etinst.eq.'ERRE') then
         retact = 1
     else if (etinst.eq.'STOP') then
@@ -160,15 +159,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 ! --- PROCHAIN INSTANT: ON REINITIALISE
 !
     if (actpas .eq. 0) then
-!
-! ----- REMISE A ZERO ESSAI_REAC_PRECOND
-!
-        call isacti(sddisc, 'REAC_PRECOND', ievdac)
-        if (ievdac .ne. 0) then
-            ireapc = 0
-            call utdidt('E', sddisc, 'ECHE', ievdac, 'ESSAI_REAC_PRECOND',&
-                        r8bid, ireapc, k8bid)
-        endif
+
 !
 ! ----- REMISE A ZERO ESSAI_ITER_PILO
 !

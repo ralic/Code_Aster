@@ -68,10 +68,6 @@ subroutine dfllac(mcfact, iechec, dtmin, even, action,&
     call getvtx(mcfact, 'ACTION', iocc=iechec, scal=action, nbret=iret)
     if (action .eq. 'ARRET') then
 ! ----- PAS D'OPTIONS
-    else if (action.eq.'REAC_PRECOND') then
-        call dflldc(mcfact, iechec, dtmin, even, submet,&
-                    subaut, pasmin, nbrpas, niveau, prcoll,&
-                    ducoll)
     else if (action.eq.'DECOUPE') then
         call dflldc(mcfact, iechec, dtmin, even, submet,&
                     subaut, pasmin, nbrpas, niveau, prcoll,&

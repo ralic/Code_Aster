@@ -359,7 +359,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! --- GESTION DES ACTIONS A LA FIN DE LA BOUCLE DE NEWTON
 !
     call nmactn(sdimpr, sddisc, sderro, defico, resoco,&
-                solveu, parcri, iterat, numins)
+                parcri, iterat, numins)
 !
 ! --- ON FAIT DES ITERATIONS SUPPLEMENTAIRES ?
 !
@@ -384,7 +384,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! --- GESTION DES ACTIONS A LA FIN D'UNE BOUCLE DE POINT FIXE
 !
     call nmactf(sdimpr, sddisc, sderro, defico, resoco,&
-                solveu, parcri, iterat, numins)
+                parcri, iterat, numins)
 !
 ! --- POUR LA CONTINUATION DU POINT FIXE: GLUTE DUE AU CONTACT DISCRET
 !

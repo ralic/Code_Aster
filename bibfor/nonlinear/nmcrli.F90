@@ -71,8 +71,8 @@ subroutine nmcrli(instin, lisins, sddisc)
     aster_logical :: linsti, linsei
     character(len=8) :: k8bid, result
     character(len=24) :: tpsipo
-    character(len=24) :: tpsrpc, tpspil, tpsdin, tpsite, tpsbcl
-    integer :: jreapc, jpil, jnivtp, jiter, jbcle
+    character(len=24) :: tpspil, tpsdin, tpsite, tpsbcl
+    integer :: jpil, jnivtp, jiter, jbcle
     character(len=24) :: lisifr, lisdit
     character(len=24) :: tpsinf
     integer :: ifm, niv
@@ -109,7 +109,6 @@ subroutine nmcrli(instin, lisins, sddisc)
     tpsite = sddisc(1:19)//'.ITER'
     tpsipo = sddisc(1:19)//'.LIPO'
 !
-    tpsrpc = sddisc(1:19)//'.REPC'
     tpspil = sddisc(1:19)//'.EPIL'
     tpsinf = sddisc(1:19)//'.LINF'
 !
@@ -120,11 +119,6 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! --- 4 - PREMIE (0 SI TOUT PREMIER, 1 SINON)
 !
     call wkvect(tpsbcl, 'V V I', 4, jbcle)
-!
-! --- OBJET REACTUALISATION DU PRECONDITIONNEUR
-!
-    call wkvect(tpsrpc, 'V V I', 1, jreapc)
-    zi(jreapc) = 0
 !
 ! --- OBJET CHOIX DE LA SOLUTION EQUATION DE PILOTAGE
 !
@@ -193,9 +187,9 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! --- INDICATEUR DU NIVEAU DE SUBDIVISION DES PAS DE TEMPS
 !
     call wkvect(tpsdin, 'V V I', nbtemp, jnivtp)
-    do 30 numins = 1, nbtemp
+    do numins = 1, nbtemp
         zi(jnivtp-1+numins) = 1
- 30 end do
+    end do
 !
 ! --- VECTEUR POUR STOCKER ITERAT NEWTON
 !

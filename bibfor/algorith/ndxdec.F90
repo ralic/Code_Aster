@@ -1,4 +1,4 @@
-subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
+subroutine ndxdec(sdimpr, sddisc, sderro, numins)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
 #include "asterfort/nmleeb.h"
     integer :: numins
     character(len=24) :: sdimpr, sderro
-    character(len=19) :: sddisc, solveu
+    character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,7 +42,6 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
 ! IN  SDIMPR : SD AFFICHAGE
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SOLVEU : SD SOLVEUR
 ! IN  NUMINS : NUMERO D'INSTANT
 !
 !
@@ -74,7 +73,7 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
     else if (etnewt.eq.'EVEN') then
         call nmacto(sddisc, ievdac)
         call nmevac(sdimpr, sddisc, sderro, k24bla, k24bla,&
-                    solveu, ievdac, numins, iterat, retact)
+                    ievdac, numins, iterat, retact)
     else if (etnewt.eq.'CONT') then
 ! ----- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE EN EXPLICITE
         ASSERT(.false.)

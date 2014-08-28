@@ -60,7 +60,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
     integer :: leevr, leevk, lesur, laevr, latpr, latpk
     integer :: iechec, iadapt
     character(len=24) :: tpsinf, tpsrpc, tpspil
-    integer :: jlinr, jreapc, jpil
+    integer :: jlinr, jpil
     character(len=24) :: tpsevr, tpsevk, tpsesu
     integer :: jeevr, jeevk, jesur
     character(len=24) :: tpsavr, tpsavk, tpstpr, tpstpk
@@ -165,22 +165,6 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 endif
             endif
 !
-        else if (quest.eq.'EXIS_REAC_PRECOND') then
-            if (getset .eq. 'L') then
-                vali = nint(zr(jlinr-1+11))
-                if (vali .eq. 0) valk = 'NON'
-                if (vali .eq. 1) valk = 'OUI'
-            else if (getset.eq.'E') then
-                if (valk .eq. 'NON') then
-                    zr(jlinr-1+11) = 0
-                else if (valk.eq.'OUI') then
-                    zr(jlinr-1+11) = 1
-                else
-                    write(6,*) 'VALK: ',valk
-                    ASSERT(.false.)
-                endif
-            endif
-!
         else if (quest.eq.'NBINST') then
             if (getset .eq. 'L') then
                 vali = nint(zr(jlinr-1+8))
@@ -220,7 +204,6 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
         call jeveuo(tpsevr, getset, jeevr)
         call jeveuo(tpsevk, getset, jeevk)
         call jeveuo(tpsesu, getset, jesur)
-        call jeveuo(tpsrpc, getset, jreapc)
         call jeveuo(tpspil, getset, jpil)
         iechec = iocc
 !
@@ -257,7 +240,6 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
             if (getset .eq. 'L') then
                 vali = nint(zr(jeevr-1+leevr*(iechec-1)+2))
                 if (vali .eq. 0) valk = 'ARRET'
-                if (vali .eq. 1) valk = 'REAC_PRECOND'
                 if (vali .eq. 2) valk = 'DECOUPE'
                 if (vali .eq. 3) valk = 'ITER_SUPPL'
                 if (vali .eq. 4) valk = 'AUTRE_PILOTAGE'
@@ -266,8 +248,6 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
             else if (getset.eq.'E') then
                 if (valk .eq. 'ARRET') then
                     zr(jeevr-1+leevr*(iechec-1)+2) = 0.d0
-                else if (valk.eq.'REAC_PRECOND') then
-                    zr(jeevr-1+leevr*(iechec-1)+2) = 1.d0
                 else if (valk.eq.'DECOUPE') then
                     zr(jeevr-1+leevr*(iechec-1)+2) = 2.d0
                 else if (valk.eq.'ITER_SUPPL') then
@@ -412,15 +392,6 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 vali = nint(zr(jesur-1+lesur*(iechec-1)+9))
             else if (getset.eq.'E') then
                 zr(jesur-1+lesur*(iechec-1)+9) = vali
-            endif
-!
-! ---- PARAMETRES ACTION 'REAC_PRECOND'
-!
-        else if (quest.eq.'ESSAI_REAC_PRECOND') then
-            if (getset .eq. 'L') then
-                vali = zi(jreapc)
-            else if (getset.eq.'E') then
-                zi(jreapc) = vali
             endif
 !
 ! ----- PARAMETRES ACTION 'ITER_SUPPL'

@@ -84,7 +84,8 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 !   slvi(5) = nombre d'itérations pour atteindre la convergence du solveur linéaire.
 !   si :
 !   - slvi(5) = 0 (on résout pour la première fois),
-!   - slvi(5) > reac_precond (la résolution linéaire précédente a demandé "trop" d'itérations),
+!   - slvi(5) > reac_precond (la résolution linéaire précédente a demandé
+!                            "trop" d'itérations),
 !   alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
 !
     call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)

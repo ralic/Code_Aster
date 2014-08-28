@@ -127,7 +127,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
         retact = 0
     else
         call nmevac(sdimpr, sddisc, sderro, k24bla, k24bla,&
-                    solveu, ievdac, numins, iterat, retact)
+                    ievdac, numins, iterat, retact)
     endif
 !
 ! --- TRAITEMENT DE L'ACTION

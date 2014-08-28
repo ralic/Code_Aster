@@ -131,7 +131,7 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 ! --- EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 ! --- DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
 !
-    call ndxdec(sdimpr, sddisc, sderro, solveu, numins)
+    call ndxdec(sdimpr, sddisc, sderro, numins)
 !
     nbiter = 1
 !

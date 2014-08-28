@@ -285,7 +285,7 @@ subroutine op0070()
 ! --- GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
 !
     call nmactp(sdimpr, sddisc, sderro, defico, resoco,&
-                solveu, parcri, nbiter, numins)
+                parcri, nbiter, numins)
 !
 ! --- INSTANT SUIVANT
 !

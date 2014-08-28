@@ -69,11 +69,11 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     integer :: nadapt, iadapt
     integer :: iter1, iter2, ibid
     integer :: ifm, niv, itmx, vali
-    aster_logical :: ldeco, lreapc
+    aster_logical :: ldeco
     real(kind=8) :: rgmaxi, rgrela, inikry
     character(len=8) :: k8bid
     character(len=19) :: even
-    character(len=16) :: typeco, nopara, decoup, reacpc
+    character(len=16) :: typeco, nopara, decoup
     character(len=24) :: lisevr, lisevk, lisesu
     character(len=24) :: lisavr, lisavk, listpr, listpk
     character(len=24) :: tpsevr, tpsevk, tpsesu
@@ -187,20 +187,6 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     if (ldeco) then
         if (solveu(1:8) .ne. '&&OP0033') then
             call crsvsi(solveu)
-        endif
-    endif
-!
-! --- REACTUALISATION AUTOMATIQUE DU PRECONDITIONNEUR LDLT_SP ACTIVEE
-!
-    call utdidt('L', sddisc, 'LIST', ibid, 'EXIS_REAC_PRECOND',&
-                r8bid, ibid, reacpc)
-    lreapc = reacpc.eq.'OUI'
-!
-! --- SI ON DOIT REACTUALISER LDLT_SP - CAPTURE ECHEC SOLVEUR ITERATIF
-!
-    if (lreapc) then
-        if (solveu(1:8) .ne. '&&OP0033') then
-            call crsvit(solveu)
         endif
     endif
 !

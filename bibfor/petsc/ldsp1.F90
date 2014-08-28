@@ -1,4 +1,4 @@
-subroutine ldsp1(pc, ierr)
+subroutine ldsp1(ierr)
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -34,8 +34,6 @@ subroutine ldsp1(pc, ierr)
 !----------------------------------------------------------------
 !     Variables PETSc
 ! because of conditional (if _HAVE_PETSC) and external types
-! aslint: disable=C1309
-    PC :: pc
     PetscInt :: ierr
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
@@ -60,7 +58,7 @@ subroutine ldsp1(pc, ierr)
 #else
 !
 !      DECLARATION BIDON POUR ASSURER LA COMPILATION
-    integer :: pc, ierr
+    integer :: ierr
 !
 #endif
 !

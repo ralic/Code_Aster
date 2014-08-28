@@ -1,5 +1,5 @@
 subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
-                  solveu, ievdac, numins, iterat, retact)
+                  ievdac, numins, iterat, retact)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,12 +32,11 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/nmerge.h"
 #include "asterfort/nmevdp.h"
 #include "asterfort/nmitsp.h"
-#include "asterfort/nmrepc.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
     character(len=24) :: defico, resoco
-    character(len=19) :: sddisc, solveu
+    character(len=19) :: sddisc
     integer :: ievdac
     integer :: iterat, numins
     integer :: retact
@@ -55,8 +54,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! IN  SDDISC : SD DISCRETISATION
 ! IN  SDERRO : SD ERREUR
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  SOLVEU : SD SOLVEUR
+! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACTreac
 ! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -71,7 +69,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
     integer :: ibid
     real(kind=8) :: r8bid
     character(len=16) :: action, nomevd
-    integer :: retrpc, retsup, retswa, retpen, retdec
+    integer :: retsup, retswa, retpen, retdec
     aster_logical :: trydec, litmax
 !
 ! ----------------------------------------------------------------------
@@ -105,16 +103,6 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         call utmess('I', 'MECANONLINE10_30')
         retact = 3
         trydec = .false.
-    else if (action.eq.'REAC_PRECOND') then
-        call utmess('I', 'MECANONLINE10_31')
-        call nmrepc(sddisc, solveu, ievdac, retrpc)
-        if (retrpc .eq. 0) then
-            trydec = .true.
-        else if (retrpc.eq.1) then
-            retact = 1
-        else
-            ASSERT(.false.)
-        endif
     else if (action.eq.'ITER_SUPPL') then
         ASSERT(iterat.ge.0)
         if (litmax) then
