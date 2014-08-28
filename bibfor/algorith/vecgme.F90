@@ -9,6 +9,7 @@ implicit none
 #include "asterfort/load_list_info.h"
 #include "asterfort/load_neum_prep.h"
 #include "asterfort/load_neum_comp.h"
+#include "asterfort/load_neum_evcu.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/inical.h"
 #include "asterfort/gcnco2.h"
@@ -18,7 +19,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/memare.h"
-#include "asterfort/nmvgme.h"
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
@@ -66,10 +66,10 @@ implicit none
 ! In  model          : name of model
 ! In  mate           : name of material characteristics (field)
 ! In  cara_elem      : name of elementary characteristics (field)
-! In  inst_prev      : previous time
-! In  inst_curr      : current time
 ! In  lload_name     : name of object for list of loads name
 ! In  lload_info     : name of object for list of loads info
+! In  inst_prev      : previous time
+! In  inst_curr      : current time
 ! In  ligrel_calc    : LIGREL to compute 
 ! In  vite_curr      : speed at current of current time
 ! In  disp_prev      : displacement at beginning of current time
@@ -163,22 +163,21 @@ implicit none
 !
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
-        load_nume = v_load_info(nb_load+i_load+1)  
+        load_nume = v_load_info(nb_load+i_load+1)
+!
+! ----- Standard undead Neumann loads 
+!
         if (load_nume .eq. 4) then  
             call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Suiv',&
                                 ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
                                 base       , resu_elem , vect_elem )
         endif
 !
-! ----- TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR
+! ----- Composite undead Neumann loads (EVOL_CHAR)
 !
-        newnom = resu_elem(10:16)
-        call gcnco2(newnom)
-        resu_elem(10:16) = newnom(2:8)
-        call nmvgme(model    , ligrel_calc, cara_elem, lload_name    , i_load   ,&
-                    inst_curr, resu_elem  , disp_prev, disp_cumu_inst, vite_curr,&
-                    strx_prev)
-        call reajre(vect_elem, resu_elem, base)
+        call load_neum_evcu(model    , ligrel_calc, cara_elem, load_name     , i_load,&
+                            inst_curr, disp_prev  , strx_prev, disp_cumu_inst, vite_curr,&
+                            base     , resu_elem  , vect_elem)
     end do
 !
  99 continue

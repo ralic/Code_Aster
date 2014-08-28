@@ -52,13 +52,7 @@ cata_msg = {
  nombre total de variables internes incohérent <--> erreur de programmation.
 """),
 
-15 : _(u"""
-  le concept EVOL_CHAR :  %(k1)s  n'en est pas un !
-"""),
 
-16 : _(u"""
-  le concept EVOL_CHAR :  %(k1)s  ne contient aucun champ de type EVOL_CHAR.
-"""),
 
 20 : _(u"""
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s

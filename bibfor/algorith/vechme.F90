@@ -10,6 +10,7 @@ implicit none
 #include "asterfort/load_list_info.h"
 #include "asterfort/load_neum_prep.h"
 #include "asterfort/load_neum_comp.h"
+#include "asterfort/load_neum_evcd.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -17,8 +18,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/memare.h"
-#include "asterfort/nmdepr.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
@@ -63,8 +62,8 @@ implicit none
 ! In  model          : name of model
 ! In  mate           : name of material characteristics (field)
 ! In  cara_elem      : name of elementary characteristics (field)
-! In  lload_name     : list of load names
-! In  lload_info     : list of information about loads
+! In  lload_name     : name of object for list of loads name
+! In  lload_info     : name of object for list of loads info
 ! In  inst           : times informations
 ! In  ligrel_calc    : LIGREL to compute 
 ! In  varc_curr      : command variable for current time
@@ -82,13 +81,13 @@ implicit none
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
-    character(len=8) :: newnom, load_name
-    integer :: nb_load, i_load, ii
+    integer :: nb_load, i_load
     integer :: load_nume
     integer :: nb_in_prep
     real(kind=8) :: inst_prev, inst_curr, inst_theta 
+    character(len=8) :: load_name
     character(len=24) :: ligrel_calc, model
-    character(len=19) :: resufv(3), vect_elem, resu_elem, varc_curr
+    character(len=19) :: vect_elem, varc_curr, resu_elem
     character(len=24) :: lload_name
     character(len=24), pointer :: v_load_name(:) => null()
     character(len=24) :: lload_info
@@ -102,7 +101,6 @@ implicit none
 !
 ! - Initializations
 !
-    newnom      = '.0000000'
     resu_elem   = '&&VECHME.0000000'
     model       = modelz
     lload_name  = lload_namez
@@ -164,30 +162,20 @@ implicit none
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
         load_nume = v_load_info(nb_load+i_load+1)  
-        if ((load_nume .gt. 0 .and. load_nume .lt. 4).or.(load_nume.eq.55)) then
-! 
-! --------- Compute VECT_ELEM
 !
-            call load_neum_comp(stop      , i_load, load_name , load_nume, 'Dead'   ,ligrel_calc, &
-                                nb_in_maxi, nb_in_prep, lpain    , lchin    ,base       , & 
-                                resu_elem , vect_elem )
+! ----- Standard dead Neumann loads
+!
+        if ((load_nume .gt. 0 .and. load_nume .lt. 4).or.(load_nume.eq.55)) then
+            call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Dead'   ,&
+                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin    ,& 
+                                base       , resu_elem , vect_elem  )
         endif
 !
-! ----- TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR
+! ----- Composite dead Neumann loads (EVOL_CHAR)
 !
-        newnom     = resu_elem(10:16)
-        do ii = 1, 3
-            resufv(ii) = resu_elem
-            call gcnco2(newnom)
-            resufv(ii) (10:16) = newnom(2:8)
-        enddo
-        call nmdepr(modelz   , ligrel_calc, cara_elem, lload_name, i_load,&
-                    inst_prev, resufv)
-        
-        do ii = 1, 3
-            call reajre(vect_elem, resufv(ii), base)
-        enddo
-        resu_elem = resufv(3)
+        call load_neum_evcd(stop      , inst_prev , load_name, i_load, ligrel_calc,&
+                            nb_in_maxi, nb_in_prep, lpain    , lchin , base       ,&
+                            resu_elem , vect_elem)
     end do
 !
  99 continue

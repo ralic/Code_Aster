@@ -40,9 +40,9 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 #include "asterfort/megeom.h"
 #include "asterfort/meharm.h"
 #include "asterfort/memare.h"
-#include "asterfort/nmdepr.h"
 #include "asterfort/nmvcd2.h"
 #include "asterfort/reajre.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -113,10 +113,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=24) :: ligrmo, ligrch, chtime, chlapl, chcara(18)
     character(len=24) :: chharm
     character(len=19) :: chvarc, chvref
-!
-    character(len=19) :: resufv(3)
-    character(len=24) :: charge
-    integer :: jad, i
+    integer :: i
     aster_logical :: ltemp, ltref
 !
 !
@@ -634,30 +631,11 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call reajre(matel, lchout(1), base)
         endif
 ! ====================================================================
-! CHARGE DE TYPE EVOL_CHAR
-!
-        charge='&&ME2MME.INTERF.NMDEPR'
-        call wkvect(charge, 'V V K24', 1, jad)
-        zk24(jad)=lchar(icha)
-!
-        resufv(1)='&&ME2MME.VE001'
-        resufv(2)='&&ME2MME.VE002'
-        resufv(3)='&&ME2MME.VE003'
-!
-        call nmdepr(modele, ligrmo, cara, charge, 1,&
-                    time, resufv)
-!
-        do i = 1, 3
-            call exisd('CHAMP_GD', resufv(i), iret)
-            if (iret .ne. 0) then
-                ilires=ilires+1
-                call codent(ilires, 'D0', lchout(1)(12:14))
-                call copisd('CHAMP_GD', base, resufv(i), lchout(1))
-                call detrsd('CHAMP_GD', resufv(i))
-                call reajre(matel, lchout(1), base)
-            endif
-        end do
-        call jedetr(charge)
+
+        call jeexin(lchar(icha)//'.CHME.EVOL.CHAR', ier)
+        if (ier.ne.0) then
+            call utmess('F','CHARGES3_11')
+        endif
 !
 ! ====================================================================
 ! CHARGE DE TYPE ONDE_PLANE :

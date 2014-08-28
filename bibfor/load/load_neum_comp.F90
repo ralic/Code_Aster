@@ -1,6 +1,6 @@
-subroutine load_neum_comp(stop       , i_load    , load_name , load_nume, load_type,&
-                          ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin    ,&
-                          base       , resu_elem , vect_elem)
+subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load_type,&
+                          ligrel_calc, nb_in_maxi, nb_in_prep, lpain      , lchin    ,&
+                          base       , resu_elem , vect_elem , iden_direct, name_inputz)
 !
     implicit none
 !
@@ -44,6 +44,8 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume, load_t
     character(len=19), intent(inout) :: resu_elem
     character(len=19), intent(in) :: vect_elem
     character(len=1), intent(in) :: base
+    character(len=*), optional, intent(in) :: iden_direct
+    character(len=*), optional, intent(in) :: name_inputz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,6 +68,8 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume, load_t
 ! IO  resu_elem      : name of resu_elem
 ! In  vect_elem      : name of vect_elem
 ! In  base           : JEVEUX base to create vect_elem
+! In  iden_direct    : direct identification of type
+! In  name_inputz    : direct name of input field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,9 +90,16 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume, load_t
 !
 ! ----- Get information about load
 !
-        call load_neum_spec(load_name   , load_nume  , load_type  , ligrel_calc, i_type_neum,&
-                            nb_type_neum, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
-                            nb_in_add   , load_ligrel, load_option)
+        if (present(iden_direct)) then
+            call load_neum_spec(load_name   , load_nume  , load_type  , ligrel_calc, i_type_neum,&
+                                nb_type_neum, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
+                                nb_in_add   , load_ligrel, load_option, iden_direct = iden_direct,&
+                                name_inputz = name_inputz)
+        else
+            call load_neum_spec(load_name   , load_nume  , load_type  , ligrel_calc, i_type_neum,&
+                                nb_type_neum, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
+                                nb_in_add   , load_ligrel, load_option)
+        endif
 !
         if (load_option .ne. 'No_Load') then
 !

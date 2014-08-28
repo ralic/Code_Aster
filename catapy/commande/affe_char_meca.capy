@@ -33,7 +33,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          EVOL_CHAR       =SIMP(statut='f',fr=tr("Champ de pression issu d'un autre calcul"),
-                               typ=evol_char ),
+                               typ=evol_char,min=1,max=1),
 
          PESANTEUR       =FACT(statut='f',max=1,fr=tr("Champ de pesanteur"),
             GROUP_MA         =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

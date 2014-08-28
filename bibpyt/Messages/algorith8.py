@@ -104,9 +104,7 @@ Arrêt suite à l'échec de l'intégration de la loi de comportement.
   endommagement maximal atteint au cours des résolutions internes
 """),
 
-77 : _(u"""
- le nombre de composantes dans le champ de vent est incorrect. on doit avoir : DX, DY, DZ
-"""),
+
 
 86 : _(u"""
  porosité strictement nulle( cas non traité)

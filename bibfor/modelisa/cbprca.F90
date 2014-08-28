@@ -1,4 +1,14 @@
-subroutine cbprca(char)
+subroutine cbprca(load)
+!
+implicit none
+!
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,27 +25,48 @@ subroutine cbprca(char)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=24) :: obj
 !
-    character(len=8) :: char, calc
-    integer :: ncalc, jcalc
+    character(len=8), intent(in) :: load
 !
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
 !
-    call getvid(' ', 'EVOL_CHAR', scal=calc, nbret=ncalc)
-    if (ncalc .ne. 0) then
-        obj = char//'.CHME.EVOL.CHAR'
-        call wkvect(obj, 'G V K8', 1, jcalc)
-        zk8(jcalc) = calc
+! Loads affectation
+!
+! Keyword = 'EVOL_CHAR'
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load      : name of load
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24) :: object
+    character(len=8), pointer :: p_object(:) => null()
+    character(len=8) :: evol_char
+    integer :: nb_occ, nb_cham
+    character(len=16) :: type_sd
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call getvid(' ', 'EVOL_CHAR', scal=evol_char, nbret=nb_occ)
+    if (nb_occ .ne. 0) then
+!
+! ----- Check
+!
+        ASSERT(nb_occ.eq.1)
+        call dismoi('NB_CHAMP_UTI', evol_char, 'RESULTAT', repi=nb_cham)
+        if (nb_cham .le. 0) then
+            call utmess('F', 'CHARGES3_1', sk=evol_char)
+        endif
+        call gettco(evol_char, type_sd)
+        ASSERT(type_sd .eq. 'EVOL_CHAR')
+!
+! ----- Save
+!
+        object = load//'.CHME.EVOL.CHAR'
+        call wkvect(object, 'G V K8', 1, vk8 = p_object)
+        p_object(1) = evol_char
+
     endif
-!
-    call jedema()
+
 end subroutine

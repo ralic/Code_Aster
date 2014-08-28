@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cbprca(char)
-        character(len=8) :: char
+    subroutine cbprca(load)
+        character(len=8), intent(in) :: load
     end subroutine cbprca
 end interface
