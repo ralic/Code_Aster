@@ -91,7 +91,7 @@ def build_context(unite, temp, prol):
     return context
 
 
-def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
+def include_materiau_ops(self,
                          EXTRACTION, UNITE_LONGUEUR, INFO,
                          PROL_GAUCHE, PROL_DROITE, **args):
     """Macro INCLUDE_MATERIAU"""
@@ -104,9 +104,13 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
     self.set_icmd(1)
     self.DeclareOut('MAT', self.sd)
 
-    bnmat = ''.join([NOM_AFNOR, '_', TYPE_MODELE, '_', VARIANTE, '.', TYPE_VALE])
-    repmat = aster_core.get_option("repmat")
-    fmat = osp.join(repmat, bnmat)
+    fmat = args.get('FICHIER')
+    if not fmat:
+        bnmat = ''.join([args['NOM_AFNOR'], '_', args['TYPE_MODELE'],
+                         '_', args['VARIANTE'], '.', args['TYPE_VALE']])
+        repmat = aster_core.get_option("repmat")
+        fmat = osp.join(repmat, bnmat)
+
     if not osp.exists(fmat):
         UTMESS('F', 'FICHIER_1', valk=fmat)
 
