@@ -1,0 +1,18 @@
+DEPL2 = FORMULE(NOM_PARA='INST',VALE='sin(OMEGAA*INST)/(OMEGAA**xx)')
+DEPLACE2=CALC_FONC_INTERP( FONCTION=DEPL2,
+                           LIST_PARA=L_INST,
+			   NOM_PARA='INST',
+                           PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                           NOM_RESU='DEPL'       )
+
+MONO_X=CALC_CHAR_SEISME(  MATR_MASS=MASSE,
+                          DIRECTION=( 1., 0., 0.,),
+                          MONO_APPUI='OUI' )
+
+
+PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
+          _F( MATRICE = CO("MASS_GEN"), MATR_ASSE = MASSE),
+          _F( MATRICE = CO("RIGI_GEN"), MATR_ASSE = RIGIDITE)),
+          VECT_ASSE_GENE=_F( VECTEUR = CO("VECT_X"), VECT_ASSE = MONO_X)
+         )
