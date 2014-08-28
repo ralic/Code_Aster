@@ -1,4 +1,4 @@
-# TITRE VALIDATION REAC_PRECOND (ERREUR)
+# TITRE VALIDATION DECOUPE (ERREUR)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0,0,1,1),);
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),
-                       ECHEC=_F(ACTION='REAC_PRECOND',),);
+                       ECHEC=_F(ACTION='DECOUPE',),);
 
 is_ok = 0
 try :
