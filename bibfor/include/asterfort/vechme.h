@@ -16,17 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vechme(stop, modelz, chargz, infchz, inst,&
-                      carele, mate, vrcplu, ligrez, vecelz)
-        character(len=1) :: stop
-        character(len=*) :: modelz
-        character(len=*) :: chargz
-        character(len=*) :: infchz
-        real(kind=8) :: inst(3)
-        character(len=*) :: carele
-        character(len=*) :: mate
-        character(len=*) :: vrcplu
-        character(len=*) :: ligrez
-        character(len=*) :: vecelz
+    subroutine vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
+                      cara_elem, mate  , vect_elemz , varc_currz , ligrel_calcz,&
+                      nharm)
+        character(len=1), intent(in) :: stop
+        character(len=*), intent(in) :: modelz
+        character(len=*), intent(in) :: lload_namez
+        character(len=*), intent(in) :: lload_infoz
+        real(kind=8), intent(in) :: inst(3)
+        character(len=*), intent(in) :: cara_elem
+        character(len=*), intent(in) :: mate
+        character(len=*), intent(inout) :: vect_elemz
+        character(len=*), optional, intent(in) :: varc_currz
+        character(len=*), optional, intent(in) :: ligrel_calcz
+        integer, optional, intent(in) :: nharm
     end subroutine vechme
 end interface

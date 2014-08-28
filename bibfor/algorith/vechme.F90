@@ -1,5 +1,25 @@
-subroutine vechme(stop, modelz, chargz, infchz, inst,&
-                  carele, mate, vrcplu, ligrez, vecelz)
+subroutine vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
+                  cara_elem, mate  , vect_elemz , varc_currz , ligrel_calcz,&
+                  nharm)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/load_list_info.h"
+#include "asterfort/load_neum_prep.h"
+#include "asterfort/load_neum_comp.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/nmdepr.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,351 +39,160 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/copisd.h"
-#include "asterfort/corich.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/exisd.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/gcnco2.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
-#include "asterfort/mecara.h"
-#include "asterfort/megeom.h"
-#include "asterfort/memare.h"
-#include "asterfort/nmdepr.h"
-#include "asterfort/reajre.h"
-#include "asterfort/dismoi.h"
-    character(len=*) :: modelz, chargz, infchz, carele, mate
-    character(len=*) :: vrcplu, vecelz, ligrez
-    character(len=1) :: stop
-    real(kind=8) :: inst(3)
+    character(len=1), intent(in) :: stop
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: lload_namez
+    character(len=*), intent(in) :: lload_infoz
+    real(kind=8), intent(in) :: inst(3)
+    character(len=*), intent(in) :: cara_elem
+    character(len=*), intent(in) :: mate
+    character(len=*), intent(inout) :: vect_elemz
+    character(len=*), optional, intent(in) :: varc_currz
+    character(len=*), optional, intent(in) :: ligrel_calcz
+    integer, optional, intent(in) :: nharm
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!  CALCUL DES VECTEURS ELEMENTAIRES DES CHARGEMENTS MECANIQUES
-!  DE NEUMANN NON SUIVEURS ET NON PILOTABLES (CONSTANTS).
+! Compute Neumann loads
+! 
+! Dead and fixed loads
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!  PRODUIT UN VECT_ELEM DEVANT ETRE ASSEMBLE PAR LA ROUTINE ASASVE
-!
-! IN  STOP   : COMPORTEMENT DE CALCUL
-! IN  MODELE : NOM DU MODELE
-! IN  CHARGE : LISTE DES CHARGES
-! IN  INFCHA : INFORMATIONS SUR LES CHARGEMENTS
-! IN  PARTPS : INSTANT PRECEDENT ET ACTUEL
-! IN  CARELE : CARACTERISTIQUES DES POUTRES ET COQUES
-! IN  MATE   : MATERIAU CODE
-! IN  TEMPLU : CHAMP DE TEMPERATURE A L'INSTANT T+
-! IN  LIGREZ : (SOUS-)LIGREL DE MODELE POUR CALCUL REDUIT
-!                  SI ' ', ON PREND LE LIGREL DU MODELE
-! OUT VECELE : VECT_ELEM RESULTAT.
+! In  stop           : continue or stop computation if no loads on elements
+! In  model          : name of model
+! In  mate           : name of material characteristics (field)
+! In  cara_elem      : name of elementary characteristics (field)
+! In  lload_name     : list of load names
+! In  lload_info     : list of information about loads
+! In  inst           : times informations
+! In  ligrel_calc    : LIGREL to compute 
+! In  varc_curr      : command variable for current time
+! IO  vect_elem      : name of vect_elem result
+! In  nharm          : Fourier mode
 !
 ! ATTENTION :
-! -----------
 !   LE VECT_ELEM (VECELZ) RESULTAT A 1 PARTICULARITE :
-!   1) CERTAINS RESUELEM NE SONT PAS DES RESUELEM MAIS DES
-!      CHAM_NO (.VEASS)
-    integer :: nchinx
-    parameter (nchinx=43)
-    integer :: nbchmx
-    parameter (nbchmx=18)
-    integer :: jlchin
-    integer :: ier, jchar, jinf
-    integer :: ibid, iret, nchar, k, icha, ii, iexis
-    integer :: numchm, nchin
-    character(len=5) :: suffix
-    character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nompar(nbchmx)
-    character(len=6) :: nomopf(nbchmx), nomopr(nbchmx)
-    character(len=7) :: nomcmp(3)
-    character(len=8) :: nomcha, ma
-    character(len=8) :: lpain(nchinx), lpaout, newnom, modele
-    character(len=16) :: option
-    character(len=24) :: chcara(18), chtime, ligrel
-    character(len=24) :: ligrmo, ligrch
-    character(len=19) :: lchout, resufv(3), vecele
-    character(len=24) :: lchin(nchinx)
-    character(len=24) :: charge, infcha
-    aster_logical :: bidon, lxfem
-    character(len=8), pointer :: vale(:) => null()
+!   CERTAINS RESUELEM NE SONT PAS DES RESUELEM MAIS DES CHAM_NO (.VEASS)
 !
-    data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
-     &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',&
-     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.SIINT','.EFOND'/
-    data nomopf/'FORC_F','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',&
-     &     'FF1D1D','PESA_R','ROTA_R','PRES_F','FRELEC','FFCO3D',&
-     &     'FFCO2D','EPSI_F','FLUX_F','      ',' ','EFON_F'/
-    data nompaf/'FORNOF','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',&
-     &     'FF1D1D','PESANR','ROTATR','PRESSF','FRELEC','FFCO3D',&
-     &     'FFCO2D','EPSINF','FLUXF','      ',' ','PEFOND'/
-    data nomopr/'FORC_R','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',&
-     &     'FR1D1D','PESA_R','ROTA_R','PRES_R','FRELEC','FRCO3D',&
-     &     'FRCO2D','EPSI_R','FLUX_R','      ',' ','EFON_R'/
-    data nompar/'FORNOR','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',&
-     &     'FR1D1D','PESANR','ROTATR','PRESSR','FRELEC','FRCO3D',&
-     &     'FRCO2D','EPSINR','FLUXR','      ',' ','PEFOND'/
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: nb_in_maxi, nbout
+    parameter (nb_in_maxi = 42, nbout = 1)
+    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
+    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
+!
+    character(len=8) :: newnom, load_name
+    integer :: nb_load, i_load, ii
+    integer :: load_nume
+    integer :: nb_in_prep
+    real(kind=8) :: inst_prev, inst_curr, inst_theta 
+    character(len=24) :: ligrel_calc, model
+    character(len=19) :: resufv(3), vect_elem, resu_elem, varc_curr
+    character(len=24) :: lload_name
+    character(len=24), pointer :: v_load_name(:) => null()
+    character(len=24) :: lload_info
+    integer, pointer :: v_load_info(:) => null()
+    aster_logical :: load_empty
+    character(len=1) :: base
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    newnom = '.0000000'
-    modele = modelz
-    charge = chargz
-    infcha = infchz
-    ligrmo = ligrez
-    do ii = 1, nchinx
-        lchin(ii) = ' '
-        lpain(ii) = ' '
-    end do
-    call exixfe(modele, ier)
-    lxfem = ier.ne.0
-    if (ligrmo .eq. ' ') ligrmo = modele(1:8)//'.MODELE'
-    lpaout = 'PVECTUR'
-    lchout = '&&VECHME.???????'
+    newnom      = '.0000000'
+    resu_elem   = '&&VECHME.0000000'
+    model       = modelz
+    lload_name  = lload_namez
+    lload_info  = lload_infoz
+    varc_curr   = ' '
+    if (present(varc_currz)) then
+        varc_curr   = varc_currz
+    endif
+    ligrel_calc = model(1:8)//'.MODELE'
+    if (present(ligrel_calcz)) then
+        ligrel_calc = ligrel_calcz
+    endif
+    inst_prev   = inst(1)
+    inst_curr   = inst(1)+inst(2)
+    inst_theta  = inst(3)
+    base        = 'V'
 !
-! --- CALCUL DU NOM DU RESULTAT :
+! - Init fields
 !
-    vecele = vecelz
-    if (vecele .eq. ' ') vecele = '&&VEMCHA'
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+                lchout)
 !
-! --- DETECTION DE LA PRESENCE DE CHARGES
+! - Result name for vect_elem
 !
-    bidon = .true.
-    call jeexin(charge, iret)
-    if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar)
-        if (nchar .ne. 0) then
-            bidon = .false.
-            call jeveuo(charge, 'L', jchar)
-            call jeveuo(infcha, 'L', jinf)
-        endif
+    vect_elem = vect_elemz
+    if (vect_elem .eq. ' ') then
+        vect_elem = '&&VECHME'
     endif
 !
-! --- ALLOCATION DU VECT_ELEM RESULTAT :
+! - Loads
 !
-    call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele, mate, carele,&
+    call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
+                        lload_name, lload_info)
+!
+! - Allocate result
+!
+    call detrsd('VECT_ELEM', vect_elem)
+    call memare(base, vect_elem, model, mate, cara_elem,&
                 'CHAR_MECA')
-    call reajre(vecele, ' ', 'V')
-    if (bidon) goto 99
-!
-! --- CARTES GEOMETRIE ET CARA_ELEM
-!
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
-    call mecara(carele, chcara)
-!
-! --- CARTE INSTANTS
-!
-    chtime = '&&VECHME.CH_INST_R'
-    nomcmp(1) = 'INST   '
-    nomcmp(2) = 'DELTAT '
-    nomcmp(3) = 'THETA  '
-    call mecact('V', chtime, 'LIGREL', ligrmo, 'INST_R  ',&
-                ncmp=3, lnomcmp=nomcmp, vr=inst)
-!
-! --- CHAMPS IN
-!
-    lpain(2) = 'PGEOMER'
-    lchin(2) = ma//'.COORDO'
-    lpain(3) = 'PTEMPSR'
-    lchin(3) = chtime
-    lpain(4) = 'PMATERC'
-    lchin(4) = mate
-    lpain(5) = 'PCACOQU'
-    lchin(5) = chcara(7)
-    lpain(6) = 'PCAGNPO'
-    lchin(6) = chcara(6)
-    lpain(7) = 'PCADISM'
-    lchin(7) = chcara(3)
-    lpain(8) = 'PCAORIE'
-    lchin(8) = chcara(1)
-    lpain(9) = 'PCACABL'
-    lchin(9) = chcara(10)
-    lpain(10) = 'PCAARPO'
-    lchin(10) = chcara(9)
-    lpain(11) = 'PCAGNBA'
-    lchin(11) = chcara(11)
-    lchin(12) = vrcplu
-    lpain(12) = 'PVARCPR '
-    lpain(13) = 'PCAMASS'
-    lchin(13) = chcara(12)
-    lpain(14) = 'PCAGEPO'
-    lchin(14) = chcara(5)
-    lpain(15) = 'PNBSP_I'
-    lchin(15) = chcara(16)
-    lpain(16) = 'PFIBRES'
-    lchin(16) = chcara(17)
-    lpain(17) = 'PCINFDI'
-    lchin(17) = chcara(15)
-    lpain(18) = 'PCOMPOR'
-    lchin(18) = mate(1:8)//'.COMPOR'
-    lpain(19) = 'PABSCUR'
-    lchin(19) = ma//'.ABSC_CURV'
-!
-    nchin = 19
-    if (lxfem) then
-        lpain(nchin + 1) = 'PPINTTO'
-        lchin(nchin + 1) = modele(1:8)//'.TOPOSE.PIN'
-        lpain(nchin + 2) = 'PCNSETO'
-        lchin(nchin + 2) = modele(1:8)//'.TOPOSE.CNS'
-        lpain(nchin + 3) = 'PHEAVTO'
-        lchin(nchin + 3) = modele(1:8)//'.TOPOSE.HEA'
-        lpain(nchin + 4) = 'PLONCHA'
-        lchin(nchin + 4) = modele(1:8)//'.TOPOSE.LON'
-        lpain(nchin + 5) = 'PLSN'
-        lchin(nchin + 5) = modele(1:8)//'.LNNO'
-        lpain(nchin + 6) = 'PLST'
-        lchin(nchin + 6) = modele(1:8)//'.LTNO'
-        lpain(nchin + 7) = 'PSTANO'
-        lchin(nchin + 7) = modele(1:8)//'.STNO'
-        lpain(nchin + 8) = 'PPMILTO'
-        lchin(nchin + 8) = modele(1:8)//'.TOPOSE.PMI'
-        lpain(nchin + 9) = 'PFISNO'
-        lchin(nchin + 9) = modele(1:8)//'.FISSNO'
-        nchin = nchin + 9
+    call reajre(vect_elem, ' ', base)
+    if (load_empty) then
+        goto 99
     endif
 !
-! --- CALCUL
+! - Preparing input fields
 !
-    do icha = 1, nchar
-        numchm = zi(jinf+nchar+icha)
-        if (numchm .gt. 0) then
-            nomcha = zk24(jchar+icha-1) (1:8)
-            ligrch = nomcha//'.CHME.LIGRE'
+    if (present(nharm)) then
+        call load_neum_prep(model    , cara_elem , mate      , 'Dead'      , inst_prev,&
+                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
+                            lpain    , varc_curr = varc_curr, nharm = nharm)
+    else
+        call load_neum_prep(model    , cara_elem , mate      , 'Dead'      , inst_prev,&
+                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
+                            lpain    , varc_curr = varc_curr)
+    endif
 !
-! ------- LE LIGREL UTILISE DANS CALCUL EST LE LIGREL DU MODELE
-! ------- SAUF POUR LES FORCES NODALES
+! - Computation
 !
-            do k = 1, nbchmx
-                if (nomlig(k) .eq. '.FORNO') then
-                    ligrel = ligrch
-                else
-                    ligrel = ligrmo
-                endif
-                if (nomlig(k) .eq. '.VEASS') then
-                    suffix = '     '
-                else
-                    suffix = '.DESC'
-                endif
-                lchin(1) = nomcha//'.CHME'//nomlig(k)//suffix
-                call jeexin(lchin(1), iret)
-                if (iret .ne. 0) then
-                    if (numchm .eq. 1) then
-                        option = 'CHAR_MECA_'//nomopr(k)
-                        lpain(1) = 'P'//nompar(k)
-                    else if (numchm.eq.2) then
-                        option = 'CHAR_MECA_'//nomopf(k)
-                        lpain(1) = 'P'//nompaf(k)
-                    else if (numchm.eq.3) then
-                        option = 'CHAR_MECA_'//nomopf(k)
-                        lpain(1) = 'P'//nompaf(k)
-                    else if (numchm.eq.55) then
-                        option = 'FORC_NODA'
-                        call jeveuo(ligrch(1:13)//'.SIINT.VALE', 'L', vk8=vale)
-                        lpain(1) = 'PCONTMR'
-                        lchin(1) = vale(1)
-                        nchin = nchin + 1
-                        lpain(nchin) = 'PDEPLMR'
-                        lchin(nchin) = ' '
-                    else if (numchm.ge.4) then
-                        goto 40
-                    endif
+    do i_load = 1, nb_load
+        load_name = v_load_name(i_load)(1:8)
+        load_nume = v_load_info(nb_load+i_load+1)  
+        if ((load_nume .gt. 0 .and. load_nume .lt. 4).or.(load_nume.eq.55)) then
+! 
+! --------- Compute VECT_ELEM
 !
-                    nchin = 28
-!
-! ----------------- For EFFE_FOND: you need two <CARTE>
-!
-                    if (option .eq. 'CHAR_MECA_EFON_R') then
-                        nchin = nchin + 1
-                        lpain(nchin) = 'PPREFFR'
-                        lchin(nchin) = nomcha//'.CHME.PREFF'
-                        lpain(1) = 'PEFOND'
-                        lchin(1) = nomcha//'.CHME.EFOND'
-                    endif
-                    if (option .eq. 'CHAR_MECA_EFON_F') then
-                        nchin = nchin + 1
-                        lpain(nchin) = 'PPREFFF'
-                        lchin(nchin) = nomcha//'.CHME.PREFF'
-                        lpain(1) = 'PEFOND'
-                        lchin(1) = nomcha//'.CHME.EFOND'
-                    endif
-!
-! ----------- POUR LES ELEMENTS DE BORD XFEM
-!
-                    if (lxfem) then
-                        if (option .eq. 'CHAR_MECA_PRES_R' .or. option .eq.&
-                            'CHAR_MECA_PRES_F') then
-                            lpain(nchin + 1) = 'PPINTER'
-                            lchin(nchin + 1) = modele(1:8)// '.TOPOFAC.OE'
-                            lpain(nchin + 2) = 'PAINTER'
-                            lchin(nchin + 2) = modele(1:8)// '.TOPOFAC.AI'
-                            lpain(nchin + 3) = 'PCFACE'
-                            lchin(nchin + 3) = modele(1:8)// '.TOPOFAC.CF'
-                            lpain(nchin + 4) = 'PLONGCO'
-                            lchin(nchin + 4) = modele(1:8)// '.TOPOFAC.LO'
-                            lpain(nchin + 5) = 'PBASECO'
-                            lchin(nchin + 5) = modele(1:8)// '.TOPOFAC.BA'
-                            nchin = nchin + 5
-                        endif
-                    endif
-!
-! ----------- GENERATION NOM DU RESU_ELEM EN SORTIE
-!
-                    call gcnco2(newnom)
-                    lchout(10:16) = newnom(2:8)
-                    call corich('E', lchout, icha, ibid)
-!
-! ----------- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
-!
-                    if (nomlig(k) .eq. '.VEASS') then
-                        call jeveuo(lchin(1), 'L', jlchin)
-                        call copisd('CHAMP_GD', 'V', zk8(jlchin), lchout)
-                    else
-                        ASSERT(nchin.le.nchinx)
-                        call calcul(stop, option, ligrel, nchin, lchin,&
-                                    lpain, 1, lchout, lpaout, 'V',&
-                                    'OUI')
-                    endif
-!
-! ----------- RECOPIE DU CHAMP (S'IL EXISTE) DANS LE VECT_ELEM
-!
-                    call exisd('CHAMP_GD', lchout, iexis)
-                    ASSERT((iexis.gt.0).or.(stop.eq.'C'))
-                    call reajre(vecele, lchout, 'V')
-!
-                endif
- 40             continue
-            enddo
+            call load_neum_comp(stop      , i_load, load_name , load_nume, 'Dead'   ,ligrel_calc, &
+                                nb_in_maxi, nb_in_prep, lpain    , lchin    ,base       , & 
+                                resu_elem , vect_elem )
         endif
 !
 ! ----- TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR
 !
+        newnom     = resu_elem(10:16)
         do ii = 1, 3
-            resufv(ii) = lchout
+            resufv(ii) = resu_elem
             call gcnco2(newnom)
             resufv(ii) (10:16) = newnom(2:8)
         enddo
-        call nmdepr(modelz, ligrmo, carele, chargz, icha,&
-                    inst(1), resufv)
+        call nmdepr(modelz   , ligrel_calc, cara_elem, lload_name, i_load,&
+                    inst_prev, resufv)
+        
         do ii = 1, 3
-            call reajre(vecele, resufv(ii), 'V')
+            call reajre(vect_elem, resufv(ii), base)
         enddo
+        resu_elem = resufv(3)
     end do
 !
  99 continue
 !
-    vecelz = vecele//'.RELR'
+    vect_elemz = vect_elem//'.RELR'
+!
     call jedema()
 end subroutine

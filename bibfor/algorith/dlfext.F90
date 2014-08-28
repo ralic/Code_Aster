@@ -71,7 +71,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
     real(kind=8) :: partps(3)
     character(len=4) :: typmat, para
     character(len=16) :: method
-    character(len=19) :: ligrmo, lischa
+    character(len=19) :: lischa
     character(len=24) :: vechmp, vachmp, cnchmp, k24bid
     real(kind=8), pointer :: f1(:) => null()
     real(kind=8), pointer :: f2(:) => null()
@@ -87,7 +87,6 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
 !
     call jemarq()
 !
-    ligrmo = modele(1:8)//'.MODELE'
     typmat = 'R'
     para = 'INST'
     lischa = charge(1:19)
@@ -118,7 +117,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
         call jeveuo(infoch, 'L', jinf)
         nchar = zi(jinf)
         call vechme('S', modele, charge, infoch, partps,&
-                    carele, mate, k24bid, ligrmo, vechmp)
+                    carele, mate, vechmp)
         call asasve(vechmp, numedd, typmat, vachmp)
         call ascova('D', vachmp, fomult, 'INST', temps,&
                     typmat, cnchmp)

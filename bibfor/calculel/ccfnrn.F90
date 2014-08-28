@@ -335,7 +335,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             stop = 'S'
             if (ligrel(1:8) .ne. modele) stop = 'C'
             call vechme(stop, modele, charge, infoch, partps,&
-                        carac, mater, chvarc, ligrel, vechmp)
+                        carac, mater, vechmp, varc_currz = chvarc, ligrel_calcz = ligrel)
 !
             call asasve(vechmp, nume, 'R', vachmp)
             call ascova('D', vachmp, fomult, 'INST', time,&

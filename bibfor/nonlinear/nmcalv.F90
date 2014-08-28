@@ -218,7 +218,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     else if (typvec.eq.'CNFEDO') then
         call nmvcex('TOUT', complu, vrcplu)
         call vechme('S', modele, charge, infoch, inst,&
-                    carele, mate, vrcplu, ' ', vecele)
+                    carele, mate, vecele, varc_currz = vrcplu)
 !
 ! --- FORCES PILOTEES
 !

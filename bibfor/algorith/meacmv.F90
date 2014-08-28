@@ -89,11 +89,10 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     character(len=1) :: typres
     character(len=2) :: codret
     character(len=8) :: matele
-    character(len=8) :: nomode
     character(len=14) :: com
     character(len=19) :: chvref, chvarc
     character(len=16) :: option
-    character(len=19) :: chamn1, chamn2, chamn3, chamn4, ligrmo
+    character(len=19) :: chamn1, chamn2, chamn3, chamn4
     character(len=24) :: k24bid, blan24, vediri, vadiri, velapl, valapl, vecham
     character(len=24) :: vacham, chlapl, chdiri, chcham, chths, charge, infoch
     character(len=24) :: vecths
@@ -150,8 +149,6 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     nh = 0
 !
     typres = 'R'
-    nomode = modele(1:8)
-    ligrmo = nomode//'.MODELE'
 !
     ass1er = .false.
 !
@@ -260,7 +257,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     k24bid = blan24
 !
     call vechme('S', modele, charge, infoch, partps,&
-                carele, mate, chvarc, ligrmo, vecham)
+                carele, mate, vecham, varc_currz = chvarc)
     call asasve(vecham, numedd, typres, vacham)
     call ascova('D', vacham, fomult, 'INST', time,&
                 typres, chcham)
