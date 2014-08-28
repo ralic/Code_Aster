@@ -236,10 +236,19 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 69 : _(u"""
- erreurs données : la maille  %(k1)s  du maillage  %(k2)s
-  n'est pas la translation de la  maille  %(k3)s
-  du maillage  %(k4)s
-    vecteur translation :  %(r1)f %(r2)f %(r3)f
+ Problème lors de la vérification de correspondance entre le 
+ GROUP_MA_INIT '%(k1)s' et le GROUP_MA_FINAL '%(k2)s' : 
+ 
+ - Aucune maille du GROUP_MA_FINAL '%(k2)s' ne semble être en correspondance
+ avec la maille '%(k3)s' du GROUP_MA_INIT '%(k1)s'.
+ 
+ - Vérifiez que le groupe '%(k2)s' (GROUP_MA_FINAL) du maillage %(k5)s
+ (MAILLAGE_FINAL) est bien la translation du groupe '%(k1)s' (GROUP_MA_INIT) 
+ du maillage  %(k4)s (MAILLAGE_INIT), suivant le vecteur de translation
+   ( %(r1)f , %(r2)f , %(r3)f ), avec la précision donnée.
+   
+ - Une erreur fréquente lors de l'utilisation de la commande PERM_MAC3COEUR 
+ est que les 2 assemblages à permuter ne sont pas du même type de conception.
 """),
 
 70 : _(u"""
