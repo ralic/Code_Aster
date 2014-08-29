@@ -647,7 +647,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     call vecini(maxfa, zero, dcad1f)
     call vecini(maxfa, zero, dcad2f)
 !
-    alpha = crit(13)
+    alpha = crit(18)
 !---------------------------------------
 ! INITIALISATION DE ANGMAS(3) À ZERO
     do 511 i = 1, 3

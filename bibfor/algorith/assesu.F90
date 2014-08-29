@@ -279,7 +279,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     adcm2 = 2*nface+2
     call inices(valcen, valfac, maxfa)
 !
-    alpha = crit(13)
+    alpha = crit(18)
 !============================
 ! LE CENTRE EST LE CENTRE DE GRAVITE (CENTRE DU CERCLE CIRCONSCRIT DESACTIVE
 !===============================

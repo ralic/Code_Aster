@@ -156,7 +156,8 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
         p_carc_valv(10) = seuil
         p_carc_valv(11) = amplitude
         p_carc_valv(12) = taux_retour
-        p_carc_valv(13) = parm_alpha
+        
+        p_carc_valv(18) = parm_alpha
 !
 ! ----- Affect in <CARTE>
 !

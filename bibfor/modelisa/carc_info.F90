@@ -61,6 +61,6 @@ subroutine carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_compor)
 ! - Create comportment informations objects
 !
     AS_ALLOCATE(vk16 = p_info_carc_valk, size = 2*nb_info_comp)
-    AS_ALLOCATE(vr   = p_info_carc_valr, size = 13*nb_info_comp)
+    AS_ALLOCATE(vr   = p_info_carc_valr, size = 18*nb_info_comp)
 !
 end subroutine

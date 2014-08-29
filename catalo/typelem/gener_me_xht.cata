@@ -73,7 +73,8 @@ MODE_LOCAL__
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL TSAMPL TSRETOUR)
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                       LC_EXT[2] MATRTANG POSTITER MODECALC )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
                                         SD_COMP    KIT1     KIT2     KIT3     KIT4     KIT5

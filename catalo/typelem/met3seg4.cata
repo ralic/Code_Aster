@@ -38,7 +38,8 @@ MODE_LOCAL__
                                         ALPHA3   BETA3    GAMMA3   ALPHA4   BETA4    GAMMA4
                                         ICOUDE   DN1N2    RCOURB   ANGCOU   ANGZZK   )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR )
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                       LC_EXT[2] MATRTANG POSTITER MODECALC )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
