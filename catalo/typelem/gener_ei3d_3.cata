@@ -55,8 +55,8 @@ MODE_LOCAL__
     CCDTAU   = PILO_R   ELEM__         (A0       )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
-    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9])
+    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
+                                        SD_COMP    KIT[9])
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN    SITX     SITY      CONT_X   CONT_Y   CONT_Z)
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX    SITY      CONT_X   CONT_Y   CONT_Z)
     ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )

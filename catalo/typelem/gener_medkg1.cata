@@ -55,8 +55,8 @@ MODE_LOCAL__
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     REP      AXE_X    AXE_Y    AXE_Z    
                                         O_X      O_Y      O_Z      )
     ECODRET  = CODE_I   ELEM__         (IRET     )
-    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9]   )
+    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
+                                        SD_COMP    KIT[9]   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )

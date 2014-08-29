@@ -34,8 +34,8 @@ MODE_LOCAL__
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     ENORME   = NEUT_R   ELEM__         (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
-    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9])
+    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
+                                        SD_COMP    KIT[9])
     ECONTPG  = SIEF_R   ELGA__ RIGI    (N        CONT_X   CONT_Y)
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (N        CONT_X   CONT_Y)
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (N        CONT_X   CONT_Y)
