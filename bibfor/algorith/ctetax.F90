@@ -189,7 +189,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
             call utmess('F', 'ALGORITH14_94')
         endif
 !
-        nbdcou=0
+!        nbdcou=0
         iloci=0
         icomp=0
         do j = 1, nta

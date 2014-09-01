@@ -84,7 +84,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
     real(kind=8) :: phitan, thetan, kkk, ecro
     real(kind=8) :: phic, kphi, thetac, ktheta, ephi
     real(kind=8) :: dpp, dphipl, seurot, kthet2
-    real(kind=8) :: tempp, tempm
+    real(kind=8) :: tempp, tempm, sgne
 !
     data nomre1/'KN_AX','KT_AX','ET_AX','ET_ROT'/
     data nomre2/'F_SER','COUL_AX'/
@@ -307,8 +307,12 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
             varip(5)=varim(5)
             phitan=kphi
         else
-            dpp=-(phic+ecro*ppm-abs(phm-phipl+dph))/(1.d0+ecro)
-            dphipl=dpp*dph/abs(dph)
+!-- Modif P. Badel        
+!            dpp=-(phic+ecro*ppm-abs(phm-phipl+dph))/(1.d0+ecro)
+!            dphipl=dpp*dph/abs(dph)
+            sgne=(fphi)/abs(fphi)
+            dpp=-(phic+ecro*ppm-abs(phm-phipl+dph))/(1.d0+ecro*sgne)
+            dphipl=dpp*sgne
             varip(4)=varim(4)+dphipl
             varip(5)=varim(5)+dpp
             mophi=kphi*(phm+dph-phipl-dphipl)
