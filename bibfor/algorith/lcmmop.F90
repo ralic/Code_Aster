@@ -83,9 +83,11 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !                        Fv et 3 angles par phase
 !           pour chaque monocristal différent
 !                 par famille de système de glissement
-!                    nb coef écoulement + coef,
-!                    nb coef écrou isot + coef,
-!                    nb coef ecou cine + coef
+!                    nb coef écoulement 
+!                       numéro de la loi d'écoulement
+!                       + coef,
+!                    nb coef écrou isot + num_loi + coef,
+!                    nb coef ecou cine + num_loi + coef
 !                        puis 2 (ou plus) paramètres localisation
 !
 !
@@ -98,6 +100,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !                       Nom de la loi d'écoulement
 !                       Nom de la loi d'écrouissage isotrope
 !                       Nom de la loi d'écrouissage cinématique
+!                       Nom de la loi d'élasticité (ELAS ou ELAS_ORTH)
 !
 !           NBCOMM(*,3) :
 !                        Colonne 1      Colonne 2      Colonne3

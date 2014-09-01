@@ -294,7 +294,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
             call lcmaei(fami, kpg, ksp, '-', nmater,&
                         imat, necris, necoul, nbval, valres,&
-                        nmat, itbint, nfs, nsg, hsr,&
+                        nmat, itbint, nfs, nsg, hsr(1, 1, imono),&
                         ifa, nomfam, nbsys)
             materd(indmat+1,2)=nbval
             materf(indmat+1,2)=nbval
@@ -304,7 +304,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 505          continue
             call lcmaei(fami, kpg, ksp, '+', nmater,&
                         imat, necris, necoul, nbval, valres,&
-                        nmat, itbint, nfs, nsg, hsr,&
+                        nmat, itbint, nfs, nsg, hsr(1, 1, imono),&
                         ifa, nomfam, nbsys)
             do 506 i = 1, nbval
                 materf(indmat+i,2)=valres(i)

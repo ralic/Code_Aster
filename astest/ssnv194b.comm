@@ -77,9 +77,27 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   Q=9.77,
                                   B=19.34,
                                   H1=1.0,
-                                  H2=1.0,
-                                  H3=1.0,
-                                  H4=1.0,
+                                  H2=0.0,
+                                  H3=0.0,
+                                  H4=0.0,
+                                  ),
+                    MONO_CINE1=_F(D=36.68,),);
+                    
+# test de la possibité de définir des matériaux différents
+# les valeurs sont identiques a celle de ACIER
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=1.0,),
+                    MONO_ISOT1=_F(R_0=75.5,
+                                  Q=9.77,
+                                  B=19.34,
+                                  H1=1.0,
+                                  H2=0.0,
+                                  H3=0.0,
+                                  H4=0.0,
                                   ),
                     MONO_CINE1=_F(D=36.68,),);
 
@@ -91,6 +109,9 @@ COEF=DEFI_FONCTION(NOM_PARA='INST',
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER,),);
+MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=(ACIER,ACIER2)),);
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                      DDL_IMPO=(
@@ -116,36 +137,48 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BCC24',),),
-                      MATR_INTER= table,
+                      #MATR_INTER= table,
+                                    );
+
+COMPORT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='BCC24',),),
+                      #MATR_INTER= table,
                                     );
 
 
 
-COMPORP=DEFI_COMPOR(POLYCRISTAL=(
+COMPORP2=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-150.646,33.864,55.646,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-137.138,41.5917,142.138,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-166.271,35.46958,171.271,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-77.676,15.61819,154.676,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-78.6463,33.864,155.646,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-65.1378,41.5917,142.138,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-94.2711,35.46958,71.271,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-5.67599,15.61819,154.676,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-6.64634,33.864,155.646,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-65.1378,41.5917,142.138,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-94.2711,35.46958,71.271,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-5.67599,15.61819,154.676,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-6.64634,33.864,155.646,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     MU_LOCA=145200./2.6,
                     );
 
 
+
+# test des deux matériaux
+
 SOLNL=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT,
+                     CHAM_MATER=MAT2,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
                        INCREMENT=(_F(LIST_INST=LINST,),),
                     COMPORTEMENT=(_F(RELATION='POLYCRISTAL',
-                                  COMPOR=COMPORP,
+                                  COMPOR=COMPORP2,
                                   DEFORMATION='PETIT',
                                   ALGO_INTE='RUNGE_KUTTA',
                                   TOUT='OUI',
@@ -161,7 +194,6 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
 SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
 
-
 # Calcul des moyennes
 
 INT_SI=POST_ELEM(MODELE=TROISD,
@@ -171,7 +203,6 @@ INT_SI=POST_ELEM(MODELE=TROISD,
                                 TOUT='OUI',
                                 TYPE_MAILLE= '3D'),)
 
-IMPR_TABLE(TABLE=INT_SI)
 
 INT_EP=POST_ELEM(MODELE=TROISD,
                    RESULTAT=SOLNL,
@@ -180,12 +211,11 @@ INT_EP=POST_ELEM(MODELE=TROISD,
                                 TOUT='OUI',
                                 TYPE_MAILLE= '3D'),)
 
-IMPR_TABLE(TABLE=INT_EP)
 
 # comparaison a la modelisation A - agregat 10 grains
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.089999999999999997,
-           VALE_CALC=302.718799025,
+           VALE_CALC=302.412907427,
            VALE_REFE=279.77699999999999,
            NOM_PARA='INTE_SIZZ',
            TABLE=INT_SI,
@@ -195,7 +225,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.059999999999999998,
-           VALE_CALC= 2.91516004E-03,
+           VALE_CALC=0.00291726670617,
            VALE_REFE=3.0731600000000001E-3,
            NOM_PARA='INTE_EPZZ',
            TABLE=INT_EP,
@@ -203,19 +233,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=5.0000000000000001E-3,),
            )
 
-F_SI=RECU_FONCTION(TABLE=INT_SI,
-                           PARA_X='INST',
-                           PARA_Y='INTE_SIZZ',);
-
-F_EP=RECU_FONCTION(TABLE=INT_EP,
-                           PARA_X='INST',
-                           PARA_Y='INTE_EPZZ',);
-
-
-IMPR_FONCTION(
-FORMAT ='XMGRACE',
-UNITE=18,
-#PILOTE='INTERACTIF',
-COURBE=_F(FONC_X=F_EP, FONC_Y=F_SI))
-
 FIN()
+
+
+
