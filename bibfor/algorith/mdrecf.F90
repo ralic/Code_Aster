@@ -85,7 +85,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iddeeq, ieq, ii, iinst
-    integer ::  inum, iret, jdepl, jmod
+    integer ::  inum, iret, jdepl, jmod, jdesc
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
     real(kind=8), pointer :: modco(:) => null()
@@ -230,6 +230,15 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                     call utmess('E', 'ALGORITH13_47')
                     goto 10
                 endif
+!               Add the identifier .DESC[7] to 1 , i.e. CORR_STAT exists
+                call jeexin(nomres//'           .DESC',iret)
+                if (iret.eq.0) then 
+                    call wkvect(nomres//'           .DESC', 'G V I', 7, jdesc)
+                else 
+                    call jeveuo(nomres//'           .DESC', 'E', jdesc)
+                end if
+                zi(jdesc+7-1) = 1
+!                
                 call getvid('EXCIT', 'D_FONC_DT', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)(1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)

@@ -38,7 +38,7 @@ class sd_dyna_gene(sd_titre,sd_resu_dyna) :
     DISC = AsVR()  # gros objet. contient la liste des instants du calcul sauvegardes si TRANS et les frequences si HARM
     ORDR = AsVI()  # gros objet.
 
-    DESC = AsVI(lonmax=6, )
+    DESC = AsVI(lonmax=7, )
 
     # si CHOC :
     DLOC = Facultatif(AsVR())

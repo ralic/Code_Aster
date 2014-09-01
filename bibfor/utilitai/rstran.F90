@@ -21,7 +21,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=*) :: interp, motcle
-    character(len=19) :: resu, kdisc, krang
+    character(len=*) :: resu, kdisc, krang
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,16 +43,16 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 !     POUR INTERP = 'NON'
 !        RECUPERATION DES DISCRETISATIONS ET DES NUMEROS DE RANGEMENT
-!        ASSOCIES DANS LA STRUCTURE DE DONNEES "RESU"
+!        ASSOCIES DANS LA STRUCTURE DE DONNEES "RESU_"
 !     POUR INTERP = 'LIN', 'LOG', ...
 !        RECUPERATION DES INSTANTS UTILISATEURS
 !     ------------------------------------------------------------------
 ! IN  : INTERP : TYPE D'INTERPOLATION
-! IN  : RESU   : NOM DE LA STRUCTURE DE DONNEES
+! IN  : RESU_   : NOM DE LA STRUCTURE DE DONNEES
 ! IN  : MOTCLE : MOT CLE FACTEUR
 ! IN  : IOCC   : NUMERO D'OCCURENCE
-! IN  : KDISC  : NOM JEVEUX POUR STOCKER LES INSTANTS
-! IN  : KRANG  : NOM JEVEUX POUR STOCKER LES NUMEROS DE RANGEMENT
+! IN  : KDISC_  : NOM JEVEUX POUR STOCKER LES INSTANTS
+! IN  : KRANG_  : NOM JEVEUX POUR STOCKER LES NUMEROS DE RANGEMENT
 ! OUT : NBDISC : NOMBRE D'INSTANTS/FREQUENCES TROUVES
 ! OUT : IER    : CODE RETOUR, = 0    : OK
 !                             = 100  : PLUSIEURS CHAMPS TROUVES
@@ -67,7 +67,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     character(len=19) :: listr
     character(len=8) :: kval
     complex(kind=8) :: cval
-    character(len=24) :: typres
+    character(len=19) :: resu_
+    character(len=24) :: typres, kdisc_, krang_
 !------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -79,6 +80,11 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     integer, pointer :: nume(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
+
+    resu_ = resu
+    kdisc_ = kdisc
+    krang_ = krang
+
     ier = 0
     nbdisc = 0
     type = 'R8  '
@@ -86,17 +92,17 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     call getvr8(motcle, 'PRECISION', iocc=iocc, scal=epsi, nbret=n)
     call getvtx(motcle, 'CRITERE', iocc=iocc, scal=crit, nbret=n)
 !
-    call jeexin(resu//'.DISC', ier1)
+    call jeexin(resu_//'.DISC', ier1)
     if (ier1 .gt. 0) then
 !     --- CAS D'UNE SD DYNA_GENE (HARM_GENE OU TRAN_GENE)
-        call jeveuo(resu//'.DISC', 'L', ldisc)
-        call jelira(resu//'.DISC', 'LONMAX', nbi)
+        call jeveuo(resu_//'.DISC', 'L', ldisc)
+        call jelira(resu_//'.DISC', 'LONMAX', nbi)
     else
-!     --- CAS D'UNE SD RESULTAT
-        call rslipa(resu, 'INST', '&&RSTRAN.LIINST', ldisc, nbi)
+!     --- CAS D'UNE SD RESU_LTAT
+        call rslipa(resu_, 'INST', '&&RSTRAN.LIINST', ldisc, nbi)
     endif
 !
-    call jeexin(resu//'.ORDR', iret)
+    call jeexin(resu_//'.ORDR', iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGORITH17_26')
 !        CALL WKVECT('&&RSTRAN.ORDR','V V I',NBI,JORDR)
@@ -104,8 +110,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !          ZI(JORDR+I-1) = I
 !   10   CONTINUE
     else
-        call jeveuo(resu//'.ORDR', 'L', jordr)
-        call jelira(resu//'.ORDR', 'LONUTI', nbi2)
+        call jeveuo(resu_//'.ORDR', 'L', jordr)
+        call jelira(resu_//'.ORDR', 'LONUTI', nbi2)
         if (nbi .ne. nbi2) then
             call utmess('F', 'ALGORITH17_27')
         endif
@@ -116,8 +122,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=nno)
     if (nno .ne. 0) then
         nbdisc = -nno
-        call wkvect(krang, 'V V I', nbdisc, jrang)
-        call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
+        call wkvect(krang_, 'V V I', nbdisc, jrang)
+        call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
         AS_ALLOCATE(vi=nume, size=nbdisc)
         call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=nume,&
                     nbret=nno)
@@ -153,8 +159,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         call getvr8(motcle, 'INST', iocc=iocc, nbval=nbdisc, vect=zr(laccr),&
                     nbret=l)
     endif
-    call wkvect(krang, 'V V I', nbdisc, jrang)
-    call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
+    call wkvect(krang_, 'V V I', nbdisc, jrang)
+    call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
     do 70 i = 0, nbdisc - 1
         tusr = zr(laccr+i)
         if (interp(1:3) .ne. 'NON') then
@@ -190,7 +196,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 !     --- RECHERCHE A PARTIR D'UNE FREQUENCE ---
 !
-    call gettco(resu(1:8), typres)
+    call gettco(resu_(1:8), typres)
     if (typres(1:9) .eq. 'HARM_GENE') then
         call getvr8(motcle, 'FREQ', iocc=iocc, nbval=0, nbret=lt)
         if (lt .eq. 0) then
@@ -207,8 +213,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
             call getvr8(motcle, 'FREQ', iocc=iocc, nbval=nbdisc, vect=zr(laccr),&
                         nbret=l)
         endif
-        call wkvect(krang, 'V V I', nbdisc, jrang)
-        call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
+        call wkvect(krang_, 'V V I', nbdisc, jrang)
+        call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
         do 71 i = 0, nbdisc - 1
             tusr = zr(laccr+i)
             call rsindi(type, ldisc, 1, jordr, ival,&
@@ -243,8 +249,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     call getvtx(motcle, 'TOUT_INST', iocc=iocc, scal=k8b, nbret=nto)
     call getvtx(motcle, 'TOUT_ORDRE', iocc=iocc, scal=k8b, nbret=nto)
     nbdisc = nbi
-    call wkvect(krang, 'V V I', nbdisc, jrang)
-    call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
+    call wkvect(krang_, 'V V I', nbdisc, jrang)
+    call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
     do 90 iord = 0, nbdisc - 1
         zi(jrang+iord) = iord + 1
         zr(jdisc+iord) = zr(ldisc+iord)

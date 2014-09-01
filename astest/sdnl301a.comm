@@ -150,6 +150,12 @@ MODE=CALC_MODES(MATR_RIGI=MATR,
                 MATR_MASS=MATM,
                 )
 
+#enrichissement de la base pour restitution des contraintes
+MODE=CALC_CHAMP(reuse=MODE,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARELEM,
+                   RESULTAT=MODE,
+                   CONTRAINTE=('SIPO_ELNO','EFGE_ELNO','EFGE_ELGA',),);
 
 NDDLGEN=NUME_DDL_GENE(BASE=MODE);
 
@@ -240,9 +246,172 @@ DEBUG(SDVERI='NON');
 
 RESPHY1 = REST_GENE_PHYS(RESU_GENE =TRANGENE,
                          TOUT_ORDRE='OUI',
-                         NOM_CHAM  ='DEPL');
+                         NOM_CHAM  =('DEPL','ACCE','SIPO_ELNO','EFGE_ELNO',),
+                   )
+
+RESPHY1=CALC_CHAMP(reuse=RESPHY1,
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARELEM,
+                   RESULTAT=RESPHY1,
+                   CONTRAINTE=('EFGE_ELGA',),);
 
 DEBUG(SDVERI='OUI');
+
+# RECU_FONCTION/RESULTAT=RESPHY1 (pour comparaison REST_GENE_PHYS/POST_GENE_PHYS)
+SVY_N1=RECU_FONCTION(RESULTAT=RESPHY1,
+                  NOM_CHAM='SIPO_ELNO',
+                  NOM_CMP='SVY',
+                   MAILLE='M1',
+                  NOEUD='N1',);
+
+MFZ_N1=RECU_FONCTION(RESULTAT=RESPHY1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='MFZ',
+                   MAILLE='M1',
+                  NOEUD='N1',);
+
+DY_N3=RECU_FONCTION(RESULTAT=RESPHY1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  NOEUD='N3',);
+
+ADRZ_N3=RECU_FONCTION(RESULTAT=RESPHY1,
+                  NOM_CHAM='ACCE',
+                  NOM_CMP='DRZ',
+                  NOEUD='N3',);
+
+VY_G1=RECU_FONCTION(RESULTAT=RESPHY1,
+                  NOM_CHAM='EFGE_ELGA',
+                  NOM_CMP='VY',
+                   MAILLE='M1',
+                  POINT=1,
+                 );
+
+#par POST_GENE_PHYS:
+T_SIPO=POST_GENE_PHYS(RESU_GENE=TRANGENE,
+                      OBSERVATION=(
+                                    _F(NOM_CHAM = 'SIPO_ELNO',
+                                       NOM_CMP=('SVY','SMFZ',),
+                                       MAILLE='M1',
+                                       ),
+                                    _F(NOM_CHAM = 'EFGE_ELNO',
+                                       NOM_CMP=('VY','MFZ',),
+                                       MAILLE='M1',
+                                       ),
+                                    _F(NOM_CHAM = 'DEPL',
+                                       NOEUD='N3',
+                                       ),
+                                    _F(NOM_CHAM = 'ACCE',
+                                       NOEUD='N3',
+                                       ),
+                                    _F(NOM_CHAM = 'EFGE_ELGA',
+                                       NOM_CMP=('VY','MFZ',),
+                                       MAILLE='M1',
+                                       ),
+                                   ),
+                       )
+
+#IMPR_TABLE(TABLE=T_SIPO)
+
+SVY_N1X = RECU_FONCTION(TABLE=T_SIPO,
+                      PARA_X='INST',PARA_Y='VALE_R',
+                      FILTRE=(_F(NOM_PARA='NOM_CMP', VALE_K='SVY',),
+                              _F(NOM_PARA='NOM_CHAM', VALE_K='SIPO_ELNO',),
+                              _F(NOM_PARA='NOEUD', VALE_K='N1',),
+                              _F(NOM_PARA='MAILLE', VALE_K='M1',),
+                             ),
+           )
+
+MFZ_N1X = RECU_FONCTION(TABLE=T_SIPO,
+                      PARA_X='INST',PARA_Y='VALE_R',
+                      FILTRE=(_F(NOM_PARA='NOM_CMP', VALE_K='MFZ',),
+                              _F(NOM_PARA='NOM_CHAM', VALE_K='EFGE_ELNO',),
+                              _F(NOM_PARA='NOEUD', VALE_K='N1',),
+                              _F(NOM_PARA='MAILLE', VALE_K='M1',),
+                             ),
+           )
+
+DY_N3X = RECU_FONCTION(TABLE=T_SIPO,
+                      PARA_X='INST',PARA_Y='VALE_R',
+                      FILTRE=(_F(NOM_PARA='NOM_CMP', VALE_K='DY',),
+                              _F(NOM_PARA='NOEUD', VALE_K='N3',),
+                              _F(NOM_PARA='NOM_CHAM', VALE_K='DEPL',),
+                             ),
+           )
+
+ADRZ_N3X = RECU_FONCTION(TABLE=T_SIPO,
+                      PARA_X='INST',PARA_Y='VALE_R',
+                      FILTRE=(_F(NOM_PARA='NOM_CMP', VALE_K='DRZ',),
+                              _F(NOM_PARA='NOEUD', VALE_K='N3',),
+                              _F(NOM_PARA='NOM_CHAM', VALE_K='ACCE',),
+                             ),
+           )
+
+VY_G1X = RECU_FONCTION(TABLE=T_SIPO,
+                      PARA_X='INST',PARA_Y='VALE_R',
+                      FILTRE=(_F(NOM_PARA='NOM_CMP', VALE_K='VY',),
+                              _F(NOM_PARA='POINT', VALE_K='PT 1',),
+                              _F(NOM_PARA='MAILLE', VALE_K='M1',),
+                             ),
+           )
+
+DIF_SVY  = FORMULE(VALE='(SVY_N1(t)-SVY_N1X(t))**2', NOM_PARA = 't',)
+DIF_MFZ  = FORMULE(VALE='(MFZ_N1(t)-MFZ_N1X(t))**2', NOM_PARA = 't',)
+DIF_DY  = FORMULE(VALE='(DY_N3(t)-DY_N3X(t))**2', NOM_PARA = 't',)
+DIF_ADRZ  = FORMULE(VALE='(ADRZ_N3(t)-ADRZ_N3X(t))**2', NOM_PARA = 't',)
+DIF_VY  = FORMULE(VALE='(VY_G1(t)-VY_G1X(t))**2', NOM_PARA = 't',)
+
+#pour limiter le temps calcul, on ne fait le calcul que sur 10 points
+echant = 10
+pas = TFIN/echant
+inst_list = [i*pas for i in range(echant+1)]
+
+D_SVY = CALC_FONC_INTERP(FONCTION = DIF_SVY,
+                         VALE_PARA = inst_list,
+                         NOM_PARA='INST',)
+
+D_MFZ = CALC_FONC_INTERP(FONCTION = DIF_MFZ,
+                         VALE_PARA = inst_list,
+                         NOM_PARA='INST',)
+
+D_DY = CALC_FONC_INTERP(FONCTION = DIF_DY,
+                         VALE_PARA = inst_list,
+                         NOM_PARA='INST',)
+
+D_ADRZ = CALC_FONC_INTERP(FONCTION = DIF_ADRZ,
+                         VALE_PARA = inst_list,
+                         NOM_PARA='INST',)
+
+D_VY = CALC_FONC_INTERP(FONCTION = DIF_VY,
+                         VALE_PARA = inst_list,
+                         NOM_PARA='INST',)
+
+ERR_SVY  = CALC_FONCTION(INTEGRE=_F(FONCTION = D_SVY))
+ERR_MFZ  = CALC_FONCTION(INTEGRE=_F(FONCTION = D_MFZ))
+ERR_DY  = CALC_FONCTION(INTEGRE=_F(FONCTION = D_DY))
+ERR_ADRZ  = CALC_FONCTION(INTEGRE=_F(FONCTION = D_ADRZ))
+ERR_VY  = CALC_FONCTION(INTEGRE=_F(FONCTION = D_VY))
+
+TEST_FONCTION(VALEUR=(_F(FONCTION  = ERR_SVY  , VALE_PARA = inst_list[-1],
+                         VALE_CALC = 0.0      , VALE_REFE = 0.0 ,
+                         CRITERE   = 'ABSOLU' , REFERENCE='AUTRE_ASTER',), ),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION  = ERR_MFZ  , VALE_PARA = inst_list[-1],
+                         VALE_CALC = 0.0      , VALE_REFE = 0.0 ,
+                         CRITERE   = 'ABSOLU' , REFERENCE='AUTRE_ASTER',), ),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION  = ERR_DY  , VALE_PARA = inst_list[-1],
+                         VALE_CALC = 0.0      , VALE_REFE = 0.0 ,
+                         CRITERE   = 'ABSOLU' , REFERENCE='AUTRE_ASTER',), ),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION  = ERR_ADRZ  , VALE_PARA = inst_list[-1],
+                         VALE_CALC = 0.0      , VALE_REFE = 0.0 ,
+                         CRITERE   = 'ABSOLU' , REFERENCE='AUTRE_ASTER',), ),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION  = ERR_VY  , VALE_PARA = inst_list[-1],
+                         VALE_CALC = 0.0      , VALE_REFE = 0.0 ,
+                         CRITERE   = 'ABSOLU' , REFERENCE='AUTRE_ASTER',), ),)
 
 dN25_Y1a = RECU_FONCTION(RESULTAT= RESPHY1,
                          NOM_CHAM= 'DEPL',
@@ -272,9 +441,9 @@ BASEMODA = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODE,
                             NUME_REF=NDDL,
                             INFO=2);
 
-IMPR_CO(CHAINE='BASEMODA           .REFE');
-IMPR_CO(CHAINE='MODE_STA           .REFE');
-IMPR_CO(CHAINE='MODE               .REFE');
+#IMPR_CO(CHAINE='BASEMODA           .REFE');
+#IMPR_CO(CHAINE='MODE_STA           .REFE');
+#IMPR_CO(CHAINE='MODE               .REFE');
 
 NDDLGEN2 = NUME_DDL_GENE(BASE= BASEMODA,
                          STOCKAGE= 'PLEIN');

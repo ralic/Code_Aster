@@ -47,9 +47,10 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !
     aster_logical :: oktref
     integer :: corent(6), ibid, jref, intyre, nbrefs, inddeb, indfin, senpar, numocc
-    integer :: indcha, ir, index, l1, l2, l3, nbcham
+    integer :: indcha, ir, index, l1, l2, l3, nbcham, jdesc
     character(len=4) :: accref(6), typref, indref
-    character(len=8) :: resdyn, numcha, intf, k8bid
+    character(len=8) :: resdyn, numcha, intf, k8bid, basemo
+    character(len=16) :: typrep
     character(len=24) :: numddl, cortre(6), questl, typcon, nomcha, nomgd
     character(len=32) :: repk
     integer, pointer :: indi(:) => null()
@@ -297,6 +298,32 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
         call jelira(resdyn//'           .ORDR', 'LONMAX', nbcham, k8bid)
         repi = nbcham
         goto 88
+!
+!
+!     ------------------
+!     --- QUESTION 8 ---
+!     ------------------------------------------------------------------
+!     --- POUR UN RESULTAT SUR BASE GENERALISE, S'AGIT IL D'UNE PROJECTION SIMPLE
+!         OU NON ?
+    else if (questl(1:11).eq.'PROJ_SIMPLE') then
+        repk = 'OUI'
+        call dismoi('BASE_MODALE', resdyn, 'RESU_DYNA', repk=basemo)
+        typrep = 'MODE_MECA'
+        if (basemo(1:8) .ne. ' ') call gettco(basemo, typrep)
+        if (typrep(1:9) .ne. 'MODE_MECA') repk = 'NON'
+        goto 88
+!
+!     ------------------
+!     --- QUESTION 9 ---
+!     ------------------------------------------------------------------
+!     --- POUR UN RESULTAT SUR BASE GENERALISE, PRENONS NOUS EN COMPTE UNE CORRECTION
+!         STATIQUE AUX CHARGEMENTS ?
+    else if (questl(1:9).eq.'CORR_STAT') then
+        repk = 'NON'
+        call jeveuo(resdyn//'           .DESC','L',jdesc)
+        if (zi(jdesc+7-1).eq.1) repk = 'OUI'
+        goto 88
+!
 !
     endif
 !

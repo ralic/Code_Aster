@@ -211,6 +211,47 @@ RESPHYA=REST_GENE_PHYS(RESU_GENE=TRANMONO,
                        ACCE_MONO_APPUI=ACCELER1,
                        DIRECTION=( 1., 0., 0., ))
 #
+L_INST1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=_F(JUSQU_A = 1., PAS = 0.1) )
+#
+PGP_MOA= POST_GENE_PHYS(RESU_GENE=TRANMONO,
+                          OBSERVATION=(
+                                      _F(LIST_INST=L_INST1,
+                                         NOM_CHAM = 'ACCE_ABSOLU',
+                                         ACCE_MONO_APPUI=ACCELER1,
+                                         DIRECTION=( 1., 0., 0., ),
+                                         NOM_CMP = 'DX',
+                                         NOEUD = ('NO2'),),
+                                      _F(LIST_INST=L_INST1,
+                                         NOM_CHAM = 'ACCE',
+                                         NOM_CMP = 'DX',
+                                         NOEUD = ('NO2'),),
+                        ),)
+#IMPR_TABLE(TABLE=PGP_MOA)
+
+TEST_TABLE(
+           VALE_CALC=199743.313821,
+           TABLE=PGP_MOA,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='INST', VALE=1.,),
+                   _F(NOM_PARA='NOM_CHAM', VALE_K='ACCE_ABSOLU',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DX',),
+                  ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-256.686178727,
+           TABLE=PGP_MOA,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='INST', VALE=1.,),
+                   _F(NOM_PARA='NOM_CHAM', VALE_K='ACCE',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DX',),
+                  ),
+           )
+
+
 # 1. RECUPERATION DES ACCELERATIONS ABSOLUES CALCULEES
 # ----------------------------------------------
 AN2MONO=RECU_FONCTION(NOEUD='NO2',  
@@ -391,6 +432,57 @@ TRANMULT=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                               DIRECTION = ( 1., 0., 0.,),
                               NOEUD = 'NO5',)),
                     INCREMENT=_F(  LIST_INST=L_INST,),)
+
+#
+PGP_MUA= POST_GENE_PHYS(RESU_GENE=TRANMULT,
+                          OBSERVATION=( 
+                                      _F(LIST_INST=L_INST1,
+                                         NOM_CHAM = 'ACCE_ABSOLU',
+                                         NOM_CMP = 'DX',
+                                         NOEUD = ('NO2'),),
+                                      _F(LIST_INST=L_INST1,
+                                         NOM_CHAM = 'VITE_ABSOLU',
+                                         NOM_CMP = 'DX',
+                                         NOEUD = ('NO2'),),
+                                      _F(LIST_INST=L_INST1,
+                                         NOM_CHAM = 'DEPL_ABSOLU',
+                                         NOM_CMP = 'DX',
+                                         NOEUD = ('NO2'),),
+                           ),)
+#IMPR_TABLE(TABLE=PGP_MUA)
+
+TEST_TABLE(
+           VALE_CALC=149858.610679,
+           TABLE=PGP_MUA,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='INST', VALE=1.,),
+                   _F(NOM_PARA='NOM_CHAM', VALE_K='ACCE_ABSOLU',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DX',),
+                  ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=49641.2499759,
+           TABLE=PGP_MUA,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='INST', VALE=1.,),
+                   _F(NOM_PARA='NOM_CHAM', VALE_K='VITE_ABSOLU',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DX',),
+                  ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=12325.2097699,
+           TABLE=PGP_MUA,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='INST', VALE=1.,),
+                   _F(NOM_PARA='NOM_CHAM', VALE_K='DEPL_ABSOLU',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DX',),
+                  ),
+           )
 
 #
 # AVEC LA MACRO MACR_SPECTRE

@@ -16,15 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rstran(interp, resu, motcle, iocc, kdisc,&
-                      krang, nbdisc, ier)
-        character(len=*) :: interp
-        character(len=*) :: resu
-        character(len=*) :: motcle
-        integer :: iocc
-        character(len=*) :: kdisc
-        character(len=*) :: krang
-        integer :: nbdisc
-        integer :: ier
-    end subroutine rstran
+    subroutine pgpchn(sd_pgp, iobs)
+        character(len=8), intent(in):: sd_pgp
+        integer         , intent(in):: iobs
+    end subroutine pgpchn
 end interface

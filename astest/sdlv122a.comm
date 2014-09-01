@@ -127,7 +127,7 @@ MODES=CALC_MODES(MATR_RIGI=RIGIASSE,
 #
 MODES=CALC_CHAMP(reuse=MODES,
                  RESULTAT=MODES,
-                 CONTRAINTE=('SIGM_ELNO',),);
+                 CONTRAINTE=('SIGM_ELNO','SIGM_ELGA'),);
 
 #
 MODES=CALC_CHAMP(reuse=MODES,
@@ -189,6 +189,27 @@ REPGENE=PROJ_MESU_MODAL(
 REPONSE=REST_GENE_PHYS(   RESU_GENE=REPGENE,
                             TOUT_CHAM='OUI'                          )
 
+T_SIGM=POST_GENE_PHYS(RESU_GENE=REPGENE,
+                      OBSERVATION=(
+                                    _F(NOM_CHAM = 'SIGM_ELNO',
+                                       NOM_CMP='SIXX',
+                                       MAILLE='M481',
+                                       NUME_ORDRE = (90,170,250,),
+                                       ),
+                                    _F(NOM_CHAM = 'VITE',
+                                       NOM_CMP='DX',
+                                       GROUP_NO='NRES5',
+                                       NUME_ORDRE = (90,170,250,),
+                                       ),
+                                    _F(NOM_CHAM = 'SIGM_ELGA',
+                                       NOM_CMP='SIXX',
+                                       MAILLE='M481',
+                                       NUME_ORDRE = (90,170,250,),
+                                       ),
+                                   ),
+                       )
+#IMPR_TABLE(TABLE=T_SIGM) 
+
 DEPL3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL3',
                       GROUP_NO=('NRES3'),
                       RESULTAT=REPONSE,
@@ -210,6 +231,117 @@ VITE5=POST_RELEVE_T(ACTION=_F(INTITULE='VITE5',
                       ),);
 
 #IMPR_TABLE( UNITE = 8, TABLE = VITE5 )
+
+TEST_TABLE(VALE_CALC=3578023.02753,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N16',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='SIGM_ELNO',),
+                   _F(NOM_PARA='INST',
+                      VALE=9.00000E-04,),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=4244736.82871,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N16',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='SIGM_ELNO',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.70000E-03,),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=2767705.59361,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N16',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='SIGM_ELNO',),
+                   _F(NOM_PARA='INST',
+                      VALE=2.50000E-03,),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=0.777392984319,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='VITE',),
+                   _F(NOM_PARA='INST',
+                      VALE=9.00000E-04,),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=-0.868713493589,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='VITE',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.70000E-03,),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=-0.715589812898,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOEUD',
+                      VALE_K='N1',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='VITE',),
+                   _F(NOM_PARA='INST',
+                      VALE=2.50000E-03,),
+                   ),
+           )
+
+TEST_TABLE(
+                  VALE_CALC=3384101.7873,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_K='PT 1',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='SIGM_ELGA',),
+                   _F(NOM_PARA='INST',
+                      VALE=9.00000E-04,),
+                   ),
+           )
+
+TEST_TABLE(
+                  VALE_CALC=4013172.8897,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_K='PT 1',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='SIGM_ELGA',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.70000E-03,),
+                   ),
+           )
+
+TEST_TABLE(
+                  VALE_CALC=2616718.74818,
+           TABLE=T_SIGM,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_K='PT 1',),
+                   _F(NOM_PARA='NOM_CHAM',
+                      VALE_K='SIGM_ELGA',),
+                   _F(NOM_PARA='INST',
+                      VALE=2.50000E-03,),
+                   ),
+           )
 
 # POUR TEST LIRE_RESU
 

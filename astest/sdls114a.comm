@@ -131,7 +131,13 @@ MODE=CALC_MODES(MATR_RIGI=RIG_ASS,
                              ),
                 )
 
+#enrichissement de la base pour la restitution sur base physique
+MODE=CALC_CHAMP(reuse=MODE,
+                   CHAM_MATER=CM,
+                   RESULTAT=MODE,
+                   FORCE=('FORC_NODA',),);
 
+#IMPR_RESU(RESU=_F(RESULTAT=MODE,))
 
 MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
@@ -247,6 +253,39 @@ RESUDYNA=CALC_CHAMP(reuse =RESUDYNA ,
                     CHAM_MATER=CM,
                     RESULTAT=RESUDYNA ,
                     FORCE='REAC_NODA',);
+
+#si calcul par POST_GENE_PHYS:
+T_FORC=POST_GENE_PHYS(RESU_GENE=RES_DYNA,
+                      OBSERVATION=(
+                                    _F(NOM_CHAM = 'FORC_NODA',
+                                     #  NOM_CMP=('DX','DY',),
+                                       MAILLE='MA1',
+                                    #   NOEUD=('NO2797','NO2798',),
+                                       INST=1.e-2,
+                                       ),
+                                   ),
+                       )
+#IMPR_TABLE(TABLE=T_FORC)
+
+TEST_TABLE(
+           VALE_CALC=3.06153456261,
+           TABLE=T_FORC,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOM_CHAM', VALE_K='FORC_NODA',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2797',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DX',),
+                  ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.717623088175,
+           TABLE=T_FORC,
+           NOM_PARA='VALE_R',
+           FILTRE=(_F(NOM_PARA='NOM_CHAM', VALE_K='FORC_NODA',),
+                   _F(NOM_PARA='NOEUD', VALE_K='NO2798',),
+                   _F(NOM_PARA='NOM_CMP', VALE_K='DY',),
+                  ),
+           )
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,

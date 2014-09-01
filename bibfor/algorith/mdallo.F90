@@ -259,50 +259,56 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         endif
     endif
 !
+!   .DESC is already created in mdrecf (external forces retreival), and DESC[7] is set
+!   to 1 if a static correction is considered.
     call jeexin(nomres//'           .DESC', iret)
-    if (iret .eq. 0) then
-        call wkvect(nomres//'           .DESC', typsau//' I', 6, jdesc)
+    if (iret.eq.0) then 
+        call wkvect(nomres//'           .DESC', typsau//' I', 7, jdesc)
+        do i = 1, 7
+            zi(jdesc+i-1) = 0
+        end do
+    else 
+        call jeveuo(nomres//'           .DESC', 'E', jdesc)
+    end if
+    zi(jdesc) = 1
 !
-        zi(jdesc) = 1
+    if (typcal .eq. 'HARM') then
+        zi(jdesc) = 4
+!      -- DANS LE CAS 'HARM' ON REMPLIT LA VALEUR A 4
 !
-        if (typcal .eq. 'HARM') then
-            zi(jdesc) = 4
-!          -- DANS LE CAS 'HARM' ON REMPLIT LA VALEUR A 4
-!
-!          -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
-            if ((nbsym2.le.0) .or. (nbsym2.ge.4)) then
+!      -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
+        if ((nbsym2.le.0) .or. (nbsym2.ge.4)) then
+            call utmess('F', 'ALGORITH17_29')
+        endif
+        do inom = 1, nbsym2
+            if ((nomsym2(inom)(1:4).ne.'DEPL') .and. (nomsym2(inom)( 1:4).ne.'VITE')&
+                .and. (nomsym2(inom)(1:4).ne.'ACCE')) then
                 call utmess('F', 'ALGORITH17_29')
             endif
-            do inom = 1, nbsym2
-                if ((nomsym2(inom)(1:4).ne.'DEPL') .and. (nomsym2(inom)( 1:4).ne.'VITE')&
-                    .and. (nomsym2(inom)(1:4).ne.'ACCE')) then
-                    call utmess('F', 'ALGORITH17_29')
-                endif
-            enddo
-        else if (typcal.eq.'TRAN') then
-!         -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
-            nbsym2 = 3
-            nomsym2(1) = 'DEPL'
-            nomsym2(2) = 'VITE'
-            nomsym2(3) = 'ACCE'
-            if (nbchoc2 .ne. 0) then
-                zi(jdesc) = 2
-            endif
-!         -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
-!          ON MET LA VALEUR 3 QUI SERVIRA DE TEST
-!           A LA COMMANDE POST_DYNA_MODA_T
-            if (method2 .eq. 'ITMI' .or. method2(1:5) .eq. 'ADAPT' .or. method2(1:5) .eq.&
-                'RUNGE') then
-                zi(jdesc) = 3
-            endif
-!         DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
+        enddo
+    else if (typcal.eq.'TRAN') then
+!     -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
+        nbsym2 = 3
+        nomsym2(1) = 'DEPL'
+        nomsym2(2) = 'VITE'
+        nomsym2(3) = 'ACCE'
+        if (nbchoc2 .ne. 0) then
+            zi(jdesc) = 2
         endif
-        zi(jdesc+1) = nbmode
-        zi(jdesc+2) = nbchoc2
-        zi(jdesc+3) = nbrede2
-        zi(jdesc+4) = nbrevi2
-        zi(jdesc+5) = mdtr74grd('MAXVINT')
+!     -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
+!      ON MET LA VALEUR 3 QUI SERVIRA DE TEST
+!       A LA COMMANDE POST_DYNA_MODA_T
+        if (method2 .eq. 'ITMI' .or. method2(1:5) .eq. 'ADAPT' .or. method2(1:5) .eq.&
+            'RUNGE') then
+            zi(jdesc) = 3
+        endif
+!     DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
     endif
+    zi(jdesc+1) = nbmode
+    zi(jdesc+2) = nbchoc2
+    zi(jdesc+3) = nbrede2
+    zi(jdesc+4) = nbrevi2
+    zi(jdesc+5) = mdtr74grd('MAXVINT')
 !
     if (typcal .eq. 'TRAN') then
         attrib = typsau//' R'

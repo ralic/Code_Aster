@@ -102,6 +102,86 @@ Attention :
  le vecteur défini sous le mot clé ACTION/AXE_Z a une norme nulle.
 """),
 
+39 : _(u"""
+ Le résultat généralisé en entrée (%(k1)s) est issu d'un calcul en sous-structuration,
+ et non pas d'un calcul standard avec une simple projection sur base modale.
+
+ Les opérations de restitution par POST_GENE_PHYS sont actuellement limitées aux calculs 
+ du dernier type (projections simples).
+
+ Conseil :
+ Utilisez l'un des deux opérateurs REST_GENE_PHYS ou REST_SOUS_STRUCT pour restituer sur
+ base physique vos résultats en coordonnées généralisées.
+"""),
+
+40 : _(u"""
+ La base modale de projection %(k1)s, référencée dans le résultat généralisé, est 
+ différente de celle donnée en entrée sous le mot-clé MODE_MECA (%(k2)s).
+
+ Vérifiez que les coordonnées généralisées peuvent être restituées sur cette dernière
+ base. 
+"""),
+
+41 : _(u"""
+ Pour l'observation no. %(i1)d : 
+
+ La restitution du champ %(k1)s n'est possible que si il a préalablement été calculé sur 
+ la base de projection. Or, dans la base %(k3)s, le champ %(k2)s n'a pas été trouvé.
+
+ Conseil :
+ Essayez d'enrichir la base %(k3)s avec un appel préalable à CREA_CHAMP, option %(k2)s.
+"""),
+
+42 : _(u"""
+ Pour l'observation no. %(i1)d : 
+ 
+ Il n'a pas été possible de trouver le composant %(k1)s dans le champ demandé %(k2)s.
+
+ Conseil :
+ Si vous ignorez les noms des composants de votre champ, il est possible d'appeler 
+ l'opérateur sans spécifier le mot-clé NOM_CMP. Cela permet d'en restituer la totalité. 
+"""),
+
+43 : _(u"""
+ Pour l'observation no. %(i1)d : 
+ 
+ Vous avez demandé le champ : %(k2)s. Néanmoins, il n'existe aucune information 
+ dans le résultat généralisé %(k1)s quant à la présence d'un chargement
+ dynamique en multi-appuis.
+
+ Si la structure est entraînée par une accélération en mono-appui, il faudra 
+ renseigner le mot-clé ACCE_MONO_APPUI afin de prendre en compte cette accélération
+ dans le champ ACCE_ABSOLU.
+
+ Le résultat obtenu correspond donc au champ %(k3)s, en relatif.
+"""),
+
+44 : _(u"""
+ Pour l'observation no. %(i1)d : 
+ 
+ Vous avez demandé le champ : %(k2)s. Néanmoins, il n'existe aucune information 
+ dans le résultat généralisé %(k1)s quant à la présence d'un chargement
+ dynamique en multi-appuis.
+
+ Il n'est actuellement pas possible de récupérer déplacements et vitesses absolues
+ en mono-appui. Pour l'accélération absolue, ceci est possible mais il est impératif 
+ de compléter avec le mot-clé ACCE_MONO_APPUI pour restituer le champ ACCE_ABSOLU.
+
+ Le résultat obtenu correspond donc au champ %(k3)s, en relatif.
+"""),
+
+45 : _(u"""
+ Pour l'observation no. %(i1)d : 
+ 
+ Vous avez demandé de restituer l'accélération absolue (ACCE_ABSOLU) en précisant la
+ fonction de l'accélération en mono-appui ainsi que sa direction. 
+
+ Le résultat généralisé %(k1)s a été calculé en présence des chargements en 
+ multi-appuis. L'accélération restituée est le cumul de l'accélération relative 
+ et les différentes accélérations d'entraînement en mono ainsi qu'en multi-appuis.
+"""),
+
+
 46 : _(u"""
  erreur dans la création du fichier de maillage au format GIBI.
  Celui-ci ne contient pas d'objet de type maillage.
