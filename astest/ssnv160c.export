@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv160c.comm D 1
-F mail efica01a.22 D 20
+F mail sdnd102a.22 D 20

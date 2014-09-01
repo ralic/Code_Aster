@@ -10,7 +10,7 @@ F comm efica01a.com0 D 1
 F comm efica01a.com1 D 1
 F mail efica01a.mail D 20
 F libr efica01a.11 D 11
-F msup efica01a.21 D 19
-F libr efica01a.21 D 21
-F libr efica01a.22 D 22
+F msup sdnd102a.21 D 19
+F libr sdnd102a.21 D 21
+F libr sdnd102a.22 D 22
 F nom materiau_test.data D 0
