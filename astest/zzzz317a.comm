@@ -51,9 +51,9 @@ pga=0.2  #(en g)
 #  ARIAS
 #####
 ACCE1a=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=100000,
-              PAS_INST       =DT, PESANTEUR =9.81,DUREE_PHASE_FORTE   =TSM,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER",  INTE_ARIAS=arias),),
+              PAS_INST       =DT, PESANTEUR =9.81,DUREE_PHASE_FORTE = TSM,
+              DSP        = _F(AMOR_REDUIT  = amor,FREQ_FOND =frr,),
+              MODULATION = _F(TYPE = "JENNINGS_HOUSNER",  INTE_ARIAS=arias),),
 
 FONCT1=RECU_FONCTION( TABLE=ACCE1a,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -68,26 +68,24 @@ N1=INFO_FONCTION(  NOCI_SEISME=_F(
                              PESANTEUR = 9.81,AMOR_REDUIT=0.05,
                              OPTION = 'TOUT') )
 
-
-#
 TEST_TABLE(
-           VALE_CALC=0.056165275748070,
+           VALE_CALC=0.0555427097231,
            NOM_PARA='INTE_ARIAS',
            TABLE=N1,
            )
 
 TEST_TABLE(
-           VALE_CALC=7.35,
+           VALE_CALC=7.34,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N1,)
 
 # ECART
 ########
-ACCE1b=GENE_ACCE_SEISME( INFO =2,  
-              INIT_ALEA=100000,NB_POIN=2**10,
-              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE   =10.,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", ECART_TYPE=ecart),),
+ACCE1b=GENE_ACCE_SEISME(INFO = 2,  
+              INIT_ALEA = 100000, NB_POIN = 2**10,
+              PAS_INST  = DT, PESANTEUR = 9.81, DUREE_PHASE_FORTE = 10.,
+              DSP        = _F(AMOR_REDUIT  = amor,FREQ_FOND = frr,),
+              MODULATION = _F(TYPE = "JENNINGS_HOUSNER", ECART_TYPE = ecart),),
 
 
 FONCT1b=RECU_FONCTION( TABLE=ACCE1b,
@@ -99,7 +97,7 @@ RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC=1.0633965972487,
+           VALE_CALC=1.06441209604 ,
            VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1b,)
@@ -110,60 +108,55 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # OPTION "GAMMA"
 ##############################
 #  ARIAS
-#####
+#########
 ACCE3=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=1000000,
-              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "GAMMA",
-                                   INST_INI= t_ini, INTE_ARIAS =arias), )
+              PAS_INST = DT, PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
+              DSP         = _F(AMOR_REDUIT = amor, FREQ_FOND = frr,),
+              MODULATION  = _F(TYPE =  "GAMMA",
+                               INST_INI = t_ini, INTE_ARIAS = arias), )
 
 FONCT3=RECU_FONCTION(TABLE=ACCE3,
                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',)
+                              NOM_PARA_TABL = 'FONCTION',)
 
 N3=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT3,
-                             PESANTEUR = 9.81,AMOR_REDUIT=0.05,
+                             PESANTEUR = 9.81,AMOR_REDUIT = 0.05,
                              OPTION = ('TOUT') ))
 
-
 RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
-
 #
 
 TEST_TABLE(
-           VALE_CALC=0.052975514080583,
+           VALE_CALC=0.0523908882612,
            NOM_PARA='INTE_ARIAS',
            TABLE=N3,
            )
 
 TEST_TABLE(
-           VALE_CALC=7.11,
+           VALE_CALC=7.13,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N3,
            )
 
 # ECART
 ########
-ACCE3b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=10000,
-              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "GAMMA",
-                                   INST_INI= 0.5, ECART_TYPE =ecart), )
+ACCE3b=GENE_ACCE_SEISME( INFO =2, INIT_ALEA=10000,
+              PAS_INST  = DT, NB_POIN = 2**10, PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
+              DSP         = _F(AMOR_REDUIT  = amor, FREQ_FOND = frr,),
+              MODULATION  = _F(TYPE = "GAMMA",
+                               INST_INI = 0.5, ECART_TYPE = ecart),)
 
 FONCT3b=RECU_FONCTION( TABLE=ACCE3b,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',)
+                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                      NOM_PARA_TABL='FONCTION',)
 
-RMS3b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3b))
+RMS3b=INFO_FONCTION(ECART_TYPE=_F(FONCTION = FONCT3b))
 
 
-TEST_TABLE(
-           VALE_CALC=0.94635675231513,
+TEST_TABLE(VALE_CALC = 0.956076079023,
            NOM_PARA='ECART_TYPE',
-           TABLE=RMS3b,
-           )
+           TABLE=RMS3b,)
 
 #
 ##############################
@@ -173,26 +166,22 @@ TEST_TABLE(
 ########
 ACCE2a=GENE_ACCE_SEISME( INFO =2,
 #        INIT_ALEA=100000,
-              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE="CONSTANT", ECART_TYPE=ecart),)
+              PAS_INST   = DT, PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
+              DSP        = _F(AMOR_REDUIT = amor,FREQ_FOND = frr,),
+              MODULATION = _F(TYPE = "CONSTANT", ECART_TYPE = ecart),)
 
-FONCT2a=RECU_FONCTION(    TABLE=ACCE2a,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',)
-
+FONCT2a=RECU_FONCTION(TABLE=ACCE2a,
+                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                      NOM_PARA_TABL='FONCTION',)
 
 RMS2a=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2a))
 
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC=1.020918728144 ,
+           VALE_CALC=1.01800184773,
            VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2a,)
-
 
 
 ############################################
@@ -213,12 +202,12 @@ TT=(nbp-1)*DT
 fcp=0.001
 
 #  ARIAS
-#####
-
+############
 ACCE2=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=100000,
-              PAS_INST       =DT, PESANTEUR =9.81,DUREE_PHASE_FORTE =TT,FREQ_FILTRE=fcp,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-               MODULATION      = _F(TYPE="CONSTANT",INTE_ARIAS=arias),)
+              PAS_INST  =DT, PESANTEUR = 9.81,DUREE_PHASE_FORTE = TT, 
+              FREQ_FILTRE = fcp, 
+              DSP         = _F(AMOR_REDUIT  =amor, FREQ_FOND = frr,),
+              MODULATION  = _F(TYPE = "CONSTANT", INTE_ARIAS = arias),)
 
 FONCT2=RECU_FONCTION(    TABLE=ACCE2,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -229,41 +218,29 @@ N2=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT2, BORNE_SUP = 0.95,BORNE_INF = 0.05,
                              PESANTEUR = 9.81, AMOR_REDUIT=0.05,OPTION = ('TOUT')) )
 
-
 RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
-
-
-TEST_TABLE(
-           VALE_CALC=0.053543264377154  ,
+TEST_TABLE( VALE_CALC= 0.053589464031 ,
            NOM_PARA='INTE_ARIAS',
-           TABLE=N2,
-           )
-
+           TABLE=N2, )
 
 INTERS=CALC_INTE_SPEC( INST_INIT=0.0,
                        INST_FIN=TT, NB_POIN=nbp, FONCTION=( FONCT2 ),  )
 
 FOM[iii]=RECU_FONCTION(INTE_SPEC=INTERS,NUME_ORDRE_I=1,),
 DETRUIRE(CONCEPT=_F(NOM=(INTERS))) 
-#
+
 ## --------------------------------
-#
-
 nbp=TT/DT+1
-
 for iii in range(1, Nsim+1):
    print "RUN  ", iii+1
-#
    VECT=GENE_ACCE_SEISME(
-              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TT,FREQ_FILTRE=fcp,
-              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE="CONSTANT", INTE_ARIAS =arias),)
-
+              PAS_INST = DT, PESANTEUR = 9.81, DUREE_PHASE_FORTE = TT, FREQ_CORNER = fcp,
+              DSP        = _F(AMOR_REDUIT = amor, FREQ_FOND = frr,),
+              MODULATION = _F(TYPE = "CONSTANT", INTE_ARIAS = arias),)
 
    TRI1=RECU_FONCTION( TABLE=VECT,
                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1), NOM_PARA_TABL='FONCTION', )
-
 
    INTERS=CALC_INTE_SPEC( INST_INIT=0.0, INST_FIN=TT, NB_POIN=nbp, FONCTION=( TRI1 ), )
 
@@ -297,28 +274,27 @@ POST_DSP=POST_DYNA_ALEA(INTERSPECTRE=_F(
 #REFERENCE [ 0.00324168  0.00014989] (DSP CP)
 #[  3.61724321e-03   1.48368417e-04   3.57812105e-05]
 #[  3.61724321e-03   1.48368417e-04   3.57812105e-05]
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.310644E-04 ,
-                         VALE_REFE=1.48288849e-04,
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.311446340394E-04    ,
+                         VALE_REFE=1.48368417e-04,
                          VALE_PARA=10.0,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.25,
                          FONCTION=FONCMF,),
                       ),
               )
-
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.616318E-03,
-                         VALE_REFE=3.61601202e-03,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.619808980733E-03,
+                         VALE_REFE=3.61724321e-03,
                          VALE_PARA=1.0,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.10000000000000001,
                          FONCTION=FONCMF,),
                          ),
                       ),
-
 ecart0= 0.174711603824 # valeur theorique de la DSP cible
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-1,
-           VALE_CALC=0.17421589332267,
+           VALE_CALC=0.174217406746  ,
            VALE_REFE=ecart0,
            NOM_PARA='ECART',
            TABLE=POST_DSP,

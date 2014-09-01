@@ -41,8 +41,9 @@ tini=0.5
 #"JENNINGS_HOUSNER"
 #----------------------------------------------------------------
 #
-ACCE4=GENE_ACCE_SEISME( INFO            =2, INIT_ALEA=10000,
-              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,FREQ_FILTRE=0.25,
+ACCE4=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA=10000,
+              PAS_INST       = DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
+              FREQ_FILTRE=0.05, FREQ_CORNER = 0.25,
               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, FREQ_PENTE=fp),
               MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", INTE_ARIAS =arias), )
 
@@ -58,21 +59,20 @@ N4=INFO_FONCTION(  NOCI_SEISME=_F(
 
 RMS4=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT4))
 #
-
 TEST_TABLE(
-           VALE_CALC=0.069293761553066,
+           VALE_CALC = 0.0692962334718  ,
            NOM_PARA='INTE_ARIAS',
            TABLE=N4,
            )
 
 TEST_TABLE(
-           VALE_CALC=5.03,
+           VALE_CALC=5.02,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N4,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.16979727695741,
+           VALE_CALC=0.16980052702,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS4,
            )
@@ -81,12 +81,10 @@ TEST_TABLE(
 #"GAMMA"
 #----------------------------------------------------------------
 #
-ACCE5=GENE_ACCE_SEISME( INFO =2,
-            INIT_ALEA=1356000, 
-             PESANTEUR =9.81,  DUREE_PHASE_FORTE =TSM,PAS_INST       =DT,
+ACCE5=GENE_ACCE_SEISME( INFO =2, INIT_ALEA=1356000, 
+               PESANTEUR =9.81,  DUREE_PHASE_FORTE =TSM, PAS_INST = DT,
                DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr,  FREQ_PENTE=0.0),
                MODULATION      = _F( TYPE=   "GAMMA", INST_INI= tini, INTE_ARIAS=arias),)
-
 
 FONCT5=RECU_FONCTION(    TABLE=ACCE5,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -98,20 +96,21 @@ N5=INFO_FONCTION(  NOCI_SEISME=_F(
                              PESANTEUR = 9.81,AMOR_REDUIT=0.05, OPTION = ('TOUT') ))
 
 RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
+
 TEST_TABLE(
-           VALE_CALC=0.062250669296113,
+           VALE_CALC=0.0616005327387,
            NOM_PARA='INTE_ARIAS',
            TABLE=N5,
            )
 
 TEST_TABLE(
-           VALE_CALC=4.38,
+           VALE_CALC=4.39,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N5,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.15832176971917,
+           VALE_CALC=0.157490024116,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS5,
            )

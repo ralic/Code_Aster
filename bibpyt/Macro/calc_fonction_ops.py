@@ -35,7 +35,7 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe as LISS
-from Utilitai.gauss_process import ACCE2SRO, DSP2SRO, SRO2DSP
+from Utilitai.random_signal_utils import ACCE2SRO, DSP2SRO, SRO2DSP
 
 from Utilitai.Utmess import UTMESS, ASSERT
 from Macro.defi_inte_spec_ops import tocomplex
@@ -511,8 +511,9 @@ class CalcFonction_DSP(CalcFonctionOper):
         deuxpi = 2. * math.pi
         freq_coup = deuxpi * kw['FREQ_COUP']
         SRO_args = {
-            'DUREE_PHASE_FORTE' : kw['DUREE'], 'FREQ_COUP' : freq_coup, 'NORME' : kw['NORME'],
-            'AMORT' : kw['AMOR_REDUIT'], 'FMIN' : f_min, 'FONC_SPEC':  f_in}
+            'DUREE_PHASE_FORTE' : kw['DUREE'], 'FREQ_COUP' : freq_coup, 
+            'NORME' : kw['NORME'], 'AMORT' : kw['AMOR_REDUIT'],
+            'FMIN' : f_min, 'FONC_SPEC':  f_in}
         if kw['FREQ_PAS'] != None:
             SRO_args['PAS'] = kw['FREQ_PAS']
         elif kw['LIST_FREQ'] != None:

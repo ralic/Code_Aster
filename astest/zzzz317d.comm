@@ -36,12 +36,11 @@ SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LOG',PROL_DROITE='CONSTANT',
                                 0.1333,  0.0127,0.2000, 0.0245,0.2500, 0.0303, 0.3333,  0.0414,0.5000, 0.0666,
                                 0.6667, 0.0922,1.0000,  0.1415,1.3333,  0.1843,2.0000,  0.2650, 2.5000,  0.3033, 3.3333,
                                 0.3430, 4.0000,  0.3647,5.0000, 0.3916,6.6667, 0.3807,10.0000, 0.3183,12.5000, 0.2648,20.0000, 
-                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  100.0000, 0.1593,
-) )
+                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  100.0000, 0.1593,) )
 
 
 L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
-              INTERVALLE=(_F(JUSQU_A=5.0, PAS=0.1,), _F(JUSQU_A=10., PAS=0.1,),
+              INTERVALLE=(  _F(JUSQU_A=5.0, PAS=0.1,), _F(JUSQU_A=10., PAS=0.1,),
                            _F(JUSQU_A=20.0, PAS=0.2,), _F(JUSQU_A=50.0, PAS=1.0,),
                            _F(JUSQU_A=60.0, PAS=1.0,),
                         ) );
@@ -61,16 +60,15 @@ SA_013=0.0127
 ## on teste NBTIR>1, NB_ITER=0
 #############################################
 
-
 nbtir=20
 fc=0.05
 
 ACCE1a=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=200000,
-              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,FREQ_FILTRE=fc,
-              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT=amor, METHODE='HARMO',
-                                         LIST_FREQ = L_FREQ2, #FREQ_PAS=0.01,
-),
+              PAS_INST = 0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE = nbtir,
+              NB_POIN = 2**11, FREQ_FILTRE = fc, FREQ_CORNER = fc,
+              SPEC_MEDIANE  = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT=amor, METHODE='HARMO',
+                                       LIST_FREQ = L_FREQ2, ),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
 
@@ -86,8 +84,8 @@ for ii in range(nbtir):
                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = nacc),
                         NOM_PARA_TABL='FONCTION',)
-   SRO1[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1[ii], LIST_FREQ = L_FREQ, METHODE='HARMO',
-                      NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
+   SRO1[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1[ii], LIST_FREQ = L_FREQ, 
+                          METHODE='HARMO',NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
    l_SRO.append(SRO1[ii])
 
 
@@ -130,16 +128,15 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15934181,
 
 nbtir=20
 fc=0.05
+ACCE1b=GENE_ACCE_SEISME( INFO =2, INIT_ALEA=200000,
+              PAS_INST  = 0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE = TSM,
+              NB_TIRAGE = nbtir, NB_POIN = 2**11, FREQ_CORNER=fc, FREQ_FILTRE=fc,
+              SPEC_MEDIANE = _F(SPEC_OSCI = SRO_NGA, AMOR_REDUIT =amor, FREQ_PAS=0.01, METHODE='NIGAM'),
+              MODULATION   = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
-ACCE1b=GENE_ACCE_SEISME( INFO =2,
-              INIT_ALEA=200000,
-              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,FREQ_FILTRE=fc,
-              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT     =amor,FREQ_PAS=0.01, METHODE='NIGAM'),
-               MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
-
-
-FONC1b=RECU_FONCTION(  TABLE=ACCE1b,
-                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1), NOM_PARA_TABL='FONCTION',)
+FONC1b=RECU_FONCTION( TABLE=ACCE1b,
+                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1), 
+                      NOM_PARA_TABL='FONCTION',)
 
 SRO1bn=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1b, LIST_FREQ = L_FREQ, METHODE='NIGAM',
                       NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
@@ -206,11 +203,11 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17883070,
 #############################################
 #
 
-ACCE2a=GENE_ACCE_SEISME( INFO =2,
-              INIT_ALEA=200000,
-              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =2,NB_POIN=2**11,FREQ_FILTRE=fc,
-              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT     =amor,FREQ_PAS=0.01, FREQ_PENTE=-0.000001),
-               MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
+ACCE2a=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=200000,
+              PAS_INST  =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =2,
+              NB_POIN=2**11,  FREQ_FILTRE=fc,  FREQ_CORNER=fc,
+              SPEC_MEDIANE = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT =amor,FREQ_PAS=0.01, FREQ_PENTE=-0.000001),
+              MODULATION   = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
 FONC1a=RECU_FONCTION(  TABLE=ACCE1a,
                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1), NOM_PARA_TABL='FONCTION',)
@@ -238,7 +235,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17883070 ,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
                          FONCTION=SRO1a,),
                          ),)
-
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17883072   , VALE_REFE=0.17883070 ,                           
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),

@@ -70,6 +70,12 @@ cata_msg={
   Nombre de tirages supérieur a la taille de l'échantillon.
 """),
 
+12: _(u"""
+  Le facteur de pic vaut %(r1).3f
+"""),
 
+13: _(u"""
+  -------------------  Tirage %(i1)d  ---------------------
+"""),
 
 }

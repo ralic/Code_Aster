@@ -51,9 +51,16 @@ cata_msg={
  on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanément.
 """),
 
+ 9: _(u"""
+ -------Échantillonnage temporel et fréquentiel des signaux -------
+        fréquence de coupure     : %(r1).2f Hz
+        pas de fréquence         : %(r2)f Hz    
+        intervalle de temps      : %(r4)f s  
+        pas de temps    : PAS_INST = %(r3)f s   
+        nombre de points: NB_POIN  = %(i1)d
+        fréquence du filtre temporel passe-haut: FREQ_FILTRE = %(k1)s 
 
-
-
+"""),
 
 10: _(u"""
  correction statique non prise en compte pour l'option: %(k1)s
@@ -213,6 +220,31 @@ Conseil:
 
 40: _(u"""
  Le MULT_APPUI n'est compatible qu'avec les modes classiques et ne fonctionne pas avec les modes issus de la sous-structuration
+"""),
+
+41: _(u"""
+ Erreur minimale optimisation multi-objectifs = %(r1).2f %% à l'itération %(i1)d
+ Erreur absolue maximale = %(r2).2f  %% pour la fréquence %(r3)f Hz
+ Erreur négative max     = %(r4).2f  %% pour la fréquence %(r5)f Hz
+ Erreur ZPA max = %(r6).3f %%
+ Erreur RMS max = %(r7).3f %%
+"""),
+
+42: _(u"""
+ Itération %(i1)d sur %(i2)d : erreur multi-objectifs = %(r1).2f %%
+"""),
+
+43: _(u"""
+ Erreurs initiales à l'itération 0:
+ Erreur ZPA = %(r1).2f %%, erreur max = %(r2).2f %%, erreur RMS = %(r3).2f %% 
+ Erreur multi-objectifs = %(r4).2f %%
+"""),
+
+44: _(u"""
+ ------- Modulation temporelle         ----------------------------
+        paramètres de la fonction de modulation %(k1)s: %(k2)s
+        durée de phase forte: %(r1).2f s
+        instants de début et de fin phase forte: %(r2).2f s et %(r3).2f s
 """),
 
 }

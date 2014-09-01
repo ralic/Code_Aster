@@ -75,7 +75,8 @@ nbtir=20
 fc=0.05
 ACCE1a=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=200000,
-              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,    FREQ_FILTRE=fc,
+              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,
+               FREQ_FILTRE=fc,  FREQ_CORNER=fc,
               SPEC_FRACTILE        = _F(SPEC_OSCI  =SRO_NGA, SPEC_1_SIGMA  =SIG_NGA,  AMOR_REDUIT=amor,FREQ_PAS=0.01, ),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 

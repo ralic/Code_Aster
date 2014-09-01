@@ -35,9 +35,7 @@ SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LOG',PROL_DROITE='CONSTANT',
                                 0.1333,  0.0127,0.2000, 0.0245,0.2500, 0.0303, 0.3333,  0.0414,0.5000, 0.0666,
                                 0.6667, 0.0922,1.0000,  0.1415,1.3333,  0.1843,2.0000,  0.2650, 2.5000,  0.3033, 3.3333,
                                 0.3430, 4.0000,  0.3647,5.0000, 0.3916,6.6667, 0.3807,10.0000, 0.3183,12.5000, 0.2648,20.0000, 
-                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  
-100.0000, 0.1593,
-) )
+                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  100.0000, 0.1593,) )
 
 
 L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
@@ -70,7 +68,8 @@ IAL=10000025
 #
 ACCE1=GENE_ACCE_SEISME( INFO =2,
                INIT_ALEA=IAL,
-              PAS_INST       =0.01, NB_POIN=2**11,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE    =nbtir,FREQ_FILTRE=0.1,
+              PAS_INST       =0.01, NB_POIN=2**11,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,
+             FREQ_FILTRE=fc,  FREQ_CORNER=fc,
               SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT     =amor, LIST_FREQ=LIST_FR, NB_ITER=15,  
                                         ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,), METHODE='NIGAM',  ),
                MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
@@ -89,7 +88,8 @@ SRO1=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1, LIST_FREQ = L_FREQ, METHODE='NIG
 
 ACCE2=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=IAL,
-              PAS_INST       =0.01, NB_POIN=2**11,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE    =nbtir,FREQ_FILTRE=0.05,
+              PAS_INST       =0.01, NB_POIN=2**11,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE    =nbtir,
+              FREQ_FILTRE=0.05,  FREQ_CORNER=0.05,
               SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT     =amor, FREQ_PAS=0.01, NB_ITER=2,  
                                        ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,),  METHODE='HARMO',  ),
               MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
