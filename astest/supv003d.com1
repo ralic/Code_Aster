@@ -1,0 +1,67 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+POURSUITE(CODE='OUI', PAR_LOT='NON')
+
+import aster
+
+L00 = DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A=2.,
+                                   NOMBRE=DEUX),)
+
+L01 = DEFI_LIST_REEL(DEBUT=3.,
+                     INTERVALLE=_F(JUSQU_A=5.,
+                                   NOMBRE=DEUX),)
+
+L02=DEFI_LIST_ENTI(VALE=UN)
+
+FOA3 = DEFI_FONCTION(NOM_PARA='X',
+                     NOM_RESU='Y',
+                     VALE=TUP)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=FOA3,
+                         VALE_PARA=10.0,
+                         VALE_CALC=11.0),
+                      _F(FONCTION=FOA3,
+                         VALE_PARA=12.0,
+                         VALE_CALC=13.0),),)
+
+tupl00 = aster.getvectjev("L00                .VALE")
+tupl01 = aster.getvectjev("L01                .VALE")
+tupl02 = tupl00 + tupl01
+
+FOL = DEFI_FONCTION(NOM_PARA='X',
+                    NOM_RESU='Y',
+                    VALE=tupl02)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=FOL,
+                         VALE_PARA=1.0,
+                         VALE_CALC=2.0),
+                      _F(FONCTION=FOL,
+                         VALE_PARA=3.0,
+                         VALE_CALC=4.0),),)
+
+y = x*2
+
+Fy = DEFI_FONCTION(NOM_PARA='X',
+                   NOM_RESU='Y',
+                   VALE=[1., y])
+
+TEST_FONCTION(VALEUR=_F(FONCTION=Fy,
+                        VALE_PARA=1.0,
+                        VALE_CALC=69.0),)
+
+FIN()

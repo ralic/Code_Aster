@@ -1,7 +1,5 @@
-# person_in_charge: Christophe-mmn.durand at edf.fr
-# TITRE  SUPERVISEUR : POURSUITE, espace de noms, acces python-jeveux
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +14,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT="NON",DEBUG=_F(SDVERI='OUI'))
+# TITRE  SUPERVISEUR : POURSUITE, espace de noms, acces python-jeveux
+# person_in_charge: mathieu.courtois@edf.fr
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON'),
+      PAR_LOT='NON',
+      DEBUG=_F(SDVERI='OUI'))
 
 #######################################################################
 # cas test du superviseur dedie a l appel de la methode getvectjev    #
@@ -26,35 +29,46 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT="NON",DEBUG=_F(S
 
 import aster
 
-MA=LIRE_MAILLAGE( )
-print aster.getvectjev("MA      .COORDO    .VALE        ")
-print aster.getcolljev("MA      .CONNEX         ")
-print aster.getvectjev("MA      .NOMMAI                 ")
-print aster.getvectjev("MA      .NOMNOE                 ")
+MA=LIRE_MAILLAGE()
 
-UN=1
-DEUX=2
-TUP=(10.,11.,12.,13.)
+coord = aster.getvectjev("MA      .COORDO    .VALE        ")
+assert min(coord) == 0.0, coord
+assert max(coord) == 0.1, coord
 
-I02=DEFI_LIST_ENTI(VALE=UN)
-I03=DEFI_LIST_ENTI(VALE=(5,6,7))
-print aster.getvectjev("I02                .VALE")
+conn = aster.getcolljev("MA      .CONNEX         ")
+assert conn.keys() == [1, ], conn
+assert conn[1] == (1, 2), conn
 
-FO3=DEFI_FONCTION(  NOM_PARA='X',
+nommai = aster.getvectjev("MA      .NOMMAI                 ")
+assert nommai == ('ELN1    ', ), nommai
+
+nomno = aster.getvectjev("MA      .NOMNOE                 ")
+assert nomno == ('NO1     ', 'NO2     '), nomno
+
+UN = 1
+DEUX = 2
+TUP = (10., 11., 12., 13.)
+
+I02 = DEFI_LIST_ENTI(VALE=UN)
+I03 = DEFI_LIST_ENTI(VALE=(5, 6, 7))
+vale = aster.getvectjev("I02                .VALE")
+assert vale == (1, ), vale
+
+FO3 = DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='Y',
-                    VALE=TUP )
+                    VALE=TUP)
 
 # on teste la methode Valeurs de la SD fonction
 # (on fait un traitement pour retrouver l'ordre du VALE)
 # Valeurs fait appel a getvectjev (voir sa definition dans accas.capy)
-lx,ly=FO3.Valeurs()
-lv=[]
+lx, ly = FO3.Valeurs()
+lv = []
 for i in range(len(lx)):
    lv.append(lx[i])
    lv.append(ly[i])
 
 # F04 est une fonction identique a F03
-FO4=DEFI_FONCTION(  NOM_PARA='X',
+FO4 = DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='Y',
                     VALE=lv )
 
@@ -71,8 +85,12 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=11.0,
 
 # on passe dans la programmation de la methode Parametres de la SD fonction
 # on ne teste pas les valeurs retournees
-dicpara=FO4.Parametres()
+dicpara = FO4.Parametres()
+assert dicpara['PROL_DROITE'] == 'EXCLU', dicpara
+assert dicpara['NOM_PARA'] == 'X', dicpara
+assert dicpara['INTERPOL'] == ['LIN', 'LIN'], dicpara
 
-xxx=34.5
+# on vérifie que la variable x sera accessible en POURSUITE
+x = 34.5
 
 FIN()
