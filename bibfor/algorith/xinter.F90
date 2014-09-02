@@ -1,5 +1,5 @@
 subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
-                  inref, inter) 
+                  lsnm, inref, inter) 
     implicit none
 !
 #include "jeveux.h"
@@ -14,6 +14,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 #include "asterfort/xnewto.h"
     character(len=8) :: elrefp
     integer :: ndim, ndime, ia, ib
+    real(kind=8), intent(in), optional :: lsnm
     real(kind=8) :: lsn(*), geom(*), inter(3), inref(3)
 !
 ! ======================================================================
@@ -43,7 +44,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 !
     character(len=6) :: name
     real(kind=8) :: ksi(ndime), ptxx(2*ndime), lsna, lsnb, x(81)
-    real(kind=8) :: epsmax
+    real(kind=8) :: epsmax, a , b , c
     integer :: itemax, ibid, n(3), j, nno, iret
 !
 !---------------------------------------------------------------------
@@ -66,11 +67,26 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     enddo
 !!!!!ATTENTION INITIALISATION DU NEWTON: INTERPOLATION LINEAIRE DE LSN
     call vecini(ndime, 0.d0, ksi)
-!   INTERPOLATION GROSSIERE POUR INITIALISER LE NEWTON
+!   INITIALISATION DU NEWTON
     lsna=lsn(ia)
     lsnb=lsn(ib)
     ASSERT(abs(lsna-lsnb) .gt. 1.d0/r8gaem())
-    ksi(1)=lsna/(lsna-lsnb)
+    if (present(lsnm)) then
+       a = (lsna + lsnb - 2*lsnm)/2.d0
+       b = (lsnb - lsna)/2.d0
+       c = lsnm
+       ASSERT(b**2.ge.(4*a*c))
+       if (abs(a).lt.1.d-8) then
+          ksi(1) = lsna/(lsna-lsnb)
+       else 
+          ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
+          if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
+          ASSERT(abs(ksi(1)).le.1)
+          ksi(1) = (ksi(1)+1)/2.d0
+       endif
+    else
+       ksi(1)=lsna/(lsna-lsnb)
+    endif
     call xnewto(elrefp, name, n,&
                 ndime, ptxx, ndim, geom, lsn,&
                 ibid, ibid, itemax,&
