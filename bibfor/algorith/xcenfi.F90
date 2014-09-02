@@ -1,5 +1,5 @@
 subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
-                  pinref, pmiref, cenref, cenfi)
+                  pinref, pmiref, cenref, cenfi, num)
 !
     implicit none
 !
@@ -20,6 +20,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "asterfort/xnormv.h"
 #include "asterfort/xveri0.h"
     integer :: ndim, ndime
+    integer, intent(in), optional :: num(8)
     character(len=8) :: elrefp
     real(kind=8) :: lsn(*), geom(*), pinref(*), pmiref(*)
     real(kind=8) :: cenfi(ndim), cenref(ndime)
@@ -73,15 +74,26 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     itemax=100
     epsmax=1.d-8
     name='XCENFI'
+    if (present(num)) then
+       pi1 = num(1) 
+       pi2 = num(2) 
+       pi3 = num(3) 
+       pi4 = num(4) 
+       m12 = num(5)
+       m13 = num(6)
+       m34 = num(7)
+       m24 = num(8)
+    else
 !  CONFERE XSTUDO
-    pi1=1
-    pi2=2
-    pi3=3
-    pi4=4
-    m12=9
-    m13=12
-    m34=11
-    m24=10
+       pi1=1
+       pi2=2
+       pi3=3
+       pi4=4
+       m12=9
+       m13=12
+       m34=11
+       m24=10
+    endif
 !
     ASSERT( ndime .eq. 3)
 !

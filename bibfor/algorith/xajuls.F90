@@ -58,15 +58,15 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     integer :: jma, ima, itypma, ar(12, 3), nbar, ia
     integer :: na, nb, nm, nunoa, nunob, nunom
-    integer ::   nmaabs, ndime, ndim
-    real(kind=8) :: d1, lsna, lsnb, lsta, lstb, crilsn, crilst, d2
-    real(kind=8) :: lsnm, lstm, lsnmax, lstmax, fit_to_vertex(2)
+    integer :: nmaabs, ndime, ndim
+    real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2
+    real(kind=8) :: lsnm, lstm, lsnmax, lstmax, penal, d3, fit_to_vertex(2)
     character(len=19) :: mai
     character(len=8) :: typma
     real(kind=8), pointer :: lnsv(:) => null()
     real(kind=8), pointer :: ltsv(:) => null()
 !
-    parameter     (fit_to_vertex=(/1.d-2,1d-6/), crilst=1.d-3)
+    parameter     (fit_to_vertex=(/1.d-2,1d-6/), crilst=1.d-3, penal=0.01)
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -180,43 +180,187 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
                 lsna=lnsv((nunoa-1)+1)
                 lsnb=lnsv((nunob-1)+1)
+                lsta=ltsv((nunoa-1)+1)
+                lstb=ltsv((nunob-1)+1)
 !
                 lsnm=lnsv((nunom-1)+1)
                 lstm=ltsv((nunom-1)+1)
-!            REAJUSTEMENT DES CONFIGURATIONS RENTRANTES
-!                if ((lsna*lsnb).ge.0.d0.and.(lsna*lsnm).le.0.d0) &
-!                   lnsv((nunom-1)+1)=0.d0
-                if (lsna.eq.0.d0.and.lsnb.eq.0.d0.and.lsnm.ne.0.d0) lnsv((nunom-1)+1)=0.d0
-                if ((lsna*lsnm).lt.0.d0.and.(lsnb*lsnm).lt.0.d0) lnsv((nunom-1)+1)=0.d0
-                if (lsna.eq.0.d0.and.(lsnb*lsnm).lt.0.d0) lnsv((nunom-1)+1)=0.d0
-                if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) lnsv((nunom-1)+1)=0.d0
 !
-                if (lnsv((nunoa-1)+1) .eq. 0.d0 .and. lnsv(( nunob-1)+1) .eq.&
-                    0.d0) then
-                    d2=lsnm/lsnmax
-                    if (abs(d2) .le. crilsn) then
-!             REAJUSTEMENT DE LSNM AUX NOEUDS MILIEUX,QUAND LA VALEUR
-!             D'UN LSNM SUR LA VALEUR LSNM LE PLUS GRAND DANS LE MEME
-!             ELEMENT EST INFERIEURE A UN CERTAIN NOMBRE, ON MET LES
-!             LSN A ZERO.
+!!!!!!!!!!!! TRAITEMENT DE LSN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!            REAJUSTEMENT DES CONFIGURATIONS RENTRANTES
+                if (lsna.eq.0.d0.and.lsnb.eq.0.d0.and.lsnm.ne.0.d0) then
+                    d1=lsnm/lsnmax
+                    if (abs(d1) .le. penal) then
+!             REAJUSTEMENT A ZERO DE LSNM AUX NOEUDS MILIEUX,QUAND LA
+!             VALEUR DE LSNM EST INFERIEURE A 1% LSNMAX ET QUE LES
+!             EXTREMITES DE L'ARETE ON LSN=0
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                     else
                         call utmess('A', 'XFEM_63')
+                        lnsv((nunom-1)+1)=0.d0
+                        clsm=clsm+1
                     endif
+                else if ((lsna*lsnm).lt.0.d0.and.(lsnb*lsnm).lt.0.d0) then
+                    d1=lsna/lsnmax
+                    d2=lsnb/lsnmax
+                    d3=lsnm/lsnmax
+                    if ((abs(d1) .le. penal) .and. (abs(d2) .le. penal) .and. &
+                        (abs(d3) .le. penal)) then
+!             REAJUSTEMENT A ZERO DE LSNM ET D'UNE LSNM D'EXTREMITE LORSQUE
+!             LA LSN CHANGE DEUX FOIS DE SIGNE SUR L'ARETE ET QUE LES LSN
+!             SONT INFERIEURES A 1% LSNMAX
+                        lnsv((nunom-1)+1)=0.d0
+                        if (d1 .gt. d2) then
+                           lnsv((nunob-1)+1)=0.d0
+                        else
+                           lnsv((nunoa-1)+1)=0.d0
+                        endif
+                        clsm=clsm+2
+                    else
+                        call utmess('A', 'XFEM_63')
+                        lnsv((nunom-1)+1)=0.d0
+                        if (d1 .gt. d2) then
+                           lnsv((nunob-1)+1)=0.d0
+                        else
+                           lnsv((nunoa-1)+1)=0.d0
+                        endif
+                        clsm=clsm+2
+                    endif
+                else if (lsna.eq.0.d0.and.(lsnb*lsnm).lt.0.d0) then
+                    d3=lsnm/lsnmax
+                    if (abs(d3) .le. penal) then
+!             REAJUSTEMENT A ZERO DE LSNM LORSQUE LA LSN EST NULLE EN A ET
+!             CHANGE DE SIGNE SUR L'ARETE ET QUE LES LSN SONT INFERIEURES
+!             A 1% LSNMAX
+                        lnsv((nunom-1)+1)=0.d0
+                        clsm=clsm+1
+                    else
+                        lnsv((nunom-1)+1)=0.d0
+                        clsm=clsm+1
+                        call utmess('A', 'XFEM_63')
+                    endif
+                else if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) then
+                    d3=lsnm/lsnmax
+                    if (abs(d3) .le. penal) then
+!             REAJUSTEMENT A ZERO DE LSNM LORSQUE LA LSN EST NULLE EN B ET
+!             CHANGE DE SIGNE SUR L'ARETE ET QUE LES LSN SONT INFERIEURES
+!             A 1% LSNMAX
+                        lnsv((nunom-1)+1)=0.d0
+                        clsm=clsm+1
+                    else
+                        call utmess('A', 'XFEM_63')
+                        lnsv((nunom-1)+1)=0.d0
+                        clsm=clsm+1
+                    endif
+               else if ((lsna*lsnb).gt.0.d0.and.lsnm.eq.0.d0) then
+                    d1=lsna/lsnmax
+                    d2=lsnb/lsnmax
+                    if ((abs(d1) .le. penal) .and. (abs(d2) .le. penal)) then
+!             REAJUSTEMENT A ZERO D'UNE LSN D'EXTREMITE LORSQUE LA LSN
+!             EST NULLE EN M ET DE MEME SIGNE AUX EXTREMITES DE L'ARETE ET
+!             QUE LES LSN SONT INFERIEURES A 1% LSNMAX
+                        if (d1 .gt. d2) then
+                           lnsv((nunob-1)+1)=0.d0
+                        else
+                           lnsv((nunoa-1)+1)=0.d0
+                        endif
+                        clsm=clsm+1
+                    else
+                        call utmess('A', 'XFEM_63')
+                        if (d1 .gt. d2) then
+                           lnsv((nunob-1)+1)=0.d0
+                        else
+                           lnsv((nunoa-1)+1)=0.d0
+                        endif
+                        clsm=clsm+1
+                    endif 
                 endif
-                if (ltsv((nunoa-1)+1) .eq. 0.d0 .and. ltsv(( nunob-1)+1) .eq.&
-                    0.d0) then
-                    d2=lstm/lstmax
-                    if (abs(d2) .le. crilst) then
-!             REAJUSTEMENT DE LSTM AUX NOEUDS MILIEUX,QUAND LA VALEUR
-!             D'UN LSTM SUR LA VALEUR LSTM LE PLUS GRAND DANS LE MEME
-!             ELEMENT EST INFERIEURE A UN CERTAIN NOMBRE, ON MET LES
-!             LST A ZERO.
+!
+!!!!!!!!!!!!! TRAITEMENT DE LST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!            REAJUSTEMENT DES CONFIGURATIONS RENTRANTES
+                if (lsta.eq.0.d0.and.lstb.eq.0.d0.and.lstm.ne.0.d0) then
+                    d1=lstm/lstmax
+                    if (abs(d1) .le. penal) then
+!             REAJUSTEMENT A ZERO DE LSNM AUX NOEUDS MILIEUX,QUAND LA
+!             VALEUR DE LSNM EST INFERIEURE A 1% LSNMAX ET QUE LES
+!             EXTREMITES DE L'ARETE ON LSN=0
                         ltsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                     else
                         call utmess('A', 'XFEM_63')
+                        ltsv((nunom-1)+1)=0.d0
+                        clsm=clsm+1
+                    endif
+                else if ((lsta*lstm).lt.0.d0.and.(lstb*lstm).lt.0.d0) then
+                    d1=lsta/lstmax
+                    d2=lstb/lstmax
+                    d3=lstm/lstmax
+                    if ((abs(d1) .le. penal) .and. (abs(d2) .le. penal) .and. &
+                        (abs(d3) .le. penal)) then
+!             REAJUSTEMENT A ZERO DE LSNM ET D'UNE LSNM D'EXTREMITE LORSQUE
+!             LA LSN CHANGE DEUX FOIS DE SIGNE SUR L'ARETE ET QUE LES LSN
+!             SONT INFERIEURES A 1% LSNMAX
+                        ltsv((nunom-1)+1)=0.d0
+                        ltsv((nunob-1)+1)=0.d0
+                        ltsv((nunoa-1)+1)=0.d0
+                        clsm=clsm+3
+                    else
+                        call utmess('A', 'XFEM_63')
+                        ltsv((nunom-1)+1)=0.d0
+                        ltsv((nunob-1)+1)=0.d0
+                        ltsv((nunoa-1)+1)=0.d0
+                        clsm=clsm+3
+                    endif
+                else if (lsta.eq.0.d0.and.(lstb*lstm).lt.0.d0) then
+                    d2=lstb/lstmax
+                    d3=lstm/lstmax
+                    if ((abs(d3) .le. penal) .and. (abs(d2) .le. penal))then
+!             REAJUSTEMENT A ZERO DE LSNM LORSQUE LA LSN EST NULLE EN A ET
+!             CHANGE DE SIGNE SUR L'ARETE ET QUE LES LSN SONT INFERIEURES
+!             A 1% LSNMAX
+                        ltsv((nunom-1)+1)=0.d0
+                        ltsv((nunob-1)+1)=0.d0
+                        clsm=clsm+2
+                    else
+                        call utmess('A', 'XFEM_63')
+                        ltsv((nunom-1)+1)=0.d0
+                        ltsv((nunob-1)+1)=0.d0
+                        clsm=clsm+2
+                    endif
+                else if ((lsta*lstm).lt.0.d0.and.lstb.eq.0.d0) then
+                    d1=lstm/lstmax
+                    d3=lstm/lstmax
+                    if ((abs(d1) .le. penal) .and. (abs(d3) .le. penal)) then
+!             REAJUSTEMENT A ZERO DE LSNM LORSQUE LA LSN EST NULLE EN B ET
+!             CHANGE DE SIGNE SUR L'ARETE ET QUE LES LSN SONT INFERIEURES
+!             A 1% LSNMAX
+                        ltsv((nunom-1)+1)=0.d0
+                        ltsv((nunoa-1)+1)=0.d0
+                        clsm=clsm+2
+                    else
+                        call utmess('A', 'XFEM_63')
+                        ltsv((nunom-1)+1)=0.d0
+                        ltsv((nunoa-1)+1)=0.d0
+                        clsm=clsm+2
+                    endif
+               else if ((lsta*lstb).gt.0.d0.and.lstm.eq.0.d0) then
+                    d1=lsta/lstmax
+                    d2=lstb/lstmax
+                    if ((abs(d1) .le. penal) .and. (abs(d2) .le. penal)) then
+!             REAJUSTEMENT A ZERO D'UNE LSN D'EXTREMITE LORSQUE LA LSN
+!             EST NULLE EN M ET DE MEME SIGNE AUX EXTREMITES DE L'ARETE ET
+!             QUE LES LSN SONT INFERIEURES A 1% LSNMAX
+                        ltsv((nunob-1)+1)=0.d0
+                        ltsv((nunoa-1)+1)=0.d0
+                        clsm=clsm+2
+                    else
+                        call utmess('A', 'XFEM_63')
+                        ltsv((nunob-1)+1)=0.d0
+                        ltsv((nunoa-1)+1)=0.d0
+                        clsm=clsm+2
                     endif
                 endif
 !

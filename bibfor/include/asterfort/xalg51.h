@@ -16,18 +16,30 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
-                      pinref, pmiref, cenref, cenfi, num)
-        character(len=8) :: elrefp
+    subroutine xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref)
         integer :: ndim
+        integer :: nnop
+        integer :: it
+        integer :: nnose
+        integer :: cnset(*)
         integer :: ndime
-        integer :: nno
-        real(kind=8) :: geom(*)
-        real(kind=8) :: lsn(*)
-        real(kind=8) :: pinref(*)
-        real(kind=8) :: pmiref(*)
-        real(kind=8) :: cenref(ndime)
-        real(kind=8) :: cenfi(ndim)
-        integer, intent(in), optional :: num(8)
-    end subroutine xcenfi
+        integer :: igeom
+        integer :: jlsn
+        integer :: ninter
+        integer ::  ar(12, 3)
+        integer :: npts
+        integer :: nptm
+        integer :: nbar
+        integer :: pmmax
+        integer :: nmilie
+        integer :: mfis
+        character(len=8) :: typma
+        character(len=8) :: elrefp
+        real(kind=8) :: lonref
+        real(kind=8) :: ainter(*)
+        real(kind=8) :: pmilie(*)
+        real(kind=8) :: pinref(*) 
+    end subroutine xalg51
 end interface 

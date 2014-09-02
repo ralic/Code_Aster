@@ -72,9 +72,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
     integer :: ia, i, ipi, ibid, pp, pd, k
     integer :: ndime, noeua, noeub, im
-    integer :: j, a1, a2, nx, ipt
+    integer :: j, a1, a2, nx, ipt, nm
     integer :: ptmax, pmmaxi(3), pmmax
-    integer :: ntm, nm, inm, nptm, nnop
+    integer :: ntm, inm, nptm, nnop
     integer :: zxain
     character(len=8) :: typma, elrese(3), elrefp
     aster_logical :: cut, papillon, ajout
@@ -150,6 +150,59 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
         if ((tabls(ar(ia,1))*tabls(ar(ia,2))) .lt. 0.d0) cut=.true.
  30 continue
 !
+!     BOUCLE SUR LES ARETES DE L'ELEMENT ENFANT POUR AJUSTEMENT DES
+!     LEVEL SET NORMALES SUR LES ARETES INTERNES
+    do ia = 1, nbar
+!
+!       RECUPERATION NUM ENFANT DES NOEUDS DE L'ARETE
+        nta=ar(ia,1)
+        ntb=ar(ia,2)
+        ntm=ar(ia,3)
+!
+!       RECUPERATION NUM PARENT DES NOEUDS DE L'ARETE
+        na=cnset(nnose*(it-1)+nta)
+        nb=cnset(nnose*(it-1)+ntb)
+        nm=cnset(nnose*(it-1)+ntm)
+!
+!       RECUPERATION LSN DES NOEUDS EXTREMITE DE L'ARETE
+        lsna=tabls(nta)
+        lsnb=tabls(ntb)
+        lsnm=tabls(ntm)
+!     BLINDAGE PARTIEL : FISSURE RENTRANTE SUR UNE ARETE
+        if (lsna .eq. 0 .and. lsnb .eq. 0) then
+           lsnm = 0.d0
+           tabls(ntm) = 0.d0
+        else if (lsna*lsnm .lt. 0 .and. lsnb*lsnm .lt. 0) then
+           if(abs(lsna).ge.abs(lsnb)) then
+              lsnb = 0.d0
+              tabls(ntb) = 0.d0
+              zr(jlsn-1+nb) = 0.d0
+           else
+              lsna = 0.d0
+              tabls(nta) = 0.d0
+              zr(jlsn-1+na) = 0.d0
+           endif
+           lsnm = 0.d0
+           tabls(ntm) = 0.d0
+        else if (lsnm .eq. 0 .and. lsnb*lsna .gt. 0) then
+           if(abs(lsna).ge.abs(lsnb)) then
+              lsnb = 0.d0
+              tabls(ntb) = 0.d0
+              zr(jlsn-1+nb) = 0.d0
+           else
+              lsna = 0.d0
+              tabls(nta) = 0.d0
+              zr(jlsn-1+na) = 0.d0
+           endif
+        else if (lsna .eq. 0 .and. lsnb*lsnm .lt. 0) then
+           lsnm = 0.d0
+           tabls(ntm) = 0.d0
+        else if (lsnb .eq. 0 .and. lsna*lsnm .lt. 0) then
+           lsnm = 0.d0
+           tabls(ntm) = 0.d0
+        endif
+    end do
+!
 !     BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
     do 100 ia = 1, nbar
 !
@@ -178,11 +231,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             b(i)=tabco(ndim*(ntb-1)+i)
             m(i)=tabco(ndim*(ntm-1)+i)
 101     continue
-!
-!     BLINDAGE PARTIEL : FISSURE RENTRANTE SUR UNE ARETE
-        if (lsna*lsnm .lt. 0 .and. lsnb*lsnm .lt. 0) then
-            call utmess('F', 'XFEM_63')
-        endif
 !
 !       LONGUEUR DE L'ARETE
         longar=padist(ndim,a,b)
@@ -253,7 +301,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
                 call xinter(ndim, ndime, elrefp, zr(igeom), zr(jlsn), na, nb,&
-                            lsnm, cref, c)
+                            lsnm, cref, c) 
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
 !           ON AJOUTE A LA LISTE LE POINT C
@@ -335,41 +383,42 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 220     continue
     endif
 !
-!       LA CONFIG 3D / NINTER=4 ET NPTS=2 / NE RESSEMBLE PAS AUTRES CONFIG IMPLEMENTEES
-!       POUR CETTE CONFIG LE NOEUD MILIEU M EST CONSIDERE COMME UN POINT D INTERSECTION
-!       SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M
+!       LES CONFIGS 3D / NINTER=4,NPTS=2 / NINTER=6,NPTS=2/ NE RESSEMBLENT PAS AUTRES 
+!       CONFIG IMPLEMENTEES POUR CETTE CONFIG LE NOEUD MILIEU M EST CONSIDERE COMME UN 
+!       POINT D INTERSECTION SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M
 !       L ALGO NE DOIT PAS LE TRAITER COMME UN POINT D INTERSECTION CLASSIQUE
 !             ==> C EST UN CAS DEGENERE TRES ENNUYEUX
-    if (ndime .eq. 3 .and. ninter .eq. 4 .and. npts .eq. 2 .and. cut) then
-!      SOLUTION : ON MET LE POINT MILIEU EN 4 EME POSITION => POUR LE DISTINGUER DES AUTRES PI
-        noeua=nint(ainter(2))
-        noeub=nint(ainter(zxain+2))
-        im=0
-        do 230 i = 1, 6
-            do 231 j = 1, 2
-                if (cnset(nnose*(it-1)+ar(i,j)) .eq. noeua .and. cnset(nnose*(it-1)+ar(i,3-j))&
-                    .eq. noeub) im=i
-231         continue
-230     continue
-        ASSERT(im.gt.0)
-        do ipt = 1, 3
-            if (nint(ainter(zxain*(ipt-1)+1)) .eq. im) then
-                do i = 1, (zxain-1)
-                    rbid=ainter(zxain*(4-1)+i)
-                    ainter(zxain*(4-1)+i)=ainter(zxain*(ipt-1)+i)
-                    ainter(zxain*(ipt-1)+i)=rbid
-                enddo
-                do k = 1, ndim
-                    tampor(k)=pinter(ndim*(4-1)+k)
-                    pinter(ndim*(4-1)+k)=pinter(ndim*(ipt-1)+k)
-                    pinter(ndim*(ipt-1)+k)=tampor(k)
+    if ((ndime.eq.3.and.ninter .eq. 4 .and. npts.eq.2.and.cut).or.&
+        (ndime.eq.3.and.ninter .eq. 6 .and. npts.eq.2.and.cut)) then
+!      SOLUTION : ON MET LE POINT MILIEU EN DERNIERE POSITION => POUR LE DISTINGUER DES AUTRES PI
+      noeua=nint(ainter(2))
+      noeub=nint(ainter(zxain+2))
+      im=0
+      do 230 i=1,6
+        do 231 j=1,2
+          if (cnset(nnose*(it-1)+ar(i,j)).eq.noeua.and.&
+            cnset(nnose*(it-1)+ar(i,3-j)).eq.noeub) im=i
+231     continue
+230   continue
+      ASSERT(im.gt.0)
+      do ipt=1,ninter-1
+        if (nint(ainter(zxain*(ipt-1)+1)).eq.im) then
+          do i=1,(zxain-1)
+            rbid=ainter(zxain*(ninter-1)+i)
+            ainter(zxain*(ninter-1)+i)=ainter(zxain*(ipt-1)+i)
+            ainter(zxain*(ipt-1)+i)=rbid
+          enddo
+          do  k=1,ndim
+            tampor(k)=pinter(ndim*(ninter-1)+k)
+            pinter(ndim*(ninter-1)+k)=pinter(ndim*(ipt-1)+k)
+            pinter(ndim*(ipt-1)+k)=tampor(k)
 !  TRAITEMENT DE PINREF
-                    tampor(k)=pinref(ndim*(4-1)+k)
-                    pinref(ndim*(4-1)+k)=pinref(ndim*(ipt-1)+k)
-                    pinref(ndim*(ipt-1)+k)=tampor(k)
-                enddo
-            endif
-        enddo
+            tampor(k)=pinref(ndim*(ninter-1)+k)
+            pinref(ndim*(ninter-1)+k)=pinref(ndim*(ipt-1)+k)
+            pinref(ndim*(ipt-1)+k)=tampor(k)
+         enddo
+        endif
+      enddo
 !    ON FORCE ainter(zxain*(4-1)+1)=0
 !       CAR LE NOEUD MILIEU EST REELLEMENT DANS LE PLAN DE LA FISSURE
 !       ainter(zxain*(4-1)+1)=0.d0

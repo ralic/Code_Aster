@@ -10,8 +10,11 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 #    include "asterfort/xalg30.h"
 #    include "asterfort/xalg31.h"
 #    include "asterfort/xalg40.h"
+#    include "asterfort/xalg41.h"
 #    include "asterfort/xalg42.h"
 #    include "asterfort/xalg20.h"
+#    include "asterfort/xalg62.h"
+#    include "asterfort/xalg51.h"
     character(len=8) :: typma, elrefp
     integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
     integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
@@ -72,6 +75,18 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       pmmax, nmilie, mfis, lonref, pinref)
     else if (ninter .eq. 4 .and. npts.eq. 2) then
         call xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 4 .and. npts.eq. 1) then
+        call xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 6 .and. npts.eq. 2) then
+        call xalg62(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 5 .and. npts.eq. 1) then
+        call xalg51(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
                       pmmax, nmilie, mfis, lonref, pinref)
     else
