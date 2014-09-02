@@ -185,6 +185,7 @@
     Anna Ouglova
     Thomas Papaconstantinou
     Aurore Parrot
+    Bertrand Paul
     Jean Pauthenet
     Jacques Pellet <jacques.pellet .at. edf.fr>
     Raphaël Perony
