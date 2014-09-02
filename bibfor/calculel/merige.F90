@@ -1,5 +1,5 @@
 subroutine merige(modele, cara, sigg, strx, matel,&
-                  base, nh)
+                  base, nh, deplr, mater)
     implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
@@ -15,7 +15,8 @@ subroutine merige(modele, cara, sigg, strx, matel,&
     character(len=8) :: modele, cara
     character(len=*) :: sigg, strx
     character(len=19) :: matel
-!     ------------------------------------------------------------------
+    character(len=*) , optional, intent(in) :: deplr,mater
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,16 +43,15 @@ subroutine merige(modele, cara, sigg, strx, matel,&
 ! VAR : MATEL  : NOM DU MATEL (N RESUELEM) PRODUIT
 ! IN  : BASE   : BASE POUR LA CREATION DE MATEL ('G'/'V')
 ! ----------------------------------------------------------------------
-!     ------------------------------------------------------------------
-    character(len=8) :: lpain(12), lpaout(1)
+    character(len=8) ::  lpain(14), lpaout(1)
+    character(len=24) :: lchin(14), lchout(1)
+!
     character(len=16) :: option
-    character(len=24) :: ligrmo, lchin(12), lchout(1)
-    character(len=24) :: chgeom, chcara(18), chharm
-    character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
-    character(len=19) :: pmilto
+    character(len=24) :: ligrmo, chgeom, chcara(18), chharm
+    character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano, pmilto
 !
 !-----------------------------------------------------------------------
-    integer :: icode, ier
+    integer :: icode, ier, nbpara
 !-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
@@ -148,8 +148,26 @@ subroutine merige(modele, cara, sigg, strx, matel,&
         lchin(10) = strx
         lpain(11) = 'PFIBRES'
         lchin(11) = chcara(17)
+        lpain(12) = 'PCACABL'
+        lchin(12) = chcara(10)
+        nbpara= 12
+        if ( present(deplr) ) then
+            if ( deplr.ne.' ') then
+                nbpara= nbpara+1
+                lpain(nbpara) = 'PDEPLPR'
+                lchin(nbpara) = deplr
+            endif
+        endif
+        if ( present(mater) ) then
+            if ( mater.ne.' ' ) then
+                nbpara= nbpara+1
+                lpain(nbpara) = 'PMATERC'
+                lchin(nbpara) = mater
+            endif
+        endif
+
         option = 'RIGI_MECA_GE'
-        call calcul('S', option, ligrmo, 11, lchin,&
+        call calcul('S', option, ligrmo, nbpara, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matel, lchout(1), base)

@@ -219,6 +219,18 @@ Erreur utilisateur :
   La température n'est pas correctement renseignée
 """),
 
+32 : _(u"""
+Erreur utilisateur :
+  -> L'utilisation de la commande %(k1)s avec l'option %(k5)s pour
+     les éléments du type %(k4)s n'est pas autorisée.
+  -> Vous utilisez la commande %(k1)s il n'y a pas moyen de contourner cette erreur.
+
+La maille incriminée est %(k6)s.
+
+Pour information :
+   Le nom du résultat         : %(k3)s
+   Le type de concept produit : %(k2)s
+"""),
 
 
 33 : _(u"""

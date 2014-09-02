@@ -66,12 +66,12 @@ subroutine pemain(resu, modele, mate, cara, nh,&
     integer :: iarg
     real(kind=8), pointer :: trav1(:) => null()
 !
-    data noparr/'LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z',&
-     &     'IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G','IX_PRIN_G',&
-     &     'IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA','X_P','Y_P',&
-     &     'Z_P','IX_P','IY_P','IZ_P','IXY_P','IXZ_P','IYZ_P'/
-    data typarr/'K24','K8','R','R','R','R','R','R','R','R','R','R',&
-     &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'/
+    data noparr/'LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z', &
+            'IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G','IX_PRIN_G', &
+            'IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA','X_P','Y_P', &
+            'Z_P','IX_P','IY_P','IZ_P','IXY_P','IXZ_P','IYZ_P'/
+    data typarr/'K24','K8','R','R','R','R','R','R','R','R','R','R', &
+            'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -133,7 +133,10 @@ subroutine pemain(resu, modele, mate, cara, nh,&
     lchin(14) = chcara(13)
     lpain(15) = 'PCINFDI'
     lchin(15) = chcara(15)
-    nb = 15
+    lpain(16) = 'PCACABL'
+    lchin(16) = chcara(10)
+    nb = 16
+!
     lpaout(1) = 'PMASSINE'
     lchout(1) = chelem
 !

@@ -30,7 +30,7 @@ subroutine vpmain(modele, mate, cara, xmastr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
+!
 !     OPERATEUR   NORM_MODE
 !     CALCUL DE LA MASSE DU MODELE
 !     ------------------------------------------------------------------
@@ -38,9 +38,9 @@ subroutine vpmain(modele, mate, cara, xmastr)
     integer :: mxvale, nb, i, iorig, icage
     parameter (mxvale=16)
     real(kind=8) :: rbi3(3), zmas(mxvale)
-    character(len=8) :: lpain(15), lpaout(5)
+    character(len=8) :: lpain(16), lpaout(5)
     character(len=19) :: chelem
-    character(len=24) :: lchin(15), lchout(1), mateco
+    character(len=24) :: lchin(16), lchout(1), mateco
     character(len=24) :: chgeom, chcara(18), ligrmo, compor
 !
 !     ------------------------------------------------------------------
@@ -94,7 +94,10 @@ subroutine vpmain(modele, mate, cara, xmastr)
     lchin(14) = chcara(15)
     lpain(15) = 'PABSCUR'
     lchin(15) = chgeom(1:8)//'.ABSC_CURV'
-    nb = 15
+    lpain(16) = 'PCACABL'
+    lchin(16) = chcara(10)
+    nb = 16
+!
     lpaout(1) = 'PMASSINE'
     lchout(1) = chelem
 !

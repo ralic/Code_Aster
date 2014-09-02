@@ -17,7 +17,7 @@
 !
 interface
     subroutine merige(modele, cara, sigg, strx, matel,&
-                      base, nh)
+                      base, nh, deplr, mater)
         character(len=8) :: modele
         character(len=8) :: cara
         character(len=*) :: sigg
@@ -25,5 +25,7 @@ interface
         character(len=19) :: matel
         character(len=1) :: base
         integer :: nh
+        character(len=*), optional, intent(in) :: deplr
+        character(len=*), optional, intent(in) :: mater
     end subroutine merige
 end interface

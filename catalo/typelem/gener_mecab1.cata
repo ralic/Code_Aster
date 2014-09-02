@@ -39,6 +39,8 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
+    EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
+                                        IZZ      IXY      IXZ      IYZ      )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CLISTMA  = LISTMA   ELEM__         (LISTMA   TRANS    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
@@ -65,118 +67,119 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    ADD_SIGM         581  IN__  EEFGEGA  PEPCON1  EEFGEGA  PEPCON2  
-                          OUT__ EEFGEGA  PEPCON3  
-    AMOR_MECA         50  IN__  NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL  
-                                ZVARCPG  PVARCPR  
-                          OUT__ MMATUUR  PMATUUR  
-    CARA_GEOM         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_LIMITE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_EPSI_R  -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_FC1D1D  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_FF1D1D 161  IN__  CFORCEF  PFF1D1D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_FR1D1D 161  IN__  CFORCER  PFR1D1D  NGEOMER  PGEOMER  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_FRELEC  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_FRLAPL 163  IN__  CFLAPLA  PFLAPLA  NGEOMER  PGEOMER  CLISTMA  PLISTMA  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_PESA_R 161  IN__  CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  
-                                ZVARCPG  PVARCPR  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_ROTA_R  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_SF1D1D 161  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFF1D1D  NGEOMER  PGEOMER  
-                                CTEMPSR  PTEMPSR  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_SR1D1D 161  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CVENTCX  PVENTCX  
-                                NVITER   PVITER   
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_TEMP_R 162  IN__  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  
-                          OUT__ MVECTUR  PVECTUR  
-    COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
-    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    EFGE_ELGA        546  IN__  EEFGEGA  PSIEFR   
-                          OUT__ EEFGEGA  PEFGER   
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    ENER_TOTALE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    EPOT_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    FORC_NODA        164  IN__  EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  
-                                ZVARCPG  PVARCPR  
-                          OUT__ MVECTUR  PVECTUR  
-    FULL_MECA        160  IN__  CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
-                                NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR  ZVARIPG  PVARIMR  
-                          OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
-                                MVECTUR  PVECTUR  
-    FULL_MECA_ELAS    -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    INDIC_ENER        -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    INDIC_SEUIL       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    INIT_VARC         99  IN__  
-                          OUT__ ZVARCPG  PVARCPR  
-    MASS_FLUI_STRU    -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    MASS_INER         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    MASS_MECA        168  IN__  CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  
-                          OUT__ MMATUUR  PMATUUR  
-    MASS_MECA_DIAG    -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    MASS_MECA_EXPLI   -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    M_GAMMA          168  IN__  DDL_MECA PACCELR  CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                                ZVARCPG  PVARCPR  
-                          OUT__ MVECTUR  PVECTUR  
-    NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR  
-                          OUT__ EDCEL_I  PDCEL_I  
-    PAS_COURANT      404  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ ECOURAN  PCOURAN  
-    RAPH_MECA        160  IN__  CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
-                                NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR  ZVARIPG  PVARIMR  
-                          OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
-    REFE_FORC_NODA   164  IN__  EREFCO   PREFCO   
-                          OUT__ MVECTUR  PVECTUR  
-    RICE_TRACEY       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_FLUI_STRU    -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA_ELAS    -1  IN__  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA_GE      -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA_HYST    -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA_RO      -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA_TANG   160  IN__  CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  
-                                NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR  
-                          OUT__ MMATUUR  PMATUUR  
-    SIEF_ELNO          4  IN__  EEFGEGA  PCONTRR  ZVARCPG  PVARCPR  
-                          OUT__ EEFGENC  PSIEFNOC EEFGENO  PSIEFNOR 
-    TOU_INI_ELGA      99  IN__  
-                          OUT__ EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  
-                                EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  
-    TOU_INI_ELNO      99  IN__  
-                          OUT__ NGEOMER  PGEOM_R  EEINST_R PINST_R  EENEUT_F PNEUT_F  EENEUT_R PNEUT_R  
-                                EEFGENO  PSIEF_R  ZVARINO  PVARI_R  
-    VARI_ELNO          4  IN__  ZVARIPG  PVARIGR  
-                          OUT__ ZVARINO  PVARINR  
-    WEIBULL           -1  IN__  
+    ADD_SIGM         581  IN__  EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
+                          OUT__ EEFGEGA  PEPCON3
+    AMOR_MECA         50  IN__  NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
+                                ZVARCPG  PVARCPR
+                          OUT__ MMATUUR  PMATUUR
+    CARA_GEOM         -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    CHAR_LIMITE       -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    CHAR_MECA_EPSI_R  -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    CHAR_MECA_FC1D1D  -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    CHAR_MECA_FF1D1D 161  IN__  CFORCEF  PFF1D1D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_FR1D1D 161  IN__  CFORCER  PFR1D1D  NGEOMER  PGEOMER
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_FRELEC  -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    CHAR_MECA_FRLAPL 163  IN__  CFLAPLA  PFLAPLA  NGEOMER  PGEOMER  CLISTMA  PLISTMA
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_PESA_R 161  IN__  CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
+                                ZVARCPG  PVARCPR
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_ROTA_R  -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    CHAR_MECA_SF1D1D 161  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFF1D1D  NGEOMER  PGEOMER
+                                CTEMPSR  PTEMPSR
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_SR1D1D 161  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CVENTCX  PVENTCX
+                                NVITER   PVITER
+                          OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_TEMP_R 162  IN__  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
+                          OUT__ MVECTUR  PVECTUR
+    COOR_ELGA        478  IN__  NGEOMER  PGEOMER
+                          OUT__ EGGEOP_R PCOORPG
+    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    EFGE_ELGA        546  IN__  EEFGEGA  PSIEFR
+                          OUT__ EEFGEGA  PEFGER
+    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    ENER_TOTALE       -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    EPOT_ELEM         -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    FORC_NODA        164  IN__  EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                                ZVARCPG  PVARCPR
+                          OUT__ MVECTUR  PVECTUR
+    FULL_MECA        160  IN__  CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
+                          OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
+                                MVECTUR  PVECTUR
+    FULL_MECA_ELAS    -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    INDIC_ENER        -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    INDIC_SEUIL       -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    INIT_VARC         99  IN__
+                          OUT__ ZVARCPG  PVARCPR
+    MASS_FLUI_STRU    -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    MASS_INER        111  IN__  CCACABL  PCACABL  NGEOMER  PGEOMER CMATERC  PMATERC
+                          OUT__ EMASSINE PMASSINE
+    MASS_MECA        168  IN__  CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                          OUT__ MMATUUR  PMATUUR
+    MASS_MECA_DIAG    -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    MASS_MECA_EXPLI   -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    M_GAMMA          168  IN__  DDL_MECA PACCELR  CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                ZVARCPG  PVARCPR
+                          OUT__ MVECTUR  PVECTUR
+    NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR
+                          OUT__ EDCEL_I  PDCEL_I
+    PAS_COURANT      404  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ ECOURAN  PCOURAN
+    RAPH_MECA        160  IN__  CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
+                          OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    REFE_FORC_NODA   164  IN__  EREFCO   PREFCO
+                          OUT__ MVECTUR  PVECTUR
+    RICE_TRACEY       -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    RIGI_FLUI_STRU    -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    RIGI_MECA         98  IN__
+                          OUT__ MMATUUR  PMATUUR
+    RIGI_MECA_ELAS    -1  IN__  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    RIGI_MECA_GE      86  IN__  CCACABL  PCACABL  EEFGEGA  PCONTRR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                                CMATERC  PMATERC
+                          OUT__ MMATUUR  PMATUUR
+    RIGI_MECA_HYST    -1  IN__  ZVARCPG  PVARCPR
+                          OUT__ XXXXXX   XXXXXX
+    RIGI_MECA_RO      -1  IN__
+                          OUT__ XXXXXX   XXXXXX
+    RIGI_MECA_TANG   160  IN__  CCACABL  PCACABL  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                ZVARCPG  PVARCRR
+                          OUT__ MMATUUR  PMATUUR
+    SIEF_ELNO          4  IN__  EEFGEGA  PCONTRR  ZVARCPG  PVARCPR
+                          OUT__ EEFGENC  PSIEFNOC EEFGENO  PSIEFNOR
+    TOU_INI_ELGA      99  IN__
+                          OUT__ EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R
+                                EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
+    TOU_INI_ELNO      99  IN__
+                          OUT__ NGEOMER  PGEOM_R  EEINST_R PINST_R  EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
+                                EEFGENO  PSIEF_R  ZVARINO  PVARI_R
+    VARI_ELNO          4  IN__  ZVARIPG  PVARIGR
+                          OUT__ ZVARINO  PVARINR
+    WEIBULL           -1  IN__
                           OUT__ XXXXXX   XXXXXX

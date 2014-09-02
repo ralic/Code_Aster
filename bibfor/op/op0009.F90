@@ -1,6 +1,5 @@
 subroutine op0009()
-    implicit none
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +16,15 @@ subroutine op0009()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     COMMANDE:  CALC_MATR_ELEM
 !
-! ----------------------------------------------------------------------
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!                       COMMANDE:  CALC_MATR_ELEM
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -56,24 +60,29 @@ subroutine op0009()
 #include "asterfort/merith.h"
 #include "asterfort/redetr.h"
 #include "asterfort/sdmpic.h"
-#include "asterfort/wkvect.h"
 !
-    real(kind=8) :: time, tps(6)
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: n1, n2, n3, ier, n5, nh, n6, ncha, icha, nbresu, iresu, iexi
     character(len=1) :: base
     character(len=4) :: ctyp, kmpic
-    character(len=8) :: modele, cara, sigg, nomcmp(6), blan8, strx
-    character(len=8) :: rigi8, mass8
+    character(len=8) :: modele, cara, sigg, nomcmp(6), blan8, strx, deplr, rigi8, mass8
     character(len=16) :: type, oper, suropt
     character(len=19) :: kcha, matel, rigiel, massel, resuel
     character(len=24) :: time2, mate, compor
-    aster_logical :: exitim
-    integer :: n1, n2, n3, n4, ier, n5, nh, n6, ncha, icha
-    integer :: nbresu, iresu, iexi, n7
+!
     character(len=24), pointer :: relr(:) => null()
+    aster_logical :: exitim
+    real(kind=8) :: time, tps(6)
+!
+! --------------------------------------------------------------------------------------------------
+!
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
-     &     'R       ','RHO     '/
+                'R       ','RHO     '/
     data tps/0.d0,2*1.d0,3*0.d0/
-! DEB ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     call infmaj()
 !
@@ -83,27 +92,22 @@ subroutine op0009()
     blan8 = '        '
     rigi8 = ' '
     mass8 = ' '
-    sigg = ' '
+    sigg  = ' '
+    strx  = ' '
+    deplr = ' '
+!
     call getvid(' ', 'RIGI_MECA', scal=rigi8, nbret=n1)
     rigiel=rigi8
     call getvid(' ', 'MASS_MECA', scal=mass8, nbret=n2)
     massel=mass8
     call getvtx(' ', 'OPTION', scal=suropt, nbret=n3)
-    call getvid(' ', 'SIEF_ELGA', scal=sigg, nbret=n4)
-    if (n4 .ne. 0) then
-        call chpver('F', sigg, 'ELGA', 'SIEF_R', ier)
-    endif
-    call getvid(' ', 'STRX_ELGA', scal=strx, nbret=n7)
-    if (n7 .ne. 0) then
-        call chpver('F', strx, 'ELGA', 'STRX_R', ier)
-    endif
     call getvr8(' ', 'INST', scal=time, nbret=n5)
     if (n5 .eq. 0) time = 0.d0
     call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n6)
     kcha = '&&OP0009.CHARGES'
     call medome(modele, mate, cara, kcha, ncha,&
                 ctyp, blan8)
-! POUR LES MULTIFIBRES ON SE SERT DE COMPOR
+!   POUR LES MULTIFIBRES ON SE SERT DE COMPOR
     compor=mate(1:8)//'.COMPOR'
     call jeveuo(kcha, 'E', icha)
     exitim = .true.
@@ -111,88 +115,114 @@ subroutine op0009()
 !
     tps(1) = time
 !
+! --------------------------------------------------------------------------------------------------
     if (suropt .eq. 'RIGI_MECA') then
         call merime(modele, ncha, zk8(icha), mate, cara,&
                     exitim, time, compor, matel, nh,&
                     base)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_FLUI_STRU') then
         call merifs(modele, ncha, zk8(icha), mate, cara,&
                     exitim, time, matel, nh)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_GEOM') then
-        call merige(modele, cara, sigg, strx, matel,&
-                    'G', nh)
+!       Mots clefs qui ne servent qu'à RIGI_GEOM
+        call getvid(' ', 'SIEF_ELGA', scal=sigg, nbret=iexi)
+        if (iexi .ne. 0) then
+            call chpver('F', sigg, 'ELGA', 'SIEF_R', ier)
+        endif
+        call getvid(' ', 'STRX_ELGA', scal=strx, nbret=iexi)
+        if (iexi .ne. 0) then
+            call chpver('F', strx, 'ELGA', 'STRX_R', ier)
+        endif
+        call getvid(' ', 'DEPL', scal=deplr, nbret=iexi)
+        if (iexi .ne. 0) then
+            call chpver('F', deplr, 'NOEU', 'DEPL_R', ier)
+        endif
 !
+        call merige(modele, cara, sigg, strx, matel,&
+                    'G', nh, deplr=deplr,mater=mate)
+!
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_ROTA') then
         call meriro(modele, cara, ncha, zk8(icha), mate,&
                     time, compor, matel)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MECA_GYRO') then
         call meamgy(modele, mate, cara, compor, matel,&
                     ncha, zk8(icha))
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_GYRO') then
         call merigy(modele, mate, cara, compor, matel,&
                     ncha, zk8(icha))
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_MECA') then
 !        COMPOR = ' '
         call memame(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, compor, matel,&
                     base)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_FLUI_STRU') then
 !        COMPOR = ' '
         call memame(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, compor, matel,&
                     base)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_MECA_DIAG') then
 !        COMPOR = ' '
         call memame(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, compor, matel,&
                     base)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt(1:9).eq.'AMOR_MECA') then
         call meamme(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, 'G', rigiel,&
                     massel, matel, ' ')
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'IMPE_MECA') then
         call meimme(modele, ncha, zk8(icha), mate, matel)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'ONDE_FLUI') then
         call meonme(modele, ncha, zk8(icha), mate, matel)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_MECA_HYST') then
         call meamme(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, 'G', rigiel,&
                     massel, matel, ' ')
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_THER') then
         call mecact('V', time2, 'MODELE', modele//'.MODELE', 'INST_R',&
                     ncmp=6, lnomcmp=nomcmp, vr=tps)
         call merith(modele, ncha, zk8(icha), mate, cara,&
                     time2, matel, nh, base)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_ACOU') then
         call meriac(modele, ncha, zk8(icha), mate, matel)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_ACOU') then
         call memaac(modele, mate, matel)
 !
+! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'AMOR_ACOU') then
         call meamac(modele, ncha, zk8(icha), mate, matel)
-!
     endif
-    goto 20
 !
- 20 continue
-!
-!
-!     -- SI MATEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
-!     ----------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!   si MATEL n'est pas MPI_COMPLET, on le complete :
     call jeexin(matel//'.RELR', iexi)
     if (iexi .gt. 0) then
         call jelira(matel//'.RELR', 'LONMAX', nbresu)
@@ -200,20 +230,16 @@ subroutine op0009()
         do iresu = 1, nbresu
             resuel=relr(iresu)(1:19)
             call jeexin(resuel//'.RESL', iexi)
-            if (iexi .eq. 0) goto 101
+            if (iexi .eq. 0) cycle
             call dismoi('MPI_COMPLET', resuel, 'RESUELEM', repk=kmpic)
             ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
             if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
-101         continue
         end do
     endif
 !
-!
-!
-!     -- DESTRUCTION DES RESUELEM NULS :
-!     ----------------------------------
+! --------------------------------------------------------------------------------------------------
+!   DESTRUCTION DES RESUELEM NULS :
     call redetr(matel)
-!
 !
     call jedetr('&MEAMAC2           .RELR')
     call jedetr('&MEAMAC2           .RERR')

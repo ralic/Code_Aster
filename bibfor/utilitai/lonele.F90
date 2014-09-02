@@ -1,8 +1,5 @@
-subroutine lonele(vlx, dime, xl)
-    implicit none
-    real(kind=8) :: vlx(7), xl
-    integer :: dime
-! ----------------------------------------------------------------------
+subroutine lonele(dime, igeom, xl)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,23 +16,58 @@ subroutine lonele(vlx, dime, xl)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!        CALCULE LA LONGEUR D'UN ELEMENT
-!     ------------------------------------------------------------------
-! IN           R8 : COORDONEES DE L'ELEMENT
-!              I  : DIMENSION
 !
-! OUT          R8 : XL LONGUEUR DE L'ELEMENT
+    implicit none
+    integer :: dime, igeom
+    real(kind=8) :: xl
 !
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
 !
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+!                           CALCULE LA LONGEUR D'UN ELEMENT
+!
+!   Message <F> en cas le longueur <= 0
+!
+!   IN
+!       dime    : dimension de l'espace
+!
+!   OUT
+!       igeom   : adresse du zr
+!       xl      : longueur de l'élément
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: iadzi, iazk24
+    real(kind=8) :: r8bid
+    character(len=8) :: nomail
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call jevech('PGEOMER', 'L', igeom)
+    igeom = igeom - 1
 !
     if (dime .eq. 3) then
-        xl = sqrt((vlx(5)-vlx(2))**2 + (vlx(6)-vlx(3))**2 + (vlx(7)- vlx(4))**2 )
-!
+        r8bid = ( zr(igeom+4) - zr(igeom+1) )**2
+        r8bid = ( zr(igeom+5) - zr(igeom+2) )**2 + r8bid
+        r8bid = ( zr(igeom+6) - zr(igeom+3) )**2 + r8bid
     else if (dime.eq.2) then
-        xl = sqrt( (vlx(4)-vlx(2))**2 + (vlx(5)-vlx(3))**2 )
-!
-!
+        r8bid = ( zr(igeom+3) - zr(igeom+1) )**2
+        r8bid = ( zr(igeom+4) - zr(igeom+2) )**2 + r8bid
+    else
+!       no warning: ‘r8bid’ may be used uninitialized in this function
+        r8bid = 0.0d0
+        ASSERT( ASTER_FALSE )
+    endif
+    xl = sqrt( r8bid )
+    if (xl .le. 0.d0) then
+        call tecael(iadzi, iazk24)
+        nomail = zk24(iazk24-1+3)(1:8)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 end subroutine

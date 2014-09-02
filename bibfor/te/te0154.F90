@@ -28,7 +28,6 @@ subroutine te0154(option, nomte)
 #include "asterfort/ptenth.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verift.h"
@@ -56,12 +55,11 @@ subroutine te0154(option, nomte)
     integer :: codres(1)
     character(len=3) :: stopz
     character(len=4) :: fami
-    character(len=8) :: nomail
     character(len=16) :: ch16
     aster_logical :: lteimp
-    real(kind=8) :: a, epsth, e(1), r8bid=0.d0, rho(1), xfl1, xfl4, xl, xmas, xrig
-    integer :: i, if, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
-    integer :: lmater, lorien, lsect, iret, lx, nc, nno, iadzi, iazk24
+    real(kind=8) :: aire, epsth, e(1), r8bid=0.d0, rho(1), xfl1, xfl4, xl, xmas, xrig
+    integer :: ii, iif, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
+    integer :: lmater, lorien, lsect, iret, igeom, nc, nno
     integer :: jvite
 !     ------------------------------------------------------------------
 !
@@ -87,29 +85,18 @@ subroutine te0154(option, nomte)
                 1, 'E', e, codres, 1)
     if (epsth .ne. 0.d0) lteimp =.true.
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-!
+!   Longueur de l'élément
     if (nomte .eq. 'MECA_BARRE') then
-!
-        call lonele(zr(lx), 3, xl)
-!
+        call lonele(3, igeom, xl)
     else if (nomte.eq.'MECA_2D_BARRE') then
-        call lonele(zr(lx), 2, xl)
-!
-    endif
-!
-    if (xl .eq. 0.d0) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
+        call lonele(2, igeom, xl)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+    aire = 0.0d0
     if (option .ne. 'EPSI_ELGA') then
         call jevech('PCAGNBA', 'L', lsect)
-        a = zr(lsect)
+        aire = zr(lsect)
     endif
 !
 !     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
@@ -118,56 +105,47 @@ subroutine te0154(option, nomte)
     call matrot(zr(lorien), pgl)
 !
 !     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
-    do i = 1, 6
-        ugr(i) = 0.d0
-    end do
+    do ii = 1, 6
+        ugr(ii) = 0.d0
+    enddo
 !
     if (option .ne. 'ECIN_ELEM') then
-!
-! ON RECUPERE DES DEPLACEMENTS
-!
+!       ON RECUPERE DES DEPLACEMENTS
         call jevech('PDEPLAR', 'L', jdepl)
         if (nomte .eq. 'MECA_BARRE') then
-            do i = 1, 6
-                ugr(i) = zr(jdepl+i-1)
-            end do
+            do ii = 1, 6
+                ugr(ii) = zr(jdepl+ii-1)
+            enddo
         else if (nomte.eq.'MECA_2D_BARRE') then
             ugr(1) = zr(jdepl+1-1)
             ugr(2) = zr(jdepl+2-1)
             ugr(4) = zr(jdepl+3-1)
             ugr(5) = zr(jdepl+4-1)
         endif
-!
     else
-!
         stopz='ONO'
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvite)
-! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
+!       IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
-!
-! ON RECUPERE DES VITESSES
-!
+!           ON RECUPERE DES VITESSES
             if (nomte .eq. 'MECA_BARRE') then
-                do i = 1, 6
-                    ugr(i) = zr(jvite+i-1)
-                end do
+                do ii = 1, 6
+                    ugr(ii) = zr(jvite+ii-1)
+                enddo
             else if (nomte.eq.'MECA_2D_BARRE') then
                 ugr(1) = zr(jvite+1-1)
                 ugr(2) = zr(jvite+2-1)
                 ugr(4) = zr(jvite+3-1)
                 ugr(5) = zr(jvite+4-1)
             endif
-!
         else
-!
-! ON RECUPERE DES DEPLACEMENTS
-!
+!           ON RECUPERE DES DEPLACEMENTS
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepl)
             if (iret .eq. 0) then
                 if (nomte .eq. 'MECA_BARRE') then
-                    do i = 1, 6
-                        ugr(i) = zr(jdepl+i-1)
-                    end do
+                    do ii = 1, 6
+                        ugr(ii) = zr(jdepl+ii-1)
+                    enddo
                 else if (nomte.eq.'MECA_2D_BARRE') then
                     ugr(1) = zr(jdepl+1-1)
                     ugr(2) = zr(jdepl+2-1)
@@ -183,41 +161,37 @@ subroutine te0154(option, nomte)
     endif
 !
 !     --- VECTEUR DANS REPERE LOCAL  ULR = PGL * UGR
-!
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !
 !     --- RIGIDITE ELEMENTAIRE ---
-    do i = 1, 6
+    do ii = 1, 6
         do j = 1, 6
-            klc(i,j) = 0.d0
-        end do
-    end do
+            klc(ii,j) = 0.d0
+        enddo
+    enddo
 !
 !     --- ENERGIE DE DEFORMATION ----
     if (option .eq. 'EPOT_ELEM') then
         call jevech('PENERDR', 'E', jende)
-        xrig = e(1) * a / xl
+        xrig = e(1) * aire / xl
         klc(1,1) = xrig
         klc(1,4) = -xrig
         klc(4,1) = -xrig
         klc(4,4) = xrig
-        if = 0
-        call ptenpo(6, ulr, klc, zr(jende), if,&
-                    if)
+        iif = 0
+        call ptenpo(6, ulr, klc, zr(jende), iif, iif)
 !
         if (lteimp) then
-            call ptenth(ulr, xl, epsth, 6, klc,&
-                        if, enerth)
+            call ptenth(ulr, xl, epsth, 6, klc, iif, enerth)
             zr(jende) = zr(jende) - enerth
         endif
 !
     else if (option .eq. 'ECIN_ELEM') then
-        call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [r8bid],&
+        call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'RHO', rho, codres, 1)
         call jevech('PENERCR', 'E', jende)
         call jevech('POMEGA2', 'L', jfreq)
-        xmas = rho(1) * a * xl / 6.d0
+        xmas = rho(1) * aire * xl / 6.d0
         klc(1,1) = xmas * 2.d0
         klc(2,2) = xmas * 2.d0
         klc(3,3) = xmas * 2.d0
@@ -230,32 +204,27 @@ subroutine te0154(option, nomte)
         klc(5,2) = xmas
         klc(3,6) = xmas
         klc(6,3) = xmas
-        if = 0
+        iif = 0
         itype = 50
         kanl = 1
-        call ptenci(6, ulr, klc, zr(jfreq), zr(jende),&
-                    itype, kanl, if)
-!
+        call ptenci(6, ulr, klc, zr(jfreq), zr(jende), itype, kanl, iif)
 !
     else if (option .eq. 'EPSI_ELGA') then
         call jevech('PDEFOPG', 'E', jdefo)
         zr(jdefo-1+1)=(ulr(4)-ulr(1))/xl
     else
-        xrig = e(1) * a / xl
+        xrig = e(1) * aire / xl
         klc(1,1) = xrig
         klc(1,4) = -xrig
         klc(4,1) = -xrig
         klc(4,4) = xrig
-!
-!
 !        --- VECTEUR EFFORT LOCAL  FLR = KLC * ULR
         call pmavec('ZERO', 6, klc, ulr, flr)
 !
 !        --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
         if (lteimp) then
-!
 !              --- CALCUL DES FORCES INDUITES ---
-            xfl1 = -epsth * e(1) * a
+            xfl1 = -epsth * e(1) * aire
             xfl4 = -xfl1
             flr(1) = flr(1) - xfl1
             flr(4) = flr(4) - xfl4
@@ -264,9 +233,8 @@ subroutine te0154(option, nomte)
         if (option .eq. 'SIEF_ELGA') then
             call jevech('PCONTRR', 'E', jeffo)
             zr(jeffo ) = -flr(1)
-!
         else
-! OPTION NON PROGRAMMEE
+!           OPTION NON PROGRAMMEE
             ASSERT(.false.)
         endif
     endif
