@@ -16,23 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xnewto(elrefp, name, n, ndime,&
-                       ptxx, ndim, tabco, tabls,&
-                       ipp, ip, itemax,&
-                       epsmax, ksi, dekker)
-        integer :: ndime
-        integer :: ndim
+    subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
         character(len=8) :: elrefp
-        character(len=6) :: name
         integer :: n(3)
         real(kind=8) :: ptxx(*)
-        real(kind=8) :: tabco(*)
-        real(kind=8) :: tabls(*)
-        integer :: ipp
-        integer :: ip
-        integer :: itemax
-        real(kind=8) :: epsmax
-        real(kind=8) :: ksi(ndime)
-        integer, intent(in), optional :: dekker
-    end subroutine xnewto
+        integer :: ndime
+        real(kind=8) :: intinf
+        real(kind=8) :: intsup
+    end subroutine xintva
 end interface

@@ -50,7 +50,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime)
     real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
     real(kind=8) :: v(ndime), k, k1, k2, alpha
-    integer :: itemax, iret
+    integer :: itemax, iret, dekker
     character(len=6) :: name
 !
 ! --------------------------------------------------------------------
@@ -92,10 +92,11 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !     DU POINT PAR UN ALGO DE NEWTON
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
+    dekker = 1
     call xnewto(elrefp, name, n,&
                 ndime, ptxx, ndim, geom, lsn,&
                 ip1, ip2, itemax,&
-                epsmax, ksi)
+                epsmax, ksi, dekker)
     do j=1,ndime
        miref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
     enddo

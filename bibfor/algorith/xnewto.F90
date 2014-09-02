@@ -1,7 +1,7 @@
 subroutine xnewto(elrefp, name, n,&
                   ndime, ptxx, ndim, tabco, tabls,&
                   ipp, ip, itemax,&
-                  epsmax, ksi)
+                  epsmax, ksi, dekker)
     implicit none
 !
 #include "jeveux.h"
@@ -14,12 +14,14 @@ subroutine xnewto(elrefp, name, n,&
 #include "asterfort/xdelt0.h"
 #include "asterfort/xdelt2.h"
 #include "asterfort/xdelt3.h"
+#include "asterfort/xintva.h"
     integer :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ptxx(*), tabco(*), tabls(*)
     integer :: itemax
-    real(kind=8) :: epsmax, ksi(ndim)
+    real(kind=8) :: epsmax, ksi(ndime)
     character(len=6) :: name
     character(len=8) :: elrefp
+    integer, intent(in), optional :: dekker
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +61,7 @@ subroutine xnewto(elrefp, name, n,&
     integer :: iter, i
     real(kind=8) :: zero
     parameter    (zero=0.d0)
-    real(kind=8) :: dist, dmin
+    real(kind=8) :: dist, dmin, intinf, intsup
     real(kind=8) :: ksi2(ndime),delta(ndime), ksim(ndime)
     data  itermin/1/
 !
@@ -80,6 +82,10 @@ subroutine xnewto(elrefp, name, n,&
     epsabs = epsmax/100.d0
     epsrel = epsmax
     dmin = r8gaem()
+!
+    if (present(dekker)) then
+       call xintva(elrefp, n, ptxx, ndime, intinf, intsup)
+    endif
 !
 ! --- DEBUT DE LA BOUCLE
 !
@@ -116,6 +122,20 @@ subroutine xnewto(elrefp, name, n,&
    end do
 !
     iter = iter + 1
+!
+!   ON VERIFIE POUR XMIFIS QUE LE NEWTON RESTE DANS LA FACE TRIA
+!   DE RECHERCHE, SINON ON ACTIVE LA METHODE DE DEKKER
+    if (name.eq. 'XMIFIS') then
+    if (present(dekker)) then
+       if (ksi2(1).gt.intsup) then
+          ksi2(1) = ksi2(1)+delta(1)
+          ksi2(1) = (ksi2(1)+intsup)/2.d0
+       else if (ksi2(1).lt.intinf) then
+          ksi2(1) = ksi2(1)+delta(1)
+          ksi2(1) = (ksi2(1)+intinf)/2.d0
+       endif
+    endif
+    endif
 !
     do  i = 1, ndim
         dist = delta(i)*delta(i)
