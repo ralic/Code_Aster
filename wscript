@@ -135,6 +135,7 @@ def configure(self):
     self.load('mumps', tooldir='waftools')
     self.load('scotch', tooldir='waftools')
     self.load('petsc', tooldir='waftools')
+    self.load('runtest', tooldir='waftools')
 
     paths = self.srcnode.ant_glob('bibc/include', src=True, dir=True)
     paths = [d.abspath() for d in paths]

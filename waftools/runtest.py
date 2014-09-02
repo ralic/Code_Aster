@@ -4,8 +4,26 @@ import os
 import os.path as osp
 import tempfile
 from subprocess import Popen, PIPE
+from functools import partial
 
 from waflib import TaskGen, Logs, Errors
+
+try:
+    from mercurial import hg, ui as UI
+    ui = UI.ui()
+    _reader = partial(ui.config, 'aster')
+except:
+    _reader = None
+
+def _read_config(env, prefs, key):
+    """Read """
+    if _reader is None:
+        return
+    value = _reader(key)
+    dkey = 'PREFS_{}'.format(key.upper())
+    env[dkey] = value
+    if value:
+        prefs[key] = value
 
 def options(self):
     """To get the names of the testcases"""
@@ -14,12 +32,21 @@ def options(self):
                     action='append', default=None,
                     help='name of testcases to run (as_run must be in PATH)')
     group.add_option('--outputdir', action='store', default=None, metavar='DIR',
-                    help='directory to store the output files')
+                    help='directory to store the output files. A default value '
+                         'can be stored in ~/.hgrc under the section "aster"')
     group.add_option('--exectool', dest='exectool',
                     action='store', default=None,
                     help='run a testcase by passing additional arguments '
                          '(possible values are "debugger", "env" + those '
                          'defined in the as_run configuration)')
+
+def configure(self):
+    """Store developer preferences"""
+    self.start_msg('Reading build preferences from ~/.hgrc')
+    prefs = {}
+    _read_config(self.env, prefs, 'outputdir')
+    self.end_msg(prefs)
+
 
 @TaskGen.feature('test')
 def runtest(self):
@@ -35,7 +62,8 @@ def runtest(self):
         toolargs.append('--run_params=actions=make_env')
     elif opts.exectool is not None:
         toolargs.append('--exectool=%s' % opts.exectool)
-    dtmp = opts.outputdir or tempfile.mkdtemp(prefix='runtest_')
+    dtmp = opts.outputdir or self.env['PREFS_OUTPUTDIR'] \
+           or tempfile.mkdtemp(prefix='runtest_')
     try:
         os.makedirs(dtmp)
     except (OSError, IOError):
