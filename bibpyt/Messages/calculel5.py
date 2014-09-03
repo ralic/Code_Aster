@@ -177,6 +177,10 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  Pour ces noeuds, la distance à la maille la plus proche est supérieure à 1/10ème
  du diamètre de cette maille.
  Les %(i2)d noeuds les plus éloignés ont été imprimés ci-dessus.
+
+Risques et conseils :
+  Le mot clé DISTANCE_MAX permet d'éviter que les noeuds trop distants ne soient
+  projetés (ou "liés" quand on utilise le mot clé LIAISON_MAIL).
 """),
 
 49 : _(u"""

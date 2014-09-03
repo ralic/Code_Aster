@@ -72,7 +72,7 @@ subroutine calirc(chargz)
     integer :: jconb2, jconu2, jcocf2, jcom12, ideca2
     integer :: nbtyp, nddl2, nbma2, jlistk, jdim, ndim1
     integer :: jnorm, idim, ij, ima1, jlisv1
-    integer :: kno2, kkno2, jcoor, iarg
+    integer :: kno2, kkno2, jcoor, n1
     aster_logical :: lrota, dnor
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     complex(kind=8) :: betac, cbid
@@ -110,18 +110,12 @@ subroutine calirc(chargz)
     cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
 !
-    l_dmax=.false.
 !
     call jemarq()
     motfac='LIAISON_MAIL'
     call getfac(motfac, nocc)
-    call getvr8(motfac, 'DISTANCE_MAX', iocc=1, scal=dmax, isdefault=iarg)
-!
-    if (iarg .eq. 0.d0) then
-        l_dmax = .true.
-    endif
-!
     if (nocc .eq. 0) goto 320
+!
 !
     call getres(kb, kb, nomcmd)
     if (nomcmd .eq. 'AFFE_CHAR_MECA') then
@@ -352,6 +346,12 @@ subroutine calirc(chargz)
             ASSERT(.not.lrota)
         endif
 !
+
+!       1.5 Calcul de dmax et l_dmax :
+!       ------------------------------
+        dmax=0.d0
+        call getvr8(motfac, 'DISTANCE_MAX', iocc=iocc, scal=dmax, nbret=n1)
+        l_dmax=n1.eq.1
 !
 !
 !       2. CALCUL DE CORRES (+ EVENTUELLEMENT CORRE1, CORRE2) :
