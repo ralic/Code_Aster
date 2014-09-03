@@ -261,8 +261,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         return retval
 
     def getdef(self, nom_motfac, nom_motcle, iocc):
-        """Retourne 1 si le mot-clé a été renseigné par l'utilisateur,
-        0 si c'est la valeur par défaut qui a été utilisée."""
+        """Retourne 0 si le mot-clé a été renseigné par l'utilisateur,
+        1 si c'est la valeur par défaut qui a été utilisée."""
         nom_motfac = nom_motfac.strip()
         nom_motcle = nom_motcle.strip()
         idef = 1   # absent ou defaut
@@ -518,7 +518,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             elif case == 4:
                 UTMESS(suite, 'FONCT0_70', **kwargs)
             UTMESS(coderr, 'FONCT0_52')
-        
+
         nom_param = tuple([p.strip() for p in nom_param])
         self._cache_func = getattr(self, '_cache_func', {})
         self._cache_ctxt = getattr(self, '_cache_ctxt', (None, {}))
