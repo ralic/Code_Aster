@@ -16,37 +16,37 @@
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>Comportement utilisateur de type UMAT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">User behavior of UMAT type</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>Nombre de variables internes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Number of internal variables</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Chemin vers la bibliothèque dynamique définissant le comportement UMAT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Path to the dynamic library defining the UMAT behavior</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Nom de la routine UMAT dans la bibliothèque</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Name of the UMAT routine in the library</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>Comportement utilisateur de type MFRONT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">User behavior of MFRONT type</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Chemin vers la bibliothèque dynamique définissant le comportement MFRONT</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Path to the dynamic library defining the MFRONT behavior</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Nom de la routine MFRONT dans la bibliothèque</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Name of the MFRONT routine in the library</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
@@ -61,52 +61,52 @@
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>lois de comportements thermo-hydro-mecaniques</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">thermo-hydro-mechanical behavior laws</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>nombre de phases metallurgiques</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Number of metallurgical phases</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Critère d'arret absolu pour assurer la condition de contraintes planes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Absolute stopping criterion to ensure the plane stress condition</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Critère d'arret relatif pour assurer la condition de contraintes planes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Relative stopping criterion to ensure the plane stress condition</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Nombre d'itérations maxi pour assurer la condition de contraintes planes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Maximum iterations number to ensure the plane stress condition</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Nombre de redécoupages internes du pas de temps</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Number of internal redistribution of the time step</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>Calcul de la matrice tangente par perturbation, valeur de la perturbation</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Perturbation value in the tangent matrix by perturbation calculus</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>Modification evolutive de la matrice tangente/secante</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Modification of the tangent/secant matrix</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
       <source>Critere de rupture selon une contrainte critique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Fracture criterion under a critical stress</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2688"/>
       <source>Force et Moment de référence pour les éléments de structure.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Force and Moment of reference to structure elements.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="27849"/>
@@ -131,27 +131,27 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4243"/>
       <source>Paramètres de la factorisation incomplète</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Parameters of the incomplete factorization</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22949"/>
       <source>Paramètres de la factorisation simple précision</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Parameters of the single-precision factorization</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8223"/>
       <source>Paramètres de la méthode PETSC</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Parameters of the PETSC method</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4243"/>
       <source>Paramètres du multigrille algébrique ML</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Parameters of the algebraic multi-grid ML</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4243"/>
       <source>Paramètres du multigrille algébrique HYPRE</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Parameters of the algebraic multi-grid HYPRE</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
@@ -161,12 +161,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>A,IY,IZ,JX sont des paramètres obligatoires</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">A,IY,IZ,JX are required parameters</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 sont des paramètres obligatoires</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 are required parameters</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
@@ -176,47 +176,47 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>R1, R2 sont des paramètres obligatoires</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">R1, R2 are required parameters</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles ou noeuds</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SYMMETRIC: Assignment of stiffness, mass and damping matrices to meshes or nodes</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 3 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 3 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 3 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 3 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 6 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 6 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 6 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 6 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 21 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 21 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 21 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 21 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 78 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 78 values (triangular upper matrix by column)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
@@ -226,77 +226,77 @@
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 1 valeur de masse</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 1 value of mass</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 1 valeur de masse, 6 valeurs du tenseur d'inertie, 3 composantes du vecteur d'excentrement</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 1 mass value, 6 values of the inertia tensor, 3 components of the eccentring vector</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 1 valeur de masse, 3 valeurs du tenseur d'inertie</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 1 value of mass, 3 values of the inertia tensor</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>NON-SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles ou noeuds</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NON-symmetric: assignment of stiffness, mass and damping matrices to meshes or nodes</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 9 valeurs (matrice pleine par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 9 values (full matrix by column)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 36 valeurs (matrice pleine par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 36 values (full matrix by column)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 36 valeurs (matrice pleine par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 36 values (full matrix by column)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 144 valeurs (matrice pleine par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 144 values (full matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 2 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 2 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 2 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 2 values (triangular upper matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 10 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 10 values (triangular upper matrix by column)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 1 valeur de masse, 1 valeur d'inertie, 2 composantes du vecteur d'excentrement</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 1 value of mass, 1 value of inertia, 2 components of the eccentring vector</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 1 valeur de masse, 1 valeur d'inertie</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 1 value of mass, 1 value of inertia</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>NOEUD: 4 valeurs (matrice pleine par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">NODE: 4 values (full matrix by column)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>SEGMENT: 16 valeurs (matrice pleine par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">SEGMENT: 16 values (full matrix by column)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
@@ -306,27 +306,27 @@
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Mailles de type point correspondant aux discrets</source>
-      <translation type="unfinished">Meshs of the type do not correspond to discrete</translation>
+      <translation type="unfinished">Type point meshes corresponding to discrete elements</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Mailles de type seg2 correspondant aux discrets</source>
-      <translation type="unfinished">Meshs of the seg2 type correspond to discrete</translation>
+      <translation type="unfinished">Type seg2 meshes corresponding to discrete elements</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Choix des types de discrets du tapis de ressorts.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Choosing the discrete elements types of the carpet of springs.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Valeurs pour les discrets du tapis de ressorts.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Values for the discrete elements of the carpet of springs.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Donner le nom de la SD regroupant tous les groupes de fibres (issue de DEFI_GEOM_FIBRE)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Give the name of the SD containing all the groups of fibres (coming from DEFI_GEOM_FIBRE)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="5127"/>
@@ -336,17 +336,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5204"/>
       <source>Affectation de conditions aux limites cinématiques (U=U0) pour un traitement sans dualisation</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Cinematic boundary conditions (U=U0) assignment for a treatment without dualization</translation>
     </message>
     <message>
       <location filename="../cata.py" line="5204"/>
       <source>Pour imposer les ddls d'un evol_xxx</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">To impose an evol_xxx dofs</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5365"/>
       <source>Affectation de conditions aux limites cinématiques fonction d'un (ou plusieurs) paramètres pour un traitement sans dualisation</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Assignment of cinematic boundary conditions depending on one (or more) parameters for a treatment without dualization</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
@@ -366,7 +366,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
       <source>Définition d'un chargement de rotation</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Definition of a load of rotation</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="6373"/>
@@ -391,7 +391,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
       <source>Impose à tous les noeuds d'une arete des elements 3D une ou plusieurs valeurs de déplacement</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Imposes on all nodes of an edge of 3D elements one or more displacement values</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
@@ -401,7 +401,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
       <source>Applique à des noeuds la meme valeur de déplacement définie composante par composante dans un repère oblique quelconque</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Applies to nodes the same displacement value defined component by component in an oblique coordinate system</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
@@ -421,7 +421,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="6455"/>
       <source>Modélise une partie indéformable d'une structure. Le mot clé TRAN permettent d'imposer le déplacement de la partie indéformable.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Models a non-deformable part of a structure. The keyword TRAN allows to impose the displacement of the non-deformable part.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
@@ -441,12 +441,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
       <source>Modélise des relations linéaires de type RBE3 entre les degrés de liberté d'un noeud maître et des noeuds esclaves.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Models linear relations of type RBE3 between the degrees of freedom of a master node and slave nodes.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
       <source>Définit une relation linéaire entre les DDLs d'interface à partir d'un MACRELEM</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Define a linear relation between the DOFs of interface from a MACRELEM</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5504"/>
@@ -7591,47 +7591,47 @@
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Maille de longueur non nulle.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Mesh of non null length.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>Vecteur dont la projection sur le plan normal à l'axe X local donne Y local.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Vector of which projection on orthogonal to X local axis plane is Y local axis.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>valeur en-dessous de laquelle la maille est considérée comme de longueur nulle</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">value below which the mesh length is considered as zero</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>Angle de rotation du repère autour de l'axe X local.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Rotation angle of the coordinate system around the local X axis.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Noeud ou Maille de longueur nulle.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Node or mesh of null length.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Les 2 vecteurs formant les axes X et Y locaux.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">X and Y local axis vectors.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Les 3 angles nautiques alpha, beta, gamma.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">The 3 nautical angles alpha, beta, gamma.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4507"/>
       <source>Tuyau.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Pipe.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4507"/>
       <source>Vecteur donnant la position de la génératrice.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Vector defining the position of the generatrix.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="16291"/>

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-07 17:18+0200\n"
+"POT-Creation-Date: 2014-09-03 10:24+0200\n"
 "PO-Revision-Date: 2014-08-07 11:39-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Spanish\n"
@@ -8109,105 +8109,14 @@ msgid ""
 " numéro sous-structure demandée -->  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:139
-#, python-format
-msgid ""
-"\n"
-" problème interpolation volumique 3d:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" code_retour: %(i1)d\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:146
-#, python-format
-msgid ""
-"\n"
-" problème interpolation volumique 2d:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" code_retour: %(i1)d\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:153
-#, python-format
-msgid ""
-"\n"
-" problème charge vol2d puis surf3d:\n"
-" EVOL_CHAR: %(k1)s\n"
-" instant  : %(r1)f\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:159
-#, python-format
-msgid ""
-"\n"
-" problème interpolation surfacique 3d:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" code_retour: %(i1)d\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:166
-#, python-format
-msgid ""
-"\n"
-" problème charge vol3d puis surf2d:\n"
-" EVOL_CHAR: %(k1)s\n"
-" instant  : %(r1)f\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:172
-#, python-format
-msgid ""
-"\n"
-" problème interpolation surfacique 2d:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" code retour: %(i1)d\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:179
-#, python-format
-msgid ""
-"\n"
-" problème interpolation pression:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" on ne sait pas extrapoler le champ  %(k2)s\n"
-" de pression par rapport au temps %(k3)s\n"
-" mais seulement l'interpoler %(k4)s\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:188
-#, python-format
-msgid ""
-"\n"
-" problème interpolation pression:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" code_retour: %(i1)d\n"
-" contacter le support %(k2)s\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:196
-#, python-format
-msgid ""
-"\n"
-" problème interpolation vitesse:\n"
-" EVOL_CHAR  : %(k1)s\n"
-" instant    : %(r1)f\n"
-" code_retour: %(i1)d\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:203
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:135
 #, python-format
 msgid ""
 "\n"
 " le noeud: %(k1)s  ne peut pas être TYPL et TYPB\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:141
 #, python-format
 msgid ""
 "\n"
@@ -8215,13 +8124,13 @@ msgid ""
 " sous-structure de nom: %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:214
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:146
 msgid ""
 "\n"
 " arrêt sur problème de connexion sous-structure\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:218
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:150
 #, python-format
 msgid ""
 "\n"
@@ -8230,7 +8139,7 @@ msgid ""
 " valeur de la borne            :  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:224
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:156
 #, python-format
 msgid ""
 "\n"
@@ -8239,14 +8148,14 @@ msgid ""
 " pour l'intervalle  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:161
 #, python-format
 msgid ""
 "\n"
 " le nombre de pas est trop grand :  %(i1)d , pour l'intervalle  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:165
 #, python-format
 msgid ""
 "\n"
@@ -8255,7 +8164,7 @@ msgid ""
 " valeur            :  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:239
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:171
 #, python-format
 msgid ""
 "\n"
@@ -8264,7 +8173,7 @@ msgid ""
 " pour l'intervalle  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:245
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith13.py:177
 #, python-format
 msgid ""
 "\n"
@@ -11936,132 +11845,117 @@ msgid ""
 "programmation.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:55
-#, python-format
-msgid ""
-"\n"
-"  le concept EVOL_CHAR :  %(k1)s  n'en est pas un !\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:59
-#, python-format
-msgid ""
-"\n"
-"  le concept EVOL_CHAR :  %(k1)s  ne contient aucun champ de type "
-"EVOL_CHAR.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:63
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:57
 #, python-format
 msgid ""
 "\n"
 " le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:67
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:61
 #, python-format
 msgid ""
 "\n"
 " option  %(k1)s  non traitée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:71
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:65
 msgid ""
 "\n"
 " pas existence de solution pour le saut\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:75
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:69
 msgid ""
 "\n"
 " existence d'un élément à discontinuité trop grand\n"
 " non unicité du saut\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:74
 msgid ""
 "\n"
 " non convergence du NEWTON pour le calcul du saut numéro 1\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:84
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:78
 msgid ""
 "\n"
 " non convergence du NEWTON pour le calcul du saut numéro 2\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:88
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:82
 msgid ""
 "\n"
 " non convergence du NEWTON pour le calcul du saut numéro 3\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:92
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:86
 msgid ""
 "\n"
 " erreur dans le calcul du saut\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:96
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:90
 #, python-format
 msgid ""
 "\n"
 " loi %(k1)s  non implantée pour les éléments discrets\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:104
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:98
 msgid ""
 "\n"
 "  valeur de D_SIGM_EPSI non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:108
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:102
 msgid ""
 "\n"
 "  valeur de SY non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:112
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:106
 msgid ""
 "\n"
 " développement non implanté\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:116
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:110
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre N doit être supérieur à "
 "0\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:120
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:114
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre PHI_ZERO doit être "
 "supérieur à 0\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:118
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit "
 "être supérieur ou égal à 0\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:122
 msgid ""
 "\n"
 " loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. "
 "Dans ces conditions le paramètre BETA doit être positif ou nul\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:126
 msgid ""
 "\n"
 " comportement ZMAT obligatoire\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:130
 msgid ""
 "\n"
 " il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation\n"
@@ -12195,50 +12089,43 @@ msgid ""
 "  endommagement maximal atteint au cours des résolutions internes\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:107
-msgid ""
-"\n"
-" le nombre de composantes dans le champ de vent est incorrect. on doit "
-"avoir : DX, DY, DZ\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:111
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:109
 msgid ""
 "\n"
 " porosité strictement nulle( cas non traité)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:113
 msgid ""
 "\n"
 " l'incrément de temps vaut zéro, vérifiez votre découpage\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:119
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:117
 msgid ""
 "\n"
 " fluence décroissante (flux<0)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:121
 msgid ""
 "\n"
 " le paramètre A doit être >=0\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:125
 msgid ""
 "\n"
 " la loi LMARC_IRRA n'est compatible qu'avec une modélisation poutre\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:129
 msgid ""
 "\n"
 " stop, RIGI_MECA_TANG non disponible\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:133
 #, python-format
 msgid ""
 "\n"
@@ -12246,34 +12133,34 @@ msgid ""
 " or la maille est de type :  %(k1)s .\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:138
 #, python-format
 msgid ""
 "\n"
 " le champ issu du concept %(k1)s n'est pas calculé à l'instant %(i3)i\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:142
 msgid ""
 "\n"
 " le séchage ne peut pas être mélangé à un autre comportement\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:146
 msgid ""
 "\n"
 " EVOL_THER_SECH est un mot-clé obligatoire pour le séchage de type "
 "SECH_GRANGER et SECH_NAPPE\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:152
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:150
 #, python-format
 msgid ""
 "\n"
 "  le concept :  %(k1)s  n'est pas un champ de température\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:154
 #, python-format
 msgid ""
 "\n"
@@ -16977,27 +16864,40 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" erreurs données : la maille  %(k1)s  du maillage  %(k2)s\n"
-"  n'est pas la translation de la  maille  %(k3)s\n"
-"  du maillage  %(k4)s\n"
-"    vecteur translation :  %(r1)f %(r2)f %(r3)f\n"
+" Problème lors de la vérification de correspondance entre le \n"
+" GROUP_MA_INIT '%(k1)s' et le GROUP_MA_FINAL '%(k2)s' : \n"
+" \n"
+" - Aucune maille du GROUP_MA_FINAL '%(k2)s' ne semble être en "
+"correspondance\n"
+" avec la maille '%(k3)s' du GROUP_MA_INIT '%(k1)s'.\n"
+" \n"
+" - Vérifiez que le groupe '%(k2)s' (GROUP_MA_FINAL) du maillage %(k5)s\n"
+" (MAILLAGE_FINAL) est bien la translation du groupe "
+"'%(k1)s' (GROUP_MA_INIT) \n"
+" du maillage  %(k4)s (MAILLAGE_INIT), suivant le vecteur de translation\n"
+"   ( %(r1)f , %(r2)f , %(r3)f ), avec la précision donnée.\n"
+"   \n"
+" - Une erreur fréquente lors de l'utilisation de la commande "
+"PERM_MAC3COEUR \n"
+" est que les 2 assemblages à permuter ne sont pas du même type de "
+"conception.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:245
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:254
 #, python-format
 msgid ""
 "\n"
 " l'instant  de calcul  %(r1)f  n'existe pas dans  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:258
 #, python-format
 msgid ""
 "\n"
 " plusieurs numéros d'ordre trouves pour l'instant  %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:253
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:262
 #, python-format
 msgid ""
 "\n"
@@ -17005,7 +16905,7 @@ msgid ""
 "    sd resultat \"RESU_FINAL\"  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:258
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:267
 #, python-format
 msgid ""
 "\n"
@@ -17013,7 +16913,7 @@ msgid ""
 "  doit contenir qu'un seul NUME_ORDRE %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:263
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:272
 #, python-format
 msgid ""
 "\n"
@@ -17024,7 +16924,7 @@ msgid ""
 " Faites une demande d'évolution.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:279
 #, python-format
 msgid ""
 "\n"
@@ -17034,7 +16934,7 @@ msgid ""
 " Faites une demande d'évolution.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:281
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:290
 #, python-format
 msgid ""
 "\n"
@@ -18129,11 +18029,15 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"La charge <%(k1)s> est de type Dirichlet :\n"
-" elle ne peut pas être suiveuse.\n"
+"La charge <%(k1)s> a été déclarée comme étant suiveuse alors que ce n'est "
+"pas possible.\n"
+"Si votre chargement contient plusieurs types dont certains ne peuvent être "
+"suiveurs, il faut les séparer.\n"
+"Certains chargements ne peuvent être suiveurs s'ils sont dépendant du "
+"temps.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:44
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:45
 #, python-format
 msgid ""
 "\n"
@@ -18141,14 +18045,17 @@ msgid ""
 " elle ne peut pas être différentielle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:50
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:51
 #, python-format
 msgid ""
 "\n"
-"La charge <%(k1)s> ne peut pas être pilotée.\n"
+"La charge <%(k1)s> a été déclarée comme étant pilotable alors que ce n'est "
+"pas possible.\n"
+"Si votre chargement contient plusieurs types dont certains ne peuvent être "
+"pilotables, il faut les séparer.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:55
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:57
 #, python-format
 msgid ""
 "\n"
@@ -18156,22 +18063,22 @@ msgid ""
 " elle ne peut pas être pilotée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:60
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:62
 #, python-format
 msgid ""
 "\n"
-"On ne peut piloter la charge <%(k1)s> car c'est une charge fonction du "
-"temps\n"
+"On ne peut pas piloter la charge <%(k1)s> car c'est une charge fonction du "
+"temps.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:64
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:66
 #, python-format
 msgid ""
 "\n"
 "La charge de type EVOL_CHAR <%(k1)s>  ne peut pas être pilotée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:68
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:70
 #, python-format
 msgid ""
 "\n"
@@ -18180,43 +18087,43 @@ msgid ""
 " car elle est pilotée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:73
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:75
 msgid ""
 "\n"
 "On ne peut pas piloter en l'absence de forces de type FIXE_PILO.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:77
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:79
 msgid ""
 "\n"
 "On ne peut piloter plus d'une charge.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:81
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:83
 msgid ""
 "\n"
 "Le chargement FORCE_SOL n'est utilisable qu'en dynamique.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:85
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:87
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne peut pas être de type suiveur\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:89
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:91
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne peut pas être de type Dirichlet différentiel.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:93
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:95
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne peut pas être une fonction.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:97
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:99
 msgid ""
 "\n"
 "Le chargement FORCE_SOL ne doit pas avoir de fonction multiplicatrice.\n"
@@ -18682,6 +18589,113 @@ msgid ""
 "des systèmes linéaires.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:23
+#, python-format
+msgid ""
+"\n"
+"  Le concept EVOL_CHAR %(k1)s ne contient aucun champ.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:27
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.\n"
+"L'extraction du chargement volumique 3D a échoué pour l'instant %(r1)f.\n"
+"Le chargement est mal défini:\n"
+"- soit %(k1)s n'est pas indexé par l'instant;\n"
+"- soit le chargement n'a pas été trouvé pour cet instant;\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:35
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.\n"
+"L'extraction du chargement volumique 2D a échoué pour l'instant %(r1)f.\n"
+"Le chargement est mal défini:\n"
+"- soit %(k1)s n'est pas indexé par l'instant;\n"
+"- soit le chargement n'a pas été trouvé pour cet instant;\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:44
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s pour "
+"l'instant %(r1)f.\n"
+"Il y a simultanément un chargement de type volumique 2D et un chargement de "
+"type surfacique 3D.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:49
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.\n"
+"L'extraction du chargement surfacique 3D a échoué pour l'instant %(r1)f.\n"
+"Le chargement est mal défini:\n"
+"- soit %(k1)s n'est pas indexé par l'instant;\n"
+"- soit le chargement n'a pas été trouvé pour cet instant;\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:57
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s pour "
+"l'instant %(r1)f.\n"
+"Il y a simultanément un chargement de type volumique 3D et un chargement de "
+"type surfacique 2D.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:62
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.\n"
+"L'extraction du chargement surfacique 2D a échoué pour l'instant %(r1)f.\n"
+"Le chargement est mal défini:\n"
+"- soit %(k1)s n'est pas indexé par l'instant;\n"
+"- soit le chargement n'a pas été trouvé pour cet instant;\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:70
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.\n"
+"L'extraction du chargement de pression a échoué pour l'instant %(r1)f.\n"
+"Le chargement est mal défini:\n"
+"- soit %(k1)s n'est pas indexé par l'instant;\n"
+"- soit le chargement n'a pas été trouvé pour cet instant;\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:78
+#, python-format
+msgid ""
+"\n"
+"Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.\n"
+"L'interpolation de la vitesse a échoué pour l'instant %(r1)f.\n"
+"Le chargement est mal défini:\n"
+"- soit %(k1)s n'est pas indexé par l'instant;\n"
+"- soit le chargement n'a pas été trouvé pour cet instant;\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:86
+#, python-format
+msgid ""
+"\n"
+"Les composantes dans le champ de vent %(k1)s doivent être exactement DX, DY "
+"et DZ.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/charges3.py:90
+msgid ""
+"\n"
+"Les chargements de type EVOL_CHAR ne sont pas traités par CALC_VECT_ELEM.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges5.py:23
 msgid ""
 "\n"
@@ -18821,6 +18835,12 @@ msgstr ""
 msgid ""
 "\n"
 "Post-traitement des déformations des assemblages combustibles\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/coeur0.py:45
+msgid ""
+"\n"
+"Il faut renseigner au moins un des mots-clés MAILLAGE_N ou RESU_INIT.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:23
@@ -19690,12 +19710,12 @@ msgstr ""
 msgid ""
 "\n"
 "  CALC_ESSAI_GEOMECA : Pour l'essai <%(k1)s>.\n"
-"  Erreur lors du calcul du module de cisaillement sécant maximal : pour les "
+"  Erreur lors du calcul du module de %(k2)s sécant maximal : pour les "
 "valeurs de paramètres matériau que vous \n"
-"  avez choisies, la valeur par défaut du mot clef simple <%(k2)s> conduit à "
+"  avez choisies, la valeur par défaut du mot clef simple <%(k3)s> conduit à "
 "sortir du domaine d'élasticité du matériau.\n"
 "  Il faut donc renseigner une valeur strictement inférieure à  <%(r1)E> pour "
-"<%(k2)s>\n"
+"<%(k3)s>\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:211
@@ -19718,7 +19738,7 @@ msgid ""
 "  CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> "
 "(occurrence %(i1)d). \n"
 "  La liste de valeurs renseignées pour le mot clef simple <%(k2)s> doit être "
-"croissante. \n"
+"%(k4)s . \n"
 "  Or vous avez renseigné la liste suivante :\n"
 "  %(k3)s\n"
 msgstr ""
@@ -19837,31 +19857,56 @@ msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:301
 #, python-format
+msgid ""
+"\n"
+"  CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> "
+"(occurrence %(i1)d). \n"
+"  Incohérence entre les valeurs saisies pour les mot clef simples "
+"<PRES_CONF>, <SIGM_IMPO> et <SIGM_décharge>. \n"
+"  On doit toujours avoir PRES_CONF + SIGM_IMPO <= SIGM_décharge .\n"
+"  Or vous avez renseigné < PRES_CONF = %(r1)E> et <SIGM_IMPO = %(r2)E>, soit "
+"PRES_CONF + SIGM_IMPO = %(r3)E supérieur à %(r4)E\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:308
+#, python-format
+msgid ""
+"\n"
+"  CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> "
+"(occurrence %(i1)d). \n"
+"  Incohérence entre les valeurs saisies pour les mot clef simples "
+"<PRES_CONF> et <SIGM_décharge>. \n"
+"  On doit toujours avoir SIGM_décharge <= PRES_CONF.\n"
+"  Or vous avez renseigné < SIGM_décharge = %(r1)E> et <PRES_CONF = %(r2)E> \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:315
+#, python-format
 msgid "Maille: %(k1)-8s - Pas de points d'intégration"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:303
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:317
 #, python-format
 msgid ""
 "Maille: %(k1)-8s - Comportement précédent: %(k2)-16s - Comportement courant: "
 "%(k3)-16s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:305
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:319
 #, python-format
 msgid ""
 "Maille: %(k1)-8s - Nombre de sous-points précédent: %(i1)d - Nombre de sous-"
 "points courant: %(i2)d"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:307
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:321
 #, python-format
 msgid ""
 "Maille: %(k1)-8s - Nombre de variables internes précédent: %(i1)d - Nombre "
 "de variables internes courant: %(i2)d"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:310
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:324
 #, python-format
 msgid ""
 "\n"
@@ -19878,7 +19923,7 @@ msgid ""
 "ECHEC=_F(SUBD_NIVEAU=10,SUBD_PAS=4),)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:336
 #, python-format
 msgid ""
 "\n"
@@ -19886,7 +19931,7 @@ msgid ""
 "%(r3).15E,  %(r4).15E))\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:326
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:340
 msgid ""
 "\n"
 "RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),\n"
@@ -19894,14 +19939,14 @@ msgid ""
 "EPXY=EXY),                      \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:345
 msgid ""
 "\n"
 "                      SUPPORT='ELEMENT', "
 "MODELISATION='C_PLAN',                      \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:349
 msgid ""
 "\n"
 "RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),\n"
@@ -19909,7 +19954,7 @@ msgid ""
 "EPXZ=EXZ,EPYZ=EYZ),                      \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:340
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:354
 #, python-format
 msgid ""
 "\n"
@@ -19917,7 +19962,7 @@ msgid ""
 "%(r3).15E,  EPXY= %(r4).15E,  EPXZ= %(r5).15E,  EPYZ= %(r6).15E ),\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:344
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:358
 #, python-format
 msgid ""
 "\n"
@@ -19926,21 +19971,21 @@ msgid ""
 "                      VARI_INIT=_F(VALE=(\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:349
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:363
 #, python-format
 msgid ""
 "\n"
 "                      %(r1).15E,\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:353
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:367
 #, python-format
 msgid ""
 "\n"
 "                      COMPORTEMENT=_F(RELATION= '%(k1)s', \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:371
 msgid ""
 "\n"
 "                      NEWTON=_F(REAC_ITER=1),\n"
@@ -19948,14 +19993,14 @@ msgid ""
 "FIN()                      \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:363
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:377
 msgid ""
 "\n"
 ")\n"
 "FIN()                      \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:368
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:382
 #, python-format
 msgid ""
 "\n"
@@ -19963,13 +20008,13 @@ msgid ""
 "%(r4).15E))\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:372
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:386
 msgid ""
 "\n"
 "                  AFFE_VARC=(\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:376
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:390
 #, python-format
 msgid ""
 "\n"
@@ -19977,33 +20022,33 @@ msgid ""
 "%(r1).15E),\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:394
 #, python-format
 msgid ""
 "\n"
 "                              _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s),\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:385
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:399
 msgid ""
 "\n"
 "                  ),\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:389
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:403
 msgid ""
 "\n"
 "                      )),\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:393
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:407
 #, python-format
 msgid ""
 "\n"
 "                      COMPOR=%(k1)s,\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:397
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:411
 #, python-format
 msgid ""
 "\n"
@@ -20011,21 +20056,21 @@ msgid ""
 "ALGO_INTE='%(k1)s',\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:415
 #, python-format
 msgid ""
 "\n"
 "                      ITER_INTE_PAS=%(i1)d, PARM_THETA=%(r1).15E,\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:419
 #, python-format
 msgid ""
 "\n"
 "                      DEFORMATION='%(k1)s',\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:409
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:423
 msgid ""
 "\n"
 "   SIMU_POINT_MAT : META_LEMA_ANI est interdit à cause de la matrice de Hill "
@@ -20035,7 +20080,7 @@ msgid ""
 "   Sinon, utiliser STAT_NON_LINE sur un maillage adéquat.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:415
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:429
 msgid ""
 "\n"
 "   SIMU_POINT_MAT : META_LEMA_ANI définit une matrice de Hill définie en "
@@ -30054,14 +30099,6 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:30
-msgid ""
-"\n"
-" La charge définie dans STAT_NON_LINE en tant que une charge de type "
-"suiveuse, \n"
-" sous le mot-clé TYPE_CHARGE = 'SUIV' n'est pas une Charge SUIVEUSE.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:37
 #, python-format
 msgid ""
 "\n"
@@ -30078,13 +30115,13 @@ msgid ""
 "suffisamment d'instants pour interpoler le champ souhaité\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:47
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:40
 msgid ""
 "\n"
 "    ARRET=NON donc poursuite du calcul sans avoir eu convergence.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:51
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:44
 #, python-format
 msgid ""
 "\n"
@@ -30092,7 +30129,7 @@ msgid ""
 "n'est pas traité.  \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:55
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:48
 msgid ""
 "\n"
 "  -> Risque et conseils : dans le cas d'une résolution incrémentale, on ne "
@@ -30109,7 +30146,7 @@ msgid ""
 "(U4.51.03) mot-clé EXCIT et le test FORMA30 (V7.20.101).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:65
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:58
 #, python-format
 msgid ""
 "\n"
@@ -30119,7 +30156,7 @@ msgid ""
 "     Valeur minimum : %(r2)f sur la maille : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:72
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:65
 #, python-format
 msgid ""
 "\n"
@@ -30131,7 +30168,7 @@ msgid ""
 "sur la maille : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:79
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:72
 msgid ""
 "\n"
 " Le résidu RESI_COMP_RELA est inutilisable au premier instant de calcul (pas "
@@ -30139,7 +30176,7 @@ msgid ""
 " On bascule automatiquement en RESI_GLOB_RELA.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:84
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:77
 msgid ""
 "\n"
 "  -> Les variables de commandes initiales induisent des contraintes \n"
@@ -30149,7 +30186,7 @@ msgid ""
 "     conduisent à des contraintes non équilibrées. \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:92
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline2.py:85
 #, python-format
 msgid ""
 "\n"
@@ -31995,20 +32032,22 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:480
-#, python-format
 msgid ""
 "\n"
-"  -> Type incorrect  %(i1)d\n"
+"  Le champ relu n'est pas du bon type. Un champ de réel est attendu\n"
+"  mais le champ contenu dans le fichier MED n'est pas de ce type.\n"
+"\n"
+"  La relecture de ce champ n'est pas possible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:484
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:487
 #, python-format
 msgid ""
 "\n"
 "  -> Maillage présent :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:488
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:491
 #, python-format
 msgid ""
 "\n"
@@ -32019,7 +32058,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:496
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:499
 #, python-format
 msgid ""
 "\n"
@@ -32029,35 +32068,35 @@ msgid ""
 "  SD Résultat %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:504
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:507
 #, python-format
 msgid ""
 "\n"
 "  -> Fichier MED :  %(k1)s, nombre de maillages présents : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:508
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:511
 #, python-format
 msgid ""
 "\n"
 "  -> Écriture impossible pour  %(k1)s  au format MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:512
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:515
 #, python-format
 msgid ""
 "\n"
 "     Début de l'écriture MED de  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:516
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:519
 msgid ""
 "\n"
 "  -> Impossible de déterminer un nom de champ MED.\n"
 "  -> Risque & Conseil:\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:521
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:524
 #, python-format
 msgid ""
 "\n"
@@ -32067,14 +32106,14 @@ msgid ""
 "     (LIRE_RESU) ou NOM_MED (LIRE_CHAMP).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:528
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:531
 #, python-format
 msgid ""
 "\n"
 "     Fin de l'écriture MED de  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:532
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:535
 msgid ""
 "\n"
 "  Vous imprimez un champ dont le maillage change au cours du temps.\n"
@@ -32085,7 +32124,7 @@ msgid ""
 "     reposent sur un seul et même maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:541
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:544
 #, python-format
 msgid ""
 "\n"
@@ -32095,7 +32134,7 @@ msgid ""
 "     ainsi que le fichier MED fourni à l'opérateur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:548
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:551
 msgid ""
 "\n"
 "  -> NOM_MED absent !\n"
@@ -32103,7 +32142,7 @@ msgid ""
 "     Veuillez renseigner le mot-clé NOM_MED de l'opérateur LIRE_CHAMP.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:554
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:557
 #, python-format
 msgid ""
 "\n"
@@ -32113,14 +32152,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:561
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:564
 #, python-format
 msgid ""
 "\n"
 "  -> Fichier MED :  %(k1)s champ :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:565
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:568
 #, python-format
 msgid ""
 "\n"
@@ -32335,9 +32374,9 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/miss0.py:97
 msgid ""
 "\n"
-"Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'), \n"
+"Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'),\n"
 "les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux "
-"sous MATR_GENE) \n"
+"sous MATR_GENE)\n"
 "ne sont pas utilisées.\n"
 "De plus, le fichier UNITE_RESU_MASS ne sera pas crée.\n"
 msgstr ""
@@ -32367,6 +32406,14 @@ msgid ""
 "En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés\n"
 "GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois "
 "obligatoires.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/miss0.py:122
+msgid ""
+"\n"
+"En interaction sol, structure, fluide (ISSF='OUI'), les propriétés du "
+"fluide\n"
+"doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:22
@@ -39997,6 +40044,129 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:105
+#, python-format
+msgid ""
+"\n"
+" Le résultat généralisé en entrée (%(k1)s) est issu d'un calcul en sous-"
+"structuration,\n"
+" et non pas d'un calcul standard avec une simple projection sur base "
+"modale.\n"
+"\n"
+" Les opérations de restitution par POST_GENE_PHYS sont actuellement limitées "
+"aux calculs \n"
+" du dernier type (projections simples).\n"
+"\n"
+" Conseil :\n"
+" Utilisez l'un des deux opérateurs REST_GENE_PHYS ou REST_SOUS_STRUCT pour "
+"restituer sur\n"
+" base physique vos résultats en coordonnées généralisées.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:117
+#, python-format
+msgid ""
+"\n"
+" La base modale de projection %(k1)s, référencée dans le résultat "
+"généralisé, est \n"
+" différente de celle donnée en entrée sous le mot-clé MODE_MECA (%(k2)s).\n"
+"\n"
+" Vérifiez que les coordonnées généralisées peuvent être restituées sur cette "
+"dernière\n"
+" base. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:125
+#, python-format
+msgid ""
+"\n"
+" Pour l'observation no. %(i1)d : \n"
+"\n"
+" La restitution du champ %(k1)s n'est possible que si il a préalablement été "
+"calculé sur \n"
+" la base de projection. Or, dans la base %(k3)s, le champ %(k2)s n'a pas été "
+"trouvé.\n"
+"\n"
+" Conseil :\n"
+" Essayez d'enrichir la base %(k3)s avec un appel préalable à CREA_CHAMP, "
+"option %(k2)s.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:135
+#, python-format
+msgid ""
+"\n"
+" Pour l'observation no. %(i1)d : \n"
+" \n"
+" Il n'a pas été possible de trouver le composant %(k1)s dans le champ "
+"demandé %(k2)s.\n"
+"\n"
+" Conseil :\n"
+" Si vous ignorez les noms des composants de votre champ, il est possible "
+"d'appeler \n"
+" l'opérateur sans spécifier le mot-clé NOM_CMP. Cela permet d'en restituer "
+"la totalité. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:145
+#, python-format
+msgid ""
+"\n"
+" Pour l'observation no. %(i1)d : \n"
+" \n"
+" Vous avez demandé le champ : %(k2)s. Néanmoins, il n'existe aucune "
+"information \n"
+" dans le résultat généralisé %(k1)s quant à la présence d'un chargement\n"
+" dynamique en multi-appuis.\n"
+"\n"
+" Si la structure est entraînée par une accélération en mono-appui, il "
+"faudra \n"
+" renseigner le mot-clé ACCE_MONO_APPUI afin de prendre en compte cette "
+"accélération\n"
+" dans le champ ACCE_ABSOLU.\n"
+"\n"
+" Le résultat obtenu correspond donc au champ %(k3)s, en relatif.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:159
+#, python-format
+msgid ""
+"\n"
+" Pour l'observation no. %(i1)d : \n"
+" \n"
+" Vous avez demandé le champ : %(k2)s. Néanmoins, il n'existe aucune "
+"information \n"
+" dans le résultat généralisé %(k1)s quant à la présence d'un chargement\n"
+" dynamique en multi-appuis.\n"
+"\n"
+" Il n'est actuellement pas possible de récupérer déplacements et vitesses "
+"absolues\n"
+" en mono-appui. Pour l'accélération absolue, ceci est possible mais il est "
+"impératif \n"
+" de compléter avec le mot-clé ACCE_MONO_APPUI pour restituer le champ "
+"ACCE_ABSOLU.\n"
+"\n"
+" Le résultat obtenu correspond donc au champ %(k3)s, en relatif.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:173
+#, python-format
+msgid ""
+"\n"
+" Pour l'observation no. %(i1)d : \n"
+" \n"
+" Vous avez demandé de restituer l'accélération absolue (ACCE_ABSOLU) en "
+"précisant la\n"
+" fonction de l'accélération en mono-appui ainsi que sa direction. \n"
+"\n"
+" Le résultat généralisé %(k1)s a été calculé en présence des chargements "
+"en \n"
+" multi-appuis. L'accélération restituée est le cumul de l'accélération "
+"relative \n"
+" et les différentes accélérations d'entraînement en mono ainsi qu'en multi-"
+"appuis.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:185
 msgid ""
 "\n"
 " erreur dans la création du fichier de maillage au format GIBI.\n"
@@ -40007,7 +40177,7 @@ msgid ""
 "maillage (pile 32 dans le formalisme GIBI)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:113
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:193
 #, python-format
 msgid ""
 "\n"
@@ -40015,7 +40185,7 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:117
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:197
 #, python-format
 msgid ""
 "\n"
@@ -40024,39 +40194,39 @@ msgid ""
 " dans la structure de données %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:202
 msgid ""
 "\n"
 " la dimension du problème est invalide : il faut : 1d, 2d ou 3d.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:126
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:206
 msgid ""
 "\n"
 " nombre de noeuds supérieur au maximum autorisé : 27.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:130
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:210
 msgid ""
 "\n"
 " objet &&GILIRE.INDIRECT inexistant\n"
 " problème à la lecture des points\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:215
 #, python-format
 msgid ""
 "\n"
 " type de maille :  %(k1)s  inconnu de la commande PRE_GIBI.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:139
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:219
 msgid ""
 "\n"
 " nombre d'objets supérieur au maximum autorisé : 99999.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:223
 msgid ""
 "\n"
 " le maillage GIBI est peut être erroné :\n"
@@ -40064,38 +40234,38 @@ msgid ""
 " on continue quand même, mais si vous avez des problèmes plus loin ...\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:229
 msgid ""
 "\n"
 " arrêt sur erreur(s)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:233
 msgid ""
 "\n"
 " problème à l'ouverture du fichier\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:237
 msgid ""
 "\n"
 " problème à la fermeture du fichier\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:161
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:241
 #, python-format
 msgid ""
 "\n"
 " la variable  %(k1)s  n'existe pas\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:165
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:245
 msgid ""
 "\n"
 " pas d'impression du champ\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:169
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:249
 #, python-format
 msgid ""
 "\n"
@@ -40104,50 +40274,50 @@ msgid ""
 "     Seuls des groupes de mailles peuvent y être intégrés.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:255
 msgid ""
 "\n"
 "  incompatibilité entre les GREL\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:179
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:259
 msgid ""
 "\n"
 "  le nombre de couches est supérieur à 1\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:183
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:263
 msgid ""
 "\n"
 " on traite les TRIA7 QUAD9 en oubliant le noeud centre\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:187
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:267
 msgid ""
 "\n"
 " Certaines composantes sélectionnées ne font pas partie du LIGREL\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:191
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:271
 msgid ""
 "\n"
 " Élément PYRAM5 non disponible dans IDEAS\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:195
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:275
 msgid ""
 "\n"
 " Élément PYRAM13 non disponible dans IDEAS\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:199
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:279
 msgid ""
 "\n"
 " On traite les PENTA18 en oubliant le(s) noeud(s)\n"
 " au centre et les SEG4 en oubliant les 2 noeuds centraux.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:204
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:284
 #, python-format
 msgid ""
 "\n"
@@ -40155,21 +40325,21 @@ msgid ""
 " champ :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:289
 #, python-format
 msgid ""
 "\n"
 " On ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:293
 #, python-format
 msgid ""
 "\n"
 " On ne sait pas imprimer les champs de type \" %(k1)s \"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:297
 #, python-format
 msgid ""
 "\n"
@@ -40177,7 +40347,7 @@ msgid ""
 " Il est écrit avec un format différent.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:222
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:302
 #, python-format
 msgid ""
 "\n"
@@ -41652,6 +41822,20 @@ msgstr ""
 msgid ""
 "\n"
 "  Nombre de tirages supérieur a la taille de l'échantillon.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/proba0.py:73
+#, python-format
+msgid ""
+"\n"
+"  Le facteur de pic vaut %(r1).3f\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/proba0.py:77
+#, python-format
+msgid ""
+"\n"
+"  -------------------  Tirage %(i1)d  ---------------------\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/recal0.py:21
@@ -43881,14 +44065,28 @@ msgid ""
 " on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanément.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:58
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:54
+#, python-format
+msgid ""
+"\n"
+" -------Échantillonnage temporel et fréquentiel des signaux -------\n"
+"        fréquence de coupure     : %(r1).2f Hz\n"
+"        pas de fréquence         : %(r2)f Hz    \n"
+"        intervalle de temps      : %(r4)f s  \n"
+"        pas de temps    : PAS_INST = %(r3)f s   \n"
+"        nombre de points: NB_POIN  = %(i1)d\n"
+"        fréquence du filtre temporel passe-haut: FREQ_FILTRE = %(k1)s \n"
+"\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:65
 #, python-format
 msgid ""
 "\n"
 " correction statique non prise en compte pour l'option: %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:62
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:69
 #, python-format
 msgid ""
 "\n"
@@ -43897,7 +44095,7 @@ msgid ""
 "   nombre de mode        : %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:68
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:75
 #, python-format
 msgid ""
 "\n"
@@ -43906,13 +44104,13 @@ msgid ""
 "   nombre de modes        : %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:74
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:81
 msgid ""
 "\n"
 " on ne peut pas demander de réponse secondaire sans la réponse primaire\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:78
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:85
 #, python-format
 msgid ""
 "\n"
@@ -43923,21 +44121,21 @@ msgid ""
 "   les options de calcul demandées sont      : %(k3)s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:86
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:93
 #, python-format
 msgid ""
 "\n"
 "                                               %(k1)s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:90
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:97
 #, python-format
 msgid ""
 "\n"
 "   la nature de l'excitation est             : %(k1)s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:94
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:101
 #, python-format
 msgid ""
 "\n"
@@ -43945,7 +44143,7 @@ msgid ""
 "   directionnelles est                       : %(k1)s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:106
 #, python-format
 msgid ""
 "\n"
@@ -43953,7 +44151,7 @@ msgid ""
 "   de chaque mouvement d'appui est           : %(k1)s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:104
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:111
 #, python-format
 msgid ""
 "\n"
@@ -43961,21 +44159,21 @@ msgid ""
 "   la masse de la structure n'existe pas dans la table: %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:109
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:116
 msgid ""
 "\n"
 " il faut au moins 2 occurrences de DEPL_MULT_APPUI pour la combinaison des "
 "appuis.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:113
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:120
 msgid ""
 "\n"
 " COMB_DEPL_APPUI: il faut au moins définir 2 cas derrière le mot clé "
 "LIST_CAS.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:117
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:124
 #, python-format
 msgid ""
 "\n"
@@ -43985,7 +44183,7 @@ msgid ""
 "   nombre d'excitations: %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:131
 #, python-format
 msgid ""
 "\n"
@@ -43994,7 +44192,7 @@ msgid ""
 "   il manque l'option        : %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:130
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:137
 #, python-format
 msgid ""
 "\n"
@@ -44004,7 +44202,7 @@ msgid ""
 "    nom du champ    : %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:137
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:144
 #, python-format
 msgid ""
 "\n"
@@ -44014,7 +44212,7 @@ msgid ""
 "    nom du champ    : %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:151
 #, python-format
 msgid ""
 "\n"
@@ -44024,14 +44222,14 @@ msgid ""
 "  non pas généralisées.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:151
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:158
 msgid ""
 "\n"
 "  Dans le cas d'excitations décorrélées,\n"
 "  le mot-clé COMB_MULT_APPUI n'est pas pris en compte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:163
 msgid ""
 "\n"
 "  La définition du groupe d'appuis n'est pas correcte dans le cas "
@@ -44040,7 +44238,7 @@ msgid ""
 "  Les groupes d'appuis doivent être disjoints.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:162
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:169
 msgid ""
 "\n"
 "  La définition du groupe d'appuis n'est pas correcte dans le cas "
@@ -44049,7 +44247,7 @@ msgid ""
 "  Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:168
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:175
 msgid ""
 "\n"
 " Attention,\n"
@@ -44058,20 +44256,20 @@ msgid ""
 " spectral multiappui.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:174
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:181
 msgid ""
 "\n"
 " Il n'est pas possible d'utiliser la combinaison GUPTA en MULTI_APPUI.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:178
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:185
 msgid ""
 "\n"
 " Dans le cadre de l'utilisation de la combinaison de type GUPTA il faut que "
 "F1 < F2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:189
 msgid ""
 "\n"
 " Il n'y a pas de points d'appui sur la structure.\n"
@@ -44079,14 +44277,14 @@ msgid ""
 "présentes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:195
 #, python-format
 msgid ""
 "\n"
 "Attention, FREQ_FOND < 0 à l'instant t= %(k1)s s. \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:199
 #, python-format
 msgid ""
 "\n"
@@ -44095,7 +44293,7 @@ msgid ""
 "%% demandée. \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:204
 #, python-format
 msgid ""
 "\n"
@@ -44104,13 +44302,13 @@ msgid ""
 "SPEC_FRACTILE. \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:202
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:209
 msgid ""
 "\n"
 "Il faut faire plus d'un seul tirage avec l'option SPEC_MEDIANE. \n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:206
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:213
 #, python-format
 msgid ""
 "\n"
@@ -44122,11 +44320,50 @@ msgid ""
 "    Augmenter NB_POINT ou réduire la durée de la phase forte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:214
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:221
 msgid ""
 "\n"
 " Le MULT_APPUI n'est compatible qu'avec les modes classiques et ne "
 "fonctionne pas avec les modes issus de la sous-structuration\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:225
+#, python-format
+msgid ""
+"\n"
+" Erreur minimale optimisation multi-objectifs = %(r1).2f %% à l'itération "
+"%(i1)d\n"
+" Erreur absolue maximale = %(r2).2f  %% pour la fréquence %(r3)f Hz\n"
+" Erreur négative max     = %(r4).2f  %% pour la fréquence %(r5)f Hz\n"
+" Erreur ZPA max = %(r6).3f %%\n"
+" Erreur RMS max = %(r7).3f %%\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:233
+#, python-format
+msgid ""
+"\n"
+" Itération %(i1)d sur %(i2)d : erreur multi-objectifs = %(r1).2f %%\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:237
+#, python-format
+msgid ""
+"\n"
+" Erreurs initiales à l'itération 0:\n"
+" Erreur ZPA = %(r1).2f %%, erreur max = %(r2).2f %%, erreur RMS = %(r3).2f "
+"%% \n"
+" Erreur multi-objectifs = %(r4).2f %%\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:243
+#, python-format
+msgid ""
+"\n"
+" ------- Modulation temporelle         ----------------------------\n"
+"        paramètres de la fonction de modulation %(k1)s: %(k2)s\n"
+"        durée de phase forte: %(r1).2f s\n"
+"        instants de début et de fin phase forte: %(r2).2f s et %(r3).2f s\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:22
@@ -51401,6 +51638,73 @@ msgid ""
 "     grande arête des éléments du maillage ou de la grille auxiliaire\n"
 "     dans la zone de propagation.\n"
 "  "
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:23
+msgid ""
+"\n"
+"  Alarme émise par le pré-conditionneur XFEM:\n"
+"  La matrice n'est pas symétrique ou à une structure \n"
+"  non symétrique. Le calcul du pré-conditionneur \n"
+"  XFEM <<NODAL>> ne supporte pas encore ce type de\n"
+"  matrices.\n"
+"  Par précaution, on ne modifie pas le problème de départ. \n"
+"  La résolution se poursuit sans pré-conditionneur XFEM.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:33
+msgid ""
+"\n"
+"  Erreur de programmation :\n"
+"  On essaie d'activer le préconditionneur <<NODAL>> \n"
+"  alors que l'ordonnancement des numéros d'équation stockées dans le\n"
+"  NUME_DDL associé à la  matrice en cours de factorisation \n"
+"  ne correspond pas l'application identité.   \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:41
+#, python-format
+msgid ""
+"\n"
+"  Erreur calcul matriciel:\n"
+"  La matrice %(i1)d est pré-conditionnée sur les noeuds\n"
+"  XFEM.\n"
+"  Vous pourriez obtenir des résultats inattendus.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:48
+#, python-format
+msgid ""
+"\n"
+"  Erreur lors d'un produit matrice-vecteur:\n"
+"  La matrice %(i1)d est pré-conditionnée sur les noeuds\n"
+"  XFEM.\n"
+"  Vous pourriez obtenir des résultats inattendus.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:55
+msgid ""
+"\n"
+"  Alarme émise par le pré-conditionneur XFEM:\n"
+"  Le calcul d'une matrice locale de pré-conditionnement a\n"
+"  échoué.\n"
+"  Par précaution, on ne modifie pas le problème de départ.\n"
+"  La résolution se poursuit sans le pré-conditionneur XFEM.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:63
+msgid ""
+"\n"
+"  Le pré-conditionneur XFEM <<NODAL>> sera activé pour la \n"
+"  suite de la résolution. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfemprecond.py:68
+msgid ""
+"\n"
+"  La matrice pré-conditionnée XFEM va être détruite. \n"
+"  La matrice initiale va être reconstruite par produit\n"
+"  avec l'inverse du pré-conditionneur XFEM.   \n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ASSD.py:96

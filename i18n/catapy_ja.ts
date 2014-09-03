@@ -31,7 +31,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2486"/>
       <source>Nom de la routine UMAT dans la bibliothèque</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ライブラリ内のUMATルーチンの名前</translation>
     </message>
     <message>
       <location filename="../cata.py" line="2486"/>
@@ -131,7 +131,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4243"/>
       <source>Paramètres de la factorisation incomplète</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">不完全コレスキー分解の設定</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22949"/>
