@@ -48,9 +48,9 @@ subroutine op9999()
 #include "asterfort/wkvect.h"
     integer :: info, nbenre, nboct
     integer :: ifm, iunerr, iunres, iunmes
-    integer :: i, l, jco, nbco
+    integer :: i, jco, nbco
     integer :: nbext, nfhdf
-    character(len=8) :: k8b, ouinon
+    character(len=8) :: k8b, ouinon, infr
     character(len=16) :: fchier, fhdf, typres
     character(len=80) :: fich
 !-----------------------------------------------------------------------
@@ -62,25 +62,28 @@ subroutine op9999()
 !
     call fin999()
 !
-! --- ECRITURE DU CONTENU DE CHAQUE SD RESULTAT
+! --- ecriture des informations sur le contenu de chaque sd_resultat :
 !
-    ifm = 0
-    fchier = ' '
-    call getvis(' ', 'UNITE', scal=ifm, nbret=l)
-    if (.not. ulexis( ifm )) then
-        call ulopen(ifm, ' ', fchier, 'NEW', 'O')
-    endif
+    call getvtx(' ', 'INFO_RESU', scal=infr)
+    if (infr.eq.'OUI') then
+        ifm = 0
+        fchier = ' '
+        call getvis(' ', 'UNITE', scal=ifm)
+        if (.not. ulexis( ifm )) then
+            call ulopen(ifm, ' ', fchier, 'NEW', 'O')
+        endif
 !
-    typres = 'RESULTAT_SDASTER'
-    nbco = 0
-    call gettyp(typres, nbco, k8b)
-    if (nbco .gt. 0) then
-        call wkvect('&&OP9999.NOM', 'V V K8', nbco, jco)
-        call gettyp(typres, nbco, zk8(jco))
-        do 10 i = 1, nbco
-            write(ifm,100)
-            call rsinfo(zk8(jco-1+i), ifm)
-10      continue
+        typres = 'RESULTAT_SDASTER'
+        nbco = 0
+        call gettyp(typres, nbco, k8b)
+        if (nbco .gt. 0) then
+            call wkvect('&&OP9999.NOM', 'V V K8', nbco, jco)
+            call gettyp(typres, nbco, zk8(jco))
+            do 10 i = 1, nbco
+                write(ifm,100)
+                call rsinfo(zk8(jco-1+i), ifm)
+10          continue
+        endif
     endif
 !
     iunerr = iunifi('ERREUR')
@@ -97,7 +100,7 @@ subroutine op9999()
 !
 ! --- RETASSAGE EVENTUEL DE LA GLOBALE
 !
-    call getvtx(' ', 'RETASSAGE', scal=ouinon, nbret=l)
+    call getvtx(' ', 'RETASSAGE', scal=ouinon)
     if (ouinon .eq. 'OUI') call jetass('G')
 !
 ! --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
