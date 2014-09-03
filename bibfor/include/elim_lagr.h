@@ -34,8 +34,10 @@ Vec :: vx0
 Vec :: vecb
 Vec :: vecc
 integer*4, dimension(:), pointer :: indred
-aster_logical :: lqr 
+aster_logical :: lqr
 ! .true. => on veut la matrice r
+aster_logical :: bidon(7)
+! tableau inutile pour eviter les warnings du linker (problemes d'alignements)
 end type
 !
 !     -- on prévoit de pouvoir utiliser simultanément ELIM_LAGR='OUI'
