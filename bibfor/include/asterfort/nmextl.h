@@ -16,19 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
-                      typcha, listno, listma, nbno, nbma,&
-                      extrch)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=24) :: nomcha
-        character(len=4) :: typcha
-        character(len=24) :: listno
-        character(len=24) :: listma
-        integer :: nbno
-        integer :: nbma
-        character(len=8) :: extrch
+    subroutine nmextl(mesh      , model    , keyw_fact, i_keyw_fact, field_type,&
+                      field_disc, list_node, list_elem, nb_node    , nb_elem   ,&
+                      type_extr)
+        character(len=*), intent(in) :: mesh
+        character(len=*), intent(in) :: model
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: i_keyw_fact
+        character(len=4), intent(in) :: field_disc
+        character(len=24), intent(in) :: field_type
+        integer, intent(out) :: nb_node
+        integer, intent(out) :: nb_elem
+        character(len=24), intent(in) :: list_node
+        character(len=24), intent(in) :: list_elem
+        character(len=8), intent(out) :: type_extr
     end subroutine nmextl
 end interface

@@ -20,26 +20,14 @@
 
 cata_msg = {
 
-1 : _(u"""
-Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds. 
-Vous n'avez pas précisé correctement son lieu d'extraction.
-Il faut donner une maille, un groupe de mailles, un noeud ou un groupe de noeuds (MAILLE ou GROUP_MA ou NOEUD ou GROUP_NO).
-"""),
-
-2 : _(u"""
-Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intégration. 
-Vous n'avez pas précisé correctement son lieu d'extraction.
-Il faut donner une maille ou un groupe de mailles (MAILLE ou GROUP_MA).
-"""),
-
 3 : _(u"""
 Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds.
-Les noeuds donnés n'appartiennent pas au modèle.
+Vous n'avez pas précisé correctement son lieu d'extraction ou les noeuds donnés n'appartiennent pas au modèle.
 """),
 
 4 : _(u"""
 Le champ %(k1)s que l'on veut extraire est de type champ aux points d'intégration. 
-Les mailles donnés n'appartiennent pas au modèle.
+Vous n'avez pas précisé correctement son lieu d'extraction ou les mailles données n'appartiennent pas au modèle.
 """),
 
 5 : _(u"""
@@ -54,7 +42,7 @@ On a pris <VALE> par défaut.
 """),
 
 7 : _(u"""
-Le champ %(k1)s pour la maille %(k2)s est de type <ELGA> et vous voulez extraire sa valeur (EXTR_ELGA='VALE'). 
+Le champ %(k1)s est de type <ELGA> et vous voulez extraire sa valeur (EXTR_ELGA='VALE'). 
 Vous n'avez pas précisé l'endroit où il est doit être extrait.
 Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de structure (POINT/SOUS_POINT).
 """),

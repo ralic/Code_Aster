@@ -1,6 +1,14 @@
-subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
-                  typcha, listno, listma, nbno, nbma,&
-                  extrch)
+subroutine nmextl(mesh      , model    , keyw_fact, i_keyw_fact, field_type,&
+                  field_disc, list_node, list_elem, nb_node    , nb_elem   ,&
+                  type_extr)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/getelem.h"
+#include "asterfort/getnode.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,40 +28,38 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/reliem.h"
-#include "asterfort/utmess.h"
-    character(len=8) :: noma, nomo
-    character(len=16) :: motfac
-    integer :: iocc
-    character(len=24) :: nomcha
-    character(len=4) :: typcha
-    integer :: nbno, nbma
-    character(len=24) :: listno, listma
-    character(len=8) :: extrch
+    character(len=*), intent(in) :: mesh
+    character(len=*), intent(in) :: model
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: i_keyw_fact
+    character(len=24), intent(in) :: field_type
+    character(len=4), intent(in) :: field_disc
+    integer, intent(out) :: nb_node
+    integer, intent(out) :: nb_elem
+    character(len=24), intent(in) :: list_node
+    character(len=24), intent(in) :: list_elem
+    character(len=8), intent(out) :: type_extr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! LECTURE TOPOLOGIE (NOEUD OU MAILLE)
+! Get topology (nodes or elements) and type of extraction for field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! IN  TYPCHA : TYPE DU CHAMP 'NOEU'/'ELGA'
-! IN  NOMCHA : NOM DU CHAMP
-! IN  LISTNO : LISTE CONTENANT LES NOEUDS
-! IN  LISTMA : LISTE CONTENANT LES MAILLES
-! OUT NBNO   : LONGUEUR DE LA LISTE DES NOEUDS
-! OUT NBMA   : LONGUEUR DE LA LISTE DES MAILLES
-! OUT EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  sd_inout         : datastructure for input/output parameters
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  i_keyw_fact      : index of keyword to read extraction parameters
+! In  field_type       : type of field (name in results datastructure)
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  list_node        : name of object contains list of nodes
+! Out nb_node          : number of nodes
+! In  list_elem        : name of object contains list of elements
+! Out nb_elem          : number of elements
+! Out type_extr        : type of extraction
 !                'MIN'      VALEUR MINI SUR TOUTES LES MAILLES/NOEUDS
 !                'MAX'      VALEUR MAXI SUR TOUTES LES MAILLES/NOEUDS
 !                'MOY'      VALEUR MOYENNE TOUTES LES MAILLES/NOEUDS
@@ -63,94 +69,41 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 !                          MAILLES/NOEUDS
 !                'VALE'     VALEUR TOUTES LES MAILLES/NOEUDS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: oui
-    integer :: n1, n2, n3, n4, n5, n6
-    character(len=16) :: valk(1)
-    integer :: nbmocl
-    character(len=16) :: limocl(5), tymocl(5)
+    integer :: nocc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    nb_node   = 0
+    nb_elem   = 0
+    type_extr = 'VALE'
 !
-! --- INITIALISATIONS
+! - Type of extraction on field
 !
-    n1 = 0
-    n2 = 0
-    n3 = 0
-    n4 = 0
-    n5 = 0
-    nbno = 0
-    nbma = 0
-    extrch = 'VALE'
-!
-! --- LECTURE DE L'ENDROIT POUR EXTRACTION
-!
-    valk(1) = nomcha
-    if (typcha .eq. 'NOEU') then
-        call getvtx(motfac, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
-        call getvtx(motfac, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n2)
-        call getvtx(motfac, 'MAILLE', iocc=iocc, nbval=0, nbret=n3)
-        call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n4)
-        call getvtx(motfac, 'TOUT', iocc=iocc, scal=oui, nbret=n5)
-        if ((n1.eq.0) .and. (n2.eq.0) .and. (n3.eq.0) .and. (n4.eq.0) .and. (n5.eq.0)) then
-            call utmess('F', 'EXTRACTION_1', sk=valk(1))
-        endif
-    else if (typcha.eq.'ELGA') then
-        call getvtx(motfac, 'MAILLE', iocc=iocc, nbval=0, nbret=n3)
-        call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n4)
-        call getvtx(motfac, 'TOUT', iocc=iocc, scal=oui, nbret=n5)
-        if ((n3.eq.0) .and. (n4.eq.0) .and. (n5.eq.0)) then
-            call utmess('F', 'EXTRACTION_2', sk=valk(1))
-        endif
-    else
-        ASSERT(.false.)
+    call getvtx(keyw_fact, 'EVAL_CHAM', iocc=i_keyw_fact, scal=type_extr, nbret=nocc)
+    if (nocc .eq. 0) then
+        type_extr = 'VALE'
+        call utmess('A', 'EXTRACTION_5', sk=field_type)
     endif
 !
-! --- TYPE D'EXTRACTION
+! - Get list of nodes
 !
-    call getvtx(motfac, 'EVAL_CHAM', iocc=iocc, scal=extrch, nbret=n6)
-    if (n6 .eq. 0) then
-        extrch = 'VALE'
-        call utmess('A', 'EXTRACTION_5', sk=valk(1))
-    endif
-!
-! --- EXTRACTION DES NOEUDS - ILS DOIVENT APPARTENIR AU MODELE -
-!
-    if (typcha .eq. 'NOEU') then
-        nbmocl = 5
-        tymocl(1) = 'GROUP_NO'
-        tymocl(2) = 'NOEUD'
-        tymocl(3) = 'GROUP_MA'
-        tymocl(4) = 'MAILLE'
-        tymocl(5) = 'TOUT'
-        limocl(1) = 'GROUP_NO'
-        limocl(2) = 'NOEUD'
-        limocl(3) = 'GROUP_MA'
-        limocl(4) = 'MAILLE'
-        limocl(5) = 'TOUT'
-        call reliem(nomo, noma, 'NU_NOEUD', motfac, iocc,&
-                    nbmocl, limocl, tymocl, listno, nbno)
-        if (nbno .eq. 0) then
-            call utmess('F', 'EXTRACTION_3', sk=valk(1))
+    if (field_disc .eq. 'NOEU') then
+        call getnode(mesh   , keyw_fact, i_keyw_fact, ' ', list_node,&
+                     nb_node, model)
+        if (nb_node .eq. 0) then
+            call utmess('F', 'EXTRACTION_3', sk=field_type)
         endif
     endif
 !
-! --- EXTRACTION DES MAILLES - ILS DOIVENT APPARTENIR AU MODELE -
+! - Get list of elements
 !
-    if (typcha .eq. 'ELGA') then
-        nbmocl = 3
-        tymocl(1) = 'GROUP_MA'
-        tymocl(2) = 'MAILLE'
-        tymocl(3) = 'TOUT'
-        limocl(1) = 'GROUP_MA'
-        limocl(2) = 'MAILLE'
-        limocl(3) = 'TOUT'
-        call reliem(nomo, noma, 'NU_MAILLE', motfac, iocc,&
-                    nbmocl, limocl, tymocl, listma, nbma)
-        if (nbma .eq. 0) then
-            call utmess('F', 'EXTRACTION_4', sk=valk(1))
+    if (field_disc .eq. 'ELGA') then
+        call getelem(mesh   , keyw_fact, i_keyw_fact, ' ', list_elem,&
+                     nb_elem, model = model)
+        if (nb_elem .eq. 0) then
+            call utmess('F', 'EXTRACTION_4', sk=field_type)
         endif
     endif
 !

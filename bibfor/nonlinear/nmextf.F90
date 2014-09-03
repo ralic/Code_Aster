@@ -1,4 +1,10 @@
-subroutine nmextf(motfac, iocc, extrcp)
+subroutine nmextf(keyw_fact, i_keyw_fact, type_extr_cmp)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,40 +24,34 @@ subroutine nmextf(motfac, iocc, extrcp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
-    character(len=16) :: motfac
-    integer :: iocc
-    character(len=8) :: extrcp
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: i_keyw_fact
+    character(len=8), intent(out) :: type_extr_cmp
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! LECTURE TYPE EXTRACTION SUR LES COMPOSANTES
+! Get type of extraction for components
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  i_keyw_fact      : index of keyword to read extraction parameters
+! Out type_extr_cmp    : type of extraction for components
 !
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! OUT EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-!               ' ' POUR LES VALEURS OU NOM DE LA FORMULE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    character(len=8) :: answer
 !
-    character(len=8) :: typext
-    integer :: n1
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    call getvtx(motfac, 'EVAL_CMP', iocc=iocc, scal=typext, nbret=n1)
-    if (typext .eq. 'VALE') then
-        extrcp = ' '
-    else if (typext.eq.'FORMULE') then
-        call getvid(motfac, 'FORMULE', iocc=iocc, scal=extrcp, nbret=n1)
+    type_extr_cmp = ' '
+    call getvtx(keyw_fact, 'EVAL_CMP', iocc=i_keyw_fact, scal=answer)
+    if (answer .eq. 'VALE') then
+        type_extr_cmp = ' '
+    else if (answer.eq.'FORMULE') then
+        call getvid(keyw_fact, 'FORMULE', iocc=i_keyw_fact, scal=type_extr_cmp)
     else
         ASSERT(.false.)
     endif

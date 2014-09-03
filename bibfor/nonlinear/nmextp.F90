@@ -1,5 +1,16 @@
-subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
-                  listpi, listsp, nbpi, nbspi, extrga)
+subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field  , field_s       ,&
+                  list_poin, list_spoi  , nb_poin   , nb_spoi, type_extr_elem)
+!
+implicit none
+!
+#include "asterfort/celces.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,148 +30,127 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/celces.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/sdmpic.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    character(len=16) :: motfac
-    character(len=24) :: nomcha, nomchs
-    integer :: iocc
-    character(len=19) :: champ
-    character(len=8) :: extrga
-    character(len=24) :: listpi, listsp
-    integer :: nbpi, nbspi
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: i_keyw_fact
+    character(len=19), intent(in) :: field
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(in) :: field_s
+    character(len=24), intent(in) :: list_poin
+    character(len=24), intent(in) :: list_spoi
+    integer, intent(out) :: nb_poin
+    integer, intent(out) :: nb_spoi
+    character(len=8), intent(out) :: type_extr_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! CAS DES CHAM_ELGA
-! LECTURE DU TYPE D'EXTRACTION POUR CHAM_ELGA
+! Get topology (point and subpoints) and type of extraction for element
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! IN  ICHAM  : OCCURRENCE DU CHAMP
-! IN  CHAMP  : CHAMP EXEMPLE POUR VERIF COMPOSANTE
-! IN  NOMCHA : NOM DU CHAMP
-! OUT NOMCHS : NOM DU CHAMP SIMPLE
-! IN  LISTPI : LISTE CONTENANT LES POINTS D'EXTRACTION
-! IN  LISTSP : LISTE CONTENANT LES SOUSPOINTS D'EXTRACTION
-! OUT EXTRGA : TYPE D'EXTRACTION
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  i_keyw_fact      : index of keyword to read extraction parameters
+! In  field            : name of field
+! In  field_s          : name of reduced field (CHAM_ELEM_S)
+! In  field_type       : type of field (name in results datastructure)
+! In  list_poin        : name of object contains list of points (Gauss)
+! Out nb_poin          : number of points (Gauss)
+! In  list_spoi        : name of object contains list of subpoints
+! Out nb_spoi          : number of subpoints
+! Out type_extr_elem   : type of extraction by element
 !                'MIN'  VALEUR MINI SUR TOUS LES POINTS DE GAUSS
 !                'MAX'  VALEUR MAXI SUR TOUS LES POINTS DE GAUSS
 !                'MOY'  VALEUR MOYENNE SUR TOUS LES POINTS DE GAUSS
 !                'VALE' VALEUR SUR POINT/SOUS_POINTS DONNES
-! OUT NBPI   : NOMBRE DE POINTS D'INTEGRATION A EXTRAIRE
-! OUT NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION A EXTRAIRE
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: jpi, jspi
-    integer :: ipi, ispi
+    integer :: i_poin, i_spoi
     integer :: n1, n2, n3, iret
-    integer :: ntpt, ntspt
-    character(len=16) :: valk(2)
+    integer :: nb_poin_maxi, nb_spoi_maxi
     integer, pointer :: cesd(:) => null()
+    integer, pointer :: v_list_poin(:) => null()
+    integer, pointer :: v_list_spoi(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nb_poin = 0
+    nb_spoi = 0
 !
-! --- INITIALISATIONS
+! - Conversion to reduced field (CHAM_ELEM_S)
 !
-    nbpi = 0
-    nbspi = 0
-!
-! --- CONVERSION EN CHAM_ELEM_S
-!
-    call jeexin(nomchs, iret)
+    call jeexin(field_s, iret)
     if (iret .eq. 0) then
-        call sdmpic('CHAM_ELEM', champ)
-        call celces(champ, 'V', nomchs)
+        call sdmpic('CHAM_ELEM', field)
+        call celces(field, 'V', field_s)
     endif
-    call jeveuo(nomchs(1:19)//'.CESD', 'L', vi=cesd)
+    call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
 !
-! --- LECTURE TYPE EXTRACTION
+! - Type of extraction on element
 !
-    call getvtx(motfac, 'EVAL_ELGA', iocc=iocc, scal=extrga, nbret=n1)
+    call getvtx(keyw_fact, 'EVAL_ELGA', iocc=i_keyw_fact, scal=type_extr_elem, nbret=n1)
     if (n1 .eq. 0) then
-        extrga = 'VALE'
-        call utmess('A', 'EXTRACTION_6', sk=nomcha)
+        type_extr_elem = 'VALE'
+        call utmess('A', 'EXTRACTION_6', sk=field_type)
     endif
 !
-! --- MAX. DE POINTS/SOUS-POINTS SUR LE CHAMP
+! - Max number of points/subpoint for this field
 !
-    ntpt = cesd(3)
-    ntspt = cesd(4)
+    nb_poin_maxi = cesd(3)
+    nb_spoi_maxi = cesd(4)
 !
-! --- COMPTE NOMBRE DE POINTS
+! - Number of points/subpoint
 !
-    if (extrga .eq. 'VALE') then
-        call getvis(motfac, 'POINT', iocc=iocc, nbval=0, nbret=n2)
-        call getvis(motfac, 'SOUS_POINT', iocc=iocc, nbval=0, nbret=n3)
+    if (type_extr_elem .eq. 'VALE') then
+        call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=0, nbret=n2)
+        call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=0, nbret=n3)
         if (n2 .eq. 0) then
-            call utmess('F', 'EXTRACTION_7', nk=2, valk=valk)
+            call utmess('F', 'EXTRACTION_7', sk = field_type)
         endif
-        nbpi = -n2
+        nb_poin = -n2
         if ((n2.ne.0) .and. (n3.eq.0)) then
-            nbspi = ntspt
+            nb_spoi = nb_spoi_maxi
         else
-            nbspi = -n3
+            nb_spoi = -n3
         endif
     else
-        nbpi = ntpt
-        nbspi = ntspt
+        nb_poin = nb_poin_maxi
+        nb_spoi = nb_spoi_maxi
     endif
 !
-! --- PLAFONNEMENT
+! - Protection
 !
-    if (nbpi .gt. ntpt) nbpi = ntpt
-    if (nbspi .gt. ntspt) nbspi = ntspt
+    if (nb_poin .gt. nb_poin_maxi) nb_poin = nb_poin_maxi
+    if (nb_spoi .gt. nb_spoi_maxi) nb_spoi = nb_spoi_maxi
 !
-! --- CREATION SD
+! - Create lists
 !
-    call wkvect(listpi, 'V V I', nbpi, jpi)
-    if (nbspi .ne. 0) then
-        call wkvect(listsp, 'V V I', nbspi, jspi)
+    call wkvect(list_poin, 'V V I', nb_poin, vi = v_list_poin)
+    if (nb_spoi .ne. 0) then
+        call wkvect(list_spoi, 'V V I', nb_spoi, vi = v_list_spoi)
     endif
 !
-! --- REMPLISSAGE SD
+! - Set lists
 !
-    if (extrga .eq. 'VALE') then
-        call getvis(motfac, 'POINT', iocc=iocc, nbval=nbpi, vect=zi(jpi),&
-                    nbret=n2)
-        if (nbspi .ne. 0) then
-            call getvis(motfac, 'SOUS_POINT', iocc=iocc, nbval=nbspi, vect=zi(jspi),&
-                        nbret=n3)
+    if (type_extr_elem .eq. 'VALE') then
+        call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=nb_poin, vect= v_list_poin)
+        if (nb_spoi .ne. 0) then
+            call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=nb_spoi,&
+                        vect = v_list_spoi, nbret=n3)
             if (n3 .eq. 0) then
-                do 132 ispi = 1, nbspi
-                    zi(jspi-1+ispi ) = ispi
-132              continue
+                do i_spoi = 1, nb_spoi
+                    v_list_spoi(i_spoi) = i_spoi
+                end do
             endif
         endif
     else
-        do 31 ipi = 1, nbpi
-            zi(jpi-1+ipi ) = ipi
-31      continue
-        do 32 ispi = 1, nbspi
-            zi(jspi-1+ispi ) = ispi
-32      continue
+        do i_poin = 1, nb_poin
+            v_list_poin(i_poin) = i_poin
+        end do
+        do i_spoi = 1, nb_spoi
+            v_list_spoi(i_spoi) = i_spoi
+        end do
     endif
-!
-    call jedema()
 !
 end subroutine

@@ -47,27 +47,28 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_suiv, nbocc, nume_reuse
+    integer :: nb_suiv, nb_keyw_fact
     character(len=16) :: keyw_fact
+    character(len=14) :: sdextr_suiv
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nb_suiv    = 0
     sd_suiv    = '&&NMCRDD.OBSV'
-    nume_reuse = 0
     keyw_fact  = 'SUIVI_DDL'
-    call getfac(keyw_fact, nbocc)
-    ASSERT(nbocc.le.99)
+    call getfac(keyw_fact, nb_keyw_fact)
+    ASSERT(nb_keyw_fact.le.99)
 !
 ! - Read datas for extraction
 !
-    call nmextr(meshz, modelz    , sd_suiv , sd_inout, keyw_fact,&
-                nbocc, nume_reuse, nb_suiv)
+    sdextr_suiv = sd_suiv(1:14)
+    call nmextr(meshz       , modelz , sdextr_suiv, sd_inout, keyw_fact,&
+                nb_keyw_fact, nb_suiv)
 !
 ! - Read name of columns
 !
-    if (nbocc .ne. 0) then
-        call nmcrdn(sd_suiv, keyw_fact, nb_suiv, nbocc)
+    if (nb_keyw_fact .ne. 0) then
+        call nmcrdn(sd_suiv, keyw_fact, nb_suiv, nb_keyw_fact)
     endif
 !
 end subroutine

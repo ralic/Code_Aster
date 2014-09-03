@@ -1,5 +1,9 @@
-subroutine nmextn(typcha, extrcp, extrga, extrch, nbno,&
-                  nbma, nbcmp, nbpi, nbspi, nbext)
+subroutine nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node,&
+                  nb_elem   , nb_cmp       , nb_poin       , nb_spoi  , nb_extr)
+!
+implicit none
+!
+#include "asterfort/nmexto.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,65 +23,64 @@ subroutine nmextn(typcha, extrcp, extrga, extrch, nbno,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterfort/nmexto.h"
-    integer :: nbext
-    character(len=4) :: typcha
-    integer :: nbno, nbma, nbcmp, nbpi, nbspi
-    character(len=8) :: extrcp, extrga, extrch
+    character(len=4), intent(in) :: field_disc
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    integer, intent(in) :: nb_cmp
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr_cmp
+    integer, intent(out) :: nb_extr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! DECOMPTE DES POINTS D'EXTRACTION
+! Count number of extractions
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr_cmp    : type of extraction for components
+! In  nb_node          : number of nodes
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  nb_cmp           : number of components
+! Out nb_extr          : number of extractions
 !
-! IN  TYPCHA : TYPE DU CHAMP 'NOEU' OU 'ELGA'
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-!               ' ' POUR LES VALEURS OU NOM DE LA FORMULE
-! IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  NBNO   : LONGUEUR DE LA LISTE DES NOEUDS (-1 SI TOUS NOEUDS)
-! IN  NBMA   : LONGUEUR DE LA LISTE DES MAILLES (-1 SI TOUTES MAILLES)
-! IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
-! IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
-! IN  NCMP   : NOMBRE DE COMPOSANTES
-! OUT NBEXT  : NOMBRE TOTAL D'EXTRACTIONS VALIDES POUR CETTE OCCURRENCE
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nfor, npoin, nlieu
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    nb_extr = 0
 !
-! --- INITIALISATIONS
+! - Number of components to extract
 !
-    nbext = 0
-!
-! --- NOMBRE DE COMPOSANTES A EXTRAIRE
-!
-    call nmexto('COMP', typcha, extrcp, extrga, extrch,&
-                nbno, nbma, nbcmp, nbpi, nbspi,&
+    call nmexto('COMP' , field_disc, type_extr_cmp, type_extr_elem, type_extr,&
+                nb_node, nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
                 nfor)
 !
-! --- NOMBRE DE POINTS A EXTRAIRE
+! - Number of points to extract
 !
-    call nmexto('POIN', typcha, extrcp, extrga, extrch,&
-                nbno, nbma, nbcmp, nbpi, nbspi,&
+    call nmexto('POIN' , field_disc, type_extr_cmp, type_extr_elem, type_extr,&
+                nb_node, nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
                 npoin)
 !
-! --- NOMBRE DE LIEUX A EXTRAIRE
+! - Number of localization to extract
 !
-    call nmexto('LIEU', typcha, extrcp, extrga, extrch,&
-                nbno, nbma, nbcmp, nbpi, nbspi,&
+    call nmexto('LIEU' , field_disc, type_extr_cmp, type_extr_elem, type_extr,&
+                nb_node, nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
                 nlieu)
 !
-! --- NOMBRE D'EXTRACTIONS
+! - Total of extraction
 !
-    nbext = nlieu * npoin * nfor
+    nb_extr = nlieu * npoin * nfor
 !
 end subroutine

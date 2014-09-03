@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextf(motfac, iocc, extrcp)
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=8) :: extrcp
+    subroutine nmextf(keyw_fact, i_keyw_fact, type_extr_cmp)
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: i_keyw_fact
+        character(len=8), intent(out) :: type_extr_cmp
     end subroutine nmextf
 end interface

@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
-                      nbocc, numreo, ntextr)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=*) :: sdextz
-        character(len=24) :: sdieto
-        character(len=16) :: motfac
-        integer :: nbocc
-        integer :: numreo
-        integer :: ntextr
+    subroutine nmextr(meshz       , modelz , sdextrz, sd_inout, keyw_fact,&
+                      nb_keyw_fact, nb_extr)
+        character(len=*), intent(in) :: meshz
+        character(len=*), intent(in) :: modelz
+        character(len=*), intent(in) :: sdextrz
+        character(len=24), intent(in) :: sd_inout
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: nb_keyw_fact
+        integer, intent(out) :: nb_extr
     end subroutine nmextr
 end interface

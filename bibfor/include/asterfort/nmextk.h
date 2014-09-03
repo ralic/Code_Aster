@@ -16,26 +16,26 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
-                      nomchs, typcha, listno, listma, listpi,&
-                      listsp, nbno, nbma, nbpi, nbspi,&
-                      listcp, nbcmp)
-        character(len=8) :: noma
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=19) :: champ
-        character(len=24) :: nomcha
-        character(len=24) :: nomchs
-        character(len=4) :: typcha
-        character(len=24) :: listno
-        character(len=24) :: listma
-        character(len=24) :: listpi
-        character(len=24) :: listsp
-        integer :: nbno
-        integer :: nbma
-        integer :: nbpi
-        integer :: nbspi
-        character(len=24) :: listcp
-        integer :: nbcmp
+    subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field    , field_type,&
+                      field_s  , field_disc, list_node  , list_elem, list_poin ,&
+                      list_spoi, nb_node   , nb_elem    , nb_poin  , nb_spoi   ,&
+                      list_cmp , nb_cmp)
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: i_keyw_fact
+        character(len=19), intent(in) :: field
+        character(len=24), intent(in) :: field_type
+        character(len=24), intent(in) :: field_s
+        character(len=4), intent(in) :: field_disc
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: nb_elem
+        character(len=24), intent(in) :: list_node
+        character(len=24), intent(in) :: list_elem
+        character(len=24), intent(in) :: list_poin
+        character(len=24), intent(in) :: list_spoi
+        integer, intent(in) :: nb_poin
+        integer, intent(in) :: nb_spoi
+        integer, intent(out) :: nb_cmp
+        character(len=24), intent(in) :: list_cmp
     end subroutine nmextk
 end interface

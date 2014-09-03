@@ -1,4 +1,10 @@
-subroutine nmextt(sdieto, nomcha, typcha)
+subroutine nmextt(sd_inout, field_type, field_disc)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetob.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,74 +24,51 @@ subroutine nmextt(sdieto, nomcha, typcha)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmetob.h"
-    character(len=24) :: sdieto, nomcha
-    character(len=4) :: typcha
+    character(len=24), intent(in) :: sd_inout
+    character(len=24), intent(in) :: field_type
+    character(len=4), intent(out) :: field_disc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! *_NON_LINE - Field extraction datastructure
 !
-! TYPE DU CHAMP (NOEU OU ELGA)
+! Get localization of field (discretization: NOEU or ELGA)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_inout         : datastructure for input/output parameters
+! In  field_type       : type of field (name in results datastructure)
+! Out field_disc       : localization of field (discretization: NOEU or ELGA)
 !
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  NOMCHA : NOM DU CHAMP
-! OUT TYPCHA : TYPE DU CHAMP
-!             'NOEU'
-!             'ELGA'
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, i_field
 !
+! --------------------------------------------------------------------------------------------------
 !
+    field_disc = 'XXXX'
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: zioch
-    integer :: icham
-    character(len=24) :: loccha
+! - Access to datastructure
 !
-! ----------------------------------------------------------------------
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    zioch    = v_io_info(4)
 !
-    call jemarq()
+! - Index of field
 !
-! --- INITIALISATIONS
+    call nmetob(sd_inout, field_type, i_field)
 !
-    typcha = 'XXXX'
+! - Get localization of field
 !
-! --- ACCES SD IN ET OUT
+    field_disc = v_io_para(zioch*(i_field-1)+5 )(1:4)
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'L', jiolch)
-    zioch = zi(jioinf+4-1)
+! - Check
 !
-! --- INDICE DU CHAMP
-!
-    call nmetob(sdieto, nomcha, icham)
-!
-! --- LOCALISATION DU CHAMP
-!
-    loccha = zk24(jiolch+zioch*(icham-1)+5-1)
-!
-! --- TYPE DE CHAMP
-!
-    if (loccha .eq. 'ELGA') then
-        typcha = 'ELGA'
-    else if (loccha.eq.'NOEU') then
-        typcha = 'NOEU'
-    else
-        write(6,*) 'LOCALISATION INTERDITE POUR OBSV: ',loccha
-        ASSERT(.false.)
-    endif
-!
-    call jedema()
+    ASSERT(field_disc.eq.'NOEU'.or.field_disc.eq.'ELGA')
+
 end subroutine

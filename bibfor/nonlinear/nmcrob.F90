@@ -49,39 +49,46 @@ implicit none
 ! In  model            : name of model
 ! In  result           : name of results datastructure
 ! In  sddisc           : datastructure for discretization
-! in  sd_inout         : datastructure for input/output parameters
+! In  sd_inout         : datastructure for input/output parameters
 ! Out sd_obsv          : datastructure for observation parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_obsv, nbocc, nume_reuse
+    integer :: nb_obsv, nb_keyw_fact, nume_reuse
     character(len=19) :: sdarch
+    character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
     character(len=24) :: arch_info
     integer, pointer :: v_arch_info(:) => null()
+    character(len=24) :: extr_info
+    integer, pointer :: v_extr_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nb_obsv   = 0
     sd_obsv   = '&&NMCROB.OBSV'
     keyw_fact = 'OBSERVATION'
-    call getfac(keyw_fact, nbocc)
-    ASSERT(nbocc.le.99)
+    call getfac(keyw_fact, nb_keyw_fact)
+    ASSERT(nb_keyw_fact.le.99)
 !
-! - Access to storage datasstructure
+! - Access to storage datastructure
 !
     sdarch    = sddisc(1:14)//'.ARCH'
     arch_info = sdarch(1:19)//'.AINF'
     call jeveuo(arch_info, 'L', vi = v_arch_info)
 !
-! - Get reuse index in OBSERVATION table
-!
-    nume_reuse = v_arch_info(3)
-!
 ! - Read datas for extraction
 !
-    call nmextr(meshz, modelz    , sd_obsv, sd_inout, keyw_fact,&
-                nbocc, nume_reuse, nb_obsv)
+    sdextr_obsv = sd_obsv(1:14)
+    call nmextr(meshz       , modelz , sdextr_obsv, sd_inout, keyw_fact,&
+                nb_keyw_fact, nb_obsv)
+!
+! - Set reuse index in OBSERVATION table
+!
+    nume_reuse = v_arch_info(3)
+    extr_info  = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'E', vi = v_extr_info)
+    v_extr_info(4) = nume_reuse
 !
 ! - Read parameters
 !
@@ -91,11 +98,11 @@ implicit none
 !
 ! ----- Read time list
 !
-        call nmcroi(sd_obsv, keyw_fact, nbocc)
+        call nmcroi(sd_obsv, keyw_fact, nb_keyw_fact)
 !
 ! ----- Read name of columns
 !
-        call nmobno(sd_obsv, keyw_fact, nbocc)
+        call nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
 !
 ! ----- Create table
 !

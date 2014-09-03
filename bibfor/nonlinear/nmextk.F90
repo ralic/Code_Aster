@@ -1,7 +1,21 @@
-subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
-                  nomchs, typcha, listno, listma, listpi,&
-                  listsp, nbno, nbma, nbpi, nbspi,&
-                  listcp, nbcmp)
+subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field    , field_type,&
+                  field_s  , field_disc, list_node  , list_elem, list_poin ,&
+                  list_spoi, nb_node   , nb_elem    , nb_poin  , nb_spoi   ,&
+                  list_cmp , nb_cmp)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/posddl.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,195 +35,197 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/lxliis.h"
-#include "asterfort/posddl.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: i_keyw_fact
+    character(len=19), intent(in) :: field
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(in) :: field_s
+    character(len=4), intent(in) :: field_disc
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    character(len=24), intent(in) :: list_node
+    character(len=24), intent(in) :: list_elem
+    character(len=24), intent(in) :: list_poin
+    character(len=24), intent(in) :: list_spoi
+    integer, intent(out) :: nb_cmp
+    character(len=24), intent(in) :: list_cmp
 !
-    character(len=8) :: noma
-    character(len=16) :: motfac
-    integer :: iocc
-    character(len=4) :: typcha
-    integer :: nbno, nbma, nbcmp
-    character(len=24) :: nomcha, nomchs
-    character(len=19) :: champ
-    character(len=24) :: listpi, listsp
-    integer :: nbpi, nbspi
-    character(len=24) :: listcp, listno, listma
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+! Get component(s)
 !
-! LECTURE COMPOSANTE DU CHAMP
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  i_keyw_fact      : index of keyword to read extraction parameters
+! In  field            : name of field
+! In  field_type       : type of field (name in results datastructure)
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_s          : name of reduced field (CHAM_ELEM_S)
+! In  list_node        : name of object contains list of nodes
+! In  nb_node          : number of nodes
+! In  list_elem        : name of object contains list of elements
+! In  nb_elem          : number of elements
+! In  list_poin        : name of object contains list of points (Gauss)
+! In  nb_poin          : number of points (Gauss)
+! In  list_spoi        : name of object contains list of subpoints
+! In  nb_spoi          : number of subpoints
+! In  list_cmp         : name of object contains list of components
+! Out nb_cmp           : number of components
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! IN  NOMCHA : NOM DU CHAMP
-! IN  TYPCHA : TYPE DU CHAMP 'NOEU' OU 'ELGA'
-! IN  LISTNO : LISTE CONTENANT LES NOEUDS
-! IN  LISTMA : LISTE CONTENANT LES MAILLES
-! IN  NBNO   : LONGUEUR DE LA LISTE DES NOEUDS
-! IN  NBMA   : LONGUEUR DE LA LISTE DES MAILLES
-! IN  CHAMP  : CHAMP EXEMPLE POUR VERIF COMPOSANTE
-! IN  LISTPI : LISTE CONTENANT LES POINTS D'EXTRACTION
-! IN  LISTSP : LISTE CONTENANT LES SOUS-POINTS D'EXTRACTION
-! OUT LISTCP : LISTE DES COMPOSANTES
-! OUT NBCMP  : NOMBRE DE COMPOSANTES
-!
-!
-!
-!
-    integer :: nparx
-    parameter    (nparx=20)
+    integer :: nb_para_maxi
+    parameter    (nb_para_maxi=20)
     integer :: n1
-    integer :: iret
-    integer :: jcmp, jno, jma, jpi, jspi, iad
-    integer :: ino, ima, icmp, ipi, ispi, ipar, i
-    integer :: nbcmpx, nuno, nuddl
-    integer :: nmapt, nmaspt, npi, nspi
-    integer :: numnoe, nummai, num, snum
-    character(len=8) :: nomnoe, nommai, nomcmp
-    character(len=8) :: nomvar
-    integer :: ivari
+    integer :: iret, iad
+    integer :: i_node, i_elem, i_cmp, ipi, ispi, ipar, i_cmp_maxi
+    integer :: nb_cmp_maxi, nuno, nuddl
+    integer :: nb_elem_poin, nb_elem_spoi, npi, nspi
+    integer :: node_nume, elem_nume, num, snum
+    character(len=8) :: node_name, elem_name, cmp_name
+    character(len=8) :: cmp_vari_name
+    integer :: i_vari
     character(len=16) :: valk(2)
     integer :: jcesd, jcesl, jcesv
     integer :: vali(4)
     character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: v_list_cmp(:) => null()
+    integer, pointer :: v_list_node(:) => null()
+    integer, pointer :: v_list_elem(:) => null()
+    integer, pointer :: v_list_poin(:) => null()
+    integer, pointer :: v_list_spoi(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nb_cmp = 0
 !
-! --- INITIALISATIONS
+! - Get reduced field (CHAM_ELEM_S)
 !
-    nbcmp = 0
-!
-! --- RECUP DU CHAM_ELEM_S
-!
-    if (typcha .eq. 'ELGA') then
-        call jeveuo(nomchs(1:19)//'.CESD', 'L', jcesd)
-        call jeveuo(nomchs(1:19)//'.CESL', 'L', jcesl)
-        call jeveuo(nomchs(1:19)//'.CESV', 'L', jcesv)
-        call jeveuo(nomchs(1:19)//'.CESC', 'L', vk8=cesc)
-        nbcmpx = zi(jcesd+4)
+    if (field_disc .eq. 'ELGA') then
+        call jeveuo(field_s(1:19)//'.CESD', 'L', jcesd)
+        call jeveuo(field_s(1:19)//'.CESL', 'L', jcesl)
+        call jeveuo(field_s(1:19)//'.CESV', 'L', jcesv)
+        call jeveuo(field_s(1:19)//'.CESC', 'L', vk8=cesc)
+        nb_cmp_maxi = zi(jcesd+4)
     endif
 !
-! --- LECTURE DES COMPOSANTES : IL FAUT AU MOINS UNE COMPOSANTE MAIS
-! --- MOINS DE NPARX
+! - Number of components
 !
-    call getvtx(motfac, 'NOM_CMP', iocc=iocc, nbval=0, nbret=n1)
-    nbcmp = -n1
-    if ((nbcmp.lt.1) .or. (nbcmp.gt.nparx)) then
-        vali(1) = nparx
-        vali(2) = nbcmp
+    call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=0, nbret=n1)
+    nb_cmp = -n1
+    if ((nb_cmp.lt.1) .or. (nb_cmp.gt.nb_para_maxi)) then
+        vali(1) = nb_para_maxi
+        vali(2) = nb_cmp
         call utmess('F', 'EXTRACTION_12', ni=2, vali=vali)
     endif
 !
-! --- LECTURE EFFECTIVE DES NOMS DE COMPOSANTES
+! - Get components
 !
-    call wkvect(listcp, 'V V K8', nbcmp, jcmp)
-    call getvtx(motfac, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+    call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
+    call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_cmp,&
                 nbret=iret)
 !
-! --- VERIFICATION QUE LES NOEUDS SUPPORTENT LES COMPOSANTES FOURNIES
+! - Check components
 !
-    if (typcha .eq. 'NOEU') then
-        call jeveuo(listno, 'L', jno)
-        do 20 ino = 1, nbno
-            numnoe = zi(jno-1+ino)
-            call jenuno(jexnum(noma(1:8)//'.NOMNOE', numnoe), nomnoe)
-            do 21 icmp = 1, nbcmp
-                nomcmp = zk8(jcmp-1+icmp)
-                call posddl('CHAM_NO', champ, nomnoe, nomcmp, nuno,&
+    if (field_disc .eq. 'NOEU') then
+!
+! ----- For nodes
+!
+        call jeveuo(list_node, 'L', vi = v_list_node)
+        do i_node = 1, nb_node
+!
+! --------- Current node
+!
+            node_nume = v_list_node(i_node)
+            call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), node_name)
+            do i_cmp = 1, nb_cmp
+                cmp_name = v_list_cmp(i_cmp)
+                call posddl('CHAM_NO', field, node_name, cmp_name, nuno,&
                             nuddl)
                 if ((nuno.eq.0) .or. (nuddl.eq.0)) then
-                    valk(1) = nomnoe
-                    valk(2) = nomcmp
+                    valk(1) = node_name
+                    valk(2) = cmp_name
                     call utmess('F', 'EXTRACTION_20', nk=2, valk=valk)
                 endif
-21          continue
-20      continue
+            end do
+        end do
+    else if (field_disc.eq.'ELGA') then
 !
-! --- VERIFICATION QUE LES ELEMENTS SUPPORTENT LES COMPOSANTES FOURNIES
+! ----- For elements
 !
-    else if (typcha.eq.'ELGA') then
-        call jeveuo(listma, 'L', jma)
-        call jeveuo(listpi, 'L', jpi)
-        call jeveuo(listsp, 'L', jspi)
-        do 30 ima = 1, nbma
+        call jeveuo(list_elem, 'L', vi = v_list_elem)
+        call jeveuo(list_poin, 'L', vi = v_list_poin)
+        call jeveuo(list_spoi, 'L', vi = v_list_spoi)
+        do i_elem = 1, nb_elem
 !
-! ------- PROPRIETES DE LA MAILLE
+! --------- Current element
 !
-            nummai = zi(jma-1+ima)
-            call jenuno(jexnum(noma(1:8)//'.NOMMAI', nummai), nommai)
+            elem_nume = v_list_elem(i_elem)
+            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name)
 !
-! ------- NOMBRE EFFECTIF DE POINTS/SOUS-POINTS SUR LA MAILLE
+! --------- Number of points/subpoints on current element
 !
-            nmapt = zi(jcesd+5+4*(nummai-1))
-            nmaspt = zi(jcesd+5+4*(nummai-1)+1)
+            nb_elem_poin = zi(jcesd+5+4*(elem_nume-1))
+            nb_elem_spoi = zi(jcesd+5+4*(elem_nume-1)+1)
 !
-! ------- PLAFONNEMENT
+! --------- Check
 !
-            npi = nbpi
-            nspi = nbspi
-            if (npi .gt. nmapt) npi = nmapt
-            if (nspi .gt. nmaspt) nspi = nmaspt
+            npi = nb_poin
+            nspi = nb_spoi
+            if (npi .gt. nb_elem_poin) npi = nb_elem_poin
+            if (nspi .gt. nb_elem_spoi) nspi = nb_elem_spoi
 !
-            do 31 ipar = 1, nbcmp
-                nomcmp = zk8(jcmp-1+ipar)
-                if (nomcha(1:4) .eq. 'VARI') then
-                    nomvar = nomcmp(2:8)//' '
-                    call lxliis(nomvar, ivari, iret)
+            nb_cmp_maxi = zi(jcesd+4)
+            do ipar = 1, nb_cmp
+                cmp_name = v_list_cmp(ipar)
+!
+! ------------- For VARI_ELGA field
+!
+                if (field_type(1:4) .eq. 'VARI') then
+                    cmp_vari_name = cmp_name(2:8)//' '
+                    call lxliis(cmp_vari_name, i_vari, iret)
                 else
-                    ivari = 0
+                    i_vari = 0
                 endif
-                nbcmpx=zi(jcesd+4)
-                if (nomcha(1:4) .eq. 'VARI') then
-                    icmp = ivari
+                
+                if (field_type(1:4) .eq. 'VARI') then
+                    i_cmp = i_vari
                 else
-                    do 32 i = 1, nbcmpx
-                        if (nomcmp .eq. cesc(i)) icmp=i
-32                  continue
+                    do i_cmp_maxi = 1, nb_cmp_maxi
+                        if (cmp_name .eq. cesc(i_cmp_maxi)) then
+                            i_cmp=i_cmp_maxi
+                        endif
+                    end do
                 endif
-                do 45 ipi = 1, npi
-                    num = zi(jpi-1+ipi )
+                do ipi = 1, npi
+                    num = v_list_poin(ipi)
                     ASSERT(num.ne.0)
-                    do 46 ispi = 1, nspi
-                        snum = zi(jspi-1+ispi )
+                    do ispi = 1, nspi
+                        snum = v_list_spoi(ispi)
                         ASSERT(snum.ne.0)
-                        call cesexi('C', jcesd, jcesl, nummai, num,&
-                                    snum, icmp, iad)
+                        call cesexi('C', jcesd, jcesl, elem_nume, num,&
+                                    snum, i_cmp, iad)
                         if (iad .eq. 0) then
-                            valk(1) = nommai
-                            valk(2) = nomcmp
+                            valk(1) = elem_name
+                            valk(2) = cmp_name
                             vali(1) = num
                             vali(2) = snum
                             call utmess('F', 'EXTRACTION_21', nk=2, valk=valk, ni=2,&
                                         vali=vali)
                         endif
-46                  continue
-45              continue
-31          continue
-30      continue
+                    end do
+                end do
+            end do
+        end do
     else
         ASSERT(.false.)
     endif
-!
-    call jedema()
 !
 end subroutine

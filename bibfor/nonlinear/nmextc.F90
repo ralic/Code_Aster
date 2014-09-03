@@ -1,4 +1,11 @@
-subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
+subroutine nmextc(sd_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/nmetob.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,72 +25,55 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmetob.h"
-    character(len=16) :: motfac
-    integer :: iocc
-    character(len=24) :: nomcha, sdieto
-    aster_logical :: lextr
+    character(len=24), intent(in) :: sd_inout
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: i_keyw_fact
+    character(len=24), intent(out) :: field_type
+    aster_logical, intent(out) :: l_extr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+! *_NON_LINE - Field extraction datastructure
 !
-! LECTURE DU NOM DU CHAMP
-! VERIFICATION CHAMP OK POUR PHENOMENE
+! Read field type
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_inout         : datastructure for input/output parameters
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  i_keyw_fact      : index of keyword to read extraction parameters
+! Out field_type       : type of field (name in results datastructure)
+! Out l_extr           : .true. if field can been extracted
 !
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! OUT NOMCHA : NOM DU CHAMP
-! OUT LEXTR  : .TRUE. SI LE CHAMP EST EXTRACTABLE (COMPATIBLE AVEC
-!               PHENOMENE)
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nchp, n1
-    integer :: icham
+    integer :: i_field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    l_extr = .true.
 !
-! --- INITIALISATIONS
+! - Read
 !
-    lextr = .true.
-!
-! --- LECTURE: IL FAUT UN CHAMP ET UN SEUL
-!
-    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n1)
+    call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, nbval=0, nbret=n1)
     nchp = -n1
     ASSERT(nchp.eq.1)
 !
-! --- NOM DU CHAMP
+! - Get name of field (type)
 !
-    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=nchp)
+    call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, scal=field_type)
 !
-! --- INDICE DU CHAMP
+! - Get index of field in sd_inout
 !
-    call nmetob(sdieto, nomcha, icham)
+    call nmetob(sd_inout, field_type, i_field)
 !
-! --- OBSERVABLE ?
+! - Can been monitored ?
 !
-    if (icham .eq. 0) then
-        lextr = .false.
+    if (i_field .eq. 0) then
+        l_extr = .false.
     else
-        lextr = .true.
+        l_extr = .true.
     endif
-!
-    call jedema()
 !
 end subroutine

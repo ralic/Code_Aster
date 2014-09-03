@@ -1,4 +1,4 @@
-subroutine nmextd(field_name_resu, sd_inout, field_algo)
+subroutine nmextd(field_name_resu, sd_inout, field)
 !
 implicit none
 !
@@ -26,19 +26,19 @@ implicit none
 !
     character(len=24), intent(in) :: sd_inout
     character(len=*), intent(in) :: field_name_resu
-    character(len=*), intent(out) :: field_algo
+    character(len=*), intent(out) :: field 
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! Get name of datastructure for field
+! Get field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sd_inout        : datastructure for input/output parameters
+! In  sd_inout        : datastructure for input/output paramnmextnmeters
 ! In  field_name_resu : name of field in algorithme
-! Out field_algo      : name of datastructure for field
+! Out field           : name of datastructure for field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ implicit none
 !
     if (i_field_obsv.ne.0) then
         field_name_algo  = v_io_para(zioch*(i_field_obsv-1)+6 )
-        call nmetnc(field_name_algo, field_algo)
+        call nmetnc(field_name_algo, field)
     endif
 !
 end subroutine

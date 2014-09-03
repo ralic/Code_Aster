@@ -1,5 +1,24 @@
-subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
-                  nbocc, numreo, ntextr)
+subroutine nmextr(meshz       , modelz , sdextrz, sd_inout, keyw_fact,&
+                  nb_keyw_fact, nb_extr)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/nmextc.h"
+#include "asterfort/nmextd.h"
+#include "asterfort/nmextf.h"
+#include "asterfort/nmextk.h"
+#include "asterfort/nmextl.h"
+#include "asterfort/nmextn.h"
+#include "asterfort/nmextp.h"
+#include "asterfort/nmextt.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,230 +38,213 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/impfoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmextc.h"
-#include "asterfort/nmextd.h"
-#include "asterfort/nmextf.h"
-#include "asterfort/nmextk.h"
-#include "asterfort/nmextl.h"
-#include "asterfort/nmextn.h"
-#include "asterfort/nmextp.h"
-#include "asterfort/nmextt.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: noma, nomo
-    character(len=*) :: sdextz
-    character(len=24) :: sdieto
-    integer :: numreo, nbocc, ntextr
-    character(len=16) :: motfac
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: sdextrz
+    character(len=24), intent(in) :: sd_inout
+    integer, intent(in) :: nb_keyw_fact
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(out) :: nb_extr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - EXTRACTION)
+! *_NON_LINE - Field extraction datastructure
 !
-! LECTURE DES DONNEES
+! Read parameters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  sdextr           : name of datastructure for extraction
+! In  sd_inout         : datastructure for input/output parameters
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  nb_keyw_fact     : number of factor keyword to read extraction parameters
+! Out nb_extr          : total number of extraction points
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  SDEXTR : NOM DE LA SD POUR EXTRACTION
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  NBOCC  : NOMBRE D'OCCURRENCES DE MOTFAC
-! IN  NUMREO : NUMERO DE REUSE POUR LA TABLE OBSERVATION
-! OUT NTEXTR : NOMBRE TOTAL D'EXTRACTIONS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: iocc, ioc2, icham, ibid
-    integer :: nbext, nbcham
-    integer :: nbno, nbma, nbpi, nbspi, nbcmp
+    integer :: i_keyw_fact, i_list_field, i_field
+    integer :: nb_extr_keyw, nb_field
+    integer :: nb_node, nb_elem, nb_poin, nb_spoi, nb_cmp
     character(len=2) :: chaine
-    character(len=24) :: oldcha, nomcha, nomchs, nomchx
-    character(len=4) :: typcha
-    aster_logical :: lextr, trouve
-    character(len=24) :: listno, listma, listpi, listsp, listcp
-    character(len=24) :: extinf, extcha, exttyp, extact
-    integer :: jextin, jextch, jextty, jextac
-    character(len=19) :: champ
-    character(len=8) :: extrcp, extrch, extrga
-    character(len=24) :: list
-    integer :: jlist
-    character(len=19) :: sdextr
+    character(len=24) :: oldcha, field_type, field_s
+    character(len=4) :: field_disc
+    aster_logical :: l_extr, l_find
+    character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp
+    character(len=19) :: field
+    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem
+    character(len=14) :: sdextr
+    character(len=24) :: extr_info, extr_type, extr_flag, extr_field
+    integer, pointer :: v_extr_info(:) => null()
+    character(len=8), pointer :: v_extr_type(:) => null()
+    aster_logical, pointer :: v_extr_flag(:) => null()
+    character(len=24), pointer :: v_extr_field(:) => null()
+    character(len=24), pointer :: v_list_field(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nb_extr    = 0
+    nb_field   = 0
+    sdextr     = sdextrz
 !
-! --- INITIALISATIONS
+! - Create information vector
 !
-    ntextr = 0
-    list = '&&NMEXTR.LIST'
-    nbcham = 0
-    sdextr = sdextz
+    extr_info = sdextr(1:14)//'     .INFO'
+    call wkvect(extr_info, 'V V I', 7*nb_keyw_fact+4, vi = v_extr_info)
+    if (nb_keyw_fact .eq. 0) goto 99
 !
-! --- SD PRINCIPALE (INFO)
+! - Create extraction type vector
 !
-    extinf = sdextr(1:14)//'     .INFO'
-    call wkvect(extinf, 'V V I', 7*nbocc+4, jextin)
-    if (nbocc .eq. 0) goto 99
+    extr_type = sdextr(1:14)//'     .EXTR'
+    call wkvect(extr_type, 'V V K8', 3*nb_keyw_fact, vk8 = v_extr_type)
 !
-! --- SD TYPE D'EXTRACTION (CHAMP, GAUSS, COMPOSANTES)
+! - Create extraction flag vector
 !
-    exttyp = sdextr(1:14)//'     .EXTR'
-    call wkvect(exttyp, 'V V K8', 3*nbocc, jextty)
+    extr_flag = sdextr(1:14)//'     .ACTI'
+    call wkvect(extr_flag, 'V V L', nb_keyw_fact, vl = v_extr_flag)
 !
-! --- SD ACTIVATION EXTRACTION
+! - List of field to extract
 !
-    extact = sdextr(1:14)//'     .ACTI'
-    call wkvect(extact, 'V V L', nbocc, jextac)
+    AS_ALLOCATE(vk24 = v_list_field, size = nb_keyw_fact)
+    do i_keyw_fact = 1, nb_keyw_fact
 !
-! --- LISTE DES CHAMPS A EXTRAIRE
+! ----- Read field type
 !
-    call wkvect(list, 'V V K24', nbocc, jlist)
-    do 5 iocc = 1, nbocc
-!
-! ----- CE CHAMP EST-IL OBSERVABLE ?
-!
-        call nmextc(sdieto, motfac, iocc, nomcha, lextr)
-        if (.not.lextr) nomcha = 'NONE'
-!
-! ----- CE CHAMP EXISTE-T-IL DEJA ?
-!
-        trouve = .false.
-        do 6 ioc2 = 1, nbocc - 1
-            oldcha = zk24(jlist-1+ioc2)
-            if (oldcha .eq. nomcha) then
-                icham = ioc2
-                trouve = .true.
-            endif
-  6     continue
-        if (.not.trouve) then
-            nbcham = nbcham + 1
-            icham = nbcham
-            zk24(jlist-1+icham) = nomcha
+        call nmextc(sd_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+        if (.not.l_extr) then
+            field_type = 'NONE'
         endif
-        zi(jextin+4+7*(iocc-1)+7-1) = icham
-  5 end do
 !
-! --- SD LISTE DES CHAMPS: CHAMP DE REFERENCE ET CHAMP SIMPLE
+! ----- Add field in list to extract
 !
-    extcha = sdextr(1:14)//'     .CHAM'
-    call wkvect(extcha, 'V V K24', 2*nbcham, jextch)
-    do 20 icham = 1, nbcham
-        nomcha = zk24(jlist-1+icham)
-        nomchs = nomcha(1:18)//'S'
-        zk24(jextch+2*(icham-1)+1-1) = nomcha
-        zk24(jextch+2*(icham-1)+2-1) = nomchs
- 20 end do
+        l_find = .false.
+        do i_list_field = 1, nb_keyw_fact - 1
+            oldcha = v_list_field(i_list_field)
+            if (oldcha .eq. field_type) then
+                i_field = i_list_field
+                l_find  = .true.
+            endif
+        end do
+        if (.not.l_find) then
+            nb_field = nb_field + 1
+            i_field  = nb_field
+            v_list_field(i_field) = field_type
+        endif
+        v_extr_info(4+7*(i_keyw_fact-1)+7) = i_field
+    end do
 !
-    do 10 iocc = 1, nbocc
+! - Create extraction field vector
 !
-        nbext = 0
-        extrga = 'NONE'
-        extrcp = 'NONE'
-        extrch = 'NONE'
+    extr_field = sdextr(1:14)//'     .CHAM'
+    call wkvect(extr_field, 'V V K24', 2*nb_field, vk24 = v_extr_field)
+    do i_field = 1, nb_field
+        field_type   = v_list_field(i_field)
+        field_s = field_type(1:18)//'S'
+        v_extr_field(2*(i_field-1)+1) = field_type
+        v_extr_field(2*(i_field-1)+2) = field_s
+    end do
 !
-! ----- GENERATION DU NOM DES SD
+! - Prepare extraction data
 !
-        call impfoi(0, 2, iocc, chaine)
-        listno = sdextr(1:14)//chaine(1:2)//'   .NOEU'
-        listma = sdextr(1:14)//chaine(1:2)//'   .MAIL'
-        listpi = sdextr(1:14)//chaine(1:2)//'   .POIN'
-        listsp = sdextr(1:14)//chaine(1:2)//'   .SSPI'
-        listcp = sdextr(1:14)//chaine(1:2)//'   .CMP '
+    do i_keyw_fact = 1, nb_keyw_fact
 !
-! ----- NOM DU CHAMP
+        nb_extr_keyw = 0
+        type_extr_elem = 'NONE'
+        type_extr_cmp = 'NONE'
+        type_extr = 'NONE'
 !
-        icham = zi(jextin+4+7*(iocc-1)+7-1)
-        nomcha = zk24(jextch+2*(icham-1)+1-1)
-        nomchs = zk24(jextch+2*(icham-1)+2-1)
-        if (nomcha .eq. 'NONE') then
-            call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomchx, nbret=ibid)
-            call utmess('A', 'EXTRACTION_99', sk=nomchx)
+! ----- Datastructure name generation
+!
+        call impfoi(0, 2, i_keyw_fact, chaine)
+        list_node = sdextr(1:14)//chaine(1:2)//'   .NOEU'
+        list_elem = sdextr(1:14)//chaine(1:2)//'   .MAIL'
+        list_poin = sdextr(1:14)//chaine(1:2)//'   .POIN'
+        list_spoi = sdextr(1:14)//chaine(1:2)//'   .SSPI'
+        list_cmp  = sdextr(1:14)//chaine(1:2)//'   .CMP '
+!
+! ----- Type of field
+!
+        i_field      = v_extr_info(4+7*(i_keyw_fact-1)+7)
+        field_type   = v_extr_field(2*(i_field-1)+1)
+        field_s      = v_extr_field(2*(i_field-1)+2)
+        if (field_type .eq. 'NONE') then
+            call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, scal=field_type)
+            call utmess('A', 'EXTRACTION_99', sk=field_type)
             goto 999
         endif
 !
-! ----- TYPE DU CHAMP (NOEU OU ELGA)
+! ----- Get localization of field (discretization: NOEU or ELGA)
 !
-        call nmextt(sdieto, nomcha, typcha)
+        call nmextt(sd_inout, field_type, field_disc)
 !
-! ----- RECUPERATION DU CHAMP TEST POUR VERIF. COMPOSANTES
+! ----- Get field
 !
-        call nmextd(nomcha, sdieto, champ)
+        call nmextd(field_type, sd_inout, field)
 !
-! ----- LECTURE DE L'ENDROIT POUR EXTRACTION (MAILLE/NOEUD)
+! ----- Get topology (nodes or elements) and type of extraction for field
 !
-        call nmextl(noma, nomo, motfac, iocc, nomcha,&
-                    typcha, listno, listma, nbno, nbma,&
-                    extrch)
+        call nmextl(meshz     , modelz   , keyw_fact, i_keyw_fact, field_type,&
+                    field_disc, list_node, list_elem, nb_node    , nb_elem   ,&
+                    type_extr)
 !
-! ----- LECTURE INFO. SI CHAM_ELGA/CHAM_ELEM
+! ----- Get topology (point and subpoints) and type of extraction for element
 !
-        if (typcha .eq. 'ELGA') then
-            call nmextp(motfac, iocc, nomcha, champ, nomchs,&
-                        listpi, listsp, nbpi, nbspi, extrga)
+        if (field_disc .eq. 'ELGA') then
+            call nmextp(keyw_fact, i_keyw_fact, field_type, field  , field_s       ,&
+                        list_poin, list_spoi  , nb_poin   , nb_spoi, type_extr_elem)
         endif
 !
-! ----- LECTURE ET VERIF DES COMPOSANTES
+! ----- Get component(s)
 !
-        call nmextk(noma, motfac, iocc, champ, nomcha,&
-                    nomchs, typcha, listno, listma, listpi,&
-                    listsp, nbno, nbma, nbpi, nbspi,&
-                    listcp, nbcmp)
+        call nmextk(meshz    , keyw_fact , i_keyw_fact, field    , field_type,&
+                    field_s  , field_disc, list_node  , list_elem, list_poin ,&
+                    list_spoi, nb_node   , nb_elem    , nb_poin  , nb_spoi   ,&
+                    list_cmp , nb_cmp)
 !
-! ----- TYPE EXTRACTION SUR LES COMPOSANTES
+! ----- Get type of extraction for components
 !
-        call nmextf(motfac, iocc, extrcp)
+        call nmextf(keyw_fact, i_keyw_fact, type_extr_cmp)
 !
-! ----- DECOMPTE DES POINTS D'EXTRACTION
+! ----- Count number of extractions
 !
-        call nmextn(typcha, extrcp, extrga, extrch, nbno,&
-                    nbma, nbcmp, nbpi, nbspi, nbext)
+        call nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node,&
+                    nb_elem   , nb_cmp       , nb_poin       , nb_spoi  , nb_extr_keyw)
 !
-! ----- SAUVEGARDE
+! ----- Save
 !
-        zk8(jextty+3*(iocc-1)+1-1) = extrch
-        zk8(jextty+3*(iocc-1)+2-1) = extrga
-        zk8(jextty+3*(iocc-1)+3-1) = extrcp
-        zi(jextin+4+7*(iocc-1)+1-1) = nbcmp
-        zi(jextin+4+7*(iocc-1)+2-1) = nbno
-        zi(jextin+4+7*(iocc-1)+3-1) = nbma
-        zi(jextin+4+7*(iocc-1)+4-1) = nbpi
-        zi(jextin+4+7*(iocc-1)+5-1) = nbspi
-        zi(jextin+4+7*(iocc-1)+6-1) = nbext
+        v_extr_type(3*(i_keyw_fact-1)+1) = type_extr
+        v_extr_type(3*(i_keyw_fact-1)+2) = type_extr_elem
+        v_extr_type(3*(i_keyw_fact-1)+3) = type_extr_cmp
+        v_extr_info(4+7*(i_keyw_fact-1)+1) = nb_cmp
+        v_extr_info(4+7*(i_keyw_fact-1)+2) = nb_node
+        v_extr_info(4+7*(i_keyw_fact-1)+3) = nb_elem
+        v_extr_info(4+7*(i_keyw_fact-1)+4) = nb_poin
+        v_extr_info(4+7*(i_keyw_fact-1)+5) = nb_spoi
+        v_extr_info(4+7*(i_keyw_fact-1)+6) = nb_extr_keyw
 !
 999     continue
 !
-        ntextr = ntextr + nbext
+        nb_extr = nb_extr + nb_extr_keyw
 !
- 10 end do
+    end do
 !
 !
 ! --- DESTRUCTION DES CHAM_ELEM_S
 !
-    do 45 icham = 1, nbcham
-        nomchs = zk24(jextch+2*(icham-1)+2-1)
-        call jedetr(nomchs)
- 45 end do
+    do i_field = 1, nb_field
+        field_s = v_extr_field(2*(i_field-1)+2)
+        call jedetr(field_s)
+    end do
  99 continue
 !
-! --- INFOS PRINCIPALES
+! - Set information vector
 !
-    zi(jextin-1+1) = nbocc
-    zi(jextin-1+2) = ntextr
-    zi(jextin-1+3) = 1
-    zi(jextin-1+4) = numreo
+    v_extr_info(1) = nb_keyw_fact
+    v_extr_info(2) = nb_extr
+    v_extr_info(3) = 1
+    v_extr_info(4) = 0
 !
-    call jedetr(list)
-    call jedema()
+    AS_DEALLOCATE(vk24 = v_list_field)
+!
 end subroutine

@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
-        character(len=24) :: sdieto
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=24) :: nomcha
-        aster_logical :: lextr
+    subroutine nmextc(sd_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
+        character(len=24), intent(in) :: sd_inout
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: i_keyw_fact
+        character(len=24), intent(out) :: field_type
+        aster_logical, intent(out) :: l_extr
     end subroutine nmextc
 end interface

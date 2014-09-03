@@ -16,17 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
-                      listpi, listsp, nbpi, nbspi, extrga)
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=24) :: nomcha
-        character(len=19) :: champ
-        character(len=24) :: nomchs
-        character(len=24) :: listpi
-        character(len=24) :: listsp
-        integer :: nbpi
-        integer :: nbspi
-        character(len=8) :: extrga
+    subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field  , field_s       ,&
+                      list_poin, list_spoi  , nb_poin   , nb_spoi, type_extr_elem)
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: i_keyw_fact
+        character(len=19), intent(in) :: field
+        character(len=24), intent(in) :: field_type
+        character(len=24), intent(in) :: field_s
+        character(len=8), intent(out) :: type_extr_elem
+        character(len=24), intent(in) :: list_poin
+        character(len=24), intent(in) :: list_spoi
+        integer, intent(out) :: nb_poin
+        integer, intent(out) :: nb_spoi
     end subroutine nmextp
 end interface

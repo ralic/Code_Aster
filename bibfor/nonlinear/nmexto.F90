@@ -1,6 +1,10 @@
-subroutine nmexto(typcpt, typcha, extrcp, extrga, extrch,&
-                  nbno, nbma, nbcmp, nbpi, nbspi,&
-                  ncompt)
+subroutine nmexto(type_count, field_disc, type_extr_cmp, type_extr_elem, type_extr,&
+                  nb_node   , nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
+                  nb_count)
+!
+implicit none
+!
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,86 +24,90 @@ subroutine nmexto(typcpt, typcha, extrcp, extrga, extrch,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterfort/assert.h"
-    integer :: ncompt
-    character(len=4) :: typcha, typcpt
-    integer :: nbno, nbma, nbcmp, nbpi, nbspi
-    character(len=8) :: extrcp, extrga, extrch
+    character(len=4), intent(in) :: type_count
+    character(len=4), intent(in) :: field_disc
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    integer, intent(in) :: nb_cmp
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr_cmp
+    integer, intent(out) :: nb_count
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! DECOMPTE DES POINTS D'EXTRACTION
+! Count number of extractions - By type
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  TYPCPT : TYPE DE DECOMPTE
+! In  type_count       : type of count
 !      'COMP' : NOMBRE DE COMPOSANTES
 !      'POIN' : NOMBRE DE POINTS
 !      'LIEU' : NOMBRE DE LIEUX
-! IN  TYPCHA : TYPE DU CHAMP 'NOEU' OU 'ELGA'
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-!               ' ' POUR LES VALEURS OU NOM DE LA FORMULE
-! IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  NBNO   : LONGUEUR DE LA LISTE DES NOEUDS (-1 SI TOUS NOEUDS)
-! IN  NBMA   : LONGUEUR DE LA LISTE DES MAILLES (-1 SI TOUTES MAILLES)
-! IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
-! IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
-! IN  NCMP   : NOMBRE DE COMPOSANTES
-! OUT NCOMPT : NOMBRE D'EXTRACTIONS
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr_cmp    : type of extraction for components
+! In  nb_node          : number of nodes
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  nb_cmp           : number of components
+! In  nb_count         : number of count
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    nb_count = 0
 !
-! --- INITIALISATIONS
-!
-    ncompt = 0
-!
-! --- COMPTAGE
-!
-    if (typcpt .eq. 'COMP') then
-        if (extrcp .eq. ' ') then
-            ncompt = nbcmp
+    if (type_count .eq. 'COMP') then
+        if (type_extr_cmp .eq. ' ') then
+            nb_count = nb_cmp
         else
-            ncompt = 1
+            nb_count = 1
         endif
-    else if (typcpt.eq.'POIN') then
-        if (typcha .eq. 'ELGA') then
-            if (extrga .eq. 'VALE') then
-                ncompt = nbpi*nbspi
-                elseif ((extrga.eq.'MIN').or. (extrga.eq.'MAX').or.&
-            (extrga.eq.'MOY')) then
-                ncompt = 1
+    else if (type_count.eq.'POIN') then
+        if (field_disc .eq. 'ELGA') then
+            if (type_extr_elem .eq. 'VALE') then
+                nb_count = nb_poin*nb_spoi
+            elseif ((type_extr_elem.eq.'MIN').or.&
+                    (type_extr_elem.eq.'MAX').or.&
+                    (type_extr_elem.eq.'MOY')) then
+                nb_count = 1
             else
                 ASSERT(.false.)
             endif
-        else if (typcha.eq.'NOEU') then
-            ncompt = 1
+        else if (field_disc.eq.'NOEU') then
+            nb_count = 1
         else
             ASSERT(.false.)
         endif
-    else if (typcpt.eq.'LIEU') then
-        if (typcha .eq. 'NOEU') then
-            if (extrch .eq. 'VALE') then
-                ncompt = nbno
-                elseif ((extrch.eq.'MIN').or. (extrch.eq.'MAX').or.&
-            (extrch.eq.'MAXI_ABS').or. (extrch.eq.'MINI_ABS').or.&
-            (extrch.eq.'MOY')) then
-                ncompt = 1
+    else if (type_count.eq.'LIEU') then
+        if (field_disc .eq. 'NOEU') then
+            if (type_extr .eq. 'VALE') then
+                nb_count = nb_node
+            elseif ((type_extr.eq.'MIN').or.&
+                    (type_extr.eq.'MAX').or.&
+                    (type_extr.eq.'MAXI_ABS').or.&
+                    (type_extr.eq.'MINI_ABS').or.&
+                    (type_extr.eq.'MOY')) then
+                nb_count = 1
             else
                 ASSERT(.false.)
             endif
-        else if (typcha.eq.'ELGA') then
-            if (extrch .eq. 'VALE') then
-                ncompt = nbma
-                elseif ((extrch.eq.'MIN').or. (extrch.eq.'MAX').or.&
-            (extrch.eq.'MAXI_ABS').or. (extrch.eq.'MINI_ABS').or.&
-            (extrch.eq.'MOY')) then
-                ncompt = 1
+        else if (field_disc.eq.'ELGA') then
+            if (type_extr .eq. 'VALE') then
+                nb_count = nb_elem
+            elseif ((type_extr.eq.'MIN').or.&
+                    (type_extr.eq.'MAX').or.&
+                    (type_extr.eq.'MAXI_ABS').or.&
+                    (type_extr.eq.'MINI_ABS').or.&
+                    (type_extr.eq.'MOY')) then
+                nb_count = 1
             else
                 ASSERT(.false.)
             endif

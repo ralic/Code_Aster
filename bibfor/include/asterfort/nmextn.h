@@ -16,17 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextn(typcha, extrcp, extrga, extrch, nbno,&
-                      nbma, nbcmp, nbpi, nbspi, nbext)
-        character(len=4) :: typcha
-        character(len=8) :: extrcp
-        character(len=8) :: extrga
-        character(len=8) :: extrch
-        integer :: nbno
-        integer :: nbma
-        integer :: nbcmp
-        integer :: nbpi
-        integer :: nbspi
-        integer :: nbext
+    subroutine nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node,&
+                      nb_elem   , nb_cmp       , nb_poin       , nb_spoi  , nb_extr)
+        character(len=4), intent(in) :: field_disc
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: nb_poin
+        integer, intent(in) :: nb_spoi
+        integer, intent(in) :: nb_cmp
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_elem
+        character(len=8), intent(in) :: type_extr_cmp
+        integer, intent(out) :: nb_extr
     end subroutine nmextn
 end interface
