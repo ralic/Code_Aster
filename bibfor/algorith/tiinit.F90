@@ -1,6 +1,10 @@
-subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
-                  lnonl, instin, sddisc, sdieto, sdobse,&
-                  levol)
+subroutine tiinit(resulz, lreuse, instin, lisins, sddisc)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/ntcrar.h"
+#include "asterfort/ntcrli.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,67 +24,33 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/getvid.h"
-#include "asterfort/nmcrob.h"
-#include "asterfort/ntcra0.h"
-#include "asterfort/ntcrar.h"
-#include "asterfort/ntcrli.h"
-#include "asterfort/utmess.h"
     real(kind=8) :: instin
-    character(len=8) :: mailla
     character(len=19) :: sddisc
-    aster_logical :: levol, lostat, lnonl, lreuse
-    character(len=19) :: sdobse
-    character(len=24) :: resulz, modele
-    character(len=24) :: sdieto
+    aster_logical :: lreuse
+    character(len=19) :: lisins
+    character(len=24) :: resulz
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE THER_NON_LINE THER_LINEAIRE (STRUCTURES DE DONNES)
+! ROUTINE THER_* (STRUCTURES DE DONNES)
 !
-! CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
+! CREATION SD DISCRETISATION ET ARCHIVAGE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  RESULT : NOM UTILISATEUR DU RESULTAT
-! IN  MAILLA : NOM DU MAILLAGE
-! IN  MODELE : NOM DU MODELE
-! IN  SDIETO : SD GESTION IN ET OUT
 ! IN  INSTIN : INSTANT INITIAL QUAND ETAT_INIT
-! IN  LOSTAT : .TRUE. SI CALCUL STATIONNAIRE PREALABLE OU PAS
-! IN  LNONL  : .TRUE. SI NON-LINEAIRE
+! IN  LISINS : list of time step
 ! IN  LREUSE : .TRUE. SI REUSE
-! OUT LEVOL  : .TRUE. SI TRANSITOIRE
 ! OUT SDDISC : SD DISCRETISATION
-! OUT SDOBSE : NOM DE LA SD POUR OBSERVATION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1
-    character(len=8) :: nomo, result
-    character(len=19) :: lisins
-    integer :: numreo
+    character(len=8) :: result
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    lisins = ' '
-    levol = .false.
-    nomo = modele(1:8)
     result = resulz(1:8)
-!
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
-    if (n1 .eq. 0) then
-        if (.not.lostat) then
-            call utmess('F', 'DISCRETISATION_8')
-        endif
-        levol = .false.
-        call ntcra0(sddisc)
-        goto 999
-    else
-        levol = .true.
-    endif
 !
 ! --- CREATION SD DISCRETISATION
 !
@@ -88,15 +58,6 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
 !
 ! --- CREATION SD ARCHIVAGE
 !
-    call ntcrar(result, sddisc, lreuse, numreo)
-!
-! --- CREATION SD OBSERVATION
-!
-    if (lnonl) then
-        call nmcrob(mailla, nomo, result, numreo, sdieto,&
-                    sdobse)
-    endif
-!
-999 continue
+    call ntcrar(result, sddisc, lreuse)
 !
 end subroutine

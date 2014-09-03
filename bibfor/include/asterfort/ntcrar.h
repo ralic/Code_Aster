@@ -18,10 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntcrar(result, sddisc, lreuse, numreo)
+    subroutine ntcrar(result, sddisc, lreuse)
         character(len=8) :: result
         character(len=19) :: sddisc
         aster_logical :: lreuse
-        integer :: numreo
     end subroutine ntcrar
 end interface

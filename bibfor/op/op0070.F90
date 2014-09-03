@@ -104,9 +104,9 @@ subroutine op0070()
 ! --- STRUCTURES DE DONNEES
 !
     character(len=24) :: sdimpr, sdtime, sderro, sd_inout
-    character(len=24) :: sdstat, sdconv, sdsuiv, sdcriq
+    character(len=24) :: sdstat, sdconv, sd_suiv, sdcriq
     character(len=19) :: sdpilo, sdnume, sddyna, sddisc, sdcrit
-    character(len=19) :: sdobse, sdpost, sdener
+    character(len=19) :: sd_obsv, sdpost, sdener
     character(len=24) :: defico, resoco, deficu, resocu
 !
 ! --- VARIABLES CHAPEAUX
@@ -120,8 +120,8 @@ subroutine op0070()
 !
 ! ----------------------------------------------------------------------
 !
-    data sdpilo, sdobse    /'&&OP0070.PILO.','&&OP0070.OBSE.'/
-    data sdimpr, sdsuiv    /'&&OP0070.IMPR.','&&OP0070.SUIV.'/
+    data sdpilo            /'&&OP0070.PILO.'/
+    data sdimpr            /'&&OP0070.IMPR.'/
     data sdpost, sdcriq    /'&&OP0070.POST.','&&OP0070.CRIQ.'/
     data sdtime, sderro    /'&&OP0070.TIME.','&&OP0070.ERRE.'/
     data sdstat            /'&&OP0070.STAT.'/
@@ -184,7 +184,7 @@ subroutine op0070()
                 solveu, carcri, numins, sdstat  , sddisc,&
                 sdnume, defico, sdcrit, comref  , fonact,&
                 parcon, parcri, method, lisch2  , mesh  ,&
-                sdpilo, sddyna, sdimpr, sdsuiv  , sdobse,&
+                sdpilo, sddyna, sdimpr, sd_suiv  , sd_obsv,&
                 sdtime, sderro, sdpost, sd_inout, sdener,&
                 sdconv, sdcriq, deficu, resocu  , resoco,&
                 valinc, solalg, measse, veelem  , meelem,&
@@ -231,7 +231,7 @@ subroutine op0070()
                     method, fonact, carcri, parcon, conv,&
                     parmet, parcri, sdstat, sd_inout, sdtime,&
                     sderro, sdimpr, sdnume, sddyna, sddisc,&
-                    sdcrit, sdsuiv, sdpilo, sdconv, solveu,&
+                    sdcrit, sd_suiv, sdpilo, sdconv, solveu,&
                     maprec, matass, valinc, solalg, meelem,&
                     measse, veelem, veasse, defico, resoco,&
                     deficu, resocu, eta, nbiter)
@@ -260,7 +260,7 @@ subroutine op0070()
                 compor, solveu, numins, mate, comref,&
                 lischa, defico, resoco, resocu, parmet,&
                 parcon, fonact, carcri, sdimpr, sdstat,&
-                sddisc, sdtime, sdobse, sderro, sd_inout,&
+                sddisc, sdtime, sd_obsv, sderro, sd_inout,&
                 sddyna, sdpost, valinc, solalg, meelem,&
                 measse, veelem, veasse, sdener, sdcriq,&
                 eta)

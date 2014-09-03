@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nminit(result, model, numedd, numfix, mate,&
-                      compor, carele, parmet, lischa, maprec,&
-                      solveu, carcri, numins, sdstat, sddisc,&
-                      sdnume, defico, sdcrit, comref, fonact,&
-                      parcon, parcri, method, lisch2, mesh,&
-                      sdpilo, sddyna, sdimpr, sdsuiv, sdobse,&
+    subroutine nminit(result, model , numedd, numfix  , mate,&
+                      compor, carele, parmet, lischa  , maprec,&
+                      solveu, carcri, numins, sdstat  , sddisc,&
+                      sdnume, defico, sdcrit, comref  , fonact,&
+                      parcon, parcri, method, lisch2  , mesh,&
+                      sdpilo, sddyna, sdimpr, sd_suiv , sd_obsv,&
                       sdtime, sderro, sdpost, sd_inout, sdener,&
-                      sdconv, sdcriq, deficu, resocu, resoco,&
-                      valinc, solalg, measse, veelem, meelem,&
+                      sdconv, sdcriq, deficu, resocu  , resoco,&
+                      valinc, solalg, measse, veelem  , meelem,&
                       veasse, codere)
         character(len=8) :: result
         character(len=24) :: model
@@ -54,12 +54,12 @@ interface
         character(len=19) :: sdpilo
         character(len=19) :: sddyna
         character(len=24) :: sdimpr
-        character(len=24) :: sdsuiv
-        character(len=19) :: sdobse
+        character(len=24), intent(out) :: sd_suiv
         character(len=24) :: sdtime
         character(len=24) :: sderro
         character(len=19) :: sdpost
         character(len=24), intent(out) :: sd_inout
+        character(len=19), intent(out) :: sd_obsv
         character(len=19) :: sdener
         character(len=24) :: sdconv
         character(len=24) :: sdcriq

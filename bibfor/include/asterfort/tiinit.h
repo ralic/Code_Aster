@@ -18,19 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
-                      lnonl, instin, sddisc, sdieto, sdobse,&
-                      levol)
-        character(len=8) :: mailla
-        character(len=24) :: modele
-        character(len=24) :: resulz
-        aster_logical :: lostat
-        aster_logical :: lreuse
-        aster_logical :: lnonl
+    subroutine tiinit(resulz, lreuse, instin, lisins, sddisc)
         real(kind=8) :: instin
         character(len=19) :: sddisc
-        character(len=24) :: sdieto
-        character(len=19) :: sdobse
-        aster_logical :: levol
+        aster_logical :: lreuse
+        character(len=19) :: lisins
+        character(len=24) :: resulz
     end subroutine tiinit
 end interface

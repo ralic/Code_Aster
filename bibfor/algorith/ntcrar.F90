@@ -1,4 +1,20 @@
-subroutine ntcrar(result, sddisc, lreuse, numreo)
+subroutine ntcrar(result, sddisc, lreuse)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarex.h"
+#include "asterfort/nmarnr.h"
+#include "asterfort/nmarpr.h"
+#include "asterfort/nmcrpx.h"
+#include "asterfort/nmdide.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,24 +33,9 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmarex.h"
-#include "asterfort/nmarnr.h"
-#include "asterfort/nmarpr.h"
-#include "asterfort/nmcrpx.h"
-#include "asterfort/nmdide.h"
-#include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=8) :: result
     aster_logical :: lreuse
-    integer :: numreo
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,12 +49,11 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 ! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  LREUSE : .TRUE. SI CONCEPT REENTRANT
 ! IN  SDDISC : SD DISCRETISATION
-! OUT NUMREO : NUMERO DE REUSE POUR LA TABLE D'OBSERVATION
 !
 ! ----------------------------------------------------------------------
 !
     integer :: nocc, iocc
-    integer :: numder, numrep
+    integer :: numder, numrep, numreo
     character(len=16) :: motfac, motpas
     integer :: numarc
     character(len=24) :: arcinf

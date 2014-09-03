@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrar(result, sddisc, fonact, numreo)
+    subroutine nmcrar(result, sddisc, fonact)
         character(len=8) :: result
         character(len=19) :: sddisc
         integer :: fonact(*)
-        integer :: numreo
     end subroutine nmcrar
 end interface

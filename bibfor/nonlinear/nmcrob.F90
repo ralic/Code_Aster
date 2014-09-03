@@ -1,5 +1,16 @@
-subroutine nmcrob(noma, nomo, result, numreo, sdieto,&
-                  sdobse)
+subroutine nmcrob(meshz  , modelz, result, sddisc, sd_inout,&
+                  sd_obsv)
+!
+implicit none
+!
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcroi.h"
+#include "asterfort/nmcrot.h"
+#include "asterfort/nmextr.h"
+#include "asterfort/nmobno.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,93 +30,76 @@ subroutine nmcrob(noma, nomo, result, numreo, sdieto,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcroi.h"
-#include "asterfort/nmcrot.h"
-#include "asterfort/nmextr.h"
-#include "asterfort/nmobno.h"
-#include "asterfort/utmess.h"
-    character(len=8) :: result, noma, nomo
-    integer :: numreo
-    character(len=19) :: sdobse
-    character(len=24) :: sdieto
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
+    character(len=8), intent(in) :: result
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sd_inout
+    character(len=19), intent(out) :: sd_obsv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (STRUCTURES DE DONNES)
+! MECA_NON_LINE - Init
 !
-! CREATION SD OBSERVATION
+! Create observation datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  result           : name of results datastructure
+! In  sddisc           : datastructure for discretization
+! in  sd_inout         : datastructure for input/output parameters
+! Out sd_obsv          : datastructure for observation parameters
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  SDOBSE : NOM DE LA SD POUR OBSERVATION
-! IN  RESULT : NOM UTILISATEUR DU RESULTAT
-! IN  NUMREO : NUMERO DE REUSE POUR LA TABLE OBSERVATION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: nb_obsv, nbocc, nume_reuse
+    character(len=19) :: sdarch
+    character(len=16) :: keyw_fact
+    character(len=24) :: arch_info
+    integer, pointer :: v_arch_info(:) => null()
 !
-    integer :: ifm, niv
-    integer :: ntobs, nbocc
-    character(len=16) :: motfac
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-    call infniv(ifm, niv)
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<    NONLINE> ... CREATION SD OBSERVATION'
-    endif
-!
-! --- INITIALISATIONS
-!
-    ntobs = 0
-    motfac = 'OBSERVATION'
-!
-! --- NOMBRE OCCURRENCES
-!
-    call getfac(motfac, nbocc)
+    nb_obsv   = 0
+    sd_obsv   = '&&NMCROB.OBSV'
+    keyw_fact = 'OBSERVATION'
+    call getfac(keyw_fact, nbocc)
     ASSERT(nbocc.le.99)
 !
-! --- LECTURE DES DONNEES
+! - Access to storage datasstructure
 !
-    call nmextr(noma, nomo, sdobse, sdieto, motfac,&
-                nbocc, numreo, ntobs)
+    sdarch    = sddisc(1:14)//'.ARCH'
+    arch_info = sdarch(1:19)//'.AINF'
+    call jeveuo(arch_info, 'L', vi = v_arch_info)
 !
-! --- CONTROLE
+! - Get reuse index in OBSERVATION table
 !
-    if (ntobs .ne. 0) then
-        call utmess('I', 'OBSERVATION_3', si=ntobs)
-    else
-        goto 999
+    nume_reuse = v_arch_info(3)
+!
+! - Read datas for extraction
+!
+    call nmextr(meshz, modelz    , sd_obsv, sd_inout, keyw_fact,&
+                nbocc, nume_reuse, nb_obsv)
+!
+! - Read parameters
+!
+    if (nb_obsv .ne. 0) then
+!
+        call utmess('I', 'OBSERVATION_3', si=nb_obsv)   
+!
+! ----- Read time list
+!
+        call nmcroi(sd_obsv, keyw_fact, nbocc)
+!
+! ----- Read name of columns
+!
+        call nmobno(sd_obsv, keyw_fact, nbocc)
+!
+! ----- Create table
+!
+        call nmcrot(result, sd_obsv)
     endif
-!
-! --- LECTURE LISTES INSTANTS
-!
-    call nmcroi(sdobse, motfac, nbocc)
-!
-! --- NOM DES COLONNES
-!
-    call nmobno(sdobse, motfac, nbocc)
-!
-! --- CREATION DE LA TABLE D'OBSERVATION
-!
-    call nmcrot(result, sdobse)
-!
-999  continue
-!
-    call jedema()
 !
 end subroutine

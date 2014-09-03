@@ -3,7 +3,7 @@ subroutine nminit(result, model , numedd, numfix  , mate,&
                   solveu, carcri, numins, sdstat  , sddisc,&
                   sdnume, defico, sdcrit, comref  , fonact,&
                   parcon, parcri, method, lisch2  , mesh,&
-                  sdpilo, sddyna, sdimpr, sdsuiv  , sdobse,&
+                  sdpilo, sddyna, sdimpr, sd_suiv , sd_obsv,&
                   sdtime, sderro, sdpost, sd_inout, sdener,&
                   sdconv, sdcriq, deficu, resocu  , resoco,&
                   valinc, solalg, measse, veelem  , meelem,&
@@ -34,6 +34,7 @@ implicit none
 #include "asterfort/nmcrch.h"
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmcrob.h"
+#include "asterfort/nmcrdd.h"
 #include "asterfort/nmcrst.h"
 #include "asterfort/nmcrti.h"
 #include "asterfort/nmdoco.h"
@@ -81,7 +82,7 @@ implicit none
     character(len=16) :: method(*)
     integer :: numins
     character(len=8) :: result, mesh
-    character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo, sdobse, sdener
+    character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo, sdener
     character(len=19) :: sdpost
     character(len=19) :: lischa, lisch2, sddyna
     character(len=19) :: maprec
@@ -93,9 +94,11 @@ implicit none
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: sdimpr, sdtime, sderro, sdstat, sdconv
-    character(len=24) :: deficu, resocu, sdsuiv, sdcriq
+    character(len=24) :: deficu, resocu, sdcriq
     character(len=24) :: comref
     character(len=24), intent(out) :: sd_inout
+    character(len=19), intent(out) :: sd_obsv
+    character(len=24), intent(out) :: sd_suiv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,6 +118,8 @@ implicit none
 ! OUT NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! OUT NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! Out sd_inout         : datastructure for input/output parameters
+! Out sd_obsv          : datastructure for observation parameters
+! Out sd_suiv          : datastructure for dof monitoring parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -232,16 +237,20 @@ implicit none
                 sddyna, sdcriq, sd_inout, solalg, lacc0,&
                 instin)
 !
-! --- CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
+! --- CREATION SD DISCRETISATION ET ARCHIVAGE
 !
-    call diinit(mesh, model, result, mate, carele,&
-                fonact, sddyna, parcri, instin, sd_inout,&
-                solveu, defico, sddisc, sdobse, sdsuiv)
+    call diinit(mesh  , model , result, mate  , carele,&
+                fonact, sddyna, parcri, instin, solveu,&
+                defico, sddisc)
 !
 ! - Create observation datastructure
 !
-    call nmcrob(mesh   , model, result, numreo, sd_inout,&
-                sdobse)
+    call nmcrob(mesh   , model, result, sddisc, sd_inout,&
+                sd_obsv)
+!
+! - Create dof monitoring datastructure
+!
+    call nmcrdd(mesh , model, sd_inout, sd_suiv)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
@@ -307,7 +316,7 @@ implicit none
 !
 ! --- INITIALISATION DE LA SD AFFICHAGE
 !
-    call nminim(sdsuiv, sdimpr)
+    call nminim(sd_suiv, sdimpr)
 !
 ! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
 !
@@ -316,7 +325,7 @@ implicit none
 !
 ! --- OBSERVATION INITIALE
 !
-    call nmobsv(mesh, sddisc, sd_inout, sdobse, numins)
+    call nmobsv(mesh, sddisc, sd_inout, sd_obsv, numins)
 !
 ! --- CREATION DE LA SD EVOL_NOLI
 !

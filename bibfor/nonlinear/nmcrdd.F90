@@ -1,4 +1,11 @@
-subroutine nmcrdd(noma, nomo, sdieto, sdsuiv)
+subroutine nmcrdd(meshz, modelz, sd_inout, sd_suiv)
+!
+implicit none
+!
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmcrdn.h"
+#include "asterfort/nmextr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,70 +25,49 @@ subroutine nmcrdd(noma, nomo, sdieto, sdsuiv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcrdn.h"
-#include "asterfort/nmextr.h"
-    character(len=8) :: noma, nomo
-    character(len=24) :: sdieto, sdsuiv
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(in) :: sd_inout
+    character(len=24), intent(out) :: sd_suiv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
+! MECA_NON_LINE - Init
 !
-! LECTURE SUIVI_DDL ET CREATION DE LA SD SUIVI_DDL
+! Create dof monitor datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  SDSUIV : NOM DE LA SD POUR SUIVI_DDL
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  result           : name of results datastructure
+! In  sddisc           : datastructure for discretization
+! in  sd_inout         : datastructure for input/output parameters
+! Out sd_suiv          : datastructure for dof monitor parameters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: ntsddl, nbocc, numreu
-    character(len=16) :: motfac
+    integer :: nb_suiv, nbocc, nume_reuse
+    character(len=16) :: keyw_fact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CREATION SD SUIVI_DDL'
-    endif
-!
-! --- INITIALISATIONS
-!
-    ntsddl = 0
-    numreu = 0
-    motfac = 'SUIVI_DDL'
-!
-! --- NOMBRE OCCURRENCES
-!
-    call getfac(motfac, nbocc)
+    nb_suiv    = 0
+    sd_suiv    = '&&NMCRDD.OBSV'
+    nume_reuse = 0
+    keyw_fact  = 'SUIVI_DDL'
+    call getfac(keyw_fact, nbocc)
     ASSERT(nbocc.le.99)
 !
-! --- LECTURE DES DONNEES
+! - Read datas for extraction
 !
-    call nmextr(noma, nomo, sdsuiv, sdieto, motfac,&
-                nbocc, numreu, ntsddl)
+    call nmextr(meshz, modelz    , sd_suiv , sd_inout, keyw_fact,&
+                nbocc, nume_reuse, nb_suiv)
 !
-! --- NOM DES COLONNES
+! - Read name of columns
 !
     if (nbocc .ne. 0) then
-        call nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
+        call nmcrdn(sd_suiv, keyw_fact, nb_suiv, nbocc)
     endif
-!
-    call jedema()
 !
 end subroutine

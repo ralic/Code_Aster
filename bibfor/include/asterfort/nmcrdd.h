@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrdd(noma, nomo, sdieto, sdsuiv)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=24) :: sdieto
-        character(len=24) :: sdsuiv
+    subroutine nmcrdd(meshz, modelz, sd_inout, sd_suiv)
+        character(len=*), intent(in) :: meshz
+        character(len=*), intent(in) :: modelz
+        character(len=24), intent(in) :: sd_inout
+        character(len=24), intent(out) :: sd_suiv
     end subroutine nmcrdd
 end interface

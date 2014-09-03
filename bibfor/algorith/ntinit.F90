@@ -8,6 +8,7 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gcucon.h"
+#include "asterfort/getvid.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
@@ -17,11 +18,13 @@ implicit none
 #include "asterfort/ntcrch.h"
 #include "asterfort/ntcrcv.h"
 #include "asterfort/ntetcr.h"
+#include "asterfort/ntcra0.h"
 #include "asterfort/numero.h"
 #include "asterfort/nxdoet.h"
 #include "asterfort/nxnoli.h"
 #include "asterfort/rsnume.h"
 #include "asterfort/tiinit.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,33 +53,21 @@ implicit none
     character(len=8) :: mailla
     real(kind=8) :: para(*)
 !
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !     THERMIQUE : INITIALISATIONS.
-!     *           ****
-!   -------------------------------------------------------------------
-!     SUBROUTINES APPELLEES:
-!       JEVEUX: JEDETR,COPISD,UTCRRE.
-!       PARAMETRE DE CMD: GETRES,NTINST.
-!       MSG: INFNIV.
-!       MANIP SD: VTCREB.
-!       LECTURE DONNEES: NTDOET,NTDOED.
-!       MATRICE: NUMERO.
 !
-!     FONCTIONS INTRINSEQUES:
-!       AUCUNE.
-!   -------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: iret, initpr
+    integer :: iret, initpr, n1
     integer :: niv, ifm
     character(len=14) :: nuposs
-    character(len=19) :: k19bla
+    character(len=19) :: lisins
     character(len=24) :: noojb, k24bla, vhydr, hydr0
     real(kind=8) :: instin
     aster_logical :: lreuse
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
@@ -84,12 +75,11 @@ implicit none
 ! --- INITIALISATIONS
 !
     lreuse = .false.
+    lisins = ' '
     k24bla = ' '
-    k19bla = ' '
     vhydr = k24bla
     lostat = .false.
     lnonl = .false.
-    levol = .false.
     time = result(1:8)//'.CHTPS'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
 !
@@ -123,11 +113,26 @@ implicit none
     call nxdoet(modele, numedd, lreuse, lostat, sd_inout,&
                 initpr, instin)
 !
-! --- CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
+! - Transient computation ?
 !
-    call tiinit(mailla, modele, result, lostat, lreuse,&
-                lnonl, instin, sddisc, sd_inout, k19bla,&
-                levol)
+    levol = .false.
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
+    if (n1 .eq. 0) then
+        if (.not.lostat) then
+            call utmess('F', 'DISCRETISATION_8')
+        endif
+        levol = .false.
+    else
+        levol = .true.
+    endif
+!
+! --- CREATION SD DISCRETISATION ET ARCHIVAGE
+!
+    if (levol) then
+        call tiinit(result, lreuse, instin, lisins, sddisc)
+    else
+        call ntcra0(sddisc)
+    endif
 !
 ! --- CREATION DE LA SD EVOL_THER
 !

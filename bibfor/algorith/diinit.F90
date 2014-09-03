@@ -1,6 +1,6 @@
-subroutine diinit(meshz , modelz, result, mate  , carele  ,&
-                  fonact, sddyna, parcri, instin, sd_inout,&
-                  solveu, defico, sddisc, sdobse, sdsuiv)
+subroutine diinit(meshz , modelz, result, mate  , carele,&
+                  fonact, sddyna, parcri, instin, solveu,&
+                  defico, sddisc)
 !
 implicit none
 !
@@ -12,7 +12,6 @@ implicit none
 #include "asterfort/nmcrar.h"
 #include "asterfort/nmcrdd.h"
 #include "asterfort/nmcrli.h"
-#include "asterfort/nmcrob.h"
 #include "asterfort/nmcrsu.h"
 #include "asterfort/pascom.h"
 #include "asterfort/pascou.h"
@@ -39,17 +38,16 @@ implicit none
     character(len=*), intent(in) :: modelz
     real(kind=8) :: instin, parcri(*)
     character(len=8) :: result
-    character(len=19) :: sddisc, sddyna, sdobse, solveu
+    character(len=19) :: sddisc, sddyna, solveu
     character(len=24) :: carele, mate
-    character(len=24) :: sdsuiv, defico
+    character(len=24) :: defico
     integer :: fonact(*)
-    character(len=24), intent(in) :: sd_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (STRUCTURES DE DONNES)
 !
-! CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
+! CREATION SD DISCRETISATION ET ARCHIVAGE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +56,6 @@ implicit none
 ! IN  SDDYNA : NOM DE LA SD DEDIEE A LA DYNAMIQUE (CF NDLECT)
 ! IN  PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE (CF NMDOCN)
 ! IN  RESULT : NOM UTILISATEUR DU RESULTAT
-! In  sd_inout         : datastructure for input/output parameters
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NOMO   : NOM DU MODELE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
@@ -66,8 +63,6 @@ implicit none
 ! IN  SOLVEU : SD SOLVEUR
 ! IN  DEFICO : SD DE DEFINITION DU CONTACT
 ! OUT SDDISC : SD DISCRETISATION
-! OUT SDSUIV : NOM DE LA SD POUR SUIVI DDL
-! OUT SDOBSE : NOM DE LA SD POUR OBSERVATION
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +71,6 @@ implicit none
     aster_logical :: limpex, lctcd
     character(len=8) :: meca
     character(len=19) :: lisins
-    integer :: numreo
     character(len=8) :: model, mesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -110,20 +104,11 @@ implicit none
 !
 ! --- CREATION SD ARCHIVAGE
 !
-    call nmcrar(result, sddisc, fonact, numreo)
+    call nmcrar(result, sddisc, fonact)
 !
 ! --- SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
 !
     call nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
                 solveu, defico)
-!
-! --- CREATION SD OBSERVATION
-!
-    call nmcrob(mesh  , model, result, numreo, sd_inout,&
-                sdobse)
-!
-! --- CREATION SD SUIVI_DDL
-!
-    call nmcrdd(mesh  , model, sd_inout, sdsuiv)
 !
 end subroutine
