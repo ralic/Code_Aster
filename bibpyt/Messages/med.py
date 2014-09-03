@@ -478,7 +478,10 @@ Conseil :
 """),
 
 84 : _(u"""
-  -> Type incorrect  %(i1)d
+  Le champ relu n'est pas du bon type. Un champ de réel est attendu
+  mais le champ contenu dans le fichier MED n'est pas de ce type.
+
+  La relecture de ce champ n'est pas possible.
 """),
 
 85 : _(u"""
