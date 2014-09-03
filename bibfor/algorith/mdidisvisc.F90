@@ -99,8 +99,8 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
     enddo
 100 format(A)
 101 format(A,I5,A)
-102 format(5(1X,A17))
-103 format(5(1X,1pE17.10))
+102 format(5(1X,A18))
+103 format(5(1X,1pE18.10E3))
 !
 999 continue
     call jedema()
