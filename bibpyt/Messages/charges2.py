@@ -275,6 +275,20 @@ l'axe de rotation doit être dirigé suivant Oz.
      Aucune maille n'est du bon type. Elles sont toutes ignorées.
 """),
 
+90: _(u"""
+ La maille de nom %(k1)s est de type volumique.
+ Elle ne sera pas affectée par %(k2)s .
+"""),
+
+91: _(u"""
+ La maille de nom %(k1)s est de type linéique.
+ Elle ne sera pas affectée par %(k2)s .
+"""),
+
+
+
+
+
 97 : _(u"""
  Tous les coefficients de la relation linéaire sont strictement nuls.
  Cette erreur peut survenir si le maillage est incorrect (par exemple des noeuds confondus) ou si

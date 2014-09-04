@@ -56,7 +56,7 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,&
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: valk(2)
-    character(len=8) :: topo_2d, topo_3d, name_elem, type_elem, topo_elem
+    character(len=8) :: topo_2d, topo_3d, name_elem, type_elem, topo_elem, topo_elem2
     integer :: iatyma, iadtyp, nerr
     integer :: jelem, ielem, nume_elem
 !
@@ -64,6 +64,7 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,&
 !
     call jemarq()
 !
+    codret=0
     if (nb_elem .eq. 0) goto 99
 !
 ! - Access to mesh
@@ -88,12 +89,13 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,&
         goto 99
     endif
 !
+    ASSERT(ndim.eq.2.or.ndim.eq.3.or.ndim.eq.23)
     if (ndim .eq. 2) then
         topo_elem = topo_2d
     else if (ndim.eq.3) then
         topo_elem = topo_3d
     else
-        ASSERT(.false.)
+        topo_elem = '23'
     endif
 !
     do ielem = 1, nb_elem
@@ -101,6 +103,36 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,&
         call jenuno(jexnum(mesh//'.NOMMAI', nume_elem), name_elem)
         iadtyp = iatyma-1+nume_elem
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type_elem)
+
+!       -- in the case ndim=23, we determine topo_elem from the first element :
+        if (topo_elem .eq. '23') then
+            ASSERT(ielem.eq.1)
+            if (type_elem(1:3) .eq. 'SEG') then
+                topo_elem2 = 'LINE'
+            elseif ((type_elem(1:4) .eq. 'QUAD') .or. (type_elem(1:4) .eq. 'TRIA')) then
+                topo_elem2 = 'SURF'
+            elseif ((type_elem(1:4) .eq. 'HEXA') .or. (type_elem(1:4) .eq. 'PENT') .or.&
+                (type_elem(1:4) .eq. 'PYRA') .or. (type_elem(1:4) .eq. 'TETR')) then
+                topo_elem2 = 'VOLU'
+            else
+                ASSERT(.false.)
+            endif
+            topo_elem=topo_elem2
+
+            if (topo_3d.eq.'VOLU') then
+                valk(1) = name_elem
+                valk(2) = load_type
+                if (topo_elem.eq.'LINE') call utmess('F', 'CHARGES2_91', nk=2, valk=valk)
+            elseif (topo_3d.eq.'SURF') then
+                valk(1) = name_elem
+                valk(2) = load_type
+                if (topo_elem.eq.'VOLU') call utmess('F', 'CHARGES2_90', nk=2, valk=valk)
+            else
+                ASSERT(.false.)
+            endif
+        endif
+
+
         if (topo_elem .eq. 'LINE') then
             if (type_elem(1:3) .ne. 'SEG') then
                 nerr = nerr+1
