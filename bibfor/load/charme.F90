@@ -49,6 +49,7 @@ subroutine charme(load, vale_type)
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/verif_affe.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -404,5 +405,8 @@ subroutine charme(load, vale_type)
     if (vale_type .ne. 'COMP') then
         call chveno(vale_type, mesh, model)
     endif
+
+! - Audit assignments :
+    call verif_affe(modele=model,sd=load)
 !
 end subroutine

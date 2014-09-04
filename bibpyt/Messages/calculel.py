@@ -267,9 +267,22 @@ Conseil :
   Relancez le calcul en créant une nouvelle structure de données résultat.
 """),
 
+40 : _(u"""
+ Erreur possible d'utilisation:
+   Vous avez affecté des données sur certaines mailles mais ces données
+   n'ont pas de signification pour les éléments finis portés par ces mailles.
+   Il s'agit peut-être d'une erreur d'affectation.
 
+ Champ : '%(k1)s' 
+ Commentaire sur ce champ : %(k2)s
+ Grandeur : %(k3)s   Composante non reconnue : %(k4)s
+ Type de l'élément :  %(k5)s
+ Ce problème concerne %(i1)d mailles
+ Les premières mailles concernées sont imprimées ci-dessous.
+"""),
 
-
+41 : _(u"""  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s %(k4)s %(k5)s
+"""),
 
 42 : _(u"""
  Erreur Programmeur:

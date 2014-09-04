@@ -26,6 +26,7 @@ subroutine charth(load, vale_type)
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/verif_affe.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -171,11 +172,11 @@ subroutine charth(load, vale_type)
 !
         call cbflnl(load, mesh, ligrmo, vale_type)
 !
-! ----- RAYONNEMENT 
+! ----- RAYONNEMENT
 !
         call cbrayo(load, mesh, ligrmo, vale_type)
 !
-! ----- ECHANGE 
+! ----- ECHANGE
 !
         call cbecha(load, mesh, ligrmo, nb_dim, vale_type)
 !
@@ -219,5 +220,8 @@ subroutine charth(load, vale_type)
         call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
         p_ligrch_lgrf(2) = model
     endif
+
+! - Audit assignments :
+    call verif_affe(modele=model,sd=load)
 !
 end subroutine

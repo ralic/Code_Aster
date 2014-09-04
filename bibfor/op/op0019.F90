@@ -81,6 +81,7 @@ subroutine op0019()
 #include "asterfort/utmess.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/verif_affe.h"
 #include "asterfort/detrsd_vide.h"
 ! --------------------------------------------------------------------------------------------------
 !   NBEPO     13  : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
@@ -578,6 +579,11 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   Certaines cartes peuvent etre vides : il faut les detruire :
     call detrsd_vide('CARTE',nomu//'.CARDISCA')
-!
+
+
+! - Audit assignments :
+    call verif_affe(modele=nomo,sd=nomu)
+
+
     call jedema()
 end subroutine

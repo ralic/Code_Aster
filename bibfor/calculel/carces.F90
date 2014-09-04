@@ -71,7 +71,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     integer :: ima, iret, nec, ncmpmx, jdesc, jvale, ngrmx, ncmp
     integer ::  jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
     integer :: cmp, ieq, iad, cmp2,    nbpt, ipt
-    integer ::   jconx2, isp, nbsp,  kcmp
+    integer ::   jconx2, isp, nbsp,  kcmp, iret2
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: cart, ces, cesmod
@@ -104,8 +104,8 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     AS_ALLOCATE(vi=vnbsp, size=nbma)
 !
 !
-    call exisd('CHAM_ELEM_S', cesmod, iret)
-    if (iret .gt. 0) then
+    call exisd('CHAM_ELEM_S', cesmod, iret2)
+    if (iret2 .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
             vnbpt(ima) = cemd(5+4* (ima-1)+1)
