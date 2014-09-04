@@ -1,4 +1,11 @@
-subroutine nmobsv(noma, sddisc, sdieto, sdobse, numins)
+subroutine nmobsv(meshz, sddisc, sd_inout, sd_obsv, nume_time)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/diinst.h"
+#include "asterfort/lobs.h"
+#include "asterfort/nmobse.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,55 +25,47 @@ subroutine nmobsv(noma, sddisc, sdieto, sdobse, numins)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/diinst.h"
-#include "asterfort/lobs.h"
-#include "asterfort/nmobse.h"
-    integer :: numins
-    character(len=8) :: noma
-    character(len=24) :: sdieto
-    character(len=19) :: sddisc, sdobse
+    character(len=*), intent(in) :: meshz
+    character(len=19), intent(in) :: sd_obsv
+    character(len=24), intent(in) :: sd_inout
+    integer, intent(in) :: nume_time
+    character(len=19), intent(in) :: sddisc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! Non-linear operators - Observation
 !
-! REALISER UNE OBSERVATION
+! Make observation
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sddisc           : datastructure for discretization
+! In  sd_inout         : datastructure for input/output parameters
+! In  sd_obsv          : datastructure for observation parameters
+! In  nume_time        : index of time
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  SDOBSE : SD OBSERVATION
-! IN  NUMINS : NUMERO DE L'INSTANT COURANT
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    real(kind=8) :: time
+    aster_logical :: l_obsv
 !
-    real(kind=8) :: inst
-    aster_logical :: lobsv
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    l_obsv = .false.
 !
+! - Current time
 !
-! --- INITIALISATIONS
+    time = diinst(sddisc, nume_time)
 !
-    lobsv = .false.
+! - Observation ?
 !
-! --- TEMPS COURANT
+    call lobs(sd_obsv, nume_time, time, l_obsv)
 !
-    inst = diinst(sddisc,numins)
+! - Make observation 
 !
-! --- DOIT-ON FAIRE UNE OBSERVATION  ?
-!
-    call lobs(sdobse, numins, inst, lobsv)
-!
-! --- AU MOINS UNE OBSERVATION
-!
-    if (lobsv) then
-        call nmobse(noma, sdieto, sdobse, inst)
+    if (l_obsv) then
+        call nmobse(meshz, sd_inout, sd_obsv, time)
     endif
 !
 end subroutine

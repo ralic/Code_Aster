@@ -1,4 +1,10 @@
-subroutine ntobsv(noma, sdieto, sdobse, numins, inst)
+subroutine ntobsv(meshz, sd_inout, sd_obsv, nume_time, time)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/lobs.h"
+#include "asterfort/nmobse.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,50 +24,42 @@ subroutine ntobsv(noma, sdieto, sdobse, numins, inst)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/lobs.h"
-#include "asterfort/nmobse.h"
-    integer :: numins
-    character(len=8) :: noma
-    character(len=19) :: sdobse
-    character(len=24) :: sdieto
-    real(kind=8) :: inst
+    character(len=*), intent(in) :: meshz
+    character(len=19), intent(in) :: sd_obsv
+    character(len=24), intent(in) :: sd_inout
+    integer, intent(in) :: nume_time
+    real(kind=8), intent(in) :: time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE THER_NON_LINE (ALGORITHME)
+! THER_* - Observation
 !
-! REALISER UNE OBSERVATION
+! Make observation
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sd_inout         : datastructure for input/output parameters
+! In  sd_obsv          : datastructure for observation parameters
+! In  nume_time        : index of time
+! In  time             : current time
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDEXTR : NOM DE LA SD POUR EXTRACTION
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  SDOBSE : SD OBSERVATION
-! IN  INST   : INSTANT COURANT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    aster_logical :: l_obsv
 !
-    aster_logical :: lobsv
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    l_obsv = .false.
 !
+! - Observation ?
 !
-! --- INITIALISATIONS
+    call lobs(sd_obsv, nume_time, time, l_obsv)
 !
-    lobsv = .false.
+! - Make observation 
 !
-! --- DOIT-ON FAIRE UNE OBSERVATION  ?
-!
-    call lobs(sdobse, numins, inst, lobsv)
-!
-! --- AU MOINS UNE OBSERVATION
-!
-    if (lobsv) then
-        call nmobse(noma, sdieto, sdobse, inst)
+    if (l_obsv) then
+        call nmobse(meshz, sd_inout, sd_obsv, time)
     endif
 !
 end subroutine

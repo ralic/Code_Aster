@@ -16,35 +16,35 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
-                      typcha, nomcha, nomchs, nbma, nbno,&
-                      nbpi, nbspi, nbcmp, extrga, extrch,&
-                      extrcp, listno, listma, listpi, listsp,&
-                      listcp, champ, chnoeu, chelga, nobsef)
-        character(len=8) :: noma
-        character(len=19) :: sdobse
-        character(len=19) :: nomtab
-        real(kind=8) :: instan
-        character(len=80) :: titobs
-        character(len=4) :: typcha
-        character(len=24) :: nomcha
-        character(len=24) :: nomchs
-        integer :: nbma
-        integer :: nbno
-        integer :: nbpi
-        integer :: nbspi
-        integer :: nbcmp
-        character(len=8) :: extrga
-        character(len=8) :: extrch
-        character(len=8) :: extrcp
-        character(len=24) :: listno
-        character(len=24) :: listma
-        character(len=24) :: listpi
-        character(len=24) :: listsp
-        character(len=24) :: listcp
-        character(len=19) :: champ
-        character(len=19) :: chnoeu
-        character(len=19) :: chelga
-        integer :: nobsef
+    subroutine nmobs2(meshz        , sd_obsv   , tabl_name, time          , title,&
+                      field_disc   , field_type, field_s  , nb_elem       , nb_node,&
+                      nb_poin      , nb_spoi   , nb_cmp   , type_extr_elem, type_extr,&
+                      type_extr_cmp, list_node , list_elem, list_poin     , list_spoi,&
+                      list_cmp     , field     , work_node, work_elem     , nb_obsf_effe)
+        character(len=*), intent(in) :: meshz
+        character(len=19), intent(in) :: sd_obsv
+        character(len=19), intent(in) :: tabl_name
+        real(kind=8), intent(in) :: time
+        character(len=80), intent(in) :: title
+        character(len=19), intent(in) :: field
+        character(len=24), intent(in) :: field_type
+        character(len=24), intent(in) :: field_s
+        character(len=4), intent(in) :: field_disc
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: nb_poin
+        integer, intent(in) :: nb_spoi
+        integer, intent(in) :: nb_cmp
+        character(len=24), intent(in) :: list_node
+        character(len=24), intent(in) :: list_elem
+        character(len=24), intent(in) :: list_poin
+        character(len=24), intent(in) :: list_spoi
+        character(len=24), intent(in) :: list_cmp
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_elem
+        character(len=8), intent(in) :: type_extr_cmp
+        character(len=19), intent(in) :: work_node
+        character(len=19), intent(in) :: work_elem
+        integer, intent(inout) :: nb_obsf_effe
     end subroutine nmobs2
 end interface

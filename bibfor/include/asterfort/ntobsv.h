@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ntobsv(noma, sdieto, sdobse, numins, inst)
-        character(len=8) :: noma
-        character(len=24) :: sdieto
-        character(len=19) :: sdobse
-        integer :: numins
-        real(kind=8) :: inst
+    subroutine ntobsv(meshz, sd_inout, sd_obsv, nume_time, time)
+        character(len=*), intent(in) :: meshz
+        character(len=19), intent(in) :: sd_obsv
+        character(len=24), intent(in) :: sd_inout
+        integer, intent(in) :: nume_time
+        real(kind=8), intent(in) :: time
     end subroutine ntobsv
 end interface

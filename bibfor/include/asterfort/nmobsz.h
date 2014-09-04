@@ -16,23 +16,25 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmobsz(sdobse, nomtab, titobs, nomcha, typcha,&
-                      extrch, extrcp, extrga, nomcmp, nomnoe,&
-                      nommai, num, snum, instan, valr)
-        character(len=19) :: sdobse
-        character(len=19) :: nomtab
-        character(len=80) :: titobs
-        character(len=24) :: nomcha
-        character(len=4) :: typcha
-        character(len=8) :: extrch
-        character(len=8) :: extrcp
-        character(len=8) :: extrga
-        character(len=8) :: nomcmp
-        character(len=8) :: nomnoe
-        character(len=8) :: nommai
-        integer :: num
-        integer :: snum
-        real(kind=8) :: instan
-        real(kind=8) :: valr
+    subroutine nmobsz(sd_obsv  , tabl_name    , title         , field_type, field_disc,&
+                      type_extr, type_extr_cmp, type_extr_elem, cmp_name,&
+                      time     , valr,&
+                      node_namez,&
+                      elem_namez, poin_numez, spoi_numez)
+        character(len=19), intent(in) :: sd_obsv
+        character(len=19), intent(in) :: tabl_name
+        character(len=4), intent(in) :: field_disc
+        character(len=24), intent(in) :: field_type
+        character(len=80), intent(in) :: title
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_cmp
+        character(len=8), intent(in) :: type_extr_elem
+        character(len=8), intent(in) :: cmp_name
+        real(kind=8), intent(in) :: time
+        real(kind=8), intent(in) :: valr
+        character(len=8), optional, intent(in) :: node_namez
+        character(len=8), optional, intent(in) :: elem_namez
+        integer, optional, intent(in) :: poin_numez
+        integer, optional, intent(in) :: spoi_numez
     end subroutine nmobsz
 end interface

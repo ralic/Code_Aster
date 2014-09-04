@@ -1,6 +1,14 @@
-subroutine nmobsz(sdobse, nomtab, titobs, nomcha, typcha,&
-                  extrch, extrcp, extrga, nomcmp, nomnoe,&
-                  nommai, num, snum, instan, valr)
+subroutine nmobsz(sd_obsv  , tabl_name    , title         , field_type, field_disc,&
+                  type_extr, type_extr_cmp, type_extr_elem, cmp_name,&
+                  time     , valr,&
+                  node_namez,&
+                  elem_namez, poin_numez, spoi_numez)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbajli.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,217 +28,219 @@ subroutine nmobsz(sdobse, nomtab, titobs, nomcha, typcha,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
+    character(len=19), intent(in) :: sd_obsv
+    character(len=19), intent(in) :: tabl_name
+    character(len=4), intent(in) :: field_disc
+    character(len=24), intent(in) :: field_type
+    character(len=80), intent(in) :: title
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_cmp
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: cmp_name
+    real(kind=8), intent(in) :: time
+    real(kind=8), intent(in) :: valr
+    character(len=8), optional, intent(in) :: node_namez
+    character(len=8), optional, intent(in) :: elem_namez
+    integer, optional, intent(in) :: poin_numez
+    integer, optional, intent(in) :: spoi_numez
 !
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/tbajli.h"
-    character(len=19) :: sdobse, nomtab
-    character(len=4) :: typcha
-    character(len=24) :: nomcha
-    character(len=80) :: titobs
-    character(len=8) :: extrch, extrcp, extrga
-    character(len=8) :: nomnoe, nommai, nomcmp
-    integer :: num, snum
-    real(kind=8) :: instan, valr
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Non-linear operators - Observation
 !
-! ROUTINE *_NON_LINE (OBSERVATION - UTILITAIRE)
+! Save value in table
 !
-! SAUVEGARDE DANS LA TABLE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  sd_obsv          : datastructure for observation parameters
+! In  tabl_name        : name of observation table
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_type       : type of field (name in results datastructure)
+! In  title            : title of observation
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr_cmp    : type of extraction for components
+! In  cmp_name         : name of components
+! In  time             : current time
+! In  valr             : value to save
+! In  node_name        : name of node
+! In  elem_name        : name of element
+! In  poin_nume        : index of point
+! In  spoi_nume        : index of subpoint
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDOBSE : SD OBSERVATION
-! IN  NOMTAB : NOM DE LA TABLE
-! IN  TITOBS : TITRE DE L'OBSERVATION
-! IN  TYPCHA : TYPE DU CHAMP
-! IN  NOMCHA : NOM DU CHAMP
-! IN  NOMCMP : NOM DE LA COMPOSANTE
-! IN  NOMNOE : NOM DU NOEUD
-! IN  NOMMAI : NOM DE LA MAILLE
-! IN  NUM    : NUMERO POINT DE GAUSS
-! IN  SNUM   : NUMERO SOUS-POINT DE GAUSS
-! IN  NUOBSV : NUMERO DE L'OBSERVATIONC
-! IN  INSTAN : VALEUR DE L'INSTANT
-! IN  VALR   : VALEUR A SAUVEGARDER DANS LA TABLE
+    integer :: nb_para
+    parameter   (nb_para=16)
+    character(len=16) :: para_name(nb_para)
+    real(kind=8) :: tabl_vale_r(nb_para)
+    integer :: tabl_vale_i(nb_para)
+    character(len=24) :: tabl_vale_k(nb_para), para_name_add(nb_para)
 !
-! ----------------------------------------------------------------------
-!
-    integer :: nbpara
-    parameter   (nbpara=16)
-    character(len=16) :: nopara(nbpara)
-    integer :: npar
-    character(len=24) :: obsinf
-    integer :: jobsin
-    integer :: numreu, numobs
+    integer :: nb_para_add
+    integer :: nume_reuse, nume_obsv
     complex(kind=8) :: c16bid
-    character(len=16) :: typobj
+    character(len=16) :: obje_type
     character(len=24) :: nomsd
-    real(kind=8) :: tabr(nbpara)
-    integer :: tabi(nbpara)
-    character(len=24) :: tabk(nbpara), noparz(nbpara)
-    integer :: ipar, kval, ival, rval
+    integer :: i_para_add, nb_vale_k, nb_vale_i, nb_vale_r
+    character(len=14) :: sdextr_obsv
+    character(len=24) :: extr_info
+    integer, pointer :: v_extr_info(:) => null()
 !
-    data nopara/'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,&
-     &            'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
-     &            'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
-     &            'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
-     &            'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',&
-     &            'VALE'           /
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    data para_name /'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,&
+                    'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
+                    'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
+                    'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
+                    'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',&
+                    'VALE'           /
 !
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
+!
     c16bid=(0.d0,0.d0)
-!
-! --- SD PRINCIPALE (INFO)
-!
-    obsinf = sdobse(1:14)//'     .INFO'
-    call jeveuo(obsinf, 'E', jobsin)
-!
-! --- INITIALISATIONS
-!
-    ipar = 1
-    kval = 1
-    ival = 1
-    rval = 1
-    typobj = 'R'
+    i_para_add = 1
+    nb_vale_k = 1
+    nb_vale_i = 1
+    nb_vale_r = 1
+    obje_type = 'R'
     nomsd = ' '
-    numobs = zi(jobsin-1+3)
-    numreu = zi(jobsin-1+4)
 !
-! --- CE QUI EST COMMUN
+! - Access to extraction datastructure
 !
-    noparz(ipar) = nopara(1)
-    ipar = ipar + 1
-    tabk(kval) = titobs
-    kval = kval + 1
+    sdextr_obsv = sd_obsv(1:14)
 !
-    noparz(ipar) = nopara(2)
-    ipar = ipar + 1
-    tabk(kval) = typobj
-    kval = kval + 1
+! - Get information vector
 !
-    noparz(ipar) = nopara(3)
-    ipar = ipar + 1
-    tabk(kval) = nomsd
-    kval = kval + 1
+    extr_info    = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'E', vi = v_extr_info)
+    nume_obsv  = v_extr_info(3)
+    nume_reuse = v_extr_info(4)
 !
-    noparz(ipar) = nopara(4)
-    ipar = ipar + 1
-    tabi(ival) = numreu
-    ival = ival + 1
+! - Common columns
 !
-    noparz(ipar) = nopara(5)
-    ipar = ipar + 1
-    tabi(ival) = numobs
-    ival = ival + 1
+    para_name_add(i_para_add) = para_name(1)
+    i_para_add = i_para_add + 1
+    tabl_vale_k(nb_vale_k) = title(1:24)
+    nb_vale_k = nb_vale_k + 1
 !
-    noparz(ipar) = nopara(6)
-    ipar = ipar + 1
-    tabr(rval) = instan
-    rval = rval + 1
+    para_name_add(i_para_add) = para_name(2)
+    i_para_add = i_para_add + 1
+    tabl_vale_k(nb_vale_k) = obje_type
+    nb_vale_k = nb_vale_k + 1
 !
-    noparz(ipar) = nopara(7)
-    ipar = ipar + 1
-    tabk(kval) = nomcha
-    kval = kval + 1
+    para_name_add(i_para_add) = para_name(3)
+    i_para_add = i_para_add + 1
+    tabl_vale_k(nb_vale_k) = nomsd
+    nb_vale_k = nb_vale_k + 1
 !
-! --- EXTRACTION DU CHAMP: TYPE
+    para_name_add(i_para_add) = para_name(4)
+    i_para_add = i_para_add + 1
+    tabl_vale_i(nb_vale_i) = nume_reuse
+    nb_vale_i = nb_vale_i + 1
 !
-    noparz(ipar) = nopara(8)
-    ipar = ipar + 1
-    tabk(kval) = extrch
-    kval = kval + 1
+    para_name_add(i_para_add) = para_name(5)
+    i_para_add = i_para_add + 1
+    tabl_vale_i(nb_vale_i) = nume_obsv
+    nb_vale_i = nb_vale_i + 1
 !
-! --- EXTRACTION DES COMPOSANTES: TYPE
+    para_name_add(i_para_add) = para_name(6)
+    i_para_add = i_para_add + 1
+    tabl_vale_r(nb_vale_r) = time
+    nb_vale_r = nb_vale_r + 1
 !
-    if (extrcp .eq. ' ') then
-        noparz(ipar) = nopara(9)
-        ipar = ipar + 1
-        tabk(kval) = nomcmp
-        kval = kval + 1
+    para_name_add(i_para_add) = para_name(7)
+    i_para_add = i_para_add + 1
+    tabl_vale_k(nb_vale_k) = field_type
+    nb_vale_k = nb_vale_k + 1
+!
+! - Type of extraction for field
+!
+    para_name_add(i_para_add) = para_name(8)
+    i_para_add = i_para_add + 1
+    tabl_vale_k(nb_vale_k) = type_extr
+    nb_vale_k = nb_vale_k + 1
+!
+! - Type of extraction for components
+!
+    if (type_extr_cmp .eq. ' ') then
+        para_name_add(i_para_add) = para_name(9)
+        i_para_add = i_para_add + 1
+        tabl_vale_k(nb_vale_k) = cmp_name
+        nb_vale_k = nb_vale_k + 1
     else
-        noparz(ipar) = nopara(10)
-        ipar = ipar + 1
-        tabk(kval) = extrcp
-        kval = kval + 1
+        para_name_add(i_para_add) = para_name(10)
+        i_para_add = i_para_add + 1
+        tabl_vale_k(nb_vale_k) = type_extr_cmp
+        nb_vale_k = nb_vale_k + 1
     endif
 !
-! --- NOEUD OU MAILLE
+! - Node or element
 !
-    if (typcha .eq. 'NOEU') then
-        if (extrch .eq. 'VALE') then
-            noparz(ipar) = nopara(11)
-            ipar = ipar + 1
-            tabk(kval) = nomnoe
-            kval = kval + 1
+    if (field_disc .eq. 'NOEU') then
+        if (type_extr .eq. 'VALE') then
+            para_name_add(i_para_add) = para_name(11)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = node_namez
+            nb_vale_k = nb_vale_k + 1
         else
-            noparz(ipar) = nopara(8)
-            ipar = ipar + 1
-            tabk(kval) = extrch
-            kval = kval + 1
+            para_name_add(i_para_add) = para_name(8)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = type_extr
+            nb_vale_k = nb_vale_k + 1
         endif
-        noparz(ipar) = nopara(16)
-        ipar = ipar + 1
-        tabr(rval) = valr
-        rval = rval + 1
-    else if (typcha.eq.'ELGA') then
-        if (extrch .eq. 'VALE') then
-            noparz(ipar) = nopara(12)
-            ipar = ipar + 1
-            tabk(kval) = nommai
-            kval = kval + 1
+        para_name_add(i_para_add) = para_name(16)
+        i_para_add = i_para_add + 1
+        tabl_vale_r(nb_vale_r) = valr
+        nb_vale_r = nb_vale_r + 1
+    else if (field_disc.eq.'ELGA') then
+        if (type_extr .eq. 'VALE') then
+            para_name_add(i_para_add) = para_name(12)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = elem_namez
+            nb_vale_k = nb_vale_k + 1
         else
-            noparz(ipar) = nopara(8)
-            ipar = ipar + 1
-            tabk(kval) = extrch
-            kval = kval + 1
+            para_name_add(i_para_add) = para_name(8)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = type_extr
+            nb_vale_k = nb_vale_k + 1
         endif
-        if (extrga .eq. 'VALE') then
-            noparz(ipar) = nopara(14)
-            ipar = ipar + 1
-            tabi(ival) = num
-            ival = ival + 1
-            noparz(ipar) = nopara(15)
-            ipar = ipar + 1
-            tabi(ival) = snum
-            ival = ival + 1
-            noparz(ipar) = nopara(16)
-            ipar = ipar + 1
-            tabr(rval) = valr
-            rval = rval + 1
+        if (type_extr_elem .eq. 'VALE') then
+            para_name_add(i_para_add) = para_name(14)
+            i_para_add = i_para_add + 1
+            tabl_vale_i(nb_vale_i) = poin_numez
+            nb_vale_i = nb_vale_i + 1
+            para_name_add(i_para_add) = para_name(15)
+            i_para_add = i_para_add + 1
+            tabl_vale_i(nb_vale_i) = spoi_numez
+            nb_vale_i = nb_vale_i + 1
+            para_name_add(i_para_add) = para_name(16)
+            i_para_add = i_para_add + 1
+            tabl_vale_r(nb_vale_r) = valr
+            nb_vale_r = nb_vale_r + 1
         else
-            noparz(ipar) = nopara(13)
-            ipar = ipar + 1
-            tabk(kval) = extrga
-            kval = kval + 1
-            noparz(ipar) = nopara(16)
-            ipar = ipar + 1
-            tabr(rval) = valr
-            rval = rval + 1
+            para_name_add(i_para_add) = para_name(13)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = type_extr_elem
+            nb_vale_k = nb_vale_k + 1
+            para_name_add(i_para_add) = para_name(16)
+            i_para_add = i_para_add + 1
+            tabl_vale_r(nb_vale_r) = valr
+            nb_vale_r = nb_vale_r + 1
         endif
     else
         ASSERT(.false.)
     endif
 !
-    npar = ipar -1
+    nb_para_add = i_para_add -1
 !
-! --- AJOUT DANS LA TABLE
+! - Add line in table
 !
-    call tbajli(nomtab, npar, noparz, tabi, tabr,&
-                [c16bid], tabk, 0)
+    call tbajli(tabl_name, nb_para_add, para_name_add, tabl_vale_i, tabl_vale_r,&
+                [c16bid], tabl_vale_k, 0)
 !
-! --- OBSERVATION SUIVANTE
+! - Next observation
 !
-    zi(jobsin-1+3) = zi(jobsin-1+3) + 1
-!
-    call jedema()
+    v_extr_info(3) = v_extr_info(3) + 1
 !
 end subroutine

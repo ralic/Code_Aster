@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine lobs(sdobse, numins, inst, lobsv)
-        character(len=19) :: sdobse
-        integer :: numins
-        real(kind=8) :: inst
-        aster_logical :: lobsv
+    subroutine lobs(sd_obsv, nume_time, time, l_obsv)
+        character(len=19), intent(in) :: sd_obsv
+        integer, intent(in) :: nume_time
+        real(kind=8), intent(in) :: time
+        aster_logical, intent(out) :: l_obsv
     end subroutine lobs
 end interface

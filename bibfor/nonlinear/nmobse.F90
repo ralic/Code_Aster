@@ -1,4 +1,19 @@
-subroutine nmobse(noma, sdieto, sdobse, instan)
+subroutine nmobse(meshz, sd_inout, sd_obsv, time)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmext0.h"
+#include "asterfort/nmext1.h"
+#include "asterfort/nmextd.h"
+#include "asterfort/nmextt.h"
+#include "asterfort/nmobs2.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,210 +33,189 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/impfoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmext0.h"
-#include "asterfort/nmext1.h"
-#include "asterfort/nmextd.h"
-#include "asterfort/nmextt.h"
-#include "asterfort/nmobs2.h"
-#include "asterfort/utmess.h"
-    character(len=8) :: noma
-    character(len=19) :: sdobse
-    character(len=24) :: sdieto
-    real(kind=8) :: instan
+    character(len=*), intent(in) :: meshz
+    character(len=19), intent(in) :: sd_obsv
+    character(len=24), intent(in) :: sd_inout
+    real(kind=8), intent(in) :: time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (OBSERVATION)
+! Non-linear operators - Observation
 !
-! REALISER LES OBSERVATIONS
+! Make observation
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  time             : current time
+! In  sd_inout         : datastructure for input/output parameters
+! In  sd_obsv          : datastructure for observation parameters
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDEXTR : NOM DE LA SD POUR EXTRACTION
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  SDOBSE : SD OBSERVATION
-! IN  INSTAN : INSTANT COURANT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: listno, listma, listpi, listsp, listcp
-    integer :: jno, jma
-    character(len=24) :: obsinf, obscha, obstyp, obsact
-    integer :: jobsin, jobsch, jobsty, jobsac
-    character(len=24) :: obstab
-    integer :: jobst
-    character(len=24) :: obsnom
-    integer :: jobsno
-    character(len=19) :: nomtab
-    character(len=80) :: titobs
-    integer :: nbcmp, nbno, nbma, nbcham
-    integer :: nbpi, nbspi
-    integer :: iocc, nbocc, nobsef, icham
+    character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp
+    character(len=14) :: sdextr_obsv
+    character(len=19) :: tabl_name
+    character(len=80) :: title
+    integer :: nb_cmp, nb_node, nb_elem, nb_field
+    integer :: nb_poin, nb_spoi
+    integer :: i_keyw_fact, nb_keyw_fact, nb_obsf_effe, i_field
     character(len=2) :: chaine
-    character(len=24) :: nomcha, nomchs
-    character(len=4) :: typcha
-    character(len=19) :: champ
-    character(len=8) :: extrcp, extrch, extrga
-    character(len=19) :: chgaus, chnoeu, chelga
-    aster_logical :: lobsv
+    character(len=24) :: field_type, field_s
+    character(len=4) :: field_disc
+    character(len=19) :: field
+    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, mesh
+    character(len=19) :: work_poin, work_node, work_elem
+    aster_logical :: l_obsv
+    character(len=24) :: obsv_titl
+    character(len=80), pointer :: v_obsv_titl(:) => null()
+    character(len=24) :: obsv_tabl
+    character(len=24), pointer :: v_obsv_tabl(:) => null()
+    character(len=24) :: extr_info, extr_type, extr_flag, extr_field
+    integer, pointer :: v_extr_info(:) => null()
+    character(len=8), pointer :: v_extr_type(:) => null()
+    aster_logical, pointer :: v_extr_flag(:) => null()
+    character(len=24), pointer :: v_extr_field(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    mesh = meshz
 !
-! --- SD POUR LE NOM DE LA TABLE
+! - Get name of observation table
 !
-    obstab = sdobse(1:14)//'     .TABL'
-    call jeveuo(obstab, 'L', jobst)
-    nomtab = zk24(jobst)(1:19)
+    obsv_tabl = sd_obsv(1:14)//'     .TABL'
+    call jeveuo(obsv_tabl, 'L', vk24 = v_obsv_tabl)
+    tabl_name = v_obsv_tabl(1)(1:19)
 !
-! --- SD PRINCIPALE (INFO)
+! - Get vector for title
 !
-    obsinf = sdobse(1:14)//'     .INFO'
-    call jeveuo(obsinf, 'L', jobsin)
-    nbocc = zi(jobsin-1+1)
-    ASSERT(nbocc.le.99)
+    obsv_titl = sd_obsv(1:14)//'     .TITR'
+    call jeveuo(obsv_titl, 'L', vk80 = v_obsv_titl)
 !
-! --- SD TITRES
+! - Access to extraction datastructure
 !
-    obsnom = sdobse(1:14)//'     .TITR'
-    call jeveuo(obsnom, 'L', jobsno)
+    sdextr_obsv = sd_obsv(1:14)
 !
-! --- SD LISTE DES CHAMPS
+! - Get information vector
 !
-    obscha = sdobse(1:14)//'     .CHAM'
-    call jeveuo(obscha, 'L', jobsch)
-    call jelira(obscha, 'LONMAX', ival=nbcham)
-    nbcham = nbcham / 2
+    extr_info    = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'L', vi = v_extr_info)
+    nb_keyw_fact = v_extr_info(1)
+    ASSERT(nb_keyw_fact.le.99)
 !
-! --- SD TYPE D'EXTRACTIONS
+! - Get extraction field vector
 !
-    obstyp = sdobse(1:14)//'     .EXTR'
-    call jeveuo(obstyp, 'L', jobsty)
+    extr_field = sdextr_obsv(1:14)//'     .CHAM'
+    call jeveuo(extr_field, 'L', vk24 = v_extr_field)
+    call jelira(extr_field, 'LONMAX', ival=nb_field)
+    nb_field = nb_field / 2
 !
-! --- SD ACTIVATION EXTRACTION
+! - Get extraction type vector
 !
-    obsact = sdobse(1:14)//'     .ACTI'
-    call jeveuo(obsact, 'L', jobsac)
+    extr_type = sdextr_obsv(1:14)//'     .EXTR'
+    call jeveuo(extr_type, 'L', vk8 = v_extr_type)
 !
-    nobsef = 0
+! - Get extraction flag vector
 !
-    do 10 iocc = 1, nbocc
+    extr_flag = sdextr_obsv(1:14)//'     .ACTI'
+    call jeveuo(extr_flag, 'L', vl = v_extr_flag)
 !
-! ----- OBSERVATION
+    nb_obsf_effe = 0
 !
-        lobsv = zl(jobsac+iocc-1)
-        if (.not.lobsv) goto 99
+    do i_keyw_fact = 1, nb_keyw_fact
 !
-! ----- GENERATION NOM DES SD
+        l_obsv = v_extr_flag(i_keyw_fact)
+        if (l_obsv) then
 !
-        call impfoi(0, 2, iocc, chaine)
-        listno = sdobse(1:14)//chaine(1:2)//'   .NOEU'
-        listma = sdobse(1:14)//chaine(1:2)//'   .MAIL'
-        listpi = sdobse(1:14)//chaine(1:2)//'   .POIN'
-        listsp = sdobse(1:14)//chaine(1:2)//'   .SSPI'
-        listcp = sdobse(1:14)//chaine(1:2)//'   .CMP '
+! --------- Datastructure name generation
 !
-! ----- NOM DU CHAMP
+            call impfoi(0, 2, i_keyw_fact, chaine)
+            list_node = sdextr_obsv(1:14)//chaine(1:2)//'   .NOEU'
+            list_elem = sdextr_obsv(1:14)//chaine(1:2)//'   .MAIL'
+            list_poin = sdextr_obsv(1:14)//chaine(1:2)//'   .POIN'
+            list_spoi = sdextr_obsv(1:14)//chaine(1:2)//'   .SSPI'
+            list_cmp  = sdextr_obsv(1:14)//chaine(1:2)//'   .CMP '
 !
-        icham = zi(jobsin+4+7*(iocc-1)+7-1)
-        nomcha = zk24(jobsch+2*(icham-1)+1-1)
-        nomchs = zk24(jobsch+2*(icham-1)+2-1)
-        if (nomcha .eq. 'NONE') goto 99
+! --------- Type of field
 !
-! ----- TYPE DE CHAMP
+            i_field      = v_extr_info(4+7*(i_keyw_fact-1)+7)
+            field_type   = v_extr_field(2*(i_field-1)+1)
+            field_s      = v_extr_field(2*(i_field-1)+2)
+            if (field_type .ne. 'NONE') then
 !
-        call nmextt(sdieto, nomcha, typcha)
+! ------------- Get localization of field (discretization: NOEU or ELGA)
 !
-! ----- RECUPERATION DU CHAMP
+                call nmextt(sd_inout, field_type, field_disc)
 !
-        call nmextd(nomcha, sdieto, champ)
+! ------------- Get field
 !
-! ----- NOMBRE DE COMPOSANTES/NOEUDS/MAILLES
+                call nmextd(field_type, sd_inout, field)
 !
-        nbcmp = zi(jobsin+4+7*(iocc-1)-1+1)
-        nbno = zi(jobsin+4+7*(iocc-1)-1+2)
-        nbma = zi(jobsin+4+7*(iocc-1)-1+3)
-        nbpi = zi(jobsin+4+7*(iocc-1)-1+4)
-        nbspi = zi(jobsin+4+7*(iocc-1)-1+5)
+! ------------- Get length of lists
 !
-! ----- ACCES LISTES
+                nb_cmp  = v_extr_info(4+7*(i_keyw_fact-1)+1)
+                nb_node = v_extr_info(4+7*(i_keyw_fact-1)+2)
+                nb_elem = v_extr_info(4+7*(i_keyw_fact-1)+3)
+                nb_poin = v_extr_info(4+7*(i_keyw_fact-1)+4)
+                nb_spoi = v_extr_info(4+7*(i_keyw_fact-1)+5)
 !
-        if (typcha .eq. 'NOEU') call jeveuo(listno, 'L', jno)
-        if (typcha .eq. 'ELGA') call jeveuo(listma, 'L', jma)
+! ------------- Extraction types
 !
-! ----- TYPES D'EXTRACTION
+                type_extr      = v_extr_type(3*(i_keyw_fact-1)+1)
+                type_extr_elem = v_extr_type(3*(i_keyw_fact-1)+2)
+                type_extr_cmp  = v_extr_type(3*(i_keyw_fact-1)+3)
 !
-        extrch = zk8(jobsty+3*(iocc-1)+1-1)
-        extrga = zk8(jobsty+3*(iocc-1)+2-1)
-        extrcp = zk8(jobsty+3*(iocc-1)+3-1)
+! ------------- Create temporary vectors for extraction
 !
-! ----- CREATION SD DONNEES TEMPORAIRES
+                work_elem = '&&NMOBSE.VALE.ELGA'
+                work_poin = '&&NMOBSE.VALE.GAUS'
+                work_node = '&&NMOBSE.VALE.NOEU'
+                call nmext0(field_disc, nb_elem   , nb_node   , nb_poin   , nb_spoi       ,&
+                            nb_cmp    , work_node , work_poin , work_elem , type_extr_elem,&
+                            type_extr)
 !
-        chelga = '&&NMOBSE.VALE.ELGA'
-        chgaus = '&&NMOBSE.VALE.GAUS'
-        chnoeu = '&&NMOBSE.VALE.NOEU'
-        call nmext0(typcha, nbma, nbno, nbpi, nbspi,&
-                    nbcmp, chnoeu, chgaus, chelga, extrga,&
-                    extrch)
+! ------------- Compute extraction values and store them
 !
-! ----- EXTRAIRE LES VALEURS ET STOCKAGE DANS VECTEURS TEMPORAIRES
+                call nmext1(mesh          , field    , field_disc   , field_type, field_s,&
+                            nb_elem       , nb_node  , nb_poin      , nb_spoi   , nb_cmp,&
+                            type_extr_elem, type_extr, type_extr_cmp, list_node , list_elem,&
+                            list_poin     , list_spoi, list_cmp     , work_node , work_poin,&
+                            work_elem)
 !
-        call nmext1(noma, champ, typcha, nomcha, nomchs,&
-                    nbma, nbno, nbpi, nbspi, nbcmp,&
-                    extrga, extrch, extrcp, listno, listma,&
-                    listpi, listsp, listcp, chnoeu, chgaus,&
-                    chelga)
+! ------------- Get title of observation
 !
-! ----- TITRE DE L'OBSERVATION
+                title = v_obsv_titl(i_keyw_fact)
 !
-        titobs = zk80(jobsno+iocc-1)
+! ------------- Save extraction values in table
 !
-! ----- SAUVER LES VALEURS DANS LA TABLE
+                call nmobs2(mesh         , sd_obsv   , tabl_name, time          , title,&
+                            field_disc   , field_type, field_s  , nb_elem       , nb_node,&
+                            nb_poin      , nb_spoi   , nb_cmp   , type_extr_elem, type_extr,&
+                            type_extr_cmp, list_node , list_elem, list_poin     , list_spoi,&
+                            list_cmp     , field     , work_node, work_elem     , nb_obsf_effe)
 !
-        call nmobs2(noma, sdobse, nomtab, instan, titobs,&
-                    typcha, nomcha, nomchs, nbma, nbno,&
-                    nbpi, nbspi, nbcmp, extrga, extrch,&
-                    extrcp, listno, listma, listpi, listsp,&
-                    listcp, champ, chnoeu, chelga, nobsef)
+                call jedetr(work_poin)
+                call jedetr(work_node)
+                call jedetr(work_elem)
+            endif
+        endif
+    end do
 !
-        call jedetr(chgaus)
-        call jedetr(chnoeu)
-        call jedetr(chelga)
+! - Print
 !
- 99     continue
-!
- 10 end do
-!
-! --- AFFICHAGE
-!
-    if (nobsef .eq. 0) then
+    if (nb_obsf_effe .eq. 0) then
         call utmess('I', 'OBSERVATION_39')
-    else if (nobsef.eq.1) then
+    else if (nb_obsf_effe.eq.1) then
         call utmess('I', 'OBSERVATION_38')
     else
-        call utmess('I', 'OBSERVATION_37', si=nobsef)
+        call utmess('I', 'OBSERVATION_37', si=nb_obsf_effe)
     endif
 !
-! --- DESTRUCTION DES CHAM_ELEM_S
+! - Cleanig
 !
-    do 45 icham = 1, nbcham
-        nomchs = zk24(jobsch+2*(icham-1)+2-1)
-        call jedetr(nomchs)
- 45 end do
-!
-    call jedema()
+    do i_field = 1, nb_field
+        field_s = v_extr_field(2*(i_field-1)+2)
+        call jedetr(field_s)
+    end do
 !
 end subroutine
