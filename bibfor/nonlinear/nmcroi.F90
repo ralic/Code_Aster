@@ -1,4 +1,9 @@
-subroutine nmcroi(sdobse, motfac, nbocc)
+subroutine nmcroi(sd_obsv, keyw_fact, nb_keyw_fact)
+!
+implicit none
+!
+#include "asterfort/impfoi.h"
+#include "asterfort/nmcrpx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,54 +23,38 @@ subroutine nmcroi(sdobse, motfac, nbocc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/impfoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmcrpx.h"
-    character(len=19) :: sdobse
-    integer :: nbocc
-    character(len=16) :: motfac
+    integer, intent(in) :: nb_keyw_fact
+    character(len=19), intent(in) :: sd_obsv
+    character(len=16), intent(in) :: keyw_fact
 !
-! --------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - OBSERVATION)
+! Non-linear operators - Observation
 !
-! LECTURE LISTE DES INSTANTS
+! Read parameters for list of time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_obsv          : datastructure for observation parameters
+! In  keyw_fact        : factor keyword to read observation parameters
+! In  nb_keyw_fact     : number of factor keyword to read observation parameters
 !
-! IN  SDOBSE : NOM DE LA SD POUR OBSERVATION
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  MOTPAS : MOT-FACTEUR POUR LIRE PAS
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: iocc
+    integer :: i_keyw_fact
     character(len=1) :: base
-    character(len=19) :: listli
+    character(len=19) :: list_inst_obsv
     character(len=2) :: chaine
-    character(len=16) :: motpas
+    character(len=16) :: keyw_step
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    base      = 'V'
+    keyw_step = 'PAS_OBSE'
+    do i_keyw_fact = 1, nb_keyw_fact
+        call impfoi(0, 2, i_keyw_fact, chaine)
+        list_inst_obsv = sd_obsv(1:14)//chaine(1:2)//'.LI'
+        call nmcrpx(keyw_fact, keyw_step, i_keyw_fact, list_inst_obsv, base)
+    end do
 !
-! --- INITIALISATIONS
-!
-    base = 'V'
-    motpas = 'PAS_OBSE'
-!
-! --- LECTURE LISTE INSTANTS
-!
-    do 10 iocc = 1, nbocc
-        call impfoi(0, 2, iocc, chaine)
-        listli = sdobse(1:14)//chaine(1:2)//'.LI'
-        call nmcrpx(motfac, motpas, iocc, listli, base)
-10  end do
-!
-    call jedema()
 end subroutine

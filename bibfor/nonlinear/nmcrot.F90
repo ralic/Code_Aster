@@ -1,4 +1,14 @@
-subroutine nmcrot(result, sdobse)
+subroutine nmcrot(result, sd_obsv)
+!
+implicit none
+!
+#include "asterfort/exisd.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,87 +28,77 @@ subroutine nmcrot(result, sdobse)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ltcrsd.h"
-#include "asterfort/ltnotb.h"
-#include "asterfort/tbajpa.h"
-#include "asterfort/tbcrsd.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: result
-    character(len=19) :: sdobse
+    character(len=8), intent(in) :: result
+    character(len=19), intent(in) :: sd_obsv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - OBSERVATION)
+! Non-linear operators - Observation
 !
-! CREATION TABLE OBSERVATION
+! Create table
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  result           : name of results datastructure
+! In  sd_obsv          : datastructure for observation parameters
 !
-! IN  RESULT : NOM SD RESULTAT
-! IN  SDOBSE : NOM DE LA SD POUR OBSERVATION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: nb_para
+    parameter   (nb_para=16)
+    character(len=8) :: para_type(nb_para)
+    character(len=16) :: para_name(nb_para)
 !
-    integer :: nbpara
-    parameter   (nbpara=16)
-    character(len=8) :: typara(nbpara)
-    character(len=16) :: nopara(nbpara)
-!
-    character(len=24) :: obstab
-    integer :: jobst
+    character(len=24) :: obsv_tabl
+    character(len=24), pointer :: v_obsv_tabl(:) => null()
     integer :: iret
-    character(len=19) :: nomtab
+    character(len=19) :: tabl_name
 !
-    data nopara/'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,&
-     &            'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
-     &            'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
-     &            'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
-     &            'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',&
-     &            'VALE'           /
-    data typara/'K80','K16','K24',&
-     &            'I'  ,'I'  ,'R'  ,&
-     &            'K16','K8' ,'K8' ,&
-     &            'K8' ,'K8' ,'K8' ,&
-     &            'K8' ,'I'  ,'I'  ,&
-     &            'R' /
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    data para_name /'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,&
+                    'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
+                    'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
+                    'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
+                    'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',&
+                    'VALE'           /
+    data para_type /'K80','K16','K24',&
+                    'I'  ,'I'  ,'R'  ,&
+                    'K16','K8' ,'K8' ,&
+                    'K8' ,'K8' ,'K8' ,&
+                    'K8' ,'I'  ,'I'  ,&
+                    'R' /
 !
-    call jemarq()
+! --------------------------------------------------------------------------------------------------
 !
-! --- SD NOM TABLE
 !
-    obstab = sdobse(1:14)//'     .TABL'
-    call wkvect(obstab, 'V V K24', 1, jobst)
+! - Create vector for table name
 !
-! --- CREATION DE LA LISTE DE TABLES SI ELLE N'EXISTE PAS
+    obsv_tabl = sd_obsv(1:14)//'     .TABL'
+    call wkvect(obsv_tabl, 'V V K24', 1, vk24 = v_obsv_tabl)
+!
+! - Create list of tables in results datastructure
 !
     call jeexin(result//'           .LTNT', iret)
-    if (iret .eq. 0) call ltcrsd(result, 'G')
-!
-! --- RECUPERATION DE LA TABLE CORRESPONDANT AUX OBSERVATIONS
-!
-    nomtab = ' '
-    call ltnotb(result, 'OBSERVATION', nomtab)
-!
-! --- CREATION DE LA TABLE CORRESPONDANT AUX OBSERVATIONS
-!
-    call exisd('TABLE', nomtab, iret)
     if (iret .eq. 0) then
-        call tbcrsd(nomtab, 'G')
-        call tbajpa(nomtab, nbpara, nopara, typara)
+        call ltcrsd(result, 'G')
     endif
 !
-! --- SAUVEGARDE NOM DU TABLEAU
+! - Get name of observation table
 !
-    zk24(jobst) = nomtab
+    tabl_name = ' '
+    call ltnotb(result, 'OBSERVATION', tabl_name)
 !
-    call jedema()
+! - Create observation table
+!
+    call exisd('TABLE', tabl_name, iret)
+    if (iret .eq. 0) then
+        call tbcrsd(tabl_name, 'G')
+        call tbajpa(tabl_name, nb_para, para_name, para_type)
+    endif
+!
+! - Save name of table
+!
+    v_obsv_tabl(1) = tabl_name
+!
 end subroutine

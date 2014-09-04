@@ -1,4 +1,11 @@
-subroutine nmobno(sdobse, motfac, nbocc)
+subroutine nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,60 +25,50 @@ subroutine nmobno(sdobse, motfac, nbocc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/impfoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    integer :: nbocc
-    character(len=19) :: sdobse
-    character(len=16) :: motfac
+    integer, intent(in) :: nb_keyw_fact
+    character(len=19), intent(in) :: sd_obsv
+    character(len=16), intent(in) :: keyw_fact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - OBSERVATION)
+! Non-linear operators - Observation
 !
-! LECTURE NOM DES OBSERVATION
+! Name of observations
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_obsv          : datastructure for observation parameters
+! In  keyw_fact        : factor keyword to read observation parameters
+! In  nb_keyw_fact     : number of factor keyword to read observation parameters
 !
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  SDOBSE : NOM DE LA SD POUR OBSERVATION
-! IN  NBOCC  : NOMBRE D'OCCURRENCES DE MOTFAC
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: iocc, nbtit, ibid
-    character(len=24) :: obsnom
-    integer :: jobsno
-    character(len=80) :: titobs
+    integer :: i_keyw_fact, nb_title
+    character(len=24) :: obsv_titl
+    character(len=80), pointer :: v_obsv_titl(:) => null()
+    character(len=80) :: title
     character(len=1) :: chaine
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- SD POUR SAUVER LES TITRES
+! - Create vector for title
 !
-    obsnom = sdobse(1:14)//'     .TITR'
-    call wkvect(obsnom, 'V V K80', nbocc, jobsno)
+    obsv_titl = sd_obsv(1:14)//'     .TITR'
+    call wkvect(obsv_titl, 'V V K80', nb_keyw_fact, vk80 = v_obsv_titl)
 !
-    do 10 iocc = 1, nbocc
-        call impfoi(0, 1, iocc, chaine)
-        titobs = 'OBSERVATION_'//chaine
-        call getvtx(motfac, 'TITRE', iocc=iocc, nbval=0, nbret=nbtit)
-        nbtit = - nbtit
-        ASSERT(nbtit.le.1)
-        if (nbtit .ne. 0) then
-            call getvtx(motfac, 'TITRE', iocc=iocc, nbval=nbtit, vect=titobs,&
-                        nbret=ibid)
+! - Set titles
+!
+    do i_keyw_fact = 1, nb_keyw_fact
+        call impfoi(0, 1, i_keyw_fact, chaine)
+        title = 'OBSERVATION_'//chaine
+        call getvtx(keyw_fact, 'TITRE', iocc=i_keyw_fact, nbval=0, nbret=nb_title)
+        nb_title = - nb_title
+        ASSERT(nb_title.le.1)
+        if (nb_title .ne. 0) then
+            call getvtx(keyw_fact, 'TITRE', iocc=i_keyw_fact, nbval=nb_title, vect=title)
         endif
-        zk80(jobsno+iocc-1) = titobs
-10  end do
+        v_obsv_titl(i_keyw_fact) = title
+    end do
 !
-    call jedema()
 end subroutine

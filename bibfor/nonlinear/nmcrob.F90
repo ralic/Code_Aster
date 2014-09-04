@@ -39,7 +39,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Init
+! Non-linear operators - Observation
 !
 ! Create observation datastructure
 !

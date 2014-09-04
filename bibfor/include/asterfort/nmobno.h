@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmobno(sdobse, motfac, nbocc)
-        character(len=19) :: sdobse
-        character(len=16) :: motfac
-        integer :: nbocc
+    subroutine nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
+        integer, intent(in) :: nb_keyw_fact
+        character(len=19), intent(in) :: sd_obsv
+        character(len=16), intent(in) :: keyw_fact
     end subroutine nmobno
 end interface
