@@ -173,4 +173,7 @@ cata_msg={
 41 : _(u"""
    Le type de résultat %(k1)s (mot clé TYPE_RESU) n'est pas autorisé pour le mot clé facteur %(k2)s (mot clé OPERATION)
 """),
+42 : _(u"""
+   On doit obligatoirement trouver le mot-clé F_MRR_RR ou le mot-clé F_MXX_XX
+"""),
 }

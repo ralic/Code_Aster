@@ -91,6 +91,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     character(len=1) :: c1
     character(len=8) :: zirc(2)
     aster_logical :: resi, rigi
+    logical :: zcylin
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data          kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -180,11 +181,20 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     call edgmat(fami, kpg, ksp, imat, c1,&
                 zalpha, temp, dt, mum, mu,&
                 troikm, troisk, alpham, alphap, anic,&
-                m, n, gamma)
+                m, n, gamma,zcylin)
 !
 ! CHANGEMENT DE REPERE DE LA MATRICE D ANISOTROPIE
+! SEULEMENT SI ON EST EN COORDONNEES CYLINDRIQUES
 !
-    call edgrep(typmod, coord, anic, ani)
+    if (zcylin) then
+      call edgrep(typmod, coord, anic, ani)
+    else
+      do 16 i = 1,6
+        do 17 k = 1,6
+          ani(i,k) = anic(i,k)
+ 17     continue
+ 16   continue
+    endif
 !
     if (resi) then
 !

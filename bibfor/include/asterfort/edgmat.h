@@ -19,7 +19,7 @@ interface
     subroutine edgmat(fami, kpg, ksp, imat, c1,&
                       zalpha, temp, dt, mum, mu,&
                       troikm, troisk, alpham, alphap, ani,&
-                      m, n, gamma)
+                      m, n, gamma,zcylin)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -38,5 +38,6 @@ interface
         real(kind=8) :: m(3)
         real(kind=8) :: n(3)
         real(kind=8) :: gamma(3)
+        logical :: zcylin
     end subroutine edgmat
 end interface

@@ -1,13 +1,15 @@
 subroutine edgmat(fami, kpg, ksp, imat, c1,&
                   zalpha, temp, dt, mum, mu,&
                   troikm, troisk, alpham, alphap, ani,&
-                  m, n, gamma)
+                  m, n, gamma,zcylin)
 !
     implicit none
 !
 !
 #include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, imat
+    logical :: zcylin
     real(kind=8) :: zalpha, temp, dt
     real(kind=8) :: mum, mu, troikm, troisk, alpham, alphap, ani(6, 6)
     real(kind=8) :: m(3), n(3), gamma(3)
@@ -80,50 +82,103 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 1, nomc(3), val, icodre(3), 2)
-    alpham=val(1)            
+    alpham=val(1)
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 1, nomc(3), val, icodre(3), 2)
-    alphap=val(1)            
+    alphap=val(1)
 !
 ! 2 - MATRICE D ANISOTROPIE
-! 2.1 - DONNEES UTILISATEUR - UNIQUEMENT LA PHASE FROIDE ET CHAUDE
+! 2.1 - TEST POUR SAVOIR SI ON EST EN COORDONNEES
+!       CARTESIENNES OU CYLINDRIQUES
+    zcylin=.true.
+    nomc(16)= 'F_MRR_RR'
+    call rcvalb(fami, kpg, ksp, c1, imat,&
+                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
+                1, nomc(16), valres(16), icodre(16), 0)
+    if (icodre(16).eq.0) then
+      m11(1)=valres(16)
+    else
+      nomc(16)= 'F_MXX_XX'
+      call rcvalb(fami, kpg, ksp, c1, imat,&
+                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
+                1, nomc(16), valres(16), icodre(16), 0)
+      if (icodre(16).eq.0) then
+        m11(1)=valres(16)
+        zcylin=.false.
+      else
+        call utmess('F', 'ALGORITH17_42')
+      endif
+    endif
+
+
+! 2.2 - DONNEES UTILISATEUR - UNIQUEMENT LA PHASE FROIDE ET CHAUDE
 !       PHASE FROIDE => INDICE 1
 !       PHASE CHAUDE => INDICE 2
 !
-    nomc(16)= 'F_MRR_RR'
-    nomc(17)= 'C_MRR_RR'
-    nomc(18)= 'F_MTT_TT'
-    nomc(19)= 'C_MTT_TT'
-    nomc(20)= 'F_MZZ_ZZ'
-    nomc(21)= 'C_MZZ_ZZ'
-    nomc(22)= 'F_MRT_RT'
-    nomc(23)= 'C_MRT_RT'
-    nomc(24)= 'F_MRZ_RZ'
-    nomc(25)= 'C_MRZ_RZ'
-    nomc(26)= 'F_MTZ_TZ'
-    nomc(27)= 'C_MTZ_TZ'
+    if (zcylin) then
+      nomc(17)= 'C_MRR_RR'
+      nomc(18)= 'F_MTT_TT'
+      nomc(19)= 'C_MTT_TT'
+      nomc(20)= 'F_MZZ_ZZ'
+      nomc(21)= 'C_MZZ_ZZ'
+      nomc(22)= 'F_MRT_RT'
+      nomc(23)= 'C_MRT_RT'
+      nomc(24)= 'F_MRZ_RZ'
+      nomc(25)= 'C_MRZ_RZ'
+      nomc(26)= 'F_MTZ_TZ'
+      nomc(27)= 'C_MTZ_TZ'
 !
-    call rcvalb(fami, kpg, ksp, c1, imat,&
+      call rcvalb(fami, kpg, ksp, c1, imat,&
                 ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
-                12, nomc(16), valres(16), icodre(16), 2)
+                11, nomc(17), valres(17), icodre(17), 2)
 !
-    m11(1)=valres(16)
-    m22(1)=valres(18)
-    m33(1)=valres(20)
-    m44(1)=valres(22)
-    m55(1)=valres(24)
-    m66(1)=valres(26)
+      m22(1)=valres(18)
+      m33(1)=valres(20)
+      m44(1)=valres(22)
+      m55(1)=valres(24)
+      m66(1)=valres(26)
 !
-    m11(2)=valres(17)
-    m22(2)=valres(19)
-    m33(2)=valres(21)
-    m44(2)=valres(23)
-    m55(2)=valres(25)
-    m66(2)=valres(27)
+      m11(2)=valres(17)
+      m22(2)=valres(19)
+      m33(2)=valres(21)
+      m44(2)=valres(23)
+      m55(2)=valres(25)
+      m66(2)=valres(27)
+    else
+      nomc(17)= 'C_MXX_XX'
+      nomc(18)= 'F_MYY_YY'
+      nomc(19)= 'C_MYY_YY'
+      nomc(20)= 'F_MZZ_ZZ'
+      nomc(21)= 'C_MZZ_ZZ'
+      nomc(22)= 'F_MXY_XY'
+      nomc(23)= 'C_MXY_XY'
+      nomc(24)= 'F_MXZ_XZ'
+      nomc(25)= 'C_MXZ_XZ'
+      nomc(26)= 'F_MYZ_YZ'
+      nomc(27)= 'C_MYZ_YZ'
 !
-! 2.2 - ON COMPLETE LA MATRICE MIJ(1) ET MIJ(2)
+      call rcvalb(fami, kpg, ksp, c1, imat,&
+                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
+                11, nomc(17), valres(17), icodre(17), 2)
+!
+      m22(1)=valres(18)
+      m33(1)=valres(20)
+      m44(1)=valres(22)
+      m55(1)=valres(24)
+      m66(1)=valres(26)
+!
+      m11(2)=valres(17)
+      m22(2)=valres(19)
+      m33(2)=valres(21)
+      m44(2)=valres(23)
+      m55(2)=valres(25)
+      m66(2)=valres(27)
+    endif
+
+!
+! 2.3 - ON COMPLETE LA MATRICE MIJ(1) ET MIJ(2)
 !
     do 5 k = 1, 2
         m12(k)=(-m11(k)-m22(k)+m33(k))/2.d0
@@ -131,7 +186,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
         m23(k)=( m11(k)-m22(k)-m33(k))/2.d0
  5  continue
 !
-! 2.3 - ON CONSTRUIT ANI(I,J) SUIVANT LE % DE PHASE FROIDE
+! 2.4 - ON CONSTRUIT ANI(I,J) SUIVANT LE % DE PHASE FROIDE
 ! SI 0   <ZALPHA<0.01 => ANI(I,J)=MIJ(2)
 ! SI 0.01<ZALPHA<0.99 => ANI(I,J)=ZALPHA*MIJ(1)+(1-ZALPHA)*MIJ(2)
 ! SI 0.99<ZALPHA<1    => ANI(I,J)=MIJ(1)
