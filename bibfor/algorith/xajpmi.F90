@@ -1,17 +1,15 @@
-subroutine xajpmi(list, long, ipt, cpt, newpt,&
+subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
                   longar, ajout)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
-#include "asterfort/tecael.h"
 !
-    integer :: long, ipt, cpt
+    integer :: ndim, long, ipt, cpt
     real(kind=8) :: newpt(3), longar, list(*)
     aster_logical :: ajout
 !
@@ -45,18 +43,14 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
 !       LIST
 !     ----------------------------------------------------------------
 !
-    character(len=8) :: noma
-    real(kind=8) :: p(3)
-    integer :: i, j, ndim, iadzi, iazk24
+    real(kind=8) :: p(3), cridist
+    parameter(cridist=1.d-7)
+    integer :: i, j
     aster_logical :: deja
 !
 ! --------------------------------------------------------------------
 !
     call jemarq()
-!
-    call tecael(iadzi, iazk24)
-    noma=zk24(iazk24)
-    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
     deja = .false.
@@ -65,7 +59,7 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
         do j = 1, ndim
             p(j) = list(ndim*(i-1)+j)
         end do
-        if (padist(ndim,p,newpt) .lt. (longar*1.d-6)) deja = .true.
+        if (padist(ndim,p,newpt) .lt. (longar*cridist)) deja = .true.
     end do
 !
     if (.not. deja) then

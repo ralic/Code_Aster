@@ -88,6 +88,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELX=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,                        
                         FISSURE=(FISS,),
+                        PRETRAITEMENTS='SANS',
                         INFO=1,);
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELX);

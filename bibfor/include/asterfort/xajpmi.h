@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xajpmi(list, long, ipt, cpt, newpt,&
+    subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
                       longar, ajout)
+        integer :: ndim
         real(kind=8) :: list(*)
         integer :: long
         integer :: ipt

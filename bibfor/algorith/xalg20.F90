@@ -149,7 +149,7 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
                     ia, ib, r, ksia, ksib,&
                     milara, milarb)
 !         STOCKAGE PMILIE
-        call xajpmi(pmilie, pmmax, ipm, inm, milara,&
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
                     lonref, ajout)
         if (ajout) then
             do j = 1, ndime
@@ -157,7 +157,7 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
             enddo
         endif
 !
-        call xajpmi(pmilie, pmmax, ipm, inm, milarb,&
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milarb,&
                     lonref, ajout)
         if (ajout) then
             do j = 1, ndime
@@ -189,7 +189,7 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
 !
 !        STOCKAGE PMILIE
             mfis=mfis+1
-            call xajpmi(pmilie, pmmax, ipm, inm, milfi,&
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfi,&
                         lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
@@ -220,7 +220,7 @@ subroutine xalg20(ndim, elrefp, nnop, it, nnose,&
                         pm2(k), typma, pinref, pmiref, ksia,&
                         milfa)
 !
-            call xajpmi(pmilie, pmmax, ipm, inm, milfa,&
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
                         lonref, ajout)
             if (ajout) then
                 do j = 1, ndime

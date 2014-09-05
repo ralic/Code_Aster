@@ -17,7 +17,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
-#include "asterfort/xajpmi.h"
 #include "asterfort/xalgo2.h"
 #include "asterfort/xalgo3.h"
 #include "asterfort/xerfis.h"

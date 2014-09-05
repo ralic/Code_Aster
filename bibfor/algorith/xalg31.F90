@@ -131,14 +131,14 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
                     ia, ib, r, ksia, ksib,&
                     milara, milarb)
 !         STOCKAGE PMILIE
-        call xajpmi(pmilie, pmmax, ipm, inm, milara,&
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
                     lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksia(j)
             enddo
         endif
-        call xajpmi(pmilie, pmmax, ipm, inm, milarb,&
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milarb,&
                     lonref, ajout)
         if (ajout) then
             do j = 1, ndime
@@ -171,7 +171,7 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
 !        STOCKAGE PMILIE
-            call xajpmi(pmilie, pmmax, ipm, inm, milfi,&
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfi,&
                         lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
@@ -203,7 +203,7 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose,&
                         pm2(k), typma, pinref, pmiref, ksia,&
                         milfa)
 !
-            call xajpmi(pmilie, pmmax, ipm, inm, milfa,&
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
                         lonref, ajout)
             if (ajout) then
                 do j = 1, ndime

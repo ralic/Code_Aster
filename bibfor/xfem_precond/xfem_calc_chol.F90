@@ -62,7 +62,7 @@ subroutine xfem_calc_chol(tab_mat, jadr, nm, scal, info, methode)
 !-----------------------------------------------------------------------
     integer :: j, i, info, niv, ifm
     real(kind=8) :: prod, dete, trace, seuil, ab(nm,nm)
-    parameter  (seuil=1.E-9)
+    parameter  (seuil=1.d-9)
 !-----------------------------------------------------------------------
 !
     methode='CHOLESKY'

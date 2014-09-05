@@ -73,7 +73,8 @@ subroutine te0514(option, nomte)
     real(kind=8) :: nmil(3, 7), txlsn(7), ainter(ptmaxi*zintmx)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)
-    real(kind=8) :: xg(3)
+    real(kind=8) :: xg(3), cridist
+    parameter(cridist=1.d-7)
     integer :: fisco(2*nfimax), fisc(2*nfimax), zxain, ai
     integer :: ndoubl(ninmax*(2**nfimax)), ndoub2(ninmax*(2**nfimax))
     integer :: ndoub3(nmmax*(2**nfimax))
@@ -253,7 +254,7 @@ subroutine te0514(option, nomte)
                         do 221 j = 1, ndim
                             p(j) = zr(jout1-1+ndim*(i-1)+j)
 221                     continue
-                        if (padist(ndim,p,newpt) .lt. (lonref*1.d-6)) then
+                        if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
                             deja = .true.
                             ni=i
                         endif
@@ -298,7 +299,7 @@ subroutine te0514(option, nomte)
                             do 321 j = 1, ndim
                                 p(j) = zr(jout5-1+ndim*(i-1)+j)
 321                         continue
-                            if (padist(ndim,p,newpt) .lt. (lonref*1.d-6)) then
+                            if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
                                 deja = .true.
                                 ni=i
                             endif

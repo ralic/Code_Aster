@@ -48,7 +48,8 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 !     SORTIE
 !       LIST,AINTER
 !     ------------------------------------------------------------------
-    real(kind=8) :: p(3)
+    real(kind=8) :: p(3), cridist
+    parameter(cridist=1.d-7)
     integer :: i, j
     aster_logical :: deja
     integer :: zxain
@@ -65,7 +66,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
         do 99 j = 1, ndim
             p(j) = list(ndim*(i-1)+j)
  99     continue
-        if (padist(ndim,p,newpt) .lt. (longar*1.d-6)) deja = .true.
+        if (padist(ndim,p,newpt) .lt. (longar*cridist)) deja = .true.
 100 end do
 !
     if (.not. deja) then
