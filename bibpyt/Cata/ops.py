@@ -228,7 +228,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
                if self.jdc.info_level > 1:
                   UTMESS('I', 'SUPERVIS2_3',
                          valk=(elem, type(co).__name__.upper()))
-               UTMESS('A', 'SUPERVIS_93', valk=(elem, "del %s" % name))
+               UTMESS('A', 'SUPERVIS_93', valk=(elem, name, "del {}".format(elem)))
                del pickle_context[elem]
                continue
          if co == None:

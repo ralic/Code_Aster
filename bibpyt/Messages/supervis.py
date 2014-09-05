@@ -278,8 +278,8 @@ On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 
 -> Conseil :
    Pour éviter cette alarme, supprimer la référence dans le jeu de commandes
-   qui produit la base :
-      %(k1)s
+   qui produit la base en faisant :
+      %(k3)s
 """),
 
 95 : _(u"""
