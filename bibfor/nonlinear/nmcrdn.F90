@@ -1,4 +1,11 @@
-subroutine nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
+subroutine nmcrdn(sd_suiv, keyw_fact, nb_dof_monitor, nb_keyw_fact)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,81 +25,71 @@ subroutine nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/impfoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    integer :: ntsddl, nbocc
-    character(len=24) :: sdsuiv
-    character(len=16) :: motfac
+    character(len=24), intent(in) :: sd_suiv
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: nb_dof_monitor
+    integer, intent(in) :: nb_keyw_fact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - SUIVI_DDL)
+! Non-linear operators - DOF monitor
 !
-! LECTURE NOM DES COLONNES
+! Create datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_suiv          : datastructure for dof monitor parameters
+! In  keyw_fact        : factor keyword to read extraction parameters
+! In  nb_keyw_fact     : number of factor keyword to read extraction parameters
+! In  nb_dof_monitor   : number of factor dofs monitored
 !
-! IN  MOTFAC : MOT-FACTEUR POUR LIRE
-! IN  SDSUIV : NOM DE LA SD POUR SUIVI_DDL
-! IN  NTSDDL : NOMBRE TOTAL DE SUIVI_DDL
-! IN  NBOCC  : NOMBRE D'OCCURRENCES DE MOTFAC
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: iocc, isuiv, nbtit, ibid
-    character(len=24) :: ddltit
-    integer :: jddlti
-    character(len=16) :: titre(3)
+    integer :: i_keyw_fact, i_dof_monitor, nb_line_title
+    character(len=16) :: title(3)
     character(len=1) :: chaine
+    character(len=24) :: dofm_titl
+    character(len=16), pointer :: v_dofm_titl(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+
 !
-! --- SD POUR SAUVER LES TITRES
+! - Create title vector
 !
-    ddltit = sdsuiv(1:14)//'     .TITR'
-    call wkvect(ddltit, 'V V K16', 3*ntsddl, jddlti)
+    dofm_titl = sd_suiv(1:14)//'     .TITR'
+    call wkvect(dofm_titl, 'V V K16', 3*nb_dof_monitor, vk16 = v_dofm_titl)
 !
-! --- TITRE DONNE PAR L'UTILISATEUR
+! - Title from user
 !
-    do 10 iocc = 1, nbocc
-        call impfoi(0, 1, iocc, chaine)
-        titre(1) = '    SUIVI '
-        titre(2) = '     DDL  '
-        titre(3) = '     '//chaine
-        call getvtx(motfac, 'TITRE', iocc=iocc, nbval=0, nbret=nbtit)
-        nbtit = - nbtit
-        ASSERT(nbtit.le.3)
-        if (nbtit .ne. 0) then
-            call getvtx(motfac, 'TITRE', iocc=iocc, nbval=nbtit, vect=titre,&
-                        nbret=ibid)
+    do i_keyw_fact = 1, nb_keyw_fact
+        call impfoi(0, 1, i_keyw_fact, chaine)
+        title(1) = '    SUIVI '
+        title(2) = '     DDL  '
+        title(3) = '     '//chaine
+        call getvtx(keyw_fact, 'TITRE', iocc=i_keyw_fact, nbval=0, nbret=nb_line_title)
+        nb_line_title = - nb_line_title
+        ASSERT(nb_line_title.le.3)
+        if (nb_line_title .ne. 0) then
+            call getvtx(keyw_fact, 'TITRE', iocc=i_keyw_fact, nbval=nb_line_title, vect=title)
         endif
-        zk16(jddlti+3*(iocc-1)+1-1) = titre(1)
-        zk16(jddlti+3*(iocc-1)+2-1) = titre(2)
-        zk16(jddlti+3*(iocc-1)+3-1) = titre(3)
-10  end do
+        v_dofm_titl(3*(i_keyw_fact-1)+1) = title(1)
+        v_dofm_titl(3*(i_keyw_fact-1)+2) = title(2)
+        v_dofm_titl(3*(i_keyw_fact-1)+3) = title(3)
+    end do
 !
-! --- COMPLETUDE: TITRE AUTOMATIQUE
+! - Automatic
 !
-    if (ntsddl .gt. nbocc) then
-        do 15 isuiv = nbocc+1, ntsddl
-            call impfoi(0, 1, isuiv, chaine)
-            titre(1) = '    SUIVI '
-            titre(2) = '     DDL  '
-            titre(3) = '     '//chaine
-            zk16(jddlti+3*(isuiv-1)+1-1) = titre(1)
-            zk16(jddlti+3*(isuiv-1)+2-1) = titre(2)
-            zk16(jddlti+3*(isuiv-1)+3-1) = titre(3)
-15      continue
+    if (nb_dof_monitor .gt. nb_keyw_fact) then
+        do i_dof_monitor = nb_keyw_fact+1, nb_dof_monitor
+            call impfoi(0, 1, i_dof_monitor, chaine)
+            title(1) = '    SUIVI '
+            title(2) = '     DDL  '
+            title(3) = '     '//chaine
+            v_dofm_titl(3*(i_dof_monitor-1)+1) = title(1)
+            v_dofm_titl(3*(i_dof_monitor-1)+2) = title(2)
+            v_dofm_titl(3*(i_dof_monitor-1)+3) = title(3)
+        end do
     endif
 !
-    call jedema()
 end subroutine

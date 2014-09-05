@@ -42,20 +42,20 @@ implicit none
 ! In  model            : name of model
 ! In  result           : name of results datastructure
 ! In  sddisc           : datastructure for discretization
-! in  sd_inout         : datastructure for input/output parameters
+! In  sd_inout         : datastructure for input/output parameters
 ! Out sd_suiv          : datastructure for dof monitor parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_suiv, nb_keyw_fact
+    integer :: nb_dof_monitor, nb_keyw_fact
     character(len=16) :: keyw_fact
     character(len=14) :: sdextr_suiv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_suiv    = 0
-    sd_suiv    = '&&NMCRDD.OBSV'
-    keyw_fact  = 'SUIVI_DDL'
+    nb_dof_monitor  = 0
+    sd_suiv         = '&&NMCRDD.OBSV'
+    keyw_fact       = 'SUIVI_DDL'
     call getfac(keyw_fact, nb_keyw_fact)
     ASSERT(nb_keyw_fact.le.99)
 !
@@ -63,12 +63,12 @@ implicit none
 !
     sdextr_suiv = sd_suiv(1:14)
     call nmextr(meshz       , modelz , sdextr_suiv, sd_inout, keyw_fact,&
-                nb_keyw_fact, nb_suiv)
+                nb_keyw_fact, nb_dof_monitor)
 !
 ! - Read name of columns
 !
     if (nb_keyw_fact .ne. 0) then
-        call nmcrdn(sd_suiv, keyw_fact, nb_suiv, nb_keyw_fact)
+        call nmcrdn(sd_suiv, keyw_fact, nb_dof_monitor, nb_keyw_fact)
     endif
 !
 end subroutine

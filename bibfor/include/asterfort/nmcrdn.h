@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
-        character(len=24) :: sdsuiv
-        character(len=16) :: motfac
-        integer :: ntsddl
-        integer :: nbocc
+    subroutine nmcrdn(sd_suiv, keyw_fact, nb_dof_monitor, nb_keyw_fact)
+        character(len=24), intent(in) :: sd_suiv
+        character(len=16), intent(in) :: keyw_fact
+        integer, intent(in) :: nb_dof_monitor
+        integer, intent(in) :: nb_keyw_fact
     end subroutine nmcrdn
 end interface
