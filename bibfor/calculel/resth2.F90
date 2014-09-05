@@ -151,7 +151,9 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         if (iretep .ne. 0) then
             call utmess('A', 'CALCULEL6_42')
         endif
-        if (((ireth.eq.0).and.(irett.ne.0)) .or. ((irett.eq.0).and.( ireth.ne.0))) ASSERT(.false.)
+        if (((ireth.eq.0).and.(irett.ne.0)) .or. ((irett.eq.0).and.( ireth.ne.0))) then
+            ASSERT(.false.)
+        endif
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE FLUX_REP/FLUN
         if (iretf .ne. 0) then

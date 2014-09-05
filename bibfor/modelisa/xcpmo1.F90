@@ -48,7 +48,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
 !
-character(len=8) :: modmes, modthx, modmex
+    character(len=8) :: modmes, modthx, modmex
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,10 +76,10 @@ character(len=8) :: modmes, modthx, modmex
     character(len=16) :: ktyelt, ktyelm
     character(len=8) :: noma, valk8(3), nommax
     character(len=1) :: k1bid
-    integer :: igr, jeltp,  imx
+    integer :: igr, jeltp, imx
     integer :: ima, iexi
-    integer ::   nmamex
-    integer ::  nfiss, nbmx, nutyelt, nutyelm
+    integer :: nmamex
+    integer :: nfiss, nbmx, nutyelt, nutyelm
     integer :: nbelmx, nbel2, cpt
 !
     integer, pointer :: tabmx(:) => null()
@@ -108,7 +108,7 @@ character(len=8) :: modmes, modthx, modmex
     character(len=16) :: ele3dthx(nel3dthx)
     character(len=16) :: eleplthx(nelplthx)
     character(len=16) :: eleaxthx(nelaxthx)
-!    
+!
 !   elements 3D lineaires thermiques X-FEM
 !   -------------------------------------------------------------------
     data ele3dthx/&
@@ -246,115 +246,129 @@ character(len=8) :: modmes, modthx, modmex
     ligmes = modmes//'.MODELE'
     ligthx = modthx//'.MODELE'
     ligmex = modmex//'.MODELE'
-
+!
 ! - recuperation de la liste de toutes les mailles fissurees
 ! - (de dimension n et n-1 car appel a xtmafi avec ndim == 0)
-
+!
     lismai = '&&XMOT2M.NUM_MAILLES'
     mesmai = '&&XMOT2M.MES_MAILLES'
-
+!
     call dismoi('NOM_MAILLA', modthx, 'MODELE', repk=noma)
     call dismoi('NB_FISS_XFEM', modthx, 'MODELE', repi=nfiss)
     call jeveuo(modthx//'.FISS', 'L', vk8=fiss)
-
-    call xtmafi(noma, 0, fiss, nfiss, lismai, mesmai, nbmx)
+!
+    call xtmafi(noma, 0, fiss, nfiss, lismai,&
+                mesmai, nbmx)
     call jeveuo(lismai, 'L', vi=tabmx)
-
+!
 ! - recuperation du '.MAILLE' de modthx et modmes
-
+!
     call jeveuo(modthx//'.MAILLE', 'L', vi=mthx)
     call jeveuo(modmes//'.MAILLE', 'L', vi=mmes)
-
+!
 ! - on s'assure que toute maille affectee par un element thermique
 ! - enrichi dans modthx est bien affectee par un element mecanique 
 ! - sain dans modmes
-
+!
     do ima = 1, nbmx
-
+!
         imx = tabmx(ima)
-
+!
         nutyelt = mthx(imx)
         nutyelm = mmes(imx)
-
-        if ( nutyelm .eq. 0 ) then
+!
+        if (nutyelm .eq. 0) then
             call jenuno(jexnum(noma//'.NOMMAI', imx), nommax)
             valk8(1) = nommax
             valk8(2) = modthx
             valk8(3) = modmes
             call utmess('F', 'XFEM_85', nk=3, valk=valk8)
         endif
-
-   enddo
-
+!
+    enddo
+!
 ! - copie integrale du contenu de modmes dans modmex 
-
+!
     call copisd('MODELE', 'G', modmes, modmex)
-
+!
 ! - on supprime modmex//'.PARTIT' s'il existe car MODI_MODELE_XFEM
 ! - avec mot-cle FISSURE ne recree pas cet objet s'il existe dans
 ! - le modele sain renseigne dans MODELE_IN
-
+!
     call jeexin(modmex//'.PARTIT', iexi)
     if (iexi .ne. 0) call jedetr(modmex//'.PARTIT')
-
+!
 ! - recuperation du '.MAILLE' de modmex
-
+!
     call jeveuo(modmex//'.MAILLE', 'E', vi=mmex)
     call jelira(modmex//'.MAILLE', 'LONMAX', nmamex, k1bid)
-
+!
 ! - modification du '.MAILLE' de modmex pour les mailles fissurees
-
+!
     do ima = 1, nbmx
-
+!
         imx = tabmx(ima)
-
+!
         nutyelt = mthx(imx)
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyelt), ktyelt)
-
+!
         nutyelm = mmex(imx)
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyelm), ktyelm)
-
+!
 !       MECANIQUE 3D
-        if     ( indk16(ele3dmec, ktyelm, 1, nel3dmec) .gt. 0 ) then
-            if ( indk16(ele3dthx, ktyelt, 1, nel3dthx) .eq. 0 ) ASSERT(.false.)
+        if (indk16(ele3dmec, ktyelm, 1, nel3dmec) .gt. 0) then
+            if (indk16(ele3dthx, ktyelt, 1, nel3dthx) .eq. 0) then
+                ASSERT(.false.)
+            endif
             ktyelm = ktyelm(1:4)//ktyelt(5:16)
-            if ( indk16(ele3dmex, ktyelm, 1, nel3dmex) .eq. 0 ) ASSERT(.false.)
+            if (indk16(ele3dmex, ktyelm, 1, nel3dmex) .eq. 0) then
+                ASSERT(.false.)
+            endif
 !
 !       MECANIQUE C_PLAN/D_PLAN
-        elseif ( indk16(eleplmec, ktyelm, 1, nelplmec) .gt. 0 ) then
-            if ( indk16(eleplthx, ktyelt, 1, nelplthx) .eq. 0 ) ASSERT(.false.)
+        else if (indk16(eleplmec, ktyelm, 1, nelplmec) .gt. 0) then
+            if (indk16(eleplthx, ktyelt, 1, nelplthx) .eq. 0) then
+                ASSERT(.false.)
+            endif
             ktyelm = ktyelm(1:4)//ktyelt(5:16)
-            if ( indk16(eleplmex, ktyelm, 1, nelplmex) .eq. 0 ) ASSERT(.false.)
-
+            if (indk16(eleplmex, ktyelm, 1, nelplmex) .eq. 0) then
+                ASSERT(.false.)
+            endif
+!
 !       MECANIQUE AXIS        
-        elseif ( indk16(eleaxmec, ktyelm, 1, nelaxmec) .gt. 0 ) then
-            if ( indk16(eleaxthx, ktyelt, 1, nelaxthx) .eq. 0 ) ASSERT(.false.)
+        else if (indk16(eleaxmec, ktyelm, 1, nelaxmec) .gt. 0) then
+            if (indk16(eleaxthx, ktyelt, 1, nelaxthx) .eq. 0) then
+                ASSERT(.false.)
+            endif
             ktyelm = ktyelm(1:4)//ktyelt(5:16)
-            if ( indk16(eleaxmex, ktyelm, 1, nelaxmex) .eq. 0 ) ASSERT(.false.)
-        
+            if (indk16(eleaxmex, ktyelm, 1, nelaxmex) .eq. 0) then
+                ASSERT(.false.)
+            endif
+!
         else
             ASSERT(.false.)
-
+!
         endif
-
+!
         call jenonu(jexnom('&CATA.TE.NOMTE', ktyelm), nutyelm)
         mmex(imx) = nutyelm
-
-   enddo
-
+!
+    enddo
+!
 ! - ligrel temporaire ligrtp (remplacera celui de modmex : ligmex)
-
+!
     ligrtp = '&&XMOT2M'//'.MODELE'
     lieltp = ligrtp//'.LIEL'
-
+!
     nbelmx = 0
     do igr = 1, nbgrel(ligmex)
         nbelmx = nbelmx + nbelem(ligmex, igr)
     enddo
-
-    call jecrec(lieltp, 'V V I', 'NU', 'CONTIG', 'VARIABLE', nbelmx)
+!
+    call jecrec(lieltp, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+                nbelmx)
     call jeecra(lieltp, 'LONT', 2*nbelmx)
-
+!
     cpt = 0
     do ima = 1, nmamex
         if (mmex(ima) .eq. 0) cycle
@@ -365,27 +379,27 @@ character(len=8) :: modmes, modthx, modmex
         zi(jeltp-1+1) = ima
         zi(jeltp-1+2) = mmex(ima)
     end do
-
+!
     call jelira(lieltp, 'NUTIOC', nbel2)
     ASSERT( nbel2 .eq. nbelmx )
-
+!
     call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false._1)
     call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false._1)
     call jeveuo(ligrtp//'.LGRF', 'E', vk8=lgrf)
     lgrf(2) = modmex
-
+!
 ! - on ecrase ligmex avec ligrtp
-
+!
     call adalig(lieltp)
     call cormgi('V', lieltp)
     call initel(lieltp)
-
+!
     call detrsd('LIGREL', ligmex)
     call copisd('LIGREL', 'G', ligrtp, ligmex)
     call detrsd('LIGREL', ligrtp)
-
+!
 ! - menage final
-
+!
     call jedetr(mesmai)
     call jedetr(lismai)
 !

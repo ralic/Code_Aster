@@ -91,7 +91,9 @@ subroutine x195cb(tychr, nomgd, chou)
         endif
 !
         call jelira(ch1//'.VALE', 'LONMAX', n2)
-        if (n2 .ne. n1) ASSERT(.false.)
+        if (n2 .ne. n1) then
+            ASSERT(.false.)
+        endif
 !
         call dismoi('NOM_GD', ch1, 'CHAMP', repk=nomgd1)
         if (nomgd1 .ne. nomgd) then

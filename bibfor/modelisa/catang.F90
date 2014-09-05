@@ -61,8 +61,8 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iacnx1, ilcnx1, jco,  j, ino, nbnoma, jcoor
-    integer ::  k, ino1, ino2, ino3,  i1, jtang
+    integer :: i, iacnx1, ilcnx1, jco, j, ino, nbnoma, jcoor
+    integer :: k, ino1, ino2, ino3, i1, jtang
     real(kind=8) :: vale1(3), vale2(3), vale3(3), vale(3), valu(3), valv(3)
     real(kind=8) :: norm
     character(len=8) :: ntyp
@@ -102,7 +102,9 @@ subroutine catang(noma, nbma, listma, nbno, listno)
     do i = 1, nbma
 !
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(1+listma(i)-1)), ntyp)
-        if (ntyp(1:3) .ne. 'SEG') ASSERT(.false.)
+        if (ntyp(1:3) .ne. 'SEG') then
+            ASSERT(.false.)
+        endif
 !
         jco=iacnx1-1+zi(ilcnx1+listma(i)-1)
         ino1=zi(jco)

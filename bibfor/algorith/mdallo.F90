@@ -178,24 +178,32 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         else
 !           --- 3.1 - Get the symbolic names of the saved fields or use def vals
             ASSERT(ENSEMBLE2(nbsym,nomsym))
-            if (typcal .eq. 'TRAN') ASSERT(absent(nbsym))
+            if (typcal .eq. 'TRAN') then
+                ASSERT(absent(nbsym))
+            endif
 !           --- 3.2 - Verify according to nomsym if it possible to retrieve the 
 !                     displacement, velocity, and acceleration vectors.
             saved = .false.
             do inom = 1, nbsym2
                 if (nomsym2(inom) .eq. 'DEPL') saved = .true.
             end do
-            if (.not.(saved)) ASSERT(absent(jdepl))
+            if (.not.(saved)) then
+                ASSERT(absent(jdepl))
+            endif
             saved = .false.
             do inom = 1, nbsym2
                 if (nomsym2(inom) .eq. 'VITE') saved = .true.
             end do
-            if (.not.(saved)) ASSERT(absent(jvite))
+            if (.not.(saved)) then
+                ASSERT(absent(jvite))
+            endif
             saved = .false.
             do inom = 1, nbsym2
                 if (nomsym2(inom) .eq. 'ACCE') saved = .true.
             end do
-            if (.not.(saved)) ASSERT(absent(jacce))
+            if (.not.(saved)) then
+                ASSERT(absent(jacce))
+            endif
 !           --- 3.3 - No time step or integration method are allowed in harmonic case
             if (typcal .eq. 'HARM') then
                 ASSERT(absent(dt))
@@ -204,16 +212,26 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             endif
         endif
 !       --- 4 - Treatment of choc parameters/arguments
-        if (nbchoc2 .ne. 0) ASSERT((present(noecho)).and.(present(intitu)))
+        if (nbchoc2 .ne. 0) then
+            ASSERT((present(noecho)).and.(present(intitu)))
+        endif
         if (nbchoc2 .eq. 0) then
             ASSERT((absent(jfcho)).and.(absent(jdcho)))
             ASSERT((absent(jvcho)).and.(absent(jadcho)))
         endif
 !       --- 5 - Treatment of rela effo depl/vite parameters/arguments
-        if (nbrede2 .ne. 0) ASSERT(present(fonred))
-        if (nbrede2 .eq. 0) ASSERT((absent(jredc)).and.(absent(jredd)))
-        if (nbrevi2 .ne. 0) ASSERT(present(fonrev))
-        if (nbrevi2 .eq. 0) ASSERT((absent(jrevc)).and.(absent(jrevv)))
+        if (nbrede2 .ne. 0) then
+            ASSERT(present(fonred))
+        endif
+        if (nbrede2 .eq. 0) then
+            ASSERT((absent(jredc)).and.(absent(jredd)))
+        endif
+        if (nbrevi2 .ne. 0) then
+            ASSERT(present(fonrev))
+        endif
+        if (nbrevi2 .eq. 0) then
+            ASSERT((absent(jrevc)).and.(absent(jrevv)))
+        endif
 !       --- 6 - Treatment of sauv parameter, global (default) or volatile saving
         ASSERT((sauve2(1:4).eq.'GLOB'.or.sauve2(1:4).eq.'VOLA'))
 !   --- End of argument verification
@@ -262,7 +280,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !   .DESC is already created in mdrecf (external forces retreival), and DESC[7] is set
 !   to 1 if a static correction is considered.
     call jeexin(nomres//'           .DESC', iret)
-    if (iret.eq.0) then 
+    if (iret .eq. 0) then
         call wkvect(nomres//'           .DESC', typsau//' I', 7, jdesc)
         do i = 1, 7
             zi(jdesc+i-1) = 0
@@ -281,8 +299,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             call utmess('F', 'ALGORITH17_29')
         endif
         do inom = 1, nbsym2
-            if ((nomsym2(inom)(1:4).ne.'DEPL') .and. (nomsym2(inom)( 1:4).ne.'VITE')&
-                .and. (nomsym2(inom)(1:4).ne.'ACCE')) then
+            if ((nomsym2(inom)(1:4).ne.'DEPL') .and. (nomsym2(inom)( 1:4).ne.'VITE') .and.&
+                (nomsym2(inom)(1:4).ne.'ACCE')) then
                 call utmess('F', 'ALGORITH17_29')
             endif
         enddo

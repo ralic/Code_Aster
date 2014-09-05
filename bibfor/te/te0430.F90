@@ -184,7 +184,9 @@ subroutine te0430(option, nomte)
         else if (option.eq.'REFE_FORC_NODA') then
 !
             call terefe('EPSI_REFE', 'GRILLE', epsref)
-            if (epsref .eq. r8vide()) ASSERT(.false.)
+            if (epsref .eq. r8vide()) then
+                ASSERT(.false.)
+            endif
 !
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
@@ -199,11 +201,13 @@ subroutine te0430(option, nomte)
                 enddo
                 b_max_rot = 0.d0
                 do i = 4, nddl
-                    if (abs(b(i,n)).gt.b_max_rot)b_max_rot = abs(b(i,n))
+                    if (abs(b(i,n)) .gt. b_max_rot) b_max_rot = abs(b(i,n))
                 enddo
                 do i = 4, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + b_max_rot * sig&
-                                                                *sqrt(abs(jac))*densit/npg
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(&
+                                                ivectu+(n-1)*nddl+ i-1) + b_max_rot * sig *sqrt(a&
+                                                &bs(jac)&
+                                                )*densit/npg
                 enddo
             enddo
 !

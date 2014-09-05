@@ -65,8 +65,8 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
     character(len=19) :: cfnos, cfnint, cfndir, cfnfex
     integer :: i, k
     real(kind=8) :: resim, fonam, res
-    integer ::     jcnsl
-    integer ::  licmpu(999)
+    integer :: jcnsl
+    integer :: licmpu(999)
     integer :: nbcmp, nbno, inc, ino, nbcmpu
     character(len=8) :: nomgd
     integer :: jfint, jdiri, jfext, jvcfo, jfnod
@@ -133,9 +133,13 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
  30     continue
     end do
 !
-    if (nbcmpu .gt. nddmax) ASSERT(.false.)
+    if (nbcmpu .gt. nddmax) then
+        ASSERT(.false.)
+    endif
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    if (tsca .ne. 'R') ASSERT(.false.)
+    if (tsca .ne. 'R') then
+        ASSERT(.false.)
+    endif
 !
     do inc = 1, nbcmpu
         nomddl(inc) = cnsc(licmpu(inc))

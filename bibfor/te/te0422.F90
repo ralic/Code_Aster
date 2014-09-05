@@ -1,5 +1,5 @@
 subroutine te0422(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -54,10 +54,12 @@ subroutine te0422(option, nomte)
 !
     fami = 'RIGI'
 !
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
-    if (option .ne. 'SIEF_ELGA') ASSERT(.false.)
+    if (option .ne. 'SIEF_ELGA') then
+        ASSERT(.false.)
+    endif
 !
     call r8inir(32, 0.d0, effgt, 1)
 !
@@ -73,15 +75,17 @@ subroutine te0422(option, nomte)
 !
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
-    beta  = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+    beta = zr(jcara+2) * r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                c, s)
 !
     call jevech('PDEPLAR', 'L', jdepg)
     call utpvgl(nno, 6, pgl, zr(jdepg), depl)
 !
 ! --- CALCUL DES EFFORTS GENERALISES AUX POINTS DE CALCUL
     call jevech('PCONTRR', 'E', jeffg)
-    call dxefgv(nomte, option, xyzl, pgl, depl, effgt)
+    call dxefgv(nomte, option, xyzl, pgl, depl,&
+                effgt)
 !
     call dxefro(npg, t2iu, effgt, zr(jeffg))
 !

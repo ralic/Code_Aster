@@ -59,7 +59,9 @@ subroutine mbrigi(fami, kpg, imate, rig)
 ! - VERIFICATION DU COMPORTEMENT
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, codret)
-    if (phenom .ne. 'ELAS_MEMBRANE') ASSERT(.false.)
+    if (phenom .ne. 'ELAS_MEMBRANE') then
+        ASSERT(.false.)
+    endif
 !
 ! - RECUPERATION DES COMPOSANTES
 !

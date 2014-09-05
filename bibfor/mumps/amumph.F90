@@ -123,7 +123,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     call infniv(ifm, niv)
     if ((action(1:6).ne.'PRERES') .and. (action(1:6).ne.'RESOUD') .and.&
         (action(1:8).ne.'DETR_OCC') .and. (action(1:8).ne.'DETR_MAT') .and.&
-        (action(1:7).ne.'VERSION')) ASSERT(.false.)
+        (action(1:7).ne.'VERSION')) then
+        ASSERT(.false.)
+    endif
 !
 ! --- ATTENTION: PARAMETRE DEVELOPPEUR
 ! --- IMPR : PARAMETRE POUR IMPRIMER LA MATRICE + RHS + EVENTUELLEMENT
@@ -211,7 +213,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
     prec=' '
     lpreco=.false.
-    if (action(1:8) .eq. 'DETR_OCC') ASSERT(solveu.ne.' ')
+    if (action(1:8) .eq. 'DETR_OCC') then
+        ASSERT(solveu.ne.' ')
+    endif
     call jeexin(solveu//'.SLVK', ibid)
     if (ibid .ne. 0) then
         call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
@@ -244,7 +248,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             else
 ! --- ON A OUBLIE UNE INITIALISATION AMONT DE MIXPRE DS .SLVK
 !     SAUF POUR CMDE ECLATEE
-                if (action(1:5) .ne. 'DETR_') ASSERT(.false.)
+                if (action(1:5) .ne. 'DETR_') then
+                    ASSERT(.false.)
+                endif
             endif
         else
 !
@@ -253,7 +259,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         endif
     else
 ! --- ON DOIT AVOIR UNE SD_SOLVEUR.SLVK POUR CETTE OPTION
-        if ((action(1:8).eq.'DETR_OCC') .or. (action(1:7).eq.'VERSION')) ASSERT(.false.)
+        if ((action(1:8).eq.'DETR_OCC') .or. (action(1:7).eq.'VERSION')) then
+            ASSERT(.false.)
+        endif
     endif
 !
     kxmps=1

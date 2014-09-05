@@ -90,8 +90,9 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 !
 !     COHERENCE DES VALEURS DE ISTOPZ (NIVEAU DEVELOPPEUR)
     istopz=istop
-    if ((istopz.ne.0) .and. (istopz.ne.1) .and. (istopz.ne.2) .and. (istopz.ne.-9999)) &
-    ASSERT(.false.)
+    if ((istopz.ne.0) .and. (istopz.ne.1) .and. (istopz.ne.2) .and. (istopz.ne.-9999)) then
+        ASSERT(.false.)
+    endif
     dbg=.true.
     dbg=.false.
 !

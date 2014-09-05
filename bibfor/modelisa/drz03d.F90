@@ -470,7 +470,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
                     abm(2) = ab(3)*am(1) - ab(1)*am(3)
                     abm(3) = ab(1)*am(2) - ab(2)*am(1)
                     labm = sqrt(abm(1)*abm(1)+abm(2)*abm(2)+abm(3)*abm(3))
-                    if (labm .gt. dist_mini) ASSERT(.false.)
+                    if (labm .gt. dist_mini) then
+                        ASSERT(.false.)
+                    endif
                 enddo
 !
 ! ------------- First relation (nodes A and B): (DU(B)-DU(A)).AB = 0

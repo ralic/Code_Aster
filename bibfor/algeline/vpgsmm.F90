@@ -170,8 +170,12 @@ subroutine vpgsmm(nbeq, nconv, vect, alpha, lmatb,&
         iauxi=zi(ireor2+i-1)
         nconvl=zi(ireor2+nconv+i-1)
 ! gardes-fous
-        if ((iauxi.lt.iauxj) .or. (iauxi.gt.(nconv-1))) ASSERT(.false.)
-        if ((nconvl.lt.2) .or. (nconvl.gt.compt3)) ASSERT(.false.)
+        if ((iauxi.lt.iauxj) .or. (iauxi.gt.(nconv-1))) then
+            ASSERT(.false.)
+        endif
+        if ((nconvl.lt.2) .or. (nconvl.gt.compt3)) then
+            ASSERT(.false.)
+        endif
 !
         if ((lcheck) .or. (niv.ge.2)) write(ifm, *)'<vpgsmm> paquet modes multiples n', i, iauxi,&
                                       nconvl
@@ -180,7 +184,9 @@ subroutine vpgsmm(nbeq, nconv, vect, alpha, lmatb,&
 !
 ! mise a jour des gardes-fous
         compt3=compt3-nconvl
-        if (compt3 .lt. 0) ASSERT(.false.)
+        if (compt3 .lt. 0) then
+            ASSERT(.false.)
+        endif
         iauxj=iauxi
  71 continue
     call jedetr('&&VPGSMM.REORTHO.PART1')

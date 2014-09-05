@@ -18,7 +18,7 @@ subroutine oblgip(sdlist, idnvaz, indice)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -67,7 +67,9 @@ subroutine oblgip(sdlist, idnvaz, indice)
 ! --- VERIFICATION
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') then
+        ASSERT(.false.)
+    endif
 !
 ! --- RECHERCHE DANS LA LISTE
 !
@@ -87,7 +89,7 @@ subroutine oblgip(sdlist, idnvaz, indice)
                 indice = istru
             endif
         endif
-10  end do
+ 10 end do
 !
     if (indice .eq. 0) then
         write(6,*) 'STRUCT INTROUVABLE DANS LA LISTE '

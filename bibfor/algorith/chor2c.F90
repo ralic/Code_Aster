@@ -56,7 +56,7 @@ subroutine chor2c(lischa, vecele)
     integer :: jcn
     character(len=24) :: resuel
     character(len=8) :: typech, typsca
-    integer :: iret,  ibid, ichar
+    integer :: iret, ibid, ichar
     integer :: ivec, nbvec, nbvdim, ivale, nbvale
     character(len=4) :: tyresl
     character(len=1) :: typchn
@@ -125,7 +125,9 @@ subroutine chor2c(lischa, vecele)
         if (typchn .eq. 'R') then
             call jeveuo(chamno//'.VALE', 'L', jcn)
             call jelira(chamno//'.VALE', 'LONMAX', nbvale)
-            if (nbvdim .ne. nbvale) ASSERT(.false.)
+            if (nbvdim .ne. nbvale) then
+                ASSERT(.false.)
+            endif
 !
 ! ------- SAUVEGARDE DES VALEURS
 !

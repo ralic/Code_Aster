@@ -195,7 +195,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ---- QRN DOIT ETRE PAIRE EN QUADRATIQUE
         qrns2=qrn/2
         lc=.true.
-        if ((qrns2*2) .ne. qrn) ASSERT(.false.)
+        if ((qrns2*2) .ne. qrn) then
+            ASSERT(.false.)
+        endif
         imult=2
     else
         lc=.false.
@@ -582,7 +584,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         bnorm1=max(bnorm1,baux)
 440 end do
 ! ---- ERREUR DONNEES OU CALCUL
-    if (anorm*bnorm*anorm1*bnorm1 .eq. 0.d0) ASSERT(.false.)
+    if (anorm*bnorm*anorm1*bnorm1 .eq. 0.d0) then
+        ASSERT(.false.)
+    endif
     if (niv .ge. 2) then
         valr(1)=anorm
         valr(2)=bnorm
@@ -687,7 +691,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             do 70 i = 1, qrn
                 im1=i-1
                 raux=zr(icscal+im1)
-                if (abs(raux) .lt. prec1) ASSERT(.false.)
+                if (abs(raux) .lt. prec1) then
+                    ASSERT(.false.)
+                endif
                 zr(icscal+im1)=prec*abnorm/raux
  70         continue
         endif
@@ -729,7 +735,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ----  QR
     else if (typeqz(1:5).eq.'QZ_QR') then
 ! ---- CONFIGURATION ILLICITE
-        if (lc .or. lnsm .or. lnsr .or. (.not.lkr)) ASSERT(.false.)
+        if (lc .or. lnsm .or. lnsr .or. (.not.lkr)) then
+            ASSERT(.false.)
+        endif
         call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
                    qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn),&
                    qrlwo, qrinfo)
@@ -941,7 +949,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 155     continue
         if (lc) call jedetr('&&VPQZLA.VP2')
     else if (typeqz(1:5).eq.'QZ_QR') then
-        if (lqze) ASSERT(.false.)
+        if (lqze) then
+            ASSERT(.false.)
+        endif
 !     --- POST-TRAITEMENT POUR QR ---
         do 57 i = 1, qrn
             im1=i-1

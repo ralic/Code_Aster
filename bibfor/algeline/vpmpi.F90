@@ -1,7 +1,7 @@
-subroutine vpmpi(option, eigsol,&
-                 icom1, icom2, lcomod, mpicou, mpicow, nbvecg, nfreqg, rangl, omemax, omemin,&
-                 vpinf, vpmax)
-
+subroutine vpmpi(option, eigsol, icom1, icom2, lcomod,&
+                 mpicou, mpicow, nbvecg, nfreqg, rangl,&
+                 omemax, omemin, vpinf, vpmax)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ subroutine vpmpi(option, eigsol,&
 ! -------------------------------------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-
+!
 #include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
@@ -34,38 +34,38 @@ subroutine vpmpi(option, eigsol,&
 #include "asterfort/getvis.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpleci.h"
-
+!
 !
 ! --- INPUT
 !
-    integer           , intent(in) :: option
-    character(len=19) , intent(in) :: eigsol
+    integer, intent(in) :: option
+    character(len=19), intent(in) :: eigsol
 !
 ! --- OUTPUT
 !
-    integer           , intent(out) :: icom1, icom2, nbvecg, nfreqg
+    integer, intent(out) :: icom1, icom2, nbvecg, nfreqg
 !
 ! --- INPUT/OUTPUT
 !
-    mpi_int           , intent(inout) :: mpicou, mpicow
-    integer           , intent(inout) :: rangl
-    aster_logical     , intent(inout) :: lcomod
-    real(kind=8)      , intent(inout) :: omemax, omemin, vpinf, vpmax
+    mpi_int , intent(inout) :: mpicou, mpicow
+    integer, intent(inout) :: rangl
+    aster_logical , intent(inout) :: lcomod
+    real(kind=8), intent(inout) :: omemax, omemin, vpinf, vpmax
 !
 ! --- VARIABLES LOCALES
 !
-    mpi_int           :: mrang, mnbproc
-    integer           :: l1, l2, l3, nbvect, nbproc, nfreq, rang, typeco, vali(5)
-    real(kind=8)      :: rbid
+    mpi_int :: mrang, mnbproc
+    integer :: l1, l2, l3, nbvect, nbproc, nfreq, rang, typeco, vali(5)
+    real(kind=8) :: rbid
     character(len=24) :: k24bid, valk(5)
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE
 ! -----------------------
-
-
-    select case(option)
-    case(1)
+!
+!
+    select case (option)
+    case (1)
 ! ---  STEP 1: RECUPERATION DES PARAMETRES MPI + TESTS
 ! --- INPUT: option
 ! --- OUTPUT: mpicou, mpicow, icom1, icom2, rangl, lcomod
@@ -74,14 +74,16 @@ subroutine vpmpi(option, eigsol,&
         call asmpi_comm('GET_WORLD', mpicow)
         call asmpi_comm('GET', mpicou)
 ! --  ON EST CENSE FONCTIONNER EN COMM_WORLD
-        if (mpicow .ne. mpicou) ASSERT(.false.)
+        if (mpicow .ne. mpicou) then
+            ASSERT(.false.)
+        endif
         call asmpi_info(mpicow, mrang, mnbproc)
         rang = to_aster_int(mrang)
         nbproc = to_aster_int(mnbproc)
-
-        call getvis('PARALLELISME_MACRO', 'TYPE_COM',   iocc=1, scal=typeco, nbret=l1)
-        call getvis('PARALLELISME_MACRO', 'IPARA1_COM', iocc=1, scal=icom1,  nbret=l2)
-        call getvis('PARALLELISME_MACRO', 'IPARA2_COM', iocc=1, scal=icom2,  nbret=l3)
+!
+        call getvis('PARALLELISME_MACRO', 'TYPE_COM', iocc=1, scal=typeco, nbret=l1)
+        call getvis('PARALLELISME_MACRO', 'IPARA1_COM', iocc=1, scal=icom1, nbret=l2)
+        call getvis('PARALLELISME_MACRO', 'IPARA2_COM', iocc=1, scal=icom2, nbret=l3)
         valk(1)='TYPE_COM'
         valk(2)='IPARA1_COM'
         valk(3)='IPARA2_COM'
@@ -92,22 +94,26 @@ subroutine vpmpi(option, eigsol,&
         vali(3)=icom2
         vali(4)=rang
         vali(5)=nbproc
-        if (l1*l2*l3.ne.1) call utmess('F', 'APPELMPI_6', nk=3, valk=valk, ni=3, vali=vali)
-
+        if (l1*l2*l3 .ne. 1) call utmess('F', 'APPELMPI_6', nk=3, valk=valk, ni=3,&
+                                         vali=vali)
+!
         if ((&
             ((typeco.ne.1).and.(typeco.ne.-999)) .or.&
             ((icom1.ne.-999).and.((icom1.lt.1).or.(icom1.gt.nbproc))) .or.&
             ((icom2.ne.-999).and.((icom2.lt.1).or.(icom2.gt.nbproc))) .or. (icom1.gt.icom2)&
             .or. (nbproc.lt.1) .or. (rang.lt.0)&
-            )) call utmess('F', 'APPELMPI_8', nk=5, valk=valk, ni=5, vali=vali)
-
-
-        if ((typeco.eq.1).and.(nbproc.gt.1)) then
+            )) call utmess('F', 'APPELMPI_8', nk=5, valk=valk, ni=5,&
+                           vali=vali)
+!
+!
+        if ((typeco.eq.1) .and. (nbproc.gt.1)) then
             lcomod=.true.
 ! --  DECOMPOSE LE COM GLOBAL MPICOW EN COM LOCAL MPICOU
 ! --  PLUS AFFECTATION DE CE NOUVEAU COM AFIN DE NE PAS PERTURBER LA FACTO DE LA DEMI-BANDE
             call asmpi_split_comm(mpicow, to_mpi_int(icom1), to_mpi_int(0), 'ipara1', mpicou)
-            if (mpicow .eq. mpicou) ASSERT(.false.)
+            if (mpicow .eq. mpicou) then
+                ASSERT(.false.)
+            endif
             call asmpi_barrier()
             call asmpi_comm('SET', mpicou)
 ! --  RANG DANS LE SOUS-COMM MPICOU LIE A CHAQUE OCCURENCE MUMPS: RANGL
@@ -118,16 +124,18 @@ subroutine vpmpi(option, eigsol,&
             mpicou=-9999
             lcomod=.false.
         endif
-
-    case(2)
+!
+    case (2)
 ! --- STEP 2: REDIMENSIONNEMENT DES BUFFERS DE COMMUNICATION
 ! --- INPUT: option, eigsol, lcomod, mpicou, mpicow, rangl
 ! --- OUTPUT: nbvecg, nfreqg
         nbvecg=-9999
         nfreqg=-9999
         if (lcomod) then
-            call vpleci(eigsol, 'I', 1, k24bid, rbid, nfreq)
-            call vpleci(eigsol, 'I', 2, k24bid, rbid, nbvect)
+            call vpleci(eigsol, 'I', 1, k24bid, rbid,&
+                        nfreq)
+            call vpleci(eigsol, 'I', 2, k24bid, rbid,&
+                        nbvect)
 ! --  ON REMET LE COM WORLD POUR COMMUNIQUER NBVECT/NBFREQ
             call asmpi_comm('SET', mpicow)
             call asmpi_barrier()
@@ -147,12 +155,12 @@ subroutine vpmpi(option, eigsol,&
             call asmpi_barrier()
             call asmpi_comm('SET', mpicou)
         endif
-
-    case(3)
+!
+    case (3)
 ! --- STEP 3: POUR MEMOIRE, ETAPE GEREE DANS VPPARA
-      ASSERT(.false.)
-
-    case(4)
+        ASSERT(.false.)
+!
+    case (4)
 ! --- STEP 4:
 ! --- EN CAS DE TEST DE STURM LOCAL A CHAQUE SOUS-BANDE, REMISE A JOUR DES BORNES VIA LE COM WORLD.
 ! --- PUIS ON REMET LE COMCOU POUR NE PAS GENER LES FACTOS EVENTUELLES DE VPCNTL.
@@ -168,8 +176,8 @@ subroutine vpmpi(option, eigsol,&
             call asmpi_barrier()
             call asmpi_comm('SET', mpicou)
         endif
-
-    case(5)
+!
+    case (5)
 ! --- STEP 5:
 ! --- AVANT DE QUITTER L'OP. ON REMET LE COM WORLD (AU CAS OU).
 ! --- DESTRUCTION DES SOUS-COMMUNICATEURS EVENTUELLEMENT ASSOCIES A UNE OCCURENCE MUMPS
@@ -180,7 +188,7 @@ subroutine vpmpi(option, eigsol,&
             call asmpi_barrier()
             call asmpi_comm('FREE', mpicou)
         endif
-
+!
     case default
         ASSERT(.false.)
     end select

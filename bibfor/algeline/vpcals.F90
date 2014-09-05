@@ -349,7 +349,9 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     -------  SORENSEN PB QUADRATIQUE COMPLEXE SYM  -------------------
 !     -------  APPROCHE COMPLEXE                     -------------------
 !     ------------------------------------------------------------------
-            if (lns) ASSERT(.false.)
+            if (lns) then
+                ASSERT(.false.)
+            endif
             call wpsorc(lmasse, lamor, lmatra, neq, nbvect,&
                         nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd),&
                         zc(lworkl), lonwl, zl(lselec), zc(ldsor), sigma,&
@@ -379,7 +381,9 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 ! --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
     mfreq = nconv
     if (optiof(1:5) .eq. 'BANDE') then
-        if (lc .or. lns .or. .not.lkr) ASSERT(.false.)
+        if (lc .or. lns .or. .not.lkr) then
+            ASSERT(.false.)
+        endif
         do ifreq = mfreq - 1, 0
             if ((zr(lresur+mxresf+ifreq).gt.omemax) .or. (zr(lresur+ mxresf+ifreq).lt.omemin)) &
             nconv = nconv - 1

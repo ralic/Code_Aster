@@ -66,7 +66,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
     integer :: jrig, jmas, jamo
     integer :: gd, aprno
     real(kind=8) :: pasa, pasm, pas, ainst, rinst
-    integer ::  idno
+    integer :: idno
     integer :: ibid
     integer :: ifreq, i1, i2, inoe, ino, ima, iddl, icmp
     character(len=24) :: uniamo, unirig, unimas, unifor
@@ -185,7 +185,9 @@ subroutine nmexso(noma, result, sddyna, numedd)
         unifrq = uniter
     endif
 !
-    if (unifrq .eq. 0) ASSERT(.false.)
+    if (unifrq .eq. 0) then
+        ASSERT(.false.)
+    endif
     if (unifrq .eq. uniter) then
         call utmess('I', 'DYNAMIQUE_20')
     endif

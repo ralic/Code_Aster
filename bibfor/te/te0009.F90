@@ -68,7 +68,9 @@ subroutine te0009(option, nomte)
         call utmess('F', 'CALCULEL_17')
     endif
 !     OPTION DE CALCUL INVALIDE
-    if (option .ne. 'MECA_GYRO') ASSERT(.false.)
+    if (option .ne. 'MECA_GYRO') then
+        ASSERT(.false.)
+    endif
 !
     call infdis('SYMM', infodi, r8bid, k8bid)
     call jevech('PCADISM', 'L', jdc)
@@ -81,7 +83,7 @@ subroutine te0009(option, nomte)
 !
     do 60 i = 1, nl1
         klv(i)=0.d0
-60  end do
+ 60 end do
 !
 !     I : LIGNE ; J : COLONNE
     i = 5

@@ -141,7 +141,9 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     call jeveuo(solv19//'.SLVI', 'L', vi=slvi)
     metres = slvk(1)
     ASSERT(metres.ne.' ')
-    if (kmpic .eq. 'NON') ASSERT(metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
+    if (kmpic .eq. 'NON') then
+        ASSERT(metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
+    endif
 !
 !     VERIFICATIONS ET INITIALISATIONS
     ASSERT((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))

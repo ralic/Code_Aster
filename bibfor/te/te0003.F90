@@ -461,7 +461,9 @@ subroutine te0003(option, nomte)
     call tecach('ONN', 'PSOURCR', 'L', iret, iad=isour)
     if (iret .ne. 0) then
         call tecach('ONN', 'PSOURCF', 'L', iret2, iad=isour)
-        if (iret2 .eq. 0) ASSERT(nomgds.eq.'SOUR_F')
+        if (iret2 .eq. 0) then
+            ASSERT(nomgds.eq.'SOUR_F')
+        endif
     endif
 !
 ! FLAG POUR EFFECTUER LES CALCULS IMPLIQUANT (1-THETA)

@@ -148,7 +148,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
             ASSERT(nosymr)
         endif
         call dismoi('XFEM', mati, 'MATR_ASSE', repk=kxfem)
-        if ( kxfem .eq. 'XFEM_PRECOND') call utmess('F', 'XFEMPRECOND_3', nk=1, valk=mati)
+        if (kxfem .eq. 'XFEM_PRECOND') call utmess('F', 'XFEMPRECOND_3', nk=1, valk=mati)
 !        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.
     end do
@@ -193,9 +193,13 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !       COMBINER SOIT DU MEME TYPE (SOIT TOUTES DISTRIBUEES,
 !       SOIT TOUTES COMPLETES MAIS SURTOUT PAS DE MELANGE !)
         if (kmatd .eq. 'OUI') then
-            if (.not.matd) ASSERT(.false.)
+            if (.not.matd) then
+                ASSERT(.false.)
+            endif
         else
-            if (matd) ASSERT(.false.)
+            if (matd) then
+                ASSERT(.false.)
+            endif
         endif
     end do
 !

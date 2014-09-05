@@ -66,10 +66,14 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
 ! --- TEST DES PARAMETRES D'ENTREES
     if (option .eq. 1) then
 ! --- LA MATRICE DOIT ETRE REELLE
-        if (zi(lmat+3) .ne. 1) ASSERT(.false.)
+        if (zi(lmat+3) .ne. 1) then
+            ASSERT(.false.)
+        endif
     else if (option.eq.2) then
 ! --- LA MATRICE DOIT ETRE COMPLEXE
-        if (zi(lmat+3) .ne. 2) ASSERT(.false.)
+        if (zi(lmat+3) .ne. 2) then
+            ASSERT(.false.)
+        endif
     else
 ! --- MAUVAISE OPTION DE CALCUL
         ASSERT(.false.)
@@ -93,7 +97,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
             nbneg=0
             do 10 i = 0, neq-1
                 if (zr(ldiag+i) .le. 0.d0) nbneg=nbneg+1
-10          continue
+ 10         continue
             call jedetr(nomdia)
             if (niv .ge. 2) write(ifm, *)'<MTDETE 1 LDLT/MF>  MANTIS/EXPO  ', mantis, expo
 !
@@ -108,7 +112,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
                 if (rauxm .lt. rmin) rauxm=1.d0
                 caux=caux/rauxm
                 cmod=cmod*caux
-15          continue
+ 15         continue
 !
             if (niv .ge. 2) write(ifm,*)'<MTDETE 2 LDLT/MF>  CMOD  ',cmod
         endif
@@ -143,7 +147,9 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
 ! --- CALCUL DET AVEC LDLT/MF
 !
 ! --- ON S'ATTEND A UN DETERMINANT REEL, CETTE VALEUR EST SUSPECTE !
-            if ((rinf12.gt.trent1) .and. (rinf13.gt.(0.05d0*rinf12))) ASSERT(.false.)
+            if ((rinf12.gt.trent1) .and. (rinf13.gt.(0.05d0*rinf12))) then
+                ASSERT(.false.)
+            endif
             mantis=rinf12
             expo = 0
             do 20 i = 1, info34
@@ -155,7 +161,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
                     mantis = mantis*trent
                     expo = expo - itrent
                 endif
-20          continue
+ 20         continue
             if (abs(mantis) .gt. rmin) then
                 ie = nint(log10(abs(mantis)))
                 mantis = mantis/ (10**ie)

@@ -73,7 +73,9 @@ subroutine nmerim(sderro)
         teven = zk16(jeeniv-1+ieven)(1:9)
         meven = zk24(jeemsg-1+ieven)
         if ((teven(1:3).eq.'ERR') .and. (icode.eq.1)) then
-            if (meven .eq. ' ') ASSERT(.false.)
+            if (meven .eq. ' ') then
+                ASSERT(.false.)
+            endif
             if (meven .eq. 'MECANONLINE10_1') then
                 call utmess('I', 'MECANONLINE10_1')
             else if (meven.eq.'MECANONLINE10_2') then
@@ -106,7 +108,7 @@ subroutine nmerim(sderro)
                 ASSERT(.false.)
             endif
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

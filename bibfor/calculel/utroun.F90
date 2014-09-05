@@ -82,7 +82,9 @@ subroutine utroun(ch1, idec, ch2, isup)
  11 continue
 !
 !     SI LA CHAINE NE CONTIENT PAS DE 'E' :
-    if (ii .eq. lcv) ASSERT(.false.)
+    if (ii .eq. lcv) then
+        ASSERT(.false.)
+    endif
     iii=ii+1
 !
 !
@@ -99,7 +101,9 @@ subroutine utroun(ch1, idec, ch2, isup)
  21 continue
 !
 !     SI LA CHAINE NE CONTIENT PAS DE POINT :
-    if (ii .eq. lcv) ASSERT(.false.)
+    if (ii .eq. lcv) then
+        ASSERT(.false.)
+    endif
 !
 !     POSITION DANS LA CHAINE DU '.' : II
     ii=ii+1

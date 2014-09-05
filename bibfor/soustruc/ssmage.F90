@@ -79,7 +79,9 @@ subroutine ssmage(nomu, option)
         call rcmfmc(materi, mate)
     endif
     nu= zk8(iarefm-1+5)
-    if (nu(1:8) .ne. nomu) ASSERT(.false.)
+    if (nu(1:8) .ne. nomu) then
+        ASSERT(.false.)
+    endif
 !
     matel = '&&MATEL'
     if (option .eq. 'MASS_MECA') then

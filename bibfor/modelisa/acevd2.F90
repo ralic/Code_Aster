@@ -96,7 +96,9 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
         call getvtx(mcf, 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
                     nbret=ncar)
 !
-        if (ncar .gt. ncar) ASSERT(.false.)
+        if (ncar .gt. ncar) then
+            ASSERT(.false.)
+        endif
         do icar = 1, ncar
             if (car(icar)(3:4) .eq. 'TR') goto 28
         end do

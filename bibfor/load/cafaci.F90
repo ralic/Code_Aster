@@ -139,7 +139,9 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 ! - Type of coefficients
 !
     coef_type = 'REEL'
-    if (vale_type .eq. 'COMP') ASSERT(.false.)
+    if (vale_type .eq. 'COMP') then
+        ASSERT(.false.)
+    endif
 !
 ! - Create list of excluded keywords for using nume_node char_read_keyw
 !

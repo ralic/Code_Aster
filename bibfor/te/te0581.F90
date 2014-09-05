@@ -89,7 +89,9 @@ subroutine te0581(option, nomte)
 !              -- LA PRECONTRAINTE != 0 N'EST AUTORISEE QUE POUR
 !              LES ELEMENTS DE BARRE ET LES ELEMENTS CABLE_GAINE
 !              (CABLES DE PRECONTRAINTE) :
-                if (v2 .ne. 0.d0) ASSERT(nomte.eq.'MECA_BARRE'.or. nomte.eq.'MECGSEG3')
+                if (v2 .ne. 0.d0) then
+                    ASSERT(nomte.eq.'MECA_BARRE'.or. nomte.eq.'MECGSEG3')
+                endif
                 zr(jtab3(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)=v1+v2
             end do
         end do

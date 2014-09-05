@@ -58,7 +58,9 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
     iprem=iprem+1
 !
     ASSERT(action.eq.'NOTE' .or.action.eq.'CHERCHE'.or.action.eq.'EFFACE')
-    if (action .ne. 'NOTE') ASSERT(rigi1.eq.' ')
+    if (action .ne. 'NOTE') then
+        ASSERT(rigi1.eq.' ')
+    endif
 !
 !
 !     -- au 1er appel on initialise le COMMON :
@@ -140,8 +142,8 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
         call VecDestroy(melim(ktrou)%vx0, ierr)
         call VecDestroy(melim(ktrou)%vecb, ierr)
         call VecDestroy(melim(ktrou)%vecc, ierr)
-        if (associated(melim(ktrou)%indred)) then 
-          deallocate(melim(ktrou)%indred)
+        if (associated(melim(ktrou)%indred)) then
+            deallocate(melim(ktrou)%indred)
         endif 
 !
         melim(ktrou)%kproj=0

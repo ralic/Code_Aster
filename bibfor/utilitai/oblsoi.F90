@@ -18,7 +18,7 @@ subroutine oblsoi(sdlist, idnvaz, nomstr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -59,7 +59,9 @@ subroutine oblsoi(sdlist, idnvaz, nomstr)
 ! --- VERIFICATION
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') then
+        ASSERT(.false.)
+    endif
     idnval = idnvaz
 !
 ! --- SETUP DU STRUCT

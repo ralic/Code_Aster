@@ -46,7 +46,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=7) :: typmat, kmpic, zero
-    integer :: iret, i, i1, ialire,  nbresu, iexi
+    integer :: iret, i, i1, ialire, nbresu, iexi
     character(len=8) :: mo, partit
     character(len=24), pointer :: rerr(:) => null()
 !
@@ -70,15 +70,15 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 1, i=1,nbresu
-            call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
-            if (iexi .eq. 0) goto 1
-            call dismre(questi, zk24(ialire-1+i), repi, typmat, i1)
-            if ((i1.eq.0) .and. (typmat.eq.'NON_SYM')) then
-                repk='NON_SYM'
-                goto 9999
-            endif
- 1          continue
+            do 1 i = 1, nbresu
+                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                if (iexi .eq. 0) goto 1
+                call dismre(questi, zk24(ialire-1+i), repi, typmat, i1)
+                if ((i1.eq.0) .and. (typmat.eq.'NON_SYM')) then
+                    repk='NON_SYM'
+                    goto 9999
+                endif
+  1         continue
         endif
 !
     else if (questi.eq.'ZERO') then
@@ -87,15 +87,15 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 4, i=1,nbresu
-            call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
-            if (iexi .eq. 0) goto 4
-            call dismre(questi, zk24(ialire-1+i), repi, zero, i1)
-            if ((i1.eq.0) .and. (zero.eq.'NON')) then
-                repk='NON'
-                goto 9999
-            endif
- 4          continue
+            do 4 i = 1, nbresu
+                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                if (iexi .eq. 0) goto 4
+                call dismre(questi, zk24(ialire-1+i), repi, zero, i1)
+                if ((i1.eq.0) .and. (zero.eq.'NON')) then
+                    repk='NON'
+                    goto 9999
+                endif
+  4         continue
         endif
 !
     else if (questi.eq.'PARTITION') then
@@ -104,13 +104,15 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 2, i=1,nbresu
-            call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
-            if (iexi .eq. 0) goto 2
-            call dismre(questi, zk24(ialire-1+i), repi, partit, i1)
-            if (partit .ne. ' ' .and. repk .eq. ' ') repk=partit
-            if (partit .ne. ' ') ASSERT(repk.eq.partit)
- 2          continue
+            do 2 i = 1, nbresu
+                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                if (iexi .eq. 0) goto 2
+                call dismre(questi, zk24(ialire-1+i), repi, partit, i1)
+                if (partit .ne. ' ' .and. repk .eq. ' ') repk=partit
+                if (partit .ne. ' ') then
+                    ASSERT(repk.eq.partit)
+                endif
+  2         continue
         endif
 !
     else if (questi.eq.'MPI_COMPLET') then
@@ -119,16 +121,16 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 3, i=1,nbresu
-            call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
-            if (iexi .eq. 0) goto 3
-            call dismre(questi, zk24(ialire-1+i), repi, kmpic, i1)
-            if (i .eq. 1) then
-                repk=kmpic
-            else
-                ASSERT(repk.eq.kmpic)
-            endif
- 3          continue
+            do 3 i = 1, nbresu
+                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                if (iexi .eq. 0) goto 3
+                call dismre(questi, zk24(ialire-1+i), repi, kmpic, i1)
+                if (i .eq. 1) then
+                    repk=kmpic
+                else
+                    ASSERT(repk.eq.kmpic)
+                endif
+  3         continue
         endif
 !
     else if (questi.eq.'CHAM_MATER') then
@@ -156,7 +158,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         ierd=1
     endif
 !
-9999  continue
+9999 continue
     repkz = repk
     call jedema()
 end subroutine

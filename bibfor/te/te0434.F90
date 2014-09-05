@@ -62,8 +62,8 @@ subroutine te0434(option, nomte)
 ! - FONCTIONS DE FORME ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
 !
@@ -173,7 +173,9 @@ subroutine te0434(option, nomte)
         else if (option.eq.'REFE_FORC_NODA') then
 !
             call terefe('EPSI_REFE', 'MEMBRANE', epsref)
-            if (epsref .eq. r8vide()) ASSERT(.false.)
+            if (epsref .eq. r8vide()) then
+                ASSERT(.false.)
+            endif
 !
             call mbrigi(fami, kpg, imate, rig)
 !

@@ -178,7 +178,9 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark,&
                     zr(lresur), zk24(lresuk), ktyp, lcomod, icom1,&
                     icom2, typres, nfreqg)
     else
-        if (lcomod) ASSERT(.false.)
+        if (lcomod) then
+            ASSERT(.false.)
+        endif
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nconv, omecor,&
                     zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari,&

@@ -70,11 +70,11 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagm1, iagm2, ialii1, ialii2,  ibid
+    integer :: i, iagm1, iagm2, ialii1, ialii2, ibid
     integer :: idlima, ier, ierr, ifm, igm, igm1
-    integer :: igm2, ii, iii, ili1, ili2,  im1
+    integer :: igm2, ii, iii, ili1, ili2, im1
     integer :: ima, ind1, ind2, iocc, ireste, jgma, jjj
-    integer :: jlisma, jmail,  kkk, maxcol, n, n1
+    integer :: jlisma, jmail, kkk, maxcol, n, n1
     integer :: n2, n3, n4, n5, n6, n6a, n6b
     integer :: n7, n8, nalar, nb, nbcol, nbgmin, nbgmp
     integer :: nbgnaj, nbgrmn, nbid, nbis, nbk8, nbline, nbma
@@ -171,7 +171,9 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 zi(jmail+nbma-1) = num
  20             continue
             end do
-            if (ier .ne. 0) ASSERT(.false.)
+            if (ier .ne. 0) then
+                ASSERT(.false.)
+            endif
             call wkvect(lisma, 'V V I', nbma, jlisma)
             do ima = 0, nbma - 1
                 zi(jlisma+ima) = zi(jmail+ima)
@@ -244,7 +246,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 endif
             end do
 !
-            call jenonu(jexnom(ma//'.GROUPEMA',lik8(1)), igm1)
+            call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
             call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
             call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
             if (ili1 .gt. nbis) then
@@ -298,7 +300,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 endif
             end do
 !
-            call jenonu(jexnom(ma//'.GROUPEMA',lik8(1)), igm1)
+            call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
             call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
             call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
             if (ili1 .gt. nbis) then
@@ -362,7 +364,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 endif
             end do
 !
-            call jenonu(jexnom(ma//'.GROUPEMA',lik8(1)), igm1)
+            call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
             call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
             call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
             if (ili1 .gt. nbis) then

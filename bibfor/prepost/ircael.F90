@@ -50,33 +50,35 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
 !
     integer :: nbrcmp, numgrf, icmp, iad, igfib
 !
-    do 20, igfib = 1,nmaxfi
-    nugrfi(igfib)=0
-    20 end do
+    do 20 igfib = 1, nmaxfi
+        nugrfi(igfib)=0
+ 20 end do
 !
     nbrcmp = zi(jcesdi-1+5+4* (nummai-1)+3)
     numgrf = 1
-    do 10, icmp = 1, nbrcmp
-    call cesexi('C', jcesdi, jcesli, nummai, 1,&
-                1, icmp, iad)
+    do 10 icmp = 1, nbrcmp
+        call cesexi('C', jcesdi, jcesli, nummai, 1,&
+                    1, icmp, iad)
 !
-    if (iad .gt. 0) then
-        if (zk8(jcesci+icmp-1) .eq. 'COQ_NCOU') then
-            nbrcou=zi(jcesvi-1+iad)
-        else if (zk8(jcesci+icmp-1).eq.'TUY_NCOU') then
-            nbrcou=zi(jcesvi-1+iad)
-        else if (zk8(jcesci+icmp-1).eq.'TUY_NSEC') then
-            nbrsec=zi(jcesvi-1+iad)
-        else if (zk8(jcesci+icmp-1).eq.'NBFIBR') then
-            nbrfib=zi(jcesvi-1+iad)
-        else if (zk8(jcesci+icmp-1).eq.'NBGRFI') then
-            nbrgrf=zi(jcesvi-1+iad)
-        else if (zk8(jcesci+icmp-1)(1:3).eq.'NUG') then
-            nugrfi(numgrf)=zi(jcesvi-1+iad)
-            numgrf=numgrf+1
+        if (iad .gt. 0) then
+            if (zk8(jcesci+icmp-1) .eq. 'COQ_NCOU') then
+                nbrcou=zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1).eq.'TUY_NCOU') then
+                nbrcou=zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1).eq.'TUY_NSEC') then
+                nbrsec=zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1).eq.'NBFIBR') then
+                nbrfib=zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1).eq.'NBGRFI') then
+                nbrgrf=zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1)(1:3).eq.'NUG') then
+                nugrfi(numgrf)=zi(jcesvi-1+iad)
+                numgrf=numgrf+1
+            endif
         endif
+ 10 end do
+    if (nbrfib .ne. 0) then
+        ASSERT(nbrgrf.ne.0)
     endif
-    10 end do
-    if (nbrfib .ne. 0) ASSERT(nbrgrf.ne.0)
 !
 end subroutine

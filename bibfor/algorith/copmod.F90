@@ -125,7 +125,9 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
             call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
             if (iret .ne. 0) then
                 call dismoi('NB_EQUA', numer2, 'NUME_DDL', repi=neq)
-                if (present(nequa)) ASSERT(nequa .eq. neq)
+                if (present(nequa)) then
+                    ASSERT(nequa .eq. neq)
+                endif
             endif
         else 
             call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C',&
@@ -134,7 +136,9 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
                 call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
                 if (iret .ne. 0) then
                     call dismoi('NB_EQUA', numer1, 'NUME_DDL', repi=neq)
-                    if (present(nequa)) ASSERT(nequa .eq. neq)
+                    if (present(nequa)) then
+                        ASSERT(nequa .eq. neq)
+                    endif
                 endif
             endif
         endif
@@ -144,7 +148,9 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
                     iret)
         nomcha = nomcha(1:19)//'.CELV'
         call jelira(nomcha, 'LONMAX', neq)
-        if (present(nequa)) ASSERT(nequa .eq. neq)
+        if (present(nequa)) then
+            ASSERT(nequa .eq. neq)
+        endif
     endif
 !   --- FIN DE LA RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS
 !

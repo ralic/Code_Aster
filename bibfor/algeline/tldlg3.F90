@@ -98,9 +98,9 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=24) :: kpiv
     character(len=40) :: infobl, valk(7)
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
-    integer :: ifm, niv,  nom, neq,   lliai, iretp, npvnez
+    integer :: ifm, niv, nom, neq, lliai, iretp, npvnez
     integer :: typvar, typsym, nbbloc, ilfin1
-    integer :: ieq3, isingu,  ieq, ndeci, jdigs, npivot
+    integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(2), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
     complex(kind=8) :: cbid
@@ -219,10 +219,10 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     ' ', 0, iretz, .true._1)
         call amumph('PRERES', solvop, noma19, [0.d0], [cbid],&
                     ' ', 0, iretz, .true._1)
-
+!
 !       -- mumps ne nous dit pas le nombre de decimales reellement perdues :
         ndeci=-999
-
+!
         nzero=-999
         iretp=0
         kpiv='&&AMUMP.PIVNUL'
@@ -371,7 +371,9 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     vali(1)=isingu
 !
     ASSERT(ndeci.eq.-999 .or. ndeci.ge.0)
-    if (isingu .eq. -999) ASSERT(ndeci.eq.-999)
+    if (isingu .eq. -999) then
+        ASSERT(ndeci.eq.-999)
+    endif
     vali(2)=ndeci
 !
     valk(1)='XXXX'

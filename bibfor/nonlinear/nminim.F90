@@ -284,7 +284,9 @@ subroutine nminim(sdsuiv, sdimpr)
     do icolo = 2, nbcolt
         call oblgoi(slcolo, icolo, sdcolo)
         call obgeti(sdcolo, 'HAUTEUR_TITRE', titcom)
-        if (titco1 .ne. titcom) ASSERT(.false.)
+        if (titco1 .ne. titcom) then
+            ASSERT(.false.)
+        endif
     end do
     call obseti(sdtabc, 'HAUTEUR_TITRE', titcom)
 !

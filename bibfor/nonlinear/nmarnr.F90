@@ -90,7 +90,9 @@ subroutine nmarnr(result, typtaz, numreu)
         goto 99
     else
         call tbexip(nomtab, 'NUME_REUSE', lexist, typvar)
-        if (.not.lexist .or. typvar .ne. 'I') ASSERT(.false.)
+        if (.not.lexist .or. typvar .ne. 'I') then
+            ASSERT(.false.)
+        endif
 !
 ! ----- NOMBRE DE LIGNES
 !

@@ -151,7 +151,9 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
 !     -------  LANCZOS PB GENERALISE REEL SYMETRIQUE -------------------
 !     ------------------------------------------------------------------
-    if ((.not.lkr) .or. lns) ASSERT(.false.)
+    if ((.not.lkr) .or. lns) then
+        ASSERT(.false.)
+    endif
     if (.not.lc) then
         call wkvect('&&VPCALT.MAT.MOD.REDUITE', 'V V R', nbvect* nbvect, iadz)
 !     ------------------------------------------------------------------
@@ -260,7 +262,9 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp,&
 ! --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
     mfreq = nconv
     if (optiof(1:5) .eq. 'BANDE') then
-        if (lc .or. lns .or. .not.lkr) ASSERT(.false.)
+        if (lc .or. lns .or. .not.lkr) then
+            ASSERT(.false.)
+        endif
         do ifreq = mfreq - 1, 0
             if ((zr(lresur+mxresf+ifreq).gt.omemax) .or. (zr(lresur+ mxresf+ifreq).lt.omemin)) &
             nconv = nconv - 1

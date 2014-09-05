@@ -55,7 +55,9 @@ function diinst(sddisc, numins)
 !
     call jemarq()
 !
-    if (numins .lt. 0) ASSERT(.false.)
+    if (numins .lt. 0) then
+        ASSERT(.false.)
+    endif
     typeco = ' '
 !
     call gettco(sddisc, typeco)
@@ -80,7 +82,7 @@ function diinst(sddisc, numins)
 ! --- VALEUR DE L'INSTANT
 !
     diinst = zr(jinst+numins)
-99  continue
+ 99 continue
 !
     call jedema()
 end function

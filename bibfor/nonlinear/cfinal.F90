@@ -168,7 +168,9 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
         if (llagrc .and. liaact) then
             if (reageo) then
 ! --------- LA LIAISON N'EXISTE PAS ENCORE, FORCEMENT
-                if (liaexi) ASSERT(.false.)
+                if (liaexi) then
+                    ASSERT(.false.)
+                endif
             else
                 liaact = .false.
             endif

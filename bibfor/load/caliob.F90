@@ -118,7 +118,9 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     rdgd = r8dgrd()
 !
     typcoe = 'REEL'
-    if (vale_type .eq. 'COMP') ASSERT(.false.)
+    if (vale_type .eq. 'COMP') then
+        ASSERT(.false.)
+    endif
     model = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
@@ -144,7 +146,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CALIOB.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+        call getnode(mesh, keywordfact, iocc, 'F', list_node,&
                      nb_node)
         call jeveuo(list_node, 'L', jlino)
 !

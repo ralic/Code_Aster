@@ -113,7 +113,9 @@ subroutine op5903(nbocci, sdcomp)
 !
 ! ----- Get number of internal variables
 !
-        if (rela_comp(1:4) .eq. 'KIT_') ASSERT(rela_comp.eq.'KIT_DDI')
+        if (rela_comp(1:4) .eq. 'KIT_') then
+            ASSERT(rela_comp.eq.'KIT_DDI')
+        endif
         l_kit = (rela_comp.eq.'KIT')
         if (l_kit) then
             call comp_meca_rkit(moclef, iocc, rela_comp, kit_comp)

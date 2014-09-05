@@ -57,41 +57,41 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-
+!
 !   ====================================================================
 !   = 0 =   Variable declarations and initialization
 !   ====================================================================
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_pgp
-    character(len=*)          , intent(in) :: param
-    integer,          optional, intent(in) :: iobs
-    character(len=24),optional, intent(out):: savejv
-    integer,          optional, intent(out):: lonvec
-    character(len=*), optional, intent(out):: kscal
-    integer,          optional, intent(out):: iscal
-    real(kind=8),     optional, intent(out):: rscal
-    complex(kind=8),  optional, intent(out):: cscal   
-    character(len=*), optional, intent(out):: kvect(*)
-    integer,          optional, intent(out):: ivect(*)
-    real(kind=8),     optional, intent(out):: rvect(*)
-    complex(kind=8),  optional, intent(out):: cvect(*)
-
+    character(len=*), intent(in) :: sd_pgp
+    character(len=*), intent(in) :: param
+    integer, optional, intent(in) :: iobs
+    character(len=24), optional, intent(out) :: savejv
+    integer, optional, intent(out) :: lonvec
+    character(len=*), optional, intent(out) :: kscal
+    integer, optional, intent(out) :: iscal
+    real(kind=8), optional, intent(out) :: rscal
+    complex(kind=8), optional, intent(out) :: cscal
+    character(len=*), optional, intent(out) :: kvect(*)
+    integer, optional, intent(out) :: ivect(*)
+    real(kind=8), optional, intent(out) :: rvect(*)
+    complex(kind=8), optional, intent(out) :: cvect(*)
+!
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_pgp_
     character(len=8) :: param_
-
+!
 !   --- For general usage
     integer :: nbparams
     parameter (nbparams=24)
-
-    aster_logical     :: output_test 
+!
+    aster_logical :: output_test
     integer :: parind(nbparams), ip, i, jvect, jscal, lvec
-    character(len=3)  :: partyp(nbparams)
-    character(len=6)  :: k_iobs
-    character(len=8)  :: params(nbparams)
+    character(len=3) :: partyp(nbparams)
+    character(len=6) :: k_iobs
+    character(len=8) :: params(nbparams)
     character(len=24) :: savename
 !
 !   -0.3- Initialization
@@ -106,7 +106,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
                   'K24','I','I','I','R8', &
                   'I','K24','R8','R8',&
                   'C8','K24','K24','K24','I'/
-
+!
 !   parind = -2 : vector global          ; = -1 : scalar global ; 
 !          =  2 : vector per observation ; =  1 : scalar per observation
     data  parind  / -1, -1, -1, -1, -1,&
@@ -114,36 +114,38 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
                      1,  2,  2,  2,  2,&
                      1,  1,  2,  2,&
                      2,  2,  2,  2,  2/
-
+!
     savename = '                        '
-
+!
 !   Copying the input strings, in order to allow in-command truncated input
     sd_pgp_ = sd_pgp
     param_ = param
 !
     call jemarq()
-
+!
 !   ====================================================================
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
-
-    if ((.not.present(lonvec)).and.(.not.present(savejv))) then
-        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
+!
+    if ((.not.present(lonvec)) .and. (.not.present(savejv))) then
+        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
                       UN_PARMI4(kvect, ivect, rvect, cvect)
-
+!
         ASSERT(output_test)
     end if
-
+!
     do ip = 1, nbparams
-        if (params(ip).eq.param_) goto 10
+        if (params(ip) .eq. param_) goto 10
     end do
-10  continue
-
+ 10 continue
+!
 !   The parameter to be saved was not found in the predefined list
-    if (ip.eq.nbparams+1) ASSERT(.false.)
-
+    if (ip .eq. nbparams+1) then
+        ASSERT(.false.)
+    endif
+!
     savename(1:8) = sd_pgp_
-    if (present(iobs)) then 
+    if (present(iobs)) then
 !       The parameter to be extracted is global but an observation index was given
         ASSERT(parind(ip).gt.0)
         call codent(iobs, 'G', k_iobs)
@@ -152,39 +154,38 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
         ASSERT(parind(ip).lt.0)
     end if
     savename(16:24)='.'//param_
-
+!
 !   ====================================================================
 !   = 2 = Extracting data
 !   ====================================================================
-
+!
 !   --- Length of vectors
     if (present(savejv)) savejv = savename
-
-    if (present(lonvec).or.UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-                           UN_PARMI4(kvect, ivect, rvect, cvect)) then
+!
+    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
+        UN_PARMI4(kvect, ivect, rvect, cvect)) then
         call jelira(savename, 'LONMAX', lvec)
     end if
-    
+!
     if (present(lonvec)) lonvec = lvec
-
-    if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-        UN_PARMI4(kvect, ivect, rvect, cvect)) then
-
+!
+    if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. UN_PARMI4(kvect, ivect, rvect, cvect)) then
+!
 !   --- Vectors
-        if (abs(parind(ip)).eq.2) then 
+        if (abs(parind(ip)) .eq. 2) then
 !
 !           The parameter to get is a vector but no vector output was found
-            call jeveuo(savename,'L',jvect)
-
+            call jeveuo(savename, 'L', jvect)
+!
             if (UN_PARMI3(kvect, ivect, rvect)) then
-                if (partyp(ip).eq.'K24') then
+                if (partyp(ip) .eq. 'K24') then
                     do i = 1, lvec
                         kvect(i) = zk24(jvect+i-1)
                     end do
                 else if (partyp(ip).eq.'R8') then
                     call dcopy(lvec, zr(jvect), 1, rvect, 1)
                 else if (partyp(ip).eq.'C16') then
-                    call zcopy(lvec, zc(jvect), 1, cvect, 1)                   
+                    call zcopy(lvec, zc(jvect), 1, cvect, 1)
                 else if (partyp(ip).eq.'I') then
                     do i = 1, lvec
                         ivect(i) = zi(jvect+i-1)
@@ -198,21 +199,21 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 !           The parameter to get is a scalar but no scalar output was found
             ASSERT(UN_PARMI3(kscal, iscal, rscal))
 !
-            call jeveuo(savename,'L',jscal)
-            if (partyp(ip).eq.'K24') then 
+            call jeveuo(savename, 'L', jscal)
+            if (partyp(ip) .eq. 'K24') then
                 kscal = zk24(jscal)
-            elseif (partyp(ip).eq.'R8') then 
+            else if (partyp(ip).eq.'R8') then
                 rscal = zr(jscal)
-            elseif (partyp(ip).eq.'C8') then 
-                cscal = zc(jscal)               
-            elseif (partyp(ip).eq.'I')  then 
+            else if (partyp(ip).eq.'C8') then
+                cscal = zc(jscal)
+            else if (partyp(ip).eq.'I') then
                 iscal = zi(jscal)
             end if
 !
         end if
     end if
 !
-
+!
     call jedema()
-
+!
 end subroutine

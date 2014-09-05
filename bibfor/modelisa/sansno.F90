@@ -19,7 +19,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
 ! ======================================================================
 ! REPONSABLE
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -76,7 +76,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
     integer :: izone, ino, isurf
     integer :: jdecno, posno, numno
     integer :: nbelim, nuelim, ielim, nbveli
-    integer ::  ltrav
+    integer :: ltrav
     character(len=24) :: listno
     integer :: jelim
     character(len=24) :: defico
@@ -141,16 +141,18 @@ subroutine sansno(char, motfac, noma, sans, psans,&
                     trav(1+stocno-1+nbveli) = nuelim
                     goto 50
                 endif
-40          continue
-50      continue
+ 40         continue
+ 50     continue
 !
 ! --- MISE A JOUR POINTEUR
 !
         stocno = stocno + nbveli
-        if (stocno .gt. ltrav) ASSERT(.false.)
+        if (stocno .gt. ltrav) then
+            ASSERT(.false.)
+        endif
         zi(jpsans+izone) = zi(jpsans+izone-1) + nbveli
 !
-70  end do
+ 70 end do
 !
 ! --- CREATION DU VECTEUR
 !
@@ -165,7 +167,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
             if (trav(i) .ne. 0) then
                 zi(jsans-1+i) = trav(i)
             endif
-170      continue
+170     continue
     endif
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES

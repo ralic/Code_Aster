@@ -175,7 +175,9 @@ subroutine nupodd(nu, base, rang, nbproc)
 !---- CREATION DU TABLEAU DE POSSESSION DES DDL LOCAUX
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
-        if (ili .eq. 2) ASSERT(nomlig.eq.ligrmo)
+        if (ili .eq. 2) then
+            ASSERT(nomlig.eq.ligrmo)
+        endif
         do igr = 1, zzngel(ili)
             nel=zznelg(ili,igr)
             do iel = 1, nel

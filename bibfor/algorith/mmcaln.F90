@@ -1,4 +1,4 @@
-subroutine mmcaln(ndim  ,tau1  ,tau2  ,norm  ,mprojn, &
+subroutine mmcaln(ndim, tau1, tau2, norm, mprojn,&
                   mprojt)
 !
 ! ======================================================================
@@ -19,7 +19,7 @@ subroutine mmcaln(ndim  ,tau1  ,tau2  ,norm  ,mprojn, &
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/matini.h"
@@ -60,26 +60,28 @@ subroutine mmcaln(ndim  ,tau1  ,tau2  ,norm  ,mprojn, &
 ! --- NORMALE
 !
     call mmnorm(ndim, tau1, tau2, norm, noor)
-    if (noor .le. r8prem()) ASSERT(.false.)
+    if (noor .le. r8prem()) then
+        ASSERT(.false.)
+    endif
 !
 ! --- MATRICE DE PROJECTION NORMALE
 !
-    do  i = 1, ndim
+    do i = 1, ndim
         do 311 j = 1, ndim
             mprojn(i,j) = norm(i)*norm(j)
-311      continue
-  end do
+311     continue
+    end do
 !
 ! --- MATRICE DE PROJECTION TANGENTE
 !
-    do  i = 1, ndim
+    do i = 1, ndim
         do 115 j = 1, ndim
             mprojt(i,j) = -1.d0*norm(i)*norm(j)
-115      continue
-  end do
+115     continue
+    end do
 !
-    do  i = 1, ndim
+    do i = 1, ndim
         mprojt(i,i) = 1.d0 + mprojt(i,i)
-  end do
+    end do
 !
 end subroutine

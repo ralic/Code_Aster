@@ -580,7 +580,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             endif
         end do
 !
-        if (opmail) ASSERT(inn.eq.nnn)
+        if (opmail) then
+            ASSERT(inn.eq.nnn)
+        endif
 !
         call jedetr(geom)
         call jedetr(dirno)

@@ -1,7 +1,6 @@
-subroutine xnewto(elrefp, name, n,&
-                  ndime, ptxx, ndim, tabco, tabls,&
-                  ipp, ip, itemax,&
-                  epsmax, ksi, dekker)
+subroutine xnewto(elrefp, name, n, ndime, ptxx,&
+                  ndim, tabco, tabls, ipp, ip,&
+                  itemax, epsmax, ksi, dekker)
     implicit none
 !
 #include "jeveux.h"
@@ -62,7 +61,7 @@ subroutine xnewto(elrefp, name, n,&
     real(kind=8) :: zero
     parameter    (zero=0.d0)
     real(kind=8) :: dist, dmin, intinf, intsup
-    real(kind=8) :: ksi2(ndime),delta(ndime), ksim(ndime)
+    real(kind=8) :: ksi2(ndime), delta(ndime), ksim(ndime)
     data  itermin/1/
 !
 ! ------------------------------------------------------------------
@@ -73,7 +72,7 @@ subroutine xnewto(elrefp, name, n,&
 !
 !  ATTENTION: ON SUPPOSE QUE LA FONCTION APPELANTE A DEJA 
 !  INITIALISE LE NEWTON EN AMONT
-    do  i=1, ndime
+    do i = 1, ndime
         ksi2(i)=ksi(i)
     enddo
 !
@@ -84,12 +83,13 @@ subroutine xnewto(elrefp, name, n,&
     dmin = r8gaem()
 !
     if (present(dekker)) then
-       call xintva(elrefp, n, ptxx, ndime, intinf, intsup)
+        call xintva(elrefp, n, ptxx, ndime, intinf,&
+                    intsup)
     endif
 !
 ! --- DEBUT DE LA BOUCLE
 !
-20  continue
+ 20 continue
 !-------------------------
 !
 !     FAIRE TANT QUE
@@ -98,52 +98,56 @@ subroutine xnewto(elrefp, name, n,&
 ! --- CALCUL DE LA QUANTITE A MINIMISER
 !
     if (name .eq. 'XMILFI') then
-        call xdelt2(elrefp, n, ndime, ksi2,&
-                    ptxx, ndim, tabco, tabls, ipp, ip,&
+        call xdelt2(elrefp, n, ndime, ksi2, ptxx,&
+                    ndim, tabco, tabls, ipp, ip,&
                     delta)
     else if (name.eq. 'XINTAR') then
         call xdelt3(ndim, ksi2, tabls, delta(1))
     else if (name .eq. 'XINTER') then
-        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), delta(1))
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
+                    delta(1))
     else if (name .eq. 'XMIFIS') then
-        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), delta(1))
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
+                    delta(1))
     else if (name .eq. 'XCENFI') then
-        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), delta(1))
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
+                    delta(1))
     endif
-!   
+!
 !   ON VERIFIE POUR XINTER QUE LE NEWTON RESTE SUR L ARETE
-    if (name .eq. 'XINTER') &
-       ASSERT((ksi2(1) .ge. 0.d0) .and. (ksi2(1) .le. 1.d0))
+    if (name .eq. 'XINTER') then
+        ASSERT((ksi2(1) .ge. 0.d0) .and. (ksi2(1) .le. 1.d0))
+    endif
 !
 ! --- ACTUALISATION
 !
     do i = 1, ndime
         ksi2(i) = ksi2(i) - delta(i)
-   end do
+    end do
 !
     iter = iter + 1
 !
 !   ON VERIFIE POUR XMIFIS QUE LE NEWTON RESTE DANS LA FACE TRIA
 !   DE RECHERCHE, SINON ON ACTIVE LA METHODE DE DEKKER
-    if (name.eq. 'XMIFIS') then
-    if (present(dekker)) then
-       if (ksi2(1).gt.intsup) then
-          ksi2(1) = ksi2(1)+delta(1)
-          ksi2(1) = (ksi2(1)+intsup)/2.d0
-       else if (ksi2(1).lt.intinf) then
-          ksi2(1) = ksi2(1)+delta(1)
-          ksi2(1) = (ksi2(1)+intinf)/2.d0
-       endif
-    endif
+    if (name .eq. 'XMIFIS') then
+        if (present(dekker)) then
+            if (ksi2(1) .gt. intsup) then
+                ksi2(1) = ksi2(1)+delta(1)
+                ksi2(1) = (ksi2(1)+intsup)/2.d0
+            else if (ksi2(1).lt.intinf) then
+                ksi2(1) = ksi2(1)+delta(1)
+                ksi2(1) = (ksi2(1)+intinf)/2.d0
+            endif
+        endif
     endif
 !
-    do  i = 1, ndim
+    do i = 1, ndim
         dist = delta(i)*delta(i)
     end do
     dist = sqrt(dist)
 !
     if (dist .le. dmin) then
-        do  i = 1, ndime
+        do i = 1, ndime
             ksim(i) = ksi2(i)
         end do
     endif
@@ -151,7 +155,7 @@ subroutine xnewto(elrefp, name, n,&
 ! --- CALCUL DE LA REFERENCE POUR TEST DEPLACEMENTS
 !
     refe = zero
-    do  i = 1, ndime
+    do i = 1, ndime
         refe = refe + ksi2(i)*ksi2(i)
     end do
     if (refe .le. epsrel) then
@@ -164,32 +168,32 @@ subroutine xnewto(elrefp, name, n,&
 ! --- CALCUL POUR LE TEST DE CONVERGENCE
 !
     test = zero
-    do  i = 1, ndime
+    do i = 1, ndime
         test = test + delta(i)*delta(i)
     end do
     test = sqrt(test/refe)
 !
 ! --- EVALUATION DE LA CONVERGENCE
 !
-    if(iter .lt. itermin) goto 20
+    if (iter .lt. itermin) goto 20
 !
     if ((test.gt.eps) .and. (iter.lt.itemax)) then
         goto 20
     else if ((iter.ge.itemax).and.(test.gt.eps)) then
         call utmess('F', 'XFEM_67')
-        do  i = 1, ndime
+        do i = 1, ndime
             ksi2(i) = ksim(i)
         end do
     endif
 !
 ! --- FIN DE LA BOUCLE
 !
-    do  i = 1, ndime
+    do i = 1, ndime
         ksi2(i)=ksi2(i)-delta(i)
     end do
 !
 !   GESTION DU CAS NDIME<NDIM
-    do  i=1, ndime
+    do i = 1, ndime
         ksi(i)=ksi2(i)
     enddo
 !    write(6,*)'CONVERGENCE DE ',name,' EN ',iter,' ITERATIONS'

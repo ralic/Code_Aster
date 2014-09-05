@@ -129,7 +129,9 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! - Type
 !
-    if (vale_type .eq. 'COMP') ASSERT(.false.)
+    if (vale_type .eq. 'COMP') then
+        ASSERT(.false.)
+    endif
 !
 ! - Access to model
 !

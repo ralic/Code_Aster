@@ -83,7 +83,9 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
     if (submet .eq. 'MANUEL') then
         call getvis(mcfact, 'SUBD_NIVEAU', iocc=iechec, scal=niveau, nbret=iret)
         call getvis(mcfact, 'SUBD_PAS', iocc=iechec, scal=nbrpas, nbret=iret)
-        if (nbrpas .lt. 2) ASSERT(.false.)
+        if (nbrpas .lt. 2) then
+            ASSERT(.false.)
+        endif
     else if (submet.eq.'AUTO') then
         if (even .eq. 'COLLISION') then
             call getvr8(mcfact, 'SUBD_INST', iocc=iechec, scal=subins, nbret=iret)

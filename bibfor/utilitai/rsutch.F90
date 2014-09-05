@@ -76,7 +76,9 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     if (irang .gt. 0 .and. lverif) then
         call jeveuo(jexnum(resu19//'.TACH', isymb), 'L', jtach)
         nomch3 = zk24(jtach-1+irang)(1:19)
-        if (nomch3 .ne. ' ') ASSERT(nomch3.eq.nomch2)
+        if (nomch3 .ne. ' ') then
+            ASSERT(nomch3.eq.nomch2)
+        endif
     endif
 !
     nomcha = nomch2

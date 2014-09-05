@@ -344,7 +344,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                 smpsk%icntl(i)=icntl(i)
             enddo
             do i = 2, ncntl
-                if (abs(cntl(i)) .gt. rr4max) ASSERT(.false.)
+                if (abs(cntl(i)) .gt. rr4max) then
+                    ASSERT(.false.)
+                endif
                 smpsk%cntl(i)=real(cntl(i), kind=4)
             enddo
         else if (type.eq.'C') then
@@ -352,7 +354,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                 cmpsk%icntl(i)=icntl(i)
             enddo
             do i = 2, ncntl
-                if (abs(cntl(i)) .gt. rr4max) ASSERT(.false.)
+                if (abs(cntl(i)) .gt. rr4max) then
+                    ASSERT(.false.)
+                endif
                 cmpsk%cntl(i)=real(cntl(i), kind=4)
             enddo
         else if (type.eq.'D') then
@@ -391,7 +395,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else
             ASSERT(.false.)
         endif
-        if (mpimum .ne. mpicou) ASSERT(.false.)
+        if (mpimum .ne. mpicou) then
+            ASSERT(.false.)
+        endif
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
         call amumpu(3, type, kxmps, k12bid, ibid,&

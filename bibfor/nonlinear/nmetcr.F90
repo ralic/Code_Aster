@@ -235,10 +235,14 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
         endif
 ! ----- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS NMETC0 !
         if (chetin .eq. 'OUI') then
-            if (chinit .eq. ' ') ASSERT(.false.)
+            if (chinit .eq. ' ') then
+                ASSERT(.false.)
+            endif
         endif
 ! ----- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS NMETCC !
-        if (choper .eq. ' ') ASSERT(.false.)
+        if (choper .eq. ' ') then
+            ASSERT(.false.)
+        endif
  50 end do
     call detrsd('RESULTAT', result)
 !

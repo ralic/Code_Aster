@@ -212,9 +212,15 @@ subroutine calirc(chargz)
             call getvtx(motfac, 'DDL_ESCL', iocc=iocc, scal=ddl2, nbret=nddl2)
             if (nddl2 .gt. 0) dnor=.true.
             call getvtx(motfac, 'TYPE_RACCORD', iocc=iocc, scal=typrac, nbret=ibid)
-            if (typrac .eq. 'COQUE') ASSERT(ndim.eq.3)
-            if (typrac .eq. 'COQUE_MASSIF') ASSERT(ndim.eq.3)
-            if (typrac .eq. 'MASSIF_COQUE') ASSERT(ndim.eq.3)
+            if (typrac .eq. 'COQUE') then
+                ASSERT(ndim.eq.3)
+            endif
+            if (typrac .eq. 'COQUE_MASSIF') then
+                ASSERT(ndim.eq.3)
+            endif
+            if (typrac .eq. 'MASSIF_COQUE') then
+                ASSERT(ndim.eq.3)
+            endif
         endif
 !
 !        1.1 RECUPERATION DE LA LISTE DES MAILLE_MAIT :
@@ -336,9 +342,15 @@ subroutine calirc(chargz)
                     l_angl_naut, angl_naut, geom2, lrota, mrota)
 !
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
-        if (typrac .eq. 'COQUE_MASSIF') ASSERT(.not.lrota)
-        if (typrac .eq. 'MASSIF_COQUE') ASSERT(.not.lrota)
-        if (typrac .eq. 'COQUE') ASSERT(.not.lrota)
+        if (typrac .eq. 'COQUE_MASSIF') then
+            ASSERT(.not.lrota)
+        endif
+        if (typrac .eq. 'MASSIF_COQUE') then
+            ASSERT(.not.lrota)
+        endif
+        if (typrac .eq. 'COQUE') then
+            ASSERT(.not.lrota)
+        endif
 !
 !
 !

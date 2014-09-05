@@ -53,7 +53,9 @@ subroutine mmmmpb(rese, nrese, ndim, matprb)
 !
     call matini(3, 3, 0.d0, matprb)
     theta = 1.d0
-    if (nrese .eq. 0.d0) ASSERT(.false.)
+    if (nrese .eq. 0.d0) then
+        ASSERT(.false.)
+    endif
 !
 ! --- CALCUL DE LA NORME DE LAMBDA +RHO[[U]]_TAU
 !
@@ -64,17 +66,17 @@ subroutine mmmmpb(rese, nrese, ndim, matprb)
     do 10 i = 1, ndim
         do 15 j = 1, ndim
             matprb(i,j) = -theta*rese(i)*rese(j)/norme
-15      continue
-10  end do
+ 15     continue
+ 10 end do
 !
     do 20 j = 1, ndim
         matprb(j,j) = 1.d0+matprb(j,j)
-20  end do
+ 20 end do
 !
     do 30 i = 1, ndim
         do 35 j = 1, ndim
             matprb(i,j) = matprb(i,j)/nrese
-35      continue
-30  end do
+ 35     continue
+ 30 end do
 !
 end subroutine

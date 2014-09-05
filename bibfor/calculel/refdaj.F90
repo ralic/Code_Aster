@@ -128,7 +128,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !  ____________________________________________________________________
 !
 !     1.1 - CONDITION D'ARRET
-    if ((arret.ne.'F') .and. (arret.ne.' ')) ASSERT(.false.)
+    if ((arret.ne.'F') .and. (arret.ne.' ')) then
+        ASSERT(.false.)
+    endif
 !
     call getres(resu2, typres, kbid)
     if (result(1:2) .eq. '&&') then
@@ -146,7 +148,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     call jeexin(obindi, ibid)
     call jeexin(corefd, jbid)
     if ((ibid*jbid) .eq. 0 .and. (ibid+jbid) .ne. 0) then
-        if (arret .eq. 'F') ASSERT(.false.)
+        if (arret .eq. 'F') then
+            ASSERT(.false.)
+        endif
         codret = 0
         goto 27
     endif
@@ -159,7 +163,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
             if (typres .eq. accres(ibid)) oktres = .true.
         end do
         if (.not.(oktres)) then
-            if (arret .eq. 'F') ASSERT(.false.)
+            if (arret .eq. 'F') then
+                ASSERT(.false.)
+            endif
             codret = 0
             goto 27
         endif
@@ -176,7 +182,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     end do
  16 continue
     if (.not.(oktref)) then
-        if (arret .eq. 'F') ASSERT(.false.)
+        if (arret .eq. 'F') then
+            ASSERT(.false.)
+        endif
         codret = 0
         goto 27
     endif

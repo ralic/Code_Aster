@@ -45,7 +45,9 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     undf = r8vide()
     indf = isnnem()
     errmoy = 0.d0
-    if (nfreq .eq. 0) ASSERT(.false.)
+    if (nfreq .eq. 0) then
+        ASSERT(.false.)
+    endif
     if (resufk(nfreq,2) .eq. 'BATHE_WILSON') then
         if (typres .eq. 'DYNAMIQUE') then
             call utmess('I', 'ALGELINE6_59')

@@ -61,8 +61,12 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
 ! --------------------------------------------------------------------------------------------------
 !
     if (ka .eq. 1 .and. kb .eq. 1) then
-        if (na2 .ne. nb1) ASSERT(.false.)
-        if (nc1 .ne. na1 .or. nc2 .ne. nb2) ASSERT(.false.)
+        if (na2 .ne. nb1) then
+            ASSERT(.false.)
+        endif
+        if (nc1 .ne. na1 .or. nc2 .ne. nb2) then
+            ASSERT(.false.)
+        endif
         do i = 1, na1
             do j = 1, nb2
                 cmat(i,j)=0.d0
@@ -74,8 +78,12 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
     endif
 !
     if (ka .eq. -1 .and. kb .eq. 1) then
-        if (na1 .ne. nb1) ASSERT(.false.)
-        if (nc1 .ne. na2 .or. nc2 .ne. nb2) ASSERT(.false.)
+        if (na1 .ne. nb1) then
+            ASSERT(.false.)
+        endif
+        if (nc1 .ne. na2 .or. nc2 .ne. nb2) then
+            ASSERT(.false.)
+        endif
         do i = 1, na2
             do j = 1, nb2
                 cmat(i,j)=0.d0
@@ -87,8 +95,12 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
     endif
 !
     if (ka .eq. 1 .and. kb .eq. -1) then
-        if (na2 .ne. nb2) ASSERT(.false.)
-        if (nc1 .ne. na1 .or. nc2 .ne. nb1) ASSERT(.false.)
+        if (na2 .ne. nb2) then
+            ASSERT(.false.)
+        endif
+        if (nc1 .ne. na1 .or. nc2 .ne. nb1) then
+            ASSERT(.false.)
+        endif
         do i = 1, na1
             do j = 1, nb1
                 cmat(i,j)=0.d0
@@ -100,12 +112,16 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
     endif
 !
     if (ka .eq. -1 .and. kb .eq. -1) then
-        if (na1 .ne. nb2) ASSERT(.false.)
-        if (nc1 .ne. na2 .or. nc2 .ne. nb1) ASSERT(.false.)
+        if (na1 .ne. nb2) then
+            ASSERT(.false.)
+        endif
+        if (nc1 .ne. na2 .or. nc2 .ne. nb1) then
+            ASSERT(.false.)
+        endif
         do i = 1, na2
             do j = 1, nb1
                 cmat(i,j)=0.d0
-                do  k = 1, nb2
+                do k = 1, nb2
                     cmat(i,j)=cmat(i,j)+amat(k,i)*bmat(j,k)
                 enddo
             enddo

@@ -1,7 +1,7 @@
-subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
+subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq,&
                            ieq_loc, nbnoxfem, neq_mloc, maxi_ddl, iglob_ddl,&
-                           nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr, &
-                           size_vect_col, vect_col, adr_raw, size_vect_raw, vect_raw, &
+                           nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr,&
+                           size_vect_col, vect_col, adr_raw, size_vect_raw, vect_raw,&
                            is_connec, coef, filtrage, seuil)
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -53,7 +53,7 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
 #include "asterfort/jeecra.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    character(len=19) :: matas1   
+    character(len=19) :: matas1
     character(len=1) :: bas1
     integer :: neq, nbnoxfem, size_vect_col, size_vect_raw, nbnomax, maxi_ddl, size_smhc
     integer :: adr_raw(nbnoxfem), vect_adr(nbnoxfem)
@@ -65,7 +65,7 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
     real(kind=8) :: vect_col(size_vect_col), vect_raw(size_vect_raw), coef
     real(kind=8) :: seuil
 !-----------------------------------------------------------------------
-    character(len=19) :: matas2   
+    character(len=19) :: matas2
     character(len=14) :: nonu, nonu2
     character(len=1) :: kbid
     integer :: jcoll, iligl, nuno, nunoj, jdeeq, jsmhc, nblig, decaj, jadr, ipos
@@ -79,7 +79,9 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
     call jemarq()
 !
     if (.not. filtrage) seuil=-1.d0/r8gaem()
-    if (filtrage) ASSERT( seuil .gt. 0.d0 )
+    if (filtrage) then
+        ASSERT( seuil .gt. 0.d0 )
+    endif
 !    if( present(filtrage) ) ASSERT( present(seuil) )
 !    if (.not. present(filtrage)) ASSERT( .not. present(seuil) )
 !
@@ -97,110 +99,113 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
 !    - PREMIERE PASSE : CALCUL DU NOMBRE D EMPLACEMENTS NECASSAIRES
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     nunoj=0
-    do 80 jcoll=1,neq
-       nunos=zi(jdeeq-1+2*(jcoll-1)+1)
-       if ( nunos .gt. 0 ) nunoj=ino_xfem(nunos)
-       if ( .not. is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0 ) then
-          if (jcoll .gt. 1) then
-             nblig=smdi(jcoll)-smdi(jcoll-1)
-          else
-             nblig=smdi(jcoll)
-          endif
-          nblig_mat(jcoll)=nblig
+    do 80 jcoll = 1, neq
+        nunos=zi(jdeeq-1+2*(jcoll-1)+1)
+        if (nunos .gt. 0) nunoj=ino_xfem(nunos)
+        if (.not. is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0) then
+            if (jcoll .gt. 1) then
+                nblig=smdi(jcoll)-smdi(jcoll-1)
+            else
+                nblig=smdi(jcoll)
+            endif
+            nblig_mat(jcoll)=nblig
 !
-       elseif ( .not. is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0 ) then
-          decaj=vect_adr(nunoj)          
-          nblig=nblig_pc(nunoj)
+        else if (.not. is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0) then
+            decaj=vect_adr(nunoj)          
+            nblig=nblig_pc(nunoj)
 ! LECTURE DE VECT_COL : BOUCLE SUR LES LIGNES DIFFERENTES DE LA DIAGONALE
-          do 82 ipos=1,nblig
-             if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt. seuil) then
-                nblig_mat(jcoll)=nblig_mat(jcoll)+1
-             endif
-82        enddo
-! NE PAS OUBLIER LE COEFFICIENT DIAGONAL
-          if (filtrage) then
-             nblig_mat(jcoll)=nblig_mat(jcoll)+1
-          else
-             nblig_mat(jcoll)=nblig_mat(jcoll)+ieq_loc(jcoll) 
-          endif    
-!
-       elseif ( is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0 ) then
-          if (jcoll .gt. 1) then
-             nblig=smdi(jcoll)-smdi(jcoll-1)
-             decaj=smdi(jcoll-1)
-          else
-             nblig=smdi(jcoll)
-             decaj=0
-          endif
-          nbnox=0
-          do ipos=1,nblig
-             iligl=zi4(jsmhc-1+decaj+ipos)
-             if (ieq_loc(iligl) .eq. 0) then 
-                nblig_mat(jcoll)=nblig_mat(jcoll)+1
-             else
-                nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
-                if ( .not. is_counted(nuno)) then
-                   count_raw(nuno)=count_raw(nuno)+1
-                   jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
-                   nbnox=nbnox+1
-                   list_no(nbnox)=nuno
-                   is_counted(nuno)=.true.
-                   do ij=1,neq_mloc(nuno)
-                      if ( abs(vect_raw(jadr+ij)) .gt. seuil ) nblig_mat(jcoll)=nblig_mat(jcoll)+1
-                   enddo
+            do 82 ipos = 1, nblig
+                if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt. seuil) then
+                    nblig_mat(jcoll)=nblig_mat(jcoll)+1
                 endif
-             endif
-          enddo
+ 82         enddo
+! NE PAS OUBLIER LE COEFFICIENT DIAGONAL
+            if (filtrage) then
+                nblig_mat(jcoll)=nblig_mat(jcoll)+1
+            else
+                nblig_mat(jcoll)=nblig_mat(jcoll)+ieq_loc(jcoll) 
+            endif 
+!
+        else if (is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0) then
+            if (jcoll .gt. 1) then
+                nblig=smdi(jcoll)-smdi(jcoll-1)
+                decaj=smdi(jcoll-1)
+            else
+                nblig=smdi(jcoll)
+                decaj=0
+            endif
+            nbnox=0
+            do ipos = 1, nblig
+                iligl=zi4(jsmhc-1+decaj+ipos)
+                if (ieq_loc(iligl) .eq. 0) then
+                    nblig_mat(jcoll)=nblig_mat(jcoll)+1
+                else
+                    nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
+                    if (.not. is_counted(nuno)) then
+                        count_raw(nuno)=count_raw(nuno)+1
+                        jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
+                        nbnox=nbnox+1
+                        list_no(nbnox)=nuno
+                        is_counted(nuno)=.true.
+                        do ij = 1, neq_mloc(nuno)
+                            if (abs(vect_raw(jadr+ij)) .gt. seuil) nblig_mat(jcoll)=nblig_mat(jco&
+                                                                   &ll)+1
+                        enddo
+                    endif
+                endif
+            enddo
 !  REINITIALISATION DE L IDENTIFIFCATEUR DES NOEUDS
-          do nuno=1,nbnox
-             is_counted(list_no(nuno))=.false.
-          enddo
+            do nuno = 1, nbnox
+                is_counted(list_no(nuno))=.false.
+            enddo
 !
-       elseif ( is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0 ) then
-          nblig=nblig_pc(nunoj)
-          nbnox=0
-          decaj=vect_adr(nunoj)
-          do 84 ipos=1,nblig
-             iligl=smhc_pc(smhc_adr(nunoj)+ipos)
-             if (ieq_loc(iligl) .eq. 0) then 
-                if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt. seuil) then 
-                   nblig_mat(jcoll)=nblig_mat(jcoll)+1
+        else if (is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0) then
+            nblig=nblig_pc(nunoj)
+            nbnox=0
+            decaj=vect_adr(nunoj)
+            do 84 ipos = 1, nblig
+                iligl=smhc_pc(smhc_adr(nunoj)+ipos)
+                if (ieq_loc(iligl) .eq. 0) then
+                    if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt.&
+                        seuil) then
+                        nblig_mat(jcoll)=nblig_mat(jcoll)+1
+                    endif
+                else
+                    nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
+                    if (.not. is_counted(nuno)) then
+                        count_raw(nuno)=count_raw(nuno)+1
+                        jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
+                        nbnox=nbnox+1
+                        list_no(nbnox)=nuno
+                        is_counted(nuno)=.true.
+                        do ij = 1, neq_mloc(nuno)
+                            if (abs(vect_raw(jadr+ij)) .gt. seuil) nblig_mat(jcoll)=nblig_mat(jco&
+                                                                   &ll)+1
+                        enddo
+                    endif
                 endif
-             else
-                nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
-                if ( .not. is_counted(nuno)) then
-                   count_raw(nuno)=count_raw(nuno)+1
-                   jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
-                   nbnox=nbnox+1
-                   list_no(nbnox)=nuno
-                   is_counted(nuno)=.true.
-                   do ij=1,neq_mloc(nuno)
-                      if ( abs(vect_raw(jadr+ij)) .gt. seuil ) nblig_mat(jcoll)=nblig_mat(jcoll)+1
-                   enddo
-                endif
-             endif
-84        enddo
+ 84         enddo
 ! NE PAS OUBLIER LE COEFFICIENT DIAGONAL
-          if (filtrage) then
-             nblig_mat(jcoll)=nblig_mat(jcoll)+1
-          else
-             nblig_mat(jcoll)=nblig_mat(jcoll)+ieq_loc(jcoll) 
-          endif 
+            if (filtrage) then
+                nblig_mat(jcoll)=nblig_mat(jcoll)+1
+            else
+                nblig_mat(jcoll)=nblig_mat(jcoll)+ieq_loc(jcoll) 
+            endif 
 ! REINITIALISATION DE L IDENTIFIFCATEUR DES NOEUDS
-          do nuno=1,nbnox
-             is_counted(list_no(nuno))=.false.
-          enddo
-       endif   
-80  enddo 
+            do nuno = 1, nbnox
+                is_counted(list_no(nuno))=.false.
+            enddo
+        endif 
+ 80 enddo 
 !
     nnz=0
-    do jcoll=1,neq
-       nnz=nnz+nblig_mat(jcoll)
+    do jcoll = 1, neq
+        nnz=nnz+nblig_mat(jcoll)
     enddo
 !
 !  REINITIALISATION DU COMPTEUR SUIVANT VECT_RAW
-    do nuno=1,nbnoxfem
-       count_raw(nuno)=0
+    do nuno = 1, nbnoxfem
+        count_raw(nuno)=0
     enddo
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -219,7 +224,8 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
 !   ALLOCATIONS DE LA NOUVELLE DIMENSION (NNZ) 
 !   - ALLOCATION DU .VALM
     call jedetr(matas1//'.VALM')
-    call jecrec(matas1//'.VALM', bas1//' V R', 'NU', 'DISPERSE', 'CONSTANT', 1)
+    call jecrec(matas1//'.VALM', bas1//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
+                1)
     call jecroc(jexnum(matas1//'.VALM', 1))
     call jeecra(matas1//'.VALM', 'LONMAX', nnz, kbid)
     call jeveuo(jexnum(matas1//'.VALM', 1), 'E', jvale)
@@ -229,9 +235,9 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
     call jedetr(nonu//'.SMOS.SMDI')
     call wkvect(nonu//'.SMOS.SMDI', bas1//' V I', neq, jsmdi)
     jadr=0
-    do iligl=1,neq
-       jadr=jadr+nblig_mat(iligl)
-       zi(jsmdi-1+iligl)=jadr
+    do iligl = 1, neq
+        jadr=jadr+nblig_mat(iligl)
+        zi(jsmdi-1+iligl)=jadr
     enddo
 !   - ALLOCATION DU .SMOS.SMHC
     call jedetr(nonu//'.SMOS.SMHC')
@@ -254,158 +260,160 @@ subroutine xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
 !     -----------------------------------------------
 !
     nunoj=0
-    do 90 jcoll=1,neq
-       nunos=zi(jdeeq-1+2*(jcoll-1)+1)
-       if ( nunos .gt. 0 ) nunoj=ino_xfem(nunos)
-       if ( .not. is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0 ) then
-          if (jcoll .gt. 1) then
-             iadr=smdi(jcoll-1)
-             iadr2=smdi2(jcoll-1)
-             nblig2=smdi2(jcoll)-smdi2(jcoll-1)
-          else
-             iadr=0
-             iadr2=0
-             nblig2=smdi2(jcoll)
-          endif
-          do ipos=1,nblig2
-             zi4(jsmhc-1+iadr+ipos)=zi4(jsmhc2-1+iadr2+ipos)
-             zr(jvale-1+iadr+ipos)=zr(jval2-1+iadr2+ipos)
-          enddo
-          incr=nblig2
+    do 90 jcoll = 1, neq
+        nunos=zi(jdeeq-1+2*(jcoll-1)+1)
+        if (nunos .gt. 0) nunoj=ino_xfem(nunos)
+        if (.not. is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0) then
+            if (jcoll .gt. 1) then
+                iadr=smdi(jcoll-1)
+                iadr2=smdi2(jcoll-1)
+                nblig2=smdi2(jcoll)-smdi2(jcoll-1)
+            else
+                iadr=0
+                iadr2=0
+                nblig2=smdi2(jcoll)
+            endif
+            do ipos = 1, nblig2
+                zi4(jsmhc-1+iadr+ipos)=zi4(jsmhc2-1+iadr2+ipos)
+                zr(jvale-1+iadr+ipos)=zr(jval2-1+iadr2+ipos)
+            enddo
+            incr=nblig2
 !
-       elseif ( .not. is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0 ) then
-          decaj=vect_adr(nunoj)
-          if (jcoll .gt. 1) then
-             iadr=smdi(jcoll-1)
-          else
-             iadr=0
-          endif
-          nblig2=nblig_pc(nunoj)
+        else if (.not. is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0) then
+            decaj=vect_adr(nunoj)
+            if (jcoll .gt. 1) then
+                iadr=smdi(jcoll-1)
+            else
+                iadr=0
+            endif
+            nblig2=nblig_pc(nunoj)
 ! LES COEFFICIENTS HORS DIAGONAUX
-          incr=0
-          do 92 ipos=1,nblig2
-             if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt. seuil) then
-                incr=incr+1
-                zi4(jsmhc-1+iadr+incr)=smhc_pc(smhc_adr(nunoj)+ipos)
-                zr(jvale-1+iadr+incr)=vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))
-             endif
-92        enddo
-! LE COEFFICIENT DIAGONAL
-          if (filtrage) then
-             incr=incr+1
-             zi4(jsmhc-1+iadr+incr)=jcoll
-             zr(jvale-1+iadr+incr)=coef
-          else
-             do ij=1,(ieq_loc(jcoll)-1)
-                incr=incr+1
-                zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nunoj-1)+ij)
-                zr(jvale-1+iadr+incr)=0.d0
-             enddo
-             incr=incr+1
-             zi4(jsmhc-1+iadr+incr)=jcoll
-             zr(jvale-1+iadr+incr)=coef
-          endif 
-!
-       elseif ( is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0 ) then
-          if (jcoll .gt. 1) then
-             iadr=smdi(jcoll-1)
-             iadr2=smdi2(jcoll-1)
-             nblig2=smdi2(jcoll)-smdi2(jcoll-1)
-          else
-             iadr=0
-             iadr2=0
-             nblig2=smdi2(jcoll)
-          endif
-          nbnox=0
-          incr=0
-          do ipos=1,nblig2
-             iligl=zi4(jsmhc2-1+iadr2+ipos)
-             if (ieq_loc(iligl) .eq. 0) then 
-                incr=incr+1
-                zi4(jsmhc-1+iadr+incr)=zi4(jsmhc2-1+iadr2+ipos)
-                zr(jvale-1+iadr+incr)=zr(jval2-1+iadr2+ipos)
-             else
-                nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
-                if ( .not. is_counted(nuno)) then
-                   count_raw(nuno)=count_raw(nuno)+1
-                   jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
-                   nbnox=nbnox+1
-                   list_no(nbnox)=nuno
-                   is_counted(nuno)=.true.
-                   do ij=1,neq_mloc(nuno)
-                      if ( abs(vect_raw(jadr+ij)) .gt. seuil ) then
-                         incr=incr+1
-                         zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nuno-1)+ij)
-                         zr(jvale-1+iadr+incr)=vect_raw(jadr+ij)
-                      endif
-                   enddo
-                endif
-             endif
-          enddo
-! REINITIALISATION DE L IDENTIFIFCATEUR DES NOEUDS
-          do nuno=1,nbnox
-             is_counted(list_no(nuno))=.false.
-          enddo
-!
-       elseif ( is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0 ) then
-          if (jcoll .gt. 1) then
-             iadr=smdi(jcoll-1)
-          else
-             iadr=0
-          endif
-          decaj=vect_adr(nunoj)
-          nblig2=nblig_pc(nunoj)
-          nbnox=0
-          incr=0
-          do 94 ipos=1,nblig2
-             iligl=smhc_pc(smhc_adr(nunoj)+ipos)
-             if (ieq_loc(iligl) .eq. 0) then
+            incr=0
+            do 92 ipos = 1, nblig2
                 if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt. seuil) then
-                   incr=incr+1
-                   zi4(jsmhc-1+iadr+incr)=smhc_pc(smhc_adr(nunoj)+ipos)
-                   zr(jvale-1+iadr+incr)=vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll)) 
+                    incr=incr+1
+                    zi4(jsmhc-1+iadr+incr)=smhc_pc(smhc_adr(nunoj)+ipos)
+                    zr(jvale-1+iadr+incr)=vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))
                 endif
-             else
-                nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
-                if ( .not. is_counted(nuno)) then
-                   count_raw(nuno)=count_raw(nuno)+1
-                   jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
-                   nbnox=nbnox+1
-                   list_no(nbnox)=nuno
-                   is_counted(nuno)=.true.
-                   do ij=1,neq_mloc(nuno)
-                      if ( abs(vect_raw(jadr+ij)) .gt. seuil ) then
-                         incr=incr+1
-                         zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nuno-1)+ij)
-                         zr(jvale-1+iadr+incr)=vect_raw(jadr+ij)
-                      endif                           
-                   enddo
-                endif
-             endif
-94        enddo
-! NE PAS OUBLIER LE COEFFICIENT DIAGONAL
-          if (filtrage) then
-             incr=incr+1
-             zi4(jsmhc-1+iadr+incr)=jcoll
-             zr(jvale-1+iadr+incr)=coef
-          else
-             do ij=1,(ieq_loc(jcoll)-1)
+ 92         enddo
+! LE COEFFICIENT DIAGONAL
+            if (filtrage) then
                 incr=incr+1
-                zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nunoj-1)+ij)
-                zr(jvale-1+iadr+incr)=0.d0
-             enddo
-             incr=incr+1
-             zi4(jsmhc-1+iadr+incr)=jcoll
-             zr(jvale-1+iadr+incr)=coef
-          endif         
+                zi4(jsmhc-1+iadr+incr)=jcoll
+                zr(jvale-1+iadr+incr)=coef
+            else
+                do ij = 1, (ieq_loc(jcoll)-1)
+                    incr=incr+1
+                    zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nunoj-1)+ij)
+                    zr(jvale-1+iadr+incr)=0.d0
+                enddo
+                incr=incr+1
+                zi4(jsmhc-1+iadr+incr)=jcoll
+                zr(jvale-1+iadr+incr)=coef
+            endif 
+!
+        else if (is_connec(jcoll) .and. ieq_loc(jcoll) .eq. 0) then
+            if (jcoll .gt. 1) then
+                iadr=smdi(jcoll-1)
+                iadr2=smdi2(jcoll-1)
+                nblig2=smdi2(jcoll)-smdi2(jcoll-1)
+            else
+                iadr=0
+                iadr2=0
+                nblig2=smdi2(jcoll)
+            endif
+            nbnox=0
+            incr=0
+            do ipos = 1, nblig2
+                iligl=zi4(jsmhc2-1+iadr2+ipos)
+                if (ieq_loc(iligl) .eq. 0) then
+                    incr=incr+1
+                    zi4(jsmhc-1+iadr+incr)=zi4(jsmhc2-1+iadr2+ipos)
+                    zr(jvale-1+iadr+incr)=zr(jval2-1+iadr2+ipos)
+                else
+                    nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
+                    if (.not. is_counted(nuno)) then
+                        count_raw(nuno)=count_raw(nuno)+1
+                        jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
+                        nbnox=nbnox+1
+                        list_no(nbnox)=nuno
+                        is_counted(nuno)=.true.
+                        do ij = 1, neq_mloc(nuno)
+                            if (abs(vect_raw(jadr+ij)) .gt. seuil) then
+                                incr=incr+1
+                                zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nuno-1)+ij)
+                                zr(jvale-1+iadr+incr)=vect_raw(jadr+ij)
+                            endif
+                        enddo
+                    endif
+                endif
+            enddo
 ! REINITIALISATION DE L IDENTIFIFCATEUR DES NOEUDS
-          do nuno=1,nbnox
-             is_counted(list_no(nuno))=.false.
-          enddo
-       endif   
+            do nuno = 1, nbnox
+                is_counted(list_no(nuno))=.false.
+            enddo
+!
+        else if (is_connec(jcoll) .and. ieq_loc(jcoll) .ne. 0) then
+            if (jcoll .gt. 1) then
+                iadr=smdi(jcoll-1)
+            else
+                iadr=0
+            endif
+            decaj=vect_adr(nunoj)
+            nblig2=nblig_pc(nunoj)
+            nbnox=0
+            incr=0
+            do 94 ipos = 1, nblig2
+                iligl=smhc_pc(smhc_adr(nunoj)+ipos)
+                if (ieq_loc(iligl) .eq. 0) then
+                    if (abs(vect_col(decaj+neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))) .gt.&
+                        seuil) then
+                        incr=incr+1
+                        zi4(jsmhc-1+iadr+incr)=smhc_pc(smhc_adr(nunoj)+ipos)
+                        zr(jvale-1+iadr+incr)=vect_col(decaj+neq_mloc(nunoj)*(ipos-1) &
+                        &    +ieq_loc(jcoll)) 
+                    endif
+                else
+                    nuno=ino_xfem(zi(jdeeq-1+2*(iligl-1)+1))      
+                    if (.not. is_counted(nuno)) then
+                        count_raw(nuno)=count_raw(nuno)+1
+                        jadr=adr_raw(nuno)+(count_raw(nuno)-1)*neq_mloc(nuno)
+                        nbnox=nbnox+1
+                        list_no(nbnox)=nuno
+                        is_counted(nuno)=.true.
+                        do ij = 1, neq_mloc(nuno)
+                            if (abs(vect_raw(jadr+ij)) .gt. seuil) then
+                                incr=incr+1
+                                zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nuno-1)+ij)
+                                zr(jvale-1+iadr+incr)=vect_raw(jadr+ij)
+                            endif 
+                        enddo
+                    endif
+                endif
+ 94         enddo
+! NE PAS OUBLIER LE COEFFICIENT DIAGONAL
+            if (filtrage) then
+                incr=incr+1
+                zi4(jsmhc-1+iadr+incr)=jcoll
+                zr(jvale-1+iadr+incr)=coef
+            else
+                do ij = 1, (ieq_loc(jcoll)-1)
+                    incr=incr+1
+                    zi4(jsmhc-1+iadr+incr)=iglob_ddl(maxi_ddl*(nunoj-1)+ij)
+                    zr(jvale-1+iadr+incr)=0.d0
+                enddo
+                incr=incr+1
+                zi4(jsmhc-1+iadr+incr)=jcoll
+                zr(jvale-1+iadr+incr)=coef
+            endif 
+! REINITIALISATION DE L IDENTIFIFCATEUR DES NOEUDS
+            do nuno = 1, nbnox
+                is_counted(list_no(nuno))=.false.
+            enddo
+        endif 
 ! ULTIME VERIFICATION
-       ASSERT( incr .eq. nblig_mat(jcoll))
-90  enddo
+        ASSERT( incr .eq. nblig_mat(jcoll))
+ 90 enddo
 !
     call detrsd('MATR_ASSE', matas2)
     call detrsd('NUME_DDL', nonu2)

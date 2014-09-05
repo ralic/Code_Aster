@@ -217,7 +217,9 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
                 newtyp = typobj(iobje)
             endif
         enddo
-        if (newtyp .eq. ' ') ASSERT(.false.)
+        if (newtyp .eq. ' ') then
+            ASSERT(.false.)
+        endif
 !
 ! ----- Add object (new line) or replace old one ?
 !

@@ -94,7 +94,9 @@ subroutine vpini2(eigsol, lcomod, nbvecg, nfreqg, nbpark,&
 !
 ! --  CREATION DES SDS 
     if (lcomod) then
-        if (lc .or. lns .or. (.not.lkr)) ASSERT(.false.)
+        if (lc .or. lns .or. (.not.lkr)) then
+            ASSERT(.false.)
+        endif
         mxresf = nfreqg
         iauxr=nbparr*nbvecg
         iauxi=nbpari*nbvecg
@@ -122,7 +124,9 @@ subroutine vpini2(eigsol, lcomod, nbvecg, nfreqg, nbpark,&
         endif
     else
 ! --  CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
-        if (lcomod) ASSERT(.false.)
+        if (lcomod) then
+            ASSERT(.false.)
+        endif
         call wkvect(vecvp, 'V V C', neq*nbvect, lvec)
     endif
 !

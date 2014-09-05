@@ -270,7 +270,9 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
                         ireth = 0
                         call exisd('CHAMP_GD', lchin(5), ireth)
                         if (((ireth.eq.0).and. (iret.ne.0)) .or.&
-                            ((iret.eq.0).and. (ireth.ne.0))) ASSERT(.false.)
+                            ((iret.eq.0).and. (ireth.ne.0))) then
+                            ASSERT(.false.)
+                        endif
                     endif
 !
 !====

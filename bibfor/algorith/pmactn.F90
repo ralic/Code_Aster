@@ -87,7 +87,9 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 !
 ! --- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE ICI
 !
-    if (actite .eq. 2) ASSERT(.false.)
+    if (actite .eq. 2) then
+        ASSERT(.false.)
+    endif
 !
 ! --- AFFICHAGE
 !

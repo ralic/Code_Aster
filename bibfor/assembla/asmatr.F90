@@ -74,7 +74,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     integer :: k
     character(len=8) :: matk8
     character(len=19) :: tlima2(150), solve2, matas, matel, infc19
-    integer :: ilicoe, i,  iret, ibid, idbgav
+    integer :: ilicoe, i, iret, ibid, idbgav
     integer :: jrefa
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: lmatel(:) => null()
@@ -92,7 +92,9 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !
     ASSERT(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
     if (cumul .eq. 'ZERO') call detrsd('MATR_ASSE', matas)
-    if (nbmat .gt. 150) ASSERT(.false.)
+    if (nbmat .gt. 150) then
+        ASSERT(.false.)
+    endif
     do k = 1, nbmat
         tlima2(k) = tlimat(k)
     end do

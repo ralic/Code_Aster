@@ -175,7 +175,9 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
                 metcor, reasma, lcamor, optrig, lcrigi,&
                 larigi, lcfint)
 !
-    if (lcfint) ASSERT(.false.)
+    if (lcfint) then
+        ASSERT(.false.)
+    endif
 !
 ! --- CALCUL DES MATR_ELEM CONTACT/XFEM_CONTACT
 !

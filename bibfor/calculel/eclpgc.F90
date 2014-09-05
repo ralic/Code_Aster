@@ -227,7 +227,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
         moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
         if (moloc1 .eq. 0) goto 80
 !
-        if (.not.lvari) ASSERT(mxvari.eq.1)
+        if (.not.lvari) then
+            ASSERT(mxvari.eq.1)
+        endif
 !
         call jeveuo(jexnum('&CATA.TE.MODELOC', moloc1), 'L', iamol1)
         ASSERT(zi(iamol1-1+1).eq.3)

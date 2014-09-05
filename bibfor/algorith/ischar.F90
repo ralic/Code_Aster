@@ -109,7 +109,9 @@ function ischar(lischa, typcha, soutyp, ichar)
             deb = 1
             fin = nchar
         else
-            if ((ichar.le.0) .or. (ichar.gt.nchar)) ASSERT(.false.)
+            if ((ichar.le.0) .or. (ichar.gt.nchar)) then
+                ASSERT(.false.)
+            endif
             deb = ichar
             fin = ichar
         endif

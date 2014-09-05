@@ -51,9 +51,15 @@ subroutine mmtang(ndim, nno, coorma, dff, tau1,&
 !
 ! --- VERIF CARACTERISTIQUES DE LA MAILLE
 !
-    if (nno .gt. 9) ASSERT(.false.)
-    if (ndim .gt. 3) ASSERT(.false.)
-    if (ndim .le. 1) ASSERT(.false.)
+    if (nno .gt. 9) then
+        ASSERT(.false.)
+    endif
+    if (ndim .gt. 3) then
+        ASSERT(.false.)
+    endif
+    if (ndim .le. 1) then
+        ASSERT(.false.)
+    endif
 !
 ! --- CALCUL DES TANGENTES
 !
@@ -63,8 +69,8 @@ subroutine mmtang(ndim, nno, coorma, dff, tau1,&
             if (ndim .eq. 3) then
                 tau2(idim) = coorma(3*(ino-1)+idim)*dff(2,ino) + tau2( idim)
             endif
-31      continue
-41  end do
+ 31     continue
+ 41 end do
 !
 !
 end subroutine

@@ -1,5 +1,5 @@
-subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
-                        scal, iret, is_svd)
+subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca,&
+                        tab_mloc, scal, iret, is_svd)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
 !-----------------------------------------------------------------------
     character(len=*) :: action
     integer :: nbnoxfem, deca, iret
-    integer :: neq_mloc(nbnoxfem)   
+    integer :: neq_mloc(nbnoxfem)
     integer, optional :: nnz_mloc(nbnoxfem)
     real(kind=8) :: scal, tab_mloc(deca*nbnoxfem)
     aster_logical, optional :: is_svd(nbnoxfem)
@@ -57,60 +57,67 @@ subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
     iret=0
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if ( action .eq. 'CHOLESKY' ) then
+    if (action .eq. 'CHOLESKY') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      ASSERT(present(is_svd))
-      do j=1,nbnoxfem
-        is_svd(j)=.false.
-        nm=neq_mloc(j)
-        if (present(nnz_mloc)) ASSERT((nm*(nm+1)/2) .eq. nnz_mloc(j))
-        jadr=deca*(j-1)
+        ASSERT(present(is_svd))
+        do j = 1, nbnoxfem
+            is_svd(j)=.false.
+            nm=neq_mloc(j)
+            if (present(nnz_mloc)) then
+                ASSERT((nm*(nm+1)/2) .eq. nnz_mloc(j))
+            endif
+            jadr=deca*(j-1)
 !
-        call xfem_calc_chol(tab_mloc, jadr, nm, scal, iret, methode)
-        if ( methode(1:3) .eq. 'SVD') is_svd(j)=.true.
+            call xfem_calc_chol(tab_mloc, jadr, nm, scal, iret,&
+                                methode)
+            if (methode(1:3) .eq. 'SVD') is_svd(j)=.true.
 !
-        if (iret .ne. 0) then
-         call utmess('A', 'XFEMPRECOND_5')
-         goto 99
-        endif
-      enddo
+            if (iret .ne. 0) then
+                call utmess('A', 'XFEMPRECOND_5')
+                goto 99
+            endif
+        enddo
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    elseif ( action .eq. 'INV_TRI_SUP' ) then
+    else if (action .eq. 'INV_TRI_SUP') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      do j=1,nbnoxfem
-      nm=neq_mloc(j)
-      if (present(nnz_mloc)) ASSERT((nm*(nm+1)/2) .eq. nnz_mloc(j))
-      jadr=deca*(j-1)
+        do j = 1, nbnoxfem
+            nm=neq_mloc(j)
+            if (present(nnz_mloc)) then
+                ASSERT((nm*(nm+1)/2) .eq. nnz_mloc(j))
+            endif
+            jadr=deca*(j-1)
 !
-      call xfem_calc_inv(tab_mloc, jadr, nm, scal, iret)
+            call xfem_calc_inv(tab_mloc, jadr, nm, scal, iret)
 !
-      if (iret .ne. 0) then
-         call utmess('A', 'XFEMPRECOND_5')
-         goto 99
-      endif
-      enddo
+            if (iret .ne. 0) then
+                call utmess('A', 'XFEMPRECOND_5')
+                goto 99
+            endif
+        enddo
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    elseif ( action .eq. 'INV_AND_SCAL' ) then
+    else if (action .eq. 'INV_AND_SCAL') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      ASSERT(present(is_svd))
-      do j=1,nbnoxfem
-      nm=neq_mloc(j)
-      if (present(nnz_mloc)) ASSERT((nm*(nm+1)/2) .eq. nnz_mloc(j))
-      jadr=deca*(j-1)
-      if (.not. is_svd(j)) then
-         call xfem_calc_inv(tab_mloc, jadr, nm, scal, iret)
-      else
-         call xfem_calc_mult(tab_mloc, jadr, nm, scal, .false._1)
-      endif
-      if (iret .ne. 0) then
-         call utmess('A', 'XFEMPRECOND_5')
-         goto 99
-      endif
-      enddo
+        ASSERT(present(is_svd))
+        do j = 1, nbnoxfem
+            nm=neq_mloc(j)
+            if (present(nnz_mloc)) then
+                ASSERT((nm*(nm+1)/2) .eq. nnz_mloc(j))
+            endif
+            jadr=deca*(j-1)
+            if (.not. is_svd(j)) then
+                call xfem_calc_inv(tab_mloc, jadr, nm, scal, iret)
+            else
+                call xfem_calc_mult(tab_mloc, jadr, nm, scal, .false._1)
+            endif
+            if (iret .ne. 0) then
+                call utmess('A', 'XFEMPRECOND_5')
+                goto 99
+            endif
+        enddo
 !
     endif 
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

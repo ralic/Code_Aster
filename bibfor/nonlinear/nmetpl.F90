@@ -18,7 +18,7 @@ subroutine nmetpl(sdieto)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -71,13 +71,15 @@ subroutine nmetpl(sdieto)
             tychap = nomchx(6:11)
             if (tychap .eq. 'VALINC') then
                 tyvari = nomchx(13:18)
-                if (tyvari .eq. 'TEMP') ASSERT(.false.)
+                if (tyvari .eq. 'TEMP') then
+                    ASSERT(.false.)
+                endif
                 newchx = nomchx
                 newchx(16:18) = 'PLU'
                 zk24(jiolch+zioch*(icham-1)+6-1) = newchx
             endif
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

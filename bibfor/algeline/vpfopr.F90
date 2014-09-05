@@ -138,9 +138,11 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 ! MAUVAISE VALEUR DE OPTION
     if ((option.ne.'CENTRE') .and. (option.ne.'BANDE') .and. (option.ne.'BANDEA') .and.&
         (option.ne.'PLUS_PETITE') .and. (option.ne.'TOUT') .and. (option.ne.'STURM') .and.&
-        (option.ne.'STURML1') .and. (option.ne.'STURML1P') .and. (option.ne.'STURML10') .and.&
-        (option.ne.'STURML11') .and. (option.ne.'STURMLN') .and. (option.ne.'STURMLNP') .and.&
-        (option.ne.'STURMAD')) ASSERT(.false.)
+        (option.ne.'STURML1') .and. (option.ne.'STURML1P') .and. (option.ne.'STURML10')&
+        .and. (option.ne.'STURML11') .and. (option.ne.'STURMLN') .and.&
+        (option.ne.'STURMLNP') .and. (option.ne.'STURMAD')) then
+        ASSERT(.false.)
+    endif
     det(1)=-9999.d0
     det(2)=-9999.d0
     idet(1)=-9999

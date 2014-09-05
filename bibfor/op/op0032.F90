@@ -109,7 +109,9 @@ subroutine op0032()
 !     ------------------------------------------------------------------
     call asmpi_comm('GET_WORLD', mpicow)
     call asmpi_comm('GET', mpicou)
-    if (mpicow .ne. mpicou) ASSERT(.false.)
+    if (mpicow .ne. mpicou) then
+        ASSERT(.false.)
+    endif
     call asmpi_info(mpicow, mrang, mnbproc)
     rang = to_aster_int(mrang)
     nbproc = to_aster_int(mnbproc)
@@ -142,8 +144,12 @@ subroutine op0032()
 !     INFO // SEUL
     typpar='XXXXXXXXXXXXXXXX'
     call getvtx(' ', 'NIVEAU_PARALLELISME', scal=typpar, nbret=l)
-    if (l .ne. 1) ASSERT(.false.)
-    if ((typpar.ne.'COMPLET') .and. (typpar.ne.'PARTIEL')) ASSERT(.false.)
+    if (l .ne. 1) then
+        ASSERT(.false.)
+    endif
+    if ((typpar.ne.'COMPLET') .and. (typpar.ne.'PARTIEL')) then
+        ASSERT(.false.)
+    endif
     if ((typpar.eq.'COMPLET') .and. (nbproc.gt.1) .and. (.not.lcomod)) then
         lcoinf=.true.
         typeco=1
@@ -273,11 +279,15 @@ subroutine op0032()
         call wkvect(k24moe, 'V V R', nbmod, jlmoe)
         call wkvect(k24stu, 'V V I', nbmod-1, jstu)
         call getvr8(' ', 'FREQ', nbval=nbmod, vect=zr(jlmod), nbret=l)
-        if (l .ne. nbmod) ASSERT(.false.)
+        if (l .ne. nbmod) then
+            ASSERT(.false.)
+        endif
         do 10 k = 1, nbmod-1
             zi(jstu+k-1)=izero
             zr(jlmoe+k-1)=rzero
-            if (zr(jlmod+k) .le. zr(jlmod+k-1)) ASSERT(.false.)
+            if (zr(jlmod+k) .le. zr(jlmod+k-1)) then
+                ASSERT(.false.)
+            endif
  10     continue
         zr(jlmoe+nbmod-1)=rzero
 !
@@ -286,7 +296,9 @@ subroutine op0032()
         call getvtx(' ', 'TYPE_CONTOUR', scal=typcon, nbret=l1)
         call getvr8(' ', 'RAYON_CONTOUR', scal=rayonc, nbret=l2)
         call getvc8(' ', 'CENTRE_CONTOUR', scal=centrc, nbret=l3)
-        if ((abs(l1)*abs(l2)*abs(l3)) .ne. 1) ASSERT(.false.)
+        if ((abs(l1)*abs(l2)*abs(l3)) .ne. 1) then
+            ASSERT(.false.)
+        endif
         calpac(1) = dble(centrc)
         calpac(2) = dimag(centrc)
         calpac(3) = rayonc
@@ -302,11 +314,15 @@ subroutine op0032()
             call wkvect(k24moe, 'V V R', nbmod, jlmoe)
             call wkvect(k24stu, 'V V I', nbmod-1, jstu)
             call getvr8(' ', 'CHAR_CRIT', nbval=nbmod, vect=zr(jlmod), nbret=l)
-            if (l .ne. nbmod) ASSERT(.false.)
+            if (l .ne. nbmod) then
+                ASSERT(.false.)
+            endif
             do 12 k = 1, nbmod-1
                 zi(jstu+k-1)=izero
                 zr(jlmoe+k-1)=rzero
-                if (zr(jlmod+k) .le. zr(jlmod+k-1)) ASSERT(.false.)
+                if (zr(jlmod+k) .le. zr(jlmod+k-1)) then
+                    ASSERT(.false.)
+                endif
  12         continue
             zr(jlmoe+nbmod-1)=rzero
         else
@@ -364,7 +380,9 @@ subroutine op0032()
 !      --- INFO_MODE OU MACRO_MODE_MECA // VALIDES QU'AVEC STURM
     if (lcomod .or. lcoinf) then
 !      --- PROBABLEMENT MAUVAISE PROGRAMMATION EN AMONT
-        if (typmet(1:5) .ne. 'STURM') ASSERT(.false.)
+        if (typmet(1:5) .ne. 'STURM') then
+            ASSERT(.false.)
+        endif
     endif
 !
 !      --- INFO_MODE PARALLELE: INCOMPATIBILITES FONCTIONNELLES ET
@@ -429,7 +447,9 @@ subroutine op0032()
     nbrow=-9999
     if (typmet(1:5) .eq. 'STURM') then
 !
-        if (nbmod .lt. 2) ASSERT(.false.)
+        if (nbmod .lt. 2) then
+            ASSERT(.false.)
+        endif
         nbrow=nbmod-1
 !
 !     ------------------------------------------------------------------
@@ -462,8 +482,9 @@ subroutine op0032()
             if ((typeco.eq.1) .and. (nbrow.eq.1)) typeco=2
 !         --- ULTIME VERIF (DEJA FAIT PAR AILLEURS NORMALEMENT)
             if ((nbproc.lt.nbrow) .or.&
-                ( (nbproc.gt.nbrow) .and. (metres( 1:5).ne.'MUMPS') .and. (typeco.eq.1) )) &
-            ASSERT(.false.)
+                ( (nbproc.gt.nbrow) .and. (metres( 1:5).ne.'MUMPS') .and. (typeco.eq.1) )) then
+                ASSERT(.false.)
+            endif
             if (typeco .eq. 1) then
                 l1=nbproc/nbrow
                 l11=l1+1
@@ -477,7 +498,9 @@ subroutine op0032()
                     call vecint(l1, k, zi(jkpar+l3+(k-l21)*l1))
  41             continue
             else if (typeco.eq.2) then
-                if (nbrow .ne. 1) ASSERT(.false.)
+                if (nbrow .ne. 1) then
+                    ASSERT(.false.)
+                endif
                 l1=nbproc/2
                 l2=nbproc-2*l1
                 l11=l1+l2
@@ -492,7 +515,9 @@ subroutine op0032()
 !         --- ULTIME VERIF VECTEUR COULEUR
             do 42 k = 1, nbproc
                 l1=zi(jkpar+k-1)
-                if ((l1.lt.0) .or. (l1.gt.nbrow)) ASSERT(.false.)
+                if ((l1.lt.0) .or. (l1.gt.nbrow)) then
+                    ASSERT(.false.)
+                endif
  42         continue
 !
 !         --- FREQUENCE COURANTE CAD FREQ A TRAITER PAR LE PROC COURANT
@@ -503,7 +528,9 @@ subroutine op0032()
 !         --- ON DETRUIT LE MPICOU QU'APRES LA DESTRUCTION DE L'OCCU
 !         --- RENCE MUMPS ASSOCIEE.
             call asmpi_split_comm(mpicow, to_mpi_int(frecou), to_mpi_int(0), 'mumps', mpicou)
-            if (mpicow .eq. mpicou) ASSERT(.false.)
+            if (mpicow .eq. mpicou) then
+                ASSERT(.false.)
+            endif
             call asmpi_barrier()
             call asmpi_comm('SET', mpicou)
             if (typeco .eq. 1) then

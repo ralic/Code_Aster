@@ -215,8 +215,12 @@ subroutine op0109()
             if (nla .ne. 0) then
                 call jeveuo(liar//'.DESC', 'L', jamor)
 !               On verifie que AMOR_GENE est une matrice (+ diagonale)
-                if (zi(jamor-1+1) .ne. 2) ASSERT(.false.)
-                if (zi(jamor-1+3) .ne. 1) ASSERT(.false.)
+                if (zi(jamor-1+1) .ne. 2) then
+                    ASSERT(.false.)
+                endif
+                if (zi(jamor-1+3) .ne. 1) then
+                    ASSERT(.false.)
+                endif
                 call jelira(liar//'.VALM', 'LONO', nbamor)
                 if (nbamor .gt. nbmode) then
                     vali(1) = nbamor

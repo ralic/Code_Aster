@@ -139,7 +139,9 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
 !     -------  JACOBI PB GENERALISE REEL SYMETRIQUE --------------------
 !     ------------------------------------------------------------------
-        if ((.not.lkr) .or. lns) ASSERT(.false.)
+        if ((.not.lkr) .or. lns) then
+            ASSERT(.false.)
+        endif
         call sspace(lmtpsc, lmatra, lmasse, neq, nbvect,&
                     nfreq, zi(lprod), itemax, nperm, tol,&
                     toldyn, zr(lvec), zr(lvalpr), nitjac, nitbat,&
@@ -191,7 +193,9 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 ! --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
     mfreq = nconv
     if (optiof(1:5) .eq. 'BANDE') then
-        if (lc .or. lns .or. .not.lkr) ASSERT(.false.)
+        if (lc .or. lns .or. .not.lkr) then
+            ASSERT(.false.)
+        endif
         do ifreq = mfreq - 1, 0
             if ((zr(lresur+mxresf+ifreq).gt.omemax) .or. (zr(lresur+ mxresf+ifreq).lt.omemin)) &
             nconv = nconv - 1

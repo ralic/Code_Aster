@@ -84,7 +84,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         call asmpi_comm('GET', mpicou)
 !       --- ON EST CENSE FONCTIONNER JUSQUE LA EN COM LOCAL
 !       --- (POUR SOLVEUR LINEAIRE DU SOLVEUR MODAL)
-        if (mpicow .eq. mpicou) ASSERT(.false.)
+        if (mpicow .eq. mpicou) then
+            ASSERT(.false.)
+        endif
         call asmpi_info(comm=mpicou, rank=rangl)
 !       ----------------------------------------------------------------
 !       --- STEP 0: COMM AU SEIN DU COM_WORLD
@@ -105,8 +107,12 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         call asmpi_split_comm(mpicow, l1, to_mpi_int(icom1), 'procs0', mpico0)
         ASSERT(mpicow .ne. mpico0)
         call asmpi_info(mpico0, rangll, l2)
-        if ((l2.ne.icom2) .and. (rangl.eq.0)) ASSERT(.false.)
-        if ((rangll.ne.(icom1-1)) .and. (rangl.eq.0)) ASSERT(.false.)
+        if ((l2.ne.icom2) .and. (rangl.eq.0)) then
+            ASSERT(.false.)
+        endif
+        if ((rangll.ne.(icom1-1)) .and. (rangl.eq.0)) then
+            ASSERT(.false.)
+        endif
 !
 !       --- VECTEUR DES DECALAGES (NCONV) PAR PROC POUR VECTEURS PROPRES
 !       --- CALCUL ET AFFECTATION DU NBRE TOTAL DE MODES CONVERGES
@@ -120,10 +126,14 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         if (rangl .eq. 0) zi(jlcom+icom1-1)=nconvl
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=icom2, vi=zi(jlcom))
         nconvg=somint(icom2,zi(jlcom))
-        if (nconvg .le. 0) ASSERT(.false.)
+        if (nconvg .le. 0) then
+            ASSERT(.false.)
+        endif
         nconv=nconvg
         nconvm=maxint(icom2,zi(jlcom))
-        if (nconvm .le. 0) ASSERT(.false.)
+        if (nconvm .le. 0) then
+            ASSERT(.false.)
+        endif
 !
 !       ----------------------------------------------------------------
 !       --- STEP 1: COMM ENTRE LES MAITRES DE CHAQUE SOUS-BANDES
@@ -146,7 +156,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                 do 114 j = 1, i-1
                     idecal=idecal+zi(jlcom+j-1)
 114             continue
-                if (idecal .lt. 0) ASSERT(.false.)
+                if (idecal .lt. 0) then
+                    ASSERT(.false.)
+                endif
                 i8=neq*zi(jlcom+i-1)
                 if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
                 call asmpi_comm_vect('BCAST', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
@@ -223,7 +235,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         do 125 i = 1, nbpark
             j=1+(i-1)*mxresf
             k24b=resuk(j)
-            if (k24b .ne. resuk(j+1)) ASSERT(.false.)
+            if (k24b .ne. resuk(j+1)) then
+                ASSERT(.false.)
+            endif
             call vecink(nconvg, k24b, resuk(j))
 125     continue
 !       ----------------------------------------------------------------

@@ -271,7 +271,9 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
  22     continue
         di= ieqp-ieq
-        if (di .gt. 10) ASSERT(.false.)
+        if (di .gt. 10) then
+            ASSERT(.false.)
+        endif
         zi(iaiino-1+3*(ino-1)+2)= di
         zi(iaiino-1+3*(ino-1)+3)= dmi
   2     continue

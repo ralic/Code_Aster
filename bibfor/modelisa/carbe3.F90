@@ -534,7 +534,9 @@ subroutine carbe3(charge)
         call mgauss('NFSP', stws, x, 6, 6,&
                     6, rbid, iret)
 !
-        if (iret .ne. 0) ASSERT(.false.)
+        if (iret .ne. 0) then
+            ASSERT(.false.)
+        endif
 !
         if (niv .eq. 2) then
             write (ifm,*) 'IMPRESSION MATRICE X'

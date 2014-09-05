@@ -237,7 +237,9 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     endif
 !
 !     TEMPORAIRE POUR EVITER LES DEPASSEMENTS DE TABLEAU
-    if (nopout .gt. 100) ASSERT(.false.)
+    if (nopout .gt. 100) then
+        ASSERT(.false.)
+    endif
 !
     call wkvect(noliop, 'V V K24', nopout, jlisop)
     call wkvect(nolori, 'V V I', 2*nopout, jliori)

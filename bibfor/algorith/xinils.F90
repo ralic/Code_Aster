@@ -240,7 +240,9 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         call jeveuo(chslsn//'.CNSD', 'L', vi=cnd)
         ASSERT(cnd(2).eq.1)
         if (callst) call jeveuo(chslst//'.CNSD', 'L', vi=ctd)
-        if (callst) ASSERT(ctd(2).eq.1)
+        if (callst) then
+            ASSERT(ctd(2).eq.1)
+        endif
 !
         call jeveuo(chslsn//'.CNSV', 'L', vr=cnv)
         call jeveuo(chslsn//'.CNSL', 'L', jcnl)

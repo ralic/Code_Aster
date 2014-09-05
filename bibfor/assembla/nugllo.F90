@@ -217,7 +217,9 @@ subroutine nugllo(nu, base, solveu)
     numinc=1
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
-        if (ili .eq. 2) ASSERT(nomlig.eq.ligrmo)
+        if (ili .eq. 2) then
+            ASSERT(nomlig.eq.ligrmo)
+        endif
         do igr = 1, zzngel(ili)
             if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 90
             nel=zznelg(ili,igr)

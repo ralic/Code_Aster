@@ -58,7 +58,9 @@ subroutine oblgai(sdlist, istru, lacti)
 ! --- VERIFICATIONS
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') then
+        ASSERT(.false.)
+    endif
 !
 ! --- ACTIVATION
 !

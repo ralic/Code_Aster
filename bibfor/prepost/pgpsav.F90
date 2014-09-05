@@ -60,37 +60,37 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
 !   ====================================================================
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_pgp
-    character(len=*)          , intent(in) :: param
-    integer                   , intent(in) :: lonvec
-    integer,          optional, intent(in) :: iobs
+    character(len=*), intent(in) :: sd_pgp
+    character(len=*), intent(in) :: param
+    integer, intent(in) :: lonvec
+    integer, optional, intent(in) :: iobs
     character(len=*), optional, intent(in) :: kscal
-    integer,          optional, intent(in) :: iscal
-    real(kind=8),     optional, intent(in) :: rscal
-    complex(kind=8),  optional, intent(in) :: cscal   
+    integer, optional, intent(in) :: iscal
+    real(kind=8), optional, intent(in) :: rscal
+    complex(kind=8), optional, intent(in) :: cscal
     character(len=*), optional, intent(in) :: kvect(lonvec)
-    integer,          optional, intent(in) :: ivect(lonvec)
-    real(kind=8),     optional, intent(in) :: rvect(lonvec)
-    complex(kind=8),  optional, intent(in) :: cvect(lonvec)
-    character(len=24),optional, intent(out):: savejv
+    integer, optional, intent(in) :: ivect(lonvec)
+    real(kind=8), optional, intent(in) :: rvect(lonvec)
+    complex(kind=8), optional, intent(in) :: cvect(lonvec)
+    character(len=24), optional, intent(out) :: savejv
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_pgp_
     character(len=8) :: param_
-    character(len=24):: kscal_
-    character(len=24):: savejv_
+    character(len=24) :: kscal_
+    character(len=24) :: savejv_
     character(len=24), pointer :: kvect_(:) => null()
-
-
+!
+!
 !   --- For general usage
-    aster_logical     :: input_test 
+    aster_logical :: input_test
     integer :: nbparams
     parameter (nbparams=24)
-    integer           :: parind(nbparams), ip, i, jvect, jscal
-    character(len=3)  :: partyp(nbparams)
-    character(len=6)  :: k_iobs
-    character(len=8)  :: params(nbparams)
+    integer :: parind(nbparams), ip, i, jvect, jscal
+    character(len=3) :: partyp(nbparams)
+    character(len=6) :: k_iobs
+    character(len=8) :: params(nbparams)
 !
 !   -0.3- Initialization
     data  params /'RESU_OUT','RESU_IN ','TYP_RESU','BASE    ','MODELE  ',&
@@ -104,7 +104,7 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
                   'K24','I','I','I','R8', &
                   'I','K24','R8','R8',&
                   'C8','K24','K24','K24','I'/
-
+!
 !   parind = -2 : vector global          ; = -1 : scalar global ; 
 !          =  2 : vector per observation ; =  1 : scalar per observation
     data  parind  / -1, -1, -1, -1, -1,&
@@ -112,10 +112,10 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
                      1,  2,  2,  2,  2,&
                      1,  1,  2,  2,&
                      2,  2,  2,  2,  2/
-
+!
     call jemarq()
     savejv_ = '                        '
-
+!
 !   Copying the input strings, in order to allow in-command truncated input
     sd_pgp_ = sd_pgp
     param_ = param
@@ -130,51 +130,54 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
 !   ====================================================================
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
-
-    input_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-                 UN_PARMI4(kvect, ivect, rvect, cvect)
-
+!
+    input_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. UN_PARMI4(kvect, ivect, rvect, cvect)
+!
     ASSERT(input_test)
-
-    if (lonvec.gt.1) ASSERT(UN_PARMI4(kvect, ivect, rvect, cvect))
-
+!
+    if (lonvec .gt. 1) then
+        ASSERT(UN_PARMI4(kvect, ivect, rvect, cvect))
+    endif
+!
     do ip = 1, nbparams
-        if (params(ip).eq.param_) goto 10
+        if (params(ip) .eq. param_) goto 10
     end do
-10  continue
-
+ 10 continue
+!
 !   The parameter to be saved was not found in the predefined list
-    if (ip.eq.nbparams+1) ASSERT(.false.)
-
+    if (ip .eq. nbparams+1) then
+        ASSERT(.false.)
+    endif
+!
     savejv_(1:8) = sd_pgp_
-    if (present(iobs)) then 
+    if (present(iobs)) then
 !       The parameter to be saved is global but an observation index was given
         ASSERT(parind(ip).gt.0)
         call codent(iobs, 'G', k_iobs)
         savejv_(9:15) = '.'//k_iobs(1:6)
     endif
     savejv_(16:24)='.'//param_
-
+!
 !   ====================================================================
 !   = 2 = Saving data
 !   ====================================================================
-
+!
 !   --- Vectors
-    if (abs(parind(ip)).eq.2) then 
+    if (abs(parind(ip)) .eq. 2) then
 !
 !       The parameter to be saved is a vector but no vector input was found
         ASSERT(UN_PARMI4(kvect, ivect, rvect, cvect))
         ASSERT(lonvec.ge.1)
 !
         call wkvect(savejv_, 'V V '//partyp(ip), lonvec, jvect)
-        if (partyp(ip).eq.'K24') then
+        if (partyp(ip) .eq. 'K24') then
             do i = 1, lonvec
                 zk24(jvect+i-1) = kvect_(i)
             end do
         else if (partyp(ip).eq.'R8') then
             call dcopy(lonvec, rvect, 1, zr(jvect), 1)
         else if (partyp(ip).eq.'C8') then
-            call zcopy(lonvec, cvect, 1, zc(jvect), 1)            
+            call zcopy(lonvec, cvect, 1, zc(jvect), 1)
         else if (partyp(ip).eq.'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)
@@ -188,13 +191,13 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
         ASSERT(UN_PARMI4(kscal, iscal, rscal, cscal))
 !
         call wkvect(savejv_, 'V V '//partyp(ip), 1, jscal)
-        if (partyp(ip).eq.'K24') then 
+        if (partyp(ip) .eq. 'K24') then
             zk24(jscal) = kscal_
-        elseif (partyp(ip).eq.'R8') then 
+        else if (partyp(ip).eq.'R8') then
             zr(jscal) = rscal
-        elseif (partyp(ip).eq.'C8') then 
+        else if (partyp(ip).eq.'C8') then
             zc(jscal) = cscal
-        elseif (partyp(ip).eq.'I')  then 
+        else if (partyp(ip).eq.'I') then
             zi(jscal) = iscal
         end if
 !
@@ -204,5 +207,5 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
     if (present(kvect)) AS_DEALLOCATE(vk24=kvect_)
 !
     call jedema()
-
+!
 end subroutine

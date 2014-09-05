@@ -95,7 +95,9 @@ subroutine utfloa(floa, ch1, ch2)
  11 continue
 !
 !     SI LA CHAINE NE CONTINENT PAS DE 'E' : ON S'ARRETE
-    if (ii .eq. lcv) ASSERT(.false.)
+    if (ii .eq. lcv) then
+        ASSERT(.false.)
+    endif
     iii=ii+1
 !
 !     SIGNE : SIGN
@@ -123,7 +125,9 @@ subroutine utfloa(floa, ch1, ch2)
  21 continue
 !
 !     SI LA CHAINE NE CONTINENT PAS DE POINT : ON S'ARRETE
-    if (ii .eq. lcv) ASSERT(.false.)
+    if (ii .eq. lcv) then
+        ASSERT(.false.)
+    endif
 !
 !     POSITION DANS LA CHAINE DU '.' : II
     ii=ii+1

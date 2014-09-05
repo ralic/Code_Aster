@@ -124,7 +124,9 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         valmi = mati//'.VALM'
         symi = refai(9) .eq. 'MS'
         symrl=symr
-        if (.not.symi) ASSERT(.not.symrl)
+        if (.not.symi) then
+            ASSERT(.not.symrl)
+        endif
         call jelira(valmi, 'TYPE', cval=typmat)
         call jeveuo(jexnum(valmi, 1), 'L', jvlmi1)
         ASSERT(typmat.eq.'R')

@@ -529,7 +529,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call dismoi('TYPE_MATRICE', resu, 'RESUELEM', repk=symel)
             ASSERT(symel(1:1).eq.'S' .or. symel(1:1) .eq.'N')
             lmesym=(symel(1:1).eq.'S')
-            if (lmasym) ASSERT(lmesym)
+            if (lmasym) then
+                ASSERT(lmesym)
+            endif
 !
 !                   -- BOUCLE SUR LES GRELS DU LIGREL
 !                   ==================================

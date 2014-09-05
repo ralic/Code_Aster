@@ -125,10 +125,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
     endif
     call jeveuo(nomres//'.MAEL_MASS_DESC', 'L', vi=mael_mass_desc)
     call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbmtot)
-    if (nbmtot .eq. 0) ASSERT(.false.)
+    if (nbmtot .eq. 0) then
+        ASSERT(.false.)
+    endif
     call dismoi('NB_MODES_STA', basmod, 'RESULTAT', repi=nbmdef)
     nbmdyn=nbmtot-nbmdef
-    if (nbmdyn .lt. 0) ASSERT(.false.)
+    if (nbmdyn .lt. 0) then
+        ASSERT(.false.)
+    endif
 !
     if (nbmtot .ne. mael_mass_desc(2)) then
         call utmess('I', 'ALGORITH_52')

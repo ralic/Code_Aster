@@ -66,7 +66,9 @@ subroutine memver(action, prec, arret, titre)
             write (6,9000)'<MEMVER> MTOTS,MTOT,DIFF=',titre, mtots,&
             mtot,mtots-mtot
         endif
-        if (arret(1:1) .eq. 'F') ASSERT(mtots-mtot.lt.precs)
+        if (arret(1:1) .eq. 'F') then
+            ASSERT(mtots-mtot.lt.precs)
+        endif
     endif
 !
     9000 format (2(a,1x),3(f15.3,1x))

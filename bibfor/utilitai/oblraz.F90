@@ -18,7 +18,7 @@ subroutine oblraz(sdlist)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -50,14 +50,16 @@ subroutine oblraz(sdlist)
 ! --- VERIFICATION
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') then
+        ASSERT(.false.)
+    endif
 !
 ! --- DESACTIVATION
 !
     call obgeti(sdlist, 'NBRE_STRUCTS', nbstru)
     do 10 istru = 1, nbstru
         call oblsai(sdlist, istru, .false._1)
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

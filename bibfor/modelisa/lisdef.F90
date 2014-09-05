@@ -610,7 +610,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         do indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) iposit = gencod(indxch)
         end do
-        if ((iposit.le.0) .or. (iposit.gt.30)) ASSERT(.false.)
+        if ((iposit.le.0) .or. (iposit.gt.30)) then
+            ASSERT(.false.)
+        endif
         vali(1) = iposit
 ! ----------------------------------------------------------------------
 ! --- POSITION DANS L'ENTIER CODE POUR UN MOT-CLEF DONNE
@@ -621,7 +623,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         do indxch = 1, nbtyth
             if (motcl(indxch) .eq. motcle) iposit = mcfcod(indxch)
         end do
-        if ((iposit.le.0) .or. (iposit.gt.60)) ASSERT(.false.)
+        if ((iposit.le.0) .or. (iposit.gt.60)) then
+            ASSERT(.false.)
+        endif
         vali(1) = iposit
 ! ----------------------------------------------------------------------
 ! --- NOM DE LA CARTE A PARTIR DU MOT-CLEF

@@ -65,7 +65,7 @@ subroutine sschge(nomacr)
     character(len=19) :: vecas, vecel
 !
 !-----------------------------------------------------------------------
-    integer ::  ialica, ialich,   icas, iocc
+    integer :: ialica, ialich, icas, iocc
     integer :: kk, n1, n2, nch, nddle, nddli, nddlt
     integer :: nocc
     real(kind=8) :: time
@@ -86,7 +86,9 @@ subroutine sschge(nomacr)
     endif
     cara = refm(4)
     nu= refm(5)
-    if (nu(1:8) .ne. nomacr) ASSERT(.false.)
+    if (nu(1:8) .ne. nomacr) then
+        ASSERT(.false.)
+    endif
 !
     vecel = '&&VECEL            '
     vecas = nomacr//'.CHARMECA'

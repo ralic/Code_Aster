@@ -172,7 +172,9 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
     else
         call jeveuo(nomnu//'.DESC', 'L', vi=desc)
         ASSERT(desc(1).eq.2)
-        if (matd) ASSERT(.false.)
+        if (matd) then
+            ASSERT(.false.)
+        endif
         call jeveuo(nomnu//'.DEEQ', 'L', vi=deeq)
         call jelira(nomnu//'.DEEQ', 'LONMAX', nleq)
         nleq=nleq/2
