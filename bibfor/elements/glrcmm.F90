@@ -75,6 +75,7 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
     character(len=8) :: nomres(8), fami, poum
     character(len=16) :: phenom
 !
+    r8bid = 0.d0
     call jemarq()
 !
     phenom = 'GLRC_DAMAGE'

@@ -115,6 +115,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
         call jeveuo(vcin19//'.VALE', 'L', vr=vale)
         do 10,k=1,nsecm
         kdeb=(k-1)*neq+1
+        cbid = dcmplx(0.d0, 0.d0)
         call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid], 'R')
 10      continue
     endif

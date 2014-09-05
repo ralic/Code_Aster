@@ -51,9 +51,9 @@ subroutine jgetlmx(nomlu, ival)
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idnom, idlong, idlono, idluti
+    integer :: iddeso, idiadd, idnom, idlong, idlono, idluti
     integer :: idnum
-    parameter    ( ivnmax = 0 , iddeso = 1 ,idiadd = 2 , idiadm = 3 ,&
+    parameter    ( iddeso = 1 ,idiadd = 2 , &
      &                          idnom  = 5 ,             idlong = 7 ,&
      &             idlono = 8 , idluti = 9 ,idnum  = 10 )
 !     ------------------------------------------------------------------

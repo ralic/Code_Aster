@@ -13,7 +13,6 @@ subroutine te0235(option, nomte)
 #include "asterfort/utpslg.h"
 !
     character(len=*) :: option, nomte
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +39,7 @@ subroutine te0235(option, nomte)
 !       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !                         MULTI-FIBRES SECTION CONSTANTE
-!     ------------------------------------------------------------------
+! aslint: disable=W0104
 !
     integer :: nbres
     parameter (nbres=6)
@@ -65,6 +64,7 @@ subroutine te0235(option, nomte)
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
+    r8b = 0.d0
 !     ------------------------------------------------------------------
 !
 !     --- CARACTERISTIQUES DES ELEMENTS

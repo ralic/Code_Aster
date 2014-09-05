@@ -52,6 +52,7 @@ subroutine te0153(option, nomte)
     integer :: lvec, lx, nc, nno
     real(kind=8) :: r8b
 !-----------------------------------------------------------------------
+    r8b = 0.d0
     call jevech('PCAGNBA', 'L', lsect)
     a = zr(lsect)
     nno = 2

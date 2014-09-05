@@ -12,10 +12,13 @@ subroutine utflmd(mailla, limail, nbmail, dim, typmai,&
 #include "asterfort/juveca.h"
 #include "asterfort/utflm2.h"
 #include "asterfort/wkvect.h"
-    integer :: nbmail, dim, nbtrou
-    character(len=8) :: mailla
-    character(len=*) :: litrou, limail, typmai
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: mailla
+    character(len=*), intent(in) :: limail
+    integer, intent(in) :: nbmail
+    integer, intent(in) :: dim
+    character(len=*), intent(in) :: typmai
+    integer, intent(out) :: nbtrou
+    character(len=*), intent(out) :: litrou
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

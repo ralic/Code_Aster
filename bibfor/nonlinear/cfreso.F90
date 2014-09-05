@@ -79,6 +79,7 @@ subroutine cfreso(resoco, ldscon, ndim, nbliac, llf,&
 !
 ! --- RESOLUTION : [-A.C-1.AT].{MU} = {JEU(DEPTOT) - A.DDEPL0}
 !
+    c16bid = dcmplx(0.d0, 0.d0)
     call rldlgg(ldscon, zr(jmu), [c16bid], 1)
     zi(ldscon+2) = neqmax
 !

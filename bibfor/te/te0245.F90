@@ -46,6 +46,7 @@ subroutine te0245(option, nomte)
 !-----------------------------------------------------------------------
     integer :: lcastr, lmater, lsect, lx
 !-----------------------------------------------------------------------
+    r8b = 0.d0
     call jevech('PMATERC', 'L', lmater)
 !
     call rccoma(zi(lmater), 'ELAS', 1, phenom, codres(1))
