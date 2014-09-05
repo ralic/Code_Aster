@@ -57,7 +57,7 @@ subroutine medomg(result, numord, modele, mate, lischa)
     character(len=8) :: materi, carele
     character(len=16) :: phenom, motfac, nomcmd
     character(len=19) :: lisold
-    integer :: iexcit, iret, nbchar
+    integer :: iexcit, nbchar
     character(len=1) :: base, codarr
 !
 ! ----------------------------------------------------------------------

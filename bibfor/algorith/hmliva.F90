@@ -88,7 +88,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, aniso
+    integer ::  aniso
     real(kind=8) :: satm, epsvm, phim, rho11m, rho12m, pvpm, rho110, dpvp
     real(kind=8) :: dpvpt, dpvpl, tbiot(6), cs, alpliq, cliq
     real(kind=8) :: cp11, cp12, sat, dsatp1, mamolv, em

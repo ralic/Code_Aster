@@ -53,7 +53,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: nature(3), id, ier, ifm, ii, im, inat, ioc, n1
-    integer :: nimpr, jvar1
+    integer :: nimpr
     real(kind=8) :: amor, coef, deuxpi, echel, epsi, freq, dirspe(3), echspe(3)
     real(kind=8) :: valpu(2), omega, omega2, resu, un, uns2pi, xnorm, zero
     real(kind=8) :: fcoup

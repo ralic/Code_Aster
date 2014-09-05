@@ -50,7 +50,7 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
     integer :: ifl, is, nbfsys, nbsys, nsfv, indpha, indcp, numirr, ns, indtau
     integer :: iei, is3, iv3, iv, irr2
     real(kind=8) :: vind(nvi), vinf(nvi), dvin(nvi), sig(6), granb(6)
-    real(kind=8) :: epseq, e, nu, fv, sigg(6), mus(6), ng(3), lg(3), pgl(3, 3)
+    real(kind=8) :: epseq, fv, sigg(6), mus(6), ng(3), lg(3), pgl(3, 3)
     real(kind=8) :: id(3, 3), f(3, 3), fpm(3, 3), fp(3, 3), fe(3, 3), detp
     real(kind=8) :: detot(*), epsd(*), pk2(6), devi(6), endoc, dp, xi, qm(3, 3)
     real(kind=8) :: materf(nmat, 2), rhoirr(12), tau(60)

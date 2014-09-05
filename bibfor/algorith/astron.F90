@@ -62,7 +62,6 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 ! OUT : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 !     ------------------------------------------------------------------
     integer :: ibid, im, in, iordr, iret, is, jmod, jvale, nbtrou
-    integer :: ind
     real(kind=8) :: r8b, rni, un, xxx
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3)

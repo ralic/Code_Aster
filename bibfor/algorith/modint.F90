@@ -101,14 +101,14 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: lmatmo, i1, j1, k1, m1, n1, l1, lmakry, linddl, nsekry
+    integer :: lmatmo, i1, j1, k1, m1, lmakry, nsekry
     integer ::       lmatk, lmatm, lmapro
-    integer :: lkpro,  lmatrm, lmatrk, lwork,   lddld
-    integer ::  lkryl,  limped,   lmatma, iret
-    integer :: nbvect, ibid, decal,   no, nbsst, lindin, coeff, lvp
-    integer :: tach1,ifm,niv
+    integer :: lkpro,  lmatrm, lmatrk, lwork
+    integer ::   limped,   lmatma, iret
+    integer :: nbvect, ibid,   no, nbsst, lindin, coeff, lvp
+    integer :: ifm,niv
     integer(kind=4) :: info
-    real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), rand, max
+    real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), max
     real(kind=8) :: abs, bande(2)
     parameter    (pi=3.141592653589793238462643d0)
     complex(kind=8) :: cbid
@@ -409,7 +409,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     AS_DEALLOCATE(vr=matr_mod_red)
     AS_DEALLOCATE(vr=matr_work_dggev)
 !
-999 continue
 !
     call detrsd('MATR_ASSE', imped)
 !
@@ -430,4 +429,3 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
     call jedema()
 end subroutine
-

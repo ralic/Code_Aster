@@ -40,8 +40,8 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 !
     real(kind=8) :: coef1, coef2, coef3, ptint(1)
     real(kind=8) :: pt1(3), pt2(3), pt3(3)
-    real(kind=8) :: d, epsmax, tab(8, ndim), rbid3(3)
-    integer :: itemax, i, ibid, num, ibid3(3)
+    real(kind=8) :: d, epsmax, tab(8, ndim)
+    integer :: itemax, i
     character(len=6) :: name
 !
 !.....................................................................

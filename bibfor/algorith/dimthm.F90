@@ -5,7 +5,6 @@ subroutine dimthm(ndlno, ndlnm, ndim)
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
     integer :: ndlno, ndlnm, ndim
-    character(len=16) :: nomte
     aster_logical :: elsufm
 ! ======================================================================
 ! ======================================================================

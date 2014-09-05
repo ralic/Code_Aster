@@ -14,12 +14,12 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     real(kind=8) :: rp, sgns, hsr(nsg, nsg), dy(12), dt, depsdt
     real(kind=8) :: n, gamma0, rmin, rhop(12)
     real(kind=8) :: tauf, rhom(12), rmax, hs, gampro, gp1, gp2, ys, taueff
-    real(kind=8) :: b, h, deltg0, tau0, d, beta, temp, dlat, kf, kself, rhomob
+    real(kind=8) :: b, h, deltg0, tau0, d, temp, dlat, kf, kself, rhomob
     real(kind=8) :: kboltz
-    real(kind=8) :: yat, mu, lc, rhotot, dg, deltag, t1, t2, t3, t4, t5, t6, t7
+    real(kind=8) :: yat, mu, lc, rhotot, dg, deltag, t1, t2, t3, t4, t5, t7
     real(kind=8) :: t8, t9
-    real(kind=8) :: rs, d1, lambda, alphat, ls, tauslt, tauslr, gamnuc, asr
-    real(kind=8) :: delta1, delta2, airr, rhoirr, depdt, tauc, t10
+    real(kind=8) :: rs, d1, lambda, alphat, ls, tauslt, tauslr, gamnuc
+    real(kind=8) ::  airr, rhoirr, depdt, tauc, t10
     aster_logical :: new
     common /deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
