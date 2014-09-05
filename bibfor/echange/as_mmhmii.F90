@@ -18,14 +18,12 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! because of used in the else block of ifdef
-! aslint: disable=W0302
     implicit none
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/utmess.h"
 #include "med/mmhmii.h"
-    aster_int :: fid, dim, dimb, cret, indice, type, typtri, nbseq, typrep
+    aster_int :: fid, dim, cret, indice, type
     character(len=64) :: maa
     character(len=200) :: desc
     character(len=16) :: descdt
@@ -37,8 +35,8 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
 #if med_int_kind != aster_int_kind
     med_int :: fid4, dim4, cret4, indic4, type4, dimb4, typtr4
     med_int :: nbseq4, typre4
-    fid4 = fid
-    indic4 = indice
+    fid4 = to_med_int(fid)
+    indic4 = to_med_int(indice)
 !   -- initialisation des chaines (prudent car appel C ensuite):
     maa=' '
     desc=' '
@@ -52,6 +50,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
     type = type4
     cret = cret4
 #else
+    aster_int :: dimb, typtri, nbseq, typrep
     call mmhmii(fid, indice, maa, dim, dimb,&
                 type, desc, descdt, typtri, nbseq,&
                 typrep, nom, unit, cret)
