@@ -1,6 +1,12 @@
-subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
-                  nbcmp, chnoeu, chgaus, chelga, extrga,&
-                  extrch)
+subroutine nmext0(field_disc, nb_elem  , nb_node  , nb_poin  , nb_spoi       ,&
+                  nb_cmp    , work_node, work_poin, work_elem, type_extr_elem,&
+                  type_extr )
+!
+implicit none
+!
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,118 +26,117 @@ subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterc/r8maem.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    integer :: nbno, nbma
-    integer :: nbpi, nbspi, nbcmp
-    character(len=4) :: typcha
-    character(len=8) :: extrga, extrch
-    character(len=19) :: chgaus, chnoeu, chelga
+    character(len=4), intent(in) :: field_disc
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    integer, intent(in) :: nb_cmp
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr
+    character(len=19), intent(in) :: work_poin
+    character(len=19), intent(in) :: work_node
+    character(len=19), intent(in) :: work_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! *_NON_LINE - Field extraction datastructure
 !
-! EXTRAIRE LES VALEURS - CREATION SD DONNEES TEMPORAIRES
+! Create workink vectors
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  nb_node          : number of nodes
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  nb_cmp           : number of components
+! In  work_node        : working vector to save node values
+! In  work_elem        : working vector to save element values
+! In  work_poin        : working vector to save point (Gauss) values
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
 !
-! IN  TYPCHA : TYPE DU CHAMP
-! IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
-! IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
-! IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
-! IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
-! IN  NBCMP  : NOMBRE DE COMPOSANTES
-! IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  CHNOEU : VECTEUR DE TRAVAIL CHAMPS AUX NOEUDS
-! IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
-! IN  CHGAUS : VECTEUR DE TRAVAIL CHAMPS AUX POINTS DE GAUSS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    real(kind=8) :: node_init_vale, elem_init_vale
+    integer :: ino, i_elem, i_cmp, i_poin, i_spoi
+    real(kind=8), pointer :: v_work_elem(:) => null()
+    real(kind=8), pointer :: v_work_poin(:) => null()
+    real(kind=8), pointer :: v_work_node(:) => null()
 !
-    real(kind=8) :: initch, initga
-    integer :: ino, ima, icmp, ipi, ispi
-    integer :: jelga, jgaus, jnoeu
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- CREATION DES VECTEURS DE TRAVAIL
-!
-    if (typcha .eq. 'NOEU') then
-        call wkvect(chnoeu, 'V V R', nbno*nbcmp, jnoeu)
-    else if (typcha.eq.'ELGA') then
-        call wkvect(chgaus, 'V V R', nbpi*nbspi*nbcmp, jgaus)
-        call wkvect(chelga, 'V V R', nbma*nbpi*nbspi*nbcmp, jelga)
+    if (field_disc .eq. 'NOEU') then
+        call wkvect(work_node, 'V V R', nb_node*nb_cmp                , vr = v_work_node)
+    else if (field_disc.eq.'ELGA') then
+        call wkvect(work_poin, 'V V R', nb_poin*nb_spoi*nb_cmp        , vr = v_work_poin)
+        call wkvect(work_elem, 'V V R', nb_elem*nb_poin*nb_spoi*nb_cmp, vr = v_work_elem)
     else
         ASSERT(.false.)
     endif
 !
-    if (extrch .eq. 'MAX') then
-        initch = -r8maem()
-    else if (extrch.eq.'MIN') then
-        initch = +r8maem()
-    else if (extrch.eq.'MAXI_ABS') then
-        initch = 0.d0
-    else if (extrch.eq.'MINI_ABS') then
-        initch = +r8maem()
-    else if (extrch.eq.'VALE') then
-        initch = 0.d0
-    else if (extrch.eq.'MOY') then
-        initch = 0.d0
+! - Values for initializations
+!
+    if (type_extr .eq. 'MAX') then
+        node_init_vale = -r8maem()
+    else if (type_extr.eq.'MIN') then
+        node_init_vale = +r8maem()
+    else if (type_extr.eq.'MAXI_ABS') then
+        node_init_vale = 0.d0
+    else if (type_extr.eq.'MINI_ABS') then
+        node_init_vale = +r8maem()
+    else if (type_extr.eq.'VALE') then
+        node_init_vale = 0.d0
+    else if (type_extr.eq.'MOY') then
+        node_init_vale = 0.d0
     else
         ASSERT(.false.)
     endif
 !
-    if (typcha .eq. 'ELGA') then
-        if (extrga .eq. 'MAX') then
-            initga = -r8maem()
-        else if (extrga.eq.'MIN') then
-            initga = +r8maem()
-        else if (extrga.eq.'VALE') then
-            initga = 0.d0
-        else if (extrga.eq.'MOY') then
-            initga = 0.d0
+    if (field_disc .eq. 'ELGA') then
+        if (type_extr_elem .eq. 'MAX') then
+            elem_init_vale = -r8maem()
+        else if (type_extr_elem.eq.'MIN') then
+            elem_init_vale = +r8maem()
+        else if (type_extr_elem.eq.'VALE') then
+            elem_init_vale = 0.d0
+        else if (type_extr_elem.eq.'MOY') then
+            elem_init_vale = 0.d0
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- INITIALISATION: CHAMP AUX NOEUDS
+! - Set for working vector (nodes)
 !
-    if (typcha .eq. 'NOEU') then
-        do 20 ino = 1, nbno
-            do 21 icmp = 1, nbcmp
-                zr(jnoeu+nbcmp*(ino-1) +icmp-1) = initch
-21          continue
-20      continue
+    if (field_disc .eq. 'NOEU') then
+        do ino = 1, nb_node
+            do i_cmp = 1, nb_cmp
+                v_work_node(nb_cmp*(ino-1)+i_cmp) = node_init_vale
+            end do
+        end do
     endif
 !
-! --- INITIALISATION: CHAMP AUX ELEMENTS
+! - Set for working vector (elements and points)
 !
-    if (typcha .eq. 'ELGA') then
-        do 60 ima = 1, nbma
-            do 61 ipi = 1, nbpi
-                do 62 ispi = 1, nbspi
-                    do 63 icmp = 1, nbcmp
-                        zr(jelga+nbcmp*nbpi*nbspi*(ima-1) +nbpi*nbspi*&
-                        (icmp-1) +nbspi*(ipi-1) +(ispi-1)) = initch
-                        zr(jgaus+nbpi*nbspi*(icmp-1) +nbspi*(ipi-1)&
-                        +(ispi-1)) = initga
-63                  continue
-62              continue
-61          continue
-60      continue
+    if (field_disc .eq. 'ELGA') then
+        do i_elem = 1, nb_elem
+            do i_poin = 1, nb_poin
+                do i_spoi = 1, nb_spoi
+                    do i_cmp = 1, nb_cmp
+                        v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem-1)+&
+                                    nb_poin*nb_spoi*(i_cmp-1)+&
+                                    nb_spoi*(i_poin-1)+&
+                                    (i_spoi-1)) = node_init_vale
+                        v_work_poin(1+nb_poin*nb_spoi*(i_cmp-1)+&
+                                    nb_spoi*(i_poin-1)+&
+                                    (i_spoi-1)) = elem_init_vale
+                    end do
+                end do
+            end do
+        end do
     endif
-!
-    call jedema()
 !
 end subroutine

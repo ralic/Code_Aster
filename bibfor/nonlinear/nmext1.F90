@@ -1,8 +1,13 @@
-subroutine nmext1(noma, champ, typcha, nomcha, nomchs,&
-                  nbma, nbno, nbpi, nbspi, nbcmp,&
-                  extrga, extrch, extrcp, listno, listma,&
-                  listpi, listsp, listcp, chnoeu, chgaus,&
-                  chelga)
+subroutine nmext1(mesh          , field    , field_disc   , field_type, field_s  ,&
+                  nb_elem       , nb_node  , nb_poin      , nb_spoi   , nb_cmp   ,&
+                  type_extr_elem, type_extr, type_extr_cmp, list_node , list_elem,&
+                  list_poin     , list_spoi, list_cmp     , work_node , work_poin,&
+                  work_elem)
+!
+implicit none
+!
+#include "asterfort/nmext2.h"
+#include "asterfort/nmext3.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,70 +26,77 @@ subroutine nmext1(noma, champ, typcha, nomcha, nomchs,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit      none
-#include "asterfort/nmext2.h"
-#include "asterfort/nmext3.h"
-    character(len=8) :: noma
-    character(len=24) :: nomcha, nomchs
-    integer :: nbcmp, nbno, nbma
-    integer :: nbpi, nbspi
-    character(len=19) :: champ
-    character(len=4) :: typcha
-    character(len=24) :: listno, listma, listpi, listcp, listsp
-    character(len=8) :: extrga, extrch, extrcp
-    character(len=19) :: chgaus, chnoeu, chelga
 !
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    integer, intent(in) :: nb_cmp
+    character(len=19), intent(in) :: field
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(in) :: field_s
+    character(len=4), intent(in) :: field_disc
+    character(len=24), intent(in) :: list_node
+    character(len=24), intent(in) :: list_elem
+    character(len=24), intent(in) :: list_poin
+    character(len=24), intent(in) :: list_spoi
+    character(len=24), intent(in) :: list_cmp
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr_cmp
+    character(len=19), intent(in) :: work_poin
+    character(len=19), intent(in) :: work_node
+    character(len=19), intent(in) :: work_elem
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! --------------------------------------------------------------------------------------------------
 !
-! EXTRAIRE LES VALEURS ET STOCKAGE DANS VECTEURS TEMPORAIRES
+! *_NON_LINE - Field extraction datastructure
 !
-! ----------------------------------------------------------------------
+! Extract values and store them in working vectors
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh             : name of mesh
+! In  field            : name of field
+! In  field_type       : type of field (name in results datastructure)
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_s          : name of reduced field (CHAM_ELEM_S)
+! In  nb_node          : number of nodes
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  nb_cmp           : number of components
+! In  work_node        : working vector to save node values
+! In  work_elem        : working vector to save element values
+! In  work_poin        : working vector to save point (Gauss) values
+! In  list_node        : name of object contains list of nodes
+! In  list_elem        : name of object contains list of elements
+! In  list_poin        : name of object contains list of points (Gauss)
+! In  list_spoi        : name of object contains list of subpoints
+! In  list_cmp         : name of object contains list of components
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr_cmp    : type of extraction for components
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  TYPCHA : TYPE DU CHAMP
-! IN  NOMCHA : NOM DU CHAMP
-! IN  NOMCHS : NOM DU CHAMP SIMPLE
-! IN  CHAMP  : CHAMP OBSERVE
-! IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
-! IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
-! IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
-! IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
-! IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
-! IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-! IN  LISTNO : LISTE CONTENANT LES NOEUDS
-! IN  LISTMA : LISTE CONTENANT LES MAILLES
-! IN  LISTCP : LISTE DES COMPOSANTES
-! IN  LISTPI : LISTE CONTENANT LES POINTS D'EXTRACTION
-! IN  LISTSP : LISTE CONTENANT LES SOUS-POINTS D'EXTRACTION
-! IN  CHNOEU : VECTEUR DE TRAVAIL CHAMPS AUX NOEUDS
-! IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
-! IN  CHGAUS : VECTEUR DE TRAVAIL CHAMPS AUX POINTS DE GAUSS
+! - For nodal values
 !
-! ----------------------------------------------------------------------
-!
-!
-!
-! --- VALEUR NODALES
-!
-    if (typcha .eq. 'NOEU') then
-        call nmext2(noma, champ, nbcmp, nbno, extrch,&
-                    extrcp, listno, listcp, chnoeu)
+    if (field_disc .eq. 'NOEU') then
+        call nmext2(mesh         , field    , nb_cmp  , nb_node  , type_extr,&
+                    type_extr_cmp, list_node, list_cmp, work_node)
     endif
 !
-! --- VALEURS AUX POINTS DE GAUSS
+! - For point (Gauss) values)
 !
-    if (typcha .eq. 'ELGA') then
-        call nmext3(noma, champ, nomcha, nomchs, nbcmp,&
-                    nbma, nbpi, nbspi, extrga, extrch,&
-                    extrcp, listma, listpi, listsp, listcp,&
-                    chgaus, chelga)
+    if (field_disc .eq. 'ELGA') then
+        call nmext3(mesh         , field    , field_type, field_s       , nb_cmp   ,&
+                    nb_elem      , nb_poin  , nb_spoi   , type_extr_elem, type_extr,&
+                    type_extr_cmp, list_elem, list_poin , list_spoi     , list_cmp ,&
+                    work_poin    , work_elem)
     endif
 !
 end subroutine

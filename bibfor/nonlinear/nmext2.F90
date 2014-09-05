@@ -1,5 +1,13 @@
-subroutine nmext2(noma, champ, nbcmp, nbno, extrch,&
-                  extrcp, listno, listcp, chnoeu)
+subroutine nmext2(mesh         , field    , nb_cmp  , nb_node  , type_extr,&
+                  type_extr_cmp, list_node, list_cmp, work_node)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmexti.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,121 +27,111 @@ subroutine nmext2(noma, champ, nbcmp, nbno, extrch,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_cmp
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_cmp
+    character(len=24), intent(in) :: list_node
+    character(len=24), intent(in) :: list_cmp
+    character(len=19), intent(in) :: field
+    character(len=19), intent(in) :: work_node
 !
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nmexti.h"
-    integer :: nbcmp, nbno
-    character(len=8) :: noma
-    character(len=8) :: extrcp, extrch
-    character(len=24) :: listno, listcp
-    character(len=19) :: champ, chnoeu
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! *_NON_LINE - Field extraction datastructure
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! Extract value(s) at nodes and store them in working vectors
 !
-! EXTRAIRE LES VALEURS - CAS DES CHAMPS AUX NOEUDS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  field            : name of field
+! In  nb_node          : number of nodes
+! In  nb_cmp           : number of components
+! In  work_node        : working vector to save node values
+! In  list_node        : name of object contains list of nodes
+! In  list_cmp         : name of object contains list of components
+! In  type_extr        : type of extraction
+! In  type_extr_cmp    : type of extraction for components
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  CHAMP  : CHAMP OBSERVE
-! IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
-! IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-! IN  LISTNO : LISTE CONTENANT LES NOEUDS
-! IN  LISTCP : LISTE DES COMPOSANTES
-! IN  CHNOEU : VECTEUR DE TRAVAIL CHAMPS AUX NOEUDS
+    integer :: nb_para_maxi
+    parameter    (nb_para_maxi=20)
+    real(kind=8) :: vale_resu(nb_para_maxi)
 !
-! ----------------------------------------------------------------------
-!
-    integer :: nparx
-    parameter    (nparx=20)
-    real(kind=8) :: valres(nparx)
-!
-    integer :: jnoeu, jno
-    integer :: ino, inor, numnoe
-    character(len=8) :: nomnoe
-    integer :: ivalcp, nvalcp
+    integer :: i_node, i_node_work, node_nume
+    character(len=8) :: node_name
+    integer :: i_vale, nb_vale
     real(kind=8) :: valr, val2r
+    real(kind=8), pointer :: v_work_node(:) => null()
+    integer, pointer :: v_list_node(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    call jeveuo(work_node, 'E', vr = v_work_node)
+    ASSERT(nb_cmp.le.nb_para_maxi)
 !
-! --- ACCES AU CHAMP DE TRAVAIL
+! - List of nodes
 !
-    call jeveuo(chnoeu, 'E', jnoeu)
-    ASSERT(nbcmp.le.nparx)
+    call jeveuo(list_node, 'L', vi = v_list_node)
 !
-! --- ACCES LISTE DES NOEUDS
+! - Loop on nodes
 !
-    call jeveuo(listno, 'L', jno)
+    do i_node = 1, nb_node
 !
-! --- BOUCLE SUR LES NOEUDS
+! ----- Current node
 !
-    do 20 ino = 1, nbno
+        node_nume = v_list_node(i_node)
+        call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), node_name)
 !
-! ----- NOEUD COURANT
+! ----- Extract value(s) at node
 !
-        numnoe = zi(jno-1+ino)
-        call jenuno(jexnum(noma(1:8)//'.NOMNOE', numnoe), nomnoe)
+        call nmexti(node_name, field    , nb_cmp, list_cmp, type_extr_cmp,&
+                    nb_vale   , vale_resu)
 !
-! ----- EXTRACTION DES VALEURS AUX NOEUDS
+! ----- Select index in working vector
 !
-        call nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
-                    nvalcp, valres)
-!
-        if (extrch .eq. 'VALE') then
-            inor = ino
+        if (type_extr .eq. 'VALE') then
+            i_node_work = i_node
         else
-            inor = 1
+            i_node_work = 1
         endif
 !
-! ----- AFFECTATION DES VALEURS AUX NOEUDS
+! ----- Save values in working vector
 !
-        do 35 ivalcp = 1, nvalcp
-            valr = zr(jnoeu+ivalcp-1 +nbcmp*(inor-1))
-            val2r = valres(ivalcp)
-            if (extrch .eq. 'VALE') then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = val2r
-            else if (extrch.eq.'MIN') then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = min(val2r,valr)
-            else if (extrch.eq.'MAX') then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = max(val2r,valr)
-            else if (extrch.eq.'MAXI_ABS') then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = max(abs(val2r), abs(valr))
-            else if (extrch.eq.'MINI_ABS') then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = min(abs(val2r), abs(valr))
-            else if (extrch.eq.'MOY') then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = valr+val2r
+        do i_vale = 1, nb_vale
+            valr  = v_work_node(i_vale+nb_cmp*(i_node_work-1))
+            val2r = vale_resu(i_vale)
+            if (type_extr .eq. 'VALE') then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = val2r
+            else if (type_extr.eq.'MIN') then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = min(val2r,valr)
+            else if (type_extr.eq.'MAX') then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = max(val2r,valr)
+            else if (type_extr.eq.'MAXI_ABS') then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = max(abs(val2r), abs(valr))
+            else if (type_extr.eq.'MINI_ABS') then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = min(abs(val2r), abs(valr))
+            else if (type_extr.eq.'MOY') then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = valr+val2r
             else
                 ASSERT(.false.)
             endif
-35      continue
-20  end do
+        end do
+    end do
 !
-! --- CALCUL DE LA MOYENNE SUR LES NOEUDS
+! - For mean value
 !
-    if (extrch .eq. 'MOY') then
-        inor = 1
-        do 25 ivalcp = 1, nvalcp
-            valr = zr(jnoeu+ivalcp-1 +nbcmp*(inor-1))
-            if (nbno .ne. 0) then
-                zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = valr/nbno
+    if (type_extr .eq. 'MOY') then
+        i_node_work = 1
+        do i_vale = 1, nb_vale
+            valr = v_work_node(i_vale+nb_cmp*(i_node_work-1))
+            if (nb_node .ne. 0) then
+                v_work_node(i_vale+nb_cmp*(i_node_work-1)) = valr/nb_node
             endif
-25      continue
+        end do
     endif
-!
-    call jedema()
 !
 end subroutine

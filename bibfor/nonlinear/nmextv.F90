@@ -1,5 +1,9 @@
-subroutine nmextv(neff, formul, nomcmp, valcmp, nvalcp,&
-                  valres)
+subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale,&
+                  vale_resu)
+!
+implicit none
+!
+#include "asterfort/fointe.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,60 +23,47 @@ subroutine nmextv(neff, formul, nomcmp, valcmp, nvalcp,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    integer :: neff, nvalcp
-    character(len=8) :: formul
-    character(len=8) :: nomcmp(*)
-    real(kind=8) :: valcmp(*), valres(*)
+    integer, intent(in) :: nb_cmp_vale
+    character(len=8), intent(in) :: func_name
+    character(len=8), intent(in) :: v_cmp_name(*)
+    real(kind=8), intent(in) :: v_cmp_vale(*)
+    real(kind=8), intent(out) :: vale_resu(*)
+    integer, intent(out) :: nb_vale
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! *_NON_LINE - Field extraction datastructure
 !
-! EXTRAIRE LES VALEURS DES COMPOSANTES - APPLICATION DE LA FORMULE
+! Extract component value or apply function between several components
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  nb_cmp_vale      : number of components to evaluate
+! In  func_name        : name of function to evaluate (' ' if not function)
+! In  v_cmp_name       : list of name of components
+! In  v_cmp_vale       : list of value of components
+! Out vale_resu        : list of result values
+! Out nb_vale          : number of result values (one if function)
 !
-! IN  NEFF   : NOMBRE EFFECTIF DE COMPOSANTES
-! IN  FORMUL : NOM DE LA FORMULE (' ' SI PAS FORMULE)
-! IN  NOMCMP : NOM DES COMPOSANTES
-! IN  VALCMP : VALEURS DES COMPOSANTES
-! OUT NVALCP : NOMBRE EFFECTIF DE COMPOSANTES
-! OUT VALRES : RESULTAT DE LA FORMULE OU DE L'EXTRACTION
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: ieff, icode
+    integer :: i_cmp_vale, icode
     real(kind=8) :: valr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nb_vale = 0
 !
-! --- INITIALISATIONS
-!
-    nvalcp = 0
-!
-! --- EVALUATION DE LA FONCTION
-!
-    if (formul .eq. ' ') then
-        do 25 ieff = 1, neff
-            valres(ieff) = valcmp(ieff)
-25      continue
-        nvalcp = neff
+    if (func_name .eq. ' ') then
+        do i_cmp_vale = 1, nb_cmp_vale
+            vale_resu(i_cmp_vale) = v_cmp_vale(i_cmp_vale)
+        end do
+        nb_vale = nb_cmp_vale
     else
-        call fointe('FM', formul, neff, nomcmp, valcmp,&
+        call fointe('FM', func_name, nb_cmp_vale, v_cmp_name, v_cmp_vale,&
                     valr, icode)
-        valres(1) = valr
-        nvalcp = 1
+        vale_resu(1) = valr
+        nb_vale = 1
     endif
-!
-    call jedema()
 !
 end subroutine

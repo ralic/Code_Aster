@@ -16,21 +16,21 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextj(nomcha, nbcmp, listcp, extrcp, num,&
-                      snum, nvalcp, nummai, jcesd, jcesv,&
-                      jcesl, jcesc, valres)
-        character(len=24) :: nomcha
-        integer :: nbcmp
-        character(len=24) :: listcp
-        character(len=8) :: extrcp
-        integer :: num
-        integer :: snum
-        integer :: nvalcp
-        integer :: nummai
-        integer :: jcesd
-        integer :: jcesv
-        integer :: jcesl
-        integer :: jcesc
-        real(kind=8) :: valres(*)
+    subroutine nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
+                      spoi_nume , nb_vale, elem_nume, jcesd        , jcesv    ,&
+                      jcesl     , jcesc  , vale_resu)
+        character(len=24), intent(in) :: field_type
+        integer, intent(in) :: nb_cmp
+        character(len=24), intent(in) :: list_cmp
+        character(len=8), intent(in) :: type_extr_cmp
+        integer, intent(in) :: poin_nume
+        integer, intent(in):: elem_nume
+        integer, intent(in) :: spoi_nume
+        integer, intent(in) :: jcesd
+        integer, intent(in) :: jcesv
+        integer, intent(in) :: jcesl
+        integer, intent(in) :: jcesc
+        integer, intent(out) :: nb_vale
+        real(kind=8), intent(out) :: vale_resu(*)
     end subroutine nmextj
 end interface

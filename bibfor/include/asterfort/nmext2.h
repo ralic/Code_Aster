@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmext2(noma, champ, nbcmp, nbno, extrch,&
-                      extrcp, listno, listcp, chnoeu)
-        character(len=8) :: noma
-        character(len=19) :: champ
-        integer :: nbcmp
-        integer :: nbno
-        character(len=8) :: extrch
-        character(len=8) :: extrcp
-        character(len=24) :: listno
-        character(len=24) :: listcp
-        character(len=19) :: chnoeu
+    subroutine nmext2(mesh         , field    , nb_cmp  , nb_node  , type_extr,&
+                      type_extr_cmp, list_node, list_cmp, work_node)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: nb_cmp
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_cmp
+        character(len=24), intent(in) :: list_node
+        character(len=24), intent(in) :: list_cmp
+        character(len=19), intent(in) :: field
+        character(len=19), intent(in) :: work_node
     end subroutine nmext2
 end interface

@@ -16,26 +16,26 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
-                      nbma, nbpi, nbspi, extrga, extrch,&
-                      extrcp, listma, listpi, listsp, listcp,&
-                      chgaus, chelga)
-        character(len=8) :: noma
-        character(len=19) :: champ
-        character(len=24) :: nomcha
-        character(len=24) :: nomchs
-        integer :: nbcmp
-        integer :: nbma
-        integer :: nbpi
-        integer :: nbspi
-        character(len=8) :: extrga
-        character(len=8) :: extrch
-        character(len=8) :: extrcp
-        character(len=24) :: listma
-        character(len=24) :: listpi
-        character(len=24) :: listsp
-        character(len=24) :: listcp
-        character(len=19) :: chgaus
-        character(len=19) :: chelga
+    subroutine nmext3(mesh         , field    , field_type, field_s       , nb_cmp   ,&
+                      nb_elem      , nb_poin  , nb_spoi   , type_extr_elem, type_extr,&
+                      type_extr_cmp, list_elem, list_poin , list_spoi     , list_cmp ,&
+                      work_poin    , work_elem)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: nb_poin
+        integer, intent(in) :: nb_spoi
+        integer, intent(in) :: nb_cmp
+        character(len=19), intent(in) :: field
+        character(len=24), intent(in) :: field_type
+        character(len=24), intent(in) :: field_s
+        character(len=24), intent(in) :: list_elem
+        character(len=24), intent(in) :: list_poin
+        character(len=24), intent(in) :: list_spoi
+        character(len=24), intent(in) :: list_cmp
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_elem
+        character(len=8), intent(in) :: type_extr_cmp
+        character(len=19), intent(in) :: work_poin
+        character(len=19), intent(in) :: work_elem
     end subroutine nmext3
 end interface

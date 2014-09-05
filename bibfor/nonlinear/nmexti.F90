@@ -1,5 +1,12 @@
-subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
-                  nvalcp, valres)
+subroutine nmexti(node_name, field    , nb_cmp, list_cmp, type_extr_cmp,&
+                  nb_vale  , vale_resu)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmextv.h"
+#include "asterfort/posddl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,93 +26,77 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmextv.h"
-#include "asterfort/posddl.h"
-    real(kind=8) :: valres(*)
-    character(len=8) :: nomnoe
-    integer :: nbcmp
-    integer :: nvalcp
-    character(len=19) :: champ
-    character(len=24) :: listcp
-    character(len=8) :: extrcp
+    character(len=8), intent(in) :: node_name
+    character(len=19), intent(in) :: field
+    integer, intent(in) :: nb_cmp
+    character(len=24), intent(in) :: list_cmp
+    character(len=8), intent(in) :: type_extr_cmp
+    integer, intent(out) :: nb_vale
+    real(kind=8), intent(out) :: vale_resu(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! *_NON_LINE - Field extraction datastructure
 !
-! EXTRAIRE LES VALEURS DES COMPOSANTES - NOEUD
+! Extract value(s) at node
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  node_name        : name of node
+! In  field            : name of field
+! In  nb_cmp           : number of components
+! In  list_cmp         : name of object contains list of components
+! In  type_extr_cmp    : type of extraction for components
+! Out vale_resu        : list of result values
+! Out nb_vale          : number of result values (one if function)
 !
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-! IN  NOMNOE : NOM DU NOEUD
-! IN  CHAMP  : CHAMP OBSERVE
-! IN  NBCMP  : NOMBRE DE COMPOSANTES
-! IN  LISTCP : LISTE DES COMPOSANTES
-! OUT VALRES : VALEUR DES COMPOSANTES
-! OUT NVALCP : NOMBRE EFFECTIF DE COMPOSANTES
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_para_maxi
+    parameter    (nb_para_maxi=20)
+    character(len=8) :: v_cmp_name(nb_para_maxi)
+    real(kind=8) :: v_cmp_vale(nb_para_maxi)
 !
-!
-!
-    integer :: nparx
-    parameter    (nparx=20)
-    character(len=8) :: nomcmp(nparx)
-    real(kind=8) :: valcmp(nparx)
-    integer :: neff
-    integer :: ieff, icmp, ipar
-    integer :: jcmp
-    character(len=8) :: cmp
-    integer :: nuno, nuddl
+    integer :: nb_cmp_vale
+    integer :: i_cmp_vale, i_cmp
+    character(len=8) :: cmp_name
+    integer :: node_nume, dof_nume
     real(kind=8), pointer :: vale(:) => null()
+    character(len=8), pointer :: v_list_cmp(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    i_cmp_vale = 1
+    ASSERT(nb_cmp.le.nb_para_maxi)
 !
-! --- INITIALISATIONS
+! - Access to field
 !
-    ieff = 1
-    ASSERT(nbcmp.le.nparx)
+    call jeveuo(field //'.VALE', 'L', vr=vale)
 !
-! --- ACCES CHAMP
+! - Get name of components
 !
-    call jeveuo(champ //'.VALE', 'L', vr=vale)
+    call jeveuo(list_cmp, 'L', vk8 = v_list_cmp)
+    do i_cmp = 1, nb_cmp
+        v_cmp_name(i_cmp) = v_list_cmp(i_cmp)
+    end do
 !
-! --- NOM DES COMPOSANTES
+! - Get value of components
 !
-    call jeveuo(listcp, 'L', jcmp)
-!
-    do 20 icmp = 1, nbcmp
-        nomcmp(icmp) = zk8(jcmp-1+icmp)
-20  end do
-!
-! --- VALEURS DES COMPOSANTES
-!
-    do 30 ipar = 1, nbcmp
-        cmp = nomcmp(ipar)
-        call posddl('CHAM_NO', champ, nomnoe, cmp, nuno,&
-                    nuddl)
-        if ((nuno.ne.0) .and. (nuddl.ne.0)) then
-            valcmp(ieff) = vale(nuddl)
-            ieff = ieff + 1
+    do i_cmp = 1, nb_cmp
+        cmp_name = v_cmp_name(i_cmp)
+        call posddl('CHAM_NO', field, node_name, cmp_name, node_nume,&
+                    dof_nume)
+        if ((node_nume.ne.0) .and. (dof_nume.ne.0)) then
+            v_cmp_vale(i_cmp_vale) = vale(dof_nume)
+            i_cmp_vale = i_cmp_vale + 1
         endif
-30  end do
-    neff = ieff - 1
+    end do
+    nb_cmp_vale = i_cmp_vale - 1
 !
-! --- EVALUATION
+! - Evaluation
 !
-    call nmextv(neff, extrcp, nomcmp, valcmp, nvalcp,&
-                valres)
-    ASSERT(nvalcp.le.nbcmp)
-!
-    call jedema()
+    call nmextv(nb_cmp_vale, type_extr_cmp, v_cmp_name, v_cmp_vale, nb_vale,&
+                vale_resu)
+    ASSERT(nb_vale.le.nb_cmp)
 !
 end subroutine

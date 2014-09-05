@@ -1,7 +1,21 @@
-subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
-                  nbma, nbpi, nbspi, extrga, extrch,&
-                  extrcp, listma, listpi, listsp, listcp,&
-                  chgaus, chelga)
+subroutine nmext3(mesh         , field    , field_type, field_s       , nb_cmp   ,&
+                  nb_elem      , nb_poin  , nb_spoi   , type_extr_elem, type_extr,&
+                  type_extr_cmp, list_elem, list_poin , list_spoi     , list_cmp ,&
+                  work_poin    , work_elem)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmextj.h"
+#include "asterfort/sdmpic.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,244 +35,265 @@ subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    integer, intent(in) :: nb_cmp
+    character(len=19), intent(in) :: field
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(in) :: field_s
+    character(len=24), intent(in) :: list_elem
+    character(len=24), intent(in) :: list_poin
+    character(len=24), intent(in) :: list_spoi
+    character(len=24), intent(in) :: list_cmp
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr_cmp
+    character(len=19), intent(in) :: work_poin
+    character(len=19), intent(in) :: work_elem
 !
-#include "asterfort/assert.h"
-#include "asterfort/celces.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nmextj.h"
-#include "asterfort/sdmpic.h"
-    integer :: nbcmp, nbma, nbpi, nbspi
-    character(len=8) :: noma
-    character(len=24) :: nomcha, nomchs
-    character(len=8) :: extrcp, extrch, extrga
-    character(len=24) :: listma, listpi, listsp, listcp
-    character(len=19) :: chgaus, chelga
-    character(len=19) :: champ
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! *_NON_LINE - Field extraction datastructure
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! Extract value(s) at point and store them in working vectors
 !
-! EXTRAIRE LES VALEURS - CAS DES CHAMPS AUX POINTS DE GAUSS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh             : name of mesh
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  nb_cmp           : number of components
+! In  field            : name of field
+! In  field_type       : type of field (name in results datastructure)
+! In  field_s          : name of reduced field (CHAM_ELEM_S)
+! In  list_elem        : name of object contains list of elements
+! In  list_poin        : name of object contains list of points (Gauss)
+! In  list_spoi        : name of object contains list of subpoints
+! In  list_cmp         : name of object contains list of components
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr_cmp    : type of extraction for components
+! In  work_elem        : working vector to save element values
+! In  work_poin        : working vector to save point (Gauss) values
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  CHAMP  : CHAMP EXTRACTE
-! IN  NOMCHA : NOM DU CHAMP
-! IN  NOMCHS : NOM DU CHAMP SIMPLE
-! IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
-! IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
-! IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
-! IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
-! IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-! IN  LISTMA : LISTE CONTENANT LES MAILLES
-! IN  LISTCP : LISTE DES COMPOSANTES
-! IN  LISTPI : LISTE CONTENANT LES POINTS D'EXTRACTION
-! IN  LISTSP : LISTE CONTENANT LES SOUS-POINTS D'EXTRACTION
-! IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
-! IN  CHGAUS : VECTEUR DE TRAVAIL CHAMPS AUX POINTS DE GAUSS
-! IN  CHAMP  : CHAMP A EXTRAIRE
+    integer :: nb_para_maxi
+    parameter    (nb_para_maxi=20)
+    real(kind=8) :: vale_resu(nb_para_maxi)
 !
-! ----------------------------------------------------------------------
-!
-    integer :: nparx
-    parameter    (nparx=20)
-    real(kind=8) :: valres(nparx)
-!
-    integer :: jgaus, jelga
-    integer :: jma, jpi, jspi
-    integer :: ima, ipi, ispi, imar, ipir, ispir, nummai
-    integer :: num, snum, iret
-    integer :: nmapt, nmaspt, npi, nspi
-    character(len=8) :: nommai
-    integer :: ivalcp, nvalcp
+    integer :: i_elem, i_poin, i_spoi, i_elem_r, i_poin_r, i_spoi_r, elem_nume
+    integer :: poin_nume, spoi_nume, iret
+    integer :: nb_elem_poin, nb_elem_spoi, nb_poin_r, nb_spoi_r
+    character(len=8) :: elem_name
+    integer :: i_vale, nb_vale
     real(kind=8) :: valr, val2r
     integer :: jcesd, jcesl, jcesv, jcesc
+    integer, pointer :: v_list_elem(:) => null()
+    integer, pointer :: v_list_poin(:) => null()
+    integer, pointer :: v_list_spoi(:) => null()
+    real(kind=8), pointer :: v_work_poin(:) => null()
+    real(kind=8), pointer :: v_work_elem(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    ASSERT(nb_cmp.le.nb_para_maxi)
 !
-! --- CONVERSION EN CHAM_ELEM_S
+! - Conversion to reduced field (CHAM_ELEM_S)
 !
-    call jeexin(nomchs, iret)
+    call jeexin(field_s, iret)
     if (iret .eq. 0) then
-        call sdmpic('CHAM_ELEM', champ)
-        call celces(champ, 'V', nomchs)
+        call sdmpic('CHAM_ELEM', field)
+        call celces(field, 'V', field_s)
     endif
 !
-! --- ACCES AUX CHAMPS DE TRAVAIL
+! - Access to reduced field (CHAM_ELEM_S)
 !
-    call jeveuo(chgaus, 'E', jgaus)
-    call jeveuo(chelga, 'E', jelga)
-    call jeveuo(nomchs(1:19)//'.CESD', 'L', jcesd)
-    call jeveuo(nomchs(1:19)//'.CESL', 'L', jcesl)
-    call jeveuo(nomchs(1:19)//'.CESV', 'L', jcesv)
-    call jeveuo(nomchs(1:19)//'.CESC', 'L', jcesc)
-    ASSERT(nbcmp.le.nparx)
+    call jeveuo(field_s(1:19)//'.CESD', 'L', jcesd)
+    call jeveuo(field_s(1:19)//'.CESL', 'L', jcesl)
+    call jeveuo(field_s(1:19)//'.CESV', 'L', jcesv)
+    call jeveuo(field_s(1:19)//'.CESC', 'L', jcesc)
 !
-! --- ACCES LISTE DES MAILLES/POINTS/SOUS_POINTS
+! - Get access to working vectors
 !
-    call jeveuo(listma, 'L', jma)
-    call jeveuo(listpi, 'L', jpi)
-    call jeveuo(listsp, 'L', jspi)
+    call jeveuo(work_elem, 'E', vr = v_work_elem)
+    call jeveuo(work_poin, 'E', vr = v_work_poin)
 !
-! --- BOUCLE SUR LES MAILLES
+! - Get access to lists
 !
-    do 30 ima = 1, nbma
+    call jeveuo(list_elem, 'L', vi = v_list_elem)
+    call jeveuo(list_poin, 'L', vi = v_list_poin)
+    call jeveuo(list_spoi, 'L', vi = v_list_spoi)
 !
-! ----- MAILLE COURANTE
+! - Loop on elements
 !
-        nummai = zi(jma-1+ima)
-        call jenuno(jexnum(noma(1:8)//'.NOMMAI', nummai), nommai)
+    do i_elem = 1, nb_elem
 !
-! ----- NOMBRE EFFECTIF DE POINTS/SOUS-POINTS SUR LA MAILLE
+! ----- Current element
 !
-        nmapt = zi(jcesd+5+4*(nummai-1)+1-1)
-        nmaspt = zi(jcesd+5+4*(nummai-1)+2-1)
+        elem_nume = v_list_elem(i_elem)
+        call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name)
 !
-! ----- PLAFONNEMENT
+! --------- Number of points/subpoints on current element
 !
-        npi = nbpi
-        nspi = nbspi
-        if (npi .gt. nmapt) npi = nmapt
-        if (nspi .gt. nmaspt) nspi = nmaspt
+            nb_elem_poin = zi(jcesd+5+4*(elem_nume-1))
+            nb_elem_spoi = zi(jcesd+5+4*(elem_nume-1)+1)
 !
-! ----- CALCUL DES COMPOSANTES SUR LES POINTS/SOUS_POINTS
+! --------- Check
 !
-        do 45 ipi = 1, npi
-            do 46 ispi = 1, nspi
+            nb_poin_r = nb_poin
+            nb_spoi_r = nb_spoi
+            if (nb_poin_r .gt. nb_elem_poin) nb_poin_r = nb_elem_poin
+            if (nb_spoi_r .gt. nb_elem_spoi) nb_spoi_r = nb_elem_spoi
 !
-! --------- NUMERO DES POINTS/SOUS-POINTS
+! --------- Extract and set point/subpoint value(s) by element
 !
-                num = zi(jpi-1+ipi )
-                snum = zi(jspi-1+ispi)
+            do i_poin = 1, nb_poin_r
+                do i_spoi = 1, nb_spoi_r
 !
-! --------- EXTRACTION DES VALEURS AUX POINTS DE GAUSS
+! ----------------- Index on point/subpoint
 !
-                call nmextj(nomcha, nbcmp, listcp, extrcp, num,&
-                            snum, nvalcp, nummai, jcesd, jcesv,&
-                            jcesl, jcesc, valres)
+                    poin_nume = v_list_poin(i_poin)
+                    spoi_nume = v_list_spoi(i_spoi)
 !
-! --------- INDICE D'ACCES
+! ----------------- Extract value at Gauss point
 !
-                if (extrga .eq. 'VALE') then
-                    ipir = ipi
-                    ispir = ispi
-                else
-                    ipir = 1
-                    ispir = 1
-                endif
+                    call nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
+                                spoi_nume , nb_vale, elem_nume, jcesd        , jcesv    ,&
+                                jcesl     , jcesc  , vale_resu)
 !
-! --------- CALCUL DES VALEURS
+! ----------------- Select index in working vectors (point/subpoint)
 !
-                do 47 ivalcp = 1, nvalcp
-                    valr = valres(ivalcp)
-                    val2r = zr( jgaus+nbcmp*(ivalcp-1) +nbpi*(ipir-1) +nbspi*(ispir-1) )
-                    if (extrga .eq. 'VALE') then
-                        zr(jgaus+nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1)&
-                        +(ispir-1)) = valr
-                    else if (extrga.eq.'MAX') then
-                        zr(jgaus+nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1)&
-                        +(ispir-1)) = max(valr,val2r)
-                    else if (extrga.eq.'MIN') then
-                        zr(jgaus+nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1)&
-                        +(ispir-1)) = min(valr,val2r)
-                    else if (extrga.eq.'MOY') then
-                        zr(jgaus+nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1)&
-                        +(ispir-1)) = valr+val2r
+                    if (type_extr_elem .eq. 'VALE') then
+                        i_poin_r = i_poin
+                        i_spoi_r = i_spoi
                     else
-                        ASSERT(.false.)
+                        i_poin_r = 1
+                        i_spoi_r = 1
                     endif
-47              continue
-46          continue
-45      continue
 !
-! ----- AFFECTATION DES VALEURS AUX MAILLES
+! ----------------- Save values in working vector (element)
 !
-        do 75 ipi = 1, npi
-            do 76 ispi = 1, nspi
-                if (extrga .eq. 'VALE') then
-                    ipir = ipi
-                    ispir = ispi
-                else
-                    ipir = 1
-                    ispir = 1
-                endif
+                    do i_vale = 1, nb_vale
+                        valr  = vale_resu(i_vale)
+                        val2r = v_work_poin(1+nb_cmp*(i_vale-1)+&
+                                              nb_poin*(i_poin_r-1)+&
+                                              nb_spoi*(i_spoi_r-1))
+                        if (type_extr_elem .eq. 'VALE') then
+                            v_work_poin(1+nb_poin*nb_spoi*(i_vale-1) +&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = valr
+                        else if (type_extr_elem.eq.'MAX') then
+                            v_work_poin(1+nb_poin*nb_spoi*(i_vale-1) +&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = max(valr,val2r)
+                        else if (type_extr_elem.eq.'MIN') then
+                            v_work_poin(1+nb_poin*nb_spoi*(i_vale-1) +&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = min(valr,val2r)
+                        else if (type_extr_elem.eq.'MOY') then
+                            v_work_poin(1+nb_poin*nb_spoi*(i_vale-1) +&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = valr+val2r
+                        else
+                            ASSERT(.false.)
+                        endif
+                    end do
+                end do
+            end do
 !
-                do 77 ivalcp = 1, nvalcp
-                    if (extrch .eq. 'VALE') then
-                        imar = ima
+! --------- Extract and set point/subpoint value(s) by point/subpoint
+!
+            do i_poin = 1, nb_poin_r
+                do i_spoi = 1, nb_spoi_r
+!
+! ----------------- Select index in working vectors (point/subpoint)
+!
+                    if (type_extr_elem .eq. 'VALE') then
+                        i_poin_r = i_poin
+                        i_spoi_r = i_spoi
                     else
-                        imar = 1
+                        i_poin_r = 1
+                        i_spoi_r = 1
                     endif
-                    valr = zr( jgaus+nbpi*nbspi*(ivalcp-1) +nbspi*( ipir-1) +(ispir-1) )
-                    val2r = zr(&
-                            jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1&
-                            &) +(ispir-1)&
-                            )
-                    if (extrch .eq. 'VALE') then
-                        zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*&
-                        nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
-                        valr
-                    else if (extrch.eq.'MAX') then
-                        zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*&
-                        nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
-                        max(valr,val2r)
-                    else if (extrch.eq.'MIN') then
-                        zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*&
-                        nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
-                        min(valr,val2r)
-                    else if (extrch.eq.'MAXI_ABS') then
-                        zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*&
-                        nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
-                        max(abs(val2r),abs(valr))
-                    else if (extrch.eq.'MINI_ABS') then
-                        zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*&
-                        nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
-                        min(abs(val2r),abs(valr))
-                    else if (extrch.eq.'MOY') then
-                        zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*&
-                        nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
-                        valr+val2r
-                    else
-                        ASSERT(.false.)
-                    endif
-77              continue
-76          continue
-75      continue
-30  end do
 !
-! --- CALCUL DE LA MOYENNE
+! ----------------- Save values in working vector (point)
 !
-    if (extrch .eq. 'MOY') then
-        imar = 1
-        do 55 ipi = 1, npi
-            do 56 ispi = 1, nspi
-                do 57 ivalcp = 1, nvalcp
-                    val2r = zr(&
-                            jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1&
-                            &) +(ispir-1)&
-                            )
-                    zr(jelga+nbcmp*nbpi*nbspi*(imar-1) +nbpi*nbspi*(&
-                    ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) = val2r/&
-                    nbma
-57              continue
-56          continue
-55      continue
+                    do i_vale = 1, nb_vale
+!
+! ----------------- Select index in working vector (element)
+!
+                        if (type_extr .eq. 'VALE') then
+                            i_elem_r = i_elem
+                        else
+                            i_elem_r = 1
+                        endif
+                        valr  = v_work_poin(1+nb_poin*nb_spoi*(i_vale-1)+&
+                                              nb_spoi*(i_poin_r-1)+&
+                                              (i_spoi_r-1))
+                        val2r = v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                              nb_poin*nb_spoi*(i_vale-1)+&
+                                              nb_spoi*(i_poin_r-1)+&
+                                              (i_spoi_r-1))
+                        if (type_extr .eq. 'VALE') then
+                            v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = valr
+                        else if (type_extr.eq.'MAX') then
+                            v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = max(valr,val2r)
+                        else if (type_extr.eq.'MIN') then
+                            v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) =  min(valr,val2r)
+                        else if (type_extr.eq.'MAXI_ABS') then
+                            v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = max(abs(val2r),abs(valr))
+                        else if (type_extr.eq.'MINI_ABS') then
+                            v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = min(abs(val2r),abs(valr))
+                        else if (type_extr.eq.'MOY') then
+                            v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1)) = valr+val2r
+                        else
+                            ASSERT(.false.)
+                        endif
+                    end do
+                end do
+            end do
+    end do
+!
+! - For mean value
+!
+    if (type_extr .eq. 'MOY') then
+        i_elem_r = 1
+        do i_poin = 1, nb_poin_r
+            do i_spoi = 1, nb_spoi_r
+                do i_vale = 1, nb_vale
+                    val2r = v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                          nb_poin*nb_spoi*(i_vale-1)+&
+                                          nb_spoi*(i_poin_r-1)+&
+                                          (i_spoi_r-1))
+                    v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
+                                  nb_poin*nb_spoi*(i_vale-1)+&
+                                  nb_spoi*(i_poin_r-1) +&
+                                  (i_spoi_r-1)) = val2r/nb_elem
+                end do
+            end do
+        end do
     endif
-!
-    call jedema()
 !
 end subroutine
