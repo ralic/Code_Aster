@@ -297,6 +297,26 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
            __vc=__aa.trapeze(0.)
            vite_abso=__vc.vale_y[-1]
            l_table.append(_F(LISTE_R=vite_abso,PARA='VITE_ABSO_CUMU'))
+        if option in('TOUT','ASA'):
+            amor = NOCI_SEISME['AMOR_REDUIT']
+            freq_osci = NOCI_SEISME['FREQ_FOND']
+            ratio = NOCI_SEISME['RATIO']
+            freq_pas = NOCI_SEISME['FREQ_PAS']
+            f_ini = (1-ratio) * freq_osci
+            liste_freq = NP.arange(f_ini, freq_osci+freq_pas, freq_pas)
+            __so= CALC_FONCTION(SPEC_OSCI=_F(
+                              NATURE     ='ACCE', NATURE_FONC='ACCE',
+                              FONCTION   = NOCI_SEISME['FONCTION'],
+                              METHODE    = 'NIGAM',
+                              NORME      = NOCI_SEISME['NORME'],
+                              FREQ       = liste_freq,
+                              AMOR_REDUIT = (amor,)),)
+            __srov = __so.convert().l_fonc[0]
+            ASA_R = 1./(ratio*freq_osci) * NP.trapz(__srov.vale_y, __srov.vale_x)
+            l_table.append(_F(LISTE_R=ASA_R, PARA='ASA'))
+            l_table.append(_F(LISTE_R=ratio, PARA='RATIO'))
+            if option =='ASA':
+                l_table.append(_F(LISTE_R=amor ,PARA='AMOR_REDUIT'))
         if option in('TOUT','INTE_SPEC') :
            amor=NOCI_SEISME['AMOR_REDUIT']
            fini=NOCI_SEISME['FREQ_INIT'  ]

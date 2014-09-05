@@ -27,7 +27,7 @@ INCLUDE(   UNITE=20 )
 #
 #--------------------------------------------------------
 #
-INLBNS=INFO_FONCTION(  NOCI_SEISME=_F(
+INLBNS=INFO_FONCTION(  NOCI_SEISME=_F(FREQ_FOND=2.0,
                              FONCTION = LBNS,
                              PESANTEUR = 9.81,
                              AMOR_REDUIT = 0.05E0)
@@ -78,7 +78,7 @@ INLBNS17=INFO_FONCTION(    NOCI_SEISME=_F(
                              AMOR_REDUIT = 0.05E0)
                        )
 
-INLBNS18=INFO_FONCTION(    NOCI_SEISME=_F(
+INLBNS18=INFO_FONCTION(    NOCI_SEISME=_F(FREQ_FOND=2.0,
                                 FONCTION = LBNS,
                                 INST_INIT = 10.,
                                 INST_FIN = 12.,
@@ -88,11 +88,33 @@ INLBNS18=INFO_FONCTION(    NOCI_SEISME=_F(
                                 PESANTEUR = 9.81,
                                 FREQ_INIT = 0.23,
                                 FREQ_FIN = 13.21,
+                                FREQ_PAS=0.1,
+                                RATIO=0.4,
                                 AMOR_REDUIT = 0.03,
                                 NORME = 1.0,
                                 BORNE_INF = 0.45,
                                 BORNE_SUP = 0.55)
                        )
+
+
+INLBNS19=INFO_FONCTION(    NOCI_SEISME=_F(
+                             FONCTION = LBNS,
+                             OPTION = 'ASA',RATIO=0.4,
+                             FREQ_FOND = 2.0,  NORME = 9.81,
+                             AMOR_REDUIT = 0.05,),
+                       )
+
+INLBNS20=INFO_FONCTION(    NOCI_SEISME=_F(
+                             FONCTION = LBNS,
+                             OPTION = 'ASA',RATIO=0.4,
+                             FREQ_FOND = 2.0,
+                             AMOR_REDUIT = 0.03,),
+                       )
+
+IMPR_TABLE (TABLE=INLBNS20,    UNITE=8,);
+IMPR_TABLE (TABLE=INLBNS19,    UNITE=8,);
+IMPR_TABLE (TABLE=INLBNS18,    UNITE=8,);
+IMPR_TABLE (TABLE=INLBNS,    UNITE=8,);
 
 #
 SPEC_H=LIRE_FONCTION(  UNITE=18,
@@ -142,6 +164,12 @@ INH1=INFO_FONCTION(
 #
 #--------------------------------------------------------
 #
+
+TEST_TABLE(VALE_CALC=2.27664335192,
+           NOM_PARA='ASA',
+           TABLE=INLBNS,)
+
+
 TEST_TABLE(VALE_CALC=1.0,
            NOM_PARA='ACCE_MAX',
            TABLE=INLBNS,)
@@ -230,6 +258,15 @@ TEST_TABLE(VALE_CALC=14.83,
 TEST_TABLE(VALE_CALC=0.58453122117572,
            NOM_PARA='INTE_SPECT',
            TABLE=INLBNS17,)
+
+TEST_TABLE(VALE_CALC=0.23207373618,
+           NOM_PARA='ASA',
+           TABLE=INLBNS19,)
+
+TEST_TABLE(VALE_CALC= 2.67207522502  ,
+           NOM_PARA='ASA',
+           TABLE=INLBNS20,)
+
 
 TEST_TABLE(VALE_CALC=0.44113,
            NOM_PARA='ACCE_MAX',
