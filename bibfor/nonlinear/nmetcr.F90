@@ -66,7 +66,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: zioch, nb_field_maxi
-    parameter    (zioch = 10, nb_field_maxi=20 )
+    parameter    (zioch = 10, nb_field_maxi=21 )
 !
     integer :: nb_field, nb_field_in, nb_field_out
     character(len=24) :: io_lcha, io_info
@@ -90,7 +90,7 @@ implicit none
                            'VALE_CONT'   ,'MODE_FLAMB'  ,'DEPL_VIBR'   ,&
                            'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,&
                            'FORC_NODA'   ,'STRX_ELGA'   ,'MODE_STAB'   ,&
-                           'FORC_AMOR'   ,'FORC_LIAI'/
+                           'FORC_AMOR'   ,'FORC_LIAI'   ,'EPSI_ELGA'/
 ! - Type of GRANDEUR for field
     data field_gran       /'DEPL_R','SIEF_R','VARI_R',&
                            'COMPOR','DEPL_R','DEPL_R',&
@@ -98,7 +98,7 @@ implicit none
                            'DEPL_R','DEPL_R','DEPL_R',&
                            'DEPL_R','DEPL_R','DEPL_R',&
                            'DEPL_R','STRX_R','DEPL_R',&
-                           'DEPL_R','DEPL_R'/
+                           'DEPL_R','DEPL_R','EPSI_R'/
 ! - Keyword for initial state (ETAT_INIT)
     data keyw_etat_init   /'DEPL','SIGM','VARI',&
                            ' '   ,'VITE','ACCE',&
@@ -106,7 +106,7 @@ implicit none
                            ' '   ,' '   ,' '   ,&
                            ' '   ,' '   ,' '   ,&
                            ' '   ,'STRX',' '   ,&
-                           ' '   ,' '/
+                           ' '   ,' '   ,' '   /
 ! - Spatial discretization of field
     data field_disc       /'NOEU','ELGA','ELGA',&
                            'ELGA','NOEU','NOEU',&
@@ -114,7 +114,7 @@ implicit none
                            'NOEU','NOEU','NOEU',&
                            'NOEU','NOEU','NOEU',&
                            'NOEU','ELGA','NOEU',&
-                           'NOEU','NOEU'/
+                           'NOEU','NOEU','ELGA'/
 ! - 'OUI' if field can been read for initial state (ETAT_INIT)
     data flag_etat_init   /'OUI','OUI','OUI',&
                            'NON','OUI','OUI',&
@@ -122,7 +122,7 @@ implicit none
                            'NON','NON','NON',&
                            'OUI','OUI','OUI',&
                            'NON','OUI','NON',&
-                           'OUI','OUI'/
+                           'OUI','OUI','NON'/
 ! - 'OUI' if field can been store (ARCHIVAGE)
     data flag_arch        /'OUI','OUI','OUI',&
                            'OUI','OUI','OUI',&
@@ -130,7 +130,7 @@ implicit none
                            'OUI','OUI','OUI',&
                            'OUI','OUI','OUI',&
                            'NON','OUI','OUI',&
-                           'OUI','OUI'/
+                           'OUI','OUI','NON'/
 ! - Keyword for OBSERVATION
     data keyw_obsv        /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,&
                            ' '           ,'VITE'        ,'ACCE'        ,&
@@ -138,7 +138,7 @@ implicit none
                            'VALE_CONT'   ,' '           ,' '           ,&
                            'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,&
                            'FORC_NODA'   ,'STRX_ELGA'   ,' '           ,&
-                           ' '           ,' '/
+                           ' '           ,' '           ,'EPSI_ELGA'   /
 !
 ! --------------------------------------------------------------------------------------------------
 !

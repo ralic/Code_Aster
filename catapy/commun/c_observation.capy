@@ -21,7 +21,7 @@ def C_OBSERVATION() : return FACT(statut='f',max=99,
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
                                    into=("VALE_CONT","FORC_NODA",
                                          "DEPL","VITE","ACCE","TEMP",
-                                         "SIEF_ELGA","VARI_ELGA",
+                                         "SIEF_ELGA","VARI_ELGA","EPSI_ELGA",
                                          "DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU",)),
 
            EVAL_CHAM       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
@@ -54,6 +54,7 @@ def C_OBSERVATION() : return FACT(statut='f',max=99,
 
 
            b_cham_elga     =BLOC(condition="(NOM_CHAM=='SIEF_ELGA') or \
+                                            (NOM_CHAM=='EPSI_ELGA') or \
                                             (NOM_CHAM=='VARI_ELGA')",
                                  regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')),
                                  TOUT            =SIMP(statut='d',typ='TXM',into=("OUI",) ),

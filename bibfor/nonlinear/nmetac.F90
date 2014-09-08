@@ -177,7 +177,12 @@ implicit none
     work_flag(19) = 1
     work_flag(20) = 1
 !
-! - Check: if ASSERT -> you've forgottent to say what Aster do with the field
+! - Standard: EPSI_ELGA
+!
+    work_flag(21) = 1
+    list_field_acti(21) = .true.
+!
+! - Check: if ASSERT -> you've forgotten to say what Aster do with the field
 !
     do i_field = 1, nb_field_maxi
         ASSERT(work_flag(i_field).eq.1)

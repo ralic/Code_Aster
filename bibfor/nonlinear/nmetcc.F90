@@ -158,6 +158,9 @@ implicit none
     else if (field_type.eq.'FORC_LIAI') then
         field_name_algo = 'CHAP#VALINC#FLIMOI'
         field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'EPSI_ELGA') then
+        field_name_algo = '&&NMETCR.EPSI'
+        field_name_init = '&&NMETCR.EPSI'
 !
     else if (field_type.eq.'TEMP') then
         field_name_algo = 'CHAP#VALINC#TEMP'
