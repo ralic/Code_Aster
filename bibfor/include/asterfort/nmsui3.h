@@ -16,23 +16,25 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
-                      nbspi, nbcmp, extrch, extrcp, extrga,&
-                      listma, chnoeu, chelga, champ, isuiv)
-        character(len=24) :: sdimpr
-        character(len=4) :: typcha
-        integer :: nbma
-        integer :: nbno
-        integer :: nbpi
-        integer :: nbspi
-        integer :: nbcmp
-        character(len=8) :: extrch
-        character(len=8) :: extrcp
-        character(len=8) :: extrga
-        character(len=24) :: listma
-        character(len=19) :: chnoeu
-        character(len=19) :: chelga
-        character(len=19) :: champ
-        integer :: isuiv
+    subroutine nmsui3(sd_prnt      , field_disc, nb_elem  , nb_node      , nb_poin       ,&
+                      nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
+                      list_elem    , work_node , work_elem, field        , field_s       ,&
+                      i_dof_monitor)
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: nb_poin
+        integer, intent(in) :: nb_spoi
+        integer, intent(in) :: nb_cmp
+        character(len=24), intent(in) :: list_elem
+        character(len=19), intent(in) :: field
+        character(len=4), intent(in) :: field_disc
+        character(len=24), intent(in) :: field_s
+        character(len=24), intent(in) :: sd_prnt
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_elem
+        character(len=8), intent(in) :: type_extr_cmp
+        character(len=19), intent(in) :: work_node
+        character(len=19), intent(in) :: work_elem
+        integer, intent(inout) :: i_dof_monitor
     end subroutine nmsui3
 end interface

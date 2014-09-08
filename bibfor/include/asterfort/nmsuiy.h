@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmsuiy(sdimpr, valr, isuiv)
-        character(len=24) :: sdimpr
-        real(kind=8) :: valr
-        integer :: isuiv
+    subroutine nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+        character(len=24), intent(in) :: sd_prnt
+        real(kind=8), intent(in) :: vale_r
+        integer, intent(inout) :: i_dof_monitor
     end subroutine nmsuiy
 end interface

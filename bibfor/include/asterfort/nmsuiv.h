@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
-        character(len=8) :: noma
-        character(len=24) :: sdieto
-        character(len=24) :: sdsuiv
-        character(len=24) :: sdimpr
+    subroutine nmsuiv(meshz, sd_suiv, sd_prnt)
+        character(len=*), intent(in) :: meshz
+        character(len=24), intent(in) :: sd_suiv
+        character(len=24), intent(in) :: sd_prnt
     end subroutine nmsuiv
 end interface

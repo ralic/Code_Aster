@@ -1,4 +1,9 @@
-subroutine nmsuiy(sdimpr, valr, isuiv)
+subroutine nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+!
+implicit none
+!
+#include "asterfort/impfoi.h"
+#include "asterfort/nmimcr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,43 +23,32 @@ subroutine nmsuiy(sdimpr, valr, isuiv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "asterfort/impfoi.h"
-#include "asterfort/nmimcr.h"
-    character(len=24) :: sdimpr
-    real(kind=8) :: valr
-    integer :: isuiv
+    character(len=24), intent(in) :: sd_prnt
+    real(kind=8), intent(in) :: vale_r
+    integer, intent(inout) :: i_dof_monitor
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (SUIVI_DDL - UTILITAIRE)
+! Non-linear operators - DOF monitor
 !
-! ECRITURE DANS LE TABLEAU DE CONVERGENCE
+! Write value
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_prnt          : datastructure for print informations
+! In  vale_r           : value to print
+! IO  i_dof_monitor    : index of current monitoring
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  VALR   : VALEUR A ECRIRE DANS LE TABLEAU
-! I/O ISUIV  : NUMERO COURANT DU SUIVI_DDL
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=9) :: typcol
     character(len=1) :: indsui
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-! --- AFFICHAGE DANS LE TABLEAU
-!
-    call impfoi(0, 1, isuiv, indsui)
+    call impfoi(0, 1, i_dof_monitor, indsui)
     typcol = 'SUIVDDL'//indsui
-    call nmimcr(sdimpr, typcol, valr, .true._1)
-!
-! --- SUIVI_DDL SUIVANT
-!
-    isuiv = isuiv + 1
+    call nmimcr(sd_prnt, typcol, vale_r, .true._1)
+    i_dof_monitor = i_dof_monitor + 1
 !
 end subroutine

@@ -1,6 +1,17 @@
-subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
-                  nbspi, nbcmp, extrch, extrcp, extrga,&
-                  listma, chnoeu, chelga, champ, isuiv)
+subroutine nmsui3(sd_prnt      , field_disc, nb_elem  , nb_node      , nb_poin       ,&
+                  nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
+                  list_elem    , work_node , work_elem, field        , field_s       ,&
+                  i_dof_monitor)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmsuiy.h"
+#include "asterfort/sdmpic.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,187 +31,172 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/celces.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmsuiy.h"
-#include "asterfort/sdmpic.h"
-    integer :: nbcmp, nbno, nbma
-    integer :: nbpi, nbspi
-    character(len=4) :: typcha
-    character(len=24) :: sdimpr
-    character(len=8) :: extrch, extrcp, extrga
-    character(len=19) :: champ, chnoeu, chelga
-    character(len=24) :: listma
-    integer :: isuiv
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    integer, intent(in) :: nb_cmp
+    character(len=24), intent(in) :: list_elem
+    character(len=19), intent(in) :: field
+    character(len=4), intent(in) :: field_disc
+    character(len=24), intent(in) :: field_s
+    character(len=24), intent(in) :: sd_prnt
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr_cmp
+    character(len=19), intent(in) :: work_node
+    character(len=19), intent(in) :: work_elem
+    integer, intent(inout) :: i_dof_monitor
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (SUIVI_DDL - UTILITAIRE)
+! Non-linear operators - DOF monitor
 !
-! EXTRAIRE LES VALEURS - ECRITURE DANS LE TABLEAU DE CONVERGENCE
+! Print monitored values in table
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_prnt          : datastructure for print informations
+! In  nb_node          : number of nodes
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  nb_cmp           : number of components
+! In  list_elem        : name of object contains list of elements
+! In  field            : name of field
+! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_s          : name of reduced field (CHAM_ELEM_S)
+! In  type_extr        : type of extraction
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr_cmp    : type of extraction for components
+! In  work_node        : working vector to save node values
+! In  work_elem        : working vector to save element values
+! IO  i_dof_monitor    : index of current monitoring
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  TYPCHA : TYPE DU CHAMP
-! IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
-! IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
-! IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
-! IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
-! IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
-! IN  LISTMA : LISTE CONTENANT LES MAILLES
-! IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
-! IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
-! IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-! IN  CHNOEU : VECTEUR DE TRAVAIL CHAMPS AUX NOEUDS
-! IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
-! IN  CHAMP  : CHAMP A EXTRAIRE
-! I/O ISUIV  : NUMERO COURANT DU SUIVI_DDL
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: ino, ima, ipi, ispi, nummai
-    integer :: nbnor, nbmar
-    integer :: ivalcp,  jma
-    real(kind=8) :: valr
-    integer :: nvalcp
-    integer :: npi, nspi, nmapt, nmaspt, nbpir, nbspir
-    integer :: jnoeu, jelga
-    character(len=19) :: cheles
+    integer :: i_node, i_elem, i_poin, i_spoi, i_cmp
+    integer :: nb_poin_elem, nb_spoi_elem, elem_nume, iret
+    real(kind=8) :: vale_r
+    integer :: nb_cmp_r, nb_poin_r, nb_spoi_r, nb_node_r, nb_elem_r
+    integer :: nb_poin_e , nb_spoi_e
     integer, pointer :: cesd(:) => null()
+    integer, pointer :: v_list_elem(:) => null()
+    real(kind=8), pointer :: v_work_node(:) => null()
+    real(kind=8), pointer :: v_work_elem(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- INITIALISATIONS
+! - Convert to reduced field
 !
-    cheles = '&&NMSUI3.TRAV'
-!
-! --- PASSAGE EN CHAM_ELEM_S
-!
-    if (typcha .eq. 'ELGA') then
-        call sdmpic('CHAM_ELEM', champ)
-        call celces(champ, 'V', cheles)
-        call jeveuo(cheles(1:19)//'.CESD', 'L', vi=cesd)
+    if (field_disc .eq. 'ELGA') then
+        call jeexin(field_s, iret)
+        if (iret .eq. 0) then
+            call sdmpic('CHAM_ELEM', field)
+            call celces(field, 'V', field_s)
+        endif
+        call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
     endif
 !
-! --- NOMBRE DE NOEUDS POUR LA BOUCLE
+! - Number of nodes for loop
 !
-    if (typcha .eq. 'NOEU') then
-        if (extrch .eq. 'VALE') then
-            nbnor = nbno
-            elseif ((extrch.eq.'MIN').or. (extrch.eq.'MAX').or. (&
-        extrch.eq.'MOY').or. (extrch.eq.'MINI_ABS').or. (&
-        extrch.eq.'MAXI_ABS')) then
-            nbnor = 1
+    if (field_disc .eq. 'NOEU') then
+        if (type_extr .eq. 'VALE') then
+            nb_node_r = nb_node
+        elseif ((type_extr.eq.'MIN').or.&
+                (type_extr.eq.'MAX').or.&
+                (type_extr.eq.'MAXI_ABS').or.&
+                (type_extr.eq.'MINI_ABS').or.&
+                (type_extr.eq.'MOY')) then
+            nb_node_r = 1
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- NOMBRE DE MAILLES POUR LA BOUCLE
+! - Number of elements for loop
 !
-    if (typcha .eq. 'ELGA') then
-        if (extrch .eq. 'VALE') then
-            nbmar = nbma
-            elseif ((extrch.eq.'MIN').or. (extrch.eq.'MAX').or. (&
-        extrch.eq.'MOY').or. (extrch.eq.'MINI_ABS').or. (&
-        extrch.eq.'MAXI_ABS')) then
-            nbmar = 1
+    if (field_disc .eq. 'ELGA') then
+        if (type_extr .eq. 'VALE') then
+            nb_elem_r = nb_elem
+        elseif ((type_extr.eq.'MIN').or.&
+                (type_extr.eq.'MAX').or.&
+                (type_extr.eq.'MAXI_ABS').or.&
+                (type_extr.eq.'MINI_ABS').or.&
+                (type_extr.eq.'MOY')) then
+            nb_elem_r = 1
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- NOMBRE DE COMPOSANTES POUR LA BOUCLE
+! - Number for components for loop
 !
-    if (extrcp .eq. ' ') then
-        nvalcp = nbcmp
+    if (type_extr_cmp .eq. ' ') then
+        nb_cmp_r = nb_cmp
     else
-        nvalcp = 1
+        nb_cmp_r = 1
     endif
 !
-! --- VALEUR NODALES
+! - For node discretization
 !
-    if (typcha .eq. 'NOEU') then
-        call jeveuo(chnoeu, 'L', jnoeu)
-!
-        do 20 ino = 1, nbnor
-!
-! ------- ECRITURE DES VALEURS
-!
-            do 21 ivalcp = 1, nvalcp
-                valr = zr(jnoeu+ivalcp-1 +nbcmp*(ino-1))
-                call nmsuiy(sdimpr, valr, isuiv)
-21          continue
-20      continue
+    if (field_disc .eq. 'NOEU') then
+        call jeveuo(work_node, 'L', vr = v_work_node)
+        do i_node = 1, nb_node_r
+            do i_cmp = 1, nb_cmp_r
+                vale_r   = v_work_node(i_cmp+nb_cmp*(i_node-1))
+                call nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+            end do
+        end do
     endif
 !
-! --- VALEURS AUX POINTS DE GAUSS
+! - For element discretization
 !
-    if (typcha .eq. 'ELGA') then
-        call jeveuo(chelga, 'L', jelga)
-        call jeveuo(listma, 'L', jma)
+    if (field_disc .eq. 'ELGA') then
+        call jeveuo(work_elem, 'L', vr = v_work_elem)
+        call jeveuo(list_elem, 'L', vi = v_list_elem)
 !
-! ----- BOUCLE SUR LES MAILLES
+        do i_elem = 1, nb_elem_r
 !
-        do 30 ima = 1, nbmar
+! --------- Current element
 !
-! ----- MAILLE COURANTE
+            elem_nume = v_list_elem(i_elem)
 !
-            nummai = zi(jma-1+ima)
+! --------- Real number of point/subpoint for current element
 !
-! ------- NOMBRE EFFECTIF DE POINTS/SOUS-POINTS SUR LA MAILLE
+            nb_poin_elem = cesd(1+5+4*(elem_nume-1))
+            nb_spoi_elem = cesd(1+5+4*(elem_nume-1)+1)
 !
-            nmapt = cesd(1+5+4*(nummai-1))
-            nmaspt = cesd(1+5+4*(nummai-1)+1)
+! --------- Check
 !
-! ------- PLAFONNEMENT
+            nb_poin_e = nb_poin
+            nb_spoi_e = nb_spoi
+            if (nb_poin_e .gt. nb_poin_elem) nb_poin_e = nb_poin_elem
+            if (nb_spoi_e .gt. nb_spoi_elem) nb_spoi_e = nb_spoi_elem
 !
-            npi = nbpi
-            nspi = nbspi
-            if (npi .gt. nmapt) npi = nmapt
-            if (nspi .gt. nmaspt) nspi = nmaspt
+! --------- Number for points/subpoints for loop
 !
-! ------- NOMBRE DE POINTS/SOUS-POINTS POUR LA BOUCLE
-!
-            if (extrga .eq. 'VALE') then
-                nbpir = npi
-                nbspir = nspi
+            if (type_extr_elem .eq. 'VALE') then
+                nb_poin_r = nb_poin_e
+                nb_spoi_r = nb_spoi_e
             else
-                nbpir = 1
-                nbspir = 1
+                nb_poin_r = 1
+                nb_spoi_r = 1
             endif
 !
-! ------- BOUCLE SUR LES POINTS/SOUS_POINTS
-!
-            do 45 ipi = 1, nbpir
-                do 46 ispi = 1, nbspir
-!
-! ----------- LECTURE DES VALEURS
-!
-                    do 47 ivalcp = 1, nvalcp
-                        valr = zr(&
-                               jelga+nbcmp*nbpi*nbspi*(ima-1) +nbpi*nbspi*(ivalcp-1) +nbspi*(ipi-&
-                               &1) +(ispi- 1)&
-                               )
-                        call nmsuiy(sdimpr, valr, isuiv)
-47                  continue
-46              continue
-45          continue
-30      continue
+            do i_poin = 1, nb_poin_r
+                do i_spoi = 1, nb_spoi_r
+                    do i_cmp = 1, nb_cmp_r
+                        vale_r   = v_work_elem(nb_cmp*nb_poin*nb_spoi*(i_elem-1)+&
+                                               nb_poin*nb_spoi*(i_cmp-1)+&
+                                               nb_spoi*(i_poin-1)+&
+                                               (i_spoi-1)+1)
+                        call nmsuiy(sd_prnt, vale_r, i_dof_monitor)
+                    end do
+                end do
+            end do
+        end do
     endif
-!
-    call jedetr(cheles)
-    call jedema()
 !
 end subroutine

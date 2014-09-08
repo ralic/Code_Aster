@@ -263,9 +263,9 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
     if (lerrit) goto 315
 !
-! --- SUIVI DE DDL
+! - DOF monitoring
 !
-    call nmsuiv(noma, sdieto, sdsuiv, sdimpr)
+    call nmsuiv(noma, sdsuiv, sdimpr)
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !

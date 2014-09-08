@@ -1,4 +1,15 @@
-subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
+subroutine nmsuiv(meshz, sd_suiv, sd_prnt)
+!
+implicit none
+!
+#include "asterfort/impfoi.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmext0.h"
+#include "asterfort/nmext1.h"
+#include "asterfort/nmsui3.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,162 +29,153 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/impfoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmext0.h"
-#include "asterfort/nmext1.h"
-#include "asterfort/nmextd.h"
-#include "asterfort/nmextt.h"
-#include "asterfort/nmsui3.h"
-    character(len=24) :: sdimpr, sdsuiv
-    character(len=8) :: noma
-    character(len=24) :: sdieto
+    character(len=*), intent(in) :: meshz
+    character(len=24), intent(in) :: sd_suiv
+    character(len=24), intent(in) :: sd_prnt
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - SUIVI_DDL)
+! Non-linear operators - DOF monitor
 !
-! REALISER UN SUIVI_DDL
+! Make monitoring
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  sd_prnt          : datastructure for print informations
+! In  sd_suiv          : datastructure for dof monitor parameters
 !
-! IN  SDIMPR : SD AFFICHAGE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDSUIV : NOM DE LA SD POUR SUIVI_DDL
-! IN  SDIETO : SD GESTION IN ET OUT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: listno, listma, listpi, listsp, listcp
-    integer :: jno, jma
-    character(len=24) :: suiinf, suicha, suityp
-    integer :: jsuiin, jsuich, jsuity
-    integer :: nbcmp, nbno, nbma, nbcham
-    integer :: nbpi, nbspi
-    integer :: iocc, nbocc
-    integer :: isuiv, icham
+    character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp
+    character(len=14) :: sdextr_suiv
+    integer :: nb_cmp, nb_node, nb_elem, nb_field
+    integer :: nb_poin, nb_spoi
+    integer :: i_keyw_fact, nb_keyw_fact
+    integer :: i_dof_monitor, i_field
     character(len=2) :: chaine
-    character(len=24) :: nomcha, nomchs
-    character(len=4) :: typcha
-    character(len=19) :: champ
-    character(len=8) :: extrcp, extrch, extrga
-    character(len=19) :: chgaus, chnoeu, chelga
+    character(len=24) :: field_type, field_s
+    character(len=4) :: field_disc
+    character(len=19) :: field
+    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, mesh
+    character(len=19) :: work_poin, work_node, work_elem
+    character(len=24) :: extr_info, extr_type, extr_field
+    integer, pointer :: v_extr_info(:) => null()
+    character(len=8), pointer :: v_extr_type(:) => null()
+    character(len=24), pointer :: v_extr_field(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    mesh          = meshz
+    i_dof_monitor = 1
 !
-! --- INITIALISATIONS
+! - Access to extraction datastructure
 !
-    isuiv = 1
+    sdextr_suiv = sd_suiv(1:14)
 !
-! --- SD PRINCIPALE (INFO)
+! - Get information vector
 !
-    suiinf = sdsuiv(1:14)//'     .INFO'
-    call jeveuo(suiinf, 'L', jsuiin)
-    nbocc  = zi(jsuiin-1+1)
-    nbcham = zi(jsuiin-1+6)
-    if (nbocc .eq. 0) goto 999
+    extr_info    = sdextr_suiv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'L', vi = v_extr_info)
+    nb_keyw_fact = v_extr_info(1)
+    nb_field     = v_extr_info(6)
+    ASSERT(nb_keyw_fact.le.99)
+    if (nb_keyw_fact .eq. 0) goto 999
 !
-! --- SD LISTE DES CHAMPS
+! - Get extraction field vector
 !
-    suicha = sdsuiv(1:14)//'     .CHAM'
-    call jeveuo(suicha, 'L', jsuich)
+    extr_field = sdextr_suiv(1:14)//'     .CHAM'
+    call jeveuo(extr_field, 'L', vk24 = v_extr_field)
 !
-! --- SD TYPE D'EXTRACTIONS
+! - Get extraction type vector
 !
-    suityp = sdsuiv(1:14)//'     .EXTR'
-    call jeveuo(suityp, 'L', jsuity)
+    extr_type = sdextr_suiv(1:14)//'     .EXTR'
+    call jeveuo(extr_type, 'L', vk8 = v_extr_type)
 !
-    do 10 iocc = 1, nbocc
+    do i_keyw_fact = 1, nb_keyw_fact
 !
-! ----- GENERATION NOM DES SD
+! ----- Datastructure name generation
 !
-        call impfoi(0, 2, iocc, chaine)
-        listno = sdsuiv(1:14)//chaine(1:2)//'   .NOEU'
-        listma = sdsuiv(1:14)//chaine(1:2)//'   .MAIL'
-        listpi = sdsuiv(1:14)//chaine(1:2)//'   .POIN'
-        listsp = sdsuiv(1:14)//chaine(1:2)//'   .SSPI'
-        listcp = sdsuiv(1:14)//chaine(1:2)//'   .CMP '
+        call impfoi(0, 2, i_keyw_fact, chaine)
+        list_node = sdextr_suiv(1:14)//chaine(1:2)//'   .NOEU'
+        list_elem = sdextr_suiv(1:14)//chaine(1:2)//'   .MAIL'
+        list_poin = sdextr_suiv(1:14)//chaine(1:2)//'   .POIN'
+        list_spoi = sdextr_suiv(1:14)//chaine(1:2)//'   .SSPI'
+        list_cmp  = sdextr_suiv(1:14)//chaine(1:2)//'   .CMP '
 !
-! ----- NOM DU CHAMP
+! ----- Type of field
 !
-        icham = zi(jsuiin+7+7*(iocc-1)+7-1)
-        nomcha = zk24(jsuich+4*(icham-1)+1-1)
-        nomchs = zk24(jsuich+4*(icham-1)+2-1)
-        if (nomcha .eq. 'NONE') goto 99
+        i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
+        field_type   = v_extr_field(4*(i_field-1)+1)
+        field_s      = v_extr_field(4*(i_field-1)+2)
+        if (field_type .ne. 'NONE') then
 !
-! ----- TYPE DE CHAMP
+! --------- Get localization of field (discretization: NOEU or ELGA)
 !
-        typcha = zk24(jsuich-1+4*(icham-1)+3)
+            field_disc = v_extr_field(4*(i_field-1)+3)(1:4)
 !
-! ----- RECUPERATION DU CHAMP
+! --------- Get field
 !
-        champ = zk24(jsuich-1+4*(icham-1)+4)
+            field = v_extr_field(4*(i_field-1)+4)(1:19)
 !
-! ----- NOMBRE DE COMPOSANTES/NOEUDS/MAILLES
+! --------- Get length of lists
 !
-        nbcmp = zi(jsuiin+7+7*(iocc-1)-1+1)
-        nbno = zi(jsuiin+7+7*(iocc-1)-1+2)
-        nbma = zi(jsuiin+7+7*(iocc-1)-1+3)
-        nbpi = zi(jsuiin+7+7*(iocc-1)-1+4)
-        nbspi = zi(jsuiin+7+7*(iocc-1)-1+5)
+            nb_cmp  = v_extr_info(7+7*(i_keyw_fact-1)+1)
+            nb_node = v_extr_info(7+7*(i_keyw_fact-1)+2)
+            nb_elem = v_extr_info(7+7*(i_keyw_fact-1)+3)
+            nb_poin = v_extr_info(7+7*(i_keyw_fact-1)+4)
+            nb_spoi = v_extr_info(7+7*(i_keyw_fact-1)+5)
 !
-! ----- ACCES LISTES
+! --------- Extraction types
 !
-        if (typcha .eq. 'NOEU') call jeveuo(listno, 'L', jno)
-        if (typcha .eq. 'ELGA') call jeveuo(listma, 'L', jma)
+            type_extr      = v_extr_type(3*(i_keyw_fact-1)+1)
+            type_extr_elem = v_extr_type(3*(i_keyw_fact-1)+2)
+            type_extr_cmp  = v_extr_type(3*(i_keyw_fact-1)+3)
 !
-! ----- TYPES D'EXTRACTION
+! --------- Create temporary vectors for extraction
 !
-        extrch = zk8(jsuity+3*(iocc-1)+1-1)
-        extrga = zk8(jsuity+3*(iocc-1)+2-1)
-        extrcp = zk8(jsuity+3*(iocc-1)+3-1)
+            work_elem = '&&NMSUIV.VALE.ELGA'
+            work_poin = '&&NMSUIV.VALE.GAUS'
+            work_node = '&&NMSUIV.VALE.NOEU'
+            call nmext0(field_disc, nb_elem   , nb_node   , nb_poin   , nb_spoi       ,&
+                        nb_cmp    , work_node , work_poin , work_elem , type_extr_elem,&
+                        type_extr)
 !
-! ----- SD DONNEES TEMPORAIRES
+! --------- Compute extraction values and store them
 !
-        chelga = '&&NMSUIV.VALE.ELGA'
-        chgaus = '&&NMSUIV.VALE.GAUS'
-        chnoeu = '&&NMSUIV.VALE.NOEU'
-        call nmext0(typcha, nbma, nbno, nbpi, nbspi,&
-                    nbcmp, chnoeu, chgaus, chelga, extrga,&
-                    extrch)
+            call nmext1(mesh          , field    , field_disc   , field_type, field_s,&
+                        nb_elem       , nb_node  , nb_poin      , nb_spoi   , nb_cmp,&
+                        type_extr_elem, type_extr, type_extr_cmp, list_node , list_elem,&
+                        list_poin     , list_spoi, list_cmp     , work_node , work_poin,&
+                        work_elem)
 !
-! ----- EXTRAIRE LES VALEURS
+! --------- Print monitored values in table
 !
-        call nmext1(noma, champ, typcha, nomcha, nomchs,&
-                    nbma, nbno, nbpi, nbspi, nbcmp,&
-                    extrga, extrch, extrcp, listno, listma,&
-                    listpi, listsp, listcp, chnoeu, chgaus,&
-                    chelga)
+            call nmsui3(sd_prnt      , field_disc, nb_elem  , nb_node      , nb_poin       ,&
+                        nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
+                        list_elem    , work_node , work_elem, field        , field_s       ,&
+                        i_dof_monitor)
 !
-! ----- LES ECRIRE DANS LE TABLEAU
+            call jedetr(work_poin)
+            call jedetr(work_node)
+            call jedetr(work_elem)
+        end if
 !
-        call nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
-                    nbspi, nbcmp, extrch, extrcp, extrga,&
-                    listma, chnoeu, chelga, champ, isuiv)
+    end do
 !
-        call jedetr(chgaus)
-        call jedetr(chnoeu)
-        call jedetr(chelga)
+! - Cleaning CHAM_ELEM_S
 !
-99      continue
+    do i_field = 1, nb_field
+        field_s    = v_extr_field(4*(i_field-1)+2)
+        field_disc = v_extr_field(4*(i_field-1)+3)(1:4)
+        if (field_disc.eq.'ELGA') then
+            call detrsd('CHAM_ELEM_S', field_s)
+        elseif (field_disc.eq.'NOEU') then
+            call detrsd('CHAM_NO_S', field_s)
+        else
+            ASSERT(.false.)
+        endif
+    end do
+999 continue
 !
-10  end do
-!
-! --- DESTRUCTION DES CHAM_ELEM_S
-!
-    do 45 icham = 1, nbcham
-        nomchs = zk24(jsuich+4*(icham-1)+2-1)
-        call jedetr(nomchs)
-45  end do
-999  continue
-!
-    call jedema()
 end subroutine
