@@ -257,7 +257,7 @@ subroutine nminim(sdsuiv, sdimpr)
         titli2 = zk16(jddlti+3*(isuiv-1)+2-1)
         titli3 = zk16(jddlti+3*(isuiv-1)+3-1)
         typval = 'R'
-        cnoval = 'ERRE'
+        cnoval = 'SANS'
         call obclcr('NMINIM', typcol, larcol, tithau, titli1,&
                     titli2, titli3, typval, cnoval, sdcolo)
     end do
