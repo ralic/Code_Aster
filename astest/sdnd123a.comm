@@ -154,7 +154,7 @@ calc_aster4 = 1.197677968396
 
 TEST_FONCTION(VALEUR=_F(VALE_PARA=fs,
                        VALE_CALC=calc_aster4,
-                       TOLE_MACHINE=5.E-05,  # valeur tres sensible en fonction de la machine
+                       TOLE_MACHINE=8.E-05,  # valeur tres sensible en fonction de la machine
                        REFERENCE='AUTRE_ASTER',
                        VALE_REFE=es,
                        FONCTION=ENRGC,),
