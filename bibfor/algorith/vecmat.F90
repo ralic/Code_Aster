@@ -158,7 +158,7 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
         imat = jmat+zi(jmat+nbmat+1)
 !
         do 10 ik = 1, zi(imat+1)
-            if (zk16(zi(imat)+ik-1)(1:9) .eq. 'VENDOCHAB') then
+            if (zk32(zi(imat)+ik-1) .eq. 'VENDOCHAB') then
                 ipi=zi(imat+ik+2-1)
                 do 15 il = 1, zi(ipi+2)
                     ivalk = zi(ipi+3)

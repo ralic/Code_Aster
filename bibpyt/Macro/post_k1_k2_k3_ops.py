@@ -1581,14 +1581,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #   ------------------------------------------------------------------
    matph = MATER.sdj.NOMRC.get()
    phenom=None
+   ind=0   
    for cmpt in matph :
+       ind=ind+1	   
        if cmpt[:4]=='ELAS' :
           phenom=cmpt
           break
    if phenom==None : UTMESS('F','RUPTURE0_5')
+   ns = '{:06d}'.format(ind)
 
 #  RECHERCHE SI LE MATERIAU DEPEND DE LA TEMPERATURE:
-   compor = sd_compor1('%-8s.%s' % (MATER.nom, phenom))
+   
+   compor = sd_compor1('%-8s.CPT.%s' % (MATER.nom, ns))
    valk = [s.strip() for s in compor.VALK.get()]
    valr = compor.VALR.get()
    dicmat=dict(zip(valk,valr))

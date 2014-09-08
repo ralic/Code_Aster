@@ -43,7 +43,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     character(len=8) :: nommat, cara
     character(len=8) :: method, mecomp, nompar
     character(len=8) :: nomres(6), kcorre, kbid
-    character(len=16) :: pheno, phenom
+    character(len=16) :: pheno
     real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
     integer :: ibask, ifonc, ihosin, nbval
@@ -67,7 +67,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     call getvtx(' ', 'DOMMAGE', scal=method, nbret=nbval)
     call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
     pheno = 'FATIGUE'
-    call rccome(nommat, pheno, phenom, icodre(1))
+    call rccome(nommat, pheno, icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_24')
     endif

@@ -263,7 +263,7 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
 
 
 /* ------------------------------------------------------------------ */
-void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE lcle)
+void DEFPS(GETMAT,getmat,_INOUT INTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE lcle)
 {
         /*
           Procedure GETMAT pour le FORTRAN
@@ -286,11 +286,11 @@ void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE l
 
         if(!PyArg_ParseTuple(res,"O",&lnom)) MYABORT("erreur dans la partie Python");
         nval=PyList_Size(lnom);
-        *nbarg = (INTEGER)nval ;
 
-        if ( nval > 0 ){
+        if ( nval > 0 && *nbarg > 0 ){
                 converltx(nval,lnom,motcle,lcle); /* conversion  */
         }
+        *nbarg = (INTEGER)nval ;
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;

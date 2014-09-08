@@ -22,6 +22,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/dismca.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -33,6 +34,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
+    character(len=6) :: k6
     character(len=32) :: repk
     character(len=8) :: nomob
 ! ----------------------------------------------------------------------
@@ -48,7 +50,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
 !
     character(len=8) :: mater, nomf, novarc
-    character(len=10) :: nomrc
+    character(len=32) :: nomrc
     character(len=16) :: ktyp
     character(len=24) :: quest2, nomobj(100)
     character(len=19) :: nomcar2
@@ -139,7 +141,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
                 call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
                 do 60 irc = 1, nbrc
-                    nomrc=zk16(ianorc-1+irc)(1:10)
+                    nomrc=zk32(ianorc-1+irc)(1:10)
                     if (nomrc .eq. 'ELAS_COQUE') then
                         repk='OUI'
                         goto 90
@@ -189,16 +191,17 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
                 call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
                 do 110 irc = 1, nbrc
-                    nomrc=zk16(ianorc-1+irc)(1:10)
+                    nomrc=zk32(ianorc-1+irc)
 !
 !            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
                     if (nomrc(5:10) .eq. '_COQMU') goto 120
 !
                     if (nomrc(1:4) .ne. 'THER') goto 110
-                    call jeveuo(mater//'.'//nomrc//'.VALK', 'L', iavalk)
-                    call jelira(mater//'.'//nomrc//'.VALK', 'LONUTI', n1)
-                    call jelira(mater//'.'//nomrc//'.VALR', 'LONUTI', nr)
-                    call jelira(mater//'.'//nomrc//'.VALC', 'LONUTI', nc)
+                    call codent(irc,'D0',k6)
+                    call jeveuo(mater//'.CPT.'//k6//'.VALK', 'L', iavalk)
+                    call jelira(mater//'.CPT.'//k6//'.VALK', 'LONUTI', n1)
+                    call jelira(mater//'.CPT.'//k6//'.VALR', 'LONUTI', nr)
+                    call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
                     do 100 if = 1, nf
                         nomf=zk8(iavalk-1+nr+nc+nf+if)
@@ -245,16 +248,17 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
                 call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
                 do 160 irc = 1, nbrc
-                    nomrc=zk16(ianorc-1+irc)(1:10)
+                    nomrc=zk32(ianorc-1+irc)
 !
 !            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
                     if (nomrc(5:10) .eq. '_COQMU') goto 170
 !
                     if (nomrc(1:4) .ne. 'ELAS') goto 160
-                    call jeveuo(mater//'.'//nomrc//'.VALK', 'L', iavalk)
-                    call jelira(mater//'.'//nomrc//'.VALK', 'LONUTI', n1)
-                    call jelira(mater//'.'//nomrc//'.VALR', 'LONUTI', nr)
-                    call jelira(mater//'.'//nomrc//'.VALC', 'LONUTI', nc)
+                    call codent(irc,'D0',k6)
+                    call jeveuo(mater//'.CPT.'//k6//'.VALK', 'L', iavalk)
+                    call jelira(mater//'.CPT.'//k6//'.VALK', 'LONUTI', n1)
+                    call jelira(mater//'.CPT.'//k6//'.VALR', 'LONUTI', nr)
+                    call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
                     do 150 if = 1, nf
                         nomf=zk8(iavalk-1+nr+nc+nf+if)

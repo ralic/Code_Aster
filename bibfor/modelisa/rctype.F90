@@ -99,7 +99,7 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
 ! - Get index for factor keyword
 !
     do icomp = 1, zi(imate+1)
-        if (keyw_fact .eq. zk16(zi(imate)+icomp-1)) then
+        if (keyw_fact .eq. zk32(zi(imate)+icomp-1)) then
             ipi = zi(imate+2+icomp-1)
             goto 11
         endif

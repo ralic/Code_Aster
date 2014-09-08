@@ -76,7 +76,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 ! - COURBE DE TRACTION SANS METALLURGIE
     if (ktrac .eq. 1) then
         do 10 icomp = 1, zi(imate+1)
-            if ('TRACTION' .eq. zk16(zi(imate)+icomp-1)(1:8)) then
+            if ('TRACTION' .eq. zk32(zi(imate)+icomp-1)(1:8)) then
                 ipi=zi(imate+2+icomp-1)
                 goto 20
             endif
@@ -100,7 +100,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
     if (ktrac .eq. 2) then
         do 50 icomp = 1, zi(imate+1)
-            if ('META_TRACTION' .eq. zk16(zi(imate)+icomp-1)(1:13)) then
+            if ('META_TRACTION' .eq. zk32(zi(imate)+icomp-1)(1:13)) then
                 ipi=zi(imate+2+icomp-1)
                 goto 60
             endif

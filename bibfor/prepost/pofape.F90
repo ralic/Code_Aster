@@ -64,7 +64,7 @@ subroutine pofape()
     integer :: icodre(2), icodwo, icodba, icodhs
     character(len=8) :: k8b, nomten(6), nomres(2), kdomm, nompar, nommat, cara
     character(len=8) :: result, nomeps(6), nomepp(6)
-    character(len=16) :: nomcmd, pheno, phenom, criter, nomfor, typcha, forvie
+    character(len=16) :: nomcmd, pheno, criter, nomfor, typcha, forvie
     character(len=16) :: proaxe, nommet, forcri
     character(len=19) :: k19b
     character(len=24) :: fvale(6), etvale(6), ptvale(6)
@@ -542,7 +542,7 @@ subroutine pofape()
 !             ---------------------------------------
         if (kdomm .eq. 'WOHLER') then
             pheno = 'FATIGUE'
-            call rccome(nommat, pheno, phenom, icodre(1))
+            call rccome(nommat, pheno, icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif

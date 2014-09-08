@@ -44,7 +44,7 @@ subroutine rc32ma(mater)
     real(kind=8) :: para(nbcmp), tempa, tempb, tke
     integer :: icodre(nbcmp)
     character(len=8) :: nopa, nopb, typeke, nocmp(nbcmp)
-    character(len=16) :: phenom, motclf
+    character(len=16) :: motclf
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -59,17 +59,17 @@ subroutine rc32ma(mater)
     motclf = 'SITUATION'
     call getfac(motclf, nbsitu)
 !
-    call rccome(mater, 'ELAS', phenom, icodre(1))
+    call rccome(mater, 'ELAS', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'POSTRCCM_7', sk='ELAS')
     endif
 !
-    call rccome(mater, 'FATIGUE', phenom, icodre(1))
+    call rccome(mater, 'FATIGUE', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
     endif
 !
-    call rccome(mater, 'RCCM', phenom, icodre(1))
+    call rccome(mater, 'RCCM', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'POSTRCCM_7', sk='RCCM')
     endif

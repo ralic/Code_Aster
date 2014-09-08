@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rccome(nommat, pheno, phenom, icodre)
+    subroutine rccome(nommat, pheno, icodre, ind_nomrc)
         character(len=*), intent(in) :: nommat
         character(len=*), intent(in) :: pheno
-        character(len=*), intent(out) :: phenom
         integer, intent(out) :: icodre
+         integer, intent(out), optional :: ind_nomrc
     end subroutine rccome
 end interface

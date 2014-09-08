@@ -125,7 +125,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! --- RECUPERATION DU NOM DU PHENOMENE ASSOCIE AU MATERIAU :
 !     ----------------------------------------------------
     call jeveut(nommat//'.MATERIAU.NOMRC', 'L', jnomrc)
-    phenom = zk16(jnomrc+nummat-1)(1:10)
+    phenom = zk32(jnomrc+nummat-1)(1:10)
 !
 ! --- CREATION DE LA NOUVELLE FONCTION DEVANT CONTENIR LES VALEURS
 ! --- INTERPOLEES DE ALPHA :

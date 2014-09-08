@@ -78,12 +78,12 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
     do im = 1, nbmat
         imat = jmat+zi(jmat+nbmat+im)
         do icomp = 1, zi(imat+1)
-            if (mater_type .eq. zk16(zi(imat)+icomp-1)(1:len(mater_typez))) then
+            if (mater_type .eq. zk32(zi(imat)+icomp-1)(1:len(mater_typez))) then
                 if (mater_keyword .eq. ' ') then
-                    mater_keyword=zk16(zi(imat)+icomp-1)
+                    mater_keyword=zk32(zi(imat)+icomp-1)
                     icodre_in = 0
                 else
-                    if (mater_keyword.ne.zk16(zi(imat)+icomp-1)) then
+                    if (mater_keyword.ne.zk32(zi(imat)+icomp-1)) then
                         if (iarret .eq. 1) then
                             call utmess('F', 'COMPOR5_56', sk=mater_type)
                         else

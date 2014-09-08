@@ -36,7 +36,6 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
     real(kind=8) :: valres(3), erefe(1), e(1), rbid, tsm(1)
     integer :: icodre(3)
     character(len=8) :: nompar, nomval(3)
-    character(len=16) :: phenom
 ! DEB ------------------------------------------------------------------
 !
     rbid = 0.d0
@@ -51,11 +50,11 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
     para(2) = r8vide()
     para(3) = r8vide()
     if (fatizh) then
-        call rccome(nommat, 'FATIGUE', phenom, icodre(1))
+        call rccome(nommat, 'FATIGUE', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
         endif
-        call rccome(nommat, 'ELAS', phenom, icodre(1))
+        call rccome(nommat, 'ELAS', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'POSTRCCM_7', sk='ELAS')
         endif

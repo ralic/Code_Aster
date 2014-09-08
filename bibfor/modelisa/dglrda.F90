@@ -21,6 +21,7 @@ subroutine dglrda()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/codent.h"
 #include "asterfort/foimpr.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gcncon.h"
@@ -64,6 +65,7 @@ subroutine dglrda()
     real(kind=8) :: nmax0, nmin(2), nmax(2), oml(na), r8b(1), par1, par2, elb(2)
     real(kind=8) :: mp1cst(2), mp2cst(2), omt, eat, bt1, bt2, pflua, pretr
     integer :: icodr2(5)
+    character(len=6) :: k6
     character(len=8) :: mater, fon(4), k8b, nomres(5)
     character(len=8) :: fsncx, fsncy, fscxd, fscyd, fscxd2, fscyd2
     character(len=8) :: fincx, fincy, ficxd, ficyd, ficxd2, ficyd2
@@ -277,18 +279,19 @@ subroutine dglrda()
     endif
 !
 !-----REMPLISSAGE DU MATERIAU
-    call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K16', 3, jlm)
-    zk16(jlm ) =  'GLRC_DAMAGE     '
-    zk16(jlm+1) = 'ELAS_GLRC       '
-    zk16(jlm+2) = 'BPEL_BETON      '
+    call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K32', 3, jlm)
+    zk32(jlm ) =  'GLRC_DAMAGE     '
+    zk32(jlm+1) = 'ELAS_GLRC       '
+    zk32(jlm+2) = 'BPEL_BETON      '
 !---------ELASTIQUE---------------
     lonobj = 10
-    call wkvect(mater//'.ELAS_GLRC .VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.ELAS_GLRC .VALK', 'LONUTI',   lonobj)
-    call wkvect(mater//'.ELAS_GLRC .VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.ELAS_GLRC .VALR', 'LONUTI',   lonobj)
-    call wkvect(mater//'.ELAS_GLRC .VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.ELAS_GLRC .VALC', 'LONUTI',   0)
+    call codent(2,'D0',K6)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
     zk8(jmelk) = 'E_M     '
     zr(jmelr) = em
     zk8(jmelk+1) = 'NU_M    '
@@ -317,12 +320,13 @@ subroutine dglrda()
     endif
 !---------BPEL_BETON--------------
     lonobj = 2
-    call wkvect(mater//'.BPEL_BETON.VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.BPEL_BETON.VALK', 'LONUTI',   lonobj, ' ')
-    call wkvect(mater//'.BPEL_BETON.VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.BPEL_BETON.VALR', 'LONUTI',   lonobj, ' ')
-    call wkvect(mater//'.BPEL_BETON.VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.BPEL_BETON.VALC', 'LONUTI',   0,      ' ')
+    call codent(3,'D0',K6)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
     zk8(jmelk )  = 'PERT_RET'
     zr(jmelr )   = pretr
     zk8(jmelk+1) = 'PERT_FLU'
@@ -330,22 +334,22 @@ subroutine dglrda()
 !---------GLRC_DAMAGE---------------
     lonobj = 48
     lonuti = 35
+    call codent(1,'D0',K6)
 !
-    call wkvect(mater//'.GLRC_DAMAG.VALK', 'G V K8', 2*lonobj, jmelk)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
 !
     call getvr8('BETON', 'MP1X', iocc=1, scal=mp1cst(1), nbret=icst)
 !
     if (icst .eq. 0) then
-        call jeecra(mater//'.GLRC_DAMAG.VALK', 'LONUTI', 59, ' ')
+        call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', 59)
     else
-        call jeecra(mater//'.GLRC_DAMAG.VALK', 'LONUTI', lonuti, ' ')
+        call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', lonuti)
     endif
 !
-!       CALL JEECRA(MATER//'.GLRC_DAMAG.VALK','LONUTI',59,' ')
-    call wkvect(mater//'.GLRC_DAMAG.VALR', 'G V R',  lonobj, jmelr)
-    call jeecra(mater//'.GLRC_DAMAG.VALR', 'LONUTI', lonuti, ' ')
-    call wkvect(mater//'.GLRC_DAMAG.VALC', 'G V C',  lonobj, jmelc)
-    call jeecra(mater//'.GLRC_DAMAG.VALC', 'LONUTI', 0,      ' ')
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',  lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI', lonuti)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',  lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI', 0)
     ifon0 = jmelk + lonuti
     longf = 12
     ifon1 = ifon0 + longf

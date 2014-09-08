@@ -97,12 +97,13 @@ subroutine op0056()
     real(kind=8) :: r8bid, h, h2, h3, h4, epsi
     integer :: icodre(9)
     character(len=2) :: val
+    character(len=6) :: k6
     character(len=24) :: valk(2)
     character(len=3) :: num
     character(len=8) :: k8b, multic, mater, nomres(9)
     character(len=16) :: type, nomcmd, fichie
     aster_logical :: elas, ther
-    character(len=16), pointer :: nomrc(:) => null()
+    character(len=32), pointer :: nomrc(:) => null()
     parameter (nv=83)
 !
     r8bid = 0.d0
@@ -120,7 +121,7 @@ subroutine op0056()
     ther = .false.
     do 20 icou = 1, nbcou
         call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
-        call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', vk16=nomrc)
+        call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', vk32=nomrc)
         call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad)
         do 10 i = 1, nbad
             if (nomrc(i) .eq. 'ELAS_ORTH       ') then
@@ -158,15 +159,16 @@ subroutine op0056()
 !     ------ CARACTERISTIQUES MECANIQUES ------
 !
         call wkvect('&&OP0056.EPOR', 'V V R', 3*nbcou, jepor)
-        call wkvect(multic//'.MATERIAU.NOMRC ', 'G V K16', nbcou+2, jrela)
-        zk16(jrela) = 'ELAS_COQMU      '
+        call wkvect(multic//'.MATERIAU.NOMRC ', 'G V K32', nbcou+2, jrela)
+        zk32(jrela) = 'ELAS_COQMU      '
         lonobj = 56 + nv*nbcou
-        call wkvect(multic//'.ELAS_COQMU.VALK', 'G V K8', 2*lonobj, jmate)
-        call jeecra(multic//'.ELAS_COQMU.VALK', 'LONUTI', lonobj)
-        call wkvect(multic//'.ELAS_COQMU.VALR', 'G V R', lonobj, jobme)
-        call jeecra(multic//'.ELAS_COQMU.VALR', 'LONUTI', lonobj)
-        call wkvect(multic//'.ELAS_COQMU.VALC', 'G V C', lonobj, jobmc)
-        call jeecra(multic//'.ELAS_COQMU.VALC', 'LONUTI', 0)
+        call codent(1, 'D0', k6)
+        call wkvect(multic//'.CPT.'//k6//'.VALK', 'G V K8', 2*lonobj, jmate)
+        call jeecra(multic//'.CPT.'//k6//'.VALK', 'LONUTI', lonobj)
+        call wkvect(multic//'.CPT.'//k6//'.VALR', 'G V R', lonobj, jobme)
+        call jeecra(multic//'.CPT.'//k6//'.VALR', 'LONUTI', lonobj)
+        call wkvect(multic//'.CPT.'//k6//'.VALC', 'G V C', lonobj, jobmc)
+        call jeecra(multic//'.CPT.'//k6//'.VALC', 'LONUTI', 0)
         eptot = 0.d0
         do 30 i = 1, 56
             call codent(i, 'G', num)
@@ -176,7 +178,7 @@ subroutine op0056()
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
             call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
             call getvr8('COUCHE', 'ORIENTATION', iocc=icou, scal=orien, nbret=n)
-            zk16(jrela+1+icou) = mater
+            zk32(jrela+1+icou) = mater
             call codent(icou, 'G', num)
             do 40 i = 1, nv
                 call codent(i, 'G', val)
@@ -205,9 +207,9 @@ subroutine op0056()
             nomres(9) = 'G_TN'
 !         EN PRINCIPE G_LN = G_LT CF BATOZ
             k8b = ' '
-            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
+            call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         6, nomres, valres, icodre, 2)
-            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
+            call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         3, nomres(7), valres(7), icodre(7), 0)
             el = valres(1)
             et = valres(2)
@@ -290,7 +292,7 @@ subroutine op0056()
             nomres(4) = 'YC'
             nomres(5) = 'S_LT'
             k8b = ' '
-            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
+            call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         5, nomres, valres, icodre, 2)
             if (icodre(1) .ne. 0) then
                 xt=r8vide()
@@ -684,16 +686,17 @@ subroutine op0056()
         call wkvect('&&OP0056.EPOR', 'V V R', 3*nbcou, jepor)
         call jeexin(multic//'.MATERIAU.NOMRC ', nobj)
         if (nobj .eq. 0) then
-            call wkvect(multic//'.MATERIAU.NOMRC ', 'G V K16', nbcou+2, jrela)
+            call wkvect(multic//'.MATERIAU.NOMRC ', 'G V K32', nbcou+2, jrela)
         endif
-        zk16(jrela) = 'THER_COQMU      '
+        zk32(jrela) = 'THER_COQMU      '
         lonobj = 31 + 3*nbcou
-        call wkvect(multic//'.THER_COQMU.VALK', 'G V K8', 2*lonobj, jmate)
-        call jeecra(multic//'.THER_COQMU.VALK', 'LONUTI', lonobj)
-        call wkvect(multic//'.THER_COQMU.VALR', 'G V R', lonobj, jobth)
-        call jeecra(multic//'.THER_COQMU.VALR', 'LONUTI', lonobj)
-        call wkvect(multic//'.THER_COQMU.VALC', 'G V C', lonobj, jobtc)
-        call jeecra(multic//'.THER_COQMU.VALC', 'LONUTI', 0)
+        call codent(1, 'D0', k6)
+        call wkvect(multic//'.CPT.'//k6//'.VALK', 'G V K8', 2*lonobj, jmate)
+        call jeecra(multic//'.CPT.'//k6//'.VALK', 'LONUTI', lonobj)
+        call wkvect(multic//'.CPT.'//k6//'.VALR', 'G V R', lonobj, jobth)
+        call jeecra(multic//'.CPT.'//k6//'.VALR', 'LONUTI', lonobj)
+        call wkvect(multic//'.CPT.'//k6//'.VALC', 'G V C', lonobj, jobtc)
+        call jeecra(multic//'.CPT.'//k6//'.VALC', 'LONUTI', 0)
         eptot = 0.d0
         do 250 i = 1, 31
             call codent(i, 'G', num)
@@ -703,7 +706,7 @@ subroutine op0056()
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
             call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
             call getvr8('COUCHE', 'ORIENTATION', iocc=icou, scal=orien, nbret=n)
-            zk16(jrela+1+icou) = mater
+            zk32(jrela+1+icou) = mater
             call codent(icou, 'G', num)
             do 260 i = 1, 3
                 call codent(i, 'G', val)
@@ -729,7 +732,7 @@ subroutine op0056()
             nomres(3) = 'LAMBDA_N'
             nomres(4) = 'RHO_CP'
             k8b = ' '
-            call rcvale(zk16(jrela+i+1) (1:8), 'THER_ORTH', 0, k8b, [r8bid],&
+            call rcvale(zk32(jrela+i+1) (1:8), 'THER_ORTH', 0, k8b, [r8bid],&
                         nbres, nomres, valres, icodre, 0)
             laml = valres(1)
             lamt = valres(2)

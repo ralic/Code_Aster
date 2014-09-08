@@ -85,7 +85,7 @@ subroutine op0151()
     integer :: icodre, icodwo, icodba, icodhs, icodma
     character(len=8) :: nomu, nomres, nommai, nommat
     character(len=8) :: nomfon, nomnap, cara, nommod, grdvie, inscri
-    character(len=16) :: concep, cmd, pheno, phenom, typcal, nomcri, nommet
+    character(len=16) :: concep, cmd, pheno, typcal, nomcri, nommet
     character(len=16) :: proaxe, nomsym, typcha, nomopt, nomgde, nomfor, forcri
     character(len=16) :: forvie
     character(len=16) :: mexpic, mcompt, mdomag, typeq, typoi, typdg, option
@@ -304,7 +304,7 @@ subroutine op0151()
                 call utmess('F', 'FATIGUE1_29', sk=nomopt)
             endif
             pheno = 'FATIGUE'
-            call rccome(nommat, pheno, phenom, icodre)
+            call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif
@@ -323,7 +323,7 @@ subroutine op0151()
                 call utmess('F', 'FATIGUE1_31', sk=nomopt)
             endif
             pheno = 'FATIGUE'
-            call rccome(nommat, pheno, phenom, icodre)
+            call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif
@@ -338,7 +338,7 @@ subroutine op0151()
                 call utmess('F', 'FATIGUE1_25', sk=nomopt)
             endif
             pheno = 'FATIGUE'
-            call rccome(nommat, pheno, phenom, icodre)
+            call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif
@@ -361,7 +361,7 @@ subroutine op0151()
                 call utmess('F', 'FATIGUE1_28', sk=nomopt)
             endif
             pheno = 'FATIGUE'
-            call rccome(nommat, pheno, phenom, icodre)
+            call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif
@@ -469,7 +469,7 @@ subroutine op0151()
                 call utmess('F', 'FATIGUE1_29', sk=nomopt)
             endif
             pheno = 'FATIGUE'
-            call rccome(nommat, pheno, phenom, icodre)
+            call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_88', sk='WOHLER')
             endif

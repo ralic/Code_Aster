@@ -62,7 +62,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !     ------------------------------------------------------------------
     integer :: ivect, icycl, adrs, i
     integer :: icodre(1)
-    character(len=16) :: phenom, kbid
+    character(len=16) :: kbid
     character(len=8) :: nomgrd
     aster_logical :: limit
 !     ------------------------------------------------------------------
@@ -77,7 +77,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 100 end do
 !
     if (.not. post) then
-        call rccome(nommat, 'FATIGUE', phenom, icodre(1))
+        call rccome(nommat, 'FATIGUE', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif

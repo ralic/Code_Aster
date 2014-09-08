@@ -50,6 +50,9 @@ subroutine ntfcma(compo, jmat, ifon)
     nbmat=zi(jmat)
     ASSERT(nbmat.eq.1)
     imate = jmat+zi(jmat+nbmat+1)
+!    
+    if(compo(1:7).ne.'THER_NL' .and. compo(1:9).ne.'THER_HYDR'&
+                               .and. compo.ne. ' ') ASSERT(.false.)
 !
     if (compo(1:7) .ne. 'THER_NL' .and. compo(1:9) .ne. 'THER_HYDR' .and. compo .ne. ' ') then
         ASSERT(.false.)
@@ -57,14 +60,14 @@ subroutine ntfcma(compo, jmat, ifon)
 !
     if (compo .eq. ' ') then
         do k = 1, zi(imate+1)
-            if ('THER_NL' .eq. zk16(zi(imate)+k-1)(1:7)) then
+            if ('THER_NL' .eq. zk32(zi(imate)+k-1)(1:7)) then
                 ipi = zi(imate+2+k-1)
                 compo2 = 'THER_NL'
                 goto 11
             endif
         end do
         do k = 1, zi(imate+1)
-            if ('THER_HYDR' .eq. zk16(zi(imate)+k-1)(1:9)) then
+            if ('THER_HYDR' .eq. zk32(zi(imate)+k-1)(1:9)) then
                 ipi = zi(imate+2+k-1)
                 compo2 = 'THER_HYDR'
                 goto 11
@@ -72,7 +75,7 @@ subroutine ntfcma(compo, jmat, ifon)
         end do
     else
         do k = 1, zi(imate+1)
-            if (compo(1:9) .eq. zk16(zi(imate)+k-1)(1:9)) then
+            if (compo(1:9) .eq. zk32(zi(imate)+k-1)(1:9)) then
                 ipi = zi(imate+2+k-1)
                 compo2 = compo
                 goto 11
@@ -80,8 +83,8 @@ subroutine ntfcma(compo, jmat, ifon)
         end do
     endif
     do k = 1, zi(imate+1)
-        if ('THER_ ' .eq. zk16(zi(imate)+k-1)(1:5)) then
-            valk(1) = zk16(zi(imate)+k-1)
+        if ('THER_ ' .eq. zk32(zi(imate)+k-1)(1:5)) then
+            valk(1) = zk32(zi(imate)+k-1)
             valk(2) = compo
             if (compo .eq. ' ') then
                 call utmess('F', 'ELEMENTS2_65', sk=valk(1))

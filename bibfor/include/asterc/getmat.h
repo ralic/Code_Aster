@@ -17,7 +17,7 @@
 !
 interface
     subroutine getmat(nbmfac, motcle)
-        integer :: nbmfac
-        character(len=*) :: motcle(*)
+        integer, intent(inout) :: nbmfac
+        character(len=*), intent(out) :: motcle(*)
     end subroutine getmat
 end interface

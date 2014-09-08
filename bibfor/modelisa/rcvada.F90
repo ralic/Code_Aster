@@ -69,7 +69,7 @@ subroutine rcvada(jmat, phenom, temp, nbres, nomres,&
 30  end do
 !
     do 40 icomp = 1, zi(imat+1)
-        if (phen .eq. zk16(zi(imat)+icomp-1)(1:10)) then
+        if (phen .eq. zk32(zi(imat)+icomp-1)(1:10)) then
             ipi = zi(imat+2+icomp-1)
             goto 888
         endif

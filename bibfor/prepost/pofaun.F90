@@ -68,7 +68,7 @@ subroutine pofaun()
     integer :: icodba, icodhs, icodma
     character(len=8) :: nomfon, result, txcum, k8b, nommat, kcorre, cara
     character(len=8) :: method, nompar, nomres(3)
-    character(len=16) :: pheno, phenom, kdomm, nomcmd, methd1
+    character(len=16) :: pheno, kdomm, nomcmd, methd1
     character(len=24) :: fvale
     real(kind=8) :: r8b, pseuil, rdomm, val(3), rampl
     complex(kind=8) :: cbid
@@ -236,7 +236,7 @@ subroutine pofaun()
         endif
 !
         pheno = 'FATIGUE'
-        call rccome(nommat, pheno, phenom, icodre(1))
+        call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif
@@ -264,7 +264,7 @@ subroutine pofaun()
             call utmess('F', 'FATIGUE1_17')
         endif
         pheno = 'FATIGUE'
-        call rccome(nommat, pheno, phenom, icodre(1))
+        call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif

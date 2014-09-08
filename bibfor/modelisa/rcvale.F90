@@ -20,12 +20,14 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/rccome.h"
 #include "asterfort/rcvals.h"
 #include "asterfort/utmess.h"
     integer, intent(in) :: nbpar, nbres
@@ -73,14 +75,14 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     integer :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
     integer :: nbobj, nbf, ir, ik
     parameter        ( nbmx=30 )
-    integer :: nbfp
+    integer :: nbfp, ind
     real(kind=8) :: valrep(nbmx)
     aster_logical :: change
     integer :: icodr2(nbmx)
     character(len=2) :: kstop
-    character(len=10) :: phen, phepre
+    character(len=32) :: nomphe, phen, phepre
     character(len=8) :: matpre, nomrep(nbmx), nomfop(nbmx)
-    character(len=10) :: nomphe
+    character(len=6) :: k6
     character(len=8) :: nommat
     real(kind=8), pointer :: valr(:) => null()
     character(len=8), pointer :: valk(:) => null()
@@ -128,7 +130,9 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
     else
         nomphe = phen
-        call jeexin(nommat//'.'//nomphe//'.VALR', iret)
+        call rccome(nommat, nomphe, iret, ind_nomrc=ind)
+        call codent(ind,'D0',k6)    
+        call jeexin(nommat//'.CPT.'//k6//'.VALR', iret)
         if (iret .eq. 0) then
             do 113 ires = 1, nbres
                 icodre(ires) = 1
@@ -136,11 +140,11 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             goto 999
         endif
 !
-        call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', vr=valr)
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
-        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', vk8=valk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
+        call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', vr=valr)
+        call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
+        call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
+        call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', vk8=valk)
+        call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
         do 130 ires = 1, nbres
             icodre(ires) = 1
             nomfop(ires) = ' '

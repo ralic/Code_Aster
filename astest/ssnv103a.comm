@@ -31,7 +31,7 @@ TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
                                             MODELISATION = '3D',
                                             TOUT = 'OUI'))
 
-ECRISO=DEFI_FONCTION(          NOM_PARA='EPSI',
+ECRISO =DEFI_FONCTION(          NOM_PARA='EPSI',
                                 PROL_DROITE='LINEAIRE',
                                PROL_GAUCHE='LINEAIRE',
                                      VALE=(

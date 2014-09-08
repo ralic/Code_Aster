@@ -51,7 +51,6 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
     real(kind=8) :: r8b, v(1)
     integer :: icodre(1)
     character(len=8) :: k8b
-    character(len=16) :: phenom
 !     ------------------------------------------------------------------
 !
 !234567                                                              012
@@ -67,7 +66,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         goto 999
     endif
 !
-    call rccome(nommat, 'CISA_PLAN_CRIT', phenom, icodre(1))
+    call rccome(nommat, 'CISA_PLAN_CRIT', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_63')
     endif

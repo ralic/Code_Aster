@@ -65,7 +65,7 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
 130  end do
     nomphe = phenom
     do 10 icomp = 1, zi(imat+1)
-        if (nomphe .eq. zk16(zi(imat)+icomp-1)(1:10)) then
+        if (nomphe .eq. zk32(zi(imat)+icomp-1)) then
             ipi = zi(imat+2+icomp-1)
             goto 11
         endif

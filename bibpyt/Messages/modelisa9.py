@@ -46,8 +46,8 @@ Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE :
    n'est pas le nom d'une composante de la grandeur.
 
  Conseil :
-   Si la table fournie provient de la commande CREA_TABLE / RESU, il faut 
-   probablement utiliser la commande CALC_TABLE + OPERATION='EXTR' pour 
+   Si la table fournie provient de la commande CREA_TABLE / RESU, il faut
+   probablement utiliser la commande CALC_TABLE + OPERATION='EXTR' pour
    éliminer les colonnes RESULTAT, NUME_ORDRE, ....
 """),
 
@@ -95,7 +95,7 @@ Erreur utilisateur :
 10 : _(u"""
 Erreur utilisateur :
    Comportement 'HUJEUX'
-   Non convergence pour le calcul de la loi de comportement (NB_ITER_MAX 
+   Non convergence pour le calcul de la loi de comportement (NB_ITER_MAX
 atteint).
 
 Conseil :
@@ -282,7 +282,7 @@ Risques et conseils :
 """),
 
 62 : _(u"""
- Courbe de traction : %(k1)s points presque alignés. Risque de PB dans 
+ Courbe de traction : %(k1)s points presque alignés. Risque de PB dans
  STAT_NON_LINE en particulier en C_PLAN
   pente initiale :     %(r1)f
   pente courante:      %(r2)f
@@ -332,9 +332,9 @@ Risques et conseils :
 """),
 
 80 : _(u"""
- Il n'y a aucun mot clé défini sous le comportement %(k1)s dans le fichier de 
+ Il n'y a aucun mot clé défini sous le comportement %(k1)s dans le fichier de
  commandes.
- Ce mot clé facteur n'apparaît donc pas dans l'écho des commandes. 
+ Ce mot clé facteur n'apparaît donc pas dans l'écho des commandes.
  Ce mot clé facteur est inutile.
 """),
 
@@ -347,7 +347,14 @@ Risques et conseils :
   GROUP_MA : %(k1)s
 """),
 
+83 : _(u"""
+ Le nom du comportement >>%(k1)s<< est trop long, il dépasse les 10 caractères autorisés.
+"""),
 
+84 : _(u"""
+ Le nom du paramètre >>%(k1)s<< est trop long, il dépasse les 8 caractères autorisés, 
+ Le nom sera tronqué à 8 caractères.
+"""),
 
 92 : _(u"""
 Erreur Europlexus
@@ -356,8 +363,8 @@ Erreur Europlexus
 
 93 : _(u"""
 Erreur Europlexus
-   Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour le 
-   mot clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS à l'occurrence %(i1)d 
+   Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour le
+   mot clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS à l'occurrence %(i1)d
    est différente de sa valeur à l'occurrence numéro 1.
 """),
 
@@ -375,14 +382,14 @@ Erreur Europlexus
 
 97 : _(u"""
 Erreur Europlexus
-   Données incorrectes. Les dimensions des objets ne sont pas cohérentes (Erreur 
+   Données incorrectes. Les dimensions des objets ne sont pas cohérentes (Erreur
    Fortran : acearp)
 """),
 
 98 : _(u"""
 Erreur Europlexus
-   Pour accéder aux valeurs nécessaires à Europlexus, il faut que dans la 
-   commande AFFE_CARA_ELEM, pour le mot clef facteur RIGI_PARASOL, la valeur 
+   Pour accéder aux valeurs nécessaires à Europlexus, il faut que dans la
+   commande AFFE_CARA_ELEM, pour le mot clef facteur RIGI_PARASOL, la valeur
    du mot clef EUROPLEXUS soit 'OUI' dans toutes les occurrences.
 """),
 

@@ -54,7 +54,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 ! IN  IGRP   : ADRESSE DU VECTEUR K8 CONTENANT LES NOMS DES MATERIAUX
 ! IN  NOMMAT : NOM DU MATERIAU
 ! OUT  CODI   : OBJET MATERIAU CODE
-!    CODI(1)   : ADRESSE ZK16  DE '.MATERIAU.NOMRC'
+!    CODI(1)   : ADRESSE ZK32  DE '.MATERIAU.NOMRC'
 !    CODI(2)   : NOMBRE DE TYPES DE COMPORTEMENT
 !
 !         P.I = CODI(2+I)
@@ -97,6 +97,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
     character(len=4) :: knuma1
     character(len=3) :: knuma2
     character(len=3) :: knuma3
+    character(len=6) :: k6
     character(len=8) :: nopara, nommat
     character(len=19) :: ch19, chma, listr
 ! ----------------------------------------------------------------------
@@ -131,8 +132,8 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
         call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', zi(jnbcm+l-1))
         call jeveut(nommat//'.MATERIAU.NOMRC', 'L', zi(jnomr+l-1))
         nbv = 0
-        if (zk16(zi(jnomr+l-1)) .eq. 'ELAS_COQMU') nbv = 1
-        if (zk16(zi(jnomr+l-1)+nbv) .eq. 'THER_COQMU') nbv = nbv+1
+        if (zk32(zi(jnomr+l-1)) .eq. 'ELAS_COQMU') nbv = 1
+        if (zk32(zi(jnomr+l-1)+nbv) .eq. 'THER_COQMU') nbv = nbv+1
         if (nbv .gt. 0) zi(jnbcm+l-1) = nbv
 100  end do
 !
@@ -151,11 +152,11 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
         jdim=zi(jjdim+l-1)
         do 10 k = 1, nbcm
             kk = jdim+lmat*(k-1)
-            chma = nommat//'.'//zk16(jnomrc+k-1)(1:10)
+            call codent(k, 'D0', k6)
+            chma = nommat//'.CPT.'//k6
             call codent(k, 'D0', knuma2)
             ch19 = chma(1:8)//'.'//knuma2//knuma1//knuma3
-            call jedupc(' ', chma, 1, 'V', ch19,&
-                        .false._1)
+            call jedupc(' ', chma, 1, 'V', ch19, .false._1)
             call jelira(ch19//'.VALR', 'LONUTI', zi(kk))
             call jeveut(ch19//'.VALR', 'L', zi(kk+1))
             call jelira(ch19//'.VALC', 'LONUTI', zi(kk+2))
@@ -164,11 +165,11 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
             call jeveut(ch19//'.VALK', 'L', zi(kk+5))
             zi(kk+4) = ( nbk - zi(kk) - zi(kk+2) ) / 2
             nbco = nbco + zi(kk+4)
-            if ((zk16(jnomrc+k-1)(1:8) .eq. 'TRACTION')) then
+            if ((zk32(jnomrc+k-1)(1:8) .eq. 'TRACTION')) then
                 zi(kk+6) = 1
                 nbt = nbt + 1
             endif
-            if (zk16(jnomrc+k-1)(1:13) .eq. 'META_TRACTION') then
+            if (zk32(jnomrc+k-1)(1:13) .eq. 'META_TRACTION') then
                 zi(kk+6) = 1
                 nbt = nbt + nbk/2
             endif
@@ -204,7 +205,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 !
         do 20 k = 1, nbcm
 !
-            chma = nommat//'.'//zk16(jnomrc+k-1)(1:10)
+            chma = nommat//'.'//zk32(jnomrc+k-1)(1:10)
 !
             kk = jdim+lmat*(k-1)
             zi(jcodi+idma+1+k) = ipi
@@ -288,8 +289,8 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                 endif
 !
                 if (zi(kk+6) .eq. 1) then
-                    if (( zk16(jnomrc+k-1)(1:8) .eq. 'TRACTION' ) .or.&
-                        (zk16(jnomrc+k-1)(1:13) .eq. 'META_TRACTION')) then
+                    if (( zk32(jnomrc+k-1)(1:8) .eq. 'TRACTION' ) .or.&
+                        (zk32(jnomrc+k-1)(1:13) .eq. 'META_TRACTION')) then
                         ipifc = ipif+lfct
                         zi(ipif+6) = ipifc
                         ch19 = nommat//'.&&RDEP'

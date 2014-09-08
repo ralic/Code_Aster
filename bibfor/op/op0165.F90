@@ -42,7 +42,7 @@ subroutine op0165()
     aster_logical :: pmpb, sn, snet, fatigu, lrocht
     integer :: icodre
     character(len=8) :: nommat
-    character(len=16) :: typtab, typmec, kopt(4), phenom
+    character(len=16) :: typtab, typmec, kopt(4)
 ! DEB ------------------------------------------------------------------
 !
     call infmaj()
@@ -68,7 +68,7 @@ subroutine op0165()
         call getvid(' ', 'MATER', scal=nommat, nbret=n1)
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
-        call rccome(nommat, 'RCCM', phenom, icodre)
+        call rccome(nommat, 'RCCM', icodre)
         if (icodre .eq. 1) then
             call utmess('F', 'POSTRCCM_7', sk='RCCM')
         endif

@@ -108,9 +108,9 @@ subroutine te0149(option, nomte)
     imat = jmat+zi(jmat+nbmat+1)
 !     SEUL ELAS EST AUTORISE
     do icomp = 1, zi(imat+1)
-        if (zk16(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
+        if (zk32(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
             messk(1) = option
-            messk(2) = zk16(zi(imat)+icomp-1)(1:10)
+            messk(2) = zk32(zi(imat)+icomp-1)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
     end do

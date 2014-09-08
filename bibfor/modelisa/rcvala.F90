@@ -96,7 +96,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
         icodre(ires) = 1
 10  end do
     do 20 icomp = 1, zi(imat+1)
-        if (nomphe .eq. zk16(zi(imat)+icomp-1)(1:10)) then
+        if (nomphe .eq. zk32(zi(imat)+icomp-1)(1:10)) then
             ipi = zi(imat+2+icomp-1)
             goto 22
         endif

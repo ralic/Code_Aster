@@ -80,7 +80,7 @@ subroutine rc36ma(nommat, noma)
     integer :: icodre(nbcmp)
     character(len=8) :: k8b, nomgd, mater, nopa, nopb, typeke, nocmp(nbcmp)
     character(len=8) :: licmp(2), ktref
-    character(len=16) :: phenom, motcl1, motcl2
+    character(len=16) :: motcl1, motcl2
     character(len=19) :: chnmat, chsmat, chsma2
     character(len=24) :: chmata, chmatb
     character(len=8), pointer :: cesvm(:) => null()
@@ -219,17 +219,17 @@ subroutine rc36ma(nommat, noma)
             if (nb .eq. 0) tempb = temprb
 !
             zk8(jmater+im-1) = mater
-            call rccome(mater, 'ELAS', phenom, icodre(1))
+            call rccome(mater, 'ELAS', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'POSTRCCM_7', sk='ELAS')
             endif
 !
-            call rccome(mater, 'FATIGUE', phenom, icodre(1))
+            call rccome(mater, 'FATIGUE', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
             endif
 !
-            call rccome(mater, 'RCCM', phenom, icodre(1))
+            call rccome(mater, 'RCCM', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'POSTRCCM_7', sk='RCCM')
             endif
@@ -371,17 +371,17 @@ subroutine rc36ma(nommat, noma)
             if (nb .eq. 0) tempb = temprb
 !
             zk8(jmater+im-1) = mater
-            call rccome(mater, 'ELAS', phenom, icodre(1))
+            call rccome(mater, 'ELAS', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'POSTRCCM_7', sk='ELAS')
             endif
 !
-            call rccome(mater, 'FATIGUE', phenom, icodre(1))
+            call rccome(mater, 'FATIGUE', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
             endif
 !
-            call rccome(mater, 'RCCM', phenom, icodre(1))
+            call rccome(mater, 'RCCM', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'POSTRCCM_7', sk='RCCM')
             endif

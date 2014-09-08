@@ -67,6 +67,7 @@ subroutine dglrdm()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/dgelas.h"
 #include "asterfort/dgendo.h"
 #include "asterfort/dgplas.h"
@@ -102,6 +103,7 @@ subroutine dglrdm()
     real(kind=8) :: valres(6), r8b
 !
     integer :: icodr2(6)
+    character(len=6) :: k6
     character(len=8) :: mater, k8b, compr, nomres(6)
     character(len=19) :: mendom
     character(len=19) :: cisail, pente
@@ -318,17 +320,18 @@ subroutine dglrdm()
     call dgendo(em, ef, h, nyt, nyc, num, nuf, pendt, pelast, pendf,&
                 pelasf, iendo, icisai, icompr, gt, gf, gc, ipente, np, dxp)
 !-----REMPLISSAGE DU MATERIAU
-    call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K16', 2, jlm)
-    zk16(jlm ) = 'GLRC_DM         '
-    zk16(jlm+1) = 'ELAS_GLRC       '
+    call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K32', 2, jlm)
+    zk32(jlm ) = 'GLRC_DM         '
+    zk32(jlm+1) = 'ELAS_GLRC       '
 !---------ELASTIQUE---------------
     lonobj = 8
-    call wkvect(mater//'.ELAS_GLRC .VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.ELAS_GLRC .VALK', 'LONUTI',   lonobj)
-    call wkvect(mater//'.ELAS_GLRC .VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.ELAS_GLRC .VALR', 'LONUTI',   lonobj)
-    call wkvect(mater//'.ELAS_GLRC .VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.ELAS_GLRC .VALC', 'LONUTI',   0)
+    call codent(2,'D0',K6)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
     zk8(jmelk ) = 'E_M     '
     zr(jmelr ) = em
     zk8(jmelk+1) = 'NU_M    '
@@ -353,12 +356,13 @@ subroutine dglrdm()
     endif
 !---------GLRC_DM---------------
     lonobj = 8
-    call wkvect(mater//'.GLRC_DM   .VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.GLRC_DM   .VALK', 'LONUTI',   lonobj, ' ')
-    call wkvect(mater//'.GLRC_DM   .VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.GLRC_DM   .VALR', 'LONUTI',   lonobj, ' ')
-    call wkvect(mater//'.GLRC_DM   .VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.GLRC_DM   .VALC', 'LONUTI',   0,      ' ')
+    call codent(1,'D0',K6)    
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
     zk8(jmelk)   = 'GAMMA_T '
     zr(jmelr )   = gt
     zk8(jmelk+1) = 'GAMMA_F '

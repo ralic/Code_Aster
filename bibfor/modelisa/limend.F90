@@ -19,6 +19,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
 #include "asterfort/jedema.h"
@@ -26,6 +27,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/rccome.h"
 #include "asterfort/utmess.h"
     aster_logical, intent(out) :: limit
     character(len=*), intent(in) :: nommaz, nomres, forvie
@@ -49,9 +51,10 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
 !
     integer :: iret, ivalr, nbr, nbc, ivalk, nbk, nbf, ik, ivalf, iprol
-    integer :: jprof, nbmx, np, ibid
+    integer :: jprof, nbmx, np, ibid, ind
     real(kind=8) :: vallim, nlimim
-    character(len=10) :: nomphe
+    character(len=6) :: k6
+    character(len=32) :: nomphe
     character(len=8) :: nomfon, nommat, nompf
     character(len=16) :: typfon
     character(len=24) :: chnom, cbid
@@ -71,16 +74,17 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
 !    DANS LE CAS OU LE MOT CLE EST WOHLER
 !
-        call jeexin(nommat//'.'//nomphe//'.VALR', iret)
-        ASSERT(iret .ne. 0)
+        call rccome(nommat, nomphe, iret, ind_nomrc=ind)
+        ASSERT(iret .eq. 0)
+        call codent(ind,'D0',K6)
+        call jeexin(nommat//'.CPT.'//k6//'.VALR', iret)
+        call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', ivalr)
+        call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
 !
-        call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
-!
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
-        call jeexin(nommat//'.'//nomphe//'.VALK', iret)
-        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
+        call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
+        call jeexin(nommat//'.CPT.'//k6//'.VALK', iret)
+        call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', ivalk)
+        call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
 !
 !    NOMBRE DE FONCTIONS PRESENTES
 !
@@ -111,16 +115,17 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
 !    DANS LE CAS OU LE MOT CLE EST MANSON_COFFIN
 !
-        call jeexin(nommat//'.'//nomphe//'.VALR', iret)
-        ASSERT(iret .ne. 0)
+        call rccome(nommat, nomphe, iret, ind_nomrc=ind)
+        ASSERT(iret .eq. 0)
+        call codent(ind,'D0',K6)
 !
-        call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
+        call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', ivalr)
+        call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
 !
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
-        call jeexin(nommat//'.'//nomphe//'.VALK', iret)
-        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
+        call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
+        call jeexin(nommat//'.CPT.'//k6//'.VALK', iret)
+        call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', ivalk)
+        call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
 !
 !    NOMBRE DE FONCTIONS PRESENTES
 !

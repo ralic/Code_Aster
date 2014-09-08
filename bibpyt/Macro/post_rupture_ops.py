@@ -127,14 +127,16 @@ def caract_mater(self,mater):
    """ recupere le module d'Young et le coefficient de poisson du materiau"""
    matph = mater.sdj.NOMRC.get()
    phenom=None
+   ind=0
    for cmpt in matph :
+      ind=ind+1 
       if cmpt[:4]=='ELAS' :
          phenom=cmpt
          break
    if phenom==None :
      UTMESS('F','RUPTURE0_5')      
-
-   compor = sd_compor1('%-8s.%s' % (mater.nom, phenom))
+   ns = '{:06d}'.format(ind)
+   compor = sd_compor1('%-8s.CPT.%s' % (mater.nom, ns))
    valk = [s.strip() for s in compor.VALK.get()]
    valr = compor.VALR.get()
    dicmat = dict(zip(valk,valr))

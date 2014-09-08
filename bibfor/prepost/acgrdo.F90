@@ -101,7 +101,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     integer :: i, j, k, l, ibid, jprof, nparma, np, icodre(1), adr, iret, ipar
     integer :: decal, paract(35), adrl, nbf, nbtot
     character(len=24) :: chnom, cbid
-    character(len=16) :: phenom, typcha
+    character(len=16) :: typcha
     character(len=8) :: nompf(35), nompar(35), nomgrd
     aster_logical :: endur, plcicr, lbid
 !----------------------------------------------------------------
@@ -730,7 +730,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             endif
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
-            call rccome(nommat, 'FATIGUE', phenom, icodre(1))
+            call rccome(nommat, 'FATIGUE', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif
@@ -821,7 +821,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 ! CELAAS DE SENS.
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
-            call rccome(nommat, 'FATIGUE', phenom, icodre(1))
+            call rccome(nommat, 'FATIGUE', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
             endif

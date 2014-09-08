@@ -31,11 +31,11 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbr, nbc, nbk, nbobj
+    integer :: nbr, nbc, nbk, nbobj, ind
     real(kind=8) :: valr(*)
     complex(kind=8) :: valc(*)
     character(len=8) :: nommat, valk(*)
-    character(len=16) :: nomrc
+    character(len=32) :: nomrc
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,16 +82,15 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     integer ::   ibk, nbmax, vali
     integer :: i, k, ii,  jrpv, jvale, nbcoup, n
     integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2
-    character(len=16), pointer :: nomobj(:) => null()
+    character(len=32), pointer :: nomobj(:) => null()
     character(len=8), pointer :: typobj(:) => null()
     character(len=24), pointer :: prol(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     AS_ALLOCATE(vk8=typobj, size=nbobj)
-    AS_ALLOCATE(vk16=nomobj, size=nbobj)
-    call getmjm(nomrc, 1, nbobj, nomobj, typobj,&
-                n)
+    AS_ALLOCATE(vk32=nomobj, size=nbobj)
+    call getmjm(nomrc, 1, nbobj, nomobj, typobj, n)
 !
 !     ON VERIFIE QUE 2 MOTS CLES DIFFERENTS N'ONT PAS LES MEMES
 !     8 PREMIERS CARACTERES :
@@ -223,6 +222,10 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                 else if (nomobj(i) .eq. 'COEF_MASS_AJOU') then
                     valk(nbr+nbc+nbk) = 'CM'
                 else
+                    ind=lxlgut(nomobj(i))+1
+                    if (ind .gt. 9) then
+                       call utmess('A','MODELISA9_84', sk=nomobj(i))
+                    endif   
                     valk(nbr+nbc+nbk) = nomobj(i)
                 endif
             endif
@@ -473,7 +476,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     endif
 !
     AS_DEALLOCATE(vk8=typobj)
-    AS_DEALLOCATE(vk16=nomobj)
+    AS_DEALLOCATE(vk32=nomobj)
 ! FIN ------------------------------------------------------------------
     call jedema()
 end subroutine

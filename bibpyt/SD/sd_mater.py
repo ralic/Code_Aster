@@ -74,7 +74,7 @@ class sd_compor1(AsBase):
 class sd_mater(AsBase):
 #----------------------
     nomj = SDNom(fin=8)
-    NOMRC = AsVK16(SDNom(nomj='.MATERIAU.NOMRC'), )
+    NOMRC = AsVK32(SDNom(nomj='.MATERIAU.NOMRC'), )
     rdep = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&RDEP')))  # à documenter
     mzp  = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&MZP' )))  # à documenter
 
@@ -84,11 +84,10 @@ class sd_mater(AsBase):
 
     # indirection vers les sd_compor1 de NOMRC :
     def check_mater_i_NOMRC(self, checker):
-        lnom = self.NOMRC.get()
-        if not lnom: return
-        for nom in lnom:
-            if not nom.strip(): continue
-            nomc1=self.nomj()[:8]+'.'+nom
+        nbc=self.NOMRC.lonuti
+        for i in range(1,nbc+1):
+            ns = '{:06d}'.format(i)
+            nomc1=self.nomj()[:8]+'.CPT.'+ns
             comp1 = sd_compor1(nomc1)
 
             # parfois, comp1 est vide : ssls115g/DEFI_COQU_MULT

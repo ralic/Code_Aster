@@ -32,8 +32,9 @@ subroutine op0005()
 #include "asterc/getmjm.h"
 #include "asterc/getres.h"
 #include "asterfort/aniver.h"
+#include "asterfort/codent.h"
 #include "asterfort/getvid.h"
-#include "asterfort/indk16.h"
+#include "asterfort/indk32.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -48,29 +49,33 @@ subroutine op0005()
 #include "asterfort/rcstoc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nmocl
-    parameter         (nmocl=200)
-    character(len=16) :: motcle(nmocl)
+!
     integer :: nbobm, jnbobj, niv, n1
     integer :: jtypfo, irc, jvalrm, jvalcm, jvalkm, jnomrc
     integer :: ind, ifm, i, k, nbrcme
     integer :: nbr, nbc, nbk, nbk2
     integer :: nbmati, jnorci, krc
+    character(len=6) :: nom
     character(len=8) :: matout, matin, schout
-    character(len=16) :: nomrc, typmat, materi, k16bid
+    character(len=16) :: typmat, materi, k16bid
     character(len=19) :: noobrc
     character(len=24) :: valk(4)
+    character(len=32) :: nomrc
+    character(len=32), allocatable :: motcle(:)   
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     call getres(matout, typmat, materi)
 !
-    nbrcme = 0
-    call getmat(nbrcme, motcle)
+    nbrcme = -1
+    call getmat(nbrcme, k16bid)
 !
-    if (nbrcme .le. 0) then
+    if (nbrcme .eq. 0) then
         call utmess('F', 'MODELISA10_16')
+    else 
+        allocate(motcle(nbrcme))   
+        call getmat(nbrcme, motcle) 
     endif
 !
     matin = ' '
@@ -84,7 +89,7 @@ subroutine op0005()
         call jelira(matin//'.MATERIAU.NOMRC', 'LONMAX', nbmati)
         do 10 irc = 1, nbrcme
             nomrc = motcle(irc)
-            ind = indk16 ( zk16(jnorci), nomrc, 1, nbmati )
+            ind = indk32 ( zk32(jnorci), nomrc, 1, nbmati )
             if (ind .ne. 0) then
                 valk(1)=matin
                 valk(2)=nomrc
@@ -109,10 +114,10 @@ subroutine op0005()
         call jedetr(matout//'.MATERIAU.NOMRC')
     endif
 !
-    call wkvect(matout//'.MATERIAU.NOMRC', 'G V K16', nbrcme+nbmati, jnomrc)
+    call wkvect(matout//'.MATERIAU.NOMRC', 'G V K32', nbrcme+nbmati, jnomrc)
 !
     do irc = 1, nbmati
-        zk16(jnomrc+irc-1) = zk16(jnorci+irc-1)
+        zk32(jnomrc+irc-1) = zk32(jnorci+irc-1)
     end do
 !
     call wkvect('&&OP0005.NBOBJE', 'V V I', nbrcme, jnbobj)
@@ -129,15 +134,18 @@ subroutine op0005()
             zl(jtypfo+irc-1) = .false.
         endif
         krc = krc + 1
-        zk16(jnomrc+krc-1) = nomrc
-        noobrc=matout//'.'//nomrc(1:10)
+        zk32(jnomrc+krc-1) = nomrc
+        call codent(krc, 'D0', nom)
+        noobrc=matout//'.CPT.'//nom
 !
+        ind=lxlgut(nomrc)+1
+        if (ind .gt. 32) then
+            call utmess('F','MODELISA9_83', sk=nomrc)
+        endif   
         if (zl(jtypfo+irc-1)) then
-            ind=lxlgut(nomrc)+1
             nomrc(ind:ind+2) = '_FO'
         endif
-        call getmjm(nomrc, 1, 0, k16bid, k16bid,&
-                    nbobm)
+        call getmjm(nomrc, 1, 0, k16bid, k16bid, nbobm)
         nbobm = - nbobm
         if (nbobm .eq. 0) then
             call utmess('F', 'MODELISA9_80', sk=nomrc)
@@ -161,13 +169,14 @@ subroutine op0005()
     write (ifm,'(1X)')
     write (ifm,'(1X,2A)') 'MATERIAU : ', matout
     call jeveuo(matout//'.MATERIAU.NOMRC', 'L', jnomrc)
-    write (ifm,'(1X,A,A16)') 'RELATION DE COMPORTEMENT: ',zk16(jnomrc)
-    write (ifm,'(27X,A16)') (zk16(jnomrc+k-1),k=2,nbrcme)
+    write (ifm,'(1X,A,A16)') 'RELATION DE COMPORTEMENT: ',zk32(jnomrc)
+    write (ifm,'(27X,A16)') (zk32(jnomrc+k-1),k=2,nbrcme)
     write (ifm,'(1X)')
 !
     if (niv .eq. 2) then
         do 200 k = 1, nbrcme
-            noobrc=matout//'.'//zk16(jnomrc+k-1)(1:10)
+            call codent(k, 'D0', nom)
+            noobrc=matout//'.CPT.'//nom
             call jeveuo(noobrc//'.VALR', 'L', jvalrm)
             call jeveuo(noobrc//'.VALC', 'L', jvalcm)
             call jeveuo(noobrc//'.VALK', 'L', jvalkm)
@@ -175,8 +184,7 @@ subroutine op0005()
             call jelira(noobrc//'.VALC', 'LONUTI', nbc)
             call jelira(noobrc//'.VALK', 'LONUTI', nbk2)
             nbk=(nbk2-nbr-nbc)/2
-            write(ifm,'(1X,2A)') 'PARAMETRES DE LA RELATION : ',zk16(&
-            jnomrc+k-1)
+            write(ifm,'(1X,2A)') 'PARAMETRES DE LA RELATION : ',zk32(jnomrc+k-1)
             write(ifm,'(5(3X,A8,5X))') (zk8(jvalkm-1+i),i=1,nbr)
             write(ifm,'(5(3X,G13.6))') (zr (jvalrm-1+i),i=1,nbr)
             write(ifm,'(5(3X,A8,5X))') (zk8(jvalkm-1+i),i=nbr+1,nbr+&
@@ -191,6 +199,8 @@ subroutine op0005()
     endif
 !
     call aniver(matout)
-!
+! 
+    deallocate(motcle)
+
     call jedema()
 end subroutine

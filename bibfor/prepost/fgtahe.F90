@@ -43,7 +43,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 !
     integer :: icodwo, icodma, icodba, icodhs, icodre(3)
     character(len=8) :: nommat, nomfo1, nomnap, cara
-    character(len=16) :: pheno, phenom
+    character(len=16) :: pheno
 !
 !-----------------------------------------------------------------------
     integer :: nbval
@@ -67,7 +67,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         endif
         call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
-        call rccome(nommat, pheno, phenom, icodre(1))
+        call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif
@@ -95,7 +95,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         endif
         call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
-        call rccome(nommat, pheno, phenom, icodre(1))
+        call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif

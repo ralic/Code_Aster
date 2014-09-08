@@ -17,6 +17,7 @@ subroutine rcpare(nommat, pheno, para, icodre)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterfort/codent.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: nommat, pheno, para
@@ -36,34 +37,39 @@ subroutine rcpare(nommat, pheno, para, icodre)
 !
 ! ----------------------------------------------------------------------
 ! DEB ------------------------------------------------------------------
+    character(len=6) ::  k6
     character(len=8) ::  nomma2
     character(len=10) :: pheno2
-    character(len=32) :: ncomr, ncomc, ncomk
-    integer :: nbpar, nbr, nbc, nbk
+    character(len=32) :: ncomr, ncomc, ncomk, ncomp
+    integer :: nbpar, nbr, nbc, nbk, nbcomp, icomp
 !
 !-----------------------------------------------------------------------
-    integer :: i, ipar
+    integer :: i, j, ipar
 !-----------------------------------------------------------------------
-    icodre = 0
+    icodre = 1
     pheno2=pheno
     nomma2=nommat
-!
-    ncomr = nomma2//'.'//pheno2//'.VALR        '
-    ncomc = nomma2//'.'//pheno2//'.VALC        '
-    ncomk = nomma2//'.'//pheno2//'.VALK        '
-    call jelira(ncomr, 'LONUTI', nbr)
-    call jelira(ncomc, 'LONUTI', nbc)
-    call jelira(ncomk, 'LONUTI', nbk)
-    call jeveuo(ncomk, 'L', ipar)
-    nbpar = nbr + nbc + nbk/2
-    do 10 i = 1, nbpar
-        if (para .eq. zk8(ipar+i-1)(1:len(para))) then
-            goto 999
-        endif
-10  end do
-    icodre = 1
-    goto 999
-!
-999  continue
+!    
+    ncomp = nommat//'.MATERIAU.NOMRC         '
+    call jelira(ncomp, 'LONUTI', nbcomp)
+    call jeveuo(ncomp, 'L', icomp)
+    do i = 1, nbcomp
+       if (pheno2 .eq. zk32(icomp+i-1)(1:len(pheno2))) then            
+          call codent(i, 'D0', k6)
+          ncomr = nomma2//'.CPT.'//k6//'.VALR        '
+          ncomc = nomma2//'.CPT.'//k6//'.VALC        '
+          ncomk = nomma2//'.CPT.'//k6//'.VALK        '
+          call jelira(ncomr, 'LONUTI', nbr)
+          call jelira(ncomc, 'LONUTI', nbc)
+          call jelira(ncomk, 'LONUTI', nbk)
+          call jeveuo(ncomk, 'L', ipar)
+          nbpar = nbr + nbc + nbk/2
+          do j = 1, nbpar
+             if (para .eq. zk8(ipar+j-1)(1:len(para))) then
+               icodre = 0
+             endif
+          end do
+       endif
+    end do  
 ! FIN ------------------------------------------------------------------
 end subroutine
