@@ -47,8 +47,9 @@ def calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression):
 
     # copy the modes concept in a temporary concept, in order to free its name
     __modes_temp = EXTR_MODE( FILTRE_MODE=_F( MODE=modes,
-                                             TOUT_ORDRE='OUI') )
-    DETRUIRE( CONCEPT=_F(NOM = modes) )
+                                              TOUT_ORDRE='OUI') )
+    DETRUIRE( CONCEPT=_F(NOM = modes),
+              INFO=1 )
 
     impr_tout = False
 
