@@ -23,7 +23,6 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 #include "asterfort/impfoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmext0.h"
@@ -78,15 +77,14 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 !
     suiinf = sdsuiv(1:14)//'     .INFO'
     call jeveuo(suiinf, 'L', jsuiin)
-    nbocc = zi(jsuiin-1+1)
+    nbocc  = zi(jsuiin-1+1)
+    nbcham = zi(jsuiin-1+6)
     if (nbocc .eq. 0) goto 999
 !
 ! --- SD LISTE DES CHAMPS
 !
     suicha = sdsuiv(1:14)//'     .CHAM'
     call jeveuo(suicha, 'L', jsuich)
-    call jelira(suicha, 'LONMAX', ival=nbcham)
-    nbcham = nbcham / 2
 !
 ! --- SD TYPE D'EXTRACTIONS
 !
@@ -106,7 +104,7 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 !
 ! ----- NOM DU CHAMP
 !
-        icham = zi(jsuiin+4+7*(iocc-1)+7-1)
+        icham = zi(jsuiin+7+7*(iocc-1)+7-1)
         nomcha = zk24(jsuich+2*(icham-1)+1-1)
         nomchs = zk24(jsuich+2*(icham-1)+2-1)
         if (nomcha .eq. 'NONE') goto 99
@@ -121,11 +119,11 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 !
 ! ----- NOMBRE DE COMPOSANTES/NOEUDS/MAILLES
 !
-        nbcmp = zi(jsuiin+4+7*(iocc-1)-1+1)
-        nbno = zi(jsuiin+4+7*(iocc-1)-1+2)
-        nbma = zi(jsuiin+4+7*(iocc-1)-1+3)
-        nbpi = zi(jsuiin+4+7*(iocc-1)-1+4)
-        nbspi = zi(jsuiin+4+7*(iocc-1)-1+5)
+        nbcmp = zi(jsuiin+7+7*(iocc-1)-1+1)
+        nbno = zi(jsuiin+7+7*(iocc-1)-1+2)
+        nbma = zi(jsuiin+7+7*(iocc-1)-1+3)
+        nbpi = zi(jsuiin+7+7*(iocc-1)-1+4)
+        nbspi = zi(jsuiin+7+7*(iocc-1)-1+5)
 !
 ! ----- ACCES LISTES
 !

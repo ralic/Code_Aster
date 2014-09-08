@@ -68,13 +68,6 @@ implicit none
     call jeveuo(extr_info, 'L', vi = v_extr_info)
     nb_keyw_fact = v_extr_info(1)
 !
-! --- ACCES DE LA SD
-!
-!    obsinf = sd_obsv(1:14)//'     .INFO'
-!    obsact = sd_obsv(1:14)//'     .ACTI'
-!    call jeveuo(obsinf, 'L', jobsin)
-!    nb_obsv = zi(jobsin-1+1)
-!
     if (nb_keyw_fact .ne. 0) then
 !
 ! ----- Access to extraction flag vector

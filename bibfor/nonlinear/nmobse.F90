@@ -6,7 +6,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmext0.h"
 #include "asterfort/nmext1.h"
@@ -101,14 +100,13 @@ implicit none
     extr_info    = sdextr_obsv(1:14)//'     .INFO'
     call jeveuo(extr_info, 'L', vi = v_extr_info)
     nb_keyw_fact = v_extr_info(1)
+    nb_field     = v_extr_info(6)
     ASSERT(nb_keyw_fact.le.99)
 !
 ! - Get extraction field vector
 !
     extr_field = sdextr_obsv(1:14)//'     .CHAM'
     call jeveuo(extr_field, 'L', vk24 = v_extr_field)
-    call jelira(extr_field, 'LONMAX', ival=nb_field)
-    nb_field = nb_field / 2
 !
 ! - Get extraction type vector
 !
@@ -138,7 +136,7 @@ implicit none
 !
 ! --------- Type of field
 !
-            i_field      = v_extr_info(4+7*(i_keyw_fact-1)+7)
+            i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
             field_type   = v_extr_field(2*(i_field-1)+1)
             field_s      = v_extr_field(2*(i_field-1)+2)
             if (field_type .ne. 'NONE') then
@@ -153,11 +151,11 @@ implicit none
 !
 ! ------------- Get length of lists
 !
-                nb_cmp  = v_extr_info(4+7*(i_keyw_fact-1)+1)
-                nb_node = v_extr_info(4+7*(i_keyw_fact-1)+2)
-                nb_elem = v_extr_info(4+7*(i_keyw_fact-1)+3)
-                nb_poin = v_extr_info(4+7*(i_keyw_fact-1)+4)
-                nb_spoi = v_extr_info(4+7*(i_keyw_fact-1)+5)
+                nb_cmp  = v_extr_info(7+7*(i_keyw_fact-1)+1)
+                nb_node = v_extr_info(7+7*(i_keyw_fact-1)+2)
+                nb_elem = v_extr_info(7+7*(i_keyw_fact-1)+3)
+                nb_poin = v_extr_info(7+7*(i_keyw_fact-1)+4)
+                nb_spoi = v_extr_info(7+7*(i_keyw_fact-1)+5)
 !
 ! ------------- Extraction types
 !

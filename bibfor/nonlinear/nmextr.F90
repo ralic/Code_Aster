@@ -91,7 +91,7 @@ implicit none
 ! - Create information vector
 !
     extr_info = sdextr(1:14)//'     .INFO'
-    call wkvect(extr_info, 'V V I', 7*nb_keyw_fact+4, vi = v_extr_info)
+    call wkvect(extr_info, 'V V I', 7+7*nb_keyw_fact, vi = v_extr_info)
     if (nb_keyw_fact .eq. 0) goto 99
 !
 ! - Create extraction type vector
@@ -131,7 +131,7 @@ implicit none
             i_field  = nb_field
             v_list_field(i_field) = field_type
         endif
-        v_extr_info(4+7*(i_keyw_fact-1)+7) = i_field
+        v_extr_info(7+7*(i_keyw_fact-1)+7) = i_field
     end do
 !
 ! - Create extraction field vector
@@ -165,7 +165,7 @@ implicit none
 !
 ! ----- Type of field
 !
-        i_field      = v_extr_info(4+7*(i_keyw_fact-1)+7)
+        i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
         field_type   = v_extr_field(2*(i_field-1)+1)
         field_s      = v_extr_field(2*(i_field-1)+2)
         if (field_type .eq. 'NONE') then
@@ -216,12 +216,12 @@ implicit none
         v_extr_type(3*(i_keyw_fact-1)+1) = type_extr
         v_extr_type(3*(i_keyw_fact-1)+2) = type_extr_elem
         v_extr_type(3*(i_keyw_fact-1)+3) = type_extr_cmp
-        v_extr_info(4+7*(i_keyw_fact-1)+1) = nb_cmp
-        v_extr_info(4+7*(i_keyw_fact-1)+2) = nb_node
-        v_extr_info(4+7*(i_keyw_fact-1)+3) = nb_elem
-        v_extr_info(4+7*(i_keyw_fact-1)+4) = nb_poin
-        v_extr_info(4+7*(i_keyw_fact-1)+5) = nb_spoi
-        v_extr_info(4+7*(i_keyw_fact-1)+6) = nb_extr_keyw
+        v_extr_info(7+7*(i_keyw_fact-1)+1) = nb_cmp
+        v_extr_info(7+7*(i_keyw_fact-1)+2) = nb_node
+        v_extr_info(7+7*(i_keyw_fact-1)+3) = nb_elem
+        v_extr_info(7+7*(i_keyw_fact-1)+4) = nb_poin
+        v_extr_info(7+7*(i_keyw_fact-1)+5) = nb_spoi
+        v_extr_info(7+7*(i_keyw_fact-1)+6) = nb_extr_keyw
 !
 999     continue
 !
@@ -244,6 +244,9 @@ implicit none
     v_extr_info(2) = nb_extr
     v_extr_info(3) = 1
     v_extr_info(4) = 0
+    v_extr_info(5) = 0
+    v_extr_info(6) = nb_field
+    v_extr_info(7) = 0
 !
     AS_DEALLOCATE(vk24 = v_list_field)
 !
