@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mfront_get_external_state_variable(nomlib, nomsub, nommod, liresu, nbvarc)
-        character(len=*) :: nomlib
-        character(len=*) :: nomsub
-        character(len=*) :: nommod
+    subroutine mfront_get_external_state_variable(pliesv, pnbesv, liresu, nbvarc)
+        integer          :: pliesv
+        integer          :: pnbesv
         character(len=*) :: liresu(*)
         integer          :: nbvarc
     end subroutine mfront_get_external_state_variable

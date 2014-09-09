@@ -1,8 +1,11 @@
-subroutine carc_read(info_carc_valk, info_carc_valr)
+subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/comp_meca_l.h"
+#include "asterfort/comp_meca_mod.h"
+#include "asterfort/dismoi.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvid.h"
@@ -12,6 +15,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 #include "asterc/lcalgo.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterc/umat_get_function.h"
+#include "asterc/mfront_get_pointers.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/jedema.h"
@@ -38,6 +43,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 !
     character(len=16), intent(out) :: info_carc_valk(:)
     real(kind=8), intent(out) :: info_carc_valr(:)
+    character(len=8), intent(in), optional :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,15 +59,16 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc, iret, nbocc
+    integer :: iocc, iret, nbocc, ndim, cpointer_nbvarext, cpointer_namevarext, cpointer_fct_ldc
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
-    aster_logical :: l_kit_thm
-    character(len=16) :: texte(3)
+    aster_logical :: l_kit_thm, l_mfront, l_umat
+    character(len=16) :: texte(3), subr_name, nom_mod_mfront
+    character(len=128) :: libr_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -214,21 +221,52 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
             endif
         endif
 !
+! ----- Get function pointers for mfront
+!
+        cpointer_nbvarext = 0
+        cpointer_namevarext = 0
+        cpointer_fct_ldc = 0
+        call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
+        call comp_meca_l(rela_comp, 'UMAT', l_umat)
+        if ( l_mfront ) then
+            call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
+            call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+            if ( .not. present(model) ) then
+! ------------- CALC_POINT_MAT case
+                ndim = 3
+                nom_mod_mfront = '_Tridimensional'
+            else
+! ------------- STAT_NON_LINE case
+                call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
+                call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
+            endif
+            call mfront_get_pointers(libr_name, subr_name, nom_mod_mfront,&
+                                     cpointer_nbvarext, cpointer_namevarext,&
+                                     cpointer_fct_ldc)
+        elseif ( l_umat ) then
+            call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
+            call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+            call umat_get_function(libr_name, subr_name, cpointer_fct_ldc)
+        endif
+!
 ! ----- Save options in list
 !
-        info_carc_valr(13*(iocc-1) + 1) = 0.d0
-        info_carc_valr(13*(iocc-1) + 2) = type_matr_t
-        info_carc_valr(13*(iocc-1) + 3) = 0.d0
-        info_carc_valr(13*(iocc-1) + 4) = parm_theta
-        info_carc_valr(13*(iocc-1) + 5) = iter_inte_pas
-        info_carc_valr(13*(iocc-1) + 6) = 0.d0
-        info_carc_valr(13*(iocc-1) + 7) = vale_pert_rela
-        info_carc_valr(13*(iocc-1) + 8) = resi_deborst_max
-        info_carc_valr(13*(iocc-1) + 9) = iter_deborst_max
-        info_carc_valr(13*(iocc-1) + 10) = seuil
-        info_carc_valr(13*(iocc-1) + 11) = amplitude
-        info_carc_valr(13*(iocc-1) + 12) = taux_retour
-        info_carc_valr(13*(iocc-1) + 13) = parm_alpha
+        info_carc_valr(18*(iocc-1) + 1) = 0.d0
+        info_carc_valr(18*(iocc-1) + 2) = type_matr_t
+        info_carc_valr(18*(iocc-1) + 3) = 0.d0
+        info_carc_valr(18*(iocc-1) + 4) = parm_theta
+        info_carc_valr(18*(iocc-1) + 5) = iter_inte_pas
+        info_carc_valr(18*(iocc-1) + 6) = 0.d0
+        info_carc_valr(18*(iocc-1) + 7) = vale_pert_rela
+        info_carc_valr(18*(iocc-1) + 8) = resi_deborst_max
+        info_carc_valr(18*(iocc-1) + 9) = iter_deborst_max
+        info_carc_valr(18*(iocc-1) + 10) = seuil
+        info_carc_valr(18*(iocc-1) + 11) = amplitude
+        info_carc_valr(18*(iocc-1) + 12) = taux_retour
+        info_carc_valr(18*(iocc-1) + 13) = parm_alpha
+        info_carc_valr(18*(iocc-1) + 14) = dble(cpointer_nbvarext)
+        info_carc_valr(18*(iocc-1) + 15) = dble(cpointer_namevarext)
+        info_carc_valr(18*(iocc-1) + 16) = dble(cpointer_fct_ldc)
         info_carc_valk(2*(iocc-1) + 1) = rela_comp
         info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do

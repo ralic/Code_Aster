@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine umatwp(nomlib, nomsub, stress, statev, ddsdde,&
+    subroutine umatwp(pfumat, stress, statev, ddsdde,&
                       sse, spd, scd, rpl, ddsddt,&
                       drplde, drpldt, stran, dstran, time,&
                       dtime, temp, dtemp, predef, dpred,&
@@ -24,8 +24,7 @@ interface
                       props, nprops, coords, drot, pnewdt,&
                       celent, dfgrd0, dfgrd1, noel, npt,&
                       layer, kspt, kstep, kinc)
-        character(len=*) :: nomlib
-        character(len=*) :: nomsub
+        integer :: pfumat
         real(kind=8) :: stress(*)
         real(kind=8) :: statev(*)
         real(kind=8) :: ddsdde(*)

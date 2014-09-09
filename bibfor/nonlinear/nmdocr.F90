@@ -67,7 +67,7 @@ subroutine nmdocr(model, carcri)
 !
 ! - Read informations from command file
 !
-    call carc_read(p_info_carc_valk, p_info_carc_valr)
+    call carc_read(p_info_carc_valk, p_info_carc_valr, model)
 !
 ! - Save and check informations in CARCRI <CARTE>
 !

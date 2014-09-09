@@ -77,7 +77,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops
+    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, pfumat
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
     integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, ndsde
     parameter     ( npropmax = 197)
@@ -98,9 +98,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
     character(len=80) :: cmname
     common/tdim/  ntens  , ndi
-!     POUR TECAEL
-    character(len=128) :: nomlib
-    character(len=16) :: nomsub
     integer :: ii, dimaki
 !     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
@@ -128,12 +125,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 
 !     IMPRESSIONS EVENTUELLES EN DEBUG
     call infniv(ifm, niv)
-!
-!     PARAMETRES UMAT STOCKES DANS 'KIT1-KIT9'
-    do 10 ii = 1, dimaki-1
-        nomlib(16*(ii-1)+1:16*ii) = compor(7+ii)
- 10 continue
-    nomsub = compor(7+dimaki)
 
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE UMAT DE DEFI_MATERIAU)
     call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
@@ -204,8 +195,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
         if ((niv.ge.2) .and. (idbg.eq.1)) then
             write(ifm,*)' '
             write(ifm,*)'AVANT APPEL UMAT, INSTANT=',time(2)+dtime
-            write(ifm,*)'     NOM LIBRAIRIE : '//nomlib
-            write(ifm,*)'       NOM ROUTINE : '//nomsub
             write(ifm,*)'NUMERO ELEMENT=',noel
             write(ifm,*)'DEFORMATIONS INSTANT PRECEDENT STRAN='
             write(ifm,'(6(1X,E11.4))') (stran(i),i=1,ntens)
@@ -220,6 +209,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     pnewdt=1.d0
 !!
+    pfumat = int(crit(16))
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         call dcopy(nsig, sigm, 1, stress, 1)
@@ -227,7 +217,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
         call lceqvn(nstatv, vim, statev)
 !
-        call umatwp(nomlib, nomsub, stress, statev, ddsdde,&
+        call umatwp(pfumat, stress, statev, ddsdde,&
                     sse, spd, scd, rpl, ddsddt,&
                     drplde, drpldt, stran, dstran, time,&
                     dtime, temp, dtemp, predef, dpred,&
@@ -238,7 +228,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     else if (option(1:9).eq. 'RIGI_MECA') then
         call r8inir(6, 0.d0, dstran, 1)
-        call umatwp(nomlib, nomsub, sigm, vim, ddsdde,&
+        call umatwp(pfumat, sigm, vim, ddsdde,&
                     sse, spd, scd, rpl, ddsddt,&
                     drplde, drpldt, stran, dstran, time,&
                     dtime, temp, dtemp, predef, dpred,&

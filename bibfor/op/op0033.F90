@@ -85,7 +85,7 @@ subroutine op0033()
     character(len=16) :: option, compor(ncmpma), nompar(ntamax), opt2
     character(len=19) :: codi, sddisc, k19b, sdcrit
     character(len=24) :: sderro
-    real(kind=8) :: instam, instap, ang(7), r8b, carcri(13), fem(9)
+    real(kind=8) :: instam, instap, ang(7), r8b, carcri(18), fem(9)
     real(kind=8) :: deps(9), sigm(6), sigp(6), epsm(9), eps(9), vr(ntamax)
     real(kind=8) :: valimp(9), r(12), rini(12), dy(12), ddy(12), y(12), rac2
     real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)

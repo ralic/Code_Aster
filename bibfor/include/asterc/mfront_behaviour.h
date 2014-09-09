@@ -17,12 +17,11 @@
 !
 interface
     subroutine mfront_behaviour&
-                     (nomlib, nomsub, stress, statev, ddsdde,&
+                     (pfcmfr, stress, statev, ddsdde,&
                       stran, dstran, dtime, temp, dtemp,&
                       predef, dpred, ntens, nstatv, props,&
                       nprops, drot, pnewdt, typmod)
-        character(len=*) :: nomlib
-        character(len=*) :: nomsub
+        integer :: pfcmfr
         real(kind=8) :: stress(*)
         real(kind=8) :: statev(*)
         real(kind=8) :: ddsdde(*)

@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmdorc(compor, carcri, nb_vari, incela)
-        character(len=16), intent(out) :: compor(20)
-        real(kind=8), intent(out) :: carcri(18)
-        integer, intent(out) :: nb_vari
-        integer, intent(out) :: incela
-    end subroutine pmdorc
+    subroutine umat_get_function(nomlib, nomsub, pfumat)
+        character(len=*) :: nomlib
+        character(len=*) :: nomsub
+        integer :: pfumat
+    end subroutine umat_get_function
 end interface

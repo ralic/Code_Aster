@@ -63,8 +63,6 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 #include "asterc/r8nnem.h"
 #include "asterc/mfront_behaviour.h"
 #include "asterc/mfront_get_external_state_variable.h"
-#include "asterc/mfront_set_double_parameter.h"
-#include "asterc/mfront_set_integer_parameter.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lceqvn.h"
@@ -82,7 +80,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !
     integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm, nbvarc
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
-    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin
+    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, pfcmfr
     integer ::      nummod
     parameter     ( npropmax = 197)
     parameter     ( npred = 8)
@@ -102,9 +100,6 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
     character(len=80) :: cmname
     common/tdim/  ntens  , ndi
-!     POUR TECAEL
-    character(len=128) :: nomlib
-    character(len=16) :: nomsub
     integer :: ii, dimaki
 !     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
@@ -132,33 +127,23 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 
 !     IMPRESSIONS EVENTUELLES EN DEBUG
     call infniv(ifm, niv)
-!
-!     PARAMETRES MFRONT STOCKES DANS 'KIT1-KIT9'
-    do 10 ii = 1, dimaki-1
-        nomlib(16*(ii-1)+1:16*ii) = compor(7+ii)
- 10 continue
-    nomsub = compor(7+dimaki)
 
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
     call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE ET DEFORMATIONS ASSOCIEES
     if ( typmod(1)(1:4).eq.'AXIS' ) then
-        nom_mod_mfront = '_Axisymmetrical'
         nummod = 4
     else if ( typmod(1)(1:6).eq.'C_PLAN' ) then
-        nom_mod_mfront = '_PlaneStress'
         nummod = 5
     else if ( typmod(1)(1:6).eq.'D_PLAN' ) then
-        nom_mod_mfront = '_PlaneStrain'
         nummod = 6
     else if ( typmod(1)(1:2).eq.'3D' ) then
-        nom_mod_mfront = '_Tridimensional'
         nummod = 3
     else
         ASSERT(.false.)
     endif
-    call mfront_get_external_state_variable(nomlib, nomsub, nom_mod_mfront, lvarc, nbvarc)
+    call mfront_get_external_state_variable(int(crit(14)), int(crit(15)), lvarc, nbvarc)
     ASSERT(nbvarc.le.npred)
     call mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, lvarc, nbvarc, &
                      temp, dtemp, predef, dpred, neps, epsth, depsth )
@@ -252,8 +237,6 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
         if ((niv.ge.2) .and. (idbg.eq.1)) then
             write(ifm,*)' '
             write(ifm,*)'AVANT APPEL MFRONT, INSTANT=',time(2)+dtime
-            write(ifm,*)'     NOM LIBRAIRIE : '//nomlib
-            write(ifm,*)'       NOM ROUTINE : '//nomsub
             write(ifm,*)'NUMERO ELEMENT=',noel
             write(ifm,*)'DEFORMATIONS INSTANT PRECEDENT STRAN='
             write(ifm,'(6(1X,E11.4))') (stran(i),i=1,ntens)
@@ -293,9 +276,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
         ddsdde(1)= 0.d0
     endif
 !
-    call mfront_set_double_parameter(nomlib, nomsub, nom_mod_mfront, "epsilon", crit(3))
-    call mfront_set_integer_parameter(nomlib, nomsub, nom_mod_mfront,&
-                                      "iterMax", int(crit(1)))
+!   Adresse de la fonction mfront a appeler
+    pfcmfr = int(crit(16))
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         call dcopy(nsig, sigm, 1, stress, 1)
@@ -303,17 +285,17 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !
         call lceqvn(nstatv, vim, statev)
 !
-        call mfront_behaviour(nomlib, nomsub, stress, statev, ddsdde,&
+        call mfront_behaviour(pfcmfr, stress, statev, ddsdde,&
                               stran, dstran, dtime, temp, dtemp,&
                               predef, dpred, ntens, nstatv, props,&
                               nprops, drot, pnewdt, nummod)
 !
     else if (option(1:9).eq. 'RIGI_MECA') then
         call r8inir(6, 0.d0, dstran, 1)
-        call mfront_behaviour(nomlib, nomsub, sigm, vim, ddsdde,&
-                              stran, dstran, dtime, temp, dtemp,&
-                              predef, dpred, ntens, nstatv, props,&
-                              nprops, drot, pnewdt, nummod)
+        call mfront_behaviour(pfcmfr, sigm, vim, ddsdde, stran,&
+                              dstran, dtime, temp, dtemp, predef,&
+                              dpred, ntens, nstatv, props, nprops,&
+                              drot, pnewdt, nummod)
     endif
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then

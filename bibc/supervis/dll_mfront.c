@@ -219,9 +219,35 @@ void DEFMFRONTSETINTEGERWRAP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_pa
 
 void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
                               mfront_get_external_state_variable,
+                              INTEGER* pliesv, INTEGER* pnbesv,
+                              char* txval, STRING_SIZE ltx, INTEGER* nbvarc)
+{
+#ifdef _POSIX
+    /* MFRONT Wrapper
+    */
+
+    char** ext_var = (char**)*pliesv;
+
+    unsigned short* nb_ext_var = (unsigned short*)*pnbesv;
+    AS_ASSERT(*nb_ext_var <= ltx);
+    *nbvarc = *nb_ext_var;
+
+    unsigned short i;
+    for ( i = 0; i < *nb_ext_var; ++i )
+    {
+        SetTabFStr( txval, i, ext_var[i], 8 );
+    }
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
+void DEFMFRONTGETFCTEXTSTVAR(MFRONT_GET_POINTERS,
+                             mfront_get_pointers,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
-    char* txval, STRING_SIZE ltx, INTEGER* nbvarc)
+    INTEGER* pliesv, INTEGER* pnbesv, INTEGER* pfcmfr)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper
@@ -231,6 +257,7 @@ void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
     char* txt_get_ext_var = "_ExternalStateVariables";
     char* txt_nb_ext_var = "_nExternalStateVariables";
     char *valk;
+    int retour = 0;
     INTEGER ibid=0, n0=0, nk=0;
     DOUBLE rbid=0.;
     PyObject* DLL_DICT;
@@ -239,6 +266,21 @@ void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
     libname = MakeCStrFromFStr(nomlib, lnomlib);
     symbol = MakeCStrFromFStr(nomsub, lnomsub);
     modelis = MakeCStrFromFStr(nommod, lnommod);
+
+    if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
+        retour = load_mfront_lib(libname, symbol);
+        if (retour == 1)
+        {
+            nk = 3;
+            valk = MakeTabFStr(nk, VALK_SIZE);
+            SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
+            SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
+            SetTabFStr(valk, 2, (char *)symbol, VALK_SIZE);
+            CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
+            FreeStr(valk);  // uncallable
+        }
+    }
+    *pfcmfr = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
 
     symb_txt_get_ext_var_m = (char *) malloc( strlen(symbol) + strlen(modelis) \
                                               + strlen(txt_get_ext_var) + 1 );
@@ -259,7 +301,7 @@ void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
     strcat(symb_txt_nb_ext_var, txt_nb_ext_var);
 
     tmp = test_mfront_symbol(libname, symb_txt_get_ext_var_m, symb_txt_get_ext_var);
-    if ( tmp == NULL)
+    if ( tmp == NULL )
     {
         nk = 3;
         valk = MakeTabFStr(nk, VALK_SIZE);
@@ -273,20 +315,14 @@ void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
         DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
         DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", tmp, (int)strlen(tmp))
 
-    char** ext_var = (char**)libsymb_get_symbol(DLL_DICT, libname, tmp);
+//     char** test_char = libsymb_get_symbol(DLL_DICT, libname, tmp);
+    *pliesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, tmp);
 
         DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", symbol, (int)strlen(symb_txt_nb_ext_var))
 
     tmp = test_mfront_symbol(libname, symb_txt_nb_ext_var_m, symb_txt_nb_ext_var);
-    unsigned short* nb_ext_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, tmp);
-    AS_ASSERT(*nb_ext_var <= ltx);
-    *nbvarc = *nb_ext_var;
-
-    unsigned short i;
-    for ( i = 0; i < *nb_ext_var; ++i )
-    {
-        SetTabFStr( txval, i, ext_var[i], 8 );
-    }
+//     int* test_int = libsymb_get_symbol(DLL_DICT, libname, tmp);
+    *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, tmp);
 
     FreeStr(libname);
     FreeStr(symbol);
@@ -410,8 +446,7 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 #endif
 }
 
-void DEFMFRONTBEHAVIOURWRAP(MFRONT_BEHAVIOUR, mfront_behaviour,
-    char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
+void DEFMFRONTBEHAVIOURWRAP(MFRONT_BEHAVIOUR, mfront_behaviour, INTEGER* pfcmfr,
     DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* stran,
     DOUBLE* dstran, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
     DOUBLE* predef, DOUBLE* dpred, INTEGER* ntens, INTEGER* nstatv,
@@ -419,45 +454,18 @@ void DEFMFRONTBEHAVIOURWRAP(MFRONT_BEHAVIOUR, mfront_behaviour,
     INTEGER* nummod)
 {
 #ifdef _POSIX
-    /* MFRONT WraPper : wrapper to the MFRONT function through the function pointer
+    /* MFRONT Wrapper : wrapper to the MFRONT function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    int retour;
-    char *libname, *symbol, *valk;
-    INTEGER ibid=0, n0=0, nk=0;
-    DOUBLE rbid=0.;
     FUNC_MFRONT(f_mfront) = NULL;
-    PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
 
-    libname = MakeCStrFromFStr(nomlib, lnomlib);
-    symbol = MakeCStrFromFStr(nomsub, lnomsub);
-
-        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", symbol, (int)strlen(symbol))
-
-    if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
-        retour = load_mfront_lib(libname, symbol);
-        if (retour == 1)
-        {
-            nk = 3;
-            valk = MakeTabFStr(nk, VALK_SIZE);
-            SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
-            SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-            SetTabFStr(valk, 2, (char *)symbol, VALK_SIZE);
-            CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
-            FreeStr(valk);  // uncallable
-        }
-    }
-    f_mfront = (FUNC_MFRONT())libsymb_get_symbol(DLL_DICT, libname, symbol);
+    f_mfront = (FUNC_MFRONT())(*pfcmfr);
 
     CALLMFRONTBEHAVIOUR(*f_mfront,
         stress, statev, ddsdde, stran, dstran,
         dtime, temp, dtemp, predef, dpred,
         ntens, nstatv, props, nprops, drot,
         pnewdt, nummod);
-    FreeStr(libname);
-    FreeStr(symbol);
 #else
     printf("Not available under Windows.\n");
     abort();

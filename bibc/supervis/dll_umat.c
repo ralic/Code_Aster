@@ -57,7 +57,7 @@ void load_umat_lib(const char* libname, const char* symbol)
     FUNC_UMAT(f_umat) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
-    
+
     strcpy(symbol_, symbol);
 
     printf("Loading '%s'... ", libname);
@@ -103,8 +103,39 @@ void load_umat_lib(const char* libname, const char* symbol)
 #endif
 
 
-void DEFUMATWRAP(UMATWP, umatwp,
+void DEFUMATGETFCT(UMAT_GET_FUNCTION, umat_get_function,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
+    INTEGER* pfumat)
+{
+#ifdef _POSIX
+    /* UMAT WraPper : wrapper to get the UMAT function.
+    */
+    char *libname, *symbol;
+    FUNC_UMAT(f_umat) = NULL;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+
+        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
+        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", symbol, (int)strlen(symbol))
+
+    if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
+        load_umat_lib(libname, symbol);
+    }
+    *pfumat = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
+
+    FreeStr(libname);
+    FreeStr(symbol);
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
+
+void DEFUMATWRAP(UMATWP, umatwp, INTEGER* pfumat,
     DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse, DOUBLE* spd, DOUBLE* scd,
     DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde, DOUBLE* drpldt,
     DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
@@ -118,29 +149,15 @@ void DEFUMATWRAP(UMATWP, umatwp,
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    char *libname, *symbol;
     FUNC_UMAT(f_umat) = NULL;
-    PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
-    
-    libname = MakeCStrFromFStr(nomlib, lnomlib);
-    symbol = MakeCStrFromFStr(nomsub, lnomsub);
 
-        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", symbol, (int)strlen(symbol))
-    
-    if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
-        load_umat_lib(libname, symbol);
-    }
-    f_umat = (FUNC_UMAT())libsymb_get_symbol(DLL_DICT, libname, symbol);
+    f_umat = (FUNC_UMAT())(*pfumat);
 
     CALLUMAT(*f_umat,
         stress, statev, ddsdde, sse, spd, scd, rpl, ddsddt, drplde, drpldt,
         stran, dstran, time, dtime, temp, dtemp, predef, dpred, cmname, 
         ndi, nshr, ntens, nstatv, props, nprops, coords, drot, pnewdt, 
         celent, dfgrd0, dfgrd1, noel, npt, layer, kspt, kstep, kinc );
-    FreeStr(libname);
-    FreeStr(symbol);
 #else
     printf("Not available under Windows.\n");
     abort();
