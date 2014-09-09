@@ -16,9 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmobse(meshz, sd_obsv, time)
+    subroutine nmobse(meshz     , sd_obsv  , time,&
+                      cara_elemz, modelz   , matez    , compor, disp_curr,&
+                      strx_curr , varc_curr, varc_refe)
         character(len=*), intent(in) :: meshz
         character(len=19), intent(in) :: sd_obsv
         real(kind=8), intent(in) :: time
+        character(len=*), optional, intent(in) :: modelz
+        character(len=*), optional, intent(in) :: cara_elemz
+        character(len=*), optional, intent(in) :: matez
+        character(len=19), optional, intent(in) :: compor
+        character(len=*), optional, intent(in) :: disp_curr
+        character(len=*), optional, intent(in) :: strx_curr
+        character(len=*), optional, intent(in) :: varc_curr
+        character(len=*), optional, intent(in) :: varc_refe
     end subroutine nmobse
 end interface

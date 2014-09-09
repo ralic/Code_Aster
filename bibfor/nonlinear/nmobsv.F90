@@ -1,4 +1,6 @@
-subroutine nmobsv(meshz, sddisc, sd_obsv, nume_time, sd_inout)
+subroutine nmobsv(meshz     , modelz, sddisc, sd_obsv  , nume_time,&
+                  cara_elemz, matez , compor, varc_refe, valinc   ,&
+                  sd_inout)
 !
 implicit none
 !
@@ -6,6 +8,7 @@ implicit none
 #include "asterfort/diinst.h"
 #include "asterfort/lobs.h"
 #include "asterfort/nmobse.h"
+#include "asterfort/nmchex.h"
 #include "asterfort/nmextd.h"
 #include "asterfort/jeveuo.h"
 !
@@ -31,6 +34,12 @@ implicit none
     character(len=19), intent(in) :: sd_obsv
     integer, intent(in) :: nume_time
     character(len=19), intent(in) :: sddisc
+    character(len=*), intent(in) :: cara_elemz
+    character(len=*), intent(in) :: matez
+    character(len=*), intent(in) :: modelz
+    character(len=19), intent(in) :: compor
+    character(len=*), intent(in) :: varc_refe
+    character(len=19), intent(in) :: valinc(*)
     character(len=24), optional, intent(in) :: sd_inout
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,12 +54,19 @@ implicit none
 ! In  sddisc           : datastructure for discretization
 ! In  sd_obsv          : datastructure for observation parameters
 ! In  nume_time        : index of time
+! In  model            : name of model
+! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
+! In  mate             : name of material characteristics (field)
+! In  compor           : name of <CARTE> COMPOR
+! In  varc_refe        : command variable for reference
+! In  valinc           : hat variable for algorithm fields
 ! In  sd_inout         : datastructure for input/output parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: time
     aster_logical :: l_obsv
+    character(len=19) :: disp_curr, strx_curr, varc_curr
     character(len=24) :: field_type
     character(len=19) :: field
     integer :: i_keyw_fact, nb_keyw_fact, i_field 
@@ -71,10 +87,18 @@ implicit none
 !
     call lobs(sd_obsv, nume_time, time, l_obsv)
 !
+! - Get fields
+!
+    call nmchex(valinc, 'VALINC', 'DEPPLU', disp_curr)
+    call nmchex(valinc, 'VALINC', 'STRPLU', strx_curr)
+    call nmchex(valinc, 'VALINC', 'COMPLU', varc_curr)
+!
 ! - Make observation 
 !
     if (l_obsv) then
-        call nmobse(meshz, sd_obsv, time)
+        call nmobse(meshz     , sd_obsv  , time,&
+                    cara_elemz, modelz   , matez    , compor, disp_curr,&
+                    strx_curr , varc_curr, varc_refe)
     endif
 !
 ! - Change fields after initial observation

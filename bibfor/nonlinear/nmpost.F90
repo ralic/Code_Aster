@@ -1,8 +1,8 @@
-subroutine nmpost(modele, noma  , numedd, numfix, carele,&
+subroutine nmpost(modele, mesh  , numedd, numfix, carele,&
                   compor, solveu, numins, mate  , comref,&
                   lischa, defico, resoco, resocu, parmet,&
                   parcon, fonact, carcri, sdimpr, sdstat,&
-                  sddisc, sdtime, sdobse, sderro, sddyna,&
+                  sddisc, sdtime, sd_obsv, sderro, sddyna,&
                   sdpost, valinc, solalg, meelem, measse,&
                   veelem, veasse, sdener, sdcriq, eta)
 !
@@ -39,13 +39,14 @@ implicit none
 ! aslint: disable=W1504
 !
     integer :: numins
-    character(len=8) :: noma
+    character(len=8), intent(in) :: mesh
     real(kind=8) :: parmet(*), parcon(*), eta
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico, resocu
     character(len=19) :: solveu
     character(len=19) :: lischa, sdener
-    character(len=19) :: sddisc, sddyna, sdpost, sdobse
+    character(len=19) :: sddisc, sddyna, sdpost
+    character(len=19), intent(in) :: sd_obsv
     character(len=24) :: modele, numedd, numfix, compor
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -112,7 +113,7 @@ implicit none
 ! --- CALCUL EVENTUEL DE L'INDICATEUR D'ERREUR TEMPORELLE THM
 !
     if (lerrt) then
-        call nmetca(modele, noma, mate, sddisc, sdcriq,&
+        call nmetca(modele, mesh, mate, sddisc, sdcriq,&
                     numins, valinc)
     endif
 !
@@ -121,7 +122,7 @@ implicit none
     if (lcont) then
         call nmtime(sdtime, 'INI', 'POST_TRAITEMENT')
         call nmtime(sdtime, 'RUN', 'POST_TRAITEMENT')
-        call cfmxpo(noma, modele, defico, resoco, numins,&
+        call cfmxpo(mesh, modele, defico, resoco, numins,&
                     sddisc, sdstat, solalg, valinc, veasse)
         call nmtime(sdtime, 'END', 'POST_TRAITEMENT')
     endif
@@ -153,7 +154,8 @@ implicit none
 !
 ! - Make observation
 !
-    call nmobsv(noma, sddisc, sdobse, numins)
+    call nmobsv(mesh  , modele, sddisc, sd_obsv, numins,&
+                carele, mate  , compor, comref , valinc)
 !
 99  continue
 !

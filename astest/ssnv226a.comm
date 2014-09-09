@@ -198,6 +198,21 @@ SOLNL=CALC_CHAMP(reuse =SOLNL,
                  RESULTAT=SOLNL,
                  DEFORMATION=('EPSI_ELGA','EPSP_ELGA',),);
 
+TAB_OBS=RECU_TABLE(CO=SOLNL,
+                   NOM_TABLE='OBSERVATION',);
+
+
+# AUTRE_ASTER: EPSI_ELGA computed by previous CALC_CHAMP
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           VALE_CALC=-0.0191186810113,
+           VALE_REFE=-0.0191186810113,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NUME_OBSE',
+                     VALE_I=303,),),
+           )
 
 # Calcul des moyennes
 

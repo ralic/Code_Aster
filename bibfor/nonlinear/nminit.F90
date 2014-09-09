@@ -338,7 +338,9 @@ implicit none
 !
 ! - Make initial observation
 !
-    call nmobsv(mesh, sddisc, sd_obsv, numins, sd_inout)
+    call nmobsv(mesh    , model, sddisc, sd_obsv  , numins,&
+                carele  , mate , compor, varc_refe, valinc,&
+                sd_inout)
 !
 !NS   ICI ON UTILISE LISCPY A LA PLACE DE COPISD POUR
 !NS   RESPECTER L'ESPRIT DE COPISD QUI NE SERT QU'A

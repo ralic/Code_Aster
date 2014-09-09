@@ -1,4 +1,6 @@
-subroutine nmobse(meshz, sd_obsv, time)
+subroutine nmobse(meshz     , sd_obsv  , time,&
+                  cara_elemz, modelz   , matez    , compor, disp_curr,&
+                  strx_curr , varc_curr, varc_refe)
 !
 implicit none
 !
@@ -7,6 +9,7 @@ implicit none
 #include "asterfort/impfoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nmextr_comp.h"
 #include "asterfort/nmext0.h"
 #include "asterfort/nmext1.h"
 #include "asterfort/nmobs2.h"
@@ -33,6 +36,14 @@ implicit none
     character(len=*), intent(in) :: meshz
     character(len=19), intent(in) :: sd_obsv
     real(kind=8), intent(in) :: time
+    character(len=*), optional, intent(in) :: cara_elemz
+    character(len=*), optional, intent(in) :: matez
+    character(len=*), optional, intent(in) :: modelz
+    character(len=19), optional, intent(in) :: compor
+    character(len=*), optional, intent(in) :: disp_curr
+    character(len=*), optional, intent(in) :: strx_curr
+    character(len=*), optional, intent(in) :: varc_curr
+    character(len=*), optional, intent(in) :: varc_refe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,6 +56,14 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  time             : current time
 ! In  sd_obsv          : datastructure for observation parameters
+! In  model            : name of model
+! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
+! In  mate             : name of material characteristics (field)
+! In  compor           : name of <CARTE> COMPOR
+! In  disp_curr        : current displacements
+! In  varc_curr        : command variable for current time
+! In  varc_refe        : command variable for reference
+! In  strx_curr        : fibers information for current time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +71,13 @@ implicit none
     character(len=14) :: sdextr_obsv
     character(len=19) :: tabl_name
     character(len=80) :: title
-    integer :: nb_cmp, nb_node, nb_elem, nb_field
+    integer :: nb_cmp, nb_node, nb_elem, nb_field, nb_field_comp
     integer :: nb_poin, nb_spoi
-    integer :: i_keyw_fact, nb_keyw_fact, nb_obsf_effe, i_field
+    integer :: i_keyw_fact, nb_keyw_fact, nb_obsf_effe, i_field, i_field_comp
     character(len=2) :: chaine
     character(len=24) :: field_type, field_s
     character(len=4) :: field_disc
-    character(len=19) :: field
+    character(len=19) :: field, ligrel, field_comp
     character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, mesh
     character(len=19) :: work_poin, work_node, work_elem
     aster_logical :: l_obsv
@@ -66,11 +85,12 @@ implicit none
     character(len=80), pointer :: v_obsv_titl(:) => null()
     character(len=24) :: obsv_tabl
     character(len=24), pointer :: v_obsv_tabl(:) => null()
-    character(len=24) :: extr_info, extr_type, extr_flag, extr_field
+    character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
     integer, pointer :: v_extr_info(:) => null()
     character(len=8), pointer :: v_extr_type(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()
+    character(len=24), pointer :: v_extr_comp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,8 +115,9 @@ implicit none
 !
     extr_info    = sdextr_obsv(1:14)//'     .INFO'
     call jeveuo(extr_info, 'L', vi = v_extr_info)
-    nb_keyw_fact = v_extr_info(1)
-    nb_field     = v_extr_info(6)
+    nb_keyw_fact  = v_extr_info(1)
+    nb_field      = v_extr_info(6)
+    nb_field_comp = v_extr_info(7)
     ASSERT(nb_keyw_fact.le.99)
 !
 ! - Get extraction field vector
@@ -113,6 +134,25 @@ implicit none
 !
     extr_flag = sdextr_obsv(1:14)//'     .ACTI'
     call jeveuo(extr_flag, 'L', vl = v_extr_flag)
+!
+! - Get computed fields
+!
+    extr_comp = sdextr_obsv(1:14)//'     .COMP'
+!
+! - Fields to compute (not a default in nonlinear operator)
+!
+    if (nb_field_comp.ne.0) then
+        call jeveuo(extr_comp , 'L' , vk24 = v_extr_comp)
+        do i_field_comp = 1, nb_field_comp
+            field_comp = v_extr_comp(4*(i_field_comp-1)+1)(1:19)
+            field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4) 
+            field_type = v_extr_comp(4*(i_field_comp-1)+3)
+            ligrel     = v_extr_comp(4*(i_field_comp-1)+4)(1:19)
+            call nmextr_comp(field_comp, field_disc, field_type, meshz    , modelz   ,&
+                             cara_elemz, matez     , compor    , disp_curr, strx_curr,&
+                             varc_curr , varc_refe , time      , ligrelz = ligrel)
+        end do
+    endif
 !
     nb_obsf_effe = 0
 !
