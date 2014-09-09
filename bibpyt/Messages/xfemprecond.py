@@ -65,10 +65,4 @@ cata_msg = {
   suite de la résolution. 
 """),
 
-7 : _(u"""
-  La matrice pré-conditionnée XFEM va être détruite. 
-  La matrice initiale va être reconstruite par produit
-  avec l'inverse du pré-conditionneur XFEM.   
-"""),
-
 }
