@@ -1,7 +1,7 @@
 subroutine nmnewt(noma, modele, numins, numedd, numfix,&
                   mate, carele, comref, compor, lischa,&
                   method, fonact, carcri, parcon, conv,&
-                  parmet, parcri, sdstat, sdieto, sdtime,&
+                  parmet, parcri, sdstat, sdtime,&
                   sderro, sdimpr, sdnume, sddyna, sddisc,&
                   sdcrit, sdsuiv, sdpilo, sdconv, solveu,&
                   maprec, matass, valinc, solalg, meelem,&
@@ -66,7 +66,7 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
     character(len=16) :: method(*)
     real(kind=8) :: parmet(*), parcri(*), parcon(*), conv(*)
     character(len=24) :: carcri
-    character(len=24) :: sdtime, sderro, sdimpr, sdieto, sdstat, sdconv, sdsuiv
+    character(len=24) :: sdtime, sderro, sdimpr, sdstat, sdconv, sdsuiv
     character(len=19) :: sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sdpilo
     character(len=19) :: valinc(*), solalg(*)
@@ -110,7 +110,6 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 ! IN  SDDISC : SD DISC_INST
 ! IN  SDTIME : SD TIMER
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  SDIETO : SD GESTION IN ET OUT
 ! IN  SDCONV : SD GESTION DE LA CONVERGENCE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -265,7 +264,9 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! - DOF monitoring
 !
-    call nmsuiv(noma, sdsuiv, sdimpr)
+    call nmsuiv(noma  , sdsuiv, sdimpr, carele, modele,&
+                mate  , compor, valinc, comref, sddisc,&
+                numins)
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !

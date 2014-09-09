@@ -1,4 +1,6 @@
-subroutine nmcrdd(meshz, modelz, sd_inout, sd_suiv)
+subroutine nmcrdd(meshz , modelz   , sd_inout , cara_elemz, matez    ,&
+                  compor, disp_curr, strx_curr, varc_curr , varc_refe,&
+                  time  , sd_suiv)
 !
 implicit none
 !
@@ -28,6 +30,14 @@ implicit none
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: modelz
     character(len=24), intent(in) :: sd_inout
+    character(len=*), intent(in) :: cara_elemz
+    character(len=*), intent(in) :: matez
+    character(len=19), intent(in) :: compor
+    character(len=*), intent(in) :: disp_curr
+    character(len=*), intent(in) :: strx_curr
+    character(len=*), intent(in) :: varc_curr
+    character(len=*), intent(in) :: varc_refe
+    real(kind=8),  intent(in) :: time
     character(len=24), intent(out) :: sd_suiv
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,6 +52,14 @@ implicit none
 ! In  model            : name of model
 ! In  result           : name of results datastructure
 ! In  sddisc           : datastructure for discretization
+! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
+! In  mate             : name of material characteristics (field)
+! In  compor           : name of <CARTE> COMPOR
+! In  disp_curr        : current displacements
+! In  varc_curr        : command variable for current time
+! In  varc_refe        : command variable for reference
+! In  time             : current time
+! In  strx_curr        : fibers information for current time
 ! In  sd_inout         : datastructure for input/output parameters
 ! Out sd_suiv          : datastructure for dof monitor parameters
 !
@@ -62,8 +80,10 @@ implicit none
 ! - Read datas for extraction
 !
     sdextr_suiv = sd_suiv(1:14)
-    call nmextr(meshz       , modelz , sdextr_suiv, sd_inout, keyw_fact,&
-                nb_keyw_fact, nb_dof_monitor)
+    call nmextr(meshz       , modelz        , sdextr_suiv, sd_inout, keyw_fact,&
+                nb_keyw_fact, nb_dof_monitor,&
+                cara_elemz  , matez         , compor     , disp_curr, strx_curr,&
+                varc_curr   , varc_refe     , time       )
 !
 ! - Read name of columns
 !

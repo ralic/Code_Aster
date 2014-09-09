@@ -243,10 +243,6 @@ implicit none
                 fonact, sddyna, parcri, instin, solveu,&
                 defico, sddisc)
 !
-! - Create dof monitoring datastructure
-!
-    call nmcrdd(mesh , model, sd_inout, sd_suiv)
-!
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
     call nmvcre(model, mate, carele, varc_refe)
@@ -319,6 +315,12 @@ implicit none
     call nmcrob(mesh     , model    , result, sddisc   , sd_inout ,&
                 carele   , mate     , compor, disp_prev, strx_prev,&
                 varc_prev, varc_refe, instin, sd_obsv  )
+!
+! - Create dof monitoring datastructure
+!
+    call nmcrdd(mesh  , model    , sd_inout , carele   , mate     ,&
+                compor, disp_prev, strx_prev, varc_prev, varc_refe,&
+                instin, sd_suiv)
 !
 ! --- INITIALISATION DE LA SD AFFICHAGE
 !

@@ -21,7 +21,7 @@ def C_SUIVI_DDL() : return FACT(statut='f',max=4,
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
                                    into=("DEPL","VITE","ACCE",
                                          "FORC_NODA",
-                                         "SIEF_ELGA","VARI_ELGA",)),
+                                         "SIEF_ELGA","VARI_ELGA","EPSI_ELGA",)),
 
            EVAL_CHAM       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
                                    into=("MIN","MAX","MOY","MAXI_ABS","MINI_ABS","VALE",),),
@@ -48,6 +48,7 @@ def C_SUIVI_DDL() : return FACT(statut='f',max=4,
                                 ),
 
            b_cham_elga     =BLOC(condition="(NOM_CHAM=='SIEF_ELGA') or \
+                                            (NOM_CHAM=='EPSI_ELGA') or \
                                             (NOM_CHAM=='VARI_ELGA')",
                                  regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')),
                                  TOUT            =SIMP(statut='d',typ='TXM',into=("OUI",) ),

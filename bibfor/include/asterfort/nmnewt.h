@@ -19,7 +19,7 @@ interface
     subroutine nmnewt(noma, modele, numins, numedd, numfix,&
                       mate, carele, comref, compor, lischa,&
                       method, fonact, carcri, parcon, conv,&
-                      parmet, parcri, sdstat, sdieto, sdtime,&
+                      parmet, parcri, sdstat, sdtime,&
                       sderro, sdimpr, sdnume, sddyna, sddisc,&
                       sdcrit, sdsuiv, sdpilo, sdconv, solveu,&
                       maprec, matass, valinc, solalg, meelem,&
@@ -43,7 +43,6 @@ interface
         real(kind=8) :: parmet(*)
         real(kind=8) :: parcri(*)
         character(len=24) :: sdstat
-        character(len=24) :: sdieto
         character(len=24) :: sdtime
         character(len=24) :: sderro
         character(len=24) :: sdimpr

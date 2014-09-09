@@ -229,7 +229,7 @@ subroutine op0070()
         call nmnewt(mesh, modele, numins, numedd, numfix,&
                     mate, carele, comref, compor, lischa,&
                     method, fonact, carcri, parcon, conv,&
-                    parmet, parcri, sdstat, sd_inout, sdtime,&
+                    parmet, parcri, sdstat, sdtime,&
                     sderro, sdimpr, sdnume, sddyna, sddisc,&
                     sdcrit, sd_suiv, sdpilo, sdconv, solveu,&
                     maprec, matass, valinc, solalg, meelem,&

@@ -16,9 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmsuiv(meshz, sd_suiv, sd_prnt)
+    subroutine nmsuiv(meshz    , sd_suiv, sd_prnt, cara_elemz, modelz,&
+                      matez    , compor , valinc , varc_refe , sddisc,&
+                      nume_inst)
         character(len=*), intent(in) :: meshz
         character(len=24), intent(in) :: sd_suiv
         character(len=24), intent(in) :: sd_prnt
+        character(len=19), intent(in) :: sddisc
+        character(len=*), intent(in) :: cara_elemz
+        character(len=*), intent(in) :: matez
+        character(len=*), intent(in) :: modelz
+        character(len=19), intent(in) :: compor
+        character(len=*), intent(in) :: varc_refe
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: valinc(*)
     end subroutine nmsuiv
 end interface
