@@ -130,22 +130,22 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !               2- SI LE NOEUD EST UN NOEUD CENTRE, ON L'OUBLIE
 !====
 !
-    do 21 , iaux = 0 , nbvato-1
+    do iaux = 0 , nbvato-1
 !
-    if (innoce(iaux+1) .eq. 1) then
-        exicmp(iaux+1) = .false.
-        goto 21
-    endif
+        if (innoce(iaux+1) .eq. 1) then
+            exicmp(iaux+1) = .false.
+            goto 21
+        endif
 !
-    jaux = adsl-1+iaux*ncmprf
-    do 211 , nrcmp = 1 , ncmpve
-    if (zl(jaux+numcmp(nrcmp))) then
-        exicmp(iaux+1) = .true.
-        goto 21
-    endif
-211 continue
+        jaux = adsl-1+iaux*ncmprf
+        do nrcmp = 1 , ncmpve
+            if (zl(jaux+numcmp(nrcmp))) then
+                exicmp(iaux+1) = .true.
+                goto 21
+            endif
+        enddo
 !
-    21 end do
+ 21 end do
 !
 !====
 ! 3. PROFAS : LISTE DES NOEUDS POUR LESQUELS ON AURA IMPRESSION
@@ -160,24 +160,24 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
     if (nbnoec .eq. 0) then
 !
-        do 31 , iaux = 1 , nbvato
-        if (exicmp(iaux)) then
-            nval = nval + 1
-            profas(nval) = iaux
-        endif
- 31     continue
+        do iaux = 1 , nbvato
+            if (exicmp(iaux)) then
+                nval = nval + 1
+                profas(nval) = iaux
+            endif
+        enddo
 !
 ! 3.2. ==> AVEC FILTRAGE
 !
     else
 !
-        do 32 , jaux = 1 , nbnoec
-        iaux = linoec(jaux)
-        if (exicmp(iaux)) then
-            nval = nval + 1
-            profas(nval) = iaux
-        endif
- 32     continue
+        do jaux = 1 , nbnoec
+            iaux = linoec(jaux)
+            if (exicmp(iaux)) then
+                nval = nval + 1
+                profas(nval) = iaux
+            endif
+        enddo
 !
     endif
 !
@@ -232,7 +232,8 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !               NUMEROTATIONS ASTER ET MED DES NOEUDS (CF IRMMNO)
 !====
 !
-    if (nval .ne. nbvato) then
+    write(6,*)'ICI', nval
+    if ( nval.ne.nbvato .and. nval.ne.0 ) then
 !
         iaux = 0
         call ircmpf(nofimd, nval, profas, noprof)

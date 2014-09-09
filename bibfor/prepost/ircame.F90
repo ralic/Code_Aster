@@ -260,77 +260,81 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
                 lienec, adsd, adsl, nomaas, modele,&
                 typgeo, nomtyp, ntproa, chanom, sdcarm)
 !
-    call jeveuo(ncaimi, 'L', adcaii)
-    call jeveuo(ncaimk, 'L', adcaik)
+    if ( nbimpr.gt.0 ) then
+        call jeveuo(ncaimi, 'L', adcaii)
+        call jeveuo(ncaimk, 'L', adcaik)
 !
 ! 3.4. ==> CARACTERISATION DES SUPPORTS QUAND CE NE SONT PAS DES NOEUDS
 !
-    if (typech(1:4) .eq. 'ELGA' .or. typech(1:4) .eq. 'ELEM') then
+        if (typech(1:4) .eq. 'ELGA' .or. typech(1:4) .eq. 'ELEM') then
 !
-        if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
-            call irelst(nofimd, chanom, typech, nomaas, nomamd,&
-                        nbimpr, zi( adcaii), zk80(adcaik), sdcarm)
+            if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
+                call irelst(nofimd, chanom, typech, nomaas, nomamd,&
+                            nbimpr, zi( adcaii), zk80(adcaik), sdcarm)
+            endif
+!
+            call irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
+                        zi( adcaii), zk80(adcaik), modnum, nuanom, sdcarm,&
+                        codret)
+!
         endif
-!
-        call irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
-                    zi( adcaii), zk80(adcaik), modnum, nuanom, sdcarm,&
-                    codret)
-!
-    endif
 !
 !====
 ! 4. REPERAGE DU CHAMP : EXISTE-T-IL DEJA ?
 !    ON DOIT PARCOURIR TOUTES LES IMPRESSIONS POSSIBLES POUR CE CHAMP
 !====
 !
-    existc = 0
+        existc = 0
 !
-    do 41 , nrimpr = 1 , nbimpr
+        do nrimpr = 1 , nbimpr
 !
-    if (codret .eq. 0) then
+            if (codret .eq. 0) then
 !
-        tygeom = zi(adcaii+10*nrimpr-2)
-        if (tygeom .eq. typnoe) then
-            typent = ednoeu
-        else
-            if (typech .eq. 'ELNO') then
-                typent = ednoma
-            else
-                typent = edmail
+                tygeom = zi(adcaii+10*nrimpr-2)
+                if (tygeom .eq. typnoe) then
+                    typent = ednoeu
+                else
+                    if (typech .eq. 'ELNO') then
+                        typent = ednoma
+                    else
+                        typent = edmail
+                    endif
+                endif
+                nvalec = zi(adcaii+10*nrimpr-4)
+!
+                call jedetr(nmcmfi)
+!
+                ifimed = 0
+                call mdexch(nofimd, ifimed, nochmd, numpt, numord,&
+                            ncmpve, ntncmp, nvalec, typent, tygeom,&
+                            jaux, nbcmfi, nmcmfi, nbval, codret)
+!
+                existc = max ( existc, jaux )
+!
             endif
-        endif
-        nvalec = zi(adcaii+10*nrimpr-4)
 !
-        call jedetr(nmcmfi)
-!
-        ifimed = 0
-        call mdexch(nofimd, ifimed, nochmd, numpt, numord,&
-                    ncmpve, ntncmp, nvalec, typent, tygeom,&
-                    jaux, nbcmfi, nmcmfi, nbval, codret)
-!
-        existc = max ( existc, jaux )
-!
-    endif
-!
-    41 end do
+        end do
 !
 !====
 ! 5. ECRITURE SI C'EST POSSIBLE
 !====
 !
-    if (existc .le. 2) then
+        if ( existc.le.2 ) then
 !
-        call ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
-                    instan, numord, adsd, adsv, adsl,&
-                    adsk, partie, ncmpve, ntlcmp, ntncmp,&
-                    ntucmp, ntproa, nbimpr, zi(adcaii), zk80(adcaik),&
-                    typech, nomamd, nomtyp, modnum, nuanom,&
-                    codret)
+            call ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
+                        instan, numord, adsd, adsv, adsl,&
+                        adsk, partie, ncmpve, ntlcmp, ntncmp,&
+                        ntucmp, ntproa, nbimpr, zi(adcaii), zk80(adcaik),&
+                        typech, nomamd, nomtyp, modnum, numnoa,&
+                        codret)
 !
+        else
+!
+            call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
+!
+        endif
     else
-!
-        call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
-!
+        call utmess('A', 'MED_82', sk=nochmd)
     endif
 !
 !====

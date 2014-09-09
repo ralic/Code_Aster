@@ -127,24 +127,24 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !    MAIS IL FAUT BIEN TENIR COMPTE DE LA NUMEROTATION DE REFERENCE
 !====
     laux = adsd + 1
-    do 21 , iaux = 1 , nbvato
-    laux = laux + 4
-    nbpg = zi(laux)
-    nbsp = zi(laux+1)
-    do 211 , nrcmp = 1 , ncmpve
-    kaux = numcmp(nrcmp)
-    do 2111 , nrpg = 1 , nbpg
-    do 2112 , nrsp = 1 , nbsp
-    call cesexi('C', adsd, adsl, iaux, nrpg,&
-                nrsp, kaux, jaux)
-    if (jaux .gt. 0) then
-        exicmp(iaux) = .true.
-        goto 21
-    endif
-2112 continue
-2111 continue
-211 continue
-    21 end do
+    do iaux = 1 , nbvato
+        laux = laux + 4
+        nbpg = zi(laux)
+        nbsp = zi(laux+1)
+        do nrcmp = 1 , ncmpve
+            kaux = numcmp(nrcmp)
+            do nrpg = 1 , nbpg
+                do nrsp = 1 , nbsp
+                    call cesexi('C', adsd, adsl, iaux, nrpg,&
+                                nrsp, kaux, jaux)
+                    if (jaux .gt. 0) then
+                        exicmp(iaux) = .true.
+                        goto 21
+                    endif
+                enddo
+            enddo
+        enddo
+ 21 end do
 !
 !====
 ! 3. PROFAS : LISTE DES MAILLES POUR LESQUELS ON AURA IMPRESSION
@@ -156,23 +156,23 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 ! 3.1. ==> SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT
 !          UNE COMPOSANTE VALIDE
     if (nbmaec .eq. 0) then
-        do 31 , iaux = 1 , nbvato
-        if (exicmp(iaux)) then
-            nval = nval + 1
-            profas(nval) = iaux
-        endif
- 31     continue
+        do iaux = 1 , nbvato
+            if (exicmp(iaux)) then
+                nval = nval + 1
+                profas(nval) = iaux
+            endif
+        enddo
 !
 ! 3.2. ==> AVEC FILTRAGE : C'EST LA LISTE DES MAILLES REQUISES ET AVEC
 !          UNE COMPOSANTE VALIDE
     else
-        do 32 , jaux = 1 , nbmaec
-        iaux = limaec(jaux)
-        if (exicmp(iaux)) then
-            nval = nval + 1
-            profas(nval) = iaux
-        endif
- 32     continue
+        do jaux = 1 , nbmaec
+            iaux = limaec(jaux)
+            if (exicmp(iaux)) then
+                nval = nval + 1
+                profas(nval) = iaux
+            endif
+        enddo
     endif
 !
 !====
@@ -209,123 +209,127 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
         exicar=.true.
     endif
 !
-    do 42 , iaux = 1 , nval
-    ima = profas(iaux)
-    nrefma = tyefma(ima)
+    do iaux = 1 , nval
+        ima = profas(iaux)
+        nrefma = tyefma(ima)
 !
-    laux = adsd + 4*ima + 1
-    nbpg = zi(laux)
-    nbsp = zi(laux+1)
-    if (typech(1:4) .eq. 'ELGA') then
-        nomfpg = nofpgma(ima)
-    endif
-    nbcou = 0
-    nbsec = 0
-    nbfib = 0
-    nbgrf = 0
-    imafib = 0
-    if (nbsp .gt. 1 .and. exicar) then
-        call ircael(jcesd, jcesl, jcesv, jcesc, ima,&
-                    nbcou, nbsec, nbfib, nbgrf, nugrfi)
-        if (nbfib .ne. 0) imafib = ima
-    endif
+        laux = adsd + 4*ima + 1
+        nbpg = zi(laux)
+        nbsp = zi(laux+1)
+        if (typech(1:4) .eq. 'ELGA') then
+            nomfpg = nofpgma(ima)
+        endif
+        nbcou = 0
+        nbsec = 0
+        nbfib = 0
+        nbgrf = 0
+        imafib = 0
+        if (nbsp .gt. 1 .and. exicar) then
+            call ircael(jcesd, jcesl, jcesv, jcesc, ima,&
+                        nbcou, nbsec, nbfib, nbgrf, nugrfi)
+            if (nbfib .ne. 0) imafib = ima
+        endif
 !
 ! 4.2.1. ==> RECHERCHE D'UNE IMPRESSION SEMBLABLE
 !
-    do 421 , jaux = 1 , nbimpr
-    if (typech(1:4) .eq. 'ELGA') then
+        do jaux = 1 , nbimpr
+            if (typech(1:4) .eq. 'ELGA') then
 !           POUR LES ELGA, TRI SUR LES FAMILLES DE POINTS DE GAUSS
-        if (.not.exicar) then
+                if (.not.exicar) then
 !             SI ON N'A PAS DE CARA_ELEM, LE CAS EST SIMPLE
 !             ON COMPARE LE NOM DE LA FAMILLE DE PG ET NBSP
-            if (tabnofpg(jaux) .eq. nomfpg .and. zi( adcaii+10*(jaux-1)+2) .eq. nbsp) then
-                nrimpr = jaux
-                goto 423
-            endif
-        else
+                    if (tabnofpg(jaux) .eq. nomfpg .and. zi( adcaii+10*(jaux-1)+2) .eq. nbsp) then
+                        nrimpr = jaux
+                        goto 423
+                    endif
+                else
 !             SINON, ON A DEUX CAS, PMF ET AUTRES
-            if (nbfib .ne. 0) then
-                if (tabnofpg(jaux) .eq. nomfpg) then
+                    if (nbfib .ne. 0) then
+                        if (tabnofpg(jaux) .eq. nomfpg) then
 !                 POUR LES PMF, ON COMPARE AUSSI LES GROUPES DE FIBRES
-                    ima2 = zi(adcaii+10*(jaux-1)+5)
-                    call ircael(jcesd, jcesl, jcesv, jcesc, ima2,&
-                                nbcou2, nbsec2, nbfib2, nbgrf2, nugrf2)
-                    if (nbfib2 .eq. nbfib .and. nbgrf2 .eq. nbgrf) then
-                        grfidt = .true.
-                        do 10 igrfi = 1, nbgrf2
-                            if (nugrf2(igrfi) .ne. nugrfi( igrfi)) grfidt = .false.
- 10                     continue
-                        if (grfidt) then
+                            ima2 = zi(adcaii+10*(jaux-1)+5)
+                            call ircael(jcesd, jcesl, jcesv, jcesc, ima2,&
+                                        nbcou2, nbsec2, nbfib2, nbgrf2, nugrf2)
+                            if (nbfib2 .eq. nbfib .and. nbgrf2 .eq. nbgrf) then
+                                grfidt = .true.
+                                do igrfi = 1, nbgrf2
+                                    if (nugrf2(igrfi) .ne. nugrfi( igrfi)) grfidt = .false.
+                                enddo
+                                if (grfidt) then
+                                    nrimpr = jaux
+                                    goto 423
+                                endif
+                            endif
+                        endif
+                    else
+                        if (tabnofpg(jaux) .eq. nomfpg .and. zi(adcaii+10*(jaux-1)+3) .eq. nbcou&
+                            .and. zi(adcaii+10*(jaux-1)+4) .eq. nbsec) then
                             nrimpr = jaux
                             goto 423
                         endif
                     endif
                 endif
             else
-                if (tabnofpg(jaux) .eq. nomfpg .and. zi(adcaii+10*(jaux-1)+3) .eq. nbcou&
-                    .and. zi(adcaii+10*(jaux-1)+4) .eq. nbsec) then
+                if (zi(adcaii+10*(jaux-1)) .eq. nrefma .and.&
+                    zi(adcaii+ 10*(jaux-1)+2) .eq. nbsp) then
                     nrimpr = jaux
                     goto 423
                 endif
             endif
-        endif
-    else
-        if (zi(adcaii+10*(jaux-1)) .eq. nrefma .and. zi(adcaii+ 10*(jaux-1)+2) .eq. nbsp) then
-            nrimpr = jaux
-            goto 423
-        endif
-    endif
-421 continue
+        enddo
 !
 ! 4.2.2. ==> ON CREE UNE NOUVELLE IMPRESSION
 !            SI ON DEPASSE LA LONGUEUR RESERVEE, ON DOUBLE
 !
-    if (nbimpr .eq. nbimp0) then
-        nbimp0 = 2*nbimp0
-        call juveca(ncaimi, 10*nbimp0)
-        call jeveuo(ncaimi, 'E', adcaii)
-    endif
+        if (nbimpr .eq. nbimp0) then
+            nbimp0 = 2*nbimp0
+            call juveca(ncaimi, 10*nbimp0)
+            call jeveuo(ncaimi, 'E', adcaii)
+        endif
 !
-    nbimpr = nbimpr + 1
-    jaux = adcaii+10*(nbimpr-1)
+        nbimpr = nbimpr + 1
+        jaux = adcaii+10*(nbimpr-1)
 !                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
-    zi(jaux) = nrefma
+        zi(jaux) = nrefma
 !                  CAIMPI(2,I) = NOMBRE DE POINTS (DE GAUSS OU NOEUDS)
-    zi(jaux+1) = nbpg
+        zi(jaux+1) = nbpg
 !                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
-    zi(jaux+2) = nbsp
+        zi(jaux+2) = nbsp
 !                  CAIMPI(4,I) = NOMBRE DE COUCHES
-    zi(jaux+3) = nbcou
+        zi(jaux+3) = nbcou
 !                  CAIMPI(5,I) = NOMBRE DE SECTEURS
-    zi(jaux+4) = nbsec
+        zi(jaux+4) = nbsec
 !                  CAIMPI(6,I) = NUMERO DE LA MAILLE 'EXEMPLE' POUR
 !                                LES PMF
-    zi(jaux+5) = imafib
+        zi(jaux+5) = imafib
 !                  CAIMPI(7,I) = NOMBRE DE MAILLES A ECRIRE
-    zi(jaux+6) = 0
+        zi(jaux+6) = 0
 !                  CAIMPI(8,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
-    zi(jaux+7) = typmai(ima)
+        zi(jaux+7) = typmai(ima)
 !                  CAIMPI(9,I) = TYPE GEOMETRIQUE AU SENS MED
-    zi(jaux+8) = typgeo(typmai(ima))
+        zi(jaux+8) = typgeo(typmai(ima))
 !
-    if (typech(1:4) .eq. 'ELGA') then
-        tabnofpg(nbimpr) = nomfpg
-    endif
-    nrimpr = nbimpr
+        if (typech(1:4) .eq. 'ELGA') then
+            tabnofpg(nbimpr) = nomfpg
+        endif
+        nrimpr = nbimpr
 !
 ! 4.2.3. ==> MEMORISATION DE L'IMPRESSION DE CETTE MAILLE
 !            CUMUL DU NOMBRE DE MAILLES POUR CETTE IMPRESSION
-423 continue
+423     continue
 !
-    nroimp(ima) = nrimpr
-    jaux = adcaii+10*(nrimpr-1)+6
-    zi(jaux) = zi(jaux) + 1
+        nroimp(ima) = nrimpr
+        jaux = adcaii+10*(nrimpr-1)+6
+        zi(jaux) = zi(jaux) + 1
 !
-    42 end do
+    enddo
 !
     if (typech(1:4) .eq. 'ELGA') then
         AS_DEALLOCATE(vk16=tabnofpg)
         call jedetr('&&IRCMPE.NOFPGMA')
+    endif
+    if ( nbimpr.eq.0 ) then
+        goto 999
     endif
 !
 !====
@@ -340,18 +344,18 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !                   IAUX EN NUMEROTATION ASTER, ON A SA POSITION DANS LE
 !                   TABLEAU DES VALEURS S'IL FAIT PARTIE DE LA LISTE
 !                   ET 0 SINON.
-    do 51 , iaux = 1 , nval
-    ima = profas(iaux)
-    prorec(ima) = iaux
-    51 end do
+    do iaux = 1 , nval
+        ima = profas(iaux)
+        prorec(ima) = iaux
+    enddo
 !
 ! 5.2. ==> ADRESSES DANS LE TABLEAU PROFAS
 !          ADRAUX(IAUX) = ADRESSE DE LA FIN DE LA ZONE DE L'IMPRESSION
 !                         PRECEDENTE, IAUX-1
     adraux(1) = 0
-    do 52 , iaux = 2 , nbimpr
-    adraux(iaux) = adraux(iaux-1) + zi(adcaii+10*(iaux-2)+6)
-    52 end do
+    do iaux = 2 , nbimpr
+        adraux(iaux) = adraux(iaux-1) + zi(adcaii+10*(iaux-2)+6)
+    enddo
 !
 ! 5.3. ==> DECOMPTE DU NOMBRE DE MAILLES PAR TYPE DE MAILLES ASTER
 !          NMATY0(IAUX) = NUMERO MED DE LA MAILLE COURANTE, DANS LA
@@ -361,75 +365,75 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !          ADRAUX(JAUX) = ADRESSE DANS LES TABLEAUX PROMED ET PROFAS
 !                         DE LA MAILLE COURANTE ASSOCIEE A L'IMPRESSION
 !                         NUMERO JAUX
-    do 531 , iaux = 1 , ntymax
-    nmaty0(iaux) = 0
-    531 end do
+    do iaux = 1 , ntymax
+        nmaty0(iaux) = 0
+    enddo
 !
-    do 532 , ima = 1 , nbvato
+    do ima = 1 , nbvato
 !
-    typmas = typmai(ima)
-    nmaty0(typmas) = nmaty0(typmas) + 1
-    if (prorec(ima) .ne. 0) then
-        jaux = nroimp(ima)
-        adraux(jaux) = adraux(jaux) + 1
-        promed(adraux(jaux)) = nmaty0(typmas)
-        profas(adraux(jaux)) = ima
-    endif
+        typmas = typmai(ima)
+        nmaty0(typmas) = nmaty0(typmas) + 1
+        if (prorec(ima) .ne. 0) then
+            jaux = nroimp(ima)
+            adraux(jaux) = adraux(jaux) + 1
+            promed(adraux(jaux)) = nmaty0(typmas)
+            profas(adraux(jaux)) = ima
+        endif
 !
-    532 end do
+    enddo
 !
 !====
 ! 6. MEMORISATION DANS LES CARACTERISTIQUES DE L'IMPRESSION
 !====
 ! 6.1. ==> NOMBRE DE MAILLES DU MEME TYPE
-    do 61 , iaux = 1 , nbimpr
+    do iaux = 1 , nbimpr
 !
-    jaux = adcaii+10*(iaux-1)
-    typmas = zi(jaux+7)
+        jaux = adcaii+10*(iaux-1)
+        typmas = zi(jaux+7)
 !                  CAIMPI(10,I) = NOMBRE DE MAILLES IDENTIQUES
-    zi(jaux+9) = nmaty0(typmas)
+        zi(jaux+9) = nmaty0(typmas)
 !
-    61 end do
+    enddo
 !
 ! 6.2. ==> CARACTERISTIQUES CARACTERES
     iaux = 3*nbimpr
     call wkvect(ncaimk, 'V V K80', iaux, adcaik)
-    do 62 , iaux = 1 , nbimpr
-    jaux = adcaik+2*(iaux-1)
+    do iaux = 1 , nbimpr
+        jaux = adcaik+2*(iaux-1)
 !                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
-    zk80(jaux) = ednoga
+        zk80(jaux) = ednoga
 !                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-    zk80(jaux+1) = ednopf
+        zk80(jaux+1) = ednopf
 !                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
-    zk80(jaux+2) = ednopf
-    62 end do
+        zk80(jaux+2) = ednopf
+    enddo
 !
 !====
 ! 7. STOCKAGE DES EVENTUELS PROFILS DANS LE FICHIER MED
 !====
     kaux = 1
 !
-    do 71 , iaux = 1 , nbimpr
+    do iaux = 1 , nbimpr
 !
-    jaux = adcaii+10*(iaux-1)
+        jaux = adcaii+10*(iaux-1)
 !
 !       SI LE NOMBRE DE MAILLES A ECRIRE EST >0
-    if (zi(jaux+6) .gt. 0) then
+        if (zi(jaux+6) .gt. 0) then
 !
 !         SI LE NOMBRE DE MAILLES A ECRIRE EST DIFFERENT
 !         DU NOMBRE TOTAL DE MAILLES DE MEME TYPE:
-        if (zi(jaux+6) .ne. zi(jaux+9)) then
-            call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof)
+            if (zi(jaux+6) .ne. zi(jaux+9)) then
+                call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof)
 !
 !                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-            zk80(adcaik+3*(iaux-1)+1) = noprof
-        endif
+                zk80(adcaik+3*(iaux-1)+1) = noprof
+            endif
 !
 !         KAUX := POINTEUR PERMETTANT DE SE PLACER DANS PROMED
 !         POUR LA PROCHAINE IMPRESSION
-        kaux = kaux + zi(jaux+6)
-    endif
-    71 end do
+            kaux = kaux + zi(jaux+6)
+        endif
+    enddo
 !
 !====
 ! 8. LA FIN
@@ -440,11 +444,11 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
         else
             write (ifm,8004)
         endif
-        do 81 , iaux = 1 , nbimpr
-        jaux = adcaii+10*(iaux-1)
-        if (zi(jaux+6) .gt. 0) write (ifm, 8002) nomtyp(zi(jaux+7)), zi(jaux+6), zi(jaux+1),&
-                               zi(jaux+2)
- 81     continue
+        do iaux = 1 , nbimpr
+            jaux = adcaii+10*(iaux-1)
+            if (zi(jaux+6) .gt. 0) write (ifm, 8002) nomtyp(zi(jaux+7)), zi(jaux+6),&
+                                zi(jaux+1), zi(jaux+2)
+        enddo
         write (ifm,8003)
         write (ifm,1001) 'FIN DE IRCMPE'
     endif
@@ -456,5 +460,6 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     8004 format(4x,65('*'),/,4x,'*  TYPE DE *',22x,'NOMBRE DE',21x,'*',&
      &/,4x,'*  MAILLE  *  VALEURS   *      POINTS       *',&
      &     '   SOUS_POINT(S)   *',/,4x,65('*'))
+999 continue
 !
 end subroutine
