@@ -3,10 +3,11 @@ subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field  , field_s       ,&
 !
 implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
@@ -79,8 +80,10 @@ implicit none
     nb_spoi = 0
 !
 ! - Conversion to reduced field (CHAM_ELEM_S)
-!
-    call jeexin(field_s, iret)
+! 
+    call exisd('CHAM_ELEM', field, iret)
+    ASSERT(iret.eq.1)
+    call exisd('CHAM_ELEM_S', field_s, iret)
     if (iret .eq. 0) then
         call sdmpic('CHAM_ELEM', field)
         call celces(field, 'V', field_s)

@@ -1,7 +1,7 @@
 subroutine nminit(result, model , numedd, numfix  , mate,&
                   compor, carele, parmet, lischa  , maprec,&
                   solveu, carcri, numins, sdstat  , sddisc,&
-                  sdnume, defico, sdcrit, comref  , fonact,&
+                  sdnume, defico, sdcrit, varc_refe  , fonact,&
                   parcon, parcri, method, lisch2  , mesh,&
                   sdpilo, sddyna, sdimpr, sd_suiv , sd_obsv,&
                   sdtime, sderro, sdpost, sd_inout, sdener,&
@@ -95,7 +95,7 @@ implicit none
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: sdimpr, sdtime, sderro, sdstat, sdconv
     character(len=24) :: deficu, resocu, sdcriq
-    character(len=24) :: comref
+    character(len=24) :: varc_refe
     character(len=24), intent(out) :: sd_inout
     character(len=19), intent(out) :: sd_obsv
     character(len=24), intent(out) :: sd_suiv
@@ -126,7 +126,7 @@ implicit none
     integer :: iret, ibid, numreo
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
-    character(len=19) :: commoi
+    character(len=19) :: varc_prev, disp_prev, strx_prev
     character(len=2) :: codret
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
     aster_logical :: lcont, lunil
@@ -243,25 +243,20 @@ implicit none
                 fonact, sddyna, parcri, instin, solveu,&
                 defico, sddisc)
 !
-! - Create observation datastructure
-!
-    call nmcrob(mesh   , model, result, sddisc, sd_inout,&
-                sd_obsv)
-!
 ! - Create dof monitoring datastructure
 !
     call nmcrdd(mesh , model, sd_inout, sd_suiv)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
-    call nmvcre(model, mate, carele, comref)
+    call nmvcre(model, mate, carele, varc_refe)
 !
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
     call nminmc(fonact, lischa, sddyna, model, compor,&
                 solveu, numedd, numfix, defico, resoco,&
                 carcri, solalg, valinc, mate, carele,&
-                sddisc, sdstat, sdtime, comref, meelem,&
+                sddisc, sdstat, sdtime, varc_refe, meelem,&
                 measse, veelem, codere)
 !
 ! --- INSTANT INITIAL
@@ -271,15 +266,15 @@ implicit none
 !
 ! --- EXTRACTION VARIABLES DE COMMANDES AU TEMPS T-
 !
-    call nmchex(valinc, 'VALINC', 'COMMOI', commoi)
-    call nmvcle(model, mate, carele, lischa, instin,&
-                commoi, codret)
+    call nmchex(valinc, 'VALINC', 'COMMOI', varc_prev)
+    call nmvcle(model    , mate, carele, lischa, instin,&
+                varc_prev, codret)
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM CONSTANTS AU COURS DU CALCUL
 !
     call nminvc(model, mate, carele, compor, carcri,&
                 sdtime, sddisc, sddyna, valinc, solalg,&
-                lischa, comref, resoco, resocu, numedd,&
+                lischa, varc_refe, resoco, resocu, numedd,&
                 fonact, parcon, veelem, veasse, measse)
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
@@ -302,7 +297,7 @@ implicit none
         call nmchar('ACCI', ' ', model, numedd, mate,&
                     carele, compor, lischa, carcri, numins,&
                     sdtime, sddisc, parcon, fonact, resoco,&
-                    resocu, comref, valinc, solalg, veelem,&
+                    resocu, varc_refe, valinc, solalg, veelem,&
                     measse, veasse, sddyna)
         call accel0(model, numedd, numfix, fonact, lischa,&
                     defico, resoco, maprec, solveu, valinc,&
@@ -313,6 +308,17 @@ implicit none
 ! --- CREATION DE LA SD CONVERGENCE
 !
     call nmcrcg(fonact, sdconv)
+!
+! - Extract variables
+!
+    call nmchex(valinc, 'VALINC', 'DEPMOI', disp_prev)
+    call nmchex(valinc, 'VALINC', 'STRMOI', strx_prev)
+!
+! - Create observation datastructure
+!
+    call nmcrob(mesh     , model    , result, sddisc   , sd_inout ,&
+                carele   , mate     , compor, disp_prev, strx_prev,&
+                varc_prev, varc_refe, instin, sd_obsv  )
 !
 ! --- INITIALISATION DE LA SD AFFICHAGE
 !
@@ -350,7 +356,7 @@ implicit none
 !
     if (lmpas) then
         call nmihht(model, numedd, mate, compor, carele,&
-                    lischa, carcri, comref, fonact, sdstat,&
+                    lischa, carcri, varc_refe, fonact, sdstat,&
                     sddyna, sdtime, sdnume, defico, resoco,&
                     resocu, valinc, sddisc, parcon, solalg,&
                     veasse)

@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrob(meshz     , modelz    , result, sddisc   , sd_inout ,&
-                      cara_elemz, matez     , compor, disp_curr, strx_curr,&
-                      varc_curr , varc_refe , time  , sd_obsv  )
-        character(len=*), intent(in) :: meshz
+    subroutine nmextr_comp(field     , field_disc, field_type, meshz    , modelz   ,&
+                           cara_elemz, matez     , compor    , disp_curr, strx_curr,&
+                           varc_curr , varc_refe , time      , ligrelz)
+        character(len=19), intent(in) :: field
+        character(len=24), intent(in) :: field_type
+        character(len=4), intent(in) :: field_disc
         character(len=*), intent(in) :: modelz
-        character(len=8), intent(in) :: result
-        character(len=19), intent(in) :: sddisc
-        character(len=24), intent(in) :: sd_inout
+        character(len=*), intent(in) :: meshz
         character(len=*), intent(in) :: cara_elemz
         character(len=*), intent(in) :: matez
         character(len=19), intent(in) :: compor
@@ -31,7 +31,7 @@ interface
         character(len=*), intent(in) :: strx_curr
         character(len=*), intent(in) :: varc_curr
         character(len=*), intent(in) :: varc_refe
-        real(kind=8),  intent(in) :: time
-        character(len=19), intent(out) :: sd_obsv
-    end subroutine nmcrob
+        real(kind=8), intent(in) :: time
+        character(len=*), optional, intent(in) :: ligrelz
+    end subroutine nmextr_comp
 end interface

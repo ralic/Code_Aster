@@ -1,4 +1,4 @@
-subroutine nmextr_crsd(sdextrz, nb_keyw_fact, nb_field)
+subroutine nmextr_crsd(sdextrz, nb_keyw_fact, nb_field, nb_field_comp)
 !
 implicit none
 !
@@ -25,6 +25,7 @@ implicit none
     character(len=*), intent(in) :: sdextrz
     integer, intent(in) :: nb_keyw_fact
     integer, intent(in) :: nb_field
+    integer, intent(in) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,15 +38,17 @@ implicit none
 ! In  sdextr           : name of datastructure for extraction
 ! In  nb_keyw_fact     : number of factor keyword to read extraction parameters
 ! In  nb_field         : total number of fields
+! In  nb_field_comp    : number of fields to compute (not a default in nonlinear operator)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=14) :: sdextr
-    character(len=24) :: extr_info, extr_type, extr_flag, extr_field
+    character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
     integer, pointer :: v_extr_info(:) => null()
     character(len=8), pointer :: v_extr_type(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()
+    character(len=24), pointer :: v_extr_comp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,6 +77,13 @@ implicit none
     if (nb_field .ne. 0) then
         extr_field = sdextr(1:14)//'     .CHAM'
         call wkvect(extr_field, 'V V K24', 4*nb_field, vk24 = v_extr_field)
+    endif
+!
+! - Create extraction fields to compute (not a default in nonlinear operator)
+!
+    if (nb_field_comp .ne. 0) then
+        extr_comp = sdextr(1:14)//'     .COMP'
+        call wkvect(extr_comp, 'V V K24', 4*nb_field_comp, vk24 = v_extr_comp)
     endif
 !
 end subroutine

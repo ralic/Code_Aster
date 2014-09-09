@@ -1,5 +1,5 @@
-subroutine nmextr_read_1(sd_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw,&
-                         nb_field)
+subroutine nmextr_read_1(sd_inout, keyw_fact    , nb_keyw_fact, list_field, rela_field_keyw,&
+                         nb_field, nb_field_comp)
 !
 implicit none
 !
@@ -31,6 +31,7 @@ implicit none
     character(len=24), intent(out), pointer :: list_field(:)
     integer, intent(out), pointer :: rela_field_keyw(:)
     integer, intent(out) :: nb_field
+    integer, intent(out) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,6 +47,7 @@ implicit none
 ! Out list_field       : list of fields
 ! Out rela_field_keyw  : relation between field index and keyword index
 ! Out nb_field         : total number of fields
+! Out nb_field_comp    : number of fields to compute (not a default in nonlinear operator)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +57,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_field = 0
+    nb_field      = 0
+    nb_field_comp = 0
     if (nb_keyw_fact.eq.0) then
         goto 99
     endif
@@ -91,11 +94,18 @@ implicit none
             nb_field = nb_field + 1
             i_field  = nb_field
             list_field(i_field) = field_type
+            if (field_type.eq.'EPSI_ELGA') then
+                nb_field_comp = nb_field_comp + 1
+            endif
         endif
 !
 ! ----- Set relation between field index and keyword index
 !
-        rela_field_keyw(i_keyw_fact) = i_field
+        if (field_type.eq.'EPSI_ELGA') then
+            rela_field_keyw(i_keyw_fact) = -i_field
+        else
+            rela_field_keyw(i_keyw_fact) = i_field
+        endif
     end do
 !
  99 continue

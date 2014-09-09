@@ -17,12 +17,13 @@
 !
 interface
     subroutine nmextr_read_1(sd_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw,&
-                             nb_field)
+                             nb_field, nb_field_comp)
         character(len=24), intent(in) :: sd_inout
         integer, intent(in) :: nb_keyw_fact
         character(len=16), intent(in) :: keyw_fact
         character(len=24), intent(out), pointer :: list_field(:)
         integer, intent(out), pointer :: rela_field_keyw(:)
         integer, intent(out) :: nb_field
+        integer, intent(out) :: nb_field_comp
     end subroutine nmextr_read_1
 end interface

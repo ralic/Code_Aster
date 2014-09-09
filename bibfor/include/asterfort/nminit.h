@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nminit(result, model , numedd, numfix  , mate,&
-                      compor, carele, parmet, lischa  , maprec,&
-                      solveu, carcri, numins, sdstat  , sddisc,&
-                      sdnume, defico, sdcrit, comref  , fonact,&
-                      parcon, parcri, method, lisch2  , mesh,&
-                      sdpilo, sddyna, sdimpr, sd_suiv , sd_obsv,&
-                      sdtime, sderro, sdpost, sd_inout, sdener,&
-                      sdconv, sdcriq, deficu, resocu  , resoco,&
-                      valinc, solalg, measse, veelem  , meelem,&
+    subroutine nminit(result, model , numedd, numfix   , mate,&
+                      compor, carele, parmet, lischa   , maprec,&
+                      solveu, carcri, numins, sdstat   , sddisc,&
+                      sdnume, defico, sdcrit, varc_refe, fonact,&
+                      parcon, parcri, method, lisch2   , mesh,&
+                      sdpilo, sddyna, sdimpr, sd_suiv  , sd_obsv,&
+                      sdtime, sderro, sdpost, sd_inout , sdener,&
+                      sdconv, sdcriq, deficu, resocu   , resoco,&
+                      valinc, solalg, measse, veelem   , meelem,&
                       veasse, codere)
         character(len=8) :: result
         character(len=24) :: model
@@ -44,7 +44,7 @@ interface
         character(len=19) :: sdnume
         character(len=24) :: defico
         character(len=19) :: sdcrit
-        character(len=24) :: comref
+        character(len=24) :: varc_refe
         integer :: fonact(*)
         real(kind=8) :: parcon(*)
         real(kind=8) :: parcri(*)
