@@ -9,7 +9,7 @@ implicit none
 #include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterfort/getvid.h"
-#include "asterfort/nmcrob.h"
+#include "asterfort/ntcrob.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
@@ -144,7 +144,7 @@ implicit none
 !
 ! - Create observation datastructure
 !
-    call nmcrob(mailla, modele, result, sddisc, sd_inout,&
+    call ntcrob(mailla, modele, result, sddisc, sd_inout,&
                 sdobse)
 !
 ! --- CREATION DE LA SD EVOL_THER

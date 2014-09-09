@@ -1,4 +1,4 @@
-subroutine nmcrob(meshz  , modelz, result, sddisc, sd_inout,&
+subroutine ntcrob(meshz  , modelz, result, sddisc, sd_inout,&
                   sd_obsv)
 !
 implicit none
@@ -39,7 +39,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Observation
+! THER_* - Observation
 !
 ! Create observation datastructure
 !

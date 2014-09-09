@@ -35,7 +35,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Non-linear operators - Observation
+! MECA_NON_LINE - Observation
 !
 ! Make observation
 !
