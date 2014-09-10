@@ -238,7 +238,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 ! ---        INTERPOLATION DES COEFFICIENTS DE DILATATION ALPHA
 ! ---        EN TENANT COMPTE DE LA TEMPERATURE DE DEFINITION TDEF :
 !            -----------------------------------------------------
-                            if (chmat .ne. ' ') then
+                            if (chmat .ne. '&chpoint') then
                                 call alfint(chmat, imate, nommat, tdef, nopara,&
                                             k, prec, ch19)
                                 zk8(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+&

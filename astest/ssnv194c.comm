@@ -47,6 +47,21 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H4=1.0,
                                   ),
                     MONO_CINE1=_F(D=36.68,),);
+                    
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=1.0,),
+                    MONO_ISOT1=_F(R_0=75.5,
+                                  Q=9.77,
+                                  B=19.34,
+                                  H1=1.0,
+                                  H2=1.0,
+                                  H3=1.0,
+                                  H4=1.0,
+                                  ),
+                    MONO_CINE1=_F(D=36.68,),);
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
@@ -54,6 +69,14 @@ EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_GAUCHE='LINEAIRE',);
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='BCC24',),),);
+
+
+COMPORT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
@@ -78,6 +101,22 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                     MU_LOCA=145200./2.6,
                     
                     )
+                    
+COMPORP2=DEFI_COMPOR(POLYCRISTAL=(
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-150.646,33.864,55.646,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-137.138,41.5917,142.138,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-166.271,35.46958,171.271,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-77.676,15.61819,154.676,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-78.6463,33.864,155.646,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-65.1378,41.5917,142.138,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-94.2711,35.46958,71.271,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-5.67599,15.61819,154.676,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(-6.64634,33.864,155.646,),),
+                        _F(MONOCRISTAL=COMPORT2,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
+                        ),
+                    LOCALISATION='BETA',DL=0.,DA=0.,
+                    MU_LOCA=145200./2.6,
+                    );
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=(
@@ -96,7 +135,7 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
 SOLNL=SIMU_POINT_MAT(INFO=1,
                    COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
-                                COMPOR=COMPORP,
+                                COMPOR=COMPORP2,
                                 ALGO_INTE='RUNGE_KUTTA',
                                 RESI_INTE_RELA=1.E-6,
                                 ),
@@ -107,7 +146,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4
                                      ),
-                   MATER      = ACIER,
+                   MATER      = (ACIER,ACIER2),
 
                    FORMAT_TABLE='CMP_COLONNE',
 

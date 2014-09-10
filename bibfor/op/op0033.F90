@@ -66,7 +66,7 @@ subroutine op0033()
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: ndim, iret, n1, nbvari, nbpar, i, incela, ier
+    integer :: ndim, iret, nbmat, nbvari, nbpar, i, incela, ier
     integer :: imate, kpg, ksp, iter, pred, ncmp, imptgt, nbvrcm
     integer :: ntamax, matrel, irota, defimp, liccvg(5)
     integer :: indimp(9), numins, actite, action, itgt, iforta
@@ -81,7 +81,7 @@ subroutine op0033()
 !     nombre de variables de commande maxi
     parameter    (nbvrcm=100)
     character(len=4) :: fami, cargau
-    character(len=8) :: typmod(2), mater, table, fonimp(9), typpar(ntamax)
+    character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
     character(len=16) :: option, compor(ncmpma), nompar(ntamax), opt2
     character(len=19) :: codi, sddisc, k19b, sdcrit
     character(len=24) :: sderro
@@ -128,7 +128,7 @@ subroutine op0033()
 !
 !     RECUPERATION DES OPTIONS DEMANDEES
 !     ----------------------------------
-    call getvid(' ', 'MATER', nbval=6, vect=mater, nbret=n1)
+    call getvid(' ', 'MATER', nbval=6, vect=mater, nbret=nbmat)
 !
 !     RECUPERATION DU COMPORTEMENT
 !     ----------------------------
@@ -145,7 +145,7 @@ subroutine op0033()
 !     LECTURE MATERIAU ET CODAGE
 !-------------------------------------------------------------------
     call r8inir(10, 0.d0, work, 1)
-    call pmmaco(mater, codi)
+    call pmmaco(mater, nbmat, codi)
     call jeveut(codi//'.CODI', 'L', imate)
 !-------------------------------------------------------------------
 !

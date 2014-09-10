@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmmaco(nommat, codi)
-        character(len=8) :: nommat
+    subroutine pmmaco(nommat, nbmat, codi)
+        character(len=8) :: nommat(*)
         character(len=19) :: codi
+        integer :: nbmat
     end subroutine pmmaco
 end interface

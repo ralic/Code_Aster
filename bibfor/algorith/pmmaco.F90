@@ -1,4 +1,4 @@
-subroutine pmmaco(nommat, codi)
+subroutine pmmaco(nommat, nbmat, codi)
     implicit   none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -7,7 +7,7 @@ subroutine pmmaco(nommat, codi)
 #include "asterfort/jeveut.h"
 #include "asterfort/matcod.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nommat
+    character(len=8) :: nommat(*)
     character(len=19) :: codi
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -41,29 +41,32 @@ subroutine pmmaco(nommat, codi)
 !
 !
 !
-    integer :: indmat, nbmat, imate, igrp, ingrp
-    character(len=8) :: k8b
+    integer :: indmat, nbmat, imate, igrp, ingrp, i
+    character(len=8) :: nommats, matercod
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jedetr(nommat//'.MATE_CODE.GRP')
-    call jedetr(nommat//'.MATE_CODE.NGRP')
-    call wkvect(nommat//'.MATE_CODE.GRP', 'V V K8', 1, igrp)
-    call wkvect(nommat//'.MATE_CODE.NGRP', 'V V I', 1, ingrp)
-    zk8(igrp)=nommat
+    nommats = '&chpoint'
+
+    call jedetr(nommats//'.MATE_CODE.GRP')
+    call jedetr(nommats//'.MATE_CODE.NGRP')
+    call wkvect(nommats//'.MATE_CODE.GRP', 'V V K8', nbmat, igrp)
+    call wkvect(nommats//'.MATE_CODE.NGRP', 'V V I', 1, ingrp)
+    do i=1,nbmat
+        zk8(igrp-1+i)=nommat(i)
+    enddo
     zi(ingrp)=1
 !
-    call jeveut(nommat//'.MATE_CODE.GRP', 'L', igrp)
+    call jeveut(nommats//'.MATE_CODE.GRP', 'L', igrp)
 !
     codi=' '
     indmat=0
-    nbmat=1
+!   imate : numero de groupe ?
     imate=1
-    k8b = ' '
-    call matcod(k8b, indmat, nbmat, imate, igrp,&
-                nommat, codi)
-!
+    matercod='matcod'
+    call matcod(nommats, indmat, nbmat, imate, igrp,&
+                matercod, codi)
     call jedema()
 !
 end subroutine
