@@ -100,7 +100,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     endif
 !
 !     CRIT_RUPT
-    if ((crit(11).gt.0.d0) .and. (vim(14).gt.0.d0)) then
+    if ((crit(13).gt.0.d0) .and. (vim(14).gt.0.d0)) then
         lgpg = 14
         call rupmat(fami, kpg, ksp, mate, vim,&
                     lgpg, young, sigm)

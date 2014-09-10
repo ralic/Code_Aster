@@ -58,7 +58,7 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
 !
     integer :: nb_comp_elem, ikit, icomp, imeca
     character(len=16) :: comp_elem(20), rela_meta, rela_meca
-    aster_logical :: l_umat, l_mfront, l_kit_meta, l_kit_thm
+    aster_logical :: l_kit_meta, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +66,6 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
     do icomp = 1, 20
         comp_elem(icomp) = 'VIDE'
     enddo
-    call comp_meca_l(rela_comp, 'UMAT', l_umat)
-    call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
     call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
 !
@@ -80,14 +78,10 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
     nb_comp_elem = nb_comp_elem + 1
     comp_elem(nb_comp_elem) = type_cpla
 !
-! - No UMAT/MFRONT with KIT
-!
-    if (.not.(l_umat.or.l_mfront)) then
-        do ikit = 1, 9
-            nb_comp_elem = nb_comp_elem + 1
-            comp_elem(nb_comp_elem) = kit_comp(ikit)
-        enddo
-    endif
+    do ikit = 1, 9
+        nb_comp_elem = nb_comp_elem + 1
+        comp_elem(nb_comp_elem) = kit_comp(ikit)
+    enddo
 !
 ! - Reorder THM behaviours
     if (l_kit_thm) then

@@ -150,20 +150,9 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     compor(9) = p_info_comp_valk(16*(iocc-1) + 6)
     compor(10) = p_info_comp_valk(16*(iocc-1) + 7)
     compor(11) = p_info_comp_valk(16*(iocc-1) + 8)
-    if (l_exte_comp) then
-        compor(12) = p_info_comp_valk(16*(iocc-1) + 9)
-    else
-        write (compor(12),'(I16)') iocc
-    endif
-    if (l_exte_comp) then
-        if (l_matr_tgsc) call utmess('F', 'COMPOR4_59')
-        if (l_crit_rupt) call utmess('F', 'COMPOR4_60')
-        compor(13) = p_info_comp_valk(16*(iocc-1) + 10)
-        compor(14) = p_info_comp_valk(16*(iocc-1) + 11)
-    else
-        compor(13) = p_info_comp_valk(16*(iocc-1) + 15)
-        compor(14) = p_info_comp_valk(16*(iocc-1) + 16)
-    endif
+    write (compor(12),'(I16)') iocc
+    compor(13) = p_info_comp_valk(16*(iocc-1) + 15)
+    compor(14) = p_info_comp_valk(16*(iocc-1) + 16)
     compor(15) = p_info_comp_valk(16*(iocc-1) + 12)
     compor(16) = p_info_comp_valk(16*(iocc-1) + 13)
 !
@@ -173,10 +162,6 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     write (compor(18),'(I16)') 0
     write (compor(19),'(I16)') 0
     write (compor(20),'(I16)') 0
-!
-! - For LC0050.F90
-!
-    compor(17) = 'POINT'
 !
 ! - Prepare informations about internal variables
 !
@@ -221,6 +206,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     carcri(14) = p_info_carc_valr(18*(iocc-1) + 14)
     carcri(15) = p_info_carc_valr(18*(iocc-1) + 15)
     carcri(16) = p_info_carc_valr(18*(iocc-1) + 16)
+    carcri(17) = 1
 !
     AS_DEALLOCATE(vk16 = p_info_comp_valk)
     AS_DEALLOCATE(vi   = p_info_comp_vali)

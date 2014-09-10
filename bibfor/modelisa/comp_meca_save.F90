@@ -177,20 +177,9 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
         p_compor_valv(9) = kit_comp(2)
         p_compor_valv(10) = kit_comp(3)
         p_compor_valv(11) = kit_comp(4)
-        if (l_exte_comp) then
-            p_compor_valv(12) = kit_comp(5)
-        else
-            write (p_compor_valv(12),'(I16)') iocc
-        endif
-        if (l_exte_comp) then
-            if (l_matr_tgsc) call utmess('F', 'COMPOR4_59')
-            if (l_crit_rupt) call utmess('F', 'COMPOR4_60')
-            p_compor_valv(13) = kit_comp(6)
-            p_compor_valv(14) = kit_comp(7)
-        else
+        write (p_compor_valv(12),'(I16)') iocc
             p_compor_valv(13) = type_matg
             p_compor_valv(14) = post_iter
-        endif
         p_compor_valv(15) = kit_comp(8)
         p_compor_valv(16) = kit_comp(9)
         write (p_compor_valv(17),'(I16)') nb_vari_comp(1)

@@ -149,7 +149,7 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
                 3, nomc(1), materd(1, 1), cerr(1), 0)
 !
 !
-    if (crit(11) .gt. 0.d0) then
+    if (crit(13) .gt. 0.d0) then
         lgpg = 34
         call rupmat(fami, kpg, ksp, imat, vim,&
                     lgpg, materd(1, 1), sigd)
@@ -173,7 +173,7 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
                 3, nomc(1), materf(1, 1), cerr(1), 0)
 !
 !
-    if (crit(11) .gt. 0.d0) then
+    if (crit(13) .gt. 0.d0) then
         lgpg = 34
         call rupmat(fami, kpg, ksp, imat, vim,&
                     lgpg, materf(1, 1), sigd)

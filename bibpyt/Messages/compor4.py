@@ -98,17 +98,8 @@ Comportement POLYCRISTAL
 56: _(u""" ... jusqu'à V%(i1)d """),
 
 
-59: _(u"""
-L'utilisation de l'option TYPE_MATR_TANG n'est pas possible avec un comportement externe (UMAT, ZMAT ou MFRONT).
-"""),
 
-60: _(u"""
-L'utilisation de l'option POST_ITER n'est pas possible avec un comportement externe (UMAT, ZMAT ou MFRONT).
-"""),
 
-61: _(u"""
-Aucun KIT ne peut être utilisé avec un comportement externe de type UMAT ou MFRONT.
-"""),
 
 62 : _(u"""
   -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'

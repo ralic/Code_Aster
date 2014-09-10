@@ -291,7 +291,7 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 800 end do
 !
 !     POST_ITER='CRIT_RUPT'
-    if (crit(11) .gt. 0.d0) then
+    if (crit(13) .gt. 0.d0) then
         ndim = 3
         call crirup(fami, imate, ndim, npg, lgpg,&
                     option, compor, sigp, vip, vim,&

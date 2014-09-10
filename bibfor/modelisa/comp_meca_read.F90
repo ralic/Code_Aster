@@ -66,7 +66,7 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
     character(len=16) :: kit_comp(9)
     character(len=128) :: libr_name
     integer :: unit_comp, nb_vari_exte
-    aster_logical :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
+    aster_logical :: l_cristal, l_zmat, l_umat, l_mfront
     aster_logical :: l_kit
     aster_logical :: l_matr_tgsc, l_crit_rupt
 !
@@ -122,7 +122,6 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
         call comp_meca_l(rela_comp, 'ZMAT'     , l_zmat)
         call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
         call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
-        call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
 !
 ! ----- Get multi-comportment *CRISTAL
 !
@@ -161,16 +160,6 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
             endif
             call mfront_get_nbvari(libr_name, subr_name, nom_mod_mfront, ndim, nb_vari_exte)
             if ( nb_vari_exte.eq.0 ) nb_vari_exte = 1
-        endif
-        if (l_umat .or. l_mfront) then
-            ASSERT(.not.l_kit)
-            if (l_kit) then
-                call utmess('F','COMPOR4_61')
-            endif
-            do ikit = 1, 8
-                kit_comp(ikit) = libr_name(16*(ikit-1)+1:16*ikit)
-            end do
-            kit_comp(9) = subr_name
         endif
 !
 ! ----- Select type of comportment (incremental or total)

@@ -76,7 +76,7 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
     character(len=16) :: algo_inte, rela_comp, subr_name, nom_mod_mfront
     character(len=128) :: libr_name
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
-    real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
+    real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, post_iter
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     aster_logical :: plane_stress
 !
@@ -111,7 +111,8 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
         seuil = info_carc_valr(18*(iocc-1) + 10)
         amplitude = info_carc_valr(18*(iocc-1) + 11)
         taux_retour = info_carc_valr(18*(iocc-1) + 12)
-        parm_alpha = info_carc_valr(18*(iocc-1) + 13)
+        post_iter  = info_carc_valr(18*(iocc-1) + 13)
+        parm_alpha = info_carc_valr(18*(iocc-1) + 18)
         rela_comp = info_carc_valk(2*(iocc-1) + 1)
         algo_inte = info_carc_valk(2*(iocc-1) + 2)
 !
@@ -169,10 +170,15 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
         p_carc_valv(10) = seuil
         p_carc_valv(11) = amplitude
         p_carc_valv(12) = taux_retour
+        p_carc_valv(13) = post_iter        
+!       exte_comp UMAT / MFRONT        
         p_carc_valv(14) = info_carc_valr(18*(iocc-1) + 14)
         p_carc_valv(15) = info_carc_valr(18*(iocc-1) + 15)
         p_carc_valv(16) = info_carc_valr(18*(iocc-1) + 16)
+!       cf. CALC_POINT_MAT / PMDORC        
+        p_carc_valv(17) = 0
         p_carc_valv(18) = parm_alpha
+
 !
 ! ----- Affect in <CARTE>
 !

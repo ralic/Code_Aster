@@ -63,7 +63,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
-    integer :: type_matr_t, iter_inte_pas, iter_deborst_max
+    integer :: type_matr_t, iter_inte_pas, iter_deborst_max,ipostiter
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
     aster_logical :: l_kit_thm, l_mfront, l_umat
@@ -214,10 +214,13 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! ----- Get POST_ITER
 !
+        ipostiter=0.d0
         if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
             call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter, nbret = iret)
             if (iret .eq. 1) then
-                amplitude = 1.d0
+               if (post_iter .eq. 'CRIT_RUPT') then
+                   ipostiter = 1.d0
+               endif
             endif
         endif
 !
@@ -263,10 +266,11 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         info_carc_valr(18*(iocc-1) + 10) = seuil
         info_carc_valr(18*(iocc-1) + 11) = amplitude
         info_carc_valr(18*(iocc-1) + 12) = taux_retour
-        info_carc_valr(18*(iocc-1) + 13) = parm_alpha
+        info_carc_valr(18*(iocc-1) + 13) = ipostiter
         info_carc_valr(18*(iocc-1) + 14) = dble(cpointer_nbvarext)
         info_carc_valr(18*(iocc-1) + 15) = dble(cpointer_namevarext)
         info_carc_valr(18*(iocc-1) + 16) = dble(cpointer_fct_ldc)
+        info_carc_valr(18*(iocc-1) + 18) = parm_alpha
         info_carc_valk(2*(iocc-1) + 1) = rela_comp
         info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do

@@ -312,7 +312,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 !
 !
 !     POST_ITER='CRIT_RUPT'
-    if (crit(11) .gt. 0.d0) then
+    if (crit(13) .gt. 0.d0) then
         ndim = 3
         call crirup(fami, mate, ndim, npg, lgpg,&
                     option, compor, sigp, vip, vim,&

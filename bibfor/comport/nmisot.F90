@@ -43,7 +43,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor, option
-    real(kind=8) :: crit(11), line, radi
+    real(kind=8) :: crit(*), line, radi
     real(kind=8) :: deps(6), dx, deuxmu, demu, cinco
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -208,7 +208,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         num = valres(2)
         deumum = em/(1.d0+num)
 !        CRIT_RUPT
-        if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
+        if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
             call rupmat(fami, kpg, ksp, imate, vim,&
                         lgpg, em, sigm)
@@ -226,7 +226,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         nu = valres(2)
 !
 !        CRIT_RUPT
-        if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
+        if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
             call rupmat(fami, kpg, ksp, imate, vim,&
                         lgpg, e, sigm)
@@ -326,7 +326,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                     jvalem, nbvalm, em)
 !
 !        CRIT_RUPT VMIS_ISOT_TRAC
-        if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
+        if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
             call rupmat(fami, kpg, ksp, imate, vim,&
                         lgpg, em, sigm)
@@ -350,7 +350,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         call rctrac(imate, 1, 'SIGM', para_vale, jprolp,&
                     jvalep, nbvalp, e)
 !        CRIT_RUPT VMIS_ISOT_TRAC
-        if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
+        if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8
             call rupmat(fami, kpg, ksp, imate, vim,&
                         lgpg, e, sigm)

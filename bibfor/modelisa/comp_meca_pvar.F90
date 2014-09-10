@@ -206,7 +206,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                 do i_kit = 1, 9
                     kit_comp(i_kit) = cesv(1+iadc-2+7+i_kit)
                 end do
-                if (.not.l_exte_comp) kit_comp(5) = 'VIDE'
+                kit_comp(5) = 'VIDE'
                 if (.not.l_matr_tgsc) kit_comp(6) = 'VIDE'
                 if (.not.l_crit_rupt) kit_comp(7) = 'VIDE'
             endif
@@ -223,7 +223,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
             do i_kit = 1, 9
                 kit_comp(i_kit) = compor_list(7+i_kit)
             end do
-            if (.not.l_exte_comp) kit_comp(5) = 'VIDE'
+            kit_comp(5) = 'VIDE'
             if (.not.l_matr_tgsc) kit_comp(6) = 'VIDE'
             if (.not.l_crit_rupt) kit_comp(7) = 'VIDE'
         endif
