@@ -57,7 +57,7 @@ MODE_LOCAL__
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
-                                       LC_EXT[2] MATRTANG POSTITER MODECALC )
+                                       POSTITER LC_EXT[3] MODECALC )
     CCDTAU   = PILO_R   ELEM__         (A0       )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )

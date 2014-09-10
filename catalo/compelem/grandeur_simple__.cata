@@ -305,7 +305,7 @@ GRANDEUR_SIMPLE__
 <<  CARCRI Type :R Critere de convergence d'un probleme non-lineaire materiel
     (pour 1 point de Gauss)
        ITECREL  : nombre max d'iteration (ITER_INTE_MAXI)
-       MACOMP   : type de Jacobien (vitesse ou incremental) ( TYPE_MATR_COMP )
+       MACOMP   : type de matrice tangente : VERIFICATION / PERTURBATION
        RESCREL  : tolerance pour la convergence ( RESI_INTE_RELA )
        THETA    : parametre de la theta_methode
        ITEDEC   : indicateur pour le redecoupage ( ITER_INTE_PAS )
@@ -313,21 +313,17 @@ GRANDEUR_SIMPLE__
        PERTURB  : perturbation pour matrice tangente par perturbation
        TOLDEBO  : tolerance pour la verification de DEBORST
        ITEDEBO  : nb iterations maxi pour DEBORST (ITER_MAXI_DEBORST == ITEDEBO)
-       TSSEUIL  : seuil d'activation de la matrice evolutive tangente/secante
-       (TANGSEC_SEUIL : TSSEUIL)
-       TSAMPL   : amplitude la perturbation  de la matrice evolutive
-       TANGENTE/SECANTE (TANGSEC_AMPL :  TSAMPL)
-       TSRETOUR : taux de retour vers la matrice tangente lors de la
-       modification evolutive tangente/secante (TANGSEC_RETOUR = TSRETOUR)
-       LC_EXT[2]: pointeurs vers routines externes (UMAT / MFRONT)
-       MATRTANG : type de matrice tangente : VERIFICATION / PERTURBATION
-       POSTITER : type de critere POST_ITER
-       MODECALC : POINT (CALC_POINT_MAT) ou ELEM (ELEMENTS FINIS)
+       TSSEUIL  : seuil d'activation matrice tangente/secante (TANGSEC_SEUIL)
+       TSAMPL   : perturbation de la matrice TANGENTE/SECANTE (TANGSEC_AMPL)
+       TSRETOUR : taux de retour vers la matrice tangente (TANGSEC_RETOUR)
+       POSTITER : type de critere POST_ITER : 0=rien, 1=CRIT_RUPT
+       LC_EXT[3]: pointeurs vers routines externes (UMAT / MFRONT)
+       MODECALC : 1 (CALC_POINT_MAT) ou 0 (ELEMENTS FINIS)
        ALPHA    : PARM_ALPHA pour les volumes finis
 >>
     CARCRI   = R    ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC PERTURB
                     TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
-                   LC_EXT[2] MATRTANG POSTITER MODECALC ALPHA
+                    POSTITER LC_EXT[3] MODECALC ALPHA
 
 <<  CASECT Type:K8 Nom d'un objet de type cara-poutre contenant le
     caracteristiques d'une section de poutre
