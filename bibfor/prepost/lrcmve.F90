@@ -3,7 +3,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
                   nbcmfi, nmcmfi, nbcmpv, ncmpvm, numcmp,&
                   jnumma, nochmd, nbma, npgma, npgmm,&
                   typech, nutyma, adsl, adsv, adsd,&
-                  codret)
+                  lrenum, nuanom, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,10 +78,16 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+    integer :: ntymax
+    parameter (ntymax=69)
+    integer :: nnomax
+    parameter (nnomax=27)
     integer :: nmatyp, nbnoma, lgproa, ntypel, npgmax
     integer :: ncmprf, nbcmpv, jnumma, nbma
     integer :: indpg(ntypel, npgmax), npgma(nbma), npgmm(nbma)
     integer :: adsl, adsv, adsd, nutyma
+    integer :: nuanom(ntymax, nnomax)
+    aster_logical :: lrenum
     integer :: codret
 !
     character(len=*) :: nochmd
@@ -100,7 +106,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
     integer :: nrcmp, ncmpdb, nbpt, nbptm
     integer :: nuval, ipg
     integer :: nbcmfi, i, kk, ima
-    integer :: adremp, advale, adncfi, adnucm, adncvm, adproa
+    integer :: adremp, advale, adncfi, adnucm, adncvm, adproa, nummod
     integer :: ifm, nivinf
 !
     character(len=8) :: saux08
@@ -121,7 +127,6 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !
     codret = 0
 !
-!               12   345678   9012345678901234
     ntcmpl = '&&'//nompro//'.LOGIQUECMP     '
     call wkvect(ntcmpl, 'V V L', ncmprf, adremp)
 !
@@ -136,16 +141,16 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
         call jeveuo(ntproa, 'L', adproa)
     endif
 !
-    do 11 , iaux = 1 , nbcmfi
+    do iaux = 1, nbcmfi
 !
-    ncmpdb = 1
+        ncmpdb = 1
 !
 ! 1.1. ==> REPERAGE DU NUMERO DE LA COMPOSANTE DU CHAMP ASTER DANS
 !          LAQUELLE AURA LIEU LE TRANSFERT DE LA IAUX-EME COMPOSANTE LUE
 !
-110  continue
+110     continue
 !
-    nrcmp = 0
+        nrcmp = 0
 !
 ! 1.1.1. ==> QUAND ON VEUT UNE SERIE DE COMPOSANTES :
 !            BOUCLE 111 : ON CHERCHE, DANS LA LISTE VOULUE EN MED,
@@ -175,16 +180,16 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !                ARRETE : NCMPDB.
 !              . ON FAIT LE TRANSFERT DES VALEURS (GOTO 12).
 !
-    if (nbcmpv .ne. 0) then
+        if (nbcmpv .ne. 0) then
 !
-        do 111 , jaux = ncmpdb , nbcmpv
-        if (zk16(adncvm-1+jaux) .eq. zk16(adncfi-1+iaux)) then
-            nrcmp = zi(adnucm-1+jaux)
-            ncmpdb = jaux + 1
-            goto 12
-        endif
-111      continue
-        goto 11
+            do jaux = ncmpdb, nbcmpv
+                if (zk16(adncvm-1+jaux) .eq. zk16(adncfi-1+iaux)) then
+                    nrcmp = zi(adnucm-1+jaux)
+                    ncmpdb = jaux + 1
+                    goto 12
+                endif
+            enddo
+            goto 11
 !
 ! 1.1.2. ==> QUAND ON STOCKE A L'IDENTIQUE, ON RECHERCHE LE NUMERO DE
 !            COMPOSANTE DE REFERENCE QUI A LE MEME NOM QUE LA
@@ -192,136 +197,160 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !            RIEN NE GARANTIT QUE L'ORDRE DES COMPOSANTES SOIT LE MEME
 !            DANS LA REFERENCE ASTER ET DANS LE CHAMP ECRIT DANS LE
 !            FICHIER.
-    else
+        else
 !
-        saux08 = zk16(adncfi-1+iaux)(1:8)
-        if (lxlgut(zk16(adncfi-1+iaux)) .gt. 8) then
-            valk(1) = zk16(adncfi-1+iaux)
-            valk(2) = saux08
-            call utmess('A', 'MED_72', nk=2, valk=valk)
+            saux08 = zk16(adncfi-1+iaux)(1:8)
+            if (lxlgut(zk16(adncfi-1+iaux)) .gt. 8) then
+                valk(1) = zk16(adncfi-1+iaux)
+                valk(2) = saux08
+                call utmess('A', 'MED_72', nk=2, valk=valk)
+            endif
+            nrcmp = indik8 ( nomcmr, saux08, 1, ncmprf )
+!
         endif
-        nrcmp = indik8 ( nomcmr, saux08, 1, ncmprf )
-!
-    endif
 !
 ! 1.2. ==> SI AUCUNE COMPOSANTE N'A ETE TROUVEE, MALAISE ...
 !
-12  continue
+12      continue
 !
-    if (nrcmp .eq. 0) then
-        call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
-    endif
+        if (nrcmp .eq. 0) then
+            call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
+        endif
 !
 ! 1.3. ==> TRANSFERT DES VALEURS DANS LA COMPOSANTE NRCMP
 !
-    zl(adremp+nrcmp-1) = .true.
-    laux = advale-nbcmfi+iaux-1
+        zl(adremp+nrcmp-1) = .true.
+        laux = advale-nbcmfi+iaux-1
 !
 ! 1.3.1. ==> SANS PROFIL : ON PARCOURT TOUTES LES MAILLES
 !
-    if (lgproa .eq. 0) then
+        if (lgproa .eq. 0) then
 !
-!       SI TYPE DE CHAMP = 'ELGA'
-        if (typech(1:4) .eq. 'ELGA') then
-            do 131 , jaux = 1 , nmatyp
-            ima=zi(jnumma+jaux-1)
-            nbpt=npgma(ima)
-            nbptm=npgmm(ima)
-            do 132 , i = 1 , nbptm
+!           SI TYPE DE CHAMP = 'ELGA'
+            if (typech(1:4) .eq. 'ELGA') then
+                do jaux = 1, nmatyp
+                    ima=zi(jnumma+jaux-1)
+                    nbpt=npgma(ima)
+                    nbptm=npgmm(ima)
+                    do i = 1, nbptm
 !
-            laux = laux + nbcmfi
-!             IS GAUSS POINT IN ASTER ELEMENT ?
-            if (i .le. nbpt) then
-                ipg=indpg(nutyma,i)
-                call cesexi('S', adsd, adsl, ima, ipg,&
-                            1, nrcmp, kk)
-                zl(adsl-kk-1) = .true.
-                zr(adsv-kk-1) = zr(laux)
+                        laux = laux + nbcmfi
+!                       IS GAUSS POINT IN ASTER ELEMENT ?
+                        if (i .le. nbpt) then
+                            ipg=indpg(nutyma,i)
+                            call cesexi('S', adsd, adsl, ima, ipg,&
+                                        1, nrcmp, kk)
+                            zl(adsl-kk-1) = .true.
+                            zr(adsv-kk-1) = zr(laux)
+                        endif
+                    enddo
+                enddo
+!
+!           SI TYPE DE CHAMP = 'ELEM'/'ELNO'
+            elseif (typech(1:4) .eq. 'ELEM' .or.&
+                    (typech(1:4) .eq. 'ELNO' .and. lrenum.eqv. .false.)) then
+                do jaux = 1, nmatyp
+                    do i = 1, nbnoma
+                        call cesexi('S', adsd, adsl, zi(jnumma+jaux-1), i,&
+                                    1, nrcmp, kk)
+                        laux = laux + nbcmfi
+                        zl(adsl-kk-1) = .true.
+                        zr(adsv-kk-1) = zr(laux)
+                    enddo
+                enddo
+            else
+                do jaux = 1, nmatyp
+                    do i = 1, nbnoma
+                        nummod = nuanom(nutyma, i)
+                        call cesexi('S', adsd, adsl, zi(jnumma+jaux-1), nummod,&
+                                    1, nrcmp, kk)
+                        laux = laux + nbcmfi
+                        zl(adsl-kk-1) = .true.
+                        zr(adsv-kk-1) = zr(laux)
+                    enddo
+                enddo
             endif
-132          continue
-131          continue
 !
-!       SI TYPE DE CHAMP = 'ELEM'/'ELNO'
         else
-            do 1310 , jaux = 1 , nmatyp
-            do 1320 , i = 1 , nbnoma
-            call cesexi('S', adsd, adsl, zi(jnumma+jaux-1), i,&
-                        1, nrcmp, kk)
-            laux = laux + nbcmfi
-            zl(adsl-kk-1) = .true.
-            zr(adsv-kk-1) = zr(laux)
-1320          continue
-1310          continue
-        endif
-!
-    else
 !
 ! 1.3.2. ==> AVEC PROFIL : ON PARCOURT LES MAILLES DU PROFIL
 !
-!       SI TYPE DE CHAMP = 'ELGA'
-        if (typech(1:4) .eq. 'ELGA') then
-            do 133 , nuval = 0 , lgproa-1
-            ima=zi(jnumma+nuval)
-            nbpt=npgma(ima)
-            nbptm=npgmm(ima)
-            do 134 , i = 1 , nbptm
+!           SI TYPE DE CHAMP = 'ELGA'
+            if (typech(1:4) .eq. 'ELGA') then
+                do nuval = 0, lgproa-1
+                    ima=zi(jnumma+nuval)
+                    nbpt=npgma(ima)
+                    nbptm=npgmm(ima)
+                    do i = 1, nbptm
 !
-            laux = laux + nbcmfi
-!             IS GAUSS POINT IN ASTER ELEMENT ?
-            if (i .le. nbpt) then
-                ipg=indpg(nutyma,i)
-                call cesexi('S', adsd, adsl, ima, ipg,&
-                            1, nrcmp, kk)
-                zl(adsl-kk-1) = .true.
-                zr(adsv-kk-1) = zr(laux)
+                        laux = laux + nbcmfi
+!                       IS GAUSS POINT IN ASTER ELEMENT ?
+                        if (i .le. nbpt) then
+                            ipg=indpg(nutyma,i)
+                            call cesexi('S', adsd, adsl, ima, ipg,&
+                                        1, nrcmp, kk)
+                            zl(adsl-kk-1) = .true.
+                            zr(adsv-kk-1) = zr(laux)
+                        endif
+                    enddo
+                enddo
+!
+!           SI TYPE DE CHAMP = 'ELEM'/'ELNO'
+            elseif (typech(1:4) .eq. 'ELEM' .or.&
+                    (typech(1:4) .eq. 'ELNO' .and. lrenum.eqv. .false.)) then
+                do nuval = 0, lgproa-1
+                    do i = 1, nbnoma
+                        call cesexi('S', adsd, adsl, zi(jnumma+nuval), i,&
+                                    1, nrcmp, kk)
+                        laux = laux + nbcmfi
+                        zl(adsl-kk-1) = .true.
+                        zr(adsv-kk-1) = zr(laux)
+                    enddo
+                enddo
+            else
+                do nuval = 0, lgproa-1
+                    do i = 1, nbnoma
+                        nummod = nuanom(nutyma, i)
+                        call cesexi('S', adsd, adsl, zi(jnumma+nuval), nummod,&
+                                    1, nrcmp, kk)
+                        laux = laux + nbcmfi
+                        zl(adsl-kk-1) = .true.
+                        zr(adsv-kk-1) = zr(laux)
+                    enddo
+                enddo
             endif
-134          continue
-133          continue
 !
-!       SI TYPE DE CHAMP = 'ELEM'/'ELNO'
-        else
-            do 1330 , nuval = 0 , lgproa-1
-            do 1340 , i = 1 , nbnoma
-            call cesexi('S', adsd, adsl, zi(jnumma+nuval), i,&
-                        1, nrcmp, kk)
-            laux = laux + nbcmfi
-            zl(adsl-kk-1) = .true.
-            zr(adsv-kk-1) = zr(laux)
-1340          continue
-1330          continue
         endif
-!
-    endif
 !
 !
 ! 1.4. ==> QUAND ON VEUT UNE SERIE DE COMPOSANTES, ON REPREND
 !          L'EXPLORATION DE LA LISTE VOULUE
 !
-    if (nbcmpv .ne. 0) then
-        goto 110
-    endif
+        if (nbcmpv .ne. 0) then
+            goto 110
+        endif
 !
-    11 end do
+ 11 end do
 !
 !====
 ! 2. ON INFORME SUR LES COMPOSANTES QUI ONT ETE REMPLIES
 !====
 !
     kaux = 0
-    do 21 , jaux = 1 , ncmprf
-    if (.not.zl(adremp+jaux-1)) then
-        kaux = kaux + 1
-    endif
-    21 end do
+    do jaux = 1, ncmprf
+        if (.not.zl(adremp+jaux-1)) then
+            kaux = kaux + 1
+        endif
+    end do
 !
     if (kaux .gt. 0 .and. nivinf .gt. 1) then
         write(ifm,2001) nochmd
-        do 22 , jaux = 1 , ncmprf
-        if (zl(adremp+jaux-1)) then
-            saux08 = nomcmr(jaux)
-            write(ifm,2002) saux08
-        endif
-22      continue
+        do jaux = 1, ncmprf
+            if (zl(adremp+jaux-1)) then
+                saux08 = nomcmr(jaux)
+                write(ifm,2002) saux08
+            endif
+        enddo
         write(ifm,*) ' '
     endif
 !

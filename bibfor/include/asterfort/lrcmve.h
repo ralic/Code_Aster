@@ -21,7 +21,7 @@ interface
                       nbcmfi, nmcmfi, nbcmpv, ncmpvm, numcmp,&
                       jnumma, nochmd, nbma, npgma, npgmm,&
                       typech, nutyma, adsl, adsv, adsd,&
-                      codret)
+                      lrenum, nuanom, codret)
         integer :: nbma
         integer :: npgmax
         integer :: ntypel
@@ -47,6 +47,8 @@ interface
         integer :: adsl
         integer :: adsv
         integer :: adsd
+        integer :: nuanom(69, 27)
+        aster_logical :: lrenum
         integer :: codret
     end subroutine lrcmve
 end interface
