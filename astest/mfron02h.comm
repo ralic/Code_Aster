@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# TITRE utilisation de mtest sur ESSAI DE FLUAGE MODELE BURGER cf mfron02c
+
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+import os
+
+# Version  de mfront
+
+os.system("tfel-config --version ")
+
+os.system("mfront --obuild BurgerAgeing.mfront --interface=aster ")
+
+from subprocess import Popen, PIPE
+
+
+proc = Popen(['mtest', 'fort.22'], stdout=PIPE)
+
+out = proc.communicate()[0]
+
+codret=proc.returncode + 1
+print 'codret=',codret
+
+if codret <> 0 :
+    print out
+
+
+Fres=DEFI_FONCTION(NOM_PARA='INST',ABSCISSE=[0.,1.], ORDONNEE=[0.,codret])
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.,
+                         VALE_PARA=1.,
+                         FONCTION=Fres,),))
+                         
+                         
+
+FIN()
