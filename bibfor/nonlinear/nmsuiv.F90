@@ -105,17 +105,17 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 ! ----- NOM DU CHAMP
 !
         icham = zi(jsuiin+7+7*(iocc-1)+7-1)
-        nomcha = zk24(jsuich+2*(icham-1)+1-1)
-        nomchs = zk24(jsuich+2*(icham-1)+2-1)
+        nomcha = zk24(jsuich+4*(icham-1)+1-1)
+        nomchs = zk24(jsuich+4*(icham-1)+2-1)
         if (nomcha .eq. 'NONE') goto 99
 !
 ! ----- TYPE DE CHAMP
 !
-        call nmextt(sdieto, nomcha, typcha)
+        typcha = zk24(jsuich-1+4*(icham-1)+3)
 !
 ! ----- RECUPERATION DU CHAMP
 !
-        call nmextd(nomcha, sdieto, champ)
+        champ = zk24(jsuich-1+4*(icham-1)+4)
 !
 ! ----- NOMBRE DE COMPOSANTES/NOEUDS/MAILLES
 !
@@ -170,7 +170,7 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 ! --- DESTRUCTION DES CHAM_ELEM_S
 !
     do 45 icham = 1, nbcham
-        nomchs = zk24(jsuich+2*(icham-1)+2-1)
+        nomchs = zk24(jsuich+4*(icham-1)+2-1)
         call jedetr(nomchs)
 45  end do
 999  continue

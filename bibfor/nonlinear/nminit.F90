@@ -323,16 +323,16 @@ implicit none
     call nminma(fonact, lischa, sddyna, solveu, numedd,&
                 numfix, meelem, measse)
 !
-! --- OBSERVATION INITIALE
-!
-    call nmobsv(mesh, sddisc, sd_inout, sd_obsv, numins)
-!
 ! --- CREATION DE LA SD EVOL_NOLI
 !
     call nmnoli(result, sddisc, sderro, carcri, sdimpr,&
                 sdcrit, fonact, sddyna, sdpost, model,&
                 mate, carele, lisch2, sdpilo, sdtime,&
                 sdener, sd_inout, sdcriq)
+!
+! - Make initial observation
+!
+    call nmobsv(mesh, sddisc, sd_obsv, numins, sd_inout)
 !
 !NS   ICI ON UTILISE LISCPY A LA PLACE DE COPISD POUR
 !NS   RESPECTER L'ESPRIT DE COPISD QUI NE SERT QU'A

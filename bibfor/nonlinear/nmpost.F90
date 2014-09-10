@@ -1,11 +1,23 @@
-subroutine nmpost(modele, noma, numedd, numfix, carele,&
-                  compor, solveu, numins, mate, comref,&
+subroutine nmpost(modele, noma  , numedd, numfix, carele,&
+                  compor, solveu, numins, mate  , comref,&
                   lischa, defico, resoco, resocu, parmet,&
                   parcon, fonact, carcri, sdimpr, sdstat,&
-                  sddisc, sdtime, sdobse, sderro, sdieto,&
-                  sddyna, sdpost, valinc, solalg, meelem,&
-                  measse, veelem, veasse, sdener, sdcriq,&
-                  eta)
+                  sddisc, sdtime, sdobse, sderro, sddyna,&
+                  sdpost, valinc, solalg, meelem, measse,&
+                  veelem, veasse, sdener, sdcriq, eta)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfmxpo.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmener.h"
+#include "asterfort/nmetca.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmobsv.h"
+#include "asterfort/nmspec.h"
+#include "asterfort/nmtime.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,27 +36,13 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfmxpo.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmener.h"
-#include "asterfort/nmetca.h"
-#include "asterfort/nmleeb.h"
-#include "asterfort/nmobsv.h"
-#include "asterfort/nmspec.h"
-#include "asterfort/nmtime.h"
+!
     integer :: numins
     character(len=8) :: noma
     real(kind=8) :: parmet(*), parcon(*), eta
     character(len=19) :: meelem(*)
     character(len=24) :: resoco, defico, resocu
-    character(len=24) :: sdieto
     character(len=19) :: solveu
     character(len=19) :: lischa, sdener
     character(len=19) :: sddisc, sddyna, sdpost, sdobse
@@ -79,7 +77,6 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 ! IN  SDSTAT : SD STATISTIQUES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  SDIETO : SD GESTION IN ET OUT
 ! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
 ! IN  SOLVEU : SOLVEUR
 ! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
@@ -96,7 +93,6 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -155,12 +151,11 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
                     veelem)
     endif
 !
-! --- OBSERVATION EVENTUELLE
+! - Make observation
 !
-    call nmobsv(noma, sddisc, sdieto, sdobse, numins)
+    call nmobsv(noma, sddisc, sdobse, numins)
 !
- 99 continue
+99  continue
 !
-    call jedema()
 !
 end subroutine

@@ -1,4 +1,4 @@
-subroutine nmobse(meshz, sd_inout, sd_obsv, time)
+subroutine nmobse(meshz, sd_obsv, time)
 !
 implicit none
 !
@@ -9,8 +9,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmext0.h"
 #include "asterfort/nmext1.h"
-#include "asterfort/nmextd.h"
-#include "asterfort/nmextt.h"
 #include "asterfort/nmobs2.h"
 #include "asterfort/utmess.h"
 !
@@ -34,7 +32,6 @@ implicit none
 !
     character(len=*), intent(in) :: meshz
     character(len=19), intent(in) :: sd_obsv
-    character(len=24), intent(in) :: sd_inout
     real(kind=8), intent(in) :: time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,7 +44,6 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  time             : current time
-! In  sd_inout         : datastructure for input/output parameters
 ! In  sd_obsv          : datastructure for observation parameters
 !
 ! --------------------------------------------------------------------------------------------------
@@ -137,17 +133,17 @@ implicit none
 ! --------- Type of field
 !
             i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
-            field_type   = v_extr_field(2*(i_field-1)+1)
-            field_s      = v_extr_field(2*(i_field-1)+2)
+            field_type   = v_extr_field(4*(i_field-1)+1)
+            field_s      = v_extr_field(4*(i_field-1)+2)
             if (field_type .ne. 'NONE') then
 !
 ! ------------- Get localization of field (discretization: NOEU or ELGA)
 !
-                call nmextt(sd_inout, field_type, field_disc)
+                field_disc = v_extr_field(4*(i_field-1)+3)(1:4)
 !
 ! ------------- Get field
 !
-                call nmextd(field_type, sd_inout, field)
+                field = v_extr_field(4*(i_field-1)+4)(1:19)
 !
 ! ------------- Get length of lists
 !
@@ -212,7 +208,7 @@ implicit none
 ! - Cleanig
 !
     do i_field = 1, nb_field
-        field_s = v_extr_field(2*(i_field-1)+2)
+        field_s = v_extr_field(4*(i_field-1)+2)
         call jedetr(field_s)
     end do
 !

@@ -137,12 +137,12 @@ implicit none
 ! - Create extraction field vector
 !
     extr_field = sdextr(1:14)//'     .CHAM'
-    call wkvect(extr_field, 'V V K24', 2*nb_field, vk24 = v_extr_field)
+    call wkvect(extr_field, 'V V K24', 4*nb_field, vk24 = v_extr_field)
     do i_field = 1, nb_field
         field_type   = v_list_field(i_field)
         field_s = field_type(1:18)//'S'
-        v_extr_field(2*(i_field-1)+1) = field_type
-        v_extr_field(2*(i_field-1)+2) = field_s
+        v_extr_field(4*(i_field-1)+1) = field_type
+        v_extr_field(4*(i_field-1)+2) = field_s
     end do
 !
 ! - Prepare extraction data
@@ -166,8 +166,8 @@ implicit none
 ! ----- Type of field
 !
         i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
-        field_type   = v_extr_field(2*(i_field-1)+1)
-        field_s      = v_extr_field(2*(i_field-1)+2)
+        field_type   = v_extr_field(4*(i_field-1)+1)
+        field_s      = v_extr_field(4*(i_field-1)+2)
         if (field_type .eq. 'NONE') then
             call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, scal=field_type)
             call utmess('A', 'EXTRACTION_99', sk=field_type)
@@ -177,10 +177,12 @@ implicit none
 ! ----- Get localization of field (discretization: NOEU or ELGA)
 !
         call nmextt(sd_inout, field_type, field_disc)
+        v_extr_field(4*(i_field-1)+3) = field_disc
 !
 ! ----- Get field
 !
         call nmextd(field_type, sd_inout, field)
+        v_extr_field(4*(i_field-1)+4) = field
 !
 ! ----- Get topology (nodes or elements) and type of extraction for field
 !
@@ -233,7 +235,7 @@ implicit none
 ! --- DESTRUCTION DES CHAM_ELEM_S
 !
     do i_field = 1, nb_field
-        field_s = v_extr_field(2*(i_field-1)+2)
+        field_s = v_extr_field(4*(i_field-1)+2)
         call jedetr(field_s)
     end do
  99 continue

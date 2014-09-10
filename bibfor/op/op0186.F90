@@ -465,10 +465,10 @@ subroutine op0186()
                 para, sddisc, sdcrit, sdieto, lisch2,&
                 force)
 !
-! ------- OBSERVATION EVENTUELLE
+! - Make observation
 !
     if (levol) then
-        call ntobsv(mailla, sdieto, sdobse, numins, instap)
+        call ntobsv(mailla, sdobse, numins, instap)
     endif
 !
 ! ------- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1

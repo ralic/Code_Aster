@@ -1,4 +1,4 @@
-subroutine ntobsv(meshz, sd_inout, sd_obsv, nume_time, time)
+subroutine ntobsv(meshz, sd_obsv, nume_time, time)
 !
 implicit none
 !
@@ -26,7 +26,6 @@ implicit none
 !
     character(len=*), intent(in) :: meshz
     character(len=19), intent(in) :: sd_obsv
-    character(len=24), intent(in) :: sd_inout
     integer, intent(in) :: nume_time
     real(kind=8), intent(in) :: time
 !
@@ -39,7 +38,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  sd_inout         : datastructure for input/output parameters
 ! In  sd_obsv          : datastructure for observation parameters
 ! In  nume_time        : index of time
 ! In  time             : current time
@@ -59,7 +57,7 @@ implicit none
 ! - Make observation 
 !
     if (l_obsv) then
-        call nmobse(meshz, sd_inout, sd_obsv, time)
+        call nmobse(meshz, sd_obsv, time)
     endif
 !
 end subroutine

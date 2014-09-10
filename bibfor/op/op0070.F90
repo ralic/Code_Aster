@@ -256,14 +256,13 @@ subroutine op0070()
 !
 ! --- POST-TRAITEMENTS
 !
-    call nmpost(modele, mesh, numedd, numfix, carele,&
-                compor, solveu, numins, mate, comref,&
-                lischa, defico, resoco, resocu, parmet,&
-                parcon, fonact, carcri, sdimpr, sdstat,&
-                sddisc, sdtime, sd_obsv, sderro, sd_inout,&
-                sddyna, sdpost, valinc, solalg, meelem,&
-                measse, veelem, veasse, sdener, sdcriq,&
-                eta)
+    call nmpost(modele, mesh  , numedd , numfix, carele,&
+                compor, solveu, numins , mate  , comref,&
+                lischa, defico, resoco , resocu, parmet,&
+                parcon, fonact, carcri , sdimpr, sdstat,&
+                sddisc, sdtime, sd_obsv, sderro, sddyna,&
+                sdpost, valinc, solalg , meelem, measse,&
+                veelem, veasse, sdener , sdcriq, eta)
 !
 ! --- ETAT DE LA CONVERGENCE DU PAS DE TEMPS
 !

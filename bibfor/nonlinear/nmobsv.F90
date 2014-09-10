@@ -1,4 +1,4 @@
-subroutine nmobsv(meshz, sddisc, sd_inout, sd_obsv, nume_time)
+subroutine nmobsv(meshz, sddisc, sd_obsv, nume_time, sd_inout)
 !
 implicit none
 !
@@ -6,6 +6,8 @@ implicit none
 #include "asterfort/diinst.h"
 #include "asterfort/lobs.h"
 #include "asterfort/nmobse.h"
+#include "asterfort/nmextd.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,9 +29,9 @@ implicit none
 !
     character(len=*), intent(in) :: meshz
     character(len=19), intent(in) :: sd_obsv
-    character(len=24), intent(in) :: sd_inout
     integer, intent(in) :: nume_time
     character(len=19), intent(in) :: sddisc
+    character(len=24), optional, intent(in) :: sd_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,14 +43,21 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  sddisc           : datastructure for discretization
-! In  sd_inout         : datastructure for input/output parameters
 ! In  sd_obsv          : datastructure for observation parameters
 ! In  nume_time        : index of time
+! In  sd_inout         : datastructure for input/output parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: time
     aster_logical :: l_obsv
+    character(len=24) :: field_type
+    character(len=19) :: field
+    integer :: i_keyw_fact, nb_keyw_fact, i_field 
+    character(len=14) :: sdextr_obsv
+    character(len=24) :: extr_info, extr_field
+    integer, pointer :: v_extr_info(:) => null()
+    character(len=24), pointer :: v_extr_field(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +74,27 @@ implicit none
 ! - Make observation 
 !
     if (l_obsv) then
-        call nmobse(meshz, sd_inout, sd_obsv, time)
+        call nmobse(meshz, sd_obsv, time)
+    endif
+!
+! - Change fields after initial observation
+!
+    if (nume_time.eq.0) then
+        sdextr_obsv = sd_obsv(1:14)
+        extr_info   = sdextr_obsv(1:14)//'     .INFO'
+        call jeveuo(extr_info, 'L', vi = v_extr_info)
+        nb_keyw_fact = v_extr_info(1)
+        if (nb_keyw_fact.ne.0) then
+            extr_field = sdextr_obsv(1:14)//'     .CHAM'
+            call jeveuo(extr_field, 'E', vk24 = v_extr_field)
+        endif
+        do i_keyw_fact = 1, nb_keyw_fact
+            i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
+            i_field      = abs(i_field)
+            field_type   = v_extr_field(4*(i_field-1)+1)
+            call nmextd(field_type, sd_inout, field)
+            v_extr_field(4*(i_field-1)+4) = field
+        end do
     endif
 !
 end subroutine

@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmpost(modele, noma, numedd, numfix, carele,&
-                      compor, solveu, numins, mate, comref,&
+    subroutine nmpost(modele, noma  , numedd, numfix, carele,&
+                      compor, solveu, numins, mate  , comref,&
                       lischa, defico, resoco, resocu, parmet,&
                       parcon, fonact, carcri, sdimpr, sdstat,&
-                      sddisc, sdtime, sdobse, sderro, sdieto,&
-                      sddyna, sdpost, valinc, solalg, meelem,&
-                      measse, veelem, veasse, sdener, sdcriq,&
-                      eta)
+                      sddisc, sdtime, sdobse, sderro, sddyna,&
+                      sdpost, valinc, solalg, meelem, measse,&
+                      veelem, veasse, sdener, sdcriq, eta)
         character(len=24) :: modele
         character(len=8) :: noma
         character(len=24) :: numedd
