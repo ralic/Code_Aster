@@ -94,27 +94,22 @@ MODME=AFFE_MODELE(  MAILLAGE=MAI,
                               PHENOMENE = 'MECANIQUE') )
 
 ESSAI=AFFE_CARA_ELEM(MODELE=MODME,
-                MASSIF=_F(
-
-       GROUP_MA = 'TOUT',
-
+                MASSIF=_F( MAILLE = 'M1',
                 ANGL_REP = (0.,  0.,  0., )))
 
 ESSAI0=AFFE_CARA_ELEM(MODELE=MODME,
-                MASSIF=_F(
-                GROUP_MA = 'TOUT',
+                MASSIF=_F( MAILLE = 'M1',
                 ANGL_REP = (23.,  65.,  78., )))
 
 ESSAI00=AFFE_CARA_ELEM(MODELE=MODME,
-                MASSIF=_F(
-                GROUP_MA = 'TOUT',
+                MASSIF=_F( MAILLE = 'M1',
                 ANGL_REP = (90.,  90.,  90., )))
 
 #-----------------------------------------------------------------------
 
 CHARTH=AFFE_CHAR_THER(  MODELE=MODTH,
              TEMP_IMPO=_F( GROUP_NO = 'XEGAL0', TEMP = 0.0),
-             PRE_GRAD_TEMP=_F( TOUT = 'OUI',FLUX_X = -1.0))
+             PRE_GRAD_TEMP=_F( MAILLE='M1',FLUX_X = -1.0))
 
 CHARMM=AFFE_CHAR_MECA(  MODELE=MODME,DDL_IMPO=(
               _F( GROUP_NO = 'ZEGAL0',   DZ = 0.),

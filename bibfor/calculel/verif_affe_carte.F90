@@ -101,11 +101,12 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
 
 !   -- 2. On calcule 2 tableaux :
 !         A_UN_SENS(igrel,kcmp)  -> 0 : non , 1 : oui
-!         NUM_GREL(ima)  : igrel associe a la maille ima
+!         NUM_GREL(2*(ima-1)+1)  : igrel associe a la maille ima
+!         NUM_GREL(2*(ima-1)+2)  : te    associe a la maille ima
 !   --------------------------------------------------------------------
     AS_ALLOCATE(vi=a_un_sens, size=nbgrel*nbcmp)
     a_un_sens=0
-    AS_ALLOCATE(vi=num_grel, size=nbma)
+    AS_ALLOCATE(vi=num_grel, size=2*nbma)
     num_grel=0
 
     do igrel=1,nbgrel
@@ -114,7 +115,10 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
        te=zi(jligrmo-1+n1)
        do k=1,n1-1
            ima=zi(jligrmo-1+k)
-           if (ima.gt.0) num_grel(ima)=igrel
+           if (ima.gt.0) then
+               num_grel(2*(ima-1)+1)=igrel
+               num_grel(2*(ima-1)+2)=te
+           endif
        enddo
        do kop=1,nbop
            ioptte=zi(joptte-1+(te-1)*nbop + kop)
@@ -156,21 +160,55 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
     do kcmp1=1,nbcmp1
         nocmp=zk8(jcesc-1+kcmp1)
 
+
 !       -- Exceptions :
-!          E1) PESA_R est en general utilise sans preciser les mailles
-!          E2) FORC_x / REP (ou PLAN) est ajoute systematiquement
-!          E3) CAMASS / C  est ajoute systematiquement
+!       ----------------------------------------------------------------
+!       E1) PESA_R / ROTA_R sont en general utilises sans preciser les mailles
         if (nomgd.eq.'PESA_R') goto 2
+        if (nomgd.eq.'ROTA_R') goto 2
+
+!       E2) Valeurs fournies par le code d'AFFE_CHAR_MECA
         if (nomgd(1:5).eq.'FORC_' .and. nocmp.eq.'REP') goto 2
         if (nomgd(1:5).eq.'FORC_' .and. nocmp.eq.'PLAN') goto 2
+        if (nomgd.eq.'VENTCX_F' .and. nocmp.eq.'FCXP') goto 2
+
+!       E3) Valeurs fournies en loucede par le code d'AFFE_CARA_ELEM
         if (nomgd.eq.'CAMASS' .and. nocmp.eq.'C') goto 2
+        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'KAPPA') goto 2
+        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') goto 2
+        if (nomgd.eq.'CAORIE' .and. nocmp.eq.'ALPHA') goto 2
+
+        if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'REP') goto 2
+        if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'SYM') goto 2
+
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'TSEC') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HY1') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HZ1') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HY2') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HZ2') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPY1') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPY2') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPZ1') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPZ2') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EP1') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EP2') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'R1') goto 2
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'R2') goto 2
+
+        if (nomgd.eq.'CAGNPO') goto 2
+
 
         kcmp = knindi(8,nocmp,zk8(jnocmp),nbcmp)
         ASSERT(kcmp.gt.0)
         nbmapb=0
         do ima=1,nbma
             lpb=.false.
-            igrel=num_grel(ima)
+            igrel=num_grel(2*(ima-1)+1)
+!           -- on ne verifie pas les mailles qui ne sont pas affectees dans le modele
+!              (on ne saurait pas remplir le champ nomte du message)
+            if (igrel.eq.0) goto 3
+
+            te=num_grel(2*(ima-1)+2)
             call cesexi('C', jcesd, jcesl, ima, 1, 1, kcmp1, iad1)
             if (iad1.gt.0) then
                 lnul=.false.
@@ -190,20 +228,20 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
                 endif
 
                 if (.not.lnul) then
-                    if (igrel.eq.0) lpb=.true.
                     if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.0) lpb=.true.
                 endif
             endif
             if (lpb) then
                nbmapb=nbmapb+1
+               if (nbmapb.eq.1) call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
                if (nbmapb.le.5) list_ma_pb(nbmapb)=ima
             endif
+3           continue
         enddo
 
 !       -- message d'alarme en cas de probleme :
 !       -----------------------------------------
         if (nbmapb.gt.0) then
-            call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
             valk(1)=carte
             valk(2)=comment
             valk(3)=nomgd

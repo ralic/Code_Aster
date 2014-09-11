@@ -28,7 +28,7 @@ CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=M_S,
                                GROUP_MA='ARC_S',),
                        MAILLAGE=MAIL,);
 CARATUY=AFFE_CARA_ELEM(MODELE=MODELE,
-                       COQUE=_F(ANGL_REP=(45.0,-45.0),
+                       COQUE=_F(
                                 GROUP_MA='ARC_S',
                                 A_CIS=0.83333333300000001,
                                 EPAIS=0.048000000000000001,),);

@@ -288,9 +288,10 @@ Conseil :
  Champ : '%(k1)s' 
  Commentaire sur ce champ : %(k2)s
  Grandeur : %(k3)s   Composante non reconnue : %(k4)s
- Type de l'élément :  %(k5)s
+
  Ce problème concerne %(i1)d mailles
  Les premières mailles concernées sont imprimées ci-dessous.
+ Type de l'élément affecté sur la première maille imprimée : %(k5)s
 """),
 
 41 : _(u"""  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s %(k4)s %(k5)s
