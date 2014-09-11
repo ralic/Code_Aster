@@ -140,7 +140,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     end do
     valk(1)=nocmp
     valk(2)=nomsym
-    call utmess('F', 'CALCULEL2_18', nk=2, valk=valk)
+    call utmess('F', 'CHAMPS_19', nk=2, valk=valk)
 !
  20 continue
     do kma = 1, nbma

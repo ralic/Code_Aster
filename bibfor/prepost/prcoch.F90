@@ -49,7 +49,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     character(len=24), intent(in) :: group(ngroup)
 !
     character(len=24) :: litrou
-    character(len=24) :: valk
+    character(len=24) :: valk(2)
     character(len=19) :: celz, cesz
     character(len=8) :: nomma, k8bid, nogd, tsca
     integer :: jcesd, jcesl, jcesv, jcesk, ncmpmx, icmp, numcmp
@@ -125,8 +125,8 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             do igr = 1, ngroup
                 call jeexin(jexnom(nomma//'.GROUPEMA', group(igr)), iret)
                 if (iret .eq. 0) then
-                    valk = group(igr)
-                    call utmess('A', 'PREPOST5_31', sk=valk)
+                    valk(1) = group(igr)
+                    call utmess('A', 'PREPOST5_31', sk=valk(1))
                 else
                     call jelira(jexnom(nomma//'.GROUPEMA', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPEMA', group(igr)), 'L', iad)
@@ -274,8 +274,8 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             do igr = 1, ngroup
                 call jeexin(jexnom(nomma//'.GROUPENO', group(igr)), iret)
                 if (iret .eq. 0) then
-                    valk = group(igr)
-                    call utmess('A', 'PREPOST5_31', sk=valk)
+                    valk(1) = group(igr)
+                    call utmess('A', 'PREPOST5_31', sk=valk(1))
                 else
                     call jelira(jexnom(nomma//'.GROUPENO', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPENO', group(igr)), 'L', iad)

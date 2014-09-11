@@ -261,7 +261,7 @@ subroutine pevolu(resu, modele, nbocc)
                     call utmess('F', 'POSTELEM_4')
                 endif
 !
-                call rsexch(' ', resuco, nomcha, numo, cham2,&
+                call rsexch('F', resuco, nomcha, numo, cham2,&
                             iret)
 !
             else

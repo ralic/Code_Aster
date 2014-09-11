@@ -128,7 +128,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     goto 10
                 endif
             end do
-            call utmess('F', 'CALCULEL6_88', sk=noddl)
+            call utmess('F', 'CHAMPS_3', sk=noddl)
  10         continue
         end do
         call jelira(cnsinr//'.CNSV', 'TYPE', cval=type)
@@ -168,7 +168,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     goto 20
                 endif
             end do
-            call utmess('F', 'CALCULEL6_88', sk=noddl)
+            call utmess('F', 'CHAMPS_3', sk=noddl)
  20         continue
         end do
         call jelira(cnsinr//'.CESV', 'TYPE', cval=type)

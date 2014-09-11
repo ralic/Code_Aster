@@ -38,10 +38,6 @@ cata_msg = {
  les structures de données résultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
 """),
 
-5 : _(u"""
- La composante %(k1)s n'existe pas dans le champ.
-"""),
-
 6 : _(u"""
  La composante %(k1)s n'existe pas dans le champ sur la maille spécifiée.
 """),

@@ -92,7 +92,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     call jelira(ces//'.CESC', 'LONMAX', nbcmp)
     kcmp = indik8(cesc,nocmp,1,nbcmp)
     if (kcmp .eq. 0) then
-        call utmess('F', 'CALCULEL3_5', sk=nocmp)
+        call utmess('F', 'CHAMPS_3', sk=nocmp)
     endif
 !
     call cesexi('C', jcesd, jcesl, numa, 1,&

@@ -130,11 +130,6 @@ Erreur utilisateur dans la commande CREA_CHAMP :
  et le maillage %(k3)s
 """),
 
-18: _(u"""
-Erreur utilisateur dans la commande POST_CHAMP / MIN_MAX_SP :
- La composante demandée %(k1)s n'est pas trouvée dans le champ %(k2)s
-"""),
-
 19: _(u"""
 Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
  Pour l'occurrence %(i1)d du mot clé COQUE_EXCENT,

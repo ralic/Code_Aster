@@ -366,10 +366,6 @@ Risques et conseils :
   Objet %(k1)s non testable.
 """),
 
-88: _(u"""
-  La composante %(k1)s n'existe pas pour ce champ.
-"""),
-
 89: _(u"""
   Le champ %(k1)s est à valeurs de type %(k2)s et la valeur de référence de
   type %(k3)s.

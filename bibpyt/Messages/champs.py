@@ -32,7 +32,8 @@ cata_msg={
 """),
 
 3: _(u"""
- La composante %(k1)s du champ  n'existe pas.
+Erreur utilisateur :
+ La composante demandée %(k1)s n'est pas trouvée dans le champ.
 """),
 
 4 : _(u"""
@@ -114,6 +115,11 @@ Conseil:
 
 18 : _(u"""
  On ne sait pas calculer la norme sur le champ car sa grandeur %(k1)s a trop de composantes.
+"""),
+
+19: _(u"""
+Erreur utilisateur :
+ La composante demandée %(k1)s n'est pas trouvée dans le champ %(k2)s.
 """),
 
 }

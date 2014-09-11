@@ -141,7 +141,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
         vmin=r8maem()
         vmax=-r8maem()
         icmp=indik8(cesc,nomcmp(i),1,nbcmpm)
-        ASSERT(icmp.ge.0)
+        ASSERT(icmp.gt.0)
         do ino = 1, nbno
             if (zl(jcesl+(ino-1)*nbcmpm+icmp-1)) then
                 if (vmax .lt. cnsv(1+(ino-1)*nbcmpm+icmp-1)) then
