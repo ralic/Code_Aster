@@ -1,19 +1,19 @@
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 # DOC V1.01.257
@@ -23,7 +23,8 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',), PAR_LOT='NON');
+# PAR_LOT='NON' pour pouvoir tester l'emission d'une alarme importante
 
 #####################################
 ###Definition de la fissure en dur###
@@ -168,6 +169,8 @@ RESU=CALC_ERREUR(reuse =RESU,
 # definition du probleme dual
 # ---------------------------
 
+# Remarque : On definit une force selon FZ (inutilisable en 2D)
+#            On verifie alors que l'alarme CALCULEL_40 est bien emise.
 CHARDUAL=AFFE_CHAR_MECA_F(MODELE=MODL,
                           FORCE_CONTOUR=(_F(GROUP_MA='LSUP',
                                             FX=FPLUSX,
@@ -177,6 +180,30 @@ CHARDUAL=AFFE_CHAR_MECA_F(MODELE=MODL,
                                             FX=FMOINX,
                                             FY=FMOINY,
                                             FZ=FMOINZ,),),);
+
+# verification de l'emission de l'alarme :
+#-----------------------------------------
+from Utilitai.Utmess import MessageLog
+infos = MessageLog.get_info_alarm()
+
+# dict pour simplifier le test
+dinf = {}
+for ida, nb, masq in infos:
+    dinf[ida] = (nb, masq)
+
+nb_superv = dinf.get('CALCULEL_40')[0]
+
+tab = CREA_TABLE(LISTE=_F(PARA='NBOK',
+                          LISTE_I=nb_superv))
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='NBOK',
+           TABLE=tab,)
+
+# fin verification
+
 
 RESUDUAL=MECA_STATIQUE(MODELE=MODL,
                        CHAM_MATER=CHMAT,
