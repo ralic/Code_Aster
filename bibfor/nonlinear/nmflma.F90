@@ -131,7 +131,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
     aster_logical :: lcrigi, lcfint, lmacr
     aster_logical :: lamor
     aster_logical :: lsuiv
-    character(len=16) :: optrig, optamo
+    character(len=16) :: optrig
     integer :: reincr, iterat
     character(len=8) :: tdiag, syme
     character(len=24) :: codere
