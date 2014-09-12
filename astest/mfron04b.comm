@@ -98,14 +98,15 @@ TEMPE=CALC_META(reuse=TEMPE,
 
 # cf. hsnv134b
 
-
-ACIERISO=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
+MATF=DEFI_MATERIAU( 
+                  ELAS_META=_F(E = 80000.,
                                NU = 0.35,
-                               F_ALPHA = 8.E-6,
-                               C_ALPHA = 8.E-6,
+                               F_ALPHA = 0.,
+                               C_ALPHA = 0.,
                                PHASE_REFE = 'FROID',
                                EPSF_EPSC_TREF = 0.,),
-                   META_LEMA_ANI=_F(
+                               
+                  META_LEMA_ANI=_F(
                             F1_A=2.39,    F2_A=0.22,     C_A=9.36,
                             F1_M=0.0,    F2_M=0.77E-04, C_M=0.99E-04,
                             F1_N=4.39,    F2_N=2.96,     C_N=6.11,
@@ -115,16 +116,8 @@ ACIERISO=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
                             F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
                             F_MRT_RT=0.75,               C_MRT_RT=0.75,
                             F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
-                            F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),),
-
-
-MATF=DEFI_MATERIAU( 
-                  ELAS_META=_F(E = 80000.,
-                               NU = 0.35,
-                               F_ALPHA = 0.,
-                               C_ALPHA = 0.,
-                               PHASE_REFE = 'FROID',
-                               EPSF_EPSC_TREF = 0.,),
+                            F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),
+                            
                   UMAT=_F( NB_VALE=26,
                            C1  =80000.,    
                            C2  =0.35, 
@@ -141,8 +134,8 @@ MATF=DEFI_MATERIAU(
                            C13 =21023.7,    ## F2_Q,  
                            C14 =6219.,      ## C_Q
                            C15 =0.4414,     ## F_M11          
-                           C16 =0.714,         ## F_M22     
-                           C17 =1.,      ## F_M33  
+                           C16 =0.714,      ## F_M22     
+                           C17 =1.,         ## F_M33  
                            C18 =0.75,       ## F_M12
                            C19 =0.75,       ## F_M13
                            C20 =0.75,       ## F_M23        
@@ -174,9 +167,10 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
 
 CH_L=AFFE_CHAR_MECA(MODELE=MO,
                     FACE_IMPO=(_F(GROUP_MA='FACE_INF',DNOR=0.,),
-                               _F(GROUP_MA='FACE_X0',DX=0.,),
-                               _F(GROUP_MA='FACE_Y0',DY=0.,),),
-                    LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DZ',),);
+                               _F(GROUP_MA='FACE_X0',DNOR=0.,),
+                               _F(GROUP_MA='FACE_Y0',DNOR=0.,),),
+                    #LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DZ',),
+                    );
 
 # ON MET UNE PRESSION INTERNE ET L EFFET DE FOND
 RINT = 4.118;
@@ -196,11 +190,127 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',
 
 
 
-LISTE_ANGLES=[]
 
-def ANGLE_AXI(GROUP_MA,MAILLAGE,CENTRE,**args):
+import numpy as NP
+
+def provec(x,y):
+   z=NP.zeros(3)
+   z[0]=x[1]*y[2]-x[2]*y[1]
+   z[1]=x[2]*y[0]-x[0]*y[2]
+   z[2]=x[0]*y[1]-x[1]*y[0]
+   return z
+
+def norm(x):
+   tmp = NP.sqrt(NP.dot(x,x))
+   return tmp
+
+def ProjAxe(point, centre, axe):
+    # Calcul de la projection M de P sur l'axe de vecteur u=VectAxe passant par A=OrigAxe
+    # Pour tout point M de l axe
+    # on pose :  AM = k .  u donc
+    # xm=k.dx+xa ; ym=k.dy+ya ; zm=k.dz+za
+    # la distance MP**2 = (xm-xp)**2+(ym-yp)**2+(zm-zp)**2= a.k**2+b.k+c 
+    # MP**2 est minimum si M est la projection de P sur l axe, donc
+    #  en -b/2a, pour k = kmin
+    #              dx(xp-xa)+dy(yp-ya)+dz(zp-za)      u.AP
+    # kmin = ------------------------------------- = ------
+    #                       dx**2+dy**2+dz**2         u.u
+    # ensuite on a un vecteur MP (axe 1 du repere local), et u (axe 3)
+    # on calcule v = u ^ MP => repere local : MP, v u
+    OrigAxe=NP.array(centre)
+    VectAxe=NP.array(axe)
+    P=NP.array(point)
+    norm2=NP.dot(VectAxe,VectAxe)
+    AP=NP.array(P)-NP.array(OrigAxe)
+    kmin = NP.dot(VectAxe,AP) / norm2
+    M= kmin * VectAxe + OrigAxe
+    MP = P - M
+    v = provec(VectAxe,MP)
+    repere=NP.zeros((3,3))
+    repere[0]=MP/norm(MP)
+    repere[1]=v/norm(v)
+    repere[2]=VectAxe/norm(VectAxe)
+    return M, repere
+
+
+def ANGLENAUT(repere):
+
+    #   Calcule les angles nautiques correspondant
+    #   au 3 axes de repere
+
+   import copy
+   
+   # expression des coordonnees globales des 3 vecteurs de base locale
+   x=NP.array([1.,0.,0.])
+   y=NP.array([0.,1.,0.])
+   z=NP.array([0.,0.,1.])
+
+   xg=repere[0]
+   yg=repere[1]
+   zg=repere[2]
+
+   # calcul des angles nautiques
+   x1=copy.copy(xg)
+   # x1 projection de xg sur la plan xy, non norme
+   x1[2]=0.
+   # produit scalaire X xg
+   COSA=x1[0]/norm(x1)
+   #produit vectoriel X xg
+   SINA=x1[1]/norm(x1)
+   ar=NP.arctan2(SINA,COSA)
+   alpha=ar*180.0/NP.pi
+
+   COSB=norm(x1)
+   SINB=-xg[2]
+   beta=NP.arctan2(SINB,COSB)*180.0/NP.pi
+
+   P2=NP.zeros((3,3))
+   P2[0,0]=NP.cos(ar)
+   P2[1,0]=NP.sin(ar)
+   P2[1,1]=NP.cos(ar)
+   P2[0,1]=-NP.sin(ar)
+   y1=NP.dot(P2,y)
+   y1n=y1/norm(y1)
+
+   # calcul de gamma
+   COSG=NP.dot(y1n,yg)
+   SING=NP.dot(xg,provec(y1n,yg))
+   gamma=NP.arctan2(SING,COSG)*180.0/NP.pi
+
+   PGL=NP.zeros((3,3))
+   PGL[0,0] = COSB*COSA
+   PGL[1,0] = SING*SINB*COSA - COSG*SINA
+   PGL[2,0] = SING*SINA + COSG*SINB*COSA
+   PGL[0,1] = COSB*SINA
+   PGL[1,1] = COSG*COSA + SING*SINB*SINA
+   PGL[2,1] = COSG*SINB*SINA - COSA*SING
+   PGL[0,2] = -SINB
+   PGL[1,2] = SING*COSB
+   PGL[2,2] = COSG*COSB
+   pgl=NP.transpose(PGL)
+   #print 'Matrice P (Nautiques)= \n ',pgl
+   #print ' '
+   xgl=NP.dot(pgl,x)
+   ygl=NP.dot(pgl,y)
+   zgl=NP.dot(pgl,z)
+
+   return alpha,beta,gamma
+
+# test
+#OrigAxe=NP.array([0,0,0])
+#VectAxe=NP.array([0,-1,1])
+#P=NP.array([0,10,10])
+#M, repere = ProjAxe(P, OrigAxe, VectAxe)
+#print "Point projete=", M
+#print "repere local=",repere
+#alpha,beta,gamma = ANGLENAUT(repere)
+#print "alpha,beta,gamma=",alpha,beta,gamma
+
+
+
+def ANGLE_CYL(GROUP_MA,MAILLAGE,CENTRE,AXE,LISTE_CARA,**args):
   """
-     Produit une liste de commandes pour orienter les éléments d'interface par AFFE_CARA_ELEM/MASSIF
+     Produit une liste de commandes pour orienter les éléments par AFFE_CARA_ELEM/MASSIF
   """
   import numpy as NP
   import copy
@@ -216,7 +326,6 @@ def ANGLE_AXI(GROUP_MA,MAILLAGE,CENTRE,**args):
   X=coordo[:,0]
   Y=coordo[:,1]
   Z=coordo[:,2]
-  LISTE_CARA=[]
   # On boucle sur les mailles du groupe de mailles GROUP_MA
   vec=NP.zeros(3)
   vex=NP.array([1.,0,0])
@@ -227,18 +336,22 @@ def ANGLE_AXI(GROUP_MA,MAILLAGE,CENTRE,**args):
       un=NP.ones(len(lnoeud),dtype='int')
       lnoeud=lnoeud-un
       xg=NP.mean(X[lnoeud])
-      vec[0]=xg-CENTRE[0]
       yg=NP.mean(Y[lnoeud])
-      vec[1]=yg-CENTRE[1]
-      norvec=sqrt(NP.dot(vec,vec))
-      vec=vec/norvec
-      # On calcule les angles de ANGL_REP pour obtenir le vecteur vecV
-      alpha=NP.arccos(NP.dot(vex,vec))/NP.pi*180.
+      zg=NP.mean(Z[lnoeud])
+      
+      P=NP.array([xg,yg,zg])
+      M, repere = ProjAxe(P, CENTRE, AXE)
+
+      #print "Point projete=", M
+      #print "repere local=",repere
+      
+      alpha,beta,gamma = ANGLENAUT(repere)
+
       # Meme remarque que precedemment sur les listes Python
       nom_maille=nommai[ima-1]
       mon_dico={}
       mon_dico["MAILLE"]=nom_maille
-      mon_dico["ANGL_REP"]=(alpha,0.,0.)
+      mon_dico["ANGL_REP"]=(alpha,beta,gamma)
 
       LISTE_CARA.append(mon_dico)
 
@@ -246,7 +359,14 @@ def ANGLE_AXI(GROUP_MA,MAILLAGE,CENTRE,**args):
   
 DEFI_GROUP(reuse =MAIL,MAILLAGE=MAIL,CREA_GROUP_MA=_F(NOM='MATIERE', TOUT='OUI', TYPE_MAILLE='3D',));
 
-LISTE_ANGLES = ANGLE_AXI(GROUP_MA='MATIERE',MAILLAGE=MAIL,CENTRE=(0.,0.,0.))
+LISTE_ANGLES=[]
+LISTE_CARA=[]
+
+Centre=(34.746,0.,4.746)
+
+Axe=(1.,0.,0.)
+
+LISTE_ANGLES = ANGLE_CYL(GROUP_MA='MATIERE',MAILLAGE=MAIL,CENTRE=Centre,AXE=Axe,LISTE_CARA=LISTE_CARA)
 
 ORIEN=AFFE_CARA_ELEM(MODELE=MO,MASSIF=LISTE_ANGLES)
 
@@ -285,11 +405,11 @@ VFP_C=MODI_REPERE(RESULTAT=VFP,
                               TYPE_CHAM='TENS_3D',
                               NOM_CHAM='EPSI_NOEU',
                               NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),),
-                 REPERE='CYLINDRIQUE',
-                                 AFFE=_F( ORIGINE=(0.0,0.0,0.0,),
-                                  AXE_Z=(0.0,0.0,1.0,),
-                                  GROUP_NO=('NA','NB'),),
-                                  );
+                REPERE='CYLINDRIQUE',
+                AFFE=_F( ORIGINE=Centre,
+                        AXE_Z=Axe,
+                        GROUP_NO=('NA','NB'),),
+                        );
 
 # NA (CE NOEUD SE SITUE A L INTERIEUR DU TUBE EN Y=0)
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES
@@ -301,7 +421,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=-9.8111372863,
+                   VALE_CALC=-9.81117926114,
                    VALE_REFE=-9.4420000000000002,
                    CRITERE='ABSOLU',
                    PRECISION=0.5,),
@@ -311,7 +431,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=60.2601930604,
+                   VALE_CALC=60.2601670975,
                    VALE_REFE=60.225999999999999,
                    CRITERE='ABSOLU',
                    PRECISION=0.5,),
@@ -321,7 +441,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   VALE_CALC=26.6413906409,
+                   VALE_CALC=26.6413287649,
                    VALE_REFE=26.795000000000002,
                    CRITERE='ABSOLU',
                    PRECISION=0.5,),
@@ -331,7 +451,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EPXX',
-                   VALE_CALC=-0.010046123276,
+                   VALE_CALC=-0.010046136802,
                    VALE_REFE=-9.4959699999999994E-3,
                    CRITERE='ABSOLU',
                    PRECISION=7.E-4,),
@@ -341,7 +461,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EPZZ',
-                   VALE_CALC=0.0141663330107,
+                   VALE_CALC=0.0141663681521,
                    VALE_REFE=0.0135633,
                    CRITERE='ABSOLU',
                    PRECISION=7.E-4,),
@@ -351,7 +471,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EPYY',
-                   VALE_CALC=-0.0038311205607,
+                   VALE_CALC=-0.00383114266282,
                    VALE_REFE=-3.7769000000000001E-3,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-4,),
@@ -368,7 +488,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=-0.31625719645,
+                   VALE_CALC=-0.316252490237,
                    VALE_REFE=0.032821500000000003,
                    CRITERE='ABSOLU',
                    PRECISION=0.5,),
@@ -378,7 +498,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=64.2809767724,
+                   VALE_CALC=64.2810210801,
                    VALE_REFE=64.198999999999998,
                    CRITERE='ABSOLU',
                    PRECISION=0.5,),
@@ -388,7 +508,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   VALE_CALC=30.6137120995,
+                   VALE_CALC=30.6137459576,
                    VALE_REFE=30.771000000000001,
                    CRITERE='ABSOLU',
                    PRECISION=0.5,),
@@ -398,7 +518,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EPXX',
-                   VALE_CALC=-0.00708291034127,
+                   VALE_CALC=-0.00708292751297,
                    VALE_REFE=-6.5860900000000002E-3,
                    CRITERE='ABSOLU',
                    PRECISION=6.E-4,),
@@ -408,7 +528,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EPZZ',
-                   VALE_CALC=0.0112687000061,
+                   VALE_CALC=0.0112687289962,
                    VALE_REFE=0.0107189,
                    CRITERE='ABSOLU',
                    PRECISION=6.E-4,),
@@ -418,7 +538,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    RESULTAT=VFP_C,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EPYY',
-                   VALE_CALC=-0.00383112054601,
+                   VALE_CALC=-0.00383113205364,
                    VALE_REFE=-3.7769000000000001E-3,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-4,),
@@ -429,3 +549,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
          
          
 FIN()
+

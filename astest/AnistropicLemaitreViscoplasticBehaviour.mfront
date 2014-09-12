@@ -40,7 +40,6 @@ nu.setGlossaryName("PoissonRatio");
 
 @AuxiliaryStateVariable real seq;
 seq.setGlossaryName("HillStress");
-@AuxiliaryStateVariable real fvi[3];
 @AuxiliaryStateVariable real svi[3];
 
 @LocalVariable stress lambda;
@@ -162,7 +161,6 @@ seq.setGlossaryName("HillStress");
 @UpdateAuxiliaryStateVars{
   seq = sqrt(sig|H*sig);
   for(unsigned short i=0;i!=3;++i){
-    fvi[i]=f[i] ;
     svi[i]=sv[i] ;
   }
 }
