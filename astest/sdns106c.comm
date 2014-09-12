@@ -142,6 +142,12 @@ inst1=DEFI_LIST_REEL(DEBUT=0.0,
 inst2=DEFI_LIST_REEL(DEBUT=t1,
                      INTERVALLE=(_F(JUSQU_A = tmax,PAS = dt),),);
 
+listm=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A = t1,PAS = 5*dt),),);
+
+listm2=DEFI_LIST_REEL(DEBUT=t1,
+                     INTERVALLE=(_F(JUSQU_A = tmax,PAS = 5*dt),),);
+
 chf1=CALC_FONC_INTERP(FONCTION=f_char,
                       LIST_PARA=inst1,
                       NOM_PARA='INST',
@@ -168,7 +174,10 @@ RESU1=DYNA_NON_LINE(MODELE=MOD,
                     AMOR_RAYL_RIGI = 'ELASTIQUE',
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                     FORMULATION='DEPLACEMENT',),
-                    ARCHIVAGE=_F(LIST_INST=inst1,),);
+                    ARCHIVAGE=_F(LIST_INST=inst1,),
+                    MODE_VIBR=_F(NB_FREQ =3,
+                                 MATR_RIGI='TANGENTE',
+                                 LIST_INST = listm,),);
 
 F_DEP=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='DEPL',
                     NOM_CMP='DZ',GROUP_NO='P04',
@@ -204,7 +213,10 @@ RESU2=DYNA_NON_LINE(ETAT_INIT=_F(INST_ETAT_INIT=t1,
                     AMOR_RAYL_RIGI='ELASTIQUE',
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                     FORMULATION='DEPLACEMENT',),
-                    ARCHIVAGE=_F(LIST_INST=inst2,),);
+                    ARCHIVAGE=_F(LIST_INST=inst2,),
+                    MODE_VIBR=_F(NB_FREQ =3,
+                                 MATR_RIGI='TANGENTE',
+                                 LIST_INST = listm2,),);
 
 F_DEP2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='DEPL',
                      NOM_CMP='DZ',GROUP_NO='P04',

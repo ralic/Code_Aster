@@ -245,16 +245,6 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
                     lcalme, lassme)
     endif
 !
-! --- CALCUL DES MATR-ELEM D'AMORTISSEMENT DE RAYLEIGH A CALCULER
-! --- NECESSAIRE SI MATR_ELEM RIGIDITE CHANGE !
-!
-    if (lcrigi .and. lamor) then
-        optamo = 'AMOR_MECA'
-        call nmcmat('AJOU', 'MEAMOR', optamo, ' ', .true._1,&
-                    .true._1, nbmatr, ltypma, loptme, loptma,&
-                    lcalme, lassme)
-    endif
-!
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
     if (lsuiv) then
