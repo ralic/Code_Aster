@@ -574,6 +574,23 @@ cata_compo['SIEF_ELGA'] = {
     'QY'   : 8
                            }
 
+cata_compo['EPSI_ELGA'] = {
+    'EPXX' : 1,
+    'EPYY' : 2,
+    'EPZZ' : 3,
+    'EPXY' : 4,
+    'EPXZ' : 5,
+    'EPYZ' : 6,
+    'EXX'  : 1,
+    'EYY'  : 2,
+    'EXY'  : 3,
+    'KXX'  : 4,
+    'KYY'  : 5,
+    'KXY'  : 6,
+    'GAX'  : 7,
+    'GAY'  : 8
+                           }
+
 cata_compo['VARI_ELGA'] = {}
 for ii in range(1, 25):
     cata_compo['VARI_ELGA']['V%i'%ii] = ii

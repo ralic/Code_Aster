@@ -614,7 +614,7 @@ class EUROPLEXUS:
                         lnoeuds.add(grno)
                 elif courbe['GROUP_MA'] != None:
                     grma = courbe['GROUP_MA']
-                    if type(mailles) == tuple:
+                    if type(grma) == tuple:
                         for el in grma:
                             lmailles.add(el)
                     else:
