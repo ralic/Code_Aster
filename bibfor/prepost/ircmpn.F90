@@ -232,7 +232,6 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !               NUMEROTATIONS ASTER ET MED DES NOEUDS (CF IRMMNO)
 !====
 !
-    write(6,*)'ICI', nval
     if ( nval.ne.nbvato .and. nval.ne.0 ) then
 !
         iaux = 0
