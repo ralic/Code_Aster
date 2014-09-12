@@ -1,0 +1,600 @@
+# TITRE VALIDATION COMPLEMENTAIRE DU CHAINAGE ASTER-EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),);
+
+MPa = 1000000.0;
+tf=0.16
+
+
+# ------------------- Lecture du maillage
+MA0=LIRE_MAILLAGE(FORMAT='MED');
+
+MA=CREA_MAILLAGE(MAILLAGE=MA0,
+                 CREA_POI1=_F(NOM_GROUP_MA='PMA',
+                              GROUP_NO='PMMA',),);
+
+# ------------------- Affectation du modele
+
+IMPR_RESU(FORMAT='ASTER',UNITE=94,
+          RESU=_F(MAILLAGE=MA,
+                     ),);
+
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(
+                     _F(GROUP_MA = ('DALQ1','DALQ2'),PHENOMENE = 'MECANIQUE',MODELISATION = 'Q4GG'),
+                     _F(GROUP_MA = ('DALT3'),PHENOMENE = 'MECANIQUE',MODELISATION = 'Q4GG'), 
+                     _F(GROUP_MA = ('PMA'),PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_T'),
+                     _F(GROUP_MA = ('AP1','AP2','AP3','AP4'),PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_TR'),
+                    )
+               );
+
+
+# ------------------- Definition des materiaux
+
+MAT_B1=DEFI_MATERIAU(
+                    ELAS = _F(
+                              E = 42824.5*MPa,
+                              NU = 0.,
+                              RHO = 2500,
+                              AMOR_ALPHA = 5.2675E-4,
+                              AMOR_BETA  = 1.913178,
+                              ),
+                    BETON_ECRO_LINE = _F(
+                                         D_SIGM_EPSI = 0.0,
+                                         SYT   =  4.2E6,
+                                         SYC    = -35.E6,
+                                         ),
+                    );
+
+MAT_B2=DEFI_MATERIAU(
+                    ELAS = _F(
+                              E = 42824.5*MPa,
+                              NU = 0.,
+                              RHO = 2500,
+                              ),
+                    BETON_ECRO_LINE = _F(
+                                         D_SIGM_EPSI = 0.0,
+                                         SYT   =  4.2E6,
+                                         SYC    = -35.E6,
+                                         ),
+                    );
+
+MAT_A1=DEFI_MATERIAU(
+                    ELAS = _F(
+                              E    =  57996.6E6,
+                              NU   =  0.0,
+                              ),
+                    ECRO_LINE = _F(
+                                   D_SIGM_EPSI = 0.0,
+                                   SY   =  500.E6,
+                                   ),
+                    );
+
+FONC3A = DEFI_FONCTION(NOM_PARA='X',
+             VALE = (
+                 -9.7900000E+07,   0.50000,
+                 -9.6761496E+07,   1011557.,
+                 -9.5623000E+07,   1996929.,
+                 -9.4484504E+07,   2956115.,
+                 -9.3346000E+07,   3889116.,
+                 -9.2207496E+07,   4795933.,
+                 -9.1069000E+07,   5676560.,
+                 -8.9930496E+07,   6531006.,
+                 -8.8792000E+07,   7359265.,
+                 -8.7653496E+07,   8161338.,
+                 -8.6515000E+07,   8937226.,
+                 -7.7715000E+07,  1.4833226E+07,
+                 -7.1082000E+07,  1.8832924E+07,
+                 -6.4448996E+07,  2.1943802E+07,
+                 -5.7815996E+07,  2.4165856E+07,
+                 -5.1182996E+07,  2.5499090E+07,
+                 -4.4549996E+07,  2.5943500E+07,
+                 -3.7916996E+07,  2.5499088E+07,
+                 -3.1283998E+07,  2.4165856E+07,
+                 -2.4650996E+07,  2.1943800E+07,
+                 -1.8017998E+07,  1.8832922E+07,
+                 -1.1384995E+07,  1.4833222E+07,
+                  -2584998.    ,   8937223.,
+                  -1446498.    ,   8161336.,
+                  -307998.0    ,   7359263.,
+                   830501.5    ,   6531004.,
+                   1969001.    ,   5676560.,
+                   3107501.    ,   4795930.,
+                   4246001.    ,   3889116.,
+                   5384500.    ,   2956114.,
+                   6523000.    ,   1996928.,
+                   7661500.    ,   1011557.,
+                   8800000.    , -0.50000))
+
+FONC4A = DEFI_FONCTION(NOM_PARA='X',
+             VALE = (
+                 -9.7900000E+07,    0.50000,
+                 -9.6761496E+07,    -1011557.,
+                 -9.5623000E+07,    -1996928.,
+                 -9.4484504E+07,    -2956114.,
+                 -9.3346000E+07,    -3889116.,
+                 -9.2207496E+07,    -4795930.,
+                 -9.1069000E+07,    -5676560.,
+                 -8.9930504E+07,    -6531004.,
+                 -8.8792000E+07,    -7359263.,
+                 -8.7653496E+07,    -8161336.,
+                 -8.6515000E+07,    -8937223.,
+                 -7.7715000E+07,  -1.4833223E+07,
+                 -7.1082000E+07,  -1.8832922E+07,
+                 -6.4449004E+07,  -2.1943800E+07,
+                 -5.7816000E+07,  -2.4165856E+07,
+                 -5.1182996E+07,  -2.5499088E+07,
+                 -4.4550000E+07,  -2.5943500E+07,
+                 -3.7916996E+07,  -2.5499088E+07,
+                 -3.1284000E+07,  -2.4165856E+07,
+                 -2.4650998E+07,  -2.1943800E+07,
+                 -1.8018000E+07,  -1.8832924E+07,
+                 -1.1384998E+07,  -1.4833223E+07,
+                  -2585001.    ,   -8937226.,
+                  -1446501.    ,   -8161338.,
+                  -308001.0    ,   -7359265.,
+                   830498.5    ,   -6531006.,
+                   1968998.    ,   -5676563.,
+                   3107498.    ,   -4795933.,
+                   4246001.    ,   -3889116.,
+                   5384498.    ,   -2956117.,
+                   6523000.    ,   -1996929.,
+                   7661500.    ,   -1011557.,
+                   8800000.    , -0.50000))
+
+MAT1 = DEFI_GLRC(RELATION = 'GLRC_DAMAGE',
+                 BETON = _F(
+                            MATER = MAT_B1,
+                            EPAIS = 1.3,
+                            GAMMA = 0.0,
+                            QP1 = 0.152,
+                            QP2 = 0.152,
+                            OMT = 5.E-3,
+                            EAT = 57996.6E6,
+                            C1N1 = 87.3E6,C1N2 = 87.3E6,C1N3 = 87.3E6,
+                            C2N1 = 87.3E6,C2N2 = 87.3E6,C2N3 = 87.3E6,
+                            C1M1 = 14.8E6,C1M2 = 14.8E6,C1M3 = 14.8E6,
+                            C2M1 = 14.8E6,C2M2 = 14.8E6,C2M3 = 14.8E6,
+                            ),
+                 NAPPE = (_F(
+                             MATER = MAT_A1,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = 0.877,
+                             RY = 0.877,
+                             ),
+                          _F(
+                             MATER = MAT_A1,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = -0.877,
+                             RY = -0.877,
+                             ),
+                          ),
+                 INFO=2,
+                 );
+
+MAT2 = DEFI_GLRC(RELATION = 'GLRC_DAMAGE',
+                 BETON = _F(
+                            MATER = MAT_B2,
+                            EPAIS = 1.3,
+                            GAMMA = 0.0,
+                            QP1 = 0.152,
+                            QP2 = 0.152,
+                            BT1 = 23000.E6,
+                            BT2 = 23000.E6,
+
+                            MP1X_FO = FONC3A,
+                            MP2X_FO = FONC4A,
+                            MP1Y_FO = FONC3A,
+                            MP2Y_FO = FONC4A,
+
+                            C1N1 = 87.3E6,C1N2 = 87.3E6,C1N3 = 87.3E6,
+                            C2N1 = 87.3E6,C2N2 = 87.3E6,C2N3 = 87.3E6,
+                            C1M1 = 14.8E6,C1M2 = 14.8E6,C1M3 = 14.8E6,
+                            C2M1 = 14.8E6,C2M2 = 14.8E6,C2M3 = 14.8E6,
+                            ),
+                 NAPPE = (_F(
+                             MATER = MAT_A1,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = 0.877,
+                             RY = 0.877,
+                             ),
+                          _F(
+                             MATER = MAT_A1,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = -0.877,
+                             RY = -0.877,)
+                             ),
+                 INFO = 2,
+                 );
+
+MAT3 = DEFI_GLRC(RELATION = 'GLRC_DAMAGE',
+                 BETON = _F(
+                            MATER = MAT_B1,
+                            EPAIS = 1.3,
+                            GAMMA = 0.0,
+                            QP1 = 0.152,
+                            QP2 = 0.152,
+
+                            MP1X = 1.2E16,
+                            MP2X = -1.2E16,
+                            MP1Y = 1.2E16,
+                            MP2Y = -1.2E16,
+
+                            C1N1 = 87.3E6,C1N2 = 87.3E6,C1N3 = 87.3E6,
+                            C2N1 = 87.3E6,C2N2 = 87.3E6,C2N3 = 87.3E6,
+                            C1M1 = 14.8E6,C1M2 = 14.8E6,C1M3 = 14.8E6,
+                            C2M1 = 14.8E6,C2M2 = 14.8E6,C2M3 = 14.8E6,
+                            ),
+                 NAPPE = (_F(
+                             MATER = MAT_A1,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = 0.877,
+                             RY = 0.877,
+                             ),
+                          _F(
+                             MATER = MAT_A1,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = -0.877,
+                             RY = -0.877,
+                             ),
+                          ),
+                 INFO = 2,
+                 );
+
+MATER=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=( _F(GROUP_MA = ('DALQ1'),MATER = MAT1),
+                              _F(GROUP_MA = ('DALQ2'),MATER = MAT2),
+                              _F(GROUP_MA = ('DALT3'),MATER = MAT3),
+                            ),
+                           )
+
+
+
+
+# ------------------- Caracteristiques des elements de structure
+
+COQUE = []
+COQUE =[_F(EPAIS=1.3,
+            GROUP_MA = ('DALQ1','DALQ2','DALT3'),
+            COQUE_NCOU  = 1,
+            INER_ROTA = 'OUI',
+            VECTEUR = (1.,0.,0.),
+            EXCENTREMENT = 0)
+         ]
+
+
+ELEM = AFFE_CARA_ELEM(MODELE = MO,
+                      COQUE = COQUE,
+                      DISCRET = (
+                                 _F(
+                                    GROUP_MA = 'PMA',
+                                    CARA     = 'M_T_D_N',
+                                    VALE     = 100.,
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('AP1','AP2','AP3','AP4'),
+                                    CARA     = 'K_TR_D_N',
+                                    VALE     = (1.53370E+08,1.51743E+08,1.52184E+08,1.81795E+11,1.73551E+11,1.68266E+11),
+                                    ),
+                                 ),
+                     INFO=1,);
+
+
+
+# ------------------- Conditions aux limites
+
+CH_PI=AFFE_CHAR_MECA(MODELE=MO,
+                     PRES_REP=(_F(PRES = 0.01,GROUP_MA = ('DALT3','DALQ1','DALQ2'),),),
+#                     DDL_IMPO=_F( DX= #0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0.,GROUP_MA = ('APPS'),),
+                    );
+
+#
+# -----------------------------------------------------------
+# DEFINITION DE LA FORCE D'IMPACT LINEAIRE
+# -----------------------------------------------------------
+
+FONCCB=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0.0,
+                           0.010,  1.E4,
+                           100.0,    0.0),
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VERIF='CROISSANT',);
+
+
+NFKT=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-1.0,     1.0,
+                          0.0,     0.0,
+                          1.0,     -1.0,
+                        ),
+                   );
+
+NFKR=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-10.,     10.,
+                          0.0,     0.0,
+                          10.,     -10.
+                        ),
+                   );
+
+
+TAB1 = CO('TAB1')
+
+U = CALC_EUROPLEXUS(
+   MODELE=MO,
+   CHAM_MATER=MATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'GLRC_DAMAGE',
+                  GROUP_MA = ('DALQ1','DALQ2','DALT3'),
+                 ),
+              ),
+   CARA_ELEM=ELEM,
+   FONC_PARASOL = _F(NFKT = NFKT,
+                     NFKR = NFKR,
+                     GROUP_MA = ('AP1','AP2','AP3','AP4'),
+                    ),
+   EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
+   DIME = _F(UNITE_DIME = 40,
+             TABLE = (5,6000),),
+   DOMAINES = (
+         _F(
+            IDENTIFIANT = 91,
+            GROUP_MA    = ('dalt3','AP1','AP2','PMA')),
+         _F(
+            IDENTIFIANT = 92,
+            GROUP_MA    = ('dalq1','AP3')),
+         _F(
+            IDENTIFIANT = 93,
+            GROUP_MA    = ('dalq2','AP4')),
+            ),
+   INTERFACES = (
+        _F(
+           TOLE = .001,
+           GROUP_MA_1 = ('a3c5'),
+           GROUP_MA_2 = ('b1c1'),
+           IDENT_DOMAINE_1 = 91,
+           IDENT_DOMAINE_2 = 92
+           ),
+         _F(
+           TOLE = .001,
+           GROUP_MA_1 = ('c5a4'),
+           GROUP_MA_2 = ('c2b2'),
+           IDENT_DOMAINE_1 = 91,
+           IDENT_DOMAINE_2 = 93
+           ),
+         _F(
+           TOLE = .001,
+           GROUP_MA_1 = ('c1c4'),
+           GROUP_MA_2 = ('c3c2'),
+           IDENT_DOMAINE_1 = 92,
+           IDENT_DOMAINE_2 = 93
+           )
+
+        ),
+#   LOGICIEL='/aster/outils/europlexus_d/epx_essai',
+   CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
+               INST_INIT = 0,
+               INST_FIN  = tf,
+               NMAX      = 9000000,
+               CSTAB     = 0.5
+               ),
+   OBSERVATION = _F(PAS_NBRE=500,
+                    #TOUT_GROUP_NO = 'OUI',
+                    #TOUT_GROUP_MA = 'OUI',
+                    #NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA','VARI_ELGA'),
+                    ),
+   PAS_NBRE_COURBE=500,
+   TABLE_COURBE    = TAB1,
+   COURBE = (_F(
+           NOM_CHAM = 'DEPL',
+           NOM_CMP  = 'DZ',
+           GROUP_NO = ('PMMA'),
+           ),
+   ),
+   ARCHIVAGE   = _F(PAS_NBRE=500,CONT_GENER='NON'),
+   );
+
+
+IMPR_TABLE(TABLE=TAB1)
+
+
+# Idem mais avec fonctions d'amortissement en plus dans FONC_PARASOL
+
+ELEM2 = AFFE_CARA_ELEM(MODELE = MO,
+                       COQUE = COQUE,
+                       DISCRET = (
+                                 _F(
+                                    GROUP_MA = 'PMA',
+                                    CARA     = 'M_T_D_N',
+                                    VALE     = 100.,
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('AP1','AP2','AP3','AP4'),
+                                    CARA     = 'K_TR_D_N',
+                                    VALE     = (1.53370E+08,1.51743E+08,1.52184E+08,1.81795E+11,1.73551E+11,1.68266E+11),
+                                    ),
+                                 _F(
+                                    GROUP_MA = ('AP1','AP2','AP3','AP4'),
+                                    CARA     = 'A_TR_D_N',
+                                    VALE     = (1.,1.,1.,1.,1.,1.),
+                                    ),
+                                 ),
+                      INFO=1,);
+
+NFAT=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-1.0,     1.0,
+                          0.0,     0.0,
+                          1.0,     -1.0,
+                        ),
+                   );
+
+NFAR=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-10.,     10.,
+                          0.0,     0.0,
+                          10.,     -10.
+                        ),
+                   );
+
+
+TAB2 = CO('TAB2')
+
+U2 = CALC_EUROPLEXUS(
+   MODELE=MO,
+   CHAM_MATER=MATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'GLRC_DAMAGE',
+                  GROUP_MA = ('DALQ1','DALQ2','DALT3'),
+                 ),
+              ),
+   CARA_ELEM=ELEM2,
+   FONC_PARASOL = _F(NFKT = NFKT,
+                     NFKR = NFKR,
+                     NFAT = NFAT,
+                     NFAR = NFAR,
+                     GROUP_MA = ('AP1','AP2','AP3','AP4'),
+                    ),
+   EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
+   DIME = _F(UNITE_DIME = 40,
+             TABLE = (5,6000),),
+   DOMAINES = (
+         _F(
+            IDENTIFIANT = 91,
+            GROUP_MA    = ('dalt3','AP1','AP2','PMA')),
+         _F(
+            IDENTIFIANT = 92,
+            GROUP_MA    = ('dalq1','AP3')),
+         _F(
+            IDENTIFIANT = 93,
+            GROUP_MA    = ('dalq2','AP4')),
+            ),
+   INTERFACES = (
+        _F(
+           TOLE = .001,
+           GROUP_MA_1 = ('a3c5'),
+           GROUP_MA_2 = ('b1c1'),
+           IDENT_DOMAINE_1 = 91,
+           IDENT_DOMAINE_2 = 92
+           ),
+         _F(
+           TOLE = .001,
+           GROUP_MA_1 = ('c5a4'),
+           GROUP_MA_2 = ('c2b2'),
+           IDENT_DOMAINE_1 = 91,
+           IDENT_DOMAINE_2 = 93
+           ),
+         _F(
+           TOLE = .001,
+           GROUP_MA_1 = ('c1c4'),
+           GROUP_MA_2 = ('c3c2'),
+           IDENT_DOMAINE_1 = 92,
+           IDENT_DOMAINE_2 = 93
+           )
+
+        ),
+#   LOGICIEL='/aster/outils/europlexus_d/epx_essai',
+   CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
+               INST_INIT = 0,
+               INST_FIN  = tf,
+               NMAX      = 9000000,
+               CSTAB     = 0.5
+               ),
+   OBSERVATION = _F(PAS_NBRE=500,
+                    TOUT_GROUP_NO = 'OUI',
+                    TOUT_GROUP_MA = 'OUI',
+                    NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA','VARI_ELGA'),
+                    ),
+   PAS_NBRE_COURBE=500,
+   TABLE_COURBE    = TAB2,
+   COURBE = (_F(
+           NOM_CHAM = 'DEPL',
+           NOM_CMP  = 'DZ',
+           GROUP_NO = ('PMMA'),
+           ),
+   ),
+   ARCHIVAGE   = _F(PAS_NBRE=500,CONT_GENER='NON'),
+   );
+
+
+IMPR_TABLE(TABLE=TAB2)
+
+
+
+MODI_REPERE(RESULTAT=U,reuse=U,
+                    REPERE='COQUE_UTIL_INTR',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'SIEF_ELGA',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
+
+MODI_REPERE(RESULTAT=U2,reuse=U2,
+                    REPERE='COQUE_UTIL_INTR',
+                    MODI_CHAM=_F(TYPE_CHAM = 'COQUE_GENE',
+                                 NOM_CHAM  = 'SIEF_ELGA',
+                                 NOM_CMP   = ('NXX','NYY','NXY',
+                                              'MXX','MYY','MXY',
+                                              'QX','QY')))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=7216,
+                   GROUP_NO='PMMA',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-2.29665004E-06,
+                   VALE_REFE=-2.2965299999999999E-06,),
+                _F(NUME_ORDRE=7216,
+                   REFERENCE='SOURCE_EXTERNE',
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-109.186724782,
+                   VALE_REFE=-109.17,
+                   MAILLE='M12',),
+                _F(NUME_ORDRE=7216,
+                   REFERENCE='SOURCE_EXTERNE',
+                   POINT=3,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='MYY',
+                   VALE_CALC=-223.91182537183,
+                   VALE_REFE=-2.2391E+02,
+                   MAILLE='M80',),
+                _F(NUME_ORDRE=7216,
+                   REFERENCE='SOURCE_EXTERNE',
+                   POINT=3,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='MYY',
+                   VALE_CALC=-223.91304121328,
+                   VALE_REFE=-2.2391E+02,
+                   MAILLE='M80',),
+                ),
+          )
+
+FIN()

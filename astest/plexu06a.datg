@@ -1,0 +1,112 @@
+opti sauv form 
+ '/home/potapov/CHAINAGE/testch.mgib';
+
+opti trac psc;
+***************
+opti dime 3 elem CUB8;
+
+eps=0.001;
+ecart_m=0.;
+ap=10.;
+bp=ap/2.;
+cp=2.;
+vz = 0. 0. cp;
+nb=5;
+na=nb*2;
+nc=4;
+
+********
+* daq4
+********
+b  = 0.  0.  ecart_m;
+b1 = ap  0.  ecart_m;
+b2 = ap  bp  ecart_m;
+b3 = 0.  bp  ecart_m;
+
+l1 = DROI na b  b1;
+l2 = DROI nb b1 b2;
+l3 = DROI na b2 b3;
+l4 = DROI nb b3 b;
+
+opti elem QUA4;
+dlq4 = DALL l1 l2 l3 l4;
+
+dgq4 = dlq4 PLUS vz;
+
+trac (dlq4 ET (dgq4 COUL ROUG));
+
+********
+* dat3
+********
+b4 = ap  ap  ecart_m;
+b5 = 0.  ap  ecart_m;
+
+m1 = DROI na b3 b2;
+m2 = DROI nb b2 b4;
+m3 = DROI na b4 b5;
+m4 = DROI nb b5 b3;
+
+opti elem TRI3;
+dlt3 = DALL m1 m2 m3 m4;
+
+dgt3 = dlt3 PLUS (0. 0. cp);
+
+trac (dlt3 ET (dgt3 COUL ROUG));
+
+trac (dlq4 ET (dgq4 COUL ROUG) ET dlt3 ET (dgt3 COUL ROUG));
+
+dline = dlq4 ET dlt3;
+dglrc = dgq4 ET dgt3;
+
+trac (dline ET (dglrc COUL ROUG));
+
+elim eps dline;
+elim eps dglrc;
+
+trac (dline ET (dglrc COUL ROUG));
+
+********
+* pout
+********
+t  = b  PLUS vz;
+t1 = b1 PLUS vz;
+t2 = b4 PLUS vz;
+t3 = b5 PLUS vz;
+
+po1 = DROI nc b  t;
+po2 = DROI nc b1 t1;
+po3 = DROI nc b4 t2;
+po4 = DROI nc b5 t3;
+
+potos = po1 ET po2 ET po3 ET po4;
+
+elim eps (dline ET potos);
+elim eps (dglrc ET potos);
+
+trac (dline ET (dglrc COUL ROUG) ET (potos COUL BLEU));
+
+***********
+* traceurs
+***********
+pp1 = dline POIN PROC (bp bp 0.);
+pp2 = dglrc POIN PROC (bp bp cp);
+bps=bp+eps;
+bms=bp-eps;
+elt3 = dlt3 ELEM CONT (bps bps 0.);
+egt3 = dgt3 ELEM CONT (bps bps cp);
+elq4 = dlq4 ELEM CONT (bms bms 0.);
+egq4 = dgq4 ELEM CONT (bms bms cp);
+
+pdline = dline POIN PLAN b b1 b4 eps;
+trac ((pdline COUL VERT) ET dglrc);
+
+*******
+mail = dline ET dglrc ET potos;
+
+sauv 'FORMAT' mail;
+
+*trac (dline ET dglrc ET potos et (ppt COUL ROUG));
+*trac (dline ET dglrc ET potos et (ept COUL ROUG));
+
+fin;
+*

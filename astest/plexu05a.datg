@@ -1,0 +1,55 @@
+*%siz 50
+*     Test bm_str_glrc_dam.dgibi: Jeux de données    *
+*           ---------------------------------         *
+*                                                     *
+* CAS TEST DE 01/2001     PROVENANCE : 
+*OPTION ECHO 1;
+*-----------------------------------------------------*
+*             Maillage d'une dalle                    *   
+*-----------------------------------------------------*
+* Définition des options
+*
+           OPTI DIME 3 ELEM TRI3 ;
+
+ecar = 3.;
+
+*----T3GS----------------------------------------------*
+*----T3GS----------------------------------------------*
+*----T3GS----------------------------------------------*
+*  Parametres
+Lx = 0.9D0 ;
+Ly = 0.9D0 ;
+Nx = 6;
+Ny = 6;
+*
+*-----------------------------------------------------*
+A1 = 0.   0.   ecar;
+A2 = Lx   0.   ecar;
+A3 = 0.   Ly   ecar;
+A4 = Lx   Ly   ecar;
+*-----------------------------------------------------*
+A1A2 = DROI Nx A1 A2 ;
+A2A4 = DROI Ny A2 A4 ;
+A4A3 = DROI Nx A4 A3 ;
+A3A1 = DROI Ny A3 A1 ;
+*-----------------------------------------------------*
+talle = DALL A2A4 A4A3 A3A1 A1A2 PLAN;
+
+t0 = A1;
+t5 = A2;
+t3 = A3;
+t4 = A4;
+tp1 = 0. 0.45 ecar;
+
+A5 = 0.  Ly  ecar;
+A6 = Lx  Ly  ecar;
+A5A6 = DROI Nx A5 A6;
+
+mesh = talle ET A5A6
+
+*
+* Save mesh
+*
+opti sauv form 'bm_str_glrc_dam.msh';
+sauv form (mesh);
+fin;

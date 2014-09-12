@@ -1,0 +1,771 @@
+# TITRE VALIDATION DU CHAINAGE ASTER-EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# BASCULE EXPLICITE-IMPLICITE
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('MED_83','DYNAMIQUE_3'),
+      DEBUG=_F(HIST_ETAPE='OUI'),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),);
+
+from Contrib.macro_bascule_schema_cata import MACRO_BASCULE_SCHEMA
+#from macro_bascule_schema_cata import MACRO_BASCULE_SCHEMA
+
+MPa = 1000000.0;
+coefseuil = 1.E5 ;
+
+PRE_GIBI();
+
+# ------------------- Lecture du maillage
+
+MA00=LIRE_MAILLAGE();
+
+MA=CREA_MAILLAGE(MAILLAGE=MA00,
+                 CREA_POI1=_F(NOM_GROUP_MA='PLINE',
+                              GROUP_MA='DLINE',),);
+
+MO2=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA = ('DLQ4','DGQ4'),PHENOMENE = 'MECANIQUE',MODELISATION = 'Q4GG'),
+                     _F(GROUP_MA = ('DLT3','DGT3'),PHENOMENE = 'MECANIQUE',MODELISATION = 'Q4GG'),
+                     _F(GROUP_MA = ('PO1','PO2','PO3','PO4'),PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E'),
+                     _F(  GROUP_MA = 'PLINE',PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_TR'),
+                    )
+               );
+
+
+# ------------------- Definition des materiaux
+
+BET_LINE = DEFI_MATERIAU(ELAS=_F(
+                    E = 42824.5*MPa,
+                    NU = 0.,
+                    RHO = 2500,
+                   )
+                  );
+
+M_BETON = DEFI_MATERIAU(
+                    ELAS = _F(
+                              E = 42824.5*MPa,
+                              NU = 0.,
+                              RHO = 2500,
+#                              AMOR_ALPHA = 5.2675E-4,
+#                              AMOR_BETA  = 1.913178,
+                              ),
+                    BETON_ECRO_LINE = _F(
+                                         D_SIGM_EPSI = 0.0,
+                                         SYT   =  4.2E6*coefseuil,
+                                         SYC    = -35.E6*coefseuil,
+                                         ),
+                    );
+
+M_ACIER = DEFI_MATERIAU(
+                    ELAS = _F(
+#                              E    =  57996.6E6,
+                              E    =  2.E11,
+                              NU   =  0.3,
+                              RHO = 7800,
+                              ),
+                    ECRO_LINE = _F(
+                                   D_SIGM_EPSI = 0.0,
+                                   SY   =  500.E6*coefseuil,
+                                   ),
+                    );
+
+
+BET_GLRC = DEFI_GLRC(RELATION = 'GLRC_DAMAGE',
+                 BETON = _F(
+                            MATER = M_BETON,
+                            EPAIS = 1.3,
+                            GAMMA = 0.0,
+                            QP1 = 0.152,
+                            QP2 = 0.152,
+                            OMT = 5.E-3,
+#                            EAT = 57996.6E6,
+                            EAT = 2.E11,
+                            C1N1 = 87.3E6,C1N2 = 87.3E6,C1N3 = 87.3E6,
+                            C2N1 = 87.3E6,C2N2 = 87.3E6,C2N3 = 87.3E6,
+                            C1M1 = 14.8E6,C1M2 = 14.8E6,C1M3 = 14.8E6,
+                            C2M1 = 14.8E6,C2M2 = 14.8E6,C2M3 = 14.8E6,
+                            ),
+                 NAPPE = (_F(
+                             MATER = M_ACIER,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = 0.877,
+                             RY = 0.877,
+                             ),
+                          _F(
+                             MATER = M_ACIER,
+                             OMX = 5.027E-3,
+                             OMY = 5.027E-3,
+                             RX = -0.877,
+                             RY = -0.877,
+                             ),
+                          ),
+                 );
+
+
+
+MATER=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=(
+                              _F(GROUP_MA = ('DLT3','DLQ4'),MATER = BET_LINE),
+                              _F(GROUP_MA = ('DGT3','DGQ4'),MATER = BET_GLRC),
+                              _F(GROUP_MA = 'POTOS',MATER = M_ACIER),
+                            ),
+                           )
+
+
+
+
+# ------------------- Caracteristiques des elements de structure
+
+COQUE = []
+COQUE =[_F(EPAIS=1.3,
+            GROUP_MA = ('DLT3','DLQ4','DGT3','DGQ4'),
+            COQUE_NCOU  = 1,
+            INER_ROTA = 'OUI',
+            VECTEUR = (1.,0.,0.),
+            EXCENTREMENT = 0)
+         ]
+
+
+POUTRE = []
+poutre1 = {'GROUP_MA':('PO1','PO2','PO3','PO4'), 'SECTION':'RECTANGLE',
+           'CARA':('HY','HZ'),
+           'VALE':(0.6,0.6),
+                }
+
+POUTRE.append(poutre1)
+
+
+ORIENTATION = []
+ORIENTATION.append(_F(GROUP_MA=('PO1','PO2','PO3','PO4'),CARA = 'ANGL_VRIL',VALE=90))
+
+
+ELEM = AFFE_CARA_ELEM(MODELE = MO2,
+                      COQUE = COQUE,
+                      POUTRE=POUTRE,
+                      ORIENTATION = ORIENTATION,
+                      RIGI_PARASOL=_F(GROUP_MA='DLINE',
+                                    GROUP_MA_POI1 = 'PLINE',
+                                    COEF_GROUP=1.0,
+                                    CARA='K_TR_D_N',
+                                    EUROPLEXUS='OUI',
+                                    VALE=(
+                                            0.13572E+12 ,
+                                            0.13428E+12 ,
+                                            0.13467E+12 ,
+                                            0.24722E+15 ,
+                                            0.22386E+15 ,
+                                            0.30600E+15 ,
+                                          ),
+                                    COOR_CENTRE=(0.0,0.0,-1.16E+01,),),
+                     INFO=1,);
+
+ELEMDNL = AFFE_CARA_ELEM(MODELE = MO2,
+                      COQUE = COQUE,
+                      POUTRE=POUTRE,
+                      ORIENTATION = ORIENTATION,
+                      RIGI_PARASOL=_F(GROUP_MA='DLINE',REPERE = 'GLOBAL',
+                                    GROUP_MA_POI1 = 'PLINE',
+                                    COEF_GROUP=1.0,
+                                    CARA='K_TR_D_N',
+                                    VALE=(
+                                            0.13572E+12 ,
+                                            0.13428E+12 ,
+                                            0.13467E+12 ,
+                                            0.24722E+15 ,
+                                            0.22386E+15 ,
+                                            0.30600E+15 ,
+                                          ),
+                                    COOR_CENTRE=(0.0,0.0,-1.16E+01,),),
+                     INFO=1,);
+
+
+
+# ------------------- Conditions aux limites
+
+CH_PI=AFFE_CHAR_MECA(MODELE=MO2,
+                     PRES_REP=(_F(PRES = -0.001,GROUP_MA = 'DGLRC',),),
+                    );
+
+#
+# -----------------------------------------------------------
+# DEFINITION DE LA FORCE D'IMPACT LINEAIRE
+# -----------------------------------------------------------
+
+FONCCB=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0.0,
+                           0.001,  50.E6,
+                           0.0170,  50.E6,
+                           0.0171,  0.0,
+                           100.0,  0.0),
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VERIF='CROISSANT',);
+
+
+NFKT=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-1.0,     1.0,
+                          0.0,     0.0,
+                          1.0,     -1.0,
+                        ),
+                   );
+
+NFKR=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(-10.,     10.,
+                          0.0,     0.0,
+                          10.,     -10.
+                        ),
+                   );
+
+TAB1 = CO('TAB1')
+#
+# Instant de fin du calcul EPX :
+textr = 0.007
+# Instant final :
+tfin = 0.009
+#tfin = 0.06
+# Pas de temps implicite :
+dt = 5.E-5
+# Pas de temps explicite :
+dtf = 0.5E-5
+#
+# Nombre de pas archives par EPX :
+nbpasepx = 50
+# precision pour le temps :
+prectps = 1.E-3
+#
+# Liste d'instants avec grand pas de temps (implicite)
+inst1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=tfin,
+                                   PAS=dt,),);
+linst1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                   LIST_INST=inst1,),
+                      ECHEC=_F(ACTION        = 'DECOUPE',
+                               SUBD_METHODE  = 'MANUEL',
+                               SUBD_PAS=4,
+                               SUBD_PAS_MINI=0.000001,),);
+#
+# Liste d'instants avec petit pas de temps (explicite)
+inst1f=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=textr,PAS=dtf,),
+                                 _F(JUSQU_A=tfin,PAS=dtf,),),
+                                   );
+linst1f=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                   LIST_INST=inst1f,),
+                      ECHEC=_F(ACTION        = 'DECOUPE',
+                               SUBD_METHODE  = 'MANUEL',
+                               SUBD_PAS=2,
+                               SUBD_PAS_MINI=0.0000001,),);
+#
+# Calcul EPX :
+#
+EPX1 = CALC_EUROPLEXUS(
+   MODELE=MO2,
+   CHAM_MATER=MATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'ELAS',
+                  GROUP_MA = ('DLT3','DLQ4','POTOS'),
+                 ),
+               _F(
+                  RELATION = 'GLRC_DAMAGE',
+                  GROUP_MA = ('DGT3','DGQ4'),
+                 ),
+              ),
+   CARA_ELEM=ELEM,
+   FONC_PARASOL = _F(NFKT = NFKT,
+                     NFKR = NFKR,
+                    ),
+   EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
+   DIME = _F(UNITE_DIME = 40,
+             TABLE = (5,6000),),
+   CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
+               INST_INIT = 0,
+               INST_FIN  = textr,
+               NMAX      = 90000000,
+               CSTAB     = 0.4
+               ),
+   OBSERVATION = _F(PAS_NBRE=nbpasepx,
+                    #TOUT_GROUP_NO = 'OUI',
+                    #GROUP_MA = ('DGT3','DGQ4',),
+                    #NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA','VARI_ELGA'),
+                    ),
+   PAS_NBRE_COURBE=5,
+   TABLE_COURBE    = TAB1,
+   COURBE = (_F(
+           NOM_CHAM = 'ACCE',
+           NOM_CMP  = 'DZ',
+           GROUP_NO = ('PP2'),
+           ),),
+   ARCHIVAGE   = _F(PAS_NBRE=nbpasepx,),);
+#
+# Sorties MED
+#
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=EPX1,INST=textr,PRECISION=prectps,),);
+
+#
+# Generation des champs pour poursuivre le calcul EPX avec DNL
+#
+
+#
+# Recuperation du maillage MED
+# On va repartir de ce maillage car il est coherent avec les champs MED.
+# On va ensuite redefinir toutes les donnees s'appyant sur ce maillage
+# (modele, champ materiau, cara_elem...) :
+MA_MED2 = LIRE_MAILLAGE(UNITE=81,FORMAT='MED',);
+#
+# Modele s'appuyant sur le maillage MED :
+MO2_MED2=AFFE_MODELE(MAILLAGE=MA_MED2,
+               AFFE=(_F(GROUP_MA = ('DLQ4','DGQ4'),PHENOMENE = 'MECANIQUE',MODELISATION = 'Q4GG'),
+                     _F(GROUP_MA = ('DLT3','DGT3'),PHENOMENE = 'MECANIQUE',MODELISATION = 'Q4GG'),
+                     _F(GROUP_MA = ('PO1','PO2','PO3','PO4'),PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E'),
+                     _F(  GROUP_MA = 'PLINE',PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_TR'),));
+#
+MATEMED2=AFFE_MATERIAU(MAILLAGE=MA_MED2,
+                       AFFE=( _F(GROUP_MA = ('DLT3','DLQ4'),MATER = BET_LINE),
+                              _F(GROUP_MA = ('DGT3','DGQ4'),MATER = BET_GLRC),
+                              _F(GROUP_MA = 'POTOS',MATER = M_ACIER),),)
+#
+ELEMMED2 = AFFE_CARA_ELEM(MODELE = MO2_MED2,
+                      COQUE = COQUE,
+                      POUTRE=POUTRE,
+                      ORIENTATION = ORIENTATION,
+                      RIGI_PARASOL=_F(GROUP_MA='DLINE',REPERE = 'GLOBAL',
+                                    GROUP_MA_POI1 = 'PLINE',
+                                    COEF_GROUP=1.0,
+                                    CARA='K_TR_D_N',
+                                    VALE=(
+                                            0.13572E+12 ,
+                                            0.13428E+12 ,
+                                            0.13467E+12 ,
+                                            0.24722E+15 ,
+                                            0.22386E+15 ,
+                                            0.30600E+15 ,
+                                          ),
+                                    COOR_CENTRE=(0.0,0.0,-1.16E+01,),),
+                     INFO=1,);
+#
+CHPIMED2=AFFE_CHAR_MECA(MODELE=MO2_MED2,
+                     PRES_REP=(_F(PRES = -0.001,GROUP_MA = 'DGLRC',),),
+                    );
+
+#
+#   Lecture des champs MED
+# On va separer parties lineaires et non-lineaires
+# Sur le domaine lineaire on ne relit que les champs cinematiques et on reconstruit les contraintes
+# Sur le domaine NL on relit tous les cahmps y compris les contraintes et variables internes
+EPX1DVA = LIRE_RESU(FORMAT='MED',MODELE=MO2_MED2,TYPE_RESU='EVOL_NOLI',UNITE=81,INST=textr,PRECISION=prectps,
+          FORMAT_MED=(
+              _F(NOM_CHAM='DEPL',NOM_CHAM_MED='EPX1____DEPL',),
+              _F(NOM_CHAM='VITE',NOM_CHAM_MED='EPX1____VITE',),
+              _F(NOM_CHAM='ACCE',NOM_CHAM_MED='EPX1____ACCE',),
+            ),);
+#
+DEP_MED = CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',NOM_CHAM='DEPL', RESULTAT=EPX1DVA,INST=textr,);
+VIT_MED = CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',NOM_CHAM='VITE', RESULTAT=EPX1DVA,INST=textr,);
+ACC_MED = CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',NOM_CHAM='ACCE', RESULTAT=EPX1DVA,INST=textr,);
+#
+LIN_MED = CREA_RESU(TYPE_RESU='EVOL_ELAS',NOM_CHAM='DEPL',OPERATION='AFFE',AFFE=(_F(CHAM_GD=DEP_MED,INST=textr),),);
+RES_MED = CALC_CHAMP( MODELE=MO2_MED2,CARA_ELEM=ELEMMED2,CHAM_MATER=MATEMED2,RESULTAT=LIN_MED,INST=textr,CONTRAINTE=('SIEF_ELGA',),
+                      GROUP_MA=('DLT3','DLQ4','POTOS','PLINE',),);
+#
+# Champ de contrainte sur la partie lineaire :
+SIGMEDL=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELGA_SIEF_R',NOM_CHAM='SIEF_ELGA', RESULTAT=RES_MED,INST=textr,);
+#
+# Champ de contrainte sur la partie non-lineaire :
+SIGMEDNL = LIRE_CHAMP(FORMAT='MED',
+               MODELE=MO2_MED2,
+               MAILLAGE=MA_MED2,
+               NOM_CMP_IDEM='OUI',
+               NOM_MED='EPX1____SIEF_ELGA',
+               TYPE_CHAM='ELGA_SIEF_R',
+               INST=textr,PRECISION=prectps,
+               PROL_ZERO='OUI',
+               UNITE=81,);
+SIG00   = CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='ELGA_SIEF_R',MODELE=MO2_MED2, PROL_ZERO='OUI',
+                   ASSE=(_F(GROUP_MA=('DGT3','DGQ4'), CHAM_GD=SIGMEDNL,COEF_R=1.0),),);
+SIG_MED = CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='ELGA_SIEF_R',MODELE=MO2_MED2, PROL_ZERO='OUI',
+             ASSE=(
+              _F(GROUP_MA=('DLT3','DLQ4','POTOS','PLINE'),CHAM_GD=SIGMEDL,),
+              _F(GROUP_MA=('DGT3','DGQ4'), CHAM_GD=SIGMEDNL,COEF_R=1.0,),
+                   ),);
+#
+# Variables internes sur la partie non-lineaire :
+VARIMED0 = LIRE_CHAMP(FORMAT='MED',
+               MODELE=MO2_MED2,
+               MAILLAGE=MA_MED2,
+               NOM_MED='EPX1____VARI_ELGA',
+               TYPE_CHAM='ELGA_VARI_R',
+               INST=textr,PRECISION=prectps,
+               NOM_CMP_IDEM='OUI',
+               PROL_ZERO='OUI',
+               UNITE=81,);
+VARI_MED = CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='ELGA_VARI_R',MODELE=MO2_MED2,PROL_ZERO='OUI',
+             ASSE=_F(GROUP_MA=('DGT3','DGQ4'), CHAM_GD=VARIMED0,),);
+
+#
+# Calcul DNL explicite sur tout l'intervalle (pour comparer) :
+#
+
+DNL_EXP=DYNA_NON_LINE(MODELE=MO2_MED2,
+                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',FORMULATION='ACCELERATION',STOP_CFL='NON',),MASS_DIAG='OUI',
+                      CHAM_MATER=MATEMED2,
+                      CARA_ELEM=ELEMMED2,
+                      EXCIT=(_F(CHARGE=CHPIMED2,FONC_MULT=FONCCB,),),
+                      COMPORTEMENT=(_F(RELATION='GLRC_DAMAGE',ITER_INTE_MAXI=100,
+                                    GROUP_MA=('DGT3','DGQ4'),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('DLT3','DLQ4',),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('POTOS',),)
+                                    ,),
+                      INCREMENT=_F(LIST_INST=linst1f,),
+                      NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),
+                      OBSERVATION=_F(NOM_CMP=('DZ',),GROUP_NO='PP2',NOM_CHAM='ACCE',),);
+
+#
+# Calcul DNL explicite en poursuite des donnees MED de CALC_EUROPLEXUS :
+#
+
+DNLEPX_E=DYNA_NON_LINE(MODELE=MO2_MED2,
+                   ETAT_INIT=_F(DEPL=DEP_MED,VITE=VIT_MED,ACCE=ACC_MED,SIGM = SIG_MED,VARI=VARI_MED,),
+                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',FORMULATION='ACCELERATION',STOP_CFL='NON',),MASS_DIAG='OUI',
+                      CHAM_MATER=MATEMED2,
+                      CARA_ELEM=ELEMMED2,
+                      EXCIT=(_F(CHARGE=CHPIMED2,FONC_MULT=FONCCB,),),
+                      COMPORTEMENT=(_F(RELATION='GLRC_DAMAGE',ITER_INTE_MAXI=100,
+                                    GROUP_MA=('DGT3','DGQ4',),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('DLT3','DLQ4',),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('POTOS',),)
+                                    ,),
+                      INCREMENT=_F(LIST_INST=linst1f,INST_INIT=textr,),
+                      NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),
+                      OBSERVATION=_F(NOM_CMP=('DZ',),GROUP_NO='PP2',NOM_CHAM='ACCE',),);
+#
+# Instant de bascule explicite vers implicite :
+tbasc = textr + 100*dtf
+#
+# Instant de debut pour MACRO_BASCULE_SCHEMA :
+tinbasc = textr + 10*dtf
+L_BAS=DEFI_LIST_REEL(VALE=(tbasc),);
+inst11=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=tfin,
+                                   PAS=dt,),);
+#
+# Bascule explicite-implicite (en poursuite de DNLEPX_E qui est lui-meme une poursuite d'EPX)
+#
+DNLB_EPX = MACRO_BASCULE_SCHEMA(MODELE=MO2_MED2,
+                 CHAM_MATER=MATEMED2,
+                 CARA_ELEM =ELEMMED2,
+                 INCR_IMPL=_F(LIST_INST=inst11,INST_INIT=tinbasc,),
+                 INCR_EXPL=_F(LIST_INST=inst1f,INST_INIT=tinbasc,),
+                 SCHEMA_TEMPS_IMPL  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.3, MODI_EQUI='NON',),
+                 SCHEMA_TEMPS_EXPL  =_F(SCHEMA='DIFF_CENT', FORMULATION='ACCELERATION',),
+# Pour tester avec equilibrage explicite :
+                 SCHEMA_TEMPS_EQUI =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.1,),
+                      COMPORTEMENT_IMPL=(_F(RELATION='GLRC_DAMAGE',ITER_INTE_MAXI=100,
+                                    GROUP_MA=('DGT3','DGQ4'),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('DLT3','DLQ4',),),
+                                 _F(RELATION='ELAS',
+                                     GROUP_MA=('POTOS',),)
+                                    ,),
+                      COMPORTEMENT_EXPL =(_F(RELATION='GLRC_DAMAGE',ITER_INTE_MAXI=100,
+                                    GROUP_MA=('DGT3','DGQ4'),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('DLT3','DLQ4',),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('POTOS',),)
+                                    ,),
+                 EXCIT=(_F(CHARGE=CHPIMED2,FONC_MULT=FONCCB,),),
+                 ETAT_INIT=_F(EVOL_NOLI=DNLEPX_E,INST=tinbasc,PRECISION=1.E-7,),
+                 LIST_INST_BASCULE     = L_BAS,
+                 SCHEMA_INIT    ='EXPLICITE',
+                 EQUILIBRAGE=_F(PAS_IMPL=dtf,
+                                PAS_EXPL=dtf,),
+                 CONVERGENCE = _F(RESI_GLOB_RELA=7.E-07,ITER_GLOB_MAXI=27,),
+                 OBSERVATION=_F(NOM_CMP=('DZ',),GROUP_NO='PP2',NOM_CHAM='ACCE',),);
+
+#
+# Bascule explicite-implicite (en poursuite de DNL_EXP, pour se comparer au calcul precedent)
+#
+DNLB_AST = MACRO_BASCULE_SCHEMA(MODELE=MO2_MED2,
+                 CHAM_MATER=MATEMED2,
+                 CARA_ELEM =ELEMMED2,
+                 INCR_IMPL=_F(LIST_INST=inst11,INST_INIT=tinbasc,),
+                 INCR_EXPL=_F(LIST_INST=inst1f,INST_INIT=tinbasc,),
+                 SCHEMA_TEMPS_IMPL  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.3, MODI_EQUI='NON',),
+                 SCHEMA_TEMPS_EXPL  =_F(SCHEMA='DIFF_CENT', FORMULATION='ACCELERATION',),
+# Pour tester avec equilibrage explicite :
+                 SCHEMA_TEMPS_EQUI =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.1,),
+                      COMPORTEMENT_IMPL=(_F(RELATION='GLRC_DAMAGE',ITER_INTE_MAXI=100,
+                                    GROUP_MA=('DGT3','DGQ4'),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('DLT3','DLQ4',),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('POTOS',),)
+                                    ,),
+                      COMPORTEMENT_EXPL=(_F(RELATION='GLRC_DAMAGE',ITER_INTE_MAXI=100,
+                                    GROUP_MA=('DGT3','DGQ4'),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('DLT3','DLQ4',),),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA=('POTOS',),)
+                                    ,),
+                 EXCIT=(_F(CHARGE=CHPIMED2,FONC_MULT=FONCCB,),),
+                 ETAT_INIT=_F(EVOL_NOLI=DNL_EXP,INST=tinbasc,PRECISION=1.E-7,),
+                 LIST_INST_BASCULE     = L_BAS,
+                 SCHEMA_INIT    ='EXPLICITE',
+                 EQUILIBRAGE=_F(PAS_IMPL=dtf,
+                                PAS_EXPL=dtf,
+                                ),
+                 CONVERGENCE = _F(RESI_GLOB_RELA=5.E-07,ITER_GLOB_MAXI=25,),
+                 OBSERVATION=_F(NOM_CMP=('DZ',),GROUP_NO='PP2',NOM_CHAM='ACCE',),);
+
+#
+# Post-traitements : deplacements et accelerations au point PP2
+#
+UZDNLEPX = RECU_FONCTION(RESULTAT=DNLEPX_E,NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+UZ_EPX = RECU_FONCTION(RESULTAT=EPX1,NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+UZ_DNL_E = RECU_FONCTION(RESULTAT=DNL_EXP,NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+AZDNLEPX = RECU_FONCTION(RESULTAT=DNLEPX_E,NOM_CHAM='ACCE',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+AZ_EPX = RECU_FONCTION(RESULTAT=EPX1,NOM_CHAM='ACCE',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+AZ_DNL_E = RECU_FONCTION(RESULTAT=DNL_EXP,NOM_CHAM='ACCE',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+UZ_B_EPX = RECU_FONCTION(RESULTAT=DNLB_EPX,NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+AZ_B_EPX = RECU_FONCTION(RESULTAT=DNLB_EPX,NOM_CHAM='ACCE',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+UZ_B_AST = RECU_FONCTION(RESULTAT=DNLB_AST,NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+AZ_B_AST = RECU_FONCTION(RESULTAT=DNLB_AST,NOM_CHAM='ACCE',NOM_CMP='DZ',GROUP_NO='PP2',
+                         INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',);
+# #
+# # Courbes des deplacements et accelerations au point PP2
+# #
+# IMPR_FONCTION ( UNITE  = 51,FORMAT = 'XMGRACE',
+#  COURBE= (
+#        _F(FONCTION= UZDNLEPX, MARQUEUR=0, ),_F(FONCTION= UZ_EPX, MARQUEUR=0, ),_F(FONCTION= UZ_DNL_E, MARQUEUR=0, ),
+#        _F(FONCTION= UZ_B_EPX, MARQUEUR=0, ),_F(FONCTION= UZ_B_AST, MARQUEUR=0, ),
+#        ),);
+# IMPR_FONCTION ( UNITE  = 52,FORMAT = 'XMGRACE',
+#  COURBE= (
+#        _F(FONCTION= AZDNLEPX, MARQUEUR=0, ),_F(FONCTION= AZ_EPX, MARQUEUR=0, ),_F(FONCTION= AZ_DNL_E, MARQUEUR=0, ),
+#       _F(FONCTION= AZ_B_EPX, MARQUEUR=0, ),_F(FONCTION= AZ_B_AST, MARQUEUR=0, ),
+#         ),);
+#
+inst_te=DEFI_LIST_REEL(DEBUT=dtf,
+                     INTERVALLE=_F(JUSQU_A=textr,
+                                   PAS=dtf,),);
+instpf = DEFI_LIST_REEL(DEBUT=textr,
+                     INTERVALLE=_F(JUSQU_A=tfin,
+                                   PAS=dtf,),);
+instp = DEFI_LIST_REEL(DEBUT=textr,
+                     INTERVALLE=_F(JUSQU_A=tfin,
+                                   PAS=dt,),);
+
+#
+# Comparaisons des resultats pour validation
+#
+# Ecarts entre EPX et DNL explicites (avant bascules et poursuites) :
+D_UZ_E1 = FORMULE(NOM_PARA='INST',VALE='''abs((UZ_DNL_E(INST)-UZ_EPX(INST))/UZ_EPX(INST))''') ;
+D_UZ_E2 = CALC_FONC_INTERP(FONCTION=D_UZ_E1, NOM_PARA = 'INST',NOM_RESU='DEPLACEMENT',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR DEPL EXPL',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=inst_te);
+D_AZ_E1 = FORMULE(NOM_PARA='INST',VALE='''abs((AZ_DNL_E(INST)-AZ_EPX(INST))/AZ_EPX(INST))''') ;
+D_AZ_E2 = CALC_FONC_INTERP(FONCTION=D_AZ_E1, NOM_PARA = 'INST',NOM_RESU='ACCELERATION',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR ACCE EXPL',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=inst_te);
+#
+# Ecarts entre la poursuite DNL explicite depuis EPX et un calcul full-DNL explicite :
+D_UZ_EP1 = FORMULE(NOM_PARA='INST',VALE='''abs((UZDNLEPX(INST)-UZ_DNL_E(INST))/UZ_DNL_E(INST))''') ;
+D_UZ_EP2 = CALC_FONC_INTERP(FONCTION=D_UZ_EP1, NOM_PARA = 'INST',NOM_RESU='DEPLACEMENT',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR DEPL POUR',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=instpf);
+D_AZ_EP1 = FORMULE(NOM_PARA='INST',VALE='''abs((AZDNLEPX(INST)-AZ_DNL_E(INST))/AZ_DNL_E(INST))''') ;
+D_AZ_EP2 = CALC_FONC_INTERP(FONCTION=D_AZ_EP1, NOM_PARA = 'INST',NOM_RESU='ACCELERATION',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR ACCE POUR',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=instpf);
+#
+# Ecarts entre la bascule EPX vers DNL implicite et la bascule DNL explicite vers implicite :
+D_UZ_B1 = FORMULE(NOM_PARA='INST',VALE='''abs((UZ_B_EPX(INST)-UZ_B_AST(INST))/UZ_B_AST(INST))''') ;
+D_UZ_B2 = CALC_FONC_INTERP(FONCTION=D_UZ_B1, NOM_PARA = 'INST',NOM_RESU='DEPLACEMENT',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR DEPL BASC',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=instp);
+D_AZ_B1 = FORMULE(NOM_PARA='INST',VALE='''abs((AZ_B_EPX(INST)-AZ_B_AST(INST))/AZ_B_AST(INST))''') ;
+D_AZ_B2 = CALC_FONC_INTERP(FONCTION=D_AZ_B1, NOM_PARA = 'INST',NOM_RESU='ACCELERATION',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR ACCE BASC',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=instp);
+#
+# Ecarts entre la bascule EPX vers DNL implicite et le calcul full-DNL explicite :
+D_UZ_BE1 = FORMULE(NOM_PARA='INST',VALE='''abs((UZ_B_EPX(INST)-UZ_DNL_E(INST))/UZ_DNL_E(INST))''') ;
+D_UZ_BE2 = CALC_FONC_INTERP(FONCTION=D_UZ_BE1, NOM_PARA = 'INST',NOM_RESU='DEPLACEMENT',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR DEPL BASC2',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=instp);
+D_AZ_BE1 = FORMULE(NOM_PARA='INST',VALE='''abs((AZ_B_EPX(INST)-AZ_DNL_E(INST))/AZ_DNL_E(INST))''') ;
+D_AZ_BE2 = CALC_FONC_INTERP(FONCTION=D_AZ_BE1, NOM_PARA = 'INST',NOM_RESU='ACCELERATION',
+                        PROL_DROITE='CONSTANT',INTERPOL='LIN',TITRE='ERREUR ACCE BASC2',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=instp);
+#
+# La tolerance sur le deplacement est forement plus faible que pour la contrainte
+# Des oscillations persistent suite a la bascule, a cause du chamgement de matrice de masse
+# Car on passe de la matrice lumpee en explicite a la matrice consistante en implicite
+#
+prec_u = 1.2E-2
+prec_a = 5.E-2
+TEST_FONCTION(VALEUR=(
+       _F(VALE_CALC=2.656188052764E-03,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_u,VALE_PARA=textr,CRITERE='ABSOLU',
+          FONCTION=D_UZ_E2,REFERENCE='AUTRE_ASTER',
+                         ),
+       _F(VALE_CALC=0.01627043702132,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_a,VALE_PARA=textr,CRITERE='ABSOLU',
+          FONCTION=D_AZ_E2,REFERENCE='AUTRE_ASTER',
+                         ),
+       _F(VALE_CALC=4.931006223535E-04,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_u,VALE_PARA=tfin,CRITERE='ABSOLU',
+          FONCTION=D_UZ_EP2,REFERENCE='AUTRE_ASTER',
+                         ),
+       _F(VALE_CALC=0.03798777453539,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_a,VALE_PARA=tfin,CRITERE='ABSOLU',
+          FONCTION=D_AZ_EP2,REFERENCE='AUTRE_ASTER',
+                         ),
+       _F(VALE_CALC=5.021950223433E-04,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_u,VALE_PARA=tfin,CRITERE='ABSOLU',
+          FONCTION=D_UZ_B2,REFERENCE='AUTRE_ASTER',
+                         ),
+       _F(VALE_CALC=0.01984832453388,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_a,VALE_PARA=tfin,CRITERE='ABSOLU',
+          FONCTION=D_AZ_B2,REFERENCE='AUTRE_ASTER',
+                         ),
+        _F(VALE_CALC=0.01146017794536,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_u,VALE_PARA=tfin,CRITERE='ABSOLU',
+           FONCTION=D_UZ_BE2,REFERENCE='AUTRE_ASTER',
+                          ),
+        _F(VALE_CALC=0.04550011663737,VALE_REFE=0.0,TOLE_MACHINE=1.E-8,PRECISION=prec_a,VALE_PARA=tfin,CRITERE='ABSOLU',
+           FONCTION=D_AZ_BE2,REFERENCE='AUTRE_ASTER',
+                          ),),);
+#
+# Génération des SRO
+#
+# Cas 1 : en partant de l'ARCHIVAGE :
+#
+IMPR_TABLE(TABLE = TAB1);
+
+fmin = int(1./tfin)
+fmin = 10.
+fmax = int(1./dt)
+fint1 = int((fmax-fmin)/10.)
+fpas = (fmax - fint1)/1000.
+fpasf = (fint1 - fmin)/1000.
+LFREQ=DEFI_LIST_REEL(DEBUT=fmin,INTERVALLE=(
+                                   _F(JUSQU_A=fint1,PAS=fpasf),
+                                   _F(JUSQU_A=fmax,PAS=fpas),
+                                        ),)
+AZ1=CALC_FONCTION(ASSE=_F( FONCTION = (AZ_EPX,AZDNLEPX), SURCHARGE = 'DROITE'),)
+AZ=CALC_FONCTION(ASSE=_F( FONCTION = (AZ1,AZ_B_EPX), SURCHARGE = 'DROITE'),)
+
+SRO_ARCH = CALC_FONCTION(SPEC_OSCI=_F(NATURE='ACCE',
+                                      FONCTION=AZ,
+                                      NORME=9.81,AMOR_REDUIT=0.05,
+                                      LIST_FREQ=LFREQ,),)
+#
+# Cas 2 : en partant de l'OBSERVATION :
+#
+TAB_1=RECU_TABLE(CO=DNLEPX_E,NOM_TABLE='OBSERVATION',);
+TAB_2=RECU_TABLE(CO=DNLB_EPX,NOM_TABLE='OBSERVATION',);
+TAB_REF=RECU_TABLE(CO=DNL_EXP,NOM_TABLE='OBSERVATION',);
+AT1=RECU_FONCTION(TABLE=TAB1,
+                  PARA_X='TEMPS',PARA_Y='ACCE_DZ_PP2',NOM_PARA='INST',NOM_RESU='DZ',INTERPOL='LIN',);
+AT2=RECU_FONCTION(TABLE=TAB_1,
+                  PARA_X='INST',PARA_Y='VALE',NOM_RESU='DZ',INTERPOL='LIN',
+                  FILTRE=(_F(NOM_PARA='NOM_CHAM',VALE_K='ACCE',),
+                          _F(NOM_PARA='NOM_CMP',VALE_K='DZ',),
+                          ),);
+AT2R1=RECU_FONCTION(TABLE=TAB_2,
+                  PARA_X='INST',PARA_Y='VALE',NOM_RESU='DZ',INTERPOL='LIN',
+                  FILTRE=(_F(NOM_PARA='NOM_CHAM',VALE_K='ACCE',),
+                          _F(NOM_PARA='NOM_CMP',VALE_K='DZ',),
+                          _F(NOM_PARA='NUME_REUSE',VALE_I=1,),
+                               ),);
+AT2R2=RECU_FONCTION(TABLE=TAB_2,
+                  PARA_X='INST',PARA_Y='VALE',NOM_RESU='DZ',INTERPOL='LIN',
+                  FILTRE=(_F(NOM_PARA='NOM_CHAM',VALE_K='ACCE',),
+                          _F(NOM_PARA='NOM_CMP',VALE_K='DZ',),
+                          _F(NOM_PARA='NUME_REUSE',VALE_I=2,),
+                               ),);
+ATREF=RECU_FONCTION(TABLE=TAB_REF,
+                  PARA_X='INST',PARA_Y='VALE',NOM_RESU='DZ',INTERPOL='LIN',
+                  FILTRE=(_F(NOM_PARA='NOM_CHAM',VALE_K='ACCE',),
+                          _F(NOM_PARA='NOM_CMP',VALE_K='DZ',),
+                          ),);
+AZT1=CALC_FONCTION(ASSE=_F( FONCTION = (AT1,AT2), SURCHARGE = 'DROITE'),)
+AZT=CALC_FONCTION(ASSE=_F( FONCTION = (AZT1,AT2R2), SURCHARGE = 'DROITE'),)
+SRO_OBS = CALC_FONCTION(SPEC_OSCI=_F(NATURE='ACCE',
+                                      FONCTION=AZT,
+                                      NORME=9.81,AMOR_REDUIT=0.05,
+                                      LIST_FREQ=LFREQ,),)
+SRO_OBSR = CALC_FONCTION(SPEC_OSCI=_F(NATURE='ACCE',
+                                      FONCTION=ATREF,
+                                      NORME=9.81,AMOR_REDUIT=0.05,
+                                      LIST_FREQ=LFREQ,),)
+#
+#  Comparaisons des SRO :
+#
+FSRO_OBS=RECU_FONCTION(NAPPE=SRO_OBS,VALE_PARA_FONC=0.05,);
+FSRO_OBR=RECU_FONCTION(NAPPE=SRO_OBSR,VALE_PARA_FONC=0.05,);
+FSRO_ARC=RECU_FONCTION(NAPPE=SRO_ARCH,VALE_PARA_FONC=0.05,);
+D_SRO = FORMULE(NOM_PARA='FREQ',VALE='''abs((FSRO_OBS(FREQ)-FSRO_ARC(FREQ))/FSRO_OBS(FREQ))''') ;
+FD_SRO = CALC_FONC_INTERP(FONCTION=D_SRO, NOM_PARA = 'FREQ',NOM_RESU='ACCELERATION',
+                        INTERPOL='LIN',TITRE='ERREUR SRO',
+                        LIST_PARA=LFREQ);
+D_SROR = FORMULE(NOM_PARA='FREQ',VALE='''abs((FSRO_OBR(FREQ)-FSRO_OBS(FREQ))/FSRO_OBR(FREQ))''') ;
+FD_SROR = CALC_FONC_INTERP(FONCTION=D_SROR, NOM_PARA = 'FREQ',NOM_RESU='ACCELERATION',
+                        INTERPOL='LIN',TITRE='ERREUR SRO',
+                        LIST_PARA=LFREQ);
+TAB_SRO = INFO_FONCTION(MAX=_F(FONCTION=FD_SRO),);
+IMPR_TABLE(TABLE=TAB_SRO);
+TAB_SROR = INFO_FONCTION(MAX=_F(FONCTION=FD_SROR),);
+IMPR_TABLE(TABLE=TAB_SROR);
+TEST_TABLE(TABLE=TAB_SRO,
+           VALE_CALC=0.0856450067334,
+           TOLE_MACHINE=1.E-5,
+           NOM_PARA='ACCELERATION',
+           FILTRE=(_F(NOM_PARA='FONCTION',
+                      VALE_K='FD_SRO',),
+                   _F(NOM_PARA='TYPE',
+                      VALE_K='MAXI',),
+                   ),);
+TEST_TABLE(TABLE=TAB_SROR,
+           VALE_CALC=0.0563364563463,
+           TOLE_MACHINE=1.E-5,
+           NOM_PARA='ACCELERATION',
+           FILTRE=(_F(NOM_PARA='FONCTION',
+                      VALE_K='FD_SROR',),
+                   _F(NOM_PARA='TYPE',
+                      VALE_K='MAXI',),
+                   ),);
+FIN();

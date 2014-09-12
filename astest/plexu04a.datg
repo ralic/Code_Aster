@@ -1,0 +1,468 @@
+# -*- coding: utf-8 -*-
+
+import math
+import salome
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+import SMESH
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+
+#############Chemin pour l'export du maillage resultat############
+ExportPATH="/home/PHIMECA/maillages/"
+##################################################################
+
+#--------------------------------------------------------------------------------
+#                              PARAMETRES
+#--------------------------------------------------------------------------------
+                                                         # Les unités sont en SI
+R = 21.9                                                 # Rayon moyen du cylindre
+H = 49.6                                                 # Hauteur du cylindre
+Larg_ancr = 0.5                                          # Largeur des ancrages
+Long_ancr = 1.5                                          # Longueur des ancrages
+ep_cyl = 0.5                                             # Epaisseur du cylindre nécessaire pour l'excentrement des câbles horizontaux et verticaux
+Rcab = R+ep_cyl/2                                        # Calcul automatique, pour l'excentrement des câbles verticaux et horizontaux
+Nb_cab_hori = 20                                         # Nombre de câbles horizontaux (CH)
+Nb_cab_vert = 20                                         # Nombre de câbles verticaux (CV)
+alpha=2*math.pi/(Nb_cab_vert)                            # Calcul automatique, angle définissant l'espacement des câbles verticaux
+Finesse = 1.0                                            # Finesse du maillage
+
+
+
+
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#                              CYLINDRE
+#--------------------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------------------
+#                              GEOMETRIE
+#--------------------------------------------------------------------------------
+
+Vector_DX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+Circle_1 = geompy.MakeCircle(None, None, R)
+
+Vertex_1 = geompy.MakeVertexOnCurve(Circle_1, (math.asin(Long_ancr/2/R))/(2*math.pi))
+Vertex_2 =geompy. MakeVertexOnCurve(Circle_1, 0.5-(math.asin(Long_ancr/2/R))/(2*math.pi))
+Vertex_3 = geompy.MakeVertexOnCurve(Circle_1, 0.5+(math.asin(Long_ancr/2/R))/(2*math.pi))
+Vertex_4 = geompy.MakeVertexOnCurve(Circle_1, 1-(math.asin(Long_ancr/2/R))/(2*math.pi))
+
+Translation_1 = geompy.MakeTranslation(Vertex_1, Larg_ancr, 0, 0)
+Translation_2 = geompy.MakeTranslation(Vertex_2, -Larg_ancr, 0, 0)
+Translation_3 = geompy.MakeTranslation(Vertex_3, -Larg_ancr, 0, 0)
+Translation_4 = geompy.MakeTranslation(Vertex_4, Larg_ancr, 0, 0)
+
+Line_1 = geompy.MakeLineTwoPnt(Vertex_1, Translation_1)
+Line_2 = geompy.MakeLineTwoPnt(Vertex_2, Translation_2)
+Line_3 = geompy.MakeLineTwoPnt(Vertex_3, Translation_3)
+Line_4 = geompy.MakeLineTwoPnt(Vertex_4, Translation_4)
+Line_5 = geompy.MakeLineTwoPnt(Translation_1, Translation_4)
+Line_6 = geompy.MakeLineTwoPnt(Translation_2, Translation_3)
+
+Extrusion_1 = geompy.MakePrismVecH(Line_1, Vector_DZ, H)
+Extrusion_2 = geompy.MakePrismVecH(Line_2, Vector_DZ, H)
+Extrusion_3 = geompy.MakePrismVecH(Line_3, Vector_DZ, H)
+Extrusion_4 = geompy.MakePrismVecH(Line_4, Vector_DZ, H)
+Extrusion_5 = geompy.MakePrismVecH(Line_5, Vector_DZ, H)
+Extrusion_6 = geompy.MakePrismVecH(Line_6, Vector_DZ, H)
+Extrusion_7 = geompy.MakePrismVecH(Circle_1, Vector_DZ, H)
+
+Partition_1 = geompy.MakePartition([Extrusion_1, Extrusion_2, Extrusion_3, Extrusion_4, Extrusion_5, Extrusion_6, Extrusion_7], [], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+
+Vertex_5 = geompy.MakeVertexOnCurve(Line_1, 0.5)
+Vertex_6 = geompy.MakeVertexOnCurve(Line_2, 0.5)
+Vertex_7 = geompy.MakeVertexOnCurve(Line_3, 0.5)
+Vertex_8 = geompy.MakeVertexOnCurve(Line_4, 0.5)
+Vertex_9 = geompy.MakeVertexOnCurve(Line_5, 0.5)
+Vertex_10 = geompy.MakeVertexOnCurve(Line_6, 0.5)
+
+Vertex_11 = geompy.MakeVertex(R, 0.01, 0)
+Vertex_12 = geompy.MakeVertex(0, R, 0)
+Vertex_13 = geompy.MakeVertex(-R, 0, 0)
+Vertex_14 = geompy.MakeVertex(0, -R, 0)
+Vertex_15 = geompy.MakeVertex(R, -0.01, 0)
+Vertex_16 = geompy.MakeVertex(R, 0.01, H)
+Vertex_17 = geompy.MakeVertex(0, R, H)
+Vertex_18 = geompy.MakeVertex(-R, 0, H)
+Vertex_19 = geompy.MakeVertex(0, -R, H)
+Vertex_20 = geompy.MakeVertex(R, -0.01, H)
+
+Vertex_21 = geompy.MakeVertex(R+Larg_ancr/2, -Long_ancr/2, H)
+Vertex_22 = geompy.MakeVertex(R+Larg_ancr/2, Long_ancr/2, H)
+Vertex_23 = geompy.MakeVertex(R+Larg_ancr, 0, H)
+Vertex_24 = geompy.MakeVertex(-R-Larg_ancr/2, -Long_ancr/2, H)
+Vertex_25 = geompy.MakeVertex(-R-Larg_ancr/2, Long_ancr/2, H)
+Vertex_26 = geompy.MakeVertex(-R-Larg_ancr, 0, H)
+
+# On récupère les faces et les côtés pour la construction de groupes
+Ancr_1 = geompy.GetFaceNearPoint(Partition_1,Vertex_5)
+Ancr_2 = geompy.GetFaceNearPoint(Partition_1,Vertex_6)
+Ancr_3 = geompy.GetFaceNearPoint(Partition_1,Vertex_7)
+Ancr_4 = geompy.GetFaceNearPoint(Partition_1,Vertex_8)
+Ancr_5 = geompy.GetFaceNearPoint(Partition_1,Vertex_9)
+Ancr_6 = geompy.GetFaceNearPoint(Partition_1,Vertex_10)
+
+Cyl_1 = geompy.GetFaceNearPoint(Partition_1,Vertex_11)
+Cyl_2 = geompy.GetFaceNearPoint(Partition_1,Vertex_12)
+Cyl_3 = geompy.GetFaceNearPoint(Partition_1,Vertex_13)
+Cyl_4 = geompy.GetFaceNearPoint(Partition_1,Vertex_14)
+Cyl_5 = geompy.GetFaceNearPoint(Partition_1,Vertex_15)
+
+Cote_1 = geompy.GetEdgeNearPoint(Partition_1,Vertex_11)
+Cote_2 = geompy.GetEdgeNearPoint(Partition_1,Vertex_12)
+Cote_3 = geompy.GetEdgeNearPoint(Partition_1,Vertex_13)
+Cote_4 = geompy.GetEdgeNearPoint(Partition_1,Vertex_14)
+Cote_5 = geompy.GetEdgeNearPoint(Partition_1,Vertex_15)
+Cote_6 = geompy.GetEdgeNearPoint(Partition_1,Vertex_16)
+Cote_7 = geompy.GetEdgeNearPoint(Partition_1,Vertex_17)
+Cote_8 = geompy.GetEdgeNearPoint(Partition_1,Vertex_18)
+Cote_9 = geompy.GetEdgeNearPoint(Partition_1,Vertex_19)
+Cote_10 = geompy.GetEdgeNearPoint(Partition_1,Vertex_20)
+Cote_11 = geompy.GetInPlace(Partition_1,Line_1)
+Cote_12 = geompy.GetInPlace(Partition_1,Line_2)
+Cote_13 = geompy.GetInPlace(Partition_1,Line_3)
+Cote_14 = geompy.GetInPlace(Partition_1,Line_4)
+Cote_15 = geompy.GetInPlace(Partition_1,Line_5)
+Cote_16 = geompy.GetInPlace(Partition_1,Line_6)
+Cote_17 = geompy.GetEdgeNearPoint(Partition_1,Vertex_21)
+Cote_18 = geompy.GetEdgeNearPoint(Partition_1,Vertex_22)
+Cote_19 = geompy.GetEdgeNearPoint(Partition_1,Vertex_23)
+Cote_20 = geompy.GetEdgeNearPoint(Partition_1,Vertex_24)
+Cote_21 = geompy.GetEdgeNearPoint(Partition_1,Vertex_25)
+Cote_22 = geompy.GetEdgeNearPoint(Partition_1,Vertex_26)
+
+CYL = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(CYL, [Cyl_1, Cyl_2, Cyl_3, Cyl_4, Cyl_5])
+ANCR = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(ANCR, [Ancr_5, Ancr_6])
+ANCR_OP = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(ANCR_OP, [Ancr_1, Ancr_2, Ancr_3, Ancr_4])
+ENCAST = geompy.CreateGroup(Partition_1, geompy.ShapeType["EDGE"])
+geompy.UnionList(ENCAST, [Cote_1, Cote_2, Cote_3, Cote_4, Cote_5, Cote_6, Cote_7, Cote_8, Cote_9, Cote_10, Cote_11, Cote_12, Cote_13, Cote_14, Cote_15, Cote_16, Cote_17, Cote_18, Cote_19, Cote_20, Cote_21, Cote_22])
+
+# Arborescence
+geompy.addToStudy( Partition_1, "Partition_1" )
+geompy.addToStudyInFather( Partition_1, CYL, "CYL" )
+geompy.addToStudyInFather( Partition_1, ANCR, "ANCR" )
+geompy.addToStudyInFather( Partition_1, ANCR_OP, "ANCR_OP" )
+geompy.addToStudyInFather( Partition_1, ENCAST, "ENCAST" )
+
+#--------------------------------------------------------------------------------
+#                              MAILLAGE
+#--------------------------------------------------------------------------------
+
+Mesh_Cyl = smesh.Mesh(Partition_1)
+Regular_1D = Mesh_Cyl.Segment()
+Max_Size_1 = Regular_1D.MaxSize(Finesse)
+Quadrangle_2D = Mesh_Cyl.Quadrangle()
+isDone = Mesh_Cyl.Compute()
+
+Tout_Group = [CYL, ANCR_OP, ANCR]
+for group in Tout_Group :
+        Mesh_Cyl.Group(group)
+
+ENCAST_1 = Mesh_Cyl.GroupOnGeom(ENCAST,'ENCAST',SMESH.NODE)
+NOEUD = Mesh_Cyl.FindNodeClosestTo(-Finesse/2+0.01, R, H/2+0.01)
+NREF_CYL = Mesh_Cyl.CreateEmptyGroup( SMESH.NODE, 'NREF_CYL' )
+nbAdd = NREF_CYL.Add( [ NOEUD ] )
+
+NOEUD1 = Mesh_Cyl.FindNodeClosestTo(Finesse/2+0.01, R, H/2+0.01)
+NOEUD2 = Mesh_Cyl.FindNodeClosestTo(Finesse/2+0.01, R, H/2+Finesse+0.01)
+NOEUD3 = Mesh_Cyl.FindNodeClosestTo(-Finesse/2+0.01, R, H/2+0.01)
+NOEUD4 = Mesh_Cyl.FindNodeClosestTo(-Finesse/2+0.01, R, H/2+Finesse+0.01)
+
+MAILLE = Mesh_Cyl.FindElementByNodes([NOEUD1, NOEUD2, NOEUD3, NOEUD4])
+MREF_CYL = Mesh_Cyl.CreateEmptyGroup( SMESH.FACE, 'MREF_CYL' )
+nbAdd = MREF_CYL.Add( [ MAILLE ] )
+
+
+
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#                              CABLES HORIZONTAUX
+#--------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------
+#                              GEOMETRIE
+#--------------------------------------------------------------------------------
+
+Vector_DX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+Circle_1 = geompy.MakeCircle(None, None, R)
+
+Vertex_1 = geompy.MakeVertexOnCurve(Circle_1, (math.asin(Long_ancr/2/R))/(2*math.pi))
+Vertex_2 = geompy.MakeVertexOnCurve(Circle_1, 0.5-(math.asin(Long_ancr/2/R))/(2*math.pi))
+Vertex_3 = geompy.MakeVertexOnCurve(Circle_1, 0.5+(math.asin(Long_ancr/2/R))/(2*math.pi))
+Vertex_4 = geompy.MakeVertexOnCurve(Circle_1, 1-(math.asin(Long_ancr/2/R))/(2*math.pi))
+
+Translation_1 =geompy.MakeTranslation(Vertex_1, Larg_ancr, 0, 0)
+Translation_2 = geompy.MakeTranslation(Vertex_2, -Larg_ancr, 0, 0)
+Translation_3 = geompy.MakeTranslation(Vertex_3, -Larg_ancr, 0, 0)
+Translation_4 = geompy.MakeTranslation(Vertex_4, Larg_ancr, 0, 0)
+
+Line_1 = geompy.MakeLineTwoPnt(Vertex_1, Translation_1)
+Line_2 = geompy.MakeLineTwoPnt(Vertex_2, Translation_2)
+Line_3 = geompy.MakeLineTwoPnt(Vertex_3, Translation_3)
+Line_4 = geompy.MakeLineTwoPnt(Vertex_4, Translation_4)
+Line_5 = geompy.MakeLineTwoPnt(Translation_1, Translation_4)
+Line_6 = geompy.MakeLineTwoPnt(Translation_2, Translation_3)
+
+Vertex_5 = geompy.MakeVertexOnCurve(Line_1, 0.5)
+Vertex_6 = geompy.MakeVertexOnCurve(Line_2, 0.5)
+Vertex_7 = geompy.MakeVertexOnCurve(Line_3, 0.5)
+Vertex_8 = geompy.MakeVertexOnCurve(Line_4, 0.5)
+Vertex_9 = geompy.MakeVertexOnCurve(Line_5, 0.5)
+Vertex_10 = geompy.MakeVertexOnCurve(Line_6, 0.5)
+Vertex_11 = geompy.MakeVertex(R, 0.01, 0)
+Vertex_12 = geompy.MakeVertex(0, R, 0)
+Vertex_13 = geompy.MakeVertex(-R, 0, 0)
+Vertex_14 = geompy.MakeVertex(0, -R, 0)
+Vertex_15 = geompy.MakeVertex(R, -0.01, 0)
+
+
+
+Vertex_16 = geompy.MakeVertex(0, 0, 0)
+Circle_2 = geompy.MakeCircle(None, None, Rcab)
+Vertex_18 = geompy.MakeTranslation(Vertex_5, 0, Long_ancr/2, 0.001)
+Vertex_19 = geompy.MakeTranslation(Vertex_8, 0, -Long_ancr/2, -0.001)
+Vertex_22 = geompy.MakeVertex(-Rcab, 0, 0)
+
+Vertex_1 = geompy.MakeVertexOnCurve(Circle_2, (math.asin(Long_ancr/2/Rcab))/(2*math.pi))
+Vertex_4 = geompy.MakeVertexOnCurve(Circle_2, 1-(math.asin(Long_ancr/2/Rcab))/(2*math.pi))
+Arc_1 = geompy.MakeArcCenter(Vertex_16, Vertex_1, Vertex_4,1)
+Line_7 = geompy.MakeLineTwoPnt(Vertex_1, Vertex_19)
+Line_8 = geompy.MakeLineTwoPnt(Vertex_4, Vertex_18)
+Wire_1 = geompy.MakeWire([Line_7, Arc_1, Line_8], 1e-07)
+Rotation_1 = geompy.MakeRotation(Wire_1, Vector_DY, 180*math.pi/180.0)
+geompy.TranslateDXDYDZ(Wire_1, 0, 0, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+geompy.TranslateDXDYDZ(Vertex_18, 0, 0, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+geompy.TranslateDXDYDZ(Vertex_19, 0, 0, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+
+# Création des câbles horizontaux ancrés d'un même côté
+Cab_hori = []
+if Nb_cab_hori/2!=Nb_cab_hori/2:
+    compt=Nb_cab_hori/2+2
+else:
+    compt=Nb_cab_hori/2+1
+
+for i in range(1,compt):
+        Edge_1 = geompy.GetEdgeNearPoint(Wire_1, Vertex_18)
+        Edge_2 = geompy.GetEdgeNearPoint(Wire_1, Vertex_19)
+        Edge_3 = geompy.GetEdgeNearPoint(Wire_1, Vertex_22)
+        Cab_hori.append(geompy.MakePartition([Edge_1, Edge_2, Edge_3], [], [], [], geompy.ShapeType["EDGE"], 0, [], 0))
+        geompy.TranslateDXDYDZ(Wire_1, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_18, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_19, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.addToStudy( Cab_hori[-1], "Cab_hori_%02i"%i )
+
+# Création des câbles horizontaux ancrés de l'autre côté
+geompy.TranslateDXDYDZ(Rotation_1, 0, 0, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+Vertex_17 = geompy.MakeVertex(Rcab, 0, 0)
+Vertex_20 = geompy.MakeTranslation(Vertex_6, 0, Long_ancr/2, -0.001)
+Vertex_21 = geompy.MakeTranslation(Vertex_7, 0, -Long_ancr/2, 0.001)
+geompy.TranslateDXDYDZ(Vertex_20, 0, 0, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+geompy.TranslateDXDYDZ(Vertex_21, 0, 0, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+for i in range(compt,Nb_cab_hori+1):
+        Edge_4 = geompy.GetEdgeNearPoint(Rotation_1, Vertex_20)
+        Edge_5 = geompy.GetEdgeNearPoint(Rotation_1, Vertex_21)
+        Edge_6 = geompy.GetEdgeNearPoint(Rotation_1, Vertex_17)
+        Cab_hori.append(geompy.MakePartition([Edge_4, Edge_5, Edge_6], [], [], [], geompy.ShapeType["EDGE"], 0, [], 0))
+        geompy.TranslateDXDYDZ(Rotation_1, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_20, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_21, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.addToStudy( Cab_hori[-1], "Cab_hori_%02i"%i )
+
+CH = geompy.MakePartition(Cab_hori)
+geompy.addToStudy(CH, "CH" )
+
+#--------------------------------------------------------------------------------
+#                              MAILLAGE
+#--------------------------------------------------------------------------------
+
+Mesh_CH = smesh.Mesh(CH,"Mesh_CH")
+Regular_1D = Mesh_CH.Segment()
+Max_Size_1 = Regular_1D.MaxSize(Finesse)
+isDone = Mesh_CH.Compute()
+
+Vertex_18 = geompy.MakeVertexOnCurve(Line_1, 0.5)
+geompy.TranslateDXDYDZ(Vertex_18, 0, Long_ancr/2, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+Vertex_19 = geompy.MakeVertexOnCurve(Line_4, 0.5)
+geompy.TranslateDXDYDZ(Vertex_19, 0, -Long_ancr/2, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+Vertex_20 = geompy.MakeVertex(-Rcab, 0, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+Vertex_21 = geompy.MakeVertex(Rcab*math.cos(math.asin(Long_ancr/2/Rcab))+Larg_ancr/4-0.01, 0.01, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+Vertex_22 = geompy.MakeVertex(Rcab*math.cos(math.asin(Long_ancr/2/Rcab))+Larg_ancr/4-0.01, -0.01, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4)
+
+# On récupère les câbles horizontaux ancrés d'un même côté
+for i in range(1,compt):
+        Edge_7 = geompy.GetEdgeNearPoint(CH, Vertex_18)
+        Edge_8 = geompy.GetEdgeNearPoint(CH, Vertex_19)
+        Edge_9 = geompy.GetEdgeNearPoint(CH, Vertex_20)
+        Edge_10 = geompy.GetEdgeNearPoint(CH, Vertex_21)
+        Edge_11 = geompy.GetEdgeNearPoint(CH, Vertex_22)
+        CAB_H = geompy.CreateGroup(CH, geompy.ShapeType["EDGE"])
+        geompy.UnionList(CAB_H, [Edge_7, Edge_8, Edge_9, Edge_10, Edge_11])
+        geompy.addToStudyInFather( CH, CAB_H, "CH_%02i"%i )
+        geompy.TranslateDXDYDZ(Vertex_18, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_19, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_20, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_21, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_22, 0, 0, H/(Nb_cab_hori/2+1))
+        Cab = Mesh_CH.GroupOnGeom(CAB_H, 'CH_%02i'%i, SMESH.EDGE)
+
+Vertex_23 = geompy.MakeVertexOnCurve(Line_2, 0.5)
+geompy.TranslateDXDYDZ(Vertex_23, 0, Long_ancr/2, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+Vertex_24 = geompy.MakeVertexOnCurve(Line_3, 0.5)
+geompy.TranslateDXDYDZ(Vertex_24, 0, -Long_ancr/2, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+Vertex_25 = geompy.MakeVertex(Rcab, 0, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+Vertex_26 = geompy.MakeVertex(-Rcab*math.cos(math.asin(Long_ancr/2/Rcab))-Larg_ancr/4+0.01, 0.01, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+Vertex_27 = geompy.MakeVertex(-Rcab*math.cos(math.asin(Long_ancr/2/Rcab))-Larg_ancr/4+0.01, -0.01, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4)
+
+# On récupère les câbles horizontaux ancrés de l'autre côté
+for i in range(compt,Nb_cab_hori+1):
+        Edge_12 = geompy.GetEdgeNearPoint(CH, Vertex_23)
+        Edge_13 = geompy.GetEdgeNearPoint(CH, Vertex_24)
+        Edge_14 = geompy.GetEdgeNearPoint(CH, Vertex_25)
+        Edge_15 = geompy.GetEdgeNearPoint(CH, Vertex_26)
+        Edge_16 = geompy.GetEdgeNearPoint(CH, Vertex_27)
+        CAB_H = geompy.CreateGroup(CH, geompy.ShapeType["EDGE"])
+        geompy.UnionList(CAB_H, [Edge_12, Edge_13, Edge_14, Edge_15, Edge_16])
+        geompy.addToStudyInFather( CH, CAB_H, "CH_%02i"%i )
+        geompy.TranslateDXDYDZ(Vertex_23, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_24, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_25, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_26, 0, 0, H/(Nb_cab_hori/2+1))
+        geompy.TranslateDXDYDZ(Vertex_27, 0, 0, H/(Nb_cab_hori/2+1))
+        Cab = Mesh_CH.GroupOnGeom(CAB_H, 'CH_%02i'%i, SMESH.EDGE)
+
+# On récupère les noeuds d'ancrage des câbles horizontaux ancrés d'un même côté
+for i in range(1,compt):
+        NOEUD_1 = Mesh_CH.FindNodeClosestTo(Rcab*math.cos(math.asin(Long_ancr/2/Rcab))+Larg_ancr/2, Long_ancr, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4+(i-1)*H/(Nb_cab_hori/2+1))
+        NODE_1 = Mesh_CH.CreateEmptyGroup( SMESH.NODE, 'CH_%02i_A'%i )
+        nbAdd = NODE_1.Add( [ NOEUD_1 ] )
+        NOEUD_2 = Mesh_CH.FindNodeClosestTo(Rcab*math.cos(math.asin(Long_ancr/2/Rcab))+Larg_ancr/2, -Long_ancr, H/(Nb_cab_hori/2+1)-H/(Nb_cab_hori/2+1)/4+(i-1)*H/(Nb_cab_hori/2+1))
+        NODE_2 = Mesh_CH.CreateEmptyGroup( SMESH.NODE, 'CH_%02i_B'%i )
+        nbAdd = NODE_2.Add( [ NOEUD_2 ] )
+
+# On récupère les noeuds d'ancrage des câbles horizontaux ancrés de l'autre côté
+for i in range(compt,Nb_cab_hori+1):
+        NOEUD_1 = Mesh_CH.FindNodeClosestTo(-Rcab*math.cos(math.asin(Long_ancr/2/Rcab))-Larg_ancr/2, Long_ancr, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4+(i-compt)*H/(Nb_cab_hori/2+1))
+        NODE_1 = Mesh_CH.CreateEmptyGroup( SMESH.NODE, 'CH_%02i_A'%i )
+        nbAdd = NODE_1.Add( [ NOEUD_1 ] )
+        NOEUD_2 = Mesh_CH.FindNodeClosestTo(-Rcab*math.cos(math.asin(Long_ancr/2/Rcab))-Larg_ancr/2, -Long_ancr, H/(Nb_cab_hori/2+1)+H/(Nb_cab_hori/2+1)/4+(i-compt)*H/(Nb_cab_hori/2+1))
+        NODE_2 = Mesh_CH.CreateEmptyGroup( SMESH.NODE, 'CH_%02i_B'%i )
+        nbAdd = NODE_2.Add( [ NOEUD_2 ] )
+
+if Nb_cab_hori/2!=Nb_cab_hori/2:
+    NOEUD1 = Mesh_CH.FindNodeClosestTo(Finesse/2+0.01, Rcab, H/2)
+    NOEUD2 = Mesh_CH.FindNodeClosestTo(-Finesse/2+0.01, Rcab, H/2)
+    MAILLE = Mesh_CH.FindElementByNodes([NOEUD1, NOEUD2])
+    MREF_CAB = Mesh_CH.CreateEmptyGroup( SMESH.EDGE, 'MREF_CAB' )
+    nbAdd = MREF_CAB.Add( [ MAILLE ] )
+    NOEUD = Mesh_CH.FindNodeClosestTo(-Finesse/2+0.01, Rcab, H/2)
+    NREF_CAB = Mesh_CH.CreateEmptyGroup( SMESH.NODE, 'NREF_CAB' )
+    nbAdd = NREF_CAB.Add( [ NOEUD ] )
+else:
+    NOEUD1 = Mesh_CH.FindNodeClosestTo(Finesse/2+0.01, Rcab, H/2-H/(Nb_cab_hori/2+1)/4)
+    NOEUD2 = Mesh_CH.FindNodeClosestTo(-Finesse/2+0.01, Rcab, H/2-H/(Nb_cab_hori/2+1)/4)
+    MAILLE = Mesh_CH.FindElementByNodes([NOEUD1, NOEUD2])
+    MREF_CAB = Mesh_CH.CreateEmptyGroup( SMESH.EDGE, 'MREF_CAB' )
+    nbAdd = MREF_CAB.Add( [ MAILLE ] )
+    NOEUD = Mesh_CH.FindNodeClosestTo(-Finesse/2+0.01, Rcab, H/2-H/(Nb_cab_hori/2+1)/4)
+    NREF_CAB = Mesh_CH.CreateEmptyGroup( SMESH.NODE, 'NREF_CAB' )
+    nbAdd = NREF_CAB.Add( [ NOEUD ] )
+
+
+
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#                              CABLES VERTICAUX
+#--------------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------------
+#                              GEOMETRIE
+#--------------------------------------------------------------------------------
+
+Vector_DX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+Vector_DY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+Vector_DZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+
+
+Vertex_17 = geompy.MakeVertex(Rcab, 0, 0)
+Vertex_18 = geompy.MakeVertex(Rcab, 0, H)
+Line_9 = geompy.MakeLineTwoPnt(Vertex_17, Vertex_18)
+geompy.addToStudy( Vertex_18, "Vertex_18" )
+geompy.addToStudy( Line_9, "Line_9" )
+
+# Création des câbles verticaux
+Cab_vert = [Line_9]
+geompy.addToStudy( Cab_vert[-1], "Cab_vert_01" )
+for i in range(2,Nb_cab_vert+1):
+        Edge = geompy.MakeRotation(Line_9, Vector_DZ, (i-1)*alpha)
+        Cab_vert.append(Edge)
+        geompy.addToStudy( Cab_vert[-1], "Cab_vert_%02i"%i )
+
+CV = geompy.MakePartition(Cab_vert)
+geompy.addToStudy(CV, "CV" )
+
+#--------------------------------------------------------------------------------
+#                              MAILLAGE
+#--------------------------------------------------------------------------------
+
+Mesh_CV = smesh.Mesh(CV,"Mesh_CV")
+Regular_1D = Mesh_CV.Segment()
+Max_Size_1 = Regular_1D.MaxSize(Finesse)
+isDone = Mesh_CV.Compute()
+
+# On récupère les câbles verticaux
+for i in range(1,Nb_cab_vert+1):
+        Vertex = geompy.MakeVertex(Rcab*math.cos((i-1)*alpha), Rcab*math.sin((i-1)*alpha),0)
+        Edge = geompy.GetEdgeNearPoint(CV, Vertex)
+        CAB_V = geompy.CreateGroup(CV, geompy.ShapeType["EDGE"])
+        geompy.UnionList(CAB_V, [Edge])
+        geompy.addToStudyInFather( CV, CAB_V, "CV_%02i"%i )
+        Cab = Mesh_CV.GroupOnGeom(CAB_V, 'CV_%02i'%i, SMESH.EDGE)
+
+# On récupère les noeuds d'ancrage haut (H) et bas (B) des câbles verticaux (CV)
+for i in range(1,Nb_cab_vert+1):
+        NOEUD_B = Mesh_CV.FindNodeClosestTo(Rcab*math.cos((i-1)*alpha), Rcab*math.sin((i-1)*alpha),0)
+        NODE_B = Mesh_CV.CreateEmptyGroup( SMESH.NODE, 'CV_%02i_A'%i )
+        nbAdd = NODE_B.Add( [ NOEUD_B ] )
+        NOEUD_H = Mesh_CV.FindNodeClosestTo(Rcab*math.cos((i-1)*alpha), Rcab*math.sin((i-1)*alpha),H)
+        NODE_H = Mesh_CV.CreateEmptyGroup( SMESH.NODE, 'CV_%02i_B'%i )
+        nbAdd = NODE_H.Add( [ NOEUD_H ] )
+
+
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+#                             ASSEMBLAGE
+#--------------------------------------------------------------------------------
+
+# Maillage final
+Mesh_tous = [Mesh_Cyl, Mesh_CH, Mesh_CV]
+Mesh_tot = smesh.Concatenate(Mesh_tous, uniteIdenticalGroups=True, mergeNodesAndElements = False, mergeTolerance = 1e-5, allGroups = False )
+Mesh_tot.SetName("Mesh_tot")
+
+
+########Export du maillage au format MMED########
+Mesh_tot.ExportMED( r''+ExportPATH+'plexu04a.mmed'+'', 0, SMESH.MED_V2_2 , 1 )
+
+#--------------------------------------------------------------------------------
+#                              MISE A JOUR DE L'AFFICHAGE
+#--------------------------------------------------------------------------------
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+

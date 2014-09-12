@@ -1,0 +1,307 @@
+# TITRE VALIDATION DES CABLES DE PRECONTRAINTE DANS CALC_EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),
+IGNORE_ALARM=('CALCULEL3_47'),DEBUG=_F(HIST_ETAPE='OUI'));
+
+MPa = 1000000.0;
+
+
+# ------------------- Lecture du maillage
+
+MAILLAGE=LIRE_MAILLAGE(    UNITE=20 )
+
+#
+
+MODELE=AFFE_MODELE(INFO=2,
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('GROUPE_____VOILE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                     _F(  GROUP_MA = 'GROUPE__CABLE001',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE')
+                            ) )
+
+#
+EP=6.0E-2
+CARAELEM=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       COQUE=(_F(  GROUP_MA = ('GROUPE_____VOILE',),
+                               EPAIS = EP,
+                               ),
+                               ),
+                       BARRE=_F(  GROUP_MA = 'GROUPE__CABLE001',
+                               SECTION = 'GENERALE',
+                               CARA =  'A',
+                               VALE = 1.5E-4 )
+                               )
+
+
+
+# ------------------- Definition des materiaux
+
+BETON = DEFI_MATERIAU(ELAS=_F(
+                    E = 30000*MPa,
+                    NU = 0.3,
+                    RHO = 2500,
+                   ),
+                    BPEL_BETON=_F()
+                  );
+
+
+ACIER = DEFI_MATERIAU(ELAS=_F(
+                    E = 200000*MPa,
+                    NU = 0.3,
+                    RHO = 7500,
+                   ),
+                   BPEL_ACIER=_F(  F_PRG = 1.77E+9,
+                              FROT_COURB = 0.,
+                              FROT_LINE = 0.)
+                  );
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = ('GROUPE_____VOILE',),
+                              MATER = BETON),
+                       _F(  GROUP_MA = 'GROUPE__CABLE001',
+                              MATER = ACIER)
+                              )
+                              )
+
+
+
+CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
+                                  CHAM_MATER=CHMATER,
+                                   CARA_ELEM=CARAELEM,
+                              GROUP_MA_BETON='GROUPE_____VOILE',
+                                  DEFI_CABLE=_F(
+                               GROUP_MA = 'GROUPE__CABLE001',
+                               NOEUD_ANCRAGE = ( 'NC001001',  'NC001005', ),),
+                               TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ),
+                                TENSION_INIT=2.0E+5,
+                               RECUL_ANCRAGE=0. )
+
+#
+
+LIAISON=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
+                               SIGM_BPEL = 'NON',
+                               RELA_CINE = 'OUI'),
+                      INFO=1 )
+
+
+BLOQ=AFFE_CHAR_MECA(
+                      MODELE=MODELE,DDL_IMPO=(
+                    _F(  GROUP_NO='ENCAST',
+                               DX = 0.,
+                               DY = 0.,
+                               DZ = 0.,
+                               DRX = 0.,
+                               DRY = 0.,
+                               DRZ = 0.),
+                               ),)
+
+
+temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),
+                                    ),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
+
+U_PREC=CALC_PRECONT(MODELE=MODELE,
+                    CHAM_MATER=CHMATER,
+                    CARA_ELEM=CARAELEM,
+                    EXCIT=(_F(CHARGE=BLOQ,),),
+                    CABLE_BP=CABLEPR,
+                    COMPORTEMENT=(_F( RELATION = 'ELAS',DEFORMATION = 'GROT_GDEP',
+                                    GROUP_MA='GROUPE_____VOILE',),
+                               _F( RELATION = 'ELAS',DEFORMATION = 'PETIT_REAC',
+                                    GROUP_MA ='GROUPE__CABLE001',),),
+                    INCREMENT=_F(LIST_INST=temps,),
+                    )
+
+
+
+
+U_PREC=CALC_CHAMP(reuse=U_PREC,RESULTAT=U_PREC,FORCE='FORC_NODA',INST=1.0)
+
+U = CALC_EUROPLEXUS(
+   ETAT_INIT=_F(RESULTAT=U_PREC,CONTRAINTE='OUI',EQUILIBRE='NON'),
+   COMPORTEMENT =(_F(
+                  RELATION = 'ELAS',
+                  GROUP_MA = ('GROUPE__CABLE001','GROUPE_____VOILE'),
+                 ),
+              ),
+   EXCIT=(_F(CHARGE = BLOQ),
+          _F(CHARGE = LIAISON,),
+         ),
+   LANCEMENT ='OUI',
+   CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
+               INST_INIT = 0,
+               INST_FIN  = 0.1,
+               NMAX      = 20000000,
+               PASFIX    = 4e-5,
+               ),
+   OBSERVATION = _F(PAS_NBRE=1,
+                    TOUT_GROUP_NO = 'OUI',
+                    TOUT_GROUP_MA = 'OUI',
+                    NOM_CHAM = ('DEPL','VITE','ACCE'),
+                    ),
+   ARCHIVAGE   = _F(PAS_INST=0.1,),
+   );
+
+# CE TEST CORRESPOND AU TEST EUROPLEXUS BM_STR_INI_MED_CONT
+# LE MAILLAGE DE CE TEST EST CREE PAR PLEXU03B EN DECOMMENTANT L'IMPR_RESU
+
+#IMPR_RESU(UNITE = 80, FORMAT = 'MED', RESU=_F(RESULTAT=U_PREC,NOM_CHAM = ('DEPL','SIEF_ELGA') ))
+
+
+IMPR_RESU(RESU=_F(INST=1.0,RESULTAT=U_PREC,NOM_CHAM=('DEPL','SIEF_ELGA','FORC_NODA')))
+IMPR_RESU(RESU=_F(INST=0.1,RESULTAT=U,NOM_CHAM=('DEPL','SIEF_ELGA')))
+
+
+# TEST SUR FORC_NODA
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='NB002002',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.8198571906369 ,
+                   REFERENCE ='SOURCE_EXTERNE',
+                   PRECISION = 1.0E-5,
+                   VALE_REFE= -1.81986E+00,
+
+                   ),
+                 _F(INST=1.0,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='NC001003',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.6030975138937 ,
+                   REFERENCE ='SOURCE_EXTERNE',
+                   PRECISION = 1.0E-5,
+                   VALE_REFE= 2.60310E+00,
+
+                   ),
+
+
+         ),)
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NB001002',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.0611820262471E-04,
+
+                   ),
+                _F(INST=0.10000000000000001,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NB001002',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.0611820610831E-04,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-6,
+                   VALE_REFE=-1.0611820262471E-04,
+                   ),
+                _F(INST=1.0,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NC001004',
+                   NOM_CMP='DY',
+                   VALE_CALC=-6.5065530436679E-06,
+
+                   ),
+                _F(INST=0.10000000000000001,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NC001004',
+                   NOM_CMP='DY',
+                   VALE_CALC=-6.5062127611937E-06,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-4,
+                   VALE_REFE=-6.5065530436679E-06,
+
+                   ),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=2.E5,
+
+                   MAILLE='SG001001',),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=1.9999998077088E+05,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-6,
+                   VALE_REFE= 2.E5,
+
+                   MAILLE='SG001001',),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='NYY',
+                   VALE_CALC=3.00796296714859E+04,
+
+                   MAILLE='TR001001',),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='NYY',
+                   VALE_CALC=3.00796284882224E+04,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 1.0E-6,
+                   VALE_REFE= 3.00796296714859E+04,
+
+                   MAILLE='TR001001',),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U_PREC,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='NYY',
+                   VALE_CALC=-24502.131452884,
+
+                   MAILLE='QD001001',),
+                _F(INST=0.10000000000000001,
+                   POINT=4,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='NYY',
+                   VALE_CALC=-24501.632724083,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION = 3.0E-5,
+                   VALE_REFE=-24502.131452884,
+
+                   MAILLE='QD001001',),
+                ),
+          )
+
+FIN()
