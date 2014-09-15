@@ -1,5 +1,15 @@
-subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
-                  zioch, carele)
+subroutine nmetc0(model, cara_elem, compor, sd_inout)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/calcul.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,164 +29,103 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/megeom.h"
-    integer :: nbcham, zioch
-    character(len=24) :: sdieto, compor
-    character(len=24) :: modele, resoco, carele
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: compor
+    character(len=24), intent(in) :: sd_inout
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (GESTION IN ET OUT)
+! *_NON_LINE - Input/output datastructure
 !
-! NOM DU CHAMP NUL
+! Compute initial field if necessary
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! SI NOM = ' ' : PAS D'INIT
+! In  sd_inout         : datastructure for input/output parameters
+! In  model            : name of model
+! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
+! In  compor           : name of <CARTE> COMPOR
 !
-! IN  MODELE : NOM DU MODELE
-! IN  COMPOR : CARTE COMPORTEMENT
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  CARELE : SD CARA_ELEM
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: iolcha
-    integer :: jiolch
-    character(len=24) :: nomcha, nomch0
-    character(len=24) :: depl0, vite0, acce0, sigm0, vari0, strx0
-    character(len=24) :: amor0, liai0
-    character(len=19) :: xindc0, xseuc0, xcohe0
-    integer :: icham
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    character(len=24) :: field_type, field_name_init
+    character(len=24) :: sief_init, vari_init, strx_init
+    integer :: i_field, nb_field, zioch
     character(len=8) :: lpain(1), lpaout(2)
     character(len=24) :: lchin(1), lchout(2)
     character(len=19) :: ligrmo
     character(len=24) :: chgeom
-    aster_logical :: lsief, lvari, lstrx
+    aster_logical :: l_sief, l_vari, l_strx
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- NOM DES CHAMPS INITIAUX NULS
+! - Access to datastructure
 !
-    depl0 = '&&CNPART.ZERO'
-    vite0 = '&&CNPART.ZERO'
-    acce0 = '&&CNPART.ZERO'
-    amor0 = '&&CNPART.ZERO'
-    liai0 = '&&CNPART.ZERO'
-    sigm0 = '&&NMETCR.SIGMO0'
-    vari0 = '&&NMETCR.VARMO0'
-    strx0 = '&&NMETCR.STRMO0'
-    xindc0 = resoco(1:14)//'.XFI0'
-    xseuc0 = resoco(1:14)//'.XFS0'
-    xcohe0 = resoco(1:14)//'.XCO0'
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_info, 'L', vi   = v_io_info)
 !
-! --- ACCES SD CHAMPS
+    nb_field = v_io_info(1)
+    zioch    = v_io_info(4)
 !
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(iolcha, 'E', jiolch)
+! - Create initial fields or not ?
 !
-! --- DOIT-ON CREER LES CHAMPS NULS ?
-!
-    lsief = .false.
-    lvari = .false.
-    lstrx = .false.
-    do icham = 1, nbcham
-        nomcha = zk24(jiolch+zioch*(icham-1)+1-1)
-        if (nomcha .eq. 'SIEF_ELGA') lsief = .true.
-        if (nomcha .eq. 'VARI_ELGA') lvari = .true.
-        if (nomcha .eq. 'STRX_ELGA') lstrx = .true.
+    l_sief = .false.
+    l_vari = .false.
+    l_strx = .false.
+    do i_field = 1, nb_field
+        field_type      = v_io_para(zioch*(i_field-1)+1 )
+        field_name_init = v_io_para(zioch*(i_field-1)+2 )
+        if (field_type .eq. 'SIEF_ELGA') then
+            l_sief    = .true.
+            sief_init = field_name_init
+        endif
+        if (field_type .eq. 'VARI_ELGA') then
+            l_vari    = .true.
+            vari_init = field_name_init
+        endif
+        if (field_type .eq. 'STRX_ELGA') then
+            l_strx    = .true.
+            strx_init = field_name_init
+        endif
     end do
 !
-! --- CREATION DES CHAMPS INITIAUX NULS POUR CONTRAINTES ET VAR. INT.
+! - Initial fields: compute stress and internal variables
 !
-    if (lvari .or. lsief) then
-        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
-        call copisd('CHAM_ELEM_S', 'V', compor, sigm0)
-        call copisd('CHAM_ELEM_S', 'V', compor, vari0)
-        call megeom(modele, chgeom)
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
+    if (l_vari .or. l_sief) then
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
+        call copisd('CHAM_ELEM_S', 'V', compor, sief_init)
+        call copisd('CHAM_ELEM_S', 'V', compor, vari_init)
+        call megeom(model, chgeom)
+        lpain(1)  = 'PGEOMER'
+        lchin(1)  = chgeom
         lpaout(1) = 'PVARI_R'
-        lchout(1) = vari0
+        lchout(1) = vari_init
         lpaout(2) = 'PSIEF_R'
-        lchout(2) = sigm0
+        lchout(2) = sief_init
         call calcul('S', 'TOU_INI_ELGA', ligrmo, 1, lchin,&
                     lpain, 2, lchout, lpaout, 'V',&
                     'OUI')
     endif
 !
-! --- CREATION DES CHAMPS INITIAUX POUR PMF
+! - Initial fields: special multifibers field
 !
-    if (lstrx) then
-        lpain(1) = 'PCAORIE'
-        lchin(1) = carele(1:8)//'.CARORIEN'
+    if (l_strx) then
+        lpain(1)  = 'PCAORIE'
+        lchin(1)  = cara_elem(1:8)//'.CARORIEN'
         lpaout(1) = 'PSTRX_R'
-        lchout(1) = strx0
+        lchout(1) = strx_init
         call calcul('S', 'INI_STRX', ligrmo, 1, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
     endif
-!
-! --- NOM DU CHAMP NUL
-!
-    do icham = 1, nbcham
-        nomcha = zk24(jiolch+zioch*(icham-1)+1-1)
-        nomch0 = ' '
-        if (nomcha .eq. 'DEPL') then
-            nomch0 = depl0
-        else if (nomcha.eq.'VITE') then
-            nomch0 = vite0
-        else if (nomcha.eq.'ACCE') then
-            nomch0 = acce0
-        else if (nomcha.eq.'FORC_AMOR') then
-            nomch0 = amor0
-        else if (nomcha.eq.'FORC_LIAI') then
-            nomch0 = liai0
-        else if (nomcha.eq.'SIEF_ELGA') then
-            nomch0 = sigm0
-        else if (nomcha.eq.'VARI_ELGA') then
-            nomch0 = vari0
-        else if (nomcha.eq.'STRX_ELGA') then
-            nomch0 = strx0
-        else if (nomcha.eq.'COMPORTEMENT') then
-            nomch0 = ' '
-        else if (nomcha.eq.'VALE_CONT') then
-            nomch0 = ' '
-        else if (nomcha.eq.'INDC_ELEM') then
-            nomch0 = xindc0
-        else if (nomcha.eq.'SECO_ELEM') then
-            nomch0 = xseuc0
-        else if (nomcha.eq.'COHE_ELEM') then
-            nomch0 = xcohe0
-        else if (nomcha.eq.'MODE_FLAMB') then
-            nomch0 = ' '
-        else if (nomcha.eq.'DEPL_VIBR') then
-            nomch0 = ' '
-        else if (nomcha.eq.'DEPL_ABSOLU') then
-            nomch0 = depl0
-        else if (nomcha.eq.'VITE_ABSOLU') then
-            nomch0 = depl0
-        else if (nomcha.eq.'ACCE_ABSOLU') then
-            nomch0 = depl0
-        else if (nomcha.eq.'FORC_NODA') then
-            nomch0 = depl0
-        else if (nomcha.eq.'MODE_STAB') then
-            nomch0 = ' '
-        endif
-        zk24(jiolch+zioch*(icham-1)+2-1) = nomch0
-    end do
 !
     call jedema()
 end subroutine

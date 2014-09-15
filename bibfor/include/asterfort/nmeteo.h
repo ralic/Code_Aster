@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
-                      numarc, instan, icham)
-        character(len=8) :: result
-        character(len=24) :: sdimpr
-        character(len=19) :: sddisc
-        character(len=24) :: sdieto
-        aster_logical :: force
-        integer :: numarc
-        real(kind=8) :: instan
-        integer :: icham
+    subroutine nmeteo(result    , sdimpr, sddisc , sd_inout, force,&
+                      nume_store, time  , i_field)
+        character(len=24), intent(in) :: sd_inout
+        character(len=24), intent(in) :: sdimpr
+        character(len=19), intent(in) :: sddisc
+        character(len=8), intent(in) :: result
+        integer, intent(in) :: i_field
+        integer, intent(in) :: nume_store
+        real(kind=8), intent(in) :: time
+        aster_logical, intent(in) :: force
     end subroutine nmeteo
 end interface

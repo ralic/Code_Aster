@@ -15,7 +15,7 @@ subroutine op0186()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: Christophe-mmn.durand at edf.fr
+! person_in_charge: jessica.haelewyn at edf.fr
 ! ----------------------------------------------------------------------
 !
 !     COMMANDE:  THER_NON_LINE
@@ -108,7 +108,6 @@ subroutine op0186()
     data fmt4/'(A,12X,A,2X,A,17X,A,9X,A,4X,A)'/
     data sddisc            /'&&OP0186.PARTPS'/
     data sdobse            /'&&OP0186.OBSER'/
-    data sdieto            /'&&OP0186.SDIETO'/
 ! ----------------------------------------------------------------------
 !
 !     MESURE DE TEMPS CPU :

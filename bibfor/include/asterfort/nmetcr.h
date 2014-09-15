@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
-                      defico, resoco, sdieto, carele)
-        character(len=24) :: modele
-        character(len=24) :: compor
-        integer :: fonact(*)
-        character(len=19) :: sddyna
-        character(len=19) :: sdpost
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=24) :: sdieto
-        character(len=24) :: carele
+    subroutine nmetcr(model      , compor     , list_func_acti, sddyna   , sdpost,&
+                      sdcont_defi, sdcont_algo, sd_inout      , cara_elem)
+        character(len=24), intent(in) :: model
+        integer, intent(in) :: list_func_acti(*)
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(in) :: sdcont_algo
+        character(len=19), intent(in) :: compor
+        character(len=19), intent(in) :: sddyna
+        character(len=19), intent(in) :: sdpost
+        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(out) :: sd_inout
     end subroutine nmetcr
 end interface

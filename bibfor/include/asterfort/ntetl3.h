@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ntetl3(result, sdieto, icham, tempct)
-        character(len=8) :: result
-        character(len=24) :: sdieto
-        integer :: icham
-        real(kind=8) :: tempct
+    subroutine ntetl3(result, sd_inout, i_field, tempct)
+        character(len=24), intent(in) :: sd_inout
+        character(len=8), intent(in) :: result
+        integer, intent(in) :: i_field
+        real(kind=8), intent(in) :: tempct
     end subroutine ntetl3
 end interface

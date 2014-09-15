@@ -1,4 +1,9 @@
-subroutine nmetpl(sdieto)
+subroutine nmetpl(sd_inout)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,68 +23,60 @@ subroutine nmetpl(sdieto)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: sdieto
+    character(len=24), intent(in) :: sd_inout
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! CHANGEMENT DU NOM DU CHAMP DANS L'OPERATEUR
+! Update name of field in algorithm
 !
-! ----------------------------------------------------------------------
+! This utiliy is required for "hat" variables
 !
-! CETTE ROUTINE TRANSFORME LES VARIABLES CHAPEAUX DE TYPE "MOI"
-!  (INSTANT MOINS)
-! EN VARIABLE DE TYPE "PLU" (INSTANT PLUS)
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDIETO : SD GESTION IN ET OUT
+! In  sd_inout         : datastructure for input/output parameters
+! In  field_name_resu  : name of field (type) in results datastructure
+! Out i_field_obsv     : index of field - 0 if not used for OBSERVATION
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, nb_field
+    integer :: i_field
+    character(len=24) :: field_algo_old, field_algo_new
+    character(len=6) :: hat_type, hat_vari
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
+! - Access to datastructure
 !
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    nb_field = v_io_info(1)
+    zioch    = v_io_info(4)
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: nbcham, zioch
-    integer :: icham
-    character(len=24) :: nomchx, newchx
-    character(len=6) :: tychap, tyvari
+! - Loop on fields
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- ACCES SD IN ET OUT
-!
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'E', jiolch)
-    zioch = zi(jioinf+4-1)
-    nbcham = zi(jioinf+1-1)
-!
-! --- BOUCLE SUR LES CHAMPS A LIRE
-!
-    do 10 icham = 1, nbcham
-        nomchx = zk24(jiolch+zioch*(icham-1)+6-1)
-        if (nomchx(1:5) .eq. 'CHAP#') then
-            tychap = nomchx(6:11)
-            if (tychap .eq. 'VALINC') then
-                tyvari = nomchx(13:18)
-                if (tyvari .eq. 'TEMP') then
+    do i_field = 1, nb_field
+        field_algo_old = v_io_para(zioch*(i_field-1)+6 )
+        if (field_algo_old(1:5) .eq. 'CHAP#') then
+            hat_type = field_algo_old(6:11)
+            if (hat_type .eq. 'VALINC') then
+                hat_vari = field_algo_old(13:18)
+                if (hat_vari .eq. 'TEMP') then
                     ASSERT(.false.)
                 endif
-                newchx = nomchx
-                newchx(16:18) = 'PLU'
-                zk24(jiolch+zioch*(icham-1)+6-1) = newchx
+                field_algo_new = field_algo_old
+                field_algo_new(16:18) = 'PLU'
+                v_io_para(zioch*(i_field-1)+6 ) = field_algo_new
             endif
         endif
- 10 end do
+    end do
 !
-    call jedema()
 end subroutine

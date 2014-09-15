@@ -1,26 +1,9 @@
-subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
-                  sddyna, sdcriq, sdieto, solalg, lacc0,&
-                  instin)
+subroutine nmdoet(model , compor, list_func_acti, nume_ddl, sdpilo     ,&
+                  sddyna, sdcriq, sd_inout      , solalg  , l_acce_zero,&
+                  inst_0)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -44,49 +27,68 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
-    real(kind=8) :: instin
-    character(len=24) :: modele, compor, sdcriq
-    character(len=24) :: numedd
-    character(len=24) :: sdieto
-    character(len=19) :: sddyna, sdpilo
-    character(len=19) :: solalg(*)
-    integer :: fonact(*)
-    aster_logical :: lacc0, lener
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ROUTINE MECA_NON_LINE (INITIALISATION)
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! SAISIE DES CHAMPS A L'ETAT INITIAL
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-! ----------------------------------------------------------------------
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: sdcriq
+    character(len=24), intent(in) :: nume_ddl
+    character(len=24), intent(in) :: sd_inout
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sdpilo
+    character(len=19), intent(in) :: solalg(*)
+    integer, intent(in) :: list_func_acti(*)
+    aster_logical, intent(out) :: l_acce_zero
+    real(kind=8), intent(out) :: inst_0
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MODELE : NOM DU MODELE
-! IN  COMPOR : CARTE COMPORTEMENT
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  NUMEDD : NUME_DDL
+! MECA_NON_LINE - Init
+!
+! Read initial state
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  model            : name of model
+! In  compor           : name of <CARTE> COMPOR
+! In  list_func_acti   : list of active functionnalities
+! In  nume_ddl         : name of nume_ddl object (numbering equation)
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  SDPILO : SD DE PILOTAGE
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  SDCRIQ : SD CRITERE QUALITE
-! IN  SDIETO : SD GESTION IN ET OUT
-! OUT LACC0  : .TRUE. SI ACCEL. INITIALE A CALCULER
-! OUT INSTIN : INSTANT INITIAL
-!                R8VIDE SI NON DEFINI
+! In  sd_inout         : datastructure for input/output parameters
+! Out l_acce_zero      : .true. if initial acceleration must been computed
+! Out inst_0           : time for initial state (R8VIDE if not defined)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: nbcham, zioch
-    character(len=24) :: nomchs
-    aster_logical :: evonol, leinit
-    integer :: neq, nocc, numein, iret, i
-    integer :: icham
-    character(len=8) :: k8bid
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, nb_field
+    character(len=24) :: field_name_resu
+    aster_logical :: l_init_evol, l_init_state
+    integer :: neq, nocc, nume_store_0, iret, i, i_field
     character(len=8) :: calcri, result
-    character(len=16) :: motfac
+    character(len=16) :: keyword_fact
     character(len=24) :: evol
     character(len=24) :: typpil, typsel
     character(len=19) :: depold
@@ -94,7 +96,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     integer :: jinst, jerrt
     aster_logical :: lpilo, lpiarc, lctcc
     aster_logical :: lexge, lreuse, lerrt
-    aster_logical :: lzero
+    aster_logical :: lzero, lener
     real(kind=8) :: coefav
     integer :: ifm, niv
     real(kind=8), pointer :: plir(:) => null()
@@ -103,52 +105,51 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     real(kind=8), pointer :: vdep2(:) => null()
     real(kind=8), pointer :: depol(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
 !
-!
-! --- INITIALISATIONS
+! - Initializations
 !
     dep1 = '&&CNPART.CHP1'
     dep2 = '&&CNPART.CHP2'
-    lacc0 = .false.
-    lpiarc = .false.
-    motfac = 'ETAT_INIT'
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
+    l_acce_zero  = .false.
+    lpiarc       = .false.
+    keyword_fact = 'ETAT_INIT'
+    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=neq)
 !
-! --- ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
+! - ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
 !
-    call dismoi('CALC_RIGI', modele, 'MODELE', repk=calcri)
+    call dismoi('CALC_RIGI', model, 'MODELE', repk=calcri)
     if (calcri .ne. 'OUI') then
-        call utmess('F', 'CALCULEL2_65', sk=modele)
+        call utmess('F', 'CALCULEL2_65', sk=model)
     endif
 !
-! --- ACCES SD IN ET OUT
+! - Access to input/output datastructure
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'L', jiolch)
-    zioch = zi(jioinf+4-1)
-    nbcham = zi(jioinf+1-1)
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    nb_field = v_io_info(1)
+    zioch    = v_io_info(4)
 !
-! --- FONCTIONNALITES ACTIVEES
+! - FONCTIONNALITES ACTIVEES
 !
-    lpilo = isfonc(fonact,'PILOTAGE')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
+    lpilo = isfonc(list_func_acti,'PILOTAGE')
+    lctcc = isfonc(list_func_acti,'CONT_CONTINU')
     lexge = ndynlo(sddyna,'EXPL_GENE')
-    lreuse = isfonc(fonact,'REUSE')
-    lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
-    lener = isfonc(fonact,'ENERGIE')
+    lreuse = isfonc(list_func_acti,'REUSE')
+    lerrt = isfonc(list_func_acti,'ERRE_TEMPS_THM')
+    lener = isfonc(list_func_acti,'ENERGIE')
 !
-! --- EXTRACTION VARIABLES CHAPEAUX
+! - EXTRACTION VARIABLES CHAPEAUX
 !
     call nmchex(solalg, 'SOLALG', 'DEPOLD', depold)
 !
-! --- PILOTAGE LONGUEUR D'ARC AVEC ANGL_INCR_DEPL: IL FAUT LES DEUX
-! --- DERNIERS DEPLACEMENTS POUR QUE CA MARCHE (CHAMP DEPOLD)
+! - PILOTAGE LONGUEUR D'ARC AVEC ANGL_INCR_DEPL: IL FAUT LES DEUX
+! - DERNIERS DEPLACEMENTS POUR QUE CA MARCHE (CHAMP DEPOLD)
 !
     if (lpilo) then
         call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
@@ -162,12 +163,12 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         endif
     endif
 !
-! --- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
+! - PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
-    call getfac(motfac, nocc)
+    call getfac(keyword_fact, nocc)
     ASSERT(nocc.le.1)
-    leinit = nocc.gt.0
-    if (leinit) then
+    l_init_state = nocc.gt.0
+    if (l_init_state) then
         call utmess('I', 'ETATINIT_10')
         if (lener) then
             call utmess('I', 'ETATINIT_5')
@@ -183,66 +184,71 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         endif
     endif
 !
-! --- CONCEPT EVOL_NOLI DONNE DANS ETAT_INIT
+! - CONCEPT EVOL_NOLI DONNE DANS ETAT_INIT
 !
-    call getvid(motfac, 'EVOL_NOLI', iocc=1, scal=evol, nbret=nocc)
+    call getvid(keyword_fact, 'EVOL_NOLI', iocc=1, scal=evol, nbret=nocc)
     ASSERT(nocc.le.1)
-    evonol = nocc .gt. 0
+    l_init_evol = nocc .gt. 0
 !
-! --- ALARME SI CONTACT CONTINU AVEC UN CONCEPT REENTRANT
+! - ALARME SI CONTACT CONTINU AVEC UN CONCEPT REENTRANT
 !
     if (lctcc) then
         if (lreuse) then
-            if (.not.isfonc(fonact,'CONTACT_INIT')) then
+            if (.not.isfonc(list_func_acti,'CONTACT_INIT')) then
                 call utmess('A', 'MECANONLINE4_14')
             endif
-        else if (evonol) then
-            if (.not.isfonc(fonact,'CONTACT_INIT')) then
+        else if (l_init_evol) then
+            if (.not.isfonc(list_func_acti,'CONTACT_INIT')) then
                 call utmess('A', 'MECANONLINE4_15')
             endif
         endif
     endif
 !
-! --- INSTANT INITIAL
+! - INSTANT INITIAL
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... INSTANT INITIAL'
     endif
-    call nmdoin(evol, evonol, instin, numein)
+    call nmdoin(evol, l_init_evol, inst_0, nume_store_0)
     if (niv .ge. 2) then
-        if (instin .eq. r8vide()) then
+        if (inst_0 .eq. r8vide()) then
             write (ifm,*) '<MECANONLINE> ...... NON DEFINI PAR ETAT_INIT'
         else
-            write (ifm,*) '<MECANONLINE> ...... VALEUR    : ',instin
+            write (ifm,*) '<MECANONLINE> ...... VALEUR    : ',inst_0
         endif
     endif
 !
-! --- BOUCLE SUR LES CHAMPS A LIRE
+! - Loop on fields
 !
-    do icham = 1, nbcham
+    do i_field = 1, nb_field
+!
+! ----- Initial state defined by EVOL_NOLI results 
+!
         result = evol(1:8)
 !
-! ----- LECTURE DU CHAMP - ETAT_INIT/SDRESU
+! ----- Read field for ETAT_INIT - From results datastructure
 !
-        if (evonol) call nmetl1(result, numein, sdieto, icham)
+        if (l_init_evol) then
+            call nmetl1(result, nume_store_0, sd_inout, i_field)
+        endif
 !
-! ----- LECTURE DU CHAMP - CHAMP PAR CHAMP
+! ----- Read field for ETAT_INIT - Field by field
 !
-        call nmetl2(motfac, sdieto, icham)
+        call nmetl2(keyword_fact, sd_inout, i_field)
 !
-! ----- VERIFICATIONS SUR LE CHAMP
+! ----- Read field for ETAT_INIT - Some checks
 !
-        call nmetl3(modele, compor, evonol, result, numein,&
-                    sdieto, leinit, icham)
+        call nmetl3(model   , compor, l_init_evol, result, nume_store_0,&
+                    sd_inout, l_init_state, i_field)
 !
     end do
 !
-! --- VERIFICATION COMPATIBILITE PILOTAGE
+! - VERIFICATION COMPATIBILITE PILOTAGE
 !
-    if (evonol .and. lpiarc) then
-        call rsexch(' ', result, 'DEPL', numein, champ1,&
+    if (l_init_evol .and. lpiarc) then
+        call rsexch(' ', result, 'DEPL', nume_store_0, champ1,&
                     iret)
-        call rsexch(' ', result, 'DEPL', numein-1, champ2,&
+        call rsexch(' ', result, 'DEPL', nume_store_0-1, champ2,&
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'MECANONLINE4_47', sk=evol)
@@ -256,51 +262,51 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
             depol(i) = vdep1(i) - vdep2(i)
         end do
         call jeveuo(sdpilo(1:19)//'.PLIR', 'E', vr=plir)
-        call rsadpa(result, 'L', 1, 'COEF_MULT', numein,&
-                    0, sjv=jinst, styp=k8bid)
+        call rsadpa(result, 'L', 1, 'COEF_MULT', nume_store_0,&
+                    0, sjv=jinst)
         coefav = zr(jinst)
         if (coefav .ne. 0.d0 .and. coefav .ne. r8vide()) then
             plir(6) = coefav
         endif
     endif
 !
-! --- LECTURE DES INDICATEURS D'ERREUR EN TEMPS EN THM
+! - LECTURE DES INDICATEURS D'ERREUR EN TEMPS EN THM
 !
-    if (evonol .and. lerrt) then
+    if (l_init_evol .and. lerrt) then
         errthm = sdcriq(1:19)//'.ERRT'
         call jeveuo(errthm, 'E', jerrt)
-        call rsadpa(result, 'L', 1, 'ERRE_TPS_LOC', numein,&
-                    0, sjv=jinst, styp=k8bid)
+        call rsadpa(result, 'L', 1, 'ERRE_TPS_LOC', nume_store_0,&
+                    0, sjv=jinst)
         zr(jerrt-1+1) = zr(jinst)
-        call rsadpa(result, 'L', 1, 'ERRE_TPS_GLOB', numein,&
-                    0, sjv=jinst, styp=k8bid)
+        call rsadpa(result, 'L', 1, 'ERRE_TPS_GLOB', nume_store_0,&
+                    0, sjv=jinst)
         zr(jerrt-1+2) = zr(jinst)
 !
     endif
 !
-! --- CAS DE LA DYNAMIQUE: VITESSE ET ACCELERATION INITIALES
+! - CAS DE LA DYNAMIQUE: VITESSE ET ACCELERATION INITIALES
 !
-    do icham = 1, nbcham
-        nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
-        lzero = zk24(jiolch+zioch*(icham-1)+4-1).eq.'ZERO'
-        if (nomchs .eq. 'VITE') then
+    do i_field = 1, nb_field
+        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
+        lzero = v_io_para(zioch*(i_field-1)+4 ).eq.'ZERO'
+        if (field_name_resu .eq. 'VITE') then
             if (lzero) then
                 call utmess('I', 'MECANONLINE4_22')
             endif
         endif
-        if (nomchs .eq. 'ACCE') then
+        if (field_name_resu .eq. 'ACCE') then
             if (lzero) then
                 call utmess('I', 'MECANONLINE4_23')
-                lacc0 = .true.
+                l_acce_zero = .true.
             endif
         endif
     end do
 !
-! --- PROJECTION MODALE EN EXPLICITE
+! - PROJECTION MODALE EN EXPLICITE
 !
     if (lexge) then
         result = evol(1:8)
-        call ndloam(sddyna, result, evonol, numein)
+        call ndloam(sddyna, result, l_init_evol, nume_store_0)
     endif
 !
     call jedema()

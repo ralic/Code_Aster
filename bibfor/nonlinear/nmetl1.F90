@@ -1,4 +1,16 @@
-subroutine nmetl1(result, numein, sdieto, icham)
+subroutine nmetl1(result, nume_store_0, sd_inout, i_field)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vtcopy.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,120 +30,105 @@ subroutine nmetl1(result, numein, sdieto, icham)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmetnc.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vtcopy.h"
-    character(len=24) :: sdieto
-    character(len=8) :: result
-    integer :: icham, numein
+    character(len=24), intent(in) :: sd_inout
+    character(len=8), intent(in) :: result
+    integer, intent(in) :: i_field
+    integer, intent(in) :: nume_store_0
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! LECTURE D'UN CHAMP - CAS DE LA SD RESULTAT DANS ETAT_INIT
+! Read field for ETAT_INIT - From results datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  result          : name of datastructure for results
+! In  sd_inout        : datastructure for input/output parameters
+! In  nume_store_0    : initial number of storage in results
+! In  i_field         : field index
 !
-! IN  RESULT : NOM SD RESULTAT
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  NUMEIN : NUMERO ORDRE INSTANT INITIAL
-! IN  ICHAM  : INDEX DU CHAMP DANS SDIETO
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, ievol, iret
+    character(len=24) :: valk(2)
+    character(len=24) :: field_resu, field_algo
+    character(len=24) :: flag_etat_init, field_name_resu
+    character(len=24) :: field_name_algo, field_name_init, field_disc
 !
+! --------------------------------------------------------------------------------------------------
 !
+    field_resu = '&&NMETL1.CHAMP'
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: zioch
-    character(len=24) :: champ
-    integer :: ievol, iret
-    character(len=24) :: chetin, nomchs, valk(2)
-    character(len=24) :: nomcha, nomch0, loccha
+! - Access to datastructure
 !
-! ----------------------------------------------------------------------
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    zioch = v_io_info(4)
 !
-    call jemarq()
+! - Field to read ?
 !
-! --- INITIALISATION
+    flag_etat_init = v_io_para(zioch*(i_field-1)+8 )
+    if (flag_etat_init .eq. 'OUI') then
 !
-    champ = '&&NMETL1.CHAMP'
+! ----- Name of field (type) in results datastructure
 !
-! --- ACCES AUX SDS
+        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'E', jiolch)
-    zioch = zi(jioinf+4-1)
+! ----- Name of field for initial state (ETAT_INIT)
 !
-! --- CHAMP A LIRE ?
+        field_name_init = v_io_para(zioch*(i_field-1)+2 )
 !
-    chetin = zk24(jiolch+zioch*(icham-1)+8-1)
-    if (chetin .eq. 'NON') goto 999
+! ----- Spatial discretization of field
 !
-! --- NOM DU CHAMP DANS SD RESULTAT
+        field_disc = v_io_para(zioch*(i_field-1)+5 )
 !
-    nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
+! ----- Name of field in algorithm
 !
-! --- NOM DU CHAMP NUL
+        field_name_algo  = v_io_para(zioch*(i_field-1)+6 )
+        call nmetnc(field_name_algo, field_algo)
 !
-    nomch0 = zk24(jiolch+zioch*(icham-1)+2-1)
+! ----- Get field in resultats datastructure
 !
-! --- LOCALISATION DU CHAMP
+        call rsexch(' ', result, field_name_resu, nume_store_0, field_resu,&
+                    ievol)
 !
-    loccha = zk24(jiolch+zioch*(icham-1)+5-1)
+! ----- Field conversion if necessary
 !
-! --- NOM DU CHAMP DANS L'OPERATEUR
+        if (ievol .ne. 0) then
+            if (field_name_init .ne. ' ') then
 !
-    call nmetnc(sdieto, icham, nomcha)
+! ------------- Not present: take initial state
 !
-! --- RECUP DANS LA SD RESULTAT
-!
-    call rsexch(' ', result, nomchs, numein, champ,&
-                ievol)
-!
-! --- TRAITEMENT DU CHAMP
-!
-    if (ievol .ne. 0) then
-        if (nomch0 .ne. ' ') then
-            call copisd('CHAMP', 'V', nomch0, nomcha)
-            zk24(jiolch+zioch*(icham-1)+4-1) = 'ZERO'
-        endif
-    else
-!
-! ----- RECOPIE DU CHAMP EN LOCAL
-!
-        if (loccha .eq. 'NOEU') then
-            call vtcopy(champ, nomcha, ' ', iret)
-            if (iret .ne. 0) then
-                valk(1) = champ
-                valk(2) = nomcha
-                call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
+                call copisd('CHAMP', 'V', field_name_init, field_algo)
+                v_io_para(zioch*(i_field-1)+4) = 'ZERO'
             endif
-            elseif ((loccha.eq.'ELGA').or. (loccha.eq.'ELNO').or. (&
-        loccha.eq.'ELEM')) then
-            call copisd('CHAMP_GD', 'V', champ, nomcha)
         else
-            write(6,*) 'LOCCHA: ',loccha
-            ASSERT(.false.)
+            if (field_disc .eq. 'NOEU') then
+                call vtcopy(field_resu, field_algo, ' ', iret)
+                if (iret .ne. 0) then
+                    valk(1) = field_resu
+                    valk(2) = field_algo
+                    call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
+                endif
+            elseif ((field_disc.eq.'ELGA').or.&
+                    (field_disc.eq.'ELNO').or.&
+                    (field_disc.eq.'ELEM')) then
+                call copisd('CHAMP_GD', 'V', field_resu, field_algo)
+            else
+                write(6,*) 'LOCCHA: ',field_disc
+                ASSERT(.false.)
+            endif
+!
+! --------- Present
+!
+            v_io_para(zioch*(i_field-1)+4) = 'SDRESU'
         endif
-!
-! ----- STATUT DU CHAMP: LU DANS SD RESULTAT
-!
-        zk24(jiolch+zioch*(icham-1)+4-1) = 'SDRESU'
     endif
 !
-999  continue
-!
-    call jedema()
 end subroutine

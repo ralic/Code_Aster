@@ -1,5 +1,13 @@
-subroutine nmetcc(sdieto, compor, sddyna, sdpost, resoco,&
-                  nbcham, zioch)
+subroutine nmetcc(field_type     , field_name_algo, field_name_init,&
+                  compor         , sddyna         , sdpost         , sdcont_algo,&
+                  hydr           , temp_init      , hydr_init)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/nmlesd.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,125 +27,150 @@ subroutine nmetcc(sdieto, compor, sddyna, sdpost, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/ndynkk.h"
-#include "asterfort/nmlesd.h"
-    integer :: nbcham, zioch
-    character(len=24) :: sdieto, compor
-    character(len=19) :: sddyna, sdpost
-    character(len=24) :: resoco
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(out) :: field_name_algo
+    character(len=24), intent(out) :: field_name_init
+    character(len=24), optional, intent(in) :: sdcont_algo
+    character(len=19), optional, intent(in) :: compor
+    character(len=19), optional, intent(in) :: sddyna
+    character(len=19), optional, intent(in) :: sdpost
+    character(len=24), optional, intent(in) :: hydr
+    character(len=24), optional, intent(in) :: hydr_init
+    character(len=24), optional, intent(in) :: temp_init
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (GESTION IN ET OUT)
+! *_NON_LINE - Input/output datastructure
 !
-! NOM DU CHAMP DANS OP0070
+! Get name of field during non-linear algorithm and initial state
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! SI NOM = CHAP#TYPCHA# : CHAMP DANS VARIABLE CHAPEAU TYPCHA
+! In  field_type       : type of field (symbolic name in result datastructure)
+! Out field_name_algo  : name of field during non-linear algorithm
+! Out field_name_init  : name of field for initial state
+! In  compor           : name of <CARTE> COMPOR
+! In  sdcont_algo      : name of contact algorithm datastructure
+! In  sddyna           : name of dynamic parameters datastructure
+! In  sdpost           : name of post-treatment for stability analysis parameters datastructure
+! In  hydr             : name of field for hydratation (HYDR_ELNO)
+! In  hydr_init        : name of field for initial hydratation
+! In  temp_init        : name of field for initial temperature
 !
-! IN  MODELE : NOM DU MODELE
-! IN  COMPOR : CARTE COMPORTEMENT
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
-! IN  RESOCO : SD DE RESOLUTION DU CONTACT
-! IN  SDIETO : SD GESTION IN ET OUT
+!     if field_name_algo = CHAP#TYPCHA#
+!       => field name is the TYPCHA "hat" variable datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: iolcha
-    integer :: jiolch
-    character(len=24) :: nomcha, nomchx
     character(len=19) :: xindco, xcohes, xseuco
     character(len=24) :: nochco
-    integer :: jnochc
-    character(len=19) :: cnoinr
+    character(len=24), pointer :: cont_sdname(:) => null()
     character(len=19) :: vecfla, vecvib, vecsta
     character(len=19) :: depabs, vitabs, accabs
     real(kind=8) :: r8bid
     integer :: ibid
-    integer :: icham
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- NOM DES CHAMPS NON-STANDARDS (PAS DANS UNE VARIABLE CHAPEAU)
+! - Special fields
 !
-    xindco = resoco(1:14)//'.XFIN'
-    xcohes = resoco(1:14)//'.XCOH'
-    xseuco = resoco(1:14)//'.XFSE'
-    call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_FLAM', ibid, r8bid,&
-                vecfla)
-    call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_STAB', ibid, r8bid,&
-                vecsta)
-    call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_VIBR', ibid, r8bid,&
-                vecvib)
-    call ndynkk(sddyna, 'DEPABS', depabs)
-    call ndynkk(sddyna, 'VITABS', vitabs)
-    call ndynkk(sddyna, 'ACCABS', accabs)
+    if (present(sdcont_algo)) then
+        xindco = sdcont_algo(1:14)//'.XFIN'
+        xcohes = sdcont_algo(1:14)//'.XCOH'
+        xseuco = sdcont_algo(1:14)//'.XFSE'
+    endif
+    if (present(sdpost)) then
+        call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_FLAM', ibid, r8bid,&
+                    vecfla)
+        call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_STAB', ibid, r8bid,&
+                    vecsta)
+        call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_VIBR', ibid, r8bid,&
+                    vecvib)
+    endif
+    if (present(sddyna)) then
+        call ndynkk(sddyna, 'DEPABS', depabs)
+        call ndynkk(sddyna, 'VITABS', vitabs)
+        call ndynkk(sddyna, 'ACCABS', accabs)
+    endif
 !
-! --- ACCES SD CHAMPS
+! - Standard fields
 !
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(iolcha, 'E', jiolch)
+    if (field_type .eq. 'DEPL') then
+        field_name_algo = 'CHAP#VALINC#DEPMOI'
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'VITE') then
+        field_name_algo = 'CHAP#VALINC#VITMOI'
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'ACCE') then
+        field_name_algo = 'CHAP#VALINC#ACCMOI'
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'SIEF_ELGA') then
+        field_name_algo = 'CHAP#VALINC#SIGMOI'
+        field_name_init = '&&NMETCR.SIGMO0'
+    else if (field_type.eq.'VARI_ELGA') then
+        field_name_algo = 'CHAP#VALINC#VARMOI'
+        field_name_init = '&&NMETCR.VARMO0'
+    else if (field_type.eq.'STRX_ELGA') then
+        field_name_algo = 'CHAP#VALINC#STRMOI'
+        field_name_init = '&&NMETCR.STRMO0'
+    else if (field_type.eq.'COMPORTEMENT') then
+        field_name_algo = compor
+        field_name_init = ' '
+    else if (field_type.eq.'VALE_CONT') then
+        nochco = sdcont_algo(1:14)//'.NOCHCO'
+        call jeveuo(nochco, 'L', vk24 = cont_sdname)
+        field_name_algo = cont_sdname(2)(1:19)
+        field_name_init = ' '
+    else if (field_type.eq.'INDC_ELEM') then
+        field_name_algo = xindco
+        field_name_init = sdcont_algo(1:14)//'.XFI0'
+    else if (field_type.eq.'SECO_ELEM') then
+        field_name_algo = xseuco
+        field_name_init = sdcont_algo(1:14)//'.XFS0'
+    else if (field_type.eq.'COHE_ELEM') then
+        field_name_algo = xcohes
+        field_name_init = sdcont_algo(1:14)//'.XCO0'
+    else if (field_type.eq.'MODE_FLAMB') then
+        field_name_algo = vecfla
+        field_name_init = ' '
+    else if (field_type.eq.'MODE_STAB') then
+        field_name_algo = vecsta
+        field_name_init = ' '
+    else if (field_type.eq.'DEPL_VIBR') then
+        field_name_algo = vecvib
+        field_name_init = ' '
+    else if (field_type.eq.'DEPL_ABSOLU') then
+        field_name_algo = depabs
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'VITE_ABSOLU') then
+        field_name_algo = vitabs
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'ACCE_ABSOLU') then
+        field_name_algo = accabs
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'FORC_NODA') then
+        field_name_algo = 'CHAP#VEASSE#CNFINT'
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'FORC_AMOR') then
+        field_name_algo = 'CHAP#VALINC#FAMMOI'
+        field_name_init = '&&CNPART.ZERO'
+    else if (field_type.eq.'FORC_LIAI') then
+        field_name_algo = 'CHAP#VALINC#FLIMOI'
+        field_name_init = '&&CNPART.ZERO'
 !
-! --- NOM DU CHAMP DANS OP0070
-! --- SI CHAP#NOMCHA# : CHAMP DANS VARIABLE CHAPEAU NOMCHA
+    else if (field_type.eq.'TEMP') then
+        field_name_algo = 'CHAP#VALINC#TEMP'
+        field_name_init = temp_init
+    else if (field_type.eq.'HYDR_ELNO') then
+        field_name_algo = hydr
+        field_name_init = hydr_init
+    else if (field_type.eq.'COMPORTHER') then
+        field_name_algo = compor
+        field_name_init = ' '
 !
-    do 40 icham = 1, nbcham
-        nomcha = zk24(jiolch+zioch*(icham-1)+1-1)
-        if (nomcha .eq. 'DEPL') then
-            nomchx = 'CHAP#VALINC#DEPMOI'
-        else if (nomcha.eq.'VITE') then
-            nomchx = 'CHAP#VALINC#VITMOI'
-        else if (nomcha.eq.'ACCE') then
-            nomchx = 'CHAP#VALINC#ACCMOI'
-        else if (nomcha.eq.'SIEF_ELGA') then
-            nomchx = 'CHAP#VALINC#SIGMOI'
-        else if (nomcha.eq.'VARI_ELGA') then
-            nomchx = 'CHAP#VALINC#VARMOI'
-        else if (nomcha.eq.'STRX_ELGA') then
-            nomchx = 'CHAP#VALINC#STRMOI'
-        else if (nomcha.eq.'COMPORTEMENT') then
-            nomchx = compor
-        else if (nomcha.eq.'VALE_CONT') then
-            nochco = resoco(1:14)//'.NOCHCO'
-            call jeveuo(nochco, 'L', jnochc)
-            cnoinr = zk24(jnochc+2-1)(1:19)
-            nomchx = cnoinr
-        else if (nomcha.eq.'INDC_ELEM') then
-            nomchx = xindco
-        else if (nomcha.eq.'SECO_ELEM') then
-            nomchx = xseuco
-        else if (nomcha.eq.'COHE_ELEM') then
-            nomchx = xcohes
-        else if (nomcha.eq.'MODE_FLAMB') then
-            nomchx = vecfla
-        else if (nomcha.eq.'MODE_STAB') then
-            nomchx = vecsta
-        else if (nomcha.eq.'DEPL_VIBR') then
-            nomchx = vecvib
-        else if (nomcha.eq.'DEPL_ABSOLU') then
-            nomchx = depabs
-        else if (nomcha.eq.'VITE_ABSOLU') then
-            nomchx = vitabs
-        else if (nomcha.eq.'ACCE_ABSOLU') then
-            nomchx = accabs
-        else if (nomcha.eq.'FORC_NODA') then
-            nomchx = 'CHAP#VEASSE#CNFINT'
-        else if (nomcha.eq.'FORC_AMOR') then
-            nomchx = 'CHAP#VALINC#FAMMOI'
-        else if (nomcha.eq.'FORC_LIAI') then
-            nomchx = 'CHAP#VALINC#FLIMOI'
-        endif
-        zk24(jiolch+zioch*(icham-1)+6-1) = nomchx
-40  end do
+    else
+        ASSERT(.false.)
+    endif
 !
-    call jedema()
 end subroutine

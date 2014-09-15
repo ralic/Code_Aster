@@ -1,5 +1,18 @@
-subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
-                  numarc, instan, icham)
+subroutine nmeteo(result    , sdimpr, sddisc , sd_inout, force,&
+                  nume_store, time  , i_field)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/diincl.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmarcc.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,94 +32,82 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/diincl.h"
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmarcc.h"
-#include "asterfort/nmetnc.h"
-#include "asterfort/obgetb.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sdieto, sdimpr
-    character(len=19) :: sddisc
-    character(len=8) :: result
-    integer :: icham
-    integer :: numarc
-    real(kind=8) :: instan
-    aster_logical :: force
+    character(len=24), intent(in) :: sd_inout
+    character(len=24), intent(in) :: sdimpr
+    character(len=19), intent(in) :: sddisc
+    character(len=8), intent(in) :: result
+    integer, intent(in) :: i_field
+    integer, intent(in) :: nume_store
+    real(kind=8), intent(in) :: time
+    aster_logical, intent(in) :: force
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! ECRITURE D'UN CHAMP DANS LA SD RESULAT
+! Save field in results datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! In  result           : name of datastructure for results
+! In  sd_inout         : datastructure for input/output parameters
+! In  nume_store       : index to store in results
+! In  i_field          : field index
+! In  sdimpr           : datastructure for print informations
+! In  sddisc           : datastructure for discretization
+! In  time             : current time
+! In  force            : .true. to store field whatever storing options
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, iret
+    character(len=24) :: field_name_algo, field_algo, field_name_resu, flag_arch
+    aster_logical :: l_print
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  RESULT : NOM SD EVOL_NOLI
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  SDIMPR : SD AFFICHAGE
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  FORCE  : VRAI SI ON SOUHAITE FORCER L'ARCHIVAGE DE TOUS LES CHAMPS
-! IN  INSTAN : INSTANT D'ARCHIVAGE
-! IN  NUMARC : NUMERO D'ARCHIVAGE
-! IN  ICHAM  : INDEX DU CHAMP DANS SDIETO
+! - Access to datastructure
 !
-! ----------------------------------------------------------------------
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    zioch = v_io_info(4)
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: zioch
-    character(len=24) :: nomcha, nomchs, charch
-    aster_logical :: lprint
-    integer :: iret
+! - Field to store ?
 !
-! ----------------------------------------------------------------------
+    flag_arch = v_io_para(zioch*(i_field-1)+9 )
+    if (flag_arch .eq. 'OUI') then
 !
-    call jemarq()
+! ----- Print for this step ?
 !
-! --- ACCES SD IN ET OUT
-!
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'E', jiolch)
-    zioch = zi(jioinf+4-1)
-!
-! --- CHAMP A ARCHIVER ?
-!
-    charch = zk24(jiolch+zioch*(icham-1)+9-1)
-    if (charch .eq. 'NON') goto 999
-!
-! --- AFFICHAGE POUR CE PAS ?
-!
-    lprint = .true.
-    if (sdimpr .ne. ' ') call obgetb(sdimpr, 'PRINT', lprint)
-!
-! --- NOM DU CHAMP DANS SD RESULTAT
-!
-    nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
-!
-! --- NOM DU CHAMP DANS L'OPERATEUR
-!
-    call nmetnc(sdieto, icham, nomcha)
-    call exisd('CHAMP', nomcha, iret)
-!
-! --- ARCHIVAGE DU CHAMP
-!
-    if (diincl(sddisc,nomchs,force ) .and. (iret.eq.1)) then
-        if (lprint) then
-            call utmess('I', 'ARCHIVAGE_6', sk=nomchs, si=numarc, sr=instan)
+        l_print = .true.
+        if (sdimpr .ne. ' ') then
+            call obgetb(sdimpr, 'PRINT', l_print)
         endif
-        call nmarcc(result, numarc, nomchs, nomcha)
+!
+! ----- Name of field (type) in results datastructure
+!
+        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
+!
+! ----- Name of field in algorithm
+!
+        field_name_algo = v_io_para(zioch*(i_field-1)+6 )
+        call nmetnc(field_name_algo, field_algo)
+        call exisd('CHAMP', field_algo, iret)
+!
+! ----- Store field
+!
+        if (diincl(sddisc,field_name_resu,force ) .and. (iret.eq.1)) then
+            if (l_print) then
+                call utmess('I', 'ARCHIVAGE_6', sk=field_name_resu, si=nume_store, sr=time)
+            endif
+            call nmarcc(result, nume_store, field_name_resu, field_algo)
+        endif
     endif
 !
-999 continue
-!
-    call jedema()
 end subroutine

@@ -1,4 +1,8 @@
-subroutine nmetnc(sdieto, icham, nomcha)
+subroutine nmetnc(field_name_algo, field_algo)
+!
+implicit none
+!
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,72 +22,46 @@ subroutine nmetnc(sdieto, icham, nomcha)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: sdieto
-    character(len=*) :: nomcha
-    integer :: icham
+    character(len=*), intent(in) :: field_name_algo
+    character(len=*), intent(out) :: field_algo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! RETOURNE LE NOM DU CHAMP DANS L'OPERATEUR
+! Get name of datastructure for field
 !
-! ----------------------------------------------------------------------
+! This utiliy is required for "hat" variables
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  ICHAM  : INDEX DU CHAMP DANS SDIETO
-! OUT NOMCHA : NOM DU CHAMP DANS L'OPERATEUR
+! In  field_name_algo : name of field in algorithme
+! Out field_algo      : name of datastructure for field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: zioch
-    character(len=24) :: nomchx
-    character(len=6) :: tychap, tyvari
+    character(len=6) :: hat_type, hat_vari
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    field_algo = ' '
 !
-! --- ACCES SD IN ET OUT
-!
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'L', jiolch)
-    zioch = zi(jioinf+4-1)
-!
-! --- NOM DU CHAMP DANS L'OPERATEUR
-!
-    nomchx = zk24(jiolch+zioch*(icham-1)+6-1)
-!
-! --- NOM DU CHAMP A STOCKER
-!
-    if (nomchx(1:5) .eq. 'CHAP#') then
-        tychap = nomchx(6:11)
-        tyvari = nomchx(13:18)
-        if (tychap .eq. 'VALINC') then
-            if (tyvari .eq. 'TEMP') then
-                nomcha = '&&NXLECTVAR_____'
+    if (field_name_algo(1:5) .eq. 'CHAP#') then
+        hat_type = field_name_algo(6:11)
+        hat_vari = field_name_algo(13:18)
+        if (hat_type .eq. 'VALINC') then
+            if (hat_vari .eq. 'TEMP') then
+                field_algo = '&&NXLECTVAR_____'
             else
-                nomcha = '&&NMCH1P.'//tyvari
+                field_algo = '&&NMCH1P.'//hat_vari
             endif
-        else if (tychap.eq.'VEASSE') then
-            nomcha = '&&NMCH5P.'//tyvari
+        else if (hat_type.eq.'VEASSE') then
+            field_algo = '&&NMCH5P.'//hat_vari
         else
             ASSERT(.false.)
         endif
     else
-        nomcha = nomchx
+        field_algo = field_name_algo
     endif
 !
-    call jedema()
 end subroutine

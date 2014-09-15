@@ -1,4 +1,12 @@
-subroutine ntetl3(result, sdieto, icham, tempct)
+subroutine ntetl3(result, sd_inout, i_field, tempct)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/chpver.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,111 +26,98 @@ subroutine ntetl3(result, sdieto, icham, tempct)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/chpver.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmetnc.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sdieto
-    character(len=8) :: result
-    integer :: icham
-    real(kind=8) :: tempct
+    character(len=24), intent(in) :: sd_inout
+    character(len=8), intent(in) :: result
+    integer, intent(in) :: i_field
+    real(kind=8), intent(in) :: tempct
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! THER_* - Input/output datastructure
 !
-! LECTURE D'UN CHAMP - VERIFICATIONS DIVERSES (THERMIQUE)
+! Read field for ETAT_INIT - Some checks
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  result           : name of results datastructure
+! In  sd_inout         : datastructure for input/output parameters
+! In  i_field          : field index
+! In  tempct           : initial temperature if constant
 !
-! IN  RESULT : NOM SD EVOL_NOLI
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  ICHAM  : INDEX DU CHAMP DANS SDIETO
-! IN  TEMPCT : VALEUR DE LA TEMPERATURE QUAND ELLE EST DONNEE
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: zioch
-    integer :: iret
-    character(len=24) :: chetin, nomchs, loccha, nomgd, statut
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, iret
+    character(len=24) :: flag_etat_init, field_name_resu, field_disc, field_gran, field_state
     character(len=24) :: valk(2)
-    character(len=24) :: nomcha
+    character(len=24) :: field_name_algo, field_algo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- ACCES AUX SDS
+! - Access to datastructure
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'E', jiolch)
-    zioch = zi(jioinf+4-1)
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    zioch = v_io_info(4)
 !
-! --- CHAMP A LIRE ?
+! - Field to read ?
 !
-    chetin = zk24(jiolch+zioch*(icham-1)+8-1)
-    if (chetin .eq. 'NON') goto 999
+    flag_etat_init = v_io_para(zioch*(i_field-1)+8 )
+    if (flag_etat_init .eq. 'OUI') then
 !
-! --- NOM DU CHAMP DANS SD RESULTAT
+! ----- Name of field (type) in results datastructure
 !
-    nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
+        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
 !
-! --- NOM DU CHAMP DANS L'OPERATEUR
+! ----- Name of field in algorithm
 !
-    call nmetnc(sdieto, icham, nomcha)
+        field_name_algo = v_io_para(zioch*(i_field-1)+6 )
+        call nmetnc(field_name_algo, field_algo)
 !
-! --- LOCALISATION DU CHAMP
+! ----- Spatial discretization of field
 !
-    loccha = zk24(jiolch+zioch*(icham-1)+5-1)
+        field_disc = v_io_para(zioch*(i_field-1)+5 )
 !
-! --- NOM DE LA GRANDEUR
+! ----- Type of GRANDEUR of field
 !
-    nomgd = zk24(jiolch+zioch*(icham-1)+7-1)
+        field_gran = v_io_para(zioch*(i_field-1)+7 )
 !
-! --- STATUT DU CHAMP
+! ----- Actual state of field
 !
-    statut = zk24(jiolch+zioch*(icham-1)+4-1)
+        field_state = v_io_para(zioch*(i_field-1)+4 )
 !
-! --- LE CHAMP N'A JAMAIS ETE LU
+! ----- Informations about field
 !
-    if (statut .eq. ' ') then
-        call utmess('F', 'ETATINIT_30', sk=nomchs)
-    else
-        valk(1) = nomchs
-        valk(2) = result(1:8)
-        if (statut .eq. 'ZERO') then
-            call utmess('I', 'ETATINIT_31', sk=nomchs)
-        else if (statut.eq.'SDRESU') then
-            call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
-        else if (statut.eq.'CHAMP') then
-            call utmess('I', 'ETATINIT_33', sk=nomchs)
-        else if (statut.eq.'STATIONNAIRE') then
-            call utmess('I', 'ETATINIT_34')
-        else if (statut.eq.'VALE') then
-            call utmess('I', 'ETATINIT_35', sr=tempct)
+        if (field_state .eq. ' ') then
+            call utmess('F', 'ETATINIT_30', sk=field_name_resu)
         else
-            ASSERT(.false.)
+            valk(1) = field_name_resu
+            valk(2) = result
+            if (field_state .eq. 'ZERO') then
+                call utmess('I', 'ETATINIT_31', sk=field_name_resu)
+            else if (field_state.eq.'SDRESU') then
+                call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
+            else if (field_state.eq.'CHAMP') then
+                call utmess('I', 'ETATINIT_33', sk=field_name_resu)
+            else if (field_state.eq.'STATIONNAIRE') then
+                call utmess('I', 'ETATINIT_34')
+            else if (field_state.eq.'VALE') then
+                call utmess('I', 'ETATINIT_35', sr=tempct)
+            else
+                ASSERT(.false.)
+            endif
+        endif
+!
+! ----- Check GRANDEUR and discretization
+!
+        if (field_gran .ne. ' ') then
+            call chpver('F', field_algo, field_disc, field_gran, iret)
         endif
     endif
 !
-! --- VERIFICATION DE LA GRANDEUR ET DE LA LOCALISATION
-!
-    if (nomgd .ne. ' ') then
-        call chpver('F', nomcha, loccha, nomgd, iret)
-    endif
-!
-999  continue
-!
-    call jedema()
 end subroutine

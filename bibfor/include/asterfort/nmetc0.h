@@ -16,14 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
-                      zioch, carele)
-        character(len=24) :: modele
-        character(len=24) :: sdieto
-        character(len=24) :: compor
-        character(len=24) :: resoco
-        integer :: nbcham
-        integer :: zioch
-        character(len=24) :: carele
+    subroutine nmetc0(model, cara_elem, compor, sd_inout)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: cara_elem
+        character(len=19), intent(in) :: compor
+        character(len=24), intent(in) :: sd_inout
     end subroutine nmetc0
 end interface

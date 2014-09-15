@@ -1,8 +1,28 @@
 subroutine ntinit(result, modele, mate, carele, lischa,&
                   lisch2, solveu, para, numedd, lostat,&
-                  levol, lnonl, sddisc, sdieto, mailla,&
+                  levol, lnonl, sddisc, sd_inout, mailla,&
                   sdcrit, time)
-! ----------------------------------------------------------------------
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/gcucon.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ntcrch.h"
+#include "asterfort/ntcrcv.h"
+#include "asterfort/ntetcr.h"
+#include "asterfort/numero.h"
+#include "asterfort/nxdoet.h"
+#include "asterfort/nxnoli.h"
+#include "asterfort/rsnume.h"
+#include "asterfort/tiinit.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,30 +41,12 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 ! ======================================================================
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/gcucon.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gnomsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ntcrch.h"
-#include "asterfort/ntcrcv.h"
-#include "asterfort/ntetcr.h"
-#include "asterfort/numero.h"
-#include "asterfort/nxdoet.h"
-#include "asterfort/nxnoli.h"
-#include "asterfort/rsnume.h"
-#include "asterfort/tiinit.h"
     aster_logical :: lostat, levol, lnonl
     character(len=19) :: lischa, lisch2, solveu
     character(len=19) :: sddisc, sdcrit
     character(len=24) :: modele, mate, carele
     character(len=24) :: result, numedd, time
-    character(len=24) :: sdieto
+    character(len=24), intent(out) :: sd_inout
     character(len=8) :: mailla
     real(kind=8) :: para(*)
 !
@@ -114,25 +116,24 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 !
 ! --- CREATION DE LA SD IN ET OUT
 !
-    call ntetcr(numedd, k24bla, sdieto, lnonl, k24bla,&
-                k24bla)
+    call ntetcr(numedd, lnonl, sd_inout)
 !
 ! --- LECTURE ETAT INITIAL
 !
-    call nxdoet(modele, numedd, lreuse, lostat, sdieto,&
+    call nxdoet(modele, numedd, lreuse, lostat, sd_inout,&
                 initpr, instin)
 !
 ! --- CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
 !
     call tiinit(mailla, modele, result, lostat, lreuse,&
-                lnonl, instin, sddisc, sdieto, k19bla,&
+                lnonl, instin, sddisc, sd_inout, k19bla,&
                 levol)
 !
 ! --- CREATION DE LA SD EVOL_THER
 !
     call nxnoli(modele, mate, carele, lostat, lreuse,&
                 lnonl, levol, para, sddisc, sdcrit,&
-                sdieto, lisch2)
+                sd_inout, lisch2)
     call copisd('LISTE_CHARGES', 'G', lischa, lisch2)
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE

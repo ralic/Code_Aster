@@ -1,24 +1,8 @@
-subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
-                  initpr, instin)
+subroutine nxdoet(model    , nume_ddl, l_reuse, l_stat, sd_inout,&
+                  type_init, inst_0)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -38,196 +22,218 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 #include "asterfort/nmetnc.h"
 #include "asterfort/ntetl3.h"
 #include "asterfort/utmess.h"
-    character(len=24) :: modele
-    aster_logical :: lostat, lreuse
-    character(len=24) :: numedd, sdieto
-    real(kind=8) :: instin
-    integer :: initpr
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ROUTINE THER_NON_LINE (INITIALISATION)
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! SAISIE DES CHAMPS A L'ETAT INITIAL
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
 !
-! ----------------------------------------------------------------------
+    character(len=24), intent(in) :: model
+    aster_logical, intent(in) :: l_reuse
+    character(len=24), intent(in) :: nume_ddl
+    character(len=24), intent(in) :: sd_inout
+    real(kind=8), intent(out) :: inst_0
+    integer, intent(out) :: type_init
+    aster_logical, intent(out) :: l_stat
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MODELE : NOM DU MODELE
-! IN  NUMEDD : NUME_DDL
-! IN  LREUSE : .TRUE. SI REUSE
-! OUT LOSTAT : .TRUE. SI L'ON CALCULE UN CAS STATIONNAIRE
-! OUT INITPR : TYPE D'INITIALISATION
+! THER_* - Init
+!
+! Read initial state
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  model            : name of model
+! In  nume_ddl         : name of nume_ddl object (numbering equation)
+! In  sd_inout         : datastructure for input/output parameters
+! In  l_reuse          : .true. if reuse results datastructure
+! Out inst_0           : time for initial state (R8VIDE if not defined)
+! Out type_init        : type of initialization
 !              -1 : PAS D'INITIALISATION. (VRAI STATIONNAIRE)
 !               0 : CALCUL STATIONNAIRE
 !               1 : VALEUR UNIFORME
 !               2 : CHAMP AUX NOEUDS
 !               3 : RESULTAT D'UN AUTRE CALCUL
-! OUT INSTIN : INSTANT INITIAL
-!                R8VIDE SI NON DEFINI
+! Out l_stat           : .true. if stationnary
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: nbcham, zioch
-    character(len=8) :: k8bid, calcri, result
-    character(len=24) :: repsta, evol
-    character(len=24) :: nomcha, nomchs
-    integer :: icham
-    character(len=16) :: motfac
-    integer :: i, neq, nocc, numein
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, nb_field
+    character(len=8) :: calcri, result
+    character(len=24) :: answer, evol
+    character(len=24) :: field_name_resu, field_name_algo, field_algo
+    integer :: i_field
+    character(len=16) :: keyword_fact
+    integer :: i, neq, nocc, nume_store_0
     real(kind=8) :: tempct
     integer :: ifm, niv
-    aster_logical :: evonol, leinit
+    aster_logical :: l_init_evol, l_init_state
     real(kind=8), pointer :: vale(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    initpr = -2
-    instin = r8vide()
-    evonol = .false.
-    lostat = .false.
-    leinit = .false.
-    motfac = 'ETAT_INIT'
+    type_init = -2
+    inst_0   = r8vide()
+    l_init_evol = .false.
+    l_stat = .false.
+    l_init_state = .false.
+    keyword_fact = 'ETAT_INIT'
 !
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
+    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=neq)
 !
-! --- ACCES SD IN ET OUT
+! - Access to input/output datastructure
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'L', jiolch)
-    zioch = zi(jioinf+4-1)
-    nbcham = zi(jioinf+1-1)
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    nb_field = v_io_info(1)
+    zioch    = v_io_info(4)
 !
-! --- ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
+! - ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
 !
-    call dismoi('CALC_RIGI', modele, 'MODELE', repk=calcri)
+    call dismoi('CALC_RIGI', model, 'MODELE', repk=calcri)
     if (calcri .ne. 'OUI') then
-        call utmess('F', 'CALCULEL2_65', sk=modele)
+        call utmess('F', 'CALCULEL2_65', sk=model)
     endif
 !
-! --- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
+! - PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
-    call getfac(motfac, nocc)
+    call getfac(keyword_fact, nocc)
     ASSERT(nocc.le.1)
-    leinit = nocc.gt.0
-    if (leinit) then
+    l_init_state = nocc.gt.0
+    if (l_init_state) then
         if (niv .ge. 2) then
             write (ifm,*) '<THERNONLINE> LECTURE ETAT INITIAL'
         endif
     else
-        if (lreuse) then
+        if (l_reuse) then
             call utmess('A', 'ETATINIT_1')
         else
             call utmess('I', 'ETATINIT_20')
         endif
     endif
 !
-! --- CONCEPT EVOL_THER DONNE DANS ETAT_INIT
+! - CONCEPT EVOL_THER DONNE DANS ETAT_INIT
 !
-    call getvid(motfac, 'EVOL_THER', iocc=1, scal=evol, nbret=nocc)
+    call getvid(keyword_fact, 'EVOL_THER', iocc=1, scal=evol, nbret=nocc)
     ASSERT(nocc.le.1)
-    evonol = nocc.gt.0
+    l_init_evol = nocc.gt.0
 !
-! --- INSTANT INITIAL
+! - INSTANT INITIAL
 !
     if (niv .ge. 2) then
         write (ifm,*) '<THERNONLINE> ... INSTANT INITIAL'
     endif
-    call nmdoin(evol, evonol, instin, numein)
+    call nmdoin(evol, l_init_evol, inst_0, nume_store_0)
     if (niv .ge. 2) then
-        if (instin .eq. r8vide()) then
+        if (inst_0 .eq. r8vide()) then
             write (ifm,*) '<THERNONLINE> ...... NON DEFINI PAR ETAT_INIT'
         else
-            write (ifm,*) '<THERNONLINE> ...... VALEUR    : ',instin
-            write (ifm,*) '<THERNONLINE> ...... NUME_ORDRE: ',numein
+            write (ifm,*) '<THERNONLINE> ...... VALEUR    : ',inst_0
+            write (ifm,*) '<THERNONLINE> ...... NUME_ORDRE: ',nume_store_0
         endif
     endif
 !
-! --- PAS DE PRECISION --> C'EST UN CALCUL STATIONNAIRE
+! - PAS DE PRECISION --> C'EST UN CALCUL STATIONNAIRE
 !
-    call getfac(motfac, nocc)
+    call getfac(keyword_fact, nocc)
     ASSERT(nocc.le.1)
     if (nocc .eq. 0) then
-        lostat = .true.
-        initpr = -1
+        l_stat    = .true.
+        type_init = -1
         goto 99
     endif
 !
-! --- BOUCLE SUR LES CHAMPS A LIRE
+! - Loop on fields
 !
-    do icham = 1, nbcham
+    do i_field = 1, nb_field
 !
-! ------- ETAT INITIAL DEFINI PAR UN CONCEPT DE TYPE EVOL_THER
+! ----- Initial state defined by EVOL_THER results 
 !
         result = evol(1:8)
 !
-! ------- LECTURE DU CHAMP - ETAT_INIT/EVONOL
+! ----- Read field for ETAT_INIT
 !
-        if (evonol) then
-            initpr = 3
-            call nmetl1(result, numein, sdieto, icham)
+        if (l_init_evol) then
+!
+! --------- Read field for ETAT_INIT - From results datastructure
+!
+            type_init = 3
+            call nmetl1(result, nume_store_0, sd_inout, i_field)
         else
 !
-! --------- NOM DU CHAMP DANS SD RESULTAT
+! --------- Name of field (type) in results datastructure
 !
-            nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
+            field_name_resu = v_io_para(zioch*(i_field-1)+1 )
 !
-! --------- NOM DU CHAMP DANS OPERATEUR
+! --------- Name of field in algorithm
 !
-            call nmetnc(sdieto, icham, nomcha)
+            field_name_algo = v_io_para(zioch*(i_field-1)+6 )
+            call nmetnc(field_name_algo, field_algo)
 !
-            if (nomchs .eq. 'TEMP') then
-                call jeveuo(nomcha(1:19)//'.VALE', 'E', vr=vale)
+            if (field_name_resu .eq. 'TEMP') then
+                call jeveuo(field_algo(1:19)//'.VALE', 'E', vr=vale)
 !
-! ----------- TEMPERATURE INITIALE PAR UN CHAMP
+! ------------- Initial temperature: from field
 !
-                call getvid(motfac, 'CHAM_NO', iocc=1, scal=k8bid, nbret=nocc)
+                call getvid(keyword_fact, 'CHAM_NO', iocc=1, nbret=nocc)
                 if (nocc .eq. 1) then
-                    initpr = 2
-                    call nmetl2(motfac, sdieto, icham)
+                    type_init = 2
+                    call nmetl2(keyword_fact, sd_inout, i_field)
                 endif
 !
-! ----------- TEMPERATURE INITIALE STATIONNAIRE
+! ------------- Initial temperature: stationnary computation
 !
-                call getvtx(motfac, 'STATIONNAIRE', iocc=1, scal=repsta, nbret=nocc)
+                call getvtx(keyword_fact, 'STATIONNAIRE', iocc=1, scal=answer, nbret=nocc)
                 if (nocc .gt. 0) then
-                    if (repsta(1:3) .eq. 'OUI') then
-                        lostat = .true.
-                        initpr = 0
-                        zk24(jiolch+zioch*(icham-1)+4-1) =&
-                        'STATIONNAIRE'
+                    if (answer(1:3) .eq. 'OUI') then
+                        l_stat = .true.
+                        type_init = 0
+                        v_io_para(zioch*(i_field-1)+4) = 'STATIONNAIRE'
                     endif
                 endif
 !
-! ----------- TEMPERATURE INITIALE UNIFORME
+! ------------- Initial temperature: constant
 !
-                call getvr8(motfac, 'VALE', iocc=1, scal=tempct, nbret=nocc)
+                call getvr8(keyword_fact, 'VALE', iocc=1, scal=tempct, nbret=nocc)
                 if (nocc .gt. 0) then
-                    initpr = 1
+                    type_init = 1
                     do i = 1, neq
                         vale(i) = tempct
-                        zk24(jiolch+zioch*(icham-1)+4-1) = 'VALE'
+                        v_io_para(zioch*(i_field-1)+4) = 'VALE'
                     end do
                 endif
 !
             else
-                call nmetl2(motfac, sdieto, icham)
+                call nmetl2(keyword_fact, sd_inout, i_field)
             endif
         endif
 !
-! ------- LECTURE DU CHAMP - VERIFICATIONS
+! ----- Read field for ETAT_INIT - Some checks
 !
-        call ntetl3(result, sdieto, icham, tempct)
+        call ntetl3(result, sd_inout, i_field, tempct)
     end do
 !
  99 continue

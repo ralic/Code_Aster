@@ -16,14 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetcc(sdieto, compor, sddyna, sdpost, resoco,&
-                      nbcham, zioch)
-        character(len=24) :: sdieto
-        character(len=24) :: compor
-        character(len=19) :: sddyna
-        character(len=19) :: sdpost
-        character(len=24) :: resoco
-        integer :: nbcham
-        integer :: zioch
+    subroutine nmetcc(field_type     , field_name_algo, field_name_init,&
+                      compor         , sddyna         , sdpost         , sdcont_algo,&
+                      hydr           , temp_init      , hydr_init)
+        character(len=24), intent(in) :: field_type
+        character(len=24), intent(out) :: field_name_algo
+        character(len=24), intent(out) :: field_name_init
+        character(len=24), optional, intent(in) :: sdcont_algo
+        character(len=19), optional, intent(in) :: compor
+        character(len=19), optional, intent(in) :: sddyna
+        character(len=19), optional, intent(in) :: sdpost
+        character(len=24), optional, intent(in) :: hydr
+        character(len=24), optional, intent(in) :: hydr_init
+        character(len=24), optional, intent(in) :: temp_init
     end subroutine nmetcc
 end interface

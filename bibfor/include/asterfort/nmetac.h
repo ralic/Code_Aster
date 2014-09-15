@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
-        integer :: nbmax
-        integer :: fonact(*)
-        character(len=19) :: sddyna
-        character(len=24) :: defico
-        aster_logical :: chaact(nbmax)
+    subroutine nmetac(list_func_acti, sddyna, sdcont_defi, nb_field_maxi, list_field_acti)
+        integer, intent(in) :: nb_field_maxi
+        aster_logical, intent(inout) :: list_field_acti(nb_field_maxi)
+        character(len=19), intent(in) :: sddyna
+        integer, intent(in) :: list_func_acti(*)
+        character(len=24), intent(in) :: sdcont_defi
     end subroutine nmetac
 end interface

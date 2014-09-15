@@ -1,4 +1,14 @@
-subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
+subroutine nmetac(list_func_acti, sddyna, sdcont_defi, nb_field_maxi, list_field_acti)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,177 +28,160 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/wkvect.h"
-    integer :: nbmax
-    aster_logical :: chaact(nbmax)
-    integer :: fonact(*)
-    character(len=19) :: sddyna
-    character(len=24) :: defico
+    integer, intent(in) :: nb_field_maxi
+    aster_logical, intent(inout) :: list_field_acti(nb_field_maxi)
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: sdcont_defi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (GESTION IN ET OUT)
+! *_NON_LINE - Input/output datastructure
 !
-! ACTIVATION DES CHAMPS A TRAITER SUIVANT FONCTIONNALITES ACTIVEES
+! Select fields depending on active functionnalities
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
-! IN  NBMAX  : NOMBRE DE CHAMPS A CONSIDERER
-! OUT CHAACT : CHAMPS A ACTIVER/DESACTIVER
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  list_func_acti   : list of active functionnalities
+! In  sddyna           : name of dynamic parameters datastructure
+! In  nb_field_maxi    : number of fields to active
+! IO  list_field_acti  : list of fields to active
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lxfcm, ldyna, lxffm, lxczm, lcont, lnoeu, lmuap, lstrx
-    aster_logical :: lvibr, lflam, lstab, lener
-    character(len=24) :: trav
-    integer :: jtrav
-    integer :: icham, istop
+    aster_logical :: l_cont_xfem, l_frot_xfem, l_xfem_czm, l_cont
+    aster_logical :: l_dyna, l_inte_node, l_muap, l_strx
+    aster_logical :: l_vibr_mode, l_crit_stab, l_dof_stab, l_ener
+    integer :: i_field
+    integer, pointer :: work_flag(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalities
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE' )
-    lxfcm = isfonc(fonact,'CONT_XFEM' )
-    lcont = isfonc(fonact,'CONTACT' )
-    lmuap = ndynlo(sddyna,'MULTI_APPUI')
-    lflam = isfonc(fonact,'CRIT_STAB' )
-    lstab = isfonc(fonact,'DDL_STAB' )
-    lvibr = isfonc(fonact,'MODE_VIBR' )
-    lener = isfonc(fonact,'ENERGIE' )
-    if (lxfcm) then
-        lxffm = isfonc(fonact,'FROT_XFEM')
-        lxczm = cfdisl(defico,'EXIS_XFEM_CZM')
+    l_dyna      = ndynlo(sddyna,'DYNAMIQUE' )
+    l_muap      = ndynlo(sddyna,'MULTI_APPUI')
+    l_crit_stab = isfonc(list_func_acti,'CRIT_STAB' )
+    l_dof_stab  = isfonc(list_func_acti,'DDL_STAB' )
+    l_vibr_mode = isfonc(list_func_acti,'MODE_VIBR' )
+    l_strx      = isfonc(list_func_acti,'EXI_STRX')
+    l_ener      = isfonc(list_func_acti,'ENERGIE' )
+    l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM' )
+    l_cont      = isfonc(list_func_acti,'CONTACT' )
+    if (l_cont_xfem) then
+        l_frot_xfem = isfonc(list_func_acti,'FROT_XFEM')
+        l_xfem_czm  = cfdisl(sdcont_defi,'EXIS_XFEM_CZM')
     endif
-    lstrx = isfonc(fonact,'EXI_STRX')
 !
-! --- VECTEUR ACTIVATION
+! - Working vector
 !
-    trav = '&&NMETAC.TRAV'
-    call wkvect(trav, 'V V I', nbmax, jtrav)
+    AS_ALLOCATE(vi = work_flag, size = nb_field_maxi)
 !
-! --- CHAMPS STANDARDS: DEPL/SIEF_ELGA/VARI_ELGA/FORC_NODA
+! - Standard: DEPL/SIEF_ELGA/VARI_ELGA/FORC_NODA
 !
-    chaact(1) = .true.
-    chaact(2) = .true.
-    chaact(3) = .true.
-    chaact(16) = .true.
-    zi(jtrav-1+1) = 1
-    zi(jtrav-1+2) = 1
-    zi(jtrav-1+3) = 1
-    zi(jtrav-1+16) = 1
+    list_field_acti(1)  = .true.
+    list_field_acti(2)  = .true.
+    list_field_acti(3)  = .true.
+    list_field_acti(16) = .true.
+    work_flag(1)  = 1
+    work_flag(2)  = 1
+    work_flag(3)  = 1
+    work_flag(16) = 1
 !
-! --- CARTE COMPORTEMENT
+! - Standard: COMPOR
 !
-    chaact(4) = .true.
-    zi(jtrav-1+4) = 1
+    list_field_acti(4) = .true.
+    work_flag(4) = 1
 !
-! --- CHAMPS DYNAMIQUE: VITE/ACCE
+! - Dynamic: VITE/ACCE
 !
-    if (ldyna) then
-        chaact(5) = .true.
-        chaact(6) = .true.
+    if (l_dyna) then
+        list_field_acti(5) = .true.
+        list_field_acti(6) = .true.
     endif
-    zi(jtrav-1+5) = 1
-    zi(jtrav-1+6) = 1
+    work_flag(5) = 1
+    work_flag(6) = 1
 !
-! --- CHAMPS XFEM
+! - XFEM
 !
-    if (lxfcm) then
-        chaact(7) = .true.
-        if (lxffm) then
-            chaact(8) = .true.
+    if (l_cont_xfem) then
+        list_field_acti(7) = .true.
+        if (l_frot_xfem) then
+            list_field_acti(8) = .true.
         endif
-        if (lxczm) then
-            chaact(9) = .true.
+        if (l_xfem_czm) then
+            list_field_acti(9) = .true.
         endif
     endif
-    zi(jtrav-1+7) = 1
-    zi(jtrav-1+8) = 1
-    zi(jtrav-1+9) = 1
+    work_flag(7) = 1
+    work_flag(8) = 1
+    work_flag(9) = 1
 !
-! --- CONTACT
+! - Contact
 !
-    if (lcont) then
-        lnoeu = cfdisl(defico,'ALL_INTEG_NOEUD')
-        if (lnoeu) then
-            chaact(10) = .true.
+    if (l_cont) then
+        l_inte_node = cfdisl(sdcont_defi,'ALL_INTEG_NOEUD')
+        if (l_inte_node) then
+            list_field_acti(10) = .true.
         endif
     endif
-    zi(jtrav-1+10) = 1
+    work_flag(10) = 1
 !
-! --- FLAMBEMENT
+! - Stability criterion (buckling)
 !
-    if (lflam) then
-        chaact(11) = .true.
+    if (l_crit_stab) then
+        list_field_acti(11) = .true.
     endif
-    zi(jtrav-1+11) = 1
+    work_flag(11) = 1
 !
-! --- STABILITE
+! - Stability criterion (with dof selection)
 !
-    if (lstab) then
-        chaact(18) = .true.
+    if (l_dof_stab) then
+        list_field_acti(18) = .true.
     endif
-    zi(jtrav-1+18) = 1
+    work_flag(18) = 1
 !
-! --- MODES VIBRATOIRES
+! - Vibration modes
 !
-    if (lvibr) then
-        chaact(12) = .true.
+    if (l_vibr_mode) then
+        list_field_acti(12) = .true.
     endif
-    zi(jtrav-1+12) = 1
+    work_flag(12) = 1
 !
-! --- DEPL/VITE/ACCE D'ENTRAINEMENT EN MULTI-APPUIS
+! - "MULTI-APPUIS": DEPL/VITE/ACCE d'entrainement
 !
-    if (lmuap) then
-        chaact(13) = .true.
-        chaact(14) = .true.
-        chaact(15) = .true.
+    if (l_muap) then
+        list_field_acti(13) = .true.
+        list_field_acti(14) = .true.
+        list_field_acti(15) = .true.
     endif
-    zi(jtrav-1+13) = 1
-    zi(jtrav-1+14) = 1
-    zi(jtrav-1+15) = 1
+    work_flag(13) = 1
+    work_flag(14) = 1
+    work_flag(15) = 1
 !
-! --- POUTRE MULTI_FIBRE
+! - Special elements: multifibers beams
 !
-    if (lstrx) then
-        chaact(17) = .true.
+    if (l_strx) then
+        list_field_acti(17) = .true.
     endif
-    zi(jtrav-1+17) = 1
+    work_flag(17) = 1
 !
-! --- FORCES POUR CALCUL DES ENERGIES
+! - Energy
 !
-    if (lener) then
-        chaact(19) = .true.
-        chaact(20) = .true.
+    if (l_ener) then
+        list_field_acti(19) = .true.
+        list_field_acti(20) = .true.
     endif
-    zi(jtrav-1+19) = 1
-    zi(jtrav-1+20) = 1
+    work_flag(19) = 1
+    work_flag(20) = 1
 !
-! --- VERIFICATION
-! --- SI LE ASSERT SE DECLENCHE, C'EST QUE VOUS AVEZ OUBLIE DE DIRE
-! --- DANS QUEL CAS ON DOIT S'OCCUPER DU CHAMP
+! - Check: if ASSERT -> you've forgottent to say what Aster do with the field
 !
-    do 10 icham = 1, nbmax
-        istop = zi(jtrav-1+icham)
-        ASSERT(istop.eq.1)
- 10 end do
+    do i_field = 1, nb_field_maxi
+        ASSERT(work_flag(i_field).eq.1)
+    end do
 !
-    call jedetr(trav)
-    call jedema()
+    AS_DEALLOCATE(vi = work_flag)
 end subroutine

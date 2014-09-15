@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
-                      chaout)
-        character(len=24) :: nomchs
-        character(len=24) :: chrefe
-        character(len=24) :: lochin
-        character(len=24) :: locout
-        character(len=24) :: chain
-        character(len=24) :: chaout
+    subroutine nmetcv(field_refe, field_in, field_disc_in, field_out, field_disc_out)
+        character(len=24), intent(in) :: field_refe
+        character(len=24), intent(in) :: field_in
+        character(len=24), intent(in) :: field_out
+        character(len=24), intent(in) :: field_disc_in
+        character(len=24), intent(in) :: field_disc_out
     end subroutine nmetcv
 end interface

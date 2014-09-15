@@ -22,7 +22,7 @@ interface
                       sdnume, defico, sdcrit, comref, fonact,&
                       parcon, parcri, method, lisch2, noma,&
                       sdpilo, sddyna, sdimpr, sdsuiv, sdobse,&
-                      sdtime, sderro, sdpost, sdieto, sdener,&
+                      sdtime, sderro, sdpost, sd_inout, sdener,&
                       sdconv, sdcriq, deficu, resocu, resoco,&
                       valinc, solalg, measse, veelem, meelem,&
                       veasse, codere)
@@ -59,7 +59,7 @@ interface
         character(len=24) :: sdtime
         character(len=24) :: sderro
         character(len=19) :: sdpost
-        character(len=24) :: sdieto
+        character(len=24), intent(out) :: sd_inout
         character(len=19) :: sdener
         character(len=24) :: sdconv
         character(len=24) :: sdcriq

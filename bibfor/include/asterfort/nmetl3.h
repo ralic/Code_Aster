@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmetl3(modele, compor, evonol, result, numein,&
-                      sdieto, leinit, icham)
-        character(len=24) :: modele
-        character(len=24) :: compor
-        aster_logical :: evonol
-        character(len=8) :: result
-        integer :: numein
-        character(len=24) :: sdieto
-        aster_logical :: leinit
-        integer :: icham
+    subroutine nmetl3(model   , compor      , l_init_evol, result, nume_store_0,&
+                      sd_inout, l_init_state, i_field)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: compor
+        aster_logical, intent(in) :: l_init_evol
+        character(len=8), intent(in) :: result
+        integer, intent(in) :: nume_store_0
+        character(len=24), intent(in) :: sd_inout
+        aster_logical, intent(in) :: l_init_state
+        integer, intent(in) :: i_field
     end subroutine nmetl3
 end interface

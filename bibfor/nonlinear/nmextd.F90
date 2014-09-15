@@ -1,4 +1,10 @@
-subroutine nmextd(nomcha, sdieto, champ)
+subroutine nmextd(field_name_resu, sd_inout, field_algo)
+!
+implicit none
+!
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/nmetob.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,45 +24,51 @@ subroutine nmextd(nomcha, sdieto, champ)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmetnc.h"
-#include "asterfort/nmetob.h"
-    character(len=24) :: nomcha, sdieto
-    character(len=19) :: champ
+    character(len=24), intent(in) :: sd_inout
+    character(len=*), intent(in) :: field_name_resu
+    character(len=*), intent(out) :: field_algo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
 !
-! RETOURNE LE CHAMP POUR L'EXTRACTION
+! Get name of datastructure for field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! In  sd_inout        : datastructure for input/output parameters
+! In  field_name_resu : name of field in algorithme
+! Out field_algo      : name of datastructure for field
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch
+    character(len=24) :: field_name_algo
+    integer :: i_field_obsv
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  NOMCHA : NOM DU CHAMP
-! IN  SDIETO : SD GESTION IN ET OUT
-! OUT CHAMP  : NOM DU CHAMP
+! - Access to datastructure
 !
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    zioch = v_io_info(4)
 !
+! - Get index of field used for OBSERVATION
 !
+    call nmetob(sd_inout, field_name_resu, i_field_obsv)
 !
-    integer :: icham
+! - Get name of datastructure for field
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INDICE DU CHAMP
-!
-    call nmetob(sdieto, nomcha, icham)
-!
-! --- NOM DU CHAMP DANS L'OPERATEUR
-!
-    call nmetnc(sdieto, icham, champ)
-!
-    call jedema()
+    if (i_field_obsv.ne.0) then
+        field_name_algo  = v_io_para(zioch*(i_field_obsv-1)+6 )
+        call nmetnc(field_name_algo, field_algo)
+    endif
 !
 end subroutine

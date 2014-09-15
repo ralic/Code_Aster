@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
-                      initpr, instin)
-        character(len=24) :: modele
-        character(len=24) :: numedd
-        aster_logical :: lreuse
-        aster_logical :: lostat
-        character(len=24) :: sdieto
-        integer :: initpr
-        real(kind=8) :: instin
+    subroutine nxdoet(model    , nume_ddl, l_reuse, l_stat, sd_inout,&
+                      type_init, inst_0)
+        character(len=24), intent(in) :: model
+        aster_logical, intent(in) :: l_reuse
+        character(len=24), intent(in) :: nume_ddl
+        character(len=24), intent(in) :: sd_inout
+        real(kind=8), intent(out) :: inst_0
+        integer, intent(out) :: type_init
+        aster_logical, intent(out) :: l_stat
     end subroutine nxdoet
 end interface

@@ -1,5 +1,10 @@
-subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
-                  chaout)
+subroutine nmetcv(field_refe, field_in, field_disc_in, field_out, field_disc_out)
+!
+implicit none
+!
+#include "asterfort/chpchd.h"
+#include "asterfort/copisd.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,81 +24,58 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/chpchd.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: chain, chaout
-    character(len=24) :: nomchs, chrefe
-    character(len=24) :: lochin, locout
+    character(len=24), intent(in) :: field_refe
+    character(len=24), intent(in) :: field_in
+    character(len=24), intent(in) :: field_out
+    character(len=24), intent(in) :: field_disc_in
+    character(len=24), intent(in) :: field_disc_out
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! CONVERSION D'UN CHAMP
+! Field conversion (discretization)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  field_refe      : name of a reference field to convert ELGA fields
+! In  field_in        : name of field to convert
+! In  field_disc_in   : spatial discretization of field to convert
+! In  field_out       : name of field converted
+! In  field_disc_out  : spatial discretization of field converted
 !
-! IN  NOMCHS : NOM DU CHAMP DANS SD RESULTAT
-! IN  CHREFE : CHAM_ELEM DE REFERENCE -
-!              SERT A LA CONVERSION CART -> ELGA
-! IN  CHAIN  : CHAMP D'ENTREE A CONVERTIR
-! IN  LOCHIN : TYPE DE LOCALISATION DU CHAMP
-! IN  LOCOUT : TYPE DE LOCALISATION DU CHAMP DE SORTIE DEMANDE
-! OUT CHAOUT : CHAMP DE SORTIE CONVERTI
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: iret
     character(len=24) :: valk(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-! --- LOCALISATION DU CHAMP EN ENTREE
+! - Good discretization -> nothing to do
 !
-    call dismoi('TYPE_CHAMP', chain, 'CHAMP', repk=lochin, arret='C',&
-                ier=iret)
-    if (iret .eq. 1) then
-        call utmess('F', 'ETATINIT_50', sk=nomchs)
-    endif
-!
-! --- PAS DE CONVERSION SI BONS TYPES
-!
-    if (lochin .eq. locout) then
-        call copisd('CHAMP_GD', 'V', chain, chaout)
-        goto 99
-    endif
-!
-! --- CONVERSION POSSIBLE ?
-!
-    valk(1) = chain
-    valk(2) = lochin
-    valk(3) = locout
-    if (locout .eq. 'ELGA') then
-        if (chrefe .eq. ' ') then
-            call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
-        else
-            call utmess('I', 'ETATINIT_51', nk=3, valk=valk)
-        endif
+    if (field_disc_in .eq. field_disc_out) then
+        call copisd('CHAMP_GD', 'V', field_in, field_out)
     else
-        call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
+!
+! ----- Not good discretization -> is it possible to convert ?
+!
+        valk(1) = field_in
+        valk(2) = field_disc_in
+        valk(3) = field_disc_out
+        if (field_disc_out .eq. 'ELGA') then
+            if (field_refe .eq. ' ') then
+                call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
+            else
+                call utmess('I', 'ETATINIT_51', nk=3, valk=valk)
+            endif
+        else
+            call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
+        endif
+!
+! ----- Not good discretization -> convert
+!
+        call chpchd(field_in , field_disc_out, field_refe, 'NON', 'V',&
+                    field_out)
     endif
 !
-! --- TRANSFORMER LE CHAM_ELEM EN CHAM_ELGA
-!
-    call chpchd(chain, locout, chrefe, 'NON', 'V',&
-                chaout)
-!
- 99 continue
-!
-    call jedema()
 end subroutine

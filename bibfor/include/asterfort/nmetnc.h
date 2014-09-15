@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmetnc(sdieto, icham, nomcha)
-        character(len=24) :: sdieto
-        integer :: icham
-        character(len=*) :: nomcha
+    subroutine nmetnc(field_name_algo, field_algo)
+        character(len=*), intent(in) :: field_name_algo
+        character(len=*), intent(out) :: field_algo
     end subroutine nmetnc
 end interface

@@ -19,6 +19,7 @@ subroutine op0025()
 ! ======================================================================
 !     COMMANDE:  THER_LINEAIRE
 ! ----------------------------------------------------------------------
+! person_in_charge: jessica.haelewyn at edf.fr
 !
     implicit none
 !
@@ -91,7 +92,6 @@ subroutine op0025()
     data cnchci  /' '/
     data tpsthe  /6*0.d0/
     data sddisc  /'&&OP0025.SDDISC'/
-    data sdieto  /'&&OP0186.SDIETO'/
 !
 ! DEB ------------------------------------------------------------------
 !====

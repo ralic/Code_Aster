@@ -103,7 +103,7 @@ subroutine op0070()
 !
 ! --- STRUCTURES DE DONNEES
 !
-    character(len=24) :: sdimpr, sdtime, sderro, sdieto
+    character(len=24) :: sdimpr, sdtime, sderro, sd_inout
     character(len=24) :: sdstat, sdconv, sdsuiv, sdcriq
     character(len=19) :: sdpilo, sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sdobse, sdpost, sdener
@@ -124,7 +124,7 @@ subroutine op0070()
     data sdimpr, sdsuiv    /'&&OP0070.IMPR.','&&OP0070.SUIV.'/
     data sdpost, sdcriq    /'&&OP0070.POST.','&&OP0070.CRIQ.'/
     data sdtime, sderro    /'&&OP0070.TIME.','&&OP0070.ERRE.'/
-    data sdieto, sdstat    /'&&OP0070.IETO.','&&OP0070.STAT.'/
+    data sdstat            /'&&OP0070.STAT.'/
     data sdnume            /'&&OP0070.NUME.ROTAT'/
     data sddisc, sdconv    /'&&OP0070.DISC.','&&OP0070.CONV.'/
     data sdcrit            /'&&OP0070.CRIT.'/
@@ -185,7 +185,7 @@ subroutine op0070()
                 sdnume, defico, sdcrit, comref, fonact,&
                 parcon, parcri, method, lisch2, mailla,&
                 sdpilo, sddyna, sdimpr, sdsuiv, sdobse,&
-                sdtime, sderro, sdpost, sdieto, sdener,&
+                sdtime, sderro, sdpost, sd_inout, sdener,&
                 sdconv, sdcriq, deficu, resocu, resoco,&
                 valinc, solalg, measse, veelem, meelem,&
                 veasse, codere)
@@ -229,7 +229,7 @@ subroutine op0070()
         call nmnewt(mailla, modele, numins, numedd, numfix,&
                     mate, carele, comref, compor, lischa,&
                     method, fonact, carcri, parcon, conv,&
-                    parmet, parcri, sdstat, sdieto, sdtime,&
+                    parmet, parcri, sdstat, sd_inout, sdtime,&
                     sderro, sdimpr, sdnume, sddyna, sddisc,&
                     sdcrit, sdsuiv, sdpilo, sdconv, solveu,&
                     maprec, matass, valinc, solalg, meelem,&
@@ -260,7 +260,7 @@ subroutine op0070()
                 compor, solveu, numins, mate, comref,&
                 lischa, defico, resoco, resocu, parmet,&
                 parcon, fonact, carcri, sdimpr, sdstat,&
-                sddisc, sdtime, sdobse, sderro, sdieto,&
+                sddisc, sdtime, sdobse, sderro, sd_inout,&
                 sddyna, sdpost, valinc, solalg, meelem,&
                 measse, veelem, veasse, sdener, sdcriq,&
                 eta)
@@ -293,7 +293,7 @@ subroutine op0070()
     if (etinst .eq. 'ERRE') then
         goto 200
     else if (etinst.eq.'STOP') then
-        goto 1000
+        goto 800
     endif
 !
 ! --- VERIFICATION DU DECLENCHEMENT DES ERREURS FATALES
@@ -310,14 +310,14 @@ subroutine op0070()
     call nmarch(result, numins, modele, mate, carele,&
                 fonact, carcri, sdimpr, sddisc, sdpost,&
                 sdcrit, sdtime, sderro, sddyna, sdpilo,&
-                sdener, sdieto, sdcriq, lisch2)
+                sdener, sd_inout, sdcriq, lisch2)
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
 !
 ! --- ETAT DU CALCUL
 !
     call nmleeb(sderro, 'CALC', etcalc)
     if ((etcalc.eq.'ERRE') .or. (etcalc.eq.'STOP')) then
-        goto 1000
+        goto 800
     else if (etcalc.eq.'CONV') then
         goto 900
     endif
@@ -335,7 +335,7 @@ subroutine op0070()
 !     GESTION DES ERREURS
 ! ======================================================================
 !
-1000 continue
+800 continue
 !
 ! --- ON COMMENCE PAR ARCHIVER LE PAS DE TEMPS PRECEDENT
 !
@@ -343,7 +343,7 @@ subroutine op0070()
         call nmarch(result, numins-1, modele, mate, carele,&
                     fonact, carcri, sdimpr, sddisc, sdpost,&
                     sdcrit, sdtime, sderro, sddyna, sdpilo,&
-                    sdener, sdieto, sdcriq, lisch2)
+                    sdener, sd_inout, sdcriq, lisch2)
     endif
 !
 ! --- GESTION DES ERREURS ET EXCEPTIONS

@@ -1,4 +1,8 @@
-subroutine nmetob(sdieto, nomcha, icham)
+subroutine nmetob(sd_inout, field_name_resu, i_field_obsv)
+!
+implicit none
+!
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,60 +22,51 @@ subroutine nmetob(sdieto, nomcha, icham)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: sdieto, nomcha
-    integer :: icham
+    character(len=24), intent(in) :: sd_inout
+    character(len=24), intent(in) :: field_name_resu
+    integer, intent(out) :: i_field_obsv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! RETOURNE L'INDICE DU CHAMP OBSERVABLE
+! Get index of field used for OBSERVATION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sd_inout         : datastructure for input/output parameters
+! In  field_name_resu  : name of field (type) in results datastructure
+! Out i_field_obsv     : index of field - 0 if not used for OBSERVATION
 !
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  NOMCHA : NOM DU CHAMP
-! OUT ICHAM  : INDEX DU CHAMP DANS SDIETO
-!              0 SI NON OBSERVABLE
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, nb_field
+    integer :: i_field
+    character(len=24) :: keyw_obsv
 !
+! --------------------------------------------------------------------------------------------------
 !
+    i_field_obsv = 0
 !
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: nbcham, zioch
-    integer :: ich
-    character(len=24) :: motcob
+! - Access to datastructure
 !
-! ----------------------------------------------------------------------
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'L', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    nb_field = v_io_info(1)
+    zioch    = v_io_info(4)
 !
-    call jemarq()
+! - Find field
 !
-! --- INITIALISATIONS
+    do i_field = 1, nb_field
+        keyw_obsv = v_io_para(zioch*(i_field-1)+10)
+        if (keyw_obsv .eq. field_name_resu) then
+            i_field_obsv = i_field
+        endif
+    end do
 !
-    icham = 0
-!
-! --- ACCES SD IN ET OUT
-!
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'L', jiolch)
-    nbcham = zi(jioinf+1-1)
-    zioch = zi(jioinf+4-1)
-!
-! --- CHAMP OBSERVABLE ?
-!
-    do 10 ich = 1, nbcham
-        motcob = zk24(jiolch+zioch*(ich-1)+10-1)
-        if (motcob .eq. nomcha) icham = ich
-10  end do
-!
-    call jedema()
 end subroutine

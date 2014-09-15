@@ -1,5 +1,20 @@
-subroutine nmetl3(modele, compor, evonol, result, numein,&
-                  sdieto, leinit, icham)
+subroutine nmetl3(model   , compor      , l_init_evol, result, nume_store_0,&
+                  sd_inout, l_init_state, i_field)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/chpver.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/nmsigi.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vrcomp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,149 +34,131 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/chpver.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmetnc.h"
-#include "asterfort/nmsigi.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vrcomp.h"
-    character(len=24) :: modele, compor
-    character(len=24) :: sdieto
-    character(len=8) :: result
-    aster_logical :: evonol, leinit
-    integer :: icham, numein
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: compor
+    aster_logical, intent(in) :: l_init_evol
+    character(len=8), intent(in) :: result
+    integer, intent(in) :: nume_store_0
+    character(len=24), intent(in) :: sd_inout
+    aster_logical, intent(in) :: l_init_state
+    integer, intent(in) :: i_field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE GESTION IN ET OUT
+! *_NON_LINE - Input/output datastructure
 !
-! LECTURE D'UN CHAMP - VERIFICATIONS DIVERSES
+! Read field for ETAT_INIT - Some checks
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  result           : name of results datastructure
+! In  compor           : name of <CARTE> COMPOR
+! In  model            : name of model
+! In  sd_inout         : datastructure for input/output parameters
+! In  i_field          : field index
+! In  nume_store_0     : storage index of initial state
+! In  l_init_evol      : .true. if there is results datastructure in ETAT_INIT
+! In  l_init_state     : .true. if read initial state in ETAT_INIT
 !
-! IN  MODELE : NOM DU MODELE
-! IN  COMPOR : CARTE COMPORTEMENT
-! IN  EVONOL : .TRUE. SI CONCEPT EVOL DANS ETAT_INIT
-! IN  LEINIT : .TRUE. SI LECTURE ETAT_INIT
-! IN  RESULT : NOM SD EVOL_NOLI
-! IN  SDIETO : SD GESTION IN ET OUT
-! IN  NUMEIN : NUMERO ORDRE INSTANT INITIAL
-! IN  ICHAM  : INDEX DU CHAMP DANS SDIETO
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=24) :: ioinfo, iolcha
-    integer :: jioinf, jiolch
-    integer :: zioch
-    integer :: iret
-    character(len=24) :: chetin, nomchs, loccha, nomgd, statut
+    character(len=24) :: io_lcha, io_info
+    character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: v_io_info(:) => null()
+    integer :: zioch, iret
+    character(len=24) :: flag_etat_init, field_name_resu, field_disc, field_gran, field_state
     character(len=24) :: valk(2)
-    character(len=24) :: nomcha
+    character(len=24) :: field_algo, field_name_algo
     character(len=24) :: ligrmo, compom
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 !
-! --- INITIALISATION
+! - Access to datastructure
 !
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    io_lcha = sd_inout(1:19)//'.LCHA'
+    io_info = sd_inout(1:19)//'.INFO'
+    call jeveuo(io_lcha, 'E', vk24 = v_io_para)
+    call jeveuo(io_info, 'L', vi   = v_io_info)
+    zioch = v_io_info(4)
 !
-! --- ACCES AUX SDS
+! - Field to read ?
 !
-    ioinfo = sdieto(1:19)//'.INFO'
-    iolcha = sdieto(1:19)//'.LCHA'
-    call jeveuo(ioinfo, 'L', jioinf)
-    call jeveuo(iolcha, 'E', jiolch)
-    zioch = zi(jioinf+4-1)
+    flag_etat_init = v_io_para(zioch*(i_field-1)+8 )
+    if (flag_etat_init .eq. 'OUI') then
 !
-! --- CHAMP A LIRE ?
+! ----- Name of field (type) in results datastructure
 !
-    chetin = zk24(jiolch+zioch*(icham-1)+8-1)
-    if (chetin .eq. 'NON') goto 999
+        field_name_resu = v_io_para(zioch*(i_field-1)+1 )
 !
-! --- NOM DU CHAMP DANS SD RESULTAT
+! ----- Name of field in algorithm
 !
-    nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
+        field_name_algo = v_io_para(zioch*(i_field-1)+6 )
+        call nmetnc(field_name_algo, field_algo)
 !
-! --- NOM DU CHAMP DANS L'OPERATEUR
+! ----- Spatial discretization of field
 !
-    call nmetnc(sdieto, icham, nomcha)
+        field_disc = v_io_para(zioch*(i_field-1)+5 )
 !
-! --- LOCALISATION DU CHAMP
+! ----- Type of GRANDEUR of field
 !
-    loccha = zk24(jiolch+zioch*(icham-1)+5-1)
+        field_gran = v_io_para(zioch*(i_field-1)+7 )
 !
-! --- NOM DE LA GRANDEUR
+! ----- Actual state of field
 !
-    nomgd = zk24(jiolch+zioch*(icham-1)+7-1)
+        field_state = v_io_para(zioch*(i_field-1)+4 )
 !
-! --- STATUT DU CHAMP
+! ----- Informations about field
 !
-    statut = zk24(jiolch+zioch*(icham-1)+4-1)
-!
-! --- LE CHAMP N'A JAMAIS ETE LU
-!
-    if (statut .eq. ' ') then
-        call utmess('F', 'ETATINIT_30', sk=nomchs)
-    else
-        valk(1) = nomchs
-        valk(2) = result(1:8)
-        if (statut .eq. 'ZERO') then
-            call utmess('I', 'ETATINIT_31', sk=nomchs)
-        else if (statut.eq.'SDRESU') then
-            call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
-        else if (statut.eq.'CHAMP') then
-            call utmess('I', 'ETATINIT_33', sk=nomchs)
+        if (field_state .eq. ' ') then
+            call utmess('F', 'ETATINIT_30', sk=field_name_resu)
         else
-            ASSERT(.false.)
-        endif
-    endif
-!
-! --- VERIFICATION DE LA GRANDEUR ET DE LA LOCALISATION
-!
-    if (nomgd .ne. ' ') then
-        call chpver('F', nomcha, loccha, nomgd, iret)
-    endif
-!
-! --- TRAITEMENT DE LA PRE-CONTRAINTE
-!
-    if (nomchs .eq. 'SIEF_ELGA') then
-        call nmsigi(ligrmo, compor, nomcha(1:19))
-    endif
-!
-! --- VERIFIER LA COHERENCE DU CHAMP DE VARIABLES INTERNES
-!
-    if (nomchs .eq. 'VARI_ELGA') then
-        if (leinit) then
-            compom = ' '
-            if (evonol) then
-                call rsexch(' ', result, 'COMPORTEMENT', numein, compom,&
-                            iret)
-                if (iret .ne. 0) compom = ' '
-            endif
-            if (compom .eq. ' ') then
-                call vrcomp(compor, nomcha, ligrmo, iret)
+            valk(1) = field_name_resu
+            valk(2) = result
+            if (field_state .eq. 'ZERO') then
+                call utmess('I', 'ETATINIT_31', sk=field_name_resu)
+            else if (field_state.eq.'SDRESU') then
+                call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
+            else if (field_state.eq.'CHAMP') then
+                call utmess('I', 'ETATINIT_33', sk=field_name_resu)
             else
-                call vrcomp(compor, nomcha, ligrmo, iret, compor_prev = compom)
+                ASSERT(.false.)
             endif
-            if (iret .eq. 1) then
-                call utmess('F', 'MECANONLINE5_2')
+        endif
+!
+! ----- Check GRANDEUR and discretization
+!
+        if (field_gran .ne. ' ') then
+            call chpver('F', field_algo, field_disc, field_gran, iret)
+        endif
+!
+! ----- For pre-stressed load
+!
+        if (field_name_resu .eq. 'SIEF_ELGA') then
+            call nmsigi(ligrmo, compor, field_algo(1:19))
+        endif
+!
+! ----- Check internal variables
+!
+        if (field_name_resu .eq. 'VARI_ELGA') then
+            if (l_init_state) then
+                compom = ' '
+                if (l_init_evol) then
+                    call rsexch(' ', result, 'COMPORTEMENT', nume_store_0, compom,&
+                                iret)
+                    if (iret .ne. 0) compom = ' '
+                endif
+                if (compom .eq. ' ') then
+                    call vrcomp(compor, field_algo, ligrmo, iret)
+                else
+                    call vrcomp(compor, field_algo, ligrmo, iret, compor_prev = compom)
+                endif
+                if (iret .eq. 1) then
+                    call utmess('F', 'MECANONLINE5_2')
+                endif
             endif
         endif
     endif
 !
-999 continue
-!
-    call jedema()
 end subroutine

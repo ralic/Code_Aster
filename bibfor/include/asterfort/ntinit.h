@@ -20,7 +20,7 @@
 interface
     subroutine ntinit(result, modele, mate, carele, lischa,&
                       lisch2, solveu, para, numedd, lostat,&
-                      levol, lnonl, sddisc, sdieto, mailla,&
+                      levol, lnonl, sddisc, sd_inout, mailla,&
                       sdcrit, time)
         character(len=24) :: result
         character(len=24) :: modele
@@ -35,7 +35,7 @@ interface
         aster_logical :: levol
         aster_logical :: lnonl
         character(len=19) :: sddisc
-        character(len=24) :: sdieto
+        character(len=24), intent(out) :: sd_inout
         character(len=8) :: mailla
         character(len=19) :: sdcrit
         character(len=24) :: time

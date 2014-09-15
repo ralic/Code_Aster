@@ -1,34 +1,16 @@
-subroutine nminit(result, modele, numedd, numfix, mate,&
-                  compor, carele, parmet, lischa, maprec,&
-                  solveu, carcri, numins, sdstat, sddisc,&
-                  sdnume, defico, sdcrit, comref, fonact,&
-                  parcon, parcri, method, lisch2, noma,&
-                  sdpilo, sddyna, sdimpr, sdsuiv, sdobse,&
-                  sdtime, sderro, sdpost, sdieto, sdener,&
-                  sdconv, sdcriq, deficu, resocu, resoco,&
-                  valinc, solalg, measse, veelem, meelem,&
+subroutine nminit(result, modele, numedd, numfix  , mate,&
+                  compor, carele, parmet, lischa  , maprec,&
+                  solveu, carcri, numins, sdstat  , sddisc,&
+                  sdnume, defico, sdcrit, comref  , fonact,&
+                  parcon, parcri, method, lisch2  , noma,&
+                  sdpilo, sddyna, sdimpr, sdsuiv  , sdobse,&
+                  sdtime, sderro, sdpost, sd_inout, sdener,&
+                  sdconv, sdcriq, deficu, resocu  , resoco,&
+                  valinc, solalg, measse, veelem  , meelem,&
                   veasse, codere)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=W1504
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/accel0.h"
@@ -39,7 +21,6 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 #include "asterfort/diinit.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -74,6 +55,26 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 #include "asterfort/nmrini.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/nmvcre.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     integer :: fonact(*)
     real(kind=8) :: parcon(*), parcri(*), parmet(*)
     character(len=16) :: method(*)
@@ -90,19 +91,18 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=24) :: sdimpr, sdtime, sderro, sdieto, sdstat, sdconv
+    character(len=24) :: sdimpr, sdtime, sderro, sdstat, sdconv
     character(len=24) :: deficu, resocu, sdsuiv, sdcriq
     character(len=24) :: comref
+    character(len=24), intent(out) :: sd_inout
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! MECA_NON_LINE
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! Init
 !
-! INITIALISATIONS
-!
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
@@ -111,8 +111,9 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 ! OUT FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! OUT NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! OUT NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
+! Out sd_inout         : datastructure for input/output parameters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, ibid
     real(kind=8) :: r8bid3(3)
@@ -121,19 +122,13 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     character(len=2) :: codret
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
     aster_logical :: lcont, lunil
-    integer :: ifm, niv
     character(len=19) :: ligrcf, ligrxf
     character(len=8) :: nomo
     integer, pointer :: slvi(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) write (ifm,*) '<MECANONLINE> INITIALISATION DU CALCUL'
 !
 ! --- INITIALISATIONS
 !
@@ -226,21 +221,21 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
     call nmdoco(modele, carele, compor)
 !
-! --- CREATION DE LA SD IN ET OUT
+! - Create input/output datastructure
 !
-    call nmetcr(modele, compor, fonact, sddyna, sdpost,&
-                defico, resoco, sdieto, carele)
+    call nmetcr(modele, compor, fonact  , sddyna, sdpost,&
+                defico, resoco, sd_inout, carele)
 !
 ! --- LECTURE ETAT_INIT
 !
     call nmdoet(modele, compor, fonact, numedd, sdpilo,&
-                sddyna, sdcriq, sdieto, solalg, lacc0,&
+                sddyna, sdcriq, sd_inout, solalg, lacc0,&
                 instin)
 !
 ! --- CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
 !
     call diinit(noma, nomo, result, mate, carele,&
-                fonact, sddyna, parcri, instin, sdieto,&
+                fonact, sddyna, parcri, instin, sd_inout,&
                 solveu, defico, sddisc, sdobse, sdsuiv)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
@@ -316,14 +311,14 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! --- OBSERVATION INITIALE
 !
-    call nmobsv(noma, sddisc, sdieto, sdobse, numins)
+    call nmobsv(noma, sddisc, sd_inout, sdobse, numins)
 !
 ! --- CREATION DE LA SD EVOL_NOLI
 !
     call nmnoli(result, sddisc, sderro, carcri, sdimpr,&
                 sdcrit, fonact, sddyna, sdpost, modele,&
                 mate, carele, lisch2, sdpilo, sdtime,&
-                sdener, sdieto, sdcriq)
+                sdener, sd_inout, sdcriq)
 !
 !NS   ICI ON UTILISE LISCPY A LA PLACE DE COPISD POUR
 !NS   RESPECTER L'ESPRIT DE COPISD QUI NE SERT QU'A
