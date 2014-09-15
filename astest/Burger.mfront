@@ -74,6 +74,7 @@ nu.setGlossaryName("PoissonRatio");
 
 @Integrator{
     real stresP=trace(sig)/3.;
+    real Vsech =max(0.,dSECH);
     Stensor stresD=sig-stresP*Stensor::Id();
     real emax=sqrt(((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI))|((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI)));
     fELIM=ELIM+dELIM-max(ELIM,emax);
@@ -82,7 +83,14 @@ nu.setGlossaryName("PoissonRatio");
     fEDEVR=dEDEVR-(SECH/Cini*stresD-KRD*(EDEVR+dEDEVR))/NRD*dt;
     fESPHI=dESPHI-(SECH/Cini*stresP/(NIS*eexp))*dt;
     fEDEVI=dEDEVI-(SECH/Cini*stresD/(NID*eexp))*dt;
-    fEdess=dEdess-NFD*dSECH/Cini*Stensor::Id();
+    if (NFD>0.)
+    {
+    fEdess=dEdess-(1./NFD)*Vsech/Cini*sig;
+    }
+    else
+    {
+    fEdess=dEdess-0.*Vsech/Cini*sig;
+     }
     feel=deel-(deto-dEDEVR-dEDEVI-dEdess-(dESPHR+dESPHI)*Stensor::Id());
 }
 

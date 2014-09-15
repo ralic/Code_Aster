@@ -69,6 +69,7 @@
 
 @Integrator{
     real stresP=trace(sig)/3.;
+    real Vsech =max(0.,dSECH);
     Stensor stresD=sig-stresP*Stensor::Id();
     real Tmoy=(2.*T+dT)/2.;
     real KRS_T=KRS*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));
@@ -84,8 +85,14 @@
 
     fESPHI=dESPHI-(SECH/SECHini*stresP/(NIS_T*pow(t0+0.5*dt,Alpha)))*dt;
     fEDEVI=dEDEVI-(SECH/SECHini*stresD/(NID_T*pow(t0+0.5*dt,Alpha)))*dt;
-
-    fEdess=dEdess-NFD*dSECH/SECHini*Stensor::Id();
+    if (NFD>0.)
+    {
+    fEdess=dEdess-(1./NFD)*Vsech/SECHini*sig;
+    }
+    else
+    {
+    fEdess=dEdess-0.*Vsech/SECHini*sig;
+     }
     feel=deel-(deto-dEDEVR-dEDEVI-dEdess-(dESPHR+dESPHI)*Stensor::Id());
 }
 
