@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine liscad(lischa, ichar, nomcha, nomfct, nbinfo,&
-                      lisinz, ival)
-        character(len=19) :: lischa
-        integer :: ichar
-        character(len=8) :: nomcha
-        character(len=8) :: nomfct
-        integer :: nbinfo
-        character(len=*) :: lisinz(*)
-        integer :: ival
+    subroutine liscad(list_load      , i_load    , load_namez  , load_funcz, nb_info_typez,&
+                      list_info_typez, info_typez, i_neum_laplz)
+        character(len=19), intent(in) :: list_load
+        integer, intent(in) :: i_load
+        character(len=*), intent(in) :: load_namez
+        character(len=*), intent(in) :: load_funcz
+        integer, optional, intent(in) :: nb_info_typez
+        character(len=*), optional, intent(in) :: list_info_typez(*)
+        character(len=*), optional, intent(in) :: info_typez
+        integer, optional, intent(in) :: i_neum_laplz
     end subroutine liscad
 end interface

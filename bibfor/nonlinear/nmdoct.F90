@@ -1,5 +1,21 @@
-subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
-                  ligrcf, ligrxf)
+subroutine nmdoct(list_load       , sdcont_defi     , sdunil_defi, l_cont, l_unil,&
+                  ligrel_link_cont, ligrel_link_xfem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/focste.h"
+#include "asterfort/getvid.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liscad.h"
+#include "asterfort/lisccr.h"
+#include "asterfort/liscli.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,211 +35,218 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/focste.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/liscad.h"
-#include "asterfort/lisccr.h"
-#include "asterfort/liscli.h"
-#include "asterfort/wkvect.h"
-    character(len=24) :: defico
-    character(len=24) :: deficu
-    character(len=19) :: lischa
-    aster_logical :: lcont, lunil
-    character(len=19) :: ligrcf, ligrxf
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(out) :: sdcont_defi
+    character(len=24), intent(out) :: sdunil_defi
+    aster_logical, intent(out) :: l_cont
+    aster_logical, intent(out) :: l_unil
+    character(len=19), intent(out) :: ligrel_link_cont
+    character(len=19), intent(out) :: ligrel_link_xfem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE UTILITAIRE
+! Non-linear algorithm - Initializations
 !
-! SAISIE ET VERIFICATION DE LA COHERENCE DU CHARGEMENT CONTACT
+! Get information about CONTACT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  list_load        : list of loads
+! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
+! Out l_cont           : .true. if contact
+! Out l_unil           : .true. if unilateral condition
+! Out ligrel_link_cont : name of LIGREL for contact
+! Out ligrel_link_xfem : name of LIGREL for contact with xfem
+! Out sd_iden_rela     : name of object for identity relations between dof
 !
-! OUT DEFICO : NOM DE LA SD DEFINITION DU CONTACT
-! OUT DEFICU : NOM DE LA SD DEFINITION DE LIAISON_UNILATER
-! I/O LISCHA : LISTE DES CHARGES
-! OUT LCONT  : IL Y A DU CONTACT
-! OUT LUNIL  : IL Y A LIAISON_UNILATER
-! OUT LIGRCF : NOM DU LIGREL TARDIF POUR ELEMENTS DE CONTACT CONTINUE
-! OUT LIGRXF : NOM DU LIGREL TARDIF POUR ELEMENTS DE CONTACT XFEM GG
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_info_maxi
+    parameter   (nb_info_maxi=99)
+    character(len=24) :: list_info_type(nb_info_maxi)
 !
-!
-!
-    character(len=16) :: motcle
-    integer :: nocc, nchar1, nchar2, ich, iatype
+    character(len=16) :: keyw
+    integer :: nb_load_cont, nb_load_init, nb_load_new, i_load, nb_info_type
     integer :: rel_lin_disc, rel_lin_xfem
-    character(len=8) :: charco
-    integer :: iform, ival1, ival2
-    character(len=8) :: ligret, ligrel, ligrxt
-    character(len=19) :: lisch2
-    character(len=24) :: infch1
-    integer :: jinfc1
-    character(len=8) :: nomch1, nomfc1, fctcst
-    character(len=24) :: infoc2
+    character(len=8) :: load_cont
+    integer :: iform, i_neum_lapl
+    character(len=8) :: ligrel_link_slav, ligrel_link
+    character(len=19) :: list_load_new
+    character(len=24) :: lload_info
+    character(len=8) :: load_name, load_func, func_const
     real(kind=8) :: coef
-    aster_logical :: ltfcm
-! --- NOMBRE MAXIMUM DE TYPE_INFO
-    integer :: nbinmx, nbinfo
-    parameter   (nbinmx=99)
-    character(len=24) :: lisinf(nbinmx)
+    aster_logical :: l_cont_xfem_gg, l_cont_cont, l_cont_xfem, l_cont_disc
+    character(len=8), pointer :: load_type(:) => null()
+    integer, pointer :: v_load_info(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    keyw             = 'CONTACT'
+    list_load_new    = '&&NMDOCT.LISCHA'
+    sdcont_defi      = '&&NMDOCT.DEFIC'
+    sdunil_defi      = '&&NMDOCT.DEFIU'
+    ligrel_link_cont = ' '
+    ligrel_link_xfem = ' '
+    l_cont           = .false.
+    l_unil           = .false.
+    rel_lin_xfem     = 0
+    rel_lin_disc     = 0
 !
-! --- INITIALISATIONS
+! - Read previous list of load
 !
-    motcle = 'CONTACT'
-    lisch2 = '&&NMDOCT.LISCHA'
-    ligrcf = ' '
-    ligrxf = ' '
-    lcont = .false.
-    lunil = .false.
+    lload_info = list_load(1:19)//'.INFC'
+    call jeveuo(lload_info, 'L', vi = v_load_info)
+    nb_load_init = v_load_info(1)
+    nb_load_new  = nb_load_init
 !
-! --- ANCIENNE SD L_CHARGES
+! - Prepare constant function
 !
-    infch1 = lischa(1:19)//'.INFC'
-    call jeveuo(infch1, 'L', jinfc1)
-    nchar1 = zi(jinfc1)
-    nchar2 = nchar1
-!
-! --- FONCTION CONSTANTE
-!
-    fctcst = '&&NMDOCT'
+    func_const = '&&NMDOCT'
     coef = 1.d0
-    call focste(fctcst, 'TOUTRESU', coef, 'V')
+    call focste(func_const, 'TOUTRESU', coef, 'V')
 !
-! --- RECUPERATION DU NOM DU CHARGEMENT DE CONTACT
+! - Get name of datastructure from DEFI_CONTACT
 !
-    call getvid(' ', motcle, scal=charco, nbret=nocc)
-    if (nocc .le. 0) then
-        defico = '&&OP0070.DEFIC'
+    call getvid(' ', keyw, scal=load_cont, nbret=nb_load_cont)
+    if (nb_load_cont .le. 0) then   
         goto 999
     endif
 !
-! --- NOM DE LA SD DE DEFINITION DU CONTACT
+! - Define datastructure names
 !
-    defico = charco(1:8)//'.CONTACT'
-    deficu = charco(1:8)//'.UNILATE'
+    sdcont_defi = load_cont(1:8)//'.CONTACT'
+    sdunil_defi = load_cont(1:8)//'.UNILATE'
 !
-! --- FORMULATION
+! - Contact formulation
 !
-    iform = cfdisi(defico,'FORMULATION')
+    iform = cfdisi(sdcont_defi,'FORMULATION')
     if (iform .eq. 4) then
-        lunil = .true.
+        l_unil = .true.
     else
-        lcont = .true.
+        l_cont = .true.
     endif
-    ltfcm = cfdisl(defico,'CONT_XFEM_GG')
+    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+    l_cont_disc    = iform.eq.1 
+    l_cont_cont    = iform.eq.2 
+    l_cont_xfem    = iform.eq.3
 !
-! --- LIGREL ELEMENTS TARDIFS - METHODE CONTINUE
+! - Contact - Continue: get list of elements for slave surface
 !
-    if (iform .eq. 2) then
-        ligret = charco(1:8)
-        ligrcf = '&&LIGRCF.CHME.LIGRE'
-        call wkvect(ligrcf(1:8)//'.TYPE', 'V V K8', 1, iatype)
-        zk8(iatype) = 'ME'
-        nchar2 = nchar2+2
-    endif
-!
-! --- LIGREL ELEMENTS TARDIFS - XFEM GRANDS GLISSEMENTS
-!
-    if (ltfcm) then
-        ligrxt = charco(1:8)
-        ligrxf = '&&LIGRXF.CHME.LIGRE'
-        call wkvect(ligrxf(1:8)//'.TYPE', 'V V K8', 1, iatype)
-        zk8(iatype) = 'ME'
-        nchar2 = nchar2+2
+    if (l_cont_cont) then
+        ligrel_link_slav = load_cont(1:8)
+        nb_load_new  = nb_load_new+1
     endif
 !
-! --- EVENTUELLES RELATIONS LINEAIRES - METHODES DISCRETES
+! - Contact - Continue: prepare list of contact elements
 !
-    if (iform .eq. 1) then
-        ligrel = charco(1:8)
-        call jeexin(ligrel//'.CHME.LIGRE.LGRF', rel_lin_disc)
-        if (rel_lin_disc .ne. 0) nchar2 = nchar2+1
+    if (l_cont_cont) then
+        ligrel_link_cont  = '&&LIGRCF.CHME.LIGRE'
+        call wkvect(ligrel_link_cont(1:8)//'.TYPE', 'V V K8', 1, vk8 = load_type)
+        load_type(1) = 'ME'
+        nb_load_new = nb_load_new+1
     endif
 !
-! --- EVENTUELLES RELATIONS LINEAIRES - METHODE XFEM
+! - Contact - XFEM (large sliding): get list of elements for slave surface
 !
-    if (iform .eq. 3) then
-        ligrel = charco(1:8)
-        call jeexin(ligrel//'.CHME.LIGRE.LGRF', rel_lin_xfem)
-        if (rel_lin_xfem .ne. 0) nchar2 = nchar2+1
+    if (l_cont_xfem_gg) then
+        ligrel_link_slav = load_cont(1:8)
+        nb_load_new = nb_load_new+1
     endif
 !
-    if (nchar2 .ne. nchar1) then
-        call lisccr(lisch2, nchar2, 'V')
+! - Contact - XFEM (large sliding): prepare list of contact elements
 !
-        do 24 ich = 1, nchar1
-            nbinfo = nbinmx
-            call liscli(lischa, ich, nomch1, nomfc1, nbinfo,&
-                        lisinf, ival1)
-            call liscad(lisch2, ich, nomch1, nomfc1, nbinfo,&
-                        lisinf, ival1)
- 24     continue
+    if (l_cont_xfem_gg) then
+        ligrel_link_xfem = '&&LIGRXF.CHME.LIGRE'
+        call wkvect(ligrel_link_xfem(1:8)//'.TYPE', 'V V K8', 1, vk8 = load_type)
+        load_type(1) = 'ME'
+        nb_load_new = nb_load_new+1
+    endif
 !
-        if (iform .eq. 2) then
-            infoc2 = 'ELEM_TARDIF'
-            ival2 = 0
-            nbinfo = 1
-            call liscad(lisch2, nchar1+1, ligret, fctcst, nbinfo,&
-                        infoc2, ival2)
+! - Contact - Discrete: list of linear relation (QUAD8)
 !
-            call liscad(lisch2, nchar1+2, ligrcf(1:8), fctcst, nbinfo,&
-                        infoc2, ival2)
+    if (l_cont_disc) then
+        ligrel_link = load_cont(1:8)
+        call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_disc)
+        if (rel_lin_disc .ne. 0) then
+            nb_load_new = nb_load_new+1
+        endif
+    endif
+!
+! -- Contact - XFEM: list of linear relations
+!
+    if (l_cont_xfem) then
+        ligrel_link = load_cont(1:8)
+        call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_xfem)
+        if (rel_lin_xfem .ne. 0) then
+            nb_load_new = nb_load_new+1
+        endif
+    endif
+!
+! - Add LIGREL to list of loads
+!
+    if (nb_load_new .ne. nb_load_init) then
+!
+! ----- Create new datastructure
+!
+        call lisccr(list_load_new, nb_load_new, 'V')
+!
+! ----- Copy old datastructure in new one
+!
+        do i_load = 1, nb_load_init
+            nb_info_type = nb_info_maxi
+            call liscli(list_load, i_load, nb_info_maxi, list_info_type, load_name,&
+                        load_func, nb_info_type, i_neum_lapl)
+            call liscad(list_load_new , i_load, load_name, load_func, nb_info_type,&
+                        list_info_type, i_neum_laplz = i_neum_lapl)
+        end do
+!
+! ----- Contact - Continue
+!
+        if (l_cont_cont) then
+            i_load = nb_load_init + 1
+            call liscad(list_load_new, i_load, ligrel_link_slav, func_const,&
+                        info_typez = 'ELEM_TARDIF')
+            i_load = nb_load_init + 2
+            call liscad(list_load_new, i_load, ligrel_link_cont, func_const,&
+                        info_typez = 'ELEM_TARDIF')
         endif
 !
-        if (iform .eq. 1) then
+! ----- Contact - Discrete
+!
+        if (l_cont_disc) then
             if (rel_lin_disc .ne. 0) then
-                infoc2 = 'DIRI_CSTE'
-                ival2 = 0
-                nbinfo = 1
-                call liscad(lisch2, nchar1+1, ligrel, fctcst, nbinfo,&
-                            infoc2, ival2)
+                i_load = nb_load_init + 1
+                call liscad(list_load_new, i_load, ligrel_link, func_const,&
+                            info_typez = 'DIRI_CSTE')
             endif
         endif
 !
-        if (iform .eq. 3) then
-            if (ltfcm) then
-                infoc2 = 'ELEM_TARDIF'
-                ival2 = 0
-                nbinfo = 1
-                call liscad(lisch2, nchar1+1, ligrxt, fctcst, nbinfo,&
-                            infoc2, ival2)
-                call liscad(lisch2, nchar1+2, ligrxf(1:8), fctcst, nbinfo,&
-                            infoc2, ival2)
+! ----- Contact - XFEM
+!
+        if (l_cont_xfem) then
+            if (l_cont_xfem_gg) then
+                i_load = nb_load_init + 1
+                call liscad(list_load_new, i_load, ligrel_link_slav, func_const,&
+                            info_typez = 'ELEM_TARDIF')
+                i_load = nb_load_init + 2
+                call liscad(list_load_new, i_load, ligrel_link_xfem, func_const,&
+                            info_typez = 'ELEM_TARDIF')
             endif
             if (rel_lin_xfem .ne. 0) then
-                infoc2 = 'DIRI_CSTE'
-                ival2 = 0
-                nbinfo = 1
-                call liscad(lisch2, nchar1+1, ligrel, fctcst, nbinfo,&
-                            infoc2, ival2)
+                i_load = nb_load_init + 1
+                call liscad(list_load_new, i_load, ligrel_link, func_const,&
+                            info_typez = 'DIRI_CSTE')
             endif
         endif
 !
+! ----- Copy and clean
 !
-        call lisccr(lischa, nchar2, 'V')
-        call copisd(' ', 'V', lisch2, lischa)
-        call detrsd('LISTE_CHARGES', lisch2)
+        call lisccr(list_load, nb_load_new, 'V')
+        call copisd(' ', 'V', list_load_new, list_load)
+        call detrsd('LISTE_CHARGES', list_load_new)
 !
     endif
 !
 999 continue
-!
-    call jedema()
 end subroutine

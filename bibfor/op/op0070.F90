@@ -131,8 +131,8 @@ subroutine op0070()
     data lischa            /'&&OP0070.LISCHA'/
     data carcri            /'&&OP0070.PARA_LDC'/
     data solveu            /'&&OP0070.SOLVEUR'/
-    data defico, resoco    /'&&OP0070.DEFIC','&&OP0070.RESOC'/
-    data deficu, resocu    /'&&OP0070.DEFUC', '&&OP0070.RESUC'/
+    data resoco            /'&&OP0070.RESOC'/
+    data resocu            /'&&OP0070.RESUC'/
     data comref            /'&&OP0070.COREF'/
     data maprec            /'&&OP0070.MAPREC'/
     data codere            /'&&OP0070.CODERE'/

@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lisccr(lischa, nchar, base)
-        character(len=19) :: lischa
-        integer :: nchar
-        character(len=1) :: base
+    subroutine lisccr(list_load, nb_loadz, base)
+        character(len=19), intent(in) :: list_load
+        integer, intent(in) :: nb_loadz
+        character(len=1), intent(in) :: base
     end subroutine lisccr
 end interface

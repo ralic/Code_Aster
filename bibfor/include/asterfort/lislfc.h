@@ -18,15 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
-                      lfcplx, lacce, fctcsr, nomfct)
-        character(len=19) :: excit
-        integer :: ichar
-        integer :: indic
-        integer :: iexcit
+    subroutine lislfc(list_load_resu, i_load, indic , l_load_user, nexci,&
+                      lfcplx        , lacce , fctcsr, nomfct)
+        aster_logical :: lfcplx, lacce, l_load_user
+        integer :: i_load, indic
         integer :: nexci
-        aster_logical :: lfcplx
-        aster_logical :: lacce
+        character(len=19) :: list_load_resu
         character(len=8) :: fctcsr
         character(len=8) :: nomfct
     end subroutine lislfc

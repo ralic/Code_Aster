@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine liscli(lischa, ichar, nomcha, nomfct, nbinfo,&
-                      lisinz, ival)
-        character(len=19) :: lischa
-        integer :: ichar
-        character(len=8) :: nomcha
-        character(len=8) :: nomfct
-        integer :: nbinfo
-        character(len=*) :: lisinz(*)
-        integer :: ival
+    subroutine liscli(list_load  , i_load      , nb_info_maxi, list_info_type, load_namez,&
+                      load_funcz , nb_info_type, i_neum_lapl)
+        character(len=19), intent(in) :: list_load
+        integer, intent(in) :: i_load
+        integer, intent(in) :: nb_info_maxi
+        character(len=24), intent(inout) :: list_info_type(nb_info_maxi)
+        character(len=*), intent(out) :: load_namez
+        character(len=*), intent(out) :: load_funcz
+        integer, intent(out) :: nb_info_type
+        integer, intent(out) :: i_neum_lapl
     end subroutine liscli
 end interface

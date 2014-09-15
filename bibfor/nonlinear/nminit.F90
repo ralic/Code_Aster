@@ -1,12 +1,12 @@
-subroutine nminit(result, model , numedd, numfix  , mate,&
-                  compor, carele, parmet, lischa  , maprec,&
-                  solveu, carcri, numins, sdstat  , sddisc,&
-                  sdnume, defico, sdcrit, varc_refe  , fonact,&
-                  parcon, parcri, method, lisch2  , mesh,&
-                  sdpilo, sddyna, sdimpr, sd_suiv , sd_obsv,&
-                  sdtime, sderro, sdpost, sd_inout, sdener,&
-                  sdconv, sdcriq, deficu, resocu  , resoco,&
-                  valinc, solalg, measse, veelem  , meelem,&
+subroutine nminit(result, model      , numedd     , numfix   , mate,&
+                  compor, carele     , parmet     , lischa   , maprec,&
+                  solveu, carcri     , numins     , sdstat   , sddisc,&
+                  sdnume, sdcont_defi, sdcrit     , varc_refe, fonact,&
+                  parcon, parcri     , method     , lisch2   , mesh,&
+                  sdpilo, sddyna     , sdimpr     , sd_suiv  , sd_obsv,&
+                  sdtime, sderro     , sdpost     , sd_inout , sdener,&
+                  sdconv, sdcriq     , sdunil_defi, resocu   , resoco,&
+                  valinc, solalg     , measse     , veelem   , meelem,&
                   veasse, codere)
 !
 implicit none
@@ -87,15 +87,17 @@ implicit none
     character(len=19) :: lischa, lisch2, sddyna
     character(len=19) :: maprec
     character(len=24) :: model, compor, numedd, numfix
-    character(len=24) :: defico, resoco
+    character(len=24) :: resoco
     character(len=24) :: carcri
     character(len=24) :: mate, carele, codere
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: sdimpr, sdtime, sderro, sdstat, sdconv
-    character(len=24) :: deficu, resocu, sdcriq
+    character(len=24) :: resocu, sdcriq
     character(len=24) :: varc_refe
+    character(len=24), intent(out) :: sdcont_defi
+    character(len=24), intent(out) :: sdunil_defi
     character(len=24), intent(out) :: sd_inout
     character(len=19), intent(out) :: sd_obsv
     character(len=24), intent(out) :: sd_suiv
@@ -120,6 +122,8 @@ implicit none
 ! Out sd_inout         : datastructure for input/output parameters
 ! Out sd_obsv          : datastructure for observation parameters
 ! Out sd_suiv          : datastructure for dof monitoring parameters
+! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -153,12 +157,12 @@ implicit none
 !
 ! --- SAISIE ET VERIFICATION DE LA COHERENCE DU CHARGEMENT CONTACT
 !
-    call nmdoct(lischa, defico, deficu, lcont, lunil,&
+    call nmdoct(lischa, sdcont_defi, sdunil_defi, lcont, lunil,&
                 ligrcf, ligrxf)
 !
 ! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
 !
-    call nmnume(model, result, lischa, lcont, defico,&
+    call nmnume(model , result, lischa, lcont, sdcont_defi,&
                 compor, solveu, numedd, sdnume)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
@@ -169,7 +173,7 @@ implicit none
 ! --- FONCTIONNALITES ACTIVEES
 !
     call nmfonc(parcri, parmet, method, solveu, model,&
-                defico, lischa, lcont, lunil, sdnume,&
+                sdcont_defi, lischa, lcont, lunil, sdnume,&
                 sddyna, sdcriq, mate, compor, result,&
                 fonact)
     lpilo = isfonc(fonact,'PILOTAGE' )
@@ -198,18 +202,18 @@ implicit none
 !
     if (lcont) then
         call cfmxsd(mesh, model, numedd, fonact, sddyna,&
-                    defico, resoco, ligrcf, ligrxf)
+                    sdcont_defi, resoco, ligrcf, ligrxf)
     endif
 !
 ! --- CREATION DE LA STRUCTURE DE LIAISON_UNILATERALE
 !
     if (lunil) then
-        call cucrsd(mesh, numedd, deficu, resocu)
+        call cucrsd(mesh, numedd, sdunil_defi, resocu)
     endif
 !
 ! --- CREATION DES VECTEURS D'INCONNUS
 !
-    call nmcrch(numedd, fonact, sddyna, defico, valinc,&
+    call nmcrch(numedd, fonact, sddyna, sdcont_defi, valinc,&
                 solalg, veasse)
 !
 ! --- CONSTRUCTION DU CHAM_NO ASSOCIE AU PILOTAGE
@@ -228,8 +232,8 @@ implicit none
 !
 ! - Create input/output datastructure
 !
-    call nmetcr(model, compor, fonact  , sddyna, sdpost,&
-                defico, resoco, sd_inout, carele)
+    call nmetcr(model , compor, fonact, sddyna, sdpost,&
+                sdcont_defi, resoco, sd_inout, carele)
 !
 ! --- LECTURE ETAT_INIT
 !
@@ -239,9 +243,9 @@ implicit none
 !
 ! --- CREATION SD DISCRETISATION ET ARCHIVAGE
 !
-    call diinit(mesh  , model , result, mate  , carele,&
-                fonact, sddyna, parcri, instin, solveu,&
-                defico, sddisc)
+    call diinit(mesh       , model , result, mate  , carele,&
+                fonact     , sddyna, parcri, instin, solveu,&
+                sdcont_defi, sddisc)
 !
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
@@ -250,7 +254,7 @@ implicit none
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
     call nminmc(fonact, lischa, sddyna, model, compor,&
-                solveu, numedd, numfix, defico, resoco,&
+                solveu, numedd, numfix, sdcont_defi, resoco,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, varc_refe, meelem,&
                 measse, veelem, codere)
@@ -296,7 +300,7 @@ implicit none
                     resocu, varc_refe, valinc, solalg, veelem,&
                     measse, veasse, sddyna)
         call accel0(model, numedd, numfix, fonact, lischa,&
-                    defico, resoco, maprec, solveu, valinc,&
+                    sdcont_defi, resoco, maprec, solveu, valinc,&
                     sddyna, sdstat, sdtime, meelem, measse,&
                     veelem, veasse, solalg)
     endif
@@ -361,7 +365,7 @@ implicit none
     if (lmpas) then
         call nmihht(model, numedd, mate, compor, carele,&
                     lischa, carcri, varc_refe, fonact, sdstat,&
-                    sddyna, sdtime, sdnume, defico, resoco,&
+                    sddyna, sdtime, sdnume, sdcont_defi, resoco,&
                     resocu, valinc, sddisc, parcon, solalg,&
                     veasse)
     endif

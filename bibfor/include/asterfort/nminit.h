@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nminit(result, model , numedd, numfix   , mate,&
-                      compor, carele, parmet, lischa   , maprec,&
-                      solveu, carcri, numins, sdstat   , sddisc,&
-                      sdnume, defico, sdcrit, varc_refe, fonact,&
-                      parcon, parcri, method, lisch2   , mesh,&
-                      sdpilo, sddyna, sdimpr, sd_suiv  , sd_obsv,&
-                      sdtime, sderro, sdpost, sd_inout , sdener,&
-                      sdconv, sdcriq, deficu, resocu   , resoco,&
-                      valinc, solalg, measse, veelem   , meelem,&
+    subroutine nminit(result, model      , numedd     , numfix   , mate,&
+                      compor, carele     , parmet     , lischa   , maprec,&
+                      solveu, carcri     , numins     , sdstat   , sddisc,&
+                      sdnume, sdcont_defi, sdcrit     , varc_refe, fonact,&
+                      parcon, parcri     , method     , lisch2   , mesh,&
+                      sdpilo, sddyna     , sdimpr     , sd_suiv  , sd_obsv,&
+                      sdtime, sderro     , sdpost     , sd_inout , sdener,&
+                      sdconv, sdcriq     , sdunil_defi, resocu   , resoco,&
+                      valinc, solalg     , measse     , veelem   , meelem,&
                       veasse, codere)
         character(len=8) :: result
         character(len=24) :: model
@@ -42,7 +42,8 @@ interface
         character(len=24) :: sdstat
         character(len=19) :: sddisc
         character(len=19) :: sdnume
-        character(len=24) :: defico
+        character(len=24), intent(out) :: sdcont_defi
+        character(len=24), intent(out) :: sdunil_defi
         character(len=19) :: sdcrit
         character(len=24) :: varc_refe
         integer :: fonact(*)
@@ -63,7 +64,6 @@ interface
         character(len=19) :: sdener
         character(len=24) :: sdconv
         character(len=24) :: sdcriq
-        character(len=24) :: deficu
         character(len=24) :: resocu
         character(len=24) :: resoco
         character(len=19) :: valinc(*)

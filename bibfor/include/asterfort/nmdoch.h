@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine nmdoch(lischa, iexcit, excit)
-        character(len=19) :: lischa
-        integer :: iexcit
-        character(len=19) :: excit
+    subroutine nmdoch(list_load, l_load_user, list_load_resu)
+        aster_logical, intent(in) :: l_load_user
+        character(len=19), intent(in) :: list_load
+        character(len=19), intent(in) :: list_load_resu
     end subroutine nmdoch
 end interface

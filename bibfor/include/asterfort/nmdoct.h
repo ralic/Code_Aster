@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
-                      ligrcf, ligrxf)
-        character(len=19) :: lischa
-        character(len=24) :: defico
-        character(len=24) :: deficu
-        aster_logical :: lcont
-        aster_logical :: lunil
-        character(len=19) :: ligrcf
-        character(len=19) :: ligrxf
+    subroutine nmdoct(list_load       , sdcont_defi     , sdunil_defi, l_cont, l_unil,&
+                      ligrel_link_cont, ligrel_link_xfem)
+        character(len=19), intent(in) :: list_load
+        character(len=24), intent(out) :: sdcont_defi
+        character(len=24), intent(out) :: sdunil_defi
+        aster_logical, intent(out) :: l_cont
+        aster_logical, intent(out) :: l_unil
+        character(len=19), intent(out) :: ligrel_link_cont
+        character(len=19), intent(out) :: ligrel_link_xfem
     end subroutine nmdoct
 end interface

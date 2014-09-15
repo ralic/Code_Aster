@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine liscpy(lischa, lisch2, base)
-        character(len=19) :: lischa
-        character(len=19) :: lisch2
-        character(len=1) :: base
+    subroutine liscpy(list_load_in, list_load_out, base)
+        character(len=19), intent(in) :: list_load_in
+        character(len=19), intent(in) :: list_load_out
+        character(len=1), intent(in) :: base
     end subroutine liscpy
 end interface

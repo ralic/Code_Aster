@@ -1,5 +1,21 @@
-subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
-                  lfcplx, lacce, fctcsr, nomfct)
+subroutine lislfc(list_load_resu, i_load, indic , l_load_user, nexci,&
+                  lfcplx        , lacce , fctcsr, nomfct)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/focstc.h"
+#include "asterfort/focste.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,24 +34,10 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/codent.h"
-#include "asterfort/focstc.h"
-#include "asterfort/focste.h"
-#include "asterfort/getvc8.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    aster_logical :: lfcplx, lacce
-    integer :: ichar, indic
-    integer :: iexcit, nexci
-    character(len=19) :: excit
+    aster_logical :: lfcplx, lacce, l_load_user
+    integer :: i_load, indic
+    integer :: nexci
+    character(len=19) :: list_load_resu
     character(len=8) :: fctcsr
     character(len=8) :: nomfct
 !
@@ -71,26 +73,26 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
 ! --- ACCES SD
 !
-    if (iexcit .eq. 0) then
-        call jeveuo(excit(1:19)//'.INFC', 'L', jinfc2)
-        call jeveuo(excit(1:19)//'.LCHA', 'L', jlcha2)
-        call jeveuo(excit(1:19)//'.FCHA', 'L', vk24=fcha)
+    if (.not.l_load_user) then
+        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', jinfc2)
+        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', jlcha2)
+        call jeveuo(list_load_resu(1:19)//'.FCHA', 'L', vk24=fcha)
     endif
 !
 ! -------- FONCTIONS MULTIPLICATIVES DES CHARGES
 !
     if (lfcplx) then
 !
-        call getvid('EXCIT', 'FONC_MULT_C', iocc=ichar, scal=nomfct, nbret=nfcplx)
-        call getvid('EXCIT', 'FONC_MULT', iocc=ichar, scal=nomfct, nbret=nfreel)
+        call getvid('EXCIT', 'FONC_MULT_C', iocc=i_load, scal=nomfct, nbret=nfcplx)
+        call getvid('EXCIT', 'FONC_MULT', iocc=i_load, scal=nomfct, nbret=nfreel)
 !
         if ((nfcplx.eq.0) .and. (nfreel.eq.0)) then
-            call codent(ichar, 'D0', knum)
+            call codent(i_load, 'D0', knum)
             nomfct = '&&NC'//knum
 !
-            call getvc8('EXCIT', 'COEF_MULT_C', iocc=ichar, scal=ccoef, nbret=nccplx)
+            call getvc8('EXCIT', 'COEF_MULT_C', iocc=i_load, scal=ccoef, nbret=nccplx)
             if (nccplx .eq. 0) then
-                call getvr8('EXCIT', 'COEF_MULT', iocc=ichar, scal=rcoef, nbret=ncreel)
+                call getvr8('EXCIT', 'COEF_MULT', iocc=i_load, scal=rcoef, nbret=ncreel)
                 ASSERT(ncreel.eq.0)
                 call focste(nomfct, 'TOUTRESU', rcoef, 'V')
             else
@@ -101,16 +103,14 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
         endif
 !
     else
-        if (iexcit .eq. 0) then
-            if (fcha(ichar)(1:1) .eq. '&') then
+        if (.not.l_load_user) then
+            if (fcha(i_load)(1:1) .eq. '&') then
                 nfreel = 0
             else
                 nfreel = 1
             endif
-        else if (iexcit.eq.1) then
-            call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=k24bid, nbret=nfreel)
         else
-            ASSERT(.false.)
+            call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=k24bid, nbret=nfreel)
         endif
 !
         if (lacce) then
@@ -132,8 +132,8 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
         else
             if (nfreel .ne. 0) then
-                if (iexcit .eq. 0) then
-                    nomfct = fcha(ichar)(1:8)
+                if (.not.l_load_user) then
+                    nomfct = fcha(i_load)(1:8)
                 else if (nexci.ne.0) then
                     call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=nomfct, nbret=nfreel)
                 endif

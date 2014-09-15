@@ -1,6 +1,20 @@
 subroutine nmdome(modele, mate, carele, lischa, result,&
                   nuord)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/getres.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdoch.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,17 +33,6 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterc/getres.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmdoch.h"
-#include "asterfort/rcmfmc.h"
-#include "asterfort/rslesd.h"
-#include "asterfort/utmess.h"
     integer :: nuord
     character(len=8) :: result
     character(len=19) :: lischa
@@ -58,6 +61,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
     character(len=8) :: cara, nomo, materi, repons
     character(len=16) :: nomcmd, typesd
     character(len=19) :: excit
+    aster_logical :: l_load_user
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,6 +73,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
     iexcit = 1
     excit = ' '
     k8bla = ' '
+    l_load_user = .true.
 !
 ! --- LECTURES
 !
@@ -81,6 +86,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
         call rslesd(result, nuord, modele(1:8), materi, carele(1:8),&
                     excit, iexcit)
+        l_load_user = iexcit.eq.1
 !
         if (materi .ne. k8bla) then
             call rcmfmc(materi, mate)
@@ -140,7 +146,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
 ! --- TRAITEMENT DES CHARGES
 !
-    call nmdoch(lischa, iexcit, excit)
+    call nmdoch(lischa, l_load_user, excit)
 !
     call jedema()
 end subroutine

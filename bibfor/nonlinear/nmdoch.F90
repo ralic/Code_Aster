@@ -1,6 +1,6 @@
-subroutine nmdoch(lischa, iexcit, excit)
+subroutine nmdoch(list_load, l_load_user, list_load_resu)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,48 +43,28 @@ subroutine nmdoch(lischa, iexcit, excit)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: iexcit
-    character(len=19) :: lischa, excit
+    aster_logical, intent(in) :: l_load_user
+    character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: list_load_resu
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE UTILITAIRE
+! Mechanics - Read parameters
 !
-! SAISIE ET VERIFICATION DE LA COHERENCE DES CHARGEMENTS
+! Get loads information and create datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  list_load_resu : name of datastructure for list of loads from result datastructure
+! In  l_load_user    : .true. if loads come from user (EXCIT)
+! In  list_load      : name of datastructure for list of loads
 !
-! IN  IEXCIT : INDICE DEFINISSANT L'ORIGINE DU CHARGEMENT
-!                      UTILISE LORS DES CALCLULS
-!                      0 : LE CHARGEMENT EST ISSU DE LA SD RESULTAT
-!                      1 : LE CHARGEMENT EST FOURNI PAR L'UTILISATEUR
-! I/O LISCHA : IN - NOM DONNE A SD L_CHARGES
-! IN  EXCIT  : NOM EXTRAIT DE LA SD RESULTAT SI IEXCIT=0
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: itych
-    integer :: n1, nocc, iexc, incha1, iret2
-    integer :: npilo, nexci, nchar, nchar1, nchar2, nchar3
-    integer :: infmax, indic, ich, iret, infc, j, ichar
-    integer :: jlisdb, ichd
-    character(len=5) :: suffix
-    character(len=8) :: k8bid, affcha, parcha, typcha
-    character(len=8) :: fctcsr
-    character(len=16) :: nomcmd, typesd
-    character(len=8) :: nomcha, nomfct, nomch1, nomfc1
-    character(len=24) :: infoc1, infoch
-    character(len=19) :: lisch2, lisdbl
-    character(len=24) :: ligrch, lchin, k24bid
-    integer :: ival, ival1
-    aster_logical :: lfcplx, lacce
-    integer :: nbinfo
 ! --- NOMBRE MAXIMUM DE TYPE_INFO
-    integer :: nbinmx
-    parameter   (nbinmx=99)
-    character(len=24) :: lisinf(nbinmx)
+    integer :: nb_info_maxi
+    parameter   (nb_info_maxi=99)
+    character(len=24) :: list_info_type(nb_info_maxi)
 ! --- NOMBRE MAXIMUM DE RESUELEM POUR LES FORCES DE LAPLACE : NBCHMX
     integer :: nbchmx
     parameter   (nbchmx=99)
@@ -92,6 +72,23 @@ subroutine nmdoch(lischa, iexcit, excit)
     integer :: nbtych
     parameter    (nbtych=18)
     character(len=6) :: nomlig(nbtych)
+!
+    integer :: itych
+    integer :: n1, nocc, iexc, iret2
+    integer :: npilo, nexci, nchar, nchar1, nchar2, nchar3
+    integer :: infmax, indic, i_load, iret, infc, j, i_load_new
+    integer :: jlisdb, ichd
+    character(len=5) :: suffix
+    character(len=8) :: k8bid, affcha, parcha, typcha
+    character(len=8) :: fctcsr
+    character(len=16) :: nomcmd, typesd
+    character(len=8) :: nomcha, nomfct, nomch1, nomfc1
+    character(len=24) :: info_type
+    character(len=19) :: list_load_new, lisdbl
+    character(len=24) :: ligrch, lchin, k24bid
+    integer :: i_neum_lapl
+    aster_logical :: lfcplx, lacce, l_new_list
+    integer :: nb_info_type
     integer, pointer :: infc2(:) => null()
     integer, pointer :: infch(:) => null()
     integer, pointer :: vinfc(:) => null()
@@ -99,12 +96,12 @@ subroutine nmdoch(lischa, iexcit, excit)
     character(len=24), pointer :: lcha(:) => null()
 !
     data nomlig  /'.FORNO','.F3D3D','.F2D3D','.F1D3D',&
-     &              '.F2D2D','.F1D2D','.F1D1D','.PESAN',&
-     &              '.ROTAT','.PRESS','.FELEC','.FCO3D',&
-     &              '.FCO2D','.EPSIN','.FLUX' ,'.VEASS',&
-     &              '.ONDPL','.SIINT'/
+                  '.F2D2D','.F1D2D','.F1D1D','.PESAN',&
+                  '.ROTAT','.PRESS','.FELEC','.FCO3D',&
+                  '.FCO2D','.EPSIN','.FLUX' ,'.VEASS',&
+                  '.ONDPL','.SIINT'/
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call getres(k8bid, typesd, nomcmd)
@@ -117,16 +114,17 @@ subroutine nmdoch(lischa, iexcit, excit)
     lisdbl = '&&NMDOME.LISDBL'
     lfcplx = .false.
     lacce = .false.
-    infoch = 'RIEN'
+    info_type = 'RIEN'
     npilo = 0
     indic = 0
     nexci = 0
-    ichar = 0
+    i_load_new = 0
     k24bid = ' '
+    l_new_list = .false.
 !
 ! --- NOMBRE DE CHARGES
 !
-    if (iexcit .eq. 1) then
+    if (l_load_user) then
         if (getexm('EXCIT','CHARGE') .eq. 1) then
             call getfac('EXCIT', nexci)
         else
@@ -154,8 +152,8 @@ subroutine nmdoch(lischa, iexcit, excit)
 ! --- CAS OU LE CHARGEMENT PEUT NE PAS ETRE OBLIGATOIRE (DYNA_NON_LINE)
 !     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
             if (nomcmd .eq. 'DYNA_NON_LINE') then
-                call lisccr(lischa, 1, 'V')
-                call jeveuo(lischa(1:19)//'.INFC', 'E', vi=infch)
+                call lisccr(list_load, 1, 'V')
+                call jeveuo(list_load(1:19)//'.INFC', 'E', vi=infch)
                 nchar=0
                 infch(1) = nchar
             else if (nomcmd.eq.'STAT_NON_LINE') then
@@ -163,60 +161,63 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
         endif
     else
-        call jeveuo(excit(1:19)//'.INFC', 'L', vi=vinfc)
+        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi=vinfc)
         nchar = vinfc(1)
 !
-!
-! --- POUR CALC_CHAMP : AFFE_CHAR_CINE EST ILLICITE: ON LES ENLEVE
+! ----- Create new list of loads fro CALC_CHAMP
 !
         if (nomcmd .eq. 'CALC_CHAMP') then
             nchar1 = nchar
             nchar2 = 0
-            call jeveuo(excit(1:19)//'.LCHA', 'L', vk24=lcha)
-            do ich = 1, nchar1
-                nomcha = lcha(ich)(1:8)
-!
-                call jeexin(nomcha//'.CHME.SIGIN', iret)
+            call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24=lcha)
+            do i_load = 1, nchar1
+                nomcha = lcha(i_load)(1:8)
                 if (nomcha .ne. ' ') then
                     call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=affcha)
-!
                     if (affcha(1:5) .ne. 'CIME_') then
                         nchar2 = nchar2 + 1
                     endif
                 endif
             end do
 !
+! --------- Create new list of loads without AFFE_CHAR_CINE loads
+!
             if (nchar1 .ne. nchar2) then
-                nchar3 = max(nchar2,1)
-                lisch2 = '&&NMDOME.CHARGES'
-                call lisccr(lisch2, nchar3, 'V')
-                incha1 = 0
-!
-                do ich = 1, nchar1
-                    nbinfo = 1
-                    call liscli(excit, ich, nomch1, nomfc1, nbinfo,&
-                                infoc1, ival1)
-                    if (infoc1(1:5) .ne. 'CINE_' .and. nomch1 .ne. ' ') then
-                        incha1 = incha1 + 1
-                        call liscad(lisch2, incha1, nomch1, nomfc1, nbinfo,&
-                                    infoc1, ival1)
+                nchar3        = max(nchar2,1)
+                list_load_new = '&&NMDOME.CHARGES'
+                call lisccr(list_load_new, nchar3, 'V')
+                i_load_new = 0
+                do i_load = 1, nchar1
+                    nb_info_type = 1
+                    call liscli(list_load_resu, i_load      , nb_info_maxi, list_info_type, nomch1,&
+                                nomfc1        , nb_info_type, i_neum_lapl)
+                    if (list_info_type(1)(1:5) .ne. 'CINE_' .and. nomch1 .ne. ' ') then
+                        i_load_new = i_load_new + 1
+                        call liscad(list_load_new , i_load_new, nomch1, nomfc1, nb_info_type,&
+                                    list_info_type, i_neum_laplz = i_neum_lapl)
                     endif
-!
                 end do
-                nchar = nchar2
-                excit = lisch2
+                nchar      = nchar2
+                l_new_list = .true.
             endif
         endif
 !
-        call jeveuo(excit(1:19)//'.INFC', 'L', vi=infc2)
-        call jeveuo(excit(1:19)//'.LCHA', 'L', vk24=lcha2)
+        if (l_new_list) then
+            call jeveuo(list_load_new(1:19)//'.INFC', 'L', vi=infc2)
+            call jeveuo(list_load_new(1:19)//'.LCHA', 'L', vk24=lcha2)
+        else
+            call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi=infc2)
+            call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24=lcha2)
+        endif
     endif
+!
+    i_load_new = 0
 !
     if (nchar .ne. 0) then
 !
 ! ----- CREATION LA SD L_CHARGES
 !
-        call lisccr(lischa, nchar, 'V')
+        call lisccr(list_load, nchar, 'V')
 !
 ! ----- LISTE DOUBLE
 !
@@ -224,8 +225,8 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 ! ----- BOUCLE SUR LES CHARGES
 !
-        do ich = 1, nchar
-            if (iexcit .eq. 1) then
+        do i_load = 1, nchar
+            if (l_load_user) then
                 indic = indic + 1
  30             continue
                 call getvid('EXCIT', 'CHARGE', iocc=indic, nbval=0, nbret=n1)
@@ -241,9 +242,9 @@ subroutine nmdoch(lischa, iexcit, excit)
                     goto 30
                 endif
             else
-                nomcha = lcha2(ich)(1:8)
+                nomcha = lcha2(i_load)(1:8)
             endif
-            zk8(jlisdb+ich-1) = nomcha(1:8)
+            zk8(jlisdb+i_load-1) = nomcha(1:8)
 !
 ! ------- LIGREL DE LA CHARGE
 !
@@ -251,7 +252,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 ! ------- TYPE DE LA CHARGE
 !
-            if (iexcit .eq. 1) then
+            if (l_load_user) then
                 if (nomcmd .eq. 'DYNA_LINE_TRAN' .or. nomcmd .eq. 'DYNA_LINE_HARM') then
                     typcha='FIXE'
                 else
@@ -260,12 +261,12 @@ subroutine nmdoch(lischa, iexcit, excit)
             else
                 typcha = 'FIXE_CST'
                 if (nomcmd .eq. 'CALC_CHAMP') then
-                    if (infc2(ich+1) .eq. 4 .or. infc2(1+nchar+ich) .eq. 4) then
+                    if (infc2(i_load+1) .eq. 4 .or. infc2(1+nchar+i_load) .eq. 4) then
                         typcha = 'SUIV'
-                        elseif (infc2(ich+1).eq.5 .or. infc2(1+nchar+&
-                    ich).eq.5) then
+                        elseif (infc2(i_load+1).eq.5 .or. infc2(1+nchar+&
+                    i_load).eq.5) then
                         typcha = 'FIXE_PIL'
-                    else if (infc2(1+3*nchar+2+ich).eq.1) then
+                    else if (infc2(1+3*nchar+2+i_load).eq.1) then
                         typcha = 'DIDI'
                     endif
                 endif
@@ -291,7 +292,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                      ( nomcmd.eq.'LIRE_RESU' .and. typesd.eq.'DYNA_HARMO' )&
                      )
             lacce = (nomcmd.eq.'DYNA_NON_LINE'.or. nomcmd.eq.'LIRE_RESU')
-            call lislfc(excit, ich, indic, iexcit, nexci,&
+            call lislfc(list_load_resu, i_load, indic, l_load_user, nexci,&
                         lfcplx, lacce, fctcsr, nomfct)
             if (nomfct .ne. fctcsr) then
                 if (typcha .eq. 'FIXE_PIL') then
@@ -301,8 +302,8 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 ! ------- CHARGE DE TYPE DIRICHLET PROVENANT D'UN AFFE_CHAR_CINE
 !
-            nbinfo = 0
-            infoch = 'RIEN'
+            nb_info_type = 0
+            info_type = 'RIEN'
             if (affcha(1:5) .eq. 'CIME_') then
                 if (typcha(1:4) .eq. 'SUIV') then
                     call utmess('F', 'CHARGES_23', sk=nomcha(1:8))
@@ -312,23 +313,23 @@ subroutine nmdoch(lischa, iexcit, excit)
                     call utmess('F', 'CHARGES_24', sk=nomcha(1:8))
                 else
                     if (affcha(5:7) .eq. '_FT') then
-                        infoch = 'CINE_FT'
+                        info_type = 'CINE_FT'
                     else if (affcha(5:7).eq.'_FO') then
-                        infoch = 'CINE_FO'
+                        info_type = 'CINE_FO'
                     else
-                        infoch = 'CINE_CSTE'
+                        info_type = 'CINE_CSTE'
                     endif
                 endif
             endif
-            if (infoch .ne. 'RIEN') then
-                nbinfo = nbinfo + 1
-                ASSERT(nbinfo.lt.nbinmx)
-                lisinf(nbinfo) = infoch
+            if (info_type .ne. 'RIEN') then
+                nb_info_type = nb_info_type + 1
+                ASSERT(nb_info_type.lt.nb_info_maxi)
+                list_info_type(nb_info_type) = info_type
             endif
 !
 ! -------- CHARGE DE TYPE DIRICHLET PROVENANT DE AFFE_CHAR_MECA
 !
-            infoch = 'RIEN'
+            info_type = 'RIEN'
             lchin = ligrch(1:13)//'.CIMPO.DESC'
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
@@ -344,29 +345,29 @@ subroutine nmdoch(lischa, iexcit, excit)
                     if (affcha(5:7) .eq. '_FT') then
                         call utmess('F', 'CHARGES_28', sk=nomcha(1:8))
                     else if (affcha(5:7).eq.'_FO') then
-                        infoch = 'DIRI_PILO_F'
+                        info_type = 'DIRI_PILO_F'
                     else
-                        infoch = 'DIRI_PILO'
+                        info_type = 'DIRI_PILO'
                     endif
                 else
                     if (affcha(5:7) .eq. '_FO') then
-                        infoch = 'DIRI_FO'
+                        info_type = 'DIRI_FO'
                         call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                         if (parcha(1:3) .eq. 'OUI') then
-                            infoch = 'DIRI_FT'
+                            info_type = 'DIRI_FT'
                         endif
                     else
-                        infoch = 'DIRI_CSTE'
+                        info_type = 'DIRI_CSTE'
                     endif
                     if (typcha(1:4) .eq. 'DIDI') then
-                        infoch = infoch(1:9)//'_DIDI'
+                        info_type = info_type(1:9)//'_DIDI'
                     endif
                 endif
             endif
-            if (infoch .ne. 'RIEN') then
-                nbinfo = nbinfo + 1
-                ASSERT(nbinfo.lt.nbinmx)
-                lisinf(nbinfo) = infoch
+            if (info_type .ne. 'RIEN') then
+                nb_info_type = nb_info_type + 1
+                ASSERT(nb_info_type.lt.nb_info_maxi)
+                list_info_type(nb_info_type) = info_type
             endif
 !
 ! ------- CHARGE DE TYPE NEUMANN
@@ -379,16 +380,16 @@ subroutine nmdoch(lischa, iexcit, excit)
                 endif
                 lchin = ligrch(1:13)//nomlig(itych)//suffix
                 call jeexin(lchin, iret)
-                infoch = 'RIEN'
+                info_type = 'RIEN'
                 if (iret .ne. 0) then
                     if (nomlig(itych) .eq. '.ONDPL') then
-                        infoch = 'NEUM_ONDE'
+                        info_type = 'NEUM_ONDE'
 !
                     else if (nomlig(itych).eq.'.SIINT') then
-                        infoch = 'NEUM_SIGM_INT'
+                        info_type = 'NEUM_SIGM_INT'
 !
                     else if (typcha.eq.'FIXE_PIL') then
-                        infoch = 'NEUM_PILO'
+                        info_type = 'NEUM_PILO'
                         if (nomlig(itych) .ne. '.VEASS') then
                             call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                             if (parcha(1:3) .eq. 'OUI') then
@@ -397,51 +398,51 @@ subroutine nmdoch(lischa, iexcit, excit)
                         endif
 !
                     else if (typcha(1:4).eq.'SUIV') then
-                        infoch = 'NEUM_SUIV'
+                        info_type = 'NEUM_SUIV'
 !
                     else if (affcha(5:7).eq.'_FO') then
                         call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
 !
                         if (parcha(1:3) .eq. 'OUI') then
-                            infoch = 'NEUM_FT'
+                            info_type = 'NEUM_FT'
                         else
-                            infoch = 'NEUM_FO'
+                            info_type = 'NEUM_FO'
                         endif
                     else
-                        infoch = 'NEUM_CSTE'
+                        info_type = 'NEUM_CSTE'
                     endif
                 endif
-                if (infoch .ne. 'RIEN') then
-                    nbinfo = nbinfo + 1
-                    ASSERT(nbinfo.lt.nbinmx)
-                    lisinf(nbinfo) = infoch
+                if (info_type .ne. 'RIEN') then
+                    nb_info_type = nb_info_type + 1
+                    ASSERT(nb_info_type.lt.nb_info_maxi)
+                    list_info_type(nb_info_type) = info_type
                 endif
             end do
 !
 ! ------- CHARGE DE TYPE EVOL_CHAR
 !
-            infoch = 'RIEN'
+            info_type = 'RIEN'
             lchin = ligrch(1:13)//'.EVOL.CHAR'
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 if (typcha(1:4) .eq. 'SUIV') then
-                    infoch = 'NEUM_SUIV'
+                    info_type = 'NEUM_SUIV'
                 else
-                    infoch = 'NEUM_CSTE'
+                    info_type = 'NEUM_CSTE'
                 endif
                 if (typcha .eq. 'FIXE_PIL') then
                     call utmess('F', 'CHARGES_34', sk=nomcha(1:8))
                 endif
             endif
-            if (infoch .ne. 'RIEN') then
-                nbinfo = nbinfo + 1
-                ASSERT(nbinfo.lt.nbinmx)
-                lisinf(nbinfo) = infoch
+            if (info_type .ne. 'RIEN') then
+                nb_info_type = nb_info_type + 1
+                ASSERT(nb_info_type.lt.nb_info_maxi)
+                list_info_type(nb_info_type) = info_type
             endif
 !
 ! ------- CHARGE DE TYPE EXCIT_SOL
 !
-            infoch = 'RIEN'
+            info_type = 'RIEN'
             lchin = ligrch(1:13)//'.VEISS'
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
@@ -460,18 +461,18 @@ subroutine nmdoch(lischa, iexcit, excit)
                 if (nomfct .ne. fctcsr) then
                     call utmess('F', 'CHARGES_54', sk=nomcha(1:8))
                 endif
-                infoch = 'EXCIT_SOL'
+                info_type = 'EXCIT_SOL'
             endif
-            if (infoch .ne. 'RIEN') then
-                nbinfo = nbinfo + 1
-                ASSERT(nbinfo.lt.nbinmx)
-                lisinf(nbinfo) = infoch
+            if (info_type .ne. 'RIEN') then
+                nb_info_type = nb_info_type + 1
+                ASSERT(nb_info_type.lt.nb_info_maxi)
+                list_info_type(nb_info_type) = info_type
             endif
 !
 ! -------- CHARGES DE TYPE FORCE DE LAPLACE
 !
             infc = 0
-            infoch = 'RIEN'
+            info_type = 'RIEN'
             do j = 1, nbchmx
                 lchin(1:17) = ligrch(1:13)//'.FL1'
                 call codent(j, 'D0', lchin(18:19))
@@ -485,21 +486,21 @@ subroutine nmdoch(lischa, iexcit, excit)
             end do
  90         continue
             if (infc .ne. 0) then
-                ival = max(infmax,infc)
-                infoch = 'NEUM_LAPL'
+                i_neum_lapl = max(infmax,infc)
+                info_type = 'NEUM_LAPL'
             endif
-            if (infoch .ne. 'RIEN') then
-                nbinfo = nbinfo + 1
-                ASSERT(nbinfo.lt.nbinmx)
-                lisinf(nbinfo) = infoch
+            if (info_type .ne. 'RIEN') then
+                nb_info_type = nb_info_type + 1
+                ASSERT(nb_info_type.lt.nb_info_maxi)
+                list_info_type(nb_info_type) = info_type
             endif
 !
 ! --- AJOUT DE LA CHARGE
 !
-            if (nbinfo .gt. 0) then
-                ichar = ichar+1
-                call liscad(lischa, ichar, nomcha, nomfct, nbinfo,&
-                            lisinf, ival)
+            if (nb_info_type .gt. 0) then
+                i_load_new = i_load_new+1
+                call liscad(list_load     , i_load_new, nomcha, nomfct, nb_info_type,&
+                            list_info_type, i_neum_laplz = i_neum_lapl)
             endif
 !
         end do
@@ -521,7 +522,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 ! ----- Some loads are prohibited with PILOTAGE
 !
         if (npilo .ge. 1) then
-            call lisexp(lischa)
+            call lisexp(list_load)
         endif
 !
     endif
