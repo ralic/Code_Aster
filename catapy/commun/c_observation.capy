@@ -18,6 +18,7 @@
 
 def C_OBSERVATION() : return FACT(statut='f',max=99,
            TITRE           =SIMP(statut='f',typ='TXM',max=1),
+           OBSE_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut='OUI' ),
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
                                    into=("VALE_CONT","FORC_NODA",
                                          "DEPL","VITE","ACCE","TEMP",

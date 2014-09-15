@@ -49,10 +49,12 @@ implicit none
     integer :: i_keyw_fact, nb_keyw_fact
     character(len=2) :: chaine
     character(len=19) :: list_inst_obsv
-    aster_logical :: l_select
+    aster_logical :: l_select, l_obse_init
     character(len=24) :: extr_info, extr_flag
     integer, pointer :: v_extr_info(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
+    character(len=24) :: obsv_init
+    character(len=8), pointer :: v_obsv_init(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,6 +72,11 @@ implicit none
 !
     if (nb_keyw_fact .ne. 0) then
 !
+! ----- Initial observation
+!
+        obsv_init = sd_obsv(1:14)//'     .INIT'
+        call jeveuo(obsv_init, 'L', vk8 = v_obsv_init)
+!
 ! ----- Access to extraction flag vector
 !
         extr_flag = sdextr_obsv(1:14)//'     .ACTI'
@@ -78,9 +85,14 @@ implicit none
 ! ----- Initial time: always !
 !
         if (nume_time .eq. 0) then
-            l_obsv = .true.
             do i_keyw_fact = 1, nb_keyw_fact
-                v_extr_flag(i_keyw_fact) = .true.
+                l_obse_init = v_obsv_init(i_keyw_fact).eq.'OUI'
+                if (l_obse_init) then
+                    v_extr_flag(i_keyw_fact) = .true.
+                else
+                    v_extr_flag(i_keyw_fact) = .false.
+                endif
+                l_obsv = l_select.or.l_obse_init
             end do
             goto 99
         endif

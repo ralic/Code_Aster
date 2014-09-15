@@ -4,6 +4,8 @@ implicit none
 !
 #include "asterfort/impfoi.h"
 #include "asterfort/nmcrpx.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +48,9 @@ implicit none
     character(len=19) :: list_inst_obsv
     character(len=2) :: chaine
     character(len=16) :: keyw_step
+    character(len=8) :: answer
+    character(len=24) :: obsv_init
+    character(len=8), pointer :: v_obsv_init(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,6 +60,15 @@ implicit none
         call impfoi(0, 2, i_keyw_fact, chaine)
         list_inst_obsv = sd_obsv(1:14)//chaine(1:2)//'.LI'
         call nmcrpx(keyw_fact, keyw_step, i_keyw_fact, list_inst_obsv, base)
+    end do
+!
+! - Initial observation
+!
+    obsv_init = sd_obsv(1:14)//'     .INIT'
+    call wkvect(obsv_init, 'V V K8', nb_keyw_fact, vk8 = v_obsv_init)
+    do i_keyw_fact = 1, nb_keyw_fact
+        call getvtx(keyw_fact, 'OBSE_ETAT_INIT', iocc=i_keyw_fact, scal = answer)
+        v_obsv_init(i_keyw_fact) = answer
     end do
 !
 end subroutine
