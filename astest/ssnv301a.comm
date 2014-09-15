@@ -503,7 +503,7 @@ CALCNL=STAT_NON_LINE(
                          COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                 DEFORMATION = 'PETIT_REAC'),
-                         INCREMENT=_F(
+                         INCREMENT=_F(INST_FIN=5.,
                 LIST_INST = CAT2),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -519,6 +519,14 @@ CALCNL=STAT_NON_LINE(
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3)
               )
+
+IMPR_RESU(RESU=(
+_F(RESULTAT=THERL),
+_F(RESULTAT=CALCNL),
+),
+FORMAT='MED',INFO=1)
+
+FIN()
 
 CALCNL=CALC_CHAMP(reuse=CALCNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=CALCNL)
 
@@ -592,5 +600,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                 ),
           )
 
-FIN()
 #

@@ -7,3 +7,7 @@ P testlist C
 
 F comm ssnv301a.comm D 1
 F mmed ssnv301a.mmed D 20
+#F rmed ssnv301a.80   R 80
+F comm ssnv301a.com1 D 1
+
+
