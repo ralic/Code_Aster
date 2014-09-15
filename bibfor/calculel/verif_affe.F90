@@ -50,8 +50,8 @@ subroutine verif_affe(modele,sd)
     character(len=80) :: comment
     integer :: n1,k,iret
     character(len=5)  :: l_cart_char_meca(26), l_cart_char_ther(10)
-    character(len=8)  :: l_cart_cara_elem(18)
-    character(len=80) :: l_comm_char_meca(26), l_comm_char_ther(10), l_comm_cara_elem(18)
+    character(len=8)  :: l_cart_cara_elem(14)
+    character(len=80) :: l_comm_char_meca(26), l_comm_char_ther(10), l_comm_cara_elem(14)
 
 !-----------------------------------------------------------------------
 !
@@ -78,18 +78,27 @@ subroutine verif_affe(modele,sd)
 !   -- cartes des sd_cara_elem :
 !   -----------------------------
     l_cart_cara_elem = (/ &
-    'CARGENBA', 'CARMASSI', 'CARCABLE', 'CARCOQUE', 'CARGEOBA', 'CARDISCK', 'CARARCPO',&
-    'CARGENPO', 'CARDISCM', 'CARORIEN', 'CARDISCA', 'CVENTCXF', 'CARPOUFL', 'CARGEOPO',&
-    'CARDNSCK', 'CARDNSCM', 'CARDNSCA', 'CARDINFO' /)
+    'CARGENBA', 'CARMASSI', 'CARCABLE', 'CARCOQUE', 'CARDISCK', 'CARARCPO', 'CARGENPO', &
+    'CARDISCM', 'CARORIEN', 'CARDISCA', 'CVENTCXF', 'CARPOUFL', 'CARGEOPO', 'CARDINFO' /)
 
     l_comm_cara_elem = ' '
-    l_comm_cara_elem(4) = 'Caracteristiques provenant du mot cle COQUE'
-
-
+    l_comm_cara_elem(1)  = 'Caracteristiques provenant du mot cle BARRE'
+    l_comm_cara_elem(2)  = 'Caracteristiques provenant du mot cle MASSIF'
+    l_comm_cara_elem(3)  = 'Caracteristiques provenant du mot cle CABLE'
+    l_comm_cara_elem(4)  = 'Caracteristiques provenant du mot cle COQUE'
+    l_comm_cara_elem(5)  = 'Caracteristiques provenant du mot cle DISCRET de type raideur'
+    l_comm_cara_elem(6)  = 'Caracteristiques provenant des POUTRES courbes'
+    l_comm_cara_elem(7)  = 'Caracteristiques provenant du mot cle POUTRE'
+    l_comm_cara_elem(8)  = 'Caracteristiques provenant du mot cle DISCRET de type masse'
+    l_comm_cara_elem(9)  = 'Caracteristiques provenant du mot cle ORIENTATION'
+    l_comm_cara_elem(10) = 'Caracteristiques provenant du mot cle DISCRET d''amortissement'
+    l_comm_cara_elem(11) = 'Caracteristiques provenant du mot cle FCX'
+    l_comm_cara_elem(12) = 'Caracteristiques provenant du mot cle POUTRE_FLUI'
+    l_comm_cara_elem(13) = 'Caracteristiques provenant du mot cle POUTRE (geometrie)'
+    l_comm_cara_elem(14) = 'Caracteristiques provenant du mot cle DISCRET (information)'
 
     modele_=modele
     ligrmo=modele_//'.MODELE'
-
 
 !   -- boucle sur les cartes de la SD :
 !   ---------------------------------------

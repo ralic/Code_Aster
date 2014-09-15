@@ -85,11 +85,8 @@ subroutine w039ca(ifi, form)
                 lexi=.true.
             endif
 !
-!
             titre='Caracteristiques generales des barres'
             call w039c1(carele//'.CARGENBA', ifi, form, ligrel, titre)
-            titre='Caracteristiques geom. des barres'
-            call w039c1(carele//'.CARGEOBA', ifi, form, ligrel, titre)
 !
             titre='Caracteristiques generales des poutres'
             call w039c1(carele//'.CARGENPO', ifi, form, ligrel, titre)
@@ -107,15 +104,12 @@ subroutine w039ca(ifi, form)
 !
             titre='Caracteristiques des elements discrets K_*'
             call w039c1(carele//'.CARDISCK', ifi, form, ligrel, titre)
-            call w039c1(carele//'.CARDNSCK', ifi, form, ligrel, titre)
 !
             titre='Caracteristiques des elements discrets M_*'
             call w039c1(carele//'.CARDISCM', ifi, form, ligrel, titre)
-            call w039c1(carele//'.CARDNSCM', ifi, form, ligrel, titre)
 !
             titre='Caracteristiques des elements discrets A_*'
             call w039c1(carele//'.CARDISCA', ifi, form, ligrel, titre)
-            call w039c1(carele//'.CARDNSCA', ifi, form, ligrel, titre)
 !
             titre='Caracteristiques geom. des coques'
             call w039c1(carele//'.CARCOQUE', ifi, form, ligrel, titre)

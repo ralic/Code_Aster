@@ -46,14 +46,13 @@ subroutine dismcr(questi, nomobz, repi, repkz, ierd)
     character(len=32) :: repk
     character(len=8) :: nomob
     integer :: k, ncarte, iexi, jadr
-    parameter (ncarte=13)
+    parameter (ncarte=12)
     character(len=11) :: cartes(ncarte)
     character(len=19) :: cart1
     data cartes/'.CARCOQUE',  '.CARGEOPO',  '.CARARCPO',&
                 '.CARCABLE',  '.CARDISCA',  '.CARDISCK',&
                 '.CARDISCM',  '.CARGENBA',  '.CARGENPO',&
-                '.CARGEOBA',  '.CARMASSI',  '.CARORIEN',&
-                '.CARPOUFL'/
+                '.CARMASSI',  '.CARORIEN',  '.CARPOUFL' /
 ! --------------------------------------------------------------------------------------------------
 !
     repk = ' '

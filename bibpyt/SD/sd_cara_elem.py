@@ -46,7 +46,4 @@ class sd_cara_elem(AsBase):
     CARRIGXV = Facultatif(AsVR())
     CARAMOXN = Facultatif(AsVK8())
     CARAMOXV = Facultatif(AsVR())
-    CARDNSCK = Facultatif(sd_carte())
-    CARDNSCM = Facultatif(sd_carte())
-    CARDNSCA = Facultatif(sd_carte())
     CARDINFO = Facultatif(sd_carte())

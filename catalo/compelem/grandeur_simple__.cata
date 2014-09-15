@@ -150,24 +150,10 @@ GRANDEUR_SIMPLE__
 %   POUR LES DISCRETS : FIN
 %
 
-<<  CAGEBA Type:R Caracteristiques geometriques des barres a section
-       rectangulaire ou circulaire
-       HY1 : dimension suivant GY du rectangle (noeud 1)
-       HZ1 : dimension suivant GZ du rectangle (noeud 1)
-       EPY1 : epaisseur suivant GY d'un rectangle creux (noeud 1)
-       EPZ1 : epaisseur suivant GZ d'un rectangle creux (noeud 1)
-       HY2 : dimension suivant GY du rectangle (noeud 2)
-       HZ2 : dimension suivant GZ du rectangle (noeud 2)
-       EPY2 : epaisseur suivant GY d'un rectangle creux (noeud 2)
-       EPZ2 : epaisseur suivant GZ d'un rectangle creux (noeud 2)
-       R1 : rayon du cercle (noeud 1)
-       EP1 : epaisseur du cercle creux (noeud 1)
-       R2 : rayon du cercle (noeud 2)
-       EP2 : epaisseur du cercle creux (noeud 2)
-       TSEC : type de la section (generale, rectangle, cercle)
+<<  CAGNBA Type:R Caracteristiques geometriques d'une section de barre
+       A1 : aire de la section transversale
 >>
-    CAGEBA   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
-                    R1       EP1      R2       EP2      TSEC
+    CAGNBA   = R    A1
 
 <<  CAGEPO Type:R Caracteristiques geometriques des poutres a section
     rectangulaire ou circulaire
@@ -188,20 +174,15 @@ GRANDEUR_SIMPLE__
     CAGEPO   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
                     R1       EP1      R2       EP2      TSEC
 
-<<  CAGNBA Type:R Caracteristiques geometriques d'une section de barre
-       A1 : aire de la section transversale
->>
-    CAGNBA   = R    A1
-
-<<  CAGNPO Type:R Caracteristiques geometriques d'une section de poutre
+<<  CAGNPO Type:R Caracteristiques mecaniques d'une section de poutre
       A1 : aire de la section (noeud 1)
       IY1 : moment d'inertie principal par rapport a GZ (noeud 1)
       IZ1 : moment d'inertie principal par rapport a GY (noeud 1)
       AY1 : coefficient de cisaillement dans la direction Gy (noeud 1)
       AZ1 : coefficient de cisaillement dans la direction Gz (noeud 1)
-      EY1 : excentricite du centre de torsion, composante de CG
+      EY1 : excentrement du centre de torsion, composante de CG
       suivant GY (noeud 1)
-      EZ1 : excentricite du centre de torsion, composante de CG suivant
+      EZ1 : excentrement du centre de torsion, composante de CG suivant
       GZ (noeud 1)
       JX1 : constante de torsion (noeud 1)
       RY1 : distance d'une fibre externe mesuree suivant Y (noeud 1)
@@ -217,9 +198,9 @@ GRANDEUR_SIMPLE__
       IZ2 : moment d'inertie principal par rapport a GY (noeud 2)
       AY2 : coefficient de cisaillement dans la direction Gy (noeud 2)
       AZ2 : coefficient de cisaillement dans la direction Gz (noeud 2)
-      EY2 : excentricite du centre de torsion, composante de CG suivant
+      EY2 : excentrement du centre de torsion, composante de CG suivant
       GY (noeud 2)
-      EZ2 : excentricite du centre de torsion, composante de CG suivant
+      EZ2 : excentrement du centre de torsion, composante de CG suivant
       GZ (noeud 2)
       JX2 : constante de torsion (noeud 2)
       RY2 : distance d'une fibre externe mesuree suivant Y (noeud 2)
