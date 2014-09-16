@@ -1,0 +1,292 @@
+# -*- coding: utf-8 -*-
+# TITRE : TEST DE MFRONT EN THM, CF. WTNP114A
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# EN THM ( CAS TEST HM EN MECANIQUE PURE )
+
+###### données similaires à wtnp114a
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+import os
+
+os.system("mfront --obuild DruckerPragerEcroLin.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so druckprag.so")
+
+MAILIN=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILLAGE = CREA_MAILLAGE(
+                         MAILLAGE  = MAILIN,
+                         LINE_QUAD = _F(TOUT = 'OUI'),
+                       )
+
+
+MODELE   = AFFE_MODELE( MAILLAGE = MAILLAGE,
+                        AFFE     = _F( TOUT         = 'OUI',
+                                       PHENOMENE    = 'MECANIQUE',
+                                       MODELISATION = 'D_PLAN_HM',),);
+
+MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
+                          MAILLAGE     = MAILLAGE,
+                          ORIE_PEAU_2D = _F( GROUP_MA = ('HAUT',
+                                                         'BAS',
+                                                         'CAVITE',
+                                                         'EXTREM',),  )
+                     )
+
+MAILLAGE = DEFI_GROUP( reuse    = MAILLAGE,
+                       MAILLAGE = MAILLAGE,
+                       CREA_GROUP_NO = ( _F(GROUP_MA='ROCHE',),
+                                         _F(GROUP_MA='EXTREM',),
+                                         _F(GROUP_MA='CAVITE',),
+                                         _F(GROUP_MA='HAUT',),
+                                         _F(GROUP_MA='BAS',),),);
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,
+               MAILLAGE=MAILLAGE,
+               CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE'),),)
+UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,);
+
+ZERO = DEFI_CONSTANTE(VALE = 0.0,);
+
+KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,);
+
+SOL  = DEFI_MATERIAU( ELAS      = _F( E           = 5800.0E6,
+                                      NU          = 0.3,
+                                      RHO         = 2764.0,
+                                      ALPHA       = 0.0,),
+                      DRUCK_PRAGER   = _F( ECROUISSAGE = 'LINEAIRE',
+                                      ALPHA       =    0.328     ,
+                                      P_ULTM      =    0.000     ,
+                                      SY          =    2.11E6    ,
+                                      H           =    0.000     ,),
+                      # données de DruckerPragerEcroLine.mfront
+                      UMAT=_F( C1 = 5800.0E6,
+                               C2 = 0.3 ,
+                               NB_VALE=6,
+                               C3  = 0.328 , 
+                               C4  = 0, 
+                               C5  = 2.11E6,
+                               C6  = 0,
+                               ),
+                      COMP_THM  =    'LIQU_SATU',
+                      THM_INIT  = _F( PRE1        = 0.0,
+                                      PORO        = 0.15,),
+                      THM_DIFFU = _F( RHO         = 2500,
+                                      BIOT_COEF   = 0.8,
+                                      PESA_X      = 0.0,
+                                      PESA_Y      = 0.0,
+                                      PESA_Z      = 0.0,
+                                      PERM_IN     = KINT,),
+                      THM_LIQU  = _F( RHO         = 1000,
+                                      UN_SUR_K    = 5E-10,
+                                      VISC        = UNM3,
+                                      D_VISC_TEMP = ZERO,),);
+
+CHMAT = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
+                       AFFE     = _F( TOUT  = 'OUI',
+                                      MATER =  SOL,),);
+
+
+# CONDITIONS AUX LIMITES DE SYMETRIE ET BLOCAGE DE LA PARTIE HYDRAULIQUE
+
+CALBAS=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=(_F(GROUP_NO='BAS',
+                                   DY=0.0,),),);
+
+FSX = FORMULE(NOM_PARA='X',VALE='15.4E6');
+
+FSY = FORMULE(NOM_PARA='Y',VALE='11.0E6');
+
+CALGAU = AFFE_CHAR_MECA(
+                           MODELE   =  MODELE,
+                           DDL_IMPO=(_F(GROUP_NO='CAVITE',
+                                   DX=0.0,),),);
+
+CALHAU=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                      PRES_REP=_F(GROUP_MA = 'HAUT',
+                                  PRES     = FSX,),);
+
+CALDRO=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                      PRES_REP=_F(GROUP_MA = 'EXTREM',
+                                  PRES     = FSY,),);
+
+CALPRE=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=_F(GROUP_NO='ROCHES',
+                                  PRE1     = 0.00,),);
+
+TEMPS_EL=DEFI_LIST_REEL(
+                      DEBUT     = 0.0,
+                      INTERVALLE=  _F( JUSQU_A = 1.0E3,   NOMBRE = 1,),
+)
+
+U1 = STAT_NON_LINE(
+                    MODELE      = MODELE,
+                    CHAM_MATER  = CHMAT,
+                    EXCIT       = ( _F( CHARGE    = CALBAS   ),
+                                    _F( CHARGE    = CALHAU   ),
+                                    _F( CHARGE    = CALGAU   ),
+                                    _F( CHARGE    = CALDRO   ),
+                                    _F( CHARGE    = CALPRE   ),
+                                  ),
+                    COMPORTEMENT=_F( RELATION = 'KIT_HM',
+                                  RELATION_KIT =  ('MFRONT', 'LIQU_SATU','HYDR_UTIL',),
+                                 NOM_ROUTINE='asterdruckprag',
+                                 LIBRAIRIE='druckprag.so',
+                                      RESI_INTE_RELA = 1.E-6,
+                                      ITER_INTE_PAS  = -10,
+                                      ITER_INTE_MAXI = 100),
+                     NEWTON      = _F( MATRICE  = 'TANGENTE',
+                                      REAC_ITER = 1, ),
+                    CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6  ,
+                                      ITER_GLOB_MAXI = 100    )  ,
+                    INCREMENT    = _F( LIST_INST     = TEMPS_EL , )
+                 )
+
+
+# CALCULS DES DEFORMATIONS
+
+U1=CALC_CHAMP(reuse=U1,
+              RESULTAT=U1,
+              DEFORMATION=('EPSI_ELGA','EPSI_ELNO'),
+              CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELGA','EPEQ_ELNO'),);
+
+
+
+# TEST SUR LES DEPLACEMENTS
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.38068966E-03,
+                   VALE_REFE=-1.3806896558000001E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC=-3.35310345E-03,
+                   VALE_REFE=-3.35310344828E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,),
+                ),
+          )
+
+# TEST SUR LES DEFORMATIONS
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-6.90344828E-04,
+                   VALE_REFE=-6.9034482758999996E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M7',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N2',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-6.90344828E-04,
+                   VALE_REFE=-6.9034482758999996E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M8',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-6.90344828E-04,
+                   VALE_REFE=-6.9034482758999996E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M8',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N4',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-6.90344828E-04,
+                   VALE_REFE=-6.9034482758999996E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M7',),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.67655172E-03,
+                   VALE_REFE=-1.67655172414E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M7',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N2',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.67655172E-03,
+                   VALE_REFE=-1.67655172414E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M8',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.67655172E-03,
+                   VALE_REFE=-1.67655172414E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M8',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N4',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.67655172E-03,
+                   VALE_REFE=-1.67655172414E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='M7',),
+                ),
+          )
+
+FIN();

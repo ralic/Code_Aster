@@ -26,9 +26,9 @@ interface
         integer :: niv
         integer :: idbg, nkwin
         character(len=8)  :: lvarc(8)
-        integer :: nbvarc
+        integer :: nbvarc, nwkin
         real(kind=8) :: temp
-        real(kind=8) :: dtemp, wkin(*)
+        real(kind=8) :: dtemp, wkin(nwkin)
         real(kind=8) :: predef(8)
         real(kind=8) :: dpred(8)
         integer :: neps
