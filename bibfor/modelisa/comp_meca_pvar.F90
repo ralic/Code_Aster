@@ -73,7 +73,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     integer :: j_comp_d, j_comp_l, iadc
     aster_logical :: l_kit_meta, l_affe
     aster_logical :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
-    aster_logical :: l_excl
+    aster_logical :: l_excl, l_kit_thm
     integer :: nb_elem, nocc, nb_vari, nb_vari_all
     integer :: i_elem, iocc, i_kit
     integer :: idummy
@@ -206,6 +206,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                 do i_kit = 1, 9
                     kit_comp(i_kit) = cesv(1+iadc-2+7+i_kit)
                 end do
+                if (kit_comp(4).eq.'MFRONT') l_exte_comp=.true.
                 kit_comp(5) = 'VIDE'
                 if (.not.l_matr_tgsc) kit_comp(6) = 'VIDE'
                 if (.not.l_crit_rupt) kit_comp(7) = 'VIDE'
@@ -223,6 +224,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
             do i_kit = 1, 9
                 kit_comp(i_kit) = compor_list(7+i_kit)
             end do
+            if (kit_comp(4).eq.'MFRONT') l_exte_comp=.true.
             kit_comp(5) = 'VIDE'
             if (.not.l_matr_tgsc) kit_comp(6) = 'VIDE'
             if (.not.l_crit_rupt) kit_comp(7) = 'VIDE'
@@ -243,6 +245,8 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
         call comp_meca_exc2(defo_comp, l_kit_meta, l_cristal, l_pmf, l_excl,&
                             vari_excl)
+        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+        if (l_kit_thm.and.l_exte_comp) l_excl=.true.
 !
 ! ----- Save name of internal variables
 !

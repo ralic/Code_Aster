@@ -127,6 +127,9 @@ subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
                 nom_mod_mfront = '_PlaneStrain'
             elseif ( type_elem.eq.'AXIS' ) then
                 nom_mod_mfront = '_Axisymmetrical'
+            elseif ( type_elem.eq.'NON_DEFINI' ) then
+!  dasn phenomes_modelisation.cata, il manque l'attribut TYPMOD pour la THM
+                nom_mod_mfront = '_Tridimensional'
             else
                 ASSERT(.false.)
             endif

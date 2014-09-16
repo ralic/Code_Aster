@@ -108,6 +108,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                        "JOINT_BANDIS",
                                        "CZM_LIN_REG",
                                        "CZM_EXP_REG",
+                                       "MFRONT",                                       
+
 # THMC
                                        "GAZ",
                                        "LIQU_SATU",
@@ -123,7 +125,17 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                        "HYDR_VGC",
                                        "HYDR_ENDO",
                                        ),),
+
+ # mfront pour la loi meca de THM                                     
+           b_mfront_thm = BLOC(condition = "'MFRONT' in RELATION_KIT",fr=tr("Comportement utilisateur meca THM de type MFRONT"),
+                                          LIBRAIRIE = SIMP(statut='o', typ='TXM',
+                                                           fr=tr("Chemin vers la bibliothèque dynamique définissant le comportement MFRONT")),
+                                          NOM_ROUTINE = SIMP(statut='o', typ='TXM',
+                                                           fr=tr("Nom de la routine MFRONT dans la bibliothèque")),
+                                      ),
+
                                        ),
+                
            b_kit_meta = BLOC(condition = "RELATION in ('META_LEMA_ANI','META_P_CL_PT_RE','META_P_CL_PT','META_P_CL_RE','META_P_CL',\
        'META_P_IL_PT_RE','META_P_IL_PT','META_P_IL_RE','META_P_IL','META_P_INL_PT_RE','META_P_INL_PT','META_P_INL_RE','META_P_INL',\
            'META_V_CL_PT_RE','META_V_CL_PT','META_V_CL_RE','META_V_CL','META_V_IL_PT_RE','META_V_IL_PT','META_V_IL_RE','META_V_IL',\

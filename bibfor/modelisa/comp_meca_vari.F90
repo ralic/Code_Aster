@@ -128,7 +128,12 @@ subroutine comp_meca_vari(rela_comp, defo_comp, type_cpla, nb_vari, kit_comp,&
         nb_vari_comp(1) = nb_vari_thmc
         nb_vari_comp(2) = nb_vari_ther
         nb_vari_comp(3) = nb_vari_hydr
-        nb_vari_comp(4) = nb_vari_meca
+        if (rela_meca.eq.'MFRONT') then
+            nb_vari_comp(4) = nb_vari_exte
+            l_exte_comp=.true.
+        else
+            nb_vari_comp(4) = nb_vari_meca
+        endif
     endif
 !
 ! - KIT META

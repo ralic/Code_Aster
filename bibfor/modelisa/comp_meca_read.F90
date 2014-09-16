@@ -133,6 +133,10 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 !
         if (l_kit) then
             call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
+
+            if (kit_comp(4).eq.'MFRONT') then
+                l_mfront=.true.
+            endif
         endif
 !
 ! ----- Get external program
