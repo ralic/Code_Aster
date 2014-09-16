@@ -15,7 +15,7 @@
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     subroutine mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, &
-                           lvarc, nbvarc, temp, dtemp, predef, dpred, &
+                           lvarc, nbvarc, nwkin, wkin, temp, dtemp, predef, dpred, &
                            neps, epsth, depsth)
 !     but: variables de commande pour interface umat
 !       in   fami    famille de point de gauss (rigi,mass,...)
@@ -35,9 +35,9 @@
 #include "asterfort/verift.h"
 !
     integer           :: imate, kpg, ksp, i, iret, iret2,  codret(3), npred
-    integer           :: ifm, niv, idbg, ndimloc, neps, nbvarc, j
+    integer           :: ifm, niv, idbg, ndimloc, neps, nbvarc, j, nwkin
     parameter          ( npred = 8)
-    real(kind=8)      :: predef(npred),dpred(npred),vrcm,vrcp,valres(3),valrem(3)
+    real(kind=8)      :: predef(npred),dpred(npred),vrcm,vrcp,valres(3),valrem(3),wkin(nwkin)
     real(kind=8)      :: hydrm,hydrp,sechm,sechp,sref,epsbp,epsbm,bendom,kdessm,bendop,kdessp
     real(kind=8)      :: tm,tp,tref,epsth(neps),depsth(neps),temp,dtemp
     character(len=8)  :: nomres(3), lvarc(npred), materi
@@ -52,12 +52,18 @@
 
 
 !   APPEL DE RCVARC POUR LE PASSAGE A UMAT DE LA TEMPERATURE
+    if ((nwkin.eq.4).and.(wkin(1).lt.-0.5)) then
+         tm=wkin(2)
+         tp=wkin(3)
+         tref=wkin(4)
+    else
     call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret)
     if (iret .ne. 0) tm=0.d0
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg, ksp, tref, iret)
     if (iret .ne. 0) tref=0.d0
     call rcvarc(' ', 'TEMP', '+', fami, kpg,  ksp, tp, iret)
     if (iret .ne. 0) tp=0.d0
+    endif
 
     call rccoma(imate, 'ELAS', 1, mcmate, iret2)
     ASSERT(iret2.eq.0)
@@ -93,7 +99,8 @@
             epsth(i) = 0
         endif
     enddo
-!
+!    
+
     do 30 i = 1, nbvarc
         if ( lvarc(i).eq.'SECH' ) then
 !           APPEL DE RCVARC POUR EXTRAIRE TOUTES LES VARIABLES DE COMMANDE

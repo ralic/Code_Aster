@@ -16,19 +16,19 @@
 ! ======================================================================
 interface
     subroutine mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, &
-                           lvarc, nbvarc, temp, dtemp, predef, dpred, &
-                           neps, epsth, depsth )
+                           lvarc, nbvarc, nwkin, wkin, temp, dtemp, &
+                           predef, dpred, neps, epsth, depsth )
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate
         integer :: ifm
         integer :: niv
-        integer :: idbg
+        integer :: idbg, nkwin
         character(len=8)  :: lvarc(8)
         integer :: nbvarc
         real(kind=8) :: temp
-        real(kind=8) :: dtemp
+        real(kind=8) :: dtemp, wkin(*)
         real(kind=8) :: predef(8)
         real(kind=8) :: dpred(8)
         integer :: neps

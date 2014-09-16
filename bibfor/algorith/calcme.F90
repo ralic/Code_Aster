@@ -78,8 +78,8 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, j, nelas, nresma, numlc, aniso
-    real(kind=8) :: deps(6), t, dt, tini, p1, p2
+    integer :: i, j, nelas, nresma, numlc, aniso, nwkin
+    real(kind=8) :: deps(6), t, dt, tini, p1, p2, wkin(4)
     real(kind=8) :: young, nu, alpha0, crit(*), instam, instap, tref
     parameter     (nelas = 4  )
     parameter     (nresma = 18)
@@ -349,6 +349,29 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     congep(adcome), vintp, 36, dsdeme, 1,&
                     [0.d0], retcom)
     endif
+
+    if (meca .eq. 'MFRONT') then
+        complg(1) = 'MFRONT'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        mectru = .true.
+        tini = t - dt
+        numlc=58
+        cp=.false.
+        nwkin=4
+        wkin(1)=-1
+        wkin(2)=tini
+        wkin(3)=t
+        wkin(4)=tref
+        call redece('RIGI', 1, 1, ndim, typmod,&
+                    imate, complg, crit, instam, instap,&
+                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
+                    vintm, option, angma1, nwkin, wkin ,&
+                    cp, numlc, tini, t, tref,&
+                    congep(adcome), vintp, 36, dsdeme, 1,&
+                    [0.d0], retcom)
+    endif
+
     if (mectru) then
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
             do i = 1, ndt

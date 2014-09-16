@@ -111,7 +111,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !
 !     NUMERO D'ELEMENT SEULEMENT SI ON N'EST PAS DANS CALC_POINT_MAT
     noel=0
-    if (compor(17) .ne. 'POINT') then
+!    if (compor(17) .ne. 'POINT') then
+    if (crit(17) .ne. 1) then
 !        NUMERO D'ELEMENT
         call tecael(iadzi, iazk24)
         noel=zi(iadzi)
@@ -143,10 +144,16 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
     else
         ASSERT(.false.)
     endif
+    if ((nwkin.eq.4).and.(wkin(1).lt.-0.5)) then
+        nbvarc=0
+    else
+        call mfront_get_external_state_variable(int(crit(14)), int(crit(15)), lvarc, nbvarc)
+        ASSERT(nbvarc.le.npred)
+    endif
     call mfront_get_external_state_variable(int(crit(14)), int(crit(15)), lvarc, nbvarc)
     ASSERT(nbvarc.le.npred)
     call mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, lvarc, nbvarc, &
-                     temp, dtemp, predef, dpred, neps, epsth, depsth )
+                     nwkin, wkin, temp, dtemp, predef, dpred, neps, epsth, depsth )
 !
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
 !
