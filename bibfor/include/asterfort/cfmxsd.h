@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
+    subroutine cfmxsd(meshz , modelz, numedd, fonact, sddyna,&
                       defico, resoco, ligrcf, ligrxf)
-        character(len=8) :: noma
-        character(len=8) :: nomo
+        character(len=*), intent(in) :: meshz
+        character(len=*), intent(in) :: modelz
         character(len=24) :: numedd
         integer :: fonact(*)
         character(len=19) :: sddyna

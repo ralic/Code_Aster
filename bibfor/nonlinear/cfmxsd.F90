@@ -1,5 +1,24 @@
-subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
+subroutine cfmxsd(meshz , modelz, numedd, fonact, sddyna,&
                   defico, resoco, ligrcf, ligrxf)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/cfcrsd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmap.h"
+#include "asterfort/cfmmci.h"
+#include "asterfort/cfmmma.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfmxme.h"
+#include "asterfort/cfmxr0.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xxmxme.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,41 +38,24 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfcrsd.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmap.h"
-#include "asterfort/cfmmci.h"
-#include "asterfort/cfmmma.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/cfmxme.h"
-#include "asterfort/cfmxr0.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/xxmxme.h"
-    character(len=8) :: noma, nomo
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
     character(len=24) :: numedd
     integer :: fonact(*)
     character(len=19) :: sddyna
     character(len=24) :: defico, resoco
     character(len=19) :: ligrcf, ligrxf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE CONTACT (TOUTES METHODES)
 !
 ! CREATION DES SDS DE RESOLUTION DU CONTACT (RESOCO)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
+! In  mesh             : name of mesh
+! In  model            : name of model
 ! IN  NUMEDD : NUME_DDL DE LA MATRICE TANGENTE GLOBALE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -62,8 +64,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! IN  LIGRCF : NOM DU LIGREL TARDIF POUR ELEMENTS DE CONTACT CONTINUE
 ! IN  LIGRXF : NOM DU LIGREL TARDIF POUR ELEMENTS DE CONTACT XFEM GG
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: zbouc, ztaco
     integer :: nzoco
@@ -76,8 +77,9 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
     character(len=14) :: numedf
     character(len=24) :: crnudd, maxdep
     integer :: jcrnud, jmaxde
+    character(len=8) :: model, mesh
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
@@ -97,15 +99,17 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! --- NUME_DDL MATRICE FROTTEMENT
     numedf = '&&CFMXSD.NUMDF'
     nzoco = cfdisi(defico,'NZOCO')
+    model = modelz
+    mesh  = meshz
 !
 ! --- CREATION DES SD RESULTATS: VALE_CONT ET PERCUSSIONS
 !
-    call cfmxr0(defico, resoco, noma)
+    call cfmxr0(defico, resoco, mesh)
 !
 ! --- CREATION DE LA SD APPARIEMENT
 !
     if (lmail) then
-        call cfmmap(noma, defico, resoco)
+        call cfmmap(mesh, defico, resoco)
     endif
 !
 ! --- CREATION DES COMPTEURS DE BOUCLE
@@ -169,7 +173,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! --- CONTACT DISCRET
 !
     if (lctcd) then
-        call cfcrsd(noma, numedd, defico, resoco)
+        call cfcrsd(mesh, numedd, defico, resoco)
     endif
 !
 ! --- CONTACT CONTINU
@@ -181,7 +185,7 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! --- CONTACT XFEM
 !
     if (lxfcm) then
-        call xxmxme(noma, nomo, fonact, defico, resoco)
+        call xxmxme(mesh, model, fonact, defico, resoco)
     endif
 !
  99 continue

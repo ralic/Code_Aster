@@ -1,7 +1,27 @@
-subroutine nmdata(result, modele, mate, carele, compor,&
-                  lischa, solveu, method, parmet, parcri,&
-                  parcon, carcri, sddyna, sdpost, sderro,&
-                  sdener, sdcriq, sdimpr)
+subroutine nmdata(result, model , mesh  , mate  , carele, &
+                  compor, lischa, solveu, method, parmet, &
+                  parcri, parcon, carcri, sddyna, sdpost, &
+                  sderro, sdener, sdcriq, sdimpr)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/getres.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eninit.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/ndcrdy.h"
+#include "asterfort/ndlect.h"
+#include "asterfort/nmcrer.h"
+#include "asterfort/nmcrga.h"
+#include "asterfort/nmdocn.h"
+#include "asterfort/nmdoim.h"
+#include "asterfort/nmdomt.h"
+#include "asterfort/nmdopo.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/nmetdo.h"
+#include "asterfort/nmlect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,43 +41,26 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterc/getres.h"
-#include "asterfort/eninit.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/getvid.h"
-#include "asterfort/ndcrdy.h"
-#include "asterfort/ndlect.h"
-#include "asterfort/nmcrer.h"
-#include "asterfort/nmcrga.h"
-#include "asterfort/nmdocn.h"
-#include "asterfort/nmdoim.h"
-#include "asterfort/nmdomt.h"
-#include "asterfort/nmdopo.h"
-#include "asterfort/nmdorc.h"
-#include "asterfort/nmetdo.h"
-#include "asterfort/nmlect.h"
     character(len=8) :: result
     character(len=19) :: lischa, solveu, sddyna, sdpost, sdener
-    character(len=24) :: modele, mate, carele, compor
+    character(len=24) :: mate, carele, compor
     character(len=24) :: carcri, sderro, sdcriq, sdimpr
     character(len=16) :: method(*)
     real(kind=8) :: parmet(*), parcri(*), parcon(*)
+    character(len=*), intent(out) :: model
+    character(len=*), intent(out) :: mesh
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! MECA_NON_LINE
 !
-! LECTURE DES OPERANDES
+! Read parameters
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! OUT RESULT : NOM UTILISATEUR DU RESULTAT DE MECA_NON_LINE
-! OUT MODELE : NOM DU MODELE
+! Out mesh             : name of mesh
+! Out model            : name of model
 ! OUT MATE   : NOM DU CHAMP DE MATERIAU
 ! OUT CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! OUT COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
@@ -75,7 +78,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! OUT SDENER : SD ENERGIES
 ! OUT SDIMPR : SD AFFICHAGE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: n1, n2
@@ -83,13 +86,9 @@ subroutine nmdata(result, modele, mate, carele, compor,&
     character(len=16) :: k16bid, nomcmd
     aster_logical :: l_etat_init
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> LECTURE DES DONNEES'
     endif
@@ -106,15 +105,16 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 !
 ! --- LECTURE DONNEES GENERALES
 !
-    call nmlect(result, modele, mate, carele, compor,&
+    call nmlect(result, model, mate, carele, compor,&
                 lischa, solveu)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... LECTURE DONNEES COMPORTEMENT'
     endif
-    call nmdorc(modele(1:8), mate, l_etat_init, compor, carcri)
+    call nmdorc(model(1:8), mate, l_etat_init, compor, carcri)
 !
 ! --- CRITERES DE CONVERGENCE GLOBAL
 !
@@ -130,7 +130,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 !
 ! --- LECTURE DES OPERANDES DYNAMIQUES
 !
-    call ndlect(modele, mate, carele, lischa, sddyna)
+    call ndlect(model, mate, carele, lischa, sddyna)
 !
 ! --- LECTURE INFOS POST-TRAITEMENT (CRIT_STAB ET MODE_VIBR)
 !
@@ -154,7 +154,5 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! --- LECTURE DES PARAMETRES UTILISATEURS AFFICHAGE
 !
     call nmdoim(sdimpr)
-!
-    call jedema()
 !
 end subroutine

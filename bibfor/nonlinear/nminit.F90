@@ -1,8 +1,8 @@
-subroutine nminit(result, modele, numedd, numfix  , mate,&
+subroutine nminit(result, model , numedd, numfix  , mate,&
                   compor, carele, parmet, lischa  , maprec,&
                   solveu, carcri, numins, sdstat  , sddisc,&
                   sdnume, defico, sdcrit, comref  , fonact,&
-                  parcon, parcri, method, lisch2  , noma,&
+                  parcon, parcri, method, lisch2  , mesh,&
                   sdpilo, sddyna, sdimpr, sdsuiv  , sdobse,&
                   sdtime, sderro, sdpost, sd_inout, sdener,&
                   sdconv, sdcriq, deficu, resocu  , resoco,&
@@ -33,6 +33,7 @@ implicit none
 #include "asterfort/nmcrcg.h"
 #include "asterfort/nmcrch.h"
 #include "asterfort/nmcrcv.h"
+#include "asterfort/nmcrob.h"
 #include "asterfort/nmcrst.h"
 #include "asterfort/nmcrti.h"
 #include "asterfort/nmdoco.h"
@@ -79,12 +80,12 @@ implicit none
     real(kind=8) :: parcon(*), parcri(*), parmet(*)
     character(len=16) :: method(*)
     integer :: numins
-    character(len=8) :: result, noma
+    character(len=8) :: result, mesh
     character(len=19) :: solveu, sdnume, sddisc, sdcrit, sdpilo, sdobse, sdener
     character(len=19) :: sdpost
     character(len=19) :: lischa, lisch2, sddyna
     character(len=19) :: maprec
-    character(len=24) :: modele, compor, numedd, numfix
+    character(len=24) :: model, compor, numedd, numfix
     character(len=24) :: defico, resoco
     character(len=24) :: carcri
     character(len=24) :: mate, carele, codere
@@ -104,6 +105,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
+! In  model            : name of model
 ! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
 ! OUT LISCH2 : NOM DE LA SD INFO CHARGE POUR STOCKAGE DANS LA SD
@@ -115,7 +118,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, ibid
+    integer :: iret, ibid, numreo
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: commoi
@@ -123,7 +126,6 @@ implicit none
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lerrt, lreli, lviss
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
-    character(len=8) :: nomo
     integer, pointer :: slvi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -132,8 +134,6 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    nomo = modele(1:8)
     lacc0 = .false.
     lunil = .false.
     lcont = .false.
@@ -153,7 +153,7 @@ implicit none
 !
 ! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
 !
-    call nmnume(modele, result, lischa, lcont, defico,&
+    call nmnume(model, result, lischa, lcont, defico,&
                 compor, solveu, numedd, sdnume)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
@@ -163,7 +163,7 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    call nmfonc(parcri, parmet, method, solveu, modele,&
+    call nmfonc(parcri, parmet, method, solveu, model,&
                 defico, lischa, lcont, lunil, sdnume,&
                 sddyna, sdcriq, mate, compor, result,&
                 fonact)
@@ -192,14 +192,14 @@ implicit none
 ! --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT DU CONTACT
 !
     if (lcont) then
-        call cfmxsd(noma, nomo, numedd, fonact, sddyna,&
+        call cfmxsd(mesh, model, numedd, fonact, sddyna,&
                     defico, resoco, ligrcf, ligrxf)
     endif
 !
 ! --- CREATION DE LA STRUCTURE DE LIAISON_UNILATERALE
 !
     if (lunil) then
-        call cucrsd(noma, numedd, deficu, resocu)
+        call cucrsd(mesh, numedd, deficu, resocu)
     endif
 !
 ! --- CREATION DES VECTEURS D'INCONNUS
@@ -210,7 +210,7 @@ implicit none
 ! --- CONSTRUCTION DU CHAM_NO ASSOCIE AU PILOTAGE
 !
     if (lpilo) then
-        call nmdopi(modele, numedd, method, lreli, sdpilo)
+        call nmdopi(model, numedd, method, lreli, sdpilo)
     endif
 !
 ! --- DUPLICATION NUME_DDL POUR CREER UN DUME_DDL FIXE
@@ -219,32 +219,37 @@ implicit none
 !
 ! --- CONSTRUCTION DU CHAM_ELEM_S ASSOCIE AU COMPORTEMENT
 !
-    call nmdoco(modele, carele, compor)
+    call nmdoco(model, carele, compor)
 !
 ! - Create input/output datastructure
 !
-    call nmetcr(modele, compor, fonact  , sddyna, sdpost,&
+    call nmetcr(model, compor, fonact  , sddyna, sdpost,&
                 defico, resoco, sd_inout, carele)
 !
 ! --- LECTURE ETAT_INIT
 !
-    call nmdoet(modele, compor, fonact, numedd, sdpilo,&
+    call nmdoet(model, compor, fonact, numedd, sdpilo,&
                 sddyna, sdcriq, sd_inout, solalg, lacc0,&
                 instin)
 !
 ! --- CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
 !
-    call diinit(noma, nomo, result, mate, carele,&
+    call diinit(mesh, model, result, mate, carele,&
                 fonact, sddyna, parcri, instin, sd_inout,&
                 solveu, defico, sddisc, sdobse, sdsuiv)
 !
+! - Create observation datastructure
+!
+    call nmcrob(mesh   , model, result, numreo, sd_inout,&
+                sdobse)
+!
 ! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
 !
-    call nmvcre(modele, mate, carele, comref)
+    call nmvcre(model, mate, carele, comref)
 !
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
-    call nminmc(fonact, lischa, sddyna, modele, compor,&
+    call nminmc(fonact, lischa, sddyna, model, compor,&
                 solveu, numedd, numfix, defico, resoco,&
                 carcri, solalg, valinc, mate, carele,&
                 sddisc, sdstat, sdtime, comref, meelem,&
@@ -258,12 +263,12 @@ implicit none
 ! --- EXTRACTION VARIABLES DE COMMANDES AU TEMPS T-
 !
     call nmchex(valinc, 'VALINC', 'COMMOI', commoi)
-    call nmvcle(modele, mate, carele, lischa, instin,&
+    call nmvcle(model, mate, carele, lischa, instin,&
                 commoi, codret)
 !
 ! --- CALCUL ET ASSEMBLAGE DES VECT_ELEM CONSTANTS AU COURS DU CALCUL
 !
-    call nminvc(modele, mate, carele, compor, carcri,&
+    call nminvc(model, mate, carele, compor, carcri,&
                 sdtime, sddisc, sddyna, valinc, solalg,&
                 lischa, comref, resoco, resocu, numedd,&
                 fonact, parcon, veelem, veasse, measse)
@@ -280,17 +285,17 @@ implicit none
 !
 ! --- CREATION DE LA SD EXCIT_SOL
 !
-    if (lviss) call nmexso(noma, result, sddyna, numedd)
+    if (lviss) call nmexso(mesh, result, sddyna, numedd)
 !
 ! --- CALCUL DE L'ACCELERATION INITIALE
 !
     if (lacc0) then
-        call nmchar('ACCI', ' ', modele, numedd, mate,&
+        call nmchar('ACCI', ' ', model, numedd, mate,&
                     carele, compor, lischa, carcri, numins,&
                     sdtime, sddisc, parcon, fonact, resoco,&
                     resocu, comref, valinc, solalg, veelem,&
                     measse, veasse, sddyna)
-        call accel0(modele, numedd, numfix, fonact, lischa,&
+        call accel0(model, numedd, numfix, fonact, lischa,&
                     defico, resoco, maprec, solveu, valinc,&
                     sddyna, sdstat, sdtime, meelem, measse,&
                     veelem, veasse, solalg)
@@ -311,12 +316,12 @@ implicit none
 !
 ! --- OBSERVATION INITIALE
 !
-    call nmobsv(noma, sddisc, sd_inout, sdobse, numins)
+    call nmobsv(mesh, sddisc, sd_inout, sdobse, numins)
 !
 ! --- CREATION DE LA SD EVOL_NOLI
 !
     call nmnoli(result, sddisc, sderro, carcri, sdimpr,&
-                sdcrit, fonact, sddyna, sdpost, modele,&
+                sdcrit, fonact, sddyna, sdpost, model,&
                 mate, carele, lisch2, sdpilo, sdtime,&
                 sdener, sd_inout, sdcriq)
 !
@@ -329,13 +334,13 @@ implicit none
 ! --- CREATION DE LA TABLE DES GRANDEURS
 !
     if (lerrt) then
-        call cetule(modele, r8bid3, iret)
+        call cetule(model, r8bid3, iret)
     endif
 !
 ! --- CALCUL DU SECOND MEMBRE INITIAL POUR MULTI-PAS
 !
     if (lmpas) then
-        call nmihht(modele, numedd, mate, compor, carele,&
+        call nmihht(model, numedd, mate, compor, carele,&
                     lischa, carcri, comref, fonact, sdstat,&
                     sddyna, sdtime, sdnume, defico, resoco,&
                     resocu, valinc, sddisc, parcon, solalg,&

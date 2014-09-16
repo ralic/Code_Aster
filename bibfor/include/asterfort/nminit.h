@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nminit(result, modele, numedd, numfix, mate,&
+    subroutine nminit(result, model, numedd, numfix, mate,&
                       compor, carele, parmet, lischa, maprec,&
                       solveu, carcri, numins, sdstat, sddisc,&
                       sdnume, defico, sdcrit, comref, fonact,&
-                      parcon, parcri, method, lisch2, noma,&
+                      parcon, parcri, method, lisch2, mesh,&
                       sdpilo, sddyna, sdimpr, sdsuiv, sdobse,&
                       sdtime, sderro, sdpost, sd_inout, sdener,&
                       sdconv, sdcriq, deficu, resocu, resoco,&
                       valinc, solalg, measse, veelem, meelem,&
                       veasse, codere)
         character(len=8) :: result
-        character(len=24) :: modele
+        character(len=24) :: model
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: mate
@@ -50,7 +50,7 @@ interface
         real(kind=8) :: parcri(*)
         character(len=16) :: method(*)
         character(len=19) :: lisch2
-        character(len=8) :: noma
+        character(len=8) :: mesh
         character(len=19) :: sdpilo
         character(len=19) :: sddyna
         character(len=24) :: sdimpr

@@ -1,6 +1,21 @@
-subroutine diinit(noma, nomo, result, mate, carele,&
-                  fonact, sddyna, parcri, instin, sdieto,&
+subroutine diinit(meshz , modelz, result, mate  , carele  ,&
+                  fonact, sddyna, parcri, instin, sd_inout,&
                   solveu, defico, sddisc, sdobse, sdsuiv)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcrar.h"
+#include "asterfort/nmcrdd.h"
+#include "asterfort/nmcrli.h"
+#include "asterfort/nmcrob.h"
+#include "asterfort/nmcrsu.h"
+#include "asterfort/pascom.h"
+#include "asterfort/pascou.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,41 +35,30 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvid.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmcrar.h"
-#include "asterfort/nmcrdd.h"
-#include "asterfort/nmcrli.h"
-#include "asterfort/nmcrob.h"
-#include "asterfort/nmcrsu.h"
-#include "asterfort/pascom.h"
-#include "asterfort/pascou.h"
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
     real(kind=8) :: instin, parcri(*)
-    character(len=8) :: result, noma, nomo
+    character(len=8) :: result
     character(len=19) :: sddisc, sddyna, sdobse, solveu
     character(len=24) :: carele, mate
-    character(len=24) :: sdieto, sdsuiv, defico
+    character(len=24) :: sdsuiv, defico
     integer :: fonact(*)
+    character(len=24), intent(in) :: sd_inout
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (STRUCTURES DE DONNES)
 !
 ! CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  MATE   : NOM DU CHAMP DE MATERIAU
-! IN  CARELE : NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
+! In  mesh             : name of mesh
+! In  model            : name of model
 ! IN  SDDYNA : NOM DE LA SD DEDIEE A LA DYNAMIQUE (CF NDLECT)
 ! IN  PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE (CF NMDOCN)
 ! IN  RESULT : NOM UTILISATEUR DU RESULTAT
-! IN  SDIETO : SD GESTION IN ET OUT
+! In  sd_inout         : datastructure for input/output parameters
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NOMO   : NOM DU MODELE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
@@ -65,7 +69,7 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! OUT SDSUIV : NOM DE LA SD POUR SUIVI DDL
 ! OUT SDOBSE : NOM DE LA SD POUR OBSERVATION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: n1, nm
     aster_logical :: lexpl, lprmo
@@ -73,11 +77,14 @@ subroutine diinit(noma, nomo, result, mate, carele,&
     character(len=8) :: meca
     character(len=19) :: lisins
     integer :: numreo
+    character(len=8) :: model, mesh
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     ASSERT(n1.ne.0)
+    model = modelz
+    mesh  = meshz
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -112,11 +119,11 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 !
 ! --- CREATION SD OBSERVATION
 !
-    call nmcrob(noma, nomo, result, numreo, sdieto,&
+    call nmcrob(mesh  , model, result, numreo, sd_inout,&
                 sdobse)
 !
 ! --- CREATION SD SUIVI_DDL
 !
-    call nmcrdd(noma, nomo, sdieto, sdsuiv)
+    call nmcrdd(mesh  , model, sd_inout, sdsuiv)
 !
 end subroutine

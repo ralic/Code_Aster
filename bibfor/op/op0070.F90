@@ -88,7 +88,7 @@ subroutine op0070()
 !
     real(kind=8) :: eta
 !
-    character(len=8) :: result, mailla
+    character(len=8) :: result, mesh
 !
     character(len=16) :: k16bid
     character(len=19) :: lischa, lisch2
@@ -172,22 +172,22 @@ subroutine op0070()
 !
 ! --- LECTURE DES OPERANDES DE LA COMMANDE
 !
-    call nmdata(result, modele, mate, carele, compor,&
-                lischa, solveu, method, parmet, parcri,&
-                parcon, carcri, sddyna, sdpost, sderro,&
-                sdener, sdcriq, sdimpr)
+    call nmdata(result, modele, mesh  , mate  , carele,&
+                compor, lischa, solveu, method, parmet,&
+                parcri, parcon, carcri, sddyna, sdpost,&
+                sderro, sdener, sdcriq, sdimpr)
 !
 ! --- ETAT INITIAL ET CREATION DES STRUCTURES DE DONNEES
 !
-    call nminit(result, modele, numedd, numfix, mate,&
-                compor, carele, parmet, lischa, maprec,&
-                solveu, carcri, numins, sdstat, sddisc,&
-                sdnume, defico, sdcrit, comref, fonact,&
-                parcon, parcri, method, lisch2, mailla,&
-                sdpilo, sddyna, sdimpr, sdsuiv, sdobse,&
+    call nminit(result, modele, numedd, numfix  , mate,&
+                compor, carele, parmet, lischa  , maprec,&
+                solveu, carcri, numins, sdstat  , sddisc,&
+                sdnume, defico, sdcrit, comref  , fonact,&
+                parcon, parcri, method, lisch2  , mesh  ,&
+                sdpilo, sddyna, sdimpr, sdsuiv  , sdobse,&
                 sdtime, sderro, sdpost, sd_inout, sdener,&
-                sdconv, sdcriq, deficu, resocu, resoco,&
-                valinc, solalg, measse, veelem, meelem,&
+                sdconv, sdcriq, deficu, resocu  , resoco,&
+                valinc, solalg, measse, veelem  , meelem,&
                 veasse, codere)
 !
 ! --- PREMIER INSTANT
@@ -226,7 +226,7 @@ subroutine op0070()
                     numins, solalg, solveu, matass, maprec,&
                     meelem, measse, veelem, veasse, nbiter)
     else if (lstat.or.limpl) then
-        call nmnewt(mailla, modele, numins, numedd, numfix,&
+        call nmnewt(mesh, modele, numins, numedd, numfix,&
                     mate, carele, comref, compor, lischa,&
                     method, fonact, carcri, parcon, conv,&
                     parmet, parcri, sdstat, sd_inout, sdtime,&
@@ -256,7 +256,7 @@ subroutine op0070()
 !
 ! --- POST-TRAITEMENTS
 !
-    call nmpost(modele, mailla, numedd, numfix, carele,&
+    call nmpost(modele, mesh, numedd, numfix, carele,&
                 compor, solveu, numins, mate, comref,&
                 lischa, defico, resoco, resocu, parmet,&
                 parcon, fonact, carcri, sdimpr, sdstat,&

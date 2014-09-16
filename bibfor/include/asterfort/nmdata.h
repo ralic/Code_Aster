@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdata(result, modele, mate, carele, compor,&
-                      lischa, solveu, method, parmet, parcri,&
-                      parcon, carcri, sddyna, sdpost, sderro,&
-                      sdener, sdcriq, sdimpr)
+    subroutine nmdata(result, model , mesh  , mate  , carele, &
+                      compor, lischa, solveu, method, parmet, &
+                      parcri, parcon, carcri, sddyna, sdpost, &
+                      sderro, sdener, sdcriq, sdimpr)
         character(len=8) :: result
-        character(len=24) :: modele
+        character(len=*), intent(out) :: model
+        character(len=*), intent(out) :: mesh
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor

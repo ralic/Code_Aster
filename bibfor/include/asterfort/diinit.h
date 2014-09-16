@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine diinit(noma, nomo, result, mate, carele,&
-                      fonact, sddyna, parcri, instin, sdieto,&
+    subroutine diinit(meshz , modelz, result, mate  , carele  ,&
+                      fonact, sddyna, parcri, instin, sd_inout,&
                       solveu, defico, sddisc, sdobse, sdsuiv)
-        character(len=8) :: noma
-        character(len=8) :: nomo
+        character(len=*), intent(in) :: meshz
+        character(len=*), intent(in) :: modelz
         character(len=8) :: result
         character(len=24) :: mate
         character(len=24) :: carele
@@ -28,7 +28,7 @@ interface
         character(len=19) :: sddyna
         real(kind=8) :: parcri(*)
         real(kind=8) :: instin
-        character(len=24) :: sdieto
+        character(len=24), intent(in) :: sd_inout
         character(len=19) :: solveu
         character(len=24) :: defico
         character(len=19) :: sddisc
