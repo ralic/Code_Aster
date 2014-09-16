@@ -901,7 +901,7 @@ rXffxK/nhVQeQ/4A5Lekkg==
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
-        if self._write or True:
+        if self._write:
             open('/tmp/test08_fdlv113a.in', 'wb').write(txt)
         diff = self._diffcompress(refe, txt)
         assert diff.strip() == "", diff
