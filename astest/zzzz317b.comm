@@ -52,23 +52,28 @@ FONCT4=RECU_FONCTION(    TABLE=ACCE4,
                                        VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
 
-N4=INFO_FONCTION(  NOCI_SEISME=_F(
+N4_intea=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT4,
-                             PESANTEUR = 9.81,AMOR_REDUIT=0.05,
-                             OPTION = ('TOUT') ))
+                             PESANTEUR = 9.81,OPTION = ('INTE_ARIAS') ))
+
+
+N4_duree=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT4,
+                             PESANTEUR = 9.81, OPTION = ('DUREE_PHAS_FORT' ) ))
+
 
 RMS4=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT4))
 #
 TEST_TABLE(
            VALE_CALC = 0.0692962334718  ,
            NOM_PARA='INTE_ARIAS',
-           TABLE=N4,
+           TABLE=N4_intea,
            )
 
 TEST_TABLE(
            VALE_CALC=5.02,
            NOM_PARA='DUREE_PHAS_FORT',
-           TABLE=N4,
+           TABLE=N4_duree,
            )
 
 TEST_TABLE(
@@ -91,22 +96,27 @@ FONCT5=RECU_FONCTION(    TABLE=ACCE5,
                                        VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
 
-N5=INFO_FONCTION(  NOCI_SEISME=_F(
+N5_intea=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT5,
-                             PESANTEUR = 9.81,AMOR_REDUIT=0.05, OPTION = ('TOUT') ))
+                             PESANTEUR = 9.81, OPTION = ('INTE_ARIAS') ))
+
+
+N5_duree=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT5,
+                             PESANTEUR = 9.81, OPTION = ('DUREE_PHAS_FORT'  ) ))
 
 RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
 
 TEST_TABLE(
            VALE_CALC=0.0616005327387,
            NOM_PARA='INTE_ARIAS',
-           TABLE=N5,
+           TABLE=N5_intea,
            )
 
 TEST_TABLE(
            VALE_CALC=4.39,
            NOM_PARA='DUREE_PHAS_FORT',
-           TABLE=N5,
+           TABLE=N5_duree,
            )
 
 TEST_TABLE(

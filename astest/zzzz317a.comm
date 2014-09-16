@@ -62,22 +62,26 @@ FONCT1=RECU_FONCTION( TABLE=ACCE1a,
 
 RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
-N1=INFO_FONCTION(  NOCI_SEISME=_F(
+N1_intea=INFO_FONCTION(  NOCI_SEISME=_F(OPTION='INTE_ARIAS',
+                             FONCTION = FONCT1, PESANTEUR = 9.81,
+                             ) )
+
+N1_duree=INFO_FONCTION(  NOCI_SEISME=_F(OPTION='DUREE_PHAS_FORT',
                              FONCTION = FONCT1,
                              BORNE_SUP = 0.95,BORNE_INF = 0.05,
-                             PESANTEUR = 9.81,AMOR_REDUIT=0.05,
-                             OPTION = 'TOUT') )
+                             PESANTEUR = 9.81,
+                            ) )
 
 TEST_TABLE(
            VALE_CALC=0.0555427097231,
            NOM_PARA='INTE_ARIAS',
-           TABLE=N1,
+           TABLE=N1_intea,
            )
 
 TEST_TABLE(
            VALE_CALC=7.34,
            NOM_PARA='DUREE_PHAS_FORT',
-           TABLE=N1,)
+           TABLE=N1_duree,)
 
 # ECART
 ########
@@ -119,10 +123,12 @@ FONCT3=RECU_FONCTION(TABLE=ACCE3,
                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
                               NOM_PARA_TABL = 'FONCTION',)
 
-N3=INFO_FONCTION(  NOCI_SEISME=_F(
-                             FONCTION = FONCT3,
-                             PESANTEUR = 9.81,AMOR_REDUIT = 0.05,
-                             OPTION = ('TOUT') ))
+N3_intea=INFO_FONCTION(  NOCI_SEISME=_F(
+                         FONCTION = FONCT3, PESANTEUR = 9.81, OPTION = ('INTE_ARIAS') ))
+
+N3_duree=INFO_FONCTION(  NOCI_SEISME=_F(
+                         FONCTION = FONCT3, PESANTEUR = 9.81, OPTION = ('DUREE_PHAS_FORT') ))
+
 
 RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
 #
@@ -130,13 +136,13 @@ RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
 TEST_TABLE(
            VALE_CALC=0.0523908882612,
            NOM_PARA='INTE_ARIAS',
-           TABLE=N3,
+           TABLE=N3_intea,
            )
 
 TEST_TABLE(
            VALE_CALC=7.13,
            NOM_PARA='DUREE_PHAS_FORT',
-           TABLE=N3,
+           TABLE=N3_duree,
            )
 
 # ECART
@@ -214,15 +220,16 @@ FONCT2=RECU_FONCTION(    TABLE=ACCE2,
                                        VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
 
-N2=INFO_FONCTION(  NOCI_SEISME=_F(
+N2_intea=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT2, BORNE_SUP = 0.95,BORNE_INF = 0.05,
-                             PESANTEUR = 9.81, AMOR_REDUIT=0.05,OPTION = ('TOUT')) )
+                             PESANTEUR = 9.81, OPTION = ('INTE_ARIAS')) )
+
 
 RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE( VALE_CALC= 0.053589464031 ,
            NOM_PARA='INTE_ARIAS',
-           TABLE=N2, )
+           TABLE=N2_intea, )
 
 INTERS=CALC_INTE_SPEC( INST_INIT=0.0,
                        INST_FIN=TT, NB_POIN=nbp, FONCTION=( FONCT2 ),  )
