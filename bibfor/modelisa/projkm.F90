@@ -1,7 +1,7 @@
-subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
-                  lnuma, licnx, numail, nbcnx, cxma,&
-                  xyzma, normal, itria, xbar, iproj,&
-                  excent)
+subroutine projkm(nmabet, nbmabe, nbnobe, mailla, x3dca,&
+                  noebe, lnuma, licnx, numail, nbcnx,&
+                  cxma, xyzma, normal, itria, xbar,&
+                  iproj, excent)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -29,6 +29,8 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 !                    OBJET CONTENANT LES MAILLES BETON
 !  IN     : NBMABE : INTEGER , SCALAIRE
 !                    NOMBRE DE MAILLE BETON
+!  IN     : NBNOBE : INTEGER , SCALAIRE
+!                    NOMBRE DE NOEUD BETON
 !  IN     : MAILLA : CHARACTER*8 , SCALAIRE
 !                    NOM DU CONCEPT MAILLAGE ASSOCIE A L'ETUDE
 !  IN     : X3DCA  : REAL*8 , VECTEUR DE DIMENSION 3
@@ -98,6 +100,8 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 #include "asterfort/canorm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -108,16 +112,18 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 #include "blas/dscal.h"
     character(len=8) :: mailla
     character(len=19) :: lnuma, licnx
-    integer :: noebe, numail, nbcnx, cxma(*), itria, iproj, nbmabe
+    integer :: noebe, numail, nbcnx, cxma(*), itria, iproj, nbmabe, nbnobe
     real(kind=8) :: x3dca(*), xyzma(3, *), normal(*), xbar(*), excent
     character(len=24) :: nmabet
 !
 ! VARIABLES LOCALES
 ! -----------------
     integer :: icnx, imail, inoma, jcoor, jlicnx, jlnuma, jnumab, jtyma
-    integer :: nbmaok, noe, ntyma, jconx1, jconx2
+    integer :: nbmaok, noe, ntyma, jconx1, jconx2, nb_linobet2, jlinob2
+    integer :: nb_lino_old, nb_linobet1, jlinob1, inob, imabok, j, jno
     real(kind=8) :: d, dmax, dx, dy, dz, epsg, x3dp(3)
-    character(len=24) :: conxma, coorno, tymama
+    character(len=24) :: conxma, coorno, tymama, linobet2, linobet1
+    logical :: l_rech_elarg, l_maok, l_no_pres
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -144,14 +150,53 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
     epsg = 1.0d+08 * r8prem()
     nbmaok = 0
 !
+!     1er passage :
 !.... BOUCLE SUR LES MAILLES APPARTENANT A LA STRUCTURE BETON, POUR
 !.... RETROUVER LE NOEUD BETON LE PLUS PROCHE DANS LES CONNECTIVITES
 !
+!     2eme passage si besoin:
+!.... BOUCLE SUR LES MAILLES APPARTENANT A LA STRUCTURE BETON, POUR
+!.... RETROUVER LES NOEUDS BETON DE LA LISTE LINOBET DANS LES CONNECTIVITES
+!     le liste linobet2 contient les noeuds de toutes les mailles contenant
+!     également le noeud le plus proche (deuxième cercle de recherche)
+    l_rech_elarg = .false.
+!
+    linobet1 = '&&PROJKM.LINOBET1'
+    nb_linobet1 = 0
+    call jecreo(linobet1, 'V V I')
+    call jeecra(linobet1, 'LONMAX', nbnobe)
+    nb_linobet1 = 1
+	call jeecra(linobet1, 'LONUTI', nb_linobet1)
+	call jeveuo(linobet1, 'E', jlinob1)
+	zi(jlinob1) = noebe
+!
+    linobet2 = '&&PROJKM.LINOBET2'
+    nb_linobet2 = 0
+    nb_lino_old = 0
+    call jecreo(linobet2, 'V V I')
+    call jeecra(linobet2, 'LONMAX', nbnobe)
+!
     call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
+!
+88  continue   
 !
     do 10 imail = 1, nbmabe
 !
         numail = zi(jnumab+imail-1)
+        
+        if (l_rech_elarg)then
+			call jeveuo(lnuma, 'E', jlnuma)
+			l_maok = .false.
+			do imabok = 1, nbmaok
+				if (numail .eq. zi(jlnuma-1+imabok))then
+					l_maok = .true.
+					exit
+				endif
+			enddo
+			call jelibe(lnuma)
+			if (l_maok) continue
+        endif
+        
         nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
 !
         do 20 icnx = 1, nbcnx
@@ -159,31 +204,55 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 !.......... SI LE NOEUD BETON EST RETROUVE DANS LES CONNECTIVITES,
 !.......... TEST DE PROJECTION DU NOEUD CABLE SUR LA MAILLE COURANTE
 !
-            if (zi(jconx1-1+zi(jconx2+numail-1)+icnx-1) .eq. noebe) then
+          do inob = 1, nb_linobet1
+             
+            if (zi(jconx1-1+zi(jconx2+numail-1)+icnx-1) .eq. zi(jlinob1-1+inob)) then
 !
 !............. ON NOTE LE NUMERO DE LA MAILLE ET L'INDICE DU NOEUD
 !............. NOEBE DANS LA TABLE DE CONNECTIVITE ASSOCIEE
 !
-                nbmaok = nbmaok + 1
-                call jeecra(lnuma, 'LONUTI', nbmaok)
-                call jeveuo(lnuma, 'E', jlnuma)
-                zi(jlnuma+nbmaok-1) = numail
-                call jelibe(lnuma)
-                call jeecra(licnx, 'LONUTI', nbmaok)
-                call jeveuo(licnx, 'E', jlicnx)
-                zi(jlicnx+nbmaok-1) = icnx
-                call jelibe(licnx)
+                if (.not. l_rech_elarg) then
+					nbmaok = nbmaok + 1
+					call jeecra(lnuma, 'LONUTI', nbmaok)
+					call jeveuo(lnuma, 'E', jlnuma)
+					zi(jlnuma+nbmaok-1) = numail
+					call jelibe(lnuma)
+					call jeecra(licnx, 'LONUTI', nbmaok)
+					call jeveuo(licnx, 'E', jlicnx)
+					zi(jlicnx+nbmaok-1) = icnx
+					call jelibe(licnx)
+!
+					nb_lino_old = nb_linobet2
+					call jeecra(linobet2, 'LONUTI', nb_linobet2 + nbcnx - 1)
+					call jeveuo(linobet2, 'E', jlinob2)
+                endif
 !
 !............. RECUPERATION DES NUMEROS ET DES COORDONNEES DES NOEUDS
 !............. DE LA MAILLE
 !
-                do 30 inoma = 1, nbcnx
+                do inoma = 1, nbcnx
                     noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
                     cxma(inoma) = noe
                     xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
                     xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
                     xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
-30              continue
+                    if ((.not. l_rech_elarg) .and. inoma.ne.icnx)then
+						l_no_pres = .false.
+						do jno = 1, nb_lino_old
+							if(noe.eq.zi(jlinob2-1+jno))then
+								l_no_pres = .true.
+								exit
+							endif
+						enddo
+						if (.not. l_no_pres) then
+							zi(jlinob2+nb_linobet2) = noe
+							nb_linobet2 = nb_linobet2 + 1
+						endif
+                    endif
+                enddo
+                if (.not. l_rech_elarg) then
+					call jelibe(linobet2)
+                endif
 !
 !............. RECUPERATION DE LA NORMALE AU PLAN DE LA MAILLE
 !
@@ -227,10 +296,26 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
                 endif
 !
             endif
+          enddo
 20      continue
 10  end do
+!   recherche elargie si pas déjà fait
+    if (.not. l_rech_elarg) then
+		l_rech_elarg = .true.
+!       copie de linobet2 vers linobet1
+        call jelibe(linobet1)
+        call jeecra(linobet1, 'LONUTI', nb_linobet2)
+	    call jeveuo(linobet1, 'E', jlinob1)
+	    call jeveuo(linobet2, 'E', jlinob2)
+        do inob = 1, nb_linobet2
+			zi(jlinob1-1+inob) = zi(jlinob2-1+inob)
+        enddo
+        goto 88
+    endif
 !
 9999  continue
+    call jedetr(linobet2)
+    call jedetr(linobet1)
     call jedema()
 !
 ! --- FIN DE PROJKM.

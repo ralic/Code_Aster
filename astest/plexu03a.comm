@@ -197,7 +197,7 @@ TEST_RESU(RESU=_F(INST=4.0000000000000002E-4,
                   NOM_CHAM='DEPL',
                   NOEUD='NC001003',
                   NOM_CMP='DZ',
-                  VALE_CALC=2.81012743199E-05,
+                  VALE_CALC=2.81117613773E-05,
                   TOLE_MACHINE=1.E-3,),
           )
 
@@ -206,7 +206,7 @@ TEST_RESU(RESU=_F(INST=4.0000000000000002E-4,
                   NOM_CHAM='DEPL',
                   NOEUD='NC001003',
                   NOM_CMP='DZ',
-                  VALE_CALC=2.8108463009E-05,
+                  VALE_CALC=2.8117346211E-05,
                   TOLE_MACHINE=1.E-3,),
           )
 
