@@ -85,8 +85,13 @@
                 ndimloc, nomres, valres, codret, 0)
 
     do i = 1, ndimloc
-        depsth(i) = valres(i)*(tp-tref)-valrem(i)*(tm- tref)
-        epsth(i)  = valrem(i)*(tm-tref)
+        if ( codret(i).eq.0 ) then
+            depsth(i) = valres(i)*(tp-tref)-valrem(i)*(tm- tref)
+            epsth(i)  = valrem(i)*(tm-tref)
+        else
+            depsth(i) = 0
+            epsth(i) = 0
+        endif
     enddo
 !
     do 30 i = 1, nbvarc

@@ -49,13 +49,14 @@ int load_mfront_lib(const char* libname, const char* symbol)
      */
     void *mfront_handle;
     char *error;
-    char symbol_[18], *valk;
+    char symbol_[256], *valk;
     INTEGER ibid=0, n0=0, nk=0;
     DOUBLE rbid=0.;
     FUNC_MFRONT(f_mfront) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
+    AS_ASSERT(strlen(symbol) < 255);
     strcpy(symbol_, symbol);
 
     DEBUG_DLL_VV("Loading '%s'%s ", libname, "...");
