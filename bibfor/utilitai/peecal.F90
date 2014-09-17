@@ -24,6 +24,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
+#include "asterfort/utflmd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcmp, nuord, iocc, ichagd
@@ -79,14 +80,14 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     integer :: iret, nbma, nbmai, i, jcesl, jcesd, jpoil, jpoid
     integer :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara
-    integer :: ico, ind1, ind2, ifm, niv
+    integer :: ico, ind1, ind2, ifm, niv, iresma, nbmaf, vali
     real(kind=8) :: vol, val, inst, volpt
     complex(kind=8) :: cbid
-    character(len=8) :: noma, k8b, typmcl(2), nomgd, nomva
+    character(len=8) :: noma, k8b, typmcl(3), nomgd, nomva, infoma
     character(len=4) :: dejain
-    character(len=16) :: motcle(2)
-    character(len=19) :: ligrel, cesout, cespoi
-    character(len=24) :: mesmai, valk(3)
+    character(len=16) :: motcle(3)
+    character(len=19) :: cesout, cespoi
+    character(len=24) :: mesmai, valk(3), mesmaf
     aster_logical :: exist
     real(kind=8), pointer :: pdsm(:) => null()
     character(len=8), pointer :: cesk(:) => null()
@@ -97,7 +98,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     cbid=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    mesmai = '&&PEECAL.MES_MAILLES'
+    mesmaf = '&&PEECAL.MAILLES_FILTRE'
+!
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
@@ -132,27 +135,46 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 ! --- CREATION D'UN TABLEAU D'INDICES POUR REPERER
 !     LES MAILLES DU POST TRAITEMENT
     call wkvect('&&PEECAL.IND.MAILLE', 'V V I', nbma, indma)
-    if (lieu(1:4) .ne. 'TOUT') then
-        mesmai = '&&PEECAL_NUM.MAILLE'
-        motcle(1) = 'GROUP_MA'
-        motcle(2) = 'MAILLE'
-        typmcl(1) = 'GROUP_MA'
-        typmcl(2) = 'MAILLE'
-        call reliem(' ', noma, 'NU_MAILLE', 'INTEGRALE', iocc,&
-                    2, motcle, typmcl, mesmai, nbmai)
-        call jeveuo(mesmai, 'L', jmesma)
-        do i = 1, nbma
-            zi(indma+i-1)=0
-        end do
-        do i = 1, nbmai
-            zi(indma+zi(jmesma+i-1)-1)=1
-        end do
-    else
-        do i = 1, nbma
-            zi(indma+i-1)=1
-        end do
-    endif
 !
+    motcle(1) = 'GROUP_MA'
+    motcle(2) = 'MAILLE'
+    motcle(3) = 'TOUT'
+    typmcl(1) = 'GROUP_MA'
+    typmcl(2) = 'MAILLE'
+    typmcl(3) = 'TOUT'
+!
+!   --MAILLES FOURNIES PAR L'UTILISATEUR -
+    call reliem(' ', noma, 'NU_MAILLE', 'INTEGRALE', iocc,&
+                3, motcle, typmcl, mesmai, nbmai)
+!
+!   --MAILLES FILTREES EN FONCTION DE LA DIMENSION POUR
+!   --ETRE HOMOGENE(2D OU 3D)(MOT CLE TYPE_MAILLE)
+    call getvtx('INTEGRALE', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
+!
+    if (iret .ne. 0) then
+        iresma = 0
+        if (infoma .eq. '1D') iresma=1
+        if (infoma .eq. '2D') iresma=2
+        if (infoma .eq. '3D') iresma=3
+        ASSERT(iresma.ne.0)
+        call utflmd(noma, mesmai, nbmai, iresma, ' ',nbmaf, mesmaf)
+        if (nbmaf .gt. 0) then
+            vali= nbmai-nbmaf
+            if (vali .ne.0) call utmess ('A','PREPOST2_7', si=vali)
+            call jedetr(mesmai)
+        else
+            call utmess('F', 'PREPOST2_8')
+        endif
+    else
+        infoma='-'
+    endif
+    call jeveuo(mesmaf, 'L', jmesma)
+    do i = 1, nbma
+        zi(indma+i-1)=0
+    end do
+    do i = 1, nbmaf
+        zi(indma+zi(jmesma+i-1)-1)=1
+    end do
 !
 ! --- POUR LES CHAM_ELEM / ELEM : MOT CLE DEJA_INTEGRE:
     if (tych .eq. 'ELEM') then
@@ -198,7 +220,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
 !     - INFOS
     if (niv .gt. 1) then
-        write(6,*) '<PEECAL> NOMBRE DE MAILLES A TRAITER : ',nbmai
+        write(6,*) '<PEECAL> NOMBRE DE MAILLES A TRAITER : ',nbmaf
         write(6,*) '<PEECAL> NOMBRE DE COMPOSANTES : ',ncmpm
     endif
 !
@@ -275,6 +297,8 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     call jedetr('&&PEECAL.INTE_K')
     call jedetr('&&PEECAL.IND.MAILLE')
     call jedetr('&&PEECAL.LIST_CMP')
+    call jedetr('&&PEECAL.MAILLES_FILTRE')
+    call jedetr('&&PEECAL.MES_MAILLES')
 !
     call jedema()
 !
