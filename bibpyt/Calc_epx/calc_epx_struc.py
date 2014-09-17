@@ -31,7 +31,7 @@ class DIRECTIVE:
     """
     def __init__(self, nom, titre, type_dir=2):
         """
-            Initialisation d'une direction, type 2 par défaut.
+            Initialisation d'une directive, type 2 par défaut.
         """
         self.nom = nom
         #if not titre.startswith('*') : titre = '*'+titre

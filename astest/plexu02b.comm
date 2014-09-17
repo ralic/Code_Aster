@@ -370,8 +370,6 @@ U = CALC_EUROPLEXUS(
                      GROUP_MA = ('AP1','AP2','AP3','AP4'),
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
-   DIME = _F(UNITE_DIME = 40,
-             TABLE = (5,6000),),
    DOMAINES = (
          _F(
             IDENTIFIANT = 91,
@@ -427,7 +425,7 @@ U = CALC_EUROPLEXUS(
            GROUP_NO = ('PMMA'),
            ),
    ),
-   ARCHIVAGE   = _F(PAS_NBRE=500,CONT_GENER='NON'),
+   ARCHIVAGE   = _F(PAS_NBRE=500,),
    );
 
 
@@ -458,8 +456,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7216,
                    RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='MXX',
-                   VALE_CALC=-109.387953818,
-                   VALE_REFE=-109.387953818,
+                   VALE_CALC=-30.810940325403333,
+                   VALE_REFE=-30.810940325403333,
                    MAILLE='M12',),
                 _F(NUME_ORDRE=7216,
                    REFERENCE='SOURCE_EXTERNE',
@@ -467,8 +465,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7216,
                    RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='MYY',
-                   VALE_CALC=-105.839247256,
-                   VALE_REFE=-105.839247256,
+                   VALE_CALC=-29.811387977106666,
+                   VALE_REFE=-29.811387977106666,
                    MAILLE='M80',),
                 ),
           )

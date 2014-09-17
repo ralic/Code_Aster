@@ -209,8 +209,6 @@ U = CALC_EUROPLEXUS(
 #                     NFAR = NFAR,
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
-   DIME = _F(UNITE_DIME = 40,
-             TABLE = (5,6000),),
    CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
                INST_INIT = 0,
                INST_FIN  = 2e-3,

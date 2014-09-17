@@ -154,12 +154,13 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                 'Le groupe %s existe déjà dans dic_cont_2_eff'%group)
     return epx, dic_cont_2_eff, mode_from_cara
 
-def export_cara(cle, DEFI_GROUP, epx, donnees_cle, MAILLAGE, CARA_ELEM,
+def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
                  dic_fonc_parasol, mode_from_cara, dic_cont_2_eff):
     """
         Traite les données 'donnes_cle' contenues dans le mot clé facteur 'cle'
         de l'objet CARA_ELEM
     """
+    from Cata.cata import DEFI_GROUP
     donnees_cle = tolist(donnees_cle)
     dic_cara_cle = {'DICT' : [],
                     'LISTE': [],

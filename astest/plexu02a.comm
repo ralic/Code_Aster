@@ -358,8 +358,6 @@ U = CALC_EUROPLEXUS(
                      GROUP_MA = ('AP1','AP2','AP3','AP4'),
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
-   DIME = _F(UNITE_DIME = 40,
-             TABLE = (5,6000),),
    DOMAINES = (
          _F(
             IDENTIFIANT = 91,
@@ -415,7 +413,7 @@ U = CALC_EUROPLEXUS(
            GROUP_NO = ('PMMA'),
            ),
    ),
-   ARCHIVAGE   = _F(PAS_NBRE=500,CONT_GENER='NON'),
+   ARCHIVAGE   = _F(PAS_NBRE=500,),
    );
 
 
@@ -478,8 +476,6 @@ U2 = CALC_EUROPLEXUS(
                      GROUP_MA = ('AP1','AP2','AP3','AP4'),
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
-   DIME = _F(UNITE_DIME = 40,
-             TABLE = (5,6000),),
    DOMAINES = (
          _F(
             IDENTIFIANT = 91,
@@ -535,7 +531,7 @@ U2 = CALC_EUROPLEXUS(
            GROUP_NO = ('PMMA'),
            ),
    ),
-   ARCHIVAGE   = _F(PAS_NBRE=500,CONT_GENER='NON'),
+   ARCHIVAGE   = _F(PAS_NBRE=500,),
    );
 
 
@@ -573,8 +569,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7216,
                    RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='MXX',
-                   VALE_CALC=-109.186724782,
-                   VALE_REFE=-109.17,
+                   VALE_CALC=-30.754260813596666,
+                   VALE_REFE=-30.74955,
                    MAILLE='M12',),
                 _F(NUME_ORDRE=7216,
                    REFERENCE='SOURCE_EXTERNE',
@@ -582,8 +578,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7216,
                    RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='MYY',
-                   VALE_CALC=-223.91182537183,
-                   VALE_REFE=-2.2391E+02,
+                   VALE_CALC=-63.068497479732116,
+                   VALE_REFE=-63.06798333333334,
                    MAILLE='M80',),
                 _F(NUME_ORDRE=7216,
                    REFERENCE='SOURCE_EXTERNE',
@@ -591,8 +587,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7216,
                    RESULTAT=U2,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='MYY',
-                   VALE_CALC=-223.91304121328,
-                   VALE_REFE=-2.2391E+02,
+                   VALE_CALC=-63.06883994166168,
+                   VALE_REFE=-63.06798333333334,
                    MAILLE='M80',),
                 ),
           )

@@ -56,7 +56,7 @@ except:
 
 
 def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, MODELE=None, CARA_ELEM=None,
-                        CHAM_MATER=None, FONC_PARASOL=None, DIME=None,
+                        CHAM_MATER=None, FONC_PARASOL=None,
                         OBSERVATION=None, ARCHIVAGE=None, COURBE=None,
                         CALCUL=None, DOMAINES=None, INTERFACES=None,
                         ETAT_INIT=None, INFO=1, **args):
@@ -72,25 +72,8 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, MODELE=None, CARA_ELEM=None,
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    # On importe les definitions des commandes a utiliser dans la macro
-    # Le nom de la variable doit etre obligatoirement le nom de la commande
-
-    global _F, INFO_EXEC_ASTER, DETRUIRE, IMPR_RESU, DEFI_FICHIER
-    global DEFI_GROUP, LIRE_MAILLAGE, CREA_TABLE, IMPR_TABLE, AFFE_MODELE
-    global MODI_REPERE, LIRE_EUROPLEXUS, CREA_MAILLAGE
-
-    INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
-    DETRUIRE = self.get_cmd('DETRUIRE')
-    IMPR_RESU = self.get_cmd('IMPR_RESU')
+    global DEFI_FICHIER
     DEFI_FICHIER = self.get_cmd('DEFI_FICHIER')
-    CREA_MAILLAGE = self.get_cmd('CREA_MAILLAGE')
-    DEFI_GROUP = self.get_cmd('DEFI_GROUP')
-    LIRE_MAILLAGE = self.get_cmd('LIRE_MAILLAGE')
-    CREA_TABLE = self.get_cmd('CREA_TABLE')
-    IMPR_TABLE = self.get_cmd('IMPR_TABLE')
-    AFFE_MODELE = self.get_cmd('AFFE_MODELE')
-    MODI_REPERE = self.get_cmd('MODI_REPERE')
-    LIRE_EUROPLEXUS = self.get_cmd('LIRE_EUROPLEXUS')
 
     # Pour la gestion des Exceptions
     prev_onFatalError = aster.onFatalError()
@@ -128,7 +111,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, MODELE=None, CARA_ELEM=None,
     #
 
     EPX = EUROPLEXUS(ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
-                     FONC_PARASOL, EXCIT, DIME, OBSERVATION, ARCHIVAGE, COURBE,
+                     FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
                      CALCUL, DOMAINES, INTERFACES, REPE='REPE_OUT', EXEC=EXEC,
                      INFO=INFO, REPE_epx=REPE_epx, NOM_RESU=nom_resu,
                      args=args)
@@ -192,7 +175,7 @@ class EUROPLEXUS:
     """
 
     def __init__(self, ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
-                 FONC_PARASOL, EXCIT, DIME, OBSERVATION, ARCHIVAGE, COURBE,
+                 FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
                  CALCUL, DOMAINES, INTERFACES, REPE, EXEC, INFO, REPE_epx,
                  NOM_RESU, args):
         """
@@ -257,7 +240,6 @@ class EUROPLEXUS:
         self.MAILLAGE = macro.get_concept(nomsd)
 
         # Autres entrées
-        self.DIME = DIME
         self.FONC_PARASOL = FONC_PARASOL
         self.EXCIT = EXCIT
         self.OBSERVATION = OBSERVATION
@@ -321,6 +303,7 @@ class EUROPLEXUS:
         """
             Retoune une unité de fichier libre.
         """
+        from Cata.cata import DETRUIRE, INFO_EXEC_ASTER
         _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
         unite = _UL['UNITE_LIBRE', 1]
         DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
@@ -376,6 +359,7 @@ class EUROPLEXUS:
             s'il y a un état initial.
         """
         from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
+        from Cata.cata import IMPR_RESU, MODI_REPERE
 
         epx = self.epx
 
@@ -430,46 +414,6 @@ class EUROPLEXUS:
         DEFI_FICHIER(UNITE=unite, ACTION='LIBERER')
 
   #-----------------------------------------------------------------------
-    def export_DIME(self,):
-        """
-            Direction DIME normalement plus utile.
-        """
-        from Calc_epx.calc_epx_struc import BLOC_DONNEES
-        epx = self.epx
-
-        directive = 'DIME'
-        # EC : DIME n'est plus utile cela pourra être supprimer
-
-        ## Test si des parametres de dime seront introuduites
-        ## à l'aide d'un fichier externe
-        #if self.DIME is not None :
-            #liste_mots_cles = self.DIME.List_F()
-            ## la liste est de longueur 1 (voir .capy)
-            #dic_mots_cles = liste_mots_cles[0]
-
-            #if dic_mots_cles.has_key('UNITE_DIME') :
-                #unite_dime = dic_mots_cles['UNITE_DIME']
-                #fort = 'fort.%i' %unite_dime
-                #dic_fichier = fichier2dic(fort)
-            #else :
-                #dic_fichier = {}
-
-            #for cle in dic_mots_cles:
-                #if cle == 'UNITE_DIME': continue
-                #dic_fichier[cle] = dic_mots_cles[cle]
-
-            #for cle in dic_fichier:
-                #li_val = []
-                #for val in dic_fichier[cle]:
-                    #li_val.append(int(val))
-                #if len(li_val)==1 :
-                    #vale = li_val[0]
-                #else :
-                    #vale = li_val
-                #bloc = BLOC_SIMP(cle,vale)
-                #epx[directive].add_bloc(bloc)
-
-  #-----------------------------------------------------------------------
     def export_MODELE(self):
         """
             Traduction du modèle Code_Aster dans la directive GEOM d'EPX.
@@ -479,7 +423,7 @@ class EUROPLEXUS:
         [self.epx, self.dic_epx_geom, self.gmaInterfaces, self.modi_repere,
          self.etat_init_cont] = export_modele(self.epx, self.MAILLAGE,
                                               self.MODELE, self.INTERFACES,
-                                              self.mode_from_cara, DEFI_GROUP)
+                                              self.mode_from_cara)
 
    #-----------------------------------------------------------------------
     def export_CARA_ELEM(self):
@@ -513,7 +457,7 @@ class EUROPLEXUS:
                 if cata_cara_elem[cle] == None:
                     continue
                 [epx, dic_cara_elem[cle], mode_from_cara,
-                dic_cont_2_eff] = export_cara(cle, DEFI_GROUP, epx,
+                dic_cont_2_eff] = export_cara(cle, epx,
                                               cara_elem_struc[cle],
                                               self.MAILLAGE, self.CARA_ELEM,
                                               dic_fonc_parasol, mode_from_cara,
@@ -872,10 +816,10 @@ class EUROPLEXUS:
         # Le module CARA_ELEM doit être exécuté avec MODELE pour connaître la
         # modelisation à affecter à certains éléments.
 
-        modules_exe = ['DEBUT', 'DIME', 'CARA_ELEM', 'MODELE', 'CHAM_MATER',
+        modules_exe = ['DEBUT', 'CARA_ELEM', 'MODELE', 'CHAM_MATER',
                        'MAILLAGE', 'EXCIT', 'ECRITURE', 'CALCUL',
                        'POST_COURBE']
-        directives = ['DEBUT', 'DIME', 'GEOM', 'COMPLEMENT', 'FONC', 'MATE',
+        directives = ['DEBUT', 'GEOM', 'COMPLEMENT', 'FONC', 'MATE',
                       'ORIENTATION', 'CHARGE', 'LINK', 'ECRITURE', 'OPTION',
                       'INIT', 'STRUCTURE', 'INTERFACE', 'CALCUL', 'SUITE',
                       'INFO_SORTIE', 'SORTIE', 'FIN']
@@ -907,6 +851,7 @@ class EUROPLEXUS:
         """
 
         from Calc_epx.calc_epx_utils import lire_pun
+        from Cata.cata import CREA_TABLE, IMPR_TABLE
         global table
 
         if not hasattr(self, 'courbes'):
@@ -976,6 +921,7 @@ class EUROPLEXUS:
             Construit un concept aster evol_noli à partir des résultats du
             calcul EPX contenus dans le fichier MED de sortie.
         """
+        from Cata.cata import LIRE_EUROPLEXUS
         import med_aster
         fichier_med = self.nom_fichiers['MED']
         if not os.path.isfile(fichier_med):

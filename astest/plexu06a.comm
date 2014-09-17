@@ -290,8 +290,6 @@ EPX1 = CALC_EUROPLEXUS(
                      NFKR = NFKR,
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
-   DIME = _F(UNITE_DIME = 40,
-             TABLE = (5,6000),),
    CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
                INST_INIT = 0,
                INST_FIN  = textr,

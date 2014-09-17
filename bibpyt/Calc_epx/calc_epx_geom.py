@@ -27,9 +27,8 @@ from Utilitai.partition import MAIL_PY
 import aster, string
 from Utilitai.Utmess import UTMESS
 from Accas import _F
-
-def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara,
-                                                        DEFI_GROUP):
+from Cata.cata import DEFI_GROUP
+def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
 
     """
         Traitement du concept MODELE et traduction pour EPX

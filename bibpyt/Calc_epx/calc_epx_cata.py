@@ -318,6 +318,10 @@ cata_ordre_para = {
                   .repère
 """
 
+# Lors de l'ajout d'un type d'élément dont le champ SIEF_ELGA est formulé en
+# effort, il est nécessaire de développer la transformation dans la methode
+# LireEPX.prep_cont2effo de lire_europlexus_ops.py.
+
 cata_modelisa = {
     'Q4GG' : {
         'MODE_EPX': {
@@ -594,3 +598,26 @@ cata_compo['EPSI_ELGA'] = {
 cata_compo['VARI_ELGA'] = {}
 for ii in range(1, 25):
     cata_compo['VARI_ELGA']['V%i'%ii] = ii
+
+    
+# Format med des champs depl, vite et acce
+format_med = [
+    {
+    'NOM_CHAM_MED' : 'DEPL_001',
+    'NOM_CMP' : ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'),
+    'NOM_CMP_MED' : ('UX', 'UY', 'UZ', 'RX', 'RY', 'RZ'),
+    'NOM_CHAM' :'DEPL'
+     },
+    {
+    'NOM_CHAM_MED' : 'VITE_001',
+    'NOM_CMP' : ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'),
+    'NOM_CMP_MED' : ('VX', 'VY', 'VZ', 'RX', 'RY', 'RZ'),
+    'NOM_CHAM' : 'VITE'
+     },
+    {
+    'NOM_CHAM_MED' : 'ACCE_001',
+    'NOM_CMP' : ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'),
+    'NOM_CMP_MED' : ('GX', 'GY', 'GZ', 'RX', 'RY', 'RZ'),
+    'NOM_CHAM' : 'ACCE'
+     },
+             ]
