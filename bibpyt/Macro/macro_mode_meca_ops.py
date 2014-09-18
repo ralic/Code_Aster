@@ -71,12 +71,11 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    # on bluffe l'algo en posant rang=0/nbproc=1 pour tous les procs.
    # Cependant si le solveur est autre que MUMPS on s'arrete en erreur.
    if (NIVEAU_PARALLELISME=='COMPLET'):
-      rang   = aster_core.mpi_info()[0]
-      nbproc = aster_core.mpi_info()[1]
+      rang, nbproc = aster_core.MPI_CommRankSize()
    elif (NIVEAU_PARALLELISME=='PARTIEL'):
-      rang=0
-      nbproc=1
-      nbproc_real=aster_core.mpi_info()[1]
+      rang = 0
+      nbproc = 1
+      nbproc_real = aster_core.MPI_CommRankSize()[1]
       if ((nbproc_real>1)&(solveur_lineaire!='MUMPS')):
          aster.affiche('MESSAGE',72*'-')
          UTMESS('F', 'MODAL_14',vali=nbproc_real,valk=solveur_lineaire)

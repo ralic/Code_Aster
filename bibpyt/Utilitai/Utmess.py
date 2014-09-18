@@ -112,7 +112,7 @@ class MESSAGE_LOGGER(Singleton):
         """Stocke les informations nécessaires pour la gestion des erreurs en MPI."""
         if not aster_exists:
             return
-        rank = aster_core.mpi_info()[0]
+        rank = aster_core.MPI_CommRankSize()[0]
         self._mpi_rank = aster_core._USE_MPI and rank or None
         import platform
         node = platform.node()
@@ -168,7 +168,7 @@ class MESSAGE_LOGGER(Singleton):
 
             if exception and code[0] in ('S', 'F'):
                 if self._mpi_rank is not None:
-                    aster_core.mpi_warn()
+                    aster_core.MPI_Warn()
                 if self._mpi_rank == 0:
                     l_unit = list_unit('F')
                     txt = _(u"On ne peut pas lever d'exception dans une exécution MPI.")
@@ -305,7 +305,7 @@ Exception : %s
     def set_parent(self, idmess):
         """Store the parent id of the current message"""
         self._parent = idmess
-    
+
     def add_to_buffer(self, dictmess):
         """Ajoute le message décrit dans le buffer en vue d'une impression
         ultérieure.

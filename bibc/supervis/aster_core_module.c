@@ -772,9 +772,9 @@ static PyMethodDef methods[] = {
     { "matfpe",         asterc_matfpe,       METH_VARARGS, matfpe_doc },
     { "get_mem_stat",   asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
     { "set_mem_stat",   asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
-    { "mpi_info",       aster_mpi_info,      METH_VARARGS},
-    { "mpi_warn",       aster_mpi_warn,      METH_VARARGS},
-    { "mpi_barrier",    aster_mpi_barrier,   METH_VARARGS},
+    { "MPI_CommRankSize", aster_mpi_info,      METH_VARARGS},
+    { "MPI_Warn",       aster_mpi_warn,      METH_VARARGS},
+    { "MPI_Barrier",    aster_mpi_barrier,   METH_VARARGS},
     { "MPI_Bcast",      aster_mpi_bcast_py,  METH_VARARGS},
     // { "get_option",  ... } : method added in register_jdc
     // { "set_info",  ... } : method added in register_jdc

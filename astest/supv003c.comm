@@ -93,7 +93,7 @@ if type(wait_on) is int:
 
 execute(err_on, wait_on)
 
-aster_core.mpi_barrier()
+aster_core.MPI_Barrier()
 
 assert test == 0, 'we should never pass here'
 
